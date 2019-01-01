@@ -220,6 +220,7 @@ public class Game {
 			if (getPlayerTeam(player).teamInfo.bed.equals(loc)) {
 				return false;
 			}
+			block.getDrops().clear();
 			bedDestroyed(loc);
 			breakedOriginalBlocks.put(block.getLocation(), block.getBlockData());
 			if (block.getLocation().equals(loc)) {
@@ -590,7 +591,7 @@ public class Game {
 					store.forceKill();
 				}
 				String message = I18n._("game_end");
-				for (GamePlayer player : players) {
+				for (GamePlayer player : (List<GamePlayer>) ((ArrayList<GamePlayer>) players).clone()) {
 					player.player.sendMessage(message);
 					player.changeGame(null);
 				}

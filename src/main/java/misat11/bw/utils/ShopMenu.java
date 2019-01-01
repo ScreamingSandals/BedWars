@@ -139,6 +139,9 @@ public class ShopMenu implements Listener {
 				}
 				int clickedSlot = e.getSlot();
 				Inventory inv = e.getInventory();
+				if (clickedSlot < 0) {
+					return;
+				}
 				ItemStack stack = inv.getItem(clickedSlot);
 				if (stack == null) {
 					return;

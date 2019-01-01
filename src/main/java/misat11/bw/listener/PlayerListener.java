@@ -171,6 +171,10 @@ public class PlayerListener implements Listener {
 			return;
 		}
 
+		if (event.getClickedInventory() == null) {
+			return;
+		}
+		
 		if (event.getClickedInventory().getType() == InventoryType.PLAYER) {
 			Player p = (Player) event.getWhoClicked();
 			if (Main.isPlayerInGame(p)) {
