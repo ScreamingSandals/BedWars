@@ -1,0 +1,42 @@
+# Locale (en, cs)
+locale: en
+
+allow-crafting: false
+keep-inventory-on-death: false
+
+# Commands whitelist
+allowed-commands:
+- "/help"
+
+# Ignored blocks (Farm blocks)
+farmBlocks:
+  enable: true
+  blocks:
+  - WHEAT
+  - CARROTS
+  - POTATOES
+  - BEETROOTS
+
+# Scoreboard settings
+scoreboard:
+  enable: true
+  title: "§a%game%§r - %time%"
+  bedLost: "§c\u2718"
+  bedExists: "§a\u2714"
+  teamTitle: "%bed%%color%%team%"
+  
+# Vault rewards
+vault:
+  enable: true
+  reward:
+    kill: 5
+    win: 20
+    
+# Spawner intervals (in seconds)
+spawners:
+  bronze: 1
+  iron: 10
+  gold: 20
+  
+# Do not edit this!!!
+version: 1

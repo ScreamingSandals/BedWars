@@ -1,0 +1,396 @@
+shop-items:
+
+#  examplecategory:
+#    name: "Example category"
+#    item: "GOLDEN_APPLE"
+#    lore:
+#    - "This is my category!"
+#    - "Please buy things inside!"
+#    items:
+#    - price: 50
+#      price-type: "bronze"
+#      stack:
+#        ==: org.bukkit.inventory.ItemStack
+#        v: 1519
+#        type: DIAMOND_SWORD
+#        amount: 1
+#        meta:
+#          ==: ItemMeta
+#          meta-type: UNSPECIFIC
+#          enchants:
+#            DAMAGE_ALL: 2
+#          repair-cost: 1
+#          Damage: 99
+
+  armor:
+    name: "Armor"
+    item: DIAMOND_CHESTPLATE     
+    lore:
+    - "Protect yourself with armor! Click here."
+    items:
+    - price: 1
+      price-type: bronze
+      stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1519
+        type: LEATHER_HELMET
+        amount: 1
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          enchants:
+            PROTECTION_ENVIRONMENTAL: 1
+    - price: 1
+      price-type: bronze
+      stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1519
+        type: LEATHER_LEGGINGS
+        amount: 1
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          enchants:
+            PROTECTION_ENVIRONMENTAL: 1
+    - price: 1
+      price-type: bronze
+      stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1519
+        type: LEATHER_BOOTS
+        amount: 1
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          enchants:
+            PROTECTION_ENVIRONMENTAL: 1
+    - price: 1
+      price-type: iron
+      stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1519
+        type: CHAINMAIL_CHESTPLATE
+        amount: 1
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          enchants:
+            PROTECTION_ENVIRONMENTAL: 1
+    - price: 3
+      price-type: iron
+      stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1519
+        type: CHAINMAIL_CHESTPLATE
+        amount: 1
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          enchants:
+            PROTECTION_ENVIRONMENTAL: 2
+    - price: 7
+      price-type: iron
+      stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1519
+        type: CHAINMAIL_CHESTPLATE
+        amount: 1
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          enchants:
+            PROTECTION_ENVIRONMENTAL: 3
+    - price: 10
+      price-type: gold
+      stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1519
+        type: IRON_HELMET
+        amount: 1
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: Helm
+          enchants:
+            PROTECTION_ENVIRONMENTAL: 2
+  
+  swords:
+    name: "Swords"
+    item: DIAMOND_SWORD     
+    lore:
+    - "Click here to get sword for attacking your enemies"
+    items:
+    - price: 8
+      price-type: bronze
+      stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1519
+        type: STICK
+        amount: 1
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          enchants:
+            KNOCKBACK: 1
+    - price: 1
+      price-type: iron
+      stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1519
+        type: GOLDEN_SWORD   
+        amount: 1
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          enchants:
+            DAMAGE_ALL: 1
+    - price: 3
+      price-type: iron
+      stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1519
+        type: GOLDEN_SWORD   
+        amount: 1
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          enchants:
+            DAMAGE_ALL: 2
+    - price: 7
+      price-type: iron
+      stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1519
+        type: GOLDEN_SWORD   
+        amount: 1
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          enchants:
+            DAMAGE_ALL: 3
+    - price: 3
+      price-type: gold
+      stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1519
+        type: GOLDEN_SWORD   
+        amount: 1
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          enchants:
+            DAMAGE_ALL: 2
+            KNOCKBACK: 1
+    - price: 15
+      price-type: gold
+      stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1519
+        type: GOLDEN_AXE
+        display-name: "Axe of Infinity"
+        amount: 1
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          enchants:
+            DAMAGE_ALL: 1
+            DURABILITY: 1
+            KNOCKBACK: 1
+    
+  bows:
+    name: "Bows"
+    item: BOW     
+    lore:
+    - "Prove yourself as a marksman with these wonderful bows"
+    items:
+    - price: 3
+      price-type: gold
+      stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1519
+        type: BOW
+        amount: 1
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          enchants:
+            ARROW_INFINITE: 1
+    - price: 7
+      price-type: gold
+      stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1519
+        type: BOW
+        amount: 1
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          enchants:
+            ARROW_INFINITE: 1
+            ARROW_DAMAGE: 1
+    - price: 13
+      price-type: gold
+      stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1519
+        type: BOW
+        amount: 1
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          enchants:
+            ARROW_INFINITE: 1
+            ARROW_DAMAGE: 2
+    - price: 14
+      price-type: gold
+      stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1519
+        type: BOW
+        amount: 1
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          enchants:
+            ARROW_INFINITE: 1
+            ARROW_FIRE: 1
+    - price: 15
+      price-type: gold
+      stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1519
+        type: BOW
+        amount: 1
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          enchants:
+            ARROW_INFINITE: 1
+            ARROW_FIRE: 1
+            ARROW_KNOCKBACK: 1
+    - price: 1
+      price-type: gold
+      stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1519
+        type: ARROW
+        amount: 1 
+  eat:
+    name: "Eat"
+    item: COOKED_PORKCHOP     
+    lore:
+    - "Are you hungry? Get something to eat."
+    items:
+    - price: 4
+      price-type: bronze
+      stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1519
+        type: COOKED_PORKCHOP
+        amount: 2
+    - price: 2
+      price-type: iron
+      stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1519
+        type: GOLDEN_APPLE
+        amount: 1
+    - price: 5
+      price-type: gold
+      stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1519
+        type: BREAD
+        amount: 10
+        
+  pickaxes:
+    name: "Pickaxes"
+    item: DIAMOND_PICKAXE     
+    lore:
+    - "Destroy others blocks? Use these pickaxes."
+    items:
+    - price: 4
+      price-type: bronze
+      stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1519
+        type: IRON_PICKAXE
+        amount: 1
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          enchants:
+            LOOT_BONUS_BLOCKS: 1
+    - price: 2
+      price-type: iron
+      stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1519
+        type: IRON_PICKAXE
+        amount: 1
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          enchants:
+            LOOT_BONUS_BLOCKS: 2
+    - price: 1
+      price-type: gold
+      stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1519
+        type: IRON_PICKAXE
+        amount: 1
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          enchants:
+            LOOT_BONUS_BLOCKS: 3
+            
+  blocks:
+    name: "Blocks"
+    item: SANDSTONE     
+    lore:
+    - "Destroy others blocks? Use these pickaxes."
+    items:
+    - price: 1
+      price-type: bronze
+      stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1519
+        type: CUT_SANDSTONE
+        amount: 2
+    - price: 7
+      price-type: bronze
+      stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1519
+        type: END_STONE
+        amount: 3
+    - price: 3
+      price-type: iron
+      stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1519
+        type: IRON_BLOCK
+        amount: 1
+    - price: 15
+      price-type: bronze
+      stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1519
+        type: GLOWSTONE
+        amount: 4
+    - price: 4
+      price-type: bronze
+      stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1519
+        type: GLASS
+        
+              
+  
+              
+          
+          
+          
+          
