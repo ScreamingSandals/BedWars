@@ -248,6 +248,7 @@ public class Game {
 			for (CurrentTeam team : teamsInGame) {
 				if (team.teamInfo.bed.equals(loc)) {
 					team.isBed = false;
+					updateScoreboard();
 					for (GamePlayer player : players) {
 						Title.send(player.player,
 								I18n._("bed_is_destroyed", false).replace("%team%",
