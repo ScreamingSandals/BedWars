@@ -47,7 +47,7 @@ public class PlayerListener implements Listener {
 		if (Main.isPlayerInGame(victim)) {
 			GamePlayer gVictim = Main.getPlayerGameProfile(victim);
 			Game game = gVictim.getGame();
-			event.setKeepInventory(Main.getConfigurator().config.getBoolean("keep-inventory-on-death") && !gVictim.isSpectator);
+			event.setKeepInventory(Main.getConfigurator().config.getBoolean("keep-inventory-on-death"));
 			if (game.getStatus() == GameStatus.RUNNING) {
 				CurrentTeam team = game.getPlayerTeam(gVictim);
 				if (!team.isBed) {
@@ -96,12 +96,7 @@ public class PlayerListener implements Listener {
 				return;
 			}
 			if (gPlayer.isSpectator) {
-				event.setRespawnLocation(gPlayer.getGame().getSpecSpawn());
-				event.getPlayer().setAllowFlight(true);
-				event.getPlayer().setFlying(true);
-				event.getPlayer()
-						.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1));
-				event.getPlayer().setCollidable(false);
+				gPlayer.getGame().makeSpectator(gPlayer);
 			} else {
 				event.setRespawnLocation(gPlayer.getGame().getPlayerTeam(gPlayer).teamInfo.spawn);
 			}

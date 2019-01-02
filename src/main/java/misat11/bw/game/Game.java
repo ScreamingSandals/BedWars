@@ -344,7 +344,7 @@ public class Game {
 				cancelTask();
 			}
 			countdown = -1;
-			gameScoreboard.clearSlot(DisplaySlot.BELOW_NAME);
+			gameScoreboard.clearSlot(DisplaySlot.SIDEBAR);
 			for (CurrentTeam team : teamsInGame) {
 				team.getScoreboardTeam().unregister();
 			}
@@ -580,6 +580,23 @@ public class Game {
 			}
 		}
 	}
+	
+	public void makeSpectator(GamePlayer player) {
+		player.isSpectator = true;
+		player.player.teleport(specSpawn);
+		player.player.setAllowFlight(true);
+		player.player.setFlying(true);
+		player.player
+				.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1));
+		player.player.setCollidable(false);
+		
+		ItemStack leave = new ItemStack(Material.SLIME_BALL);
+		ItemMeta leaveMeta = leave.getItemMeta();
+		leaveMeta.setDisplayName(I18n._("leave_from_game_item", false));
+		leave.setItemMeta(leaveMeta);
+		player.player.getInventory().setItem(8, leave);
+		
+	}
 
 	public void run() {
 		if (this.status == GameStatus.RUNNING) {
@@ -687,13 +704,7 @@ public class Game {
 					player.player.playSound(player.player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
 					Title.send(player.player, gameStartTitle, gameStartSubtitle);
 					if (team == null) {
-						player.isSpectator = true;
-						player.player.teleport(specSpawn);
-						player.player.setAllowFlight(true);
-						player.player.setFlying(true);
-						player.player
-								.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1));
-						player.player.setCollidable(false);
+						makeSpectator(player);
 					} else {
 						player.player.teleport(team.teamInfo.spawn);
 					}
