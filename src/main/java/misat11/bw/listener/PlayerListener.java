@@ -142,7 +142,7 @@ public class PlayerListener implements Listener {
 				event.setCancelled(true);
 				return;
 			}
-			if (!game.blockBreak(Main.getPlayerGameProfile(event.getPlayer()), event.getBlock())) {
+			if (!game.blockBreak(Main.getPlayerGameProfile(event.getPlayer()), event.getBlock(), event)) {
 				event.setCancelled(true);
 			}
 		}

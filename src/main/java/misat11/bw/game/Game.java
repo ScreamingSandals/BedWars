@@ -20,6 +20,7 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
@@ -194,7 +195,7 @@ public class Game {
 		return true;
 	}
 
-	public boolean blockBreak(GamePlayer player, Block block) {
+	public boolean blockBreak(GamePlayer player, Block block, BlockBreakEvent event) {
 		if (status != GameStatus.RUNNING) {
 			return false; // ?
 		}
@@ -220,7 +221,7 @@ public class Game {
 			if (getPlayerTeam(player).teamInfo.bed.equals(loc)) {
 				return false;
 			}
-			block.getDrops().clear();
+			event.setDropItems(false);
 			bedDestroyed(loc);
 			breakedOriginalBlocks.put(block.getLocation(), block.getBlockData());
 			if (block.getLocation().equals(loc)) {
@@ -602,8 +603,6 @@ public class Game {
 		if (this.status == GameStatus.RUNNING) {
 			updateScoreboardTimer();
 			if (countdown == 0) {
-				this.status = GameStatus.REBUILDING;
-				this.countdown = -1;
 				teamsInGame.clear();
 				for (GameStore store : gameStore) {
 					store.forceKill();
@@ -721,6 +720,7 @@ public class Game {
 				}
 				block.getBlock().setType(Material.AIR);
 			}
+			buildedBlocks.clear();
 			for (Map.Entry<Location, BlockData> block : breakedOriginalBlocks.entrySet()) {
 				Chunk chunk = block.getKey().getChunk();
 				if (!chunk.isLoaded()) {
@@ -728,6 +728,7 @@ public class Game {
 				}
 				block.getKey().getBlock().setBlockData(block.getValue());
 			}
+			breakedOriginalBlocks.clear();
 			this.status = this.afterRebuild;
 			cancelTask();
 		}
