@@ -25,6 +25,17 @@ scoreboard:
   bedExists: "§a\u2714"
   teamTitle: "%bed%%color%%team%"
   
+# Title speed
+title:
+  fadeIn: 0
+  stay: 20
+  fadeOut: 0
+  
+# Items
+items:
+  jointeam: COMPASS
+  leavegame: SLIME_BALL
+  
 # Vault rewards
 vault:
   enable: true

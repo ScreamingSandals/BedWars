@@ -296,11 +296,11 @@ public class Game {
 		for (GamePlayer p : players)
 			p.player.sendMessage(message);
 
-		ItemStack compass = new ItemStack(Material.COMPASS);
+		ItemStack compass = new ItemStack(Material.valueOf(Main.getConfigurator().config.getString("items.jointeam")));
 		ItemMeta metaCompass = compass.getItemMeta();
 		metaCompass.setDisplayName(I18n._("compass_selector_team", false));
 		compass.setItemMeta(metaCompass);
-		ItemStack leave = new ItemStack(Material.SLIME_BALL);
+		ItemStack leave = new ItemStack(Material.valueOf(Main.getConfigurator().config.getString("items.leavegame")));
 		ItemMeta leaveMeta = leave.getItemMeta();
 		leaveMeta.setDisplayName(I18n._("leave_from_game_item", false));
 		leave.setItemMeta(leaveMeta);

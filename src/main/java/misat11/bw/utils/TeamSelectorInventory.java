@@ -71,6 +71,12 @@ public class TeamSelectorInventory implements Listener {
 			player.closeInventory();
 			return;
 		}
+		if (e.getCurrentItem() == null) {
+			return;
+		}
+		if (e.getCurrentItem().getItemMeta() == null) {
+			return;
+		}
 		game.selectTeam(Main.getPlayerGameProfile(player), e.getCurrentItem().getItemMeta().getDisplayName());
 	}
 

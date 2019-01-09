@@ -1,7 +1,9 @@
 package misat11.bw.game;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -17,14 +19,14 @@ import misat11.bw.utils.I18n;
 public class GameCreator {
 
 	private Game game;
-	private List<String> villagerstores = new ArrayList<String>();
+	private HashMap<String, Location> villagerstores = new HashMap<String, Location>();
 
 	public GameCreator(Game game) {
 		this.game = game;
 		List<GameStore> gs = game.getGameStores();
 		if (!gs.isEmpty()) {
 			for (GameStore store : gs) {
-				villagerstores.add(store.loc.getBlockX() + ";" + store.loc.getBlockY() + ";" + store.loc.getBlockZ());
+				villagerstores.put(store.loc.getBlockX() + ";" + store.loc.getBlockY() + ";" + store.loc.getBlockZ(), store.loc);
 			}
 		}
 	}
@@ -95,8 +97,8 @@ public class GameCreator {
 			}
 		} else if (action.equalsIgnoreCase("save")) {
 			List<GameStore> gamestores = new ArrayList<GameStore>();
-			for (String vloc : villagerstores) {
-				gamestores.add(new GameStore(Game.readLocationFromString(game.getWorld(), vloc)));
+			for (Map.Entry<String, Location> vloc : villagerstores.entrySet()) {
+				gamestores.add(new GameStore(vloc.getValue()));
 			}
 			game.setGameStores(gamestores);
 			if (game.getTeams().size() < 2) {
@@ -251,6 +253,8 @@ public class GameCreator {
 		if (!isInArea(loc, game.getPos1(), game.getPos2())) {
 			return CommandResponse.SPAWN_MUST_BE_IN_MAIN_AREA;
 		}
+		loc.setYaw(0);
+		loc.setPitch(0);
 		if (type.equalsIgnoreCase("bronze")) {
 			game.getSpawners().add(new ItemSpawner(loc, ItemSpawnerType.BRONZE));
 		} else if (type.equalsIgnoreCase("iron")) {
@@ -274,10 +278,10 @@ public class GameCreator {
 			return CommandResponse.SPAWN_MUST_BE_IN_MAIN_AREA;
 		}
 		String location = loc.getBlockX() + ";" + loc.getBlockY() + ";" + loc.getBlockZ();
-		if (villagerstores.contains(location)) {
+		if (villagerstores.containsKey(location)) {
 			return CommandResponse.STORE_EXISTS;
 		}
-		villagerstores.add(location);
+		villagerstores.put(location, loc);
 		return CommandResponse.SUCCESS;
 	}
 
@@ -286,7 +290,7 @@ public class GameCreator {
 			return CommandResponse.MUST_BE_IN_SAME_WORLD;
 		}
 		String location = loc.getBlockX() + ";" + loc.getBlockY() + ";" + loc.getBlockZ();
-		if (!villagerstores.contains(location)) {
+		if (!villagerstores.containsKey(location)) {
 			return CommandResponse.STORE_NOT_EXISTS;
 		}
 		villagerstores.remove(location);

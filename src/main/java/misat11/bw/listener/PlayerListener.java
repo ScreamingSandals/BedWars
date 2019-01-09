@@ -1,5 +1,6 @@
 package misat11.bw.listener;
 
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
@@ -291,8 +292,7 @@ public class PlayerListener implements Listener {
 			Game game = gPlayer.getGame();
 			if (game.getStatus() == GameStatus.WAITING || gPlayer.isSpectator) {
 				event.setCancelled(true);
-				switch (event.getMaterial()) {
-				case COMPASS:
+				if(event.getMaterial() == Material.valueOf(Main.getConfigurator().config.getString("items.jointeam"))) {
 					if (game.getStatus() == GameStatus.WAITING) {
 						TeamSelectorInventory inv = game.getTeamSelectorInventory();
 						if (inv == null) {
@@ -302,13 +302,8 @@ public class PlayerListener implements Listener {
 					} else if (gPlayer.isSpectator) {
 						// TODO
 					}
-					break;
-				case SLIME_BALL:
+				} else if (event.getMaterial() == Material.valueOf(Main.getConfigurator().config.getString("items.leavegame"))) {
 					game.leaveFromGame(player);
-					break;
-				default:
-					break;
-
 				}
 			}
 		}

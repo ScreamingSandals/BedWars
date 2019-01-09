@@ -59,6 +59,11 @@ public class Configurator {
 		modify = modify || checkOrSetConfig("scoreboard.bedLost", "§c\u2718");
 		modify = modify || checkOrSetConfig("scoreboard.bedExists", "§a\u2714");
 		modify = modify || checkOrSetConfig("scoreboard.teamTitle", "%bed%%color%%team%");
+		modify = modify || checkOrSetConfig("title.fadeIn", 0);
+		modify = modify || checkOrSetConfig("title.stay", 20);
+		modify = modify || checkOrSetConfig("title.fadeOut", 0);
+		modify = modify || checkOrSetConfig("items.jointeam", "COMPASS");
+		modify = modify || checkOrSetConfig("items.leavegame", "SLIME_BALL");
 		modify = modify || checkOrSetConfig("vault.enable", true);
 		modify = modify || checkOrSetConfig("vault.reward.kill", 5);
 		modify = modify || checkOrSetConfig("vault.reward.win", 20);
