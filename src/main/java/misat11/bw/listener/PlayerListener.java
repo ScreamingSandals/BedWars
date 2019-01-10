@@ -292,7 +292,7 @@ public class PlayerListener implements Listener {
 			Game game = gPlayer.getGame();
 			if (game.getStatus() == GameStatus.WAITING || gPlayer.isSpectator) {
 				event.setCancelled(true);
-				if(event.getMaterial() == Material.valueOf(Main.getConfigurator().config.getString("items.jointeam"))) {
+				if(event.getMaterial() == Material.valueOf(Main.getConfigurator().config.getString("items.jointeam", "COMPASS"))) {
 					if (game.getStatus() == GameStatus.WAITING) {
 						TeamSelectorInventory inv = game.getTeamSelectorInventory();
 						if (inv == null) {
@@ -302,7 +302,7 @@ public class PlayerListener implements Listener {
 					} else if (gPlayer.isSpectator) {
 						// TODO
 					}
-				} else if (event.getMaterial() == Material.valueOf(Main.getConfigurator().config.getString("items.leavegame"))) {
+				} else if (event.getMaterial() == Material.valueOf(Main.getConfigurator().config.getString("items.leavegame", "SLIME_BALL"))) {
 					game.leaveFromGame(player);
 				}
 			}

@@ -19,6 +19,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
@@ -296,11 +297,11 @@ public class Game {
 		for (GamePlayer p : players)
 			p.player.sendMessage(message);
 
-		ItemStack compass = new ItemStack(Material.valueOf(Main.getConfigurator().config.getString("items.jointeam")));
+		ItemStack compass = new ItemStack(Material.valueOf(Main.getConfigurator().config.getString("items.jointeam", "COMPASS")));
 		ItemMeta metaCompass = compass.getItemMeta();
 		metaCompass.setDisplayName(I18n._("compass_selector_team", false));
 		compass.setItemMeta(metaCompass);
-		ItemStack leave = new ItemStack(Material.valueOf(Main.getConfigurator().config.getString("items.leavegame")));
+		ItemStack leave = new ItemStack(Material.valueOf(Main.getConfigurator().config.getString("items.leavegame", "SLIME_BALL")));
 		ItemMeta leaveMeta = leave.getItemMeta();
 		leaveMeta.setDisplayName(I18n._("leave_from_game_item", false));
 		leave.setItemMeta(leaveMeta);
@@ -591,7 +592,7 @@ public class Game {
 				.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1));
 		player.player.setCollidable(false);
 		
-		ItemStack leave = new ItemStack(Material.SLIME_BALL);
+		ItemStack leave = new ItemStack(Material.valueOf(Main.getConfigurator().config.getString("items.leavegame", "SLIME_BALL")));
 		ItemMeta leaveMeta = leave.getItemMeta();
 		leaveMeta.setDisplayName(I18n._("leave_from_game_item", false));
 		leave.setItemMeta(leaveMeta);
@@ -655,7 +656,8 @@ public class Game {
 						ItemMeta stackMeta = stack.getItemMeta();
 						stackMeta.setDisplayName(type.color + I18n._("resource_" + type.name().toLowerCase(), false));
 						stack.setItemMeta(stackMeta);
-						loc.getWorld().dropItemNaturally(loc, stack);
+						Item item = loc.getWorld().dropItem(loc, stack);
+						item.setPickupDelay(0);
 					}
 				}
 			}

@@ -1,5 +1,6 @@
 package misat11.bw.utils;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -21,6 +22,7 @@ public class I18n {
 	private static String locale = "en";
 	private static FileConfiguration config_baseLanguage;
 	private static FileConfiguration config;
+	private static FileConfiguration customMessageConfig;
 
 	public static String _(String key) {
 		return _(key, true);
@@ -36,7 +38,9 @@ public class I18n {
 	}
 
 	private static String translate(String base) {
-		if (config.isSet(base)) {
+		if (customMessageConfig.isSet(base)) {
+			return customMessageConfig.getString(base);
+		} else if (config.isSet(base)) {
 			return config.getString(base);
 		} else if (config_baseLanguage != null) {
 			if (config_baseLanguage.isSet(base)) {
@@ -72,6 +76,17 @@ public class I18n {
 			e.printStackTrace();
 		} catch (InvalidConfigurationException e) {
 			e.printStackTrace();
+		}
+		customMessageConfig = new YamlConfiguration();
+		File customMessageConfigF = new File(Main.getInstance().getDataFolder(), "messages_" + locale + ".yml");
+		if (customMessageConfigF.exists()) {
+			try {
+				customMessageConfig.load(customMessageConfigF);
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (InvalidConfigurationException e) {
+				e.printStackTrace();
+			}
 		}
 		Main.getInstance().getLogger()
 				.info("Successfully loaded messages for BedWars! Language: " + config.getString("lang_name"));
