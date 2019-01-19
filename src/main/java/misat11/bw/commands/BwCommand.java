@@ -22,6 +22,8 @@ import misat11.bw.game.TeamColor;
 import misat11.bw.utils.I18n;
 
 public class BwCommand implements CommandExecutor, TabCompleter {
+	
+	public static final String ADMIN_PERMISSION = "misat11.bw.admin";
 
 	public HashMap<String, GameCreator> gc = new HashMap<String, GameCreator>();
 
@@ -54,7 +56,7 @@ public class BwCommand implements CommandExecutor, TabCompleter {
 					player.sendMessage(I18n._("list_header"));
 					Main.sendGameListInfo(player);
 				} else if (args[0].equalsIgnoreCase("admin")) {
-					if (player.hasPermission("misat11.bw.admin")) {
+					if (player.hasPermission(ADMIN_PERMISSION)) {
 						if (args.length >= 3) {
 							String arN = args[1];
 							if (args[2].equalsIgnoreCase("add")) {
@@ -117,7 +119,7 @@ public class BwCommand implements CommandExecutor, TabCompleter {
 						player.sendMessage(I18n._("no_permissions"));
 					}
 				} else if (args[0].equalsIgnoreCase("reload")) {
-					if (player.hasPermission("misat11.bw.admin")) {
+					if (player.hasPermission(ADMIN_PERMISSION)) {
 						Bukkit.getServer().getPluginManager().disablePlugin(Main.getInstance());
 						Bukkit.getServer().getPluginManager().enablePlugin(Main.getInstance());
 						player.sendMessage("Plugin reloaded!");
@@ -140,7 +142,7 @@ public class BwCommand implements CommandExecutor, TabCompleter {
 			Player player = (Player) sender;
 			if (args.length == 1) {
 				List<String> cmds = Arrays.asList("join", "leave", "list");
-				if (player.hasPermission("misat11.bw.admin")) {
+				if (player.hasPermission(ADMIN_PERMISSION)) {
 					cmds = Arrays.asList("join", "leave", "list", "admin", "reload");
 				}
 				StringUtil.copyPartialMatches(args[0], cmds, completionList);
@@ -149,7 +151,7 @@ public class BwCommand implements CommandExecutor, TabCompleter {
 				if (args[0].equalsIgnoreCase("join")) {
 					List<String> arenas = Main.getGameNames();
 					StringUtil.copyPartialMatches(args[1], arenas, completionList);
-				} else if (args[0].equalsIgnoreCase("admin") && player.hasPermission("misat11.bw.admin")) {
+				} else if (args[0].equalsIgnoreCase("admin") && player.hasPermission(ADMIN_PERMISSION)) {
 					if (args.length == 2) {
 						List<String> arenas = Main.getGameNames();
 						for (String arena : gc.keySet()) {
@@ -200,12 +202,12 @@ public class BwCommand implements CommandExecutor, TabCompleter {
 								}
 								StringUtil.copyPartialMatches(args[5], colors, completionList);
 							} else if (args[3].equalsIgnoreCase("maxplayers")) {
-								StringUtil.copyPartialMatches(args[3], Arrays.asList("1", "2", "4", "8"),
+								StringUtil.copyPartialMatches(args[5], Arrays.asList("1", "2", "4", "8"),
 										completionList);
 							}
 						}
 						if (args.length == 7 && args[3].equalsIgnoreCase("add")) {
-							StringUtil.copyPartialMatches(args[3], Arrays.asList("1", "2", "4", "8"),
+							StringUtil.copyPartialMatches(args[6], Arrays.asList("1", "2", "4", "8"),
 									completionList);
 						}
 					}
@@ -220,7 +222,7 @@ public class BwCommand implements CommandExecutor, TabCompleter {
 		player.sendMessage(I18n._("help_bw_join", false));
 		player.sendMessage(I18n._("help_bw_leave", false));
 		player.sendMessage(I18n._("help_bw_list", false));
-		if (player.hasPermission("misat11.bw.admin")) {
+		if (player.hasPermission(ADMIN_PERMISSION)) {
 			player.sendMessage(I18n._("help_bw_admin_add", false));
 			player.sendMessage(I18n._("help_bw_admin_lobby", false));
 			player.sendMessage(I18n._("help_bw_admin_spec", false));

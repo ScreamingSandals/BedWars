@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -21,8 +22,10 @@ import misat11.bw.listener.SignListener;
 import misat11.bw.listener.VillagerListener;
 import misat11.bw.listener.WorldListener;
 import misat11.bw.utils.Configurator;
+import misat11.bw.utils.GameSign;
 import misat11.bw.utils.I18n;
 import misat11.bw.utils.ShopMenu;
+import misat11.bw.utils.SignManager;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 
@@ -36,6 +39,7 @@ public class Main extends JavaPlugin {
 	private HashMap<Entity, Game> entitiesInGame = new HashMap<Entity, Game>();
 	private Configurator configurator;
 	private ShopMenu menu;
+	private SignManager signManager;
 
 	public static Main getInstance() {
 		return instance;
@@ -169,6 +173,26 @@ public class Main extends JavaPlugin {
 		}
 		return false;
 	}
+	
+	public static boolean isSignRegistered(Location location) {
+		return instance.signManager.isSignRegistered(location);
+	}
+	
+	public static void unregisterSign(Location location) {
+		instance.signManager.unregisterSign(location);
+	}
+	
+	public static boolean registerSign(Location location, String game) {
+		return instance.signManager.registerSign(location, game);
+	}
+	
+	public static GameSign getSign(Location location) {
+		return instance.signManager.getSign(location);
+	}
+	
+	public static List<GameSign> getSignsForGame(Game game){
+		return instance.signManager.getSignsForGame(game);
+	}
 
 	public static List<String> getGameNames() {
 		List<String> list = new ArrayList<String>();
@@ -201,7 +225,9 @@ public class Main extends JavaPlugin {
 
 		configurator.createFiles();
 
-		I18n.load();
+		I18n.load(this, configurator.config);
+		
+		signManager = new SignManager(configurator.signconfig, configurator.signconfigf);
 
 		BwCommand cmd = new BwCommand();
 		getCommand("bw").setExecutor(cmd);
@@ -264,6 +290,9 @@ public class Main extends JavaPlugin {
 	}
 
 	public void onDisable() {
+		if (signManager != null) {
+			signManager.save();
+		}
 		for (Game game : games.values()) {
 			game.stop();
 		}

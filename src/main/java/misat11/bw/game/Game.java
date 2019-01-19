@@ -9,6 +9,7 @@ import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
+import org.bukkit.block.Sign;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Bed;
 import org.bukkit.block.data.type.Bed.Part;
@@ -35,6 +36,7 @@ import org.bukkit.scoreboard.Scoreboard;
 
 import misat11.bw.Main;
 import misat11.bw.utils.BedUtils;
+import misat11.bw.utils.GameSign;
 import misat11.bw.utils.I18n;
 import misat11.bw.utils.TeamSelectorInventory;
 import misat11.bw.utils.Title;
@@ -289,6 +291,7 @@ public class Game {
 		if (!players.contains(player)) {
 			players.add(player);
 		}
+		updateSigns();
 
 		player.player.teleport(lobbySpawn);
 		String message = I18n._("join").replace("%name%", player.player.getDisplayName())
@@ -297,11 +300,13 @@ public class Game {
 		for (GamePlayer p : players)
 			p.player.sendMessage(message);
 
-		ItemStack compass = new ItemStack(Material.valueOf(Main.getConfigurator().config.getString("items.jointeam", "COMPASS")));
+		ItemStack compass = new ItemStack(
+				Material.valueOf(Main.getConfigurator().config.getString("items.jointeam", "COMPASS")));
 		ItemMeta metaCompass = compass.getItemMeta();
 		metaCompass.setDisplayName(I18n._("compass_selector_team", false));
 		compass.setItemMeta(metaCompass);
-		ItemStack leave = new ItemStack(Material.valueOf(Main.getConfigurator().config.getString("items.leavegame", "SLIME_BALL")));
+		ItemStack leave = new ItemStack(
+				Material.valueOf(Main.getConfigurator().config.getString("items.leavegame", "SLIME_BALL")));
 		ItemMeta leaveMeta = leave.getItemMeta();
 		leaveMeta.setDisplayName(I18n._("leave_from_game_item", false));
 		leave.setItemMeta(leaveMeta);
@@ -322,6 +327,7 @@ public class Game {
 		if (players.contains(player)) {
 			players.remove(player);
 		}
+		updateSigns();
 
 		String message = I18n._("leave").replace("%name%", player.player.getDisplayName())
 				.replace("%players%", Integer.toString(players.size()))
@@ -341,6 +347,7 @@ public class Game {
 			if (status == GameStatus.RUNNING) {
 				status = GameStatus.REBUILDING;
 				afterRebuild = GameStatus.WAITING;
+				updateSigns();
 			} else {
 				status = GameStatus.WAITING;
 				cancelTask();
@@ -533,6 +540,7 @@ public class Game {
 			for (Team team : teams) {
 				calculatedMaxPlayers += team.maxPlayers;
 			}
+			updateSigns();
 		}
 	}
 
@@ -542,6 +550,7 @@ public class Game {
 			p.changeGame(null);
 		if (status != GameStatus.REBUILDING) {
 			status = GameStatus.DISABLED;
+			updateSigns();
 		} else {
 			afterRebuild = GameStatus.DISABLED;
 		}
@@ -582,22 +591,22 @@ public class Game {
 			}
 		}
 	}
-	
+
 	public void makeSpectator(GamePlayer player) {
 		player.isSpectator = true;
 		player.player.teleport(specSpawn);
 		player.player.setAllowFlight(true);
 		player.player.setFlying(true);
-		player.player
-				.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1));
+		player.player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1));
 		player.player.setCollidable(false);
-		
-		ItemStack leave = new ItemStack(Material.valueOf(Main.getConfigurator().config.getString("items.leavegame", "SLIME_BALL")));
+
+		ItemStack leave = new ItemStack(
+				Material.valueOf(Main.getConfigurator().config.getString("items.leavegame", "SLIME_BALL")));
 		ItemMeta leaveMeta = leave.getItemMeta();
 		leaveMeta.setDisplayName(I18n._("leave_from_game_item", false));
 		leave.setItemMeta(leaveMeta);
 		player.player.getInventory().setItem(8, leave);
-		
+
 	}
 
 	public void run() {
@@ -674,6 +683,7 @@ public class Game {
 				if (teamSelectorInventory == null) {
 					teamSelectorInventory = new TeamSelectorInventory(Main.getInstance(), this);
 				}
+				updateSigns();
 			}
 			if (teamsInGame.size() <= 1) {
 				return;
@@ -694,6 +704,7 @@ public class Game {
 					teamSelectorInventory.destroy();
 				teamSelectorInventory = null;
 				updateScoreboard();
+				updateSigns();
 				for (GameStore store : gameStore) {
 					store.spawn();
 				}
@@ -732,6 +743,7 @@ public class Game {
 			}
 			breakedOriginalBlocks.clear();
 			this.status = this.afterRebuild;
+			updateSigns();
 			cancelTask();
 		}
 	}
@@ -917,6 +929,49 @@ public class Game {
 		secStr = (sec < 10) ? "0" + String.valueOf(sec) : String.valueOf(sec);
 
 		return minStr + ":" + secStr;
+	}
+
+	public void updateSigns() {
+		List<GameSign> gameSigns = Main.getSignsForGame(this);
+		
+		if(gameSigns.isEmpty()) {
+			return;
+		}
+		
+		String line2 = "";
+		String line3 = "";
+		switch (status) {
+		case DISABLED:
+			line2 = I18n._("sign_status_disabled", false);
+			line3 = I18n._("sign_status_disabled_players", false);
+			break;
+		case REBUILDING:
+			line2 = I18n._("sign_status_rebuilding", false);
+			line3 = I18n._("sign_status_rebuilding_players", false);
+			break;
+		case RUNNING:
+			line2 = I18n._("sign_status_running", false);
+			line3 = I18n._("sign_status_running_players", false);
+			break;
+		case WAITING:
+			line2 = I18n._("sign_status_waiting", false);
+			line3 = I18n._("sign_status_waiting_players", false);
+			break;
+		}
+		line3 = line3.replace("%players%", Integer.toString(players.size()));
+		line3 = line3.replace("%maxplayers%", Integer.toString(calculatedMaxPlayers));
+
+		for (GameSign sign : gameSigns) {
+			if (sign.getLocation().getChunk().isLoaded()) {
+				Block block = sign.getLocation().getBlock();
+				if (block.getState() instanceof Sign) {
+					Sign state = (Sign) block.getState();
+					state.setLine(2, line2);
+					state.setLine(3, line3);
+					state.update();
+				}
+			}
+		}
 	}
 
 }

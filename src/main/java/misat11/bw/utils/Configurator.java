@@ -12,8 +12,8 @@ import misat11.bw.Main;
 
 public class Configurator {
 
-	public File configf, shopconfigf;
-	public FileConfiguration config, shopconfig;
+	public File configf, shopconfigf, signconfigf;
+	public FileConfiguration config, shopconfig, signconfig;
 	
 	public final File datafolder;
 	public final Main main;
@@ -28,6 +28,7 @@ public class Configurator {
 
 		configf = new File(datafolder, "config.yml");
 		shopconfigf = new File(datafolder, "shop.yml");
+		signconfigf = new File(datafolder, "sign.yml");
 
 		if (!configf.exists()) {
 			configf.getParentFile().mkdirs();
@@ -37,11 +38,17 @@ public class Configurator {
 			shopconfigf.getParentFile().mkdirs();
 			main.saveResource("shop.yml", false);
 		}
+		if (!signconfigf.exists()) {
+			signconfigf.getParentFile().mkdirs();
+			main.saveResource("sign.yml", false);
+		}
 		config = new YamlConfiguration();
 		shopconfig = new YamlConfiguration();
+		signconfig = new YamlConfiguration();
 		try {
 			config.load(configf);
 			shopconfig.load(shopconfigf);
+			signconfig.load(signconfigf);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (InvalidConfigurationException e) {

@@ -4,20 +4,15 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Arrays;
-import java.util.List;
 
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-
-import misat11.bw.Main;
+import org.bukkit.plugin.Plugin;
 
 public class I18n {
 
 	public static final String base_lang_code = "en";
-
-	public static final List<String> supported_lang_codes = Arrays.asList("en", "cs");
 
 	private static String locale = "en";
 	private static FileConfiguration config_baseLanguage;
@@ -50,15 +45,12 @@ public class I18n {
 		return "§c" + base;
 	}
 
-	public static void load() {
-		if (Main.getConfigurator().config.isSet("locale")) {
-			locale = Main.getConfigurator().config.getString("locale");
-		}
-		if (!supported_lang_codes.contains(locale)) {
-			locale = base_lang_code;
+	public static void load(Plugin plugin, FileConfiguration cfg) {
+		if (cfg.isSet("locale")) {
+			locale = cfg.getString("locale");
 		}
 		if (!base_lang_code.equals(locale)) {
-			InputStream inb = Main.getInstance().getResource("messages_" + base_lang_code + ".yml");
+			InputStream inb = plugin.getResource("messages_" + base_lang_code + ".yml");
 			config_baseLanguage = new YamlConfiguration();
 			try {
 				config_baseLanguage.load(new InputStreamReader(inb));
@@ -68,17 +60,19 @@ public class I18n {
 				e.printStackTrace();
 			}
 		}
-		InputStream in = Main.getInstance().getResource("messages_" + locale + ".yml");
+		InputStream in = plugin.getResource("messages_" + locale + ".yml");
 		config = new YamlConfiguration();
-		try {
-			config.load(new InputStreamReader(in));
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (InvalidConfigurationException e) {
-			e.printStackTrace();
+		if (in != null) {
+			try {
+				config.load(new InputStreamReader(in));
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (InvalidConfigurationException e) {
+				e.printStackTrace();
+			}
 		}
 		customMessageConfig = new YamlConfiguration();
-		File customMessageConfigF = new File(Main.getInstance().getDataFolder(), "messages_" + locale + ".yml");
+		File customMessageConfigF = new File(plugin.getDataFolder(), "messages_" + locale + ".yml");
 		if (customMessageConfigF.exists()) {
 			try {
 				customMessageConfig.load(customMessageConfigF);
@@ -88,8 +82,8 @@ public class I18n {
 				e.printStackTrace();
 			}
 		}
-		Main.getInstance().getLogger()
-				.info("Successfully loaded messages for BedWars! Language: " + config.getString("lang_name"));
+		plugin.getLogger()
+				.info("Successfully loaded messages for " + plugin.getName() + "! Language: " + translate("lang_name"));
 	}
 
 }
