@@ -28,8 +28,6 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import misat11.bw.Main;
@@ -37,8 +35,9 @@ import misat11.bw.game.CurrentTeam;
 import misat11.bw.game.Game;
 import misat11.bw.game.GamePlayer;
 import misat11.bw.game.GameStatus;
-import misat11.bw.utils.I18n;
 import misat11.bw.utils.TeamSelectorInventory;
+
+import static misat11.bw.utils.I18n.i18n;
 
 public class PlayerListener implements Listener {
 
@@ -156,7 +155,7 @@ public class PlayerListener implements Listener {
 		if (Main.isPlayerInGame(event.getPlayer())) {
 			if (!Main.isCommandAllowedInGame(event.getMessage().split(" ")[0])) {
 				event.setCancelled(true);
-				event.getPlayer().sendMessage(I18n._("command_is_not_allowed"));
+				event.getPlayer().sendMessage(i18n("command_is_not_allowed"));
 			}
 		}
 	}

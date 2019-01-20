@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>misat11.bw</groupId>
 	<artifactId>BedWars</artifactId>
-	<version>0.0.4</version>
+	<version>0.0.5-pre1</version>
 
 	<repositories>
 		<repository>

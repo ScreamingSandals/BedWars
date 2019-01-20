@@ -29,6 +29,8 @@ import misat11.bw.utils.SignManager;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 
+import static misat11.bw.utils.I18n.i18n;
+
 public class Main extends JavaPlugin {
 	private static Main instance;
 	private String version;
@@ -69,7 +71,7 @@ public class Main extends JavaPlugin {
 		if (isVault() && instance.configurator.config.getBoolean("vault.enable")) {
 			EconomyResponse response = instance.econ.depositPlayer(player, coins);
 			if (response.transactionSuccess()) {
-				player.sendMessage(I18n._("vault_deposite").replace("%coins%", Double.toString(coins)).replace("%currency%", (coins == 1 ? instance.econ.currencyNameSingular() : instance.econ.currencyNamePlural())));
+				player.sendMessage(i18n("vault_deposite").replace("%coins%", Double.toString(coins)).replace("%currency%", (coins == 1 ? instance.econ.currencyNameSingular() : instance.econ.currencyNamePlural())));
 			}
 		}
 	}
@@ -225,7 +227,7 @@ public class Main extends JavaPlugin {
 
 		configurator.createFiles();
 
-		I18n.load(this, configurator.config);
+		I18n.load(this, configurator.config.getString("locale"));
 		
 		signManager = new SignManager(configurator.signconfig, configurator.signconfigf);
 

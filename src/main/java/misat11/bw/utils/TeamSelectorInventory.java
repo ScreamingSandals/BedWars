@@ -12,6 +12,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import static misat11.bw.utils.I18n.i18n;
+
 import misat11.bw.Main;
 import misat11.bw.game.Game;
 import misat11.bw.game.Team;
@@ -40,12 +42,12 @@ public class TeamSelectorInventory implements Listener {
 			ItemStack teamStack = materializeColorToWool(team.color);
 			ItemMeta im = teamStack.getItemMeta();
 			im.setDisplayName(team.color.chatColor + team.name);
-			im.setLore(Arrays.asList(I18n._("click_to_join_team", false)));
+			im.setLore(Arrays.asList(i18n("click_to_join_team", false)));
 			teamStack.setItemMeta(im);
 			inv.addItem(teamStack);
 		}
 
-		Bukkit.getServer().getPluginManager().registerEvents(this, plugin);
+		Bukkit.getServer().getPluginManager().registerEvents(this, this.plugin);
 	}
 
 	public static ItemStack materializeColorToWool(TeamColor color) {

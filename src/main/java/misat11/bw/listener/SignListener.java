@@ -16,7 +16,8 @@ import misat11.bw.Main;
 import misat11.bw.commands.BwCommand;
 import misat11.bw.game.Game;
 import misat11.bw.utils.GameSign;
-import misat11.bw.utils.I18n;
+
+import static misat11.bw.utils.I18n.i18n;
 
 public class SignListener implements Listener {
 
@@ -37,7 +38,7 @@ public class SignListener implements Listener {
 						if (game != null) {
 							game.joinToGame(event.getPlayer());
 						} else {
-							event.getPlayer().sendMessage(I18n._("sign_game_not_exists"));
+							event.getPlayer().sendMessage(i18n("sign_game_not_exists"));
 						}
 					}
 				}
@@ -57,7 +58,7 @@ public class SignListener implements Listener {
 				if (event.getPlayer().hasPermission(BwCommand.ADMIN_PERMISSION)) {
 					Main.unregisterSign(loc);
 				} else {
-					event.getPlayer().sendMessage(I18n._("sign_can_not_been_destroyed"));
+					event.getPlayer().sendMessage(i18n("sign_can_not_been_destroyed"));
 					event.setCancelled(true);
 				}
 			}
@@ -71,14 +72,13 @@ public class SignListener implements Listener {
 			return;
 		}
 		if (event.getBlock().getState() instanceof Sign) {
-			Sign sign = (Sign) event.getBlock().getState();
 			Location loc = event.getBlock().getLocation();
 			if (BEDWARS_SIGN_PREFIX.contains(event.getLine(0).toLowerCase())) {
 				if (event.getPlayer().hasPermission(BwCommand.ADMIN_PERMISSION)) {
 					if (Main.registerSign(loc, event.getLine(1))) {
-						event.getPlayer().sendMessage(I18n._("sign_successfully_created"));
+						event.getPlayer().sendMessage(i18n("sign_successfully_created"));
 					} else {
-						event.getPlayer().sendMessage(I18n._("sign_can_not_been_created"));
+						event.getPlayer().sendMessage(i18n("sign_can_not_been_created"));
 						event.setCancelled(true);
 						event.getBlock().breakNaturally();
 					}

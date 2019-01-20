@@ -19,11 +19,11 @@ public class I18n {
 	private static FileConfiguration config;
 	private static FileConfiguration customMessageConfig;
 
-	public static String _(String key) {
-		return _(key, true);
+	public static String i18n(String key) {
+		return i18n(key, true);
 	}
 
-	public static String _(String key, boolean prefix) {
+	public static String i18n(String key, boolean prefix) {
 		String value = "";
 		if (prefix) {
 			value += translate("prefix") + " ";
@@ -45,9 +45,9 @@ public class I18n {
 		return "§c" + base;
 	}
 
-	public static void load(Plugin plugin, FileConfiguration cfg) {
-		if (cfg.isSet("locale")) {
-			locale = cfg.getString("locale");
+	public static void load(Plugin plugin, String loc) {
+		if (loc != null) {
+			locale = loc;
 		}
 		if (!base_lang_code.equals(locale)) {
 			InputStream inb = plugin.getResource("messages_" + base_lang_code + ".yml");

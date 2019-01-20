@@ -402,7 +402,7 @@ public class GameCreator {
 		}
 
 		public String i18n() {
-			return I18n._(msg, false);
+			return I18n.i18n(msg, false);
 		}
 	}
 }

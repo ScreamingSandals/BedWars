@@ -19,7 +19,8 @@ import misat11.bw.game.Game;
 import misat11.bw.game.GameCreator;
 import misat11.bw.game.Team;
 import misat11.bw.game.TeamColor;
-import misat11.bw.utils.I18n;
+
+import static misat11.bw.utils.I18n.i18n;
 
 public class BwCommand implements CommandExecutor, TabCompleter {
 	
@@ -41,19 +42,19 @@ public class BwCommand implements CommandExecutor, TabCompleter {
 						if (Main.isGameExists(arenaN)) {
 							Main.getGame(arenaN).joinToGame(player);
 						} else {
-							player.sendMessage(I18n._("no_arena_found"));
+							player.sendMessage(i18n("no_arena_found"));
 						}
 					} else {
-						player.sendMessage(I18n._("usage_bw_join"));
+						player.sendMessage(i18n("usage_bw_join"));
 					}
 				} else if (args[0].equalsIgnoreCase("leave")) {
 					if (Main.isPlayerInGame(player)) {
 						Main.getPlayerGameProfile(player).changeGame(null);
 					} else {
-						player.sendMessage(I18n._("you_arent_in_game"));
+						player.sendMessage(i18n("you_arent_in_game"));
 					}
 				} else if (args[0].equalsIgnoreCase("list")) {
-					player.sendMessage(I18n._("list_header"));
+					player.sendMessage(i18n("list_header"));
 					Main.sendGameListInfo(player);
 				} else if (args[0].equalsIgnoreCase("admin")) {
 					if (player.hasPermission(ADMIN_PERMISSION)) {
@@ -61,38 +62,38 @@ public class BwCommand implements CommandExecutor, TabCompleter {
 							String arN = args[1];
 							if (args[2].equalsIgnoreCase("add")) {
 								if (Main.isGameExists(arN)) {
-									player.sendMessage(I18n._("allready_exists"));
+									player.sendMessage(i18n("allready_exists"));
 								} else if (gc.containsKey(arN)) {
-									player.sendMessage(I18n._("allready_working_on_it"));
+									player.sendMessage(i18n("allready_working_on_it"));
 								} else {
 									GameCreator creator = new GameCreator(Game.createGame(arN));
 									gc.put(arN, creator);
-									player.sendMessage(I18n._("arena_added"));
+									player.sendMessage(i18n("arena_added"));
 								}
 							} else if (args[2].equalsIgnoreCase("remove")) {
 								if (Main.isGameExists(arN)) {
 									if (!gc.containsKey(arN)) {
-										player.sendMessage(I18n._("arena_must_be_in_edit_mode"));
+										player.sendMessage(i18n("arena_must_be_in_edit_mode"));
 									} else {
 										gc.remove(arN);
 										new File(Main.getInstance().getDataFolder(), "arenas/" + arN + ".yml").delete();
 										Main.removeGame(Main.getGame(arN));
-										player.sendMessage(I18n._("arena_removed"));
+										player.sendMessage(i18n("arena_removed"));
 									}
 								} else if (gc.containsKey(arN)) {
 									gc.remove(arN);
-									player.sendMessage(I18n._("arena_removed"));
+									player.sendMessage(i18n("arena_removed"));
 								} else {
-									player.sendMessage(I18n._("no_arena_found"));
+									player.sendMessage(i18n("no_arena_found"));
 								}
 							} else if (args[2].equalsIgnoreCase("edit")) {
 								if (Main.isGameExists(arN)) {
 									Game game = Main.getGame(arN);
 									game.stop();
 									gc.put(arN, new GameCreator(game));
-									player.sendMessage(I18n._("arena_switched_to_edit"));
+									player.sendMessage(i18n("arena_switched_to_edit"));
 								} else {
-									player.sendMessage(I18n._("no_arena_found"));
+									player.sendMessage(i18n("no_arena_found"));
 								}
 							} else {
 								if (gc.containsKey(arN)) {
@@ -109,14 +110,14 @@ public class BwCommand implements CommandExecutor, TabCompleter {
 										gc.remove(arN);
 									}
 								} else {
-									player.sendMessage(I18n._("arena_not_in_edit"));
+									player.sendMessage(i18n("arena_not_in_edit"));
 								}
 							}
 						} else {
-							player.sendMessage(I18n._("usage_bw_admin"));
+							player.sendMessage(i18n("usage_bw_admin"));
 						}
 					} else {
-						player.sendMessage(I18n._("no_permissions"));
+						player.sendMessage(i18n("no_permissions"));
 					}
 				} else if (args[0].equalsIgnoreCase("reload")) {
 					if (player.hasPermission(ADMIN_PERMISSION)) {
@@ -124,10 +125,10 @@ public class BwCommand implements CommandExecutor, TabCompleter {
 						Bukkit.getServer().getPluginManager().enablePlugin(Main.getInstance());
 						player.sendMessage("Plugin reloaded!");
 					} else {
-						player.sendMessage(I18n._("no_permissions"));
+						player.sendMessage(i18n("no_permissions"));
 					}
 				} else {
-					player.sendMessage(I18n._("unknown_command"));
+					player.sendMessage(i18n("unknown_command"));
 				}
 			}
 		} else {
@@ -218,31 +219,31 @@ public class BwCommand implements CommandExecutor, TabCompleter {
 	}
 
 	public void sendHelp(Player player) {
-		player.sendMessage(I18n._("help_title", false).replace("%version%", Main.getVersion()));
-		player.sendMessage(I18n._("help_bw_join", false));
-		player.sendMessage(I18n._("help_bw_leave", false));
-		player.sendMessage(I18n._("help_bw_list", false));
+		player.sendMessage(i18n("help_title", false).replace("%version%", Main.getVersion()));
+		player.sendMessage(i18n("help_bw_join", false));
+		player.sendMessage(i18n("help_bw_leave", false));
+		player.sendMessage(i18n("help_bw_list", false));
 		if (player.hasPermission(ADMIN_PERMISSION)) {
-			player.sendMessage(I18n._("help_bw_admin_add", false));
-			player.sendMessage(I18n._("help_bw_admin_lobby", false));
-			player.sendMessage(I18n._("help_bw_admin_spec", false));
-			player.sendMessage(I18n._("help_bw_admin_pos1", false));
-			player.sendMessage(I18n._("help_bw_admin_pos2", false));
-			player.sendMessage(I18n._("help_bw_admin_pausecountdown", false));
-			player.sendMessage(I18n._("help_bw_admin_time", false));
-			player.sendMessage(I18n._("help_bw_admin_team_add", false));
-			player.sendMessage(I18n._("help_bw_admin_team_color", false));
-			player.sendMessage(I18n._("help_bw_admin_team_maxplayers", false));
-			player.sendMessage(I18n._("help_bw_admin_team_spawn", false));
-			player.sendMessage(I18n._("help_bw_admin_team_bed", false));
-			player.sendMessage(I18n._("help_bw_admin_spawner_add", false));
-			player.sendMessage(I18n._("help_bw_admin_spawner_reset", false));
-			player.sendMessage(I18n._("help_bw_admin_store_add", false));
-			player.sendMessage(I18n._("help_bw_admin_store_remove", false));
-			player.sendMessage(I18n._("help_bw_admin_remove", false));
-			player.sendMessage(I18n._("help_bw_admin_edit", false));
-			player.sendMessage(I18n._("help_bw_admin_save", false));
-			player.sendMessage(I18n._("help_bw_reload", false));
+			player.sendMessage(i18n("help_bw_admin_add", false));
+			player.sendMessage(i18n("help_bw_admin_lobby", false));
+			player.sendMessage(i18n("help_bw_admin_spec", false));
+			player.sendMessage(i18n("help_bw_admin_pos1", false));
+			player.sendMessage(i18n("help_bw_admin_pos2", false));
+			player.sendMessage(i18n("help_bw_admin_pausecountdown", false));
+			player.sendMessage(i18n("help_bw_admin_time", false));
+			player.sendMessage(i18n("help_bw_admin_team_add", false));
+			player.sendMessage(i18n("help_bw_admin_team_color", false));
+			player.sendMessage(i18n("help_bw_admin_team_maxplayers", false));
+			player.sendMessage(i18n("help_bw_admin_team_spawn", false));
+			player.sendMessage(i18n("help_bw_admin_team_bed", false));
+			player.sendMessage(i18n("help_bw_admin_spawner_add", false));
+			player.sendMessage(i18n("help_bw_admin_spawner_reset", false));
+			player.sendMessage(i18n("help_bw_admin_store_add", false));
+			player.sendMessage(i18n("help_bw_admin_store_remove", false));
+			player.sendMessage(i18n("help_bw_admin_remove", false));
+			player.sendMessage(i18n("help_bw_admin_edit", false));
+			player.sendMessage(i18n("help_bw_admin_save", false));
+			player.sendMessage(i18n("help_bw_reload", false));
 		}
 	}
 

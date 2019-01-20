@@ -23,6 +23,8 @@ import misat11.bw.Main;
 import misat11.bw.game.Game;
 import misat11.bw.game.ItemSpawnerType;
 
+import static misat11.bw.utils.I18n.i18n;
+
 public class ShopMenu implements Listener {
 
 	private Inventory mainInventory;
@@ -48,7 +50,7 @@ public class ShopMenu implements Listener {
 		
 		backItem = new ItemStack(Material.BARRIER);
 		ItemMeta backItemMeta = backItem.getItemMeta();
-		backItemMeta.setDisplayName(I18n._("shop_back", false));
+		backItemMeta.setDisplayName(i18n("shop_back", false));
 		backItem.setItemMeta(backItemMeta);
 
 		for (String i : s) {
@@ -76,9 +78,9 @@ public class ShopMenu implements Listener {
 				}
 				int price = (int) item.get("price");
 				ItemSpawnerType type = Game.readTypeFromString((String) item.get("price-type"));
-				lore.add(I18n._("price", false));
-				lore.add(price + "" + type.color + I18n._("resource_"+type.name().toLowerCase(), false));
-				lore.add(I18n._("amount", false));
+				lore.add(i18n("price", false));
+				lore.add(price + "" + type.color + i18n("resource_"+type.name().toLowerCase(), false));
+				lore.add(i18n("amount", false));
 				lore.add(Integer.toString(stack.getAmount()));
 				stackMeta.setLore(lore);
 				stack.setItemMeta(stackMeta);
@@ -157,17 +159,17 @@ public class ShopMenu implements Listener {
 				ItemSpawnerType type = Game.readTypeFromString((String) itemInfo.get("price-type"));
 				ItemStack materialItem = new ItemStack(type.material, price);
 				ItemMeta materialItemMeta = materialItem.getItemMeta();
-				materialItemMeta.setDisplayName(type.color + I18n._("resource_" + type.name().toLowerCase(), false));
+				materialItemMeta.setDisplayName(type.color + i18n("resource_" + type.name().toLowerCase(), false));
 				materialItem.setItemMeta(materialItemMeta);
 				ItemStack newItem = (ItemStack) itemInfo.get("stack");
 				if (player.getInventory().containsAtLeast(materialItem, price)) {
 					player.getInventory().removeItem(materialItem);
 					player.getInventory().addItem(newItem);
-					player.sendMessage(I18n._("buy_succes").replace("%item%",
+					player.sendMessage(i18n("buy_succes").replace("%item%",
 							newItem.getItemMeta().hasDisplayName() ? newItem.getItemMeta().getDisplayName() : newItem.getType().name().toLowerCase()));
 					player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1, 1);
 				} else {
-					player.sendMessage(I18n._("buy_failed").replace("%item%",
+					player.sendMessage(i18n("buy_failed").replace("%item%",
 							newItem.getItemMeta().hasDisplayName() ? newItem.getItemMeta().getDisplayName() : newItem.getType().name().toLowerCase()));
 				}
 				return;

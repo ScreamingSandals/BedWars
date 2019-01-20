@@ -3,6 +3,7 @@ package misat11.bw.utils;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -55,30 +56,31 @@ public class Configurator {
 			e.printStackTrace();
 		}
 
-		boolean modify = checkOrSetConfig("locale", "en");
-		modify = modify || checkOrSetConfig("allow-crafting", false);
-		modify = modify || checkOrSetConfig("keep-inventory-on-death", false);
-		modify = modify || checkOrSetConfig("allowed-commands", new ArrayList<>());
-		modify = modify || checkOrSetConfig("farmBlocks.enable", true);
-		modify = modify || checkOrSetConfig("farmBlocks.blocks", new ArrayList<>());
-		modify = modify || checkOrSetConfig("scoreboard.enable", true);
-		modify = modify || checkOrSetConfig("scoreboard.title", "§a%game%§r - %time%");
-		modify = modify || checkOrSetConfig("scoreboard.bedLost", "§c\u2718");
-		modify = modify || checkOrSetConfig("scoreboard.bedExists", "§a\u2714");
-		modify = modify || checkOrSetConfig("scoreboard.teamTitle", "%bed%%color%%team%");
-		modify = modify || checkOrSetConfig("title.fadeIn", 0);
-		modify = modify || checkOrSetConfig("title.stay", 20);
-		modify = modify || checkOrSetConfig("title.fadeOut", 0);
-		modify = modify || checkOrSetConfig("items.jointeam", "COMPASS");
-		modify = modify || checkOrSetConfig("items.leavegame", "SLIME_BALL");
-		modify = modify || checkOrSetConfig("vault.enable", true);
-		modify = modify || checkOrSetConfig("vault.reward.kill", 5);
-		modify = modify || checkOrSetConfig("vault.reward.win", 20);
-		modify = modify || checkOrSetConfig("spawners.bronze", 1);
-		modify = modify || checkOrSetConfig("spawners.iron", 10);
-		modify = modify || checkOrSetConfig("spawners.gold", 20);
-		modify = modify || checkOrSetConfig("version", 1);
-		if (modify) {
+		AtomicBoolean modify = new AtomicBoolean(false);
+		checkOrSetConfig(modify, "locale", "en");
+		checkOrSetConfig(modify, "allow-crafting", false);
+		checkOrSetConfig(modify, "keep-inventory-on-death", false);
+		checkOrSetConfig(modify, "allowed-commands", new ArrayList<>());
+		checkOrSetConfig(modify, "farmBlocks.enable", true);
+		checkOrSetConfig(modify, "farmBlocks.blocks", new ArrayList<>());
+		checkOrSetConfig(modify, "scoreboard.enable", true);
+		checkOrSetConfig(modify, "scoreboard.title", "§a%game%§r - %time%");
+		checkOrSetConfig(modify, "scoreboard.bedLost", "§c\u2718");
+		checkOrSetConfig(modify, "scoreboard.bedExists", "§a\u2714");
+		checkOrSetConfig(modify, "scoreboard.teamTitle", "%bed%%color%%team%");
+		checkOrSetConfig(modify, "title.fadeIn", 0);
+		checkOrSetConfig(modify, "title.stay", 20);
+		checkOrSetConfig(modify, "title.fadeOut", 0);
+		checkOrSetConfig(modify, "items.jointeam", "COMPASS");
+		checkOrSetConfig(modify, "items.leavegame", "SLIME_BALL");
+		checkOrSetConfig(modify, "vault.enable", true);
+		checkOrSetConfig(modify, "vault.reward.kill", 5);
+		checkOrSetConfig(modify, "vault.reward.win", 20);
+		checkOrSetConfig(modify, "spawners.bronze", 1);
+		checkOrSetConfig(modify, "spawners.iron", 10);
+		checkOrSetConfig(modify, "spawners.gold", 20);
+		checkOrSetConfig(modify, "version", 1);
+		if (modify.get()) {
 			try {
 				config.save(configf);
 			} catch (IOException e) {
@@ -87,19 +89,14 @@ public class Configurator {
 		}
 	}
 	
-	private boolean checkOrSetConfig(String path, Object value) {
-		return checkOrSet(this.config, path, value);
+	private void checkOrSetConfig(AtomicBoolean modify, String path, Object value) {
+		checkOrSet(modify, this.config, path, value);
 	}
 	
-	private boolean checkOrSetShop(String path, Object value) {
-		return checkOrSet(this.shopconfig, path, value);
-	}
-	
-	private static boolean checkOrSet(FileConfiguration config, String path, Object value) {
+	private static void checkOrSet(AtomicBoolean modify, FileConfiguration config, String path, Object value) {
 		if (!config.isSet(path)) {
 			config.set(path, value);
-			return true;
+			modify.set(true);
 		}
-		return false;
 	}
 }

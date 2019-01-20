@@ -37,7 +37,6 @@ import org.bukkit.scoreboard.Scoreboard;
 import misat11.bw.Main;
 import misat11.bw.utils.BedUtils;
 import misat11.bw.utils.GameSign;
-import misat11.bw.utils.I18n;
 import misat11.bw.utils.TeamSelectorInventory;
 import misat11.bw.utils.Title;
 
@@ -47,6 +46,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static misat11.bw.utils.I18n.i18n;
 
 public class Game {
 
@@ -255,10 +256,10 @@ public class Game {
 					updateScoreboard();
 					for (GamePlayer player : players) {
 						Title.send(player.player,
-								I18n._("bed_is_destroyed", false).replace("%team%",
+								i18n("bed_is_destroyed", false).replace("%team%",
 										team.teamInfo.color.chatColor + team.teamInfo.name),
-								I18n._("bed_is_destroyed_subtitle", false));
-						player.player.sendMessage(I18n._("bed_is_destroyed").replace("%team%",
+								i18n("bed_is_destroyed_subtitle", false));
+						player.player.sendMessage(i18n("bed_is_destroyed").replace("%team%",
 								team.teamInfo.color.chatColor + team.teamInfo.name));
 						player.player.playSound(player.player.getLocation(), Sound.ENTITY_ENDER_DRAGON_GROWL, 1, 1);
 					}
@@ -273,17 +274,17 @@ public class Game {
 			return;
 		}
 		if (status == GameStatus.REBUILDING) {
-			player.player.sendMessage(I18n._("game_is_rebuilding").replace("%arena%", this.name));
+			player.player.sendMessage(i18n("game_is_rebuilding").replace("%arena%", this.name));
 			player.changeGame(null);
 			return;
 		}
 		if (status == GameStatus.RUNNING) {
-			player.player.sendMessage(I18n._("game_already_running").replace("%arena%", this.name));
+			player.player.sendMessage(i18n("game_already_running").replace("%arena%", this.name));
 			player.changeGame(null);
 			return;
 		}
 		if (players.size() >= calculatedMaxPlayers) {
-			player.player.sendMessage(I18n._("game_is_full").replace("%arena%", this.name));
+			player.player.sendMessage(i18n("game_is_full").replace("%arena%", this.name));
 			player.changeGame(null);
 			return;
 		}
@@ -294,7 +295,7 @@ public class Game {
 		updateSigns();
 
 		player.player.teleport(lobbySpawn);
-		String message = I18n._("join").replace("%name%", player.player.getDisplayName())
+		String message = i18n("join").replace("%name%", player.player.getDisplayName())
 				.replace("%players%", Integer.toString(players.size()))
 				.replaceAll("%maxplayers%", Integer.toString(calculatedMaxPlayers));
 		for (GamePlayer p : players)
@@ -303,12 +304,12 @@ public class Game {
 		ItemStack compass = new ItemStack(
 				Material.valueOf(Main.getConfigurator().config.getString("items.jointeam", "COMPASS")));
 		ItemMeta metaCompass = compass.getItemMeta();
-		metaCompass.setDisplayName(I18n._("compass_selector_team", false));
+		metaCompass.setDisplayName(i18n("compass_selector_team", false));
 		compass.setItemMeta(metaCompass);
 		ItemStack leave = new ItemStack(
 				Material.valueOf(Main.getConfigurator().config.getString("items.leavegame", "SLIME_BALL")));
 		ItemMeta leaveMeta = leave.getItemMeta();
-		leaveMeta.setDisplayName(I18n._("leave_from_game_item", false));
+		leaveMeta.setDisplayName(i18n("leave_from_game_item", false));
 		leave.setItemMeta(leaveMeta);
 		player.player.getInventory().setItem(0, compass);
 		player.player.getInventory().setItem(8, leave);
@@ -329,7 +330,7 @@ public class Game {
 		}
 		updateSigns();
 
-		String message = I18n._("leave").replace("%name%", player.player.getDisplayName())
+		String message = i18n("leave").replace("%name%", player.player.getDisplayName())
 				.replace("%players%", Integer.toString(players.size()))
 				.replaceAll("%maxplayers%", Integer.toString(calculatedMaxPlayers));
 		bossbar.removePlayer(player.player);
@@ -561,15 +562,15 @@ public class Game {
 			return;
 		}
 		if (status == GameStatus.REBUILDING) {
-			player.sendMessage(I18n._("game_is_rebuilding").replace("%arena%", this.name));
+			player.sendMessage(i18n("game_is_rebuilding").replace("%arena%", this.name));
 			return;
 		}
 		if (status == GameStatus.RUNNING) {
-			player.sendMessage(I18n._("game_already_running").replace("%arena%", this.name));
+			player.sendMessage(i18n("game_already_running").replace("%arena%", this.name));
 			return;
 		}
 		if (players.size() >= calculatedMaxPlayers) {
-			player.sendMessage(I18n._("game_is_full").replace("%arena%", this.name));
+			player.sendMessage(i18n("game_is_full").replace("%arena%", this.name));
 			return;
 		}
 		GamePlayer gPlayer = Main.getPlayerGameProfile(player);
@@ -603,7 +604,7 @@ public class Game {
 		ItemStack leave = new ItemStack(
 				Material.valueOf(Main.getConfigurator().config.getString("items.leavegame", "SLIME_BALL")));
 		ItemMeta leaveMeta = leave.getItemMeta();
-		leaveMeta.setDisplayName(I18n._("leave_from_game_item", false));
+		leaveMeta.setDisplayName(i18n("leave_from_game_item", false));
 		leave.setItemMeta(leaveMeta);
 		player.player.getInventory().setItem(8, leave);
 
@@ -617,7 +618,7 @@ public class Game {
 				for (GameStore store : gameStore) {
 					store.forceKill();
 				}
-				String message = I18n._("game_end");
+				String message = i18n("game_end");
 				for (GamePlayer player : (List<GamePlayer>) ((ArrayList<GamePlayer>) players).clone()) {
 					player.player.sendMessage(message);
 					player.changeGame(null);
@@ -633,19 +634,19 @@ public class Game {
 					for (CurrentTeam t : teamsInGame) {
 						if (t.isAlive()) {
 							String time = getFormattedTimeLeft(this.gameTime - this.countdown);
-							String message = I18n._("team_win", true)
+							String message = i18n("team_win", true)
 									.replace("%team%", t.teamInfo.color.chatColor + t.teamInfo.name)
 									.replace("%time%", time);
-							String subtitle = I18n._("team_win", false)
+							String subtitle = i18n("team_win", false)
 									.replace("%team%", t.teamInfo.color.chatColor + t.teamInfo.name)
 									.replace("%time%", time);
 							for (GamePlayer player : players) {
 								player.player.sendMessage(message);
 								if (getPlayerTeam(player) == t) {
-									Title.send(player.player, I18n._("you_won", false), subtitle);
+									Title.send(player.player, i18n("you_won", false), subtitle);
 									Main.depositPlayer(player.player, Main.getVaultWinReward());
 								} else {
-									Title.send(player.player, I18n._("you_lost", false), subtitle);
+									Title.send(player.player, i18n("you_lost", false), subtitle);
 								}
 							}
 							break;
@@ -663,7 +664,7 @@ public class Game {
 						Location loc = spawner.loc.clone().add(0, 1, 0);
 						ItemStack stack = new ItemStack(type.material);
 						ItemMeta stackMeta = stack.getItemMeta();
-						stackMeta.setDisplayName(type.color + I18n._("resource_" + type.name().toLowerCase(), false));
+						stackMeta.setDisplayName(type.color + i18n("resource_" + type.name().toLowerCase(), false));
 						stack.setItemMeta(stackMeta);
 						Item item = loc.getWorld().dropItem(loc, stack);
 						item.setPickupDelay(0);
@@ -673,7 +674,7 @@ public class Game {
 		} else if (this.status == GameStatus.WAITING) {
 			if (countdown == -1) {
 				countdown = pauseCountdown;
-				String title = I18n._("bossbar_waiting", false);
+				String title = i18n("bossbar_waiting", false);
 				bossbar = Bukkit.createBossBar(title, BarColor.RED, BarStyle.SEGMENTED_20);
 				bossbar.setColor(BarColor.YELLOW);
 				bossbar.setProgress(0);
@@ -697,7 +698,7 @@ public class Game {
 			if (countdown == 0) {
 				this.status = GameStatus.RUNNING;
 				this.countdown = this.gameTime;
-				bossbar.setTitle(I18n._("bossbar_running", false));
+				bossbar.setTitle(i18n("bossbar_running", false));
 				bossbar.setProgress(0);
 				bossbar.setColor(BarColor.GREEN);
 				if (teamSelectorInventory != null)
@@ -708,8 +709,8 @@ public class Game {
 				for (GameStore store : gameStore) {
 					store.spawn();
 				}
-				String gameStartTitle = I18n._("game_start_title", false);
-				String gameStartSubtitle = I18n._("game_start_subtitle", false).replace("%arena%", this.name);
+				String gameStartTitle = i18n("game_start_title", false);
+				String gameStartSubtitle = i18n("game_start_subtitle", false).replace("%arena%", this.name);
 				for (GamePlayer player : players) {
 					CurrentTeam team = getPlayerTeam(player);
 					player.player.getInventory().clear();
@@ -802,19 +803,19 @@ public class Game {
 					CurrentTeam cur = getPlayerTeam(playerGameProfile);
 					if (cur == current) {
 						playerGameProfile.player.sendMessage(
-								I18n._("team_already_selected").replace("%team%", team.color.chatColor + team.name)
+								i18n("team_already_selected").replace("%team%", team.color.chatColor + team.name)
 										.replace("%players%", Integer.toString(current.players.size()))
 										.replaceAll("%maxplayers%", Integer.toString(current.teamInfo.maxPlayers)));
 						return;
 					}
 					if (current.players.size() >= current.teamInfo.maxPlayers) {
 						if (cur != null) {
-							playerGameProfile.player.sendMessage(I18n._("team_is_full_you_are_staying")
+							playerGameProfile.player.sendMessage(i18n("team_is_full_you_are_staying")
 									.replace("%team%", team.color.chatColor + team.name)
 									.replace("%oldteam%", cur.teamInfo.color.chatColor + cur.teamInfo.name));
 						} else {
 							playerGameProfile.player.sendMessage(
-									I18n._("team_is_full").replace("%team%", team.color.chatColor + team.name));
+									i18n("team_is_full").replace("%team%", team.color.chatColor + team.name));
 						}
 						return;
 					}
@@ -829,7 +830,7 @@ public class Game {
 					current.players.add(playerGameProfile);
 					current.getScoreboardTeam().addEntry(playerGameProfile.player.getName());
 					playerGameProfile.player
-							.sendMessage(I18n._("team_selected").replace("%team%", team.color.chatColor + team.name)
+							.sendMessage(i18n("team_selected").replace("%team%", team.color.chatColor + team.name)
 									.replace("%players%", Integer.toString(current.players.size()))
 									.replaceAll("%maxplayers%", Integer.toString(current.teamInfo.maxPlayers)));
 					ItemStack stack = TeamSelectorInventory.materializeColorToWool(team.color);
@@ -942,20 +943,20 @@ public class Game {
 		String line3 = "";
 		switch (status) {
 		case DISABLED:
-			line2 = I18n._("sign_status_disabled", false);
-			line3 = I18n._("sign_status_disabled_players", false);
+			line2 = i18n("sign_status_disabled", false);
+			line3 = i18n("sign_status_disabled_players", false);
 			break;
 		case REBUILDING:
-			line2 = I18n._("sign_status_rebuilding", false);
-			line3 = I18n._("sign_status_rebuilding_players", false);
+			line2 = i18n("sign_status_rebuilding", false);
+			line3 = i18n("sign_status_rebuilding_players", false);
 			break;
 		case RUNNING:
-			line2 = I18n._("sign_status_running", false);
-			line3 = I18n._("sign_status_running_players", false);
+			line2 = i18n("sign_status_running", false);
+			line3 = i18n("sign_status_running_players", false);
 			break;
 		case WAITING:
-			line2 = I18n._("sign_status_waiting", false);
-			line3 = I18n._("sign_status_waiting_players", false);
+			line2 = i18n("sign_status_waiting", false);
+			line3 = i18n("sign_status_waiting_players", false);
 			break;
 		}
 		line3 = line3.replace("%players%", Integer.toString(players.size()));
