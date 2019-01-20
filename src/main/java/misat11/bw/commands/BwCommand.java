@@ -105,8 +105,8 @@ public class BwCommand implements CommandExecutor, TabCompleter {
 										}
 										lid++;
 									}
-									gc.get(arN).cmd(player, args[2], nargs.toArray(new String[nargs.size()]));
-									if (args[2].equalsIgnoreCase("save")) {
+									boolean isArenaSaved = gc.get(arN).cmd(player, args[2], nargs.toArray(new String[nargs.size()]));
+									if (args[2].equalsIgnoreCase("save") && isArenaSaved) {
 										gc.remove(arN);
 									}
 								} else {

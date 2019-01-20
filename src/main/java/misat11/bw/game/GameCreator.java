@@ -16,6 +16,8 @@ import misat11.bw.Main;
 import misat11.bw.utils.BedUtils;
 import misat11.bw.utils.I18n;
 
+import static misat11.bw.utils.I18n.i18n;
+
 public class GameCreator {
 
 	private Game game;
@@ -26,17 +28,19 @@ public class GameCreator {
 		List<GameStore> gs = game.getGameStores();
 		if (!gs.isEmpty()) {
 			for (GameStore store : gs) {
-				villagerstores.put(store.loc.getBlockX() + ";" + store.loc.getBlockY() + ";" + store.loc.getBlockZ(), store.loc);
+				villagerstores.put(store.loc.getBlockX() + ";" + store.loc.getBlockY() + ";" + store.loc.getBlockZ(),
+						store.loc);
 			}
 		}
 	}
-	
+
 	public Game getGame() {
 		return game;
 	}
 
-	public void cmd(Player player, String action, String[] args) {
-		CommandResponse response = null;
+	public boolean cmd(Player player, String action, String[] args) {
+		boolean isArenaSaved = false;
+		Object response = null;
 		if (action.equalsIgnoreCase("lobby")) {
 			response = setLobbySpawn(player.getLocation());
 		} else if (action.equalsIgnoreCase("spec")) {
@@ -67,7 +71,7 @@ public class GameCreator {
 					}
 				} else if (args[0].equalsIgnoreCase("maxplayers")) {
 					if (args.length >= 3) {
-						response = setTeamMaxPlayers(args[1], Integer.parseInt(args[3]));
+						response = setTeamMaxPlayers(args[1], Integer.parseInt(args[2]));
 					}
 				} else if (args[0].equalsIgnoreCase("spawn")) {
 					response = setTeamSpawn(args[1], player.getLocation());
@@ -103,21 +107,34 @@ public class GameCreator {
 			game.setGameStores(gamestores);
 			if (game.getTeams().size() < 2) {
 				response = CommandResponse.NEED_MIN_2_TEAMS;
+			} else if (game.getPos1() == null || game.getPos2() == null){
+				response = i18n("admin_command_set_pos1_pos2_before_save");
+			} else if (game.getLobbySpawn() == null) {
+				response = i18n("admin_command_set_lobby_before_save");
+			} else if (game.getSpecSpawn() == null){
+				response = i18n("admin_command_set_spec_before_save");
+			} else if (game.getGameStores().isEmpty()) {
+				response = i18n("admin_command_set_stores_before_save");
+			} else if (game.getSpawners().isEmpty()) {
+				response = i18n("admin_command_set_spawners_before_save");
 			} else {
 				game.saveToConfig();
 				game.start();
 				Main.addGame(game);
 				response = CommandResponse.SAVED_AND_STARTED;
+				isArenaSaved = true;
 			}
 		}
 
 		if (response == null) {
 			response = CommandResponse.UNKNOWN_COMMAND;
 		}
-		player.sendMessage(response.i18n());
+		player.sendMessage(
+				response instanceof CommandResponse ? ((CommandResponse) response).i18n() : response.toString());
+		return isArenaSaved;
 	}
 
-	private CommandResponse setTeamBed(String name, Block block) {
+	private Object setTeamBed(String name, Block block) {
 		for (Team t : game.getTeams()) {
 			if (t.name.equals(name)) {
 				Location loc = block.getLocation();
@@ -139,13 +156,16 @@ public class GameCreator {
 				} else {
 					t.bed = loc;
 				}
-				return CommandResponse.SUCCESS;
+				return i18n("admin_command_bed_setted").replace("%team%", t.name)
+						.replace("%x%", Integer.toString(t.bed.getBlockX()))
+						.replace("%y%", Integer.toString(t.bed.getBlockY()))
+						.replace("%z%", Integer.toString(t.bed.getBlockZ()));
 			}
 		}
 		return CommandResponse.TEAM_IS_NOT_EXISTS;
 	}
 
-	private CommandResponse setTeamSpawn(String name, Location loc) {
+	private Object setTeamSpawn(String name, Location loc) {
 		for (Team t : game.getTeams()) {
 			if (t.name.equals(name)) {
 				if (game.getPos1() == null || game.getPos2() == null) {
@@ -158,28 +178,33 @@ public class GameCreator {
 					return CommandResponse.SPAWN_MUST_BE_IN_MAIN_AREA;
 				}
 				t.spawn = loc;
-				return CommandResponse.SUCCESS;
+				return i18n("admin_command_team_spawn_setted").replace("%team%", t.name)
+						.replace("%x%", Double.toString(t.spawn.getX())).replace("%y%", Double.toString(t.spawn.getY()))
+						.replace("%z%", Double.toString(t.spawn.getZ()))
+						.replace("%yaw%", Float.toString(t.spawn.getYaw()))
+						.replace("%pitch%", Float.toString(t.spawn.getPitch()));
 			}
 		}
 		return CommandResponse.TEAM_IS_NOT_EXISTS;
 	}
 
-	private CommandResponse setTeamMaxPlayers(String name, int maxPlayers) {
+	private Object setTeamMaxPlayers(String name, int maxPlayers) {
 		for (Team t : game.getTeams()) {
 			if (t.name.equals(name)) {
 				if (maxPlayers < 1) {
 					return CommandResponse.MAX_PLAYERS_FAIL;
 				}
-				
+
 				t.maxPlayers = maxPlayers;
-				
-				return CommandResponse.SUCCESS;
+
+				return i18n("admin_command_team_maxplayers_setted").replace("%team%", t.name).replace("%maxplayers%",
+						Integer.toString(t.maxPlayers));
 			}
 		}
 		return CommandResponse.TEAM_IS_NOT_EXISTS;
 	}
 
-	private CommandResponse setTeamColor(String name, String color) {
+	private Object setTeamColor(String name, String color) {
 		for (Team t : game.getTeams()) {
 			if (t.name.equals(name)) {
 				TeamColor c;
@@ -188,16 +213,17 @@ public class GameCreator {
 				} catch (Exception e) {
 					return CommandResponse.INVALID_COLOR;
 				}
-				
+
 				t.color = c;
-				
-				return CommandResponse.SUCCESS;
+
+				return i18n("admin_command_team_color_setted").replace("%team%", t.name).replace("%teamcolor%",
+						t.color.chatColor + t.color.name());
 			}
 		}
 		return CommandResponse.TEAM_IS_NOT_EXISTS;
 	}
 
-	private CommandResponse removeTeam(String name) {
+	private Object removeTeam(String name) {
 		Team forRemove = null;
 		for (Team t : game.getTeams()) {
 			if (t.name.equals(name)) {
@@ -207,12 +233,13 @@ public class GameCreator {
 		}
 		if (forRemove != null) {
 			game.getTeams().remove(forRemove);
-			return CommandResponse.SUCCESS;
+
+			return i18n("admin_command_team_removed").replace("%team%", forRemove.name);
 		}
 		return CommandResponse.TEAM_IS_NOT_EXISTS;
 	}
 
-	private CommandResponse addTeam(String name, String color, int maxPlayers) {
+	private Object addTeam(String name, String color, int maxPlayers) {
 		for (Team t : game.getTeams()) {
 			if (t.name.equals(name)) {
 				return CommandResponse.TEAM_IS_ALREADY_EXISTS;
@@ -224,26 +251,28 @@ public class GameCreator {
 		} catch (Exception e) {
 			return CommandResponse.INVALID_COLOR;
 		}
-		
+
 		if (maxPlayers < 1) {
 			return CommandResponse.MAX_PLAYERS_FAIL;
 		}
-		
+
 		Team team = new Team();
 		team.name = name;
 		team.color = c;
 		team.maxPlayers = maxPlayers;
 		game.getTeams().add(team);
-		
-		return CommandResponse.SUCCESS;
+
+		return i18n("admin_command_team_created").replace("%team%", team.name)
+				.replace("%teamcolor%", team.color.chatColor + team.color.name())
+				.replace("%maxplayers%", Integer.toString(team.maxPlayers));
 	}
 
-	private CommandResponse resetAllSpawners() {
+	private Object resetAllSpawners() {
 		game.getSpawners().clear();
-		return CommandResponse.SUCCESS;
+		return i18n("admin_command_spawners_reseted").replace("%arena%", game.getName());
 	}
 
-	private CommandResponse addSpawner(String type, Location loc) {
+	private Object addSpawner(String type, Location loc) {
 		if (game.getPos1() == null || game.getPos2() == null) {
 			return CommandResponse.SET_POS1_POS2_FIRST;
 		}
@@ -257,17 +286,28 @@ public class GameCreator {
 		loc.setPitch(0);
 		if (type.equalsIgnoreCase("bronze")) {
 			game.getSpawners().add(new ItemSpawner(loc, ItemSpawnerType.BRONZE));
+			return i18n("admin_command_spawner_added")
+					.replace("%resource%", ItemSpawnerType.BRONZE.color + ItemSpawnerType.BRONZE.name())
+					.replace("%x%", Integer.toString(loc.getBlockX())).replace("%y%", Integer.toString(loc.getBlockY()))
+					.replace("%z%", Integer.toString(loc.getBlockZ()));
 		} else if (type.equalsIgnoreCase("iron")) {
 			game.getSpawners().add(new ItemSpawner(loc, ItemSpawnerType.IRON));
+			return i18n("admin_command_spawner_added")
+					.replace("%resource%", ItemSpawnerType.IRON.color + ItemSpawnerType.IRON.name())
+					.replace("%x%", Integer.toString(loc.getBlockX())).replace("%y%", Integer.toString(loc.getBlockY()))
+					.replace("%z%", Integer.toString(loc.getBlockZ()));
 		} else if (type.equalsIgnoreCase("gold")) {
 			game.getSpawners().add(new ItemSpawner(loc, ItemSpawnerType.GOLD));
+			return i18n("admin_command_spawner_added")
+					.replace("%resource%", ItemSpawnerType.GOLD.color + ItemSpawnerType.GOLD.name())
+					.replace("%x%", Integer.toString(loc.getBlockX())).replace("%y%", Integer.toString(loc.getBlockY()))
+					.replace("%z%", Integer.toString(loc.getBlockZ()));
 		} else {
 			return CommandResponse.INVALID_SPAWNER_TYPE;
 		}
-		return CommandResponse.SUCCESS;
 	}
 
-	public CommandResponse addStore(Location loc) {
+	public Object addStore(Location loc) {
 		if (game.getPos1() == null || game.getPos2() == null) {
 			return CommandResponse.SET_POS1_POS2_FIRST;
 		}
@@ -282,10 +322,12 @@ public class GameCreator {
 			return CommandResponse.STORE_EXISTS;
 		}
 		villagerstores.put(location, loc);
-		return CommandResponse.SUCCESS;
+		return i18n("admin_command_store_added").replace("%x%", Double.toString(loc.getX()))
+				.replace("%y%", Double.toString(loc.getY())).replace("%z%", Double.toString(loc.getZ()))
+				.replace("%yaw%", Float.toString(loc.getYaw())).replace("%pitch%", Float.toString(loc.getPitch()));
 	}
 
-	public CommandResponse removeStore(Location loc) {
+	public Object removeStore(Location loc) {
 		if (game.getWorld() != loc.getWorld()) {
 			return CommandResponse.MUST_BE_IN_SAME_WORLD;
 		}
@@ -294,15 +336,19 @@ public class GameCreator {
 			return CommandResponse.STORE_NOT_EXISTS;
 		}
 		villagerstores.remove(location);
-		return CommandResponse.SUCCESS;
+		return i18n("admin_command_store_removed").replace("%x%", Double.toString(loc.getX()))
+				.replace("%y%", Double.toString(loc.getY())).replace("%z%", Double.toString(loc.getZ()))
+				.replace("%yaw%", Float.toString(loc.getYaw())).replace("%pitch%", Float.toString(loc.getPitch()));
 	}
 
-	public CommandResponse setLobbySpawn(Location loc) {
+	public Object setLobbySpawn(Location loc) {
 		game.setLobbySpawn(loc);
-		return CommandResponse.SUCCESS;
+		return i18n("admin_command_lobby_spawn_setted").replace("%x%", Double.toString(loc.getX()))
+				.replace("%y%", Double.toString(loc.getY())).replace("%z%", Double.toString(loc.getZ()))
+				.replace("%yaw%", Float.toString(loc.getYaw())).replace("%pitch%", Float.toString(loc.getPitch()));
 	}
 
-	public CommandResponse setSpecSpawn(Location loc) {
+	public Object setSpecSpawn(Location loc) {
 		if (game.getPos1() == null || game.getPos2() == null) {
 			return CommandResponse.SET_POS1_POS2_FIRST;
 		}
@@ -313,10 +359,12 @@ public class GameCreator {
 			return CommandResponse.SPAWN_MUST_BE_IN_MAIN_AREA;
 		}
 		game.setSpecSpawn(loc);
-		return CommandResponse.SUCCESS;
+		return i18n("admin_command_spec_spawn_setted").replace("%x%", Double.toString(loc.getX()))
+				.replace("%y%", Double.toString(loc.getY())).replace("%z%", Double.toString(loc.getZ()))
+				.replace("%yaw%", Float.toString(loc.getYaw())).replace("%pitch%", Float.toString(loc.getPitch()));
 	}
 
-	public CommandResponse setPos1(Location loc) {
+	public Object setPos1(Location loc) {
 		if (game.getWorld() == null) {
 			game.setWorld(loc.getWorld());
 		}
@@ -329,10 +377,11 @@ public class GameCreator {
 			}
 		}
 		game.setPos1(loc);
-		return CommandResponse.SUCCESS;
+		return i18n("admin_command_pos1_setted").replace("%arena%", game.getName()).replace("%x%", Integer.toString(loc.getBlockX()))
+				.replace("%y%", Integer.toString(loc.getBlockY())).replace("%z%", Integer.toString(loc.getBlockZ()));
 	}
 
-	public CommandResponse setPos2(Location loc) {
+	public Object setPos2(Location loc) {
 		if (game.getWorld() == null) {
 			game.setWorld(loc.getWorld());
 		}
@@ -345,21 +394,22 @@ public class GameCreator {
 			}
 		}
 		game.setPos2(loc);
-		return CommandResponse.SUCCESS;
+		return i18n("admin_command_pos2_setted").replace("%arena%", game.getName()).replace("%x%", Integer.toString(loc.getBlockX()))
+				.replace("%y%", Integer.toString(loc.getBlockY())).replace("%z%", Integer.toString(loc.getBlockZ()));
 	}
 
-	public CommandResponse setPauseCountdown(int countdown) {
+	public Object setPauseCountdown(int countdown) {
 		if (countdown >= 10 && countdown <= 600) {
 			game.setPauseCountdown(countdown);
-			return CommandResponse.SUCCESS;
+			return i18n("admin_command_pausecontdown_setted").replace("%countdown%", Integer.toString(countdown));
 		}
 		return CommandResponse.INVALID_COUNTDOWN;
 	}
 
-	public CommandResponse setGameTime(int countdown) {
+	public Object setGameTime(int countdown) {
 		if (countdown >= 10 && countdown <= 3600) {
 			game.setGameTime(countdown);
-			return CommandResponse.SUCCESS;
+			return i18n("admin_command_gametime_setted").replace("%time%", Integer.toString(countdown));
 		}
 		return CommandResponse.INVALID_COUNTDOWN2;
 	}
@@ -372,7 +422,7 @@ public class GameCreator {
 		return (min.getX() <= l.getX() && min.getY() <= l.getY() && min.getZ() <= l.getZ() && max.getX() >= l.getX()
 				&& max.getY() >= l.getY() && max.getZ() >= l.getZ());
 	}
-	
+
 	public static boolean isChunkInArea(Chunk l, Location p1, Location p2) {
 		Chunk min = new Location(p1.getWorld(), Math.min(p1.getX(), p2.getX()), Math.min(p1.getY(), p2.getY()),
 				Math.min(p1.getZ(), p2.getZ())).getChunk();

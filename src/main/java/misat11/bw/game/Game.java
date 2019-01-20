@@ -529,6 +529,8 @@ public class Game {
 	public static Game createGame(String name) {
 		Game game = new Game();
 		game.name = name;
+		game.pauseCountdown = 60;
+		game.gameTime = 3600;
 
 		return game;
 	}
