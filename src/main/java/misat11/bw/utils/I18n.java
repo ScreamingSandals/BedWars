@@ -20,19 +20,27 @@ public class I18n {
 	private static FileConfiguration customMessageConfig;
 
 	public static String i18n(String key) {
-		return i18n(key, true);
+		return i18n(key, null, true);
 	}
 
 	public static String i18n(String key, boolean prefix) {
+		return i18n(key, null, prefix);
+	}
+	
+	public static String i18n(String key, String defaultK) {
+		return i18n(key, defaultK, true);
+	}
+	
+	public static String i18n(String key, String defaultK, boolean prefix) {
 		String value = "";
 		if (prefix) {
-			value += translate("prefix") + " ";
+			value += translate("prefix", "") + " ";
 		}
-		value += translate(key);
+		value += translate(key, defaultK);
 		return value;
 	}
 
-	private static String translate(String base) {
+	private static String translate(String base, String defaultK) {
 		if (customMessageConfig.isSet(base)) {
 			return customMessageConfig.getString(base);
 		} else if (config.isSet(base)) {
@@ -41,6 +49,9 @@ public class I18n {
 			if (config_baseLanguage.isSet(base)) {
 				return config_baseLanguage.getString(base);
 			}
+		}
+		if (defaultK != null) {
+			return defaultK;
 		}
 		return "§c" + base;
 	}
@@ -83,7 +94,7 @@ public class I18n {
 			}
 		}
 		plugin.getLogger()
-				.info("Successfully loaded messages for " + plugin.getName() + "! Language: " + translate("lang_name"));
+				.info("Successfully loaded messages for " + plugin.getName() + "! Language: " + translate("lang_name", null));
 	}
 
 }

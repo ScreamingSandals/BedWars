@@ -23,6 +23,43 @@ public class Configurator {
 		this.datafolder = main.getDataFolder();
 		this.main = main;
 	}
+	
+	private void configMigration() {
+		if (config.getInt("version") < 2) {
+			main.getLogger().info("Migrating config from version 1 to version 2 ...");
+			config.set("resources.bronze.material", "BRICK");
+			config.set("resources.bronze.interval", config.getInt("spawners.bronze", 1));
+			config.set("resources.bronze.name", "Bronze");
+			config.set("resources.bronze.translate", "resource_bronze");
+			config.set("resources.bronze.color", "DARK_RED");
+			config.set("resources.bronze.spread", 1.0);
+
+			config.set("resources.iron.material", "IRON_INGOT");
+			config.set("resources.iron.interval", config.getInt("spawners.iron", 10));
+			config.set("resources.iron.name", "Iron");
+			config.set("resources.iron.translate", "resource_iron");
+			config.set("resources.iron.color", "GRAY");
+			config.set("resources.iron.spread", 1.0);
+
+			config.set("resources.gold.material", "GOLD_INGOT");
+			config.set("resources.gold.interval", config.getInt("spawners.gold", 20));
+			config.set("resources.gold.name", "Gold");
+			config.set("resources.gold.translate", "resource_gold");
+			config.set("resources.gold.color", "GOLD");
+			config.set("resources.gold.spread", 1.0);
+			
+			config.set("version", 2);
+			
+			config.set("spawners", null);
+			
+			try {
+				config.save(configf);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			main.getLogger().info("Config successfully migrated from version 1 to version 2!");
+		}
+	}
 
 
 	public void createFiles() {
@@ -55,6 +92,8 @@ public class Configurator {
 		} catch (InvalidConfigurationException e) {
 			e.printStackTrace();
 		}
+		
+		configMigration();
 
 		AtomicBoolean modify = new AtomicBoolean(false);
 		checkOrSetConfig(modify, "locale", "en");
@@ -76,10 +115,8 @@ public class Configurator {
 		checkOrSetConfig(modify, "vault.enable", true);
 		checkOrSetConfig(modify, "vault.reward.kill", 5);
 		checkOrSetConfig(modify, "vault.reward.win", 20);
-		checkOrSetConfig(modify, "spawners.bronze", 1);
-		checkOrSetConfig(modify, "spawners.iron", 10);
-		checkOrSetConfig(modify, "spawners.gold", 20);
-		checkOrSetConfig(modify, "version", 1);
+		checkOrSetConfig(modify, "resources", new ArrayList<>());
+		checkOrSetConfig(modify, "version", 2);
 		if (modify.get()) {
 			try {
 				config.save(configf);

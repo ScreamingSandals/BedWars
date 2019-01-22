@@ -67,7 +67,7 @@ admin_command_small_already_exists: "§cMiniarena with this name already exists!
 admin_command_small_not_exists: "§cMiniarena with this name don't exist!"
 admin_command_store_already_exists: "§cStore already exists!"
 admin_command_store_not_exists: "§cStore don't exist!"
-admin_command_invalid_spawner_type: "§cSpawner must be BRONZE, IRON or GOLD!"
+admin_command_invalid_spawner_type: "§cSpawner must be bronze, iron, gold, or by custom configuration!"
 admin_command_invalid_color: "§cThis color is invalid!"
 admin_command_block_is_not_bed: "§cTargeted block is not bed!"
 admin_command_max_players_fail: "§cMax players count must be >= 1!"

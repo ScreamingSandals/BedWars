@@ -77,9 +77,12 @@ public class ShopMenu implements Listener {
 					lore = stackMeta.getLore();
 				}
 				int price = (int) item.get("price");
-				ItemSpawnerType type = Game.readTypeFromString((String) item.get("price-type"));
+				ItemSpawnerType type = Main.getSpawnerType(((String) item.get("price-type")).toLowerCase());
+				if (type == null) {
+					continue;
+				}
 				lore.add(i18n("price", false));
-				lore.add(price + "" + type.color + i18n("resource_"+type.name().toLowerCase(), false));
+				lore.add(price + " " + type.getItemName());
 				lore.add(i18n("amount", false));
 				lore.add(Integer.toString(stack.getAmount()));
 				stackMeta.setLore(lore);
@@ -156,11 +159,9 @@ public class ShopMenu implements Listener {
 					return;
 				}
 				int price = (int) itemInfo.get("price");
-				ItemSpawnerType type = Game.readTypeFromString((String) itemInfo.get("price-type"));
-				ItemStack materialItem = new ItemStack(type.material, price);
-				ItemMeta materialItemMeta = materialItem.getItemMeta();
-				materialItemMeta.setDisplayName(type.color + i18n("resource_" + type.name().toLowerCase(), false));
-				materialItem.setItemMeta(materialItemMeta);
+				ItemSpawnerType type = Main.getSpawnerType((String) itemInfo.get("price-type"));
+				ItemStack materialItem = type.getStack();
+				materialItem.setAmount(price);
 				ItemStack newItem = (ItemStack) itemInfo.get("stack");
 				if (player.getInventory().containsAtLeast(materialItem, price)) {
 					player.getInventory().removeItem(materialItem);

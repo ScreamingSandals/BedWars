@@ -284,22 +284,11 @@ public class GameCreator {
 		}
 		loc.setYaw(0);
 		loc.setPitch(0);
-		if (type.equalsIgnoreCase("bronze")) {
-			game.getSpawners().add(new ItemSpawner(loc, ItemSpawnerType.BRONZE));
+		ItemSpawnerType spawnerType = Main.getSpawnerType(type);
+		if (type != null) {
+			game.getSpawners().add(new ItemSpawner(loc, spawnerType));
 			return i18n("admin_command_spawner_added")
-					.replace("%resource%", ItemSpawnerType.BRONZE.color + ItemSpawnerType.BRONZE.name())
-					.replace("%x%", Integer.toString(loc.getBlockX())).replace("%y%", Integer.toString(loc.getBlockY()))
-					.replace("%z%", Integer.toString(loc.getBlockZ()));
-		} else if (type.equalsIgnoreCase("iron")) {
-			game.getSpawners().add(new ItemSpawner(loc, ItemSpawnerType.IRON));
-			return i18n("admin_command_spawner_added")
-					.replace("%resource%", ItemSpawnerType.IRON.color + ItemSpawnerType.IRON.name())
-					.replace("%x%", Integer.toString(loc.getBlockX())).replace("%y%", Integer.toString(loc.getBlockY()))
-					.replace("%z%", Integer.toString(loc.getBlockZ()));
-		} else if (type.equalsIgnoreCase("gold")) {
-			game.getSpawners().add(new ItemSpawner(loc, ItemSpawnerType.GOLD));
-			return i18n("admin_command_spawner_added")
-					.replace("%resource%", ItemSpawnerType.GOLD.color + ItemSpawnerType.GOLD.name())
+					.replace("%resource%", spawnerType.getItemName())
 					.replace("%x%", Integer.toString(loc.getBlockX())).replace("%y%", Integer.toString(loc.getBlockY()))
 					.replace("%z%", Integer.toString(loc.getBlockZ()));
 		} else {

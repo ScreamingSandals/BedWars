@@ -394,7 +394,7 @@ public class Game {
 			List<Map<String, String>> spawners = (List<Map<String, String>>) configMap.getList("spawners");
 			for (Map<String, String> spawner : spawners) {
 				ItemSpawner sa = new ItemSpawner(readLocationFromString(game.world, spawner.get("location")),
-						readTypeFromString(spawner.get("type")));
+						Main.getSpawnerType(spawner.get("type").toLowerCase()));
 				game.spawners.add(sa);
 			}
 		}
@@ -420,20 +420,6 @@ public class Game {
 		Main.getInstance().getLogger().info("Arena " + game.name + " loaded!");
 		Main.addGame(game);
 		return game;
-	}
-
-	public static ItemSpawnerType readTypeFromString(String string) {
-		ItemSpawnerType type = ItemSpawnerType.BRONZE;
-		if (string.equalsIgnoreCase("iron")) {
-			type = ItemSpawnerType.IRON;
-		} else if (string.equalsIgnoreCase("gold")) {
-			type = ItemSpawnerType.GOLD;
-		}
-		return type;
-	}
-
-	public static String setTypeToString(ItemSpawnerType type) {
-		return type.toString();
 	}
 
 	public static Location readLocationFromString(World world, String location) {
@@ -499,7 +485,7 @@ public class Game {
 		for (ItemSpawner spawner : spawners) {
 			Map<String, String> spawnerMap = new HashMap<String, String>();
 			spawnerMap.put("location", setLocationToString(spawner.loc));
-			spawnerMap.put("type", setTypeToString(spawner.type));
+			spawnerMap.put("type", spawner.type.getConfigKey());
 			nS.add(spawnerMap);
 		}
 		configMap.set("spawners", nS);
@@ -661,14 +647,10 @@ public class Game {
 				countdown--;
 				for (ItemSpawner spawner : spawners) {
 					ItemSpawnerType type = spawner.type;
-					int cycle = Main.getConfigurator().config.getInt("spawners." + type.name().toLowerCase());
+					int cycle = type.getInterval();
 					if ((countdown % cycle) == 0) {
 						Location loc = spawner.loc.clone().add(0, 1, 0);
-						ItemStack stack = new ItemStack(type.material);
-						ItemMeta stackMeta = stack.getItemMeta();
-						stackMeta.setDisplayName(type.color + i18n("resource_" + type.name().toLowerCase(), false));
-						stack.setItemMeta(stackMeta);
-						Item item = loc.getWorld().dropItem(loc, stack);
+						Item item = loc.getWorld().dropItem(loc, type.getStack());
 						item.setPickupDelay(0);
 					}
 				}
@@ -936,11 +918,11 @@ public class Game {
 
 	public void updateSigns() {
 		List<GameSign> gameSigns = Main.getSignsForGame(this);
-		
-		if(gameSigns.isEmpty()) {
+
+		if (gameSigns.isEmpty()) {
 			return;
 		}
-		
+
 		String line2 = "";
 		String line3 = "";
 		switch (status) {

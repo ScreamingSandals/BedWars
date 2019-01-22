@@ -63,7 +63,7 @@ admin_command_pos1_pos2_difference_must_be_higher: "§cVýškový rozdíl mezi s
 admin_command_game_saved_and_started: "§aHra byla úspěšně uložena a spuštěna! Nyní se můžete do arény připojit a hrát!"
 admin_command_store_already_exists: "§cObchod již existuje!"
 admin_command_store_not_exists: "§cObchod neexistuje!"
-admin_command_invalid_spawner_type: "§cSpawner musí být buď BRONZE, IRON nebo GOLD!"
+admin_command_invalid_spawner_type: "§cSpawner musí být buď bronze, iron, gold, nebo podle vlastní konfigurace!"
 admin_command_invalid_color: "§cTato barva nebyla nalezena!"
 admin_command_block_is_not_bed: "§cVybraný blok není postel!"
 admin_command_max_players_fail: "§cMaximální počet hráčů musí být minimálně 1!"

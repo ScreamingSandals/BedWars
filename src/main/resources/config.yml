@@ -42,12 +42,30 @@ vault:
   reward:
     kill: 5
     win: 20
-    
-# Spawner intervals (in seconds)
-spawners:
-  bronze: 1
-  iron: 10
-  gold: 20
+  
+# Resources
+resources:
+  bronze:
+    material: BRICK
+    interval: 1
+    name: "Bronze"
+    translate: "resource_bronze"
+    color: DARK_RED
+    spread: 1.0
+  iron:
+    material: IRON_INGOT
+    interval: 10
+    name: "Iron"
+    translate: "resource_iron"
+    color: GRAY
+    spread: 1.0
+  gold:
+    material: GOLD_INGOT
+    interval: 20
+    name: "Gold"
+    translate: "resource_gold"
+    color: GOLD
+    spread: 1.0
   
 # Do not edit this!!!
-version: 1
+version: 2

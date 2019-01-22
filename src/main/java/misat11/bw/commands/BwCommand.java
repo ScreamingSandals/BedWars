@@ -178,7 +178,7 @@ public class BwCommand implements CommandExecutor, TabCompleter {
 							StringUtil.copyPartialMatches(args[3], cmds, completionList);
 						}
 						if (args.length == 5) {
-							List<String> cmds = Arrays.asList("bronze", "iron", "gold");
+							List<String> cmds = Main.getAllSpawnerTypes();
 							StringUtil.copyPartialMatches(args[4], cmds, completionList);
 						}
 					} else if (args[2].equalsIgnoreCase("team")) {

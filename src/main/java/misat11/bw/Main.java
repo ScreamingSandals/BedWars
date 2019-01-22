@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
@@ -17,6 +18,7 @@ import misat11.bw.commands.BwCommand;
 import misat11.bw.game.Game;
 import misat11.bw.game.GamePlayer;
 import misat11.bw.game.GameStatus;
+import misat11.bw.game.ItemSpawnerType;
 import misat11.bw.listener.PlayerListener;
 import misat11.bw.listener.SignListener;
 import misat11.bw.listener.VillagerListener;
@@ -42,6 +44,7 @@ public class Main extends JavaPlugin {
 	private Configurator configurator;
 	private ShopMenu menu;
 	private SignManager signManager;
+	private HashMap<String, ItemSpawnerType> spawnerTypes = new HashMap<String, ItemSpawnerType>();
 
 	public static Main getInstance() {
 		return instance;
@@ -195,6 +198,14 @@ public class Main extends JavaPlugin {
 	public static List<GameSign> getSignsForGame(Game game){
 		return instance.signManager.getSignsForGame(game);
 	}
+	
+	public static ItemSpawnerType getSpawnerType(String key) {
+		return instance.spawnerTypes.get(key);
+	}
+	
+	public static List<String> getAllSpawnerTypes(){
+		return new ArrayList<String>(instance.spawnerTypes.keySet());
+	}
 
 	public static List<String> getGameNames() {
 		List<String> list = new ArrayList<String>();
@@ -238,6 +249,27 @@ public class Main extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(new VillagerListener(), this);
 		getServer().getPluginManager().registerEvents(new SignListener(), this);
 		getServer().getPluginManager().registerEvents(new WorldListener(), this);
+		
+		for (String spawnerN : configurator.config.getConfigurationSection("resources").getKeys(false)) {
+
+			String name = Main.getConfigurator().config.getString("resources." + spawnerN + ".name");
+			String translate = Main.getConfigurator().config.getString("resources." + spawnerN + ".translate");
+			int interval = Main.getConfigurator().config.getInt("resources." + spawnerN + ".interval", 1);
+			double spread = Main.getConfigurator().config.getDouble("resources." + spawnerN + ".spread");
+			int damage = Main.getConfigurator().config.getInt("resources." + spawnerN + ".damage");
+			String materialName = Main.getConfigurator().config.getString("resources." + spawnerN + ".material", "AIR");
+			String colorName = Main.getConfigurator().config.getString("resources." + spawnerN + ".color", "WHITE");
+			
+			Material material = Material.valueOf(materialName);
+			if (material == Material.AIR || material == null) {
+				continue;
+			}
+			
+			ChatColor color = ChatColor.valueOf(colorName);
+
+			spawnerTypes.put(spawnerN.toLowerCase(), new ItemSpawnerType(spawnerN.toLowerCase(), name, translate, spread, material, color, interval, damage));
+		}
+		
 		menu = new ShopMenu(this);
 
 		Bukkit.getLogger().info("********************");
