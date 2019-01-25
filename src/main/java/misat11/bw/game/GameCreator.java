@@ -147,14 +147,31 @@ public class GameCreator {
 				if (!isInArea(loc, game.getPos1(), game.getPos2())) {
 					return CommandResponse.SPAWN_MUST_BE_IN_MAIN_AREA;
 				}
-				if (!(block.getBlockData() instanceof Bed)) {
-					return CommandResponse.BLOCK_IS_NOT_BED;
-				}
-				Bed bed = (Bed) block.getBlockData();
-				if (bed.getPart() != Part.HEAD) {
-					t.bed = BedUtils.getBedNeighbor(block).getLocation();
+				if (Main.isLegacy()) {
+					// Legacy
+					if (!(block.getState().getData() instanceof org.bukkit.material.Bed)) {
+						return CommandResponse.BLOCK_IS_NOT_BED;
+					}
+					
+					org.bukkit.material.Bed bed = (org.bukkit.material.Bed) block.getState().getData();
+					if (!bed.isHeadOfBed()) {
+						t.bed = misat11.bw.legacy.LegacyBedUtils.getBedNeighbor(block).getLocation();
+					} else {
+						t.bed = loc;
+					}
+					
 				} else {
-					t.bed = loc;
+					// 1.13+
+					if (!(block.getBlockData() instanceof Bed)) {
+						return CommandResponse.BLOCK_IS_NOT_BED;
+					}
+					
+					Bed bed = (Bed) block.getBlockData();
+					if (bed.getPart() != Part.HEAD) {
+						t.bed = BedUtils.getBedNeighbor(block).getLocation();
+					} else {
+						t.bed = loc;
+					}
 				}
 				return i18n("admin_command_bed_setted").replace("%team%", t.name)
 						.replace("%x%", Integer.toString(t.bed.getBlockX()))

@@ -2,7 +2,6 @@ package misat11.bw.game;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -10,9 +9,6 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
-import org.bukkit.block.data.BlockData;
-import org.bukkit.block.data.type.Bed;
-import org.bukkit.block.data.type.Bed.Part;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
@@ -35,8 +31,10 @@ import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
 
 import misat11.bw.Main;
-import misat11.bw.utils.BedUtils;
+import misat11.bw.legacy.LegacyRegion;
 import misat11.bw.utils.GameSign;
+import misat11.bw.utils.IRegion;
+import misat11.bw.utils.Region;
 import misat11.bw.utils.TeamSelectorInventory;
 import misat11.bw.utils.Title;
 
@@ -71,8 +69,7 @@ public class Game {
 	private int calculatedMaxPlayers;
 	private BukkitTask task;
 	private List<CurrentTeam> teamsInGame = new ArrayList<CurrentTeam>();
-	private List<Location> buildedBlocks = new ArrayList<Location>();
-	private Map<Location, BlockData> breakedOriginalBlocks = new HashMap<Location, BlockData>();
+	private IRegion region = Main.isLegacy() ? new LegacyRegion() : new Region();
 	private TeamSelectorInventory teamSelectorInventory;
 	private Scoreboard gameScoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
 	private BossBar bossbar;
@@ -172,7 +169,7 @@ public class Game {
 	}
 
 	public boolean isBlockAddedDuringGame(Location loc) {
-		return status == GameStatus.RUNNING && buildedBlocks.contains(loc);
+		return status == GameStatus.RUNNING && region.isBlockAddedDuringGame(loc);
 	}
 
 	public boolean blockPlace(GamePlayer player, Block block, BlockState replaced) {
@@ -189,13 +186,13 @@ public class Game {
 			return false;
 		}
 		if (replaced.getType() != Material.AIR) {
-			if (replaced.getType() == Material.WATER || replaced.getType() == Material.LAVA) {
-				breakedOriginalBlocks.put(block.getLocation(), replaced.getBlockData());
+			if (region.isLiquid(replaced.getType())) {
+				region.putOriginalBlock(block.getLocation(), replaced);
 			} else {
 				return false;
 			}
 		}
-		buildedBlocks.add(block.getLocation());
+		region.addBuildedDuringGame(block.getLocation());
 		return true;
 	}
 
@@ -212,27 +209,26 @@ public class Game {
 		if (!GameCreator.isInArea(block.getLocation(), pos1, pos2)) {
 			return false;
 		}
-		if (buildedBlocks.contains(block.getLocation())) {
-			buildedBlocks.remove(block.getLocation());
+		if (region.isBlockAddedDuringGame(block.getLocation())) {
+			region.removeBlockBuildedDuringGame(block.getLocation());
 			return true;
 		}
-		if (block.getBlockData() instanceof Bed) {
+		if (region.isBedBlock(block.getState())) {
 			Location loc = block.getLocation();
-			Bed bed = (Bed) block.getBlockData();
-			if (bed.getPart() != Part.HEAD) {
-				loc = BedUtils.getBedNeighbor(block).getLocation();
+			if (!region.isBedHead(block.getState())) {
+				loc = region.getBedNeighbor(block).getLocation();
 			}
 			if (getPlayerTeam(player).teamInfo.bed.equals(loc)) {
 				return false;
 			}
 			event.setDropItems(false);
 			bedDestroyed(loc);
-			breakedOriginalBlocks.put(block.getLocation(), block.getBlockData());
+			region.putOriginalBlock(block.getLocation(), block.getState());
 			if (block.getLocation().equals(loc)) {
-				Block neighbor = BedUtils.getBedNeighbor(block);
-				breakedOriginalBlocks.put(neighbor.getLocation(), neighbor.getBlockData());
+				Block neighbor = region.getBedNeighbor(block);
+				region.putOriginalBlock(neighbor.getLocation(), neighbor.getState());
 			} else {
-				breakedOriginalBlocks.put(loc, BedUtils.getBedNeighbor(block).getBlockData());
+				region.putOriginalBlock(loc, region.getBedNeighbor(block).getState());
 			}
 			return true;
 		}
@@ -711,22 +707,7 @@ public class Game {
 			bossbar.setProgress((double) countdown / (double) pauseCountdown);
 			countdown--;
 		} else if (this.status == GameStatus.REBUILDING) {
-			for (Location block : buildedBlocks) {
-				Chunk chunk = block.getChunk();
-				if (!chunk.isLoaded()) {
-					chunk.load();
-				}
-				block.getBlock().setType(Material.AIR);
-			}
-			buildedBlocks.clear();
-			for (Map.Entry<Location, BlockData> block : breakedOriginalBlocks.entrySet()) {
-				Chunk chunk = block.getKey().getChunk();
-				if (!chunk.isLoaded()) {
-					chunk.load();
-				}
-				block.getKey().getBlock().setBlockData(block.getValue());
-			}
-			breakedOriginalBlocks.clear();
+			region.regen();
 			this.status = this.afterRebuild;
 			updateSigns();
 			cancelTask();

@@ -48,7 +48,7 @@ public class ShopMenu implements Listener {
 
 		Set<String> s = Main.getConfigurator().shopconfig.getConfigurationSection("shop-items").getKeys(false);
 		
-		backItem = new ItemStack(Material.BARRIER);
+		backItem = new ItemStack(Material.valueOf(Main.getConfigurator().config.getString("items.shopback", "BARRIER")));
 		ItemMeta backItemMeta = backItem.getItemMeta();
 		backItemMeta.setDisplayName(i18n("shop_back", false));
 		backItem.setItemMeta(backItemMeta);
@@ -57,7 +57,7 @@ public class ShopMenu implements Listener {
 			ConfigurationSection category = Main.getConfigurator().shopconfig
 					.getConfigurationSection("shop-items." + i);
 
-			ItemStack categoryItem = new ItemStack(Material.valueOf(category.getString("item")), 1);
+			ItemStack categoryItem = new ItemStack(Material.valueOf(category.getString("item")), 1, (short) category.getInt("damage", 0));
 			ItemMeta categoryItemMeta = categoryItem.getItemMeta();
 			categoryItemMeta.setLore(category.getStringList("lore"));
 			categoryItemMeta.setDisplayName(category.getString("name"));

@@ -51,7 +51,7 @@ public class TeamSelectorInventory implements Listener {
 	}
 
 	public static ItemStack materializeColorToWool(TeamColor color) {
-		return new ItemStack(color.material);
+		return color.getWool();
 	}
 
 	public void destroy() {

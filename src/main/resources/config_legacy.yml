@@ -13,9 +13,9 @@ farmBlocks:
   enable: true
   blocks:
   - WHEAT
-  - CARROTS
-  - POTATOES
-  - BEETROOTS
+  - CARROT
+  - POTATO
+  - BEETROOT_BLOCK
 
 # Scoreboard settings
 scoreboard:
@@ -47,7 +47,7 @@ vault:
 # Resources
 resources:
   bronze:
-    material: BRICK
+    material: CLAY_BRICK
     interval: 1
     name: "Bronze"
     translate: "resource_bronze"

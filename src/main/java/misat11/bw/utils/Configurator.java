@@ -27,7 +27,11 @@ public class Configurator {
 	private void configMigration() {
 		if (config.getInt("version") < 2) {
 			main.getLogger().info("Migrating config from version 1 to version 2 ...");
-			config.set("resources.bronze.material", "BRICK");
+			if (Main.isLegacy()) {
+				config.set("resources.bronze.material", "CLAY_BRICK");
+			} else {
+				config.set("resources.bronze.material", "BRICK");
+			}
 			config.set("resources.bronze.interval", config.getInt("spawners.bronze", 1));
 			config.set("resources.bronze.name", "Bronze");
 			config.set("resources.bronze.translate", "resource_bronze");
@@ -70,11 +74,21 @@ public class Configurator {
 
 		if (!configf.exists()) {
 			configf.getParentFile().mkdirs();
-			main.saveResource("config.yml", false);
+			if (Main.isLegacy()) {
+				main.saveResource("config_legacy.yml", false);
+				new File(datafolder, "config_legacy.yml").renameTo(configf);
+			} else {
+				main.saveResource("config.yml", false);
+			}
 		}
 		if (!shopconfigf.exists()) {
 			shopconfigf.getParentFile().mkdirs();
-			main.saveResource("shop.yml", false);
+			if (Main.isLegacy()) {
+				main.saveResource("shop_legacy.yml", false);
+				new File(datafolder, "shop_legacy.yml").renameTo(shopconfigf);
+			} else {
+				main.saveResource("shop.yml", false);
+			}
 		}
 		if (!signconfigf.exists()) {
 			signconfigf.getParentFile().mkdirs();
@@ -112,6 +126,7 @@ public class Configurator {
 		checkOrSetConfig(modify, "title.fadeOut", 0);
 		checkOrSetConfig(modify, "items.jointeam", "COMPASS");
 		checkOrSetConfig(modify, "items.leavegame", "SLIME_BALL");
+		checkOrSetConfig(modify, "items.shopback", "BARRIER");
 		checkOrSetConfig(modify, "vault.enable", true);
 		checkOrSetConfig(modify, "vault.reward.kill", 5);
 		checkOrSetConfig(modify, "vault.reward.win", 20);

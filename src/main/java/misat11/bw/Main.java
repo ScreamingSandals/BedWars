@@ -36,7 +36,7 @@ import static misat11.bw.utils.I18n.i18n;
 public class Main extends JavaPlugin {
 	private static Main instance;
 	private String version;
-	private boolean isSpigot, snapshot, isVault;
+	private boolean isSpigot, snapshot, isVault, isLegacy;
 	private Economy econ = null;
 	private HashMap<String, Game> games = new HashMap<String, Game>();
 	private HashMap<Player, GamePlayer> playersInGame = new HashMap<Player, GamePlayer>();
@@ -68,6 +68,10 @@ public class Main extends JavaPlugin {
 	
 	public static boolean isVault() {
 		return instance.isVault;
+	}
+	
+	public static boolean isLegacy() {
+		return instance.isLegacy;
 	}
 	
 	public static void depositPlayer(Player player, double coins) {
@@ -233,6 +237,14 @@ public class Main extends JavaPlugin {
 			setupEconomy();
 			isVault = true;
 		}
+		
+		String[] bukkitVersion = Bukkit.getBukkitVersion().split("-")[0].split("\\.");
+		int versionNumber = 0;
+		for (int i = 0; i < 2; i++) {
+			versionNumber += Integer.parseInt(bukkitVersion[i]) * (i == 0 ? 100 : 1);
+		}
+		
+		isLegacy = versionNumber < 113;
 
 		configurator = new Configurator(this);
 
