@@ -98,6 +98,8 @@ admin_command_set_lobby_before_save: "§cBefore saving game please set lobby spa
 admin_command_set_spec_before_save: "§cBefore saving game please set spec spawn!"
 admin_command_set_stores_before_save: "§cBefore saving game please add at least 1 store!"
 admin_command_set_spawners_before_save: "§cBefore saving game please add at least 1 spawner!"
+admin_command_set_bed_for_team_before_save: "§cBefore saving game please set bed of team §7%team%§c!"
+admin_command_set_spawn_for_team_before_save: "§cBefore saving game please set spawn of team §7%team%§c!"
 
 sign_successfully_created: "§aSign was successfully created!"
 sign_can_not_been_created: "§cSign couldn't be created! Please check the name of arena!"

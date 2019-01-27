@@ -73,7 +73,6 @@ public class Configurator {
 		signconfigf = new File(datafolder, "sign.yml");
 
 		if (!configf.exists()) {
-			configf.getParentFile().mkdirs();
 			if (Main.isLegacy()) {
 				main.saveResource("config_legacy.yml", false);
 				new File(datafolder, "config_legacy.yml").renameTo(configf);
@@ -82,7 +81,6 @@ public class Configurator {
 			}
 		}
 		if (!shopconfigf.exists()) {
-			shopconfigf.getParentFile().mkdirs();
 			if (Main.isLegacy()) {
 				main.saveResource("shop_legacy.yml", false);
 				new File(datafolder, "shop_legacy.yml").renameTo(shopconfigf);
@@ -91,7 +89,6 @@ public class Configurator {
 			}
 		}
 		if (!signconfigf.exists()) {
-			signconfigf.getParentFile().mkdirs();
 			main.saveResource("sign.yml", false);
 		}
 		config = new YamlConfiguration();

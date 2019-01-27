@@ -1,9 +1,7 @@
 # BedWars
 [![Build Status](https://jenkins.mtorus.cz/job/BedWars/badge/icon)](https://jenkins.mtorus.cz/job/BedWars/)
 
-Simple BedWars rewrite for versions 1.13 and above!
-
-##### This plugin is not backwards compatible! For legacy (1.12 and below) versions use BedWarsRel: https://www.spigotmc.org/resources/bedwars-rel.6799/
+Simple BedWars rewrite for versions 1.13 and above and it can support 1.12 versions and possibly older versions too!
 
 ## Features:
 - Bed destroying

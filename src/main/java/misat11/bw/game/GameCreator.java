@@ -104,25 +104,41 @@ public class GameCreator {
 			for (Map.Entry<String, Location> vloc : villagerstores.entrySet()) {
 				gamestores.add(new GameStore(vloc.getValue()));
 			}
-			game.setGameStores(gamestores);
-			if (game.getTeams().size() < 2) {
-				response = CommandResponse.NEED_MIN_2_TEAMS;
-			} else if (game.getPos1() == null || game.getPos2() == null){
-				response = i18n("admin_command_set_pos1_pos2_before_save");
-			} else if (game.getLobbySpawn() == null) {
-				response = i18n("admin_command_set_lobby_before_save");
-			} else if (game.getSpecSpawn() == null){
-				response = i18n("admin_command_set_spec_before_save");
-			} else if (game.getGameStores().isEmpty()) {
-				response = i18n("admin_command_set_stores_before_save");
-			} else if (game.getSpawners().isEmpty()) {
-				response = i18n("admin_command_set_spawners_before_save");
-			} else {
-				game.saveToConfig();
-				game.start();
-				Main.addGame(game);
-				response = CommandResponse.SAVED_AND_STARTED;
-				isArenaSaved = true;
+			boolean isTeamsSetCorrectly = true;
+			for (Team team : game.getTeams()) {
+				if (team.bed == null) {
+					response = i18n("admin_command_set_bed_for_team_before_save")
+							.replace("%team%", team.name);
+					isTeamsSetCorrectly = false;
+					break;
+				} else if (team.spawn == null) {
+					response = i18n("admin_command_set_spawn_for_team_before_save")
+							.replace("%team%", team.name);
+					isTeamsSetCorrectly = false;
+					break;
+				}
+			}
+			if (isTeamsSetCorrectly) {
+				game.setGameStores(gamestores);
+				if (game.getTeams().size() < 2) {
+					response = CommandResponse.NEED_MIN_2_TEAMS;
+				} else if (game.getPos1() == null || game.getPos2() == null){
+					response = i18n("admin_command_set_pos1_pos2_before_save");
+				} else if (game.getLobbySpawn() == null) {
+					response = i18n("admin_command_set_lobby_before_save");
+				} else if (game.getSpecSpawn() == null){
+					response = i18n("admin_command_set_spec_before_save");
+				} else if (game.getGameStores().isEmpty()) {
+					response = i18n("admin_command_set_stores_before_save");
+				} else if (game.getSpawners().isEmpty()) {
+					response = i18n("admin_command_set_spawners_before_save");
+				} else {
+					game.saveToConfig();
+					game.start();
+					Main.addGame(game);
+					response = CommandResponse.SAVED_AND_STARTED;
+					isArenaSaved = true;
+				}
 			}
 		}
 
@@ -302,13 +318,13 @@ public class GameCreator {
 		loc.setYaw(0);
 		loc.setPitch(0);
 		ItemSpawnerType spawnerType = Main.getSpawnerType(type);
-		if (type != null) {
-			game.getSpawners().add(new ItemSpawner(loc, spawnerType));
+		if (spawnerType != null) {
 			return i18n("admin_command_spawner_added")
 					.replace("%resource%", spawnerType.getItemName())
 					.replace("%x%", Integer.toString(loc.getBlockX())).replace("%y%", Integer.toString(loc.getBlockY()))
 					.replace("%z%", Integer.toString(loc.getBlockZ()));
 		} else {
+			System.out.println("non-exists");
 			return CommandResponse.INVALID_SPAWNER_TYPE;
 		}
 	}

@@ -94,6 +94,8 @@ admin_command_set_lobby_before_save: "§cPřed uložením prosím nastavte lobby
 admin_command_set_spec_before_save: "§cPřed uložením prosím nastavte spec spawn!"
 admin_command_set_stores_before_save: "§cPřed uložením prosím přidejte alespoň 1 obchod!"
 admin_command_set_spawners_before_save: "§cPřed uložením prosím přidejte alespoň 1 spawner!"
+admin_command_set_bed_for_team_before_save: "§cPřed uložením prosím nastavte týmu §7%team%§c postel!"
+admin_command_set_spawn_for_team_before_save: "§cPřed uložením prosím nastavte týmu §7%team%§c spawn!"
 
 sign_successfully_created: "§aCedule byla úspěšně vytvořena!"
 sign_can_not_been_created: "§cCeduli se nepodařilo vytvorit! Zkontrolujte si prosím název arény!"
