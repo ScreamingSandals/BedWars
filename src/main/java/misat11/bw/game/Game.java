@@ -4,7 +4,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -16,11 +15,13 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -35,6 +36,7 @@ import misat11.bw.legacy.LegacyRegion;
 import misat11.bw.utils.GameSign;
 import misat11.bw.utils.IRegion;
 import misat11.bw.utils.Region;
+import misat11.bw.utils.Sounds;
 import misat11.bw.utils.TeamSelectorInventory;
 import misat11.bw.utils.Title;
 
@@ -73,6 +75,8 @@ public class Game {
 	private TeamSelectorInventory teamSelectorInventory;
 	private Scoreboard gameScoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
 	private BossBar bossbar;
+	
+	private List<Entity> spawnedEntities = new ArrayList<Entity>();
 
 	private Game() {
 
@@ -257,11 +261,15 @@ public class Game {
 								i18n("bed_is_destroyed_subtitle", false));
 						player.player.sendMessage(i18n("bed_is_destroyed").replace("%team%",
 								team.teamInfo.color.chatColor + team.teamInfo.name));
-						player.player.playSound(player.player.getLocation(), Sound.ENTITY_ENDER_DRAGON_GROWL, 1, 1);
+						Sounds.ENTITY_ENDER_DRAGON_GROWL.playSound(player.player, player.player.getLocation(), 1, 1);
 					}
 				}
 			}
 		}
+	}
+	
+	public void putDroppedItem(Item item) {
+		spawnedEntities.add(item);
 	}
 
 	public void joinPlayer(GamePlayer player) {
@@ -525,7 +533,11 @@ public class Game {
 			for (Team team : teams) {
 				calculatedMaxPlayers += team.maxPlayers;
 			}
-			updateSigns();
+			new BukkitRunnable() {
+				public void run() {
+					updateSigns();
+				}
+			}.runTask(Main.getInstance());
 		}
 	}
 
@@ -602,6 +614,12 @@ public class Game {
 				for (GameStore store : gameStore) {
 					store.forceKill();
 				}
+				for (Entity entity : spawnedEntities) {
+					if (!entity.isDead()) {
+						entity.remove();
+					}
+				}
+				spawnedEntities.clear();
 				String message = i18n("game_end");
 				for (GamePlayer player : (List<GamePlayer>) ((ArrayList<GamePlayer>) players).clone()) {
 					player.player.sendMessage(message);
@@ -648,6 +666,7 @@ public class Game {
 						Location loc = spawner.loc.clone().add(0, 1, 0);
 						Item item = loc.getWorld().dropItem(loc, type.getStack());
 						item.setPickupDelay(0);
+						spawnedEntities.add(item);
 					}
 				}
 			}
@@ -672,7 +691,7 @@ public class Game {
 			if (countdown <= 10 && countdown >= 1) {
 				for (GamePlayer player : players) {
 					Title.send(player.player, ChatColor.YELLOW + Integer.toString(countdown), "");
-					player.player.playSound(player.player.getLocation(), Sound.UI_BUTTON_CLICK, 1, 1);
+					Sounds.UI_BUTTON_CLICK.playSound(player.player, player.player.getLocation(), 1, 1);
 				}
 			}
 			if (countdown == 0) {
@@ -694,7 +713,7 @@ public class Game {
 				for (GamePlayer player : players) {
 					CurrentTeam team = getPlayerTeam(player);
 					player.player.getInventory().clear();
-					player.player.playSound(player.player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
+					Sounds.ENTITY_PLAYER_LEVELUP.playSound(player.player, player.player.getLocation(), 1, 1);
 					Title.send(player.player, gameStartTitle, gameStartSubtitle);
 					if (team == null) {
 						makeSpectator(player);
@@ -803,6 +822,15 @@ public class Game {
 					stackMeta.setDisplayName(team.color.chatColor + team.name);
 					stack.setItemMeta(stackMeta);
 					playerGameProfile.player.getInventory().setItem(1, stack);
+					
+					if (Main.getConfigurator().config.getBoolean("in-lobby-colored-leather-by-team")) {
+						ItemStack chestplate = new ItemStack(Material.LEATHER_CHESTPLATE);
+					    LeatherArmorMeta meta = (LeatherArmorMeta) chestplate.getItemMeta();
+					    meta.setColor(team.color.leatherColor);
+					    chestplate.setItemMeta(meta);
+					    playerGameProfile.player.getInventory().setChestplate(chestplate);
+					}
+					
 					if (!teamsInGame.contains(current)) {
 						teamsInGame.add(current);
 					}

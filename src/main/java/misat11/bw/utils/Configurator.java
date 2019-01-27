@@ -113,6 +113,7 @@ public class Configurator {
 		checkOrSetConfig(modify, "locale", "en");
 		checkOrSetConfig(modify, "allow-crafting", false);
 		checkOrSetConfig(modify, "keep-inventory-on-death", false);
+		checkOrSetConfig(modify, "in-lobby-colored-leather-by-team", true);
 		checkOrSetConfig(modify, "allowed-commands", new ArrayList<>());
 		checkOrSetConfig(modify, "farmBlocks.enable", true);
 		checkOrSetConfig(modify, "farmBlocks.blocks", new ArrayList<>());

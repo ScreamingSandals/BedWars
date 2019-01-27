@@ -3,6 +3,7 @@ locale: en
 
 allow-crafting: false
 keep-inventory-on-death: false
+in-lobby-colored-leather-by-team: true
 
 # Commands whitelist
 allowed-commands:

@@ -396,4 +396,15 @@ public class PlayerListener implements Listener {
 			}
 		}
 	}
+	
+	@EventHandler
+	public void onPlayerDrop(PlayerDropItemEvent event) {
+		if (event.isCancelled()) {
+			return;
+		}
+
+		if (Main.isPlayerInGame(event.getPlayer())) {
+			Main.getPlayerGameProfile(event.getPlayer()).getGame().putDroppedItem(event.getItemDrop());
+		}
+	} 
 }

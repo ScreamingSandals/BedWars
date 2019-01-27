@@ -70,7 +70,7 @@ public class ShopMenu implements Listener {
 
 			List<Map<String, Object>> categoryItemsList = (List<Map<String, Object>>) category.getList("items");
 			for (Map<String, Object> item : categoryItemsList) {
-				ItemStack stack = (ItemStack) item.get("stack");
+				ItemStack stack = ((ItemStack) item.get("stack")).clone();
 				ItemMeta stackMeta = stack.getItemMeta();
 				List<String> lore = new ArrayList<String>();
 				if (stackMeta.hasLore()) {
