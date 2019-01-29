@@ -1,8 +1,13 @@
 package misat11.bw.listener;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Arrow;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -22,22 +27,31 @@ import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
+import org.bukkit.metadata.MetadataValue;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import misat11.bw.Main;
+import misat11.bw.commands.BwCommand;
 import misat11.bw.game.CurrentTeam;
 import misat11.bw.game.Game;
+import misat11.bw.game.GameCreator;
 import misat11.bw.game.GamePlayer;
 import misat11.bw.game.GameStatus;
+import misat11.bw.game.Team;
+import misat11.bw.utils.ArmorStandUtils;
+import misat11.bw.utils.TeamJoinMetaDataValue;
 import misat11.bw.utils.TeamSelectorInventory;
 
 import static misat11.bw.utils.I18n.i18n;
+
+import java.util.List;
 
 public class PlayerListener implements Listener {
 
@@ -169,7 +183,7 @@ public class PlayerListener implements Listener {
 		if (event.getClickedInventory() == null) {
 			return;
 		}
-		
+
 		if (event.getClickedInventory().getType() == InventoryType.PLAYER) {
 			Player p = (Player) event.getWhoClicked();
 			if (Main.isPlayerInGame(p)) {
@@ -291,7 +305,8 @@ public class PlayerListener implements Listener {
 			Game game = gPlayer.getGame();
 			if (game.getStatus() == GameStatus.WAITING || gPlayer.isSpectator) {
 				event.setCancelled(true);
-				if(event.getMaterial() == Material.valueOf(Main.getConfigurator().config.getString("items.jointeam", "COMPASS"))) {
+				if (event.getMaterial() == Material
+						.valueOf(Main.getConfigurator().config.getString("items.jointeam", "COMPASS"))) {
 					if (game.getStatus() == GameStatus.WAITING) {
 						TeamSelectorInventory inv = game.getTeamSelectorInventory();
 						if (inv == null) {
@@ -301,7 +316,8 @@ public class PlayerListener implements Listener {
 					} else if (gPlayer.isSpectator) {
 						// TODO
 					}
-				} else if (event.getMaterial() == Material.valueOf(Main.getConfigurator().config.getString("items.leavegame", "SLIME_BALL"))) {
+				} else if (event.getMaterial() == Material
+						.valueOf(Main.getConfigurator().config.getString("items.leavegame", "SLIME_BALL"))) {
 					game.leaveFromGame(player);
 				}
 			}
@@ -396,7 +412,7 @@ public class PlayerListener implements Listener {
 			}
 		}
 	}
-	
+
 	@EventHandler
 	public void onPlayerDrop(PlayerDropItemEvent event) {
 		if (event.isCancelled()) {
@@ -406,5 +422,69 @@ public class PlayerListener implements Listener {
 		if (Main.isPlayerInGame(event.getPlayer())) {
 			Main.getPlayerGameProfile(event.getPlayer()).getGame().putDroppedItem(event.getItemDrop());
 		}
-	} 
+	}
+
+	@EventHandler
+	public void onInteractAtEntity(PlayerInteractAtEntityEvent event) {
+		if (event.isCancelled()) {
+			return;
+		}
+
+		if (event.getRightClicked() == null) {
+			return;
+		}
+
+		Player player = event.getPlayer();
+		Entity entity = event.getRightClicked();
+
+		if (Main.isPlayerInGame(player)) {
+			Game game = Main.getPlayerGameProfile(player).getGame();
+			if (!(entity instanceof LivingEntity)) {
+				return;
+			}
+
+			if (game.getStatus() != GameStatus.WAITING) {
+				return;
+			}
+			LivingEntity living = (LivingEntity) entity;
+			String displayName = ChatColor.stripColor(living.getCustomName());
+
+			for (Team team : game.getTeams()) {
+				if (team.name.equals(displayName)) {
+					event.setCancelled(true);
+					game.selectTeam(Main.getPlayerGameProfile(player), displayName);
+					return;
+				}
+			}
+		} else if (player.hasPermission(BwCommand.ADMIN_PERMISSION)) {
+			List<MetadataValue> values = player.getMetadata(GameCreator.BEDWARS_TEAM_JOIN_METADATA);
+			if (values == null || values.size() == 0) {
+				return;
+			}
+
+			event.setCancelled(true);
+			TeamJoinMetaDataValue value = (TeamJoinMetaDataValue) values.get(0);
+			if (!((boolean) value.value())) {
+				return;
+			}
+
+			if (!(entity instanceof LivingEntity)) {
+				player.sendMessage(i18n("admin_command_jointeam_entitynotcompatible"));
+				return;
+			}
+
+			LivingEntity living = (LivingEntity) entity;
+			living.setRemoveWhenFarAway(false);
+			living.setCanPickupItems(false);
+			living.setCustomName(value.getTeam().color.chatColor + value.getTeam().name);
+			living.setCustomNameVisible(Main.getConfigurator().config.getBoolean("jointeam-entity-show-name", true));
+
+			if (living instanceof ArmorStand) {
+				ArmorStandUtils.equipArmorStand((ArmorStand) living, value.getTeam());
+			}
+
+			player.removeMetadata(GameCreator.BEDWARS_TEAM_JOIN_METADATA, Main.getInstance());
+			player.sendMessage(i18n("admin_command_jointeam_entity_added"));
+		}
+	}
 }

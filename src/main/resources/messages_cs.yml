@@ -96,6 +96,9 @@ admin_command_set_stores_before_save: "§cPřed uložením prosím přidejte ale
 admin_command_set_spawners_before_save: "§cPřed uložením prosím přidejte alespoň 1 spawner!"
 admin_command_set_bed_for_team_before_save: "§cPřed uložením prosím nastavte týmu §7%team%§c postel!"
 admin_command_set_spawn_for_team_before_save: "§cPřed uložením prosím nastavte týmu §7%team%§c spawn!"
+admin_command_click_right_on_entity_to_set_join: "§aNyní klikněte pravým tlačítkem na požadovanou entitu, pro kterou chcete nastavit připojování do týmu: §7%team%"
+admin_command_jointeam_entitynotcompatible: "§cEntita, kterou se pokoušíte použít není kompatibilní! Lze použít pouze entity typu Living (žijící nebo ArmorStand)!"
+admin_command_jointeam_entity_added: "§aEntita pro připojení k týmu přidána!"
 
 sign_successfully_created: "§aCedule byla úspěšně vytvořena!"
 sign_can_not_been_created: "§cCeduli se nepodařilo vytvorit! Zkontrolujte si prosím název arény!"
@@ -133,6 +136,7 @@ help_bw_admin_team_color: "/bw admin <aréna> team color <tým> <barva> - §eZm�
 help_bw_admin_team_maxplayers: "/bw admin <aréna> team maxplayers <tým> <max hráčů> - §eZmění týmu maximální počet hráčů"
 help_bw_admin_team_spawn: "/bw admin <aréna> team spawn <tým> - §eNastaví týmu spawn na tvojí pozici"
 help_bw_admin_team_bed: "/bw admin <aréna> team bed <tým> - §eNastaví týmu lokaci postele, na kterou koukáš"
+help_bw_admin_jointeam: "/bw admin <aréna> jointeam <tým> - §eNastaví možnost připojení se do týmu pomocí entity"
 help_bw_admin_spawner_add: "/bw admin <aréna> spawner add <bronze|gold|iron> - §ePřidá item spawner na tvojí pozici"
 help_bw_admin_spawner_reset: "/bw admin <aréna> spawner reset - §eSmaže se hry všechny spawnery"
 help_bw_admin_store_add: "/bw admin <aréna> store add - §ePřidá obchodujícího vesničana na tvojí pozici"

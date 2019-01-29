@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -64,7 +65,7 @@ public class I18n {
 			InputStream inb = plugin.getResource("messages_" + base_lang_code + ".yml");
 			config_baseLanguage = new YamlConfiguration();
 			try {
-				config_baseLanguage.load(new InputStreamReader(inb));
+				config_baseLanguage.load(new InputStreamReader(inb, StandardCharsets.UTF_8));
 			} catch (IOException e) {
 				e.printStackTrace();
 			} catch (InvalidConfigurationException e) {
@@ -75,7 +76,7 @@ public class I18n {
 		config = new YamlConfiguration();
 		if (in != null) {
 			try {
-				config.load(new InputStreamReader(in));
+				config.load(new InputStreamReader(in, StandardCharsets.UTF_8));
 			} catch (IOException e) {
 				e.printStackTrace();
 			} catch (InvalidConfigurationException e) {

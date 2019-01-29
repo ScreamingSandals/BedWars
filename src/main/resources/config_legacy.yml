@@ -4,6 +4,7 @@ locale: en
 allow-crafting: false
 keep-inventory-on-death: false
 in-lobby-colored-leather-by-team: true
+jointeam-entity-show-name: true
 
 # Commands whitelist
 allowed-commands:

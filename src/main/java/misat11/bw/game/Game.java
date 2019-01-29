@@ -764,9 +764,10 @@ public class Game {
 
 	public void selectTeam(GamePlayer playerGameProfile, String displayName) {
 		if (status == GameStatus.WAITING) {
+			displayName = ChatColor.stripColor(displayName);
 			playerGameProfile.player.closeInventory();
 			for (Team team : teams) {
-				if (displayName.equals(team.color.chatColor + team.name)) {
+				if (displayName.equals(team.name)) {
 					CurrentTeam current = null;
 					for (CurrentTeam t : teamsInGame) {
 						if (t.teamInfo == team) {

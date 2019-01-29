@@ -100,6 +100,9 @@ admin_command_set_stores_before_save: "§cBefore saving game please add at least
 admin_command_set_spawners_before_save: "§cBefore saving game please add at least 1 spawner!"
 admin_command_set_bed_for_team_before_save: "§cBefore saving game please set bed of team §7%team%§c!"
 admin_command_set_spawn_for_team_before_save: "§cBefore saving game please set spawn of team §7%team%§c!"
+admin_command_click_right_on_entity_to_set_join: "§aNow use right click on the desired entity for which you want to set up joining to team: §7%team%"
+admin_command_jointeam_entitynotcompatible: "§cThe Entity you are trying to use is not compatible! Only Living entities or Armor Stands can be used!"
+admin_command_jointeam_entity_added: "§aEntity to join team added!"
 
 sign_successfully_created: "§aSign was successfully created!"
 sign_can_not_been_created: "§cSign couldn't be created! Please check the name of arena!"
@@ -137,6 +140,7 @@ help_bw_admin_team_color: "/bw admin <arena> team color <team> <color> - §eChan
 help_bw_admin_team_maxplayers: "/bw admin <arena> team maxplayers <team> <max players> - §eChange max team players"
 help_bw_admin_team_spawn: "/bw admin <arena> team spawn <team> - §eSets team spawn to your position"
 help_bw_admin_team_bed: "/bw admin <arena> team bed <team> - §eSets team bed to your target position"
+help_bw_admin_jointeam: "/bw admin <arena> jointeam <team> - §eSets the ability to connect to a team using an entity"
 help_bw_admin_spawner_add: "/bw admin <arena> spawner add <bronze|gold|iron> - §eAdd item spawner to your position"
 help_bw_admin_spawner_reset: "/bw admin <arena> spawner reset - §eRemove all spawners"
 help_bw_admin_store_add: "/bw admin <arena> store add - §eAdd trading villager to your position"
