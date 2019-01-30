@@ -2,11 +2,9 @@ package misat11.bw.listener;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.Sound;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -46,6 +44,8 @@ import misat11.bw.game.GamePlayer;
 import misat11.bw.game.GameStatus;
 import misat11.bw.game.Team;
 import misat11.bw.utils.ArmorStandUtils;
+import misat11.bw.utils.Sounds;
+import misat11.bw.utils.SpawnEffects;
 import misat11.bw.utils.TeamJoinMetaDataValue;
 import misat11.bw.utils.TeamSelectorInventory;
 
@@ -55,7 +55,7 @@ import java.util.List;
 
 public class PlayerListener implements Listener {
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerDeath(PlayerDeathEvent event) {
 		final Player victim = (Player) event.getEntity();
 		if (Main.isPlayerInGame(victim)) {
@@ -64,6 +64,7 @@ public class PlayerListener implements Listener {
 			event.setKeepInventory(Main.getConfigurator().config.getBoolean("keep-inventory-on-death"));
 			if (game.getStatus() == GameStatus.RUNNING) {
 				CurrentTeam team = game.getPlayerTeam(gVictim);
+				SpawnEffects.spawnEffect(victim, "game-effects.kill");
 				if (!team.isBed) {
 					game.updateScoreboard();
 					gVictim.isSpectator = true;
@@ -76,7 +77,8 @@ public class PlayerListener implements Listener {
 					if (gKiller.getGame() == game) {
 						Main.depositPlayer(killer, Main.getVaultKillReward());
 						if (team.isDead()) {
-							killer.playSound(killer.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
+							SpawnEffects.spawnEffect(victim, "game-effects.teamkill");
+							Sounds.playSound(killer, killer.getLocation(), Main.getConfigurator().config.getString("sounds.on_team_kill"), Sounds.ENTITY_PLAYER_LEVELUP, 1, 1);
 						}
 					}
 				}
@@ -101,7 +103,7 @@ public class PlayerListener implements Listener {
 		}
 	}
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerRespawn(PlayerRespawnEvent event) {
 		if (Main.isPlayerInGame(event.getPlayer())) {
 			GamePlayer gPlayer = Main.getPlayerGameProfile(event.getPlayer());
@@ -113,6 +115,7 @@ public class PlayerListener implements Listener {
 				gPlayer.getGame().makeSpectator(gPlayer);
 			} else {
 				event.setRespawnLocation(gPlayer.getGame().getPlayerTeam(gPlayer).teamInfo.spawn);
+				SpawnEffects.spawnEffect(gPlayer.player, "game-effects.respawn");
 			}
 		}
 	}
@@ -162,7 +165,7 @@ public class PlayerListener implements Listener {
 		}
 	}
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onCommandExecuted(PlayerCommandPreprocessEvent event) {
 		if (event.isCancelled())
 			return;
@@ -196,7 +199,7 @@ public class PlayerListener implements Listener {
 		}
 	}
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGH)
 	public void onHunger(FoodLevelChangeEvent event) {
 		if (!(event.getEntity() instanceof Player) || event.isCancelled()) {
 			return;
@@ -230,7 +233,7 @@ public class PlayerListener implements Listener {
 		}
 	}
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onDamage(EntityDamageEvent event) {
 		if (event.isCancelled() || !(event.getEntity() instanceof Player)) {
 			return;
@@ -424,7 +427,7 @@ public class PlayerListener implements Listener {
 		}
 	}
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGH)
 	public void onInteractAtEntity(PlayerInteractAtEntityEvent event) {
 		if (event.isCancelled()) {
 			return;

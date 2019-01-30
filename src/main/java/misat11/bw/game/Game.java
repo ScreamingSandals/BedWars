@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -37,6 +38,7 @@ import misat11.bw.utils.GameSign;
 import misat11.bw.utils.IRegion;
 import misat11.bw.utils.Region;
 import misat11.bw.utils.Sounds;
+import misat11.bw.utils.SpawnEffects;
 import misat11.bw.utils.TeamSelectorInventory;
 import misat11.bw.utils.Title;
 
@@ -261,7 +263,8 @@ public class Game {
 								i18n("bed_is_destroyed_subtitle", false));
 						player.player.sendMessage(i18n("bed_is_destroyed").replace("%team%",
 								team.teamInfo.color.chatColor + team.teamInfo.name));
-						Sounds.ENTITY_ENDER_DRAGON_GROWL.playSound(player.player, player.player.getLocation(), 1, 1);
+						SpawnEffects.spawnEffect(player.player, "game-effects.beddestroy");
+						Sounds.playSound(player.player, player.player.getLocation(), Main.getConfigurator().config.getString("sounds.on_bed_destroyed"), Sounds.ENTITY_ENDER_DRAGON_GROWL, 1, 1);
 					}
 				}
 			}
@@ -299,6 +302,7 @@ public class Game {
 		updateSigns();
 
 		player.player.teleport(lobbySpawn);
+		SpawnEffects.spawnEffect(player.player, "game-effects.lobbyjoin");
 		String message = i18n("join").replace("%name%", player.player.getDisplayName())
 				.replace("%players%", Integer.toString(players.size()))
 				.replaceAll("%maxplayers%", Integer.toString(calculatedMaxPlayers));
@@ -334,16 +338,28 @@ public class Game {
 		}
 		updateSigns();
 
+		if (status == GameStatus.WAITING) {
+			SpawnEffects.spawnEffect(player.player, "game-effects.lobbyleave");
+		}
+		
 		String message = i18n("leave").replace("%name%", player.player.getDisplayName())
 				.replace("%players%", Integer.toString(players.size()))
 				.replaceAll("%maxplayers%", Integer.toString(calculatedMaxPlayers));
 		bossbar.removePlayer(player.player);
 		player.player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
-		if (status == GameStatus.RUNNING) {
+		if (status == GameStatus.RUNNING || status == GameStatus.WAITING) {
 			CurrentTeam team = getPlayerTeam(player);
 			if (team != null) {
 				team.players.remove(player);
-				updateScoreboard();
+				if (status == GameStatus.WAITING) {
+					team.getScoreboardTeam().removeEntry(player.player.getName());
+					if (team.players.isEmpty()) {
+						teamsInGame.remove(team);
+						team.getScoreboardTeam().unregister();
+					}
+				} else {
+					updateScoreboard();
+				}
 			}
 		}
 		for (GamePlayer p : players)
@@ -647,6 +663,8 @@ public class Game {
 								if (getPlayerTeam(player) == t) {
 									Title.send(player.player, i18n("you_won", false), subtitle);
 									Main.depositPlayer(player.player, Main.getVaultWinReward());
+									
+									SpawnEffects.spawnEffect(player.player, "game-effects.end");
 								} else {
 									Title.send(player.player, i18n("you_lost", false), subtitle);
 								}
@@ -691,7 +709,7 @@ public class Game {
 			if (countdown <= 10 && countdown >= 1) {
 				for (GamePlayer player : players) {
 					Title.send(player.player, ChatColor.YELLOW + Integer.toString(countdown), "");
-					Sounds.UI_BUTTON_CLICK.playSound(player.player, player.player.getLocation(), 1, 1);
+					Sounds.playSound(player.player, player.player.getLocation(), Main.getConfigurator().config.getString("sounds.on_countdown"), Sounds.UI_BUTTON_CLICK, 1, 1);
 				}
 			}
 			if (countdown == 0) {
@@ -713,12 +731,13 @@ public class Game {
 				for (GamePlayer player : players) {
 					CurrentTeam team = getPlayerTeam(player);
 					player.player.getInventory().clear();
-					Sounds.ENTITY_PLAYER_LEVELUP.playSound(player.player, player.player.getLocation(), 1, 1);
+					Sounds.playSound(player.player, player.player.getLocation(), Main.getConfigurator().config.getString("sounds.on_game_start"), Sounds.ENTITY_PLAYER_LEVELUP, 1, 1);
 					Title.send(player.player, gameStartTitle, gameStartSubtitle);
 					if (team == null) {
 						makeSpectator(player);
 					} else {
 						player.player.teleport(team.teamInfo.spawn);
+						SpawnEffects.spawnEffect(player.player, "game-effects.start");
 					}
 				}
 				return;

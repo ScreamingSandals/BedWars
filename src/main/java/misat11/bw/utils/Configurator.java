@@ -3,6 +3,7 @@ package misat11.bw.utils;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -130,6 +131,18 @@ public class Configurator {
 		checkOrSetConfig(modify, "vault.reward.kill", 5);
 		checkOrSetConfig(modify, "vault.reward.win", 20);
 		checkOrSetConfig(modify, "resources", new ArrayList<>());
+		checkOrSetConfig(modify, "sounds.on_bed_destroyed", "ENTITY_ENDER_DRAGON_GROWL");
+		checkOrSetConfig(modify, "sounds.on_countdown", "UI_BUTTON_CLICK");
+		checkOrSetConfig(modify, "sounds.on_game_start", "ENTITY_PLAYER_LEVELUP");
+		checkOrSetConfig(modify, "sounds.on_team_kill", "ENTITY_PLAYER_LEVELUP");
+		checkOrSetConfig(modify, "game-effects.end", new HashMap<String, Object>());
+		checkOrSetConfig(modify, "game-effects.start", new HashMap<String, Object>());
+		checkOrSetConfig(modify, "game-effects.kill", new HashMap<String, Object>());
+		checkOrSetConfig(modify, "game-effects.teamkill", new HashMap<String, Object>());
+		checkOrSetConfig(modify, "game-effects.lobbyjoin", new HashMap<String, Object>());
+		checkOrSetConfig(modify, "game-effects.lobbyleave", new HashMap<String, Object>());
+		checkOrSetConfig(modify, "game-effects.respawn", new HashMap<String, Object>());
+		checkOrSetConfig(modify, "game-effects.beddestroy", new HashMap<String, Object>());
 		checkOrSetConfig(modify, "version", 2);
 		if (modify.get()) {
 			try {

@@ -69,6 +69,43 @@ resources:
     translate: "resource_gold"
     color: GOLD
     spread: 1.0
+    
+        
+# Sounds (look to github src/main/java/misat11/bw/utils/Sounds.java for possible values)
+sounds:
+  on_bed_destroyed: ENTITY_ENDER_DRAGON_GROWL
+  on_countdown: UI_BUTTON_CLICK
+  on_game_start: ENTITY_PLAYER_LEVELUP
+  on_team_kill: ENTITY_PLAYER_LEVELUP
+  
+  
+# Game effects
+game-effects:
+  end: 
+    type: Firework
+    power: 1
+    effects:
+    - ==: org.bukkit.FireworkEffect
+      type: BALL
+      fade-colors:
+      - ==: org.bukkit.Color
+        RED: 255
+        GREEN: 255
+        BLUE: 255
+      colors:
+      - ==: org.bukkit.Color
+        RED: 255
+        GREEN: 255
+        BLUE: 255
+      trail: false
+      flicker: false
+  start: {}
+  kill: {}
+  teamkill: {}
+  lobbyjoin: {}
+  lobbyleave: {}
+  respawn: {}
+  beddestroy: {}
   
 # Do not edit this!!!
 version: 2

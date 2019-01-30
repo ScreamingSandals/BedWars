@@ -1018,10 +1018,21 @@ public enum Sounds {
             try {
                 cached = org.bukkit.Sound.valueOf(name);
                 player.playSound(location, cached, volume, pitch);
-                break;
+                return;
             } catch (IllegalArgumentException ignore2) {
 
             }
         }
+    }
+    
+    public static void playSound(Player player, Location location, String name, Sounds fallbackSound, float volume, float pitch) {
+    	try {
+    		Sounds sound = Sounds.valueOf(name.toUpperCase());
+    		sound.playSound(player, location, volume, pitch);
+    	} catch (IllegalArgumentException | NullPointerException ex) {
+    		if (fallbackSound != null) {
+    			fallbackSound.playSound(player, location, volume, pitch);
+    		}
+    	}
     }
 }
