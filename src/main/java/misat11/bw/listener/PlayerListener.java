@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -62,7 +63,11 @@ public class PlayerListener implements Listener {
 			GamePlayer gVictim = Main.getPlayerGameProfile(victim);
 			Game game = gVictim.getGame();
 			event.setKeepInventory(Main.getConfigurator().config.getBoolean("keep-inventory-on-death"));
+			event.setDroppedExp(0);
 			if (game.getStatus() == GameStatus.RUNNING) {
+				if (!Main.getConfigurator().config.getBoolean("player-drops")) {
+					event.getDrops().clear();
+				}
 				CurrentTeam team = game.getPlayerTeam(gVictim);
 				SpawnEffects.spawnEffect(victim, "game-effects.kill");
 				if (!team.isBed) {
@@ -298,7 +303,7 @@ public class PlayerListener implements Listener {
 
 	@EventHandler
 	public void onPlayerIteract(PlayerInteractEvent event) {
-		if (event.isCancelled()) {
+		if (event.isCancelled() && event.getAction() != Action.RIGHT_CLICK_AIR) {
 			return;
 		}
 
@@ -306,22 +311,24 @@ public class PlayerListener implements Listener {
 		if (Main.isPlayerInGame(player)) {
 			GamePlayer gPlayer = Main.getPlayerGameProfile(player);
 			Game game = gPlayer.getGame();
-			if (game.getStatus() == GameStatus.WAITING || gPlayer.isSpectator) {
-				event.setCancelled(true);
-				if (event.getMaterial() == Material
-						.valueOf(Main.getConfigurator().config.getString("items.jointeam", "COMPASS"))) {
-					if (game.getStatus() == GameStatus.WAITING) {
-						TeamSelectorInventory inv = game.getTeamSelectorInventory();
-						if (inv == null) {
-							return;
+			if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+				if (game.getStatus() == GameStatus.WAITING || gPlayer.isSpectator) {
+					event.setCancelled(true);
+					if (event.getMaterial() == Material
+							.valueOf(Main.getConfigurator().config.getString("items.jointeam", "COMPASS"))) {
+						if (game.getStatus() == GameStatus.WAITING) {
+							TeamSelectorInventory inv = game.getTeamSelectorInventory();
+							if (inv == null) {
+								return;
+							}
+							inv.openForPlayer(player);
+						} else if (gPlayer.isSpectator) {
+							// TODO
 						}
-						inv.openForPlayer(player);
-					} else if (gPlayer.isSpectator) {
-						// TODO
+					} else if (event.getMaterial() == Material
+							.valueOf(Main.getConfigurator().config.getString("items.leavegame", "SLIME_BALL"))) {
+						game.leaveFromGame(player);
 					}
-				} else if (event.getMaterial() == Material
-						.valueOf(Main.getConfigurator().config.getString("items.leavegame", "SLIME_BALL"))) {
-					game.leaveFromGame(player);
 				}
 			}
 		}
@@ -413,17 +420,6 @@ public class PlayerListener implements Listener {
 					}
 				}
 			}
-		}
-	}
-
-	@EventHandler
-	public void onPlayerDrop(PlayerDropItemEvent event) {
-		if (event.isCancelled()) {
-			return;
-		}
-
-		if (Main.isPlayerInGame(event.getPlayer())) {
-			Main.getPlayerGameProfile(event.getPlayer()).getGame().putDroppedItem(event.getItemDrop());
 		}
 	}
 

@@ -4,7 +4,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -46,6 +45,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -77,8 +77,6 @@ public class Game {
 	private TeamSelectorInventory teamSelectorInventory;
 	private Scoreboard gameScoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
 	private BossBar bossbar;
-	
-	private List<Entity> spawnedEntities = new ArrayList<Entity>();
 
 	private Game() {
 
@@ -264,15 +262,13 @@ public class Game {
 						player.player.sendMessage(i18n("bed_is_destroyed").replace("%team%",
 								team.teamInfo.color.chatColor + team.teamInfo.name));
 						SpawnEffects.spawnEffect(player.player, "game-effects.beddestroy");
-						Sounds.playSound(player.player, player.player.getLocation(), Main.getConfigurator().config.getString("sounds.on_bed_destroyed"), Sounds.ENTITY_ENDER_DRAGON_GROWL, 1, 1);
+						Sounds.playSound(player.player, player.player.getLocation(),
+								Main.getConfigurator().config.getString("sounds.on_bed_destroyed"),
+								Sounds.ENTITY_ENDER_DRAGON_GROWL, 1, 1);
 					}
 				}
 			}
 		}
-	}
-	
-	public void putDroppedItem(Item item) {
-		spawnedEntities.add(item);
 	}
 
 	public void joinPlayer(GamePlayer player) {
@@ -341,11 +337,12 @@ public class Game {
 		if (status == GameStatus.WAITING) {
 			SpawnEffects.spawnEffect(player.player, "game-effects.lobbyleave");
 		}
-		
+
 		String message = i18n("leave").replace("%name%", player.player.getDisplayName())
 				.replace("%players%", Integer.toString(players.size()))
 				.replaceAll("%maxplayers%", Integer.toString(calculatedMaxPlayers));
 		bossbar.removePlayer(player.player);
+		player.player.sendMessage(message);
 		player.player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
 		if (status == GameStatus.RUNNING || status == GameStatus.WAITING) {
 			CurrentTeam team = getPlayerTeam(player);
@@ -374,6 +371,9 @@ public class Game {
 				cancelTask();
 			}
 			countdown = -1;
+			if (gameScoreboard.getObjective("display") != null) {
+				gameScoreboard.getObjective("display").unregister();
+			}
 			gameScoreboard.clearSlot(DisplaySlot.SIDEBAR);
 			for (CurrentTeam team : teamsInGame) {
 				team.getScoreboardTeam().unregister();
@@ -630,12 +630,6 @@ public class Game {
 				for (GameStore store : gameStore) {
 					store.forceKill();
 				}
-				for (Entity entity : spawnedEntities) {
-					if (!entity.isDead()) {
-						entity.remove();
-					}
-				}
-				spawnedEntities.clear();
 				String message = i18n("game_end");
 				for (GamePlayer player : (List<GamePlayer>) ((ArrayList<GamePlayer>) players).clone()) {
 					player.player.sendMessage(message);
@@ -663,7 +657,7 @@ public class Game {
 								if (getPlayerTeam(player) == t) {
 									Title.send(player.player, i18n("you_won", false), subtitle);
 									Main.depositPlayer(player.player, Main.getVaultWinReward());
-									
+
 									SpawnEffects.spawnEffect(player.player, "game-effects.end");
 								} else {
 									Title.send(player.player, i18n("you_lost", false), subtitle);
@@ -684,7 +678,6 @@ public class Game {
 						Location loc = spawner.loc.clone().add(0, 1, 0);
 						Item item = loc.getWorld().dropItem(loc, type.getStack());
 						item.setPickupDelay(0);
-						spawnedEntities.add(item);
 					}
 				}
 			}
@@ -703,13 +696,18 @@ public class Game {
 				}
 				updateSigns();
 			}
+			updateLobbyScoreboard();
 			if (teamsInGame.size() <= 1) {
+				// Countdown reset
+				countdown = pauseCountdown;
 				return;
 			}
 			if (countdown <= 10 && countdown >= 1) {
 				for (GamePlayer player : players) {
 					Title.send(player.player, ChatColor.YELLOW + Integer.toString(countdown), "");
-					Sounds.playSound(player.player, player.player.getLocation(), Main.getConfigurator().config.getString("sounds.on_countdown"), Sounds.UI_BUTTON_CLICK, 1, 1);
+					Sounds.playSound(player.player, player.player.getLocation(),
+							Main.getConfigurator().config.getString("sounds.on_countdown"), Sounds.UI_BUTTON_CLICK, 1,
+							1);
 				}
 			}
 			if (countdown == 0) {
@@ -731,7 +729,9 @@ public class Game {
 				for (GamePlayer player : players) {
 					CurrentTeam team = getPlayerTeam(player);
 					player.player.getInventory().clear();
-					Sounds.playSound(player.player, player.player.getLocation(), Main.getConfigurator().config.getString("sounds.on_game_start"), Sounds.ENTITY_PLAYER_LEVELUP, 1, 1);
+					Sounds.playSound(player.player, player.player.getLocation(),
+							Main.getConfigurator().config.getString("sounds.on_game_start"),
+							Sounds.ENTITY_PLAYER_LEVELUP, 1, 1);
 					Title.send(player.player, gameStartTitle, gameStartSubtitle);
 					if (team == null) {
 						makeSpectator(player);
@@ -746,6 +746,16 @@ public class Game {
 			countdown--;
 		} else if (this.status == GameStatus.REBUILDING) {
 			region.regen();
+			// Remove items
+			Iterator<Entity> entityIterator = this.world.getEntities().iterator();
+			while (entityIterator.hasNext()) {
+				Entity e = entityIterator.next();
+				if (GameCreator.isInArea(e.getLocation(), pos1, pos2)) {
+					if (e instanceof Item) {
+						e.remove();
+					}
+				}
+			}
 			this.status = this.afterRebuild;
 			updateSigns();
 			cancelTask();
@@ -801,6 +811,7 @@ public class Game {
 							scoreboardTeam = gameScoreboard.registerNewTeam(team.name);
 						}
 						scoreboardTeam.setColor(team.color.chatColor);
+						scoreboardTeam.setAllowFriendlyFire(Main.getConfigurator().config.getBoolean("friendlyfire"));
 
 						current.setScoreboardTeam(scoreboardTeam);
 					}
@@ -842,15 +853,15 @@ public class Game {
 					stackMeta.setDisplayName(team.color.chatColor + team.name);
 					stack.setItemMeta(stackMeta);
 					playerGameProfile.player.getInventory().setItem(1, stack);
-					
+
 					if (Main.getConfigurator().config.getBoolean("in-lobby-colored-leather-by-team")) {
 						ItemStack chestplate = new ItemStack(Material.LEATHER_CHESTPLATE);
-					    LeatherArmorMeta meta = (LeatherArmorMeta) chestplate.getItemMeta();
-					    meta.setColor(team.color.leatherColor);
-					    chestplate.setItemMeta(meta);
-					    playerGameProfile.player.getInventory().setChestplate(chestplate);
+						LeatherArmorMeta meta = (LeatherArmorMeta) chestplate.getItemMeta();
+						meta.setColor(team.color.leatherColor);
+						chestplate.setItemMeta(meta);
+						playerGameProfile.player.getInventory().setChestplate(chestplate);
 					}
-					
+
 					if (!teamsInGame.contains(current)) {
 						teamsInGame.add(current);
 					}
@@ -986,6 +997,55 @@ public class Game {
 				}
 			}
 		}
+	}
+
+	private void updateLobbyScoreboard() {
+		if (status != GameStatus.WAITING || !Main.getConfigurator().config.getBoolean("lobby-scoreboard.enabled")) {
+			return;
+		}
+		gameScoreboard.clearSlot(DisplaySlot.SIDEBAR);
+
+		Objective obj = gameScoreboard.getObjective("lobby");
+		if (obj != null) {
+			obj.unregister();
+		}
+
+		obj = gameScoreboard.registerNewObjective("lobby", "dummy");
+		obj.setDisplaySlot(DisplaySlot.SIDEBAR);
+		obj.setDisplayName(this.formatLobbyScoreboardString(
+				Main.getConfigurator().config.getString("lobby-scoreboard.title", "§eBEDWARS")));
+
+		List<String> rows = Main.getConfigurator().config.getStringList("lobby-scoreboard.content");
+		int rowMax = rows.size();
+		if (rows == null || rows.isEmpty()) {
+			return;
+		}
+
+		for (String row : rows) {
+			if (row.trim().equals("")) {
+				for (int i = 0; i <= rowMax; i++) {
+					row = row + " ";
+				}
+			}
+
+			Score score = obj.getScore(this.formatLobbyScoreboardString(row));
+			score.setScore(rowMax);
+			rowMax--;
+		}
+
+		for (GamePlayer player : players) {
+			player.player.setScoreboard(gameScoreboard);
+		}
+	}
+
+	private String formatLobbyScoreboardString(String str) {
+		String finalStr = str;
+
+		finalStr = finalStr.replace("%arena%", name);
+		finalStr = finalStr.replace("%players%", String.valueOf(players.size()));
+		finalStr = finalStr.replace("%maxplayers%", String.valueOf(calculatedMaxPlayers));
+
+		return finalStr;
 	}
 
 }

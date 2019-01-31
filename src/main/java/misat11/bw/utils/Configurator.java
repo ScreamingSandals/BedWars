@@ -3,6 +3,7 @@ package misat11.bw.utils;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -113,6 +114,8 @@ public class Configurator {
 		checkOrSetConfig(modify, "keep-inventory-on-death", false);
 		checkOrSetConfig(modify, "in-lobby-colored-leather-by-team", true);
 		checkOrSetConfig(modify, "jointeam-entity-show-name", true);
+		checkOrSetConfig(modify, "friendlyfire", false);
+		checkOrSetConfig(modify, "player-drops", true);
 		checkOrSetConfig(modify, "allowed-commands", new ArrayList<>());
 		checkOrSetConfig(modify, "farmBlocks.enable", true);
 		checkOrSetConfig(modify, "farmBlocks.blocks", new ArrayList<>());
@@ -143,6 +146,9 @@ public class Configurator {
 		checkOrSetConfig(modify, "game-effects.lobbyleave", new HashMap<String, Object>());
 		checkOrSetConfig(modify, "game-effects.respawn", new HashMap<String, Object>());
 		checkOrSetConfig(modify, "game-effects.beddestroy", new HashMap<String, Object>());
+		checkOrSetConfig(modify, "lobby-scoreboard.enabled", true);
+		checkOrSetConfig(modify, "lobby-scoreboard.title", "§eBEDWARS");
+		checkOrSetConfig(modify, "lobby-scoreboard.content", Arrays.asList(" ", "§fMap: §2%arena%", "§fPlayers: §2%players%§f/§2%maxplayers%", " ", "§fWaiting ...", " "));
 		checkOrSetConfig(modify, "version", 2);
 		if (modify.get()) {
 			try {

@@ -5,6 +5,8 @@ allow-crafting: false
 keep-inventory-on-death: false
 in-lobby-colored-leather-by-team: true
 jointeam-entity-show-name: true
+friendlyfire: false
+player-drops: true
 
 # Commands whitelist
 allowed-commands:
@@ -106,6 +108,20 @@ game-effects:
   lobbyleave: {}
   respawn: {}
   beddestroy: {}
+  
+# Lobby scoreboard
+lobby-scoreboard:
+  enabled: true
+
+  title: "§eBEDWARS"
+  
+  content:
+    - " "
+    - "§fMap: §2%arena%"
+    - "§fPlayers: §2%players%§f/§2%maxplayers%"
+    - " "
+    - "§fWaiting ..."
+    - " "
   
 # Do not edit this!!!
 version: 2
