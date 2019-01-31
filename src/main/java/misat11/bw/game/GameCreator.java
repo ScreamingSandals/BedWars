@@ -346,6 +346,7 @@ public class GameCreator {
 		loc.setPitch(0);
 		ItemSpawnerType spawnerType = Main.getSpawnerType(type);
 		if (spawnerType != null) {
+			game.getSpawners().add(new ItemSpawner(loc, spawnerType));
 			return i18n("admin_command_spawner_added").replace("%resource%", spawnerType.getItemName())
 					.replace("%x%", Integer.toString(loc.getBlockX())).replace("%y%", Integer.toString(loc.getBlockY()))
 					.replace("%z%", Integer.toString(loc.getBlockZ()));
