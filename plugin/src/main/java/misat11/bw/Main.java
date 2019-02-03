@@ -19,6 +19,7 @@ import misat11.bw.game.Game;
 import misat11.bw.game.GamePlayer;
 import misat11.bw.game.GameStatus;
 import misat11.bw.game.ItemSpawnerType;
+import misat11.bw.listener.Player19Listener;
 import misat11.bw.listener.PlayerListener;
 import misat11.bw.listener.SignListener;
 import misat11.bw.listener.VillagerListener;
@@ -258,6 +259,9 @@ public class Main extends JavaPlugin {
 		getCommand("bw").setExecutor(cmd);
 		getCommand("bw").setTabCompleter(cmd);
 		getServer().getPluginManager().registerEvents(new PlayerListener(), this);
+		if (versionNumber >= 109) {
+			getServer().getPluginManager().registerEvents(new Player19Listener(), this);
+		}
 		getServer().getPluginManager().registerEvents(new VillagerListener(), this);
 		getServer().getPluginManager().registerEvents(new SignListener(), this);
 		getServer().getPluginManager().registerEvents(new WorldListener(), this);

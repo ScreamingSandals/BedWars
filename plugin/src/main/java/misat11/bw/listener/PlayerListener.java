@@ -31,7 +31,6 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
-import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -345,17 +344,6 @@ public class PlayerListener implements Listener {
 			GamePlayer gPlayer = Main.getPlayerGameProfile(player);
 			Game game = gPlayer.getGame();
 			if (game.getStatus() == GameStatus.WAITING || gPlayer.isSpectator) {
-				event.setCancelled(true);
-			}
-		}
-	}
-
-	@EventHandler
-	public void onPlayerSwapHandItems(PlayerSwapHandItemsEvent event) {
-		Player player = event.getPlayer();
-		if (Main.isPlayerInGame(player)) {
-			GamePlayer gPlayer = Main.getPlayerGameProfile(player);
-			if (gPlayer.getGame().getStatus() == GameStatus.WAITING) {
 				event.setCancelled(true);
 			}
 		}
