@@ -1,4 +1,4 @@
-package misat11.bw.game;
+package misat11.bw.api;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -15,6 +15,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import static misat11.bw.utils.I18n.i18n;
 
 import misat11.bw.Main;
+import misat11.bw.api.events.BedwarsOpenTeamSelectionEvent;
 import misat11.bw.game.Game;
 import misat11.bw.game.Team;
 import misat11.bw.game.TeamColor;
@@ -83,6 +84,13 @@ public class TeamSelectorInventory implements Listener {
 	}
 
 	public void openForPlayer(Player player) {
+		BedwarsOpenTeamSelectionEvent event = new BedwarsOpenTeamSelectionEvent(this.game, player);
+		Main.getInstance().getServer().getPluginManager().callEvent(event);
+		
+		if (event.isCancelled()) {
+			return;
+		}
+		
 		player.openInventory(inv);
 	}
 

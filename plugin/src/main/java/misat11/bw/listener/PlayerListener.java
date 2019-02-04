@@ -36,12 +36,13 @@ import org.bukkit.metadata.MetadataValue;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import misat11.bw.Main;
+import misat11.bw.api.GameStatus;
+import misat11.bw.api.events.BedwarsPlayerKilledEvent;
 import misat11.bw.commands.BwCommand;
 import misat11.bw.game.CurrentTeam;
 import misat11.bw.game.Game;
 import misat11.bw.game.GameCreator;
 import misat11.bw.game.GamePlayer;
-import misat11.bw.game.GameStatus;
 import misat11.bw.game.Team;
 import misat11.bw.utils.ArmorStandUtils;
 import misat11.bw.utils.Sounds;
@@ -86,6 +87,8 @@ public class PlayerListener implements Listener {
 						}
 					}
 				}
+				BedwarsPlayerKilledEvent killedEvent = new BedwarsPlayerKilledEvent(game, victim, Main.isPlayerInGame(killer) ? killer : null);
+				Main.getInstance().getServer().getPluginManager().callEvent(killedEvent);
 			}
 			if (Main.isSpigot()) {
 				new BukkitRunnable() {
@@ -93,6 +96,13 @@ public class PlayerListener implements Listener {
 						victim.spigot().respawn();
 					}
 				}.runTaskLater(Main.getInstance(), 20L);
+			} else if (Main.isNMS()) {
+				try {
+					Class clazz = Class.forName("misat11.bw.nms." + Main.getNMSVersion().toLowerCase() + ".PerformRespawnRunnable");
+					((BukkitRunnable) clazz.getDeclaredConstructor(Player.class).newInstance(victim)).runTaskLater(Main.getInstance(), 20L);
+				} catch (Throwable tr) {
+					
+				}
 			}
 		}
 	}

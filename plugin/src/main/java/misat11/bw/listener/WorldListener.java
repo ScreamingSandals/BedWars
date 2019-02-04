@@ -9,9 +9,9 @@ import org.bukkit.event.block.BlockFormEvent;
 import org.bukkit.event.world.StructureGrowEvent;
 
 import misat11.bw.Main;
+import misat11.bw.api.GameStatus;
 import misat11.bw.game.Game;
 import misat11.bw.game.GameCreator;
-import misat11.bw.game.GameStatus;
 
 public class WorldListener implements Listener {
 	@EventHandler

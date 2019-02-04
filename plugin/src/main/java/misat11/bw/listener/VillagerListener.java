@@ -6,8 +6,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 
 import misat11.bw.Main;
+import misat11.bw.api.GameStatus;
+import misat11.bw.api.events.BedwarsOpenShopEvent;
 import misat11.bw.game.GamePlayer;
-import misat11.bw.game.GameStatus;
 
 public class VillagerListener implements Listener {
 
@@ -17,6 +18,13 @@ public class VillagerListener implements Listener {
 			GamePlayer gPlayer = Main.getPlayerGameProfile(event.getPlayer());
 			if (event.getRightClicked().getType() == EntityType.VILLAGER && !gPlayer.isSpectator && gPlayer.getGame().getStatus() == GameStatus.RUNNING) {
 				event.setCancelled(true);
+				BedwarsOpenShopEvent openShopEvent = new BedwarsOpenShopEvent(gPlayer.getGame(), event.getPlayer(), event.getRightClicked());
+				Main.getInstance().getServer().getPluginManager().callEvent(openShopEvent);
+				
+				if (openShopEvent.isCancelled()) {
+					return;
+				}
+				
 				Main.openStore(event.getPlayer());
 			}
 		}

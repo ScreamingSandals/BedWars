@@ -6,8 +6,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 
 import misat11.bw.Main;
+import misat11.bw.api.GameStatus;
 import misat11.bw.game.GamePlayer;
-import misat11.bw.game.GameStatus;
 
 public class Player19Listener implements Listener {
 	@EventHandler

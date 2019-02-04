@@ -14,6 +14,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import misat11.bw.Main;
+import misat11.bw.api.GameStore;
 import misat11.bw.utils.BedUtils;
 import misat11.bw.utils.TeamJoinMetaDataValue;
 
@@ -59,6 +60,10 @@ public class GameCreator {
 		} else if (action.equalsIgnoreCase("time")) {
 			if (args.length >= 1) {
 				response = setGameTime(Integer.parseInt(args[0]));
+			}
+		} else if (action.equalsIgnoreCase("minplayers")) {
+			if (args.length >= 1) {
+				response = setMinPlayers(Integer.parseInt(args[0]));
 			}
 		} else if (action.equalsIgnoreCase("team")) {
 			if (args.length >= 2) {
@@ -152,6 +157,14 @@ public class GameCreator {
 		}
 		player.sendMessage(response);
 		return isArenaSaved;
+	}
+
+	private String setMinPlayers(int minPlayers) {
+		if (minPlayers < 2) {
+			return i18n("admin_command_invalid_min_players");
+		}
+		game.setMinPlayers(minPlayers);
+		return i18n("admin_command_min_players_set").replace("%min%", Integer.toString(minPlayers));
 	}
 
 	private String addTeamJoinEntity(final Player player, String name) {

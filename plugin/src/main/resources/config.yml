@@ -7,6 +7,8 @@ in-lobby-colored-leather-by-team: true
 jointeam-entity-show-name: true
 friendlyfire: false
 player-drops: true
+join-randomly-after-lobby-timeout: false
+spectator-gm3: false
 
 # Commands whitelist
 allowed-commands:

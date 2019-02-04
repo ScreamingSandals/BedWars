@@ -14,10 +14,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import misat11.bw.api.GameStatus;
 import misat11.bw.commands.BwCommand;
 import misat11.bw.game.Game;
 import misat11.bw.game.GamePlayer;
-import misat11.bw.game.GameStatus;
 import misat11.bw.game.ItemSpawnerType;
 import misat11.bw.listener.Player19Listener;
 import misat11.bw.listener.PlayerListener;
@@ -36,8 +36,8 @@ import static misat11.bw.utils.I18n.i18n;
 
 public class Main extends JavaPlugin {
 	private static Main instance;
-	private String version;
-	private boolean isSpigot, snapshot, isVault, isLegacy;
+	private String version, nmsVersion;
+	private boolean isSpigot, snapshot, isVault, isLegacy, isNMS;
 	private Economy econ = null;
 	private HashMap<String, Game> games = new HashMap<String, Game>();
 	private HashMap<Player, GamePlayer> playersInGame = new HashMap<Player, GamePlayer>();
@@ -73,6 +73,14 @@ public class Main extends JavaPlugin {
 	
 	public static boolean isLegacy() {
 		return instance.isLegacy;
+	}
+	
+	public static boolean isNMS() {
+		return instance.isNMS;
+	}
+	
+	public static String getNMSVersion() {
+		return isNMS() ? instance.nmsVersion : null;
 	}
 	
 	public static void depositPlayer(Player player, double coins) {
@@ -225,6 +233,18 @@ public class Main extends JavaPlugin {
 		version = this.getDescription().getVersion();
 		snapshot = version.toLowerCase().contains("pre");
 
+		try {
+			Class.forName("org.bukkit.craftbukkit.Main");
+			isNMS = true;
+		} catch (ClassNotFoundException e) {
+			isNMS = false;
+		}
+		
+		if (isNMS) {
+			String packName = Bukkit.getServer().getClass().getPackage().getName();
+			nmsVersion = packName.substring(packName.lastIndexOf('.') + 1);
+		}
+		
 		try {
 			Package spigotPackage = Package.getPackage("org.spigotmc");
 			isSpigot = (spigotPackage != null);

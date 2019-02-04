@@ -2,7 +2,7 @@ package misat11.bw.game;
 
 import org.bukkit.Location;
 
-public class Team implements Cloneable {
+public class Team implements Cloneable, misat11.bw.api.Team {
 	public TeamColor color;
 	public String name;
 	public Location bed;
@@ -17,5 +17,30 @@ public class Team implements Cloneable {
 		t.spawn = this.spawn;
 		t.maxPlayers = this.maxPlayers;
 		return t;
+	}
+
+	@Override
+	public String getName() {
+		return name;
+	}
+
+	@Override
+	public misat11.bw.api.TeamColor getColor() {
+		return color.toApiColor();
+	}
+
+	@Override
+	public Location getTeamSpawn() {
+		return spawn;
+	}
+
+	@Override
+	public Location getTargetBlock() {
+		return bed;
+	}
+
+	@Override
+	public int getMaxPlayers() {
+		return maxPlayers;
 	}
 }

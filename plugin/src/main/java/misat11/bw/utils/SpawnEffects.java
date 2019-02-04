@@ -1,5 +1,6 @@
 package misat11.bw.utils;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.bukkit.Effect;
@@ -22,8 +23,24 @@ public class SpawnEffects {
 				if (type.equalsIgnoreCase("Particle")) {
 					if (effect.isSet("value")) {
 						String value = effect.getString("value");
-						Particle particle = Particle.valueOf(value.toUpperCase());
-						player.getWorld().spawnParticle(particle, player.getLocation(), 1);
+						try {
+							Particle particle = Particle.valueOf(value.toUpperCase());
+							player.getWorld().spawnParticle(particle, player.getLocation(), 1);
+						} catch (Throwable e) {
+							if (Main.isNMS()) {
+								try {
+									Class clazz = Class.forName("misat11.bw.nms." + Main.getNMSVersion().toLowerCase()
+											+ ".ParticleSpawner");
+									clazz.getDeclaredMethod("spawnParticle", List.class, String.class, float.class,
+											float.class, float.class)
+											.invoke(null, Arrays.asList(player) /* TODO: all players */, value,
+													player.getLocation().getX(), player.getLocation().getY(),
+													player.getLocation().getZ());
+								} catch (Throwable e2) {
+
+								}
+							}
+						}
 					}
 				} else if (type.equalsIgnoreCase("Effect")) {
 					if (effect.isSet("value")) {
@@ -32,7 +49,8 @@ public class SpawnEffects {
 						player.getWorld().playEffect(player.getLocation(), particle, 1);
 					}
 				} else if (type.equalsIgnoreCase("Firework")) {
-					Firework firework = (Firework) player.getWorld().spawnEntity(player.getLocation(), EntityType.FIREWORK);
+					Firework firework = (Firework) player.getWorld().spawnEntity(player.getLocation(),
+							EntityType.FIREWORK);
 					FireworkMeta meta = firework.getFireworkMeta();
 					int power = effect.getInt("power", 1);
 					meta.setPower(power);
@@ -42,7 +60,7 @@ public class SpawnEffects {
 					}
 					firework.setFireworkMeta(meta);
 				}
-			} catch (Exception e) {
+			} catch (Throwable e) {
 			}
 		}
 	}

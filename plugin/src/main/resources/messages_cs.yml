@@ -100,6 +100,9 @@ admin_command_click_right_on_entity_to_set_join: "§aNyní klikněte pravým tla
 admin_command_jointeam_entitynotcompatible: "§cEntita, kterou se pokoušíte použít není kompatibilní! Lze použít pouze entity typu Living (žijící nebo ArmorStand)!"
 admin_command_jointeam_entity_added: "§aEntita pro připojení k týmu přidána!"
 
+admin_command_invalid_min_players: "§cMinimum hráčů musí být hodnota 2 a vyšší!"
+admin_command_min_players_set: "§aÚspěšně nastaveno minimum hráčů na hodnotu §7%min%§a!"
+
 sign_successfully_created: "§aCedule byla úspěšně vytvořena!"
 sign_can_not_been_created: "§cCeduli se nepodařilo vytvorit! Zkontrolujte si prosím název arény!"
 sign_can_not_been_destroyed: "§cNemáš patřičná oprávnění pro zničení této cedule!"
@@ -130,6 +133,7 @@ help_bw_admin_spec: "/bw admin <aréna> spec - §eNastaví spawn pozorovatelů n
 help_bw_admin_pos1: "/bw admin <aréna> pos1 - §eNastaví krajní bod arény na tvojí pozici"
 help_bw_admin_pos2: "/bw admin <aréna> pos2 - §eNastaví protilehlý krajní bod arény na tvojí pozici"
 help_bw_admin_pausecountdown: "/bw admin <aréna> pausecountdown <sekundy> - §eNastaví dobu trvání pauzy před začátkem hry"
+help_bw_admin_minplayers: "/bw admin <aréna> minplayers <minimum> - §eNastaví minimum hráčů potřebných pro start hry"
 help_bw_admin_time: "/bw admin <aréna> time <sekundy> - §eNastaví dobu trvání hry"
 help_bw_admin_team_add: "/bw admin <aréna> team add <tým> <barva> <max hráčů> - §ePřidá tým do hry"
 help_bw_admin_team_color: "/bw admin <aréna> team color <tým> <barva> - §eZmění týmu barvu"

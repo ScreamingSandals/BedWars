@@ -2,6 +2,7 @@ package misat11.bw.game;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -32,6 +33,20 @@ import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
 
 import misat11.bw.Main;
+import misat11.bw.api.GameStatus;
+import misat11.bw.api.GameStore;
+import misat11.bw.api.RunningTeam;
+import misat11.bw.api.events.BedwarsGameEndEvent;
+import misat11.bw.api.events.BedwarsGameStartEvent;
+import misat11.bw.api.events.BedwarsGameStartedEvent;
+import misat11.bw.api.events.BedwarsPlayerJoinEvent;
+import misat11.bw.api.events.BedwarsPlayerJoinTeamEvent;
+import misat11.bw.api.events.BedwarsPlayerJoinedEvent;
+import misat11.bw.api.events.BedwarsPlayerLeaveEvent;
+import misat11.bw.api.events.BedwarsPostRebuildingEvent;
+import misat11.bw.api.events.BedwarsPreRebuildingEvent;
+import misat11.bw.api.events.BedwarsResourceSpawnEvent;
+import misat11.bw.api.events.BedwarsTargetBlockDestroyedEvent;
 import misat11.bw.legacy.LegacyRegion;
 import misat11.bw.utils.GameSign;
 import misat11.bw.utils.IRegion;
@@ -51,7 +66,7 @@ import java.util.Map;
 
 import static misat11.bw.utils.I18n.i18n;
 
-public class Game {
+public class Game implements misat11.bw.api.Game {
 
 	private String name;
 	private Location pos1;
@@ -62,6 +77,7 @@ public class Game {
 	private List<ItemSpawner> spawners = new ArrayList<ItemSpawner>();
 	private int pauseCountdown;
 	private int gameTime;
+	private int minPlayers;
 	private List<GamePlayer> players = new ArrayList<GamePlayer>();
 	private World world;
 	private List<GameStore> gameStore = new ArrayList<GameStore>();
@@ -130,6 +146,14 @@ public class Game {
 
 	public void setPauseCountdown(int pauseCountdown) {
 		this.pauseCountdown = pauseCountdown;
+	}
+
+	public int getMinPlayers() {
+		return minPlayers;
+	}
+
+	public void setMinPlayers(int minPlayers) {
+		this.minPlayers = minPlayers;
 	}
 
 	public int countPlayers() {
@@ -226,7 +250,7 @@ public class Game {
 				return false;
 			}
 			event.setDropItems(false);
-			bedDestroyed(loc);
+			bedDestroyed(loc, player.player);
 			region.putOriginalBlock(block.getLocation(), block.getState());
 			if (block.getLocation().equals(loc)) {
 				Block neighbor = region.getBedNeighbor(block);
@@ -248,7 +272,7 @@ public class Game {
 		return null;
 	}
 
-	protected void bedDestroyed(Location loc) {
+	protected void bedDestroyed(Location loc, Player broker) {
 		if (status == GameStatus.RUNNING) {
 			for (CurrentTeam team : teamsInGame) {
 				if (team.teamInfo.bed.equals(loc)) {
@@ -266,6 +290,9 @@ public class Game {
 								Main.getConfigurator().config.getString("sounds.on_bed_destroyed"),
 								Sounds.ENTITY_ENDER_DRAGON_GROWL, 1, 1);
 					}
+					BedwarsTargetBlockDestroyedEvent targetBlockDestroyed = new BedwarsTargetBlockDestroyedEvent(this,
+							broker, team);
+					Main.getInstance().getServer().getPluginManager().callEvent(targetBlockDestroyed);
 				}
 			}
 		}
@@ -291,6 +318,19 @@ public class Game {
 			player.changeGame(null);
 			return;
 		}
+
+		BedwarsPlayerJoinEvent joinEvent = new BedwarsPlayerJoinEvent(this, player.player);
+		Main.getInstance().getServer().getPluginManager().callEvent(joinEvent);
+
+		if (joinEvent.isCancelled()) {
+			String message = joinEvent.getCancelMessage();
+			if (message != null && !message.equals("")) {
+				player.player.sendMessage(message);
+			}
+			player.changeGame(null);
+			return;
+		}
+
 		boolean isEmpty = players.isEmpty();
 		if (!players.contains(player)) {
 			players.add(player);
@@ -323,12 +363,19 @@ public class Game {
 		} else {
 			bossbar.addPlayer(player.player);
 		}
+
+		BedwarsPlayerJoinedEvent joinedEvent = new BedwarsPlayerJoinedEvent(this, null, player.player);
+		Main.getInstance().getServer().getPluginManager().callEvent(joinedEvent);
 	}
 
 	public void leavePlayer(GamePlayer player) {
 		if (status == GameStatus.DISABLED) {
 			return;
 		}
+
+		BedwarsPlayerLeaveEvent event = new BedwarsPlayerLeaveEvent(this, player.player, getPlayerTeam(player));
+		Main.getInstance().getServer().getPluginManager().callEvent(event);
+
 		if (players.contains(player)) {
 			players.remove(player);
 		}
@@ -410,6 +457,7 @@ public class Game {
 		game.specSpawn = readLocationFromString(game.world, configMap.getString("specSpawn"));
 		game.lobbySpawn = readLocationFromString(Bukkit.getWorld(configMap.getString("lobbySpawnWorld")),
 				configMap.getString("lobbySpawn"));
+		game.minPlayers = configMap.getInt("minPlayers", 2);
 		if (configMap.isSet("spawners")) {
 			List<Map<String, String>> spawners = (List<Map<String, String>>) configMap.getList("spawners");
 			for (Map<String, String> spawner : spawners) {
@@ -501,6 +549,7 @@ public class Game {
 		configMap.set("specSpawn", setLocationToString(specSpawn));
 		configMap.set("lobbySpawn", setLocationToString(lobbySpawn));
 		configMap.set("lobbySpawnWorld", lobbySpawn.getWorld().getName());
+		configMap.set("minPlayers", minPlayers);
 		List<Map<String, String>> nS = new ArrayList<Map<String, String>>();
 		for (ItemSpawner spawner : spawners) {
 			Map<String, String> spawnerMap = new HashMap<String, String>();
@@ -537,6 +586,7 @@ public class Game {
 		game.name = name;
 		game.pauseCountdown = 60;
 		game.gameTime = 3600;
+		game.minPlayers = 2;
 
 		return game;
 	}
@@ -605,13 +655,30 @@ public class Game {
 		}
 	}
 
+	private String getRandomTeam() {
+		int size = teams.size();
+		int random = getRandomNumberInRange(0, size - 1);
+		return teams.get(random).name;
+	}
+
+	private static int getRandomNumberInRange(int min, int max) {
+		if (min >= max) {
+			throw new IllegalArgumentException("max must be greater than min");
+		}
+		return (int) (Math.random() * ((max - min) + 1)) + min;
+	}
+
 	public void makeSpectator(GamePlayer player) {
 		player.isSpectator = true;
 		player.player.teleport(specSpawn);
 		player.player.setAllowFlight(true);
 		player.player.setFlying(true);
-		player.player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1));
-		player.player.setCollidable(false);
+		if (Main.getConfigurator().config.getBoolean("spectator-gm3")) {
+			player.player.setGameMode(GameMode.SPECTATOR);
+		} else {
+			player.player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1));
+			// FIX this not working: player.player.setCollidable(false);
+		}
 
 		ItemStack leave = new ItemStack(
 				Material.valueOf(Main.getConfigurator().config.getString("items.leavegame", "SLIME_BALL")));
@@ -635,6 +702,9 @@ public class Game {
 					player.player.sendMessage(message);
 					player.changeGame(null);
 				}
+
+				BedwarsGameEndEvent event = new BedwarsGameEndEvent(this);
+				Main.getInstance().getServer().getPluginManager().callEvent(event);
 				return;
 			}
 			int runningTeams = 0;
@@ -675,8 +745,17 @@ public class Game {
 					ItemSpawnerType type = spawner.type;
 					int cycle = type.getInterval();
 					if ((countdown % cycle) == 0) {
+
+						BedwarsResourceSpawnEvent resourceSpawnEvent = new BedwarsResourceSpawnEvent(this, spawner.loc,
+								type.getStack());
+						Main.getInstance().getServer().getPluginManager().callEvent(resourceSpawnEvent);
+
+						if (resourceSpawnEvent.isCancelled()) {
+							return;
+						}
+
 						Location loc = spawner.loc.clone().add(0, 1, 0);
-						Item item = loc.getWorld().dropItem(loc, type.getStack());
+						Item item = loc.getWorld().dropItem(loc, resourceSpawnEvent.getResource());
 						item.setPickupDelay(0);
 					}
 				}
@@ -697,7 +776,7 @@ public class Game {
 				updateSigns();
 			}
 			updateLobbyScoreboard();
-			if (teamsInGame.size() <= 1) {
+			if (teamsInGame.size() <= 1 || players.size() < minPlayers) {
 				// Countdown reset
 				countdown = pauseCountdown;
 				return;
@@ -711,6 +790,24 @@ public class Game {
 				}
 			}
 			if (countdown == 0) {
+				BedwarsGameStartEvent event = new BedwarsGameStartEvent(this);
+				Main.getInstance().getServer().getPluginManager().callEvent(event);
+
+				if (event.isCancelled()) {
+					// reset timer
+					countdown = pauseCountdown;
+					return;
+				}
+				
+				if (Main.getConfigurator().config.getBoolean("join-randomly-after-lobby-timeout")) {
+					// TODO: make this working correctly
+					for (GamePlayer player : players) {
+						if (getPlayerTeam(player) == null) {
+							selectTeam(player, getRandomTeam());
+						}
+					}
+				}
+
 				this.status = GameStatus.RUNNING;
 				this.countdown = this.gameTime;
 				bossbar.setTitle(i18n("bossbar_running", false));
@@ -740,11 +837,17 @@ public class Game {
 						SpawnEffects.spawnEffect(player.player, "game-effects.start");
 					}
 				}
+
+				BedwarsGameStartedEvent startedEvent = new BedwarsGameStartedEvent(this);
+				Main.getInstance().getServer().getPluginManager().callEvent(startedEvent);
 				return;
 			}
 			bossbar.setProgress((double) countdown / (double) pauseCountdown);
 			countdown--;
 		} else if (this.status == GameStatus.REBUILDING) {
+			BedwarsPreRebuildingEvent preRebuildingEvent = new BedwarsPreRebuildingEvent(this);
+			Main.getInstance().getServer().getPluginManager().callEvent(preRebuildingEvent);
+
 			region.regen();
 			// Remove items
 			Iterator<Entity> entityIterator = this.world.getEntities().iterator();
@@ -756,6 +859,10 @@ public class Game {
 					}
 				}
 			}
+
+			BedwarsPostRebuildingEvent postRebuildingEvent = new BedwarsPostRebuildingEvent(this);
+			Main.getInstance().getServer().getPluginManager().callEvent(postRebuildingEvent);
+
 			this.status = this.afterRebuild;
 			updateSigns();
 			cancelTask();
@@ -804,6 +911,16 @@ public class Game {
 							break;
 						}
 					}
+					CurrentTeam cur = getPlayerTeam(playerGameProfile);
+
+					BedwarsPlayerJoinTeamEvent event = new BedwarsPlayerJoinTeamEvent(current, playerGameProfile.player,
+							cur);
+					Main.getInstance().getServer().getPluginManager().callEvent(event);
+
+					if (event.isCancelled()) {
+						return;
+					}
+
 					if (current == null) {
 						current = new CurrentTeam(team);
 						org.bukkit.scoreboard.Team scoreboardTeam = gameScoreboard.getTeam(team.name);
@@ -815,7 +932,6 @@ public class Game {
 
 						current.setScoreboardTeam(scoreboardTeam);
 					}
-					CurrentTeam cur = getPlayerTeam(playerGameProfile);
 					if (cur == current) {
 						playerGameProfile.player.sendMessage(
 								i18n("team_already_selected").replace("%team%", team.color.chatColor + team.name)
@@ -1046,6 +1162,76 @@ public class Game {
 		finalStr = finalStr.replace("%maxplayers%", String.valueOf(calculatedMaxPlayers));
 
 		return finalStr;
+	}
+
+	@Override
+	public void selectPlayerTeam(Player player, misat11.bw.api.Team team) {
+		if (!Main.isPlayerInGame(player)) {
+			return;
+		}
+		GamePlayer profile = Main.getPlayerGameProfile(player);
+		if (profile.getGame() != this) {
+			return;
+		}
+
+		selectTeam(profile, team.getName());
+	}
+
+	@Override
+	public World getGameWorld() {
+		return world;
+	}
+
+	@Override
+	public Location getSpectatorSpawn() {
+		return specSpawn;
+	}
+
+	@Override
+	public int countConnectedPlayers() {
+		return players.size();
+	}
+
+	@Override
+	public List<Player> getConnectedPlayers() {
+		List<Player> playerList = new ArrayList<Player>();
+		for (GamePlayer player : players) {
+			playerList.add(player.player);
+		}
+		return playerList;
+	}
+
+	@Override
+	public List<misat11.bw.api.Team> getAvailableTeams() {
+		return new ArrayList<misat11.bw.api.Team>(teams);
+	}
+
+	@Override
+	public List<RunningTeam> getRunningTeams() {
+		return new ArrayList<misat11.bw.api.RunningTeam>(teamsInGame);
+	}
+
+	@Override
+	public RunningTeam getTeamOfPlayer(Player player) {
+		if (!Main.isPlayerInGame(player)) {
+			return null;
+		}
+		return getPlayerTeam(Main.getPlayerGameProfile(player));
+	}
+
+	@Override
+	public boolean isLocationInArena(Location location) {
+		return GameCreator.isInArea(location, pos1, pos2);
+	}
+
+	@Override
+	public World getLobbyWorld() {
+		return lobbySpawn.getWorld();
+	}
+
+	@Override
+	public int getLobbyCountdown() {
+		return pauseCountdown;
 	}
 
 }

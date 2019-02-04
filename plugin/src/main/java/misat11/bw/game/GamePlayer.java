@@ -36,6 +36,7 @@ public class GamePlayer {
 			this.game.leavePlayer(this);
 			this.game = game;
 			this.isSpectator = false;
+			this.clean();
 			this.game.joinPlayer(this);
 		}
 	}

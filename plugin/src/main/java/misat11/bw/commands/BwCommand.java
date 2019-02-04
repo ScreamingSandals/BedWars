@@ -161,12 +161,14 @@ public class BwCommand implements CommandExecutor, TabCompleter {
 						StringUtil.copyPartialMatches(args[1], arenas, completionList);
 					} else if (args.length == 3) {
 						List<String> cmds = Arrays.asList("add", "lobby", "spec", "pos1", "pos2", "pausecountdown",
-								"team", "spawner", "time", "store", "save", "remove", "edit", "jointeam");
+								"team", "spawner", "time", "store", "save", "remove", "edit", "jointeam", "minplayers");
 						StringUtil.copyPartialMatches(args[2], cmds, completionList);
 					} else if (args[2].equalsIgnoreCase("pausecountdown") && args.length == 4) {
 						StringUtil.copyPartialMatches(args[3], Arrays.asList("30", "60"), completionList);
 					} else if (args[2].equalsIgnoreCase("time") && args.length == 4) {
 						StringUtil.copyPartialMatches(args[3], Arrays.asList("180", "300", "600"), completionList);
+					} else if (args[2].equalsIgnoreCase("minplayers") && args.length == 4) {
+						StringUtil.copyPartialMatches(args[3], Arrays.asList("2", "3", "4", "5"), completionList);
 					} else if (args[2].equalsIgnoreCase("store")) {
 						if (args.length == 4) {
 							List<String> cmds = Arrays.asList("add", "remove");
@@ -238,6 +240,7 @@ public class BwCommand implements CommandExecutor, TabCompleter {
 			player.sendMessage(i18n("help_bw_admin_pos1", false));
 			player.sendMessage(i18n("help_bw_admin_pos2", false));
 			player.sendMessage(i18n("help_bw_admin_pausecountdown", false));
+			player.sendMessage(i18n("help_bw_admin_minplayers", false));
 			player.sendMessage(i18n("help_bw_admin_time", false));
 			player.sendMessage(i18n("help_bw_admin_team_add", false));
 			player.sendMessage(i18n("help_bw_admin_team_color", false));

@@ -51,4 +51,12 @@ public enum TeamColor {
 		}
 		
 	}
+	
+	public misat11.bw.api.TeamColor toApiColor(){
+		return misat11.bw.api.TeamColor.valueOf(this.name());
+	}
+	
+	public static TeamColor fromApiColor(misat11.bw.api.TeamColor color) {
+		return TeamColor.valueOf(color.name());
+	}
 }

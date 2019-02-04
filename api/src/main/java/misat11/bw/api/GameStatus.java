@@ -1,4 +1,4 @@
-package misat11.bw.game;
+package misat11.bw.api;
 
 public enum GameStatus {
 	WAITING,

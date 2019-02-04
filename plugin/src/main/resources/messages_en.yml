@@ -104,6 +104,9 @@ admin_command_click_right_on_entity_to_set_join: "§aNow use right click on the 
 admin_command_jointeam_entitynotcompatible: "§cThe Entity you are trying to use is not compatible! Only Living entities or Armor Stands can be used!"
 admin_command_jointeam_entity_added: "§aEntity to join team added!"
 
+admin_command_invalid_min_players: "§cMinimum players must be 2 or higher!"
+admin_command_min_players_set: "§aSuccessfully set minimum players to §7%min%§a!"
+
 sign_successfully_created: "§aSign was successfully created!"
 sign_can_not_been_created: "§cSign couldn't be created! Please check the name of arena!"
 sign_can_not_been_destroyed: "§cYou don't have permissions to destroy this sign!"
@@ -134,6 +137,7 @@ help_bw_admin_spec: "/bw admin <arena> spec - §eSets specatator's position to y
 help_bw_admin_pos1: "/bw admin <arena> pos1 - §eSets the extreme point of the arena to your position"
 help_bw_admin_pos2: "/bw admin <arena> pos2 - §eSets the second extreme point of the arena to your position"
 help_bw_admin_pausecountdown: "/bw admin <arena> pausecountdown <seconds> - §eSets the pause duration before game starts"
+help_bw_admin_minplayers: "/bw admin <arena> minplayers <minimum> - §eSets minimum of players needed to start the game"
 help_bw_admin_time: "/bw admin <arena> time <seconds> - §eSets the game duration"
 help_bw_admin_team_add: "/bw admin <arena> team add <team> <color> <max players> - §eAdd team to game"
 help_bw_admin_team_color: "/bw admin <arena> team color <team> <color> - §eChange team color"

@@ -116,6 +116,8 @@ public class Configurator {
 		checkOrSetConfig(modify, "jointeam-entity-show-name", true);
 		checkOrSetConfig(modify, "friendlyfire", false);
 		checkOrSetConfig(modify, "player-drops", true);
+		checkOrSetConfig(modify, "join-randomly-after-lobby-timeout", false);
+		checkOrSetConfig(modify, "spectator-gm3", false);
 		checkOrSetConfig(modify, "allowed-commands", new ArrayList<>());
 		checkOrSetConfig(modify, "farmBlocks.enable", true);
 		checkOrSetConfig(modify, "farmBlocks.blocks", new ArrayList<>());
