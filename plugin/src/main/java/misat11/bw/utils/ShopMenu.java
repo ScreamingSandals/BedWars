@@ -168,7 +168,7 @@ public class ShopMenu implements Listener {
 					player.getInventory().addItem(newItem);
 					player.sendMessage(i18n("buy_succes").replace("%item%",
 							newItem.getItemMeta().hasDisplayName() ? newItem.getItemMeta().getDisplayName() : newItem.getType().name().toLowerCase()));
-					player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1, 1);
+					Sounds.playSound(player, player.getLocation(), Main.getConfigurator().config.getString("sounds.on_item_buy"), Sounds.ENTITY_ITEM_PICKUP, 1, 1);
 				} else {
 					player.sendMessage(i18n("buy_failed").replace("%item%",
 							newItem.getItemMeta().hasDisplayName() ? newItem.getItemMeta().getDisplayName() : newItem.getType().name().toLowerCase()));

@@ -7,10 +7,10 @@ import java.util.List;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Bed;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
+import org.bukkit.material.Bed;
 import org.bukkit.material.Directional;
 import org.bukkit.material.Lever;
 import org.bukkit.material.MaterialData;
@@ -119,12 +119,12 @@ public class LegacyRegion implements IRegion {
 
 	@Override
 	public boolean isBedBlock(BlockState block) {
-		return block instanceof Bed;
+		return block.getData() instanceof Bed;
 	}
 
 	@Override
 	public boolean isBedHead(BlockState block) {
-		return isBedBlock(block) && ((org.bukkit.material.Bed) block.getData()).isHeadOfBed();
+		return isBedBlock(block) && ((Bed) block.getData()).isHeadOfBed();
 	}
 
 	@Override

@@ -140,6 +140,7 @@ public class Configurator {
 		checkOrSetConfig(modify, "sounds.on_countdown", "UI_BUTTON_CLICK");
 		checkOrSetConfig(modify, "sounds.on_game_start", "ENTITY_PLAYER_LEVELUP");
 		checkOrSetConfig(modify, "sounds.on_team_kill", "ENTITY_PLAYER_LEVELUP");
+		checkOrSetConfig(modify, "sounds.on_item_buy", "ENTITY_ITEM_PICKUP");
 		checkOrSetConfig(modify, "game-effects.end", new HashMap<String, Object>());
 		checkOrSetConfig(modify, "game-effects.start", new HashMap<String, Object>());
 		checkOrSetConfig(modify, "game-effects.kill", new HashMap<String, Object>());

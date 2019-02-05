@@ -89,7 +89,6 @@ public class GamePlayer {
 		player.updateInventory();
 		player.teleport(oldinventory.left);
 		player.resetPlayerTime();
-		player.setCollidable(true);
 	}
 
 	public void clean() {

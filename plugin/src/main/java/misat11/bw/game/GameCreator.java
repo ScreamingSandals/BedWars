@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.bukkit.Chunk;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.type.Bed;
 import org.bukkit.block.data.type.Bed.Part;
@@ -84,7 +86,7 @@ public class GameCreator {
 				} else if (args[0].equalsIgnoreCase("spawn")) {
 					response = setTeamSpawn(args[1], player.getLocation());
 				} else if (args[0].equalsIgnoreCase("bed")) {
-					response = setTeamBed(args[1], player.getTargetBlock(null, 5));
+					response = setTeamBed(args[1], player.getTargetBlock((Set<Material>) null, 5));
 				}
 			}
 		} else if (action.equalsIgnoreCase("spawner")) {

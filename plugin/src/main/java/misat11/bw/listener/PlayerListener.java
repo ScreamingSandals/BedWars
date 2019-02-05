@@ -15,7 +15,6 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
@@ -29,6 +28,7 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
@@ -69,7 +69,7 @@ public class PlayerListener implements Listener {
 					event.getDrops().clear();
 				}
 				CurrentTeam team = game.getPlayerTeam(gVictim);
-				SpawnEffects.spawnEffect(victim, "game-effects.kill");
+				SpawnEffects.spawnEffect(game, victim, "game-effects.kill");
 				if (!team.isBed) {
 					game.updateScoreboard();
 					gVictim.isSpectator = true;
@@ -82,7 +82,7 @@ public class PlayerListener implements Listener {
 					if (gKiller.getGame() == game) {
 						Main.depositPlayer(killer, Main.getVaultKillReward());
 						if (team.isDead()) {
-							SpawnEffects.spawnEffect(victim, "game-effects.teamkill");
+							SpawnEffects.spawnEffect(game, victim, "game-effects.teamkill");
 							Sounds.playSound(killer, killer.getLocation(), Main.getConfigurator().config.getString("sounds.on_team_kill"), Sounds.ENTITY_PLAYER_LEVELUP, 1, 1);
 						}
 					}
@@ -129,7 +129,7 @@ public class PlayerListener implements Listener {
 				gPlayer.getGame().makeSpectator(gPlayer);
 			} else {
 				event.setRespawnLocation(gPlayer.getGame().getPlayerTeam(gPlayer).teamInfo.spawn);
-				SpawnEffects.spawnEffect(gPlayer.player, "game-effects.respawn");
+				SpawnEffects.spawnEffect(gPlayer.getGame(), gPlayer.player, "game-effects.respawn");
 			}
 		}
 	}
@@ -360,12 +360,12 @@ public class PlayerListener implements Listener {
 	}
 
 	@EventHandler
-	public void onPickup(EntityPickupItemEvent event) {
-		if (event.isCancelled() || !(event.getEntity() instanceof Player)) {
+	public void onPickup(PlayerPickupItemEvent event) {
+		if (event.isCancelled()) {
 			return;
 		}
 
-		Player player = (Player) event.getEntity();
+		Player player = event.getPlayer();
 		if (Main.isPlayerInGame(player)) {
 			GamePlayer gPlayer = Main.getPlayerGameProfile(player);
 			Game game = gPlayer.getGame();

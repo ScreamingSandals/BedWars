@@ -81,6 +81,7 @@ sounds:
   on_countdown: UI_BUTTON_CLICK
   on_game_start: ENTITY_PLAYER_LEVELUP
   on_team_kill: ENTITY_PLAYER_LEVELUP
+  on_item_buy: ENTITY_ITEM_PICKUP
   
   
 # Game effects

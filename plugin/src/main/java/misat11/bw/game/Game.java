@@ -249,7 +249,11 @@ public class Game implements misat11.bw.api.Game {
 			if (getPlayerTeam(player).teamInfo.bed.equals(loc)) {
 				return false;
 			}
-			event.setDropItems(false);
+			try {
+				event.setDropItems(false);
+			} catch (Throwable tr) {
+				block.setType(Material.AIR);
+			}
 			bedDestroyed(loc, player.player);
 			region.putOriginalBlock(block.getLocation(), block.getState());
 			if (block.getLocation().equals(loc)) {
@@ -285,7 +289,7 @@ public class Game implements misat11.bw.api.Game {
 								i18n("bed_is_destroyed_subtitle", false));
 						player.player.sendMessage(i18n("bed_is_destroyed").replace("%team%",
 								team.teamInfo.color.chatColor + team.teamInfo.name));
-						SpawnEffects.spawnEffect(player.player, "game-effects.beddestroy");
+						SpawnEffects.spawnEffect(this, player.player, "game-effects.beddestroy");
 						Sounds.playSound(player.player, player.player.getLocation(),
 								Main.getConfigurator().config.getString("sounds.on_bed_destroyed"),
 								Sounds.ENTITY_ENDER_DRAGON_GROWL, 1, 1);
@@ -338,7 +342,7 @@ public class Game implements misat11.bw.api.Game {
 		updateSigns();
 
 		player.player.teleport(lobbySpawn);
-		SpawnEffects.spawnEffect(player.player, "game-effects.lobbyjoin");
+		SpawnEffects.spawnEffect(this, player.player, "game-effects.lobbyjoin");
 		String message = i18n("join").replace("%name%", player.player.getDisplayName())
 				.replace("%players%", Integer.toString(players.size()))
 				.replaceAll("%maxplayers%", Integer.toString(calculatedMaxPlayers));
@@ -361,7 +365,11 @@ public class Game implements misat11.bw.api.Game {
 		if (isEmpty) {
 			runTask();
 		} else {
-			bossbar.addPlayer(player.player);
+			try {
+				bossbar.addPlayer(player.player);
+			} catch (Throwable tr) {
+
+			}
 		}
 
 		BedwarsPlayerJoinedEvent joinedEvent = new BedwarsPlayerJoinedEvent(this, null, player.player);
@@ -382,13 +390,17 @@ public class Game implements misat11.bw.api.Game {
 		updateSigns();
 
 		if (status == GameStatus.WAITING) {
-			SpawnEffects.spawnEffect(player.player, "game-effects.lobbyleave");
+			SpawnEffects.spawnEffect(this, player.player, "game-effects.lobbyleave");
 		}
 
 		String message = i18n("leave").replace("%name%", player.player.getDisplayName())
 				.replace("%players%", Integer.toString(players.size()))
 				.replaceAll("%maxplayers%", Integer.toString(calculatedMaxPlayers));
-		bossbar.removePlayer(player.player);
+		try {
+			bossbar.removePlayer(player.player);
+		} catch (Throwable tr) {
+
+		}
 		player.player.sendMessage(message);
 		player.player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
 		if (status == GameStatus.RUNNING || status == GameStatus.WAITING) {
@@ -654,18 +666,55 @@ public class Game implements misat11.bw.api.Game {
 			}
 		}
 	}
-
-	private String getRandomTeam() {
-		int size = teams.size();
-		int random = getRandomNumberInRange(0, size - 1);
-		return teams.get(random).name;
+	
+	public CurrentTeam getCurrentTeamByTeam(Team team) {
+		for (CurrentTeam current : teamsInGame) {
+			if (current.teamInfo == team) {
+				return current;
+			}
+		}
+		return null;
+	}
+	
+	public Team getFirstTeamThatIsntInGame() {
+		for (Team team : teams) {
+			if (getCurrentTeamByTeam(team) == null) {
+				return team;
+			}
+		}
+		return null;
+	}
+	
+	public CurrentTeam getTeamWithLowestPlayers() {
+		CurrentTeam lowest = null;
+		
+		for (CurrentTeam team : teamsInGame) {
+			if (lowest == null) {
+				lowest = team;
+			}
+			
+			if (lowest.players.size() > team.players.size()) {
+				lowest = team;
+			}
+		}
+			
+		return lowest;
 	}
 
-	private static int getRandomNumberInRange(int min, int max) {
-		if (min >= max) {
-			throw new IllegalArgumentException("max must be greater than min");
+	public void joinRandomTeam(GamePlayer player) {
+		Team teamForJoin;
+		if (teamsInGame.size() < 2) {
+			teamForJoin = getFirstTeamThatIsntInGame();
+		} else {
+			CurrentTeam current = getTeamWithLowestPlayers();
+			if (current.players.size() >= current.getMaxPlayers()) {
+				teamForJoin = getFirstTeamThatIsntInGame();
+			} else {
+				teamForJoin = current.teamInfo;
+			}
 		}
-		return (int) (Math.random() * ((max - min) + 1)) + min;
+		
+		// TODO: complete this
 	}
 
 	public void makeSpectator(GamePlayer player) {
@@ -677,7 +726,6 @@ public class Game implements misat11.bw.api.Game {
 			player.player.setGameMode(GameMode.SPECTATOR);
 		} else {
 			player.player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1));
-			// FIX this not working: player.player.setCollidable(false);
 		}
 
 		ItemStack leave = new ItemStack(
@@ -728,7 +776,7 @@ public class Game implements misat11.bw.api.Game {
 									Title.send(player.player, i18n("you_won", false), subtitle);
 									Main.depositPlayer(player.player, Main.getVaultWinReward());
 
-									SpawnEffects.spawnEffect(player.player, "game-effects.end");
+									SpawnEffects.spawnEffect(this, player.player, "game-effects.end");
 								} else {
 									Title.send(player.player, i18n("you_lost", false), subtitle);
 								}
@@ -739,7 +787,11 @@ public class Game implements misat11.bw.api.Game {
 				}
 				countdown = 0;
 			} else {
-				bossbar.setProgress((double) countdown / (double) gameTime);
+				try {
+					bossbar.setProgress((double) countdown / (double) gameTime);
+				} catch (Throwable t) {
+
+				}
 				countdown--;
 				for (ItemSpawner spawner : spawners) {
 					ItemSpawnerType type = spawner.type;
@@ -764,11 +816,14 @@ public class Game implements misat11.bw.api.Game {
 			if (countdown == -1) {
 				countdown = pauseCountdown;
 				String title = i18n("bossbar_waiting", false);
-				bossbar = Bukkit.createBossBar(title, BarColor.RED, BarStyle.SEGMENTED_20);
-				bossbar.setColor(BarColor.YELLOW);
-				bossbar.setProgress(0);
-				for (GamePlayer p : players) {
-					bossbar.addPlayer(p.player);
+				try {
+					bossbar = Bukkit.createBossBar(title, BarColor.RED, BarStyle.SEGMENTED_20);
+					bossbar.setColor(BarColor.YELLOW);
+					bossbar.setProgress(0);
+					for (GamePlayer p : players) {
+						bossbar.addPlayer(p.player);
+					}
+				} catch (Throwable t) {
 				}
 				if (teamSelectorInventory == null) {
 					teamSelectorInventory = new TeamSelectorInventory(Main.getInstance(), this);
@@ -798,21 +853,24 @@ public class Game implements misat11.bw.api.Game {
 					countdown = pauseCountdown;
 					return;
 				}
-				
+
 				if (Main.getConfigurator().config.getBoolean("join-randomly-after-lobby-timeout")) {
-					// TODO: make this working correctly
 					for (GamePlayer player : players) {
 						if (getPlayerTeam(player) == null) {
-							selectTeam(player, getRandomTeam());
+							joinRandomTeam(player);
 						}
 					}
 				}
 
 				this.status = GameStatus.RUNNING;
 				this.countdown = this.gameTime;
-				bossbar.setTitle(i18n("bossbar_running", false));
-				bossbar.setProgress(0);
-				bossbar.setColor(BarColor.GREEN);
+				try {
+					bossbar.setTitle(i18n("bossbar_running", false));
+					bossbar.setProgress(0);
+					bossbar.setColor(BarColor.GREEN);
+				} catch (Throwable tr) {
+
+				}
 				if (teamSelectorInventory != null)
 					teamSelectorInventory.destroy();
 				teamSelectorInventory = null;
@@ -834,7 +892,7 @@ public class Game implements misat11.bw.api.Game {
 						makeSpectator(player);
 					} else {
 						player.player.teleport(team.teamInfo.spawn);
-						SpawnEffects.spawnEffect(player.player, "game-effects.start");
+						SpawnEffects.spawnEffect(this, player.player, "game-effects.start");
 					}
 				}
 
@@ -842,7 +900,11 @@ public class Game implements misat11.bw.api.Game {
 				Main.getInstance().getServer().getPluginManager().callEvent(startedEvent);
 				return;
 			}
-			bossbar.setProgress((double) countdown / (double) pauseCountdown);
+			try {
+				bossbar.setProgress((double) countdown / (double) pauseCountdown);
+			} catch (Throwable tr) {
+
+			}
 			countdown--;
 		} else if (this.status == GameStatus.REBUILDING) {
 			BedwarsPreRebuildingEvent preRebuildingEvent = new BedwarsPreRebuildingEvent(this);
@@ -927,7 +989,11 @@ public class Game implements misat11.bw.api.Game {
 						if (scoreboardTeam == null) {
 							scoreboardTeam = gameScoreboard.registerNewTeam(team.name);
 						}
-						scoreboardTeam.setColor(team.color.chatColor);
+						try {
+							scoreboardTeam.setColor(team.color.chatColor);
+						} catch (Throwable t) {
+							scoreboardTeam.setPrefix(team.color.chatColor.toString());
+						}
 						scoreboardTeam.setAllowFriendlyFire(Main.getConfigurator().config.getBoolean("friendlyfire"));
 
 						current.setScoreboardTeam(scoreboardTeam);
