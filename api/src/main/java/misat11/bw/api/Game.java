@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
 public interface Game {
@@ -67,5 +68,7 @@ public interface Game {
 	
 	public int getLobbyCountdown();
 	
+	public RunningTeam getTeamOfChest(Location location);
 	
+	public RunningTeam getTeamOfChest(Block block);
 }

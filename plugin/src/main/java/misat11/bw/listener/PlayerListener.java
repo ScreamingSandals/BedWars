@@ -2,11 +2,13 @@ package misat11.bw.listener;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Villager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -38,6 +40,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import misat11.bw.Main;
 import misat11.bw.api.GameStatus;
 import misat11.bw.api.events.BedwarsPlayerKilledEvent;
+import misat11.bw.api.events.BedwarsTeamChestOpenEvent;
 import misat11.bw.commands.BwCommand;
 import misat11.bw.game.CurrentTeam;
 import misat11.bw.game.Game;
@@ -249,7 +252,19 @@ public class PlayerListener implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onDamage(EntityDamageEvent event) {
-		if (event.isCancelled() || !(event.getEntity() instanceof Player)) {
+		if (event.isCancelled()) {
+			return;
+		}
+		
+		if (!(event.getEntity() instanceof Player)) {
+			
+			if (event instanceof EntityDamageByEntityEvent && event.getEntity() instanceof Villager && Main.getConfigurator().config.getBoolean("prevent-killing-villagers")) {
+				Game game = Main.getInGameEntity(event.getEntity());
+				if (game != null) {
+					event.setCancelled(true);
+				}
+			}
+			
 			return;
 		}
 
@@ -337,6 +352,37 @@ public class PlayerListener implements Listener {
 					} else if (event.getMaterial() == Material
 							.valueOf(Main.getConfigurator().config.getString("items.leavegame", "SLIME_BALL"))) {
 						game.leaveFromGame(player);
+					}
+				}
+				
+				if (game.getStatus() == GameStatus.RUNNING) {
+					if (event.getClickedBlock() != null) {
+						if (event.getClickedBlock().getType() == Material.ENDER_CHEST) {
+							event.setCancelled(true);
+							
+							Block chest = event.getClickedBlock();
+							CurrentTeam team = game.getTeamOfChest(chest);
+							
+							if (team == null) {
+								return;
+							}
+							
+							if (!team.players.contains(gPlayer)) {
+								player.sendMessage(i18n("team_chest_is_not_your"));
+								return;
+							}
+							
+							BedwarsTeamChestOpenEvent teamChestOpenEvent = new BedwarsTeamChestOpenEvent(game, player, team);
+							Main.getInstance().getServer().getPluginManager().callEvent(teamChestOpenEvent);
+							
+							if (teamChestOpenEvent.isCancelled()) {
+								return;
+							}
+							
+							player.openInventory(team.getTeamChestInventory());
+						} else if (event.getClickedBlock().getType() == Material.CHEST) {
+							game.addChestForFutureClear(event.getClickedBlock().getLocation());
+						}
 					}
 				}
 			}

@@ -118,6 +118,7 @@ public class Configurator {
 		checkOrSetConfig(modify, "player-drops", true);
 		checkOrSetConfig(modify, "join-randomly-after-lobby-timeout", false);
 		checkOrSetConfig(modify, "spectator-gm3", false);
+		checkOrSetConfig(modify, "prevent-killing-villagers", true);
 		checkOrSetConfig(modify, "allowed-commands", new ArrayList<>());
 		checkOrSetConfig(modify, "farmBlocks.enable", true);
 		checkOrSetConfig(modify, "farmBlocks.blocks", new ArrayList<>());

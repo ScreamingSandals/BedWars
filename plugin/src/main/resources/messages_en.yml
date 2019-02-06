@@ -126,6 +126,11 @@ sign_status_waiting_players: "§a%players%§8/§a%maxplayers%"
 
 list_header: "§aAvailible arenas:"
 
+team_chest: "§a§lTeam chest"
+team_chest_is_not_your: "§eThis team chest isn't your!"
+team_chest_placed: "§aNew team chest was placed!"
+team_chest_broken: "§cYour team chest was broken!"
+
 help_title: "BedWars %version% - Help"
 help_bw_join: "/bw join <arena> - §aJoin to arena"
 help_bw_leave: "/bw leave - §aLeave from arena"

@@ -3,16 +3,24 @@ package misat11.bw.game;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.Inventory;
 
 import misat11.bw.api.RunningTeam;
 import misat11.bw.api.TeamColor;
+
+import static misat11.bw.utils.I18n.i18n;
 
 public class CurrentTeam implements RunningTeam {
 	public final Team teamInfo;
 	public final List<GamePlayer> players = new ArrayList<>();
 	private org.bukkit.scoreboard.Team scoreboardTeam;
+	private Inventory chestInventory = Bukkit.createInventory(null, InventoryType.ENDER_CHEST, i18n("team_chest"));
+	private List<Block> chests = new ArrayList<Block>();
 
 	public boolean isBed = true;
 
@@ -88,5 +96,44 @@ public class CurrentTeam implements RunningTeam {
 	@Override
 	public boolean isTargetBlockExists() {
 		return isBed;
+	}
+
+	@Override
+	public void addTeamChest(Location location) {
+		addTeamChest(location.getBlock());
+	}
+
+	@Override
+	public void addTeamChest(Block block) {
+		if (!chests.contains(block)) {
+			chests.add(block);
+		}
+	}
+
+	@Override
+	public void removeTeamChest(Location location) {
+		removeTeamChest(location.getBlock());
+	}
+
+	@Override
+	public void removeTeamChest(Block block) {
+		if (chests.contains(block)) {
+			chests.remove(block);
+		}
+	}
+
+	@Override
+	public boolean isTeamChestRegistered(Location location) {
+		return isTeamChestRegistered(location.getBlock());
+	}
+
+	@Override
+	public boolean isTeamChestRegistered(Block block) {
+		return chests.contains(block);
+	}
+
+	@Override
+	public Inventory getTeamChestInventory() {
+		return chestInventory;
 	}
 }

@@ -8,6 +8,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
+import org.bukkit.block.Chest;
 import org.bukkit.block.Sign;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
@@ -19,6 +20,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Villager;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -93,6 +95,7 @@ public class Game implements misat11.bw.api.Game {
 	private TeamSelectorInventory teamSelectorInventory;
 	private Scoreboard gameScoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
 	private BossBar bossbar;
+	private List<Location> usedChests = new ArrayList<Location>();
 
 	private Game() {
 
@@ -221,6 +224,15 @@ public class Game implements misat11.bw.api.Game {
 			}
 		}
 		region.addBuildedDuringGame(block.getLocation());
+		
+		if (block.getType() == Material.ENDER_CHEST) {
+			CurrentTeam team = getPlayerTeam(player);
+			team.addTeamChest(block);
+			String message = i18n("team_chest_placed");
+			for (GamePlayer gp : team.players) {
+				gp.player.sendMessage(message);
+			}
+		}
 		return true;
 	}
 
@@ -239,6 +251,18 @@ public class Game implements misat11.bw.api.Game {
 		}
 		if (region.isBlockAddedDuringGame(block.getLocation())) {
 			region.removeBlockBuildedDuringGame(block.getLocation());
+			
+			if (block.getType() == Material.ENDER_CHEST) {
+				CurrentTeam team = getTeamOfChest(block);
+				if (team != null) {
+					team.removeTeamChest(block);
+					String message = i18n("team_chest_broken");
+					for (GamePlayer gp : team.players) {
+						gp.player.sendMessage(message);
+					}
+				}
+			}
+			
 			return true;
 		}
 		if (region.isBedBlock(block.getState())) {
@@ -439,7 +463,10 @@ public class Game implements misat11.bw.api.Game {
 			}
 			teamsInGame.clear();
 			for (GameStore store : gameStore) {
-				store.forceKill();
+				Villager villager = store.kill();
+				if (villager != null) {
+					Main.unregisterGameEntity(villager);
+				}
 			}
 		}
 	}
@@ -581,7 +608,7 @@ public class Game implements misat11.bw.api.Game {
 		if (!gameStore.isEmpty()) {
 			List<String> nL = new ArrayList<String>();
 			for (GameStore store : gameStore) {
-				nL.add(setLocationToString(store.loc));
+				nL.add(setLocationToString(store.getStoreLocation()));
 			}
 			configMap.set("stores", nL);
 		}
@@ -714,7 +741,90 @@ public class Game implements misat11.bw.api.Game {
 			}
 		}
 		
-		// TODO: complete this
+		if (teamForJoin == null) {
+			return;
+		}
+		
+		CurrentTeam current = null;
+		for (CurrentTeam t : teamsInGame) {
+			if (t.teamInfo == teamForJoin) {
+				current = t;
+				break;
+			}
+		}
+		CurrentTeam cur = getPlayerTeam(player);
+
+		BedwarsPlayerJoinTeamEvent event = new BedwarsPlayerJoinTeamEvent(current, player.player, cur);
+		Main.getInstance().getServer().getPluginManager().callEvent(event);
+
+		if (event.isCancelled()) {
+			return;
+		}
+
+		if (current == null) {
+			current = new CurrentTeam(teamForJoin);
+			org.bukkit.scoreboard.Team scoreboardTeam = gameScoreboard.getTeam(teamForJoin.name);
+			if (scoreboardTeam == null) {
+				scoreboardTeam = gameScoreboard.registerNewTeam(teamForJoin.name);
+			}
+			try {
+				scoreboardTeam.setColor(teamForJoin.color.chatColor);
+			} catch (Throwable t) {
+				scoreboardTeam.setPrefix(teamForJoin.color.chatColor.toString());
+			}
+			scoreboardTeam.setAllowFriendlyFire(Main.getConfigurator().config.getBoolean("friendlyfire"));
+
+			current.setScoreboardTeam(scoreboardTeam);
+		}
+		if (cur == current) {
+			player.player.sendMessage(
+					i18n("team_already_selected").replace("%team%", teamForJoin.color.chatColor + teamForJoin.name)
+							.replace("%players%", Integer.toString(current.players.size()))
+							.replaceAll("%maxplayers%", Integer.toString(current.teamInfo.maxPlayers)));
+			return;
+		}
+		if (current.players.size() >= current.teamInfo.maxPlayers) {
+			if (cur != null) {
+				player.player.sendMessage(i18n("team_is_full_you_are_staying")
+						.replace("%team%", teamForJoin.color.chatColor + teamForJoin.name)
+						.replace("%oldteam%", cur.teamInfo.color.chatColor + cur.teamInfo.name));
+			} else {
+				player.player.sendMessage(
+						i18n("team_is_full").replace("%team%", teamForJoin.color.chatColor + teamForJoin.name));
+			}
+			return;
+		}
+		if (cur != null) {
+			cur.players.remove(player);
+			cur.getScoreboardTeam().removeEntry(player.player.getName());
+			if (cur.players.isEmpty()) {
+				teamsInGame.remove(cur);
+				cur.getScoreboardTeam().unregister();
+			}
+		}
+		current.players.add(player);
+		current.getScoreboardTeam().addEntry(player.player.getName());
+		player.player
+				.sendMessage(i18n("team_selected").replace("%team%", teamForJoin.color.chatColor + teamForJoin.name)
+						.replace("%players%", Integer.toString(current.players.size()))
+						.replaceAll("%maxplayers%", Integer.toString(current.teamInfo.maxPlayers)));
+		ItemStack stack = TeamSelectorInventory.materializeColorToWool(teamForJoin.color);
+		ItemMeta stackMeta = stack.getItemMeta();
+		stackMeta.setDisplayName(teamForJoin.color.chatColor + teamForJoin.name);
+		stack.setItemMeta(stackMeta);
+		player.player.getInventory().setItem(1, stack);
+
+		if (Main.getConfigurator().config.getBoolean("in-lobby-colored-leather-by-team")) {
+			ItemStack chestplate = new ItemStack(Material.LEATHER_CHESTPLATE);
+			LeatherArmorMeta meta = (LeatherArmorMeta) chestplate.getItemMeta();
+			meta.setColor(teamForJoin.color.leatherColor);
+			chestplate.setItemMeta(meta);
+			player.player.getInventory().setChestplate(chestplate);
+		}
+
+		if (!teamsInGame.contains(current)) {
+			teamsInGame.add(current);
+		}
 	}
 
 	public void makeSpectator(GamePlayer player) {
@@ -743,7 +853,10 @@ public class Game implements misat11.bw.api.Game {
 			if (countdown == 0) {
 				teamsInGame.clear();
 				for (GameStore store : gameStore) {
-					store.forceKill();
+					Villager villager = store.kill();
+					if (villager != null) {
+						Main.unregisterGameEntity(villager);
+					}
 				}
 				String message = i18n("game_end");
 				for (GamePlayer player : (List<GamePlayer>) ((ArrayList<GamePlayer>) players).clone()) {
@@ -877,7 +990,10 @@ public class Game implements misat11.bw.api.Game {
 				updateScoreboard();
 				updateSigns();
 				for (GameStore store : gameStore) {
-					store.spawn();
+					Villager villager = store.spawn();
+					if (villager != null) {
+						Main.registerGameEntity(villager, this);
+					}
 				}
 				String gameStartTitle = i18n("game_start_title", false);
 				String gameStartSubtitle = i18n("game_start_subtitle", false).replace("%arena%", this.name);
@@ -921,6 +1037,16 @@ public class Game implements misat11.bw.api.Game {
 					}
 				}
 			}
+			
+			// Chest clearing
+			for (Location location : usedChests) {
+				Block block = location.getBlock();
+				if (block.getState() instanceof Chest) {
+					Chest chest = (Chest) block.getState();
+					chest.getBlockInventory().clear();
+				}
+			}
+			usedChests.clear();
 
 			BedwarsPostRebuildingEvent postRebuildingEvent = new BedwarsPostRebuildingEvent(this);
 			Main.getInstance().getServer().getPluginManager().callEvent(postRebuildingEvent);
@@ -1298,6 +1424,32 @@ public class Game implements misat11.bw.api.Game {
 	@Override
 	public int getLobbyCountdown() {
 		return pauseCountdown;
+	}
+
+	@Override
+	public CurrentTeam getTeamOfChest(Location location) {
+		for (CurrentTeam team : teamsInGame) {
+			if (team.isTeamChestRegistered(location)) {
+				return team;
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public CurrentTeam getTeamOfChest(Block block) {
+		for (CurrentTeam team : teamsInGame) {
+			if (team.isTeamChestRegistered(block)) {
+				return team;
+			}
+		}
+		return null;
+	}
+	
+	public void addChestForFutureClear(Location loc) {
+		if (!usedChests.contains(loc)) {
+			usedChests.add(loc);
+		}
 	}
 
 }

@@ -122,6 +122,11 @@ sign_status_waiting_players: "§a%players%§8/§a%maxplayers%"
 
 list_header: "§aDostupné arény:"
 
+team_chest: "§a§lTýmová truhla"
+team_chest_is_not_your: "§eTato týmová truhla není tvého týmu!"
+team_chest_placed: "§aNová truhla tvého týmu byla položena!"
+team_chest_broken: "§cNěkdo zničil vaši týmovou truhlu!"
+
 help_title: "BedWars %version% - Nápověda"
 help_bw_join: "/bw join <aréna> - §aPřipojí tě k aréně"
 help_bw_leave: "/bw leave - §aOdpojí tě z arény"

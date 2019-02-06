@@ -9,6 +9,7 @@ friendlyfire: false
 player-drops: true
 join-randomly-after-lobby-timeout: false
 spectator-gm3: false
+prevent-killing-villagers: true
 
 # Commands whitelist
 allowed-commands:

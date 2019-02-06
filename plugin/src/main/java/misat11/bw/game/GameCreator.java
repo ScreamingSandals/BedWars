@@ -34,8 +34,8 @@ public class GameCreator {
 		List<GameStore> gs = game.getGameStores();
 		if (!gs.isEmpty()) {
 			for (GameStore store : gs) {
-				villagerstores.put(store.loc.getBlockX() + ";" + store.loc.getBlockY() + ";" + store.loc.getBlockZ(),
-						store.loc);
+				villagerstores.put(store.getStoreLocation().getBlockX() + ";" + store.getStoreLocation().getBlockY() + ";" + store.getStoreLocation().getBlockZ(),
+						store.getStoreLocation());
 			}
 		}
 	}

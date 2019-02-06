@@ -12,8 +12,10 @@ import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
+import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import misat11.bw.api.BedwarsAPI;
 import misat11.bw.api.GameStatus;
 import misat11.bw.commands.BwCommand;
 import misat11.bw.game.Game;
@@ -35,7 +37,7 @@ import net.milkbowl.vault.economy.EconomyResponse;
 
 import static misat11.bw.utils.I18n.i18n;
 
-public class Main extends JavaPlugin {
+public class Main extends JavaPlugin implements BedwarsAPI {
 	private static Main instance;
 	private String version, nmsVersion;
 	private boolean isSpigot, snapshot, isVault, isLegacy, isNMS;
@@ -290,6 +292,8 @@ public class Main extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(new SignListener(), this);
 		getServer().getPluginManager().registerEvents(new WorldListener(), this);
 		
+		getServer().getServicesManager().register(BedwarsAPI.class, this, this, ServicePriority.Normal);
+		
 		for (String spawnerN : configurator.config.getConfigurationSection("resources").getKeys(false)) {
 
 			String name = Main.getConfigurator().config.getString("resources." + spawnerN + ".name");
@@ -370,6 +374,7 @@ public class Main extends JavaPlugin {
 		for (Game game : games.values()) {
 			game.stop();
 		}
+		this.getServer().getServicesManager().unregisterAll(this);
 	}
 	
 	private boolean setupEconomy() {
@@ -383,5 +388,29 @@ public class Main extends JavaPlugin {
 
 		econ = rsp.getProvider();
 		return econ != null;
+	}
+
+	@Override
+	public List<misat11.bw.api.Game> getGames() {
+		List<misat11.bw.api.Game> gms = new ArrayList<misat11.bw.api.Game>();
+		for (Game game : games.values()) {
+			gms.add(game);
+		}
+		return gms;
+	}
+
+	@Override
+	public misat11.bw.api.Game getGameOfPlayer(Player player) {
+		return isPlayerInGame(player) ? getPlayerGameProfile(player).getGame() : null;
+	}
+
+	@Override
+	public boolean isGameWithNameExists(String name) {
+		return games.containsKey(name);
+	}
+
+	@Override
+	public misat11.bw.api.Game getGameByName(String name) {
+		return games.get(name);
 	}
 }
