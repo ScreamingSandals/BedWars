@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -15,8 +16,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.StringUtil;
 
 import misat11.bw.Main;
+import misat11.bw.api.GameStore;
 import misat11.bw.game.Game;
 import misat11.bw.game.GameCreator;
+import misat11.bw.game.ItemSpawner;
 import misat11.bw.game.Team;
 import misat11.bw.game.TeamColor;
 
@@ -60,7 +63,145 @@ public class BwCommand implements CommandExecutor, TabCompleter {
 					if (player.hasPermission(ADMIN_PERMISSION)) {
 						if (args.length >= 3) {
 							String arN = args[1];
-							if (args[2].equalsIgnoreCase("add")) {
+							if (args[2].equalsIgnoreCase("info")) {
+								if (Main.isGameExists(arN)) {
+									Game game = Main.getGame(arN);
+									player.sendMessage(i18n("arena_info_header"));
+									
+									player.sendMessage(i18n("arena_info_name", false).replace("%name%", game.getName()));
+									String status = i18n("arena_info_status", false);
+									switch (game.getStatus()) {
+									case DISABLED:
+										if (gc.containsKey(arN)) {
+											status = status.replace("%status%", i18n("arena_info_status_disabled_in_edit", false));
+										} else {
+											status = status.replace("%status%", i18n("arena_info_status_disabled", false));
+										}
+										break;
+									case REBUILDING:
+										status = status.replace("%status%", i18n("arena_info_status_rebuilding", false));
+										break;
+									case RUNNING:
+										status = status.replace("%status%", i18n("arena_info_status_running", false));
+										break;
+									case WAITING:
+										status = status.replace("%status%", i18n("arena_info_status_waiting", false));
+										break;
+									}
+									player.sendMessage(status);
+									
+									player.sendMessage(i18n("arena_info_world", false).replace("%world%", game.getWorld().getName()));
+									
+									Location loc_pos1 = game.getPos1();
+									String pos1 = i18n("arena_info_pos1", false)
+											.replace("%x%", Double.toString(loc_pos1.getX()))
+											.replace("%y%", Double.toString(loc_pos1.getY()))
+											.replace("%z%", Double.toString(loc_pos1.getZ()))
+											.replace("%yaw%", Float.toString(loc_pos1.getYaw()))
+											.replace("%pitch%", Float.toString(loc_pos1.getPitch()))
+											.replace("%world%", loc_pos1.getWorld().getName());
+									
+									player.sendMessage(pos1);
+									
+									Location loc_pos2 = game.getPos2();
+									String pos2 = i18n("arena_info_pos2", false)
+											.replace("%x%", Double.toString(loc_pos2.getX()))
+											.replace("%y%", Double.toString(loc_pos2.getY()))
+											.replace("%z%", Double.toString(loc_pos2.getZ()))
+											.replace("%yaw%", Float.toString(loc_pos2.getYaw()))
+											.replace("%pitch%", Float.toString(loc_pos2.getPitch()))
+											.replace("%world%", loc_pos2.getWorld().getName());
+									
+									player.sendMessage(pos2);
+									
+									Location loc_spec = game.getSpecSpawn();
+									String spec = i18n("arena_info_spec", false)
+											.replace("%x%", Double.toString(loc_spec.getX()))
+											.replace("%y%", Double.toString(loc_spec.getY()))
+											.replace("%z%", Double.toString(loc_spec.getZ()))
+											.replace("%yaw%", Float.toString(loc_spec.getYaw()))
+											.replace("%pitch%", Float.toString(loc_spec.getPitch()))
+											.replace("%world%", loc_spec.getWorld().getName());
+									
+									player.sendMessage(spec);
+									
+									Location loc_lobby = game.getLobbySpawn();
+									String lobby = i18n("arena_info_lobby", false)
+											.replace("%x%", Double.toString(loc_lobby.getX()))
+											.replace("%y%", Double.toString(loc_lobby.getY()))
+											.replace("%z%", Double.toString(loc_lobby.getZ()))
+											.replace("%yaw%", Float.toString(loc_lobby.getYaw()))
+											.replace("%pitch%", Float.toString(loc_lobby.getPitch()))
+											.replace("%world%", loc_lobby.getWorld().getName());
+									
+									player.sendMessage(lobby);
+									player.sendMessage(i18n("arena_info_min_players", false).replace("%minplayers%", Integer.toString(game.getMinPlayers())));
+									player.sendMessage(i18n("arena_info_lobby_countdown", false).replace("%time%", Integer.toString(game.getPauseCountdown())));
+									player.sendMessage(i18n("arena_info_game_time", false).replace("%time%", Integer.toString(game.getGameTime())));
+									
+									player.sendMessage(i18n("arena_info_teams", false));
+									for (Team team : game.getTeams()) {
+										player.sendMessage(i18n("arena_info_team", false)
+												.replace("%team%", team.color.chatColor.toString() + team.name)
+												.replace("%maxplayers%", Integer.toString(team.maxPlayers)));
+										
+										Location loc_spawn = team.spawn;
+										String spawn = i18n("arena_info_team_spawn", false)
+												.replace("%x%", Double.toString(loc_spawn.getX()))
+												.replace("%y%", Double.toString(loc_spawn.getY()))
+												.replace("%z%", Double.toString(loc_spawn.getZ()))
+												.replace("%yaw%", Float.toString(loc_spawn.getYaw()))
+												.replace("%pitch%", Float.toString(loc_spawn.getPitch()))
+												.replace("%world%", loc_spawn.getWorld().getName());
+										
+										player.sendMessage(spawn);
+
+										Location loc_target = team.bed;
+										String target = i18n("arena_info_team_target", false)
+												.replace("%x%", Double.toString(loc_target.getX()))
+												.replace("%y%", Double.toString(loc_target.getY()))
+												.replace("%z%", Double.toString(loc_target.getZ()))
+												.replace("%yaw%", Float.toString(loc_target.getYaw()))
+												.replace("%pitch%", Float.toString(loc_target.getPitch()))
+												.replace("%world%", loc_target.getWorld().getName());
+										
+										player.sendMessage(target);
+									}
+									
+									player.sendMessage(i18n("arena_info_spawners", false));
+									for (ItemSpawner spawner : game.getSpawners()) {
+
+										Location loc_spawner = spawner.loc;
+										String spawnerM = i18n("arena_info_spawner", false)
+												.replace("%resource%", spawner.type.getItemName())
+												.replace("%x%", Double.toString(loc_spawner.getX()))
+												.replace("%y%", Double.toString(loc_spawner.getY()))
+												.replace("%z%", Double.toString(loc_spawner.getZ()))
+												.replace("%yaw%", Float.toString(loc_spawner.getYaw()))
+												.replace("%pitch%", Float.toString(loc_spawner.getPitch()))
+												.replace("%world%", loc_spawner.getWorld().getName());
+										
+										player.sendMessage(spawnerM);
+									}
+									
+									player.sendMessage(i18n("arena_info_villagers", false));
+									for (GameStore store : game.getGameStores()) {
+
+										Location loc_store = store.getStoreLocation();
+										String storeM = i18n("arena_info_villager", false)
+												.replace("%x%", Double.toString(loc_store.getX()))
+												.replace("%y%", Double.toString(loc_store.getY()))
+												.replace("%z%", Double.toString(loc_store.getZ()))
+												.replace("%yaw%", Float.toString(loc_store.getYaw()))
+												.replace("%pitch%", Float.toString(loc_store.getPitch()))
+												.replace("%world%", loc_store.getWorld().getName());
+										
+										player.sendMessage(storeM);
+									}
+								} else {
+									player.sendMessage(i18n("no_arena_found"));
+								}
+							} else if (args[2].equalsIgnoreCase("add")) {
 								if (Main.isGameExists(arN)) {
 									player.sendMessage(i18n("allready_exists"));
 								} else if (gc.containsKey(arN)) {
@@ -161,7 +302,7 @@ public class BwCommand implements CommandExecutor, TabCompleter {
 						StringUtil.copyPartialMatches(args[1], arenas, completionList);
 					} else if (args.length == 3) {
 						List<String> cmds = Arrays.asList("add", "lobby", "spec", "pos1", "pos2", "pausecountdown",
-								"team", "spawner", "time", "store", "save", "remove", "edit", "jointeam", "minplayers");
+								"team", "spawner", "time", "store", "save", "remove", "edit", "jointeam", "minplayers", "info");
 						StringUtil.copyPartialMatches(args[2], cmds, completionList);
 					} else if (args[2].equalsIgnoreCase("pausecountdown") && args.length == 4) {
 						StringUtil.copyPartialMatches(args[3], Arrays.asList("30", "60"), completionList);
@@ -234,6 +375,7 @@ public class BwCommand implements CommandExecutor, TabCompleter {
 		player.sendMessage(i18n("help_bw_leave", false));
 		player.sendMessage(i18n("help_bw_list", false));
 		if (player.hasPermission(ADMIN_PERMISSION)) {
+			player.sendMessage(i18n("help_bw_admin_info", false));
 			player.sendMessage(i18n("help_bw_admin_add", false));
 			player.sendMessage(i18n("help_bw_admin_lobby", false));
 			player.sendMessage(i18n("help_bw_admin_spec", false));
