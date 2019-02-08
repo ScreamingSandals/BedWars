@@ -413,4 +413,55 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 	public misat11.bw.api.Game getGameByName(String name) {
 		return games.get(name);
 	}
+
+	@Override
+	public List<misat11.bw.api.ItemSpawnerType> getItemSpawnerTypes() {
+		List<misat11.bw.api.ItemSpawnerType> list = new ArrayList<misat11.bw.api.ItemSpawnerType>();
+		
+		for (ItemSpawnerType type : spawnerTypes.values()) {
+			list.add(type);
+		}
+		
+		return list;
+	}
+
+	@Override
+	public misat11.bw.api.ItemSpawnerType getItemSpawnerTypeByName(String name) {
+		return spawnerTypes.get(name);
+	}
+	
+	@Override
+	public boolean isItemSpawnerTypeRegistered(String name) {
+		return spawnerTypes.containsKey(name);
+	}
+
+	@Override
+	public boolean isEntityInGame(Entity entity) {
+		return entitiesInGame.containsKey(entity);
+	}
+
+	@Override
+	public misat11.bw.api.Game getGameOfEntity(Entity entity) {
+		return entitiesInGame.get(entity);
+	}
+
+	@Override
+	public void registerEntityToGame(Entity entity, misat11.bw.api.Game game) {
+		if (!(game instanceof Game)) {
+			return;
+		}
+		entitiesInGame.put(entity, (Game) game);
+	}
+
+	@Override
+	public void unregisterEntityFromGame(Entity entity) {
+		if (entitiesInGame.containsKey(entity)) {
+			entitiesInGame.remove(entity);
+		}
+	}
+
+	@Override
+	public boolean isPlayerPlayingAnyGame(Player player) {
+		return isPlayerInGame(player);
+	}
 }

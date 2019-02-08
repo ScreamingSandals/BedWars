@@ -86,11 +86,14 @@ public class PlayerListener implements Listener {
 						Main.depositPlayer(killer, Main.getVaultKillReward());
 						if (team.isDead()) {
 							SpawnEffects.spawnEffect(game, victim, "game-effects.teamkill");
-							Sounds.playSound(killer, killer.getLocation(), Main.getConfigurator().config.getString("sounds.on_team_kill"), Sounds.ENTITY_PLAYER_LEVELUP, 1, 1);
+							Sounds.playSound(killer, killer.getLocation(),
+									Main.getConfigurator().config.getString("sounds.on_team_kill"),
+									Sounds.ENTITY_PLAYER_LEVELUP, 1, 1);
 						}
 					}
 				}
-				BedwarsPlayerKilledEvent killedEvent = new BedwarsPlayerKilledEvent(game, victim, Main.isPlayerInGame(killer) ? killer : null);
+				BedwarsPlayerKilledEvent killedEvent = new BedwarsPlayerKilledEvent(game, victim,
+						Main.isPlayerInGame(killer) ? killer : null);
 				Main.getInstance().getServer().getPluginManager().callEvent(killedEvent);
 			}
 			if (Main.isSpigot()) {
@@ -101,10 +104,12 @@ public class PlayerListener implements Listener {
 				}.runTaskLater(Main.getInstance(), 20L);
 			} else if (Main.isNMS()) {
 				try {
-					Class clazz = Class.forName("misat11.bw.nms." + Main.getNMSVersion().toLowerCase() + ".PerformRespawnRunnable");
-					((BukkitRunnable) clazz.getDeclaredConstructor(Player.class).newInstance(victim)).runTaskLater(Main.getInstance(), 20L);
+					Class clazz = Class.forName(
+							"misat11.bw.nms." + Main.getNMSVersion().toLowerCase() + ".PerformRespawnRunnable");
+					((BukkitRunnable) clazz.getDeclaredConstructor(Player.class).newInstance(victim))
+							.runTaskLater(Main.getInstance(), 20L);
 				} catch (Throwable tr) {
-					
+
 				}
 			}
 		}
@@ -255,16 +260,34 @@ public class PlayerListener implements Listener {
 		if (event.isCancelled()) {
 			return;
 		}
-		
+
 		if (!(event.getEntity() instanceof Player)) {
-			
-			if (event instanceof EntityDamageByEntityEvent && event.getEntity() instanceof Villager && Main.getConfigurator().config.getBoolean("prevent-killing-villagers")) {
-				Game game = Main.getInGameEntity(event.getEntity());
-				if (game != null) {
-					event.setCancelled(true);
+
+			if (event instanceof EntityDamageByEntityEvent) {
+
+				if (event.getEntity() instanceof Villager
+						&& Main.getConfigurator().config.getBoolean("prevent-killing-villagers")) {
+					Game game = Main.getInGameEntity(event.getEntity());
+					if (game != null) {
+						event.setCancelled(true);
+					}
 				}
+				
+				if (event.getEntity() instanceof ArmorStand) {
+					Entity damager = ((EntityDamageByEntityEvent) event).getDamager();
+					if (damager instanceof Player) {
+						Player player = (Player) damager;
+						if (Main.isPlayerInGame(player)) {
+							GamePlayer gPlayer = Main.getPlayerGameProfile(player);
+							if (gPlayer.getGame().getStatus() == GameStatus.WAITING || gPlayer.isSpectator) {
+								event.setCancelled(true);
+							}
+						}
+					}
+				}
+
 			}
-			
+
 			return;
 		}
 
@@ -354,36 +377,42 @@ public class PlayerListener implements Listener {
 						game.leaveFromGame(player);
 					}
 				}
-				
+
 				if (game.getStatus() == GameStatus.RUNNING) {
 					if (event.getClickedBlock() != null) {
 						if (event.getClickedBlock().getType() == Material.ENDER_CHEST) {
 							event.setCancelled(true);
-							
+
 							Block chest = event.getClickedBlock();
 							CurrentTeam team = game.getTeamOfChest(chest);
-							
+
 							if (team == null) {
 								return;
 							}
-							
+
 							if (!team.players.contains(gPlayer)) {
 								player.sendMessage(i18n("team_chest_is_not_your"));
 								return;
 							}
-							
-							BedwarsTeamChestOpenEvent teamChestOpenEvent = new BedwarsTeamChestOpenEvent(game, player, team);
+
+							BedwarsTeamChestOpenEvent teamChestOpenEvent = new BedwarsTeamChestOpenEvent(game, player,
+									team);
 							Main.getInstance().getServer().getPluginManager().callEvent(teamChestOpenEvent);
-							
+
 							if (teamChestOpenEvent.isCancelled()) {
 								return;
 							}
-							
+
 							player.openInventory(team.getTeamChestInventory());
 						} else if (event.getClickedBlock().getType() == Material.CHEST) {
 							game.addChestForFutureClear(event.getClickedBlock().getLocation());
 						}
 					}
+				}
+
+				if (game.getRegion().isBedBlock(event.getClickedBlock().getState())) {
+					// prevent Essentials to set home in arena
+					event.setCancelled(true);
 				}
 			}
 		}
@@ -445,11 +474,6 @@ public class PlayerListener implements Listener {
 			if (gProfile.getGame().getStatus() == GameStatus.RUNNING) {
 				if (gProfile.isSpectator) {
 					// TODO spectator compass exclude
-					event.setCancelled(true);
-					return;
-				}
-				if (event.getInventory().getType() == InventoryType.ENDER_CHEST) {
-					// TODO team chest
 					event.setCancelled(true);
 					return;
 				}

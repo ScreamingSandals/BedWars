@@ -224,7 +224,7 @@ public class Game implements misat11.bw.api.Game {
 			}
 		}
 		region.addBuildedDuringGame(block.getLocation());
-		
+
 		if (block.getType() == Material.ENDER_CHEST) {
 			CurrentTeam team = getPlayerTeam(player);
 			team.addTeamChest(block);
@@ -251,7 +251,7 @@ public class Game implements misat11.bw.api.Game {
 		}
 		if (region.isBlockAddedDuringGame(block.getLocation())) {
 			region.removeBlockBuildedDuringGame(block.getLocation());
-			
+
 			if (block.getType() == Material.ENDER_CHEST) {
 				CurrentTeam team = getTeamOfChest(block);
 				if (team != null) {
@@ -262,7 +262,7 @@ public class Game implements misat11.bw.api.Game {
 					}
 				}
 			}
-			
+
 			return true;
 		}
 		if (region.isBedBlock(block.getState())) {
@@ -289,6 +289,10 @@ public class Game implements misat11.bw.api.Game {
 			return true;
 		}
 		return false;
+	}
+	
+	public IRegion getRegion() {
+		return region;
 	}
 
 	public CurrentTeam getPlayerTeam(GamePlayer player) {
@@ -693,7 +697,7 @@ public class Game implements misat11.bw.api.Game {
 			}
 		}
 	}
-	
+
 	public CurrentTeam getCurrentTeamByTeam(Team team) {
 		for (CurrentTeam current : teamsInGame) {
 			if (current.teamInfo == team) {
@@ -702,7 +706,7 @@ public class Game implements misat11.bw.api.Game {
 		}
 		return null;
 	}
-	
+
 	public Team getFirstTeamThatIsntInGame() {
 		for (Team team : teams) {
 			if (getCurrentTeamByTeam(team) == null) {
@@ -711,20 +715,20 @@ public class Game implements misat11.bw.api.Game {
 		}
 		return null;
 	}
-	
+
 	public CurrentTeam getTeamWithLowestPlayers() {
 		CurrentTeam lowest = null;
-		
+
 		for (CurrentTeam team : teamsInGame) {
 			if (lowest == null) {
 				lowest = team;
 			}
-			
+
 			if (lowest.players.size() > team.players.size()) {
 				lowest = team;
 			}
 		}
-			
+
 		return lowest;
 	}
 
@@ -740,11 +744,11 @@ public class Game implements misat11.bw.api.Game {
 				teamForJoin = current.teamInfo;
 			}
 		}
-		
+
 		if (teamForJoin == null) {
 			return;
 		}
-		
+
 		CurrentTeam current = null;
 		for (CurrentTeam t : teamsInGame) {
 			if (t.teamInfo == teamForJoin) {
@@ -767,9 +771,9 @@ public class Game implements misat11.bw.api.Game {
 			if (scoreboardTeam == null) {
 				scoreboardTeam = gameScoreboard.registerNewTeam(teamForJoin.name);
 			}
-			try {
+			if (!Main.isLegacy()) {
 				scoreboardTeam.setColor(teamForJoin.color.chatColor);
-			} catch (Throwable t) {
+			} else {
 				scoreboardTeam.setPrefix(teamForJoin.color.chatColor.toString());
 			}
 			scoreboardTeam.setAllowFriendlyFire(Main.getConfigurator().config.getBoolean("friendlyfire"));
@@ -912,7 +916,7 @@ public class Game implements misat11.bw.api.Game {
 					if ((countdown % cycle) == 0) {
 
 						BedwarsResourceSpawnEvent resourceSpawnEvent = new BedwarsResourceSpawnEvent(this, spawner.loc,
-								type.getStack());
+								type, type.getStack());
 						Main.getInstance().getServer().getPluginManager().callEvent(resourceSpawnEvent);
 
 						if (resourceSpawnEvent.isCancelled()) {
@@ -1037,7 +1041,7 @@ public class Game implements misat11.bw.api.Game {
 					}
 				}
 			}
-			
+
 			// Chest clearing
 			for (Location location : usedChests) {
 				Block block = location.getBlock();
@@ -1115,9 +1119,9 @@ public class Game implements misat11.bw.api.Game {
 						if (scoreboardTeam == null) {
 							scoreboardTeam = gameScoreboard.registerNewTeam(team.name);
 						}
-						try {
+						if (!Main.isLegacy()) {
 							scoreboardTeam.setColor(team.color.chatColor);
-						} catch (Throwable t) {
+						} else {
 							scoreboardTeam.setPrefix(team.color.chatColor.toString());
 						}
 						scoreboardTeam.setAllowFriendlyFire(Main.getConfigurator().config.getBoolean("friendlyfire"));
@@ -1445,7 +1449,7 @@ public class Game implements misat11.bw.api.Game {
 		}
 		return null;
 	}
-	
+
 	public void addChestForFutureClear(Location loc) {
 		if (!usedChests.contains(loc)) {
 			usedChests.add(loc);

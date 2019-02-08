@@ -8,7 +8,6 @@ import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -20,7 +19,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 
 import misat11.bw.Main;
-import misat11.bw.game.Game;
 import misat11.bw.game.ItemSpawnerType;
 
 import static misat11.bw.utils.I18n.i18n;
@@ -151,7 +149,18 @@ public class ShopMenu implements Listener {
 				if (stack == null) {
 					return;
 				}
-				Map<String, Object> itemInfo = cat.items.get(stack);
+				Map<String, Object> itemInfo = null;
+				if (Main.isLegacy() && (stack.getType() == Material.ENDER_CHEST || stack.getType() == Material.CHEST)) {
+					// FIX: unable to buy chest in legacy versions
+					for (ItemStack item : cat.items.keySet()) {
+						if (item.getType() == stack.getType()) {
+							itemInfo = cat.items.get(item);
+							break;
+						}
+					}
+				} else {
+					itemInfo = cat.items.get(stack);
+				}
 				if (itemInfo == null) {
 					if (stack.equals(backItem)) {
 						player.openInventory(mainInventory);
