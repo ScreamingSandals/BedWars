@@ -9,84 +9,82 @@ public interface BedwarsAPI {
 
 	/**
 	 * 
-	 * @return List<Game> List of available games
+	 * @return List of available games
 	 */
 	public List<Game> getGames();
 
 	/**
 	 * 
-	 * @param String Name of game
-	 * @return boolean Is game is exists
+	 * @param name Name of game
+	 * @return true if game is exists
 	 */
 	public boolean isGameWithNameExists(String name);
 
 	/**
 	 * 
-	 * @param String Name of game
-	 * @return Game Game or null if game is not exists
+	 * @param name Name of game
+	 * @return Game or null if game is not exists
 	 */
 	public Game getGameByName(String name);
 
 	/**
 	 * 
-	 * @param String Name of player
-	 * @return Game Player's Game or null if player isn't in game
+	 * @param player Player
+	 * @return Player's Game or null if player isn't in game
 	 */
 	public Game getGameOfPlayer(Player player);
 
 	/**
 	 * 
-	 * @param String Name of player
-	 * @return boolean Is player in any game
+	 * @param player Player
+	 * @return true if player is in any game
 	 */
 	public boolean isPlayerPlayingAnyGame(Player player);
 
 	/**
 	 * 
-	 * @return List<ItemSpawnerType> list of existing spawner types
+	 * @return List of existing spawner types
 	 */
 	public List<ItemSpawnerType> getItemSpawnerTypes();
 
 	/**
 	 * 
-	 * @param String Name of item spawner type
+	 * @param name Name of item spawner type
 	 * @return boolean Is spawner type registered
 	 */
 	public boolean isItemSpawnerTypeRegistered(String name);
 
 	/**
 	 * 
-	 * @param String Name of item spawner type
-	 * @return ItemSpawnerType Type by name or null if type isn't exists
+	 * @param name Name of item spawner type
+	 * @return ItemSpawnerType by name or null if type isn't exists
 	 */
 	public ItemSpawnerType getItemSpawnerTypeByName(String name);
 
 	/**
 	 * 
-	 * @param Entity entity
-	 * @return boolean Is entity in game
+	 * @param entity Entity
+	 * @return true if entity is in game
 	 */
 	public boolean isEntityInGame(Entity entity);
 
 	/**
 	 * 
-	 * @param Entity entity
-	 * @return Game game of entity or null
+	 * @param entity Entity
+	 * @return Game of entity or null
 	 */
 	public Game getGameOfEntity(Entity entity);
 
 	/**
 	 * 
-	 * @param Entity entity
-	 * @param Game game
-	 * @return Nothing.
+	 * @param entity Entity
+	 * @param game Game
 	 */
 	public void registerEntityToGame(Entity entity, Game game);
 
 	/**
 	 * 
-	 * @param Entity entity
-	 * @return Nothing.
+	 * @param entity Entity
 	 */
 	public void unregisterEntityFromGame(Entity entity);
 }
