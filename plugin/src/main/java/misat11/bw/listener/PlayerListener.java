@@ -409,7 +409,7 @@ public class PlayerListener implements Listener {
 						}
 					}
 				}
-
+                                if (event.getClickedBlock() != null)
 				if (game.getRegion().isBedBlock(event.getClickedBlock().getState())) {
 					// prevent Essentials to set home in arena
 					event.setCancelled(true);
