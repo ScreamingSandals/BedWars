@@ -29,6 +29,12 @@
 			<version>${bedwars.api}</version>
 			<scope>compile</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.zaxxer</groupId>
+			<artifactId>HikariCP</artifactId>
+			<version>3.3.0</version>
+			<scope>compile</scope>
+		</dependency>
 
 		<!-- NMS -->
 		<dependency>
@@ -116,6 +122,14 @@
 						<goals>
 							<goal>shade</goal>
 						</goals>
+						<configuration>
+							<relocations>
+								<relocation>
+									<pattern>com.zaxxer</pattern>
+									<shadedPattern>thirdparty.com.zaxxer.HikariCP</shadedPattern>
+								</relocation>
+							</relocations>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>

@@ -18,6 +18,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import misat11.bw.api.BedwarsAPI;
 import misat11.bw.api.GameStatus;
 import misat11.bw.commands.BwCommand;
+import misat11.bw.database.DatabaseManager;
 import misat11.bw.game.Game;
 import misat11.bw.game.GamePlayer;
 import misat11.bw.game.ItemSpawnerType;
@@ -27,6 +28,7 @@ import misat11.bw.listener.PlayerListener;
 import misat11.bw.listener.SignListener;
 import misat11.bw.listener.VillagerListener;
 import misat11.bw.listener.WorldListener;
+import misat11.bw.statistics.PlayerStatisticManager;
 import misat11.bw.utils.Configurator;
 import misat11.bw.utils.GameSign;
 import misat11.bw.utils.I18n;
@@ -49,6 +51,8 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 	private ShopMenu menu;
 	private SignManager signManager;
 	private HashMap<String, ItemSpawnerType> spawnerTypes = new HashMap<String, ItemSpawnerType>();
+	private DatabaseManager databaseManager;
+	private PlayerStatisticManager playerStatisticsManager;
 
 	public static Main getInstance() {
 		return instance;
@@ -69,36 +73,38 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 	public static boolean isSpigot() {
 		return instance.isSpigot;
 	}
-	
+
 	public static boolean isVault() {
 		return instance.isVault;
 	}
-	
+
 	public static boolean isLegacy() {
 		return instance.isLegacy;
 	}
-	
+
 	public static boolean isNMS() {
 		return instance.isNMS;
 	}
-	
+
 	public static String getNMSVersion() {
 		return isNMS() ? instance.nmsVersion : null;
 	}
-	
+
 	public static void depositPlayer(Player player, double coins) {
 		if (isVault() && instance.configurator.config.getBoolean("vault.enable")) {
 			EconomyResponse response = instance.econ.depositPlayer(player, coins);
 			if (response.transactionSuccess()) {
-				player.sendMessage(i18n("vault_deposite").replace("%coins%", Double.toString(coins)).replace("%currency%", (coins == 1 ? instance.econ.currencyNameSingular() : instance.econ.currencyNamePlural())));
+				player.sendMessage(i18n("vault_deposite").replace("%coins%", Double.toString(coins)).replace(
+						"%currency%",
+						(coins == 1 ? instance.econ.currencyNameSingular() : instance.econ.currencyNamePlural())));
 			}
 		}
 	}
-	
+
 	public static int getVaultKillReward() {
 		return instance.configurator.config.getInt("vault.reward.kill");
 	}
-	
+
 	public static int getVaultWinReward() {
 		return instance.configurator.config.getInt("vault.reward.win");
 	}
@@ -178,7 +184,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 		}
 		return false;
 	}
-	
+
 	public static boolean isCommandAllowedInGame(String commandPref) {
 		if ("/bw".equals(commandPref) || "/bedwars".equals(commandPref)) {
 			return true;
@@ -194,32 +200,32 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 		}
 		return false;
 	}
-	
+
 	public static boolean isSignRegistered(Location location) {
 		return instance.signManager.isSignRegistered(location);
 	}
-	
+
 	public static void unregisterSign(Location location) {
 		instance.signManager.unregisterSign(location);
 	}
-	
+
 	public static boolean registerSign(Location location, String game) {
 		return instance.signManager.registerSign(location, game);
 	}
-	
+
 	public static GameSign getSign(Location location) {
 		return instance.signManager.getSign(location);
 	}
-	
-	public static List<GameSign> getSignsForGame(Game game){
+
+	public static List<GameSign> getSignsForGame(Game game) {
 		return instance.signManager.getSignsForGame(game);
 	}
-	
+
 	public static ItemSpawnerType getSpawnerType(String key) {
 		return instance.spawnerTypes.get(key);
 	}
-	
-	public static List<String> getAllSpawnerTypes(){
+
+	public static List<String> getAllSpawnerTypes() {
 		return new ArrayList<String>(instance.spawnerTypes.keySet());
 	}
 
@@ -229,6 +235,18 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 			list.add(game.getName());
 		}
 		return list;
+	}
+	
+	public static DatabaseManager getDatabaseManager() {
+		return instance.databaseManager;
+	}
+	
+	public static PlayerStatisticManager getPlayerStatisticsManager() {
+		return instance.playerStatisticsManager;
+	}
+	
+	public static boolean isPlayerStatisticsEnabled() {
+		return instance.configurator.config.getBoolean("statistics.enabled");
 	}
 
 	public void onEnable() {
@@ -242,32 +260,32 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 		} catch (ClassNotFoundException e) {
 			isNMS = false;
 		}
-		
+
 		if (isNMS) {
 			String packName = Bukkit.getServer().getClass().getPackage().getName();
 			nmsVersion = packName.substring(packName.lastIndexOf('.') + 1);
 		}
-		
+
 		try {
 			Package spigotPackage = Package.getPackage("org.spigotmc");
 			isSpigot = (spigotPackage != null);
 		} catch (Exception e) {
 			isSpigot = false;
 		}
-		
+
 		if (!getServer().getPluginManager().isPluginEnabled("Vault")) {
 			isVault = false;
 		} else {
 			setupEconomy();
 			isVault = true;
 		}
-		
+
 		String[] bukkitVersion = Bukkit.getBukkitVersion().split("-")[0].split("\\.");
 		int versionNumber = 0;
 		for (int i = 0; i < 2; i++) {
 			versionNumber += Integer.parseInt(bukkitVersion[i]) * (i == 0 ? 100 : 1);
 		}
-		
+
 		isLegacy = versionNumber < 113;
 
 		configurator = new Configurator(this);
@@ -275,8 +293,17 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 		configurator.createFiles();
 
 		I18n.load(this, configurator.config.getString("locale"));
-		
+
 		signManager = new SignManager(configurator.signconfig, configurator.signconfigf);
+
+		databaseManager = new DatabaseManager(configurator.config.getString("database.host"),
+				configurator.config.getInt("database.port"), configurator.config.getString("database.user"),
+				configurator.config.getString("database.password"), configurator.config.getString("database.db"),
+				configurator.config.getString("database.table-prefix", "bw_"));
+		
+		if (isPlayerStatisticsEnabled()) {
+			playerStatisticsManager = new PlayerStatisticManager();
+		}
 
 		BwCommand cmd = new BwCommand();
 		getCommand("bw").setExecutor(cmd);
@@ -291,9 +318,9 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 		getServer().getPluginManager().registerEvents(new VillagerListener(), this);
 		getServer().getPluginManager().registerEvents(new SignListener(), this);
 		getServer().getPluginManager().registerEvents(new WorldListener(), this);
-		
+
 		getServer().getServicesManager().register(BedwarsAPI.class, this, this, ServicePriority.Normal);
-		
+
 		for (String spawnerN : configurator.config.getConfigurationSection("resources").getKeys(false)) {
 
 			String name = Main.getConfigurator().config.getString("resources." + spawnerN + ".name");
@@ -303,17 +330,18 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 			int damage = Main.getConfigurator().config.getInt("resources." + spawnerN + ".damage");
 			String materialName = Main.getConfigurator().config.getString("resources." + spawnerN + ".material", "AIR");
 			String colorName = Main.getConfigurator().config.getString("resources." + spawnerN + ".color", "WHITE");
-			
+
 			Material material = Material.valueOf(materialName);
 			if (material == Material.AIR || material == null) {
 				continue;
 			}
-			
+
 			ChatColor color = ChatColor.valueOf(colorName);
 
-			spawnerTypes.put(spawnerN.toLowerCase(), new ItemSpawnerType(spawnerN.toLowerCase(), name, translate, spread, material, color, interval, damage));
+			spawnerTypes.put(spawnerN.toLowerCase(), new ItemSpawnerType(spawnerN.toLowerCase(), name, translate,
+					spread, material, color, interval, damage));
 		}
-		
+
 		menu = new ShopMenu(this);
 
 		Bukkit.getLogger().info("********************");
@@ -339,7 +367,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 			Bukkit.getLogger().info("*   Vault hooked   *");
 			Bukkit.getLogger().info("*                  *");
 		}
-		
+
 		if (isSpigot == false) {
 			Bukkit.getLogger().info("*                  *");
 			Bukkit.getLogger().info("*     WARNING:     *");
@@ -376,7 +404,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 		}
 		this.getServer().getServicesManager().unregisterAll(this);
 	}
-	
+
 	private boolean setupEconomy() {
 		if (getServer().getPluginManager().getPlugin("Vault") == null) {
 			return false;
@@ -417,11 +445,11 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 	@Override
 	public List<misat11.bw.api.ItemSpawnerType> getItemSpawnerTypes() {
 		List<misat11.bw.api.ItemSpawnerType> list = new ArrayList<misat11.bw.api.ItemSpawnerType>();
-		
+
 		for (ItemSpawnerType type : spawnerTypes.values()) {
 			list.add(type);
 		}
-		
+
 		return list;
 	}
 
@@ -429,7 +457,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 	public misat11.bw.api.ItemSpawnerType getItemSpawnerTypeByName(String name) {
 		return spawnerTypes.get(name);
 	}
-	
+
 	@Override
 	public boolean isItemSpawnerTypeRegistered(String name) {
 		return spawnerTypes.containsKey(name);

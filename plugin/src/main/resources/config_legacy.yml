@@ -1,4 +1,4 @@
-# Locale (en, cs)
+# Locale (en, cs, ru)
 locale: en
 
 allow-crafting: false
@@ -126,6 +126,31 @@ lobby-scoreboard:
     - " "
     - "§fWaiting ..."
     - " "
+
+# Statistics      
+statistics:
+  enabled: true
+  type: 'yaml'
+  show-on-game-end: true
+  bed-destroyed-kills: false
+  
+  # Scores configuration
+  scores:
+    kill: 10
+    die: 0
+    win: 50
+    bed-destroy: 25
+    lose: 0
+    record: 100
+  
+# database (currently only mysql) configuration
+database:
+  host: localhost
+  port: 3306
+  db: database
+  user: root
+  password: secret
+  table-prefix: bw_
   
 # Do not edit this!!!
 version: 2

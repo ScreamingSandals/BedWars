@@ -15,7 +15,7 @@ public class Title {
 		} catch (Throwable ex) {
 			if (Main.isNMS()) {
 				try {
-					Class clazz = Class.forName("misat11.bw.nms." + Main.getNMSVersion().toLowerCase() + ".Title");
+					Class<?> clazz = Class.forName("misat11.bw.nms." + Main.getNMSVersion().toLowerCase() + ".Title");
 					clazz.getDeclaredMethod("showTitle", Player.class, String.class, double.class, double.class,
 							double.class).invoke(null, player, title, fadeIn, stay, fadeOut);
 					clazz.getDeclaredMethod("showSubTitle", Player.class, String.class, double.class, double.class,

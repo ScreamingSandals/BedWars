@@ -1,6 +1,5 @@
 package misat11.bw.api.events;
 
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
@@ -33,7 +32,7 @@ public class BedwarsOpenTeamSelectionEvent extends Event implements Cancellable 
 		return BedwarsOpenTeamSelectionEvent.handlers;
 	}
 
-	public CommandSender getPlayer() {
+	public Player getPlayer() {
 		return this.player;
 	}
 

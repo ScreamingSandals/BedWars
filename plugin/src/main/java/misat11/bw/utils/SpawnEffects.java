@@ -35,7 +35,7 @@ public class SpawnEffects {
 							if (Main.isNMS()) {
 								try {
 									List<Player> players = game.getConnectedPlayers();
-									Class clazz = Class.forName("misat11.bw.nms." + Main.getNMSVersion().toLowerCase()
+									Class<?> clazz = Class.forName("misat11.bw.nms." + Main.getNMSVersion().toLowerCase()
 											+ ".ParticleSpawner");
 									clazz.getDeclaredMethod("spawnParticle", List.class, String.class, float.class,
 											float.class, float.class)

@@ -47,6 +47,7 @@ import misat11.bw.game.Game;
 import misat11.bw.game.GameCreator;
 import misat11.bw.game.GamePlayer;
 import misat11.bw.game.Team;
+import misat11.bw.statistics.PlayerStatistic;
 import misat11.bw.utils.ArmorStandUtils;
 import misat11.bw.utils.Sounds;
 import misat11.bw.utils.SpawnEffects;
@@ -78,6 +79,13 @@ public class PlayerListener implements Listener {
 					gVictim.isSpectator = true;
 					team.players.remove(gVictim);
 					team.getScoreboardTeam().removeEntry(victim.getName());
+					if (Main.isPlayerStatisticsEnabled()) {
+						PlayerStatistic statistic = Main.getPlayerStatisticsManager().getStatistic(victim);
+						statistic.setCurrentLoses(statistic.getCurrentLoses() + 1);
+						statistic.setCurrentScore(statistic.getCurrentScore()
+								+ Main.getConfigurator().config.getInt("statistics.scores.lose", 0));
+						
+					}
 				}
 				Player killer = victim.getKiller();
 				if (Main.isPlayerInGame(killer)) {
@@ -95,6 +103,33 @@ public class PlayerListener implements Listener {
 				BedwarsPlayerKilledEvent killedEvent = new BedwarsPlayerKilledEvent(game, victim,
 						Main.isPlayerInGame(killer) ? killer : null);
 				Main.getInstance().getServer().getPluginManager().callEvent(killedEvent);
+
+				if (Main.isPlayerStatisticsEnabled()) {
+					PlayerStatistic diePlayer = Main.getPlayerStatisticsManager().getStatistic(victim);
+					PlayerStatistic killerPlayer = null;
+
+					boolean onlyOnBedDestroy = Main.getConfigurator().config
+							.getBoolean("statistics.bed-destroyed-kills", false);
+
+					boolean teamIsDead = !team.isBed;
+
+					if ((onlyOnBedDestroy && teamIsDead) || !onlyOnBedDestroy) {
+						diePlayer.setCurrentDeaths(diePlayer.getCurrentDeaths() + 1);
+						diePlayer.setCurrentScore(diePlayer.getCurrentScore()
+								+ Main.getConfigurator().config.getInt("statistics.scores.die", 0));
+					}
+
+					if (killer != null) {
+						if ((onlyOnBedDestroy && teamIsDead) || !onlyOnBedDestroy) {
+							killerPlayer = Main.getPlayerStatisticsManager().getStatistic(killer);
+							if (killerPlayer != null) {
+								killerPlayer.setCurrentKills(killerPlayer.getCurrentKills() + 1);
+								killerPlayer.setCurrentScore(killerPlayer.getCurrentScore()
+										+ Main.getConfigurator().config.getInt("statistics.scores.kill", 10));
+							}
+						}
+					}
+				}
 			}
 			if (Main.isSpigot()) {
 				new BukkitRunnable() {
@@ -104,7 +139,7 @@ public class PlayerListener implements Listener {
 				}.runTaskLater(Main.getInstance(), 20L);
 			} else if (Main.isNMS()) {
 				try {
-					Class clazz = Class.forName(
+					Class<?> clazz = Class.forName(
 							"misat11.bw.nms." + Main.getNMSVersion().toLowerCase() + ".PerformRespawnRunnable");
 					((BukkitRunnable) clazz.getDeclaredConstructor(Player.class).newInstance(victim))
 							.runTaskLater(Main.getInstance(), 20L);
@@ -272,7 +307,7 @@ public class PlayerListener implements Listener {
 						event.setCancelled(true);
 					}
 				}
-				
+
 				if (event.getEntity() instanceof ArmorStand) {
 					Entity damager = ((EntityDamageByEntityEvent) event).getDamager();
 					if (damager instanceof Player) {
@@ -409,10 +444,12 @@ public class PlayerListener implements Listener {
 						}
 					}
 				}
-                                if (event.getClickedBlock() != null)
-				if (game.getRegion().isBedBlock(event.getClickedBlock().getState())) {
-					// prevent Essentials to set home in arena
-					event.setCancelled(true);
+
+				if (event.getClickedBlock() != null) {
+					if (game.getRegion().isBedBlock(event.getClickedBlock().getState())) {
+						// prevent Essentials to set home in arena
+						event.setCancelled(true);
+					}
 				}
 			}
 		}

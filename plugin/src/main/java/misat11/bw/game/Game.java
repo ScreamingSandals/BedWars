@@ -50,6 +50,7 @@ import misat11.bw.api.events.BedwarsPreRebuildingEvent;
 import misat11.bw.api.events.BedwarsResourceSpawnEvent;
 import misat11.bw.api.events.BedwarsTargetBlockDestroyedEvent;
 import misat11.bw.legacy.LegacyRegion;
+import misat11.bw.statistics.PlayerStatistic;
 import misat11.bw.utils.GameSign;
 import misat11.bw.utils.IRegion;
 import misat11.bw.utils.Region;
@@ -325,6 +326,12 @@ public class Game implements misat11.bw.api.Game {
 					BedwarsTargetBlockDestroyedEvent targetBlockDestroyed = new BedwarsTargetBlockDestroyedEvent(this,
 							broker, team);
 					Main.getInstance().getServer().getPluginManager().callEvent(targetBlockDestroyed);
+					
+					if (Main.isPlayerStatisticsEnabled()) {
+						PlayerStatistic statistic = Main.getPlayerStatisticsManager().getStatistic(broker);
+						statistic.setCurrentDestroyedBeds(statistic.getCurrentDestroyedBeds()+1);
+						statistic.setCurrentScore(statistic.getCurrentScore()+Main.getConfigurator().config.getInt("statistics.scores.bed-destroy", 25));
+					}
 				}
 			}
 		}
@@ -368,6 +375,11 @@ public class Game implements misat11.bw.api.Game {
 			players.add(player);
 		}
 		updateSigns();
+		
+		if (Main.isPlayerStatisticsEnabled()) {
+			// Load
+			Main.getPlayerStatisticsManager().getStatistic(player.player);
+		}
 
 		player.player.teleport(lobbySpawn);
 		SpawnEffects.spawnEffect(this, player.player, "game-effects.lobbyjoin");
@@ -446,8 +458,17 @@ public class Game implements misat11.bw.api.Game {
 				}
 			}
 		}
-		for (GamePlayer p : players)
+		for (GamePlayer p : players) {
 			p.player.sendMessage(message);
+		}
+		
+		if (Main.isPlayerStatisticsEnabled()) {
+			PlayerStatistic statistic = Main.getPlayerStatisticsManager().getStatistic(player.player);
+			Main.getPlayerStatisticsManager().storeStatistic(statistic);
+			
+			Main.getPlayerStatisticsManager().unloadStatistic(player.player);
+		}
+		
 		if (players.isEmpty()) {
 			if (status == GameStatus.RUNNING) {
 				status = GameStatus.REBUILDING;
@@ -887,6 +908,7 @@ public class Game implements misat11.bw.api.Game {
 							String subtitle = i18n("team_win", false)
 									.replace("%team%", t.teamInfo.color.chatColor + t.teamInfo.name)
 									.replace("%time%", time);
+							boolean madeRecord = false; // TODO
 							for (GamePlayer player : players) {
 								player.player.sendMessage(message);
 								if (getPlayerTeam(player) == t) {
@@ -894,6 +916,23 @@ public class Game implements misat11.bw.api.Game {
 									Main.depositPlayer(player.player, Main.getVaultWinReward());
 
 									SpawnEffects.spawnEffect(this, player.player, "game-effects.end");
+									
+									if (Main.isPlayerStatisticsEnabled()) {
+										PlayerStatistic statistic = Main.getPlayerStatisticsManager().getStatistic(player.player);
+										statistic.setCurrentWins(statistic.getCurrentWins() + 1);
+										statistic.setCurrentScore(statistic.getCurrentScore()
+												+ Main.getConfigurator().config.getInt("statistics.scores.win", 50));
+										
+										if (madeRecord) {
+											statistic.setCurrentScore(statistic.getCurrentScore()
+													+ Main.getConfigurator().config.getInt("statistics.scores.record", 100));
+										}
+										
+										if (Main.getConfigurator().config.getBoolean("statistics.show-on-game-end")) {
+											Main.getInstance().getServer().dispatchCommand(player.player, "bw stats");
+										}
+										
+									}
 								} else {
 									Title.send(player.player, i18n("you_lost", false), subtitle);
 								}

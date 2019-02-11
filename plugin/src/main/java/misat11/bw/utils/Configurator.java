@@ -153,6 +153,22 @@ public class Configurator {
 		checkOrSetConfig(modify, "lobby-scoreboard.enabled", true);
 		checkOrSetConfig(modify, "lobby-scoreboard.title", "§eBEDWARS");
 		checkOrSetConfig(modify, "lobby-scoreboard.content", Arrays.asList(" ", "§fMap: §2%arena%", "§fPlayers: §2%players%§f/§2%maxplayers%", " ", "§fWaiting ...", " "));
+		checkOrSetConfig(modify, "statistics.enabled", true);
+		checkOrSetConfig(modify, "statistics.type", "yaml");
+		checkOrSetConfig(modify, "statistics.show-on-game-end", false);
+		checkOrSetConfig(modify, "statistics.bed-destroyed-kills", false);
+		checkOrSetConfig(modify, "statistics.scores.kill", 10);
+		checkOrSetConfig(modify, "statistics.scores.die", 0);
+		checkOrSetConfig(modify, "statistics.scores.win", 50);
+		checkOrSetConfig(modify, "statistics.scores.bed-destroy", 25);
+		checkOrSetConfig(modify, "statistics.scores.lose", 0);
+		checkOrSetConfig(modify, "statistics.scores.record", 100);
+		checkOrSetConfig(modify, "database.host", "localhost");
+		checkOrSetConfig(modify, "database.port", 3306);
+		checkOrSetConfig(modify, "database.db", "databse");
+		checkOrSetConfig(modify, "database.user", "root");
+		checkOrSetConfig(modify, "database.password", "secret");
+		checkOrSetConfig(modify, "database.table-prefix", "bw_");
 		checkOrSetConfig(modify, "version", 2);
 		if (modify.get()) {
 			try {
