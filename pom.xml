@@ -20,6 +20,10 @@
 			<id>vault-repo</id>
 			<url>http://nexus.hc.to/content/repositories/pub_releases</url>
 		</repository>
+		<repository>
+			<id>placeholderapi</id>
+			<url>http://repo.extendedclip.com/content/repositories/placeholderapi/</url>
+		</repository>
 	</repositories>
 
 	<properties>
@@ -30,20 +34,20 @@
 	</properties>
 
 	<modules>
-        <module>api</module>
+		<module>api</module>
 		<module>plugin</module>
 
-        <!-- NMS modules -->
-        <module>v1_8_r1</module>
-        <module>v1_8_r2</module>
-        <module>v1_8_r3</module>
-        <module>v1_9_r1</module>
-        <module>v1_9_r2</module>
-        <module>v1_10_r1</module>
-        <module>v1_11_r1</module>
-        <module>v1_12_r1</module>
-        <module>v1_13_r1</module>
-        <module>v1_13_r2</module>
+		<!-- NMS modules -->
+		<module>v1_8_r1</module>
+		<module>v1_8_r2</module>
+		<module>v1_8_r3</module>
+		<module>v1_9_r1</module>
+		<module>v1_9_r2</module>
+		<module>v1_10_r1</module>
+		<module>v1_11_r1</module>
+		<module>v1_12_r1</module>
+		<module>v1_13_r1</module>
+		<module>v1_13_r2</module>
 	</modules>
 
 </project>

@@ -28,6 +28,7 @@ import misat11.bw.listener.PlayerListener;
 import misat11.bw.listener.SignListener;
 import misat11.bw.listener.VillagerListener;
 import misat11.bw.listener.WorldListener;
+import misat11.bw.placeholderapi.BedwarsExpansion;
 import misat11.bw.statistics.PlayerStatisticManager;
 import misat11.bw.utils.Configurator;
 import misat11.bw.utils.GameSign;
@@ -304,6 +305,14 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 		if (isPlayerStatisticsEnabled()) {
 			playerStatisticsManager = new PlayerStatisticManager();
 			playerStatisticsManager.initialize();
+		}
+		
+		try {
+			if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+				new BedwarsExpansion().register();
+			}
+		} catch (Throwable t) {
+			
 		}
 
 		BwCommand cmd = new BwCommand();
