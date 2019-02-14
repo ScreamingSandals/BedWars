@@ -303,6 +303,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 		
 		if (isPlayerStatisticsEnabled()) {
 			playerStatisticsManager = new PlayerStatisticManager();
+			playerStatisticsManager.initialize();
 		}
 
 		BwCommand cmd = new BwCommand();
