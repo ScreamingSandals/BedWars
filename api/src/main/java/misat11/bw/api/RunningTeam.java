@@ -35,4 +35,6 @@ public interface RunningTeam extends Team {
 	public boolean isTeamChestRegistered(Block block);
 	
 	public Inventory getTeamChestInventory();
+	
+	public int countTeamChests();
 }

@@ -6,17 +6,17 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 import misat11.bw.api.Game;
-import misat11.bw.api.Team;
+import misat11.bw.api.RunningTeam;
 
 public class BedwarsTeamChestOpenEvent extends Event implements Cancellable {
 
 	private static final HandlerList handlers = new HandlerList();
 	private Game game = null;
 	private Player player = null;
-	private Team team = null;
+	private RunningTeam team = null;
 	private boolean cancelled = false;
 
-	public BedwarsTeamChestOpenEvent(Game game, Player player, Team team) {
+	public BedwarsTeamChestOpenEvent(Game game, Player player, RunningTeam team) {
 		this.player = player;
 		this.team = team;
 		this.game = game;
@@ -39,7 +39,7 @@ public class BedwarsTeamChestOpenEvent extends Event implements Cancellable {
 		return this.player;
 	}
 
-	public Team getTeam() {
+	public RunningTeam getTeam() {
 		return this.team;
 	}
 

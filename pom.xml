@@ -18,7 +18,9 @@
 		</repository>
 		<repository>
 			<id>vault-repo</id>
-			<url>http://nexus.hc.to/content/repositories/pub_releases</url>
+			<!-- <url>http://nexus.hc.to/content/repositories/pub_releases</url> -->
+			<!-- Using my repository, because hc.to often crashes -->
+			<url>https://jenkins.mtorus.cz/plugin/repository/project/VaultAPI/LastSuccessful/repository/</url>
 		</repository>
 		<repository>
 			<id>placeholderapi</id>
@@ -30,7 +32,7 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<bedwars.api>1.1</bedwars.api>
-		<bedwars.version>0.0.8-pre1</bedwars.version>
+		<bedwars.version>0.0.8</bedwars.version>
 	</properties>
 
 	<modules>

@@ -44,17 +44,29 @@ public interface Game {
 	
 	public int getMinPlayers();
 	
+	public int getMaxPlayers();
+	
 	public int countConnectedPlayers();
 	
 	public List<Player> getConnectedPlayers();
 	
 	public List<GameStore> getGameStores();
 	
+	public int countGameStores();
+	
 	public List<Team> getAvailableTeams();
+	
+	public int countAvailableTeams();
 	
 	public List<RunningTeam> getRunningTeams();
 	
+	public int countRunningTeams();
+	
 	public RunningTeam getTeamOfPlayer(Player player);
+	
+	public boolean isPlayerInAnyTeam(Player player);
+	
+	public boolean isPlayerInTeam(Player player, RunningTeam team);
 	
 	public boolean isLocationInArena(Location location);
 	
@@ -67,6 +79,10 @@ public interface Game {
 	public Location getLobbySpawn();
 	
 	public int getLobbyCountdown();
+	
+	public int countTeamChests();
+	
+	public int countTeamChests(RunningTeam team);
 	
 	public RunningTeam getTeamOfChest(Location location);
 	

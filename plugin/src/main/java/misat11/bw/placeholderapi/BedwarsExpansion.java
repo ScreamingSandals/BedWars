@@ -5,12 +5,16 @@ import org.bukkit.entity.Player;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import misat11.bw.Main;
 import misat11.bw.api.statistics.PlayerStatistic;
+import misat11.bw.game.CurrentTeam;
+import misat11.bw.game.Game;
+import misat11.bw.game.GamePlayer;
+import net.md_5.bungee.api.ChatColor;
 
 public class BedwarsExpansion extends PlaceholderExpansion {
 
 	@Override
 	public String getAuthor() {
-		return "Misat11";
+		return String.join(", ", Main.getInstance().getDescription().getAuthors());
 	}
 
 	@Override
@@ -22,36 +26,162 @@ public class BedwarsExpansion extends PlaceholderExpansion {
 	public String getVersion() {
 		return Main.getVersion();
 	}
-	
+
 	@Override
 	public String getPlugin() {
 		return Main.getInstance().getName();
 	}
-	
+
 	@Override
 	public String onPlaceholderRequest(Player player, String identifier) {
-		// About game
-		
-		
 		// Player
 		if (player == null) {
 			return "";
 		}
-		
-		// TODO current game
-		
+
+		// current game
+		switch (identifier.toLowerCase()) {
+		case "current_game":
+			return Main.isPlayerInGame(player) ? Main.getPlayerGameProfile(player).getGame().getName() : "none";
+		case "current_game_players":
+			if (Main.isPlayerInGame(player)) {
+				return Integer.toString(Main.getPlayerGameProfile(player).getGame().countConnectedPlayers());
+			} else {
+				return "0";
+			}
+		case "current_game_maxplayers":
+			if (Main.isPlayerInGame(player)) {
+				return Integer.toString(Main.getPlayerGameProfile(player).getGame().getMaxPlayers());
+			} else {
+				return "0";
+			}
+		case "current_game_minplayers":
+			if (Main.isPlayerInGame(player)) {
+				return Integer.toString(Main.getPlayerGameProfile(player).getGame().getMinPlayers());
+			} else {
+				return "0";
+			}
+		case "current_game_world":
+			if (Main.isPlayerInGame(player)) {
+				return Main.getPlayerGameProfile(player).getGame().getWorld().getName();
+			} else {
+				return "none";
+			}
+		case "current_game_state":
+			if (Main.isPlayerInGame(player)) {
+				return Main.getPlayerGameProfile(player).getGame().getStatus().name().toLowerCase();
+			} else {
+				return "none";
+			}
+		case "current_available_teams":
+			if (Main.isPlayerInGame(player)) {
+				return Integer.toString(Main.getPlayerGameProfile(player).getGame().countAvailableTeams());
+			} else {
+				return "0";
+			}
+		case "current_connected_teams":
+			if (Main.isPlayerInGame(player)) {
+				return Integer.toString(Main.getPlayerGameProfile(player).getGame().countRunningTeams());
+			} else {
+				return "0";
+			}
+		case "current_teamchests":
+			if (Main.isPlayerInGame(player)) {
+				return Integer.toString(Main.getPlayerGameProfile(player).getGame().countTeamChests());
+			} else {
+				return "0";
+			}
+		case "current_team":
+			if (Main.isPlayerInGame(player)) {
+				GamePlayer gPlayer = Main.getPlayerGameProfile(player);
+				Game game = gPlayer.getGame();
+				if (gPlayer.isSpectator) {
+					return "spectator";
+				} else {
+					return game.getPlayerTeam(gPlayer).getName();
+				}
+			} else {
+				return "none";
+			}
+		case "current_team_colored":
+			if (Main.isPlayerInGame(player)) {
+				GamePlayer gPlayer = Main.getPlayerGameProfile(player);
+				Game game = gPlayer.getGame();
+				if (gPlayer.isSpectator) {
+					return ChatColor.GRAY + "spectator";
+				} else {
+					CurrentTeam team = game.getPlayerTeam(gPlayer);
+					return team.getColor() + team.getName();
+				}
+			} else {
+				return ChatColor.RED + "none";
+			}
+		case "current_team_players":
+			if (Main.isPlayerInGame(player)) {
+				GamePlayer gPlayer = Main.getPlayerGameProfile(player);
+				Game game = gPlayer.getGame();
+				if (gPlayer.isSpectator) {
+					return "0";
+				} else {
+					CurrentTeam team = game.getPlayerTeam(gPlayer);
+					return Integer.toString(team.countConnectedPlayers());
+				}
+			} else {
+				return "0";
+			}
+		case "current_team_maxplayers":
+			if (Main.isPlayerInGame(player)) {
+				GamePlayer gPlayer = Main.getPlayerGameProfile(player);
+				Game game = gPlayer.getGame();
+				if (gPlayer.isSpectator) {
+					return "0";
+				} else {
+					CurrentTeam team = game.getPlayerTeam(gPlayer);
+					return Integer.toString(team.getMaxPlayers());
+				}
+			} else {
+				return "0";
+			}
+		case "current_team_bed":
+			if (Main.isPlayerInGame(player)) {
+				GamePlayer gPlayer = Main.getPlayerGameProfile(player);
+				Game game = gPlayer.getGame();
+				if (gPlayer.isSpectator) {
+					return "no";
+				} else {
+					CurrentTeam team = game.getPlayerTeam(gPlayer);
+					return team.isBed ? "yes" : "no";
+				}
+			} else {
+				return "no";
+			}
+		case "current_team_teamchests":
+			if (Main.isPlayerInGame(player)) {
+				GamePlayer gPlayer = Main.getPlayerGameProfile(player);
+				Game game = gPlayer.getGame();
+				if (gPlayer.isSpectator) {
+					return "0";
+				} else {
+					CurrentTeam team = game.getPlayerTeam(gPlayer);
+					return Integer.toString(team.countTeamChests());
+				}
+			} else {
+				return "0";
+			}
+		}
+
 		// Stats
-		
+
 		if (!Main.isPlayerStatisticsEnabled()) {
 			return null;
 		}
-		
+
 		PlayerStatistic stats = Main.getPlayerStatisticsManager().getStatistic(player);
-		
+
 		if (stats == null) {
 			return null;
 		}
-		
+
 		switch (identifier.toLowerCase()) {
 		case "stats_deaths":
 			return Integer.toString(stats.getCurrentDeaths() + stats.getDeaths());
@@ -70,7 +200,7 @@ public class BedwarsExpansion extends PlaceholderExpansion {
 		case "stats_kd":
 			return Double.toString(stats.getCurrentKD() + stats.getKD());
 		}
-		
+
 		return null;
 	}
 

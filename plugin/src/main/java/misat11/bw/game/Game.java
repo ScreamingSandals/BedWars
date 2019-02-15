@@ -539,6 +539,7 @@ public class Game implements misat11.bw.api.Game {
 				t.bed = readLocationFromString(game.world, team.getString("bed"));
 				t.maxPlayers = team.getInt("maxPlayers");
 				t.spawn = readLocationFromString(game.world, team.getString("spawn"));
+				t.game = game;
 				game.teams.add(t);
 			}
 		}
@@ -787,7 +788,7 @@ public class Game implements misat11.bw.api.Game {
 		}
 
 		if (current == null) {
-			current = new CurrentTeam(teamForJoin);
+			current = new CurrentTeam(teamForJoin, this);
 			org.bukkit.scoreboard.Team scoreboardTeam = gameScoreboard.getTeam(teamForJoin.name);
 			if (scoreboardTeam == null) {
 				scoreboardTeam = gameScoreboard.registerNewTeam(teamForJoin.name);
@@ -1153,7 +1154,7 @@ public class Game implements misat11.bw.api.Game {
 					}
 
 					if (current == null) {
-						current = new CurrentTeam(team);
+						current = new CurrentTeam(team, this);
 						org.bukkit.scoreboard.Team scoreboardTeam = gameScoreboard.getTeam(team.name);
 						if (scoreboardTeam == null) {
 							scoreboardTeam = gameScoreboard.registerNewTeam(team.name);
@@ -1493,6 +1494,50 @@ public class Game implements misat11.bw.api.Game {
 		if (!usedChests.contains(loc)) {
 			usedChests.add(loc);
 		}
+	}
+
+	@Override
+	public int getMaxPlayers() {
+		return calculatedMaxPlayers;
+	}
+
+	@Override
+	public int countGameStores() {
+		return gameStore.size();
+	}
+
+	@Override
+	public int countAvailableTeams() {
+		return teams.size();
+	}
+
+	@Override
+	public int countRunningTeams() {
+		return teamsInGame.size();
+	}
+
+	@Override
+	public boolean isPlayerInAnyTeam(Player player) {
+		return getTeamOfPlayer(player) != null;
+	}
+
+	@Override
+	public boolean isPlayerInTeam(Player player, RunningTeam team) {
+		return getTeamOfPlayer(player) == team;
+	}
+
+	@Override
+	public int countTeamChests() {
+		int total = 0;
+		for (CurrentTeam team : teamsInGame) {
+			total += team.countTeamChests();
+		}
+		return total;
+	}
+
+	@Override
+	public int countTeamChests(RunningTeam team) {
+		return team.countTeamChests();
 	}
 
 }

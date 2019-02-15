@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 
+import misat11.bw.api.Game;
 import misat11.bw.api.RunningTeam;
 import misat11.bw.api.TeamColor;
 
@@ -21,11 +22,13 @@ public class CurrentTeam implements RunningTeam {
 	private org.bukkit.scoreboard.Team scoreboardTeam;
 	private Inventory chestInventory = Bukkit.createInventory(null, InventoryType.ENDER_CHEST, i18n("team_chest"));
 	private List<Block> chests = new ArrayList<Block>();
+	private Game game;
 
 	public boolean isBed = true;
 
-	public CurrentTeam(Team team) {
+	public CurrentTeam(Team team, Game game) {
 		this.teamInfo = team;
+		this.game = game;
 	}
 
 	public boolean isDead() {
@@ -135,5 +138,15 @@ public class CurrentTeam implements RunningTeam {
 	@Override
 	public Inventory getTeamChestInventory() {
 		return chestInventory;
+	}
+
+	@Override
+	public Game getGame() {
+		return game;
+	}
+
+	@Override
+	public int countTeamChests() {
+		return chests.size();
 	}
 }

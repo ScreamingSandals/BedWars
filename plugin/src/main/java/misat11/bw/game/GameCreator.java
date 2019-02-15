@@ -335,6 +335,7 @@ public class GameCreator {
 		team.name = name;
 		team.color = c;
 		team.maxPlayers = maxPlayers;
+		team.game = game;
 		game.getTeams().add(team);
 
 		return i18n("admin_command_team_created").replace("%team%", team.name)
