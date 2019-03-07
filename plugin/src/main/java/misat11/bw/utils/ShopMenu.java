@@ -19,6 +19,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 
 import misat11.bw.Main;
+import misat11.bw.api.events.BedwarsApplyPropertyToBoughtItem;
 import misat11.bw.game.ItemSpawnerType;
 
 import static misat11.bw.utils.I18n.i18n;
@@ -173,6 +174,23 @@ public class ShopMenu implements Listener {
 				materialItem.setAmount(price);
 				ItemStack newItem = (ItemStack) itemInfo.get("stack");
 				if (player.getInventory().containsAtLeast(materialItem, price)) {
+					if (itemInfo.containsKey("properties")) {
+						Object properties = itemInfo.get("properties");
+						if (properties instanceof List) {
+							List<Object> propertiesList = (List<Object>) properties;
+							for (Object obj : propertiesList) {
+								if (obj instanceof Map) {
+									Map<String, Object> propertyMap = (Map<String, Object>) obj;
+									if (propertyMap.get("name") instanceof String) {
+										BedwarsApplyPropertyToBoughtItem applyEvent = new BedwarsApplyPropertyToBoughtItem(Main.getPlayerGameProfile(player).getGame(), player, newItem, propertyMap);
+										Main.getInstance().getServer().getPluginManager().callEvent(applyEvent);
+										
+										newItem = applyEvent.getStack();
+									}
+								}
+							}
+						}
+					}
 					player.getInventory().removeItem(materialItem);
 					player.getInventory().addItem(newItem);
 					player.sendMessage(i18n("buy_succes").replace("%item%",

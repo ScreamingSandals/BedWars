@@ -27,6 +27,7 @@ import misat11.bw.listener.Player19Listener;
 import misat11.bw.listener.PlayerListener;
 import misat11.bw.listener.SignListener;
 import misat11.bw.listener.VillagerListener;
+import misat11.bw.listener.WarpPowderListener;
 import misat11.bw.listener.WorldListener;
 import misat11.bw.placeholderapi.BedwarsExpansion;
 import misat11.bw.statistics.PlayerStatisticManager;
@@ -328,6 +329,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 		getServer().getPluginManager().registerEvents(new VillagerListener(), this);
 		getServer().getPluginManager().registerEvents(new SignListener(), this);
 		getServer().getPluginManager().registerEvents(new WorldListener(), this);
+		getServer().getPluginManager().registerEvents(new WarpPowderListener(), this);
 
 		getServer().getServicesManager().register(BedwarsAPI.class, this, this, ServicePriority.Normal);
 

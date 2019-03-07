@@ -386,6 +386,42 @@ shop-items:
         ==: org.bukkit.inventory.ItemStack
         v: 1519
         type: GLASS
+            
+  usefulstuff:
+    name: "Useful Stuff"
+    item: TNT     
+    lore:
+    - "Looking for useful stuff? Here are some!"
+    items:
+    - price: 1
+      price-type: iron
+      stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1519
+        type: CHEST
+    - price: 1
+      price-type: gold
+      stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 1519
+        type: ENDER_CHEST
+    - price: 7
+      price-type: iron
+      properties:
+      - name: "WarpPowder"
+        delay: 6
+      stack:
+        ==: org.bukkit.inventory.ItemStack
+        type: GUNPOWDER
+        v: 1519
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: "Warp Powder"
+          lore:
+          - "When using this powder you'll get"
+          - "teleported to you spawn point within 6 seconds"
+          - "Warning: Any movement will stop the process"
         
               
   
