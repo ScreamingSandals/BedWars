@@ -110,6 +110,8 @@ game-effects:
   lobbyleave: {}
   respawn: {}
   beddestroy: {}
+  warppowdertick: {}
+  
   
 # Lobby scoreboard
 lobby-scoreboard:

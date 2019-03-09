@@ -7,6 +7,8 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
+import misat11.bw.api.special.SpecialItem;
+
 public interface Game {
 	public String getName();
 	
@@ -71,6 +73,32 @@ public interface Game {
 	public boolean isLocationInArena(Location location);
 	
 	public boolean isBlockAddedDuringGame(Location location);
+	
+	public List<SpecialItem> getActivedSpecialItems();
+	
+	public List<SpecialItem> getActivedSpecialItems(Class<? extends SpecialItem> type);
+
+	public List<SpecialItem> getActivedSpecialItemsOfTeam(Team team);
+
+	public List<SpecialItem> getActivedSpecialItemsOfTeam(Team team, Class<? extends SpecialItem> type);
+	
+	public SpecialItem getFirstActivedSpecialItemOfTeam(Team team);
+	
+	public SpecialItem getFirstActivedSpecialItemOfTeam(Team team, Class<? extends SpecialItem> type);
+	
+	public List<SpecialItem> getActivedSpecialItemsOfPlayer(Player player);
+	
+	public List<SpecialItem> getActivedSpecialItemsOfPlayer(Player player, Class<? extends SpecialItem> type);
+	
+	public SpecialItem getFirstActivedSpecialItemOfPlayer(Player player);
+	
+	public SpecialItem getFirstActivedSpecialItemOfPlayer(Player player, Class<? extends SpecialItem> type);
+	
+	public void registerSpecialItem(SpecialItem item);
+	
+	public void unregisterSpecialItem(SpecialItem item);
+	
+	public boolean isRegisteredSpecialItem(SpecialItem item);
 	
 	// LOBBY
 	

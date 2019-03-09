@@ -87,8 +87,12 @@ public class ShopMenu implements Listener {
 				stackMeta.setLore(lore);
 				stack.setItemMeta(stackMeta);
 				categoryClass.items.put(stack, item);
-				categoryClass.inv.setItem(categoryClass.lastpos, stack);
-				categoryClass.lastpos++;
+				int position = categoryClass.lastpos;
+				if (item.containsKey("skip")) {
+					position += (int) item.get("skip");
+				}
+				categoryClass.inv.setItem(position, stack);
+				categoryClass.lastpos = position + 1;
 			}
 
 			mainInventory.setItem(lastpos, categoryItem);

@@ -150,6 +150,7 @@ public class Configurator {
 		checkOrSetConfig(modify, "game-effects.lobbyleave", new HashMap<String, Object>());
 		checkOrSetConfig(modify, "game-effects.respawn", new HashMap<String, Object>());
 		checkOrSetConfig(modify, "game-effects.beddestroy", new HashMap<String, Object>());
+		checkOrSetConfig(modify, "game-effects.warppowdertick", new HashMap<String, Object>());
 		checkOrSetConfig(modify, "lobby-scoreboard.enabled", true);
 		checkOrSetConfig(modify, "lobby-scoreboard.title", "§eBEDWARS");
 		checkOrSetConfig(modify, "lobby-scoreboard.content", Arrays.asList(" ", "§fMap: §2%arena%", "§fPlayers: §2%players%§f/§2%maxplayers%", " ", "§fWaiting ...", " "));

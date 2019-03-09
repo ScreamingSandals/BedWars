@@ -12,7 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.FireworkMeta;
 
 import misat11.bw.Main;
-import misat11.bw.game.Game;
+import misat11.bw.api.Game;
 
 public class SpawnEffects {
 	public static <T> void spawnEffect(Game game, Player player, String particleName) {

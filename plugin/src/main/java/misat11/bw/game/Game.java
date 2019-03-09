@@ -49,6 +49,7 @@ import misat11.bw.api.events.BedwarsPostRebuildingEvent;
 import misat11.bw.api.events.BedwarsPreRebuildingEvent;
 import misat11.bw.api.events.BedwarsResourceSpawnEvent;
 import misat11.bw.api.events.BedwarsTargetBlockDestroyedEvent;
+import misat11.bw.api.special.SpecialItem;
 import misat11.bw.legacy.LegacyRegion;
 import misat11.bw.statistics.PlayerStatistic;
 import misat11.bw.utils.GameSign;
@@ -97,6 +98,7 @@ public class Game implements misat11.bw.api.Game {
 	private Scoreboard gameScoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
 	private BossBar bossbar;
 	private List<Location> usedChests = new ArrayList<Location>();
+	private List<SpecialItem> activeSpecialItems = new ArrayList<SpecialItem>();
 
 	private Game() {
 
@@ -291,7 +293,7 @@ public class Game implements misat11.bw.api.Game {
 		}
 		return false;
 	}
-	
+
 	public IRegion getRegion() {
 		return region;
 	}
@@ -326,11 +328,12 @@ public class Game implements misat11.bw.api.Game {
 					BedwarsTargetBlockDestroyedEvent targetBlockDestroyed = new BedwarsTargetBlockDestroyedEvent(this,
 							broker, team);
 					Main.getInstance().getServer().getPluginManager().callEvent(targetBlockDestroyed);
-					
+
 					if (Main.isPlayerStatisticsEnabled()) {
 						PlayerStatistic statistic = Main.getPlayerStatisticsManager().getStatistic(broker);
-						statistic.setCurrentDestroyedBeds(statistic.getCurrentDestroyedBeds()+1);
-						statistic.setCurrentScore(statistic.getCurrentScore()+Main.getConfigurator().config.getInt("statistics.scores.bed-destroy", 25));
+						statistic.setCurrentDestroyedBeds(statistic.getCurrentDestroyedBeds() + 1);
+						statistic.setCurrentScore(statistic.getCurrentScore()
+								+ Main.getConfigurator().config.getInt("statistics.scores.bed-destroy", 25));
 					}
 				}
 			}
@@ -375,7 +378,7 @@ public class Game implements misat11.bw.api.Game {
 			players.add(player);
 		}
 		updateSigns();
-		
+
 		if (Main.isPlayerStatisticsEnabled()) {
 			// Load
 			Main.getPlayerStatisticsManager().getStatistic(player.player);
@@ -461,14 +464,14 @@ public class Game implements misat11.bw.api.Game {
 		for (GamePlayer p : players) {
 			p.player.sendMessage(message);
 		}
-		
+
 		if (Main.isPlayerStatisticsEnabled()) {
 			PlayerStatistic statistic = Main.getPlayerStatisticsManager().getStatistic(player.player);
 			Main.getPlayerStatisticsManager().storeStatistic(statistic);
-			
+
 			Main.getPlayerStatisticsManager().unloadStatistic(player.player);
 		}
-		
+
 		if (players.isEmpty()) {
 			if (status == GameStatus.RUNNING) {
 				status = GameStatus.REBUILDING;
@@ -878,6 +881,7 @@ public class Game implements misat11.bw.api.Game {
 			updateScoreboardTimer();
 			if (countdown == 0) {
 				teamsInGame.clear();
+				activeSpecialItems.clear();
 				for (GameStore store : gameStore) {
 					Villager villager = store.kill();
 					if (villager != null) {
@@ -917,22 +921,24 @@ public class Game implements misat11.bw.api.Game {
 									Main.depositPlayer(player.player, Main.getVaultWinReward());
 
 									SpawnEffects.spawnEffect(this, player.player, "game-effects.end");
-									
+
 									if (Main.isPlayerStatisticsEnabled()) {
-										PlayerStatistic statistic = Main.getPlayerStatisticsManager().getStatistic(player.player);
+										PlayerStatistic statistic = Main.getPlayerStatisticsManager()
+												.getStatistic(player.player);
 										statistic.setCurrentWins(statistic.getCurrentWins() + 1);
 										statistic.setCurrentScore(statistic.getCurrentScore()
 												+ Main.getConfigurator().config.getInt("statistics.scores.win", 50));
-										
+
 										if (madeRecord) {
-											statistic.setCurrentScore(statistic.getCurrentScore()
-													+ Main.getConfigurator().config.getInt("statistics.scores.record", 100));
+											statistic.setCurrentScore(
+													statistic.getCurrentScore() + Main.getConfigurator().config
+															.getInt("statistics.scores.record", 100));
 										}
-										
+
 										if (Main.getConfigurator().config.getBoolean("statistics.show-on-game-end")) {
 											Main.getInstance().getServer().dispatchCommand(player.player, "bw stats");
 										}
-										
+
 									}
 								} else {
 									Title.send(player.player, i18n("you_lost", false), subtitle);
@@ -1538,6 +1544,125 @@ public class Game implements misat11.bw.api.Game {
 	@Override
 	public int countTeamChests(RunningTeam team) {
 		return team.countTeamChests();
+	}
+
+	@Override
+	public List<SpecialItem> getActivedSpecialItems() {
+		return new ArrayList<SpecialItem>(activeSpecialItems);
+	}
+
+	@Override
+	public List<SpecialItem> getActivedSpecialItems(Class<? extends SpecialItem> type) {
+		List<SpecialItem> items = new ArrayList<SpecialItem>();
+		for (SpecialItem item : activeSpecialItems) {
+			if (type.isInstance(item)) {
+				items.add(item);
+			}
+		}
+		return items;
+	}
+
+	@Override
+	public List<SpecialItem> getActivedSpecialItemsOfTeam(misat11.bw.api.Team team) {
+		List<SpecialItem> items = new ArrayList<SpecialItem>();
+		for (SpecialItem item : activeSpecialItems) {
+			if (item.getTeam() == team) {
+				items.add(item);
+			}
+		}
+		return items;
+	}
+
+	@Override
+	public List<SpecialItem> getActivedSpecialItemsOfTeam(misat11.bw.api.Team team, Class<? extends SpecialItem> type) {
+		List<SpecialItem> items = new ArrayList<SpecialItem>();
+		for (SpecialItem item : activeSpecialItems) {
+			if (type.isInstance(item) && item.getTeam() == team) {
+				items.add(item);
+			}
+		}
+		return items;
+	}
+
+	@Override
+	public SpecialItem getFirstActivedSpecialItemOfTeam(misat11.bw.api.Team team) {
+		for (SpecialItem item : activeSpecialItems) {
+			if (item.getTeam() == team) {
+				return item;
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public SpecialItem getFirstActivedSpecialItemOfTeam(misat11.bw.api.Team team, Class<? extends SpecialItem> type) {
+		for (SpecialItem item : activeSpecialItems) {
+			if (item.getTeam() == team && type.isInstance(item)) {
+				return item;
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public List<SpecialItem> getActivedSpecialItemsOfPlayer(Player player) {
+		List<SpecialItem> items = new ArrayList<SpecialItem>();
+		for (SpecialItem item : activeSpecialItems) {
+			if (item.getPlayer() == player) {
+				items.add(item);
+			}
+		}
+		return items;
+	}
+
+	@Override
+	public List<SpecialItem> getActivedSpecialItemsOfPlayer(Player player, Class<? extends SpecialItem> type) {
+		List<SpecialItem> items = new ArrayList<SpecialItem>();
+		for (SpecialItem item : activeSpecialItems) {
+			if (item.getPlayer() == player && type.isInstance(item)) {
+				items.add(item);
+			}
+		}
+		return items;
+	}
+
+	@Override
+	public SpecialItem getFirstActivedSpecialItemOfPlayer(Player player) {
+		for (SpecialItem item : activeSpecialItems) {
+			if (item.getPlayer() == player) {
+				return item;
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public SpecialItem getFirstActivedSpecialItemOfPlayer(Player player, Class<? extends SpecialItem> type) {
+		for (SpecialItem item : activeSpecialItems) {
+			if (item.getTeam() == player && type.isInstance(item)) {
+				return item;
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public void registerSpecialItem(SpecialItem item) {
+		if (!activeSpecialItems.contains(item)) {
+			activeSpecialItems.add(item);
+		}
+	}
+
+	@Override
+	public void unregisterSpecialItem(SpecialItem item) {
+		if (activeSpecialItems.contains(item)) {
+			activeSpecialItems.remove(item);
+		}
+	}
+
+	@Override
+	public boolean isRegisteredSpecialItem(SpecialItem item) {
+		return activeSpecialItems.contains(item);
 	}
 
 }
