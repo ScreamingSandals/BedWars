@@ -13,9 +13,18 @@ import org.bukkit.inventory.meta.FireworkMeta;
 
 import misat11.bw.Main;
 import misat11.bw.api.Game;
+import misat11.bw.api.events.BedwarsPostSpawnEffectEvent;
+import misat11.bw.api.events.BedwarsPreSpawnEffectEvent;
 
 public class SpawnEffects {
-	public static <T> void spawnEffect(Game game, Player player, String particleName) {
+	public static void spawnEffect(Game game, Player player, String particleName) {
+		BedwarsPreSpawnEffectEvent firstEvent = new BedwarsPreSpawnEffectEvent(game, player, particleName);
+		Main.getInstance().getServer().getPluginManager().callEvent(firstEvent);
+		
+		if (firstEvent.isCancelled()) {
+			return;
+		}
+		
 		ConfigurationSection effect = Main.getConfigurator().config.getConfigurationSection(particleName);
 		if (effect != null && effect.isSet("type")) {
 			try {
@@ -69,5 +78,8 @@ public class SpawnEffects {
 			} catch (Throwable e) {
 			}
 		}
+		
+		BedwarsPostSpawnEffectEvent secondEvent = new BedwarsPostSpawnEffectEvent(game, player, particleName);
+		Main.getInstance().getServer().getPluginManager().callEvent(secondEvent);
 	}
 }

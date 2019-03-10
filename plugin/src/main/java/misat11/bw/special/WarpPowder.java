@@ -27,6 +27,7 @@ public class WarpPowder extends SpecialItem implements misat11.bw.api.special.Wa
 		this.teleportingTime = delay;
 	}
 
+	@Override
 	public void cancelTeleport(boolean removeSpecial, boolean showMessage, boolean decrementStack) {
 		try {
 			teleportingTask.cancel();
@@ -49,10 +50,12 @@ public class WarpPowder extends SpecialItem implements misat11.bw.api.special.Wa
 		}
 	}
 
+	@Override
 	public ItemStack getStack() {
 		return item;
 	}
 
+	@Override
 	public void runTask() {
 		game.registerSpecialItem(this);
 
@@ -75,6 +78,7 @@ public class WarpPowder extends SpecialItem implements misat11.bw.api.special.Wa
 		}.runTaskTimer(Main.getInstance(), 0L, 20L);
 	}
 
+	@Override
 	public void setStackAmount(int amount) {
 		item.setAmount(amount);
 	}

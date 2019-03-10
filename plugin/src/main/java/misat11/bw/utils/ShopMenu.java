@@ -88,11 +88,29 @@ public class ShopMenu implements Listener {
 				stack.setItemMeta(stackMeta);
 				categoryClass.items.put(stack, item);
 				int position = categoryClass.lastpos;
+				int linebreak = 0;
+				if (item.containsKey("linebreak")) {
+					String lnBreak = (String) item.get("linebreak");
+					if (lnBreak.equalsIgnoreCase("before")) {
+						linebreak = 1;
+					} else if (lnBreak.equalsIgnoreCase("after")) {
+						linebreak = 2;
+					}
+				}
+				if (linebreak == 1) {
+					position += (9 - (position % 9));
+				}
 				if (item.containsKey("skip")) {
 					position += (int) item.get("skip");
 				}
 				categoryClass.inv.setItem(position, stack);
-				categoryClass.lastpos = position + 1;
+				int nextPosition = position;
+				if (linebreak == 2) {
+					nextPosition += (9 - (nextPosition % 9));
+				} else {
+					nextPosition++;
+				}
+				categoryClass.lastpos = nextPosition;
 			}
 
 			mainInventory.setItem(lastpos, categoryItem);
