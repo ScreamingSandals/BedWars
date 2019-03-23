@@ -169,6 +169,10 @@ statistics_games: "§7Played games: §b%games%"
 statistics_beds: "§7Destroyed beds: §a%beds%"
 statistics_score: "§7Total score: §a%score%"
 
+specials_warp_powder_multiuse: "§cAnother WarpPowder is already actived!"
+specials_warp_powder_canceled: "§cWarpPowder was canceled!"
+specials_warp_powder_started: "§aWarpPowder was started! Please don't move for §7%time%§a seconds!"
+
 help_title: "BedWars %version% - Help"
 help_bw_join: "/bw join <arena> - §aJoin to arena"
 help_bw_leave: "/bw leave - §aLeave from arena"

@@ -1639,7 +1639,7 @@ public class Game implements misat11.bw.api.Game {
 	@Override
 	public SpecialItem getFirstActivedSpecialItemOfPlayer(Player player, Class<? extends SpecialItem> type) {
 		for (SpecialItem item : activeSpecialItems) {
-			if (item.getTeam() == player && type.isInstance(item)) {
+			if (item.getPlayer() == player && type.isInstance(item)) {
 				return item;
 			}
 		}

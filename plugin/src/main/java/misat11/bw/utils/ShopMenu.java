@@ -80,6 +80,7 @@ public class ShopMenu implements Listener {
 				if (type == null) {
 					continue;
 				}
+				
 				lore.add(i18n("price", false));
 				lore.add(price + " " + type.getItemName());
 				lore.add(i18n("amount", false));
@@ -95,9 +96,11 @@ public class ShopMenu implements Listener {
 						linebreak = 1;
 					} else if (lnBreak.equalsIgnoreCase("after")) {
 						linebreak = 2;
+					} else if (lnBreak.equalsIgnoreCase("both")) {
+						linebreak = 3;
 					}
 				}
-				if (linebreak == 1) {
+				if (linebreak == 1 || linebreak == 3) {
 					position += (9 - (position % 9));
 				}
 				if (item.containsKey("skip")) {
@@ -105,7 +108,7 @@ public class ShopMenu implements Listener {
 				}
 				categoryClass.inv.setItem(position, stack);
 				int nextPosition = position;
-				if (linebreak == 2) {
+				if (linebreak >= 2) {
 					nextPosition += (9 - (nextPosition % 9));
 				} else {
 					nextPosition++;

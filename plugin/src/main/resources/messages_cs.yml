@@ -165,6 +165,10 @@ statistics_games: "§7Odehrané hry: §b%games%"
 statistics_beds: "§7Zničeno postelí: §a%beds%"
 statistics_score: "§7Celkové score: §a%score%"
 
+specials_warp_powder_multiuse: "§cJiž je aktivován jiný WarpPowder!"
+specials_warp_powder_canceled: "§cTeleportace na základnu zrušena!"
+specials_warp_powder_started: "§aTeleportace na základnu začala! Ani se nehni po dobu §7%time%§a sekund!"
+
 help_title: "BedWars %version% - Nápověda"
 help_bw_join: "/bw join <aréna> - §aPřipojí tě k aréně"
 help_bw_leave: "/bw leave - §aOdpojí tě z arény"
