@@ -7,9 +7,11 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.bukkit.Material;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.inventory.ItemStack;
 
 import misat11.bw.Main;
 
@@ -133,6 +135,9 @@ public class Configurator {
 		checkOrSetConfig(modify, "items.jointeam", "COMPASS");
 		checkOrSetConfig(modify, "items.leavegame", "SLIME_BALL");
 		checkOrSetConfig(modify, "items.shopback", "BARRIER");
+		checkOrSetConfig(modify, "items.shopcosmetic", "AIR");
+		checkOrSetConfig(modify, "items.pageback", "ARROW");
+		checkOrSetConfig(modify, "items.pageforward", "ARROW");
 		checkOrSetConfig(modify, "vault.enable", true);
 		checkOrSetConfig(modify, "vault.reward.kill", 5);
 		checkOrSetConfig(modify, "vault.reward.win", 20);
@@ -189,5 +194,20 @@ public class Configurator {
 			config.set(path, value);
 			modify.set(true);
 		}
+	}
+	
+	public ItemStack readDefinedItem(String item, String def) {
+		ItemStack material = new ItemStack(Material.valueOf(def));
+		
+		if (config.isSet("items." + item)) {
+			Object obj = config.get("items." + item);
+			if (obj instanceof ItemStack) {
+				material = (ItemStack) obj;
+			} else {
+				material.setType(Material.valueOf((String) obj));
+			}
+		}
+		
+		return material;
 	}
 }

@@ -173,6 +173,9 @@ specials_warp_powder_multiuse: "§cAnother WarpPowder is already actived!"
 specials_warp_powder_canceled: "§cWarpPowder was canceled!"
 specials_warp_powder_started: "§aWarpPowder was started! Please don't move for §7%time%§a seconds!"
 
+page_back: "Page back"
+page_forward: "Page forward"
+
 help_title: "BedWars %version% - Help"
 help_bw_join: "/bw join <arena> - §aJoin to arena"
 help_bw_leave: "/bw leave - §aLeave from arena"

@@ -392,13 +392,11 @@ public class Game implements misat11.bw.api.Game {
 		for (GamePlayer p : players)
 			p.player.sendMessage(message);
 
-		ItemStack compass = new ItemStack(
-				Material.valueOf(Main.getConfigurator().config.getString("items.jointeam", "COMPASS")));
+		ItemStack compass = Main.getConfigurator().readDefinedItem("jointeam", "COMPASS");
 		ItemMeta metaCompass = compass.getItemMeta();
 		metaCompass.setDisplayName(i18n("compass_selector_team", false));
 		compass.setItemMeta(metaCompass);
-		ItemStack leave = new ItemStack(
-				Material.valueOf(Main.getConfigurator().config.getString("items.leavegame", "SLIME_BALL")));
+		ItemStack leave = Main.getConfigurator().readDefinedItem("leavegame", "SLIME_BALL");
 		ItemMeta leaveMeta = leave.getItemMeta();
 		leaveMeta.setDisplayName(i18n("leave_from_game_item", false));
 		leave.setItemMeta(leaveMeta);
@@ -867,8 +865,7 @@ public class Game implements misat11.bw.api.Game {
 			player.player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1));
 		}
 
-		ItemStack leave = new ItemStack(
-				Material.valueOf(Main.getConfigurator().config.getString("items.leavegame", "SLIME_BALL")));
+		ItemStack leave = Main.getConfigurator().readDefinedItem("leavegame", "SLIME_BALL");
 		ItemMeta leaveMeta = leave.getItemMeta();
 		leaveMeta.setDisplayName(i18n("leave_from_game_item", false));
 		leave.setItemMeta(leaveMeta);

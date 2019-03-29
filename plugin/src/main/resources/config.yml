@@ -43,6 +43,9 @@ items:
   jointeam: COMPASS
   leavegame: SLIME_BALL
   shopback: BARRIER
+  shopcosmetic: GRAY_STAINED_GLASS_PANE
+  pageback: ARROW
+  pageforward: ARROW
   
 # Vault rewards
 vault:

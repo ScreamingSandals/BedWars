@@ -43,6 +43,12 @@ items:
   jointeam: COMPASS
   leavegame: SLIME_BALL
   shopback: BARRIER
+  shopcosmetic: 
+    ==: org.bukkit.inventory.ItemStack
+    type: STAINED_GLASS_PANE
+    damage: 7
+  pageback: ARROW
+  pageforward: ARROW
   
 # Vault rewards
 vault:
