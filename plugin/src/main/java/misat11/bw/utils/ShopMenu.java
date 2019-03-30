@@ -127,7 +127,7 @@ public class ShopMenu implements Listener {
 					position += (ITEMS_ON_PAGE - (position % ITEMS_ON_PAGE));
 				}
 				if (item.containsKey("row")) {
-					position = 9 + ((int) item.get("row") * 9) + (position % 9);
+					position = position - (position % ITEMS_ON_PAGE) + (((int) item.get("row") - 1) * 9) + (position % 9);
 				}
 				if (item.containsKey("column")) {
 					Object cl = item.get("column");
@@ -151,7 +151,7 @@ public class ShopMenu implements Listener {
 					position += (int) item.get("skip");
 				}
 				createInventoryOnPage((position / ITEMS_ON_PAGE) + 1, categoryClass, category.getString("name"))
-						.setItem(position, stack);
+						.setItem(9 + position % ITEMS_ON_PAGE, stack);
 				int nextPosition = position;
 				if (pagebreak >= 2) {
 					nextPosition += (ITEMS_ON_PAGE - (nextPosition % ITEMS_ON_PAGE));
@@ -236,7 +236,8 @@ public class ShopMenu implements Listener {
 		}
 
 		for (Category cat : categoryInventories.values()) {
-			for (Inventory inv : cat.inv) {
+			for (int i = 0; i < cat.inv.size(); i++) {
+				Inventory inv = cat.inv.get(i);
 				if (e.getInventory().equals(inv)) {
 					e.setCancelled(true);
 					if (!(e.getWhoClicked() instanceof Player)) {
@@ -272,6 +273,10 @@ public class ShopMenu implements Listener {
 					if (itemInfo == null) {
 						if (stack.equals(backItem)) {
 							player.openInventory(mainInventory);
+						} else if (stack.equals(pageBackItem) && i > 0) {
+							player.openInventory(cat.inv.get(i - 1));
+						} else if (stack.equals(pageForwardItem) && i < (cat.inv.size() - 1)) {
+							player.openInventory(cat.inv.get(i + 1));
 						}
 						return;
 					}

@@ -10,6 +10,9 @@ player-drops: true
 join-randomly-after-lobby-timeout: false
 spectator-gm3: false
 prevent-killing-villagers: true
+compass-enabled: true
+join-randomly-on-lobby-join: false
+add-wool-to-inventory-on-join: true
 
 # Commands whitelist
 allowed-commands:

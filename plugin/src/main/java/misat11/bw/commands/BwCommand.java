@@ -241,6 +241,85 @@ public class BwCommand implements CommandExecutor, TabCompleter {
 
 										player.sendMessage(storeM);
 									}
+
+									player.sendMessage(i18n("arena_info_config", false));
+
+									player.sendMessage(
+											i18n("arena_info_config_constant", false)
+													.replace("%constant%", "compassEnabled").replace("%value%",
+															i18n("arena_info_config_"
+																	+ game.getCompassEnabled().name().toLowerCase(),
+																	false)));
+
+									player.sendMessage(
+											i18n("arena_info_config_constant", false)
+													.replace("%constant%", "joinRandomTeamAfterLobby").replace("%value%",
+															i18n("arena_info_config_"
+																	+ game.getJoinRandomTeamAfterLobby().name().toLowerCase(),
+																	false)));
+
+									player.sendMessage(
+											i18n("arena_info_config_constant", false)
+													.replace("%constant%", "joinRandomTeamOnJoin").replace("%value%",
+															i18n("arena_info_config_"
+																	+ game.getJoinRandomTeamOnJoin().name().toLowerCase(),
+																	false)));
+
+									player.sendMessage(
+											i18n("arena_info_config_constant", false)
+													.replace("%constant%", "addWoolToInventoryOnJoin").replace("%value%",
+															i18n("arena_info_config_"
+																	+ game.getAddWoolToInventoryOnJoin().name().toLowerCase(),
+																	false)));
+
+									player.sendMessage(
+											i18n("arena_info_config_constant", false)
+													.replace("%constant%", "preventKillingVillagers").replace("%value%",
+															i18n("arena_info_config_"
+																	+ game.getPreventKillingVillagers().name().toLowerCase(),
+																	false)));
+
+									player.sendMessage(
+											i18n("arena_info_config_constant", false)
+													.replace("%constant%", "spectatorGm3").replace("%value%",
+															i18n("arena_info_config_"
+																	+ game.getSpectatorGm3().name().toLowerCase(),
+																	false)));
+
+									player.sendMessage(
+											i18n("arena_info_config_constant", false)
+													.replace("%constant%", "playerDrops").replace("%value%",
+															i18n("arena_info_config_"
+																	+ game.getPlayerDrops().name().toLowerCase(),
+																	false)));
+
+									player.sendMessage(
+											i18n("arena_info_config_constant", false)
+													.replace("%constant%", "friendlyfire").replace("%value%",
+															i18n("arena_info_config_"
+																	+ game.getFriendlyfire().name().toLowerCase(),
+																	false)));
+
+									player.sendMessage(
+											i18n("arena_info_config_constant", false)
+													.replace("%constant%", "coloredLeatherByTeamInLobby").replace("%value%",
+															i18n("arena_info_config_"
+																	+ game.getColoredLeatherByTeamInLobby().name().toLowerCase(),
+																	false)));
+
+									player.sendMessage(
+											i18n("arena_info_config_constant", false)
+													.replace("%constant%", "keepInventory").replace("%value%",
+															i18n("arena_info_config_"
+																	+ game.getKeepInventory().name().toLowerCase(),
+																	false)));
+
+									player.sendMessage(
+											i18n("arena_info_config_constant", false)
+													.replace("%constant%", "crafting").replace("%value%",
+															i18n("arena_info_config_"
+																	+ game.getCrafting().name().toLowerCase(),
+																	false)));
 								} else {
 									player.sendMessage(i18n("no_arena_found"));
 								}
@@ -347,7 +426,7 @@ public class BwCommand implements CommandExecutor, TabCompleter {
 					} else if (args.length == 3) {
 						List<String> cmds = Arrays.asList("add", "lobby", "spec", "pos1", "pos2", "pausecountdown",
 								"team", "spawner", "time", "store", "save", "remove", "edit", "jointeam", "minplayers",
-								"info");
+								"info", "config");
 						StringUtil.copyPartialMatches(args[2], cmds, completionList);
 					} else if (args[2].equalsIgnoreCase("pausecountdown") && args.length == 4) {
 						StringUtil.copyPartialMatches(args[3], Arrays.asList("30", "60"), completionList);
@@ -359,6 +438,18 @@ public class BwCommand implements CommandExecutor, TabCompleter {
 						if (args.length == 4) {
 							List<String> cmds = Arrays.asList("add", "remove");
 							StringUtil.copyPartialMatches(args[3], cmds, completionList);
+						}
+					} else if (args[2].equalsIgnoreCase("config")) {
+						if (args.length == 4) {
+							List<String> cmds = Arrays.asList("compassEnabled", "joinRandomTeamAfterLobby",
+									"joinRandomTeamOnJoin", "addWoolToInventoryOnJoin", "preventKillingVillagers",
+									"spectatorGm3", "playerDrops", "friendlyfire", "coloredLeatherByTeamInLobby",
+									"keepInventory", "crafting");
+							StringUtil.copyPartialMatches(args[3], cmds, completionList);
+						}
+						if (args.length == 5) {
+							List<String> cmds = Arrays.asList("true", "false", "inherit");
+							StringUtil.copyPartialMatches(args[4], cmds, completionList);
 						}
 					} else if (args[2].equalsIgnoreCase("spawner")) {
 						if (args.length == 4) {
@@ -418,13 +509,13 @@ public class BwCommand implements CommandExecutor, TabCompleter {
 		player.sendMessage(i18n("help_bw_join", false));
 		player.sendMessage(i18n("help_bw_leave", false));
 		player.sendMessage(i18n("help_bw_list", false));
-		
+
 		if (player.hasPermission(ADMIN_PERMISSION) || player.hasPermission(OTHER_STATS_PERMISSION)) {
 			player.sendMessage(i18n("help_bw_stats_other", false));
 		} else {
 			player.sendMessage(i18n("help_bw_stats", false));
 		}
-		
+
 		if (player.hasPermission(ADMIN_PERMISSION)) {
 			player.sendMessage(i18n("help_bw_admin_info", false));
 			player.sendMessage(i18n("help_bw_admin_add", false));
@@ -445,6 +536,7 @@ public class BwCommand implements CommandExecutor, TabCompleter {
 			player.sendMessage(i18n("help_bw_admin_spawner_reset", false));
 			player.sendMessage(i18n("help_bw_admin_store_add", false));
 			player.sendMessage(i18n("help_bw_admin_store_remove", false));
+			player.sendMessage(i18n("help_bw_admin_config", false));
 			player.sendMessage(i18n("help_bw_admin_remove", false));
 			player.sendMessage(i18n("help_bw_admin_edit", false));
 			player.sendMessage(i18n("help_bw_admin_save", false));
@@ -454,14 +546,22 @@ public class BwCommand implements CommandExecutor, TabCompleter {
 
 	private void sendStats(Player player, PlayerStatistic statistic) {
 		player.sendMessage(i18n("statistics_header").replace("%player%", statistic.getName()));
-		
-		player.sendMessage(i18n("statistics_kills", false).replace("%kills%", Integer.toString(statistic.getKills() + statistic.getCurrentKills())));
-		player.sendMessage(i18n("statistics_deaths", false).replace("%deaths%", Integer.toString(statistic.getDeaths() + statistic.getCurrentDeaths())));
-		player.sendMessage(i18n("statistics_kd", false).replace("%kd%", Double.toString(statistic.getKD() + statistic.getCurrentKD())));
-		player.sendMessage(i18n("statistics_wins", false).replace("%wins%", Integer.toString(statistic.getWins() + statistic.getCurrentWins())));
-		player.sendMessage(i18n("statistics_loses", false).replace("%loses%", Integer.toString(statistic.getLoses() + statistic.getCurrentLoses())));
-		player.sendMessage(i18n("statistics_games", false).replace("%games%", Integer.toString(statistic.getGames() + statistic.getCurrentGames())));
-		player.sendMessage(i18n("statistics_beds", false).replace("%beds%", Integer.toString(statistic.getDestroyedBeds() + statistic.getCurrentDestroyedBeds())));
-		player.sendMessage(i18n("statistics_score", false).replace("%score%", Integer.toString(statistic.getScore() + statistic.getCurrentScore())));
+
+		player.sendMessage(i18n("statistics_kills", false).replace("%kills%",
+				Integer.toString(statistic.getKills() + statistic.getCurrentKills())));
+		player.sendMessage(i18n("statistics_deaths", false).replace("%deaths%",
+				Integer.toString(statistic.getDeaths() + statistic.getCurrentDeaths())));
+		player.sendMessage(i18n("statistics_kd", false).replace("%kd%",
+				Double.toString(statistic.getKD() + statistic.getCurrentKD())));
+		player.sendMessage(i18n("statistics_wins", false).replace("%wins%",
+				Integer.toString(statistic.getWins() + statistic.getCurrentWins())));
+		player.sendMessage(i18n("statistics_loses", false).replace("%loses%",
+				Integer.toString(statistic.getLoses() + statistic.getCurrentLoses())));
+		player.sendMessage(i18n("statistics_games", false).replace("%games%",
+				Integer.toString(statistic.getGames() + statistic.getCurrentGames())));
+		player.sendMessage(i18n("statistics_beds", false).replace("%beds%",
+				Integer.toString(statistic.getDestroyedBeds() + statistic.getCurrentDestroyedBeds())));
+		player.sendMessage(i18n("statistics_score", false).replace("%score%",
+				Integer.toString(statistic.getScore() + statistic.getCurrentScore())));
 	}
 }

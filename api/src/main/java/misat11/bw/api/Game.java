@@ -115,4 +115,39 @@ public interface Game {
 	public RunningTeam getTeamOfChest(Location location);
 	
 	public RunningTeam getTeamOfChest(Block block);
+	
+	// BOOLEAN SETTINGS
+
+	public InGameConfigBooleanConstants getCompassEnabled();
+	public boolean getOriginalOrInheritedCompassEnabled();
+	
+	public InGameConfigBooleanConstants getJoinRandomTeamAfterLobby();
+	public boolean getOriginalOrInheritedJoinRandomTeamAfterLobby();
+	
+	public InGameConfigBooleanConstants getJoinRandomTeamOnJoin();
+	public boolean getOriginalOrInheritedJoinRandomTeamOnJoin();
+	
+	public InGameConfigBooleanConstants getAddWoolToInventoryOnJoin();
+	public boolean getOriginalOrInheritedAddWoolToInventoryOnJoin();
+	
+	public InGameConfigBooleanConstants getPreventKillingVillagers();
+	public boolean getOriginalOrInheritedPreventKillingVillagers();
+	
+	public InGameConfigBooleanConstants getSpectatorGm3();
+	public boolean getOriginalOrInheritedSpectatorGm3();
+	
+	public InGameConfigBooleanConstants getPlayerDrops();
+	public boolean getOriginalOrInheritedPlayerDrops();
+	
+	public InGameConfigBooleanConstants getFriendlyfire();
+	public boolean getOriginalOrInheritedFriendlyfire();
+	
+	public InGameConfigBooleanConstants getColoredLeatherByTeamInLobby();
+	public boolean getOriginalOrInheritedColoredLeatherByTeamInLobby();
+	
+	public InGameConfigBooleanConstants getKeepInventory();
+	public boolean getOriginalOrInheritedKeepInventory();
+	
+	public InGameConfigBooleanConstants getCrafting();
+	public boolean getOriginalOrInheritedCrafting();
 }

@@ -66,10 +66,10 @@ public class PlayerListener implements Listener {
 		if (Main.isPlayerInGame(victim)) {
 			GamePlayer gVictim = Main.getPlayerGameProfile(victim);
 			Game game = gVictim.getGame();
-			event.setKeepInventory(Main.getConfigurator().config.getBoolean("keep-inventory-on-death"));
+			event.setKeepInventory(game.getOriginalOrInheritedKeepInventory());
 			event.setDroppedExp(0);
 			if (game.getStatus() == GameStatus.RUNNING) {
-				if (!Main.getConfigurator().config.getBoolean("player-drops")) {
+				if (!game.getOriginalOrInheritedPlayerDrops()) {
 					event.getDrops().clear();
 				}
 				CurrentTeam team = game.getPlayerTeam(gVictim);
@@ -283,7 +283,7 @@ public class PlayerListener implements Listener {
 			if (gPlayer.getGame().getStatus() != GameStatus.RUNNING) {
 				event.setCancelled(true);
 				return;
-			} else if (!Main.getConfigurator().config.getBoolean("allow-crafting")) {
+			} else if (!gPlayer.getGame().getOriginalOrInheritedCrafting()) {
 				event.setCancelled(true);
 				return;
 			}
@@ -300,11 +300,12 @@ public class PlayerListener implements Listener {
 
 			if (event instanceof EntityDamageByEntityEvent) {
 
-				if (event.getEntity() instanceof Villager
-						&& Main.getConfigurator().config.getBoolean("prevent-killing-villagers")) {
+				if (event.getEntity() instanceof Villager) {
 					Game game = Main.getInGameEntity(event.getEntity());
 					if (game != null) {
-						event.setCancelled(true);
+						if (game.getOriginalOrInheritedPreventKillingVillagers()) {
+							event.setCancelled(true);
+						}
 					}
 				}
 
@@ -520,7 +521,7 @@ public class PlayerListener implements Listener {
 						|| event.getInventory().getType() == InventoryType.BREWING
 						|| event.getInventory().getType() == InventoryType.FURNACE
 						|| event.getInventory().getType() == InventoryType.WORKBENCH) {
-					if (!Main.getConfigurator().config.getBoolean("allow-crafting")) {
+					if (!gProfile.getGame().getOriginalOrInheritedCrafting()) {
 						event.setCancelled(true);
 					}
 				}

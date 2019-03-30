@@ -17,6 +17,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import misat11.bw.Main;
 import misat11.bw.api.GameStore;
+import misat11.bw.api.InGameConfigBooleanConstants;
 import misat11.bw.utils.BedUtils;
 import misat11.bw.utils.TeamJoinMetaDataValue;
 
@@ -34,8 +35,8 @@ public class GameCreator {
 		List<GameStore> gs = game.getGameStores();
 		if (!gs.isEmpty()) {
 			for (GameStore store : gs) {
-				villagerstores.put(store.getStoreLocation().getBlockX() + ";" + store.getStoreLocation().getBlockY() + ";" + store.getStoreLocation().getBlockZ(),
-						store.getStoreLocation());
+				villagerstores.put(store.getStoreLocation().getBlockX() + ";" + store.getStoreLocation().getBlockY()
+						+ ";" + store.getStoreLocation().getBlockZ(), store.getStoreLocation());
 			}
 		}
 	}
@@ -66,6 +67,10 @@ public class GameCreator {
 		} else if (action.equalsIgnoreCase("minplayers")) {
 			if (args.length >= 1) {
 				response = setMinPlayers(Integer.parseInt(args[0]));
+			}
+		} else if (action.equalsIgnoreCase("config")) {
+			if (args.length >= 2) {
+				response = setLocalConfigVariable(args[0], args[1]);
 			}
 		} else if (action.equalsIgnoreCase("team")) {
 			if (args.length >= 2) {
@@ -159,6 +164,99 @@ public class GameCreator {
 		}
 		player.sendMessage(response);
 		return isArenaSaved;
+	}
+
+	private String setLocalConfigVariable(String config, String value) {
+		value = value.toLowerCase();
+		InGameConfigBooleanConstants cons;
+		switch (value) {
+		case "t":
+		case "tr":
+		case "tru":
+		case "true":
+		case "y":
+		case "ye":
+		case "yes":
+		case "1":
+			cons = InGameConfigBooleanConstants.TRUE;
+			value = "true";
+			break;
+		case "f":
+		case "fa":
+		case "fal":
+		case "fals":
+		case "false":
+		case "n":
+		case "no":
+		case "0":
+			cons = InGameConfigBooleanConstants.FALSE;
+			value = "false";
+			break;
+		case "i":
+		case "in":
+		case "inh":
+		case "inhe":
+		case "inher":
+		case "inheri":
+		case "inherit":
+		case "d":
+		case "de":
+		case "def":
+		case "defa":
+		case "defau":
+		case "defaul":
+		case "default":
+			cons = InGameConfigBooleanConstants.INHERIT;
+			value = "inherit";
+			break;
+		default:
+			return i18n("admin_command_invalid_config_value");
+		}
+
+		config = config.toLowerCase().replaceAll("-", "");
+		switch (config) {
+		case "compassenabled":
+			game.setCompassEnabled(cons);
+			break;
+		case "joinrandomteamafterlobby":
+		case "joinrandomlyafterlobbytimeout":
+			game.setJoinRandomTeamAfterLobby(cons);
+			break;
+		case "joinrandomteamonjoin":
+		case "joinrandomlyonlobbyjoin":
+			game.setJoinRandomTeamOnJoin(cons);
+			break;
+		case "addwooltoinventoryonjoin":
+			game.setAddWoolToInventoryOnJoin(cons);
+			break;
+		case "preventkillingvillagers":
+			game.setPreventKillingVillagers(cons);
+			break;
+		case "spectatorgm3":
+			game.setSpectatorGm3(cons);
+			break;
+		case "playerdrops":
+			game.setPlayerDrops(cons);
+			break;
+		case "friendlyfire":
+			game.setFriendlyfire(cons);
+			break;
+		case "coloredleatherbyteaminlobby":
+		case "inlobbycoloredleatherbyteam":
+			game.setColoredLeatherByTeamInLobby(cons);
+			break;
+		case "keepinventory":
+		case "keepinventoryondeath":
+			game.setKeepInventory(cons);
+			break;
+		case "crafting":
+		case "allowcrafting":
+			game.setCrafting(cons);
+			break;
+		default:
+			return i18n("admin_command_invalid_config_variable_name");
+		}
+		return i18n("admin_command_config_variable_set_to").replace("%config%", config).replace("%value%", value);
 	}
 
 	private String setMinPlayers(int minPlayers) {

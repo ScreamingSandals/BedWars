@@ -37,6 +37,7 @@ import org.bukkit.scoreboard.Scoreboard;
 import misat11.bw.Main;
 import misat11.bw.api.GameStatus;
 import misat11.bw.api.GameStore;
+import misat11.bw.api.InGameConfigBooleanConstants;
 import misat11.bw.api.RunningTeam;
 import misat11.bw.api.events.BedwarsGameEndEvent;
 import misat11.bw.api.events.BedwarsGameStartEvent;
@@ -85,6 +86,40 @@ public class Game implements misat11.bw.api.Game {
 	private List<GamePlayer> players = new ArrayList<GamePlayer>();
 	private World world;
 	private List<GameStore> gameStore = new ArrayList<GameStore>();
+
+	// Boolean settings
+	public static final String COMPASS_ENABLED = "compass-enabled";
+	private InGameConfigBooleanConstants compassEnabled = InGameConfigBooleanConstants.INHERIT;
+
+	public static final String JOIN_RANDOM_TEAM_AFTER_LOBBY = "join-randomly-after-lobby-timeout";
+	private InGameConfigBooleanConstants joinRandomTeamAfterLobby = InGameConfigBooleanConstants.INHERIT;
+
+	public static final String JOIN_RANDOM_TEAM_ON_JOIN = "join-randomly-on-lobby-join";
+	private InGameConfigBooleanConstants joinRandomTeamOnJoin = InGameConfigBooleanConstants.INHERIT;
+
+	public static final String ADD_WOOL_TO_INVENTORY_ON_JOIN = "add-wool-to-inventory-on-join";
+	private InGameConfigBooleanConstants addWoolToInventoryOnJoin = InGameConfigBooleanConstants.INHERIT;
+
+	public static final String PREVENT_KILLING_VILLAGERS = "prevent-killing-villagers";
+	private InGameConfigBooleanConstants preventKillingVillagers = InGameConfigBooleanConstants.INHERIT;
+
+	public static final String SPECTATOR_GM_3 = "spectator-gm3";
+	private InGameConfigBooleanConstants spectatorGm3 = InGameConfigBooleanConstants.INHERIT;
+
+	public static final String PLAYER_DROPS = "player-drops";
+	private InGameConfigBooleanConstants playerDrops = InGameConfigBooleanConstants.INHERIT;
+
+	public static final String FRIENDLY_FIRE = "friendlyfire";
+	private InGameConfigBooleanConstants friendlyfire = InGameConfigBooleanConstants.INHERIT;
+
+	public static final String COLORED_LEATHER_BY_TEAM_IN_LOBBY = "in-lobby-colored-leather-by-team";
+	private InGameConfigBooleanConstants coloredLeatherByTeamInLobby = InGameConfigBooleanConstants.INHERIT;
+
+	public static final String KEEP_INVENTORY = "keep-inventory-on-death";
+	private InGameConfigBooleanConstants keepInventory = InGameConfigBooleanConstants.INHERIT;
+
+	public static final String CRAFTING = "allow-crafting";
+	private InGameConfigBooleanConstants crafting = InGameConfigBooleanConstants.INHERIT;
 
 	// STATUS
 	private GameStatus status = GameStatus.DISABLED;
@@ -392,15 +427,22 @@ public class Game implements misat11.bw.api.Game {
 		for (GamePlayer p : players)
 			p.player.sendMessage(message);
 
-		ItemStack compass = Main.getConfigurator().readDefinedItem("jointeam", "COMPASS");
-		ItemMeta metaCompass = compass.getItemMeta();
-		metaCompass.setDisplayName(i18n("compass_selector_team", false));
-		compass.setItemMeta(metaCompass);
+		if (getOriginalOrInheritedJoinRandomTeamOnJoin()) {
+			joinRandomTeam(player);
+		}
+
+		if (getOriginalOrInheritedCompassEnabled()) {
+			ItemStack compass = Main.getConfigurator().readDefinedItem("jointeam", "COMPASS");
+			ItemMeta metaCompass = compass.getItemMeta();
+			metaCompass.setDisplayName(i18n("compass_selector_team", false));
+			compass.setItemMeta(metaCompass);
+			player.player.getInventory().setItem(0, compass);
+		}
+
 		ItemStack leave = Main.getConfigurator().readDefinedItem("leavegame", "SLIME_BALL");
 		ItemMeta leaveMeta = leave.getItemMeta();
 		leaveMeta.setDisplayName(i18n("leave_from_game_item", false));
 		leave.setItemMeta(leaveMeta);
-		player.player.getInventory().setItem(0, compass);
 		player.player.getInventory().setItem(8, leave);
 
 		if (isEmpty) {
@@ -413,7 +455,7 @@ public class Game implements misat11.bw.api.Game {
 			}
 		}
 
-		BedwarsPlayerJoinedEvent joinedEvent = new BedwarsPlayerJoinedEvent(this, null, player.player);
+		BedwarsPlayerJoinedEvent joinedEvent = new BedwarsPlayerJoinedEvent(this, getPlayerTeam(player), player.player);
 		Main.getInstance().getServer().getPluginManager().callEvent(joinedEvent);
 	}
 
@@ -550,6 +592,24 @@ public class Game implements misat11.bw.api.Game {
 				game.gameStore.add(new GameStore(readLocationFromString(game.world, store)));
 			}
 		}
+
+		game.compassEnabled = readBooleanConstant(configMap.getString("constant." + COMPASS_ENABLED, "inherit"));
+		game.addWoolToInventoryOnJoin = readBooleanConstant(
+				configMap.getString("constant." + ADD_WOOL_TO_INVENTORY_ON_JOIN, "inherit"));
+		game.coloredLeatherByTeamInLobby = readBooleanConstant(
+				configMap.getString("constant." + COLORED_LEATHER_BY_TEAM_IN_LOBBY, "inherit"));
+		game.crafting = readBooleanConstant(configMap.getString("constant." + CRAFTING, "inherit"));
+		game.friendlyfire = readBooleanConstant(configMap.getString("constant." + FRIENDLY_FIRE, "inherit"));
+		game.joinRandomTeamAfterLobby = readBooleanConstant(
+				configMap.getString("constant." + JOIN_RANDOM_TEAM_AFTER_LOBBY, "inherit"));
+		game.joinRandomTeamOnJoin = readBooleanConstant(
+				configMap.getString("constant." + JOIN_RANDOM_TEAM_ON_JOIN, "inherit"));
+		game.keepInventory = readBooleanConstant(configMap.getString("constant." + KEEP_INVENTORY, "inherit"));
+		game.preventKillingVillagers = readBooleanConstant(
+				configMap.getString("constant." + PREVENT_KILLING_VILLAGERS, "inherit"));
+		game.spectatorGm3 = readBooleanConstant(configMap.getString("constant." + SPECTATOR_GM_3, "inherit"));
+		game.playerDrops = readBooleanConstant(configMap.getString("constant." + PLAYER_DROPS, "inherit"));
+
 		game.start();
 		Main.getInstance().getLogger().info("Arena " + game.name + " loaded!");
 		Main.addGame(game);
@@ -591,6 +651,28 @@ public class Game implements misat11.bw.api.Game {
 	public static String setLocationToString(Location location) {
 		return location.getX() + ";" + location.getY() + ";" + location.getZ() + ";" + location.getYaw() + ";"
 				+ location.getPitch();
+	}
+
+	public static InGameConfigBooleanConstants readBooleanConstant(String s) {
+		if ("true".equalsIgnoreCase(s)) {
+			return InGameConfigBooleanConstants.TRUE;
+		} else if ("false".equalsIgnoreCase(s)) {
+			return InGameConfigBooleanConstants.FALSE;
+		}
+
+		return InGameConfigBooleanConstants.INHERIT;
+	}
+
+	public static String writeBooleanConstant(InGameConfigBooleanConstants constant) {
+		switch (constant) {
+		case TRUE:
+			return "true";
+		case FALSE:
+			return "false";
+		case INHERIT:
+		default:
+			return "inherit";
+		}
 	}
 
 	public void saveToConfig() {
@@ -639,6 +721,18 @@ public class Game implements misat11.bw.api.Game {
 			}
 			configMap.set("stores", nL);
 		}
+
+		configMap.set("constant." + COMPASS_ENABLED, writeBooleanConstant(compassEnabled));
+		configMap.set("constant." + ADD_WOOL_TO_INVENTORY_ON_JOIN, writeBooleanConstant(addWoolToInventoryOnJoin));
+		configMap.set("constant." + COLORED_LEATHER_BY_TEAM_IN_LOBBY, writeBooleanConstant(coloredLeatherByTeamInLobby));
+		configMap.set("constant." + CRAFTING, writeBooleanConstant(crafting));
+		configMap.set("constant." + JOIN_RANDOM_TEAM_AFTER_LOBBY, writeBooleanConstant(joinRandomTeamAfterLobby));
+		configMap.set("constant." + JOIN_RANDOM_TEAM_ON_JOIN, writeBooleanConstant(joinRandomTeamOnJoin));
+		configMap.set("constant." + KEEP_INVENTORY, writeBooleanConstant(keepInventory));
+		configMap.set("constant." + PREVENT_KILLING_VILLAGERS, writeBooleanConstant(preventKillingVillagers));
+		configMap.set("constant." + SPECTATOR_GM_3, writeBooleanConstant(spectatorGm3));
+		configMap.set("constant." + PLAYER_DROPS, writeBooleanConstant(playerDrops));
+		configMap.set("constant." + FRIENDLY_FIRE, writeBooleanConstant(friendlyfire));
 
 		try {
 			configMap.save(file);
@@ -799,7 +893,7 @@ public class Game implements misat11.bw.api.Game {
 			} else {
 				scoreboardTeam.setPrefix(teamForJoin.color.chatColor.toString());
 			}
-			scoreboardTeam.setAllowFriendlyFire(Main.getConfigurator().config.getBoolean("friendlyfire"));
+			scoreboardTeam.setAllowFriendlyFire(getOriginalOrInheritedFriendlyfire());
 
 			current.setScoreboardTeam(scoreboardTeam);
 		}
@@ -835,13 +929,16 @@ public class Game implements misat11.bw.api.Game {
 				.sendMessage(i18n("team_selected").replace("%team%", teamForJoin.color.chatColor + teamForJoin.name)
 						.replace("%players%", Integer.toString(current.players.size()))
 						.replaceAll("%maxplayers%", Integer.toString(current.teamInfo.maxPlayers)));
-		ItemStack stack = TeamSelectorInventory.materializeColorToWool(teamForJoin.color);
-		ItemMeta stackMeta = stack.getItemMeta();
-		stackMeta.setDisplayName(teamForJoin.color.chatColor + teamForJoin.name);
-		stack.setItemMeta(stackMeta);
-		player.player.getInventory().setItem(1, stack);
 
-		if (Main.getConfigurator().config.getBoolean("in-lobby-colored-leather-by-team")) {
+		if (getOriginalOrInheritedAddWoolToInventoryOnJoin()) {
+			ItemStack stack = TeamSelectorInventory.materializeColorToWool(teamForJoin.color);
+			ItemMeta stackMeta = stack.getItemMeta();
+			stackMeta.setDisplayName(teamForJoin.color.chatColor + teamForJoin.name);
+			stack.setItemMeta(stackMeta);
+			player.player.getInventory().setItem(1, stack);
+		}
+
+		if (getOriginalOrInheritedColoredLeatherByTeamInLobby()) {
 			ItemStack chestplate = new ItemStack(Material.LEATHER_CHESTPLATE);
 			LeatherArmorMeta meta = (LeatherArmorMeta) chestplate.getItemMeta();
 			meta.setColor(teamForJoin.color.leatherColor);
@@ -859,7 +956,7 @@ public class Game implements misat11.bw.api.Game {
 		player.player.teleport(specSpawn);
 		player.player.setAllowFlight(true);
 		player.player.setFlying(true);
-		if (Main.getConfigurator().config.getBoolean("spectator-gm3")) {
+		if (getOriginalOrInheritedSpectatorGm3()) {
 			player.player.setGameMode(GameMode.SPECTATOR);
 		} else {
 			player.player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1));
@@ -1014,7 +1111,7 @@ public class Game implements misat11.bw.api.Game {
 					return;
 				}
 
-				if (Main.getConfigurator().config.getBoolean("join-randomly-after-lobby-timeout")) {
+				if (getOriginalOrInheritedJoinRandomTeamAfterLobby()) {
 					for (GamePlayer player : players) {
 						if (getPlayerTeam(player) == null) {
 							joinRandomTeam(player);
@@ -1167,7 +1264,7 @@ public class Game implements misat11.bw.api.Game {
 						} else {
 							scoreboardTeam.setPrefix(team.color.chatColor.toString());
 						}
-						scoreboardTeam.setAllowFriendlyFire(Main.getConfigurator().config.getBoolean("friendlyfire"));
+						scoreboardTeam.setAllowFriendlyFire(getOriginalOrInheritedFriendlyfire());
 
 						current.setScoreboardTeam(scoreboardTeam);
 					}
@@ -1203,13 +1300,16 @@ public class Game implements misat11.bw.api.Game {
 							.sendMessage(i18n("team_selected").replace("%team%", team.color.chatColor + team.name)
 									.replace("%players%", Integer.toString(current.players.size()))
 									.replaceAll("%maxplayers%", Integer.toString(current.teamInfo.maxPlayers)));
-					ItemStack stack = TeamSelectorInventory.materializeColorToWool(team.color);
-					ItemMeta stackMeta = stack.getItemMeta();
-					stackMeta.setDisplayName(team.color.chatColor + team.name);
-					stack.setItemMeta(stackMeta);
-					playerGameProfile.player.getInventory().setItem(1, stack);
 
-					if (Main.getConfigurator().config.getBoolean("in-lobby-colored-leather-by-team")) {
+					if (getOriginalOrInheritedAddWoolToInventoryOnJoin()) {
+						ItemStack stack = TeamSelectorInventory.materializeColorToWool(team.color);
+						ItemMeta stackMeta = stack.getItemMeta();
+						stackMeta.setDisplayName(team.color.chatColor + team.name);
+						stack.setItemMeta(stackMeta);
+						playerGameProfile.player.getInventory().setItem(1, stack);
+					}
+
+					if (getOriginalOrInheritedColoredLeatherByTeamInLobby()) {
 						ItemStack chestplate = new ItemStack(Material.LEATHER_CHESTPLATE);
 						LeatherArmorMeta meta = (LeatherArmorMeta) chestplate.getItemMeta();
 						meta.setColor(team.color.leatherColor);
@@ -1660,6 +1760,159 @@ public class Game implements misat11.bw.api.Game {
 	@Override
 	public boolean isRegisteredSpecialItem(SpecialItem item) {
 		return activeSpecialItems.contains(item);
+	}
+
+	public InGameConfigBooleanConstants getCompassEnabled() {
+		return compassEnabled;
+	}
+
+	public void setCompassEnabled(InGameConfigBooleanConstants compassEnabled) {
+		this.compassEnabled = compassEnabled;
+	}
+
+	public InGameConfigBooleanConstants getJoinRandomTeamAfterLobby() {
+		return joinRandomTeamAfterLobby;
+	}
+
+	public void setJoinRandomTeamAfterLobby(InGameConfigBooleanConstants joinRandomTeamAfterLobby) {
+		this.joinRandomTeamAfterLobby = joinRandomTeamAfterLobby;
+	}
+
+	public InGameConfigBooleanConstants getJoinRandomTeamOnJoin() {
+		return joinRandomTeamOnJoin;
+	}
+
+	public void setJoinRandomTeamOnJoin(InGameConfigBooleanConstants joinRandomTeamOnJoin) {
+		this.joinRandomTeamOnJoin = joinRandomTeamOnJoin;
+	}
+
+	public InGameConfigBooleanConstants getAddWoolToInventoryOnJoin() {
+		return addWoolToInventoryOnJoin;
+	}
+
+	public void setAddWoolToInventoryOnJoin(InGameConfigBooleanConstants addWoolToInventoryOnJoin) {
+		this.addWoolToInventoryOnJoin = addWoolToInventoryOnJoin;
+	}
+
+	public InGameConfigBooleanConstants getPreventKillingVillagers() {
+		return preventKillingVillagers;
+	}
+
+	public void setPreventKillingVillagers(InGameConfigBooleanConstants preventKillingVillagers) {
+		this.preventKillingVillagers = preventKillingVillagers;
+	}
+
+	public InGameConfigBooleanConstants getSpectatorGm3() {
+		return spectatorGm3;
+	}
+
+	public void setSpectatorGm3(InGameConfigBooleanConstants spectatorGm3) {
+		this.spectatorGm3 = spectatorGm3;
+	}
+
+	public InGameConfigBooleanConstants getPlayerDrops() {
+		return playerDrops;
+	}
+
+	public void setPlayerDrops(InGameConfigBooleanConstants playerDrops) {
+		this.playerDrops = playerDrops;
+	}
+
+	public InGameConfigBooleanConstants getFriendlyfire() {
+		return friendlyfire;
+	}
+
+	public void setFriendlyfire(InGameConfigBooleanConstants friendlyfire) {
+		this.friendlyfire = friendlyfire;
+	}
+
+	public InGameConfigBooleanConstants getColoredLeatherByTeamInLobby() {
+		return coloredLeatherByTeamInLobby;
+	}
+
+	public void setColoredLeatherByTeamInLobby(InGameConfigBooleanConstants coloredLeatherByTeamInLobby) {
+		this.coloredLeatherByTeamInLobby = coloredLeatherByTeamInLobby;
+	}
+
+	public InGameConfigBooleanConstants getKeepInventory() {
+		return keepInventory;
+	}
+
+	public void setKeepInventory(InGameConfigBooleanConstants keepInventory) {
+		this.keepInventory = keepInventory;
+	}
+
+	public InGameConfigBooleanConstants getCrafting() {
+		return crafting;
+	}
+
+	public void setCrafting(InGameConfigBooleanConstants crafting) {
+		this.crafting = crafting;
+	}
+
+	@Override
+	public boolean getOriginalOrInheritedCompassEnabled() {
+		return compassEnabled.isOriginal() ? compassEnabled.getValue()
+				: Main.getConfigurator().config.getBoolean(COMPASS_ENABLED);
+	}
+
+	@Override
+	public boolean getOriginalOrInheritedJoinRandomTeamAfterLobby() {
+		return joinRandomTeamAfterLobby.isOriginal() ? joinRandomTeamAfterLobby.getValue()
+				: Main.getConfigurator().config.getBoolean(JOIN_RANDOM_TEAM_AFTER_LOBBY);
+	}
+
+	@Override
+	public boolean getOriginalOrInheritedJoinRandomTeamOnJoin() {
+		return joinRandomTeamOnJoin.isOriginal() ? joinRandomTeamOnJoin.getValue()
+				: Main.getConfigurator().config.getBoolean(JOIN_RANDOM_TEAM_ON_JOIN);
+	}
+
+	@Override
+	public boolean getOriginalOrInheritedAddWoolToInventoryOnJoin() {
+		return addWoolToInventoryOnJoin.isOriginal() ? addWoolToInventoryOnJoin.getValue()
+				: Main.getConfigurator().config.getBoolean(ADD_WOOL_TO_INVENTORY_ON_JOIN);
+	}
+
+	@Override
+	public boolean getOriginalOrInheritedPreventKillingVillagers() {
+		return preventKillingVillagers.isOriginal() ? preventKillingVillagers.getValue()
+				: Main.getConfigurator().config.getBoolean(PREVENT_KILLING_VILLAGERS);
+	}
+
+	@Override
+	public boolean getOriginalOrInheritedSpectatorGm3() {
+		return spectatorGm3.isOriginal() ? spectatorGm3.getValue()
+				: Main.getConfigurator().config.getBoolean(SPECTATOR_GM_3);
+	}
+
+	@Override
+	public boolean getOriginalOrInheritedPlayerDrops() {
+		return playerDrops.isOriginal() ? playerDrops.getValue()
+				: Main.getConfigurator().config.getBoolean(PLAYER_DROPS);
+	}
+
+	@Override
+	public boolean getOriginalOrInheritedFriendlyfire() {
+		return friendlyfire.isOriginal() ? friendlyfire.getValue()
+				: Main.getConfigurator().config.getBoolean(FRIENDLY_FIRE);
+	}
+
+	@Override
+	public boolean getOriginalOrInheritedColoredLeatherByTeamInLobby() {
+		return coloredLeatherByTeamInLobby.isOriginal() ? coloredLeatherByTeamInLobby.getValue()
+				: Main.getConfigurator().config.getBoolean(COLORED_LEATHER_BY_TEAM_IN_LOBBY);
+	}
+
+	@Override
+	public boolean getOriginalOrInheritedKeepInventory() {
+		return keepInventory.isOriginal() ? keepInventory.getValue()
+				: Main.getConfigurator().config.getBoolean(KEEP_INVENTORY);
+	}
+
+	@Override
+	public boolean getOriginalOrInheritedCrafting() {
+		return crafting.isOriginal() ? crafting.getValue() : Main.getConfigurator().config.getBoolean(CRAFTING);
 	}
 
 }
