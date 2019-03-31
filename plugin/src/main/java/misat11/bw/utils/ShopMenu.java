@@ -4,11 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -26,8 +24,8 @@ import static misat11.bw.utils.I18n.i18n;
 
 public class ShopMenu implements Listener {
 
-	private Inventory mainInventory;
-	private HashMap<Integer, Category> categoryInventories = new HashMap<Integer, Category>();
+	private List<Inventory> inv = new ArrayList<Inventory>();
+	private HashMap<ItemStack, Category> categoryInventories = new HashMap<ItemStack, Category>();
 	private ItemStack backItem, pageBackItem, pageForwardItem, cosmeticItem;
 
 	public static final int ITEMS_ON_PAGE = 36;
@@ -36,6 +34,7 @@ public class ShopMenu implements Listener {
 		public final List<Inventory> inv = new ArrayList<Inventory>();
 		public final HashMap<ItemStack, Map<String, Object>> items = new HashMap<ItemStack, Map<String, Object>>();
 		public int lastpos = 0;
+		public int onPage = 0;
 
 		private Category() {
 		}
@@ -43,10 +42,10 @@ public class ShopMenu implements Listener {
 	}
 
 	public ShopMenu(Plugin p) {
-		mainInventory = Bukkit.getServer().createInventory(null, 54, "[BW] Shop");
 		int lastpos = 0;
 
-		Set<String> s = Main.getConfigurator().shopconfig.getConfigurationSection("shop-items").getKeys(false);
+		List<Map<String, Object>> categoriesList = (List<Map<String, Object>>) Main.getConfigurator().shopconfig
+				.getList("data");
 
 		backItem = Main.getConfigurator().readDefinedItem("shopback", "BARRIER");
 		ItemMeta backItemMeta = backItem.getItemMeta();
@@ -65,112 +64,176 @@ public class ShopMenu implements Listener {
 
 		cosmeticItem = Main.getConfigurator().readDefinedItem("shopcosmetic", "AIR");
 
-		for (String i : s) {
-			ConfigurationSection category = Main.getConfigurator().shopconfig
-					.getConfigurationSection("shop-items." + i);
+		createMainInventoryOnPage(1); // Force first page
 
-			ItemStack categoryItem = new ItemStack(Material.valueOf(category.getString("item")), 1,
-					(short) category.getInt("damage", 0));
-			ItemMeta categoryItemMeta = categoryItem.getItemMeta();
-			categoryItemMeta.setLore(category.getStringList("lore"));
-			categoryItemMeta.setDisplayName(category.getString("name"));
-			categoryItem.setItemMeta(categoryItemMeta);
-			Category categoryClass = new Category();
+		for (Map<String, Object> category : categoriesList) {
+			ItemStack categoryItem = (ItemStack) category.get("stack");
 
-			createInventoryOnPage(1, categoryClass, category.getString("name")); // Force first page
-
-			List<Map<String, Object>> categoryItemsList = (List<Map<String, Object>>) category.getList("items");
-			for (Map<String, Object> item : categoryItemsList) {
-				ItemStack stack = ((ItemStack) item.get("stack")).clone();
-				ItemMeta stackMeta = stack.getItemMeta();
-				List<String> lore = new ArrayList<String>();
-				if (stackMeta.hasLore()) {
-					lore = stackMeta.getLore();
+			int positionC = lastpos;
+			int linebreakC = 0;
+			int pagebreakC = 0;
+			if (category.containsKey("linebreak")) {
+				String lnBreak = (String) category.get("linebreak");
+				if ("before".equalsIgnoreCase(lnBreak)) {
+					linebreakC = 1;
+				} else if ("after".equalsIgnoreCase(lnBreak)) {
+					linebreakC = 2;
+				} else if ("both".equalsIgnoreCase(lnBreak)) {
+					linebreakC = 3;
 				}
-				int price = (int) item.get("price");
-				ItemSpawnerType type = Main.getSpawnerType(((String) item.get("price-type")).toLowerCase());
-				if (type == null) {
-					continue;
-				}
-
-				lore.add(i18n("price", false));
-				lore.add(price + " " + type.getItemName());
-				lore.add(i18n("amount", false));
-				lore.add(Integer.toString(stack.getAmount()));
-				stackMeta.setLore(lore);
-				stack.setItemMeta(stackMeta);
-				categoryClass.items.put(stack, item);
-				int position = categoryClass.lastpos;
-				int linebreak = 0;
-				int pagebreak = 0;
-				if (item.containsKey("linebreak")) {
-					String lnBreak = (String) item.get("linebreak");
-					if (lnBreak.equalsIgnoreCase("before")) {
-						linebreak = 1;
-					} else if (lnBreak.equalsIgnoreCase("after")) {
-						linebreak = 2;
-					} else if (lnBreak.equalsIgnoreCase("both")) {
-						linebreak = 3;
-					}
-				}
-				if (item.containsKey("pagebreak")) {
-					String pgBreak = (String) item.get("pagebreak");
-					if (pgBreak.equalsIgnoreCase("before")) {
-						pagebreak = 1;
-					} else if (pgBreak.equalsIgnoreCase("after")) {
-						pagebreak = 2;
-					} else if (pgBreak.equalsIgnoreCase("both")) {
-						pagebreak = 3;
-					}
-				}
-				if (pagebreak == 1 || pagebreak == 3) {
-					position += (ITEMS_ON_PAGE - (position % ITEMS_ON_PAGE));
-				}
-				if (item.containsKey("row")) {
-					position = position - (position % ITEMS_ON_PAGE) + (((int) item.get("row") - 1) * 9) + (position % 9);
-				}
-				if (item.containsKey("column")) {
-					Object cl = item.get("column");
-					int column = 0;
-					if ("left".equals(cl) || "first".equals(cl)) {
-						column = 0;
-					} else if ("middle".equals(cl) || "center".equals(cl)) {
-						column = 4;
-					} else if ("right".equals(cl) || "last".equals(cl)) {
-						column = 8;
-					} else {
-						column = (int) cl;
-					}
-
-					position = (position - (position % 9)) + column;
-				}
-				if (linebreak == 1 || linebreak == 3) {
-					position += (9 - (position % 9));
-				}
-				if (item.containsKey("skip")) {
-					position += (int) item.get("skip");
-				}
-				createInventoryOnPage((position / ITEMS_ON_PAGE) + 1, categoryClass, category.getString("name"))
-						.setItem(9 + position % ITEMS_ON_PAGE, stack);
-				int nextPosition = position;
-				if (pagebreak >= 2) {
-					nextPosition += (ITEMS_ON_PAGE - (nextPosition % ITEMS_ON_PAGE));
-				}
-				if (linebreak >= 2) {
-					nextPosition += (9 - (nextPosition % 9));
-				}
-				if (pagebreak < 2 && linebreak < 2) {
-					nextPosition++;
-				}
-				categoryClass.lastpos = nextPosition;
 			}
+			if (category.containsKey("pagebreak")) {
+				String pgBreak = (String) category.get("pagebreak");
+				if ("before".equalsIgnoreCase(pgBreak)) {
+					pagebreakC = 1;
+				} else if ("after".equalsIgnoreCase(pgBreak)) {
+					pagebreakC = 2;
+				} else if ("both".equalsIgnoreCase(pgBreak)) {
+					pagebreakC = 3;
+				}
+			}
+			if (pagebreakC == 1 || pagebreakC == 3) {
+				positionC += (ITEMS_ON_PAGE - (positionC % ITEMS_ON_PAGE));
+			}
+			if (category.containsKey("row")) {
+				positionC = positionC - (positionC % ITEMS_ON_PAGE) + (((int) category.get("row") - 1) * 9)
+						+ (positionC % 9);
+			}
+			if (category.containsKey("column")) {
+				Object cl = category.get("column");
+				int column = 0;
+				if ("left".equals(cl) || "first".equals(cl)) {
+					column = 0;
+				} else if ("middle".equals(cl) || "center".equals(cl)) {
+					column = 4;
+				} else if ("right".equals(cl) || "last".equals(cl)) {
+					column = 8;
+				} else {
+					column = (int) cl;
+				}
 
-			categoryClass.inv.get(categoryClass.inv.size() - 1).setItem(53, cosmeticItem);
+				positionC = (positionC - (positionC % 9)) + column;
+			}
+			if (linebreakC == 1 || linebreakC == 3) {
+				positionC += (9 - (positionC % 9));
+			}
+			if (category.containsKey("skip")) {
+				positionC += (int) category.get("skip");
+			}
+			createMainInventoryOnPage((positionC / ITEMS_ON_PAGE) + 1).setItem(9 + positionC % ITEMS_ON_PAGE,
+					categoryItem);
 
-			mainInventory.setItem(lastpos, categoryItem);
-			categoryInventories.put(lastpos, categoryClass);
-			lastpos++;
+			List<Map<String, Object>> categoryItemsList = (List<Map<String, Object>>) category.get("items");
+			if (categoryItemsList != null) {
+				Category categoryClass = new Category();
+				categoryClass.onPage = (positionC / ITEMS_ON_PAGE) + 1;
+				createInventoryOnPage(1, categoryClass, categoryItem.getItemMeta().getDisplayName()); // Force first page
+				
+				categoryInventories.put(categoryItem, categoryClass);
+				for (Map<String, Object> item : categoryItemsList) {
+					ItemStack stack = ((ItemStack) item.get("stack")).clone();
+					if (item.containsKey("price") && item.containsKey("price-type")) {
+						ItemMeta stackMeta = stack.getItemMeta();
+						List<String> lore = new ArrayList<String>();
+						if (stackMeta.hasLore()) {
+							lore = stackMeta.getLore();
+						}
+						int price = (int) item.get("price");
+						ItemSpawnerType type = Main.getSpawnerType(((String) item.get("price-type")).toLowerCase());
+						if (type == null) {
+							continue;
+						}
+	
+						lore.add(i18n("price", false));
+						lore.add(price + " " + type.getItemName());
+						lore.add(i18n("amount", false));
+						lore.add(Integer.toString(stack.getAmount()));
+						stackMeta.setLore(lore);
+						stack.setItemMeta(stackMeta);
+						categoryClass.items.put(stack, item);
+					}
+					int position = categoryClass.lastpos;
+					int linebreak = 0;
+					int pagebreak = 0;
+					if (item.containsKey("linebreak")) {
+						String lnBreak = (String) item.get("linebreak");
+						if ("before".equalsIgnoreCase(lnBreak)) {
+							linebreak = 1;
+						} else if ("after".equalsIgnoreCase(lnBreak)) {
+							linebreak = 2;
+						} else if ("both".equalsIgnoreCase(lnBreak)) {
+							linebreak = 3;
+						}
+					}
+					if (item.containsKey("pagebreak")) {
+						String pgBreak = (String) item.get("pagebreak");
+						if ("before".equalsIgnoreCase(pgBreak)) {
+							pagebreak = 1;
+						} else if ("after".equalsIgnoreCase(pgBreak)) {
+							pagebreak = 2;
+						} else if ("both".equalsIgnoreCase(pgBreak)) {
+							pagebreak = 3;
+						}
+					}
+					if (pagebreak == 1 || pagebreak == 3) {
+						position += (ITEMS_ON_PAGE - (position % ITEMS_ON_PAGE));
+					}
+					if (item.containsKey("row")) {
+						position = position - (position % ITEMS_ON_PAGE) + (((int) item.get("row") - 1) * 9)
+								+ (position % 9);
+					}
+					if (item.containsKey("column")) {
+						Object cl = item.get("column");
+						int column = 0;
+						if ("left".equals(cl) || "first".equals(cl)) {
+							column = 0;
+						} else if ("middle".equals(cl) || "center".equals(cl)) {
+							column = 4;
+						} else if ("right".equals(cl) || "last".equals(cl)) {
+							column = 8;
+						} else {
+							column = (int) cl;
+						}
+
+						position = (position - (position % 9)) + column;
+					}
+					if (linebreak == 1 || linebreak == 3) {
+						position += (9 - (position % 9));
+					}
+					if (item.containsKey("skip")) {
+						position += (int) item.get("skip");
+					}
+					createInventoryOnPage((position / ITEMS_ON_PAGE) + 1, categoryClass,
+							categoryItem.getItemMeta().getDisplayName()).setItem(9 + position % ITEMS_ON_PAGE, stack);
+					int nextPosition = position;
+					if (pagebreak >= 2) {
+						nextPosition += (ITEMS_ON_PAGE - (nextPosition % ITEMS_ON_PAGE));
+					}
+					if (linebreak >= 2) {
+						nextPosition += (9 - (nextPosition % 9));
+					}
+					if (pagebreak < 2 && linebreak < 2) {
+						nextPosition++;
+					}
+					categoryClass.lastpos = nextPosition;
+				}
+
+				categoryClass.inv.get(categoryClass.inv.size() - 1).setItem(53, cosmeticItem);
+			}
+			int nextPosition = positionC;
+			if (pagebreakC >= 2) {
+				nextPosition += (ITEMS_ON_PAGE - (nextPosition % ITEMS_ON_PAGE));
+			}
+			if (linebreakC >= 2) {
+				nextPosition += (9 - (nextPosition % 9));
+			}
+			if (pagebreakC < 2 && linebreakC < 2) {
+				nextPosition++;
+			}
+			lastpos = nextPosition;
 		}
+
+		inv.get(inv.size() - 1).setItem(53, cosmeticItem);
 
 		Bukkit.getServer().getPluginManager().registerEvents(this, p);
 	}
@@ -205,8 +268,35 @@ public class ShopMenu implements Listener {
 		return categoryInventory;
 	}
 
+	private Inventory createMainInventoryOnPage(int page) {
+		if (inv.size() >= page) {
+			return inv.get(page - 1);
+		}
+
+		Inventory mainInventory = Bukkit.getServer().createInventory(null, 54, "[BW] Shop - " + page);
+
+		inv.add(mainInventory);
+
+		for (int a = 0; a <= 8; a++) {
+			mainInventory.setItem(a, cosmeticItem);
+		}
+
+		if (page > 1) {
+			mainInventory.setItem(45, pageBackItem);
+			inv.get(page - 2).setItem(53, pageForwardItem);
+		} else {
+			mainInventory.setItem(45, cosmeticItem);
+		}
+
+		for (int a = 1; a <= 7; a++) {
+			mainInventory.setItem(45 + a, cosmeticItem);
+		}
+
+		return mainInventory;
+	}
+
 	public void show(Player p) {
-		p.openInventory(mainInventory);
+		p.openInventory(this.inv.get(0));
 	}
 
 	@EventHandler
@@ -214,25 +304,37 @@ public class ShopMenu implements Listener {
 		if (e.isCancelled())
 			return;
 
-		if (e.getInventory().equals(mainInventory)) {
-			e.setCancelled(true);
-			if (!(e.getWhoClicked() instanceof Player)) {
-				e.getWhoClicked().closeInventory();
-				return; // How this happened?
-			}
-			Player player = (Player) e.getWhoClicked();
-			if (!Main.isPlayerInGame(player)) {
+		for (int i = 0; i < this.inv.size(); i++) {
+			Inventory inv = this.inv.get(i);
+			if (e.getInventory().equals(inv)) {
+				e.setCancelled(true);
+				if (!(e.getWhoClicked() instanceof Player)) {
+					e.getWhoClicked().closeInventory();
+					return; // How this happened?
+				}
+				Player player = (Player) e.getWhoClicked();
+				if (!Main.isPlayerInGame(player)) {
+					player.closeInventory();
+					return;
+				}
+				int clickedSlot = e.getSlot();
+				if (clickedSlot < 0) {
+					return;
+				}
+				ItemStack stack = inv.getItem(clickedSlot);
+				Category category = categoryInventories.get(stack);
+				if (category == null) {
+					if (stack.equals(pageBackItem) && i > 0) {
+						player.openInventory(this.inv.get(i - 1));
+					} else if (stack.equals(pageForwardItem) && i < (this.inv.size() - 1)) {
+						player.openInventory(this.inv.get(i + 1));
+					}
+					return;
+				}
 				player.closeInventory();
+				player.openInventory(category.inv.get(0));
 				return;
 			}
-			int clickedSlot = e.getSlot();
-			Category category = categoryInventories.get(clickedSlot);
-			if (category == null) {
-				return;
-			}
-			player.closeInventory();
-			player.openInventory(category.inv.get(0));
-			return;
 		}
 
 		for (Category cat : categoryInventories.values()) {
@@ -272,7 +374,7 @@ public class ShopMenu implements Listener {
 					}
 					if (itemInfo == null) {
 						if (stack.equals(backItem)) {
-							player.openInventory(mainInventory);
+							player.openInventory(this.inv.get(cat.onPage - 1));
 						} else if (stack.equals(pageBackItem) && i > 0) {
 							player.openInventory(cat.inv.get(i - 1));
 						} else if (stack.equals(pageForwardItem) && i < (cat.inv.size() - 1)) {

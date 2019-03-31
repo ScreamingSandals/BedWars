@@ -5,13 +5,18 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import misat11.bw.Main;
 
@@ -66,6 +71,44 @@ public class Configurator {
 				e.printStackTrace();
 			}
 			main.getLogger().info("Config successfully migrated from version 1 to version 2!");
+		}
+		
+		if (shopconfig.getInt("version") < 2) {
+			shopconfig.set("version", 2);
+			main.getLogger().info("Migrating shop.yml from version 1 to version 2 ...");
+			
+			List<Map<String, Object>> newData = new ArrayList<Map<String, Object>>();
+			
+			Set<String> s = Main.getConfigurator().shopconfig.getConfigurationSection("shop-items").getKeys(false);
+
+			for (String i : s) {
+				ConfigurationSection category = Main.getConfigurator().shopconfig
+						.getConfigurationSection("shop-items." + i);
+				ItemStack categoryItem = new ItemStack(Material.valueOf(category.getString("item")), 1,
+						(short) category.getInt("damage", 0));
+				ItemMeta categoryItemMeta = categoryItem.getItemMeta();
+				categoryItemMeta.setLore(category.getStringList("lore"));
+				categoryItemMeta.setDisplayName(category.getString("name"));
+				categoryItem.setItemMeta(categoryItemMeta);
+				
+				Map<String, Object> map = new HashMap<String, Object>();
+				
+				map.put("stack", categoryItem);
+				map.put("items", (List<Map<String, Object>>) category.getList("items"));
+				
+				newData.add(map);
+			}
+			
+			shopconfig.set("data", newData);
+			
+			shopconfig.set("shop-items", null);
+			
+			try {
+				shopconfig.save(shopconfigf);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			main.getLogger().info("Shop.yml successfully migrated from version 1 to version 2!");
 		}
 	}
 

@@ -1,11 +1,20 @@
-shop-items:
+# DO NOT EDIT THIS!!!
+version: 2
 
-#  examplecategory:
-#    name: "Example category"
-#    item: "GOLDEN_APPLE"
-#    lore:
-#    - "This is my category!"
-#    - "Please buy things inside!"
+
+data:
+
+#-   stack:
+#      ==: org.bukkit.inventory.ItemStack
+#      type: GOLDEN_APPLE
+#      amount: 1
+#      meta:
+#        ==: ItemMeta
+#        meta-type: UNSPECIFIC
+#        display-name: "Example category"
+#        lore:
+#        - "This is my category!"
+#        - "Please buy things inside!"
 #    items:
 #    - price: 50
 #      price-type: "bronze"
@@ -14,11 +23,16 @@ shop-items:
 #        type: DIAMOND_SWORD
 #        amount: 1
 
-  armor:
-    name: "Armor"
-    item: DIAMOND_CHESTPLATE     
-    lore:
-    - "Protect yourself with armor! Click here."
+-   stack:
+      ==: org.bukkit.inventory.ItemStack
+      type: DIAMOND_CHESTPLATE
+      amount: 1
+      meta:
+        ==: ItemMeta
+        meta-type: UNSPECIFIC
+        display-name: "Armor"
+        lore:
+        - "Protect yourself with armor! Click here."
     items:
     - price: 1
       price-type: bronze
@@ -99,11 +113,16 @@ shop-items:
           enchants:
             PROTECTION_ENVIRONMENTAL: 2
   
-  swords:
-    name: "Swords"
-    item: DIAMOND_SWORD     
-    lore:
-    - "Click here to get sword for attacking your enemies"
+-   stack:
+      ==: org.bukkit.inventory.ItemStack
+      type: DIAMOND_SWORD
+      amount: 1
+      meta:
+        ==: ItemMeta
+        meta-type: UNSPECIFIC
+        display-name: "Swords"
+        lore:
+        - "Click here to get sword for attacking your enemies"
     items:
     - price: 8
       price-type: bronze
@@ -176,11 +195,16 @@ shop-items:
             DURABILITY: 1
             KNOCKBACK: 1
     
-  bows:
-    name: "Bows"
-    item: BOW     
-    lore:
-    - "Prove yourself as a marksman with these wonderful bows"
+-   stack:
+      ==: org.bukkit.inventory.ItemStack
+      type: BOW
+      amount: 1
+      meta:
+        ==: ItemMeta
+        meta-type: UNSPECIFIC
+        display-name: "Bows"
+        lore:
+        - "Prove yourself as a marksman with these wonderful bows"
     items:
     - price: 3
       price-type: gold
@@ -248,11 +272,16 @@ shop-items:
         ==: org.bukkit.inventory.ItemStack
         type: ARROW
         amount: 1 
-  eat:
-    name: "Eat"
-    item: GRILLED_PORK     
-    lore:
-    - "Are you hungry? Get something to eat."
+-   stack:
+      ==: org.bukkit.inventory.ItemStack
+      type: GRILLED_PORK
+      amount: 1
+      meta:
+        ==: ItemMeta
+        meta-type: UNSPECIFIC
+        display-name: "Eat"
+        lore:
+        - "Are you hungry? Get something to eat."
     items:
     - price: 4
       price-type: bronze
@@ -273,11 +302,16 @@ shop-items:
         type: BREAD
         amount: 10
         
-  pickaxes:
-    name: "Pickaxes"
-    item: DIAMOND_PICKAXE     
-    lore:
-    - "Destroy others blocks? Use these pickaxes."
+-   stack:
+      ==: org.bukkit.inventory.ItemStack
+      type: DIAMOND_PICKAXE
+      amount: 1
+      meta:
+        ==: ItemMeta
+        meta-type: UNSPECIFIC
+        display-name: "Pickaxes"
+        lore:
+        - "Destroy others blocks? Use these pickaxes."
     items:
     - price: 4
       price-type: bronze
@@ -313,11 +347,17 @@ shop-items:
           enchants:
             LOOT_BONUS_BLOCKS: 3
             
-  blocks:
-    name: "Blocks"
-    item: SANDSTONE     
-    lore:
-    - "Destroy others blocks? Use these pickaxes."
+-   stack:
+      ==: org.bukkit.inventory.ItemStack
+      v: 1519
+      type: SANDSTONE
+      amount: 1
+      meta:
+        ==: ItemMeta
+        meta-type: UNSPECIFIC
+        display-name: "Blocks"
+        lore:
+        - "Destroy others blocks? Use these pickaxes."
     items:
     - price: 1
       price-type: bronze
@@ -350,11 +390,17 @@ shop-items:
         ==: org.bukkit.inventory.ItemStack
         type: GLASS
             
-  usefulstuff:
-    name: "Useful Stuff"
-    item: TNT     
-    lore:
-    - "Looking for useful stuff? Here are some!"
+-   stack:
+      ==: org.bukkit.inventory.ItemStack
+      v: 1519
+      type: TNT
+      amount: 1
+      meta:
+        ==: ItemMeta
+        meta-type: UNSPECIFIC
+        display-name: "Useful Stuff"
+        lore:
+        - "Looking for useful stuff? Here are some!"
     items:
     - price: 1
       price-type: iron

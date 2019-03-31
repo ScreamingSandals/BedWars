@@ -32,7 +32,7 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<bedwars.api>1.2</bedwars.api>
-		<bedwars.version>0.0.9</bedwars.version>
+		<bedwars.version>0.1.0-pre1</bedwars.version>
 	</properties>
 
 	<modules>
