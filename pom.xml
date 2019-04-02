@@ -23,6 +23,10 @@
 			<url>https://jenkins.mtorus.cz/plugin/repository/project/VaultAPI/LastSuccessful/repository/</url>
 		</repository>
 		<repository>
+			<id>simpleguiformat-repo</id>
+			<url>https://jenkins.mtorus.cz/plugin/repository/project/SimpleGuiFormat/LastSuccessful/repository/</url>
+		</repository>
+		<repository>
 			<id>placeholderapi</id>
 			<url>http://repo.extendedclip.com/content/repositories/placeholderapi/</url>
 		</repository>

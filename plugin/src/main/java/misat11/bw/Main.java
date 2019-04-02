@@ -354,7 +354,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 					spread, material, color, interval, damage));
 		}
 
-		menu = new ShopMenu(this);
+		menu = new ShopMenu();
 
 		Bukkit.getLogger().info("********************");
 		Bukkit.getLogger().info("*     Bed Wars     *");

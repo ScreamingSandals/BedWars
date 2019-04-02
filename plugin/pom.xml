@@ -41,6 +41,12 @@
 			<version>2.9.2</version>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>misat11.lib.sgui</groupId>
+			<artifactId>SimpleGuiFormat-Lib</artifactId>
+			<version>0.0.1</version>
+			<scope>compile</scope>
+		</dependency>
 
 		<!-- NMS -->
 		<dependency>
@@ -133,6 +139,10 @@
 								<relocation>
 									<pattern>com.zaxxer</pattern>
 									<shadedPattern>thirdparty.com.zaxxer.HikariCP</shadedPattern>
+								</relocation>
+								<relocation>
+									<pattern>misat11.lib</pattern>
+									<shadedPattern>misat11.bw.lib</shadedPattern>
 								</relocation>
 							</relocations>
 						</configuration>
