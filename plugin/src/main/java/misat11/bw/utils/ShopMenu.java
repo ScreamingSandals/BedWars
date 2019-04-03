@@ -56,15 +56,20 @@ public class ShopMenu implements Listener {
 		format.generateData();
 
 		creator = new StaticGuiCreator("[BW] Shop", format, backItem, pageBackItem, pageForwardItem, cosmeticItem);
-		creator.generate();
 
 		listener = new StaticInventoryListener(creator);
 		Bukkit.getServer().getPluginManager().registerEvents(listener, Main.getInstance());
 		Bukkit.getServer().getPluginManager().registerEvents(this, Main.getInstance());
+		
+		creator.generate();
 	}
 	
 	@EventHandler
 	public void onGeneratingItem(GenerateItemEvent event) {
+		if (event.getFormat() != format) {
+			return;
+		}
+		
 		ItemInfo item = event.getInfo();
 		ItemData data = item.getData();
 		Map<String, Object> originalItemData = data.getData();
