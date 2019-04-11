@@ -158,5 +158,17 @@ database:
   password: secret
   table-prefix: bw_
   
+# Bossbar
+bossbar:
+  lobby:
+    enable: true
+    color: YELLOW
+    style: SEGMENTED_20
+  game:
+    enable: true
+    color: GREEN
+    style: SEGMENTED_20
+    
+  
 # Do not edit this!!!
 version: 2

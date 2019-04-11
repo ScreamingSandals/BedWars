@@ -75,33 +75,35 @@ public class Configurator {
 		
 		if (shopconfig.getInt("version") < 2) {
 			shopconfig.set("version", 2);
-			main.getLogger().info("Migrating shop.yml from version 1 to version 2 ...");
-			
-			List<Map<String, Object>> newData = new ArrayList<Map<String, Object>>();
-			
-			Set<String> s = Main.getConfigurator().shopconfig.getConfigurationSection("shop-items").getKeys(false);
-
-			for (String i : s) {
-				ConfigurationSection category = Main.getConfigurator().shopconfig
-						.getConfigurationSection("shop-items." + i);
-				ItemStack categoryItem = new ItemStack(Material.valueOf(category.getString("item")), 1,
-						(short) category.getInt("damage", 0));
-				ItemMeta categoryItemMeta = categoryItem.getItemMeta();
-				categoryItemMeta.setLore(category.getStringList("lore"));
-				categoryItemMeta.setDisplayName(category.getString("name"));
-				categoryItem.setItemMeta(categoryItemMeta);
+			if (shopconfig.isSet("shop-items")) {
+				main.getLogger().info("Migrating shop.yml from version 1 to version 2 ...");
 				
-				Map<String, Object> map = new HashMap<String, Object>();
+				List<Map<String, Object>> newData = new ArrayList<Map<String, Object>>();
 				
-				map.put("stack", categoryItem);
-				map.put("items", (List<Map<String, Object>>) category.getList("items"));
+				Set<String> s = Main.getConfigurator().shopconfig.getConfigurationSection("shop-items").getKeys(false);
+	
+				for (String i : s) {
+					ConfigurationSection category = Main.getConfigurator().shopconfig
+							.getConfigurationSection("shop-items." + i);
+					ItemStack categoryItem = new ItemStack(Material.valueOf(category.getString("item")), 1,
+							(short) category.getInt("damage", 0));
+					ItemMeta categoryItemMeta = categoryItem.getItemMeta();
+					categoryItemMeta.setLore(category.getStringList("lore"));
+					categoryItemMeta.setDisplayName(category.getString("name"));
+					categoryItem.setItemMeta(categoryItemMeta);
+					
+					Map<String, Object> map = new HashMap<String, Object>();
+					
+					map.put("stack", categoryItem);
+					map.put("items", (List<Map<String, Object>>) category.getList("items"));
+					
+					newData.add(map);
+				}
 				
-				newData.add(map);
+				shopconfig.set("data", newData);
+				
+				shopconfig.set("shop-items", null);
 			}
-			
-			shopconfig.set("data", newData);
-			
-			shopconfig.set("shop-items", null);
 			
 			try {
 				shopconfig.save(shopconfigf);
@@ -221,6 +223,12 @@ public class Configurator {
 		checkOrSetConfig(modify, "database.user", "root");
 		checkOrSetConfig(modify, "database.password", "secret");
 		checkOrSetConfig(modify, "database.table-prefix", "bw_");
+		checkOrSetConfig(modify, "bossbar.lobby.enable", true);
+		checkOrSetConfig(modify, "bossbar.lobby.color", "YELLOW");
+		checkOrSetConfig(modify, "bossbar.lobby.style", "SEGMENTED_20");
+		checkOrSetConfig(modify, "bossbar.game.enable", true);
+		checkOrSetConfig(modify, "bossbar.game.color", "GREEN");
+		checkOrSetConfig(modify, "bossbar.game.style", "SEGMENTED_20");
 		checkOrSetConfig(modify, "version", 2);
 		if (modify.get()) {
 			try {

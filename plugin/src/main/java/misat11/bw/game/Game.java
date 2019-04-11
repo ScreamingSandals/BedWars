@@ -724,7 +724,8 @@ public class Game implements misat11.bw.api.Game {
 
 		configMap.set("constant." + COMPASS_ENABLED, writeBooleanConstant(compassEnabled));
 		configMap.set("constant." + ADD_WOOL_TO_INVENTORY_ON_JOIN, writeBooleanConstant(addWoolToInventoryOnJoin));
-		configMap.set("constant." + COLORED_LEATHER_BY_TEAM_IN_LOBBY, writeBooleanConstant(coloredLeatherByTeamInLobby));
+		configMap.set("constant." + COLORED_LEATHER_BY_TEAM_IN_LOBBY,
+				writeBooleanConstant(coloredLeatherByTeamInLobby));
 		configMap.set("constant." + CRAFTING, writeBooleanConstant(crafting));
 		configMap.set("constant." + JOIN_RANDOM_TEAM_AFTER_LOBBY, writeBooleanConstant(joinRandomTeamAfterLobby));
 		configMap.set("constant." + JOIN_RANDOM_TEAM_ON_JOIN, writeBooleanConstant(joinRandomTeamOnJoin));
@@ -1074,12 +1075,15 @@ public class Game implements misat11.bw.api.Game {
 				countdown = pauseCountdown;
 				String title = i18n("bossbar_waiting", false);
 				try {
-					bossbar = Bukkit.createBossBar(title, BarColor.RED, BarStyle.SEGMENTED_20);
-					bossbar.setColor(BarColor.YELLOW);
+					bossbar = Bukkit.createBossBar(title, BarColor.RED, BarStyle.SOLID);
+					bossbar.setVisible(false);
 					bossbar.setProgress(0);
 					for (GamePlayer p : players) {
 						bossbar.addPlayer(p.player);
 					}
+					bossbar.setColor(BarColor.valueOf(Main.getConfigurator().config.getString("bossbar.lobby.color")));
+					bossbar.setStyle(BarStyle.valueOf(Main.getConfigurator().config.getString("bossbar.lobby.style")));
+					bossbar.setVisible(Main.getConfigurator().config.getBoolean("bossbar.lobby.enable"));
 				} catch (Throwable t) {
 				}
 				if (teamSelectorInventory == null) {
@@ -1124,7 +1128,9 @@ public class Game implements misat11.bw.api.Game {
 				try {
 					bossbar.setTitle(i18n("bossbar_running", false));
 					bossbar.setProgress(0);
-					bossbar.setColor(BarColor.GREEN);
+					bossbar.setColor(BarColor.valueOf(Main.getConfigurator().config.getString("bossbar.game.color")));
+					bossbar.setStyle(BarStyle.valueOf(Main.getConfigurator().config.getString("bossbar.game.style")));
+					bossbar.setVisible(Main.getConfigurator().config.getBoolean("bossbar.game.enable"));
 				} catch (Throwable tr) {
 
 				}
