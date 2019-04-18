@@ -16,7 +16,11 @@ public class GameStore {
 	public Villager spawn() {
 		if (entity == null) {
 			entity = (Villager) loc.getWorld().spawnEntity(loc, EntityType.VILLAGER);
-			entity.setAI(false);
+			try  {
+				entity.setAI(false);
+			} catch (Throwable t) {
+				
+			}
 		}
 		return entity;
 	}

@@ -311,11 +311,6 @@ public class Game implements misat11.bw.api.Game {
 			if (getPlayerTeam(player).teamInfo.bed.equals(loc)) {
 				return false;
 			}
-			try {
-				event.setDropItems(false);
-			} catch (Throwable tr) {
-				block.setType(Material.AIR);
-			}
 			bedDestroyed(loc, player.player);
 			region.putOriginalBlock(block.getLocation(), block.getState());
 			if (block.getLocation().equals(loc)) {
@@ -323,6 +318,15 @@ public class Game implements misat11.bw.api.Game {
 				region.putOriginalBlock(neighbor.getLocation(), neighbor.getState());
 			} else {
 				region.putOriginalBlock(loc, region.getBedNeighbor(block).getState());
+			}
+			try {
+				event.setDropItems(false);
+			} catch (Throwable tr) {
+				if (region.isBedHead(block.getState())) {
+					region.getBedNeighbor(block).setType(Material.AIR);
+				} else {
+					block.setType(Material.AIR);
+				}
 			}
 			return true;
 		}

@@ -389,6 +389,18 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 			Bukkit.getLogger().info("* Please download! *");
 			Bukkit.getLogger().info("*   spigotmc.org   *");
 		}
+		
+		if (versionNumber < 109) {
+			Bukkit.getLogger().info("*                  *");
+			Bukkit.getLogger().info("*   You're using   *");
+			Bukkit.getLogger().info("*       old        *");
+			Bukkit.getLogger().info("*   game version   *");
+			Bukkit.getLogger().info("*                  *");
+			Bukkit.getLogger().info("*   We recommend   *");
+			Bukkit.getLogger().info("*      to use      *");
+			Bukkit.getLogger().info("*  1.9 and newer!  *");
+			Bukkit.getLogger().info("*                  *");
+		}
 
 		Bukkit.getLogger().info("*                  *");
 		Bukkit.getLogger().info("********************");

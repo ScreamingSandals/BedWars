@@ -16,8 +16,8 @@ public class Title {
     PacketPlayOutTitle subTitlePacket =
         new PacketPlayOutTitle(EnumTitleAction.SUBTITLE, subTitleComponent);
     PacketPlayOutTitle timesPacket =
-        new PacketPlayOutTitle(EnumTitleAction.TIMES, null, (int) Math.round(fadeIn * 20.0),
-            (int) Math.round(stay * 20.0), (int) Math.round(fadeOut * 20.0));
+        new PacketPlayOutTitle(EnumTitleAction.TIMES, null, (int) Math.round(fadeIn),
+            (int) Math.round(stay), (int) Math.round(fadeOut));
 
     ((CraftPlayer) player).getHandle().playerConnection.sendPacket(timesPacket);
     ((CraftPlayer) player).getHandle().playerConnection.sendPacket(subTitlePacket);
@@ -29,7 +29,7 @@ public class Title {
 
     PacketPlayOutTitle titlePacket = new PacketPlayOutTitle(EnumTitleAction.TITLE, titleComponent);
     PacketPlayOutTitle timesPacket = new PacketPlayOutTitle(EnumTitleAction.TIMES, null,
-        (int) Math.round(fadeIn * 20), (int) Math.round(stay * 20), (int) Math.round(fadeOut * 20));
+        (int) Math.round(fadeIn), (int) Math.round(stay), (int) Math.round(fadeOut));
 
     ((CraftPlayer) player).getHandle().playerConnection.sendPacket(timesPacket);
     ((CraftPlayer) player).getHandle().playerConnection.sendPacket(titlePacket);
