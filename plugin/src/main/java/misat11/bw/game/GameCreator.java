@@ -9,6 +9,7 @@ import java.util.Set;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.WeatherType;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.type.Bed;
 import org.bukkit.block.data.type.Bed.Part;
@@ -16,6 +17,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import misat11.bw.Main;
+import misat11.bw.api.ArenaTime;
 import misat11.bw.api.GameStore;
 import misat11.bw.api.InGameConfigBooleanConstants;
 import misat11.bw.utils.BedUtils;
@@ -63,6 +65,14 @@ public class GameCreator {
 		} else if (action.equalsIgnoreCase("time")) {
 			if (args.length >= 1) {
 				response = setGameTime(Integer.parseInt(args[0]));
+			}
+		} else if (action.equalsIgnoreCase("arenatime")) {
+			if (args.length >= 1) {
+				response = setArenaTime(args[0]);
+			}
+		} else if (action.equalsIgnoreCase("arenaweather")) {
+			if (args.length >= 1) {
+				response = setArenaWeather(args[0]);
 			}
 		} else if (action.equalsIgnoreCase("minplayers")) {
 			if (args.length >= 1) {
@@ -164,6 +174,36 @@ public class GameCreator {
 		}
 		player.sendMessage(response);
 		return isArenaSaved;
+	}
+
+	private String setArenaWeather(String arenaWeather) {
+		arenaWeather = arenaWeather.toUpperCase();
+		WeatherType c = null;
+		if (!arenaWeather.equalsIgnoreCase("default")) {
+			try {
+				c = WeatherType.valueOf(arenaWeather);
+			} catch (Exception e) {
+				return i18n("admin_command_invalid_arena_weather");
+			}
+		}
+		
+		game.setArenaWeather(c);
+		
+		return i18n("admin_command_arena_weather_set").replace("%weather%", c == null ? "default" : c.name());
+	}
+
+	private String setArenaTime(String arenaTime) {
+		arenaTime = arenaTime.toUpperCase();
+		ArenaTime c;
+		try {
+			c = ArenaTime.valueOf(arenaTime);
+		} catch (Exception e) {
+			return i18n("admin_command_invalid_arena_time");
+		}
+		
+		game.setArenaTime(c);
+
+		return i18n("admin_command_arena_time_set").replace("%time%", c.name());
 	}
 
 	private String setLocalConfigVariable(String config, String value) {

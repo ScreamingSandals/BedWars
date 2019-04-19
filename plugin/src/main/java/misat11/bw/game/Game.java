@@ -445,6 +445,14 @@ public class Game implements misat11.bw.api.Game {
 			// Load
 			Main.getPlayerStatisticsManager().getStatistic(player.player);
 		}
+		
+		if (arenaTime.time >= 0) {
+			player.player.setPlayerTime(arenaTime.time, false);
+		}
+		
+		if (arenaWeather != null) {
+			player.player.setPlayerWeather(arenaWeather);
+		}
 
 		player.player.teleport(lobbySpawn);
 		SpawnEffects.spawnEffect(this, player.player, "game-effects.lobbyjoin");
@@ -552,6 +560,9 @@ public class Game implements misat11.bw.api.Game {
 			if (gameScoreboard.getObjective("display") != null) {
 				gameScoreboard.getObjective("display").unregister();
 			}
+			if (gameScoreboard.getObjective("lobby") != null) {
+				gameScoreboard.getObjective("lobby").unregister();
+			}
 			gameScoreboard.clearSlot(DisplaySlot.SIDEBAR);
 			for (CurrentTeam team : teamsInGame) {
 				team.getScoreboardTeam().unregister();
@@ -640,11 +651,23 @@ public class Game implements misat11.bw.api.Game {
 		game.gamebossbar = readBooleanConstant(configMap.getString("constant." + GAME_BOSSBAR, "inherit"));
 		game.ascoreboard = readBooleanConstant(configMap.getString("constant." + SCOREBOARD, "inherit"));
 		game.lobbyscoreboard = readBooleanConstant(configMap.getString("constant." + LOBBY_SCOREBOARD, "inherit"));
+		game.preventSpawningMobs = readBooleanConstant(configMap.getString("constant." + PREVENT_SPAWNING_MOBS, "inherit"));
+		
+		game.arenaTime = ArenaTime.valueOf(configMap.getString("arenaTime", ArenaTime.WORLD.name()).toUpperCase());
+		game.arenaWeather = loadWeather(configMap.getString("arenaWeather", "default").toUpperCase());
 
 		game.start();
 		Main.getInstance().getLogger().info("Arena " + game.name + " loaded!");
 		Main.addGame(game);
 		return game;
+	}
+	
+	public static WeatherType loadWeather(String weather) {
+		try {
+			return WeatherType.valueOf(weather);
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 	public static Location readLocationFromString(World world, String location) {
@@ -769,6 +792,10 @@ public class Game implements misat11.bw.api.Game {
 		configMap.set("constant." + GAME_BOSSBAR, writeBooleanConstant(gamebossbar));
 		configMap.set("constant." + LOBBY_SCOREBOARD, writeBooleanConstant(lobbyscoreboard));
 		configMap.set("constant." + SCOREBOARD, writeBooleanConstant(ascoreboard));
+		configMap.set("constant." + PREVENT_SPAWNING_MOBS, writeBooleanConstant(preventSpawningMobs));
+		
+		configMap.set("arenaTime", arenaTime.name());
+		configMap.set("arenaWeather", arenaWeather == null ? "default" : arenaWeather.name());
 
 		try {
 			configMap.save(file);
@@ -1172,6 +1199,10 @@ public class Game implements misat11.bw.api.Game {
 				if (teamSelectorInventory != null)
 					teamSelectorInventory.destroy();
 				teamSelectorInventory = null;
+				if (gameScoreboard.getObjective("lobby") != null) {
+					gameScoreboard.getObjective("lobby").unregister();
+				}
+				gameScoreboard.clearSlot(DisplaySlot.SIDEBAR);
 				updateScoreboard();
 				updateSigns();
 				for (GameStore store : gameStore) {

@@ -1,6 +1,9 @@
 package misat11.bw.listener;
 
 import org.bukkit.Material;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Phantom;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBurnEvent;
@@ -104,7 +107,7 @@ public class WorldListener implements Listener {
 			Game game = Main.getGame(gameName);
 			if (GameCreator.isInArea(event.getLocation(), game.getPos1(), game.getPos2())) {
 				event.setCancelled(true);
-				break;
+				return;
 			}
 		}
 	}

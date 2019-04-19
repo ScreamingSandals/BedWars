@@ -89,6 +89,7 @@ public class GamePlayer {
 		player.updateInventory();
 		player.teleport(oldinventory.left);
 		player.resetPlayerTime();
+		player.resetPlayerWeather();
 	}
 
 	public void clean() {

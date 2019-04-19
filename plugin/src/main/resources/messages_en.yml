@@ -111,6 +111,12 @@ admin_command_invalid_config_value: "§cWrong value! It could be §7true§c, §7
 admin_command_invalid_config_variable_name: "§cWrong name of constant!"
 admin_command_config_variable_set_to: "§aConstant §7%config%§a was successfully set to §7%value%§a!"
 
+admin_command_invalid_arena_time: "§cWrong type of arena's world time!"
+admin_command_arena_time_set: "§aArena's world time has been set to §7%time%§a!"
+
+admin_command_invalid_arena_weather: "§cWrong type of arena's world weather!"
+admin_command_arena_weather_set: "§aArena's world weather has been set to §7%weather%§a!"
+
 sign_successfully_created: "§aSign was successfully created!"
 sign_can_not_been_created: "§cSign couldn't be created! Please check the name of arena!"
 sign_can_not_been_destroyed: "§cYou don't have permissions to destroy this sign!"
@@ -212,6 +218,8 @@ help_bw_admin_spawner_reset: "/bw admin <arena> spawner reset - §eRemove all sp
 help_bw_admin_store_add: "/bw admin <arena> store add - §eAdd trading villager to your position"
 help_bw_admin_store_remove: "/bw admin <arena> store remove - §eRemove trading villager from your position"
 help_bw_admin_config: "/bw admin <arena> config <constant> <value> - §eSets value of constant variable for game"
+help_bw_admin_arena_time: "/bw admin <arena> arenatime <type> - §eSets time in arena (DAY, NIGHT, etc.)"
+help_bw_admin_arena_weather: "/bw admin <arena> arenaweather <type> - §eSets weather in arena (default, CLEAN, DOWNFALL)"
 help_bw_admin_remove: "/bw admin <arena> remove - §cRemove the arena"
 help_bw_admin_edit: "/bw admin <arena> edit - §eTurns the game off and switches the arena to edit mode"
 help_bw_admin_save: "/bw admin <arena> save - §aSaves the game and activates it!"

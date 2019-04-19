@@ -107,6 +107,12 @@ admin_command_invalid_config_value: "§cŠpatná hodnota! Možné varianty jsou 
 admin_command_invalid_config_variable_name: "§cŠpatný název konstanty!"
 admin_command_config_variable_set_to: "§aKonstanta §7%config%§a byla úspěšně nastavena na hodnotu §7%value%§a!"
 
+admin_command_invalid_arena_time: "§cŠpatný typ času světa arény!"
+admin_command_arena_time_set: "§aČas světa byl nastaven na §7%time%§a!"
+
+admin_command_invalid_arena_weather: "§cŠpatný typ počasí světa arény!"
+admin_command_arena_weather_set: "§aPočasí světa byl nastaven na §7%weather%§a!"
+
 sign_successfully_created: "§aCedule byla úspěšně vytvořena!"
 sign_can_not_been_created: "§cCeduli se nepodařilo vytvorit! Zkontrolujte si prosím název arény!"
 sign_can_not_been_destroyed: "§cNemáš patřičná oprávnění pro zničení této cedule!"
@@ -208,6 +214,8 @@ help_bw_admin_spawner_reset: "/bw admin <aréna> spawner reset - §eSmaže se hr
 help_bw_admin_store_add: "/bw admin <aréna> store add - §ePřidá obchodujícího vesničana na tvojí pozici"
 help_bw_admin_store_remove: "/bw admin <aréna> store remove - §eOdebere obchodujícího vesničana ze tvojí pozice"
 help_bw_admin_config: "/bw admin <aréna> config <konstanta> <hodnota> - §eNastaví hodnotu konstantě pro danou arénu"
+help_bw_admin_arena_time: "/bw admin <aréna> arenatime <typ> - §eNastaví, jaký bude čas v aréně"
+help_bw_admin_arena_weather: "/bw admin <aréna> arenaweather <typ> - §eNastaví, jaké bude v aréně počasí"
 help_bw_admin_remove: "/bw admin <aréna> remove - §cOdstraní arénu"
 help_bw_admin_edit: "/bw admin <aréna> edit - §eVypne hru a přepne arénu do módu úprav"
 help_bw_admin_save: "/bw admin <aréna> save - §aUloží hru a aktivuje jí!"

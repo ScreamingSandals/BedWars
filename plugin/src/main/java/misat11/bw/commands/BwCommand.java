@@ -9,6 +9,7 @@ import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.WeatherType;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -17,6 +18,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.StringUtil;
 
 import misat11.bw.Main;
+import misat11.bw.api.ArenaTime;
 import misat11.bw.api.GameStore;
 import misat11.bw.game.Game;
 import misat11.bw.game.GameCreator;
@@ -446,7 +448,7 @@ public class BwCommand implements CommandExecutor, TabCompleter {
 					} else if (args.length == 3) {
 						List<String> cmds = Arrays.asList("add", "lobby", "spec", "pos1", "pos2", "pausecountdown",
 								"team", "spawner", "time", "store", "save", "remove", "edit", "jointeam", "minplayers",
-								"info", "config");
+								"info", "config", "arenatime", "arenaweather");
 						StringUtil.copyPartialMatches(args[2], cmds, completionList);
 					} else if (args[2].equalsIgnoreCase("pausecountdown") && args.length == 4) {
 						StringUtil.copyPartialMatches(args[3], Arrays.asList("30", "60"), completionList);
@@ -454,6 +456,23 @@ public class BwCommand implements CommandExecutor, TabCompleter {
 						StringUtil.copyPartialMatches(args[3], Arrays.asList("180", "300", "600"), completionList);
 					} else if (args[2].equalsIgnoreCase("minplayers") && args.length == 4) {
 						StringUtil.copyPartialMatches(args[3], Arrays.asList("2", "3", "4", "5"), completionList);
+					} else if (args[2].equalsIgnoreCase("arenatime")) {
+						if (args.length == 4) {
+							List<String> cmds = new ArrayList<>();
+							for (ArenaTime type : ArenaTime.values()) {
+								cmds.add(type.name());
+							}
+							StringUtil.copyPartialMatches(args[3], cmds, completionList);
+						}
+					} else if (args[2].equalsIgnoreCase("arenaweather")) {
+						if (args.length == 4) {
+							List<String> cmds = new ArrayList<String>();
+							cmds.add("default");
+							for (WeatherType type : WeatherType.values()) {
+								cmds.add(type.name());
+							}
+							StringUtil.copyPartialMatches(args[3], cmds, completionList);
+						}
 					} else if (args[2].equalsIgnoreCase("store")) {
 						if (args.length == 4) {
 							List<String> cmds = Arrays.asList("add", "remove");
@@ -558,6 +577,8 @@ public class BwCommand implements CommandExecutor, TabCompleter {
 			player.sendMessage(i18n("help_bw_admin_store_add", false));
 			player.sendMessage(i18n("help_bw_admin_store_remove", false));
 			player.sendMessage(i18n("help_bw_admin_config", false));
+			player.sendMessage(i18n("help_bw_admin_arena_time", false));
+			player.sendMessage(i18n("help_bw_admin_arena_weather", false));
 			player.sendMessage(i18n("help_bw_admin_remove", false));
 			player.sendMessage(i18n("help_bw_admin_edit", false));
 			player.sendMessage(i18n("help_bw_admin_save", false));
