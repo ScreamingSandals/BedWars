@@ -169,6 +169,7 @@ public class Configurator {
 		checkOrSetConfig(modify, "compass-enabled", true);
 		checkOrSetConfig(modify, "join-randomly-on-lobby-join", false);
 		checkOrSetConfig(modify, "add-wool-to-inventory-on-join", true);
+		checkOrSetConfig(modify, "prevent-spawning-mobs", true);
 		checkOrSetConfig(modify, "allowed-commands", new ArrayList<>());
 		checkOrSetConfig(modify, "farmBlocks.enable", true);
 		checkOrSetConfig(modify, "farmBlocks.blocks", new ArrayList<>());

@@ -253,6 +253,25 @@ public class GameCreator {
 		case "allowcrafting":
 			game.setCrafting(cons);
 			break;
+		case "bossbar":
+		case "gamebossbar":
+			game.setGamebossbar(cons);
+			break;
+		case "lobbybossbar":
+			game.setLobbybossbar(cons);
+			break;
+		case "scoreboard":
+		case "gamescoreboard":
+			game.setAscoreboard(cons);
+			break;
+		case "lobbyscoreboard":
+			game.setLobbyscoreboard(cons);
+			break;
+		case "preventspawningmobs":
+		case "preventmobs":
+		case "mobs":
+			game.setPreventSpawningMobs(cons);
+			break;
 		default:
 			return i18n("admin_command_invalid_config_variable_name");
 		}
@@ -579,6 +598,10 @@ public class GameCreator {
 	}
 
 	public static boolean isInArea(Location l, Location p1, Location p2) {
+		if (!p1.getWorld().equals(l.getWorld())) {
+			return false;
+		}
+		
 		Location min = new Location(p1.getWorld(), Math.min(p1.getX(), p2.getX()), Math.min(p1.getY(), p2.getY()),
 				Math.min(p1.getZ(), p2.getZ()));
 		Location max = new Location(p1.getWorld(), Math.max(p1.getX(), p2.getX()), Math.max(p1.getY(), p2.getY()),

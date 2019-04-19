@@ -3,6 +3,7 @@ package misat11.bw.api;
 import java.util.List;
 
 import org.bukkit.Location;
+import org.bukkit.WeatherType;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -150,4 +151,24 @@ public interface Game {
 	
 	public InGameConfigBooleanConstants getCrafting();
 	public boolean getOriginalOrInheritedCrafting();
+	
+	public InGameConfigBooleanConstants getLobbyBossbar();
+	public boolean getOriginalOrInheritedLobbyBossbar();
+	
+	public InGameConfigBooleanConstants getGameBossbar();
+	public boolean getOriginalOrInheritedGameBossbar();
+	
+	public InGameConfigBooleanConstants getScoreboard();
+	public boolean getOriginalOrInheritedScoreaboard();
+	
+	public InGameConfigBooleanConstants getLobbyScoreboard();
+	public boolean getOriginalOrInheritedLobbyScoreaboard();
+	
+	public InGameConfigBooleanConstants getPreventSpawningMobs();
+	public boolean getOriginalOrInheritedPreventSpawningMobs();
+	
+	public ArenaTime getArenaTime();
+	public WeatherType getArenaWeather();
+	
+	
 }

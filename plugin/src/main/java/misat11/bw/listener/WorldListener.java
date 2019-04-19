@@ -6,6 +6,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockFadeEvent;
 import org.bukkit.event.block.BlockFormEvent;
+import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.world.StructureGrowEvent;
 
 import misat11.bw.Main;
@@ -88,6 +90,21 @@ public class WorldListener implements Listener {
 					event.setCancelled(true);
 					return;
 				}
+			}
+		}
+	}
+	
+	@EventHandler
+	public void onCreatureSpawn(CreatureSpawnEvent event) {
+		if (event.isCancelled() || event.getSpawnReason() == SpawnReason.CUSTOM) {
+			return;
+		}
+		
+		for (String gameName : Main.getGameNames()) {
+			Game game = Main.getGame(gameName);
+			if (GameCreator.isInArea(event.getLocation(), game.getPos1(), game.getPos2())) {
+				event.setCancelled(true);
+				break;
 			}
 		}
 	}

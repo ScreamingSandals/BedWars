@@ -13,6 +13,7 @@ prevent-killing-villagers: true
 compass-enabled: true
 join-randomly-on-lobby-join: false
 add-wool-to-inventory-on-join: true
+prevent-spawning-mobs: true
 
 # Commands whitelist
 allowed-commands:

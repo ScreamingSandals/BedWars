@@ -251,75 +251,95 @@ public class BwCommand implements CommandExecutor, TabCompleter {
 																	+ game.getCompassEnabled().name().toLowerCase(),
 																	false)));
 
-									player.sendMessage(
-											i18n("arena_info_config_constant", false)
-													.replace("%constant%", "joinRandomTeamAfterLobby").replace("%value%",
-															i18n("arena_info_config_"
-																	+ game.getJoinRandomTeamAfterLobby().name().toLowerCase(),
-																	false)));
+									player.sendMessage(i18n("arena_info_config_constant", false)
+											.replace("%constant%", "joinRandomTeamAfterLobby").replace("%value%",
+													i18n("arena_info_config_"
+															+ game.getJoinRandomTeamAfterLobby().name().toLowerCase(),
+															false)));
+
+									player.sendMessage(i18n("arena_info_config_constant", false)
+											.replace("%constant%", "joinRandomTeamOnJoin").replace("%value%",
+													i18n("arena_info_config_"
+															+ game.getJoinRandomTeamOnJoin().name().toLowerCase(),
+															false)));
+
+									player.sendMessage(i18n("arena_info_config_constant", false)
+											.replace("%constant%", "addWoolToInventoryOnJoin").replace("%value%",
+													i18n("arena_info_config_"
+															+ game.getAddWoolToInventoryOnJoin().name().toLowerCase(),
+															false)));
+
+									player.sendMessage(i18n("arena_info_config_constant", false)
+											.replace("%constant%", "preventKillingVillagers").replace("%value%",
+													i18n("arena_info_config_"
+															+ game.getPreventKillingVillagers().name().toLowerCase(),
+															false)));
+
+									player.sendMessage(i18n("arena_info_config_constant", false)
+											.replace("%constant%", "spectatorGm3")
+											.replace("%value%", i18n(
+													"arena_info_config_" + game.getSpectatorGm3().name().toLowerCase(),
+													false)));
+
+									player.sendMessage(i18n("arena_info_config_constant", false)
+											.replace("%constant%", "playerDrops")
+											.replace("%value%", i18n(
+													"arena_info_config_" + game.getPlayerDrops().name().toLowerCase(),
+													false)));
+
+									player.sendMessage(i18n("arena_info_config_constant", false)
+											.replace("%constant%", "friendlyfire")
+											.replace("%value%", i18n(
+													"arena_info_config_" + game.getFriendlyfire().name().toLowerCase(),
+													false)));
+
+									player.sendMessage(i18n("arena_info_config_constant", false)
+											.replace("%constant%", "coloredLeatherByTeamInLobby")
+											.replace("%value%", i18n("arena_info_config_"
+													+ game.getColoredLeatherByTeamInLobby().name().toLowerCase(),
+													false)));
+
+									player.sendMessage(i18n("arena_info_config_constant", false)
+											.replace("%constant%", "keepInventory")
+											.replace("%value%", i18n(
+													"arena_info_config_" + game.getKeepInventory().name().toLowerCase(),
+													false)));
+
+									player.sendMessage(i18n("arena_info_config_constant", false)
+											.replace("%constant%", "crafting").replace("%value%",
+													i18n("arena_info_config_" + game.getCrafting().name().toLowerCase(),
+															false)));
+
+									player.sendMessage(i18n("arena_info_config_constant", false)
+											.replace("%constant%", "gameScoreboard")
+											.replace("%value%", i18n(
+													"arena_info_config_" + game.getScoreboard().name().toLowerCase(),
+													false)));
 
 									player.sendMessage(
 											i18n("arena_info_config_constant", false)
-													.replace("%constant%", "joinRandomTeamOnJoin").replace("%value%",
+													.replace("%constant%", "lobbyScoreboard").replace("%value%",
 															i18n("arena_info_config_"
-																	+ game.getJoinRandomTeamOnJoin().name().toLowerCase(),
+																	+ game.getLobbyScoreboard().name().toLowerCase(),
 																	false)));
 
-									player.sendMessage(
-											i18n("arena_info_config_constant", false)
-													.replace("%constant%", "addWoolToInventoryOnJoin").replace("%value%",
-															i18n("arena_info_config_"
-																	+ game.getAddWoolToInventoryOnJoin().name().toLowerCase(),
-																	false)));
+									player.sendMessage(i18n("arena_info_config_constant", false)
+											.replace("%constant%", "gameBossbar")
+											.replace("%value%", i18n(
+													"arena_info_config_" + game.getGameBossbar().name().toLowerCase(),
+													false)));
 
-									player.sendMessage(
-											i18n("arena_info_config_constant", false)
-													.replace("%constant%", "preventKillingVillagers").replace("%value%",
-															i18n("arena_info_config_"
-																	+ game.getPreventKillingVillagers().name().toLowerCase(),
-																	false)));
+									player.sendMessage(i18n("arena_info_config_constant", false)
+											.replace("%constant%", "lobbyScoreboard")
+											.replace("%value%", i18n(
+													"arena_info_config_" + game.getLobbyBossbar().name().toLowerCase(),
+													false)));
 
-									player.sendMessage(
-											i18n("arena_info_config_constant", false)
-													.replace("%constant%", "spectatorGm3").replace("%value%",
-															i18n("arena_info_config_"
-																	+ game.getSpectatorGm3().name().toLowerCase(),
-																	false)));
-
-									player.sendMessage(
-											i18n("arena_info_config_constant", false)
-													.replace("%constant%", "playerDrops").replace("%value%",
-															i18n("arena_info_config_"
-																	+ game.getPlayerDrops().name().toLowerCase(),
-																	false)));
-
-									player.sendMessage(
-											i18n("arena_info_config_constant", false)
-													.replace("%constant%", "friendlyfire").replace("%value%",
-															i18n("arena_info_config_"
-																	+ game.getFriendlyfire().name().toLowerCase(),
-																	false)));
-
-									player.sendMessage(
-											i18n("arena_info_config_constant", false)
-													.replace("%constant%", "coloredLeatherByTeamInLobby").replace("%value%",
-															i18n("arena_info_config_"
-																	+ game.getColoredLeatherByTeamInLobby().name().toLowerCase(),
-																	false)));
-
-									player.sendMessage(
-											i18n("arena_info_config_constant", false)
-													.replace("%constant%", "keepInventory").replace("%value%",
-															i18n("arena_info_config_"
-																	+ game.getKeepInventory().name().toLowerCase(),
-																	false)));
-
-									player.sendMessage(
-											i18n("arena_info_config_constant", false)
-													.replace("%constant%", "crafting").replace("%value%",
-															i18n("arena_info_config_"
-																	+ game.getCrafting().name().toLowerCase(),
-																	false)));
+									player.sendMessage(i18n("arena_info_config_constant", false)
+											.replace("%constant%", "preventSpawningMobs").replace("%value%",
+													i18n("arena_info_config_"
+															+ game.getPreventSpawningMobs().name().toLowerCase(),
+															false)));
 								} else {
 									player.sendMessage(i18n("no_arena_found"));
 								}
@@ -444,7 +464,8 @@ public class BwCommand implements CommandExecutor, TabCompleter {
 							List<String> cmds = Arrays.asList("compassEnabled", "joinRandomTeamAfterLobby",
 									"joinRandomTeamOnJoin", "addWoolToInventoryOnJoin", "preventKillingVillagers",
 									"spectatorGm3", "playerDrops", "friendlyfire", "coloredLeatherByTeamInLobby",
-									"keepInventory", "crafting");
+									"keepInventory", "crafting", "gamebossbar", "lobbybossbar", "gamescoreboard",
+									"lobbyscoreboard", "preventspawningmobs");
 							StringUtil.copyPartialMatches(args[3], cmds, completionList);
 						}
 						if (args.length == 5) {

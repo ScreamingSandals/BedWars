@@ -5,6 +5,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.WeatherType;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -35,6 +36,7 @@ import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
 
 import misat11.bw.Main;
+import misat11.bw.api.ArenaTime;
 import misat11.bw.api.GameStatus;
 import misat11.bw.api.GameStore;
 import misat11.bw.api.InGameConfigBooleanConstants;
@@ -86,6 +88,8 @@ public class Game implements misat11.bw.api.Game {
 	private List<GamePlayer> players = new ArrayList<GamePlayer>();
 	private World world;
 	private List<GameStore> gameStore = new ArrayList<GameStore>();
+	private ArenaTime arenaTime = ArenaTime.WORLD;
+	private WeatherType arenaWeather = null;
 
 	// Boolean settings
 	public static final String COMPASS_ENABLED = "compass-enabled";
@@ -120,6 +124,25 @@ public class Game implements misat11.bw.api.Game {
 
 	public static final String CRAFTING = "allow-crafting";
 	private InGameConfigBooleanConstants crafting = InGameConfigBooleanConstants.INHERIT;
+
+	public static final String GLOBAL_LOBBY_BOSSBAR = "bossbar.lobby.enable";
+	public static final String LOBBY_BOSSBAR = "lobbybossbar";
+	private InGameConfigBooleanConstants lobbybossbar = InGameConfigBooleanConstants.INHERIT;
+
+	public static final String GLOBAL_GAME_BOSSBAR = "bossbar.game.enable";
+	public static final String GAME_BOSSBAR = "bossbar";
+	private InGameConfigBooleanConstants gamebossbar = InGameConfigBooleanConstants.INHERIT;
+
+	public static final String GLOBAL_SCOREBOARD = "scoreboard.enable";
+	public static final String SCOREBOARD = "scoreboard";
+	private InGameConfigBooleanConstants ascoreboard = InGameConfigBooleanConstants.INHERIT;
+
+	public static final String GLOBAL_LOBBY_SCOREBOARD = "lobby-scoreboard.enabled";
+	public static final String LOBBY_SCOREBOARD = "lobbyscoreboard";
+	private InGameConfigBooleanConstants lobbyscoreboard = InGameConfigBooleanConstants.INHERIT;
+	
+	public static final String PREVENT_SPAWNING_MOBS = "prevent-spawning-mobs";
+	private InGameConfigBooleanConstants preventSpawningMobs = InGameConfigBooleanConstants.INHERIT;
 
 	// STATUS
 	private GameStatus status = GameStatus.DISABLED;
@@ -613,6 +636,10 @@ public class Game implements misat11.bw.api.Game {
 				configMap.getString("constant." + PREVENT_KILLING_VILLAGERS, "inherit"));
 		game.spectatorGm3 = readBooleanConstant(configMap.getString("constant." + SPECTATOR_GM_3, "inherit"));
 		game.playerDrops = readBooleanConstant(configMap.getString("constant." + PLAYER_DROPS, "inherit"));
+		game.lobbybossbar = readBooleanConstant(configMap.getString("constant." + LOBBY_BOSSBAR, "inherit"));
+		game.gamebossbar = readBooleanConstant(configMap.getString("constant." + GAME_BOSSBAR, "inherit"));
+		game.ascoreboard = readBooleanConstant(configMap.getString("constant." + SCOREBOARD, "inherit"));
+		game.lobbyscoreboard = readBooleanConstant(configMap.getString("constant." + LOBBY_SCOREBOARD, "inherit"));
 
 		game.start();
 		Main.getInstance().getLogger().info("Arena " + game.name + " loaded!");
@@ -738,6 +765,10 @@ public class Game implements misat11.bw.api.Game {
 		configMap.set("constant." + SPECTATOR_GM_3, writeBooleanConstant(spectatorGm3));
 		configMap.set("constant." + PLAYER_DROPS, writeBooleanConstant(playerDrops));
 		configMap.set("constant." + FRIENDLY_FIRE, writeBooleanConstant(friendlyfire));
+		configMap.set("constant." + LOBBY_BOSSBAR, writeBooleanConstant(lobbybossbar));
+		configMap.set("constant." + GAME_BOSSBAR, writeBooleanConstant(gamebossbar));
+		configMap.set("constant." + LOBBY_SCOREBOARD, writeBooleanConstant(lobbyscoreboard));
+		configMap.set("constant." + SCOREBOARD, writeBooleanConstant(ascoreboard));
 
 		try {
 			configMap.save(file);
@@ -1087,7 +1118,7 @@ public class Game implements misat11.bw.api.Game {
 					}
 					bossbar.setColor(BarColor.valueOf(Main.getConfigurator().config.getString("bossbar.lobby.color")));
 					bossbar.setStyle(BarStyle.valueOf(Main.getConfigurator().config.getString("bossbar.lobby.style")));
-					bossbar.setVisible(Main.getConfigurator().config.getBoolean("bossbar.lobby.enable"));
+					bossbar.setVisible(getOriginalOrInheritedLobbyBossbar());
 				} catch (Throwable t) {
 				}
 				if (teamSelectorInventory == null) {
@@ -1134,7 +1165,7 @@ public class Game implements misat11.bw.api.Game {
 					bossbar.setProgress(0);
 					bossbar.setColor(BarColor.valueOf(Main.getConfigurator().config.getString("bossbar.game.color")));
 					bossbar.setStyle(BarStyle.valueOf(Main.getConfigurator().config.getString("bossbar.game.style")));
-					bossbar.setVisible(Main.getConfigurator().config.getBoolean("bossbar.game.enable"));
+					bossbar.setVisible(getOriginalOrInheritedGameBossbar());
 				} catch (Throwable tr) {
 
 				}
@@ -1337,7 +1368,7 @@ public class Game implements misat11.bw.api.Game {
 	}
 
 	public void updateScoreboard() {
-		if (status != GameStatus.RUNNING || !Main.getConfigurator().config.getBoolean("scoreboard.enable")) {
+		if (status != GameStatus.RUNNING || !getOriginalOrInheritedScoreaboard()) {
 			return;
 		}
 
@@ -1381,7 +1412,7 @@ public class Game implements misat11.bw.api.Game {
 	}
 
 	private void updateScoreboardTimer() {
-		if (this.status != GameStatus.RUNNING || !Main.getConfigurator().config.getBoolean("scoreboard.enable")) {
+		if (this.status != GameStatus.RUNNING || !getOriginalOrInheritedScoreaboard()) {
 			return;
 		}
 
@@ -1465,7 +1496,7 @@ public class Game implements misat11.bw.api.Game {
 	}
 
 	private void updateLobbyScoreboard() {
-		if (status != GameStatus.WAITING || !Main.getConfigurator().config.getBoolean("lobby-scoreboard.enabled")) {
+		if (status != GameStatus.WAITING || !getOriginalOrInheritedLobbyScoreaboard()) {
 			return;
 		}
 		gameScoreboard.clearSlot(DisplaySlot.SIDEBAR);
@@ -1924,5 +1955,95 @@ public class Game implements misat11.bw.api.Game {
 	public boolean getOriginalOrInheritedCrafting() {
 		return crafting.isOriginal() ? crafting.getValue() : Main.getConfigurator().config.getBoolean(CRAFTING);
 	}
+
+	@Override
+	public InGameConfigBooleanConstants getLobbyBossbar() {
+		return lobbybossbar;
+	}
+
+	@Override
+	public boolean getOriginalOrInheritedLobbyBossbar() {
+		return lobbybossbar.isOriginal() ? lobbybossbar.getValue() : Main.getConfigurator().config.getBoolean(GLOBAL_LOBBY_BOSSBAR);
+	}
+
+	@Override
+	public InGameConfigBooleanConstants getGameBossbar() {
+		return gamebossbar;
+	}
+
+	@Override
+	public boolean getOriginalOrInheritedGameBossbar() {
+		return gamebossbar.isOriginal() ? gamebossbar.getValue() : Main.getConfigurator().config.getBoolean(GLOBAL_GAME_BOSSBAR);
+	}
+
+	@Override
+	public InGameConfigBooleanConstants getScoreboard() {
+		return ascoreboard;
+	}
+
+	@Override
+	public boolean getOriginalOrInheritedScoreaboard() {
+		return ascoreboard.isOriginal() ? ascoreboard.getValue() : Main.getConfigurator().config.getBoolean(GLOBAL_SCOREBOARD);
+	}
+
+	@Override
+	public InGameConfigBooleanConstants getLobbyScoreboard() {
+		return lobbyscoreboard;
+	}
+
+	@Override
+	public boolean getOriginalOrInheritedLobbyScoreaboard() {
+		return lobbyscoreboard.isOriginal() ? lobbyscoreboard.getValue() : Main.getConfigurator().config.getBoolean(GLOBAL_LOBBY_SCOREBOARD);
+	}
+
+	public void setLobbybossbar(InGameConfigBooleanConstants lobbybossbar) {
+		this.lobbybossbar = lobbybossbar;
+	}
+
+	public void setGamebossbar(InGameConfigBooleanConstants gamebossbar) {
+		this.gamebossbar = gamebossbar;
+	}
+
+	public void setAscoreboard(InGameConfigBooleanConstants ascoreboard) {
+		this.ascoreboard = ascoreboard;
+	}
+
+	public void setLobbyscoreboard(InGameConfigBooleanConstants lobbyscoreboard) {
+		this.lobbyscoreboard = lobbyscoreboard;
+	}
+
+	public void setPreventSpawningMobs(InGameConfigBooleanConstants preventSpawningMobs) {
+		this.preventSpawningMobs = preventSpawningMobs;
+	}
+
+	@Override
+	public InGameConfigBooleanConstants getPreventSpawningMobs() {
+		return preventSpawningMobs;
+	}
+
+	@Override
+	public boolean getOriginalOrInheritedPreventSpawningMobs() {
+		return preventSpawningMobs.isOriginal() ? preventSpawningMobs.getValue() : Main.getConfigurator().config.getBoolean(PREVENT_SPAWNING_MOBS);
+	}
+
+	@Override
+	public ArenaTime getArenaTime() {
+		return arenaTime;
+	}
+
+	public void setArenaTime(ArenaTime arenaTime) {
+		this.arenaTime = arenaTime;
+	}
+
+	@Override
+	public WeatherType getArenaWeather() {
+		return arenaWeather;
+	}
+
+	public void setArenaWeather(WeatherType arenaWeather) {
+		this.arenaWeather = arenaWeather;
+	}
+	
+	
 
 }
