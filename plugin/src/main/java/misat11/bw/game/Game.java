@@ -1091,6 +1091,10 @@ public class Game implements misat11.bw.api.Game {
 													statistic.getCurrentScore() + Main.getConfigurator().config
 															.getInt("statistics.scores.record", 100));
 										}
+										
+									    if (Main.isHologramsEnabled()) {
+									          Main.getHologramInteraction().updateHolograms(player.player);
+									        }
 
 										if (Main.getConfigurator().config.getBoolean("statistics.show-on-game-end")) {
 											Main.getInstance().getServer().dispatchCommand(player.player, "bw stats");

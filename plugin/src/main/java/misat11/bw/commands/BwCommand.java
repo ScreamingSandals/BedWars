@@ -17,6 +17,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.StringUtil;
 
 import misat11.bw.Main;
@@ -96,6 +97,29 @@ public class BwCommand implements CommandExecutor, TabCompleter {
 				} else if (args[0].equalsIgnoreCase("list")) {
 					player.sendMessage(i18n("list_header"));
 					Main.sendGameListInfo(player);
+				} else if (args[0].equalsIgnoreCase("addholo")) {
+					if (player.hasPermission(ADMIN_PERMISSION)) {
+						if (!Main.isHologramsEnabled()) {
+							player.sendMessage(i18n("holo_not_enabled"));
+						} else {
+							Main.getHologramInteraction().addHologramLocation(player.getEyeLocation());
+							Main.getHologramInteraction().updateHolograms();
+							player.sendMessage(i18n("holo_added"));
+						}
+					} else {
+						player.sendMessage(i18n("no_permissions"));
+					}
+				} else if (args[0].equalsIgnoreCase("removeholo")) {
+					if (player.hasPermission(ADMIN_PERMISSION)) {
+						if (!Main.isHologramsEnabled()) {
+							player.sendMessage(i18n("holo_not_enabled"));
+						} else {
+						    player.setMetadata("bw-remove-holo", new FixedMetadataValue(Main.getInstance(), true));
+							player.sendMessage(i18n("click_to_holo_for_remove"));
+						}
+					} else {
+						player.sendMessage(i18n("no_permissions"));
+					}
 				} else if (args[0].equalsIgnoreCase("admin")) {
 					if (player.hasPermission(ADMIN_PERMISSION)) {
 						if (args.length >= 3) {
@@ -430,7 +454,7 @@ public class BwCommand implements CommandExecutor, TabCompleter {
 			if (args.length == 1) {
 				List<String> cmds = Arrays.asList("join", "leave", "list", "stats");
 				if (player.hasPermission(ADMIN_PERMISSION)) {
-					cmds = Arrays.asList("join", "leave", "list", "admin", "reload", "stats");
+					cmds = Arrays.asList("join", "leave", "list", "admin", "reload", "stats", "addholo", "removeholo");
 				}
 				StringUtil.copyPartialMatches(args[0], cmds, completionList);
 			}
@@ -557,6 +581,9 @@ public class BwCommand implements CommandExecutor, TabCompleter {
 		}
 
 		if (player.hasPermission(ADMIN_PERMISSION)) {
+			player.sendMessage(i18n("help_bw_addholo", false));
+			player.sendMessage(i18n("help_bw_removeholo", false));
+
 			player.sendMessage(i18n("help_bw_admin_info", false));
 			player.sendMessage(i18n("help_bw_admin_add", false));
 			player.sendMessage(i18n("help_bw_admin_lobby", false));

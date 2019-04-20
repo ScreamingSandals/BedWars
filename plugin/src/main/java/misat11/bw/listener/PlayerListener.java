@@ -30,6 +30,7 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
@@ -84,7 +85,7 @@ public class PlayerListener implements Listener {
 						statistic.setCurrentLoses(statistic.getCurrentLoses() + 1);
 						statistic.setCurrentScore(statistic.getCurrentScore()
 								+ Main.getConfigurator().config.getInt("statistics.scores.lose", 0));
-						
+
 					}
 				}
 				Player killer = victim.getKiller();
@@ -590,6 +591,17 @@ public class PlayerListener implements Listener {
 
 			player.removeMetadata(GameCreator.BEDWARS_TEAM_JOIN_METADATA, Main.getInstance());
 			player.sendMessage(i18n("admin_command_jointeam_entity_added"));
+		}
+	}
+
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onJoin(PlayerJoinEvent je) {
+
+		final Player player = je.getPlayer();
+
+		if (Main.isHologramsEnabled()) {
+			Main.getHologramInteraction().updateHolograms(player, 60L);
+
 		}
 	}
 }

@@ -24,6 +24,8 @@ import misat11.bw.database.DatabaseManager;
 import misat11.bw.game.Game;
 import misat11.bw.game.GamePlayer;
 import misat11.bw.game.ItemSpawnerType;
+import misat11.bw.holograms.HolographicDisplaysInteraction;
+import misat11.bw.holograms.IHologramInteraction;
 import misat11.bw.listener.Player112Listener;
 import misat11.bw.listener.Player19Listener;
 import misat11.bw.listener.PlayerListener;
@@ -55,6 +57,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 	private HashMap<String, ItemSpawnerType> spawnerTypes = new HashMap<String, ItemSpawnerType>();
 	private DatabaseManager databaseManager;
 	private PlayerStatisticManager playerStatisticsManager;
+	private IHologramInteraction hologramInteraction;
 
 	public static Main getInstance() {
 		return instance;
@@ -238,17 +241,25 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 		}
 		return list;
 	}
-	
+
 	public static DatabaseManager getDatabaseManager() {
 		return instance.databaseManager;
 	}
-	
+
 	public static PlayerStatisticManager getPlayerStatisticsManager() {
 		return instance.playerStatisticsManager;
 	}
-	
+
 	public static boolean isPlayerStatisticsEnabled() {
 		return instance.configurator.config.getBoolean("statistics.enabled");
+	}
+
+	public static boolean isHologramsEnabled() {
+		return instance.configurator.config.getBoolean("holograms.enabled") && instance.hologramInteraction != null;
+	}
+
+	public static IHologramInteraction getHologramInteraction() {
+		return instance.hologramInteraction;
 	}
 
 	public void onEnable() {
@@ -302,18 +313,29 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 				configurator.config.getInt("database.port"), configurator.config.getString("database.user"),
 				configurator.config.getString("database.password"), configurator.config.getString("database.db"),
 				configurator.config.getString("database.table-prefix", "bw_"));
-		
+
 		if (isPlayerStatisticsEnabled()) {
 			playerStatisticsManager = new PlayerStatisticManager();
 			playerStatisticsManager.initialize();
 		}
-		
+
 		try {
-			if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+			if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
 				new BedwarsExpansion().register();
 			}
+
+			if (configurator.config.getBoolean("holograms.enabled")) {
+				// Holographic Displays
+				if (Bukkit.getPluginManager().isPluginEnabled("HolographicDisplays")) {
+					hologramInteraction = new HolographicDisplaysInteraction();
+				}
+				
+				if (hologramInteraction != null) {
+					hologramInteraction.loadHolograms();
+				}
+			}
 		} catch (Throwable t) {
-			
+
 		}
 
 		BwCommand cmd = new BwCommand();
@@ -389,7 +411,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 			Bukkit.getLogger().info("* Please download! *");
 			Bukkit.getLogger().info("*   spigotmc.org   *");
 		}
-		
+
 		if (versionNumber < 109) {
 			Bukkit.getLogger().info("*                  *");
 			Bukkit.getLogger().info("*   You're using   *");
@@ -427,6 +449,10 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 			game.stop();
 		}
 		this.getServer().getServicesManager().unregisterAll(this);
+
+		if (isHologramsEnabled() && hologramInteraction != null) {
+			hologramInteraction.unloadHolograms();
+		}
 	}
 
 	private boolean setupEconomy() {

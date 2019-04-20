@@ -170,6 +170,10 @@ bossbar:
     color: GREEN
     style: SEGMENTED_20
     
+# Holograms
+holograms:
+   enabled: true  
+   headline: "Your §eBEDWARS§f stats"
   
 # Do not edit this!!!
 version: 2
