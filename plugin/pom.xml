@@ -47,6 +47,12 @@
 			<version>0.0.1</version>
 			<scope>compile</scope>
 		</dependency>
+		<dependency>
+			<groupId>misat11.lib.lang</groupId>
+			<artifactId>LanguageTool</artifactId>
+			<version>1.0.0</version>
+			<scope>compile</scope>
+		</dependency>
 
 		<!-- NMS -->
 		<dependency>

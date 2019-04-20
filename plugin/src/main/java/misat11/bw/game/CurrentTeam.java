@@ -1,5 +1,7 @@
 package misat11.bw.game;
 
+import static misat11.lib.lang.I18n.i18n;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,8 +15,6 @@ import org.bukkit.inventory.Inventory;
 import misat11.bw.api.Game;
 import misat11.bw.api.RunningTeam;
 import misat11.bw.api.TeamColor;
-
-import static misat11.bw.utils.I18n.i18n;
 
 public class CurrentTeam implements RunningTeam {
 	public final Team teamInfo;

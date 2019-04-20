@@ -1,5 +1,7 @@
 package misat11.bw.utils;
 
+import static misat11.lib.lang.I18n.i18n;
+
 import java.util.Arrays;
 
 import org.bukkit.Bukkit;
@@ -11,8 +13,6 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-
-import static misat11.bw.utils.I18n.i18n;
 
 import misat11.bw.Main;
 import misat11.bw.api.events.BedwarsOpenTeamSelectionEvent;

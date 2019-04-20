@@ -1,5 +1,7 @@
 package misat11.bw.listener;
 
+import static misat11.lib.lang.I18n.i18n;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -16,8 +18,6 @@ import misat11.bw.Main;
 import misat11.bw.commands.BwCommand;
 import misat11.bw.game.Game;
 import misat11.bw.utils.GameSign;
-
-import static misat11.bw.utils.I18n.i18n;
 
 public class SignListener implements Listener {
 

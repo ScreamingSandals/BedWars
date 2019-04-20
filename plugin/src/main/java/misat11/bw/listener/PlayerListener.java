@@ -54,7 +54,7 @@ import misat11.bw.utils.SpawnEffects;
 import misat11.bw.utils.TeamJoinMetaDataValue;
 import misat11.bw.utils.TeamSelectorInventory;
 
-import static misat11.bw.utils.I18n.i18n;
+import static misat11.lib.lang.I18n.i18n;
 
 import java.util.List;
 

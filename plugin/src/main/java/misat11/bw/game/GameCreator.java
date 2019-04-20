@@ -1,5 +1,7 @@
 package misat11.bw.game;
 
+import static misat11.lib.lang.I18n.i18n;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,8 +24,6 @@ import misat11.bw.api.GameStore;
 import misat11.bw.api.InGameConfigBooleanConstants;
 import misat11.bw.utils.BedUtils;
 import misat11.bw.utils.TeamJoinMetaDataValue;
-
-import static misat11.bw.utils.I18n.i18n;
 
 public class GameCreator {
 

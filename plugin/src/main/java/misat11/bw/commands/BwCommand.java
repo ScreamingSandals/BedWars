@@ -1,5 +1,7 @@
 package misat11.bw.commands;
 
+import static misat11.lib.lang.I18n.i18n;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,8 +28,6 @@ import misat11.bw.game.ItemSpawner;
 import misat11.bw.game.Team;
 import misat11.bw.game.TeamColor;
 import misat11.bw.statistics.PlayerStatistic;
-
-import static misat11.bw.utils.I18n.i18n;
 
 public class BwCommand implements CommandExecutor, TabCompleter {
 

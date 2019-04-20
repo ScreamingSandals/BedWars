@@ -63,6 +63,8 @@ import misat11.bw.utils.SpawnEffects;
 import misat11.bw.utils.TeamSelectorInventory;
 import misat11.bw.utils.Title;
 
+import static misat11.lib.lang.I18n.i18n;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -70,8 +72,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import static misat11.bw.utils.I18n.i18n;
 
 public class Game implements misat11.bw.api.Game {
 

@@ -17,14 +17,8 @@
 			<url>https://repo.codemc.org/repository/nms/</url>
 		</repository>
 		<repository>
-			<id>vault-repo</id>
-			<!-- <url>http://nexus.hc.to/content/repositories/pub_releases</url> -->
-			<!-- Using my repository, because hc.to often crashes -->
-			<url>https://jenkins.mtorus.cz/plugin/repository/project/VaultAPI/LastSuccessful/repository/</url>
-		</repository>
-		<repository>
-			<id>simpleguiformat-repo</id>
-			<url>https://jenkins.mtorus.cz/plugin/repository/project/SimpleGuiFormat/LastSuccessful/repository/</url>
+			<id>mtorus-repo</id>
+			<url>https://jenkins.mtorus.cz/plugin/repository/everything/</url>
 		</repository>
 		<repository>
 			<id>placeholderapi</id>

@@ -1,5 +1,7 @@
 package misat11.bw;
 
+import static misat11.lib.lang.I18n.i18n;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,13 +35,11 @@ import misat11.bw.placeholderapi.BedwarsExpansion;
 import misat11.bw.statistics.PlayerStatisticManager;
 import misat11.bw.utils.Configurator;
 import misat11.bw.utils.GameSign;
-import misat11.bw.utils.I18n;
 import misat11.bw.utils.ShopMenu;
 import misat11.bw.utils.SignManager;
+import misat11.lib.lang.I18n;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
-
-import static misat11.bw.utils.I18n.i18n;
 
 public class Main extends JavaPlugin implements BedwarsAPI {
 	private static Main instance;

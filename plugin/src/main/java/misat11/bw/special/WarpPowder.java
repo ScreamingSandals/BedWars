@@ -1,5 +1,7 @@
 package misat11.bw.special;
 
+import static misat11.lib.lang.I18n.i18n;
+
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -9,8 +11,6 @@ import misat11.bw.Main;
 import misat11.bw.api.Game;
 import misat11.bw.api.Team;
 import misat11.bw.utils.SpawnEffects;
-
-import static misat11.bw.utils.I18n.i18n;
 
 public class WarpPowder extends SpecialItem implements misat11.bw.api.special.WarpPowder {
 
