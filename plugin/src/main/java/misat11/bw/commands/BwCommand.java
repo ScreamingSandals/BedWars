@@ -12,6 +12,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.WeatherType;
+import org.bukkit.boss.BarColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -472,7 +473,7 @@ public class BwCommand implements CommandExecutor, TabCompleter {
 					} else if (args.length == 3) {
 						List<String> cmds = Arrays.asList("add", "lobby", "spec", "pos1", "pos2", "pausecountdown",
 								"team", "spawner", "time", "store", "save", "remove", "edit", "jointeam", "minplayers",
-								"info", "config", "arenatime", "arenaweather");
+								"info", "config", "arenatime", "arenaweather", "lobbybossbarcolor", "gamebossbarcolor");
 						StringUtil.copyPartialMatches(args[2], cmds, completionList);
 					} else if (args[2].equalsIgnoreCase("pausecountdown") && args.length == 4) {
 						StringUtil.copyPartialMatches(args[3], Arrays.asList("30", "60"), completionList);
@@ -484,6 +485,15 @@ public class BwCommand implements CommandExecutor, TabCompleter {
 						if (args.length == 4) {
 							List<String> cmds = new ArrayList<>();
 							for (ArenaTime type : ArenaTime.values()) {
+								cmds.add(type.name());
+							}
+							StringUtil.copyPartialMatches(args[3], cmds, completionList);
+						}
+					} else if (args[2].equalsIgnoreCase("lobbybossbarcolor") || args[2].equalsIgnoreCase("gamebossbarcolor")) {
+						if (args.length == 4) {
+							List<String> cmds = new ArrayList<>();
+							cmds.add("default");
+							for (BarColor type : BarColor.values()) {
 								cmds.add(type.name());
 							}
 							StringUtil.copyPartialMatches(args[3], cmds, completionList);

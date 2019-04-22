@@ -7,15 +7,22 @@ import java.util.List;
 import java.util.Map;
 
 import org.bukkit.Bukkit;
+import org.bukkit.DyeColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.material.Colorable;
+import org.bukkit.material.Dye;
+import org.bukkit.material.MaterialData;
 
 import misat11.bw.Main;
 import misat11.bw.api.ItemSpawnerType;
+import misat11.bw.api.Team;
 import misat11.bw.api.events.BedwarsApplyPropertyToBoughtItem;
+import misat11.bw.game.CurrentTeam;
 import misat11.lib.sgui.ItemData;
 import misat11.lib.sgui.ItemInfo;
 import misat11.lib.sgui.Property;
@@ -106,6 +113,10 @@ public class ShopMenu implements Listener {
 		if (!Main.isPlayerInGame(event.getPlayer())) {
 			event.setCancelled(true);
 		}
+		
+		if (Main.getPlayerGameProfile(event.getPlayer()).isSpectator) {
+			event.setCancelled(true);
+		}
 	}
 
 	@EventHandler
@@ -125,7 +136,7 @@ public class ShopMenu implements Listener {
 			ItemSpawnerType type = Main.getSpawnerType(priceType);
 			ItemStack materialItem = type.getStack();
 			materialItem.setAmount(price);
-			ItemStack newItem = (ItemStack) originalItemData.get("stack");
+			ItemStack newItem = ((ItemStack) originalItemData.get("stack")).clone();
 			if (player.getInventory().containsAtLeast(materialItem, price)) {
 				if (data.hasProperties()) {
 					for (Property property : data.getProperties()) {
@@ -152,6 +163,21 @@ public class ShopMenu implements Listener {
 						newItem.getItemMeta().hasDisplayName() ? newItem.getItemMeta().getDisplayName()
 								: newItem.getType().name().toLowerCase()));
 			}
+		}
+	}
+	
+	@EventHandler
+	public void onApplyPropertyToBoughtItem(BedwarsApplyPropertyToBoughtItem event) {
+		if (event.getPropertyName().equalsIgnoreCase("transform::applycolorbyteam")) { 
+			ItemStack stack = event.getStack();
+			Player player = event.getPlayer();
+			CurrentTeam team = (CurrentTeam) event.getGame().getTeamOfPlayer(player);
+			
+			Material material = stack.getType();
+			if (material.name().endsWith("WOOL")) {
+				event.setStack(team.teamInfo.color.getWool(stack));
+			}
+			// TODO: other materials
 		}
 	}
 

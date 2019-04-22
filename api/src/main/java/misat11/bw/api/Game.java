@@ -6,6 +6,7 @@ import org.bukkit.Location;
 import org.bukkit.WeatherType;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.boss.BarColor;
 import org.bukkit.entity.Player;
 
 import misat11.bw.api.special.SpecialItem;
@@ -169,6 +170,8 @@ public interface Game {
 	
 	public ArenaTime getArenaTime();
 	public WeatherType getArenaWeather();
+	public BarColor getLobbyBossBarColor();
+	public BarColor getGameBossBarColor();
 	
 	
 }

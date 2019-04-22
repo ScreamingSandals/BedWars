@@ -90,6 +90,8 @@ public class Game implements misat11.bw.api.Game {
 	private List<GameStore> gameStore = new ArrayList<GameStore>();
 	private ArenaTime arenaTime = ArenaTime.WORLD;
 	private WeatherType arenaWeather = null;
+	private BarColor lobbyBossBarColor = null;
+	private BarColor gameBossBarColor = null;
 
 	// Boolean settings
 	public static final String COMPASS_ENABLED = "compass-enabled";
@@ -140,7 +142,7 @@ public class Game implements misat11.bw.api.Game {
 	public static final String GLOBAL_LOBBY_SCOREBOARD = "lobby-scoreboard.enabled";
 	public static final String LOBBY_SCOREBOARD = "lobbyscoreboard";
 	private InGameConfigBooleanConstants lobbyscoreboard = InGameConfigBooleanConstants.INHERIT;
-	
+
 	public static final String PREVENT_SPAWNING_MOBS = "prevent-spawning-mobs";
 	private InGameConfigBooleanConstants preventSpawningMobs = InGameConfigBooleanConstants.INHERIT;
 
@@ -326,32 +328,57 @@ public class Game implements misat11.bw.api.Game {
 
 			return true;
 		}
+		Location loc = block.getLocation();
 		if (region.isBedBlock(block.getState())) {
-			Location loc = block.getLocation();
 			if (!region.isBedHead(block.getState())) {
 				loc = region.getBedNeighbor(block).getLocation();
 			}
-			if (getPlayerTeam(player).teamInfo.bed.equals(loc)) {
-				return false;
-			}
-			bedDestroyed(loc, player.player);
-			region.putOriginalBlock(block.getLocation(), block.getState());
-			if (block.getLocation().equals(loc)) {
-				Block neighbor = region.getBedNeighbor(block);
-				region.putOriginalBlock(neighbor.getLocation(), neighbor.getState());
-			} else {
-				region.putOriginalBlock(loc, region.getBedNeighbor(block).getState());
-			}
-			try {
-				event.setDropItems(false);
-			} catch (Throwable tr) {
-				if (region.isBedHead(block.getState())) {
-					region.getBedNeighbor(block).setType(Material.AIR);
+		}
+		if (isTargetBlock(loc)) {
+			if (region.isBedBlock(block.getState())) {
+				if (getPlayerTeam(player).teamInfo.bed.equals(loc)) {
+					return false;
+				}
+				bedDestroyed(loc, player.player, true);
+				region.putOriginalBlock(block.getLocation(), block.getState());
+				if (block.getLocation().equals(loc)) {
+					Block neighbor = region.getBedNeighbor(block);
+					region.putOriginalBlock(neighbor.getLocation(), neighbor.getState());
 				} else {
+					region.putOriginalBlock(loc, region.getBedNeighbor(block).getState());
+				}
+				try {
+					event.setDropItems(false);
+				} catch (Throwable tr) {
+					if (region.isBedHead(block.getState())) {
+						region.getBedNeighbor(block).setType(Material.AIR);
+					} else {
+						block.setType(Material.AIR);
+					}
+				}
+				return true;
+			} else {
+				if (getPlayerTeam(player).teamInfo.bed.equals(loc)) {
+					return false;
+				}
+				bedDestroyed(loc, player.player, false);
+				region.putOriginalBlock(loc, block.getState());
+				try {
+					event.setDropItems(false);
+				} catch (Throwable tr) {
 					block.setType(Material.AIR);
 				}
+				return true;
 			}
-			return true;
+		}
+		return false;
+	}
+
+	private boolean isTargetBlock(Location loc) {
+		for (CurrentTeam team : teamsInGame) {
+			if (team.isBed && team.teamInfo.bed.equals(loc)) {
+				return true;
+			}
 		}
 		return false;
 	}
@@ -369,7 +396,7 @@ public class Game implements misat11.bw.api.Game {
 		return null;
 	}
 
-	protected void bedDestroyed(Location loc, Player broker) {
+	protected void bedDestroyed(Location loc, Player broker, boolean isItBedBlock) {
 		if (status == GameStatus.RUNNING) {
 			for (CurrentTeam team : teamsInGame) {
 				if (team.teamInfo.bed.equals(loc)) {
@@ -377,10 +404,10 @@ public class Game implements misat11.bw.api.Game {
 					updateScoreboard();
 					for (GamePlayer player : players) {
 						Title.send(player.player,
-								i18n("bed_is_destroyed", false).replace("%team%",
+								i18n(isItBedBlock ? "bed_is_destroyed" : "target_is_destroyed", false).replace("%team%",
 										team.teamInfo.color.chatColor + team.teamInfo.name),
 								i18n("bed_is_destroyed_subtitle", false));
-						player.player.sendMessage(i18n("bed_is_destroyed").replace("%team%",
+						player.player.sendMessage(i18n(isItBedBlock ? "bed_is_destroyed" : "target_is_destroyed").replace("%team%",
 								team.teamInfo.color.chatColor + team.teamInfo.name));
 						SpawnEffects.spawnEffect(this, player.player, "game-effects.beddestroy");
 						Sounds.playSound(player.player, player.player.getLocation(),
@@ -445,11 +472,11 @@ public class Game implements misat11.bw.api.Game {
 			// Load
 			Main.getPlayerStatisticsManager().getStatistic(player.player);
 		}
-		
+
 		if (arenaTime.time >= 0) {
 			player.player.setPlayerTime(arenaTime.time, false);
 		}
-		
+
 		if (arenaWeather != null) {
 			player.player.setPlayerWeather(arenaWeather);
 		}
@@ -651,20 +678,32 @@ public class Game implements misat11.bw.api.Game {
 		game.gamebossbar = readBooleanConstant(configMap.getString("constant." + GAME_BOSSBAR, "inherit"));
 		game.ascoreboard = readBooleanConstant(configMap.getString("constant." + SCOREBOARD, "inherit"));
 		game.lobbyscoreboard = readBooleanConstant(configMap.getString("constant." + LOBBY_SCOREBOARD, "inherit"));
-		game.preventSpawningMobs = readBooleanConstant(configMap.getString("constant." + PREVENT_SPAWNING_MOBS, "inherit"));
-		
+		game.preventSpawningMobs = readBooleanConstant(
+				configMap.getString("constant." + PREVENT_SPAWNING_MOBS, "inherit"));
+
 		game.arenaTime = ArenaTime.valueOf(configMap.getString("arenaTime", ArenaTime.WORLD.name()).toUpperCase());
 		game.arenaWeather = loadWeather(configMap.getString("arenaWeather", "default").toUpperCase());
+		
+		game.lobbyBossBarColor = loadBossBarColor(configMap.getString("lobbyBossBarColor", "default").toUpperCase());
+		game.gameBossBarColor = loadBossBarColor(configMap.getString("gameBossBarColor", "default").toUpperCase());
 
 		game.start();
 		Main.getInstance().getLogger().info("Arena " + game.name + " loaded!");
 		Main.addGame(game);
 		return game;
 	}
-	
+
 	public static WeatherType loadWeather(String weather) {
 		try {
 			return WeatherType.valueOf(weather);
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	public static BarColor loadBossBarColor(String color) {
+		try {
+			return BarColor.valueOf(color);
 		} catch (Exception e) {
 			return null;
 		}
@@ -793,9 +832,12 @@ public class Game implements misat11.bw.api.Game {
 		configMap.set("constant." + LOBBY_SCOREBOARD, writeBooleanConstant(lobbyscoreboard));
 		configMap.set("constant." + SCOREBOARD, writeBooleanConstant(ascoreboard));
 		configMap.set("constant." + PREVENT_SPAWNING_MOBS, writeBooleanConstant(preventSpawningMobs));
-		
+
 		configMap.set("arenaTime", arenaTime.name());
 		configMap.set("arenaWeather", arenaWeather == null ? "default" : arenaWeather.name());
+		
+		configMap.set("lobbyBossBarColor", lobbyBossBarColor == null ? "default" : lobbyBossBarColor.name());
+		configMap.set("gameBossBarColor", gameBossBarColor == null ? "default" : gameBossBarColor.name());
 
 		try {
 			configMap.save(file);
@@ -1091,10 +1133,10 @@ public class Game implements misat11.bw.api.Game {
 													statistic.getCurrentScore() + Main.getConfigurator().config
 															.getInt("statistics.scores.record", 100));
 										}
-										
-									    if (Main.isHologramsEnabled()) {
-									          Main.getHologramInteraction().updateHolograms(player.player);
-									        }
+
+										if (Main.isHologramsEnabled()) {
+											Main.getHologramInteraction().updateHolograms(player.player);
+										}
 
 										if (Main.getConfigurator().config.getBoolean("statistics.show-on-game-end")) {
 											Main.getInstance().getServer().dispatchCommand(player.player, "bw stats");
@@ -1147,7 +1189,7 @@ public class Game implements misat11.bw.api.Game {
 					for (GamePlayer p : players) {
 						bossbar.addPlayer(p.player);
 					}
-					bossbar.setColor(BarColor.valueOf(Main.getConfigurator().config.getString("bossbar.lobby.color")));
+					bossbar.setColor(lobbyBossBarColor != null ? lobbyBossBarColor : BarColor.valueOf(Main.getConfigurator().config.getString("bossbar.lobby.color")));
 					bossbar.setStyle(BarStyle.valueOf(Main.getConfigurator().config.getString("bossbar.lobby.style")));
 					bossbar.setVisible(getOriginalOrInheritedLobbyBossbar());
 				} catch (Throwable t) {
@@ -1194,7 +1236,7 @@ public class Game implements misat11.bw.api.Game {
 				try {
 					bossbar.setTitle(i18n("bossbar_running", false));
 					bossbar.setProgress(0);
-					bossbar.setColor(BarColor.valueOf(Main.getConfigurator().config.getString("bossbar.game.color")));
+					bossbar.setColor(gameBossBarColor != null ? gameBossBarColor : BarColor.valueOf(Main.getConfigurator().config.getString("bossbar.game.color")));
 					bossbar.setStyle(BarStyle.valueOf(Main.getConfigurator().config.getString("bossbar.game.style")));
 					bossbar.setVisible(getOriginalOrInheritedGameBossbar());
 				} catch (Throwable tr) {
@@ -1998,7 +2040,8 @@ public class Game implements misat11.bw.api.Game {
 
 	@Override
 	public boolean getOriginalOrInheritedLobbyBossbar() {
-		return lobbybossbar.isOriginal() ? lobbybossbar.getValue() : Main.getConfigurator().config.getBoolean(GLOBAL_LOBBY_BOSSBAR);
+		return lobbybossbar.isOriginal() ? lobbybossbar.getValue()
+				: Main.getConfigurator().config.getBoolean(GLOBAL_LOBBY_BOSSBAR);
 	}
 
 	@Override
@@ -2008,7 +2051,8 @@ public class Game implements misat11.bw.api.Game {
 
 	@Override
 	public boolean getOriginalOrInheritedGameBossbar() {
-		return gamebossbar.isOriginal() ? gamebossbar.getValue() : Main.getConfigurator().config.getBoolean(GLOBAL_GAME_BOSSBAR);
+		return gamebossbar.isOriginal() ? gamebossbar.getValue()
+				: Main.getConfigurator().config.getBoolean(GLOBAL_GAME_BOSSBAR);
 	}
 
 	@Override
@@ -2018,7 +2062,8 @@ public class Game implements misat11.bw.api.Game {
 
 	@Override
 	public boolean getOriginalOrInheritedScoreaboard() {
-		return ascoreboard.isOriginal() ? ascoreboard.getValue() : Main.getConfigurator().config.getBoolean(GLOBAL_SCOREBOARD);
+		return ascoreboard.isOriginal() ? ascoreboard.getValue()
+				: Main.getConfigurator().config.getBoolean(GLOBAL_SCOREBOARD);
 	}
 
 	@Override
@@ -2028,7 +2073,8 @@ public class Game implements misat11.bw.api.Game {
 
 	@Override
 	public boolean getOriginalOrInheritedLobbyScoreaboard() {
-		return lobbyscoreboard.isOriginal() ? lobbyscoreboard.getValue() : Main.getConfigurator().config.getBoolean(GLOBAL_LOBBY_SCOREBOARD);
+		return lobbyscoreboard.isOriginal() ? lobbyscoreboard.getValue()
+				: Main.getConfigurator().config.getBoolean(GLOBAL_LOBBY_SCOREBOARD);
 	}
 
 	public void setLobbybossbar(InGameConfigBooleanConstants lobbybossbar) {
@@ -2058,7 +2104,8 @@ public class Game implements misat11.bw.api.Game {
 
 	@Override
 	public boolean getOriginalOrInheritedPreventSpawningMobs() {
-		return preventSpawningMobs.isOriginal() ? preventSpawningMobs.getValue() : Main.getConfigurator().config.getBoolean(PREVENT_SPAWNING_MOBS);
+		return preventSpawningMobs.isOriginal() ? preventSpawningMobs.getValue()
+				: Main.getConfigurator().config.getBoolean(PREVENT_SPAWNING_MOBS);
 	}
 
 	@Override
@@ -2079,6 +2126,22 @@ public class Game implements misat11.bw.api.Game {
 		this.arenaWeather = arenaWeather;
 	}
 	
+	@Override
+	public BarColor getLobbyBossBarColor() {
+		return this.lobbyBossBarColor;
+	}
 	
+	public void setLobbyBossBarColor(BarColor color) {
+		this.lobbyBossBarColor = color;
+	}
+	
+	@Override
+	public BarColor getGameBossBarColor() {
+		return this.gameBossBarColor;
+	}
+	
+	public void setGameBossBarColor(BarColor color) {
+		this.gameBossBarColor = color;
+	}
 
 }

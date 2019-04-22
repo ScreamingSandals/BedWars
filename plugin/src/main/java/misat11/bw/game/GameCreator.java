@@ -15,6 +15,7 @@ import org.bukkit.WeatherType;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.type.Bed;
 import org.bukkit.block.data.type.Bed.Part;
+import org.bukkit.boss.BarColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -128,6 +129,14 @@ public class GameCreator {
 			if (args.length >= 1) {
 				response = addTeamJoinEntity(player, args[0]);
 			}
+		} else if (action.equalsIgnoreCase("lobbybossbarcolor")) {
+			if (args.length >= 1) {
+				response = setLobbyBossBarColor(args[0]);
+			}
+		} else if (action.equalsIgnoreCase("gamebossbarcolor")) {
+			if (args.length >= 1) {
+				response = setGameBossBarColor(args[0]);
+			}
 		} else if (action.equalsIgnoreCase("save")) {
 			List<GameStore> gamestores = new ArrayList<GameStore>();
 			for (Map.Entry<String, Location> vloc : villagerstores.entrySet()) {
@@ -176,6 +185,38 @@ public class GameCreator {
 		return isArenaSaved;
 	}
 
+	private String setGameBossBarColor(String color) {
+		color = color.toUpperCase();
+		BarColor c = null;
+		if (!color.equalsIgnoreCase("default")) {
+			try {
+				c = BarColor.valueOf(color);
+			} catch (Exception e) {
+				return i18n("admin_command_invalid_bar_color");
+			}
+		}
+		
+		game.setGameBossBarColor(c);
+		
+		return i18n("admin_command_bar_color_set").replace("%color%", c == null ? "default" : c.name()).replace("%type%", "GAME");
+	}
+
+	private String setLobbyBossBarColor(String color) {
+		color = color.toUpperCase();
+		BarColor c = null;
+		if (!color.equalsIgnoreCase("default")) {
+			try {
+				c = BarColor.valueOf(color);
+			} catch (Exception e) {
+				return i18n("admin_command_invalid_bar_color");
+			}
+		}
+		
+		game.setLobbyBossBarColor(c);
+		
+		return i18n("admin_command_bar_color_set").replace("%color%", c == null ? "default" : c.name()).replace("%type%", "LOBBY");
+	}
+
 	private String setArenaWeather(String arenaWeather) {
 		arenaWeather = arenaWeather.toUpperCase();
 		WeatherType c = null;
@@ -186,9 +227,9 @@ public class GameCreator {
 				return i18n("admin_command_invalid_arena_weather");
 			}
 		}
-		
+
 		game.setArenaWeather(c);
-		
+
 		return i18n("admin_command_arena_weather_set").replace("%weather%", c == null ? "default" : c.name());
 	}
 
@@ -200,7 +241,7 @@ public class GameCreator {
 		} catch (Exception e) {
 			return i18n("admin_command_invalid_arena_time");
 		}
-		
+
 		game.setArenaTime(c);
 
 		return i18n("admin_command_arena_time_set").replace("%time%", c.name());
@@ -364,26 +405,26 @@ public class GameCreator {
 				}
 				if (Main.isLegacy()) {
 					// Legacy
-					if (!(block.getState().getData() instanceof org.bukkit.material.Bed)) {
-						return i18n("admin_command_block_is_not_bed");
-					}
-
-					org.bukkit.material.Bed bed = (org.bukkit.material.Bed) block.getState().getData();
-					if (!bed.isHeadOfBed()) {
-						t.bed = misat11.bw.legacy.LegacyBedUtils.getBedNeighbor(block).getLocation();
+					if (block.getState().getData() instanceof org.bukkit.material.Bed) {
+						org.bukkit.material.Bed bed = (org.bukkit.material.Bed) block.getState().getData();
+						if (!bed.isHeadOfBed()) {
+							t.bed = misat11.bw.legacy.LegacyBedUtils.getBedNeighbor(block).getLocation();
+						} else {
+							t.bed = loc;
+						}
 					} else {
 						t.bed = loc;
 					}
 
 				} else {
 					// 1.13+
-					if (!(block.getBlockData() instanceof Bed)) {
-						return i18n("admin_command_block_is_not_bed");
-					}
-
-					Bed bed = (Bed) block.getBlockData();
-					if (bed.getPart() != Part.HEAD) {
-						t.bed = BedUtils.getBedNeighbor(block).getLocation();
+					if (block.getBlockData() instanceof Bed) {
+						Bed bed = (Bed) block.getBlockData();
+						if (bed.getPart() != Part.HEAD) {
+							t.bed = BedUtils.getBedNeighbor(block).getLocation();
+						} else {
+							t.bed = loc;
+						}
 					} else {
 						t.bed = loc;
 					}
@@ -641,7 +682,7 @@ public class GameCreator {
 		if (!p1.getWorld().equals(l.getWorld())) {
 			return false;
 		}
-		
+
 		Location min = new Location(p1.getWorld(), Math.min(p1.getX(), p2.getX()), Math.min(p1.getY(), p2.getY()),
 				Math.min(p1.getZ(), p2.getZ()));
 		Location max = new Location(p1.getWorld(), Math.max(p1.getX(), p2.getX()), Math.max(p1.getY(), p2.getY()),

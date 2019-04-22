@@ -22,6 +22,7 @@ arena_added: "§aArena added!"
 arena_switched_to_edit: "§aArena switched to edit mode!"
 click_to_join_team: "§aClick to join to the team!"
 bed_is_destroyed: "Bed of %team%§r is destroyed!"
+target_is_destroyed: "Target block of %team%§r is destroyed!"
 bed_is_destroyed_subtitle: "Now you can kill the team members!"
 game_is_rebuilding: "§cGame §7%arena%§c is now rebuilding! Please wait..."
 vault_deposite: "§aYou got §7%coins% %currency%§a to your Vault account!"
@@ -116,6 +117,9 @@ admin_command_arena_time_set: "§aArena's world time has been set to §7%time%§
 
 admin_command_invalid_arena_weather: "§cWrong type of arena's world weather!"
 admin_command_arena_weather_set: "§aArena's world weather has been set to §7%weather%§a!"
+
+admin_command_invalid_bar_color: "§cWrong color for Boss Bar!"
+admin_command_bar_color_set: "§aColor set to §7%color%§a for bossbar §7%type%§a!"
 
 holo_not_enabled: "§cHolographic is disabled!"
 holo_added: "§aHolographic added to your position!"
@@ -218,7 +222,7 @@ help_bw_admin_team_add: "/bw admin <arena> team add <team> <color> <max players>
 help_bw_admin_team_color: "/bw admin <arena> team color <team> <color> - §eChange team color"
 help_bw_admin_team_maxplayers: "/bw admin <arena> team maxplayers <team> <max players> - §eChange max team players"
 help_bw_admin_team_spawn: "/bw admin <arena> team spawn <team> - §eSets team spawn to your position"
-help_bw_admin_team_bed: "/bw admin <arena> team bed <team> - §eSets team bed to your target position"
+help_bw_admin_team_bed: "/bw admin <arena> team bed <team> - §eSets team target block to your target position (it can be another block, not just bed)"
 help_bw_admin_jointeam: "/bw admin <arena> jointeam <team> - §eSets the ability to connect to a team using an entity"
 help_bw_admin_spawner_add: "/bw admin <arena> spawner add <bronze|gold|iron> - §eAdd item spawner to your position"
 help_bw_admin_spawner_reset: "/bw admin <arena> spawner reset - §eRemove all spawners"

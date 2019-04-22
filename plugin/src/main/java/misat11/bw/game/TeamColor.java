@@ -52,6 +52,17 @@ public enum TeamColor {
 		
 	}
 	
+	public ItemStack getWool(ItemStack stack) {
+		if (Main.isLegacy()) {
+			stack.setType(Material.valueOf("WOOL"));
+			stack.setDurability((short) dyeColor);
+		} else {
+			stack.setType(Material.valueOf(material1_13));
+		}
+		return stack;
+		
+	}
+	
 	public misat11.bw.api.TeamColor toApiColor(){
 		return misat11.bw.api.TeamColor.valueOf(this.name());
 	}
