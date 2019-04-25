@@ -226,7 +226,7 @@ help_bw_admin_team_bed: "/bw admin <arena> team bed <team> - §eSets team target
 help_bw_admin_jointeam: "/bw admin <arena> jointeam <team> - §eSets the ability to connect to a team using an entity"
 help_bw_admin_spawner_add: "/bw admin <arena> spawner add <bronze|gold|iron> - §eAdd item spawner to your position"
 help_bw_admin_spawner_reset: "/bw admin <arena> spawner reset - §eRemove all spawners"
-help_bw_admin_store_add: "/bw admin <arena> store add - §eAdd trading villager to your position"
+help_bw_admin_store_add: "/bw admin <arena> store add [file with shop] [use main shop] - §eAdd trading villager to your position"
 help_bw_admin_store_remove: "/bw admin <arena> store remove - §eRemove trading villager from your position"
 help_bw_admin_config: "/bw admin <arena> config <constant> <value> - §eSets value of constant variable for game"
 help_bw_admin_arena_time: "/bw admin <arena> arenatime <type> - §eSets time in arena (DAY, NIGHT, etc.)"

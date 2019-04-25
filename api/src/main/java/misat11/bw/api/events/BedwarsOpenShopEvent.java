@@ -7,6 +7,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 import misat11.bw.api.Game;
+import misat11.bw.api.GameStore;
 
 public class BedwarsOpenShopEvent extends Event implements Cancellable {
 
@@ -15,11 +16,13 @@ public class BedwarsOpenShopEvent extends Event implements Cancellable {
 	private Entity clickedEntity = null;
 	private Game game = null;
 	private Player player = null;
+	private GameStore store = null;
 
-	public BedwarsOpenShopEvent(Game game, Player player, Entity clickedEntity) {
+	public BedwarsOpenShopEvent(Game game, Player player, GameStore store, Entity clickedEntity) {
 		this.player = player;
 		this.game = game;
 		this.clickedEntity = clickedEntity;
+		this.store = store;
 	}
 
 	public static HandlerList getHandlerList() {
@@ -41,6 +44,10 @@ public class BedwarsOpenShopEvent extends Event implements Cancellable {
 
 	public Player getPlayer() {
 		return this.player;
+	}
+	
+	public GameStore getStore() {
+		return this.store;
 	}
 
 	@Override

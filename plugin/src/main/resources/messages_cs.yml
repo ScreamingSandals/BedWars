@@ -222,7 +222,7 @@ help_bw_admin_team_bed: "/bw admin <aréna> team bed <tým> - §eNastaví týmu 
 help_bw_admin_jointeam: "/bw admin <aréna> jointeam <tým> - §eNastaví možnost připojení se do týmu pomocí entity"
 help_bw_admin_spawner_add: "/bw admin <aréna> spawner add <bronze|gold|iron> - §ePřidá item spawner na tvojí pozici"
 help_bw_admin_spawner_reset: "/bw admin <aréna> spawner reset - §eSmaže se hry všechny spawnery"
-help_bw_admin_store_add: "/bw admin <aréna> store add - §ePřidá obchodujícího vesničana na tvojí pozici"
+help_bw_admin_store_add: "/bw admin <aréna> store add [soubor s obchodem] [použít i hlavní soubor] - §ePřidá obchodujícího vesničana na tvojí pozici"
 help_bw_admin_store_remove: "/bw admin <aréna> store remove - §eOdebere obchodujícího vesničana ze tvojí pozice"
 help_bw_admin_config: "/bw admin <aréna> config <konstanta> <hodnota> - §eNastaví hodnotu konstantě pro danou arénu"
 help_bw_admin_arena_time: "/bw admin <aréna> arenatime <typ> - §eNastaví, jaký bude čas v aréně"

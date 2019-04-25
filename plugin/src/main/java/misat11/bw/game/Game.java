@@ -652,9 +652,14 @@ public class Game implements misat11.bw.api.Game {
 			}
 		}
 		if (configMap.isSet("stores")) {
-			List<String> stores = (List<String>) configMap.getList("stores");
-			for (String store : stores) {
-				game.gameStore.add(new GameStore(readLocationFromString(game.world, store)));
+			List<Object> stores = (List<Object>) configMap.getList("stores");
+			for (Object store : stores) {
+				if (store instanceof Map) {
+					Map<String, String> map = (Map<String, String>) store;
+					game.gameStore.add(new GameStore(readLocationFromString(game.world, map.get("loc")), map.get("shop"), "true".equals(map.getOrDefault("parent", "true"))));
+				} else if (store instanceof String) {
+					game.gameStore.add(new GameStore(readLocationFromString(game.world, (String) store), null, true));
+				}
 			}
 		}
 
@@ -808,9 +813,13 @@ public class Game implements misat11.bw.api.Game {
 			}
 		}
 		if (!gameStore.isEmpty()) {
-			List<String> nL = new ArrayList<String>();
+			List<Map<String, String>> nL = new ArrayList<Map<String, String>>();
 			for (GameStore store : gameStore) {
-				nL.add(setLocationToString(store.getStoreLocation()));
+				Map<String, String> map = new HashMap<>();
+				map.put("loc", setLocationToString(store.getStoreLocation()));
+				map.put("shop", store.getShopFile());
+				map.put("parent", store.getUseParent() ? "true" : "false");
+				nL.add(map);
 			}
 			configMap.set("stores", nL);
 		}

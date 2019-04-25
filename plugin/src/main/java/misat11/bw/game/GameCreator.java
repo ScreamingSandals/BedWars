@@ -31,7 +31,7 @@ public class GameCreator {
 	public static final String BEDWARS_TEAM_JOIN_METADATA = "bw-addteamjoin";
 
 	private Game game;
-	private HashMap<String, Location> villagerstores = new HashMap<String, Location>();
+	private HashMap<String, GameStore> villagerstores = new HashMap<String, GameStore>();
 
 	public GameCreator(Game game) {
 		this.game = game;
@@ -39,7 +39,7 @@ public class GameCreator {
 		if (!gs.isEmpty()) {
 			for (GameStore store : gs) {
 				villagerstores.put(store.getStoreLocation().getBlockX() + ";" + store.getStoreLocation().getBlockY()
-						+ ";" + store.getStoreLocation().getBlockZ(), store.getStoreLocation());
+						+ ";" + store.getStoreLocation().getBlockZ(), store);
 			}
 		}
 	}
@@ -120,7 +120,15 @@ public class GameCreator {
 		{
 			if (args.length >= 1) {
 				if (args[0].equalsIgnoreCase("add")) {
-					response = addStore(player.getLocation());
+					if (args.length >= 2) {
+						if (args.length >= 3) {
+							response = addStore(player.getLocation(), args[1], Boolean.parseBoolean(args[2]));
+						} else {
+							response = addStore(player.getLocation(), args[1], true);
+						}
+					} else {
+						response = addStore(player.getLocation(), null, true);
+					}
 				} else if (args[0].equalsIgnoreCase("remove")) {
 					response = removeStore(player.getLocation());
 				}
@@ -139,8 +147,8 @@ public class GameCreator {
 			}
 		} else if (action.equalsIgnoreCase("save")) {
 			List<GameStore> gamestores = new ArrayList<GameStore>();
-			for (Map.Entry<String, Location> vloc : villagerstores.entrySet()) {
-				gamestores.add(new GameStore(vloc.getValue()));
+			for (Map.Entry<String, GameStore> vloc : villagerstores.entrySet()) {
+				gamestores.add(vloc.getValue());
 			}
 			boolean isTeamsSetCorrectly = true;
 			for (Team team : game.getTeams()) {
@@ -569,7 +577,7 @@ public class GameCreator {
 		}
 	}
 
-	public String addStore(Location loc) {
+	public String addStore(Location loc, String shop, boolean useParent) {
 		if (game.getPos1() == null || game.getPos2() == null) {
 			return i18n("admin_command_set_pos1_pos2_first");
 		}
@@ -583,7 +591,7 @@ public class GameCreator {
 		if (villagerstores.containsKey(location)) {
 			return i18n("admin_command_store_already_exists");
 		}
-		villagerstores.put(location, loc);
+		villagerstores.put(location, new GameStore(loc, shop, useParent));
 		return i18n("admin_command_store_added").replace("%x%", Double.toString(loc.getX()))
 				.replace("%y%", Double.toString(loc.getY())).replace("%z%", Double.toString(loc.getZ()))
 				.replace("%yaw%", Float.toString(loc.getYaw())).replace("%pitch%", Float.toString(loc.getPitch()));

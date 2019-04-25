@@ -7,10 +7,14 @@ import org.bukkit.entity.Villager;
 public class GameStore {
 
 	private final Location loc;
+	private final String shop;
+	private final boolean useParent;
 	private Villager entity;
 
-	public GameStore(Location loc) {
+	public GameStore(Location loc, String shop, boolean useParent) {
 		this.loc = loc;
+		this.shop = shop;
+		this.useParent = useParent;
 	}
 
 	public Villager spawn() {
@@ -40,6 +44,14 @@ public class GameStore {
 	
 	public Location getStoreLocation() {
 		return loc;
+	}
+	
+	public String getShopFile() {
+		return shop;
+	}
+	
+	public boolean getUseParent() {
+		return useParent && shop != null;
 	}
 	
 	

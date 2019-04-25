@@ -19,6 +19,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import misat11.bw.api.BedwarsAPI;
 import misat11.bw.api.GameStatus;
+import misat11.bw.api.GameStore;
 import misat11.bw.commands.BwCommand;
 import misat11.bw.database.DatabaseManager;
 import misat11.bw.game.Game;
@@ -176,8 +177,8 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 		}
 	}
 
-	public static void openStore(Player player) {
-		instance.menu.show(player);
+	public static void openStore(Player player, GameStore store) {
+		instance.menu.show(player, store);
 	}
 
 	public static boolean isFarmBlock(Material mat) {
