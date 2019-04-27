@@ -52,6 +52,7 @@
 		<module>v1_12_r1</module>
 		<module>v1_13_r1</module>
 		<module>v1_13_r2</module>
+		<module>v1_14_r1</module>
 	</modules>
 
 </project>

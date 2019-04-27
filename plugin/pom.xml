@@ -14,7 +14,7 @@
 		<dependency>
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot-api</artifactId>
-			<version>1.13.2-R0.1-SNAPSHOT</version>
+			<version>1.14-R0.1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -118,6 +118,12 @@
 		<dependency>
 			<groupId>misat11.bw</groupId>
 			<artifactId>BedWars-V1_13_R2</artifactId>
+			<version>1</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>misat11.bw</groupId>
+			<artifactId>BedWars-V1_14_R1</artifactId>
 			<version>1</version>
 			<scope>compile</scope>
 		</dependency>

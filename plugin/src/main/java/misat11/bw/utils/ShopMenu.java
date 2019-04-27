@@ -242,6 +242,9 @@ public class ShopMenu implements Listener {
 			file = store.getShopFile();
 		}
 		if (file != null) {
+			if (file.endsWith(".yml")) {
+				file = file.substring(0, file.length() - 4);
+			}
 			String name = (parent ? "+" : "-") + file;
 			if (!shopMenus.containsKey(name)){
 				ShopMenu shopMenu = new ShopMenu(file, parent);

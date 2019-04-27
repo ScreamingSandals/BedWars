@@ -16,6 +16,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.data.type.Bed;
 import org.bukkit.block.data.type.Bed.Part;
 import org.bukkit.boss.BarColor;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -131,6 +132,10 @@ public class GameCreator {
 					}
 				} else if (args[0].equalsIgnoreCase("remove")) {
 					response = removeStore(player.getLocation());
+				} else if (args[0].equalsIgnoreCase("type")) {
+					if (args.length >= 2) {
+						response = changeStoreEntityType(player.getLocation(), args[1]);
+					}
 				}
 			}
 		} else if (action.equalsIgnoreCase("jointeam")) {
@@ -203,10 +208,11 @@ public class GameCreator {
 				return i18n("admin_command_invalid_bar_color");
 			}
 		}
-		
+
 		game.setGameBossBarColor(c);
-		
-		return i18n("admin_command_bar_color_set").replace("%color%", c == null ? "default" : c.name()).replace("%type%", "GAME");
+
+		return i18n("admin_command_bar_color_set").replace("%color%", c == null ? "default" : c.name())
+				.replace("%type%", "GAME");
 	}
 
 	private String setLobbyBossBarColor(String color) {
@@ -219,10 +225,11 @@ public class GameCreator {
 				return i18n("admin_command_invalid_bar_color");
 			}
 		}
-		
+
 		game.setLobbyBossBarColor(c);
-		
-		return i18n("admin_command_bar_color_set").replace("%color%", c == null ? "default" : c.name()).replace("%type%", "LOBBY");
+
+		return i18n("admin_command_bar_color_set").replace("%color%", c == null ? "default" : c.name())
+				.replace("%type%", "LOBBY");
 	}
 
 	private String setArenaWeather(String arenaWeather) {
@@ -595,6 +602,32 @@ public class GameCreator {
 		return i18n("admin_command_store_added").replace("%x%", Double.toString(loc.getX()))
 				.replace("%y%", Double.toString(loc.getY())).replace("%z%", Double.toString(loc.getZ()))
 				.replace("%yaw%", Float.toString(loc.getYaw())).replace("%pitch%", Float.toString(loc.getPitch()));
+	}
+
+	private String changeStoreEntityType(Location loc, String type) {
+		type = type.toUpperCase();
+
+		String location = loc.getBlockX() + ";" + loc.getBlockY() + ";" + loc.getBlockZ();
+		if (villagerstores.containsKey(location)) {
+			EntityType t = null;
+			try {
+				t = EntityType.valueOf(type);
+				if (!t.isAlive()) {
+					t = null;
+				}
+			} catch (Exception e) {
+			}
+
+			if (t == null) {
+				return i18n("admin_command_wrong_living_entity_type");
+			}
+			
+			villagerstores.get(location).setEntityType(t);
+			
+			return i18n("admin_command_store_living_entity_type_set").replace("%type%", t.toString());
+		}
+
+		return i18n("admin_command_store_not_exists");
 	}
 
 	public String removeStore(Location loc) {

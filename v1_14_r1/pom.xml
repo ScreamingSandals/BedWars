@@ -7,13 +7,12 @@
 		<artifactId>BedWars-parent</artifactId>
 		<version>1</version>
 	</parent>
-	<artifactId>BedWars-API</artifactId>
-	<version>${bedwars.api}</version>
+	<artifactId>BedWars-V1_14_R1</artifactId>
 
 	<dependencies>
 		<dependency>
 			<groupId>org.spigotmc</groupId>
-			<artifactId>spigot-api</artifactId>
+			<artifactId>spigot</artifactId>
 			<version>1.14-R0.1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>

@@ -19,9 +19,10 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Villager;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -407,8 +408,8 @@ public class Game implements misat11.bw.api.Game {
 								i18n(isItBedBlock ? "bed_is_destroyed" : "target_is_destroyed", false).replace("%team%",
 										team.teamInfo.color.chatColor + team.teamInfo.name),
 								i18n("bed_is_destroyed_subtitle", false));
-						player.player.sendMessage(i18n(isItBedBlock ? "bed_is_destroyed" : "target_is_destroyed").replace("%team%",
-								team.teamInfo.color.chatColor + team.teamInfo.name));
+						player.player.sendMessage(i18n(isItBedBlock ? "bed_is_destroyed" : "target_is_destroyed")
+								.replace("%team%", team.teamInfo.color.chatColor + team.teamInfo.name));
 						SpawnEffects.spawnEffect(this, player.player, "game-effects.beddestroy");
 						Sounds.playSound(player.player, player.player.getLocation(),
 								Main.getConfigurator().config.getString("sounds.on_bed_destroyed"),
@@ -596,7 +597,7 @@ public class Game implements misat11.bw.api.Game {
 			}
 			teamsInGame.clear();
 			for (GameStore store : gameStore) {
-				Villager villager = store.kill();
+				LivingEntity villager = store.kill();
 				if (villager != null) {
 					Main.unregisterGameEntity(villager);
 				}
@@ -656,9 +657,12 @@ public class Game implements misat11.bw.api.Game {
 			for (Object store : stores) {
 				if (store instanceof Map) {
 					Map<String, String> map = (Map<String, String>) store;
-					game.gameStore.add(new GameStore(readLocationFromString(game.world, map.get("loc")), map.get("shop"), "true".equals(map.getOrDefault("parent", "true"))));
+					game.gameStore.add(new GameStore(readLocationFromString(game.world, map.get("loc")),
+							map.get("shop"), "true".equals(map.getOrDefault("parent", "true")),
+							EntityType.valueOf(map.getOrDefault("type", "VILLAGER").toUpperCase())));
 				} else if (store instanceof String) {
-					game.gameStore.add(new GameStore(readLocationFromString(game.world, (String) store), null, true));
+					game.gameStore.add(new GameStore(readLocationFromString(game.world, (String) store), null, true,
+							EntityType.VILLAGER));
 				}
 			}
 		}
@@ -688,7 +692,7 @@ public class Game implements misat11.bw.api.Game {
 
 		game.arenaTime = ArenaTime.valueOf(configMap.getString("arenaTime", ArenaTime.WORLD.name()).toUpperCase());
 		game.arenaWeather = loadWeather(configMap.getString("arenaWeather", "default").toUpperCase());
-		
+
 		game.lobbyBossBarColor = loadBossBarColor(configMap.getString("lobbyBossBarColor", "default").toUpperCase());
 		game.gameBossBarColor = loadBossBarColor(configMap.getString("gameBossBarColor", "default").toUpperCase());
 
@@ -819,6 +823,7 @@ public class Game implements misat11.bw.api.Game {
 				map.put("loc", setLocationToString(store.getStoreLocation()));
 				map.put("shop", store.getShopFile());
 				map.put("parent", store.getUseParent() ? "true" : "false");
+				map.put("type", store.getEntityType().name());
 				nL.add(map);
 			}
 			configMap.set("stores", nL);
@@ -844,7 +849,7 @@ public class Game implements misat11.bw.api.Game {
 
 		configMap.set("arenaTime", arenaTime.name());
 		configMap.set("arenaWeather", arenaWeather == null ? "default" : arenaWeather.name());
-		
+
 		configMap.set("lobbyBossBarColor", lobbyBossBarColor == null ? "default" : lobbyBossBarColor.name());
 		configMap.set("gameBossBarColor", gameBossBarColor == null ? "default" : gameBossBarColor.name());
 
@@ -1091,7 +1096,7 @@ public class Game implements misat11.bw.api.Game {
 				teamsInGame.clear();
 				activeSpecialItems.clear();
 				for (GameStore store : gameStore) {
-					Villager villager = store.kill();
+					LivingEntity villager = store.kill();
 					if (villager != null) {
 						Main.unregisterGameEntity(villager);
 					}
@@ -1198,7 +1203,8 @@ public class Game implements misat11.bw.api.Game {
 					for (GamePlayer p : players) {
 						bossbar.addPlayer(p.player);
 					}
-					bossbar.setColor(lobbyBossBarColor != null ? lobbyBossBarColor : BarColor.valueOf(Main.getConfigurator().config.getString("bossbar.lobby.color")));
+					bossbar.setColor(lobbyBossBarColor != null ? lobbyBossBarColor
+							: BarColor.valueOf(Main.getConfigurator().config.getString("bossbar.lobby.color")));
 					bossbar.setStyle(BarStyle.valueOf(Main.getConfigurator().config.getString("bossbar.lobby.style")));
 					bossbar.setVisible(getOriginalOrInheritedLobbyBossbar());
 				} catch (Throwable t) {
@@ -1245,7 +1251,8 @@ public class Game implements misat11.bw.api.Game {
 				try {
 					bossbar.setTitle(i18n("bossbar_running", false));
 					bossbar.setProgress(0);
-					bossbar.setColor(gameBossBarColor != null ? gameBossBarColor : BarColor.valueOf(Main.getConfigurator().config.getString("bossbar.game.color")));
+					bossbar.setColor(gameBossBarColor != null ? gameBossBarColor
+							: BarColor.valueOf(Main.getConfigurator().config.getString("bossbar.game.color")));
 					bossbar.setStyle(BarStyle.valueOf(Main.getConfigurator().config.getString("bossbar.game.style")));
 					bossbar.setVisible(getOriginalOrInheritedGameBossbar());
 				} catch (Throwable tr) {
@@ -1261,7 +1268,7 @@ public class Game implements misat11.bw.api.Game {
 				updateScoreboard();
 				updateSigns();
 				for (GameStore store : gameStore) {
-					Villager villager = store.spawn();
+					LivingEntity villager = store.spawn();
 					if (villager != null) {
 						Main.registerGameEntity(villager, this);
 					}
@@ -2134,21 +2141,21 @@ public class Game implements misat11.bw.api.Game {
 	public void setArenaWeather(WeatherType arenaWeather) {
 		this.arenaWeather = arenaWeather;
 	}
-	
+
 	@Override
 	public BarColor getLobbyBossBarColor() {
 		return this.lobbyBossBarColor;
 	}
-	
+
 	public void setLobbyBossBarColor(BarColor color) {
 		this.lobbyBossBarColor = color;
 	}
-	
+
 	@Override
 	public BarColor getGameBossBarColor() {
 		return this.gameBossBarColor;
 	}
-	
+
 	public void setGameBossBarColor(BarColor color) {
 		this.gameBossBarColor = color;
 	}
