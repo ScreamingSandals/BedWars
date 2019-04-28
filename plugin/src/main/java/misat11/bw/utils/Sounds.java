@@ -1030,8 +1030,14 @@ public enum Sounds {
     		Sounds sound = Sounds.valueOf(name.toUpperCase());
     		sound.playSound(player, location, volume, pitch);
     	} catch (IllegalArgumentException | NullPointerException ex) {
-    		if (fallbackSound != null) {
-    			fallbackSound.playSound(player, location, volume, pitch);
+    		try {
+    			// If something is exists in bukkit, but not in this mapping
+    			Sound s = org.bukkit.Sound.valueOf(name);
+    			player.playSound(location, s, volume, pitch);
+    		} catch (IllegalArgumentException t) {
+        		if (fallbackSound != null) {
+        			fallbackSound.playSound(player, location, volume, pitch);
+        		}
     		}
     	}
     }
