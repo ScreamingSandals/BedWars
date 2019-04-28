@@ -18,6 +18,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
@@ -149,6 +150,9 @@ public class Game implements misat11.bw.api.Game {
 	public static final String PREVENT_SPAWNING_MOBS = "prevent-spawning-mobs";
 	private InGameConfigBooleanConstants preventSpawningMobs = InGameConfigBooleanConstants.INHERIT;
 
+	public static final String SPAWNER_HOLOGRAMS = "spawner-holograms";
+	private InGameConfigBooleanConstants spawnerHolograms = InGameConfigBooleanConstants.INHERIT;
+
 	// STATUS
 	private GameStatus status = GameStatus.DISABLED;
 	private GameStatus afterRebuild = GameStatus.WAITING;
@@ -162,6 +166,7 @@ public class Game implements misat11.bw.api.Game {
 	private BossBar bossbar;
 	private List<Location> usedChests = new ArrayList<Location>();
 	private List<SpecialItem> activeSpecialItems = new ArrayList<SpecialItem>();
+	private List<ArmorStand> armorStandsInGame = new ArrayList<ArmorStand>();
 
 	private Game() {
 
@@ -716,6 +721,8 @@ public class Game implements misat11.bw.api.Game {
 		game.lobbyscoreboard = readBooleanConstant(configMap.getString("constant." + LOBBY_SCOREBOARD, "inherit"));
 		game.preventSpawningMobs = readBooleanConstant(
 				configMap.getString("constant." + PREVENT_SPAWNING_MOBS, "inherit"));
+		game.spawnerHolograms = readBooleanConstant(
+				configMap.getString("constant." + SPAWNER_HOLOGRAMS, "inherit"));
 
 		game.arenaTime = ArenaTime.valueOf(configMap.getString("arenaTime", ArenaTime.WORLD.name()).toUpperCase());
 		game.arenaWeather = loadWeather(configMap.getString("arenaWeather", "default").toUpperCase());
@@ -873,6 +880,7 @@ public class Game implements misat11.bw.api.Game {
 		configMap.set("constant." + LOBBY_SCOREBOARD, writeBooleanConstant(lobbyscoreboard));
 		configMap.set("constant." + SCOREBOARD, writeBooleanConstant(ascoreboard));
 		configMap.set("constant." + PREVENT_SPAWNING_MOBS, writeBooleanConstant(preventSpawningMobs));
+		configMap.set("constant." + SPAWNER_HOLOGRAMS, writeBooleanConstant(spawnerHolograms));
 
 		configMap.set("arenaTime", arenaTime.name());
 		configMap.set("arenaWeather", arenaWeather == null ? "default" : arenaWeather.name());
@@ -1213,7 +1221,7 @@ public class Game implements misat11.bw.api.Game {
 							return;
 						}
 
-						Location loc = spawner.loc.clone().add(0, 1, 0);
+						Location loc = spawner.loc.clone().add(0, 0.05, 0);
 						Item item = loc.getWorld().dropItem(loc, resourceSpawnEvent.getResource());
 						item.setPickupDelay(0);
 					}
@@ -1300,6 +1308,28 @@ public class Game implements misat11.bw.api.Game {
 						Main.registerGameEntity(villager, this);
 					}
 				}
+				if (getOriginalOrInheritedSpawnerHolograms()) {
+					for (ItemSpawner spawner : spawners) {
+						Location loc = spawner.loc.clone().add(0, 0.25, 0);
+						ArmorStand stand = (ArmorStand) loc.getWorld().spawnEntity(loc, EntityType.ARMOR_STAND);
+						
+						stand.setGravity(false);
+						stand.setCanPickupItems(false);
+						stand.setCustomName(spawner.type.getItemBoldName());
+						stand.setCustomNameVisible(true);
+						stand.setVisible(false);
+						stand.setSmall(true);
+						
+						try {
+							stand.setMarker(true);
+						} catch (Throwable t) {
+							
+						}
+						
+						armorStandsInGame.add(stand);
+						Main.registerGameEntity(stand, this);
+					}
+				}
 				String gameStartTitle = i18n("game_start_title", false);
 				String gameStartSubtitle = i18n("game_start_subtitle", false).replace("%arena%", this.name);
 				for (GamePlayer player : players) {
@@ -1352,6 +1382,12 @@ public class Game implements misat11.bw.api.Game {
 				}
 			}
 			usedChests.clear();
+			
+			// Armor Stands destroy
+			for (ArmorStand stand : armorStandsInGame) {
+				stand.setHealth(0);
+				Main.unregisterGameEntity(stand);
+			}
 
 			BedwarsPostRebuildingEvent postRebuildingEvent = new BedwarsPostRebuildingEvent(this);
 			Main.getInstance().getServer().getPluginManager().callEvent(postRebuildingEvent);
@@ -2185,6 +2221,21 @@ public class Game implements misat11.bw.api.Game {
 
 	public void setGameBossBarColor(BarColor color) {
 		this.gameBossBarColor = color;
+	}
+
+	@Override
+	public InGameConfigBooleanConstants getSpawnerHolograms() {
+		return spawnerHolograms;
+	}
+
+	@Override
+	public boolean getOriginalOrInheritedSpawnerHolograms() {
+		return spawnerHolograms.isOriginal() ? spawnerHolograms.getValue()
+				: Main.getConfigurator().config.getBoolean(SPAWNER_HOLOGRAMS);
+	}
+	
+	public void setSpawnerHolograms(InGameConfigBooleanConstants spawnerHolograms) {
+		this.spawnerHolograms = spawnerHolograms;
 	}
 
 }

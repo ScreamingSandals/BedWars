@@ -410,6 +410,16 @@ public class BwCommand implements CommandExecutor, TabCompleter {
 															+ game.getPreventSpawningMobs().name().toLowerCase(),
 															false)));
 
+
+											player.sendMessage(i18n("arena_info_config_constant", false)
+													.replace("%constant%", "spawnerholograms")
+													.replace("%value%", i18n("arena_info_config_"
+															+ game.getSpawnerHolograms().name().toLowerCase(),
+															false)));
+											
+											// NON-BOOLEAN CONSTANTS
+											
+
 											player.sendMessage(i18n("arena_info_config_constant", false)
 													.replace("%constant%", "arenaTime")
 													.replace("%value%", game.getArenaTime().name()));
@@ -626,7 +636,7 @@ public class BwCommand implements CommandExecutor, TabCompleter {
 									"joinRandomTeamOnJoin", "addWoolToInventoryOnJoin", "preventKillingVillagers",
 									"spectatorGm3", "playerDrops", "friendlyfire", "coloredLeatherByTeamInLobby",
 									"keepInventory", "crafting", "gamebossbar", "lobbybossbar", "gamescoreboard",
-									"lobbyscoreboard", "preventspawningmobs");
+									"lobbyscoreboard", "preventspawningmobs", "spawnerholograms");
 							StringUtil.copyPartialMatches(args[3], cmds, completionList);
 						}
 						if (args.length == 5) {

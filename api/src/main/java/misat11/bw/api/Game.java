@@ -168,6 +168,9 @@ public interface Game {
 	public InGameConfigBooleanConstants getPreventSpawningMobs();
 	public boolean getOriginalOrInheritedPreventSpawningMobs();
 	
+	public InGameConfigBooleanConstants getSpawnerHolograms();
+	public boolean getOriginalOrInheritedSpawnerHolograms();
+	
 	public ArenaTime getArenaTime();
 	public WeatherType getArenaWeather();
 	public BarColor getLobbyBossBarColor();

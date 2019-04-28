@@ -64,6 +64,10 @@ public class ItemSpawnerType implements misat11.bw.api.ItemSpawnerType {
 		return color + getTranslatableKey();
 	}
 
+	public String getItemBoldName() {
+		return color.toString() + ChatColor.BOLD.toString() + getTranslatableKey();
+	}
+
 	public int getDamage() {
 		return damage;
 	}

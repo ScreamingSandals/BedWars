@@ -21,6 +21,8 @@ public interface ItemSpawnerType {
 
 	public String getItemName();
 
+	public String getItemBoldName();
+
 	public int getDamage();
 
 	public ItemStack getStack();
