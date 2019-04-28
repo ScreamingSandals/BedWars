@@ -201,7 +201,7 @@ public class PlayerListener implements Listener {
 				return;
 			}
 			if (!game.blockPlace(Main.getPlayerGameProfile(event.getPlayer()), event.getBlock(),
-					event.getBlockReplacedState())) {
+					event.getBlockReplacedState(), event.getItemInHand())) {
 				event.setCancelled(true);
 			}
 		}
@@ -301,12 +301,10 @@ public class PlayerListener implements Listener {
 
 			if (event instanceof EntityDamageByEntityEvent) {
 
-				if (event.getEntity() instanceof Villager) {
-					Game game = Main.getInGameEntity(event.getEntity());
-					if (game != null) {
-						if (game.getOriginalOrInheritedPreventKillingVillagers()) {
-							event.setCancelled(true);
-						}
+				Game game = Main.getInGameEntity(event.getEntity());
+				if (game != null) {
+					if (game.getOriginalOrInheritedPreventKillingVillagers()) {
+						event.setCancelled(true);
 					}
 				}
 

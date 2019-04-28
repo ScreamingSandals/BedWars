@@ -27,6 +27,7 @@ import misat11.bw.game.GamePlayer;
 import misat11.bw.game.ItemSpawnerType;
 import misat11.bw.holograms.HolographicDisplaysInteraction;
 import misat11.bw.holograms.IHologramInteraction;
+import misat11.bw.listener.LuckyBlockAddonListener;
 import misat11.bw.listener.Player112Listener;
 import misat11.bw.listener.Player19Listener;
 import misat11.bw.listener.PlayerListener;
@@ -353,6 +354,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 		getServer().getPluginManager().registerEvents(new SignListener(), this);
 		getServer().getPluginManager().registerEvents(new WorldListener(), this);
 		getServer().getPluginManager().registerEvents(new WarpPowderListener(), this);
+		getServer().getPluginManager().registerEvents(new LuckyBlockAddonListener(), this);
 
 		getServer().getServicesManager().register(BedwarsAPI.class, this, this, ServicePriority.Normal);
 

@@ -24,6 +24,8 @@ public class ShowSettingsParticles extends BukkitRunnable {
 	@Override
 	public void run() {
 		try {
+			// TODO in some future version
+			
 			for (GameStore store : game.getGameStores()) {
 				
 			}

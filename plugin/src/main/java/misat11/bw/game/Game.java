@@ -45,6 +45,8 @@ import misat11.bw.api.RunningTeam;
 import misat11.bw.api.events.BedwarsGameEndEvent;
 import misat11.bw.api.events.BedwarsGameStartEvent;
 import misat11.bw.api.events.BedwarsGameStartedEvent;
+import misat11.bw.api.events.BedwarsPlayerBreakBlock;
+import misat11.bw.api.events.BedwarsPlayerBuildBlock;
 import misat11.bw.api.events.BedwarsPlayerJoinEvent;
 import misat11.bw.api.events.BedwarsPlayerJoinTeamEvent;
 import misat11.bw.api.events.BedwarsPlayerJoinedEvent;
@@ -267,7 +269,7 @@ public class Game implements misat11.bw.api.Game {
 		return status == GameStatus.RUNNING && region.isBlockAddedDuringGame(loc);
 	}
 
-	public boolean blockPlace(GamePlayer player, Block block, BlockState replaced) {
+	public boolean blockPlace(GamePlayer player, Block block, BlockState replaced, ItemStack itemInHand) {
 		if (status != GameStatus.RUNNING) {
 			return false; // ?
 		}
@@ -280,6 +282,14 @@ public class Game implements misat11.bw.api.Game {
 		if (!GameCreator.isInArea(block.getLocation(), pos1, pos2)) {
 			return false;
 		}
+		
+		BedwarsPlayerBuildBlock event = new BedwarsPlayerBuildBlock(this, player.player, getPlayerTeam(player), block, itemInHand, replaced);
+		Main.getInstance().getServer().getPluginManager().callEvent(event);
+		
+		if (event.isCancelled()) {
+			return false;
+		}
+		
 		if (replaced.getType() != Material.AIR) {
 			if (region.isLiquid(replaced.getType())) {
 				region.putOriginalBlock(block.getLocation(), replaced);
@@ -297,6 +307,7 @@ public class Game implements misat11.bw.api.Game {
 				gp.player.sendMessage(message);
 			}
 		}
+		
 		return true;
 	}
 
@@ -313,6 +324,14 @@ public class Game implements misat11.bw.api.Game {
 		if (!GameCreator.isInArea(block.getLocation(), pos1, pos2)) {
 			return false;
 		}
+		
+		BedwarsPlayerBreakBlock breakEvent = new BedwarsPlayerBreakBlock(this, player.player, getPlayerTeam(player), block);
+		Main.getInstance().getServer().getPluginManager().callEvent(breakEvent);
+		
+		if (breakEvent.isCancelled()) {
+			return false;
+		}
+		
 		if (region.isBlockAddedDuringGame(block.getLocation())) {
 			region.removeBlockBuildedDuringGame(block.getLocation());
 
@@ -324,6 +343,14 @@ public class Game implements misat11.bw.api.Game {
 					for (GamePlayer gp : team.players) {
 						gp.player.sendMessage(message);
 					}
+				}
+			}
+			
+			if (!breakEvent.isDrops()) {
+				try {
+					event.setDropItems(false);
+				} catch (Throwable tr) {
+					block.setType(Material.AIR);
 				}
 			}
 

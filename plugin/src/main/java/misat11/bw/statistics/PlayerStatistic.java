@@ -130,8 +130,7 @@ public class PlayerStatistic implements ConfigurationSerializable, misat11.bw.ap
 		} else {
 			kd = ((double) this.getKills()) / ((double) this.getDeaths());
 		}
-		DecimalFormat df = new DecimalFormat("#.##");
-		kd = Double.valueOf(df.format(kd));
+		kd = Math.round(kd * 100.0) / 100.0;
 
 		return kd;
 	}
