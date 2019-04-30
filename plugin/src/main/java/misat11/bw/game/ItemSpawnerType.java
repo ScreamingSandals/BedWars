@@ -73,7 +73,11 @@ public class ItemSpawnerType implements misat11.bw.api.ItemSpawnerType {
 	}
 
 	public ItemStack getStack() {
-		ItemStack stack = new ItemStack(material, 1, (short) damage);
+		return getStack(1);
+	}
+
+	public ItemStack getStack(int amount) {
+		ItemStack stack = new ItemStack(material, amount, (short) damage);
 		ItemMeta stackMeta = stack.getItemMeta();
 		stackMeta.setDisplayName(getItemName());
 		stack.setItemMeta(stackMeta);

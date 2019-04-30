@@ -24,6 +24,8 @@ import misat11.bw.api.GameStore;
 import misat11.bw.api.ItemSpawnerType;
 import misat11.bw.api.events.BedwarsApplyPropertyToBoughtItem;
 import misat11.bw.game.CurrentTeam;
+import misat11.bw.game.Game;
+import misat11.bw.game.ItemSpawner;
 import misat11.lib.sgui.ItemData;
 import misat11.lib.sgui.ItemInfo;
 import misat11.lib.sgui.Property;
@@ -68,7 +70,7 @@ public class ShopMenu implements Listener {
 		listener = new StaticInventoryListener(creator);
 		Bukkit.getServer().getPluginManager().registerEvents(listener, Main.getInstance());
 		Bukkit.getServer().getPluginManager().registerEvents(this, Main.getInstance());
-		
+
 		creator.generate();
 	}
 
@@ -76,7 +78,7 @@ public class ShopMenu implements Listener {
 		File file = new File(Main.getInstance().getDataFolder(), fileName + ".yml");
 
 		YamlConfiguration config = new YamlConfiguration();
-		
+
 		try {
 			config.load(file);
 		} catch (IOException e) {
@@ -84,9 +86,10 @@ public class ShopMenu implements Listener {
 		} catch (InvalidConfigurationException e) {
 			e.printStackTrace();
 		}
-		
-		List<Map<String, Object>> parent = (List<Map<String, Object>>) Main.getConfigurator().shopconfig.getList("data");
-		
+
+		List<Map<String, Object>> parent = (List<Map<String, Object>>) Main.getConfigurator().shopconfig
+				.getList("data");
+
 		List<Map<String, Object>> data = (List<Map<String, Object>>) config.getList("data");
 
 		backItem = Main.getConfigurator().readDefinedItem("shopback", "BARRIER");
@@ -118,16 +121,16 @@ public class ShopMenu implements Listener {
 		listener = new StaticInventoryListener(creator);
 		Bukkit.getServer().getPluginManager().registerEvents(listener, Main.getInstance());
 		Bukkit.getServer().getPluginManager().registerEvents(this, Main.getInstance());
-		
+
 		creator.generate();
 	}
-	
+
 	@EventHandler
 	public void onGeneratingItem(GenerateItemEvent event) {
 		if (event.getFormat() != format) {
 			return;
 		}
-		
+
 		ItemInfo item = event.getInfo();
 		ItemData data = item.getData();
 		Map<String, Object> originalItemData = data.getData();
@@ -152,7 +155,7 @@ public class ShopMenu implements Listener {
 			stack.setItemMeta(stackMeta);
 			event.setStack(stack);
 		}
-		
+
 	}
 
 	@EventHandler
@@ -164,7 +167,7 @@ public class ShopMenu implements Listener {
 		if (!Main.isPlayerInGame(event.getPlayer())) {
 			event.setCancelled(true);
 		}
-		
+
 		if (Main.getPlayerGameProfile(event.getPlayer()).isSpectator) {
 			event.setCancelled(true);
 		}
@@ -177,53 +180,84 @@ public class ShopMenu implements Listener {
 		}
 
 		Player player = event.getPlayer();
-		
+		Game game = Main.getPlayerGameProfile(event.getPlayer()).getGame();
+
 		ItemInfo item = event.getItem();
 		ItemData data = item.getData();
 		Map<String, Object> originalItemData = data.getData();
 		if (originalItemData.containsKey("price") && originalItemData.containsKey("price-type")) {
-			int price = (int) originalItemData.get("price");
-			String priceType = ((String) originalItemData.get("price-type")).toLowerCase();
-			ItemSpawnerType type = Main.getSpawnerType(priceType);
-			ItemStack materialItem = type.getStack();
-			materialItem.setAmount(price);
-			ItemStack newItem = ((ItemStack) originalItemData.get("stack")).clone();
-			if (player.getInventory().containsAtLeast(materialItem, price)) {
-				if (data.hasProperties()) {
-					for (Property property : data.getProperties()) {
-						if (property.hasName()) {
-							BedwarsApplyPropertyToBoughtItem applyEvent = new BedwarsApplyPropertyToBoughtItem(
-									Main.getPlayerGameProfile(player).getGame(), player, newItem,
-									property.getPropertyData());
-							Main.getInstance().getServer().getPluginManager().callEvent(applyEvent);
-
-							newItem = applyEvent.getStack();
+			if (originalItemData.containsKey("upgrade") && game.isUpgradesEnabled()) {
+				Map<String, Object> upgrade = (Map<String, Object>) originalItemData.get("upgrade");
+				List<Map<String, Object>> entities = (List<Map<String, Object>>) upgrade.get("entities");
+				int price = (int) originalItemData.get("price");
+				String priceType = ((String) originalItemData.get("price-type")).toLowerCase();
+				ItemSpawnerType type = Main.getSpawnerType(priceType);
+				ItemStack materialItem = type.getStack(price);
+				if (player.getInventory().containsAtLeast(materialItem, price)) {
+					player.getInventory().removeItem(materialItem);
+					for (Map<String, Object> entity : entities) {
+						String typ = (String) entity.get("type");
+						switch (typ.toLowerCase()) {
+						case "spawner":
+							String customName = (String) entity.get("customName");
+							int addLevels = (int) entity.get("levels");
+							for (ItemSpawner spawner : game.getSpawners()) {
+								if (customName.equals(spawner.customName)) {
+									spawner.currentLevel += addLevels;
+								}
+							}
+							break;
 						}
 					}
+					player.sendMessage(i18n("buy_succes").replace("%item%", "UPGRADE"));
+					Sounds.playSound(player, player.getLocation(),
+							Main.getConfigurator().config.getString("sounds.on_upgrade_buy"),
+							Sounds.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
+				} else {
+					player.sendMessage(i18n("buy_failed").replace("%item%", "UPGRADE"));
 				}
-				player.getInventory().removeItem(materialItem);
-				player.getInventory().addItem(newItem);
-				player.sendMessage(i18n("buy_succes").replace("%item%",
-						newItem.getItemMeta().hasDisplayName() ? newItem.getItemMeta().getDisplayName()
-								: newItem.getType().name().toLowerCase()));
-				Sounds.playSound(player, player.getLocation(),
-						Main.getConfigurator().config.getString("sounds.on_item_buy"),
-						Sounds.ENTITY_ITEM_PICKUP, 1, 1);
 			} else {
-				player.sendMessage(i18n("buy_failed").replace("%item%",
-						newItem.getItemMeta().hasDisplayName() ? newItem.getItemMeta().getDisplayName()
-								: newItem.getType().name().toLowerCase()));
+				int price = (int) originalItemData.get("price");
+				String priceType = ((String) originalItemData.get("price-type")).toLowerCase();
+				ItemSpawnerType type = Main.getSpawnerType(priceType);
+				ItemStack materialItem = type.getStack(price);
+				ItemStack newItem = ((ItemStack) originalItemData.get("stack")).clone();
+				if (player.getInventory().containsAtLeast(materialItem, price)) {
+					if (data.hasProperties()) {
+						for (Property property : data.getProperties()) {
+							if (property.hasName()) {
+								BedwarsApplyPropertyToBoughtItem applyEvent = new BedwarsApplyPropertyToBoughtItem(game,
+										player, newItem, property.getPropertyData());
+								Main.getInstance().getServer().getPluginManager().callEvent(applyEvent);
+
+								newItem = applyEvent.getStack();
+							}
+						}
+					}
+					player.getInventory().removeItem(materialItem);
+					player.getInventory().addItem(newItem);
+					player.sendMessage(i18n("buy_succes").replace("%item%",
+							newItem.getItemMeta().hasDisplayName() ? newItem.getItemMeta().getDisplayName()
+									: newItem.getType().name().toLowerCase()));
+					Sounds.playSound(player, player.getLocation(),
+							Main.getConfigurator().config.getString("sounds.on_item_buy"), Sounds.ENTITY_ITEM_PICKUP, 1,
+							1);
+				} else {
+					player.sendMessage(i18n("buy_failed").replace("%item%",
+							newItem.getItemMeta().hasDisplayName() ? newItem.getItemMeta().getDisplayName()
+									: newItem.getType().name().toLowerCase()));
+				}
 			}
 		}
 	}
-	
+
 	@EventHandler
 	public void onApplyPropertyToBoughtItem(BedwarsApplyPropertyToBoughtItem event) {
-		if (event.getPropertyName().equalsIgnoreCase("transform::applycolorbyteam")) { 
+		if (event.getPropertyName().equalsIgnoreCase("transform::applycolorbyteam")) {
 			ItemStack stack = event.getStack();
 			Player player = event.getPlayer();
 			CurrentTeam team = (CurrentTeam) event.getGame().getTeamOfPlayer(player);
-			
+
 			Material material = stack.getType();
 			if (material.name().endsWith("WOOL")) {
 				event.setStack(team.teamInfo.color.getWool(stack));
@@ -231,7 +265,7 @@ public class ShopMenu implements Listener {
 			// TODO: other materials
 		}
 	}
-	
+
 	private static final HashMap<String, ShopMenu> shopMenus = new HashMap<String, ShopMenu>();
 
 	public void show(Player p, GameStore store) {
@@ -246,7 +280,7 @@ public class ShopMenu implements Listener {
 				file = file.substring(0, file.length() - 4);
 			}
 			String name = (parent ? "+" : "-") + file;
-			if (!shopMenus.containsKey(name)){
+			if (!shopMenus.containsKey(name)) {
 				ShopMenu shopMenu = new ShopMenu(file, parent);
 				shopMenus.put(name, shopMenu);
 			}

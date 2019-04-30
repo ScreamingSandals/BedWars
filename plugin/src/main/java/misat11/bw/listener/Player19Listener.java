@@ -33,7 +33,7 @@ public class Player19Listener implements Listener {
 
 		for (String s : Main.getGameNames()) {
 			Game game = Main.getGame(s);
-			if (game.getStatus() == GameStatus.RUNNING) {
+			if (game.getStatus() == GameStatus.RUNNING && game.getOriginalOrInheritedSpawnerDisableMerge()) {
 				if (GameCreator.isInArea(event.getEntity().getLocation(), game.getPos1(), game.getPos2()) || GameCreator.isInArea(event.getTarget().getLocation(), game.getPos1(), game.getPos2())) {
 					event.setCancelled(true);
 					return;

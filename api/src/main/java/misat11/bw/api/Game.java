@@ -102,6 +102,8 @@ public interface Game {
 	
 	public boolean isRegisteredSpecialItem(SpecialItem item);
 	
+	public List<ItemSpawner> getItemSpawners();
+	
 	// LOBBY
 	
 	public World getLobbyWorld();
@@ -171,10 +173,15 @@ public interface Game {
 	public InGameConfigBooleanConstants getSpawnerHolograms();
 	public boolean getOriginalOrInheritedSpawnerHolograms();
 	
+	public InGameConfigBooleanConstants getSpawnerDisableMerge();
+	public boolean getOriginalOrInheritedSpawnerDisableMerge();
+	
 	public ArenaTime getArenaTime();
 	public WeatherType getArenaWeather();
 	public BarColor getLobbyBossBarColor();
 	public BarColor getGameBossBarColor();
+	
+	public boolean isUpgradesEnabled();
 	
 	
 }

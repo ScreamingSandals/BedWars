@@ -31,7 +31,6 @@ import misat11.bw.game.ItemSpawner;
 import misat11.bw.game.Team;
 import misat11.bw.game.TeamColor;
 import misat11.bw.statistics.PlayerStatistic;
-import misat11.bw.utils.ShowSettingsParticles;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -42,7 +41,6 @@ public class BwCommand implements CommandExecutor, TabCompleter {
 	public static final String OTHER_STATS_PERMISSION = "misat11.bw.otherstats";
 
 	public HashMap<String, GameCreator> gc = new HashMap<String, GameCreator>();
-	public HashMap<Player, ShowSettingsParticles> showSettings = new HashMap<Player, ShowSettingsParticles>();
 
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		if (sender instanceof Player) {
@@ -416,6 +414,20 @@ public class BwCommand implements CommandExecutor, TabCompleter {
 													.replace("%value%", i18n("arena_info_config_"
 															+ game.getSpawnerHolograms().name().toLowerCase(),
 															false)));
+
+
+											player.sendMessage(i18n("arena_info_config_constant", false)
+													.replace("%constant%", "spawnerDisableMerge")
+													.replace("%value%", i18n("arena_info_config_"
+															+ game.getSpawnerDisableMerge().name().toLowerCase(),
+															false)));
+
+
+											player.sendMessage(i18n("arena_info_config_constant", false)
+													.replace("%constant%", "upgrades (experimental)")
+													.replace("%value%", i18n("arena_info_config_"
+															+ String.valueOf(game.isUpgradesEnabled()),
+															false)));
 											
 											// NON-BOOLEAN CONSTANTS
 											
@@ -449,29 +461,6 @@ public class BwCommand implements CommandExecutor, TabCompleter {
 									}
 								} else {
 									player.sendMessage(i18n("no_arena_found"));
-								}
-							} else if (args[2].equalsIgnoreCase("showparticles")) {
-								if (Main.isGameExists(arN)) {
-									Game game = Main.getGame(arN);
-									if (!showSettings.containsKey(player) || showSettings.get(player).game != game) {
-										if (showSettings.containsKey(player)) {
-											int taskId = showSettings.get(player).getTaskId();
-											if (Bukkit.getScheduler().isQueued(taskId)) {
-												Bukkit.getScheduler().cancelTask(taskId);
-											}
-										}
-										showSettings.put(player, new ShowSettingsParticles(player, game));
-									}
-								} else {
-									player.sendMessage(i18n("no_arena_found"));
-								}
-							} else if (args[2].equalsIgnoreCase("hideparticles")){
-								if (showSettings.containsKey(player)) {
-									int taskId = showSettings.get(player).getTaskId();
-									if (Bukkit.getScheduler().isQueued(taskId)) {
-										Bukkit.getScheduler().cancelTask(taskId);
-									}
-									showSettings.remove(player);
 								}
 							} else if (args[2].equalsIgnoreCase("add")) {
 								if (Main.isGameExists(arN)) {
@@ -576,7 +565,7 @@ public class BwCommand implements CommandExecutor, TabCompleter {
 					} else if (args.length == 3) {
 						List<String> cmds = Arrays.asList("add", "lobby", "spec", "pos1", "pos2", "pausecountdown",
 								"team", "spawner", "time", "store", "save", "remove", "edit", "jointeam", "minplayers",
-								"info", "config", "arenatime", "arenaweather", "lobbybossbarcolor", "gamebossbarcolor");
+								"info", "config", "arenatime", "arenaweather", "lobbybossbarcolor", "gamebossbarcolor", "upgrades");
 						StringUtil.copyPartialMatches(args[2], cmds, completionList);
 					} else if (args[2].equalsIgnoreCase("pausecountdown") && args.length == 4) {
 						StringUtil.copyPartialMatches(args[3], Arrays.asList("30", "60"), completionList);
@@ -636,12 +625,16 @@ public class BwCommand implements CommandExecutor, TabCompleter {
 									"joinRandomTeamOnJoin", "addWoolToInventoryOnJoin", "preventKillingVillagers",
 									"spectatorGm3", "playerDrops", "friendlyfire", "coloredLeatherByTeamInLobby",
 									"keepInventory", "crafting", "gamebossbar", "lobbybossbar", "gamescoreboard",
-									"lobbyscoreboard", "preventspawningmobs", "spawnerholograms");
+									"lobbyscoreboard", "preventspawningmobs", "spawnerholograms", "spawnerDisableMerge");
 							StringUtil.copyPartialMatches(args[3], cmds, completionList);
 						}
 						if (args.length == 5) {
 							List<String> cmds = Arrays.asList("true", "false", "inherit");
 							StringUtil.copyPartialMatches(args[4], cmds, completionList);
+						}
+					} else if (args[2].equalsIgnoreCase("upgrades")) {
+						if (args.length == 4) {
+							StringUtil.copyPartialMatches(args[3], Arrays.asList("true", "false"), completionList);
 						}
 					} else if (args[2].equalsIgnoreCase("spawner")) {
 						if (args.length == 4) {
@@ -734,6 +727,7 @@ public class BwCommand implements CommandExecutor, TabCompleter {
 			player.sendMessage(i18n("help_bw_admin_config", false));
 			player.sendMessage(i18n("help_bw_admin_arena_time", false));
 			player.sendMessage(i18n("help_bw_admin_arena_weather", false));
+			player.sendMessage(i18n("help_bw_admin_upgrades", false));
 			player.sendMessage(i18n("help_bw_admin_remove", false));
 			player.sendMessage(i18n("help_bw_admin_edit", false));
 			player.sendMessage(i18n("help_bw_admin_save", false));

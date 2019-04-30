@@ -120,6 +120,8 @@ admin_command_bar_color_set: "§aNastavena barva §7%color%§a pro bossbar §7%t
 admin_command_wrong_living_entity_type: "§cNeznámý typ žíjící entity!"
 admin_command_store_living_entity_type_set: "§aTyp entity obchodu byl nastaven na §7%type%§a!"
 
+admin_command_upgrades: "§aUpgrades byly nastaveny na hodnotu §7%bool%§a!"
+
 holo_not_enabled: "§cHologramy nejsou povoleny!"
 holo_added: "§aHologram byl úspěšně přidán!"
 click_to_holo_for_remove: "§eNyní klikněte na hologram, který chcete odebrat!"
@@ -242,6 +244,7 @@ help_bw_admin_store_type: "/bw admin <aréna> store type <žijící entita> - §
 help_bw_admin_config: "/bw admin <aréna> config <konstanta> <hodnota> - §eNastaví hodnotu konstantě pro danou arénu"
 help_bw_admin_arena_time: "/bw admin <aréna> arenatime <typ> - §eNastaví, jaký bude čas v aréně"
 help_bw_admin_arena_weather: "/bw admin <aréna> arenaweather <typ> - §eNastaví, jaké bude v aréně počasí"
+help_bw_admin_upgrades: "/bw admin <aréna> upgrades <true|false> - §eZapne či vypne upgrady ve hře"
 help_bw_admin_remove: "/bw admin <aréna> remove - §cOdstraní arénu"
 help_bw_admin_edit: "/bw admin <aréna> edit - §eVypne hru a přepne arénu do módu úprav"
 help_bw_admin_save: "/bw admin <aréna> save - §aUloží hru a aktivuje jí!"

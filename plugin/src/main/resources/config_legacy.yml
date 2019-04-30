@@ -15,6 +15,7 @@ join-randomly-on-lobby-join: false
 add-wool-to-inventory-on-join: true
 prevent-spawning-mobs: true
 spawner-holograms: true
+spawner-disable-merge: true
 
 # Commands whitelist
 allowed-commands:
@@ -94,6 +95,7 @@ sounds:
   on_game_start: ENTITY_PLAYER_LEVELUP
   on_team_kill: ENTITY_PLAYER_LEVELUP
   on_item_buy: ENTITY_ITEM_PICKUP
+  on_upgrade_buy: ENTITY_EXPERIENCE_ORB_PICKUP
   
   
 # Game effects

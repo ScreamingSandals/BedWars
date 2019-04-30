@@ -26,4 +26,6 @@ public interface ItemSpawnerType {
 	public int getDamage();
 
 	public ItemStack getStack();
+
+	public ItemStack getStack(int amount);
 }

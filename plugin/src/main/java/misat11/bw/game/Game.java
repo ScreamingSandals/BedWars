@@ -152,6 +152,11 @@ public class Game implements misat11.bw.api.Game {
 
 	public static final String SPAWNER_HOLOGRAMS = "spawner-holograms";
 	private InGameConfigBooleanConstants spawnerHolograms = InGameConfigBooleanConstants.INHERIT;
+	
+	public static final String SPAWNER_DISABLE_MERGE = "spawner-disable-merge";
+	private InGameConfigBooleanConstants spawnerDisableMerge = InGameConfigBooleanConstants.INHERIT;
+
+	private boolean upgrades = false;
 
 	// STATUS
 	private GameStatus status = GameStatus.DISABLED;
@@ -287,14 +292,15 @@ public class Game implements misat11.bw.api.Game {
 		if (!GameCreator.isInArea(block.getLocation(), pos1, pos2)) {
 			return false;
 		}
-		
-		BedwarsPlayerBuildBlock event = new BedwarsPlayerBuildBlock(this, player.player, getPlayerTeam(player), block, itemInHand, replaced);
+
+		BedwarsPlayerBuildBlock event = new BedwarsPlayerBuildBlock(this, player.player, getPlayerTeam(player), block,
+				itemInHand, replaced);
 		Main.getInstance().getServer().getPluginManager().callEvent(event);
-		
+
 		if (event.isCancelled()) {
 			return false;
 		}
-		
+
 		if (replaced.getType() != Material.AIR) {
 			if (region.isLiquid(replaced.getType())) {
 				region.putOriginalBlock(block.getLocation(), replaced);
@@ -312,7 +318,7 @@ public class Game implements misat11.bw.api.Game {
 				gp.player.sendMessage(message);
 			}
 		}
-		
+
 		return true;
 	}
 
@@ -329,14 +335,15 @@ public class Game implements misat11.bw.api.Game {
 		if (!GameCreator.isInArea(block.getLocation(), pos1, pos2)) {
 			return false;
 		}
-		
-		BedwarsPlayerBreakBlock breakEvent = new BedwarsPlayerBreakBlock(this, player.player, getPlayerTeam(player), block);
+
+		BedwarsPlayerBreakBlock breakEvent = new BedwarsPlayerBreakBlock(this, player.player, getPlayerTeam(player),
+				block);
 		Main.getInstance().getServer().getPluginManager().callEvent(breakEvent);
-		
+
 		if (breakEvent.isCancelled()) {
 			return false;
 		}
-		
+
 		if (region.isBlockAddedDuringGame(block.getLocation())) {
 			region.removeBlockBuildedDuringGame(block.getLocation());
 
@@ -350,7 +357,7 @@ public class Game implements misat11.bw.api.Game {
 					}
 				}
 			}
-			
+
 			if (!breakEvent.isDrops()) {
 				try {
 					event.setDropItems(false);
@@ -664,10 +671,11 @@ public class Game implements misat11.bw.api.Game {
 				configMap.getString("lobbySpawn"));
 		game.minPlayers = configMap.getInt("minPlayers", 2);
 		if (configMap.isSet("spawners")) {
-			List<Map<String, String>> spawners = (List<Map<String, String>>) configMap.getList("spawners");
-			for (Map<String, String> spawner : spawners) {
-				ItemSpawner sa = new ItemSpawner(readLocationFromString(game.world, spawner.get("location")),
-						Main.getSpawnerType(spawner.get("type").toLowerCase()));
+			List<Map<String, Object>> spawners = (List<Map<String, Object>>) configMap.getList("spawners");
+			for (Map<String, Object> spawner : spawners) {
+				ItemSpawner sa = new ItemSpawner(readLocationFromString(game.world, (String) spawner.get("location")),
+						Main.getSpawnerType(((String) spawner.get("type")).toLowerCase()),
+						(String) spawner.get("customName"), (int) spawner.getOrDefault("startLevel", 1));
 				game.spawners.add(sa);
 			}
 		}
@@ -721,14 +729,16 @@ public class Game implements misat11.bw.api.Game {
 		game.lobbyscoreboard = readBooleanConstant(configMap.getString("constant." + LOBBY_SCOREBOARD, "inherit"));
 		game.preventSpawningMobs = readBooleanConstant(
 				configMap.getString("constant." + PREVENT_SPAWNING_MOBS, "inherit"));
-		game.spawnerHolograms = readBooleanConstant(
-				configMap.getString("constant." + SPAWNER_HOLOGRAMS, "inherit"));
+		game.spawnerHolograms = readBooleanConstant(configMap.getString("constant." + SPAWNER_HOLOGRAMS, "inherit"));
+		game.spawnerDisableMerge = readBooleanConstant(configMap.getString("constant." + SPAWNER_DISABLE_MERGE, "inherit"));
 
 		game.arenaTime = ArenaTime.valueOf(configMap.getString("arenaTime", ArenaTime.WORLD.name()).toUpperCase());
 		game.arenaWeather = loadWeather(configMap.getString("arenaWeather", "default").toUpperCase());
 
 		game.lobbyBossBarColor = loadBossBarColor(configMap.getString("lobbyBossBarColor", "default").toUpperCase());
 		game.gameBossBarColor = loadBossBarColor(configMap.getString("gameBossBarColor", "default").toUpperCase());
+
+		game.upgrades = configMap.getBoolean("upgrades", false);
 
 		game.start();
 		Main.getInstance().getLogger().info("Arena " + game.name + " loaded!");
@@ -834,11 +844,13 @@ public class Game implements misat11.bw.api.Game {
 		configMap.set("lobbySpawn", setLocationToString(lobbySpawn));
 		configMap.set("lobbySpawnWorld", lobbySpawn.getWorld().getName());
 		configMap.set("minPlayers", minPlayers);
-		List<Map<String, String>> nS = new ArrayList<Map<String, String>>();
+		List<Map<String, Object>> nS = new ArrayList<Map<String, Object>>();
 		for (ItemSpawner spawner : spawners) {
-			Map<String, String> spawnerMap = new HashMap<String, String>();
+			Map<String, Object> spawnerMap = new HashMap<String, Object>();
 			spawnerMap.put("location", setLocationToString(spawner.loc));
 			spawnerMap.put("type", spawner.type.getConfigKey());
+			spawnerMap.put("customName", spawner.customName);
+			spawnerMap.put("startLevel", spawner.startLevel);
 			nS.add(spawnerMap);
 		}
 		configMap.set("spawners", nS);
@@ -881,12 +893,15 @@ public class Game implements misat11.bw.api.Game {
 		configMap.set("constant." + SCOREBOARD, writeBooleanConstant(ascoreboard));
 		configMap.set("constant." + PREVENT_SPAWNING_MOBS, writeBooleanConstant(preventSpawningMobs));
 		configMap.set("constant." + SPAWNER_HOLOGRAMS, writeBooleanConstant(spawnerHolograms));
+		configMap.set("constant." + SPAWNER_DISABLE_MERGE, writeBooleanConstant(spawnerDisableMerge));
 
 		configMap.set("arenaTime", arenaTime.name());
 		configMap.set("arenaWeather", arenaWeather == null ? "default" : arenaWeather.name());
 
 		configMap.set("lobbyBossBarColor", lobbyBossBarColor == null ? "default" : lobbyBossBarColor.name());
 		configMap.set("gameBossBarColor", gameBossBarColor == null ? "default" : gameBossBarColor.name());
+
+		configMap.set("upgrades", upgrades);
 
 		try {
 			configMap.save(file);
@@ -1130,6 +1145,11 @@ public class Game implements misat11.bw.api.Game {
 			if (countdown == 0) {
 				teamsInGame.clear();
 				activeSpecialItems.clear();
+				if (upgrades) {
+					for (ItemSpawner spawner : spawners) {
+						spawner.currentLevel = spawner.startLevel;
+					}
+				}
 				for (GameStore store : gameStore) {
 					LivingEntity villager = store.kill();
 					if (villager != null) {
@@ -1213,8 +1233,8 @@ public class Game implements misat11.bw.api.Game {
 					int cycle = type.getInterval();
 					if ((countdown % cycle) == 0) {
 
-						BedwarsResourceSpawnEvent resourceSpawnEvent = new BedwarsResourceSpawnEvent(this, spawner.loc,
-								type, type.getStack());
+						BedwarsResourceSpawnEvent resourceSpawnEvent = new BedwarsResourceSpawnEvent(this, spawner,
+								type.getStack(upgrades ? spawner.currentLevel : 1));
 						Main.getInstance().getServer().getPluginManager().callEvent(resourceSpawnEvent);
 
 						if (resourceSpawnEvent.isCancelled()) {
@@ -1312,20 +1332,20 @@ public class Game implements misat11.bw.api.Game {
 					for (ItemSpawner spawner : spawners) {
 						Location loc = spawner.loc.clone().add(0, 0.25, 0);
 						ArmorStand stand = (ArmorStand) loc.getWorld().spawnEntity(loc, EntityType.ARMOR_STAND);
-						
+
 						stand.setGravity(false);
 						stand.setCanPickupItems(false);
 						stand.setCustomName(spawner.type.getItemBoldName());
 						stand.setCustomNameVisible(true);
 						stand.setVisible(false);
 						stand.setSmall(true);
-						
+
 						try {
 							stand.setMarker(true);
 						} catch (Throwable t) {
-							
+
 						}
-						
+
 						armorStandsInGame.add(stand);
 						Main.registerGameEntity(stand, this);
 					}
@@ -1382,7 +1402,7 @@ public class Game implements misat11.bw.api.Game {
 				}
 			}
 			usedChests.clear();
-			
+
 			// Armor Stands destroy
 			for (ArmorStand stand : armorStandsInGame) {
 				stand.setHealth(0);
@@ -2233,9 +2253,38 @@ public class Game implements misat11.bw.api.Game {
 		return spawnerHolograms.isOriginal() ? spawnerHolograms.getValue()
 				: Main.getConfigurator().config.getBoolean(SPAWNER_HOLOGRAMS);
 	}
-	
+
 	public void setSpawnerHolograms(InGameConfigBooleanConstants spawnerHolograms) {
 		this.spawnerHolograms = spawnerHolograms;
+	}
+
+	@Override
+	public boolean isUpgradesEnabled() {
+		return upgrades;
+	}
+
+	public void setUpgradesEnabled(boolean upgrades) {
+		this.upgrades = upgrades;
+	}
+
+	@Override
+	public List<misat11.bw.api.ItemSpawner> getItemSpawners() {
+		return new ArrayList<>(spawners);
+	}
+
+	@Override
+	public InGameConfigBooleanConstants getSpawnerDisableMerge() {
+		return spawnerDisableMerge;
+	}
+
+	@Override
+	public boolean getOriginalOrInheritedSpawnerDisableMerge() {
+		return spawnerDisableMerge.isOriginal() ? spawnerDisableMerge.getValue()
+				: Main.getConfigurator().config.getBoolean(SPAWNER_DISABLE_MERGE);
+	}
+
+	public void setSpawnerDisableMerge(InGameConfigBooleanConstants spawnerDisableMerge) {
+		this.spawnerDisableMerge = spawnerDisableMerge;
 	}
 
 }

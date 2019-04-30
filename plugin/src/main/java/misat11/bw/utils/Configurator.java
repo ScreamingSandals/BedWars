@@ -171,6 +171,7 @@ public class Configurator {
 		checkOrSetConfig(modify, "add-wool-to-inventory-on-join", true);
 		checkOrSetConfig(modify, "prevent-spawning-mobs", true);
 		checkOrSetConfig(modify, "spawner-holograms", true);
+		checkOrSetConfig(modify, "spawner-disable-merge", true);
 		checkOrSetConfig(modify, "allowed-commands", new ArrayList<>());
 		checkOrSetConfig(modify, "farmBlocks.enable", true);
 		checkOrSetConfig(modify, "farmBlocks.blocks", new ArrayList<>());
@@ -197,6 +198,7 @@ public class Configurator {
 		checkOrSetConfig(modify, "sounds.on_game_start", "ENTITY_PLAYER_LEVELUP");
 		checkOrSetConfig(modify, "sounds.on_team_kill", "ENTITY_PLAYER_LEVELUP");
 		checkOrSetConfig(modify, "sounds.on_item_buy", "ENTITY_ITEM_PICKUP");
+		checkOrSetConfig(modify, "sounds.on_upgrade_buy", "ENTITY_EXPERIENCE_ORB_PICKUP");
 		checkOrSetConfig(modify, "game-effects.end", new HashMap<String, Object>());
 		checkOrSetConfig(modify, "game-effects.start", new HashMap<String, Object>());
 		checkOrSetConfig(modify, "game-effects.kill", new HashMap<String, Object>());

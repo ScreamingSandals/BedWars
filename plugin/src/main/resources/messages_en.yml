@@ -124,6 +124,8 @@ admin_command_bar_color_set: "§aColor set to §7%color%§a for bossbar §7%type
 admin_command_wrong_living_entity_type: "§cWrong living entity type!"
 admin_command_store_living_entity_type_set: "§aStore's living entity type has been set to §7%type%§a!"
 
+admin_command_upgrades: "§aUpgrades has been set to §7%bool%§a!"
+
 holo_not_enabled: "§cHolographic is disabled!"
 holo_added: "§aHolographic added to your position!"
 click_to_holo_for_remove: "§eNow click to holographic you want to remove!"
@@ -246,6 +248,7 @@ help_bw_admin_store_type: "/bw admin <arena> store type <living entity> - §eSet
 help_bw_admin_config: "/bw admin <arena> config <constant> <value> - §eSets value of constant variable for game"
 help_bw_admin_arena_time: "/bw admin <arena> arenatime <type> - §eSets time in arena (DAY, NIGHT, etc.)"
 help_bw_admin_arena_weather: "/bw admin <arena> arenaweather <type> - §eSets weather in arena (default, CLEAN, DOWNFALL)"
+help_bw_admin_upgrades: "/bw admin <arena> upgrades <true|false> - §eEnables or disables game upgrades"
 help_bw_admin_remove: "/bw admin <arena> remove - §cRemove the arena"
 help_bw_admin_edit: "/bw admin <arena> edit - §eTurns the game off and switches the arena to edit mode"
 help_bw_admin_save: "/bw admin <arena> save - §aSaves the game and activates it!"

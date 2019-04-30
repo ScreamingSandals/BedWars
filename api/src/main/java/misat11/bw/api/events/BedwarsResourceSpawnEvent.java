@@ -7,6 +7,7 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
 
 import misat11.bw.api.Game;
+import misat11.bw.api.ItemSpawner;
 import misat11.bw.api.ItemSpawnerType;
 
 public class BedwarsResourceSpawnEvent extends Event implements Cancellable {
@@ -14,15 +15,13 @@ public class BedwarsResourceSpawnEvent extends Event implements Cancellable {
 	private static final HandlerList handlers = new HandlerList();
 	private boolean cancelled = false;
 	private Game game = null;
-	private Location location = null;
 	private ItemStack resource = null;
-	private ItemSpawnerType type = null;
+	private ItemSpawner spawner = null;
 
-	public BedwarsResourceSpawnEvent(Game game, Location location, ItemSpawnerType type, ItemStack resource) {
+	public BedwarsResourceSpawnEvent(Game game, ItemSpawner spawner, ItemStack resource) {
 		this.game = game;
-		this.location = location;
+		this.spawner = spawner;
 		this.resource = resource;
-		this.type = type;
 	}
 
 	public static HandlerList getHandlerList() {
@@ -37,9 +36,13 @@ public class BedwarsResourceSpawnEvent extends Event implements Cancellable {
 	public HandlerList getHandlers() {
 		return BedwarsResourceSpawnEvent.handlers;
 	}
+	
+	public ItemSpawner getSpawner() {
+		return this.spawner;
+	}
 
 	public Location getLocation() {
-		return this.location;
+		return this.spawner.getLocation();
 	}
 
 	public ItemStack getResource() {
@@ -61,7 +64,7 @@ public class BedwarsResourceSpawnEvent extends Event implements Cancellable {
 	}
 	
 	public ItemSpawnerType getType() {
-		return type;
+		return this.spawner.getItemSpawnerType();
 	}
 
 }
