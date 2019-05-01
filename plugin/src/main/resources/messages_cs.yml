@@ -151,6 +151,8 @@ team_chest_is_not_your: "§eTato týmová truhla není tvého týmu!"
 team_chest_placed: "§aNová truhla tvého týmu byla položena!"
 team_chest_broken: "§cNěkdo zničil vaši týmovou truhlu!"
 
+trap_built: "§aPostavil jste past! Nyní počkejte, až se do ní někdo chytne!"
+
 arena_info_header: "§aPodrobnosti o aréně:"
 arena_info_name: "§7Jméno: §r%name%"
 arena_info_status: "§7Status: §r%status%"

@@ -516,6 +516,7 @@ public class GameCreator {
 	}
 
 	private String setTeamColor(String name, String color) {
+		color = color.toUpperCase();
 		for (Team t : game.getTeams()) {
 			if (t.name.equals(name)) {
 				TeamColor c;
@@ -556,6 +557,7 @@ public class GameCreator {
 				return i18n("admin_command_team_is_already_exists");
 			}
 		}
+		color = color.toUpperCase();
 		TeamColor c;
 		try {
 			c = TeamColor.valueOf(color);

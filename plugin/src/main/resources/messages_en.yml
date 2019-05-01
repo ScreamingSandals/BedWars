@@ -155,6 +155,8 @@ team_chest_is_not_your: "§eThis team chest isn't your!"
 team_chest_placed: "§aNew team chest was placed!"
 team_chest_broken: "§cYour team chest was broken!"
 
+trap_built: "§aYou've built a trap! Now wait for someone to get caught in it!"
+
 arena_info_header: "§aDetails of the arena:"
 arena_info_name: "§7Name: §r%name%"
 arena_info_status: "§7Status: §r%status%"

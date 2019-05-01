@@ -1238,12 +1238,16 @@ public class Game implements misat11.bw.api.Game {
 						Main.getInstance().getServer().getPluginManager().callEvent(resourceSpawnEvent);
 
 						if (resourceSpawnEvent.isCancelled()) {
-							return;
+							continue;
 						}
+						
+						ItemStack resource = resourceSpawnEvent.getResource();
 
-						Location loc = spawner.loc.clone().add(0, 0.05, 0);
-						Item item = loc.getWorld().dropItem(loc, resourceSpawnEvent.getResource());
-						item.setPickupDelay(0);
+						if (resource.getAmount() > 0) {
+							Location loc = spawner.loc.clone().add(0, 0.05, 0);
+							Item item = loc.getWorld().dropItem(loc, resource);
+							item.setPickupDelay(0);
+						}
 					}
 				}
 			}

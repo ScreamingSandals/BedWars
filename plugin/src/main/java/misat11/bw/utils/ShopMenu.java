@@ -237,18 +237,30 @@ public class ShopMenu implements Listener {
 					player.getInventory().removeItem(materialItem);
 					player.getInventory().addItem(newItem);
 					player.sendMessage(i18n("buy_succes").replace("%item%",
-							newItem.getItemMeta().hasDisplayName() ? newItem.getItemMeta().getDisplayName()
-									: newItem.getType().name().toLowerCase()));
+							newItem.getAmount() + "x " + getNameOrCustomNameOfItem(newItem)));
 					Sounds.playSound(player, player.getLocation(),
 							Main.getConfigurator().config.getString("sounds.on_item_buy"), Sounds.ENTITY_ITEM_PICKUP, 1,
 							1);
 				} else {
 					player.sendMessage(i18n("buy_failed").replace("%item%",
-							newItem.getItemMeta().hasDisplayName() ? newItem.getItemMeta().getDisplayName()
-									: newItem.getType().name().toLowerCase()));
+							newItem.getAmount() + "x " + getNameOrCustomNameOfItem(newItem)));
 				}
 			}
 		}
+	}
+	
+	public static String getNameOrCustomNameOfItem(ItemStack stack) {
+		if (stack.hasItemMeta()) {
+			ItemMeta meta = stack.getItemMeta();
+			if (meta.hasDisplayName()) {
+				return meta.getDisplayName();
+			}
+			if (meta.hasLocalizedName()) {
+				return meta.getLocalizedName();
+			}
+		}
+		String normalName = stack.getType().name().replace("_", " ").toLowerCase();
+		return normalName.substring(0, 1).toUpperCase() + normalName.substring(1);
 	}
 
 	@EventHandler
@@ -266,7 +278,7 @@ public class ShopMenu implements Listener {
 		}
 	}
 
-	private static final HashMap<String, ShopMenu> shopMenus = new HashMap<String, ShopMenu>();
+	private final HashMap<String, ShopMenu> shopMenus = new HashMap<String, ShopMenu>();
 
 	public void show(Player p, GameStore store) {
 		boolean parent = true;

@@ -428,6 +428,48 @@ data:
           - "When using this powder you'll get"
           - "teleported to you spawn point within 6 seconds"
           - "Warning: Any movement will stop the process"
+    - price: 3
+      price-type: iron
+      properties:
+      - name: "Trap"
+        data:
+        - sound: ENTITY_SHEEP_AMBIENT
+        - effect:
+            ==: org.bukkit.potion.PotionEffect
+            effect: 15
+            amplifier: 2
+            duration: 100
+            ambient: true
+            has-particles: true
+            has-icon: true
+        - effect:
+            ==: org.bukkit.potion.PotionEffect
+            effect: 18
+            amplifier: 2
+            duration: 100
+            ambient: true
+            has-particles: true
+            has-icon: true
+        - effect:
+            ==: org.bukkit.potion.PotionEffect
+            effect: 2
+            amplifier: 2
+            duration: 100
+            ambient: true
+            has-particles: true
+            has-icon: true
+      stack:
+        ==: org.bukkit.inventory.ItemStack
+        type: STRING
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: "Trap"
+          lore:
+          - "Get informed if an enemy steps on your trap"
+          - "and your enemy won't be able to move properly."
+          
+          
         
               
   
