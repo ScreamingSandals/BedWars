@@ -49,8 +49,8 @@
 		</dependency>
 		<dependency>
 			<groupId>misat11.lib.sgui</groupId>
-			<artifactId>SimpleGuiFormat-Lib</artifactId>
-			<version>0.0.1</version>
+			<artifactId>SimpleGuiFormat</artifactId>
+			<version>0.0.2</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
