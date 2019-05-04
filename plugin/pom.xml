@@ -160,7 +160,7 @@
 								</relocation>
 								<relocation>
 									<pattern>misat11.lib</pattern>
-									<shadedPattern>misat11.bw.lib</shadedPattern>
+									<shadedPattern>${project.groupId}.lib</shadedPattern>
 								</relocation>
 							</relocations>
 						</configuration>
