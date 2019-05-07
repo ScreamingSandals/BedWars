@@ -26,6 +26,7 @@ import misat11.bw.api.events.BedwarsApplyPropertyToBoughtItem;
 import misat11.bw.game.CurrentTeam;
 import misat11.bw.game.Game;
 import misat11.bw.game.ItemSpawner;
+import misat11.lib.sgui.DynamicGuiCreator;
 import misat11.lib.sgui.ItemData;
 import misat11.lib.sgui.ItemInfo;
 import misat11.lib.sgui.Property;
@@ -39,8 +40,7 @@ import misat11.lib.sgui.events.PreActionEvent;
 public class ShopMenu implements Listener {
 	private ItemStack backItem, pageBackItem, pageForwardItem, cosmeticItem;
 	private SimpleGuiFormat format;
-	private StaticGuiCreator creator;
-	private StaticInventoryListener listener;
+	private DynamicGuiCreator creator;
 
 	public ShopMenu() {
 		List<Map<String, Object>> data = (List<Map<String, Object>>) Main.getConfigurator().shopconfig.getList("data");
@@ -65,13 +65,11 @@ public class ShopMenu implements Listener {
 		format = new SimpleGuiFormat(data);
 		format.generateData();
 
-		creator = new StaticGuiCreator("[BW] Shop", format, backItem, pageBackItem, pageForwardItem, cosmeticItem);
+		creator = new DynamicGuiCreator("[BW] Shop", format, backItem, pageBackItem, pageForwardItem, cosmeticItem);
 
-		listener = new StaticInventoryListener(creator);
-		Bukkit.getServer().getPluginManager().registerEvents(listener, Main.getInstance());
 		Bukkit.getServer().getPluginManager().registerEvents(this, Main.getInstance());
 
-		creator.generate();
+		creator.prepare();
 	}
 
 	public ShopMenu(String fileName, boolean useParent) {
@@ -116,13 +114,11 @@ public class ShopMenu implements Listener {
 		}
 		format.generateData();
 
-		creator = new StaticGuiCreator("[BW] Shop", format, backItem, pageBackItem, pageForwardItem, cosmeticItem);
+		creator = new DynamicGuiCreator("[BW] Shop", format, backItem, pageBackItem, pageForwardItem, cosmeticItem);
 
-		listener = new StaticInventoryListener(creator);
-		Bukkit.getServer().getPluginManager().registerEvents(listener, Main.getInstance());
 		Bukkit.getServer().getPluginManager().registerEvents(this, Main.getInstance());
 
-		creator.generate();
+		creator.prepare();
 	}
 
 	@EventHandler
@@ -299,7 +295,7 @@ public class ShopMenu implements Listener {
 			ShopMenu shop = shopMenus.get(name);
 			shop.show(p, null);
 		} else {
-			p.openInventory(creator.getInventories(null).get(0));
+			creator.openForPlayer(p);
 		}
 	}
 }
