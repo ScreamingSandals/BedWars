@@ -26,21 +26,17 @@ import misat11.bw.api.events.BedwarsApplyPropertyToBoughtItem;
 import misat11.bw.game.CurrentTeam;
 import misat11.bw.game.Game;
 import misat11.bw.game.ItemSpawner;
-import misat11.lib.sgui.DynamicGuiCreator;
-import misat11.lib.sgui.ItemData;
-import misat11.lib.sgui.ItemInfo;
+import misat11.lib.sgui.PlayerItemInfo;
 import misat11.lib.sgui.Property;
 import misat11.lib.sgui.SimpleGuiFormat;
-import misat11.lib.sgui.StaticGuiCreator;
-import misat11.lib.sgui.StaticInventoryListener;
 import misat11.lib.sgui.events.GenerateItemEvent;
 import misat11.lib.sgui.events.PostActionEvent;
 import misat11.lib.sgui.events.PreActionEvent;
+import misat11.lib.sgui.events.ShopTransactionEvent;
 
 public class ShopMenu implements Listener {
 	private ItemStack backItem, pageBackItem, pageForwardItem, cosmeticItem;
 	private SimpleGuiFormat format;
-	private DynamicGuiCreator creator;
 
 	public ShopMenu() {
 		List<Map<String, Object>> data = (List<Map<String, Object>>) Main.getConfigurator().shopconfig.getList("data");
@@ -62,14 +58,14 @@ public class ShopMenu implements Listener {
 
 		cosmeticItem = Main.getConfigurator().readDefinedItem("shopcosmetic", "AIR");
 
-		format = new SimpleGuiFormat(data);
-		format.generateData();
-
-		creator = new DynamicGuiCreator("[BW] Shop", format, backItem, pageBackItem, pageForwardItem, cosmeticItem);
+		format = new SimpleGuiFormat("[BW] Shop", backItem, pageBackItem, pageForwardItem, cosmeticItem);
+		format.load(data);
+		format.enableAnimations(Main.getInstance());
+		format.enableGenericShop(true);
 
 		Bukkit.getServer().getPluginManager().registerEvents(this, Main.getInstance());
 
-		creator.prepare();
+		format.generateData();
 	}
 
 	public ShopMenu(String fileName, boolean useParent) {
@@ -107,18 +103,17 @@ public class ShopMenu implements Listener {
 
 		cosmeticItem = Main.getConfigurator().readDefinedItem("shopcosmetic", "AIR");
 
+		format = new SimpleGuiFormat("[BW] Shop", backItem, pageBackItem, pageForwardItem, cosmeticItem);
 		if (useParent) {
-			format = new SimpleGuiFormat(parent, data);
-		} else {
-			format = new SimpleGuiFormat(data);
+			format.load(parent);
 		}
-		format.generateData();
-
-		creator = new DynamicGuiCreator("[BW] Shop", format, backItem, pageBackItem, pageForwardItem, cosmeticItem);
+		format.load(data);
+		format.enableAnimations(Main.getInstance());
+		format.enableGenericShop(true);
 
 		Bukkit.getServer().getPluginManager().registerEvents(this, Main.getInstance());
 
-		creator.prepare();
+		format.generateData();
 	}
 
 	@EventHandler
@@ -127,9 +122,8 @@ public class ShopMenu implements Listener {
 			return;
 		}
 
-		ItemInfo item = event.getInfo();
-		ItemData data = item.getData();
-		Map<String, Object> originalItemData = data.getData();
+		PlayerItemInfo item = event.getInfo();
+		Map<String, Object> originalItemData = item.getData();
 		if (originalItemData.containsKey("price") && originalItemData.containsKey("price-type")) {
 			ItemStack stack = event.getStack();
 			ItemMeta stackMeta = stack.getItemMeta();
@@ -168,9 +162,9 @@ public class ShopMenu implements Listener {
 			event.setCancelled(true);
 		}
 	}
-
+	
 	@EventHandler
-	public void onPostAction(PostActionEvent event) {
+	public void onShopTransaction(ShopTransactionEvent event) {
 		if (event.getFormat() != format || event.isCancelled()) {
 			return;
 		}
@@ -178,73 +172,69 @@ public class ShopMenu implements Listener {
 		Player player = event.getPlayer();
 		Game game = Main.getPlayerGameProfile(event.getPlayer()).getGame();
 
-		ItemInfo item = event.getItem();
-		ItemData data = item.getData();
-		Map<String, Object> originalItemData = data.getData();
-		if (originalItemData.containsKey("price") && originalItemData.containsKey("price-type")) {
-			if (originalItemData.containsKey("upgrade") && game.isUpgradesEnabled()) {
-				Map<String, Object> upgrade = (Map<String, Object>) originalItemData.get("upgrade");
-				List<Map<String, Object>> entities = (List<Map<String, Object>>) upgrade.get("entities");
-				int price = (int) originalItemData.get("price");
-				String priceType = ((String) originalItemData.get("price-type")).toLowerCase();
-				ItemSpawnerType type = Main.getSpawnerType(priceType);
-				ItemStack materialItem = type.getStack(price);
-				if (player.getInventory().containsAtLeast(materialItem, price)) {
-					player.getInventory().removeItem(materialItem);
-					for (Map<String, Object> entity : entities) {
-						String typ = (String) entity.get("type");
-						switch (typ.toLowerCase()) {
-						case "spawner":
-							String customName = (String) entity.get("customName");
-							int addLevels = (int) entity.get("levels");
-							for (ItemSpawner spawner : game.getSpawners()) {
-								if (customName.equals(spawner.customName)) {
-									spawner.currentLevel += addLevels;
-								}
+		Map<String, Object> originalItemData = event.getItem().getData();
+		if (originalItemData.containsKey("upgrade") && game.isUpgradesEnabled()) {
+			Map<String, Object> upgrade = (Map<String, Object>) originalItemData.get("upgrade");
+			List<Map<String, Object>> entities = (List<Map<String, Object>>) upgrade.get("entities");
+			int price = event.getPrice();
+			String priceType = event.getType().toLowerCase();
+			ItemSpawnerType type = Main.getSpawnerType(priceType);
+			ItemStack materialItem = type.getStack(price);
+			if (event.hasPlayerInInventory(materialItem)) {
+				event.sellStack(materialItem);
+				for (Map<String, Object> entity : entities) {
+					String typ = (String) entity.get("type");
+					switch (typ.toLowerCase()) {
+					case "spawner":
+						String customName = (String) entity.get("customName");
+						int addLevels = (int) entity.get("levels");
+						for (ItemSpawner spawner : game.getSpawners()) {
+							if (customName.equals(spawner.customName)) {
+								spawner.currentLevel += addLevels;
 							}
-							break;
 						}
+						break;
 					}
-					player.sendMessage(i18n("buy_succes").replace("%item%", "UPGRADE"));
-					Sounds.playSound(player, player.getLocation(),
-							Main.getConfigurator().config.getString("sounds.on_upgrade_buy"),
-							Sounds.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
-				} else {
-					player.sendMessage(i18n("buy_failed").replace("%item%", "UPGRADE"));
 				}
+				player.sendMessage(i18n("buy_succes").replace("%item%", "UPGRADE"));
+				Sounds.playSound(player, player.getLocation(),
+						Main.getConfigurator().config.getString("sounds.on_upgrade_buy"),
+						Sounds.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
 			} else {
-				int price = (int) originalItemData.get("price");
-				String priceType = ((String) originalItemData.get("price-type")).toLowerCase();
-				ItemSpawnerType type = Main.getSpawnerType(priceType);
-				ItemStack materialItem = type.getStack(price);
-				ItemStack newItem = ((ItemStack) originalItemData.get("stack")).clone();
-				if (player.getInventory().containsAtLeast(materialItem, price)) {
-					if (data.hasProperties()) {
-						for (Property property : data.getProperties()) {
-							if (property.hasName()) {
-								BedwarsApplyPropertyToBoughtItem applyEvent = new BedwarsApplyPropertyToBoughtItem(game,
-										player, newItem, property.getPropertyData());
-								Main.getInstance().getServer().getPluginManager().callEvent(applyEvent);
+				player.sendMessage(i18n("buy_failed").replace("%item%", "UPGRADE"));
+			}
+		} else {
+			int price = event.getPrice();
+			String priceType = event.getType().toLowerCase();
+			ItemSpawnerType type = Main.getSpawnerType(priceType);
+			ItemStack materialItem = type.getStack(price);
+			ItemStack newItem = event.getStack();
+			if (event.hasPlayerInInventory(materialItem)) {
+				if (event.hasProperties()) {
+					for (Property property : event.getProperties()) {
+						if (property.hasName()) {
+							BedwarsApplyPropertyToBoughtItem applyEvent = new BedwarsApplyPropertyToBoughtItem(game,
+									player, newItem, property.getPropertyData());
+							Main.getInstance().getServer().getPluginManager().callEvent(applyEvent);
 
-								newItem = applyEvent.getStack();
-							}
+							newItem = applyEvent.getStack();
 						}
 					}
-					player.getInventory().removeItem(materialItem);
-					player.getInventory().addItem(newItem);
-					player.sendMessage(i18n("buy_succes").replace("%item%",
-							newItem.getAmount() + "x " + getNameOrCustomNameOfItem(newItem)));
-					Sounds.playSound(player, player.getLocation(),
-							Main.getConfigurator().config.getString("sounds.on_item_buy"), Sounds.ENTITY_ITEM_PICKUP, 1,
-							1);
-				} else {
-					player.sendMessage(i18n("buy_failed").replace("%item%",
-							newItem.getAmount() + "x " + getNameOrCustomNameOfItem(newItem)));
 				}
+				event.sellStack(materialItem);
+				event.buyStack(newItem);
+				player.sendMessage(i18n("buy_succes").replace("%item%",
+						newItem.getAmount() + "x " + getNameOrCustomNameOfItem(newItem)));
+				Sounds.playSound(player, player.getLocation(),
+						Main.getConfigurator().config.getString("sounds.on_item_buy"), Sounds.ENTITY_ITEM_PICKUP, 1,
+						1);
+			} else {
+				player.sendMessage(i18n("buy_failed").replace("%item%",
+						newItem.getAmount() + "x " + getNameOrCustomNameOfItem(newItem)));
 			}
 		}
 	}
-	
+
 	public static String getNameOrCustomNameOfItem(ItemStack stack) {
 		if (stack.hasItemMeta()) {
 			ItemMeta meta = stack.getItemMeta();
@@ -295,7 +285,7 @@ public class ShopMenu implements Listener {
 			ShopMenu shop = shopMenus.get(name);
 			shop.show(p, null);
 		} else {
-			creator.openForPlayer(p);
+			format.openForPlayer(p);
 		}
 	}
 }

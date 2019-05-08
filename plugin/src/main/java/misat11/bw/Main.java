@@ -43,7 +43,7 @@ import misat11.bw.utils.GameSign;
 import misat11.bw.utils.ShopMenu;
 import misat11.bw.utils.SignManager;
 import misat11.lib.lang.I18n;
-import misat11.lib.sgui.DynamicInventoryListener;
+import misat11.lib.sgui.InventoryListener;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 
@@ -358,7 +358,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 		getServer().getPluginManager().registerEvents(new WarpPowderListener(), this);
 		getServer().getPluginManager().registerEvents(new LuckyBlockAddonListener(), this);
 		getServer().getPluginManager().registerEvents(new TrapListener(), this);
-		getServer().getPluginManager().registerEvents(new DynamicInventoryListener(), this);
+		getServer().getPluginManager().registerEvents(new InventoryListener(), this);
 
 		getServer().getServicesManager().register(BedwarsAPI.class, this, this, ServicePriority.Normal);
 
