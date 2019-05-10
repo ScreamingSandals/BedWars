@@ -22,8 +22,8 @@ import misat11.bw.Main;
 
 public class Configurator {
 
-	public File configf, shopconfigf, signconfigf;
-	public FileConfiguration config, shopconfig, signconfig;
+	public File configf, shopconfigf, signconfigf, recordconfigf;
+	public FileConfiguration config, shopconfig, signconfig, recordconfig;
 	
 	public final File datafolder;
 	public final Main main;
@@ -120,6 +120,7 @@ public class Configurator {
 		configf = new File(datafolder, "config.yml");
 		shopconfigf = new File(datafolder, "shop.yml");
 		signconfigf = new File(datafolder, "sign.yml");
+		recordconfigf = new File(datafolder, "record.yml");
 
 		if (!configf.exists()) {
 			if (Main.isLegacy()) {
@@ -140,13 +141,18 @@ public class Configurator {
 		if (!signconfigf.exists()) {
 			main.saveResource("sign.yml", false);
 		}
+		if (!recordconfigf.exists()) {
+			main.saveResource("record.yml", false);
+		}
 		config = new YamlConfiguration();
 		shopconfig = new YamlConfiguration();
 		signconfig = new YamlConfiguration();
+		recordconfig = new YamlConfiguration();
 		try {
 			config.load(configf);
 			shopconfig.load(shopconfigf);
 			signconfig.load(signconfigf);
+			recordconfig.load(recordconfigf);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (InvalidConfigurationException e) {

@@ -157,6 +157,7 @@ public class Game implements misat11.bw.api.Game {
 	private InGameConfigBooleanConstants spawnerDisableMerge = InGameConfigBooleanConstants.INHERIT;
 
 	private boolean upgrades = false;
+	private static final int POST_GAME_WAITING = 5;
 
 	// STATUS
 	private GameStatus status = GameStatus.DISABLED;
@@ -172,6 +173,7 @@ public class Game implements misat11.bw.api.Game {
 	private List<Location> usedChests = new ArrayList<Location>();
 	private List<SpecialItem> activeSpecialItems = new ArrayList<SpecialItem>();
 	private List<ArmorStand> armorStandsInGame = new ArrayList<ArmorStand>();
+	private boolean postGameWaiting = false;
 
 	private Game() {
 
@@ -1141,6 +1143,14 @@ public class Game implements misat11.bw.api.Game {
 
 	public void run() {
 		if (this.status == GameStatus.RUNNING) {
+			if (postGameWaiting) {
+				if (countdown == 0) {
+					postGameWaiting = false;
+					return;
+				}
+				countdown--;
+				return;
+			}
 			updateScoreboardTimer();
 			if (countdown == 0) {
 				teamsInGame.clear();
@@ -1181,7 +1191,7 @@ public class Game implements misat11.bw.api.Game {
 							String subtitle = i18n("team_win", false)
 									.replace("%team%", t.teamInfo.color.chatColor + t.teamInfo.name)
 									.replace("%time%", time);
-							boolean madeRecord = false; // TODO
+							boolean madeRecord = processRecord(t, this.gameTime - this.countdown);
 							for (GamePlayer player : players) {
 								player.player.sendMessage(message);
 								if (getPlayerTeam(player) == t) {
@@ -1219,8 +1229,11 @@ public class Game implements misat11.bw.api.Game {
 							break;
 						}
 					}
+					postGameWaiting = true;
+					countdown = POST_GAME_WAITING;
+				} else {
+					countdown = 0;
 				}
-				countdown = 0;
 			} else {
 				try {
 					bossbar.setProgress((double) countdown / (double) gameTime);
@@ -1420,6 +1433,32 @@ public class Game implements misat11.bw.api.Game {
 			updateSigns();
 			cancelTask();
 		}
+	}
+
+	private boolean processRecord(CurrentTeam t, int wonTime) {
+		if (!Main.getConfigurator().recordconfig.contains("record." + this.getName())) {
+			Main.getConfigurator().recordconfig.set("record."+this.getName(), new HashMap<String, Object>());
+		}
+		Map<String, Object> record = (Map<String, Object>) Main.getConfigurator().recordconfig.get("record."+this.getName());
+		int time = (int) record.getOrDefault("time", Integer.MAX_VALUE);
+		if (time > wonTime) {
+			Map<String, Object> newRecord = new HashMap<String, Object>();
+			newRecord.put("time", wonTime);
+			newRecord.put("team", t.teamInfo.color.chatColor + t.teamInfo.name);
+			List<String> winners = new ArrayList<String>();
+			for (GamePlayer p : t.players) {
+				winners.add(p.player.getName());
+			}
+			newRecord.put("winners", winners);
+			Main.getConfigurator().recordconfig.set("record." + this.getName(), newRecord);
+			try {
+				Main.getConfigurator().recordconfig.save(Main.getConfigurator().recordconfigf);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return true;
+		}
+		return false;
 	}
 
 	public GameStatus getStatus() {
