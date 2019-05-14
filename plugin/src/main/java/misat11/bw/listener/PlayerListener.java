@@ -19,6 +19,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
@@ -330,7 +331,15 @@ public class PlayerListener implements Listener {
 		if (Main.isPlayerInGame(player)) {
 			GamePlayer gPlayer = Main.getPlayerGameProfile(player);
 			Game game = gPlayer.getGame();
-			if (game.getStatus() == GameStatus.WAITING || gPlayer.isSpectator) {
+			if (gPlayer.isSpectator) {
+				if (event.getCause() == DamageCause.VOID) {
+					player.teleport(game.getSpecSpawn());
+				}
+				event.setCancelled(true);
+			} else if (game.getStatus() == GameStatus.WAITING) {
+				if (event.getCause() == DamageCause.VOID) {
+					player.teleport(game.getLobbySpawn());
+				}
 				event.setCancelled(true);
 			} else if (event instanceof EntityDamageByEntityEvent) {
 				EntityDamageByEntityEvent edbee = (EntityDamageByEntityEvent) event;

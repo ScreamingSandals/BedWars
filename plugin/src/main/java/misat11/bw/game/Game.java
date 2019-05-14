@@ -152,7 +152,7 @@ public class Game implements misat11.bw.api.Game {
 
 	public static final String SPAWNER_HOLOGRAMS = "spawner-holograms";
 	private InGameConfigBooleanConstants spawnerHolograms = InGameConfigBooleanConstants.INHERIT;
-	
+
 	public static final String SPAWNER_DISABLE_MERGE = "spawner-disable-merge";
 	private InGameConfigBooleanConstants spawnerDisableMerge = InGameConfigBooleanConstants.INHERIT;
 
@@ -732,7 +732,8 @@ public class Game implements misat11.bw.api.Game {
 		game.preventSpawningMobs = readBooleanConstant(
 				configMap.getString("constant." + PREVENT_SPAWNING_MOBS, "inherit"));
 		game.spawnerHolograms = readBooleanConstant(configMap.getString("constant." + SPAWNER_HOLOGRAMS, "inherit"));
-		game.spawnerDisableMerge = readBooleanConstant(configMap.getString("constant." + SPAWNER_DISABLE_MERGE, "inherit"));
+		game.spawnerDisableMerge = readBooleanConstant(
+				configMap.getString("constant." + SPAWNER_DISABLE_MERGE, "inherit"));
 
 		game.arenaTime = ArenaTime.valueOf(configMap.getString("arenaTime", ArenaTime.WORLD.name()).toUpperCase());
 		game.arenaWeather = loadWeather(configMap.getString("arenaWeather", "default").toUpperCase());
@@ -1253,7 +1254,7 @@ public class Game implements misat11.bw.api.Game {
 						if (resourceSpawnEvent.isCancelled()) {
 							continue;
 						}
-						
+
 						ItemStack resource = resourceSpawnEvent.getResource();
 
 						if (resource.getAmount() > 0) {
@@ -1436,21 +1437,15 @@ public class Game implements misat11.bw.api.Game {
 	}
 
 	private boolean processRecord(CurrentTeam t, int wonTime) {
-		if (!Main.getConfigurator().recordconfig.contains("record." + this.getName())) {
-			Main.getConfigurator().recordconfig.set("record."+this.getName(), new HashMap<String, Object>());
-		}
-		Map<String, Object> record = (Map<String, Object>) Main.getConfigurator().recordconfig.get("record."+this.getName());
-		int time = (int) record.getOrDefault("time", Integer.MAX_VALUE);
+		int time = Main.getConfigurator().recordconfig.getInt("record." + this.getName() + ".time", Integer.MAX_VALUE);
 		if (time > wonTime) {
-			Map<String, Object> newRecord = new HashMap<String, Object>();
-			newRecord.put("time", wonTime);
-			newRecord.put("team", t.teamInfo.color.chatColor + t.teamInfo.name);
+			Main.getConfigurator().recordconfig.set("record." + this.getName() + ".time", wonTime);
+			Main.getConfigurator().recordconfig.set("record." + this.getName() + ".team", t.teamInfo.color.chatColor + t.teamInfo.name);
 			List<String> winners = new ArrayList<String>();
 			for (GamePlayer p : t.players) {
 				winners.add(p.player.getName());
 			}
-			newRecord.put("winners", winners);
-			Main.getConfigurator().recordconfig.set("record." + this.getName(), newRecord);
+			Main.getConfigurator().recordconfig.set("record." + this.getName() + ".winners", winners);
 			try {
 				Main.getConfigurator().recordconfig.save(Main.getConfigurator().recordconfigf);
 			} catch (IOException e) {
