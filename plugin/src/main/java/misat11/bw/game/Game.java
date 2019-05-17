@@ -157,7 +157,7 @@ public class Game implements misat11.bw.api.Game {
 	private InGameConfigBooleanConstants spawnerDisableMerge = InGameConfigBooleanConstants.INHERIT;
 
 	private boolean upgrades = false;
-	private static final int POST_GAME_WAITING = 5;
+	private static final int POST_GAME_WAITING = 4;
 
 	// STATUS
 	private GameStatus status = GameStatus.DISABLED;
@@ -1145,6 +1145,11 @@ public class Game implements misat11.bw.api.Game {
 	public void run() {
 		if (this.status == GameStatus.RUNNING) {
 			if (postGameWaiting) {
+				try {
+					bossbar.setProgress((double) countdown / (double) POST_GAME_WAITING);
+				} catch (Throwable t) {
+
+				}
 				if (countdown == 0) {
 					postGameWaiting = false;
 					return;
@@ -1232,6 +1237,11 @@ public class Game implements misat11.bw.api.Game {
 					}
 					postGameWaiting = true;
 					countdown = POST_GAME_WAITING;
+					try {
+						bossbar.setTitle(" ");
+					} catch (Throwable t) {
+
+					}
 				} else {
 					countdown = 0;
 				}
@@ -1373,9 +1383,6 @@ public class Game implements misat11.bw.api.Game {
 				for (GamePlayer player : players) {
 					CurrentTeam team = getPlayerTeam(player);
 					player.player.getInventory().clear();
-					Sounds.playSound(player.player, player.player.getLocation(),
-							Main.getConfigurator().config.getString("sounds.on_game_start"),
-							Sounds.ENTITY_PLAYER_LEVELUP, 1, 1);
 					Title.send(player.player, gameStartTitle, gameStartSubtitle);
 					if (team == null) {
 						makeSpectator(player);
@@ -1383,6 +1390,9 @@ public class Game implements misat11.bw.api.Game {
 						player.player.teleport(team.teamInfo.spawn);
 						SpawnEffects.spawnEffect(this, player.player, "game-effects.start");
 					}
+					Sounds.playSound(player.player, player.player.getLocation(),
+							Main.getConfigurator().config.getString("sounds.on_game_start"),
+							Sounds.ENTITY_PLAYER_LEVELUP, 1, 1);
 				}
 
 				BedwarsGameStartedEvent startedEvent = new BedwarsGameStartedEvent(this);

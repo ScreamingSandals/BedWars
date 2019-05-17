@@ -16,6 +16,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -30,7 +31,6 @@ import misat11.lib.sgui.PlayerItemInfo;
 import misat11.lib.sgui.Property;
 import misat11.lib.sgui.SimpleGuiFormat;
 import misat11.lib.sgui.events.GenerateItemEvent;
-import misat11.lib.sgui.events.PostActionEvent;
 import misat11.lib.sgui.events.PreActionEvent;
 import misat11.lib.sgui.events.ShopTransactionEvent;
 
@@ -171,6 +171,7 @@ public class ShopMenu implements Listener {
 
 		Player player = event.getPlayer();
 		Game game = Main.getPlayerGameProfile(event.getPlayer()).getGame();
+		ClickType clickType = event.getClickType();
 
 		Map<String, Object> originalItemData = event.getItem().getData();
 		if (originalItemData.containsKey("upgrade") && game.isUpgradesEnabled()) {
@@ -204,11 +205,21 @@ public class ShopMenu implements Listener {
 				player.sendMessage(i18n("buy_failed").replace("%item%", "UPGRADE"));
 			}
 		} else {
+			ItemStack newItem = event.getStack();
+			int amount = newItem.getAmount();
 			int price = event.getPrice();
+			if (clickType.isShiftClick()) {
+				int maxStackSize = newItem.getMaxStackSize();
+				if (maxStackSize > amount) {
+					double priceOfOne = (double) price / amount;
+					price = (int) (priceOfOne * maxStackSize);
+					newItem.setAmount(maxStackSize);
+					amount = maxStackSize;
+				}
+			}
 			String priceType = event.getType().toLowerCase();
 			ItemSpawnerType type = Main.getSpawnerType(priceType);
 			ItemStack materialItem = type.getStack(price);
-			ItemStack newItem = event.getStack();
 			if (event.hasPlayerInInventory(materialItem)) {
 				if (event.hasProperties()) {
 					for (Property property : event.getProperties()) {
@@ -224,13 +235,13 @@ public class ShopMenu implements Listener {
 				event.sellStack(materialItem);
 				event.buyStack(newItem);
 				player.sendMessage(i18n("buy_succes").replace("%item%",
-						newItem.getAmount() + "x " + getNameOrCustomNameOfItem(newItem)));
+						amount + "x " + getNameOrCustomNameOfItem(newItem)).replace("%material%", price + " " + type.getItemName()));
 				Sounds.playSound(player, player.getLocation(),
 						Main.getConfigurator().config.getString("sounds.on_item_buy"), Sounds.ENTITY_ITEM_PICKUP, 1,
 						1);
 			} else {
 				player.sendMessage(i18n("buy_failed").replace("%item%",
-						newItem.getAmount() + "x " + getNameOrCustomNameOfItem(newItem)));
+						amount + "x " + getNameOrCustomNameOfItem(newItem)).replace("%material%", price + " " + type.getItemName()));
 			}
 		}
 	}

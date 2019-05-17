@@ -32,8 +32,8 @@ game_start_subtitle: "§aSpiel §7%arena%§a hat begonnen! Viel Spaß!"
 bossbar_waiting: "§cDas Spiel beginnt in Kürze!"
 bossbar_running: "§aSpiel läuft, viel Glück!"
 
-buy_succes: "§7%item% §awurde gekauft!"
-buy_failed: "§cDu hast nicht genug Resourccen um §7%item% §czu kaufen!"
+buy_succes: "§7%item% §awurde für §7%material%§a gekauft!"
+buy_failed: "§cDu hast nicht genug Resourccen um §7%item% §czu kaufen! Du brauchst §7%material%§c!"
 
 compass_selector_team: "§aWähle dein Team"
 leave_from_game_item: "§cSpiel verlassen"

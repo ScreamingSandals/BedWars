@@ -50,7 +50,7 @@
 		<dependency>
 			<groupId>misat11.lib.sgui</groupId>
 			<artifactId>SimpleGuiFormat</artifactId>
-			<version>0.0.4</version>
+			<version>0.0.5</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>

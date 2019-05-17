@@ -32,8 +32,8 @@ game_start_subtitle: "§aHra §7%arena%§a nyní začala! Užij si hru!"
 bossbar_waiting: "§cHra začne již za okamžik!"
 bossbar_running: "§aHra začala! Hodně štěstí!"
 
-buy_succes: "§aÚspěšně zakoupen §7%item%§a!"
-buy_failed: "§cNedostatek materiálu pro koupi §7%item%§c!"
+buy_succes: "§aÚspěšně zakoupen §7%item%§a za §7%material%§a!"
+buy_failed: "§cNedostatek materiálu pro koupi §7%item%§c! Je potřeba §7%material%§c!"
 
 compass_selector_team: "§aVýběr týmu"
 leave_from_game_item: "§cOpustit hru"

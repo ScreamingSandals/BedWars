@@ -32,8 +32,8 @@ game_start_subtitle: "§aGame §7%arena%§a has started! Enjoy the game!"
 bossbar_waiting: "§cThe game will begin shortly!"
 bossbar_running: "§aGame started! Good luck!"
 
-buy_succes: "§aSuccessfully purchased §7%item%§a!"
-buy_failed: "§cLack of material to buy §7%item%§c!"
+buy_succes: "§aSuccessfully purchased §7%item%§a for §7%material%§a!"
+buy_failed: "§cLack of material to buy §7%item%§c! Needed §7%material%§c!"
 
 compass_selector_team: "§aSelect team"
 leave_from_game_item: "§cLeave the game"
