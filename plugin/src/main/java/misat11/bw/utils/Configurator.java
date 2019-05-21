@@ -241,6 +241,9 @@ public class Configurator {
 		checkOrSetConfig(modify, "bossbar.game.style", "SEGMENTED_20");
 		checkOrSetConfig(modify, "holograms.enabled", true);
 		checkOrSetConfig(modify, "holograms.headline", "Your §eBEDWARS§f stats");
+		checkOrSetConfig(modify, "chat.override", true);
+		checkOrSetConfig(modify, "chat.format", "<%teamcolor%%name%§r> ");
+		checkOrSetConfig(modify, "chat.separate-game-chat", false);
 		checkOrSetConfig(modify, "version", 2);
 		if (modify.get()) {
 			try {

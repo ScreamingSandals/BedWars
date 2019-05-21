@@ -1,5 +1,6 @@
 package misat11.bw.listener;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -8,7 +9,6 @@ import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Villager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -24,6 +24,7 @@ import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
@@ -37,6 +38,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
 import org.bukkit.metadata.MetadataValue;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import misat11.bw.Main;
@@ -55,9 +57,11 @@ import misat11.bw.utils.Sounds;
 import misat11.bw.utils.SpawnEffects;
 import misat11.bw.utils.TeamJoinMetaDataValue;
 import misat11.bw.utils.TeamSelectorInventory;
+import net.milkbowl.vault.chat.Chat;
 
 import static misat11.lib.lang.I18n.i18n;
 
+import java.util.Iterator;
 import java.util.List;
 
 public class PlayerListener implements Listener {
@@ -609,6 +613,81 @@ public class PlayerListener implements Listener {
 		if (Main.isHologramsEnabled()) {
 			Main.getHologramInteraction().updateHolograms(player, 60L);
 
+		}
+	}
+
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onChat(AsyncPlayerChatEvent event) {
+		if (event.isCancelled() || !Main.getConfigurator().config.getBoolean("chat.override")) {
+			return;
+		}
+
+		Player player = event.getPlayer();
+		if (Main.isPlayerInGame(player)) {
+			GamePlayer gPlayer = Main.getPlayerGameProfile(player);
+			Game game = gPlayer.getGame();
+			CurrentTeam team = game.getPlayerTeam(gPlayer);
+			String message = event.getMessage();
+			boolean spectator = gPlayer.isSpectator;
+
+			String playerName = player.getName();
+			String displayName = player.getDisplayName();
+			String playerListName = player.getPlayerListName();
+
+			String format = Main.getConfigurator().config.getString("chat.format", "<%teamcolor%%name%§r> ");
+			if (team != null) {
+				format = format.replace("%teamcolor%", team.teamInfo.color.chatColor.toString());
+				format = format.replace("%team%", team.teamInfo.name);
+				format = format.replace("%coloredteam%", team.teamInfo.color.chatColor + team.teamInfo.name);
+			} else if (spectator) {
+				format = format.replace("%teamcolor%", ChatColor.GRAY.toString());
+				format = format.replace("%team%", "SPECTATOR");
+				format = format.replace("%coloredteam%", ChatColor.GRAY.toString() + "SPECTATOR");
+			} else {
+				format = format.replace("%teamcolor%", ChatColor.GRAY.toString());
+				format = format.replace("%team%", "");
+				format = format.replace("%coloredteam%", ChatColor.GRAY.toString());
+			}
+			format = format.replace("%name%", playerName);
+			format = format.replace("%displayName%", displayName);
+			format = format.replace("%playerListName%", playerListName);
+
+			if (Main.isVault()) {
+				Chat chat = ((RegisteredServiceProvider<Chat>) Bukkit.getServer().getServicesManager()
+						.getRegistration(Chat.class)).getProvider();
+				if (chat != null) {
+					format = format.replace("%prefix%", chat.getPlayerPrefix(player));
+					format = format.replace("%suffix%", chat.getPlayerSuffix(player));
+				}
+			}
+
+			format = format.replace("%prefix%", "");
+			format = format.replace("%suffix%", "");
+
+			event.setFormat(format + event.getMessage());
+			if (Main.getConfigurator().config.getBoolean("chat.separate-game-chat")) {
+				Iterator<Player> recipients = event.getRecipients().iterator();
+				while (recipients.hasNext()) {
+					Player recipient = recipients.next();
+					GamePlayer recipientgPlayer = Main.getPlayerGameProfile(recipient);
+					Game recipientGame = recipientgPlayer.getGame();
+					if (recipientGame != game) {
+						recipients.remove();
+					}
+				}
+			}
+		} else {
+			if (Main.getConfigurator().config.getBoolean("chat.separate-game-chat")) {
+				Iterator<Player> recipients = event.getRecipients().iterator();
+				while (recipients.hasNext()) {
+					Player recipient = recipients.next();
+					GamePlayer recipientgPlayer = Main.getPlayerGameProfile(recipient);
+					Game recipientGame = recipientgPlayer.getGame();
+					if (recipientGame != null) {
+						recipients.remove();
+					}
+				}
+			}
 		}
 	}
 }

@@ -177,6 +177,12 @@ bossbar:
 holograms:
    enabled: true  
    headline: "Your §eBEDWARS§f stats"
+   
+# Chat
+chat:
+   override: true
+   format: "<%teamcolor%%name%§r> "
+   separate-game-chat: false
   
 # Do not edit this!!!
 version: 2
