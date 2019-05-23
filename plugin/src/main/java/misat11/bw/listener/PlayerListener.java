@@ -93,11 +93,19 @@ public class PlayerListener implements Listener {
 
 					}
 				}
+
+				boolean onlyOnBedDestroy = Main.getConfigurator().config.getBoolean("statistics.bed-destroyed-kills",
+						false);
+
 				Player killer = victim.getKiller();
 				if (Main.isPlayerInGame(killer)) {
 					GamePlayer gKiller = Main.getPlayerGameProfile(killer);
 					if (gKiller.getGame() == game) {
 						Main.depositPlayer(killer, Main.getVaultKillReward());
+						if ((onlyOnBedDestroy && !team.isBed) || !onlyOnBedDestroy) {
+							game.dispatchRewardCommands("player-kill", killer,
+									Main.getConfigurator().config.getInt("statistics.scores.kill", 10));
+						}
 						if (team.isDead()) {
 							SpawnEffects.spawnEffect(game, victim, "game-effects.teamkill");
 							Sounds.playSound(killer, killer.getLocation(),
@@ -113,9 +121,6 @@ public class PlayerListener implements Listener {
 				if (Main.isPlayerStatisticsEnabled()) {
 					PlayerStatistic diePlayer = Main.getPlayerStatisticsManager().getStatistic(victim);
 					PlayerStatistic killerPlayer = null;
-
-					boolean onlyOnBedDestroy = Main.getConfigurator().config
-							.getBoolean("statistics.bed-destroyed-kills", false);
 
 					boolean teamIsDead = !team.isBed;
 

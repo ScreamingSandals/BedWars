@@ -466,6 +466,8 @@ public class Game implements misat11.bw.api.Game {
 						statistic.setCurrentScore(statistic.getCurrentScore()
 								+ Main.getConfigurator().config.getInt("statistics.scores.bed-destroy", 25));
 					}
+					
+					dispatchRewardCommands("player-destroy-bed", broker, Main.getConfigurator().config.getInt("statistics.scores.bed-destroy", 25));
 				}
 			}
 		}
@@ -1176,6 +1178,24 @@ public class Game implements misat11.bw.api.Game {
 				for (GamePlayer player : (List<GamePlayer>) ((ArrayList<GamePlayer>) players).clone()) {
 					player.player.sendMessage(message);
 					player.changeGame(null);
+
+					if (Main.getConfigurator().config.getBoolean("rewards.enabled")) {
+						final Player pl = player.player;
+						new BukkitRunnable() {
+							
+							@Override
+							public void run() {
+								if (Main.isPlayerStatisticsEnabled()) {
+									PlayerStatistic statistic = Main.getPlayerStatisticsManager()
+											.getStatistic(player.player);
+									Game.this.dispatchRewardCommands("player-end-game", pl, statistic.getCurrentScore());
+								} else {
+									Game.this.dispatchRewardCommands("player-end-game", pl, 0);
+								}
+							}
+							
+						}.runTaskLater(Main.getInstance(), 40);
+					}
 				}
 
 				BedwarsGameEndEvent event = new BedwarsGameEndEvent(this);
@@ -1227,6 +1247,24 @@ public class Game implements misat11.bw.api.Game {
 											Main.getInstance().getServer().dispatchCommand(player.player, "bw stats");
 										}
 
+									}
+
+									if (Main.getConfigurator().config.getBoolean("rewards.enabled")) {
+										final Player pl = player.player;
+										new BukkitRunnable() {
+											
+											@Override
+											public void run() {
+												if (Main.isPlayerStatisticsEnabled()) {
+													PlayerStatistic statistic = Main.getPlayerStatisticsManager()
+															.getStatistic(player.player);
+													Game.this.dispatchRewardCommands("player-win", pl, statistic.getCurrentScore());
+												} else {
+													Game.this.dispatchRewardCommands("player-win", pl, 0);
+												}
+											}
+											
+										}.runTaskLater(Main.getInstance(), (2 + POST_GAME_WAITING) * 20);
 									}
 								} else {
 									Title.send(player.player, i18n("you_lost", false), subtitle);
@@ -2333,6 +2371,20 @@ public class Game implements misat11.bw.api.Game {
 
 	public void setSpawnerDisableMerge(InGameConfigBooleanConstants spawnerDisableMerge) {
 		this.spawnerDisableMerge = spawnerDisableMerge;
+	}
+	
+	public void dispatchRewardCommands(String type, Player player, int score) {
+		if (!Main.getConfigurator().config.getBoolean("rewards.enabled")) {
+			return;
+		}
+		
+		List<String> list = Main.getConfigurator().config.getStringList("rewards." + type);
+		for (String command : list) {
+			command = command.replaceAll("\\{player\\}", player.getName());
+			command = command.replaceAll("\\{score\\}", Integer.toString(score));
+			command = command.startsWith("/") ? command.substring(1) : command;
+			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
+		}
 	}
 
 }

@@ -244,6 +244,11 @@ public class Configurator {
 		checkOrSetConfig(modify, "chat.override", true);
 		checkOrSetConfig(modify, "chat.format", "<%teamcolor%%name%§r> ");
 		checkOrSetConfig(modify, "chat.separate-game-chat", false);
+		checkOrSetConfig(modify, "rewards.enabled", false);
+		checkOrSetConfig(modify, "rewards.player-win", new ArrayList<>());
+		checkOrSetConfig(modify, "rewards.player-end-game", new ArrayList<>());
+		checkOrSetConfig(modify, "rewards.player-destroy-bed", new ArrayList<>());
+		checkOrSetConfig(modify, "rewards.player-kill", new ArrayList<>());
 		checkOrSetConfig(modify, "version", 2);
 		if (modify.get()) {
 			try {

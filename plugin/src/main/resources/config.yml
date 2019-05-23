@@ -183,6 +183,22 @@ chat:
    override: true
    format: "<%teamcolor%%name%§r> "
    separate-game-chat: false
-  
+   
+# Command rewards (possible placeholders {player},{score})
+rewards:
+   enabled: false
+   # Player won
+   player-win:
+   - /example {player} 200
+   # Every player in game
+   player-end-game:
+   - /example {player} {score}
+   # Player destroyed target block of other team
+   player-destroy-bed:
+   - /example {player} {score}  
+   # Player killed other player
+   player-kill:
+   - /example {player} 10
+   
 # Do not edit this!!!
 version: 2
