@@ -157,7 +157,7 @@ public class Game implements misat11.bw.api.Game {
 	private InGameConfigBooleanConstants spawnerDisableMerge = InGameConfigBooleanConstants.INHERIT;
 
 	private boolean upgrades = false;
-	private static final int POST_GAME_WAITING = 4;
+	private static final int POST_GAME_WAITING = 3;
 
 	// STATUS
 	private GameStatus status = GameStatus.DISABLED;

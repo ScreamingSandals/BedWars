@@ -123,6 +123,7 @@ data:
         display-name: "Swords"
         lore:
         - "Click here to get sword for attacking your enemies"
+    column: center
     items:
     - price: 8
       price-type: bronze
@@ -205,6 +206,7 @@ data:
         display-name: "Bows"
         lore:
         - "Prove yourself as a marksman with these wonderful bows"
+    column: right
     items:
     - price: 3
       price-type: gold
@@ -282,6 +284,8 @@ data:
         display-name: "Eat"
         lore:
         - "Are you hungry? Get something to eat."
+    row: 3
+    column: 2
     items:
     - price: 4
       price-type: bronze
@@ -301,51 +305,65 @@ data:
         ==: org.bukkit.inventory.ItemStack
         type: BREAD
         amount: 10
-        
+
 -   stack:
       ==: org.bukkit.inventory.ItemStack
-      type: DIAMOND_PICKAXE
-      amount: 1
+      type: POTION
       meta:
         ==: ItemMeta
-        meta-type: UNSPECIFIC
-        display-name: "Pickaxes"
+        meta-type: POTION
+        display-name: "Drinks"
         lore:
-        - "Destroy others blocks? Use these pickaxes."
+        - "Not enough? Use these potions and you'll feel better!"
+        potion-type: strength
+    row: 3
+    column: 6
     items:
-    - price: 4
-      price-type: bronze
-      stack:
+    - stack:
         ==: org.bukkit.inventory.ItemStack
-        type: IRON_PICKAXE
-        amount: 1
+        type: POTION
         meta:
           ==: ItemMeta
-          meta-type: UNSPECIFIC
-          enchants:
-            LOOT_BONUS_BLOCKS: 1
-    - price: 2
+          meta-type: POTION
+          potion-type: healing
+      price: 3
       price-type: iron
-      stack:
+    - stack:
         ==: org.bukkit.inventory.ItemStack
-        type: IRON_PICKAXE
-        amount: 1
+        type: POTION
         meta:
           ==: ItemMeta
-          meta-type: UNSPECIFIC
-          enchants:
-            LOOT_BONUS_BLOCKS: 2
-    - price: 1
+          meta-type: POTION
+          potion-type: strong_healing
+      price: 5
+      price-type: iron
+    - stack:
+        ==: org.bukkit.inventory.ItemStack
+        type: POTION
+        meta:
+          ==: ItemMeta
+          meta-type: POTION
+          potion-type: swiftness
+      price: 7
+      price-type: iron
+    - stack:
+        ==: org.bukkit.inventory.ItemStack
+        type: POTION
+        meta:
+          ==: ItemMeta
+          meta-type: POTION
+          potion-type: strength
+      price: 1
       price-type: gold
-      stack:
+    - stack:
         ==: org.bukkit.inventory.ItemStack
-        type: IRON_PICKAXE
-        amount: 1
+        type: POTION
         meta:
           ==: ItemMeta
-          meta-type: UNSPECIFIC
-          enchants:
-            LOOT_BONUS_BLOCKS: 3
+          meta-type: POTION
+          potion-type: regeneration
+      price: 3
+      price-type: gold
             
 -   stack:
       ==: org.bukkit.inventory.ItemStack
@@ -358,6 +376,7 @@ data:
         display-name: "Blocks"
         lore:
         - "Destroy others blocks? Use these pickaxes."
+    linebreak: before
     items:
     - price: 1
       price-type: bronze
@@ -401,6 +420,7 @@ data:
         display-name: "Useful Stuff"
         lore:
         - "Looking for useful stuff? Here are some!"
+    column: center
     items:
     - price: 1
       price-type: iron
@@ -469,7 +489,53 @@ data:
           - "Get informed if an enemy steps on your trap"
           - "and your enemy won't be able to move properly."
           
-          
+
+        
+-   stack:
+      ==: org.bukkit.inventory.ItemStack
+      type: DIAMOND_PICKAXE
+      amount: 1
+      meta:
+        ==: ItemMeta
+        meta-type: UNSPECIFIC
+        display-name: "Pickaxes"
+        lore:
+        - "Destroy others blocks? Use these pickaxes."
+    column: right
+    items:
+    - price: 4
+      price-type: bronze
+      stack:
+        ==: org.bukkit.inventory.ItemStack
+        type: IRON_PICKAXE
+        amount: 1
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          enchants:
+            LOOT_BONUS_BLOCKS: 1
+    - price: 2
+      price-type: iron
+      stack:
+        ==: org.bukkit.inventory.ItemStack
+        type: IRON_PICKAXE
+        amount: 1
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          enchants:
+            LOOT_BONUS_BLOCKS: 2
+    - price: 1
+      price-type: gold
+      stack:
+        ==: org.bukkit.inventory.ItemStack
+        type: IRON_PICKAXE
+        amount: 1
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          enchants:
+            LOOT_BONUS_BLOCKS: 3
         
               
   

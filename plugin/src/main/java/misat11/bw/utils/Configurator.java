@@ -178,6 +178,7 @@ public class Configurator {
 		checkOrSetConfig(modify, "prevent-spawning-mobs", true);
 		checkOrSetConfig(modify, "spawner-holograms", true);
 		checkOrSetConfig(modify, "spawner-disable-merge", true);
+		checkOrSetConfig(modify, "prevent-lobby-spawn-mobs-in-radius", 16);
 		checkOrSetConfig(modify, "allowed-commands", new ArrayList<>());
 		checkOrSetConfig(modify, "farmBlocks.enable", true);
 		checkOrSetConfig(modify, "farmBlocks.blocks", new ArrayList<>());

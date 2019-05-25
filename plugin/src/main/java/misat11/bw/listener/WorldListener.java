@@ -126,6 +126,13 @@ public class WorldListener implements Listener {
 					event.setCancelled(true);
 					return;
 				}
+			} else if (game.getStatus() == GameStatus.WAITING) {
+				if (game.getLobbyWorld() == event.getLocation().getWorld()) {
+					if (event.getLocation().distanceSquared(game.getLobbySpawn()) <= Math.pow(Main.getConfigurator().config.getInt("prevent-lobby-spawn-mobs-in-radius"), 2)) {
+						event.setCancelled(true);
+						return;
+					}
+				}
 			}
 		}
 	}

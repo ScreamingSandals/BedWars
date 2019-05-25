@@ -16,6 +16,7 @@ add-wool-to-inventory-on-join: true
 prevent-spawning-mobs: true
 spawner-holograms: true
 spawner-disable-merge: true
+prevent-lobby-spawn-mobs-in-radius: 16
 
 # Commands whitelist
 allowed-commands:
