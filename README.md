@@ -3,6 +3,8 @@
 
 Simple BedWars rewrite for versions 1.13 and above and it can support 1.12 versions and possibly older versions too!
 
+Discord: https://discord.gg/VgrFUbV
+
 ## Features:
 - Bed destroying
 - Shop
