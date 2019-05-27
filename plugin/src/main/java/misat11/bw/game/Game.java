@@ -466,8 +466,9 @@ public class Game implements misat11.bw.api.Game {
 						statistic.setCurrentScore(statistic.getCurrentScore()
 								+ Main.getConfigurator().config.getInt("statistics.scores.bed-destroy", 25));
 					}
-					
-					dispatchRewardCommands("player-destroy-bed", broker, Main.getConfigurator().config.getInt("statistics.scores.bed-destroy", 25));
+
+					dispatchRewardCommands("player-destroy-bed", broker,
+							Main.getConfigurator().config.getInt("statistics.scores.bed-destroy", 25));
 				}
 			}
 		}
@@ -740,8 +741,13 @@ public class Game implements misat11.bw.api.Game {
 		game.arenaTime = ArenaTime.valueOf(configMap.getString("arenaTime", ArenaTime.WORLD.name()).toUpperCase());
 		game.arenaWeather = loadWeather(configMap.getString("arenaWeather", "default").toUpperCase());
 
-		game.lobbyBossBarColor = loadBossBarColor(configMap.getString("lobbyBossBarColor", "default").toUpperCase());
-		game.gameBossBarColor = loadBossBarColor(configMap.getString("gameBossBarColor", "default").toUpperCase());
+		try {
+			game.lobbyBossBarColor = loadBossBarColor(
+					configMap.getString("lobbyBossBarColor", "default").toUpperCase());
+			game.gameBossBarColor = loadBossBarColor(configMap.getString("gameBossBarColor", "default").toUpperCase());
+		} catch (Throwable t) {
+			// We're using 1.8
+		}
 
 		game.upgrades = configMap.getBoolean("upgrades", false);
 
@@ -903,8 +909,12 @@ public class Game implements misat11.bw.api.Game {
 		configMap.set("arenaTime", arenaTime.name());
 		configMap.set("arenaWeather", arenaWeather == null ? "default" : arenaWeather.name());
 
-		configMap.set("lobbyBossBarColor", lobbyBossBarColor == null ? "default" : lobbyBossBarColor.name());
-		configMap.set("gameBossBarColor", gameBossBarColor == null ? "default" : gameBossBarColor.name());
+		try {
+			configMap.set("lobbyBossBarColor", lobbyBossBarColor == null ? "default" : lobbyBossBarColor.name());
+			configMap.set("gameBossBarColor", gameBossBarColor == null ? "default" : gameBossBarColor.name());
+		} catch (Throwable t) {
+			// We're using 1.8
+		}
 
 		configMap.set("upgrades", upgrades);
 
@@ -1182,18 +1192,19 @@ public class Game implements misat11.bw.api.Game {
 					if (Main.getConfigurator().config.getBoolean("rewards.enabled")) {
 						final Player pl = player.player;
 						new BukkitRunnable() {
-							
+
 							@Override
 							public void run() {
 								if (Main.isPlayerStatisticsEnabled()) {
 									PlayerStatistic statistic = Main.getPlayerStatisticsManager()
 											.getStatistic(player.player);
-									Game.this.dispatchRewardCommands("player-end-game", pl, statistic.getCurrentScore());
+									Game.this.dispatchRewardCommands("player-end-game", pl,
+											statistic.getCurrentScore());
 								} else {
 									Game.this.dispatchRewardCommands("player-end-game", pl, 0);
 								}
 							}
-							
+
 						}.runTaskLater(Main.getInstance(), 40);
 					}
 				}
@@ -1252,18 +1263,19 @@ public class Game implements misat11.bw.api.Game {
 									if (Main.getConfigurator().config.getBoolean("rewards.enabled")) {
 										final Player pl = player.player;
 										new BukkitRunnable() {
-											
+
 											@Override
 											public void run() {
 												if (Main.isPlayerStatisticsEnabled()) {
 													PlayerStatistic statistic = Main.getPlayerStatisticsManager()
 															.getStatistic(player.player);
-													Game.this.dispatchRewardCommands("player-win", pl, statistic.getCurrentScore());
+													Game.this.dispatchRewardCommands("player-win", pl,
+															statistic.getCurrentScore());
 												} else {
 													Game.this.dispatchRewardCommands("player-win", pl, 0);
 												}
 											}
-											
+
 										}.runTaskLater(Main.getInstance(), (2 + POST_GAME_WAITING) * 20);
 									}
 								} else {
@@ -1488,7 +1500,8 @@ public class Game implements misat11.bw.api.Game {
 		int time = Main.getConfigurator().recordconfig.getInt("record." + this.getName() + ".time", Integer.MAX_VALUE);
 		if (time > wonTime) {
 			Main.getConfigurator().recordconfig.set("record." + this.getName() + ".time", wonTime);
-			Main.getConfigurator().recordconfig.set("record." + this.getName() + ".team", t.teamInfo.color.chatColor + t.teamInfo.name);
+			Main.getConfigurator().recordconfig.set("record." + this.getName() + ".team",
+					t.teamInfo.color.chatColor + t.teamInfo.name);
 			List<String> winners = new ArrayList<String>();
 			for (GamePlayer p : t.players) {
 				winners.add(p.player.getName());
@@ -2372,12 +2385,12 @@ public class Game implements misat11.bw.api.Game {
 	public void setSpawnerDisableMerge(InGameConfigBooleanConstants spawnerDisableMerge) {
 		this.spawnerDisableMerge = spawnerDisableMerge;
 	}
-	
+
 	public void dispatchRewardCommands(String type, Player player, int score) {
 		if (!Main.getConfigurator().config.getBoolean("rewards.enabled")) {
 			return;
 		}
-		
+
 		List<String> list = Main.getConfigurator().config.getStringList("rewards." + type);
 		for (String command : list) {
 			command = command.replaceAll("\\{player\\}", player.getName());
