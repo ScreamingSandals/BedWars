@@ -247,14 +247,17 @@ public class ShopMenu implements Listener {
 	}
 
 	public static String getNameOrCustomNameOfItem(ItemStack stack) {
-		if (stack.hasItemMeta()) {
-			ItemMeta meta = stack.getItemMeta();
-			if (meta.hasDisplayName()) {
-				return meta.getDisplayName();
+		try {
+			if (stack.hasItemMeta()) {
+				ItemMeta meta = stack.getItemMeta();
+				if (meta.hasDisplayName()) {
+					return meta.getDisplayName();
+				}
+				if (meta.hasLocalizedName()) {
+					return meta.getLocalizedName();
+				}
 			}
-			if (meta.hasLocalizedName()) {
-				return meta.getLocalizedName();
-			}
+		} catch (Throwable t) {
 		}
 		String normalName = stack.getType().name().replace("_", " ").toLowerCase();
 		return normalName.substring(0, 1).toUpperCase() + normalName.substring(1);
