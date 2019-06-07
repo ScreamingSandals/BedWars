@@ -391,6 +391,14 @@ public class GameCreator {
 		case "spawnerdisablemerge":
 			game.setSpawnerDisableMerge(cons);
 			break;
+		case "gamestartitems":
+		case "giveitemsongamestart":
+			game.setGameStartItems(cons);
+			break;
+		case "playerrespawnitems":
+		case "giveitemsonplayerrespawn":
+			game.setPlayerRespawnItems(cons);
+			break;
 		default:
 			return i18n("admin_command_invalid_config_variable_name");
 		}

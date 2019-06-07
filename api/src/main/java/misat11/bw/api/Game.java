@@ -176,6 +176,12 @@ public interface Game {
 	public InGameConfigBooleanConstants getSpawnerDisableMerge();
 	public boolean getOriginalOrInheritedSpawnerDisableMerge();
 	
+	public InGameConfigBooleanConstants getGameStartItems();
+	public boolean getOriginalOrInheritedGameStartItems();
+	
+	public InGameConfigBooleanConstants getPlayerRespawnItems();
+	public boolean getOriginalOrInheritedPlayerRespawnItems();
+	
 	public ArenaTime getArenaTime();
 	public WeatherType getArenaWeather();
 	public BarColor getLobbyBossBarColor();

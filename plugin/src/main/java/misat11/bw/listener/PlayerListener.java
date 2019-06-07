@@ -37,6 +37,7 @@ import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -184,6 +185,12 @@ public class PlayerListener implements Listener {
 			} else {
 				event.setRespawnLocation(gPlayer.getGame().getPlayerTeam(gPlayer).teamInfo.spawn);
 				SpawnEffects.spawnEffect(gPlayer.getGame(), gPlayer.player, "game-effects.respawn");
+				if (gPlayer.getGame().getOriginalOrInheritedPlayerRespawnItems()) {
+					List<ItemStack> givedGameStartItems = (List<ItemStack>) Main.getConfigurator().config.getList("gived-player-respawn-items");
+					for (ItemStack stack : givedGameStartItems) {
+						gPlayer.player.getInventory().addItem(stack);
+					}
+				}
 			}
 		}
 	}

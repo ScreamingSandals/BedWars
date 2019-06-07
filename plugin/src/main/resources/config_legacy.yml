@@ -205,5 +205,11 @@ rewards:
    player-kill:
    - /example {player} 10
    
+# Give items
+game-start-items: false
+player-respawn-items: false
+gived-game-start-items: []
+gived-player-respawn-items: []
+   
 # Do not edit this!!!
 version: 2

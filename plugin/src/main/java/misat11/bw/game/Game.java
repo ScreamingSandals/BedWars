@@ -156,6 +156,12 @@ public class Game implements misat11.bw.api.Game {
 	public static final String SPAWNER_DISABLE_MERGE = "spawner-disable-merge";
 	private InGameConfigBooleanConstants spawnerDisableMerge = InGameConfigBooleanConstants.INHERIT;
 
+	public static final String GAME_START_ITEMS = "game-start-items";
+	private InGameConfigBooleanConstants gameStartItems = InGameConfigBooleanConstants.INHERIT;
+
+	public static final String PLAYER_RESPAWN_ITEMS = "player-respawn-items";
+	private InGameConfigBooleanConstants playerRespawnItems = InGameConfigBooleanConstants.INHERIT;
+
 	private boolean upgrades = false;
 	private static final int POST_GAME_WAITING = 3;
 
@@ -737,6 +743,10 @@ public class Game implements misat11.bw.api.Game {
 		game.spawnerHolograms = readBooleanConstant(configMap.getString("constant." + SPAWNER_HOLOGRAMS, "inherit"));
 		game.spawnerDisableMerge = readBooleanConstant(
 				configMap.getString("constant." + SPAWNER_DISABLE_MERGE, "inherit"));
+		game.gameStartItems = readBooleanConstant(
+				configMap.getString("constant." + GAME_START_ITEMS, "inherit"));
+		game.playerRespawnItems = readBooleanConstant(
+				configMap.getString("constant." + PLAYER_RESPAWN_ITEMS, "inherit"));
 
 		game.arenaTime = ArenaTime.valueOf(configMap.getString("arenaTime", ArenaTime.WORLD.name()).toUpperCase());
 		game.arenaWeather = loadWeather(configMap.getString("arenaWeather", "default").toUpperCase());
@@ -905,6 +915,8 @@ public class Game implements misat11.bw.api.Game {
 		configMap.set("constant." + PREVENT_SPAWNING_MOBS, writeBooleanConstant(preventSpawningMobs));
 		configMap.set("constant." + SPAWNER_HOLOGRAMS, writeBooleanConstant(spawnerHolograms));
 		configMap.set("constant." + SPAWNER_DISABLE_MERGE, writeBooleanConstant(spawnerDisableMerge));
+		configMap.set("constant." + GAME_START_ITEMS, writeBooleanConstant(gameStartItems));
+		configMap.set("constant." + PLAYER_RESPAWN_ITEMS, writeBooleanConstant(playerRespawnItems));
 
 		configMap.set("arenaTime", arenaTime.name());
 		configMap.set("arenaWeather", arenaWeather == null ? "default" : arenaWeather.name());
@@ -1439,6 +1451,12 @@ public class Game implements misat11.bw.api.Game {
 					} else {
 						player.player.teleport(team.teamInfo.spawn);
 						SpawnEffects.spawnEffect(this, player.player, "game-effects.start");
+						if (getOriginalOrInheritedGameStartItems()) {
+							List<ItemStack> givedGameStartItems = (List<ItemStack>) Main.getConfigurator().config.getList("gived-game-start-items");
+							for (ItemStack stack : givedGameStartItems) {
+								player.player.getInventory().addItem(stack);
+							}
+						}
 					}
 					Sounds.playSound(player.player, player.player.getLocation(),
 							Main.getConfigurator().config.getString("sounds.on_game_start"),
@@ -2398,6 +2416,36 @@ public class Game implements misat11.bw.api.Game {
 			command = command.startsWith("/") ? command.substring(1) : command;
 			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
 		}
+	}
+
+	@Override
+	public InGameConfigBooleanConstants getGameStartItems() {
+		return gameStartItems;
+	}
+
+	@Override
+	public boolean getOriginalOrInheritedGameStartItems() {
+		return gameStartItems.isOriginal() ? gameStartItems.getValue()
+				: Main.getConfigurator().config.getBoolean(GAME_START_ITEMS);
+	}
+
+	@Override
+	public InGameConfigBooleanConstants getPlayerRespawnItems() {
+		return playerRespawnItems;
+	}
+
+	@Override
+	public boolean getOriginalOrInheritedPlayerRespawnItems() {
+		return playerRespawnItems.isOriginal() ? playerRespawnItems.getValue()
+				: Main.getConfigurator().config.getBoolean(PLAYER_RESPAWN_ITEMS);
+	}
+	
+	public void setGameStartItems(InGameConfigBooleanConstants gameStartItems) {
+		this.gameStartItems = gameStartItems;
+	}
+	
+	public void setPlayerRespawnItems(InGameConfigBooleanConstants playerRespawnItems) {
+		this.playerRespawnItems = playerRespawnItems;
 	}
 
 }

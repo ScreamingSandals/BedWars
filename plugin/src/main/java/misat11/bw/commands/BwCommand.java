@@ -422,6 +422,18 @@ public class BwCommand implements CommandExecutor, TabCompleter {
 															+ game.getSpawnerDisableMerge().name().toLowerCase(),
 															false)));
 
+											player.sendMessage(i18n("arena_info_config_constant", false)
+													.replace("%constant%", "give gameStartItems")
+													.replace("%value%", i18n("arena_info_config_"
+															+ game.getGameStartItems().name().toLowerCase(),
+															false)));
+
+											player.sendMessage(i18n("arena_info_config_constant", false)
+													.replace("%constant%", "give playerRespawnItems")
+													.replace("%value%", i18n("arena_info_config_"
+															+ game.getPlayerRespawnItems().name().toLowerCase(),
+															false)));
+
 
 											player.sendMessage(i18n("arena_info_config_constant", false)
 													.replace("%constant%", "upgrades (experimental)")
