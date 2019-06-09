@@ -125,25 +125,32 @@ public class ShopMenu implements Listener {
 		PlayerItemInfo item = event.getInfo();
 		Map<String, Object> originalItemData = item.getData();
 		if (originalItemData.containsKey("price") && originalItemData.containsKey("price-type")) {
-			ItemStack stack = event.getStack();
-			ItemMeta stackMeta = stack.getItemMeta();
-			List<String> lore = new ArrayList<String>();
-			if (stackMeta.hasLore()) {
-				lore = stackMeta.getLore();
-			}
 			int price = (int) originalItemData.get("price");
 			ItemSpawnerType type = Main.getSpawnerType(((String) originalItemData.get("price-type")).toLowerCase());
 			if (type == null) {
 				return;
 			}
-
-			lore.add(i18n("price", false));
-			lore.add(price + " " + type.getItemName());
-			lore.add(i18n("amount", false));
-			lore.add(Integer.toString(stack.getAmount()));
-			stackMeta.setLore(lore);
-			stack.setItemMeta(stackMeta);
-			event.setStack(stack);
+			
+			boolean enabled = Main.getConfigurator().config.getBoolean("lore.generate-automatically", true);
+			enabled = (boolean) originalItemData.getOrDefault("generate-lore", enabled);
+			
+			if (enabled) {
+				ItemStack stack = event.getStack();
+				ItemMeta stackMeta = stack.getItemMeta();
+				List<String> lore = new ArrayList<String>();
+				if (stackMeta.hasLore()) {
+					lore = stackMeta.getLore();
+				}
+				for (String s : Main.getConfigurator().config.getStringList("lore.text")) {
+					s = s.replaceAll("%price%", Integer.toString(price));
+					s = s.replaceAll("%resource%", type.getItemName());
+					s = s.replaceAll("%amount%", Integer.toString(stack.getAmount()));
+					lore.add(s);
+				}
+				stackMeta.setLore(lore);
+				stack.setItemMeta(stackMeta);
+				event.setStack(stack);
+			}
 		}
 
 	}

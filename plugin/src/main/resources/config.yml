@@ -206,6 +206,15 @@ game-start-items: false
 player-respawn-items: false
 gived-game-start-items: []
 gived-player-respawn-items: []
+
+# Shop lore
+lore:
+   generate-automatically: true # can be set individual to items
+   text:
+   - "§7Price:"
+   - "§7%price% %resource%"
+   - "§7Amount:"
+   - "§7%amount%"
    
 # Do not edit this!!!
 version: 2

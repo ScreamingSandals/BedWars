@@ -24,15 +24,15 @@ public class Configurator {
 
 	public File configf, shopconfigf, signconfigf, recordconfigf;
 	public FileConfiguration config, shopconfig, signconfig, recordconfig;
-	
+
 	public final File datafolder;
 	public final Main main;
-	
+
 	public Configurator(Main main) {
 		this.datafolder = main.getDataFolder();
 		this.main = main;
 	}
-	
+
 	private void configMigration() {
 		if (config.getInt("version") < 2) {
 			main.getLogger().info("Migrating config from version 1 to version 2 ...");
@@ -60,11 +60,11 @@ public class Configurator {
 			config.set("resources.gold.translate", "resource_gold");
 			config.set("resources.gold.color", "GOLD");
 			config.set("resources.gold.spread", 1.0);
-			
+
 			config.set("version", 2);
-			
+
 			config.set("spawners", null);
-			
+
 			try {
 				config.save(configf);
 			} catch (IOException e) {
@@ -72,16 +72,16 @@ public class Configurator {
 			}
 			main.getLogger().info("Config successfully migrated from version 1 to version 2!");
 		}
-		
+
 		if (shopconfig.getInt("version") < 2) {
 			shopconfig.set("version", 2);
 			if (shopconfig.isSet("shop-items")) {
 				main.getLogger().info("Migrating shop.yml from version 1 to version 2 ...");
-				
+
 				List<Map<String, Object>> newData = new ArrayList<Map<String, Object>>();
-				
+
 				Set<String> s = Main.getConfigurator().shopconfig.getConfigurationSection("shop-items").getKeys(false);
-	
+
 				for (String i : s) {
 					ConfigurationSection category = Main.getConfigurator().shopconfig
 							.getConfigurationSection("shop-items." + i);
@@ -91,20 +91,20 @@ public class Configurator {
 					categoryItemMeta.setLore(category.getStringList("lore"));
 					categoryItemMeta.setDisplayName(category.getString("name"));
 					categoryItem.setItemMeta(categoryItemMeta);
-					
+
 					Map<String, Object> map = new HashMap<String, Object>();
-					
+
 					map.put("stack", categoryItem);
 					map.put("items", (List<Map<String, Object>>) category.getList("items"));
-					
+
 					newData.add(map);
 				}
-				
+
 				shopconfig.set("data", newData);
-				
+
 				shopconfig.set("shop-items", null);
 			}
-			
+
 			try {
 				shopconfig.save(shopconfigf);
 			} catch (IOException e) {
@@ -113,7 +113,6 @@ public class Configurator {
 			main.getLogger().info("Shop.yml successfully migrated from version 1 to version 2!");
 		}
 	}
-
 
 	public void createFiles() {
 
@@ -158,7 +157,7 @@ public class Configurator {
 		} catch (InvalidConfigurationException e) {
 			e.printStackTrace();
 		}
-		
+
 		configMigration();
 
 		AtomicBoolean modify = new AtomicBoolean(false);
@@ -221,7 +220,8 @@ public class Configurator {
 		checkOrSetConfig(modify, "game-effects.warppowdertick", new HashMap<String, Object>());
 		checkOrSetConfig(modify, "lobby-scoreboard.enabled", true);
 		checkOrSetConfig(modify, "lobby-scoreboard.title", "§eBEDWARS");
-		checkOrSetConfig(modify, "lobby-scoreboard.content", Arrays.asList(" ", "§fMap: §2%arena%", "§fPlayers: §2%players%§f/§2%maxplayers%", " ", "§fWaiting ...", " "));
+		checkOrSetConfig(modify, "lobby-scoreboard.content", Arrays.asList(" ", "§fMap: §2%arena%",
+				"§fPlayers: §2%players%§f/§2%maxplayers%", " ", "§fWaiting ...", " "));
 		checkOrSetConfig(modify, "statistics.enabled", true);
 		checkOrSetConfig(modify, "statistics.type", "yaml");
 		checkOrSetConfig(modify, "statistics.show-on-game-end", false);
@@ -254,6 +254,9 @@ public class Configurator {
 		checkOrSetConfig(modify, "rewards.player-end-game", new ArrayList<>());
 		checkOrSetConfig(modify, "rewards.player-destroy-bed", new ArrayList<>());
 		checkOrSetConfig(modify, "rewards.player-kill", new ArrayList<>());
+		checkOrSetConfig(modify, "lore.generate-automatically", true);
+		checkOrSetConfig(modify, "lore.text",
+				Arrays.asList("§7Price:", "§7%price% %resource%", "§7Amount:", "§7%amount%"));
 		checkOrSetConfig(modify, "version", 2);
 		if (modify.get()) {
 			try {
@@ -263,21 +266,21 @@ public class Configurator {
 			}
 		}
 	}
-	
+
 	private void checkOrSetConfig(AtomicBoolean modify, String path, Object value) {
 		checkOrSet(modify, this.config, path, value);
 	}
-	
+
 	private static void checkOrSet(AtomicBoolean modify, FileConfiguration config, String path, Object value) {
 		if (!config.isSet(path)) {
 			config.set(path, value);
 			modify.set(true);
 		}
 	}
-	
+
 	public ItemStack readDefinedItem(String item, String def) {
 		ItemStack material = new ItemStack(Material.valueOf(def));
-		
+
 		if (config.isSet("items." + item)) {
 			Object obj = config.get("items." + item);
 			if (obj instanceof ItemStack) {
@@ -286,7 +289,7 @@ public class Configurator {
 				material.setType(Material.valueOf((String) obj));
 			}
 		}
-		
+
 		return material;
 	}
 }
