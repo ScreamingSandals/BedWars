@@ -182,6 +182,9 @@ public interface Game {
 	public InGameConfigBooleanConstants getPlayerRespawnItems();
 	public boolean getOriginalOrInheritedPlayerRespawnItems();
 	
+	public InGameConfigBooleanConstants getSpawnerHologramsCountdown();
+	public boolean getOriginalOrInheritedSpawnerHologramsCountdown();
+	
 	public ArenaTime getArenaTime();
 	public WeatherType getArenaWeather();
 	public BarColor getLobbyBossBarColor();

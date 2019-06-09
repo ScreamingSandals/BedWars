@@ -408,13 +408,11 @@ public class BwCommand implements CommandExecutor, TabCompleter {
 															+ game.getPreventSpawningMobs().name().toLowerCase(),
 															false)));
 
-
 											player.sendMessage(i18n("arena_info_config_constant", false)
-													.replace("%constant%", "spawnerholograms")
-													.replace("%value%", i18n("arena_info_config_"
-															+ game.getSpawnerHolograms().name().toLowerCase(),
-															false)));
-
+													.replace("%constant%", "spawnerholograms").replace("%value%",
+															i18n("arena_info_config_"
+																	+ game.getSpawnerHolograms().name().toLowerCase(),
+																	false)));
 
 											player.sendMessage(i18n("arena_info_config_constant", false)
 													.replace("%constant%", "spawnerDisableMerge")
@@ -423,26 +421,30 @@ public class BwCommand implements CommandExecutor, TabCompleter {
 															false)));
 
 											player.sendMessage(i18n("arena_info_config_constant", false)
-													.replace("%constant%", "give gameStartItems")
+													.replace("%constant%", "give gameStartItems").replace("%value%",
+															i18n("arena_info_config_"
+																	+ game.getGameStartItems().name().toLowerCase(),
+																	false)));
+
+											player.sendMessage(i18n("arena_info_config_constant", false)
+													.replace("%constant%", "give playerRespawnItems").replace("%value%",
+															i18n("arena_info_config_"
+																	+ game.getPlayerRespawnItems().name().toLowerCase(),
+																	false)));
+
+											player.sendMessage(i18n("arena_info_config_constant", false)
+													.replace("%constant%", "spawnerHologramsCountdown")
 													.replace("%value%", i18n("arena_info_config_"
-															+ game.getGameStartItems().name().toLowerCase(),
+															+ game.getSpawnerHologramsCountdown().name().toLowerCase(),
 															false)));
 
 											player.sendMessage(i18n("arena_info_config_constant", false)
-													.replace("%constant%", "give playerRespawnItems")
-													.replace("%value%", i18n("arena_info_config_"
-															+ game.getPlayerRespawnItems().name().toLowerCase(),
-															false)));
+													.replace("%constant%", "upgrades (experimental)").replace("%value%",
+															i18n("arena_info_config_"
+																	+ String.valueOf(game.isUpgradesEnabled()),
+																	false)));
 
-
-											player.sendMessage(i18n("arena_info_config_constant", false)
-													.replace("%constant%", "upgrades (experimental)")
-													.replace("%value%", i18n("arena_info_config_"
-															+ String.valueOf(game.isUpgradesEnabled()),
-															false)));
-											
 											// NON-BOOLEAN CONSTANTS
-											
 
 											player.sendMessage(i18n("arena_info_config_constant", false)
 													.replace("%constant%", "arenaTime")
@@ -577,7 +579,8 @@ public class BwCommand implements CommandExecutor, TabCompleter {
 					} else if (args.length == 3) {
 						List<String> cmds = Arrays.asList("add", "lobby", "spec", "pos1", "pos2", "pausecountdown",
 								"team", "spawner", "time", "store", "save", "remove", "edit", "jointeam", "minplayers",
-								"info", "config", "arenatime", "arenaweather", "lobbybossbarcolor", "gamebossbarcolor", "upgrades");
+								"info", "config", "arenatime", "arenaweather", "lobbybossbarcolor", "gamebossbarcolor",
+								"upgrades");
 						StringUtil.copyPartialMatches(args[2], cmds, completionList);
 					} else if (args[2].equalsIgnoreCase("pausecountdown") && args.length == 4) {
 						StringUtil.copyPartialMatches(args[3], Arrays.asList("30", "60"), completionList);
@@ -637,7 +640,8 @@ public class BwCommand implements CommandExecutor, TabCompleter {
 									"joinRandomTeamOnJoin", "addWoolToInventoryOnJoin", "preventKillingVillagers",
 									"spectatorGm3", "playerDrops", "friendlyfire", "coloredLeatherByTeamInLobby",
 									"keepInventory", "crafting", "gamebossbar", "lobbybossbar", "gamescoreboard",
-									"lobbyscoreboard", "preventspawningmobs", "spawnerholograms", "spawnerDisableMerge");
+									"lobbyscoreboard", "preventspawningmobs", "spawnerholograms", "spawnerDisableMerge",
+									"gamestartitems", "playerrespawnitems", "spawnerhologramscountdown");
 							StringUtil.copyPartialMatches(args[3], cmds, completionList);
 						}
 						if (args.length == 5) {

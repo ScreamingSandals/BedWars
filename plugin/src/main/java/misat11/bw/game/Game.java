@@ -67,7 +67,7 @@ import misat11.bw.utils.SpawnEffects;
 import misat11.bw.utils.TeamSelectorInventory;
 import misat11.bw.utils.Title;
 
-import static misat11.lib.lang.I18n.i18n;
+import static misat11.lib.lang.I18n.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -162,6 +162,9 @@ public class Game implements misat11.bw.api.Game {
 	public static final String PLAYER_RESPAWN_ITEMS = "player-respawn-items";
 	private InGameConfigBooleanConstants playerRespawnItems = InGameConfigBooleanConstants.INHERIT;
 
+	public static final String SPAWNER_HOLOGRAMS_COUNTDOWN = "spawner-holograms-countdown";
+	private InGameConfigBooleanConstants spawnerHologramsCountdown = InGameConfigBooleanConstants.INHERIT;
+
 	private boolean upgrades = false;
 	private static final int POST_GAME_WAITING = 3;
 
@@ -180,7 +183,8 @@ public class Game implements misat11.bw.api.Game {
 	private List<SpecialItem> activeSpecialItems = new ArrayList<SpecialItem>();
 	private List<ArmorStand> armorStandsInGame = new ArrayList<ArmorStand>();
 	private boolean postGameWaiting = false;
-
+	private Map<ItemSpawner, ArmorStand> countdownArmorStands = new HashMap<ItemSpawner, ArmorStand>();
+	
 	private Game() {
 
 	}
@@ -747,6 +751,8 @@ public class Game implements misat11.bw.api.Game {
 				configMap.getString("constant." + GAME_START_ITEMS, "inherit"));
 		game.playerRespawnItems = readBooleanConstant(
 				configMap.getString("constant." + PLAYER_RESPAWN_ITEMS, "inherit"));
+		game.spawnerHologramsCountdown = readBooleanConstant(
+				configMap.getString("constant." + SPAWNER_HOLOGRAMS_COUNTDOWN, "inherit"));
 
 		game.arenaTime = ArenaTime.valueOf(configMap.getString("arenaTime", ArenaTime.WORLD.name()).toUpperCase());
 		game.arenaWeather = loadWeather(configMap.getString("arenaWeather", "default").toUpperCase());
@@ -917,6 +923,7 @@ public class Game implements misat11.bw.api.Game {
 		configMap.set("constant." + SPAWNER_DISABLE_MERGE, writeBooleanConstant(spawnerDisableMerge));
 		configMap.set("constant." + GAME_START_ITEMS, writeBooleanConstant(gameStartItems));
 		configMap.set("constant." + PLAYER_RESPAWN_ITEMS, writeBooleanConstant(playerRespawnItems));
+		configMap.set("constant." + SPAWNER_HOLOGRAMS_COUNTDOWN, writeBooleanConstant(spawnerHologramsCountdown));
 
 		configMap.set("arenaTime", arenaTime.name());
 		configMap.set("arenaWeather", arenaWeather == null ? "default" : arenaWeather.name());
@@ -1317,6 +1324,11 @@ public class Game implements misat11.bw.api.Game {
 				for (ItemSpawner spawner : spawners) {
 					ItemSpawnerType type = spawner.type;
 					int cycle = type.getInterval();
+					
+					if (getOriginalOrInheritedSpawnerHologramsCountdown() && cycle > 1) {
+						countdownArmorStands.get(spawner).setCustomName(i18nonly("countdown_spawning").replace("%seconds%", Integer.toString(countdown % cycle)));
+					}
+					
 					if ((countdown % cycle) == 0) {
 
 						BedwarsResourceSpawnEvent resourceSpawnEvent = new BedwarsResourceSpawnEvent(this, spawner,
@@ -1419,8 +1431,12 @@ public class Game implements misat11.bw.api.Game {
 					}
 				}
 				if (getOriginalOrInheritedSpawnerHolograms()) {
+					boolean countdownEnabled = getOriginalOrInheritedSpawnerHologramsCountdown();
 					for (ItemSpawner spawner : spawners) {
-						Location loc = spawner.loc.clone().add(0, 0.25, 0);
+						Location loc = spawner.loc.clone().add(0, Main.getConfigurator().config.getDouble("spawner-holo-height", 0.25), 0);
+						if (countdownEnabled) {
+							loc.add(0, 0.30, 0);
+						}
 						ArmorStand stand = (ArmorStand) loc.getWorld().spawnEntity(loc, EntityType.ARMOR_STAND);
 
 						stand.setGravity(false);
@@ -1438,6 +1454,28 @@ public class Game implements misat11.bw.api.Game {
 
 						armorStandsInGame.add(stand);
 						Main.registerGameEntity(stand, this);
+						
+						if (countdownEnabled) {
+							loc = spawner.loc.clone().add(0, Main.getConfigurator().config.getDouble("spawner-holo-height", 0.25), 0);
+							ArmorStand countdownStand = (ArmorStand) loc.getWorld().spawnEntity(loc, EntityType.ARMOR_STAND);
+
+							countdownStand.setGravity(false);
+							countdownStand.setCanPickupItems(false);
+							countdownStand.setCustomName(spawner.type.getInterval() < 2 ? i18nonly("every_second_spawning") : i18nonly("countdown_spawning").replace("%seconds%", Integer.toString(spawner.type.getInterval())));
+							countdownStand.setCustomNameVisible(true);
+							countdownStand.setVisible(false);
+							countdownStand.setSmall(true);
+
+							try {
+								countdownStand.setMarker(true);
+							} catch (Throwable t) {
+
+							}
+
+							armorStandsInGame.add(countdownStand);
+							countdownArmorStands.put(spawner, countdownStand);
+							Main.registerGameEntity(countdownStand, this);
+						}
 					}
 				}
 				String gameStartTitle = i18n("game_start_title", false);
@@ -1504,6 +1542,8 @@ public class Game implements misat11.bw.api.Game {
 				stand.setHealth(0);
 				Main.unregisterGameEntity(stand);
 			}
+			armorStandsInGame.clear();
+			countdownArmorStands.clear();
 
 			BedwarsPostRebuildingEvent postRebuildingEvent = new BedwarsPostRebuildingEvent(this);
 			Main.getInstance().getServer().getPluginManager().callEvent(postRebuildingEvent);
@@ -2446,6 +2486,21 @@ public class Game implements misat11.bw.api.Game {
 	
 	public void setPlayerRespawnItems(InGameConfigBooleanConstants playerRespawnItems) {
 		this.playerRespawnItems = playerRespawnItems;
+	}
+
+	@Override
+	public InGameConfigBooleanConstants getSpawnerHologramsCountdown() {
+		return spawnerHologramsCountdown;
+	}
+
+	@Override
+	public boolean getOriginalOrInheritedSpawnerHologramsCountdown() {
+		return spawnerHologramsCountdown.isOriginal() ? spawnerHologramsCountdown.getValue()
+				: Main.getConfigurator().config.getBoolean(SPAWNER_HOLOGRAMS_COUNTDOWN);
+	}
+	
+	public void setSpawnerHologramsCountdown(InGameConfigBooleanConstants spawnerHologramsCountdown) {
+		this.spawnerHologramsCountdown = spawnerHologramsCountdown;
 	}
 
 }
