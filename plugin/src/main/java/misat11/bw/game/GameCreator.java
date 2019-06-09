@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -135,12 +136,16 @@ public class GameCreator {
 				if (args[0].equalsIgnoreCase("add")) {
 					if (args.length >= 2) {
 						if (args.length >= 3) {
-							response = addStore(player.getLocation(), args[1], Boolean.parseBoolean(args[2]));
+							if (args.length >= 4) {
+								response = addStore(player.getLocation(), args[2], Boolean.parseBoolean(args[3]), args[1]);
+							} else {
+								response = addStore(player.getLocation(), args[2], true, args[1]);
+							}
 						} else {
-							response = addStore(player.getLocation(), args[1], true);
+							response = addStore(player.getLocation(), null, true, args[1]);
 						}
 					} else {
-						response = addStore(player.getLocation(), null, true);
+						response = addStore(player.getLocation(), null, true, null);
 					}
 				} else if (args[0].equalsIgnoreCase("remove")) {
 					response = removeStore(player.getLocation());
@@ -620,7 +625,7 @@ public class GameCreator {
 		}
 	}
 
-	public String addStore(Location loc, String shop, boolean useParent) {
+	public String addStore(Location loc, String shop, boolean useParent, String name) {
 		if (game.getPos1() == null || game.getPos2() == null) {
 			return i18n("admin_command_set_pos1_pos2_first");
 		}
@@ -634,7 +639,10 @@ public class GameCreator {
 		if (villagerstores.containsKey(location)) {
 			return i18n("admin_command_store_already_exists");
 		}
-		villagerstores.put(location, new GameStore(loc, shop, useParent));
+		if (name != null) {
+			name = ChatColor.translateAlternateColorCodes('&', name);
+		}
+		villagerstores.put(location, new GameStore(loc, shop, useParent, name, name != null));
 		return i18n("admin_command_store_added").replace("%x%", Double.toString(loc.getX()))
 				.replace("%y%", Double.toString(loc.getY())).replace("%z%", Double.toString(loc.getZ()))
 				.replace("%yaw%", Float.toString(loc.getYaw())).replace("%pitch%", Float.toString(loc.getPitch()));

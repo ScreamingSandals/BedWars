@@ -242,7 +242,7 @@ help_bw_admin_team_bed: "/bw admin <Spiel> team bed <Team> - §eSetzt den Zielbl
 help_bw_admin_jointeam: "/bw admin <Spiel> jointeam <Team> - §eSetzt einen Teambeitrittspunkt"
 help_bw_admin_spawner_add: "/bw admin <Spiel> spawner add <bronze|gold|iron> [name] [first level] - §eSetze einen Spawner an deiner Position"
 help_bw_admin_spawner_reset: "/bw admin <Spiel> spawner reset - §eEntferne alle Spawner"
-help_bw_admin_store_add: "/bw admin <Spiel> store add [file with shop] [use main shop] - §eSetzt einen Dorfbewohnershop an deine Position"
+help_bw_admin_store_add: "/bw admin <Spiel> store add [name above dealer head] [file with shop] [use main shop] - §eSetzt einen Dorfbewohnershop an deine Position"
 help_bw_admin_store_remove: "/bw admin <Spiel> store remove - §eEntferne den Shop an deiner Position"
 help_bw_admin_store_type: "/bw admin <Spiel> store type <living entity> - §eSetzt die Art des Shops (Villager, Horse, Cow, Pig etc.)"
 help_bw_admin_config: "/bw admin <Spiel> config <Option> <Wert> - §eSetzt den Wert der Option für das Spiel"

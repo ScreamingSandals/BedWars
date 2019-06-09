@@ -714,10 +714,10 @@ public class Game implements misat11.bw.api.Game {
 					Map<String, String> map = (Map<String, String>) store;
 					game.gameStore.add(new GameStore(readLocationFromString(game.world, map.get("loc")),
 							map.get("shop"), "true".equals(map.getOrDefault("parent", "true")),
-							EntityType.valueOf(map.getOrDefault("type", "VILLAGER").toUpperCase())));
+							EntityType.valueOf(map.getOrDefault("type", "VILLAGER").toUpperCase()), map.getOrDefault("name", ""), map.containsKey("name")));
 				} else if (store instanceof String) {
 					game.gameStore.add(new GameStore(readLocationFromString(game.world, (String) store), null, true,
-							EntityType.VILLAGER));
+							EntityType.VILLAGER, "", false));
 				}
 			}
 		}
@@ -897,6 +897,9 @@ public class Game implements misat11.bw.api.Game {
 				map.put("shop", store.getShopFile());
 				map.put("parent", store.getUseParent() ? "true" : "false");
 				map.put("type", store.getEntityType().name());
+				if (store.isShopCustomName()) {
+					map.put("name", store.getShopCustomName());
+				}
 				nL.add(map);
 			}
 			configMap.set("stores", nL);

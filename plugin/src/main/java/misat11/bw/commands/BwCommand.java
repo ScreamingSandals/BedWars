@@ -1,6 +1,6 @@
 package misat11.bw.commands;
 
-import static misat11.lib.lang.I18n.i18n;
+import static misat11.lib.lang.I18n.*;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -301,6 +301,12 @@ public class BwCommand implements CommandExecutor, TabCompleter {
 																			: i18n("arena_info_config_false", false));
 													player.sendMessage(storeM4);
 												}
+												String storeM5 = i18nonly("arena_info_villager_shop_dealer_name")
+														.replace("%name%", store.isShopCustomName()
+																? store.getShopCustomName()
+																: i18nonly(
+																		"arena_info_villager_shop_dealer_has_no_name"));
+												player.sendMessage(storeM5);
 											}
 										} else if (args[3].equalsIgnoreCase("config")) {
 											player.sendMessage(i18n("arena_info_header"));
@@ -633,6 +639,17 @@ public class BwCommand implements CommandExecutor, TabCompleter {
 								}
 							}
 							StringUtil.copyPartialMatches(args[4], cmds, completionList);
+						}
+						if (args.length == 5 && args[3].equalsIgnoreCase("add")) {
+							StringUtil.copyPartialMatches(args[4],
+									Arrays.asList("Villager_shop", "Dealer", "Seller", "&a&lVillager_shop"),
+									completionList);
+						}
+						if (args.length == 6 && args[3].equalsIgnoreCase("add")) {
+							// TODO scan files for this :D
+						}
+						if (args.length == 7 && args[3].equalsIgnoreCase("add")) {
+							StringUtil.copyPartialMatches(args[6], Arrays.asList("true", "false"), completionList);
 						}
 					} else if (args[2].equalsIgnoreCase("config")) {
 						if (args.length == 4) {

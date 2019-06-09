@@ -9,15 +9,17 @@ public class GameStore {
 
 	private final Location loc;
 	private final String shop;
+	private final String shopName;
+	private final boolean enableCustomName;
 	private final boolean useParent;
 	private LivingEntity entity;
 	private EntityType type;
 
-	public GameStore(Location loc, String shop, boolean useParent) {
-		this(loc, shop, useParent, EntityType.VILLAGER);
+	public GameStore(Location loc, String shop, boolean useParent, String shopName, boolean enableCustomName) {
+		this(loc, shop, useParent, EntityType.VILLAGER, shopName, enableCustomName);
 	}
 
-	public GameStore(Location loc, String shop, boolean useParent, EntityType type) {
+	public GameStore(Location loc, String shop, boolean useParent, EntityType type, String shopName, boolean enableCustomName) {
 		if (type == null || !type.isAlive()) {
 			type = EntityType.VILLAGER;
 		}
@@ -25,11 +27,17 @@ public class GameStore {
 		this.shop = shop;
 		this.useParent = useParent;
 		this.type = type;
+		this.shopName = shopName;
+		this.enableCustomName = enableCustomName;
 	}
 
 	public LivingEntity spawn() {
 		if (entity == null) {
 			entity = (LivingEntity) loc.getWorld().spawnEntity(loc, type);
+			if (enableCustomName) {
+				entity.setCustomName(shopName);
+				entity.setCustomNameVisible(true);
+			}
 			try {
 				entity.setAI(false);
 				if (entity instanceof Villager) {
@@ -72,9 +80,17 @@ public class GameStore {
 	public String getShopFile() {
 		return shop;
 	}
+	
+	public String getShopCustomName() {
+		return shopName;
+	}
 
 	public boolean getUseParent() {
 		return useParent && shop != null;
+	}
+	
+	public boolean isShopCustomName() {
+		return enableCustomName;
 	}
 
 }
