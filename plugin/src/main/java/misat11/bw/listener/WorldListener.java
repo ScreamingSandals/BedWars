@@ -121,7 +121,7 @@ public class WorldListener implements Listener {
 		
 		for (String gameName : Main.getGameNames()) {
 			Game game = Main.getGame(gameName);
-			if (game.getStatus() == GameStatus.RUNNING) {
+			if (game.getStatus() == GameStatus.RUNNING && game.getOriginalOrInheritedPreventSpawningMobs()) {
 				if (GameCreator.isInArea(event.getLocation(), game.getPos1(), game.getPos2())) {
 					event.setCancelled(true);
 					return;
