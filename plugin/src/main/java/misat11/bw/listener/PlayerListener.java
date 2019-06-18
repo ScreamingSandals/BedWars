@@ -675,6 +675,8 @@ public class PlayerListener implements Listener {
 
 			format = format.replace("%prefix%", "");
 			format = format.replace("%suffix%", "");
+			
+			format = ChatColor.translateAlternateColorCodes('&', format);
 
 			event.setFormat(format + event.getMessage());
 			if (Main.getConfigurator().config.getBoolean("chat.separate-game-chat")) {
