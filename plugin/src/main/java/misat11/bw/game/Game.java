@@ -1157,7 +1157,7 @@ public class Game implements misat11.bw.api.Game {
 		}
 	}
 
-	public void makeSpectator(GamePlayer player) {
+	public Location makeSpectator(GamePlayer player) {
 		player.isSpectator = true;
 		player.player.teleport(specSpawn);
 		player.player.setAllowFlight(true);
@@ -1173,6 +1173,7 @@ public class Game implements misat11.bw.api.Game {
 		leaveMeta.setDisplayName(i18n("leave_from_game_item", false));
 		leave.setItemMeta(leaveMeta);
 		player.player.getInventory().setItem(8, leave);
+		return specSpawn;
 
 	}
 

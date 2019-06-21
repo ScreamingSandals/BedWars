@@ -167,7 +167,7 @@ public class PlayerListener implements Listener {
 				return;
 			}
 			if (gPlayer.isSpectator) {
-				gPlayer.getGame().makeSpectator(gPlayer);
+				event.setRespawnLocation(gPlayer.getGame().makeSpectator(gPlayer));
 			} else {
 				event.setRespawnLocation(gPlayer.getGame().getPlayerTeam(gPlayer).teamInfo.spawn);
 				SpawnEffects.spawnEffect(gPlayer.getGame(), gPlayer.player, "game-effects.respawn");
