@@ -58,6 +58,7 @@ import misat11.bw.utils.Sounds;
 import misat11.bw.utils.SpawnEffects;
 import misat11.bw.utils.TeamJoinMetaDataValue;
 import misat11.bw.utils.TeamSelectorInventory;
+import misat11.lib.nms.NMSUtils;
 import net.milkbowl.vault.chat.Chat;
 
 import static misat11.lib.lang.I18n.i18n;
@@ -143,22 +144,7 @@ public class PlayerListener implements Listener {
 					}
 				}
 			}
-			if (Main.isSpigot()) {
-				new BukkitRunnable() {
-					public void run() {
-						victim.spigot().respawn();
-					}
-				}.runTaskLater(Main.getInstance(), 20L);
-			} else if (Main.isNMS()) {
-				try {
-					Class<?> clazz = Class.forName(
-							"misat11.bw.nms." + Main.getNMSVersion().toLowerCase() + ".PerformRespawnRunnable");
-					((BukkitRunnable) clazz.getDeclaredConstructor(Player.class).newInstance(victim))
-							.runTaskLater(Main.getInstance(), 20L);
-				} catch (Throwable tr) {
-
-				}
-			}
+			NMSUtils.respawn(Main.getInstance(), victim, 20L);
 		}
 	}
 

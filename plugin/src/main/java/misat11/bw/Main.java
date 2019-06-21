@@ -43,6 +43,7 @@ import misat11.bw.utils.GameSign;
 import misat11.bw.utils.ShopMenu;
 import misat11.bw.utils.SignManager;
 import misat11.lib.lang.I18n;
+import misat11.lib.nms.NMSUtils;
 import misat11.lib.sgui.InventoryListener;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
@@ -270,25 +271,9 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 		instance = this;
 		version = this.getDescription().getVersion();
 		snapshot = version.toLowerCase().contains("pre");
-
-		try {
-			Class.forName("org.bukkit.craftbukkit.Main");
-			isNMS = true;
-		} catch (ClassNotFoundException e) {
-			isNMS = false;
-		}
-
-		if (isNMS) {
-			String packName = Bukkit.getServer().getClass().getPackage().getName();
-			nmsVersion = packName.substring(packName.lastIndexOf('.') + 1);
-		}
-
-		try {
-			Package spigotPackage = Package.getPackage("org.spigotmc");
-			isSpigot = (spigotPackage != null);
-		} catch (Exception e) {
-			isSpigot = false;
-		}
+		isNMS = NMSUtils.NMS_BASED_SERVER;
+		nmsVersion = NMSUtils.NMS_VERSION;
+		isSpigot = NMSUtils.IS_SPIGOT_SERVER;
 
 		if (!getServer().getPluginManager().isPluginEnabled("Vault")) {
 			isVault = false;
