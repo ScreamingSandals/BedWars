@@ -977,7 +977,10 @@ public class Game implements misat11.bw.api.Game {
 		List<GamePlayer> clonedPlayers = (List<GamePlayer>) ((ArrayList<GamePlayer>) players).clone();
 		for (GamePlayer p : clonedPlayers)
 			p.changeGame(null);
-		if (status != GameStatus.REBUILDING) {
+		if (status == GameStatus.RUNNING) { // Fix for arena is not rebuilt when game is stopped
+			status = GameStatus.REBUILDING;
+			afterRebuild = GameStatus.DISABLED;
+		} else if (status != GameStatus.REBUILDING) {
 			status = GameStatus.DISABLED;
 			updateSigns();
 		} else {
