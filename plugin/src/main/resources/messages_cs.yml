@@ -124,6 +124,9 @@ admin_command_store_living_entity_type_set: "§aTyp entity obchodu byl nastaven 
 
 admin_command_upgrades: "§aUpgrades byly nastaveny na hodnotu §7%bool%§a!"
 
+safe_reload: "§aPřed reloadem čekám na bezpečné zastavení všech her nebo na uplynutí 60 sekund!"
+safe_reload_failed_to_stop_game: "§cNěkteré hry nebyly ukončeny v časovém limitu, jejich aréna tak mohla být poškozena!"
+
 holo_not_enabled: "§cHologramy nejsou povoleny!"
 holo_added: "§aHologram byl úspěšně přidán!"
 click_to_holo_for_remove: "§eNyní klikněte na hologram, který chcete odebrat!"

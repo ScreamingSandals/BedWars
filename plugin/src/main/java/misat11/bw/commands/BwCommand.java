@@ -20,10 +20,12 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.StringUtil;
 
 import misat11.bw.Main;
 import misat11.bw.api.ArenaTime;
+import misat11.bw.api.GameStatus;
 import misat11.bw.api.GameStore;
 import misat11.bw.game.Game;
 import misat11.bw.game.GameCreator;
@@ -445,6 +447,12 @@ public class BwCommand implements CommandExecutor, TabCompleter {
 															false)));
 
 											player.sendMessage(i18n("arena_info_config_constant", false)
+													.replace("%constant%", "damageWhenPlayerIsNotInArena")
+													.replace("%value%", i18n("arena_info_config_"
+															+ game.getDamageWhenPlayerIsNotInArena().name().toLowerCase(),
+															false)));
+
+											player.sendMessage(i18n("arena_info_config_constant", false)
 													.replace("%constant%", "upgrades (experimental)").replace("%value%",
 															i18n("arena_info_config_"
 																	+ String.valueOf(game.isUpgradesEnabled()),
@@ -544,9 +552,42 @@ public class BwCommand implements CommandExecutor, TabCompleter {
 					}
 				} else if (args[0].equalsIgnoreCase("reload")) {
 					if (player.hasPermission(ADMIN_PERMISSION)) {
-						Bukkit.getServer().getPluginManager().disablePlugin(Main.getInstance());
-						Bukkit.getServer().getPluginManager().enablePlugin(Main.getInstance());
-						player.sendMessage("Plugin reloaded!");
+						
+						player.sendMessage(i18n("safe_reload"));
+						
+						for (String game : Main.getGameNames()) {
+							Main.getGame(game).stop();
+						}
+						
+						new BukkitRunnable() {
+
+							public int timer = 60;
+							
+							@Override
+							public void run() {
+								boolean gameRuns = false;
+								for (String game : Main.getGameNames()) {
+									if (Main.getGame(game).getStatus() != GameStatus.DISABLED) {
+										gameRuns = true;
+										break;
+									}
+								}
+								
+								if (gameRuns && timer == 0) {
+									player.sendMessage(i18n("safe_reload_failed_to_stop_game"));
+								}
+								
+								if (!gameRuns || timer == 0) {
+									this.cancel();
+									Bukkit.getServer().getPluginManager().disablePlugin(Main.getInstance());
+									Bukkit.getServer().getPluginManager().enablePlugin(Main.getInstance());
+									player.sendMessage("Plugin reloaded!");
+									return;
+								}
+								timer--;
+							}
+							
+						}.runTaskTimer(Main.getInstance(), 0L, 20L);
 					} else {
 						player.sendMessage(i18n("no_permissions"));
 					}
@@ -658,7 +699,8 @@ public class BwCommand implements CommandExecutor, TabCompleter {
 									"spectatorGm3", "playerDrops", "friendlyfire", "coloredLeatherByTeamInLobby",
 									"keepInventory", "crafting", "gamebossbar", "lobbybossbar", "gamescoreboard",
 									"lobbyscoreboard", "preventspawningmobs", "spawnerholograms", "spawnerDisableMerge",
-									"gamestartitems", "playerrespawnitems", "spawnerhologramscountdown");
+									"gamestartitems", "playerrespawnitems", "spawnerhologramscountdown",
+									"damagewhenplayerisnotinarena");
 							StringUtil.copyPartialMatches(args[3], cmds, completionList);
 						}
 						if (args.length == 5) {

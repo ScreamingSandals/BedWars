@@ -19,6 +19,7 @@ spawner-disable-merge: true
 prevent-lobby-spawn-mobs-in-radius: 16
 spawner-holo-height: 0.25
 spawner-holograms-countdown: true
+damage-when-player-is-not-in-arena: false
 
 # Commands whitelist
 allowed-commands:

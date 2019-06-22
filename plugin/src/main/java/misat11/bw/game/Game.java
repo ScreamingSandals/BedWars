@@ -165,6 +165,9 @@ public class Game implements misat11.bw.api.Game {
 	public static final String SPAWNER_HOLOGRAMS_COUNTDOWN = "spawner-holograms-countdown";
 	private InGameConfigBooleanConstants spawnerHologramsCountdown = InGameConfigBooleanConstants.INHERIT;
 
+	public static final String DAMAGE_WHEN_PLAYER_IS_NOT_IN_ARENA = "damage-when-player-is-not-in-arena";
+	private InGameConfigBooleanConstants damageWhenPlayerIsNotInArena = InGameConfigBooleanConstants.INHERIT;
+
 	private boolean upgrades = false;
 	private static final int POST_GAME_WAITING = 3;
 
@@ -184,7 +187,7 @@ public class Game implements misat11.bw.api.Game {
 	private List<ArmorStand> armorStandsInGame = new ArrayList<ArmorStand>();
 	private boolean postGameWaiting = false;
 	private Map<ItemSpawner, ArmorStand> countdownArmorStands = new HashMap<ItemSpawner, ArmorStand>();
-	
+
 	private Game() {
 
 	}
@@ -714,7 +717,8 @@ public class Game implements misat11.bw.api.Game {
 					Map<String, String> map = (Map<String, String>) store;
 					game.gameStore.add(new GameStore(readLocationFromString(game.world, map.get("loc")),
 							map.get("shop"), "true".equals(map.getOrDefault("parent", "true")),
-							EntityType.valueOf(map.getOrDefault("type", "VILLAGER").toUpperCase()), map.getOrDefault("name", ""), map.containsKey("name")));
+							EntityType.valueOf(map.getOrDefault("type", "VILLAGER").toUpperCase()),
+							map.getOrDefault("name", ""), map.containsKey("name")));
 				} else if (store instanceof String) {
 					game.gameStore.add(new GameStore(readLocationFromString(game.world, (String) store), null, true,
 							EntityType.VILLAGER, "", false));
@@ -747,12 +751,13 @@ public class Game implements misat11.bw.api.Game {
 		game.spawnerHolograms = readBooleanConstant(configMap.getString("constant." + SPAWNER_HOLOGRAMS, "inherit"));
 		game.spawnerDisableMerge = readBooleanConstant(
 				configMap.getString("constant." + SPAWNER_DISABLE_MERGE, "inherit"));
-		game.gameStartItems = readBooleanConstant(
-				configMap.getString("constant." + GAME_START_ITEMS, "inherit"));
+		game.gameStartItems = readBooleanConstant(configMap.getString("constant." + GAME_START_ITEMS, "inherit"));
 		game.playerRespawnItems = readBooleanConstant(
 				configMap.getString("constant." + PLAYER_RESPAWN_ITEMS, "inherit"));
 		game.spawnerHologramsCountdown = readBooleanConstant(
 				configMap.getString("constant." + SPAWNER_HOLOGRAMS_COUNTDOWN, "inherit"));
+		game.damageWhenPlayerIsNotInArena = readBooleanConstant(
+				configMap.getString("constant." + DAMAGE_WHEN_PLAYER_IS_NOT_IN_ARENA, "inherit"));
 
 		game.arenaTime = ArenaTime.valueOf(configMap.getString("arenaTime", ArenaTime.WORLD.name()).toUpperCase());
 		game.arenaWeather = loadWeather(configMap.getString("arenaWeather", "default").toUpperCase());
@@ -927,6 +932,8 @@ public class Game implements misat11.bw.api.Game {
 		configMap.set("constant." + GAME_START_ITEMS, writeBooleanConstant(gameStartItems));
 		configMap.set("constant." + PLAYER_RESPAWN_ITEMS, writeBooleanConstant(playerRespawnItems));
 		configMap.set("constant." + SPAWNER_HOLOGRAMS_COUNTDOWN, writeBooleanConstant(spawnerHologramsCountdown));
+		configMap.set("constant." + DAMAGE_WHEN_PLAYER_IS_NOT_IN_ARENA,
+				writeBooleanConstant(damageWhenPlayerIsNotInArena));
 
 		configMap.set("arenaTime", arenaTime.name());
 		configMap.set("arenaWeather", arenaWeather == null ? "default" : arenaWeather.name());
@@ -974,13 +981,13 @@ public class Game implements misat11.bw.api.Game {
 	}
 
 	public void stop() {
+		if (status == GameStatus.DISABLED) {
+			return; // Game is already stopped
+		}
 		List<GamePlayer> clonedPlayers = (List<GamePlayer>) ((ArrayList<GamePlayer>) players).clone();
 		for (GamePlayer p : clonedPlayers)
 			p.changeGame(null);
-		if (status == GameStatus.RUNNING) { // Fix for arena is not rebuilt when game is stopped
-			status = GameStatus.REBUILDING;
-			afterRebuild = GameStatus.DISABLED;
-		} else if (status != GameStatus.REBUILDING) {
+		if (status != GameStatus.REBUILDING) {
 			status = GameStatus.DISABLED;
 			updateSigns();
 		} else {
@@ -1162,14 +1169,21 @@ public class Game implements misat11.bw.api.Game {
 
 	public Location makeSpectator(GamePlayer player) {
 		player.isSpectator = true;
-		player.player.teleport(specSpawn);
-		player.player.setAllowFlight(true);
-		player.player.setFlying(true);
-		if (getOriginalOrInheritedSpectatorGm3()) {
-			player.player.setGameMode(GameMode.SPECTATOR);
-		} else {
-			player.player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1));
-		}
+		new BukkitRunnable() {
+
+			@Override
+			public void run() {
+				player.player.teleport(specSpawn);
+				player.player.setAllowFlight(true);
+				player.player.setFlying(true);
+				if (getOriginalOrInheritedSpectatorGm3()) {
+					player.player.setGameMode(GameMode.SPECTATOR);
+				} else {
+					player.player
+							.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1));
+				}
+			}
+		}.runTask(Main.getInstance());
 
 		ItemStack leave = Main.getConfigurator().readDefinedItem("leavegame", "SLIME_BALL");
 		ItemMeta leaveMeta = leave.getItemMeta();
@@ -1331,12 +1345,13 @@ public class Game implements misat11.bw.api.Game {
 				for (ItemSpawner spawner : spawners) {
 					ItemSpawnerType type = spawner.type;
 					int cycle = type.getInterval();
-					
+
 					if (getOriginalOrInheritedSpawnerHologramsCountdown() && cycle > 1) {
 						int modulo = countdown % cycle;
-						countdownArmorStands.get(spawner).setCustomName(i18nonly("countdown_spawning").replace("%seconds%", Integer.toString(modulo == 0 ? cycle : modulo)));
+						countdownArmorStands.get(spawner).setCustomName(i18nonly("countdown_spawning")
+								.replace("%seconds%", Integer.toString(modulo == 0 ? cycle : modulo)));
 					}
-					
+
 					if ((countdown % cycle) == 0) {
 
 						BedwarsResourceSpawnEvent resourceSpawnEvent = new BedwarsResourceSpawnEvent(this, spawner,
@@ -1441,7 +1456,8 @@ public class Game implements misat11.bw.api.Game {
 				if (getOriginalOrInheritedSpawnerHolograms()) {
 					boolean countdownEnabled = getOriginalOrInheritedSpawnerHologramsCountdown();
 					for (ItemSpawner spawner : spawners) {
-						Location loc = spawner.loc.clone().add(0, Main.getConfigurator().config.getDouble("spawner-holo-height", 0.25), 0);
+						Location loc = spawner.loc.clone().add(0,
+								Main.getConfigurator().config.getDouble("spawner-holo-height", 0.25), 0);
 						if (countdownEnabled) {
 							loc.add(0, 0.30, 0);
 						}
@@ -1462,14 +1478,19 @@ public class Game implements misat11.bw.api.Game {
 
 						armorStandsInGame.add(stand);
 						Main.registerGameEntity(stand, this);
-						
+
 						if (countdownEnabled) {
-							loc = spawner.loc.clone().add(0, Main.getConfigurator().config.getDouble("spawner-holo-height", 0.25), 0);
-							ArmorStand countdownStand = (ArmorStand) loc.getWorld().spawnEntity(loc, EntityType.ARMOR_STAND);
+							loc = spawner.loc.clone().add(0,
+									Main.getConfigurator().config.getDouble("spawner-holo-height", 0.25), 0);
+							ArmorStand countdownStand = (ArmorStand) loc.getWorld().spawnEntity(loc,
+									EntityType.ARMOR_STAND);
 
 							countdownStand.setGravity(false);
 							countdownStand.setCanPickupItems(false);
-							countdownStand.setCustomName(spawner.type.getInterval() < 2 ? i18nonly("every_second_spawning") : i18nonly("countdown_spawning").replace("%seconds%", Integer.toString(spawner.type.getInterval())));
+							countdownStand
+									.setCustomName(spawner.type.getInterval() < 2 ? i18nonly("every_second_spawning")
+											: i18nonly("countdown_spawning").replace("%seconds%",
+													Integer.toString(spawner.type.getInterval())));
 							countdownStand.setCustomNameVisible(true);
 							countdownStand.setVisible(false);
 							countdownStand.setSmall(true);
@@ -1498,7 +1519,8 @@ public class Game implements misat11.bw.api.Game {
 						player.player.teleport(team.teamInfo.spawn);
 						SpawnEffects.spawnEffect(this, player.player, "game-effects.start");
 						if (getOriginalOrInheritedGameStartItems()) {
-							List<ItemStack> givedGameStartItems = (List<ItemStack>) Main.getConfigurator().config.getList("gived-game-start-items");
+							List<ItemStack> givedGameStartItems = (List<ItemStack>) Main.getConfigurator().config
+									.getList("gived-game-start-items");
 							for (ItemStack stack : givedGameStartItems) {
 								player.player.getInventory().addItem(stack);
 							}
@@ -2487,11 +2509,11 @@ public class Game implements misat11.bw.api.Game {
 		return playerRespawnItems.isOriginal() ? playerRespawnItems.getValue()
 				: Main.getConfigurator().config.getBoolean(PLAYER_RESPAWN_ITEMS);
 	}
-	
+
 	public void setGameStartItems(InGameConfigBooleanConstants gameStartItems) {
 		this.gameStartItems = gameStartItems;
 	}
-	
+
 	public void setPlayerRespawnItems(InGameConfigBooleanConstants playerRespawnItems) {
 		this.playerRespawnItems = playerRespawnItems;
 	}
@@ -2506,9 +2528,24 @@ public class Game implements misat11.bw.api.Game {
 		return spawnerHologramsCountdown.isOriginal() ? spawnerHologramsCountdown.getValue()
 				: Main.getConfigurator().config.getBoolean(SPAWNER_HOLOGRAMS_COUNTDOWN);
 	}
-	
+
 	public void setSpawnerHologramsCountdown(InGameConfigBooleanConstants spawnerHologramsCountdown) {
 		this.spawnerHologramsCountdown = spawnerHologramsCountdown;
+	}
+
+	@Override
+	public InGameConfigBooleanConstants getDamageWhenPlayerIsNotInArena() {
+		return damageWhenPlayerIsNotInArena;
+	}
+
+	@Override
+	public boolean getOriginalOrInheritedDamageWhenPlayerIsNotInArena() {
+		return damageWhenPlayerIsNotInArena.isOriginal() ? damageWhenPlayerIsNotInArena.getValue()
+				: Main.getConfigurator().config.getBoolean(DAMAGE_WHEN_PLAYER_IS_NOT_IN_ARENA);
+	}
+
+	public void setDamageWhenPlayerIsNotInArena(InGameConfigBooleanConstants damageWhenPlayerIsNotInArena) {
+		this.damageWhenPlayerIsNotInArena = damageWhenPlayerIsNotInArena;
 	}
 
 }

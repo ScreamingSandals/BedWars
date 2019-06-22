@@ -124,6 +124,9 @@ admin_command_store_living_entity_type_set: "§aStore's living entity type has b
 
 admin_command_upgrades: "§aUpgrades has been set to §7%bool%§a!"
 
+safe_reload: "§aI'm waiting for safe stop of all games or for 60 seconds before reload!"
+safe_reload_failed_to_stop_game: "§cSome games have not ended within the time limit, so their arena may have been damaged!"
+
 holo_not_enabled: "§cHolographic is disabled. Do you have Holographic Displays installed?"
 holo_added: "§aHolographic added to your position!"
 click_to_holo_for_remove: "§eNow click the holographic you want to remove!"

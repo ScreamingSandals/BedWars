@@ -33,6 +33,7 @@ import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
@@ -686,6 +687,24 @@ public class PlayerListener implements Listener {
 					if (recipientGame != null) {
 						recipients.remove();
 					}
+				}
+			}
+		}
+	}
+	
+	@EventHandler
+	public void onMove(PlayerMoveEvent event) {
+		if (event.isCancelled()) {
+			return;
+		}
+		
+		Player player = event.getPlayer();
+		if (Main.isPlayerInGame(player)) {
+			GamePlayer gPlayer = Main.getPlayerGameProfile(player);
+			Game game = gPlayer.getGame();
+			if (game.getOriginalOrInheritedDamageWhenPlayerIsNotInArena() && game.getStatus() == GameStatus.RUNNING && !gPlayer.isSpectator) {
+				if (!GameCreator.isInArea(event.getTo(), game.getPos1(), game.getPos2())) {
+					player.damage(5);
 				}
 			}
 		}

@@ -407,6 +407,9 @@ public class GameCreator {
 		case "spawnerhologramscountdown":
 			game.setSpawnerHologramsCountdown(cons);
 			break;
+		case "damagewhenplayerisnotinarena":
+			game.setDamageWhenPlayerIsNotInArena(cons);
+			break;
 		default:
 			return i18n("admin_command_invalid_config_variable_name");
 		}

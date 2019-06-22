@@ -185,6 +185,9 @@ public interface Game {
 	public InGameConfigBooleanConstants getSpawnerHologramsCountdown();
 	public boolean getOriginalOrInheritedSpawnerHologramsCountdown();
 	
+	public InGameConfigBooleanConstants getDamageWhenPlayerIsNotInArena();
+	public boolean getOriginalOrInheritedDamageWhenPlayerIsNotInArena();
+	
 	public ArenaTime getArenaTime();
 	public WeatherType getArenaWeather();
 	public BarColor getLobbyBossBarColor();
