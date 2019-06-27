@@ -842,6 +842,8 @@ public class BwCommand implements CommandExecutor, TabCompleter {
 
 		if (Main.isSpigot()) {
 			player.sendMessage(select);
+			new BukkitRunnable() { // Fix loading plugin on CraftBukkit (non-Spigot) server
+				public void run() {
 			TextComponent[] hoverComponent = new TextComponent[] { new TextComponent(click) };
 
 			TextComponent msg1 = new TextComponent(base);
@@ -873,6 +875,8 @@ public class BwCommand implements CommandExecutor, TabCompleter {
 					new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/bw admin " + game.getName() + " info config"));
 			msg5.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverComponent));
 			player.spigot().sendMessage(msg5);
+				}
+			}.runTask(Main.getInstance());
 		} else {
 			player.sendMessage(select);
 			player.sendMessage(base);
