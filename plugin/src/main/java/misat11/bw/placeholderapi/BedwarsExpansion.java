@@ -8,7 +8,7 @@ import misat11.bw.api.statistics.PlayerStatistic;
 import misat11.bw.game.CurrentTeam;
 import misat11.bw.game.Game;
 import misat11.bw.game.GamePlayer;
-import net.md_5.bungee.api.ChatColor;
+import org.bukkit.ChatColor;
 
 public class BedwarsExpansion extends PlaceholderExpansion {
 
