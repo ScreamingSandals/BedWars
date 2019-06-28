@@ -62,7 +62,7 @@ import misat11.bw.utils.TeamSelectorInventory;
 import misat11.lib.nms.NMSUtils;
 import net.milkbowl.vault.chat.Chat;
 
-import static misat11.lib.lang.I18n.i18n;
+import static misat11.lib.lang.I18n.*;
 
 import java.util.Iterator;
 import java.util.List;
@@ -80,6 +80,17 @@ public class PlayerListener implements Listener {
 			if (game.getStatus() == GameStatus.RUNNING) {
 				if (!game.getOriginalOrInheritedPlayerDrops()) {
 					event.getDrops().clear();
+				}
+				if (Main.getConfigurator().config.getBoolean("chat.send-death-messages-just-in-game")) {
+					String oldDeathMessage = event.getDeathMessage();
+					
+					// TODO custom death messages
+					
+					event.setDeathMessage(null);
+					String newDeathMessage = i18nonly("prefix") + " " + oldDeathMessage;
+					for (Player player : game.getConnectedPlayers()) {
+						player.sendMessage(newDeathMessage);
+					}
 				}
 				CurrentTeam team = game.getPlayerTeam(gVictim);
 				SpawnEffects.spawnEffect(game, victim, "game-effects.kill");

@@ -190,6 +190,7 @@ chat:
    override: true
    format: "<%teamcolor%%name%§r> "
    separate-game-chat: false
+   send-death-messages-just-in-game: true
   
 # Command rewards (possible placeholders {player},{score})
 rewards:

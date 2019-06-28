@@ -251,6 +251,7 @@ public class Configurator {
 		checkOrSetConfig(modify, "chat.override", true);
 		checkOrSetConfig(modify, "chat.format", "<%teamcolor%%name%§r> ");
 		checkOrSetConfig(modify, "chat.separate-game-chat", false);
+		checkOrSetConfig(modify, "chat.send-death-messages-just-in-game", true);
 		checkOrSetConfig(modify, "rewards.enabled", false);
 		checkOrSetConfig(modify, "rewards.player-win", new ArrayList<>());
 		checkOrSetConfig(modify, "rewards.player-end-game", new ArrayList<>());
