@@ -58,9 +58,10 @@ public class PlayerStatisticManager {
 
 	public void initializeDatabase() {
 		Main.getInstance().getLogger().info("Loading statistics from database ...");
-		
 
 		try {
+			Main.getDatabaseManager().initialize();
+			
 			Connection connection = Main.getDatabaseManager().getConnection();
 			connection.setAutoCommit(false);
 			PreparedStatement preparedStatement = connection
