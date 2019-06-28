@@ -2,6 +2,7 @@ package misat11.bw.listener;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.ArmorStand;
@@ -26,6 +27,7 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerBedEnterEvent;
+import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -717,6 +719,36 @@ public class PlayerListener implements Listener {
 				if (!GameCreator.isInArea(event.getTo(), game.getPos1(), game.getPos2())) {
 					player.damage(5);
 				}
+			}
+		}
+	}
+	
+	@EventHandler
+	public void onPlaceLiquid(PlayerBucketEmptyEvent event) {
+		if (event.isCancelled()) {
+			return;
+		}
+		
+		Player player = event.getPlayer();
+		if (Main.isPlayerInGame(player)) {
+			GamePlayer gPlayer = Main.getPlayerGameProfile(player);
+			Game game = gPlayer.getGame();
+			
+			Location loc = event.getBlockClicked().getLocation();
+			
+			loc.add(event.getBlockFace().getDirection());
+			
+			Block block = loc.getBlock();
+			
+			if (game.getStatus() == GameStatus.RUNNING) {
+				if (block.getType() == Material.AIR
+						|| game.getRegion().isBlockAddedDuringGame(block.getLocation())) {
+					game.getRegion().addBuildedDuringGame(block.getLocation());
+				} else {
+					event.setCancelled(true);
+				}
+			} else if (game.getStatus() != GameStatus.DISABLED) {
+				event.setCancelled(true);
 			}
 		}
 	}
