@@ -171,6 +171,9 @@ public class Game implements misat11.bw.api.Game {
 	public static final String DAMAGE_WHEN_PLAYER_IS_NOT_IN_ARENA = "damage-when-player-is-not-in-arena";
 	private InGameConfigBooleanConstants damageWhenPlayerIsNotInArena = InGameConfigBooleanConstants.INHERIT;
 
+	public static final String REMOVE_UNUSED_TARGET_BLOCKS = "remove-unused-target-blocks";
+	private InGameConfigBooleanConstants removeUnusedTargetBlocks = InGameConfigBooleanConstants.INHERIT;
+
 	private boolean upgrades = false;
 	private static final int POST_GAME_WAITING = 3;
 
@@ -694,8 +697,8 @@ public class Game implements misat11.bw.api.Game {
 				Core multiverse = (Core) Bukkit.getPluginManager().getPlugin("Multiverse-Core");
 				MVWorldManager manager = multiverse.getMVWorldManager();
 				if (manager.loadWorld(worldName)) {
-					Main.getInstance().getLogger()
-							.info("World " + worldName + " was succesfully loaded with Multiverse-Core, continue in arena loading.");
+					Main.getInstance().getLogger().info("World " + worldName
+							+ " was succesfully loaded with Multiverse-Core, continue in arena loading.");
 
 					game.world = Bukkit.getWorld(worldName);
 				} else {
@@ -785,6 +788,8 @@ public class Game implements misat11.bw.api.Game {
 				configMap.getString("constant." + SPAWNER_HOLOGRAMS_COUNTDOWN, "inherit"));
 		game.damageWhenPlayerIsNotInArena = readBooleanConstant(
 				configMap.getString("constant." + DAMAGE_WHEN_PLAYER_IS_NOT_IN_ARENA, "inherit"));
+		game.removeUnusedTargetBlocks = readBooleanConstant(
+				configMap.getString("constant." + REMOVE_UNUSED_TARGET_BLOCKS, "inherit"));
 
 		game.arenaTime = ArenaTime.valueOf(configMap.getString("arenaTime", ArenaTime.WORLD.name()).toUpperCase());
 		game.arenaWeather = loadWeather(configMap.getString("arenaWeather", "default").toUpperCase());
@@ -961,6 +966,7 @@ public class Game implements misat11.bw.api.Game {
 		configMap.set("constant." + SPAWNER_HOLOGRAMS_COUNTDOWN, writeBooleanConstant(spawnerHologramsCountdown));
 		configMap.set("constant." + DAMAGE_WHEN_PLAYER_IS_NOT_IN_ARENA,
 				writeBooleanConstant(damageWhenPlayerIsNotInArena));
+		configMap.set("constant." + REMOVE_UNUSED_TARGET_BLOCKS, writeBooleanConstant(removeUnusedTargetBlocks));
 
 		configMap.set("arenaTime", arenaTime.name());
 		configMap.set("arenaWeather", arenaWeather == null ? "default" : arenaWeather.name());
@@ -1556,6 +1562,32 @@ public class Game implements misat11.bw.api.Game {
 					Sounds.playSound(player.player, player.player.getLocation(),
 							Main.getConfigurator().config.getString("sounds.on_game_start"),
 							Sounds.ENTITY_PLAYER_LEVELUP, 1, 1);
+				}
+
+				if (getOriginalOrInheritedRemoveUnusedTargetBlocks()) {
+					for (Team team : teams) {
+						CurrentTeam ct = null;
+						for (CurrentTeam curt : teamsInGame) {
+							if (curt.teamInfo == team) {
+								ct = curt;
+								break;
+							}
+						}
+						if (ct == null) {
+							Location loc = team.bed;
+							Block block = team.bed.getBlock();
+							if (region.isBedBlock(block.getState())) {
+								region.putOriginalBlock(block.getLocation(), block.getState());
+								Block neighbor = region.getBedNeighbor(block);
+								region.putOriginalBlock(neighbor.getLocation(), neighbor.getState());
+								block.setType(Material.AIR);
+								neighbor.setType(Material.AIR);
+							} else {
+								region.putOriginalBlock(loc, block.getState());
+								block.setType(Material.AIR);
+							}
+						}
+					}
 				}
 
 				BedwarsGameStartedEvent startedEvent = new BedwarsGameStartedEvent(this);
@@ -2573,6 +2605,21 @@ public class Game implements misat11.bw.api.Game {
 
 	public void setDamageWhenPlayerIsNotInArena(InGameConfigBooleanConstants damageWhenPlayerIsNotInArena) {
 		this.damageWhenPlayerIsNotInArena = damageWhenPlayerIsNotInArena;
+	}
+
+	@Override
+	public InGameConfigBooleanConstants getRemoveUnusedTargetBlocks() {
+		return removeUnusedTargetBlocks;
+	}
+
+	@Override
+	public boolean getOriginalOrInheritedRemoveUnusedTargetBlocks() {
+		return removeUnusedTargetBlocks.isOriginal() ? removeUnusedTargetBlocks.getValue()
+				: Main.getConfigurator().config.getBoolean(REMOVE_UNUSED_TARGET_BLOCKS);
+	}
+
+	public void setRemoveUnusedTargetBlocks(InGameConfigBooleanConstants removeUnusedTargetBlocks) {
+		this.removeUnusedTargetBlocks = removeUnusedTargetBlocks;
 	}
 
 }

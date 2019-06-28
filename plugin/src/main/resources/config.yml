@@ -20,6 +20,7 @@ prevent-lobby-spawn-mobs-in-radius: 16
 spawner-holo-height: 0.25
 spawner-holograms-countdown: true
 damage-when-player-is-not-in-arena: false
+remove-unused-target-blocks: true
 
 # Commands whitelist
 allowed-commands:

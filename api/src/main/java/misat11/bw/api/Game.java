@@ -188,6 +188,9 @@ public interface Game {
 	public InGameConfigBooleanConstants getDamageWhenPlayerIsNotInArena();
 	public boolean getOriginalOrInheritedDamageWhenPlayerIsNotInArena();
 	
+	public InGameConfigBooleanConstants getRemoveUnusedTargetBlocks();
+	public boolean getOriginalOrInheritedRemoveUnusedTargetBlocks();
+	
 	public ArenaTime getArenaTime();
 	public WeatherType getArenaWeather();
 	public BarColor getLobbyBossBarColor();
