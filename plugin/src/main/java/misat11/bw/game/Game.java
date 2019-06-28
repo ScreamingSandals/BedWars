@@ -37,6 +37,12 @@ import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
 
+import com.onarandombox.MultiverseCore.MVWorld;
+import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.api.Core;
+import com.onarandombox.MultiverseCore.api.MVWorldManager;
+import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+
 import misat11.bw.Main;
 import misat11.bw.api.ArenaTime;
 import misat11.bw.api.GameStatus;
@@ -681,7 +687,31 @@ public class Game implements misat11.bw.api.Game {
 		game.name = configMap.getString("name");
 		game.pauseCountdown = configMap.getInt("pauseCountdown");
 		game.gameTime = configMap.getInt("gameTime");
-		game.world = Bukkit.getWorld(configMap.getString("world"));
+		String worldName = configMap.getString("world");
+		game.world = Bukkit.getWorld(worldName);
+		if (game.world == null) {
+			if (Bukkit.getPluginManager().isPluginEnabled("Multiverse-Core")) {
+				Main.getInstance().getLogger().warning("World " + worldName
+						+ " was not found, but we found Multiverse-Core, so we try to load this world.");
+
+				Core multiverse = (Core) Bukkit.getPluginManager().getPlugin("Multiverse-Core");
+				MVWorldManager manager = multiverse.getMVWorldManager();
+				if (manager.loadWorld(worldName)) {
+					Main.getInstance().getLogger()
+							.info("World " + worldName + " was succesfully loaded with Multiverse-Core, continue in arena loading.");
+
+					game.world = Bukkit.getWorld(worldName);
+				} else {
+					Main.getInstance().getLogger().severe(
+							"Arena " + game.name + " can't be loaded, because world " + worldName + " is missing!");
+					return null;
+				}
+			} else {
+				Main.getInstance().getLogger()
+						.severe("Arena " + game.name + " can't be loaded, because world " + worldName + " is missing!");
+				return null;
+			}
+		}
 		game.pos1 = readLocationFromString(game.world, configMap.getString("pos1"));
 		game.pos2 = readLocationFromString(game.world, configMap.getString("pos2"));
 		game.specSpawn = readLocationFromString(game.world, configMap.getString("specSpawn"));
