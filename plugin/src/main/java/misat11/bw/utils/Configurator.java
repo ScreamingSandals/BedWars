@@ -199,6 +199,7 @@ public class Configurator {
 		checkOrSetConfig(modify, "title.fadeOut", 0);
 		checkOrSetConfig(modify, "items.jointeam", "COMPASS");
 		checkOrSetConfig(modify, "items.leavegame", "SLIME_BALL");
+		checkOrSetConfig(modify, "items.startgame", "DIAMOND");
 		checkOrSetConfig(modify, "items.shopback", "BARRIER");
 		checkOrSetConfig(modify, "items.shopcosmetic", "AIR");
 		checkOrSetConfig(modify, "items.pageback", "ARROW");

@@ -37,6 +37,7 @@ buy_failed: "§cDu hast nicht genug Resourccen um §7%item% §czu kaufen! Du bra
 
 compass_selector_team: "§aWähle dein Team"
 leave_from_game_item: "§cSpiel verlassen"
+start_game_item: "§2Start game"
 team_selected: "§aAusgewähltes Team: %team%§r §7[§a%players%§7/§a%maxplayers%§7]"
 team_already_selected: "§aDu bist bereits in Team: %team%§r §7[§a%players%§7/§a%maxplayers%§7]"
 team_is_full: "§cTeam %team% is full!"
