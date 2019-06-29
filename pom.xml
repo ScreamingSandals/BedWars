@@ -32,6 +32,10 @@
 			<id>onarandombox</id>
 			<url>http://repo.onarandombox.com/content/groups/public</url>
 		</repository>
+		<repository>
+			<id>confuser-repo</id>
+			<url>https://ci.frostcast.net/plugin/repository/everything</url>
+		</repository>
 	</repositories>
 
 	<properties>

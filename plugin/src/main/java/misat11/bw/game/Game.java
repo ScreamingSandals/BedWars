@@ -4,6 +4,7 @@ import misat11.bw.Main;
 import misat11.bw.api.*;
 import misat11.bw.api.events.*;
 import misat11.bw.api.special.SpecialItem;
+import misat11.bw.legacy.BossBar_1_8;
 import misat11.bw.legacy.LegacyRegion;
 import misat11.bw.statistics.PlayerStatistic;
 import misat11.bw.utils.*;
@@ -155,6 +156,7 @@ public class Game implements misat11.bw.api.Game {
 	private TeamSelectorInventory teamSelectorInventory;
 	private Scoreboard gameScoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
 	private BossBar bossbar;
+	private BossBar_1_8 legacyBossbar;
 	private Map<Location, ItemStack[]> usedChests = new HashMap<>();
 	private List<SpecialItem> activeSpecialItems = new ArrayList<>();
 	private List<ArmorStand> armorStandsInGame = new ArrayList<>();
@@ -553,7 +555,14 @@ public class Game implements misat11.bw.api.Game {
 			try {
 				bossbar.addPlayer(player.player);
 			} catch (Throwable tr) {
-
+				// 1.8
+				if (BossBar_1_8.isPluginForLegacyBossBarEnabled()) {
+					try {
+						legacyBossbar.addPlayer(player.player);
+					} catch (Throwable t2) {
+						// WHAT?
+					}
+				}
 			}
 		}
 
@@ -584,7 +593,14 @@ public class Game implements misat11.bw.api.Game {
 		try {
 			bossbar.removePlayer(player.player);
 		} catch (Throwable tr) {
-
+			// 1.8
+			if (BossBar_1_8.isPluginForLegacyBossBarEnabled()) {
+				try {
+					legacyBossbar.removePlayer(player.player);
+				} catch (Throwable t2) {
+					// WHAT?
+				}
+			}
 		}
 		player.player.sendMessage(message);
 		player.player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
@@ -1209,7 +1225,14 @@ public class Game implements misat11.bw.api.Game {
 				try {
 					bossbar.setProgress((double) countdown / (double) POST_GAME_WAITING);
 				} catch (Throwable t) {
-
+					// 1.8
+					if (BossBar_1_8.isPluginForLegacyBossBarEnabled()) {
+						try {
+							legacyBossbar.setProgress((double) countdown / (double) POST_GAME_WAITING);
+						} catch (Throwable t2) {
+							// WHAT?
+						}
+					}
 				}
 				if (countdown == 0) {
 					postGameWaiting = false;
@@ -1339,7 +1362,14 @@ public class Game implements misat11.bw.api.Game {
 					try {
 						bossbar.setTitle(" ");
 					} catch (Throwable t) {
-
+						// 1.8
+						if (BossBar_1_8.isPluginForLegacyBossBarEnabled()) {
+							try {
+								legacyBossbar.setMessage(" ");
+							} catch (Throwable t2) {
+								// WHAT?
+							}
+						}
 					}
 				} else {
 					countdown = 0;
@@ -1348,7 +1378,14 @@ public class Game implements misat11.bw.api.Game {
 				try {
 					bossbar.setProgress((double) countdown / (double) gameTime);
 				} catch (Throwable t) {
-
+					// 1.8
+					if (BossBar_1_8.isPluginForLegacyBossBarEnabled()) {
+						try {
+							legacyBossbar.setProgress((double) countdown / (double) gameTime);
+						} catch (Throwable t2) {
+							// WHAT?
+						}
+					}
 				}
 				countdown--;
 				for (ItemSpawner spawner : spawners) {
@@ -1397,6 +1434,19 @@ public class Game implements misat11.bw.api.Game {
 					bossbar.setStyle(BarStyle.valueOf(Main.getConfigurator().config.getString("bossbar.lobby.style")));
 					bossbar.setVisible(getOriginalOrInheritedLobbyBossbar());
 				} catch (Throwable t) {
+					// 1.8
+					if (BossBar_1_8.isPluginForLegacyBossBarEnabled()) {
+						try {
+							legacyBossbar = new BossBar_1_8();
+							legacyBossbar.setProgress(1);
+							for (GamePlayer p : players) {
+								legacyBossbar.addPlayer(p.player);
+							}
+							legacyBossbar.setVisible(getOriginalOrInheritedLobbyBossbar());
+						} catch (Throwable t2) {
+							// WHAT?
+						}
+					}
 				}
 				if (teamSelectorInventory == null) {
 					teamSelectorInventory = new TeamSelectorInventory(Main.getInstance(), this);
@@ -1458,7 +1508,16 @@ public class Game implements misat11.bw.api.Game {
 					bossbar.setStyle(BarStyle.valueOf(Main.getConfigurator().config.getString("bossbar.game.style")));
 					bossbar.setVisible(getOriginalOrInheritedGameBossbar());
 				} catch (Throwable tr) {
-
+					// 1.8
+					if (BossBar_1_8.isPluginForLegacyBossBarEnabled()) {
+						try {
+							legacyBossbar.setMessage(i18n("bossbar_running", false));
+							legacyBossbar.setProgress(1);
+							legacyBossbar.setVisible(getOriginalOrInheritedGameBossbar());
+						} catch (Throwable t2) {
+							// WHAT?
+						}
+					}
 				}
 				if (teamSelectorInventory != null)
 					teamSelectorInventory.destroy();
@@ -1534,6 +1593,11 @@ public class Game implements misat11.bw.api.Game {
 				for (GamePlayer player : players) {
 					CurrentTeam team = getPlayerTeam(player);
 					player.player.getInventory().clear();
+					// Player still had armor on legacy versions
+					player.player.getInventory().setHelmet(null);
+					player.player.getInventory().setChestplate(null);
+					player.player.getInventory().setLeggings(null);
+					player.player.getInventory().setBoots(null);
 					Title.send(player.player, gameStartTitle, gameStartSubtitle);
 					if (team == null) {
 						makeSpectator(player);
@@ -1586,7 +1650,14 @@ public class Game implements misat11.bw.api.Game {
 			try {
 				bossbar.setProgress((double) countdown / (double) pauseCountdown);
 			} catch (Throwable tr) {
-
+				// 1.8
+				if (BossBar_1_8.isPluginForLegacyBossBarEnabled()) {
+					try {
+						legacyBossbar.setProgress((double) countdown / (double) pauseCountdown);
+					} catch (Throwable t2) {
+						// WHAT?
+					}
+				}
 			}
 			countdown--;
 		} else if (this.status == GameStatus.REBUILDING) {

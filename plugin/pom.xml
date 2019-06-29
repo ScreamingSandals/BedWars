@@ -30,6 +30,12 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
+			<groupId>me.confuser</groupId>
+			<artifactId>BarAPI</artifactId>
+			<version>3.5</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
 			<groupId>misat11.bw</groupId>
 			<artifactId>BedWars-API</artifactId>
 			<version>${bedwars.api}</version>
