@@ -155,7 +155,7 @@ public class Game implements misat11.bw.api.Game {
 	private TeamSelectorInventory teamSelectorInventory;
 	private Scoreboard gameScoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
 	private BossBar bossbar;
-	private List<Location> usedChests = new ArrayList<>();
+	private Map<Location, ItemStack[]> usedChests = new HashMap<>();
 	private List<SpecialItem> activeSpecialItems = new ArrayList<>();
 	private List<ArmorStand> armorStandsInGame = new ArrayList<>();
 	private boolean postGameWaiting = false;
@@ -537,7 +537,6 @@ public class Game implements misat11.bw.api.Game {
 		leaveMeta.setDisplayName(i18n("leave_from_game_item", false));
 		leave.setItemMeta(leaveMeta);
 		player.player.getInventory().setItem(8, leave);
-
 
 		if (player.player.hasPermission("bw.vip")) {
 			ItemStack startGame = Main.getConfigurator().readDefinedItem("startgame", "DIAMOND");
@@ -1605,11 +1604,13 @@ public class Game implements misat11.bw.api.Game {
 			}
 
 			// Chest clearing
-			for (Location location : usedChests) {
+			for (Map.Entry<Location, ItemStack[]> entry : usedChests.entrySet()) {
+				Location location = entry.getKey();
 				Block block = location.getBlock();
+				ItemStack[] contents = entry.getValue();
 				if (block.getState() instanceof Chest) {
 					Chest chest = (Chest) block.getState();
-					chest.getBlockInventory().clear();
+					chest.getBlockInventory().setContents(contents);
 				}
 			}
 			usedChests.clear();
@@ -2045,8 +2046,16 @@ public class Game implements misat11.bw.api.Game {
 	}
 
 	public void addChestForFutureClear(Location loc) {
-		if (!usedChests.contains(loc)) {
-			usedChests.add(loc);
+		if (!usedChests.containsKey(loc)) {
+			Chest chest = (Chest) loc.getBlock().getState();
+			ItemStack[] contents = chest.getBlockInventory().getContents();
+			ItemStack[] clone = new ItemStack[contents.length];
+			for (int i = 0; i < contents.length; i++) {
+				ItemStack stack = contents[i];
+				if (stack != null)
+					clone[i] = stack.clone();
+			}
+			usedChests.put(loc, clone);
 		}
 	}
 
