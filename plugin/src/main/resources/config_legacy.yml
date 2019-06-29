@@ -60,6 +60,7 @@ items:
     damage: 7
   pageback: ARROW
   pageforward: ARROW
+  startgame: DIAMOND
   
 # Vault rewards
 vault:

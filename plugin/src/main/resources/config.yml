@@ -57,6 +57,7 @@ items:
   shopcosmetic: GRAY_STAINED_GLASS_PANE
   pageback: ARROW
   pageforward: ARROW
+  startgame: DIAMOND
   
 # Vault rewards
 vault:
