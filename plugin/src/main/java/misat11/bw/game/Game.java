@@ -1,12 +1,13 @@
 package misat11.bw.game;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.WeatherType;
-import org.bukkit.World;
+import misat11.bw.Main;
+import misat11.bw.api.*;
+import misat11.bw.api.events.*;
+import misat11.bw.api.special.SpecialItem;
+import misat11.bw.legacy.LegacyRegion;
+import misat11.bw.statistics.PlayerStatistic;
+import misat11.bw.utils.*;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Chest;
@@ -18,12 +19,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Item;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -40,45 +36,15 @@ import org.bukkit.scoreboard.Scoreboard;
 import com.onarandombox.MultiverseCore.api.Core;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 
-import misat11.bw.Main;
-import misat11.bw.api.ArenaTime;
-import misat11.bw.api.GameStatus;
-import misat11.bw.api.GameStore;
-import misat11.bw.api.InGameConfigBooleanConstants;
-import misat11.bw.api.RunningTeam;
-import misat11.bw.api.events.BedwarsGameEndEvent;
-import misat11.bw.api.events.BedwarsGameStartEvent;
-import misat11.bw.api.events.BedwarsGameStartedEvent;
-import misat11.bw.api.events.BedwarsPlayerBreakBlock;
-import misat11.bw.api.events.BedwarsPlayerBuildBlock;
-import misat11.bw.api.events.BedwarsPlayerJoinEvent;
-import misat11.bw.api.events.BedwarsPlayerJoinTeamEvent;
-import misat11.bw.api.events.BedwarsPlayerJoinedEvent;
-import misat11.bw.api.events.BedwarsPlayerLeaveEvent;
-import misat11.bw.api.events.BedwarsPostRebuildingEvent;
-import misat11.bw.api.events.BedwarsPreRebuildingEvent;
-import misat11.bw.api.events.BedwarsResourceSpawnEvent;
-import misat11.bw.api.events.BedwarsTargetBlockDestroyedEvent;
-import misat11.bw.api.special.SpecialItem;
-import misat11.bw.legacy.LegacyRegion;
-import misat11.bw.statistics.PlayerStatistic;
-import misat11.bw.utils.GameSign;
-import misat11.bw.utils.IRegion;
-import misat11.bw.utils.Region;
-import misat11.bw.utils.Sounds;
-import misat11.bw.utils.SpawnEffects;
-import misat11.bw.utils.TeamSelectorInventory;
-import misat11.bw.utils.Title;
-
-import static misat11.lib.lang.I18n.*;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import static misat11.lib.lang.I18n.i18n;
+import static misat11.lib.lang.I18n.i18nonly;
 
 public class Game implements misat11.bw.api.Game {
 
@@ -87,14 +53,14 @@ public class Game implements misat11.bw.api.Game {
 	private Location pos2;
 	private Location lobbySpawn;
 	private Location specSpawn;
-	private List<Team> teams = new ArrayList<Team>();
-	private List<ItemSpawner> spawners = new ArrayList<ItemSpawner>();
+	private List<Team> teams = new ArrayList<>();
+	private List<ItemSpawner> spawners = new ArrayList<>();
 	private int pauseCountdown;
 	private int gameTime;
 	private int minPlayers;
-	private List<GamePlayer> players = new ArrayList<GamePlayer>();
+	private List<GamePlayer> players = new ArrayList<>();
 	private World world;
-	private List<GameStore> gameStore = new ArrayList<GameStore>();
+	private List<GameStore> gameStore = new ArrayList<>();
 	private ArenaTime arenaTime = ArenaTime.WORLD;
 	private WeatherType arenaWeather = null;
 	private BarColor lobbyBossBarColor = null;
@@ -174,6 +140,7 @@ public class Game implements misat11.bw.api.Game {
 	public static final String REMOVE_UNUSED_TARGET_BLOCKS = "remove-unused-target-blocks";
 	private InGameConfigBooleanConstants removeUnusedTargetBlocks = InGameConfigBooleanConstants.INHERIT;
 
+	public boolean gameStartItem;
 	private boolean upgrades = false;
 	private static final int POST_GAME_WAITING = 3;
 
@@ -183,16 +150,16 @@ public class Game implements misat11.bw.api.Game {
 	private int countdown = -1;
 	private int calculatedMaxPlayers;
 	private BukkitTask task;
-	private List<CurrentTeam> teamsInGame = new ArrayList<CurrentTeam>();
+	private List<CurrentTeam> teamsInGame = new ArrayList<>();
 	private IRegion region = Main.isLegacy() ? new LegacyRegion() : new Region();
 	private TeamSelectorInventory teamSelectorInventory;
 	private Scoreboard gameScoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
 	private BossBar bossbar;
-	private List<Location> usedChests = new ArrayList<Location>();
-	private List<SpecialItem> activeSpecialItems = new ArrayList<SpecialItem>();
-	private List<ArmorStand> armorStandsInGame = new ArrayList<ArmorStand>();
+	private List<Location> usedChests = new ArrayList<>();
+	private List<SpecialItem> activeSpecialItems = new ArrayList<>();
+	private List<ArmorStand> armorStandsInGame = new ArrayList<>();
 	private boolean postGameWaiting = false;
-	private Map<ItemSpawner, ArmorStand> countdownArmorStands = new HashMap<ItemSpawner, ArmorStand>();
+	private Map<ItemSpawner, ArmorStand> countdownArmorStands = new HashMap<>();
 
 	private Game() {
 
@@ -570,6 +537,16 @@ public class Game implements misat11.bw.api.Game {
 		leaveMeta.setDisplayName(i18n("leave_from_game_item", false));
 		leave.setItemMeta(leaveMeta);
 		player.player.getInventory().setItem(8, leave);
+
+
+		if (player.player.hasPermission("bw.vip")) {
+			ItemStack startGame = Main.getConfigurator().readDefinedItem("startgame", "DIAMOND");
+			ItemMeta startGameMeta = startGame.getItemMeta();
+			startGameMeta.setDisplayName(i18n("start_game_item", false));
+			startGame.setItemMeta(startGameMeta);
+
+			player.player.getInventory().setItem(2, startGame);
+		}
 
 		if (isEmpty) {
 			runTask();
@@ -1429,9 +1406,22 @@ public class Game implements misat11.bw.api.Game {
 			}
 			updateLobbyScoreboard();
 			if (teamsInGame.size() <= 1 || players.size() < minPlayers) {
-				// Countdown reset
-				countdown = pauseCountdown;
-				return;
+				// Game starting because of start item
+				if (gameStartItem) {
+					if (players.size() >= getMinPlayers()) {
+						for (GamePlayer player : players) {
+							joinRandomTeam(player);
+						}
+					}
+					if (players.size() > 1) {
+						countdown = 0;
+						gameStartItem = false;
+					}
+				} else {
+					// Countdown reset
+					countdown = pauseCountdown;
+					return;
+				}
 			}
 			if (countdown <= 10 && countdown >= 1) {
 				for (GamePlayer player : players) {
@@ -1606,9 +1596,7 @@ public class Game implements misat11.bw.api.Game {
 
 			region.regen();
 			// Remove items
-			Iterator<Entity> entityIterator = this.world.getEntities().iterator();
-			while (entityIterator.hasNext()) {
-				Entity e = entityIterator.next();
+			for (Entity e : this.world.getEntities()) {
 				if (GameCreator.isInArea(e.getLocation(), pos1, pos2)) {
 					if (e instanceof Item) {
 						e.remove();
@@ -1668,7 +1656,7 @@ public class Game implements misat11.bw.api.Game {
 		return status;
 	}
 
-	private void runTask() {
+	public void runTask() {
 		if (task != null) {
 			if (Bukkit.getScheduler().isQueued(task.getTaskId())) {
 				task.cancel();
@@ -1860,16 +1848,16 @@ public class Game implements misat11.bw.api.Game {
 	}
 
 	private String getFormattedTimeLeft(int countdown) {
-		int min = 0;
-		int sec = 0;
-		String minStr = "";
-		String secStr = "";
+		int min;
+		int sec;
+		String minStr;
+		String secStr;
 
 		min = (int) Math.floor(countdown / 60);
 		sec = countdown % 60;
 
-		minStr = (min < 10) ? "0" + String.valueOf(min) : String.valueOf(min);
-		secStr = (sec < 10) ? "0" + String.valueOf(sec) : String.valueOf(sec);
+		minStr = (min < 10) ? "0" + min : String.valueOf(min);
+		secStr = (sec < 10) ? "0" + sec : String.valueOf(sec);
 
 		return minStr + ":" + secStr;
 	}
@@ -2005,12 +1993,12 @@ public class Game implements misat11.bw.api.Game {
 
 	@Override
 	public List<misat11.bw.api.Team> getAvailableTeams() {
-		return new ArrayList<misat11.bw.api.Team>(teams);
+		return new ArrayList<>(teams);
 	}
 
 	@Override
 	public List<RunningTeam> getRunningTeams() {
-		return new ArrayList<misat11.bw.api.RunningTeam>(teamsInGame);
+		return new ArrayList<>(teamsInGame);
 	}
 
 	@Override
