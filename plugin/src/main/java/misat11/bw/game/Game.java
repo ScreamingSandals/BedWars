@@ -539,7 +539,7 @@ public class Game implements misat11.bw.api.Game {
 			startGameMeta.setDisplayName(i18n("start_game_item", false));
 			startGame.setItemMeta(startGameMeta);
 
-			player.player.getInventory().setItem(4, startGame);
+			player.player.getInventory().setItem(2, startGame);
 		}
 
 		if (isEmpty) {

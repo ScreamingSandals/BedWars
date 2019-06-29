@@ -421,8 +421,10 @@ public class PlayerListener implements Listener {
 						}
 					}
 					else if (event.getMaterial() == Material.valueOf(Main.getConfigurator().config.getString("items.startgame", "DIAMOND"))) {
-						game.gameStartItem = true;
-						game.runTask();
+						if (game.getStatus() == GameStatus.WAITING) {
+							game.gameStartItem = true;
+							game.runTask();
+						}
 					}
 					else if (event.getMaterial() == Material
 							.valueOf(Main.getConfigurator().config.getString("items.leavegame", "SLIME_BALL"))) {
