@@ -223,6 +223,7 @@ page_back: "O stránku zpět"
 page_forward: "O stránku vpřed"
 
 help_title: "BedWars %version% - Nápověda"
+help_title_console: "BedWars %version% - Nápověda pro konzoli"
 help_bw_join: "/bw join <aréna> - §aPřipojí tě k aréně"
 help_bw_leave: "/bw leave - §aOdpojí tě z arény"
 help_bw_list: "/bw list - §aVypíše seznam aktivních her"

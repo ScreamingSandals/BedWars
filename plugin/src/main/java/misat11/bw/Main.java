@@ -11,6 +11,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -174,7 +175,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 		return instance.playersInGame.containsKey(player);
 	}
 
-	public static void sendGameListInfo(Player player) {
+	public static void sendGameListInfo(CommandSender player) {
 		for (Game game : instance.games.values()) {
 			player.sendMessage((game.getStatus() == GameStatus.DISABLED ? "§c" : "§a") + game.getName() + "§f "
 					+ game.countPlayers());

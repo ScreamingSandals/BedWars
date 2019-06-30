@@ -20,6 +20,7 @@ prevent-lobby-spawn-mobs-in-radius: 16
 spawner-holo-height: 0.25
 spawner-holograms-countdown: true
 damage-when-player-is-not-in-arena: false
+remove-unused-target-blocks: true
 
 # Commands whitelist
 allowed-commands:
@@ -56,6 +57,7 @@ items:
   shopcosmetic: GRAY_STAINED_GLASS_PANE
   pageback: ARROW
   pageforward: ARROW
+  startgame: DIAMOND
   
 # Vault rewards
 vault:
@@ -187,6 +189,7 @@ chat:
    override: true
    format: "<%teamcolor%%name%§r> "
    separate-game-chat: false
+   send-death-messages-just-in-game: true
    
 # Command rewards (possible placeholders {player},{score})
 rewards:

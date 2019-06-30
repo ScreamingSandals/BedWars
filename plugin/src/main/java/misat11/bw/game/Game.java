@@ -4,6 +4,7 @@ import misat11.bw.Main;
 import misat11.bw.api.*;
 import misat11.bw.api.events.*;
 import misat11.bw.api.special.SpecialItem;
+import misat11.bw.legacy.BossBar_1_8;
 import misat11.bw.legacy.LegacyRegion;
 import misat11.bw.statistics.PlayerStatistic;
 import misat11.bw.utils.*;
@@ -32,6 +33,9 @@ import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
+
+import com.onarandombox.MultiverseCore.api.Core;
+import com.onarandombox.MultiverseCore.api.MVWorldManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -134,6 +138,9 @@ public class Game implements misat11.bw.api.Game {
 	public static final String DAMAGE_WHEN_PLAYER_IS_NOT_IN_ARENA = "damage-when-player-is-not-in-arena";
 	private InGameConfigBooleanConstants damageWhenPlayerIsNotInArena = InGameConfigBooleanConstants.INHERIT;
 
+	public static final String REMOVE_UNUSED_TARGET_BLOCKS = "remove-unused-target-blocks";
+	private InGameConfigBooleanConstants removeUnusedTargetBlocks = InGameConfigBooleanConstants.INHERIT;
+
 	public boolean gameStartItem;
 	private boolean upgrades = false;
 	private static final int POST_GAME_WAITING = 3;
@@ -149,7 +156,8 @@ public class Game implements misat11.bw.api.Game {
 	private TeamSelectorInventory teamSelectorInventory;
 	private Scoreboard gameScoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
 	private BossBar bossbar;
-	private List<Location> usedChests = new ArrayList<>();
+	private BossBar_1_8 legacyBossbar;
+	private Map<Location, ItemStack[]> usedChests = new HashMap<>();
 	private List<SpecialItem> activeSpecialItems = new ArrayList<>();
 	private List<ArmorStand> armorStandsInGame = new ArrayList<>();
 	private boolean postGameWaiting = false;
@@ -532,7 +540,6 @@ public class Game implements misat11.bw.api.Game {
 		leave.setItemMeta(leaveMeta);
 		player.player.getInventory().setItem(8, leave);
 
-
 		if (player.player.hasPermission("bw.vip")) {
 			ItemStack startGame = Main.getConfigurator().readDefinedItem("startgame", "DIAMOND");
 			ItemMeta startGameMeta = startGame.getItemMeta();
@@ -548,7 +555,14 @@ public class Game implements misat11.bw.api.Game {
 			try {
 				bossbar.addPlayer(player.player);
 			} catch (Throwable tr) {
-
+				// 1.8
+				if (BossBar_1_8.isPluginForLegacyBossBarEnabled()) {
+					try {
+						legacyBossbar.addPlayer(player.player);
+					} catch (Throwable t2) {
+						// WHAT?
+					}
+				}
 			}
 		}
 
@@ -579,7 +593,14 @@ public class Game implements misat11.bw.api.Game {
 		try {
 			bossbar.removePlayer(player.player);
 		} catch (Throwable tr) {
-
+			// 1.8
+			if (BossBar_1_8.isPluginForLegacyBossBarEnabled()) {
+				try {
+					legacyBossbar.removePlayer(player.player);
+				} catch (Throwable t2) {
+					// WHAT?
+				}
+			}
 		}
 		player.player.sendMessage(message);
 		player.player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
@@ -658,7 +679,31 @@ public class Game implements misat11.bw.api.Game {
 		game.name = configMap.getString("name");
 		game.pauseCountdown = configMap.getInt("pauseCountdown");
 		game.gameTime = configMap.getInt("gameTime");
-		game.world = Bukkit.getWorld(configMap.getString("world"));
+		String worldName = configMap.getString("world");
+		game.world = Bukkit.getWorld(worldName);
+		if (game.world == null) {
+			if (Bukkit.getPluginManager().isPluginEnabled("Multiverse-Core")) {
+				Main.getInstance().getLogger().warning("World " + worldName
+						+ " was not found, but we found Multiverse-Core, so we try to load this world.");
+
+				Core multiverse = (Core) Bukkit.getPluginManager().getPlugin("Multiverse-Core");
+				MVWorldManager manager = multiverse.getMVWorldManager();
+				if (manager.loadWorld(worldName)) {
+					Main.getInstance().getLogger().info("World " + worldName
+							+ " was succesfully loaded with Multiverse-Core, continue in arena loading.");
+
+					game.world = Bukkit.getWorld(worldName);
+				} else {
+					Main.getInstance().getLogger().severe(
+							"Arena " + game.name + " can't be loaded, because world " + worldName + " is missing!");
+					return null;
+				}
+			} else {
+				Main.getInstance().getLogger()
+						.severe("Arena " + game.name + " can't be loaded, because world " + worldName + " is missing!");
+				return null;
+			}
+		}
 		game.pos1 = readLocationFromString(game.world, configMap.getString("pos1"));
 		game.pos2 = readLocationFromString(game.world, configMap.getString("pos2"));
 		game.specSpawn = readLocationFromString(game.world, configMap.getString("specSpawn"));
@@ -735,6 +780,8 @@ public class Game implements misat11.bw.api.Game {
 				configMap.getString("constant." + SPAWNER_HOLOGRAMS_COUNTDOWN, "inherit"));
 		game.damageWhenPlayerIsNotInArena = readBooleanConstant(
 				configMap.getString("constant." + DAMAGE_WHEN_PLAYER_IS_NOT_IN_ARENA, "inherit"));
+		game.removeUnusedTargetBlocks = readBooleanConstant(
+				configMap.getString("constant." + REMOVE_UNUSED_TARGET_BLOCKS, "inherit"));
 
 		game.arenaTime = ArenaTime.valueOf(configMap.getString("arenaTime", ArenaTime.WORLD.name()).toUpperCase());
 		game.arenaWeather = loadWeather(configMap.getString("arenaWeather", "default").toUpperCase());
@@ -911,6 +958,7 @@ public class Game implements misat11.bw.api.Game {
 		configMap.set("constant." + SPAWNER_HOLOGRAMS_COUNTDOWN, writeBooleanConstant(spawnerHologramsCountdown));
 		configMap.set("constant." + DAMAGE_WHEN_PLAYER_IS_NOT_IN_ARENA,
 				writeBooleanConstant(damageWhenPlayerIsNotInArena));
+		configMap.set("constant." + REMOVE_UNUSED_TARGET_BLOCKS, writeBooleanConstant(removeUnusedTargetBlocks));
 
 		configMap.set("arenaTime", arenaTime.name());
 		configMap.set("arenaWeather", arenaWeather == null ? "default" : arenaWeather.name());
@@ -1177,7 +1225,14 @@ public class Game implements misat11.bw.api.Game {
 				try {
 					bossbar.setProgress((double) countdown / (double) POST_GAME_WAITING);
 				} catch (Throwable t) {
-
+					// 1.8
+					if (BossBar_1_8.isPluginForLegacyBossBarEnabled()) {
+						try {
+							legacyBossbar.setProgress((double) countdown / (double) POST_GAME_WAITING);
+						} catch (Throwable t2) {
+							// WHAT?
+						}
+					}
 				}
 				if (countdown == 0) {
 					postGameWaiting = false;
@@ -1307,7 +1362,14 @@ public class Game implements misat11.bw.api.Game {
 					try {
 						bossbar.setTitle(" ");
 					} catch (Throwable t) {
-
+						// 1.8
+						if (BossBar_1_8.isPluginForLegacyBossBarEnabled()) {
+							try {
+								legacyBossbar.setMessage(" ");
+							} catch (Throwable t2) {
+								// WHAT?
+							}
+						}
 					}
 				} else {
 					countdown = 0;
@@ -1316,7 +1378,14 @@ public class Game implements misat11.bw.api.Game {
 				try {
 					bossbar.setProgress((double) countdown / (double) gameTime);
 				} catch (Throwable t) {
-
+					// 1.8
+					if (BossBar_1_8.isPluginForLegacyBossBarEnabled()) {
+						try {
+							legacyBossbar.setProgress((double) countdown / (double) gameTime);
+						} catch (Throwable t2) {
+							// WHAT?
+						}
+					}
 				}
 				countdown--;
 				for (ItemSpawner spawner : spawners) {
@@ -1365,6 +1434,19 @@ public class Game implements misat11.bw.api.Game {
 					bossbar.setStyle(BarStyle.valueOf(Main.getConfigurator().config.getString("bossbar.lobby.style")));
 					bossbar.setVisible(getOriginalOrInheritedLobbyBossbar());
 				} catch (Throwable t) {
+					// 1.8
+					if (BossBar_1_8.isPluginForLegacyBossBarEnabled()) {
+						try {
+							legacyBossbar = new BossBar_1_8();
+							legacyBossbar.setProgress(1);
+							for (GamePlayer p : players) {
+								legacyBossbar.addPlayer(p.player);
+							}
+							legacyBossbar.setVisible(getOriginalOrInheritedLobbyBossbar());
+						} catch (Throwable t2) {
+							// WHAT?
+						}
+					}
 				}
 				if (teamSelectorInventory == null) {
 					teamSelectorInventory = new TeamSelectorInventory(Main.getInstance(), this);
@@ -1426,7 +1508,16 @@ public class Game implements misat11.bw.api.Game {
 					bossbar.setStyle(BarStyle.valueOf(Main.getConfigurator().config.getString("bossbar.game.style")));
 					bossbar.setVisible(getOriginalOrInheritedGameBossbar());
 				} catch (Throwable tr) {
-
+					// 1.8
+					if (BossBar_1_8.isPluginForLegacyBossBarEnabled()) {
+						try {
+							legacyBossbar.setMessage(i18n("bossbar_running", false));
+							legacyBossbar.setProgress(1);
+							legacyBossbar.setVisible(getOriginalOrInheritedGameBossbar());
+						} catch (Throwable t2) {
+							// WHAT?
+						}
+					}
 				}
 				if (teamSelectorInventory != null)
 					teamSelectorInventory.destroy();
@@ -1502,6 +1593,11 @@ public class Game implements misat11.bw.api.Game {
 				for (GamePlayer player : players) {
 					CurrentTeam team = getPlayerTeam(player);
 					player.player.getInventory().clear();
+					// Player still had armor on legacy versions
+					player.player.getInventory().setHelmet(null);
+					player.player.getInventory().setChestplate(null);
+					player.player.getInventory().setLeggings(null);
+					player.player.getInventory().setBoots(null);
 					Title.send(player.player, gameStartTitle, gameStartSubtitle);
 					if (team == null) {
 						makeSpectator(player);
@@ -1521,6 +1617,32 @@ public class Game implements misat11.bw.api.Game {
 							Sounds.ENTITY_PLAYER_LEVELUP, 1, 1);
 				}
 
+				if (getOriginalOrInheritedRemoveUnusedTargetBlocks()) {
+					for (Team team : teams) {
+						CurrentTeam ct = null;
+						for (CurrentTeam curt : teamsInGame) {
+							if (curt.teamInfo == team) {
+								ct = curt;
+								break;
+							}
+						}
+						if (ct == null) {
+							Location loc = team.bed;
+							Block block = team.bed.getBlock();
+							if (region.isBedBlock(block.getState())) {
+								region.putOriginalBlock(block.getLocation(), block.getState());
+								Block neighbor = region.getBedNeighbor(block);
+								region.putOriginalBlock(neighbor.getLocation(), neighbor.getState());
+								block.setType(Material.AIR);
+								neighbor.setType(Material.AIR);
+							} else {
+								region.putOriginalBlock(loc, block.getState());
+								block.setType(Material.AIR);
+							}
+						}
+					}
+				}
+
 				BedwarsGameStartedEvent startedEvent = new BedwarsGameStartedEvent(this);
 				Main.getInstance().getServer().getPluginManager().callEvent(startedEvent);
 				return;
@@ -1528,7 +1650,14 @@ public class Game implements misat11.bw.api.Game {
 			try {
 				bossbar.setProgress((double) countdown / (double) pauseCountdown);
 			} catch (Throwable tr) {
-
+				// 1.8
+				if (BossBar_1_8.isPluginForLegacyBossBarEnabled()) {
+					try {
+						legacyBossbar.setProgress((double) countdown / (double) pauseCountdown);
+					} catch (Throwable t2) {
+						// WHAT?
+					}
+				}
 			}
 			countdown--;
 		} else if (this.status == GameStatus.REBUILDING) {
@@ -1546,11 +1675,13 @@ public class Game implements misat11.bw.api.Game {
 			}
 
 			// Chest clearing
-			for (Location location : usedChests) {
+			for (Map.Entry<Location, ItemStack[]> entry : usedChests.entrySet()) {
+				Location location = entry.getKey();
 				Block block = location.getBlock();
+				ItemStack[] contents = entry.getValue();
 				if (block.getState() instanceof Chest) {
 					Chest chest = (Chest) block.getState();
-					chest.getBlockInventory().clear();
+					chest.getBlockInventory().setContents(contents);
 				}
 			}
 			usedChests.clear();
@@ -1986,8 +2117,16 @@ public class Game implements misat11.bw.api.Game {
 	}
 
 	public void addChestForFutureClear(Location loc) {
-		if (!usedChests.contains(loc)) {
-			usedChests.add(loc);
+		if (!usedChests.containsKey(loc)) {
+			Chest chest = (Chest) loc.getBlock().getState();
+			ItemStack[] contents = chest.getBlockInventory().getContents();
+			ItemStack[] clone = new ItemStack[contents.length];
+			for (int i = 0; i < contents.length; i++) {
+				ItemStack stack = contents[i];
+				if (stack != null)
+					clone[i] = stack.clone();
+			}
+			usedChests.put(loc, clone);
 		}
 	}
 
@@ -2534,6 +2673,21 @@ public class Game implements misat11.bw.api.Game {
 
 	public void setDamageWhenPlayerIsNotInArena(InGameConfigBooleanConstants damageWhenPlayerIsNotInArena) {
 		this.damageWhenPlayerIsNotInArena = damageWhenPlayerIsNotInArena;
+	}
+
+	@Override
+	public InGameConfigBooleanConstants getRemoveUnusedTargetBlocks() {
+		return removeUnusedTargetBlocks;
+	}
+
+	@Override
+	public boolean getOriginalOrInheritedRemoveUnusedTargetBlocks() {
+		return removeUnusedTargetBlocks.isOriginal() ? removeUnusedTargetBlocks.getValue()
+				: Main.getConfigurator().config.getBoolean(REMOVE_UNUSED_TARGET_BLOCKS);
+	}
+
+	public void setRemoveUnusedTargetBlocks(InGameConfigBooleanConstants removeUnusedTargetBlocks) {
+		this.removeUnusedTargetBlocks = removeUnusedTargetBlocks;
 	}
 
 }
