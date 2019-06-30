@@ -152,7 +152,6 @@ public class WorldListener implements Listener {
 			if (GameCreator.isInArea(event.getBlock().getLocation(), game.getPos1(), game.getPos2())) {
 				if (game.getStatus() == GameStatus.RUNNING) {
 					Block block = event.getToBlock();
-					System.out.println(block);
 					if (block.getType() == Material.AIR
 							|| game.getRegion().isBlockAddedDuringGame(block.getLocation())) {
 						game.getRegion().addBuildedDuringGame(block.getLocation());

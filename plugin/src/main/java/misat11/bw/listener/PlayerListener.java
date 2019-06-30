@@ -2,6 +2,7 @@ package misat11.bw.listener;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.ArmorStand;
@@ -26,6 +27,7 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerBedEnterEvent;
+import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -41,7 +43,6 @@ import org.bukkit.event.player.PlayerToggleFlightEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.RegisteredServiceProvider;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import misat11.bw.Main;
 import misat11.bw.api.GameStatus;
@@ -62,7 +63,7 @@ import misat11.bw.utils.TeamSelectorInventory;
 import misat11.lib.nms.NMSUtils;
 import net.milkbowl.vault.chat.Chat;
 
-import static misat11.lib.lang.I18n.i18n;
+import static misat11.lib.lang.I18n.*;
 
 import java.util.Iterator;
 import java.util.List;
@@ -80,6 +81,17 @@ public class PlayerListener implements Listener {
 			if (game.getStatus() == GameStatus.RUNNING) {
 				if (!game.getOriginalOrInheritedPlayerDrops()) {
 					event.getDrops().clear();
+				}
+				if (Main.getConfigurator().config.getBoolean("chat.send-death-messages-just-in-game")) {
+					String oldDeathMessage = event.getDeathMessage();
+					
+					// TODO custom death messages
+					
+					event.setDeathMessage(null);
+					String newDeathMessage = i18nonly("prefix") + " " + oldDeathMessage;
+					for (Player player : game.getConnectedPlayers()) {
+						player.sendMessage(newDeathMessage);
+					}
 				}
 				CurrentTeam team = game.getPlayerTeam(gVictim);
 				SpawnEffects.spawnEffect(game, victim, "game-effects.kill");
@@ -717,6 +729,36 @@ public class PlayerListener implements Listener {
 				if (!GameCreator.isInArea(event.getTo(), game.getPos1(), game.getPos2())) {
 					player.damage(5);
 				}
+			}
+		}
+	}
+	
+	@EventHandler
+	public void onPlaceLiquid(PlayerBucketEmptyEvent event) {
+		if (event.isCancelled()) {
+			return;
+		}
+		
+		Player player = event.getPlayer();
+		if (Main.isPlayerInGame(player)) {
+			GamePlayer gPlayer = Main.getPlayerGameProfile(player);
+			Game game = gPlayer.getGame();
+			
+			Location loc = event.getBlockClicked().getLocation();
+			
+			loc.add(event.getBlockFace().getDirection());
+			
+			Block block = loc.getBlock();
+			
+			if (game.getStatus() == GameStatus.RUNNING) {
+				if (block.getType() == Material.AIR
+						|| game.getRegion().isBlockAddedDuringGame(block.getLocation())) {
+					game.getRegion().addBuildedDuringGame(block.getLocation());
+				} else {
+					event.setCancelled(true);
+				}
+			} else if (game.getStatus() != GameStatus.DISABLED) {
+				event.setCancelled(true);
 			}
 		}
 	}

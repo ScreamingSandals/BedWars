@@ -16,6 +16,7 @@ import org.bukkit.boss.BarColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -448,9 +449,18 @@ public class BwCommand implements CommandExecutor, TabCompleter {
 
 											player.sendMessage(i18n("arena_info_config_constant", false)
 													.replace("%constant%", "damageWhenPlayerIsNotInArena")
-													.replace("%value%", i18n("arena_info_config_"
-															+ game.getDamageWhenPlayerIsNotInArena().name().toLowerCase(),
-															false)));
+													.replace("%value%",
+															i18n("arena_info_config_"
+																	+ game.getDamageWhenPlayerIsNotInArena().name()
+																			.toLowerCase(),
+																	false)));
+
+											player.sendMessage(i18n("arena_info_config_constant", false)
+													.replace("%constant%", "removeunusedtargetblocks")
+													.replace("%value%",
+															i18n("arena_info_config_" + game
+																	.getRemoveUnusedTargetBlocks().name().toLowerCase(),
+																	false)));
 
 											player.sendMessage(i18n("arena_info_config_constant", false)
 													.replace("%constant%", "upgrades (experimental)").replace("%value%",
@@ -552,42 +562,7 @@ public class BwCommand implements CommandExecutor, TabCompleter {
 					}
 				} else if (args[0].equalsIgnoreCase("reload")) {
 					if (player.hasPermission(ADMIN_PERMISSION)) {
-						
-						player.sendMessage(i18n("safe_reload"));
-						
-						for (String game : Main.getGameNames()) {
-							Main.getGame(game).stop();
-						}
-						
-						new BukkitRunnable() {
-
-							public int timer = 60;
-							
-							@Override
-							public void run() {
-								boolean gameRuns = false;
-								for (String game : Main.getGameNames()) {
-									if (Main.getGame(game).getStatus() != GameStatus.DISABLED) {
-										gameRuns = true;
-										break;
-									}
-								}
-								
-								if (gameRuns && timer == 0) {
-									player.sendMessage(i18n("safe_reload_failed_to_stop_game"));
-								}
-								
-								if (!gameRuns || timer == 0) {
-									this.cancel();
-									Bukkit.getServer().getPluginManager().disablePlugin(Main.getInstance());
-									Bukkit.getServer().getPluginManager().enablePlugin(Main.getInstance());
-									player.sendMessage("Plugin reloaded!");
-									return;
-								}
-								timer--;
-							}
-							
-						}.runTaskTimer(Main.getInstance(), 0L, 20L);
+						safeReload(sender);
 					} else {
 						player.sendMessage(i18n("no_permissions"));
 					}
@@ -595,10 +570,78 @@ public class BwCommand implements CommandExecutor, TabCompleter {
 					player.sendMessage(i18n("unknown_command"));
 				}
 			}
-		} else {
-			sender.sendMessage("BW commands cannot be executed from console!");
+		} else if (sender instanceof ConsoleCommandSender) {
+			ConsoleCommandSender console = (ConsoleCommandSender) sender;
+			if (args.length == 0) {
+				sendConsoleHelp(console);
+			} else {
+				if (args[0].equalsIgnoreCase("list")) {
+					console.sendMessage(i18n("list_header"));
+					Main.sendGameListInfo(console);
+				} else if (args[0].equalsIgnoreCase("stats") && args.length >= 2) {
+					if (!Main.isPlayerStatisticsEnabled()) {
+						console.sendMessage(i18n("statistics_is_disabled"));
+					} else {
+						String name = args[1];
+						OfflinePlayer off = Main.getInstance().getServer().getPlayerExact(name);
+
+						if (off == null) {
+							console.sendMessage(i18n("statistics_player_is_not_exists"));
+						} else {
+							PlayerStatistic statistic = Main.getPlayerStatisticsManager().getStatistic(off);
+							if (statistic == null) {
+								console.sendMessage(i18n("statistics_not_found"));
+							} else {
+								this.sendStats(console, statistic);
+							}
+						}
+					}
+				} else if (args[0].equalsIgnoreCase("reload")) {
+					safeReload(sender);
+				} else {
+					sendConsoleHelp(console);
+				}
+			}
 		}
 		return true;
+	}
+
+	public void safeReload(CommandSender sender) {
+		sender.sendMessage(i18n("safe_reload"));
+
+		for (String game : Main.getGameNames()) {
+			Main.getGame(game).stop();
+		}
+
+		new BukkitRunnable() {
+
+			public int timer = 60;
+
+			@Override
+			public void run() {
+				boolean gameRuns = false;
+				for (String game : Main.getGameNames()) {
+					if (Main.getGame(game).getStatus() != GameStatus.DISABLED) {
+						gameRuns = true;
+						break;
+					}
+				}
+
+				if (gameRuns && timer == 0) {
+					sender.sendMessage(i18n("safe_reload_failed_to_stop_game"));
+				}
+
+				if (!gameRuns || timer == 0) {
+					this.cancel();
+					Bukkit.getServer().getPluginManager().disablePlugin(Main.getInstance());
+					Bukkit.getServer().getPluginManager().enablePlugin(Main.getInstance());
+					sender.sendMessage("Plugin reloaded!");
+					return;
+				}
+				timer--;
+			}
+
+		}.runTaskTimer(Main.getInstance(), 0L, 20L);
 	}
 
 	public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
@@ -700,7 +743,7 @@ public class BwCommand implements CommandExecutor, TabCompleter {
 									"keepInventory", "crafting", "gamebossbar", "lobbybossbar", "gamescoreboard",
 									"lobbyscoreboard", "preventspawningmobs", "spawnerholograms", "spawnerDisableMerge",
 									"gamestartitems", "playerrespawnitems", "spawnerhologramscountdown",
-									"damagewhenplayerisnotinarena");
+									"damagewhenplayerisnotinarena", "removeunusedtargetblocks");
 							StringUtil.copyPartialMatches(args[3], cmds, completionList);
 						}
 						if (args.length == 5) {
@@ -764,6 +807,13 @@ public class BwCommand implements CommandExecutor, TabCompleter {
 		return completionList;
 	}
 
+	public void sendConsoleHelp(ConsoleCommandSender console) {
+		console.sendMessage(i18n("help_title_console", false).replace("%version%", Main.getVersion()));
+		console.sendMessage(i18n("help_bw_list", false));
+		console.sendMessage(i18n("help_bw_stats_other", false));
+		console.sendMessage(i18n("help_bw_reload", false));
+	}
+
 	public void sendHelp(Player player) {
 		player.sendMessage(i18n("help_title", false).replace("%version%", Main.getVersion()));
 		player.sendMessage(i18n("help_bw_join", false));
@@ -810,7 +860,7 @@ public class BwCommand implements CommandExecutor, TabCompleter {
 		}
 	}
 
-	private void sendStats(Player player, PlayerStatistic statistic) {
+	private void sendStats(CommandSender player, PlayerStatistic statistic) {
 		player.sendMessage(i18n("statistics_header").replace("%player%", statistic.getName()));
 
 		player.sendMessage(i18n("statistics_kills", false).replace("%kills%",
@@ -844,37 +894,37 @@ public class BwCommand implements CommandExecutor, TabCompleter {
 			player.sendMessage(select);
 			new BukkitRunnable() { // Fix loading plugin on CraftBukkit (non-Spigot) server
 				public void run() {
-			TextComponent[] hoverComponent = new TextComponent[] { new TextComponent(click) };
+					TextComponent[] hoverComponent = new TextComponent[] { new TextComponent(click) };
 
-			TextComponent msg1 = new TextComponent(base);
-			msg1.setClickEvent(
-					new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/bw admin " + game.getName() + " info base"));
-			msg1.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverComponent));
-			player.spigot().sendMessage(msg1);
+					TextComponent msg1 = new TextComponent(base);
+					msg1.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
+							"/bw admin " + game.getName() + " info base"));
+					msg1.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverComponent));
+					player.spigot().sendMessage(msg1);
 
-			TextComponent msg2 = new TextComponent(stores);
-			msg2.setClickEvent(
-					new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/bw admin " + game.getName() + " info stores"));
-			msg2.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverComponent));
-			player.spigot().sendMessage(msg2);
+					TextComponent msg2 = new TextComponent(stores);
+					msg2.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
+							"/bw admin " + game.getName() + " info stores"));
+					msg2.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverComponent));
+					player.spigot().sendMessage(msg2);
 
-			TextComponent msg3 = new TextComponent(spawners);
-			msg3.setClickEvent(
-					new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/bw admin " + game.getName() + " info spawners"));
-			msg3.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverComponent));
-			player.spigot().sendMessage(msg3);
+					TextComponent msg3 = new TextComponent(spawners);
+					msg3.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
+							"/bw admin " + game.getName() + " info spawners"));
+					msg3.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverComponent));
+					player.spigot().sendMessage(msg3);
 
-			TextComponent msg4 = new TextComponent(teams);
-			msg4.setClickEvent(
-					new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/bw admin " + game.getName() + " info teams"));
-			msg4.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverComponent));
-			player.spigot().sendMessage(msg4);
+					TextComponent msg4 = new TextComponent(teams);
+					msg4.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
+							"/bw admin " + game.getName() + " info teams"));
+					msg4.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverComponent));
+					player.spigot().sendMessage(msg4);
 
-			TextComponent msg5 = new TextComponent(config);
-			msg5.setClickEvent(
-					new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/bw admin " + game.getName() + " info config"));
-			msg5.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverComponent));
-			player.spigot().sendMessage(msg5);
+					TextComponent msg5 = new TextComponent(config);
+					msg5.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
+							"/bw admin " + game.getName() + " info config"));
+					msg5.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverComponent));
+					player.spigot().sendMessage(msg5);
 				}
 			}.runTask(Main.getInstance());
 		} else {

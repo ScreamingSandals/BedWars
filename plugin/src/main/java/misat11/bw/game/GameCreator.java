@@ -410,6 +410,9 @@ public class GameCreator {
 		case "damagewhenplayerisnotinarena":
 			game.setDamageWhenPlayerIsNotInArena(cons);
 			break;
+		case "removeunusedtargetblocks":
+			game.setRemoveUnusedTargetBlocks(cons);
+			break;
 		default:
 			return i18n("admin_command_invalid_config_variable_name");
 		}

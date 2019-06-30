@@ -225,6 +225,7 @@ page_back: "Page back"
 page_forward: "Page forward"
 
 help_title: "BedWars %version% - Help"
+help_title_console: "BedWars %version% - Help for Console"
 help_bw_join: "/bw join <arena> - §aJoin the game"
 help_bw_leave: "/bw leave - §aLeave the game"
 help_bw_list: "/bw list - §aList of active games"

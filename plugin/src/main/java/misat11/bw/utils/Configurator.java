@@ -180,6 +180,8 @@ public class Configurator {
 		checkOrSetConfig(modify, "prevent-lobby-spawn-mobs-in-radius", 16);
 		checkOrSetConfig(modify, "spawner-holo-height", 0.25);
 		checkOrSetConfig(modify, "spawner-holograms-countdown", true);
+		checkOrSetConfig(modify, "damage-when-player-is-not-in-arena", false);
+		checkOrSetConfig(modify, "remove-unused-target-blocks", true);
 		checkOrSetConfig(modify, "game-start-items", false);
 		checkOrSetConfig(modify, "player-respawn-items", false);
 		checkOrSetConfig(modify, "gived-game-start-items", new ArrayList<>());
@@ -252,6 +254,7 @@ public class Configurator {
 		checkOrSetConfig(modify, "chat.override", true);
 		checkOrSetConfig(modify, "chat.format", "<%teamcolor%%name%§r> ");
 		checkOrSetConfig(modify, "chat.separate-game-chat", false);
+		checkOrSetConfig(modify, "chat.send-death-messages-just-in-game", true);
 		checkOrSetConfig(modify, "rewards.enabled", false);
 		checkOrSetConfig(modify, "rewards.player-win", new ArrayList<>());
 		checkOrSetConfig(modify, "rewards.player-end-game", new ArrayList<>());
