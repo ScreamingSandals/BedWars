@@ -31,6 +31,8 @@ game_start_subtitle: "§aИгра §7%arena%§a началась! Удачи!"
 bossbar_waiting: "§cОжидание игроков!"
 bossbar_running: "§aИгра началась!"
 
+vip_not_enough_players: "§cNot enough players in arena!"
+
 buy_succes: "§aУспешно куплен §7%item%§a!"
 buy_failed: "§cНедостаточно слитков для покупки §7%item%§c!"
 

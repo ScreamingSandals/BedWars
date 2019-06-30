@@ -32,6 +32,8 @@ game_start_subtitle: "§aGame §7%arena%§a has started! Enjoy the game!"
 bossbar_waiting: "§cThe game will begin shortly!"
 bossbar_running: "§aGame started! Good luck!"
 
+vip_not_enough_players: "§cNot enough players in arena!"
+
 buy_succes: "§aSuccessfully purchased §7%item%§a for §7%material%§a!"
 buy_failed: "§cLack of material to buy §7%item%§c! Needed §7%material%§c!"
 
