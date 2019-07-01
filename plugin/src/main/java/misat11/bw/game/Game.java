@@ -221,6 +221,10 @@ public class Game implements misat11.bw.api.Game {
 		return minPlayers;
 	}
 
+	public boolean checkMinPlayers() {
+		return players.size() >= getMinPlayers();
+	}
+
 	public void setMinPlayers(int minPlayers) {
 		this.minPlayers = minPlayers;
 	}
