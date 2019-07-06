@@ -1396,7 +1396,7 @@ public class Game implements misat11.bw.api.Game {
 					ItemSpawnerType type = spawner.type;
 					int cycle = type.getInterval();
 
-					if (getOriginalOrInheritedSpawnerHologramsCountdown() && cycle > 1) {
+					if (getOriginalOrInheritedSpawnerHolograms() && getOriginalOrInheritedSpawnerHologramsCountdown() && cycle > 1) {
 						int modulo = countdown % cycle;
 						countdownArmorStands.get(spawner).setCustomName(i18nonly("countdown_spawning")
 								.replace("%seconds%", Integer.toString(modulo == 0 ? cycle : modulo)));
