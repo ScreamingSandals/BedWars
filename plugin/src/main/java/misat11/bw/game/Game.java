@@ -59,6 +59,7 @@ import misat11.bw.api.RunningTeam;
 import misat11.bw.api.events.BedwarsGameEndEvent;
 import misat11.bw.api.events.BedwarsGameStartEvent;
 import misat11.bw.api.events.BedwarsGameStartedEvent;
+import misat11.bw.api.events.BedwarsGameTickEvent;
 import misat11.bw.api.events.BedwarsPlayerBreakBlock;
 import misat11.bw.api.events.BedwarsPlayerBuildBlock;
 import misat11.bw.api.events.BedwarsPlayerJoinEvent;
@@ -180,12 +181,13 @@ public class Game implements misat11.bw.api.Game {
 
 	public boolean gameStartItem;
 	private boolean upgrades = false;
-	private static final int POST_GAME_WAITING = 3;
+	public static final int POST_GAME_WAITING = 3;
 
 	// STATUS
+	private GameStatus previousStatus = GameStatus.DISABLED;
 	private GameStatus status = GameStatus.DISABLED;
 	private GameStatus afterRebuild = GameStatus.WAITING;
-	private int countdown = -1;
+	private int countdown = -1, previousCountdown = -1;
 	private int calculatedMaxPlayers;
 	private BukkitTask task;
 	private List<CurrentTeam> teamsInGame = new ArrayList<>();
@@ -197,7 +199,6 @@ public class Game implements misat11.bw.api.Game {
 	private Map<Location, ItemStack[]> usedChests = new HashMap<>();
 	private List<SpecialItem> activeSpecialItems = new ArrayList<>();
 	private List<ArmorStand> armorStandsInGame = new ArrayList<>();
-	private boolean postGameWaiting = false;
 	private Map<ItemSpawner, ArmorStand> countdownArmorStands = new HashMap<>();
 
 	private Game() {
@@ -672,10 +673,10 @@ public class Game implements misat11.bw.api.Game {
 		}
 
 		if (players.isEmpty()) {
-			if (status == GameStatus.RUNNING) {
-				status = GameStatus.REBUILDING;
+			if (status != GameStatus.WAITING) {
 				afterRebuild = GameStatus.WAITING;
 				updateSigns();
+				rebuilding();
 			} else {
 				status = GameStatus.WAITING;
 				cancelTask();
@@ -1263,242 +1264,84 @@ public class Game implements misat11.bw.api.Game {
 
 	}
 
+	public void setBossbarProgress(int count, int max) {
+		double progress = (double) count / (double) max;
+		try {
+			bossbar.setProgress(progress);
+		} catch (Throwable tr) {
+			// 1.8
+			if (BossBar_1_8.isPluginForLegacyBossBarEnabled()) {
+				try {
+					legacyBossbar.setProgress(progress);
+				} catch (Throwable t2) {
+					// WHAT?
+				}
+			}
+		}
+	}
+
 	public void run() {
-		if (this.status == GameStatus.RUNNING) {
-			if (postGameWaiting) {
-				try {
-					bossbar.setProgress((double) countdown / (double) POST_GAME_WAITING);
-				} catch (Throwable t) {
-					// 1.8
-					if (BossBar_1_8.isPluginForLegacyBossBarEnabled()) {
-						try {
-							legacyBossbar.setProgress((double) countdown / (double) POST_GAME_WAITING);
-						} catch (Throwable t2) {
-							// WHAT?
-						}
-					}
+		if (countdown == -1 && status == GameStatus.WAITING) {
+			previousCountdown = countdown = pauseCountdown;
+			previousStatus = GameStatus.WAITING;
+			String title = i18nonly("bossbar_waiting");
+			try {
+				bossbar = Bukkit.createBossBar(title, BarColor.RED, BarStyle.SOLID);
+				bossbar.setVisible(false);
+				bossbar.setProgress(0);
+				for (GamePlayer p : players) {
+					bossbar.addPlayer(p.player);
 				}
-				if (countdown == 0) {
-					postGameWaiting = false;
-					return;
-				}
-				countdown--;
-				return;
-			}
-			updateScoreboardTimer();
-			if (countdown == 0) {
-				teamsInGame.clear();
-				activeSpecialItems.clear();
-				if (upgrades) {
-					for (ItemSpawner spawner : spawners) {
-						spawner.currentLevel = spawner.startLevel;
-					}
-				}
-				for (GameStore store : gameStore) {
-					LivingEntity villager = store.kill();
-					if (villager != null) {
-						Main.unregisterGameEntity(villager);
-					}
-				}
-				String message = i18n("game_end");
-				for (GamePlayer player : (List<GamePlayer>) ((ArrayList<GamePlayer>) players).clone()) {
-					player.player.sendMessage(message);
-					player.changeGame(null);
-
-					if (Main.getConfigurator().config.getBoolean("rewards.enabled")) {
-						final Player pl = player.player;
-						new BukkitRunnable() {
-
-							@Override
-							public void run() {
-								if (Main.isPlayerStatisticsEnabled()) {
-									PlayerStatistic statistic = Main.getPlayerStatisticsManager()
-											.getStatistic(player.player);
-									Game.this.dispatchRewardCommands("player-end-game", pl,
-											statistic.getCurrentScore());
-								} else {
-									Game.this.dispatchRewardCommands("player-end-game", pl, 0);
-								}
-							}
-
-						}.runTaskLater(Main.getInstance(), 40);
-					}
-				}
-
-				BedwarsGameEndEvent event = new BedwarsGameEndEvent(this);
-				Main.getInstance().getServer().getPluginManager().callEvent(event);
-				return;
-			}
-			int runningTeams = 0;
-			for (CurrentTeam t : teamsInGame) {
-				runningTeams += t.isAlive() ? 1 : 0;
-			}
-			if (runningTeams <= 1) {
-				if (runningTeams == 1) {
-					for (CurrentTeam t : teamsInGame) {
-						if (t.isAlive()) {
-							String time = getFormattedTimeLeft(this.gameTime - this.countdown);
-							String message = i18n("team_win", true)
-									.replace("%team%", t.teamInfo.color.chatColor + t.teamInfo.name)
-									.replace("%time%", time);
-							String subtitle = i18n("team_win", false)
-									.replace("%team%", t.teamInfo.color.chatColor + t.teamInfo.name)
-									.replace("%time%", time);
-							boolean madeRecord = processRecord(t, this.gameTime - this.countdown);
-							for (GamePlayer player : players) {
-								player.player.sendMessage(message);
-								if (getPlayerTeam(player) == t) {
-									Title.send(player.player, i18n("you_won", false), subtitle);
-									Main.depositPlayer(player.player, Main.getVaultWinReward());
-
-									SpawnEffects.spawnEffect(this, player.player, "game-effects.end");
-
-									if (Main.isPlayerStatisticsEnabled()) {
-										PlayerStatistic statistic = Main.getPlayerStatisticsManager()
-												.getStatistic(player.player);
-										statistic.setCurrentWins(statistic.getCurrentWins() + 1);
-										statistic.setCurrentScore(statistic.getCurrentScore()
-												+ Main.getConfigurator().config.getInt("statistics.scores.win", 50));
-
-										if (madeRecord) {
-											statistic.setCurrentScore(
-													statistic.getCurrentScore() + Main.getConfigurator().config
-															.getInt("statistics.scores.record", 100));
-										}
-
-										if (Main.isHologramsEnabled()) {
-											Main.getHologramInteraction().updateHolograms(player.player);
-										}
-
-										if (Main.getConfigurator().config.getBoolean("statistics.show-on-game-end")) {
-											Main.getInstance().getServer().dispatchCommand(player.player, "bw stats");
-										}
-
-									}
-
-									if (Main.getConfigurator().config.getBoolean("rewards.enabled")) {
-										final Player pl = player.player;
-										new BukkitRunnable() {
-
-											@Override
-											public void run() {
-												if (Main.isPlayerStatisticsEnabled()) {
-													PlayerStatistic statistic = Main.getPlayerStatisticsManager()
-															.getStatistic(player.player);
-													Game.this.dispatchRewardCommands("player-win", pl,
-															statistic.getCurrentScore());
-												} else {
-													Game.this.dispatchRewardCommands("player-win", pl, 0);
-												}
-											}
-
-										}.runTaskLater(Main.getInstance(), (2 + POST_GAME_WAITING) * 20);
-									}
-								} else {
-									Title.send(player.player, i18n("you_lost", false), subtitle);
-								}
-							}
-							break;
-						}
-					}
-					postGameWaiting = true;
-					countdown = POST_GAME_WAITING;
+				bossbar.setColor(lobbyBossBarColor != null ? lobbyBossBarColor
+						: BarColor.valueOf(Main.getConfigurator().config.getString("bossbar.lobby.color")));
+				bossbar.setStyle(BarStyle.valueOf(Main.getConfigurator().config.getString("bossbar.lobby.style")));
+				bossbar.setVisible(getOriginalOrInheritedLobbyBossbar());
+			} catch (Throwable t) {
+				// 1.8
+				if (BossBar_1_8.isPluginForLegacyBossBarEnabled()) {
 					try {
-						bossbar.setTitle(" ");
-					} catch (Throwable t) {
-						// 1.8
-						if (BossBar_1_8.isPluginForLegacyBossBarEnabled()) {
-							try {
-								legacyBossbar.setMessage(" ");
-							} catch (Throwable t2) {
-								// WHAT?
-							}
+						legacyBossbar = new BossBar_1_8();
+						legacyBossbar.setProgress(1);
+						for (GamePlayer p : players) {
+							legacyBossbar.addPlayer(p.player);
 						}
+						legacyBossbar.setVisible(getOriginalOrInheritedLobbyBossbar());
+					} catch (Throwable t2) {
+						// WHAT?
 					}
+				}
+			}
+			if (teamSelectorInventory == null) {
+				teamSelectorInventory = new TeamSelectorInventory(Main.getInstance(), this);
+			}
+			updateSigns();
+		}
+
+		int nextCountdown = countdown;
+		GameStatus nextStatus = status;
+
+		if (status == GameStatus.WAITING) {
+			if (teamsInGame.size() > 1) {
+				if (countdown == 0) {
+					nextCountdown = gameTime;
+					nextStatus = GameStatus.RUNNING;
 				} else {
-					countdown = 0;
-				}
-			} else {
-				try {
-					bossbar.setProgress((double) countdown / (double) gameTime);
-				} catch (Throwable t) {
-					// 1.8
-					if (BossBar_1_8.isPluginForLegacyBossBarEnabled()) {
-						try {
-							legacyBossbar.setProgress((double) countdown / (double) gameTime);
-						} catch (Throwable t2) {
-							// WHAT?
-						}
-					}
-				}
-				countdown--;
-				for (ItemSpawner spawner : spawners) {
-					ItemSpawnerType type = spawner.type;
-					int cycle = type.getInterval();
+					nextCountdown--;
 
-					if (getOriginalOrInheritedSpawnerHolograms() && getOriginalOrInheritedSpawnerHologramsCountdown()
-							&& cycle > 1) {
-						int modulo = countdown % cycle;
-						countdownArmorStands.get(spawner).setCustomName(i18nonly("countdown_spawning")
-								.replace("%seconds%", Integer.toString(modulo == 0 ? cycle : modulo)));
-					}
-
-					if ((countdown % cycle) == 0) {
-
-						BedwarsResourceSpawnEvent resourceSpawnEvent = new BedwarsResourceSpawnEvent(this, spawner,
-								type.getStack(upgrades ? spawner.currentLevel : 1));
-						Main.getInstance().getServer().getPluginManager().callEvent(resourceSpawnEvent);
-
-						if (resourceSpawnEvent.isCancelled()) {
-							continue;
-						}
-
-						ItemStack resource = resourceSpawnEvent.getResource();
-
-						if (resource.getAmount() > 0) {
-							Location loc = spawner.loc.clone().add(0, 0.05, 0);
-							Item item = loc.getWorld().dropItem(loc, resource);
-							item.setPickupDelay(0);
+					if (countdown <= 10 && countdown >= 1 && countdown != previousCountdown) {
+						for (GamePlayer player : players) {
+							Title.send(player.player, ChatColor.YELLOW + Integer.toString(countdown), "");
+							Sounds.playSound(player.player, player.player.getLocation(),
+									Main.getConfigurator().config.getString("sounds.on_countdown"),
+									Sounds.UI_BUTTON_CLICK, 1, 1);
 						}
 					}
 				}
 			}
-		} else if (this.status == GameStatus.WAITING) {
-			if (countdown == -1) {
-				countdown = pauseCountdown;
-				String title = i18n("bossbar_waiting", false);
-				try {
-					bossbar = Bukkit.createBossBar(title, BarColor.RED, BarStyle.SOLID);
-					bossbar.setVisible(false);
-					bossbar.setProgress(0);
-					for (GamePlayer p : players) {
-						bossbar.addPlayer(p.player);
-					}
-					bossbar.setColor(lobbyBossBarColor != null ? lobbyBossBarColor
-							: BarColor.valueOf(Main.getConfigurator().config.getString("bossbar.lobby.color")));
-					bossbar.setStyle(BarStyle.valueOf(Main.getConfigurator().config.getString("bossbar.lobby.style")));
-					bossbar.setVisible(getOriginalOrInheritedLobbyBossbar());
-				} catch (Throwable t) {
-					// 1.8
-					if (BossBar_1_8.isPluginForLegacyBossBarEnabled()) {
-						try {
-							legacyBossbar = new BossBar_1_8();
-							legacyBossbar.setProgress(1);
-							for (GamePlayer p : players) {
-								legacyBossbar.addPlayer(p.player);
-							}
-							legacyBossbar.setVisible(getOriginalOrInheritedLobbyBossbar());
-						} catch (Throwable t2) {
-							// WHAT?
-						}
-					}
-				}
-				if (teamSelectorInventory == null) {
-					teamSelectorInventory = new TeamSelectorInventory(Main.getInstance(), this);
-				}
-				updateSigns();
-			}
+			setBossbarProgress(countdown, pauseCountdown);
 			updateLobbyScoreboard();
+
+			// REWRITE!!!!
 			if (teamsInGame.size() <= 1 || players.size() < minPlayers) {
 				// Game starting because of start item
 				if (gameStartItem) {
@@ -1514,24 +1357,42 @@ public class Game implements misat11.bw.api.Game {
 				} else {
 					// Countdown reset
 					countdown = pauseCountdown;
-					return;
 				}
 			}
-			if (countdown <= 10 && countdown >= 1) {
-				for (GamePlayer player : players) {
-					Title.send(player.player, ChatColor.YELLOW + Integer.toString(countdown), "");
-					Sounds.playSound(player.player, player.player.getLocation(),
-							Main.getConfigurator().config.getString("sounds.on_countdown"), Sounds.UI_BUTTON_CLICK, 1,
-							1);
-				}
-			}
+		} else if (status == GameStatus.RUNNING) {
 			if (countdown == 0) {
-				BedwarsGameStartEvent event = new BedwarsGameStartEvent(this);
-				Main.getInstance().getServer().getPluginManager().callEvent(event);
+				nextCountdown = POST_GAME_WAITING;
+				nextStatus = GameStatus.GAME_END_CELEBRATING;
+			} else {
+				nextCountdown--;
+			}
+			setBossbarProgress(countdown, gameTime);
+			updateScoreboardTimer();
+		} else if (status == GameStatus.GAME_END_CELEBRATING) {
+			if (countdown == 0) {
+				nextStatus = GameStatus.REBUILDING;
+				nextCountdown = 0;
+			} else {
+				nextCountdown--;
+			}
+			setBossbarProgress(countdown, POST_GAME_WAITING);
+		}
 
-				if (event.isCancelled()) {
-					// reset timer
-					countdown = pauseCountdown;
+		BedwarsGameTickEvent tick = new BedwarsGameTickEvent(this, previousCountdown, previousStatus, countdown, status,
+				nextCountdown, nextStatus);
+		Bukkit.getPluginManager().callEvent(tick);
+
+		previousCountdown = countdown;
+		previousStatus = status;
+
+		if (status != tick.getNextStatus()) {
+			if (tick.getNextStatus() == GameStatus.RUNNING) {
+				BedwarsGameStartEvent startE = new BedwarsGameStartEvent(this);
+				Main.getInstance().getServer().getPluginManager().callEvent(startE);
+
+				if (startE.isCancelled()) {
+					tick.setNextCountdown(pauseCountdown);
+					tick.setNextStatus(GameStatus.WAITING);
 					return;
 				}
 
@@ -1543,8 +1404,6 @@ public class Game implements misat11.bw.api.Game {
 					}
 				}
 
-				this.status = GameStatus.RUNNING;
-				this.countdown = this.gameTime;
 				try {
 					bossbar.setTitle(i18n("bossbar_running", false));
 					bossbar.setProgress(0);
@@ -1571,7 +1430,6 @@ public class Game implements misat11.bw.api.Game {
 					gameScoreboard.getObjective("lobby").unregister();
 				}
 				gameScoreboard.clearSlot(DisplaySlot.SIDEBAR);
-				updateScoreboard();
 				updateSigns();
 				for (GameStore store : gameStore) {
 					LivingEntity villager = store.spawn();
@@ -1579,6 +1437,7 @@ public class Game implements misat11.bw.api.Game {
 						Main.registerGameEntity(villager, this);
 					}
 				}
+
 				if (getOriginalOrInheritedSpawnerHolograms()) {
 					boolean countdownEnabled = getOriginalOrInheritedSpawnerHologramsCountdown();
 					for (ItemSpawner spawner : spawners) {
@@ -1633,9 +1492,10 @@ public class Game implements misat11.bw.api.Game {
 						}
 					}
 				}
-				String gameStartTitle = i18n("game_start_title", false);
-				String gameStartSubtitle = i18n("game_start_subtitle", false).replace("%arena%", this.name);
-				for (GamePlayer player : players) {
+
+				String gameStartTitle = i18nonly("game_start_title");
+				String gameStartSubtitle = i18nonly("game_start_subtitle").replace("%arena%", this.name);
+				for (GamePlayer player : this.players) {
 					CurrentTeam team = getPlayerTeam(player);
 					player.player.getInventory().clear();
 					// Player still had armor on legacy versions
@@ -1648,7 +1508,6 @@ public class Game implements misat11.bw.api.Game {
 						makeSpectator(player);
 					} else {
 						player.player.teleport(team.teamInfo.spawn);
-						SpawnEffects.spawnEffect(this, player.player, "game-effects.start");
 						if (getOriginalOrInheritedGameStartItems()) {
 							List<ItemStack> givedGameStartItems = (List<ItemStack>) Main.getConfigurator().config
 									.getList("gived-game-start-items");
@@ -1656,6 +1515,7 @@ public class Game implements misat11.bw.api.Game {
 								player.player.getInventory().addItem(stack);
 							}
 						}
+						SpawnEffects.spawnEffect(this, player.player, "game-effects.start");
 					}
 					Sounds.playSound(player.player, player.player.getLocation(),
 							Main.getConfigurator().config.getString("sounds.on_game_start"),
@@ -1690,65 +1550,236 @@ public class Game implements misat11.bw.api.Game {
 
 				BedwarsGameStartedEvent startedEvent = new BedwarsGameStartedEvent(this);
 				Main.getInstance().getServer().getPluginManager().callEvent(startedEvent);
-				return;
+				updateScoreboard();
 			}
+		} else {
+			if (status == GameStatus.RUNNING && tick.getNextStatus() == GameStatus.RUNNING) {
+				int runningTeams = 0;
+			for (CurrentTeam t : teamsInGame) {
+				runningTeams += t.isAlive() ? 1 : 0;
+			}
+			if (runningTeams <= 1) {
+				if (runningTeams == 1) {
+					for (CurrentTeam t : teamsInGame) {
+						if (t.isAlive()) {
+							String time = getFormattedTimeLeft(gameTime - countdown);
+							String message = i18n("team_win")
+									.replace("%team%", TeamColor.fromApiColor(t.getColor()).chatColor + t.getName())
+									.replace("%time%", time);
+							String subtitle = i18n("team_win", false)
+									.replace("%team%", TeamColor.fromApiColor(t.getColor()).chatColor + t.getName())
+									.replace("%time%", time);
+							boolean madeRecord = processRecord(t, gameTime - countdown);
+							for (GamePlayer player : players) {
+								player.player.sendMessage(message);
+								if (getPlayerTeam(player) == t) {
+									Title.send(player.player, i18nonly("you_won"), subtitle);
+									Main.depositPlayer(player.player, Main.getVaultWinReward());
+
+									SpawnEffects.spawnEffect(this, player.player, "game-effects.end");
+
+									if (Main.isPlayerStatisticsEnabled()) {
+										PlayerStatistic statistic = Main.getPlayerStatisticsManager()
+												.getStatistic(player.player);
+										statistic.setCurrentWins(statistic.getCurrentWins() + 1);
+										statistic.setCurrentScore(statistic.getCurrentScore()
+												+ Main.getConfigurator().config.getInt("statistics.scores.win", 50));
+
+										if (madeRecord) {
+											statistic.setCurrentScore(
+													statistic.getCurrentScore() + Main.getConfigurator().config
+															.getInt("statistics.scores.record", 100));
+										}
+
+										if (Main.isHologramsEnabled()) {
+											Main.getHologramInteraction().updateHolograms(player.player);
+										}
+
+										if (Main.getConfigurator().config.getBoolean("statistics.show-on-game-end")) {
+											Main.getInstance().getServer().dispatchCommand(player.player, "bw stats");
+										}
+
+									}
+
+									if (Main.getConfigurator().config.getBoolean("rewards.enabled")) {
+										final Player pl = player.player;
+										new BukkitRunnable() {
+
+											@Override
+											public void run() {
+												if (Main.isPlayerStatisticsEnabled()) {
+													PlayerStatistic statistic = Main.getPlayerStatisticsManager()
+															.getStatistic(player.player);
+													Game.this.dispatchRewardCommands("player-win", pl,
+															statistic.getCurrentScore());
+												} else {
+													Game.this.dispatchRewardCommands("player-win", pl, 0);
+												}
+											}
+
+										}.runTaskLater(Main.getInstance(), (2 + Game.POST_GAME_WAITING) * 20);
+									}
+								} else {
+									Title.send(player.player, i18n("you_lost", false), subtitle);
+								}
+							}
+							break;
+						}
+					}
+					tick.setNextCountdown(Game.POST_GAME_WAITING);
+					tick.setNextStatus(GameStatus.GAME_END_CELEBRATING);
+				} else {
+					tick.setNextStatus(GameStatus.REBUILDING);
+					tick.setNextCountdown(0);
+				}
+			} else {
+				for (ItemSpawner spawner : spawners) {
+					ItemSpawnerType type = spawner.type;
+					int cycle = type.getInterval();
+
+					if (getOriginalOrInheritedSpawnerHolograms() && getOriginalOrInheritedSpawnerHologramsCountdown()
+							&& cycle > 1) {
+						int modulo = countdown % cycle;
+						countdownArmorStands.get(spawner).setCustomName(i18nonly("countdown_spawning")
+								.replace("%seconds%", Integer.toString(modulo == 0 ? cycle : modulo)));
+					}
+
+					if ((countdown % cycle) == 0) {
+
+						BedwarsResourceSpawnEvent resourceSpawnEvent = new BedwarsResourceSpawnEvent(this, spawner,
+								type.getStack(upgrades ? spawner.currentLevel : 1));
+						Main.getInstance().getServer().getPluginManager().callEvent(resourceSpawnEvent);
+
+						if (resourceSpawnEvent.isCancelled()) {
+							continue;
+						}
+
+						ItemStack resource = resourceSpawnEvent.getResource();
+
+						if (resource.getAmount() > 0) {
+							Location loc = spawner.getLocation().clone().add(0, 0.05, 0);
+							Item item = loc.getWorld().dropItem(loc, resource);
+							item.setPickupDelay(0);
+						}
+					}
+				}
+			}
+			}
+		}
+
+		countdown = tick.getNextCountdown();
+		status = tick.getNextStatus();
+		
+		if (status == GameStatus.GAME_END_CELEBRATING) {
+
 			try {
-				bossbar.setProgress((double) countdown / (double) pauseCountdown);
+				bossbar.setTitle(" ");
 			} catch (Throwable tr) {
 				// 1.8
 				if (BossBar_1_8.isPluginForLegacyBossBarEnabled()) {
 					try {
-						legacyBossbar.setProgress((double) countdown / (double) pauseCountdown);
+						legacyBossbar.setMessage(" ");
 					} catch (Throwable t2) {
 						// WHAT?
 					}
 				}
 			}
-			countdown--;
-		} else if (this.status == GameStatus.REBUILDING) {
-			BedwarsPreRebuildingEvent preRebuildingEvent = new BedwarsPreRebuildingEvent(this);
-			Main.getInstance().getServer().getPluginManager().callEvent(preRebuildingEvent);
+		}
 
-			region.regen();
-			// Remove items
-			for (Entity e : this.world.getEntities()) {
-				if (GameCreator.isInArea(e.getLocation(), pos1, pos2)) {
-					if (e instanceof Item) {
-						e.remove();
-					}
+		if (status == GameStatus.REBUILDING) {
+			BedwarsGameEndEvent event = new BedwarsGameEndEvent(this);
+			Main.getInstance().getServer().getPluginManager().callEvent(event);
+			
+			if (players.isEmpty()) {
+				rebuilding();
+				return;
+			}
+			
+			String message = i18n("game_end");
+			for (GamePlayer player : (List<GamePlayer>) ((ArrayList<GamePlayer>) players).clone()) {
+				player.player.sendMessage(message);
+				player.changeGame(null);
+
+				if (Main.getConfigurator().config.getBoolean("rewards.enabled")) {
+					final Player pl = player.player;
+					new BukkitRunnable() {
+
+						@Override
+						public void run() {
+							if (Main.isPlayerStatisticsEnabled()) {
+								PlayerStatistic statistic = Main.getPlayerStatisticsManager()
+										.getStatistic(player.player);
+								Game.this.dispatchRewardCommands("player-end-game", pl, statistic.getCurrentScore());
+							} else {
+								Game.this.dispatchRewardCommands("player-end-game", pl, 0);
+							}
+						}
+
+					}.runTaskLater(Main.getInstance(), 40);
 				}
 			}
-
-			// Chest clearing
-			for (Map.Entry<Location, ItemStack[]> entry : usedChests.entrySet()) {
-				Location location = entry.getKey();
-				Block block = location.getBlock();
-				ItemStack[] contents = entry.getValue();
-				if (block.getState() instanceof Chest) {
-					Chest chest = (Chest) block.getState();
-					chest.getBlockInventory().setContents(contents);
-				}
-			}
-			usedChests.clear();
-
-			// Armor Stands destroy
-			for (ArmorStand stand : armorStandsInGame) {
-				stand.setHealth(0);
-				Main.unregisterGameEntity(stand);
-			}
-			armorStandsInGame.clear();
-			countdownArmorStands.clear();
-
-			BedwarsPostRebuildingEvent postRebuildingEvent = new BedwarsPostRebuildingEvent(this);
-			Main.getInstance().getServer().getPluginManager().callEvent(postRebuildingEvent);
-
-			this.status = this.afterRebuild;
-			updateSigns();
-			cancelTask();
 		}
 	}
+	
+	public void rebuilding() {
+		teamsInGame.clear();
+		activeSpecialItems.clear();
 
-	private boolean processRecord(CurrentTeam t, int wonTime) {
+		BedwarsPreRebuildingEvent preRebuildingEvent = new BedwarsPreRebuildingEvent(this);
+		Main.getInstance().getServer().getPluginManager().callEvent(preRebuildingEvent);
+		
+		if (upgrades) {
+			for (ItemSpawner spawner : spawners) {
+				spawner.currentLevel = spawner.startLevel;
+			}
+		}
+		for (GameStore store : gameStore) {
+			LivingEntity villager = store.kill();
+			if (villager != null) {
+				Main.unregisterGameEntity(villager);
+			}
+		}
+
+		region.regen();
+		// Remove items
+		for (Entity e : this.world.getEntities()) {
+			if (GameCreator.isInArea(e.getLocation(), pos1, pos2)) {
+				if (e instanceof Item) {
+					e.remove();
+				}
+			}
+		}
+
+		// Chest clearing
+		for (Map.Entry<Location, ItemStack[]> entry : usedChests.entrySet()) {
+			Location location = entry.getKey();
+			Block block = location.getBlock();
+			ItemStack[] contents = entry.getValue();
+			if (block.getState() instanceof Chest) {
+				Chest chest = (Chest) block.getState();
+				chest.getBlockInventory().setContents(contents);
+			}
+		}
+		usedChests.clear();
+
+		// Armor Stands destroy
+		for (ArmorStand stand : armorStandsInGame) {
+			stand.remove();
+			Main.unregisterGameEntity(stand);
+		}
+		armorStandsInGame.clear();
+		countdownArmorStands.clear();
+
+		BedwarsPostRebuildingEvent postRebuildingEvent = new BedwarsPostRebuildingEvent(this);
+		Main.getInstance().getServer().getPluginManager().callEvent(postRebuildingEvent);
+
+		this.status = this.afterRebuild;
+		this.countdown = -1;
+		updateSigns();
+		cancelTask();
+	}
+
+	public boolean processRecord(CurrentTeam t, int wonTime) {
 		int time = Main.getConfigurator().recordconfig.getInt("record." + this.getName() + ".time", Integer.MAX_VALUE);
 		if (time > wonTime) {
 			Main.getConfigurator().recordconfig.set("record." + this.getName() + ".time", wonTime);
@@ -1895,7 +1926,7 @@ public class Game implements misat11.bw.api.Game {
 	}
 
 	public void updateScoreboard() {
-		if (status != GameStatus.RUNNING || !getOriginalOrInheritedScoreaboard()) {
+		if (!getOriginalOrInheritedScoreaboard()) {
 			return;
 		}
 
@@ -1960,11 +1991,11 @@ public class Game implements misat11.bw.api.Game {
 				.replace("%time%", this.getFormattedTimeLeft());
 	}
 
-	private String getFormattedTimeLeft() {
+	public String getFormattedTimeLeft() {
 		return getFormattedTimeLeft(this.countdown);
 	}
 
-	private String getFormattedTimeLeft(int countdown) {
+	public String getFormattedTimeLeft(int countdown) {
 		int min;
 		int sec;
 		String minStr;
@@ -2745,9 +2776,18 @@ public class Game implements misat11.bw.api.Game {
 		return allowBlockFalling.isOriginal() ? allowBlockFalling.getValue()
 				: Main.getConfigurator().config.getBoolean(ALLOW_BLOCK_FALLING);
 	}
-	
+
 	public void setAllowBlockFalling(InGameConfigBooleanConstants allowBlockFalling) {
 		this.allowBlockFalling = allowBlockFalling;
+	}
+
+	public Map<ItemSpawner, ArmorStand> getCountdownArmorStands() {
+		return countdownArmorStands;
+	}
+
+	@Override
+	public void selectPlayerRandomTeam(Player player) {
+		joinRandomTeam(Main.getPlayerGameProfile(player));
 	}
 
 }

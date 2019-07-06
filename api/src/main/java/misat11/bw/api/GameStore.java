@@ -53,7 +53,7 @@ public class GameStore {
 	public LivingEntity kill() {
 		LivingEntity en = entity;
 		if (entity != null) {
-			entity.setHealth(0);
+			entity.remove();
 			entity = null;
 		}
 		return en;
