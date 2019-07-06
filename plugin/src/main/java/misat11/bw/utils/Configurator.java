@@ -182,6 +182,7 @@ public class Configurator {
 		checkOrSetConfig(modify, "spawner-holograms-countdown", true);
 		checkOrSetConfig(modify, "damage-when-player-is-not-in-arena", false);
 		checkOrSetConfig(modify, "remove-unused-target-blocks", true);
+		checkOrSetConfig(modify, "allow-block-falling", true);
 		checkOrSetConfig(modify, "game-start-items", false);
 		checkOrSetConfig(modify, "player-respawn-items", false);
 		checkOrSetConfig(modify, "gived-game-start-items", new ArrayList<>());

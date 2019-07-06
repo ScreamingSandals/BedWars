@@ -104,6 +104,8 @@ public interface Game {
 	
 	public List<ItemSpawner> getItemSpawners();
 	
+	public Region getRegion();
+	
 	// LOBBY
 	
 	public World getLobbyWorld();
@@ -190,6 +192,9 @@ public interface Game {
 	
 	public InGameConfigBooleanConstants getRemoveUnusedTargetBlocks();
 	public boolean getOriginalOrInheritedRemoveUnusedTargetBlocks();
+	
+	public InGameConfigBooleanConstants getAllowBlockFalling();
+	public boolean getOriginalOrInheritedAllowBlockFalling();
 	
 	public ArenaTime getArenaTime();
 	public WeatherType getArenaWeather();

@@ -1,14 +1,22 @@
 package misat11.bw.game;
 
-import misat11.bw.Main;
-import misat11.bw.api.*;
-import misat11.bw.api.events.*;
-import misat11.bw.api.special.SpecialItem;
-import misat11.bw.legacy.BossBar_1_8;
-import misat11.bw.legacy.LegacyRegion;
-import misat11.bw.statistics.PlayerStatistic;
-import misat11.bw.utils.*;
-import org.bukkit.*;
+import static misat11.lib.lang.I18n.i18n;
+import static misat11.lib.lang.I18n.i18nonly;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.WeatherType;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Chest;
@@ -20,7 +28,12 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.*;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Item;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -37,15 +50,36 @@ import org.bukkit.scoreboard.Scoreboard;
 import com.onarandombox.MultiverseCore.api.Core;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static misat11.lib.lang.I18n.i18n;
-import static misat11.lib.lang.I18n.i18nonly;
+import misat11.bw.Main;
+import misat11.bw.api.ArenaTime;
+import misat11.bw.api.GameStatus;
+import misat11.bw.api.GameStore;
+import misat11.bw.api.InGameConfigBooleanConstants;
+import misat11.bw.api.RunningTeam;
+import misat11.bw.api.events.BedwarsGameEndEvent;
+import misat11.bw.api.events.BedwarsGameStartEvent;
+import misat11.bw.api.events.BedwarsGameStartedEvent;
+import misat11.bw.api.events.BedwarsPlayerBreakBlock;
+import misat11.bw.api.events.BedwarsPlayerBuildBlock;
+import misat11.bw.api.events.BedwarsPlayerJoinEvent;
+import misat11.bw.api.events.BedwarsPlayerJoinTeamEvent;
+import misat11.bw.api.events.BedwarsPlayerJoinedEvent;
+import misat11.bw.api.events.BedwarsPlayerLeaveEvent;
+import misat11.bw.api.events.BedwarsPostRebuildingEvent;
+import misat11.bw.api.events.BedwarsPreRebuildingEvent;
+import misat11.bw.api.events.BedwarsResourceSpawnEvent;
+import misat11.bw.api.events.BedwarsTargetBlockDestroyedEvent;
+import misat11.bw.api.special.SpecialItem;
+import misat11.bw.legacy.BossBar_1_8;
+import misat11.bw.legacy.LegacyRegion;
+import misat11.bw.statistics.PlayerStatistic;
+import misat11.bw.utils.GameSign;
+import misat11.bw.utils.IRegion;
+import misat11.bw.utils.Region;
+import misat11.bw.utils.Sounds;
+import misat11.bw.utils.SpawnEffects;
+import misat11.bw.utils.TeamSelectorInventory;
+import misat11.bw.utils.Title;
 
 public class Game implements misat11.bw.api.Game {
 
@@ -140,6 +174,9 @@ public class Game implements misat11.bw.api.Game {
 
 	public static final String REMOVE_UNUSED_TARGET_BLOCKS = "remove-unused-target-blocks";
 	private InGameConfigBooleanConstants removeUnusedTargetBlocks = InGameConfigBooleanConstants.INHERIT;
+
+	public static final String ALLOW_BLOCK_FALLING = "allow-block-falling";
+	private InGameConfigBooleanConstants allowBlockFalling = InGameConfigBooleanConstants.INHERIT;
 
 	public boolean gameStartItem;
 	private boolean upgrades = false;
@@ -786,6 +823,8 @@ public class Game implements misat11.bw.api.Game {
 				configMap.getString("constant." + DAMAGE_WHEN_PLAYER_IS_NOT_IN_ARENA, "inherit"));
 		game.removeUnusedTargetBlocks = readBooleanConstant(
 				configMap.getString("constant." + REMOVE_UNUSED_TARGET_BLOCKS, "inherit"));
+		game.allowBlockFalling = readBooleanConstant(
+				configMap.getString("constants." + ALLOW_BLOCK_FALLING, "inherit"));
 
 		game.arenaTime = ArenaTime.valueOf(configMap.getString("arenaTime", ArenaTime.WORLD.name()).toUpperCase());
 		game.arenaWeather = loadWeather(configMap.getString("arenaWeather", "default").toUpperCase());
@@ -963,6 +1002,7 @@ public class Game implements misat11.bw.api.Game {
 		configMap.set("constant." + DAMAGE_WHEN_PLAYER_IS_NOT_IN_ARENA,
 				writeBooleanConstant(damageWhenPlayerIsNotInArena));
 		configMap.set("constant." + REMOVE_UNUSED_TARGET_BLOCKS, writeBooleanConstant(removeUnusedTargetBlocks));
+		configMap.set("constants." + ALLOW_BLOCK_FALLING, writeBooleanConstant(allowBlockFalling));
 
 		configMap.set("arenaTime", arenaTime.name());
 		configMap.set("arenaWeather", arenaWeather == null ? "default" : arenaWeather.name());
@@ -1396,7 +1436,8 @@ public class Game implements misat11.bw.api.Game {
 					ItemSpawnerType type = spawner.type;
 					int cycle = type.getInterval();
 
-					if (getOriginalOrInheritedSpawnerHolograms() && getOriginalOrInheritedSpawnerHologramsCountdown() && cycle > 1) {
+					if (getOriginalOrInheritedSpawnerHolograms() && getOriginalOrInheritedSpawnerHologramsCountdown()
+							&& cycle > 1) {
 						int modulo = countdown % cycle;
 						countdownArmorStands.get(spawner).setCustomName(i18nonly("countdown_spawning")
 								.replace("%seconds%", Integer.toString(modulo == 0 ? cycle : modulo)));
@@ -2692,6 +2733,21 @@ public class Game implements misat11.bw.api.Game {
 
 	public void setRemoveUnusedTargetBlocks(InGameConfigBooleanConstants removeUnusedTargetBlocks) {
 		this.removeUnusedTargetBlocks = removeUnusedTargetBlocks;
+	}
+
+	@Override
+	public InGameConfigBooleanConstants getAllowBlockFalling() {
+		return allowBlockFalling;
+	}
+
+	@Override
+	public boolean getOriginalOrInheritedAllowBlockFalling() {
+		return allowBlockFalling.isOriginal() ? allowBlockFalling.getValue()
+				: Main.getConfigurator().config.getBoolean(ALLOW_BLOCK_FALLING);
+	}
+	
+	public void setAllowBlockFalling(InGameConfigBooleanConstants allowBlockFalling) {
+		this.allowBlockFalling = allowBlockFalling;
 	}
 
 }

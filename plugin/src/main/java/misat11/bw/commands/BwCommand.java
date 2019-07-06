@@ -463,6 +463,13 @@ public class BwCommand implements CommandExecutor, TabCompleter {
 																	false)));
 
 											player.sendMessage(i18n("arena_info_config_constant", false)
+													.replace("%constant%", "allowblockfalling")
+													.replace("%value%",
+															i18n("arena_info_config_" + game
+																	.getAllowBlockFalling().name().toLowerCase(),
+																	false)));
+
+											player.sendMessage(i18n("arena_info_config_constant", false)
 													.replace("%constant%", "upgrades (experimental)").replace("%value%",
 															i18n("arena_info_config_"
 																	+ String.valueOf(game.isUpgradesEnabled()),
