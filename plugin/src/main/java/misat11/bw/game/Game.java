@@ -514,7 +514,7 @@ public class Game implements misat11.bw.api.Game {
 			player.changeGame(null);
 			return;
 		}
-		if (status == GameStatus.RUNNING) {
+		if (status == GameStatus.RUNNING || status == GameStatus.GAME_END_CELEBRATING) {
 			player.player.sendMessage(i18n("game_already_running").replace("%arena%", this.name));
 			player.changeGame(null);
 			return;
@@ -1073,7 +1073,7 @@ public class Game implements misat11.bw.api.Game {
 			player.sendMessage(i18n("game_is_rebuilding").replace("%arena%", this.name));
 			return;
 		}
-		if (status == GameStatus.RUNNING) {
+		if (status == GameStatus.RUNNING || status == GameStatus.GAME_END_CELEBRATING) {
 			player.sendMessage(i18n("game_already_running").replace("%arena%", this.name));
 			return;
 		}
@@ -1094,7 +1094,7 @@ public class Game implements misat11.bw.api.Game {
 
 			if (gPlayer.getGame() == this) {
 				gPlayer.changeGame(null);
-				if (status == GameStatus.RUNNING) {
+				if (status == GameStatus.RUNNING || status == GameStatus.GAME_END_CELEBRATING) {
 					updateScoreboard();
 				}
 			}
@@ -1134,24 +1134,8 @@ public class Game implements misat11.bw.api.Game {
 
 		return lowest;
 	}
-
-	public void joinRandomTeam(GamePlayer player) {
-		Team teamForJoin;
-		if (teamsInGame.size() < 2) {
-			teamForJoin = getFirstTeamThatIsntInGame();
-		} else {
-			CurrentTeam current = getTeamWithLowestPlayers();
-			if (current.players.size() >= current.getMaxPlayers()) {
-				teamForJoin = getFirstTeamThatIsntInGame();
-			} else {
-				teamForJoin = current.teamInfo;
-			}
-		}
-
-		if (teamForJoin == null) {
-			return;
-		}
-
+	
+	private void internalTeamJoin(GamePlayer player, Team teamForJoin) {
 		CurrentTeam current = null;
 		for (CurrentTeam t : teamsInGame) {
 			if (t.teamInfo == teamForJoin) {
@@ -1159,8 +1143,8 @@ public class Game implements misat11.bw.api.Game {
 				break;
 			}
 		}
+	
 		CurrentTeam cur = getPlayerTeam(player);
-
 		BedwarsPlayerJoinTeamEvent event = new BedwarsPlayerJoinTeamEvent(current, player.player, cur);
 		Main.getInstance().getServer().getPluginManager().callEvent(event);
 
@@ -1235,6 +1219,26 @@ public class Game implements misat11.bw.api.Game {
 		if (!teamsInGame.contains(current)) {
 			teamsInGame.add(current);
 		}
+	}
+
+	public void joinRandomTeam(GamePlayer player) {
+		Team teamForJoin;
+		if (teamsInGame.size() < 2) {
+			teamForJoin = getFirstTeamThatIsntInGame();
+		} else {
+			CurrentTeam current = getTeamWithLowestPlayers();
+			if (current.players.size() >= current.getMaxPlayers()) {
+				teamForJoin = getFirstTeamThatIsntInGame();
+			} else {
+				teamForJoin = current.teamInfo;
+			}
+		}
+
+		if (teamForJoin == null) {
+			return;
+		}
+
+		internalTeamJoin(player, teamForJoin);
 	}
 
 	public Location makeSpectator(GamePlayer player) {
@@ -1651,7 +1655,7 @@ public class Game implements misat11.bw.api.Game {
 						tick.setNextStatus(GameStatus.REBUILDING);
 						tick.setNextCountdown(0);
 					}
-				} else {
+				} else if (previousStatus == GameStatus.RUNNING /* Prevent spawning resources on game start */) {
 					for (ItemSpawner spawner : spawners) {
 						ItemSpawnerType type = spawner.type;
 						int cycle = type.getInterval();
@@ -1856,90 +1860,7 @@ public class Game implements misat11.bw.api.Game {
 			playerGameProfile.player.closeInventory();
 			for (Team team : teams) {
 				if (displayName.equals(team.name)) {
-					CurrentTeam current = null;
-					for (CurrentTeam t : teamsInGame) {
-						if (t.teamInfo == team) {
-							current = t;
-							break;
-						}
-					}
-					CurrentTeam cur = getPlayerTeam(playerGameProfile);
-
-					BedwarsPlayerJoinTeamEvent event = new BedwarsPlayerJoinTeamEvent(current, playerGameProfile.player,
-							cur);
-					Main.getInstance().getServer().getPluginManager().callEvent(event);
-
-					if (event.isCancelled()) {
-						return;
-					}
-
-					if (current == null) {
-						current = new CurrentTeam(team, this);
-						org.bukkit.scoreboard.Team scoreboardTeam = gameScoreboard.getTeam(team.name);
-						if (scoreboardTeam == null) {
-							scoreboardTeam = gameScoreboard.registerNewTeam(team.name);
-						}
-						if (!Main.isLegacy()) {
-							scoreboardTeam.setColor(team.color.chatColor);
-						} else {
-							scoreboardTeam.setPrefix(team.color.chatColor.toString());
-						}
-						scoreboardTeam.setAllowFriendlyFire(getOriginalOrInheritedFriendlyfire());
-
-						current.setScoreboardTeam(scoreboardTeam);
-					}
-					if (cur == current) {
-						playerGameProfile.player.sendMessage(
-								i18n("team_already_selected").replace("%team%", team.color.chatColor + team.name)
-										.replace("%players%", Integer.toString(current.players.size()))
-										.replaceAll("%maxplayers%", Integer.toString(current.teamInfo.maxPlayers)));
-						return;
-					}
-					if (current.players.size() >= current.teamInfo.maxPlayers) {
-						if (cur != null) {
-							playerGameProfile.player.sendMessage(i18n("team_is_full_you_are_staying")
-									.replace("%team%", team.color.chatColor + team.name)
-									.replace("%oldteam%", cur.teamInfo.color.chatColor + cur.teamInfo.name));
-						} else {
-							playerGameProfile.player.sendMessage(
-									i18n("team_is_full").replace("%team%", team.color.chatColor + team.name));
-						}
-						return;
-					}
-					if (cur != null) {
-						cur.players.remove(playerGameProfile);
-						cur.getScoreboardTeam().removeEntry(playerGameProfile.player.getName());
-						if (cur.players.isEmpty()) {
-							teamsInGame.remove(cur);
-							cur.getScoreboardTeam().unregister();
-						}
-					}
-					current.players.add(playerGameProfile);
-					current.getScoreboardTeam().addEntry(playerGameProfile.player.getName());
-					playerGameProfile.player
-							.sendMessage(i18n("team_selected").replace("%team%", team.color.chatColor + team.name)
-									.replace("%players%", Integer.toString(current.players.size()))
-									.replaceAll("%maxplayers%", Integer.toString(current.teamInfo.maxPlayers)));
-
-					if (getOriginalOrInheritedAddWoolToInventoryOnJoin()) {
-						ItemStack stack = TeamSelectorInventory.materializeColorToWool(team.color);
-						ItemMeta stackMeta = stack.getItemMeta();
-						stackMeta.setDisplayName(team.color.chatColor + team.name);
-						stack.setItemMeta(stackMeta);
-						playerGameProfile.player.getInventory().setItem(1, stack);
-					}
-
-					if (getOriginalOrInheritedColoredLeatherByTeamInLobby()) {
-						ItemStack chestplate = new ItemStack(Material.LEATHER_CHESTPLATE);
-						LeatherArmorMeta meta = (LeatherArmorMeta) chestplate.getItemMeta();
-						meta.setColor(team.color.leatherColor);
-						chestplate.setItemMeta(meta);
-						playerGameProfile.player.getInventory().setChestplate(chestplate);
-					}
-
-					if (!teamsInGame.contains(current)) {
-						teamsInGame.add(current);
-					}
+					internalTeamJoin(playerGameProfile, team);
 					break;
 				}
 			}
@@ -2042,20 +1963,21 @@ public class Game implements misat11.bw.api.Game {
 		String line3 = "";
 		switch (status) {
 		case DISABLED:
-			line2 = i18n("sign_status_disabled", false);
-			line3 = i18n("sign_status_disabled_players", false);
+			line2 = i18nonly("sign_status_disabled");
+			line3 = i18nonly("sign_status_disabled_players");
 			break;
 		case REBUILDING:
-			line2 = i18n("sign_status_rebuilding", false);
-			line3 = i18n("sign_status_rebuilding_players", false);
+			line2 = i18nonly("sign_status_rebuilding");
+			line3 = i18nonly("sign_status_rebuilding_players");
 			break;
 		case RUNNING:
-			line2 = i18n("sign_status_running", false);
-			line3 = i18n("sign_status_running_players", false);
+		case GAME_END_CELEBRATING:
+			line2 = i18nonly("sign_status_running");
+			line3 = i18nonly("sign_status_running_players");
 			break;
 		case WAITING:
-			line2 = i18n("sign_status_waiting", false);
-			line3 = i18n("sign_status_waiting_players", false);
+			line2 = i18nonly("sign_status_waiting");
+			line3 = i18nonly("sign_status_waiting_players");
 			break;
 		}
 		line3 = line3.replace("%players%", Integer.toString(players.size()));
