@@ -38,13 +38,8 @@ public class GameStore {
 				entity.setCustomName(shopName);
 				entity.setCustomNameVisible(true);
 			}
-			try {
-				entity.setAI(false);
-				if (entity instanceof Villager) {
-					((Villager) entity).setProfession(Villager.Profession.FARMER);
-				}
-			} catch (Throwable t) {
-
+			if (entity instanceof Villager) {
+				((Villager) entity).setProfession(Villager.Profession.FARMER);
 			}
 		}
 		return entity;

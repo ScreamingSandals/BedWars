@@ -34,6 +34,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Villager;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -81,6 +82,7 @@ import misat11.bw.utils.Sounds;
 import misat11.bw.utils.SpawnEffects;
 import misat11.bw.utils.TeamSelectorInventory;
 import misat11.bw.utils.Title;
+import misat11.lib.nms.NMSUtils;
 
 public class Game implements misat11.bw.api.Game {
 
@@ -1453,6 +1455,11 @@ public class Game implements misat11.bw.api.Game {
 						LivingEntity villager = store.spawn();
 						if (villager != null) {
 							Main.registerGameEntity(villager, this);
+							try {
+								villager.setAI(false); // Disable Entity AI
+							} catch (Throwable t) {
+								NMSUtils.disableEntityAI(villager); // Disable Entity AI 1.8
+							}
 						}
 					}
 
