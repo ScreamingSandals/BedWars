@@ -1313,6 +1313,7 @@ public class Game implements misat11.bw.api.Game {
 					try {
 						legacyBossbar = new BossBar_1_8();
 						legacyBossbar.setProgress(1);
+						legacyBossbar.setMessage(title);
 						for (GamePlayer p : players) {
 							legacyBossbar.addPlayer(p.player);
 						}
