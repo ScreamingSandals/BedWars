@@ -2724,10 +2724,6 @@ public class Game implements misat11.bw.api.Game {
 		this.allowBlockFalling = allowBlockFalling;
 	}
 
-	public Map<ItemSpawner, ArmorStand> getCountdownArmorStands() {
-		return countdownArmorStands;
-	}
-
 	@Override
 	public void selectPlayerRandomTeam(Player player) {
 		joinRandomTeam(Main.getPlayerGameProfile(player));
