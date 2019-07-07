@@ -46,7 +46,6 @@ public abstract class BaseCommand {
 		}
 		
 		if (!sender.hasPermission(permission)) {
-			sender.sendMessage(i18n("no_permissions"));
 			return false;
 		}
 
