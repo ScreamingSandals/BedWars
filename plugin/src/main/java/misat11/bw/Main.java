@@ -275,7 +275,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 	public void onEnable() {
 		instance = this;
 		version = this.getDescription().getVersion();
-		snapshot = version.toLowerCase().contains("pre");
+		snapshot = version.toLowerCase().contains("pre") || version.toLowerCase().contains("snapshot");
 		isNMS = NMSUtils.NMS_BASED_SERVER;
 		nmsVersion = NMSUtils.NMS_VERSION;
 		isSpigot = NMSUtils.IS_SPIGOT_SERVER;
@@ -375,54 +375,19 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 
 		menu = new ShopMenu();
 
-		Bukkit.getLogger().info("********************");
-		Bukkit.getLogger().info("*     Bed Wars     *");
-		Bukkit.getLogger().info("*    by Misat11    *");
-		Bukkit.getLogger().info("*                  *");
-		if (version.length() == 10) {
-			Bukkit.getLogger().info("*                  *");
-			Bukkit.getLogger().info("*    V" + version + "   *");
-		} else {
-			Bukkit.getLogger().info("*      V" + version + "      *");
+		Bukkit.getConsoleSender().sendMessage("§c=====§f======  by Misat11");
+		Bukkit.getConsoleSender().sendMessage("§c+ Bed§fWars +  §6Version: " + version);
+		Bukkit.getConsoleSender().sendMessage("§c=====§f======  " + (snapshot ? "§cSNAPSHOT VERSION" : "§aSTABLE VERSION"));
+		if (isVault) {
+			Bukkit.getConsoleSender().sendMessage("§c[B§fW] §6Found Vault");
 		}
-		Bukkit.getLogger().info("*                  *");
-		if (snapshot == true) {
-			Bukkit.getLogger().info("* SNAPSHOT VERSION *");
-		} else {
-			Bukkit.getLogger().info("*  STABLE VERSION  *");
-		}
-		Bukkit.getLogger().info("*                  *");
-
-		if (isVault == true) {
-			Bukkit.getLogger().info("*                  *");
-			Bukkit.getLogger().info("*   Vault hooked   *");
-			Bukkit.getLogger().info("*                  *");
-		}
-
-		if (isSpigot == false) {
-			Bukkit.getLogger().info("*                  *");
-			Bukkit.getLogger().info("*     WARNING:     *");
-			Bukkit.getLogger().info("* You aren't using *");
-			Bukkit.getLogger().info("*      Spigot      *");
-			Bukkit.getLogger().info("*                  *");
-			Bukkit.getLogger().info("* Please download! *");
-			Bukkit.getLogger().info("*   spigotmc.org   *");
+		if (!isSpigot) {
+			Bukkit.getConsoleSender().sendMessage("§c[B§fW] §cWARNING: You are not using Spigot. Some features may not work properly.");
 		}
 
 		if (versionNumber < 109) {
-			Bukkit.getLogger().info("*                  *");
-			Bukkit.getLogger().info("*   You're using   *");
-			Bukkit.getLogger().info("*       old        *");
-			Bukkit.getLogger().info("*   game version   *");
-			Bukkit.getLogger().info("*                  *");
-			Bukkit.getLogger().info("*   We recommend   *");
-			Bukkit.getLogger().info("*      to use      *");
-			Bukkit.getLogger().info("*  1.9 and newer!  *");
-			Bukkit.getLogger().info("*                  *");
+			Bukkit.getConsoleSender().sendMessage("§c[B§fW] §cIMPORTANT WARNING: You are using version older than 1.9! This version is not officially supported and some features may not work at all!");
 		}
-
-		Bukkit.getLogger().info("*                  *");
-		Bukkit.getLogger().info("********************");
 
 		File folder = new File(getDataFolder().toString(), "arenas");
 		if (folder.exists()) {

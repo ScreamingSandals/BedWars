@@ -34,6 +34,8 @@ public interface Game {
 	
 	public void selectPlayerTeam(Player player, Team team);
 	
+	public void selectPlayerRandomTeam(Player player);
+	
 	// INGAME
 	
 	public World getGameWorld();
