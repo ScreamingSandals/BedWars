@@ -21,7 +21,17 @@ import org.bukkit.plugin.java.JavaPlugin;
 import misat11.bw.api.BedwarsAPI;
 import misat11.bw.api.GameStatus;
 import misat11.bw.api.GameStore;
-import misat11.bw.commands.BwCommand;
+import misat11.bw.commands.AddholoCommand;
+import misat11.bw.commands.AdminCommand;
+import misat11.bw.commands.BaseCommand;
+import misat11.bw.commands.BwCommandsExecutor;
+import misat11.bw.commands.HelpCommand;
+import misat11.bw.commands.JoinCommand;
+import misat11.bw.commands.LeaveCommand;
+import misat11.bw.commands.ListCommand;
+import misat11.bw.commands.ReloadCommand;
+import misat11.bw.commands.RemoveholoCommand;
+import misat11.bw.commands.StatsCommand;
 import misat11.bw.database.DatabaseManager;
 import misat11.bw.game.Game;
 import misat11.bw.game.GamePlayer;
@@ -64,6 +74,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 	private DatabaseManager databaseManager;
 	private PlayerStatisticManager playerStatisticsManager;
 	private IHologramInteraction hologramInteraction;
+	private HashMap<String, BaseCommand> commands;
 
 	public static Main getInstance() {
 		return instance;
@@ -271,6 +282,10 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 	public static IHologramInteraction getHologramInteraction() {
 		return instance.hologramInteraction;
 	}
+	
+	public static HashMap<String, BaseCommand> getCommands() {
+		return instance.commands;
+	}
 
 	public void onEnable() {
 		instance = this;
@@ -331,8 +346,19 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 		} catch (Throwable t) {
 
 		}
+		
+		commands = new HashMap<String, BaseCommand>();
+		new AddholoCommand();
+		new AdminCommand();
+		new HelpCommand();
+		new JoinCommand();
+		new LeaveCommand();
+		new ListCommand();
+		new ReloadCommand();
+		new RemoveholoCommand();
+		new StatsCommand();
 
-		BwCommand cmd = new BwCommand();
+		BwCommandsExecutor cmd = new BwCommandsExecutor();
 		getCommand("bw").setExecutor(cmd);
 		getCommand("bw").setTabCompleter(cmd);
 		getServer().getPluginManager().registerEvents(new PlayerListener(), this);
