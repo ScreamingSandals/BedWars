@@ -2,6 +2,8 @@ package misat11.bw.api;
 
 import java.util.List;
 
+import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
@@ -87,4 +89,26 @@ public interface BedwarsAPI {
 	 * @param entity Entity
 	 */
 	public void unregisterEntityFromGame(Entity entity);
+	
+	/**
+	 * 
+	 * @return String of Bedwars Version
+	 */
+	public String getBedwarsVersion();
+
+	/**
+	 * 
+	 * @return String of Bedwars API Version
+	 */
+	default String getAPIVersion() {
+		return GetConstants.loadConfig().getString("version");
+	}
+	
+	/**
+	 * 
+	 * @return Bedwars instance
+	 */
+	public static BedwarsAPI getInstance() {
+		return Bukkit.getServicesManager().getRegistration(BedwarsAPI.class).getProvider();
+	}
 }

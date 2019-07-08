@@ -402,7 +402,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 		menu = new ShopMenu();
 
 		Bukkit.getConsoleSender().sendMessage("§c=====§f======  by Misat11");
-		Bukkit.getConsoleSender().sendMessage("§c+ Bed§fWars +  §6Version: " + version);
+		Bukkit.getConsoleSender().sendMessage("§c+ Bed§fWars +  §6Version: " + version + " (API: " + getAPIVersion() + ")");
 		Bukkit.getConsoleSender().sendMessage("§c=====§f======  " + (snapshot ? "§cSNAPSHOT VERSION" : "§aSTABLE VERSION"));
 		if (isVault) {
 			Bukkit.getConsoleSender().sendMessage("§c[B§fW] §6Found Vault");
@@ -529,5 +529,10 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 	@Override
 	public boolean isPlayerPlayingAnyGame(Player player) {
 		return isPlayerInGame(player);
+	}
+
+	@Override
+	public String getBedwarsVersion() {
+		return version;
 	}
 }
