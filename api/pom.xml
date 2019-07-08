@@ -18,4 +18,17 @@
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
+	
+	<build>
+		<resources>
+			<resource>
+				<targetPath>.</targetPath>
+				<filtering>true</filtering>
+				<directory>src/main/java</directory>
+				<includes>
+					<include>misat11/bw/api/constants.yml</include>
+				</includes>
+			</resource>
+		</resources>
+	</build>
 </project>

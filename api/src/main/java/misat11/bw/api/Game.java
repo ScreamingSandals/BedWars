@@ -34,6 +34,8 @@ public interface Game {
 	
 	public void selectPlayerTeam(Player player, Team team);
 	
+	public void selectPlayerRandomTeam(Player player);
+	
 	// INGAME
 	
 	public World getGameWorld();
@@ -103,6 +105,8 @@ public interface Game {
 	public boolean isRegisteredSpecialItem(SpecialItem item);
 	
 	public List<ItemSpawner> getItemSpawners();
+	
+	public Region getRegion();
 	
 	// LOBBY
 	
@@ -190,6 +194,9 @@ public interface Game {
 	
 	public InGameConfigBooleanConstants getRemoveUnusedTargetBlocks();
 	public boolean getOriginalOrInheritedRemoveUnusedTargetBlocks();
+	
+	public InGameConfigBooleanConstants getAllowBlockFalling();
+	public boolean getOriginalOrInheritedAllowBlockFalling();
 	
 	public ArenaTime getArenaTime();
 	public WeatherType getArenaWeather();

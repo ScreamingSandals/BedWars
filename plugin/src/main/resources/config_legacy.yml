@@ -21,6 +21,7 @@ spawner-holo-height: 0.25
 spawner-holograms-countdown: true
 damage-when-player-is-not-in-arena: false
 remove-unused-target-blocks: true
+allow-block-falling: true
 
 # Commands whitelist
 allowed-commands:

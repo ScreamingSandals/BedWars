@@ -8,6 +8,7 @@ game_already_running: "§cHra §7%arena% §cjiž běží! Nelze se připojit do 
 game_is_full: "§cHra §7%arena% §cje již plná! Prosím vyčkejte na další hru!"
 
 unknown_command: "§cPříkaz neznámý! Zadej §4/bw help §cpro nápovědu!"
+unknown_usage: "§cNesprávný počet parametrů nebo neznámé parametry! Zadej §4/bw help §cpro nápovědu!"
 no_arena_found: "§cAréna nenalezena!"
 usage_bw_join: "§cPoužití: /bw join <aréna>"
 usage_bw_admin: "§cPoužití: /bw admin <aréna> <add|edit|remove|save|...> ..."

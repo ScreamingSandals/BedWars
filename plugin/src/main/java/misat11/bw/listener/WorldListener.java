@@ -3,6 +3,7 @@ package misat11.bw.listener;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
+import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBurnEvent;
@@ -174,6 +175,20 @@ public class WorldListener implements Listener {
 
 		for (String gameName : Main.getGameNames()) {
 			Game game = Main.getGame(gameName);
+			if (game.getStatus() == GameStatus.RUNNING) {
+				if (event.getEntityType() == EntityType.FALLING_BLOCK && game.getOriginalOrInheritedAllowBlockFalling()) {
+					if (event.getBlock().getType() != event.getTo()) {
+						if (!game.getRegion().isBlockAddedDuringGame(event.getBlock().getLocation())) {
+							if (event.getBlock().getType() != Material.AIR) {
+								game.getRegion().putOriginalBlock(event.getBlock().getLocation(), event.getBlock().getState());
+							}
+							game.getRegion().addBuildedDuringGame(event.getBlock().getLocation());
+						}
+					}
+					return; // allow block fall
+				}
+			}
+			
 			if (game.getStatus() != GameStatus.DISABLED) {
 				event.setCancelled(true);
 			}

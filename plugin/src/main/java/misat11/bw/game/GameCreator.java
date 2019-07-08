@@ -413,6 +413,10 @@ public class GameCreator {
 		case "removeunusedtargetblocks":
 			game.setRemoveUnusedTargetBlocks(cons);
 			break;
+		case "allowblockfall":
+		case "allowblockfalling":
+			game.setAllowBlockFalling(cons);
+			break;
 		default:
 			return i18n("admin_command_invalid_config_variable_name");
 		}

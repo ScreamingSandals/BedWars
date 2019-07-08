@@ -21,7 +21,17 @@ import org.bukkit.plugin.java.JavaPlugin;
 import misat11.bw.api.BedwarsAPI;
 import misat11.bw.api.GameStatus;
 import misat11.bw.api.GameStore;
-import misat11.bw.commands.BwCommand;
+import misat11.bw.commands.AddholoCommand;
+import misat11.bw.commands.AdminCommand;
+import misat11.bw.commands.BaseCommand;
+import misat11.bw.commands.BwCommandsExecutor;
+import misat11.bw.commands.HelpCommand;
+import misat11.bw.commands.JoinCommand;
+import misat11.bw.commands.LeaveCommand;
+import misat11.bw.commands.ListCommand;
+import misat11.bw.commands.ReloadCommand;
+import misat11.bw.commands.RemoveholoCommand;
+import misat11.bw.commands.StatsCommand;
 import misat11.bw.database.DatabaseManager;
 import misat11.bw.game.Game;
 import misat11.bw.game.GamePlayer;
@@ -64,6 +74,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 	private DatabaseManager databaseManager;
 	private PlayerStatisticManager playerStatisticsManager;
 	private IHologramInteraction hologramInteraction;
+	private HashMap<String, BaseCommand> commands;
 
 	public static Main getInstance() {
 		return instance;
@@ -102,13 +113,17 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 	}
 
 	public static void depositPlayer(Player player, double coins) {
-		if (isVault() && instance.configurator.config.getBoolean("vault.enable")) {
-			EconomyResponse response = instance.econ.depositPlayer(player, coins);
-			if (response.transactionSuccess()) {
-				player.sendMessage(i18n("vault_deposite").replace("%coins%", Double.toString(coins)).replace(
-						"%currency%",
-						(coins == 1 ? instance.econ.currencyNameSingular() : instance.econ.currencyNamePlural())));
+		try {
+			if (isVault() && instance.configurator.config.getBoolean("vault.enable")) {
+				EconomyResponse response = instance.econ.depositPlayer(player, coins);
+				if (response.transactionSuccess()) {
+					player.sendMessage(i18n("vault_deposite").replace("%coins%", Double.toString(coins)).replace(
+							"%currency%",
+							(coins == 1 ? instance.econ.currencyNameSingular() : instance.econ.currencyNamePlural())));
+				}
 			}
+		} catch (Throwable t) {
+			
 		}
 	}
 
@@ -267,11 +282,15 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 	public static IHologramInteraction getHologramInteraction() {
 		return instance.hologramInteraction;
 	}
+	
+	public static HashMap<String, BaseCommand> getCommands() {
+		return instance.commands;
+	}
 
 	public void onEnable() {
 		instance = this;
 		version = this.getDescription().getVersion();
-		snapshot = version.toLowerCase().contains("pre");
+		snapshot = version.toLowerCase().contains("pre") || version.toLowerCase().contains("snapshot");
 		isNMS = NMSUtils.NMS_BASED_SERVER;
 		nmsVersion = NMSUtils.NMS_VERSION;
 		isSpigot = NMSUtils.IS_SPIGOT_SERVER;
@@ -327,8 +346,19 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 		} catch (Throwable t) {
 
 		}
+		
+		commands = new HashMap<String, BaseCommand>();
+		new AddholoCommand();
+		new AdminCommand();
+		new HelpCommand();
+		new JoinCommand();
+		new LeaveCommand();
+		new ListCommand();
+		new ReloadCommand();
+		new RemoveholoCommand();
+		new StatsCommand();
 
-		BwCommand cmd = new BwCommand();
+		BwCommandsExecutor cmd = new BwCommandsExecutor();
 		getCommand("bw").setExecutor(cmd);
 		getCommand("bw").setTabCompleter(cmd);
 		getServer().getPluginManager().registerEvents(new PlayerListener(), this);
@@ -371,54 +401,19 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 
 		menu = new ShopMenu();
 
-		Bukkit.getLogger().info("********************");
-		Bukkit.getLogger().info("*     Bed Wars     *");
-		Bukkit.getLogger().info("*    by Misat11    *");
-		Bukkit.getLogger().info("*                  *");
-		if (version.length() == 10) {
-			Bukkit.getLogger().info("*                  *");
-			Bukkit.getLogger().info("*    V" + version + "   *");
-		} else {
-			Bukkit.getLogger().info("*      V" + version + "      *");
+		Bukkit.getConsoleSender().sendMessage("§c=====§f======  by Misat11");
+		Bukkit.getConsoleSender().sendMessage("§c+ Bed§fWars +  §6Version: " + version + " (API: " + getAPIVersion() + ")");
+		Bukkit.getConsoleSender().sendMessage("§c=====§f======  " + (snapshot ? "§cSNAPSHOT VERSION" : "§aSTABLE VERSION"));
+		if (isVault) {
+			Bukkit.getConsoleSender().sendMessage("§c[B§fW] §6Found Vault");
 		}
-		Bukkit.getLogger().info("*                  *");
-		if (snapshot == true) {
-			Bukkit.getLogger().info("* SNAPSHOT VERSION *");
-		} else {
-			Bukkit.getLogger().info("*  STABLE VERSION  *");
-		}
-		Bukkit.getLogger().info("*                  *");
-
-		if (isVault == true) {
-			Bukkit.getLogger().info("*                  *");
-			Bukkit.getLogger().info("*   Vault hooked   *");
-			Bukkit.getLogger().info("*                  *");
-		}
-
-		if (isSpigot == false) {
-			Bukkit.getLogger().info("*                  *");
-			Bukkit.getLogger().info("*     WARNING:     *");
-			Bukkit.getLogger().info("* You aren't using *");
-			Bukkit.getLogger().info("*      Spigot      *");
-			Bukkit.getLogger().info("*                  *");
-			Bukkit.getLogger().info("* Please download! *");
-			Bukkit.getLogger().info("*   spigotmc.org   *");
+		if (!isSpigot) {
+			Bukkit.getConsoleSender().sendMessage("§c[B§fW] §cWARNING: You are not using Spigot. Some features may not work properly.");
 		}
 
 		if (versionNumber < 109) {
-			Bukkit.getLogger().info("*                  *");
-			Bukkit.getLogger().info("*   You're using   *");
-			Bukkit.getLogger().info("*       old        *");
-			Bukkit.getLogger().info("*   game version   *");
-			Bukkit.getLogger().info("*                  *");
-			Bukkit.getLogger().info("*   We recommend   *");
-			Bukkit.getLogger().info("*      to use      *");
-			Bukkit.getLogger().info("*  1.9 and newer!  *");
-			Bukkit.getLogger().info("*                  *");
+			Bukkit.getConsoleSender().sendMessage("§c[B§fW] §cIMPORTANT WARNING: You are using version older than 1.9! This version is not officially supported and some features may not work at all!");
 		}
-
-		Bukkit.getLogger().info("*                  *");
-		Bukkit.getLogger().info("********************");
 
 		File folder = new File(getDataFolder().toString(), "arenas");
 		if (folder.exists()) {
@@ -534,5 +529,10 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 	@Override
 	public boolean isPlayerPlayingAnyGame(Player player) {
 		return isPlayerInGame(player);
+	}
+
+	@Override
+	public String getBedwarsVersion() {
+		return version;
 	}
 }

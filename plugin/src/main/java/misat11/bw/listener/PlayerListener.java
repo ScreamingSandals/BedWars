@@ -48,7 +48,7 @@ import misat11.bw.Main;
 import misat11.bw.api.GameStatus;
 import misat11.bw.api.events.BedwarsPlayerKilledEvent;
 import misat11.bw.api.events.BedwarsTeamChestOpenEvent;
-import misat11.bw.commands.BwCommand;
+import misat11.bw.commands.BaseCommand;
 import misat11.bw.game.CurrentTeam;
 import misat11.bw.game.Game;
 import misat11.bw.game.GameCreator;
@@ -595,7 +595,7 @@ public class PlayerListener implements Listener {
 					return;
 				}
 			}
-		} else if (player.hasPermission(BwCommand.ADMIN_PERMISSION)) {
+		} else if (player.hasPermission(BaseCommand.ADMIN_PERMISSION)) {
 			List<MetadataValue> values = player.getMetadata(GameCreator.BEDWARS_TEAM_JOIN_METADATA);
 			if (values == null || values.size() == 0) {
 				return;

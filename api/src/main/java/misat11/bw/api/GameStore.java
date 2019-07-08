@@ -38,13 +38,8 @@ public class GameStore {
 				entity.setCustomName(shopName);
 				entity.setCustomNameVisible(true);
 			}
-			try {
-				entity.setAI(false);
-				if (entity instanceof Villager) {
-					((Villager) entity).setProfession(Villager.Profession.FARMER);
-				}
-			} catch (Throwable t) {
-
+			if (entity instanceof Villager) {
+				((Villager) entity).setProfession(Villager.Profession.FARMER);
 			}
 		}
 		return entity;
@@ -53,7 +48,7 @@ public class GameStore {
 	public LivingEntity kill() {
 		LivingEntity en = entity;
 		if (entity != null) {
-			entity.setHealth(0);
+			entity.remove();
 			entity = null;
 		}
 		return en;
