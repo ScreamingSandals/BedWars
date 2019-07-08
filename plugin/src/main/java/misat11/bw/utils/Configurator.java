@@ -264,6 +264,7 @@ public class Configurator {
 		checkOrSetConfig(modify, "lore.generate-automatically", true);
 		checkOrSetConfig(modify, "lore.text",
 				Arrays.asList("§7Price:", "§7%price% %resource%", "§7Amount:", "§7%amount%"));
+		checkOrSetConfig(modify, "sign", Arrays.asList("§c§l[BedWars]", "%arena%", "%status%", "%players%"));
 		checkOrSetConfig(modify, "version", 2);
 		if (modify.get()) {
 			try {

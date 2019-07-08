@@ -227,5 +227,12 @@ lore:
    - "§7Amount:"
    - "§7%amount%"
    
+# Signs (%status% and %players% can be modified in messages_<your language>.yml
+sign:
+   - "§c§l[BedWars]"
+   - "%arena%"
+   - "%status%"
+   - "%players%"
+   
 # Do not edit this!!!
 version: 2

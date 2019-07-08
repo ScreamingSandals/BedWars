@@ -34,7 +34,6 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Villager;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -1967,37 +1966,45 @@ public class Game implements misat11.bw.api.Game {
 			return;
 		}
 
-		String line2 = "";
-		String line3 = "";
+		String statusLine = "";
+		String playersLine = "";
 		switch (status) {
 		case DISABLED:
-			line2 = i18nonly("sign_status_disabled");
-			line3 = i18nonly("sign_status_disabled_players");
+			statusLine = i18nonly("sign_status_disabled");
+			playersLine = i18nonly("sign_status_disabled_players");
 			break;
 		case REBUILDING:
-			line2 = i18nonly("sign_status_rebuilding");
-			line3 = i18nonly("sign_status_rebuilding_players");
+			statusLine = i18nonly("sign_status_rebuilding");
+			playersLine = i18nonly("sign_status_rebuilding_players");
 			break;
 		case RUNNING:
 		case GAME_END_CELEBRATING:
-			line2 = i18nonly("sign_status_running");
-			line3 = i18nonly("sign_status_running_players");
+			statusLine = i18nonly("sign_status_running");
+			playersLine = i18nonly("sign_status_running_players");
 			break;
 		case WAITING:
-			line2 = i18nonly("sign_status_waiting");
-			line3 = i18nonly("sign_status_waiting_players");
+			statusLine = i18nonly("sign_status_waiting");
+			playersLine = i18nonly("sign_status_waiting_players");
 			break;
 		}
-		line3 = line3.replace("%players%", Integer.toString(players.size()));
-		line3 = line3.replace("%maxplayers%", Integer.toString(calculatedMaxPlayers));
+		playersLine = playersLine.replace("%players%", Integer.toString(players.size()));
+		playersLine = playersLine.replace("%maxplayers%", Integer.toString(calculatedMaxPlayers));
+		
+		List<String> texts = new ArrayList<String>(Main.getConfigurator().config.getStringList("sign"));
+		
+		for (int i = 0; i < texts.size(); i++) {
+			String text = texts.get(i);
+			texts.set(i, text.replaceAll("%arena%", this.getName()).replaceAll("%status%", statusLine).replaceAll("%players%", playersLine));
+		}
 
 		for (GameSign sign : gameSigns) {
 			if (sign.getLocation().getChunk().isLoaded()) {
 				Block block = sign.getLocation().getBlock();
 				if (block.getState() instanceof Sign) {
 					Sign state = (Sign) block.getState();
-					state.setLine(2, line2);
-					state.setLine(3, line3);
+					for (int i = 0; i < texts.size() && i < 4; i++) {
+						state.setLine(i, texts.get(i));
+					}
 					state.update();
 				}
 			}
