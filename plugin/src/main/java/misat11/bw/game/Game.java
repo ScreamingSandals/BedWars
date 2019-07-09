@@ -1252,6 +1252,10 @@ public class Game implements misat11.bw.api.Game {
 	public void setBossbarProgress(int count, int max) {
 		double progress = (double) count / (double) max;
 		statusbar.setProgress(progress);
+		if (statusbar instanceof XPBar) {
+			XPBar xpbar = (XPBar) statusbar;
+			xpbar.setSeconds(count);
+		}
 	}
 
 	public void run() {
