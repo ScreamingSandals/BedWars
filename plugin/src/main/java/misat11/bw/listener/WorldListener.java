@@ -175,6 +175,7 @@ public class WorldListener implements Listener {
 
 		for (String gameName : Main.getGameNames()) {
 			Game game = Main.getGame(gameName);
+if (GameCreator.isInArea(event.getBlock().getLocation(), game.getPos1(), game.getPos2())) {
 			if (game.getStatus() == GameStatus.RUNNING) {
 				if (event.getEntityType() == EntityType.FALLING_BLOCK && game.getOriginalOrInheritedAllowBlockFalling()) {
 					if (event.getBlock().getType() != event.getTo()) {
@@ -192,6 +193,7 @@ public class WorldListener implements Listener {
 			if (game.getStatus() != GameStatus.DISABLED) {
 				event.setCancelled(true);
 			}
+}
 		}
 	}
 }
