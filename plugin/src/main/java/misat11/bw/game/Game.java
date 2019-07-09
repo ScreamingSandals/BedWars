@@ -572,26 +572,35 @@ public class Game implements misat11.bw.api.Game {
 		}
 
 		if (getOriginalOrInheritedCompassEnabled()) {
-			ItemStack compass = Main.getConfigurator().readDefinedItem("jointeam", "COMPASS");
-			ItemMeta metaCompass = compass.getItemMeta();
-			metaCompass.setDisplayName(i18n("compass_selector_team", false));
-			compass.setItemMeta(metaCompass);
-			player.player.getInventory().setItem(0, compass);
+			int compassPosition = Main.getConfigurator().config.getInt("hotbar.selector", 0);
+			if (compassPosition >= 0 && compassPosition <= 8) {
+				ItemStack compass = Main.getConfigurator().readDefinedItem("jointeam", "COMPASS");
+				ItemMeta metaCompass = compass.getItemMeta();
+				metaCompass.setDisplayName(i18n("compass_selector_team", false));
+				compass.setItemMeta(metaCompass);
+				player.player.getInventory().setItem(compassPosition, compass);
+			}
 		}
 
-		ItemStack leave = Main.getConfigurator().readDefinedItem("leavegame", "SLIME_BALL");
-		ItemMeta leaveMeta = leave.getItemMeta();
-		leaveMeta.setDisplayName(i18n("leave_from_game_item", false));
-		leave.setItemMeta(leaveMeta);
-		player.player.getInventory().setItem(8, leave);
+		int leavePosition = Main.getConfigurator().config.getInt("hotbar.leave", 8);
+		if (leavePosition >= 0 && leavePosition <= 8) {
+			ItemStack leave = Main.getConfigurator().readDefinedItem("leavegame", "SLIME_BALL");
+			ItemMeta leaveMeta = leave.getItemMeta();
+			leaveMeta.setDisplayName(i18n("leave_from_game_item", false));
+			leave.setItemMeta(leaveMeta);
+			player.player.getInventory().setItem(leavePosition, leave);
+		}
 
-		if (player.player.hasPermission("bw.vip")) {
-			ItemStack startGame = Main.getConfigurator().readDefinedItem("startgame", "DIAMOND");
-			ItemMeta startGameMeta = startGame.getItemMeta();
-			startGameMeta.setDisplayName(i18n("start_game_item", false));
-			startGame.setItemMeta(startGameMeta);
+		if (player.player.hasPermission("bw.vip") || player.player.hasPermission("misat11.bw.vip")) {
+			int vipPosition = Main.getConfigurator().config.getInt("hotbar.start", 1);
+			if (vipPosition >= 0 && vipPosition <= 8) {
+				ItemStack startGame = Main.getConfigurator().readDefinedItem("startgame", "DIAMOND");
+				ItemMeta startGameMeta = startGame.getItemMeta();
+				startGameMeta.setDisplayName(i18n("start_game_item", false));
+				startGame.setItemMeta(startGameMeta);
 
-			player.player.getInventory().setItem(2, startGame);
+				player.player.getInventory().setItem(vipPosition, startGame);
+			}
 		}
 
 		if (isEmpty) {
@@ -1182,11 +1191,14 @@ public class Game implements misat11.bw.api.Game {
 						.replaceAll("%maxplayers%", Integer.toString(current.teamInfo.maxPlayers)));
 
 		if (getOriginalOrInheritedAddWoolToInventoryOnJoin()) {
-			ItemStack stack = TeamSelectorInventory.materializeColorToWool(teamForJoin.color);
-			ItemMeta stackMeta = stack.getItemMeta();
-			stackMeta.setDisplayName(teamForJoin.color.chatColor + teamForJoin.name);
-			stack.setItemMeta(stackMeta);
-			player.player.getInventory().setItem(1, stack);
+			int colorPosition = Main.getConfigurator().config.getInt("hotbar.color", 1);
+			if (colorPosition >= 0 && colorPosition <= 8) {
+				ItemStack stack = TeamSelectorInventory.materializeColorToWool(teamForJoin.color);
+				ItemMeta stackMeta = stack.getItemMeta();
+				stackMeta.setDisplayName(teamForJoin.color.chatColor + teamForJoin.name);
+				stack.setItemMeta(stackMeta);
+				player.player.getInventory().setItem(colorPosition, stack);
+			}
 		}
 
 		if (getOriginalOrInheritedColoredLeatherByTeamInLobby()) {
@@ -1240,11 +1252,14 @@ public class Game implements misat11.bw.api.Game {
 			}
 		}.runTask(Main.getInstance());
 
-		ItemStack leave = Main.getConfigurator().readDefinedItem("leavegame", "SLIME_BALL");
-		ItemMeta leaveMeta = leave.getItemMeta();
-		leaveMeta.setDisplayName(i18n("leave_from_game_item", false));
-		leave.setItemMeta(leaveMeta);
-		player.player.getInventory().setItem(8, leave);
+		int leavePosition = Main.getConfigurator().config.getInt("hotbar.leave", 8);
+		if (leavePosition >= 0 && leavePosition <= 8) {
+			ItemStack leave = Main.getConfigurator().readDefinedItem("leavegame", "SLIME_BALL");
+			ItemMeta leaveMeta = leave.getItemMeta();
+			leaveMeta.setDisplayName(i18n("leave_from_game_item", false));
+			leave.setItemMeta(leaveMeta);
+			player.player.getInventory().setItem(leavePosition, leave);
+		}
 		return specSpawn;
 
 	}
@@ -1287,7 +1302,8 @@ public class Game implements misat11.bw.api.Game {
 					BossBar19 bossbar19 = (BossBar19) bossbar;
 					bossbar19.setColor(lobbyBossBarColor != null ? lobbyBossBarColor
 							: BarColor.valueOf(Main.getConfigurator().config.getString("bossbar.lobby.color")));
-					bossbar19.setStyle(BarStyle.valueOf(Main.getConfigurator().config.getString("bossbar.lobby.style")));
+					bossbar19
+							.setStyle(BarStyle.valueOf(Main.getConfigurator().config.getString("bossbar.lobby.style")));
 				}
 			}
 			if (teamSelectorInventory == null) {
@@ -1387,7 +1403,7 @@ public class Game implements misat11.bw.api.Game {
 							}
 						}
 					}
-					
+
 					statusbar.setProgress(0);
 					statusbar.setVisible(getOriginalOrInheritedGameBossbar());
 					if (statusbar instanceof BossBar) {
@@ -1621,19 +1637,21 @@ public class Game implements misat11.bw.api.Game {
 						tick.setNextStatus(GameStatus.REBUILDING);
 						tick.setNextCountdown(0);
 					}
-				} else if (previousStatus == GameStatus.RUNNING /* Prevent spawning resources on game start */) {
+				} else if (countdown != gameTime /* Prevent spawning resources on game start */) {
 					for (ItemSpawner spawner : spawners) {
 						ItemSpawnerType type = spawner.type;
 						int cycle = type.getInterval();
+						/* Calculate resource spawn from elapsedTime, not from remainingTime/countdown */
+						int elapsedTime = gameTime - countdown;
 
 						if (getOriginalOrInheritedSpawnerHolograms()
 								&& getOriginalOrInheritedSpawnerHologramsCountdown() && cycle > 1) {
-							int modulo = countdown % cycle;
+							int modulo = cycle - elapsedTime % cycle;
 							countdownArmorStands.get(spawner).setCustomName(i18nonly("countdown_spawning")
-									.replace("%seconds%", Integer.toString(modulo == 0 ? cycle : modulo)));
+									.replace("%seconds%", Integer.toString(modulo)));
 						}
 
-						if ((countdown % cycle) == 0) {
+						if ((elapsedTime % cycle) == 0) {
 
 							BedwarsResourceSpawnEvent resourceSpawnEvent = new BedwarsResourceSpawnEvent(this, spawner,
 									type.getStack(upgrades ? spawner.currentLevel : 1));

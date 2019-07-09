@@ -272,6 +272,10 @@ public class Configurator {
 		checkOrSetConfig(modify, "lore.text",
 				Arrays.asList("§7Price:", "§7%price% %resource%", "§7Amount:", "§7%amount%"));
 		checkOrSetConfig(modify, "sign", Arrays.asList("§c§l[BedWars]", "%arena%", "%status%", "%players%"));
+		checkOrSetConfig(modify, "hotbar.selector", 0);
+		checkOrSetConfig(modify, "hotbar.color", 1);
+		checkOrSetConfig(modify, "hotbar.start", 2);
+		checkOrSetConfig(modify, "hotbar.leave", 8);
 		checkOrSetConfig(modify, "version", 2);
 		if (modify.get()) {
 			try {

@@ -237,5 +237,12 @@ sign:
    - "%status%"
    - "%players%"
    
+# Lobby Hotbar (possible values: 0-8, other numbers will disable item)
+hotbar: 
+   selector: 0
+   color: 1
+   start: 2
+   leave: 8
+   
 # Do not edit this!!!
 version: 2
