@@ -20,6 +20,10 @@ public class JoinCommand extends BaseCommand {
 	public boolean execute(CommandSender sender, List<String> args) {
 		Player player = (Player) sender;
 		if (args.size() >= 1) {
+			if (Main.isPlayerInGame(player)) {
+				player.sendMessage(i18n("you_are_already_in_some_game"));
+				return true;
+			}
 			String arenaN = args.get(0);
 			if (Main.isGameExists(arenaN)) {
 				Main.getGame(arenaN).joinToGame(player);
