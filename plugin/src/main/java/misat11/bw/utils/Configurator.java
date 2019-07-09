@@ -244,6 +244,7 @@ public class Configurator {
 		checkOrSetConfig(modify, "database.user", "root");
 		checkOrSetConfig(modify, "database.password", "secret");
 		checkOrSetConfig(modify, "database.table-prefix", "bw_");
+		checkOrSetConfig(modify, "bossbar.use-xp-bar", false);
 		checkOrSetConfig(modify, "bossbar.lobby.enable", true);
 		checkOrSetConfig(modify, "bossbar.lobby.color", "YELLOW");
 		checkOrSetConfig(modify, "bossbar.lobby.style", "SEGMENTED_20");

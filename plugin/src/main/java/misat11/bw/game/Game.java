@@ -23,7 +23,6 @@ import org.bukkit.block.Chest;
 import org.bukkit.block.Sign;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
-import org.bukkit.boss.BossBar;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -56,6 +55,9 @@ import misat11.bw.api.GameStatus;
 import misat11.bw.api.GameStore;
 import misat11.bw.api.InGameConfigBooleanConstants;
 import misat11.bw.api.RunningTeam;
+import misat11.bw.api.boss.BossBar;
+import misat11.bw.api.boss.BossBar19;
+import misat11.bw.api.boss.StatusBar;
 import misat11.bw.api.events.BedwarsGameEndEvent;
 import misat11.bw.api.events.BedwarsGameStartEvent;
 import misat11.bw.api.events.BedwarsGameStartedEvent;
@@ -71,7 +73,8 @@ import misat11.bw.api.events.BedwarsPreRebuildingEvent;
 import misat11.bw.api.events.BedwarsResourceSpawnEvent;
 import misat11.bw.api.events.BedwarsTargetBlockDestroyedEvent;
 import misat11.bw.api.special.SpecialItem;
-import misat11.bw.legacy.BossBar_1_8;
+import misat11.bw.boss.BossBarSelector;
+import misat11.bw.boss.XPBar;
 import misat11.bw.legacy.LegacyRegion;
 import misat11.bw.statistics.PlayerStatistic;
 import misat11.bw.utils.GameSign;
@@ -195,8 +198,7 @@ public class Game implements misat11.bw.api.Game {
 	private IRegion region = Main.isLegacy() ? new LegacyRegion() : new Region();
 	private TeamSelectorInventory teamSelectorInventory;
 	private Scoreboard gameScoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
-	private BossBar bossbar;
-	private BossBar_1_8 legacyBossbar;
+	private StatusBar statusbar;
 	private Map<Location, ItemStack[]> usedChests = new HashMap<>();
 	private List<SpecialItem> activeSpecialItems = new ArrayList<>();
 	private List<ArmorStand> armorStandsInGame = new ArrayList<>();
@@ -595,18 +597,7 @@ public class Game implements misat11.bw.api.Game {
 		if (isEmpty) {
 			runTask();
 		} else {
-			try {
-				bossbar.addPlayer(player.player);
-			} catch (Throwable tr) {
-				// 1.8
-				if (BossBar_1_8.isPluginForLegacyBossBarEnabled()) {
-					try {
-						legacyBossbar.addPlayer(player.player);
-					} catch (Throwable t2) {
-						// WHAT?
-					}
-				}
-			}
+			statusbar.addPlayer(player.player);
 		}
 
 		BedwarsPlayerJoinedEvent joinedEvent = new BedwarsPlayerJoinedEvent(this, getPlayerTeam(player), player.player);
@@ -633,18 +624,7 @@ public class Game implements misat11.bw.api.Game {
 		String message = i18n("leave").replace("%name%", player.player.getDisplayName())
 				.replace("%players%", Integer.toString(players.size()))
 				.replaceAll("%maxplayers%", Integer.toString(calculatedMaxPlayers));
-		try {
-			bossbar.removePlayer(player.player);
-		} catch (Throwable tr) {
-			// 1.8
-			if (BossBar_1_8.isPluginForLegacyBossBarEnabled()) {
-				try {
-					legacyBossbar.removePlayer(player.player);
-				} catch (Throwable t2) {
-					// WHAT?
-				}
-			}
-		}
+		statusbar.removePlayer(player.player);
 		player.player.sendMessage(message);
 		player.player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
 		if (status == GameStatus.RUNNING || status == GameStatus.WAITING) {
@@ -1135,7 +1115,7 @@ public class Game implements misat11.bw.api.Game {
 
 		return lowest;
 	}
-	
+
 	private void internalTeamJoin(GamePlayer player, Team teamForJoin) {
 		CurrentTeam current = null;
 		for (CurrentTeam t : teamsInGame) {
@@ -1144,7 +1124,7 @@ public class Game implements misat11.bw.api.Game {
 				break;
 			}
 		}
-	
+
 		CurrentTeam cur = getPlayerTeam(player);
 		BedwarsPlayerJoinTeamEvent event = new BedwarsPlayerJoinTeamEvent(current, player.player, cur);
 		Main.getInstance().getServer().getPluginManager().callEvent(event);
@@ -1271,18 +1251,7 @@ public class Game implements misat11.bw.api.Game {
 
 	public void setBossbarProgress(int count, int max) {
 		double progress = (double) count / (double) max;
-		try {
-			bossbar.setProgress(progress);
-		} catch (Throwable tr) {
-			// 1.8
-			if (BossBar_1_8.isPluginForLegacyBossBarEnabled()) {
-				try {
-					legacyBossbar.setProgress(progress);
-				} catch (Throwable t2) {
-					// WHAT?
-				}
-			}
-		}
+		statusbar.setProgress(progress);
 	}
 
 	public void run() {
@@ -1297,31 +1266,24 @@ public class Game implements misat11.bw.api.Game {
 			previousCountdown = countdown = pauseCountdown;
 			previousStatus = GameStatus.WAITING;
 			String title = i18nonly("bossbar_waiting");
-			try {
-				bossbar = Bukkit.createBossBar(title, BarColor.RED, BarStyle.SOLID);
-				bossbar.setVisible(false);
-				bossbar.setProgress(0);
-				for (GamePlayer p : players) {
-					bossbar.addPlayer(p.player);
-				}
-				bossbar.setColor(lobbyBossBarColor != null ? lobbyBossBarColor
-						: BarColor.valueOf(Main.getConfigurator().config.getString("bossbar.lobby.color")));
-				bossbar.setStyle(BarStyle.valueOf(Main.getConfigurator().config.getString("bossbar.lobby.style")));
-				bossbar.setVisible(getOriginalOrInheritedLobbyBossbar());
-			} catch (Throwable t) {
-				// 1.8
-				if (BossBar_1_8.isPluginForLegacyBossBarEnabled()) {
-					try {
-						legacyBossbar = new BossBar_1_8();
-						legacyBossbar.setProgress(1);
-						legacyBossbar.setMessage(title);
-						for (GamePlayer p : players) {
-							legacyBossbar.addPlayer(p.player);
-						}
-						legacyBossbar.setVisible(getOriginalOrInheritedLobbyBossbar());
-					} catch (Throwable t2) {
-						// WHAT?
-					}
+			if (Main.getConfigurator().config.getBoolean("bossbar.use-xp-bar", false)) {
+				statusbar = new XPBar();
+			} else {
+				statusbar = BossBarSelector.getBossBar();
+			}
+			statusbar.setProgress(0);
+			statusbar.setVisible(getOriginalOrInheritedLobbyBossbar());
+			for (GamePlayer p : players) {
+				statusbar.addPlayer(p.player);
+			}
+			if (statusbar instanceof BossBar) {
+				BossBar bossbar = (BossBar) statusbar;
+				bossbar.setMessage(title);
+				if (bossbar instanceof BossBar19) {
+					BossBar19 bossbar19 = (BossBar19) bossbar;
+					bossbar19.setColor(lobbyBossBarColor != null ? lobbyBossBarColor
+							: BarColor.valueOf(Main.getConfigurator().config.getString("bossbar.lobby.color")));
+					bossbar19.setStyle(BarStyle.valueOf(Main.getConfigurator().config.getString("bossbar.lobby.style")));
 				}
 			}
 			if (teamSelectorInventory == null) {
@@ -1421,25 +1383,18 @@ public class Game implements misat11.bw.api.Game {
 							}
 						}
 					}
-
-					try {
-						bossbar.setTitle(i18n("bossbar_running", false));
-						bossbar.setProgress(0);
-						bossbar.setColor(gameBossBarColor != null ? gameBossBarColor
-								: BarColor.valueOf(Main.getConfigurator().config.getString("bossbar.game.color")));
-						bossbar.setStyle(
-								BarStyle.valueOf(Main.getConfigurator().config.getString("bossbar.game.style")));
-						bossbar.setVisible(getOriginalOrInheritedGameBossbar());
-					} catch (Throwable tr) {
-						// 1.8
-						if (BossBar_1_8.isPluginForLegacyBossBarEnabled()) {
-							try {
-								legacyBossbar.setMessage(i18n("bossbar_running", false));
-								legacyBossbar.setProgress(1);
-								legacyBossbar.setVisible(getOriginalOrInheritedGameBossbar());
-							} catch (Throwable t2) {
-								// WHAT?
-							}
+					
+					statusbar.setProgress(0);
+					statusbar.setVisible(getOriginalOrInheritedGameBossbar());
+					if (statusbar instanceof BossBar) {
+						BossBar bossbar = (BossBar) statusbar;
+						bossbar.setMessage(i18n("bossbar_running", false));
+						if (bossbar instanceof BossBar19) {
+							BossBar19 bossbar19 = (BossBar19) bossbar;
+							bossbar19.setColor(gameBossBarColor != null ? gameBossBarColor
+									: BarColor.valueOf(Main.getConfigurator().config.getString("bossbar.game.color")));
+							bossbar19.setStyle(
+									BarStyle.valueOf(Main.getConfigurator().config.getString("bossbar.game.style")));
 						}
 					}
 					if (teamSelectorInventory != null)
@@ -1703,18 +1658,9 @@ public class Game implements misat11.bw.api.Game {
 
 		// Phase 8: Check if game end celebrating started and remove title on bossbar
 		if (status == GameStatus.GAME_END_CELEBRATING && previousStatus != status) {
-
-			try {
-				bossbar.setTitle(" ");
-			} catch (Throwable tr) {
-				// 1.8
-				if (BossBar_1_8.isPluginForLegacyBossBarEnabled()) {
-					try {
-						legacyBossbar.setMessage(" ");
-					} catch (Throwable t2) {
-						// WHAT?
-					}
-				}
+			if (statusbar instanceof BossBar) {
+				BossBar bossbar = (BossBar) statusbar;
+				bossbar.setMessage(" ");
 			}
 		}
 
@@ -1989,12 +1935,13 @@ public class Game implements misat11.bw.api.Game {
 		}
 		playersLine = playersLine.replace("%players%", Integer.toString(players.size()));
 		playersLine = playersLine.replace("%maxplayers%", Integer.toString(calculatedMaxPlayers));
-		
+
 		List<String> texts = new ArrayList<String>(Main.getConfigurator().config.getStringList("sign"));
-		
+
 		for (int i = 0; i < texts.size(); i++) {
 			String text = texts.get(i);
-			texts.set(i, text.replaceAll("%arena%", this.getName()).replaceAll("%status%", statusLine).replaceAll("%players%", playersLine));
+			texts.set(i, text.replaceAll("%arena%", this.getName()).replaceAll("%status%", statusLine)
+					.replaceAll("%players%", playersLine));
 		}
 
 		for (GameSign sign : gameSigns) {
@@ -2742,6 +2689,11 @@ public class Game implements misat11.bw.api.Game {
 	@Override
 	public void selectPlayerRandomTeam(Player player) {
 		joinRandomTeam(Main.getPlayerGameProfile(player));
+	}
+
+	@Override
+	public StatusBar getStatusBar() {
+		return statusbar;
 	}
 
 }

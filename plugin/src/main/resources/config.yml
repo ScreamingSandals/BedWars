@@ -171,6 +171,7 @@ database:
   
 # Bossbar
 bossbar:
+  use-xp-bar: false
   lobby:
     enable: true
     color: YELLOW
