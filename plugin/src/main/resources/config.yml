@@ -191,6 +191,12 @@ chat:
    format: "<%teamcolor%%name%§r> "
    separate-game-chat: false
    send-death-messages-just-in-game: true
+   default-team-chat-while-running: true
+   all-chat-prefix: "@a"
+   team-chat-prefix: "@t"
+   all-chat: "[ALL] "
+   team-chat: "[TEAM] "
+   death-chat: "[DEATH] "
    
 # Command rewards (possible placeholders {player},{score})
 rewards:

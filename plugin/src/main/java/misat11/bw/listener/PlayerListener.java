@@ -84,9 +84,9 @@ public class PlayerListener implements Listener {
 				}
 				if (Main.getConfigurator().config.getBoolean("chat.send-death-messages-just-in-game")) {
 					String oldDeathMessage = event.getDeathMessage();
-					
+
 					// TODO custom death messages
-					
+
 					event.setDeathMessage(null);
 					String newDeathMessage = i18nonly("prefix") + " " + oldDeathMessage;
 					for (Player player : game.getConnectedPlayers()) {
@@ -185,7 +185,8 @@ public class PlayerListener implements Listener {
 				event.setRespawnLocation(gPlayer.getGame().getPlayerTeam(gPlayer).teamInfo.spawn);
 				SpawnEffects.spawnEffect(gPlayer.getGame(), gPlayer.player, "game-effects.respawn");
 				if (gPlayer.getGame().getOriginalOrInheritedPlayerRespawnItems()) {
-					List<ItemStack> givedGameStartItems = (List<ItemStack>) Main.getConfigurator().config.getList("gived-player-respawn-items");
+					List<ItemStack> givedGameStartItems = (List<ItemStack>) Main.getConfigurator().config
+							.getList("gived-player-respawn-items");
 					for (ItemStack stack : givedGameStartItems) {
 						gPlayer.player.getInventory().addItem(stack);
 					}
@@ -431,8 +432,8 @@ public class PlayerListener implements Listener {
 						} else if (gPlayer.isSpectator) {
 							// TODO
 						}
-					}
-					else if (event.getMaterial() == Material.valueOf(Main.getConfigurator().config.getString("items.startgame", "DIAMOND"))) {
+					} else if (event.getMaterial() == Material
+							.valueOf(Main.getConfigurator().config.getString("items.startgame", "DIAMOND"))) {
 						if (game.getStatus() == GameStatus.WAITING) {
 							if (game.checkMinPlayers()) {
 								game.gameStartItem = true;
@@ -441,8 +442,7 @@ public class PlayerListener implements Listener {
 								player.sendMessage(i18n("vip_not_enough_players"));
 							}
 						}
-					}
-					else if (event.getMaterial() == Material
+					} else if (event.getMaterial() == Material
 							.valueOf(Main.getConfigurator().config.getString("items.leavegame", "SLIME_BALL"))) {
 						game.leaveFromGame(player);
 					}
@@ -649,7 +649,7 @@ public class PlayerListener implements Listener {
 			GamePlayer gPlayer = Main.getPlayerGameProfile(player);
 			Game game = gPlayer.getGame();
 			CurrentTeam team = game.getPlayerTeam(gPlayer);
-			String message = event.getMessage();
+			String message = event.getMessage().trim();
 			boolean spectator = gPlayer.isSpectator;
 
 			String playerName = player.getName();
@@ -685,19 +685,41 @@ public class PlayerListener implements Listener {
 
 			format = format.replace("%prefix%", "");
 			format = format.replace("%suffix%", "");
-			
+
 			format = ChatColor.translateAlternateColorCodes('&', format);
 
-			event.setFormat(format + event.getMessage());
-			if (Main.getConfigurator().config.getBoolean("chat.separate-game-chat")) {
-				Iterator<Player> recipients = event.getRecipients().iterator();
-				while (recipients.hasNext()) {
-					Player recipient = recipients.next();
-					GamePlayer recipientgPlayer = Main.getPlayerGameProfile(recipient);
-					Game recipientGame = recipientgPlayer.getGame();
-					if (recipientGame != game) {
-						recipients.remove();
-					}
+			boolean teamChat = Main.getConfigurator().config.getBoolean("chat.default-team-chat-while-running", true)
+					&& game.getStatus() == GameStatus.RUNNING && (team != null || spectator);
+
+			if (message.startsWith(Main.getConfigurator().config.getString("chat.all-chat-prefix", "@a"))) {
+				teamChat = false;
+				message = message.substring(2).trim();
+			} else if (message.startsWith(Main.getConfigurator().config.getString("chat.team-chat-prefix", "@t"))
+					&& (team != null || spectator)) {
+				teamChat = true;
+				message = message.substring(2).trim();
+			}
+
+			if (teamChat) {
+				if (spectator) {
+					format = Main.getConfigurator().config.getString("chat.death-chat", "[DEATH] ") + format;
+				} else {
+					format = Main.getConfigurator().config.getString("chat.team-chat", "[TEAM] ") + format;
+				}
+			} else {
+				format = Main.getConfigurator().config.getString("chat.all-chat", "[ALL] ") + format;
+			}
+
+			event.setFormat(format + message);
+			Iterator<Player> recipients = event.getRecipients().iterator();
+			while (recipients.hasNext()) {
+				Player recipient = recipients.next();
+				GamePlayer recipientgPlayer = Main.getPlayerGameProfile(recipient);
+				Game recipientGame = recipientgPlayer.getGame();
+				if (recipientGame != game && Main.getConfigurator().config.getBoolean("chat.separate-game-chat")) {
+					recipients.remove();
+				} else if (game.getPlayerTeam(recipientgPlayer) != team && teamChat) {
+					recipients.remove();
 				}
 			}
 		} else {
@@ -714,45 +736,45 @@ public class PlayerListener implements Listener {
 			}
 		}
 	}
-	
+
 	@EventHandler
 	public void onMove(PlayerMoveEvent event) {
 		if (event.isCancelled()) {
 			return;
 		}
-		
+
 		Player player = event.getPlayer();
 		if (Main.isPlayerInGame(player)) {
 			GamePlayer gPlayer = Main.getPlayerGameProfile(player);
 			Game game = gPlayer.getGame();
-			if (game.getOriginalOrInheritedDamageWhenPlayerIsNotInArena() && game.getStatus() == GameStatus.RUNNING && !gPlayer.isSpectator) {
+			if (game.getOriginalOrInheritedDamageWhenPlayerIsNotInArena() && game.getStatus() == GameStatus.RUNNING
+					&& !gPlayer.isSpectator) {
 				if (!GameCreator.isInArea(event.getTo(), game.getPos1(), game.getPos2())) {
 					player.damage(5);
 				}
 			}
 		}
 	}
-	
+
 	@EventHandler
 	public void onPlaceLiquid(PlayerBucketEmptyEvent event) {
 		if (event.isCancelled()) {
 			return;
 		}
-		
+
 		Player player = event.getPlayer();
 		if (Main.isPlayerInGame(player)) {
 			GamePlayer gPlayer = Main.getPlayerGameProfile(player);
 			Game game = gPlayer.getGame();
-			
+
 			Location loc = event.getBlockClicked().getLocation();
-			
+
 			loc.add(event.getBlockFace().getDirection());
-			
+
 			Block block = loc.getBlock();
-			
+
 			if (game.getStatus() == GameStatus.RUNNING) {
-				if (block.getType() == Material.AIR
-						|| game.getRegion().isBlockAddedDuringGame(block.getLocation())) {
+				if (block.getType() == Material.AIR || game.getRegion().isBlockAddedDuringGame(block.getLocation())) {
 					game.getRegion().addBuildedDuringGame(block.getLocation());
 				} else {
 					event.setCancelled(true);
