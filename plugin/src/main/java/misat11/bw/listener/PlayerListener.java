@@ -649,7 +649,7 @@ public class PlayerListener implements Listener {
 			GamePlayer gPlayer = Main.getPlayerGameProfile(player);
 			Game game = gPlayer.getGame();
 			CurrentTeam team = game.getPlayerTeam(gPlayer);
-			String message = event.getMessage().trim();
+			String message = event.getMessage();
 			boolean spectator = gPlayer.isSpectator;
 
 			String playerName = player.getName();
@@ -691,13 +691,15 @@ public class PlayerListener implements Listener {
 			boolean teamChat = Main.getConfigurator().config.getBoolean("chat.default-team-chat-while-running", true)
 					&& game.getStatus() == GameStatus.RUNNING && (team != null || spectator);
 
-			if (message.startsWith(Main.getConfigurator().config.getString("chat.all-chat-prefix", "@a"))) {
+			String allChat = Main.getConfigurator().config.getString("chat.all-chat-prefix", "@a");
+			String tChat = Main.getConfigurator().config.getString("chat.team-chat-prefix", "@t");
+
+			if (message.startsWith(allChat)) {
 				teamChat = false;
-				message = message.substring(2).trim();
-			} else if (message.startsWith(Main.getConfigurator().config.getString("chat.team-chat-prefix", "@t"))
-					&& (team != null || spectator)) {
+				message = message.substring(allChat.length()).trim();
+			} else if (message.startsWith(tChat) && (team != null || spectator)) {
 				teamChat = true;
-				message = message.substring(2).trim();
+				message = message.substring(tChat.length()).trim();
 			}
 
 			if (teamChat) {
