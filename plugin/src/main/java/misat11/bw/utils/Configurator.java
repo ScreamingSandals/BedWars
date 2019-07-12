@@ -244,6 +244,7 @@ public class Configurator {
 		checkOrSetConfig(modify, "database.user", "root");
 		checkOrSetConfig(modify, "database.password", "secret");
 		checkOrSetConfig(modify, "database.table-prefix", "bw_");
+		checkOrSetConfig(modify, "bossbar.use-xp-bar", false);
 		checkOrSetConfig(modify, "bossbar.lobby.enable", true);
 		checkOrSetConfig(modify, "bossbar.lobby.color", "YELLOW");
 		checkOrSetConfig(modify, "bossbar.lobby.style", "SEGMENTED_20");
@@ -256,6 +257,12 @@ public class Configurator {
 		checkOrSetConfig(modify, "chat.format", "<%teamcolor%%name%§r> ");
 		checkOrSetConfig(modify, "chat.separate-game-chat", false);
 		checkOrSetConfig(modify, "chat.send-death-messages-just-in-game", true);
+		checkOrSetConfig(modify, "chat.default-team-chat-while-running", true);
+		checkOrSetConfig(modify, "chat.all-chat-prefix", "@a");
+		checkOrSetConfig(modify, "chat.team-chat-prefix", "@t");
+		checkOrSetConfig(modify, "chat.all-chat", "[ALL] ");
+		checkOrSetConfig(modify, "chat.team-chat", "[TEAM] ");
+		checkOrSetConfig(modify, "chat.death-chat", "[DEATH] ");
 		checkOrSetConfig(modify, "rewards.enabled", false);
 		checkOrSetConfig(modify, "rewards.player-win", new ArrayList<>());
 		checkOrSetConfig(modify, "rewards.player-end-game", new ArrayList<>());
@@ -264,6 +271,11 @@ public class Configurator {
 		checkOrSetConfig(modify, "lore.generate-automatically", true);
 		checkOrSetConfig(modify, "lore.text",
 				Arrays.asList("§7Price:", "§7%price% %resource%", "§7Amount:", "§7%amount%"));
+		checkOrSetConfig(modify, "sign", Arrays.asList("§c§l[BedWars]", "%arena%", "%status%", "%players%"));
+		checkOrSetConfig(modify, "hotbar.selector", 0);
+		checkOrSetConfig(modify, "hotbar.color", 1);
+		checkOrSetConfig(modify, "hotbar.start", 2);
+		checkOrSetConfig(modify, "hotbar.leave", 8);
 		checkOrSetConfig(modify, "version", 2);
 		if (modify.get()) {
 			try {

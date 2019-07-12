@@ -10,6 +10,7 @@ public class GamePlayer {
 
 	public final Player player;
 	private Game game = null;
+	private String latestGame = null;
 	
 	public boolean isSpectator = false;
 
@@ -32,17 +33,23 @@ public class GamePlayer {
 			this.game = game;
 			this.isSpectator = false;
 			this.game.joinPlayer(this);
+			this.latestGame = this.game.getName();
 		} else if (this.game != null && game != null) {
 			this.game.leavePlayer(this);
 			this.game = game;
 			this.isSpectator = false;
 			this.clean();
 			this.game.joinPlayer(this);
+			this.latestGame = this.game.getName();
 		}
 	}
 
 	public Game getGame() {
 		return game;
+	}
+	
+	public String getLatestGameName() {
+		return this.latestGame;
 	}
 
 	public boolean isInGame() {

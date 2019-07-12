@@ -29,6 +29,7 @@ import misat11.bw.commands.HelpCommand;
 import misat11.bw.commands.JoinCommand;
 import misat11.bw.commands.LeaveCommand;
 import misat11.bw.commands.ListCommand;
+import misat11.bw.commands.RejoinCommand;
 import misat11.bw.commands.ReloadCommand;
 import misat11.bw.commands.RemoveholoCommand;
 import misat11.bw.commands.StatsCommand;
@@ -354,6 +355,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 		new JoinCommand();
 		new LeaveCommand();
 		new ListCommand();
+		new RejoinCommand();
 		new ReloadCommand();
 		new RemoveholoCommand();
 		new StatsCommand();

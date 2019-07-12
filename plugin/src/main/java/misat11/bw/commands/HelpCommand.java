@@ -42,6 +42,7 @@ public class HelpCommand extends BaseCommand {
 		player.sendMessage(i18nonly("help_title").replace("%version%", Main.getVersion()));
 		player.sendMessage(i18nonly("help_bw_join"));
 		player.sendMessage(i18nonly("help_bw_leave"));
+		player.sendMessage(i18nonly("help_bw_rejoin"));
 		player.sendMessage(i18nonly("help_bw_list"));
 
 		if (player.hasPermission(ADMIN_PERMISSION) || player.hasPermission(OTHER_STATS_PERMISSION)) {

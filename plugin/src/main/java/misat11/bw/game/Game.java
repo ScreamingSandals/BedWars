@@ -23,7 +23,6 @@ import org.bukkit.block.Chest;
 import org.bukkit.block.Sign;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
-import org.bukkit.boss.BossBar;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -34,7 +33,6 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Villager;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -57,6 +55,9 @@ import misat11.bw.api.GameStatus;
 import misat11.bw.api.GameStore;
 import misat11.bw.api.InGameConfigBooleanConstants;
 import misat11.bw.api.RunningTeam;
+import misat11.bw.api.boss.BossBar;
+import misat11.bw.api.boss.BossBar19;
+import misat11.bw.api.boss.StatusBar;
 import misat11.bw.api.events.BedwarsGameEndEvent;
 import misat11.bw.api.events.BedwarsGameStartEvent;
 import misat11.bw.api.events.BedwarsGameStartedEvent;
@@ -72,7 +73,8 @@ import misat11.bw.api.events.BedwarsPreRebuildingEvent;
 import misat11.bw.api.events.BedwarsResourceSpawnEvent;
 import misat11.bw.api.events.BedwarsTargetBlockDestroyedEvent;
 import misat11.bw.api.special.SpecialItem;
-import misat11.bw.legacy.BossBar_1_8;
+import misat11.bw.boss.BossBarSelector;
+import misat11.bw.boss.XPBar;
 import misat11.bw.legacy.LegacyRegion;
 import misat11.bw.statistics.PlayerStatistic;
 import misat11.bw.utils.GameSign;
@@ -196,8 +198,7 @@ public class Game implements misat11.bw.api.Game {
 	private IRegion region = Main.isLegacy() ? new LegacyRegion() : new Region();
 	private TeamSelectorInventory teamSelectorInventory;
 	private Scoreboard gameScoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
-	private BossBar bossbar;
-	private BossBar_1_8 legacyBossbar;
+	private StatusBar statusbar;
 	private Map<Location, ItemStack[]> usedChests = new HashMap<>();
 	private List<SpecialItem> activeSpecialItems = new ArrayList<>();
 	private List<ArmorStand> armorStandsInGame = new ArrayList<>();
@@ -571,43 +572,41 @@ public class Game implements misat11.bw.api.Game {
 		}
 
 		if (getOriginalOrInheritedCompassEnabled()) {
-			ItemStack compass = Main.getConfigurator().readDefinedItem("jointeam", "COMPASS");
-			ItemMeta metaCompass = compass.getItemMeta();
-			metaCompass.setDisplayName(i18n("compass_selector_team", false));
-			compass.setItemMeta(metaCompass);
-			player.player.getInventory().setItem(0, compass);
+			int compassPosition = Main.getConfigurator().config.getInt("hotbar.selector", 0);
+			if (compassPosition >= 0 && compassPosition <= 8) {
+				ItemStack compass = Main.getConfigurator().readDefinedItem("jointeam", "COMPASS");
+				ItemMeta metaCompass = compass.getItemMeta();
+				metaCompass.setDisplayName(i18n("compass_selector_team", false));
+				compass.setItemMeta(metaCompass);
+				player.player.getInventory().setItem(compassPosition, compass);
+			}
 		}
 
-		ItemStack leave = Main.getConfigurator().readDefinedItem("leavegame", "SLIME_BALL");
-		ItemMeta leaveMeta = leave.getItemMeta();
-		leaveMeta.setDisplayName(i18n("leave_from_game_item", false));
-		leave.setItemMeta(leaveMeta);
-		player.player.getInventory().setItem(8, leave);
+		int leavePosition = Main.getConfigurator().config.getInt("hotbar.leave", 8);
+		if (leavePosition >= 0 && leavePosition <= 8) {
+			ItemStack leave = Main.getConfigurator().readDefinedItem("leavegame", "SLIME_BALL");
+			ItemMeta leaveMeta = leave.getItemMeta();
+			leaveMeta.setDisplayName(i18n("leave_from_game_item", false));
+			leave.setItemMeta(leaveMeta);
+			player.player.getInventory().setItem(leavePosition, leave);
+		}
 
-		if (player.player.hasPermission("bw.vip")) {
-			ItemStack startGame = Main.getConfigurator().readDefinedItem("startgame", "DIAMOND");
-			ItemMeta startGameMeta = startGame.getItemMeta();
-			startGameMeta.setDisplayName(i18n("start_game_item", false));
-			startGame.setItemMeta(startGameMeta);
+		if (player.player.hasPermission("bw.vip") || player.player.hasPermission("misat11.bw.vip")) {
+			int vipPosition = Main.getConfigurator().config.getInt("hotbar.start", 1);
+			if (vipPosition >= 0 && vipPosition <= 8) {
+				ItemStack startGame = Main.getConfigurator().readDefinedItem("startgame", "DIAMOND");
+				ItemMeta startGameMeta = startGame.getItemMeta();
+				startGameMeta.setDisplayName(i18n("start_game_item", false));
+				startGame.setItemMeta(startGameMeta);
 
-			player.player.getInventory().setItem(2, startGame);
+				player.player.getInventory().setItem(vipPosition, startGame);
+			}
 		}
 
 		if (isEmpty) {
 			runTask();
 		} else {
-			try {
-				bossbar.addPlayer(player.player);
-			} catch (Throwable tr) {
-				// 1.8
-				if (BossBar_1_8.isPluginForLegacyBossBarEnabled()) {
-					try {
-						legacyBossbar.addPlayer(player.player);
-					} catch (Throwable t2) {
-						// WHAT?
-					}
-				}
-			}
+			statusbar.addPlayer(player.player);
 		}
 
 		BedwarsPlayerJoinedEvent joinedEvent = new BedwarsPlayerJoinedEvent(this, getPlayerTeam(player), player.player);
@@ -634,18 +633,7 @@ public class Game implements misat11.bw.api.Game {
 		String message = i18n("leave").replace("%name%", player.player.getDisplayName())
 				.replace("%players%", Integer.toString(players.size()))
 				.replaceAll("%maxplayers%", Integer.toString(calculatedMaxPlayers));
-		try {
-			bossbar.removePlayer(player.player);
-		} catch (Throwable tr) {
-			// 1.8
-			if (BossBar_1_8.isPluginForLegacyBossBarEnabled()) {
-				try {
-					legacyBossbar.removePlayer(player.player);
-				} catch (Throwable t2) {
-					// WHAT?
-				}
-			}
-		}
+		statusbar.removePlayer(player.player);
 		player.player.sendMessage(message);
 		player.player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
 		if (status == GameStatus.RUNNING || status == GameStatus.WAITING) {
@@ -1136,7 +1124,7 @@ public class Game implements misat11.bw.api.Game {
 
 		return lowest;
 	}
-	
+
 	private void internalTeamJoin(GamePlayer player, Team teamForJoin) {
 		CurrentTeam current = null;
 		for (CurrentTeam t : teamsInGame) {
@@ -1145,7 +1133,7 @@ public class Game implements misat11.bw.api.Game {
 				break;
 			}
 		}
-	
+
 		CurrentTeam cur = getPlayerTeam(player);
 		BedwarsPlayerJoinTeamEvent event = new BedwarsPlayerJoinTeamEvent(current, player.player, cur);
 		Main.getInstance().getServer().getPluginManager().callEvent(event);
@@ -1203,11 +1191,14 @@ public class Game implements misat11.bw.api.Game {
 						.replaceAll("%maxplayers%", Integer.toString(current.teamInfo.maxPlayers)));
 
 		if (getOriginalOrInheritedAddWoolToInventoryOnJoin()) {
-			ItemStack stack = TeamSelectorInventory.materializeColorToWool(teamForJoin.color);
-			ItemMeta stackMeta = stack.getItemMeta();
-			stackMeta.setDisplayName(teamForJoin.color.chatColor + teamForJoin.name);
-			stack.setItemMeta(stackMeta);
-			player.player.getInventory().setItem(1, stack);
+			int colorPosition = Main.getConfigurator().config.getInt("hotbar.color", 1);
+			if (colorPosition >= 0 && colorPosition <= 8) {
+				ItemStack stack = TeamSelectorInventory.materializeColorToWool(teamForJoin.color);
+				ItemMeta stackMeta = stack.getItemMeta();
+				stackMeta.setDisplayName(teamForJoin.color.chatColor + teamForJoin.name);
+				stack.setItemMeta(stackMeta);
+				player.player.getInventory().setItem(colorPosition, stack);
+			}
 		}
 
 		if (getOriginalOrInheritedColoredLeatherByTeamInLobby()) {
@@ -1261,28 +1252,24 @@ public class Game implements misat11.bw.api.Game {
 			}
 		}.runTask(Main.getInstance());
 
-		ItemStack leave = Main.getConfigurator().readDefinedItem("leavegame", "SLIME_BALL");
-		ItemMeta leaveMeta = leave.getItemMeta();
-		leaveMeta.setDisplayName(i18n("leave_from_game_item", false));
-		leave.setItemMeta(leaveMeta);
-		player.player.getInventory().setItem(8, leave);
+		int leavePosition = Main.getConfigurator().config.getInt("hotbar.leave", 8);
+		if (leavePosition >= 0 && leavePosition <= 8) {
+			ItemStack leave = Main.getConfigurator().readDefinedItem("leavegame", "SLIME_BALL");
+			ItemMeta leaveMeta = leave.getItemMeta();
+			leaveMeta.setDisplayName(i18n("leave_from_game_item", false));
+			leave.setItemMeta(leaveMeta);
+			player.player.getInventory().setItem(leavePosition, leave);
+		}
 		return specSpawn;
 
 	}
 
 	public void setBossbarProgress(int count, int max) {
 		double progress = (double) count / (double) max;
-		try {
-			bossbar.setProgress(progress);
-		} catch (Throwable tr) {
-			// 1.8
-			if (BossBar_1_8.isPluginForLegacyBossBarEnabled()) {
-				try {
-					legacyBossbar.setProgress(progress);
-				} catch (Throwable t2) {
-					// WHAT?
-				}
-			}
+		statusbar.setProgress(progress);
+		if (statusbar instanceof XPBar) {
+			XPBar xpbar = (XPBar) statusbar;
+			xpbar.setSeconds(count);
 		}
 	}
 
@@ -1298,31 +1285,25 @@ public class Game implements misat11.bw.api.Game {
 			previousCountdown = countdown = pauseCountdown;
 			previousStatus = GameStatus.WAITING;
 			String title = i18nonly("bossbar_waiting");
-			try {
-				bossbar = Bukkit.createBossBar(title, BarColor.RED, BarStyle.SOLID);
-				bossbar.setVisible(false);
-				bossbar.setProgress(0);
-				for (GamePlayer p : players) {
-					bossbar.addPlayer(p.player);
-				}
-				bossbar.setColor(lobbyBossBarColor != null ? lobbyBossBarColor
-						: BarColor.valueOf(Main.getConfigurator().config.getString("bossbar.lobby.color")));
-				bossbar.setStyle(BarStyle.valueOf(Main.getConfigurator().config.getString("bossbar.lobby.style")));
-				bossbar.setVisible(getOriginalOrInheritedLobbyBossbar());
-			} catch (Throwable t) {
-				// 1.8
-				if (BossBar_1_8.isPluginForLegacyBossBarEnabled()) {
-					try {
-						legacyBossbar = new BossBar_1_8();
-						legacyBossbar.setProgress(1);
-						legacyBossbar.setMessage(title);
-						for (GamePlayer p : players) {
-							legacyBossbar.addPlayer(p.player);
-						}
-						legacyBossbar.setVisible(getOriginalOrInheritedLobbyBossbar());
-					} catch (Throwable t2) {
-						// WHAT?
-					}
+			if (Main.getConfigurator().config.getBoolean("bossbar.use-xp-bar", false)) {
+				statusbar = new XPBar();
+			} else {
+				statusbar = BossBarSelector.getBossBar();
+			}
+			statusbar.setProgress(0);
+			statusbar.setVisible(getOriginalOrInheritedLobbyBossbar());
+			for (GamePlayer p : players) {
+				statusbar.addPlayer(p.player);
+			}
+			if (statusbar instanceof BossBar) {
+				BossBar bossbar = (BossBar) statusbar;
+				bossbar.setMessage(title);
+				if (bossbar instanceof BossBar19) {
+					BossBar19 bossbar19 = (BossBar19) bossbar;
+					bossbar19.setColor(lobbyBossBarColor != null ? lobbyBossBarColor
+							: BarColor.valueOf(Main.getConfigurator().config.getString("bossbar.lobby.color")));
+					bossbar19
+							.setStyle(BarStyle.valueOf(Main.getConfigurator().config.getString("bossbar.lobby.style")));
 				}
 			}
 			if (teamSelectorInventory == null) {
@@ -1423,24 +1404,17 @@ public class Game implements misat11.bw.api.Game {
 						}
 					}
 
-					try {
-						bossbar.setTitle(i18n("bossbar_running", false));
-						bossbar.setProgress(0);
-						bossbar.setColor(gameBossBarColor != null ? gameBossBarColor
-								: BarColor.valueOf(Main.getConfigurator().config.getString("bossbar.game.color")));
-						bossbar.setStyle(
-								BarStyle.valueOf(Main.getConfigurator().config.getString("bossbar.game.style")));
-						bossbar.setVisible(getOriginalOrInheritedGameBossbar());
-					} catch (Throwable tr) {
-						// 1.8
-						if (BossBar_1_8.isPluginForLegacyBossBarEnabled()) {
-							try {
-								legacyBossbar.setMessage(i18n("bossbar_running", false));
-								legacyBossbar.setProgress(1);
-								legacyBossbar.setVisible(getOriginalOrInheritedGameBossbar());
-							} catch (Throwable t2) {
-								// WHAT?
-							}
+					statusbar.setProgress(0);
+					statusbar.setVisible(getOriginalOrInheritedGameBossbar());
+					if (statusbar instanceof BossBar) {
+						BossBar bossbar = (BossBar) statusbar;
+						bossbar.setMessage(i18n("bossbar_running", false));
+						if (bossbar instanceof BossBar19) {
+							BossBar19 bossbar19 = (BossBar19) bossbar;
+							bossbar19.setColor(gameBossBarColor != null ? gameBossBarColor
+									: BarColor.valueOf(Main.getConfigurator().config.getString("bossbar.game.color")));
+							bossbar19.setStyle(
+									BarStyle.valueOf(Main.getConfigurator().config.getString("bossbar.game.style")));
 						}
 					}
 					if (teamSelectorInventory != null)
@@ -1663,19 +1637,21 @@ public class Game implements misat11.bw.api.Game {
 						tick.setNextStatus(GameStatus.REBUILDING);
 						tick.setNextCountdown(0);
 					}
-				} else if (previousStatus == GameStatus.RUNNING /* Prevent spawning resources on game start */) {
+				} else if (countdown != gameTime /* Prevent spawning resources on game start */) {
 					for (ItemSpawner spawner : spawners) {
 						ItemSpawnerType type = spawner.type;
 						int cycle = type.getInterval();
+						/* Calculate resource spawn from elapsedTime, not from remainingTime/countdown */
+						int elapsedTime = gameTime - countdown;
 
 						if (getOriginalOrInheritedSpawnerHolograms()
 								&& getOriginalOrInheritedSpawnerHologramsCountdown() && cycle > 1) {
-							int modulo = countdown % cycle;
+							int modulo = cycle - elapsedTime % cycle;
 							countdownArmorStands.get(spawner).setCustomName(i18nonly("countdown_spawning")
-									.replace("%seconds%", Integer.toString(modulo == 0 ? cycle : modulo)));
+									.replace("%seconds%", Integer.toString(modulo)));
 						}
 
-						if ((countdown % cycle) == 0) {
+						if ((elapsedTime % cycle) == 0) {
 
 							BedwarsResourceSpawnEvent resourceSpawnEvent = new BedwarsResourceSpawnEvent(this, spawner,
 									type.getStack(upgrades ? spawner.currentLevel : 1));
@@ -1704,18 +1680,9 @@ public class Game implements misat11.bw.api.Game {
 
 		// Phase 8: Check if game end celebrating started and remove title on bossbar
 		if (status == GameStatus.GAME_END_CELEBRATING && previousStatus != status) {
-
-			try {
-				bossbar.setTitle(" ");
-			} catch (Throwable tr) {
-				// 1.8
-				if (BossBar_1_8.isPluginForLegacyBossBarEnabled()) {
-					try {
-						legacyBossbar.setMessage(" ");
-					} catch (Throwable t2) {
-						// WHAT?
-					}
-				}
+			if (statusbar instanceof BossBar) {
+				BossBar bossbar = (BossBar) statusbar;
+				bossbar.setMessage(" ");
 			}
 		}
 
@@ -1967,37 +1934,46 @@ public class Game implements misat11.bw.api.Game {
 			return;
 		}
 
-		String line2 = "";
-		String line3 = "";
+		String statusLine = "";
+		String playersLine = "";
 		switch (status) {
 		case DISABLED:
-			line2 = i18nonly("sign_status_disabled");
-			line3 = i18nonly("sign_status_disabled_players");
+			statusLine = i18nonly("sign_status_disabled");
+			playersLine = i18nonly("sign_status_disabled_players");
 			break;
 		case REBUILDING:
-			line2 = i18nonly("sign_status_rebuilding");
-			line3 = i18nonly("sign_status_rebuilding_players");
+			statusLine = i18nonly("sign_status_rebuilding");
+			playersLine = i18nonly("sign_status_rebuilding_players");
 			break;
 		case RUNNING:
 		case GAME_END_CELEBRATING:
-			line2 = i18nonly("sign_status_running");
-			line3 = i18nonly("sign_status_running_players");
+			statusLine = i18nonly("sign_status_running");
+			playersLine = i18nonly("sign_status_running_players");
 			break;
 		case WAITING:
-			line2 = i18nonly("sign_status_waiting");
-			line3 = i18nonly("sign_status_waiting_players");
+			statusLine = i18nonly("sign_status_waiting");
+			playersLine = i18nonly("sign_status_waiting_players");
 			break;
 		}
-		line3 = line3.replace("%players%", Integer.toString(players.size()));
-		line3 = line3.replace("%maxplayers%", Integer.toString(calculatedMaxPlayers));
+		playersLine = playersLine.replace("%players%", Integer.toString(players.size()));
+		playersLine = playersLine.replace("%maxplayers%", Integer.toString(calculatedMaxPlayers));
+
+		List<String> texts = new ArrayList<String>(Main.getConfigurator().config.getStringList("sign"));
+
+		for (int i = 0; i < texts.size(); i++) {
+			String text = texts.get(i);
+			texts.set(i, text.replaceAll("%arena%", this.getName()).replaceAll("%status%", statusLine)
+					.replaceAll("%players%", playersLine));
+		}
 
 		for (GameSign sign : gameSigns) {
 			if (sign.getLocation().getChunk().isLoaded()) {
 				Block block = sign.getLocation().getBlock();
 				if (block.getState() instanceof Sign) {
 					Sign state = (Sign) block.getState();
-					state.setLine(2, line2);
-					state.setLine(3, line3);
+					for (int i = 0; i < texts.size() && i < 4; i++) {
+						state.setLine(i, texts.get(i));
+					}
 					state.update();
 				}
 			}
@@ -2735,6 +2711,11 @@ public class Game implements misat11.bw.api.Game {
 	@Override
 	public void selectPlayerRandomTeam(Player player) {
 		joinRandomTeam(Main.getPlayerGameProfile(player));
+	}
+
+	@Override
+	public StatusBar getStatusBar() {
+		return statusbar;
 	}
 
 }

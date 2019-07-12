@@ -130,10 +130,13 @@ public class ShopMenu implements Listener {
 			if (type == null) {
 				return;
 			}
-			
+
 			boolean enabled = Main.getConfigurator().config.getBoolean("lore.generate-automatically", true);
 			enabled = (boolean) originalItemData.getOrDefault("generate-lore", enabled);
-			
+
+			List<String> loreText = (List<String>) originalItemData.getOrDefault("generated-lore-text",
+					Main.getConfigurator().config.getStringList("lore.text"));
+
 			if (enabled) {
 				ItemStack stack = event.getStack();
 				ItemMeta stackMeta = stack.getItemMeta();
@@ -141,7 +144,7 @@ public class ShopMenu implements Listener {
 				if (stackMeta.hasLore()) {
 					lore = stackMeta.getLore();
 				}
-				for (String s : Main.getConfigurator().config.getStringList("lore.text")) {
+				for (String s : loreText) {
 					s = s.replaceAll("%price%", Integer.toString(price));
 					s = s.replaceAll("%resource%", type.getItemName());
 					s = s.replaceAll("%amount%", Integer.toString(stack.getAmount()));
@@ -169,7 +172,7 @@ public class ShopMenu implements Listener {
 			event.setCancelled(true);
 		}
 	}
-	
+
 	@EventHandler
 	public void onShopTransaction(ShopTransactionEvent event) {
 		if (event.getFormat() != format || event.isCancelled()) {
@@ -241,14 +244,15 @@ public class ShopMenu implements Listener {
 				}
 				event.sellStack(materialItem);
 				event.buyStack(newItem);
-				player.sendMessage(i18n("buy_succes").replace("%item%",
-						amount + "x " + getNameOrCustomNameOfItem(newItem)).replace("%material%", price + " " + type.getItemName()));
+				player.sendMessage(
+						i18n("buy_succes").replace("%item%", amount + "x " + getNameOrCustomNameOfItem(newItem))
+								.replace("%material%", price + " " + type.getItemName()));
 				Sounds.playSound(player, player.getLocation(),
-						Main.getConfigurator().config.getString("sounds.on_item_buy"), Sounds.ENTITY_ITEM_PICKUP, 1,
-						1);
+						Main.getConfigurator().config.getString("sounds.on_item_buy"), Sounds.ENTITY_ITEM_PICKUP, 1, 1);
 			} else {
-				player.sendMessage(i18n("buy_failed").replace("%item%",
-						amount + "x " + getNameOrCustomNameOfItem(newItem)).replace("%material%", price + " " + type.getItemName()));
+				player.sendMessage(
+						i18n("buy_failed").replace("%item%", amount + "x " + getNameOrCustomNameOfItem(newItem))
+								.replace("%material%", price + " " + type.getItemName()));
 			}
 		}
 	}

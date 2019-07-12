@@ -171,6 +171,7 @@ database:
   
 # Bossbar
 bossbar:
+  use-xp-bar: false
   lobby:
     enable: true
     color: YELLOW
@@ -191,6 +192,12 @@ chat:
    format: "<%teamcolor%%name%§r> "
    separate-game-chat: false
    send-death-messages-just-in-game: true
+   default-team-chat-while-running: true
+   all-chat-prefix: "@a"
+   team-chat-prefix: "@t"
+   all-chat: "[ALL] "
+   team-chat: "[TEAM] "
+   death-chat: "[DEATH] "
    
 # Command rewards (possible placeholders {player},{score})
 rewards:
@@ -222,6 +229,20 @@ lore:
    - "§7%price% %resource%"
    - "§7Amount:"
    - "§7%amount%"
+   
+# Signs (%status% and %players% can be modified in messages_<your language>.yml
+sign:
+   - "§c§l[BedWars]"
+   - "%arena%"
+   - "%status%"
+   - "%players%"
+   
+# Lobby Hotbar (possible values: 0-8, other numbers will disable item)
+hotbar: 
+   selector: 0
+   color: 1
+   start: 2
+   leave: 8
    
 # Do not edit this!!!
 version: 2

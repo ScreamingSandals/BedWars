@@ -9,6 +9,7 @@ import org.bukkit.block.Block;
 import org.bukkit.boss.BarColor;
 import org.bukkit.entity.Player;
 
+import misat11.bw.api.boss.StatusBar;
 import misat11.bw.api.special.SpecialItem;
 
 public interface Game {
@@ -107,6 +108,8 @@ public interface Game {
 	public List<ItemSpawner> getItemSpawners();
 	
 	public Region getRegion();
+	
+	public StatusBar getStatusBar();
 	
 	// LOBBY
 	
