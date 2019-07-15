@@ -1,5 +1,9 @@
 package misat11.bw.api.special;
 
-public interface MagnetShoes extends SpecialItem {
+import org.bukkit.entity.Player;
 
+public interface MagnetShoes extends SpecialItem {
+	public Player getWearer();
+	
+	public boolean isAnybodyWearing();
 }
