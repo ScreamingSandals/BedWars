@@ -88,8 +88,8 @@ public class HolographicDisplaysInteraction implements IHologramInteraction {
 			this.unloadHolograms();
 		}
 
-		this.holograms = new HashMap<Player, List<Hologram>>();
-		this.hologramLocations = new ArrayList<Location>();
+		this.holograms = new HashMap<>();
+		this.hologramLocations = new ArrayList<>();
 
 		File file = new File(Main.getInstance().getDataFolder(), "holodb.yml");
 		if (file.exists()) {
@@ -209,9 +209,9 @@ public class HolographicDisplaysInteraction implements IHologramInteraction {
 	}
 
 	private void updatePlayerHologram(Player player, Location holoLocation) {
-		List<Hologram> holograms = null;
+		List<Hologram> holograms;
 		if (!this.holograms.containsKey(player)) {
-			this.holograms.put(player, new ArrayList<Hologram>());
+			this.holograms.put(player, new ArrayList<>());
 		}
 
 		holograms = this.holograms.get(player);
@@ -232,7 +232,7 @@ public class HolographicDisplaysInteraction implements IHologramInteraction {
 		PlayerStatistic statistic = Main.getPlayerStatisticsManager().getStatistic(player);
 		holo.clearLines();
 
-		List<String> lines = new ArrayList<String>();
+		List<String> lines = new ArrayList<>();
 
 		String headline = Main.getConfigurator().config.getString("holograms.headline", "Your §eBEDWARS§f stats");
 		if (!headline.trim().isEmpty()) {
@@ -258,9 +258,7 @@ public class HolographicDisplaysInteraction implements IHologramInteraction {
 
 		for (String line : lines) {
 			TextLine textLine = holo.appendTextLine(line);
-			textLine.setTouchHandler(play -> {
-				HolographicDisplaysInteraction.this.onHologramTouch(play, holo);
-			});
+			textLine.setTouchHandler(play -> HolographicDisplaysInteraction.this.onHologramTouch(play, holo));
 		}
 	}
 

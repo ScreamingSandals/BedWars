@@ -9,13 +9,13 @@ import java.util.TimeZone;
 
 public class DatabaseManager {
 
-	private String tablePrefix = "bw_";
-	private String database = null;
+	private String tablePrefix;
+	private String database;
 	private HikariDataSource dataSource = null;
-	private String host = null;
-	private String password = null;
-	private int port = 3306;
-	private String user = null;
+	private String host;
+	private String password;
+	private int port;
+	private String user;
 
 	public DatabaseManager(String host, int port, String user, String password, String database, String tablePrefix) {
 		this.host = host;

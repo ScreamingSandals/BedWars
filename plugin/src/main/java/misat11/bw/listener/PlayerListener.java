@@ -135,7 +135,7 @@ public class PlayerListener implements Listener {
 
 				if (Main.isPlayerStatisticsEnabled()) {
 					PlayerStatistic diePlayer = Main.getPlayerStatisticsManager().getStatistic(victim);
-					PlayerStatistic killerPlayer = null;
+					PlayerStatistic killerPlayer;
 
 					boolean teamIsDead = !team.isBed;
 
@@ -386,7 +386,7 @@ public class PlayerListener implements Listener {
 		if (event.isCancelled()) {
 			return;
 		}
-		Player player = (Player) event.getPlayer();
+		Player player = event.getPlayer();
 		if (Main.isPlayerInGame(player)) {
 			GamePlayer gPlayer = Main.getPlayerGameProfile(player);
 			if (gPlayer.getGame().getStatus() != GameStatus.RUNNING || gPlayer.isSpectator) {
@@ -400,7 +400,7 @@ public class PlayerListener implements Listener {
 		if (event.isCancelled()) {
 			return;
 		}
-		Player player = (Player) event.getPlayer();
+		Player player = event.getPlayer();
 		if (Main.isPlayerInGame(player)) {
 			if (!Main.getPlayerGameProfile(player).isSpectator) {
 				event.setCancelled(true);
@@ -675,8 +675,8 @@ public class PlayerListener implements Listener {
 			format = format.replace("%playerListName%", playerListName);
 
 			if (Main.isVault()) {
-				Chat chat = ((RegisteredServiceProvider<Chat>) Bukkit.getServer().getServicesManager()
-						.getRegistration(Chat.class)).getProvider();
+				Chat chat = Bukkit.getServer().getServicesManager()
+						.getRegistration(Chat.class).getProvider();
 				if (chat != null) {
 					format = format.replace("%prefix%", chat.getPlayerPrefix(player));
 					format = format.replace("%suffix%", chat.getPlayerSuffix(player));

@@ -69,7 +69,7 @@ public class GamePlayer {
 	public void storeInv() {
 		oldinventory.inventory = player.getInventory().getContents();
 		oldinventory.armor = player.getInventory().getArmorContents();
-		oldinventory.xp = Float.valueOf(player.getExp());
+		oldinventory.xp = player.getExp();
 		oldinventory.effects = player.getActivePotionEffects();
 		oldinventory.mode = player.getGameMode();
 		oldinventory.left = player.getLocation();

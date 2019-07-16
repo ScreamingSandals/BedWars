@@ -8,7 +8,7 @@ import misat11.bw.game.Team;
 
 public class TeamJoinMetaDataValue implements MetadataValue {
 
-  private Team team = null;
+  private Team team;
   private boolean teamjoin = true;
 
   public TeamJoinMetaDataValue(Team team) {

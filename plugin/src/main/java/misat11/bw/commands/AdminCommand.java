@@ -31,7 +31,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 
 public class AdminCommand extends BaseCommand {
 
-	public HashMap<String, GameCreator> gc = new HashMap<String, GameCreator>();
+	public HashMap<String, GameCreator> gc = new HashMap<>();
 
 	public AdminCommand() {
 		super("admin", ADMIN_PERMISSION, false);
@@ -355,7 +355,7 @@ public class AdminCommand extends BaseCommand {
 
 							player.sendMessage(i18n("arena_info_config_constant", false)
 									.replace("%constant%", "upgrades (experimental)").replace("%value%", i18n(
-											"arena_info_config_" + String.valueOf(game.isUpgradesEnabled()), false)));
+											"arena_info_config_" + game.isUpgradesEnabled(), false)));
 
 							// NON-BOOLEAN CONSTANTS
 
@@ -422,7 +422,7 @@ public class AdminCommand extends BaseCommand {
 				}
 			} else {
 				if (gc.containsKey(arN)) {
-					List<String> nargs = new ArrayList<String>();
+					List<String> nargs = new ArrayList<>();
 					int lid = 0;
 					for (String arg : args) {
 						if (lid >= 2) {

@@ -21,7 +21,7 @@ public class CurrentTeam implements RunningTeam {
 	public final List<GamePlayer> players = new ArrayList<>();
 	private org.bukkit.scoreboard.Team scoreboardTeam;
 	private Inventory chestInventory = Bukkit.createInventory(null, InventoryType.ENDER_CHEST, i18n("team_chest"));
-	private List<Block> chests = new ArrayList<Block>();
+	private List<Block> chests = new ArrayList<>();
 	private Game game;
 
 	public boolean isBed = true;
@@ -79,7 +79,7 @@ public class CurrentTeam implements RunningTeam {
 
 	@Override
 	public List<Player> getConnectedPlayers() {
-		List<Player> playerList = new ArrayList<Player>();
+		List<Player> playerList = new ArrayList<>();
 		for (GamePlayer gamePlayer : players) {
 			playerList.add(gamePlayer.player);
 		}

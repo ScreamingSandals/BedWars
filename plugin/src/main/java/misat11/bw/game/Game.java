@@ -899,9 +899,9 @@ public class Game implements misat11.bw.api.Game {
 		configMap.set("lobbySpawn", setLocationToString(lobbySpawn));
 		configMap.set("lobbySpawnWorld", lobbySpawn.getWorld().getName());
 		configMap.set("minPlayers", minPlayers);
-		List<Map<String, Object>> nS = new ArrayList<Map<String, Object>>();
+		List<Map<String, Object>> nS = new ArrayList<>();
 		for (ItemSpawner spawner : spawners) {
-			Map<String, Object> spawnerMap = new HashMap<String, Object>();
+			Map<String, Object> spawnerMap = new HashMap<>();
 			spawnerMap.put("location", setLocationToString(spawner.loc));
 			spawnerMap.put("type", spawner.type.getConfigKey());
 			spawnerMap.put("customName", spawner.customName);
@@ -918,7 +918,7 @@ public class Game implements misat11.bw.api.Game {
 			}
 		}
 		if (!gameStore.isEmpty()) {
-			List<Map<String, String>> nL = new ArrayList<Map<String, String>>();
+			List<Map<String, String>> nL = new ArrayList<>();
 			for (GameStore store : gameStore) {
 				Map<String, String> map = new HashMap<>();
 				map.put("loc", setLocationToString(store.getStoreLocation()));
@@ -1934,7 +1934,7 @@ public class Game implements misat11.bw.api.Game {
 		playersLine = playersLine.replace("%players%", Integer.toString(players.size()));
 		playersLine = playersLine.replace("%maxplayers%", Integer.toString(calculatedMaxPlayers));
 
-		List<String> texts = new ArrayList<String>(Main.getConfigurator().config.getStringList("sign"));
+		List<String> texts = new ArrayList<>(Main.getConfigurator().config.getStringList("sign"));
 
 		for (int i = 0; i < texts.size(); i++) {
 			String text = texts.get(i);
@@ -2035,7 +2035,7 @@ public class Game implements misat11.bw.api.Game {
 
 	@Override
 	public List<Player> getConnectedPlayers() {
-		List<Player> playerList = new ArrayList<Player>();
+		List<Player> playerList = new ArrayList<>();
 		for (GamePlayer player : players) {
 			playerList.add(player.player);
 		}
@@ -2155,12 +2155,12 @@ public class Game implements misat11.bw.api.Game {
 
 	@Override
 	public List<SpecialItem> getActivedSpecialItems() {
-		return new ArrayList<SpecialItem>(activeSpecialItems);
+		return new ArrayList<>(activeSpecialItems);
 	}
 
 	@Override
 	public List<SpecialItem> getActivedSpecialItems(Class<? extends SpecialItem> type) {
-		List<SpecialItem> items = new ArrayList<SpecialItem>();
+		List<SpecialItem> items = new ArrayList<>();
 		for (SpecialItem item : activeSpecialItems) {
 			if (type.isInstance(item)) {
 				items.add(item);
@@ -2171,7 +2171,7 @@ public class Game implements misat11.bw.api.Game {
 
 	@Override
 	public List<SpecialItem> getActivedSpecialItemsOfTeam(misat11.bw.api.Team team) {
-		List<SpecialItem> items = new ArrayList<SpecialItem>();
+		List<SpecialItem> items = new ArrayList<>();
 		for (SpecialItem item : activeSpecialItems) {
 			if (item.getTeam() == team) {
 				items.add(item);
@@ -2182,7 +2182,7 @@ public class Game implements misat11.bw.api.Game {
 
 	@Override
 	public List<SpecialItem> getActivedSpecialItemsOfTeam(misat11.bw.api.Team team, Class<? extends SpecialItem> type) {
-		List<SpecialItem> items = new ArrayList<SpecialItem>();
+		List<SpecialItem> items = new ArrayList<>();
 		for (SpecialItem item : activeSpecialItems) {
 			if (type.isInstance(item) && item.getTeam() == team) {
 				items.add(item);
@@ -2213,7 +2213,7 @@ public class Game implements misat11.bw.api.Game {
 
 	@Override
 	public List<SpecialItem> getActivedSpecialItemsOfPlayer(Player player) {
-		List<SpecialItem> items = new ArrayList<SpecialItem>();
+		List<SpecialItem> items = new ArrayList<>();
 		for (SpecialItem item : activeSpecialItems) {
 			if (item.getPlayer() == player) {
 				items.add(item);
@@ -2224,7 +2224,7 @@ public class Game implements misat11.bw.api.Game {
 
 	@Override
 	public List<SpecialItem> getActivedSpecialItemsOfPlayer(Player player, Class<? extends SpecialItem> type) {
-		List<SpecialItem> items = new ArrayList<SpecialItem>();
+		List<SpecialItem> items = new ArrayList<>();
 		for (SpecialItem item : activeSpecialItems) {
 			if (item.getPlayer() == player && type.isInstance(item)) {
 				items.add(item);
@@ -2587,8 +2587,8 @@ public class Game implements misat11.bw.api.Game {
 
 		List<String> list = Main.getConfigurator().config.getStringList("rewards." + type);
 		for (String command : list) {
-			command = command.replaceAll("\\{player\\}", player.getName());
-			command = command.replaceAll("\\{score\\}", Integer.toString(score));
+			command = command.replaceAll("\\{player}", player.getName());
+			command = command.replaceAll("\\{score}", Integer.toString(score));
 			command = command.startsWith("/") ? command.substring(1) : command;
 			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
 		}

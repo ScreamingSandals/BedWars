@@ -23,8 +23,8 @@ import misat11.bw.api.events.BedwarsSavePlayerStatisticEvent;
 public class PlayerStatisticManager {
 
 	private File databaseFile = null;
-	private FileConfiguration fileDatabase = null;
-	private Map<UUID, PlayerStatistic> playerStatistic = null;
+	private FileConfiguration fileDatabase;
+	private Map<UUID, PlayerStatistic> playerStatistic;
 
 	public PlayerStatisticManager() {
 		this.playerStatistic = new HashMap<>();
@@ -153,7 +153,7 @@ public class PlayerStatisticManager {
 		try {
 			Main.getInstance().getLogger().info("Loading statistics from YAML-File ...");
 
-			YamlConfiguration config = null;
+			YamlConfiguration config;
 
 			this.databaseFile = ymlFile;
 

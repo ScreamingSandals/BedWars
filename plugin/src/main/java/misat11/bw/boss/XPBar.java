@@ -12,7 +12,7 @@ public class XPBar implements misat11.bw.api.boss.XPBar {
 	private boolean visible = false;
 	private float progress = 0F;
 	private int seconds = 0;
-	private List<Player> players = new ArrayList<Player>();
+	private List<Player> players = new ArrayList<>();
 
 	@Override
 	public void addPlayer(Player player) {
