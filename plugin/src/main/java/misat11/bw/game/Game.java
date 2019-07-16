@@ -3,17 +3,20 @@ package misat11.bw.game;
 import com.onarandombox.MultiverseCore.api.Core;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import misat11.bw.Main;
+import misat11.bw.api.*;
 import misat11.bw.api.boss.BossBar;
 import misat11.bw.api.boss.BossBar19;
 import misat11.bw.api.boss.StatusBar;
+import misat11.bw.api.events.*;
 import misat11.bw.api.special.SpecialItem;
 import misat11.bw.boss.BossBarSelector;
 import misat11.bw.boss.XPBar;
 import misat11.bw.legacy.LegacyRegion;
 import misat11.bw.statistics.PlayerStatistic;
-import misat11.bw.utils.*;
 import misat11.bw.utils.Region;
+import misat11.bw.utils.*;
 import misat11.lib.nms.NMSUtils;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Chest;
@@ -24,6 +27,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.*;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -1679,6 +1683,15 @@ public class Game implements misat11.bw.api.Game {
 			if (status == GameStatus.REBUILDING) { // If status is still rebuilding
 				rebuilding();
 			}
+
+			if (Main.getConfigurator().config.getBoolean("bungee.serverRestart")) {
+				if (!getConnectedPlayers().isEmpty()){
+					kickAllPlayers();
+				}
+				Main.getInstance().getServer().dispatchCommand(Main.getInstance().getServer().getConsoleSender(), "restart");
+			} else if (Main.getConfigurator().config.getBoolean("bungee.serverStop")) {
+				Bukkit.shutdown();
+			}
 		}
 	}
 
@@ -1738,6 +1751,8 @@ public class Game implements misat11.bw.api.Game {
 		this.countdown = -1;
 		updateSigns();
 		cancelTask();
+
+
 	}
 
 	public boolean processRecord(CurrentTeam t, int wonTime) {
@@ -2679,4 +2694,10 @@ public class Game implements misat11.bw.api.Game {
 		return statusbar;
 	}
 
+
+	public void kickAllPlayers() {
+		for (Player player : getConnectedPlayers()) {
+			leaveFromGame(player);
+		}
+	}
 }

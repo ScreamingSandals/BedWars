@@ -189,6 +189,8 @@ public class Configurator {
 		checkOrSetConfig(modify, "gived-player-respawn-items", new ArrayList<>());
 		checkOrSetConfig(modify, "allowed-commands", new ArrayList<>());
 		checkOrSetConfig(modify, "bungee.enabled", false);
+		checkOrSetConfig(modify, "bungee.serverRestart", true);
+		checkOrSetConfig(modify, "bungee.serverStop", false);
 		checkOrSetConfig(modify, "bungee.server", "hub");
 		checkOrSetConfig(modify, "farmBlocks.enable", true);
 		checkOrSetConfig(modify, "farmBlocks.blocks", new ArrayList<>());
