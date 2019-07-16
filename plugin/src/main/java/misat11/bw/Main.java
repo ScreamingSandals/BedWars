@@ -1,53 +1,16 @@
 package misat11.bw;
 
-import static misat11.lib.lang.I18n.i18n;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.RegisteredServiceProvider;
-import org.bukkit.plugin.ServicePriority;
-import org.bukkit.plugin.java.JavaPlugin;
-
 import misat11.bw.api.BedwarsAPI;
 import misat11.bw.api.GameStatus;
 import misat11.bw.api.GameStore;
-import misat11.bw.commands.AddholoCommand;
-import misat11.bw.commands.AdminCommand;
-import misat11.bw.commands.BaseCommand;
-import misat11.bw.commands.BwCommandsExecutor;
-import misat11.bw.commands.HelpCommand;
-import misat11.bw.commands.JoinCommand;
-import misat11.bw.commands.LeaveCommand;
-import misat11.bw.commands.ListCommand;
-import misat11.bw.commands.RejoinCommand;
-import misat11.bw.commands.ReloadCommand;
-import misat11.bw.commands.RemoveholoCommand;
-import misat11.bw.commands.StatsCommand;
+import misat11.bw.commands.*;
 import misat11.bw.database.DatabaseManager;
 import misat11.bw.game.Game;
 import misat11.bw.game.GamePlayer;
 import misat11.bw.game.ItemSpawnerType;
 import misat11.bw.holograms.HolographicDisplaysInteraction;
 import misat11.bw.holograms.IHologramInteraction;
-import misat11.bw.listener.LuckyBlockAddonListener;
-import misat11.bw.listener.Player112Listener;
-import misat11.bw.listener.Player19Listener;
-import misat11.bw.listener.PlayerListener;
-import misat11.bw.listener.SignListener;
-import misat11.bw.listener.TrapListener;
-import misat11.bw.listener.VillagerListener;
-import misat11.bw.listener.WarpPowderListener;
-import misat11.bw.listener.WorldListener;
+import misat11.bw.listener.*;
 import misat11.bw.placeholderapi.BedwarsExpansion;
 import misat11.bw.statistics.PlayerStatisticManager;
 import misat11.bw.utils.Configurator;
@@ -59,6 +22,23 @@ import misat11.lib.nms.NMSUtils;
 import misat11.lib.sgui.InventoryListener;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.RegisteredServiceProvider;
+import org.bukkit.plugin.ServicePriority;
+import org.bukkit.plugin.java.JavaPlugin;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import static misat11.lib.lang.I18n.i18n;
 
 public class Main extends JavaPlugin implements BedwarsAPI {
 	private static Main instance;
@@ -402,6 +382,11 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 		}
 
 		menu = new ShopMenu();
+
+		if (getConfigurator().config.getBoolean("bungee.enabled")) {
+			Bukkit.getLogger().info("boolean bungee enabled");
+			Bukkit.getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
+		}
 
 		Bukkit.getConsoleSender().sendMessage("§c=====§f======  by Misat11");
 		Bukkit.getConsoleSender().sendMessage("§c+ Bed§fWars +  §6Version: " + version + " (API: " + getAPIVersion() + ")");

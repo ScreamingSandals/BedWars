@@ -8,7 +8,7 @@ public enum InGameConfigBooleanConstants {
 	private final boolean original;
 	private final boolean value;
 	
-	private InGameConfigBooleanConstants(boolean original, boolean value) {
+	InGameConfigBooleanConstants(boolean original, boolean value) {
 		this.original = original;
 		this.value = value;
 	}

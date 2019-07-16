@@ -2,6 +2,7 @@ package misat11.bw.database;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.TimeZone;
@@ -27,7 +28,7 @@ public class DatabaseManager {
 
 	public void initialize() {
 		HikariConfig config = new HikariConfig();
-		config.setJdbcUrl("jdbc:mysql://" + this.host + ":" + String.valueOf(this.port) + "/" + this.database
+		config.setJdbcUrl("jdbc:mysql://" + this.host + ":" + this.port + "/" + this.database
 				+ "?autoReconnect=true&serverTimezone=" + TimeZone.getDefault().getID());
 		config.setUsername(this.user);
 		config.setPassword(this.password);

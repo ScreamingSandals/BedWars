@@ -27,6 +27,10 @@ allow-block-falling: true
 allowed-commands:
 - "/help"
 
+bungee:
+  enabled: false
+  server: "hub"
+
 # Ignored blocks (Farm blocks)
 farmBlocks:
   enable: true

@@ -72,7 +72,7 @@ public class PlayerListener implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerDeath(PlayerDeathEvent event) {
-		final Player victim = (Player) event.getEntity();
+		final Player victim = event.getEntity();
 		if (Main.isPlayerInGame(victim)) {
 			GamePlayer gVictim = Main.getPlayerGameProfile(victim);
 			Game game = gVictim.getGame();
