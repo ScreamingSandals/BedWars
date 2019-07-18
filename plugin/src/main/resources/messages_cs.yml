@@ -165,8 +165,8 @@ team_chest_broken: "§cNěkdo zničil vaši týmovou truhlu!"
 
 trap_built: "§aPostavil jste past! Nyní počkejte, až se do ní někdo chytne!"
 
-player_self_killed: "§cHrac §f%victim% §czemrel!";
-player_killed: "§cHrac §f%killer% §czabil hrace §f%victim%!";
+player_self_killed: "§cHrac §f%victim% §czemrel!"
+player_killed: "§cHrac §f%killer% §czabil hrace §f%victim%!"
 
 arena_info_header: "§aPodrobnosti o aréně:"
 arena_info_name: "§7Jméno: §r%name%"
