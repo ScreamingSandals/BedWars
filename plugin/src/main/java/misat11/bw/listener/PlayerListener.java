@@ -126,6 +126,9 @@ public class PlayerListener implements Listener {
 				if (Main.isPlayerInGame(killer)) {
 					GamePlayer gKiller = Main.getPlayerGameProfile(killer);
 					if (gKiller.getGame() == game) {
+						Sounds.playSound(killer, killer.getLocation(),
+								Main.getConfigurator().config.getString("sounds.on_player_kill"),
+								Sounds.ENTITY_PLAYER_BIG_FALL, 1, 1);
 						Main.depositPlayer(killer, Main.getVaultKillReward());
 						if ((onlyOnBedDestroy && !team.isBed) || !onlyOnBedDestroy) {
 							game.dispatchRewardCommands("player-kill", killer,
