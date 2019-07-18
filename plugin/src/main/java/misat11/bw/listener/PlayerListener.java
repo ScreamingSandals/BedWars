@@ -42,7 +42,6 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.MetadataValue;
-import org.bukkit.plugin.RegisteredServiceProvider;
 
 import misat11.bw.Main;
 import misat11.bw.api.GameStatus;
@@ -298,6 +297,10 @@ public class PlayerListener implements Listener {
 			GamePlayer gPlayer = Main.getPlayerGameProfile(player);
 			Game game = gPlayer.getGame();
 			if (game.getStatus() == GameStatus.WAITING || gPlayer.isSpectator) {
+				event.setCancelled(true);
+			}
+
+			if (game.getStatus() == GameStatus.RUNNING && Main.getConfigurator().config.getBoolean("disable-hunger")) {
 				event.setCancelled(true);
 			}
 		}

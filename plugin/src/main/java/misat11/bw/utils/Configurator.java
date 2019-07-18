@@ -188,6 +188,7 @@ public class Configurator {
 		checkOrSetConfig(modify, "gived-game-start-items", new ArrayList<>());
 		checkOrSetConfig(modify, "gived-player-respawn-items", new ArrayList<>());
 		checkOrSetConfig(modify, "allowed-commands", new ArrayList<>());
+		checkOrSetConfig(modify, "disable-hunger", false);
 		checkOrSetConfig(modify, "bungee.enabled", false);
 		checkOrSetConfig(modify, "bungee.serverRestart", true);
 		checkOrSetConfig(modify, "bungee.serverStop", false);
