@@ -64,6 +64,7 @@ import misat11.lib.nms.NMSUtils;
 import net.milkbowl.vault.chat.Chat;
 
 import static misat11.lib.lang.I18n.*;
+import static misat11.lib.lang.I18n.i18n;
 
 import java.util.Iterator;
 import java.util.List;
@@ -72,7 +73,8 @@ public class PlayerListener implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerDeath(PlayerDeathEvent event) {
-		final Player victim = (Player) event.getEntity();
+		final Player victim = event.getEntity();
+
 		if (Main.isPlayerInGame(victim)) {
 			GamePlayer gVictim = Main.getPlayerGameProfile(victim);
 			Game game = gVictim.getGame();
@@ -82,15 +84,23 @@ public class PlayerListener implements Listener {
 				if (!game.getOriginalOrInheritedPlayerDrops()) {
 					event.getDrops().clear();
 				}
+
 				if (Main.getConfigurator().config.getBoolean("chat.send-death-messages-just-in-game")) {
-					String oldDeathMessage = event.getDeathMessage();
+					String deathMessage = event.getDeathMessage();
+					if (Main.getConfigurator().config.getBoolean("chat.send-custom-death-messages")) {
+						if (event.getEntity().getKiller() != null) {
+							Player killer = event.getEntity().getKiller();
 
-					// TODO custom death messages
+							deathMessage = i18n("player_killed").replace("%victim%", victim.getName())
+									.replace("%killer%", killer.getDisplayName());
+						} else {
+							deathMessage = i18n("player_self_killed").replace("%victim%", victim.getName());
+						}
 
+					}
 					event.setDeathMessage(null);
-					String newDeathMessage = i18nonly("prefix") + " " + oldDeathMessage;
 					for (Player player : game.getConnectedPlayers()) {
-						player.sendMessage(newDeathMessage);
+						player.sendMessage(deathMessage);
 					}
 				}
 				CurrentTeam team = game.getPlayerTeam(gVictim);
@@ -135,7 +145,7 @@ public class PlayerListener implements Listener {
 
 				if (Main.isPlayerStatisticsEnabled()) {
 					PlayerStatistic diePlayer = Main.getPlayerStatisticsManager().getStatistic(victim);
-					PlayerStatistic killerPlayer = null;
+					PlayerStatistic killerPlayer;
 
 					boolean teamIsDead = !team.isBed;
 
@@ -386,7 +396,7 @@ public class PlayerListener implements Listener {
 		if (event.isCancelled()) {
 			return;
 		}
-		Player player = (Player) event.getPlayer();
+		Player player = event.getPlayer();
 		if (Main.isPlayerInGame(player)) {
 			GamePlayer gPlayer = Main.getPlayerGameProfile(player);
 			if (gPlayer.getGame().getStatus() != GameStatus.RUNNING || gPlayer.isSpectator) {
@@ -400,7 +410,7 @@ public class PlayerListener implements Listener {
 		if (event.isCancelled()) {
 			return;
 		}
-		Player player = (Player) event.getPlayer();
+		Player player = event.getPlayer();
 		if (Main.isPlayerInGame(player)) {
 			if (!Main.getPlayerGameProfile(player).isSpectator) {
 				event.setCancelled(true);
@@ -675,8 +685,8 @@ public class PlayerListener implements Listener {
 			format = format.replace("%playerListName%", playerListName);
 
 			if (Main.isVault()) {
-				Chat chat = ((RegisteredServiceProvider<Chat>) Bukkit.getServer().getServicesManager()
-						.getRegistration(Chat.class)).getProvider();
+				Chat chat = Bukkit.getServer().getServicesManager()
+						.getRegistration(Chat.class).getProvider();
 				if (chat != null) {
 					format = format.replace("%prefix%", chat.getPlayerPrefix(player));
 					format = format.replace("%suffix%", chat.getPlayerSuffix(player));

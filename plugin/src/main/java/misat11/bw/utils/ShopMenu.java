@@ -75,9 +75,7 @@ public class ShopMenu implements Listener {
 
 		try {
 			config.load(file);
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (InvalidConfigurationException e) {
+		} catch (IOException | InvalidConfigurationException e) {
 			e.printStackTrace();
 		}
 
@@ -140,7 +138,7 @@ public class ShopMenu implements Listener {
 			if (enabled) {
 				ItemStack stack = event.getStack();
 				ItemMeta stackMeta = stack.getItemMeta();
-				List<String> lore = new ArrayList<String>();
+				List<String> lore = new ArrayList<>();
 				if (stackMeta.hasLore()) {
 					lore = stackMeta.getLore();
 				}
@@ -195,8 +193,7 @@ public class ShopMenu implements Listener {
 				event.sellStack(materialItem);
 				for (Map<String, Object> entity : entities) {
 					String typ = (String) entity.get("type");
-					switch (typ.toLowerCase()) {
-					case "spawner":
+					if ("spawner".equals(typ.toLowerCase())) {
 						String customName = (String) entity.get("customName");
 						int addLevels = (int) entity.get("levels");
 						for (ItemSpawner spawner : game.getSpawners()) {
@@ -204,7 +201,6 @@ public class ShopMenu implements Listener {
 								spawner.currentLevel += addLevels;
 							}
 						}
-						break;
 					}
 				}
 				player.sendMessage(i18n("buy_succes").replace("%item%", "UPGRADE"));

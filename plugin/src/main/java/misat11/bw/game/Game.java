@@ -1,23 +1,22 @@
 package misat11.bw.game;
 
-import static misat11.lib.lang.I18n.i18n;
-import static misat11.lib.lang.I18n.i18nonly;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Chunk;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.WeatherType;
-import org.bukkit.World;
+import com.onarandombox.MultiverseCore.api.Core;
+import com.onarandombox.MultiverseCore.api.MVWorldManager;
+import misat11.bw.Main;
+import misat11.bw.api.*;
+import misat11.bw.api.boss.BossBar;
+import misat11.bw.api.boss.BossBar19;
+import misat11.bw.api.boss.StatusBar;
+import misat11.bw.api.events.*;
+import misat11.bw.api.special.SpecialItem;
+import misat11.bw.boss.BossBarSelector;
+import misat11.bw.boss.XPBar;
+import misat11.bw.legacy.LegacyRegion;
+import misat11.bw.statistics.PlayerStatistic;
+import misat11.bw.utils.Region;
+import misat11.bw.utils.*;
+import misat11.lib.nms.NMSUtils;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Chest;
@@ -28,12 +27,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Item;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -47,45 +41,15 @@ import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
 
-import com.onarandombox.MultiverseCore.api.Core;
-import com.onarandombox.MultiverseCore.api.MVWorldManager;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import misat11.bw.Main;
-import misat11.bw.api.ArenaTime;
-import misat11.bw.api.GameStatus;
-import misat11.bw.api.GameStore;
-import misat11.bw.api.InGameConfigBooleanConstants;
-import misat11.bw.api.RunningTeam;
-import misat11.bw.api.boss.BossBar;
-import misat11.bw.api.boss.BossBar19;
-import misat11.bw.api.boss.StatusBar;
-import misat11.bw.api.events.BedwarsGameEndEvent;
-import misat11.bw.api.events.BedwarsGameStartEvent;
-import misat11.bw.api.events.BedwarsGameStartedEvent;
-import misat11.bw.api.events.BedwarsGameTickEvent;
-import misat11.bw.api.events.BedwarsPlayerBreakBlock;
-import misat11.bw.api.events.BedwarsPlayerBuildBlock;
-import misat11.bw.api.events.BedwarsPlayerJoinEvent;
-import misat11.bw.api.events.BedwarsPlayerJoinTeamEvent;
-import misat11.bw.api.events.BedwarsPlayerJoinedEvent;
-import misat11.bw.api.events.BedwarsPlayerLeaveEvent;
-import misat11.bw.api.events.BedwarsPostRebuildingEvent;
-import misat11.bw.api.events.BedwarsPreRebuildingEvent;
-import misat11.bw.api.events.BedwarsResourceSpawnEvent;
-import misat11.bw.api.events.BedwarsTargetBlockDestroyedEvent;
-import misat11.bw.api.special.SpecialItem;
-import misat11.bw.boss.BossBarSelector;
-import misat11.bw.boss.XPBar;
-import misat11.bw.legacy.LegacyRegion;
-import misat11.bw.statistics.PlayerStatistic;
-import misat11.bw.utils.GameSign;
-import misat11.bw.utils.IRegion;
-import misat11.bw.utils.Region;
-import misat11.bw.utils.Sounds;
-import misat11.bw.utils.SpawnEffects;
-import misat11.bw.utils.TeamSelectorInventory;
-import misat11.bw.utils.Title;
-import misat11.lib.nms.NMSUtils;
+import static misat11.lib.lang.I18n.i18n;
+import static misat11.lib.lang.I18n.i18nonly;
 
 public class Game implements misat11.bw.api.Game {
 
@@ -717,7 +681,7 @@ public class Game implements misat11.bw.api.Game {
 		if (game.world == null) {
 			if (Bukkit.getPluginManager().isPluginEnabled("Multiverse-Core")) {
 				Main.getInstance().getLogger().warning("World " + worldName
-						+ " was not found, but we found Multiverse-Core, so we try to load this world.");
+						+ " was not found, but we found Multiverse-Core, so we will try to load this world.");
 
 				Core multiverse = (Core) Bukkit.getPluginManager().getPlugin("Multiverse-Core");
 				MVWorldManager manager = multiverse.getMVWorldManager();
@@ -935,9 +899,9 @@ public class Game implements misat11.bw.api.Game {
 		configMap.set("lobbySpawn", setLocationToString(lobbySpawn));
 		configMap.set("lobbySpawnWorld", lobbySpawn.getWorld().getName());
 		configMap.set("minPlayers", minPlayers);
-		List<Map<String, Object>> nS = new ArrayList<Map<String, Object>>();
+		List<Map<String, Object>> nS = new ArrayList<>();
 		for (ItemSpawner spawner : spawners) {
-			Map<String, Object> spawnerMap = new HashMap<String, Object>();
+			Map<String, Object> spawnerMap = new HashMap<>();
 			spawnerMap.put("location", setLocationToString(spawner.loc));
 			spawnerMap.put("type", spawner.type.getConfigKey());
 			spawnerMap.put("customName", spawner.customName);
@@ -954,7 +918,7 @@ public class Game implements misat11.bw.api.Game {
 			}
 		}
 		if (!gameStore.isEmpty()) {
-			List<Map<String, String>> nL = new ArrayList<Map<String, String>>();
+			List<Map<String, String>> nL = new ArrayList<>();
 			for (GameStore store : gameStore) {
 				Map<String, String> map = new HashMap<>();
 				map.put("loc", setLocationToString(store.getStoreLocation()));
@@ -1723,6 +1687,22 @@ public class Game implements misat11.bw.api.Game {
 			if (status == GameStatus.REBUILDING) { // If status is still rebuilding
 				rebuilding();
 			}
+
+			new BukkitRunnable() {
+
+				@Override
+				public void run() {
+					if (Main.getConfigurator().config.getBoolean("bungee.serverRestart")) {
+						if (!getConnectedPlayers().isEmpty()){
+							kickAllPlayers();
+						}
+						Main.getInstance().getServer().dispatchCommand(Main.getInstance().getServer().getConsoleSender(), "restart");
+					} else if (Main.getConfigurator().config.getBoolean("bungee.serverStop")) {
+						Bukkit.shutdown();
+					}
+				}
+
+			}.runTaskLater(Main.getInstance(), 50);
 		}
 	}
 
@@ -1794,6 +1774,8 @@ public class Game implements misat11.bw.api.Game {
 		this.countdown = -1;
 		updateSigns();
 		cancelTask();
+
+
 	}
 
 	public boolean processRecord(CurrentTeam t, int wonTime) {
@@ -1975,7 +1957,7 @@ public class Game implements misat11.bw.api.Game {
 		playersLine = playersLine.replace("%players%", Integer.toString(players.size()));
 		playersLine = playersLine.replace("%maxplayers%", Integer.toString(calculatedMaxPlayers));
 
-		List<String> texts = new ArrayList<String>(Main.getConfigurator().config.getStringList("sign"));
+		List<String> texts = new ArrayList<>(Main.getConfigurator().config.getStringList("sign"));
 
 		for (int i = 0; i < texts.size(); i++) {
 			String text = texts.get(i);
@@ -2076,7 +2058,7 @@ public class Game implements misat11.bw.api.Game {
 
 	@Override
 	public List<Player> getConnectedPlayers() {
-		List<Player> playerList = new ArrayList<Player>();
+		List<Player> playerList = new ArrayList<>();
 		for (GamePlayer player : players) {
 			playerList.add(player.player);
 		}
@@ -2196,12 +2178,12 @@ public class Game implements misat11.bw.api.Game {
 
 	@Override
 	public List<SpecialItem> getActivedSpecialItems() {
-		return new ArrayList<SpecialItem>(activeSpecialItems);
+		return new ArrayList<>(activeSpecialItems);
 	}
 
 	@Override
 	public List<SpecialItem> getActivedSpecialItems(Class<? extends SpecialItem> type) {
-		List<SpecialItem> items = new ArrayList<SpecialItem>();
+		List<SpecialItem> items = new ArrayList<>();
 		for (SpecialItem item : activeSpecialItems) {
 			if (type.isInstance(item)) {
 				items.add(item);
@@ -2212,7 +2194,7 @@ public class Game implements misat11.bw.api.Game {
 
 	@Override
 	public List<SpecialItem> getActivedSpecialItemsOfTeam(misat11.bw.api.Team team) {
-		List<SpecialItem> items = new ArrayList<SpecialItem>();
+		List<SpecialItem> items = new ArrayList<>();
 		for (SpecialItem item : activeSpecialItems) {
 			if (item.getTeam() == team) {
 				items.add(item);
@@ -2223,7 +2205,7 @@ public class Game implements misat11.bw.api.Game {
 
 	@Override
 	public List<SpecialItem> getActivedSpecialItemsOfTeam(misat11.bw.api.Team team, Class<? extends SpecialItem> type) {
-		List<SpecialItem> items = new ArrayList<SpecialItem>();
+		List<SpecialItem> items = new ArrayList<>();
 		for (SpecialItem item : activeSpecialItems) {
 			if (type.isInstance(item) && item.getTeam() == team) {
 				items.add(item);
@@ -2254,7 +2236,7 @@ public class Game implements misat11.bw.api.Game {
 
 	@Override
 	public List<SpecialItem> getActivedSpecialItemsOfPlayer(Player player) {
-		List<SpecialItem> items = new ArrayList<SpecialItem>();
+		List<SpecialItem> items = new ArrayList<>();
 		for (SpecialItem item : activeSpecialItems) {
 			if (item.getPlayer() == player) {
 				items.add(item);
@@ -2265,7 +2247,7 @@ public class Game implements misat11.bw.api.Game {
 
 	@Override
 	public List<SpecialItem> getActivedSpecialItemsOfPlayer(Player player, Class<? extends SpecialItem> type) {
-		List<SpecialItem> items = new ArrayList<SpecialItem>();
+		List<SpecialItem> items = new ArrayList<>();
 		for (SpecialItem item : activeSpecialItems) {
 			if (item.getPlayer() == player && type.isInstance(item)) {
 				items.add(item);
@@ -2628,8 +2610,8 @@ public class Game implements misat11.bw.api.Game {
 
 		List<String> list = Main.getConfigurator().config.getStringList("rewards." + type);
 		for (String command : list) {
-			command = command.replaceAll("\\{player\\}", player.getName());
-			command = command.replaceAll("\\{score\\}", Integer.toString(score));
+			command = command.replaceAll("\\{player}", player.getName());
+			command = command.replaceAll("\\{score}", Integer.toString(score));
 			command = command.startsWith("/") ? command.substring(1) : command;
 			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
 		}
@@ -2735,4 +2717,10 @@ public class Game implements misat11.bw.api.Game {
 		return statusbar;
 	}
 
+
+	public void kickAllPlayers() {
+		for (Player player : getConnectedPlayers()) {
+			leaveFromGame(player);
+		}
+	}
 }

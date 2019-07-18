@@ -33,7 +33,7 @@ public class GameCreator {
 	public static final String BEDWARS_TEAM_JOIN_METADATA = "bw-addteamjoin";
 
 	private Game game;
-	private HashMap<String, GameStore> villagerstores = new HashMap<String, GameStore>();
+	private HashMap<String, GameStore> villagerstores = new HashMap<>();
 
 	public GameCreator(Game game) {
 		this.game = game;
@@ -108,7 +108,7 @@ public class GameCreator {
 				} else if (args[0].equalsIgnoreCase("spawn")) {
 					response = setTeamSpawn(args[1], player.getLocation());
 				} else if (args[0].equalsIgnoreCase("bed")) {
-					response = setTeamBed(args[1], player.getTargetBlock((Set<Material>) null, 5));
+					response = setTeamBed(args[1], player.getTargetBlock(null, 5));
 				}
 			}
 		} else if (action.equalsIgnoreCase("spawner")) {
@@ -168,7 +168,7 @@ public class GameCreator {
 				response = setGameBossBarColor(args[0]);
 			}
 		} else if (action.equalsIgnoreCase("save")) {
-			List<GameStore> gamestores = new ArrayList<GameStore>();
+			List<GameStore> gamestores = new ArrayList<>();
 			for (Map.Entry<String, GameStore> vloc : villagerstores.entrySet()) {
 				gamestores.add(vloc.getValue());
 			}

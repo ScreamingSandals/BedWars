@@ -1,5 +1,7 @@
 package misat11.bw.game;
 
+import misat11.bw.Main;
+import misat11.bw.utils.BungeeUtils;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -22,11 +24,19 @@ public class GamePlayer {
 
 	public void changeGame(Game game) {
 		if (this.game != null && game == null) {
-			this.game.leavePlayer(this);
-			this.game = null;
-			this.isSpectator = false;
-			this.clean();
-			this.restoreInv();
+			if (Main.getConfigurator().config.getBoolean("bungee.enabled")) {
+				this.game.leavePlayer(this);
+				this.game = null;
+				this.isSpectator = false;
+				this.clean();
+				BungeeUtils.movePlayer(player);
+			} else {
+                this.game.leavePlayer(this);
+                this.game = null;
+                this.isSpectator = false;
+                this.clean();
+                this.restoreInv();
+            }
 		} else if (this.game == null && game != null) {
 			this.storeInv();
 			this.clean();
@@ -59,7 +69,7 @@ public class GamePlayer {
 	public void storeInv() {
 		oldinventory.inventory = player.getInventory().getContents();
 		oldinventory.armor = player.getInventory().getArmorContents();
-		oldinventory.xp = Float.valueOf(player.getExp());
+		oldinventory.xp = player.getExp();
 		oldinventory.effects = player.getActivePotionEffects();
 		oldinventory.mode = player.getGameMode();
 		oldinventory.left = player.getLocation();

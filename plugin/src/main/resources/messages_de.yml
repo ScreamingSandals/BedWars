@@ -158,6 +158,9 @@ team_chest_broken: "§cDeine Teamtruhe wurde zerstört!"
 
 trap_built: "§aDeine Falle wurde platziert!"
 
+player_self_killed: "§cPlayer §f%victim% §cdied!"
+player_killed: "§cPlayer §f%killer% §ckilled §f%victim%!"
+
 arena_info_header: "§aDetails des Spiels:"
 arena_info_name: "§7Name: §r%name%"
 arena_info_status: "§7Status: §r%status%"

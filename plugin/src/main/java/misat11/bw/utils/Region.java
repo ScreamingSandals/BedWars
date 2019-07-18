@@ -15,8 +15,8 @@ import org.bukkit.block.data.type.Bed;
 import org.bukkit.block.data.type.Bed.Part;
 
 public class Region implements IRegion {
-	private List<Location> buildedBlocks = new ArrayList<Location>();
-	private Map<Location, BlockData> breakedOriginalBlocks = new HashMap<Location, BlockData>();
+	private List<Location> buildedBlocks = new ArrayList<>();
+	private Map<Location, BlockData> breakedOriginalBlocks = new HashMap<>();
 
 	@Override
 	public boolean isBlockAddedDuringGame(Location loc) {

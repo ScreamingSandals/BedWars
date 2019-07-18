@@ -18,7 +18,7 @@ public class SignManager {
 
 	private final FileConfiguration config;
 	private final File configFile;
-	private final HashMap<Location, GameSign> signs = new HashMap<Location, GameSign>();
+	private final HashMap<Location, GameSign> signs = new HashMap<>();
 	private boolean modify = false;
 
 	public SignManager(FileConfiguration config, File configFile) {
@@ -65,7 +65,7 @@ public class SignManager {
 	}
 	
 	public List<GameSign> getSignsForGame(Game game){
-		List<GameSign> list = new ArrayList<GameSign>();
+		List<GameSign> list = new ArrayList<>();
 		for (GameSign sign : signs.values()) {
 			if (game == sign.getGame()) {
 				list.add(sign);
@@ -80,9 +80,9 @@ public class SignManager {
 
 	public void save(boolean force) {
 		if (modify || force) {
-			List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+			List<Map<String, Object>> list = new ArrayList<>();
 			for (GameSign sign : signs.values()) {
-				Map<String, Object> map = new HashMap<String, Object>();
+				Map<String, Object> map = new HashMap<>();
 				map.put("location", sign.getLocation());
 				map.put("game", sign.getGameName());
 				list.add(map);

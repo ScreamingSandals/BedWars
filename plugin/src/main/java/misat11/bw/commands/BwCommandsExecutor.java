@@ -30,7 +30,7 @@ public class BwCommandsExecutor implements CommandExecutor, TabCompleter {
 					}
 				}
 			} else if (args.length > 1) {
-				ArrayList<String> arguments = new ArrayList<String>(Arrays.asList(args));
+				ArrayList<String> arguments = new ArrayList<>(Arrays.asList(args));
 				arguments.remove(0);
 				BaseCommand bCommand = Main.getCommands().get(args[0]);
 				if (bCommand != null) {
@@ -52,7 +52,7 @@ public class BwCommandsExecutor implements CommandExecutor, TabCompleter {
 		}
 
 		String command = args[0];
-		ArrayList<String> arguments = new ArrayList<String>(Arrays.asList(args));
+		ArrayList<String> arguments = new ArrayList<>(Arrays.asList(args));
 		arguments.remove(0);
 
 		BaseCommand bCommand = Main.getCommands().get(command.toLowerCase());

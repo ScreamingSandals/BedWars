@@ -19,12 +19,12 @@ import org.bukkit.material.Redstone;
 import misat11.bw.utils.IRegion;
 
 public class LegacyRegion implements IRegion {
-	private List<Location> buildedBlocks = new ArrayList<Location>();
-	private List<Block> breakedBlocks = new ArrayList<Block>();
-	private HashMap<Block, Byte> breakedBlockData = new HashMap<Block, Byte>();
-	private HashMap<Block, BlockFace> breakedBlockFace = new HashMap<Block, BlockFace>();
-	private HashMap<Block, Boolean> breakedBlockPower = new HashMap<Block, Boolean>();
-	private HashMap<Block, Material> breakedBlockTypes = new HashMap<Block, Material>();
+	private List<Location> buildedBlocks = new ArrayList<>();
+	private List<Block> breakedBlocks = new ArrayList<>();
+	private HashMap<Block, Byte> breakedBlockData = new HashMap<>();
+	private HashMap<Block, BlockFace> breakedBlockFace = new HashMap<>();
+	private HashMap<Block, Boolean> breakedBlockPower = new HashMap<>();
+	private HashMap<Block, Material> breakedBlockTypes = new HashMap<>();
 
 	@Override
 	public boolean isBlockAddedDuringGame(Location loc) {
