@@ -12,6 +12,7 @@ import java.util.Map;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Chunk;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -1745,6 +1746,10 @@ public class Game implements misat11.bw.api.Game {
 		for (Entity e : this.world.getEntities()) {
 			if (GameCreator.isInArea(e.getLocation(), pos1, pos2)) {
 				if (e instanceof Item) {
+					Chunk chunk = e.getLocation().getChunk();
+					if (!chunk.isLoaded()) {
+						chunk.load();
+					}
 					e.remove();
 				}
 			}
@@ -1753,6 +1758,10 @@ public class Game implements misat11.bw.api.Game {
 		// Chest clearing
 		for (Map.Entry<Location, ItemStack[]> entry : usedChests.entrySet()) {
 			Location location = entry.getKey();
+			Chunk chunk = location.getChunk();
+			if (!chunk.isLoaded()) {
+				chunk.load();
+			}
 			Block block = location.getBlock();
 			ItemStack[] contents = entry.getValue();
 			if (block.getState() instanceof Chest) {
@@ -1764,6 +1773,10 @@ public class Game implements misat11.bw.api.Game {
 
 		// Armor Stands destroy
 		for (ArmorStand stand : armorStandsInGame) {
+			Chunk chunk = stand.getLocation().getChunk();
+			if (!chunk.isLoaded()) {
+				chunk.load();
+			}
 			stand.remove();
 			Main.unregisterGameEntity(stand);
 		}
