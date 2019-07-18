@@ -130,6 +130,11 @@ team_chest_is_not_your: "§eЭтот командный сундук прина�
 team_chest_placed: "§aКомандный сундук поставлен!"
 team_chest_broken: "§cКомандный сундук разрушен!"
 
+trap_built: "§aYou've built a trap! Now wait for someone to get caught in it!"
+
+player_self_killed: "§cPlayer §f%victim% §cdied!";
+player_killed: "§cPlayer §f%killer% §ckilled §f%victim%!";
+
 arena_info_header: "§aИнформация о арене:"
 arena_info_name: "§7Название: §r%name%"
 arena_info_status: "§7Статус: §r%status%"

@@ -165,6 +165,9 @@ team_chest_broken: "§cYour team chest was broken!"
 
 trap_built: "§aYou've built a trap! Now wait for someone to get caught in it!"
 
+player_self_killed: "§cPlayer §f%victim% §cdied!";
+player_killed: "§cPlayer §f%killer% §ckilled §f%victim%!";
+
 arena_info_header: "§aDetails of the arena:"
 arena_info_name: "§7Name: §r%name%"
 arena_info_status: "§7Status: §r%status%"

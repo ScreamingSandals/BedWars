@@ -84,9 +84,16 @@ public class PlayerListener implements Listener {
 				}
 				if (Main.getConfigurator().config.getBoolean("chat.send-death-messages-just-in-game")) {
 					String oldDeathMessage = event.getDeathMessage();
+					if (Main.getConfigurator().config.getBoolean("chat.send-custom-death-messages")) {
+						if (event.getEntity().getKiller() != null) {
+							Player killer = event.getEntity().getKiller();
+							oldDeathMessage = "player_killed".replace("%victim%", victim.getName())
+									.replace("%killer%", killer.getName());
+						} else {
+							oldDeathMessage = "player_self_killed".replace("%victim%", victim.getName());
+						}
 
-					// TODO custom death messages
-
+					}
 					event.setDeathMessage(null);
 					String newDeathMessage = i18nonly("prefix") + " " + oldDeathMessage;
 					for (Player player : game.getConnectedPlayers()) {
