@@ -681,7 +681,7 @@ public class Game implements misat11.bw.api.Game {
 		if (game.world == null) {
 			if (Bukkit.getPluginManager().isPluginEnabled("Multiverse-Core")) {
 				Main.getInstance().getLogger().warning("World " + worldName
-						+ " was not found, but we found Multiverse-Core, so we try to load this world.");
+						+ " was not found, but we found Multiverse-Core, so we will try to load this world.");
 
 				Core multiverse = (Core) Bukkit.getPluginManager().getPlugin("Multiverse-Core");
 				MVWorldManager manager = multiverse.getMVWorldManager();
@@ -1684,14 +1684,21 @@ public class Game implements misat11.bw.api.Game {
 				rebuilding();
 			}
 
-			if (Main.getConfigurator().config.getBoolean("bungee.serverRestart")) {
-				if (!getConnectedPlayers().isEmpty()){
-					kickAllPlayers();
+			new BukkitRunnable() {
+
+				@Override
+				public void run() {
+					if (Main.getConfigurator().config.getBoolean("bungee.serverRestart")) {
+						if (!getConnectedPlayers().isEmpty()){
+							kickAllPlayers();
+						}
+						Main.getInstance().getServer().dispatchCommand(Main.getInstance().getServer().getConsoleSender(), "restart");
+					} else if (Main.getConfigurator().config.getBoolean("bungee.serverStop")) {
+						Bukkit.shutdown();
+					}
 				}
-				Main.getInstance().getServer().dispatchCommand(Main.getInstance().getServer().getConsoleSender(), "restart");
-			} else if (Main.getConfigurator().config.getBoolean("bungee.serverStop")) {
-				Bukkit.shutdown();
-			}
+
+			}.runTaskLater(Main.getInstance(), 50);
 		}
 	}
 

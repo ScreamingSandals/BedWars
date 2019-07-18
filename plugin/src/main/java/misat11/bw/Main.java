@@ -45,13 +45,13 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 	private String version, nmsVersion;
 	private boolean isSpigot, snapshot, isVault, isLegacy, isNMS;
 	private Economy econ = null;
-	private HashMap<String, Game> games = new HashMap<String, Game>();
-	private HashMap<Player, GamePlayer> playersInGame = new HashMap<Player, GamePlayer>();
-	private HashMap<Entity, Game> entitiesInGame = new HashMap<Entity, Game>();
+	private HashMap<String, Game> games = new HashMap<>();
+	private HashMap<Player, GamePlayer> playersInGame = new HashMap<>();
+	private HashMap<Entity, Game> entitiesInGame = new HashMap<>();
 	private Configurator configurator;
 	private ShopMenu menu;
 	private SignManager signManager;
-	private HashMap<String, ItemSpawnerType> spawnerTypes = new HashMap<String, ItemSpawnerType>();
+	private HashMap<String, ItemSpawnerType> spawnerTypes = new HashMap<>();
 	private DatabaseManager databaseManager;
 	private PlayerStatisticManager playerStatisticsManager;
 	private IHologramInteraction hologramInteraction;

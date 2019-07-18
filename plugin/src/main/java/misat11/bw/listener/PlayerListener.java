@@ -64,6 +64,7 @@ import misat11.lib.nms.NMSUtils;
 import net.milkbowl.vault.chat.Chat;
 
 import static misat11.lib.lang.I18n.*;
+import static misat11.lib.lang.I18n.i18n;
 
 import java.util.Iterator;
 import java.util.List;
@@ -73,6 +74,7 @@ public class PlayerListener implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerDeath(PlayerDeathEvent event) {
 		final Player victim = event.getEntity();
+
 		if (Main.isPlayerInGame(victim)) {
 			GamePlayer gVictim = Main.getPlayerGameProfile(victim);
 			Game game = gVictim.getGame();
@@ -82,22 +84,23 @@ public class PlayerListener implements Listener {
 				if (!game.getOriginalOrInheritedPlayerDrops()) {
 					event.getDrops().clear();
 				}
+
 				if (Main.getConfigurator().config.getBoolean("chat.send-death-messages-just-in-game")) {
-					String oldDeathMessage = event.getDeathMessage();
+					String deathMessage = event.getDeathMessage();
 					if (Main.getConfigurator().config.getBoolean("chat.send-custom-death-messages")) {
 						if (event.getEntity().getKiller() != null) {
 							Player killer = event.getEntity().getKiller();
-							oldDeathMessage = "player_killed".replace("%victim%", victim.getName())
-									.replace("%killer%", killer.getName());
+
+							deathMessage = i18n("player_killed").replace("%victim%", victim.getName())
+									.replace("%killer%", killer.getDisplayName());
 						} else {
-							oldDeathMessage = "player_self_killed".replace("%victim%", victim.getName());
+							deathMessage = i18n("player_self_killed").replace("%victim%", victim.getName());
 						}
 
 					}
 					event.setDeathMessage(null);
-					String newDeathMessage = i18nonly("prefix") + " " + oldDeathMessage;
 					for (Player player : game.getConnectedPlayers()) {
-						player.sendMessage(newDeathMessage);
+						player.sendMessage(deathMessage);
 					}
 				}
 				CurrentTeam team = game.getPlayerTeam(gVictim);
