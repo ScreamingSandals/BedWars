@@ -1,5 +1,6 @@
 package misat11.bw.api;
 
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -48,6 +49,10 @@ public class GameStore {
 	public LivingEntity kill() {
 		LivingEntity en = entity;
 		if (entity != null) {
+			Chunk chunk = entity.getLocation().getChunk();
+			if (!chunk.isLoaded()) {
+				chunk.load();
+			}
 			entity.remove();
 			entity = null;
 		}

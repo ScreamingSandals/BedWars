@@ -1631,6 +1631,10 @@ public class Game implements misat11.bw.api.Game {
 							if (resource.getAmount() > 0) {
 								Location loc = spawner.getLocation().clone().add(0, 0.05, 0);
 								Item item = loc.getWorld().dropItem(loc, resource);
+								double spread = type.getSpread();
+							    if (spread != 1.0) {
+							        item.setVelocity(item.getVelocity().multiply(spread));
+							      }
 								item.setPickupDelay(0);
 							}
 						}
@@ -1726,6 +1730,10 @@ public class Game implements misat11.bw.api.Game {
 		for (Entity e : this.world.getEntities()) {
 			if (GameCreator.isInArea(e.getLocation(), pos1, pos2)) {
 				if (e instanceof Item) {
+					Chunk chunk = e.getLocation().getChunk();
+					if (!chunk.isLoaded()) {
+						chunk.load();
+					}
 					e.remove();
 				}
 			}
@@ -1734,6 +1742,10 @@ public class Game implements misat11.bw.api.Game {
 		// Chest clearing
 		for (Map.Entry<Location, ItemStack[]> entry : usedChests.entrySet()) {
 			Location location = entry.getKey();
+			Chunk chunk = location.getChunk();
+			if (!chunk.isLoaded()) {
+				chunk.load();
+			}
 			Block block = location.getBlock();
 			ItemStack[] contents = entry.getValue();
 			if (block.getState() instanceof Chest) {
@@ -1745,6 +1757,10 @@ public class Game implements misat11.bw.api.Game {
 
 		// Armor Stands destroy
 		for (ArmorStand stand : armorStandsInGame) {
+			Chunk chunk = stand.getLocation().getChunk();
+			if (!chunk.isLoaded()) {
+				chunk.load();
+			}
 			stand.remove();
 			Main.unregisterGameEntity(stand);
 		}
