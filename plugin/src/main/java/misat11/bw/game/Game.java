@@ -1667,6 +1667,10 @@ public class Game implements misat11.bw.api.Game {
 							if (resource.getAmount() > 0) {
 								Location loc = spawner.getLocation().clone().add(0, 0.05, 0);
 								Item item = loc.getWorld().dropItem(loc, resource);
+								double spread = type.getSpread();
+							    if (spread != 1.0) {
+							        item.setVelocity(item.getVelocity().multiply(spread));
+							      }
 								item.setPickupDelay(0);
 							}
 						}
