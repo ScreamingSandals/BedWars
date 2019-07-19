@@ -1655,7 +1655,7 @@ public class Game implements misat11.bw.api.Game {
 						if ((elapsedTime % cycle) == 0) {
 
 							BedwarsResourceSpawnEvent resourceSpawnEvent = new BedwarsResourceSpawnEvent(this, spawner,
-									type.getStack(upgrades ? spawner.currentLevel : 1));
+									type.getStack(upgrades ? max(floor((elapsedTime / cycle) * spawner.currentLevel) - floor(((elapsedTime / cycle) - 1) * spawner.currentLevel), 0) : 1));
 							Main.getInstance().getServer().getPluginManager().callEvent(resourceSpawnEvent);
 
 							if (resourceSpawnEvent.isCancelled()) {
