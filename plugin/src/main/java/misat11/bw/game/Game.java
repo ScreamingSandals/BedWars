@@ -748,7 +748,8 @@ public class Game implements misat11.bw.api.Game {
 			for (Map<String, Object> spawner : spawners) {
 				ItemSpawner sa = new ItemSpawner(readLocationFromString(game.world, (String) spawner.get("location")),
 						Main.getSpawnerType(((String) spawner.get("type")).toLowerCase()),
-						(String) spawner.get("customName"), (int) spawner.getOrDefault("startLevel", 1));
+						(String) spawner.get("customName"), (int) spawner.getOrDefault("startLevel", 1),
+						(bool) spawner.getOrDefault("hologramVisible", true));
 				game.spawners.add(sa);
 			}
 		}
@@ -942,6 +943,7 @@ public class Game implements misat11.bw.api.Game {
 			spawnerMap.put("type", spawner.type.getConfigKey());
 			spawnerMap.put("customName", spawner.customName);
 			spawnerMap.put("startLevel", spawner.startLevel);
+			spawnerMap.put("hologramVisible", spawner.hologramVisible);
 			nS.add(spawnerMap);
 		}
 		configMap.set("spawners", nS);
@@ -1441,6 +1443,9 @@ public class Game implements misat11.bw.api.Game {
 					if (getOriginalOrInheritedSpawnerHolograms()) {
 						boolean countdownEnabled = getOriginalOrInheritedSpawnerHologramsCountdown();
 						for (ItemSpawner spawner : spawners) {
+							if (!spawner.hologramVisible) {
+								continue;
+							}
 							Location loc = spawner.loc.clone().add(0,
 									Main.getConfigurator().config.getDouble("spawner-holo-height", 0.25), 0);
 							if (countdownEnabled) {
