@@ -446,7 +446,7 @@ public class Game implements misat11.bw.api.Game {
 						Title.send(player.player,
 								i18n(isItBedBlock ? "bed_is_destroyed" : "target_is_destroyed", false).replace("%team%",
 										team.teamInfo.color.chatColor + team.teamInfo.name),
-								i18n("bed_is_destroyed_subtitle", false));
+								i18n(getPlayerTeam(player) == team ? "bed_is_destroyed_subtitle_for_victim" : "bed_is_destroyed_subtitle", false));
 						player.player.sendMessage(i18n(isItBedBlock ? "bed_is_destroyed" : "target_is_destroyed")
 								.replace("%team%", team.teamInfo.color.chatColor + team.teamInfo.name));
 						SpawnEffects.spawnEffect(this, player.player, "game-effects.beddestroy");
