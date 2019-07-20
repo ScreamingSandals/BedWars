@@ -286,15 +286,14 @@ public class PlayerListener implements Listener {
 		if (event.isCancelled() || !(event.getWhoClicked() instanceof Player)) {
 			return;
 		}
+
 		Player player = (Player) event.getWhoClicked();
 		if (Main.isPlayerInGame(player)) {
 			GamePlayer gPlayer = Main.getPlayerGameProfile(player);
 			if (gPlayer.getGame().getStatus() != GameStatus.RUNNING) {
 				event.setCancelled(true);
-				return;
 			} else if (!gPlayer.getGame().getOriginalOrInheritedCrafting()) {
 				event.setCancelled(true);
-				return;
 			}
 		}
 	}

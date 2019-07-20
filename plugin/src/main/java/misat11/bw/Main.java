@@ -185,9 +185,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 	public static boolean isFarmBlock(Material mat) {
 		if (instance.configurator.config.getBoolean("farmBlocks.enable")) {
 			List<String> list = (List<String>) instance.configurator.config.getList("farmBlocks.blocks");
-			if (list.contains(mat.name())) {
-				return true;
-			}
+			return list.contains(mat.name());
 		}
 		return false;
 	}

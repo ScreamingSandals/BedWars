@@ -39,6 +39,7 @@ public class ShopMenu implements Listener {
 	private ItemStack backItem, pageBackItem, pageForwardItem, cosmeticItem;
 	private SimpleGuiFormat format;
 	private String shopName = i18nonly("item_shop_name", "[BW] Shop");
+	private static List<String> materialList = new ArrayList<>();
 
 	public ShopMenu() {
 		List<Map<String, Object>> data = (List<Map<String, Object>>) Main.getConfigurator().shopconfig.getList("data");
@@ -68,6 +69,14 @@ public class ShopMenu implements Listener {
 		Bukkit.getServer().getPluginManager().registerEvents(this, Main.getInstance());
 
 		format.generateData();
+
+		//materials that are colored automaticallydsf
+		materialList.add("_STAINED_CLAY");
+		materialList.add("_CONCRETE");
+		materialList.add("_CONCRETE_POWDER");
+		materialList.add("_WOOL");
+		materialList.add("_CARPET");
+
 	}
 
 	public ShopMenu(String fileName, boolean useParent) {
@@ -313,16 +322,10 @@ public class ShopMenu implements Listener {
 
 	public static Material changeStackColor(ItemStack itemStack, TeamColor color) {
 		Material material = itemStack.getType();
-		List<String> materialList = new ArrayList<>();
-		String materialName = material.toString();
-		String newMaterialName = materialName.substring(materialName.indexOf("_")+1);
+		String materialName = material.toString().substring(material.toString().indexOf("_"));
 
-		materialList.add("_STAINED_CLAY");
-		materialList.add("_WOOL");
-		materialList.add("_CARPET");
-
-		if (materialList.contains(material.toString())) {
-			return Material.getMaterial(color + newMaterialName);
+		if (materialList.contains(materialName)) {
+			return Material.getMaterial(color + materialName);
 		}
 		else if (material.toString().contains("GLASS")) {
 			return Material.getMaterial(color + "_STAINED_GLASS");
