@@ -24,7 +24,7 @@ public class GamePlayer {
 
 	public void changeGame(Game game) {
 		if (this.game != null && game == null) {
-			if (Main.getConfigurator().config.getBoolean("bungee.enabled")) {
+			if (Game.isBungeeEnabled()) {
 				this.game.leavePlayer(this);
 				this.game = null;
 				this.isSpectator = false;

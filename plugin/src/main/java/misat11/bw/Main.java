@@ -384,7 +384,6 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 		menu = new ShopMenu();
 
 		if (getConfigurator().config.getBoolean("bungee.enabled")) {
-			Bukkit.getLogger().info("boolean bungee enabled");
 			Bukkit.getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 		}
 
@@ -445,7 +444,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 
 	@Override
 	public List<misat11.bw.api.Game> getGames() {
-		List<misat11.bw.api.Game> gms = new ArrayList<misat11.bw.api.Game>();
+		List<misat11.bw.api.Game> gms = new ArrayList<>();
 		for (Game game : games.values()) {
 			gms.add(game);
 		}
