@@ -1,6 +1,7 @@
 lang_name: "Polski"
 
 prefix: "[BW]"
+item_shop_name: "Shop"
 
 join: "%name% §adołączył do gry!§r §7[§a%players%§7/§a%maxplayers%§7]"
 leave: "%name% §copuścił grę!"
@@ -44,6 +45,7 @@ buy_failed: "§cNiewystarczająca ilość materiałów! Potrzeba §7%material%§
 compass_selector_team: "§aWybierz drużynę"
 leave_from_game_item: "§cOpuść grę"
 start_game_item: "§2Rozpocznij grę"
+team_selection_name: "Select team - %arena%"
 team_selected: "§aWybrano drużynę: %team%§r §7[§a%players%§7/§a%maxplayers%§7]"
 team_already_selected: "§aJuż jesteś w drużynie: %team%§r §7[§a%players%§7/§a%maxplayers%§7]"
 team_is_full: "§cBrak wolnych miejsc w drużynie: %team%!"

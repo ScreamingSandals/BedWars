@@ -125,11 +125,7 @@ public class PlayerListener implements Listener {
 				if (Main.isPlayerInGame(killer)) {
 					GamePlayer gKiller = Main.getPlayerGameProfile(killer);
 					if (gKiller.getGame() == game) {
-						Sounds.playSound(killer, killer.getLocation(),
-								Main.getConfigurator().config.getString("sounds.on_player_kill"),
-								Sounds.ENTITY_PLAYER_BIG_FALL, 1, 1);
-						Main.depositPlayer(killer, Main.getVaultKillReward());
-						if ((onlyOnBedDestroy && !team.isBed) || !onlyOnBedDestroy) {
+						if (!onlyOnBedDestroy || !team.isBed) {
 							game.dispatchRewardCommands("player-kill", killer,
 									Main.getConfigurator().config.getInt("statistics.scores.kill", 10));
 						}
@@ -138,9 +134,16 @@ public class PlayerListener implements Listener {
 							Sounds.playSound(killer, killer.getLocation(),
 									Main.getConfigurator().config.getString("sounds.on_team_kill"),
 									Sounds.ENTITY_PLAYER_LEVELUP, 1, 1);
+						} else {
+							Sounds.playSound(killer, killer.getLocation(),
+									Main.getConfigurator().config.getString("sounds.on_player_kill"),
+									Sounds.ENTITY_PLAYER_BIG_FALL, 1, 1);
+							Main.depositPlayer(killer, Main.getVaultKillReward());
 						}
+
 					}
 				}
+
 				BedwarsPlayerKilledEvent killedEvent = new BedwarsPlayerKilledEvent(game, victim,
 						Main.isPlayerInGame(killer) ? killer : null);
 				Main.getInstance().getServer().getPluginManager().callEvent(killedEvent);
@@ -151,14 +154,14 @@ public class PlayerListener implements Listener {
 
 					boolean teamIsDead = !team.isBed;
 
-					if ((onlyOnBedDestroy && teamIsDead) || !onlyOnBedDestroy) {
+					if (!onlyOnBedDestroy || teamIsDead) {
 						diePlayer.setCurrentDeaths(diePlayer.getCurrentDeaths() + 1);
 						diePlayer.setCurrentScore(diePlayer.getCurrentScore()
 								+ Main.getConfigurator().config.getInt("statistics.scores.die", 0));
 					}
 
 					if (killer != null) {
-						if ((onlyOnBedDestroy && teamIsDead) || !onlyOnBedDestroy) {
+						if (!onlyOnBedDestroy || teamIsDead) {
 							killerPlayer = Main.getPlayerStatisticsManager().getStatistic(killer);
 							if (killerPlayer != null) {
 								killerPlayer.setCurrentKills(killerPlayer.getCurrentKills() + 1);

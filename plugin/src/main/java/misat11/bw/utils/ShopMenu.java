@@ -1,28 +1,9 @@
 package misat11.bw.utils;
 
-import static misat11.lib.lang.I18n.i18n;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.ClickType;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-
 import misat11.bw.Main;
 import misat11.bw.api.GameStore;
 import misat11.bw.api.ItemSpawnerType;
+import misat11.bw.api.TeamColor;
 import misat11.bw.api.events.BedwarsApplyPropertyToBoughtItem;
 import misat11.bw.game.CurrentTeam;
 import misat11.bw.game.Game;
@@ -33,10 +14,32 @@ import misat11.lib.sgui.SimpleGuiFormat;
 import misat11.lib.sgui.events.GenerateItemEvent;
 import misat11.lib.sgui.events.PreActionEvent;
 import misat11.lib.sgui.events.ShopTransactionEvent;
+import org.bukkit.Bukkit;
+import org.bukkit.DyeColor;
+import org.bukkit.Material;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.ClickType;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static misat11.lib.lang.I18n.i18n;
+import static misat11.lib.lang.I18n.i18nonly;
 
 public class ShopMenu implements Listener {
 	private ItemStack backItem, pageBackItem, pageForwardItem, cosmeticItem;
 	private SimpleGuiFormat format;
+	private String shopName = i18nonly("item_shop_name", "[BW] Shop");
 
 	public ShopMenu() {
 		List<Map<String, Object>> data = (List<Map<String, Object>>) Main.getConfigurator().shopconfig.getList("data");
@@ -58,7 +61,7 @@ public class ShopMenu implements Listener {
 
 		cosmeticItem = Main.getConfigurator().readDefinedItem("shopcosmetic", "AIR");
 
-		format = new SimpleGuiFormat("[BW] Shop", backItem, pageBackItem, pageForwardItem, cosmeticItem);
+		format = new SimpleGuiFormat(shopName, backItem, pageBackItem, pageForwardItem, cosmeticItem);
 		format.load(data);
 		format.enableAnimations(Main.getInstance());
 		format.enableGenericShop(true);
@@ -101,7 +104,7 @@ public class ShopMenu implements Listener {
 
 		cosmeticItem = Main.getConfigurator().readDefinedItem("shopcosmetic", "AIR");
 
-		format = new SimpleGuiFormat("[BW] Shop", backItem, pageBackItem, pageForwardItem, cosmeticItem);
+		format = new SimpleGuiFormat(shopName, backItem, pageBackItem, pageForwardItem, cosmeticItem);
 		if (useParent) {
 			format.load(parent);
 		}
@@ -277,15 +280,15 @@ public class ShopMenu implements Listener {
 			Player player = event.getPlayer();
 			CurrentTeam team = (CurrentTeam) event.getGame().getTeamOfPlayer(player);
 
-			Material material = stack.getType();
-			if (material.name().endsWith("WOOL")) {
-				event.setStack(team.teamInfo.color.getWool(stack));
+			if (isStackColorable(stack) && Main.getConfigurator().config.getBoolean("automatic-coloring-in-shop")) {
+				Bukkit.getLogger().info("isStackColorable true");
+				stack.setType(addStackColor(stack, team.getColor()));
+				event.setStack(stack);
 			}
-			// TODO: other materials
 		}
 	}
 
-	private final HashMap<String, ShopMenu> shopMenus = new HashMap<String, ShopMenu>();
+	private final HashMap<String, ShopMenu> shopMenus = new HashMap<>();
 
 	public void show(Player p, GameStore store) {
 		boolean parent = true;
@@ -308,5 +311,51 @@ public class ShopMenu implements Listener {
 		} else {
 			format.openForPlayer(p);
 		}
+	}
+
+	public static boolean isStackColorable(ItemStack itemStack) {
+		return (itemStack.getType().toString().contains("STAINED_CLAY"))
+				|| itemStack.getType().toString().contains("WOOL")
+				|| itemStack.getType().toString().contains("CARPET")
+				|| itemStack.getType().toString().contains("STAINED_GLASS")
+				|| itemStack.getType().toString().contains("STAINED_GLASS_PANE");
+	}
+
+	public static Material addStackColor(ItemStack itemStack, TeamColor color) {
+		Material material = itemStack.getType();
+		Bukkit.getLogger().info(color + "is the color");
+
+		switch (material.hashCode()) {
+			case 0:
+				if (material.toString().contains("_STAINED_CLAY")) {
+					return Material.getMaterial(color.name() + "_STAINED_CLAY");
+
+				}
+				break;
+			case 1:
+				if (material.toString().contains("_WOOL")) {
+					return Material.getMaterial(color + "_WOOL");
+
+				}
+				break;
+			case 2:
+				if (material.toString().contains("_CARPET")) {
+					return Material.getMaterial(color + "_CARPET");
+
+				}
+				break;
+			case 3:
+				if (material.toString().contains("_STAINED_GLASS")) {
+					return Material.getMaterial(color.name() + "_STAINED_GLASS");
+
+				}
+				break;
+			case 4:
+				if (material.toString().contains("_STAINED_GLASS_PANE")) {
+					return Material.getMaterial(color + "_STAINED_GLASS_PANE");
+
+				}
+		}
+		return material;
 	}
 }

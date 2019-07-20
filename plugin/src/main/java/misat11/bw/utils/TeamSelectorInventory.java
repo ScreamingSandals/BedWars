@@ -1,9 +1,10 @@
 package misat11.bw.utils;
 
-import static misat11.lib.lang.I18n.i18n;
-
-import java.util.Arrays;
-
+import misat11.bw.Main;
+import misat11.bw.api.events.BedwarsOpenTeamSelectionEvent;
+import misat11.bw.game.Game;
+import misat11.bw.game.Team;
+import misat11.bw.game.TeamColor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -14,11 +15,10 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import misat11.bw.Main;
-import misat11.bw.api.events.BedwarsOpenTeamSelectionEvent;
-import misat11.bw.game.Game;
-import misat11.bw.game.Team;
-import misat11.bw.game.TeamColor;
+import java.util.Arrays;
+
+import static misat11.lib.lang.I18n.i18n;
+import static misat11.lib.lang.I18n.i18nonly;
 
 public class TeamSelectorInventory implements Listener {
 
@@ -37,7 +37,8 @@ public class TeamSelectorInventory implements Listener {
 			slotCount = 54; // What??? There are more than 18 teams?
 		}
 
-		inv = Bukkit.getServer().createInventory(null, slotCount, "[BW] Teams: " + game.getName());
+		String teamSelectionName = i18nonly("team_selection_name", "Select team - %arena%").replace("%arena%", game.getName());
+		inv = Bukkit.getServer().createInventory(null, slotCount, teamSelectionName);
 
 		for (Team team : game.getTeams()) {
 			ItemStack teamStack = materializeColorToWool(team.color);

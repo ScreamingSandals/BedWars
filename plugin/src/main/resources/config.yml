@@ -23,6 +23,7 @@ damage-when-player-is-not-in-arena: false
 remove-unused-target-blocks: true
 allow-block-falling: true
 disable-hunger: false
+automatic-coloring-in-shop: true
 
 # Commands whitelist
 allowed-commands:
