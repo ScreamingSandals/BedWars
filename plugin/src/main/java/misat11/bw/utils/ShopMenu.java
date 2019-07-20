@@ -15,7 +15,6 @@ import misat11.lib.sgui.events.GenerateItemEvent;
 import misat11.lib.sgui.events.PreActionEvent;
 import misat11.lib.sgui.events.ShopTransactionEvent;
 import org.bukkit.Bukkit;
-import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -275,14 +274,13 @@ public class ShopMenu implements Listener {
 
 	@EventHandler
 	public void onApplyPropertyToBoughtItem(BedwarsApplyPropertyToBoughtItem event) {
-		if (event.getPropertyName().equalsIgnoreCase("transform::applycolorbyteam")) {
+		if (event.getPropertyName().equalsIgnoreCase("applycolorbyteam")) {
 			ItemStack stack = event.getStack();
 			Player player = event.getPlayer();
 			CurrentTeam team = (CurrentTeam) event.getGame().getTeamOfPlayer(player);
 
-			if (isStackColorable(stack) && Main.getConfigurator().config.getBoolean("automatic-coloring-in-shop")) {
-				Bukkit.getLogger().info("isStackColorable true");
-				stack.setType(addStackColor(stack, team.getColor()));
+			if (Main.getConfigurator().config.getBoolean("automatic-coloring-in-shop")) {
+				stack.setType(changeStackColor(stack, team.getColor()));
 				event.setStack(stack);
 			}
 		}
@@ -313,49 +311,30 @@ public class ShopMenu implements Listener {
 		}
 	}
 
-	public static boolean isStackColorable(ItemStack itemStack) {
-		return (itemStack.getType().toString().contains("STAINED_CLAY"))
-				|| itemStack.getType().toString().contains("WOOL")
-				|| itemStack.getType().toString().contains("CARPET")
-				|| itemStack.getType().toString().contains("STAINED_GLASS")
-				|| itemStack.getType().toString().contains("STAINED_GLASS_PANE");
-	}
-
-	public static Material addStackColor(ItemStack itemStack, TeamColor color) {
+	public static Material changeStackColor(ItemStack itemStack, TeamColor color) {
 		Material material = itemStack.getType();
-		Bukkit.getLogger().info(color + "is the color");
+		List<String> materialList = new ArrayList<>();
+		String materialName = material.toString();
+		String newMaterialName = materialName.substring(materialName.indexOf("_")+1);
 
-		switch (material.hashCode()) {
-			case 0:
-				if (material.toString().contains("_STAINED_CLAY")) {
-					return Material.getMaterial(color.name() + "_STAINED_CLAY");
+		materialList.add("_STAINED_CLAY");
+		materialList.add("_WOOL");
+		materialList.add("_CARPET");
 
-				}
-				break;
-			case 1:
-				if (material.toString().contains("_WOOL")) {
-					return Material.getMaterial(color + "_WOOL");
-
-				}
-				break;
-			case 2:
-				if (material.toString().contains("_CARPET")) {
-					return Material.getMaterial(color + "_CARPET");
-
-				}
-				break;
-			case 3:
-				if (material.toString().contains("_STAINED_GLASS")) {
-					return Material.getMaterial(color.name() + "_STAINED_GLASS");
-
-				}
-				break;
-			case 4:
-				if (material.toString().contains("_STAINED_GLASS_PANE")) {
-					return Material.getMaterial(color + "_STAINED_GLASS_PANE");
-
-				}
+		if (materialList.contains(material.toString())) {
+			return Material.getMaterial(color + newMaterialName);
 		}
+		else if (material.toString().contains("GLASS")) {
+			return Material.getMaterial(color + "_STAINED_GLASS");
+		}
+
+		else if (material.toString().contains("GLASS_PANE")) {
+			return Material.getMaterial(color + "_STAINED_GLASS_PANE");
+		}
+
 		return material;
+
 	}
 }
+
+
