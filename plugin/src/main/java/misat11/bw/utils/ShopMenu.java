@@ -285,7 +285,8 @@ public class ShopMenu implements Listener {
 
 	@EventHandler
 	public void onApplyPropertyToBoughtItem(BedwarsApplyPropertyToBoughtItem event) {
-		if (event.getPropertyName().equalsIgnoreCase("applycolorbyteam")) {
+		if (event.getPropertyName().equalsIgnoreCase("applycolorbyteam") ||
+				event.getPropertyName().equalsIgnoreCase("transform::applycolorbyteam")) {
 			ItemStack stack = event.getStack();
 			Player player = event.getPlayer();
 			CurrentTeam team = (CurrentTeam) event.getGame().getTeamOfPlayer(player);
