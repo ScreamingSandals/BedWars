@@ -15,7 +15,6 @@ import misat11.lib.sgui.events.GenerateItemEvent;
 import misat11.lib.sgui.events.PreActionEvent;
 import misat11.lib.sgui.events.ShopTransactionEvent;
 import org.bukkit.Bukkit;
-import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -337,16 +336,18 @@ public class ShopMenu implements Listener {
 			materialName = material.toString().substring(material.toString().indexOf("_"));
 		} catch (StringIndexOutOfBoundsException e) {
 		}
+		
+		String teamMaterialColor = misat11.bw.game.TeamColor.fromApiColor(teamColor).material1_13;
 
 		if (materialList.contains(materialName)) {
-			return Material.getMaterial(teamColor + materialName);
+			return Material.getMaterial(teamMaterialColor + materialName);
 		}
 		else if (material.toString().contains("GLASS")) {
-			return Material.getMaterial(teamColor + "_STAINED_GLASS");
+			return Material.getMaterial(teamMaterialColor + "_STAINED_GLASS");
 		}
 
 		else if (material.toString().contains("GLASS_PANE")) {
-			return Material.getMaterial(teamColor + "_STAINED_GLASS_PANE");
+			return Material.getMaterial(teamMaterialColor + "_STAINED_GLASS_PANE");
 		}
 		return material;
 

@@ -8,21 +8,21 @@ import org.bukkit.inventory.ItemStack;
 import misat11.bw.Main;
 
 public enum TeamColor {
-	BLACK(0xF, "BLACK_WOOL", Color.BLACK),
-	DARK_BLUE(0xB, "BLUE_WOOL", Color.fromRGB(0, 0, 170)),
-	DARK_GREEN(0xD, "GREEN_WOOL", Color.fromRGB(0, 170, 0)),
-	RED(0xE, "RED_WOOL", Color.fromRGB(255, 85, 85)),
-	DARK_PURPLE(0x2, "MAGENTA_WOOL", Color.fromRGB(170, 0, 170)),
-	GOLD(0x1, "ORANGE_WOOL", Color.fromRGB(255, 170, 0)),
-	GRAY(0x8, "LIGHT_GRAY_WOOL", Color.fromRGB(170, 170, 170)),
-	DARK_GRAY(0x7, "GRAY_WOOL", Color.fromRGB(85, 85, 85)),
-	BLUE(0x3, "LIGHT_BLUE_WOOL", Color.fromRGB(85, 85, 255)),
-	GREEN(0x5, "LIME_WOOL", Color.fromRGB(85, 255, 85)),
-	AQUA(0x9, "CYAN_WOOL", Color.fromRGB(85, 255, 255)),
-	LIGHT_PURPLE(0x6, "PINK_WOOL", Color.fromRGB(255, 85, 255)),
-	YELLOW(0x4, "YELLOW_WOOL", Color.fromRGB(255, 255, 85)),
-	WHITE(0x0, "WHITE_WOOL", Color.WHITE),
-	DARK_RED(0xC, "BROWN_WOOL", Color.fromRGB(170, 0, 0));
+	BLACK(0xF, "BLACK", Color.BLACK),
+	DARK_BLUE(0xB, "BLUE", Color.fromRGB(0, 0, 170)),
+	DARK_GREEN(0xD, "GREEN", Color.fromRGB(0, 170, 0)),
+	RED(0xE, "RED", Color.fromRGB(255, 85, 85)),
+	DARK_PURPLE(0x2, "MAGENTA", Color.fromRGB(170, 0, 170)),
+	GOLD(0x1, "ORANGE", Color.fromRGB(255, 170, 0)),
+	GRAY(0x8, "LIGHT_GRAY", Color.fromRGB(170, 170, 170)),
+	DARK_GRAY(0x7, "GRAY", Color.fromRGB(85, 85, 85)),
+	BLUE(0x3, "LIGHT_BLUE", Color.fromRGB(85, 85, 255)),
+	GREEN(0x5, "LIME", Color.fromRGB(85, 255, 85)),
+	AQUA(0x9, "CYAN", Color.fromRGB(85, 255, 255)),
+	LIGHT_PURPLE(0x6, "PINK", Color.fromRGB(255, 85, 255)),
+	YELLOW(0x4, "YELLOW", Color.fromRGB(255, 255, 85)),
+	WHITE(0x0, "WHITE", Color.WHITE),
+	DARK_RED(0xC, "BROWN", Color.fromRGB(170, 0, 0));
 	
 	public final ChatColor chatColor;
 	public final String material1_13;
@@ -47,7 +47,7 @@ public enum TeamColor {
 		if (Main.isLegacy()) {
 			return new ItemStack(Material.valueOf("WOOL"), 1, (short) dyeColor);
 		} else {
-			return new ItemStack(Material.valueOf(material1_13));
+			return new ItemStack(Material.valueOf(material1_13 + "_WOOL"));
 		}
 		
 	}
@@ -57,7 +57,7 @@ public enum TeamColor {
 			stack.setType(Material.valueOf("WOOL"));
 			stack.setDurability((short) dyeColor);
 		} else {
-			stack.setType(Material.valueOf(material1_13));
+			stack.setType(Material.valueOf(material1_13 + "_WOOL"));
 		}
 		return stack;
 		
