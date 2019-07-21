@@ -1158,7 +1158,7 @@ public class Game implements misat11.bw.api.Game {
 		if (getOriginalOrInheritedAddWoolToInventoryOnJoin()) {
 			int colorPosition = Main.getConfigurator().config.getInt("hotbar.color", 1);
 			if (colorPosition >= 0 && colorPosition <= 8) {
-				ItemStack stack = TeamSelectorInventory.materializeColorToWool(teamForJoin.color);
+				ItemStack stack = teamForJoin.color.getWool();
 				ItemMeta stackMeta = stack.getItemMeta();
 				stackMeta.setDisplayName(teamForJoin.color.chatColor + teamForJoin.name);
 				stack.setItemMeta(stackMeta);

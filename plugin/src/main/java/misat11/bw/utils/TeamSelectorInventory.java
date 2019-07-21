@@ -4,7 +4,6 @@ import misat11.bw.Main;
 import misat11.bw.api.events.BedwarsOpenTeamSelectionEvent;
 import misat11.bw.game.Game;
 import misat11.bw.game.Team;
-import misat11.bw.game.TeamColor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -41,7 +40,7 @@ public class TeamSelectorInventory implements Listener {
 		inv = Bukkit.getServer().createInventory(null, slotCount, teamSelectionName);
 
 		for (Team team : game.getTeams()) {
-			ItemStack teamStack = materializeColorToWool(team.color);
+			ItemStack teamStack = team.color.getWool();
 			ItemMeta im = teamStack.getItemMeta();
 			im.setDisplayName(team.color.chatColor + team.name);
 			im.setLore(Arrays.asList(i18n("click_to_join_team", false)));
@@ -50,10 +49,6 @@ public class TeamSelectorInventory implements Listener {
 		}
 
 		Bukkit.getServer().getPluginManager().registerEvents(this, this.plugin);
-	}
-
-	public static ItemStack materializeColorToWool(TeamColor color) {
-		return color.getWool();
 	}
 
 	public void destroy() {
