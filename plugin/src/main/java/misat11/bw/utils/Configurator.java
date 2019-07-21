@@ -188,6 +188,8 @@ public class Configurator {
 		checkOrSetConfig(modify, "gived-game-start-items", new ArrayList<>());
 		checkOrSetConfig(modify, "gived-player-respawn-items", new ArrayList<>());
 		checkOrSetConfig(modify, "allowed-commands", new ArrayList<>());
+		checkOrSetConfig(modify, "disable-hunger", false);
+		checkOrSetConfig(modify, "automatic-coloring-in-shop", true);
 		checkOrSetConfig(modify, "bungee.enabled", false);
 		checkOrSetConfig(modify, "bungee.serverRestart", true);
 		checkOrSetConfig(modify, "bungee.serverStop", false);
@@ -217,6 +219,7 @@ public class Configurator {
 		checkOrSetConfig(modify, "sounds.on_countdown", "UI_BUTTON_CLICK");
 		checkOrSetConfig(modify, "sounds.on_game_start", "ENTITY_PLAYER_LEVELUP");
 		checkOrSetConfig(modify, "sounds.on_team_kill", "ENTITY_PLAYER_LEVELUP");
+		checkOrSetConfig(modify, "sounds.on_player_kill", "ENTITY_PLAYER_BIG_FALL");
 		checkOrSetConfig(modify, "sounds.on_item_buy", "ENTITY_ITEM_PICKUP");
 		checkOrSetConfig(modify, "sounds.on_upgrade_buy", "ENTITY_EXPERIENCE_ORB_PICKUP");
 		checkOrSetConfig(modify, "game-effects.end", new HashMap<String, Object>());

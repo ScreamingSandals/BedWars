@@ -29,14 +29,14 @@ public enum TeamColor {
 	public final int dyeColor;
 	public final Color leatherColor;
 	
-	private TeamColor(int woolData, String material1_13, Color leatherColor) {
+	TeamColor(int woolData, String material1_13, Color leatherColor) {
 		this.chatColor = ChatColor.valueOf(this.name());
 		this.dyeColor = woolData;
 		this.material1_13 = material1_13;
 		this.leatherColor = leatherColor;
 	}
 	
-	private TeamColor(ChatColor chatColor, int woolData, String material1_13, Color leatherColor) {
+	TeamColor(ChatColor chatColor, int woolData, String material1_13, Color leatherColor) {
 		this.chatColor = chatColor;
 		this.dyeColor = woolData;
 		this.material1_13 = material1_13;

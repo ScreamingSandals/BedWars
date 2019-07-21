@@ -1,28 +1,9 @@
 package misat11.bw.utils;
 
-import static misat11.lib.lang.I18n.i18n;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.ClickType;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-
 import misat11.bw.Main;
 import misat11.bw.api.GameStore;
 import misat11.bw.api.ItemSpawnerType;
+import misat11.bw.api.TeamColor;
 import misat11.bw.api.events.BedwarsApplyPropertyToBoughtItem;
 import misat11.bw.game.CurrentTeam;
 import misat11.bw.game.Game;
@@ -33,10 +14,34 @@ import misat11.lib.sgui.SimpleGuiFormat;
 import misat11.lib.sgui.events.GenerateItemEvent;
 import misat11.lib.sgui.events.PreActionEvent;
 import misat11.lib.sgui.events.ShopTransactionEvent;
+import org.bukkit.Bukkit;
+import org.bukkit.Color;
+import org.bukkit.Material;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.ClickType;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static misat11.lib.lang.I18n.i18n;
+import static misat11.lib.lang.I18n.i18nonly;
 
 public class ShopMenu implements Listener {
 	private ItemStack backItem, pageBackItem, pageForwardItem, cosmeticItem;
 	private SimpleGuiFormat format;
+	private String shopName = i18nonly("item_shop_name", "[BW] Shop");
+	private static List<String> materialList = new ArrayList<>();
 
 	public ShopMenu() {
 		List<Map<String, Object>> data = (List<Map<String, Object>>) Main.getConfigurator().shopconfig.getList("data");
@@ -58,7 +63,7 @@ public class ShopMenu implements Listener {
 
 		cosmeticItem = Main.getConfigurator().readDefinedItem("shopcosmetic", "AIR");
 
-		format = new SimpleGuiFormat("[BW] Shop", backItem, pageBackItem, pageForwardItem, cosmeticItem);
+		format = new SimpleGuiFormat(shopName, backItem, pageBackItem, pageForwardItem, cosmeticItem);
 		format.load(data);
 		format.enableAnimations(Main.getInstance());
 		format.enableGenericShop(true);
@@ -66,6 +71,14 @@ public class ShopMenu implements Listener {
 		Bukkit.getServer().getPluginManager().registerEvents(this, Main.getInstance());
 
 		format.generateData();
+
+		//materials that are colored automaticallydsf
+		materialList.add("_STAINED_CLAY");
+		materialList.add("_CONCRETE");
+		materialList.add("_CONCRETE_POWDER");
+		materialList.add("_WOOL");
+		materialList.add("_CARPET");
+
 	}
 
 	public ShopMenu(String fileName, boolean useParent) {
@@ -101,7 +114,7 @@ public class ShopMenu implements Listener {
 
 		cosmeticItem = Main.getConfigurator().readDefinedItem("shopcosmetic", "AIR");
 
-		format = new SimpleGuiFormat("[BW] Shop", backItem, pageBackItem, pageForwardItem, cosmeticItem);
+		format = new SimpleGuiFormat(shopName, backItem, pageBackItem, pageForwardItem, cosmeticItem);
 		if (useParent) {
 			format.load(parent);
 		}
@@ -272,20 +285,22 @@ public class ShopMenu implements Listener {
 
 	@EventHandler
 	public void onApplyPropertyToBoughtItem(BedwarsApplyPropertyToBoughtItem event) {
-		if (event.getPropertyName().equalsIgnoreCase("transform::applycolorbyteam")) {
+		if (event.getPropertyName().equalsIgnoreCase("applycolorbyteam") ||
+				event.getPropertyName().equalsIgnoreCase("transform::applycolorbyteam")) {
 			ItemStack stack = event.getStack();
 			Player player = event.getPlayer();
 			CurrentTeam team = (CurrentTeam) event.getGame().getTeamOfPlayer(player);
 
-			Material material = stack.getType();
-			if (material.name().endsWith("WOOL")) {
-				event.setStack(team.teamInfo.color.getWool(stack));
+			if (Main.getConfigurator().config.getBoolean("automatic-coloring-in-shop")) {
+				stack.setType(changeStackColor(stack, team.getColor()));
+				ItemStack newStack = changeLeatherArmorColor(stack, team.getColor());
+
+				event.setStack(newStack);
 			}
-			// TODO: other materials
 		}
 	}
 
-	private final HashMap<String, ShopMenu> shopMenus = new HashMap<String, ShopMenu>();
+	private final HashMap<String, ShopMenu> shopMenus = new HashMap<>();
 
 	public void show(Player p, GameStore store) {
 		boolean parent = true;
@@ -309,4 +324,44 @@ public class ShopMenu implements Listener {
 			format.openForPlayer(p);
 		}
 	}
+
+	public static Material changeStackColor(ItemStack itemStack, TeamColor teamColor) {
+		Material material = itemStack.getType();
+		String materialName = material.toString();
+
+		try {
+			materialName = material.toString().substring(material.toString().indexOf("_"));
+		} catch (StringIndexOutOfBoundsException e) {
+		}
+
+		if (materialList.contains(materialName)) {
+			return Material.getMaterial(teamColor + materialName);
+		}
+		else if (material.toString().contains("GLASS")) {
+			return Material.getMaterial(teamColor + "_STAINED_GLASS");
+		}
+
+		else if (material.toString().contains("GLASS_PANE")) {
+			return Material.getMaterial(teamColor + "_STAINED_GLASS_PANE");
+		}
+		return material;
+
+	}
+
+	public static ItemStack changeLeatherArmorColor(ItemStack itemStack, TeamColor teamColor) {
+		Material material = itemStack.getType();
+
+		if (material.toString().contains("LEATHER_") && !material.toString().contains("LEATHER_HORSE_")) {
+			LeatherArmorMeta meta = (LeatherArmorMeta) itemStack.getItemMeta();
+			misat11.bw.game.TeamColor color = misat11.bw.game.TeamColor.fromApiColor(teamColor);
+
+			meta.setColor(color.leatherColor);
+			itemStack.setItemMeta(meta);
+
+			return itemStack;
+		}
+		return itemStack;
+	}
 }
+
+

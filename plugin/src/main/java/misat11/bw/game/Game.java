@@ -1692,12 +1692,12 @@ public class Game implements misat11.bw.api.Game {
 
 				@Override
 				public void run() {
-					if (Main.getConfigurator().config.getBoolean("bungee.serverRestart")) {
+					if (isBungeeEnabled() && Main.getConfigurator().config.getBoolean("bungee.serverRestart")) {
 						if (!getConnectedPlayers().isEmpty()){
 							kickAllPlayers();
 						}
 						Main.getInstance().getServer().dispatchCommand(Main.getInstance().getServer().getConsoleSender(), "restart");
-					} else if (Main.getConfigurator().config.getBoolean("bungee.serverStop")) {
+					} else if (isBungeeEnabled() && Main.getConfigurator().config.getBoolean("bungee.serverStop")) {
 						Bukkit.shutdown();
 					}
 				}
@@ -2722,5 +2722,9 @@ public class Game implements misat11.bw.api.Game {
 		for (Player player : getConnectedPlayers()) {
 			leaveFromGame(player);
 		}
+	}
+
+	public static boolean isBungeeEnabled() {
+		return Main.getConfigurator().config.getBoolean("bungee.enabled");
 	}
 }

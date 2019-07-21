@@ -185,9 +185,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 	public static boolean isFarmBlock(Material mat) {
 		if (instance.configurator.config.getBoolean("farmBlocks.enable")) {
 			List<String> list = (List<String>) instance.configurator.config.getList("farmBlocks.blocks");
-			if (list.contains(mat.name())) {
-				return true;
-			}
+			return list.contains(mat.name());
 		}
 		return false;
 	}
@@ -384,7 +382,6 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 		menu = new ShopMenu();
 
 		if (getConfigurator().config.getBoolean("bungee.enabled")) {
-			Bukkit.getLogger().info("boolean bungee enabled");
 			Bukkit.getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 		}
 
@@ -445,7 +442,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 
 	@Override
 	public List<misat11.bw.api.Game> getGames() {
-		List<misat11.bw.api.Game> gms = new ArrayList<misat11.bw.api.Game>();
+		List<misat11.bw.api.Game> gms = new ArrayList<>();
 		for (Game game : games.values()) {
 			gms.add(game);
 		}

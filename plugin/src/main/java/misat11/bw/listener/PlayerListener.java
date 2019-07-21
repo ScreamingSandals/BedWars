@@ -1,15 +1,21 @@
 package misat11.bw.listener;
 
+import misat11.bw.Main;
+import misat11.bw.api.GameStatus;
+import misat11.bw.api.events.BedwarsPlayerKilledEvent;
+import misat11.bw.api.events.BedwarsTeamChestOpenEvent;
+import misat11.bw.commands.BaseCommand;
+import misat11.bw.game.*;
+import misat11.bw.statistics.PlayerStatistic;
+import misat11.bw.utils.*;
+import misat11.lib.nms.NMSUtils;
+import net.milkbowl.vault.chat.Chat;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Arrow;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -18,56 +24,21 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerBedEnterEvent;
-import org.bukkit.event.player.PlayerBucketEmptyEvent;
-import org.bukkit.event.player.PlayerChangedWorldEvent;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerInteractAtEntityEvent;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
-import org.bukkit.event.player.PlayerToggleFlightEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.MetadataValue;
-import org.bukkit.plugin.RegisteredServiceProvider;
-
-import misat11.bw.Main;
-import misat11.bw.api.GameStatus;
-import misat11.bw.api.events.BedwarsPlayerKilledEvent;
-import misat11.bw.api.events.BedwarsTeamChestOpenEvent;
-import misat11.bw.commands.BaseCommand;
-import misat11.bw.game.CurrentTeam;
-import misat11.bw.game.Game;
-import misat11.bw.game.GameCreator;
-import misat11.bw.game.GamePlayer;
-import misat11.bw.game.Team;
-import misat11.bw.statistics.PlayerStatistic;
-import misat11.bw.utils.ArmorStandUtils;
-import misat11.bw.utils.Sounds;
-import misat11.bw.utils.SpawnEffects;
-import misat11.bw.utils.TeamJoinMetaDataValue;
-import misat11.bw.utils.TeamSelectorInventory;
-import misat11.lib.nms.NMSUtils;
-import net.milkbowl.vault.chat.Chat;
-
-import static misat11.lib.lang.I18n.*;
-import static misat11.lib.lang.I18n.i18n;
 
 import java.util.Iterator;
 import java.util.List;
+
+import static misat11.lib.lang.I18n.i18n;
 
 public class PlayerListener implements Listener {
 
@@ -126,8 +97,7 @@ public class PlayerListener implements Listener {
 				if (Main.isPlayerInGame(killer)) {
 					GamePlayer gKiller = Main.getPlayerGameProfile(killer);
 					if (gKiller.getGame() == game) {
-						Main.depositPlayer(killer, Main.getVaultKillReward());
-						if ((onlyOnBedDestroy && !team.isBed) || !onlyOnBedDestroy) {
+						if (!onlyOnBedDestroy || !team.isBed) {
 							game.dispatchRewardCommands("player-kill", killer,
 									Main.getConfigurator().config.getInt("statistics.scores.kill", 10));
 						}
@@ -136,9 +106,16 @@ public class PlayerListener implements Listener {
 							Sounds.playSound(killer, killer.getLocation(),
 									Main.getConfigurator().config.getString("sounds.on_team_kill"),
 									Sounds.ENTITY_PLAYER_LEVELUP, 1, 1);
+						} else {
+							Sounds.playSound(killer, killer.getLocation(),
+									Main.getConfigurator().config.getString("sounds.on_player_kill"),
+									Sounds.ENTITY_PLAYER_BIG_FALL, 1, 1);
+							Main.depositPlayer(killer, Main.getVaultKillReward());
 						}
+
 					}
 				}
+
 				BedwarsPlayerKilledEvent killedEvent = new BedwarsPlayerKilledEvent(game, victim,
 						Main.isPlayerInGame(killer) ? killer : null);
 				Main.getInstance().getServer().getPluginManager().callEvent(killedEvent);
@@ -149,14 +126,14 @@ public class PlayerListener implements Listener {
 
 					boolean teamIsDead = !team.isBed;
 
-					if ((onlyOnBedDestroy && teamIsDead) || !onlyOnBedDestroy) {
+					if (!onlyOnBedDestroy || teamIsDead) {
 						diePlayer.setCurrentDeaths(diePlayer.getCurrentDeaths() + 1);
 						diePlayer.setCurrentScore(diePlayer.getCurrentScore()
 								+ Main.getConfigurator().config.getInt("statistics.scores.die", 0));
 					}
 
 					if (killer != null) {
-						if ((onlyOnBedDestroy && teamIsDead) || !onlyOnBedDestroy) {
+						if (!onlyOnBedDestroy || teamIsDead) {
 							killerPlayer = Main.getPlayerStatisticsManager().getStatistic(killer);
 							if (killerPlayer != null) {
 								killerPlayer.setCurrentKills(killerPlayer.getCurrentKills() + 1);
@@ -297,6 +274,10 @@ public class PlayerListener implements Listener {
 			if (game.getStatus() == GameStatus.WAITING || gPlayer.isSpectator) {
 				event.setCancelled(true);
 			}
+
+			if (game.getStatus() == GameStatus.RUNNING && Main.getConfigurator().config.getBoolean("disable-hunger")) {
+				event.setCancelled(true);
+			}
 		}
 	}
 
@@ -305,15 +286,14 @@ public class PlayerListener implements Listener {
 		if (event.isCancelled() || !(event.getWhoClicked() instanceof Player)) {
 			return;
 		}
+
 		Player player = (Player) event.getWhoClicked();
 		if (Main.isPlayerInGame(player)) {
 			GamePlayer gPlayer = Main.getPlayerGameProfile(player);
 			if (gPlayer.getGame().getStatus() != GameStatus.RUNNING) {
 				event.setCancelled(true);
-				return;
 			} else if (!gPlayer.getGame().getOriginalOrInheritedCrafting()) {
 				event.setCancelled(true);
-				return;
 			}
 		}
 	}

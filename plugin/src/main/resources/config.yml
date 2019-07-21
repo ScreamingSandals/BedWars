@@ -22,6 +22,8 @@ spawner-holograms-countdown: true
 damage-when-player-is-not-in-arena: false
 remove-unused-target-blocks: true
 allow-block-falling: true
+disable-hunger: false
+automatic-coloring-in-shop: true
 
 # Commands whitelist
 allowed-commands:
@@ -103,6 +105,7 @@ sounds:
   on_countdown: UI_BUTTON_CLICK
   on_game_start: ENTITY_PLAYER_LEVELUP
   on_team_kill: ENTITY_PLAYER_LEVELUP
+  on_player_kill: ENTITY_PLAYER_BIG_FALL
   on_item_buy: ENTITY_ITEM_PICKUP
   on_upgrade_buy: ENTITY_EXPERIENCE_ORB_PICKUP
   

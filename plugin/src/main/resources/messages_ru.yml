@@ -1,6 +1,7 @@
 lang_name: "Russian"
 
 prefix: "[BW]"
+item_shop_name: "Shop"
 
 join: "%name% §aвошёл в игру!§r §7[§a%players%§7/§a%maxplayers%§7]"
 leave: "%name% §cвышел из игры!"
@@ -39,6 +40,7 @@ buy_failed: "§cНедостаточно слитков для покупки §
 compass_selector_team: "§aВыбрать команду"
 leave_from_game_item: "§cВыйти"
 start_game_item: "§2Start game"
+team_selection_name: "Select team - %arena%"
 team_selected: "§aВы в команде: %team%§r §7[§a%players%§7/§a%maxplayers%§7]"
 team_already_selected: "§aВы итак в этой команде: %team%§r §7[§a%players%§7/§a%maxplayers%§7]"
 team_is_full: "§cКоманда %team% заполнена!"

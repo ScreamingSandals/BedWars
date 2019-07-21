@@ -1,6 +1,7 @@
 lang_name: "Čeština"
 
 prefix: "[BW]"
+item_shop_name: "Obchod"
 
 join: "%name% §ase připojil do arény!§r §7[§a%players%§7/§a%maxplayers%§7]"
 leave: "%name% §copustil arénu!"
@@ -45,6 +46,7 @@ buy_failed: "§cNedostatek materiálu pro koupi §7%item%§c! Je potřeba §7%ma
 compass_selector_team: "§aVýběr týmu"
 leave_from_game_item: "§cOpustit hru"
 start_game_item: "§2Začít hru"
+team_selection_name: "Výběr týmu - %arena%"
 team_selected: "§aVybrán tým: %team%§r §7[§a%players%§7/§a%maxplayers%§7]"
 team_already_selected: "§aJiž jste v týmu: %team%§r §7[§a%players%§7/§a%maxplayers%§7]"
 team_is_full: "§cTým %team% je již plný!"
