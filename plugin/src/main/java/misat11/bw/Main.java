@@ -12,6 +12,10 @@ import misat11.bw.holograms.HolographicDisplaysInteraction;
 import misat11.bw.holograms.IHologramInteraction;
 import misat11.bw.listener.*;
 import misat11.bw.placeholderapi.BedwarsExpansion;
+import misat11.bw.special.SpecialRegister;
+import misat11.bw.special.listener.LuckyBlockAddonListener;
+import misat11.bw.special.listener.TrapListener;
+import misat11.bw.special.listener.WarpPowderListener;
 import misat11.bw.statistics.PlayerStatisticManager;
 import misat11.bw.utils.Configurator;
 import misat11.bw.utils.GameSign;
@@ -351,10 +355,9 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 		getServer().getPluginManager().registerEvents(new VillagerListener(), this);
 		getServer().getPluginManager().registerEvents(new SignListener(), this);
 		getServer().getPluginManager().registerEvents(new WorldListener(), this);
-		getServer().getPluginManager().registerEvents(new WarpPowderListener(), this);
-		getServer().getPluginManager().registerEvents(new LuckyBlockAddonListener(), this);
-		getServer().getPluginManager().registerEvents(new TrapListener(), this);
 		getServer().getPluginManager().registerEvents(new InventoryListener(), this);
+		
+		SpecialRegister.onEnable(this);
 
 		getServer().getServicesManager().register(BedwarsAPI.class, this, this, ServicePriority.Normal);
 

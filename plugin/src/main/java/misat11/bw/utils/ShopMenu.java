@@ -287,15 +287,19 @@ public class ShopMenu implements Listener {
 	public void onApplyPropertyToBoughtItem(BedwarsApplyPropertyToBoughtItem event) {
 		if (event.getPropertyName().equalsIgnoreCase("applycolorbyteam") ||
 				event.getPropertyName().equalsIgnoreCase("transform::applycolorbyteam")) {
-			ItemStack stack = event.getStack();
-			Player player = event.getPlayer();
-			CurrentTeam team = (CurrentTeam) event.getGame().getTeamOfPlayer(player);
-
-			if (Main.getConfigurator().config.getBoolean("automatic-coloring-in-shop")) {
-				stack.setType(changeStackColor(stack, team.getColor()));
-				ItemStack newStack = changeLeatherArmorColor(stack, team.getColor());
-
-				event.setStack(newStack);
+			if (Main.isLegacy()) {
+				// TODO for Legacy versions
+			} else {
+				ItemStack stack = event.getStack();
+				Player player = event.getPlayer();
+				CurrentTeam team = (CurrentTeam) event.getGame().getTeamOfPlayer(player);
+	
+				if (Main.getConfigurator().config.getBoolean("automatic-coloring-in-shop")) {
+					stack.setType(changeStackColor(stack, team.getColor()));
+					ItemStack newStack = changeLeatherArmorColor(stack, team.getColor());
+	
+					event.setStack(newStack);
+				}
 			}
 		}
 	}
