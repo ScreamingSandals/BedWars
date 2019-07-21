@@ -1,7 +1,5 @@
 package misat11.bw.commands;
 
-import static misat11.lib.lang.I18n.*;
-
 import java.util.List;
 
 import org.bukkit.command.CommandSender;

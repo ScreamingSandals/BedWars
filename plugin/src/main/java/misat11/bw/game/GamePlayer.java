@@ -1,6 +1,5 @@
 package misat11.bw.game;
 
-import misat11.bw.Main;
 import misat11.bw.utils.BungeeUtils;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
