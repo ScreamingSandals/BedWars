@@ -15,6 +15,7 @@ import misat11.lib.sgui.events.GenerateItemEvent;
 import misat11.lib.sgui.events.PreActionEvent;
 import misat11.lib.sgui.events.ShopTransactionEvent;
 import org.bukkit.Bukkit;
+import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -24,6 +25,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
 
 import java.io.File;
 import java.io.IOException;
@@ -290,7 +292,9 @@ public class ShopMenu implements Listener {
 
 			if (Main.getConfigurator().config.getBoolean("automatic-coloring-in-shop")) {
 				stack.setType(changeStackColor(stack, team.getColor()));
-				event.setStack(stack);
+				ItemStack newStack = changeLeatherArmorColor(stack, team.getColor());
+
+				event.setStack(newStack);
 			}
 		}
 	}
@@ -320,23 +324,42 @@ public class ShopMenu implements Listener {
 		}
 	}
 
-	public static Material changeStackColor(ItemStack itemStack, TeamColor color) {
+	public static Material changeStackColor(ItemStack itemStack, TeamColor teamColor) {
 		Material material = itemStack.getType();
-		String materialName = material.toString().substring(material.toString().indexOf("_"));
+		String materialName = material.toString();
+
+		try {
+			materialName = material.toString().substring(material.toString().indexOf("_"));
+		} catch (StringIndexOutOfBoundsException e) {
+		}
 
 		if (materialList.contains(materialName)) {
-			return Material.getMaterial(color + materialName);
+			return Material.getMaterial(teamColor + materialName);
 		}
 		else if (material.toString().contains("GLASS")) {
-			return Material.getMaterial(color + "_STAINED_GLASS");
+			return Material.getMaterial(teamColor + "_STAINED_GLASS");
 		}
 
 		else if (material.toString().contains("GLASS_PANE")) {
-			return Material.getMaterial(color + "_STAINED_GLASS_PANE");
+			return Material.getMaterial(teamColor + "_STAINED_GLASS_PANE");
 		}
-
 		return material;
 
+	}
+
+	public static ItemStack changeLeatherArmorColor(ItemStack itemStack, TeamColor teamColor) {
+		Material material = itemStack.getType();
+
+		if (material.toString().contains("LEATHER_") && !material.toString().contains("LEATHER_HORSE_")) {
+			LeatherArmorMeta meta = (LeatherArmorMeta) itemStack.getItemMeta();
+			misat11.bw.game.TeamColor color = misat11.bw.game.TeamColor.fromApiColor(teamColor);
+
+			meta.setColor(color.leatherColor);
+			itemStack.setItemMeta(meta);
+
+			return itemStack;
+		}
+		return itemStack;
 	}
 }
 

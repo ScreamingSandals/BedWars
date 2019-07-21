@@ -30,6 +30,8 @@ data:
 #            DAMAGE_ALL: 2
 #          repair-cost: 1
 #          Damage: 99
+# Value 'applycolorbyteam' is used for automatic-coloring-in-shop.
+# See WarpPowder for more info.
 
 -   stack:
       ==: org.bukkit.inventory.ItemStack
@@ -45,6 +47,8 @@ data:
     items:
     - price: 1
       price-type: bronze
+      properties:
+        - name: "applycolorbyteam"
       stack:
         ==: org.bukkit.inventory.ItemStack
         v: 1519
@@ -57,6 +61,8 @@ data:
             PROTECTION_ENVIRONMENTAL: 1
     - price: 1
       price-type: bronze
+      properties:
+        - name: "applycolorbyteam"
       stack:
         ==: org.bukkit.inventory.ItemStack
         v: 1519
@@ -69,6 +75,8 @@ data:
             PROTECTION_ENVIRONMENTAL: 1
     - price: 1
       price-type: bronze
+      properties:
+        - name: "applycolorbyteam"
       stack:
         ==: org.bukkit.inventory.ItemStack
         v: 1519
@@ -451,6 +459,8 @@ data:
         amount: 4
     - price: 4
       price-type: bronze
+      properties:
+        - name: "applycolorbyteam"
       stack:
         ==: org.bukkit.inventory.ItemStack
         v: 1519
