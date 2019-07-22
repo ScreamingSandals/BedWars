@@ -23,7 +23,8 @@ import misat11.bw.Main;
 import misat11.bw.api.ArenaTime;
 import misat11.bw.api.GameStore;
 import misat11.bw.api.InGameConfigBooleanConstants;
-import misat11.bw.utils.BedUtils;
+import misat11.bw.region.FlatteningBedUtils;
+import misat11.bw.region.LegacyBedUtils;
 import misat11.bw.utils.TeamJoinMetaDataValue;
 
 public class GameCreator {
@@ -470,7 +471,7 @@ public class GameCreator {
 					if (block.getState().getData() instanceof org.bukkit.material.Bed) {
 						org.bukkit.material.Bed bed = (org.bukkit.material.Bed) block.getState().getData();
 						if (!bed.isHeadOfBed()) {
-							t.bed = misat11.bw.legacy.LegacyBedUtils.getBedNeighbor(block).getLocation();
+							t.bed = LegacyBedUtils.getBedNeighbor(block).getLocation();
 						} else {
 							t.bed = loc;
 						}
@@ -483,7 +484,7 @@ public class GameCreator {
 					if (block.getBlockData() instanceof Bed) {
 						Bed bed = (Bed) block.getBlockData();
 						if (bed.getPart() != Part.HEAD) {
-							t.bed = BedUtils.getBedNeighbor(block).getLocation();
+							t.bed = FlatteningBedUtils.getBedNeighbor(block).getLocation();
 						} else {
 							t.bed = loc;
 						}

@@ -1,4 +1,4 @@
-package misat11.bw.legacy;
+package misat11.bw.region;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,8 +15,6 @@ import org.bukkit.material.Directional;
 import org.bukkit.material.Lever;
 import org.bukkit.material.MaterialData;
 import org.bukkit.material.Redstone;
-
-import misat11.bw.utils.IRegion;
 
 public class LegacyRegion implements IRegion {
 	private List<Location> buildedBlocks = new ArrayList<>();

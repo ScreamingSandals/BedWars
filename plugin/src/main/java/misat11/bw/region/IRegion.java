@@ -1,4 +1,4 @@
-package misat11.bw.utils;
+package misat11.bw.region;
 
 import misat11.bw.api.Region;
 

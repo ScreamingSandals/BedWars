@@ -122,6 +122,7 @@ public class Configurator {
 		recordconfigf = new File(datafolder, "record.yml");
 
 		if (!configf.exists()) {
+			// Think about config.yml and config_legacy.yml
 			if (Main.isLegacy()) {
 				main.saveResource("config_legacy.yml", false);
 				new File(datafolder, "config_legacy.yml").renameTo(configf);

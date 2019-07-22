@@ -1,4 +1,4 @@
-package misat11.bw.utils;
+package misat11.bw.region;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,7 +14,7 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Bed;
 import org.bukkit.block.data.type.Bed.Part;
 
-public class Region implements IRegion {
+public class FlatteningRegion implements IRegion {
 	private List<Location> buildedBlocks = new ArrayList<>();
 	private Map<Location, BlockData> breakedOriginalBlocks = new HashMap<>();
 
@@ -75,6 +75,6 @@ public class Region implements IRegion {
 
 	@Override
 	public Block getBedNeighbor(Block head) {
-		return BedUtils.getBedNeighbor(head);
+		return FlatteningBedUtils.getBedNeighbor(head);
 	}
 }

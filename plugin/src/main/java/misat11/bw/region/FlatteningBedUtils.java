@@ -1,11 +1,15 @@
-package misat11.bw.legacy;
+package misat11.bw.region;
 
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.type.Bed;
 
-public class LegacyBedUtils {
+public class FlatteningBedUtils {
 	public static Block getBedNeighbor(Block head) {
+		if (!(head.getBlockData() instanceof Bed)) {
+			return null;
+		}
+
 		if (isBedBlock(head.getRelative(BlockFace.EAST))) {
 			return head.getRelative(BlockFace.EAST);
 		} else if (isBedBlock(head.getRelative(BlockFace.WEST))) {
@@ -17,11 +21,11 @@ public class LegacyBedUtils {
 		}
 	}
 
-	public static boolean isBedBlock(Block isBed) {
-		if (isBed == null) {
+	public static boolean isBedBlock(Block block) {
+		if (block == null) {
 			return false;
 		}
 
-		return (isBed.getType() == Material.valueOf("BED") || isBed.getType() == Material.valueOf("BED_BLOCK"));
+		return block.getBlockData() instanceof Bed;
 	}
 }

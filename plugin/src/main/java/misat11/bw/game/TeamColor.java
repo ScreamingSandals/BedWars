@@ -26,26 +26,26 @@ public enum TeamColor {
 	
 	public final ChatColor chatColor;
 	public final String material1_13;
-	public final int dyeColor;
+	public final int woolData;
 	public final Color leatherColor;
 	
 	TeamColor(int woolData, String material1_13, Color leatherColor) {
 		this.chatColor = ChatColor.valueOf(this.name());
-		this.dyeColor = woolData;
+		this.woolData = woolData;
 		this.material1_13 = material1_13;
 		this.leatherColor = leatherColor;
 	}
 	
 	TeamColor(ChatColor chatColor, int woolData, String material1_13, Color leatherColor) {
 		this.chatColor = chatColor;
-		this.dyeColor = woolData;
+		this.woolData = woolData;
 		this.material1_13 = material1_13;
 		this.leatherColor = leatherColor;
 	}
 	
 	public ItemStack getWool() {
 		if (Main.isLegacy()) {
-			return new ItemStack(Material.valueOf("WOOL"), 1, (short) dyeColor);
+			return new ItemStack(Material.valueOf("WOOL"), 1, (short) woolData);
 		} else {
 			return new ItemStack(Material.valueOf(material1_13 + "_WOOL"));
 		}
@@ -55,7 +55,7 @@ public enum TeamColor {
 	public ItemStack getWool(ItemStack stack) {
 		if (Main.isLegacy()) {
 			stack.setType(Material.valueOf("WOOL"));
-			stack.setDurability((short) dyeColor);
+			stack.setDurability((short) woolData);
 		} else {
 			stack.setType(Material.valueOf(material1_13 + "_WOOL"));
 		}
