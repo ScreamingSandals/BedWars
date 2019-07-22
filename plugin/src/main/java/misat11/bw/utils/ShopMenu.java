@@ -4,6 +4,8 @@ import misat11.bw.Main;
 import misat11.bw.api.GameStore;
 import misat11.bw.api.ItemSpawnerType;
 import misat11.bw.api.events.BedwarsApplyPropertyToBoughtItem;
+import misat11.bw.api.events.BedwarsApplyPropertyToDisplayedItem;
+import misat11.bw.api.events.BedwarsApplyPropertyToItem;
 import misat11.bw.game.CurrentTeam;
 import misat11.bw.game.Game;
 import misat11.bw.game.ItemSpawner;
@@ -102,6 +104,8 @@ public class ShopMenu implements Listener {
 		}
 
 		PlayerItemInfo item = event.getInfo();
+		Player player = event.getPlayer();
+		Game game = Main.getPlayerGameProfile(player).getGame();
 		Map<String, Object> originalItemData = item.getData();
 		if (originalItemData.containsKey("price") && originalItemData.containsKey("price-type")) {
 			int price = (int) originalItemData.get("price");
@@ -132,6 +136,18 @@ public class ShopMenu implements Listener {
 				stackMeta.setLore(lore);
 				stack.setItemMeta(stackMeta);
 				event.setStack(stack);
+			}
+			if (item.hasProperties()) {
+				for (Property property : item.getProperties()) {
+					if (property.hasName()) {
+						ItemStack newItem = event.getStack();
+						BedwarsApplyPropertyToDisplayedItem applyEvent = new BedwarsApplyPropertyToDisplayedItem(game,
+								player, newItem, property.getPropertyData());
+						Main.getInstance().getServer().getPluginManager().callEvent(applyEvent);
+						
+						event.setStack(newItem);
+					}
+				}
 			}
 		}
 
@@ -252,7 +268,7 @@ public class ShopMenu implements Listener {
 	}
 
 	@EventHandler
-	public void onApplyPropertyToBoughtItem(BedwarsApplyPropertyToBoughtItem event) {
+	public void onApplyPropertyToBoughtItem(BedwarsApplyPropertyToItem event) {
 		if (event.getPropertyName().equalsIgnoreCase("applycolorbyteam")
 				|| event.getPropertyName().equalsIgnoreCase("transform::applycolorbyteam")) {
 			ItemStack stack = event.getStack();
