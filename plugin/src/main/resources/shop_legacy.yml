@@ -377,7 +377,7 @@ data:
         meta-type: UNSPECIFIC
         display-name: "Blocks"
         lore:
-        - "Destroy others blocks? Use these pickaxes."
+        - "Get to the others! Possible with blocks."
     linebreak: before
     items:
     - price: 1
@@ -490,6 +490,21 @@ data:
           lore:
           - "Get informed if an enemy steps on your trap"
           - "and your enemy won't be able to move properly."
+    - price: 6
+      price-type: iron
+      properties:
+      - name: "MagnetShoes"
+        probability: 75
+      stack:
+        ==: org.bukkit.inventory.ItemStack
+        type: IRON_BOOTS
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: "Magnet-Shoes"
+          lore:
+          - "Wear those shoes and have a 75%"
+          - "chance of getting no knockback!"
           
 
         
