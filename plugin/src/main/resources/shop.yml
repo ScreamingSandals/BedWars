@@ -552,8 +552,8 @@ data:
     - price: 6
       price-type: iron
       properties:
-      - name: "MagnetShoes"
-        probability: 75
+        - name: "MagnetShoes"
+          probability: 75
       stack:
         ==: org.bukkit.inventory.ItemStack
         type: IRON_BOOTS
@@ -563,8 +563,23 @@ data:
           meta-type: UNSPECIFIC
           display-name: "Magnet-Shoes"
           lore:
-          - "Wear those shoes and have a 75%"
-          - "chance of getting no knockback!"
+            - "Wear those shoes and have a 75%"
+            - "chance of getting no knockback!"
+    - price: 5
+      price-type: iron
+      properties:
+        - name: "Tracker"
+      stack:
+        ==: org.bukkit.inventory.ItemStack
+        type: COMPASS
+        v: 1519
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: "Tracker"
+          lore:
+            - "Wanna know where your closest target is?"
+            - "Let's try this out!"
 
 -   stack:
       ==: org.bukkit.inventory.ItemStack

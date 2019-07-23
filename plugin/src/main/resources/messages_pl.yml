@@ -226,6 +226,8 @@ statistics_score: "§7Łączny wynik: §a%score%"
 specials_warp_powder_multiuse: "§cInny pył teleportacyjny jest już aktywny!"
 specials_warp_powder_canceled: "§cTeleportacja została anulowana!"
 specials_warp_powder_started: "§aPył teleportacyjny aktywowany! Proszę się nie ruszać przez §7%time%§a sekund!"
+specials_tracker_no_target_found: "§cNo target found!"
+specials_tracker_target_found: "§a§f%target% has been found §f%distance% §ablocks away!"
 
 page_back: "Poprzednia strona"
 page_forward: "Następna strona"

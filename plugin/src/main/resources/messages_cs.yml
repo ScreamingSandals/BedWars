@@ -230,6 +230,8 @@ statistics_score: "§7Celkové score: §a%score%"
 specials_warp_powder_multiuse: "§cJiž je aktivován jiný WarpPowder!"
 specials_warp_powder_canceled: "§cTeleportace na základnu zrušena!"
 specials_warp_powder_started: "§aTeleportace na základnu začala! Ani se nehni po dobu §7%time%§a sekund!"
+specials_tracker_no_target_found: "§cŽádný cíl nebyl v dosahu nalezen!"
+specials_tracker_target_found: "§aNalezen cíl §f%target% §ave vzdálenosti §f%distance% §abloků!"
 
 page_back: "O stránku zpět"
 page_forward: "O stránku vpřed"

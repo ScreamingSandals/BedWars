@@ -20,7 +20,7 @@ public class SpecialRegister {
 		plugin.getServer().getPluginManager().registerEvents(new ProtectionWallListener(), plugin); // TODO
 		plugin.getServer().getPluginManager().registerEvents(new RescuePlatformListener(), plugin); // TODO
 		plugin.getServer().getPluginManager().registerEvents(new TNTSheepListener(), plugin); // TODO
-		plugin.getServer().getPluginManager().registerEvents(new TrackerListener(), plugin); // TODO
+		plugin.getServer().getPluginManager().registerEvents(new TrackerListener(), plugin);
 		plugin.getServer().getPluginManager().registerEvents(new TrapListener(), plugin);
 		plugin.getServer().getPluginManager().registerEvents(new WarpPowderListener(), plugin);
 	}

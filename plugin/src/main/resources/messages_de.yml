@@ -220,6 +220,8 @@ statistics_score: "§7Punktzahl: §a%score%"
 specials_warp_powder_multiuse: "§cEin anderes WarpPowder wurde bereits aktiviert!"
 specials_warp_powder_canceled: "§cWarpPowder wurde abgebrochen!"
 specials_warp_powder_started: "§aWarpPowder wurde gestartet! bitte bewege dich nicht für §7%time%§a Sekunden!"
+specials_tracker_no_target_found: "§cNo target found!"
+specials_tracker_target_found: "§a§f%target% has been found §f%distance% §ablocks away!"
 
 page_back: "Vorherige Seite"
 page_forward: "Nächste Seite"
