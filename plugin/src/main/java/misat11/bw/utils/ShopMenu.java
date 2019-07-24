@@ -41,7 +41,6 @@ public class ShopMenu implements Listener {
 	private ItemStack backItem, pageBackItem, pageForwardItem, cosmeticItem;
 	private String shopName = i18nonly("item_shop_name", "[BW] Shop");
 	private Map<String, SimpleGuiFormat> shopMap = new HashMap<>();
-	private static List<String> materialList = new ArrayList<>();
 
 	public ShopMenu() {
 		Bukkit.getServer().getPluginManager().registerEvents(this, Main.getInstance());
@@ -64,17 +63,6 @@ public class ShopMenu implements Listener {
 		cosmeticItem = Main.getConfigurator().readDefinedItem("shopcosmetic", "AIR");
 
 		loadNewShop("default", null, true);
-
-		// materials that are colored automaticallydsf
-		materialList.add("WOOL");
-		materialList.add("CARPET");
-		materialList.add("CONCRETE");
-		materialList.add("CONCRETE_POWDER");
-		materialList.add("STAINED_CLAY"); // LEGACY ONLY
-		materialList.add("TERRACOTTA"); // FLATTENING ONLY
-		materialList.add("STAINED_GLASS");
-		materialList.add("STAINED_GLASS_PANE");
-
 	}
 
 	private void loadNewShop(String name, String fileName, boolean useParent) {
@@ -277,11 +265,11 @@ public class ShopMenu implements Listener {
 			TeamColor color = team.teamInfo.color;
 			if (Main.getConfigurator().config.getBoolean("automatic-coloring-in-shop")) {
 				if (Main.isLegacy()) {
-					event.setStack(changeLegacyStackColor(stack, color));
+					event.setStack(ColorChanger.changeLegacyStackColor(stack, color));
 				} else {
-					stack.setType(changeStackColor(stack, color));
+					stack.setType(ColorChanger.changeStackColor(stack, color));
 				}
-				ItemStack newStack = changeLeatherArmorColor(stack, color);
+				ItemStack newStack = ColorChanger.changeLeatherArmorColor(stack, color);
 
 				event.setStack(newStack);
 			}
@@ -308,57 +296,5 @@ public class ShopMenu implements Listener {
 		} else {
 			shopMap.get("default").openForPlayer(p);
 		}
-	}
-
-	public static ItemStack changeLegacyStackColor(ItemStack itemStack, TeamColor teamColor) {
-		Material material = itemStack.getType();
-		String materialName = material.name();
-
-		if (materialList.contains(materialName)) {
-			itemStack.setDurability((short) teamColor.woolData);
-		} else if (material.toString().contains("GLASS")) {
-			itemStack.setType(Material.getMaterial("STAINED_GLASS"));
-			itemStack.setDurability((short) teamColor.woolData);
-		} else if (material.toString().contains("GLASS_PANE")) {
-			itemStack.setType(Material.getMaterial("STAINED_GLASS_PANE"));
-			itemStack.setDurability((short) teamColor.woolData);
-		}
-		return itemStack;
-	}
-
-	public static Material changeStackColor(ItemStack itemStack, TeamColor teamColor) {
-		Material material = itemStack.getType();
-		String materialName = material.toString();
-
-		try {
-			materialName = material.toString().substring(material.toString().indexOf("_") + 1);
-		} catch (StringIndexOutOfBoundsException e) {
-		}
-
-		String teamMaterialColor = teamColor.material1_13;
-
-		if (materialList.contains(materialName)) {
-			return Material.getMaterial(teamMaterialColor + "_" + materialName);
-		} else if (material.toString().contains("GLASS")) {
-			return Material.getMaterial(teamMaterialColor + "_STAINED_GLASS");
-		} else if (material.toString().contains("GLASS_PANE")) {
-			return Material.getMaterial(teamMaterialColor + "_STAINED_GLASS_PANE");
-		}
-		return material;
-
-	}
-
-	public static ItemStack changeLeatherArmorColor(ItemStack itemStack, TeamColor color) {
-		Material material = itemStack.getType();
-
-		if (material.toString().contains("LEATHER_") && !material.toString().contains("LEATHER_HORSE_")) {
-			LeatherArmorMeta meta = (LeatherArmorMeta) itemStack.getItemMeta();
-
-			meta.setColor(color.leatherColor);
-			itemStack.setItemMeta(meta);
-
-			return itemStack;
-		}
-		return itemStack;
 	}
 }

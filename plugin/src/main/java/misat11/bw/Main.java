@@ -57,6 +57,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 	private PlayerStatisticManager playerStatisticsManager;
 	private IHologramInteraction hologramInteraction;
 	private HashMap<String, BaseCommand> commands;
+	public static List<String> autoColoredMaterials = new ArrayList<>();
 
 	public static Main getInstance() {
 		return instance;
@@ -410,6 +411,16 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 				}
 			}
 		}
+
+		//ColorChanger list of materials
+		autoColoredMaterials.add("WOOL");
+		autoColoredMaterials.add("CARPET");
+		autoColoredMaterials.add("CONCRETE");
+		autoColoredMaterials.add("CONCRETE_POWDER");
+		autoColoredMaterials.add("STAINED_CLAY"); // LEGACY ONLY
+		autoColoredMaterials.add("TERRACOTTA"); // FLATTENING ONLY
+		autoColoredMaterials.add("STAINED_GLASS");
+		autoColoredMaterials.add("STAINED_GLASS_PANE");
 
 	}
 
