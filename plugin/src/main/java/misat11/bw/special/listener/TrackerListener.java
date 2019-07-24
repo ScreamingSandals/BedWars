@@ -42,7 +42,7 @@ public class TrackerListener implements Listener {
 
 		if (event.getItem() != null) {
 			if (event.getItem().getType() != Material.COMPASS) {
-				return;
+				return; // TODO think about this restriction
 			}
 		}
 

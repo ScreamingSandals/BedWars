@@ -12,4 +12,8 @@ public interface TNTSheep extends SpecialItem {
 	public Location getInitialLocation();
 	
 	public TNTPrimed getTNT();
+	
+	public double getSpeed();
+	
+	public double getFollowRange();
 }

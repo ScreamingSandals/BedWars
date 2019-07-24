@@ -232,6 +232,7 @@ specials_warp_powder_canceled: "§cWarpPowder was canceled!"
 specials_warp_powder_started: "§aWarpPowder was started! Please don't move for §7%time%§a seconds!"
 specials_tracker_no_target_found: "§cNo target found!"
 specials_tracker_target_found: "§a§f%target% has been found §f%distance% §ablocks away!"
+specials_tntsheep_no_target_found: "§cNo target found!"
 
 page_back: "Page back"
 page_forward: "Page forward"

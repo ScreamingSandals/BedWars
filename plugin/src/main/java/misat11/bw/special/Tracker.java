@@ -44,13 +44,16 @@ public class Tracker extends SpecialItem implements misat11.bw.api.special.Track
 
 	@Override
 	public Player findTarget(Player player) {
+		return find(game, player);
+	}
+	
+	public static Player find(Game game, Player player) {
 		Player playerTarget = null;
-		Player trackerUser = this.player;
 		double maxDistance = Double.MAX_VALUE;
 
-		RunningTeam team = game.getTeamOfPlayer(trackerUser);
+		RunningTeam team = game.getTeamOfPlayer(player);
 
-		ArrayList<Player> foundTargets = new ArrayList<>(this.game.getConnectedPlayers());
+		ArrayList<Player> foundTargets = new ArrayList<>(game.getConnectedPlayers());
 		foundTargets.removeAll(team.getConnectedPlayers());
 
 		for (Player p : foundTargets) {
