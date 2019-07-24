@@ -5,5 +5,5 @@ import org.bukkit.entity.Player;
 public interface Tracker extends SpecialItem {
 	public void runTask();
 
-	public Player findTarget();
+	public Player findTarget(Player player);
 }

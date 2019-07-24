@@ -14,13 +14,11 @@ import static misat11.lib.lang.I18n.i18n;
 public class Tracker extends SpecialItem implements misat11.bw.api.special.Tracker {
 	private Game game;
 	private Player player;
-	private Team team;
 
 	public Tracker(Game game, Player player, Team team) {
 		super(game, player, team);
 		this.game = game;
 		this.player = player;
-		this.team = team;
 	}
 
 	@Override
@@ -30,7 +28,7 @@ public class Tracker extends SpecialItem implements misat11.bw.api.special.Track
 
 			@Override
 			public void run() {
-				Player target = findTarget();
+				Player target = findTarget(player);
 				if (target != null) {
 					player.setCompassTarget(target.getLocation());
 
@@ -45,10 +43,11 @@ public class Tracker extends SpecialItem implements misat11.bw.api.special.Track
 	}
 
 	@Override
-	public Player findTarget() {
+	public Player findTarget(Player player) {
 		Player playerTarget = null;
 		Player trackerUser = this.player;
 		double maxDistance = Double.MAX_VALUE;
+
 		RunningTeam team = game.getTeamOfPlayer(trackerUser);
 
 		ArrayList<Player> foundTargets = new ArrayList<>(this.game.getConnectedPlayers());
@@ -67,5 +66,4 @@ public class Tracker extends SpecialItem implements misat11.bw.api.special.Track
 		}
 		return playerTarget;
 	}
-
 }
