@@ -4,6 +4,7 @@ import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Sheep;
 import org.bukkit.entity.TNTPrimed;
@@ -13,6 +14,8 @@ import misat11.bw.Main;
 import misat11.bw.api.Game;
 import misat11.bw.api.Team;
 import misat11.bw.game.TeamColor;
+import misat11.lib.nms.NMSUtils;
+
 import static misat11.lib.lang.I18n.i18n;
 
 public class TNTSheep extends SpecialItem implements misat11.bw.api.special.TNTSheep {
@@ -45,6 +48,7 @@ public class TNTSheep extends SpecialItem implements misat11.bw.api.special.TNTS
 			}
 			sheep.setTarget(target);
 			entity = sheep;
+			NMSUtils.changeTNTSheepAI(sheep, speed, followRange);
 
 			tnt = (TNTPrimed) loc.getWorld().spawnEntity(loc, EntityType.PRIMED_TNT);
 			tnt.setFuseTicks(8 * 20); // TODO remove this hardcoded ****
