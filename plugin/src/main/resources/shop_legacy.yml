@@ -369,7 +369,6 @@ data:
             
 -   stack:
       ==: org.bukkit.inventory.ItemStack
-      v: 1519
       type: SANDSTONE
       amount: 1
       meta:
@@ -413,7 +412,6 @@ data:
             
 -   stack:
       ==: org.bukkit.inventory.ItemStack
-      v: 1519
       type: TNT
       amount: 1
       meta:
