@@ -48,7 +48,7 @@ public class TNTSheep extends SpecialItem implements misat11.bw.api.special.TNTS
 			}
 			sheep.setTarget(target);
 			entity = sheep;
-			NMSUtils.changeTNTSheepAI(sheep, speed, followRange);
+			NMSUtils.makeMobAttackTarget(sheep, speed, followRange, 0);
 
 			tnt = (TNTPrimed) loc.getWorld().spawnEntity(loc, EntityType.PRIMED_TNT);
 			tnt.setFuseTicks(8 * 20); // TODO remove this hardcoded ****
