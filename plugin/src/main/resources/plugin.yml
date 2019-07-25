@@ -5,6 +5,10 @@ author: Misat11
 api-version: 1.13
 softdepend: [Vault, Multiverse-Core, Multiworld, MultiWorld, UltimateCore, PlaceholderAPI, HolographicDisplays, BarAPI]
 
+# Contributors
+authors:
+- iamceph
+
 commands:
   bw:
     description: Command of BW plugin
