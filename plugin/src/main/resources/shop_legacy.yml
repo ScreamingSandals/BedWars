@@ -503,9 +503,37 @@ data:
           lore:
           - "Wear those shoes and have a 75%"
           - "chance of getting no knockback!"
-          
+    - price: 5
+      price-type: iron
+      properties:
+        - name: "Tracker"
+      stack:
+        ==: org.bukkit.inventory.ItemStack
+        type: COMPASS
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: "Tracker"
+          lore:
+            - "Wanna know where your closest target is?"
+            - "Let's try this out!"
+    - price: 15
+        price-type: iron
+        properties:
+          - name: "rescueplatform"
+            delay: 5
+        stack:
+          ==: org.bukkit.inventory.ItemStack
+          type: BLAZE_ROD
+          meta:
+            ==: ItemMeta
+            meta-type: UNSPECIFIC
+            display-name: "Rescue Platform"
+            lore:
+              - "Protect yourself from falling into"
+              - "void with a Rescue Platform."
+              - "This is your last hope!"
 
-        
 -   stack:
       ==: org.bukkit.inventory.ItemStack
       type: DIAMOND_PICKAXE

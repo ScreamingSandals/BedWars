@@ -1,9 +1,8 @@
 package misat11.bw.special;
 
-import org.bukkit.entity.Player;
-
 import misat11.bw.api.Game;
 import misat11.bw.api.Team;
+import org.bukkit.entity.Player;
 
 public abstract class SpecialItem implements misat11.bw.api.special.SpecialItem {
 	

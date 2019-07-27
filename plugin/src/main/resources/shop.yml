@@ -580,6 +580,23 @@ data:
           lore:
             - "Wanna know where your closest target is?"
             - "Let's try this out!"
+    - price: 15
+        price-type: iron
+        properties:
+          - name: "rescueplatform"
+            delay: 5
+        stack:
+          ==: org.bukkit.inventory.ItemStack
+          type: BLAZE_ROD
+          v: 1519
+          meta:
+            ==: ItemMeta
+            meta-type: UNSPECIFIC
+            display-name: "Rescue Platform"
+            lore:
+              - "Protect yourself from falling into"
+              - "void with a Rescue Platform."
+              - "This is your last hope!"
 
 -   stack:
       ==: org.bukkit.inventory.ItemStack

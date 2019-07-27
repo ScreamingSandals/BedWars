@@ -1,15 +1,6 @@
 package misat11.bw.utils;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicBoolean;
-
+import misat11.bw.Main;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -18,7 +9,10 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import misat11.bw.Main;
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Configurator {
 
@@ -216,6 +210,13 @@ public class Configurator {
 		checkOrSetConfig(modify, "vault.reward.kill", 5);
 		checkOrSetConfig(modify, "vault.reward.win", 20);
 		checkOrSetConfig(modify, "resources", new ArrayList<>());
+		checkOrSetConfig(modify, "specials.warp-powder.used-item", "GUNPOWDER");
+		checkOrSetConfig(modify, "specials.tracker.used-item", "COMPASS");
+		checkOrSetConfig(modify, "specials.rescue-platform.used-item", "BLAZE_ROD");
+		checkOrSetConfig(modify, "specials.rescue-platform.break-time", 10);
+		checkOrSetConfig(modify, "specials.rescue-platform.distance", 1);
+		checkOrSetConfig(modify, "specials.rescue-platform.material", "GLASS");
+		checkOrSetConfig(modify, "specials.tntsheep.used-item", "SHEEP_SPAWN_EGG");
 		checkOrSetConfig(modify, "sounds.on_bed_destroyed", "ENTITY_ENDER_DRAGON_GROWL");
 		checkOrSetConfig(modify, "sounds.on_countdown", "UI_BUTTON_CLICK");
 		checkOrSetConfig(modify, "sounds.on_game_start", "ENTITY_PLAYER_LEVELUP");
@@ -315,6 +316,20 @@ public class Configurator {
 				material = (ItemStack) obj;
 			} else {
 				material.setType(Material.valueOf((String) obj));
+			}
+		}
+
+		return material;
+	}
+
+	public Material getDefinedMaterial(String path, String def) {
+		Material material = Material.getMaterial(def);
+
+		if (config.isSet(path)) {
+			Object obj = config.get(path);
+
+			if (obj instanceof Material) {
+				material = (Material) obj;
 			}
 		}
 

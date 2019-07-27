@@ -260,6 +260,7 @@ public class ShopMenu implements Listener {
 		if (event.getPropertyName().equalsIgnoreCase("applycolorbyteam")
 				|| event.getPropertyName().equalsIgnoreCase("transform::applycolorbyteam")) {
 			ItemStack stack = event.getStack();
+			Material material = stack.getType();
 			Player player = event.getPlayer();
 			CurrentTeam team = (CurrentTeam) event.getGame().getTeamOfPlayer(player);
 			TeamColor color = team.teamInfo.color;
@@ -267,7 +268,7 @@ public class ShopMenu implements Listener {
 				if (Main.isLegacy()) {
 					event.setStack(ColorChanger.changeLegacyStackColor(stack, color));
 				} else {
-					stack.setType(ColorChanger.changeStackColor(stack, color));
+					stack.setType(ColorChanger.changeStackColor(material, color));
 				}
 				ItemStack newStack = ColorChanger.changeLeatherArmorColor(stack, color);
 

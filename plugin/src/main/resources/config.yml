@@ -1,4 +1,4 @@
-# Locale (en, cs, ru)
+# Locale (en, cs, ru, de, pl)
 locale: en
 
 allow-crafting: false
@@ -98,6 +98,20 @@ resources:
     translate: "resource_gold"
     color: GOLD
     spread: 1.0
+
+# Special items
+specials:
+  warp-powder:
+    used-item: GUNPOWDER
+  tracker:
+    used-item: COMPASS
+  rescue-platform:
+    used-item: BLAZE_ROD
+    break-time: 10
+    distance: 1
+    material: GLASS
+  tntsheep:
+    used-item: SHEEP_SPAWN_EGG
     
 # Sounds (look to github src/main/java/misat11/bw/utils/Sounds.java for possible values)
 sounds:

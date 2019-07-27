@@ -41,8 +41,10 @@ public class TrackerListener implements Listener {
 		}
 
 		if (event.getItem() != null) {
-			if (event.getItem().getType() != Material.COMPASS) {
-				return; // TODO think about this restriction
+			Material material = Material.getMaterial(Main.getConfigurator().config.getString("specials.tracker.used-item", "COMPASS"));
+
+			if (event.getItem().getType() != material) {
+				return;
 			}
 		}
 

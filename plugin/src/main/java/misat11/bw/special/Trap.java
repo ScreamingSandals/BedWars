@@ -1,26 +1,28 @@
 package misat11.bw.special;
 
-import java.util.List;
-import java.util.Map;
-
+import misat11.bw.api.Game;
+import misat11.bw.api.Team;
+import misat11.bw.utils.Sounds;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 
-import misat11.bw.api.Game;
-import misat11.bw.api.Team;
-import misat11.bw.utils.Sounds;
+import java.util.List;
+import java.util.Map;
 
 public class Trap extends SpecialItem implements misat11.bw.api.special.Trap {
 
 	private List<Map<String, Object>> trapData;
 	private Location location;
 
+	private Player player;
+
 	public Trap(Game game, Player player, Team team, List<Map<String, Object>> trapData) {
 		super(game, player, team);
 		
 		this.trapData = trapData;
+		this.player = player;
 
 		game.registerSpecialItem(this);
 	}
@@ -33,6 +35,10 @@ public class Trap extends SpecialItem implements misat11.bw.api.special.Trap {
 	@Override
 	public boolean isPlaced() {
 		return location != null;
+	}
+
+	public Player getOwner() {
+		return this.player;
 	}
 
 	public void place(Location loc) {
@@ -60,7 +66,6 @@ public class Trap extends SpecialItem implements misat11.bw.api.special.Trap {
 				player.damage(damage);
 			}
 		}
-		
 	}
 
 }

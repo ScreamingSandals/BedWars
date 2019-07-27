@@ -101,7 +101,16 @@ resources:
     translate: "resource_gold"
     color: GOLD
     spread: 1.0
-    
+
+# Special items
+specials:
+  tracker:
+    used-item: COMPASS
+  rescue-platform:
+    used-item: BLAZE_ROD
+    break-time: 10
+    distance: 1
+    material: STAINED_CLAY
         
 # Sounds (look to github src/main/java/misat11/bw/utils/Sounds.java for possible values)
 sounds:
