@@ -24,6 +24,7 @@ remove-unused-target-blocks: true
 allow-block-falling: true
 disable-hunger: false
 automatic-coloring-in-shop: true
+destroy-placed-blocks-by-explosion: true
 
 # Commands whitelist
 allowed-commands:
@@ -112,7 +113,13 @@ specials:
     material: GLASS
   tntsheep:
     used-item: SHEEP_SPAWN_EGG
-    
+    explosion-time: 8
+
+# Automatic TNT ignite (default: false)
+tnt:
+  auto-ignite: false
+  explosion-time: 8
+
 # Sounds (look to github src/main/java/misat11/bw/utils/Sounds.java for possible values)
 sounds:
   on_bed_destroyed: ENTITY_ENDER_DRAGON_GROWL

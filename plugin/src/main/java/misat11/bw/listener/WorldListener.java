@@ -20,6 +20,10 @@ import misat11.bw.api.GameStatus;
 import misat11.bw.game.Game;
 import misat11.bw.game.GameCreator;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 public class WorldListener implements Listener {
 	@EventHandler
 	public void onBurn(BlockBurnEvent event) {
@@ -92,7 +96,12 @@ public class WorldListener implements Listener {
 			Game game = Main.getGame(s);
 			if (game.getStatus() == GameStatus.RUNNING) {
 				if (GameCreator.isInArea(event.getLocation(), game.getPos1(), game.getPos2())) {
-					event.blockList().clear();
+					if (Main.getConfigurator().config.getBoolean("destroy-placed-blocks-by-explosion", true)) {
+						event.blockList().removeIf(block -> !game.isBlockAddedDuringGame(block.getLocation()));
+
+					} else {
+						event.blockList().clear();
+					}
 				}
 			}
 		}

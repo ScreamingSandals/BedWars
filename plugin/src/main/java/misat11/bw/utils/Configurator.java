@@ -185,6 +185,7 @@ public class Configurator {
 		checkOrSetConfig(modify, "allowed-commands", new ArrayList<>());
 		checkOrSetConfig(modify, "disable-hunger", false);
 		checkOrSetConfig(modify, "automatic-coloring-in-shop", true);
+		checkOrSetConfig(modify, "destroy-placed-blocks-by-explosion", true);
 		checkOrSetConfig(modify, "bungee.enabled", false);
 		checkOrSetConfig(modify, "bungee.serverRestart", true);
 		checkOrSetConfig(modify, "bungee.serverStop", false);
@@ -217,6 +218,9 @@ public class Configurator {
 		checkOrSetConfig(modify, "specials.rescue-platform.distance", 1);
 		checkOrSetConfig(modify, "specials.rescue-platform.material", "GLASS");
 		checkOrSetConfig(modify, "specials.tntsheep.used-item", "SHEEP_SPAWN_EGG");
+		checkOrSetConfig(modify, "specials.tntsheep.explosion-time", 8);
+		checkOrSetConfig(modify, "tnt.auto-ignite", false);
+		checkOrSetConfig(modify, "tnt.explosion-time", 8);
 		checkOrSetConfig(modify, "sounds.on_bed_destroyed", "ENTITY_ENDER_DRAGON_GROWL");
 		checkOrSetConfig(modify, "sounds.on_countdown", "UI_BUTTON_CLICK");
 		checkOrSetConfig(modify, "sounds.on_game_start", "ENTITY_PLAYER_LEVELUP");

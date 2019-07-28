@@ -37,6 +37,7 @@ public class TNTSheep extends SpecialItem implements misat11.bw.api.special.TNTS
 
 	public boolean use() {
 		if (!used) {
+			int explosionTime = Main.getConfigurator().config.getInt("specials.tntsheep.explosion-time", 8) * 20;
 			Sheep sheep = (Sheep) loc.getWorld().spawnEntity(loc, EntityType.SHEEP);
 			TeamColor color = TeamColor.fromApiColor(team.getColor());
 			sheep.setColor(DyeColor.getByWoolData((byte) color.woolData));
@@ -51,7 +52,7 @@ public class TNTSheep extends SpecialItem implements misat11.bw.api.special.TNTS
 			NMSUtils.makeMobAttackTarget(sheep, speed, followRange, 0);
 
 			tnt = (TNTPrimed) loc.getWorld().spawnEntity(loc, EntityType.PRIMED_TNT);
-			tnt.setFuseTicks(8 * 20); // TODO remove this hardcoded ****
+			tnt.setFuseTicks(explosionTime);
 			tnt.setIsIncendiary(false);
 			sheep.addPassenger(tnt);
 
@@ -66,7 +67,7 @@ public class TNTSheep extends SpecialItem implements misat11.bw.api.special.TNTS
 					sheep.remove();
 					game.unregisterSpecialItem(TNTSheep.this);
 				}
-			}.runTaskLater(Main.getInstance(), (long) ((8 * 20) + 13));
+			}.runTaskLater(Main.getInstance(), (long) (explosionTime + 13));
 
 			used = true;
 		}

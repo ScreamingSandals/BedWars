@@ -208,6 +208,21 @@ public class PlayerListener implements Listener {
 					event.getBlockReplacedState(), event.getItemInHand())) {
 				event.setCancelled(true);
 			}
+
+			if (game.getStatus() == GameStatus.RUNNING
+					&& GameCreator.isInArea(event.getBlock().getLocation(), game.getPos1(), game.getPos2())) {
+				Block block = event.getBlock();
+				int explosionTime = Main.getConfigurator().config.getInt("tnt.explosion-time", 8) * 20;
+
+				if (block .getType() == Material.TNT
+						&&  Main.getConfigurator().config.getBoolean("tnt.auto-ignite", false)) {
+					block.setType(Material.AIR);
+					Location location = block.getLocation();
+
+					TNTPrimed tnt = (TNTPrimed) location.getWorld().spawnEntity(location, EntityType.PRIMED_TNT);
+					tnt.setFuseTicks(explosionTime);
+				}
+			}
 		}
 	}
 
