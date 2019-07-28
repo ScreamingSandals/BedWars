@@ -40,14 +40,6 @@ public class TrackerListener implements Listener {
 			return;
 		}
 
-		if (event.getItem() != null) {
-			Material material = Material.getMaterial(Main.getConfigurator().config.getString("specials.tracker.used-item", "COMPASS"));
-
-			if (event.getItem().getType() != material) {
-				return;
-			}
-		}
-
 		Player eventPlayer = event.getPlayer();
 		GamePlayer gamePlayer = Main.getPlayerGameProfile(eventPlayer);
 		Game game = gamePlayer.getGame();

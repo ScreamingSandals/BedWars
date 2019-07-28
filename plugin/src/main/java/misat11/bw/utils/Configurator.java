@@ -211,14 +211,10 @@ public class Configurator {
 		checkOrSetConfig(modify, "vault.reward.kill", 5);
 		checkOrSetConfig(modify, "vault.reward.win", 20);
 		checkOrSetConfig(modify, "resources", new ArrayList<>());
-		checkOrSetConfig(modify, "specials.warp-powder.used-item", "GUNPOWDER");
-		checkOrSetConfig(modify, "specials.tracker.used-item", "COMPASS");
-		checkOrSetConfig(modify, "specials.rescue-platform.used-item", "BLAZE_ROD");
 		checkOrSetConfig(modify, "specials.rescue-platform.break-time", 10);
 		checkOrSetConfig(modify, "specials.rescue-platform.distance", 1);
 		checkOrSetConfig(modify, "specials.rescue-platform.material", "GLASS");
-		checkOrSetConfig(modify, "specials.tntsheep.used-item", "SHEEP_SPAWN_EGG");
-		checkOrSetConfig(modify, "specials.tntsheep.explosion-time", 8);
+		checkOrSetConfig(modify, "specials.tntsheep.explosion-time", 160);
 		checkOrSetConfig(modify, "tnt.auto-ignite", false);
 		checkOrSetConfig(modify, "tnt.explosion-time", 8);
 		checkOrSetConfig(modify, "sounds.on_bed_destroyed", "ENTITY_ENDER_DRAGON_GROWL");

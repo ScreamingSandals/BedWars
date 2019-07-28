@@ -8,6 +8,7 @@ import misat11.bw.Main;
 import misat11.bw.api.GameStatus;
 import misat11.bw.api.GameStore;
 import misat11.bw.api.events.BedwarsOpenShopEvent;
+import misat11.bw.api.events.BedwarsOpenShopEvent.Result;
 import misat11.bw.game.Game;
 import misat11.bw.game.GamePlayer;
 
@@ -28,7 +29,7 @@ public class VillagerListener implements Listener {
 								event.getPlayer(), store, event.getRightClicked());
 						Main.getInstance().getServer().getPluginManager().callEvent(openShopEvent);
 
-						if (openShopEvent.isCancelled()) {
+						if (openShopEvent.getResult() != Result.ALLOW) {
 							return;
 						}
 

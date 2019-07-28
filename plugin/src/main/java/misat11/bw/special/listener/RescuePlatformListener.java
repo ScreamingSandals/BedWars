@@ -46,14 +46,6 @@ public class RescuePlatformListener implements Listener {
 			return;
 		}
 
-		if (event.getItem() != null) {
-			Material material = Main.getConfigurator().getDefinedMaterial("specials.rescue-platform.used-item", "BLAZE_ROD");
-
-			if (event.getItem().getType() != material) {
-				return;
-			}
-		}
-
 		GamePlayer gPlayer = Main.getPlayerGameProfile(event.getPlayer());
 		Game game = gPlayer.getGame();
 		if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {

@@ -56,14 +56,6 @@ public class TNTSheepListener implements Listener {
 			return;
 		}
 
-		if (event.getItem() != null) {
-			Material material = Main.getConfigurator().getDefinedMaterial("specials.tntsheep.used-item", "SHEEP_SPAWN_EGG");
-
-			if (event.getItem().getType() != material) {
-				return;
-			}
-		}
-
 		Player eventPlayer = event.getPlayer();
 		GamePlayer gamePlayer = Main.getPlayerGameProfile(eventPlayer);
 		Game game = gamePlayer.getGame();

@@ -12,11 +12,12 @@ import misat11.bw.api.GameStore;
 public class BedwarsOpenShopEvent extends Event implements Cancellable {
 
 	private static final HandlerList handlers = new HandlerList();
-	private boolean cancelled = false;
 	private Entity clickedEntity = null;
 	private Game game = null;
 	private Player player = null;
 	private GameStore store = null;
+	private Result result = Result.ALLOW;
+	
 
 	public BedwarsOpenShopEvent(Game game, Player player, GameStore store, Entity clickedEntity) {
 		this.player = player;
@@ -50,14 +51,31 @@ public class BedwarsOpenShopEvent extends Event implements Cancellable {
 		return this.store;
 	}
 
+	@Deprecated
 	@Override
 	public boolean isCancelled() {
-		return this.cancelled;
+		return result != Result.ALLOW;
 	}
 
+	@Deprecated
 	@Override
 	public void setCancelled(boolean cancel) {
-		this.cancelled = cancel;
+		result = cancel ? Result.DISALLOW_UNKNOWN : Result.ALLOW;
+	}
+	
+	public Result getResult() {
+		return result;
+	}
+	
+	public void setResult(Result result) {
+		this.result = result;
+	}
+	
+	public static enum Result {
+		ALLOW,
+		DISALLOW_THIRD_PARTY_SHOP,
+		DISALLOW_LOCKED_FOR_THIS_PLAYER,
+		DISALLOW_UNKNOWN;
 	}
 
 }

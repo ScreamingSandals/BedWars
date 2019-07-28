@@ -105,18 +105,12 @@ resources:
 
 # Special items
 specials:
-  warp-powder:
-    used-item: GUNPOWDER
-  tracker:
-    used-item: COMPASS
   rescue-platform:
-    used-item: BLAZE_ROD
     break-time: 10
     distance: 1
     material: GLASS
   tntsheep:
-    used-item: SHEEP_SPAWN_EGG
-    explosion-time: 8
+    explosion-time: 160
 
 # Automatic TNT ignite (default: false)
 tnt:
