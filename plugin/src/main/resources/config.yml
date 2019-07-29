@@ -107,7 +107,7 @@ specials:
     distance: 1
     material: GLASS
   tntsheep:
-    explosion-time: 160
+    explosion-time: 8
 
 # Automatic TNT ignite (default: false)
 tnt:

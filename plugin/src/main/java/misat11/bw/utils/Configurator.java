@@ -214,7 +214,7 @@ public class Configurator {
 		checkOrSetConfig(modify, "specials.rescue-platform.break-time", 10);
 		checkOrSetConfig(modify, "specials.rescue-platform.distance", 1);
 		checkOrSetConfig(modify, "specials.rescue-platform.material", "GLASS");
-		checkOrSetConfig(modify, "specials.tntsheep.explosion-time", 160);
+		checkOrSetConfig(modify, "specials.tntsheep.explosion-time", 8);
 		checkOrSetConfig(modify, "tnt.auto-ignite", false);
 		checkOrSetConfig(modify, "tnt.explosion-time", 8);
 		checkOrSetConfig(modify, "sounds.on_bed_destroyed", "ENTITY_ENDER_DRAGON_GROWL");
