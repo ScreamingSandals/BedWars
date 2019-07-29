@@ -33,7 +33,7 @@ public class WorldListener implements Listener {
 
 		for (String s : Main.getGameNames()) {
 			Game game = Main.getGame(s);
-			if (game.getStatus() == GameStatus.RUNNING) {
+			if (game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) {
 				if (GameCreator.isInArea(event.getBlock().getLocation(), game.getPos1(), game.getPos2())) {
 					if (!game.isBlockAddedDuringGame(event.getBlock().getLocation())) {
 						event.setCancelled(true);
@@ -52,7 +52,7 @@ public class WorldListener implements Listener {
 
 		for (String s : Main.getGameNames()) {
 			Game game = Main.getGame(s);
-			if (game.getStatus() == GameStatus.RUNNING) {
+			if (game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) {
 				if (GameCreator.isInArea(event.getBlock().getLocation(), game.getPos1(), game.getPos2())) {
 					if (!game.isBlockAddedDuringGame(event.getBlock().getLocation())) {
 						event.setCancelled(true);
@@ -75,7 +75,7 @@ public class WorldListener implements Listener {
 
 		for (String s : Main.getGameNames()) {
 			Game game = Main.getGame(s);
-			if (game.getStatus() == GameStatus.RUNNING) {
+			if (game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) {
 				if (GameCreator.isInArea(event.getBlock().getLocation(), game.getPos1(), game.getPos2())) {
 					if (!game.isBlockAddedDuringGame(event.getBlock().getLocation())) {
 						event.setCancelled(true);
@@ -94,7 +94,7 @@ public class WorldListener implements Listener {
 
 		for (String s : Main.getGameNames()) {
 			Game game = Main.getGame(s);
-			if (game.getStatus() == GameStatus.RUNNING) {
+			if (game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) {
 				if (GameCreator.isInArea(event.getLocation(), game.getPos1(), game.getPos2())) {
 					if (Main.getConfigurator().config.getBoolean("destroy-placed-blocks-by-explosion", true)) {
 						event.blockList().removeIf(block -> !game.isBlockAddedDuringGame(block.getLocation()));
@@ -116,7 +116,7 @@ public class WorldListener implements Listener {
 
 		for (String s : Main.getGameNames()) {
 			Game game = Main.getGame(s);
-			if (game.getStatus() == GameStatus.RUNNING) {
+			if (game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) {
 				if (GameCreator.isInArea(event.getLocation(), game.getPos1(), game.getPos2())) {
 					event.setCancelled(true);
 					return;
@@ -133,7 +133,7 @@ public class WorldListener implements Listener {
 
 		for (String gameName : Main.getGameNames()) {
 			Game game = Main.getGame(gameName);
-			if (game.getStatus() == GameStatus.RUNNING && game.getOriginalOrInheritedPreventSpawningMobs()) {
+			if ((game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) && game.getOriginalOrInheritedPreventSpawningMobs()) {
 				if (GameCreator.isInArea(event.getLocation(), game.getPos1(), game.getPos2())) {
 					event.setCancelled(true);
 					return;
@@ -159,7 +159,7 @@ public class WorldListener implements Listener {
 		for (String gameName : Main.getGameNames()) {
 			Game game = Main.getGame(gameName);
 			if (GameCreator.isInArea(event.getBlock().getLocation(), game.getPos1(), game.getPos2())) {
-				if (game.getStatus() == GameStatus.RUNNING) {
+				if (game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) {
 					Block block = event.getToBlock();
 					if (block.getType() == Material.AIR
 							|| game.getRegion().isBlockAddedDuringGame(block.getLocation())) {
@@ -184,7 +184,7 @@ public class WorldListener implements Listener {
 		for (String gameName : Main.getGameNames()) {
 			Game game = Main.getGame(gameName);
 			if (GameCreator.isInArea(event.getBlock().getLocation(), game.getPos1(), game.getPos2())) {
-				if (game.getStatus() == GameStatus.RUNNING) {
+				if (game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) {
 					if (event.getEntityType() == EntityType.FALLING_BLOCK
 							&& game.getOriginalOrInheritedAllowBlockFalling()) {
 						if (event.getBlock().getType() != event.getTo()) {
