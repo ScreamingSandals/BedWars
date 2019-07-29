@@ -15,7 +15,7 @@ public interface RescuePlatform extends SpecialItem {
 
 	public ItemStack getStack();
 	
-	public void runTask(int breakTime, int delay);
+	public void runTask();
 	
 	public List<Block> getPlatformBlocks();
 }

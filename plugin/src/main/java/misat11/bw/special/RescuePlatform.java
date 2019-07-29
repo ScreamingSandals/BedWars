@@ -61,7 +61,7 @@ public class RescuePlatform extends SpecialItem implements misat11.bw.api.specia
 	}
 
 	@Override
-	public void runTask(final int breakTime, final int delay) {
+	public void runTask() {
 		new BukkitRunnable() {
 
 			@Override
@@ -72,7 +72,7 @@ public class RescuePlatform extends SpecialItem implements misat11.bw.api.specia
 					player.sendMessage(i18n("specials_rescue_platform_destroy").replace("%time%", Integer.toString(platformLivingTime)));
 				}
 
-				if (breakTime > 0 && platformLivingTime == breakTime) {
+				if (platformLivingTime == breakingTime) {
 					for (Block block : RescuePlatform.this.platformBlocks) {
 						block.getChunk().load(true);
 						block.setType(Material.AIR);
@@ -124,7 +124,7 @@ public class RescuePlatform extends SpecialItem implements misat11.bw.api.specia
 
 		if (breakingTime > 0) {
 			game.registerSpecialItem(this);
-			runTask(breakingTime, useDelay);
+			runTask();
 
 			item.setAmount(item.getAmount() - 1);
 			player.updateInventory();
