@@ -6,14 +6,14 @@ public class ItemSpawner implements misat11.bw.api.ItemSpawner {
 	public Location loc;
 	public ItemSpawnerType type;
 	public String customName;
-	public int startLevel = 1;
-	public int currentLevel = startLevel;
+	public double startLevel;
+	public double currentLevel;
 	
-	public ItemSpawner(Location loc, ItemSpawnerType type, String customName, int startLevel) {
+	public ItemSpawner(Location loc, ItemSpawnerType type, String customName, double startLevel) {
 		this.loc = loc;
 		this.type = type;
 		this.customName = customName;
-		this.startLevel = startLevel;
+		this.currentLevel = this.startLevel = startLevel;
 	}
 
 	@Override
@@ -37,12 +37,17 @@ public class ItemSpawner implements misat11.bw.api.ItemSpawner {
 	}
 
 	@Override
-	public int getStartLevel() {
+	public double getStartLevel() {
 		return startLevel;
 	}
 
 	@Override
-	public int getCurrentLevel() {
+	public double getCurrentLevel() {
 		return currentLevel;
+	}
+
+	@Override
+	public void setCurrentLevel(double level) {
+		currentLevel = level;
 	}
 }

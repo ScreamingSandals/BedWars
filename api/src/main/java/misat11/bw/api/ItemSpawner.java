@@ -11,7 +11,13 @@ public interface ItemSpawner {
 	
 	public String getCustomName();
 	
-	public int getStartLevel();
+	public double getStartLevel();
 	
-	public int getCurrentLevel();
+	public double getCurrentLevel();
+	
+	public void setCurrentLevel(double level);
+	
+	default void addToCurrentLevel(double level) {
+		setCurrentLevel(getCurrentLevel() + level);
+	}
 }

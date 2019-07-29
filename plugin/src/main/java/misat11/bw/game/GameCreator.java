@@ -116,7 +116,7 @@ public class GameCreator {
 					if (args.length >= 2) {
 						if (args.length >= 3) {
 							if (args.length >= 4) {
-								response = addSpawner(args[1], player.getLocation(), args[2], Integer.parseInt(args[3]));
+								response = addSpawner(args[1], player.getLocation(), args[2], Double.parseDouble(args[3]));
 							} else {
 								response = addSpawner(args[1], player.getLocation(), args[2], 1);
 							}
@@ -611,7 +611,7 @@ public class GameCreator {
 		return i18n("admin_command_spawners_reseted").replace("%arena%", game.getName());
 	}
 
-	private String addSpawner(String type, Location loc, String customName, int startLevel) {
+	private String addSpawner(String type, Location loc, String customName, double startLevel) {
 		if (game.getPos1() == null || game.getPos2() == null) {
 			return i18n("admin_command_set_pos1_pos2_first");
 		}

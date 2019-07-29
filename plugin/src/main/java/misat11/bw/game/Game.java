@@ -447,7 +447,8 @@ public class Game implements misat11.bw.api.Game {
 						Title.send(player.player,
 								i18n(isItBedBlock ? "bed_is_destroyed" : "target_is_destroyed", false).replace("%team%",
 										team.teamInfo.color.chatColor + team.teamInfo.name),
-								i18n(getPlayerTeam(player) == team ? "bed_is_destroyed_subtitle_for_victim" : "bed_is_destroyed_subtitle", false));
+								i18n(getPlayerTeam(player) == team ? "bed_is_destroyed_subtitle_for_victim"
+										: "bed_is_destroyed_subtitle", false));
 						player.player.sendMessage(i18n(isItBedBlock ? "bed_is_destroyed" : "target_is_destroyed")
 								.replace("%team%", team.teamInfo.color.chatColor + team.teamInfo.name));
 						SpawnEffects.spawnEffect(this, player.player, "game-effects.beddestroy");
@@ -557,7 +558,8 @@ public class Game implements misat11.bw.api.Game {
 			player.player.getInventory().setItem(leavePosition, leave);
 		}
 
-		if (player.player.hasPermission("bw.vip.startitem") || player.player.hasPermission("misat11.bw.vip.startitem")) {
+		if (player.player.hasPermission("bw.vip.startitem")
+				|| player.player.hasPermission("misat11.bw.vip.startitem")) {
 			int vipPosition = Main.getConfigurator().config.getInt("hotbar.start", 1);
 			if (vipPosition >= 0 && vipPosition <= 8) {
 				ItemStack startGame = Main.getConfigurator().readDefinedItem("startgame", "DIAMOND");
@@ -713,7 +715,8 @@ public class Game implements misat11.bw.api.Game {
 			for (Map<String, Object> spawner : spawners) {
 				ItemSpawner sa = new ItemSpawner(readLocationFromString(game.world, (String) spawner.get("location")),
 						Main.getSpawnerType(((String) spawner.get("type")).toLowerCase()),
-						(String) spawner.get("customName"), (int) spawner.getOrDefault("startLevel", 1));
+						(String) spawner.get("customName"),
+						((Number) spawner.getOrDefault("startLevel", 1)).doubleValue());
 				game.spawners.add(sa);
 			}
 		}
@@ -1607,20 +1610,35 @@ public class Game implements misat11.bw.api.Game {
 					for (ItemSpawner spawner : spawners) {
 						ItemSpawnerType type = spawner.type;
 						int cycle = type.getInterval();
-						/* Calculate resource spawn from elapsedTime, not from remainingTime/countdown */
+						/*
+						 * Calculate resource spawn from elapsedTime, not from remainingTime/countdown
+						 */
 						int elapsedTime = gameTime - countdown;
 
 						if (getOriginalOrInheritedSpawnerHolograms()
 								&& getOriginalOrInheritedSpawnerHologramsCountdown() && cycle > 1) {
 							int modulo = cycle - elapsedTime % cycle;
-							countdownArmorStands.get(spawner).setCustomName(i18nonly("countdown_spawning")
-									.replace("%seconds%", Integer.toString(modulo)));
+							countdownArmorStands.get(spawner).setCustomName(
+									i18nonly("countdown_spawning").replace("%seconds%", Integer.toString(modulo)));
 						}
 
 						if ((elapsedTime % cycle) == 0) {
+							int calculatedStack = 1;
+							if (upgrades) {
+								double currentLevel = spawner.getCurrentLevel();
+								calculatedStack = (int) currentLevel;
+
+								/* Allow half level */
+								if ((currentLevel % 1) != 0) {
+									int a = elapsedTime / cycle;
+									if ((a % 2) == 0) {
+										calculatedStack++;
+									}
+								}
+							}
 
 							BedwarsResourceSpawnEvent resourceSpawnEvent = new BedwarsResourceSpawnEvent(this, spawner,
-									type.getStack(upgrades ? spawner.currentLevel : 1));
+									type.getStack(calculatedStack));
 							Main.getInstance().getServer().getPluginManager().callEvent(resourceSpawnEvent);
 
 							if (resourceSpawnEvent.isCancelled()) {
@@ -1633,9 +1651,9 @@ public class Game implements misat11.bw.api.Game {
 								Location loc = spawner.getLocation().clone().add(0, 0.05, 0);
 								Item item = loc.getWorld().dropItem(loc, resource);
 								double spread = type.getSpread();
-							    if (spread != 1.0) {
-							        item.setVelocity(item.getVelocity().multiply(spread));
-							      }
+								if (spread != 1.0) {
+									item.setVelocity(item.getVelocity().multiply(spread));
+								}
 								item.setPickupDelay(0);
 							}
 						}
@@ -1694,10 +1712,11 @@ public class Game implements misat11.bw.api.Game {
 				@Override
 				public void run() {
 					if (isBungeeEnabled() && Main.getConfigurator().config.getBoolean("bungee.serverRestart")) {
-						if (!getConnectedPlayers().isEmpty()){
+						if (!getConnectedPlayers().isEmpty()) {
 							kickAllPlayers();
 						}
-						Main.getInstance().getServer().dispatchCommand(Main.getInstance().getServer().getConsoleSender(), "restart");
+						Main.getInstance().getServer()
+								.dispatchCommand(Main.getInstance().getServer().getConsoleSender(), "restart");
 					} else if (isBungeeEnabled() && Main.getConfigurator().config.getBoolean("bungee.serverStop")) {
 						Bukkit.shutdown();
 					}
@@ -1775,7 +1794,6 @@ public class Game implements misat11.bw.api.Game {
 		this.countdown = -1;
 		updateSigns();
 		cancelTask();
-
 
 	}
 
@@ -2717,7 +2735,6 @@ public class Game implements misat11.bw.api.Game {
 	public StatusBar getStatusBar() {
 		return statusbar;
 	}
-
 
 	public void kickAllPlayers() {
 		for (Player player : getConnectedPlayers()) {

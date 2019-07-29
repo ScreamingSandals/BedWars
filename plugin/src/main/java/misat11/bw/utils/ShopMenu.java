@@ -179,7 +179,7 @@ public class ShopMenu implements Listener {
 					String typ = (String) entity.get("type");
 					if ("spawner".equals(typ.toLowerCase())) {
 						String customName = (String) entity.get("customName");
-						int addLevels = (int) entity.get("levels");
+						double addLevels = ((Number) entity.get("levels")).doubleValue();
 						for (ItemSpawner spawner : game.getSpawners()) {
 							if (customName.equals(spawner.customName)) {
 								spawner.currentLevel += addLevels;
