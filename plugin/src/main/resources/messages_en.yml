@@ -240,6 +240,11 @@ specials_rescue_platform_not_in_air: "§cFor using this, you need to be in the a
 specials_rescue_platform_destroy: "§cPlatform will be destroyed in §f%time% §cseconds."
 specials_rescue_platform_created: "§cPlatform is created and will be destroyed in §f%time% §cseconds."
 specials_tntsheep_no_target_found: "§cNo target found!"
+specials_arrow_blocker_started: "§aArrow blocker has been activated for %time% seconds!"
+specials_arrow_blocker_already_activated: "§cArrow blocker is already activated!"
+specials_arrow_blocker_ended: "§cArrow blocker is no longer activated!"
+
+special_item_delay: "§cYou need to wait %time% seconds before using this item again!"
 
 page_back: "Page back"
 page_forward: "Page forward"

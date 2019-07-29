@@ -597,6 +597,23 @@ data:
             - "Protect yourself from falling into"
             - "void with a Rescue Platform."
             - "This is your last hope!"
+    - price: 5
+      price-type: gold
+      properties:
+        - name: "arrowblocker"
+          delay: 5
+      stack:
+        ==: org.bukkit.inventory.ItemStack
+        type: ENDER_EYE
+        v: 1519
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: "Arrow Blocker"
+          lore:
+            - "Block arrows that are coming"
+            - "for you with black magic."
+            - "I mean, with this item."
 
 -   stack:
       ==: org.bukkit.inventory.ItemStack

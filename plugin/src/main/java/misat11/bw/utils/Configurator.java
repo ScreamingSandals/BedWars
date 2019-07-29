@@ -72,7 +72,7 @@ public class Configurator {
 			if (shopconfig.isSet("shop-items")) {
 				main.getLogger().info("Migrating shop.yml from version 1 to version 2 ...");
 
-				List<Map<String, Object>> newData = new ArrayList<Map<String, Object>>();
+				List<Map<String, Object>> newData = new ArrayList<>();
 
 				Set<String> s = Main.getConfigurator().shopconfig.getConfigurationSection("shop-items").getKeys(false);
 
@@ -86,10 +86,10 @@ public class Configurator {
 					categoryItemMeta.setDisplayName(category.getString("name"));
 					categoryItem.setItemMeta(categoryItemMeta);
 
-					Map<String, Object> map = new HashMap<String, Object>();
+					Map<String, Object> map = new HashMap<>();
 
 					map.put("stack", categoryItem);
-					map.put("items", (List<Map<String, Object>>) category.getList("items"));
+					map.put("items", category.getList("items"));
 
 					newData.add(map);
 				}
@@ -215,6 +215,7 @@ public class Configurator {
 		checkOrSetConfig(modify, "specials.rescue-platform.distance", 1);
 		checkOrSetConfig(modify, "specials.rescue-platform.material", "GLASS");
 		checkOrSetConfig(modify, "specials.tntsheep.explosion-time", 8);
+		checkOrSetConfig(modify, "specials.arrow-blocker.protection-time", 10);
 		checkOrSetConfig(modify, "tnt.auto-ignite", false);
 		checkOrSetConfig(modify, "tnt.explosion-time", 8);
 		checkOrSetConfig(modify, "sounds.on_bed_destroyed", "ENTITY_ENDER_DRAGON_GROWL");

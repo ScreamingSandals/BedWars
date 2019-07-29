@@ -111,7 +111,8 @@ specials:
     material: GLASS
   tntsheep:
     explosion-time: 8
-
+  arrow-blocker:
+    protection-time: 10
 # Automatic TNT ignite (default: false)
 tnt:
   auto-ignite: false

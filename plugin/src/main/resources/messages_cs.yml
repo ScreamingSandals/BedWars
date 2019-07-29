@@ -240,6 +240,11 @@ specials_rescue_platform_not_in_air: "§cPro použití záchrané platformy mus�
 specials_rescue_platform_destroy: "§cPlatforma bude zničena za §f%time% §csekund."
 specials_rescue_platform_created: "§cPlatforma je vytvořena a bude zničena za §f%time% §csekund."
 specials_tntsheep_no_target_found: "§cŽádný cíl nebyl v dosahu nalezen!"
+specials_arrow_blocker_started: "§aArrow blocker byl aktivován na dobu %time% sekund!"
+specials_arrow_blocker_already_activated: "§cArrow blocker již je aktivovaný! Nelze jej použít znova."
+specials_arrow_blocker_ended: "§cArrow blocker již není aktivovaný!"
+
+special_item_delay: "§cPřed použitím tohoto předmětu musíš počkat %time% sekund!"
 
 page_back: "O stránku zpět"
 page_forward: "O stránku vpřed"
