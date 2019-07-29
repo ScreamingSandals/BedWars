@@ -218,6 +218,9 @@ public class PlayerListener implements Listener {
 						&&  Main.getConfigurator().config.getBoolean("tnt.auto-ignite", false)) {
 					block.setType(Material.AIR);
 					Location location = block.getLocation();
+					location.setX(location.getX() + 0.5);
+					location.setY(location.getY() + 0.5);
+					location.setZ(location.getZ() + 0.5);
 
 					TNTPrimed tnt = (TNTPrimed) location.getWorld().spawnEntity(location, EntityType.PRIMED_TNT);
 					tnt.setFuseTicks(explosionTime);
