@@ -3,10 +3,9 @@ package misat11.bw.special.listener;
 import java.util.List;
 
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
+import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
@@ -132,8 +131,8 @@ public class TNTSheepListener implements Listener {
 					}
 				}
 			}
-		} else if (event.getEntity() instanceof Mob) {
-			Mob mob = (Mob) event.getEntity();
+		} else if (event.getEntity() instanceof Creature) {
+			Creature mob = (Creature) event.getEntity();
 			for (String name : Main.getGameNames()) {
 				Game game = Main.getGame(name);
 				if (game.getStatus() == GameStatus.RUNNING && mob.getWorld().equals(game.getGameWorld())) {
