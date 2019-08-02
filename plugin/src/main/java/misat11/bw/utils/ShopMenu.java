@@ -8,6 +8,7 @@ import misat11.bw.api.events.BedwarsApplyPropertyToDisplayedItem;
 import misat11.bw.api.events.BedwarsApplyPropertyToItem;
 import misat11.bw.game.CurrentTeam;
 import misat11.bw.game.Game;
+import misat11.bw.game.GamePlayer;
 import misat11.bw.game.ItemSpawner;
 import misat11.bw.game.TeamColor;
 import misat11.lib.sgui.MapReader;
@@ -79,6 +80,27 @@ public class ShopMenu implements Listener {
 		}
 		format.enableAnimations(Main.getInstance());
 		format.enableGenericShop(true);
+		
+		format.registerPlaceholder("%team%", (key, player, arguments) -> {
+			GamePlayer gPlayer = Main.getPlayerGameProfile(player);
+			CurrentTeam team = gPlayer.getGame().getPlayerTeam(gPlayer);
+			if (arguments.length > 0) {
+				String fa = arguments[0];
+				switch (fa) {
+				case "color":
+					return team.teamInfo.color.name();
+				case "chatcolor":
+					return team.teamInfo.color.chatColor.toString();
+				case "maxplayers":
+					return Integer.toString(team.teamInfo.maxPlayers);
+				case "players":
+					return Integer.toString(team.players.size());
+				case "hasBed":
+					return Boolean.toString(team.isBed);
+				}
+			}
+			return team.getName();
+		});
 
 		format.generateData();
 
