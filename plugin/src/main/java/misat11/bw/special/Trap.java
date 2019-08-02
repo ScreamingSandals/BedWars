@@ -1,6 +1,7 @@
 package misat11.bw.special;
 
 import misat11.bw.api.Game;
+import misat11.bw.api.RunningTeam;
 import misat11.bw.api.Team;
 import misat11.bw.utils.Sounds;
 import org.bukkit.Location;
@@ -45,25 +46,27 @@ public class Trap extends SpecialItem implements misat11.bw.api.special.Trap {
 		this.location = loc;
 	}
 
-	public void process(Player player) {
+	public void process(Player player, RunningTeam runningTeam) {
 		game.unregisterSpecialItem(this);
 		
 		location.getBlock().setType(Material.AIR);
-		
-		for (Map<String, Object> data : trapData) {
-			if (data.containsKey("sound")) {
-				String sound = (String) data.get("sound");
-				Sounds.playSound(player, location, sound, null, 1, 1);
-			}
-			
-			if (data.containsKey("effect")) {
-				PotionEffect effect = (PotionEffect) data.get("effect");
-				player.addPotionEffect(effect);
-			}
-			
-			if (data.containsKey("damage")) {
-				double damage = (double) data.get("damage");
-				player.damage(damage);
+
+		if (runningTeam != game.getTeamOfPlayer(player)) {
+			for (Map<String, Object> data : trapData) {
+				if (data.containsKey("sound")) {
+					String sound = (String) data.get("sound");
+					Sounds.playSound(player, location, sound, null, 1, 1);
+				}
+
+				if (data.containsKey("effect")) {
+					PotionEffect effect = (PotionEffect) data.get("effect");
+					player.addPotionEffect(effect);
+				}
+
+				if (data.containsKey("damage")) {
+					double damage = (double) data.get("damage");
+					player.damage(damage);
+				}
 			}
 		}
 	}

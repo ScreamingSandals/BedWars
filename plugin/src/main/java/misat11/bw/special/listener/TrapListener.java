@@ -73,13 +73,14 @@ public class TrapListener implements Listener {
 		if (event.isCancelled()) {
 			return;
 		}
+
 		for (SpecialItem special : event.getGame().getActivedSpecialItems(Trap.class)) {
 			Trap trapBlock = (Trap) special;
-			if (trapBlock.isPlaced()) {
-				if (event.getBlock().getLocation().equals(trapBlock.getLocation())) {
-					event.setCancelled(true);
-					return;
-				}
+			RunningTeam runningTeam = event.getTeam();
+
+			if (trapBlock.isPlaced()
+					&& event.getBlock().getLocation().equals(trapBlock.getLocation())) {
+				trapBlock.process(event.getPlayer(), runningTeam);
 			}
 		}
 	}
@@ -105,8 +106,8 @@ public class TrapListener implements Listener {
 	    		for (SpecialItem special : game.getActivedSpecialItems(Trap.class)) {
 	    			Trap trapBlock = (Trap) special;
 	    			if (trapBlock.isPlaced()) {
-	    				if (event.getTo().getBlock().getLocation().equals(trapBlock.getLocation()) && trapBlock.getTeam() != game.getPlayerTeam(gPlayer)) {
-	    					trapBlock.process(player);
+	    				if (event.getTo().getBlock().getLocation().equals(trapBlock.getLocation())) {
+	    					trapBlock.process(player, game.getPlayerTeam(gPlayer));
 
 	    					RunningTeam ownerTeam = game.getTeamOfPlayer(trapBlock.getOwner());
 							for (Player p : ownerTeam.getConnectedPlayers()) {
