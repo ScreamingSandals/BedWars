@@ -10,6 +10,7 @@ import misat11.bw.game.CurrentTeam;
 import misat11.bw.game.Game;
 import misat11.bw.game.ItemSpawner;
 import misat11.bw.game.TeamColor;
+import misat11.lib.sgui.MapReader;
 import misat11.lib.sgui.PlayerItemInfo;
 import misat11.lib.sgui.Property;
 import misat11.lib.sgui.SimpleGuiFormat;
@@ -93,18 +94,18 @@ public class ShopMenu implements Listener {
 		PlayerItemInfo item = event.getInfo();
 		Player player = event.getPlayer();
 		Game game = Main.getPlayerGameProfile(player).getGame();
-		Map<String, Object> originalItemData = item.getData();
-		if (originalItemData.containsKey("price") && originalItemData.containsKey("price-type")) {
-			int price = (int) originalItemData.get("price");
-			ItemSpawnerType type = Main.getSpawnerType(((String) originalItemData.get("price-type")).toLowerCase());
+		MapReader reader = item.getReader();
+		if (reader.containsKey("price") && reader.containsKey("price-type")) {
+			int price = reader.getInt("price");
+			ItemSpawnerType type = Main.getSpawnerType((reader.getString("price-type")).toLowerCase());
 			if (type == null) {
 				return;
 			}
 
 			boolean enabled = Main.getConfigurator().config.getBoolean("lore.generate-automatically", true);
-			enabled = (boolean) originalItemData.getOrDefault("generate-lore", enabled);
+			enabled = reader.getBoolean("generate-lore", enabled);
 
-			List<String> loreText = (List<String>) originalItemData.getOrDefault("generated-lore-text",
+			List<String> loreText = reader.getStringList("generated-lore-text",
 					Main.getConfigurator().config.getStringList("lore.text"));
 
 			if (enabled) {
@@ -129,9 +130,9 @@ public class ShopMenu implements Listener {
 					if (property.hasName()) {
 						ItemStack newItem = event.getStack();
 						BedwarsApplyPropertyToDisplayedItem applyEvent = new BedwarsApplyPropertyToDisplayedItem(game,
-								player, newItem, property.getPropertyData());
+								player, newItem, property.getReader(player).convertToMap());
 						Main.getInstance().getServer().getPluginManager().callEvent(applyEvent);
-						
+
 						event.setStack(newItem);
 					}
 				}
@@ -165,21 +166,21 @@ public class ShopMenu implements Listener {
 		Game game = Main.getPlayerGameProfile(event.getPlayer()).getGame();
 		ClickType clickType = event.getClickType();
 
-		Map<String, Object> originalItemData = event.getItem().getData();
-		if (originalItemData.containsKey("upgrade") && game.isUpgradesEnabled()) {
-			Map<String, Object> upgrade = (Map<String, Object>) originalItemData.get("upgrade");
-			List<Map<String, Object>> entities = (List<Map<String, Object>>) upgrade.get("entities");
+		MapReader reader = event.getItem().getReader();
+		if (reader.containsKey("upgrade") && game.isUpgradesEnabled()) {
+			MapReader upgrade = reader.getMap("upgrade");
+			List<MapReader> entities = upgrade.getMapList("entities");
 			int price = event.getPrice();
 			String priceType = event.getType().toLowerCase();
 			ItemSpawnerType type = Main.getSpawnerType(priceType);
 			ItemStack materialItem = type.getStack(price);
 			if (event.hasPlayerInInventory(materialItem)) {
 				event.sellStack(materialItem);
-				for (Map<String, Object> entity : entities) {
-					String typ = (String) entity.get("type");
+				for (MapReader entity : entities) {
+					String typ = entity.getString("type");
 					if ("spawner".equals(typ.toLowerCase())) {
-						String customName = (String) entity.get("customName");
-						double addLevels = ((Number) entity.get("levels")).doubleValue();
+						String customName = entity.getString("customName");
+						double addLevels = entity.getDouble("levels");
 						for (ItemSpawner spawner : game.getSpawners()) {
 							if (customName.equals(spawner.customName)) {
 								spawner.currentLevel += addLevels;
@@ -187,12 +188,14 @@ public class ShopMenu implements Listener {
 						}
 					}
 				}
-				player.sendMessage(i18n("buy_succes").replace("%item%", "UPGRADE"));
+				player.sendMessage(i18n("buy_succes").replace("%item%", "UPGRADE").replace("%material%",
+						price + " " + type.getItemName()));
 				Sounds.playSound(player, player.getLocation(),
 						Main.getConfigurator().config.getString("sounds.on_upgrade_buy"),
 						Sounds.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
 			} else {
-				player.sendMessage(i18n("buy_failed").replace("%item%", "UPGRADE"));
+				player.sendMessage(i18n("buy_failed").replace("%item%", "UPGRADE").replace("%material%",
+						price + " " + type.getItemName()));
 			}
 		} else {
 			ItemStack newItem = event.getStack();
@@ -215,7 +218,7 @@ public class ShopMenu implements Listener {
 					for (Property property : event.getProperties()) {
 						if (property.hasName()) {
 							BedwarsApplyPropertyToBoughtItem applyEvent = new BedwarsApplyPropertyToBoughtItem(game,
-									player, newItem, property.getPropertyData());
+									player, newItem, property.getReader(player).convertToMap());
 							Main.getInstance().getServer().getPluginManager().callEvent(applyEvent);
 
 							newItem = applyEvent.getStack();
