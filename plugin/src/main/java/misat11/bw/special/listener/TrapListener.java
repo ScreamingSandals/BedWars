@@ -80,7 +80,7 @@ public class TrapListener implements Listener {
 
 			if (trapBlock.isPlaced()
 					&& event.getBlock().getLocation().equals(trapBlock.getLocation())) {
-				trapBlock.process(event.getPlayer(), runningTeam);
+				trapBlock.process(event.getPlayer(), runningTeam, true);
 			}
 		}
 	}
@@ -107,14 +107,7 @@ public class TrapListener implements Listener {
 	    			Trap trapBlock = (Trap) special;
 	    			if (trapBlock.isPlaced()) {
 	    				if (event.getTo().getBlock().getLocation().equals(trapBlock.getLocation())) {
-	    					trapBlock.process(player, game.getPlayerTeam(gPlayer));
-
-	    					RunningTeam ownerTeam = game.getTeamOfPlayer(trapBlock.getOwner());
-							for (Player p : ownerTeam.getConnectedPlayers()) {
-								p.sendMessage(i18n("specials_trap_caught_team").replace("%player%", player.getDisplayName()));
-							}
-
-							player.sendMessage(i18n("specials_trap_caught").replace("%team%", trapBlock.getTeam().getName()));
+	    					trapBlock.process(player, game.getPlayerTeam(gPlayer), false);
 	    				}
 	    			}
 	    		}
