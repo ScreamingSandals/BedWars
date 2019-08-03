@@ -4,6 +4,7 @@ import misat11.bw.Main;
 import misat11.bw.api.Game;
 import misat11.bw.api.RunningTeam;
 import misat11.bw.api.Team;
+import misat11.bw.game.GamePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -56,8 +57,14 @@ public class Tracker extends SpecialItem implements misat11.bw.api.special.Track
 		ArrayList<Player> foundTargets = new ArrayList<>(game.getConnectedPlayers());
 		foundTargets.removeAll(team.getConnectedPlayers());
 
+
 		for (Player p : foundTargets) {
+			GamePlayer gamePlayer = Main.getPlayerGameProfile(p);
 			if (player.getWorld() != p.getWorld()) {
+				continue;
+			}
+
+			if (gamePlayer.isSpectator) {
 				continue;
 			}
 

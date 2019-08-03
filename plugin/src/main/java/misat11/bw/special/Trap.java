@@ -12,18 +12,22 @@ import org.bukkit.potion.PotionEffect;
 import java.util.List;
 import java.util.Map;
 
+import static misat11.lib.lang.I18n.i18n;
+
 public class Trap extends SpecialItem implements misat11.bw.api.special.Trap {
 
 	private List<Map<String, Object>> trapData;
 	private Location location;
 
 	private Player player;
+	private Team team;
 
 	public Trap(Game game, Player player, Team team, List<Map<String, Object>> trapData) {
 		super(game, player, team);
 		
 		this.trapData = trapData;
 		this.player = player;
+		this.team = team;
 
 		game.registerSpecialItem(this);
 	}
@@ -46,12 +50,14 @@ public class Trap extends SpecialItem implements misat11.bw.api.special.Trap {
 		this.location = loc;
 	}
 
-	public void process(Player player, RunningTeam runningTeam) {
+	public void process(Player player, RunningTeam runningTeam, boolean forceDestroy) {
 		game.unregisterSpecialItem(this);
-		
-		location.getBlock().setType(Material.AIR);
 
-		if (runningTeam != game.getTeamOfPlayer(player)) {
+		if (runningTeam != game.getTeamOfPlayer(this.player) || forceDestroy) {
+			location.getBlock().setType(Material.AIR);
+		}
+
+		if (runningTeam != game.getTeamOfPlayer(this.player)) {
 			for (Map<String, Object> data : trapData) {
 				if (data.containsKey("sound")) {
 					String sound = (String) data.get("sound");
@@ -68,6 +74,12 @@ public class Trap extends SpecialItem implements misat11.bw.api.special.Trap {
 					player.damage(damage);
 				}
 			}
+
+			for (Player p : game.getTeamOfPlayer(this.player).getConnectedPlayers()) {
+				p.sendMessage(i18n("specials_trap_caught_team").replace("%player%", player.getDisplayName()));
+			}
+
+			player.sendMessage(i18n("specials_trap_caught").replace("%team%", getTeam().getName()));
 		}
 	}
 
