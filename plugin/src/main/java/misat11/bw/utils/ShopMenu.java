@@ -12,6 +12,7 @@ import misat11.bw.game.GamePlayer;
 import misat11.bw.game.ItemSpawner;
 import misat11.bw.game.TeamColor;
 import misat11.lib.sgui.MapReader;
+import misat11.lib.sgui.Options;
 import misat11.lib.sgui.PlayerItemInfo;
 import misat11.lib.sgui.Property;
 import misat11.lib.sgui.SimpleGuiFormat;
@@ -39,49 +40,38 @@ import static misat11.lib.lang.I18n.i18nonly;
 
 public class ShopMenu implements Listener {
 
-	private ItemStack backItem, pageBackItem, pageForwardItem, cosmeticItem;
-	private String shopName = i18nonly("item_shop_name", "[BW] Shop");
 	private Map<String, SimpleGuiFormat> shopMap = new HashMap<>();
+	private Options options = new Options();
 
 	public ShopMenu() {
 		Bukkit.getServer().getPluginManager().registerEvents(this, Main.getInstance());
 
-		backItem = Main.getConfigurator().readDefinedItem("shopback", "BARRIER");
+		ItemStack backItem = Main.getConfigurator().readDefinedItem("shopback", "BARRIER");
 		ItemMeta backItemMeta = backItem.getItemMeta();
 		backItemMeta.setDisplayName(i18n("shop_back", false));
 		backItem.setItemMeta(backItemMeta);
-
-		pageBackItem = Main.getConfigurator().readDefinedItem("pageback", "ARROW");
+		options.setBackItem(backItem);
+		
+		ItemStack pageBackItem = Main.getConfigurator().readDefinedItem("pageback", "ARROW");
 		ItemMeta pageBackItemMeta = backItem.getItemMeta();
 		pageBackItemMeta.setDisplayName(i18n("page_back", false));
 		pageBackItem.setItemMeta(pageBackItemMeta);
+		options.setPageBackItem(pageBackItem);
 
-		pageForwardItem = Main.getConfigurator().readDefinedItem("pageforward", "ARROW");
+		ItemStack pageForwardItem = Main.getConfigurator().readDefinedItem("pageforward", "ARROW");
 		ItemMeta pageForwardItemMeta = backItem.getItemMeta();
 		pageForwardItemMeta.setDisplayName(i18n("page_forward", false));
 		pageForwardItem.setItemMeta(pageForwardItemMeta);
+		options.setPageForwardItem(pageForwardItem);
 
-		cosmeticItem = Main.getConfigurator().readDefinedItem("shopcosmetic", "AIR");
-
-		loadNewShop("default", null, true);
-	}
-
-	private void loadNewShop(String name, String fileName, boolean useParent) {
-		SimpleGuiFormat format = new SimpleGuiFormat(shopName, backItem, pageBackItem, pageForwardItem, cosmeticItem);
-		try {
-			if (useParent) {
-				format.loadFromDataFolder(Main.getInstance().getDataFolder(), "shop.yml");
-			}
-			if (fileName != null) {
-				format.loadFromDataFolder(Main.getInstance().getDataFolder(), fileName);
-			}
-		} catch (IOException | InvalidConfigurationException e) {
-			e.printStackTrace();
-		}
-		format.enableAnimations(Main.getInstance());
-		format.enableGenericShop(true);
+		ItemStack cosmeticItem = Main.getConfigurator().readDefinedItem("shopcosmetic", "AIR");
+		options.setCosmeticItem(cosmeticItem);
 		
-		format.registerPlaceholder("%team%", (key, player, arguments) -> {
+		options.setPrefix(i18nonly("item_shop_name", "[BW] Shop"));
+		options.setGenericShop(true);
+		options.setGenericShopPriceTypeRequired(true);
+		options.setAnimationsEnabled(true, Main.getInstance());
+		options.registerPlaceholder("%team%", (key, player, arguments) -> {
 			GamePlayer gPlayer = Main.getPlayerGameProfile(player);
 			CurrentTeam team = gPlayer.getGame().getPlayerTeam(gPlayer);
 			if (arguments.length > 0) {
@@ -101,6 +91,22 @@ public class ShopMenu implements Listener {
 			}
 			return team.getName();
 		});
+
+		loadNewShop("default", null, true);
+	}
+
+	private void loadNewShop(String name, String fileName, boolean useParent) {
+		SimpleGuiFormat format = new SimpleGuiFormat(options);
+		try {
+			if (useParent) {
+				format.loadFromDataFolder(Main.getInstance().getDataFolder(), "shop.yml");
+			}
+			if (fileName != null) {
+				format.loadFromDataFolder(Main.getInstance().getDataFolder(), fileName);
+			}
+		} catch (IOException | InvalidConfigurationException e) {
+			e.printStackTrace();
+		}
 
 		format.generateData();
 
