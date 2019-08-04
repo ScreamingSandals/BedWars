@@ -115,7 +115,12 @@ public class RescuePlatform extends SpecialItem implements misat11.bw.api.specia
 				continue;
 			}
 
-			placedBlock.setType(ColorChanger.changeStackColor(buildingMaterial, TeamColor.fromApiColor(team.getColor())));
+			if (Main.isLegacy()) {
+				ItemStack itemStack = new ItemStack(buildingMaterial);
+				placedBlock.setType(ColorChanger.changeLegacyStackColor(itemStack, TeamColor.fromApiColor(team.getColor())).getType());
+			} else {
+				placedBlock.setType(ColorChanger.changeStackColor(buildingMaterial, TeamColor.fromApiColor(team.getColor())));
+			}
 
 			game.getRegion().addBuildedDuringGame(placedBlock.getLocation());
 
