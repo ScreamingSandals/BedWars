@@ -533,6 +533,23 @@ data:
               - "Protect yourself from falling into"
               - "void with a Rescue Platform."
               - "This is your last hope!"
+    - price: 24
+      price-type: iron
+      properties:
+      - name: "Golem"
+        speed: 0.25
+        follow: 16.0
+      stack:
+        ==: org.bukkit.inventory.ItemStack
+        type: MONSTER_EGG
+        damage: 56 # Ghast
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: "Golem"
+          lore:
+          - "An iron golem that will protect"
+          - "your team from the enemies."
 
 -   stack:
       ==: org.bukkit.inventory.ItemStack
@@ -583,7 +600,6 @@ data:
               
   
               
-          
           
           
           

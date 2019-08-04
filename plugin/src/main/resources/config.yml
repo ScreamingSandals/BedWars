@@ -110,6 +110,9 @@ specials:
     explosion-time: 8
   arrow-blocker:
     protection-time: 10
+  golem:
+    name-format: "%teamcolor%%team% Golem"
+    show-name: true
 
 # Automatic TNT ignite (default: false)
 tnt:
