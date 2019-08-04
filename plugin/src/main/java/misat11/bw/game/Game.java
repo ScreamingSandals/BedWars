@@ -1786,6 +1786,12 @@ public class Game implements misat11.bw.api.Game {
 		}
 		armorStandsInGame.clear();
 		countdownArmorStands.clear();
+		
+		// Remove remaining entities registered by other plugins
+		for (Entity entity : Main.getGameEntities(this)) {
+			entity.remove();
+			Main.unregisterGameEntity(entity);
+		}
 
 		BedwarsPostRebuildingEvent postRebuildingEvent = new BedwarsPostRebuildingEvent(this);
 		Main.getInstance().getServer().getPluginManager().callEvent(postRebuildingEvent);

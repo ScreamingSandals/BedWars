@@ -38,6 +38,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static misat11.lib.lang.I18n.i18n;
 
@@ -266,6 +267,16 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 	
 	public static HashMap<String, BaseCommand> getCommands() {
 		return instance.commands;
+	}
+	
+	public static List<Entity> getGameEntities(Game game){
+		List<Entity> entityList = new ArrayList<>();
+		for (Map.Entry<Entity, Game> entry : instance.entitiesInGame.entrySet()) {
+			if (entry.getValue() == game) {
+				entityList.add(entry.getKey());
+			}
+		}
+		return entityList;
 	}
 
 	public void onEnable() {
