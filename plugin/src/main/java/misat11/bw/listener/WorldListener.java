@@ -20,10 +20,6 @@ import misat11.bw.api.GameStatus;
 import misat11.bw.game.Game;
 import misat11.bw.game.GameCreator;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 public class WorldListener implements Listener {
 	@EventHandler
 	public void onBurn(BlockBurnEvent event) {

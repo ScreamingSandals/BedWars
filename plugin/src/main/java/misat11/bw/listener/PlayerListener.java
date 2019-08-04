@@ -323,7 +323,7 @@ public class PlayerListener implements Listener {
 			if (event instanceof EntityDamageByEntityEvent) {
 				Game game = Main.getInGameEntity(event.getEntity());
 				if (game != null) {
-					if (game.getOriginalOrInheritedPreventKillingVillagers()) {
+					if (game.isEntityShop(event.getEntity()) && game.getOriginalOrInheritedPreventKillingVillagers()) {
 						event.setCancelled(true);
 					}
 				}

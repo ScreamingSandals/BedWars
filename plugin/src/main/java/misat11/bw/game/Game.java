@@ -2745,4 +2745,14 @@ public class Game implements misat11.bw.api.Game {
 	public static boolean isBungeeEnabled() {
 		return Main.getConfigurator().config.getBoolean("bungee.enabled");
 	}
+
+	@Override
+	public boolean isEntityShop(Entity entity) {
+		for (GameStore store : gameStore) {
+			if (store.getEntity().equals(entity)) {
+				return true;
+			}
+		}
+		return false;
+	}
 }

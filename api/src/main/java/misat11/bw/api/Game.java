@@ -7,6 +7,7 @@ import org.bukkit.WeatherType;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.boss.BarColor;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 import misat11.bw.api.boss.StatusBar;
@@ -126,6 +127,8 @@ public interface Game {
 	public RunningTeam getTeamOfChest(Location location);
 	
 	public RunningTeam getTeamOfChest(Block block);
+	
+	public boolean isEntityShop(Entity entity);
 	
 	// BOOLEAN SETTINGS
 
