@@ -444,13 +444,16 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 					// Kotlin version
 					getServer().getPluginManager().registerEvents(new PerWorldInventoryKotlinListener(), this);
 				} else {
-					
+					// Legacy version
+					getServer().getPluginManager().registerEvents(new PerWorldInventoryLegacyListener(), this);
 				}
 			}
 		
 		
-		} catch (Throwable t) {
+		} catch (Throwable ignored) {
 			// maybe something here can cause exception
+			
+			ignored.printStackTrace(); // TODO remove this line after testing
 		}
 	}
 

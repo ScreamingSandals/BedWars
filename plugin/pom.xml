@@ -66,6 +66,12 @@
 			<version>2.2.2</version>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>me.gnat008</groupId>
+			<artifactId>perworldinventory</artifactId>
+			<version>1.11.5</version>
+			<scope>provided</scope>
+		</dependency>
 		
 		<!-- COMPILE -->
 		<dependency>
