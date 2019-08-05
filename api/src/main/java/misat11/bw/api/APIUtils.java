@@ -22,28 +22,36 @@ public class APIUtils {
 
 	public static String unhashFromInvisibleStringStartsWith(ItemStack stack, String startsWith) {
 		ItemMeta meta = stack.getItemMeta();
-		if (meta.hasLore()) {
-			List<String> lore = meta.getLore();
-			for (String s : lore) {
-				String unhidden = returnFromInvisibleString(s);
-				if (unhidden != null && unhidden.startsWith(startsWith)) {
-					return unhidden;
+		try {
+			if (meta.hasLore()) {
+				List<String> lore = meta.getLore();
+				for (String s : lore) {
+					String unhidden = returnFromInvisibleString(s);
+					if (unhidden.startsWith(startsWith)) {
+						return unhidden;
+					}
 				}
 			}
+		} catch (NullPointerException ignored) {
+			return null;
 		}
 		return null;
 	}
 
 	public static boolean unhashFromInvisibleString(ItemStack stack, String hash) {
 		ItemMeta meta = stack.getItemMeta();
-		if (meta.hasLore()) {
-			List<String> lore = meta.getLore();
-			for (String s : lore) {
-				String unhidden = returnFromInvisibleString(s);
-				if (unhidden != null && unhidden.equals(hash)) {
-					return true;
+		try {
+			if (meta.hasLore()) {
+				List<String> lore = meta.getLore();
+				for (String s : lore) {
+					String unhidden = returnFromInvisibleString(s);
+					if (unhidden.equals(hash)) {
+						return true;
+					}
 				}
 			}
+		} catch (NullPointerException ignored) {
+			return false;
 		}
 		return false;
 	}
