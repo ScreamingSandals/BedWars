@@ -13,6 +13,7 @@ softdepend:
 - HolographicDisplays
 - BarAPI
 - PerWorldInventory
+- Multiverse-Inventories
 
 # Contributors
 authors:

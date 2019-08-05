@@ -448,6 +448,11 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 					getServer().getPluginManager().registerEvents(new PerWorldInventoryLegacyListener(), this);
 				}
 			}
+			
+			// Multiverse inventories
+			if (Bukkit.getPluginManager().isPluginEnabled("Multiverse-Inventories")) {
+				getServer().getPluginManager().registerEvents(new MultiverseInventoriesListener(), this);
+			}
 		
 		
 		} catch (Throwable ignored) {
