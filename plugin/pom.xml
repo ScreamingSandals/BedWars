@@ -81,7 +81,7 @@
 
 	<build>
 		<directory>target</directory>
-		<finalName>BedWars-${project.version}</finalName>
+		<finalName>BedWars-${project.version}-${BUILD_NUMBER}</finalName>
 		<resources>
 			<resource>
 				<targetPath>.</targetPath>
