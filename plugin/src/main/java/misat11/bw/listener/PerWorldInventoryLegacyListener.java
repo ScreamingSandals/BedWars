@@ -12,13 +12,11 @@ public class PerWorldInventoryLegacyListener implements Listener {
 
 	@EventHandler
 	public void onInventoryChange(InventoryLoadEvent event) {
-		System.out.println("DEBUG: " + event.getEventName() + " " + event.getPlayer() + " changing world");
 		Player player = event.getPlayer();
 		if (Main.isPlayerGameProfileRegistered(player)) {
 			GamePlayer gPlayer = Main.getPlayerGameProfile(player);
 			if (gPlayer.getGame() != null || gPlayer.isTeleportingFromGame_justForInventoryPlugins) {
 				gPlayer.isTeleportingFromGame_justForInventoryPlugins = false;
-				System.out.println("DEBUG: cancelled");
 				event.setCancelled(true);
 			}
 		}
