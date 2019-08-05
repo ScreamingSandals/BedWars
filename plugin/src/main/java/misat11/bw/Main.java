@@ -30,6 +30,7 @@ import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -432,7 +433,25 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 		autoColoredMaterials.add("TERRACOTTA"); // FLATTENING ONLY
 		autoColoredMaterials.add("STAINED_GLASS");
 		autoColoredMaterials.add("STAINED_GLASS_PANE");
-
+		
+		try {
+			// Fixing bugs created by third party plugin
+			
+			// PerWorldInventory
+			if (Bukkit.getPluginManager().isPluginEnabled("PerWorldInventory")) {
+				Plugin pwi = Bukkit.getPluginManager().getPlugin("PerWorldInventory");
+				if (pwi.getClass().getName().equals("me.ebonjaeger.perworldinventory.PerWorldInventory")) {
+					// Kotlin version
+					getServer().getPluginManager().registerEvents(new PerWorldInventoryKotlinListener(), this);
+				} else {
+					
+				}
+			}
+		
+		
+		} catch (Throwable t) {
+			// maybe something here can cause exception
+		}
 	}
 
 	public void onDisable() {

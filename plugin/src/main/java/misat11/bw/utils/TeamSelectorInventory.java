@@ -87,7 +87,6 @@ public class TeamSelectorInventory implements Listener {
 		MapReader reader = event.getItem().getReader();
 		if (reader.containsKey("team")) {
 			Team team = (Team) reader.get("team");
-			System.out.println(team);
 			game.selectTeam(Main.getPlayerGameProfile(event.getPlayer()), team.getName());
 			event.getPlayer().closeInventory();
 		}
