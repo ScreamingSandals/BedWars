@@ -41,7 +41,7 @@ public class Golem extends SpecialItem implements misat11.bw.api.special.Golem {
 			golem.setCustomNameVisible(config.getBoolean("specials.golem.show-name", true));
 			entity = golem;
 
-			NMSUtils.makeMobTargetNearestAttackable(golem, "EntityPlayer", speed, followRange);
+			NMSUtils.makeMobAttackTarget(golem, speed, followRange, -1).attackNearestTarget(0, "EntityPlayer");
 
 			Main.registerGameEntity(golem, (misat11.bw.game.Game) game);
 			used = true;

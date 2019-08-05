@@ -43,18 +43,6 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>misat11.bw</groupId>
-			<artifactId>BedWars-API</artifactId>
-			<version>${bedwars.api}</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.zaxxer</groupId>
-			<artifactId>HikariCP</artifactId>
-			<version>3.3.0</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
 			<groupId>me.clip</groupId>
 			<artifactId>placeholderapi</artifactId>
 			<version>2.9.2</version>
@@ -81,6 +69,18 @@
 		
 		<!-- COMPILE -->
 		<dependency>
+			<groupId>misat11.bw</groupId>
+			<artifactId>BedWars-API</artifactId>
+			<version>${bedwars.api}</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.zaxxer</groupId>
+			<artifactId>HikariCP</artifactId>
+			<version>3.3.0</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
 			<groupId>misat11.lib.sgui</groupId>
 			<artifactId>SimpleGuiFormat</artifactId>
 			<version>0.0.8-snapshot6</version>
@@ -95,7 +95,7 @@
 		<dependency>
 			<groupId>misat11.lib.nms</groupId>
 			<artifactId>NMSUtils</artifactId>
-			<version>1.0.6</version>
+			<version>1.0.7</version>
 			<scope>compile</scope>
 		</dependency>
 	</dependencies>
