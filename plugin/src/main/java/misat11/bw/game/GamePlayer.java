@@ -14,6 +14,8 @@ public class GamePlayer {
 	private String latestGame = null;
 	
 	public boolean isSpectator = false;
+	
+	public boolean isTeleportingFromGame_justForInventoryPlugins = false;
 
 	private StoredInventory oldinventory = new StoredInventory();
 
@@ -79,6 +81,9 @@ public class GamePlayer {
 	}
 
 	public void restoreInv() {
+		isTeleportingFromGame_justForInventoryPlugins = true;
+		player.teleport(oldinventory.left);
+		
 		player.getInventory().setContents(oldinventory.inventory);
 		player.getInventory().setArmorContents(oldinventory.armor);
 
@@ -103,7 +108,6 @@ public class GamePlayer {
 			player.setAllowFlight(false);
 
 		player.updateInventory();
-		player.teleport(oldinventory.left);
 		player.resetPlayerTime();
 		player.resetPlayerWeather();
 	}
