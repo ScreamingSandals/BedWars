@@ -26,7 +26,7 @@ public class APIUtils {
 			List<String> lore = meta.getLore();
 			for (String s : lore) {
 				String unhidden = returnFromInvisibleString(s);
-				if (unhidden.startsWith(startsWith)) {
+				if (unhidden != null && unhidden.startsWith(startsWith)) {
 					return unhidden;
 				}
 			}
@@ -40,7 +40,7 @@ public class APIUtils {
 			List<String> lore = meta.getLore();
 			for (String s : lore) {
 				String unhidden = returnFromInvisibleString(s);
-				if (unhidden.equals(hash)) {
+				if (unhidden != null && unhidden.equals(hash)) {
 					return true;
 				}
 			}

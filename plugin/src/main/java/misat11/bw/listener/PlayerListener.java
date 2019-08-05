@@ -655,7 +655,7 @@ public class PlayerListener implements Listener {
 			GamePlayer gPlayer = Main.getPlayerGameProfile(player);
 			Game game = gPlayer.getGame();
 			CurrentTeam team = game.getPlayerTeam(gPlayer);
-			String message = event.getMessage();
+			String message = event.getMessage(); 
 			boolean spectator = gPlayer.isSpectator;
 
 			String playerName = player.getName();
@@ -718,7 +718,7 @@ public class PlayerListener implements Listener {
 				format = Main.getConfigurator().config.getString("chat.all-chat", "[ALL] ") + format;
 			}
 
-			event.setFormat(format + message);
+			event.setFormat(format + message.replaceAll("%", "%%")); // Fix using % in chat
 			Iterator<Player> recipients = event.getRecipients().iterator();
 			while (recipients.hasNext()) {
 				Player recipient = recipients.next();
