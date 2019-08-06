@@ -682,7 +682,7 @@ public class PlayerListener implements Listener {
 
 			if (Main.isVault()) {
 				Chat chat = Bukkit.getServer().getServicesManager()
-						.getRegistration(Chat.class).getProvider();
+						.load(Chat.class);
 				if (chat != null) {
 					format = format.replace("%prefix%", chat.getPlayerPrefix(player));
 					format = format.replace("%suffix%", chat.getPlayerSuffix(player));
