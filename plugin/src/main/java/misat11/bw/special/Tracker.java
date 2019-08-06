@@ -5,12 +5,14 @@ import misat11.bw.api.Game;
 import misat11.bw.api.RunningTeam;
 import misat11.bw.api.Team;
 import misat11.bw.game.GamePlayer;
+import misat11.bw.utils.MiscUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 
 import static misat11.lib.lang.I18n.i18n;
+import static misat11.lib.lang.I18n.i18nonly;
 
 public class Tracker extends SpecialItem implements misat11.bw.api.special.Tracker {
 	private Game game;
@@ -34,9 +36,9 @@ public class Tracker extends SpecialItem implements misat11.bw.api.special.Track
 					player.setCompassTarget(target.getLocation());
 
 					int distance = (int) player.getLocation().distance(target.getLocation());
-					player.sendMessage(i18n("specials_tracker_target_found").replace("%target%", target.getDisplayName()).replace("%distance%", String.valueOf(distance)));
+					MiscUtils.sendActionBarMessage(player, i18nonly("specials_tracker_target_found").replace("%target%", target.getDisplayName()).replace("%distance%", String.valueOf(distance)));
 				} else {
-					player.sendMessage(i18n("specials_tracker_no_target_found"));
+					MiscUtils.sendActionBarMessage(player, i18nonly("specials_tracker_no_target_found"));
 					player.setCompassTarget(game.getTeamOfPlayer(player).getTeamSpawn());
 				}
 			}

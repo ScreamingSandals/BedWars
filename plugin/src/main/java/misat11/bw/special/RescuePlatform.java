@@ -7,8 +7,7 @@ import misat11.bw.api.boss.StatusBar;
 import misat11.bw.boss.XPBar;
 import misat11.bw.game.TeamColor;
 import misat11.bw.utils.ColorChanger;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
+import misat11.bw.utils.MiscUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -20,7 +19,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.ArrayList;
 import java.util.List;
 
-import static misat11.lib.lang.I18n.i18n;
 import static misat11.lib.lang.I18n.i18nonly;
 
 public class RescuePlatform extends SpecialItem implements misat11.bw.api.special.RescuePlatform {
@@ -140,30 +138,17 @@ public class RescuePlatform extends SpecialItem implements misat11.bw.api.specia
 			game.registerSpecialItem(this);
 			runTask();
 
-			item.setAmount(item.getAmount() - 1);
-			player.updateInventory();
-
-			new BukkitRunnable() {
-				@Override
-				public void run() {
-					if (Main.isSpigot()) {
-						player.spigot().sendMessage(ChatMessageType.ACTION_BAR,
-								TextComponent.fromLegacyText(
-										i18nonly("specials_rescue_platform_created").replace("%time%", Integer.toString(breakingTime))));
-					} else {
-						player.sendMessage(i18n("specials_rescue_platform_created").replace("%time%", Integer.toString(breakingTime)));
-					}
-				}
-			}.runTask(Main.getInstance());
-
+			MiscUtils.sendActionBarMessage(player, i18nonly("specials_rescue_platform_created").replace("%time%", Integer.toString(breakingTime)));
 			setGameBar(false, player);
 
 			xpBar.addPlayer(player);
 			if (!xpBar.isVisible()) {
 				xpBar.setVisible(true);
 			}
-
 			xpBar.setProgress(1);
+
+			item.setAmount(item.getAmount() - 1);
+			player.updateInventory();
 		}
 	}
 

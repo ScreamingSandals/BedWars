@@ -8,7 +8,6 @@ import misat11.bw.api.GameStatus;
 import misat11.bw.api.events.BedwarsApplyPropertyToBoughtItem;
 import misat11.bw.game.GamePlayer;
 import misat11.bw.special.Tracker;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

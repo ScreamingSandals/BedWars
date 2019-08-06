@@ -3,6 +3,7 @@ package misat11.bw.special;
 import misat11.bw.api.Game;
 import misat11.bw.api.RunningTeam;
 import misat11.bw.api.Team;
+import misat11.bw.utils.MiscUtils;
 import misat11.bw.utils.Sounds;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -12,7 +13,7 @@ import org.bukkit.potion.PotionEffect;
 import java.util.List;
 import java.util.Map;
 
-import static misat11.lib.lang.I18n.i18n;
+import static misat11.lib.lang.I18n.i18nonly;
 
 public class Trap extends SpecialItem implements misat11.bw.api.special.Trap {
 
@@ -24,7 +25,7 @@ public class Trap extends SpecialItem implements misat11.bw.api.special.Trap {
 
 	public Trap(Game game, Player player, Team team, List<Map<String, Object>> trapData) {
 		super(game, player, team);
-		
+
 		this.trapData = trapData;
 		this.player = player;
 		this.team = team;
@@ -76,11 +77,10 @@ public class Trap extends SpecialItem implements misat11.bw.api.special.Trap {
 			}
 
 			for (Player p : game.getTeamOfPlayer(this.player).getConnectedPlayers()) {
-				p.sendMessage(i18n("specials_trap_caught_team").replace("%player%", player.getDisplayName()));
+				MiscUtils.sendActionBarMessage(p, i18nonly("specials_trap_caught_team").replace("%player%", player.getDisplayName()));
 			}
-
-			player.sendMessage(i18n("specials_trap_caught").replace("%team%", getTeam().getName()));
 		}
-	}
 
+		MiscUtils.sendActionBarMessage(player, i18nonly("specials_trap_caught").replace("%team%", getTeam().getName()));
+	}
 }

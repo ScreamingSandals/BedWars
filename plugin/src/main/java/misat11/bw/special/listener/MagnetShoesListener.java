@@ -1,16 +1,15 @@
 package misat11.bw.special.listener;
 
-import java.util.Random;
-
+import misat11.bw.Main;
+import misat11.bw.api.APIUtils;
+import misat11.bw.api.events.BedwarsApplyPropertyToBoughtItem;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 
-import misat11.bw.Main;
-import misat11.bw.api.APIUtils;
-import misat11.bw.api.events.BedwarsApplyPropertyToBoughtItem;
+import java.util.Random;
 
 public class MagnetShoesListener implements Listener {
 	
