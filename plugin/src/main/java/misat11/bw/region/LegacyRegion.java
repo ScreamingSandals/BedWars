@@ -5,13 +5,15 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.bukkit.Chunk;
+import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
-import org.bukkit.material.Bed;
+import org.bukkit.material.Colorable;
 import org.bukkit.material.Directional;
+import org.bukkit.material.Bed;
 import org.bukkit.material.Lever;
 import org.bukkit.material.MaterialData;
 import org.bukkit.material.Redstone;
@@ -23,6 +25,7 @@ public class LegacyRegion implements IRegion {
 	private HashMap<Block, BlockFace> breakedBlockFace = new HashMap<>();
 	private HashMap<Block, Boolean> breakedBlockPower = new HashMap<>();
 	private HashMap<Block, Material> breakedBlockTypes = new HashMap<>();
+	private HashMap<Block, DyeColor> breakedBlockColors = new HashMap<>();
 
 	@Override
 	public boolean isBlockAddedDuringGame(Location loc) {
@@ -42,6 +45,11 @@ public class LegacyRegion implements IRegion {
 
 		if (block.getData() instanceof Redstone) {
 			breakedBlockPower.put(loc.getBlock(), ((Redstone) block.getData()).isPowered());
+		}
+
+		if (block instanceof Colorable) {
+			// Save bed color on 1.12.x
+			breakedBlockColors.put(loc.getBlock(), ((Colorable) block).getColor());
 		}
 	}
 
@@ -101,12 +109,19 @@ public class LegacyRegion implements IRegion {
 			} else {
 				block.getState().update(true, true);
 			}
+
+			if (breakedBlockColors.containsKey(block) && block.getState() instanceof Colorable) {
+				// Update bed color on 1.12.x
+				((Colorable) block.getState()).setColor(breakedBlockColors.get(block));
+				block.getState().update(true, false);
+			}
 		}
 		breakedBlocks.clear();
 		breakedBlockData.clear();
 		breakedBlockFace.clear();
 		breakedBlockPower.clear();
 		breakedBlockTypes.clear();
+		breakedBlockColors.clear();
 	}
 
 	@Override
