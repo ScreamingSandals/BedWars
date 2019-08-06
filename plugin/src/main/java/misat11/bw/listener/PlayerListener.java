@@ -359,6 +359,11 @@ public class PlayerListener implements Listener {
 					player.teleport(game.getLobbySpawn());
 				}
 				event.setCancelled(true);
+			} else if (game.getStatus() == GameStatus.RUNNING){
+				if (event.getCause() == DamageCause.VOID) {
+					player.setHealth(0.5);
+				}
+
 			} else if (event instanceof EntityDamageByEntityEvent) {
 				EntityDamageByEntityEvent edbee = (EntityDamageByEntityEvent) event;
 				if (edbee.getDamager() instanceof Player) {
