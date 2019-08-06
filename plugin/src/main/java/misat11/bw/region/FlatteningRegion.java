@@ -15,27 +15,27 @@ import org.bukkit.block.data.type.Bed;
 import org.bukkit.block.data.type.Bed.Part;
 
 public class FlatteningRegion implements IRegion {
-	private List<Location> buildedBlocks = new ArrayList<>();
-	private Map<Location, BlockData> breakedOriginalBlocks = new HashMap<>();
+	private List<Location> builtBlocks = new ArrayList<>();
+	private Map<Location, BlockData> brokenOriginalBlocks = new HashMap<>();
 
 	@Override
 	public boolean isBlockAddedDuringGame(Location loc) {
-		return buildedBlocks.contains(loc);
+		return builtBlocks.contains(loc);
 	}
 
 	@Override
 	public void putOriginalBlock(Location loc, BlockState block) {
-		breakedOriginalBlocks.put(loc, block.getBlockData());
+		brokenOriginalBlocks.put(loc, block.getBlockData());
 	}
 
 	@Override
-	public void addBuildedDuringGame(Location loc) {
-		buildedBlocks.add(loc);
+	public void addBuiltDuringGame(Location loc) {
+		builtBlocks.add(loc);
 	}
 
 	@Override
-	public void removeBlockBuildedDuringGame(Location loc) {
-		buildedBlocks.remove(loc);
+	public void removeBlockBuiltDuringGame(Location loc) {
+		builtBlocks.remove(loc);
 	}
 
 	@Override
@@ -50,22 +50,22 @@ public class FlatteningRegion implements IRegion {
 
 	@Override
 	public void regen() {
-		for (Location block : buildedBlocks) {
+		for (Location block : builtBlocks) {
 			Chunk chunk = block.getChunk();
 			if (!chunk.isLoaded()) {
 				chunk.load();
 			}
 			block.getBlock().setType(Material.AIR);
 		}
-		buildedBlocks.clear();
-		for (Map.Entry<Location, BlockData> block : breakedOriginalBlocks.entrySet()) {
+		builtBlocks.clear();
+		for (Map.Entry<Location, BlockData> block : brokenOriginalBlocks.entrySet()) {
 			Chunk chunk = block.getKey().getChunk();
 			if (!chunk.isLoaded()) {
 				chunk.load();
 			}
 			block.getKey().getBlock().setBlockData(block.getValue());
 		}
-		breakedOriginalBlocks.clear();
+		brokenOriginalBlocks.clear();
 	}
 
 	@Override
@@ -76,5 +76,23 @@ public class FlatteningRegion implements IRegion {
 	@Override
 	public Block getBedNeighbor(Block head) {
 		return FlatteningBedUtils.getBedNeighbor(head);
+	}
+
+	@Override
+	public boolean isChunkUsed(Chunk chunk) {
+		if (chunk == null) {
+			return false;
+		}
+		for (Location loc : builtBlocks) {
+			if (chunk.equals(loc.getChunk())) {
+				return true;
+			}
+		}
+		for (Location loc : brokenOriginalBlocks.keySet()) {
+			if (chunk.equals(loc.getChunk())) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

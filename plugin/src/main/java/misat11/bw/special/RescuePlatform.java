@@ -81,7 +81,7 @@ public class RescuePlatform extends SpecialItem implements misat11.bw.api.specia
 						block.getChunk().load(true);
 						block.setType(Material.AIR);
 
-						game.getRegion().removeBlockBuildedDuringGame(block.getLocation());
+						game.getRegion().removeBlockBuiltDuringGame(block.getLocation());
 						game.unregisterSpecialItem(RescuePlatform.this);
 
 						xpBar.setVisible(false);
@@ -129,7 +129,7 @@ public class RescuePlatform extends SpecialItem implements misat11.bw.api.specia
 				placedBlock.setType(ColorChanger.changeStackColor(buildingMaterial, TeamColor.fromApiColor(team.getColor())));
 			}
 
-			game.getRegion().addBuildedDuringGame(placedBlock.getLocation());
+			game.getRegion().addBuiltDuringGame(placedBlock.getLocation());
 
 			addBlockToList(placedBlock);
 		}

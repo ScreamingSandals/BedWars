@@ -788,7 +788,7 @@ public class PlayerListener implements Listener {
 
 			if (game.getStatus() == GameStatus.RUNNING) {
 				if (block.getType() == Material.AIR || game.getRegion().isBlockAddedDuringGame(block.getLocation())) {
-					game.getRegion().addBuildedDuringGame(block.getLocation());
+					game.getRegion().addBuiltDuringGame(block.getLocation());
 				} else {
 					event.setCancelled(true);
 				}

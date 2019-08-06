@@ -19,79 +19,79 @@ import org.bukkit.material.MaterialData;
 import org.bukkit.material.Redstone;
 
 public class LegacyRegion implements IRegion {
-	private List<Location> buildedBlocks = new ArrayList<>();
-	private List<Block> breakedBlocks = new ArrayList<>();
-	private HashMap<Block, Byte> breakedBlockData = new HashMap<>();
-	private HashMap<Block, BlockFace> breakedBlockFace = new HashMap<>();
-	private HashMap<Block, Boolean> breakedBlockPower = new HashMap<>();
-	private HashMap<Block, Material> breakedBlockTypes = new HashMap<>();
-	private HashMap<Block, DyeColor> breakedBlockColors = new HashMap<>();
+	private List<Location> builtBlocks = new ArrayList<>();
+	private List<Block> brokenBlocks = new ArrayList<>();
+	private HashMap<Block, Byte> brokenBlockData = new HashMap<>();
+	private HashMap<Block, BlockFace> brokenBlockFace = new HashMap<>();
+	private HashMap<Block, Boolean> brokenBlockPower = new HashMap<>();
+	private HashMap<Block, Material> brokenBlockTypes = new HashMap<>();
+	private HashMap<Block, DyeColor> brokenBlockColors = new HashMap<>();
 
 	@Override
 	public boolean isBlockAddedDuringGame(Location loc) {
-		return buildedBlocks.contains(loc);
+		return builtBlocks.contains(loc);
 	}
 
 	@Override
 	public void putOriginalBlock(Location loc, BlockState block) {
-		breakedBlocks.add(loc.getBlock());
+		brokenBlocks.add(loc.getBlock());
 
 		if (block.getData() instanceof Directional) {
-			breakedBlockFace.put(loc.getBlock(), ((Directional) block.getData()).getFacing());
+			brokenBlockFace.put(loc.getBlock(), ((Directional) block.getData()).getFacing());
 		}
 
-		breakedBlockTypes.put(loc.getBlock(), block.getType());
-		breakedBlockData.put(loc.getBlock(), block.getData().getData());
+		brokenBlockTypes.put(loc.getBlock(), block.getType());
+		brokenBlockData.put(loc.getBlock(), block.getData().getData());
 
 		if (block.getData() instanceof Redstone) {
-			breakedBlockPower.put(loc.getBlock(), ((Redstone) block.getData()).isPowered());
+			brokenBlockPower.put(loc.getBlock(), ((Redstone) block.getData()).isPowered());
 		}
 
 		if (block instanceof Colorable) {
 			// Save bed color on 1.12.x
-			breakedBlockColors.put(loc.getBlock(), ((Colorable) block).getColor());
+			brokenBlockColors.put(loc.getBlock(), ((Colorable) block).getColor());
 		}
 	}
 
 	@Override
-	public void addBuildedDuringGame(Location loc) {
-		buildedBlocks.add(loc);
+	public void addBuiltDuringGame(Location loc) {
+		builtBlocks.add(loc);
 	}
 
 	@Override
-	public void removeBlockBuildedDuringGame(Location loc) {
-		buildedBlocks.remove(loc);
+	public void removeBlockBuiltDuringGame(Location loc) {
+		builtBlocks.remove(loc);
 
 	}
 
 	@Override
 	public void regen() {
-		for (Location block : buildedBlocks) {
+		for (Location block : builtBlocks) {
 			Chunk chunk = block.getChunk();
 			if (!chunk.isLoaded()) {
 				chunk.load();
 			}
 			block.getBlock().setType(Material.AIR);
 		}
-		buildedBlocks.clear();
+		builtBlocks.clear();
 
-		for (Block block : breakedBlocks) {
+		for (Block block : brokenBlocks) {
 			Chunk chunk = block.getChunk();
 			if (!chunk.isLoaded()) {
 				chunk.load();
 			}
-			block.setType(breakedBlockTypes.get(block));
+			block.setType(brokenBlockTypes.get(block));
 			try {
 				// The method is no longer in API, but in legacy versions exists
-				Block.class.getMethod("setData", byte.class).invoke(block, breakedBlockData.get(block));
+				Block.class.getMethod("setData", byte.class).invoke(block, brokenBlockData.get(block));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 
-			if (breakedBlockFace.containsKey(block)) {
+			if (brokenBlockFace.containsKey(block)) {
 				MaterialData data = block.getState().getData();
 				if (data instanceof Directional) {
-					((Directional) data).setFacingDirection(breakedBlockFace.get(block));
+					((Directional) data).setFacingDirection(brokenBlockFace.get(block));
 					block.getState().setData(data);
 				}
 			}
@@ -100,7 +100,7 @@ public class LegacyRegion implements IRegion {
 				Lever attach = (Lever) block.getState().getData();
 				BlockState supportState = block.getState();
 				BlockState initalState = block.getState();
-				attach.setPowered(breakedBlockPower.get(block));
+				attach.setPowered(brokenBlockPower.get(block));
 				block.getState().setData(attach);
 
 				supportState.setType(Material.AIR);
@@ -110,18 +110,18 @@ public class LegacyRegion implements IRegion {
 				block.getState().update(true, true);
 			}
 
-			if (breakedBlockColors.containsKey(block) && block.getState() instanceof Colorable) {
+			if (brokenBlockColors.containsKey(block) && block.getState() instanceof Colorable) {
 				// Update bed color on 1.12.x
-				((Colorable) block.getState()).setColor(breakedBlockColors.get(block));
+				((Colorable) block.getState()).setColor(brokenBlockColors.get(block));
 				block.getState().update(true, false);
 			}
 		}
-		breakedBlocks.clear();
-		breakedBlockData.clear();
-		breakedBlockFace.clear();
-		breakedBlockPower.clear();
-		breakedBlockTypes.clear();
-		breakedBlockColors.clear();
+		brokenBlocks.clear();
+		brokenBlockData.clear();
+		brokenBlockFace.clear();
+		brokenBlockPower.clear();
+		brokenBlockTypes.clear();
+		brokenBlockColors.clear();
 	}
 
 	@Override
@@ -143,6 +143,24 @@ public class LegacyRegion implements IRegion {
 	@Override
 	public Block getBedNeighbor(Block head) {
 		return LegacyBedUtils.getBedNeighbor(head);
+	}
+
+	@Override
+	public boolean isChunkUsed(Chunk chunk) {
+		if (chunk == null) {
+			return false;
+		}
+		for (Location loc : builtBlocks) {
+			if (chunk.equals(loc.getChunk())) {
+				return true;
+			}
+		}
+		for (Block block : brokenBlocks) {
+			if (chunk.equals(block.getChunk())) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

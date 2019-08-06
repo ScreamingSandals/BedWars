@@ -159,7 +159,7 @@ public class WorldListener implements Listener {
 					Block block = event.getToBlock();
 					if (block.getType() == Material.AIR
 							|| game.getRegion().isBlockAddedDuringGame(block.getLocation())) {
-						game.getRegion().addBuildedDuringGame(block.getLocation());
+						game.getRegion().addBuiltDuringGame(block.getLocation());
 					} else {
 						event.setCancelled(true);
 					}
@@ -189,7 +189,7 @@ public class WorldListener implements Listener {
 									game.getRegion().putOriginalBlock(event.getBlock().getLocation(),
 											event.getBlock().getState());
 								}
-								game.getRegion().addBuildedDuringGame(event.getBlock().getLocation());
+								game.getRegion().addBuiltDuringGame(event.getBlock().getLocation());
 							}
 						}
 						return; // allow block fall

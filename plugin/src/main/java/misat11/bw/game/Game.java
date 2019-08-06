@@ -309,7 +309,7 @@ public class Game implements misat11.bw.api.Game {
 				return false;
 			}
 		}
-		region.addBuildedDuringGame(block.getLocation());
+		region.addBuiltDuringGame(block.getLocation());
 
 		if (block.getType() == Material.ENDER_CHEST) {
 			CurrentTeam team = getPlayerTeam(player);
@@ -346,7 +346,7 @@ public class Game implements misat11.bw.api.Game {
 		}
 
 		if (region.isBlockAddedDuringGame(block.getLocation())) {
-			region.removeBlockBuildedDuringGame(block.getLocation());
+			region.removeBlockBuiltDuringGame(block.getLocation());
 
 			if (block.getType() == Material.ENDER_CHEST) {
 				CurrentTeam team = getTeamOfChest(block);

@@ -1,5 +1,6 @@
 package misat11.bw.api;
 
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -10,9 +11,19 @@ public interface Region {
 	
 	public void putOriginalBlock(Location loc, BlockState block);
 	
-	public void addBuildedDuringGame(Location loc);
+	public void addBuiltDuringGame(Location loc);
 	
-	public void removeBlockBuildedDuringGame(Location loc);
+	/* Archaic form of built */
+	default void addBuildedDuringGame(Location loc) {
+		addBuiltDuringGame(loc);
+	}
+	
+	public void removeBlockBuiltDuringGame(Location loc);
+
+	/* Archaic form of built */
+	default void removeBlockBuildedDuringGame(Location loc) {
+		removeBlockBuiltDuringGame(loc);
+	}
 	
 	public boolean isLiquid(Material material);
 	
@@ -21,4 +32,6 @@ public interface Region {
 	public boolean isBedHead(BlockState block);
 	
 	public Block getBedNeighbor(Block head);
+	
+	public boolean isChunkUsed(Chunk chunk);
 }
