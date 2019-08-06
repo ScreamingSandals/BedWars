@@ -16,10 +16,10 @@ import misat11.bw.special.listener.WarpPowderListener;
 public class SpecialRegister {
 
 	public static void onEnable(Plugin plugin) {
-		plugin.getServer().getPluginManager().registerEvents(new ArrowBlockerListener(), plugin); // TODO
+		plugin.getServer().getPluginManager().registerEvents(new ArrowBlockerListener(), plugin);
 		plugin.getServer().getPluginManager().registerEvents(new GolemListener(), plugin);
 		plugin.getServer().getPluginManager().registerEvents(new LuckyBlockAddonListener(), plugin);
-		plugin.getServer().getPluginManager().registerEvents(new MagnetShoesListener(), plugin); // TODO
+		plugin.getServer().getPluginManager().registerEvents(new MagnetShoesListener(), plugin);
 		plugin.getServer().getPluginManager().registerEvents(new ProtectionWallListener(), plugin); // TODO
 		plugin.getServer().getPluginManager().registerEvents(new RescuePlatformListener(), plugin);
 		plugin.getServer().getPluginManager().registerEvents(new TNTSheepListener(), plugin);

@@ -106,6 +106,7 @@ resources:
 # Special items
 specials:
   rescue-platform:
+    is-breakable: false
     break-time: 10
     distance: 1
     material: GLASS

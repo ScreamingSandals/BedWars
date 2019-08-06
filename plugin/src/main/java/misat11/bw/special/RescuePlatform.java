@@ -3,8 +3,12 @@ package misat11.bw.special;
 import misat11.bw.Main;
 import misat11.bw.api.Game;
 import misat11.bw.api.Team;
+import misat11.bw.api.boss.StatusBar;
+import misat11.bw.boss.XPBar;
 import misat11.bw.game.TeamColor;
 import misat11.bw.utils.ColorChanger;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -17,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static misat11.lib.lang.I18n.i18n;
+import static misat11.lib.lang.I18n.i18nonly;
 
 public class RescuePlatform extends SpecialItem implements misat11.bw.api.special.RescuePlatform {
 	private Game game;
@@ -30,6 +35,7 @@ public class RescuePlatform extends SpecialItem implements misat11.bw.api.specia
 	private int useDelay;
 	private int breakingTime;
 	private int platformLivingTime;
+	private XPBar xpBar;
 
 	public RescuePlatform(Game game, Player player, Team team, ItemStack item, int delay) {
 		super(game, player, team);
@@ -38,6 +44,8 @@ public class RescuePlatform extends SpecialItem implements misat11.bw.api.specia
 		this.team = team;
 		this.useDelay = delay;
 		this.item = item;
+
+		this.xpBar = new XPBar();
 	}
 
 	@Override
@@ -47,7 +55,7 @@ public class RescuePlatform extends SpecialItem implements misat11.bw.api.specia
 
 	@Override
 	public boolean canBreak() {
-		return Main.getConfigurator().config.getBoolean("specials.rescue-platform.is-breakable", true);
+		return Main.getConfigurator().config.getBoolean("specials.rescue-platform.is-breakable", false);
 	}
 
 	@Override
@@ -67,10 +75,8 @@ public class RescuePlatform extends SpecialItem implements misat11.bw.api.specia
 			@Override
 			public void run() {
 				platformLivingTime++;
-
-				if (platformLivingTime == 5) {
-					player.sendMessage(i18n("specials_rescue_platform_destroy").replace("%time%", Integer.toString(platformLivingTime)));
-				}
+				double xpTime = ((double)breakingTime - platformLivingTime) / breakingTime;
+				xpBar.setProgress(xpTime);
 
 				if (platformLivingTime == breakingTime) {
 					for (Block block : RescuePlatform.this.platformBlocks) {
@@ -80,6 +86,9 @@ public class RescuePlatform extends SpecialItem implements misat11.bw.api.specia
 						game.getRegion().removeBlockBuildedDuringGame(block.getLocation());
 						game.unregisterSpecialItem(RescuePlatform.this);
 
+						xpBar.setVisible(false);
+						setGameBar(true);
+						xpBar.removePlayer(player);
 						this.cancel();
 					}
 				}
@@ -134,7 +143,34 @@ public class RescuePlatform extends SpecialItem implements misat11.bw.api.specia
 			item.setAmount(item.getAmount() - 1);
 			player.updateInventory();
 
-			player.sendMessage(i18n("specials_rescue_platform_created").replace("%time%", Integer.toString(breakingTime)));
+			new BukkitRunnable() {
+				@Override
+				public void run() {
+					if (Main.isSpigot()) {
+						player.spigot().sendMessage(ChatMessageType.ACTION_BAR,
+								TextComponent.fromLegacyText(
+										i18nonly("specials_rescue_platform_created").replace("%time%", Integer.toString(breakingTime))));
+					} else {
+						player.sendMessage(i18n("specials_rescue_platform_created").replace("%time%", Integer.toString(breakingTime)));
+					}
+				}
+			}.runTask(Main.getInstance());
+
+			setGameBar(false);
+
+			xpBar.addPlayer(player);
+			if (!xpBar.isVisible()) {
+				xpBar.setVisible(true);
+			}
+
+			xpBar.setProgress(1);
+		}
+	}
+
+	private void setGameBar(boolean visible) {
+		if (game.getStatusBar() instanceof XPBar) {
+			StatusBar gameBar = game.getStatusBar();
+			gameBar.setVisible(visible);
 		}
 	}
 }

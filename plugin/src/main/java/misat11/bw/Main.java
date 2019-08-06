@@ -235,7 +235,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 	}
 
 	public static List<String> getAllSpawnerTypes() {
-		return new ArrayList<String>(instance.spawnerTypes.keySet());
+		return new ArrayList<>(instance.spawnerTypes.keySet());
 	}
 
 	public static List<String> getGameNames() {
@@ -336,11 +336,10 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 					hologramInteraction.loadHolograms();
 				}
 			}
-		} catch (Throwable t) {
-
+		} catch (Throwable ignored) {
 		}
 		
-		commands = new HashMap<String, BaseCommand>();
+		commands = new HashMap<>();
 		new AddholoCommand();
 		new AdminCommand();
 		new HelpCommand();

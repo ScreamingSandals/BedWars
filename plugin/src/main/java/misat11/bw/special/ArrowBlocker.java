@@ -63,7 +63,6 @@ public class ArrowBlocker extends SpecialItem implements misat11.bw.api.special.
 			@Override
 			public void run() {
 				usedTime++;
-
 				if (usedTime == protectionTime) {
 					isActivated = false;
 					player.sendMessage(i18n("specials_arrow_blocker_ended"));
