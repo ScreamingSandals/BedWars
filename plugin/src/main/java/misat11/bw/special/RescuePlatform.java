@@ -87,7 +87,7 @@ public class RescuePlatform extends SpecialItem implements misat11.bw.api.specia
 						game.unregisterSpecialItem(RescuePlatform.this);
 
 						xpBar.setVisible(false);
-						setGameBar(true);
+						setGameBar(true, player);
 						xpBar.removePlayer(player);
 						this.cancel();
 					}
@@ -156,7 +156,7 @@ public class RescuePlatform extends SpecialItem implements misat11.bw.api.specia
 				}
 			}.runTask(Main.getInstance());
 
-			setGameBar(false);
+			setGameBar(false, player);
 
 			xpBar.addPlayer(player);
 			if (!xpBar.isVisible()) {
@@ -167,10 +167,14 @@ public class RescuePlatform extends SpecialItem implements misat11.bw.api.specia
 		}
 	}
 
-	private void setGameBar(boolean visible) {
+	private void setGameBar(boolean visible, Player player) {
 		if (game.getStatusBar() instanceof XPBar) {
 			StatusBar gameBar = game.getStatusBar();
-			gameBar.setVisible(visible);
+			if (visible) {
+				gameBar.addPlayer(player);
+			} else {
+				gameBar.removePlayer(player);
+			}
 		}
 	}
 }
