@@ -27,7 +27,7 @@ public class XPBar implements misat11.bw.api.boss.XPBar {
 
 	@Override
 	public void removePlayer(Player player) {
-		if (!players.contains(player)) {
+		if (players.contains(player)) {
 			players.remove(player);
 			NMSUtils.fakeExp(player, player.getExp(), player.getLevel());
 		}
