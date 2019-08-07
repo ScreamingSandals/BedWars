@@ -94,6 +94,12 @@ public interface BedwarsAPI {
 	 * @return String of Bedwars Version
 	 */
 	public String getBedwarsVersion();
+	
+	/**
+	 * 
+	 * @return Color changer for coloring ItemStacks
+	 */
+	public ColorChanger getColorChanger();
 
 	/**
 	 * 

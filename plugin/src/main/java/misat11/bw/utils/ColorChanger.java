@@ -6,7 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 
-public class ColorChanger {
+public class ColorChanger implements misat11.bw.api.ColorChanger {
     public static ItemStack changeLegacyStackColor(ItemStack itemStack, TeamColor teamColor) {
         Material material = itemStack.getType();
         String materialName = material.name();
@@ -57,4 +57,17 @@ public class ColorChanger {
         }
         return itemStack;
     }
+
+	@Override
+	public ItemStack applyColor(misat11.bw.api.TeamColor apiColor, ItemStack stack) {
+		TeamColor color = TeamColor.fromApiColor(apiColor);
+		Material material = stack.getType();
+		if (Main.isLegacy()) {
+			stack = changeLegacyStackColor(stack, color);
+		} else {
+			stack.setType(changeStackColor(material, color));
+		}
+		stack = changeLeatherArmorColor(stack, color);
+		return stack;
+	}
 }

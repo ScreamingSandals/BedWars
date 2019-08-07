@@ -1,6 +1,7 @@
 package misat11.bw;
 
 import misat11.bw.api.BedwarsAPI;
+import misat11.bw.api.ColorChanger;
 import misat11.bw.api.GameStatus;
 import misat11.bw.api.GameStore;
 import misat11.bw.commands.*;
@@ -566,5 +567,10 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 	@Override
 	public String getBedwarsVersion() {
 		return version;
+	}
+
+	@Override
+	public ColorChanger getColorChanger() {
+		return new misat11.bw.utils.ColorChanger();
 	}
 }
