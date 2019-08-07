@@ -2792,6 +2792,4 @@ public class Game implements misat11.bw.api.Game {
 	public boolean isProtectionActive(Player player) {
 		return (this.respawnProtectionMap.containsKey(player));
 	}
-		return gamePlayerList;
-	}
 }
