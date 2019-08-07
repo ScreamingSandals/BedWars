@@ -329,15 +329,19 @@ public class Configurator {
 
 	public Material getDefinedMaterial(String path, String def) {
 		Material material = Material.getMaterial(def);
+		String configString = config.getString(path);
 
-		if (config.isSet(path)) {
-			Object obj = config.get(path);
-
-			if (obj instanceof Material) {
-				material = (Material) obj;
+		if (configString != null) {
+			try {
+				Material mat = Material.getMaterial(configString);
+				if (mat != null) {
+					material = mat;
+				}
+			} catch (NullPointerException e) {
+				System.out.println("Wrong material configured on " + path);
+				e.printStackTrace();
 			}
 		}
-
 		return material;
 	}
 }
