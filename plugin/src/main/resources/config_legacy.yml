@@ -103,6 +103,11 @@ resources:
     color: GOLD
     spread: 1.0
 
+# respawn protection
+respawn:
+  protection-enabled: true
+  protection-time: 10
+
 # Special items
 specials:
   action-bar-messages: true

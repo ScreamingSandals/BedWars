@@ -37,6 +37,8 @@ bossbar_running: "§aGame started! Good luck!"
 you_are_already_in_some_game: "§cYou are already in some game."
 you_are_not_in_game_yet: "§cYou haven't been in any game yet."
 game_is_gone: "§cLooks like the game you were in is no longer in this world."
+respawn_protection_remaining: "§aRespawn protection will be gone in §f%time% §aseconds!"
+respawn_protection_end: "§cRespawn protection is gone!"
 
 vip_not_enough_players: "§cNot enough players in arena!"
 

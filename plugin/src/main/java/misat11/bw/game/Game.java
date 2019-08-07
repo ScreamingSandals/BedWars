@@ -61,6 +61,7 @@ public class Game implements misat11.bw.api.Game {
 	private Location specSpawn;
 	private List<Team> teams = new ArrayList<>();
 	private List<ItemSpawner> spawners = new ArrayList<>();
+	private Map<Player, RespawnProtection> respawnProtectionMap = new HashMap<>();
 	private int pauseCountdown;
 	private int gameTime;
 	private int minPlayers;
@@ -1028,14 +1029,17 @@ public class Game implements misat11.bw.api.Game {
 		if (status == GameStatus.DISABLED) {
 			return;
 		}
+
 		if (status == GameStatus.REBUILDING) {
 			player.sendMessage(i18n("game_is_rebuilding").replace("%arena%", this.name));
 			return;
 		}
+
 		if (status == GameStatus.RUNNING || status == GameStatus.GAME_END_CELEBRATING) {
 			player.sendMessage(i18n("game_already_running").replace("%arena%", this.name));
 			return;
 		}
+
 		if (players.size() >= calculatedMaxPlayers) {
 			player.sendMessage(i18n("game_is_full").replace("%arena%", this.name));
 			return;
@@ -2760,5 +2764,34 @@ public class Game implements misat11.bw.api.Game {
 			}
 		}
 		return false;
+	}
+
+	public RespawnProtection addProtectedPlayer(Player player) {
+		int time = Main.getConfigurator().config.getInt("respawn.protection-time", 10);
+
+		RespawnProtection respawnProtection = new RespawnProtection(this, player, time);
+		respawnProtectionMap.put(player, respawnProtection);
+
+		return respawnProtection;
+	}
+
+	public void removeProtectedPlayer(Player player) {
+		RespawnProtection respawnProtection = respawnProtectionMap.get(player);
+		if (respawnProtection == null) {
+			return;
+		}
+
+		try {
+			respawnProtection.cancel();
+		} catch (Exception ignored) {
+		}
+
+		respawnProtectionMap.remove(player);
+	}
+
+	public boolean isProtectionActive(Player player) {
+		return (this.respawnProtectionMap.containsKey(player));
+	}
+		return gamePlayerList;
 	}
 }

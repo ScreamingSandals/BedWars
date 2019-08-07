@@ -211,6 +211,8 @@ public class Configurator {
 		checkOrSetConfig(modify, "vault.reward.kill", 5);
 		checkOrSetConfig(modify, "vault.reward.win", 20);
 		checkOrSetConfig(modify, "resources", new ArrayList<>());
+		checkOrSetConfig(modify, "respawn.protection-enabled", true);
+		checkOrSetConfig(modify, "respawn.protection-time",10);
 		checkOrSetConfig(modify, "specials.action-bar-messages", true);
 		checkOrSetConfig(modify, "specials.rescue-platform.is-breakable", false);
 		checkOrSetConfig(modify, "specials.rescue-platform.break-time", 10);

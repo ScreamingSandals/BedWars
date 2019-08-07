@@ -6,7 +6,7 @@ item_shop_name: "Obchod"
 join: "%name% §ase připojil do arény!§r §7[§a%players%§7/§a%maxplayers%§7]"
 leave: "%name% §copustil arénu!"
 game_already_running: "§cHra §7%arena% §cjiž běží! Nelze se připojit do probíhající hry!"
-game_is_full: "§cHra §7%arena% §cje již plná! Prosím vyčkejte na další hru!"
+game_is_full: "§cHra §7%arena% §cje již plná. Prosím vyčkej na další hru!"
 
 unknown_command: "§cPříkaz neznámý! Zadej §4/bw help §cpro nápovědu!"
 unknown_usage: "§cNesprávný počet parametrů nebo neznámé parametry! Zadej §4/bw help §cpro nápovědu!"
@@ -37,6 +37,8 @@ bossbar_running: "§aHra začala! Hodně štěstí!"
 you_are_already_in_some_game: "§cJiž v nějaké hře jsi."
 you_are_not_in_game_yet: "§cJeště jste v žádné hře nebyl."
 game_is_gone: "§cVypadá to, že hra, ve které jste byl, už není."
+respawn_protection_remaining: "§aRespawn ochrana vyprší za §f%time% §asekund!"
+respawn_protection_end: "§cRespawn ochrana vypršela!"
 
 vip_not_enough_players: "§cV aréně není dostatek hráčů!"
 

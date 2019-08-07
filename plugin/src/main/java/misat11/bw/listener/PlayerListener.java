@@ -162,7 +162,9 @@ public class PlayerListener implements Listener {
 	public void onPlayerRespawn(PlayerRespawnEvent event) {
 		if (Main.isPlayerInGame(event.getPlayer())) {
 			GamePlayer gPlayer = Main.getPlayerGameProfile(event.getPlayer());
-			if (gPlayer.getGame().getStatus() == GameStatus.WAITING) {
+			Game game = gPlayer.getGame();
+
+			if (game.getStatus() == GameStatus.WAITING) {
 				event.setRespawnLocation(gPlayer.getGame().getLobbySpawn());
 				return;
 			}
@@ -170,6 +172,12 @@ public class PlayerListener implements Listener {
 				event.setRespawnLocation(gPlayer.getGame().makeSpectator(gPlayer));
 			} else {
 				event.setRespawnLocation(gPlayer.getGame().getPlayerTeam(gPlayer).teamInfo.spawn);
+
+				if (Main.getConfigurator().config.getBoolean("respawn.protection-enabled", true)) {
+					RespawnProtection respawnProtection = game.addProtectedPlayer(gPlayer.player);
+					respawnProtection.runProtection();
+				}
+
 				SpawnEffects.spawnEffect(gPlayer.getGame(), gPlayer.player, "game-effects.respawn");
 				if (gPlayer.getGame().getOriginalOrInheritedPlayerRespawnItems()) {
 					List<ItemStack> givedGameStartItems = (List<ItemStack>) Main.getConfigurator().config
@@ -360,6 +368,11 @@ public class PlayerListener implements Listener {
 				}
 				event.setCancelled(true);
 			} else if (game.getStatus() == GameStatus.RUNNING){
+				if (game.isProtectionActive(player) && event.getCause() != DamageCause.VOID) {
+					event.setCancelled(true);
+					return;
+				}
+
 				if (event.getCause() == DamageCause.VOID) {
 					player.setHealth(0.5);
 				}
