@@ -105,6 +105,7 @@ resources:
 
 # Special items
 specials:
+  action-bar-messages: true
   rescue-platform:
     is-breakable: false
     break-time: 10

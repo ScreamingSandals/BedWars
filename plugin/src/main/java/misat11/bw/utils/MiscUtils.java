@@ -21,7 +21,7 @@ public class MiscUtils {
         new BukkitRunnable() {
             @Override
             public void run() {
-                if (Main.isSpigot() && !Main.isLegacy()) {
+                if (Main.isSpigot() && !Main.isLegacy() && Main.getConfigurator().config.getBoolean("specials.action-bar-messages")) {
                     player.spigot().sendMessage(ChatMessageType.ACTION_BAR,
                             TextComponent.fromLegacyText(message));
                 } else {
