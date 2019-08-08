@@ -113,6 +113,14 @@ specials:
     break-time: 10
     distance: 1
     material: GLASS
+  protection-wall:
+    is-breakable: false
+    delay: 20
+    break-time: 0
+    width: 5
+    height: 3
+    distance: 2
+    material: CUT_SANDSTONE
   tntsheep:
     explosion-time: 8
   arrow-blocker:

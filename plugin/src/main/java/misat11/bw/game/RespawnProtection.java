@@ -5,7 +5,7 @@ import misat11.bw.utils.MiscUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import static misat11.lib.lang.I18n.i18n;
+import static misat11.lib.lang.I18n.i18nonly;
 
 public class RespawnProtection extends BukkitRunnable {
     private Game game;
@@ -21,11 +21,11 @@ public class RespawnProtection extends BukkitRunnable {
     @Override
     public void run() {
         if (length > 0) {
-            MiscUtils.sendActionBarMessage(player, i18n("respawn_protection_remaining").replace("%time%", String.valueOf(this.length)));
+            MiscUtils.sendActionBarMessage(player, i18nonly("respawn_protection_remaining").replace("%time%", String.valueOf(this.length)));
 
         }
         if (length <= 0) {
-            MiscUtils.sendActionBarMessage(player, i18n("respawn_protection_end"));
+            MiscUtils.sendActionBarMessage(player, i18nonly("respawn_protection_end"));
             game.removeProtectedPlayer(player);
         }
         length--;

@@ -218,6 +218,13 @@ public class Configurator {
 		checkOrSetConfig(modify, "specials.rescue-platform.break-time", 10);
 		checkOrSetConfig(modify, "specials.rescue-platform.distance", 1);
 		checkOrSetConfig(modify, "specials.rescue-platform.material", "GLASS");
+		checkOrSetConfig(modify, "specials.protection-wall.is-breakable", false);
+		checkOrSetConfig(modify, "specials.protection-wall.delay", 20);
+		checkOrSetConfig(modify, "specials.protection-wall.break-time", 0);
+		checkOrSetConfig(modify, "specials.protection-wall.width", 5);
+		checkOrSetConfig(modify, "specials.protection-wall.height", 3);
+		checkOrSetConfig(modify, "specials.protection-wall.distance", 2);
+		checkOrSetConfig(modify, "specials.protection-wall.material", "CUT_SANDSTONE");
 		checkOrSetConfig(modify, "specials.tntsheep.explosion-time", 8);
 		checkOrSetConfig(modify, "specials.arrow-blocker.protection-time", 10);
 		checkOrSetConfig(modify, "tnt.auto-ignite", false);
@@ -324,24 +331,6 @@ public class Configurator {
 			}
 		}
 
-		return material;
-	}
-
-	public Material getDefinedMaterial(String path, String def) {
-		Material material = Material.getMaterial(def);
-		String configString = config.getString(path);
-
-		if (configString != null) {
-			try {
-				Material mat = Material.getMaterial(configString);
-				if (mat != null) {
-					material = mat;
-				}
-			} catch (NullPointerException e) {
-				System.out.println("Wrong material configured on " + path);
-				e.printStackTrace();
-			}
-		}
 		return material;
 	}
 }

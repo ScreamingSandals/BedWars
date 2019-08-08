@@ -37,10 +37,12 @@ bossbar_running: "§aHra začala! Hodně štěstí!"
 you_are_already_in_some_game: "§cJiž v nějaké hře jsi."
 you_are_not_in_game_yet: "§cJeště jste v žádné hře nebyl."
 game_is_gone: "§cVypadá to, že hra, ve které jste byl, už není."
+game_kicked_by_vip: "§cByl jsi odpojen, protože se do arény připojil VIP hráč!"
 respawn_protection_remaining: "§aRespawn ochrana vyprší za §f%time% §asekund!"
 respawn_protection_end: "§cRespawn ochrana vypršela!"
 
 vip_not_enough_players: "§cV aréně není dostatek hráčů!"
+vip_game_is_full: "§cHra §7%arena% §cje již plná VIP hráčů. Prosím vyčkej na další hru!"
 
 buy_succes: "§aÚspěšně zakoupen §7%item%§a za §7%material%§a!"
 buy_failed: "§cNedostatek materiálu pro koupi §7%item%§c! Je potřeba §7%material%§c!"
@@ -231,17 +233,26 @@ statistics_score: "§7Celkové score: §a%score%"
 
 specials_trap_caught: "§cVstoupil jsi do pasti týmu §f%tean%§c!"
 specials_trap_caught_team: "§cDo pasti vašeho týmu vstoupil hráč §f%player%§c!"
+
 specials_warp_powder_multiuse: "§cJiž je aktivován jiný WarpPowder!"
 specials_warp_powder_canceled: "§cTeleportace na základnu zrušena!"
 specials_warp_powder_started: "§aTeleportace na základnu začala! Ani se nehni po dobu §7%time%§a sekund!"
+
 specials_tracker_no_target_found: "§cŽádný cíl nebyl v dosahu nalezen!"
 specials_tracker_target_found: "§aNalezen cíl §f%target% §ave vzdálenosti §f%distance% §abloků!"
-specials_rescue_platform_wait_time: "§cMusíš počkat §f%time% §csekund před znovu použitím."
-specials_rescue_platform_multiuse: "§cJiž jsi použil stejnou záchranou platformu."
+
 specials_rescue_platform_not_in_air: "§cPro použití záchrané platformy musíš být ve vzduchu."
 specials_rescue_platform_destroy: "§cPlatforma bude zničena za §f%time% §csekund."
-specials_rescue_platform_created: "§cPlatforma je vytvořena a bude zničena za §f%time% §csekund."
+specials_rescue_platform_created: "§aPlatforma je vytvořena a bude zničena za §f%time% §asekund."
+specials_rescue_platform_created_unbreakable: "§aNezničitelná záchranná platforma byla vytvořena!"
+
+specials_protection_wall_not_usable_here: "§cPro vytvoření zdi není místo!"
+specials_protection_wall_destroy: "§cZeď bude zničena za §f%time% §csekund."
+specials_protection_wall_created_unbreakable: "§aNezničitelná zeď byla vytvořena!"
+specials_protection_wall_created: "§aZeď byla vytvořena a zmizí za §f%time% §asekund."
+
 specials_tntsheep_no_target_found: "§cŽádný cíl nebyl v dosahu nalezen!"
+
 specials_arrow_blocker_started: "§aArrow blocker byl aktivován na dobu %time% sekund!"
 specials_arrow_blocker_already_activated: "§cArrow blocker již je aktivovaný! Nelze jej použít znova."
 specials_arrow_blocker_ended: "§cArrow blocker již není aktivovaný!"

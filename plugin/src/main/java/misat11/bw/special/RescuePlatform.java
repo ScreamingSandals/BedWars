@@ -80,6 +80,7 @@ public class RescuePlatform extends SpecialItem implements misat11.bw.api.specia
 					for (Block block : RescuePlatform.this.platformBlocks) {
 						block.getChunk().load(true);
 						block.setType(Material.AIR);
+						removeBlockFromList(block);
 
 						game.getRegion().removeBlockBuiltDuringGame(block.getLocation());
 						game.unregisterSpecialItem(RescuePlatform.this);
@@ -101,15 +102,20 @@ public class RescuePlatform extends SpecialItem implements misat11.bw.api.specia
 
 	private void addBlockToList(Block block)  {
 		platformBlocks.add(block);
+		game.getRegion().addBuildedDuringGame(block.getLocation());
+	}
+
+	private void removeBlockFromList(Block block) {
+		game.getRegion().removeBlockBuiltDuringGame(block.getLocation());
 	}
 
 	public void createPlatform() {
 		breakingTime = Main.getConfigurator().config.getInt("specials.rescue-platform.break-time", 10);
-		buildingMaterial = Main.getConfigurator().getDefinedMaterial("specials.rescue-platform.material", "GLASS");
-
+		buildingMaterial = MiscUtils.getMaterialFromString(
+				Main.getConfigurator().config.getString("specials.rescue-platform.material"), "GLASS");
 		platformBlocks = new ArrayList<>();
-		Location center = player.getLocation().clone();
 
+		Location center = player.getLocation().clone();
 		center.setY(center.getY() - Main.getConfigurator().config.getInt("specials.rescue-platform.distance", 1));
 
 		for (BlockFace blockFace : BlockFace.values()) {
@@ -147,6 +153,12 @@ public class RescuePlatform extends SpecialItem implements misat11.bw.api.specia
 			}
 			xpBar.setProgress(1);
 
+			item.setAmount(item.getAmount() - 1);
+			player.updateInventory();
+		} else {
+			game.registerSpecialItem(this);
+
+			MiscUtils.sendActionBarMessage(player, i18nonly("specials_rescue_platform_created_unbreakable"));
 			item.setAmount(item.getAmount() - 1);
 			player.updateInventory();
 		}

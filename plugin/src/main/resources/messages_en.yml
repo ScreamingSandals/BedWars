@@ -37,10 +37,12 @@ bossbar_running: "§aGame started! Good luck!"
 you_are_already_in_some_game: "§cYou are already in some game."
 you_are_not_in_game_yet: "§cYou haven't been in any game yet."
 game_is_gone: "§cLooks like the game you were in is no longer in this world."
+game_kicked_by_vip: "§cYou were kicked by VIP player!"
 respawn_protection_remaining: "§aRespawn protection will be gone in §f%time% §aseconds!"
 respawn_protection_end: "§cRespawn protection is gone!"
 
 vip_not_enough_players: "§cNot enough players in arena!"
+vip_game_is_full: "§cGame §7%arena% §cis full of VIP players. Please wait for game end!"
 
 buy_succes: "§aSuccessfully purchased §7%item%§a for §7%material%§a!"
 buy_failed: "§cLack of material to buy §7%item%§c! Needed §7%material%§c!"
@@ -231,17 +233,26 @@ statistics_score: "§7Total score: §a%score%"
 
 specials_trap_caught: "§cYou got caught in trap of team §f%team%§c!"
 specials_trap_caught_team: "§f%player%§c got caught in your team's trap!"
+
 specials_warp_powder_multiuse: "§cAnother WarpPowder is already actived!"
 specials_warp_powder_canceled: "§cWarpPowder was canceled!"
 specials_warp_powder_started: "§aWarpPowder was started! Please don't move for §7%time%§a seconds!"
+
 specials_tracker_no_target_found: "§cNo target found!"
 specials_tracker_target_found: "§f%target% §ahas been found §f%distance% §ablocks away!"
-specials_rescue_platform_wait_time: "§cYou need to wait §f%time% §cseconds before using this item again."
-specials_rescue_platform_multiuse: "§cYou already used Rescue Platform."
+
 specials_rescue_platform_not_in_air: "§cFor using this, you need to be in the air."
 specials_rescue_platform_destroy: "§cPlatform will be destroyed in §f%time% §cseconds."
-specials_rescue_platform_created: "§cPlatform is created and will be destroyed in §f%time% §cseconds."
+specials_rescue_platform_created_unbreakable: "§aUnbreakable Platform was created!"
+specials_rescue_platform_created: "§aPlatform is created and will be destroyed in §f%time% §aseconds."
+
+specials_protection_wall_not_usable_here: "§cThere is no space left for creating Protection Wall."
+specials_protection_wall_destroy: "§cProtection Wall will be destroyed in §f%time% §cseconds."
+specials_protection_wall_created_unbreakable: "§aUnbreakable Protection Wall was created!"
+specials_protection_wall_created: "§aProtection Wall is created and will be destroyed in §f%time% §aseconds."
+
 specials_tntsheep_no_target_found: "§cNo target found!"
+
 specials_arrow_blocker_started: "§aArrow blocker has been activated for %time% seconds!"
 specials_arrow_blocker_already_activated: "§cArrow blocker is already activated!"
 specials_arrow_blocker_ended: "§cArrow blocker is no longer activated!"

@@ -614,6 +614,21 @@ data:
             - "Block arrows that are coming"
             - "for you with black magic."
             - "I mean, with this item."
+    - price: 64
+      price-type: bronze
+      properties:
+        - name: "protectionwall"
+      stack:
+        ==: org.bukkit.inventory.ItemStack
+        type: BRICKS
+        v: 1519
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: "Protection Wall"
+          lore:
+            - "Instantly builds a wall that"
+            - "can save your life!"
     - price: 24
       price-type: iron
       properties:

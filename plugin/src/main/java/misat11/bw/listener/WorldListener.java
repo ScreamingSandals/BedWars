@@ -94,7 +94,6 @@ public class WorldListener implements Listener {
 				if (GameCreator.isInArea(event.getLocation(), game.getPos1(), game.getPos2())) {
 					if (Main.getConfigurator().config.getBoolean("destroy-placed-blocks-by-explosion", true)) {
 						event.blockList().removeIf(block -> !game.isBlockAddedDuringGame(block.getLocation()));
-
 					} else {
 						event.blockList().clear();
 					}

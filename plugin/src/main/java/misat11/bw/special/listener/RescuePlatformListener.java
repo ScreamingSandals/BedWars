@@ -8,6 +8,7 @@ import misat11.bw.api.GameStatus;
 import misat11.bw.api.events.BedwarsApplyPropertyToBoughtItem;
 import misat11.bw.game.GamePlayer;
 import misat11.bw.special.RescuePlatform;
+import misat11.bw.utils.MiscUtils;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -30,7 +31,8 @@ public class RescuePlatformListener implements Listener {
 	@EventHandler
 	public void onRescuePlatformRegistered(BedwarsApplyPropertyToBoughtItem event) {
 		if (event.getPropertyName().equalsIgnoreCase("rescueplatform")) {
-			String rescuePlatformString = RESCUE_PLATFORM_PREFIX + event.getIntProperty("delay");
+			String rescuePlatformString = RESCUE_PLATFORM_PREFIX + MiscUtils.getIntFromProperty(
+			        "delay", "specials.rescue-platform.delay", event);
 			ItemStack stack = event.getStack();
 
 			APIUtils.hashIntoInvisibleString(stack, rescuePlatformString);
