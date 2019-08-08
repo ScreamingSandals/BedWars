@@ -19,7 +19,6 @@ import misat11.bw.utils.Configurator;
 import misat11.bw.utils.GameSign;
 import misat11.bw.utils.ShopMenu;
 import misat11.bw.utils.SignManager;
-import misat11.bw.utils.SpigetBetterVersionComparator;
 import misat11.lib.lang.I18n;
 import misat11.lib.nms.NMSUtils;
 import misat11.lib.sgui.InventoryListener;
@@ -472,7 +471,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 
 		updater = new SpigetUpdate(this, 63714);
 
-		updater.setVersionComparator(SpigetBetterVersionComparator.instance);
+		updater.setVersionComparator(VersionComparator.SEM_VER_SNAPSHOT);
 
 		updater.checkForUpdate(new UpdateCallback() {
 			@Override

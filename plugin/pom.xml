@@ -101,14 +101,8 @@
 		<dependency>
 			<groupId>org.inventivetalent.spiget-update</groupId>
 			<artifactId>bukkit</artifactId>
-			<version>1.4.2-SNAPSHOT</version>
+			<version>1.5.0-SNAPSHOT</version>
 			<scope>compile</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>org.bukkit</groupId>
-					<artifactId>bukkit</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 	</dependencies>
 
