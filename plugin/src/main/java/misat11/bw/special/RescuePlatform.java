@@ -3,8 +3,6 @@ package misat11.bw.special;
 import misat11.bw.Main;
 import misat11.bw.api.Game;
 import misat11.bw.api.Team;
-import misat11.bw.api.boss.StatusBar;
-import misat11.bw.boss.XPBar;
 import misat11.bw.game.TeamColor;
 import misat11.bw.utils.ColorChanger;
 import misat11.bw.utils.MiscUtils;
@@ -30,20 +28,17 @@ public class RescuePlatform extends SpecialItem implements misat11.bw.api.specia
 	private Material buildingMaterial;
 	private ItemStack item;
 
-	private int useDelay;
+	private boolean canBreak;
 	private int breakingTime;
-	private int platformLivingTime;
-	private XPBar xpBar;
+	private int livingTime;
+	private int distance;
 
-	public RescuePlatform(Game game, Player player, Team team, ItemStack item, int delay) {
+	public RescuePlatform(Game game, Player player, Team team, ItemStack item) {
 		super(game, player, team);
 		this.game = game;
 		this.player = player;
 		this.team = team;
-		this.useDelay = delay;
 		this.item = item;
-
-		this.xpBar = new XPBar();
 	}
 
 	@Override
@@ -53,7 +48,7 @@ public class RescuePlatform extends SpecialItem implements misat11.bw.api.specia
 
 	@Override
 	public boolean canBreak() {
-		return Main.getConfigurator().config.getBoolean("specials.rescue-platform.is-breakable", false);
+		return canBreak;
 	}
 
 	@Override
@@ -72,11 +67,9 @@ public class RescuePlatform extends SpecialItem implements misat11.bw.api.specia
 
 			@Override
 			public void run() {
-				platformLivingTime++;
-				double xpTime = ((double)breakingTime - platformLivingTime) / breakingTime;
-				xpBar.setProgress(xpTime);
+				livingTime++;
 
-				if (platformLivingTime == breakingTime) {
+				if (livingTime == breakingTime) {
 					for (Block block : RescuePlatform.this.platformBlocks) {
 						block.getChunk().load(true);
 						block.setType(Material.AIR);
@@ -85,9 +78,6 @@ public class RescuePlatform extends SpecialItem implements misat11.bw.api.specia
 						game.getRegion().removeBlockBuiltDuringGame(block.getLocation());
 						game.unregisterSpecialItem(RescuePlatform.this);
 
-						xpBar.setVisible(false);
-						setGameBar(true, player);
-						xpBar.removePlayer(player);
 						this.cancel();
 					}
 				}
@@ -109,14 +99,15 @@ public class RescuePlatform extends SpecialItem implements misat11.bw.api.specia
 		game.getRegion().removeBlockBuiltDuringGame(block.getLocation());
 	}
 
-	public void createPlatform() {
-		breakingTime = Main.getConfigurator().config.getInt("specials.rescue-platform.break-time", 10);
-		buildingMaterial = MiscUtils.getMaterialFromString(
-				Main.getConfigurator().config.getString("specials.rescue-platform.material"), "GLASS");
+	public void createPlatform(boolean bre, int time, int dist, Material bMat) {
+		canBreak = bre;
+		breakingTime = time;
+		buildingMaterial = bMat;
+		distance = dist;
 		platformBlocks = new ArrayList<>();
 
 		Location center = player.getLocation().clone();
-		center.setY(center.getY() - Main.getConfigurator().config.getInt("specials.rescue-platform.distance", 1));
+		center.setY(center.getY() - distance);
 
 		for (BlockFace blockFace : BlockFace.values()) {
 			if (blockFace.equals(BlockFace.DOWN) || blockFace.equals(BlockFace.UP)) {
@@ -136,7 +127,6 @@ public class RescuePlatform extends SpecialItem implements misat11.bw.api.specia
 			}
 
 			game.getRegion().addBuiltDuringGame(placedBlock.getLocation());
-
 			addBlockToList(placedBlock);
 		}
 
@@ -145,13 +135,6 @@ public class RescuePlatform extends SpecialItem implements misat11.bw.api.specia
 			runTask();
 
 			MiscUtils.sendActionBarMessage(player, i18nonly("specials_rescue_platform_created").replace("%time%", Integer.toString(breakingTime)));
-			setGameBar(false, player);
-
-			xpBar.addPlayer(player);
-			if (!xpBar.isVisible()) {
-				xpBar.setVisible(true);
-			}
-			xpBar.setProgress(1);
 
 			item.setAmount(item.getAmount() - 1);
 			player.updateInventory();
@@ -161,17 +144,6 @@ public class RescuePlatform extends SpecialItem implements misat11.bw.api.specia
 			MiscUtils.sendActionBarMessage(player, i18nonly("specials_rescue_platform_created_unbreakable"));
 			item.setAmount(item.getAmount() - 1);
 			player.updateInventory();
-		}
-	}
-
-	private void setGameBar(boolean visible, Player player) {
-		if (game.getStatusBar() instanceof XPBar) {
-			StatusBar gameBar = game.getStatusBar();
-			if (visible) {
-				gameBar.addPlayer(player);
-			} else {
-				gameBar.removePlayer(player);
-			}
 		}
 	}
 }

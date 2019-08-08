@@ -5,13 +5,13 @@ import misat11.bw.Main;
 import misat11.bw.api.APIUtils;
 import misat11.bw.api.Game;
 import misat11.bw.api.GameStatus;
+import misat11.bw.api.events.BedwarsApplyPropertyToBoughtItem;
+import misat11.bw.api.special.SpecialItem;
 import misat11.bw.game.GamePlayer;
 import misat11.bw.special.ProtectionWall;
-import misat11.bw.special.RescuePlatform;
 import misat11.bw.utils.MiscUtils;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -19,11 +19,10 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-
-import misat11.bw.api.events.BedwarsApplyPropertyToBoughtItem;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import static misat11.lib.lang.I18n.i18n;
+import java.util.ArrayList;
+
 import static misat11.lib.lang.I18n.i18nonly;
 
 public class ProtectionWallListener implements Listener {
@@ -109,17 +108,28 @@ public class ProtectionWallListener implements Listener {
 			return;
 		}
 
-		ProtectionWall protectionWall = (ProtectionWall) game.getFirstActivedSpecialItemOfPlayer(player, ProtectionWall.class);
-		if (protectionWall != null) {
-			Block block = event.getBlock();
+		Block block = event.getBlock();
+		for (ProtectionWall checkedWall : getCreatedWalls(game, player)) {
+			if (checkedWall != null) {
+				for (Block wallBlock : checkedWall.getWallBlocks()) {
+					if (wallBlock.equals(block) && !checkedWall.canBreak()) {
+						event.setCancelled(true);
+					}
 
-			for (Block wallBlock : protectionWall.getWallBlocks()) {
-				if (wallBlock.equals(block) && !protectionWall.canBreak()) {
-					event.setCancelled(true);
 				}
-
 			}
 		}
+	}
+
+	private ArrayList<ProtectionWall> getCreatedWalls(Game game, Player player) {
+		ArrayList<ProtectionWall> createdWalls = new ArrayList<>();
+		for (SpecialItem specialItem : game.getActivedSpecialItemsOfPlayer(player)) {
+			if (specialItem instanceof ProtectionWall) {
+				ProtectionWall wall = (ProtectionWall) specialItem;
+				createdWalls.add(wall);
+			}
+		}
+		return createdWalls;
 	}
 
 	private void runCountdown() {

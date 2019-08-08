@@ -1,10 +1,8 @@
 package misat11.bw.special;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.google.common.collect.ImmutableMap;
 import misat11.bw.Main;
+import misat11.bw.api.Game;
+import misat11.bw.api.Team;
 import misat11.bw.game.TeamColor;
 import misat11.bw.utils.ColorChanger;
 import misat11.bw.utils.MiscUtils;
@@ -12,13 +10,12 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-
-import misat11.bw.api.Game;
-import misat11.bw.api.Team;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static misat11.lib.lang.I18n.i18n;
 import static misat11.lib.lang.I18n.i18nonly;
