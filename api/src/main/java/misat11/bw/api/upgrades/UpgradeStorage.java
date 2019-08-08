@@ -136,7 +136,7 @@ public final class UpgradeStorage{
 		
 		if (upgradeRegistry.containsKey(game)) {
 			for (Upgrade upgrade : upgradeRegistry.get(game)) {
-				if (upgrade.getInstanceName().equals(instanceName)) {
+				if (instanceName.equals(upgrade.getInstanceName())) {
 					upgrades.add(upgrade);
 				}
 			}
