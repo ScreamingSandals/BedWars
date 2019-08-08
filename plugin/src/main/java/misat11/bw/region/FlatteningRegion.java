@@ -14,7 +14,9 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Bed;
 import org.bukkit.block.data.type.Bed.Part;
 
-public class FlatteningRegion implements IRegion {
+import misat11.bw.api.Region;
+
+public class FlatteningRegion implements Region {
 	private List<Location> builtBlocks = new ArrayList<>();
 	private Map<Location, BlockData> brokenOriginalBlocks = new HashMap<>();
 

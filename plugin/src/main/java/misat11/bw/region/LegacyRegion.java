@@ -18,7 +18,9 @@ import org.bukkit.material.Lever;
 import org.bukkit.material.MaterialData;
 import org.bukkit.material.Redstone;
 
-public class LegacyRegion implements IRegion {
+import misat11.bw.api.Region;
+
+public class LegacyRegion implements Region {
 	private List<Location> builtBlocks = new ArrayList<>();
 	private List<Block> brokenBlocks = new ArrayList<>();
 	private HashMap<Block, Byte> brokenBlockData = new HashMap<>();

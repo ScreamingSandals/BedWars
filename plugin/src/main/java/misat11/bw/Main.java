@@ -211,6 +211,14 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 		return false;
 	}
 
+	public static boolean isBreakableBlock(Material mat) {
+		if (instance.configurator.config.getBoolean("breakable.enable")) {
+			List<String> list = (List<String>) instance.configurator.config.getList("breakable.blocks");
+			return list.contains(mat.name());
+		}
+		return false;
+	}
+
 	public static boolean isCommandAllowedInGame(String commandPref) {
 		if ("/bw".equals(commandPref) || "/bedwars".equals(commandPref)) {
 			return true;

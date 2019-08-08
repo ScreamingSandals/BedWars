@@ -299,6 +299,8 @@ public class Configurator {
 		checkOrSetConfig(modify, "hotbar.color", 1);
 		checkOrSetConfig(modify, "hotbar.start", 2);
 		checkOrSetConfig(modify, "hotbar.leave", 8);
+		checkOrSetConfig(modify, "breakable.enabled", false);
+		checkOrSetConfig(modify, "breakable.blocks", new ArrayList<>());
 		checkOrSetConfig(modify, "version", 2);
 		if (modify.get()) {
 			try {

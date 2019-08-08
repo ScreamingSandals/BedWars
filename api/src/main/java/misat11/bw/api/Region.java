@@ -34,4 +34,7 @@ public interface Region {
 	public Block getBedNeighbor(Block head);
 	
 	public boolean isChunkUsed(Chunk chunk);
+	
+	/* Don't use from API */
+	public void regen();
 }

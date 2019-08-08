@@ -12,7 +12,6 @@ import misat11.bw.api.special.SpecialItem;
 import misat11.bw.boss.BossBarSelector;
 import misat11.bw.boss.XPBar;
 import misat11.bw.region.FlatteningRegion;
-import misat11.bw.region.IRegion;
 import misat11.bw.region.LegacyRegion;
 import misat11.bw.statistics.PlayerStatistic;
 import misat11.bw.utils.*;
@@ -162,7 +161,7 @@ public class Game implements misat11.bw.api.Game {
 	private int calculatedMaxPlayers;
 	private BukkitTask task;
 	private List<CurrentTeam> teamsInGame = new ArrayList<>();
-	private IRegion region = Main.isLegacy() ? new LegacyRegion() : new FlatteningRegion();
+	private Region region = Main.isLegacy() ? new LegacyRegion() : new FlatteningRegion();
 	private TeamSelectorInventory teamSelectorInventory;
 	private Scoreboard gameScoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
 	private StatusBar statusbar;
@@ -304,7 +303,9 @@ public class Game implements misat11.bw.api.Game {
 		}
 
 		if (replaced.getType() != Material.AIR) {
-			if (region.isLiquid(replaced.getType())) {
+			if (Main.isBreakableBlock(replaced.getType())) {
+				region.putOriginalBlock(block.getLocation(), replaced);
+			} else if (region.isLiquid(replaced.getType())) {
 				region.putOriginalBlock(block.getLocation(), replaced);
 			} else {
 				return false;
@@ -370,6 +371,7 @@ public class Game implements misat11.bw.api.Game {
 
 			return true;
 		}
+		
 		Location loc = block.getLocation();
 		if (region.isBedBlock(block.getState())) {
 			if (!region.isBedHead(block.getState())) {
@@ -413,6 +415,10 @@ public class Game implements misat11.bw.api.Game {
 				return true;
 			}
 		}
+		if (Main.isBreakableBlock(block.getType())) {
+			region.putOriginalBlock(block.getLocation(), block.getState());
+			return true;
+		}
 		return false;
 	}
 
@@ -425,7 +431,7 @@ public class Game implements misat11.bw.api.Game {
 		return false;
 	}
 
-	public IRegion getRegion() {
+	public Region getRegion() {
 		return region;
 	}
 

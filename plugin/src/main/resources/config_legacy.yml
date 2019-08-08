@@ -278,5 +278,10 @@ hotbar:
    start: 2
    leave: 8
    
+# Breakable blocks (DON'T WRITE TARGET BLOCK TYPES HERE!!!)
+breakable:
+   enabled: false
+   blocks: []
+   
 # Do not edit this!!!
 version: 2
