@@ -9,6 +9,7 @@ import misat11.bw.api.Game;
 import misat11.bw.api.ItemSpawner;
 import misat11.bw.api.Team;
 
+@Deprecated
 public class BedwarsApplyUpgradeEvent extends Event implements Cancellable {
 
 	private static final HandlerList handlers = new HandlerList();
