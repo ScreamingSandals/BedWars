@@ -215,6 +215,7 @@ public class Configurator {
 		checkOrSetConfig(modify, "respawn.protection-time",10);
 		checkOrSetConfig(modify, "specials.action-bar-messages", true);
 		checkOrSetConfig(modify, "specials.rescue-platform.is-breakable", false);
+		checkOrSetConfig(modify, "specials.rescue-platform.delay", 0);
 		checkOrSetConfig(modify, "specials.rescue-platform.break-time", 10);
 		checkOrSetConfig(modify, "specials.rescue-platform.distance", 1);
 		checkOrSetConfig(modify, "specials.rescue-platform.material", "GLASS");

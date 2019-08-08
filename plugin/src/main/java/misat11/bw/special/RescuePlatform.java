@@ -68,6 +68,12 @@ public class RescuePlatform extends SpecialItem implements misat11.bw.api.specia
 			@Override
 			public void run() {
 				livingTime++;
+				int time = breakingTime - livingTime;
+
+				if (time < 6) {
+					MiscUtils.sendActionBarMessage(
+							player, i18nonly("specials_rescue_platform_destroy").replace("%time%", Integer.toString(time)));
+				}
 
 				if (livingTime == breakingTime) {
 					for (Block block : RescuePlatform.this.platformBlocks) {

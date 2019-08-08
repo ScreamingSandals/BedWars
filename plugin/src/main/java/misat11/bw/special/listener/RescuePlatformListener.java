@@ -187,7 +187,7 @@ public class RescuePlatformListener implements Listener {
 				+ MiscUtils.getBooleanFromProperty(
 				"is-breakable", "specials.rescue-platform.is-breakable", event) + ":"
 				+ MiscUtils.getIntFromProperty(
-				"delay", "specials.protection-wall.delay", event) + ":"
+				"delay", "specials.rescue-platform.delay", event) + ":"
 				+ MiscUtils.getIntFromProperty(
 				"break-time", "specials.rescue-platform.break-time", event) + ":"
 				+ MiscUtils.getIntFromProperty(

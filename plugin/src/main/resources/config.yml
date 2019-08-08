@@ -110,6 +110,7 @@ specials:
   action-bar-messages: true
   rescue-platform:
     is-breakable: false
+    delay: 10
     break-time: 10
     distance: 1
     material: GLASS
