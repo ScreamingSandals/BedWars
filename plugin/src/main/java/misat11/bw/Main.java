@@ -19,6 +19,7 @@ import misat11.bw.utils.Configurator;
 import misat11.bw.utils.GameSign;
 import misat11.bw.utils.ShopMenu;
 import misat11.bw.utils.SignManager;
+import misat11.bw.utils.SpigetBetterVersionComparator;
 import misat11.lib.lang.I18n;
 import misat11.lib.nms.NMSUtils;
 import misat11.lib.sgui.InventoryListener;
@@ -35,6 +36,9 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.inventivetalent.update.spiget.SpigetUpdate;
+import org.inventivetalent.update.spiget.UpdateCallback;
+import org.inventivetalent.update.spiget.comparator.VersionComparator;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -60,10 +64,11 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 	private PlayerStatisticManager playerStatisticsManager;
 	private IHologramInteraction hologramInteraction;
 	private HashMap<String, BaseCommand> commands;
+	private SpigetUpdate updater;
 	public static List<String> autoColoredMaterials = new ArrayList<>();
-	
+
 	static {
-		//ColorChanger list of materials
+		// ColorChanger list of materials
 		autoColoredMaterials.add("WOOL");
 		autoColoredMaterials.add("CARPET");
 		autoColoredMaterials.add("CONCRETE");
@@ -121,7 +126,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 				}
 			}
 		} catch (Throwable t) {
-			
+
 		}
 	}
 
@@ -278,12 +283,12 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 	public static IHologramInteraction getHologramInteraction() {
 		return instance.hologramInteraction;
 	}
-	
+
 	public static HashMap<String, BaseCommand> getCommands() {
 		return instance.commands;
 	}
-	
-	public static List<Entity> getGameEntities(Game game){
+
+	public static List<Entity> getGameEntities(Game game) {
 		List<Entity> entityList = new ArrayList<>();
 		for (Map.Entry<Entity, Game> entry : instance.entitiesInGame.entrySet()) {
 			if (entry.getValue() == game) {
@@ -344,14 +349,14 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 				if (Bukkit.getPluginManager().isPluginEnabled("HolographicDisplays")) {
 					hologramInteraction = new HolographicDisplaysInteraction();
 				}
-				
+
 				if (hologramInteraction != null) {
 					hologramInteraction.loadHolograms();
 				}
 			}
 		} catch (Throwable ignored) {
 		}
-		
+
 		commands = new HashMap<>();
 		new AddholoCommand();
 		new AdminCommand();
@@ -378,7 +383,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 		getServer().getPluginManager().registerEvents(new SignListener(), this);
 		getServer().getPluginManager().registerEvents(new WorldListener(), this);
 		getServer().getPluginManager().registerEvents(new InventoryListener(), this);
-		
+
 		SpecialRegister.onEnable(this);
 
 		getServer().getServicesManager().register(BedwarsAPI.class, this, this, ServicePriority.Normal);
@@ -411,17 +416,21 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 		}
 
 		Bukkit.getConsoleSender().sendMessage("§c=====§f======  by Misat11");
-		Bukkit.getConsoleSender().sendMessage("§c+ Bed§fWars +  §6Version: " + version + " (API: " + getAPIVersion() + ")");
-		Bukkit.getConsoleSender().sendMessage("§c=====§f======  " + (snapshot ? "§cSNAPSHOT VERSION" : "§aSTABLE VERSION"));
+		Bukkit.getConsoleSender()
+				.sendMessage("§c+ Bed§fWars +  §6Version: " + version + " (API: " + getAPIVersion() + ")");
+		Bukkit.getConsoleSender()
+				.sendMessage("§c=====§f======  " + (snapshot ? "§cSNAPSHOT VERSION" : "§aSTABLE VERSION"));
 		if (isVault) {
 			Bukkit.getConsoleSender().sendMessage("§c[B§fW] §6Found Vault");
 		}
 		if (!isSpigot) {
-			Bukkit.getConsoleSender().sendMessage("§c[B§fW] §cWARNING: You are not using Spigot. Some features may not work properly.");
+			Bukkit.getConsoleSender()
+					.sendMessage("§c[B§fW] §cWARNING: You are not using Spigot. Some features may not work properly.");
 		}
 
 		if (versionNumber < 109) {
-			Bukkit.getConsoleSender().sendMessage("§c[B§fW] §cIMPORTANT WARNING: You are using version older than 1.9! This version is not officially supported and some features may not work at all!");
+			Bukkit.getConsoleSender().sendMessage(
+					"§c[B§fW] §cIMPORTANT WARNING: You are using version older than 1.9! This version is not officially supported and some features may not work at all!");
 		}
 
 		File folder = new File(getDataFolder().toString(), "arenas");
@@ -435,10 +444,10 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 				}
 			}
 		}
-		
+
 		try {
 			// Fixing bugs created by third party plugin
-			
+
 			// PerWorldInventory
 			if (Bukkit.getPluginManager().isPluginEnabled("PerWorldInventory")) {
 				Plugin pwi = Bukkit.getPluginManager().getPlugin("PerWorldInventory");
@@ -450,18 +459,33 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 					getServer().getPluginManager().registerEvents(new PerWorldInventoryLegacyListener(), this);
 				}
 			}
-			
+
 			// Multiverse inventories
 			if (Bukkit.getPluginManager().isPluginEnabled("Multiverse-Inventories")) {
 				getServer().getPluginManager().registerEvents(new MultiverseInventoriesListener(), this);
 			}
-		
-		
+
 		} catch (Throwable ignored) {
 			// maybe something here can cause exception
-			
-			ignored.printStackTrace(); // TODO remove this line after testing
+
 		}
+
+		updater = new SpigetUpdate(this, 63714);
+
+		updater.setVersionComparator(SpigetBetterVersionComparator.instance);
+
+		updater.checkForUpdate(new UpdateCallback() {
+			@Override
+			public void updateAvailable(String newVersion, String downloadUrl, boolean hasDirectDownload) {
+				Bukkit.getConsoleSender().sendMessage("§c[B§fW] §aNew RELEASE version " + newVersion
+						+ " of BedWars is available! Download it from " + downloadUrl);
+			}
+
+			@Override
+			public void upToDate() {
+
+			}
+		});
 	}
 
 	public void onDisable() {

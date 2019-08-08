@@ -66,7 +66,7 @@
 			<version>1.11.5</version>
 			<scope>provided</scope>
 		</dependency>
-		
+
 		<!-- COMPILE -->
 		<dependency>
 			<groupId>misat11.bw</groupId>
@@ -98,6 +98,12 @@
 			<version>1.0.7</version>
 			<scope>compile</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.inventivetalent.spiget-update</groupId>
+			<artifactId>bukkit</artifactId>
+			<version>1.4.2-SNAPSHOT</version>
+			<scope>compile</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -127,7 +133,11 @@
 							<relocations>
 								<relocation>
 									<pattern>com.zaxxer</pattern>
-									<shadedPattern>thirdparty.com.zaxxer.HikariCP</shadedPattern>
+									<shadedPattern>${project.groupId}.lib.HikariCP</shadedPattern>
+								</relocation>
+								<relocation>
+									<pattern>org.inventivetalent.update.spiget</pattern>
+									<shadedPattern>${project.groupId}.lib.spiget</shadedPattern>
 								</relocation>
 								<relocation>
 									<pattern>misat11.lib</pattern>
