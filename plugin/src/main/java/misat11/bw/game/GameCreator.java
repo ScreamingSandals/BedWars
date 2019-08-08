@@ -84,10 +84,6 @@ public class GameCreator {
 			if (args.length >= 2) {
 				response = setLocalConfigVariable(args[0], args[1]);
 			}
-		} else if (action.equalsIgnoreCase("upgrades")) {
-			if (args.length >= 1) {
-				response = enableUpgrades(Boolean.parseBoolean(args[0].toLowerCase()));
-			}
 		} else if (action.equalsIgnoreCase("team")) {
 			if (args.length >= 2) {
 				if (args[0].equalsIgnoreCase("add")) {
@@ -212,11 +208,6 @@ public class GameCreator {
 		}
 		player.sendMessage(response);
 		return isArenaSaved;
-	}
-
-	private String enableUpgrades(boolean bool) {
-		game.setUpgradesEnabled(bool);
-		return i18n("admin_command_upgrades").replace("%bool%", String.valueOf(bool));
 	}
 
 	private String setGameBossBarColor(String color) {

@@ -268,7 +268,6 @@ help_bw_admin_store_type: "/bw admin <арена> store type <существо> 
 help_bw_admin_config: "/bw admin <арена> config <constant> <value> - §eЗадать нестандартное значение для арены"
 help_bw_admin_arena_time: "/bw admin <арена> arenatime <тип> - §eЗадать время суток (DAY, NIGHT, etc.)"
 help_bw_admin_arena_weather: "/bw admin <арена> arenaweather <type> - §eПоставить погоду (default, CLEAN, DOWNFALL)"
-help_bw_admin_upgrades: "/bw admin <арена> upgrades <true|false> - §eВключить/выключить прокачки"
 help_bw_admin_remove: "/bw admin <арена> remove - §cУдалить арену"
 help_bw_admin_edit: "/bw admin <арена> edit - §eПереключить арену в режим редактирования"
 help_bw_admin_save: "/bw admin <арена> save - §aСохранить арену и запускить её"

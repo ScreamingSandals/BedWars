@@ -283,7 +283,6 @@ help_bw_admin_store_type: "/bw admin <arena> store type <living entity> - §e设
 help_bw_admin_config: "/bw admin <arena> config <constant> <value> - §e为游戏设置常量变量的值"
 help_bw_admin_arena_time: "/bw admin <arena> arenatime <type> - §e设置游戏亮度 (白天, 晚上, etc.)"
 help_bw_admin_arena_weather: "/bw admin <arena> arenaweather <type> - §e设置游戏天气 (default, CLEAN, DOWNFALL)"
-help_bw_admin_upgrades: "/bw admin <arena> upgrades <true|false> - §e启用或关闭游戏更新"
 help_bw_admin_remove: "/bw admin <arena> remove - §c移除地图"
 help_bw_admin_edit: "/bw admin <arena> edit - §e关闭游戏并进入编辑模式"
 help_bw_admin_save: "/bw admin <arena> save - §a保存游戏并激活!"

@@ -353,10 +353,6 @@ public class AdminCommand extends BaseCommand {
 											"arena_info_config_" + game.getAllowBlockFalling().name().toLowerCase(),
 											false)));
 
-							player.sendMessage(i18n("arena_info_config_constant", false)
-									.replace("%constant%", "upgrades (experimental)").replace("%value%", i18n(
-											"arena_info_config_" + game.isUpgradesEnabled(), false)));
-
 							// NON-BOOLEAN CONSTANTS
 
 							player.sendMessage(i18n("arena_info_config_constant", false)
@@ -459,7 +455,7 @@ public class AdminCommand extends BaseCommand {
 		} else if (args.size() == 2) {
 			completion.addAll(Arrays.asList("add", "lobby", "spec", "pos1", "pos2", "pausecountdown", "team", "spawner",
 					"time", "store", "save", "remove", "edit", "jointeam", "minplayers", "info", "config", "arenatime",
-					"arenaweather", "lobbybossbarcolor", "gamebossbarcolor", "upgrades"));
+					"arenaweather", "lobbybossbarcolor", "gamebossbarcolor"));
 		} else if (args.get(1).equalsIgnoreCase("pausecountdown") && args.size() == 3) {
 			completion.addAll(Arrays.asList("30", "60"));
 		} else if (args.get(1).equalsIgnoreCase("time") && args.size() == 3) {
@@ -518,8 +514,6 @@ public class AdminCommand extends BaseCommand {
 			if (args.size() == 4) {
 				completion.addAll(Arrays.asList("true", "false", "inherit"));
 			}
-		} else if (args.get(1).equalsIgnoreCase("upgrades") && args.size() == 3) {
-			completion.addAll(Arrays.asList("true", "false"));
 		} else if (args.get(1).equalsIgnoreCase("spawner")) {
 			if (args.size() == 3) {
 				completion.addAll(Arrays.asList("add", "reset"));

@@ -6,6 +6,12 @@ import misat11.bw.api.ItemSpawnerType;
 import misat11.bw.api.events.BedwarsApplyPropertyToBoughtItem;
 import misat11.bw.api.events.BedwarsApplyPropertyToDisplayedItem;
 import misat11.bw.api.events.BedwarsApplyPropertyToItem;
+import misat11.bw.api.events.BedwarsApplyUpgradeEvent;
+import misat11.bw.api.events.BedwarsUpgradeBoughtEvent;
+import misat11.bw.api.events.BedwarsUpgradeImprovedEvent;
+import misat11.bw.api.upgrades.Upgrade;
+import misat11.bw.api.upgrades.UpgradeRegistry;
+import misat11.bw.api.upgrades.UpgradeStorage;
 import misat11.bw.game.CurrentTeam;
 import misat11.bw.game.Game;
 import misat11.bw.game.GamePlayer;
@@ -51,7 +57,7 @@ public class ShopMenu implements Listener {
 		backItemMeta.setDisplayName(i18n("shop_back", false));
 		backItem.setItemMeta(backItemMeta);
 		options.setBackItem(backItem);
-		
+
 		ItemStack pageBackItem = Main.getConfigurator().readDefinedItem("pageback", "ARROW");
 		ItemMeta pageBackItemMeta = backItem.getItemMeta();
 		pageBackItemMeta.setDisplayName(i18n("page_back", false));
@@ -66,7 +72,7 @@ public class ShopMenu implements Listener {
 
 		ItemStack cosmeticItem = Main.getConfigurator().readDefinedItem("shopcosmetic", "AIR");
 		options.setCosmeticItem(cosmeticItem);
-		
+
 		options.setPrefix(i18nonly("item_shop_name", "[BW] Shop"));
 		options.setGenericShop(true);
 		options.setGenericShopPriceTypeRequired(true);
@@ -206,6 +212,32 @@ public class ShopMenu implements Listener {
 				event.sellStack(materialItem);
 				for (MapReader entity : entities) {
 					String typ = entity.getString("type");
+					UpgradeStorage storage = UpgradeRegistry.getUpgrade(typ);
+					if (storage != null) {
+						String customName = entity.getString("customName");
+						double addLevels = entity.getDouble("levels");
+						List<Upgrade> upgrades = storage.findUpgrade(game, customName);
+						BedwarsUpgradeBoughtEvent boughEvent = new BedwarsUpgradeBoughtEvent(game, storage, upgrades,
+								player, addLevels);
+						Bukkit.getPluginManager().callEvent(boughEvent);
+
+						if (boughEvent.isCancelled()) {
+							continue;
+						}
+
+						for (Upgrade upgrad : upgrades) {
+							BedwarsUpgradeImprovedEvent improvedEvent = new BedwarsUpgradeImprovedEvent(game, storage,
+									upgrad, upgrad.getLevel(), upgrad.getLevel() + addLevels);
+							Bukkit.getPluginManager().callEvent(improvedEvent);
+							
+							if (upgrad instanceof ItemSpawner) {
+								BedwarsApplyUpgradeEvent deprecatedApplyUpgradeEvent = new BedwarsApplyUpgradeEvent(game, player, game.getTeamOfPlayer(player), (ItemSpawner) upgrad, upgrad.getLevel());
+								Bukkit.getPluginManager().callEvent(deprecatedApplyUpgradeEvent);
+								
+								// Ignore isCancelled of this event
+							}
+						}
+					}
 					if ("spawner".equals(typ.toLowerCase())) {
 						String customName = entity.getString("customName");
 						double addLevels = entity.getDouble("levels");

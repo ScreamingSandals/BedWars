@@ -3,6 +3,7 @@ package misat11.bw.api.upgrades;
 import java.util.HashMap;
 import java.util.Map;
 
+import misat11.bw.api.Game;
 import misat11.bw.api.ItemSpawner;
 
 public final class UpgradeRegistry {
@@ -53,9 +54,20 @@ public final class UpgradeRegistry {
 	 * Get storage for upgrades
 	 * 
 	 * @param name Name of upgrade
-	 * @return storage of specified upgrade type
+	 * @return storage of specified upgrade type or null
 	 */
 	public static UpgradeStorage getUpgrade(String name) {
 		return UPGRADES.get(name);
+	}
+	
+	/**
+	 * Unregister all active upgrades of any type from game
+	 * 
+	 * @param game that is ending
+	 */
+	public static void clearAll(Game game) {
+		for (UpgradeStorage storage : UPGRADES.values()) {
+			storage.resetUpgradesForGame(game);
+		}
 	}
 }

@@ -77,7 +77,6 @@ public class HelpCommand extends BaseCommand {
 			player.sendMessage(i18nonly("help_bw_admin_config"));
 			player.sendMessage(i18nonly("help_bw_admin_arena_time"));
 			player.sendMessage(i18nonly("help_bw_admin_arena_weather"));
-			player.sendMessage(i18nonly("help_bw_admin_upgrades"));
 			player.sendMessage(i18nonly("help_bw_admin_remove"));
 			player.sendMessage(i18nonly("help_bw_admin_edit"));
 			player.sendMessage(i18nonly("help_bw_admin_save"));

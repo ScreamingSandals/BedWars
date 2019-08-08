@@ -209,6 +209,7 @@ public interface Game {
 	public BarColor getLobbyBossBarColor();
 	public BarColor getGameBossBarColor();
 	
+	@Deprecated
 	public boolean isUpgradesEnabled();
 	
 	

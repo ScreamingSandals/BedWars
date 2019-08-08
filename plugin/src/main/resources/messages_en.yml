@@ -296,7 +296,6 @@ help_bw_admin_store_type: "/bw admin <arena> store type <living entity> - §eSet
 help_bw_admin_config: "/bw admin <arena> config <constant> <value> - §eSets value of constant variable for game"
 help_bw_admin_arena_time: "/bw admin <arena> arenatime <type> - §eSets time in arena (DAY, NIGHT, etc.)"
 help_bw_admin_arena_weather: "/bw admin <arena> arenaweather <type> - §eSets weather in arena (default, CLEAN, DOWNFALL)"
-help_bw_admin_upgrades: "/bw admin <arena> upgrades <true|false> - §eEnables or disables game upgrades"
 help_bw_admin_remove: "/bw admin <arena> remove - §cRemove the arena"
 help_bw_admin_edit: "/bw admin <arena> edit - §eTurns the game off and switches the arena to edit mode"
 help_bw_admin_save: "/bw admin <arena> save - §aSaves the game and activates it!"

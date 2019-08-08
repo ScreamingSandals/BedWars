@@ -267,7 +267,6 @@ help_bw_admin_store_type: "/bw admin <arena> store type <byt> - §eZmienia typ s
 help_bw_admin_config: "/bw admin <arena> config <constant> <wartość> - §eZmienia wartość stałej na arenie"
 help_bw_admin_arena_time: "/bw admin <arena> arenatime <typ> - §eZmienia porę dnia na arenie (DAY, NIGHT, etc.)"
 help_bw_admin_arena_weather: "/bw admin <arena> arenaweather <typ> - §eZmienia pogodę na arenie (default, CLEAN, DOWNFALL)"
-help_bw_admin_upgrades: "/bw admin <arena> upgrades <true|false> - §eWłącza lub wyłącza ulepszenia w grze"
 help_bw_admin_remove: "/bw admin <arena> remove - §cUsuwa arenę"
 help_bw_admin_edit: "/bw admin <arena> edit - §eWyłącza grę i włącza tryb edycji areny"
 help_bw_admin_save: "/bw admin <arena> save - §aZapisuje arenę w celu rozpoczęcia gry"

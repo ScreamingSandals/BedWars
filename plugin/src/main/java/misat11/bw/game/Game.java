@@ -9,6 +9,8 @@ import misat11.bw.api.boss.BossBar19;
 import misat11.bw.api.boss.StatusBar;
 import misat11.bw.api.events.*;
 import misat11.bw.api.special.SpecialItem;
+import misat11.bw.api.upgrades.UpgradeRegistry;
+import misat11.bw.api.upgrades.UpgradeStorage;
 import misat11.bw.boss.BossBarSelector;
 import misat11.bw.boss.XPBar;
 import misat11.bw.region.FlatteningRegion;
@@ -150,7 +152,6 @@ public class Game implements misat11.bw.api.Game {
 	private InGameConfigBooleanConstants allowBlockFalling = InGameConfigBooleanConstants.INHERIT;
 
 	public boolean gameStartItem;
-	private boolean upgrades = false;
 	public static final int POST_GAME_WAITING = 3;
 
 	// STATUS
@@ -804,8 +805,6 @@ public class Game implements misat11.bw.api.Game {
 			// We're using 1.8
 		}
 
-		game.upgrades = configMap.getBoolean("upgrades", false);
-
 		game.start();
 		Main.getInstance().getLogger().info("Arena " + game.name + " loaded!");
 		Main.addGame(game);
@@ -980,8 +979,6 @@ public class Game implements misat11.bw.api.Game {
 		} catch (Throwable t) {
 			// We're using 1.8
 		}
-
-		configMap.set("upgrades", upgrades);
 
 		try {
 			configMap.save(file);
@@ -1415,7 +1412,15 @@ public class Game implements misat11.bw.api.Game {
 							}
 						}
 					}
-
+					
+					for (ItemSpawner spawner : spawners) {
+						UpgradeStorage storage = UpgradeRegistry.getUpgrade("spawner");
+						if (storage != null) {
+							storage.addUpgrade(this, spawner);
+						}
+					}
+					
+					
 					if (getOriginalOrInheritedSpawnerHolograms()) {
 						boolean countdownEnabled = getOriginalOrInheritedSpawnerHologramsCountdown();
 						for (ItemSpawner spawner : spawners) {
@@ -1634,7 +1639,6 @@ public class Game implements misat11.bw.api.Game {
 
 						if ((elapsedTime % cycle) == 0) {
 							int calculatedStack = 1;
-							if (upgrades) {
 								double currentLevel = spawner.getCurrentLevel();
 								calculatedStack = (int) currentLevel;
 
@@ -1645,7 +1649,6 @@ public class Game implements misat11.bw.api.Game {
 										calculatedStack++;
 									}
 								}
-							}
 
 							BedwarsResourceSpawnEvent resourceSpawnEvent = new BedwarsResourceSpawnEvent(this, spawner,
 									type.getStack(calculatedStack));
@@ -1743,10 +1746,8 @@ public class Game implements misat11.bw.api.Game {
 		BedwarsPreRebuildingEvent preRebuildingEvent = new BedwarsPreRebuildingEvent(this);
 		Main.getInstance().getServer().getPluginManager().callEvent(preRebuildingEvent);
 
-		if (upgrades) {
-			for (ItemSpawner spawner : spawners) {
-				spawner.currentLevel = spawner.startLevel;
-			}
+		for (ItemSpawner spawner : spawners) {
+			spawner.currentLevel = spawner.startLevel;
 		}
 		for (GameStore store : gameStore) {
 			LivingEntity villager = store.kill();
@@ -1803,6 +1804,8 @@ public class Game implements misat11.bw.api.Game {
 			Main.unregisterGameEntity(entity);
 		}
 
+		UpgradeRegistry.clearAll(this);
+		
 		BedwarsPostRebuildingEvent postRebuildingEvent = new BedwarsPostRebuildingEvent(this);
 		Main.getInstance().getServer().getPluginManager().callEvent(postRebuildingEvent);
 
@@ -2611,11 +2614,7 @@ public class Game implements misat11.bw.api.Game {
 
 	@Override
 	public boolean isUpgradesEnabled() {
-		return upgrades;
-	}
-
-	public void setUpgradesEnabled(boolean upgrades) {
-		this.upgrades = upgrades;
+		return true;
 	}
 
 	@Override

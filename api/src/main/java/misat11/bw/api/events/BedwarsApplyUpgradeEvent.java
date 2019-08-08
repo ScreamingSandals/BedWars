@@ -17,10 +17,10 @@ public class BedwarsApplyUpgradeEvent extends Event implements Cancellable {
 	private Team team = null;
 	private Player player = null;
 	private ItemSpawner spawner = null;
-	private int newLevel = 1;
+	private double newLevel = 1;
 	private boolean cancel = false;
 
-	public BedwarsApplyUpgradeEvent(Game game, Player player, Team team, ItemSpawner spawner, int newLevel) {
+	public BedwarsApplyUpgradeEvent(Game game, Player player, Team team, ItemSpawner spawner, double newLevel) {
 		this.game = game;
 		this.team = team;
 		this.player = player;
@@ -41,7 +41,7 @@ public class BedwarsApplyUpgradeEvent extends Event implements Cancellable {
 		return BedwarsApplyUpgradeEvent.handlers;
 	}
 
-	public int getNewLevel() {
+	public double getNewLevel() {
 		return newLevel;
 	}
 

@@ -259,7 +259,6 @@ help_bw_admin_store_type: "/bw admin <Spiel> store type <living entity> - §eSet
 help_bw_admin_config: "/bw admin <Spiel> config <Option> <Wert> - §eSetzt den Wert der Option für das Spiel"
 help_bw_admin_arena_time: "/bw admin <Spiel> arenatime <Typ> - §eSetzt die Uhrzeit im Spiel (DAY, NIGHT, etc.)"
 help_bw_admin_arena_weather: "/bw admin <Spiel> arenaweather <Typ> - §eSetzt das Wetter im SPiel (default, CLEAN, DOWNFALL)"
-help_bw_admin_upgrades: "/bw admin <Spiel> upgrades <true|false> - §eAktiviert oder deaktiviert upgrades"
 help_bw_admin_remove: "/bw admin <Spiel> remove - §cEntferne ein Spiel"
 help_bw_admin_edit: "/bw admin <Spiel> edit - §eSchaltet das Spiel aus und aktiviert den edit-Modus"
 help_bw_admin_save: "/bw admin <Spiel> save - §aSpeichert das Spiel und aktiviert es!"
