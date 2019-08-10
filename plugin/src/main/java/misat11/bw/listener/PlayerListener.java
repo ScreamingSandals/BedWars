@@ -386,10 +386,10 @@ public class PlayerListener implements Listener {
 							event.setCancelled(true);
 						}
 					}
-				} else if (edbee.getDamager() instanceof Arrow) {
-					Arrow arrow = (Arrow) edbee.getDamager();
-					if (arrow.getShooter() instanceof Player) {
-						Player damager = (Player) arrow.getShooter();
+				} else if (edbee.getDamager() instanceof Projectile) {
+					Projectile projectile = (Projectile) edbee.getDamager();
+					if (projectile.getShooter() instanceof Player) {
+						Player damager = (Player) projectile.getShooter();
 						if (Main.isPlayerInGame(damager)) {
 							if (Main.getPlayerGameProfile(damager).isSpectator) {
 								event.setCancelled(true);
