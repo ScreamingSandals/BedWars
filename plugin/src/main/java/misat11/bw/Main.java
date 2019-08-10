@@ -212,7 +212,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 	}
 
 	public static boolean isBreakableBlock(Material mat) {
-		if (instance.configurator.config.getBoolean("breakable.enable")) {
+		if (instance.configurator.config.getBoolean("breakable.enabled")) {
 			List<String> list = (List<String>) instance.configurator.config.getList("breakable.blocks");
 			return list.contains(mat.name());
 		}
