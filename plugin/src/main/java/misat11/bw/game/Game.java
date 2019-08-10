@@ -634,7 +634,6 @@ public class Game implements misat11.bw.api.Game {
 
 			Main.getPlayerStatisticsManager().unloadStatistic(player.player);
 		}
-
 		if (players.isEmpty()) {
 			if (status != GameStatus.WAITING) {
 				afterRebuild = GameStatus.WAITING;
@@ -1043,7 +1042,6 @@ public class Game implements misat11.bw.api.Game {
 		if (players.size() >= calculatedMaxPlayers && status == GameStatus.WAITING) {
 			if (Main.getPlayerGameProfile(player).canJoinFullGame()) {
 				List<GamePlayer> withoutVIP = getPlayersWithoutVIP();
-				System.out.println("DEBUG: withoutVIP = " + withoutVIP.toString());
 
 				if (withoutVIP.size() == 0) {
 					player.sendMessage(i18n("vip_game_is_full"));
@@ -1057,10 +1055,8 @@ public class Game implements misat11.bw.api.Game {
 					kickPlayer = withoutVIP.get(MiscUtils.randInt(0, players.size() - 1));
 				}
 
-				kickPlayer.changeGame(null);
-				System.out.println("DEBUG: Kick player is " + kickPlayer.player.getDisplayName());
 				kickPlayer.player.sendMessage(i18n("game_kicked_by_vip").replace("%arena%", this.name));
-
+				kickPlayer.changeGame(null);
 			} else {
 				player.sendMessage(i18n("game_is_full").replace("%arena%", this.name));
 				return;
@@ -2820,7 +2816,7 @@ public class Game implements misat11.bw.api.Game {
 
 
 	public List<GamePlayer> getPlayersWithoutVIP() {
-		List<GamePlayer> gamePlayerList = this.players;
+		List<GamePlayer> gamePlayerList = new ArrayList<>(this.players);
 		gamePlayerList.removeIf(gamePlayer -> gamePlayer.canJoinFullGame() || gamePlayer.isVIP());
 
 		return gamePlayerList;
