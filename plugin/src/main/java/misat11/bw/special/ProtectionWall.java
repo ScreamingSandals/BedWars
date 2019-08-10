@@ -92,14 +92,12 @@ public class ProtectionWall extends SpecialItem implements misat11.bw.api.specia
 					for (Block block : ProtectionWall.this.wallBlocks) {
 						block.getChunk().load(true);
 						block.setType(Material.AIR);
+
 						removeBlockFromList(block);
-
 						game.getRegion().removeBlockBuiltDuringGame(block.getLocation());
-						game.unregisterSpecialItem(ProtectionWall.this);
-						game.getRegion().removeBlockBuildedDuringGame(block.getLocation());
-
-						this.cancel();
 					}
+					game.unregisterSpecialItem(ProtectionWall.this);
+					this.cancel();
 				}
 			}
 		}.runTaskTimer(Main.getInstance(), 20L, 20L);
