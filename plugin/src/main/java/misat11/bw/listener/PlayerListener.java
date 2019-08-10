@@ -27,6 +27,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
@@ -222,10 +223,11 @@ public class PlayerListener implements Listener {
 				Block block = event.getBlock();
 				int explosionTime = Main.getConfigurator().config.getInt("tnt.explosion-time", 8) * 20;
 
-				if (block .getType() == Material.TNT
-						&&  Main.getConfigurator().config.getBoolean("tnt.auto-ignite", false)) {
+				if (block.getType() == Material.TNT
+						&& Main.getConfigurator().config.getBoolean("tnt.auto-ignite", false)) {
 					block.setType(Material.AIR);
-					Location location = block.getLocation().add(0.5, 0.5, 0.5);;
+					Location location = block.getLocation().add(0.5, 0.5, 0.5);
+					;
 
 					TNTPrimed tnt = (TNTPrimed) location.getWorld().spawnEntity(location, EntityType.PRIMED_TNT);
 					tnt.setFuseTicks(explosionTime);
@@ -367,7 +369,7 @@ public class PlayerListener implements Listener {
 					player.teleport(game.getLobbySpawn());
 				}
 				event.setCancelled(true);
-			} else if (game.getStatus() == GameStatus.RUNNING){
+			} else if (game.getStatus() == GameStatus.RUNNING) {
 				if (game.isProtectionActive(player) && event.getCause() != DamageCause.VOID) {
 					event.setCancelled(true);
 					return;
@@ -386,7 +388,10 @@ public class PlayerListener implements Listener {
 							event.setCancelled(true);
 						}
 					}
-				} else if (edbee.getDamager() instanceof Projectile) {
+				/*
+				 * Used onLaunchProjectile instead of this, remove this comment after testing
+				 * 
+				   } else if (edbee.getDamager() instanceof Projectile) {
 					Projectile projectile = (Projectile) edbee.getDamager();
 					if (projectile.getShooter() instanceof Player) {
 						Player damager = (Player) projectile.getShooter();
@@ -395,11 +400,28 @@ public class PlayerListener implements Listener {
 								event.setCancelled(true);
 							}
 						}
-					}
+					}*/
 				} else if (edbee.getDamager() instanceof Firework) {
-						if (Main.isPlayerInGame(player)) {
-							event.setCancelled(true);
-						}
+					if (Main.isPlayerInGame(player)) {
+						event.setCancelled(true);
+					}
+				}
+			}
+		}
+	}
+
+	@EventHandler
+	public void onLaunchProjectile(ProjectileLaunchEvent event) {
+		if (event.isCancelled()) {
+			return;
+		}
+
+		Projectile projectile = event.getEntity();
+		if (projectile.getShooter() instanceof Player) {
+			Player damager = (Player) projectile.getShooter();
+			if (Main.isPlayerInGame(damager)) {
+				if (Main.getPlayerGameProfile(damager).isSpectator) {
+					event.setCancelled(true);
 				}
 			}
 		}
@@ -673,7 +695,7 @@ public class PlayerListener implements Listener {
 			GamePlayer gPlayer = Main.getPlayerGameProfile(player);
 			Game game = gPlayer.getGame();
 			CurrentTeam team = game.getPlayerTeam(gPlayer);
-			String message = event.getMessage(); 
+			String message = event.getMessage();
 			boolean spectator = gPlayer.isSpectator;
 
 			String playerName = player.getName();
@@ -699,8 +721,7 @@ public class PlayerListener implements Listener {
 			format = format.replace("%playerListName%", playerListName);
 
 			if (Main.isVault()) {
-				Chat chat = Bukkit.getServer().getServicesManager()
-						.load(Chat.class);
+				Chat chat = Bukkit.getServer().getServicesManager().load(Chat.class);
 				if (chat != null) {
 					format = format.replace("%prefix%", chat.getPlayerPrefix(player));
 					format = format.replace("%suffix%", chat.getPlayerSuffix(player));
