@@ -79,13 +79,13 @@ public class RescuePlatform extends SpecialItem implements misat11.bw.api.specia
 					for (Block block : RescuePlatform.this.platformBlocks) {
 						block.getChunk().load(true);
 						block.setType(Material.AIR);
+
 						removeBlockFromList(block);
-
 						game.getRegion().removeBlockBuiltDuringGame(block.getLocation());
-						game.unregisterSpecialItem(RescuePlatform.this);
 
-						this.cancel();
 					}
+                    game.unregisterSpecialItem(RescuePlatform.this);
+                    this.cancel();
 				}
 			}
 		}.runTaskTimer(Main.getInstance(), 20L, 20L);
