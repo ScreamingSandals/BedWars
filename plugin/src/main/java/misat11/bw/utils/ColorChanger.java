@@ -28,7 +28,7 @@ public class ColorChanger implements misat11.bw.api.ColorChanger {
 
         try {
             materialName = material.toString().substring(material.toString().indexOf("_") + 1);
-        } catch (StringIndexOutOfBoundsException e) {
+        } catch (StringIndexOutOfBoundsException ignored) {
         }
 
         String teamMaterialColor = teamColor.material1_13;

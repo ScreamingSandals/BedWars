@@ -45,7 +45,10 @@ import org.bukkit.scoreboard.Scoreboard;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static misat11.lib.lang.I18n.i18n;
 import static misat11.lib.lang.I18n.i18nonly;
@@ -1040,25 +1043,7 @@ public class Game implements misat11.bw.api.Game {
 		}
 
 		if (players.size() >= calculatedMaxPlayers && status == GameStatus.WAITING) {
-			if (Main.getPlayerGameProfile(player).canJoinFullGame()) {
-				List<GamePlayer> withoutVIP = getPlayersWithoutVIP();
-
-				if (withoutVIP.size() == 0) {
-					player.sendMessage(i18n("vip_game_is_full"));
-					return;
-				}
-
-				GamePlayer kickPlayer;
-				if (withoutVIP.size() == 1) {
-					kickPlayer = withoutVIP.get(0);
-				} else {
-					kickPlayer = withoutVIP.get(MiscUtils.randInt(0, players.size() - 1));
-				}
-
-				kickPlayer.player.sendMessage(i18n("game_kicked_by_vip").replace("%arena%", this.name));
-				kickPlayer.changeGame(null);
-			} else {
-				player.sendMessage(i18n("game_is_full").replace("%arena%", this.name));
+			if (!sortFullArenaPlayers(player)) {
 				return;
 			}
 		}
@@ -1080,6 +1065,35 @@ public class Game implements misat11.bw.api.Game {
 					updateScoreboard();
 				}
 			}
+		}
+	}
+
+	public boolean sortFullArenaPlayers(Player player) {
+		if (Main.getPlayerGameProfile(player).canJoinFullGame()) {
+			List<GamePlayer> withoutVIP = getPlayersWithoutVIP();
+
+			if (withoutVIP.size() == 0) {
+				player.sendMessage(i18n("vip_game_is_full"));
+				return false;
+			}
+
+			GamePlayer kickPlayer;
+			if (withoutVIP.size() == 1) {
+				kickPlayer = withoutVIP.get(0);
+			} else {
+				kickPlayer = withoutVIP.get(MiscUtils.randInt(0, players.size() - 1));
+			}
+
+			if (isBungeeEnabled()) {
+				BungeeUtils.sendMessage(kickPlayer.player, i18n("game_kicked_by_vip").replace("%arena%", Game.this.name));
+			} else {
+				kickPlayer.player.sendMessage(i18n("game_kicked_by_vip").replace("%arena%", this.name));
+			}
+			kickPlayer.changeGame(null);
+			return true;
+		} else {
+			player.sendMessage(i18n("game_is_full").replace("%arena%", this.name));
+			return false;
 		}
 	}
 
@@ -2774,6 +2788,12 @@ public class Game implements misat11.bw.api.Game {
 	}
 
 	public static boolean isBungeeEnabled() {
+		return Main.getConfigurator().config.getBoolean("bungee.enabled");
+	}
+
+
+	@Override
+	public boolean getBungeeEnabled() {
 		return Main.getConfigurator().config.getBoolean("bungee.enabled");
 	}
 
