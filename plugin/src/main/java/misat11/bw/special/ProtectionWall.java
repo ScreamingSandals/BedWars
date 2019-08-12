@@ -10,10 +10,8 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.MaterialData;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
@@ -184,8 +182,15 @@ public class ProtectionWall extends SpecialItem implements misat11.bw.api.specia
 
 				if (Main.isLegacy()) {
 					ItemStack itemStack = new ItemStack(buildingMaterial);
-					placedBlock.setType(ColorChanger.changeLegacyStackColor(itemStack, TeamColor.fromApiColor(team.getColor())).getType());
+					itemStack = ColorChanger.changeLegacyStackColor(itemStack, TeamColor.fromApiColor(team.getColor()));
 
+					placedBlock.setType(itemStack.getType());
+					try {
+						// The method is no longer in API, but in legacy versions exists
+						Block.class.getMethod("setData", byte.class).invoke(placedBlock, (byte) itemStack.getDurability());
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 				} else {
 					placedBlock.setType(ColorChanger.changeMaterialColor(buildingMaterial, TeamColor.fromApiColor(team.getColor())));
 				}
