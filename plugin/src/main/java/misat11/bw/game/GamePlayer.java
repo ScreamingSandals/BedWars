@@ -69,8 +69,6 @@ public class GamePlayer {
 
 	public boolean canJoinFullGame() { return player.hasPermission("bw.vip.forcejoin"); }
 
-	public boolean isVIP() { return player.hasPermission("bw.vip"); }
-
 	public void storeInv() {
 		oldinventory.inventory = player.getInventory().getContents();
 		oldinventory.armor = player.getInventory().getArmorContents();

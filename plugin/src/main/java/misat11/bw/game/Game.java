@@ -2817,7 +2817,7 @@ public class Game implements misat11.bw.api.Game {
 
 	public List<GamePlayer> getPlayersWithoutVIP() {
 		List<GamePlayer> gamePlayerList = new ArrayList<>(this.players);
-		gamePlayerList.removeIf(gamePlayer -> gamePlayer.canJoinFullGame() || gamePlayer.isVIP());
+		gamePlayerList.removeIf(GamePlayer::canJoinFullGame);
 
 		return gamePlayerList;
 	}
