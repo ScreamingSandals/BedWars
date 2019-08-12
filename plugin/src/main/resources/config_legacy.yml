@@ -113,13 +113,26 @@ specials:
   action-bar-messages: true
   rescue-platform:
     is-breakable: false
+    delay: 10
     break-time: 10
     distance: 1
     material: GLASS
+  protection-wall:
+    is-breakable: false
+    delay: 20
+    break-time: 0
+    width: 5
+    height: 3
+    distance: 2
+    material: SANDSTONE
   tntsheep:
     explosion-time: 8
   arrow-blocker:
     protection-time: 10
+  golem:
+    name-format: "%teamcolor%%team% Golem"
+    show-name: true
+
 # Automatic TNT ignite (default: false)
 tnt:
   auto-ignite: false

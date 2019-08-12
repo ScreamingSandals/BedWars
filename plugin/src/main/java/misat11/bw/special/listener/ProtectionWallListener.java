@@ -64,17 +64,22 @@ public class ProtectionWallListener implements Listener {
 						int width = Integer.parseInt(unhidden.split(":")[5]);
 						int height = Integer.parseInt(unhidden.split(":")[6]);
 						int distance = Integer.parseInt(unhidden.split(":")[7]);
-						Material material = MiscUtils.getMaterialFromString(unhidden.split(":")[8], "CUT_SANDSTONE");
+						Material material;
+						if (Main.isLegacy()) {
+							material = MiscUtils.getMaterialFromString(unhidden.split(":")[8], "SANDSTONE");
+						} else {
+							material = MiscUtils.getMaterialFromString(unhidden.split(":")[8], "CUT_SANDSTONE");
+						}
 
 						ProtectionWall protectionWall = new ProtectionWall(game, event.getPlayer(),
 								game.getTeamOfPlayer(event.getPlayer()), stack);
 
-						if (event.getPlayer().getEyeLocation().getBlock().getType() != Material.AIR) {
-							MiscUtils.sendActionBarMessage(event.getPlayer(), i18nonly("specials_protection_wall_not_usable_here"));
-							return;
-						}
-
 						if (isUsable) {
+							if (event.getPlayer().getEyeLocation().getBlock().getType() != Material.AIR) {
+								MiscUtils.sendActionBarMessage(event.getPlayer(), i18nonly("specials_protection_wall_not_usable_here"));
+								return;
+							}
+
 							protectionWall.createWall(isBreakable, breakTime, width, height, distance, material);
 							delay = Integer.parseInt(unhidden.split(":")[3]);
 							runCountdown();

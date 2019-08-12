@@ -23,8 +23,8 @@ public class ColorChanger implements misat11.bw.api.ColorChanger {
         return itemStack;
     }
 
-    public static Material changeStackColor(Material material, TeamColor teamColor) {
-        String materialName = material.toString();
+    public static Material changeMaterialColor(Material material, TeamColor teamColor) {
+        String materialName = material.name();
 
         try {
             materialName = material.toString().substring(material.toString().indexOf("_") + 1);
@@ -65,7 +65,7 @@ public class ColorChanger implements misat11.bw.api.ColorChanger {
 		if (Main.isLegacy()) {
 			stack = changeLegacyStackColor(stack, color);
 		} else {
-			stack.setType(changeStackColor(material, color));
+			stack.setType(changeMaterialColor(material, color));
 		}
 		stack = changeLeatherArmorColor(stack, color);
 		return stack;

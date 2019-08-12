@@ -3,25 +3,12 @@ package misat11.bw.utils;
 import misat11.bw.Main;
 import misat11.bw.api.GameStore;
 import misat11.bw.api.ItemSpawnerType;
-import misat11.bw.api.events.BedwarsApplyPropertyToBoughtItem;
-import misat11.bw.api.events.BedwarsApplyPropertyToDisplayedItem;
-import misat11.bw.api.events.BedwarsApplyPropertyToItem;
-import misat11.bw.api.events.BedwarsApplyUpgradeEvent;
-import misat11.bw.api.events.BedwarsUpgradeBoughtEvent;
-import misat11.bw.api.events.BedwarsUpgradeImprovedEvent;
+import misat11.bw.api.events.*;
 import misat11.bw.api.upgrades.Upgrade;
 import misat11.bw.api.upgrades.UpgradeRegistry;
 import misat11.bw.api.upgrades.UpgradeStorage;
-import misat11.bw.game.CurrentTeam;
-import misat11.bw.game.Game;
-import misat11.bw.game.GamePlayer;
-import misat11.bw.game.ItemSpawner;
-import misat11.bw.game.TeamColor;
-import misat11.lib.sgui.MapReader;
-import misat11.lib.sgui.Options;
-import misat11.lib.sgui.PlayerItemInfo;
-import misat11.lib.sgui.Property;
-import misat11.lib.sgui.SimpleGuiFormat;
+import misat11.bw.game.*;
+import misat11.lib.sgui.*;
 import misat11.lib.sgui.events.GenerateItemEvent;
 import misat11.lib.sgui.events.PreActionEvent;
 import misat11.lib.sgui.events.ShopTransactionEvent;
@@ -330,7 +317,8 @@ public class ShopMenu implements Listener {
 				if (Main.isLegacy()) {
 					event.setStack(ColorChanger.changeLegacyStackColor(stack, color));
 				} else {
-					stack.setType(ColorChanger.changeStackColor(material, color));
+					ItemStack itemStack = new ItemStack(ColorChanger.changeMaterialColor(material, color));
+					event.setStack(itemStack);
 				}
 				ItemStack newStack = ColorChanger.changeLeatherArmorColor(stack, color);
 

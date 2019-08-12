@@ -10,8 +10,10 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.MaterialData;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
@@ -83,7 +85,7 @@ public class ProtectionWall extends SpecialItem implements misat11.bw.api.specia
 				livingTime++;
 				int time = breakingTime - livingTime;
 
-				if (time < 6) {
+				if (time < 6 && time > 0) {
 					MiscUtils.sendActionBarMessage(
 							player, i18nonly("specials_protection_wall_destroy").replace("%time%", Integer.toString(time)));
 				}
@@ -183,8 +185,9 @@ public class ProtectionWall extends SpecialItem implements misat11.bw.api.specia
 				if (Main.isLegacy()) {
 					ItemStack itemStack = new ItemStack(buildingMaterial);
 					placedBlock.setType(ColorChanger.changeLegacyStackColor(itemStack, TeamColor.fromApiColor(team.getColor())).getType());
+
 				} else {
-					placedBlock.setType(ColorChanger.changeStackColor(buildingMaterial, TeamColor.fromApiColor(team.getColor())));
+					placedBlock.setType(ColorChanger.changeMaterialColor(buildingMaterial, TeamColor.fromApiColor(team.getColor())));
 				}
 
 				addBlockToList(placedBlock);
