@@ -1343,7 +1343,7 @@ public class Game implements misat11.bw.api.Game {
 					}
 				}
 			} else {
-				previousCountdown = countdown = pauseCountdown;
+				nextCountdown = previousCountdown = countdown = pauseCountdown;
 			}
 			setBossbarProgress(countdown, pauseCountdown);
 			updateLobbyScoreboard();
