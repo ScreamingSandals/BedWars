@@ -18,8 +18,8 @@ public final class UpgradeStorage{
 	private final Map<Game, List<Upgrade>> upgradeRegistry = new HashMap<>();
 	
 	/**
-	 * @param upgradeName
-	 * @param upgradeClass
+	 * @param upgradeName Upgrade Name
+	 * @param upgradeClass Upgrade Class
 	 */
 	UpgradeStorage(String upgradeName, Class<? extends Upgrade> upgradeClass) {
 		this.upgradeName = upgradeName;
@@ -43,8 +43,8 @@ public final class UpgradeStorage{
 	/**
 	 * Register active upgrade in game
 	 * 
-	 * @param game
-	 * @param upgrade
+	 * @param game Game
+	 * @param upgrade Upgrade
 	 */
 	public void addUpgrade(Game game, Upgrade upgrade) {
 		if (!upgradeClass.isInstance(upgrade)) {
@@ -64,8 +64,8 @@ public final class UpgradeStorage{
 	/**
 	 * Unregister active upgrade
 	 * 
-	 * @param game
-	 * @param upgrade
+	 * @param game Game
+	 * @param upgrade Upgrade
 	 */
 	public void removeUpgrade(Game game, Upgrade upgrade) {
 		if (!upgradeClass.isInstance(upgrade)) {
@@ -82,8 +82,8 @@ public final class UpgradeStorage{
 	}
 	
 	/**
-	 * @param game
-	 * @param upgrade
+	 * @param game Game
+	 * @param upgrade Upgrade
 	 * @return true if upgrade is registered
 	 */
 	public boolean isUpgradeRegistered(Game game, Upgrade upgrade) {
@@ -97,7 +97,7 @@ public final class UpgradeStorage{
 	/**
 	 * This is automatically used while game is ending
 	 * 
-	 * @param game
+	 * @param game Game
 	 */
 	public void resetUpgradesForGame(Game game) {
 		if (upgradeRegistry.containsKey(game)) {
@@ -113,7 +113,7 @@ public final class UpgradeStorage{
 	/**
 	 * Get all upgrades of this type that is registered in game as active
 	 * 
-	 * @param game
+	 * @param game Game
 	 * @return ĺist of registered upgrades of game
 	 */
 	public List<Upgrade> getAllUpgradesOfGame(Game game) {
@@ -127,7 +127,7 @@ public final class UpgradeStorage{
 	/**
 	 * Find active upgrades with this instanceName
 	 * 
-	 * @param game
+	 * @param game Game
 	 * @param instanceName name of spawner
 	 * @return list of upgrades with same name
 	 */

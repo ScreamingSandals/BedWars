@@ -22,6 +22,7 @@ public final class UpgradeRegistry {
 	 * 
 	 * @param name         Name of upgrade
 	 * @param upgradeClass Class type of upgrade
+	 * @return new instance of upgrade storage
 	 */
 	public static UpgradeStorage registerUpgrade(String name, Class<? extends Upgrade> upgradeClass) {
 		UpgradeStorage storage = new UpgradeStorage(name, upgradeClass);
