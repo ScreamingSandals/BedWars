@@ -497,10 +497,11 @@ public class Game implements misat11.bw.api.Game {
 			player.changeGame(null);
 			return;
 		}
-		if (players.size() >= calculatedMaxPlayers) {
-			player.player.sendMessage(i18n("game_is_full").replace("%arena%", this.name));
-			player.changeGame(null);
-			return;
+		if (players.size() >= calculatedMaxPlayers && status == GameStatus.WAITING) {
+			if (!sortFullArenaPlayers(player.player)) {
+				player.changeGame(null);
+				return;
+			}
 		}
 
 		BedwarsPlayerJoinEvent joinEvent = new BedwarsPlayerJoinEvent(this, player.player);
@@ -2791,7 +2792,6 @@ public class Game implements misat11.bw.api.Game {
 		return Main.getConfigurator().config.getBoolean("bungee.enabled");
 	}
 
-
 	@Override
 	public boolean getBungeeEnabled() {
 		return Main.getConfigurator().config.getBoolean("bungee.enabled");
@@ -2833,7 +2833,6 @@ public class Game implements misat11.bw.api.Game {
 	public boolean isProtectionActive(Player player) {
 		return (this.respawnProtectionMap.containsKey(player));
 	}
-
 
 	public List<GamePlayer> getPlayersWithoutVIP() {
 		List<GamePlayer> gamePlayerList = new ArrayList<>(this.players);

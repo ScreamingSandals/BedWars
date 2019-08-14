@@ -814,7 +814,6 @@ public class PlayerListener implements Listener {
 			loc.add(event.getBlockFace().getDirection());
 
 			Block block = loc.getBlock();
-
 			if (game.getStatus() == GameStatus.RUNNING) {
 				if (block.getType() == Material.AIR || game.getRegion().isBlockAddedDuringGame(block.getLocation())) {
 					game.getRegion().addBuiltDuringGame(block.getLocation());
@@ -827,16 +826,18 @@ public class PlayerListener implements Listener {
 		}
 	}
 
-
 	/* BungeeCord */
 	@EventHandler
-	public void onPreLoginEvent(PlayerLoginEvent event) {
-		Player player = event.getPlayer();
-		GamePlayer gamePlayer = Main.getPlayerGameProfile(player);
-		Game game = gamePlayer.getGame();
+	public void onPlayerLogin(PlayerLoginEvent event) {
+		if (!(event.getResult() == PlayerLoginEvent.Result.ALLOWED)) {
+			return;
+		}
 
-		if (Game.isBungeeEnabled()) {
-			game.sortFullArenaPlayers(player);
+		Player player = event.getPlayer();
+		Game game = (Game) Main.getInstance().getFirstWaitingGame();
+
+		if (Game.isBungeeEnabled() && Main.getConfigurator().config.getBoolean("bungee.auto-game-connect", false)) {
+			game.joinToGame(player);
 		}
 	}
 }

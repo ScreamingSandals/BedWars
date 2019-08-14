@@ -35,6 +35,7 @@ bungee:
   serverRestart: true
   serverStop: false
   server: "hub"
+  auto-game-connect: false
 
 # Ignored blocks (Farm blocks)
 farmBlocks:

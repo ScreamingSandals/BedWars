@@ -190,6 +190,7 @@ public class Configurator {
 		checkOrSetConfig(modify, "bungee.serverRestart", true);
 		checkOrSetConfig(modify, "bungee.serverStop", false);
 		checkOrSetConfig(modify, "bungee.server", "hub");
+		checkOrSetConfig(modify, "bungee.auto-game-connect", false);
 		checkOrSetConfig(modify, "farmBlocks.enable", true);
 		checkOrSetConfig(modify, "farmBlocks.blocks", new ArrayList<>());
 		checkOrSetConfig(modify, "scoreboard.enable", true);
