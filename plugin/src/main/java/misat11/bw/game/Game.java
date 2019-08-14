@@ -1816,6 +1816,10 @@ public class Game implements misat11.bw.api.Game {
 		
 		// Remove remaining entities registered by other plugins
 		for (Entity entity : Main.getGameEntities(this)) {
+			Chunk chunk = entity.getLocation().getChunk();
+			if (!chunk.isLoaded()) {
+				chunk.load();
+			}
 			entity.remove();
 			Main.unregisterGameEntity(entity);
 		}
