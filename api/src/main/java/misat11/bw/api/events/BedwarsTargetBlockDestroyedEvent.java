@@ -7,6 +7,10 @@ import org.bukkit.event.HandlerList;
 import misat11.bw.api.Game;
 import misat11.bw.api.RunningTeam;
 
+/**
+ * @author Bedwars Team
+ *
+ */
 public class BedwarsTargetBlockDestroyedEvent extends Event {
 
 	private static final HandlerList handlers = new HandlerList();
@@ -14,6 +18,11 @@ public class BedwarsTargetBlockDestroyedEvent extends Event {
 	private Player player = null;
 	private RunningTeam team = null;
 
+	/**
+	 * @param game
+	 * @param player
+	 * @param team
+	 */
 	public BedwarsTargetBlockDestroyedEvent(Game game, Player player, RunningTeam team) {
 		this.player = player;
 		this.team = team;
@@ -24,6 +33,9 @@ public class BedwarsTargetBlockDestroyedEvent extends Event {
 		return BedwarsTargetBlockDestroyedEvent.handlers;
 	}
 
+	/**
+	 * @return game
+	 */
 	public Game getGame() {
 		return this.game;
 	}
@@ -33,10 +45,16 @@ public class BedwarsTargetBlockDestroyedEvent extends Event {
 		return BedwarsTargetBlockDestroyedEvent.handlers;
 	}
 
+	/**
+	 * @return player
+	 */
 	public Player getPlayer() {
 		return this.player;
 	}
 
+	/**
+	 * @return team of player
+	 */
 	public RunningTeam getTeam() {
 		return this.team;
 	}

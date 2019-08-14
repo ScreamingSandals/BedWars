@@ -7,6 +7,10 @@ import org.bukkit.event.HandlerList;
 import misat11.bw.api.Game;
 import misat11.bw.api.Team;
 
+/**
+ * @author Bedwars Team
+ *
+ */
 public class BedwarsPlayerJoinedEvent extends Event {
 
 	private static final HandlerList handlers = new HandlerList();
@@ -14,6 +18,11 @@ public class BedwarsPlayerJoinedEvent extends Event {
 	private Player player = null;
 	private Team team = null;
 
+	/**
+	 * @param game
+	 * @param team
+	 * @param player
+	 */
 	public BedwarsPlayerJoinedEvent(Game game, Team team, Player player) {
 		this.game = game;
 		this.player = player;
@@ -24,8 +33,11 @@ public class BedwarsPlayerJoinedEvent extends Event {
 		return BedwarsPlayerJoinedEvent.handlers;
 	}
 
+	/**
+	 * @return
+	 */
 	public Game getGame() {
-		return this.game;
+		return this.game; 
 	}
 
 	@Override
@@ -33,10 +45,16 @@ public class BedwarsPlayerJoinedEvent extends Event {
 		return BedwarsPlayerJoinedEvent.handlers;
 	}
 
+	/**
+	 * @return
+	 */
 	public Player getPlayer() {
 		return this.player;
 	}
 
+	/**
+	 * @return
+	 */
 	public Team getTeam() {
 		return this.team;
 	}

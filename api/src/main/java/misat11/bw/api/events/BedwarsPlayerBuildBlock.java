@@ -11,6 +11,10 @@ import org.bukkit.inventory.ItemStack;
 import misat11.bw.api.Game;
 import misat11.bw.api.RunningTeam;
 
+/**
+ * @author Bedwars Team
+ *
+ */
 public class BedwarsPlayerBuildBlock extends Event implements Cancellable {
 
 	private static final HandlerList handlers = new HandlerList();
@@ -22,6 +26,14 @@ public class BedwarsPlayerBuildBlock extends Event implements Cancellable {
 	private boolean cancel = false;
 	private ItemStack itemInHand = null;
 
+	/**
+	 * @param game
+	 * @param player
+	 * @param team
+	 * @param block
+	 * @param itemInHand
+	 * @param replaced
+	 */
 	public BedwarsPlayerBuildBlock(Game game, Player player, RunningTeam team, Block block, ItemStack itemInHand, BlockState replaced) {
 		this.game = game;
 		this.player = player;
@@ -35,6 +47,9 @@ public class BedwarsPlayerBuildBlock extends Event implements Cancellable {
 		return BedwarsPlayerBuildBlock.handlers;
 	}
 
+	/**
+	 * @return
+	 */
 	public Game getGame() {
 		return this.game;
 	}
@@ -44,22 +59,37 @@ public class BedwarsPlayerBuildBlock extends Event implements Cancellable {
 		return BedwarsPlayerBuildBlock.handlers;
 	}
 
+	/**
+	 * @return
+	 */
 	public Player getPlayer() {
 		return this.player;
 	}
 
+	/**
+	 * @return
+	 */
 	public RunningTeam getTeam() {
 		return this.team;
 	}
 
+	/**
+	 * @return
+	 */
 	public Block getBlock() {
 		return this.block;
 	}
 
+	/**
+	 * @return
+	 */
 	public BlockState getReplaced() {
 		return this.replaced;
 	}
 	
+	/**
+	 * @return
+	 */
 	public ItemStack getItemInHand() {
 		return this.itemInHand;
 	}

@@ -9,6 +9,10 @@ import misat11.bw.api.Game;
 import misat11.bw.api.ItemSpawner;
 import misat11.bw.api.Team;
 
+/**
+ * @author Bedwars Team
+ *
+ */
 @Deprecated
 public class BedwarsApplyUpgradeEvent extends Event implements Cancellable {
 
@@ -20,6 +24,13 @@ public class BedwarsApplyUpgradeEvent extends Event implements Cancellable {
 	private double newLevel = 1;
 	private boolean cancel = false;
 
+	/**
+	 * @param game
+	 * @param player
+	 * @param team
+	 * @param spawner
+	 * @param newLevel
+	 */
 	public BedwarsApplyUpgradeEvent(Game game, Player player, Team team, ItemSpawner spawner, double newLevel) {
 		this.game = game;
 		this.team = team;
@@ -32,6 +43,9 @@ public class BedwarsApplyUpgradeEvent extends Event implements Cancellable {
 		return BedwarsApplyUpgradeEvent.handlers;
 	}
 
+	/**
+	 * @return
+	 */
 	public Game getGame() {
 		return this.game;
 	}
@@ -41,22 +55,37 @@ public class BedwarsApplyUpgradeEvent extends Event implements Cancellable {
 		return BedwarsApplyUpgradeEvent.handlers;
 	}
 
+	/**
+	 * @return
+	 */
 	public double getNewLevel() {
 		return newLevel;
 	}
 
+	/**
+	 * @param newLevel
+	 */
 	public void setNewLevel(int newLevel) {
 		this.newLevel = newLevel;
 	}
 
+	/**
+	 * @return
+	 */
 	public Team getTeam() {
 		return team;
 	}
 
+	/**
+	 * @return
+	 */
 	public Player getPlayer() {
 		return player;
 	}
 
+	/**
+	 * @return
+	 */
 	public ItemSpawner getSpawner() {
 		return spawner;
 	}

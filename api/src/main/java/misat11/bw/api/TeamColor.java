@@ -1,5 +1,9 @@
 package misat11.bw.api;
 
+/**
+ * @author Bedwars Team
+ *
+ */
 public enum TeamColor {
 	BLACK,
 	DARK_BLUE,

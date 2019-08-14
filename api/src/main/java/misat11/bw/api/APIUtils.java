@@ -7,7 +7,15 @@ import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+/**
+ * @author Bedwars Team
+ *
+ */
 public class APIUtils {
+	/**
+	 * @param stack
+	 * @param hash
+	 */
 	public static void hashIntoInvisibleString(ItemStack stack, String hash) {
 		ItemMeta meta = stack.getItemMeta();
 
@@ -20,6 +28,11 @@ public class APIUtils {
 		stack.setItemMeta(meta);
 	}
 
+	/**
+	 * @param stack
+	 * @param startsWith
+	 * @return
+	 */
 	public static String unhashFromInvisibleStringStartsWith(ItemStack stack, String startsWith) {
 		ItemMeta meta = stack.getItemMeta();
 		try {
@@ -38,6 +51,11 @@ public class APIUtils {
 		return null;
 	}
 
+	/**
+	 * @param stack
+	 * @param hash
+	 * @return
+	 */
 	public static boolean unhashFromInvisibleString(ItemStack stack, String hash) {
 		ItemMeta meta = stack.getItemMeta();
 		try {

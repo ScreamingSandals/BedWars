@@ -7,6 +7,10 @@ import org.bukkit.event.HandlerList;
 
 import misat11.bw.api.RunningTeam;
 
+/**
+ * @author Bedwars Team
+ *
+ */
 public class BedwarsPlayerJoinTeamEvent extends Event implements Cancellable {
 
 	private static final HandlerList handlers = new HandlerList();
@@ -15,6 +19,11 @@ public class BedwarsPlayerJoinTeamEvent extends Event implements Cancellable {
 	private RunningTeam team = null;
 	private RunningTeam prevTeam = null;
 
+	/**
+	 * @param team
+	 * @param player
+	 * @param prevTeam
+	 */
 	public BedwarsPlayerJoinTeamEvent(RunningTeam team, Player player, RunningTeam prevTeam) {
 		this.player = player;
 		this.team = team;
@@ -30,14 +39,23 @@ public class BedwarsPlayerJoinTeamEvent extends Event implements Cancellable {
 		return BedwarsPlayerJoinTeamEvent.handlers;
 	}
 
+	/**
+	 * @return
+	 */
 	public Player getPlayer() {
 		return this.player;
 	}
 
+	/**
+	 * @return
+	 */
 	public RunningTeam getTeam() {
 		return this.team;
 	}
 
+	/**
+	 * @return
+	 */
 	public RunningTeam getPreviousTeam() {
 		return this.prevTeam;
 	}

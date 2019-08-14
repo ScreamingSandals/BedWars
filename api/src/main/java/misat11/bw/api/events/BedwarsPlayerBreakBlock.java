@@ -9,6 +9,10 @@ import org.bukkit.event.HandlerList;
 import misat11.bw.api.Game;
 import misat11.bw.api.RunningTeam;
 
+/**
+ * @author Bedwars Team
+ *
+ */
 public class BedwarsPlayerBreakBlock extends Event implements Cancellable {
 
 	private static final HandlerList handlers = new HandlerList();
@@ -19,6 +23,12 @@ public class BedwarsPlayerBreakBlock extends Event implements Cancellable {
 	private boolean cancel = false;
 	private boolean drops = true;
 
+	/**
+	 * @param game
+	 * @param player
+	 * @param team
+	 * @param block
+	 */
 	public BedwarsPlayerBreakBlock(Game game, Player player, RunningTeam team, Block block) {
 		this.game = game;
 		this.player = player;
@@ -30,6 +40,9 @@ public class BedwarsPlayerBreakBlock extends Event implements Cancellable {
 		return BedwarsPlayerBreakBlock.handlers;
 	}
 
+	/**
+	 * @return
+	 */
 	public Game getGame() {
 		return this.game;
 	}
@@ -39,14 +52,23 @@ public class BedwarsPlayerBreakBlock extends Event implements Cancellable {
 		return BedwarsPlayerBreakBlock.handlers;
 	}
 
+	/**
+	 * @return
+	 */
 	public Player getPlayer() {
 		return this.player;
 	}
 
+	/**
+	 * @return
+	 */
 	public RunningTeam getTeam() {
 		return this.team;
 	}
 
+	/**
+	 * @return
+	 */
 	public Block getBlock() {
 		return this.block;
 	}
@@ -61,10 +83,16 @@ public class BedwarsPlayerBreakBlock extends Event implements Cancellable {
 		this.cancel = cancel;
 	}
 
+	/**
+	 * @return
+	 */
 	public boolean isDrops() {
 		return drops;
 	}
 
+	/**
+	 * @param drops
+	 */
 	public void setDrops(boolean drops) {
 		this.drops = drops;
 	}

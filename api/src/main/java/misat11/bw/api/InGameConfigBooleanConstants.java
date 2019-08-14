@@ -1,5 +1,9 @@
 package misat11.bw.api;
 
+/**
+ * @author Bedwars Team
+ *
+ */
 public enum InGameConfigBooleanConstants {
 	INHERIT(false, false),
 	TRUE(true, true),
@@ -13,14 +17,23 @@ public enum InGameConfigBooleanConstants {
 		this.value = value;
 	}
 	
+	/**
+	 * @return
+	 */
 	public boolean isInherited() {
 		return !original;
 	}
 	
+	/**
+	 * @return
+	 */
 	public boolean isOriginal() {
 		return original;
 	}
 	
+	/**
+	 * @return
+	 */
 	public boolean getValue() {
 		return value;
 	}

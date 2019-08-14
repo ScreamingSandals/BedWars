@@ -7,6 +7,10 @@ import org.bukkit.event.HandlerList;
 
 import misat11.bw.api.Game;
 
+/**
+ * @author Bedwars Team
+ *
+ */
 public class BedwarsOpenTeamSelectionEvent extends Event implements Cancellable {
 
 	private static final HandlerList handlers = new HandlerList();
@@ -14,6 +18,10 @@ public class BedwarsOpenTeamSelectionEvent extends Event implements Cancellable 
 	private Game game = null;
 	private Player player = null;
 
+	/**
+	 * @param game
+	 * @param player
+	 */
 	public BedwarsOpenTeamSelectionEvent(Game game, Player player) {
 		this.player = player;
 		this.game = game;
@@ -23,6 +31,9 @@ public class BedwarsOpenTeamSelectionEvent extends Event implements Cancellable 
 		return BedwarsOpenTeamSelectionEvent.handlers;
 	}
 
+	/**
+	 * @return game
+	 */
 	public Game getGame() {
 		return this.game;
 	}
@@ -32,6 +43,9 @@ public class BedwarsOpenTeamSelectionEvent extends Event implements Cancellable 
 		return BedwarsOpenTeamSelectionEvent.handlers;
 	}
 
+	/**
+	 * @return player
+	 */
 	public Player getPlayer() {
 		return this.player;
 	}

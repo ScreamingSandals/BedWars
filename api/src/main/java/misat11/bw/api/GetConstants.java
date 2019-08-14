@@ -5,9 +5,16 @@ import java.nio.charset.StandardCharsets;
 
 import org.bukkit.configuration.file.YamlConfiguration;
 
+/**
+ * @author Bedwars Team
+ *
+ */
 public class GetConstants {
 	private static YamlConfiguration yaml;
 	
+	/**
+	 * @return
+	 */
 	public static YamlConfiguration loadConfig() {
 		if (yaml == null) {
 			yaml = new YamlConfiguration();

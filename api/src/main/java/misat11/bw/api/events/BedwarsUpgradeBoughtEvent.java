@@ -11,6 +11,10 @@ import misat11.bw.api.Game;
 import misat11.bw.api.upgrades.Upgrade;
 import misat11.bw.api.upgrades.UpgradeStorage;
 
+/**
+ * @author Bedwars Team
+ *
+ */
 public class BedwarsUpgradeBoughtEvent extends Event implements Cancellable {
 
 	private static final HandlerList handlers = new HandlerList();
@@ -21,7 +25,15 @@ public class BedwarsUpgradeBoughtEvent extends Event implements Cancellable {
 	private UpgradeStorage storage;
 	private double addLevels;
 
-	public BedwarsUpgradeBoughtEvent(Game game, UpgradeStorage storage, List<Upgrade> upgrades, Player customer, double addLevels) {
+	/**
+	 * @param game
+	 * @param storage
+	 * @param upgrades
+	 * @param customer
+	 * @param addLevels
+	 */
+	public BedwarsUpgradeBoughtEvent(Game game, UpgradeStorage storage, List<Upgrade> upgrades, Player customer,
+			double addLevels) {
 		this.game = game;
 		this.upgrades = upgrades;
 		this.customer = customer;
@@ -33,6 +45,9 @@ public class BedwarsUpgradeBoughtEvent extends Event implements Cancellable {
 		return BedwarsUpgradeBoughtEvent.handlers;
 	}
 
+	/**
+	 * @return game
+	 */
 	public Game getGame() {
 		return this.game;
 	}
@@ -52,18 +67,30 @@ public class BedwarsUpgradeBoughtEvent extends Event implements Cancellable {
 		this.cancelled = cancel;
 	}
 
+	/**
+	 * @return list of upgrades
+	 */
 	public List<Upgrade> getUpgrades() {
 		return upgrades;
 	}
-	
+
+	/**
+	 * @return customer
+	 */
 	public Player getCustomer() {
 		return customer;
 	}
-	
+
+	/**
+	 * @return addition
+	 */
 	public double getAddLevels() {
 		return addLevels;
 	}
-	
+
+	/**
+	 * @return storage for these upgrades type
+	 */
 	public UpgradeStorage getStorage() {
 		return storage;
 	}

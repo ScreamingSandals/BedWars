@@ -9,6 +9,10 @@ import org.bukkit.event.HandlerList;
 import misat11.bw.api.Game;
 import misat11.bw.api.GameStore;
 
+/**
+ * @author Bedwars Team
+ *
+ */
 public class BedwarsOpenShopEvent extends Event implements Cancellable {
 
 	private static final HandlerList handlers = new HandlerList();
@@ -19,6 +23,12 @@ public class BedwarsOpenShopEvent extends Event implements Cancellable {
 	private Result result = Result.ALLOW;
 	
 
+	/**
+	 * @param game
+	 * @param player
+	 * @param store
+	 * @param clickedEntity
+	 */
 	public BedwarsOpenShopEvent(Game game, Player player, GameStore store, Entity clickedEntity) {
 		this.player = player;
 		this.game = game;
@@ -26,14 +36,23 @@ public class BedwarsOpenShopEvent extends Event implements Cancellable {
 		this.store = store;
 	}
 
+	/**
+	 * @return
+	 */
 	public static HandlerList getHandlerList() {
 		return BedwarsOpenShopEvent.handlers;
 	}
 
+	/**
+	 * @return
+	 */
 	public Entity getEntity() {
 		return this.clickedEntity;
 	}
 
+	/**
+	 * @return
+	 */
 	public Game getGame() {
 		return this.game;
 	}
@@ -43,10 +62,16 @@ public class BedwarsOpenShopEvent extends Event implements Cancellable {
 		return BedwarsOpenShopEvent.handlers;
 	}
 
+	/**
+	 * @return
+	 */
 	public Player getPlayer() {
 		return this.player;
 	}
 	
+	/**
+	 * @return
+	 */
 	public GameStore getStore() {
 		return this.store;
 	}
@@ -63,14 +88,24 @@ public class BedwarsOpenShopEvent extends Event implements Cancellable {
 		result = cancel ? Result.DISALLOW_UNKNOWN : Result.ALLOW;
 	}
 	
+	/**
+	 * @return
+	 */
 	public Result getResult() {
 		return result;
 	}
 	
+	/**
+	 * @param result
+	 */
 	public void setResult(Result result) {
 		this.result = result;
 	}
 	
+	/**
+	 * @author Bedwars Team
+	 *
+	 */
 	public static enum Result {
 		ALLOW,
 		DISALLOW_THIRD_PARTY_SHOP,

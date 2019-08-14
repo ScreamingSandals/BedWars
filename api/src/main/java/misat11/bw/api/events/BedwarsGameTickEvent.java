@@ -6,6 +6,10 @@ import org.bukkit.event.HandlerList;
 import misat11.bw.api.Game;
 import misat11.bw.api.GameStatus;
 
+/**
+ * @author Bedwars Team
+ *
+ */
 public class BedwarsGameTickEvent extends Event {
 
 	private static final HandlerList handlers = new HandlerList();
@@ -20,6 +24,15 @@ public class BedwarsGameTickEvent extends Event {
 	private int nextCountdown;
 	private GameStatus nextStatus;
 	
+	/**
+	 * @param game
+	 * @param previousCountdown
+	 * @param previousStatus
+	 * @param countdown
+	 * @param status
+	 * @param nextCountdown
+	 * @param nextStatus
+	 */
 	public BedwarsGameTickEvent(Game game, int previousCountdown, GameStatus previousStatus, int countdown, GameStatus status, int nextCountdown, GameStatus nextStatus) {
 		this.game = game;
 		this.previousCountdown = previousCountdown;
@@ -39,42 +52,72 @@ public class BedwarsGameTickEvent extends Event {
 		return BedwarsGameTickEvent.handlers;
 	}
 	
+	/**
+	 * @return
+	 */
 	public Game getGame() {
 		return this.game;
 	}
 	
+	/**
+	 * @return
+	 */
 	public int getCountdown() {
 		return this.countdown;
 	}
 	
+	/**
+	 * @return
+	 */
 	public GameStatus getStatus() {
 		return this.status;
 	}
 
+	/**
+	 * @return
+	 */
 	public int getNextCountdown() {
 		return nextCountdown;
 	}
 
+	/**
+	 * @param nextCountdown
+	 */
 	public void setNextCountdown(int nextCountdown) {
 		this.nextCountdown = nextCountdown;
 	}
 
+	/**
+	 * @return
+	 */
 	public GameStatus getNextStatus() {
 		return nextStatus;
 	}
 
+	/**
+	 * @param nextStatus
+	 */
 	public void setNextStatus(GameStatus nextStatus) {
 		this.nextStatus = nextStatus;
 	}
 
+	/**
+	 * @return
+	 */
 	public int getPreviousCountdown() {
 		return previousCountdown;
 	}
 
+	/**
+	 * @return
+	 */
 	public GameStatus getPreviousStatus() {
 		return previousStatus;
 	}
 	
+	/**
+	 * @param prevent
+	 */
 	public void preventContinuation(boolean prevent) {
 		if (prevent) {
 			this.nextCountdown = this.countdown;
@@ -85,14 +128,23 @@ public class BedwarsGameTickEvent extends Event {
 		}
 	}
 	
+	/**
+	 * @return
+	 */
 	public boolean isNextCountdownChanged() {
 		return this.nextCountdown != this.originalNextCountdown;
 	}
 	
+	/**
+	 * @return
+	 */
 	public boolean isNextStatusChanged() {
 		return this.nextStatus != this.originalNextStatus;
 	}
 	
+	/**
+	 * @return
+	 */
 	public boolean isNextTickChanged() {
 		return isNextCountdownChanged() || isNextStatusChanged();
 	}

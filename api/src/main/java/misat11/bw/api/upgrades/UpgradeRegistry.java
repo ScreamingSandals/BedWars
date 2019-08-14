@@ -6,9 +6,11 @@ import java.util.Map;
 import misat11.bw.api.Game;
 import misat11.bw.api.ItemSpawner;
 
+/**
+ * @author Bedwars Team
+ *
+ */
 public final class UpgradeRegistry {
-	
-	// TODO IMPLEMENT UPGRADE API
 
 	private static final Map<String, UpgradeStorage> UPGRADES = new HashMap<>();
 	

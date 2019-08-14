@@ -7,6 +7,10 @@ import org.bukkit.event.HandlerList;
 
 import misat11.bw.api.Game;
 
+/**
+ * @author Bedwars Team
+ *
+ */
 public class BedwarsPreSpawnEffectEvent extends Event implements Cancellable {
 
 	private static final HandlerList handlers = new HandlerList();
@@ -15,6 +19,11 @@ public class BedwarsPreSpawnEffectEvent extends Event implements Cancellable {
 	private String effectsGroupName = null;
 	private boolean cancelled = false;
 
+	/**
+	 * @param game
+	 * @param player
+	 * @param effectsGroupName
+	 */
 	public BedwarsPreSpawnEffectEvent(Game game, Player player, String effectsGroupName) {
 		this.game = game;
 		this.player = player;
@@ -25,14 +34,23 @@ public class BedwarsPreSpawnEffectEvent extends Event implements Cancellable {
 		return BedwarsPreSpawnEffectEvent.handlers;
 	}
 
+	/**
+	 * @return game
+	 */
 	public Game getGame() {
 		return this.game;
 	}
 	
+	/**
+	 * @return player
+	 */
 	public Player getPlayer() {
 		return this.player;
 	}
 	
+	/**
+	 * @return group effects
+	 */
 	public String getEffectsGroupName() {
 		return this.effectsGroupName;
 	}

@@ -6,12 +6,19 @@ import org.bukkit.event.HandlerList;
 
 import misat11.bw.api.Game;
 
+/**
+ * @author Bedwars Team
+ *
+ */
 public class BedwarsGameStartEvent extends Event implements Cancellable {
 
 	private static final HandlerList handlers = new HandlerList();
 	private boolean cancelled = false;
 	private Game game = null;
 
+	/**
+	 * @param game
+	 */
 	public BedwarsGameStartEvent(Game game) {
 		this.game = game;
 	}
@@ -20,6 +27,9 @@ public class BedwarsGameStartEvent extends Event implements Cancellable {
 		return BedwarsGameStartEvent.handlers;
 	}
 
+	/**
+	 * @return
+	 */
 	public Game getGame() {
 		return this.game;
 	}

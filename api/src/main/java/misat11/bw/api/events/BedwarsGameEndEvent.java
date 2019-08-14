@@ -5,11 +5,18 @@ import org.bukkit.event.HandlerList;
 
 import misat11.bw.api.Game;
 
+/**
+ * @author Bedwars Team
+ *
+ */
 public class BedwarsGameEndEvent extends Event {
 
 	private static final HandlerList handlers = new HandlerList();
 	private Game game = null;
 
+	/**
+	 * @param game
+	 */
 	public BedwarsGameEndEvent(Game game) {
 		this.game = game;
 	}
@@ -18,6 +25,9 @@ public class BedwarsGameEndEvent extends Event {
 		return BedwarsGameEndEvent.handlers;
 	}
 
+	/**
+	 * @return game
+	 */
 	public Game getGame() {
 		return this.game;
 	}

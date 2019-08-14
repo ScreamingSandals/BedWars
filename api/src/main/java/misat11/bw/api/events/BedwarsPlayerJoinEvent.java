@@ -7,6 +7,10 @@ import org.bukkit.event.HandlerList;
 
 import misat11.bw.api.Game;
 
+/**
+ * @author Bedwars Team
+ *
+ */
 public class BedwarsPlayerJoinEvent extends Event implements Cancellable {
 
 	private static final HandlerList handlers = new HandlerList();
@@ -15,6 +19,10 @@ public class BedwarsPlayerJoinEvent extends Event implements Cancellable {
 	private Game game = null;
 	private Player player = null;
 
+	/**
+	 * @param game
+	 * @param player
+	 */
 	public BedwarsPlayerJoinEvent(Game game, Player player) {
 		this.game = game;
 		this.player = player;
@@ -24,6 +32,9 @@ public class BedwarsPlayerJoinEvent extends Event implements Cancellable {
 		return BedwarsPlayerJoinEvent.handlers;
 	}
 
+	/**
+	 * @return
+	 */
 	public Game getGame() {
 		return this.game;
 	}
@@ -33,6 +44,9 @@ public class BedwarsPlayerJoinEvent extends Event implements Cancellable {
 		return BedwarsPlayerJoinEvent.handlers;
 	}
 
+	/**
+	 * @return
+	 */
 	public Player getPlayer() {
 		return this.player;
 	}
@@ -47,10 +61,16 @@ public class BedwarsPlayerJoinEvent extends Event implements Cancellable {
 		this.cancelled = cancel;
 	}
 
+	/**
+	 * @return
+	 */
 	public String getCancelMessage() {
 		return cancelMessage;
 	}
 
+	/**
+	 * @param cancelMessage
+	 */
 	public void setCancelMessage(String cancelMessage) {
 		this.cancelMessage = cancelMessage;
 	}

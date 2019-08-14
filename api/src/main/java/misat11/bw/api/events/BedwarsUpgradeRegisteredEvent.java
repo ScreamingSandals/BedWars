@@ -7,6 +7,10 @@ import misat11.bw.api.Game;
 import misat11.bw.api.upgrades.Upgrade;
 import misat11.bw.api.upgrades.UpgradeStorage;
 
+/**
+ * @author Bedwars Team
+ *
+ */
 public class BedwarsUpgradeRegisteredEvent extends Event {
 
 	private static final HandlerList handlers = new HandlerList();
@@ -14,6 +18,11 @@ public class BedwarsUpgradeRegisteredEvent extends Event {
 	private UpgradeStorage storage = null;
 	private Upgrade upgrade = null;
 
+	/**
+	 * @param game
+	 * @param storage
+	 * @param upgrade
+	 */
 	public BedwarsUpgradeRegisteredEvent(Game game, UpgradeStorage storage, Upgrade upgrade) {
 		this.game = game;
 		this.storage = storage;
@@ -24,6 +33,9 @@ public class BedwarsUpgradeRegisteredEvent extends Event {
 		return BedwarsUpgradeRegisteredEvent.handlers;
 	}
 
+	/**
+	 * @return game
+	 */
 	public Game getGame() {
 		return this.game;
 	}
@@ -32,11 +44,17 @@ public class BedwarsUpgradeRegisteredEvent extends Event {
 	public HandlerList getHandlers() {
 		return BedwarsUpgradeRegisteredEvent.handlers;
 	}
-	
+
+	/**
+	 * @return upgrade
+	 */
 	public Upgrade getUpgrade() {
 		return upgrade;
 	}
-	
+
+	/**
+	 * @return storage of this upgrades type
+	 */
 	public UpgradeStorage getStorage() {
 		return storage;
 	}

@@ -2,6 +2,10 @@ package misat11.bw.api.upgrades;
 
 import misat11.bw.api.Game;
 
+/**
+ * @author Bedwars Team
+ *
+ */
 public interface Upgrade {
 	
 	/**

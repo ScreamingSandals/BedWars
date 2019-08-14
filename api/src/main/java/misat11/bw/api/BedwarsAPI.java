@@ -6,6 +6,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
+/**
+ * @author Bedwars Team
+ *
+ */
 public interface BedwarsAPI {
 
 	/**

@@ -6,37 +6,47 @@ import org.bukkit.event.HandlerList;
 
 import misat11.bw.api.statistics.PlayerStatistic;
 
+/**
+ * @author Bedwars Team
+ *
+ */
 public class BedwarsSavePlayerStatisticEvent extends Event implements Cancellable {
 
-	  private static final HandlerList handlers = new HandlerList();
-	  private boolean cancelled = false;
-	  private PlayerStatistic playerStatistic = null;
+	private static final HandlerList handlers = new HandlerList();
+	private boolean cancelled = false;
+	private PlayerStatistic playerStatistic = null;
 
-	  public BedwarsSavePlayerStatisticEvent(PlayerStatistic playerStatistic) {
-	    this.playerStatistic = playerStatistic;
-	  }
-
-	  public static HandlerList getHandlerList() {
-	    return BedwarsSavePlayerStatisticEvent.handlers;
-	  }
-
-	  @Override
-	  public HandlerList getHandlers() {
-	    return BedwarsSavePlayerStatisticEvent.handlers;
-	  }
-
-	  public PlayerStatistic getPlayerStatistic() {
-	    return this.playerStatistic;
-	  }
-
-	  @Override
-	  public boolean isCancelled() {
-	    return this.cancelled;
-	  }
-
-	  @Override
-	  public void setCancelled(boolean cancel) {
-	    this.cancelled = cancel;
-	  }
-
+	/**
+	 * @param playerStatistic
+	 */
+	public BedwarsSavePlayerStatisticEvent(PlayerStatistic playerStatistic) {
+		this.playerStatistic = playerStatistic;
 	}
+
+	public static HandlerList getHandlerList() {
+		return BedwarsSavePlayerStatisticEvent.handlers;
+	}
+
+	@Override
+	public HandlerList getHandlers() {
+		return BedwarsSavePlayerStatisticEvent.handlers;
+	}
+
+	/**
+	 * @return statistics
+	 */
+	public PlayerStatistic getPlayerStatistic() {
+		return this.playerStatistic;
+	}
+
+	@Override
+	public boolean isCancelled() {
+		return this.cancelled;
+	}
+
+	@Override
+	public void setCancelled(boolean cancel) {
+		this.cancelled = cancel;
+	}
+
+}

@@ -1,5 +1,9 @@
 package misat11.bw.api;
 
+/**
+ * @author Bedwars Team
+ *
+ */
 public enum ArenaTime {
 	WORLD(-1),
 	DAY_BEGINNING(0),
@@ -14,5 +18,12 @@ public enum ArenaTime {
 	
 	private ArenaTime(int time) {
 		this.time = time;
+	}
+	
+	/**
+	 * @return time in ticks
+	 */
+	public int getTime() {
+		return this.time;
 	}
 }

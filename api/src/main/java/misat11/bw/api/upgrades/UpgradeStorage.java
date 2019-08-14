@@ -11,6 +11,10 @@ import misat11.bw.api.Game;
 import misat11.bw.api.events.BedwarsUpgradeRegisteredEvent;
 import misat11.bw.api.events.BedwarsUpgradeUnregisteredEvent;
 
+/**
+ * @author Bedwars Team
+ *
+ */
 public final class UpgradeStorage{
 	private final String upgradeName;
 	private final Class<? extends Upgrade> upgradeClass;

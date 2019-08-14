@@ -2,6 +2,11 @@ package misat11.bw.api;
 
 import org.bukkit.inventory.ItemStack;
 
+
+/**
+ * @author Bedwars Team
+ *
+ */
 public interface ColorChanger {
 	
 	/**

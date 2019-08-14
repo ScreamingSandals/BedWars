@@ -10,6 +10,10 @@ import misat11.bw.api.Game;
 import misat11.bw.api.ItemSpawner;
 import misat11.bw.api.ItemSpawnerType;
 
+/**
+ * @author Bedwars Team
+ *
+ */
 public class BedwarsResourceSpawnEvent extends Event implements Cancellable {
 
 	private static final HandlerList handlers = new HandlerList();
@@ -18,6 +22,11 @@ public class BedwarsResourceSpawnEvent extends Event implements Cancellable {
 	private ItemStack resource = null;
 	private ItemSpawner spawner = null;
 
+	/**
+	 * @param game
+	 * @param spawner
+	 * @param resource
+	 */
 	public BedwarsResourceSpawnEvent(Game game, ItemSpawner spawner, ItemStack resource) {
 		this.game = game;
 		this.spawner = spawner;
@@ -28,6 +37,9 @@ public class BedwarsResourceSpawnEvent extends Event implements Cancellable {
 		return BedwarsResourceSpawnEvent.handlers;
 	}
 
+	/**
+	 * @return game
+	 */
 	public Game getGame() {
 		return this.game;
 	}
@@ -37,18 +49,30 @@ public class BedwarsResourceSpawnEvent extends Event implements Cancellable {
 		return BedwarsResourceSpawnEvent.handlers;
 	}
 	
+	/**
+	 * @return spawner
+	 */
 	public ItemSpawner getSpawner() {
 		return this.spawner;
 	}
 
+	/**
+	 * @return location
+	 */
 	public Location getLocation() {
 		return this.spawner.getLocation();
 	}
 
+	/**
+	 * @return resource
+	 */
 	public ItemStack getResource() {
 		return this.resource;
 	}
 
+	/**
+	 * @param resource
+	 */
 	public void setResource(ItemStack resource) {
 		this.resource = resource;
 	}
@@ -63,6 +87,9 @@ public class BedwarsResourceSpawnEvent extends Event implements Cancellable {
 		this.cancelled = cancel;
 	}
 	
+	/**
+	 * @return spawner type
+	 */
 	public ItemSpawnerType getType() {
 		return this.spawner.getItemSpawnerType();
 	}
