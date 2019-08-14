@@ -1034,12 +1034,20 @@ public class Game implements misat11.bw.api.Game {
 		}
 
 		if (status == GameStatus.REBUILDING) {
-			player.sendMessage(i18n("game_is_rebuilding").replace("%arena%", this.name));
+			if (isBungeeEnabled()) {
+				BungeeUtils.sendMessage(player, i18n("game_is_rebuilding").replace("%arena%", Game.this.name));
+			} else {
+				player.sendMessage(i18n("game_is_rebuilding").replace("%arena%", this.name));
+			}
 			return;
 		}
 
 		if (status == GameStatus.RUNNING || status == GameStatus.GAME_END_CELEBRATING) {
-			player.sendMessage(i18n("game_already_running").replace("%arena%", this.name));
+			if (isBungeeEnabled()) {
+				BungeeUtils.sendMessage(player, i18n("game_already_running").replace("%arena%", Game.this.name));
+			} else {
+				player.sendMessage(i18n("game_already_running").replace("%arena%", this.name));
+			}
 			return;
 		}
 
@@ -1093,7 +1101,11 @@ public class Game implements misat11.bw.api.Game {
 			kickPlayer.changeGame(null);
 			return true;
 		} else {
-			player.sendMessage(i18n("game_is_full").replace("%arena%", this.name));
+			if (isBungeeEnabled()) {
+				BungeeUtils.sendMessage(player, i18n("game_kicked_by_vip").replace("%arena%", Game.this.name));
+			} else {
+				player.sendMessage(i18n("game_is_full").replace("%arena%", this.name));
+			}
 			return false;
 		}
 	}

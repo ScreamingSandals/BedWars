@@ -22,7 +22,7 @@ public class BungeeUtils {
 
                 player.sendPluginMessage(Main.getInstance(), "BungeeCord", out.toByteArray());
             }
-        }.runTaskLater(Main.getInstance(), 10L);
+        }.runTask(Main.getInstance());
     }
 
     public static void sendMessage(Player player, String string) {
