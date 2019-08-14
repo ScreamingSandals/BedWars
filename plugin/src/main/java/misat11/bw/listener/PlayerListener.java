@@ -47,8 +47,8 @@ public class PlayerListener implements Listener {
 		if (Main.isPlayerInGame(victim)) {
 			GamePlayer gVictim = Main.getPlayerGameProfile(victim);
 			Game game = gVictim.getGame();
-			RunningTeam victimTeam = game.getTeamOfPlayer(victim);
-			ChatColor victimColor = ChatColor.getByChar(victimTeam.getColor().name());
+			CurrentTeam victimTeam = game.getPlayerTeam(gVictim);
+			ChatColor victimColor = victimTeam.teamInfo.color.chatColor;
 
 			event.setKeepInventory(game.getOriginalOrInheritedKeepInventory());
 			event.setDroppedExp(0);
@@ -63,8 +63,9 @@ public class PlayerListener implements Listener {
 					if (Main.getConfigurator().config.getBoolean("chat.send-custom-death-messages")) {
 						if (event.getEntity().getKiller() != null) {
 							Player killer = event.getEntity().getKiller();
-							RunningTeam killerTeam = game.getTeamOfPlayer(killer);
-							ChatColor killerColor = ChatColor.getByChar(killerTeam.getColor().name());
+							GamePlayer gKiller = Main.getPlayerGameProfile(killer);
+							CurrentTeam killerTeam = game.getPlayerTeam(gKiller);
+							ChatColor killerColor = killerTeam.teamInfo.color.chatColor;
 
 							deathMessage =
 									i18n("player_killed")
@@ -402,7 +403,7 @@ public class PlayerListener implements Listener {
 					}
 				/*
 				 * Used onLaunchProjectile instead of this, remove this comment after testing
-				 * 
+				 *
 				   } else if (edbee.getDamager() instanceof Projectile) {
 					Projectile projectile = (Projectile) edbee.getDamager();
 					if (projectile.getShooter() instanceof Player) {
