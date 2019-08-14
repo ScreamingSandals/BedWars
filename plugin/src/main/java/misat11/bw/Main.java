@@ -365,6 +365,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 		commands = new HashMap<>();
 		new AddholoCommand();
 		new AdminCommand();
+		new AutojoinCommand();
 		new HelpCommand();
 		new JoinCommand();
 		new LeaveCommand();
@@ -593,5 +594,15 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 	@Override
 	public ColorChanger getColorChanger() {
 		return new misat11.bw.utils.ColorChanger();
+	}
+
+	@Override
+	public misat11.bw.api.Game getFirstWaitingGame() {
+		for (Game game : games.values()) {
+			if (game.getStatus() == GameStatus.WAITING) {
+				return game;
+			}
+		}
+		return null;
 	}
 }
