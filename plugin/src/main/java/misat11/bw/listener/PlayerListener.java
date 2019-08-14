@@ -2,7 +2,6 @@ package misat11.bw.listener;
 
 import misat11.bw.Main;
 import misat11.bw.api.GameStatus;
-import misat11.bw.api.RunningTeam;
 import misat11.bw.api.events.BedwarsPlayerKilledEvent;
 import misat11.bw.api.events.BedwarsTeamChestOpenEvent;
 import misat11.bw.commands.BaseCommand;
@@ -32,6 +31,7 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.MetadataValue;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Iterator;
 import java.util.List;
@@ -849,12 +849,15 @@ public class PlayerListener implements Listener {
 		if (!(event.getResult() == PlayerLoginEvent.Result.ALLOWED)) {
 			return;
 		}
-
 		Player player = event.getPlayer();
 		Game game = (Game) Main.getInstance().getFirstWaitingGame();
 
 		if (Game.isBungeeEnabled() && Main.getConfigurator().config.getBoolean("bungee.auto-game-connect", false)) {
-			game.joinToGame(player);
+			new BukkitRunnable() {
+				public void run() {
+					game.joinToGame(player);
+				}
+			}.runTaskLater(Main.getInstance(), 5L);
 		}
 	}
 }
