@@ -124,8 +124,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 							(coins == 1 ? instance.econ.currencyNameSingular() : instance.econ.currencyNamePlural())));
 				}
 			}
-		} catch (Throwable t) {
-
+		} catch (Throwable ignored) {
 		}
 	}
 
@@ -154,7 +153,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 	}
 
 	public static Game getInGameEntity(Entity entity) {
-		return instance.entitiesInGame.containsKey(entity) ? instance.entitiesInGame.get(entity) : null;
+		return instance.entitiesInGame.getOrDefault(entity, null);
 	}
 
 	public static void registerGameEntity(Entity entity, Game game) {
@@ -168,8 +167,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 
 	public static boolean isPlayerInGame(Player player) {
 		if (instance.playersInGame.containsKey(player))
-			if (instance.playersInGame.get(player).isInGame())
-				return true;
+			return instance.playersInGame.get(player).isInGame();
 		return false;
 	}
 
@@ -264,7 +262,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 	}
 
 	public static List<String> getGameNames() {
-		List<String> list = new ArrayList<String>();
+		List<String> list = new ArrayList<>();
 		for (Game game : instance.games.values()) {
 			list.add(game.getName());
 		}
@@ -525,11 +523,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 
 	@Override
 	public List<misat11.bw.api.Game> getGames() {
-		List<misat11.bw.api.Game> gms = new ArrayList<>();
-		for (Game game : games.values()) {
-			gms.add(game);
-		}
-		return gms;
+		return new ArrayList<>(games.values());
 	}
 
 	@Override
@@ -549,13 +543,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 
 	@Override
 	public List<misat11.bw.api.ItemSpawnerType> getItemSpawnerTypes() {
-		List<misat11.bw.api.ItemSpawnerType> list = new ArrayList<misat11.bw.api.ItemSpawnerType>();
-
-		for (ItemSpawnerType type : spawnerTypes.values()) {
-			list.add(type);
-		}
-
-		return list;
+		return new ArrayList<>(spawnerTypes.values());
 	}
 
 	@Override

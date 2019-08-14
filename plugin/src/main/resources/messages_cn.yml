@@ -168,8 +168,8 @@ team_chest_broken: "§c你的队伍箱被破坏!"
 
 trap_built: "§a 你已经设置了一个陷阱! 等待被触发吧!"
 
-player_self_killed: "§c玩家 §f%victim% §c死亡!"
-player_killed: "§c玩家 §f%killer% §c杀死了 §f%victim%!"
+player_self_killed: "§c玩家 %victim% §c死亡§c!"
+player_killed: "§c玩家 %killer% §c杀死了 %victim%§c!"
 
 arena_info_header: "§a地图详细信息:"
 arena_info_name: "§7名字: §r%name%"

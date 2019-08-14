@@ -203,6 +203,8 @@ public interface Game {
 	
 	public InGameConfigBooleanConstants getAllowBlockFalling();
 	public boolean getOriginalOrInheritedAllowBlockFalling();
+
+	public boolean getBungeeEnabled();
 	
 	public ArenaTime getArenaTime();
 	public WeatherType getArenaWeather();

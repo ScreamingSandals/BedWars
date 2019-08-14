@@ -12,7 +12,7 @@ public class GamePlayer {
 	public final Player player;
 	private Game game = null;
 	private String latestGame = null;
-	
+
 	public boolean isSpectator = false;
 	
 	public boolean isTeleportingFromGame_justForInventoryPlugins = false;
@@ -67,6 +67,8 @@ public class GamePlayer {
 		return game != null;
 	}
 
+	public boolean canJoinFullGame() { return player.hasPermission("bw.vip.forcejoin"); }
+
 	public void storeInv() {
 		oldinventory.inventory = player.getInventory().getContents();
 		oldinventory.armor = player.getInventory().getArmorContents();
@@ -113,7 +115,6 @@ public class GamePlayer {
 	}
 
 	public void clean() {
-
 		PlayerInventory inv = this.player.getInventory();
 		inv.setArmorContents(new ItemStack[4]);
 		inv.setContents(new ItemStack[] {});

@@ -83,7 +83,7 @@ public class ProtectionWall extends SpecialItem implements misat11.bw.api.specia
 				livingTime++;
 				int time = breakingTime - livingTime;
 
-				if (time < 6) {
+				if (time < 6 && time > 0) {
 					MiscUtils.sendActionBarMessage(
 							player, i18nonly("specials_protection_wall_destroy").replace("%time%", Integer.toString(time)));
 				}
@@ -182,9 +182,17 @@ public class ProtectionWall extends SpecialItem implements misat11.bw.api.specia
 
 				if (Main.isLegacy()) {
 					ItemStack itemStack = new ItemStack(buildingMaterial);
-					placedBlock.setType(ColorChanger.changeLegacyStackColor(itemStack, TeamColor.fromApiColor(team.getColor())).getType());
+					itemStack = ColorChanger.changeLegacyStackColor(itemStack, TeamColor.fromApiColor(team.getColor()));
+
+					placedBlock.setType(itemStack.getType());
+					try {
+						// The method is no longer in API, but in legacy versions exists
+						Block.class.getMethod("setData", byte.class).invoke(placedBlock, (byte) itemStack.getDurability());
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 				} else {
-					placedBlock.setType(ColorChanger.changeStackColor(buildingMaterial, TeamColor.fromApiColor(team.getColor())));
+					placedBlock.setType(ColorChanger.changeMaterialColor(buildingMaterial, TeamColor.fromApiColor(team.getColor())));
 				}
 
 				addBlockToList(placedBlock);

@@ -173,8 +173,8 @@ team_chest_broken: "§cYour team chest was broken!"
 
 trap_built: "§aYou've built a trap! Now wait for someone to get caught in it!"
 
-player_self_killed: "§cPlayer §f%victim% §cdied!"
-player_killed: "§cPlayer §f%killer% §ckilled §f%victim%!"
+player_self_killed: "§cPlayer %victim% §cdied!"
+player_killed: "§cPlayer %killer% §ckilled %victim%§c!"
 
 arena_info_header: "§aDetails of the arena:"
 arena_info_name: "§7Name: §r%name%"

@@ -72,13 +72,13 @@ public class RescuePlatformListener implements Listener {
 						RescuePlatform platform = new RescuePlatform(game, event.getPlayer(),
 								game.getTeamOfPlayer(event.getPlayer()), stack);
 
-						if (event.getPlayer().getLocation().getBlock().getRelative(BlockFace.DOWN)
-								.getType() != Material.AIR) {
-							event.getPlayer().sendMessage(i18n("specials_rescue_platform_not_in_air"));
-							return;
-						}
-
 						if (isUsable) {
+							if (event.getPlayer().getLocation().getBlock().getRelative(BlockFace.DOWN)
+									.getType() != Material.AIR) {
+								event.getPlayer().sendMessage(i18n("specials_rescue_platform_not_in_air"));
+								return;
+							}
+
 							platform.createPlatform(isBreakable, breakTime, distance, material);
 							delay = Integer.parseInt(unhidden.split(":")[3]);
 							runCountdown();

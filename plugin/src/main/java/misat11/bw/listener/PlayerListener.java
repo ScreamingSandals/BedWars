@@ -22,12 +22,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-import org.bukkit.event.entity.FoodLevelChangeEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
@@ -35,6 +31,7 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.MetadataValue;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Iterator;
 import java.util.List;
@@ -50,8 +47,12 @@ public class PlayerListener implements Listener {
 		if (Main.isPlayerInGame(victim)) {
 			GamePlayer gVictim = Main.getPlayerGameProfile(victim);
 			Game game = gVictim.getGame();
+			CurrentTeam victimTeam = game.getPlayerTeam(gVictim);
+			ChatColor victimColor = victimTeam.teamInfo.color.chatColor;
+
 			event.setKeepInventory(game.getOriginalOrInheritedKeepInventory());
 			event.setDroppedExp(0);
+
 			if (game.getStatus() == GameStatus.RUNNING) {
 				if (!game.getOriginalOrInheritedPlayerDrops()) {
 					event.getDrops().clear();
@@ -62,19 +63,31 @@ public class PlayerListener implements Listener {
 					if (Main.getConfigurator().config.getBoolean("chat.send-custom-death-messages")) {
 						if (event.getEntity().getKiller() != null) {
 							Player killer = event.getEntity().getKiller();
+							GamePlayer gKiller = Main.getPlayerGameProfile(killer);
+							CurrentTeam killerTeam = game.getPlayerTeam(gKiller);
+							ChatColor killerColor = killerTeam.teamInfo.color.chatColor;
 
-							deathMessage = i18n("player_killed").replace("%victim%", victim.getName())
-									.replace("%killer%", killer.getDisplayName());
+							deathMessage =
+									i18n("player_killed")
+											.replace("%victim%", victimColor + victim.getDisplayName())
+											.replace("%killer%", killerColor + killer.getDisplayName())
+											.replace("%victimTeam%", victimColor + victimTeam.getName())
+											.replace("%killerTeam%", killerColor + killerTeam.getName());
 						} else {
-							deathMessage = i18n("player_self_killed").replace("%victim%", victim.getName());
+							deathMessage = i18n("player_self_killed")
+									.replace("%victim%", victimColor + victim.getDisplayName())
+									.replace("%victimTeam%", victimColor + victimTeam.getName());
 						}
 
 					}
-					event.setDeathMessage(null);
-					for (Player player : game.getConnectedPlayers()) {
-						player.sendMessage(deathMessage);
+					if (deathMessage != null) {
+						event.setDeathMessage(null);
+						for (Player player : game.getConnectedPlayers()) {
+							player.sendMessage(deathMessage);
+						}
 					}
 				}
+
 				CurrentTeam team = game.getPlayerTeam(gVictim);
 				SpawnEffects.spawnEffect(game, victim, "game-effects.kill");
 				if (!team.isBed) {
@@ -390,7 +403,7 @@ public class PlayerListener implements Listener {
 					}
 				/*
 				 * Used onLaunchProjectile instead of this, remove this comment after testing
-				 * 
+				 *
 				   } else if (edbee.getDamager() instanceof Projectile) {
 					Projectile projectile = (Projectile) edbee.getDamager();
 					if (projectile.getShooter() instanceof Player) {
@@ -813,13 +826,11 @@ public class PlayerListener implements Listener {
 		if (Main.isPlayerInGame(player)) {
 			GamePlayer gPlayer = Main.getPlayerGameProfile(player);
 			Game game = gPlayer.getGame();
-
 			Location loc = event.getBlockClicked().getLocation();
 
 			loc.add(event.getBlockFace().getDirection());
 
 			Block block = loc.getBlock();
-
 			if (game.getStatus() == GameStatus.RUNNING) {
 				if (block.getType() == Material.AIR || game.getRegion().isBlockAddedDuringGame(block.getLocation())) {
 					game.getRegion().addBuiltDuringGame(block.getLocation());
@@ -829,6 +840,24 @@ public class PlayerListener implements Listener {
 			} else if (game.getStatus() != GameStatus.DISABLED) {
 				event.setCancelled(true);
 			}
+		}
+	}
+
+	/* BungeeCord */
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onPlayerLogin(PlayerLoginEvent event) {
+		if (!(event.getResult() == PlayerLoginEvent.Result.ALLOWED)) {
+			return;
+		}
+		Player player = event.getPlayer();
+		Game game = (Game) Main.getInstance().getFirstWaitingGame();
+
+		if (Game.isBungeeEnabled() && Main.getConfigurator().config.getBoolean("bungee.auto-game-connect", false)) {
+			new BukkitRunnable() {
+				public void run() {
+					game.joinToGame(player);
+				}
+			}.runTaskLater(Main.getInstance(), 5L);
 		}
 	}
 }

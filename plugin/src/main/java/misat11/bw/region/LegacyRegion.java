@@ -114,8 +114,9 @@ public class LegacyRegion implements Region {
 
 			if (brokenBlockColors.containsKey(block) && block.getState() instanceof Colorable) {
 				// Update bed color on 1.12.x
-				((Colorable) block.getState()).setColor(brokenBlockColors.get(block));
-				block.getState().update(true, false);
+				BlockState state = block.getState();
+				((Colorable) state).setColor(brokenBlockColors.get(block));
+				state.update(true, false);
 			}
 		}
 		brokenBlocks.clear();

@@ -497,10 +497,11 @@ public class Game implements misat11.bw.api.Game {
 			player.changeGame(null);
 			return;
 		}
-		if (players.size() >= calculatedMaxPlayers) {
-			player.player.sendMessage(i18n("game_is_full").replace("%arena%", this.name));
-			player.changeGame(null);
-			return;
+		if (players.size() >= calculatedMaxPlayers && status == GameStatus.WAITING) {
+			if (!sortFullArenaPlayers(player.player)) {
+				player.changeGame(null);
+				return;
+			}
 		}
 
 		BedwarsPlayerJoinEvent joinEvent = new BedwarsPlayerJoinEvent(this, player.player);
@@ -637,7 +638,6 @@ public class Game implements misat11.bw.api.Game {
 
 			Main.getPlayerStatisticsManager().unloadStatistic(player.player);
 		}
-
 		if (players.isEmpty()) {
 			if (status != GameStatus.WAITING) {
 				afterRebuild = GameStatus.WAITING;
@@ -1043,13 +1043,15 @@ public class Game implements misat11.bw.api.Game {
 			return;
 		}
 
-		if (players.size() >= calculatedMaxPlayers) {
-			player.sendMessage(i18n("game_is_full").replace("%arena%", this.name));
-			return;
+		if (players.size() >= calculatedMaxPlayers && status == GameStatus.WAITING) {
+			if (!sortFullArenaPlayers(player)) {
+				return;
+			}
 		}
 		GamePlayer gPlayer = Main.getPlayerGameProfile(player);
 		gPlayer.changeGame(this);
 	}
+
 
 	public void leaveFromGame(Player player) {
 		if (status == GameStatus.DISABLED) {
@@ -1064,6 +1066,35 @@ public class Game implements misat11.bw.api.Game {
 					updateScoreboard();
 				}
 			}
+		}
+	}
+
+	public boolean sortFullArenaPlayers(Player player) {
+		if (Main.getPlayerGameProfile(player).canJoinFullGame()) {
+			List<GamePlayer> withoutVIP = getPlayersWithoutVIP();
+
+			if (withoutVIP.size() == 0) {
+				player.sendMessage(i18n("vip_game_is_full"));
+				return false;
+			}
+
+			GamePlayer kickPlayer;
+			if (withoutVIP.size() == 1) {
+				kickPlayer = withoutVIP.get(0);
+			} else {
+				kickPlayer = withoutVIP.get(MiscUtils.randInt(0, players.size() - 1));
+			}
+
+			if (isBungeeEnabled()) {
+				BungeeUtils.sendMessage(kickPlayer.player, i18n("game_kicked_by_vip").replace("%arena%", Game.this.name));
+			} else {
+				kickPlayer.player.sendMessage(i18n("game_kicked_by_vip").replace("%arena%", this.name));
+			}
+			kickPlayer.changeGame(null);
+			return true;
+		} else {
+			player.sendMessage(i18n("game_is_full").replace("%arena%", this.name));
+			return false;
 		}
 	}
 
@@ -1327,7 +1358,7 @@ public class Game implements misat11.bw.api.Game {
 					}
 				}
 			} else {
-				previousCountdown = countdown = pauseCountdown;
+				nextCountdown = previousCountdown = countdown = pauseCountdown;
 			}
 			setBossbarProgress(countdown, pauseCountdown);
 			updateLobbyScoreboard();
@@ -2762,6 +2793,11 @@ public class Game implements misat11.bw.api.Game {
 	}
 
 	@Override
+	public boolean getBungeeEnabled() {
+		return Main.getConfigurator().config.getBoolean("bungee.enabled");
+	}
+
+	@Override
 	public boolean isEntityShop(Entity entity) {
 		for (GameStore store : gameStore) {
 			if (store.getEntity().equals(entity)) {
@@ -2796,5 +2832,12 @@ public class Game implements misat11.bw.api.Game {
 
 	public boolean isProtectionActive(Player player) {
 		return (this.respawnProtectionMap.containsKey(player));
+	}
+
+	public List<GamePlayer> getPlayersWithoutVIP() {
+		List<GamePlayer> gamePlayerList = new ArrayList<>(this.players);
+		gamePlayerList.removeIf(GamePlayer::canJoinFullGame);
+
+		return gamePlayerList;
 	}
 }
