@@ -2,6 +2,7 @@ package misat11.bw.listener;
 
 import misat11.bw.Main;
 import misat11.bw.api.GameStatus;
+import misat11.bw.api.RunningTeam;
 import misat11.bw.api.events.BedwarsPlayerKilledEvent;
 import misat11.bw.api.events.BedwarsTeamChestOpenEvent;
 import misat11.bw.commands.BaseCommand;
@@ -46,8 +47,12 @@ public class PlayerListener implements Listener {
 		if (Main.isPlayerInGame(victim)) {
 			GamePlayer gVictim = Main.getPlayerGameProfile(victim);
 			Game game = gVictim.getGame();
+			RunningTeam victimTeam = game.getTeamOfPlayer(victim);
+			ChatColor victimColor = ChatColor.getByChar(victimTeam.getColor().name());
+
 			event.setKeepInventory(game.getOriginalOrInheritedKeepInventory());
 			event.setDroppedExp(0);
+
 			if (game.getStatus() == GameStatus.RUNNING) {
 				if (!game.getOriginalOrInheritedPlayerDrops()) {
 					event.getDrops().clear();
@@ -58,19 +63,30 @@ public class PlayerListener implements Listener {
 					if (Main.getConfigurator().config.getBoolean("chat.send-custom-death-messages")) {
 						if (event.getEntity().getKiller() != null) {
 							Player killer = event.getEntity().getKiller();
+							RunningTeam killerTeam = game.getTeamOfPlayer(killer);
+							ChatColor killerColor = ChatColor.getByChar(killerTeam.getColor().name());
 
-							deathMessage = i18n("player_killed").replace("%victim%", victim.getName())
-									.replace("%killer%", killer.getDisplayName());
+							deathMessage =
+									i18n("player_killed")
+											.replace("%victim%", victimColor + victim.getDisplayName())
+											.replace("%killer%", killerColor + killer.getDisplayName())
+											.replace("%victimTeam%", victimColor + victimTeam.getName())
+											.replace("%killerTeam%", killerColor + killerTeam.getName());
 						} else {
-							deathMessage = i18n("player_self_killed").replace("%victim%", victim.getName());
+							deathMessage = i18n("player_self_killed")
+									.replace("%victim%", victimColor + victim.getDisplayName())
+									.replace("%victimTeam%", victimColor + victimTeam.getName());
 						}
 
 					}
-					event.setDeathMessage(null);
-					for (Player player : game.getConnectedPlayers()) {
-						player.sendMessage(deathMessage);
+					if (deathMessage != null) {
+						event.setDeathMessage(null);
+						for (Player player : game.getConnectedPlayers()) {
+							player.sendMessage(deathMessage);
+						}
 					}
 				}
+
 				CurrentTeam team = game.getPlayerTeam(gVictim);
 				SpawnEffects.spawnEffect(game, victim, "game-effects.kill");
 				if (!team.isBed) {
@@ -827,7 +843,7 @@ public class PlayerListener implements Listener {
 	}
 
 	/* BungeeCord */
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerLogin(PlayerLoginEvent event) {
 		if (!(event.getResult() == PlayerLoginEvent.Result.ALLOWED)) {
 			return;

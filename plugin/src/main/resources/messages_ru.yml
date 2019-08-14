@@ -168,8 +168,8 @@ team_chest_broken: "§cВаш командный сундук сломан!"
 
 trap_built: "§aВы поставили ловушку! Now wait for someone to get caught in it!"
 
-player_self_killed: "§cИгрок §f%victim% §cумер!"
-player_killed: "§cИгрок §f%killer% §cубил игрока §f%victim%!"
+player_self_killed: "§cИгрок %victim% §cумер!"
+player_killed: "§cИгрок %killer% §cубил игрока %victim%§c!"
 
 arena_info_header: "§aИнформация о арене:"
 arena_info_name: "§7Имя: §r%name%"
