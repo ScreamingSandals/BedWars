@@ -4,6 +4,7 @@ import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import misat11.bw.Main;
 import misat11.bw.game.Game;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -34,9 +35,8 @@ public class BungeeUtils {
                 out.writeUTF(player.getName());
                 out.writeUTF(string);
 
-                player.sendPluginMessage(Main.getInstance(), "BungeeCord", out.toByteArray());
+                Bukkit.getServer().sendPluginMessage(Main.getInstance(), "BungeeCord", out.toByteArray());
             }
-        }.runTaskLater(Main.getInstance(), 60L);
-
+        }.runTaskLater(Main.getInstance(), 30L);
     }
 }
