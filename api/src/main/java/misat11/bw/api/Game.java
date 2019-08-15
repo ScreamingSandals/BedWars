@@ -558,6 +558,17 @@ public interface Game {
 	/**
 	 * @return
 	 */
+	public InGameConfigBooleanConstants getDisablePlayerDrops();
+
+	/**
+	 * @return
+	 */
+	public boolean getOriginalOrInheritedDisablePlayerDrops();
+
+
+	/**
+	 * @return
+	 */
 	public boolean getBungeeEnabled();
 
 	/**
