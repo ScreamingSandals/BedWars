@@ -401,14 +401,11 @@ public class GameCreator {
 			game.setDamageWhenPlayerIsNotInArena(cons);
 			break;
 		case "removeunusedtargetblocks":
-				game.setRemoveUnusedTargetBlocks(cons);
-				break;
+			game.setRemoveUnusedTargetBlocks(cons);
+			break;
 		case "allowblockfall":
 		case "allowblockfalling":
 			game.setAllowBlockFalling(cons);
-			break;
-		case "disableplayerdrops":
-			game.setDisablePlayerDrops(cons);
 			break;
 		default:
 			return i18n("admin_command_invalid_config_variable_name");
