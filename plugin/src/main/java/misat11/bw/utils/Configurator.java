@@ -178,6 +178,7 @@ public class Configurator {
 		checkOrSetConfig(modify, "damage-when-player-is-not-in-arena", false);
 		checkOrSetConfig(modify, "remove-unused-target-blocks", true);
 		checkOrSetConfig(modify, "allow-block-falling", true);
+		checkOrSetConfig(modify, "disable-player-drops-on-death", false);
 		checkOrSetConfig(modify, "game-start-items", false);
 		checkOrSetConfig(modify, "player-respawn-items", false);
 		checkOrSetConfig(modify, "gived-game-start-items", new ArrayList<>());

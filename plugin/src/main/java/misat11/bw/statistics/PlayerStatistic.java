@@ -2,15 +2,14 @@ package misat11.bw.statistics;
 
 // From BedwarsRel
 
-import java.text.DecimalFormat;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 public class PlayerStatistic implements ConfigurationSerializable, misat11.bw.api.statistics.PlayerStatistic {
 
