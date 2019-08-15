@@ -22,6 +22,7 @@ spawner-holograms-countdown: true
 damage-when-player-is-not-in-arena: false
 remove-unused-target-blocks: true
 allow-block-falling: true
+disable-player-drops-on-death: false
 disable-hunger: false
 automatic-coloring-in-shop: true
 destroy-placed-blocks-by-explosion: true

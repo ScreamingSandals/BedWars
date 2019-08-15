@@ -33,6 +33,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -52,6 +53,10 @@ public class PlayerListener implements Listener {
 
 			event.setKeepInventory(game.getOriginalOrInheritedKeepInventory());
 			event.setDroppedExp(0);
+
+			if (game.getOriginalOrInheritedDisablePlayerDrops()) {
+				event.getDrops().clear();
+			}
 
 			if (game.getStatus() == GameStatus.RUNNING) {
 				if (!game.getOriginalOrInheritedPlayerDrops()) {

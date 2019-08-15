@@ -151,6 +151,9 @@ public class Game implements misat11.bw.api.Game {
 	public static final String ALLOW_BLOCK_FALLING = "allow-block-falling";
 	private InGameConfigBooleanConstants allowBlockFalling = InGameConfigBooleanConstants.INHERIT;
 
+	public static final String DISABLE_PLAYER_DROPS = "disable-player-drops-on-death";
+	private InGameConfigBooleanConstants disablePlayerDrops = InGameConfigBooleanConstants.INHERIT;
+
 	public boolean gameStartItem;
 	public static final int POST_GAME_WAITING = 3;
 
@@ -772,6 +775,10 @@ public class Game implements misat11.bw.api.Game {
 				configMap.getString("constant." + REMOVE_UNUSED_TARGET_BLOCKS, "inherit"));
 		game.allowBlockFalling = readBooleanConstant(
 				configMap.getString("constants." + ALLOW_BLOCK_FALLING, "inherit"));
+		game.allowBlockFalling = readBooleanConstant(
+				configMap.getString("constants." + ALLOW_BLOCK_FALLING, "inherit"));
+		game.disablePlayerDrops = readBooleanConstant(
+				configMap.getString("constants." + DISABLE_PLAYER_DROPS, "inherit"));
 
 		game.arenaTime = ArenaTime.valueOf(configMap.getString("arenaTime", ArenaTime.WORLD.name()).toUpperCase());
 		game.arenaWeather = loadWeather(configMap.getString("arenaWeather", "default").toUpperCase());
@@ -2751,6 +2758,7 @@ public class Game implements misat11.bw.api.Game {
 		return allowBlockFalling;
 	}
 
+
 	@Override
 	public boolean getOriginalOrInheritedAllowBlockFalling() {
 		return allowBlockFalling.isOriginal() ? allowBlockFalling.getValue()
@@ -2759,6 +2767,21 @@ public class Game implements misat11.bw.api.Game {
 
 	public void setAllowBlockFalling(InGameConfigBooleanConstants allowBlockFalling) {
 		this.allowBlockFalling = allowBlockFalling;
+	}
+
+	@Override
+	public InGameConfigBooleanConstants getDisablePlayerDrops() {
+		return disablePlayerDrops;
+	}
+
+	@Override
+	public boolean getOriginalOrInheritedDisablePlayerDrops() {
+		return disablePlayerDrops.isOriginal() ? disablePlayerDrops.getValue()
+				: Main.getConfigurator().config.getBoolean(DISABLE_PLAYER_DROPS);
+	}
+
+	public void setDisablePlayerDrops(InGameConfigBooleanConstants disablePlayerDrops) {
+		this.disablePlayerDrops = disablePlayerDrops;
 	}
 
 	@Override
