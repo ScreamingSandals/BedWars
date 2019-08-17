@@ -114,7 +114,11 @@ public class GameCreator {
 							if (args.length >= 4) {
 								if (args[3].equals("true") || args[3].equals("false")) {
 									if (args.length >= 5) {
-										response = addSpawner(args[1], player.getLocation(), args[2], Boolean.parseBoolean(args[3]), Double.parseDouble(args[4]));
+										try {
+											response = addSpawner(args[1], player.getLocation(), args[2], Boolean.parseBoolean(args[3]), Double.parseDouble(args[4]));
+										} catch (NumberFormatException e) {
+											response = null;
+										}
 									} else {
 										response = addSpawner(args[1], player.getLocation(), args[2], Boolean.parseBoolean(args[3]), 1);
 									}
