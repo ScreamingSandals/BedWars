@@ -574,8 +574,8 @@ public class Game implements misat11.bw.api.Game {
 			return;
 		}
 
-		BedwarsPlayerLeaveEvent event = new BedwarsPlayerLeaveEvent(this, player.player, getPlayerTeam(player));
-		Main.getInstance().getServer().getPluginManager().callEvent(event);
+		BedwarsPlayerLeaveEvent playerLeaveEvent = new BedwarsPlayerLeaveEvent(this, player.player, getPlayerTeam(player));
+		Main.getInstance().getServer().getPluginManager().callEvent(playerLeaveEvent);
 
 		if (players.contains(player)) {
 			players.remove(player);
@@ -618,6 +618,9 @@ public class Game implements misat11.bw.api.Game {
 			Main.getPlayerStatisticsManager().unloadStatistic(player.player);
 		}
 		if (players.isEmpty()) {
+			BedWarsPlayerLastLeaveEvent playerLastLeaveEvent = new BedWarsPlayerLastLeaveEvent(this, player.player, getPlayerTeam(player));
+			Main.getInstance().getServer().getPluginManager().callEvent(playerLastLeaveEvent);
+
 			if (status != GameStatus.WAITING) {
 				afterRebuild = GameStatus.WAITING;
 				updateSigns();
