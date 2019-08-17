@@ -109,28 +109,29 @@ public class GameCreator {
 		} else if (action.equalsIgnoreCase("spawner")) {
 			if (args.length >= 1) {
 				if (args[0].equalsIgnoreCase("add")) {
-					if (args.length >= 2) {
-						if (args.length >= 3) {
+					if (args.length >= 3) {
+						if (args[2].equals("true") || args[2].equals("false")) {
 							if (args.length >= 4) {
-								if (args[3].equals("true") || args[3].equals("false")) {
-									if (args.length >= 5) {
-										try {
-											response = addSpawner(args[1], player.getLocation(), args[2], Boolean.parseBoolean(args[3]), Double.parseDouble(args[4]));
-										} catch (NumberFormatException e) {
-											response = null;
-										}
-									} else {
-										response = addSpawner(args[1], player.getLocation(), args[2], Boolean.parseBoolean(args[3]), 1);
-									}
+								double customLevel;
+								try {
+									customLevel = Double.parseDouble(args[3]);
+								} catch (NumberFormatException e) {
+									player.sendMessage(i18n("admin_command_invalid_spawner_level"));
+									customLevel = 1.0;
+								}
+								if (args.length >= 5) {
+										response = addSpawner(args[1], player.getLocation(), args[4], Boolean.parseBoolean(args[2]), customLevel);
 								} else {
-									response = null;
+									response = addSpawner(args[1], player.getLocation(), null, Boolean.parseBoolean(args[2]), customLevel);
 								}
 							} else {
-								response = addSpawner(args[1], player.getLocation(), args[2], true, 1);
+								response = addSpawner(args[1], player.getLocation(), null, Boolean.parseBoolean(args[2]), 1);
 							}
 						} else {
-							response = addSpawner(args[1], player.getLocation(), null, true, 1);
+							response = null;
 						}
+					} else {
+						response = addSpawner(args[1], player.getLocation(), null, true, 1);
 					}
 				} else if (args[0].equalsIgnoreCase("reset")) {
 					response = resetAllSpawners();

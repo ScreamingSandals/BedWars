@@ -521,7 +521,7 @@ public class AdminCommand extends BaseCommand {
 			if (args.size() == 4) {
 				completion.addAll(Main.getAllSpawnerTypes());
 			}
-			if (args.size() == 6) {
+			if (args.size() == 5) {
 				completion.addAll(Arrays.asList("true", "false"));
 			}
 		} else if (args.get(1).equalsIgnoreCase("team")) {
