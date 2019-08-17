@@ -147,9 +147,7 @@ public class Configurator {
 			shopconfig.load(shopconfigf);
 			signconfig.load(signconfigf);
 			recordconfig.load(recordconfigf);
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (InvalidConfigurationException e) {
+		} catch (IOException | InvalidConfigurationException e) {
 			e.printStackTrace();
 		}
 

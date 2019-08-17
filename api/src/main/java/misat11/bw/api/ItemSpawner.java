@@ -38,6 +38,11 @@ public interface ItemSpawner extends Upgrade {
 	 * @return
 	 */
 	public double getCurrentLevel();
+
+	/**
+	 * @return
+	 */
+	public boolean getHologramEnabled();
 	
 	/**
 	 * @param level

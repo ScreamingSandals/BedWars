@@ -8,12 +8,14 @@ public class ItemSpawner implements misat11.bw.api.ItemSpawner {
 	public String customName;
 	public double startLevel;
 	public double currentLevel;
+	public boolean hologramEnabled;
 	
-	public ItemSpawner(Location loc, ItemSpawnerType type, String customName, double startLevel) {
+	public ItemSpawner(Location loc, ItemSpawnerType type, String customName, boolean hologramEnabled, double startLevel) {
 		this.loc = loc;
 		this.type = type;
 		this.customName = customName;
 		this.currentLevel = this.startLevel = startLevel;
+		this.hologramEnabled = hologramEnabled;
 	}
 
 	@Override
@@ -44,6 +46,11 @@ public class ItemSpawner implements misat11.bw.api.ItemSpawner {
 	@Override
 	public double getCurrentLevel() {
 		return currentLevel;
+	}
+
+	@Override
+	public boolean getHologramEnabled() {
+		return hologramEnabled;
 	}
 
 	@Override

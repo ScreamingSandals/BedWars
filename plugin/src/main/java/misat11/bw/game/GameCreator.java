@@ -112,12 +112,20 @@ public class GameCreator {
 					if (args.length >= 2) {
 						if (args.length >= 3) {
 							if (args.length >= 4) {
-								response = addSpawner(args[1], player.getLocation(), args[2], Double.parseDouble(args[3]));
+								if (args[3].equals("true") || args[3].equals("false")) {
+									if (args.length >= 5) {
+										response = addSpawner(args[1], player.getLocation(), args[2], Boolean.parseBoolean(args[3]), Double.parseDouble(args[4]));
+									} else {
+										response = addSpawner(args[1], player.getLocation(), args[2], Boolean.parseBoolean(args[3]), 1);
+									}
+								} else {
+									response = null;
+								}
 							} else {
-								response = addSpawner(args[1], player.getLocation(), args[2], 1);
+								response = addSpawner(args[1], player.getLocation(), args[2], true, 1);
 							}
 						} else {
-							response = addSpawner(args[1], player.getLocation(), null, 1);
+							response = addSpawner(args[1], player.getLocation(), null, true, 1);
 						}
 					}
 				} else if (args[0].equalsIgnoreCase("reset")) {
@@ -602,7 +610,7 @@ public class GameCreator {
 		return i18n("admin_command_spawners_reseted").replace("%arena%", game.getName());
 	}
 
-	private String addSpawner(String type, Location loc, String customName, double startLevel) {
+	private String addSpawner(String type, Location loc, String customName, boolean hologramEnabled, double startLevel) {
 		if (game.getPos1() == null || game.getPos2() == null) {
 			return i18n("admin_command_set_pos1_pos2_first");
 		}
@@ -616,7 +624,7 @@ public class GameCreator {
 		loc.setPitch(0);
 		ItemSpawnerType spawnerType = Main.getSpawnerType(type);
 		if (spawnerType != null) {
-			game.getSpawners().add(new ItemSpawner(loc, spawnerType, customName, startLevel));
+			game.getSpawners().add(new ItemSpawner(loc, spawnerType, customName, hologramEnabled, startLevel));
 			return i18n("admin_command_spawner_added").replace("%resource%", spawnerType.getItemName())
 					.replace("%x%", Integer.toString(loc.getBlockX())).replace("%y%", Integer.toString(loc.getBlockY()))
 					.replace("%z%", Integer.toString(loc.getBlockZ()));

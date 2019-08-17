@@ -654,10 +654,7 @@ public class Game implements misat11.bw.api.Game {
 		FileConfiguration configMap = new YamlConfiguration();
 		try {
 			configMap.load(file);
-		} catch (IOException e) {
-			e.printStackTrace();
-			return null;
-		} catch (InvalidConfigurationException e) {
+		} catch (IOException | InvalidConfigurationException e) {
 			e.printStackTrace();
 			return null;
 		}
@@ -703,6 +700,7 @@ public class Game implements misat11.bw.api.Game {
 				ItemSpawner sa = new ItemSpawner(readLocationFromString(game.world, (String) spawner.get("location")),
 						Main.getSpawnerType(((String) spawner.get("type")).toLowerCase()),
 						(String) spawner.get("customName"),
+						((Boolean) spawner.getOrDefault("hologramEnabled", true)),
 						((Number) spawner.getOrDefault("startLevel", 1)).doubleValue());
 				game.spawners.add(sa);
 			}
@@ -895,6 +893,7 @@ public class Game implements misat11.bw.api.Game {
 			spawnerMap.put("type", spawner.type.getConfigKey());
 			spawnerMap.put("customName", spawner.customName);
 			spawnerMap.put("startLevel", spawner.startLevel);
+			spawnerMap.put("hologramEnabled", spawner.hologramEnabled);
 			nS.add(spawnerMap);
 		}
 		configMap.set("spawners", nS);
@@ -1435,59 +1434,58 @@ public class Game implements misat11.bw.api.Game {
 							storage.addUpgrade(this, spawner);
 						}
 					}
-					
-					
+
 					if (getOriginalOrInheritedSpawnerHolograms()) {
 						boolean countdownEnabled = getOriginalOrInheritedSpawnerHologramsCountdown();
 						for (ItemSpawner spawner : spawners) {
-							Location loc = spawner.loc.clone().add(0,
-									Main.getConfigurator().config.getDouble("spawner-holo-height", 0.25), 0);
-							if (countdownEnabled) {
-								loc.add(0, 0.30, 0);
-							}
-							ArmorStand stand = (ArmorStand) loc.getWorld().spawnEntity(loc, EntityType.ARMOR_STAND);
-
-							stand.setGravity(false);
-							stand.setCanPickupItems(false);
-							stand.setCustomName(spawner.type.getItemBoldName());
-							stand.setCustomNameVisible(true);
-							stand.setVisible(false);
-							stand.setSmall(true);
-
-							try {
-								stand.setMarker(true);
-							} catch (Throwable t) {
-
-							}
-
-							armorStandsInGame.add(stand);
-							Main.registerGameEntity(stand, this);
-
-							if (countdownEnabled) {
-								loc = spawner.loc.clone().add(0,
+							if (spawner.getHologramEnabled()) {
+								Location loc = spawner.loc.clone().add(0,
 										Main.getConfigurator().config.getDouble("spawner-holo-height", 0.25), 0);
-								ArmorStand countdownStand = (ArmorStand) loc.getWorld().spawnEntity(loc,
-										EntityType.ARMOR_STAND);
+								if (countdownEnabled) {
+									loc.add(0, 0.30, 0);
+								}
+								ArmorStand stand = (ArmorStand) loc.getWorld().spawnEntity(loc, EntityType.ARMOR_STAND);
 
-								countdownStand.setGravity(false);
-								countdownStand.setCanPickupItems(false);
-								countdownStand.setCustomName(
-										spawner.type.getInterval() < 2 ? i18nonly("every_second_spawning")
-												: i18nonly("countdown_spawning").replace("%seconds%",
-														Integer.toString(spawner.type.getInterval())));
-								countdownStand.setCustomNameVisible(true);
-								countdownStand.setVisible(false);
-								countdownStand.setSmall(true);
+								stand.setGravity(false);
+								stand.setCanPickupItems(false);
+								stand.setCustomName(spawner.type.getItemBoldName());
+								stand.setCustomNameVisible(true);
+								stand.setVisible(false);
+								stand.setSmall(true);
 
 								try {
-									countdownStand.setMarker(true);
-								} catch (Throwable t) {
-
+									stand.setMarker(true);
+								} catch (Throwable ignored) {
 								}
 
-								armorStandsInGame.add(countdownStand);
-								countdownArmorStands.put(spawner, countdownStand);
-								Main.registerGameEntity(countdownStand, this);
+								armorStandsInGame.add(stand);
+								Main.registerGameEntity(stand, this);
+
+								if (countdownEnabled) {
+									loc = spawner.loc.clone().add(0,
+											Main.getConfigurator().config.getDouble("spawner-holo-height", 0.25), 0);
+									ArmorStand countdownStand = (ArmorStand) loc.getWorld().spawnEntity(loc,
+											EntityType.ARMOR_STAND);
+
+									countdownStand.setGravity(false);
+									countdownStand.setCanPickupItems(false);
+									countdownStand.setCustomName(
+											spawner.type.getInterval() < 2 ? i18nonly("every_second_spawning")
+													: i18nonly("countdown_spawning").replace("%seconds%",
+													Integer.toString(spawner.type.getInterval())));
+									countdownStand.setCustomNameVisible(true);
+									countdownStand.setVisible(false);
+									countdownStand.setSmall(true);
+
+									try {
+										countdownStand.setMarker(true);
+									} catch (Throwable ignored) {
+									}
+
+									armorStandsInGame.add(countdownStand);
+									countdownArmorStands.put(spawner, countdownStand);
+									Main.registerGameEntity(countdownStand, this);
+								}
 							}
 						}
 					}
