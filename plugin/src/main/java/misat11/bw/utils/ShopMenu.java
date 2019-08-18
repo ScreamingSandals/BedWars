@@ -7,13 +7,15 @@ import misat11.bw.api.events.*;
 import misat11.bw.api.upgrades.Upgrade;
 import misat11.bw.api.upgrades.UpgradeRegistry;
 import misat11.bw.api.upgrades.UpgradeStorage;
-import misat11.bw.game.*;
+import misat11.bw.game.CurrentTeam;
+import misat11.bw.game.Game;
+import misat11.bw.game.GamePlayer;
+import misat11.bw.game.ItemSpawner;
 import misat11.lib.sgui.*;
 import misat11.lib.sgui.events.GenerateItemEvent;
 import misat11.lib.sgui.events.PreActionEvent;
 import misat11.lib.sgui.events.ShopTransactionEvent;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -308,21 +310,11 @@ public class ShopMenu implements Listener {
 	public void onApplyPropertyToBoughtItem(BedwarsApplyPropertyToItem event) {
 		if (event.getPropertyName().equalsIgnoreCase("applycolorbyteam")
 				|| event.getPropertyName().equalsIgnoreCase("transform::applycolorbyteam")) {
-			ItemStack stack = event.getStack();
-			Material material = stack.getType();
 			Player player = event.getPlayer();
 			CurrentTeam team = (CurrentTeam) event.getGame().getTeamOfPlayer(player);
-			TeamColor color = team.teamInfo.color;
-			if (Main.getConfigurator().config.getBoolean("automatic-coloring-in-shop")) {
-				if (Main.isLegacy()) {
-					event.setStack(ColorChanger.changeLegacyStackColor(stack, color));
-				} else {
-					ItemStack itemStack = new ItemStack(ColorChanger.changeMaterialColor(material, color));
-					event.setStack(itemStack);
-				}
-				ItemStack newStack = ColorChanger.changeLeatherArmorColor(stack, color);
 
-				event.setStack(newStack);
+			if (Main.getConfigurator().config.getBoolean("automatic-coloring-in-shop")) {
+				event.setStack(Main.applyColor(team.teamInfo.color, event.getStack()));
 			}
 		}
 	}

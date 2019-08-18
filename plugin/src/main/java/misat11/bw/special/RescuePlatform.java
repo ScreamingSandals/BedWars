@@ -98,7 +98,7 @@ public class RescuePlatform extends SpecialItem implements misat11.bw.api.specia
 
 	private void addBlockToList(Block block)  {
 		platformBlocks.add(block);
-		game.getRegion().addBuildedDuringGame(block.getLocation());
+		game.getRegion().addBuiltDuringGame(block.getLocation());
 	}
 
 	private void removeBlockFromList(Block block) {
@@ -125,22 +125,19 @@ public class RescuePlatform extends SpecialItem implements misat11.bw.api.specia
 				continue;
 			}
 
+			ItemStack coloredStack = Main.applyColor(
+					TeamColor.fromApiColor(team.getColor()), new ItemStack(buildingMaterial));
 			if (Main.isLegacy()) {
-				ItemStack itemStack = new ItemStack(buildingMaterial);
-				itemStack = ColorChanger.changeLegacyStackColor(itemStack, TeamColor.fromApiColor(team.getColor()));
-
-				placedBlock.setType(itemStack.getType());
+				placedBlock.setType(coloredStack.getType());
 				try {
 					// The method is no longer in API, but in legacy versions exists
-					Block.class.getMethod("setData", byte.class).invoke(placedBlock, (byte) itemStack.getDurability());
+					Block.class.getMethod("setData", byte.class).invoke(placedBlock, (byte) coloredStack.getDurability());
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			} else {
-				placedBlock.setType(ColorChanger.changeMaterialColor(buildingMaterial, TeamColor.fromApiColor(team.getColor())));
+				placedBlock.setType(coloredStack.getType());
 			}
-
-			game.getRegion().addBuiltDuringGame(placedBlock.getLocation());
 			addBlockToList(placedBlock);
 		}
 

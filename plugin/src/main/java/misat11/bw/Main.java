@@ -9,6 +9,7 @@ import misat11.bw.database.DatabaseManager;
 import misat11.bw.game.Game;
 import misat11.bw.game.GamePlayer;
 import misat11.bw.game.ItemSpawnerType;
+import misat11.bw.game.TeamColor;
 import misat11.bw.holograms.HolographicDisplaysInteraction;
 import misat11.bw.holograms.IHologramInteraction;
 import misat11.bw.listener.*;
@@ -31,6 +32,7 @@ import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.ServicePriority;
@@ -64,6 +66,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 	private IHologramInteraction hologramInteraction;
 	private HashMap<String, BaseCommand> commands;
 	private SpigetUpdate updater;
+	private ColorChanger colorChanger;
 	public static List<String> autoColoredMaterials = new ArrayList<>();
 
 	static {
@@ -310,6 +313,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 		isNMS = NMSUtils.NMS_BASED_SERVER;
 		nmsVersion = NMSUtils.NMS_VERSION;
 		isSpigot = NMSUtils.IS_SPIGOT_SERVER;
+		colorChanger = new misat11.bw.utils.ColorChanger();
 
 		if (!getServer().getPluginManager().isPluginEnabled("Vault")) {
 			isVault = false;
@@ -594,6 +598,11 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 	@Override
 	public ColorChanger getColorChanger() {
 		return new misat11.bw.utils.ColorChanger();
+	}
+
+	public static ItemStack applyColor(TeamColor color, ItemStack itemStack) {
+		misat11.bw.api.TeamColor teamColor = color.toApiColor();
+		return instance.getColorChanger().applyColor(teamColor, itemStack);
 	}
 
 	@Override
