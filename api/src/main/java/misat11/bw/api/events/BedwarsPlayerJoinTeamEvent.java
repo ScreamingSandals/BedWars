@@ -12,7 +12,6 @@ import misat11.bw.api.RunningTeam;
  *
  */
 public class BedwarsPlayerJoinTeamEvent extends Event implements Cancellable {
-
 	private static final HandlerList handlers = new HandlerList();
 	private boolean cancelled = false;
 	private Player player = null;
