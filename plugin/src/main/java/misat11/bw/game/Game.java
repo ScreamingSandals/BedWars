@@ -1647,11 +1647,13 @@ public class Game implements misat11.bw.api.Game {
 						 */
 						int elapsedTime = gameTime - countdown;
 
-						if (getOriginalOrInheritedSpawnerHolograms()
-								&& getOriginalOrInheritedSpawnerHologramsCountdown() && cycle > 1) {
-							int modulo = cycle - elapsedTime % cycle;
-							countdownArmorStands.get(spawner).setCustomName(
-									i18nonly("countdown_spawning").replace("%seconds%", Integer.toString(modulo)));
+						if (spawner.getHologramEnabled()) {
+							if (getOriginalOrInheritedSpawnerHolograms()
+									&& getOriginalOrInheritedSpawnerHologramsCountdown() && cycle > 1) {
+								int modulo = cycle - elapsedTime % cycle;
+								countdownArmorStands.get(spawner).setCustomName(
+										i18nonly("countdown_spawning").replace("%seconds%", Integer.toString(modulo)));
+							}
 						}
 
 						if ((elapsedTime % cycle) == 0) {
