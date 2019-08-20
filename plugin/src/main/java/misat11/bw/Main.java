@@ -605,6 +605,10 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 		return instance.getColorChanger().applyColor(teamColor, itemStack);
 	}
 
+	public static ItemStack applyColor(misat11.bw.api.TeamColor teamColor, ItemStack itemStack) {
+		return instance.getColorChanger().applyColor(teamColor, itemStack);
+	}
+
 	@Override
 	public misat11.bw.api.Game getFirstWaitingGame() {
 		for (Game game : games.values()) {
