@@ -177,6 +177,7 @@ public class PlayerListener implements Listener {
 		if (Main.isPlayerInGame(event.getPlayer())) {
 			GamePlayer gPlayer = Main.getPlayerGameProfile(event.getPlayer());
 			Game game = gPlayer.getGame();
+			CurrentTeam team = game.getPlayerTeam(gPlayer);
 
 			if (game.getStatus() == GameStatus.WAITING) {
 				event.setRespawnLocation(gPlayer.getGame().getLobbySpawn());
@@ -197,7 +198,7 @@ public class PlayerListener implements Listener {
 					List<ItemStack> givedGameStartItems = (List<ItemStack>) Main.getConfigurator().config
 							.getList("gived-player-respawn-items");
 					for (ItemStack stack : givedGameStartItems) {
-						gPlayer.player.getInventory().addItem(stack);
+						gPlayer.player.getInventory().addItem(Main.applyColor(team.getColor(), stack));
 					}
 				}
 			}

@@ -1512,7 +1512,7 @@ public class Game implements misat11.bw.api.Game {
 								List<ItemStack> givedGameStartItems = (List<ItemStack>) Main.getConfigurator().config
 										.getList("gived-game-start-items");
 								for (ItemStack stack : givedGameStartItems) {
-									player.player.getInventory().addItem(stack);
+									player.player.getInventory().addItem(Main.applyColor(team.getColor(), stack));
 								}
 							}
 							SpawnEffects.spawnEffect(this, player.player, "game-effects.start");
