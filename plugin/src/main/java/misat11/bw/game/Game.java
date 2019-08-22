@@ -363,7 +363,8 @@ public class Game implements misat11.bw.api.Game {
 					}
 
 					if (breakEvent.isDrops()) {
-						block.setType(Material.ENDER_CHEST);
+						event.setDropItems(false);
+						player.player.getInventory().addItem(new ItemStack(Material.ENDER_CHEST));
 					}
 				}
 			}
@@ -375,7 +376,6 @@ public class Game implements misat11.bw.api.Game {
 					block.setType(Material.AIR);
 				}
 			}
-
 			return true;
 		}
 		
