@@ -15,12 +15,12 @@ public interface RescuePlatform extends SpecialItem {
 	 * @return
 	 */
 	public int getBreakingTime();
-	
+
 	/**
 	 * @return
 	 */
 	public boolean canBreak();
-	
+
 	/**
 	 * @return
 	 */

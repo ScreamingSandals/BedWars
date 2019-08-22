@@ -184,21 +184,26 @@ public class Configurator {
 		checkOrSetConfig(modify, "disable-hunger", false);
 		checkOrSetConfig(modify, "automatic-coloring-in-shop", true);
 		checkOrSetConfig(modify, "destroy-placed-blocks-by-explosion", true);
+
 		checkOrSetConfig(modify, "bungee.enabled", false);
 		checkOrSetConfig(modify, "bungee.serverRestart", true);
 		checkOrSetConfig(modify, "bungee.serverStop", false);
 		checkOrSetConfig(modify, "bungee.server", "hub");
 		checkOrSetConfig(modify, "bungee.auto-game-connect", false);
+
 		checkOrSetConfig(modify, "farmBlocks.enable", true);
 		checkOrSetConfig(modify, "farmBlocks.blocks", new ArrayList<>());
+
 		checkOrSetConfig(modify, "scoreboard.enable", true);
 		checkOrSetConfig(modify, "scoreboard.title", "§a%game%§r - %time%");
 		checkOrSetConfig(modify, "scoreboard.bedLost", "§c\u2718");
 		checkOrSetConfig(modify, "scoreboard.bedExists", "§a\u2714");
 		checkOrSetConfig(modify, "scoreboard.teamTitle", "%bed%%color%%team%");
+
 		checkOrSetConfig(modify, "title.fadeIn", 0);
 		checkOrSetConfig(modify, "title.stay", 20);
 		checkOrSetConfig(modify, "title.fadeOut", 0);
+
 		checkOrSetConfig(modify, "items.jointeam", "COMPASS");
 		checkOrSetConfig(modify, "items.leavegame", "SLIME_BALL");
 		checkOrSetConfig(modify, "items.startgame", "DIAMOND");
@@ -206,12 +211,15 @@ public class Configurator {
 		checkOrSetConfig(modify, "items.shopcosmetic", "AIR");
 		checkOrSetConfig(modify, "items.pageback", "ARROW");
 		checkOrSetConfig(modify, "items.pageforward", "ARROW");
+
 		checkOrSetConfig(modify, "vault.enable", true);
 		checkOrSetConfig(modify, "vault.reward.kill", 5);
 		checkOrSetConfig(modify, "vault.reward.win", 20);
 		checkOrSetConfig(modify, "resources", new ArrayList<>());
+
 		checkOrSetConfig(modify, "respawn.protection-enabled", true);
 		checkOrSetConfig(modify, "respawn.protection-time",10);
+
 		checkOrSetConfig(modify, "specials.action-bar-messages", true);
 		checkOrSetConfig(modify, "specials.rescue-platform.is-breakable", false);
 		checkOrSetConfig(modify, "specials.rescue-platform.delay", 0);
@@ -225,10 +233,25 @@ public class Configurator {
 		checkOrSetConfig(modify, "specials.protection-wall.height", 3);
 		checkOrSetConfig(modify, "specials.protection-wall.distance", 2);
 		checkOrSetConfig(modify, "specials.protection-wall.material", "CUT_SANDSTONE");
+		checkOrSetConfig(modify, "specials.tntsheep.speed", 4.0);
+		checkOrSetConfig(modify, "specials.tntsheep.follow-range", 10.0);
+		checkOrSetConfig(modify, "specials.tntsheep.max-target-distance", 32);
 		checkOrSetConfig(modify, "specials.tntsheep.explosion-time", 8);
 		checkOrSetConfig(modify, "specials.arrow-blocker.protection-time", 10);
+		checkOrSetConfig(modify, "specials.arrow-blocker.delay", 5);
+		checkOrSetConfig(modify, "specials.warp-powder.teleport-time", 6);
+		checkOrSetConfig(modify, "specials.warp-powder.delay", 0);
+		checkOrSetConfig(modify, "specials.magnet-shoes.probability", 75);
+		checkOrSetConfig(modify, "specials.golem.speed", 0.25);
+		checkOrSetConfig(modify, "specials.golem.follow-range", 10);
+		checkOrSetConfig(modify, "specials.golem.health", 20);
+		checkOrSetConfig(modify, "specials.golem.name-format", "%teamcolor%%team% Golem");
+		checkOrSetConfig(modify, "specials.golem.show-name", true);
+		checkOrSetConfig(modify, "specials.golem.delay", 0);
+
 		checkOrSetConfig(modify, "tnt.auto-ignite", false);
 		checkOrSetConfig(modify, "tnt.explosion-time", 8);
+
 		checkOrSetConfig(modify, "sounds.on_bed_destroyed", "ENTITY_ENDER_DRAGON_GROWL");
 		checkOrSetConfig(modify, "sounds.on_countdown", "UI_BUTTON_CLICK");
 		checkOrSetConfig(modify, "sounds.on_game_start", "ENTITY_PLAYER_LEVELUP");
@@ -236,6 +259,7 @@ public class Configurator {
 		checkOrSetConfig(modify, "sounds.on_player_kill", "ENTITY_PLAYER_BIG_FALL");
 		checkOrSetConfig(modify, "sounds.on_item_buy", "ENTITY_ITEM_PICKUP");
 		checkOrSetConfig(modify, "sounds.on_upgrade_buy", "ENTITY_EXPERIENCE_ORB_PICKUP");
+
 		checkOrSetConfig(modify, "game-effects.end", new HashMap<String, Object>());
 		checkOrSetConfig(modify, "game-effects.start", new HashMap<String, Object>());
 		checkOrSetConfig(modify, "game-effects.kill", new HashMap<String, Object>());
@@ -245,10 +269,12 @@ public class Configurator {
 		checkOrSetConfig(modify, "game-effects.respawn", new HashMap<String, Object>());
 		checkOrSetConfig(modify, "game-effects.beddestroy", new HashMap<String, Object>());
 		checkOrSetConfig(modify, "game-effects.warppowdertick", new HashMap<String, Object>());
+
 		checkOrSetConfig(modify, "lobby-scoreboard.enabled", true);
 		checkOrSetConfig(modify, "lobby-scoreboard.title", "§eBEDWARS");
 		checkOrSetConfig(modify, "lobby-scoreboard.content", Arrays.asList(" ", "§fMap: §2%arena%",
 				"§fPlayers: §2%players%§f/§2%maxplayers%", " ", "§fWaiting ...", " "));
+
 		checkOrSetConfig(modify, "statistics.enabled", true);
 		checkOrSetConfig(modify, "statistics.type", "yaml");
 		checkOrSetConfig(modify, "statistics.show-on-game-end", false);
@@ -259,12 +285,14 @@ public class Configurator {
 		checkOrSetConfig(modify, "statistics.scores.bed-destroy", 25);
 		checkOrSetConfig(modify, "statistics.scores.lose", 0);
 		checkOrSetConfig(modify, "statistics.scores.record", 100);
+
 		checkOrSetConfig(modify, "database.host", "localhost");
 		checkOrSetConfig(modify, "database.port", 3306);
 		checkOrSetConfig(modify, "database.db", "databse");
 		checkOrSetConfig(modify, "database.user", "root");
 		checkOrSetConfig(modify, "database.password", "secret");
 		checkOrSetConfig(modify, "database.table-prefix", "bw_");
+
 		checkOrSetConfig(modify, "bossbar.use-xp-bar", false);
 		checkOrSetConfig(modify, "bossbar.lobby.enable", true);
 		checkOrSetConfig(modify, "bossbar.lobby.color", "YELLOW");
@@ -272,8 +300,10 @@ public class Configurator {
 		checkOrSetConfig(modify, "bossbar.game.enable", true);
 		checkOrSetConfig(modify, "bossbar.game.color", "GREEN");
 		checkOrSetConfig(modify, "bossbar.game.style", "SEGMENTED_20");
+
 		checkOrSetConfig(modify, "holograms.enabled", true);
 		checkOrSetConfig(modify, "holograms.headline", "Your §eBEDWARS§f stats");
+
 		checkOrSetConfig(modify, "chat.override", true);
 		checkOrSetConfig(modify, "chat.format", "<%teamcolor%%name%§r> ");
 		checkOrSetConfig(modify, "chat.separate-game-chat", false);
@@ -285,21 +315,26 @@ public class Configurator {
 		checkOrSetConfig(modify, "chat.all-chat", "[ALL] ");
 		checkOrSetConfig(modify, "chat.team-chat", "[TEAM] ");
 		checkOrSetConfig(modify, "chat.death-chat", "[DEATH] ");
+
 		checkOrSetConfig(modify, "rewards.enabled", false);
 		checkOrSetConfig(modify, "rewards.player-win", new ArrayList<>());
 		checkOrSetConfig(modify, "rewards.player-end-game", new ArrayList<>());
 		checkOrSetConfig(modify, "rewards.player-destroy-bed", new ArrayList<>());
 		checkOrSetConfig(modify, "rewards.player-kill", new ArrayList<>());
+
 		checkOrSetConfig(modify, "lore.generate-automatically", true);
 		checkOrSetConfig(modify, "lore.text",
 				Arrays.asList("§7Price:", "§7%price% %resource%", "§7Amount:", "§7%amount%"));
 		checkOrSetConfig(modify, "sign", Arrays.asList("§c§l[BedWars]", "%arena%", "%status%", "%players%"));
+
 		checkOrSetConfig(modify, "hotbar.selector", 0);
 		checkOrSetConfig(modify, "hotbar.color", 1);
 		checkOrSetConfig(modify, "hotbar.start", 2);
 		checkOrSetConfig(modify, "hotbar.leave", 8);
+
 		checkOrSetConfig(modify, "breakable.enabled", false);
 		checkOrSetConfig(modify, "breakable.blocks", new ArrayList<>());
+
 		checkOrSetConfig(modify, "version", 2);
 		if (modify.get()) {
 			try {

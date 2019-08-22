@@ -126,13 +126,26 @@ specials:
     height: 3
     distance: 2
     material: SANDSTONE
-  tntsheep:
+  tnt-sheep:
+    speed: 4.0
+    follow-range: 10.0
+    max-target-distance: 32
     explosion-time: 8
   arrow-blocker:
     protection-time: 10
+    delay: 5
+  warp-powder:
+    teleport-time: 6
+    delay: 0
+  magnet-shoes:
+    probability: 75
   golem:
+    speed: 0.25
+    follow-range: 10.0
+    health: 20
     name-format: "%teamcolor%%team% Golem"
     show-name: true
+    delay: 0
 
 # Automatic TNT ignite (default: false)
 tnt:

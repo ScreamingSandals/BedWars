@@ -2,6 +2,7 @@ package misat11.bw.special.listener;
 
 import java.util.List;
 
+import misat11.bw.utils.MiscUtils;
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Creature;
@@ -36,11 +37,7 @@ public class TNTSheepListener implements Listener {
 	public void onTNTSheepRegistered(BedwarsApplyPropertyToBoughtItem event) {
 		if (event.getPropertyName().equalsIgnoreCase("tntsheep")) {
 			ItemStack stack = event.getStack();
-
-			String specialString = TNT_SHEEP_PREFIX + event.getDoubleProperty("speed") + ":"
-					+ event.getDoubleProperty("follow");
-
-			APIUtils.hashIntoInvisibleString(stack, specialString);
+			APIUtils.hashIntoInvisibleString(stack, applyProperty(event));
 		}
 
 	}
@@ -55,46 +52,35 @@ public class TNTSheepListener implements Listener {
 			return;
 		}
 
-		Player eventPlayer = event.getPlayer();
-		GamePlayer gamePlayer = Main.getPlayerGameProfile(eventPlayer);
+		Player player = event.getPlayer();
+		GamePlayer gamePlayer = Main.getPlayerGameProfile(player);
 		Game game = gamePlayer.getGame();
+
 		if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-			if (game.getStatus() == GameStatus.RUNNING && !gamePlayer.isSpectator) {
-				if (event.getItem() != null) {
-					ItemStack stack = event.getItem();
-					String unhidden = APIUtils.unhashFromInvisibleStringStartsWith(stack, TNT_SHEEP_PREFIX);
-					if (unhidden != null) {
-						event.setCancelled(true);
-						String[] splitted = unhidden.split(":");
-						double speed = Double.parseDouble(splitted[2]);
-						double follow = Double.parseDouble(splitted[3]);
-						Location startLocation;
-						if (event.getClickedBlock() == null) {
-							startLocation = eventPlayer.getLocation(); // TODO do something better :D
-						} else {
-							startLocation = event.getClickedBlock().getRelative(BlockFace.UP).getLocation();
-						}
-						TNTSheep sheep = new TNTSheep(game, eventPlayer, game.getTeamOfPlayer(eventPlayer),
-								startLocation, speed, follow);
-						if (sheep.use()) {
-							ItemStack replace = null;
-							if (event.getItem().getAmount() > 1) {
-								replace = event.getItem().clone();
-								replace.setAmount(event.getItem().getAmount() - 1);
-							}
-							try {
-								if (event.getHand() == EquipmentSlot.HAND) {
-									eventPlayer.getInventory().setItemInMainHand(replace);
-								} else {
-									eventPlayer.getInventory().setItemInOffHand(replace);
-								}
-							} catch (Throwable t) {
-								// F*cking 1.8
-								eventPlayer.setItemInHand(replace);
-							}
-						}
+			if (game.getStatus() == GameStatus.RUNNING && !gamePlayer.isSpectator && event.getItem() != null) {
+				ItemStack stack = event.getItem();
+				String unhidden = APIUtils.unhashFromInvisibleStringStartsWith(stack, TNT_SHEEP_PREFIX);
+
+				if (unhidden != null) {
+					event.setCancelled(true);
+
+					double speed = Double.parseDouble(unhidden.split(":")[2]);
+					double follow = Double.parseDouble(unhidden.split(":")[3]);
+					double maxTargetDistance = Double.parseDouble(unhidden.split(":")[4]);
+					int explosionTime = Integer.parseInt(unhidden.split(":")[5]);
+					Location startLocation;
+
+					if (event.getClickedBlock() == null) {
+						startLocation = player.getLocation();
+					} else {
+						startLocation = event.getClickedBlock().getRelative(BlockFace.UP).getLocation();
 					}
+					TNTSheep sheep = new TNTSheep(game, player, game.getTeamOfPlayer(player),
+							startLocation, speed, follow, maxTargetDistance, explosionTime);
+
+					sheep.spawn();
 				}
+
 			}
 		}
 	}
@@ -154,11 +140,6 @@ public class TNTSheepListener implements Listener {
 
 	@EventHandler
 	public void onTNTSheepInteractOtherUser(PlayerInteractEntityEvent event) {
-		// TODO think about if it's needed
-		if (event.getPlayer() == null) {
-			return;
-		}
-
 		Player player = event.getPlayer();
 		if (Main.isPlayerInGame(player)) {
 			GamePlayer gamePlayer = Main.getPlayerGameProfile(player);
@@ -183,4 +164,15 @@ public class TNTSheepListener implements Listener {
 		}
 	}
 
+	private String applyProperty(BedwarsApplyPropertyToBoughtItem event) {
+		return TNT_SHEEP_PREFIX
+				+ MiscUtils.getDoubleFromProperty(
+				"speed", "specials.tnt-sheep.speed", event) + ":"
+				+ MiscUtils.getDoubleFromProperty(
+				"follow-range", "specials.tnt-sheep.follow-range", event) + ":"
+				+ MiscUtils.getDoubleFromProperty(
+				"max-target-distance", "specials.tnt-sheep.max-target-distance", event) + ":"
+				+ MiscUtils.getIntFromProperty(
+				"explosion-time", "specials.tnt-sheep.explosion-time", event);
+	}
 }

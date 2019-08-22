@@ -1,5 +1,6 @@
 package misat11.bw.special;
 
+import misat11.bw.utils.MiscUtils;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
@@ -25,62 +26,22 @@ public class TNTSheep extends SpecialItem implements misat11.bw.api.special.TNTS
 	private Location loc;
 	private double speed;
 	private double followRange;
-	private boolean used = false;
+	private double maxTargetDistance;
+	private int explosionTime;
 
-	public TNTSheep(Game game, Player player, Team team, Location loc, double speed, double followRange) {
+	public TNTSheep(Game game, Player player, Team team, Location loc,
+					double speed, double followRange, double maxTargetDistance , int explosionTime) {
 		super(game, player, team);
 		this.loc = loc;
 		this.speed = speed;
 		this.followRange = followRange;
-		game.registerSpecialItem(this);
-	}
-
-	public boolean use() {
-		if (!used) {
-			int explosionTime = Main.getConfigurator().config.getInt("specials.tntsheep.explosion-time", 8) * 20;
-			Sheep sheep = (Sheep) loc.getWorld().spawnEntity(loc, EntityType.SHEEP);
-			TeamColor color = TeamColor.fromApiColor(team.getColor());
-			sheep.setColor(DyeColor.getByWoolData((byte) color.woolData));
-			Player target = Tracker.find(game, player);
-			if (target == null) {
-				player.sendMessage(i18n("specials_tntsheep_no_target_found"));
-				sheep.remove();
-				return false;
-			}
-			entity = sheep;
-			NMSUtils.makeMobAttackTarget(sheep, speed, followRange, 0).attackTarget(target);
-
-			tnt = (TNTPrimed) loc.getWorld().spawnEntity(loc, EntityType.PRIMED_TNT);
-			tnt.setFuseTicks(explosionTime);
-			tnt.setIsIncendiary(false);
-			sheep.addPassenger(tnt);
-
-			Main.registerGameEntity(sheep, (misat11.bw.game.Game) game);
-			Main.registerGameEntity(tnt, (misat11.bw.game.Game) game);
-
-			new BukkitRunnable() {
-
-				@Override
-				public void run() {
-					tnt.remove();
-					sheep.remove();
-					game.unregisterSpecialItem(TNTSheep.this);
-				}
-			}.runTaskLater(Main.getInstance(), (long) (explosionTime + 13));
-
-			used = true;
-		}
-		return used;
+		this.maxTargetDistance = maxTargetDistance;
+		this.explosionTime = explosionTime * 20;
 	}
 
 	@Override
 	public LivingEntity getEntity() {
 		return entity;
-	}
-
-	@Override
-	public boolean isUsed() {
-		return used;
 	}
 
 	@Override
@@ -103,4 +64,39 @@ public class TNTSheep extends SpecialItem implements misat11.bw.api.special.TNTS
 		return followRange;
 	}
 
+	public void spawn() {
+		Sheep sheep = (Sheep) loc.getWorld().spawnEntity(loc, EntityType.SHEEP);
+		TeamColor color = TeamColor.fromApiColor(team.getColor());
+		Player target = MiscUtils.findTarget(game, player, maxTargetDistance);
+
+		sheep.setColor(DyeColor.getByWoolData((byte) color.woolData));
+
+		if (target == null) {
+			player.sendMessage(i18n("specials_tntsheep_no_target_found"));
+			sheep.remove();
+			return;
+		}
+
+		entity = sheep;
+		NMSUtils.makeMobAttackTarget(sheep, speed, followRange, 0).attackTarget(target);
+
+		tnt = (TNTPrimed) loc.getWorld().spawnEntity(loc, EntityType.PRIMED_TNT);
+		tnt.setFuseTicks(explosionTime);
+		tnt.setIsIncendiary(false);
+		sheep.addPassenger(tnt);
+
+		game.registerSpecialItem(this);
+		Main.registerGameEntity(sheep, (misat11.bw.game.Game) game);
+		Main.registerGameEntity(tnt, (misat11.bw.game.Game) game);
+
+		new BukkitRunnable() {
+
+			@Override
+			public void run() {
+				tnt.remove();
+				sheep.remove();
+				game.unregisterSpecialItem(TNTSheep.this);
+			}
+		}.runTaskLater(Main.getInstance(), (explosionTime + 13));
+	}
 }

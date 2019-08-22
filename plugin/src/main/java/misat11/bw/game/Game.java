@@ -9,6 +9,7 @@ import misat11.bw.api.boss.BossBar19;
 import misat11.bw.api.boss.StatusBar;
 import misat11.bw.api.events.*;
 import misat11.bw.api.special.SpecialItem;
+import misat11.bw.api.utils.DelayFactory;
 import misat11.bw.api.upgrades.UpgradeRegistry;
 import misat11.bw.api.upgrades.UpgradeStorage;
 import misat11.bw.boss.BossBarSelector;
@@ -168,6 +169,7 @@ public class Game implements misat11.bw.api.Game {
 	private StatusBar statusbar;
 	private Map<Location, ItemStack[]> usedChests = new HashMap<>();
 	private List<SpecialItem> activeSpecialItems = new ArrayList<>();
+	private List<DelayFactory> activeDelays = new ArrayList<>();
 	private List<ArmorStand> armorStandsInGame = new ArrayList<>();
 	private Map<ItemSpawner, ArmorStand> countdownArmorStands = new HashMap<>();
 
@@ -355,9 +357,14 @@ public class Game implements misat11.bw.api.Game {
 				CurrentTeam team = getTeamOfChest(block);
 				if (team != null) {
 					team.removeTeamChest(block);
-					String message = i18n("team_chest_broken");
-					for (GamePlayer gp : team.players) {
-						gp.player.sendMessage(message);
+						String message = i18n("team_chest_broken");
+						for (GamePlayer gp : team.players) {
+							gp.player.sendMessage(message);
+					}
+
+					if (breakEvent.isDrops()) {
+						event.setDropItems(false);
+						player.player.getInventory().addItem(new ItemStack(Material.ENDER_CHEST));
 					}
 				}
 			}
@@ -369,7 +376,6 @@ public class Game implements misat11.bw.api.Game {
 					block.setType(Material.AIR);
 				}
 			}
-
 			return true;
 		}
 		
@@ -1764,6 +1770,7 @@ public class Game implements misat11.bw.api.Game {
 	public void rebuilding() {
 		teamsInGame.clear();
 		activeSpecialItems.clear();
+		activeDelays.clear();
 
 		BedwarsPreRebuildingEvent preRebuildingEvent = new BedwarsPreRebuildingEvent(this);
 		Main.getInstance().getServer().getPluginManager().callEvent(preRebuildingEvent);
@@ -2359,6 +2366,54 @@ public class Game implements misat11.bw.api.Game {
 		return activeSpecialItems.contains(item);
 	}
 
+	@Override
+	public List<DelayFactory> getActiveDelays() {
+		return new ArrayList<>(activeDelays);
+	}
+
+	@Override
+	public List<DelayFactory> getActiveDelaysOfPlayer(Player player) {
+		List<DelayFactory> delays = new ArrayList<>();
+		for (DelayFactory delay : activeDelays) {
+			if (delay.getPlayer() == player) {
+				delays.add(delay);
+			}
+		}
+		return delays;
+	}
+
+	@Override
+	public DelayFactory getActiveDelay(Player player, Class<? extends SpecialItem> specialItem) {
+		for (DelayFactory delayFactory : getActiveDelaysOfPlayer(player)) {
+			if (specialItem.isInstance(delayFactory.getSpecialItem())) {
+				return delayFactory;
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public void registerDelay(DelayFactory delayFactory) {
+		if (!activeDelays.contains(delayFactory)) {
+			activeDelays.add(delayFactory);
+		}
+	}
+
+	@Override
+	public void unregisterDelay(DelayFactory delayFactory) {
+		activeDelays.remove(delayFactory);
+	}
+
+	@Override
+	public boolean isDelayActive(Player player, Class<? extends SpecialItem> specialItem) {
+		for (DelayFactory delayFactory : getActiveDelaysOfPlayer(player)) {
+			if (specialItem.isInstance(delayFactory.getSpecialItem())) {
+				return delayFactory.getDelayActive();
+			}
+		}
+		return false;
+	}
+
 	public InGameConfigBooleanConstants getCompassEnabled() {
 		return compassEnabled;
 	}
@@ -2826,7 +2881,7 @@ public class Game implements misat11.bw.api.Game {
 	}
 
 	public boolean isProtectionActive(Player player) {
-		return (this.respawnProtectionMap.containsKey(player));
+		return (respawnProtectionMap.containsKey(player));
 	}
 
 	public List<GamePlayer> getPlayersWithoutVIP() {

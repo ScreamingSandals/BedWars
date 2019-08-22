@@ -17,22 +17,15 @@ public class ArrowBlocker extends SpecialItem implements misat11.bw.api.special.
 
 	private int protectionTime;
 	private int usedTime;
-	private int delayTime;
-	private int delay;
-
 	private boolean isActivated;
-	private boolean canUse;
-
 	private ItemStack item;
 
-	public ArrowBlocker(Game game, Player player, Team team, ItemStack item, int delay) {
+	public ArrowBlocker(Game game, Player player, Team team, ItemStack item, int protectionTime) {
 		super(game, player, team);
 		this.game = game;
 		this.player = player;
 		this.item = item;
-		this.delay = delay;
-
-		canUse = true;
+		this.protectionTime = protectionTime;
 	}
 
 	@Override
@@ -45,17 +38,9 @@ public class ArrowBlocker extends SpecialItem implements misat11.bw.api.special.
 		return usedTime;
 	}
 
-	public int getDelayTime() {
-		return delayTime;
-	}
-
 	@Override
 	public boolean isActivated() {
 		return isActivated;
-	}
-
-	public boolean canUse() {
-		return canUse;
 	}
 
 	@Override
@@ -77,10 +62,7 @@ public class ArrowBlocker extends SpecialItem implements misat11.bw.api.special.
 	}
 
 	public void activate() {
-		protectionTime = Main.getConfigurator().config.getInt("specials.arrow-blocker.protection-time", 10);
-		delayTime = delay;
-		canUse = true;
-
+		//protectionTime = Main.getConfigurator().config.getInt("specials.arrow-blocker.protection-time", 10);
 		if (protectionTime > 0) {
 			game.registerSpecialItem(this);
 			runTask();
@@ -89,7 +71,6 @@ public class ArrowBlocker extends SpecialItem implements misat11.bw.api.special.
 			player.updateInventory();
 
 			MiscUtils.sendActionBarMessage(player, i18nonly("specials_arrow_blocker_started").replace("%time%", Integer.toString(protectionTime)));
-			canUse = false;
 		}
 	}
 }

@@ -1,7 +1,10 @@
 package misat11.bw.utils;
 
 import misat11.bw.Main;
+import misat11.bw.api.Game;
+import misat11.bw.api.RunningTeam;
 import misat11.bw.api.events.BedwarsApplyPropertyToBoughtItem;
+import misat11.bw.game.GamePlayer;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Location;
@@ -10,6 +13,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 public class MiscUtils {
@@ -67,9 +71,17 @@ public class MiscUtils {
 
     public static int getIntFromProperty(String name, String fallback, BedwarsApplyPropertyToBoughtItem event) {
         try {
-           return event.getIntProperty(name);
+            return event.getIntProperty(name);
         } catch (NullPointerException e) {
             return Main.getConfigurator().config.getInt(fallback);
+        }
+    }
+
+    public static double getDoubleFromProperty(String name, String fallback, BedwarsApplyPropertyToBoughtItem event) {
+        try {
+            return event.getDoubleProperty(name);
+        } catch (NullPointerException e) {
+            return Main.getConfigurator().config.getDouble(fallback);
         }
     }
 
@@ -78,6 +90,14 @@ public class MiscUtils {
             return event.getBooleanProperty(name);
         } catch (NullPointerException e) {
             return Main.getConfigurator().config.getBoolean(fallback);
+        }
+    }
+
+    public static String getStringFromProperty(String name, String fallback, BedwarsApplyPropertyToBoughtItem event) {
+        try {
+            return event.getStringProperty(name);
+        } catch (NullPointerException e) {
+            return Main.getConfigurator().config.getString(fallback);
         }
     }
 
@@ -103,6 +123,33 @@ public class MiscUtils {
             }
         }
         return material;
+    }
+
+    public static Player findTarget(Game game, Player player, double maxDist) {
+        Player playerTarget = null;
+        RunningTeam team = game.getTeamOfPlayer(player);
+
+        ArrayList<Player> foundTargets = new ArrayList<>(game.getConnectedPlayers());
+        foundTargets.removeAll(team.getConnectedPlayers());
+
+
+        for (Player p : foundTargets) {
+            GamePlayer gamePlayer = Main.getPlayerGameProfile(p);
+            if (player.getWorld() != p.getWorld()) {
+                continue;
+            }
+
+            if (gamePlayer.isSpectator) {
+                continue;
+            }
+
+            double realDistance = player.getLocation().distance(p.getLocation());
+            if (realDistance < maxDist) {
+                playerTarget = p;
+                maxDist = realDistance;
+            }
+        }
+        return playerTarget;
     }
 
     /* End of Special Items */

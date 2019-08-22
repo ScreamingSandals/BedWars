@@ -1,6 +1,5 @@
 package misat11.bw.special.listener;
 
-
 import misat11.bw.Main;
 import misat11.bw.api.APIUtils;
 import misat11.bw.api.Game;
@@ -9,6 +8,7 @@ import misat11.bw.api.events.BedwarsApplyPropertyToBoughtItem;
 import misat11.bw.api.special.SpecialItem;
 import misat11.bw.game.GamePlayer;
 import misat11.bw.special.RescuePlatform;
+import misat11.bw.utils.DelayFactory;
 import misat11.bw.utils.MiscUtils;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -22,7 +22,6 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 
@@ -31,8 +30,6 @@ import static misat11.lib.lang.I18n.i18nonly;
 
 public class RescuePlatformListener implements Listener {
 	private static final String RESCUE_PLATFORM_PREFIX = "Module:RescuePlatform:";
-	private boolean isUsable = true;
-	private int delay;
 
 	@EventHandler
 	public void onRescuePlatformRegistered(BedwarsApplyPropertyToBoughtItem event) {
@@ -40,51 +37,57 @@ public class RescuePlatformListener implements Listener {
 			ItemStack stack = event.getStack();
 			APIUtils.hashIntoInvisibleString(stack, applyProperty(event));
 		}
-
 	}
 
 	@EventHandler
 	public void onPlayerUseItem(PlayerInteractEvent event) {
+		Player player = event.getPlayer();
+
 		if (event.isCancelled() && event.getAction() != Action.RIGHT_CLICK_AIR) {
 			return;
 		}
 
-		if (!Main.isPlayerInGame(event.getPlayer())) {
+		if (!Main.isPlayerInGame(player)) {
 			return;
 		}
-
-		GamePlayer gPlayer = Main.getPlayerGameProfile(event.getPlayer());
+		GamePlayer gPlayer = Main.getPlayerGameProfile(player);
 		Game game = gPlayer.getGame();
-		if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-			if (game.getStatus() == GameStatus.RUNNING && !gPlayer.isSpectator) {
-				if (event.getItem() != null) {
-					ItemStack stack = event.getItem();
-					String unhidden = APIUtils.unhashFromInvisibleStringStartsWith(stack, RESCUE_PLATFORM_PREFIX);
 
-					if (unhidden != null) {
+		if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+			if (game.getStatus() == GameStatus.RUNNING && !gPlayer.isSpectator && event.getItem() != null) {
+				ItemStack stack = event.getItem();
+				String unhidden = APIUtils.unhashFromInvisibleStringStartsWith(stack, RESCUE_PLATFORM_PREFIX);
+
+				if (unhidden != null) {
+					if (!game.isDelayActive(player, RescuePlatform.class)) {
 						event.setCancelled(true);
 
 						boolean isBreakable = Boolean.parseBoolean(unhidden.split(":")[2]);
+						int delay = Integer.parseInt(unhidden.split(":")[3]);
 						int breakTime = Integer.parseInt(unhidden.split(":")[4]);
 						int distance = Integer.parseInt(unhidden.split(":")[5]);
 						Material material = MiscUtils.getMaterialFromString(unhidden.split(":")[6], "GLASS");
 
-						RescuePlatform platform = new RescuePlatform(game, event.getPlayer(),
-								game.getTeamOfPlayer(event.getPlayer()), stack);
+						RescuePlatform rescuePlatform = new RescuePlatform(game, player,
+								game.getTeamOfPlayer(player), stack);
 
-						if (isUsable) {
-							if (event.getPlayer().getLocation().getBlock().getRelative(BlockFace.DOWN)
-									.getType() != Material.AIR) {
-								event.getPlayer().sendMessage(i18n("specials_rescue_platform_not_in_air"));
-								return;
-							}
-
-							platform.createPlatform(isBreakable, breakTime, distance, material);
-							delay = Integer.parseInt(unhidden.split(":")[3]);
-							runCountdown();
-						} else {
-							MiscUtils.sendActionBarMessage(event.getPlayer(), i18nonly("special_item_delay").replace("%time%", String.valueOf(delay)));
+						if (player.getLocation().getBlock().getRelative(BlockFace.DOWN)
+								.getType() != Material.AIR) {
+							player.sendMessage(i18n("specials_rescue_platform_not_in_air"));
+							return;
 						}
+
+						if (delay > 0) {
+							DelayFactory delayFactory = new DelayFactory(delay, rescuePlatform, player, game);
+							game.registerDelay(delayFactory);
+						}
+
+						rescuePlatform.createPlatform(isBreakable, breakTime, distance, material);
+					} else {
+						event.setCancelled(true);
+
+						int delay = game.getActiveDelay(player, RescuePlatform.class).getRemainDelay();
+						MiscUtils.sendActionBarMessage(player, i18nonly("special_item_delay").replace("%time%", String.valueOf(delay)));
 					}
 				}
 			}
@@ -94,12 +97,7 @@ public class RescuePlatformListener implements Listener {
 	@EventHandler
 	public void onFallDamage(EntityDamageEvent event) {
 		Entity entity = event.getEntity();
-
-		if (event.isCancelled()) {
-			return;
-		}
-
-		if (!(entity instanceof Player)) {
+		if (event.isCancelled() || !(entity instanceof Player)) {
 			return;
 		}
 
@@ -126,11 +124,7 @@ public class RescuePlatformListener implements Listener {
 	public void onBlockBreak(BlockBreakEvent event) {
 		Player player = event.getPlayer();
 
-		if (event.isCancelled()) {
-			return;
-		}
-
-		if (!Main.isPlayerInGame(player)) {
+		if (event.isCancelled() && !Main.isPlayerInGame(player)) {
 			return;
 		}
 
@@ -163,23 +157,6 @@ public class RescuePlatformListener implements Listener {
 			}
 		}
 		return createdPlatforms;
-	}
-
-	private void runCountdown() {
-		if (delay > 0) {
-			isUsable = false;
-			new BukkitRunnable() {
-
-				@Override
-				public void run() {
-					delay--;
-					if (delay == 0) {
-						isUsable = true;
-						this.cancel();
-					}
-				}
-			}.runTaskTimer(Main.getInstance(), 20L, 20L);
-		}
 	}
 
 	private String applyProperty(BedwarsApplyPropertyToBoughtItem event) {

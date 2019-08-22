@@ -6,7 +6,10 @@ import misat11.bw.api.Game;
 import misat11.bw.api.GameStatus;
 import misat11.bw.api.events.BedwarsApplyPropertyToBoughtItem;
 import misat11.bw.game.GamePlayer;
+import misat11.bw.special.RescuePlatform;
 import misat11.bw.special.WarpPowder;
+import misat11.bw.utils.DelayFactory;
+import misat11.bw.utils.MiscUtils;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
@@ -19,64 +22,65 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 
-import static misat11.lib.lang.I18n.i18n;
+import static misat11.lib.lang.I18n.i18nonly;
 
 public class WarpPowderListener implements Listener {
-	
-	public static final String WARP_POWDER_PREFIX = "Module:WarpPowder:";
+	private static final String WARP_POWDER_PREFIX = "Module:WarpPowder:";
 
 	@EventHandler
 	public void onPowderItemRegister(BedwarsApplyPropertyToBoughtItem event) {
 		if (event.getPropertyName().equalsIgnoreCase("warppowder")) {
 			ItemStack stack = event.getStack();
-
-			String warpPowderString = WARP_POWDER_PREFIX + event.getIntProperty("delay");
-
-			APIUtils.hashIntoInvisibleString(stack, warpPowderString);
+			APIUtils.hashIntoInvisibleString(stack, applyProperty(event));
 		}
 	}
 
 	@EventHandler
 	public void onPlayerUseItem(PlayerInteractEvent event) {
+		Player player = event.getPlayer();
+
 		if (event.isCancelled() && event.getAction() != Action.RIGHT_CLICK_AIR) {
 			return;
 		}
 
-		if (!Main.isPlayerInGame(event.getPlayer())) {
+		if (!Main.isPlayerInGame(player)) {
 			return;
 		}
-
-		GamePlayer gPlayer = Main.getPlayerGameProfile(event.getPlayer());
+		GamePlayer gPlayer = Main.getPlayerGameProfile(player);
 		Game game = gPlayer.getGame();
+
 		if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
 			if (game.getStatus() == GameStatus.RUNNING && !gPlayer.isSpectator) {
 				if (event.getItem() != null) {
 					ItemStack stack = event.getItem();
 					String unhidden = APIUtils.unhashFromInvisibleStringStartsWith(stack, WARP_POWDER_PREFIX);
+
 					if (unhidden != null) {
-						event.setCancelled(true);
-						int delay = Integer.parseInt(unhidden.split(":")[2]);
-						WarpPowder powder = new WarpPowder(game, event.getPlayer(),
-								game.getTeamOfPlayer(event.getPlayer()), stack, delay);
+						if (!game.isDelayActive(player, WarpPowder.class)) {
+							event.setCancelled(true);
 
-						WarpPowder originalPowder = (WarpPowder) game
-								.getFirstActivedSpecialItemOfPlayer(event.getPlayer(), WarpPowder.class);
+							int teleportTime = Integer.parseInt(unhidden.split(":")[1]);
+							int delay = Integer.parseInt(unhidden.split(":")[2]);
+							WarpPowder warpPowder = new WarpPowder(game, event.getPlayer(),
+									game.getTeamOfPlayer(event.getPlayer()), stack, teleportTime);
 
-						if (originalPowder != null) {
-							if (originalPowder.getStack().equals(powder.getStack())) {
-								originalPowder.cancelTeleport(true, true, false);
-							} else {
-								event.getPlayer().sendMessage(i18n("specials_warp_powder_multiuse"));
+							if (event.getPlayer().getLocation().getBlock().getRelative(BlockFace.DOWN)
+									.getType() == Material.AIR) {
+								return;
 							}
-							return;
-						}
 
-						if (event.getPlayer().getLocation().getBlock().getRelative(BlockFace.DOWN)
-								.getType() == Material.AIR) {
-							return;
-						}
+							if (delay > 0) {
+								DelayFactory delayFactory = new DelayFactory(delay, warpPowder, player, game);
+								game.registerDelay(delayFactory);
+							}
 
-						powder.runTask();
+							warpPowder.runTask();
+						}
+					} else {
+						event.setCancelled(true);
+
+						int delay = game.getActiveDelay(player, RescuePlatform.class).getRemainDelay();
+						MiscUtils.sendActionBarMessage(player, i18nonly("special_item_delay").replace("%time%", String.valueOf(delay)));
 					}
 				}
 			}
@@ -101,32 +105,33 @@ public class WarpPowderListener implements Listener {
 			return;
 		}
 
-		WarpPowder powder = (WarpPowder) game.getFirstActivedSpecialItemOfPlayer(player, WarpPowder.class);
-		if (powder != null) {
-			powder.cancelTeleport(true, true, false);
+		WarpPowder warpPowder = (WarpPowder) game.getFirstActivedSpecialItemOfPlayer(player, WarpPowder.class);
+		if (warpPowder != null) {
+			warpPowder.cancelTeleport(true, true, false);
 		}
 	}
 
 	@EventHandler
 	public void onDrop(PlayerDropItemEvent event) {
+		Player player = event.getPlayer();
 		if (event.isCancelled()) {
 			return;
 		}
 
-		if (!Main.isPlayerInGame(event.getPlayer())) {
+		if (!Main.isPlayerInGame(player)) {
 			return;
 		}
 
-		GamePlayer gPlayer = Main.getPlayerGameProfile(event.getPlayer());
+		GamePlayer gPlayer = Main.getPlayerGameProfile(player);
 		Game game = gPlayer.getGame();
 
 		if (gPlayer.isSpectator) {
 			return;
 		}
 
-		WarpPowder powder = (WarpPowder) game.getFirstActivedSpecialItemOfPlayer(event.getPlayer(), WarpPowder.class);
-		if (powder != null) {
-			if (powder.getStack().equals(event.getItemDrop().getItemStack())) {
+		WarpPowder warpPowder = (WarpPowder) game.getFirstActivedSpecialItemOfPlayer(player, WarpPowder.class);
+		if (warpPowder != null) {
+			if (warpPowder.getStack().equals(event.getItemDrop().getItemStack())) {
 				event.setCancelled(true);
 			}
 		}
@@ -134,24 +139,33 @@ public class WarpPowderListener implements Listener {
 
 	@EventHandler
 	public void onMove(PlayerMoveEvent event) {
+		Player player = event.getPlayer();
 		if (event.isCancelled()) {
 			return;
 		}
 
-		if (!Main.isPlayerInGame(event.getPlayer())) {
+		if (!Main.isPlayerInGame(player)) {
 			return;
 		}
 
-		GamePlayer gPlayer = Main.getPlayerGameProfile(event.getPlayer());
+		GamePlayer gPlayer = Main.getPlayerGameProfile(player);
 		Game game = gPlayer.getGame();
 
 		if (gPlayer.isSpectator) {
 			return;
 		}
 
-		WarpPowder powder = (WarpPowder) game.getFirstActivedSpecialItemOfPlayer(event.getPlayer(), WarpPowder.class);
-		if (powder != null) {
-			powder.cancelTeleport(true, true, false);
+		WarpPowder warpPowder = (WarpPowder) game.getFirstActivedSpecialItemOfPlayer(player, WarpPowder.class);
+		if (warpPowder != null) {
+			warpPowder.cancelTeleport(true, true, false);
 		}
+	}
+
+	private String applyProperty(BedwarsApplyPropertyToBoughtItem event) {
+		return WARP_POWDER_PREFIX
+				+ MiscUtils.getBooleanFromProperty(
+				"teleport-time", "specials.warp-powder.teleport-time", event) + ":"
+				+ MiscUtils.getIntFromProperty(
+				"delay", "specials.warp-powder.delay", event);
 	}
 }

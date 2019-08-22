@@ -74,6 +74,10 @@ public class TrapListener implements Listener {
 			return;
 		}
 
+		if (!Main.isPlayerInGame(event.getPlayer())) {
+			return;
+		}
+
 		for (SpecialItem special : event.getGame().getActivedSpecialItems(Trap.class)) {
 			Trap trapBlock = (Trap) special;
 			RunningTeam runningTeam = event.getTeam();
@@ -88,6 +92,10 @@ public class TrapListener implements Listener {
 	@EventHandler
 	public void onMove(PlayerMoveEvent event) {
 		if (event.isCancelled()) {
+			return;
+		}
+
+		if (!Main.isPlayerInGame(event.getPlayer())) {
 			return;
 		}
 		

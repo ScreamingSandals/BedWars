@@ -1,7 +1,9 @@
 package misat11.bw.api;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import misat11.bw.api.utils.DelayFactory;
 import org.bukkit.Location;
 import org.bukkit.WeatherType;
 import org.bukkit.World;
@@ -237,6 +239,41 @@ public interface Game {
 	 * @return
 	 */
 	public SpecialItem getFirstActivedSpecialItemOfPlayer(Player player, Class<? extends SpecialItem> type);
+
+	/**
+	 * @return
+	 */
+	List<DelayFactory> getActiveDelays();
+
+	/**
+	 * @param player
+	 * @return
+	 */
+	List<DelayFactory> getActiveDelaysOfPlayer(Player player);
+
+	/**
+	 * @param player
+	 * @param specialItem
+	 * @return
+	 */
+	DelayFactory getActiveDelay(Player player, Class<? extends SpecialItem> specialItem);
+
+	/**
+	 * @param delayFactory
+	 */
+	void registerDelay(DelayFactory delayFactory);
+
+	/**
+	 * @param delayFactory
+	 */
+	void unregisterDelay(DelayFactory delayFactory);
+
+	/**
+	 * @param player
+	 * @param specialItem
+	 * @return
+	 */
+	boolean isDelayActive(Player player, Class<? extends SpecialItem> specialItem);
 
 	/**
 	 * @param item
