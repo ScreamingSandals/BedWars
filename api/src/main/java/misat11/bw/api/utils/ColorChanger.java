@@ -1,5 +1,6 @@
-package misat11.bw.api;
+package misat11.bw.api.utils;
 
+import misat11.bw.api.TeamColor;
 import org.bukkit.inventory.ItemStack;
 
 
@@ -16,5 +17,5 @@ public interface ColorChanger {
 	 * @param stack ItemStack that should be colored
 	 * @return colored ItemStack or normal ItemStack if ItemStack can't be colored
 	 */
-	public ItemStack applyColor(TeamColor color, ItemStack stack);
+	ItemStack applyColor(TeamColor color, ItemStack stack);
 }

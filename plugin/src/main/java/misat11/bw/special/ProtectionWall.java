@@ -213,5 +213,4 @@ public class ProtectionWall extends SpecialItem implements misat11.bw.api.specia
 			player.updateInventory();
 		}
 	}
-
 }

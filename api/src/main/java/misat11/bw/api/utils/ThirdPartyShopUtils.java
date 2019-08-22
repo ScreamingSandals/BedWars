@@ -1,8 +1,10 @@
-package misat11.bw.api;
+package misat11.bw.api.utils;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import misat11.bw.api.BedwarsAPI;
+import misat11.bw.api.Game;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;

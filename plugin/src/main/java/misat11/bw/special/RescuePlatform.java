@@ -31,7 +31,6 @@ public class RescuePlatform extends SpecialItem implements misat11.bw.api.specia
 	private boolean canBreak;
 	private int breakingTime;
 	private int livingTime;
-	private int distance;
 
 	public RescuePlatform(Game game, Player player, Team team, ItemStack item) {
 		super(game, player, team);
@@ -109,11 +108,10 @@ public class RescuePlatform extends SpecialItem implements misat11.bw.api.specia
 		canBreak = bre;
 		breakingTime = time;
 		buildingMaterial = bMat;
-		distance = dist;
 		platformBlocks = new ArrayList<>();
 
 		Location center = player.getLocation().clone();
-		center.setY(center.getY() - distance);
+		center.setY(center.getY() - dist);
 
 		for (BlockFace blockFace : BlockFace.values()) {
 			if (blockFace.equals(BlockFace.DOWN) || blockFace.equals(BlockFace.UP)) {
