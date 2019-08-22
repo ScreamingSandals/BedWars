@@ -2880,6 +2880,7 @@ public class Game implements misat11.bw.api.Game {
 		respawnProtectionMap.remove(player);
 	}
 
+	@Override
 	public boolean isProtectionActive(Player player) {
 		return (respawnProtectionMap.containsKey(player));
 	}

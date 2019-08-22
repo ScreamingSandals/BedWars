@@ -620,7 +620,13 @@ public interface Game {
 	/**
 	 * @return
 	 */
+	boolean isProtectionActive(Player player);
+
+	/**
+	 * @return
+	 */
 	@Deprecated
 	public boolean isUpgradesEnabled();
+
 
 }
