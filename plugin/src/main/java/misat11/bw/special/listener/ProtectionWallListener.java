@@ -52,48 +52,46 @@ public class ProtectionWallListener implements Listener {
 		Game game = gPlayer.getGame();
 
 		if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-			if (game.getStatus() == GameStatus.RUNNING && !gPlayer.isSpectator) {
-				if (event.getItem() != null) {
-					ItemStack stack = event.getItem();
-					String unhidden = APIUtils.unhashFromInvisibleStringStartsWith(stack, PROTECTION_WALL_PREFIX);
+			if (game.getStatus() == GameStatus.RUNNING && !gPlayer.isSpectator && event.getItem() != null) {
+				ItemStack stack = event.getItem();
+				String unhidden = APIUtils.unhashFromInvisibleStringStartsWith(stack, PROTECTION_WALL_PREFIX);
 
-					if (unhidden != null) {
-						if (!game.isDelayActive(player, ProtectionWall.class)) {
-							event.setCancelled(true);
+				if (unhidden != null) {
+					if (!game.isDelayActive(player, ProtectionWall.class)) {
+						event.setCancelled(true);
 
-							boolean isBreakable = Boolean.parseBoolean(unhidden.split(":")[2]);
-							int delay = Integer.parseInt(unhidden.split(":")[3]);
-							int breakTime = Integer.parseInt(unhidden.split(":")[4]);
-							int width = Integer.parseInt(unhidden.split(":")[5]);
-							int height = Integer.parseInt(unhidden.split(":")[6]);
-							int distance = Integer.parseInt(unhidden.split(":")[7]);
-							Material material;
-							if (Main.isLegacy()) {
-								material = MiscUtils.getMaterialFromString(unhidden.split(":")[8], "SANDSTONE");
-							} else {
-								material = MiscUtils.getMaterialFromString(unhidden.split(":")[8], "CUT_SANDSTONE");
-							}
-
-							ProtectionWall protectionWall = new ProtectionWall(game, event.getPlayer(),
-									game.getTeamOfPlayer(event.getPlayer()), stack);
-
-							if (event.getPlayer().getEyeLocation().getBlock().getType() != Material.AIR) {
-								MiscUtils.sendActionBarMessage(event.getPlayer(), i18nonly("specials_protection_wall_not_usable_here"));
-								return;
-							}
-
-							if (delay > 0) {
-								DelayFactory delayFactory = new DelayFactory(delay, protectionWall, player, game);
-								game.registerDelay(delayFactory);
-							}
-
-							protectionWall.createWall(isBreakable, breakTime, width, height, distance, material);
+						boolean isBreakable = Boolean.parseBoolean(unhidden.split(":")[2]);
+						int delay = Integer.parseInt(unhidden.split(":")[3]);
+						int breakTime = Integer.parseInt(unhidden.split(":")[4]);
+						int width = Integer.parseInt(unhidden.split(":")[5]);
+						int height = Integer.parseInt(unhidden.split(":")[6]);
+						int distance = Integer.parseInt(unhidden.split(":")[7]);
+						Material material;
+						if (Main.isLegacy()) {
+							material = MiscUtils.getMaterialFromString(unhidden.split(":")[8], "SANDSTONE");
 						} else {
-							event.setCancelled(true);
-
-							int delay = game.getActiveDelay(player, ProtectionWall.class).getRemainDelay();
-							MiscUtils.sendActionBarMessage(player, i18nonly("special_item_delay").replace("%time%", String.valueOf(delay)));
+							material = MiscUtils.getMaterialFromString(unhidden.split(":")[8], "CUT_SANDSTONE");
 						}
+
+						ProtectionWall protectionWall = new ProtectionWall(game, event.getPlayer(),
+								game.getTeamOfPlayer(event.getPlayer()), stack);
+
+						if (event.getPlayer().getEyeLocation().getBlock().getType() != Material.AIR) {
+							MiscUtils.sendActionBarMessage(event.getPlayer(), i18nonly("specials_protection_wall_not_usable_here"));
+							return;
+						}
+
+						if (delay > 0) {
+							DelayFactory delayFactory = new DelayFactory(delay, protectionWall, player, game);
+							game.registerDelay(delayFactory);
+						}
+
+						protectionWall.createWall(isBreakable, breakTime, width, height, distance, material);
+					} else {
+						event.setCancelled(true);
+
+						int delay = game.getActiveDelay(player, ProtectionWall.class).getRemainDelay();
+						MiscUtils.sendActionBarMessage(player, i18nonly("special_item_delay").replace("%time%", String.valueOf(delay)));
 					}
 				}
 			}

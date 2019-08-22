@@ -12,25 +12,22 @@ import org.bukkit.scheduler.BukkitTask;
 import static misat11.lib.lang.I18n.i18n;
 
 public class WarpPowder extends SpecialItem implements misat11.bw.api.special.WarpPowder {
-
-	private int fullTeleportingTime;
 	private BukkitTask teleportingTask = null;
 	private int teleportingTime;
 
 	private ItemStack item;
 
-	public WarpPowder(Game game, Player player, Team team, ItemStack item, int delay) {
+	public WarpPowder(Game game, Player player, Team team, ItemStack item, int teleportingTime) {
 		super(game, player, team);
 		this.item = item;
-		this.fullTeleportingTime = delay;
-		this.teleportingTime = delay;
+		this.teleportingTime = teleportingTime;
 	}
 
 	@Override
 	public void cancelTeleport(boolean removeSpecial, boolean showMessage, boolean decrementStack) {
 		try {
 			teleportingTask.cancel();
-		} catch (Exception e) {
+		} catch (Exception ignored) {
 
 		}
 
@@ -57,8 +54,6 @@ public class WarpPowder extends SpecialItem implements misat11.bw.api.special.Wa
 	@Override
 	public void runTask() {
 		game.registerSpecialItem(this);
-
-		teleportingTime = fullTeleportingTime;
 
 		player.sendMessage(i18n("specials_warp_powder_started").replace("%time%", Double.toString(teleportingTime)));
 

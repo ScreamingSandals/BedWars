@@ -13,12 +13,7 @@ public interface TNTSheep extends SpecialItem {
 	 * @return
 	 */
 	public LivingEntity getEntity();
-	
-	/**
-	 * @return
-	 */
-	public boolean isUsed();
-	
+
 	/**
 	 * @return
 	 */

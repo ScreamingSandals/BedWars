@@ -259,6 +259,8 @@ specials_arrow_blocker_started: "§aArrow blocker byl aktivován na dobu %time% 
 specials_arrow_blocker_already_activated: "§cArrow blocker již je aktivovaný! Nelze jej použít znova."
 specials_arrow_blocker_ended: "§cArrow blocker již není aktivovaný!"
 
+specials_golem_created: "§aGolem byl zrozen."
+
 special_item_delay: "§cPřed použitím tohoto předmětu musíš počkat %time% sekund!"
 
 page_back: "O stránku zpět"

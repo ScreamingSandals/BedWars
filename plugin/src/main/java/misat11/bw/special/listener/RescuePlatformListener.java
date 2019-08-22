@@ -1,6 +1,5 @@
 package misat11.bw.special.listener;
 
-
 import misat11.bw.Main;
 import misat11.bw.api.APIUtils;
 import misat11.bw.api.Game;
@@ -38,7 +37,6 @@ public class RescuePlatformListener implements Listener {
 			ItemStack stack = event.getStack();
 			APIUtils.hashIntoInvisibleString(stack, applyProperty(event));
 		}
-
 	}
 
 	@EventHandler
@@ -56,42 +54,40 @@ public class RescuePlatformListener implements Listener {
 		Game game = gPlayer.getGame();
 
 		if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-			if (game.getStatus() == GameStatus.RUNNING && !gPlayer.isSpectator) {
-				if (event.getItem() != null) {
-					ItemStack stack = event.getItem();
-					String unhidden = APIUtils.unhashFromInvisibleStringStartsWith(stack, RESCUE_PLATFORM_PREFIX);
+			if (game.getStatus() == GameStatus.RUNNING && !gPlayer.isSpectator && event.getItem() != null) {
+				ItemStack stack = event.getItem();
+				String unhidden = APIUtils.unhashFromInvisibleStringStartsWith(stack, RESCUE_PLATFORM_PREFIX);
 
-					if (unhidden != null) {
-						if (!game.isDelayActive(player, RescuePlatform.class)) {
-							event.setCancelled(true);
+				if (unhidden != null) {
+					if (!game.isDelayActive(player, RescuePlatform.class)) {
+						event.setCancelled(true);
 
-							boolean isBreakable = Boolean.parseBoolean(unhidden.split(":")[2]);
-							int delay = Integer.parseInt(unhidden.split(":")[3]);
-							int breakTime = Integer.parseInt(unhidden.split(":")[4]);
-							int distance = Integer.parseInt(unhidden.split(":")[5]);
-							Material material = MiscUtils.getMaterialFromString(unhidden.split(":")[6], "GLASS");
+						boolean isBreakable = Boolean.parseBoolean(unhidden.split(":")[2]);
+						int delay = Integer.parseInt(unhidden.split(":")[3]);
+						int breakTime = Integer.parseInt(unhidden.split(":")[4]);
+						int distance = Integer.parseInt(unhidden.split(":")[5]);
+						Material material = MiscUtils.getMaterialFromString(unhidden.split(":")[6], "GLASS");
 
-							RescuePlatform rescuePlatform = new RescuePlatform(game, player,
-									game.getTeamOfPlayer(player), stack);
+						RescuePlatform rescuePlatform = new RescuePlatform(game, player,
+								game.getTeamOfPlayer(player), stack);
 
-							if (player.getLocation().getBlock().getRelative(BlockFace.DOWN)
-									.getType() != Material.AIR) {
-								player.sendMessage(i18n("specials_rescue_platform_not_in_air"));
-								return;
-							}
-
-							if (delay > 0) {
-								DelayFactory delayFactory = new DelayFactory(delay, rescuePlatform, player, game);
-								game.registerDelay(delayFactory);
-							}
-
-							rescuePlatform.createPlatform(isBreakable, breakTime, distance, material);
-						} else {
-							event.setCancelled(true);
-
-							int delay = game.getActiveDelay(player, RescuePlatform.class).getRemainDelay();
-							MiscUtils.sendActionBarMessage(player, i18nonly("special_item_delay").replace("%time%", String.valueOf(delay)));
+						if (player.getLocation().getBlock().getRelative(BlockFace.DOWN)
+								.getType() != Material.AIR) {
+							player.sendMessage(i18n("specials_rescue_platform_not_in_air"));
+							return;
 						}
+
+						if (delay > 0) {
+							DelayFactory delayFactory = new DelayFactory(delay, rescuePlatform, player, game);
+							game.registerDelay(delayFactory);
+						}
+
+						rescuePlatform.createPlatform(isBreakable, breakTime, distance, material);
+					} else {
+						event.setCancelled(true);
+
+						int delay = game.getActiveDelay(player, RescuePlatform.class).getRemainDelay();
+						MiscUtils.sendActionBarMessage(player, i18nonly("special_item_delay").replace("%time%", String.valueOf(delay)));
 					}
 				}
 			}

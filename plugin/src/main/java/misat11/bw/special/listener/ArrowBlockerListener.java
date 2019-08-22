@@ -8,6 +8,7 @@ import misat11.bw.api.GameStatus;
 import misat11.bw.api.events.BedwarsApplyPropertyToBoughtItem;
 import misat11.bw.game.GamePlayer;
 import misat11.bw.special.ArrowBlocker;
+import misat11.bw.utils.MiscUtils;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -21,50 +22,47 @@ import org.bukkit.inventory.ItemStack;
 import static misat11.lib.lang.I18n.i18n;
 
 public class ArrowBlockerListener implements Listener {
-
-	public static final String ARROW_BLOCKER_PREFIX = "Module:ArrowBlocker:";
+	private static final String ARROW_BLOCKER_PREFIX = "Module:ArrowBlocker:";
 	
 	@EventHandler
 	public void onArrowBlockerRegistered(BedwarsApplyPropertyToBoughtItem event) {
 		if (event.getPropertyName().equalsIgnoreCase("arrowblocker")) {
-			String arrowBlockerString = ARROW_BLOCKER_PREFIX + event.getIntProperty("delay");
 			ItemStack stack = event.getStack();
-
-			APIUtils.hashIntoInvisibleString(stack, arrowBlockerString);
+			APIUtils.hashIntoInvisibleString(stack, applyProperty(event));
 		}
 	}
 
 	@EventHandler
 	public void onPlayerUseItem(PlayerInteractEvent event) {
-		if (event.isCancelled() && event.getAction() != Action.RIGHT_CLICK_AIR) {
+		Player player = event.getPlayer();
+		if (event.isCancelled() || event.getAction() != Action.RIGHT_CLICK_AIR) {
 			return;
 		}
 
-		if (!Main.isPlayerInGame(event.getPlayer())) {
+		if (!Main.isPlayerInGame(player)) {
 			return;
 		}
 
-		GamePlayer gPlayer = Main.getPlayerGameProfile(event.getPlayer());
+		GamePlayer gPlayer = Main.getPlayerGameProfile(player);
 		Game game = gPlayer.getGame();
+
 		if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-			if (game.getStatus() == GameStatus.RUNNING && !gPlayer.isSpectator) {
-				if (event.getItem() != null) {
-					ItemStack stack = event.getItem();
-					String unhidden = APIUtils.unhashFromInvisibleStringStartsWith(stack, ARROW_BLOCKER_PREFIX);
+			if (game.getStatus() == GameStatus.RUNNING && !gPlayer.isSpectator && event.getItem() != null) {
+				ItemStack stack = event.getItem();
+				String unhidden = APIUtils.unhashFromInvisibleStringStartsWith(stack, ARROW_BLOCKER_PREFIX);
 
-					if (unhidden != null) {
-						event.setCancelled(true);
-						int delay = Integer.parseInt(unhidden.split(":")[2]);
-						ArrowBlocker arrowBlocker = new ArrowBlocker(game, event.getPlayer(),
-								game.getTeamOfPlayer(event.getPlayer()), stack, delay);
+				if (unhidden != null) {
+					event.setCancelled(true);
+					int delay = Integer.parseInt(unhidden.split(":")[2]);
+					ArrowBlocker arrowBlocker = new ArrowBlocker(game, event.getPlayer(),
+							game.getTeamOfPlayer(event.getPlayer()), stack, delay);
 
-						if (arrowBlocker.isActivated()) {
-							event.getPlayer().sendMessage(i18n("specials_arrow_blocker_already_activated"));
-							return;
-						}
-
-						arrowBlocker.activate();
+					if (arrowBlocker.isActivated()) {
+						event.getPlayer().sendMessage(i18n("specials_arrow_blocker_already_activated"));
+						return;
 					}
+
+					arrowBlocker.activate();
 				}
 			}
 		}
@@ -99,5 +97,13 @@ public class ArrowBlockerListener implements Listener {
 		if (arrowBlocker != null && event.getCause() == EntityDamageEvent.DamageCause.PROJECTILE) {
 			event.setCancelled(true);
 		}
+	}
+
+	private String applyProperty(BedwarsApplyPropertyToBoughtItem event) {
+		return ARROW_BLOCKER_PREFIX
+				+ MiscUtils.getBooleanFromProperty(
+				"protection-time", "specials.arrow-blocker.protection-time", event) + ":"
+				+ MiscUtils.getIntFromProperty(
+				"delay", "specials.arrow-blocker.delay", event);
 	}
 }

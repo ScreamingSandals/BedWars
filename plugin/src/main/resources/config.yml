@@ -107,11 +107,12 @@ respawn:
   protection-time: 10
 
 # Special items
+# delay: 0 = disabled
 specials:
   action-bar-messages: true
   rescue-platform:
     is-breakable: false
-    delay: 10
+    delay: 20
     break-time: 10
     distance: 1
     material: GLASS
@@ -123,18 +124,31 @@ specials:
     height: 3
     distance: 2
     material: CUT_SANDSTONE
-  tntsheep:
+  tnt-sheep:
+    speed: 4.0
+    follow-range: 10.0
+    max-target-distance: 32
     explosion-time: 8
   arrow-blocker:
     protection-time: 10
+    delay: 5
+  warp-powder:
+    teleport-time: 6
+    delay: 0
+  magnet-shoes:
+    probability: 75
   golem:
+    speed: 0.25
+    follow-range: 10.0
+    health: 20
     name-format: "%teamcolor%%team% Golem"
     show-name: true
+    delay: 0
 
 # Automatic TNT ignite (default: false)
 tnt:
   auto-ignite: false
-  explosion-time: 8
+  explosion-time: 4
 
 # Sounds (look to github src/main/java/misat11/bw/utils/Sounds.java for possible values)
 sounds:

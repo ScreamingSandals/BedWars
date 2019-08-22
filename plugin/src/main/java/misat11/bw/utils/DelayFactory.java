@@ -56,6 +56,6 @@ public class DelayFactory implements misat11.bw.api.utils.DelayFactory {
                     }
                 }
             }
-        }.runTaskTimer(Main.getInstance(), 20L, 20L);
+        }.runTaskTimer(Main.getInstance(), 0L, 20L);
     }
 }

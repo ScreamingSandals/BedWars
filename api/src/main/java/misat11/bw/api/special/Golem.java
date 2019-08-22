@@ -16,11 +16,6 @@ public interface Golem extends SpecialItem {
 	/**
 	 * @return
 	 */
-	public boolean isUsed();
-
-	/**
-	 * @return
-	 */
 	public double getSpeed();
 
 	/**

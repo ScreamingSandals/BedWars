@@ -2,6 +2,9 @@ package misat11.bw.special.listener;
 
 import java.util.List;
 
+import misat11.bw.special.RescuePlatform;
+import misat11.bw.utils.DelayFactory;
+import misat11.bw.utils.MiscUtils;
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.IronGolem;
@@ -27,78 +30,78 @@ import misat11.bw.api.special.SpecialItem;
 import misat11.bw.game.GamePlayer;
 import misat11.bw.special.Golem;
 
+import static misat11.lib.lang.I18n.i18nonly;
+
 public class GolemListener implements Listener {
 
 	public static final String GOLEM_PREFIX = "Module:Golem:";
 
 	@EventHandler
-	public void onGolemRegistered(BedwarsApplyPropertyToBoughtItem event) {
+	public void onGolemRegister(BedwarsApplyPropertyToBoughtItem event) {
 		if (event.getPropertyName().equalsIgnoreCase("golem")) {
 			ItemStack stack = event.getStack();
-
-			String specialString = GOLEM_PREFIX + event.getDoubleProperty("speed") + ":"
-					+ event.getDoubleProperty("follow");
-
-			APIUtils.hashIntoInvisibleString(stack, specialString);
+			APIUtils.hashIntoInvisibleString(stack, applyProperty(event));
 		}
-
 	}
 
 	@EventHandler
-	public void onGolemUsed(PlayerInteractEvent event) {
-		if (event.isCancelled() && event.getAction() != Action.RIGHT_CLICK_AIR) {
+	public void onGolemUse(PlayerInteractEvent event) {
+		Player player = event.getPlayer();
+		if (event.isCancelled() || event.getAction() != Action.RIGHT_CLICK_AIR) {
 			return;
 		}
 
-		if (!Main.isPlayerInGame(event.getPlayer())) {
+		if (!Main.isPlayerInGame(player)) {
 			return;
 		}
 
-		Player eventPlayer = event.getPlayer();
-		GamePlayer gamePlayer = Main.getPlayerGameProfile(eventPlayer);
+		GamePlayer gamePlayer = Main.getPlayerGameProfile(player);
 		Game game = gamePlayer.getGame();
+
 		if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-			if (game.getStatus() == GameStatus.RUNNING && !gamePlayer.isSpectator) {
-				if (event.getItem() != null) {
-					ItemStack stack = event.getItem();
-					String unhidden = APIUtils.unhashFromInvisibleStringStartsWith(stack, GOLEM_PREFIX);
-					if (unhidden != null) {
+			if (game.getStatus() == GameStatus.RUNNING && !gamePlayer.isSpectator && event.getItem() != null) {
+				ItemStack stack = event.getItem();
+				String unhidden = APIUtils.unhashFromInvisibleStringStartsWith(stack, GOLEM_PREFIX);
+
+				if (unhidden != null) {
+					if (!game.isDelayActive(player, Golem.class)) {
 						event.setCancelled(true);
-						String[] splitted = unhidden.split(":");
-						double speed = Double.parseDouble(splitted[2]);
-						double follow = Double.parseDouble(splitted[3]);
-						Location startLocation;
+
+						double speed = Double.parseDouble(unhidden.split(":")[2]);
+						double follow = Double.parseDouble(unhidden.split(":")[3]);
+						double health = Double.parseDouble(unhidden.split(":")[4]);
+						String name = unhidden.split(":")[5];
+						boolean showName = Boolean.parseBoolean(unhidden.split(":")[6]);
+						int delay = Integer.parseInt(unhidden.split(":")[7]);
+						Location location;
+
 						if (event.getClickedBlock() == null) {
-							startLocation = eventPlayer.getLocation();
+							location = player.getLocation();
 						} else {
-							startLocation = event.getClickedBlock().getRelative(BlockFace.UP)
+							location = event.getClickedBlock().getRelative(BlockFace.UP)
 									.getLocation().add(0.5, 0.5, 0.5);
 						}
-						Golem golem = new Golem(game, eventPlayer, game.getTeamOfPlayer(eventPlayer),
-								startLocation, speed, follow);
-						if (golem.use()) {
-							ItemStack replace = null;
-							if (event.getItem().getAmount() > 1) {
-								replace = event.getItem().clone();
-								replace.setAmount(event.getItem().getAmount() - 1);
-							}
-							try {
-								if (event.getHand() == EquipmentSlot.HAND) {
-									eventPlayer.getInventory().setItemInMainHand(replace);
-								} else {
-									eventPlayer.getInventory().setItemInOffHand(replace);
-								}
-							} catch (Throwable t) {
-								eventPlayer.setItemInHand(replace);
-							}
+						Golem golem = new Golem(game, player, game.getTeamOfPlayer(player),
+								stack, location, speed, follow, health, name, showName);
+
+						if (delay > 0) {
+							DelayFactory delayFactory = new DelayFactory(delay, golem, player, game);
+							game.registerDelay(delayFactory);
 						}
+
+						golem.spawn();
+					} else {
+						event.setCancelled(true);
+
+						int delay = game.getActiveDelay(player, Golem.class).getRemainDelay();
+						MiscUtils.sendActionBarMessage(player, i18nonly("special_item_delay").replace("%time%", String.valueOf(delay)));
 					}
 				}
+
 			}
 		}
 	}
 
-	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onGolemDamage(EntityDamageByEntityEvent event) {
 		if (event.isCancelled()) {
 			return;
@@ -119,21 +122,18 @@ public class GolemListener implements Listener {
 				Game game = gamePlayer.getGame();
 				if (!game.getOriginalOrInheritedFriendlyfire()) {
 					for (SpecialItem item : game.getActivedSpecialItems(Golem.class)) {
-						if (item instanceof Golem) {
-							if (((Golem) item).getEntity().equals(event.getEntity())) {
-								if (item.getTeam() == game.getTeamOfPlayer(player)) {
-									event.setCancelled(true);
-								}
-								return;
-							}
+						if (item instanceof Golem
+								&& ((Golem) item).getEntity().equals(event.getEntity())
+								&& item.getTeam() == game.getTeamOfPlayer(player)) {
+							event.setCancelled(true);
 						}
+						return;
 					}
 				}
 			}
 		}
 	}
 
-	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onGolemTarget(EntityTargetEvent event) {
 		if (event.isCancelled()) {
 			return;
@@ -176,4 +176,19 @@ public class GolemListener implements Listener {
 		}
 	}
 
+	private String applyProperty(BedwarsApplyPropertyToBoughtItem event) {
+		return GOLEM_PREFIX
+				+ MiscUtils.getDoubleFromProperty(
+				"speed", "specials.golem.speed", event) + ":"
+				+ MiscUtils.getDoubleFromProperty(
+				"follow-range", "specials.golem.follow-range", event) + ":"
+				+ MiscUtils.getDoubleFromProperty(
+				"health", "specials.golem.health", event) + ":"
+				+ MiscUtils.getStringFromProperty(
+				"name-format", "specials.golem.name-format", event) + ":"
+				+ MiscUtils.getBooleanFromProperty(
+				"show-name", "specials.golem.show-name", event) + ":"
+				+ MiscUtils.getIntFromProperty(
+				"delay", "specials.golem.delay", event);
+	}
 }
