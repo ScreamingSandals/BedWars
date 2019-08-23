@@ -124,7 +124,7 @@ public class RescuePlatformListener implements Listener {
 	public void onBlockBreak(BlockBreakEvent event) {
 		Player player = event.getPlayer();
 
-		if (event.isCancelled() && !Main.isPlayerInGame(player)) {
+		if (event.isCancelled() || !Main.isPlayerInGame(player)) {
 			return;
 		}
 
