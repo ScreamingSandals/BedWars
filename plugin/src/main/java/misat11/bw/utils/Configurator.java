@@ -181,6 +181,7 @@ public class Configurator {
 		checkOrSetConfig(modify, "gived-game-start-items", new ArrayList<>());
 		checkOrSetConfig(modify, "gived-player-respawn-items", new ArrayList<>());
 		checkOrSetConfig(modify, "allowed-commands", new ArrayList<>());
+		checkOrSetConfig(modify, "change-allowed-commands-to-blacklist", false);
 		checkOrSetConfig(modify, "disable-hunger", false);
 		checkOrSetConfig(modify, "automatic-coloring-in-shop", true);
 		checkOrSetConfig(modify, "destroy-placed-blocks-by-explosion", true);

@@ -230,10 +230,10 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 				comm = "/" + comm;
 			}
 			if (comm.equals(commandPref)) {
-				return true;
+				return !instance.configurator.config.getBoolean("change-allowed-commands-to-blacklist", false);
 			}
 		}
-		return false;
+		return instance.configurator.config.getBoolean("change-allowed-commands-to-blacklist", false);
 	}
 
 	public static boolean isSignRegistered(Location location) {

@@ -29,6 +29,7 @@ destroy-placed-blocks-by-explosion: true
 # Commands whitelist
 allowed-commands:
 - "/help"
+change-allowed-commands-to-blacklist: false
 
 bungee:
   enabled: false
