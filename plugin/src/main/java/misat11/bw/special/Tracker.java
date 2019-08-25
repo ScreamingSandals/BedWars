@@ -31,7 +31,7 @@ public class Tracker extends SpecialItem implements misat11.bw.api.special.Track
 
 			@Override
 			public void run() {
-				Player target = findTarget(player);
+				Player target =  MiscUtils.findTarget(game, player, Double.MAX_VALUE);
 				if (target != null) {
 					player.setCompassTarget(target.getLocation());
 
@@ -43,10 +43,5 @@ public class Tracker extends SpecialItem implements misat11.bw.api.special.Track
 				}
 			}
 		}.runTask(Main.getInstance());
-	}
-
-	@Override
-	public Player findTarget(Player player) {
-		return MiscUtils.findTarget(game, player, Double.MAX_VALUE);
 	}
 }

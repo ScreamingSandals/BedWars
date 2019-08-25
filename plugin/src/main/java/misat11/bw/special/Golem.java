@@ -61,12 +61,12 @@ public class Golem extends SpecialItem implements misat11.bw.api.special.Golem {
 				.replace("%teamcolor%", color.chatColor.toString())
 				.replace("%team%", team.getName()));
 		golem.setCustomNameVisible(showName);
-		golem.setHealth(health);
 		entity = golem;
 
 		NMSUtils.makeMobAttackTarget(golem, speed, followRange, -1).attackNearestTarget(0, "EntityPlayer");
-		Main.registerGameEntity(golem, (misat11.bw.game.Game) game);
 
+		game.registerSpecialItem(this);
+		Main.registerGameEntity(golem, (misat11.bw.game.Game) game);
 		MiscUtils.sendActionBarMessage(player, i18nonly("specials_golem_created"));
 
 		item.setAmount(item.getAmount() - 1);

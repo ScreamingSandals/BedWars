@@ -1,7 +1,6 @@
 package misat11.bw.utils;
 
 import misat11.bw.Main;
-
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Material;
@@ -113,7 +112,6 @@ public class Configurator {
 	}
 
 	public void createFiles() {
-		
 		datafolder.mkdirs();
 
 		configf = new File(datafolder, "config.yml");
@@ -284,7 +282,7 @@ public class Configurator {
 		checkOrSetConfig(modify, "specials.protection-wall.height", 3);
 		checkOrSetConfig(modify, "specials.protection-wall.distance", 2);
 		checkOrSetConfig(modify, "specials.protection-wall.material", Main.isLegacy() ? "SANDSTONE" : "CUT_SANDSTONE");
-		checkOrSetConfig(modify, "specials.tnt-sheep.speed", 4.0);
+		checkOrSetConfig(modify, "specials.tnt-sheep.speed", 2.0);
 		checkOrSetConfig(modify, "specials.tnt-sheep.follow-range", 10.0);
 		checkOrSetConfig(modify, "specials.tnt-sheep.max-target-distance", 32);
 		checkOrSetConfig(modify, "specials.tnt-sheep.explosion-time", 8);

@@ -259,6 +259,8 @@ specials_arrow_blocker_started: "§aArrow blocker has been activated for %time% 
 specials_arrow_blocker_already_activated: "§cArrow blocker is already activated!"
 specials_arrow_blocker_ended: "§cArrow blocker is no longer activated!"
 
+specials_golem_created: "§aGolem has been spawned."
+
 special_item_delay: "§cYou need to wait %time% seconds before using this item again!"
 
 page_back: "Page back"

@@ -233,7 +233,7 @@ statistics_games: "§7Odehrané hry: §b%games%"
 statistics_beds: "§7Zničeno postelí: §a%beds%"
 statistics_score: "§7Celkové score: §a%score%"
 
-specials_trap_caught: "§cVstoupil jsi do pasti týmu §f%tean%§c!"
+specials_trap_caught: "§cVstoupil jsi do pasti týmu §f%team%§c!"
 specials_trap_caught_team: "§cDo pasti vašeho týmu vstoupil hráč §f%player%§c!"
 
 specials_warp_powder_multiuse: "§cJiž je aktivován jiný WarpPowder!"

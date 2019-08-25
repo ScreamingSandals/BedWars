@@ -1,9 +1,9 @@
 package misat11.bw;
 
 import misat11.bw.api.BedwarsAPI;
-import misat11.bw.api.utils.ColorChanger;
 import misat11.bw.api.GameStatus;
 import misat11.bw.api.GameStore;
+import misat11.bw.api.utils.ColorChanger;
 import misat11.bw.commands.*;
 import misat11.bw.database.DatabaseManager;
 import misat11.bw.game.Game;
