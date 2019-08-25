@@ -61,8 +61,8 @@ public class GolemListener implements Listener {
 						double health = Double.parseDouble(unhidden.split(":")[4]);
 						boolean showName = Boolean.parseBoolean(unhidden.split(":")[5]);
 						int delay = Integer.parseInt(unhidden.split(":")[6]);
-
-						String name = Main.getConfigurator().config.getString("specials.golem.name-format");
+						String name = unhidden.split(":", 8)[7];
+						
 						Location location;
 
 						if (event.getClickedBlock() == null) {
@@ -174,6 +174,8 @@ public class GolemListener implements Listener {
 				+ MiscUtils.getBooleanFromProperty(
 				"show-name", "specials.golem.show-name", event) + ":"
 				+ MiscUtils.getIntFromProperty(
-				"delay", "specials.golem.delay", event);
+				"delay", "specials.golem.delay", event) + ":"
+				+ MiscUtils.getStringFromProperty(
+						"name-format", "specials.golem.name-format", event);
 	}
 }

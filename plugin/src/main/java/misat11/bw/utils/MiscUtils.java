@@ -103,7 +103,7 @@ public class MiscUtils {
         try {
             return event.getStringProperty(name);
         } catch (NullPointerException e) {
-            return Main.getConfigurator().config.getString(fallback, "CUT_SANDSTONE");
+            return Main.getConfigurator().config.getString(fallback, Main.isLegacy() ? "SANDSTONE" : "CUT_SANDSTONE");
         }
     }
 
