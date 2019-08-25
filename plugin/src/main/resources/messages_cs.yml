@@ -266,6 +266,13 @@ special_item_delay: "§cPřed použitím tohoto předmětu musíš počkat %time
 page_back: "O stránku zpět"
 page_forward: "O stránku vpřed"
 
+protect_your_bed: "%teamcolor%§lChraňte svoji postel!"
+protect_your_target: "%teamcolor%§lChraňte svůj blok!"
+protect_your_bed_destroyed: "§7§lPostel je zničena."
+protect_your_target_destroyed: "§7§lBlok je zničen."
+destroy_this_bed: "%teamcolor%§lZničte tuto postel!"
+destroy_this_target: "%teamcolor%§lZničte tento blok!"
+
 help_title: "BedWars %version% - Nápověda"
 help_title_console: "BedWars %version% - Nápověda pro konzoli"
 help_bw_join: "/bw join <aréna> - §aPřipojí tě do arény"

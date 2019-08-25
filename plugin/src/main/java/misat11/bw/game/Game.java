@@ -473,6 +473,11 @@ public class Game implements misat11.bw.api.Game {
 								Main.getConfigurator().config.getString("sounds.on_bed_destroyed"),
 								Sounds.ENTITY_ENDER_DRAGON_GROWL, 1, 1);
 					}
+					
+					if (team.hasArmorStand()) {
+						team.getArmorStand().setCustomName(i18nonly(isItBedBlock ? "protect_your_bed_destroyed" : "protect_your_target_destroyed"));
+					}
+					
 					BedwarsTargetBlockDestroyedEvent targetBlockDestroyed = new BedwarsTargetBlockDestroyedEvent(this,
 							broker, team);
 					Main.getInstance().getServer().getPluginManager().callEvent(targetBlockDestroyed);
@@ -1557,6 +1562,31 @@ public class Game implements misat11.bw.api.Game {
 									block.setType(Material.AIR);
 								}
 							}
+						}
+					}
+
+					if (getOriginalOrInheritedHoloAboveBed()) {
+						for (CurrentTeam team : teamsInGame) {
+							Block bed = team.teamInfo.bed.getBlock();
+							Location loc = team.teamInfo.bed.clone().add(0.5, 1.5, 0.5);
+							boolean isBlockTypeBed = region.isBedBlock(bed.getState());
+							ArmorStand stand = (ArmorStand) loc.getWorld().spawnEntity(loc, EntityType.ARMOR_STAND);
+							stand.setGravity(false);
+							stand.setCanPickupItems(false);
+							stand.setCustomName(i18nonly(isBlockTypeBed ? "protect_your_bed" : "protect_your_target")
+									.replace("%teamcolor%", team.teamInfo.color.chatColor.toString()));
+							stand.setCustomNameVisible(true);
+							stand.setVisible(false);
+							stand.setSmall(true);
+
+							try {
+								stand.setMarker(true);
+							} catch (Throwable ignored) {
+							}
+
+							armorStandsInGame.add(stand);
+							Main.registerGameEntity(stand, this);
+							team.setArmorStand(stand);
 						}
 					}
 
@@ -2908,7 +2938,7 @@ public class Game implements misat11.bw.api.Game {
 		return holoAboveBed.isOriginal() ? holoAboveBed.getValue()
 				: Main.getConfigurator().config.getBoolean(HOLO_ABOVE_BED);
 	}
-	
+
 	public void setHoloAboveBed(InGameConfigBooleanConstants holoAboveBed) {
 		this.holoAboveBed = holoAboveBed;
 	}

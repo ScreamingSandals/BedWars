@@ -266,6 +266,13 @@ special_item_delay: "§cYou need to wait %time% seconds before using this item a
 page_back: "Page back"
 page_forward: "Page forward"
 
+protect_your_bed: "%teamcolor%§lProtect your bed!"
+protect_your_target: "%teamcolor%§lProtect your target block!"
+protect_your_bed_destroyed: "§7§lBed is destroyed."
+protect_your_target_destroyed: "§7§lTarget block is destroyed."
+destroy_this_bed: "%teamcolor%§lDestroy this bed!"
+destroy_this_target: "%teamcolor%§lDestroy this target block!"
+
 help_title: "BedWars %version% - Help"
 help_title_console: "BedWars %version% - Help for Console"
 help_bw_join: "/bw join <arena> - §aJoin the game"

@@ -6,6 +6,7 @@ import misat11.bw.api.TeamColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
@@ -22,6 +23,7 @@ public class CurrentTeam implements RunningTeam {
 	private Inventory chestInventory = Bukkit.createInventory(null, InventoryType.ENDER_CHEST, i18n("team_chest"));
 	private List<Block> chests = new ArrayList<>();
 	private Game game;
+	private ArmorStand stand;
 
 	public boolean isBed = true;
 
@@ -44,6 +46,18 @@ public class CurrentTeam implements RunningTeam {
 
 	public void setScoreboardTeam(org.bukkit.scoreboard.Team scoreboardTeam) {
 		this.scoreboardTeam = scoreboardTeam;
+	}
+	
+	public void setArmorStand(ArmorStand stand) {
+		this.stand = stand;
+	}
+	
+	public ArmorStand getArmorStand() {
+		return this.stand;
+	}
+	
+	public boolean hasArmorStand() {
+		return this.stand != null;
 	}
 
 	@Override
