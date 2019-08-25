@@ -20,6 +20,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -135,7 +136,7 @@ public class GolemListener implements Listener {
 		IronGolem ironGolem = (IronGolem) event.getEntity();
 		for (String name : Main.getGameNames()) {
 			Game game = Main.getGame(name);
-			if (game.getStatus() == GameStatus.RUNNING && ironGolem.getWorld().equals(game.getGameWorld())) {
+			if ((game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) && ironGolem.getWorld().equals(game.getGameWorld())) {
 				List<SpecialItem> golems = game.getActivedSpecialItems(Golem.class);
 				for (SpecialItem item : golems) {
 					if (item instanceof Golem) {
@@ -164,6 +165,22 @@ public class GolemListener implements Listener {
 							return;
 						}
 					}
+				}
+			}
+		}
+	}
+	
+	@EventHandler
+	public void onGolemTargetDie(PlayerDeathEvent event) {
+		if (Main.isPlayerInGame(event.getEntity())) {
+			Game game = Main.getPlayerGameProfile(event.getEntity()).getGame();
+
+			List<SpecialItem> golems = game.getActivedSpecialItems(Golem.class);
+			for (SpecialItem item : golems) {
+				Golem golem = (Golem) item;
+				IronGolem iron = (IronGolem) golem.getEntity();
+				if (iron.getTarget().equals(event.getEntity())) {
+					iron.setTarget(null);
 				}
 			}
 		}
