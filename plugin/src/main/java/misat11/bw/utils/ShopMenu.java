@@ -230,17 +230,6 @@ public class ShopMenu implements Listener {
 							}
 						}
 					}
-
-					if ("spawner".equals(typ.toLowerCase())) {
-						String customName = entity.getString("customName");
-						double addLevels = entity.getDouble("levels");
-						itemName = entity.getString("shop-name");
-						for (ItemSpawner spawner : game.getSpawners()) {
-							if (customName.equals(spawner.customName)) {
-								spawner.currentLevel += addLevels;
-							}
-						}
-					}
 				}
 
 				player.sendMessage(i18n("buy_succes").replace("%item%", itemName).replace("%material%",
@@ -275,7 +264,6 @@ public class ShopMenu implements Listener {
 						inInventory = inInventory + itemStack.getAmount();
 					}
 				}
-
 				if (Main.getConfigurator().config.getBoolean("sell-max-64-per-click-in-shop")) {
 					maxStackSize = Math.min(inInventory / priceOfOne, 64);
 				} else {
@@ -283,7 +271,6 @@ public class ShopMenu implements Listener {
 				}
 
 				finalStackSize = (int) maxStackSize;
-
 				if (finalStackSize > amount) {
 					price = (int) (priceOfOne * finalStackSize);
 					newItem.setAmount(finalStackSize);
@@ -331,8 +318,9 @@ public class ShopMenu implements Listener {
 					return meta.getLocalizedName();
 				}
 			}
-		} catch (Throwable t) {
+		} catch (Throwable ignored) {
 		}
+
 		String normalName = stack.getType().name().replace("_", " ").toLowerCase();
 		return normalName.substring(0, 1).toUpperCase() + normalName.substring(1);
 	}
