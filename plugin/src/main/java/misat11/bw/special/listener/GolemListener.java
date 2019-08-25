@@ -146,6 +146,12 @@ public class GolemListener implements Listener {
 								if (Main.isPlayerInGame(player)) {
 									if (golem.getTeam() == game.getTeamOfPlayer(player)) {
 										event.setCancelled(true);
+										// Try to find enemy
+										Player playerTarget = MiscUtils.findTarget(game, player, Double.POSITIVE_INFINITY);
+										if (playerTarget != null) {
+											// Oh. We found enemy!
+											ironGolem.setTarget(playerTarget);
+										}
 									} else {
 										return;
 									}

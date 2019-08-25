@@ -56,6 +56,7 @@ public class Golem extends SpecialItem implements misat11.bw.api.special.Golem {
 	public void spawn() {
 		TeamColor color = TeamColor.fromApiColor(team.getColor());
 		IronGolem golem = (IronGolem) loc.getWorld().spawnEntity(loc, EntityType.IRON_GOLEM);
+		golem.setHealth(health);
 
 		golem.setCustomName(name
 				.replace("%teamcolor%", color.chatColor.toString())
@@ -63,7 +64,8 @@ public class Golem extends SpecialItem implements misat11.bw.api.special.Golem {
 		golem.setCustomNameVisible(showName);
 		entity = golem;
 
-		NMSUtils.makeMobAttackTarget(golem, speed, followRange, -1).attackNearestTarget(0, "EntityPlayer");
+		NMSUtils.makeMobAttackTarget(golem, speed, followRange, -1)
+		.attackNearestTarget(0, "EntityPlayer");
 
 		game.registerSpecialItem(this);
 		Main.registerGameEntity(golem, (misat11.bw.game.Game) game);
