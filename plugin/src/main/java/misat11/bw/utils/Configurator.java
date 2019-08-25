@@ -193,6 +193,7 @@ public class Configurator {
 		checkOrSetConfig(modify, "gived-player-respawn-items", new ArrayList<>());
 		checkOrSetConfig(modify, "disable-hunger", false);
 		checkOrSetConfig(modify, "automatic-coloring-in-shop", true);
+		checkOrSetConfig(modify, "sell-max-64-per-click-in-shop", true);
 		checkOrSetConfig(modify, "destroy-placed-blocks-by-explosion", true);
 		checkOrSetConfig(modify, "holo-above-bed", true);
 
