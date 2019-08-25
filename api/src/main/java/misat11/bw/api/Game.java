@@ -1,6 +1,5 @@
 package misat11.bw.api;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import misat11.bw.api.utils.DelayFactory;
@@ -591,6 +590,16 @@ public interface Game {
 	 * @return
 	 */
 	public boolean getOriginalOrInheritedAllowBlockFalling();
+
+	/**
+	 * @return
+	 */
+	public InGameConfigBooleanConstants getHoloAboveBed();
+
+	/**
+	 * @return
+	 */
+	public boolean getOriginalOrInheritedHoloAboveBed();
 
 	/**
 	 * @return

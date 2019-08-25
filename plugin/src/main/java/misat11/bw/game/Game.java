@@ -152,6 +152,9 @@ public class Game implements misat11.bw.api.Game {
 	public static final String ALLOW_BLOCK_FALLING = "allow-block-falling";
 	private InGameConfigBooleanConstants allowBlockFalling = InGameConfigBooleanConstants.INHERIT;
 
+	public static final String HOLO_ABOVE_BED = "holo-above-bed";
+	private InGameConfigBooleanConstants holoAboveBed = InGameConfigBooleanConstants.INHERIT;
+
 	public boolean gameStartItem;
 	public static final int POST_GAME_WAITING = 3;
 
@@ -357,9 +360,9 @@ public class Game implements misat11.bw.api.Game {
 				CurrentTeam team = getTeamOfChest(block);
 				if (team != null) {
 					team.removeTeamChest(block);
-						String message = i18n("team_chest_broken");
-						for (GamePlayer gp : team.players) {
-							gp.player.sendMessage(message);
+					String message = i18n("team_chest_broken");
+					for (GamePlayer gp : team.players) {
+						gp.player.sendMessage(message);
 					}
 
 					if (breakEvent.isDrops()) {
@@ -378,7 +381,7 @@ public class Game implements misat11.bw.api.Game {
 			}
 			return true;
 		}
-		
+
 		Location loc = block.getLocation();
 		if (region.isBedBlock(block.getState())) {
 			if (!region.isBedHead(block.getState())) {
@@ -580,7 +583,8 @@ public class Game implements misat11.bw.api.Game {
 			return;
 		}
 
-		BedwarsPlayerLeaveEvent playerLeaveEvent = new BedwarsPlayerLeaveEvent(this, player.player, getPlayerTeam(player));
+		BedwarsPlayerLeaveEvent playerLeaveEvent = new BedwarsPlayerLeaveEvent(this, player.player,
+				getPlayerTeam(player));
 		Main.getInstance().getServer().getPluginManager().callEvent(playerLeaveEvent);
 
 		if (players.contains(player)) {
@@ -624,7 +628,8 @@ public class Game implements misat11.bw.api.Game {
 			Main.getPlayerStatisticsManager().unloadStatistic(player.player);
 		}
 		if (players.isEmpty()) {
-			BedWarsPlayerLastLeaveEvent playerLastLeaveEvent = new BedWarsPlayerLastLeaveEvent(this, player.player, getPlayerTeam(player));
+			BedWarsPlayerLastLeaveEvent playerLastLeaveEvent = new BedWarsPlayerLastLeaveEvent(this, player.player,
+					getPlayerTeam(player));
 			Main.getInstance().getServer().getPluginManager().callEvent(playerLastLeaveEvent);
 
 			if (status != GameStatus.WAITING) {
@@ -708,8 +713,7 @@ public class Game implements misat11.bw.api.Game {
 			for (Map<String, Object> spawner : spawners) {
 				ItemSpawner sa = new ItemSpawner(readLocationFromString(game.world, (String) spawner.get("location")),
 						Main.getSpawnerType(((String) spawner.get("type")).toLowerCase()),
-						(String) spawner.get("customName"),
-						((Boolean) spawner.getOrDefault("hologramEnabled", true)),
+						(String) spawner.get("customName"), ((Boolean) spawner.getOrDefault("hologramEnabled", true)),
 						((Number) spawner.getOrDefault("startLevel", 1)).doubleValue());
 				game.spawners.add(sa);
 			}
@@ -779,6 +783,7 @@ public class Game implements misat11.bw.api.Game {
 				configMap.getString("constant." + REMOVE_UNUSED_TARGET_BLOCKS, "inherit"));
 		game.allowBlockFalling = readBooleanConstant(
 				configMap.getString("constants." + ALLOW_BLOCK_FALLING, "inherit"));
+		game.holoAboveBed = readBooleanConstant(configMap.getString("constant." + HOLO_ABOVE_BED, "inherit"));
 
 		game.arenaTime = ArenaTime.valueOf(configMap.getString("arenaTime", ArenaTime.WORLD.name()).toUpperCase());
 		game.arenaWeather = loadWeather(configMap.getString("arenaWeather", "default").toUpperCase());
@@ -956,6 +961,7 @@ public class Game implements misat11.bw.api.Game {
 				writeBooleanConstant(damageWhenPlayerIsNotInArena));
 		configMap.set("constant." + REMOVE_UNUSED_TARGET_BLOCKS, writeBooleanConstant(removeUnusedTargetBlocks));
 		configMap.set("constants." + ALLOW_BLOCK_FALLING, writeBooleanConstant(allowBlockFalling));
+		configMap.set("constant." + HOLO_ABOVE_BED, writeBooleanConstant(holoAboveBed));
 
 		configMap.set("arenaTime", arenaTime.name());
 		configMap.set("arenaWeather", arenaWeather == null ? "default" : arenaWeather.name());
@@ -1055,7 +1061,8 @@ public class Game implements misat11.bw.api.Game {
 				}
 
 				if (isBungeeEnabled()) {
-					BungeeUtils.sendMessage(kickPlayer.player, i18n("game_kicked_by_vip").replace("%arena%", Game.this.name));
+					BungeeUtils.sendMessage(kickPlayer.player,
+							i18n("game_kicked_by_vip").replace("%arena%", Game.this.name));
 				} else {
 					kickPlayer.player.sendMessage(i18n("game_kicked_by_vip").replace("%arena%", this.name));
 				}
@@ -1073,7 +1080,6 @@ public class Game implements misat11.bw.api.Game {
 		GamePlayer gPlayer = Main.getPlayerGameProfile(player);
 		gPlayer.changeGame(this);
 	}
-
 
 	public void leaveFromGame(Player player) {
 		if (status == GameStatus.DISABLED) {
@@ -1436,7 +1442,7 @@ public class Game implements misat11.bw.api.Game {
 							}
 						}
 					}
-					
+
 					for (ItemSpawner spawner : spawners) {
 						UpgradeStorage storage = UpgradeRegistry.getUpgrade("spawner");
 						if (storage != null) {
@@ -1481,7 +1487,7 @@ public class Game implements misat11.bw.api.Game {
 									countdownStand.setCustomName(
 											spawner.type.getInterval() < 2 ? i18nonly("every_second_spawning")
 													: i18nonly("countdown_spawning").replace("%seconds%",
-													Integer.toString(spawner.type.getInterval())));
+															Integer.toString(spawner.type.getInterval())));
 									countdownStand.setCustomNameVisible(true);
 									countdownStand.setVisible(false);
 									countdownStand.setSmall(true);
@@ -1664,16 +1670,16 @@ public class Game implements misat11.bw.api.Game {
 
 						if ((elapsedTime % cycle) == 0) {
 							int calculatedStack = 1;
-								double currentLevel = spawner.getCurrentLevel();
-								calculatedStack = (int) currentLevel;
+							double currentLevel = spawner.getCurrentLevel();
+							calculatedStack = (int) currentLevel;
 
-								/* Allow half level */
-								if ((currentLevel % 1) != 0) {
-									int a = elapsedTime / cycle;
-									if ((a % 2) == 0) {
-										calculatedStack++;
-									}
+							/* Allow half level */
+							if ((currentLevel % 1) != 0) {
+								int a = elapsedTime / cycle;
+								if ((a % 2) == 0) {
+									calculatedStack++;
 								}
+							}
 
 							BedwarsResourceSpawnEvent resourceSpawnEvent = new BedwarsResourceSpawnEvent(this, spawner,
 									type.getStack(calculatedStack));
@@ -1826,7 +1832,7 @@ public class Game implements misat11.bw.api.Game {
 		}
 		armorStandsInGame.clear();
 		countdownArmorStands.clear();
-		
+
 		// Remove remaining entities registered by other plugins
 		for (Entity entity : Main.getGameEntities(this)) {
 			Chunk chunk = entity.getLocation().getChunk();
@@ -1838,7 +1844,7 @@ public class Game implements misat11.bw.api.Game {
 		}
 
 		UpgradeRegistry.clearAll(this);
-		
+
 		BedwarsPostRebuildingEvent postRebuildingEvent = new BedwarsPostRebuildingEvent(this);
 		Main.getInstance().getServer().getPluginManager().callEvent(postRebuildingEvent);
 
@@ -2890,5 +2896,20 @@ public class Game implements misat11.bw.api.Game {
 		gamePlayerList.removeIf(GamePlayer::canJoinFullGame);
 
 		return gamePlayerList;
+	}
+
+	@Override
+	public InGameConfigBooleanConstants getHoloAboveBed() {
+		return holoAboveBed;
+	}
+
+	@Override
+	public boolean getOriginalOrInheritedHoloAboveBed() {
+		return holoAboveBed.isOriginal() ? holoAboveBed.getValue()
+				: Main.getConfigurator().config.getBoolean(HOLO_ABOVE_BED);
+	}
+	
+	public void setHoloAboveBed(InGameConfigBooleanConstants holoAboveBed) {
+		this.holoAboveBed = holoAboveBed;
 	}
 }
