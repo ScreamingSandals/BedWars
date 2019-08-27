@@ -174,9 +174,8 @@ public class Game implements misat11.bw.api.Game {
 	private Map<Location, ItemStack[]> usedChests = new HashMap<>();
 	private List<SpecialItem> activeSpecialItems = new ArrayList<>();
 	private List<DelayFactory> activeDelays = new ArrayList<>();
-	private List<ArmorStand> armorStandsInGame = new ArrayList<>();
-	private Map<ItemSpawner, ArmorStand> countdownArmorStands = new HashMap<>();
 	private List<Hologram> createdHolograms = new ArrayList<>();
+	private Map<ItemSpawner, Hologram> countdownHolograms = new HashMap<>();
 
 	private Game() {
 
@@ -475,16 +474,17 @@ public class Game implements misat11.bw.api.Game {
 								Main.getConfigurator().config.getString("sounds.on_bed_destroyed"),
 								Sounds.ENTITY_ENDER_DRAGON_GROWL, 1, 1);
 					}
-					
+
 					if (team.hasBedHolo()) {
-						team.getBedHolo().setLine(0, i18nonly(isItBedBlock ? "protect_your_bed_destroyed" : "protect_your_target_destroyed"));
+						team.getBedHolo().setLine(0, i18nonly(
+								isItBedBlock ? "protect_your_bed_destroyed" : "protect_your_target_destroyed"));
 						team.getBedHolo().addViewers(team.getConnectedPlayers());
 					}
-					
+
 					if (team.hasProtectHolo()) {
 						team.getProtectHolo().destroy();
 					}
-					
+
 					BedwarsTargetBlockDestroyedEvent targetBlockDestroyed = new BedwarsTargetBlockDestroyedEvent(this,
 							broker, team);
 					Main.getInstance().getServer().getPluginManager().callEvent(targetBlockDestroyed);
@@ -612,6 +612,7 @@ public class Game implements misat11.bw.api.Game {
 				.replace("%players%", Integer.toString(players.size()))
 				.replaceAll("%maxplayers%", Integer.toString(calculatedMaxPlayers));
 		statusbar.removePlayer(player.player);
+		createdHolograms.forEach(holo -> holo.removeViewer(player.player));
 		player.player.sendMessage(message);
 		player.player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
 		if (status == GameStatus.RUNNING || status == GameStatus.WAITING) {
@@ -1463,55 +1464,18 @@ public class Game implements misat11.bw.api.Game {
 					}
 
 					if (getOriginalOrInheritedSpawnerHolograms()) {
-						boolean countdownEnabled = getOriginalOrInheritedSpawnerHologramsCountdown();
 						for (ItemSpawner spawner : spawners) {
 							if (spawner.getHologramEnabled()) {
 								Location loc = spawner.loc.clone().add(0,
 										Main.getConfigurator().config.getDouble("spawner-holo-height", 0.25), 0);
-								if (countdownEnabled) {
-									loc.add(0, 0.30, 0);
-								}
-								ArmorStand stand = (ArmorStand) loc.getWorld().spawnEntity(loc, EntityType.ARMOR_STAND);
-
-								stand.setGravity(false);
-								stand.setCanPickupItems(false);
-								stand.setCustomName(spawner.type.getItemBoldName());
-								stand.setCustomNameVisible(true);
-								stand.setVisible(false);
-								stand.setSmall(true);
-
-								try {
-									stand.setMarker(true);
-								} catch (Throwable ignored) {
-								}
-
-								armorStandsInGame.add(stand);
-								Main.registerGameEntity(stand, this);
-
-								if (countdownEnabled) {
-									loc = spawner.loc.clone().add(0,
-											Main.getConfigurator().config.getDouble("spawner-holo-height", 0.25), 0);
-									ArmorStand countdownStand = (ArmorStand) loc.getWorld().spawnEntity(loc,
-											EntityType.ARMOR_STAND);
-
-									countdownStand.setGravity(false);
-									countdownStand.setCanPickupItems(false);
-									countdownStand.setCustomName(
-											spawner.type.getInterval() < 2 ? i18nonly("every_second_spawning")
-													: i18nonly("countdown_spawning").replace("%seconds%",
-															Integer.toString(spawner.type.getInterval())));
-									countdownStand.setCustomNameVisible(true);
-									countdownStand.setVisible(false);
-									countdownStand.setSmall(true);
-
-									try {
-										countdownStand.setMarker(true);
-									} catch (Throwable ignored) {
-									}
-
-									armorStandsInGame.add(countdownStand);
-									countdownArmorStands.put(spawner, countdownStand);
-									Main.registerGameEntity(countdownStand, this);
+								Hologram holo = NMSUtils.spawnHologram(getConnectedPlayers(), loc,
+										spawner.type.getItemBoldName());
+								createdHolograms.add(holo);
+								if (getOriginalOrInheritedSpawnerHologramsCountdown()) {
+									holo.addLine(spawner.type.getInterval() < 2 ? i18nonly("every_second_spawning")
+											: i18nonly("countdown_spawning").replace("%seconds%",
+													Integer.toString(spawner.type.getInterval())));
+									countdownHolograms.put(spawner, holo);
 								}
 							}
 						}
@@ -1579,12 +1543,14 @@ public class Game implements misat11.bw.api.Game {
 							boolean isBlockTypeBed = region.isBedBlock(bed.getState());
 							List<Player> enemies = getConnectedPlayers();
 							enemies.removeAll(team.getConnectedPlayers());
-							Hologram holo = NMSUtils.spawnHologram(enemies, loc, i18nonly(isBlockTypeBed ? "destroy_this_bed" : "destroy_this_target")
-									.replace("%teamcolor%", team.teamInfo.color.chatColor.toString()));
+							Hologram holo = NMSUtils.spawnHologram(enemies, loc,
+									i18nonly(isBlockTypeBed ? "destroy_this_bed" : "destroy_this_target")
+											.replace("%teamcolor%", team.teamInfo.color.chatColor.toString()));
 							createdHolograms.add(holo);
 							team.setBedHolo(holo);
-							Hologram protectHolo = NMSUtils.spawnHologram(team.getConnectedPlayers(), loc, i18nonly(isBlockTypeBed ? "protect_your_bed" : "protect_your_target")
-									.replace("%teamcolor%", team.teamInfo.color.chatColor.toString()));
+							Hologram protectHolo = NMSUtils.spawnHologram(team.getConnectedPlayers(), loc,
+									i18nonly(isBlockTypeBed ? "protect_your_bed" : "protect_your_target")
+											.replace("%teamcolor%", team.teamInfo.color.chatColor.toString()));
 							createdHolograms.add(protectHolo);
 							team.setProtectHolo(protectHolo);
 						}
@@ -1693,7 +1659,7 @@ public class Game implements misat11.bw.api.Game {
 							if (getOriginalOrInheritedSpawnerHolograms()
 									&& getOriginalOrInheritedSpawnerHologramsCountdown() && cycle > 1) {
 								int modulo = cycle - elapsedTime % cycle;
-								countdownArmorStands.get(spawner).setCustomName(
+								countdownHolograms.get(spawner).setLine(1,
 										i18nonly("countdown_spawning").replace("%seconds%", Integer.toString(modulo)));
 							}
 						}
@@ -1851,18 +1817,6 @@ public class Game implements misat11.bw.api.Game {
 		}
 		usedChests.clear();
 
-		// Armor Stands destroy
-		for (ArmorStand stand : armorStandsInGame) {
-			Chunk chunk = stand.getLocation().getChunk();
-			if (!chunk.isLoaded()) {
-				chunk.load();
-			}
-			stand.remove();
-			Main.unregisterGameEntity(stand);
-		}
-		armorStandsInGame.clear();
-		countdownArmorStands.clear();
-
 		// Remove remaining entities registered by other plugins
 		for (Entity entity : Main.getGameEntities(this)) {
 			Chunk chunk = entity.getLocation().getChunk();
@@ -1872,12 +1826,13 @@ public class Game implements misat11.bw.api.Game {
 			entity.remove();
 			Main.unregisterGameEntity(entity);
 		}
-		
+
 		// Holograms destroy
 		for (Hologram holo : createdHolograms) {
 			holo.destroy();
 		}
 		createdHolograms.clear();
+		countdownHolograms.clear();
 
 		UpgradeRegistry.clearAll(this);
 
