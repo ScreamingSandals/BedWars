@@ -16,6 +16,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.ArrayList;
 import java.util.Random;
 
+import static misat11.lib.lang.I18n.i18nonly;
+
 public class MiscUtils {
     /** From BedWarsRel */
     public static int randInt(int min, int max) {
@@ -61,7 +63,7 @@ public class MiscUtils {
                     player.spigot().sendMessage(ChatMessageType.ACTION_BAR,
                             TextComponent.fromLegacyText(message));
                 } else {
-                    player.sendMessage(message);
+                    player.sendMessage(i18nonly("prefix") + " " + message);
                 }
             }
         }.runTask(Main.getInstance());
