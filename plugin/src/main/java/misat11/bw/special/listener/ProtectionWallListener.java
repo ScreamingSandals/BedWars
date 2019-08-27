@@ -72,7 +72,7 @@ public class ProtectionWallListener implements Listener {
 								game.getTeamOfPlayer(event.getPlayer()), stack);
 
 						if (event.getPlayer().getEyeLocation().getBlock().getType() != Material.AIR) {
-							MiscUtils.sendActionBarMessage(event.getPlayer(), i18nonly("specials_protection_wall_not_usable_here"));
+							MiscUtils.sendActionBarMessage(player, "specials_protection_wall_not_usable_here");
 							return;
 						}
 
@@ -86,7 +86,7 @@ public class ProtectionWallListener implements Listener {
 						event.setCancelled(true);
 
 						int delay = game.getActiveDelay(player, ProtectionWall.class).getRemainDelay();
-						MiscUtils.sendActionBarMessage(player, i18nonly("special_item_delay").replace("%time%", String.valueOf(delay)));
+						MiscUtils.sendActionBarMessage(player, "special_item_delay".replace("%time%", String.valueOf(delay)));
 					}
 				}
 			}

@@ -75,7 +75,7 @@ public class WarpPowderListener implements Listener {
 								event.setCancelled(true);
 
 								int delay = game.getActiveDelay(player, RescuePlatform.class).getRemainDelay();
-								MiscUtils.sendActionBarMessage(player, i18nonly("special_item_delay").replace("%time%", String.valueOf(delay)));
+								MiscUtils.sendActionBarMessage(player, "special_item_delay".replace("%time%", String.valueOf(delay)));
 							}
 						}
 					}

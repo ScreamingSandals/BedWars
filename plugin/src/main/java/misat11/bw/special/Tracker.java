@@ -36,9 +36,11 @@ public class Tracker extends SpecialItem implements misat11.bw.api.special.Track
 					player.setCompassTarget(target.getLocation());
 
 					int distance = (int) player.getLocation().distance(target.getLocation());
-					MiscUtils.sendActionBarMessage(player, i18nonly("specials_tracker_target_found").replace("%target%", target.getDisplayName()).replace("%distance%", String.valueOf(distance)));
+					MiscUtils.sendActionBarMessage(player, "specials_tracker_target_found"
+							.replace("%target%", target.getDisplayName())
+							.replace("%distance%", String.valueOf(distance)));
 				} else {
-					MiscUtils.sendActionBarMessage(player, i18nonly("specials_tracker_no_target_found"));
+					MiscUtils.sendActionBarMessage(player, "specials_tracker_no_target_found");
 					player.setCompassTarget(game.getTeamOfPlayer(player).getTeamSpawn());
 				}
 			}

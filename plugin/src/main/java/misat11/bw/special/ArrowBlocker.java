@@ -51,7 +51,7 @@ public class ArrowBlocker extends SpecialItem implements misat11.bw.api.special.
 				usedTime++;
 				if (usedTime == protectionTime) {
 					isActivated = false;
-					MiscUtils.sendActionBarMessage(player, i18nonly("specials_arrow_blocker_ended"));
+					MiscUtils.sendActionBarMessage(player, "specials_arrow_blocker_ended");
 
 					game.unregisterSpecialItem(ArrowBlocker.this);
 					this.cancel();
@@ -68,7 +68,7 @@ public class ArrowBlocker extends SpecialItem implements misat11.bw.api.special.
 			item.setAmount(item.getAmount() - 1);
 			player.updateInventory();
 
-			MiscUtils.sendActionBarMessage(player, i18nonly("specials_arrow_blocker_started").replace("%time%", Integer.toString(protectionTime)));
+			MiscUtils.sendActionBarMessage(player, "specials_arrow_blocker_started".replace("%time%", Integer.toString(protectionTime)));
 		}
 	}
 }

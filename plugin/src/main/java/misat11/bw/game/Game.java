@@ -599,9 +599,7 @@ public class Game implements misat11.bw.api.Game {
 				getPlayerTeam(player));
 		Main.getInstance().getServer().getPluginManager().callEvent(playerLeaveEvent);
 
-		if (players.contains(player)) {
-			players.remove(player);
-		}
+		players.remove(player);
 		updateSigns();
 
 		if (status == GameStatus.WAITING) {

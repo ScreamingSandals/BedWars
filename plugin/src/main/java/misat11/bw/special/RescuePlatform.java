@@ -69,8 +69,7 @@ public class RescuePlatform extends SpecialItem implements misat11.bw.api.specia
 				int time = breakingTime - livingTime;
 
 				if (time < 6 && time > 0) {
-					MiscUtils.sendActionBarMessage(
-							player, i18nonly("specials_rescue_platform_destroy").replace("%time%", Integer.toString(time)));
+					MiscUtils.sendActionBarMessage(player, "specials_rescue_platform_destroy".replace("%time%", Integer.toString(time)));
 				}
 
 				if (livingTime == breakingTime) {
@@ -142,14 +141,14 @@ public class RescuePlatform extends SpecialItem implements misat11.bw.api.specia
 			game.registerSpecialItem(this);
 			runTask();
 
-			MiscUtils.sendActionBarMessage(player, i18nonly("specials_rescue_platform_created").replace("%time%", Integer.toString(breakingTime)));
+			MiscUtils.sendActionBarMessage(player," specials_rescue_platform_created".replace("%time%", Integer.toString(breakingTime)));
 
 			item.setAmount(item.getAmount() - 1);
 			player.updateInventory();
 		} else {
 			game.registerSpecialItem(this);
 
-			MiscUtils.sendActionBarMessage(player, i18nonly("specials_rescue_platform_created_unbreakable"));
+			MiscUtils.sendActionBarMessage(player, "specials_rescue_platform_created_unbreakable");
 			item.setAmount(item.getAmount() - 1);
 			player.updateInventory();
 		}
