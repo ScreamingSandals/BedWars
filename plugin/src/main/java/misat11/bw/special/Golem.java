@@ -69,7 +69,7 @@ public class Golem extends SpecialItem implements misat11.bw.api.special.Golem {
 
 		game.registerSpecialItem(this);
 		Main.registerGameEntity(golem, (misat11.bw.game.Game) game);
-		MiscUtils.sendActionBarMessage(player, "specials_golem_created");
+		MiscUtils.sendActionBarMessage(player, i18nonly("specials_golem_created"));
 
 		item.setAmount(item.getAmount() - 1);
 		player.updateInventory();

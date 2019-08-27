@@ -85,7 +85,7 @@ public class GolemListener implements Listener {
 						event.setCancelled(true);
 
 						int delay = game.getActiveDelay(player, Golem.class).getRemainDelay();
-						MiscUtils.sendActionBarMessage(player, "special_item_delay".replace("%time%", String.valueOf(delay)));
+						MiscUtils.sendActionBarMessage(player, i18nonly("special_item_delay").replace("%time%", String.valueOf(delay)));
 					}
 				}
 

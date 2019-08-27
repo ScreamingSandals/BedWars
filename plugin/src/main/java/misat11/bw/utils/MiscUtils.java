@@ -16,9 +16,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.ArrayList;
 import java.util.Random;
 
-import static misat11.lib.lang.I18n.i18n;
-import static misat11.lib.lang.I18n.i18nonly;
-
 public class MiscUtils {
     /** From BedWarsRel */
     public static int randInt(int min, int max) {
@@ -62,9 +59,9 @@ public class MiscUtils {
             public void run() {
                 if (Main.isSpigot() && !Main.isLegacy() && Main.getConfigurator().config.getBoolean("specials.action-bar-messages")) {
                     player.spigot().sendMessage(ChatMessageType.ACTION_BAR,
-                            TextComponent.fromLegacyText(i18nonly(message)));
+                            TextComponent.fromLegacyText(message));
                 } else {
-                    player.sendMessage(i18n(message));
+                    player.sendMessage(message);
                 }
             }
         }.runTask(Main.getInstance());

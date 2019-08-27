@@ -70,9 +70,9 @@ public class Trap extends SpecialItem implements misat11.bw.api.special.Trap {
 			}
 
 			for (Player p : game.getTeamOfPlayer(this.player).getConnectedPlayers()) {
-				MiscUtils.sendActionBarMessage(p, "specials_trap_caught_team".replace("%player%", player.getDisplayName()));
+				MiscUtils.sendActionBarMessage(p, i18nonly("specials_trap_caught_team").replace("%player%", player.getDisplayName()));
 			}
 		}
-		MiscUtils.sendActionBarMessage(player, "specials_trap_caught".replace("%team%", getTeam().getName()));
+		MiscUtils.sendActionBarMessage(player, i18nonly("specials_trap_caught").replace("%team%", getTeam().getName()));
 	}
 }

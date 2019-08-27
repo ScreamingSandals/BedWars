@@ -21,11 +21,11 @@ public class RespawnProtection extends BukkitRunnable {
     @Override
     public void run() {
         if (length > 0) {
-            MiscUtils.sendActionBarMessage(player, "respawn_protection_remaining".replace("%time%", String.valueOf(this.length)));
+            MiscUtils.sendActionBarMessage(player, i18nonly("respawn_protection_remaining").replace("%time%", String.valueOf(this.length)));
 
         }
         if (length <= 0) {
-            MiscUtils.sendActionBarMessage(player, "respawn_protection_end");
+            MiscUtils.sendActionBarMessage(player, i18nonly("respawn_protection_end"));
             game.removeProtectedPlayer(player);
         }
         length--;
