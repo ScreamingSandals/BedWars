@@ -30,49 +30,10 @@ public class Configurator {
 	}
 
 	/**
-	 *  From very old version, think about removing it
+	 * Move this out of Configurator
 	 */
 	@Deprecated
 	private void configMigration() {
-		if (config.getInt("version") < 2) {
-			main.getLogger().info("Migrating config from version 1 to version 2 ...");
-			if (Main.isLegacy()) {
-				config.set("resources.bronze.material", "CLAY_BRICK");
-			} else {
-				config.set("resources.bronze.material", "BRICK");
-			}
-			config.set("resources.bronze.interval", config.getInt("spawners.bronze", 1));
-			config.set("resources.bronze.name", "Bronze");
-			config.set("resources.bronze.translate", "resource_bronze");
-			config.set("resources.bronze.color", "DARK_RED");
-			config.set("resources.bronze.spread", 1.0);
-
-			config.set("resources.iron.material", "IRON_INGOT");
-			config.set("resources.iron.interval", config.getInt("spawners.iron", 10));
-			config.set("resources.iron.name", "Iron");
-			config.set("resources.iron.translate", "resource_iron");
-			config.set("resources.iron.color", "GRAY");
-			config.set("resources.iron.spread", 1.0);
-
-			config.set("resources.gold.material", "GOLD_INGOT");
-			config.set("resources.gold.interval", config.getInt("spawners.gold", 20));
-			config.set("resources.gold.name", "Gold");
-			config.set("resources.gold.translate", "resource_gold");
-			config.set("resources.gold.color", "GOLD");
-			config.set("resources.gold.spread", 1.0);
-
-			config.set("version", 2);
-
-			config.set("spawners", null);
-
-			try {
-				config.save(configf);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			main.getLogger().info("Config successfully migrated from version 1 to version 2!");
-		}
-
 		if (shopconfig.isSet("shop-items")) {
 			main.getLogger().info("Migrating shop.yml from version 1 to version 2 ...");
 
@@ -126,6 +87,7 @@ public class Configurator {
 				e.printStackTrace();
 			}
 		}
+		/* Move this out of Configurator */
 		if (!shopconfigf.exists()) {
 			if (Main.isLegacy()) {
 				main.saveResource("shop_legacy.yml", false);
@@ -232,12 +194,14 @@ public class Configurator {
 		checkOrSetConfig(modify, "vault.enable", true);
 		checkOrSetConfig(modify, "vault.reward.kill", 5);
 		checkOrSetConfig(modify, "vault.reward.win", 20);
+
 		checkOrSetConfig(modify, "resources", new HashMap<String, Object>() {
 			{
 				put("bronze", new HashMap<String, Object>() {
 					{
 						put("material", Main.isLegacy() ? "CLAY_BRICK" : "BRICK");
-						put("interval", 1);
+						/* Config migration 1 -> 2: if spawners.bronze exists, get this value */
+						put("interval", config.getInt("spawners.bronze", 1));
 						put("name", "Bronze");
 						put("translate", "resource_bronze");
 						put("color", "DARK_RED");
@@ -247,7 +211,8 @@ public class Configurator {
 				put("iron", new HashMap<String, Object>() {
 					{
 						put("material", "IRON_INGOT");
-						put("interval", 10);
+						/* Config migration 1 -> 2: if spawners.iron exists, get this value */
+						put("interval", config.getInt("spawners.iron", 10));
 						put("name", "Iron");
 						put("translate", "resource_iron");
 						put("color", "GRAY");
@@ -257,7 +222,8 @@ public class Configurator {
 				put("gold", new HashMap<String, Object>() {
 					{
 						put("material", "GOLD_INGOT");
-						put("interval", 20);
+						/* Config migration 1 -> 2: if spawners.gold exists, get this value */
+						put("interval", config.getInt("spawners.gold", 20));
 						put("name", "Gold");
 						put("translate", "resource_gold");
 						put("color", "GOLD");
@@ -266,6 +232,13 @@ public class Configurator {
 				});
 			}
 		});
+		if (config.contains("spawners")) {
+			/* Config migration 1 -> 2: After creating resources, remove old spawners */
+			modify.set(true);
+			config.set("spawners", null);
+		}
+		
+		System.out.println(config.get("resources"));
 
 		checkOrSetConfig(modify, "respawn.protection-enabled", true);
 		checkOrSetConfig(modify, "respawn.protection-time", 10);
@@ -413,6 +386,7 @@ public class Configurator {
 		checkOrSetConfig(modify, "breakable.blocks", new ArrayList<>());
 
 		checkOrSetConfig(modify, "version", 2);
+
 		if (modify.get()) {
 			try {
 				config.save(configf);
@@ -428,7 +402,11 @@ public class Configurator {
 
 	private static void checkOrSet(AtomicBoolean modify, FileConfiguration config, String path, Object value) {
 		if (!config.isSet(path)) {
-			config.set(path, value);
+			if (value instanceof Map) {
+				config.createSection(path, (Map<?, ?>) value);
+			} else {
+				config.set(path, value);
+			}
 			modify.set(true);
 		}
 	}
