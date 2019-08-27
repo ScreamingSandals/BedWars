@@ -18,6 +18,7 @@ import misat11.bw.region.FlatteningRegion;
 import misat11.bw.region.LegacyRegion;
 import misat11.bw.statistics.PlayerStatistic;
 import misat11.bw.utils.*;
+import misat11.lib.nms.Hologram;
 import misat11.lib.nms.NMSUtils;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -175,6 +176,7 @@ public class Game implements misat11.bw.api.Game {
 	private List<DelayFactory> activeDelays = new ArrayList<>();
 	private List<ArmorStand> armorStandsInGame = new ArrayList<>();
 	private Map<ItemSpawner, ArmorStand> countdownArmorStands = new HashMap<>();
+	private List<Hologram> createdHolograms = new ArrayList<>();
 
 	private Game() {
 
@@ -476,6 +478,10 @@ public class Game implements misat11.bw.api.Game {
 					
 					if (team.hasArmorStand()) {
 						team.getArmorStand().setCustomName(i18nonly(isItBedBlock ? "protect_your_bed_destroyed" : "protect_your_target_destroyed"));
+					}
+					
+					if (team.hasHolo()) {
+						team.getBedHolo().setLine(0, i18nonly(isItBedBlock ? "protect_your_bed_destroyed" : "protect_your_target_destroyed"));
 					}
 					
 					BedwarsTargetBlockDestroyedEvent targetBlockDestroyed = new BedwarsTargetBlockDestroyedEvent(this,
@@ -1570,7 +1576,11 @@ public class Game implements misat11.bw.api.Game {
 							Block bed = team.teamInfo.bed.getBlock();
 							Location loc = team.teamInfo.bed.clone().add(0.5, 1.5, 0.5);
 							boolean isBlockTypeBed = region.isBedBlock(bed.getState());
-							ArmorStand stand = (ArmorStand) loc.getWorld().spawnEntity(loc, EntityType.ARMOR_STAND);
+							Hologram holo = NMSUtils.spawnHologram(getConnectedPlayers(), loc, i18nonly(isBlockTypeBed ? "protect_your_bed" : "protect_your_target")
+									.replace("%teamcolor%", team.teamInfo.color.chatColor.toString()));
+							createdHolograms.add(holo);
+							team.setBedHolo(holo);
+							/*ArmorStand stand = (ArmorStand) loc.getWorld().spawnEntity(loc, EntityType.ARMOR_STAND);
 							stand.setGravity(false);
 							stand.setCanPickupItems(false);
 							stand.setCustomName(i18nonly(isBlockTypeBed ? "protect_your_bed" : "protect_your_target")
@@ -1586,7 +1596,7 @@ public class Game implements misat11.bw.api.Game {
 
 							armorStandsInGame.add(stand);
 							Main.registerGameEntity(stand, this);
-							team.setArmorStand(stand);
+							team.setArmorStand(stand);*/
 						}
 					}
 
@@ -1872,6 +1882,12 @@ public class Game implements misat11.bw.api.Game {
 			entity.remove();
 			Main.unregisterGameEntity(entity);
 		}
+		
+		// Holograms destroy
+		for (Hologram holo : createdHolograms) {
+			holo.destroy();
+		}
+		createdHolograms.clear();
 
 		UpgradeRegistry.clearAll(this);
 

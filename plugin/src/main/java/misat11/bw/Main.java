@@ -597,7 +597,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 
 	@Override
 	public ColorChanger getColorChanger() {
-		return new misat11.bw.utils.ColorChanger();
+		return colorChanger;
 	}
 
 	public static ItemStack applyColor(TeamColor color, ItemStack itemStack) {
