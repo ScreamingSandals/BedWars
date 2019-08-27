@@ -8,7 +8,6 @@ import misat11.lib.nms.Hologram;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
-import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
@@ -25,8 +24,8 @@ public class CurrentTeam implements RunningTeam {
 	private Inventory chestInventory = Bukkit.createInventory(null, InventoryType.ENDER_CHEST, i18n("team_chest"));
 	private List<Block> chests = new ArrayList<>();
 	private Game game;
-	private ArmorStand stand;
 	private Hologram holo;
+	private Hologram protectHolo;
 
 	public boolean isBed = true;
 
@@ -51,14 +50,6 @@ public class CurrentTeam implements RunningTeam {
 		this.scoreboardTeam = scoreboardTeam;
 	}
 	
-	public void setArmorStand(ArmorStand stand) {
-		this.stand = stand;
-	}
-	
-	public ArmorStand getArmorStand() {
-		return this.stand;
-	}
-	
 	public void setBedHolo(Hologram holo) {
 		this.holo = holo;
 	}
@@ -67,12 +58,20 @@ public class CurrentTeam implements RunningTeam {
 		return this.holo;
 	}
 	
-	public boolean hasHolo() {
+	public boolean hasBedHolo() {
 		return this.holo != null;
 	}
 	
-	public boolean hasArmorStand() {
-		return this.stand != null;
+	public void setProtectHolo(Hologram protectHolo) {
+		this.protectHolo = protectHolo;
+	}
+	
+	public Hologram getProtectHolo() {
+		return this.protectHolo;
+	}
+	
+	public boolean hasProtectHolo() {
+		return this.protectHolo != null;
 	}
 
 	@Override

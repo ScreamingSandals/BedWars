@@ -476,12 +476,13 @@ public class Game implements misat11.bw.api.Game {
 								Sounds.ENTITY_ENDER_DRAGON_GROWL, 1, 1);
 					}
 					
-					if (team.hasArmorStand()) {
-						team.getArmorStand().setCustomName(i18nonly(isItBedBlock ? "protect_your_bed_destroyed" : "protect_your_target_destroyed"));
+					if (team.hasBedHolo()) {
+						team.getBedHolo().setLine(0, i18nonly(isItBedBlock ? "protect_your_bed_destroyed" : "protect_your_target_destroyed"));
+						team.getBedHolo().addViewers(team.getConnectedPlayers());
 					}
 					
-					if (team.hasHolo()) {
-						team.getBedHolo().setLine(0, i18nonly(isItBedBlock ? "protect_your_bed_destroyed" : "protect_your_target_destroyed"));
+					if (team.hasProtectHolo()) {
+						team.getProtectHolo().destroy();
 					}
 					
 					BedwarsTargetBlockDestroyedEvent targetBlockDestroyed = new BedwarsTargetBlockDestroyedEvent(this,
@@ -1576,27 +1577,16 @@ public class Game implements misat11.bw.api.Game {
 							Block bed = team.teamInfo.bed.getBlock();
 							Location loc = team.teamInfo.bed.clone().add(0.5, 1.5, 0.5);
 							boolean isBlockTypeBed = region.isBedBlock(bed.getState());
-							Hologram holo = NMSUtils.spawnHologram(getConnectedPlayers(), loc, i18nonly(isBlockTypeBed ? "protect_your_bed" : "protect_your_target")
+							List<Player> enemies = getConnectedPlayers();
+							enemies.removeAll(team.getConnectedPlayers());
+							Hologram holo = NMSUtils.spawnHologram(enemies, loc, i18nonly(isBlockTypeBed ? "destroy_this_bed" : "destroy_this_target")
 									.replace("%teamcolor%", team.teamInfo.color.chatColor.toString()));
 							createdHolograms.add(holo);
 							team.setBedHolo(holo);
-							/*ArmorStand stand = (ArmorStand) loc.getWorld().spawnEntity(loc, EntityType.ARMOR_STAND);
-							stand.setGravity(false);
-							stand.setCanPickupItems(false);
-							stand.setCustomName(i18nonly(isBlockTypeBed ? "protect_your_bed" : "protect_your_target")
+							Hologram protectHolo = NMSUtils.spawnHologram(team.getConnectedPlayers(), loc, i18nonly(isBlockTypeBed ? "protect_your_bed" : "protect_your_target")
 									.replace("%teamcolor%", team.teamInfo.color.chatColor.toString()));
-							stand.setCustomNameVisible(true);
-							stand.setVisible(false);
-							stand.setSmall(true);
-
-							try {
-								stand.setMarker(true);
-							} catch (Throwable ignored) {
-							}
-
-							armorStandsInGame.add(stand);
-							Main.registerGameEntity(stand, this);
-							team.setArmorStand(stand);*/
+							createdHolograms.add(protectHolo);
+							team.setProtectHolo(protectHolo);
 						}
 					}
 
