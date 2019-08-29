@@ -57,8 +57,7 @@ public class GolemListener implements Listener {
 				if (unhidden != null) {
 					if (!game.isDelayActive(player, Golem.class)) {
 						event.setCancelled(true);
-
-						System.out.println(unhidden);
+						
 						double speed = Double.parseDouble(unhidden.split(":")[2]);
 						double follow = Double.parseDouble(unhidden.split(":")[3]);
 						double health = Double.parseDouble(unhidden.split(":")[4]);
