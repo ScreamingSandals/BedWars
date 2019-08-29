@@ -62,6 +62,7 @@ public class Golem extends SpecialItem implements misat11.bw.api.special.Golem {
 				.replace("%teamcolor%", color.chatColor.toString())
 				.replace("%team%", team.getName()));
 		golem.setCustomNameVisible(showName);
+		golem.setCollidable(false);
 		entity = golem;
 
 		NMSUtils.makeMobAttackTarget(golem, speed, followRange, -1)

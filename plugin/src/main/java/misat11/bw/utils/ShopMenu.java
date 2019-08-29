@@ -62,6 +62,7 @@ public class ShopMenu implements Listener {
 		ItemStack cosmeticItem = Main.getConfigurator().readDefinedItem("shopcosmetic", "AIR");
 		options.setCosmeticItem(cosmeticItem);
 
+		options.setRows(Main.getConfigurator().config.getInt("secretShopSetRows", 4));
 		options.setPrefix(i18nonly("item_shop_name", "[BW] Shop"));
 		options.setGenericShop(true);
 		options.setGenericShopPriceTypeRequired(true);
@@ -100,6 +101,7 @@ public class ShopMenu implements Listener {
 				format.loadFromDataFolder(Main.getInstance().getDataFolder(), fileName);
 			}
 		} catch (IOException | InvalidConfigurationException e) {
+			System.out.println("Wrong shop.yml configuration!");
 			e.printStackTrace();
 		}
 

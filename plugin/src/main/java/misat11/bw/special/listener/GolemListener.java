@@ -19,6 +19,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -57,6 +58,7 @@ public class GolemListener implements Listener {
 					if (!game.isDelayActive(player, Golem.class)) {
 						event.setCancelled(true);
 
+						System.out.println(unhidden);
 						double speed = Double.parseDouble(unhidden.split(":")[2]);
 						double follow = Double.parseDouble(unhidden.split(":")[3]);
 						double health = Double.parseDouble(unhidden.split(":")[4]);
@@ -148,7 +150,7 @@ public class GolemListener implements Listener {
 									if (golem.getTeam() == game.getTeamOfPlayer(player)) {
 										event.setCancelled(true);
 										// Try to find enemy
-										Player playerTarget = MiscUtils.findTarget(game, player, Double.POSITIVE_INFINITY);
+										Player playerTarget = MiscUtils.findTarget(game, player, 30);
 										if (playerTarget != null) {
 											// Oh. We found enemy!
 											ironGolem.setTarget(playerTarget);
@@ -179,8 +181,31 @@ public class GolemListener implements Listener {
 			for (SpecialItem item : golems) {
 				Golem golem = (Golem) item;
 				IronGolem iron = (IronGolem) golem.getEntity();
-				if (iron.getTarget().equals(event.getEntity())) {
+				if (iron.getTarget() != null && iron.getTarget().equals(event.getEntity())) {
 					iron.setTarget(null);
+				}
+			}
+		}
+	}
+
+	@EventHandler
+	public void onGolemDeath(EntityDeathEvent event) {
+		if (!(event.getEntity() instanceof IronGolem)) {
+			return;
+		}
+
+		IronGolem ironGolem = (IronGolem) event.getEntity();
+		for (String name : Main.getGameNames()) {
+			Game game = Main.getGame(name);
+			if ((game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) && ironGolem.getWorld().equals(game.getGameWorld())) {
+				List<SpecialItem> golems = game.getActivedSpecialItems(Golem.class);
+				for (SpecialItem item : golems) {
+					if (item instanceof Golem) {
+						Golem golem = (Golem) item;
+						if (golem.getEntity().equals(ironGolem)) {
+							event.getDrops().clear();
+						}
+					}
 				}
 			}
 		}

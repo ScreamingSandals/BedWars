@@ -858,7 +858,7 @@ public class PlayerListener implements Listener {
 				public void run() {
 					game.joinToGame(player);
 				}
-			}.runTaskLater(Main.getInstance(), 5L);
+			}.runTaskLater(Main.getInstance(), 1L);
 		}
 	}
 }
