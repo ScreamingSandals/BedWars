@@ -271,6 +271,7 @@ public class Configurator {
 		checkOrSetConfig(modify, "specials.golem.name-format", "%teamcolor%%team% Golem");
 		checkOrSetConfig(modify, "specials.golem.show-name", true);
 		checkOrSetConfig(modify, "specials.golem.delay", 0);
+		checkOrSetConfig(modify, "specials.golem.collidable", false);
 
 		checkOrSetConfig(modify, "tnt.auto-ignite", false);
 		checkOrSetConfig(modify, "tnt.explosion-time", 8);

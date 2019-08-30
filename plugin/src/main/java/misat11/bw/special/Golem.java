@@ -24,10 +24,11 @@ public class Golem extends SpecialItem implements misat11.bw.api.special.Golem {
 	private double health;
 	private String name;
 	private boolean showName;
+	private boolean collidable;
 
 	public Golem(Game game, Player player, Team team,
 				 ItemStack item, Location loc, double speed, double followRange, double health,
-				 String name, boolean showName) {
+				 String name, boolean showName, boolean collidable) {
 		super(game, player, team);
 		this.loc = loc;
 		this.item = item;
@@ -36,6 +37,7 @@ public class Golem extends SpecialItem implements misat11.bw.api.special.Golem {
 		this.health = health;
 		this.name = name;
 		this.showName = showName;
+		this.collidable = collidable;
 	}
 
 	@Override
@@ -62,7 +64,11 @@ public class Golem extends SpecialItem implements misat11.bw.api.special.Golem {
 				.replace("%teamcolor%", color.chatColor.toString())
 				.replace("%team%", team.getName()));
 		golem.setCustomNameVisible(showName);
-		golem.setCollidable(false);
+		try {
+			golem.setCollidable(collidable);
+		} catch (Throwable t) {
+			// Fucking 1.8.x
+		}
 		entity = golem;
 
 		NMSUtils.makeMobAttackTarget(golem, speed, followRange, -1)
