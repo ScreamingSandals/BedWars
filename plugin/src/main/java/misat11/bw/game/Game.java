@@ -1353,7 +1353,7 @@ public class Game implements misat11.bw.api.Game {
 				}
 			}
 
-			if (teamsInGame.size() > 1) {
+			if (teamsInGame.size() > 1 && players.size() >= getMinPlayers()) {
 				if (countdown == 0) {
 					nextCountdown = gameTime;
 					nextStatus = GameStatus.RUNNING;
