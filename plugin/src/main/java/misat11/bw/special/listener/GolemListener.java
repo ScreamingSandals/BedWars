@@ -150,7 +150,7 @@ public class GolemListener implements Listener {
 									if (golem.getTeam() == game.getTeamOfPlayer(player)) {
 										event.setCancelled(true);
 										// Try to find enemy
-										Player playerTarget = MiscUtils.findTarget(game, player, 30);
+										Player playerTarget = MiscUtils.findTarget(game, player, golem.getFollowRange());
 										if (playerTarget != null) {
 											// Oh. We found enemy!
 											ironGolem.setTarget(playerTarget);
