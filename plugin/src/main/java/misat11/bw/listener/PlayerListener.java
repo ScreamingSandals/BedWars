@@ -49,6 +49,7 @@ public class PlayerListener implements Listener {
 			Game game = gVictim.getGame();
 			CurrentTeam victimTeam = game.getPlayerTeam(gVictim);
 			ChatColor victimColor = victimTeam.teamInfo.color.chatColor;
+			List<ItemStack> drops = event.getDrops();
 
 			event.setKeepInventory(game.getOriginalOrInheritedKeepInventory());
 			event.setDroppedExp(0);
@@ -131,7 +132,7 @@ public class PlayerListener implements Listener {
 				}
 
 				BedwarsPlayerKilledEvent killedEvent = new BedwarsPlayerKilledEvent(game, victim,
-						Main.isPlayerInGame(killer) ? killer : null);
+						Main.isPlayerInGame(killer) ? killer : null, drops);
 				Main.getInstance().getServer().getPluginManager().callEvent(killedEvent);
 
 				if (Main.isPlayerStatisticsEnabled()) {

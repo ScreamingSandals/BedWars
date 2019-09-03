@@ -53,6 +53,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 	private static Main instance;
 	private String version, nmsVersion;
 	private boolean isSpigot, snapshot, isVault, isLegacy, isNMS;
+	private int versionNumber = 0;
 	private Economy econ = null;
 	private HashMap<String, Game> games = new HashMap<>();
 	private HashMap<Player, GamePlayer> playersInGame = new HashMap<>();
@@ -306,6 +307,10 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 		return entityList;
 	}
 
+	public static int getVersionNumber() {
+	    return instance.versionNumber;
+    }
+
 	public void onEnable() {
 		instance = this;
 		version = this.getDescription().getVersion();
@@ -323,7 +328,6 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 		}
 
 		String[] bukkitVersion = Bukkit.getBukkitVersion().split("-")[0].split("\\.");
-		int versionNumber = 0;
 		for (int i = 0; i < 2; i++) {
 			versionNumber += Integer.parseInt(bukkitVersion[i]) * (i == 0 ? 100 : 1);
 		}
