@@ -98,7 +98,12 @@ public class BedwarsExpansion extends PlaceholderExpansion {
 				if (gPlayer.isSpectator) {
 					return "spectator";
 				} else {
-					return game.getPlayerTeam(gPlayer).getName();
+					CurrentTeam team = game.getPlayerTeam(gPlayer);
+					if (team != null) {
+						return team.getName();	
+					} else {
+						return "none";
+					}
 				}
 			} else {
 				return "none";
@@ -111,7 +116,11 @@ public class BedwarsExpansion extends PlaceholderExpansion {
 					return ChatColor.GRAY + "spectator";
 				} else {
 					CurrentTeam team = game.getPlayerTeam(gPlayer);
-					return team.getColor() + team.getName();
+					if (team != null) {
+						return team.getColor() + team.getName();
+					} else {
+						return ChatColor.RED + "none";
+					}
 				}
 			} else {
 				return ChatColor.RED + "none";
@@ -124,7 +133,11 @@ public class BedwarsExpansion extends PlaceholderExpansion {
 					return "0";
 				} else {
 					CurrentTeam team = game.getPlayerTeam(gPlayer);
-					return Integer.toString(team.countConnectedPlayers());
+					if (team != null) {
+						return Integer.toString(team.countConnectedPlayers());
+					} else {
+						return "0";
+					}
 				}
 			} else {
 				return "0";
@@ -137,7 +150,11 @@ public class BedwarsExpansion extends PlaceholderExpansion {
 					return "0";
 				} else {
 					CurrentTeam team = game.getPlayerTeam(gPlayer);
-					return Integer.toString(team.getMaxPlayers());
+					if (team != null) {
+						return Integer.toString(team.getMaxPlayers());
+					} else {
+						return "0";
+					}
 				}
 			} else {
 				return "0";
@@ -150,7 +167,11 @@ public class BedwarsExpansion extends PlaceholderExpansion {
 					return "no";
 				} else {
 					CurrentTeam team = game.getPlayerTeam(gPlayer);
-					return team.isBed ? "yes" : "no";
+					if (team != null) {
+						return team.isBed ? "yes" : "no";
+					} else {
+						return "no";
+					}
 				}
 			} else {
 				return "no";
@@ -163,7 +184,11 @@ public class BedwarsExpansion extends PlaceholderExpansion {
 					return "0";
 				} else {
 					CurrentTeam team = game.getPlayerTeam(gPlayer);
-					return Integer.toString(team.countTeamChests());
+					if (team != null) {
+						return Integer.toString(team.countTeamChests());
+					} else {
+						return "0";
+					}
 				}
 			} else {
 				return "0";
