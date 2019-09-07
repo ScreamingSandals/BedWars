@@ -353,7 +353,7 @@ public class ShopMenu implements Listener {
 			}
 			String name = (parent ? "+" : "-") + file;
 			if (!shopMap.containsKey(name)) {
-				loadNewShop(name, file, parent);
+				loadNewShop(name, file + ".yml", parent);
 			}
 			SimpleGuiFormat shop = shopMap.get(name);
 			shop.openForPlayer(p);
