@@ -397,6 +397,8 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 		getServer().getPluginManager().registerEvents(new SignListener(), this);
 		getServer().getPluginManager().registerEvents(new WorldListener(), this);
 		getServer().getPluginManager().registerEvents(new InventoryListener(), this);
+		
+		NMSUtils.init(this);
 
 		SpecialRegister.onEnable(this);
 
