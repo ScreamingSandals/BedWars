@@ -857,7 +857,11 @@ public class PlayerListener implements Listener {
 		if (Game.isBungeeEnabled() && Main.getConfigurator().config.getBoolean("bungee.auto-game-connect", false)) {
 			new BukkitRunnable() {
 				public void run() {
-					game.joinToGame(player);
+					try {
+						game.joinToGame(player);
+					} catch (NullPointerException ignored) {
+						BungeeUtils.movePlayer(player);
+					}
 				}
 			}.runTaskLater(Main.getInstance(), 1L);
 		}
