@@ -450,9 +450,7 @@ public class AdminCommand extends BaseCommand {
 	@Override
 	public void completeTab(List<String> completion, CommandSender sender, List<String> args) {
 		if (args.size() == 1) {
-			for (String gameName : Main.getGameNames()) {
-				completion.add(gameName);
-			}
+			completion.addAll(Main.getGameNames());
 			for (String arena : gc.keySet()) {
 				if (!completion.contains(arena)) {
 					completion.add(arena);

@@ -137,6 +137,10 @@ public class WarpPowderListener implements Listener {
 			return;
 		}
 
+		if (event.getFrom().getBlock().equals(event.getTo().getBlock())) {
+			return;
+		}
+
 		GamePlayer gPlayer = Main.getPlayerGameProfile(player);
 		Game game = gPlayer.getGame();
 		if (gPlayer.isSpectator) {
