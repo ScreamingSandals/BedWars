@@ -496,7 +496,7 @@ public class PlayerListener implements Listener {
 					} else if (event.getMaterial() == Material
 							.valueOf(Main.getConfigurator().config.getString("items.startgame", "DIAMOND"))) {
 						if (game.getStatus() == GameStatus.WAITING
-								&& (player.hasPermission("bw.vip") || player.hasPermission("misat11.bw.vip"))) {
+								&& (player.hasPermission("bw.vip.startitem") || player.hasPermission("misat11.bw.vip.startitem"))) {
 							if (game.checkMinPlayers()) {
 								game.gameStartItem = true;
 							} else {
