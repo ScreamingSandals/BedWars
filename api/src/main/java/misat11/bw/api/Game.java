@@ -595,6 +595,16 @@ public interface Game {
 	/**
 	 * @return
 	 */
+	public InGameConfigBooleanConstants getHoloAboveBed();
+
+	/**
+	 * @return
+	 */
+	public boolean getOriginalOrInheritedHoloAboveBed();
+
+	/**
+	 * @return
+	 */
 	public boolean getBungeeEnabled();
 
 	/**
@@ -620,7 +630,13 @@ public interface Game {
 	/**
 	 * @return
 	 */
+	boolean isProtectionActive(Player player);
+
+	/**
+	 * @return
+	 */
 	@Deprecated
 	public boolean isUpgradesEnabled();
+
 
 }

@@ -11,10 +11,4 @@ public interface Tracker extends SpecialItem {
 	 * 
 	 */
 	public void runTask();
-
-	/**
-	 * @param player
-	 * @return
-	 */
-	public Player findTarget(Player player);
 }

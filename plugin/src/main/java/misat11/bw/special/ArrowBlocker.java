@@ -8,7 +8,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import static misat11.lib.lang.I18n.i18n;
 import static misat11.lib.lang.I18n.i18nonly;
 
 public class ArrowBlocker extends SpecialItem implements misat11.bw.api.special.ArrowBlocker {
@@ -62,7 +61,6 @@ public class ArrowBlocker extends SpecialItem implements misat11.bw.api.special.
 	}
 
 	public void activate() {
-		//protectionTime = Main.getConfigurator().config.getInt("specials.arrow-blocker.protection-time", 10);
 		if (protectionTime > 0) {
 			game.registerSpecialItem(this);
 			runTask();

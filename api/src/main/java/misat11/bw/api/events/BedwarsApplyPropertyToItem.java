@@ -90,7 +90,7 @@ public class BedwarsApplyPropertyToItem extends Event {
 	 * @return
 	 */
 	public String getStringProperty(String key) {
-		return (String) this.properties.get(key);
+		return this.properties.get(key).toString();
 	}
 	
 	/**
@@ -98,7 +98,7 @@ public class BedwarsApplyPropertyToItem extends Event {
 	 * @return
 	 */
 	public byte getByteProperty(String key) {
-		return (byte) this.properties.get(key);
+		return ((Number) this.properties.get(key)).byteValue();
 	}
 	
 	/**
@@ -106,7 +106,7 @@ public class BedwarsApplyPropertyToItem extends Event {
 	 * @return
 	 */
 	public short getShortProperty(String key) {
-		return (short) this.properties.get(key);
+		return ((Number) this.properties.get(key)).shortValue();
 	}
 	
 	/**
@@ -114,7 +114,7 @@ public class BedwarsApplyPropertyToItem extends Event {
 	 * @return
 	 */
 	public int getIntProperty(String key) {
-		return (int) this.properties.get(key);
+		return ((Number) this.properties.get(key)).intValue();
 	}
 	
 	/**
@@ -122,7 +122,7 @@ public class BedwarsApplyPropertyToItem extends Event {
 	 * @return
 	 */
 	public long getLongProperty(String key) {
-		return (long) this.properties.get(key);
+		return ((Number) this.properties.get(key)).longValue();
 	}
 	
 	/**
@@ -130,7 +130,7 @@ public class BedwarsApplyPropertyToItem extends Event {
 	 * @return
 	 */
 	public float getFloatProperty(String key) {
-		return (float) this.properties.get(key);
+		return ((Number) this.properties.get(key)).floatValue();
 	}
 	
 	/**
@@ -138,7 +138,7 @@ public class BedwarsApplyPropertyToItem extends Event {
 	 * @return
 	 */
 	public double getDoubleProperty(String key) {
-		return (double) this.properties.get(key);
+		return ((Number) this.properties.get(key)).doubleValue();
 	}
 	
 	/**
@@ -146,7 +146,7 @@ public class BedwarsApplyPropertyToItem extends Event {
 	 * @return
 	 */
 	public boolean getBooleanProperty(String key) {
-		return (boolean) this.properties.get(key);
+		return Boolean.parseBoolean(this.properties.get(key).toString());
 	}
 	
 	/**
