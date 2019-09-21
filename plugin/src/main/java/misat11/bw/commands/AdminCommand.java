@@ -4,10 +4,8 @@ import static misat11.lib.lang.I18n.i18n;
 import static misat11.lib.lang.I18n.i18nonly;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.text.DecimalFormat;
+import java.util.*;
 
 import org.bukkit.Location;
 import org.bukkit.WeatherType;
@@ -164,14 +162,24 @@ public class AdminCommand extends BaseCommand {
 							for (ItemSpawner spawner : game.getSpawners()) {
 
 								Location loc_spawner = spawner.loc;
+								DecimalFormat numFormat = new DecimalFormat("##");
+								misat11.bw.api.Team team = spawner.getTeam();
+								String spawnerTeam = i18nonly("arena_info_spawner_no_team");
+
+								if (team != null) {
+									spawnerTeam = team.getName();
+								}
+
 								String spawnerM = i18n("arena_info_spawner", false)
 										.replace("%resource%", spawner.type.getItemName())
-										.replace("%x%", Double.toString(loc_spawner.getX()))
-										.replace("%y%", Double.toString(loc_spawner.getY()))
-										.replace("%z%", Double.toString(loc_spawner.getZ()))
-										.replace("%yaw%", Float.toString(loc_spawner.getYaw()))
-										.replace("%pitch%", Float.toString(loc_spawner.getPitch()))
-										.replace("%world%", loc_spawner.getWorld().getName());
+										.replace("%x%", numFormat.format(Double.toString(loc_spawner.getX())))
+										.replace("%y%",  numFormat.format(Double.toString(loc_spawner.getY())))
+										.replace("%z%",  numFormat.format(Double.toString(loc_spawner.getZ())))
+										.replace("%yaw%",  numFormat.format(Float.toString(loc_spawner.getYaw())))
+										.replace("%pitch%",  numFormat.format(Float.toString(loc_spawner.getPitch())))
+										.replace("%world%", loc_spawner.getWorld().getName())
+										.replace("%team%", spawnerTeam)
+										.replace("%holo%",String.valueOf(spawner.getHologramEnabled()));
 
 								player.sendMessage(spawnerM);
 							}
@@ -526,7 +534,15 @@ public class AdminCommand extends BaseCommand {
 				completion.addAll(Main.getAllSpawnerTypes());
 			}
 			if (args.size() == 5) {
-				completion.addAll(Arrays.asList("true", "false"));
+				completion.addAll(Arrays.asList("false", "true"));
+			}
+			if (args.size() == 6) {
+				completion.addAll(Collections.singletonList("1"));
+			}
+			if (args.size() == 8) {
+				for (Team t : gc.get(args.get(0)).getGame().getTeams()) {
+					completion.add(t.name);
+				}
 			}
 		} else if (args.get(1).equalsIgnoreCase("team")) {
 			if (args.size() == 3) {

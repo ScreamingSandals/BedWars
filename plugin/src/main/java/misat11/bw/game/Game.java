@@ -272,6 +272,15 @@ public class Game implements misat11.bw.api.Game {
 		this.gameTime = gameTime;
 	}
 
+	public Team getTeamFromName(String name) {
+		for (Team t : getTeams()) {
+			if (t.name.equals(name)) {
+				return t;
+			}
+		}
+		return null;
+	}
+
 	public List<Team> getTeams() {
 		return teams;
 	}
@@ -742,7 +751,8 @@ public class Game implements misat11.bw.api.Game {
 				ItemSpawner sa = new ItemSpawner(readLocationFromString(game.world, (String) spawner.get("location")),
 						Main.getSpawnerType(((String) spawner.get("type")).toLowerCase()),
 						(String) spawner.get("customName"), ((Boolean) spawner.getOrDefault("hologramEnabled", true)),
-						((Number) spawner.getOrDefault("startLevel", 1)).doubleValue());
+						((Number) spawner.getOrDefault("startLevel", 1)).doubleValue(),
+						game.getTeamFromName((String) spawner.get("team")));
 				game.spawners.add(sa);
 			}
 		}
@@ -936,6 +946,7 @@ public class Game implements misat11.bw.api.Game {
 			spawnerMap.put("customName", spawner.customName);
 			spawnerMap.put("startLevel", spawner.startLevel);
 			spawnerMap.put("hologramEnabled", spawner.hologramEnabled);
+			spawnerMap.put("team", spawner.getTeam());
 			nS.add(spawnerMap);
 		}
 		configMap.set("spawners", nS);

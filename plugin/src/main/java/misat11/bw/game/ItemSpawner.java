@@ -1,5 +1,6 @@
 package misat11.bw.game;
 
+import misat11.bw.api.Team;
 import org.bukkit.Location;
 
 public class ItemSpawner implements misat11.bw.api.ItemSpawner {
@@ -9,13 +10,15 @@ public class ItemSpawner implements misat11.bw.api.ItemSpawner {
 	public double startLevel;
 	public double currentLevel;
 	public boolean hologramEnabled;
+	public Team team;
 	
-	public ItemSpawner(Location loc, ItemSpawnerType type, String customName, boolean hologramEnabled, double startLevel) {
+	public ItemSpawner(Location loc, ItemSpawnerType type, String customName, boolean hologramEnabled, double startLevel, Team team) {
 		this.loc = loc;
 		this.type = type;
 		this.customName = customName;
 		this.currentLevel = this.startLevel = startLevel;
 		this.hologramEnabled = hologramEnabled;
+		this.team = team;
 	}
 
 	@Override
@@ -56,5 +59,15 @@ public class ItemSpawner implements misat11.bw.api.ItemSpawner {
 	@Override
 	public void setCurrentLevel(double level) {
 		currentLevel = level;
+	}
+
+	@Override
+	public Team getTeam() {
+		return team;
+	}
+
+	@Override
+	public void setTeam(Team team) {
+		this.team = team;
 	}
 }
