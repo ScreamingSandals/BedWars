@@ -8,12 +8,6 @@ import misat11.bw.api.GameStatus;
 import misat11.bw.api.events.BedwarsApplyPropertyToBoughtItem;
 import misat11.bw.game.GamePlayer;
 import misat11.bw.special.ArrowBlocker;
-<<<<<<< HEAD
-=======
-import misat11.bw.special.RescuePlatform;
-import misat11.bw.special.WarpPowder;
-import misat11.bw.utils.DelayFactory;
->>>>>>> master
 import misat11.bw.utils.MiscUtils;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -26,7 +20,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
 import static misat11.lib.lang.I18n.i18n;
-import static misat11.lib.lang.I18n.i18nonly;
 
 public class ArrowBlockerListener implements Listener {
 	private static final String ARROW_BLOCKER_PREFIX = "Module:ArrowBlocker:";
@@ -42,13 +35,10 @@ public class ArrowBlockerListener implements Listener {
 	@EventHandler
 	public void onPlayerUseItem(PlayerInteractEvent event) {
 		Player player = event.getPlayer();
-<<<<<<< HEAD
 		if (event.isCancelled() || event.getAction() != Action.RIGHT_CLICK_AIR) {
 			return;
 		}
 
-=======
->>>>>>> master
 		if (!Main.isPlayerInGame(player)) {
 			return;
 		}
@@ -62,7 +52,6 @@ public class ArrowBlockerListener implements Listener {
 				String unhidden = APIUtils.unhashFromInvisibleStringStartsWith(stack, ARROW_BLOCKER_PREFIX);
 
 				if (unhidden != null) {
-<<<<<<< HEAD
 					event.setCancelled(true);
 					int delay = Integer.parseInt(unhidden.split(":")[2]);
 					ArrowBlocker arrowBlocker = new ArrowBlocker(game, event.getPlayer(),
@@ -71,32 +60,6 @@ public class ArrowBlockerListener implements Listener {
 					if (arrowBlocker.isActivated()) {
 						event.getPlayer().sendMessage(i18n("specials_arrow_blocker_already_activated"));
 						return;
-=======
-					if (!game.isDelayActive(player, ArrowBlocker.class)) {
-						event.setCancelled(true);
-
-						int protectionTime = Integer.parseInt(unhidden.split(":")[2]);
-						int delay = Integer.parseInt(unhidden.split(":")[3]);
-						ArrowBlocker arrowBlocker = new ArrowBlocker(game, event.getPlayer(),
-								game.getTeamOfPlayer(event.getPlayer()), stack, protectionTime);
-
-						if (arrowBlocker.isActivated()) {
-							event.getPlayer().sendMessage(i18n("specials_arrow_blocker_already_activated"));
-							return;
-						}
-
-						if (delay > 0) {
-							DelayFactory delayFactory = new DelayFactory(delay, arrowBlocker, player, game);
-							game.registerDelay(delayFactory);
-						}
-
-						arrowBlocker.activate();
-					} else {
-						event.setCancelled(true);
-
-						int delay = game.getActiveDelay(player, ArrowBlocker.class).getRemainDelay();
-						MiscUtils.sendActionBarMessage(player, i18nonly("special_item_delay").replace("%time%", String.valueOf(delay)));
->>>>>>> master
 					}
 
 					arrowBlocker.activate();
@@ -108,6 +71,11 @@ public class ArrowBlockerListener implements Listener {
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onDamage(EntityDamageEvent event) {
 		Entity entity = event.getEntity();
+
+		if (event.isCancelled()) {
+			return;
+		}
+
 		if (!(entity instanceof Player)) {
 			return;
 		}
@@ -133,11 +101,7 @@ public class ArrowBlockerListener implements Listener {
 
 	private String applyProperty(BedwarsApplyPropertyToBoughtItem event) {
 		return ARROW_BLOCKER_PREFIX
-<<<<<<< HEAD
 				+ MiscUtils.getBooleanFromProperty(
-=======
-				+ MiscUtils.getIntFromProperty(
->>>>>>> master
 				"protection-time", "specials.arrow-blocker.protection-time", event) + ":"
 				+ MiscUtils.getIntFromProperty(
 				"delay", "specials.arrow-blocker.delay", event);

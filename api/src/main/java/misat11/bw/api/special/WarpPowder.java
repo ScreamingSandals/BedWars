@@ -23,4 +23,9 @@ public interface WarpPowder extends SpecialItem {
 	 * 
 	 */
 	public void runTask();
+	
+	/**
+	 * @param amount
+	 */
+	public void setStackAmount(int amount);
 }

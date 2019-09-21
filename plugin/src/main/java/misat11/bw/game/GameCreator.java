@@ -434,12 +434,6 @@ public class GameCreator {
 		case "allowblockfalling":
 			game.setAllowBlockFalling(cons);
 			break;
-		case "holoabovebed":
-		case "hologramabovebed":
-		case "holobed":
-		case "hologrambed":
-			game.setHoloAboveBed(cons);
-			break;
 		default:
 			return i18n("admin_command_invalid_config_variable_name");
 		}

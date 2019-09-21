@@ -1,13 +1,9 @@
 package misat11.bw;
 
 import misat11.bw.api.BedwarsAPI;
-<<<<<<< HEAD
 import misat11.bw.api.utils.ColorChanger;
-=======
->>>>>>> master
 import misat11.bw.api.GameStatus;
 import misat11.bw.api.GameStore;
-import misat11.bw.api.utils.ColorChanger;
 import misat11.bw.commands.*;
 import misat11.bw.database.DatabaseManager;
 import misat11.bw.game.Game;
@@ -57,7 +53,6 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 	private static Main instance;
 	private String version, nmsVersion;
 	private boolean isSpigot, snapshot, isVault, isLegacy, isNMS;
-	private int versionNumber = 0;
 	private Economy econ = null;
 	private HashMap<String, Game> games = new HashMap<>();
 	private HashMap<Player, GamePlayer> playersInGame = new HashMap<>();
@@ -235,10 +230,10 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 				comm = "/" + comm;
 			}
 			if (comm.equals(commandPref)) {
-				return !instance.configurator.config.getBoolean("change-allowed-commands-to-blacklist", false);
+				return true;
 			}
 		}
-		return instance.configurator.config.getBoolean("change-allowed-commands-to-blacklist", false);
+		return false;
 	}
 
 	public static boolean isSignRegistered(Location location) {
@@ -311,10 +306,6 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 		return entityList;
 	}
 
-	public static int getVersionNumber() {
-	    return instance.versionNumber;
-    }
-
 	public void onEnable() {
 		instance = this;
 		version = this.getDescription().getVersion();
@@ -332,6 +323,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 		}
 
 		String[] bukkitVersion = Bukkit.getBukkitVersion().split("-")[0].split("\\.");
+		int versionNumber = 0;
 		for (int i = 0; i < 2; i++) {
 			versionNumber += Integer.parseInt(bukkitVersion[i]) * (i == 0 ? 100 : 1);
 		}
@@ -401,8 +393,6 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 		getServer().getPluginManager().registerEvents(new SignListener(), this);
 		getServer().getPluginManager().registerEvents(new WorldListener(), this);
 		getServer().getPluginManager().registerEvents(new InventoryListener(), this);
-		
-		NMSUtils.init(this);
 
 		SpecialRegister.onEnable(this);
 
@@ -607,7 +597,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 
 	@Override
 	public ColorChanger getColorChanger() {
-		return colorChanger;
+		return new misat11.bw.utils.ColorChanger();
 	}
 
 	public static ItemStack applyColor(TeamColor color, ItemStack itemStack) {

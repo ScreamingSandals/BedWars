@@ -23,17 +23,20 @@ import java.util.Map;
 import static misat11.lib.lang.I18n.i18n;
 
 public class TrapListener implements Listener {
-	private static final String TRAP_PREFIX = "Module:Trap:";
+
+	public static final String TRAP_PREFIX = "Module:Trap:";
 	
 	@EventHandler
 	public void onTrapRegistered(BedwarsApplyPropertyToBoughtItem event) {
 		if (event.getPropertyName().equalsIgnoreCase("trap")) {
 			ItemStack stack = event.getStack();
+
 			Trap trap = new Trap(event.getGame(), event.getPlayer(),
 					event.getGame().getTeamOfPlayer(event.getPlayer()),
 					(List<Map<String, Object>>) event.getProperty("data"));
 
 			int id = System.identityHashCode(trap);
+
 			String trapString = TRAP_PREFIX + id;
 
 			APIUtils.hashIntoInvisibleString(stack, trapString);
@@ -48,9 +51,10 @@ public class TrapListener implements Listener {
 		}
 		
 		ItemStack trapItem = event.getItemInHand();
-		String unhidden = APIUtils.unhashFromInvisibleStringStartsWith(trapItem, TRAP_PREFIX);
-		if (unhidden != null) {
-			int classID = Integer.parseInt(unhidden.split(":")[2]);
+		String invisible = APIUtils.unhashFromInvisibleStringStartsWith(trapItem, TRAP_PREFIX);
+		if (invisible != null) {
+			String[] splitted = invisible.split(":");
+			int classID = Integer.parseInt(splitted[2]);
 			
 			for (SpecialItem special : event.getGame().getActivedSpecialItems(Trap.class)) {
 				Trap trap = (Trap) special;
@@ -66,8 +70,7 @@ public class TrapListener implements Listener {
 	
 	@EventHandler
 	public void onTrapBreak(BedwarsPlayerBreakBlock event) {
-		Player player = event.getPlayer();
-		if (!Main.isPlayerInGame(player)) {
+		if (event.isCancelled()) {
 			return;
 		}
 
@@ -88,39 +91,38 @@ public class TrapListener implements Listener {
 	
 	@EventHandler
 	public void onMove(PlayerMoveEvent event) {
-		Player player = event.getPlayer();
-		if (event.isCancelled() || !Main.isPlayerInGame(player)) {
+		if (event.isCancelled()) {
 			return;
 		}
 
-<<<<<<< HEAD
 		if (!Main.isPlayerInGame(event.getPlayer())) {
 			return;
 		}
 		
-=======
->>>>>>> master
 		double difX = Math.abs(event.getFrom().getX() - event.getTo().getX());
-		double difZ = Math.abs(event.getFrom().getZ() - event.getTo().getZ());
+	    double difZ = Math.abs(event.getFrom().getZ() - event.getTo().getZ());
 
-		if (difX == 0.0 && difZ == 0.0) {
-			return;
-		}
-
-		GamePlayer gPlayer = Main.getPlayerGameProfile(player);
-		Game game = gPlayer.getGame();
-		if (game.getStatus() == GameStatus.RUNNING && !gPlayer.isSpectator) {
-			for (SpecialItem special : game.getActivedSpecialItems(Trap.class)) {
-				Trap trapBlock = (Trap) special;
-
-				if (trapBlock.isPlaced()) {
-					if(game.getTeamOfPlayer(player) != trapBlock.getTeam()) {
-						if (event.getTo().getBlock().getLocation().equals(trapBlock.getLocation())) {
-							trapBlock.process(player, game.getPlayerTeam(gPlayer), false);
-						}
-					}
-				}
-			}
-		}
+	    if (difX == 0.0 && difZ == 0.0) {
+	      return;
+	    }
+	    
+	    Player player = event.getPlayer();
+	    if (Main.isPlayerInGame(player)) {
+	    	GamePlayer gPlayer = Main.getPlayerGameProfile(player);
+	    	Game game = gPlayer.getGame();
+	    	if (game.getStatus() == GameStatus.RUNNING && !gPlayer.isSpectator) {
+	    		for (SpecialItem special : game.getActivedSpecialItems(Trap.class)) {
+	    			Trap trapBlock = (Trap) special;
+	    			if (trapBlock.isPlaced()) {
+	    				if (event.getTo().getBlock().getLocation().equals(trapBlock.getLocation())) {
+	    					trapBlock.process(player, game.getPlayerTeam(gPlayer), false);
+	    				}
+	    			}
+	    		}
+	    	}
+	    
+	    }
+	    
 	}
+
 }

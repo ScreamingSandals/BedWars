@@ -49,7 +49,6 @@ public class PlayerListener implements Listener {
 			Game game = gVictim.getGame();
 			CurrentTeam victimTeam = game.getPlayerTeam(gVictim);
 			ChatColor victimColor = victimTeam.teamInfo.color.chatColor;
-			List<ItemStack> drops = event.getDrops();
 
 			event.setKeepInventory(game.getOriginalOrInheritedKeepInventory());
 			event.setDroppedExp(0);
@@ -132,7 +131,7 @@ public class PlayerListener implements Listener {
 				}
 
 				BedwarsPlayerKilledEvent killedEvent = new BedwarsPlayerKilledEvent(game, victim,
-						Main.isPlayerInGame(killer) ? killer : null, drops);
+						Main.isPlayerInGame(killer) ? killer : null);
 				Main.getInstance().getServer().getPluginManager().callEvent(killedEvent);
 
 				if (Main.isPlayerStatisticsEnabled()) {
@@ -496,7 +495,7 @@ public class PlayerListener implements Listener {
 					} else if (event.getMaterial() == Material
 							.valueOf(Main.getConfigurator().config.getString("items.startgame", "DIAMOND"))) {
 						if (game.getStatus() == GameStatus.WAITING
-								&& (player.hasPermission("bw.vip.startitem") || player.hasPermission("misat11.bw.vip.startitem"))) {
+								&& (player.hasPermission("bw.vip") || player.hasPermission("misat11.bw.vip"))) {
 							if (game.checkMinPlayers()) {
 								game.gameStartItem = true;
 							} else {
@@ -857,13 +856,9 @@ public class PlayerListener implements Listener {
 		if (Game.isBungeeEnabled() && Main.getConfigurator().config.getBoolean("bungee.auto-game-connect", false)) {
 			new BukkitRunnable() {
 				public void run() {
-					try {
-						game.joinToGame(player);
-					} catch (NullPointerException ignored) {
-						BungeeUtils.movePlayer(player);
-					}
+					game.joinToGame(player);
 				}
-			}.runTaskLater(Main.getInstance(), 1L);
+			}.runTaskLater(Main.getInstance(), 5L);
 		}
 	}
 }

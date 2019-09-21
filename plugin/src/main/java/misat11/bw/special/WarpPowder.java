@@ -21,14 +21,6 @@ public class WarpPowder extends SpecialItem implements misat11.bw.api.special.Wa
 		super(game, player, team);
 		this.item = item;
 		this.teleportingTime = teleportingTime;
-<<<<<<< HEAD
-=======
-	}
-
-	@Override
-	public ItemStack getStack() {
-		return item;
->>>>>>> master
 	}
 
 	@Override
@@ -55,6 +47,11 @@ public class WarpPowder extends SpecialItem implements misat11.bw.api.special.Wa
 	}
 
 	@Override
+	public ItemStack getStack() {
+		return item;
+	}
+
+	@Override
 	public void runTask() {
 		game.registerSpecialItem(this);
 
@@ -74,4 +71,10 @@ public class WarpPowder extends SpecialItem implements misat11.bw.api.special.Wa
 			}
 		}.runTaskTimer(Main.getInstance(), 0L, 20L);
 	}
+
+	@Override
+	public void setStackAmount(int amount) {
+		item.setAmount(amount);
+	}
+
 }

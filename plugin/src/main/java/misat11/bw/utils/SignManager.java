@@ -26,12 +26,10 @@ public class SignManager {
 		this.configFile = configFile;
 
 		List<Map<String, Object>> conf = (List<Map<String, Object>>) config.getList("sign");
-		if (conf != null) {
-			for (Map<String, Object> c : conf) {
-				String gameName = (String) c.get("game");
-				Location loc = (Location) c.get("location");
-				signs.put(loc, new GameSign(loc, gameName));
-			}
+		for (Map<String, Object> c : conf) {
+			String gameName = (String) c.get("game");
+			Location loc = (Location) c.get("location");
+			signs.put(loc, new GameSign(loc, gameName));
 		}
 	}
 

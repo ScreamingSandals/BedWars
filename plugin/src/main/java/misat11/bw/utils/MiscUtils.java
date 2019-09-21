@@ -16,13 +16,13 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.ArrayList;
 import java.util.Random;
 
-import static misat11.lib.lang.I18n.i18nonly;
-
 public class MiscUtils {
     /** From BedWarsRel */
     public static int randInt(int min, int max) {
         Random rand = new Random();
-        return rand.nextInt((max - min) + 1) + min;
+        int randomNum = rand.nextInt((max - min) + 1) + min;
+
+        return randomNum;
     }
 
     public static BlockFace getCardinalDirection(Location location) {
@@ -63,7 +63,7 @@ public class MiscUtils {
                     player.spigot().sendMessage(ChatMessageType.ACTION_BAR,
                             TextComponent.fromLegacyText(message));
                 } else {
-                    player.sendMessage(i18nonly("prefix") + " " + message);
+                    player.sendMessage(message);
                 }
             }
         }.runTask(Main.getInstance());
@@ -105,7 +105,7 @@ public class MiscUtils {
         try {
             return event.getStringProperty(name);
         } catch (NullPointerException e) {
-            return Main.getConfigurator().config.getString(fallback, Main.isLegacy() ? "SANDSTONE" : "CUT_SANDSTONE");
+            return Main.getConfigurator().config.getString(fallback, "CUT_SANDSTONE");
         }
     }
 

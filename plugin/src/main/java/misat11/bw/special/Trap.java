@@ -16,12 +16,16 @@ import java.util.Map;
 import static misat11.lib.lang.I18n.i18nonly;
 
 public class Trap extends SpecialItem implements misat11.bw.api.special.Trap {
+
 	private List<Map<String, Object>> trapData;
 	private Location location;
+
 	private Player player;
+	private Team team;
 
 	public Trap(Game game, Player player, Team team, List<Map<String, Object>> trapData) {
 		super(game, player, team);
+
 		this.trapData = trapData;
 		this.player = player;
 		this.team = team;
@@ -39,6 +43,10 @@ public class Trap extends SpecialItem implements misat11.bw.api.special.Trap {
 		return location != null;
 	}
 
+	public Player getOwner() {
+		return this.player;
+	}
+
 	public void place(Location loc) {
 		this.location = loc;
 	}
@@ -46,9 +54,8 @@ public class Trap extends SpecialItem implements misat11.bw.api.special.Trap {
 	public void process(Player player, RunningTeam runningTeam, boolean forceDestroy) {
 		game.unregisterSpecialItem(this);
 
-		if (runningTeam == game.getTeamOfPlayer(this.player) || forceDestroy) {
+		if (runningTeam != game.getTeamOfPlayer(this.player) || forceDestroy) {
 			location.getBlock().setType(Material.AIR);
-			return;
 		}
 
 		if (runningTeam != game.getTeamOfPlayer(this.player)) {
@@ -73,6 +80,7 @@ public class Trap extends SpecialItem implements misat11.bw.api.special.Trap {
 				MiscUtils.sendActionBarMessage(p, i18nonly("specials_trap_caught_team").replace("%player%", player.getDisplayName()));
 			}
 		}
+
 		MiscUtils.sendActionBarMessage(player, i18nonly("specials_trap_caught").replace("%team%", getTeam().getName()));
 	}
 }

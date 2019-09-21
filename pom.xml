@@ -41,8 +41,8 @@
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
-		<bedwars.api>1.3.8</bedwars.api> <!-- increment this version on api change -->
-		<bedwars.version>0.2.2-SNAPSHOT</bedwars.version>
+		<bedwars.api>1.3.7</bedwars.api>
+		<bedwars.version>0.2.1-SNAPSHOT</bedwars.version>
 	</properties>
 
 	<modules>

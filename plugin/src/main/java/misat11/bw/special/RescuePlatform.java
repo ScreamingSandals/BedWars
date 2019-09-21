@@ -4,6 +4,7 @@ import misat11.bw.Main;
 import misat11.bw.api.Game;
 import misat11.bw.api.Team;
 import misat11.bw.game.TeamColor;
+import misat11.bw.utils.ColorChanger;
 import misat11.bw.utils.MiscUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -74,8 +75,8 @@ public class RescuePlatform extends SpecialItem implements misat11.bw.api.specia
 				}
 
 				if (livingTime == breakingTime) {
-					for (Block block : platformBlocks) {
-						block.getChunk().load(false);
+					for (Block block : RescuePlatform.this.platformBlocks) {
+						block.getChunk().load(true);
 						block.setType(Material.AIR);
 
 						removeBlockFromList(block);

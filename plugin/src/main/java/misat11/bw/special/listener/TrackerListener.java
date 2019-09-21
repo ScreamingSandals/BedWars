@@ -1,5 +1,6 @@
 package misat11.bw.special.listener;
 
+
 import misat11.bw.Main;
 import misat11.bw.api.APIUtils;
 import misat11.bw.api.Game;
@@ -15,7 +16,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
 public class TrackerListener implements Listener {
-	private static final String TRACKER_PREFIX = "Module:Tracker:";
+
+	public static final String TRACKER_PREFIX = "Module:Tracker:";
 
 	@EventHandler
 	public void onTrackerRegistered(BedwarsApplyPropertyToBoughtItem event) {
@@ -28,13 +30,17 @@ public class TrackerListener implements Listener {
 	}
 
 	@EventHandler
-	public void onTrackerUse(PlayerInteractEvent event) {
-		Player player = event.getPlayer();
-		if (!Main.isPlayerInGame(player)) {
+	public void onPlayerInteract(PlayerInteractEvent event) {
+		if (event.isCancelled() && event.getAction() != Action.RIGHT_CLICK_AIR) {
 			return;
 		}
 
-		GamePlayer gamePlayer = Main.getPlayerGameProfile(player);
+		if (!Main.isPlayerInGame(event.getPlayer())) {
+			return;
+		}
+
+		Player eventPlayer = event.getPlayer();
+		GamePlayer gamePlayer = Main.getPlayerGameProfile(eventPlayer);
 		Game game = gamePlayer.getGame();
 		if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
 			if (game.getStatus() == GameStatus.RUNNING && !gamePlayer.isSpectator) {
@@ -43,8 +49,9 @@ public class TrackerListener implements Listener {
 					String unhidden = APIUtils.unhashFromInvisibleStringStartsWith(stack, TRACKER_PREFIX);
 					if (unhidden != null) {
 						event.setCancelled(true);
+						Tracker tracker = new Tracker(game, eventPlayer,
+								game.getTeamOfPlayer(eventPlayer));
 
-						Tracker tracker = new Tracker(game, player, game.getTeamOfPlayer(player));
 						tracker.runTask();
 					}
 				}

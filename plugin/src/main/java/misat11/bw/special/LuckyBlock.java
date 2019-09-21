@@ -1,8 +1,9 @@
 package misat11.bw.special;
 
-import misat11.bw.Main;
-import misat11.bw.api.Game;
-import misat11.bw.api.Team;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -11,9 +12,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import misat11.bw.Main;
+import misat11.bw.api.Game;
+import misat11.bw.api.Team;
 
 public class LuckyBlock extends SpecialItem implements misat11.bw.api.special.LuckyBlock {
 

@@ -89,13 +89,13 @@
 		<dependency>
 			<groupId>misat11.lib.lang</groupId>
 			<artifactId>LanguageTool</artifactId>
-			<version>1.0.2</version>
+			<version>1.0.0</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>misat11.lib.nms</groupId>
 			<artifactId>NMSUtils</artifactId>
-			<version>1.0.10</version>
+			<version>1.0.7</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>

@@ -3,8 +3,6 @@ package misat11.bw.game;
 import misat11.bw.api.Game;
 import misat11.bw.api.RunningTeam;
 import misat11.bw.api.TeamColor;
-import misat11.lib.nms.Hologram;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -24,8 +22,6 @@ public class CurrentTeam implements RunningTeam {
 	private Inventory chestInventory = Bukkit.createInventory(null, InventoryType.ENDER_CHEST, i18n("team_chest"));
 	private List<Block> chests = new ArrayList<>();
 	private Game game;
-	private Hologram holo;
-	private Hologram protectHolo;
 
 	public boolean isBed = true;
 
@@ -48,30 +44,6 @@ public class CurrentTeam implements RunningTeam {
 
 	public void setScoreboardTeam(org.bukkit.scoreboard.Team scoreboardTeam) {
 		this.scoreboardTeam = scoreboardTeam;
-	}
-	
-	public void setBedHolo(Hologram holo) {
-		this.holo = holo;
-	}
-	
-	public Hologram getBedHolo() {
-		return this.holo;
-	}
-	
-	public boolean hasBedHolo() {
-		return this.holo != null;
-	}
-	
-	public void setProtectHolo(Hologram protectHolo) {
-		this.protectHolo = protectHolo;
-	}
-	
-	public Hologram getProtectHolo() {
-		return this.protectHolo;
-	}
-	
-	public boolean hasProtectHolo() {
-		return this.protectHolo != null;
 	}
 
 	@Override

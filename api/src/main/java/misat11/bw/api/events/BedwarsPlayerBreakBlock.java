@@ -16,10 +16,10 @@ import misat11.bw.api.RunningTeam;
 public class BedwarsPlayerBreakBlock extends Event implements Cancellable {
 
 	private static final HandlerList handlers = new HandlerList();
-	private Game game;
-	private Player player;
-	private RunningTeam team;
-	private Block block;
+	private Game game = null;
+	private Player player = null;
+	private RunningTeam team = null;
+	private Block block = null;
 	private boolean cancel = false;
 	private boolean drops = true;
 

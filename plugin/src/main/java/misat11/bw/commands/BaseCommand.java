@@ -42,8 +42,12 @@ public abstract class BaseCommand {
 		if (permission == null || "".equals(permission)) {
 			return true; // There's no permissions required
 		}
+		
+		if (!sender.hasPermission(permission)) {
+			return false;
+		}
 
-		return sender.hasPermission(permission);
+		return true;
 	}
 
 }
