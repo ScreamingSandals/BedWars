@@ -56,7 +56,6 @@ import static misat11.lib.lang.I18n.i18n;
 import static misat11.lib.lang.I18n.i18nonly;
 
 public class Game implements misat11.bw.api.Game {
-
 	private String name;
 	private Location pos1;
 	private Location pos2;
@@ -157,6 +156,7 @@ public class Game implements misat11.bw.api.Game {
 	private InGameConfigBooleanConstants holoAboveBed = InGameConfigBooleanConstants.INHERIT;
 
 	public boolean gameStartItem;
+	private boolean preServerRestart = false;
 	public static final int POST_GAME_WAITING = 3;
 
 	// STATUS
@@ -455,7 +455,7 @@ public class Game implements misat11.bw.api.Game {
 		return null;
 	}
 
-	protected void bedDestroyed(Location loc, Player broker, boolean isItBedBlock) {
+	private void bedDestroyed(Location loc, Player broker, boolean isItBedBlock) {
 		if (status == GameStatus.RUNNING) {
 			for (CurrentTeam team : teamsInGame) {
 				if (team.teamInfo.bed.equals(loc)) {
@@ -630,8 +630,11 @@ public class Game implements misat11.bw.api.Game {
 				}
 			}
 		}
-		for (GamePlayer p : players) {
-			p.player.sendMessage(message);
+
+		if (!preServerRestart) {
+			for (GamePlayer p : players) {
+				p.player.sendMessage(message);
+			}
 		}
 
 		if (Main.isPlayerStatisticsEnabled()) {
@@ -641,9 +644,11 @@ public class Game implements misat11.bw.api.Game {
 			Main.getPlayerStatisticsManager().unloadStatistic(player.player);
 		}
 		if (players.isEmpty()) {
-			BedWarsPlayerLastLeaveEvent playerLastLeaveEvent = new BedWarsPlayerLastLeaveEvent(this, player.player,
-					getPlayerTeam(player));
-			Main.getInstance().getServer().getPluginManager().callEvent(playerLastLeaveEvent);
+			if (!preServerRestart) {
+				BedWarsPlayerLastLeaveEvent playerLastLeaveEvent = new BedWarsPlayerLastLeaveEvent(this, player.player,
+						getPlayerTeam(player));
+				Main.getInstance().getServer().getPluginManager().callEvent(playerLastLeaveEvent);
+			}
 
 			if (status != GameStatus.WAITING) {
 				afterRebuild = GameStatus.WAITING;
@@ -1748,24 +1753,28 @@ public class Game implements misat11.bw.api.Game {
 			}
 
 			if (isBungeeEnabled() && !getConnectedPlayers().isEmpty()) {
-				kickAllPlayers();
-			}
+				preServerRestart = true;
 
-			new BukkitRunnable() {
-				@Override
-				public void run() {
-					if (isBungeeEnabled() && Main.getConfigurator().config.getBoolean("bungee.serverRestart")) {
-						BedWarsServerRestartEvent serverRestartEvent = new BedWarsServerRestartEvent();
-						Main.getInstance().getServer().getPluginManager().callEvent(serverRestartEvent);
+				BedWarsServerRestartEvent serverRestartEvent = new BedWarsServerRestartEvent();
+				Main.getInstance().getServer().getPluginManager().callEvent(serverRestartEvent);
 
-						Main.getInstance().getServer()
-								.dispatchCommand(Main.getInstance().getServer().getConsoleSender(), "restart");
-					} else if (isBungeeEnabled() && Main.getConfigurator().config.getBoolean("bungee.serverStop")) {
-						Bukkit.shutdown();
-					}
+				if (!getConnectedPlayers().isEmpty()) {
+					kickAllPlayers();
 				}
 
-			}.runTaskLater(Main.getInstance(), 50);
+				new BukkitRunnable() {
+					@Override
+					public void run() {
+						if (Main.getConfigurator().config.getBoolean("bungee.serverRestart")) {
+							Main.getInstance().getServer()
+									.dispatchCommand(Main.getInstance().getServer().getConsoleSender(), "restart");
+						} else if (Main.getConfigurator().config.getBoolean("bungee.serverStop")) {
+							Bukkit.shutdown();
+						}
+					}
+
+				}.runTaskLater(Main.getInstance(), 70);
+			}
 		}
 	}
 
