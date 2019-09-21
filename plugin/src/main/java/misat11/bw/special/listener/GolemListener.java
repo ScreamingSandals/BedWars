@@ -1,8 +1,19 @@
 package misat11.bw.special.listener;
 
+<<<<<<< HEAD
 import java.util.List;
 
 import misat11.bw.special.RescuePlatform;
+=======
+import misat11.bw.Main;
+import misat11.bw.api.APIUtils;
+import misat11.bw.api.Game;
+import misat11.bw.api.GameStatus;
+import misat11.bw.api.events.BedwarsApplyPropertyToBoughtItem;
+import misat11.bw.api.special.SpecialItem;
+import misat11.bw.game.GamePlayer;
+import misat11.bw.special.Golem;
+>>>>>>> master
 import misat11.bw.utils.DelayFactory;
 import misat11.bw.utils.MiscUtils;
 import org.bukkit.Location;
@@ -14,27 +25,23 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
-import org.bukkit.event.entity.EntityTargetEvent.TargetReason;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
-import misat11.bw.Main;
-import misat11.bw.api.APIUtils;
-import misat11.bw.api.Game;
-import misat11.bw.api.GameStatus;
-import misat11.bw.api.events.BedwarsApplyPropertyToBoughtItem;
-import misat11.bw.api.special.SpecialItem;
-import misat11.bw.game.GamePlayer;
-import misat11.bw.special.Golem;
+import java.util.List;
 
 import static misat11.lib.lang.I18n.i18nonly;
+<<<<<<< HEAD
 
 public class GolemListener implements Listener {
+=======
+>>>>>>> master
 
-	public static final String GOLEM_PREFIX = "Module:Golem:";
+public class GolemListener implements Listener {
+	private static final String GOLEM_PREFIX = "Module:Golem:";
 
 	@EventHandler
 	public void onGolemRegister(BedwarsApplyPropertyToBoughtItem event) {
@@ -47,6 +54,7 @@ public class GolemListener implements Listener {
 	@EventHandler
 	public void onGolemUse(PlayerInteractEvent event) {
 		Player player = event.getPlayer();
+<<<<<<< HEAD
 		if (event.isCancelled() || event.getAction() != Action.RIGHT_CLICK_AIR) {
 			return;
 		}
@@ -55,6 +63,12 @@ public class GolemListener implements Listener {
 			return;
 		}
 
+=======
+		if (!Main.isPlayerInGame(player)) {
+			return;
+		}
+
+>>>>>>> master
 		GamePlayer gamePlayer = Main.getPlayerGameProfile(player);
 		Game game = gamePlayer.getGame();
 
@@ -66,6 +80,7 @@ public class GolemListener implements Listener {
 				if (unhidden != null) {
 					if (!game.isDelayActive(player, Golem.class)) {
 						event.setCancelled(true);
+<<<<<<< HEAD
 
 						double speed = Double.parseDouble(unhidden.split(":")[2]);
 						double follow = Double.parseDouble(unhidden.split(":")[3]);
@@ -73,6 +88,17 @@ public class GolemListener implements Listener {
 						String name = unhidden.split(":")[5];
 						boolean showName = Boolean.parseBoolean(unhidden.split(":")[6]);
 						int delay = Integer.parseInt(unhidden.split(":")[7]);
+=======
+						
+						double speed = Double.parseDouble(unhidden.split(":")[2]);
+						double follow = Double.parseDouble(unhidden.split(":")[3]);
+						double health = Double.parseDouble(unhidden.split(":")[4]);
+						boolean showName = Boolean.parseBoolean(unhidden.split(":")[5]);
+						int delay = Integer.parseInt(unhidden.split(":")[6]);
+						boolean collidable = Boolean.valueOf((unhidden.split(":")[7]));
+						String name = unhidden.split(":", 9)[8];
+						
+>>>>>>> master
 						Location location;
 
 						if (event.getClickedBlock() == null) {
@@ -82,7 +108,11 @@ public class GolemListener implements Listener {
 									.getLocation().add(0.5, 0.5, 0.5);
 						}
 						Golem golem = new Golem(game, player, game.getTeamOfPlayer(player),
+<<<<<<< HEAD
 								stack, location, speed, follow, health, name, showName);
+=======
+								stack, location, speed, follow, health, name, showName, collidable);
+>>>>>>> master
 
 						if (delay > 0) {
 							DelayFactory delayFactory = new DelayFactory(delay, golem, player, game);
@@ -103,18 +133,11 @@ public class GolemListener implements Listener {
 	}
 
 	public void onGolemDamage(EntityDamageByEntityEvent event) {
-		if (event.isCancelled()) {
-			return;
-		}
-
-		if (event.getCause().equals(DamageCause.CUSTOM) || event.getCause().equals(DamageCause.VOID)) {
-			return;
-		}
-
 		if (!(event.getEntity() instanceof IronGolem)) {
 			return;
 		}
 
+<<<<<<< HEAD
 		if (event.getDamager() instanceof Player) {
 			Player player = (Player) event.getDamager();
 			if (Main.isPlayerInGame(player)) {
@@ -126,28 +149,7 @@ public class GolemListener implements Listener {
 								&& ((Golem) item).getEntity().equals(event.getEntity())
 								&& item.getTeam() == game.getTeamOfPlayer(player)) {
 							event.setCancelled(true);
-						}
-						return;
-					}
-				}
-			}
-		}
-	}
-
-	public void onGolemTarget(EntityTargetEvent event) {
-		if (event.isCancelled()) {
-			return;
-		}
-
-		if (!(event.getEntity() instanceof IronGolem)) {
-			return;
-		}
-
-		if (event.getReason().equals(TargetReason.CUSTOM)) {
-			return;
-		}
-
-		// When a *golem* targets an entity
+=======
 		IronGolem ironGolem = (IronGolem) event.getEntity();
 		for (String name : Main.getGameNames()) {
 			Game game = Main.getGame(name);
@@ -157,18 +159,101 @@ public class GolemListener implements Listener {
 					if (item instanceof Golem) {
 						Golem golem = (Golem) item;
 						if (golem.getEntity().equals(ironGolem)) {
-							// Target enemy players only
-							if (event.getTarget() instanceof Player) {
-								Player player = (Player) event.getTarget();
+							if (event.getDamager() instanceof Player) {
+								Player player = (Player) event.getDamager();
 								if (Main.isPlayerInGame(player)) {
-									if (golem.getTeam() != game.getTeamOfPlayer(player)) {
+									if (golem.getTeam() == game.getTeamOfPlayer(player)) {
+										event.setCancelled(true);
+									} else {
 										return;
 									}
 								}
 							}
-							// Don't target anything except an enemy player
 							event.setCancelled(true);
 							return;
+>>>>>>> master
+						}
+						return;
+					}
+				}
+			}
+		}
+	}
+
+	public void onGolemTarget(EntityTargetEvent event) {
+		if (!(event.getEntity() instanceof IronGolem)) {
+			return;
+		}
+
+		IronGolem ironGolem = (IronGolem) event.getEntity();
+		for (String name : Main.getGameNames()) {
+			Game game = Main.getGame(name);
+			if ((game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) && ironGolem.getWorld().equals(game.getGameWorld())) {
+				List<SpecialItem> golems = game.getActivedSpecialItems(Golem.class);
+				for (SpecialItem item : golems) {
+					if (item instanceof Golem) {
+						Golem golem = (Golem) item;
+						if (golem.getEntity().equals(ironGolem)) {
+							if (event.getTarget() instanceof Player) {
+								Player player = (Player) event.getTarget();
+								if (Main.isPlayerInGame(player)) {
+									if (golem.getTeam() == game.getTeamOfPlayer(player)) {
+										event.setCancelled(true);
+										// Try to find enemy
+										Player playerTarget = MiscUtils.findTarget(game, player, golem.getFollowRange());
+										if (playerTarget != null) {
+											// Oh. We found enemy!
+											ironGolem.setTarget(playerTarget);
+										}
+									} else {
+										return;
+									}
+								}
+								if (game.isProtectionActive(player)) {
+									event.setCancelled(true);
+								}
+							}
+							event.setCancelled(true);
+							return;
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	@EventHandler
+	public void onGolemTargetDie(PlayerDeathEvent event) {
+		if (Main.isPlayerInGame(event.getEntity())) {
+			Game game = Main.getPlayerGameProfile(event.getEntity()).getGame();
+
+			List<SpecialItem> golems = game.getActivedSpecialItems(Golem.class);
+			for (SpecialItem item : golems) {
+				Golem golem = (Golem) item;
+				IronGolem iron = (IronGolem) golem.getEntity();
+				if (iron.getTarget() != null && iron.getTarget().equals(event.getEntity())) {
+					iron.setTarget(null);
+				}
+			}
+		}
+	}
+
+	@EventHandler
+	public void onGolemDeath(EntityDeathEvent event) {
+		if (!(event.getEntity() instanceof IronGolem)) {
+			return;
+		}
+
+		IronGolem ironGolem = (IronGolem) event.getEntity();
+		for (String name : Main.getGameNames()) {
+			Game game = Main.getGame(name);
+			if ((game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) && ironGolem.getWorld().equals(game.getGameWorld())) {
+				List<SpecialItem> golems = game.getActivedSpecialItems(Golem.class);
+				for (SpecialItem item : golems) {
+					if (item instanceof Golem) {
+						Golem golem = (Golem) item;
+						if (golem.getEntity().equals(ironGolem)) {
+							event.getDrops().clear();
 						}
 					}
 				}
@@ -184,6 +269,7 @@ public class GolemListener implements Listener {
 				"follow-range", "specials.golem.follow-range", event) + ":"
 				+ MiscUtils.getDoubleFromProperty(
 				"health", "specials.golem.health", event) + ":"
+<<<<<<< HEAD
 				+ MiscUtils.getStringFromProperty(
 				"name-format", "specials.golem.name-format", event) + ":"
 				+ MiscUtils.getBooleanFromProperty(
@@ -192,3 +278,14 @@ public class GolemListener implements Listener {
 				"delay", "specials.golem.delay", event);
 	}
 }
+=======
+				+ MiscUtils.getBooleanFromProperty(
+				"show-name", "specials.golem.show-name", event) + ":"
+				+ MiscUtils.getIntFromProperty(
+				"delay", "specials.golem.delay", event) + ":"
+				+ MiscUtils.getBooleanFromProperty("collidable", "specials.golem.collidable", event) + ":"
+				+ MiscUtils.getStringFromProperty(
+						"name-format", "specials.golem.name-format", event);
+	}
+}
+>>>>>>> master

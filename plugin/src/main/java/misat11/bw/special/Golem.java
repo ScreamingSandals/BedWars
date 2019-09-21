@@ -24,10 +24,18 @@ public class Golem extends SpecialItem implements misat11.bw.api.special.Golem {
 	private double health;
 	private String name;
 	private boolean showName;
+<<<<<<< HEAD
 
 	public Golem(Game game, Player player, Team team,
 				 ItemStack item, Location loc, double speed, double followRange, double health,
 				 String name, boolean showName) {
+=======
+	private boolean collidable;
+
+	public Golem(Game game, Player player, Team team,
+				 ItemStack item, Location loc, double speed, double followRange, double health,
+				 String name, boolean showName, boolean collidable) {
+>>>>>>> master
 		super(game, player, team);
 		this.loc = loc;
 		this.item = item;
@@ -36,6 +44,10 @@ public class Golem extends SpecialItem implements misat11.bw.api.special.Golem {
 		this.health = health;
 		this.name = name;
 		this.showName = showName;
+<<<<<<< HEAD
+=======
+		this.collidable = collidable;
+>>>>>>> master
 	}
 
 	@Override
@@ -56,20 +68,43 @@ public class Golem extends SpecialItem implements misat11.bw.api.special.Golem {
 	public void spawn() {
 		TeamColor color = TeamColor.fromApiColor(team.getColor());
 		IronGolem golem = (IronGolem) loc.getWorld().spawnEntity(loc, EntityType.IRON_GOLEM);
+<<<<<<< HEAD
+=======
+		golem.setHealth(health);
+>>>>>>> master
 
 		golem.setCustomName(name
 				.replace("%teamcolor%", color.chatColor.toString())
 				.replace("%team%", team.getName()));
 		golem.setCustomNameVisible(showName);
+<<<<<<< HEAD
 		golem.setHealth(health);
 		entity = golem;
 
 		NMSUtils.makeMobAttackTarget(golem, speed, followRange, -1).attackNearestTarget(0, "EntityPlayer");
 		Main.registerGameEntity(golem, (misat11.bw.game.Game) game);
 
+=======
+		try {
+			golem.setCollidable(collidable);
+		} catch (Throwable t) {
+			// Fucking 1.8.x
+		}
+		entity = golem;
+
+		NMSUtils.makeMobAttackTarget(golem, speed, followRange, -1)
+		.attackNearestTarget(0, "EntityPlayer");
+
+		game.registerSpecialItem(this);
+		Main.registerGameEntity(golem, (misat11.bw.game.Game) game);
+>>>>>>> master
 		MiscUtils.sendActionBarMessage(player, i18nonly("specials_golem_created"));
 
 		item.setAmount(item.getAmount() - 1);
 		player.updateInventory();
 	}
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> master

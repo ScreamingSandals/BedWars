@@ -40,6 +40,7 @@ public class ProtectionWallListener implements Listener {
 	@EventHandler
 	public void onPlayerUseItem(PlayerInteractEvent event) {
 		Player player = event.getPlayer();
+<<<<<<< HEAD
 
 		if (event.isCancelled() && event.getAction() != Action.RIGHT_CLICK_AIR) {
 			return;
@@ -48,6 +49,12 @@ public class ProtectionWallListener implements Listener {
 		if (!Main.isPlayerInGame(player)) {
 			return;
 		}
+=======
+		if (!Main.isPlayerInGame(player)) {
+			return;
+		}
+
+>>>>>>> master
 		GamePlayer gPlayer = Main.getPlayerGameProfile(player);
 		Game game = gPlayer.getGame();
 
@@ -101,13 +108,16 @@ public class ProtectionWallListener implements Listener {
 	@EventHandler
 	public void onBlockBreak(BlockBreakEvent event) {
 		Player player = event.getPlayer();
+<<<<<<< HEAD
 		if (event.isCancelled() || !Main.isPlayerInGame(player)) {
+=======
+		if (!Main.isPlayerInGame(player)) {
+>>>>>>> master
 			return;
 		}
 
 		GamePlayer gPlayer = Main.getPlayerGameProfile(player);
 		Game game = gPlayer.getGame();
-
 		if (gPlayer.isSpectator) {
 			return;
 		}

@@ -62,6 +62,7 @@ public class ShopMenu implements Listener {
 		ItemStack cosmeticItem = Main.getConfigurator().readDefinedItem("shopcosmetic", "AIR");
 		options.setCosmeticItem(cosmeticItem);
 
+		options.setRows(Main.getConfigurator().config.getInt("secretShopSetRows", 4));
 		options.setPrefix(i18nonly("item_shop_name", "[BW] Shop"));
 		options.setGenericShop(true);
 		options.setGenericShopPriceTypeRequired(true);
@@ -100,6 +101,7 @@ public class ShopMenu implements Listener {
 				format.loadFromDataFolder(Main.getInstance().getDataFolder(), fileName);
 			}
 		} catch (IOException | InvalidConfigurationException e) {
+			System.out.println("Wrong shop.yml configuration!");
 			e.printStackTrace();
 		}
 
@@ -188,6 +190,7 @@ public class ShopMenu implements Listener {
 		Player player = event.getPlayer();
 		Game game = Main.getPlayerGameProfile(event.getPlayer()).getGame();
 		ClickType clickType = event.getClickType();
+		String itemName = "UPGRADE";
 
 		MapReader reader = event.getItem().getReader();
 		if (reader.containsKey("upgrade") && game.isUpgradesEnabled()) {
@@ -205,6 +208,8 @@ public class ShopMenu implements Listener {
 					if (storage != null) {
 						String customName = entity.getString("customName");
 						double addLevels = entity.getDouble("levels");
+						itemName = entity.getString("shop-name");
+
 						List<Upgrade> upgrades = storage.findUpgrade(game, customName);
 						BedwarsUpgradeBoughtEvent boughEvent = new BedwarsUpgradeBoughtEvent(game, storage, upgrades,
 								player, addLevels);
@@ -227,17 +232,9 @@ public class ShopMenu implements Listener {
 							}
 						}
 					}
-					if ("spawner".equals(typ.toLowerCase())) {
-						String customName = entity.getString("customName");
-						double addLevels = entity.getDouble("levels");
-						for (ItemSpawner spawner : game.getSpawners()) {
-							if (customName.equals(spawner.customName)) {
-								spawner.currentLevel += addLevels;
-							}
-						}
-					}
 				}
-				player.sendMessage(i18n("buy_succes").replace("%item%", "UPGRADE").replace("%material%",
+
+				player.sendMessage(i18n("buy_succes").replace("%item%", itemName).replace("%material%",
 						price + " " + type.getItemName()));
 				Sounds.playSound(player, player.getLocation(),
 						Main.getConfigurator().config.getString("sounds.on_upgrade_buy"),
@@ -247,21 +244,44 @@ public class ShopMenu implements Listener {
 						price + " " + type.getItemName()));
 			}
 		} else {
-			ItemStack newItem = event.getStack();
-			int amount = newItem.getAmount();
-			int price = event.getPrice();
-			if (clickType.isShiftClick()) {
-				int maxStackSize = newItem.getMaxStackSize();
-				if (maxStackSize > amount) {
-					double priceOfOne = (double) price / amount;
-					price = (int) (priceOfOne * maxStackSize);
-					newItem.setAmount(maxStackSize);
-					amount = maxStackSize;
-				}
-			}
 			String priceType = event.getType().toLowerCase();
 			ItemSpawnerType type = Main.getSpawnerType(priceType);
+			ItemStack newItem = event.getStack();
+
+			int amount = newItem.getAmount();
+			int price = event.getPrice();
+			int inInventory = 0;
+
+			if (clickType.isShiftClick()) {
+				double priceOfOne = (double) price / amount;
+				double maxStackSize;
+				int finalStackSize;
+
+				for (ItemStack itemStack : event.getPlayer().getInventory().getStorageContents()) {
+					if (itemStack == null) {
+						continue;
+					}
+
+					if (itemStack.isSimilar(type.getStack())) {
+						inInventory = inInventory + itemStack.getAmount();
+					}
+				}
+				if (Main.getConfigurator().config.getBoolean("sell-max-64-per-click-in-shop")) {
+					maxStackSize = Math.min(inInventory / priceOfOne, 64);
+				} else {
+					maxStackSize = inInventory / priceOfOne;
+				}
+
+				finalStackSize = (int) maxStackSize;
+				if (finalStackSize > amount) {
+					price = (int) (priceOfOne * finalStackSize);
+					newItem.setAmount(finalStackSize);
+					amount = finalStackSize;
+				}
+			}
+
 			ItemStack materialItem = type.getStack(price);
+
 			if (event.hasPlayerInInventory(materialItem)) {
 				if (event.hasProperties()) {
 					for (Property property : event.getProperties()) {
@@ -300,8 +320,9 @@ public class ShopMenu implements Listener {
 					return meta.getLocalizedName();
 				}
 			}
-		} catch (Throwable t) {
+		} catch (Throwable ignored) {
 		}
+
 		String normalName = stack.getType().name().replace("_", " ").toLowerCase();
 		return normalName.substring(0, 1).toUpperCase() + normalName.substring(1);
 	}
@@ -332,7 +353,7 @@ public class ShopMenu implements Listener {
 			}
 			String name = (parent ? "+" : "-") + file;
 			if (!shopMap.containsKey(name)) {
-				loadNewShop(name, file, parent);
+				loadNewShop(name, file + ".yml", parent);
 			}
 			SimpleGuiFormat shop = shopMap.get(name);
 			shop.openForPlayer(p);

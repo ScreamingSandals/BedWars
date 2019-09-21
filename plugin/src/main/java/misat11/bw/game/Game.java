@@ -18,6 +18,7 @@ import misat11.bw.region.FlatteningRegion;
 import misat11.bw.region.LegacyRegion;
 import misat11.bw.statistics.PlayerStatistic;
 import misat11.bw.utils.*;
+import misat11.lib.nms.Hologram;
 import misat11.lib.nms.NMSUtils;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -55,7 +56,6 @@ import static misat11.lib.lang.I18n.i18n;
 import static misat11.lib.lang.I18n.i18nonly;
 
 public class Game implements misat11.bw.api.Game {
-
 	private String name;
 	private Location pos1;
 	private Location pos2;
@@ -152,7 +152,11 @@ public class Game implements misat11.bw.api.Game {
 	public static final String ALLOW_BLOCK_FALLING = "allow-block-falling";
 	private InGameConfigBooleanConstants allowBlockFalling = InGameConfigBooleanConstants.INHERIT;
 
+	public static final String HOLO_ABOVE_BED = "holo-above-bed";
+	private InGameConfigBooleanConstants holoAboveBed = InGameConfigBooleanConstants.INHERIT;
+
 	public boolean gameStartItem;
+	private boolean preServerRestart = false;
 	public static final int POST_GAME_WAITING = 3;
 
 	// STATUS
@@ -170,8 +174,13 @@ public class Game implements misat11.bw.api.Game {
 	private Map<Location, ItemStack[]> usedChests = new HashMap<>();
 	private List<SpecialItem> activeSpecialItems = new ArrayList<>();
 	private List<DelayFactory> activeDelays = new ArrayList<>();
+<<<<<<< HEAD
 	private List<ArmorStand> armorStandsInGame = new ArrayList<>();
 	private Map<ItemSpawner, ArmorStand> countdownArmorStands = new HashMap<>();
+=======
+	private List<Hologram> createdHolograms = new ArrayList<>();
+	private Map<ItemSpawner, Hologram> countdownHolograms = new HashMap<>();
+>>>>>>> master
 
 	private Game() {
 
@@ -366,6 +375,11 @@ public class Game implements misat11.bw.api.Game {
 						event.setDropItems(false);
 						player.player.getInventory().addItem(new ItemStack(Material.ENDER_CHEST));
 					}
+
+					if (breakEvent.isDrops()) {
+						event.setDropItems(false);
+						player.player.getInventory().addItem(new ItemStack(Material.ENDER_CHEST));
+					}
 				}
 			}
 
@@ -378,7 +392,7 @@ public class Game implements misat11.bw.api.Game {
 			}
 			return true;
 		}
-		
+
 		Location loc = block.getLocation();
 		if (region.isBedBlock(block.getState())) {
 			if (!region.isBedHead(block.getState())) {
@@ -451,7 +465,7 @@ public class Game implements misat11.bw.api.Game {
 		return null;
 	}
 
-	protected void bedDestroyed(Location loc, Player broker, boolean isItBedBlock) {
+	private void bedDestroyed(Location loc, Player broker, boolean isItBedBlock) {
 		if (status == GameStatus.RUNNING) {
 			for (CurrentTeam team : teamsInGame) {
 				if (team.teamInfo.bed.equals(loc)) {
@@ -470,6 +484,17 @@ public class Game implements misat11.bw.api.Game {
 								Main.getConfigurator().config.getString("sounds.on_bed_destroyed"),
 								Sounds.ENTITY_ENDER_DRAGON_GROWL, 1, 1);
 					}
+
+					if (team.hasBedHolo()) {
+						team.getBedHolo().setLine(0, i18nonly(
+								isItBedBlock ? "protect_your_bed_destroyed" : "protect_your_target_destroyed"));
+						team.getBedHolo().addViewers(team.getConnectedPlayers());
+					}
+
+					if (team.hasProtectHolo()) {
+						team.getProtectHolo().destroy();
+					}
+
 					BedwarsTargetBlockDestroyedEvent targetBlockDestroyed = new BedwarsTargetBlockDestroyedEvent(this,
 							broker, team);
 					Main.getInstance().getServer().getPluginManager().callEvent(targetBlockDestroyed);
@@ -580,7 +605,8 @@ public class Game implements misat11.bw.api.Game {
 			return;
 		}
 
-		BedwarsPlayerLeaveEvent playerLeaveEvent = new BedwarsPlayerLeaveEvent(this, player.player, getPlayerTeam(player));
+		BedwarsPlayerLeaveEvent playerLeaveEvent = new BedwarsPlayerLeaveEvent(this, player.player,
+				getPlayerTeam(player));
 		Main.getInstance().getServer().getPluginManager().callEvent(playerLeaveEvent);
 
 		if (players.contains(player)) {
@@ -596,6 +622,7 @@ public class Game implements misat11.bw.api.Game {
 				.replace("%players%", Integer.toString(players.size()))
 				.replaceAll("%maxplayers%", Integer.toString(calculatedMaxPlayers));
 		statusbar.removePlayer(player.player);
+		createdHolograms.forEach(holo -> holo.removeViewer(player.player));
 		player.player.sendMessage(message);
 		player.player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
 		if (status == GameStatus.RUNNING || status == GameStatus.WAITING) {
@@ -613,8 +640,11 @@ public class Game implements misat11.bw.api.Game {
 				}
 			}
 		}
-		for (GamePlayer p : players) {
-			p.player.sendMessage(message);
+
+		if (!preServerRestart) {
+			for (GamePlayer p : players) {
+				p.player.sendMessage(message);
+			}
 		}
 
 		if (Main.isPlayerStatisticsEnabled()) {
@@ -624,8 +654,11 @@ public class Game implements misat11.bw.api.Game {
 			Main.getPlayerStatisticsManager().unloadStatistic(player.player);
 		}
 		if (players.isEmpty()) {
-			BedWarsPlayerLastLeaveEvent playerLastLeaveEvent = new BedWarsPlayerLastLeaveEvent(this, player.player, getPlayerTeam(player));
-			Main.getInstance().getServer().getPluginManager().callEvent(playerLastLeaveEvent);
+			if (!preServerRestart) {
+				BedWarsPlayerLastLeaveEvent playerLastLeaveEvent = new BedWarsPlayerLastLeaveEvent(this, player.player,
+						getPlayerTeam(player));
+				Main.getInstance().getServer().getPluginManager().callEvent(playerLastLeaveEvent);
+			}
 
 			if (status != GameStatus.WAITING) {
 				afterRebuild = GameStatus.WAITING;
@@ -708,8 +741,7 @@ public class Game implements misat11.bw.api.Game {
 			for (Map<String, Object> spawner : spawners) {
 				ItemSpawner sa = new ItemSpawner(readLocationFromString(game.world, (String) spawner.get("location")),
 						Main.getSpawnerType(((String) spawner.get("type")).toLowerCase()),
-						(String) spawner.get("customName"),
-						((Boolean) spawner.getOrDefault("hologramEnabled", true)),
+						(String) spawner.get("customName"), ((Boolean) spawner.getOrDefault("hologramEnabled", true)),
 						((Number) spawner.getOrDefault("startLevel", 1)).doubleValue());
 				game.spawners.add(sa);
 			}
@@ -779,6 +811,7 @@ public class Game implements misat11.bw.api.Game {
 				configMap.getString("constant." + REMOVE_UNUSED_TARGET_BLOCKS, "inherit"));
 		game.allowBlockFalling = readBooleanConstant(
 				configMap.getString("constants." + ALLOW_BLOCK_FALLING, "inherit"));
+		game.holoAboveBed = readBooleanConstant(configMap.getString("constant." + HOLO_ABOVE_BED, "inherit"));
 
 		game.arenaTime = ArenaTime.valueOf(configMap.getString("arenaTime", ArenaTime.WORLD.name()).toUpperCase());
 		game.arenaWeather = loadWeather(configMap.getString("arenaWeather", "default").toUpperCase());
@@ -956,6 +989,7 @@ public class Game implements misat11.bw.api.Game {
 				writeBooleanConstant(damageWhenPlayerIsNotInArena));
 		configMap.set("constant." + REMOVE_UNUSED_TARGET_BLOCKS, writeBooleanConstant(removeUnusedTargetBlocks));
 		configMap.set("constants." + ALLOW_BLOCK_FALLING, writeBooleanConstant(allowBlockFalling));
+		configMap.set("constant." + HOLO_ABOVE_BED, writeBooleanConstant(holoAboveBed));
 
 		configMap.set("arenaTime", arenaTime.name());
 		configMap.set("arenaWeather", arenaWeather == null ? "default" : arenaWeather.name());
@@ -1055,7 +1089,8 @@ public class Game implements misat11.bw.api.Game {
 				}
 
 				if (isBungeeEnabled()) {
-					BungeeUtils.sendMessage(kickPlayer.player, i18n("game_kicked_by_vip").replace("%arena%", Game.this.name));
+					BungeeUtils.sendMessage(kickPlayer.player,
+							i18n("game_kicked_by_vip").replace("%arena%", Game.this.name));
 				} else {
 					kickPlayer.player.sendMessage(i18n("game_kicked_by_vip").replace("%arena%", this.name));
 				}
@@ -1073,7 +1108,6 @@ public class Game implements misat11.bw.api.Game {
 		GamePlayer gPlayer = Main.getPlayerGameProfile(player);
 		gPlayer.changeGame(this);
 	}
-
 
 	public void leaveFromGame(Player player) {
 		if (status == GameStatus.DISABLED) {
@@ -1334,7 +1368,7 @@ public class Game implements misat11.bw.api.Game {
 				}
 			}
 
-			if (teamsInGame.size() > 1) {
+			if (teamsInGame.size() > 1 && players.size() >= getMinPlayers()) {
 				if (countdown == 0) {
 					nextCountdown = gameTime;
 					nextStatus = GameStatus.RUNNING;
@@ -1436,7 +1470,7 @@ public class Game implements misat11.bw.api.Game {
 							}
 						}
 					}
-					
+
 					for (ItemSpawner spawner : spawners) {
 						UpgradeStorage storage = UpgradeRegistry.getUpgrade("spawner");
 						if (storage != null) {
@@ -1445,55 +1479,18 @@ public class Game implements misat11.bw.api.Game {
 					}
 
 					if (getOriginalOrInheritedSpawnerHolograms()) {
-						boolean countdownEnabled = getOriginalOrInheritedSpawnerHologramsCountdown();
 						for (ItemSpawner spawner : spawners) {
 							if (spawner.getHologramEnabled()) {
 								Location loc = spawner.loc.clone().add(0,
 										Main.getConfigurator().config.getDouble("spawner-holo-height", 0.25), 0);
-								if (countdownEnabled) {
-									loc.add(0, 0.30, 0);
-								}
-								ArmorStand stand = (ArmorStand) loc.getWorld().spawnEntity(loc, EntityType.ARMOR_STAND);
-
-								stand.setGravity(false);
-								stand.setCanPickupItems(false);
-								stand.setCustomName(spawner.type.getItemBoldName());
-								stand.setCustomNameVisible(true);
-								stand.setVisible(false);
-								stand.setSmall(true);
-
-								try {
-									stand.setMarker(true);
-								} catch (Throwable ignored) {
-								}
-
-								armorStandsInGame.add(stand);
-								Main.registerGameEntity(stand, this);
-
-								if (countdownEnabled) {
-									loc = spawner.loc.clone().add(0,
-											Main.getConfigurator().config.getDouble("spawner-holo-height", 0.25), 0);
-									ArmorStand countdownStand = (ArmorStand) loc.getWorld().spawnEntity(loc,
-											EntityType.ARMOR_STAND);
-
-									countdownStand.setGravity(false);
-									countdownStand.setCanPickupItems(false);
-									countdownStand.setCustomName(
-											spawner.type.getInterval() < 2 ? i18nonly("every_second_spawning")
-													: i18nonly("countdown_spawning").replace("%seconds%",
+								Hologram holo = NMSUtils.spawnHologram(getConnectedPlayers(), loc,
+										spawner.type.getItemBoldName());
+								createdHolograms.add(holo);
+								if (getOriginalOrInheritedSpawnerHologramsCountdown()) {
+									holo.addLine(spawner.type.getInterval() < 2 ? i18nonly("every_second_spawning")
+											: i18nonly("countdown_spawning").replace("%seconds%",
 													Integer.toString(spawner.type.getInterval())));
-									countdownStand.setCustomNameVisible(true);
-									countdownStand.setVisible(false);
-									countdownStand.setSmall(true);
-
-									try {
-										countdownStand.setMarker(true);
-									} catch (Throwable ignored) {
-									}
-
-									armorStandsInGame.add(countdownStand);
-									countdownArmorStands.put(spawner, countdownStand);
-									Main.registerGameEntity(countdownStand, this);
+									countdownHolograms.put(spawner, holo);
 								}
 							}
 						}
@@ -1551,6 +1548,26 @@ public class Game implements misat11.bw.api.Game {
 									block.setType(Material.AIR);
 								}
 							}
+						}
+					}
+
+					if (getOriginalOrInheritedHoloAboveBed()) {
+						for (CurrentTeam team : teamsInGame) {
+							Block bed = team.teamInfo.bed.getBlock();
+							Location loc = team.teamInfo.bed.clone().add(0.5, 1.5, 0.5);
+							boolean isBlockTypeBed = region.isBedBlock(bed.getState());
+							List<Player> enemies = getConnectedPlayers();
+							enemies.removeAll(team.getConnectedPlayers());
+							Hologram holo = NMSUtils.spawnHologram(enemies, loc,
+									i18nonly(isBlockTypeBed ? "destroy_this_bed" : "destroy_this_target")
+											.replace("%teamcolor%", team.teamInfo.color.chatColor.toString()));
+							createdHolograms.add(holo);
+							team.setBedHolo(holo);
+							Hologram protectHolo = NMSUtils.spawnHologram(team.getConnectedPlayers(), loc,
+									i18nonly(isBlockTypeBed ? "protect_your_bed" : "protect_your_target")
+											.replace("%teamcolor%", team.teamInfo.color.chatColor.toString()));
+							createdHolograms.add(protectHolo);
+							team.setProtectHolo(protectHolo);
 						}
 					}
 
@@ -1657,23 +1674,23 @@ public class Game implements misat11.bw.api.Game {
 							if (getOriginalOrInheritedSpawnerHolograms()
 									&& getOriginalOrInheritedSpawnerHologramsCountdown() && cycle > 1) {
 								int modulo = cycle - elapsedTime % cycle;
-								countdownArmorStands.get(spawner).setCustomName(
+								countdownHolograms.get(spawner).setLine(1,
 										i18nonly("countdown_spawning").replace("%seconds%", Integer.toString(modulo)));
 							}
 						}
 
 						if ((elapsedTime % cycle) == 0) {
 							int calculatedStack = 1;
-								double currentLevel = spawner.getCurrentLevel();
-								calculatedStack = (int) currentLevel;
+							double currentLevel = spawner.getCurrentLevel();
+							calculatedStack = (int) currentLevel;
 
-								/* Allow half level */
-								if ((currentLevel % 1) != 0) {
-									int a = elapsedTime / cycle;
-									if ((a % 2) == 0) {
-										calculatedStack++;
-									}
+							/* Allow half level */
+							if ((currentLevel % 1) != 0) {
+								int a = elapsedTime / cycle;
+								if ((a % 2) == 0) {
+									calculatedStack++;
 								}
+							}
 
 							BedwarsResourceSpawnEvent resourceSpawnEvent = new BedwarsResourceSpawnEvent(this, spawner,
 									type.getStack(calculatedStack));
@@ -1746,6 +1763,7 @@ public class Game implements misat11.bw.api.Game {
 			}
 
 			if (isBungeeEnabled() && !getConnectedPlayers().isEmpty()) {
+<<<<<<< HEAD
 				kickAllPlayers();
 			}
 
@@ -1760,10 +1778,30 @@ public class Game implements misat11.bw.api.Game {
 								.dispatchCommand(Main.getInstance().getServer().getConsoleSender(), "restart");
 					} else if (isBungeeEnabled() && Main.getConfigurator().config.getBoolean("bungee.serverStop")) {
 						Bukkit.shutdown();
-					}
+=======
+				preServerRestart = true;
+
+				BedWarsServerRestartEvent serverRestartEvent = new BedWarsServerRestartEvent();
+				Main.getInstance().getServer().getPluginManager().callEvent(serverRestartEvent);
+
+				if (!getConnectedPlayers().isEmpty()) {
+					kickAllPlayers();
 				}
 
-			}.runTaskLater(Main.getInstance(), 50);
+				new BukkitRunnable() {
+					@Override
+					public void run() {
+						if (Main.getConfigurator().config.getBoolean("bungee.serverRestart")) {
+							Main.getInstance().getServer()
+									.dispatchCommand(Main.getInstance().getServer().getConsoleSender(), "restart");
+						} else if (Main.getConfigurator().config.getBoolean("bungee.serverStop")) {
+							Bukkit.shutdown();
+						}
+>>>>>>> master
+					}
+
+				}.runTaskLater(Main.getInstance(), 70);
+			}
 		}
 	}
 
@@ -1815,18 +1853,6 @@ public class Game implements misat11.bw.api.Game {
 		}
 		usedChests.clear();
 
-		// Armor Stands destroy
-		for (ArmorStand stand : armorStandsInGame) {
-			Chunk chunk = stand.getLocation().getChunk();
-			if (!chunk.isLoaded()) {
-				chunk.load();
-			}
-			stand.remove();
-			Main.unregisterGameEntity(stand);
-		}
-		armorStandsInGame.clear();
-		countdownArmorStands.clear();
-		
 		// Remove remaining entities registered by other plugins
 		for (Entity entity : Main.getGameEntities(this)) {
 			Chunk chunk = entity.getLocation().getChunk();
@@ -1837,8 +1863,15 @@ public class Game implements misat11.bw.api.Game {
 			Main.unregisterGameEntity(entity);
 		}
 
+		// Holograms destroy
+		for (Hologram holo : createdHolograms) {
+			holo.destroy();
+		}
+		createdHolograms.clear();
+		countdownHolograms.clear();
+
 		UpgradeRegistry.clearAll(this);
-		
+
 		BedwarsPostRebuildingEvent postRebuildingEvent = new BedwarsPostRebuildingEvent(this);
 		Main.getInstance().getServer().getPluginManager().callEvent(postRebuildingEvent);
 
@@ -2880,6 +2913,7 @@ public class Game implements misat11.bw.api.Game {
 		respawnProtectionMap.remove(player);
 	}
 
+	@Override
 	public boolean isProtectionActive(Player player) {
 		return (respawnProtectionMap.containsKey(player));
 	}
@@ -2889,5 +2923,20 @@ public class Game implements misat11.bw.api.Game {
 		gamePlayerList.removeIf(GamePlayer::canJoinFullGame);
 
 		return gamePlayerList;
+	}
+
+	@Override
+	public InGameConfigBooleanConstants getHoloAboveBed() {
+		return holoAboveBed;
+	}
+
+	@Override
+	public boolean getOriginalOrInheritedHoloAboveBed() {
+		return holoAboveBed.isOriginal() ? holoAboveBed.getValue()
+				: Main.getConfigurator().config.getBoolean(HOLO_ABOVE_BED);
+	}
+
+	public void setHoloAboveBed(InGameConfigBooleanConstants holoAboveBed) {
+		this.holoAboveBed = holoAboveBed;
 	}
 }

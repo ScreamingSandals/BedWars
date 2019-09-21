@@ -1,6 +1,8 @@
 package misat11.bw.utils;
 
 import misat11.bw.Main;
+import org.bukkit.Color;
+import org.bukkit.FireworkEffect;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -27,77 +29,39 @@ public class Configurator {
 		this.main = main;
 	}
 
+	/**
+	 * Move this out of Configurator
+	 */
+	@Deprecated
 	private void configMigration() {
-		if (config.getInt("version") < 2) {
-			main.getLogger().info("Migrating config from version 1 to version 2 ...");
-			if (Main.isLegacy()) {
-				config.set("resources.bronze.material", "CLAY_BRICK");
-			} else {
-				config.set("resources.bronze.material", "BRICK");
+		if (shopconfig.isSet("shop-items")) {
+			main.getLogger().info("Migrating shop.yml from version 1 to version 2 ...");
+
+			List<Map<String, Object>> newData = new ArrayList<>();
+
+			Set<String> s = Main.getConfigurator().shopconfig.getConfigurationSection("shop-items").getKeys(false);
+
+			for (String i : s) {
+				ConfigurationSection category = Main.getConfigurator().shopconfig
+						.getConfigurationSection("shop-items." + i);
+				ItemStack categoryItem = new ItemStack(Material.valueOf(category.getString("item")), 1,
+						(short) category.getInt("damage", 0));
+				ItemMeta categoryItemMeta = categoryItem.getItemMeta();
+				categoryItemMeta.setLore(category.getStringList("lore"));
+				categoryItemMeta.setDisplayName(category.getString("name"));
+				categoryItem.setItemMeta(categoryItemMeta);
+
+				Map<String, Object> map = new HashMap<>();
+
+				map.put("stack", categoryItem);
+				map.put("items", category.getList("items"));
+
+				newData.add(map);
 			}
-			config.set("resources.bronze.interval", config.getInt("spawners.bronze", 1));
-			config.set("resources.bronze.name", "Bronze");
-			config.set("resources.bronze.translate", "resource_bronze");
-			config.set("resources.bronze.color", "DARK_RED");
-			config.set("resources.bronze.spread", 1.0);
 
-			config.set("resources.iron.material", "IRON_INGOT");
-			config.set("resources.iron.interval", config.getInt("spawners.iron", 10));
-			config.set("resources.iron.name", "Iron");
-			config.set("resources.iron.translate", "resource_iron");
-			config.set("resources.iron.color", "GRAY");
-			config.set("resources.iron.spread", 1.0);
+			shopconfig.set("data", newData);
 
-			config.set("resources.gold.material", "GOLD_INGOT");
-			config.set("resources.gold.interval", config.getInt("spawners.gold", 20));
-			config.set("resources.gold.name", "Gold");
-			config.set("resources.gold.translate", "resource_gold");
-			config.set("resources.gold.color", "GOLD");
-			config.set("resources.gold.spread", 1.0);
-
-			config.set("version", 2);
-
-			config.set("spawners", null);
-
-			try {
-				config.save(configf);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			main.getLogger().info("Config successfully migrated from version 1 to version 2!");
-		}
-
-		if (shopconfig.getInt("version") < 2) {
-			shopconfig.set("version", 2);
-			if (shopconfig.isSet("shop-items")) {
-				main.getLogger().info("Migrating shop.yml from version 1 to version 2 ...");
-
-				List<Map<String, Object>> newData = new ArrayList<>();
-
-				Set<String> s = Main.getConfigurator().shopconfig.getConfigurationSection("shop-items").getKeys(false);
-
-				for (String i : s) {
-					ConfigurationSection category = Main.getConfigurator().shopconfig
-							.getConfigurationSection("shop-items." + i);
-					ItemStack categoryItem = new ItemStack(Material.valueOf(category.getString("item")), 1,
-							(short) category.getInt("damage", 0));
-					ItemMeta categoryItemMeta = categoryItem.getItemMeta();
-					categoryItemMeta.setLore(category.getStringList("lore"));
-					categoryItemMeta.setDisplayName(category.getString("name"));
-					categoryItem.setItemMeta(categoryItemMeta);
-
-					Map<String, Object> map = new HashMap<>();
-
-					map.put("stack", categoryItem);
-					map.put("items", category.getList("items"));
-
-					newData.add(map);
-				}
-
-				shopconfig.set("data", newData);
-
-				shopconfig.set("shop-items", null);
-			}
+			shopconfig.set("shop-items", null);
 
 			try {
 				shopconfig.save(shopconfigf);
@@ -109,6 +73,7 @@ public class Configurator {
 	}
 
 	public void createFiles() {
+		datafolder.mkdirs();
 
 		configf = new File(datafolder, "config.yml");
 		shopconfigf = new File(datafolder, "shop.yml");
@@ -116,14 +81,13 @@ public class Configurator {
 		recordconfigf = new File(datafolder, "record.yml");
 
 		if (!configf.exists()) {
-			// Think about config.yml and config_legacy.yml
-			if (Main.isLegacy()) {
-				main.saveResource("config_legacy.yml", false);
-				new File(datafolder, "config_legacy.yml").renameTo(configf);
-			} else {
-				main.saveResource("config.yml", false);
+			try {
+				configf.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
 		}
+		/* Move this out of Configurator */
 		if (!shopconfigf.exists()) {
 			if (Main.isLegacy()) {
 				main.saveResource("shop_legacy.yml", false);
@@ -133,10 +97,18 @@ public class Configurator {
 			}
 		}
 		if (!signconfigf.exists()) {
-			main.saveResource("sign.yml", false);
+			try {
+				signconfigf.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 		if (!recordconfigf.exists()) {
-			main.saveResource("record.yml", false);
+			try {
+				recordconfigf.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 		config = new YamlConfiguration();
 		shopconfig = new YamlConfiguration();
@@ -155,6 +127,7 @@ public class Configurator {
 
 		AtomicBoolean modify = new AtomicBoolean(false);
 		checkOrSetConfig(modify, "locale", "en");
+
 		checkOrSetConfig(modify, "allow-crafting", false);
 		checkOrSetConfig(modify, "keep-inventory-on-death", false);
 		checkOrSetConfig(modify, "in-lobby-colored-leather-by-team", true);
@@ -180,10 +153,17 @@ public class Configurator {
 		checkOrSetConfig(modify, "player-respawn-items", false);
 		checkOrSetConfig(modify, "gived-game-start-items", new ArrayList<>());
 		checkOrSetConfig(modify, "gived-player-respawn-items", new ArrayList<>());
-		checkOrSetConfig(modify, "allowed-commands", new ArrayList<>());
 		checkOrSetConfig(modify, "disable-hunger", false);
 		checkOrSetConfig(modify, "automatic-coloring-in-shop", true);
+		checkOrSetConfig(modify, "sell-max-64-per-click-in-shop", true);
 		checkOrSetConfig(modify, "destroy-placed-blocks-by-explosion", true);
+<<<<<<< HEAD
+=======
+		checkOrSetConfig(modify, "holo-above-bed", true);
+
+		checkOrSetConfig(modify, "allowed-commands", new ArrayList<>());
+		checkOrSetConfig(modify, "change-allowed-commands-to-blacklist", false);
+>>>>>>> master
 
 		checkOrSetConfig(modify, "bungee.enabled", false);
 		checkOrSetConfig(modify, "bungee.serverRestart", true);
@@ -208,17 +188,70 @@ public class Configurator {
 		checkOrSetConfig(modify, "items.leavegame", "SLIME_BALL");
 		checkOrSetConfig(modify, "items.startgame", "DIAMOND");
 		checkOrSetConfig(modify, "items.shopback", "BARRIER");
-		checkOrSetConfig(modify, "items.shopcosmetic", "AIR");
+		checkOrSetConfig(modify, "items.shopcosmetic",
+				Main.isLegacy() ? new ItemStack(Material.getMaterial("STAINED_GLASS_PANE"), 1, (short) 7)
+						: "GRAY_STAINED_GLASS_PANE");
 		checkOrSetConfig(modify, "items.pageback", "ARROW");
 		checkOrSetConfig(modify, "items.pageforward", "ARROW");
 
 		checkOrSetConfig(modify, "vault.enable", true);
 		checkOrSetConfig(modify, "vault.reward.kill", 5);
 		checkOrSetConfig(modify, "vault.reward.win", 20);
+<<<<<<< HEAD
 		checkOrSetConfig(modify, "resources", new ArrayList<>());
 
 		checkOrSetConfig(modify, "respawn.protection-enabled", true);
 		checkOrSetConfig(modify, "respawn.protection-time",10);
+=======
+
+		checkOrSetConfig(modify, "resources", new HashMap<String, Object>() {
+			{
+				put("bronze", new HashMap<String, Object>() {
+					{
+						put("material", Main.isLegacy() ? "CLAY_BRICK" : "BRICK");
+						/* Config migration 1 -> 2: if spawners.bronze exists, get this value */
+						put("interval", config.getInt("spawners.bronze", 1));
+						put("name", "Bronze");
+						put("translate", "resource_bronze");
+						put("color", "DARK_RED");
+						put("spread", 1.0);
+					}
+				});
+				put("iron", new HashMap<String, Object>() {
+					{
+						put("material", "IRON_INGOT");
+						/* Config migration 1 -> 2: if spawners.iron exists, get this value */
+						put("interval", config.getInt("spawners.iron", 10));
+						put("name", "Iron");
+						put("translate", "resource_iron");
+						put("color", "GRAY");
+						put("spread", 1.0);
+					}
+				});
+				put("gold", new HashMap<String, Object>() {
+					{
+						put("material", "GOLD_INGOT");
+						/* Config migration 1 -> 2: if spawners.gold exists, get this value */
+						put("interval", config.getInt("spawners.gold", 20));
+						put("name", "Gold");
+						put("translate", "resource_gold");
+						put("color", "GOLD");
+						put("spread", 1.0);
+					}
+				});
+			}
+		});
+		if (config.contains("spawners")) {
+			/* Config migration 1 -> 2: After creating resources, remove old spawners */
+			modify.set(true);
+			config.set("spawners", null);
+		}
+		
+		System.out.println(config.get("resources"));
+
+		checkOrSetConfig(modify, "respawn.protection-enabled", true);
+		checkOrSetConfig(modify, "respawn.protection-time", 10);
+>>>>>>> master
 
 		checkOrSetConfig(modify, "specials.action-bar-messages", true);
 		checkOrSetConfig(modify, "specials.rescue-platform.is-breakable", false);
@@ -232,11 +265,19 @@ public class Configurator {
 		checkOrSetConfig(modify, "specials.protection-wall.width", 5);
 		checkOrSetConfig(modify, "specials.protection-wall.height", 3);
 		checkOrSetConfig(modify, "specials.protection-wall.distance", 2);
+<<<<<<< HEAD
 		checkOrSetConfig(modify, "specials.protection-wall.material", "CUT_SANDSTONE");
 		checkOrSetConfig(modify, "specials.tntsheep.speed", 4.0);
 		checkOrSetConfig(modify, "specials.tntsheep.follow-range", 10.0);
 		checkOrSetConfig(modify, "specials.tntsheep.max-target-distance", 32);
 		checkOrSetConfig(modify, "specials.tntsheep.explosion-time", 8);
+=======
+		checkOrSetConfig(modify, "specials.protection-wall.material", Main.isLegacy() ? "SANDSTONE" : "CUT_SANDSTONE");
+		checkOrSetConfig(modify, "specials.tnt-sheep.speed", 2.0);
+		checkOrSetConfig(modify, "specials.tnt-sheep.follow-range", 10.0);
+		checkOrSetConfig(modify, "specials.tnt-sheep.max-target-distance", 32);
+		checkOrSetConfig(modify, "specials.tnt-sheep.explosion-time", 8);
+>>>>>>> master
 		checkOrSetConfig(modify, "specials.arrow-blocker.protection-time", 10);
 		checkOrSetConfig(modify, "specials.arrow-blocker.delay", 5);
 		checkOrSetConfig(modify, "specials.warp-powder.teleport-time", 6);
@@ -248,6 +289,10 @@ public class Configurator {
 		checkOrSetConfig(modify, "specials.golem.name-format", "%teamcolor%%team% Golem");
 		checkOrSetConfig(modify, "specials.golem.show-name", true);
 		checkOrSetConfig(modify, "specials.golem.delay", 0);
+<<<<<<< HEAD
+=======
+		checkOrSetConfig(modify, "specials.golem.collidable", false);
+>>>>>>> master
 
 		checkOrSetConfig(modify, "tnt.auto-ignite", false);
 		checkOrSetConfig(modify, "tnt.explosion-time", 8);
@@ -260,7 +305,22 @@ public class Configurator {
 		checkOrSetConfig(modify, "sounds.on_item_buy", "ENTITY_ITEM_PICKUP");
 		checkOrSetConfig(modify, "sounds.on_upgrade_buy", "ENTITY_EXPERIENCE_ORB_PICKUP");
 
+<<<<<<< HEAD
 		checkOrSetConfig(modify, "game-effects.end", new HashMap<String, Object>());
+=======
+		checkOrSetConfig(modify, "game-effects.end", new HashMap<String, Object>() {
+			{
+				put("type", "Firework");
+				put("power", 1);
+				put("effects", new ArrayList<Object>() {
+					{
+						add(FireworkEffect.builder().with(FireworkEffect.Type.BALL).trail(false).flicker(false)
+								.withColor(Color.WHITE).withFade(Color.WHITE).build());
+					}
+				});
+			}
+		});
+>>>>>>> master
 		checkOrSetConfig(modify, "game-effects.start", new HashMap<String, Object>());
 		checkOrSetConfig(modify, "game-effects.kill", new HashMap<String, Object>());
 		checkOrSetConfig(modify, "game-effects.teamkill", new HashMap<String, Object>());
@@ -317,10 +377,33 @@ public class Configurator {
 		checkOrSetConfig(modify, "chat.death-chat", "[DEATH] ");
 
 		checkOrSetConfig(modify, "rewards.enabled", false);
+<<<<<<< HEAD
 		checkOrSetConfig(modify, "rewards.player-win", new ArrayList<>());
 		checkOrSetConfig(modify, "rewards.player-end-game", new ArrayList<>());
 		checkOrSetConfig(modify, "rewards.player-destroy-bed", new ArrayList<>());
 		checkOrSetConfig(modify, "rewards.player-kill", new ArrayList<>());
+=======
+		checkOrSetConfig(modify, "rewards.player-win", new ArrayList<String>() {
+			{
+				add("/example {player} 200");
+			}
+		});
+		checkOrSetConfig(modify, "rewards.player-end-game", new ArrayList<String>() {
+			{
+				add("/example {player} {score}");
+			}
+		});
+		checkOrSetConfig(modify, "rewards.player-destroy-bed", new ArrayList<String>() {
+			{
+				add("/example {player} {score}");
+			}
+		});
+		checkOrSetConfig(modify, "rewards.player-kill", new ArrayList<String>() {
+			{
+				add("/example {player} 10");
+			}
+		});
+>>>>>>> master
 
 		checkOrSetConfig(modify, "lore.generate-automatically", true);
 		checkOrSetConfig(modify, "lore.text",
@@ -336,6 +419,7 @@ public class Configurator {
 		checkOrSetConfig(modify, "breakable.blocks", new ArrayList<>());
 
 		checkOrSetConfig(modify, "version", 2);
+
 		if (modify.get()) {
 			try {
 				config.save(configf);
@@ -351,7 +435,11 @@ public class Configurator {
 
 	private static void checkOrSet(AtomicBoolean modify, FileConfiguration config, String path, Object value) {
 		if (!config.isSet(path)) {
-			config.set(path, value);
+			if (value instanceof Map) {
+				config.createSection(path, (Map<?, ?>) value);
+			} else {
+				config.set(path, value);
+			}
 			modify.set(true);
 		}
 	}

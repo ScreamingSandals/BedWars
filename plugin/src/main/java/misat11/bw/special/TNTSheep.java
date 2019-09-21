@@ -1,5 +1,6 @@
 package misat11.bw.special;
 
+<<<<<<< HEAD
 import misat11.bw.utils.MiscUtils;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
@@ -11,28 +12,41 @@ import org.bukkit.entity.Sheep;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.scheduler.BukkitRunnable;
 
+=======
+>>>>>>> master
 import misat11.bw.Main;
 import misat11.bw.api.Game;
 import misat11.bw.api.Team;
 import misat11.bw.game.TeamColor;
+import misat11.bw.utils.MiscUtils;
 import misat11.lib.nms.NMSUtils;
+import org.bukkit.DyeColor;
+import org.bukkit.Location;
+import org.bukkit.entity.*;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import static misat11.lib.lang.I18n.i18n;
 
 public class TNTSheep extends SpecialItem implements misat11.bw.api.special.TNTSheep {
-
 	private LivingEntity entity;
 	private TNTPrimed tnt;
 	private Location loc;
+	private ItemStack item;
 	private double speed;
 	private double followRange;
 	private double maxTargetDistance;
 	private int explosionTime;
 
+<<<<<<< HEAD
 	public TNTSheep(Game game, Player player, Team team, Location loc,
+=======
+	public TNTSheep(Game game, Player player, Team team, Location loc, ItemStack item,
+>>>>>>> master
 					double speed, double followRange, double maxTargetDistance , int explosionTime) {
 		super(game, player, team);
 		this.loc = loc;
+		this.item = item;
 		this.speed = speed;
 		this.followRange = followRange;
 		this.maxTargetDistance = maxTargetDistance;
@@ -89,6 +103,12 @@ public class TNTSheep extends SpecialItem implements misat11.bw.api.special.TNTS
 		Main.registerGameEntity(sheep, (misat11.bw.game.Game) game);
 		Main.registerGameEntity(tnt, (misat11.bw.game.Game) game);
 
+<<<<<<< HEAD
+=======
+		item.setAmount(item.getAmount() - 1);
+		player.updateInventory();
+
+>>>>>>> master
 		new BukkitRunnable() {
 
 			@Override

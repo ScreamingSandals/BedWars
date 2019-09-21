@@ -353,6 +353,12 @@ public class AdminCommand extends BaseCommand {
 											"arena_info_config_" + game.getAllowBlockFalling().name().toLowerCase(),
 											false)));
 
+							player.sendMessage(i18n("arena_info_config_constant", false)
+									.replace("%constant%", "holoAboveBed")
+									.replace("%value%", i18n(
+											"arena_info_config_" + game.getHoloAboveBed().name().toLowerCase(),
+											false)));
+
 							// NON-BOOLEAN CONSTANTS
 
 							player.sendMessage(i18n("arena_info_config_constant", false)
@@ -444,9 +450,7 @@ public class AdminCommand extends BaseCommand {
 	@Override
 	public void completeTab(List<String> completion, CommandSender sender, List<String> args) {
 		if (args.size() == 1) {
-			for (String gameName : Main.getGameNames()) {
-				completion.add(gameName);
-			}
+			completion.addAll(Main.getGameNames());
 			for (String arena : gc.keySet()) {
 				if (!completion.contains(arena)) {
 					completion.add(arena);
@@ -509,7 +513,7 @@ public class AdminCommand extends BaseCommand {
 						"friendlyfire", "coloredLeatherByTeamInLobby", "keepInventory", "crafting", "gamebossbar",
 						"lobbybossbar", "gamescoreboard", "lobbyscoreboard", "preventspawningmobs", "spawnerholograms",
 						"spawnerDisableMerge", "gamestartitems", "playerrespawnitems", "spawnerhologramscountdown",
-						"damagewhenplayerisnotinarena", "removeunusedtargetblocks"));
+						"damagewhenplayerisnotinarena", "removeunusedtargetblocks", "holoabovebed", "allowblockfall"));
 			}
 			if (args.size() == 4) {
 				completion.addAll(Arrays.asList("true", "false", "inherit"));

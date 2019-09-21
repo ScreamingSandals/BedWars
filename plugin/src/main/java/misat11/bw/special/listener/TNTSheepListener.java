@@ -1,7 +1,18 @@
 package misat11.bw.special.listener;
 
+<<<<<<< HEAD
 import java.util.List;
 
+=======
+import misat11.bw.Main;
+import misat11.bw.api.APIUtils;
+import misat11.bw.api.Game;
+import misat11.bw.api.GameStatus;
+import misat11.bw.api.events.BedwarsApplyPropertyToBoughtItem;
+import misat11.bw.api.special.SpecialItem;
+import misat11.bw.game.GamePlayer;
+import misat11.bw.special.TNTSheep;
+>>>>>>> master
 import misat11.bw.utils.MiscUtils;
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
@@ -17,21 +28,12 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
-import misat11.bw.Main;
-import misat11.bw.api.APIUtils;
-import misat11.bw.api.Game;
-import misat11.bw.api.GameStatus;
-import misat11.bw.api.events.BedwarsApplyPropertyToBoughtItem;
-import misat11.bw.api.special.SpecialItem;
-import misat11.bw.game.GamePlayer;
-import misat11.bw.special.TNTSheep;
+import java.util.List;
 
 public class TNTSheepListener implements Listener {
-
-	public static final String TNT_SHEEP_PREFIX = "Module:TNTSheep:";
+	private static final String TNT_SHEEP_PREFIX = "Module:TNTSheep:";
 
 	@EventHandler
 	public void onTNTSheepRegistered(BedwarsApplyPropertyToBoughtItem event) {
@@ -44,15 +46,15 @@ public class TNTSheepListener implements Listener {
 
 	@EventHandler
 	public void onTNTSheepUsed(PlayerInteractEvent event) {
-		if (event.isCancelled() && event.getAction() != Action.RIGHT_CLICK_AIR) {
-			return;
-		}
-
-		if (!Main.isPlayerInGame(event.getPlayer())) {
-			return;
-		}
-
 		Player player = event.getPlayer();
+		if (!Main.isPlayerInGame(player)) {
+			return;
+		}
+
+<<<<<<< HEAD
+		Player player = event.getPlayer();
+=======
+>>>>>>> master
 		GamePlayer gamePlayer = Main.getPlayerGameProfile(player);
 		Game game = gamePlayer.getGame();
 
@@ -76,7 +78,11 @@ public class TNTSheepListener implements Listener {
 						startLocation = event.getClickedBlock().getRelative(BlockFace.UP).getLocation();
 					}
 					TNTSheep sheep = new TNTSheep(game, player, game.getTeamOfPlayer(player),
+<<<<<<< HEAD
 							startLocation, speed, follow, maxTargetDistance, explosionTime);
+=======
+							startLocation, stack, speed, follow, maxTargetDistance, explosionTime);
+>>>>>>> master
 
 					sheep.spawn();
 				}
@@ -86,12 +92,9 @@ public class TNTSheepListener implements Listener {
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onTNTSheepDamge(EntityDamageByEntityEvent event) {
-		if (event.isCancelled()) {
-			return;
-		}
-
-		if (event.getCause().equals(DamageCause.CUSTOM) || event.getCause().equals(DamageCause.VOID)
+	public void onTNTSheepDamage(EntityDamageByEntityEvent event) {
+		if (event.isCancelled() || event.getCause().equals(DamageCause.CUSTOM)
+				|| event.getCause().equals(DamageCause.VOID)
 				|| event.getCause().equals(DamageCause.FALL)) {
 			return;
 		}
@@ -145,12 +148,8 @@ public class TNTSheepListener implements Listener {
 			GamePlayer gamePlayer = Main.getPlayerGameProfile(player);
 			Game game = gamePlayer.getGame();
 
-			if (event.getRightClicked() == null) {
-				return;
-			}
 			Entity rightClicked = event.getRightClicked();
 			Entity vehicle = rightClicked.getVehicle();
-
 			List<SpecialItem> sheeps = game.getActivedSpecialItems(TNTSheep.class);
 			for (SpecialItem item : sheeps) {
 				if (item instanceof TNTSheep) {
