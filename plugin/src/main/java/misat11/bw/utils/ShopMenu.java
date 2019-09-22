@@ -210,7 +210,7 @@ public class ShopMenu implements Listener {
 						double addLevels = entity.getDouble("levels");
 						itemName = entity.getString("shop-name");
 
-						List<Upgrade> upgrades = storage.findUpgrade(game, customName);
+						List<Upgrade> upgrades = storage.findUpgradeByName(game, customName);
 						BedwarsUpgradeBoughtEvent boughEvent = new BedwarsUpgradeBoughtEvent(game, storage, upgrades,
 								player, addLevels);
 						Bukkit.getPluginManager().callEvent(boughEvent);

@@ -7,6 +7,7 @@ import java.io.File;
 import java.text.DecimalFormat;
 import java.util.*;
 
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.WeatherType;
 import org.bukkit.boss.BarColor;
@@ -160,23 +161,26 @@ public class AdminCommand extends BaseCommand {
 
 							player.sendMessage(i18n("arena_info_spawners", false));
 							for (ItemSpawner spawner : game.getSpawners()) {
-
 								Location loc_spawner = spawner.loc;
-								DecimalFormat numFormat = new DecimalFormat("##");
 								misat11.bw.api.Team team = spawner.getTeam();
-								String spawnerTeam = i18nonly("arena_info_spawner_no_team");
+
+								DecimalFormat numFormat = new DecimalFormat("##");
+
+								String spawnerTeam;
 
 								if (team != null) {
 									spawnerTeam = team.getName();
+								} else {
+									spawnerTeam = i18nonly("arena_info_spawner_no_team");
 								}
 
 								String spawnerM = i18n("arena_info_spawner", false)
 										.replace("%resource%", spawner.type.getItemName())
-										.replace("%x%", numFormat.format(Double.toString(loc_spawner.getX())))
-										.replace("%y%",  numFormat.format(Double.toString(loc_spawner.getY())))
-										.replace("%z%",  numFormat.format(Double.toString(loc_spawner.getZ())))
-										.replace("%yaw%",  numFormat.format(Float.toString(loc_spawner.getYaw())))
-										.replace("%pitch%",  numFormat.format(Float.toString(loc_spawner.getPitch())))
+										.replace("%x%", numFormat.format(loc_spawner.getX()))
+										.replace("%y%",  numFormat.format(loc_spawner.getY()))
+										.replace("%z%",  numFormat.format(loc_spawner.getZ()))
+										.replace("%yaw%",  numFormat.format(loc_spawner.getYaw()))
+										.replace("%pitch%",  numFormat.format(loc_spawner.getPitch()))
 										.replace("%world%", loc_spawner.getWorld().getName())
 										.replace("%team%", spawnerTeam)
 										.replace("%holo%",String.valueOf(spawner.getHologramEnabled()));
@@ -487,7 +491,7 @@ public class AdminCommand extends BaseCommand {
 				for (BarColor type : BarColor.values()) {
 					completion.add(type.name());
 				}
-			} catch (Throwable t) {
+			} catch (Throwable ignored) {
 			}
 		} else if (args.get(1).equalsIgnoreCase("arenaweather") && args.size() == 3) {
 			completion.add("default");

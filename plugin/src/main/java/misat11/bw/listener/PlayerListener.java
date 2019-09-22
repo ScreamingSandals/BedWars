@@ -33,6 +33,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -49,7 +50,7 @@ public class PlayerListener implements Listener {
 			Game game = gVictim.getGame();
 			CurrentTeam victimTeam = game.getPlayerTeam(gVictim);
 			ChatColor victimColor = victimTeam.teamInfo.color.chatColor;
-			List<ItemStack> drops = event.getDrops();
+			List<ItemStack> drops = new ArrayList<>(event.getDrops());
 
 			event.setKeepInventory(game.getOriginalOrInheritedKeepInventory());
 			event.setDroppedExp(0);

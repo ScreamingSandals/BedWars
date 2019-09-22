@@ -267,13 +267,18 @@ public class Game implements misat11.bw.api.Game {
 		this.gameTime = gameTime;
 	}
 
-	public Team getTeamFromName(String name) {
+	public misat11.bw.api.Team getTeamFromName(String name) {
+		Team team = null;
 		for (Team t : getTeams()) {
-			if (t.name.equals(name)) {
-				return t;
+			Bukkit.getLogger().info("Getting ready for team, team is: " + t.name);
+			if (t.name.equalsIgnoreCase(name)) {
+				Bukkit.getLogger().info("Team is true, team is: " + t.name);
+				team = t;
+			} else {
+				Bukkit.getLogger().info("Team is false, team is: " + t.name + " string name is " + name);
 			}
 		}
-		return null;
+		return team;
 	}
 
 	public List<Team> getTeams() {
@@ -608,9 +613,7 @@ public class Game implements misat11.bw.api.Game {
 				getPlayerTeam(player));
 		Main.getInstance().getServer().getPluginManager().callEvent(playerLeaveEvent);
 
-		if (players.contains(player)) {
-			players.remove(player);
-		}
+		players.remove(player);
 		updateSigns();
 
 		if (status == GameStatus.WAITING) {
@@ -622,7 +625,9 @@ public class Game implements misat11.bw.api.Game {
 				.replaceAll("%maxplayers%", Integer.toString(calculatedMaxPlayers));
 		statusbar.removePlayer(player.player);
 		createdHolograms.forEach(holo -> holo.removeViewer(player.player));
-		player.player.sendMessage(message);
+		if (!preServerRestart) {
+			player.player.sendMessage(message);
+		}
 		player.player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
 		if (status == GameStatus.RUNNING || status == GameStatus.WAITING) {
 			CurrentTeam team = getPlayerTeam(player);
@@ -936,7 +941,11 @@ public class Game implements misat11.bw.api.Game {
 			spawnerMap.put("customName", spawner.customName);
 			spawnerMap.put("startLevel", spawner.startLevel);
 			spawnerMap.put("hologramEnabled", spawner.hologramEnabled);
-			spawnerMap.put("team", spawner.getTeam());
+			if (spawner.getTeam() != null) {
+				spawnerMap.put("team", spawner.getTeam().getName());
+			} else {
+				spawnerMap.put("team", null);
+			}
 			nS.add(spawnerMap);
 		}
 		configMap.set("spawners", nS);
@@ -1057,6 +1066,7 @@ public class Game implements misat11.bw.api.Game {
 
 		if (status == GameStatus.REBUILDING) {
 			if (isBungeeEnabled()) {
+				BungeeUtils.movePlayer(player);
 				BungeeUtils.sendMessage(player, i18n("game_is_rebuilding").replace("%arena%", Game.this.name));
 			} else {
 				player.sendMessage(i18n("game_is_rebuilding").replace("%arena%", this.name));
@@ -1066,6 +1076,7 @@ public class Game implements misat11.bw.api.Game {
 
 		if (status == GameStatus.RUNNING || status == GameStatus.GAME_END_CELEBRATING) {
 			if (isBungeeEnabled()) {
+				BungeeUtils.movePlayer(player);
 				BungeeUtils.sendMessage(player, i18n("game_already_running").replace("%arena%", Game.this.name));
 			} else {
 				player.sendMessage(i18n("game_already_running").replace("%arena%", this.name));
@@ -1763,11 +1774,8 @@ public class Game implements misat11.bw.api.Game {
 				rebuilding();
 			}
 
-			if (isBungeeEnabled() && !getConnectedPlayers().isEmpty()) {
+			if (isBungeeEnabled()) {
 				preServerRestart = true;
-
-				BedWarsServerRestartEvent serverRestartEvent = new BedWarsServerRestartEvent();
-				Main.getInstance().getServer().getPluginManager().callEvent(serverRestartEvent);
 
 				if (!getConnectedPlayers().isEmpty()) {
 					kickAllPlayers();
@@ -1777,6 +1785,9 @@ public class Game implements misat11.bw.api.Game {
 					@Override
 					public void run() {
 						if (Main.getConfigurator().config.getBoolean("bungee.serverRestart")) {
+							BedWarsServerRestartEvent serverRestartEvent = new BedWarsServerRestartEvent();
+							Main.getInstance().getServer().getPluginManager().callEvent(serverRestartEvent);
+
 							Main.getInstance().getServer()
 									.dispatchCommand(Main.getInstance().getServer().getConsoleSender(), "restart");
 						} else if (Main.getConfigurator().config.getBoolean("bungee.serverStop")) {
@@ -1784,7 +1795,7 @@ public class Game implements misat11.bw.api.Game {
 						}
 					}
 
-				}.runTaskLater(Main.getInstance(), 70);
+				}.runTaskLater(Main.getInstance(), 30L);
 			}
 		}
 	}

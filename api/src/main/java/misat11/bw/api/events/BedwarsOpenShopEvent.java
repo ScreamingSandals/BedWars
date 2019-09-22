@@ -14,7 +14,6 @@ import misat11.bw.api.GameStore;
  *
  */
 public class BedwarsOpenShopEvent extends Event implements Cancellable {
-
 	private static final HandlerList handlers = new HandlerList();
 	private Entity clickedEntity = null;
 	private Game game = null;

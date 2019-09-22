@@ -135,7 +135,7 @@ public final class UpgradeStorage{
 	 * @param instanceName name of spawner
 	 * @return list of upgrades with same name
 	 */
-	public List<Upgrade> findUpgrade(Game game, String instanceName) {
+	public List<Upgrade> findUpgradeByName(Game game, String instanceName) {
 		List<Upgrade> upgrades = new ArrayList<>();
 		
 		if (upgradeRegistry.containsKey(game)) {

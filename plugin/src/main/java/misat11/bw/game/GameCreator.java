@@ -123,12 +123,12 @@ public class GameCreator {
 									if (args.length >= 6) {
 										misat11.bw.api.Team newTeam = null;
 										for (Team team : game.getTeams()) {
-											if (team.name.equals(args[4])) {
+											if (team.name.equals(args[5])) {
 												newTeam = team;
 											}
 										}
 										if (newTeam == null) {
-											player.sendMessage(i18n("admin_command_invalid_team").replace("%team%", args[4]));
+											player.sendMessage(i18n("admin_command_invalid_team").replace("%team%", args[5]));
 											return false;
 										}
 										response = addSpawner(args[1], player.getLocation(), args[4], Boolean.parseBoolean(args[2]), customLevel, newTeam);
