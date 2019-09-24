@@ -13,12 +13,12 @@ public class MultiverseInventoriesListener implements Listener {
 	@EventHandler
 	public void onInventoryChange(MVInventoryHandlingEvent event) {
 		Player player = event.getPlayer();
-		if (Main.isPlayerGameProfileRegistered(player)) {
+		/*if (Main.isPlayerGameProfileRegistered(player)) {
 			GamePlayer gPlayer = Main.getPlayerGameProfile(player);
 			if (gPlayer.getGame() != null || gPlayer.isTeleportingFromGame_justForInventoryPlugins) {
 				gPlayer.isTeleportingFromGame_justForInventoryPlugins = false;
 				event.setCancelled(true);
 			}
-		}
+		}*/
 	}
 }
