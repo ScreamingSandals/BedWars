@@ -246,6 +246,14 @@ public class PlayerListener implements Listener {
 
 					TNTPrimed tnt = (TNTPrimed) location.getWorld().spawnEntity(location, EntityType.PRIMED_TNT);
 					tnt.setFuseTicks(explosionTime);
+
+					Main.registerGameEntity(tnt, game);
+
+					new BukkitRunnable() {
+						public void run() {
+							Main.unregisterGameEntity(tnt);
+						}
+					}.runTaskLater(Main.getInstance(), explosionTime + 10);
 				}
 			}
 		}

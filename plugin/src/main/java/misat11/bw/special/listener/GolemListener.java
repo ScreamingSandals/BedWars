@@ -63,7 +63,7 @@ public class GolemListener implements Listener {
 						double health = Double.parseDouble(unhidden.split(":")[4]);
 						boolean showName = Boolean.parseBoolean(unhidden.split(":")[5]);
 						int delay = Integer.parseInt(unhidden.split(":")[6]);
-						boolean collidable = Boolean.valueOf((unhidden.split(":")[7]));
+						boolean collidable = Boolean.parseBoolean((unhidden.split(":")[7]));
 						String name = unhidden.split(":", 9)[8];
 						
 						Location location;

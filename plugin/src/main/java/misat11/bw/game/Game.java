@@ -1752,11 +1752,8 @@ public class Game implements misat11.bw.api.Game {
 				rebuilding();
 			}
 
-			if (isBungeeEnabled() && !getConnectedPlayers().isEmpty()) {
+			if (isBungeeEnabled()) {
 				preServerRestart = true;
-
-				BedWarsServerRestartEvent serverRestartEvent = new BedWarsServerRestartEvent();
-				Main.getInstance().getServer().getPluginManager().callEvent(serverRestartEvent);
 
 				if (!getConnectedPlayers().isEmpty()) {
 					kickAllPlayers();
@@ -1766,6 +1763,9 @@ public class Game implements misat11.bw.api.Game {
 					@Override
 					public void run() {
 						if (Main.getConfigurator().config.getBoolean("bungee.serverRestart")) {
+							BedWarsServerRestartEvent serverRestartEvent = new BedWarsServerRestartEvent();
+							Main.getInstance().getServer().getPluginManager().callEvent(serverRestartEvent);
+
 							Main.getInstance().getServer()
 									.dispatchCommand(Main.getInstance().getServer().getConsoleSender(), "restart");
 						} else if (Main.getConfigurator().config.getBoolean("bungee.serverStop")) {
