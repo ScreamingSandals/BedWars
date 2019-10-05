@@ -62,7 +62,7 @@ public class ShopMenu implements Listener {
 		ItemStack cosmeticItem = Main.getConfigurator().readDefinedItem("shopcosmetic", "AIR");
 		options.setCosmeticItem(cosmeticItem);
 
-		options.setRows(Main.getConfigurator().config.getInt("secretShopSetRows", 4));
+		options.setRender_actual_rows(Main.getConfigurator().config.getInt("secretShopSetRows", 6));
 		options.setPrefix(i18nonly("item_shop_name", "[BW] Shop"));
 		options.setGenericShop(true);
 		options.setGenericShopPriceTypeRequired(true);

@@ -111,7 +111,12 @@ public class RescuePlatformListener implements Listener {
 
 		RescuePlatform rescuePlatform = (RescuePlatform) game.getFirstActivedSpecialItemOfPlayer(player, RescuePlatform.class);
 		if (rescuePlatform != null && event.getCause() == EntityDamageEvent.DamageCause.FALL) {
-			event.setCancelled(true);
+			Block block = player.getLocation().getBlock().getRelative(BlockFace.DOWN);
+			if (block != null) {
+				if (block.getType() == rescuePlatform.getMaterial()) {
+					event.setCancelled(true);
+				}
+			}
 		}
 	}
 
@@ -135,7 +140,6 @@ public class RescuePlatformListener implements Listener {
 					if (platformBlock.equals(block) && !checkedPlatform.canBreak()) {
 						event.setCancelled(true);
 					}
-
 				}
 			}
 		}
