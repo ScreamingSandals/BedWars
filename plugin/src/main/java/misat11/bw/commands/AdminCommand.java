@@ -7,7 +7,7 @@ import java.io.File;
 import java.text.DecimalFormat;
 import java.util.*;
 
-import net.md_5.bungee.api.ChatColor;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.WeatherType;
 import org.bukkit.boss.BarColor;
@@ -169,7 +169,7 @@ public class AdminCommand extends BaseCommand {
 								String spawnerTeam;
 
 								if (team != null) {
-									spawnerTeam = team.getName();
+									spawnerTeam = TeamColor.fromApiColor(team.getColor()).chatColor + team.getName();
 								} else {
 									spawnerTeam = i18nonly("arena_info_spawner_no_team");
 								}

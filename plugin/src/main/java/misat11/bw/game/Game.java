@@ -270,12 +270,12 @@ public class Game implements misat11.bw.api.Game {
 	public misat11.bw.api.Team getTeamFromName(String name) {
 		Team team = null;
 		for (Team t : getTeams()) {
-			Bukkit.getLogger().info("Getting ready for team, team is: " + t.name);
-			if (t.name.equalsIgnoreCase(name)) {
-				Bukkit.getLogger().info("Team is true, team is: " + t.name);
+			Bukkit.getLogger().info("Getting ready for team, team is: " + t.getName());
+			if (t.getName().equalsIgnoreCase(name)) {
+				Bukkit.getLogger().info("Team is true, team is: " + t.getName());
 				team = t;
 			} else {
-				Bukkit.getLogger().info("Team is false, team is: " + t.name + " string name is " + name);
+				Bukkit.getLogger().info("Team is false, team is: " + t.getName() + " string name is " + name);
 			}
 		}
 		return team;
@@ -740,17 +740,6 @@ public class Game implements misat11.bw.api.Game {
 		game.lobbySpawn = readLocationFromString(Bukkit.getWorld(configMap.getString("lobbySpawnWorld")),
 				configMap.getString("lobbySpawn"));
 		game.minPlayers = configMap.getInt("minPlayers", 2);
-		if (configMap.isSet("spawners")) {
-			List<Map<String, Object>> spawners = (List<Map<String, Object>>) configMap.getList("spawners");
-			for (Map<String, Object> spawner : spawners) {
-				ItemSpawner sa = new ItemSpawner(readLocationFromString(game.world, (String) spawner.get("location")),
-						Main.getSpawnerType(((String) spawner.get("type")).toLowerCase()),
-						(String) spawner.get("customName"), ((Boolean) spawner.getOrDefault("hologramEnabled", true)),
-						((Number) spawner.getOrDefault("startLevel", 1)).doubleValue(),
-						game.getTeamFromName((String) spawner.get("team")));
-				game.spawners.add(sa);
-			}
-		}
 		if (configMap.isSet("teams")) {
 			for (String teamN : configMap.getConfigurationSection("teams").getKeys(false)) {
 				ConfigurationSection team = configMap.getConfigurationSection("teams").getConfigurationSection(teamN);
@@ -762,6 +751,17 @@ public class Game implements misat11.bw.api.Game {
 				t.spawn = readLocationFromString(game.world, team.getString("spawn"));
 				t.game = game;
 				game.teams.add(t);
+			}
+		}
+		if (configMap.isSet("spawners")) {
+			List<Map<String, Object>> spawners = (List<Map<String, Object>>) configMap.getList("spawners");
+			for (Map<String, Object> spawner : spawners) {
+				ItemSpawner sa = new ItemSpawner(readLocationFromString(game.world, (String) spawner.get("location")),
+						Main.getSpawnerType(((String) spawner.get("type")).toLowerCase()),
+						(String) spawner.get("customName"), ((Boolean) spawner.getOrDefault("hologramEnabled", true)),
+						((Number) spawner.getOrDefault("startLevel", 1)).doubleValue(),
+						game.getTeamFromName((String) spawner.get("team")));
+				game.spawners.add(sa);
 			}
 		}
 		if (configMap.isSet("stores")) {
@@ -933,6 +933,14 @@ public class Game implements misat11.bw.api.Game {
 		configMap.set("lobbySpawn", setLocationToString(lobbySpawn));
 		configMap.set("lobbySpawnWorld", lobbySpawn.getWorld().getName());
 		configMap.set("minPlayers", minPlayers);
+		if (!teams.isEmpty()) {
+			for (Team t : teams) {
+				configMap.set("teams." + t.name + ".color", t.color.name());
+				configMap.set("teams." + t.name + ".maxPlayers", t.maxPlayers);
+				configMap.set("teams." + t.name + ".bed", setLocationToString(t.bed));
+				configMap.set("teams." + t.name + ".spawn", setLocationToString(t.spawn));
+			}
+		}
 		List<Map<String, Object>> nS = new ArrayList<>();
 		for (ItemSpawner spawner : spawners) {
 			Map<String, Object> spawnerMap = new HashMap<>();
@@ -949,14 +957,6 @@ public class Game implements misat11.bw.api.Game {
 			nS.add(spawnerMap);
 		}
 		configMap.set("spawners", nS);
-		if (!teams.isEmpty()) {
-			for (Team t : teams) {
-				configMap.set("teams." + t.name + ".color", t.color.name());
-				configMap.set("teams." + t.name + ".maxPlayers", t.maxPlayers);
-				configMap.set("teams." + t.name + ".bed", setLocationToString(t.bed));
-				configMap.set("teams." + t.name + ".spawn", setLocationToString(t.spawn));
-			}
-		}
 		if (!gameStore.isEmpty()) {
 			List<Map<String, String>> nL = new ArrayList<>();
 			for (GameStore store : gameStore) {
