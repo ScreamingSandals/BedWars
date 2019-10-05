@@ -71,6 +71,7 @@ resource_gold: "Gold"
 countdown_spawning: "&e%seconds% &bseconds"
 every_second_spawning: "&bevery second"
 
+admin_command_mainlobby_info: "&cWARNING&f: You need to execute /bw reload to make Mainlobby work!"
 admin_command_success: "&aCommand executed successfully!"
 admin_command_must_be_in_same_world: "&cAll commands must be called from one world!"
 admin_command_invalid_countdown: "&cDeduction must be within 10 < x < 600 seconds!"

@@ -382,6 +382,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 		new ReloadCommand();
 		new RemoveholoCommand();
 		new StatsCommand();
+		new MainlobbyCommand();
 
 		BwCommandsExecutor cmd = new BwCommandsExecutor();
 		getCommand("bw").setExecutor(cmd);

@@ -386,6 +386,10 @@ public class Configurator {
 		checkOrSetConfig(modify, "breakable.enabled", false);
 		checkOrSetConfig(modify, "breakable.blocks", new ArrayList<>());
 
+		checkOrSetConfig(modify, "mainlobby.enabled", false);
+		checkOrSetConfig(modify, "mainlobby.location", "");
+		checkOrSetConfig(modify, "mainlobby.world", "");
+
 		checkOrSetConfig(modify, "version", 2);
 
 		if (modify.get()) {
@@ -394,6 +398,14 @@ public class Configurator {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+		}
+	}
+
+	public void saveConfig() {
+		try {
+			config.save(configf);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 

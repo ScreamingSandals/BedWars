@@ -71,6 +71,7 @@ resource_gold: "Zlato"
 countdown_spawning: "&e%seconds% &bsekund"
 every_second_spawning: "&bkaždou sekundu"
 
+admin_command_mainlobby_info: "&cUPOZORNĚNÍ&f: Aby mainlobby fungovalo, musíš dát /bw reload!"
 admin_command_success: "&aPříkaz proveden! Změna zapsána!"
 admin_command_must_be_in_same_world: "&cVšechny příkazy musí být provedeny z jednoho světa!"
 admin_command_invalid_countdown: "&cOdpočet musí být v rozmezí 10 < x < 600 sekund!"

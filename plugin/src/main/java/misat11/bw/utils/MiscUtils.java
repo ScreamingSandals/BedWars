@@ -9,6 +9,7 @@ import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -19,7 +20,9 @@ import java.util.Random;
 import static misat11.lib.lang.I18n.i18nonly;
 
 public class MiscUtils {
-    /** From BedWarsRel */
+    /**
+     * From BedWarsRel
+     */
     public static int randInt(int min, int max) {
         Random rand = new Random();
         return rand.nextInt((max - min) + 1) + min;
@@ -153,4 +156,41 @@ public class MiscUtils {
     }
 
     /* End of Special Items */
+
+    public static Location readLocationFromString(World world, String location) {
+        int lpos = 0;
+        double x = 0;
+        double y = 0;
+        double z = 0;
+        float yaw = 0;
+        float pitch = 0;
+        for (String pos : location.split(";")) {
+            lpos++;
+            switch (lpos) {
+                case 1:
+                    x = Double.parseDouble(pos);
+                    break;
+                case 2:
+                    y = Double.parseDouble(pos);
+                    break;
+                case 3:
+                    z = Double.parseDouble(pos);
+                    break;
+                case 4:
+                    yaw = Float.parseFloat(pos);
+                    break;
+                case 5:
+                    pitch = Float.parseFloat(pos);
+                    break;
+                default:
+                    break;
+            }
+        }
+        return new Location(world, x, y, z, yaw, pitch);
+    }
+
+    public static String setLocationToString(Location location) {
+        return location.getX() + ";" + location.getY() + ";" + location.getZ() + ";" + location.getYaw() + ";"
+                + location.getPitch();
+    }
 }

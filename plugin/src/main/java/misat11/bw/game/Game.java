@@ -599,9 +599,8 @@ public class Game implements misat11.bw.api.Game {
 				getPlayerTeam(player));
 		Main.getInstance().getServer().getPluginManager().callEvent(playerLeaveEvent);
 
-		if (players.contains(player)) {
-			players.remove(player);
-		}
+		players.remove(player);
+
 		updateSigns();
 
 		if (status == GameStatus.WAITING) {
@@ -613,8 +612,18 @@ public class Game implements misat11.bw.api.Game {
 				.replaceAll("%maxplayers%", Integer.toString(calculatedMaxPlayers));
 		statusbar.removePlayer(player.player);
 		createdHolograms.forEach(holo -> holo.removeViewer(player.player));
-		player.player.sendMessage(message);
+		if (!preServerRestart) {
+			player.player.sendMessage(message);
+		}
 		player.player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
+
+		if (Main.getConfigurator().config.getBoolean("mainlobby.enabled") && !Main.getConfigurator().config.getBoolean("bungee.enabled")) {
+			Location mainLobbyLocation = MiscUtils.readLocationFromString(
+					Bukkit.getWorld(Main.getConfigurator().config.getString("mainlobby.world")),
+					Main.getConfigurator().config.getString("mainlobby.location"));
+			player.player.teleport(mainLobbyLocation);
+		}
+
 		if (status == GameStatus.RUNNING || status == GameStatus.WAITING) {
 			CurrentTeam team = getPlayerTeam(player);
 			if (team != null) {
@@ -720,16 +729,16 @@ public class Game implements misat11.bw.api.Game {
 				return null;
 			}
 		}
-		game.pos1 = readLocationFromString(game.world, configMap.getString("pos1"));
-		game.pos2 = readLocationFromString(game.world, configMap.getString("pos2"));
-		game.specSpawn = readLocationFromString(game.world, configMap.getString("specSpawn"));
-		game.lobbySpawn = readLocationFromString(Bukkit.getWorld(configMap.getString("lobbySpawnWorld")),
+		game.pos1 = MiscUtils.readLocationFromString(game.world, configMap.getString("pos1"));
+		game.pos2 = MiscUtils.readLocationFromString(game.world, configMap.getString("pos2"));
+		game.specSpawn = MiscUtils.readLocationFromString(game.world, configMap.getString("specSpawn"));
+		game.lobbySpawn = MiscUtils.readLocationFromString(Bukkit.getWorld(configMap.getString("lobbySpawnWorld")),
 				configMap.getString("lobbySpawn"));
 		game.minPlayers = configMap.getInt("minPlayers", 2);
 		if (configMap.isSet("spawners")) {
 			List<Map<String, Object>> spawners = (List<Map<String, Object>>) configMap.getList("spawners");
 			for (Map<String, Object> spawner : spawners) {
-				ItemSpawner sa = new ItemSpawner(readLocationFromString(game.world, (String) spawner.get("location")),
+				ItemSpawner sa = new ItemSpawner(MiscUtils.readLocationFromString(game.world, (String) spawner.get("location")),
 						Main.getSpawnerType(((String) spawner.get("type")).toLowerCase()),
 						(String) spawner.get("customName"), ((Boolean) spawner.getOrDefault("hologramEnabled", true)),
 						((Number) spawner.getOrDefault("startLevel", 1)).doubleValue());
@@ -742,9 +751,9 @@ public class Game implements misat11.bw.api.Game {
 				Team t = new Team();
 				t.color = TeamColor.valueOf(team.getString("color"));
 				t.name = teamN;
-				t.bed = readLocationFromString(game.world, team.getString("bed"));
+				t.bed = MiscUtils.readLocationFromString(game.world, team.getString("bed"));
 				t.maxPlayers = team.getInt("maxPlayers");
-				t.spawn = readLocationFromString(game.world, team.getString("spawn"));
+				t.spawn = MiscUtils.readLocationFromString(game.world, team.getString("spawn"));
 				t.game = game;
 				game.teams.add(t);
 			}
@@ -754,12 +763,12 @@ public class Game implements misat11.bw.api.Game {
 			for (Object store : stores) {
 				if (store instanceof Map) {
 					Map<String, String> map = (Map<String, String>) store;
-					game.gameStore.add(new GameStore(readLocationFromString(game.world, map.get("loc")),
+					game.gameStore.add(new GameStore(MiscUtils.readLocationFromString(game.world, map.get("loc")),
 							map.get("shop"), "true".equals(map.getOrDefault("parent", "true")),
 							EntityType.valueOf(map.getOrDefault("type", "VILLAGER").toUpperCase()),
 							map.getOrDefault("name", ""), map.containsKey("name")));
 				} else if (store instanceof String) {
-					game.gameStore.add(new GameStore(readLocationFromString(game.world, (String) store), null, true,
+					game.gameStore.add(new GameStore(MiscUtils.readLocationFromString(game.world, (String) store), null, true,
 							EntityType.VILLAGER, "", false));
 				}
 			}
@@ -836,43 +845,6 @@ public class Game implements misat11.bw.api.Game {
 		}
 	}
 
-	public static Location readLocationFromString(World world, String location) {
-		int lpos = 0;
-		double x = 0;
-		double y = 0;
-		double z = 0;
-		float yaw = 0;
-		float pitch = 0;
-		for (String pos : location.split(";")) {
-			lpos++;
-			switch (lpos) {
-			case 1:
-				x = Double.parseDouble(pos);
-				break;
-			case 2:
-				y = Double.parseDouble(pos);
-				break;
-			case 3:
-				z = Double.parseDouble(pos);
-				break;
-			case 4:
-				yaw = Float.parseFloat(pos);
-				break;
-			case 5:
-				pitch = Float.parseFloat(pos);
-				break;
-			default:
-				break;
-			}
-		}
-		return new Location(world, x, y, z, yaw, pitch);
-	}
-
-	public static String setLocationToString(Location location) {
-		return location.getX() + ";" + location.getY() + ";" + location.getZ() + ";" + location.getYaw() + ";"
-				+ location.getPitch();
-	}
-
 	public static InGameConfigBooleanConstants readBooleanConstant(String s) {
 		if ("true".equalsIgnoreCase(s)) {
 			return InGameConfigBooleanConstants.TRUE;
@@ -912,16 +884,16 @@ public class Game implements misat11.bw.api.Game {
 		configMap.set("pauseCountdown", pauseCountdown);
 		configMap.set("gameTime", gameTime);
 		configMap.set("world", world.getName());
-		configMap.set("pos1", setLocationToString(pos1));
-		configMap.set("pos2", setLocationToString(pos2));
-		configMap.set("specSpawn", setLocationToString(specSpawn));
-		configMap.set("lobbySpawn", setLocationToString(lobbySpawn));
+		configMap.set("pos1", MiscUtils.setLocationToString(pos1));
+		configMap.set("pos2", MiscUtils.setLocationToString(pos2));
+		configMap.set("specSpawn", MiscUtils.setLocationToString(specSpawn));
+		configMap.set("lobbySpawn", MiscUtils.setLocationToString(lobbySpawn));
 		configMap.set("lobbySpawnWorld", lobbySpawn.getWorld().getName());
 		configMap.set("minPlayers", minPlayers);
 		List<Map<String, Object>> nS = new ArrayList<>();
 		for (ItemSpawner spawner : spawners) {
 			Map<String, Object> spawnerMap = new HashMap<>();
-			spawnerMap.put("location", setLocationToString(spawner.loc));
+			spawnerMap.put("location", MiscUtils.setLocationToString(spawner.loc));
 			spawnerMap.put("type", spawner.type.getConfigKey());
 			spawnerMap.put("customName", spawner.customName);
 			spawnerMap.put("startLevel", spawner.startLevel);
@@ -933,15 +905,15 @@ public class Game implements misat11.bw.api.Game {
 			for (Team t : teams) {
 				configMap.set("teams." + t.name + ".color", t.color.name());
 				configMap.set("teams." + t.name + ".maxPlayers", t.maxPlayers);
-				configMap.set("teams." + t.name + ".bed", setLocationToString(t.bed));
-				configMap.set("teams." + t.name + ".spawn", setLocationToString(t.spawn));
+				configMap.set("teams." + t.name + ".bed", MiscUtils.setLocationToString(t.bed));
+				configMap.set("teams." + t.name + ".spawn", MiscUtils.setLocationToString(t.spawn));
 			}
 		}
 		if (!gameStore.isEmpty()) {
 			List<Map<String, String>> nL = new ArrayList<>();
 			for (GameStore store : gameStore) {
 				Map<String, String> map = new HashMap<>();
-				map.put("loc", setLocationToString(store.getStoreLocation()));
+				map.put("loc", MiscUtils.setLocationToString(store.getStoreLocation()));
 				map.put("shop", store.getShopFile());
 				map.put("parent", store.getUseParent() ? "true" : "false");
 				map.put("type", store.getEntityType().name());
