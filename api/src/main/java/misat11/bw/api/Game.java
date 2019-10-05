@@ -129,6 +129,11 @@ public interface Game {
 	/**
 	 * @return
 	 */
+	Team getTeamFromName(String name);
+
+	/**
+	 * @return
+	 */
 	public List<Team> getAvailableTeams();
 
 	/**

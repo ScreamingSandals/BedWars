@@ -267,15 +267,12 @@ public class Game implements misat11.bw.api.Game {
 		this.gameTime = gameTime;
 	}
 
+	@Override
 	public misat11.bw.api.Team getTeamFromName(String name) {
 		Team team = null;
 		for (Team t : getTeams()) {
-			Bukkit.getLogger().info("Getting ready for team, team is: " + t.getName());
 			if (t.getName().equalsIgnoreCase(name)) {
-				Bukkit.getLogger().info("Team is true, team is: " + t.getName());
 				team = t;
-			} else {
-				Bukkit.getLogger().info("Team is false, team is: " + t.getName() + " string name is " + name);
 			}
 		}
 		return team;

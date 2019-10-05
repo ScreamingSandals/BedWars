@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import misat11.bw.api.ItemSpawnerType;
+import misat11.bw.api.Team;
 import org.bukkit.Bukkit;
 
 import misat11.bw.api.Game;
@@ -15,7 +17,7 @@ import misat11.bw.api.events.BedwarsUpgradeUnregisteredEvent;
  * @author Bedwars Team
  *
  */
-public final class UpgradeStorage{
+public final class UpgradeStorage {
 	private final String upgradeName;
 	private final Class<? extends Upgrade> upgradeClass;
 	
@@ -148,6 +150,18 @@ public final class UpgradeStorage{
 		
 		return upgrades;
 	}
-	
-	
+
+	public List<Upgrade> findUpgradesByTeam(Game game, Team team) {
+		List<Upgrade> upgrades = new ArrayList<>();
+
+		if (upgradeRegistry.containsKey(game)) {
+			for (Upgrade upgrade : upgradeRegistry.get(game)) {
+				if (team == upgrade.getTeam()) {
+					upgrades.add(upgrade);
+				}
+			}
+		}
+
+		return upgrades;
+	}
 }
