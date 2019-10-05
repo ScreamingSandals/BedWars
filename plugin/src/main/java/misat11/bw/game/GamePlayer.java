@@ -84,7 +84,7 @@ public class GamePlayer {
 
 	public void restoreInv() {
 		isTeleportingFromGame_justForInventoryPlugins = true;
-		if (Main.getConfigurator().config.getBoolean("mainlobby.enabled")) {
+		if (!Main.getConfigurator().config.getBoolean("mainlobby.enabled")) {
 			player.teleport(oldinventory.leftLocation);
 		}
 
