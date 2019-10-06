@@ -320,15 +320,6 @@ public class Game implements misat11.bw.api.Game {
 		}
 		region.addBuiltDuringGame(block.getLocation());
 
-		if (block.getType() == Material.ENDER_CHEST) {
-			CurrentTeam team = getPlayerTeam(player);
-			team.addTeamChest(block);
-			String message = i18n("team_chest_placed");
-			for (GamePlayer gp : team.players) {
-				gp.player.sendMessage(message);
-			}
-		}
-
 		return true;
 	}
 
