@@ -2,6 +2,7 @@ package misat11.bw.utils;
 
 import misat11.bw.Main;
 import misat11.bw.api.events.BedwarsOpenTeamSelectionEvent;
+import misat11.bw.api.events.BedwarsPlayerLeaveEvent;
 import misat11.bw.game.Game;
 import misat11.bw.game.GamePlayer;
 import misat11.bw.game.Team;
@@ -27,12 +28,13 @@ import static misat11.lib.lang.I18n.i18nonly;
 public class TeamSelectorInventory implements Listener {
     private Game game;
     private SimpleGuiFormat simpleGuiFormat;
+    private Options options;
     private List<Player> openedForPlayers = new ArrayList<>();
 
     public TeamSelectorInventory(Main plugin, Game game) {
         this.game = game;
 
-        Options options = new Options();
+        options = new Options();
         options.setPrefix(i18nonly("team_selection_name", "Select team - %arena%").replace("%arena%", game.getName()));
         options.setShowPageNumber(false);
         options.setRender_header_start(54); // Disable header
@@ -44,7 +46,7 @@ public class TeamSelectorInventory implements Listener {
             options.setRender_actual_rows(2);
         }
 
-        simpleGuiFormat = new SimpleGuiFormat(options);
+        createData();
 
         Bukkit.getServer().getPluginManager().registerEvents(this, plugin);
     }
@@ -62,21 +64,26 @@ public class TeamSelectorInventory implements Listener {
             return;
         }
 
+        createData();
         simpleGuiFormat.openForPlayer(player);
         openedForPlayers.add(player);
     }
 
-    private SimpleGuiFormat createData() {
+    private void createData() {
+        SimpleGuiFormat simpleGuiFormat = new SimpleGuiFormat(options);
         FormatBuilder builder = new FormatBuilder();
+
         for (Team team : game.getTeams()) {
             ItemStack teamStack = team.color.getWool();
             ItemMeta teamMeta = teamStack.getItemMeta();
-            int playersInTeam = game.getPlayersCountInTeam(team);
+
+            List<GamePlayer> playersInTeam = game.getPlayersInTeam(team);
+            int playersInTeamCount = playersInTeam.size();
 
             teamMeta.setDisplayName(i18nonly("team_select_item")
                     .replace("%teamName%", team.color.chatColor + team.getName())
-                    .replace("%inTeam%", String.valueOf(playersInTeam))
-                    .replace("maxInTeam", String.valueOf(team.maxPlayers)));
+                    .replace("%inTeam%", String.valueOf(playersInTeamCount))
+                    .replace("%maxInTeam%", String.valueOf(team.maxPlayers)));
             teamMeta.setLore(formatLore(team, game));
             teamStack.setItemMeta(teamMeta);
 
@@ -86,22 +93,26 @@ public class TeamSelectorInventory implements Listener {
         simpleGuiFormat.load(builder);
         simpleGuiFormat.generateData();
 
-        return simpleGuiFormat;
+        this.simpleGuiFormat = simpleGuiFormat;
     }
 
     private List<String> formatLore(Team team, Game game) {
         List<String> loreList = new ArrayList<>();
-        int playersInTeam = game.getPlayersCountInTeam(team);
+        List<GamePlayer> playersInTeam = game.getPlayersInTeam(team);
+        int playersInTeamCount = playersInTeam.size();
 
-        if (playersInTeam >= team.maxPlayers) {
+        if (playersInTeamCount >= team.maxPlayers) {
             loreList.add(team.color.chatColor + i18nonly("team_select_item_lore_full"));
         } else {
             loreList.add(team.color.chatColor + i18nonly("click_to_join_team"));
         }
 
-        loreList.add(i18nonly("team_select_item_lore"));
-        for (GamePlayer gamePlayer : game.getPlayersInTeam(team)) {
-            loreList.add(team.color.chatColor + gamePlayer.player.getDisplayName());
+        if (!playersInTeam.isEmpty()) {
+            loreList.add(i18nonly("team_select_item_lore"));
+
+            for (GamePlayer gamePlayer : playersInTeam) {
+                loreList.add(team.color.chatColor + gamePlayer.player.getDisplayName());
+            }
         }
 
         return loreList;
@@ -114,7 +125,8 @@ public class TeamSelectorInventory implements Listener {
                 return;
             }
 
-            guiHolder.setFormat(createData());
+            createData();
+            guiHolder.setFormat(simpleGuiFormat);
             guiHolder.repaint();
         }
     }
@@ -132,8 +144,16 @@ public class TeamSelectorInventory implements Listener {
             game.selectTeam(Main.getPlayerGameProfile(player), team.getName());
             player.closeInventory();
 
-            openedForPlayers.remove(player);
             repaint();
+            openedForPlayers.remove(player);
         }
+    }
+
+    @EventHandler
+    public void onPlayerLeave(BedwarsPlayerLeaveEvent event) {
+        if (event.getGame() != game) {
+            return;
+        }
+        repaint();
     }
 }

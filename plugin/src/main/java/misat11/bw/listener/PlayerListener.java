@@ -38,6 +38,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import static misat11.lib.lang.I18n.i18n;
+import static misat11.lib.lang.I18n.i18nonly;
 
 public class PlayerListener implements Listener {
 
@@ -163,21 +164,33 @@ public class PlayerListener implements Listener {
             }
             NMSUtils.respawn(Main.getInstance(), victim, 5L);
             if (Main.getConfigurator().config.getBoolean("respawn-cooldown.enabled")) {
-                game.makeSpectator(gVictim);
+                game.makeSpectator(gVictim, false);
 
                 new BukkitRunnable() {
                     int livingTime = respawnTime;
                     GamePlayer gamePlayer = gVictim;
+                    Player player = gamePlayer.player;
 
                     @Override
                     public void run() {
                         livingTime--;
+                        if (livingTime > 0) {
+                            Title.send(player, i18nonly("respawn_cooldown_title").replace("%time%", String.valueOf(livingTime)), "");
+                            Sounds.playSound(player, player.getLocation(),
+                                    Main.getConfigurator().config.getString("sounds.on_respawn_cooldown_wait"),
+                                    Sounds.BLOCK_STONE_BUTTON_CLICK_ON, 1, 1);
+                        }
 
                         if (livingTime == 0) {
+                            Sounds.playSound(player, player.getLocation(),
+                                    Main.getConfigurator().config.getString("sounds.on_respawn_cooldown_done"),
+                                    Sounds.UI_BUTTON_CLICK, 1, 1);
                             game.makePlayerFromSpectator(gamePlayer);
+
+                            this.cancel();
                         }
                     }
-                }.runTaskTimer(Main.getInstance(), 1L, 20L);
+                }.runTaskTimer(Main.getInstance(), 20L, 20L);
             }
         }
     }
@@ -204,7 +217,7 @@ public class PlayerListener implements Listener {
                 return;
             }
             if (gPlayer.isSpectator) {
-                event.setRespawnLocation(gPlayer.getGame().makeSpectator(gPlayer));
+                event.setRespawnLocation(gPlayer.getGame().makeSpectator(gPlayer, true));
             } else {
                 event.setRespawnLocation(gPlayer.getGame().getPlayerTeam(gPlayer).teamInfo.spawn);
 

@@ -1130,34 +1130,19 @@ public class Game implements misat11.bw.api.Game {
         return lowest;
     }
 
-    public int getPlayersCountInTeam(Team team) {
-        CurrentTeam current = null;
-        for (CurrentTeam t : teamsInGame) {
-            if (t.teamInfo == team) {
-                current = t;
-                break;
-            }
-        }
-
-        if (current != null) {
-            return current.players.size();
-        }
-        return 0;
-    }
-
     public List<GamePlayer> getPlayersInTeam(Team team) {
         CurrentTeam currentTeam = null;
         for (CurrentTeam cTeam : teamsInGame) {
             if (cTeam.teamInfo == team) {
                 currentTeam = cTeam;
-                break;
             }
         }
 
         if (currentTeam != null) {
             return currentTeam.players;
+        } else {
+            return new ArrayList<>();
         }
-        return null;
     }
 
     private void internalTeamJoin(GamePlayer player, Team teamForJoin) {
@@ -1269,7 +1254,7 @@ public class Game implements misat11.bw.api.Game {
         internalTeamJoin(player, teamForJoin);
     }
 
-    public Location makeSpectator(GamePlayer gamePlayer) {
+    public Location makeSpectator(GamePlayer gamePlayer, boolean leaveItem) {
         gamePlayer.isSpectator = true;
         new BukkitRunnable() {
 
@@ -1287,13 +1272,15 @@ public class Game implements misat11.bw.api.Game {
             }
         }.runTask(Main.getInstance());
 
-        int leavePosition = Main.getConfigurator().config.getInt("hotbar.leave", 8);
-        if (leavePosition >= 0 && leavePosition <= 8) {
-            ItemStack leave = Main.getConfigurator().readDefinedItem("leavegame", "SLIME_BALL");
-            ItemMeta leaveMeta = leave.getItemMeta();
-            leaveMeta.setDisplayName(i18n("leave_from_game_item", false));
-            leave.setItemMeta(leaveMeta);
-            gamePlayer.player.getInventory().setItem(leavePosition, leave);
+        if (leaveItem) {
+            int leavePosition = Main.getConfigurator().config.getInt("hotbar.leave", 8);
+            if (leavePosition >= 0 && leavePosition <= 8) {
+                ItemStack leave = Main.getConfigurator().readDefinedItem("leavegame", "SLIME_BALL");
+                ItemMeta leaveMeta = leave.getItemMeta();
+                leaveMeta.setDisplayName(i18n("leave_from_game_item", false));
+                leave.setItemMeta(leaveMeta);
+                gamePlayer.player.getInventory().setItem(leavePosition, leave);
+            }
         }
         return specSpawn;
 
@@ -1311,7 +1298,7 @@ public class Game implements misat11.bw.api.Game {
                 player.teleport(runningTeam.getTeamSpawn());
                 player.setAllowFlight(false);
                 player.setFlying(false);
-                player.setGameMode(GameMode.SPECTATOR);
+                player.setGameMode(GameMode.SURVIVAL);
                 if (!getOriginalOrInheritedSpectatorGm3()) {
                     player.removePotionEffect(PotionEffectType.INVISIBILITY);
                 }
@@ -1534,7 +1521,7 @@ public class Game implements misat11.bw.api.Game {
                         player.player.getInventory().setBoots(null);
                         Title.send(player.player, gameStartTitle, gameStartSubtitle);
                         if (team == null) {
-                            makeSpectator(player);
+                            makeSpectator(player, true);
                         } else {
                             player.player.teleport(team.teamInfo.spawn);
                             if (getOriginalOrInheritedGameStartItems()) {

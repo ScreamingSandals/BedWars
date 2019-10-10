@@ -40,6 +40,7 @@ game_kicked_by_vip: "&cYou were kicked by VIP player!"
 respawn_protection_remaining: "&aRespawn protection will be gone in &f%time% &aseconds!"
 respawn_protection_end: "&cRespawn protection is gone!"
 there_is_no_empty_game: "&cThere's no game in waiting state. All games are already running!"
+respawn_cooldown_title: "&aRespawn in: &c%time%"
 
 vip_not_enough_players: "&cNot enough players in arena!"
 vip_game_is_full: "&cGame &7%arena% &cis full of VIP players. Please wait for game end!"

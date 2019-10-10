@@ -244,6 +244,8 @@ public class Configurator {
         checkOrSetConfig(modify, "sounds.on_player_kill", "ENTITY_PLAYER_BIG_FALL");
         checkOrSetConfig(modify, "sounds.on_item_buy", "ENTITY_ITEM_PICKUP");
         checkOrSetConfig(modify, "sounds.on_upgrade_buy", "ENTITY_EXPERIENCE_ORB_PICKUP");
+        checkOrSetConfig(modify, "sounds.on_respawn_cooldown_wait", "UI_BUTTON_CLICK");
+        checkOrSetConfig(modify, "sounds.on_respawn_cooldown_done", "ENTITY_PLAYER_LEVELUP");
 
         checkOrSetConfig(modify, "game-effects.end", new HashMap<String, Object>() {
             {
