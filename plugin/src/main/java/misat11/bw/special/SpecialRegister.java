@@ -9,6 +9,7 @@ import misat11.bw.special.listener.MagnetShoesListener;
 import misat11.bw.special.listener.ProtectionWallListener;
 import misat11.bw.special.listener.RescuePlatformListener;
 import misat11.bw.special.listener.TNTSheepListener;
+import misat11.bw.special.listener.TeamChestListener;
 import misat11.bw.special.listener.TrackerListener;
 import misat11.bw.special.listener.TrapListener;
 import misat11.bw.special.listener.WarpPowderListener;
@@ -22,6 +23,7 @@ public class SpecialRegister {
 		plugin.getServer().getPluginManager().registerEvents(new MagnetShoesListener(), plugin);
 		plugin.getServer().getPluginManager().registerEvents(new ProtectionWallListener(), plugin);
 		plugin.getServer().getPluginManager().registerEvents(new RescuePlatformListener(), plugin);
+		plugin.getServer().getPluginManager().registerEvents(new TeamChestListener(), plugin);
 		plugin.getServer().getPluginManager().registerEvents(new TNTSheepListener(), plugin);
 		plugin.getServer().getPluginManager().registerEvents(new TrackerListener(), plugin);
 		plugin.getServer().getPluginManager().registerEvents(new TrapListener(), plugin);

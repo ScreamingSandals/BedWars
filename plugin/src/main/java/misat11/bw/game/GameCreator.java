@@ -28,7 +28,6 @@ import misat11.bw.region.LegacyBedUtils;
 import misat11.bw.utils.TeamJoinMetaDataValue;
 
 public class GameCreator {
-
 	public static final String BEDWARS_TEAM_JOIN_METADATA = "bw-addteamjoin";
 
 	private Game game;

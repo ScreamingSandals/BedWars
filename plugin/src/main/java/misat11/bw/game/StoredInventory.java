@@ -13,7 +13,7 @@ public class StoredInventory {
 	  public Collection<PotionEffect> effects = null;
 	  public int foodLevel = 0;
 	  public ItemStack[] inventory = null;
-	  public Location left = null;
+	  public Location leftLocation = null;
 	  public int level = 0;
 	  public String listName = null;
 	  public GameMode mode = null;

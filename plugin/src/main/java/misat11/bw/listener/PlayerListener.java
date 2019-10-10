@@ -521,14 +521,13 @@ public class PlayerListener implements Listener {
 				if (game.getStatus() == GameStatus.RUNNING) {
 					if (event.getClickedBlock() != null) {
 						if (event.getClickedBlock().getType() == Material.ENDER_CHEST) {
-							event.setCancelled(true);
-
 							Block chest = event.getClickedBlock();
 							CurrentTeam team = game.getTeamOfChest(chest);
 
 							if (team == null) {
 								return;
 							}
+							event.setCancelled(true);
 
 							if (!team.players.contains(gPlayer)) {
 								player.sendMessage(i18n("team_chest_is_not_your"));

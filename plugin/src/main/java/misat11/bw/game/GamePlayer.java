@@ -1,5 +1,6 @@
 package misat11.bw.game;
 
+import misat11.bw.Main;
 import misat11.bw.utils.BungeeUtils;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
@@ -8,7 +9,6 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffect;
 
 public class GamePlayer {
-
 	public final Player player;
 	private Game game = null;
 	private String latestGame = null;
@@ -75,7 +75,7 @@ public class GamePlayer {
 		oldinventory.xp = player.getExp();
 		oldinventory.effects = player.getActivePotionEffects();
 		oldinventory.mode = player.getGameMode();
-		oldinventory.left = player.getLocation();
+		oldinventory.leftLocation = player.getLocation();
 		oldinventory.level = player.getLevel();
 		oldinventory.listName = player.getPlayerListName();
 		oldinventory.displayName = player.getDisplayName();
@@ -84,8 +84,10 @@ public class GamePlayer {
 
 	public void restoreInv() {
 		isTeleportingFromGame_justForInventoryPlugins = true;
-		player.teleport(oldinventory.left);
-		
+		if (!Main.getConfigurator().config.getBoolean("mainlobby.enabled")) {
+			player.teleport(oldinventory.leftLocation);
+		}
+
 		player.getInventory().setContents(oldinventory.inventory);
 		player.getInventory().setArmorContents(oldinventory.armor);
 

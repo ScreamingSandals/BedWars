@@ -272,6 +272,7 @@ public class Configurator {
 		checkOrSetConfig(modify, "specials.golem.show-name", true);
 		checkOrSetConfig(modify, "specials.golem.delay", 0);
 		checkOrSetConfig(modify, "specials.golem.collidable", false);
+		checkOrSetConfig(modify, "specials.teamchest.turn-all-enderchests-to-teamchests", true);
 
 		checkOrSetConfig(modify, "tnt.auto-ignite", false);
 		checkOrSetConfig(modify, "tnt.explosion-time", 8);
@@ -386,6 +387,10 @@ public class Configurator {
 		checkOrSetConfig(modify, "breakable.enabled", false);
 		checkOrSetConfig(modify, "breakable.blocks", new ArrayList<>());
 
+		checkOrSetConfig(modify, "mainlobby.enabled", false);
+		checkOrSetConfig(modify, "mainlobby.location", "");
+		checkOrSetConfig(modify, "mainlobby.world", "");
+
 		checkOrSetConfig(modify, "version", 2);
 
 		if (modify.get()) {
@@ -394,6 +399,14 @@ public class Configurator {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+		}
+	}
+
+	public void saveConfig() {
+		try {
+			config.save(configf);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 
