@@ -51,6 +51,7 @@ public class PlayerListener implements Listener {
             CurrentTeam victimTeam = game.getPlayerTeam(gVictim);
             ChatColor victimColor = victimTeam.teamInfo.color.chatColor;
             List<ItemStack> drops = new ArrayList<>(event.getDrops());
+            int respawnTime = Main.getConfigurator().config.getInt("respawn-cooldown-time", 5);
 
             event.setKeepInventory(game.getOriginalOrInheritedKeepInventory());
             event.setDroppedExp(0);
@@ -160,7 +161,24 @@ public class PlayerListener implements Listener {
                     }
                 }
             }
-            NMSUtils.respawn(Main.getInstance(), victim, 20L);
+            NMSUtils.respawn(Main.getInstance(), victim, 5L);
+            if (Main.getConfigurator().config.getBoolean("respawn-cooldown.enabled")) {
+                game.makeSpectator(gVictim);
+
+                new BukkitRunnable() {
+                    int livingTime = respawnTime;
+                    GamePlayer gamePlayer = gVictim;
+
+                    @Override
+                    public void run() {
+                        livingTime--;
+
+                        if (livingTime == 0) {
+                            game.makePlayerFromSpectator(gamePlayer);
+                        }
+                    }
+                }.runTaskTimer(Main.getInstance(), 1L, 20L);
+            }
         }
     }
 

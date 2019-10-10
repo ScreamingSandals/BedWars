@@ -1269,19 +1269,19 @@ public class Game implements misat11.bw.api.Game {
         internalTeamJoin(player, teamForJoin);
     }
 
-    public Location makeSpectator(GamePlayer player) {
-        player.isSpectator = true;
+    public Location makeSpectator(GamePlayer gamePlayer) {
+        gamePlayer.isSpectator = true;
         new BukkitRunnable() {
 
             @Override
             public void run() {
-                player.player.teleport(specSpawn);
-                player.player.setAllowFlight(true);
-                player.player.setFlying(true);
+                gamePlayer.player.teleport(specSpawn);
+                gamePlayer.player.setAllowFlight(true);
+                gamePlayer.player.setFlying(true);
                 if (getOriginalOrInheritedSpectatorGm3()) {
-                    player.player.setGameMode(GameMode.SPECTATOR);
+                    gamePlayer.player.setGameMode(GameMode.SPECTATOR);
                 } else {
-                    player.player
+                    gamePlayer.player
                             .addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1));
                 }
             }
@@ -1293,10 +1293,30 @@ public class Game implements misat11.bw.api.Game {
             ItemMeta leaveMeta = leave.getItemMeta();
             leaveMeta.setDisplayName(i18n("leave_from_game_item", false));
             leave.setItemMeta(leaveMeta);
-            player.player.getInventory().setItem(leavePosition, leave);
+            gamePlayer.player.getInventory().setItem(leavePosition, leave);
         }
         return specSpawn;
 
+    }
+
+    public void makePlayerFromSpectator(GamePlayer gamePlayer) {
+        Player player = gamePlayer.player;
+        Game game = gamePlayer.getGame();
+        RunningTeam runningTeam = game.getTeamOfPlayer(player);
+
+        gamePlayer.isSpectator = false;
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                player.teleport(runningTeam.getTeamSpawn());
+                player.setAllowFlight(false);
+                player.setFlying(false);
+                player.setGameMode(GameMode.SPECTATOR);
+                if (!getOriginalOrInheritedSpectatorGm3()) {
+                    player.removePotionEffect(PotionEffectType.INVISIBILITY);
+                }
+            }
+        }.runTask(Main.getInstance());
     }
 
     public void setBossbarProgress(int count, int max) {
@@ -1353,7 +1373,6 @@ public class Game implements misat11.bw.api.Game {
         GameStatus nextStatus = status;
 
         if (status == GameStatus.WAITING) {
-
             // Game start item
             if (gameStartItem) {
                 if (players.size() >= getMinPlayers()) {
@@ -1369,19 +1388,25 @@ public class Game implements misat11.bw.api.Game {
                 }
             }
 
-            if (teamsInGame.size() > 1 && players.size() >= getMinPlayers()) {
-                if (countdown == 0) {
-                    nextCountdown = gameTime;
-                    nextStatus = GameStatus.RUNNING;
+            if (players.size() >= getMinPlayers()) {
+                if (!getOriginalOrInheritedJoinRandomTeamAfterLobby()) {
+                    if (teamsInGame.size() > 1) {
+                        nextCountdown = previousCountdown = countdown = pauseCountdown;
+                    }
                 } else {
-                    nextCountdown--;
+                    if (countdown == 0) {
+                        nextCountdown = gameTime;
+                        nextStatus = GameStatus.RUNNING;
+                    } else {
+                        nextCountdown--;
 
-                    if (countdown <= 10 && countdown >= 1 && countdown != previousCountdown) {
-                        for (GamePlayer player : players) {
-                            Title.send(player.player, ChatColor.YELLOW + Integer.toString(countdown), "");
-                            Sounds.playSound(player.player, player.player.getLocation(),
-                                    Main.getConfigurator().config.getString("sounds.on_countdown"),
-                                    Sounds.UI_BUTTON_CLICK, 1, 1);
+                        if (countdown <= 10 && countdown >= 1 && countdown != previousCountdown) {
+                            for (GamePlayer player : players) {
+                                Title.send(player.player, ChatColor.YELLOW + Integer.toString(countdown), "");
+                                Sounds.playSound(player.player, player.player.getLocation(),
+                                        Main.getConfigurator().config.getString("sounds.on_countdown"),
+                                        Sounds.UI_BUTTON_CLICK, 1, 1);
+                            }
                         }
                     }
                 }
