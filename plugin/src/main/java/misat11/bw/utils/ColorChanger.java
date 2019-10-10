@@ -58,16 +58,16 @@ public class ColorChanger implements misat11.bw.api.utils.ColorChanger {
         return itemStack;
     }
 
-	@Override
-	public ItemStack applyColor(misat11.bw.api.TeamColor apiColor, ItemStack stack) {
-		TeamColor color = TeamColor.fromApiColor(apiColor);
-		Material material = stack.getType();
-		if (Main.isLegacy()) {
-			stack = changeLegacyStackColor(stack, color);
-		} else {
-			stack.setType(changeMaterialColor(material, color));
-		}
-		stack = changeLeatherArmorColor(stack, color);
-		return stack;
-	}
+    @Override
+    public ItemStack applyColor(misat11.bw.api.TeamColor apiColor, ItemStack stack) {
+        TeamColor color = TeamColor.fromApiColor(apiColor);
+        Material material = stack.getType();
+        if (Main.isLegacy()) {
+            stack = changeLegacyStackColor(stack, color);
+        } else {
+            stack.setType(changeMaterialColor(material, color));
+        }
+        stack = changeLeatherArmorColor(stack, color);
+        return stack;
+    }
 }

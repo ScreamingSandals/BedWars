@@ -24,93 +24,93 @@ import static misat11.lib.lang.I18n.i18n;
 import static misat11.lib.lang.I18n.i18nonly;
 
 public class ArrowBlockerListener implements Listener {
-	private static final String ARROW_BLOCKER_PREFIX = "Module:ArrowBlocker:";
-	
-	@EventHandler
-	public void onArrowBlockerRegistered(BedwarsApplyPropertyToBoughtItem event) {
-		if (event.getPropertyName().equalsIgnoreCase("arrowblocker")) {
-			ItemStack stack = event.getStack();
-			APIUtils.hashIntoInvisibleString(stack, applyProperty(event));
-		}
-	}
+    private static final String ARROW_BLOCKER_PREFIX = "Module:ArrowBlocker:";
 
-	@EventHandler
-	public void onPlayerUseItem(PlayerInteractEvent event) {
-		Player player = event.getPlayer();
-		if (!Main.isPlayerInGame(player)) {
-			return;
-		}
+    @EventHandler
+    public void onArrowBlockerRegistered(BedwarsApplyPropertyToBoughtItem event) {
+        if (event.getPropertyName().equalsIgnoreCase("arrowblocker")) {
+            ItemStack stack = event.getStack();
+            APIUtils.hashIntoInvisibleString(stack, applyProperty(event));
+        }
+    }
 
-		GamePlayer gPlayer = Main.getPlayerGameProfile(player);
-		Game game = gPlayer.getGame();
+    @EventHandler
+    public void onPlayerUseItem(PlayerInteractEvent event) {
+        Player player = event.getPlayer();
+        if (!Main.isPlayerInGame(player)) {
+            return;
+        }
 
-		if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-			if (game.getStatus() == GameStatus.RUNNING && !gPlayer.isSpectator && event.getItem() != null) {
-				ItemStack stack = event.getItem();
-				String unhidden = APIUtils.unhashFromInvisibleStringStartsWith(stack, ARROW_BLOCKER_PREFIX);
+        GamePlayer gPlayer = Main.getPlayerGameProfile(player);
+        Game game = gPlayer.getGame();
 
-				if (unhidden != null) {
-					if (!game.isDelayActive(player, ArrowBlocker.class)) {
-						event.setCancelled(true);
+        if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            if (game.getStatus() == GameStatus.RUNNING && !gPlayer.isSpectator && event.getItem() != null) {
+                ItemStack stack = event.getItem();
+                String unhidden = APIUtils.unhashFromInvisibleStringStartsWith(stack, ARROW_BLOCKER_PREFIX);
 
-						int protectionTime = Integer.parseInt(unhidden.split(":")[2]);
-						int delay = Integer.parseInt(unhidden.split(":")[3]);
-						ArrowBlocker arrowBlocker = new ArrowBlocker(game, event.getPlayer(),
-								game.getTeamOfPlayer(event.getPlayer()), stack, protectionTime);
+                if (unhidden != null) {
+                    if (!game.isDelayActive(player, ArrowBlocker.class)) {
+                        event.setCancelled(true);
 
-					if (arrowBlocker.isActivated()) {
-						event.getPlayer().sendMessage(i18n("specials_arrow_blocker_already_activated"));
-						return;
-					}
+                        int protectionTime = Integer.parseInt(unhidden.split(":")[2]);
+                        int delay = Integer.parseInt(unhidden.split(":")[3]);
+                        ArrowBlocker arrowBlocker = new ArrowBlocker(game, event.getPlayer(),
+                                game.getTeamOfPlayer(event.getPlayer()), stack, protectionTime);
 
-						if (delay > 0) {
-							DelayFactory delayFactory = new DelayFactory(delay, arrowBlocker, player, game);
-							game.registerDelay(delayFactory);
-						}
+                        if (arrowBlocker.isActivated()) {
+                            event.getPlayer().sendMessage(i18n("specials_arrow_blocker_already_activated"));
+                            return;
+                        }
 
-						arrowBlocker.activate();
-					} else {
-						event.setCancelled(true);
+                        if (delay > 0) {
+                            DelayFactory delayFactory = new DelayFactory(delay, arrowBlocker, player, game);
+                            game.registerDelay(delayFactory);
+                        }
 
-						int delay = game.getActiveDelay(player, ArrowBlocker.class).getRemainDelay();
-						MiscUtils.sendActionBarMessage(player, i18nonly("special_item_delay").replace("%time%", String.valueOf(delay)));
-					}
-				}
-			}
-		}
-	}
+                        arrowBlocker.activate();
+                    } else {
+                        event.setCancelled(true);
 
-	@EventHandler(priority = EventPriority.HIGH)
-	public void onDamage(EntityDamageEvent event) {
-		Entity entity = event.getEntity();
-		if (!(entity instanceof Player)) {
-			return;
-		}
+                        int delay = game.getActiveDelay(player, ArrowBlocker.class).getRemainDelay();
+                        MiscUtils.sendActionBarMessage(player, i18nonly("special_item_delay").replace("%time%", String.valueOf(delay)));
+                    }
+                }
+            }
+        }
+    }
 
-		Player player = ((Player) entity).getPlayer();
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onDamage(EntityDamageEvent event) {
+        Entity entity = event.getEntity();
+        if (!(entity instanceof Player)) {
+            return;
+        }
 
-		if (!Main.isPlayerInGame(player)) {
-			return;
-		}
+        Player player = ((Player) entity).getPlayer();
 
-		GamePlayer gPlayer = Main.getPlayerGameProfile(player);
-		Game game = gPlayer.getGame();
+        if (!Main.isPlayerInGame(player)) {
+            return;
+        }
 
-		if (gPlayer.isSpectator) {
-			return;
-		}
+        GamePlayer gPlayer = Main.getPlayerGameProfile(player);
+        Game game = gPlayer.getGame();
 
-		ArrowBlocker arrowBlocker = (ArrowBlocker) game.getFirstActivedSpecialItemOfPlayer(player, ArrowBlocker.class);
-		if (arrowBlocker != null && event.getCause() == EntityDamageEvent.DamageCause.PROJECTILE) {
-			event.setCancelled(true);
-		}
-	}
+        if (gPlayer.isSpectator) {
+            return;
+        }
 
-	private String applyProperty(BedwarsApplyPropertyToBoughtItem event) {
-		return ARROW_BLOCKER_PREFIX
-				+ MiscUtils.getIntFromProperty(
-				"protection-time", "specials.arrow-blocker.protection-time", event) + ":"
-				+ MiscUtils.getIntFromProperty(
-				"delay", "specials.arrow-blocker.delay", event);
-	}
+        ArrowBlocker arrowBlocker = (ArrowBlocker) game.getFirstActivedSpecialItemOfPlayer(player, ArrowBlocker.class);
+        if (arrowBlocker != null && event.getCause() == EntityDamageEvent.DamageCause.PROJECTILE) {
+            event.setCancelled(true);
+        }
+    }
+
+    private String applyProperty(BedwarsApplyPropertyToBoughtItem event) {
+        return ARROW_BLOCKER_PREFIX
+                + MiscUtils.getIntFromProperty(
+                "protection-time", "specials.arrow-blocker.protection-time", event) + ":"
+                + MiscUtils.getIntFromProperty(
+                "delay", "specials.arrow-blocker.delay", event);
+    }
 }

@@ -5,30 +5,30 @@ import misat11.bw.api.Team;
 import org.bukkit.entity.Player;
 
 public abstract class SpecialItem implements misat11.bw.api.special.SpecialItem {
-	
-	protected Game game;
-	protected Player player;
-	protected Team team;
-	
-	public SpecialItem(Game game, Player player, Team team) {
-		this.game = game;
-		this.player = player;
-		this.team = team;
-	}
 
-	@Override
-	public Game getGame() {
-		return game;
-	}
+    protected Game game;
+    protected Player player;
+    protected Team team;
 
-	@Override
-	public Player getPlayer() {
-		return player;
-	}
+    public SpecialItem(Game game, Player player, Team team) {
+        this.game = game;
+        this.player = player;
+        this.team = team;
+    }
 
-	@Override
-	public Team getTeam() {
-		return team;
-	}
+    @Override
+    public Game getGame() {
+        return game;
+    }
+
+    @Override
+    public Player getPlayer() {
+        return player;
+    }
+
+    @Override
+    public Team getTeam() {
+        return team;
+    }
 
 }

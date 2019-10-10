@@ -4,7 +4,6 @@ import misat11.bw.api.Game;
 import misat11.bw.api.RunningTeam;
 import misat11.bw.api.TeamColor;
 import misat11.lib.nms.Hologram;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -18,162 +17,162 @@ import java.util.List;
 import static misat11.lib.lang.I18n.i18n;
 
 public class CurrentTeam implements RunningTeam {
-	public final Team teamInfo;
-	public final List<GamePlayer> players = new ArrayList<>();
-	private org.bukkit.scoreboard.Team scoreboardTeam;
-	private Inventory chestInventory = Bukkit.createInventory(null, InventoryType.ENDER_CHEST, i18n("team_chest"));
-	private List<Block> chests = new ArrayList<>();
-	private Game game;
-	private Hologram holo;
-	private Hologram protectHolo;
+    public final Team teamInfo;
+    public final List<GamePlayer> players = new ArrayList<>();
+    private org.bukkit.scoreboard.Team scoreboardTeam;
+    private Inventory chestInventory = Bukkit.createInventory(null, InventoryType.ENDER_CHEST, i18n("team_chest"));
+    private List<Block> chests = new ArrayList<>();
+    private Game game;
+    private Hologram holo;
+    private Hologram protectHolo;
 
-	public boolean isBed = true;
+    public boolean isBed = true;
 
-	public CurrentTeam(Team team, Game game) {
-		this.teamInfo = team;
-		this.game = game;
-	}
+    public CurrentTeam(Team team, Game game) {
+        this.teamInfo = team;
+        this.game = game;
+    }
 
-	public boolean isDead() {
-		return players.isEmpty();
-	}
+    public boolean isDead() {
+        return players.isEmpty();
+    }
 
-	public boolean isAlive() {
-		return !players.isEmpty();
-	}
+    public boolean isAlive() {
+        return !players.isEmpty();
+    }
 
-	public org.bukkit.scoreboard.Team getScoreboardTeam() {
-		return scoreboardTeam;
-	}
+    public org.bukkit.scoreboard.Team getScoreboardTeam() {
+        return scoreboardTeam;
+    }
 
-	public void setScoreboardTeam(org.bukkit.scoreboard.Team scoreboardTeam) {
-		this.scoreboardTeam = scoreboardTeam;
-	}
-	
-	public void setBedHolo(Hologram holo) {
-		this.holo = holo;
-	}
-	
-	public Hologram getBedHolo() {
-		return this.holo;
-	}
-	
-	public boolean hasBedHolo() {
-		return this.holo != null;
-	}
-	
-	public void setProtectHolo(Hologram protectHolo) {
-		this.protectHolo = protectHolo;
-	}
-	
-	public Hologram getProtectHolo() {
-		return this.protectHolo;
-	}
-	
-	public boolean hasProtectHolo() {
-		return this.protectHolo != null;
-	}
+    public void setScoreboardTeam(org.bukkit.scoreboard.Team scoreboardTeam) {
+        this.scoreboardTeam = scoreboardTeam;
+    }
 
-	@Override
-	public String getName() {
-		return teamInfo.name;
-	}
+    public void setBedHolo(Hologram holo) {
+        this.holo = holo;
+    }
 
-	@Override
-	public TeamColor getColor() {
-		return teamInfo.color.toApiColor();
-	}
+    public Hologram getBedHolo() {
+        return this.holo;
+    }
 
-	@Override
-	public Location getTeamSpawn() {
-		return teamInfo.spawn;
-	}
+    public boolean hasBedHolo() {
+        return this.holo != null;
+    }
 
-	@Override
-	public Location getTargetBlock() {
-		return teamInfo.bed;
-	}
+    public void setProtectHolo(Hologram protectHolo) {
+        this.protectHolo = protectHolo;
+    }
 
-	@Override
-	public int getMaxPlayers() {
-		return teamInfo.maxPlayers;
-	}
+    public Hologram getProtectHolo() {
+        return this.protectHolo;
+    }
 
-	@Override
-	public int countConnectedPlayers() {
-		return players.size();
-	}
+    public boolean hasProtectHolo() {
+        return this.protectHolo != null;
+    }
 
-	@Override
-	public List<Player> getConnectedPlayers() {
-		List<Player> playerList = new ArrayList<>();
-		for (GamePlayer gamePlayer : players) {
-			playerList.add(gamePlayer.player);
-		}
-		return playerList;
-	}
+    @Override
+    public String getName() {
+        return teamInfo.name;
+    }
 
-	@Override
-	public boolean isPlayerInTeam(Player player) {
-		for (GamePlayer gamePlayer : players) {
-			if (gamePlayer.player.equals(player)) {
-				return true;
-			}
-		}
-		return false;
-	}
+    @Override
+    public TeamColor getColor() {
+        return teamInfo.color.toApiColor();
+    }
 
-	@Override
-	public boolean isTargetBlockExists() {
-		return isBed;
-	}
+    @Override
+    public Location getTeamSpawn() {
+        return teamInfo.spawn;
+    }
 
-	@Override
-	public void addTeamChest(Location location) {
-		addTeamChest(location.getBlock());
-	}
+    @Override
+    public Location getTargetBlock() {
+        return teamInfo.bed;
+    }
 
-	@Override
-	public void addTeamChest(Block block) {
-		if (!chests.contains(block)) {
-			chests.add(block);
-		}
-	}
+    @Override
+    public int getMaxPlayers() {
+        return teamInfo.maxPlayers;
+    }
 
-	@Override
-	public void removeTeamChest(Location location) {
-		removeTeamChest(location.getBlock());
-	}
+    @Override
+    public int countConnectedPlayers() {
+        return players.size();
+    }
 
-	@Override
-	public void removeTeamChest(Block block) {
-		if (chests.contains(block)) {
-			chests.remove(block);
-		}
-	}
+    @Override
+    public List<Player> getConnectedPlayers() {
+        List<Player> playerList = new ArrayList<>();
+        for (GamePlayer gamePlayer : players) {
+            playerList.add(gamePlayer.player);
+        }
+        return playerList;
+    }
 
-	@Override
-	public boolean isTeamChestRegistered(Location location) {
-		return isTeamChestRegistered(location.getBlock());
-	}
+    @Override
+    public boolean isPlayerInTeam(Player player) {
+        for (GamePlayer gamePlayer : players) {
+            if (gamePlayer.player.equals(player)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-	@Override
-	public boolean isTeamChestRegistered(Block block) {
-		return chests.contains(block);
-	}
+    @Override
+    public boolean isTargetBlockExists() {
+        return isBed;
+    }
 
-	@Override
-	public Inventory getTeamChestInventory() {
-		return chestInventory;
-	}
+    @Override
+    public void addTeamChest(Location location) {
+        addTeamChest(location.getBlock());
+    }
 
-	@Override
-	public Game getGame() {
-		return game;
-	}
+    @Override
+    public void addTeamChest(Block block) {
+        if (!chests.contains(block)) {
+            chests.add(block);
+        }
+    }
 
-	@Override
-	public int countTeamChests() {
-		return chests.size();
-	}
+    @Override
+    public void removeTeamChest(Location location) {
+        removeTeamChest(location.getBlock());
+    }
+
+    @Override
+    public void removeTeamChest(Block block) {
+        if (chests.contains(block)) {
+            chests.remove(block);
+        }
+    }
+
+    @Override
+    public boolean isTeamChestRegistered(Location location) {
+        return isTeamChestRegistered(location.getBlock());
+    }
+
+    @Override
+    public boolean isTeamChestRegistered(Block block) {
+        return chests.contains(block);
+    }
+
+    @Override
+    public Inventory getTeamChestInventory() {
+        return chestInventory;
+    }
+
+    @Override
+    public Game getGame() {
+        return game;
+    }
+
+    @Override
+    public int countTeamChests() {
+        return chests.size();
+    }
 }
