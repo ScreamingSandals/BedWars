@@ -386,17 +386,17 @@ public class GameCreator {
                 break;
             case "bossbar":
             case "gamebossbar":
-                game.setGamebossbar(cons);
+                game.setGameBossbar(cons);
                 break;
             case "lobbybossbar":
-                game.setLobbybossbar(cons);
+                game.setLobbyBossbar(cons);
                 break;
             case "scoreboard":
             case "gamescoreboard":
                 game.setAscoreboard(cons);
                 break;
             case "lobbyscoreboard":
-                game.setLobbyscoreboard(cons);
+                game.setLobbyScoreboard(cons);
                 break;
             case "preventspawningmobs":
             case "preventmobs":

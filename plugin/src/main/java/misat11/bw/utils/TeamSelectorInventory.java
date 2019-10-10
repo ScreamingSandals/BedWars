@@ -2,7 +2,6 @@ package misat11.bw.utils;
 
 import misat11.bw.Main;
 import misat11.bw.api.events.BedwarsOpenTeamSelectionEvent;
-import misat11.bw.api.events.BedwarsPlayerJoinTeamEvent;
 import misat11.bw.game.Game;
 import misat11.bw.game.GamePlayer;
 import misat11.bw.game.Team;
@@ -23,7 +22,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.ArrayList;
 import java.util.List;
 
-import static misat11.lib.lang.I18n.i18n;
 import static misat11.lib.lang.I18n.i18nonly;
 
 public class TeamSelectorInventory implements Listener {
@@ -52,7 +50,7 @@ public class TeamSelectorInventory implements Listener {
     }
 
     public void destroy() {
-    	openedForPlayers.clear();
+        openedForPlayers.clear();
         HandlerList.unregisterAll(this);
     }
 
@@ -65,61 +63,61 @@ public class TeamSelectorInventory implements Listener {
         }
 
         simpleGuiFormat.openForPlayer(player);
-		openedForPlayers.add(player);
+        openedForPlayers.add(player);
     }
 
     private SimpleGuiFormat createData() {
-		FormatBuilder builder = new FormatBuilder();
-		for (Team team : game.getTeams()) {
-			ItemStack teamStack = team.color.getWool();
-			ItemMeta teamMeta = teamStack.getItemMeta();
-			int playersInTeam = game.getPlayersCountInTeam(team);
+        FormatBuilder builder = new FormatBuilder();
+        for (Team team : game.getTeams()) {
+            ItemStack teamStack = team.color.getWool();
+            ItemMeta teamMeta = teamStack.getItemMeta();
+            int playersInTeam = game.getPlayersCountInTeam(team);
 
-			teamMeta.setDisplayName(i18nonly("team_select_item")
-					.replace("%teamName%", team.color.chatColor + team.getName())
-					.replace("%inTeam%", String.valueOf(playersInTeam))
-					.replace("maxInTeam", String.valueOf(team.maxPlayers)));
-			teamMeta.setLore(formatLore(team, game));
-			teamStack.setItemMeta(teamMeta);
+            teamMeta.setDisplayName(i18nonly("team_select_item")
+                    .replace("%teamName%", team.color.chatColor + team.getName())
+                    .replace("%inTeam%", String.valueOf(playersInTeam))
+                    .replace("maxInTeam", String.valueOf(team.maxPlayers)));
+            teamMeta.setLore(formatLore(team, game));
+            teamStack.setItemMeta(teamMeta);
 
-			builder.add(teamStack).set("team", team);
-		}
+            builder.add(teamStack).set("team", team);
+        }
 
-		simpleGuiFormat.load(builder);
-		simpleGuiFormat.generateData();
+        simpleGuiFormat.load(builder);
+        simpleGuiFormat.generateData();
 
-		return simpleGuiFormat;
-	}
+        return simpleGuiFormat;
+    }
 
-	private List<String> formatLore(Team team, Game game) {
-		List<String> loreList = new ArrayList<>();
-		int playersInTeam = game.getPlayersCountInTeam(team);
+    private List<String> formatLore(Team team, Game game) {
+        List<String> loreList = new ArrayList<>();
+        int playersInTeam = game.getPlayersCountInTeam(team);
 
-		if (playersInTeam >= team.maxPlayers) {
-			loreList.add(team.color.chatColor + i18nonly("team_select_item_lore_full"));
-		} else {
-			loreList.add(team.color.chatColor + i18nonly("click_to_join_team"));
-		}
+        if (playersInTeam >= team.maxPlayers) {
+            loreList.add(team.color.chatColor + i18nonly("team_select_item_lore_full"));
+        } else {
+            loreList.add(team.color.chatColor + i18nonly("click_to_join_team"));
+        }
 
-		loreList.add(i18nonly("team_select_item_lore"));
-		for (GamePlayer gamePlayer : game.getPlayersInTeam(team)) {
-			loreList.add(team.color.chatColor + gamePlayer.player.getDisplayName());
-		}
+        loreList.add(i18nonly("team_select_item_lore"));
+        for (GamePlayer gamePlayer : game.getPlayersInTeam(team)) {
+            loreList.add(team.color.chatColor + gamePlayer.player.getDisplayName());
+        }
 
-		return loreList;
-	}
+        return loreList;
+    }
 
-	private void repaint() {
-		for (Player player : openedForPlayers) {
-			GuiHolder guiHolder = simpleGuiFormat.getCurrentGuiHolder(player);
-			if (guiHolder == null) {
-				return;
-			}
+    private void repaint() {
+        for (Player player : openedForPlayers) {
+            GuiHolder guiHolder = simpleGuiFormat.getCurrentGuiHolder(player);
+            if (guiHolder == null) {
+                return;
+            }
 
-			guiHolder.setFormat(createData());
-			guiHolder.repaint();
-		}
-	}
+            guiHolder.setFormat(createData());
+            guiHolder.repaint();
+        }
+    }
 
     @EventHandler
     public void onPostAction(PostActionEvent event) {

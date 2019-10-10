@@ -42,10 +42,7 @@ import org.inventivetalent.update.spiget.UpdateCallback;
 import org.inventivetalent.update.spiget.comparator.VersionComparator;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static misat11.lib.lang.I18n.i18n;
 
@@ -66,7 +63,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
     private PlayerStatisticManager playerStatisticsManager;
     private IHologramInteraction hologramInteraction;
     private HashMap<String, BaseCommand> commands;
-    private SpigetUpdate updater;
+    private SpigetUpdate spigetUpdate;
     private ColorChanger colorChanger;
     public static List<String> autoColoredMaterials = new ArrayList<>();
 
@@ -165,8 +162,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
     }
 
     public static void unregisterGameEntity(Entity entity) {
-        if (instance.entitiesInGame.containsKey(entity))
-            instance.entitiesInGame.remove(entity);
+        instance.entitiesInGame.remove(entity);
     }
 
     public static boolean isPlayerInGame(Player player) {
@@ -323,8 +319,8 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         if (!getServer().getPluginManager().isPluginEnabled("Vault")) {
             isVault = false;
         } else {
-            setupEconomy();
-            isVault = true;
+            isVault = setupEconomy();
+            ;
         }
 
         String[] bukkitVersion = Bukkit.getBukkitVersion().split("-")[0].split("\\.");
@@ -416,12 +412,11 @@ public class Main extends JavaPlugin implements BedwarsAPI {
             String colorName = Main.getConfigurator().config.getString("resources." + spawnerN + ".color", "WHITE");
 
             Material material = Material.valueOf(materialName);
-            if (material == Material.AIR || material == null) {
+            if (material == Material.AIR) {
                 continue;
             }
 
             ChatColor color = ChatColor.valueOf(colorName);
-
             spawnerTypes.put(spawnerN.toLowerCase(), new ItemSpawnerType(spawnerN.toLowerCase(), name, translate,
                     spread, material, color, interval, damage));
         }
@@ -482,11 +477,11 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 
         }
 
-        updater = new SpigetUpdate(this, 63714);
+        spigetUpdate = new SpigetUpdate(this, 63714);
 
-        updater.setVersionComparator(VersionComparator.SEM_VER_SNAPSHOT);
+        spigetUpdate.setVersionComparator(VersionComparator.SEM_VER_SNAPSHOT);
 
-        updater.checkForUpdate(new UpdateCallback() {
+        spigetUpdate.checkForUpdate(new UpdateCallback() {
             @Override
             public void updateAvailable(String newVersion, String downloadUrl, boolean hasDirectDownload) {
                 Bukkit.getConsoleSender().sendMessage("§c[B§fW] §aNew RELEASE version " + newVersion
@@ -524,7 +519,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         }
 
         econ = rsp.getProvider();
-        return econ != null;
+        return true;
     }
 
     @Override
@@ -545,6 +540,40 @@ public class Main extends JavaPlugin implements BedwarsAPI {
     @Override
     public misat11.bw.api.Game getGameByName(String name) {
         return games.get(name);
+    }
+
+    @Override
+    public misat11.bw.api.Game getGameWithHighestPlayers() {
+        TreeMap<Integer, misat11.bw.api.Game> gameList = new TreeMap<>();
+        for (misat11.bw.api.Game game : getGames()) {
+            if (game.getStatus() != GameStatus.WAITING) {
+                continue;
+            }
+            if (game.getConnectedPlayers().size() >= game.getMaxPlayers()) {
+                continue;
+            }
+            gameList.put(game.countConnectedPlayers(), game);
+        }
+
+        Map.Entry<Integer, misat11.bw.api.Game> lastEntry = gameList.lastEntry();
+        return lastEntry.getValue();
+    }
+
+    @Override
+    public misat11.bw.api.Game getGameWithLowestPlayers() {
+        TreeMap<Integer, misat11.bw.api.Game> gameList = new TreeMap<>();
+        for (misat11.bw.api.Game game : getGames()) {
+            if (game.getStatus() != GameStatus.WAITING) {
+                continue;
+            }
+            if (game.getConnectedPlayers().size() >= game.getMaxPlayers()) {
+                continue;
+            }
+            gameList.put(game.countConnectedPlayers(), game);
+        }
+
+        Map.Entry<Integer, misat11.bw.api.Game> lastEntry = gameList.firstEntry();
+        return lastEntry.getValue();
     }
 
     @Override

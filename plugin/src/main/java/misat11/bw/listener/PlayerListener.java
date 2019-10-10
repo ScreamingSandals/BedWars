@@ -394,6 +394,9 @@ public class PlayerListener implements Listener {
                 }
                 event.setCancelled(true);
             } else if (game.getStatus() == GameStatus.RUNNING) {
+                if (gPlayer.isSpectator) {
+                    event.setCancelled(true);
+                }
                 if (game.isProtectionActive(player) && event.getCause() != DamageCause.VOID) {
                     event.setCancelled(true);
                     return;
@@ -479,7 +482,7 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler
-    public void onPlayerIteract(PlayerInteractEvent event) {
+    public void onPlayerInteract(PlayerInteractEvent event) {
         if (event.isCancelled() && event.getAction() != Action.RIGHT_CLICK_AIR) {
             return;
         }
@@ -638,10 +641,6 @@ public class PlayerListener implements Listener {
             return;
         }
 
-        if (event.getRightClicked() == null) {
-            return;
-        }
-
         Player player = event.getPlayer();
         Entity entity = event.getRightClicked();
 
@@ -666,7 +665,7 @@ public class PlayerListener implements Listener {
             }
         } else if (player.hasPermission(BaseCommand.ADMIN_PERMISSION)) {
             List<MetadataValue> values = player.getMetadata(GameCreator.BEDWARS_TEAM_JOIN_METADATA);
-            if (values == null || values.size() == 0) {
+            if (values.size() == 0) {
                 return;
             }
 

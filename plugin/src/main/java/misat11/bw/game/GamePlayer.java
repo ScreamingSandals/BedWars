@@ -12,12 +12,10 @@ public class GamePlayer {
     public final Player player;
     private Game game = null;
     private String latestGame = null;
+    private StoredInventory oldInventory = new StoredInventory();
 
     public boolean isSpectator = false;
-
     public boolean isTeleportingFromGame_justForInventoryPlugins = false;
-
-    private StoredInventory oldinventory = new StoredInventory();
 
     public GamePlayer(Player player) {
         this.player = player;
@@ -26,13 +24,13 @@ public class GamePlayer {
     public void changeGame(Game game) {
         if (this.game != null && game == null) {
             if (Game.isBungeeEnabled()) {
-                this.game.leavePlayer(this);
+                this.game.internalLeavePlayer(this);
                 this.game = null;
                 this.isSpectator = false;
                 this.clean();
                 BungeeUtils.movePlayerToBungeeServer(player);
             } else {
-                this.game.leavePlayer(this);
+                this.game.internalLeavePlayer(this);
                 this.game = null;
                 this.isSpectator = false;
                 this.clean();
@@ -43,14 +41,14 @@ public class GamePlayer {
             this.clean();
             this.game = game;
             this.isSpectator = false;
-            this.game.joinPlayer(this);
+            this.game.internalJoinPlayer(this);
             this.latestGame = this.game.getName();
-        } else if (this.game != null && game != null) {
-            this.game.leavePlayer(this);
+        } else if (this.game != null) {
+            this.game.internalLeavePlayer(this);
             this.game = game;
             this.isSpectator = false;
             this.clean();
-            this.game.joinPlayer(this);
+            this.game.internalJoinPlayer(this);
             this.latestGame = this.game.getName();
         }
     }
@@ -72,43 +70,43 @@ public class GamePlayer {
     }
 
     public void storeInv() {
-        oldinventory.inventory = player.getInventory().getContents();
-        oldinventory.armor = player.getInventory().getArmorContents();
-        oldinventory.xp = player.getExp();
-        oldinventory.effects = player.getActivePotionEffects();
-        oldinventory.mode = player.getGameMode();
-        oldinventory.leftLocation = player.getLocation();
-        oldinventory.level = player.getLevel();
-        oldinventory.listName = player.getPlayerListName();
-        oldinventory.displayName = player.getDisplayName();
-        oldinventory.foodLevel = player.getFoodLevel();
+        oldInventory.inventory = player.getInventory().getContents();
+        oldInventory.armor = player.getInventory().getArmorContents();
+        oldInventory.xp = player.getExp();
+        oldInventory.effects = player.getActivePotionEffects();
+        oldInventory.mode = player.getGameMode();
+        oldInventory.leftLocation = player.getLocation();
+        oldInventory.level = player.getLevel();
+        oldInventory.listName = player.getPlayerListName();
+        oldInventory.displayName = player.getDisplayName();
+        oldInventory.foodLevel = player.getFoodLevel();
     }
 
     public void restoreInv() {
         isTeleportingFromGame_justForInventoryPlugins = true;
         if (!Main.getConfigurator().config.getBoolean("mainlobby.enabled")) {
-            player.teleport(oldinventory.leftLocation);
+            player.teleport(oldInventory.leftLocation);
         }
 
-        player.getInventory().setContents(oldinventory.inventory);
-        player.getInventory().setArmorContents(oldinventory.armor);
+        player.getInventory().setContents(oldInventory.inventory);
+        player.getInventory().setArmorContents(oldInventory.armor);
 
-        player.addPotionEffects(oldinventory.effects);
-        player.setLevel(oldinventory.level);
-        player.setExp(oldinventory.xp);
-        player.setFoodLevel(oldinventory.foodLevel);
+        player.addPotionEffects(oldInventory.effects);
+        player.setLevel(oldInventory.level);
+        player.setExp(oldInventory.xp);
+        player.setFoodLevel(oldInventory.foodLevel);
 
         for (PotionEffect e : player.getActivePotionEffects())
             player.removePotionEffect(e.getType());
 
-        player.addPotionEffects(oldinventory.effects);
+        player.addPotionEffects(oldInventory.effects);
 
-        player.setPlayerListName(oldinventory.listName);
-        player.setDisplayName(oldinventory.displayName);
+        player.setPlayerListName(oldInventory.listName);
+        player.setDisplayName(oldInventory.displayName);
 
-        player.setGameMode(oldinventory.mode);
+        player.setGameMode(oldInventory.mode);
 
-        if (oldinventory.mode == GameMode.CREATIVE)
+        if (oldInventory.mode == GameMode.CREATIVE)
             player.setAllowFlight(true);
         else
             player.setAllowFlight(false);

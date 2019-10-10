@@ -17,11 +17,12 @@ public class JoinCommand extends BaseCommand {
     @Override
     public boolean execute(CommandSender sender, List<String> args) {
         Player player = (Player) sender;
+        if (Main.isPlayerInGame(player)) {
+            player.sendMessage(i18n("you_are_already_in_some_game"));
+            return true;
+        }
+
         if (args.size() >= 1) {
-            if (Main.isPlayerInGame(player)) {
-                player.sendMessage(i18n("you_are_already_in_some_game"));
-                return true;
-            }
             String arenaN = args.get(0);
             if (Main.isGameExists(arenaN)) {
                 Main.getGame(arenaN).joinToGame(player);
@@ -29,7 +30,8 @@ public class JoinCommand extends BaseCommand {
                 player.sendMessage(i18n("no_arena_found"));
             }
         } else {
-            player.sendMessage(i18n("usage_bw_join"));
+            Main.getInstance().getGameWithHighestPlayers().joinToGame(player);
+            return true;
         }
         return true;
     }

@@ -505,7 +505,7 @@ public class Game implements misat11.bw.api.Game {
         }
     }
 
-    public void joinPlayer(GamePlayer player) {
+    public void internalJoinPlayer(GamePlayer player) {
         BedwarsPlayerJoinEvent joinEvent = new BedwarsPlayerJoinEvent(this, player.player);
         Main.getInstance().getServer().getPluginManager().callEvent(joinEvent);
 
@@ -592,7 +592,7 @@ public class Game implements misat11.bw.api.Game {
         Main.getInstance().getServer().getPluginManager().callEvent(joinedEvent);
     }
 
-    public void leavePlayer(GamePlayer player) {
+    public void internalLeavePlayer(GamePlayer player) {
         if (status == GameStatus.DISABLED) {
             return;
         }
@@ -663,7 +663,7 @@ public class Game implements misat11.bw.api.Game {
             if (status != GameStatus.WAITING) {
                 afterRebuild = GameStatus.WAITING;
                 updateSigns();
-                rebuilding();
+                rebuild();
             } else {
                 status = GameStatus.WAITING;
                 cancelTask();
@@ -1170,7 +1170,7 @@ public class Game implements misat11.bw.api.Game {
         }
 
         CurrentTeam cur = getPlayerTeam(player);
-        BedwarsPlayerJoinTeamEvent event = new BedwarsPlayerJoinTeamEvent(current, player.player, cur);
+        BedwarsPlayerJoinTeamEvent event = new BedwarsPlayerJoinTeamEvent(current, player.player, this, cur);
         Main.getInstance().getServer().getPluginManager().callEvent(event);
 
         if (event.isCancelled()) {
@@ -1760,7 +1760,7 @@ public class Game implements misat11.bw.api.Game {
             }
 
             if (status == GameStatus.REBUILDING) { // If status is still rebuilding
-                rebuilding();
+                rebuild();
             }
 
             if (isBungeeEnabled()) {
@@ -1789,7 +1789,7 @@ public class Game implements misat11.bw.api.Game {
         }
     }
 
-    public void rebuilding() {
+    public void rebuild() {
         teamsInGame.clear();
         activeSpecialItems.clear();
         activeDelays.clear();
@@ -2628,11 +2628,11 @@ public class Game implements misat11.bw.api.Game {
                 : Main.getConfigurator().config.getBoolean(GLOBAL_LOBBY_SCOREBOARD);
     }
 
-    public void setLobbybossbar(InGameConfigBooleanConstants lobbybossbar) {
+    public void setLobbyBossbar(InGameConfigBooleanConstants lobbybossbar) {
         this.lobbybossbar = lobbybossbar;
     }
 
-    public void setGamebossbar(InGameConfigBooleanConstants gamebossbar) {
+    public void setGameBossbar(InGameConfigBooleanConstants gamebossbar) {
         this.gamebossbar = gamebossbar;
     }
 
@@ -2640,7 +2640,7 @@ public class Game implements misat11.bw.api.Game {
         this.ascoreboard = ascoreboard;
     }
 
-    public void setLobbyscoreboard(InGameConfigBooleanConstants lobbyscoreboard) {
+    public void setLobbyScoreboard(InGameConfigBooleanConstants lobbyscoreboard) {
         this.lobbyscoreboard = lobbyscoreboard;
     }
 
