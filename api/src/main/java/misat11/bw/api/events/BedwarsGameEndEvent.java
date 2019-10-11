@@ -3,7 +3,7 @@ package misat11.bw.api.events;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-import misat11.bw.api.Game;
+import misat11.bw.api.game.Game;
 
 /**
  * @author Bedwars Team

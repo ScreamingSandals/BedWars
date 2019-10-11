@@ -3,7 +3,7 @@ package misat11.bw.game;
 import misat11.bw.api.Team;
 import org.bukkit.Location;
 
-public class ItemSpawner implements misat11.bw.api.ItemSpawner {
+public class ItemSpawner implements misat11.bw.api.game.ItemSpawner {
     public Location loc;
     public ItemSpawnerType type;
     public String customName;
@@ -22,7 +22,7 @@ public class ItemSpawner implements misat11.bw.api.ItemSpawner {
     }
 
     @Override
-    public misat11.bw.api.ItemSpawnerType getItemSpawnerType() {
+    public misat11.bw.api.game.ItemSpawnerType getItemSpawnerType() {
         return type;
     }
 

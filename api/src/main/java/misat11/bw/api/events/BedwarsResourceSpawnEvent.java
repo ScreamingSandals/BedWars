@@ -1,8 +1,8 @@
 package misat11.bw.api.events;
 
-import misat11.bw.api.Game;
-import misat11.bw.api.ItemSpawner;
-import misat11.bw.api.ItemSpawnerType;
+import misat11.bw.api.game.Game;
+import misat11.bw.api.game.ItemSpawner;
+import misat11.bw.api.game.ItemSpawnerType;
 import org.bukkit.Location;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;

@@ -1,4 +1,4 @@
-package misat11.bw.utils;
+package misat11.bw.inventories;
 
 import misat11.bw.Main;
 import misat11.bw.api.events.BedwarsOpenTeamSelectionEvent;

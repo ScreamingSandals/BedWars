@@ -1,11 +1,12 @@
 package misat11.bw.listener;
 
 import misat11.bw.Main;
-import misat11.bw.api.GameStatus;
+import misat11.bw.api.game.GameStatus;
 import misat11.bw.api.events.BedwarsPlayerKilledEvent;
 import misat11.bw.api.events.BedwarsTeamChestOpenEvent;
 import misat11.bw.commands.BaseCommand;
 import misat11.bw.game.*;
+import misat11.bw.inventories.TeamSelectorInventory;
 import misat11.bw.statistics.PlayerStatistic;
 import misat11.bw.utils.*;
 import misat11.lib.nms.NMSUtils;

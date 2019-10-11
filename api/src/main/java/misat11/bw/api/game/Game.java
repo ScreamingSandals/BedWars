@@ -1,5 +1,6 @@
-package misat11.bw.api;
+package misat11.bw.api.game;
 
+import misat11.bw.api.*;
 import misat11.bw.api.boss.StatusBar;
 import misat11.bw.api.special.SpecialItem;
 import misat11.bw.api.utils.DelayFactory;

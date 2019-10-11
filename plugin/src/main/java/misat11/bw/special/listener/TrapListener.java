@@ -2,7 +2,7 @@ package misat11.bw.special.listener;
 
 import misat11.bw.Main;
 import misat11.bw.api.APIUtils;
-import misat11.bw.api.GameStatus;
+import misat11.bw.api.game.GameStatus;
 import misat11.bw.api.RunningTeam;
 import misat11.bw.api.events.BedwarsApplyPropertyToBoughtItem;
 import misat11.bw.api.events.BedwarsPlayerBreakBlock;

@@ -1,7 +1,7 @@
 package misat11.bw.listener;
 
 import misat11.bw.Main;
-import misat11.bw.api.GameStatus;
+import misat11.bw.api.game.GameStatus;
 import misat11.bw.game.Game;
 import misat11.bw.game.GameCreator;
 import org.bukkit.Material;

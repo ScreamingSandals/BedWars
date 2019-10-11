@@ -1,8 +1,8 @@
 package misat11.bw;
 
 import misat11.bw.api.BedwarsAPI;
-import misat11.bw.api.GameStatus;
-import misat11.bw.api.GameStore;
+import misat11.bw.api.game.GameStatus;
+import misat11.bw.api.game.GameStore;
 import misat11.bw.api.utils.ColorChanger;
 import misat11.bw.commands.*;
 import misat11.bw.database.DatabaseManager;
@@ -18,7 +18,7 @@ import misat11.bw.special.SpecialRegister;
 import misat11.bw.statistics.PlayerStatisticManager;
 import misat11.bw.utils.Configurator;
 import misat11.bw.utils.GameSign;
-import misat11.bw.utils.ShopMenu;
+import misat11.bw.inventories.ShopInventory;
 import misat11.bw.utils.SignManager;
 import misat11.lib.lang.I18n;
 import misat11.lib.nms.NMSUtils;
@@ -56,7 +56,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
     private HashMap<Player, GamePlayer> playersInGame = new HashMap<>();
     private HashMap<Entity, Game> entitiesInGame = new HashMap<>();
     private Configurator configurator;
-    private ShopMenu menu;
+    private ShopInventory menu;
     private SignManager signManager;
     private HashMap<String, ItemSpawnerType> spawnerTypes = new HashMap<>();
     private DatabaseManager databaseManager;
@@ -421,7 +421,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
                     spread, material, color, interval, damage));
         }
 
-        menu = new ShopMenu();
+        menu = new ShopInventory();
 
         if (getConfigurator().config.getBoolean("bungee.enabled")) {
             Bukkit.getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
@@ -523,12 +523,12 @@ public class Main extends JavaPlugin implements BedwarsAPI {
     }
 
     @Override
-    public List<misat11.bw.api.Game> getGames() {
+    public List<misat11.bw.api.game.Game> getGames() {
         return new ArrayList<>(games.values());
     }
 
     @Override
-    public misat11.bw.api.Game getGameOfPlayer(Player player) {
+    public misat11.bw.api.game.Game getGameOfPlayer(Player player) {
         return isPlayerInGame(player) ? getPlayerGameProfile(player).getGame() : null;
     }
 
@@ -538,14 +538,14 @@ public class Main extends JavaPlugin implements BedwarsAPI {
     }
 
     @Override
-    public misat11.bw.api.Game getGameByName(String name) {
+    public misat11.bw.api.game.Game getGameByName(String name) {
         return games.get(name);
     }
 
     @Override
-    public misat11.bw.api.Game getGameWithHighestPlayers() {
-        TreeMap<Integer, misat11.bw.api.Game> gameList = new TreeMap<>();
-        for (misat11.bw.api.Game game : getGames()) {
+    public misat11.bw.api.game.Game getGameWithHighestPlayers() {
+        TreeMap<Integer, misat11.bw.api.game.Game> gameList = new TreeMap<>();
+        for (misat11.bw.api.game.Game game : getGames()) {
             if (game.getStatus() != GameStatus.WAITING) {
                 continue;
             }
@@ -555,14 +555,14 @@ public class Main extends JavaPlugin implements BedwarsAPI {
             gameList.put(game.countConnectedPlayers(), game);
         }
 
-        Map.Entry<Integer, misat11.bw.api.Game> lastEntry = gameList.lastEntry();
+        Map.Entry<Integer, misat11.bw.api.game.Game> lastEntry = gameList.lastEntry();
         return lastEntry.getValue();
     }
 
     @Override
-    public misat11.bw.api.Game getGameWithLowestPlayers() {
-        TreeMap<Integer, misat11.bw.api.Game> gameList = new TreeMap<>();
-        for (misat11.bw.api.Game game : getGames()) {
+    public misat11.bw.api.game.Game getGameWithLowestPlayers() {
+        TreeMap<Integer, misat11.bw.api.game.Game> gameList = new TreeMap<>();
+        for (misat11.bw.api.game.Game game : getGames()) {
             if (game.getStatus() != GameStatus.WAITING) {
                 continue;
             }
@@ -572,17 +572,17 @@ public class Main extends JavaPlugin implements BedwarsAPI {
             gameList.put(game.countConnectedPlayers(), game);
         }
 
-        Map.Entry<Integer, misat11.bw.api.Game> lastEntry = gameList.firstEntry();
+        Map.Entry<Integer, misat11.bw.api.game.Game> lastEntry = gameList.firstEntry();
         return lastEntry.getValue();
     }
 
     @Override
-    public List<misat11.bw.api.ItemSpawnerType> getItemSpawnerTypes() {
+    public List<misat11.bw.api.game.ItemSpawnerType> getItemSpawnerTypes() {
         return new ArrayList<>(spawnerTypes.values());
     }
 
     @Override
-    public misat11.bw.api.ItemSpawnerType getItemSpawnerTypeByName(String name) {
+    public misat11.bw.api.game.ItemSpawnerType getItemSpawnerTypeByName(String name) {
         return spawnerTypes.get(name);
     }
 
@@ -597,12 +597,12 @@ public class Main extends JavaPlugin implements BedwarsAPI {
     }
 
     @Override
-    public misat11.bw.api.Game getGameOfEntity(Entity entity) {
+    public misat11.bw.api.game.Game getGameOfEntity(Entity entity) {
         return entitiesInGame.get(entity);
     }
 
     @Override
-    public void registerEntityToGame(Entity entity, misat11.bw.api.Game game) {
+    public void registerEntityToGame(Entity entity, misat11.bw.api.game.Game game) {
         if (!(game instanceof Game)) {
             return;
         }
@@ -641,7 +641,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
     }
 
     @Override
-    public misat11.bw.api.Game getFirstWaitingGame() {
+    public misat11.bw.api.game.Game getFirstWaitingGame() {
         for (Game game : games.values()) {
             if (game.getStatus() == GameStatus.WAITING) {
                 return game;

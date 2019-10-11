@@ -1,7 +1,7 @@
 package misat11.bw.commands;
 
 import misat11.bw.Main;
-import misat11.bw.api.Game;
+import misat11.bw.api.game.Game;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 

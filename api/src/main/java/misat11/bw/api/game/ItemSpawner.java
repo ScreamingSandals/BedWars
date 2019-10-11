@@ -1,5 +1,6 @@
-package misat11.bw.api;
+package misat11.bw.api.game;
 
+import misat11.bw.api.Team;
 import misat11.bw.api.upgrades.Upgrade;
 import org.bukkit.Location;
 
@@ -41,6 +42,19 @@ public interface ItemSpawner extends Upgrade {
      * @return
      */
     boolean getHologramEnabled();
+
+    /**
+     * Sets team of this upgrade
+     *
+     * @param team current team
+     */
+    void setTeam(Team team);
+
+    /**
+     *
+     * @return registered team for this upgrade
+     */
+    Team getTeam();
 
     /**
      * @param level

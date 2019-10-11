@@ -1,7 +1,7 @@
 package misat11.bw.utils;
 
 import misat11.bw.Main;
-import misat11.bw.api.Game;
+import misat11.bw.api.game.Game;
 import misat11.bw.api.events.BedwarsPostSpawnEffectEvent;
 import misat11.bw.api.events.BedwarsPreSpawnEffectEvent;
 import misat11.lib.nms.NMSUtils;

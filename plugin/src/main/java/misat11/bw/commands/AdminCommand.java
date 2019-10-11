@@ -2,7 +2,7 @@ package misat11.bw.commands;
 
 import misat11.bw.Main;
 import misat11.bw.api.ArenaTime;
-import misat11.bw.api.GameStore;
+import misat11.bw.api.game.GameStore;
 import misat11.bw.game.*;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;

@@ -1,7 +1,7 @@
 package misat11.bw.special;
 
 import misat11.bw.Main;
-import misat11.bw.api.Game;
+import misat11.bw.api.game.Game;
 import misat11.bw.api.Team;
 import misat11.bw.utils.SpawnEffects;
 import org.bukkit.entity.Player;

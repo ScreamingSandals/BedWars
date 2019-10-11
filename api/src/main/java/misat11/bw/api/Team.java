@@ -1,5 +1,6 @@
 package misat11.bw.api;
 
+import misat11.bw.api.game.Game;
 import org.bukkit.Location;
 
 /**

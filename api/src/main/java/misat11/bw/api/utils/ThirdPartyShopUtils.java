@@ -1,7 +1,7 @@
 package misat11.bw.api.utils;
 
 import misat11.bw.api.BedwarsAPI;
-import misat11.bw.api.Game;
+import misat11.bw.api.game.Game;
 import misat11.bw.api.events.BedwarsApplyPropertyToBoughtItem;
 import misat11.bw.api.events.BedwarsApplyPropertyToDisplayedItem;
 import misat11.bw.api.events.BedwarsApplyPropertyToItem;

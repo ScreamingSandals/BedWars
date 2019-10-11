@@ -1,7 +1,7 @@
 package misat11.bw.commands;
 
 import misat11.bw.Main;
-import misat11.bw.api.GameStatus;
+import misat11.bw.api.game.GameStatus;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.scheduler.BukkitRunnable;

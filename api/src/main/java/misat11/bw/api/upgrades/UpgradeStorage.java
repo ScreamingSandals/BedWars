@@ -1,9 +1,11 @@
 package misat11.bw.api.upgrades;
 
-import misat11.bw.api.Game;
+import misat11.bw.api.game.Game;
+import misat11.bw.api.game.ItemSpawner;
 import misat11.bw.api.Team;
 import misat11.bw.api.events.BedwarsUpgradeRegisteredEvent;
 import misat11.bw.api.events.BedwarsUpgradeUnregisteredEvent;
+import misat11.bw.api.game.ItemSpawnerType;
 import org.bukkit.Bukkit;
 
 import java.util.ArrayList;
@@ -134,6 +136,7 @@ public final class UpgradeStorage {
      * @param instanceName name of spawner
      * @return list of upgrades with same name
      */
+    @Deprecated
     public List<Upgrade> findUpgradeByName(Game game, String instanceName) {
         List<Upgrade> upgrades = new ArrayList<>();
 
@@ -148,17 +151,54 @@ public final class UpgradeStorage {
         return upgrades;
     }
 
-    public List<Upgrade> findUpgradesByTeam(Game game, Team team) {
+    public List<Upgrade> findItemSpawnerUpgrades(Game game, String spawnerInstanceName) {
         List<Upgrade> upgrades = new ArrayList<>();
 
         if (upgradeRegistry.containsKey(game)) {
             for (Upgrade upgrade : upgradeRegistry.get(game)) {
-                if (team == upgrade.getTeam()) {
-                    upgrades.add(upgrade);
+                if (upgrade instanceof ItemSpawner) {
+                    ItemSpawner itemSpawner = (ItemSpawner) upgrade;
+
+                    if (spawnerInstanceName.equals(itemSpawner.getInstanceName())) {
+                        upgrades.add(itemSpawner);
+                    }
                 }
             }
         }
+        return upgrades;
+    }
 
+    public List<Upgrade> findItemSpawnerUpgrades(Game game, Team team) {
+        List<Upgrade> upgrades = new ArrayList<>();
+
+        if (upgradeRegistry.containsKey(game)) {
+            for (Upgrade upgrade : upgradeRegistry.get(game)) {
+                if (upgrade instanceof ItemSpawner) {
+                    ItemSpawner itemSpawner = (ItemSpawner) upgrade;
+
+                    if (team == itemSpawner.getTeam()) {
+                        upgrades.add(upgrade);
+                    }
+                }
+            }
+        }
+        return upgrades;
+    }
+
+    public List<Upgrade> findItemSpawnerUpgrades(Game game, Team team, ItemSpawnerType itemSpawnerType) {
+        List<Upgrade> upgrades = new ArrayList<>();
+
+        if (upgradeRegistry.containsKey(game)) {
+            for (Upgrade upgrade : upgradeRegistry.get(game)) {
+                if (upgrade instanceof ItemSpawner) {
+                    ItemSpawner itemSpawner = (ItemSpawner) upgrade;
+
+                    if (team == itemSpawner.getTeam() && itemSpawnerType == itemSpawner.getItemSpawnerType()) {
+                        upgrades.add(upgrade);
+                    }
+                }
+            }
+        }
         return upgrades;
     }
 }

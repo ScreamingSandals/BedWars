@@ -1,7 +1,6 @@
 package misat11.bw.api.upgrades;
 
-import misat11.bw.api.Game;
-import misat11.bw.api.Team;
+import misat11.bw.api.game.Game;
 
 /**
  * @author Bedwars Team
@@ -46,20 +45,6 @@ public interface Upgrade {
 	 * @return initial level of upgrade
 	 */
 	double getInitialLevel();
-
-	/**
-	 * Sets team of this upgrade
-	 *
-	 * @param team current team
-	 */
-	void setTeam(Team team);
-
-
-	/**
-	 *
-	 * @return registered team for this upgrade
-	 */
-	Team getTeam();
 
 	/**
 	 * Called when upgrade is registered

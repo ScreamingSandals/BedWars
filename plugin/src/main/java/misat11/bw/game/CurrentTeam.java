@@ -1,6 +1,6 @@
 package misat11.bw.game;
 
-import misat11.bw.api.Game;
+import misat11.bw.api.game.Game;
 import misat11.bw.api.RunningTeam;
 import misat11.bw.api.TeamColor;
 import misat11.lib.nms.Hologram;

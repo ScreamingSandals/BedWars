@@ -1,6 +1,6 @@
 package misat11.bw.api.events;
 
-import misat11.bw.api.Game;
+import misat11.bw.api.game.Game;
 import misat11.bw.api.upgrades.Upgrade;
 import misat11.bw.api.upgrades.UpgradeStorage;
 import org.bukkit.entity.Player;

@@ -1,4 +1,4 @@
-package misat11.bw.api;
+package misat11.bw.api.game;
 
 import org.bukkit.Chunk;
 import org.bukkit.Location;

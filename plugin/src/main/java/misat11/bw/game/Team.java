@@ -1,6 +1,6 @@
 package misat11.bw.game;
 
-import misat11.bw.api.Game;
+import misat11.bw.api.game.Game;
 import org.bukkit.Location;
 
 public class Team implements Cloneable, misat11.bw.api.Team {

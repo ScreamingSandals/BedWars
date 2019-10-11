@@ -1,6 +1,6 @@
 package misat11.bw.api.special;
 
-import misat11.bw.api.Game;
+import misat11.bw.api.game.Game;
 import misat11.bw.api.Team;
 import org.bukkit.entity.Player;
 

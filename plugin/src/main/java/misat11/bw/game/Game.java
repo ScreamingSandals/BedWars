@@ -8,12 +8,15 @@ import misat11.bw.api.boss.BossBar;
 import misat11.bw.api.boss.BossBar19;
 import misat11.bw.api.boss.StatusBar;
 import misat11.bw.api.events.*;
+import misat11.bw.api.game.GameStatus;
+import misat11.bw.api.game.GameStore;
 import misat11.bw.api.special.SpecialItem;
 import misat11.bw.api.upgrades.UpgradeRegistry;
 import misat11.bw.api.upgrades.UpgradeStorage;
 import misat11.bw.api.utils.DelayFactory;
 import misat11.bw.boss.BossBarSelector;
 import misat11.bw.boss.XPBar;
+import misat11.bw.inventories.TeamSelectorInventory;
 import misat11.bw.region.FlatteningRegion;
 import misat11.bw.region.LegacyRegion;
 import misat11.bw.statistics.PlayerStatistic;
@@ -55,7 +58,7 @@ import java.util.Map;
 import static misat11.lib.lang.I18n.i18n;
 import static misat11.lib.lang.I18n.i18nonly;
 
-public class Game implements misat11.bw.api.Game {
+public class Game implements misat11.bw.api.game.Game {
     private String name;
     private Location pos1;
     private Location pos2;
@@ -2728,7 +2731,7 @@ public class Game implements misat11.bw.api.Game {
     }
 
     @Override
-    public List<misat11.bw.api.ItemSpawner> getItemSpawners() {
+    public List<misat11.bw.api.game.ItemSpawner> getItemSpawners() {
         return new ArrayList<>(spawners);
     }
 

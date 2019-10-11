@@ -1,8 +1,8 @@
 package misat11.bw.listener;
 
 import misat11.bw.Main;
-import misat11.bw.api.GameStatus;
-import misat11.bw.api.GameStore;
+import misat11.bw.api.game.GameStatus;
+import misat11.bw.api.game.GameStore;
 import misat11.bw.api.events.BedwarsOpenShopEvent;
 import misat11.bw.api.events.BedwarsOpenShopEvent.Result;
 import misat11.bw.game.Game;

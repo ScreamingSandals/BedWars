@@ -1,5 +1,7 @@
 package misat11.bw.api;
 
+import misat11.bw.api.game.Game;
+import misat11.bw.api.game.ItemSpawnerType;
 import misat11.bw.api.utils.ColorChanger;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;

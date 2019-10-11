@@ -7,7 +7,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import static misat11.lib.lang.I18n.i18n;
 
-public class ItemSpawnerType implements misat11.bw.api.ItemSpawnerType {
+public class ItemSpawnerType implements misat11.bw.api.game.ItemSpawnerType {
     private String configKey;
     private String name;
     private String translatableKey;

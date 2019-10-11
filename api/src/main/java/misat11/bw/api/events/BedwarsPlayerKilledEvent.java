@@ -1,6 +1,6 @@
 package misat11.bw.api.events;
 
-import misat11.bw.api.Game;
+import misat11.bw.api.game.Game;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
