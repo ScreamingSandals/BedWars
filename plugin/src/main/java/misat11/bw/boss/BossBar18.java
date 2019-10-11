@@ -1,125 +1,124 @@
 package misat11.bw.boss;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import me.confuser.barapi.BarAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import me.confuser.barapi.BarAPI;
+import java.util.ArrayList;
+import java.util.List;
 
 public class BossBar18 implements misat11.bw.api.boss.BossBar18 {
 
-	public static boolean isPluginForLegacyBossBarEnabled() {
-		return Bukkit.getPluginManager().isPluginEnabled("BarAPI");
-	}
+    public static boolean isPluginForLegacyBossBarEnabled() {
+        return Bukkit.getPluginManager().isPluginEnabled("BarAPI");
+    }
 
-	private boolean visible = false;
-	private List<Player> players = new ArrayList<>();
-	private String message = "";
-	private double progress = 0;
+    private boolean visible = false;
+    private List<Player> players = new ArrayList<>();
+    private String message = "";
+    private double progress = 0;
 
-	
-	public BossBar18() {
 
-	}
+    public BossBar18() {
 
-	@Override
-	public String getMessage() {
-		return message;
-	}
+    }
 
-	@Override
-	public void setMessage(String message) {
-		if (!isPluginForLegacyBossBarEnabled()) return;
-		this.message = message;
-		if (visible) {
-			for (Player p : players) {
-				show(p);
-			}
-		}
-	}
+    @Override
+    public String getMessage() {
+        return message;
+    }
 
-	@Override
-	public void addPlayer(Player player) {
-		if (!isPluginForLegacyBossBarEnabled()) return;
-		if (!players.contains(player)) {
-			players.add(player);
+    @Override
+    public void setMessage(String message) {
+        if (!isPluginForLegacyBossBarEnabled()) return;
+        this.message = message;
+        if (visible) {
+            for (Player p : players) {
+                show(p);
+            }
+        }
+    }
 
-			if (visible) {
-				show(player);
-			}
-		}
-	}
+    @Override
+    public void addPlayer(Player player) {
+        if (!isPluginForLegacyBossBarEnabled()) return;
+        if (!players.contains(player)) {
+            players.add(player);
 
-	@Override
-	public void removePlayer(Player player) {
-		if (!isPluginForLegacyBossBarEnabled()) return;
-		if (players.contains(player)) {
-			players.remove(player);
+            if (visible) {
+                show(player);
+            }
+        }
+    }
 
-			if (BarAPI.hasBar(player)) {
-				hide(player);
-			}
-		}
-	}
+    @Override
+    public void removePlayer(Player player) {
+        if (!isPluginForLegacyBossBarEnabled()) return;
+        if (players.contains(player)) {
+            players.remove(player);
 
-	@Override
-	public void setProgress(double progress) {
-		if (!isPluginForLegacyBossBarEnabled()) return;
-		this.progress = progress;
-		if (progress < 0) {
-			progress = 0;
-		} else if (progress > 1) {
-			progress = 1;
-		}
-		if (visible) {
-			for (Player p : players) {
-				show(p);
-			}
-		}
-	}
+            if (BarAPI.hasBar(player)) {
+                hide(player);
+            }
+        }
+    }
 
-	@Override
-	public List<Player> getViewers() {
-		return players;
-	}
+    @Override
+    public void setProgress(double progress) {
+        if (!isPluginForLegacyBossBarEnabled()) return;
+        this.progress = progress;
+        if (progress < 0) {
+            progress = 0;
+        } else if (progress > 1) {
+            progress = 1;
+        }
+        if (visible) {
+            for (Player p : players) {
+                show(p);
+            }
+        }
+    }
 
-	@Override
-	public double getProgress() {
-		return progress;
-	}
+    @Override
+    public List<Player> getViewers() {
+        return players;
+    }
 
-	@Override
-	public boolean isVisible() {
-		return visible;
-	}
+    @Override
+    public double getProgress() {
+        return progress;
+    }
 
-	@Override
-	public void setVisible(boolean visible) {
-		if (!isPluginForLegacyBossBarEnabled()) return;
-		if (this.visible != visible) {
-			if (visible) {
-				for (Player player : players) {
-					show(player);
-				}
-			} else {
-				for (Player player : players) {
-					hide(player);
-				}
-			}
-			this.visible = visible;
-		}
-	}
+    @Override
+    public boolean isVisible() {
+        return visible;
+    }
 
-	private void show(Player player) {
-		if (!isPluginForLegacyBossBarEnabled()) return;
-		BarAPI.setMessage(player, message, (float) progress * 100);
-	}
+    @Override
+    public void setVisible(boolean visible) {
+        if (!isPluginForLegacyBossBarEnabled()) return;
+        if (this.visible != visible) {
+            if (visible) {
+                for (Player player : players) {
+                    show(player);
+                }
+            } else {
+                for (Player player : players) {
+                    hide(player);
+                }
+            }
+            this.visible = visible;
+        }
+    }
 
-	private void hide(Player player) {
-		if (!isPluginForLegacyBossBarEnabled()) return;
-		BarAPI.removeBar(player);
-	}
+    private void show(Player player) {
+        if (!isPluginForLegacyBossBarEnabled()) return;
+        BarAPI.setMessage(player, message, (float) progress * 100);
+    }
+
+    private void hide(Player player) {
+        if (!isPluginForLegacyBossBarEnabled()) return;
+        BarAPI.removeBar(player);
+    }
 
 }

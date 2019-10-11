@@ -1,6 +1,7 @@
 package misat11.bw.api.upgrades;
 
 import misat11.bw.api.Game;
+import misat11.bw.api.Team;
 
 /**
  * @author Bedwars Team
@@ -12,40 +13,54 @@ public interface Upgrade {
 	 * 
 	 * @return registered name of this upgrade
 	 */
-	public String getName();
+	String getName();
 	
 	/**
 	 * 
 	 * @return identificator of this upgrade instance
 	 */
-	public String getInstanceName();
+	String getInstanceName();
 	
 	/**
 	 * 
 	 * @return current level of upgrade
 	 */
-	public double getLevel();
+	double getLevel();
 	
 	/**
 	 * Sets level of this upgrade
 	 * 
 	 * @param level Current level
 	 */
-	public void setLevel(double level);
+	void setLevel(double level);
 	
 	/**
 	 * Add levels to this upgrade
 	 * 
 	 * @param level Levels that will be added to current level
 	 */
-	public void increaseLevel(double level);
+	void increaseLevel(double level);
 	
 	/**
 	 * 
 	 * @return initial level of upgrade
 	 */
-	public double getInitialLevel();
-	
+	double getInitialLevel();
+
+	/**
+	 * Sets team of this upgrade
+	 *
+	 * @param team current team
+	 */
+	void setTeam(Team team);
+
+
+	/**
+	 *
+	 * @return registered team for this upgrade
+	 */
+	Team getTeam();
+
 	/**
 	 * Called when upgrade is registered
 	 * 

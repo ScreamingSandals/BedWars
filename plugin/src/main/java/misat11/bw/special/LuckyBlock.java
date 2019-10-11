@@ -17,70 +17,70 @@ import java.util.Random;
 
 public class LuckyBlock extends SpecialItem implements misat11.bw.api.special.LuckyBlock {
 
-	private List<Map<String, Object>> luckyBlockData;
-	private Location placedLocation = null;
-	private boolean isPlaced = false;
+    private List<Map<String, Object>> luckyBlockData;
+    private Location placedLocation = null;
+    private boolean isPlaced = false;
 
-	public LuckyBlock(Game game, Player player, Team team, List<Map<String, Object>> luckyBlockData) {
-		super(game, player, team);
+    public LuckyBlock(Game game, Player player, Team team, List<Map<String, Object>> luckyBlockData) {
+        super(game, player, team);
 
-		this.luckyBlockData = luckyBlockData;
+        this.luckyBlockData = luckyBlockData;
 
-		game.registerSpecialItem(this);
-	}
+        game.registerSpecialItem(this);
+    }
 
-	public void place(Location loc) {
-		this.placedLocation = loc;
-		this.isPlaced = true;
-	}
+    public void place(Location loc) {
+        this.placedLocation = loc;
+        this.isPlaced = true;
+    }
 
-	public void process(Player broker) {
-		game.unregisterSpecialItem(this);
+    public void process(Player broker) {
+        game.unregisterSpecialItem(this);
 
-		Random rand = new Random();
-		int element = rand.nextInt(luckyBlockData.size());
+        Random rand = new Random();
+        int element = rand.nextInt(luckyBlockData.size());
 
-		Map<String, Object> map = luckyBlockData.get(element);
+        Map<String, Object> map = luckyBlockData.get(element);
 
-		String type = (String) map.getOrDefault("type", "nothing");
-		switch (type) {
-		case "item":
-			ItemStack stack = ((ItemStack) map.get("stack")).clone();
-			placedLocation.getWorld().dropItem(placedLocation, stack);
-			break;
-		case "potion":
-			PotionEffect potionEffect = (PotionEffect) map.get("effect");
-			broker.addPotionEffect(potionEffect);
-			break;
-		case "tnt":
-			new BukkitRunnable() {
-				
-				@Override
-				public void run() {
-					TNTPrimed tnt = (TNTPrimed) placedLocation.getWorld().spawnEntity(placedLocation, EntityType.PRIMED_TNT);
-					tnt.setFuseTicks(0);
-				}
-			}.runTaskLater(Main.getInstance(), 10L);
-			break;
-		case "teleport":
-			broker.teleport(broker.getLocation().add(0, (int) map.get("height"), 0));
-			break;
-		}
-		
-		if (map.containsKey("message")) {
-			broker.sendMessage((String) map.get("message"));
-		}
+        String type = (String) map.getOrDefault("type", "nothing");
+        switch (type) {
+            case "item":
+                ItemStack stack = ((ItemStack) map.get("stack")).clone();
+                placedLocation.getWorld().dropItem(placedLocation, stack);
+                break;
+            case "potion":
+                PotionEffect potionEffect = (PotionEffect) map.get("effect");
+                broker.addPotionEffect(potionEffect);
+                break;
+            case "tnt":
+                new BukkitRunnable() {
 
-	}
+                    @Override
+                    public void run() {
+                        TNTPrimed tnt = (TNTPrimed) placedLocation.getWorld().spawnEntity(placedLocation, EntityType.PRIMED_TNT);
+                        tnt.setFuseTicks(0);
+                    }
+                }.runTaskLater(Main.getInstance(), 10L);
+                break;
+            case "teleport":
+                broker.teleport(broker.getLocation().add(0, (int) map.get("height"), 0));
+                break;
+        }
 
-	@Override
-	public boolean isPlaced() {
-		return isPlaced;
-	}
+        if (map.containsKey("message")) {
+            broker.sendMessage((String) map.get("message"));
+        }
 
-	@Override
-	public Location getBlockLocation() {
-		return placedLocation;
-	}
+    }
+
+    @Override
+    public boolean isPlaced() {
+        return isPlaced;
+    }
+
+    @Override
+    public Location getBlockLocation() {
+        return placedLocation;
+    }
 
 }

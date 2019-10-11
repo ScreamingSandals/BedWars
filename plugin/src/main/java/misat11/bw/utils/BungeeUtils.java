@@ -3,16 +3,12 @@ package misat11.bw.utils;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import misat11.bw.Main;
-import misat11.bw.game.Game;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import static misat11.lib.lang.I18n.i18n;
-
 public class BungeeUtils {
-
-    public static void movePlayer(Player player) {
+    public static void movePlayerToBungeeServer(Player player) {
         new BukkitRunnable() {
             public void run() {
                 String server = Main.getConfigurator().config.getString("bungee.server");
@@ -26,7 +22,7 @@ public class BungeeUtils {
         }.runTask(Main.getInstance());
     }
 
-    public static void sendMessage(Player player, String string) {
+    public static void sendPlayerBungeeMessage(Player player, String string) {
         new BukkitRunnable() {
             public void run() {
                 ByteArrayDataOutput out = ByteStreams.newDataOutput();

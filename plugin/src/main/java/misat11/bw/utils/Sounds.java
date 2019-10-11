@@ -1024,21 +1024,21 @@ public enum Sounds {
             }
         }
     }
-    
+
     public static void playSound(Player player, Location location, String name, Sounds fallbackSound, float volume, float pitch) {
-    	try {
-    		Sounds sound = Sounds.valueOf(name.toUpperCase());
-    		sound.playSound(player, location, volume, pitch);
-    	} catch (IllegalArgumentException | NullPointerException ex) {
-    		try {
-    			// If something is exists in bukkit, but not in this mapping
-    			Sound s = org.bukkit.Sound.valueOf(name);
-    			player.playSound(location, s, volume, pitch);
-    		} catch (IllegalArgumentException t) {
-        		if (fallbackSound != null) {
-        			fallbackSound.playSound(player, location, volume, pitch);
-        		}
-    		}
-    	}
+        try {
+            Sounds sound = Sounds.valueOf(name.toUpperCase());
+            sound.playSound(player, location, volume, pitch);
+        } catch (IllegalArgumentException | NullPointerException ex) {
+            try {
+                // If something is exists in bukkit, but not in this mapping
+                Sound s = org.bukkit.Sound.valueOf(name);
+                player.playSound(location, s, volume, pitch);
+            } catch (IllegalArgumentException t) {
+                if (fallbackSound != null) {
+                    fallbackSound.playSound(player, location, volume, pitch);
+                }
+            }
+        }
     }
 }

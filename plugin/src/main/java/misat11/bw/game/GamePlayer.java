@@ -9,140 +9,140 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffect;
 
 public class GamePlayer {
-	public final Player player;
-	private Game game = null;
-	private String latestGame = null;
+    public final Player player;
+    private Game game = null;
+    private String latestGame = null;
+    private StoredInventory oldInventory = new StoredInventory();
 
-	public boolean isSpectator = false;
-	
-	public boolean isTeleportingFromGame_justForInventoryPlugins = false;
+    public boolean isSpectator = false;
+    public boolean isTeleportingFromGame_justForInventoryPlugins = false;
 
-	private StoredInventory oldinventory = new StoredInventory();
+    public GamePlayer(Player player) {
+        this.player = player;
+    }
 
-	public GamePlayer(Player player) {
-		this.player = player;
-	}
-
-	public void changeGame(Game game) {
-		if (this.game != null && game == null) {
-			if (Game.isBungeeEnabled()) {
-				this.game.leavePlayer(this);
-				this.game = null;
-				this.isSpectator = false;
-				this.clean();
-				BungeeUtils.movePlayer(player);
-			} else {
-                this.game.leavePlayer(this);
+    public void changeGame(Game game) {
+        if (this.game != null && game == null) {
+            if (Game.isBungeeEnabled()) {
+                this.game.internalLeavePlayer(this);
+                this.game = null;
+                this.isSpectator = false;
+                this.clean();
+                BungeeUtils.movePlayerToBungeeServer(player);
+            } else {
+                this.game.internalLeavePlayer(this);
                 this.game = null;
                 this.isSpectator = false;
                 this.clean();
                 this.restoreInv();
             }
-		} else if (this.game == null && game != null) {
-			this.storeInv();
-			this.clean();
-			this.game = game;
-			this.isSpectator = false;
-			this.game.joinPlayer(this);
-			this.latestGame = this.game.getName();
-		} else if (this.game != null && game != null) {
-			this.game.leavePlayer(this);
-			this.game = game;
-			this.isSpectator = false;
-			this.clean();
-			this.game.joinPlayer(this);
-			this.latestGame = this.game.getName();
-		}
-	}
+        } else if (this.game == null && game != null) {
+            this.storeInv();
+            this.clean();
+            this.game = game;
+            this.isSpectator = false;
+            this.game.internalJoinPlayer(this);
+            this.latestGame = this.game.getName();
+        } else if (this.game != null) {
+            this.game.internalLeavePlayer(this);
+            this.game = game;
+            this.isSpectator = false;
+            this.clean();
+            this.game.internalJoinPlayer(this);
+            this.latestGame = this.game.getName();
+        }
+    }
 
-	public Game getGame() {
-		return game;
-	}
-	
-	public String getLatestGameName() {
-		return this.latestGame;
-	}
+    public Game getGame() {
+        return game;
+    }
 
-	public boolean isInGame() {
-		return game != null;
-	}
+    public String getLatestGameName() {
+        return this.latestGame;
+    }
 
-	public boolean canJoinFullGame() { return player.hasPermission("bw.vip.forcejoin"); }
+    public boolean isInGame() {
+        return game != null;
+    }
 
-	public void storeInv() {
-		oldinventory.inventory = player.getInventory().getContents();
-		oldinventory.armor = player.getInventory().getArmorContents();
-		oldinventory.xp = player.getExp();
-		oldinventory.effects = player.getActivePotionEffects();
-		oldinventory.mode = player.getGameMode();
-		oldinventory.leftLocation = player.getLocation();
-		oldinventory.level = player.getLevel();
-		oldinventory.listName = player.getPlayerListName();
-		oldinventory.displayName = player.getDisplayName();
-		oldinventory.foodLevel = player.getFoodLevel();
-	}
+    public boolean canJoinFullGame() {
+        return player.hasPermission("bw.vip.forcejoin");
+    }
 
-	public void restoreInv() {
-		isTeleportingFromGame_justForInventoryPlugins = true;
-		if (!Main.getConfigurator().config.getBoolean("mainlobby.enabled")) {
-			player.teleport(oldinventory.leftLocation);
-		}
+    public void storeInv() {
+        oldInventory.inventory = player.getInventory().getContents();
+        oldInventory.armor = player.getInventory().getArmorContents();
+        oldInventory.xp = player.getExp();
+        oldInventory.effects = player.getActivePotionEffects();
+        oldInventory.mode = player.getGameMode();
+        oldInventory.leftLocation = player.getLocation();
+        oldInventory.level = player.getLevel();
+        oldInventory.listName = player.getPlayerListName();
+        oldInventory.displayName = player.getDisplayName();
+        oldInventory.foodLevel = player.getFoodLevel();
+    }
 
-		player.getInventory().setContents(oldinventory.inventory);
-		player.getInventory().setArmorContents(oldinventory.armor);
+    public void restoreInv() {
+        isTeleportingFromGame_justForInventoryPlugins = true;
+        if (!Main.getConfigurator().config.getBoolean("mainlobby.enabled")) {
+            player.teleport(oldInventory.leftLocation);
+        }
 
-		player.addPotionEffects(oldinventory.effects);
-		player.setLevel(oldinventory.level);
-		player.setExp(oldinventory.xp);
-		player.setFoodLevel(oldinventory.foodLevel);
+        player.getInventory().setContents(oldInventory.inventory);
+        player.getInventory().setArmorContents(oldInventory.armor);
 
-		for (PotionEffect e : player.getActivePotionEffects())
-			player.removePotionEffect(e.getType());
+        player.addPotionEffects(oldInventory.effects);
+        player.setLevel(oldInventory.level);
+        player.setExp(oldInventory.xp);
+        player.setFoodLevel(oldInventory.foodLevel);
 
-		player.addPotionEffects(oldinventory.effects);
+        for (PotionEffect e : player.getActivePotionEffects())
+            player.removePotionEffect(e.getType());
 
-		player.setPlayerListName(oldinventory.listName);
-		player.setDisplayName(oldinventory.displayName);
+        player.addPotionEffects(oldInventory.effects);
 
-		player.setGameMode(oldinventory.mode);
+        player.setPlayerListName(oldInventory.listName);
+        player.setDisplayName(oldInventory.displayName);
 
-		if (oldinventory.mode == GameMode.CREATIVE)
-			player.setAllowFlight(true);
-		else
-			player.setAllowFlight(false);
+        player.setGameMode(oldInventory.mode);
 
-		player.updateInventory();
-		player.resetPlayerTime();
-		player.resetPlayerWeather();
-	}
+        if (oldInventory.mode == GameMode.CREATIVE)
+            player.setAllowFlight(true);
+        else
+            player.setAllowFlight(false);
 
-	public void clean() {
-		PlayerInventory inv = this.player.getInventory();
-		inv.setArmorContents(new ItemStack[4]);
-		inv.setContents(new ItemStack[] {});
+        player.updateInventory();
+        player.resetPlayerTime();
+        player.resetPlayerWeather();
+    }
 
-		this.player.setAllowFlight(false);
-		this.player.setFlying(false);
-		this.player.setExp(0.0F);
-		this.player.setLevel(0);
-		this.player.setSneaking(false);
-		this.player.setSprinting(false);
-		this.player.setFoodLevel(20);
-		this.player.setSaturation(10);
-		this.player.setExhaustion(0);
-		this.player.setHealth(20.0D);
-		this.player.setFireTicks(0);
-		this.player.setGameMode(GameMode.SURVIVAL);
+    public void clean() {
+        PlayerInventory inv = this.player.getInventory();
+        inv.setArmorContents(new ItemStack[4]);
+        inv.setContents(new ItemStack[]{});
 
-		if (this.player.isInsideVehicle()) {
-			this.player.leaveVehicle();
-		}
+        this.player.setAllowFlight(false);
+        this.player.setFlying(false);
+        this.player.setExp(0.0F);
+        this.player.setLevel(0);
+        this.player.setSneaking(false);
+        this.player.setSprinting(false);
+        this.player.setFoodLevel(20);
+        this.player.setSaturation(10);
+        this.player.setExhaustion(0);
+        this.player.setHealth(20.0D);
+        this.player.setFireTicks(0);
+        this.player.setGameMode(GameMode.SURVIVAL);
 
-		for (PotionEffect e : this.player.getActivePotionEffects()) {
-			this.player.removePotionEffect(e.getType());
-		}
+        if (this.player.isInsideVehicle()) {
+            this.player.leaveVehicle();
+        }
 
-		this.player.updateInventory();
-	}
+        for (PotionEffect e : this.player.getActivePotionEffects()) {
+            this.player.removePotionEffect(e.getType());
+        }
+
+        this.player.updateInventory();
+    }
 
 }
