@@ -4,23 +4,22 @@ import org.bukkit.entity.LivingEntity;
 
 /**
  * @author Bedwars Team
- *
  */
 public interface Golem extends SpecialItem {
 
-	/**
-	 * @return
-	 */
-	public LivingEntity getEntity();
+    /**
+     * @return
+     */
+    LivingEntity getEntity();
 
-	/**
-	 * @return
-	 */
-	public double getSpeed();
+    /**
+     * @return
+     */
+    double getSpeed();
 
-	/**
-	 * @return
-	 */
-	public double getFollowRange();
+    /**
+     * @return
+     */
+    double getFollowRange();
 
 }

@@ -5,8 +5,7 @@ import org.bukkit.entity.Player;
 
 /**
  * @author Bedwars Team
-         *
-         */
+ */
 public interface DelayFactory {
 
     /**

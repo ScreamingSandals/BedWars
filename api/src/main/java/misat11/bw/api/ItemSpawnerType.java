@@ -6,67 +6,66 @@ import org.bukkit.inventory.ItemStack;
 
 /**
  * @author Bedwars Team
- *
  */
 public interface ItemSpawnerType {
-	/**
-	 * @return
-	 */
-	public String getConfigKey();
+    /**
+     * @return
+     */
+    String getConfigKey();
 
-	/**
-	 * @return
-	 */
-	public ChatColor getColor();
+    /**
+     * @return
+     */
+    ChatColor getColor();
 
-	/**
-	 * @return
-	 */
-	public int getInterval();
+    /**
+     * @return
+     */
+    int getInterval();
 
-	/**
-	 * @return
-	 */
-	public double getSpread();
+    /**
+     * @return
+     */
+    double getSpread();
 
-	/**
-	 * @return
-	 */
-	public String getName();
+    /**
+     * @return
+     */
+    String getName();
 
-	/**
-	 * @return
-	 */
-	public Material getMaterial();
+    /**
+     * @return
+     */
+    Material getMaterial();
 
-	/**
-	 * @return
-	 */
-	public String getTranslatableKey();
+    /**
+     * @return
+     */
+    String getTranslatableKey();
 
-	/**
-	 * @return
-	 */
-	public String getItemName();
+    /**
+     * @return
+     */
+    String getItemName();
 
-	/**
-	 * @return
-	 */
-	public String getItemBoldName();
+    /**
+     * @return
+     */
+    String getItemBoldName();
 
-	/**
-	 * @return
-	 */
-	public int getDamage();
+    /**
+     * @return
+     */
+    int getDamage();
 
-	/**
-	 * @return
-	 */
-	public ItemStack getStack();
+    /**
+     * @return
+     */
+    ItemStack getStack();
 
-	/**
-	 * @param amount
-	 * @return
-	 */
-	public ItemStack getStack(int amount);
+    /**
+     * @param amount
+     * @return
+     */
+    ItemStack getStack(int amount);
 }

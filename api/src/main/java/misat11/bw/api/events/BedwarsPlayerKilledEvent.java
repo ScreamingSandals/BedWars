@@ -10,64 +10,63 @@ import java.util.List;
 
 /**
  * @author Bedwars Team
- *
  */
 public class BedwarsPlayerKilledEvent extends Event {
 
-	private static final HandlerList handlers = new HandlerList();
-	private Game game;
-	private Player killer;
-	private Player player;
-	private List<ItemStack> drops;
+    private static final HandlerList handlers = new HandlerList();
+    private Game game;
+    private Player killer;
+    private Player player;
+    private List<ItemStack> drops;
 
-	/**
-	 * @param game
-	 * @param player
-	 * @param killer
-	 * @param drops
-	 */
-	public BedwarsPlayerKilledEvent(Game game, Player player, Player killer, List<ItemStack> drops) {
-		this.player = player;
-		this.killer = killer;
-		this.game = game;
-		this.drops = drops;
-	}
+    /**
+     * @param game
+     * @param player
+     * @param killer
+     * @param drops
+     */
+    public BedwarsPlayerKilledEvent(Game game, Player player, Player killer, List<ItemStack> drops) {
+        this.player = player;
+        this.killer = killer;
+        this.game = game;
+        this.drops = drops;
+    }
 
-	public static HandlerList getHandlerList() {
-		return BedwarsPlayerKilledEvent.handlers;
-	}
+    public static HandlerList getHandlerList() {
+        return BedwarsPlayerKilledEvent.handlers;
+    }
 
-	/**
-	 * @return game
-	 */
-	public Game getGame() {
-		return this.game;
-	}
+    /**
+     * @return game
+     */
+    public Game getGame() {
+        return this.game;
+    }
 
-	@Override
-	public HandlerList getHandlers() {
-		return BedwarsPlayerKilledEvent.handlers;
-	}
+    @Override
+    public HandlerList getHandlers() {
+        return BedwarsPlayerKilledEvent.handlers;
+    }
 
-	/**
-	 * @return killer
-	 */
-	public Player getKiller() {
-		return this.killer;
-	}
+    /**
+     * @return killer
+     */
+    public Player getKiller() {
+        return this.killer;
+    }
 
-	/**
-	 * @return victim
-	 */
-	public Player getPlayer() {
-		return this.player;
-	}
+    /**
+     * @return victim
+     */
+    public Player getPlayer() {
+        return this.player;
+    }
 
-	/**
-	 * @return victim's drops
-	 */
-	public List<ItemStack> getDrops() {
-		return this.drops;
-	}
+    /**
+     * @return victim's drops
+     */
+    public List<ItemStack> getDrops() {
+        return this.drops;
+    }
 
 }

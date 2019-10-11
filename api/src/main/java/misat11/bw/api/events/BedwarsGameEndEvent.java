@@ -12,7 +12,7 @@ import misat11.bw.api.Game;
 public class BedwarsGameEndEvent extends Event {
 
 	private static final HandlerList handlers = new HandlerList();
-	private Game game = null;
+	private Game game;
 
 	/**
 	 * @param game

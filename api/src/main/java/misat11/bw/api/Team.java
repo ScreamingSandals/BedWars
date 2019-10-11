@@ -4,36 +4,35 @@ import org.bukkit.Location;
 
 /**
  * @author Bedwars Team
- *
  */
 public interface Team {
-	/**
-	 * @return
-	 */
-	public Game getGame();
-	
-	/**
-	 * @return
-	 */
-	public String getName();
-	
-	/**
-	 * @return
-	 */
-	public TeamColor getColor();
-	
-	/**
-	 * @return
-	 */
-	public Location getTeamSpawn();
-	
-	/**
-	 * @return
-	 */
-	public Location getTargetBlock();
-	
-	/**
-	 * @return
-	 */
-	public int getMaxPlayers();
+    /**
+     * @return
+     */
+    Game getGame();
+
+    /**
+     * @return
+     */
+    String getName();
+
+    /**
+     * @return
+     */
+    TeamColor getColor();
+
+    /**
+     * @return
+     */
+    Location getTeamSpawn();
+
+    /**
+     * @return
+     */
+    Location getTargetBlock();
+
+    /**
+     * @return
+     */
+    int getMaxPlayers();
 }

@@ -11,7 +11,6 @@ import misat11.bw.api.ItemSpawner;
  *
  */
 public final class UpgradeRegistry {
-
 	private static final Map<String, UpgradeStorage> UPGRADES = new HashMap<>();
 	
 	static {

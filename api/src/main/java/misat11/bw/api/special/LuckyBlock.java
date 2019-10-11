@@ -4,16 +4,15 @@ import org.bukkit.Location;
 
 /**
  * @author Bedwars Team
- *
  */
 public interface LuckyBlock extends SpecialItem {
-	/**
-	 * @return
-	 */
-	public boolean isPlaced();
-	
-	/**
-	 * @return
-	 */
-	public Location getBlockLocation();
+    /**
+     * @return
+     */
+    boolean isPlaced();
+
+    /**
+     * @return
+     */
+    Location getBlockLocation();
 }

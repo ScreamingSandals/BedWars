@@ -12,25 +12,25 @@ public interface TNTSheep extends SpecialItem {
 	/**
 	 * @return
 	 */
-	public LivingEntity getEntity();
+	LivingEntity getEntity();
 
 	/**
 	 * @return
 	 */
-	public Location getInitialLocation();
+	Location getInitialLocation();
 	
 	/**
 	 * @return
 	 */
-	public TNTPrimed getTNT();
+	TNTPrimed getTNT();
 	
 	/**
 	 * @return
 	 */
-	public double getSpeed();
+	double getSpeed();
 	
 	/**
 	 * @return
 	 */
-	public double getFollowRange();
+	double getFollowRange();
 }

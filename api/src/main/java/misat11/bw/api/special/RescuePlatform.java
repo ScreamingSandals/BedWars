@@ -8,36 +8,35 @@ import java.util.List;
 
 /**
  * @author Bedwars Team
- *
  */
 public interface RescuePlatform extends SpecialItem {
-	/**
-	 * @return
-	 */
-	public int getBreakingTime();
+    /**
+     * @return
+     */
+    int getBreakingTime();
 
-	/**
-	 * @return
-	 */
-	public boolean canBreak();
+    /**
+     * @return
+     */
+    boolean canBreak();
 
-	/**
-	 * @return
-	 */
-	public Material getMaterial();
+    /**
+     * @return
+     */
+    Material getMaterial();
 
-	/**
-	 * @return
-	 */
-	public ItemStack getStack();
-	
-	/**
-	 * 
-	 */
-	public void runTask();
-	
-	/**
-	 * @return
-	 */
-	public List<Block> getPlatformBlocks();
+    /**
+     * @return
+     */
+    ItemStack getStack();
+
+    /**
+     *
+     */
+    void runTask();
+
+    /**
+     * @return
+     */
+    List<Block> getPlatformBlocks();
 }

@@ -4,126 +4,125 @@ import java.util.UUID;
 
 /**
  * @author Bedwars Team
- *
  */
 public interface PlayerStatistic {
-	/**
-	 * @return
-	 */
-	public int getCurrentDeaths();
+    /**
+     * @return
+     */
+    int getCurrentDeaths();
 
-	/**
-	 * @param currentDeaths
-	 */
-	public void setCurrentDeaths(int currentDeaths);
+    /**
+     * @param currentDeaths
+     */
+    void setCurrentDeaths(int currentDeaths);
 
-	/**
-	 * @return
-	 */
-	public int getCurrentDestroyedBeds();
+    /**
+     * @return
+     */
+    int getCurrentDestroyedBeds();
 
-	/**
-	 * @param currentDestroyedBeds
-	 */
-	public void setCurrentDestroyedBeds(int currentDestroyedBeds);
+    /**
+     * @param currentDestroyedBeds
+     */
+    void setCurrentDestroyedBeds(int currentDestroyedBeds);
 
-	/**
-	 * @return
-	 */
-	public int getCurrentKills();
+    /**
+     * @return
+     */
+    int getCurrentKills();
 
-	/**
-	 * @param currentKills
-	 */
-	public void setCurrentKills(int currentKills);
+    /**
+     * @param currentKills
+     */
+    void setCurrentKills(int currentKills);
 
-	/**
-	 * @return
-	 */
-	public int getCurrentLoses();
+    /**
+     * @return
+     */
+    int getCurrentLoses();
 
-	/**
-	 * @param currentLoses
-	 */
-	public void setCurrentLoses(int currentLoses);
+    /**
+     * @param currentLoses
+     */
+    void setCurrentLoses(int currentLoses);
 
-	/**
-	 * @return
-	 */
-	public int getCurrentScore();
+    /**
+     * @return
+     */
+    int getCurrentScore();
 
-	/**
-	 * @param currentScore
-	 */
-	public void setCurrentScore(int currentScore);
+    /**
+     * @param currentScore
+     */
+    void setCurrentScore(int currentScore);
 
-	/**
-	 * @return
-	 */
-	public int getCurrentWins();
+    /**
+     * @return
+     */
+    int getCurrentWins();
 
-	/**
-	 * @param currentWins
-	 */
-	public void setCurrentWins(int currentWins);
+    /**
+     * @param currentWins
+     */
+    void setCurrentWins(int currentWins);
 
-	/**
-	 * @return
-	 */
-	public double getCurrentKD();
+    /**
+     * @return
+     */
+    double getCurrentKD();
 
-	/**
-	 * @return
-	 */
-	public int getCurrentGames();
+    /**
+     * @return
+     */
+    int getCurrentGames();
 
-	/**
-	 * @return
-	 */
-	public int getDeaths();
+    /**
+     * @return
+     */
+    int getDeaths();
 
-	/**
-	 * @return
-	 */
-	public int getDestroyedBeds();
+    /**
+     * @return
+     */
+    int getDestroyedBeds();
 
-	/**
-	 * @return
-	 */
-	public int getKills();
+    /**
+     * @return
+     */
+    int getKills();
 
-	/**
-	 * @return
-	 */
-	public int getLoses();
+    /**
+     * @return
+     */
+    int getLoses();
 
-	/**
-	 * @return
-	 */
-	public String getName();
+    /**
+     * @return
+     */
+    String getName();
 
-	/**
-	 * @return
-	 */
-	public int getScore();
+    /**
+     * @return
+     */
+    int getScore();
 
-	/**
-	 * @return
-	 */
-	public UUID getUuid();
+    /**
+     * @return
+     */
+    UUID getUuid();
 
-	/**
-	 * @return
-	 */
-	public int getWins();
+    /**
+     * @return
+     */
+    int getWins();
 
-	/**
-	 * @return
-	 */
-	public double getKD();
+    /**
+     * @return
+     */
+    double getKD();
 
-	/**
-	 * @return
-	 */
-	public int getGames();
+    /**
+     * @return
+     */
+    int getGames();
 }

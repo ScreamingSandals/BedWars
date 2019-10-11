@@ -8,7 +8,6 @@ import org.bukkit.event.HandlerList;
 
 /**
  * @author Bedwars Team
- *
  */
 public class BedWarsPlayerLastLeaveEvent extends Event {
     private static final HandlerList handlers = new HandlerList();

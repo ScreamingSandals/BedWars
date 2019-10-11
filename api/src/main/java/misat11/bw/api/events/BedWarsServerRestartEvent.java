@@ -5,7 +5,6 @@ import org.bukkit.event.HandlerList;
 
 /**
  * @author Bedwars Team
- *
  */
 public class BedWarsServerRestartEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
