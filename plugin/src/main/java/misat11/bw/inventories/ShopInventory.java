@@ -85,7 +85,6 @@ public class ShopInventory implements Listener {
                         return Boolean.toString(team.isBed);
                 }
             }
-            System.out.println("apply team " + team.getName());
             return team.getName();
         });
 
