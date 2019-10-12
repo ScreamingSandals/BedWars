@@ -187,7 +187,6 @@ public class ProtectionWall extends SpecialItem implements misat11.bw.api.specia
                         // The method is no longer in API, but in legacy versions exists
                         Block.class.getMethod("setData", byte.class).invoke(placedBlock, (byte) coloredStack.getDurability());
                     } catch (Exception e) {
-                        e.printStackTrace();
                     }
                 } else {
                     placedBlock.setType(coloredStack.getType());
