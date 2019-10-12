@@ -333,6 +333,7 @@ public class ShopInventory implements Listener {
         MapReader mapReader = event.getItem().getReader();
         String priceType = event.getType().toLowerCase();
         String itemName = "UPGRADE";
+        boolean sendToAll = false;
         ItemSpawnerType itemSpawnerType = Main.getSpawnerType(priceType);
 
         if (mapReader.containsKey("upgrade") && game.isUpgradesEnabled()) {
@@ -352,22 +353,21 @@ public class ShopInventory implements Listener {
 
                     UpgradeStorage upgradeStorage = UpgradeRegistry.getUpgrade(configuredType);
                     if (upgradeStorage != null) {
-                        String mapSpawnerType = mapEntity.getString("shop-name");
-                        itemName = mapEntity.getString("shop-name");
-                        double addLevels = mapEntity.getDouble("levels");
+                        Team team = game.getTeamOfPlayer(event.getPlayer());
+                        double addLevels = mapEntity.getDouble("add-levels");
+                        itemName = mapEntity.getString("shop-name").replace("%team%", team.getName());
+                        sendToAll = mapEntity.getBoolean("notify-team", false);
+
                         List<Upgrade> upgrades = new ArrayList<>();
 
-                        if (mapEntity.containsKey("customName")) {
-                            String customName = mapEntity.getString("customName");
+                        if (mapEntity.containsKey("spawnerName")) {
+                            String customName = mapEntity.getString("spawnerName");
                             upgrades = upgradeStorage.findItemSpawnerUpgrades(game, customName);
-                        } else if (mapEntity.containsKey("team") && mapEntity.containsKey("spawnerType")) {
-                            Team team = game.getTeamFromName(mapEntity.getString("team"));
+                        } else if (mapEntity.containsKey("spawner-type")) {
+                            String mapSpawnerType = mapEntity.getString("spawner-type");
                             ItemSpawnerType spawnerType = Main.getSpawnerType(mapSpawnerType);
 
                             upgrades = upgradeStorage.findItemSpawnerUpgrades(game, team, spawnerType);
-                        } else if (mapEntity.containsKey("team")) {
-                            Team team = game.getTeamFromName(mapEntity.getString("team"));
-                            upgrades = upgradeStorage.findItemSpawnerUpgrades(game, team);
                         } else {
                             System.out.println("[BedWars]> Upgrade configuration is invalid.");
                         }
@@ -387,11 +387,21 @@ public class ShopInventory implements Listener {
                         }
                     }
 
-                    player.sendMessage(i18n("buy_succes").replace("%item%", itemName).replace("%material%",
-                            price + " " + itemSpawnerType.getItemName()));
-                    Sounds.playSound(player, player.getLocation(),
-                            Main.getConfigurator().config.getString("sounds.on_upgrade_buy"),
-                            Sounds.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
+                    if (sendToAll) {
+                        for (Player player1 : game.getTeamOfPlayer(event.getPlayer()).getConnectedPlayers()) {
+                            player1.sendMessage(i18n("buy_succes").replace("%item%", itemName).replace("%material%",
+                                    price + " " + itemSpawnerType.getItemName()));
+                            Sounds.playSound(player1, player1.getLocation(),
+                                    Main.getConfigurator().config.getString("sounds.on_upgrade_buy"),
+                                    Sounds.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
+                        }
+                    } else {
+                        player.sendMessage(i18n("buy_succes").replace("%item%", itemName).replace("%material%",
+                                price + " " + itemSpawnerType.getItemName()));
+                        Sounds.playSound(player, player.getLocation(),
+                                Main.getConfigurator().config.getString("sounds.on_upgrade_buy"),
+                                Sounds.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
+                    }
                 }
             } else {
                 player.sendMessage(i18n("buy_failed").replace("%item%", "UPGRADE").replace("%material%",
