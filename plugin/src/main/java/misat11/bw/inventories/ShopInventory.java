@@ -11,6 +11,7 @@ import misat11.bw.api.upgrades.UpgradeStorage;
 import misat11.bw.game.CurrentTeam;
 import misat11.bw.game.Game;
 import misat11.bw.game.GamePlayer;
+import misat11.bw.utils.Debugger;
 import misat11.bw.utils.Sounds;
 import misat11.lib.sgui.*;
 import misat11.lib.sgui.events.GenerateItemEvent;
@@ -24,6 +25,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import sun.security.util.Debug;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -331,6 +333,7 @@ public class ShopInventory implements Listener {
         String priceType = event.getType().toLowerCase();
         String itemName = "UPGRADE";
         boolean sendToAll = false;
+        boolean isUpgrade = true;
         ItemSpawnerType itemSpawnerType = Main.getSpawnerType(priceType);
 
         if (mapReader.containsKey("upgrade") && game.isUpgradesEnabled()) {
@@ -357,30 +360,43 @@ public class ShopInventory implements Listener {
 
                         List<Upgrade> upgrades = new ArrayList<>();
 
-                        if (mapEntity.containsKey("spawnerName")) {
-                            String customName = mapEntity.getString("spawnerName");
+                        if (mapEntity.containsKey("spawner-name")) {
+                            String customName = mapEntity.getString("spawner-name");
                             upgrades = upgradeStorage.findItemSpawnerUpgrades(game, customName);
                         } else if (mapEntity.containsKey("spawner-type")) {
                             String mapSpawnerType = mapEntity.getString("spawner-type");
                             ItemSpawnerType spawnerType = Main.getSpawnerType(mapSpawnerType);
 
                             upgrades = upgradeStorage.findItemSpawnerUpgrades(game, team, spawnerType);
+                        } else if (mapEntity.containsKey("team-upgrade")) {
+                            boolean upgradeAllSpawnersInTeam = mapEntity.getBoolean("team-upgrade");
+
+                            if (upgradeAllSpawnersInTeam) {
+                                upgrades = upgradeStorage.findItemSpawnerUpgrades(game, team);
+                            }
                         } else {
-                            System.out.println("[BedWars]> Upgrade configuration is invalid.");
+                            isUpgrade = false;
+                            Debugger.warn("[BedWars]> Upgrade configuration is invalid.");
                         }
 
-                        BedwarsUpgradeBoughtEvent bedwarsUpgradeBoughtEvent = new BedwarsUpgradeBoughtEvent(game, upgradeStorage, upgrades,
-                                player, addLevels);
-                        Bukkit.getPluginManager().callEvent(bedwarsUpgradeBoughtEvent);
+                        if (isUpgrade) {
+                            BedwarsUpgradeBoughtEvent bedwarsUpgradeBoughtEvent = new BedwarsUpgradeBoughtEvent(game, upgradeStorage, upgrades,
+                                    player, addLevels);
+                            Bukkit.getPluginManager().callEvent(bedwarsUpgradeBoughtEvent);
 
-                        if (bedwarsUpgradeBoughtEvent.isCancelled()) {
-                            continue;
-                        }
+                            if (bedwarsUpgradeBoughtEvent.isCancelled()) {
+                                continue;
+                            }
 
-                        for (Upgrade upgrade : upgrades) {
-                            BedwarsUpgradeImprovedEvent improvedEvent = new BedwarsUpgradeImprovedEvent(game, upgradeStorage,
-                                    upgrade, upgrade.getLevel(), upgrade.getLevel() + addLevels);
-                            Bukkit.getPluginManager().callEvent(improvedEvent);
+                            if (upgrades.isEmpty()) {
+                                continue;
+                            }
+
+                            for (Upgrade upgrade : upgrades) {
+                                BedwarsUpgradeImprovedEvent improvedEvent = new BedwarsUpgradeImprovedEvent(game, upgradeStorage,
+                                        upgrade, upgrade.getLevel(), upgrade.getLevel() + addLevels);
+                                Bukkit.getPluginManager().callEvent(improvedEvent);
+                            }
                         }
                     }
 

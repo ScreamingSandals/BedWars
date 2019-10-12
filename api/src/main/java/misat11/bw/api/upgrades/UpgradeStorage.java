@@ -175,8 +175,11 @@ public final class UpgradeStorage {
             for (Upgrade upgrade : upgradeRegistry.get(game)) {
                 if (upgrade instanceof ItemSpawner) {
                     ItemSpawner itemSpawner = (ItemSpawner) upgrade;
+                    if (itemSpawner.getTeam() == null) {
+                        continue;
+                    }
 
-                    if (team == itemSpawner.getTeam()) {
+                    if (team.getName().equals(itemSpawner.getTeam().getName())) {
                         upgrades.add(upgrade);
                     }
                 }
@@ -192,8 +195,11 @@ public final class UpgradeStorage {
             for (Upgrade upgrade : upgradeRegistry.get(game)) {
                 if (upgrade instanceof ItemSpawner) {
                     ItemSpawner itemSpawner = (ItemSpawner) upgrade;
+                    if (itemSpawner.getTeam() == null) {
+                        continue;
+                    }
 
-                    if (team == itemSpawner.getTeam() && itemSpawnerType == itemSpawner.getItemSpawnerType()) {
+                    if (team.getName().equals(itemSpawner.getTeam().getName()) && itemSpawnerType.getName().equals(itemSpawner.getItemSpawnerType().getName())) {
                         upgrades.add(upgrade);
                     }
                 }
