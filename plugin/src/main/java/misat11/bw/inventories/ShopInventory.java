@@ -190,7 +190,6 @@ public class ShopInventory implements Listener {
         if (!shopMap.containsValue(event.getFormat()) || event.isCancelled()) {
             return;
         }
-
         Game game = Main.getPlayerGameProfile(event.getPlayer()).getGame();
 
         MapReader reader = event.getItem().getReader();
