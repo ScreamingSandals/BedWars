@@ -1378,30 +1378,24 @@ public class Game implements misat11.bw.api.game.Game {
                 }
             }
 
-            if (players.size() >= getMinPlayers()) {
-                if (!getOriginalOrInheritedJoinRandomTeamAfterLobby()) {
-                    if (teamsInGame.size() > 1) {
-                        nextCountdown = previousCountdown = countdown = pauseCountdown;
-                    }
+            if (players.size() >= getMinPlayers() && (getOriginalOrInheritedJoinRandomTeamAfterLobby() || teamsInGame.size() > 1)) {
+                if (countdown == 0) {
+                    nextCountdown = gameTime;
+                    nextStatus = GameStatus.RUNNING;
                 } else {
-                    if (countdown == 0) {
-                        nextCountdown = gameTime;
-                        nextStatus = GameStatus.RUNNING;
-                    } else {
-                        nextCountdown--;
+                    nextCountdown--;
 
-                        if (countdown <= 10 && countdown >= 1 && countdown != previousCountdown) {
-                            for (GamePlayer player : players) {
-                                Title.send(player.player, ChatColor.YELLOW + Integer.toString(countdown), "");
-                                Sounds.playSound(player.player, player.player.getLocation(),
-                                        Main.getConfigurator().config.getString("sounds.on_countdown"),
-                                        Sounds.UI_BUTTON_CLICK, 1, 1);
-                            }
+                    if (countdown <= 10 && countdown >= 1 && countdown != previousCountdown) {
+                        for (GamePlayer player : players) {
+                            Title.send(player.player, ChatColor.YELLOW + Integer.toString(countdown), "");
+                            Sounds.playSound(player.player, player.player.getLocation(),
+                                    Main.getConfigurator().config.getString("sounds.on_countdown"),
+                                    Sounds.UI_BUTTON_CLICK, 1, 1);
                         }
                     }
                 }
             } else {
-                nextCountdown = previousCountdown = countdown = pauseCountdown;
+                nextCountdown = countdown = pauseCountdown;
             }
             setBossbarProgress(countdown, pauseCountdown);
             updateLobbyScoreboard();
