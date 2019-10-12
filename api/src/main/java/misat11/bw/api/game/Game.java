@@ -20,12 +20,12 @@ import java.util.List;
  */
 public interface Game {
     /**
-     * @return
+     * @return Arena name
      */
 	String getName();
 
     /**
-     * @return
+     * @return GameStatus of the arena
      */
 	GameStatus getStatus();
 
@@ -40,7 +40,7 @@ public interface Game {
 	void stop();
 
     /**
-     * @return
+     * @return true if GameStatus is different than DISABLED
      */
     default boolean isActivated() {
         return getStatus() != GameStatus.DISABLED;
@@ -70,7 +70,7 @@ public interface Game {
 	void selectPlayerRandomTeam(Player player);
 
     /**
-     * @return
+     * @return defined world of the game
      */
 	World getGameWorld();
 
@@ -90,32 +90,32 @@ public interface Game {
 	Location getSpectatorSpawn();
 
     /**
-     * @return
+     * @return configured time of the game
      */
 	int getGameTime();
 
     /**
-     * @return
+     * @return configured minimal players to start the game
      */
 	int getMinPlayers();
 
     /**
-     * @return
+     * @return configured maximal players of the arena
      */
 	int getMaxPlayers();
 
     /**
-     * @return
+     * @return players in game
      */
 	int countConnectedPlayers();
 
     /**
-     * @return
+     * @return list of players in game
      */
 	List<Player> getConnectedPlayers();
 
     /**
-     * @return
+     * @return list of game stores
      */
 	List<GameStore> getGameStores();
 
@@ -125,7 +125,7 @@ public interface Game {
 	int countGameStores();
 
     /**
-     * @return
+     * @return Team instance from the name
      */
     Team getTeamFromName(String name);
 

@@ -449,9 +449,9 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         if (folder.exists()) {
             File[] listOfFiles = folder.listFiles();
             if (listOfFiles.length > 0) {
-                for (int i = 0; i < listOfFiles.length; i++) {
-                    if (listOfFiles[i].isFile()) {
-                        Game.loadGame(listOfFiles[i]);
+                for (File listOfFile : listOfFiles) {
+                    if (listOfFile.isFile()) {
+                        Game.loadGame(listOfFile);
                     }
                 }
             }
