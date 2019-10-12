@@ -67,7 +67,7 @@ public class ShopInventory implements Listener {
         options.setGenericShop(true);
         options.setGenericShopPriceTypeRequired(true);
         options.setAnimationsEnabled(true, Main.getInstance());
-        options.registerPlaceholder("%team%", (key, player, arguments) -> {
+        options.registerPlaceholder("team", (key, player, arguments) -> {
             GamePlayer gPlayer = Main.getPlayerGameProfile(player);
             CurrentTeam team = gPlayer.getGame().getPlayerTeam(gPlayer);
             if (arguments.length > 0) {
@@ -85,6 +85,7 @@ public class ShopInventory implements Listener {
                         return Boolean.toString(team.isBed);
                 }
             }
+            System.out.println("apply team " + team.getName());
             return team.getName();
         });
 
