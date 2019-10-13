@@ -25,7 +25,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import sun.security.util.Debug;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -281,7 +280,7 @@ public class ShopInventory implements Listener {
             int finalStackSize;
 
             for (ItemStack itemStack : event.getPlayer().getInventory().getStorageContents()) {
-                if (itemStack.isSimilar(type.getStack())) {
+                if (itemStack != null && itemStack.isSimilar(type.getStack())) {
                     inInventory = inInventory + itemStack.getAmount();
                 }
             }
