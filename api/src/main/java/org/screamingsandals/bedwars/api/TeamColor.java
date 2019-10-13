@@ -5,18 +5,18 @@ package org.screamingsandals.bedwars.api;
  */
 public enum TeamColor {
     BLACK,
-    DARK_BLUE,
-    DARK_GREEN,
-    RED,
-    DARK_PURPLE,
-    GOLD,
-    GRAY,
-    DARK_GRAY,
     BLUE,
     GREEN,
-    AQUA,
-    LIGHT_PURPLE,
+    RED,
+    MAGENTA,
+    ORANGE,
+    LIGHT_GRAY,
+    GRAY,
+    LIGHT_BLUE,
+    LIME,
+    CYAN,
+    PINK,
     YELLOW,
     WHITE,
-    DARK_RED;
+    BROWN;
 }

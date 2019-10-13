@@ -1,10 +1,5 @@
 package org.screamingsandals.bedwars.utils;
 
-import org.screamingsandals.bedwars.Main;
-import org.screamingsandals.bedwars.api.game.Game;
-import org.screamingsandals.bedwars.api.RunningTeam;
-import org.screamingsandals.bedwars.api.events.BedwarsApplyPropertyToBoughtItem;
-import org.screamingsandals.bedwars.game.GamePlayer;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Location;
@@ -13,6 +8,12 @@ import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.screamingsandals.bedwars.Main;
+import org.screamingsandals.bedwars.api.RunningTeam;
+import org.screamingsandals.bedwars.api.events.BedwarsApplyPropertyToBoughtItem;
+import org.screamingsandals.bedwars.api.game.Game;
+import org.screamingsandals.bedwars.game.GamePlayer;
+import org.screamingsandals.bedwars.game.Team;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -192,5 +193,47 @@ public class MiscUtils {
     public static String setLocationToString(Location location) {
         return location.getX() + ";" + location.getY() + ";" + location.getZ() + ";" + location.getYaw() + ";"
                 + location.getPitch();
+    }
+
+    public static String convertColorToNewFormat(String oldColor, Team team) {
+        String newColor = oldColor;
+
+        if (team.isNewColor()) {
+            return oldColor;
+        }
+
+        switch (oldColor) {
+            case "DARK_BLUE":
+                newColor = "BLUE";
+                break;
+            case "DARK_GREEN":
+                newColor = "GREEN";
+                break;
+            case "DARK_PURPLE":
+                newColor = "MAGENTA";
+                break;
+            case "GOLD":
+                newColor = "ORANGE";
+                break;
+            case "GRAY":
+                newColor = "LIGHT_GRAY";
+                break;
+            case "BLUE":
+                newColor = "LIGHT_BLUE";
+                break;
+            case "GREEN":
+                newColor = "LIME";
+                break;
+            case "AQUA":
+                newColor = "CYAN";
+                break;
+            case "LIGHT_PURPLE":
+                newColor = "PINK";
+                break;
+            case "DARK_RED":
+                newColor = "BROWN";
+                break;
+        }
+        return newColor;
     }
 }

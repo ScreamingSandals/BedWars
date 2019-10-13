@@ -26,7 +26,7 @@
 				<filtering>true</filtering>
 				<directory>src/main/java</directory>
 				<includes>
-					<include>misat11/bw/api/constants.yml</include>
+					<include>org/screamingsandals/bedwars/api/constants.yml</include>
 				</includes>
 			</resource>
 		</resources>

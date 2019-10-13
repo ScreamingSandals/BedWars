@@ -745,12 +745,15 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             for (String teamN : configMap.getConfigurationSection("teams").getKeys(false)) {
                 ConfigurationSection team = configMap.getConfigurationSection("teams").getConfigurationSection(teamN);
                 Team t = new Team();
-                t.color = TeamColor.valueOf(team.getString("color"));
+                t.newColor = team.getBoolean("isNewColor", false);
+                t.color = TeamColor.valueOf(MiscUtils.convertColorToNewFormat(team.getString("color"), t));
                 t.name = teamN;
                 t.bed = MiscUtils.readLocationFromString(game.world, team.getString("bed"));
                 t.maxPlayers = team.getInt("maxPlayers");
                 t.spawn = MiscUtils.readLocationFromString(game.world, team.getString("spawn"));
                 t.game = game;
+
+                t.newColor = true;
                 game.teams.add(t);
             }
         }
@@ -899,6 +902,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         configMap.set("minPlayers", minPlayers);
         if (!teams.isEmpty()) {
             for (Team t : teams) {
+                configMap.set("teams." + t.name + ".isNewColor", t.isNewColor());
                 configMap.set("teams." + t.name + ".color", t.color.name());
                 configMap.set("teams." + t.name + ".maxPlayers", t.maxPlayers);
                 configMap.set("teams." + t.name + ".bed", MiscUtils.setLocationToString(t.bed));
