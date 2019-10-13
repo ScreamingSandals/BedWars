@@ -55,8 +55,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static misat11.lib.lang.I18n.i18n;
-import static misat11.lib.lang.I18n.i18nonly;
+import static misat11.lib.lang.I.*;
 
 public class Game implements misat11.bw.api.game.Game {
     private String name;
@@ -542,11 +541,11 @@ public class Game implements misat11.bw.api.game.Game {
 
         player.player.teleport(lobbySpawn);
         SpawnEffects.spawnEffect(this, player.player, "game-effects.lobbyjoin");
-        String message = i18n("join").replace("%name%", player.player.getDisplayName())
-                .replace("%players%", Integer.toString(players.size()))
-                .replaceAll("%maxplayers%", Integer.toString(calculatedMaxPlayers));
-        for (GamePlayer p : players)
-            p.player.sendMessage(message);
+        mpr("join")
+        .replace("name", player.player.getDisplayName())
+        .replace("players", players.size())
+        .replace("maxplayers", calculatedMaxPlayers)
+        .send(getConnectedPlayers());
 
         if (getOriginalOrInheritedJoinRandomTeamOnJoin()) {
             joinRandomTeam(player);
