@@ -41,6 +41,7 @@ respawn_protection_remaining: "&aRespawn ochrana vyprší za &f%time% &asekund!"
 respawn_protection_end: "&cRespawn ochrana vypršela!"
 there_is_no_empty_game: "&cNení zde žádná hra, která by čekala na hráče. Všechny hry již běží!"
 respawn_cooldown_title: "&aRespawn za: &c%time%"
+respawn_cooldown_title_cancel: "&cTým umřel :("
 
 vip_not_enough_players: "&cV aréně není dostatek hráčů!"
 vip_game_is_full: "&cHra &7%arena% &cje již plná VIP hráčů. Prosím vyčkej na další hru!"
