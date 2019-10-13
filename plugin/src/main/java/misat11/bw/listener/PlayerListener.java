@@ -165,17 +165,22 @@ public class PlayerListener implements Listener {
                 }
             }
             NMSUtils.respawn(Main.getInstance(), victim, 5L);
-            if (Main.getConfigurator().config.getBoolean("respawn-cooldown.enabled")) {
+            if (Main.getConfigurator().config.getBoolean("respawn-cooldown.enabled") && victimTeam.isAlive()) {
                 game.makeSpectator(gVictim, false);
 
                 new BukkitRunnable() {
                     int livingTime = respawnTime;
                     GamePlayer gamePlayer = gVictim;
+                    CurrentTeam currentTeam = victimTeam;
                     Player player = gamePlayer.player;
 
                     @Override
                     public void run() {
                         livingTime--;
+                        if (!currentTeam.isAlive()) {
+                            this.cancel();
+                        }
+
                         if (livingTime > 0) {
                             Title.send(player,
                                 i18nonly("respawn_cooldown_title").replace("%time%", String.valueOf(livingTime)), "");
@@ -185,10 +190,10 @@ public class PlayerListener implements Listener {
                         }
 
                         if (livingTime == 0) {
-                            Sounds.playSound(player, player.getLocation(),
-                                Main.getConfigurator().config.getString("sounds.on_respawn_cooldown_done"),
-                                Sounds.UI_BUTTON_CLICK, 1, 1);
                             game.makePlayerFromSpectator(gamePlayer);
+                            Sounds.playSound(player, player.getLocation(),
+                                    Main.getConfigurator().config.getString("sounds.on_respawn_cooldown_done"),
+                                    Sounds.UI_BUTTON_CLICK, 1, 1);
 
                             this.cancel();
                         }

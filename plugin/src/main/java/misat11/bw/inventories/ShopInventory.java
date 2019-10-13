@@ -266,6 +266,7 @@ public class ShopInventory implements Listener {
         Player player = event.getPlayer();
         Game game = Main.getPlayerGameProfile(event.getPlayer()).getGame();
         ClickType clickType = event.getClickType();
+        MapReader mapReader = event.getItem().getReader();
         String priceType = event.getType().toLowerCase();
         ItemSpawnerType type = Main.getSpawnerType(priceType);
         ItemStack newItem = event.getStack();
@@ -273,6 +274,22 @@ public class ShopInventory implements Listener {
         int amount = newItem.getAmount();
         int price = event.getPrice();
         int inInventory = 0;
+
+        if (mapReader.containsKey("currency-change")) {
+            MapReader currencyChangeReader = mapReader.getMap("currency-change");
+            String changeItemToName = currencyChangeReader.getString("change-to");
+            ItemSpawnerType changeItemType;
+            if (changeItemToName == null) {
+                return;
+            }
+
+            changeItemType = Main.getSpawnerType(changeItemToName);
+            if (changeItemType == null) {
+                return;
+            }
+
+            newItem = changeItemType.getStack();
+        }
 
         if (clickType.isShiftClick()) {
             double priceOfOne = (double) price / amount;
@@ -335,90 +352,138 @@ public class ShopInventory implements Listener {
         boolean isUpgrade = true;
         ItemSpawnerType itemSpawnerType = Main.getSpawnerType(priceType);
 
-        if (mapReader.containsKey("upgrade") && game.isUpgradesEnabled()) {
-            MapReader upgradeMapReader = mapReader.getMap("upgrade");
-            List<MapReader> entities = upgradeMapReader.getMapList("entities");
+        MapReader upgradeMapReader = mapReader.getMap("upgrade");
+        List<MapReader> entities = upgradeMapReader.getMapList("entities");
 
-            int price = event.getPrice();
-            ItemStack materialItem = itemSpawnerType.getStack(price);
+        int price = event.getPrice();
+        ItemStack materialItem = itemSpawnerType.getStack(price);
 
-            if (event.hasPlayerInInventory(materialItem)) {
-                event.sellStack(materialItem);
-                for (MapReader mapEntity : entities) {
-                    String configuredType = mapEntity.getString("type");
-                    if (configuredType == null) {
-                        return;
-                    }
+        if (event.hasPlayerInInventory(materialItem)) {
+            event.sellStack(materialItem);
+            for (MapReader mapEntity : entities) {
+                String configuredType = mapEntity.getString("type");
+                if (configuredType == null) {
+                    return;
+                }
 
-                    UpgradeStorage upgradeStorage = UpgradeRegistry.getUpgrade(configuredType);
-                    if (upgradeStorage != null) {
-                        Team team = game.getTeamOfPlayer(event.getPlayer());
-                        double addLevels = mapEntity.getDouble("add-levels");
-                        itemName = mapEntity.getString("shop-name");
-                        sendToAll = mapEntity.getBoolean("notify-team", false);
+                UpgradeStorage upgradeStorage = UpgradeRegistry.getUpgrade(configuredType);
+                if (upgradeStorage != null) {
+                    Team team = game.getTeamOfPlayer(event.getPlayer());
+                    double addLevels = mapEntity.getDouble("add-levels");
+                    itemName = mapEntity.getString("shop-name");
+                    sendToAll = mapEntity.getBoolean("notify-team", false);
 
-                        List<Upgrade> upgrades = new ArrayList<>();
+                    List<Upgrade> upgrades = new ArrayList<>();
 
-                        if (mapEntity.containsKey("spawner-name")) {
-                            String customName = mapEntity.getString("spawner-name");
-                            upgrades = upgradeStorage.findItemSpawnerUpgrades(game, customName);
-                        } else if (mapEntity.containsKey("spawner-type")) {
-                            String mapSpawnerType = mapEntity.getString("spawner-type");
-                            ItemSpawnerType spawnerType = Main.getSpawnerType(mapSpawnerType);
+                    if (mapEntity.containsKey("spawner-name")) {
+                        String customName = mapEntity.getString("spawner-name");
+                        upgrades = upgradeStorage.findItemSpawnerUpgrades(game, customName);
+                    } else if (mapEntity.containsKey("spawner-type")) {
+                        String mapSpawnerType = mapEntity.getString("spawner-type");
+                        ItemSpawnerType spawnerType = Main.getSpawnerType(mapSpawnerType);
 
-                            upgrades = upgradeStorage.findItemSpawnerUpgrades(game, team, spawnerType);
-                        } else if (mapEntity.containsKey("team-upgrade")) {
-                            boolean upgradeAllSpawnersInTeam = mapEntity.getBoolean("team-upgrade");
+                        upgrades = upgradeStorage.findItemSpawnerUpgrades(game, team, spawnerType);
+                    } else if (mapEntity.containsKey("team-upgrade")) {
+                        boolean upgradeAllSpawnersInTeam = mapEntity.getBoolean("team-upgrade");
 
-                            if (upgradeAllSpawnersInTeam) {
-                                upgrades = upgradeStorage.findItemSpawnerUpgrades(game, team);
-                            }
-                        } else {
-                            isUpgrade = false;
-                            Debugger.warn("[BedWars]> Upgrade configuration is invalid.");
-                        }
-
-                        if (isUpgrade) {
-                            BedwarsUpgradeBoughtEvent bedwarsUpgradeBoughtEvent = new BedwarsUpgradeBoughtEvent(game, upgradeStorage, upgrades,
-                                    player, addLevels);
-                            Bukkit.getPluginManager().callEvent(bedwarsUpgradeBoughtEvent);
-
-                            if (bedwarsUpgradeBoughtEvent.isCancelled()) {
-                                continue;
-                            }
-
-                            if (upgrades.isEmpty()) {
-                                continue;
-                            }
-
-                            for (Upgrade upgrade : upgrades) {
-                                BedwarsUpgradeImprovedEvent improvedEvent = new BedwarsUpgradeImprovedEvent(game, upgradeStorage,
-                                        upgrade, upgrade.getLevel(), upgrade.getLevel() + addLevels);
-                                Bukkit.getPluginManager().callEvent(improvedEvent);
-                            }
-                        }
-                    }
-
-                    if (sendToAll) {
-                        for (Player player1 : game.getTeamOfPlayer(event.getPlayer()).getConnectedPlayers()) {
-                            player1.sendMessage(i18n("buy_succes").replace("%item%", itemName).replace("%material%",
-                                    price + " " + itemSpawnerType.getItemName()));
-                            Sounds.playSound(player1, player1.getLocation(),
-                                    Main.getConfigurator().config.getString("sounds.on_upgrade_buy"),
-                                    Sounds.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
+                        if (upgradeAllSpawnersInTeam) {
+                            upgrades = upgradeStorage.findItemSpawnerUpgrades(game, team);
                         }
                     } else {
-                        player.sendMessage(i18n("buy_succes").replace("%item%", itemName).replace("%material%",
+                        isUpgrade = false;
+                        Debugger.warn("[BedWars]> Upgrade configuration is invalid.");
+                    }
+
+                    if (isUpgrade) {
+                        BedwarsUpgradeBoughtEvent bedwarsUpgradeBoughtEvent = new BedwarsUpgradeBoughtEvent(game, upgradeStorage, upgrades,
+                                player, addLevels);
+                        Bukkit.getPluginManager().callEvent(bedwarsUpgradeBoughtEvent);
+
+                        if (bedwarsUpgradeBoughtEvent.isCancelled()) {
+                            continue;
+                        }
+
+                        if (upgrades.isEmpty()) {
+                            continue;
+                        }
+
+                        for (Upgrade upgrade : upgrades) {
+                            BedwarsUpgradeImprovedEvent improvedEvent = new BedwarsUpgradeImprovedEvent(game, upgradeStorage,
+                                    upgrade, upgrade.getLevel(), upgrade.getLevel() + addLevels);
+                            Bukkit.getPluginManager().callEvent(improvedEvent);
+                        }
+                    }
+                }
+
+                if (sendToAll) {
+                    for (Player player1 : game.getTeamOfPlayer(event.getPlayer()).getConnectedPlayers()) {
+                        player1.sendMessage(i18n("buy_succes").replace("%item%", itemName).replace("%material%",
                                 price + " " + itemSpawnerType.getItemName()));
-                        Sounds.playSound(player, player.getLocation(),
+                        Sounds.playSound(player1, player1.getLocation(),
                                 Main.getConfigurator().config.getString("sounds.on_upgrade_buy"),
                                 Sounds.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
                     }
+                } else {
+                    player.sendMessage(i18n("buy_succes").replace("%item%", itemName).replace("%material%",
+                            price + " " + itemSpawnerType.getItemName()));
+                    Sounds.playSound(player, player.getLocation(),
+                            Main.getConfigurator().config.getString("sounds.on_upgrade_buy"),
+                            Sounds.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
                 }
-            } else {
-                player.sendMessage(i18n("buy_failed").replace("%item%", "UPGRADE").replace("%material%",
-                        price + " " + itemSpawnerType.getItemName()));
             }
+        } else {
+            player.sendMessage(i18n("buy_failed").replace("%item%", "UPGRADE").replace("%material%",
+                    price + " " + itemSpawnerType.getItemName()));
+        }
+    }
+
+    private void handleResourceChange(ShopTransactionEvent event) {
+        Player player = event.getPlayer();
+        Game game = Main.getPlayerGameProfile(event.getPlayer()).getGame();
+        MapReader mapReader = event.getItem().getReader();
+        String priceType = event.getType().toLowerCase();
+        String itemName = event.getStack().getItemMeta().getDisplayName();
+        boolean isUpgrade = true;
+        ItemSpawnerType itemSpawnerType = Main.getSpawnerType(priceType);
+
+        MapReader upgradeMapReader = mapReader.getMap("upgrade");
+        List<MapReader> entities = upgradeMapReader.getMapList("entities");
+
+        int price = event.getPrice();
+        ItemStack materialItem = itemSpawnerType.getStack(price);
+
+        if (event.hasPlayerInInventory(materialItem)) {
+            event.sellStack(materialItem);
+            for (MapReader mapEntity : entities) {
+                String configuredType = mapEntity.getString("type");
+                if (configuredType == null) {
+                    return;
+                }
+
+                UpgradeStorage upgradeStorage = UpgradeRegistry.getUpgrade(configuredType);
+                if (upgradeStorage != null) {
+                    itemName = mapEntity.getString("shop-name");
+
+                    List<Upgrade> upgrades = new ArrayList<>();
+
+                    if (mapEntity.containsKey("new-resource")) {
+                        String customName = mapEntity.getString("spawner-name");
+                        upgrades = upgradeStorage.findItemSpawnerUpgrades(game, customName);
+                    } else {
+                        Debugger.warn("[BedWars]> Upgrade configuration is invalid.");
+                    }
+
+                }
+
+                player.sendMessage(i18n("buy_succes").replace("%item%", itemName).replace("%material%",
+                        price + " " + itemSpawnerType.getItemName()));
+                Sounds.playSound(player, player.getLocation(),
+                        Main.getConfigurator().config.getString("sounds.on_upgrade_buy"),
+                        Sounds.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
+            }
+        } else {
+            player.sendMessage(i18n("buy_failed").replace("%item%", "UPGRADE").replace("%material%",
+                    price + " " + itemSpawnerType.getItemName()));
         }
     }
 }

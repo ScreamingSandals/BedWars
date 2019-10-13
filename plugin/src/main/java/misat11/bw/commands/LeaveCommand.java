@@ -27,8 +27,6 @@ public class LeaveCommand extends BaseCommand {
 
     @Override
     public void completeTab(List<String> completion, CommandSender sender, List<String> args) {
-        // TODO Auto-generated method stub
-
     }
 
 }
