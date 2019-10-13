@@ -58,7 +58,7 @@ team_is_full: "&cTeam %team% is full!"
 team_is_full_you_are_staying: "&cTeam %team%&c is full, You stay in %oldteam%&c!"
 team_select_item: "%teamName% &7(&e%inTeam% &f/ &e%maxInTeam%&7)"
 team_select_item_lore: "&f---------------------"
-team_select_item_lore_full: "Tým je již plný!"
+team_select_item_lore_full: "&fTeam is full!"
 team_select_item_lore_join: "Click to join the team!"
 
 

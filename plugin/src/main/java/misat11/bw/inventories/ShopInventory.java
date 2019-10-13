@@ -330,7 +330,7 @@ public class ShopInventory implements Listener {
         Game game = Main.getPlayerGameProfile(event.getPlayer()).getGame();
         MapReader mapReader = event.getItem().getReader();
         String priceType = event.getType().toLowerCase();
-        String itemName = "UPGRADE";
+        String itemName = event.getStack().getItemMeta().getDisplayName();
         boolean sendToAll = false;
         boolean isUpgrade = true;
         ItemSpawnerType itemSpawnerType = Main.getSpawnerType(priceType);
@@ -354,7 +354,7 @@ public class ShopInventory implements Listener {
                     if (upgradeStorage != null) {
                         Team team = game.getTeamOfPlayer(event.getPlayer());
                         double addLevels = mapEntity.getDouble("add-levels");
-                        itemName = mapEntity.getString("shop-name").replace("%team%", team.getName());
+                        itemName = mapEntity.getString("shop-name");
                         sendToAll = mapEntity.getBoolean("notify-team", false);
 
                         List<Upgrade> upgrades = new ArrayList<>();

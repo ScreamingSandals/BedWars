@@ -220,7 +220,11 @@ public class PlayerListener implements Listener {
                 return;
             }
             if (gPlayer.isSpectator) {
-                event.setRespawnLocation(gPlayer.getGame().makeSpectator(gPlayer, true));
+                if (!team.isAlive()) {
+                    event.setRespawnLocation(gPlayer.getGame().makeSpectator(gPlayer, true));
+                } else {
+                    event.setRespawnLocation(gPlayer.getGame().makeSpectator(gPlayer, false));
+                }
             } else {
                 event.setRespawnLocation(gPlayer.getGame().getPlayerTeam(gPlayer).teamInfo.spawn);
 
