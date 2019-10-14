@@ -34,6 +34,7 @@ public class Team implements Cloneable, org.screamingsandals.bedwars.api.Team {
         return color.toApiColor();
     }
 
+    @Override
     public boolean isNewColor() {
         return newColor;
     }

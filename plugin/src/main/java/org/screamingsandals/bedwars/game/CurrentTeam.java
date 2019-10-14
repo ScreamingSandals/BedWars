@@ -1,8 +1,5 @@
 package org.screamingsandals.bedwars.game;
 
-import org.screamingsandals.bedwars.api.game.Game;
-import org.screamingsandals.bedwars.api.RunningTeam;
-import org.screamingsandals.bedwars.api.TeamColor;
 import misat11.lib.nms.Hologram;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -10,6 +7,9 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
+import org.screamingsandals.bedwars.api.RunningTeam;
+import org.screamingsandals.bedwars.api.TeamColor;
+import org.screamingsandals.bedwars.api.game.Game;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,6 +81,11 @@ public class CurrentTeam implements RunningTeam {
     @Override
     public TeamColor getColor() {
         return teamInfo.color.toApiColor();
+    }
+
+    @Override
+    public boolean isNewColor() {
+        return teamInfo.newColor;
     }
 
     @Override
