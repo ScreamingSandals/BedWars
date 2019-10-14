@@ -7,7 +7,6 @@ import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
@@ -37,9 +36,10 @@ import org.screamingsandals.bedwars.listener.*;
 import org.screamingsandals.bedwars.placeholderapi.BedwarsExpansion;
 import org.screamingsandals.bedwars.special.SpecialRegister;
 import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
+import org.screamingsandals.bedwars.utils.BedWarsSignOwner;
 import org.screamingsandals.bedwars.utils.Configurator;
-import org.screamingsandals.bedwars.utils.GameSign;
-import org.screamingsandals.bedwars.utils.SignManager;
+import org.screamingsandals.lib.signmanager.SignListener;
+import org.screamingsandals.lib.signmanager.SignManager;
 
 import java.io.File;
 import java.util.*;
@@ -57,7 +57,6 @@ public class Main extends JavaPlugin implements BedwarsAPI {
     private HashMap<Entity, Game> entitiesInGame = new HashMap<>();
     private Configurator configurator;
     private ShopInventory menu;
-    private SignManager signManager;
     private HashMap<String, ItemSpawnerType> spawnerTypes = new HashMap<>();
     private DatabaseManager databaseManager;
     private PlayerStatisticManager playerStatisticsManager;
@@ -65,6 +64,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
     private HashMap<String, BaseCommand> commands;
     private SpigetUpdate spigetUpdate;
     private ColorChanger colorChanger;
+    private SignManager signManager;
     public static List<String> autoColoredMaterials = new ArrayList<>();
 
     static {
@@ -233,26 +233,6 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         return instance.configurator.config.getBoolean("change-allowed-commands-to-blacklist", false);
     }
 
-    public static boolean isSignRegistered(Location location) {
-        return instance.signManager.isSignRegistered(location);
-    }
-
-    public static void unregisterSign(Location location) {
-        instance.signManager.unregisterSign(location);
-    }
-
-    public static boolean registerSign(Location location, String game) {
-        return instance.signManager.registerSign(location, game);
-    }
-
-    public static GameSign getSign(Location location) {
-        return instance.signManager.getSign(location);
-    }
-
-    public static List<GameSign> getSignsForGame(Game game) {
-        return instance.signManager.getSignsForGame(game);
-    }
-
     public static ItemSpawnerType getSpawnerType(String key) {
         return instance.spawnerTypes.get(key);
     }
@@ -306,6 +286,10 @@ public class Main extends JavaPlugin implements BedwarsAPI {
     public static int getVersionNumber() {
         return instance.versionNumber;
     }
+    
+    public static SignManager getSignManager() {
+    	return instance.signManager;
+    }
 
     public void onEnable() {
         instance = this;
@@ -335,8 +319,6 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         configurator.createFiles();
 
         I18n.load(this, configurator.config.getString("locale"));
-
-        signManager = new SignManager(configurator.signsConfig, configurator.signsFile);
 
         databaseManager = new DatabaseManager(configurator.config.getString("database.host"),
                 configurator.config.getInt("database.port"), configurator.config.getString("database.user"),
@@ -391,7 +373,6 @@ public class Main extends JavaPlugin implements BedwarsAPI {
             getServer().getPluginManager().registerEvents(new Player112Listener(), this);
         }
         getServer().getPluginManager().registerEvents(new VillagerListener(), this);
-        getServer().getPluginManager().registerEvents(new SignListener(), this);
         getServer().getPluginManager().registerEvents(new WorldListener(), this);
         getServer().getPluginManager().registerEvents(new InventoryListener(), this);
 
@@ -456,6 +437,10 @@ public class Main extends JavaPlugin implements BedwarsAPI {
                 }
             }
         }
+
+        BedWarsSignOwner signOwner = new BedWarsSignOwner();
+        signManager = new SignManager(signOwner, configurator.signsConfig, configurator.signsFile);
+        getServer().getPluginManager().registerEvents(new SignListener(signOwner, signManager), this);
 
         try {
             // Fixing bugs created by third party plugin

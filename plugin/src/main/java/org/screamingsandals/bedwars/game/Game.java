@@ -50,6 +50,7 @@ import org.screamingsandals.bedwars.region.FlatteningRegion;
 import org.screamingsandals.bedwars.region.LegacyRegion;
 import org.screamingsandals.bedwars.statistics.PlayerStatistic;
 import org.screamingsandals.bedwars.utils.*;
+import org.screamingsandals.lib.signmanager.SignBlock;
 
 import java.io.File;
 import java.io.IOException;
@@ -2030,7 +2031,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     }
 
     public void updateSigns() {
-        List<GameSign> gameSigns = Main.getSignsForGame(this);
+    	List<SignBlock> gameSigns = Main.getSignManager().getSignsForName(this.name);
 
         if (gameSigns.isEmpty()) {
             return;
@@ -2068,7 +2069,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                     .replaceAll("%players%", playersLine));
         }
 
-        for (GameSign sign : gameSigns) {
+        for (SignBlock sign : gameSigns) {
             if (sign.getLocation().getChunk().isLoaded()) {
                 Block block = sign.getLocation().getBlock();
                 if (block.getState() instanceof Sign) {

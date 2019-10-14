@@ -113,6 +113,12 @@
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
+			<groupId>org.screamingsandals.lib.signmanager</groupId>
+			<artifactId>SignManager</artifactId>
+			<version>1.0.0</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.inventivetalent.spiget-update</groupId>
 			<artifactId>bukkit</artifactId>
 			<version>1.5.0-SNAPSHOT</version>
