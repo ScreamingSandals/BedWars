@@ -635,11 +635,5 @@ public interface Game {
      */
     boolean isProtectionActive(Player player);
 
-    /**
-     * @return
-     */
-    @Deprecated
-	boolean isUpgradesEnabled();
-
 
 }

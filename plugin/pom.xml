@@ -85,7 +85,7 @@
 		<dependency>
 			<groupId>org.screamingsandals.bedwars</groupId>
 			<artifactId>BedWars-API</artifactId>
-			<version>${bedwars.api}</version>
+			<version>${project.version}</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
@@ -153,8 +153,14 @@
 									<pattern>org.inventivetalent.update.spiget</pattern>
 									<shadedPattern>${project.groupId}.lib.spiget</shadedPattern>
 								</relocation>
+								<!-- OLD Libraries -->
 								<relocation>
 									<pattern>misat11.lib</pattern>
+									<shadedPattern>${project.groupId}.lib</shadedPattern>
+								</relocation>
+								<!-- NEW Libraries -->
+								<relocation>
+									<pattern>org.screamingsandals.lib</pattern>
 									<shadedPattern>${project.groupId}.lib</shadedPattern>
 								</relocation>
 							</relocations>

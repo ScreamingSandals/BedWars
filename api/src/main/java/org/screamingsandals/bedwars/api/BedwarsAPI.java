@@ -101,19 +101,12 @@ public interface BedwarsAPI {
     /**
      * @return String of Bedwars Version
      */
-    String getBedwarsVersion();
+    String getPluginVersion();
 
     /**
      * @return Color changer for coloring ItemStacks
      */
     ColorChanger getColorChanger();
-
-    /**
-     * @return String of Bedwars API Version
-     */
-    default String getAPIVersion() {
-        return GetConstants.loadConfig().getString("version");
-    }
 
     /**
      * @return Bedwars instance

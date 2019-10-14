@@ -30,23 +30,7 @@ public interface Region {
     /**
      * @param loc
      */
-    @Deprecated
-    default void addBuildedDuringGame(Location loc) {
-        addBuiltDuringGame(loc);
-    }
-
-    /**
-     * @param loc
-     */
     void removeBlockBuiltDuringGame(Location loc);
-
-    /**
-     * @param loc
-     */
-    @Deprecated
-    default void removeBlockBuildedDuringGame(Location loc) {
-        removeBlockBuiltDuringGame(loc);
-    }
 
     /**
      * @param material

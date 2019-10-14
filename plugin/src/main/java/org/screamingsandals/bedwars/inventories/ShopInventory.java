@@ -193,7 +193,7 @@ public class ShopInventory implements Listener {
         Game game = Main.getPlayerGameProfile(event.getPlayer()).getGame();
 
         MapReader reader = event.getItem().getReader();
-        if (reader.containsKey("upgrade") && game.isUpgradesEnabled()) {
+        if (reader.containsKey("upgrade")) {
             handleUpgrade(event);
         } else {
             handleBuy(event);

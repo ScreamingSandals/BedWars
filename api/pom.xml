@@ -8,7 +8,7 @@
 		<version>1</version>
 	</parent>
 	<artifactId>BedWars-API</artifactId>
-	<version>${bedwars.api}</version>
+	<version>${bedwars.version}</version>
 
 	<dependencies>
 		<dependency>

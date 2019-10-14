@@ -429,7 +429,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 
         Bukkit.getConsoleSender().sendMessage("§c=====§f======  by ScreamingSandals <Misat11, Ceph)");
         Bukkit.getConsoleSender()
-                .sendMessage("§c+ Bed§fWars +  §6Version: " + version + " (API: " + getAPIVersion() + ")");
+                .sendMessage("§c+ Bed§fWars +  §6Version: " + version);
         Bukkit.getConsoleSender()
                 .sendMessage("§c=====§f======  " + (snapshot ? "§cSNAPSHOT VERSION" : "§aSTABLE VERSION"));
         if (isVault) {
@@ -622,7 +622,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
     }
 
     @Override
-    public String getBedwarsVersion() {
+    public String getPluginVersion() {
         return version;
     }
 

@@ -2726,11 +2726,6 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     }
 
     @Override
-    public boolean isUpgradesEnabled() {
-        return true;
-    }
-
-    @Override
     public List<org.screamingsandals.bedwars.api.game.ItemSpawner> getItemSpawners() {
         return new ArrayList<>(spawners);
     }
