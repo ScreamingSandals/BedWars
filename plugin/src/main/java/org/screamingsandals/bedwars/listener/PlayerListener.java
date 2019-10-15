@@ -165,7 +165,9 @@ public class PlayerListener implements Listener {
                 }
             }
             NMSUtils.respawn(Main.getInstance(), victim, 5L);
-            if (Main.getConfigurator().config.getBoolean("respawn-cooldown.enabled") && victimTeam.isAlive()) {
+            if (Main.getConfigurator().config.getBoolean("respawn-cooldown.enabled")
+                    && victimTeam.isAlive()
+                    && !gVictim.isSpectator) {
                 game.makeSpectator(gVictim, false);
 
                 new BukkitRunnable() {
@@ -178,6 +180,8 @@ public class PlayerListener implements Listener {
                         livingTime--;
                         if (!victimTeam.isTargetBlockExists()) {
                             game.makeSpectator(gamePlayer, true);
+                            victimTeam.players.remove(gVictim);
+
                             Title.send(player,
                                     i18nonly("respawn_cooldown_title_cancel"),"");
                             this.cancel();

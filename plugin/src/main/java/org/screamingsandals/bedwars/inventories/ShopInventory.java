@@ -1,5 +1,17 @@
 package org.screamingsandals.bedwars.inventories;
 
+import misat11.lib.sgui.*;
+import misat11.lib.sgui.events.GenerateItemEvent;
+import misat11.lib.sgui.events.PreActionEvent;
+import misat11.lib.sgui.events.ShopTransactionEvent;
+import org.bukkit.Bukkit;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.ClickType;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.Team;
 import org.screamingsandals.bedwars.api.events.*;
@@ -13,18 +25,6 @@ import org.screamingsandals.bedwars.game.Game;
 import org.screamingsandals.bedwars.game.GamePlayer;
 import org.screamingsandals.bedwars.utils.Debugger;
 import org.screamingsandals.bedwars.utils.Sounds;
-import misat11.lib.sgui.*;
-import misat11.lib.sgui.events.GenerateItemEvent;
-import misat11.lib.sgui.events.PreActionEvent;
-import misat11.lib.sgui.events.ShopTransactionEvent;
-import org.bukkit.Bukkit;
-import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.ClickType;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -275,9 +275,8 @@ public class ShopInventory implements Listener {
         int price = event.getPrice();
         int inInventory = 0;
 
-        if (mapReader.containsKey("currency-change")) {
-            MapReader currencyChangeReader = mapReader.getMap("currency-change");
-            String changeItemToName = currencyChangeReader.getString("change-to");
+        if (mapReader.containsKey("currency-changer")) {
+            String changeItemToName = mapReader.getString("currency-changer");
             ItemSpawnerType changeItemType;
             if (changeItemToName == null) {
                 return;
@@ -328,8 +327,10 @@ public class ShopInventory implements Listener {
                     }
                 }
             }
+
             event.sellStack(materialItem);
             event.buyStack(newItem);
+
             player.sendMessage(
                     i18n("buy_succes").replace("%item%", amount + "x " + getNameOrCustomNameOfItem(newItem))
                             .replace("%material%", price + " " + type.getItemName()));
@@ -348,14 +349,14 @@ public class ShopInventory implements Listener {
         MapReader mapReader = event.getItem().getReader();
         String priceType = event.getType().toLowerCase();
         String itemName = event.getStack().getItemMeta().getDisplayName();
-        boolean sendToAll = false;
-        boolean isUpgrade = true;
         ItemSpawnerType itemSpawnerType = Main.getSpawnerType(priceType);
 
         MapReader upgradeMapReader = mapReader.getMap("upgrade");
         List<MapReader> entities = upgradeMapReader.getMapList("entities");
 
         int price = event.getPrice();
+        boolean sendToAll = false;
+        boolean isUpgrade = true;
         ItemStack materialItem = itemSpawnerType.getStack(price);
 
         if (event.hasPlayerInInventory(materialItem)) {
@@ -430,56 +431,6 @@ public class ShopInventory implements Listener {
                             Main.getConfigurator().config.getString("sounds.on_upgrade_buy"),
                             Sounds.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
                 }
-            }
-        } else {
-            player.sendMessage(i18n("buy_failed").replace("%item%", "UPGRADE").replace("%material%",
-                    price + " " + itemSpawnerType.getItemName()));
-        }
-    }
-
-    private void handleResourceChange(ShopTransactionEvent event) {
-        Player player = event.getPlayer();
-        Game game = Main.getPlayerGameProfile(event.getPlayer()).getGame();
-        MapReader mapReader = event.getItem().getReader();
-        String priceType = event.getType().toLowerCase();
-        String itemName = event.getStack().getItemMeta().getDisplayName();
-        boolean isUpgrade = true;
-        ItemSpawnerType itemSpawnerType = Main.getSpawnerType(priceType);
-
-        MapReader upgradeMapReader = mapReader.getMap("upgrade");
-        List<MapReader> entities = upgradeMapReader.getMapList("entities");
-
-        int price = event.getPrice();
-        ItemStack materialItem = itemSpawnerType.getStack(price);
-
-        if (event.hasPlayerInInventory(materialItem)) {
-            event.sellStack(materialItem);
-            for (MapReader mapEntity : entities) {
-                String configuredType = mapEntity.getString("type");
-                if (configuredType == null) {
-                    return;
-                }
-
-                UpgradeStorage upgradeStorage = UpgradeRegistry.getUpgrade(configuredType);
-                if (upgradeStorage != null) {
-                    itemName = mapEntity.getString("shop-name");
-
-                    List<Upgrade> upgrades = new ArrayList<>();
-
-                    if (mapEntity.containsKey("new-resource")) {
-                        String customName = mapEntity.getString("spawner-name");
-                        upgrades = upgradeStorage.findItemSpawnerUpgrades(game, customName);
-                    } else {
-                        Debugger.warn("[BedWars]> Upgrade configuration is invalid.");
-                    }
-
-                }
-
-                player.sendMessage(i18n("buy_succes").replace("%item%", itemName).replace("%material%",
-                        price + " " + itemSpawnerType.getItemName()));
-                Sounds.playSound(player, player.getLocation(),
-                        Main.getConfigurator().config.getString("sounds.on_upgrade_buy"),
-                        Sounds.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
             }
         } else {
             player.sendMessage(i18n("buy_failed").replace("%item%", "UPGRADE").replace("%material%",

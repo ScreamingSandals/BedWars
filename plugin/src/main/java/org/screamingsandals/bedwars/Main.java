@@ -408,7 +408,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
             Bukkit.getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
         }
 
-        Bukkit.getConsoleSender().sendMessage("§c=====§f======  by ScreamingSandals <Misat11, Ceph)");
+        Bukkit.getConsoleSender().sendMessage("§c=====§f======  by ScreamingSandals <Misat11, Ceph>)");
         Bukkit.getConsoleSender()
                 .sendMessage("§c+ Bed§fWars +  §6Version: " + version);
         Bukkit.getConsoleSender()
