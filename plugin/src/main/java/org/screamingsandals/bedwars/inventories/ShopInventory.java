@@ -222,7 +222,7 @@ public class ShopInventory implements Listener {
             if (fileName != null) {
                 format.loadFromDataFolder(Main.getInstance().getDataFolder(), fileName);
             }
-        } catch (IOException | InvalidConfigurationException e) {
+        } catch (Exception e) {
             System.out.println("Wrong shop.yml configuration!");
             e.printStackTrace();
         }
