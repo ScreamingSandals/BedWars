@@ -104,7 +104,7 @@ public class TeamSelectorInventory implements Listener {
         if (playersInTeamCount >= team.maxPlayers) {
             loreList.add(team.color.chatColor + i18nonly("team_select_item_lore_full"));
         } else {
-            loreList.add(team.color.chatColor + i18nonly("click_to_join_team"));
+            loreList.add(team.color.chatColor + i18nonly("team_select_item_lore_join"));
         }
 
         if (!playersInTeam.isEmpty()) {
