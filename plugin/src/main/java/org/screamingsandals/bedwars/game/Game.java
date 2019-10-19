@@ -97,9 +97,6 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     public static final String PREVENT_KILLING_VILLAGERS = "prevent-killing-villagers";
     private InGameConfigBooleanConstants preventKillingVillagers = InGameConfigBooleanConstants.INHERIT;
 
-    public static final String SPECTATOR_GM_3 = "spectator-gm3";
-    private InGameConfigBooleanConstants spectatorGm3 = InGameConfigBooleanConstants.INHERIT;
-
     public static final String PLAYER_DROPS = "player-drops";
     private InGameConfigBooleanConstants playerDrops = InGameConfigBooleanConstants.INHERIT;
 
@@ -799,7 +796,6 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         game.keepInventory = readBooleanConstant(configMap.getString("constant." + KEEP_INVENTORY, "inherit"));
         game.preventKillingVillagers = readBooleanConstant(
                 configMap.getString("constant." + PREVENT_KILLING_VILLAGERS, "inherit"));
-        game.spectatorGm3 = readBooleanConstant(configMap.getString("constant." + SPECTATOR_GM_3, "inherit"));
         game.playerDrops = readBooleanConstant(configMap.getString("constant." + PLAYER_DROPS, "inherit"));
         game.lobbybossbar = readBooleanConstant(configMap.getString("constant." + LOBBY_BOSSBAR, "inherit"));
         game.gamebossbar = readBooleanConstant(configMap.getString("constant." + GAME_BOSSBAR, "inherit"));
@@ -951,7 +947,6 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         configMap.set("constant." + JOIN_RANDOM_TEAM_ON_JOIN, writeBooleanConstant(joinRandomTeamOnJoin));
         configMap.set("constant." + KEEP_INVENTORY, writeBooleanConstant(keepInventory));
         configMap.set("constant." + PREVENT_KILLING_VILLAGERS, writeBooleanConstant(preventKillingVillagers));
-        configMap.set("constant." + SPECTATOR_GM_3, writeBooleanConstant(spectatorGm3));
         configMap.set("constant." + PLAYER_DROPS, writeBooleanConstant(playerDrops));
         configMap.set("constant." + FRIENDLY_FIRE, writeBooleanConstant(friendlyfire));
         configMap.set("constant." + LOBBY_BOSSBAR, writeBooleanConstant(lobbybossbar));
@@ -1273,12 +1268,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 gamePlayer.player.teleport(specSpawn);
                 gamePlayer.player.setAllowFlight(true);
                 gamePlayer.player.setFlying(true);
-                if (getOriginalOrInheritedSpectatorGm3()) {
-                    gamePlayer.player.setGameMode(GameMode.SPECTATOR);
-                } else {
-                    gamePlayer.player
-                            .addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1));
-                }
+                gamePlayer.player.setGameMode(GameMode.SPECTATOR);
             }
         }.runTask(Main.getInstance());
 
@@ -1309,9 +1299,6 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 player.setAllowFlight(false);
                 player.setFlying(false);
                 player.setGameMode(GameMode.SURVIVAL);
-                if (!getOriginalOrInheritedSpectatorGm3()) {
-                    player.removePotionEffect(PotionEffectType.INVISIBILITY);
-                }
             }
         }.runTask(Main.getInstance());
     }
@@ -2031,7 +2018,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     }
 
     public void updateSigns() {
-    	List<SignBlock> gameSigns = Main.getSignManager().getSignsForName(this.name);
+        List<SignBlock> gameSigns = Main.getSignManager().getSignsForName(this.name);
 
         if (gameSigns.isEmpty()) {
             return;
@@ -2487,14 +2474,6 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         this.preventKillingVillagers = preventKillingVillagers;
     }
 
-    public InGameConfigBooleanConstants getSpectatorGm3() {
-        return spectatorGm3;
-    }
-
-    public void setSpectatorGm3(InGameConfigBooleanConstants spectatorGm3) {
-        this.spectatorGm3 = spectatorGm3;
-    }
-
     public InGameConfigBooleanConstants getPlayerDrops() {
         return playerDrops;
     }
@@ -2563,12 +2542,6 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     public boolean getOriginalOrInheritedPreventKillingVillagers() {
         return preventKillingVillagers.isOriginal() ? preventKillingVillagers.getValue()
                 : Main.getConfigurator().config.getBoolean(PREVENT_KILLING_VILLAGERS);
-    }
-
-    @Override
-    public boolean getOriginalOrInheritedSpectatorGm3() {
-        return spectatorGm3.isOriginal() ? spectatorGm3.getValue()
-                : Main.getConfigurator().config.getBoolean(SPECTATOR_GM_3);
     }
 
     @Override

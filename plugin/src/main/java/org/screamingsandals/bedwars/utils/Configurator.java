@@ -93,7 +93,6 @@ public class Configurator {
         checkOrSetConfig(modify, "friendlyfire", false);
         checkOrSetConfig(modify, "player-drops", true);
         checkOrSetConfig(modify, "join-randomly-after-lobby-timeout", false);
-        checkOrSetConfig(modify, "spectator-gm3", false);
         checkOrSetConfig(modify, "prevent-killing-villagers", true);
         checkOrSetConfig(modify, "compass-enabled", true);
         checkOrSetConfig(modify, "join-randomly-on-lobby-join", false);

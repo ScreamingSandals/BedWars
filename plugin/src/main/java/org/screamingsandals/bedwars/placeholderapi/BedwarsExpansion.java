@@ -1,13 +1,13 @@
 package org.screamingsandals.bedwars.placeholderapi;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.statistics.PlayerStatistic;
 import org.screamingsandals.bedwars.game.CurrentTeam;
 import org.screamingsandals.bedwars.game.Game;
 import org.screamingsandals.bedwars.game.GamePlayer;
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
 
 public class BedwarsExpansion extends PlaceholderExpansion {
 
