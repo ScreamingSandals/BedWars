@@ -17,10 +17,6 @@
 			<url>https://jenkins.mtorus.cz/plugin/repository/everything/</url>
 		</repository>
 		<repository>
-			<id>filoghost-repo</id>
-			<url>https://ci.filoghost.me/plugin/repository/everything/</url>
-		</repository>
-		<repository>
 			<id>placeholderapi</id>
 			<url>http://repo.extendedclip.com/content/repositories/placeholderapi/</url>
 		</repository>

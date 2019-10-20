@@ -11,10 +11,8 @@ softdepend:
 - MultiWorld
 - UltimateCore
 - PlaceholderAPI
-- HolographicDisplays
 - BarAPI
 - PerWorldInventory
-- Multiverse-Inventories
 
 commands:
   bw:

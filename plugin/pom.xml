@@ -38,12 +38,6 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.onarandombox.multiverseinventories</groupId>
-			<artifactId>Multiverse-Inventories</artifactId>
-			<version>3.0.1-SNAPSHOT</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
 			<groupId>me.confuser</groupId>
 			<artifactId>BarAPI</artifactId>
 			<version>3.5</version>
@@ -53,12 +47,6 @@
 			<groupId>me.clip</groupId>
 			<artifactId>placeholderapi</artifactId>
 			<version>2.9.2</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.gmail.filoghost.holographicdisplays</groupId>
-			<artifactId>holographicdisplays-api</artifactId>
-			<version>2.3.2</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
