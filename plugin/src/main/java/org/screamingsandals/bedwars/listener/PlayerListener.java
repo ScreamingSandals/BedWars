@@ -177,16 +177,6 @@ public class PlayerListener implements Listener {
 
                     @Override
                     public void run() {
-                        livingTime--;
-                        if (!victimTeam.isTargetBlockExists()) {
-                            game.makeSpectator(gamePlayer, true);
-                            victimTeam.players.remove(gVictim);
-
-                            Title.send(player,
-                                    i18nonly("respawn_cooldown_title_cancel"),"");
-                            this.cancel();
-                        }
-
                         if (livingTime > 0) {
                             Title.send(player,
                                     i18nonly("respawn_cooldown_title").replace("%time%", String.valueOf(livingTime)), "");
@@ -195,6 +185,7 @@ public class PlayerListener implements Listener {
                                     Sounds.BLOCK_STONE_BUTTON_CLICK_ON, 1, 1);
                         }
 
+                        livingTime--;
                         if (livingTime == 0) {
                             game.makePlayerFromSpectator(gamePlayer);
                             Sounds.playSound(player, player.getLocation(),

@@ -1,4 +1,4 @@
-package org.screamingsandals.bedwars.utils;
+package org.screamingsandals.bedwars.config;
 
 import org.screamingsandals.bedwars.Main;
 import org.bukkit.Color;
@@ -18,8 +18,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Configurator {
-
-    public File configFile, shopFile, signsFile, recordFile;
+    public File configFile, shopFile, signsFile, recordFile, langFolder;
     public FileConfiguration config, shopConfig, signsConfig, recordConfig;
 
     public final File dataFolder;
@@ -37,6 +36,7 @@ public class Configurator {
         shopFile = new File(dataFolder, "shop.yml");
         signsFile = new File(dataFolder, "sign.yml");
         recordFile = new File(dataFolder, "record.yml");
+        langFolder = new File(dataFolder.toString(), "languages");
 
         config = new YamlConfiguration();
         shopConfig = new YamlConfiguration();
@@ -74,6 +74,11 @@ public class Configurator {
             }
         }
 
+        if (!langFolder.exists()) {
+            langFolder.mkdirs();
+
+        }
+
         try {
             config.load(configFile);
             shopConfig.load(shopFile);
@@ -85,6 +90,7 @@ public class Configurator {
 
         AtomicBoolean modify = new AtomicBoolean(false);
         checkOrSetConfig(modify, "locale", "en");
+        checkOrSetConfig(modify, "debug", false);
 
         checkOrSetConfig(modify, "allow-crafting", false);
         checkOrSetConfig(modify, "keep-inventory-on-death", false);

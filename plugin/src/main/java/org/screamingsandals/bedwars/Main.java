@@ -37,7 +37,8 @@ import org.screamingsandals.bedwars.placeholderapi.BedwarsExpansion;
 import org.screamingsandals.bedwars.special.SpecialRegister;
 import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.bedwars.utils.BedWarsSignOwner;
-import org.screamingsandals.bedwars.utils.Configurator;
+import org.screamingsandals.bedwars.config.Configurator;
+import org.screamingsandals.easydebug.Debug;
 import org.screamingsandals.lib.signmanager.SignListener;
 import org.screamingsandals.lib.signmanager.SignManager;
 
@@ -317,6 +318,9 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         configurator = new Configurator(this);
 
         configurator.createFiles();
+
+        Debug.init(getName());
+        Debug.setDebug(configurator.config.getBoolean("debug"));
 
         I18n.load(this, configurator.config.getString("locale"));
 

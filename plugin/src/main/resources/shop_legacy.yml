@@ -1,11 +1,8 @@
 # DO NOT EDIT THIS VARIABLE!!!
 version: 2
 
-
-
 # And this you can edit of course.
 data:
-
 #-   stack:
 #      ==: org.bukkit.inventory.ItemStack
 #      type: GOLDEN_APPLE
