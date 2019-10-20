@@ -91,7 +91,7 @@
 		<dependency>
 			<groupId>misat11.lib.lang</groupId>
 			<artifactId>LanguageTool</artifactId>
-			<version>1.0.6</version>
+			<version>1.0.8</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
