@@ -776,7 +776,7 @@ public class PlayerListener implements Listener {
         final Player player = je.getPlayer();
 
         if (Main.isHologramsEnabled()) {
-            Main.getHologramInteraction().updateHolograms(player, 60L);
+            Main.getHologramInteraction().updateHolograms(player, 10L);
 
         }
     }

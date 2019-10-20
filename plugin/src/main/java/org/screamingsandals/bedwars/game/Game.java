@@ -1667,6 +1667,10 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                                         }
                                     } else {
                                         Title.send(player.player, i18n("you_lost", false), subtitle);
+
+                                        if (Main.isPlayerStatisticsEnabled() && Main.isHologramsEnabled()) {
+                                            Main.getHologramInteraction().updateHolograms(player.player);
+                                        }
                                     }
                                 }
                                 break;

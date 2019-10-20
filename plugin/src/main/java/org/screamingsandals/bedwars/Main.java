@@ -29,8 +29,8 @@ import org.screamingsandals.bedwars.game.Game;
 import org.screamingsandals.bedwars.game.GamePlayer;
 import org.screamingsandals.bedwars.game.ItemSpawnerType;
 import org.screamingsandals.bedwars.game.TeamColor;
-import org.screamingsandals.bedwars.holograms.HolographicDisplaysInteraction;
 import org.screamingsandals.bedwars.holograms.IHologramInteraction;
+import org.screamingsandals.bedwars.holograms.NMSUtilsHologramInteraction;
 import org.screamingsandals.bedwars.inventories.ShopInventory;
 import org.screamingsandals.bedwars.listener.*;
 import org.screamingsandals.bedwars.placeholderapi.BedwarsExpansion;
@@ -334,12 +334,12 @@ public class Main extends JavaPlugin implements BedwarsAPI {
             if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
                 new BedwarsExpansion().register();
             }
-
+        } catch (Throwable ignored) {
+        }
+        
+        try {
             if (configurator.config.getBoolean("holograms.enabled")) {
-                // Holographic Displays
-                if (Bukkit.getPluginManager().isPluginEnabled("HolographicDisplays")) {
-                    hologramInteraction = new HolographicDisplaysInteraction();
-                }
+            	hologramInteraction = new NMSUtilsHologramInteraction();
 
                 if (hologramInteraction != null) {
                     hologramInteraction.loadHolograms();
