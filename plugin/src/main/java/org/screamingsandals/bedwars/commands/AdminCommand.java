@@ -255,12 +255,6 @@ public class AdminCommand extends BaseCommand {
                                                             + game.getPreventKillingVillagers().name().toLowerCase(),
                                                     false)));
 
-                            player.sendMessage(
-                                    i18n("arena_info_config_constant", false).replace("%constant%", "spectatorGm3")
-                                            .replace("%value%", i18n(
-                                                    "arena_info_config_" + game.getSpectatorGm3().name().toLowerCase(),
-                                                    false)));
-
                             player.sendMessage(i18n("arena_info_config_constant", false)
                                     .replace("%constant%", "playerDrops").replace("%value%", i18n(
                                             "arena_info_config_" + game.getPlayerDrops().name().toLowerCase(), false)));
@@ -515,7 +509,7 @@ public class AdminCommand extends BaseCommand {
         } else if (args.get(1).equalsIgnoreCase("config")) {
             if (args.size() == 3) {
                 completion.addAll(Arrays.asList("compassEnabled", "joinRandomTeamAfterLobby", "joinRandomTeamOnJoin",
-                        "addWoolToInventoryOnJoin", "preventKillingVillagers", "spectatorGm3", "playerDrops",
+                        "addWoolToInventoryOnJoin", "preventKillingVillagers", "playerDrops",
                         "friendlyfire", "coloredLeatherByTeamInLobby", "keepInventory", "crafting", "gamebossbar",
                         "lobbybossbar", "gamescoreboard", "lobbyscoreboard", "preventspawningmobs", "spawnerholograms",
                         "spawnerDisableMerge", "gamestartitems", "playerrespawnitems", "spawnerhologramscountdown",

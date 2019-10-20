@@ -408,16 +408,6 @@ public interface Game {
     /**
      * @return
      */
-	InGameConfigBooleanConstants getSpectatorGm3();
-
-    /**
-     * @return
-     */
-	boolean getOriginalOrInheritedSpectatorGm3();
-
-    /**
-     * @return
-     */
 	InGameConfigBooleanConstants getPlayerDrops();
 
     /**

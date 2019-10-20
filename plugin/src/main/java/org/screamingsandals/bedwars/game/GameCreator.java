@@ -363,9 +363,6 @@ public class GameCreator {
             case "preventkillingvillagers":
                 game.setPreventKillingVillagers(cons);
                 break;
-            case "spectatorgm3":
-                game.setSpectatorGm3(cons);
-                break;
             case "playerdrops":
                 game.setPlayerDrops(cons);
                 break;
