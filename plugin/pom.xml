@@ -91,7 +91,7 @@
 		<dependency>
 			<groupId>misat11.lib.lang</groupId>
 			<artifactId>LanguageTool</artifactId>
-			<version>1.0.8</version>
+			<version>1.0.9</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
@@ -129,7 +129,7 @@
 				<filtering>true</filtering>
 				<directory>src/main/resources</directory>
 				<includes>
-					<include>*.yml</include>
+					<include>**/*</include>
 				</includes>
 			</resource>
 		</resources>
