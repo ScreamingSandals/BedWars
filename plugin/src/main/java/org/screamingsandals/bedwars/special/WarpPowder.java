@@ -1,13 +1,13 @@
 package org.screamingsandals.bedwars.special;
 
-import org.screamingsandals.bedwars.Main;
-import org.screamingsandals.bedwars.api.game.Game;
-import org.screamingsandals.bedwars.api.Team;
-import org.screamingsandals.bedwars.utils.SpawnEffects;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
+import org.screamingsandals.bedwars.Main;
+import org.screamingsandals.bedwars.api.Team;
+import org.screamingsandals.bedwars.api.game.Game;
+import org.screamingsandals.bedwars.utils.SpawnEffects;
 
 import static misat11.lib.lang.I18n.i18n;
 
@@ -63,7 +63,11 @@ public class WarpPowder extends SpecialItem implements org.screamingsandals.bedw
             public void run() {
                 if (teleportingTime == 0) {
                     cancelTeleport(true, false, true);
-                    player.teleport(team.getTeamSpawn());
+                    if (Main.isPaper()) {
+                        player.teleportAsync(team.getTeamSpawn());
+                    } else {
+                        player.teleport(team.getTeamSpawn());
+                    }
                 } else {
                     SpawnEffects.spawnEffect(game, player, "game-effects.warppowdertick");
                     teleportingTime--;

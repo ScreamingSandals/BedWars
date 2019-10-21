@@ -1,12 +1,14 @@
 package org.screamingsandals.bedwars.game;
 
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.utils.BungeeUtils;
 import org.bukkit.GameMode;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffect;
+import org.screamingsandals.easydebug.Debug;
 
 public class GamePlayer {
     public final Player player;
@@ -85,7 +87,7 @@ public class GamePlayer {
     public void restoreInv() {
         isTeleportingFromGame_justForInventoryPlugins = true;
         if (!Main.getConfigurator().config.getBoolean("mainlobby.enabled")) {
-            player.teleport(oldInventory.leftLocation);
+            teleport(oldInventory.leftLocation);
         }
 
         player.getInventory().setContents(oldInventory.inventory);
@@ -143,6 +145,14 @@ public class GamePlayer {
         }
 
         this.player.updateInventory();
+    }
+
+    public void teleport(Location location) {
+        if (Main.isPaper()) {
+            player.teleportAsync(location);
+        } else {
+            player.teleport(location);
+        }
     }
 
 }

@@ -540,7 +540,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             player.player.setPlayerWeather(arenaWeather);
         }
 
-        player.player.teleport(lobbySpawn);
+        player.teleport(lobbySpawn);
         SpawnEffects.spawnEffect(this, player.player, "game-effects.lobbyjoin");
         mpr("join")
                 .replace("name", player.player.getDisplayName())
@@ -625,7 +625,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             Location mainLobbyLocation = MiscUtils.readLocationFromString(
                     Bukkit.getWorld(Main.getConfigurator().config.getString("mainlobby.world")),
                     Main.getConfigurator().config.getString("mainlobby.location"));
-            player.player.teleport(mainLobbyLocation);
+            player.teleport(mainLobbyLocation);
         }
 
         if (status == GameStatus.RUNNING || status == GameStatus.WAITING) {
@@ -1260,15 +1260,17 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     }
 
     public Location makeSpectator(GamePlayer gamePlayer, boolean leaveItem) {
+        Player player = gamePlayer.player;
         gamePlayer.isSpectator = true;
+
         new BukkitRunnable() {
 
             @Override
             public void run() {
-                gamePlayer.player.teleport(specSpawn);
-                gamePlayer.player.setAllowFlight(true);
-                gamePlayer.player.setFlying(true);
-                gamePlayer.player.setGameMode(GameMode.SPECTATOR);
+                gamePlayer.teleport(specSpawn);
+                player.setAllowFlight(true);
+                player.setFlying(true);
+                player.setGameMode(GameMode.SPECTATOR);
             }
         }.runTask(Main.getInstance());
 
@@ -1295,7 +1297,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         new BukkitRunnable() {
             @Override
             public void run() {
-                player.teleport(runningTeam.getTeamSpawn());
+                gamePlayer.teleport(runningTeam.getTeamSpawn());
                 player.setAllowFlight(false);
                 player.setFlying(false);
                 player.setGameMode(GameMode.SURVIVAL);
@@ -1514,7 +1516,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                         if (team == null) {
                             makeSpectator(player, true);
                         } else {
-                            player.player.teleport(team.teamInfo.spawn);
+                            player.teleport(team.teamInfo.spawn);
                             if (getOriginalOrInheritedGameStartItems()) {
                                 List<ItemStack> givedGameStartItems = (List<ItemStack>) Main.getConfigurator().config
                                         .getList("gived-game-start-items");

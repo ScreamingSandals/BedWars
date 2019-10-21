@@ -50,7 +50,9 @@ import static misat11.lib.lang.I18n.i18n;
 public class Main extends JavaPlugin implements BedwarsAPI {
     private static Main instance;
     private String version, nmsVersion;
-    private boolean isSpigot, snapshot, isVault, isLegacy, isNMS;
+    private static boolean isPaper;
+    private boolean isSpigot, isLegacy;
+    private boolean snapshot, isVault, isNMS;
     private int versionNumber = 0;
     private Economy econ = null;
     private HashMap<String, Game> games = new HashMap<>();
@@ -301,6 +303,13 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         isSpigot = NMSUtils.IS_SPIGOT_SERVER;
         colorChanger = new org.screamingsandals.bedwars.utils.ColorChanger();
 
+        try {
+            Class.forName("com.destroystokyo.paper.PaperConfig");
+            isPaper = true;
+        } catch (ClassNotFoundException ignored) {
+            isPaper = false;
+        }
+
         if (!getServer().getPluginManager().isPluginEnabled("Vault")) {
             isVault = false;
         } else {
@@ -496,6 +505,10 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         if (isHologramsEnabled() && hologramInteraction != null) {
             hologramInteraction.unloadHolograms();
         }
+    }
+
+    public static boolean isPaper() {
+        return isPaper;
     }
 
     private boolean setupEconomy() {

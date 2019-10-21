@@ -40,7 +40,7 @@ public class SpawnEffects {
                     useEffect(type, effect.getValues(false), player, game);
                 }
 
-            } catch (Throwable e) {
+            } catch (Throwable ignored) {
             }
         }
 

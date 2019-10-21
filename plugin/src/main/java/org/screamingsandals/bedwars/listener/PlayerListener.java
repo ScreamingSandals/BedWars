@@ -425,12 +425,12 @@ public class PlayerListener implements Listener {
             Game game = gPlayer.getGame();
             if (gPlayer.isSpectator) {
                 if (event.getCause() == DamageCause.VOID) {
-                    player.teleport(game.getSpecSpawn());
+                    gPlayer.teleport(game.getSpecSpawn());
                 }
                 event.setCancelled(true);
             } else if (game.getStatus() == GameStatus.WAITING) {
                 if (event.getCause() == DamageCause.VOID) {
-                    player.teleport(game.getLobbySpawn());
+                    gPlayer.teleport(game.getLobbySpawn());
                 }
                 event.setCancelled(true);
             } else if (game.getStatus() == GameStatus.RUNNING) {

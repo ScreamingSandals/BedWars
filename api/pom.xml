@@ -12,23 +12,10 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>org.spigotmc</groupId>
-			<artifactId>spigot-api</artifactId>
+			<groupId>com.destroystokyo.paper</groupId>
+			<artifactId>paper-api</artifactId>
 			<version>1.14.4-R0.1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
-	
-	<build>
-		<resources>
-			<resource>
-				<targetPath>.</targetPath>
-				<filtering>true</filtering>
-				<directory>src/main/java</directory>
-				<includes>
-					<include>org/screamingsandals/bedwars/api/constants.yml</include>
-				</includes>
-			</resource>
-		</resources>
-	</build>
 </project>
