@@ -1,14 +1,13 @@
 package org.screamingsandals.bedwars.game;
 
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.screamingsandals.bedwars.Main;
-import org.screamingsandals.bedwars.utils.BungeeUtils;
-import org.bukkit.GameMode;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffect;
-import org.screamingsandals.easydebug.Debug;
+import org.screamingsandals.bedwars.Main;
+import org.screamingsandals.bedwars.utils.BungeeUtils;
 
 public class GamePlayer {
     public final Player player;
@@ -30,7 +29,7 @@ public class GamePlayer {
                 this.game = null;
                 this.isSpectator = false;
                 this.clean();
-                BungeeUtils.movePlayerToBungeeServer(player);
+                BungeeUtils.movePlayerToBungeeServer(player, Main.isDisabling());
             } else {
                 this.game.internalLeavePlayer(this);
                 this.game = null;

@@ -20,8 +20,6 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.DisplaySlot;
@@ -1030,7 +1028,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
         if (status == GameStatus.REBUILDING) {
             if (isBungeeEnabled()) {
-                BungeeUtils.movePlayerToBungeeServer(player);
+                BungeeUtils.movePlayerToBungeeServer(player, false);
                 BungeeUtils.sendPlayerBungeeMessage(player, i18n("game_is_rebuilding").replace("%arena%", Game.this.name));
             } else {
                 player.sendMessage(i18n("game_is_rebuilding").replace("%arena%", this.name));
@@ -1040,7 +1038,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
         if (status == GameStatus.RUNNING || status == GameStatus.GAME_END_CELEBRATING) {
             if (isBungeeEnabled()) {
-                BungeeUtils.movePlayerToBungeeServer(player);
+                BungeeUtils.movePlayerToBungeeServer(player, false);
                 BungeeUtils.sendPlayerBungeeMessage(player, i18n("game_already_running").replace("%arena%", Game.this.name));
             } else {
                 player.sendMessage(i18n("game_already_running").replace("%arena%", this.name));
@@ -1074,7 +1072,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             } else {
                 if (isBungeeEnabled()) {
                     BungeeUtils.sendPlayerBungeeMessage(player, i18n("game_is_full").replace("%arena%", Game.this.name));
-                    BungeeUtils.movePlayerToBungeeServer(player);
+                    BungeeUtils.movePlayerToBungeeServer(player, false);
                 } else {
                     player.sendMessage(i18n("game_is_full").replace("%arena%", this.name));
                 }

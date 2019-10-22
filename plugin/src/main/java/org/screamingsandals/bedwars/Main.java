@@ -51,6 +51,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
     private static Main instance;
     private String version, nmsVersion;
     private static boolean isPaper;
+    private static boolean isDisabling = false;
     private boolean isSpigot, isLegacy;
     private boolean snapshot, isVault, isNMS;
     private int versionNumber = 0;
@@ -494,6 +495,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
     }
 
     public void onDisable() {
+        isDisabling = true;
         if (signManager != null) {
             signManager.save();
         }
@@ -650,5 +652,9 @@ public class Main extends JavaPlugin implements BedwarsAPI {
             }
         }
         return null;
+    }
+
+    public static boolean isDisabling() {
+        return isDisabling;
     }
 }
