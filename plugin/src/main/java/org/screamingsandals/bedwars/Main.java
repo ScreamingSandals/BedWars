@@ -50,8 +50,8 @@ import static misat11.lib.lang.I18n.i18n;
 public class Main extends JavaPlugin implements BedwarsAPI {
     private static Main instance;
     private String version, nmsVersion;
-    private static boolean isPaper;
-    private static boolean isDisabling = false;
+    private boolean isPaper;
+    private boolean isDisabling = false;
     private boolean isSpigot, isLegacy;
     private boolean snapshot, isVault, isNMS;
     private int versionNumber = 0;
@@ -510,7 +510,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
     }
 
     public static boolean isPaper() {
-        return isPaper;
+        return instance.isPaper;
     }
 
     private boolean setupEconomy() {
@@ -655,6 +655,6 @@ public class Main extends JavaPlugin implements BedwarsAPI {
     }
 
     public static boolean isDisabling() {
-        return isDisabling;
+        return instance.isDisabling;
     }
 }

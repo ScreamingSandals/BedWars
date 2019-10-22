@@ -1114,6 +1114,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 				} else {
 					player.sendMessage(i18n("game_is_full").replace("%arena%", this.name));
 				}
+				return;
 			}
 		}
 
