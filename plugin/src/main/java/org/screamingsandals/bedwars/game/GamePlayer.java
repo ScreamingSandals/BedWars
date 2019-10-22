@@ -24,17 +24,13 @@ public class GamePlayer {
 
     public void changeGame(Game game) {
         if (this.game != null && game == null) {
+            this.game.internalLeavePlayer(this);
+            this.game = null;
+            this.isSpectator = false;
+            this.clean();
             if (Game.isBungeeEnabled()) {
-                this.game.internalLeavePlayer(this);
-                this.game = null;
-                this.isSpectator = false;
-                this.clean();
                 BungeeUtils.movePlayerToBungeeServer(player, Main.isDisabling());
             } else {
-                this.game.internalLeavePlayer(this);
-                this.game = null;
-                this.isSpectator = false;
-                this.clean();
                 this.restoreInv();
             }
         } else if (this.game == null && game != null) {

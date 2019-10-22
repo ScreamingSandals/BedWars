@@ -598,6 +598,16 @@ public interface Game {
     /**
      * @return
      */
+	InGameConfigBooleanConstants getSpectatorJoin();
+
+    /**
+     * @return
+     */
+	boolean getOriginalOrInheritedSpectatorJoin();
+
+    /**
+     * @return
+     */
 	boolean getBungeeEnabled();
 
     /**

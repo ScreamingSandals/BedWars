@@ -8,7 +8,7 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
-import org.screamingsandals.easydebug.Debug;
+import org.screamingsandals.lib.debug.Debug;
 
 import java.io.File;
 import java.io.IOException;
@@ -122,6 +122,7 @@ public class Configurator {
         checkOrSetConfig(modify, "sell-max-64-per-click-in-shop", true);
         checkOrSetConfig(modify, "destroy-placed-blocks-by-explosion", true);
         checkOrSetConfig(modify, "holo-above-bed", true);
+        checkOrSetConfig(modify, "allow-spectator-join", false);
         checkOrSetConfig(modify, "disable-server-message.player-join", false);
         checkOrSetConfig(modify, "disable-server-message.player-leave", false);
         checkOrSetConfig(modify, "respawn-cooldown.enabled", true);
@@ -208,8 +209,6 @@ public class Configurator {
             modify.set(true);
             config.set("spawners", null);
         }
-
-        System.out.println(config.get("resources"));
 
         checkOrSetConfig(modify, "respawn.protection-enabled", true);
         checkOrSetConfig(modify, "respawn.protection-time", 10);

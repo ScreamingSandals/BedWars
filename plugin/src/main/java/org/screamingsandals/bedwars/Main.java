@@ -38,7 +38,7 @@ import org.screamingsandals.bedwars.special.SpecialRegister;
 import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.bedwars.utils.BedWarsSignOwner;
 import org.screamingsandals.bedwars.config.Configurator;
-import org.screamingsandals.easydebug.Debug;
+import org.screamingsandals.lib.debug.Debug;
 import org.screamingsandals.lib.signmanager.SignListener;
 import org.screamingsandals.lib.signmanager.SignManager;
 

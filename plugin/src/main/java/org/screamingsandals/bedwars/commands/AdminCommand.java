@@ -359,6 +359,12 @@ public class AdminCommand extends BaseCommand {
                                             "arena_info_config_" + game.getHoloAboveBed().name().toLowerCase(),
                                             false)));
 
+                            player.sendMessage(i18n("arena_info_config_constant", false)
+                                    .replace("%constant%", "spectatorJoin")
+                                    .replace("%value%", i18n(
+                                            "arena_info_config_" + game.getSpectatorJoin().name().toLowerCase(),
+                                            false)));
+
                             // NON-BOOLEAN CONSTANTS
 
                             player.sendMessage(i18n("arena_info_config_constant", false)
@@ -513,7 +519,8 @@ public class AdminCommand extends BaseCommand {
                         "friendlyfire", "coloredLeatherByTeamInLobby", "keepInventory", "crafting", "gamebossbar",
                         "lobbybossbar", "gamescoreboard", "lobbyscoreboard", "preventspawningmobs", "spawnerholograms",
                         "spawnerDisableMerge", "gamestartitems", "playerrespawnitems", "spawnerhologramscountdown",
-                        "damagewhenplayerisnotinarena", "removeunusedtargetblocks", "holoabovebed", "allowblockfall"));
+                        "damagewhenplayerisnotinarena", "removeunusedtargetblocks", "holoabovebed", "allowblockfall",
+                        "spectatorjoin"));
             }
             if (args.size() == 4) {
                 completion.addAll(Arrays.asList("true", "false", "inherit"));
