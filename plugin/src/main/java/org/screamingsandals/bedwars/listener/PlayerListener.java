@@ -933,7 +933,7 @@ public class PlayerListener implements Listener {
                     try {
                         game.joinToGame(player);
                     } catch (NullPointerException ignored) {
-                        BungeeUtils.movePlayerToBungeeServer(player);
+                        BungeeUtils.movePlayerToBungeeServer(player, false);
                     }
                 }
             }.runTaskLater(Main.getInstance(), 1L);
