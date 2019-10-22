@@ -5,6 +5,7 @@ import org.screamingsandals.bedwars.game.TeamColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.screamingsandals.easydebug.Debug;
 
 public class ColorChanger implements org.screamingsandals.bedwars.api.utils.ColorChanger {
     public static ItemStack changeLegacyStackColor(ItemStack itemStack, TeamColor teamColor) {
@@ -60,14 +61,20 @@ public class ColorChanger implements org.screamingsandals.bedwars.api.utils.Colo
 
     @Override
     public ItemStack applyColor(org.screamingsandals.bedwars.api.TeamColor apiColor, ItemStack stack) {
-        TeamColor color = TeamColor.fromApiColor(apiColor);
-        Material material = stack.getType();
-        if (Main.isLegacy()) {
-            stack = changeLegacyStackColor(stack, color);
-        } else {
-            stack.setType(changeMaterialColor(material, color));
+        try {
+            TeamColor color = TeamColor.fromApiColor(apiColor);
+            Material material = stack.getType();
+            if (Main.isLegacy()) {
+                stack = changeLegacyStackColor(stack, color);
+            } else {
+                stack.setType(changeMaterialColor(material, color));
+            }
+            stack = changeLeatherArmorColor(stack, color);
+            return stack;
+        } catch (NullPointerException e) {
+            Debug.warn("DEFINED ITEM DOES NOT EXISTS. CHECK YOUR CONFIG.");
+            e.printStackTrace();
+            return new ItemStack(Material.BLACK_WOOL);
         }
-        stack = changeLeatherArmorColor(stack, color);
-        return stack;
     }
 }

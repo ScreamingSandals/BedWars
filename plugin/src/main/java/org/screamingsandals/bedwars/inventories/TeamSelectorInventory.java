@@ -1,11 +1,5 @@
 package org.screamingsandals.bedwars.inventories;
 
-import org.screamingsandals.bedwars.Main;
-import org.screamingsandals.bedwars.api.events.BedwarsOpenTeamSelectionEvent;
-import org.screamingsandals.bedwars.api.events.BedwarsPlayerLeaveEvent;
-import org.screamingsandals.bedwars.game.Game;
-import org.screamingsandals.bedwars.game.GamePlayer;
-import org.screamingsandals.bedwars.game.Team;
 import misat11.lib.sgui.GuiHolder;
 import misat11.lib.sgui.MapReader;
 import misat11.lib.sgui.Options;
@@ -19,6 +13,12 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.screamingsandals.bedwars.Main;
+import org.screamingsandals.bedwars.api.events.BedwarsOpenTeamSelectionEvent;
+import org.screamingsandals.bedwars.api.events.BedwarsPlayerLeaveEvent;
+import org.screamingsandals.bedwars.game.Game;
+import org.screamingsandals.bedwars.game.GamePlayer;
+import org.screamingsandals.bedwars.game.Team;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,7 +74,8 @@ public class TeamSelectorInventory implements Listener {
         FormatBuilder builder = new FormatBuilder();
 
         for (Team team : game.getTeams()) {
-            ItemStack teamStack = team.color.getWool();
+            ItemStack teamStack = Main.applyColor(team.color,
+                    Main.getConfigurator().readDefinedItem("team-select", Main.isLegacy() ? "WOOL" : "WHITE_WOOL"));
             ItemMeta teamMeta = teamStack.getItemMeta();
 
             List<GamePlayer> playersInTeam = game.getPlayersInTeam(team);

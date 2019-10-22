@@ -8,6 +8,7 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
+import org.screamingsandals.easydebug.Debug;
 
 import java.io.File;
 import java.io.IOException;
@@ -157,6 +158,9 @@ public class Configurator {
                         : "GRAY_STAINED_GLASS_PANE");
         checkOrSetConfig(modify, "items.pageback", "ARROW");
         checkOrSetConfig(modify, "items.pageforward", "ARROW");
+        checkOrSetConfig(modify, "items.team-select",
+                Main.isLegacy() ? new ItemStack(Material.getMaterial("WOOL"), 1, (short) 1)
+                        : "WHITE_WOOL");
 
         checkOrSetConfig(modify, "vault.enable", true);
         checkOrSetConfig(modify, "vault.reward.kill", 5);
@@ -402,7 +406,12 @@ public class Configurator {
             if (obj instanceof ItemStack) {
                 material = (ItemStack) obj;
             } else {
-                material.setType(Material.valueOf((String) obj));
+                try {
+                    material.setType(Material.valueOf((String) obj));
+                } catch (IllegalArgumentException e) {
+                    Debug.warn("DEFINED ITEM " + obj + " DOES NOT EXISTS.", true);
+                    Debug.warn("Check config variable: items." + item);
+                }
             }
         }
 
