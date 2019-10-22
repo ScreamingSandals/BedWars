@@ -121,6 +121,8 @@ public class Configurator {
         checkOrSetConfig(modify, "sell-max-64-per-click-in-shop", true);
         checkOrSetConfig(modify, "destroy-placed-blocks-by-explosion", true);
         checkOrSetConfig(modify, "holo-above-bed", true);
+        checkOrSetConfig(modify, "disable-server-message.player-join", false);
+        checkOrSetConfig(modify, "disable-server-message.player-leave", false);
         checkOrSetConfig(modify, "respawn-cooldown.enabled", true);
         checkOrSetConfig(modify, "respawn-cooldown.time", 5);
 

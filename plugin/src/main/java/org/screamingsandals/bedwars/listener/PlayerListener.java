@@ -208,6 +208,32 @@ public class PlayerListener implements Listener {
                 gPlayer.changeGame(null);
             Main.unloadPlayerGameProfile(event.getPlayer());
         }
+
+        if (Main.getConfigurator().config.getBoolean("disable-server-message.player-join")) {
+            event.setQuitMessage(null);
+        }
+    }
+
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        Player player = event.getPlayer();
+        Game game = (Game) Main.getInstance().getFirstWaitingGame();
+
+        if (Game.isBungeeEnabled() && Main.getConfigurator().config.getBoolean("bungee.auto-game-connect", false)) {
+            new BukkitRunnable() {
+                public void run() {
+                    try {
+                        game.joinToGame(player);
+                    } catch (NullPointerException ignored) {
+                        BungeeUtils.movePlayerToBungeeServer(player, false);
+                    }
+                }
+            }.runTaskLater(Main.getInstance(), 1L);
+        }
+
+        if (Main.getConfigurator().config.getBoolean("disable-server-message.player-join")) {
+            event.setJoinMessage(null);
+        }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -915,28 +941,6 @@ public class PlayerListener implements Listener {
             } else if (game.getStatus() != GameStatus.DISABLED) {
                 event.setCancelled(true);
             }
-        }
-    }
-
-    /* BungeeCord */
-    @EventHandler(priority = EventPriority.HIGHEST)
-    public void onPlayerLogin(PlayerLoginEvent event) {
-        if (!(event.getResult() == PlayerLoginEvent.Result.ALLOWED)) {
-            return;
-        }
-        Player player = event.getPlayer();
-        Game game = (Game) Main.getInstance().getFirstWaitingGame();
-
-        if (Game.isBungeeEnabled() && Main.getConfigurator().config.getBoolean("bungee.auto-game-connect", false)) {
-            new BukkitRunnable() {
-                public void run() {
-                    try {
-                        game.joinToGame(player);
-                    } catch (NullPointerException ignored) {
-                        BungeeUtils.movePlayerToBungeeServer(player, false);
-                    }
-                }
-            }.runTaskLater(Main.getInstance(), 1L);
         }
     }
 }
