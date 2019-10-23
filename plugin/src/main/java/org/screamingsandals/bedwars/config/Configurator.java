@@ -78,6 +78,8 @@ public class Configurator {
         if (!langFolder.exists()) {
             langFolder.mkdirs();
 
+            /* TODO: Seek for old message files */
+            
         }
 
         try {
@@ -137,7 +139,7 @@ public class Configurator {
         checkOrSetConfig(modify, "bungee.server", "hub");
         checkOrSetConfig(modify, "bungee.auto-game-connect", false);
 
-        checkOrSetConfig(modify, "farmBlocks.enable", true);
+        checkOrSetConfig(modify, "farmBlocks.enable", false);
         checkOrSetConfig(modify, "farmBlocks.blocks", new ArrayList<>());
 
         checkOrSetConfig(modify, "scoreboard.enable", true);
@@ -357,7 +359,15 @@ public class Configurator {
         checkOrSetConfig(modify, "hotbar.leave", 8);
 
         checkOrSetConfig(modify, "breakable.enabled", false);
+        checkOrSetConfig(modify, "breakable.asblacklist", false);
         checkOrSetConfig(modify, "breakable.blocks", new ArrayList<>());
+
+        checkOrSetConfig(modify, "leaveshortcuts.enabled", false);
+        checkOrSetConfig(modify, "leaveshortcuts.list", new ArrayList<String>() {
+        	{
+        		add("leave");
+        	}
+        });
 
         checkOrSetConfig(modify, "mainlobby.enabled", false);
         checkOrSetConfig(modify, "mainlobby.location", "");

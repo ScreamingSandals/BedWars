@@ -347,10 +347,13 @@ public class PlayerListener implements Listener {
         if (event.isCancelled())
             return;
         if (Main.isPlayerInGame(event.getPlayer())) {
-            if (!Main.isCommandAllowedInGame(event.getMessage().split(" ")[0])) {
+        	if (Main.isCommandLeaveShortcut(event.getMessage())) {
+        		event.setCancelled(true);
+            	Main.getPlayerGameProfile(event.getPlayer()).changeGame(null);
+        	} else if (!Main.isCommandAllowedInGame(event.getMessage().split(" ")[0])) {
                 event.setCancelled(true);
                 event.getPlayer().sendMessage(i18n("command_is_not_allowed"));
-            }
+            } 
         }
     }
 

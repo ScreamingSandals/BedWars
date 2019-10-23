@@ -216,7 +216,23 @@ public class Main extends JavaPlugin implements BedwarsAPI {
     public static boolean isBreakableBlock(Material mat) {
         if (instance.configurator.config.getBoolean("breakable.enabled")) {
             List<String> list = (List<String>) instance.configurator.config.getList("breakable.blocks");
-            return list.contains(mat.name());
+            boolean asblacklist = instance.configurator.config.getBoolean("breakable.asblacklist", false);
+            return list.contains(mat.name()) ? !asblacklist : asblacklist;
+        }
+        return false;
+    }
+    
+    public static boolean isCommandLeaveShortcut(String command) {
+        if (instance.configurator.config.getBoolean("leaveshortcuts.enabled")) {
+            List<String> commands = (List<String>) instance.configurator.config.getList("leaveshortcuts.list");
+            for (String comm : commands) {
+                if (!comm.startsWith("/")) {
+                    comm = "/" + comm;
+                }
+                if (comm.equals(command)) {
+                	return true;
+                }
+            }
         }
         return false;
     }
