@@ -78,8 +78,15 @@ public class Configurator {
         if (!langFolder.exists()) {
             langFolder.mkdirs();
 
-            /* TODO: Seek for old message files */
-            
+            File[] listOfFiles = dataFolder.listFiles();
+            if (listOfFiles.length > 0) {
+                for (File file : listOfFiles) {
+                    if (file.isFile() && file.getName().startsWith("messages_") && file.getName().endsWith(".yml")) {
+                    	File dest = new File(langFolder, "language_" + file.getName().substring(9));
+                    	file.renameTo(dest);
+                    }
+                }
+            }
         }
 
         try {
