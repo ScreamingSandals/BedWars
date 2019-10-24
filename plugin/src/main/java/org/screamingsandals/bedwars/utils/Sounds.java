@@ -1016,7 +1016,7 @@ public enum Sounds {
         }
         for (String name : versionDependentNames) {
             try {
-                cached = org.bukkit.Sound.valueOf(name);
+                cached = Sound.valueOf(name);
                 player.playSound(location, cached, volume, pitch);
                 return;
             } catch (IllegalArgumentException ignore2) {
@@ -1032,7 +1032,7 @@ public enum Sounds {
         } catch (IllegalArgumentException | NullPointerException ex) {
             try {
                 // If something is exists in bukkit, but not in this mapping
-                Sound s = org.bukkit.Sound.valueOf(name);
+                Sound s = Sound.valueOf(name);
                 player.playSound(location, s, volume, pitch);
             } catch (IllegalArgumentException t) {
                 if (fallbackSound != null) {

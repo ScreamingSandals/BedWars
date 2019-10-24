@@ -2,7 +2,6 @@ package org.screamingsandals.bedwars.utils;
 
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
-import com.google.gson.internal.$Gson$Preconditions;
 import org.screamingsandals.bedwars.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

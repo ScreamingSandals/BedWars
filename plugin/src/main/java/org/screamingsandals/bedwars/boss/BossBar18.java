@@ -9,19 +9,10 @@ import java.util.List;
 
 public class BossBar18 implements org.screamingsandals.bedwars.api.boss.BossBar18 {
 
-    public static boolean isPluginForLegacyBossBarEnabled() {
-        return Bukkit.getPluginManager().isPluginEnabled("BarAPI");
-    }
-
     private boolean visible = false;
     private List<Player> players = new ArrayList<>();
     private String message = "";
     private double progress = 0;
-
-
-    public BossBar18() {
-
-    }
 
     @Override
     public String getMessage() {
@@ -119,6 +110,10 @@ public class BossBar18 implements org.screamingsandals.bedwars.api.boss.BossBar1
     private void hide(Player player) {
         if (!isPluginForLegacyBossBarEnabled()) return;
         BarAPI.removeBar(player);
+    }
+
+    public static boolean isPluginForLegacyBossBarEnabled() {
+        return Bukkit.getPluginManager().isPluginEnabled("BarAPI");
     }
 
 }

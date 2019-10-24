@@ -9,9 +9,6 @@ import org.bukkit.event.HandlerList;
 public class BedWarsServerRestartEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
 
-    public BedWarsServerRestartEvent() {
-    }
-
     public static HandlerList getHandlerList() {
         return BedWarsServerRestartEvent.handlers;
     }

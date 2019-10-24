@@ -5,7 +5,6 @@ import misat11.lib.sgui.events.GenerateItemEvent;
 import misat11.lib.sgui.events.PreActionEvent;
 import misat11.lib.sgui.events.ShopTransactionEvent;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -26,7 +25,6 @@ import org.screamingsandals.bedwars.game.GamePlayer;
 import org.screamingsandals.bedwars.utils.Debugger;
 import org.screamingsandals.bedwars.utils.Sounds;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

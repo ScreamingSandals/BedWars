@@ -7,17 +7,17 @@ assignees: ''
 
 ---
 
-**Describe the bug**
+#### Describe the bug
 A clear and concise description of what the bug is.
 
-**Server and plugin version**
+#### Server and plugin version
 Spigot version:
 BedWars version:
 
-**Installed plugins on server (can be obtained by `/pl`):**
+#### Installed plugins on server (can be obtained by `/pl`)
 
-**Console log:**
+#### Console log
 
-**Configuration (of config.yml and shop.yml):**
+#### Configuration (of config.yml and shop.yml)
 
-**If there are problem with only one game, paste here config of this game:**
+#### If there are problem with only one game, paste here config of this game
