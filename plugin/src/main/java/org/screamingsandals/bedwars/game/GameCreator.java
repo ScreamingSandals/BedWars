@@ -437,6 +437,10 @@ public class GameCreator {
             case "allowspectatorjoin":
             	game.setSpectatorJoin(cons);
             	break;
+            case "stopteamspawnersondie":
+            case "stopdeathspawners":
+                game.setStopTeamSpawnersOnDie(cons);
+                break;
             default:
                 return i18n("admin_command_invalid_config_variable_name");
         }
