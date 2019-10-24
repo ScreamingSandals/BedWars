@@ -365,6 +365,12 @@ public class AdminCommand extends BaseCommand {
                                             "arena_info_config_" + game.getSpectatorJoin().name().toLowerCase(),
                                             false)));
 
+                            player.sendMessage(i18n("arena_info_config_constant", false)
+                                    .replace("%constant%", "stopTeamSpawnersOnDie")
+                                    .replace("%value%", i18n(
+                                            "arena_info_config_" + game.getStopTeamSpawnersOnDie().name().toLowerCase(),
+                                            false)));
+
                             // NON-BOOLEAN CONSTANTS
 
                             player.sendMessage(i18n("arena_info_config_constant", false)
@@ -520,7 +526,7 @@ public class AdminCommand extends BaseCommand {
                         "lobbybossbar", "gamescoreboard", "lobbyscoreboard", "preventspawningmobs", "spawnerholograms",
                         "spawnerDisableMerge", "gamestartitems", "playerrespawnitems", "spawnerhologramscountdown",
                         "damagewhenplayerisnotinarena", "removeunusedtargetblocks", "holoabovebed", "allowblockfall",
-                        "spectatorjoin"));
+                        "spectatorjoin", "stopTeamSpawnersOnDie"));
             }
             if (args.size() == 4) {
                 completion.addAll(Arrays.asList("true", "false", "inherit"));

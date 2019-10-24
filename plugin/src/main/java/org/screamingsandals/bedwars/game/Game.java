@@ -159,6 +159,9 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 	public static final String SPECTATOR_JOIN = "allow-spectator-join";
 	private InGameConfigBooleanConstants spectatorJoin = InGameConfigBooleanConstants.INHERIT;
 
+	public static final String STOP_TEAM_SPAWNERS_ON_DIE = "stop-team-spawners-on-die";
+	private InGameConfigBooleanConstants stopTeamSpawnersOnDie = InGameConfigBooleanConstants.INHERIT;
+
 	public boolean gameStartItem;
 	private boolean preServerRestart = false;
 	public static final int POST_GAME_WAITING = 3;
@@ -456,6 +459,15 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 		for (CurrentTeam team : teamsInGame) {
 			if (team.players.contains(player)) {
 				return team;
+			}
+		}
+		return null;
+	}
+
+	public CurrentTeam getCurrentTeamFromTeam(org.screamingsandals.bedwars.api.Team team) {
+		for (CurrentTeam currentTeam : teamsInGame) {
+			if (currentTeam.teamInfo == team) {
+				return currentTeam;
 			}
 		}
 		return null;
@@ -1710,6 +1722,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 					}
 				} else if (countdown != gameTime /* Prevent spawning resources on game start */) {
 					for (ItemSpawner spawner : spawners) {
+						CurrentTeam spawnerTeam = getCurrentTeamFromTeam(spawner.getTeam());
 						ItemSpawnerType type = spawner.type;
 						int cycle = type.getInterval();
 						/*
@@ -1723,6 +1736,12 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 								int modulo = cycle - elapsedTime % cycle;
 								countdownHolograms.get(spawner).setLine(1,
 									i18nonly("countdown_spawning").replace("%seconds%", Integer.toString(modulo)));
+							}
+						}
+
+						if (spawnerTeam != null) {
+							if (getOriginalOrInheritedStopTeamSpawnersOnDie() && (spawnerTeam.isDead())) {
+								continue;
 							}
 						}
 
@@ -2966,5 +2985,20 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
 	public void setSpectatorJoin(InGameConfigBooleanConstants spectatorJoin) {
 		this.spectatorJoin = spectatorJoin;
+	}
+
+	@Override
+	public InGameConfigBooleanConstants getStopTeamSpawnersOnDie() {
+		return stopTeamSpawnersOnDie;
+	}
+
+	@Override
+	public boolean getOriginalOrInheritedStopTeamSpawnersOnDie() {
+		return stopTeamSpawnersOnDie.isOriginal() ? stopTeamSpawnersOnDie.getValue()
+				: Main.getConfigurator().config.getBoolean(STOP_TEAM_SPAWNERS_ON_DIE);
+	}
+
+	public void setStopTeamSpawnersOnDie(InGameConfigBooleanConstants stopTeamSpawnersOnDie) {
+		this.stopTeamSpawnersOnDie = stopTeamSpawnersOnDie;
 	}
 }

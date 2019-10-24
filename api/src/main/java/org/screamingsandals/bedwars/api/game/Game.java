@@ -608,6 +608,16 @@ public interface Game {
     /**
      * @return
      */
+    InGameConfigBooleanConstants getStopTeamSpawnersOnDie();
+
+    /**
+     * @return
+     */
+    boolean getOriginalOrInheritedStopTeamSpawnersOnDie();
+
+    /**
+     * @return
+     */
 	boolean getBungeeEnabled();
 
     /**
