@@ -144,7 +144,12 @@ public class GamePlayer {
 
     public void teleport(Location location) {
         if (Main.isPaper()) {
-            player.teleportAsync(location);
+        	try {
+                player.teleportAsync(location);
+        	} catch (Throwable t) {
+        		// Old Paper builds
+                player.teleport(location);
+        	}
         } else {
             player.teleport(location);
         }
