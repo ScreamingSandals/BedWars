@@ -76,7 +76,7 @@ resource_iron: "Iron"
 resource_gold: "Gold"
 countdown_spawning: "&e%seconds% &bseconds"
 every_second_spawning: "&bevery second"
-spawner_is_full: "§c§lSpawner is full"
+spawner_is_full: "§c§lSpawner is depleted"
 
 admin_command_mainlobby_info: "&cWARNING&f: You need to execute /bw reload to make Mainlobby work!"
 admin_command_success: "&aCommand executed successfully!"
