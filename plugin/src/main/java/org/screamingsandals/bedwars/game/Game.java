@@ -740,8 +740,8 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
 					game.world = Bukkit.getWorld(worldName);
 				} else {
-					Bukkit.getConsoleSender().sendMessage(
-						"§c[B§fW] §cArena " + game.name + " can't be loaded, because world " + worldName + " is missing!");
+					Bukkit.getConsoleSender().sendMessage("§c[B§fW] §cArena " + game.name
+						+ " can't be loaded, because world " + worldName + " is missing!");
 					return null;
 				}
 			} else {
@@ -768,8 +768,8 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
 					lobbySpawnWorld = Bukkit.getWorld(spawnWorld);
 				} else {
-					Bukkit.getConsoleSender().sendMessage(
-						"§c[B§fW] §cArena " + game.name + " can't be loaded, because world " + spawnWorld + " is missing!");
+					Bukkit.getConsoleSender().sendMessage("§c[B§fW] §cArena " + game.name
+						+ " can't be loaded, because world " + spawnWorld + " is missing!");
 					return null;
 				}
 			} else {
@@ -804,7 +804,8 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 					Main.getSpawnerType(((String) spawner.get("type")).toLowerCase()),
 					(String) spawner.get("customName"), ((Boolean) spawner.getOrDefault("hologramEnabled", true)),
 					((Number) spawner.getOrDefault("startLevel", 1)).doubleValue(),
-					game.getTeamFromName((String) spawner.get("team")));
+					game.getTeamFromName((String) spawner.get("team")),
+					(int) spawner.getOrDefault("maxSpawnedResources", -1));
 				game.spawners.add(sa);
 			}
 		}
@@ -962,6 +963,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 			} else {
 				spawnerMap.put("team", null);
 			}
+			spawnerMap.put("maxSpawnedResources", spawner.maxSpawnedResources);
 			nS.add(spawnerMap);
 		}
 		configMap.set("spawners", nS);
@@ -1732,10 +1734,16 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
 						if (spawner.getHologramEnabled()) {
 							if (getOriginalOrInheritedSpawnerHolograms()
-								&& getOriginalOrInheritedSpawnerHologramsCountdown() && cycle > 1) {
-								int modulo = cycle - elapsedTime % cycle;
-								countdownHolograms.get(spawner).setLine(1,
-									i18nonly("countdown_spawning").replace("%seconds%", Integer.toString(modulo)));
+								&& getOriginalOrInheritedSpawnerHologramsCountdown()
+								&& !spawner.spawnerIsFullHologram) {
+									if (cycle > 1) {
+										int modulo = cycle - elapsedTime % cycle;
+										countdownHolograms.get(spawner).setLine(1,
+											i18nonly("countdown_spawning").replace("%seconds%", Integer.toString(modulo)));
+									} else if (spawner.rerenderHologram) {
+										countdownHolograms.get(spawner).setLine(1, i18nonly("every_second_spawning"));
+										spawner.rerenderHologram = false;
+									}
 							}
 						}
 
@@ -1768,6 +1776,8 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
 							ItemStack resource = resourceSpawnEvent.getResource();
 
+							resource.setAmount(spawner.nextMaxSpawn(resource.getAmount(), countdownHolograms.get(spawner)));
+							
 							if (resource.getAmount() > 0) {
 								Location loc = spawner.getLocation().clone().add(0, 0.05, 0);
 								Item item = loc.getWorld().dropItem(loc, resource);
@@ -1776,6 +1786,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 									item.setVelocity(item.getVelocity().multiply(spread));
 								}
 								item.setPickupDelay(0);
+								spawner.add(item);
 							}
 						}
 					}
@@ -1864,6 +1875,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
 		for (ItemSpawner spawner : spawners) {
 			spawner.currentLevel = spawner.startLevel;
+			spawner.spawnedItems.clear();
 		}
 		for (GameStore store : gameStore) {
 			LivingEntity villager = store.kill();
@@ -2995,7 +3007,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 	@Override
 	public boolean getOriginalOrInheritedStopTeamSpawnersOnDie() {
 		return stopTeamSpawnersOnDie.isOriginal() ? stopTeamSpawnersOnDie.getValue()
-				: Main.getConfigurator().config.getBoolean(STOP_TEAM_SPAWNERS_ON_DIE);
+			: Main.getConfigurator().config.getBoolean(STOP_TEAM_SPAWNERS_ON_DIE);
 	}
 
 	public void setStopTeamSpawnersOnDie(InGameConfigBooleanConstants stopTeamSpawnersOnDie) {

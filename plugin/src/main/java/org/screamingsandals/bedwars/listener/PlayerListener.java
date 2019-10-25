@@ -10,6 +10,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.*;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -547,7 +548,8 @@ public class PlayerListener implements Listener {
         }
     }
 
-    @EventHandler
+    @SuppressWarnings("deprecation")
+	@EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
         if (event.isCancelled() && event.getAction() != Action.RIGHT_CLICK_AIR) {
             return;
@@ -671,23 +673,6 @@ public class PlayerListener implements Listener {
                 event.setCancelled(true);
             }
         }
-    }
-
-    @EventHandler
-    public void onPickup(PlayerPickupItemEvent event) {
-        if (event.isCancelled()) {
-            return;
-        }
-
-        Player player = event.getPlayer();
-        if (Main.isPlayerInGame(player)) {
-            GamePlayer gPlayer = Main.getPlayerGameProfile(player);
-            Game game = gPlayer.getGame();
-            if (game.getStatus() == GameStatus.WAITING || gPlayer.isSpectator) {
-                event.setCancelled(true);
-            }
-        }
-
     }
 
     @EventHandler
@@ -943,6 +928,27 @@ public class PlayerListener implements Listener {
                 }
             } else if (game.getStatus() != GameStatus.DISABLED) {
                 event.setCancelled(true);
+            }
+        }
+    }
+    
+    /* This event was replaced on 1.12 with newer (event handling is devided between Player112Listener and PlayerBefore112Listener) */
+    public static void onItemPickup(Player player, Item item, Cancellable cancel) {
+    	if (cancel.isCancelled()) {
+    		return;
+    	}
+    	
+        if (Main.isPlayerInGame(player)) {
+            GamePlayer gPlayer = Main.getPlayerGameProfile(player);
+            Game game = gPlayer.getGame();
+            if (game.getStatus() == GameStatus.WAITING || gPlayer.isSpectator) {
+                cancel.setCancelled(true);
+            } else {
+            	for (ItemSpawner spawner : game.getSpawners()) {
+            		if (spawner.getMaxSpawnedResources() > 0) {
+            			spawner.remove(item);
+            		}
+            	}
             }
         }
     }

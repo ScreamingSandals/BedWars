@@ -401,6 +401,8 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         }
         if (versionNumber >= 112) {
             getServer().getPluginManager().registerEvents(new Player112Listener(), this);
+        } else {
+        	getServer().getPluginManager().registerEvents(new PlayerBefore112Listener(), this);
         }
         getServer().getPluginManager().registerEvents(new VillagerListener(), this);
         getServer().getPluginManager().registerEvents(new WorldListener(), this);

@@ -1,7 +1,17 @@
 package org.screamingsandals.bedwars.game;
 
 import org.screamingsandals.bedwars.api.Team;
+
+import misat11.lib.nms.Hologram;
+
+import static misat11.lib.lang.I.i18nonly;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.Location;
+import org.bukkit.entity.Item;
+import org.junit.experimental.max.MaxHistory;
 
 public class ItemSpawner implements org.screamingsandals.bedwars.api.game.ItemSpawner {
     public Location loc;
@@ -9,16 +19,22 @@ public class ItemSpawner implements org.screamingsandals.bedwars.api.game.ItemSp
     public String customName;
     public double startLevel;
     public double currentLevel;
+    public int maxSpawnedResources;
     public boolean hologramEnabled;
     public Team team;
+    public List<Item> spawnedItems;
+    public boolean spawnerIsFullHologram = false;
+    public boolean rerenderHologram = false;
 
-    public ItemSpawner(Location loc, ItemSpawnerType type, String customName, boolean hologramEnabled, double startLevel, Team team) {
+    public ItemSpawner(Location loc, ItemSpawnerType type, String customName, boolean hologramEnabled, double startLevel, Team team, int maxSpawnedResources) {
         this.loc = loc;
         this.type = type;
         this.customName = customName;
         this.currentLevel = this.startLevel = startLevel;
         this.hologramEnabled = hologramEnabled;
         this.team = team;
+        this.spawnedItems = new ArrayList<>();
+        this.maxSpawnedResources = maxSpawnedResources;
     }
 
     @Override
@@ -69,5 +85,66 @@ public class ItemSpawner implements org.screamingsandals.bedwars.api.game.ItemSp
     @Override
     public void setTeam(Team team) {
         this.team = team;
+    }
+    
+    public int getMaxSpawnedResources() {
+    	return maxSpawnedResources;
+    }
+    
+    public int nextMaxSpawn(int calculated, Hologram countdown) {
+    	if (maxSpawnedResources <= 0) {
+    		return calculated;
+    	}
+    	
+    	/* Update spawned items */
+    	for (Item item : new ArrayList<>(spawnedItems)) {
+    		if (item.isDead()) {
+    			spawnedItems.remove(item);
+    		}
+    	}
+    	
+    	int spawned = spawnedItems.size();
+    	
+    	if (spawned >= maxSpawnedResources) {
+    		if (countdown != null && !spawnerIsFullHologram) {
+        		spawnerIsFullHologram = true;
+    			countdown.setLine(1, i18nonly("spawner_is_full"));
+    		}
+    		return 0;
+    	}
+    	
+    	if ((maxSpawnedResources - spawned) >= calculated) {
+    		if (spawnerIsFullHologram && !rerenderHologram) {
+    			rerenderHologram = true;
+    			spawnerIsFullHologram = false;
+    		} else if ((calculated + spawned) == maxSpawnedResources) {
+        		spawnerIsFullHologram = true;
+    			countdown.setLine(1, i18nonly("spawner_is_full"));
+    		}
+    		return calculated;
+    	}
+    	
+		if (countdown != null && !spawnerIsFullHologram) {
+    		spawnerIsFullHologram = true;
+			countdown.setLine(1, i18nonly("spawner_is_full"));
+		}
+    	
+    	return maxSpawnedResources - spawned;
+    }
+    
+    public void add(Item item) {
+    	if (maxSpawnedResources > 0 && !spawnedItems.contains(item)) {
+    		spawnedItems.add(item);
+    	}
+    }
+    
+    public void remove(Item item) {
+    	if (maxSpawnedResources > 0 && spawnedItems.contains(item)) {
+    		spawnedItems.remove(item);
+    		if (spawnerIsFullHologram && maxSpawnedResources > spawnedItems.size()) {
+    			spawnerIsFullHologram = false;
+    			rerenderHologram = true;
+    		}
+    	}
     }
 }

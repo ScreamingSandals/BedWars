@@ -545,9 +545,14 @@ public class AdminCommand extends BaseCommand {
                 completion.addAll(Collections.singletonList("1"));
             }
             if (args.size() == 8) {
-                for (Team t : gc.get(args.get(0)).getGame().getTeams()) {
-                    completion.add(t.name);
+                if (gc.containsKey(args.get(0))) {
+	                for (Team t : gc.get(args.get(0)).getGame().getTeams()) {
+	                    completion.add(t.name);
+	                }
                 }
+            }
+            if (args.size() == 8 || args.size() == 9) {
+                completion.addAll(Arrays.asList("5", "10", "20"));
             }
         } else if (args.get(1).equalsIgnoreCase("team")) {
             if (args.size() == 3) {
