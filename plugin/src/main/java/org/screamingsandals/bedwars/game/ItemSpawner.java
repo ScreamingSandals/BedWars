@@ -11,7 +11,6 @@ import java.util.List;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Item;
-import org.junit.experimental.max.MaxHistory;
 
 public class ItemSpawner implements org.screamingsandals.bedwars.api.game.ItemSpawner {
     public Location loc;
