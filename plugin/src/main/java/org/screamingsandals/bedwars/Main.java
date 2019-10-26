@@ -331,10 +331,10 @@ public class Main extends JavaPlugin implements BedwarsAPI {
             isVault = false;
         } else {
             isVault = setupEconomy();
-            ;
         }
 
         String[] bukkitVersion = Bukkit.getBukkitVersion().split("-")[0].split("\\.");
+        versionNumber = 0;
         for (int i = 0; i < 2; i++) {
             versionNumber += Integer.parseInt(bukkitVersion[i]) * (i == 0 ? 100 : 1);
         }
@@ -652,9 +652,16 @@ public class Main extends JavaPlugin implements BedwarsAPI {
     public ColorChanger getColorChanger() {
         return colorChanger;
     }
-
+    
     public static ItemStack applyColor(TeamColor color, ItemStack itemStack) {
+    	return applyColor(color, itemStack);
+    }
+
+    public static ItemStack applyColor(TeamColor color, ItemStack itemStack, boolean clone) {
         org.screamingsandals.bedwars.api.TeamColor teamColor = color.toApiColor();
+        if (clone) {
+        	itemStack = itemStack.clone();
+        } 
         return instance.getColorChanger().applyColor(teamColor, itemStack);
     }
 

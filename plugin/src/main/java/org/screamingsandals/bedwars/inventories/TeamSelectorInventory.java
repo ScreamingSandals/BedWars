@@ -72,10 +72,11 @@ public class TeamSelectorInventory implements Listener {
     private void createData() {
         SimpleGuiFormat simpleGuiFormat = new SimpleGuiFormat(options);
         FormatBuilder builder = new FormatBuilder();
-
+        
+        ItemStack stack = Main.getConfigurator().readDefinedItem("team-select", Main.isLegacy() ? "WOOL" : "WHITE_WOOL");
+        
         for (Team team : game.getTeams()) {
-            ItemStack teamStack = Main.applyColor(team.color,
-                    Main.getConfigurator().readDefinedItem("team-select", Main.isLegacy() ? "WOOL" : "WHITE_WOOL"));
+            ItemStack teamStack = Main.applyColor(team.color, stack, true);
             ItemMeta teamMeta = teamStack.getItemMeta();
 
             List<GamePlayer> playersInTeam = game.getPlayersInTeam(team);

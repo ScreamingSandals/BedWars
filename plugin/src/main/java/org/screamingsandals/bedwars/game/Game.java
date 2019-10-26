@@ -1599,8 +1599,8 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 									region.putOriginalBlock(block.getLocation(), block.getState());
 									Block neighbor = region.getBedNeighbor(block);
 									region.putOriginalBlock(neighbor.getLocation(), neighbor.getState());
-									block.setType(Material.AIR);
 									neighbor.setType(Material.AIR);
+									block.setType(Material.AIR);
 								} else {
 									region.putOriginalBlock(loc, block.getState());
 									block.setType(Material.AIR);
