@@ -77,6 +77,7 @@ resource_gold: "Gold"
 countdown_spawning: "&e%seconds% &bseconds"
 every_second_spawning: "&bevery second"
 spawner_is_full: "§c§lSpawner is depleted"
+spawner_not_enough_level: "§cSpawner can't work! You need to upgrade by %levels% levels."
 
 admin_command_mainlobby_info: "&cWARNING&f: You need to execute /bw reload to make Mainlobby work!"
 admin_command_success: "&aCommand executed successfully!"

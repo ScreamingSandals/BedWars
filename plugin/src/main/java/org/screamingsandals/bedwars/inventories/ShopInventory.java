@@ -346,11 +346,11 @@ public class ShopInventory implements Listener {
         Game game = Main.getPlayerGameProfile(event.getPlayer()).getGame();
         MapReader mapReader = event.getItem().getReader();
         String priceType = event.getType().toLowerCase();
-        String itemName = event.getStack().getItemMeta().getDisplayName();
         ItemSpawnerType itemSpawnerType = Main.getSpawnerType(priceType);
 
         MapReader upgradeMapReader = mapReader.getMap("upgrade");
         List<MapReader> entities = upgradeMapReader.getMapList("entities");
+        String itemName = upgradeMapReader.getString("shop-name", "UPGRADE");
 
         int price = event.getPrice();
         boolean sendToAll = false;
@@ -367,9 +367,14 @@ public class ShopInventory implements Listener {
 
                 UpgradeStorage upgradeStorage = UpgradeRegistry.getUpgrade(configuredType);
                 if (upgradeStorage != null) {
-                    Team team = game.getTeamOfPlayer(event.getPlayer());
-                    double addLevels = mapEntity.getDouble("add-levels");
-                    itemName = mapEntity.getString("shop-name");
+
+                    // TODO: Learn SimpleGuiFormat upgrades pre-parsing and automatic renaming old variables
+                	Team team = game.getTeamOfPlayer(event.getPlayer());
+                    double addLevels = mapEntity.getDouble("add-levels", mapEntity.getDouble("levels", 0) /* Old configuration */);
+                    /* You shouldn't use it in entities */
+                    if (mapEntity.containsKey("shop-name")) {
+                        itemName = mapEntity.getString("shop-name");
+                    }
                     sendToAll = mapEntity.getBoolean("notify-team", false);
 
                     List<Upgrade> upgrades = new ArrayList<>();
@@ -388,6 +393,10 @@ public class ShopInventory implements Listener {
                         if (upgradeAllSpawnersInTeam) {
                             upgrades = upgradeStorage.findItemSpawnerUpgrades(game, team);
                         }
+                        
+                    } else if (mapEntity.containsKey("customName")) { // Old configuration
+                        String customName = mapEntity.getString("customName");
+                        upgrades = upgradeStorage.findItemSpawnerUpgrades(game, customName);
                     } else {
                         isUpgrade = false;
                         Debugger.warn("[BedWars]> Upgrade configuration is invalid.");
@@ -397,7 +406,15 @@ public class ShopInventory implements Listener {
                         BedwarsUpgradeBoughtEvent bedwarsUpgradeBoughtEvent = new BedwarsUpgradeBoughtEvent(game, upgradeStorage, upgrades,
                                 player, addLevels);
                         Bukkit.getPluginManager().callEvent(bedwarsUpgradeBoughtEvent);
+                        System.out.println(upgrades);
+                        for (Upgrade upgrade : upgrades) {
+                        	System.out.println("OBJECT: " + upgrade);
+                        	System.out.println("INSTANCE NAME: " + upgrade.getInstanceName());
+                        	System.out.println("INITIAL LEVEL: " + upgrade.getInitialLevel());
+                        	System.out.println("CURRENT LEVEL: " + upgrade.getLevel());
+                        }
 
+                    	System.out.println("CANCELLED: " + bedwarsUpgradeBoughtEvent.isCancelled());
                         if (bedwarsUpgradeBoughtEvent.isCancelled()) {
                             continue;
                         }
@@ -410,6 +427,10 @@ public class ShopInventory implements Listener {
                             BedwarsUpgradeImprovedEvent improvedEvent = new BedwarsUpgradeImprovedEvent(game, upgradeStorage,
                                     upgrade, upgrade.getLevel(), upgrade.getLevel() + addLevels);
                             Bukkit.getPluginManager().callEvent(improvedEvent);
+                        	System.out.println("OBJECT: " + upgrade);
+                        	System.out.println("INSTANCE NAME: " + upgrade.getInstanceName());
+                        	System.out.println("INITIAL LEVEL: " + upgrade.getInitialLevel());
+                        	System.out.println("CURRENT LEVEL: " + upgrade.getLevel());
                         }
                     }
                 }

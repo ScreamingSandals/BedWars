@@ -24,6 +24,7 @@ public class ItemSpawner implements org.screamingsandals.bedwars.api.game.ItemSp
     public List<Item> spawnedItems;
     public boolean spawnerIsFullHologram = false;
     public boolean rerenderHologram = false;
+    public double currentLevelOnHologram = -1;
 
     public ItemSpawner(Location loc, ItemSpawnerType type, String customName, boolean hologramEnabled, double startLevel, Team team, int maxSpawnedResources) {
         this.loc = loc;
@@ -91,7 +92,20 @@ public class ItemSpawner implements org.screamingsandals.bedwars.api.game.ItemSp
     }
     
     public int nextMaxSpawn(int calculated, Hologram countdown) {
+    	if (currentLevel <= 0) {
+    		if (!spawnerIsFullHologram || currentLevelOnHologram != currentLevel) {
+    			spawnerIsFullHologram = true;
+    			currentLevelOnHologram = currentLevel; 
+    			countdown.setLine(1, i18nonly("spawner_not_enough_level").replace("%levels%", String.valueOf((currentLevelOnHologram * (-1)) + 1)));
+    		}
+    		return 0;
+    	}
+    	
     	if (maxSpawnedResources <= 0) {
+    		if (spawnerIsFullHologram && !rerenderHologram) {
+    			spawnerIsFullHologram = false;
+    			rerenderHologram = true;
+    		}
     		return calculated;
     	}
     	
