@@ -654,7 +654,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
     }
     
     public static ItemStack applyColor(TeamColor color, ItemStack itemStack) {
-    	return applyColor(color, itemStack);
+    	return applyColor(color, itemStack, false);
     }
 
     public static ItemStack applyColor(TeamColor color, ItemStack itemStack, boolean clone) {
