@@ -24,6 +24,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.*;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -594,11 +595,12 @@ public class PlayerListener implements Listener {
                         if (event.getClickedBlock().getType() == Material.ENDER_CHEST) {
                             Block chest = event.getClickedBlock();
                             CurrentTeam team = game.getTeamOfChest(chest);
+                            event.setCancelled(true);
 
                             if (team == null) {
+                            	player.openInventory(game.getFakeEnderChest(gPlayer));
                                 return;
                             }
-                            event.setCancelled(true);
 
                             if (!team.players.contains(gPlayer)) {
                                 player.sendMessage(i18n("team_chest_is_not_your"));
@@ -614,8 +616,9 @@ public class PlayerListener implements Listener {
                             }
 
                             player.openInventory(team.getTeamChestInventory());
-                        } else if (event.getClickedBlock().getType() == Material.CHEST) {
-                            game.addChestForFutureClear(event.getClickedBlock().getLocation());
+                        } else if (event.getClickedBlock().getState() instanceof InventoryHolder) {
+                        	InventoryHolder holder = (InventoryHolder) event.getClickedBlock().getState();
+                            game.addChestForFutureClear(event.getClickedBlock().getLocation(), holder.getInventory());
                         }
                     }
                 }

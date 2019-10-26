@@ -17,6 +17,9 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.*;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
@@ -183,6 +186,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 	private List<DelayFactory> activeDelays = new ArrayList<>();
 	private List<Hologram> createdHolograms = new ArrayList<>();
 	private Map<ItemSpawner, Hologram> countdownHolograms = new HashMap<>();
+	private Map<GamePlayer, Inventory> fakeEnderChests = new HashMap<>();
 
 	private Game() {
 
@@ -1907,12 +1911,18 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 			}
 			Block block = location.getBlock();
 			ItemStack[] contents = entry.getValue();
-			if (block.getState() instanceof Chest) {
-				Chest chest = (Chest) block.getState();
-				chest.getBlockInventory().setContents(contents);
+			if (block.getState() instanceof InventoryHolder) {
+				InventoryHolder chest = (InventoryHolder) block.getState();
+				chest.getInventory().setContents(contents);
 			}
 		}
 		usedChests.clear();
+		
+		// Clear fake ender chests
+		for (Inventory inv : fakeEnderChests.values()) {
+			inv.clear();
+		}
+		fakeEnderChests.clear();
 
 		// Remove remaining entities registered by other plugins
 		for (Entity entity : Main.getGameEntities(this)) {
@@ -2283,10 +2293,9 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 		return null;
 	}
 
-	public void addChestForFutureClear(Location loc) {
+	public void addChestForFutureClear(Location loc, Inventory inventory) {
 		if (!usedChests.containsKey(loc)) {
-			Chest chest = (Chest) loc.getBlock().getState();
-			ItemStack[] contents = chest.getBlockInventory().getContents();
+			ItemStack[] contents = inventory.getContents();
 			ItemStack[] clone = new ItemStack[contents.length];
 			for (int i = 0; i < contents.length; i++) {
 				ItemStack stack = contents[i];
@@ -3012,5 +3021,12 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
 	public void setStopTeamSpawnersOnDie(InGameConfigBooleanConstants stopTeamSpawnersOnDie) {
 		this.stopTeamSpawnersOnDie = stopTeamSpawnersOnDie;
+	}
+	
+	public Inventory getFakeEnderChest(GamePlayer player) {
+		if (!fakeEnderChests.containsKey(player)) {
+			fakeEnderChests.put(player, Bukkit.createInventory(player.player, InventoryType.ENDER_CHEST));
+		}
+		return fakeEnderChests.get(player);
 	}
 }
