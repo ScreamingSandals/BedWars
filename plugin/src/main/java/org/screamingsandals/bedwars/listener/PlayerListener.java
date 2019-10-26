@@ -632,7 +632,7 @@ public class PlayerListener implements Listener {
                             ItemStack stack = event.getItem();
                             if (stack.getType().isBlock()) {
                                 BlockFace face = event.getBlockFace();
-                                Block block = event.getClickedBlock().getLocation().clone().add(face.getDirection())
+                                Block block = event.getClickedBlock().getLocation().clone().add(MiscUtils.getDirection(face))
                                         .getBlock();
                                 if (block.getType() == Material.AIR) {
                                     BlockState originalState = block.getState();
@@ -920,7 +920,7 @@ public class PlayerListener implements Listener {
             Game game = gPlayer.getGame();
             Location loc = event.getBlockClicked().getLocation();
 
-            loc.add(event.getBlockFace().getDirection());
+            loc.add(MiscUtils.getDirection(event.getBlockFace()));
 
             Block block = loc.getBlock();
             if (game.getStatus() == GameStatus.RUNNING) {

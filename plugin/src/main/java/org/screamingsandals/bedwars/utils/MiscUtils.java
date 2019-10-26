@@ -8,6 +8,7 @@ import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.RunningTeam;
 import org.screamingsandals.bedwars.api.events.BedwarsApplyPropertyToBoughtItem;
@@ -235,5 +236,16 @@ public class MiscUtils {
                 break;
         }
         return newColor;
+    }
+    
+    public static Vector getDirection(BlockFace face) {
+    	int modX = face.getModX();
+    	int modY = face.getModY();
+    	int modZ = face.getModZ();
+        Vector direction = new Vector(modX, modY, modZ);
+        if (modX != 0 || modY != 0 || modZ != 0) {
+            direction.normalize();
+        }
+        return direction;
     }
 }
