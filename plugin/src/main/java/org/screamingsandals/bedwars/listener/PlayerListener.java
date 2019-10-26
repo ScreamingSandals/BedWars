@@ -99,7 +99,6 @@ public class PlayerListener implements Listener {
                 CurrentTeam team = game.getPlayerTeam(gVictim);
                 SpawnEffects.spawnEffect(game, victim, "game-effects.kill");
                 if (!team.isBed) {
-                    game.updateScoreboard();
                     gVictim.isSpectator = true;
                     team.players.remove(gVictim);
                     team.getScoreboardTeam().removeEntry(victim.getName());
@@ -110,6 +109,7 @@ public class PlayerListener implements Listener {
                                 + Main.getConfigurator().config.getInt("statistics.scores.lose", 0));
 
                     }
+                    game.updateScoreboard();
                 }
 
                 boolean onlyOnBedDestroy = Main.getConfigurator().config.getBoolean("statistics.bed-destroyed-kills",
