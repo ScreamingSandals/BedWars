@@ -54,6 +54,7 @@ public class HelpCommand extends BaseCommand {
         if (player.hasPermission(ADMIN_PERMISSION)) {
             player.sendMessage(i18nonly("help_bw_addholo"));
             player.sendMessage(i18nonly("help_bw_removeholo"));
+            player.sendMessage(i18nonly("help_bw_mainlobby"));
 
             player.sendMessage(i18nonly("help_bw_admin_info"));
             player.sendMessage(i18nonly("help_bw_admin_add"));

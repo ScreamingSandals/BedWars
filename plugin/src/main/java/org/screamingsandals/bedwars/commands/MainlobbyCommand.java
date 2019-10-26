@@ -19,10 +19,6 @@ public class MainlobbyCommand extends BaseCommand {
 
     @Override
     public boolean execute(CommandSender sender, List<String> args) {
-        if (!(sender instanceof Player)) {
-            sender.sendMessage(i18n("unknown_command"));
-            return true;
-        }
         Player player = (Player) sender;
 
         if (args.size() == 1) {
