@@ -1356,6 +1356,15 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 				player.setAllowFlight(false);
 				player.setFlying(false);
 				player.setGameMode(GameMode.SURVIVAL);
+				
+
+                if (gamePlayer.getGame().getOriginalOrInheritedPlayerRespawnItems()) {
+                    List<ItemStack> givedGameStartItems = (List<ItemStack>) Main.getConfigurator().config
+                            .getList("gived-player-respawn-items");
+                    for (ItemStack stack : givedGameStartItems) {
+                    	gamePlayer.player.getInventory().addItem(Main.applyColor(runningTeam.getColor(), stack));
+                    }
+                }
 			}
 		}.runTask(Main.getInstance());
 	}
