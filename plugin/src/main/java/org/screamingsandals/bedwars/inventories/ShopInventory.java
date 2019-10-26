@@ -406,15 +406,7 @@ public class ShopInventory implements Listener {
                         BedwarsUpgradeBoughtEvent bedwarsUpgradeBoughtEvent = new BedwarsUpgradeBoughtEvent(game, upgradeStorage, upgrades,
                                 player, addLevels);
                         Bukkit.getPluginManager().callEvent(bedwarsUpgradeBoughtEvent);
-                        System.out.println(upgrades);
-                        for (Upgrade upgrade : upgrades) {
-                        	System.out.println("OBJECT: " + upgrade);
-                        	System.out.println("INSTANCE NAME: " + upgrade.getInstanceName());
-                        	System.out.println("INITIAL LEVEL: " + upgrade.getInitialLevel());
-                        	System.out.println("CURRENT LEVEL: " + upgrade.getLevel());
-                        }
 
-                    	System.out.println("CANCELLED: " + bedwarsUpgradeBoughtEvent.isCancelled());
                         if (bedwarsUpgradeBoughtEvent.isCancelled()) {
                             continue;
                         }
@@ -427,10 +419,6 @@ public class ShopInventory implements Listener {
                             BedwarsUpgradeImprovedEvent improvedEvent = new BedwarsUpgradeImprovedEvent(game, upgradeStorage,
                                     upgrade, upgrade.getLevel(), upgrade.getLevel() + addLevels);
                             Bukkit.getPluginManager().callEvent(improvedEvent);
-                        	System.out.println("OBJECT: " + upgrade);
-                        	System.out.println("INSTANCE NAME: " + upgrade.getInstanceName());
-                        	System.out.println("INITIAL LEVEL: " + upgrade.getInitialLevel());
-                        	System.out.println("CURRENT LEVEL: " + upgrade.getLevel());
                         }
                     }
                 }
