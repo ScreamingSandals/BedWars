@@ -7,7 +7,6 @@ import misat11.lib.nms.NMSUtils;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
-import org.bukkit.block.Chest;
 import org.bukkit.block.Sign;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
@@ -615,46 +614,51 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 		Main.getInstance().getServer().getPluginManager().callEvent(joinedEvent);
 	}
 
-	public void internalLeavePlayer(GamePlayer player) {
+	public void internalLeavePlayer(GamePlayer gamePlayer) {
 		if (status == GameStatus.DISABLED) {
 			return;
 		}
 
-		BedwarsPlayerLeaveEvent playerLeaveEvent = new BedwarsPlayerLeaveEvent(this, player.player,
-			getPlayerTeam(player));
+		BedwarsPlayerLeaveEvent playerLeaveEvent = new BedwarsPlayerLeaveEvent(this, gamePlayer.player,
+			getPlayerTeam(gamePlayer));
 		Main.getInstance().getServer().getPluginManager().callEvent(playerLeaveEvent);
 
-		players.remove(player);
+		String message = i18n("leave").replace("%name%", gamePlayer.player.getDisplayName())
+			.replace("%players%", Integer.toString(players.size()))
+			.replaceAll("%maxplayers%", Integer.toString(calculatedMaxPlayers));
+
+		if (!preServerRestart) {
+			for (GamePlayer p : players) {
+				p.player.sendMessage(message);
+			}
+		}
+
+		players.remove(gamePlayer);
 		updateSigns();
 
 		if (status == GameStatus.WAITING) {
-			SpawnEffects.spawnEffect(this, player.player, "game-effects.lobbyleave");
+			SpawnEffects.spawnEffect(this, gamePlayer.player, "game-effects.lobbyleave");
 		}
 
-		String message = i18n("leave").replace("%name%", player.player.getDisplayName())
-			.replace("%players%", Integer.toString(players.size()))
-			.replaceAll("%maxplayers%", Integer.toString(calculatedMaxPlayers));
-		statusbar.removePlayer(player.player);
-		createdHolograms.forEach(holo -> holo.removeViewer(player.player));
-		if (!preServerRestart) {
-			player.player.sendMessage(message);
-		}
-		player.player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
+		statusbar.removePlayer(gamePlayer.player);
+		createdHolograms.forEach(holo -> holo.removeViewer(gamePlayer.player));
+
+		gamePlayer.player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
 
 		if (Main.getConfigurator().config.getBoolean("mainlobby.enabled")
 			&& !Main.getConfigurator().config.getBoolean("bungee.enabled")) {
 			Location mainLobbyLocation = MiscUtils.readLocationFromString(
 				Bukkit.getWorld(Main.getConfigurator().config.getString("mainlobby.world")),
 				Main.getConfigurator().config.getString("mainlobby.location"));
-			player.teleport(mainLobbyLocation);
+			gamePlayer.teleport(mainLobbyLocation);
 		}
 
 		if (status == GameStatus.RUNNING || status == GameStatus.WAITING) {
-			CurrentTeam team = getPlayerTeam(player);
+			CurrentTeam team = getPlayerTeam(gamePlayer);
 			if (team != null) {
-				team.players.remove(player);
+				team.players.remove(gamePlayer);
 				if (status == GameStatus.WAITING) {
-					team.getScoreboardTeam().removeEntry(player.player.getName());
+					team.getScoreboardTeam().removeEntry(gamePlayer.player.getName());
 					if (team.players.isEmpty()) {
 						teamsInGame.remove(team);
 						team.getScoreboardTeam().unregister();
@@ -665,22 +669,17 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 			}
 		}
 
-		if (!preServerRestart) {
-			for (GamePlayer p : players) {
-				p.player.sendMessage(message);
-			}
-		}
-
 		if (Main.isPlayerStatisticsEnabled()) {
-			PlayerStatistic statistic = Main.getPlayerStatisticsManager().getStatistic(player.player);
+			PlayerStatistic statistic = Main.getPlayerStatisticsManager().getStatistic(gamePlayer.player);
 			Main.getPlayerStatisticsManager().storeStatistic(statistic);
 
-			Main.getPlayerStatisticsManager().unloadStatistic(player.player);
+			Main.getPlayerStatisticsManager().unloadStatistic(gamePlayer.player);
 		}
+
 		if (players.isEmpty()) {
 			if (!preServerRestart) {
-				BedWarsPlayerLastLeaveEvent playerLastLeaveEvent = new BedWarsPlayerLastLeaveEvent(this, player.player,
-					getPlayerTeam(player));
+				BedWarsPlayerLastLeaveEvent playerLastLeaveEvent = new BedWarsPlayerLastLeaveEvent(this, gamePlayer.player,
+					getPlayerTeam(gamePlayer));
 				Main.getInstance().getServer().getPluginManager().callEvent(playerLastLeaveEvent);
 			}
 
@@ -1356,7 +1355,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 				player.setAllowFlight(false);
 				player.setFlying(false);
 				player.setGameMode(GameMode.SURVIVAL);
-				
+
 
                 if (gamePlayer.getGame().getOriginalOrInheritedPlayerRespawnItems()) {
                     List<ItemStack> givedGameStartItems = (List<ItemStack>) Main.getConfigurator().config
@@ -1790,7 +1789,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 							ItemStack resource = resourceSpawnEvent.getResource();
 
 							resource.setAmount(spawner.nextMaxSpawn(resource.getAmount(), countdownHolograms.get(spawner)));
-							
+
 							if (resource.getAmount() > 0) {
 								Location loc = spawner.getLocation().clone().add(0, 0.05, 0);
 								Item item = loc.getWorld().dropItem(loc, resource);
@@ -1926,7 +1925,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 			}
 		}
 		usedChests.clear();
-		
+
 		// Clear fake ender chests
 		for (Inventory inv : fakeEnderChests.values()) {
 			inv.clear();
@@ -3031,7 +3030,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 	public void setStopTeamSpawnersOnDie(InGameConfigBooleanConstants stopTeamSpawnersOnDie) {
 		this.stopTeamSpawnersOnDie = stopTeamSpawnersOnDie;
 	}
-	
+
 	public Inventory getFakeEnderChest(GamePlayer player) {
 		if (!fakeEnderChests.containsKey(player)) {
 			fakeEnderChests.put(player, Bukkit.createInventory(player.player, InventoryType.ENDER_CHEST));
