@@ -37,7 +37,7 @@
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
-		<bedwars.version>0.2.2</bedwars.version>
+		<bedwars.version>1.0.0-SNAPSHOT</bedwars.version>
 	</properties>
 
 	<modules>
