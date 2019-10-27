@@ -1,10 +1,12 @@
 # BedWars
 [![Build Status](https://jenkins.mtorus.cz/job/BedWars/badge/icon)](https://jenkins.mtorus.cz/job/BedWars/)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/472077c84c9d40de8b0e9efc55e64b19)](https://www.codacy.com/manual/Misat11/BedWars?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ScreamingSandals/BedWars&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/472077c84c9d40de8b0e9efc55e64b19?branch=master)](https://www.codacy.com/manual/Misat11/BedWars?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ScreamingSandals/BedWars&amp;utm_campaign=Badge_Grade&bid=14860338)
 
 Complete rewrite of the BedWarsRel plugin.
 
-Supported versions: [1.9 - 1.14.4]. Recommended version: [1.14.4]
+This is the stable branch with bugfixes supporting all versions since 1.9! For new branch visit [1.x.x](https://github.com/ScreamingSandals/BedWars/tree/1.x.x)
+
+Supported versions: \[1.9 - 1.14.4\]. Recommended version: \[1.14.4\]
 
 ## Support
 If you need any help, you can contact us on [Discord](https://discord.gg/VgrFUbV). Please make sure to look into older messages. There are many question already answered. It is really anoying to repeat the same thing over and over.
