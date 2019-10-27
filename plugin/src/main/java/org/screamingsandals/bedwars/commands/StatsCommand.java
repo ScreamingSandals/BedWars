@@ -1,14 +1,15 @@
 package org.screamingsandals.bedwars.commands;
 
-import org.screamingsandals.bedwars.Main;
-import org.screamingsandals.bedwars.statistics.PlayerStatistic;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.screamingsandals.bedwars.Main;
+import org.screamingsandals.bedwars.statistics.PlayerStatistic;
 
 import java.util.List;
 
+import static misat11.lib.lang.I.m;
 import static misat11.lib.lang.I18n.i18n;
 
 public class StatsCommand extends BaseCommand {
@@ -20,21 +21,21 @@ public class StatsCommand extends BaseCommand {
     @Override
     public boolean execute(CommandSender sender, List<String> args) {
         if (!Main.isPlayerStatisticsEnabled()) {
-            sender.sendMessage(i18n("statistics_is_disabled"));
+            m("commands.statistics.disabled").send(sender);
         } else {
             if (args.size() >= 1) {
                 if (!sender.hasPermission(OTHER_STATS_PERMISSION) && !sender.hasPermission(ADMIN_PERMISSION)) {
-                    sender.sendMessage(i18n("no_permissions"));
+                    m("commands.errors.no_permissions").send(sender);
                 } else {
                     String name = args.get(0);
-                    OfflinePlayer off = Main.getInstance().getServer().getPlayerExact(name);
+                    OfflinePlayer offlinePlayer = Main.getInstance().getServer().getPlayerExact(name);
 
-                    if (off == null) {
-                        sender.sendMessage(i18n("statistics_player_is_not_exists"));
+                    if (offlinePlayer == null) {
+                        m("commands.statistics.not_found").send(sender);
                     } else {
-                        PlayerStatistic statistic = Main.getPlayerStatisticsManager().getStatistic(off);
+                        PlayerStatistic statistic = Main.getPlayerStatisticsManager().getStatistic(offlinePlayer);
                         if (statistic == null) {
-                            sender.sendMessage(i18n("statistics_not_found"));
+                            m("commands.statistics.not_found").send(sender);
                         } else {
                             this.sendStats(sender, statistic);
                         }
@@ -45,7 +46,7 @@ public class StatsCommand extends BaseCommand {
                     Player player = (Player) sender;
                     PlayerStatistic statistic = Main.getPlayerStatisticsManager().getStatistic(player);
                     if (statistic == null) {
-                        player.sendMessage(i18n("statistics_not_found"));
+                        m("commands.statistics.not_found").send(sender);
                     } else {
                         this.sendStats(player, statistic);
                     }
@@ -68,24 +69,31 @@ public class StatsCommand extends BaseCommand {
     }
 
     private void sendStats(CommandSender player, PlayerStatistic statistic) {
-        player.sendMessage(i18n("statistics_header").replace("%player%", statistic.getName()));
-
-        player.sendMessage(i18n("statistics_kills", false).replace("%kills%",
-                Integer.toString(statistic.getKills() + statistic.getCurrentKills())));
-        player.sendMessage(i18n("statistics_deaths", false).replace("%deaths%",
-                Integer.toString(statistic.getDeaths() + statistic.getCurrentDeaths())));
-        player.sendMessage(i18n("statistics_kd", false).replace("%kd%",
-                Double.toString(statistic.getKD() + statistic.getCurrentKD())));
-        player.sendMessage(i18n("statistics_wins", false).replace("%wins%",
-                Integer.toString(statistic.getWins() + statistic.getCurrentWins())));
-        player.sendMessage(i18n("statistics_loses", false).replace("%loses%",
-                Integer.toString(statistic.getLoses() + statistic.getCurrentLoses())));
-        player.sendMessage(i18n("statistics_games", false).replace("%games%",
-                Integer.toString(statistic.getGames() + statistic.getCurrentGames())));
-        player.sendMessage(i18n("statistics_beds", false).replace("%beds%",
-                Integer.toString(statistic.getDestroyedBeds() + statistic.getCurrentDestroyedBeds())));
-        player.sendMessage(i18n("statistics_score", false).replace("%score%",
-                Integer.toString(statistic.getScore() + statistic.getCurrentScore())));
+        m("commands.statistics.header").replace("%player%", statistic.getName()).send(player);
+        m("commands.statistics.kills")
+                .replace("%kills%", Integer.toString(statistic.getKills() + statistic.getCurrentKills()))
+                .send(player);
+        m("commands.statistics.deaths")
+                .replace("%deaths%", Integer.toString(statistic.getDeaths() + statistic.getCurrentDeaths()))
+                .send(player);
+        m("commands.statistics.kd")
+                .replace("%kd%", Double.toString(statistic.getKD() + statistic.getCurrentKD()))
+                .send(player);
+        m("commands.statistics.wins")
+                .replace("%wins%", Integer.toString(statistic.getWins() + statistic.getCurrentWins()))
+                .send(player);
+        m("commands.statistics.loses")
+                .replace("%loses%", Integer.toString(statistic.getLoses() + statistic.getCurrentLoses()))
+                .send(player);
+        m("commands.statistics.games")
+                .replace("%games%", Integer.toString(statistic.getGames() + statistic.getCurrentGames()))
+                .send(player);
+        m("commands.statistics.beds")
+                .replace("%beds%", Integer.toString(statistic.getDestroyedBeds() + statistic.getCurrentDestroyedBeds()))
+                .send(player);
+        m("commands.statistics.score")
+                .replace("%score%", Integer.toString(statistic.getScore() + statistic.getCurrentScore()))
+                .send(player);
     }
 
 }

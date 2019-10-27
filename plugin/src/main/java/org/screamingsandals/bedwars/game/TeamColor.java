@@ -21,7 +21,7 @@ public enum TeamColor {
     PINK(ChatColor.LIGHT_PURPLE, 0x6, "PINK", Color.fromRGB(255, 85, 255)),
     YELLOW(ChatColor.YELLOW, 0x4, "YELLOW", Color.fromRGB(255, 255, 85)),
     WHITE(ChatColor.WHITE, 0x0, "WHITE", Color.WHITE),
-    BROWN(ChatColor.DARK_RED, 0xC, "BROWN", Color.fromRGB(139,69,19));
+    BROWN(ChatColor.DARK_RED, 0xC, "BROWN", Color.fromRGB(139, 69, 19));
 
     public final ChatColor chatColor;
     public final String material1_13;

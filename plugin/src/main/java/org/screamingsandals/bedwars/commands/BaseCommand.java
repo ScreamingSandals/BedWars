@@ -7,8 +7,8 @@ import java.util.List;
 
 public abstract class BaseCommand {
 
-    public static final String ADMIN_PERMISSION = "misat11.bw.admin";
-    public static final String OTHER_STATS_PERMISSION = "misat11.bw.otherstats";
+    public static final String ADMIN_PERMISSION = "screamingbedwars.admin";
+    public static final String OTHER_STATS_PERMISSION = "screamingbedwars.otherstats";
 
     private String name;
     private String permission;
@@ -39,7 +39,7 @@ public abstract class BaseCommand {
 
     public boolean hasPermission(CommandSender sender) {
         if (permission == null || "".equals(permission)) {
-            return true; // There's no permissions required
+            return true;
         }
 
         return sender.hasPermission(permission);

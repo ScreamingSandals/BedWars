@@ -1,11 +1,11 @@
 package org.screamingsandals.bedwars.commands;
 
-import org.screamingsandals.bedwars.Main;
 import org.bukkit.command.CommandSender;
+import org.screamingsandals.bedwars.Main;
 
 import java.util.List;
 
-import static misat11.lib.lang.I18n.i18n;
+import static misat11.lib.lang.I.m;
 
 public class ListCommand extends BaseCommand {
 
@@ -15,7 +15,7 @@ public class ListCommand extends BaseCommand {
 
     @Override
     public boolean execute(CommandSender sender, List<String> args) {
-        sender.sendMessage(i18n("list_header"));
+        m("commands.list.header").send(sender);
         Main.sendGameListInfo(sender);
         return true;
     }

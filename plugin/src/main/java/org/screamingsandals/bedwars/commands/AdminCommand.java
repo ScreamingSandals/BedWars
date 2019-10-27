@@ -19,12 +19,10 @@ import java.io.File;
 import java.text.DecimalFormat;
 import java.util.*;
 
-import static misat11.lib.lang.I18n.i18n;
-import static misat11.lib.lang.I18n.i18nonly;
+import static misat11.lib.lang.I.m;
 
 public class AdminCommand extends BaseCommand {
-
-    public HashMap<String, GameCreator> gc = new HashMap<>();
+    private HashMap<String, GameCreator> gameCreator = new HashMap<>();
 
     public AdminCommand() {
         super("admin", ADMIN_PERMISSION, false);
@@ -34,141 +32,112 @@ public class AdminCommand extends BaseCommand {
     public boolean execute(CommandSender sender, List<String> args) {
         Player player = (Player) sender;
         if (args.size() >= 2) {
-            String arN = args.get(0);
+            String arenaName = args.get(0);
             if (args.get(1).equalsIgnoreCase("info")) {
-                if (Main.isGameExists(arN)) {
-                    Game game = Main.getGame(arN);
+                if (Main.isGameExists(arenaName)) {
+                    Game game = Main.getGame(arenaName);
                     if (args.size() >= 3) {
                         if (args.get(2).equalsIgnoreCase("base")) {
-                            player.sendMessage(i18n("arena_info_header"));
-
-                            player.sendMessage(i18n("arena_info_name", false).replace("%name%", game.getName()));
-                            String status = i18n("arena_info_status", false);
-                            switch (game.getStatus()) {
-                                case DISABLED:
-                                    if (gc.containsKey(arN)) {
-                                        status = status.replace("%status%",
-                                                i18n("arena_info_status_disabled_in_edit", false));
-                                    } else {
-                                        status = status.replace("%status%", i18n("arena_info_status_disabled", false));
-                                    }
-                                    break;
-                                case REBUILDING:
-                                    status = status.replace("%status%", i18n("arena_info_status_rebuilding", false));
-                                    break;
-                                case RUNNING:
-                                case GAME_END_CELEBRATING:
-                                    status = status.replace("%status%", i18n("arena_info_status_running", false));
-                                    break;
-                                case WAITING:
-                                    status = status.replace("%status%", i18n("arena_info_status_waiting", false));
-                                    break;
-                            }
-                            player.sendMessage(status);
-
-                            player.sendMessage(
-                                    i18n("arena_info_world", false).replace("%world%", game.getWorld().getName()));
+                            m("commands.admin.arena.info.header").send(player);
+                            m("commands.admin.arena.info.name").send(player).replace("%name%", game.getName());
+                            m("commands.admin.arena.info.status", false).replace("%status%", game.getGameStatusString()).send(player);
+                            m("commands.admin.arena.info.world", false).replace("%world%", game.getWorld().getName()).send(player);
 
                             Location loc_pos1 = game.getPos1();
-                            String pos1 = i18n("arena_info_pos1", false)
+                            m("commands.admin.arena.info.pos1", false)
                                     .replace("%x%", Double.toString(loc_pos1.getX()))
                                     .replace("%y%", Double.toString(loc_pos1.getY()))
                                     .replace("%z%", Double.toString(loc_pos1.getZ()))
                                     .replace("%yaw%", Float.toString(loc_pos1.getYaw()))
                                     .replace("%pitch%", Float.toString(loc_pos1.getPitch()))
-                                    .replace("%world%", loc_pos1.getWorld().getName());
-
-                            player.sendMessage(pos1);
+                                    .replace("%world%", loc_pos1.getWorld().getName())
+                                    .send(player);
 
                             Location loc_pos2 = game.getPos2();
-                            String pos2 = i18n("arena_info_pos2", false)
+                            m("commands.admin.arena.info.pos2", false)
                                     .replace("%x%", Double.toString(loc_pos2.getX()))
                                     .replace("%y%", Double.toString(loc_pos2.getY()))
                                     .replace("%z%", Double.toString(loc_pos2.getZ()))
                                     .replace("%yaw%", Float.toString(loc_pos2.getYaw()))
                                     .replace("%pitch%", Float.toString(loc_pos2.getPitch()))
-                                    .replace("%world%", loc_pos2.getWorld().getName());
-
-                            player.sendMessage(pos2);
+                                    .replace("%world%", loc_pos2.getWorld().getName())
+                                    .send(player);
 
                             Location loc_spec = game.getSpecSpawn();
-                            String spec = i18n("arena_info_spec", false)
+                            m("commands.admin.arena.info.spectator", false)
                                     .replace("%x%", Double.toString(loc_spec.getX()))
                                     .replace("%y%", Double.toString(loc_spec.getY()))
                                     .replace("%z%", Double.toString(loc_spec.getZ()))
                                     .replace("%yaw%", Float.toString(loc_spec.getYaw()))
                                     .replace("%pitch%", Float.toString(loc_spec.getPitch()))
-                                    .replace("%world%", loc_spec.getWorld().getName());
-
-                            player.sendMessage(spec);
+                                    .replace("%world%", loc_spec.getWorld().getName())
+                                    .send(player);
 
                             Location loc_lobby = game.getLobbySpawn();
-                            String lobby = i18n("arena_info_lobby", false)
+                            m("commands.admin.arena.info.lobby", false)
                                     .replace("%x%", Double.toString(loc_lobby.getX()))
                                     .replace("%y%", Double.toString(loc_lobby.getY()))
                                     .replace("%z%", Double.toString(loc_lobby.getZ()))
                                     .replace("%yaw%", Float.toString(loc_lobby.getYaw()))
                                     .replace("%pitch%", Float.toString(loc_lobby.getPitch()))
-                                    .replace("%world%", loc_lobby.getWorld().getName());
+                                    .replace("%world%", loc_lobby.getWorld().getName())
+                                    .send(player);
 
-                            player.sendMessage(lobby);
-                            player.sendMessage(i18n("arena_info_min_players", false).replace("%minplayers%",
-                                    Integer.toString(game.getMinPlayers())));
-                            player.sendMessage(i18n("arena_info_lobby_countdown", false).replace("%time%",
-                                    Integer.toString(game.getPauseCountdown())));
-                            player.sendMessage(i18n("arena_info_game_time", false).replace("%time%",
-                                    Integer.toString(game.getGameTime())));
+                            m("commands.admin.arena.info.min_players", false).replace("%minplayers%",
+                                    Integer.toString(game.getMinPlayers())).send(player);
+                            m("commands.admin.arena.info.countdown_time", false).replace("%minplayers%",
+                                    Integer.toString(game.getPauseCountdown())).send(player);
+                            m("commands.admin.arena.info.game_length", false).replace("%minplayers%",
+                                    Integer.toString(game.getGameTime())).send(player);
 
                         } else if (args.get(2).equalsIgnoreCase("teams")) {
-                            player.sendMessage(i18n("arena_info_header"));
+                            m("commands.admin.arena.info.header").send(player);
+                            m("commands.admin.arena.info.teams.header").send(player);
 
-                            player.sendMessage(i18n("arena_info_teams", false));
                             for (Team team : game.getTeams()) {
-                                player.sendMessage(i18n("arena_info_team", false)
+                                m("commands.admin.arena.info.teams.info")
                                         .replace("%team%", team.color.chatColor.toString() + team.name)
-                                        .replace("%maxplayers%", Integer.toString(team.maxPlayers)));
+                                        .replace("%maxplayers%", Integer.toString(team.maxPlayers))
+                                        .send(player);
 
                                 Location loc_spawn = team.spawn;
-                                String spawn = i18n("arena_info_team_spawn", false)
+                                m("commands.admin.arena.info.teams.spawn", false)
                                         .replace("%x%", Double.toString(loc_spawn.getX()))
                                         .replace("%y%", Double.toString(loc_spawn.getY()))
                                         .replace("%z%", Double.toString(loc_spawn.getZ()))
                                         .replace("%yaw%", Float.toString(loc_spawn.getYaw()))
                                         .replace("%pitch%", Float.toString(loc_spawn.getPitch()))
-                                        .replace("%world%", loc_spawn.getWorld().getName());
-
-                                player.sendMessage(spawn);
+                                        .replace("%world%", loc_spawn.getWorld().getName())
+                                        .send(player);
 
                                 Location loc_target = team.bed;
-                                String target = i18n("arena_info_team_target", false)
+                                m("commands.admin.arena.info.teams.target", false)
                                         .replace("%x%", Double.toString(loc_target.getX()))
                                         .replace("%y%", Double.toString(loc_target.getY()))
                                         .replace("%z%", Double.toString(loc_target.getZ()))
                                         .replace("%yaw%", Float.toString(loc_target.getYaw()))
                                         .replace("%pitch%", Float.toString(loc_target.getPitch()))
-                                        .replace("%world%", loc_target.getWorld().getName());
-
-                                player.sendMessage(target);
+                                        .replace("%world%", loc_target.getWorld().getName())
+                                        .send(player);
                             }
                         } else if (args.get(2).equalsIgnoreCase("spawners")) {
-                            player.sendMessage(i18n("arena_info_header"));
+                            m("commands.admin.arena.info.header").send(player);
+                            m("commands.admin.arena.info.spawners.header").send(player);
 
-                            player.sendMessage(i18n("arena_info_spawners", false));
                             for (ItemSpawner spawner : game.getSpawners()) {
                                 Location loc_spawner = spawner.loc;
                                 org.screamingsandals.bedwars.api.Team team = spawner.getTeam();
 
                                 DecimalFormat numFormat = new DecimalFormat("##");
-
                                 String spawnerTeam;
 
                                 if (team != null) {
                                     spawnerTeam = TeamColor.fromApiColor(team.getColor()).chatColor + team.getName();
                                 } else {
-                                    spawnerTeam = i18nonly("arena_info_spawner_no_team");
+                                    spawnerTeam = m("commands.admin.arena.info.spawners.no_team").get();
                                 }
 
-                                String spawnerM = i18n("arena_info_spawner", false)
+                                m("commands.admin.arena.info.spawners.info", false)
                                         .replace("%resource%", spawner.type.getItemName())
                                         .replace("%x%", numFormat.format(loc_spawner.getX()))
                                         .replace("%y%", numFormat.format(loc_spawner.getY()))
@@ -177,219 +146,248 @@ public class AdminCommand extends BaseCommand {
                                         .replace("%pitch%", numFormat.format(loc_spawner.getPitch()))
                                         .replace("%world%", loc_spawner.getWorld().getName())
                                         .replace("%team%", spawnerTeam)
-                                        .replace("%holo%", String.valueOf(spawner.getHologramEnabled()));
-
-                                player.sendMessage(spawnerM);
+                                        .replace("%holo%", String.valueOf(spawner.getHologramEnabled()))
+                                        .send(player);
                             }
+
                         } else if (args.get(2).equalsIgnoreCase("stores")) {
-                            player.sendMessage(i18n("arena_info_header"));
+                            m("commands.admin.arena.info.header").send(player);
+                            m("commands.admin.arena.info.stores.header").send(player);
 
-                            player.sendMessage(i18n("arena_info_villagers", false));
                             for (GameStore store : game.getGameStores()) {
-
                                 Location loc_store = store.getStoreLocation();
-                                String storeM = i18n("arena_info_villager_pos", false)
+                                m("commands.admin.arena.info.store.position", false)
                                         .replace("%x%", Double.toString(loc_store.getX()))
                                         .replace("%y%", Double.toString(loc_store.getY()))
                                         .replace("%z%", Double.toString(loc_store.getZ()))
                                         .replace("%yaw%", Float.toString(loc_store.getYaw()))
                                         .replace("%pitch%", Float.toString(loc_store.getPitch()))
-                                        .replace("%world%", loc_store.getWorld().getName());
+                                        .replace("%world%", loc_store.getWorld().getName())
+                                        .send(player);
 
-                                player.sendMessage(storeM);
+                                m("commands.admin.arena.info.store.entity_type", false).replace("%type%",
+                                        store.getEntityType().name()).send(player);
 
-                                String storeM2 = i18n("arena_info_villager_entity_type", false).replace("%type%",
-                                        store.getEntityType().name());
-                                player.sendMessage(storeM2);
+                                m("commands.admin.arena.info.store.custom_shop", false).replace("%type%",
+                                        store.getEntityType().name()).send(player);
 
-                                String storeM3 = i18n("arena_info_villager_shop", false).replace("%bool%",
-                                        store.getShopFile() != null ? i18n("arena_info_config_true", false)
-                                                : i18n("arena_info_config_false", false));
-                                player.sendMessage(storeM3);
+                                m("commands.admin.arena.info.store.custom_shop", false).replace("%bool%",
+                                        store.getShopFile() != null ? m("commands.admin.arena.info.true_value", false).get()
+                                                : m("commands.admin.arena.info.false_value", false).get()).send(player);
+
                                 if (store.getShopFile() != null) {
-                                    String storeM4 = i18n("arena_info_villager_shop_name", false)
-                                            .replace("%file%", store.getShopFile()).replace("%bool%",
-                                                    store.getUseParent() ? i18n("arena_info_config_true", false)
-                                                            : i18n("arena_info_config_false", false));
-                                    player.sendMessage(storeM4);
+                                    m("commands.admin.arena.info.store.custom_shop", false).replace("%file%",
+                                            store.getUseParent() ? m("commands.admin.arena.info.true_value", false).get()
+                                                    : m("commands.admin.arena.info.false_value", false).get()).send(player);
                                 }
-                                String storeM5 = i18nonly("arena_info_villager_shop_dealer_name").replace("%name%",
-                                        store.isShopCustomName() ? store.getShopCustomName()
-                                                : i18nonly("arena_info_villager_shop_dealer_has_no_name"));
-                                player.sendMessage(storeM5);
+
+                                m("commands.admin.arena.info.store.name_above", false).replace("%name%",
+                                        store.getUseParent() ? store.getShopCustomName()
+                                                : m("commands.admin.arena.info.store.no_name_above", false).get()).send(player);
                             }
                         } else if (args.get(2).equalsIgnoreCase("config")) {
-                            player.sendMessage(i18n("arena_info_header"));
+                            m("commands.admin.arena.info.header").send(player);
+                            m("commands.admin.arena.info.config.header").send(player);
 
-                            player.sendMessage(i18n("arena_info_config", false));
+                            m("commands.admin.arena.info.config.constant", false)
+                                    .replace("%constant%", "compassEnabled")
+                                    .replace("%value%",
+                                            m("commands.admin.arena.info.config.constant"
+                                                    + game.getCompassEnabled().name().toLowerCase(), false).get())
+                                    .send(player);
 
-                            player.sendMessage(i18n("arena_info_config_constant", false)
-                                    .replace("%constant%", "compassEnabled").replace("%value%",
-                                            i18n("arena_info_config_" + game.getCompassEnabled().name().toLowerCase(),
-                                                    false)));
+                            m("commands.admin.arena.info.config.constant", false)
+                                    .replace("%constant%", "joinRandomTeamAfterLobby")
+                                    .replace("%value%",
+                                            m("commands.admin.arena.info.config.constant"
+                                                    + game.getJoinRandomTeamAfterLobby().name().toLowerCase(), false).get())
+                                    .send(player);
 
-                            player.sendMessage(
-                                    i18n("arena_info_config_constant", false)
-                                            .replace("%constant%", "joinRandomTeamAfterLobby").replace("%value%",
-                                            i18n("arena_info_config_"
-                                                            + game.getJoinRandomTeamAfterLobby().name().toLowerCase(),
-                                                    false)));
-
-                            player.sendMessage(i18n("arena_info_config_constant", false)
+                            m("commands.admin.arena.info.config.constant", false)
                                     .replace("%constant%", "joinRandomTeamOnJoin")
-                                    .replace("%value%", i18n(
-                                            "arena_info_config_" + game.getJoinRandomTeamOnJoin().name().toLowerCase(),
-                                            false)));
+                                    .replace("%value%",
+                                            m("commands.admin.arena.info.config.constant"
+                                                    + game.getJoinRandomTeamOnJoin().name().toLowerCase(), false).get())
+                                    .send(player);
 
-                            player.sendMessage(
-                                    i18n("arena_info_config_constant", false)
-                                            .replace("%constant%", "addWoolToInventoryOnJoin").replace("%value%",
-                                            i18n("arena_info_config_"
-                                                            + game.getAddWoolToInventoryOnJoin().name().toLowerCase(),
-                                                    false)));
+                            m("commands.admin.arena.info.config.constant", false)
+                                    .replace("%constant%", "addWoolToInventoryOnJoin")
+                                    .replace("%value%",
+                                            m("commands.admin.arena.info.config.constant"
+                                                    + game.getAddWoolToInventoryOnJoin().name().toLowerCase(), false).get())
+                                    .send(player);
 
-                            player.sendMessage(
-                                    i18n("arena_info_config_constant", false)
-                                            .replace("%constant%", "preventKillingVillagers").replace("%value%",
-                                            i18n("arena_info_config_"
-                                                            + game.getPreventKillingVillagers().name().toLowerCase(),
-                                                    false)));
+                            m("commands.admin.arena.info.config.constant", false)
+                                    .replace("%constant%", "preventKillingVillagers")
+                                    .replace("%value%",
+                                            m("commands.admin.arena.info.config.constant"
+                                                    + game.getPreventKillingVillagers().name().toLowerCase(), false).get())
+                                    .send(player);
 
-                            player.sendMessage(i18n("arena_info_config_constant", false)
-                                    .replace("%constant%", "playerDrops").replace("%value%", i18n(
-                                            "arena_info_config_" + game.getPlayerDrops().name().toLowerCase(), false)));
+                            m("commands.admin.arena.info.config.constant", false)
+                                    .replace("%constant%", "playerDrops")
+                                    .replace("%value%",
+                                            m("commands.admin.arena.info.config.constant"
+                                                    + game.getPlayerDrops().name().toLowerCase(), false).get())
+                                    .send(player);
 
-                            player.sendMessage(
-                                    i18n("arena_info_config_constant", false).replace("%constant%", "friendlyfire")
-                                            .replace("%value%", i18n(
-                                                    "arena_info_config_" + game.getFriendlyfire().name().toLowerCase(),
-                                                    false)));
+                            m("commands.admin.arena.info.config.constant", false)
+                                    .replace("%constant%", "friendlyfire")
+                                    .replace("%value%",
+                                            m("commands.admin.arena.info.config.constant" + game.getFriendlyfire().name().toLowerCase(), false).get())
+                                    .send(player);
 
-                            player.sendMessage(i18n("arena_info_config_constant", false)
-                                    .replace("%constant%", "coloredLeatherByTeamInLobby").replace("%value%",
-                                            i18n("arena_info_config_"
-                                                            + game.getColoredLeatherByTeamInLobby().name().toLowerCase(),
-                                                    false)));
+                            m("commands.admin.arena.info.config.constant", false)
+                                    .replace("%constant%", "coloredLeatherByTeamInLobby")
+                                    .replace("%value%",
+                                            m("commands.admin.arena.info.config.constant"
+                                                    + game.getColoredLeatherByTeamInLobby().name().toLowerCase(), false).get())
+                                    .send(player);
 
-                            player.sendMessage(
-                                    i18n("arena_info_config_constant", false).replace("%constant%", "keepInventory")
-                                            .replace("%value%", i18n(
-                                                    "arena_info_config_" + game.getKeepInventory().name().toLowerCase(),
-                                                    false)));
+                            m("commands.admin.arena.info.config.constant", false)
+                                    .replace("%constant%", "keepInventory")
+                                    .replace("%value%",
+                                            m("commands.admin.arena.info.config.constant"
+                                                    + game.getKeepInventory().name().toLowerCase(), false).get())
+                                    .send(player);
 
-                            player.sendMessage(i18n("arena_info_config_constant", false)
-                                    .replace("%constant%", "crafting").replace("%value%", i18n(
-                                            "arena_info_config_" + game.getCrafting().name().toLowerCase(), false)));
+                            m("commands.admin.arena.info.config.constant", false)
+                                    .replace("%constant%", "crafting")
+                                    .replace("%value%",
+                                            m("commands.admin.arena.info.config.constant"
+                                                    + game.getCrafting().name().toLowerCase(), false).get())
+                                    .send(player);
 
-                            player.sendMessage(i18n("arena_info_config_constant", false)
-                                    .replace("%constant%", "gameScoreboard").replace("%value%", i18n(
-                                            "arena_info_config_" + game.getScoreboard().name().toLowerCase(), false)));
+                            m("commands.admin.arena.info.config.constant", false)
+                                    .replace("%constant%", "gameScoreboard")
+                                    .replace("%value%",
+                                            m("commands.admin.arena.info.config.constant"
+                                                    + game.getScoreboard().name().toLowerCase(), false).get())
+                                    .send(player);
 
-                            player.sendMessage(i18n("arena_info_config_constant", false)
-                                    .replace("%constant%", "lobbyScoreboard").replace("%value%",
-                                            i18n("arena_info_config_" + game.getLobbyScoreboard().name().toLowerCase(),
-                                                    false)));
+                            m("commands.admin.arena.info.config.constant", false)
+                                    .replace("%constant%", "lobbyScoreboard")
+                                    .replace("%value%",
+                                            m("commands.admin.arena.info.config.constant"
+                                                    + game.getLobbyScoreboard().name().toLowerCase(), false).get())
+                                    .send(player);
 
-                            player.sendMessage(i18n("arena_info_config_constant", false)
-                                    .replace("%constant%", "gameBossbar").replace("%value%", i18n(
-                                            "arena_info_config_" + game.getGameBossbar().name().toLowerCase(), false)));
+                            m("commands.admin.arena.info.config.constant", false)
+                                    .replace("%constant%", "gameBossbar")
+                                    .replace("%value%",
+                                            m("commands.admin.arena.info.config.constant"
+                                                    + game.getGameBossbar().name().toLowerCase(), false).get())
+                                    .send(player);
 
-                            player.sendMessage(
-                                    i18n("arena_info_config_constant", false).replace("%constant%", "lobbyScoreboard")
-                                            .replace("%value%", i18n(
-                                                    "arena_info_config_" + game.getLobbyBossbar().name().toLowerCase(),
-                                                    false)));
+                            m("commands.admin.arena.info.config.constant", false)
+                                    .replace("%constant%", "lobbyScoreboard")
+                                    .replace("%value%",
+                                            m("commands.admin.arena.info.config.constant"
+                                                    + game.getLobbyBossbar().name().toLowerCase(), false).get())
+                                    .send(player);
 
-                            player.sendMessage(i18n("arena_info_config_constant", false)
+                            m("commands.admin.arena.info.config.constant", false)
                                     .replace("%constant%", "preventSpawningMobs")
-                                    .replace("%value%", i18n(
-                                            "arena_info_config_" + game.getPreventSpawningMobs().name().toLowerCase(),
-                                            false)));
+                                    .replace("%value%",
+                                            m("commands.admin.arena.info.config.constant"
+                                                    + game.getPreventSpawningMobs().name().toLowerCase(), false).get())
+                                    .send(player);
 
-                            player.sendMessage(i18n("arena_info_config_constant", false)
-                                    .replace("%constant%", "spawnerholograms").replace("%value%",
-                                            i18n("arena_info_config_" + game.getSpawnerHolograms().name().toLowerCase(),
-                                                    false)));
+                            m("commands.admin.arena.info.config.constant", false)
+                                    .replace("%constant%", "spawnerholograms")
+                                    .replace("%value%",
+                                            m("commands.admin.arena.info.config.constant"
+                                                    + game.getSpawnerHolograms().name().toLowerCase(), false).get())
+                                    .send(player);
 
-                            player.sendMessage(i18n("arena_info_config_constant", false)
+                            m("commands.admin.arena.info.config.constant", false)
                                     .replace("%constant%", "spawnerDisableMerge")
-                                    .replace("%value%", i18n(
-                                            "arena_info_config_" + game.getSpawnerDisableMerge().name().toLowerCase(),
-                                            false)));
+                                    .replace("%value%", m("commands.admin.arena.info.config.constant"
+                                            + game.getSpawnerDisableMerge().name().toLowerCase(), false).get())
+                                    .send(player);
 
-                            player.sendMessage(i18n("arena_info_config_constant", false)
-                                    .replace("%constant%", "give gameStartItems").replace("%value%",
-                                            i18n("arena_info_config_" + game.getGameStartItems().name().toLowerCase(),
-                                                    false)));
+                            m("commands.admin.arena.info.config.constant", false)
+                                    .replace("%constant%", "give gameStartItems")
+                                    .replace("%value%",
+                                            m("commands.admin.arena.info.config.constant"
+                                                    + game.getGameStartItems().name().toLowerCase(), false).get())
+                                    .send(player);
 
-                            player.sendMessage(i18n("arena_info_config_constant", false)
+                            m("commands.admin.arena.info.config.constant", false)
                                     .replace("%constant%", "give playerRespawnItems")
-                                    .replace("%value%", i18n(
-                                            "arena_info_config_" + game.getPlayerRespawnItems().name().toLowerCase(),
-                                            false)));
+                                    .replace("%value%", m("commands.admin.arena.info.config.constant"
+                                            + game.getPlayerRespawnItems().name().toLowerCase(), false).get())
+                                    .send(player);
 
-                            player.sendMessage(i18n("arena_info_config_constant", false)
-                                    .replace("%constant%", "spawnerHologramsCountdown").replace("%value%",
-                                            i18n("arena_info_config_"
-                                                            + game.getSpawnerHologramsCountdown().name().toLowerCase(),
-                                                    false)));
+                            m("commands.admin.arena.info.config.constant", false)
+                                    .replace("%constant%", "spawnerHologramsCountdown")
+                                    .replace("%value%",
+                                            m("commands.admin.arena.info.config.constant"
+                                                    + game.getSpawnerHologramsCountdown().name().toLowerCase(), false).get())
+                                    .send(player);
 
-                            player.sendMessage(i18n("arena_info_config_constant", false)
-                                    .replace("%constant%", "damageWhenPlayerIsNotInArena").replace("%value%",
-                                            i18n("arena_info_config_"
-                                                            + game.getDamageWhenPlayerIsNotInArena().name().toLowerCase(),
-                                                    false)));
+                            m("commands.admin.arena.info.config.constant", false)
+                                    .replace("%constant%", "damageWhenPlayerIsNotInArena")
+                                    .replace("%value%",
+                                            m("commands.admin.arena.info.config.constant"
+                                                    + game.getDamageWhenPlayerIsNotInArena().name().toLowerCase(), false).get())
+                                    .send(player);
 
-                            player.sendMessage(
-                                    i18n("arena_info_config_constant", false)
-                                            .replace("%constant%", "removeunusedtargetblocks").replace("%value%",
-                                            i18n("arena_info_config_"
-                                                            + game.getRemoveUnusedTargetBlocks().name().toLowerCase(),
-                                                    false)));
+                            m("commands.admin.arena.info.config.constant", false)
+                                    .replace("%constant%", "removeunusedtargetblocks")
+                                    .replace("%value%",
+                                            m("commands.admin.arena.info.config.constant"
+                                                    + game.getRemoveUnusedTargetBlocks().name().toLowerCase(), false).get())
+                                    .send(player);
 
-                            player.sendMessage(i18n("arena_info_config_constant", false)
+                            m("commands.admin.arena.info.config.constant", false)
                                     .replace("%constant%", "allowblockfalling")
-                                    .replace("%value%", i18n(
-                                            "arena_info_config_" + game.getAllowBlockFalling().name().toLowerCase(),
-                                            false)));
+                                    .replace("%value%", m("commands.admin.arena.info.config.constant"
+                                            + game.getAllowBlockFalling().name().toLowerCase(), false).get())
+                                    .send(player);
 
-                            player.sendMessage(i18n("arena_info_config_constant", false)
+                            m("commands.admin.arena.info.config.constant", false)
                                     .replace("%constant%", "holoAboveBed")
-                                    .replace("%value%", i18n(
-                                            "arena_info_config_" + game.getHoloAboveBed().name().toLowerCase(),
-                                            false)));
+                                    .replace("%value%", m("commands.admin.arena.info.config.constant"
+                                            + game.getHoloAboveBed().name().toLowerCase(), false).get())
+                                    .send(player);
 
-                            player.sendMessage(i18n("arena_info_config_constant", false)
+                            m("commands.admin.arena.info.config.constant", false)
                                     .replace("%constant%", "spectatorJoin")
-                                    .replace("%value%", i18n(
-                                            "arena_info_config_" + game.getSpectatorJoin().name().toLowerCase(),
-                                            false)));
+                                    .replace("%value%", m("commands.admin.arena.info.config.constant"
+                                            + game.getSpectatorJoin().name().toLowerCase(), false).get())
+                                    .send(player);
 
-                            player.sendMessage(i18n("arena_info_config_constant", false)
+                            m("commands.admin.arena.info.config.constant", false)
                                     .replace("%constant%", "stopTeamSpawnersOnDie")
-                                    .replace("%value%", i18n(
-                                            "arena_info_config_" + game.getStopTeamSpawnersOnDie().name().toLowerCase(),
-                                            false)));
+                                    .replace("%value%", m("commands.admin.arena.info.config.constant"
+                                            + game.getStopTeamSpawnersOnDie().name().toLowerCase(), false).get())
+                                    .send(player);
 
                             // NON-BOOLEAN CONSTANTS
 
-                            player.sendMessage(i18n("arena_info_config_constant", false)
-                                    .replace("%constant%", "arenaTime").replace("%value%", game.getArenaTime().name()));
+                            m("commands.admin.arena.info.config.constant", false)
+                                    .replace("%constant%", "arenaTime")
+                                    .replace("%value%", game.getArenaTime().name())
+                                    .send(player);
 
-                            player.sendMessage(i18n("arena_info_config_constant", false)
+                            m("commands.admin.arena.info.config.constant", false)
                                     .replace("%constant%", "arenaWeather")
-                                    .replace("%value%", game.getArenaWeather() != null ? game.getArenaWeather().name()
-                                            : "default"));
+                                    .replace("%value%",
+                                            game.getArenaWeather() != null ? game.getArenaWeather().name() : "default")
+                                    .send(player);
 
-                            player.sendMessage(i18n("arena_info_config_constant", false)
-                                    .replace("%constant%", "lobbybossbarcolor").replace("%value%",
-                                            game.getLobbyBossBarColor() != null ? game.getLobbyBossBarColor().name()
-                                                    : "default"));
+                            m("commands.admin.arena.info.config.constant", false)
+                                    .replace("%constant%", "lobbybossbarcolor")
+                                    .replace("%value%",
+                                            game.getLobbyBossBarColor() != null ? game.getLobbyBossBarColor().name() : "default")
+                                    .send(player);
 
-                            player.sendMessage(i18n("arena_info_config_constant", false)
-                                    .replace("%constant%", "gamebossbarcolor").replace("%value%",
-                                            game.getGameBossBarColor() != null ? game.getGameBossBarColor().name()
-                                                    : "default"));
+                            m("commands.admin.arena.info.config.constant", false)
+                                    .replace("%constant%", "gamebossbarcolor")
+                                    .replace("%value%",
+                                            game.getGameBossBarColor() != null ? game.getGameBossBarColor().name() : "default")
+                                    .send(player);
                         } else {
                             sendInfoSelectType(player, game);
                         }
@@ -397,45 +395,45 @@ public class AdminCommand extends BaseCommand {
                         sendInfoSelectType(player, game);
                     }
                 } else {
-                    player.sendMessage(i18n("no_arena_found"));
+                    m("commands.admin.arena.not_found").send(player);
                 }
             } else if (args.get(1).equalsIgnoreCase("add")) {
-                if (Main.isGameExists(arN)) {
-                    player.sendMessage(i18n("allready_exists"));
-                } else if (gc.containsKey(arN)) {
-                    player.sendMessage(i18n("allready_working_on_it"));
+                if (Main.isGameExists(arenaName)) {
+                    m("commands.admin.arena.add.already_exists").send(player);
+                } else if (gameCreator.containsKey(arenaName)) {
+                    m("commands.admin.arena.add.not_saved").send(player);
                 } else {
-                    GameCreator creator = new GameCreator(Game.createGame(arN));
-                    gc.put(arN, creator);
-                    player.sendMessage(i18n("arena_added"));
+                    GameCreator creator = new GameCreator(Game.createGame(arenaName));
+                    gameCreator.put(arenaName, creator);
+                    m("commands.admin.arena.add.added").send(player);
                 }
             } else if (args.get(1).equalsIgnoreCase("remove")) {
-                if (Main.isGameExists(arN)) {
-                    if (!gc.containsKey(arN)) {
-                        player.sendMessage(i18n("arena_must_be_in_edit_mode"));
+                if (Main.isGameExists(arenaName)) {
+                    if (!gameCreator.containsKey(arenaName)) {
+                        m("commands.admin.arena.not_in_edit_mode").send(player);
                     } else {
-                        gc.remove(arN);
-                        new File(Main.getInstance().getDataFolder(), "arenas/" + arN + ".yml").delete();
-                        Main.removeGame(Main.getGame(arN));
-                        player.sendMessage(i18n("arena_removed"));
+                        gameCreator.remove(arenaName);
+                        new File(Main.getInstance().getDataFolder(), "arenas/" + arenaName + ".yml").delete();
+                        Main.removeGame(Main.getGame(arenaName));
+                        m("commands.admin.arena.remove.removed").send(player);
                     }
-                } else if (gc.containsKey(arN)) {
-                    gc.remove(arN);
-                    player.sendMessage(i18n("arena_removed"));
+                } else if (gameCreator.containsKey(arenaName)) {
+                    gameCreator.remove(arenaName);
+                    m("commands.admin.arena.remove.removed").send(player);
                 } else {
-                    player.sendMessage(i18n("no_arena_found"));
+                    m("commands.admin.arena.not_found").send(player);
                 }
             } else if (args.get(1).equalsIgnoreCase("edit")) {
-                if (Main.isGameExists(arN)) {
-                    Game game = Main.getGame(arN);
+                if (Main.isGameExists(arenaName)) {
+                    Game game = Main.getGame(arenaName);
                     game.stop();
-                    gc.put(arN, new GameCreator(game));
-                    player.sendMessage(i18n("arena_switched_to_edit"));
+                    gameCreator.put(arenaName, new GameCreator(game));
+                    m("commands.admin.arena.edit.switched").send(player);
                 } else {
-                    player.sendMessage(i18n("no_arena_found"));
+                    m("commands.admin.arena.not_found").send(player);
                 }
             } else {
-                if (gc.containsKey(arN)) {
+                if (gameCreator.containsKey(arenaName)) {
                     List<String> nargs = new ArrayList<>();
                     int lid = 0;
                     for (String arg : args) {
@@ -444,17 +442,17 @@ public class AdminCommand extends BaseCommand {
                         }
                         lid++;
                     }
-                    boolean isArenaSaved = gc.get(arN).cmd(player, args.get(1),
-                            nargs.toArray(new String[nargs.size()]));
+                    boolean isArenaSaved = gameCreator.get(arenaName).cmd(player, args.get(1),
+                            nargs.toArray(new String[0]));
                     if (args.get(1).equalsIgnoreCase("save") && isArenaSaved) {
-                        gc.remove(arN);
+                        gameCreator.remove(arenaName);
                     }
                 } else {
-                    player.sendMessage(i18n("arena_not_in_edit"));
+                    m("commands.admin.arena.not_in_edit_mode").send(player);
                 }
             }
         } else {
-            player.sendMessage(i18n("usage_bw_admin"));
+            m("commands.admin.usage").send(player);
         }
         return true;
     }
@@ -463,7 +461,7 @@ public class AdminCommand extends BaseCommand {
     public void completeTab(List<String> completion, CommandSender sender, List<String> args) {
         if (args.size() == 1) {
             completion.addAll(Main.getGameNames());
-            for (String arena : gc.keySet()) {
+            for (String arena : gameCreator.keySet()) {
                 if (!completion.contains(arena)) {
                     completion.add(arena);
                 }
@@ -513,6 +511,7 @@ public class AdminCommand extends BaseCommand {
                 completion.addAll(Arrays.asList("Villager_shop", "Dealer", "Seller", "&a&lVillager_shop"));
             }
             if (args.size() == 5 && args.get(2).equalsIgnoreCase("add")) {
+                completion.addAll(Collections.singletonList("<Shop File>"));
                 // TODO scan files for this :D
             }
             if (args.size() == 6 && args.get(2).equalsIgnoreCase("add")) {
@@ -545,10 +544,10 @@ public class AdminCommand extends BaseCommand {
                 completion.addAll(Collections.singletonList("1"));
             }
             if (args.size() == 8) {
-                if (gc.containsKey(args.get(0))) {
-	                for (Team t : gc.get(args.get(0)).getGame().getTeams()) {
-	                    completion.add(t.name);
-	                }
+                if (gameCreator.containsKey(args.get(0))) {
+                    for (Team t : gameCreator.get(args.get(0)).getGame().getTeams()) {
+                        completion.add(t.name);
+                    }
                 }
             }
             if (args.size() == 8 || args.size() == 9) {
@@ -559,8 +558,8 @@ public class AdminCommand extends BaseCommand {
                 completion.addAll(Arrays.asList("add", "color", "maxplayers", "spawn", "bed", "remove"));
             }
             if (args.size() == 4) {
-                if (gc.containsKey(args.get(0))) {
-                    for (Team t : gc.get(args.get(0)).getGame().getTeams()) {
+                if (gameCreator.containsKey(args.get(0))) {
+                    for (Team t : gameCreator.get(args.get(0)).getGame().getTeams()) {
                         completion.add(t.name);
                     }
                 }
@@ -578,8 +577,8 @@ public class AdminCommand extends BaseCommand {
                 completion.addAll(Arrays.asList("1", "2", "4", "8"));
             }
         } else if (args.get(1).equalsIgnoreCase("jointeam")) {
-            if (gc.containsKey(args.get(0))) {
-                for (Team t : gc.get(args.get(0)).getGame().getTeams()) {
+            if (gameCreator.containsKey(args.get(0))) {
+                for (Team t : gameCreator.get(args.get(0)).getGame().getTeams()) {
                     completion.add(t.name);
                 }
             }
@@ -587,13 +586,19 @@ public class AdminCommand extends BaseCommand {
     }
 
     private void sendInfoSelectType(Player player, Game game) {
-        String select = i18n("please_select_info_type").replace("%arena%", game.getName());
-        String base = i18n("please_select_info_type_base", false).replace("%arena%", game.getName());
-        String stores = i18n("please_select_info_type_stores", false).replace("%arena%", game.getName());
-        String spawners = i18n("please_select_info_type_spawners", false).replace("%arena%", game.getName());
-        String teams = i18n("please_select_info_type_teams", false).replace("%arena%", game.getName());
-        String config = i18n("please_select_info_type_config", false).replace("%arena%", game.getName());
-        String click = i18n("please_select_info_type_click", false);
+        String select = m("commands.admin.arena.info_sender.header")
+                .replace("%arena%", game.getName()).get();
+        String base = m("commands.admin.arena.info_sender.base", false)
+                .replace("%arena%", game.getName()).get();
+        String stores = m("commands.admin.arena.info_sender.stores", false)
+                .replace("%arena%", game.getName()).get();
+        String spawners = m("commands.admin.arena.info_sender.spawners", false)
+                .replace("%arena%", game.getName()).get();
+        String teams = m("commands.admin.arena.info_sender.teams", false)
+                .replace("%arena%", game.getName()).get();
+        String config = m("commands.admin.arena.info_sender.config", false)
+                .replace("%arena%", game.getName()).get();
+        String click = m("commands.admin.arena.info_sender.click", false).get();
 
         if (Main.isSpigot()) {
             player.sendMessage(select);

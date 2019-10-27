@@ -1,12 +1,12 @@
 package org.screamingsandals.bedwars.commands;
 
-import org.screamingsandals.bedwars.Main;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.screamingsandals.bedwars.Main;
 
 import java.util.List;
 
-import static misat11.lib.lang.I18n.i18n;
+import static misat11.lib.lang.I.m;
 
 public class LeaveCommand extends BaseCommand {
 
@@ -20,7 +20,7 @@ public class LeaveCommand extends BaseCommand {
         if (Main.isPlayerInGame(player)) {
             Main.getPlayerGameProfile(player).changeGame(null);
         } else {
-            player.sendMessage(i18n("you_arent_in_game"));
+            m("commands.leave.not_in_game").send(player);
         }
         return true;
     }
