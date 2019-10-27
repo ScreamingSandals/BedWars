@@ -1,9 +1,9 @@
 package org.screamingsandals.bedwars.commands;
 
-import org.screamingsandals.bedwars.Main;
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 import org.bukkit.util.StringUtil;
+import org.screamingsandals.bedwars.Main;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -5,11 +5,9 @@ import org.screamingsandals.bedwars.api.boss.BossBar;
 public class BossBarSelector {
     public static BossBar getBossBar() {
         try {
-            BossBar bar = new BossBar19();
-            return bar;
+            return new BossBar19();
         } catch (Throwable t) {
-            BossBar bar = new BossBar18();
-            return bar;
+            return new BossBar18();
         }
     }
 }

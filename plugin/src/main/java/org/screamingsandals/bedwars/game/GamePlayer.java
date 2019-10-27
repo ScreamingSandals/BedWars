@@ -8,6 +8,7 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffect;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.utils.BungeeUtils;
+import org.screamingsandals.bedwars.utils.PaperUtils;
 
 public class GamePlayer {
     public final Player player;
@@ -143,16 +144,7 @@ public class GamePlayer {
     }
 
     public void teleport(Location location) {
-        if (Main.isPaper()) {
-        	try {
-                player.teleportAsync(location);
-        	} catch (Throwable t) {
-        		// Old Paper builds
-                player.teleport(location);
-        	}
-        } else {
-            player.teleport(location);
-        }
+        PaperUtils.teleport(player, location);
     }
 
 }
