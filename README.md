@@ -1,10 +1,10 @@
-# BedWars
+# Screaming BedWars
 [![Build Status](https://jenkins.mtorus.cz/job/BedWars-1.x.x/badge/icon)](https://jenkins.mtorus.cz/job/BedWars-1.x.x/)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/472077c84c9d40de8b0e9efc55e64b19?branch=1.x.x)](https://www.codacy.com/manual/Misat11/BedWars?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ScreamingSandals/BedWars&amp;utm_campaign=Badge_Grade&bid=14885397)
 
 Complete rewrite of the BedWarsRel plugin.
 
-Supported versions: [1.9 - 1.14.4]. Recommended version: [1.14.4]
+Supported versions: \[1.9 - 1.14.4\]. Recommended version: \[1.14.4\]
 
 ## Support
 If you need any help, you can contact us on [Discord](https://discord.gg/VgrFUbV). Please make sure to look into older messages. There are many question already answered. It is really anoying to repeat the same thing over and over.
@@ -24,7 +24,7 @@ If you have found any bug, feel free to report is into [Issues](https://github.c
 -   Breakable (those are refreshing after arena rebuild) / ignored blocks
 -   SpecialItems (RescuePlatform, TNTSheep and so on) - they can be configured in shop too!
 
-##### Customizable
+#### Customizable
 -   Team selecting GUI
 -   Auto coloring items (like armor and so)
 -   Resource Spawners (you can have as much as you want)
