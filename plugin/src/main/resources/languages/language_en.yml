@@ -115,7 +115,6 @@ arena:
     waiting: "&eWAITING"
     running: "&aRUNNING"
     rebuilding: "&eREBUILDING"
-    edit_mode: "&cIN EDIT MODE"
 
 signs:
   created: "&aSign was successfully created!"

@@ -3039,25 +3039,22 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 	}
 
 	public String getGameStatusString() {
-		String toReturn;
+		String toReturn = "";
 		switch (getStatus()) {
 			case DISABLED:
-				if (gameCreator.containsKey(arenaName)) {
-					toReturn = m("arena.status.edit_mode", false).get();
-				} else {
-					toReturn = m("arena.status.disabled", false).get();
-				}
+				toReturn = m("arena.status.disabled", false).get();
 				break;
 			case REBUILDING:
-				statusMessage = statusMessage.replace("%status%", m("arena.status.rebuilding", false).get());
+				toReturn = m("arena.status.rebuilding", false).get();
 				break;
 			case RUNNING:
 			case GAME_END_CELEBRATING:
-				statusMessage = statusMessage.replace("%status%", m("arena.status.running", false).get());
+				toReturn = m("arena.status.running", false).get();
 				break;
 			case WAITING:
-				statusMessage = statusMessage.replace("%status%", m("arena.status.waiting", false).get());
+				toReturn = m("arena.status.waiting", false).get();
 				break;
 		}
+		return toReturn;
 	}
 }
