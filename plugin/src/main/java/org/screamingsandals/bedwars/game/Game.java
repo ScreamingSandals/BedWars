@@ -1054,6 +1054,12 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 					updateSigns();
 				}
 			}.runTask(Main.getInstance());
+			
+			if (Main.getConfigurator().config.getBoolean("bossbar.use-xp-bar", false)) {
+				statusbar = new XPBar();
+			} else {
+				statusbar = BossBarSelector.getBossBar();
+			}
 		}
 	}
 
@@ -1389,11 +1395,6 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 			previousCountdown = countdown = pauseCountdown;
 			previousStatus = GameStatus.WAITING;
 			String title = i18nonly("bossbar_waiting");
-			if (Main.getConfigurator().config.getBoolean("bossbar.use-xp-bar", false)) {
-				statusbar = new XPBar();
-			} else {
-				statusbar = BossBarSelector.getBossBar();
-			}
 			statusbar.setProgress(0);
 			statusbar.setVisible(getOriginalOrInheritedLobbyBossbar());
 			for (GamePlayer p : players) {
