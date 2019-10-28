@@ -199,7 +199,7 @@ please_select_info_type_config: "&aKonfigurace&f - &7/bw admin %arena% info conf
 please_select_info_type_click: "&bKliknutím se příkaz zavolá!"
 statistics_is_disabled: "&cNa tomto serveru je zakázáno uchovávání statistiky hráčů!"
 statistics_player_is_not_exists: "&cHráč nebyl nalezen!"
-statistics_not_found: "&cStatistika k tomuto hráči nebyla nalazena!"
+statistics_not_found: "&cStatistika k tomuto hráči nebyla nalezena!"
 statistics_header: "&aStatistiky hráče &7%player%&a:"
 statistics_kills: "&7Zabití: &a%kills%"
 statistics_deaths: "&7Smrti: &e%deaths%"
