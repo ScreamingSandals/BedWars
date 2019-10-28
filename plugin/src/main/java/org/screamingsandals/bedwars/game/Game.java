@@ -1533,11 +1533,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 						LivingEntity villager = store.spawn();
 						if (villager != null) {
 							Main.registerGameEntity(villager, this);
-							try {
-								villager.setAI(false); // Disable Entity AI
-							} catch (Throwable t) {
-								NMSUtils.disableEntityAI(villager); // Disable Entity AI 1.8
-							}
+							NMSUtils.disableEntityAI(villager);
 						}
 					}
 
