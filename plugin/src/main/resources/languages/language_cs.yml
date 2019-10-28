@@ -109,8 +109,8 @@ game:
 arena:
   status:
     disabled: "&cVYPNUTO"
-    waiting: "&eWAITING"
-    running: "&aRUNNING"
+    waiting: "&eČekání"
+    running: "&aHra běží"
     rebuilding: "&eV PŘESTAVBĚ"
 signs:
   created: "&aCedule byla úspěšně vytvořena!"
@@ -151,13 +151,13 @@ commands:
     no_permissions: "&cNemáš příslušná oprávnění k použití příkazu!"
     not_allowed: "&cBěhem hry nejsou povoleny žádné příkazy s výjimkou příkazů pluginu BedWars!"
   holograms:
-    added: "&aHologram has been added to your position!"
+    added: "&aHologram byl úspěšně přidán!"
   auto_join:
     already_in_game: "&cJiž v nějaké hře jsi."
-    no_empty_game: "&cThere's no game empty game!"
+    no_empty_game: "&cAktuálně tu není žádná prázdná hra!"
   join:
     already_in_game: "&cJiž v nějaké hře jsi."
-    not_found: "&cArena does not exists!"
+    not_found: "&cAréna neexistuje!"
   leave:
     not_in_game: "&cNejste ve hře!"
   list:
@@ -166,13 +166,13 @@ commands:
     info: "&cUPOZORNĚNÍ&f: Aby mainlobby fungovalo, musíš dát /bw reload!"
   rejoin:
     already_in_game: "&cJiž v nějaké hře jsi."
-    no_game_found: "&cNo previous game found."
+    no_game_found: "&cNebyla nalezena žádná předchozí hra."
   reload:
     safe: "&aPřed reloadem čekám na bezpečné zastavení všech her nebo na uplynutí 60 sekund!"
     failed: "&cNěkteré hry nebyly ukončeny v časovém limitu, jejich aréna tak mohla být poškozena!"
   statistics:
     header: "&aStatistiky hráče &7%player%&a:"
-    disabled: "&cPlayer statistics are disabled!"
+    disabled: "&cUchovávání statistik hráčů je zakázáno!"
     not_found: "&cStatistika k tomuto hráči nebyla nalazena!"
     kills: "&7Zabití: &a%kills%"
     deaths: "&7Smrti: &e%deaths%"
@@ -197,7 +197,7 @@ commands:
         pos2: "&7Pozice 2: &fXYZ: &7%x%&r/&7%y%&r/&7%z%"
         spectator: "&7Pozorovatel: &fXYZ: &7%x%&r/&7%y%&r/&7%z%"
         lobby: "&7Lobby: &fSvět: &7%world% &fXYZ: &7%x%&r/&7%y%&r/&7%z%"
-        min_players: "&7Minimal players of the game: &r%minplayers%"
+        min_players: "&7Minimální počet hráčů: &r%minplayers%"
         countdown_time: "&7Odpočet před začátkem hry: &f%time% s"
         game_length: "&7Délka hry: &f%time% s"
         true_value: "&aPovoleno"
@@ -211,14 +211,14 @@ commands:
         spawners:
           header: "&7Spawnery:"
           info: "- %resource% &7- %team% &7- &eHolo: &f%holo% &7- XYZ: &7%x%&r/&7%y%&r/&7%z%"
-          no_team: "no team"
+          no_team: "žádný tým"
         stores:
           header: "&7Obchodníci:"
           position: "- XYZ: &7%x%&r/&7%y%&r/&7%z%"
           entity_type: "  Typ žijící entity: &a%type%"
           custom_shop: "  Má vlastní obchod: &7%bool%"
           name: "  Jméno obchodu: &6%file%&r (dědí z hlavního obchodu: &7%bool%&r)"
-          name_above: "  Custom name above head: &6%name%&r"
+          name_above: "  Vlastní jméno nad hlavou: &6%name%&r"
           no_name_above: "&cŽádné jméno nemá"
         config:
           header: "&7Konfigurace konstant:"
@@ -226,11 +226,11 @@ commands:
     add:
       added: "&aAréna přidána!"
       already_exists: "&cAréna již existuje!"
-      not_saved: "&cArena already exists but it's not saved!"
+      not_saved: "&cAréna již existuje, ale není uložena!"
     remove:
       removed: "&c&lAréna smazána!"
     edit:
-      switched: "&aArena was switched to edit mode!"
+      switched: "&aArena byla přepnuta do režimu úprav!"
     info_sender:
       header: "&aVyberte prosím sekci informací k aréně &7%arena%&a:"
       base: "&aZákladní informace&f - &7/bw admin %arena% info base"
