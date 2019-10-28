@@ -1,5 +1,5 @@
 ---
-lang_name: "Српски"
+lang_name: "English"
 prefix: "[BW]"
 item_shop_name: "Shop"
 join: "%name% &ajoined the game!&r &7[&a%players%&7/&a%maxplayers%&7]"
