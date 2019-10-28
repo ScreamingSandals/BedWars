@@ -205,9 +205,9 @@ commands:
         inherit: "&eDědící z aktuální konfigurace pluginu"
         teams:
           header: "&7Týmy:"
-          info: "- %team%&r (Maximal players in team: &7%maxplayers%&r)"
+          info: "- %team%&r (Maximální počet hráčů: &7%maxplayers%&r)"
           spawn: "  &7Spawn týmu: &fXYZ: &7%x%&r/&7%y%&r/&7%z%"
-          target: "  &7Target block: &fXYZ: &7%x%&r/&7%y%&r/&7%z%"
+          target: "  &7Týmový blok: &fXYZ: &7%x%&r/&7%y%&r/&7%z%"
         spawners:
           header: "&7Spawnery:"
           info: "- %resource% &7- %team% &7- &eHolo: &f%holo% &7- XYZ: &7%x%&r/&7%y%&r/&7%z%"
