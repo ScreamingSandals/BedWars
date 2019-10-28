@@ -1533,11 +1533,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 						LivingEntity villager = store.spawn();
 						if (villager != null) {
 							Main.registerGameEntity(villager, this);
-							try {
-								villager.setAI(false); // Disable Entity AI
-							} catch (Throwable t) {
-								NMSUtils.disableEntityAI(villager); // Disable Entity AI 1.8
-							}
+							NMSUtils.disableEntityAI(villager);
 						}
 					}
 
@@ -3036,5 +3032,25 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 			fakeEnderChests.put(player, Bukkit.createInventory(player.player, InventoryType.ENDER_CHEST));
 		}
 		return fakeEnderChests.get(player);
+	}
+
+	public String getGameStatusString() {
+		String toReturn = "";
+		switch (getStatus()) {
+			case DISABLED:
+				toReturn = m("arena.status.disabled", false).get();
+				break;
+			case REBUILDING:
+				toReturn = m("arena.status.rebuilding", false).get();
+				break;
+			case RUNNING:
+			case GAME_END_CELEBRATING:
+				toReturn = m("arena.status.running", false).get();
+				break;
+			case WAITING:
+				toReturn = m("arena.status.waiting", false).get();
+				break;
+		}
+		return toReturn;
 	}
 }

@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
+import static misat11.lib.lang.I.m;
 import static misat11.lib.lang.I18n.i18n;
 
 public class AddholoCommand extends BaseCommand {
@@ -18,11 +19,11 @@ public class AddholoCommand extends BaseCommand {
     public boolean execute(CommandSender sender, List<String> args) {
         Player player = (Player) sender;
         if (!Main.isHologramsEnabled()) {
-            player.sendMessage(i18n("holo_not_enabled"));
+            m("holograms.not_enabled").send(player);
         } else {
             Main.getHologramInteraction().addHologramLocation(player.getEyeLocation());
             Main.getHologramInteraction().updateHolograms();
-            player.sendMessage(i18n("holo_added"));
+            m("commands.holograms.added").send(player);
         }
         return true;
     }

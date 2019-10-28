@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static misat11.lib.lang.I.m;
 import static misat11.lib.lang.I18n.i18n;
 
 public class BwCommandsExecutor implements CommandExecutor, TabCompleter {
@@ -53,7 +54,7 @@ public class BwCommandsExecutor implements CommandExecutor, TabCompleter {
         BaseCommand bCommand = Main.getCommands().get(command.toLowerCase());
 
         if (bCommand == null) {
-            sender.sendMessage(i18n("unknown_command"));
+            m("commands.errors.unknown_command").send(sender);
             return true;
         }
 
@@ -65,14 +66,14 @@ public class BwCommandsExecutor implements CommandExecutor, TabCompleter {
         }
 
         if (!bCommand.hasPermission(sender)) {
-            sender.sendMessage(i18n("no_permissions"));
+            m("commands.errors.no_permissions").send(sender);
             return true;
         }
 
         boolean result = bCommand.execute(sender, arguments);
 
         if (!result) {
-            sender.sendMessage(i18n("unknown_usage"));
+            m("commands.errors.unknown_usage").send(sender);
         }
 
         return true;

@@ -1,12 +1,12 @@
 package org.screamingsandals.bedwars.commands;
 
-import org.screamingsandals.bedwars.Main;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.screamingsandals.bedwars.Main;
 
 import java.util.List;
 
-import static misat11.lib.lang.I18n.i18n;
+import static misat11.lib.lang.I.m;
 
 public class JoinCommand extends BaseCommand {
 
@@ -18,7 +18,7 @@ public class JoinCommand extends BaseCommand {
     public boolean execute(CommandSender sender, List<String> args) {
         Player player = (Player) sender;
         if (Main.isPlayerInGame(player)) {
-            player.sendMessage(i18n("you_are_already_in_some_game"));
+            m("commands.join.already_in_game").send(player);
             return true;
         }
 
@@ -27,7 +27,7 @@ public class JoinCommand extends BaseCommand {
             if (Main.isGameExists(arenaN)) {
                 Main.getGame(arenaN).joinToGame(player);
             } else {
-                player.sendMessage(i18n("no_arena_found"));
+                m("commands.join.not_found").send(player);
             }
         } else {
             Main.getInstance().getGameWithHighestPlayers().joinToGame(player);

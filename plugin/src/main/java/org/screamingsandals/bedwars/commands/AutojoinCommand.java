@@ -1,13 +1,13 @@
 package org.screamingsandals.bedwars.commands;
 
-import org.screamingsandals.bedwars.Main;
-import org.screamingsandals.bedwars.api.game.Game;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.screamingsandals.bedwars.Main;
+import org.screamingsandals.bedwars.api.game.Game;
 
 import java.util.List;
 
-import static misat11.lib.lang.I18n.i18n;
+import static misat11.lib.lang.I.m;
 
 public class AutojoinCommand extends BaseCommand {
 
@@ -19,13 +19,13 @@ public class AutojoinCommand extends BaseCommand {
     public boolean execute(CommandSender sender, List<String> args) {
         Player player = (Player) sender;
         if (Main.isPlayerInGame(player)) {
-            player.sendMessage(i18n("you_are_already_in_some_game"));
+            m("commands.auto_join.already_in_game").send(player);
             return true;
         }
 
         Game game = Main.getInstance().getFirstWaitingGame();
         if (game == null) {
-            player.sendMessage(i18n("there_is_no_empty_game"));
+            m("commands.auto_join.no_empty_game").send(player);
         } else {
             game.joinToGame(player);
         }

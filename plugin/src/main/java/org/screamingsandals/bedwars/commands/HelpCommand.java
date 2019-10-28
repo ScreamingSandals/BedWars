@@ -1,13 +1,13 @@
 package org.screamingsandals.bedwars.commands;
 
-import org.screamingsandals.bedwars.Main;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
+import org.screamingsandals.bedwars.Main;
 
 import java.util.List;
 
-import static misat11.lib.lang.I18n.i18nonly;
+import static misat11.lib.lang.I.m;
 
 public class HelpCommand extends BaseCommand {
 
@@ -31,57 +31,60 @@ public class HelpCommand extends BaseCommand {
     }
 
     public void sendConsoleHelp(ConsoleCommandSender console) {
-        console.sendMessage(i18nonly("help_title_console").replace("%version%", Main.getVersion()));
-        console.sendMessage(i18nonly("help_bw_list"));
-        console.sendMessage(i18nonly("help_bw_stats_other"));
-        console.sendMessage(i18nonly("help_bw_reload"));
+        m("commands.help.header_console")
+                .replace("%version%", Main.getVersion())
+                .send(console);
+        m("commands.help.list").send(console);
+        m("commands.help.stats_others").send(console);
+        m("commands.help.admin.reload").send(console);
     }
 
     public void sendHelp(Player player) {
-        player.sendMessage(i18nonly("help_title").replace("%version%", Main.getVersion()));
-        player.sendMessage(i18nonly("help_bw_join"));
-        player.sendMessage(i18nonly("help_bw_leave"));
-        player.sendMessage(i18nonly("help_bw_rejoin"));
-        player.sendMessage(i18nonly("help_bw_autojoin"));
-        player.sendMessage(i18nonly("help_bw_list"));
+        m("commands.help.header")
+                .replace("%version%", Main.getVersion())
+                .send(player);
+        m("commands.help.join").send(player);
+        m("commands.help.leave").send(player);
+        m("commands.help.rejoin").send(player);
+        m("commands.help.auto_join").send(player);
+        m("commands.help.list").send(player);
 
         if (player.hasPermission(ADMIN_PERMISSION) || player.hasPermission(OTHER_STATS_PERMISSION)) {
-            player.sendMessage(i18nonly("help_bw_stats_other"));
+            m("commands.help.stats_others").send(player);
         } else {
-            player.sendMessage(i18nonly("help_bw_stats"));
+            m("commands.help.stats").send(player);
         }
 
         if (player.hasPermission(ADMIN_PERMISSION)) {
-            player.sendMessage(i18nonly("help_bw_addholo"));
-            player.sendMessage(i18nonly("help_bw_removeholo"));
-            player.sendMessage(i18nonly("help_bw_mainlobby"));
-
-            player.sendMessage(i18nonly("help_bw_admin_info"));
-            player.sendMessage(i18nonly("help_bw_admin_add"));
-            player.sendMessage(i18nonly("help_bw_admin_lobby"));
-            player.sendMessage(i18nonly("help_bw_admin_spec"));
-            player.sendMessage(i18nonly("help_bw_admin_pos1"));
-            player.sendMessage(i18nonly("help_bw_admin_pos2"));
-            player.sendMessage(i18nonly("help_bw_admin_pausecountdown"));
-            player.sendMessage(i18nonly("help_bw_admin_minplayers"));
-            player.sendMessage(i18nonly("help_bw_admin_time"));
-            player.sendMessage(i18nonly("help_bw_admin_team_add"));
-            player.sendMessage(i18nonly("help_bw_admin_team_color"));
-            player.sendMessage(i18nonly("help_bw_admin_team_maxplayers"));
-            player.sendMessage(i18nonly("help_bw_admin_team_spawn"));
-            player.sendMessage(i18nonly("help_bw_admin_team_bed"));
-            player.sendMessage(i18nonly("help_bw_admin_jointeam"));
-            player.sendMessage(i18nonly("help_bw_admin_spawner_add"));
-            player.sendMessage(i18nonly("help_bw_admin_spawner_reset"));
-            player.sendMessage(i18nonly("help_bw_admin_store_add"));
-            player.sendMessage(i18nonly("help_bw_admin_store_remove"));
-            player.sendMessage(i18nonly("help_bw_admin_config"));
-            player.sendMessage(i18nonly("help_bw_admin_arena_time"));
-            player.sendMessage(i18nonly("help_bw_admin_arena_weather"));
-            player.sendMessage(i18nonly("help_bw_admin_remove"));
-            player.sendMessage(i18nonly("help_bw_admin_edit"));
-            player.sendMessage(i18nonly("help_bw_admin_save"));
-            player.sendMessage(i18nonly("help_bw_reload"));
+            m("commands.help.admin.addholo").send(player);
+            m("commands.help.admin.removeholo").send(player);
+            m("commands.help.admin.mainlobby").send(player);
+            m("commands.help.admin.info").send(player);
+            m("commands.help.admin.add").send(player);
+            m("commands.help.admin.lobby").send(player);
+            m("commands.help.admin.spec").send(player);
+            m("commands.help.admin.pos1").send(player);
+            m("commands.help.admin.pos2").send(player);
+            m("commands.help.admin.pausecountdown").send(player);
+            m("commands.help.admin.minplayers").send(player);
+            m("commands.help.admin.time").send(player);
+            m("commands.help.admin.team_add").send(player);
+            m("commands.help.admin.team_color").send(player);
+            m("commands.help.admin.team_maxplayers").send(player);
+            m("commands.help.admin.team_spawn").send(player);
+            m("commands.help.admin.team_bed").send(player);
+            m("commands.help.admin.join_team").send(player);
+            m("commands.help.admin.spawner_add").send(player);
+            m("commands.help.admin.spawner_reset").send(player);
+            m("commands.help.admin.store_add").send(player);
+            m("commands.help.admin.store_remove").send(player);
+            m("commands.help.admin.config").send(player);
+            m("commands.help.admin.arena_time").send(player);
+            m("commands.help.admin.arena_weather").send(player);
+            m("commands.help.admin.remove").send(player);
+            m("commands.help.admin.edit").send(player);
+            m("commands.help.admin.save").send(player);
+            m("commands.help.admin.reload").send(player);
         }
     }
 

@@ -22,25 +22,18 @@ import misat11.lib.nms.Hologram;
 import misat11.lib.nms.NMSUtils;
 import misat11.lib.nms.TouchHandler;
 
-public class NMSUtilsHologramInteraction implements IHologramInteraction, TouchHandler {
+public class HologramManager implements TouchHandler {
 
     private ArrayList<Location> hologramLocations = null;
     private Map<Player, List<Hologram>> holograms = null;
 
-	@Override
 	public void addHologramLocation(Location eyeLocation) {
         this.hologramLocations.add(eyeLocation.subtract(0, 3, 0));
         this.updateHologramDatabase();
 	}
 
-	@Override
 	public ArrayList<Location> getHologramLocations() {
 		return hologramLocations;
-	}
-
-	@Override
-	public String getType() {
-        return "NMSUtils.Holograms";
 	}
 
     @SuppressWarnings("unchecked")
@@ -73,12 +66,6 @@ public class NMSUtilsHologramInteraction implements IHologramInteraction, TouchH
         this.updateHolograms();
     }
 
-	@Override
-	public void onHologramTouch(Player player, Location holoLocation) {
-        // NOT NEEDED HERE
-	}
-
-	@Override
 	public void unloadAllHolograms(Player player) {
         if (!this.holograms.containsKey(player)) {
             return;
@@ -91,7 +78,6 @@ public class NMSUtilsHologramInteraction implements IHologramInteraction, TouchH
         this.holograms.remove(player);
 	}
 
-	@Override
 	public void unloadHolograms() {
         if (Main.isHologramsEnabled()) {
         	for (List<Hologram> holos : holograms.values()) {
@@ -102,28 +88,25 @@ public class NMSUtilsHologramInteraction implements IHologramInteraction, TouchH
         }
 	}
 
-	@Override
 	public void updateHolograms(Player player) {
         Main.getInstance().getServer().getScheduler().runTask(Main.getInstance(), () -> {
-            for (Location holoLocation : NMSUtilsHologramInteraction.this.hologramLocations) {
-            	NMSUtilsHologramInteraction.this.updatePlayerHologram(player, holoLocation);
+            for (Location holoLocation : HologramManager.this.hologramLocations) {
+            	HologramManager.this.updatePlayerHologram(player, holoLocation);
             }
         });
 	}
 
-	@Override
 	public void updateHolograms(Player player, long delay) {
         Main.getInstance().getServer().getScheduler().runTaskLater(Main.getInstance(), () -> {
-        	NMSUtilsHologramInteraction.this.updateHolograms(player);
+        	HologramManager.this.updateHolograms(player);
         }, delay);
 	}
 
-	@Override
 	public void updateHolograms() {
         for (final Player player : Bukkit.getServer().getOnlinePlayers()) {
             Main.getInstance().getServer().getScheduler().runTask(Main.getInstance(), () -> {
-                for (Location holoLocation : NMSUtilsHologramInteraction.this.hologramLocations) {
-                	NMSUtilsHologramInteraction.this.updatePlayerHologram(player, holoLocation);
+                for (Location holoLocation : HologramManager.this.hologramLocations) {
+                	HologramManager.this.updatePlayerHologram(player, holoLocation);
                 }
             });
         }

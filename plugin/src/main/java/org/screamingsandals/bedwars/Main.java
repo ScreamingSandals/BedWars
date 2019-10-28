@@ -29,8 +29,7 @@ import org.screamingsandals.bedwars.game.Game;
 import org.screamingsandals.bedwars.game.GamePlayer;
 import org.screamingsandals.bedwars.game.ItemSpawnerType;
 import org.screamingsandals.bedwars.game.TeamColor;
-import org.screamingsandals.bedwars.holograms.IHologramInteraction;
-import org.screamingsandals.bedwars.holograms.NMSUtilsHologramInteraction;
+import org.screamingsandals.bedwars.holograms.HologramManager;
 import org.screamingsandals.bedwars.inventories.ShopInventory;
 import org.screamingsandals.bedwars.listener.*;
 import org.screamingsandals.bedwars.placeholderapi.BedwarsExpansion;
@@ -64,7 +63,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
     private HashMap<String, ItemSpawnerType> spawnerTypes = new HashMap<>();
     private DatabaseManager databaseManager;
     private PlayerStatisticManager playerStatisticsManager;
-    private IHologramInteraction hologramInteraction;
+    private HologramManager hologramInteraction;
     private HashMap<String, BaseCommand> commands;
     private SpigetUpdate spigetUpdate;
     private ColorChanger colorChanger;
@@ -285,7 +284,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         return instance.configurator.config.getBoolean("holograms.enabled") && instance.hologramInteraction != null;
     }
 
-    public static IHologramInteraction getHologramInteraction() {
+    public static HologramManager getHologramInteraction() {
         return instance.hologramInteraction;
     }
 
@@ -369,7 +368,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         
         try {
             if (configurator.config.getBoolean("holograms.enabled")) {
-            	hologramInteraction = new NMSUtilsHologramInteraction();
+            	hologramInteraction = new HologramManager();
 
                 if (hologramInteraction != null) {
                     hologramInteraction.loadHolograms();

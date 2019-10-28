@@ -1,14 +1,14 @@
 package org.screamingsandals.bedwars.commands;
 
-import org.screamingsandals.bedwars.Main;
-import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.screamingsandals.bedwars.Main;
+import org.screamingsandals.bedwars.api.game.GameStatus;
 
 import java.util.List;
 
-import static misat11.lib.lang.I18n.i18n;
+import static misat11.lib.lang.I.m;
 
 public class ReloadCommand extends BaseCommand {
 
@@ -18,15 +18,14 @@ public class ReloadCommand extends BaseCommand {
 
     @Override
     public boolean execute(CommandSender sender, List<String> args) {
-        sender.sendMessage(i18n("safe_reload"));
+        m("commands.reload.safe").send(sender);
 
         for (String game : Main.getGameNames()) {
             Main.getGame(game).stop();
         }
 
         new BukkitRunnable() {
-
-            public int timer = 60;
+            int timer = 60;
 
             @Override
             public void run() {
@@ -39,14 +38,14 @@ public class ReloadCommand extends BaseCommand {
                 }
 
                 if (gameRuns && timer == 0) {
-                    sender.sendMessage(i18n("safe_reload_failed_to_stop_game"));
+                    m("commands.reload.failed").send(sender);
                 }
 
                 if (!gameRuns || timer == 0) {
                     this.cancel();
                     Bukkit.getServer().getPluginManager().disablePlugin(Main.getInstance());
                     Bukkit.getServer().getPluginManager().enablePlugin(Main.getInstance());
-                    sender.sendMessage("Plugin reloaded!");
+                    sender.sendMessage("Plugin was reloaded! YAAY.");
                     return;
                 }
                 timer--;

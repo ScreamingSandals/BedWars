@@ -1,15 +1,15 @@
 package org.screamingsandals.bedwars.commands;
 
-import org.screamingsandals.bedwars.Main;
-import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.screamingsandals.bedwars.Main;
+import org.screamingsandals.bedwars.utils.MiscUtils;
 
 import java.util.Arrays;
 import java.util.List;
 
-import static misat11.lib.lang.I18n.i18n;
+import static misat11.lib.lang.I.m;
 
 public class MainlobbyCommand extends BaseCommand {
 
@@ -26,8 +26,8 @@ public class MainlobbyCommand extends BaseCommand {
                 Main.getConfigurator().config.set("mainlobby.enabled", true);
                 Main.getConfigurator().saveConfig();
 
-                player.sendMessage(i18n("admin_command_success"));
-                player.sendMessage(i18n("admin_command_mainlobby_info"));
+                m("commands.success.done.list.header").send(sender);
+                m("commands.admin.main_lobby.info").send(sender);
                 return true;
             } else if (args.contains("set")) {
                 Location location = player.getLocation();
@@ -36,11 +36,11 @@ public class MainlobbyCommand extends BaseCommand {
                 Main.getConfigurator().config.set("mainlobby.world", location.getWorld().getName());
                 Main.getConfigurator().saveConfig();
 
-                player.sendMessage(i18n("admin_command_success"));
+                m("commands.success.done.list.header").send(sender);
                 return true;
             }
         }
-        player.sendMessage(i18n("unknown_usage"));
+        m("commands.errors.unknown_usage").send(sender);
         return true;
     }
 

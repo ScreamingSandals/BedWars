@@ -1,12 +1,12 @@
 package org.screamingsandals.bedwars.commands;
 
-import org.screamingsandals.bedwars.Main;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.screamingsandals.bedwars.Main;
 
 import java.util.List;
 
-import static misat11.lib.lang.I18n.i18n;
+import static misat11.lib.lang.I.m;
 
 public class RejoinCommand extends BaseCommand {
 
@@ -18,7 +18,7 @@ public class RejoinCommand extends BaseCommand {
     public boolean execute(CommandSender sender, List<String> args) {
         Player player = (Player) sender;
         if (Main.isPlayerInGame(player)) {
-            player.sendMessage(i18n("you_are_already_in_some_game"));
+            m("commands.rejoin.already_in_game").send(player);
             return true;
         }
 
@@ -27,12 +27,12 @@ public class RejoinCommand extends BaseCommand {
             name = Main.getPlayerGameProfile(player).getLatestGameName();
         }
         if (name == null) {
-            player.sendMessage(i18n("you_are_not_in_game_yet"));
+            m("commands.rejoin.no_game_found").send(player);
         } else {
             if (Main.isGameExists(name)) {
                 Main.getGame(name).joinToGame(player);
             } else {
-                player.sendMessage(i18n("game_is_gone"));
+                m("commands.rejoin.no_game_found").send(player);
             }
         }
         return true;
