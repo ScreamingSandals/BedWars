@@ -1,7 +1,7 @@
 ---
-lang_name: "German"
+lang_name: "Englisch"
 prefix: "[BW]"
-item_shop_name: "Shop"
+item_shop_name: "Geschäft"
 join: "%name% &atritt dem Spiel bei!&r &7[&a%players%&7/&a%maxplayers%&7]"
 leave: "%name% &chat das Spiel verlassen!"
 game_already_running: "&cSpiel &7%arena% &cläuft bereits!"
