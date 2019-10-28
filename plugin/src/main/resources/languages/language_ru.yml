@@ -7,13 +7,13 @@ game:
     global:
       joined: "%name% &aприсоединился к игре!&r &7[&a%players%&7/&a%maxplayers%&7]"
       leaved: "%name% &cпокинул игру!"
-      game_win: "&aTeam &r%team%&a won game in &7%time%"
-      game_end: "&cGame ended! Thanks for playing!"
+      game_win: "&Команда &r%team%&a победила за время &7%time%"
+      game_end: "&cИгра окончена! Спасибо за участие!"
       players:
-        self_killed: "&cPlayer %victim% &cdied!"
-        killed: "&cPlayer %killer% &ckilled %victim%&c!"
+        self_killed: "&cИгрок %victim% &cумер!"
+        killed: "&cИгрок %killer% &cубил игрока %victim%&c!"
       titles:
-        start: "&aGame started!"
+        start: "&aИгра началась!"
         start_subtitle: "&aGame &7%arena%&a has started! Enjoy the game!"
         bed_is_destroyed: "Bed of %team%&r is destroyed!"
         target_is_destroyed: "Target block of %team%&r is destroyed!"
