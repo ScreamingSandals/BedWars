@@ -18,9 +18,9 @@ game:
         bed_is_destroyed: "¡pǝʎoɹʇsǝp sᴉ %team%&r ɟo pǝq"
         target_is_destroyed: "¡pǝʎoɹʇsǝp sᴉ %team%&r ɟo ʞɔolq ʇǝƃɹɐ┴"
         bed_is_destroyed_subtitle: "¡sɹǝqɯǝɯ ɯɐǝʇ ǝɥʇ llᴉʞ ʍou uɐɔ no⅄"
-        bed_is_destroyed_subtitle_for_victim: "Now you will never be respawned!"
+        bed_is_destroyed_subtitle_for_victim: "¡pǝuʍɐdsǝɹ ǝq ɹǝʌǝu llᴉʍ noʎ ʍoN"
       bossbar:
-        waiting: "&cThe game will begin shortly!"
+        waiting: "&c¡ʎlʇɹoɥs uᴉƃǝq llᴉʍ ǝɯɐƃ ǝɥ┴"
         running: "&aGame started! Good luck!"
     player:
       already_running: "&cGame &7%arena% &cis already running! You can't join a running game!"
