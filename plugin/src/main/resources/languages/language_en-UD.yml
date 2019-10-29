@@ -1,12 +1,12 @@
 ---
 lang_name: "(uʍop ǝpᴉsdn) ɥsᴉlƃuƎ"
 prefix: "&7[&4sɹɐM&fpǝq&7]"
-item_shop_name: "Shop"
+item_shop_name: "doɥS"
 game:
   info:
     global:
-      joined: "%name% &ajoined the game!&r &7[&a%players%&7/&a%maxplayers%&7]"
-      leaved: "%name% &cleft the game!"
+      joined: "%name% &aɾoᴉuǝp ʇɥǝ ƃɐɯǝ¡&r &7[&a%players%&7/&a%maxplayers%&7]"
+      leaved: "&c¡ǝɯɐƃ ǝɥʇ ʇɟǝl &r%name%"
       game_win: "&aTeam &r%team%&a won game in &7%time%"
       game_end: "&cGame ended! Thanks for playing!"
       players:
