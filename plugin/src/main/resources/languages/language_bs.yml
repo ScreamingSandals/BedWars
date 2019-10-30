@@ -1,13 +1,13 @@
 ---
 lang_name: "English"
 prefix: "&7[&fBed&4Wars&7]&r"
-item_shop_name: "Shop"
+item_shop_name: "Trgovina"
 game:
   info:
     global:
-      joined: "%name% &ajoined the game!&r &7[&a%players%&7/&a%maxplayers%&7]"
-      leaved: "%name% &cleft the game!"
-      game_win: "&aTeam &r%team%&a won game in &7%time%"
+      joined: "%name% &aje usao u igru!&r &7[&a%players%&7/&a%maxplayers%&7]"
+      leaved: "%name% &cje napustio igru!"
+      game_win: "&aTim &r%team%&a je pobijedio igru za &7%time%"
       game_end: "&cGame ended! Thanks for playing!"
       players:
         self_killed: "&cPlayer %victim% &cdied!"
