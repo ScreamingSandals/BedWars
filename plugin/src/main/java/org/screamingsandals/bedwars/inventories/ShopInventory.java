@@ -86,6 +86,52 @@ public class ShopInventory implements Listener {
             }
             return team.getName();
         });
+        options.registerPlaceholder("spawner", (key, player, arguments) -> {
+			GamePlayer gPlayer = Main.getPlayerGameProfile(player);
+			Game game = gPlayer.getGame();
+			if (arguments.length > 2) {
+				String upgradeBy = arguments[0];
+				String upgrade = arguments[1];
+				UpgradeStorage upgradeStorage = UpgradeRegistry.getUpgrade("spawner");
+				if (upgradeStorage == null) {
+					return null;
+				}
+				List<Upgrade> upgrades = null;
+				switch (upgradeBy) {
+				case "name":
+					upgrades = upgradeStorage.findItemSpawnerUpgrades(game, upgrade);
+					break;
+				case "team":
+					upgrades = upgradeStorage.findItemSpawnerUpgrades(game, game.getPlayerTeam(gPlayer));
+					break;
+				}
+
+				if (upgrades != null && !upgrades.isEmpty()) {
+					String what = "level";
+					if (arguments.length > 3) {
+						what = arguments[2];
+					}
+					double heighest = Double.MIN_VALUE;
+					switch (what) {
+					case "level":
+						for (Upgrade upgrad : upgrades) {
+							if (upgrad.getLevel() > heighest) {
+								heighest = upgrad.getLevel();
+							}
+						}
+						return String.valueOf(heighest);
+					case "initial":
+						for (Upgrade upgrad : upgrades) {
+							if (upgrad.getInitialLevel() > heighest) {
+								heighest = upgrad.getInitialLevel();
+							}
+						}
+						return String.valueOf(heighest);
+					}
+				}
+			}
+			return "";
+		});
 
         loadNewShop("default", null, true);
     }
