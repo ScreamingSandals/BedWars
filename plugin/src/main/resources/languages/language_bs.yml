@@ -115,45 +115,45 @@ arena:
 signs:
   created: "&aNatpis je uspjesno napravljen!"
   not_created: "&cNatpis nije moguce napraviti! Provjerite naziv arene!"
-  cannot_destroy: "&cYou don't have permissions to destroy this sign!"
-  game_not_exists: "&cThe game that is written on the sign doesn't exist! Please contact an admin!"
+  cannot_destroy: "&cNemate dozvolu da unistite ovaj natpis!"
+  game_not_exists: "&cArena navedena na natpisu ne postoji! Kontaktirajte admina!"
   status:
     disabled:
-      name: "&cGame"
-      players: "&cdisabled"
+      name: "&cIgra"
+      players: "&ciskljuceno"
     rebuilding:
-      name: "&cGame"
+      name: "&cIgra"
       players: "&6Arena"
     running:
-      name: "&aRunning"
+      name: "&aZapoceto"
       players: "&c%players%&8/&c%maxplayers%"
     waiting:
-      name: "&6Waiting"
+      name: "&6Cekanje"
       players: "&a%players%&8/&a%maxplayers%"
 holograms:
-  not_enabled: "&cHolograms are disabled."
-  click_to_remove: "&eNow click the &ahologram &eyou want to remove!"
-  holo_removed: "&aHologram has been &lsuccessfully &aremoved!"
+  not_enabled: "&cHologrami su iskljuceni."
+  click_to_remove: "&eSada kliknite na &ahologram &ekoji zelite ukloniti!"
+  holo_removed: "&aHologram je &luspjesno &auklonjen!"
   game:
     beds:
-      protect_your_bed: "%teamcolor%&lProtect your bed!"
-      protect_your_target: "%teamcolor%&lProtect your target block!"
-      protect_your_bed_destroyed: "&7&lBed is destroyed."
-      protect_your_target_destroyed: "&7&lTarget block is destroyed."
-      destroy_this_bed: "%teamcolor%&lDestroy this bed!"
-      destroy_this_target: "%teamcolor%&lDestroy this target block!"
+      protect_your_bed: "%teamcolor%&lZastitite vas krevet!"
+      protect_your_target: "%teamcolor%&lZastitite vasu metu!"
+      protect_your_bed_destroyed: "&7&lKrevet je unisten."
+      protect_your_target_destroyed: "&7&lMeta je unistena."
+      destroy_this_bed: "%teamcolor%&lUnistite ovaj krevet!"
+      destroy_this_target: "%teamcolor%&lUnistite ovu metu!"
 commands:
   success:
-    done: "&aCommand executed successfully!"
+    done: "&aKomanda uspjesno izvrsena!"
   errors:
-    unknown_command: "&cCommand unknown! Type &4/bw help &cfor help!"
-    unknown_usage: "&cNumber of arguments does not match the correct amount or unknown arguments! Type &4/bw help &cfor help!"
-    no_permissions: "&cYou don't have the permission to do that!"
-    not_allowed: "&cThis command is blocked while the game is running!"
+    unknown_command: "&cNepostojeca komanda! Upisite &4/bw help &cza pomoc!"
+    unknown_usage: "&cBroj argumenata nije valjan ili su navedeni nepostojeci argumenti! Upisite &4/bw help &cza pomoc!"
+    no_permissions: "&cNemate dozvolu da to radite!"
+    not_allowed: "&cOva komanda se ne moze koristiti za vrijeme igre!"
   holograms:
-    added: "&aHologram has been added to your position!"
+    added: "&aHologram je dodan na vasu poziciju!"
   auto_join:
-    already_in_game: "&cYou are already in some game."
+    already_in_game: "&cVec ste u nekoj igri."
     no_empty_game: "&cThere's no game empty game!"
   join:
     already_in_game: "&cYou are already in some game."
@@ -215,8 +215,8 @@ commands:
         stores:
           header: "&7Stores:"
           position: "- XYZ: &7%x%&r/&7%y%&r/&7%z%"
-          entity_type: "  Type: &a%type%"
-          custom_shop: "  Has own shop: &7%bool%"
+          entity_type: "  Tip: &a%type%"
+          custom_shop: "  Ima vlastitu trgovinu: &7%bool%"
           name: "  Shop name: &6%file%&r (inherit from main: &7%bool%&r)"
           name_above: "  Custom name above head: &6%name%&r"
           no_name_above: "&cNo name is set"
