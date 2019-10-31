@@ -81,25 +81,25 @@ game:
     trap:
       built: "&aPostavili ste zamku! Sada pricekajte da nekoga ulovite u njoj!"
       caught: "&cUpali ste u zamku od &f%team% &ctima!"
-      broadcast: "&f%player%&c got caught in your team's trap!"
+      broadcast: "&f%player%&c je upao u zamku vaseg tima!"
     warp_powder:
-      canceled: "&cTeleporting was canceled."
-      started: "&aTeleporting.. Please don't move for &7%time%&a seconds!"
+      canceled: "&cTeleportacija je otkazana."
+      started: "&aTeleportacija... Ne micite se sljedecih &7%time%&a sekundi!"
     tracker:
-      no_one: "&cNo target found!"
-      found: "&f%target% &ahas been found &f%distance% &ablocks away!"
+      no_one: "&cMeta nije pronadjena!"
+      found: "&f%target% &aje pronadjen na udaljenosti od &f%distance%&a!"
     rescue_platform:
-      not_in_air: "&cYou need to be in the air."
-      destroyed_in: "&cPlatform will be destroyed in &f%time% &cseconds."
-      created_unbreakable: "&aUnbreakable Platform was created!"
-      created: "&aPlatform is created and will be destroyed in &f%time% &aseconds."
+      not_in_air: "&cMorate biti u zraku."
+      destroyed_in: "&cPlatforma ce biti unistena za &f%time% &csekundi."
+      created_unbreakable: "&aNeunistiva platforma napravljena!"
+      created: "&aPlatforma je napravljena i bit ce unistena za &f%time% &asekundi."
     protection_wall:
-      not_usable_here: "&cThere is no space left for creating Protection Wall."
-      destroyed_in: "&cProtection Wall will be destroyed in &f%time% &cseconds."
-      created_unbreakable: "&aUnbreakable Protection Wall was created!"
-      created: "&aProtection Wall is created and will be destroyed in &f%time% &aseconds."
+      not_usable_here: "&cNema dovoljno prostora kako bi se napravio Protection Wall."
+      destroyed_in: "&cProtection Wall ce biti unisten za &f%time% &csekundi."
+      created_unbreakable: "&aNeunistivi Protection Wall napravljen!"
+      created: "&aProtection Wall je napravljen i bit ce unisten za &f%time% &asekundi."
     tnt_sheep:
-      no_target_found: "&cNo target found!"
+      no_target_found: "&cMeta nije pronadjena!"
     arror_blocker:
       activated: "&aArrow blocker has been activated for %time% seconds!"
       already_activated: "&cArrow blocker is already activated!"
@@ -108,13 +108,13 @@ game:
       created: "&aGolem has been spawned."
 arena:
   status:
-    disabled: "&cDISABLED"
-    waiting: "&eWAITING"
-    running: "&aRUNNING"
-    rebuilding: "&eREBUILDING"
+    disabled: "&cISKLJUCENO"
+    waiting: "&eCEKANJE"
+    running: "&aZAPOCETO"
+    rebuilding: "&aRESETUJE SE"
 signs:
-  created: "&aSign was successfully created!"
-  not_created: "&cSign couldn't be created! Please check the name of the arena!"
+  created: "&aNatpis je uspjesno napravljen!"
+  not_created: "&cNatpis nije moguce napraviti! Provjerite naziv arene!"
   cannot_destroy: "&cYou don't have permissions to destroy this sign!"
   game_not_exists: "&cThe game that is written on the sign doesn't exist! Please contact an admin!"
   status:
