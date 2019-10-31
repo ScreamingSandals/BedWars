@@ -21,9 +21,9 @@ game:
         bed_is_destroyed_subtitle_for_victim: "¡pǝuʍɐdsǝɹ ǝq ɹǝʌǝu llᴉʍ noʎ ʍoN"
       bossbar:
         waiting: "&c¡ʎlʇɹoɥs uᴉƃǝq llᴉʍ ǝɯɐƃ ǝɥ┴"
-        running: "&aGame started! Good luck!"
+        running: "&a¡ʞɔnl pooפ ¡pǝʇɹɐʇs ǝɯɐפ"
     player:
-      already_running: "&cGame &7%arena% &cis already running! You can't join a running game!"
+      already_running: "&c¡ǝɯɐƃ ƃuᴉuunɹ ɐ uᴉoɾ ʇ,uɐɔ no⅄ ¡ƃuᴉuunɹ ʎpɐǝɹlɐ sᴉ &7%arena% &cǝɯɐפ"
       full: "&cGame &7%arena% &cis full! Please wait for game end!"
       vip:
         not_enough_players: "&cNot enough players in arena!"
