@@ -230,7 +230,7 @@ commands:
     remove:
       removed: "&c&lArena została usunięta!"
     edit:
-      switched: "&aArena was switched to edit mode!"
+      switched: "&aWłączono tryb edycji areny!"
     info_sender:
       header: "&aWybierz typ informacji o arenie &7%arena%&a:"
       base: "&aInformacje podstawowe&f - &7/bw admin %arena% info base"
@@ -246,12 +246,12 @@ commands:
       join: "/bw join <arena> - &aDołącz do gry"
       leave: "/bw leave - &aOpuść grę"
       rejoin: "/bw rejoin - &aDołącz do ostatniej gry"
-      auto_join: "/bw autojoin - &aJoin to first waiting game"
+      auto_join: "/bw autojoin - &aDołącz do wolnej gry"
       stats: "/bw stats - &aTwoje statystyki"
       stats_others: "/bw stats [gracz] - &aPokaż statystyki innych graczy"
       admin:
         info: "/bw admin <arena> info [sekcja] - &ePokazuje informacje o arenie"
-        add: "/bw admin <arena> add - &eStwórz nową arenę"
+        add: "/bw admin <arena> add - &eTworzy nową arenę"
         lobby: "/bw admin <arena> lobby - &eUstawia punkt spawnu lobby"
         spec: "/bw admin <arena> spec - &eUstawia punkt spawnu obserwatora"
         pos1: "/bw admin <arena> pos1 - &eUstawia pozycję graniczną areny"
@@ -278,7 +278,7 @@ commands:
         save: "/bw admin <arena> save - &aZapisuje arenę w celu rozpoczęcia gry"
         addholo: "/bw addholo - &eDodaje hologram w twojej pozycji"
         removeholo: "/bw removeholo - &eUsuwa hologram"
-        mainlobby: "/bw mainlobby [enable|set] - &eEnables main lobby or sets main lobby location"
+        mainlobby: "/bw mainlobby [enable|set] - &eWłącza lub zmienia pozycję głównego lobby"
         reload: "/bw reload - &cPrzeładowuje plugin"
     messages:
       must_be_in_same_world: "&cKomendy muszą być wykonane w obecnym świecie!"
@@ -289,7 +289,7 @@ commands:
       store_already_exists: "&cSklep już istnieje!"
       store_not_exists: "&cSklep nie istnieje!"
       invalid_spawner_type: "&cBłędny typ generatora!"
-      invalid_spawner_level: "&fWrong level number, default level 1 was used."
+      invalid_spawner_level: "&fBłędny poziom generatora (użyto poziomu domyślnego: 1)."
       invalid_color: "&cPodano nieprawidłowy kolor!"
       block_is_not_bed: "&cWskazany blok nie jest łóżkiem!"
       max_players_fail: "&cMaksymalna liczba graczy musi być liczbą dodatnią!"
