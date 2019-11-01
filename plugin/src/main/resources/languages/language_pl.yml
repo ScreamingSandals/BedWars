@@ -97,26 +97,26 @@ game:
       not_usable_here: "&cNie ma miejsca na utworzenie muru ochronnego!"
       destroyed_in: "&cMur ochronny zniknie za &f%time% &csekund!"
       created_unbreakable: "&aNiezniszczalny mur ochronny został utworzony!"
-      created: "&aProtection Wall is created and will be destroyed in &f%time% &aseconds."
+      created: "&aMur ochronny został utworzony i zniknie za &f%time% &asekund!"
     tnt_sheep:
-      no_target_found: "&cNo target found!"
+      no_target_found: "&cNie znaleziono celu!"
     arror_blocker:
-      activated: "&aArrow blocker has been activated for %time% seconds!"
-      already_activated: "&cArrow blocker is already activated!"
-      ended: "&cArrow blocker is no longer activated!"
+      activated: "&aOchrona przed pociskami aktywowana na %time% sekund!"
+      already_activated: "&cMasz już ochronę przed pociskami!"
+      ended: "&cOchrona przed pociskami przestała działać!"
     golem:
-      created: "&aGolem has been spawned."
+      created: "&aGolem został stworzony."
 arena:
   status:
     disabled: "&cWYŁĄCZONA"
-    waiting: "&eWAITING"
-    running: "&aRUNNING"
+    waiting: "&eOCZEKIWANIE NA GRACZY"
+    running: "&aGRA W TOKU"
     rebuilding: "&eODBUDOWA"
 signs:
   created: "&aZnak został pomyślnie utworzony!"
   not_created: "&cZnak nie mógł być utworzony! Upewnij się, czy na pewno wpisałeś poprawną nazwę areny!"
   cannot_destroy: "&cNie masz uprawnień do zniszczenia tego znaku!"
-  game_not_exists: "&cThe game that is written on the sign doesn't exist! Please contact an admin!"
+  game_not_exists: "&cPróbowałeś dołączyć do gry, która nie istnieje! Skontaktuj się z administratorem serwera."
   status:
     disabled:
       name: "&cGra"
@@ -131,13 +131,13 @@ signs:
       name: "&6Oczekiwanie"
       players: "&a%players%&8/&a%maxplayers%"
 holograms:
-  not_enabled: "&cHolograms are disabled."
-  click_to_remove: "&eNow click the &ahologram &eyou want to remove!"
-  holo_removed: "&aHologram has been &lsuccessfully &aremoved!"
+  not_enabled: "&cHologramy są wyłączone."
+  click_to_remove: "&eKliknij na &ahologram&e, który chcesz usunąć!"
+  holo_removed: "&aHologram został &lpomyślnie &ausunięty!"
   game:
     beds:
-      protect_your_bed: "%teamcolor%&lProtect your bed!"
-      protect_your_target: "%teamcolor%&lProtect your target block!"
+      protect_your_bed: "%teamcolor%&lChroń swoje łóżko!"
+      protect_your_target: "%teamcolor%&lChroń swój cel!"
       protect_your_bed_destroyed: "&7&lBed is destroyed."
       protect_your_target_destroyed: "&7&lTarget block is destroyed."
       destroy_this_bed: "%teamcolor%&lDestroy this bed!"
