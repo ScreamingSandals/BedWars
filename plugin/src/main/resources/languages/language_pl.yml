@@ -138,10 +138,10 @@ holograms:
     beds:
       protect_your_bed: "%teamcolor%&lChroń swoje łóżko!"
       protect_your_target: "%teamcolor%&lChroń swój cel!"
-      protect_your_bed_destroyed: "&7&lBed is destroyed."
-      protect_your_target_destroyed: "&7&lTarget block is destroyed."
-      destroy_this_bed: "%teamcolor%&lDestroy this bed!"
-      destroy_this_target: "%teamcolor%&lDestroy this target block!"
+      protect_your_bed_destroyed: "&7&lŁóżko zostało zniszczone!"
+      protect_your_target_destroyed: "&7&lCel został zniszczony!"
+      destroy_this_bed: "%teamcolor%&lŁóżko do zniszczenia"
+      destroy_this_target: "%teamcolor%&lCel do zniszczenia"
 commands:
   success:
     done: "&aKomemda wykonana pomyślnie!"
@@ -151,29 +151,29 @@ commands:
     no_permissions: "&cNie masz uprawnień do użycia tej komendy!"
     not_allowed: "&cNie masz dostępu do tej komendy podczas gry!"
   holograms:
-    added: "&aHologram has been added to your position!"
+    added: "&aDodano hologram w twojej aktualnej pozycji!"
   auto_join:
     already_in_game: "&cJesteś już w innej grze."
-    no_empty_game: "&cThere's no game empty game!"
+    no_empty_game: "&cNie ma pustej gry!"
   join:
     already_in_game: "&cJesteś już w innej grze."
-    not_found: "&cArena does not exists!"
+    not_found: "&cArena nie istnieje!"
   leave:
-    not_in_game: "&cYou are not in game!"
+    not_in_game: "&cNie jesteś w grze!"
   list:
-    header: "&aAvailable arenas:"
+    header: "&aDostępne areny:"
   main_lobby:
-    info: "&cWARNING&f: You need to execute /bw reload to make Mainlobby work!"
+    info: "&cUWAGA&f: Przeładuj plugin za pomocą /bw reload aby uruchomić lobby główne!"
   rejoin:
     already_in_game: "&cJesteś już w innej grze."
-    no_game_found: "&cNo previous game found."
+    no_game_found: "&cNie znaleziono poprzedniej gry!"
   reload:
-    safe: "&aWaiting for safe stop of all games or for 60 seconds before reload!"
+    safe: "&aPrzed przeładowaniem czekam aż wszystkie gry zostaną zakończone (maksymalny czas: 60 sekund)!"
     failed: "&cNiektóre gry nie zostały zakończone w określonym czasie, areny mogą być uszkodzone!"
   statistics:
     header: "&aStatystyki gracza &7%player%&a:"
-    disabled: "&cPlayer statistics are disabled!"
-    not_found: "&cStatistics for this player were not found!"
+    disabled: "&cStatystyki graczy są wyłączone!"
+    not_found: "&cNie znaleziono statystyk podanego gracza!"
     kills: "&7Zabójstwa: &a%kills%"
     deaths: "&7Śmierci: &e%deaths%"
     kd: "&7K/D: &a%kd%"
@@ -183,10 +183,10 @@ commands:
     beds: "&7Zniszczone łóżka: &a%beds%"
     score: "&7Łączny wynik: &a%score%"
   admin:
-    usage: "&cUsage: &f/bw admin <arena> <add|edit|remove|save|...> ..."
+    usage: "&cUżycie: &f/bw admin <arena> <add|edit|remove|save|...> ..."
     arena:
       errors:
-        not_found: "&cArena not found!"
+        not_found: "&cNie znaleziono areny!"
         not_in_edit_mode: "&cArena musi być w trybie edycji!"
       info:
         header: "&aDane areny:"
@@ -197,7 +197,7 @@ commands:
         pos2: "&7Pozycja 2: &fXYZ: &7%x%&r/&7%y%&r/&7%z%"
         spectator: "&7Spawn obserwatora: &fXYZ: &7%x%&r/&7%y%&r/&7%z%"
         lobby: "&7Spawn lobby: &fSvět: &7%world% &fXYZ: &7%x%&r/&7%y%&r/&7%z%"
-        min_players: "&7Minimal players of the game: &r%minplayers%"
+        min_players: "&7Minimalna liczba graczy: &r%minplayers%"
         countdown_time: "&7Czas odliczania do startu gry: &f%time% s"
         game_length: "&7Długość gry: &f%time% s"
         true_value: "&aprawda"
@@ -205,20 +205,20 @@ commands:
         inherit: "&edziedziczona"
         teams:
           header: "&7Drużyny:"
-          info: "- %team%&r (Maximal players in team: &7%maxplayers%&r)"
+          info: "- %team%&r (maksymalna liczba graczy: &7%maxplayers%&r)"
           spawn: "  &7Spawn: &fXYZ: &7%x%&r/&7%y%&r/&7%z%"
-          target: "  &7Target block: &fXYZ: &7%x%&r/&7%y%&r/&7%z%"
+          target: "  &7Cel: &fXYZ: &7%x%&r/&7%y%&r/&7%z%"
         spawners:
           header: "&7Generatory:"
           info: "- %resource% &fXYZ: &7%x%&r/&7%y%&r/&7%z%"
-          no_team: "no team"
+          no_team: "żadna"
         stores:
           header: "&7Sklepy:"
           position: "- XYZ: &7%x%&r/&7%y%&r/&7%z%"
           entity_type: "  Typ: &a%type%"
           custom_shop: "  Posiada własny sklep: &7%bool%"
           name: "  Nazwa: &6%file%&r (dziedziczona: &7%bool%&r)"
-          name_above: "  Custom name above head: &6%name%&r"
+          name_above: "  Własna nazwa sklepu: &6%name%&r"
           no_name_above: "&cBez nazwy"
         config:
           header: "&7Stałe:"
@@ -226,7 +226,7 @@ commands:
     add:
       added: "&aArena została dodana!"
       already_exists: "&cArena o tej nazwie już istnieje!"
-      not_saved: "&cArena already exists but it's not saved!"
+      not_saved: "&cArena już istnieje, ale nie jest zapisana!"
     remove:
       removed: "&c&lArena została usunięta!"
     edit:
