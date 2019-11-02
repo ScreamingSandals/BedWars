@@ -57,7 +57,7 @@ public class PlayerListener implements Listener {
             CurrentTeam victimTeam = game.getPlayerTeam(gVictim);
             ChatColor victimColor = victimTeam.teamInfo.color.chatColor;
             List<ItemStack> drops = new ArrayList<>(event.getDrops());
-            int respawnTime = Main.getConfigurator().config.getInt("respawn-cooldown-time", 5);
+            int respawnTime = Main.getConfigurator().config.getInt("respawn-cooldown.time", 5);
 
             event.setKeepInventory(game.getOriginalOrInheritedKeepInventory());
             event.setDroppedExp(0);
