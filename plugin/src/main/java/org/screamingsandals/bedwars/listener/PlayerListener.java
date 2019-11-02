@@ -630,7 +630,7 @@ public class PlayerListener implements Listener {
 
                         if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
                             ItemStack stack = event.getItem();
-                            if (stack.getType().isBlock()) {
+                            if (stack != null && stack.getAmount() > 0 && stack.getType().isBlock()) {
                                 BlockFace face = event.getBlockFace();
                                 Block block = event.getClickedBlock().getLocation().clone().add(MiscUtils.getDirection(face))
                                         .getBlock();
@@ -650,6 +650,7 @@ public class PlayerListener implements Listener {
                                     if (bevent.isCancelled()) {
                                         originalState.update(true, false);
                                     } else {
+                                    	stack.setAmount(stack.getAmount() - 1);
                                         // TODO get right block place sound
                                         Sounds.BLOCK_STONE_PLACE.playSound(player, block.getLocation(), 1, 1);
                                     }
