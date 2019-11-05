@@ -156,7 +156,7 @@ commands:
     already_in_game: "&cVec ste u nekoj igri."
     no_empty_game: "&cThere's no game empty game!"
   join:
-    already_in_game: "&cYou are already in some game."
+    already_in_game: "&cVec ste u nekoj igri."
     not_found: "&cArena does not exists!"
   leave:
     not_in_game: "&cYou are not in game!"
@@ -165,7 +165,7 @@ commands:
   main_lobby:
     info: "&cWARNING&f: You need to execute /bw reload to make Mainlobby work!"
   rejoin:
-    already_in_game: "&cYou are already in some game."
+    already_in_game: "&cVec ste u nekoj igri."
     no_game_found: "&cNo previous game found."
   reload:
     safe: "&aWaiting for safe stop of all games or for 60 seconds before reload!"
