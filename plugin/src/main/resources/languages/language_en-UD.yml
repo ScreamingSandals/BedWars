@@ -1,29 +1,29 @@
 ---
-lang_name: "Tiếng Việt"
-prefix: "&7[&fBed&4Wars&7]&r"
-item_shop_name: "Shop"
+lang_name: "(uʍop ǝpᴉsdn) ɥsᴉlƃuƎ"
+prefix: "&7[&4sɹɐM&fpǝq&7]"
+item_shop_name: "doɥS"
 game:
   info:
     global:
-      joined: "%name% &ajoined the game!&r &7[&a%players%&7/&a%maxplayers%&7]"
-      leaved: "%name% &cleft the game!"
-      game_win: "&aTeam &r%team%&a won game in &7%time%"
-      game_end: "&cGame ended! Thanks for playing!"
+      joined: "&7[&a%maxplayers%&7/&a%players%&7] &a¡ǝɯɐƃ ǝɥʇ pǝuᴉoɾ &r%ǝɯɐu%"
+      leaved: "&c¡ǝɯɐƃ ǝɥʇ ʇɟǝl &r%name%"
+      game_win: "&7%time% &auᴉ ǝɯɐƃ uoʍ &r%team% &aɯɐǝ┴"
+      game_end: "&c¡ƃuᴉʎɐld ɹoɟ sʞuɐɥ┴ ¡pǝpuǝ ǝɯɐפ"
       players:
-        self_killed: "&cPlayer %victim% &cdied!"
-        killed: "&cPlayer %killer% &ckilled %victim%&c!"
+        self_killed: "&c¡pǝᴉp %victim% &cɹǝʎɐlԀ"
+        killed: "&c¡%victim% &cpǝllᴉʞ %killer% &cɹǝʎɐlԀ"
       titles:
-        start: "&aGame started!"
-        start_subtitle: "&aGame &7%arena%&a has started! Enjoy the game!"
-        bed_is_destroyed: "Bed of %team%&r is destroyed!"
-        target_is_destroyed: "Target block of %team%&r is destroyed!"
-        bed_is_destroyed_subtitle: "You can now kill the team members!"
-        bed_is_destroyed_subtitle_for_victim: "Now you will never be respawned!"
+        start: "&a¡pǝʇɹɐʇs ǝɯɐפ"
+        start_subtitle: "&a¡ǝɯɐƃ ǝɥʇ ʎoɾuƎ ¡pǝʇɹɐʇs sɐɥ &7%arena% &aǝɯɐפ"
+        bed_is_destroyed: "¡pǝʎoɹʇsǝp sᴉ %team%&r ɟo pǝq"
+        target_is_destroyed: "¡pǝʎoɹʇsǝp sᴉ %team%&r ɟo ʞɔolq ʇǝƃɹɐ┴"
+        bed_is_destroyed_subtitle: "¡sɹǝqɯǝɯ ɯɐǝʇ ǝɥʇ llᴉʞ ʍou uɐɔ no⅄"
+        bed_is_destroyed_subtitle_for_victim: "¡pǝuʍɐdsǝɹ ǝq ɹǝʌǝu llᴉʍ noʎ ʍoN"
       bossbar:
-        waiting: "&cThe game will begin shortly!"
-        running: "&aGame started! Good luck!"
+        waiting: "&c¡ʎlʇɹoɥs uᴉƃǝq llᴉʍ ǝɯɐƃ ǝɥ┴"
+        running: "&a¡ʞɔnl pooפ ¡pǝʇɹɐʇs ǝɯɐפ"
     player:
-      already_running: "&cGame &7%arena% &cis already running! You can't join a running game!"
+      already_running: "&c¡ǝɯɐƃ ƃuᴉuunɹ ɐ uᴉoɾ ʇ,uɐɔ no⅄ ¡ƃuᴉuunɹ ʎpɐǝɹlɐ sᴉ &7%arena% &cǝɯɐפ"
       full: "&cGame &7%arena% &cis full! Please wait for game end!"
       vip:
         not_enough_players: "&cNot enough players in arena!"
