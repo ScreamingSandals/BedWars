@@ -1,20 +1,20 @@
 ---
 lang_name: "Nederlands"
 prefix: "&7[&fBed&4Wars&7]&r"
-item_shop_name: "Shop"
+item_shop_name: "Winkel"
 game:
   info:
     global:
-      joined: "%name% &ajoined the game!&r &7[&a%players%&7/&a%maxplayers%&7]"
-      leaved: "%name% &cleft the game!"
-      game_win: "&aTeam &r%team%&a won game in &7%time%"
-      game_end: "&cGame ended! Thanks for playing!"
+      joined: "%name% &aheeft het spel betreden!&r &7[&a%players%&7/&a%maxplayers%&7]"
+      leaved: "%name% &cheeft het spel verlaten!"
+      game_win: "&aTeam &r%team%&heeft het spel gewonnen &7%time%"
+      game_end: "&cSpel afgelopen! Bedankt voor het spelen!"
       players:
-        self_killed: "&cPlayer %victim% &cdied!"
-        killed: "&cPlayer %killer% &ckilled %victim%&c!"
+        self_killed: "&cSpeler %victim% &cis gestorven!"
+        killed: "&cSpeler %killer% &cvermoordde %victim%&c!"
       titles:
-        start: "&aGame started!"
-        start_subtitle: "&aGame &7%arena%&a has started! Enjoy the game!"
+        start: "&aSpel is gestart!"
+        start_subtitle: "&aSpel &7%arena%&a is begonnen! Geniet van het spel!"
         bed_is_destroyed: "Bed of %team%&r is destroyed!"
         target_is_destroyed: "Target block of %team%&r is destroyed!"
         bed_is_destroyed_subtitle: "You can now kill the team members!"
