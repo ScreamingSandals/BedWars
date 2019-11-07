@@ -22,8 +22,8 @@ import org.screamingsandals.bedwars.api.upgrades.UpgradeStorage;
 import org.screamingsandals.bedwars.game.CurrentTeam;
 import org.screamingsandals.bedwars.game.Game;
 import org.screamingsandals.bedwars.game.GamePlayer;
-import org.screamingsandals.bedwars.utils.Debugger;
 import org.screamingsandals.bedwars.utils.Sounds;
+import org.screamingsandals.lib.debug.Debug;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -445,7 +445,7 @@ public class ShopInventory implements Listener {
                         upgrades = upgradeStorage.findItemSpawnerUpgrades(game, customName);
                     } else {
                         isUpgrade = false;
-                        Debugger.warn("[BedWars]> Upgrade configuration is invalid.");
+                        Debug.warn("[BedWars]> Upgrade configuration is invalid.");
                     }
 
                     if (isUpgrade) {
