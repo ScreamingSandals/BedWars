@@ -16,6 +16,8 @@ import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.game.GamePlayer;
 import org.screamingsandals.bedwars.game.Team;
 
+import misat11.lib.nms.NMSUtils;
+
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -250,5 +252,13 @@ public class MiscUtils {
             direction.normalize();
         }
         return direction;
+    }
+    
+    public static void sendTitle(Player player, String title, String subtitle) {
+        int fadeIn = Main.getConfigurator().config.getInt("title.fadeIn");
+        int stay = Main.getConfigurator().config.getInt("title.stay");
+        int fadeOut = Main.getConfigurator().config.getInt("title.fadeOut");
+
+        NMSUtils.sendTitle(player, title, subtitle, fadeIn, stay, fadeOut);
     }
 }
