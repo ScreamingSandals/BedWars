@@ -57,7 +57,7 @@ public class PlayerListener implements Listener {
             CurrentTeam victimTeam = game.getPlayerTeam(gVictim);
             ChatColor victimColor = victimTeam.teamInfo.color.chatColor;
             List<ItemStack> drops = new ArrayList<>(event.getDrops());
-            int respawnTime = Main.getConfigurator().config.getInt("respawn-cooldown-time", 5);
+            int respawnTime = Main.getConfigurator().config.getInt("respawn-cooldown.time", 5);
 
             event.setKeepInventory(game.getOriginalOrInheritedKeepInventory());
             event.setDroppedExp(0);
@@ -180,7 +180,7 @@ public class PlayerListener implements Listener {
                     @Override
                     public void run() {
                         if (livingTime > 0) {
-                            Title.send(player,
+                        	MiscUtils.sendTitle(player,
                                     i18nonly("respawn_cooldown_title").replace("%time%", String.valueOf(livingTime)), "");
                             Sounds.playSound(player, player.getLocation(),
                                     Main.getConfigurator().config.getString("sounds.on_respawn_cooldown_wait"),
@@ -630,7 +630,7 @@ public class PlayerListener implements Listener {
 
                         if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
                             ItemStack stack = event.getItem();
-                            if (stack.getType().isBlock()) {
+                            if (stack != null && stack.getAmount() > 0 && stack.getType().isBlock()) {
                                 BlockFace face = event.getBlockFace();
                                 Block block = event.getClickedBlock().getLocation().clone().add(MiscUtils.getDirection(face))
                                         .getBlock();
@@ -650,6 +650,7 @@ public class PlayerListener implements Listener {
                                     if (bevent.isCancelled()) {
                                         originalState.update(true, false);
                                     } else {
+                                    	stack.setAmount(stack.getAmount() - 1);
                                         // TODO get right block place sound
                                         Sounds.BLOCK_STONE_PLACE.playSound(player, block.getLocation(), 1, 1);
                                     }

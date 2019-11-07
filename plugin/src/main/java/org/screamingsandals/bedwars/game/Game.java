@@ -483,7 +483,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 					team.isBed = false;
 					updateScoreboard();
 					for (GamePlayer player : players) {
-						Title.send(player.player,
+						MiscUtils.sendTitle(player.player,
 							i18n(isItBedBlock ? "bed_is_destroyed" : "target_is_destroyed", false).replace("%team%",
 								team.teamInfo.color.chatColor + team.teamInfo.name),
 							i18n(getPlayerTeam(player) == team ? "bed_is_destroyed_subtitle_for_victim"
@@ -1448,7 +1448,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
 					if (countdown <= 10 && countdown >= 1 && countdown != previousCountdown) {
 						for (GamePlayer player : players) {
-							Title.send(player.player, ChatColor.YELLOW + Integer.toString(countdown), "");
+							MiscUtils.sendTitle(player.player, ChatColor.YELLOW + Integer.toString(countdown), "");
 							Sounds.playSound(player.player, player.player.getLocation(),
 								Main.getConfigurator().config.getString("sounds.on_countdown"), Sounds.UI_BUTTON_CLICK,
 								1, 1);
@@ -1573,7 +1573,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 						player.player.getInventory().setChestplate(null);
 						player.player.getInventory().setLeggings(null);
 						player.player.getInventory().setBoots(null);
-						Title.send(player.player, gameStartTitle, gameStartSubtitle);
+						MiscUtils.sendTitle(player.player, gameStartTitle, gameStartSubtitle);
 						if (team == null) {
 							makeSpectator(player, true);
 						} else {
@@ -1666,7 +1666,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 								for (GamePlayer player : players) {
 									player.player.sendMessage(message);
 									if (getPlayerTeam(player) == t) {
-										Title.send(player.player, i18nonly("you_won"), subtitle);
+										MiscUtils.sendTitle(player.player, i18nonly("you_won"), subtitle);
 										Main.depositPlayer(player.player, Main.getVaultWinReward());
 
 										SpawnEffects.spawnEffect(this, player.player, "game-effects.end");
@@ -1715,7 +1715,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 											}.runTaskLater(Main.getInstance(), (2 + Game.POST_GAME_WAITING) * 20);
 										}
 									} else {
-										Title.send(player.player, i18n("you_lost", false), subtitle);
+										MiscUtils.sendTitle(player.player, i18n("you_lost", false), subtitle);
 
 										if (Main.isPlayerStatisticsEnabled() && Main.isHologramsEnabled()) {
 											Main.getHologramInteraction().updateHolograms(player.player);

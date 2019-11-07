@@ -83,13 +83,13 @@ game:
       caught: "&cВы пойманы в ловушку команды &f%team%&c!"
       broadcast: "&f%player%&c пойман в ловушку вашей команды!"
     warp_powder:
-      canceled: "&cTeleporting was canceled."
-      started: "&aTeleporting.. Please don't move for &7%time%&a seconds!"
+      canceled: "&cТелепорт отменён."
+      started: "&aТелепортация.. Не двигайтесь в течение &7%time%&a сек."
     tracker:
       no_one: "&cЦель не найдена!"
       found: "Игрок &f%target% &aнаходится от вас в &f%distance% &aблоках!"
     rescue_platform:
-      not_in_air: "&cYou need to be in the air."
+      not_in_air: "&cВам нужно быть в воздухе."
       destroyed_in: "&cПлатформа будет разрушена через &f%time% &cсекунд."
       created_unbreakable: "&aНеразрушимая платформа создана!"
       created: "&aПлатформа была создана и будет разрушена через &f%time% &aseconds."
@@ -109,14 +109,14 @@ game:
 arena:
   status:
     disabled: "&cВыключена"
-    waiting: "&eWAITING"
-    running: "&aRUNNING"
+    waiting: "&eОЖИДАНИЕ"
+    running: "&aЗАПУЩЕНА"
     rebuilding: "&eПерестройка"
 signs:
   created: "&aТабличка успешно создана!"
   not_created: "&cТабличка не добавлена! Проверьте название арены!"
   cannot_destroy: "&cУ вас нет права на разрушение табличек!"
-  game_not_exists: "&cThe game that is written on the sign doesn't exist! Please contact an admin!"
+  game_not_exists: "&cАрена, написанная на табличке, не существует! Свяжитесь с администратором!"
   status:
     disabled:
       name: "&cАрена"
@@ -131,9 +131,9 @@ signs:
       name: "&6Ожидание"
       players: "&a%players%&8/&a%maxplayers%"
 holograms:
-  not_enabled: "&cHolograms are disabled."
-  click_to_remove: "&eNow click the &ahologram &eyou want to remove!"
-  holo_removed: "&aHologram has been &lsuccessfully &aremoved!"
+  not_enabled: "&cГолограммы отключены."
+  click_to_remove: "&eТеперь нажмите на голограмму, которую хотите убрать!"
+  holo_removed: "&aГолограмма &lуспешно &aудалена!"
   game:
     beds:
       protect_your_bed: "%teamcolor%&lЗащитите свою кровать!"
@@ -218,7 +218,7 @@ commands:
           entity_type: "  Тип: &a%type%"
           custom_shop: "  Имеет свой магазин: &7%bool%"
           name: "  Файл: &6%file%&r (зависим от: &7%bool%&r)"
-          name_above: "  Custom name above head: &6%name%&r"
+          name_above: "  Имя над головой: &6%name%&r"
           no_name_above: "&cНет имени"
         config:
           header: "&7Конфигурация:"
@@ -226,11 +226,11 @@ commands:
     add:
       added: "&aАрена добавлена!"
       already_exists: "&cАрена уже существует!"
-      not_saved: "&cArena already exists but it's not saved!"
+      not_saved: "&cАрена уже существует или ещё не сохранена!"
     remove:
       removed: "&c&lАрена удалена!"
     edit:
-      switched: "&aArena was switched to edit mode!"
+      switched: "&aАрена теперь в режиме редактирования!"
     info_sender:
       header: "&aВыберите информацию о арене &7%arena%&a:"
       base: "&aОсновная информация&f - &7/bw admin %arena% info base"
