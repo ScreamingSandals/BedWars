@@ -234,6 +234,9 @@ public class MiscUtils {
             case "DARK_RED":
                 newColor = "BROWN";
                 break;
+            case "DARK_GRAY":
+            	newColor = "GRAY";
+            	break;
         }
         return newColor;
     }
