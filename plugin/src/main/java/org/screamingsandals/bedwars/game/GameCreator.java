@@ -132,7 +132,7 @@ public class GameCreator {
 	                                        	try {
 	                                        		maxSpawnedResources = Integer.parseInt(args[5]);
 	                                        		error = false;
-	                                        	} catch (NumberFormatException e) {
+	                                        	} catch (NumberFormatException ignored) {
 	                                        	}
                                         	}
                                         	if (error) {
@@ -672,7 +672,7 @@ public class GameCreator {
         }
     }
 
-    public String addStore(Location loc, String shop, boolean useParent, String name) {
+    private String addStore(Location loc, String shop, boolean useParent, String name) {
         if (game.getPos1() == null || game.getPos2() == null) {
             return i18n("admin_command_set_pos1_pos2_first");
         }
@@ -706,7 +706,7 @@ public class GameCreator {
                 if (!t.isAlive()) {
                     t = null;
                 }
-            } catch (Exception e) {
+            } catch (Exception ignored) {
             }
 
             if (t == null) {
@@ -721,7 +721,7 @@ public class GameCreator {
         return i18n("admin_command_store_not_exists");
     }
 
-    public String removeStore(Location loc) {
+    private String removeStore(Location loc) {
         if (game.getWorld() != loc.getWorld()) {
             return i18n("admin_command_must_be_in_same_world");
         }
@@ -735,7 +735,7 @@ public class GameCreator {
                 .replace("%yaw%", Float.toString(loc.getYaw())).replace("%pitch%", Float.toString(loc.getPitch()));
     }
 
-    public String setLobbySpawn(Location loc) {
+    private String setLobbySpawn(Location loc) {
         game.setLobbySpawn(loc);
         return i18n("admin_command_lobby_spawn_setted").replace("%x%", Double.toString(loc.getX()))
                 .replace("%y%", Double.toString(loc.getY())).replace("%z%", Double.toString(loc.getZ()))

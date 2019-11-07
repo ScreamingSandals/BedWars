@@ -13,9 +13,3 @@ softdepend:
 - PlaceholderAPI
 - BarAPI
 - PerWorldInventory
-
-commands:
-  bw:
-    description: Command of BW plugin
-    usage: /bw [subcommand]
-    aliases: "bedwars"

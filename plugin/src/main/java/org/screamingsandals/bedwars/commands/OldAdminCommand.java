@@ -4,60 +4,34 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Location;
-import org.bukkit.command.Command;
+import org.bukkit.WeatherType;
+import org.bukkit.boss.BarColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.screamingsandals.bedwars.Main;
+import org.screamingsandals.bedwars.api.ArenaTime;
 import org.screamingsandals.bedwars.api.game.GameStore;
 import org.screamingsandals.bedwars.game.*;
-import org.screamingsandals.bedwars.utils.Permissions;
-import org.screamingsandals.lib.screamingcommands.base.annotations.RegisterCommand;
-import org.screamingsandals.lib.screamingcommands.base.interfaces.IBasicCommand;
 
 import java.io.File;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 import static misat11.lib.lang.I.m;
 
-/**
- * @author ScreamingSandals team
- */
-@RegisterCommand(commandName = "bw", subCommandName = "admin")
-public class AdminCommand implements IBasicCommand {
+public class OldAdminCommand extends BaseCommand {
+    private HashMap<String, GameCreator> gameCreator = new HashMap<>();
 
-    public AdminCommand(Main main) {
+    public OldAdminCommand() {
+        super("admin", ADMIN_PERMISSION, false);
     }
 
     @Override
-    public String getPermission() {
-        return Permissions.ADMIN_PERMISSIONS.permission;
-    }
-
-    @Override
-    public String getDescription() {
-        return "BedWars admin command";
-    }
-
-    @Override
-    public String getUsage() {
-        return "/bw admin";
-    }
-
-    @Override
-    public String getInvalidUsageMessage() {
-        return "Not working.";
-    }
-
-    @Override
-    public boolean onPlayerCommand(Player player, List<String> args) {
+    public boolean execute(CommandSender sender, List<String> args) {
+        Player player = (Player) sender;
         if (args.size() >= 2) {
-            HashMap<String, GameCreator> gameCreator = Main.getInstance().getGamesInCreator();
-
             String arenaName = args.get(0);
             if (args.get(1).equalsIgnoreCase("info")) {
                 if (Main.isGameExists(arenaName)) {
@@ -430,7 +404,7 @@ public class AdminCommand implements IBasicCommand {
                     m("commands.admin.arena.add.not_saved").send(player);
                 } else {
                     GameCreator creator = new GameCreator(Game.createGame(arenaName));
-                    Main.getInstance().addCreator(arenaName, creator);
+                    gameCreator.put(arenaName, creator);
                     m("commands.admin.arena.add.added").send(player);
                 }
             } else if (args.get(1).equalsIgnoreCase("remove")) {
@@ -438,13 +412,13 @@ public class AdminCommand implements IBasicCommand {
                     if (!gameCreator.containsKey(arenaName)) {
                         m("commands.admin.arena.not_in_edit_mode").send(player);
                     } else {
-                        Main.getInstance().removeCreator(arenaName);
+                        gameCreator.remove(arenaName);
                         new File(Main.getInstance().getDataFolder(), "arenas/" + arenaName + ".yml").delete();
                         Main.removeGame(Main.getGame(arenaName));
                         m("commands.admin.arena.remove.removed").send(player);
                     }
                 } else if (gameCreator.containsKey(arenaName)) {
-                    Main.getInstance().removeCreator(arenaName);
+                    gameCreator.remove(arenaName);
                     m("commands.admin.arena.remove.removed").send(player);
                 } else {
                     m("commands.admin.arena.not_found").send(player);
@@ -453,7 +427,7 @@ public class AdminCommand implements IBasicCommand {
                 if (Main.isGameExists(arenaName)) {
                     Game game = Main.getGame(arenaName);
                     game.stop();
-                    Main.getInstance().addCreator(arenaName, new GameCreator(game));
+                    gameCreator.put(arenaName, new GameCreator(game));
                     m("commands.admin.arena.edit.switched").send(player);
                 } else {
                     m("commands.admin.arena.not_found").send(player);
@@ -471,7 +445,7 @@ public class AdminCommand implements IBasicCommand {
                     boolean isArenaSaved = gameCreator.get(arenaName).cmd(player, args.get(1),
                             nargs.toArray(new String[0]));
                     if (args.get(1).equalsIgnoreCase("save") && isArenaSaved) {
-                        Main.getInstance().removeCreator(arenaName);
+                        gameCreator.remove(arenaName);
                     }
                 } else {
                     m("commands.admin.arena.not_in_edit_mode").send(player);
@@ -484,14 +458,131 @@ public class AdminCommand implements IBasicCommand {
     }
 
     @Override
-    public boolean onConsoleCommand(ConsoleCommandSender consoleCommandSender, List<String> args) {
-        consoleCommandSender.sendMessage("YOU SHALL NOT PASSSSSSS");
-        return true;
-    }
-
-    @Override
-    public List<String> onTabComplete(CommandSender commandSender, Command command, List<String> list) {
-        return list;
+    public void completeTab(List<String> completion, CommandSender sender, List<String> args) {
+        if (args.size() == 1) {
+            completion.addAll(Main.getGameNames());
+            for (String arena : gameCreator.keySet()) {
+                if (!completion.contains(arena)) {
+                    completion.add(arena);
+                }
+            }
+        } else if (args.size() == 2) {
+            completion.addAll(Arrays.asList("add", "lobby", "spec", "pos1", "pos2", "pausecountdown", "team", "spawner",
+                    "time", "store", "save", "remove", "edit", "jointeam", "minplayers", "info", "config", "arenatime",
+                    "arenaweather", "lobbybossbarcolor", "gamebossbarcolor"));
+        } else if (args.get(1).equalsIgnoreCase("pausecountdown") && args.size() == 3) {
+            completion.addAll(Arrays.asList("30", "60"));
+        } else if (args.get(1).equalsIgnoreCase("time") && args.size() == 3) {
+            completion.addAll(Arrays.asList("180", "300", "600"));
+        } else if (args.get(1).equalsIgnoreCase("minplayers") && args.size() == 3) {
+            completion.addAll(Arrays.asList("2", "3", "4", "5"));
+        } else if (args.get(1).equalsIgnoreCase("info") && args.size() == 3) {
+            completion.addAll(Arrays.asList("base", "stores", "spawners", "teams", "config"));
+        } else if (args.get(1).equalsIgnoreCase("arenatime") && args.size() == 3) {
+            for (ArenaTime type : ArenaTime.values()) {
+                completion.add(type.name());
+            }
+        } else if ((args.get(1).equalsIgnoreCase("lobbybossbarcolor")
+                || args.get(1).equalsIgnoreCase("gamebossbarcolor")) && args.size() == 3) {
+            try {
+                completion.add("default");
+                for (BarColor type : BarColor.values()) {
+                    completion.add(type.name());
+                }
+            } catch (Throwable ignored) {
+            }
+        } else if (args.get(1).equalsIgnoreCase("arenaweather") && args.size() == 3) {
+            completion.add("default");
+            for (WeatherType type : WeatherType.values()) {
+                completion.add(type.name());
+            }
+        } else if (args.get(1).equalsIgnoreCase("store")) {
+            if (args.size() == 3) {
+                completion.addAll(Arrays.asList("add", "remove", "type"));
+            }
+            if (args.size() == 4 && args.get(2).equalsIgnoreCase("type")) {
+                for (EntityType type : EntityType.values()) {
+                    if (type.isAlive()) {
+                        completion.add(type.name());
+                    }
+                }
+            }
+            if (args.size() == 4 && args.get(2).equalsIgnoreCase("add")) {
+                completion.addAll(Arrays.asList("Villager_shop", "Dealer", "Seller", "&a&lVillager_shop"));
+            }
+            if (args.size() == 5 && args.get(2).equalsIgnoreCase("add")) {
+                completion.addAll(Collections.singletonList("<Shop File>"));
+                // TODO scan files for this :D
+            }
+            if (args.size() == 6 && args.get(2).equalsIgnoreCase("add")) {
+                completion.addAll(Arrays.asList("true", "false"));
+            }
+        } else if (args.get(1).equalsIgnoreCase("config")) {
+            if (args.size() == 3) {
+                completion.addAll(Arrays.asList("compassEnabled", "joinRandomTeamAfterLobby", "joinRandomTeamOnJoin",
+                        "addWoolToInventoryOnJoin", "preventKillingVillagers", "playerDrops",
+                        "friendlyfire", "coloredLeatherByTeamInLobby", "keepInventory", "crafting", "gamebossbar",
+                        "lobbybossbar", "gamescoreboard", "lobbyscoreboard", "preventspawningmobs", "spawnerholograms",
+                        "spawnerDisableMerge", "gamestartitems", "playerrespawnitems", "spawnerhologramscountdown",
+                        "damagewhenplayerisnotinarena", "removeunusedtargetblocks", "holoabovebed", "allowblockfall",
+                        "spectatorjoin", "stopTeamSpawnersOnDie"));
+            }
+            if (args.size() == 4) {
+                completion.addAll(Arrays.asList("true", "false", "inherit"));
+            }
+        } else if (args.get(1).equalsIgnoreCase("spawner")) {
+            if (args.size() == 3) {
+                completion.addAll(Arrays.asList("add", "reset"));
+            }
+            if (args.size() == 4) {
+                completion.addAll(Main.getAllSpawnerTypes());
+            }
+            if (args.size() == 5) {
+                completion.addAll(Arrays.asList("false", "true"));
+            }
+            if (args.size() == 6) {
+                completion.addAll(Collections.singletonList("1"));
+            }
+            if (args.size() == 8) {
+                if (gameCreator.containsKey(args.get(0))) {
+                    for (Team t : gameCreator.get(args.get(0)).getGame().getTeams()) {
+                        completion.add(t.name);
+                    }
+                }
+            }
+            if (args.size() == 8 || args.size() == 9) {
+                completion.addAll(Arrays.asList("5", "10", "20"));
+            }
+        } else if (args.get(1).equalsIgnoreCase("team")) {
+            if (args.size() == 3) {
+                completion.addAll(Arrays.asList("add", "color", "maxplayers", "spawn", "bed", "remove"));
+            }
+            if (args.size() == 4) {
+                if (gameCreator.containsKey(args.get(0))) {
+                    for (Team t : gameCreator.get(args.get(0)).getGame().getTeams()) {
+                        completion.add(t.name);
+                    }
+                }
+            }
+            if (args.size() == 5) {
+                if (args.get(2).equalsIgnoreCase("add") || args.get(2).equalsIgnoreCase("color")) {
+                    for (TeamColor en : TeamColor.values()) {
+                        completion.add(en.toString());
+                    }
+                } else if (args.get(2).equalsIgnoreCase("maxplayers")) {
+                    completion.addAll(Arrays.asList("1", "2", "4", "8"));
+                }
+            }
+            if (args.size() == 6 && args.get(2).equalsIgnoreCase("add")) {
+                completion.addAll(Arrays.asList("1", "2", "4", "8"));
+            }
+        } else if (args.get(1).equalsIgnoreCase("jointeam")) {
+            if (gameCreator.containsKey(args.get(0))) {
+                for (Team t : gameCreator.get(args.get(0)).getGame().getTeams()) {
+                    completion.add(t.name);
+                }
+            }
+        }
     }
 
     private void sendInfoSelectType(Player player, Game game) {
@@ -556,4 +647,5 @@ public class AdminCommand implements IBasicCommand {
             player.sendMessage(config);
         }
     }
+
 }

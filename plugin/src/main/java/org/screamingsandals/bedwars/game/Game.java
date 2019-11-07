@@ -3039,17 +3039,17 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 		String toReturn = "";
 		switch (getStatus()) {
 			case DISABLED:
-				toReturn = m("arena.status.disabled", false).get();
+				toReturn = mpr("arena.status.disabled").get();
 				break;
 			case REBUILDING:
-				toReturn = m("arena.status.rebuilding", false).get();
+				toReturn = mpr("arena.status.rebuilding").get();
 				break;
 			case RUNNING:
 			case GAME_END_CELEBRATING:
-				toReturn = m("arena.status.running", false).get();
+				toReturn = mpr("arena.status.running").get();
 				break;
 			case WAITING:
-				toReturn = m("arena.status.waiting", false).get();
+				toReturn = mpr("arena.status.waiting").get();
 				break;
 		}
 		return toReturn;

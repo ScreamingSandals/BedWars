@@ -25,10 +25,7 @@ import org.screamingsandals.bedwars.api.game.GameStore;
 import org.screamingsandals.bedwars.api.utils.ColorChanger;
 import org.screamingsandals.bedwars.commands.*;
 import org.screamingsandals.bedwars.database.DatabaseManager;
-import org.screamingsandals.bedwars.game.Game;
-import org.screamingsandals.bedwars.game.GamePlayer;
-import org.screamingsandals.bedwars.game.ItemSpawnerType;
-import org.screamingsandals.bedwars.game.TeamColor;
+import org.screamingsandals.bedwars.game.*;
 import org.screamingsandals.bedwars.holograms.HologramManager;
 import org.screamingsandals.bedwars.inventories.ShopInventory;
 import org.screamingsandals.bedwars.listener.*;
@@ -38,6 +35,8 @@ import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.bedwars.utils.BedWarsSignOwner;
 import org.screamingsandals.bedwars.config.Configurator;
 import org.screamingsandals.lib.debug.Debug;
+import org.screamingsandals.lib.screamingcommands.ScreamingCommands;
+import org.screamingsandals.lib.screamingcommands.base.CommandManager;
 import org.screamingsandals.lib.signmanager.SignListener;
 import org.screamingsandals.lib.signmanager.SignManager;
 
@@ -58,6 +57,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
     private HashMap<String, Game> games = new HashMap<>();
     private HashMap<Player, GamePlayer> playersInGame = new HashMap<>();
     private HashMap<Entity, Game> entitiesInGame = new HashMap<>();
+    private HashMap<String, GameCreator> gamesInCreator = new HashMap<>();
     private Configurator configurator;
     private ShopInventory menu;
     private HashMap<String, ItemSpawnerType> spawnerTypes = new HashMap<>();
@@ -68,6 +68,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
     private SpigetUpdate spigetUpdate;
     private ColorChanger colorChanger;
     private SignManager signManager;
+    private ScreamingCommands screamingCommands;
     public static List<String> autoColoredMaterials = new ArrayList<>();
 
     static {
@@ -158,6 +159,18 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 
     public static Game getInGameEntity(Entity entity) {
         return instance.entitiesInGame.getOrDefault(entity, null);
+    }
+
+    public HashMap<String, GameCreator> getGamesInCreator() {
+        return gamesInCreator;
+    }
+
+    public void addCreator(String arenaName, GameCreator gameCreator) {
+        gamesInCreator.put(arenaName, gameCreator);
+    }
+
+    public void removeCreator(String arenaName) {
+        gamesInCreator.remove(arenaName);
     }
 
     public static void registerGameEntity(Entity entity, Game game) {
@@ -349,6 +362,9 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 
         I18n.load(this, configurator.config.getString("locale"));
 
+        screamingCommands = new ScreamingCommands(this, Main.class, "org/screamingsandals/bedwars");
+        screamingCommands.loadAllCommands();
+
         databaseManager = new DatabaseManager(configurator.config.getString("database.host"),
                 configurator.config.getInt("database.port"), configurator.config.getString("database.user"),
                 configurator.config.getString("database.password"), configurator.config.getString("database.db"),
@@ -379,7 +395,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 
         commands = new HashMap<>();
         new AddholoCommand();
-        new AdminCommand();
+        new OldAdminCommand();
         new AutojoinCommand();
         new HelpCommand();
         new JoinCommand();
@@ -391,9 +407,6 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         new StatsCommand();
         new MainlobbyCommand();
 
-        BwCommandsExecutor cmd = new BwCommandsExecutor();
-        getCommand("bw").setExecutor(cmd);
-        getCommand("bw").setTabCompleter(cmd);
         getServer().getPluginManager().registerEvents(new PlayerListener(), this);
         if (versionNumber >= 109) {
             getServer().getPluginManager().registerEvents(new Player19Listener(), this);

@@ -151,9 +151,7 @@ public class CurrentTeam implements RunningTeam {
 
     @Override
     public void removeTeamChest(Block block) {
-        if (chests.contains(block)) {
-            chests.remove(block);
-        }
+        chests.remove(block);
     }
 
     @Override
