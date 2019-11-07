@@ -70,7 +70,9 @@ public class TeamSelectorInventory implements Listener {
     }
 
     private void createData() {
-        SimpleGuiFormat simpleGuiFormat = new SimpleGuiFormat(options);
+    	if (simpleGuiFormat == null) {
+    		simpleGuiFormat = new SimpleGuiFormat(options);
+    	}
         FormatBuilder builder = new FormatBuilder();
         
         ItemStack stack = Main.getConfigurator().readDefinedItem("team-select", Main.isLegacy() ? "WOOL" : "WHITE_WOOL");
@@ -92,10 +94,9 @@ public class TeamSelectorInventory implements Listener {
             builder.add(teamStack).set("team", team);
         }
 
+        simpleGuiFormat.purgeData();
         simpleGuiFormat.load(builder);
         simpleGuiFormat.generateData();
-
-        this.simpleGuiFormat = simpleGuiFormat;
     }
 
     private List<String> formatLore(Team team, Game game) {
@@ -128,7 +129,6 @@ public class TeamSelectorInventory implements Listener {
             }
 
             createData();
-            guiHolder.setFormat(simpleGuiFormat);
             guiHolder.repaint();
         }
     }
