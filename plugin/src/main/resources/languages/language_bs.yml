@@ -101,11 +101,11 @@ game:
     tnt_sheep:
       no_target_found: "&cMeta nije pronadjena!"
     arror_blocker:
-      activated: "&aArrow blocker has been activated for %time% seconds!"
-      already_activated: "&cArrow blocker is already activated!"
-      ended: "&cArrow blocker is no longer activated!"
+      activated: "&aBlokada strijela je ukljucena i traje %time% sekundi!"
+      already_activated: "&cBlokada strijela je vec ukljucena!"
+      ended: "&cBlokada strijela je sada iskljucena!"
     golem:
-      created: "&aGolem has been spawned."
+      created: "&aGolem je stvoren."
 arena:
   status:
     disabled: "&cISKLJUCENO"
@@ -154,14 +154,14 @@ commands:
     added: "&aHologram je dodan na vasu poziciju!"
   auto_join:
     already_in_game: "&cVec ste u nekoj igri."
-    no_empty_game: "&cThere's no game empty game!"
+    no_empty_game: "&cNema prazne igre!"
   join:
     already_in_game: "&cVec ste u nekoj igri."
-    not_found: "&cArena does not exists!"
+    not_found: "&cArena ne postoji!"
   leave:
-    not_in_game: "&cYou are not in game!"
+    not_in_game: "&cNiste u igri!"
   list:
-    header: "&aAvailable arenas:"
+    header: "&aDostupne arene:"
   main_lobby:
     info: "&cUPOZORENJE&f: Morate upisati /bw reload kako bi glavni lobby proradio!"
   rejoin:
