@@ -16,7 +16,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.statistics.PlayerStatistic;
-import org.screamingsandals.bedwars.commands.AdminCommand;
+import org.screamingsandals.bedwars.commands.OldAdminCommand;
 
 import misat11.lib.nms.Hologram;
 import misat11.lib.nms.NMSUtils;
@@ -186,7 +186,7 @@ public class HologramManager implements TouchHandler {
 
 	@Override
 	public void handle(Player player, Hologram holo) {
-        if (!player.hasMetadata("bw-remove-holo") || (!player.isOp() && !player.hasPermission(AdminCommand.ADMIN_PERMISSION))) {
+        if (!player.hasMetadata("bw-remove-holo") || (!player.isOp() && !player.hasPermission(OldAdminCommand.ADMIN_PERMISSION))) {
             return;
         }
 
