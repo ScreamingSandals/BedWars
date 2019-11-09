@@ -8,7 +8,7 @@ game_already_running: "&cIgra &7%arena% &cje vec pocela! Ne mozete se pridruziva
 game_is_full: "&cIgra &7%arena% &cje puna! Pricekajte kraj igre!"
 unknown_command: "&cNepostojeca komanda! Upisite &4/bw help &cza pomoc!"
 unknown_usage: "&cBroj argumenata nije valjan ili su navedeni nepostojeci argumenti! Upisite &4/bw help &cza pomoc!"
-no_arena_found: "&cGame not found!"
+no_arena_found: "&cArena nije pronadjena!"
 usage_bw_join: "&cUsage: /bw join <arena>"
 usage_bw_admin: "&cUsage: /bw admin <arena> <add|edit|remove|save|...> ..."
 you_arent_in_game: "&cYou're not in a game!"
