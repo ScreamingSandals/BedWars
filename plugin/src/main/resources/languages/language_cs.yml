@@ -2,6 +2,8 @@
 lang_name: "Čeština"
 prefix: "&7[&fBed&4Wars&7]&r"
 item_shop_name: "Obchod"
+plugin:
+  version_info: "Version: %version%"
 game:
   info:
     global:
@@ -150,6 +152,7 @@ commands:
     unknown_usage: "&cNesprávný počet parametrů nebo neznámé parametry! Zadej &4/bw help &cpro nápovědu!"
     no_permissions: "&cNemáš příslušná oprávnění k použití příkazu!"
     not_allowed: "&cBěhem hry nejsou povoleny žádné příkazy s výjimkou příkazů pluginu BedWars!"
+    not_for_console: "&cThis command is not supported for the console."
   holograms:
     added: "&aHologram byl úspěšně přidán!"
   auto_join:
