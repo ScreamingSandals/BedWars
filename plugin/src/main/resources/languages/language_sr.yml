@@ -2,6 +2,8 @@
 lang_name: "Српски"
 prefix: "&7[&fBed&4Wars&7]&r"
 item_shop_name: "Shop"
+plugin:
+  version_info: "Version: %version%"
 game:
   info:
     global:
@@ -150,6 +152,7 @@ commands:
     unknown_usage: "&cNumber of arguments does not match the correct amount or unknown arguments! Type &4/bw help &cfor help!"
     no_permissions: "&cYou don't have the permission to do that!"
     not_allowed: "&cThis command is blocked while the game is running!"
+    not_for_console: "&cThis command is not supported for the console."
   holograms:
     added: "&aHologram has been added to your position!"
   auto_join:
