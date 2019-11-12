@@ -16,7 +16,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.statistics.PlayerStatistic;
-import org.screamingsandals.bedwars.commands.OldAdminCommand;
 
 import misat11.lib.nms.Hologram;
 import misat11.lib.nms.NMSUtils;

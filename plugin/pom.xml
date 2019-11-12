@@ -121,7 +121,7 @@
         <dependency>
             <groupId>org.screamingsandals.lib</groupId>
             <artifactId>screamingcommands</artifactId>
-            <version>1.0.1-SNAPSHOT1</version>
+            <version>1.0.1-SNAPSHOT11</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>

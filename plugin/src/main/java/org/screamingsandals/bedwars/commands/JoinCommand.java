@@ -1,22 +1,46 @@
 package org.screamingsandals.bedwars.commands;
 
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.Main;
+import org.screamingsandals.bedwars.utils.Permissions;
+import org.screamingsandals.lib.screamingcommands.base.annotations.RegisterCommand;
+import org.screamingsandals.lib.screamingcommands.base.interfaces.IBasicCommand;
 
 import java.util.List;
 
 import static misat11.lib.lang.I.m;
 
-public class JoinCommand extends BaseCommand {
+@RegisterCommand(commandName = "bw", subCommandName = "join")
+public class JoinCommand implements IBasicCommand {
 
-    public JoinCommand() {
-        super("join", null, false);
+    public JoinCommand(Main main) {
     }
 
     @Override
-    public boolean execute(CommandSender sender, List<String> args) {
-        Player player = (Player) sender;
+    public String getPermission() {
+        return Permissions.BASE_PERMISSION.permission;
+    }
+
+    @Override
+    public String getDescription() {
+        return "BedWars join command";
+    }
+
+    @Override
+    public String getUsage() {
+        return m("commands.help.join").get();
+    }
+
+    @Override
+    public String getInvalidUsageMessage() {
+        return "/bw join <arena>";
+    }
+
+    @Override
+    public boolean onPlayerCommand(Player player, List<String> args) {
         if (Main.isPlayerInGame(player)) {
             m("commands.join.already_in_game").send(player);
             return true;
@@ -37,10 +61,19 @@ public class JoinCommand extends BaseCommand {
     }
 
     @Override
-    public void completeTab(List<String> completion, CommandSender sender, List<String> args) {
+    public boolean onConsoleCommand(ConsoleCommandSender consoleCommandSender, List<String> list) {
+        return false;
+    }
+
+    @Override
+    public void onPlayerTabComplete(Player player, Command command, List<String> completion, List<String> args) {
         if (args.size() == 1) {
             completion.addAll(Main.getGameNames());
         }
     }
 
+    @Override
+    public void onConsoleTabComplete(ConsoleCommandSender consoleCommandSender, Command command, List<String> list, List<String> list1) {
+
+    }
 }

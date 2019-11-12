@@ -6,7 +6,6 @@ import java.util.List;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.screamingsandals.bedwars.Main;
-import org.screamingsandals.bedwars.commands.OldAdminCommand;
 import org.screamingsandals.bedwars.game.Game;
 import org.screamingsandals.lib.signmanager.SignBlock;
 import org.screamingsandals.lib.signmanager.SignOwner;

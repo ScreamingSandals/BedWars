@@ -6,7 +6,6 @@ import org.bukkit.command.CommandSender;
 import java.util.List;
 
 public abstract class BaseCommand {
-
     public static final String ADMIN_PERMISSION = "screamingbedwars.admin";
     public static final String OTHER_STATS_PERMISSION = "screamingbedwars.otherstats";
 
