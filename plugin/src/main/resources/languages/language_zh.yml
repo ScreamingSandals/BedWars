@@ -2,6 +2,8 @@
 lang_name: "Chinese"
 prefix: "&7[&fBed&4Wars&7]&r"
 item_shop_name: "商店"
+plugin:
+  version_info: "Version: %version%"
 game:
   info:
     global:
@@ -150,6 +152,7 @@ commands:
     unknown_usage: "&c参数个数不正确或参数错误! 输入 &4/bw help &c获取帮助！"
     no_permissions: "&c你没有这样做的权限!"
     not_allowed: "&c这个命令在游戏运行中不可用!"
+    not_for_console: "&cThis command is not supported for the console."
   holograms:
     added: "&aHologram has been added to your position!"
   auto_join:
