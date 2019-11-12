@@ -2,6 +2,8 @@
 lang_name: "Russian"
 prefix: "&7[&fBed&4Wars&7]&r"
 item_shop_name: "Магазин"
+plugin:
+  version_info: "Version: %version%"
 game:
   info:
     global:
@@ -150,6 +152,7 @@ commands:
     unknown_usage: "&cНеправильное использование команды! Напишите &4/bw help &cдля помощи!"
     no_permissions: "&cУ вас недостаточно прав на это!"
     not_allowed: "&cНельзя пользоваться этой командой во время игры!"
+    not_for_console: "&cThis command is not supported for the console."
   holograms:
     added: "&aГологама создана!"
   auto_join:
