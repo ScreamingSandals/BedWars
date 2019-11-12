@@ -2,6 +2,8 @@
 lang_name: "Polski"
 prefix: "&7[&fBed&4Wars&7]&r"
 item_shop_name: "Sklep"
+plugin:
+  version_info: "Version: %version%"
 game:
   info:
     global:
@@ -150,6 +152,7 @@ commands:
     unknown_usage: "&cBłędne argumenty! Wpisz &4/bw help &caby uzyskać pomoc."
     no_permissions: "&cNie masz uprawnień do użycia tej komendy!"
     not_allowed: "&cNie masz dostępu do tej komendy podczas gry!"
+    not_for_console: "&cThis command is not supported for the console."
   holograms:
     added: "&aDodano hologram w twojej aktualnej pozycji!"
   auto_join:
