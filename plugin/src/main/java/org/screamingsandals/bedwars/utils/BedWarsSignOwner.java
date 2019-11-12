@@ -56,7 +56,7 @@ public class BedWarsSignOwner implements SignOwner {
 
 	@Override
 	public String getSignCreationPermission() {
-		return OldAdminCommand.ADMIN_PERMISSION;
+		return Permissions.ADMIN_PERMISSIONS.permission;
 	}
 
 	@Override

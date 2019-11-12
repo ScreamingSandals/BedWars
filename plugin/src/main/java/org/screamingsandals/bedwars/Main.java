@@ -385,10 +385,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         try {
             if (configurator.config.getBoolean("holograms.enabled")) {
             	hologramInteraction = new HologramManager();
-
-                if (hologramInteraction != null) {
-                    hologramInteraction.loadHolograms();
-                }
+                hologramInteraction.loadHolograms();
             }
         } catch (Throwable ignored) {
         }

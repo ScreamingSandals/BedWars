@@ -20,6 +20,7 @@ import org.screamingsandals.bedwars.api.statistics.PlayerStatistic;
 import misat11.lib.nms.Hologram;
 import misat11.lib.nms.NMSUtils;
 import misat11.lib.nms.TouchHandler;
+import org.screamingsandals.bedwars.utils.Permissions;
 
 public class HologramManager implements TouchHandler {
 
@@ -185,7 +186,7 @@ public class HologramManager implements TouchHandler {
 
 	@Override
 	public void handle(Player player, Hologram holo) {
-        if (!player.hasMetadata("bw-remove-holo") || (!player.isOp() && !player.hasPermission(OldAdminCommand.ADMIN_PERMISSION))) {
+        if (!player.hasMetadata("bw-remove-holo") || (!player.isOp() && !player.hasPermission(Permissions.ADMIN_PERMISSIONS.permission))) {
             return;
         }
 
