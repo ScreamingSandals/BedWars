@@ -395,10 +395,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 
         commands = new HashMap<>();
         new AddholoCommand();
-        new OldAdminCommand();
-        new AutojoinCommand();
         new HelpCommand();
-        new JoinCommand();
         new LeaveCommand();
         new ListCommand();
         new RejoinCommand();
