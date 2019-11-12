@@ -2,6 +2,8 @@
 lang_name: "Bosanski"
 prefix: "&7[&fBed&4Wars&7]&r"
 item_shop_name: "Trgovina"
+plugin:
+  version_info: "Version: %version%"
 game:
   info:
     global:
@@ -150,6 +152,7 @@ commands:
     unknown_usage: "&cBroj argumenata nije valjan ili su navedeni nepostojeci argumenti! Upisite &4/bw help &cza pomoc!"
     no_permissions: "&cNemate dozvolu da to radite!"
     not_allowed: "&cOva komanda se ne moze koristiti za vrijeme igre!"
+    not_for_console: "&cThis command is not supported for the console."
   holograms:
     added: "&aHologram je dodan na vasu poziciju!"
   auto_join:
