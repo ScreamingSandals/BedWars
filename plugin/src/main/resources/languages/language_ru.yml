@@ -152,7 +152,7 @@ commands:
     unknown_usage: "&cНеправильное использование команды! Напишите &4/bw help &cдля помощи!"
     no_permissions: "&cУ вас недостаточно прав на это!"
     not_allowed: "&cНельзя пользоваться этой командой во время игры!"
-    not_for_console: "&cThis command is not supported for the console."
+    not_for_console: "&cДанную команду нельзя выполнить из консоли."
   holograms:
     added: "&aГологама создана!"
   auto_join:
