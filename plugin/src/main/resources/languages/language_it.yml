@@ -3,23 +3,23 @@ lang_name: "Italiano"
 prefix: "&7[&fBed&4Wars&7]&r"
 item_shop_name: "Shop"
 plugin:
-  version_info: "Version: %version%"
+  version_info: "Versione: %version%"
 game:
   info:
     global:
-      joined: "%name% &ajoined the game!&r &7[&a%players%&7/&a%maxplayers%&7]"
-      leaved: "%name% &cleft the game!"
-      game_win: "&aTeam &r%team%&a won game in &7%time%"
-      game_end: "&cGame ended! Thanks for playing!"
+      joined: "%name% &aè entrato/a in gioco!&r &7[&a%players%&7/&a%maxplayers%&7]"
+      leaved: "%name% &cè uscito/a dal gioco!"
+      game_win: "&aSquadra &r%team%&a Vince la partità in &7%time%"
+      game_end: "&cGioco finito! Grazie per aver partecipato!"
       players:
-        self_killed: "&cPlayer %victim% &cdied!"
-        killed: "&cPlayer %killer% &ckilled %victim%&c!"
+        self_killed: "&cGiocatori sconfitti %victim% &c!"
+        killed: "&c%killer% &cgioctori &cuccidono %victim%&c!"
       titles:
-        start: "&aGame started!"
-        start_subtitle: "&aGame &7%arena%&a has started! Enjoy the game!"
-        bed_is_destroyed: "Bed of %team%&r is destroyed!"
-        target_is_destroyed: "Target block of %team%&r is destroyed!"
-        bed_is_destroyed_subtitle: "You can now kill the team members!"
+        start: "&aPartita iniziata!"
+        start_subtitle: "&aPartita &7%arena%&a iniziata! Partecipa adesso!"
+        bed_is_destroyed: "Il letto della squadra %team%&r è stato distrutto!"
+        target_is_destroyed: "Il bersaglio della squadra %team%&r è stato agnentato!"
+        bed_is_destroyed_subtitle: "Ora puoi uccidere i compagni di squadra!"
         bed_is_destroyed_subtitle_for_victim: "Now you will never be respawned!"
       bossbar:
         waiting: "&cThe game will begin shortly!"
