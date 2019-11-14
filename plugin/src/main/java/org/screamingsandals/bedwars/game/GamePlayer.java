@@ -9,6 +9,7 @@ import org.bukkit.potion.PotionEffect;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.utils.BungeeUtils;
 import org.screamingsandals.bedwars.utils.PaperUtils;
+import org.screamingsandals.bedwars.utils.Permissions;
 
 public class GamePlayer {
     public final Player player;
@@ -64,7 +65,7 @@ public class GamePlayer {
     }
 
     public boolean canJoinFullGame() {
-        return player.hasPermission("bw.vip.forcejoin");
+        return player.hasPermission(Permissions.VIP_JOIN_FULL.permission);
     }
 
     public void storeInv() {

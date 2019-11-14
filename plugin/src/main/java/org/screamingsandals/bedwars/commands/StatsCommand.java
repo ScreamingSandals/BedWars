@@ -25,7 +25,7 @@ public class StatsCommand implements IBasicCommand {
 
     @Override
     public String getPermission() {
-        return Permissions.BASE_PERMISSION.permission;
+        return Permissions.BASE.permission;
     }
 
     @Override
@@ -50,7 +50,7 @@ public class StatsCommand implements IBasicCommand {
         } else {
             if (args.size() >= 1) {
                 if (!player.hasPermission(Permissions.SEE_OTHER_STATS.permission)
-                        && !player.hasPermission(Permissions.ADMIN_PERMISSIONS.permission)) {
+                        && !player.hasPermission(Permissions.ADMIN.permission)) {
                     mpr("commands.errors.no_permissions").send(player);
                 } else {
                     String name = args.get(0);
@@ -107,7 +107,7 @@ public class StatsCommand implements IBasicCommand {
     public void onPlayerTabComplete(Player player, Command command, List<String> completion, List<String> args) {
         if (args.size() == 1 && Main.isPlayerStatisticsEnabled()
                 && (player.hasPermission(Permissions.SEE_OTHER_STATS.permission)
-                || player.hasPermission(Permissions.ADMIN_PERMISSIONS.permission))) {
+                || player.hasPermission(Permissions.ADMIN.permission))) {
             for (Player p : Bukkit.getOnlinePlayers()) {
                 completion.add(p.getName());
             }

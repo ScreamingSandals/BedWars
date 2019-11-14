@@ -20,7 +20,7 @@ public class HelpCommand implements IBasicCommand {
 
     @Override
     public String getPermission() {
-        return Permissions.BASE_PERMISSION.permission;
+        return Permissions.BASE.permission;
     }
 
     @Override
@@ -49,14 +49,14 @@ public class HelpCommand implements IBasicCommand {
         m("commands.admin.help.auto_join").send(player);
         m("commands.admin.help.list").send(player);
 
-        if (player.hasPermission(Permissions.ADMIN_PERMISSIONS.permission)
+        if (player.hasPermission(Permissions.ADMIN.permission)
                 || player.hasPermission(Permissions.SEE_OTHER_STATS.permission)) {
             m("commands.admin.help.stats_others").send(player);
         } else {
             m("commands.admin.help.stats").send(player);
         }
 
-        if (player.hasPermission(Permissions.ADMIN_PERMISSIONS.permission)) {
+        if (player.hasPermission(Permissions.ADMIN.permission)) {
             m("commands.admin.help.admin.addholo").send(player);
             m("commands.admin.help.admin.removeholo").send(player);
             m("commands.admin.help.admin.mainlobby").send(player);

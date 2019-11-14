@@ -587,8 +587,8 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 				player.player.getInventory().setItem(leavePosition, leave);
 			}
 
-			if (player.player.hasPermission("bw.vip.startitem")
-				|| player.player.hasPermission("misat11.bw.vip.startitem")) {
+			if (player.player.hasPermission(Permissions.VIP.permission)
+				|| player.player.hasPermission(Permissions.VIP_START_ITEM.permission)) {
 				int vipPosition = Main.getConfigurator().config.getInt("hotbar.start", 1);
 				if (vipPosition >= 0 && vipPosition <= 8) {
 					ItemStack startGame = Main.getConfigurator().readDefinedItem("startgame", "DIAMOND");

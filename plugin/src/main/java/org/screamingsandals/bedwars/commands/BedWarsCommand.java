@@ -1,16 +1,13 @@
 package org.screamingsandals.bedwars.commands;
 
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.utils.Permissions;
-import org.screamingsandals.lib.debug.Debug;
 import org.screamingsandals.lib.screamingcommands.base.annotations.RegisterCommand;
 import org.screamingsandals.lib.screamingcommands.base.interfaces.IBasicCommand;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static misat11.lib.lang.I.mpr;
@@ -48,7 +45,7 @@ public class BedWarsCommand implements IBasicCommand {
 
     @Override
     public String getPermission() {
-        return Permissions.BASE_PERMISSION.permission;
+        return Permissions.BASE.permission;
     }
 
     @Override

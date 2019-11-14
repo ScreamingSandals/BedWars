@@ -21,7 +21,7 @@ public class RejoinCommand implements IBasicCommand {
 
     @Override
     public String getPermission() {
-        return Permissions.BASE_PERMISSION.permission;
+        return Permissions.BASE.permission;
     }
 
     @Override

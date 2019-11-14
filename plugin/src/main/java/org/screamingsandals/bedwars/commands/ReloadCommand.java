@@ -24,7 +24,7 @@ public class ReloadCommand implements IBasicCommand {
 
     @Override
     public String getPermission() {
-        return Permissions.ADMIN_PERMISSIONS.permission;
+        return Permissions.ADMIN.permission;
     }
 
     @Override

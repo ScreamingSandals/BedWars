@@ -575,8 +575,8 @@ public class PlayerListener implements Listener {
                         }
                     } else if (event.getMaterial() == Material
                             .valueOf(Main.getConfigurator().config.getString("items.startgame", "DIAMOND"))) {
-                        if (game.getStatus() == GameStatus.WAITING && (player.hasPermission("bw.vip.startitem")
-                                || player.hasPermission("misat11.bw.vip.startitem"))) {
+                        if (game.getStatus() == GameStatus.WAITING && (player.hasPermission(Permissions.VIP.permission)
+                                || player.hasPermission(Permissions.VIP_START_ITEM.permission))) {
                             if (game.checkMinPlayers()) {
                                 game.gameStartItem = true;
                             } else {
@@ -746,7 +746,7 @@ public class PlayerListener implements Listener {
                     return;
                 }
             }
-        } else if (player.hasPermission(Permissions.ADMIN_PERMISSIONS.permission)) {
+        } else if (player.hasPermission(Permissions.ADMIN.permission)) {
             List<MetadataValue> values = player.getMetadata(GameCreator.BEDWARS_TEAM_JOIN_METADATA);
             if (values.size() == 0) {
                 return;

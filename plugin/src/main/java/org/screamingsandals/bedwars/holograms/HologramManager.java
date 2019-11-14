@@ -186,7 +186,7 @@ public class HologramManager implements TouchHandler {
 
 	@Override
 	public void handle(Player player, Hologram holo) {
-        if (!player.hasMetadata("bw-remove-holo") || (!player.isOp() && !player.hasPermission(Permissions.ADMIN_PERMISSIONS.permission))) {
+        if (!player.hasMetadata("bw-remove-holo") || (!player.isOp() && !player.hasPermission(Permissions.ADMIN.permission))) {
             return;
         }
 
