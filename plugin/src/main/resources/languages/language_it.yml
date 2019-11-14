@@ -20,17 +20,17 @@ game:
         bed_is_destroyed: "Il letto della squadra %team%&r è stato distrutto!"
         target_is_destroyed: "Il bersaglio della squadra %team%&r è stato agnentato!"
         bed_is_destroyed_subtitle: "Ora puoi uccidere i compagni di squadra!"
-        bed_is_destroyed_subtitle_for_victim: "Now you will never be respawned!"
+        bed_is_destroyed_subtitle_for_victim: "Da questo momento non è più possibile rinascere!"
       bossbar:
-        waiting: "&cThe game will begin shortly!"
-        running: "&aGame started! Good luck!"
+        waiting: "&cLa partita inizierà a breve!"
+        running: "&aPartita iniziata! Buona fortuna!"
     player:
-      already_running: "&cGame &7%arena% &cis already running! You can't join a running game!"
-      full: "&cGame &7%arena% &cis full! Please wait for game end!"
+      already_running: "&cPartita &7%arena% &cè già in corso! Attendi il termine per entrare!"
+      full: "&cLa partita &7%arena% &cè al completo! Aspetta per il prossimo incontro!"
       vip:
         not_enough_players: "&cNot enough players in arena!"
         full: "&cGame &7%arena% &cis full of VIP players. Please wait for game end!"
-        kicked_by_vip: "&cYou were kicked by VIP player!"
+        kicked_by_vip: "&cSei stato kickato un giocatore VIP!"
       team:
         selected: "&aSelected team: %team%&r &7[&a%players%&7/&a%maxplayers%&7]"
         already_selected: "&aYou are already in team: %team%&r &7[&a%players%&7/&a%maxplayers%&7]"
@@ -57,7 +57,7 @@ game:
     amount: "Amount:"
     page_back: "Page back"
     page_forward: "Page forward"
-    category_back: "&cBack to category list"
+    category_back: "&cTorna alla lista delle cattegorie"
   resources:
     bronze: "Bronze"
     iron: "Iron"
@@ -147,19 +147,19 @@ commands:
   success:
     done: "&aCommand executed successfully!"
   errors:
-    unknown_command: "&cCommand unknown! Type &4/bw help &cfor help!"
-    unknown_usage: "&cNumber of arguments does not match the correct amount or unknown arguments! Type &4/bw help &cfor help!"
-    no_permissions: "&cYou don't have the permission to do that!"
+    unknown_command: "&cComando sconosciuto! Scrivi &4/bw help &cper vedere la lista completa!"
+    unknown_usage: "&cQualcosa non corrisponde, l'argomento è sbagliato o sconosciuto! Scrivi &4/bw help &cper altri comandi e contenuti!"
+    no_permissions: "&cNon hai il permesso di fare questo!"
     not_allowed: "&cThis command is blocked while the game is running!"
     not_for_console: "&cThis command is not supported for the console."
   holograms:
     added: "&aHologram has been added to your position!"
     click_to_remove: "&eNow click the &ahologram &eyou want to remove!"
   auto_join:
-    already_in_game: "&cYou are already in some game."
+    already_in_game: "&cSei già in una partita."
     no_empty_game: "&cThere's no game empty game!"
   join:
-    already_in_game: "&cYou are already in some game."
+    already_in_game: "&cSei già in una partita."
     not_found: "&cArena does not exists!"
   leave:
     not_in_game: "&cYou are not in game!"
@@ -168,7 +168,7 @@ commands:
   main_lobby:
     info: "&cWARNING&f: You need to execute /bw reload to make Mainlobby work!"
   rejoin:
-    already_in_game: "&cYou are already in some game."
+    already_in_game: "&cSei già in una partita."
     no_game_found: "&cNo previous game found."
   reload:
     safe: "&aWaiting for safe stop of all games or for 60 seconds before reload!"
@@ -190,7 +190,7 @@ commands:
     arena:
       errors:
         not_found: "&cArena not found!"
-        not_in_edit_mode: "&cArena must be in edit mode!"
+        not_in_edit_mode: "&cDevi attivare la modifica dell'Arena!"
       info:
         header: "&aDetails of the arena:"
         name: "&7Name: &r%name%"
@@ -227,11 +227,11 @@ commands:
           header: "&7Constants configuration:"
           constant: "- &7%constant%&r: &7%value%"
     add:
-      added: "&aArena added!"
-      already_exists: "&cArena already exists!"
+      added: "&aArena aggiunta!"
+      already_exists: "&cEsiste già un Arena con questo nome!"
       not_saved: "&cArena already exists but it's not saved!"
     remove:
-      removed: "&c&lArena removed!"
+      removed: "&c&lArena rimossa!"
     edit:
       switched: "&aArena was switched to edit mode!"
     info_sender:
