@@ -7,7 +7,6 @@ import org.bukkit.Location;
 import org.bukkit.WeatherType;
 import org.bukkit.boss.BarColor;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -55,7 +54,7 @@ public class AdminCommand implements IBasicCommand {
 
     @Override
     public String getInvalidUsageMessage() {
-        return "Not working.";
+        return mpr("commands.errors.unknown_usage").get();
     }
 
     @Override

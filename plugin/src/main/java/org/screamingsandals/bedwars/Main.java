@@ -23,7 +23,7 @@ import org.screamingsandals.bedwars.api.BedwarsAPI;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.api.game.GameStore;
 import org.screamingsandals.bedwars.api.utils.ColorChanger;
-import org.screamingsandals.bedwars.commands.*;
+import org.screamingsandals.bedwars.config.Configurator;
 import org.screamingsandals.bedwars.database.DatabaseManager;
 import org.screamingsandals.bedwars.game.*;
 import org.screamingsandals.bedwars.holograms.HologramManager;
@@ -33,10 +33,8 @@ import org.screamingsandals.bedwars.placeholderapi.BedwarsExpansion;
 import org.screamingsandals.bedwars.special.SpecialRegister;
 import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.bedwars.utils.BedWarsSignOwner;
-import org.screamingsandals.bedwars.config.Configurator;
 import org.screamingsandals.lib.debug.Debug;
 import org.screamingsandals.lib.screamingcommands.ScreamingCommands;
-import org.screamingsandals.lib.screamingcommands.base.CommandManager;
 import org.screamingsandals.lib.signmanager.SignListener;
 import org.screamingsandals.lib.signmanager.SignManager;
 
@@ -64,7 +62,6 @@ public class Main extends JavaPlugin implements BedwarsAPI {
     private DatabaseManager databaseManager;
     private PlayerStatisticManager playerStatisticsManager;
     private HologramManager hologramInteraction;
-    private HashMap<String, BaseCommand> commands;
     private SpigetUpdate spigetUpdate;
     private ColorChanger colorChanger;
     private SignManager signManager;
@@ -220,6 +217,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
     public static boolean isFarmBlock(Material mat) {
         if (instance.configurator.config.getBoolean("farmBlocks.enable")) {
             List<String> list = (List<String>) instance.configurator.config.getList("farmBlocks.blocks");
+            assert list != null;
             return list.contains(mat.name());
         }
         return false;
@@ -229,20 +227,22 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         if (instance.configurator.config.getBoolean("breakable.enabled")) {
             List<String> list = (List<String>) instance.configurator.config.getList("breakable.blocks");
             boolean asblacklist = instance.configurator.config.getBoolean("breakable.asblacklist", false);
-            return list.contains(mat.name()) ? !asblacklist : asblacklist;
+            assert list != null;
+            return list.contains(mat.name()) != asblacklist;
         }
         return false;
     }
-    
+
     public static boolean isCommandLeaveShortcut(String command) {
         if (instance.configurator.config.getBoolean("leaveshortcuts.enabled")) {
             List<String> commands = (List<String>) instance.configurator.config.getList("leaveshortcuts.list");
+            assert commands != null;
             for (String comm : commands) {
                 if (!comm.startsWith("/")) {
                     comm = "/" + comm;
                 }
                 if (comm.equals(command)) {
-                	return true;
+                    return true;
                 }
             }
         }
@@ -301,10 +301,6 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         return instance.hologramInteraction;
     }
 
-    public static HashMap<String, BaseCommand> getCommands() {
-        return instance.commands;
-    }
-
     public static List<Entity> getGameEntities(Game game) {
         List<Entity> entityList = new ArrayList<>();
         for (Map.Entry<Entity, Game> entry : instance.entitiesInGame.entrySet()) {
@@ -318,9 +314,9 @@ public class Main extends JavaPlugin implements BedwarsAPI {
     public static int getVersionNumber() {
         return instance.versionNumber;
     }
-    
+
     public static SignManager getSignManager() {
-    	return instance.signManager;
+        return instance.signManager;
     }
 
     public void onEnable() {
@@ -381,25 +377,14 @@ public class Main extends JavaPlugin implements BedwarsAPI {
             }
         } catch (Throwable ignored) {
         }
-        
+
         try {
             if (configurator.config.getBoolean("holograms.enabled")) {
-            	hologramInteraction = new HologramManager();
+                hologramInteraction = new HologramManager();
                 hologramInteraction.loadHolograms();
             }
         } catch (Throwable ignored) {
         }
-
-        commands = new HashMap<>();
-        new AddholoCommand();
-        new HelpCommand();
-        new LeaveCommand();
-        new ListCommand();
-        new RejoinCommand();
-        new ReloadCommand();
-        new RemoveholoCommand();
-        new StatsCommand();
-        new MainlobbyCommand();
 
         getServer().getPluginManager().registerEvents(new PlayerListener(), this);
         if (versionNumber >= 109) {
@@ -408,7 +393,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         if (versionNumber >= 112) {
             getServer().getPluginManager().registerEvents(new Player112Listener(), this);
         } else {
-        	getServer().getPluginManager().registerEvents(new PlayerBefore112Listener(), this);
+            getServer().getPluginManager().registerEvents(new PlayerBefore112Listener(), this);
         }
         getServer().getPluginManager().registerEvents(new VillagerListener(), this);
         getServer().getPluginManager().registerEvents(new WorldListener(), this);
@@ -467,6 +452,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         File folder = new File(getDataFolder().toString(), "arenas");
         if (folder.exists()) {
             File[] listOfFiles = folder.listFiles();
+            assert listOfFiles != null;
             if (listOfFiles.length > 0) {
                 for (File listOfFile : listOfFiles) {
                     if (listOfFile.isFile()) {
@@ -486,6 +472,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
             // PerWorldInventory
             if (Bukkit.getPluginManager().isPluginEnabled("PerWorldInventory")) {
                 Plugin pwi = Bukkit.getPluginManager().getPlugin("PerWorldInventory");
+                assert pwi != null;
                 if (pwi.getClass().getName().equals("me.ebonjaeger.perworldinventory.PerWorldInventory")) {
                     // Kotlin version
                     getServer().getPluginManager().registerEvents(new PerWorldInventoryKotlinListener(), this);
@@ -639,9 +626,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 
     @Override
     public void unregisterEntityFromGame(Entity entity) {
-        if (entitiesInGame.containsKey(entity)) {
-            entitiesInGame.remove(entity);
-        }
+        entitiesInGame.remove(entity);
     }
 
     @Override
@@ -658,16 +643,16 @@ public class Main extends JavaPlugin implements BedwarsAPI {
     public ColorChanger getColorChanger() {
         return colorChanger;
     }
-    
+
     public static ItemStack applyColor(TeamColor color, ItemStack itemStack) {
-    	return applyColor(color, itemStack, false);
+        return applyColor(color, itemStack, false);
     }
 
     public static ItemStack applyColor(TeamColor color, ItemStack itemStack, boolean clone) {
         org.screamingsandals.bedwars.api.TeamColor teamColor = color.toApiColor();
         if (clone) {
-        	itemStack = itemStack.clone();
-        } 
+            itemStack = itemStack.clone();
+        }
         return instance.getColorChanger().applyColor(teamColor, itemStack);
     }
 

@@ -6,6 +6,8 @@ public enum Permissions {
     ADMIN_PERMISSIONS("screamingbedwars.admin"),
     VIP_PERMISSIONS("screamingbedwars.vip"),
 
+    SEE_OTHER_STATS("screamingbedwars.others.statistics"),
+
     VIP_JOIN_FULL_PERMISSIONS("screamingbedwars.vip.joinfull");
 
 

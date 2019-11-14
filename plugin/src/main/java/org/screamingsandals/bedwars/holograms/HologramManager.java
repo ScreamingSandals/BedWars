@@ -50,13 +50,12 @@ public class HologramManager implements TouchHandler {
         this.holograms = new HashMap<>();
         this.hologramLocations = new ArrayList<>();
 
-        File file = new File(Main.getInstance().getDataFolder(), "holodb.yml");
+        File file = new File(Main.getInstance().getDataFolder(), "holograms.yml");
         if (file.exists()) {
             YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
             List<Location> locations = (List<Location>) config.get("locations");
-            for (Location location : locations) {
-                this.hologramLocations.add(location);
-            }
+            assert locations != null;
+            this.hologramLocations.addAll(locations);
         }
 
         if (this.hologramLocations.size() == 0) {
@@ -148,6 +147,7 @@ public class HologramManager implements TouchHandler {
         holo.addHandler(this);
 
         String headline = Main.getConfigurator().config.getString("holograms.headline", "Your §eBEDWARS§f stats");
+        assert headline != null;
         if (!headline.trim().isEmpty()) {
             holo.addLine(headline);
         }
@@ -159,7 +159,7 @@ public class HologramManager implements TouchHandler {
     private void updateHologramDatabase() {
         try {
             // update hologram-database file
-            File file = new File(Main.getInstance().getDataFolder(), "holodb.yml");
+            File file = new File(Main.getInstance().getDataFolder(), "holograms.yml");
             YamlConfiguration config = new YamlConfiguration();
 
             if (!file.exists()) {

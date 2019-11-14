@@ -32,7 +32,6 @@ import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.events.BedwarsPlayerKilledEvent;
 import org.screamingsandals.bedwars.api.events.BedwarsTeamChestOpenEvent;
 import org.screamingsandals.bedwars.api.game.GameStatus;
-import org.screamingsandals.bedwars.commands.BaseCommand;
 import org.screamingsandals.bedwars.game.*;
 import org.screamingsandals.bedwars.inventories.TeamSelectorInventory;
 import org.screamingsandals.bedwars.statistics.PlayerStatistic;
@@ -747,7 +746,7 @@ public class PlayerListener implements Listener {
                     return;
                 }
             }
-        } else if (player.hasPermission(BaseCommand.ADMIN_PERMISSION)) {
+        } else if (player.hasPermission(Permissions.ADMIN_PERMISSIONS.permission)) {
             List<MetadataValue> values = player.getMetadata(GameCreator.BEDWARS_TEAM_JOIN_METADATA);
             if (values.size() == 0) {
                 return;

@@ -1,27 +1,62 @@
 package org.screamingsandals.bedwars.commands;
 
-import org.bukkit.command.CommandSender;
+import org.bukkit.command.Command;
+import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.Main;
+import org.screamingsandals.bedwars.utils.Permissions;
+import org.screamingsandals.lib.screamingcommands.base.annotations.RegisterCommand;
+import org.screamingsandals.lib.screamingcommands.base.interfaces.IBasicCommand;
 
 import java.util.List;
 
-import static misat11.lib.lang.I.m;
+import static misat11.lib.lang.I.mpr;
 
-public class ListCommand extends BaseCommand {
+@RegisterCommand(commandName = "bw", subCommandName = "list")
+public class ListCommand implements IBasicCommand {
 
-    public ListCommand() {
-        super("list", null, true);
+    public ListCommand(Main main) {
     }
 
     @Override
-    public boolean execute(CommandSender sender, List<String> args) {
-        m("commands.list.header").send(sender);
-        Main.sendGameListInfo(sender);
+    public String getPermission() {
+        return Permissions.BASE_PERMISSION.permission;
+    }
+
+    @Override
+    public String getDescription() {
+        return "BedWars list command";
+    }
+
+    @Override
+    public String getUsage() {
+        return "/bw list";
+    }
+
+    @Override
+    public String getInvalidUsageMessage() {
+        return "";
+    }
+
+    @Override
+    public boolean onPlayerCommand(Player player, List<String> list) {
+        mpr("commands.list.header").send(player);
+        Main.sendGameListInfo(player);
         return true;
     }
 
     @Override
-    public void completeTab(List<String> completion, CommandSender sender, List<String> args) {
+    public boolean onConsoleCommand(ConsoleCommandSender consoleCommandSender, List<String> list) {
+        return false;
     }
 
+    @Override
+    public void onPlayerTabComplete(Player player, Command command, List<String> list, List<String> list1) {
+
+    }
+
+    @Override
+    public void onConsoleTabComplete(ConsoleCommandSender consoleCommandSender, Command command, List<String> list, List<String> list1) {
+
+    }
 }

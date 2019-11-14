@@ -1,7 +1,6 @@
 package org.screamingsandals.bedwars.commands;
 
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.Main;
@@ -12,6 +11,7 @@ import org.screamingsandals.lib.screamingcommands.base.interfaces.IBasicCommand;
 import java.util.List;
 
 import static misat11.lib.lang.I.m;
+import static misat11.lib.lang.I.mpr;
 
 @RegisterCommand(commandName = "bw", subCommandName = "join")
 public class JoinCommand implements IBasicCommand {
@@ -42,7 +42,7 @@ public class JoinCommand implements IBasicCommand {
     @Override
     public boolean onPlayerCommand(Player player, List<String> args) {
         if (Main.isPlayerInGame(player)) {
-            m("commands.join.already_in_game").send(player);
+            mpr("commands.join.already_in_game").send(player);
             return true;
         }
 
@@ -51,7 +51,7 @@ public class JoinCommand implements IBasicCommand {
             if (Main.isGameExists(arenaN)) {
                 Main.getGame(arenaN).joinToGame(player);
             } else {
-                m("commands.join.not_found").send(player);
+                mpr("commands.join.not_found").send(player);
             }
         } else {
             Main.getInstance().getGameWithHighestPlayers().joinToGame(player);
