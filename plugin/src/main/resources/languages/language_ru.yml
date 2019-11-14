@@ -134,7 +134,6 @@ signs:
       players: "&a%players%&8/&a%maxplayers%"
 holograms:
   not_enabled: "&cГолограммы отключены."
-  click_to_remove: "&eТеперь нажмите на голограмму, которую хотите убрать!"
   holo_removed: "&aГолограмма &lуспешно &aудалена!"
   game:
     beds:
@@ -155,6 +154,7 @@ commands:
     not_for_console: "&cДанную команду нельзя выполнить из консоли."
   holograms:
     added: "&aГологама создана!"
+    click_to_remove: "&eNow click the &ahologram &eyou want to remove!"
   auto_join:
     already_in_game: "&cВы уже находитесь в игре."
     no_empty_game: "&cВсе игры заполнены!"
