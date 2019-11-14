@@ -134,7 +134,6 @@ signs:
       players: "&a%players%&8/&a%maxplayers%"
 holograms:
   not_enabled: "&cHologrami su iskljuceni."
-  click_to_remove: "&eSada kliknite na &ahologram &ekoji zelite ukloniti!"
   holo_removed: "&aHologram je &luspjesno &auklonjen!"
   game:
     beds:
@@ -155,6 +154,7 @@ commands:
     not_for_console: "&cThis command is not supported for the console."
   holograms:
     added: "&aHologram je dodan na vasu poziciju!"
+    click_to_remove: "&eNow click the &ahologram &eyou want to remove!"
   auto_join:
     already_in_game: "&cVec ste u nekoj igri."
     no_empty_game: "&cNema prazne igre!"
