@@ -154,7 +154,7 @@ commands:
     not_for_console: "&cThis command is not supported for the console."
   holograms:
     added: "&aDodano hologram w twojej aktualnej pozycji!"
-    click_to_remove: "&eNow click the &ahologram &eyou want to remove!"
+    click_to_remove: "&eKliknij na &ahologram&e, który chcesz usunąć!"
   auto_join:
     already_in_game: "&cJesteś już w innej grze."
     no_empty_game: "&cNie ma pustej gry!"
