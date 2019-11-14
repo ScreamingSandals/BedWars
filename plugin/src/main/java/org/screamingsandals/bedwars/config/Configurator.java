@@ -19,8 +19,8 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Configurator {
-    public File configFile, shopFile, signsFile, recordFile, langFolder;
-    public FileConfiguration config, shopConfig, signsConfig, recordConfig;
+    public File configFile, signsFile, recordFile, langFolder;
+    public FileConfiguration config, signsConfig, recordConfig;
 
     public final File dataFolder;
     public final Main main;
@@ -34,13 +34,11 @@ public class Configurator {
         dataFolder.mkdirs();
 
         configFile = new File(dataFolder, "config.yml");
-        shopFile = new File(dataFolder, "shop.yml");
         signsFile = new File(dataFolder, "sign.yml");
         recordFile = new File(dataFolder, "record.yml");
         langFolder = new File(dataFolder.toString(), "languages");
 
         config = new YamlConfiguration();
-        shopConfig = new YamlConfiguration();
         signsConfig = new YamlConfiguration();
         recordConfig = new YamlConfiguration();
 
@@ -49,15 +47,6 @@ public class Configurator {
                 configFile.createNewFile();
             } catch (IOException e) {
                 e.printStackTrace();
-            }
-        }
-        /* Move this out of Configurator */
-        if (!shopFile.exists()) {
-            if (Main.isLegacy()) {
-                main.saveResource("shop_legacy.yml", false);
-                new File(dataFolder, "shop_legacy.yml").renameTo(shopFile);
-            } else {
-                main.saveResource("shop.yml", false);
             }
         }
         if (!signsFile.exists()) {
@@ -91,7 +80,6 @@ public class Configurator {
 
         try {
             config.load(configFile);
-            shopConfig.load(shopFile);
             signsConfig.load(signsFile);
             recordConfig.load(recordFile);
         } catch (IOException | InvalidConfigurationException e) {
