@@ -153,8 +153,8 @@ commands:
     not_allowed: "&cНельзя пользоваться этой командой во время игры!"
     not_for_console: "&cДанную команду нельзя выполнить из консоли."
   holograms:
-    added: "&aГологама создана!"
-    click_to_remove: "&eNow click the &ahologram &eyou want to remove!"
+    added: "&aГологамма создана!"
+    click_to_remove: "&eТеперь нажмите на &aголограмму&e, которую хотите убрать!"
   auto_join:
     already_in_game: "&cВы уже находитесь в игре."
     no_empty_game: "&cВсе игры заполнены!"
