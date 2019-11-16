@@ -2,6 +2,8 @@
 lang_name: "Português (Brasileiro)"
 prefix: "&7[&fBed&4Wars&7]&r"
 item_shop_name: "Shop"
+plugin:
+  version_info: "Version: %version%"
 game:
   info:
     global:
@@ -132,7 +134,6 @@ signs:
       players: "&a%players%&8/&a%maxplayers%"
 holograms:
   not_enabled: "&cHolograms are disabled."
-  click_to_remove: "&eNow click the &ahologram &eyou want to remove!"
   holo_removed: "&aHologram has been &lsuccessfully &aremoved!"
   game:
     beds:
@@ -150,8 +151,10 @@ commands:
     unknown_usage: "&cNumber of arguments does not match the correct amount or unknown arguments! Type &4/bw help &cfor help!"
     no_permissions: "&cYou don't have the permission to do that!"
     not_allowed: "&cThis command is blocked while the game is running!"
+    not_for_console: "&cThis command is not supported for the console."
   holograms:
     added: "&aHologram has been added to your position!"
+    click_to_remove: "&eNow click the &ahologram &eyou want to remove!"
   auto_join:
     already_in_game: "&cYou are already in some game."
     no_empty_game: "&cThere's no game empty game!"

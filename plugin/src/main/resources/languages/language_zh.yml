@@ -2,6 +2,8 @@
 lang_name: "Chinese"
 prefix: "&7[&fBed&4Wars&7]&r"
 item_shop_name: "商店"
+plugin:
+  version_info: "Version: %version%"
 game:
   info:
     global:
@@ -132,7 +134,6 @@ signs:
       players: "&a%players%&8/&a%maxplayers%"
 holograms:
   not_enabled: "&cHolograms are disabled."
-  click_to_remove: "&eNow click the &ahologram &eyou want to remove!"
   holo_removed: "&aHologram has been &lsuccessfully &aremoved!"
   game:
     beds:
@@ -150,8 +151,10 @@ commands:
     unknown_usage: "&c参数个数不正确或参数错误! 输入 &4/bw help &c获取帮助！"
     no_permissions: "&c你没有这样做的权限!"
     not_allowed: "&c这个命令在游戏运行中不可用!"
+    not_for_console: "&cThis command is not supported for the console."
   holograms:
     added: "&aHologram has been added to your position!"
+    click_to_remove: "&eNow click the &ahologram &eyou want to remove!"
   auto_join:
     already_in_game: "&c你已经在其他游戏中了."
     no_empty_game: "&cThere's no game empty game!"
