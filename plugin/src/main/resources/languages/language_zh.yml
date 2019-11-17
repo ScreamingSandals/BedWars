@@ -27,6 +27,7 @@ game:
     player:
       already_running: "&c游戏 &7%arena% &c正在进行! 你不可以加入一个进行中的游戏!"
       full: "&c游戏玩家 &7%arena% &c已满! 请等待下一轮!"
+      rebuilding: "Game %arena% is rebuilding now."
       vip:
         not_enough_players: "&c游戏人数不足!"
         full: "&cGame &7%arena% &cis full of VIP players. Please wait for game end!"
@@ -121,17 +122,17 @@ signs:
   game_not_exists: "&cThe game that is written on the sign doesn't exist! Please contact an admin!"
   status:
     disabled:
-      name: "&c游戏"
-      players: "&c禁用"
+      line1: "&cGame"
+      line2: "&cdisabled"
     rebuilding:
-      name: "&c游戏"
-      players: "&6游戏区域"
+      line1: "&cGame"
+      line2: "&6Arena"
     running:
-      name: "&a游戏中"
-      players: "&c%players%&8/&c%maxplayers%"
+      line1: "&aRunning"
+      line2: "&c%players%&8/&c%maxplayers%"
     waiting:
-      name: "&6等待中"
-      players: "&a%players%&8/&a%maxplayers%"
+      line1: "&6Waiting"
+      line2: "&a%players%&8/&a%maxplayers%"
 holograms:
   not_enabled: "&cHolograms are disabled."
   holo_removed: "&aHologram has been &lsuccessfully &aremoved!"
@@ -296,7 +297,7 @@ commands:
       invalid_color: "&c颜色不存在!"
       block_is_not_bed: "&c标记方块不是床!"
       max_players_fail: "&c最大玩家数量应 >= 1!"
-      need_min_2_teems: "&c游戏至少需要两个队伍!"
+      need_min_2_teams: "&cThe game needs 2 or more teams!"
       spawners_needed: "&c游戏至少有 2 个资源生成器!"
       team_is_not_exists: "&c队伍不存在!"
       team_is_already_exists: "&c队伍已存在!"
