@@ -27,6 +27,7 @@ game:
     player:
       already_running: "&cHra &7%arena% &cjiž běží! Nelze se připojit do probíhající hry!"
       full: "&cHra &7%arena% &cje již plná. Prosím vyčkej na další hru!"
+      rebuilding: "Game %arena% is rebuilding now."
       vip:
         not_enough_players: "&cV aréně není dostatek hráčů!"
         full: "&cHra &7%arena% &cje již plná VIP hráčů. Prosím vyčkej na další hru!"
@@ -121,17 +122,17 @@ signs:
   game_not_exists: "&cHra, která je napsaná na ceduli neexistuje!\nKontaktuj prosím admina!"
   status:
     disabled:
-      name: "&cHra"
-      players: "&cvypnuta"
+      line1: "&cGame"
+      line2: "&cdisabled"
     rebuilding:
-      name: "&cHra"
-      players: "&6Arény"
+      line1: "&cGame"
+      line2: "&6Arena"
     running:
-      name: "&aHra běží"
-      players: "&c%players%&8/&c%maxplayers%"
+      line1: "&aRunning"
+      line2: "&c%players%&8/&c%maxplayers%"
     waiting:
-      name: "&6Čekání"
-      players: "&a%players%&8/&a%maxplayers%"
+      line1: "&6Waiting"
+      line2: "&a%players%&8/&a%maxplayers%"
 holograms:
   not_enabled: "&cHologramy jsou zakázány."
   holo_removed: "&aHologram byl &lúspěšně &aodstraněn!"
@@ -296,7 +297,7 @@ commands:
       invalid_color: "&cTato barva nebyla nalezena!"
       block_is_not_bed: "&cVybraný blok není postel!"
       max_players_fail: "&cMaximální počet hráčů musí být minimálně 1!"
-      need_min_2_teems: "&cPro hru je třeba minimálně 2 týmy!"
+      need_min_2_teams: "&cThe game needs 2 or more teams!"
       spawners_needed: "&cVe hře musí být nastaven alespoň 1 spawner!"
       team_is_not_exists: "&cZadaný tým neexistuje!"
       team_is_already_exists: "&cZadaný tým již existuje!"
