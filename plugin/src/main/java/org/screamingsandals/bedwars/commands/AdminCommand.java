@@ -116,7 +116,7 @@ public class AdminCommand implements IBasicCommand {
                             m("commands.admin.arena.info.min_players", false).replace("%minplayers%",
                                     Integer.toString(game.getMinPlayers())).send(player);
                             m("commands.admin.arena.info.countdown_time", false).replace("%minplayers%",
-                                    Integer.toString(game.getPauseCountdown())).send(player);
+                                    Integer.toString(game.getLobbyTime())).send(player);
                             m("commands.admin.arena.info.game_length", false).replace("%minplayers%",
                                     Integer.toString(game.getGameTime())).send(player);
 
@@ -505,10 +505,10 @@ public class AdminCommand implements IBasicCommand {
                 }
             }
         } else if (args.size() == 2) {
-            completion.addAll(Arrays.asList("add", "lobby", "spec", "pos1", "pos2", "pausecountdown", "team", "spawner",
+            completion.addAll(Arrays.asList("add", "lobby", "spec", "pos1", "pos2", "lobbytime", "team", "spawner",
                     "time", "store", "save", "remove", "edit", "jointeam", "minplayers", "info", "config", "arenatime",
                     "arenaweather", "lobbybossbarcolor", "gamebossbarcolor"));
-        } else if (args.get(1).equalsIgnoreCase("pausecountdown") && args.size() == 3) {
+        } else if (args.get(1).equalsIgnoreCase("lobbytime") && args.size() == 3) {
             completion.addAll(Arrays.asList("30", "60"));
         } else if (args.get(1).equalsIgnoreCase("time") && args.size() == 3) {
             completion.addAll(Arrays.asList("180", "300", "600"));

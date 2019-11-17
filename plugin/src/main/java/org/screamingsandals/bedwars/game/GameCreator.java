@@ -58,9 +58,9 @@ public class GameCreator {
             response = setPos1(player.getLocation());
         } else if (action.equalsIgnoreCase("pos2")) {
             response = setPos2(player.getLocation());
-        } else if (action.equalsIgnoreCase("pausecountdown")) {
+        } else if (action.equalsIgnoreCase("lobbytime")) {
             if (args.length >= 1) {
-                response = setPauseCountdown(Integer.parseInt(args[0]));
+                response = setLobbyTime(Integer.parseInt(args[0]));
             }
         } else if (action.equalsIgnoreCase("time")) {
             if (args.length >= 1) {
@@ -794,9 +794,9 @@ public class GameCreator {
                 .replace("%z%", Integer.toString(loc.getBlockZ()));
     }
 
-    public String setPauseCountdown(int countdown) {
+    public String setLobbyTime(int countdown) {
         if (countdown >= 10 && countdown <= 600) {
-            game.setPauseCountdown(countdown);
+            game.setLobbyTime(countdown);
             return i18n("admin_command_pausecontdown_setted").replace("%countdown%", Integer.toString(countdown));
         }
         return i18n("admin_command_invalid_countdown");

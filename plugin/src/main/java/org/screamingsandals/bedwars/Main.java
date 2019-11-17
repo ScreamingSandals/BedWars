@@ -41,7 +41,7 @@ import org.screamingsandals.lib.signmanager.SignManager;
 import java.io.File;
 import java.util.*;
 
-import static misat11.lib.lang.I18n.i18n;
+import static misat11.lib.lang.I.mpr;
 
 public class Main extends JavaPlugin implements BedwarsAPI {
     private static Main instance;
@@ -121,9 +121,11 @@ public class Main extends JavaPlugin implements BedwarsAPI {
             if (isVault() && instance.configurator.config.getBoolean("vault.enable")) {
                 EconomyResponse response = instance.econ.depositPlayer(player, coins);
                 if (response.transactionSuccess()) {
-                    player.sendMessage(i18n("vault_deposite").replace("%coins%", Double.toString(coins)).replace(
-                            "%currency%",
-                            (coins == 1 ? instance.econ.currencyNameSingular() : instance.econ.currencyNamePlural())));
+                    mpr("game.info.player.vault_deposite")
+                            .replace("%coins%", Double.toString(coins))
+                            .replace("%currency%", (coins == 1
+                                    ? instance.econ.currencyNameSingular()
+                                    : instance.econ.currencyNamePlural())).send(player);
                 }
             }
         } catch (Throwable ignored) {
