@@ -91,7 +91,7 @@
         <dependency>
             <groupId>misat11.lib.sgui</groupId>
             <artifactId>SimpleGuiFormat</artifactId>
-            <version>0.0.9</version>
+            <version>0.0.10-snap1</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
