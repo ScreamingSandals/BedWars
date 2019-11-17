@@ -54,7 +54,7 @@ game:
   shop:
     succes: "&aSuccessfully purchased &7%item%&a for &7%material%&a!"
     failed: "&cLack of material to buy &7%item%&c! Needed &7%material%&c!"
-    price: "Price:"
+    price: "Ár:"
     amount: "Amount:"
     page_back: "Page back"
     page_forward: "Page forward"
