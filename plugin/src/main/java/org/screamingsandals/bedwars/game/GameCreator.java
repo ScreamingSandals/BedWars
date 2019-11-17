@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static misat11.lib.lang.I.mpr;
 import static misat11.lib.lang.I18n.i18n;
 
 public class GameCreator {
@@ -114,7 +115,7 @@ public class GameCreator {
                                 try {
                                     customLevel = Double.parseDouble(args[3]);
                                 } catch (NumberFormatException e) {
-                                    player.sendMessage(i18n("admin_command_invalid_spawner_level"));
+                                    mpr("commands.admin.messages.invalid_spawner_level").send(player);
                                     customLevel = 1.0;
                                 }
                                 if (args.length >= 5) {
@@ -136,7 +137,9 @@ public class GameCreator {
 	                                        	}
                                         	}
                                         	if (error) {
-	                                            player.sendMessage(i18n("admin_command_invalid_team").replace("%team%", args[5]));
+                                                mpr("commands.admin.messages.team_is_not_exists")
+                                                        .replace("%team%", args[5])
+                                                        .send(player);
 	                                            return false;
                                         	}
                                         } else if (args.length >= 7) {
@@ -206,11 +209,11 @@ public class GameCreator {
             boolean isTeamsSetCorrectly = true;
             for (Team team : game.getTeams()) {
                 if (team.bed == null) {
-                    response = i18n("admin_command_set_bed_for_team_before_save").replace("%team%", team.name);
+                    response =  mpr("commands.admin.messages.set_bed_for_team_before_save").replace("%team%", team.name).get();
                     isTeamsSetCorrectly = false;
                     break;
                 } else if (team.spawn == null) {
-                    response = i18n("admin_command_set_spawn_for_team_before_save").replace("%team%", team.name);
+                    response = mpr("commands.admin.messages.set_bed_for_team_before_save").replace("%team%", team.name).get();
                     isTeamsSetCorrectly = false;
                     break;
                 }
@@ -218,29 +221,29 @@ public class GameCreator {
             if (isTeamsSetCorrectly) {
                 game.setGameStores(gamestores);
                 if (game.getTeams().size() < 2) {
-                    response = i18n("admin_command_need_min_2_teems");
+                    response = mpr("commands.admin.messages.need_min_2_teams").get();
                 } else if (game.getPos1() == null || game.getPos2() == null) {
-                    response = i18n("admin_command_set_pos1_pos2_before_save");
+                    response = mpr("commands.admin.messages.set_pos1_pos2_before_save").get();
                 } else if (game.getLobbySpawn() == null) {
-                    response = i18n("admin_command_set_lobby_before_save");
+                    response = mpr("commands.admin.messages.set_lobby_before_save").get();
                 } else if (game.getSpecSpawn() == null) {
-                    response = i18n("admin_command_set_spec_before_save");
+                    response = mpr("commands.admin.messages.set_spec_before_save").get();
                 } else if (game.getGameStores().isEmpty()) {
-                    response = i18n("admin_command_set_stores_before_save");
+                    response = mpr("commands.admin.messages.set_stores_before_save").get();
                 } else if (game.getSpawners().isEmpty()) {
-                    response = i18n("admin_command_set_spawners_before_save");
+                    response = mpr("commands.admin.messages.set_spawners_before_save").get();
                 } else {
                     game.saveToConfig();
                     game.start();
                     Main.addGame(game);
-                    response = i18n("admin_command_game_saved_and_started");
+                    response = mpr("commands.admin.messages.game_saved_and_started").get();
                     isArenaSaved = true;
                 }
             }
         }
 
         if (response == null) {
-            response = i18n("unknown_command");
+            response = mpr("commands.errors.unknown_command").get();
         }
         player.sendMessage(response);
         return isArenaSaved;
@@ -253,7 +256,7 @@ public class GameCreator {
             try {
                 c = BarColor.valueOf(color);
             } catch (Exception e) {
-                return i18n("admin_command_invalid_bar_color");
+                return mpr("admin_command_invalid_bar_color").get();
             }
         }
 

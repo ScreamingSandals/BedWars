@@ -1,5 +1,6 @@
 package org.screamingsandals.bedwars.game;
 
+import io.papermc.lib.PaperLib;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -145,7 +146,7 @@ public class GamePlayer {
     }
 
     public void teleport(Location location) {
-        PaperUtils.teleport(player, location);
+        PaperLib.teleportAsync(player, location);
     }
 
 }

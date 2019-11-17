@@ -1,5 +1,6 @@
 package org.screamingsandals.bedwars;
 
+import io.papermc.lib.PaperLib;
 import misat11.lib.lang.I18n;
 import misat11.lib.nms.NMSUtils;
 import misat11.lib.sgui.InventoryListener;
@@ -46,9 +47,8 @@ import static misat11.lib.lang.I.mpr;
 public class Main extends JavaPlugin implements BedwarsAPI {
     private static Main instance;
     private String version, nmsVersion;
-    private boolean isPaper;
     private boolean isDisabling = false;
-    private boolean isSpigot, isLegacy;
+    private boolean isLegacy;
     private boolean snapshot, isVault, isNMS;
     private int versionNumber = 0;
     private Economy econ = null;
@@ -97,7 +97,11 @@ public class Main extends JavaPlugin implements BedwarsAPI {
     }
 
     public static boolean isSpigot() {
-        return instance.isSpigot;
+        return PaperLib.isSpigot();
+    }
+
+    public static boolean isPaper() {
+        return PaperLib.isPaper();
     }
 
     public static boolean isVault() {
@@ -327,15 +331,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         snapshot = version.toLowerCase().contains("pre") || version.toLowerCase().contains("snapshot");
         isNMS = NMSUtils.NMS_BASED_SERVER;
         nmsVersion = NMSUtils.NMS_VERSION;
-        isSpigot = NMSUtils.IS_SPIGOT_SERVER;
         colorChanger = new org.screamingsandals.bedwars.utils.ColorChanger();
-
-        try {
-            Class.forName("com.destroystokyo.paper.PaperConfig");
-            isPaper = true;
-        } catch (ClassNotFoundException ignored) {
-            isPaper = false;
-        }
 
         if (!getServer().getPluginManager().isPluginEnabled("Vault")) {
             isVault = false;
@@ -359,6 +355,8 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         Debug.setDebug(configurator.config.getBoolean("debug"));
 
         I18n.load(this, configurator.config.getString("locale"));
+
+        PaperLib.suggestPaper(this);
 
         screamingCommands = new ScreamingCommands(this, Main.class, "org/screamingsandals/bedwars");
         screamingCommands.loadAllCommands();
@@ -441,7 +439,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         if (isVault) {
             Bukkit.getConsoleSender().sendMessage("§c[B§fW] §6Found Vault");
         }
-        if (!isSpigot) {
+        if (!isSpigot()) {
             Bukkit.getConsoleSender()
                     .sendMessage("§c[B§fW] §cWARNING: You are not using Spigot. Some features may not work properly.");
         }
@@ -520,10 +518,6 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         if (isHologramsEnabled() && hologramInteraction != null) {
             hologramInteraction.unloadHolograms();
         }
-    }
-
-    public static boolean isPaper() {
-        return instance.isPaper;
     }
 
     private boolean setupEconomy() {
