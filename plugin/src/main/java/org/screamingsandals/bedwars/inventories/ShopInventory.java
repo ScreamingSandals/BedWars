@@ -25,6 +25,7 @@ import org.screamingsandals.bedwars.game.GamePlayer;
 import org.screamingsandals.bedwars.utils.Sounds;
 import org.screamingsandals.lib.debug.Debug;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -132,7 +133,17 @@ public class ShopInventory implements Listener {
 			}
 			return "";
 		});
-
+        
+        File file = new File(Main.getInstance().getDataFolder(), "shop.yml");
+        if (!file.exists()) {
+            if (Main.isLegacy()) {
+            	Main.getInstance().saveResource("shop_legacy.yml", false);
+                new File(Main.getInstance().getDataFolder(), "shop_legacy.yml").renameTo(file);
+            } else {
+            	Main.getInstance().saveResource("shop.yml", false);
+            }
+        }
+        
         loadNewShop("default", null, true);
     }
 

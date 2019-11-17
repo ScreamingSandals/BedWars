@@ -6,7 +6,10 @@ import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.api.events.BedwarsApplyPropertyToBoughtItem;
 import org.screamingsandals.bedwars.game.GamePlayer;
-import org.screamingsandals.bedwars.special.Tracker;
+import org.screamingsandals.bedwars.utils.MiscUtils;
+
+import static misat11.lib.lang.I.i18nonly;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -44,8 +47,16 @@ public class TrackerListener implements Listener {
                     if (unhidden != null) {
                         event.setCancelled(true);
 
-                        Tracker tracker = new Tracker(game, player, game.getTeamOfPlayer(player));
-                        tracker.runTask();
+                        Player target = MiscUtils.findTarget(game, player, Double.MAX_VALUE);
+                        if (target != null) {
+                            player.setCompassTarget(target.getLocation());
+
+                            int distance = (int) player.getLocation().distance(target.getLocation());
+                            MiscUtils.sendActionBarMessage(player, i18nonly("specials_tracker_target_found").replace("%target%", target.getDisplayName()).replace("%distance%", String.valueOf(distance)));
+                        } else {
+                            MiscUtils.sendActionBarMessage(player, i18nonly("specials_tracker_no_target_found"));
+                            player.setCompassTarget(game.getTeamOfPlayer(player).getTeamSpawn());
+                        }
                     }
                 }
             }

@@ -2,6 +2,8 @@
 lang_name: "German"
 prefix: "&7[&fBed&4Wars&7]&r"
 item_shop_name: "Geschäft"
+plugin:
+  version_info: "Version: %version%"
 game:
   info:
     global:
@@ -132,7 +134,6 @@ signs:
       players: "&a%players%&8/&a%maxplayers%"
 holograms:
   not_enabled: "&cHolograms are disabled."
-  click_to_remove: "&eNow click the &ahologram &eyou want to remove!"
   holo_removed: "&aHologram has been &lsuccessfully &aremoved!"
   game:
     beds:
@@ -150,8 +151,10 @@ commands:
     unknown_usage: "&cAnzahl der Argumente stimmt nicht mit der richtigen Anzahl oder unbekannten Argumenten überein! Geben Sie &4/bw Hilfe &cfür Hilfe ein!"
     no_permissions: "&cDu hast nicht die Berechtigung das zu tun!"
     not_allowed: "&cDieser Befehl ist während des Spiels nicht verfügbar!"
+    not_for_console: "&cThis command is not supported for the console."
   holograms:
     added: "&aHologram has been added to your position!"
+    click_to_remove: "&eNow click the &ahologram &eyou want to remove!"
   auto_join:
     already_in_game: "&cDu bist bereits in einem Spiel."
     no_empty_game: "&cThere's no game empty game!"
