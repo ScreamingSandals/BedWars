@@ -36,6 +36,7 @@ import org.screamingsandals.bedwars.api.boss.BossBar;
 import org.screamingsandals.bedwars.api.boss.BossBar19;
 import org.screamingsandals.bedwars.api.boss.StatusBar;
 import org.screamingsandals.bedwars.api.events.*;
+import org.screamingsandals.bedwars.api.game.ConfigVariables;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.api.game.GameStore;
 import org.screamingsandals.bedwars.api.special.SpecialItem;
@@ -488,11 +489,11 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             player.teleport(lobbySpawn);
             SpawnEffects.spawnEffect(this, player.player, "game-effects.lobbyjoin");
 
-            if (getOriginalOrInheritedJoinRandomTeamOnJoin()) {
+            if (getConfigManager().get(ConfigVariables.AUTOBALANCE_ON_JOIN)) {
                 joinRandomTeam(player);
             }
 
-            if (getOriginalOrInheritedCompassEnabled()) {
+            if (getConfigManager().get(ConfigVariables.TEAM_SELECTOR)) {
                 int compassPosition = Main.getConfigurator().config.getInt("hotbar.selector", 0);
                 if (compassPosition >= 0 && compassPosition <= 8) {
                     ItemStack compass = Main.getConfigurator().readDefinedItem("jointeam", "COMPASS");
