@@ -1350,28 +1350,33 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
 	public void makePlayerFromSpectator(GamePlayer gamePlayer) {
 		Player player = gamePlayer.player;
-		Game game = gamePlayer.getGame();
-		RunningTeam runningTeam = game.getTeamOfPlayer(player);
+		CurrentTeam currentTeam = getPlayerTeam(gamePlayer);
+		
+		if (gamePlayer.getGame() == this && currentTeam != null) {
+			gamePlayer.isSpectator = false;
+			new BukkitRunnable() {
+				@Override
+				public void run() {
+					gamePlayer.teleport(currentTeam.getTeamSpawn());
+					player.setAllowFlight(false);
+					player.setFlying(false);
+					player.setGameMode(GameMode.SURVIVAL);
 
-		gamePlayer.isSpectator = false;
-		new BukkitRunnable() {
-			@Override
-			public void run() {
-				gamePlayer.teleport(runningTeam.getTeamSpawn());
-				player.setAllowFlight(false);
-				player.setFlying(false);
-				player.setGameMode(GameMode.SURVIVAL);
-
-
-                if (gamePlayer.getGame().getOriginalOrInheritedPlayerRespawnItems()) {
-                    List<ItemStack> givedGameStartItems = (List<ItemStack>) Main.getConfigurator().config
-                            .getList("gived-player-respawn-items");
-                    for (ItemStack stack : givedGameStartItems) {
-                    	gamePlayer.player.getInventory().addItem(Main.applyColor(runningTeam.getColor(), stack));
-                    }
-                }
-			}
-		}.runTask(Main.getInstance());
+	                if (Main.getConfigurator().config.getBoolean("respawn.protection-enabled", true)) {
+	                    RespawnProtection respawnProtection = addProtectedPlayer(player);
+	                    respawnProtection.runProtection();
+	                }
+	
+	                if (gamePlayer.getGame().getOriginalOrInheritedPlayerRespawnItems()) {
+	                    List<ItemStack> givedGameStartItems = (List<ItemStack>) Main.getConfigurator().config
+	                            .getList("gived-player-respawn-items");
+	                    for (ItemStack stack : givedGameStartItems) {
+	                    	gamePlayer.player.getInventory().addItem(Main.applyColor(currentTeam.getColor(), stack));
+	                    }
+	                }
+				}
+			}.runTask(Main.getInstance());
+		}
 	}
 
 	public void setBossbarProgress(int count, int max) {
