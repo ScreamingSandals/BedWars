@@ -126,7 +126,7 @@ signs:
       line2: "&cdisabled"
     rebuilding:
       line1: "&cGame"
-      line2: "&6Arena"
+      line2: "&6rebuilding"
     running:
       line1: "&aRunning"
       line2: "&c%players%&8/&c%maxplayers%"
