@@ -126,7 +126,7 @@ signs:
       line2: "&cvypnuta"
     rebuilding:
       line1: "&cHra"
-      line2: "&6rebuilding"
+      line2: "&6obnovování"
     running:
       line1: "&aHra běží"
       line2: "&c%players%&8/&c%maxplayers%"
