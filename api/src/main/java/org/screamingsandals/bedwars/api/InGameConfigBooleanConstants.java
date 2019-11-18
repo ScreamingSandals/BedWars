@@ -3,6 +3,8 @@ package org.screamingsandals.bedwars.api;
 /**
  * @author Bedwars Team
  */
+
+@Deprecated
 public enum InGameConfigBooleanConstants {
     INHERIT(false, false),
     TRUE(true, true),

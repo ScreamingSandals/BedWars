@@ -2,6 +2,7 @@ package org.screamingsandals.bedwars.game;
 
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.ArenaTime;
+import org.screamingsandals.bedwars.api.game.ConfigVariables;
 import org.screamingsandals.bedwars.api.game.GameStore;
 import org.screamingsandals.bedwars.api.InGameConfigBooleanConstants;
 import org.screamingsandals.bedwars.region.FlatteningBedUtils;
@@ -315,7 +316,8 @@ public class GameCreator {
 
     private String setLocalConfigVariable(String config, String value) {
         value = value.toLowerCase();
-        InGameConfigBooleanConstants cons;
+        boolean val = false;
+        boolean inherited = false;
         switch (value) {
             case "t":
             case "tr":
@@ -325,8 +327,7 @@ public class GameCreator {
             case "ye":
             case "yes":
             case "1":
-                cons = InGameConfigBooleanConstants.TRUE;
-                value = "true";
+            	val = true;
                 break;
             case "f":
             case "fa":
@@ -336,8 +337,7 @@ public class GameCreator {
             case "n":
             case "no":
             case "0":
-                cons = InGameConfigBooleanConstants.FALSE;
-                value = "false";
+            	val = false;
                 break;
             case "i":
             case "in":
@@ -353,114 +353,25 @@ public class GameCreator {
             case "defau":
             case "defaul":
             case "default":
-                cons = InGameConfigBooleanConstants.INHERIT;
-                value = "inherit";
+            	inherited = true;
                 break;
             default:
                 return i18n("admin_command_invalid_config_value");
         }
 
-        config = config.toLowerCase().replaceAll("-", "");
-        switch (config) {
-            case "compassenabled":
-                game.setCompassEnabled(cons);
-                break;
-            case "joinrandomteamafterlobby":
-            case "joinrandomlyafterlobbytimeout":
-                game.setJoinRandomTeamAfterLobby(cons);
-                break;
-            case "joinrandomteamonjoin":
-            case "joinrandomlyonlobbyjoin":
-                game.setJoinRandomTeamOnJoin(cons);
-                break;
-            case "addwooltoinventoryonjoin":
-                game.setAddWoolToInventoryOnJoin(cons);
-                break;
-            case "preventkillingvillagers":
-                game.setPreventKillingVillagers(cons);
-                break;
-            case "playerdrops":
-                game.setPlayerDrops(cons);
-                break;
-            case "friendlyfire":
-                game.setFriendlyfire(cons);
-                break;
-            case "coloredleatherbyteaminlobby":
-            case "inlobbycoloredleatherbyteam":
-                game.setColoredLeatherByTeamInLobby(cons);
-                break;
-            case "keepinventory":
-            case "keepinventoryondeath":
-                game.setKeepInventory(cons);
-                break;
-            case "crafting":
-            case "allowcrafting":
-                game.setCrafting(cons);
-                break;
-            case "bossbar":
-            case "gamebossbar":
-                game.setGameBossbar(cons);
-                break;
-            case "lobbybossbar":
-                game.setLobbyBossbar(cons);
-                break;
-            case "scoreboard":
-            case "gamescoreboard":
-                game.setAscoreboard(cons);
-                break;
-            case "lobbyscoreboard":
-                game.setLobbyScoreboard(cons);
-                break;
-            case "preventspawningmobs":
-            case "preventmobs":
-            case "mobs":
-                game.setPreventSpawningMobs(cons);
-                break;
-            case "spawnerholograms":
-                game.setSpawnerHolograms(cons);
-                break;
-            case "spawnerdisablemerge":
-                game.setSpawnerDisableMerge(cons);
-                break;
-            case "gamestartitems":
-            case "giveitemsongamestart":
-                game.setGameStartItems(cons);
-                break;
-            case "playerrespawnitems":
-            case "giveitemsonplayerrespawn":
-                game.setPlayerRespawnItems(cons);
-                break;
-            case "spawnerhologramscountdown":
-                game.setSpawnerHologramsCountdown(cons);
-                break;
-            case "damagewhenplayerisnotinarena":
-                game.setDamageWhenPlayerIsNotInArena(cons);
-                break;
-            case "removeunusedtargetblocks":
-                game.setRemoveUnusedTargetBlocks(cons);
-                break;
-            case "allowblockfall":
-            case "allowblockfalling":
-                game.setAllowBlockFalling(cons);
-                break;
-            case "holoabovebed":
-            case "hologramabovebed":
-            case "holobed":
-            case "hologrambed":
-                game.setHoloAboveBed(cons);
-                break;
-            case "spectatorjoin":
-            case "allowspectatorjoin":
-            	game.setSpectatorJoin(cons);
-            	break;
-            case "stopteamspawnersondie":
-            case "stopdeathspawners":
-                game.setStopTeamSpawnersOnDie(cons);
-                break;
-            default:
-                return i18n("admin_command_invalid_config_variable_name");
+        config = config.toLowerCase().replaceAll("-", "").replaceAll("_", "");
+        for (ConfigVariables var : ConfigVariables.values()) {
+        	if (GameConfigManager.transform(var).equalsIgnoreCase(config)) {
+        		if (inherited) {
+        			game.getConfigManager().reset(var);
+        		} else {
+        			game.getConfigManager().set(var, val);
+        		}
+                return i18n("admin_command_config_variable_set_to").replace("%config%", config).replace("%value%", value);
+        	}
         }
-        return i18n("admin_command_config_variable_set_to").replace("%config%", config).replace("%value%", value);
+        
+        return i18n("admin_command_invalid_config_variable_name");
     }
 
     private String setMinPlayers(int minPlayers) {

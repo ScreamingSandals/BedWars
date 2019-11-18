@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.ArenaTime;
+import org.screamingsandals.bedwars.api.game.ConfigVariables;
 import org.screamingsandals.bedwars.api.game.GameStore;
 import org.screamingsandals.bedwars.game.*;
 import org.screamingsandals.bedwars.utils.Permissions;
@@ -218,181 +219,23 @@ public class AdminCommand implements IBasicCommand {
                         } else if (args.get(2).equalsIgnoreCase("config")) {
                             m("commands.admin.arena.info.header").send(player);
                             m("commands.admin.arena.info.config.header").send(player);
-
-                            m("commands.admin.arena.info.config.constant", false)
-                                    .replace("%constant%", "compassEnabled")
-                                    .replace("%value%",
-                                            m("commands.admin.arena.info.config.constant"
-                                                    + game.getCompassEnabled().name().toLowerCase(), false).get())
-                                    .send(player);
-
-                            m("commands.admin.arena.info.config.constant", false)
-                                    .replace("%constant%", "joinRandomTeamAfterLobby")
-                                    .replace("%value%",
-                                            m("commands.admin.arena.info.config.constant"
-                                                    + game.getJoinRandomTeamAfterLobby().name().toLowerCase(), false).get())
-                                    .send(player);
-
-                            m("commands.admin.arena.info.config.constant", false)
-                                    .replace("%constant%", "joinRandomTeamOnJoin")
-                                    .replace("%value%",
-                                            m("commands.admin.arena.info.config.constant"
-                                                    + game.getJoinRandomTeamOnJoin().name().toLowerCase(), false).get())
-                                    .send(player);
-
-                            m("commands.admin.arena.info.config.constant", false)
-                                    .replace("%constant%", "addWoolToInventoryOnJoin")
-                                    .replace("%value%",
-                                            m("commands.admin.arena.info.config.constant"
-                                                    + game.getAddWoolToInventoryOnJoin().name().toLowerCase(), false).get())
-                                    .send(player);
-
-                            m("commands.admin.arena.info.config.constant", false)
-                                    .replace("%constant%", "preventKillingVillagers")
-                                    .replace("%value%",
-                                            m("commands.admin.arena.info.config.constant"
-                                                    + game.getPreventKillingVillagers().name().toLowerCase(), false).get())
-                                    .send(player);
-
-                            m("commands.admin.arena.info.config.constant", false)
-                                    .replace("%constant%", "playerDrops")
-                                    .replace("%value%",
-                                            m("commands.admin.arena.info.config.constant"
-                                                    + game.getPlayerDrops().name().toLowerCase(), false).get())
-                                    .send(player);
-
-                            m("commands.admin.arena.info.config.constant", false)
-                                    .replace("%constant%", "friendlyfire")
-                                    .replace("%value%",
-                                            m("commands.admin.arena.info.config.constant" + game.getFriendlyfire().name().toLowerCase(), false).get())
-                                    .send(player);
-
-                            m("commands.admin.arena.info.config.constant", false)
-                                    .replace("%constant%", "coloredLeatherByTeamInLobby")
-                                    .replace("%value%",
-                                            m("commands.admin.arena.info.config.constant"
-                                                    + game.getColoredLeatherByTeamInLobby().name().toLowerCase(), false).get())
-                                    .send(player);
-
-                            m("commands.admin.arena.info.config.constant", false)
-                                    .replace("%constant%", "keepInventory")
-                                    .replace("%value%",
-                                            m("commands.admin.arena.info.config.constant"
-                                                    + game.getKeepInventory().name().toLowerCase(), false).get())
-                                    .send(player);
-
-                            m("commands.admin.arena.info.config.constant", false)
-                                    .replace("%constant%", "crafting")
-                                    .replace("%value%",
-                                            m("commands.admin.arena.info.config.constant"
-                                                    + game.getCrafting().name().toLowerCase(), false).get())
-                                    .send(player);
-
-                            m("commands.admin.arena.info.config.constant", false)
-                                    .replace("%constant%", "gameScoreboard")
-                                    .replace("%value%",
-                                            m("commands.admin.arena.info.config.constant"
-                                                    + game.getScoreboard().name().toLowerCase(), false).get())
-                                    .send(player);
-
-                            m("commands.admin.arena.info.config.constant", false)
-                                    .replace("%constant%", "lobbyScoreboard")
-                                    .replace("%value%",
-                                            m("commands.admin.arena.info.config.constant"
-                                                    + game.getLobbyScoreboard().name().toLowerCase(), false).get())
-                                    .send(player);
-
-                            m("commands.admin.arena.info.config.constant", false)
-                                    .replace("%constant%", "gameBossbar")
-                                    .replace("%value%",
-                                            m("commands.admin.arena.info.config.constant"
-                                                    + game.getGameBossbar().name().toLowerCase(), false).get())
-                                    .send(player);
-
-                            m("commands.admin.arena.info.config.constant", false)
-                                    .replace("%constant%", "lobbyScoreboard")
-                                    .replace("%value%",
-                                            m("commands.admin.arena.info.config.constant"
-                                                    + game.getLobbyBossbar().name().toLowerCase(), false).get())
-                                    .send(player);
-
-                            m("commands.admin.arena.info.config.constant", false)
-                                    .replace("%constant%", "preventSpawningMobs")
-                                    .replace("%value%",
-                                            m("commands.admin.arena.info.config.constant"
-                                                    + game.getPreventSpawningMobs().name().toLowerCase(), false).get())
-                                    .send(player);
-
-                            m("commands.admin.arena.info.config.constant", false)
-                                    .replace("%constant%", "spawnerholograms")
-                                    .replace("%value%",
-                                            m("commands.admin.arena.info.config.constant"
-                                                    + game.getSpawnerHolograms().name().toLowerCase(), false).get())
-                                    .send(player);
-
-                            m("commands.admin.arena.info.config.constant", false)
-                                    .replace("%constant%", "spawnerDisableMerge")
-                                    .replace("%value%", m("commands.admin.arena.info.config.constant"
-                                            + game.getSpawnerDisableMerge().name().toLowerCase(), false).get())
-                                    .send(player);
-
-                            m("commands.admin.arena.info.config.constant", false)
-                                    .replace("%constant%", "give gameStartItems")
-                                    .replace("%value%",
-                                            m("commands.admin.arena.info.config.constant"
-                                                    + game.getGameStartItems().name().toLowerCase(), false).get())
-                                    .send(player);
-
-                            m("commands.admin.arena.info.config.constant", false)
-                                    .replace("%constant%", "give playerRespawnItems")
-                                    .replace("%value%", m("commands.admin.arena.info.config.constant"
-                                            + game.getPlayerRespawnItems().name().toLowerCase(), false).get())
-                                    .send(player);
-
-                            m("commands.admin.arena.info.config.constant", false)
-                                    .replace("%constant%", "spawnerHologramsCountdown")
-                                    .replace("%value%",
-                                            m("commands.admin.arena.info.config.constant"
-                                                    + game.getSpawnerHologramsCountdown().name().toLowerCase(), false).get())
-                                    .send(player);
-
-                            m("commands.admin.arena.info.config.constant", false)
-                                    .replace("%constant%", "damageWhenPlayerIsNotInArena")
-                                    .replace("%value%",
-                                            m("commands.admin.arena.info.config.constant"
-                                                    + game.getDamageWhenPlayerIsNotInArena().name().toLowerCase(), false).get())
-                                    .send(player);
-
-                            m("commands.admin.arena.info.config.constant", false)
-                                    .replace("%constant%", "removeunusedtargetblocks")
-                                    .replace("%value%",
-                                            m("commands.admin.arena.info.config.constant"
-                                                    + game.getRemoveUnusedTargetBlocks().name().toLowerCase(), false).get())
-                                    .send(player);
-
-                            m("commands.admin.arena.info.config.constant", false)
-                                    .replace("%constant%", "allowblockfalling")
-                                    .replace("%value%", m("commands.admin.arena.info.config.constant"
-                                            + game.getAllowBlockFalling().name().toLowerCase(), false).get())
-                                    .send(player);
-
-                            m("commands.admin.arena.info.config.constant", false)
-                                    .replace("%constant%", "holoAboveBed")
-                                    .replace("%value%", m("commands.admin.arena.info.config.constant"
-                                            + game.getHoloAboveBed().name().toLowerCase(), false).get())
-                                    .send(player);
-
-                            m("commands.admin.arena.info.config.constant", false)
-                                    .replace("%constant%", "spectatorJoin")
-                                    .replace("%value%", m("commands.admin.arena.info.config.constant"
-                                            + game.getSpectatorJoin().name().toLowerCase(), false).get())
-                                    .send(player);
-
-                            m("commands.admin.arena.info.config.constant", false)
-                                    .replace("%constant%", "stopTeamSpawnersOnDie")
-                                    .replace("%value%", m("commands.admin.arena.info.config.constant"
-                                            + game.getStopTeamSpawnersOnDie().name().toLowerCase(), false).get())
-                                    .send(player);
+                            
+                            for (ConfigVariables var : ConfigVariables.values()) {
+                            	boolean inherited = !game.getConfigManager().isChanged(var);
+                            	boolean value = game.getConfigManager().get(var);
+                            	String result = "";
+                            	if (inherited) {
+                            		result = m("commands.admin.arena.info.inherit").get();
+                            	} else if (value) {
+                            		result = m("commands.admin.arena.info.true_value").get();
+                            	} else {
+                            		result = m("commands.admin.arena.info.false_value").get();
+                            	}
+                                m("commands.admin.arena.info.config.constant", false)
+                                        .replace("constant", var.name())
+                                        .replace("value", result)
+                                        .send(player);
+                            }
 
                             // NON-BOOLEAN CONSTANTS
 
@@ -557,13 +400,9 @@ public class AdminCommand implements IBasicCommand {
             }
         } else if (args.get(1).equalsIgnoreCase("config")) {
             if (args.size() == 3) {
-                completion.addAll(Arrays.asList("compassEnabled", "joinRandomTeamAfterLobby", "joinRandomTeamOnJoin",
-                        "addWoolToInventoryOnJoin", "preventKillingVillagers", "playerDrops",
-                        "friendlyfire", "coloredLeatherByTeamInLobby", "keepInventory", "crafting", "gamebossbar",
-                        "lobbybossbar", "gamescoreboard", "lobbyscoreboard", "preventspawningmobs", "spawnerholograms",
-                        "spawnerDisableMerge", "gamestartitems", "playerrespawnitems", "spawnerhologramscountdown",
-                        "damagewhenplayerisnotinarena", "removeunusedtargetblocks", "holoabovebed", "allowblockfall",
-                        "spectatorjoin", "stopTeamSpawnersOnDie"));
+            	for (ConfigVariables var : ConfigVariables.values()) {
+            		completion.add(var.name().toLowerCase());
+            	}
             }
             if (args.size() == 4) {
                 completion.addAll(Arrays.asList("true", "false", "inherit"));

@@ -30,7 +30,6 @@ import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.ArenaTime;
-import org.screamingsandals.bedwars.api.InGameConfigBooleanConstants;
 import org.screamingsandals.bedwars.api.Region;
 import org.screamingsandals.bedwars.api.RunningTeam;
 import org.screamingsandals.bedwars.api.boss.BossBar;
@@ -80,89 +79,8 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     private WeatherType arenaWeather = null;
     private BarColor lobbyBossBarColor = null;
     private BarColor gameBossBarColor = null;
-
-    // Boolean settings
-    public static final String COMPASS_ENABLED = "compass-enabled";
-    private InGameConfigBooleanConstants compassEnabled = InGameConfigBooleanConstants.INHERIT;
-
-    public static final String JOIN_RANDOM_TEAM_AFTER_LOBBY = "join-randomly-after-lobby-timeout";
-    private InGameConfigBooleanConstants joinRandomTeamAfterLobby = InGameConfigBooleanConstants.INHERIT;
-
-    public static final String JOIN_RANDOM_TEAM_ON_JOIN = "join-randomly-on-lobby-join";
-    private InGameConfigBooleanConstants joinRandomTeamOnJoin = InGameConfigBooleanConstants.INHERIT;
-
-    public static final String ADD_WOOL_TO_INVENTORY_ON_JOIN = "add-wool-to-inventory-on-join";
-    private InGameConfigBooleanConstants addWoolToInventoryOnJoin = InGameConfigBooleanConstants.INHERIT;
-
-    public static final String PREVENT_KILLING_VILLAGERS = "prevent-killing-villagers";
-    private InGameConfigBooleanConstants preventKillingVillagers = InGameConfigBooleanConstants.INHERIT;
-
-    public static final String PLAYER_DROPS = "player-drops";
-    private InGameConfigBooleanConstants playerDrops = InGameConfigBooleanConstants.INHERIT;
-
-    public static final String FRIENDLY_FIRE = "friendlyfire";
-    private InGameConfigBooleanConstants friendlyfire = InGameConfigBooleanConstants.INHERIT;
-
-    public static final String COLORED_LEATHER_BY_TEAM_IN_LOBBY = "in-lobby-colored-leather-by-team";
-    private InGameConfigBooleanConstants coloredLeatherByTeamInLobby = InGameConfigBooleanConstants.INHERIT;
-
-    public static final String KEEP_INVENTORY = "keep-inventory-on-death";
-    private InGameConfigBooleanConstants keepInventory = InGameConfigBooleanConstants.INHERIT;
-
-    public static final String CRAFTING = "allow-crafting";
-    private InGameConfigBooleanConstants crafting = InGameConfigBooleanConstants.INHERIT;
-
-    public static final String GLOBAL_LOBBY_BOSSBAR = "bossbar.lobby.enable";
-    public static final String LOBBY_BOSSBAR = "lobbybossbar";
-    private InGameConfigBooleanConstants lobbybossbar = InGameConfigBooleanConstants.INHERIT;
-
-    public static final String GLOBAL_GAME_BOSSBAR = "bossbar.game.enable";
-    public static final String GAME_BOSSBAR = "bossbar";
-    private InGameConfigBooleanConstants gamebossbar = InGameConfigBooleanConstants.INHERIT;
-
-    public static final String GLOBAL_SCOREBOARD = "scoreboard.enable";
-    public static final String SCOREBOARD = "scoreboard";
-    private InGameConfigBooleanConstants ascoreboard = InGameConfigBooleanConstants.INHERIT;
-
-    public static final String GLOBAL_LOBBY_SCOREBOARD = "lobby-scoreboard.enabled";
-    public static final String LOBBY_SCOREBOARD = "lobbyscoreboard";
-    private InGameConfigBooleanConstants lobbyscoreboard = InGameConfigBooleanConstants.INHERIT;
-
-    public static final String PREVENT_SPAWNING_MOBS = "prevent-spawning-mobs";
-    private InGameConfigBooleanConstants preventSpawningMobs = InGameConfigBooleanConstants.INHERIT;
-
-    public static final String SPAWNER_HOLOGRAMS = "spawner-holograms";
-    private InGameConfigBooleanConstants spawnerHolograms = InGameConfigBooleanConstants.INHERIT;
-
-    public static final String SPAWNER_DISABLE_MERGE = "spawner-disable-merge";
-    private InGameConfigBooleanConstants spawnerDisableMerge = InGameConfigBooleanConstants.INHERIT;
-
-    public static final String GAME_START_ITEMS = "game-start-items";
-    private InGameConfigBooleanConstants gameStartItems = InGameConfigBooleanConstants.INHERIT;
-
-    public static final String PLAYER_RESPAWN_ITEMS = "player-respawn-items";
-    private InGameConfigBooleanConstants playerRespawnItems = InGameConfigBooleanConstants.INHERIT;
-
-    public static final String SPAWNER_HOLOGRAMS_COUNTDOWN = "spawner-holograms-countdown";
-    private InGameConfigBooleanConstants spawnerHologramsCountdown = InGameConfigBooleanConstants.INHERIT;
-
-    public static final String DAMAGE_WHEN_PLAYER_IS_NOT_IN_ARENA = "damage-when-player-is-not-in-arena";
-    private InGameConfigBooleanConstants damageWhenPlayerIsNotInArena = InGameConfigBooleanConstants.INHERIT;
-
-    public static final String REMOVE_UNUSED_TARGET_BLOCKS = "remove-unused-target-blocks";
-    private InGameConfigBooleanConstants removeUnusedTargetBlocks = InGameConfigBooleanConstants.INHERIT;
-
-    public static final String ALLOW_BLOCK_FALLING = "allow-block-falling";
-    private InGameConfigBooleanConstants allowBlockFalling = InGameConfigBooleanConstants.INHERIT;
-
-    public static final String HOLO_ABOVE_BED = "holo-above-bed";
-    private InGameConfigBooleanConstants holoAboveBed = InGameConfigBooleanConstants.INHERIT;
-
-    public static final String SPECTATOR_JOIN = "allow-spectator-join";
-    private InGameConfigBooleanConstants spectatorJoin = InGameConfigBooleanConstants.INHERIT;
-
-    public static final String STOP_TEAM_SPAWNERS_ON_DIE = "stop-team-spawners-on-die";
-    private InGameConfigBooleanConstants stopTeamSpawnersOnDie = InGameConfigBooleanConstants.INHERIT;
+    private GameConfigManager gameConfigManager = new GameConfigManager(this);
+    private File gameFile;
 
     public boolean gameStartItem;
     private boolean preServerRestart = false;
@@ -732,6 +650,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         }
 
         Game game = new Game();
+        game.gameFile = file;
         game.name = configMap.getString("name");
         game.lobbyTime = configMap.getInt("pauseCountdown");
         game.gameTime = configMap.getInt("gameTime");
@@ -834,44 +753,24 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 }
             }
         }
-
-        game.compassEnabled = readBooleanConstant(configMap.getString("constant." + COMPASS_ENABLED, "inherit"));
-        game.addWoolToInventoryOnJoin = readBooleanConstant(
-                configMap.getString("constant." + ADD_WOOL_TO_INVENTORY_ON_JOIN, "inherit"));
-        game.coloredLeatherByTeamInLobby = readBooleanConstant(
-                configMap.getString("constant." + COLORED_LEATHER_BY_TEAM_IN_LOBBY, "inherit"));
-        game.crafting = readBooleanConstant(configMap.getString("constant." + CRAFTING, "inherit"));
-        game.friendlyfire = readBooleanConstant(configMap.getString("constant." + FRIENDLY_FIRE, "inherit"));
-        game.joinRandomTeamAfterLobby = readBooleanConstant(
-                configMap.getString("constant." + JOIN_RANDOM_TEAM_AFTER_LOBBY, "inherit"));
-        game.joinRandomTeamOnJoin = readBooleanConstant(
-                configMap.getString("constant." + JOIN_RANDOM_TEAM_ON_JOIN, "inherit"));
-        game.keepInventory = readBooleanConstant(configMap.getString("constant." + KEEP_INVENTORY, "inherit"));
-        game.preventKillingVillagers = readBooleanConstant(
-                configMap.getString("constant." + PREVENT_KILLING_VILLAGERS, "inherit"));
-        game.playerDrops = readBooleanConstant(configMap.getString("constant." + PLAYER_DROPS, "inherit"));
-        game.lobbybossbar = readBooleanConstant(configMap.getString("constant." + LOBBY_BOSSBAR, "inherit"));
-        game.gamebossbar = readBooleanConstant(configMap.getString("constant." + GAME_BOSSBAR, "inherit"));
-        game.ascoreboard = readBooleanConstant(configMap.getString("constant." + SCOREBOARD, "inherit"));
-        game.lobbyscoreboard = readBooleanConstant(configMap.getString("constant." + LOBBY_SCOREBOARD, "inherit"));
-        game.preventSpawningMobs = readBooleanConstant(
-                configMap.getString("constant." + PREVENT_SPAWNING_MOBS, "inherit"));
-        game.spawnerHolograms = readBooleanConstant(configMap.getString("constant." + SPAWNER_HOLOGRAMS, "inherit"));
-        game.spawnerDisableMerge = readBooleanConstant(
-                configMap.getString("constant." + SPAWNER_DISABLE_MERGE, "inherit"));
-        game.gameStartItems = readBooleanConstant(configMap.getString("constant." + GAME_START_ITEMS, "inherit"));
-        game.playerRespawnItems = readBooleanConstant(
-                configMap.getString("constant." + PLAYER_RESPAWN_ITEMS, "inherit"));
-        game.spawnerHologramsCountdown = readBooleanConstant(
-                configMap.getString("constant." + SPAWNER_HOLOGRAMS_COUNTDOWN, "inherit"));
-        game.damageWhenPlayerIsNotInArena = readBooleanConstant(
-                configMap.getString("constant." + DAMAGE_WHEN_PLAYER_IS_NOT_IN_ARENA, "inherit"));
-        game.removeUnusedTargetBlocks = readBooleanConstant(
-                configMap.getString("constant." + REMOVE_UNUSED_TARGET_BLOCKS, "inherit"));
-        game.allowBlockFalling = readBooleanConstant(
-                configMap.getString("constants." + ALLOW_BLOCK_FALLING, "inherit"));
-        game.holoAboveBed = readBooleanConstant(configMap.getString("constant." + HOLO_ABOVE_BED, "inherit"));
-        game.spectatorJoin = readBooleanConstant(configMap.getString("constant." + SPECTATOR_JOIN, "inherit"));
+        
+        if (configMap.isSet("constant")) {
+        	Map<String, Boolean> constantMap = new HashMap<>();
+        	ConfigurationSection constant = configMap.getConfigurationSection("constant");
+        	for (String key : constant.getKeys(false)) {
+        		Object get = constant.get(key);
+        		if (get instanceof String) {
+        			if (((String) get).equalsIgnoreCase("true")) {
+        				constantMap.put(key, true);
+        			} else if (((String) get).equalsIgnoreCase("false")) {
+        				constantMap.put(key, false);
+        			}
+        		} else if (get instanceof Boolean) {
+        			constantMap.put(key, (boolean) get);
+        		}
+        	}
+        	game.gameConfigManager.changesMap().putAll(constantMap);
+        }
 
         game.arenaTime = ArenaTime.valueOf(configMap.getString("arenaTime", ArenaTime.WORLD.name()).toUpperCase());
         game.arenaWeather = loadWeather(configMap.getString("arenaWeather", "default").toUpperCase());
@@ -906,36 +805,14 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         }
     }
 
-    public static InGameConfigBooleanConstants readBooleanConstant(String s) {
-        if ("true".equalsIgnoreCase(s)) {
-            return InGameConfigBooleanConstants.TRUE;
-        } else if ("false".equalsIgnoreCase(s)) {
-            return InGameConfigBooleanConstants.FALSE;
-        }
-
-        return InGameConfigBooleanConstants.INHERIT;
-    }
-
-    public static String writeBooleanConstant(InGameConfigBooleanConstants constant) {
-        switch (constant) {
-            case TRUE:
-                return "true";
-            case FALSE:
-                return "false";
-            case INHERIT:
-            default:
-                return "inherit";
-        }
-    }
-
     public void saveToConfig() {
-        File dir = new File(Main.getInstance().getDataFolder(), "arenas");
-        if (!dir.exists())
-            dir.mkdir();
-        File file = new File(dir, name + ".yml");
-        if (!file.exists()) {
+        File parent = gameFile.getParentFile();
+        if (!parent.exists()) {
+        	parent.mkdirs();
+        }
+        if (!gameFile.exists()) {
             try {
-                file.createNewFile();
+            	gameFile.createNewFile();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -992,34 +869,12 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             }
             configMap.set("stores", nL);
         }
-
-        configMap.set("constant." + COMPASS_ENABLED, writeBooleanConstant(compassEnabled));
-        configMap.set("constant." + ADD_WOOL_TO_INVENTORY_ON_JOIN, writeBooleanConstant(addWoolToInventoryOnJoin));
-        configMap.set("constant." + COLORED_LEATHER_BY_TEAM_IN_LOBBY,
-                writeBooleanConstant(coloredLeatherByTeamInLobby));
-        configMap.set("constant." + CRAFTING, writeBooleanConstant(crafting));
-        configMap.set("constant." + JOIN_RANDOM_TEAM_AFTER_LOBBY, writeBooleanConstant(joinRandomTeamAfterLobby));
-        configMap.set("constant." + JOIN_RANDOM_TEAM_ON_JOIN, writeBooleanConstant(joinRandomTeamOnJoin));
-        configMap.set("constant." + KEEP_INVENTORY, writeBooleanConstant(keepInventory));
-        configMap.set("constant." + PREVENT_KILLING_VILLAGERS, writeBooleanConstant(preventKillingVillagers));
-        configMap.set("constant." + PLAYER_DROPS, writeBooleanConstant(playerDrops));
-        configMap.set("constant." + FRIENDLY_FIRE, writeBooleanConstant(friendlyfire));
-        configMap.set("constant." + LOBBY_BOSSBAR, writeBooleanConstant(lobbybossbar));
-        configMap.set("constant." + GAME_BOSSBAR, writeBooleanConstant(gamebossbar));
-        configMap.set("constant." + LOBBY_SCOREBOARD, writeBooleanConstant(lobbyscoreboard));
-        configMap.set("constant." + SCOREBOARD, writeBooleanConstant(ascoreboard));
-        configMap.set("constant." + PREVENT_SPAWNING_MOBS, writeBooleanConstant(preventSpawningMobs));
-        configMap.set("constant." + SPAWNER_HOLOGRAMS, writeBooleanConstant(spawnerHolograms));
-        configMap.set("constant." + SPAWNER_DISABLE_MERGE, writeBooleanConstant(spawnerDisableMerge));
-        configMap.set("constant." + GAME_START_ITEMS, writeBooleanConstant(gameStartItems));
-        configMap.set("constant." + PLAYER_RESPAWN_ITEMS, writeBooleanConstant(playerRespawnItems));
-        configMap.set("constant." + SPAWNER_HOLOGRAMS_COUNTDOWN, writeBooleanConstant(spawnerHologramsCountdown));
-        configMap.set("constant." + DAMAGE_WHEN_PLAYER_IS_NOT_IN_ARENA,
-                writeBooleanConstant(damageWhenPlayerIsNotInArena));
-        configMap.set("constant." + REMOVE_UNUSED_TARGET_BLOCKS, writeBooleanConstant(removeUnusedTargetBlocks));
-        configMap.set("constants." + ALLOW_BLOCK_FALLING, writeBooleanConstant(allowBlockFalling));
-        configMap.set("constant." + HOLO_ABOVE_BED, writeBooleanConstant(holoAboveBed));
-        configMap.set("constant." + SPECTATOR_JOIN, writeBooleanConstant(spectatorJoin));
+        
+        Map<String, Boolean> constants = gameConfigManager.changesMap();
+        
+        for (Map.Entry<String, Boolean> constant : constants.entrySet()) {
+            configMap.set("constant." + constant.getKey(), (boolean) constant.getValue());
+        }
 
         configMap.set("arenaTime", arenaTime.name());
         configMap.set("arenaWeather", arenaWeather == null ? "default" : arenaWeather.name());
@@ -1032,7 +887,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         }
 
         try {
-            configMap.save(file);
+            configMap.save(gameFile);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -1044,6 +899,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         game.lobbyTime = 60;
         game.gameTime = 3600;
         game.minPlayers = 2;
+        game.gameFile = new File(new File(Main.getInstance().getDataFolder(), "arenas"), name + ".yml");
 
         return game;
     }
@@ -2537,220 +2393,6 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         return false;
     }
 
-    public InGameConfigBooleanConstants getCompassEnabled() {
-        return compassEnabled;
-    }
-
-    public void setCompassEnabled(InGameConfigBooleanConstants compassEnabled) {
-        this.compassEnabled = compassEnabled;
-    }
-
-    public InGameConfigBooleanConstants getJoinRandomTeamAfterLobby() {
-        return joinRandomTeamAfterLobby;
-    }
-
-    public void setJoinRandomTeamAfterLobby(InGameConfigBooleanConstants joinRandomTeamAfterLobby) {
-        this.joinRandomTeamAfterLobby = joinRandomTeamAfterLobby;
-    }
-
-    public InGameConfigBooleanConstants getJoinRandomTeamOnJoin() {
-        return joinRandomTeamOnJoin;
-    }
-
-    public void setJoinRandomTeamOnJoin(InGameConfigBooleanConstants joinRandomTeamOnJoin) {
-        this.joinRandomTeamOnJoin = joinRandomTeamOnJoin;
-    }
-
-    public InGameConfigBooleanConstants getAddWoolToInventoryOnJoin() {
-        return addWoolToInventoryOnJoin;
-    }
-
-    public void setAddWoolToInventoryOnJoin(InGameConfigBooleanConstants addWoolToInventoryOnJoin) {
-        this.addWoolToInventoryOnJoin = addWoolToInventoryOnJoin;
-    }
-
-    public InGameConfigBooleanConstants getPreventKillingVillagers() {
-        return preventKillingVillagers;
-    }
-
-    public void setPreventKillingVillagers(InGameConfigBooleanConstants preventKillingVillagers) {
-        this.preventKillingVillagers = preventKillingVillagers;
-    }
-
-    public InGameConfigBooleanConstants getPlayerDrops() {
-        return playerDrops;
-    }
-
-    public void setPlayerDrops(InGameConfigBooleanConstants playerDrops) {
-        this.playerDrops = playerDrops;
-    }
-
-    public InGameConfigBooleanConstants getFriendlyfire() {
-        return friendlyfire;
-    }
-
-    public void setFriendlyfire(InGameConfigBooleanConstants friendlyfire) {
-        this.friendlyfire = friendlyfire;
-    }
-
-    public InGameConfigBooleanConstants getColoredLeatherByTeamInLobby() {
-        return coloredLeatherByTeamInLobby;
-    }
-
-    public void setColoredLeatherByTeamInLobby(InGameConfigBooleanConstants coloredLeatherByTeamInLobby) {
-        this.coloredLeatherByTeamInLobby = coloredLeatherByTeamInLobby;
-    }
-
-    public InGameConfigBooleanConstants getKeepInventory() {
-        return keepInventory;
-    }
-
-    public void setKeepInventory(InGameConfigBooleanConstants keepInventory) {
-        this.keepInventory = keepInventory;
-    }
-
-    public InGameConfigBooleanConstants getCrafting() {
-        return crafting;
-    }
-
-    public void setCrafting(InGameConfigBooleanConstants crafting) {
-        this.crafting = crafting;
-    }
-
-    @Override
-    public boolean getOriginalOrInheritedCompassEnabled() {
-        return compassEnabled.isOriginal() ? compassEnabled.getValue()
-                : Main.getConfigurator().config.getBoolean(COMPASS_ENABLED);
-    }
-
-    @Override
-    public boolean getOriginalOrInheritedJoinRandomTeamAfterLobby() {
-        return joinRandomTeamAfterLobby.isOriginal() ? joinRandomTeamAfterLobby.getValue()
-                : Main.getConfigurator().config.getBoolean(JOIN_RANDOM_TEAM_AFTER_LOBBY);
-    }
-
-    @Override
-    public boolean getOriginalOrInheritedJoinRandomTeamOnJoin() {
-        return joinRandomTeamOnJoin.isOriginal() ? joinRandomTeamOnJoin.getValue()
-                : Main.getConfigurator().config.getBoolean(JOIN_RANDOM_TEAM_ON_JOIN);
-    }
-
-    @Override
-    public boolean getOriginalOrInheritedAddWoolToInventoryOnJoin() {
-        return addWoolToInventoryOnJoin.isOriginal() ? addWoolToInventoryOnJoin.getValue()
-                : Main.getConfigurator().config.getBoolean(ADD_WOOL_TO_INVENTORY_ON_JOIN);
-    }
-
-    @Override
-    public boolean getOriginalOrInheritedPreventKillingVillagers() {
-        return preventKillingVillagers.isOriginal() ? preventKillingVillagers.getValue()
-                : Main.getConfigurator().config.getBoolean(PREVENT_KILLING_VILLAGERS);
-    }
-
-    @Override
-    public boolean getOriginalOrInheritedPlayerDrops() {
-        return playerDrops.isOriginal() ? playerDrops.getValue()
-                : Main.getConfigurator().config.getBoolean(PLAYER_DROPS);
-    }
-
-    @Override
-    public boolean getOriginalOrInheritedFriendlyfire() {
-        return friendlyfire.isOriginal() ? friendlyfire.getValue()
-                : Main.getConfigurator().config.getBoolean(FRIENDLY_FIRE);
-    }
-
-    @Override
-    public boolean getOriginalOrInheritedColoredLeatherByTeamInLobby() {
-        return coloredLeatherByTeamInLobby.isOriginal() ? coloredLeatherByTeamInLobby.getValue()
-                : Main.getConfigurator().config.getBoolean(COLORED_LEATHER_BY_TEAM_IN_LOBBY);
-    }
-
-    @Override
-    public boolean getOriginalOrInheritedKeepInventory() {
-        return keepInventory.isOriginal() ? keepInventory.getValue()
-                : Main.getConfigurator().config.getBoolean(KEEP_INVENTORY);
-    }
-
-    @Override
-    public boolean getOriginalOrInheritedCrafting() {
-        return crafting.isOriginal() ? crafting.getValue() : Main.getConfigurator().config.getBoolean(CRAFTING);
-    }
-
-    @Override
-    public InGameConfigBooleanConstants getLobbyBossbar() {
-        return lobbybossbar;
-    }
-
-    @Override
-    public boolean getOriginalOrInheritedLobbyBossbar() {
-        return lobbybossbar.isOriginal() ? lobbybossbar.getValue()
-                : Main.getConfigurator().config.getBoolean(GLOBAL_LOBBY_BOSSBAR);
-    }
-
-    @Override
-    public InGameConfigBooleanConstants getGameBossbar() {
-        return gamebossbar;
-    }
-
-    @Override
-    public boolean getOriginalOrInheritedGameBossbar() {
-        return gamebossbar.isOriginal() ? gamebossbar.getValue()
-                : Main.getConfigurator().config.getBoolean(GLOBAL_GAME_BOSSBAR);
-    }
-
-    @Override
-    public InGameConfigBooleanConstants getScoreboard() {
-        return ascoreboard;
-    }
-
-    @Override
-    public boolean getOriginalOrInheritedScoreaboard() {
-        return ascoreboard.isOriginal() ? ascoreboard.getValue()
-                : Main.getConfigurator().config.getBoolean(GLOBAL_SCOREBOARD);
-    }
-
-    @Override
-    public InGameConfigBooleanConstants getLobbyScoreboard() {
-        return lobbyscoreboard;
-    }
-
-    @Override
-    public boolean getOriginalOrInheritedLobbyScoreaboard() {
-        return lobbyscoreboard.isOriginal() ? lobbyscoreboard.getValue()
-                : Main.getConfigurator().config.getBoolean(GLOBAL_LOBBY_SCOREBOARD);
-    }
-
-    public void setLobbyBossbar(InGameConfigBooleanConstants lobbybossbar) {
-        this.lobbybossbar = lobbybossbar;
-    }
-
-    public void setGameBossbar(InGameConfigBooleanConstants gamebossbar) {
-        this.gamebossbar = gamebossbar;
-    }
-
-    public void setAscoreboard(InGameConfigBooleanConstants ascoreboard) {
-        this.ascoreboard = ascoreboard;
-    }
-
-    public void setLobbyScoreboard(InGameConfigBooleanConstants lobbyscoreboard) {
-        this.lobbyscoreboard = lobbyscoreboard;
-    }
-
-    public void setPreventSpawningMobs(InGameConfigBooleanConstants preventSpawningMobs) {
-        this.preventSpawningMobs = preventSpawningMobs;
-    }
-
-    @Override
-    public InGameConfigBooleanConstants getPreventSpawningMobs() {
-        return preventSpawningMobs;
-    }
-
-    @Override
-    public boolean getOriginalOrInheritedPreventSpawningMobs() {
-        return preventSpawningMobs.isOriginal() ? preventSpawningMobs.getValue()
-                : Main.getConfigurator().config.getBoolean(PREVENT_SPAWNING_MOBS);
-    }
-
     @Override
     public ArenaTime getArenaTime() {
         return arenaTime;
@@ -2788,38 +2430,8 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     }
 
     @Override
-    public InGameConfigBooleanConstants getSpawnerHolograms() {
-        return spawnerHolograms;
-    }
-
-    @Override
-    public boolean getOriginalOrInheritedSpawnerHolograms() {
-        return spawnerHolograms.isOriginal() ? spawnerHolograms.getValue()
-                : Main.getConfigurator().config.getBoolean(SPAWNER_HOLOGRAMS);
-    }
-
-    public void setSpawnerHolograms(InGameConfigBooleanConstants spawnerHolograms) {
-        this.spawnerHolograms = spawnerHolograms;
-    }
-
-    @Override
     public List<org.screamingsandals.bedwars.api.game.ItemSpawner> getItemSpawners() {
         return new ArrayList<>(spawners);
-    }
-
-    @Override
-    public InGameConfigBooleanConstants getSpawnerDisableMerge() {
-        return spawnerDisableMerge;
-    }
-
-    @Override
-    public boolean getOriginalOrInheritedSpawnerDisableMerge() {
-        return spawnerDisableMerge.isOriginal() ? spawnerDisableMerge.getValue()
-                : Main.getConfigurator().config.getBoolean(SPAWNER_DISABLE_MERGE);
-    }
-
-    public void setSpawnerDisableMerge(InGameConfigBooleanConstants spawnerDisableMerge) {
-        this.spawnerDisableMerge = spawnerDisableMerge;
     }
 
     public void dispatchRewardCommands(String type, Player player, int score) {
@@ -2834,96 +2446,6 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             command = command.startsWith("/") ? command.substring(1) : command;
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
         }
-    }
-
-    @Override
-    public InGameConfigBooleanConstants getGameStartItems() {
-        return gameStartItems;
-    }
-
-    @Override
-    public boolean getOriginalOrInheritedGameStartItems() {
-        return gameStartItems.isOriginal() ? gameStartItems.getValue()
-                : Main.getConfigurator().config.getBoolean(GAME_START_ITEMS);
-    }
-
-    @Override
-    public InGameConfigBooleanConstants getPlayerRespawnItems() {
-        return playerRespawnItems;
-    }
-
-    @Override
-    public boolean getOriginalOrInheritedPlayerRespawnItems() {
-        return playerRespawnItems.isOriginal() ? playerRespawnItems.getValue()
-                : Main.getConfigurator().config.getBoolean(PLAYER_RESPAWN_ITEMS);
-    }
-
-    public void setGameStartItems(InGameConfigBooleanConstants gameStartItems) {
-        this.gameStartItems = gameStartItems;
-    }
-
-    public void setPlayerRespawnItems(InGameConfigBooleanConstants playerRespawnItems) {
-        this.playerRespawnItems = playerRespawnItems;
-    }
-
-    @Override
-    public InGameConfigBooleanConstants getSpawnerHologramsCountdown() {
-        return spawnerHologramsCountdown;
-    }
-
-    @Override
-    public boolean getOriginalOrInheritedSpawnerHologramsCountdown() {
-        return spawnerHologramsCountdown.isOriginal() ? spawnerHologramsCountdown.getValue()
-                : Main.getConfigurator().config.getBoolean(SPAWNER_HOLOGRAMS_COUNTDOWN);
-    }
-
-    public void setSpawnerHologramsCountdown(InGameConfigBooleanConstants spawnerHologramsCountdown) {
-        this.spawnerHologramsCountdown = spawnerHologramsCountdown;
-    }
-
-    @Override
-    public InGameConfigBooleanConstants getDamageWhenPlayerIsNotInArena() {
-        return damageWhenPlayerIsNotInArena;
-    }
-
-    @Override
-    public boolean getOriginalOrInheritedDamageWhenPlayerIsNotInArena() {
-        return damageWhenPlayerIsNotInArena.isOriginal() ? damageWhenPlayerIsNotInArena.getValue()
-                : Main.getConfigurator().config.getBoolean(DAMAGE_WHEN_PLAYER_IS_NOT_IN_ARENA);
-    }
-
-    public void setDamageWhenPlayerIsNotInArena(InGameConfigBooleanConstants damageWhenPlayerIsNotInArena) {
-        this.damageWhenPlayerIsNotInArena = damageWhenPlayerIsNotInArena;
-    }
-
-    @Override
-    public InGameConfigBooleanConstants getRemoveUnusedTargetBlocks() {
-        return removeUnusedTargetBlocks;
-    }
-
-    @Override
-    public boolean getOriginalOrInheritedRemoveUnusedTargetBlocks() {
-        return removeUnusedTargetBlocks.isOriginal() ? removeUnusedTargetBlocks.getValue()
-                : Main.getConfigurator().config.getBoolean(REMOVE_UNUSED_TARGET_BLOCKS);
-    }
-
-    public void setRemoveUnusedTargetBlocks(InGameConfigBooleanConstants removeUnusedTargetBlocks) {
-        this.removeUnusedTargetBlocks = removeUnusedTargetBlocks;
-    }
-
-    @Override
-    public InGameConfigBooleanConstants getAllowBlockFalling() {
-        return allowBlockFalling;
-    }
-
-    @Override
-    public boolean getOriginalOrInheritedAllowBlockFalling() {
-        return allowBlockFalling.isOriginal() ? allowBlockFalling.getValue()
-                : Main.getConfigurator().config.getBoolean(ALLOW_BLOCK_FALLING);
-    }
-
-    public void setAllowBlockFalling(InGameConfigBooleanConstants allowBlockFalling) {
-        this.allowBlockFalling = allowBlockFalling;
     }
 
     @Override
@@ -2996,51 +2518,6 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         return gamePlayerList;
     }
 
-    @Override
-    public InGameConfigBooleanConstants getHoloAboveBed() {
-        return holoAboveBed;
-    }
-
-    @Override
-    public boolean getOriginalOrInheritedHoloAboveBed() {
-        return holoAboveBed.isOriginal() ? holoAboveBed.getValue()
-                : Main.getConfigurator().config.getBoolean(HOLO_ABOVE_BED);
-    }
-
-    public void setHoloAboveBed(InGameConfigBooleanConstants holoAboveBed) {
-        this.holoAboveBed = holoAboveBed;
-    }
-
-    @Override
-    public InGameConfigBooleanConstants getSpectatorJoin() {
-        return spectatorJoin;
-    }
-
-    @Override
-    public boolean getOriginalOrInheritedSpectatorJoin() {
-        return spectatorJoin.isOriginal() ? spectatorJoin.getValue()
-                : Main.getConfigurator().config.getBoolean(SPECTATOR_JOIN);
-    }
-
-    public void setSpectatorJoin(InGameConfigBooleanConstants spectatorJoin) {
-        this.spectatorJoin = spectatorJoin;
-    }
-
-    @Override
-    public InGameConfigBooleanConstants getStopTeamSpawnersOnDie() {
-        return stopTeamSpawnersOnDie;
-    }
-
-    @Override
-    public boolean getOriginalOrInheritedStopTeamSpawnersOnDie() {
-        return stopTeamSpawnersOnDie.isOriginal() ? stopTeamSpawnersOnDie.getValue()
-                : Main.getConfigurator().config.getBoolean(STOP_TEAM_SPAWNERS_ON_DIE);
-    }
-
-    public void setStopTeamSpawnersOnDie(InGameConfigBooleanConstants stopTeamSpawnersOnDie) {
-        this.stopTeamSpawnersOnDie = stopTeamSpawnersOnDie;
-    }
-
     public Inventory getFakeEnderChest(GamePlayer player) {
         if (!fakeEnderChests.containsKey(player)) {
             fakeEnderChests.put(player, Bukkit.createInventory(player.player, InventoryType.ENDER_CHEST));
@@ -3067,4 +2544,9 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         }
         return toReturn;
     }
+
+	@Override
+	public GameConfigManager getConfigManager() {
+		return gameConfigManager;
+	}
 }
