@@ -198,7 +198,7 @@ please_select_info_type_teams: "&aList of teams&f - &7/bw admin %arena% info tea
 please_select_info_type_config: "&aConfiguration&f - &7/bw admin %arena% info config"
 please_select_info_type_click: "&bClick for execute this command!"
 statistics_is_disabled: "&cPlayer statistics are disabled on this server!"
-statistics_player_is_not_exists: "&cPlayer is not found!"
+statistics_player_is_not_exists: "&cJátékos nem található!"
 statistics_not_found: "&cStatistics for this player are not found!"
 statistics_header: "&aStatistics of &7%player%&a:"
 statistics_kills: "&7Ölések: &a%kills%"
