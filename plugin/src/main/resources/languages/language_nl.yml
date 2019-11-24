@@ -3,7 +3,7 @@ lang_name: "Nederlands"
 prefix: "&7[&fBed&4Wars&7]&r"
 item_shop_name: "Winkel"
 plugin:
-  version_info: "Version: %version%"
+  version_info: "Versie: %version%"
 game:
   info:
     global:
@@ -27,7 +27,7 @@ game:
     player:
       already_running: "&cSpel &7%arena% &cwordt al uitgevoerd! Je kan niet deelnemen aan een lopend spel!"
       full: "&cSpel &7%arena% &cis vol! Wacht tot het spel eindigt!"
-      rebuilding: "Game %arena% is rebuilding now."
+      rebuilding: "Spel %arena% wordt nu opnieuw opgebouwd."
       vip:
         not_enough_players: "&cNiet genoeg spelers in arena!"
         full: "&cSpel &7%arena% &czit vol met VIP spelers. Wacht alsjeblieft tot het spel eindigt!"
