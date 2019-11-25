@@ -55,17 +55,17 @@ game:
     succes: "&aKjøpte &7%item%&a for &7%material%&a!"
     failed: "&cMangler materialer til å kjøpe &7%item%&c! Trenger &7%material%&c!"
     price: "Pris:"
-    amount: "Amount:"
-    page_back: "Page back"
-    page_forward: "Page forward"
-    category_back: "&cBack to category list"
+    amount: "Antall:"
+    page_back: "Gå tilbake"
+    page_forward: "Gå fremover"
+    category_back: "&cTilbake til kategorilisten"
   resources:
-    bronze: "Bronze"
-    iron: "Iron"
-    gold: "Gold"
+    bronze: "Bronse"
+    iron: "Jern"
+    gold: "Gull"
   spawners:
-    countdown: "&e%seconds% &bseconds"
-    every_second: "&bevery second"
+    countdown: "&e%seconds% &bsekunder"
+    every_second: "&bhvert sekund"
     depleted: "§c§lSpawner is depleted"
     not_enough_levels: "§cSpawner can't work! You need to upgrade by %levels% levels."
   guis:
@@ -139,17 +139,17 @@ holograms:
   game:
     beds:
       protect_your_bed: "%teamcolor%&lProtect your bed!"
-      protect_your_target: "%teamcolor%&lProtect your target block!"
-      protect_your_bed_destroyed: "&7&lBed is destroyed."
-      protect_your_target_destroyed: "&7&lTarget block is destroyed."
-      destroy_this_bed: "%teamcolor%&lDestroy this bed!"
-      destroy_this_target: "%teamcolor%&lDestroy this target block!"
+      protect_your_target: "%teamcolor%&lBeskytt din blokk!"
+      protect_your_bed_destroyed: "&7&lSengen er ødelagt."
+      protect_your_target_destroyed: "&7&lBlokken er ødelagt."
+      destroy_this_bed: "%teamcolor%&lØdelegg denne sengen!"
+      destroy_this_target: "%teamcolor%&lØdelegg denne blokken!"
 commands:
   success:
-    done: "&aCommand executed successfully!"
+    done: "&aKommando vellykket utført!"
   errors:
-    unknown_command: "&cCommand unknown! Type &4/bw help &cfor help!"
-    unknown_usage: "&cNumber of arguments does not match the correct amount or unknown arguments! Type &4/bw help &cfor help!"
+    unknown_command: "&cUkjent kommando! Skriv &4/bw help &cfor hjelp!"
+    unknown_usage: "&cArgumentene samsvarer ikke med oppgitt antall eller ukjente argumenter! Type &4/bw help &cfor hjelp!"
     no_permissions: "&cYou don't have the permission to do that!"
     not_allowed: "&cThis command is blocked while the game is running!"
     not_for_console: "&cThis command is not supported for the console."
