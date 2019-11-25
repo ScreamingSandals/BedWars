@@ -34,11 +34,11 @@ game:
         kicked_by_vip: "&cDu ble sparket av en VIP spiller!"
       team:
         selected: "&aValgt lag: %team%&r &7[&a%players%&7/&a%maxplayers%&7]"
-        already_selected: "&aYou are already in team: %team%&r &7[&a%players%&7/&a%maxplayers%&7]"
-        full: "&cTeam %team% is full!"
-        you_won: "&aYour team won!"
-        you_lost: "&cYour team lost!"
-      vault_deposite: "&aAdded &7%coins% %currency%&a to your account!"
+        already_selected: "&aDu er allerede på et lag: %team%&r &7[&a%players%&7/&a%maxplayers%&7]"
+        full: "&cLaget %team% er fullt!"
+        you_won: "&aDitt lag vant!"
+        you_lost: "&cDitt lag tapte!"
+      vault_deposite: "&aLa til &7%coins% %currency%&a til din konto!"
       respawn_protection:
         remaining: "&aRespawn protection will be gone in &f%time% &aseconds!"
         end: "&cRespawn protection is gone!"
