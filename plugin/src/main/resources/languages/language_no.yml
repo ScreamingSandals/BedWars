@@ -22,18 +22,18 @@ game:
         bed_is_destroyed_subtitle: "Du kan nå drepe lagspillere!"
         bed_is_destroyed_subtitle_for_victim: "Nå vil du ikke bli gjenopplivet!"
       bossbar:
-        waiting: "&cThe game will begin shortly!"
-        running: "&aGame started! Good luck!"
+        waiting: "&cSpillet begynner snart!"
+        running: "&aSpillet har startet! Lykke til!"
     player:
-      already_running: "&cGame &7%arena% &cis already running! You can't join a running game!"
-      full: "&cGame &7%arena% &cis full! Please wait for game end!"
-      rebuilding: "Game %arena% is rebuilding now."
+      already_running: "&cSpillet &7%arena% &cer allerede igang! Du kan ikke bli med på et pågående spill!"
+      full: "&cSpillet &7%arena% &cer full! Vennligst vent til spillet er ferdig!"
+      rebuilding: "Spillet %arena% gjenoppbygger."
       vip:
-        not_enough_players: "&cNot enough players in arena!"
-        full: "&cGame &7%arena% &cis full of VIP players. Please wait for game end!"
-        kicked_by_vip: "&cYou were kicked by VIP player!"
+        not_enough_players: "&cIkke nok spillere på arenaen!"
+        full: "&cSpillet &7%arena% &cer full av VIP spillere! Vennligst vent til spillet er ferdig!"
+        kicked_by_vip: "&cDu ble sparket av en VIP spiller!"
       team:
-        selected: "&aSelected team: %team%&r &7[&a%players%&7/&a%maxplayers%&7]"
+        selected: "&aValgt lag: %team%&r &7[&a%players%&7/&a%maxplayers%&7]"
         already_selected: "&aYou are already in team: %team%&r &7[&a%players%&7/&a%maxplayers%&7]"
         full: "&cTeam %team% is full!"
         you_won: "&aYour team won!"
