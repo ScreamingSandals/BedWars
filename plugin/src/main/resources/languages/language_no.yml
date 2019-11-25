@@ -150,29 +150,29 @@ commands:
   errors:
     unknown_command: "&cUkjent kommando! Skriv &4/bw help &cfor hjelp!"
     unknown_usage: "&cArgumentene samsvarer ikke med oppgitt antall eller ukjente argumenter! Type &4/bw help &cfor hjelp!"
-    no_permissions: "&cYou don't have the permission to do that!"
-    not_allowed: "&cThis command is blocked while the game is running!"
-    not_for_console: "&cThis command is not supported for the console."
+    no_permissions: "&cDu har ikke tillatelse til å gjøre dette!"
+    not_allowed: "&cDenne kommandoen er blokkert mens spillet er i gang!"
+    not_for_console: "&cDenne kommandoen kan ikke brukes i konsollen."
   holograms:
-    added: "&aHologram has been added to your position!"
-    click_to_remove: "&eNow click the &ahologram &eyou want to remove!"
+    added: "&aEt hologram har blitt plassert på din posisjon!"
+    click_to_remove: "&eKlikk på &ahologrammet &edu vil fjerne!"
   auto_join:
-    already_in_game: "&cYou are already in some game."
-    no_empty_game: "&cThere's no game empty game!"
+    already_in_game: "&cDu er allerede i et spill."
+    no_empty_game: "&cDet er ingen ledige spill!"
   join:
-    already_in_game: "&cYou are already in some game."
-    not_found: "&cArena does not exists!"
+    already_in_game: "&cDu er allerede i et spill."
+    not_found: "&cArenaen ble ikke funnet!"
   leave:
-    not_in_game: "&cYou are not in game!"
+    not_in_game: "&cDu er ikke i et spill!"
   list:
-    header: "&aAvailable arenas:"
+    header: "&aTilgjengelige arenaer:"
   main_lobby:
-    info: "&cWARNING&f: You need to execute /bw reload to make Mainlobby work!"
+    info: "&cADVARSEL&f: Du må utføre kommandoen /bw reload for å få Mainlobby til å virke!"
   rejoin:
-    already_in_game: "&cYou are already in some game."
-    no_game_found: "&cNo previous game found."
+    already_in_game: "&cDu er allerede i et spill."
+    no_game_found: "&cIngen tidligere spill funnet."
   reload:
-    safe: "&aWaiting for safe stop of all games or for 60 seconds before reload!"
+    safe: "&aVenter på en trygg stopp av alle spill eller i 60 sekunder før vi laster inn på nytt!"
     failed: "&cSome games have not ended within the time limit, so their arena may have been damaged!"
   statistics:
     header: "&aStatistics of &7%player%&a:"
