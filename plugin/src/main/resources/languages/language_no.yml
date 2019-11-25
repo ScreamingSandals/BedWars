@@ -17,10 +17,10 @@ game:
       titles:
         start: "&aSpillet har startet!"
         start_subtitle: "&aSpillet &7%arena%&a har startet! Nyt spillet!"
-        bed_is_destroyed: "Bed of %team%&r is destroyed!"
-        target_is_destroyed: "Target block of %team%&r is destroyed!"
-        bed_is_destroyed_subtitle: "You can now kill the team members!"
-        bed_is_destroyed_subtitle_for_victim: "Now you will never be respawned!"
+        bed_is_destroyed: "Sengen til lag %team%&r er ødelagt!"
+        target_is_destroyed: "Blokken på lag %team%&r er ødelagt!"
+        bed_is_destroyed_subtitle: "Du kan nå drepe lagspillere!"
+        bed_is_destroyed_subtitle_for_victim: "Nå vil du ikke bli gjenopplivet!"
       bossbar:
         waiting: "&cThe game will begin shortly!"
         running: "&aGame started! Good luck!"
