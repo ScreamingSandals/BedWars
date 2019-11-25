@@ -1,22 +1,22 @@
 ---
 lang_name: "Norsk"
 prefix: "&7[&fBed&4Wars&7]&r"
-item_shop_name: "Shop"
+item_shop_name: "Butikk"
 plugin:
-  version_info: "Version: %version%"
+  version_info: "Versjon: %version%"
 game:
   info:
     global:
-      joined: "%name% &ajoined the game!&r &7[&a%players%&7/&a%maxplayers%&7]"
-      leaved: "%name% &cleft the game!"
-      game_win: "&aTeam &r%team%&a won game in &7%time%"
-      game_end: "&cGame ended! Thanks for playing!"
+      joined: "%name% &able med i spillet!&r &7[&a%players%&7/&a%maxplayers%&7]"
+      leaved: "%name% &cforlot spillet!"
+      game_win: "&aLag &r%team%&a vant spillet på &7%time%"
+      game_end: "&cSpillet ble avsluttet! Takk for at du spilte!"
       players:
-        self_killed: "&cPlayer %victim% &cdied!"
-        killed: "&cPlayer %killer% &ckilled %victim%&c!"
+        self_killed: "&cSpiller %victim% &cdøde!"
+        killed: "&cSpiller %killer% &cdrepte %victim%&c!"
       titles:
-        start: "&aGame started!"
-        start_subtitle: "&aGame &7%arena%&a has started! Enjoy the game!"
+        start: "&aSpillet har startet!"
+        start_subtitle: "&aSpillet &7%arena%&a har startet! Nyt spillet!"
         bed_is_destroyed: "Bed of %team%&r is destroyed!"
         target_is_destroyed: "Target block of %team%&r is destroyed!"
         bed_is_destroyed_subtitle: "You can now kill the team members!"
