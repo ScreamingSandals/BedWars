@@ -53,8 +53,8 @@ game:
         broken: "&cDin lagkiste ble ødelagt!"
   shop:
     succes: "&aKjøpte &7%item%&a for &7%material%&a!"
-    failed: "&cLack of material to buy &7%item%&c! Needed &7%material%&c!"
-    price: "Price:"
+    failed: "&cMangler materialer til å kjøpe &7%item%&c! Trenger &7%material%&c!"
+    price: "Pris:"
     amount: "Amount:"
     page_back: "Page back"
     page_forward: "Page forward"
