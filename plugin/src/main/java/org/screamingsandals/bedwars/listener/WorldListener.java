@@ -8,6 +8,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockFadeEvent;
@@ -199,5 +200,17 @@ public class WorldListener implements Listener {
                 }
             }
         }
+    }
+    
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onBedWarsSpawnIsCancelled(CreatureSpawnEvent event) {
+    	if (!event.isCancelled()) {
+    		return;
+    	}
+    	// Fix for uSkyBlock plugin
+    	if (event.getSpawnReason() == SpawnReason.CUSTOM && Main.getInstance().isEntityInGame(event.getEntity())) {
+    		event.setCancelled(false);
+    	}
+        return;
     }
 }
