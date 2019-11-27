@@ -27,17 +27,17 @@ game:
     player:
       already_running: "&cPartita &7%arena% &cè già in corso! Attendi il termine per entrare!"
       full: "&cLa partita &7%arena% &cè al completo! Aspetta per il prossimo incontro!"
-      rebuilding: "Game %arena% is rebuilding now."
+      rebuilding: "La partita %arena% si sta resettando in questo momento."
       vip:
-        not_enough_players: "&cNot enough players in arena!"
-        full: "&cGame &7%arena% &cis full of VIP players. Please wait for game end!"
+        not_enough_players: "&cNon ci sono abbastanza giocatori nell'arena!"
+        full: "&cLa partita &7%arena% &cè al completo di giocatori VIP. Per favore, aspetta che il gioco finisca!"
         kicked_by_vip: "&cSei stato kickato un giocatore VIP!"
       team:
-        selected: "&aSelected team: %team%&r &7[&a%players%&7/&a%maxplayers%&7]"
-        already_selected: "&aYou are already in team: %team%&r &7[&a%players%&7/&a%maxplayers%&7]"
-        full: "&cTeam %team% is full!"
-        you_won: "&aYour team won!"
-        you_lost: "&cYour team lost!"
+        selected: "&aTeam selezionato: %team%&r &7[&a%players%&7/&a%maxplayers%&7]"
+        already_selected: "&aSei già in questo team: %team%&r &7[&a%players%&7/&a%maxplayers%&7]"
+        full: "§cIl team %team% è pieno!"
+        you_won: "&2Il tuo team ha vinto!"
+        you_lost: "&cIl tuo team ha perso!"
       vault_deposite: "&aAdded &7%coins% %currency%&a to your account!"
       respawn_protection:
         remaining: "&aRespawn protection will be gone in &f%time% &aseconds!"
