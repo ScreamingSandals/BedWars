@@ -1,7 +1,7 @@
 ---
 lang_name: "German"
 prefix: "&7[&fBed&4Wars&7]&r"
-item_shop_name: "Geschäft"
+item_shop_name: "Shop"
 plugin:
   version_info: "Version: %version%"
 game:
@@ -23,7 +23,7 @@ game:
         bed_is_destroyed_subtitle_for_victim: "Jetzt wirst du nie wieder vertrieben werden!"
       bossbar:
         waiting: "&cDas Spiel beginnt in Kürze!"
-        running: "&aSpiel läuft, viel Glück!"
+        running: "&aDas Spiel startet! Viel Glück!"
     player:
       already_running: "&cSpiel &7%arena% &cläuft bereits!"
       full: "&cSpiel &7%arena% &cist voll!"
@@ -112,8 +112,8 @@ game:
 arena:
   status:
     disabled: "&cAusgeschaltet"
-    waiting: "&eWAITING"
-    running: "&aRUNNING"
+    waiting: "&eWARTEN"
+    running: "&aSPIEL LÄUFT"
     rebuilding: "&eZurücksetzen"
 signs:
   created: "&aSchild wurde erstellt!"
@@ -215,7 +215,7 @@ commands:
         spawners:
           header: "&7Spawner:"
           info: "- %resource% &fXYZ: &7%x%&r/&7%y%&r/&7%z%"
-          no_team: "no team"
+          no_team: "Kein Team"
         stores:
           header: "&7Shops:"
           position: "- XYZ: &7%x%&r/&7%y%&r/&7%z%"
