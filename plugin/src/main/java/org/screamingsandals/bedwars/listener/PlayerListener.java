@@ -859,21 +859,27 @@ public class PlayerListener implements Listener {
                 Player recipient = recipients.next();
                 GamePlayer recipientgPlayer = Main.getPlayerGameProfile(recipient);
                 Game recipientGame = recipientgPlayer.getGame();
-                if (recipientGame != game && Main.getConfigurator().config.getBoolean("chat.separate-game-chat")) {
-                    recipients.remove();
+                if (recipientGame != game) {
+                	if ((game.getStatus() == GameStatus.WAITING && Main.getConfigurator().config.getBoolean("chat.separate-chat.lobby"))
+                		|| (game.getStatus() != GameStatus.WAITING && Main.getConfigurator().config.getBoolean("chat.separate-chat.game"))) {
+                        recipients.remove();
+                	}
                 } else if (game.getPlayerTeam(recipientgPlayer) != team && teamChat) {
                     recipients.remove();
                 }
             }
         } else {
-            if (Main.getConfigurator().config.getBoolean("chat.separate-game-chat")) {
+            if (Main.getConfigurator().config.getBoolean("chat.separate-chat.lobby") || Main.getConfigurator().config.getBoolean("chat.separate-chat.game")) {
                 Iterator<Player> recipients = event.getRecipients().iterator();
                 while (recipients.hasNext()) {
                     Player recipient = recipients.next();
                     GamePlayer recipientgPlayer = Main.getPlayerGameProfile(recipient);
                     Game recipientGame = recipientgPlayer.getGame();
                     if (recipientGame != null) {
-                        recipients.remove();
+	                    if ((recipientGame.getStatus() == GameStatus.WAITING && Main.getConfigurator().config.getBoolean("chat.separate-chat.lobby"))
+	                		|| (recipientGame.getStatus() != GameStatus.WAITING && Main.getConfigurator().config.getBoolean("chat.separate-chat.game"))) {
+	                        recipients.remove();
+	                    }
                     }
                 }
             }

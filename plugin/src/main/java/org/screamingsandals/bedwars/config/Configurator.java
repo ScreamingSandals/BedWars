@@ -324,7 +324,12 @@ public class Configurator {
 
         checkOrSetConfig(modify, "chat.override", true);
         checkOrSetConfig(modify, "chat.format", "<%teamcolor%%name%§r> ");
-        checkOrSetConfig(modify, "chat.separate-game-chat", false);
+        checkOrSetConfig(modify, "chat.separate-chat.lobby", config.get("chat.separate-game-chat", false));
+        checkOrSetConfig(modify, "chat.separate-chat.game", config.get("chat.separate-game-chat", false));
+        if (config.isSet("chat.separate-game-chat")) {
+        	config.set("chat.separate-game-chat", null);
+        }
+        
         checkOrSetConfig(modify, "chat.send-death-messages-just-in-game", true);
         checkOrSetConfig(modify, "chat.send-custom-death-messages", true);
         checkOrSetConfig(modify, "chat.default-team-chat-while-running", true);
