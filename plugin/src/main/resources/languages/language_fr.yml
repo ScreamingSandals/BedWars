@@ -1,16 +1,16 @@
 ---
 lang_name: "Français"
 prefix: "&7[&fBed&4Wars&7]&r"
-item_shop_name: "Shop"
+item_shop_name: "Boutique"
 plugin:
   version_info: "Version: %version%"
 game:
   info:
     global:
-      joined: "%name% &ajoined the game!&r &7[&a%players%&7/&a%maxplayers%&7]"
-      leaved: "%name% &cleft the game!"
-      game_win: "&aTeam &r%team%&a won game in &7%time%"
-      game_end: "&cGame ended! Thanks for playing!"
+      joined: "%name% &a rejoint la partie!&r &7[&a%players%&7/&a%maxplayers%&7]"
+      leaved: "%name% &cquitté &rla partie!"
+      game_win: "&aL'équipe &r%team%&a a gagné la partie &aen &7%time%"
+      game_end: "&cPartie terminée! Merci d''avoir joué !"
       players:
         self_killed: "&cPlayer %victim% &cdied!"
         killed: "&cPlayer %killer% &ckilled %victim%&c!"
