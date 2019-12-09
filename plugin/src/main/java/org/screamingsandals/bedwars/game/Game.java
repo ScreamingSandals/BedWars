@@ -1504,6 +1504,23 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                             team.setProtectHolo(protectHolo);
                         }
                     }
+					
+					// Check target blocks existence
+					for (CurrentTeam team : teamsInGame) {
+						Location targetLocation = team.getTargetBlock();
+						if (targetLocation.getBlock().getType() == Material.AIR) {
+							ItemStack stack = team.teamInfo.color.getWool();
+							Block placedBlock = targetLocation.getBlock();
+		                    placedBlock.setType(stack.getType());
+		                    if (!Main.isLegacy()) {
+			                    try {
+			                        // The method is no longer in API, but in legacy versions exists
+			                        Block.class.getMethod("setData", byte.class).invoke(placedBlock, (byte) stack.getDurability());
+			                    } catch (Exception e) {
+			                    }
+		                    }
+						}
+					}
 
                     BedwarsGameStartedEvent startedEvent = new BedwarsGameStartedEvent(this);
                     Main.getInstance().getServer().getPluginManager().callEvent(startedEvent);
