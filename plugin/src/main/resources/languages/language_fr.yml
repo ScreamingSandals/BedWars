@@ -139,14 +139,14 @@ holograms:
   game:
     beds:
       protect_your_bed: "%teamcolor%&lProtégez votre lit !"
-      protect_your_target: "%teamcolor%&lProtect your target block!"
-      protect_your_bed_destroyed: "&7&lBed is destroyed."
-      protect_your_target_destroyed: "&7&lTarget block is destroyed."
-      destroy_this_bed: "%teamcolor%&lDestroy this bed!"
-      destroy_this_target: "%teamcolor%&lDestroy this target block!"
+      protect_your_target: "%teamcolor%&lProtégez votre bloc cible!"
+      protect_your_bed_destroyed: "&7Le lit est détruit."
+      protect_your_target_destroyed: "Le bloc &7&lCible est détruit."
+      destroy_this_bed: "%teamcolor%&lDétruisez ce lit !"
+      destroy_this_target: "%teamcolor%&lDétruisez ce bloc cible!"
 commands:
   success:
-    done: "&aCommand executed successfully!"
+    done: "Commande exécutée avec succès!"
   errors:
     unknown_command: "&cCommand unknown! Type &4/bw help &cfor help!"
     unknown_usage: "&cNumber of arguments does not match the correct amount or unknown arguments! Type &4/bw help &cfor help!"
@@ -213,14 +213,14 @@ commands:
           spawn: "  &7Team spawn: &fXYZ: &7%x%&r/&7%y%&r/&7%z%"
           target: "  &7Target block: &fXYZ: &7%x%&r/&7%y%&r/&7%z%"
         spawners:
-          header: "&7Spawners:"
+          header: "&7Spawners :"
           info: "- %resource% &7- %team% &7- &eHolo: &f%holo% &7- XYZ: &7%x%&r/&7%y%&r/&7%z%"
-          no_team: "no team"
+          no_team: "aucune équipe"
         stores:
-          header: "&7Stores:"
+          header: "&7Magasins :"
           position: "- XYZ: &7%x%&r/&7%y%&r/&7%z%"
           entity_type: "  Type: &a%type%"
-          custom_shop: "  Has own shop: &7%bool%"
+          custom_shop: "  A sa propre boutique : &7%bool%"
           name: "  Shop name: &6%file%&r (inherit from main: &7%bool%&r)"
           name_above: "  Custom name above head: &6%name%&r"
           no_name_above: "&cNo name is set"
