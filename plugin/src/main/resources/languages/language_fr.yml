@@ -117,28 +117,28 @@ arena:
     rebuilding: "&eRECONSTRUCTION"
 signs:
   created: "Le panneau a bien été créé!"
-  not_created: "&cSign couldn't be created! Please check the name of the arena!"
-  cannot_destroy: "&cYou don't have permissions to destroy this sign!"
-  game_not_exists: "&cThe game that is written on the sign doesn't exist! Please contact an admin!"
+  not_created: "&cLe panneau n'a pas pu être créé ! Veuillez vérifier le nom de l'arène !"
+  cannot_destroy: "&cVous n'avez pas la permission de détruire ce panneau !"
+  game_not_exists: "&cLe jeu qui est écrit sur le panneau n'existe pas ! Veuillez contacter un administrateur !"
   status:
     disabled:
-      line1: "&cGame"
-      line2: "&cdisabled"
+      line1: "&cPartie"
+      line2: "&cDésactivé"
     rebuilding:
-      line1: "&cGame"
-      line2: "&6rebuilding"
+      line1: "&cPartie"
+      line2: "&6reconstruction"
     running:
-      line1: "&aRunning"
+      line1: "&aExécution"
       line2: "&c%players%&8/&c%maxplayers%"
     waiting:
-      line1: "&6Waiting"
-      line2: "&a%players%&8/&a%maxplayers%"
+      line1: "&6En attente"
+      line2: "&un%players%&8/&a%maxplayers%"
 holograms:
-  not_enabled: "&cHolograms are disabled."
-  holo_removed: "&aHologram has been &lsuccessfully &aremoved!"
+  not_enabled: "&cLes hologrammes sont désactivés."
+  holo_removed: "&aL'hologramme a été &supprimé avec succès !"
   game:
     beds:
-      protect_your_bed: "%teamcolor%&lProtect your bed!"
+      protect_your_bed: "%teamcolor%&lProtégez votre lit !"
       protect_your_target: "%teamcolor%&lProtect your target block!"
       protect_your_bed_destroyed: "&7&lBed is destroyed."
       protect_your_target_destroyed: "&7&lTarget block is destroyed."
