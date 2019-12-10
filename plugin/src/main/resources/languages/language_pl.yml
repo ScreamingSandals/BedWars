@@ -152,7 +152,7 @@ commands:
     unknown_usage: "&cBłędne argumenty! Wpisz &4/bw help &caby uzyskać pomoc."
     no_permissions: "&cNie masz uprawnień do użycia tej komendy!"
     not_allowed: "&cNie masz dostępu do tej komendy podczas gry!"
-    not_for_console: "&cThis command is not supported for the console."
+    not_for_console: "&cTa komenda nie jest możliwa do uruchomienia z poziomu konsoli."
   holograms:
     added: "&aDodano hologram w twojej aktualnej pozycji!"
     click_to_remove: "&eKliknij na &ahologram&e, który chcesz usunąć!"
