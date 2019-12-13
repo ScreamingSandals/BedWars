@@ -13,10 +13,12 @@ import org.bukkit.material.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class LegacyRegion implements Region {
     private List<Location> builtBlocks = new ArrayList<>();
     private List<Block> brokenBlocks = new ArrayList<>();
+    private HashMap<Block, Block> brokenBeds = new HashMap<>();
     private HashMap<Block, Byte> brokenBlockData = new HashMap<>();
     private HashMap<Block, BlockFace> brokenBlockFace = new HashMap<>();
     private HashMap<Block, Boolean> brokenBlockPower = new HashMap<>();
@@ -30,7 +32,9 @@ public class LegacyRegion implements Region {
 
     @Override
     public void putOriginalBlock(Location loc, BlockState block) {
-        brokenBlocks.add(loc.getBlock());
+    	if (!block.getType().name().equals("BED_BLOCK")) {
+    		brokenBlocks.add(loc.getBlock());
+    	}
 
         if (block.getData() instanceof Directional) {
             brokenBlockFace.put(loc.getBlock(), ((Directional) block.getData()).getFacing());
@@ -46,6 +50,10 @@ public class LegacyRegion implements Region {
         if (block instanceof Colorable) {
             // Save bed color on 1.12.x
             brokenBlockColors.put(loc.getBlock(), ((Colorable) block).getColor());
+        }
+        
+        if (isBedHead(block)) {
+        	brokenBeds.put(loc.getBlock(), getBedNeighbor(loc.getBlock()));
         }
     }
 
@@ -113,6 +121,47 @@ public class LegacyRegion implements Region {
                 state.update(true, false);
             }
         }
+        
+        for (Map.Entry<Block, Block> entry : brokenBeds.entrySet()) {
+            Block blockHead = entry.getKey();
+            Block blockFeed = entry.getValue();
+            BlockState headState = blockHead.getState();
+            BlockState feedState = blockFeed.getState();
+
+            headState.setType(brokenBlockTypes.get(blockHead));
+            feedState.setType(brokenBlockTypes.get(blockFeed));
+            headState.setRawData((byte) 0x0);
+            feedState.setRawData((byte) 0x8);
+            feedState.update(true, false);
+            headState.update(true, false);
+
+            Bed bedHead = (Bed) headState.getData();
+            bedHead.setHeadOfBed(true);
+            bedHead.setFacingDirection(blockHead.getFace(blockFeed).getOppositeFace());
+
+            Bed bedFeed = (Bed) feedState.getData();
+            bedFeed.setHeadOfBed(false);
+            bedFeed.setFacingDirection(blockFeed.getFace(blockHead));
+
+            feedState.update(true, false);
+            headState.update(true, true);
+            headState = blockHead.getState();
+            feedState = blockFeed.getState();
+
+            if (brokenBlockColors.containsKey(blockFeed) && feedState instanceof Colorable) {
+                // Update bed color on 1.12.x
+            	((Colorable) feedState).setColor(brokenBlockColors.get(blockFeed));
+                feedState.update(true, false);
+            }
+
+            if (brokenBlockColors.containsKey(blockHead) && headState instanceof Colorable) {
+                // Update bed color on 1.12.x
+            	((Colorable) headState).setColor(brokenBlockColors.get(blockHead));
+                headState.update(true, true);
+            }
+        }
+        brokenBeds.clear();
+        
         brokenBlocks.clear();
         brokenBlockData.clear();
         brokenBlockFace.clear();
