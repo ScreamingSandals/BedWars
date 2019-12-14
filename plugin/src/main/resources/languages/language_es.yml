@@ -15,9 +15,9 @@ game:
         self_killed: "&c¡El jugador %victim% &cha muerto!"
         killed: "§c¡El jugador %killer% §cmató a %victim%§c!"
       titles:
-        start: "§a¡La Partida acaba de Iniciar!"
-        start_subtitle: "§aLa Partida de §7%arena%§a ha empezado! ¡Disfruta el juego!"
-        bed_is_destroyed: "La cama del Equipo %team%§r ha sido Destruida!"
+        start: "&a¡Partida comenzada!"
+        start_subtitle: "&aLa partida &7%arena%&a ha comenzado! ¡Disfruta el juego!"
+        bed_is_destroyed: "¡La cama del %team%&r ha sido destruida!"
         target_is_destroyed: "¡Target block del Equipo %team%§r ha sido Destruida!"
         bed_is_destroyed_subtitle: "¡Ahora puedes matar a los miembros del equipo!"
         bed_is_destroyed_subtitle_for_victim: "¡Ahora nunca volverás a aparecer!"
