@@ -87,12 +87,12 @@ game:
       broadcast: "§c¡§f%player%§c ha caído en la Trampa!"
     warp_powder:
       canceled: "&cTeletransporte cancelado."
-      started: "&aTeleporting.. Please don't move for &7%time%&a seconds!"
+      started: "&aTeletransportando.. ¡Por favor no te muevas por &7%time%&a segundos!"
     tracker:
       no_one: "§c¡No se ha encontrado ningún objetivo!"
       found: "¡§f%target% §aha sido encontrado §f%distance% §aunas cuantos metros!"
     rescue_platform:
-      not_in_air: "&cYou need to be in the air."
+      not_in_air: "&cDebes estar en el aire."
       destroyed_in: "§cLa plataforma será destruida en §f%time% §csegundos."
       created_unbreakable: "§a¡Se creó la plataforma irrompible!"
       created: "§aLa plataforma se crea y se destruirá en §f%time% §asegundos."
@@ -112,14 +112,14 @@ game:
 arena:
   status:
     disabled: "§cDESAVITADO"
-    waiting: "&eWAITING"
-    running: "&aRUNNING"
+    waiting: "&eESPERANDO"
+    running: "&aEN JUEGO"
     rebuilding: "§eRECONSTRUCCIÓN"
 signs:
   created: "§a¡El cartel fue creada con éxito!"
   not_created: "§c¡No se pudo crear el cartel! Por favor verifique el nombre de la arena!"
   cannot_destroy: "§c¡No tienes permisos para destruir este cartel!"
-  game_not_exists: "&cThe game that is written on the sign doesn't exist! Please contact an admin!"
+  game_not_exists: "&c¡La partida que está en el cartel no existe! Por favor contacta a un administrador."
   status:
     disabled:
       line1: "§cPartida"
@@ -134,8 +134,8 @@ signs:
       line1: "§6Esperando"
       line2: "§a%players%§8/§a%maxplayers%"
 holograms:
-  not_enabled: "&cHolograms are disabled."
-  holo_removed: "&aHologram has been &lsuccessfully &aremoved!"
+  not_enabled: "&cLos hologramas están desactivados."
+  holo_removed: "&a¡El holograma ha sido eliminado &lcorrectamente&a!"
   game:
     beds:
       protect_your_bed: "%teamcolor%§l¡Protege tu Cama!"
@@ -152,32 +152,32 @@ commands:
     unknown_usage: "§cEl número de argumentos no coincide con la cantidad correcta o argumentos desconocidos! Usa §4/bw help §cpara guiarte!"
     no_permissions: "§cNo tienes permiso para hacer eso!"
     not_allowed: "§c¡Este comando está bloqueado mientras el juego se está ejecutando!"
-    not_for_console: "&cThis command is not supported for the console."
+    not_for_console: "&cEste comando no puede ser usado desde la consola."
   holograms:
-    added: "&aHologram has been added to your position!"
-    click_to_remove: "&eNow click the &ahologram &eyou want to remove!"
+    added: "&a¡Holograma creado en tu posición!"
+    click_to_remove: "&e¡Ahora haz clic en el &aholograma &eque quieras eliminar!"
   auto_join:
     already_in_game: "§c¡Ya estás en una partida!"
-    no_empty_game: "&cThere's no game empty game!"
+    no_empty_game: "&c¡No hay ninguna partida vacía!"
   join:
     already_in_game: "§c¡Ya estás en una partida!"
-    not_found: "&cArena does not exists!"
+    not_found: "&c¡La partida no existe!"
   leave:
-    not_in_game: "&cYou are not in game!"
+    not_in_game: "&c¡No estás en juego!"
   list:
-    header: "&aAvailable arenas:"
+    header: "&aPartidas disponibles:"
   main_lobby:
     info: "&cWARNING&f: Necesitas ejecutar /bw reload para que Mainlobby funcione!"
   rejoin:
     already_in_game: "§c¡Ya estás en una partida!"
-    no_game_found: "&cNo previous game found."
+    no_game_found: "&cNo se encontró una partida anterior."
   reload:
     safe: "&aWaiting for safe stop of all games or for 60 seconds before reload!"
     failed: "§c¡Algunos juegos no han terminado dentro del límite de tiempo, por lo que su arena puede haber sido dañada!"
   statistics:
     header: "§aEstadísticas de §7%player%§a:"
-    disabled: "&cPlayer statistics are disabled!"
-    not_found: "&cStatistics for this player were not found!"
+    disabled: "&c¡Las estadísticas de los jugadores están desactivadas!"
+    not_found: "&c¡No se han encontrado estadísticas de ese jugador!"
     kills: "§7Asesinatos: §a%kills%"
     deaths: "§7Muertes: §e%deaths%"
     kd: "§7K/D: §a%kd%"
@@ -187,10 +187,10 @@ commands:
     beds: "§7Camas Destruídas: §a%beds%"
     score: "§7Total de puntos: §a%score%"
   admin:
-    usage: "&cUsage: &f/bw admin <arena> <add|edit|remove|save|...> ..."
+    usage: "&cUso: &f/bw admin <arena> <add|edit|remove|save|...> ..."
     arena:
       errors:
-        not_found: "&cArena not found!"
+        not_found: "&c¡Arena no encontrada!"
         not_in_edit_mode: "§cLa arena debe estar en modo edición!"
       info:
         header: "§aDetalles de la arena:"
@@ -201,7 +201,7 @@ commands:
         pos2: "§7Posición 2: §fXYZ: §7%x%§r/§7%y%§r/§7%z%"
         spectator: "§7Posición del Modo Espectador: §fXYZ: §7%x%§r/§7%y%§r/§7%z%"
         lobby: "§7Posición del Lobby: §fMundo: §7%world% §fXYZ: §7%x%§r/§7%y%§r/§7%z%"
-        min_players: "&7Minimal players of the game: &r%minplayers%"
+        min_players: "&7Jugadores mínimos de la partida: &r%minplayers%"
         countdown_time: "§7Cuenta regresiva antes de que comience el juego: §f%time% segundos"
         game_length: "§7Duración del juego: §f%time% segundos"
         true_value: "§aVerdadero"
@@ -209,9 +209,9 @@ commands:
         inherit: "§eHeredado de la configuración del complemento"
         teams:
           header: "§7Equipos:"
-          info: "- %team%&r (Maximal players in team: &7%maxplayers%&r)"
+          info: "- %team%&r (Máximos jugadores por equipo: &7%maxplayers%&r)"
           spawn: "  §7Spawn del Equipo: §fXYZ: §7%x%§r/§7%y%§r/§7%z%"
-          target: "  &7Target block: &fXYZ: &7%x%&r/&7%y%&r/&7%z%"
+          target: "  &7Bloque objetivo: &fXYZ: &7%x%&r/&7%y%&r/&7%z%"
         spawners:
           header: "§7Spawners:"
           info: "- %resource% §fXYZ: §7%x%§r/§7%y%§r/§7%z%"
