@@ -7,12 +7,12 @@ plugin:
 game:
   info:
     global:
-      joined: "%name% §ase unió a la partida!§r §7[§a%players%§7/§a%maxplayers%§7]"
-      leaved: "%name% §cdejó la partida!"
-      game_win: "§aEl Equipo §r%team%§a ganó la partida en §7%time%"
-      game_end: "§c¡Juego terminado! ¡Gracias por jugar!"
+      joined: "&a¡&r%name% &ase unió a la partida!&r &7[&a%players%&7/&a%maxplayers%&7]"
+      leaved: "&c¡&r%name% &cdejó la partida!"
+      game_win: "&aEl equipo &r%team%&a ganó la partida en &7%time%"
+      game_end: "&c¡Juego terminado! ¡Gracias por jugar!"
       players:
-        self_killed: "§c¡El jugador %victim% §cha muerto!"
+        self_killed: "&c¡El jugador %victim% &cha muerto!"
         killed: "§c¡El jugador %killer% §cmató a %victim%§c!"
       titles:
         start: "§a¡La Partida acaba de Iniciar!"
@@ -222,7 +222,7 @@ commands:
           entity_type: "  Tipo: §a%type%"
           custom_shop: "Tiene tienda propia: §7%bool%"
           name: "Nombre de la tienda: §6%file%§r (heredar de main: §7%bool%§r)"
-          name_above: "  Custom name above head: &6%name%&r"
+          name_above: "  Nombre personalizado sobre la cabeza: &6%name%&r"
           no_name_above: "§cNo hay nombre establecido"
         config:
           header: "§7Configuración:"
@@ -230,11 +230,11 @@ commands:
     add:
       added: "§aArena creada!"
       already_exists: "§cEsa arena ya existe!"
-      not_saved: "&cArena already exists but it's not saved!"
+      not_saved: "&c¡La arena ya existe pero no está guardada!"
     remove:
       removed: "§c§lLa arena ha sido removida!"
     edit:
-      switched: "&aArena was switched to edit mode!"
+      switched: "&a¡La arena ha sido cambiada al modo edición!"
     info_sender:
       header: "§aSeleccione la sección de información de §7%arena%§a:"
       base: "§aInformación Base§f - §7/bw admin %arena% info base"
@@ -282,7 +282,7 @@ commands:
         save: "/bw admin <arena> save - §aGuardar la edición de la Arena"
         addholo: "/bw addholo - §eCrear un Holograma de las Estadísticas"
         removeholo: "/bw removeholo - §eDespués de ejecutar este comando, dale Click derecho al holograma para eliminarlo."
-        mainlobby: "/bw mainlobby [enable|set] - &eEnables main lobby or sets main lobby location"
+        mainlobby: "/bw mainlobby [enable|set] - &eActiva el lobby principal o establece la posición del mismo"
         reload: "/bw reload - §cRecargar la configuración del Plugin"
     messages:
       must_be_in_same_world: "§c¡Todos los comandos deben ser puestos desde la arena!"
