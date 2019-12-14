@@ -1,7 +1,7 @@
 ---
 lang_name: "German"
 prefix: "&7[&fBed&4Wars&7]&r"
-item_shop_name: "Geschäft"
+item_shop_name: "Shop"
 plugin:
   version_info: "Version: %version%"
 game:
@@ -23,10 +23,11 @@ game:
         bed_is_destroyed_subtitle_for_victim: "Jetzt wirst du nie wieder vertrieben werden!"
       bossbar:
         waiting: "&cDas Spiel beginnt in Kürze!"
-        running: "&aSpiel läuft, viel Glück!"
+        running: "&aDas Spiel startet! Viel Glück!"
     player:
       already_running: "&cSpiel &7%arena% &cläuft bereits!"
       full: "&cSpiel &7%arena% &cist voll!"
+      rebuilding: "Game %arena% is rebuilding now."
       vip:
         not_enough_players: "&cEs sind nicht genügend Spieler in der Arena!"
         full: "&cDas Spiel &7%arena% &cist voll mit VIP Spielern. Bitte warte, bis ein Spiel geendet ist!"
@@ -111,8 +112,8 @@ game:
 arena:
   status:
     disabled: "&cAusgeschaltet"
-    waiting: "&eWAITING"
-    running: "&aRUNNING"
+    waiting: "&eWARTEN"
+    running: "&aSPIEL LÄUFT"
     rebuilding: "&eZurücksetzen"
 signs:
   created: "&aSchild wurde erstellt!"
@@ -121,17 +122,17 @@ signs:
   game_not_exists: "&cThe game that is written on the sign doesn't exist! Please contact an admin!"
   status:
     disabled:
-      name: "&cSpiel"
-      players: "&cAus"
+      line1: "&cSpiel"
+      line2: "&cAus"
     rebuilding:
-      name: "&cSpiel"
-      players: "&6Game"
+      line1: "&cSpiel"
+      line2: "&6zurücksetzen"
     running:
-      name: "&aLäuft"
-      players: "&c%players%&8/&c%maxplayers%"
+      line1: "&aLäuft"
+      line2: "&c%players%&8/&c%maxplayers%"
     waiting:
-      name: "&6Wartend"
-      players: "&a%players%&8/&a%maxplayers%"
+      line1: "&6Wartend"
+      line2: "&a%players%&8/&a%maxplayers%"
 holograms:
   not_enabled: "&cHolograms are disabled."
   holo_removed: "&aHologram has been &lsuccessfully &aremoved!"
@@ -214,7 +215,7 @@ commands:
         spawners:
           header: "&7Spawner:"
           info: "- %resource% &fXYZ: &7%x%&r/&7%y%&r/&7%z%"
-          no_team: "no team"
+          no_team: "Kein Team"
         stores:
           header: "&7Shops:"
           position: "- XYZ: &7%x%&r/&7%y%&r/&7%z%"
@@ -296,7 +297,7 @@ commands:
       invalid_color: "&cDiese Farbe gibt es nicht, probiere YELLOW, RED, etc.!"
       block_is_not_bed: "&cDer Zielblock ist kein Bett!"
       max_players_fail: "&cDie maximale Spieleranzahl muss größer als 1 sein!"
-      need_min_2_teems: "&cEs werden zwei oder mehr Teams für das Spiel benötigt!"
+      need_min_2_teams: "&cEs werden zwei oder mehr Teams für das Spiel benötigt!"
       spawners_needed: "&cEs wird mehr als ein Spawner für das Spiel benötigt!"
       team_is_not_exists: "&cDieses Team gibt es nicht!"
       team_is_already_exists: "&cDieses Teams gibt es bereits!"

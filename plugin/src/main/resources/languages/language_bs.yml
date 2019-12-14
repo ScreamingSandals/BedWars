@@ -3,7 +3,7 @@ lang_name: "Bosanski"
 prefix: "&7[&fBed&4Wars&7]&r"
 item_shop_name: "Trgovina"
 plugin:
-  version_info: "Version: %version%"
+  version_info: "Verzija: %version%"
 game:
   info:
     global:
@@ -27,6 +27,7 @@ game:
     player:
       already_running: "&cIgra &7%arena% &cje vec pocela! Ne mozete se pridruzivati zapocetim igrama!"
       full: "&cIgra &7%arena% &cje puna! Pricekajte kraj igre!"
+      rebuilding: "Igra %arena% se sada regenerira."
       vip:
         not_enough_players: "&cNedovoljno igraca je u areni!"
         full: "&cIgra &7%arena% &cje puna VIP igraca. Pricekajte kraj igre!"
@@ -121,17 +122,17 @@ signs:
   game_not_exists: "&cArena navedena na natpisu ne postoji! Kontaktirajte admina!"
   status:
     disabled:
-      name: "&cIgra"
-      players: "&ciskljuceno"
+      line1: "&cIgra"
+      line2: "&ciskljuceno"
     rebuilding:
-      name: "&cIgra"
-      players: "&6Arena"
+      line1: "&cIgra"
+      line2: "&6regenerisanje"
     running:
-      name: "&aZapoceto"
-      players: "&c%players%&8/&c%maxplayers%"
+      line1: "&aZapoceto"
+      line2: "&c%players%&8/&c%maxplayers%"
     waiting:
-      name: "&6Cekanje"
-      players: "&a%players%&8/&a%maxplayers%"
+      line1: "&6Cekanje"
+      line2: "&a%players%&8/&a%maxplayers%"
 holograms:
   not_enabled: "&cHologrami su iskljuceni."
   holo_removed: "&aHologram je &luspjesno &auklonjen!"
@@ -151,7 +152,7 @@ commands:
     unknown_usage: "&cBroj argumenata nije valjan ili su navedeni nepostojeci argumenti! Upisite &4/bw help &cza pomoc!"
     no_permissions: "&cNemate dozvolu da to radite!"
     not_allowed: "&cOva komanda se ne moze koristiti za vrijeme igre!"
-    not_for_console: "&cThis command is not supported for the console."
+    not_for_console: "&cOva komanda nije podrzana kroz konzolu."
   holograms:
     added: "&aHologram je dodan na vasu poziciju!"
     click_to_remove: "&eSada kliknite na &ahologram &ekoji zelite ukloniti!"
@@ -296,7 +297,7 @@ commands:
       invalid_color: "&cNavedena boja ne postoji!"
       block_is_not_bed: "&cMeta nije krevet!"
       max_players_fail: "&cMaksimalni broj igraca mora biti >= 1!"
-      need_min_2_teems: "&cIgra mora imati 2 ili vise timova!"
+      need_min_2_teams: "&cZa igru je potrebno 2 ili vise timova!"
       spawners_needed: "&cIgra mora imati >= 1 spawnera itema!"
       team_is_not_exists: "&cTaj tim ne postoji!"
       team_is_already_exists: "&cTaj tim vec postoji!"

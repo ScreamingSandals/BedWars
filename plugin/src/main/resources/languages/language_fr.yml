@@ -1,16 +1,16 @@
 ---
 lang_name: "Français"
 prefix: "&7[&fBed&4Wars&7]&r"
-item_shop_name: "Shop"
+item_shop_name: "Boutique"
 plugin:
   version_info: "Version: %version%"
 game:
   info:
     global:
-      joined: "%name% &ajoined the game!&r &7[&a%players%&7/&a%maxplayers%&7]"
-      leaved: "%name% &cleft the game!"
-      game_win: "&aTeam &r%team%&a won game in &7%time%"
-      game_end: "&cGame ended! Thanks for playing!"
+      joined: "%name% &a rejoint la partie!&r &7[&a%players%&7/&a%maxplayers%&7]"
+      leaved: "%name% &cquitté &rla partie!"
+      game_win: "&aL'équipe &r%team%&a a gagné la partie &aen &7%time%"
+      game_end: "&cPartie terminée! Merci d''avoir joué !"
       players:
         self_killed: "&cPlayer %victim% &cdied!"
         killed: "&cPlayer %killer% &ckilled %victim%&c!"
@@ -27,6 +27,7 @@ game:
     player:
       already_running: "&cGame &7%arena% &cis already running! You can't join a running game!"
       full: "&cGame &7%arena% &cis full! Please wait for game end!"
+      rebuilding: "Game %arena% is rebuilding now."
       vip:
         not_enough_players: "&cNot enough players in arena!"
         full: "&cGame &7%arena% &cis full of VIP players. Please wait for game end!"
@@ -71,81 +72,81 @@ game:
     team_selector:
       name: "%teamName% &7(&e%inTeam% &f/ &e%maxInTeam%&7)"
       lore: "&f---------------------"
-      lore_full: "&fTeam is full!"
+      lore_full: "&fL'équipe est pleine !"
       lore_join: "Click to join the team!"
   items:
-    leave: "&cLeave the game"
-    start_game: "&eStart game"
-    team_selector: "&aSelect team"
+    leave: "&cquitté &rla partie"
+    start_game: "Nouvelle Partie"
+    team_selector: "&aChoisir une équipe"
   specials:
-    already_active: "&cYou already activated this!"
-    delay: "&cYou need to wait %time% seconds before using this item again!"
+    already_active: "&cVous avez déjà activé ceci !"
+    delay: "&cVous devez attendre %time% secondes avant d'utiliser à nouveau cet objet !"
     trap:
-      built: "&aYou've built a trap! Now wait for someone to get caught in it!"
-      caught: "&cYou got caught in trap of team &f%team%&c!"
-      broadcast: "&f%player%&c got caught in your team's trap!"
+      built: "&aVous avez construit un piège ! Attendez maintenant que quelqu'un se fasse attraper !"
+      caught: "&cVous avez été pris dans le piège de l'équipe &f%team%&c !"
+      broadcast: "&f%player%&c a été pris dans le piège de votre équipe !"
     warp_powder:
-      canceled: "&cTeleporting was canceled."
-      started: "&aTeleporting.. Please don't move for &7%time%&a seconds!"
+      canceled: "&cTéléportation annulée."
+      started: "&aTéléportation.. Veuillez ne pas bouger pendant &7%time%&a secondes !"
     tracker:
-      no_one: "&cNo target found!"
-      found: "&f%target% &ahas been found &f%distance% &ablocks away!"
+      no_one: "&cAucune cible trouvée !"
+      found: "&f%target% &a a été trouvé a &f%distance% &ade là !"
     rescue_platform:
-      not_in_air: "&cYou need to be in the air."
-      destroyed_in: "&cPlatform will be destroyed in &f%time% &cseconds."
-      created_unbreakable: "&aUnbreakable Platform was created!"
-      created: "&aPlatform is created and will be destroyed in &f%time% &aseconds."
+      not_in_air: "&cVous devez être dans l'air."
+      destroyed_in: "&cLa plateforme sera détruite dans &f%time% &csecondes."
+      created_unbreakable: "&aPlateforme incassable a été créée !"
+      created: "&aLa plateforme est créée et sera détruite en &f%time% &asecondes."
     protection_wall:
-      not_usable_here: "&cThere is no space left for creating Protection Wall."
-      destroyed_in: "&cProtection Wall will be destroyed in &f%time% &cseconds."
-      created_unbreakable: "&aUnbreakable Protection Wall was created!"
-      created: "&aProtection Wall is created and will be destroyed in &f%time% &aseconds."
+      not_usable_here: "&cIl n'y a plus d'espace pour créer un mur de protection."
+      destroyed_in: "&cLe mur de protection sera détruit en &f%time% &csecondes."
+      created_unbreakable: "&aLe Mur de Protection Incassable a été créé !"
+      created: "&aLe Mur de Protection est créé et sera détruit en &f%time% &asecondes."
     tnt_sheep:
-      no_target_found: "&cNo target found!"
+      no_target_found: "&cAucune cible trouvée !"
     arror_blocker:
-      activated: "&aArrow blocker has been activated for %time% seconds!"
-      already_activated: "&cArrow blocker is already activated!"
-      ended: "&cArrow blocker is no longer activated!"
+      activated: "&aLe bloqueur de flèches a été activé pendant %time% secondes !"
+      already_activated: "&cLe bloqueur de flèches est déjà activé !"
+      ended: "&cLe bloqueur de flèches n'est plus activé !"
     golem:
-      created: "&aGolem has been spawned."
+      created: "&aGolem a été créé."
 arena:
   status:
-    disabled: "&cDISABLED"
-    waiting: "&eWAITING"
+    disabled: "&cDésactivé"
+    waiting: "&en attente"
     running: "&aRUNNING"
-    rebuilding: "&eREBUILDING"
+    rebuilding: "&eRECONSTRUCTION"
 signs:
-  created: "&aSign was successfully created!"
-  not_created: "&cSign couldn't be created! Please check the name of the arena!"
-  cannot_destroy: "&cYou don't have permissions to destroy this sign!"
-  game_not_exists: "&cThe game that is written on the sign doesn't exist! Please contact an admin!"
+  created: "Le panneau a bien été créé!"
+  not_created: "&cLe panneau n'a pas pu être créé ! Veuillez vérifier le nom de l'arène !"
+  cannot_destroy: "&cVous n'avez pas la permission de détruire ce panneau !"
+  game_not_exists: "&cLe jeu qui est écrit sur le panneau n'existe pas ! Veuillez contacter un administrateur !"
   status:
     disabled:
-      name: "&cGame"
-      players: "&cdisabled"
+      line1: "&cPartie"
+      line2: "&cDésactivé"
     rebuilding:
-      name: "&cGame"
-      players: "&6Arena"
+      line1: "&cPartie"
+      line2: "&6reconstruction"
     running:
-      name: "&aRunning"
-      players: "&c%players%&8/&c%maxplayers%"
+      line1: "&aExécution"
+      line2: "&c%players%&8/&c%maxplayers%"
     waiting:
-      name: "&6Waiting"
-      players: "&a%players%&8/&a%maxplayers%"
+      line1: "&6En attente"
+      line2: "&un%players%&8/&a%maxplayers%"
 holograms:
-  not_enabled: "&cHolograms are disabled."
-  holo_removed: "&aHologram has been &lsuccessfully &aremoved!"
+  not_enabled: "&cLes hologrammes sont désactivés."
+  holo_removed: "&aL'hologramme a été &supprimé avec succès !"
   game:
     beds:
-      protect_your_bed: "%teamcolor%&lProtect your bed!"
-      protect_your_target: "%teamcolor%&lProtect your target block!"
-      protect_your_bed_destroyed: "&7&lBed is destroyed."
-      protect_your_target_destroyed: "&7&lTarget block is destroyed."
-      destroy_this_bed: "%teamcolor%&lDestroy this bed!"
-      destroy_this_target: "%teamcolor%&lDestroy this target block!"
+      protect_your_bed: "%teamcolor%&lProtégez votre lit !"
+      protect_your_target: "%teamcolor%&lProtégez votre bloc cible!"
+      protect_your_bed_destroyed: "&7Le lit est détruit."
+      protect_your_target_destroyed: "Le bloc &7&lCible est détruit."
+      destroy_this_bed: "%teamcolor%&lDétruisez ce lit !"
+      destroy_this_target: "%teamcolor%&lDétruisez ce bloc cible!"
 commands:
   success:
-    done: "&aCommand executed successfully!"
+    done: "Commande exécutée avec succès!"
   errors:
     unknown_command: "&cCommand unknown! Type &4/bw help &cfor help!"
     unknown_usage: "&cNumber of arguments does not match the correct amount or unknown arguments! Type &4/bw help &cfor help!"
@@ -212,14 +213,14 @@ commands:
           spawn: "  &7Team spawn: &fXYZ: &7%x%&r/&7%y%&r/&7%z%"
           target: "  &7Target block: &fXYZ: &7%x%&r/&7%y%&r/&7%z%"
         spawners:
-          header: "&7Spawners:"
+          header: "&7Spawners :"
           info: "- %resource% &7- %team% &7- &eHolo: &f%holo% &7- XYZ: &7%x%&r/&7%y%&r/&7%z%"
-          no_team: "no team"
+          no_team: "aucune équipe"
         stores:
-          header: "&7Stores:"
+          header: "&7Magasins :"
           position: "- XYZ: &7%x%&r/&7%y%&r/&7%z%"
           entity_type: "  Type: &a%type%"
-          custom_shop: "  Has own shop: &7%bool%"
+          custom_shop: "  A sa propre boutique : &7%bool%"
           name: "  Shop name: &6%file%&r (inherit from main: &7%bool%&r)"
           name_above: "  Custom name above head: &6%name%&r"
           no_name_above: "&cNo name is set"
@@ -296,7 +297,7 @@ commands:
       invalid_color: "&cThis color is invalid!"
       block_is_not_bed: "&cTargeted block is not a bed!"
       max_players_fail: "&cMax players count must be >= 1!"
-      need_min_2_teems: "&cThe game needs 2 or more teams!"
+      need_min_2_teams: "&cThe game needs 2 or more teams!"
       spawners_needed: "&cThe game must have >= 1 item spawner!"
       team_is_not_exists: "&cThis team doesn't exist!"
       team_is_already_exists: "&cThis team already exists!"

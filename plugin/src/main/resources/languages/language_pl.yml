@@ -27,6 +27,7 @@ game:
     player:
       already_running: "&cNie można dołączyć do gry: Gra na arenie &7%arena% &cjest w toku!"
       full: "&cNie można dołączyć do gry: Arena &7%arena% &cjest już pełna!"
+      rebuilding: "Game %arena% is rebuilding now."
       vip:
         not_enough_players: "&cNiewystarczająca ilość graczy!"
         full: "&cGra &7%arena% &cjest już pełna!"
@@ -121,17 +122,17 @@ signs:
   game_not_exists: "&cPróbowałeś dołączyć do gry, która nie istnieje! Skontaktuj się z administratorem serwera."
   status:
     disabled:
-      name: "&cGra"
-      players: "&cwyłączona"
+      line1: "&cGra"
+      line2: "&cwyłączona"
     rebuilding:
-      name: "&cGra"
-      players: "&6areny"
+      line1: "&cGra"
+      line2: "&6trwa odbudowa"
     running:
-      name: "&aGra w toku"
-      players: "&c%players%&8/&c%maxplayers%"
+      line1: "&aGra w toku"
+      line2: "&c%players%&8/&c%maxplayers%"
     waiting:
-      name: "&6Oczekiwanie"
-      players: "&a%players%&8/&a%maxplayers%"
+      line1: "&6Oczekiwanie"
+      line2: "&a%players%&8/&a%maxplayers%"
 holograms:
   not_enabled: "&cHologramy są wyłączone."
   holo_removed: "&aHologram został &lpomyślnie &ausunięty!"
@@ -151,7 +152,7 @@ commands:
     unknown_usage: "&cBłędne argumenty! Wpisz &4/bw help &caby uzyskać pomoc."
     no_permissions: "&cNie masz uprawnień do użycia tej komendy!"
     not_allowed: "&cNie masz dostępu do tej komendy podczas gry!"
-    not_for_console: "&cThis command is not supported for the console."
+    not_for_console: "&cTa komenda nie jest możliwa do uruchomienia z poziomu konsoli."
   holograms:
     added: "&aDodano hologram w twojej aktualnej pozycji!"
     click_to_remove: "&eKliknij na &ahologram&e, który chcesz usunąć!"
@@ -296,7 +297,7 @@ commands:
       invalid_color: "&cPodano nieprawidłowy kolor!"
       block_is_not_bed: "&cWskazany blok nie jest łóżkiem!"
       max_players_fail: "&cMaksymalna liczba graczy musi być liczbą dodatnią!"
-      need_min_2_teems: "&cNa arenie muszą znajdować się co najmniej dwie drużyny!"
+      need_min_2_teams: "&cNa arenie muszą znajdować się co najmniej dwie drużyny!"
       spawners_needed: "&cArena musi zawierać przynajmniej jeden generator!"
       team_is_not_exists: "&cWskazana drużyna nie istnieje!"
       team_is_already_exists: "&cWskazana drużyna już istnieje!"
