@@ -3,7 +3,7 @@ lang_name: "Español España"
 prefix: "&7[&fBed&4Wars&7]&r"
 item_shop_name: "Tienda"
 plugin:
-  version_info: "Version: %version%"
+  version_info: "Versión: %version%"
 game:
   info:
     global:
@@ -27,7 +27,7 @@ game:
     player:
       already_running: "§cLa arena §7%arena% §cya está en juego! No puedes unirte a la partida!"
       full: "§cLa Arena §7%arena% §cestá llena! Por favor espera a que la Partida Termine.."
-      rebuilding: "Game %arena% is rebuilding now."
+      rebuilding: "La partida %arena% se está reconstruyendo."
       vip:
         not_enough_players: "§c¡No hay suficientes jugadores en la arena!"
         full: "§cLa arena §7%arena% §cestá lleno de jugadores VIP. ¡Por favor espera el final del juego!"
@@ -38,14 +38,14 @@ game:
         full: "§c¡El Equipo %team% está lleno!"
         you_won: "§a¡Tu Equipo ha Ganado!"
         you_lost: "§c¡Tu Equipo ha perdido!"
-      vault_deposite: "&aAdded &7%coins% %currency%&a to your account!"
+      vault_deposite: "&a¡Agregados &7%coins% %currency%&a a tu cuenta!"
       respawn_protection:
         remaining: "§aLa protección de reaparición se acabará en §f%time% §asegundos!"
         end: "§cLa protección de reaparición se acabó!"
       respawn_cooldown:
         title: "&aRespawn in: &c%time%"
         title_cancel: "&cTeam está muerto :("
-        respawned: "&aRespawned!"
+        respawned: "&a¡Reaparecido!"
       chests:
         name: "§a§lCofre del Equipo"
         not_yours: "§e¡Este Cofre del Equipo no es tuyo!"
@@ -66,8 +66,8 @@ game:
   spawners:
     countdown: "§e%seconds% §bsegundos"
     every_second: "§bcada segundo"
-    depleted: "§c§lSpawner is depleted"
-    not_enough_levels: "§cSpawner can't work! You need to upgrade by %levels% levels."
+    depleted: "§c§lGenerador agotado"
+    not_enough_levels: "§c¡El generador no puede funcionar! Debes mejorarlo %levels% niveles."
   guis:
     team_selector:
       name: "%teamName% &7(&e%inTeam% &f/ &e%maxInTeam%&7)"
@@ -76,17 +76,17 @@ game:
       lore_join: "Haz clic para unirte al equipo!"
   items:
     leave: "§cAbandonar la Partida"
-    start_game: "&eStart game"
+    start_game: "&eIniciar partida"
     team_selector: "§aSeleccionar Equipo"
   specials:
-    already_active: "&cYou already activated this!"
+    already_active: "&c¡Ya has activado esto!"
     delay: "§c¡Debe esperar %time% segundos antes de usar este artículo nuevamente!"
     trap:
       built: "§a¡Has construido una trampa! ¡Ahora espera a que alguien quede atrapado en él!"
       caught: "§c¡Quedaste atrapado en la trampa del Equipo §f%team%§c!"
       broadcast: "§c¡§f%player%§c ha caído en la Trampa!"
     warp_powder:
-      canceled: "&cTeleporting was canceled."
+      canceled: "&cTeletransporte cancelado."
       started: "&aTeleporting.. Please don't move for &7%time%&a seconds!"
     tracker:
       no_one: "§c¡No se ha encontrado ningún objetivo!"
