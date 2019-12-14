@@ -27,7 +27,7 @@ game:
     player:
       already_running: "&cSpiel &7%arena% &cläuft bereits!"
       full: "&cSpiel &7%arena% &cist voll!"
-      rebuilding: "Game %arena% is rebuilding now."
+      rebuilding: "%arena% wird neu aufgebaut."
       vip:
         not_enough_players: "&cEs sind nicht genügend Spieler in der Arena!"
         full: "&cDas Spiel &7%arena% &cist voll mit VIP Spielern. Bitte warte, bis ein Spiel geendet ist!"
