@@ -3,7 +3,7 @@ lang_name: "Français"
 prefix: "&7[&fBed&4Wars&7]&r"
 item_shop_name: "Boutique"
 plugin:
-  version_info: "Version: %version%"
+  version_info: "Version : %version%"
 game:
   info:
     global:
@@ -12,12 +12,12 @@ game:
       game_win: "&aL'équipe &r%team%&a a gagné la partie &aen &7%time%"
       game_end: "&cPartie terminée! Merci d''avoir joué !"
       players:
-        self_killed: "&cPlayer %victim% &cdied!"
-        killed: "&cPlayer %killer% &ckilled %victim%&c!"
+        self_killed: "&cJoueur %victim% &cest mort !"
+        killed: "&cJoueur %killer% &cà tué %victim%&c !"
       titles:
-        start: "&aGame started!"
-        start_subtitle: "&aGame &7%arena%&a has started! Enjoy the game!"
-        bed_is_destroyed: "Bed of %team%&r is destroyed!"
+        start: "&aLa partie commence  !"
+        start_subtitle: "&aLe partie &7%arena%&a a commencé ! Profitez du jeu !"
+        bed_is_destroyed: "Le lit des %team%&r est détruit !"
         target_is_destroyed: "Target block of %team%&r is destroyed!"
         bed_is_destroyed_subtitle: "You can now kill the team members!"
         bed_is_destroyed_subtitle_for_victim: "Now you will never be respawned!"
