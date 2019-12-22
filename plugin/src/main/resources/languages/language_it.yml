@@ -114,33 +114,33 @@ arena:
     disabled: "&cDISATTIVATO"
     waiting: "&eIN ATTESA"
     running: "&aIN GIOCO"
-    rebuilding: "&eREBUILDING"
+    rebuilding: "&eIN CORSO DI RIGENERAZIONE"
 signs:
-  created: "&aSign was successfully created!"
-  not_created: "&cSign couldn't be created! Please check the name of the arena!"
-  cannot_destroy: "&cYou don't have permissions to destroy this sign!"
-  game_not_exists: "&cThe game that is written on the sign doesn't exist! Please contact an admin!"
+  created: "&aIl cartello è stato creato con successo!"
+  not_created: "&cNon è stato possibile creare il cartello. Per favore controlla il nome dell'arena!"
+  cannot_destroy: "&cNon hai il permesso di rompere questo cartello!"
+  game_not_exists: "&cLa partita non esiste. Per favore, contatta un amministratore!"
   status:
     disabled:
-      line1: "&cGame"
-      line2: "&cdisabled"
+      line1: "&cMappa"
+      line2: "&cdisabilitata"
     rebuilding:
-      line1: "&cGame"
-      line2: "&6rebuilding"
+      line1: "&cMappa"
+      line2: "&6Rigenerando..."
     running:
-      line1: "&aRunning"
+      line1: "&aIn Gioco"
       line2: "&c%players%&8/&c%maxplayers%"
     waiting:
-      line1: "&6Waiting"
+      line1: "&6In attesa"
       line2: "&a%players%&8/&a%maxplayers%"
 holograms:
-  not_enabled: "&cHolograms are disabled."
-  holo_removed: "&aHologram has been &lsuccessfully &aremoved!"
+  not_enabled: "&cGli ologrammi sono disabilitati."
+  holo_removed: "&aL'ologramma è stato rimosso con successo!"
   game:
     beds:
-      protect_your_bed: "%teamcolor%&lProtect your bed!"
-      protect_your_target: "%teamcolor%&lProtect your target block!"
-      protect_your_bed_destroyed: "&7&lBed is destroyed."
+      protect_your_bed: "%teamcolor%&lProteggi il tuo letto!"
+      protect_your_target: "%teamcolor%&lProteggi il tuo blocco bersaglio!"
+      protect_your_bed_destroyed: "&7&lIl letto è distrutto."
       protect_your_target_destroyed: "&7&lTarget block is destroyed."
       destroy_this_bed: "%teamcolor%&lDestroy this bed!"
       destroy_this_target: "%teamcolor%&lDestroy this target block!"
