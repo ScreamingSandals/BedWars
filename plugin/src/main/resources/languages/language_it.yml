@@ -84,36 +84,36 @@ game:
     trap:
       built: "&aHai costruito una trappola! Ora aspetta che qualcuno ci cada!"
       caught: "&cSei finito nella trappola del team &f%team%&c!"
-      broadcast: "&f%player%&c got caught in your team's trap!"
+      broadcast: "&f%player%&c è caduto nella trappola del tuo team!"
     warp_powder:
-      canceled: "&cTeleporting was canceled."
-      started: "&aTeleporting.. Please don't move for &7%time%&a seconds!"
+      canceled: "&cTeletrasporto annullato."
+      started: "&aTeletrasporto in corso... Non muoverti per &7%time% secondi!"
     tracker:
-      no_one: "&cNo target found!"
-      found: "&f%target% &ahas been found &f%distance% &ablocks away!"
+      no_one: "&cBersaglio non trovato!"
+      found: "&f%target% &aè stato localizzato a &f%distance% &ablocchi di distanza!"
     rescue_platform:
-      not_in_air: "&cYou need to be in the air."
-      destroyed_in: "&cPlatform will be destroyed in &f%time% &cseconds."
-      created_unbreakable: "&aUnbreakable Platform was created!"
-      created: "&aPlatform is created and will be destroyed in &f%time% &aseconds."
+      not_in_air: "&cDevi essere in aria."
+      destroyed_in: "&cLa piattaforma si distruggerà in &f%time% &csecondi."
+      created_unbreakable: "&aPiattaforma indistruttibile creata!"
+      created: "&aLa piattaforma è stata creata e si distruggerà in &f%time% &asecondi."
     protection_wall:
-      not_usable_here: "&cThere is no space left for creating Protection Wall."
-      destroyed_in: "&cProtection Wall will be destroyed in &f%time% &cseconds."
-      created_unbreakable: "&aUnbreakable Protection Wall was created!"
-      created: "&aProtection Wall is created and will be destroyed in &f%time% &aseconds."
+      not_usable_here: "&cNon c'è abbastanza spazio per creare un muro di protezione."
+      destroyed_in: "&cIl muro di protezione si distruggerà in &f%time% secondi."
+      created_unbreakable: "&aMuro di protezione indistruttibile creato!"
+      created: "&aIl muro di protezione è stato creato e si distruggerà in &f%time% &asecondi."
     tnt_sheep:
-      no_target_found: "&cNo target found!"
+      no_target_found: "&cBersaglio non trovato!"
     arror_blocker:
-      activated: "&aArrow blocker has been activated for %time% seconds!"
-      already_activated: "&cArrow blocker is already activated!"
-      ended: "&cArrow blocker is no longer activated!"
+      activated: "&aLa protezione dalle frecce è stata attivata per %time% secondi!"
+      already_activated: "&cLa protezione dalle frecce è già attiva!"
+      ended: "&cLa protezione dalle frecce è stata disattivata!"
     golem:
-      created: "&aGolem has been spawned."
+      created: "&aIl golem è stato generato."
 arena:
   status:
-    disabled: "&cDISABLED"
-    waiting: "&eWAITING"
-    running: "&aRUNNING"
+    disabled: "&cDISATTIVATO"
+    waiting: "&eIN ATTESA"
+    running: "&aIN GIOCO"
     rebuilding: "&eREBUILDING"
 signs:
   created: "&aSign was successfully created!"
