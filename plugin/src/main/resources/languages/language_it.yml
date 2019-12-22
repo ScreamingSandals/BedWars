@@ -72,18 +72,18 @@ game:
     team_selector:
       name: "%teamName% &7(&e%inTeam% &f/ &e%maxInTeam%&7)"
       lore: "&f---------------------"
-      lore_full: "&fTeam is full!"
-      lore_join: "Click to join the team!"
+      lore_full: "&fQuesto team è al completo!"
+      lore_join: "Clicca per unirti a questo team!"
   items:
-    leave: "&cLeave the game"
-    start_game: "&eStart game"
-    team_selector: "&aSelect team"
+    leave: "&cAbbandona la partita"
+    start_game: "&eAvvia la partita"
+    team_selector: "&aScegli un team"
   specials:
-    already_active: "&cYou already activated this!"
-    delay: "&cYou need to wait %time% seconds before using this item again!"
+    already_active: "&cGià attivo!"
+    delay: "&cDevi aspettare %time% secondi prima di poter utilizzare questo oggeto di nuovo!"
     trap:
-      built: "&aYou've built a trap! Now wait for someone to get caught in it!"
-      caught: "&cYou got caught in trap of team &f%team%&c!"
+      built: "&aHai costruito una trappola! Ora aspetta che qualcuno ci cada!"
+      caught: "&cSei finito nella trappola del team &f%team%&c!"
       broadcast: "&f%player%&c got caught in your team's trap!"
     warp_powder:
       canceled: "&cTeleporting was canceled."
