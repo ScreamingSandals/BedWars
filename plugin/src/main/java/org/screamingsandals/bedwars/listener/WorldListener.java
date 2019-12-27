@@ -128,12 +128,12 @@ public class WorldListener implements Listener {
 
         for (String gameName : Main.getGameNames()) {
             Game game = Main.getGame(gameName);
-            if ((game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) && game.getOriginalOrInheritedPreventSpawningMobs()) {
-                if (GameCreator.isInArea(event.getLocation(), game.getPos1(), game.getPos2())) {
+            // prevent creature spawn everytime, not just in game
+            if (/*(game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) &&*/ game.getOriginalOrInheritedPreventSpawningMobs()) {   if (GameCreator.isInArea(event.getLocation(), game.getPos1(), game.getPos2())) {
                     event.setCancelled(true);
                     return;
-                }
-            } else if (game.getStatus() == GameStatus.WAITING) {
+                //}
+            } else /*if (game.getStatus() == GameStatus.WAITING) {*/
                 if (game.getLobbyWorld() == event.getLocation().getWorld()) {
                     if (event.getLocation().distanceSquared(game.getLobbySpawn()) <= Math
                             .pow(Main.getConfigurator().config.getInt("prevent-lobby-spawn-mobs-in-radius"), 2)) {
