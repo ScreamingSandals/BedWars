@@ -1,7 +1,7 @@
 ---
 lang_name: "Türkçe"
 prefix: "[BW]"
-item_shop_name: "Shop"
+item_shop_name: "Market"
 join: "%name% &ajoined the game!&r &7[&a%players%&7/&a%maxplayers%&7]"
 leave: "%name% &cleft the game!"
 game_already_running: "&cGame &7%arena% &cis already running! You can't join a running game!"
