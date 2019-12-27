@@ -87,44 +87,9 @@ public class Configurator {
         }
 
         AtomicBoolean modify = new AtomicBoolean(false);
-        checkOrSetConfig(modify, "locale", "en");
-        checkOrSetConfig(modify, "debug", false);
 
-        checkOrSetConfig(modify, "allow-crafting", false);
-        checkOrSetConfig(modify, "keep-inventory-on-death", false);
-        checkOrSetConfig(modify, "in-lobby-colored-leather-by-team", true);
-        checkOrSetConfig(modify, "jointeam-entity-show-name", true);
-        checkOrSetConfig(modify, "friendlyfire", false);
-        checkOrSetConfig(modify, "player-drops", true);
-        checkOrSetConfig(modify, "join-randomly-after-lobby-timeout", false);
-        checkOrSetConfig(modify, "prevent-killing-villagers", true);
-        checkOrSetConfig(modify, "compass-enabled", true);
-        checkOrSetConfig(modify, "join-randomly-on-lobby-join", false);
-        checkOrSetConfig(modify, "add-wool-to-inventory-on-join", true);
-        checkOrSetConfig(modify, "prevent-spawning-mobs", true);
-        checkOrSetConfig(modify, "spawner-holograms", true);
-        checkOrSetConfig(modify, "spawner-disable-merge", true);
-        checkOrSetConfig(modify, "prevent-lobby-spawn-mobs-in-radius", 16);
-        checkOrSetConfig(modify, "spawner-holo-height", 0.25);
-        checkOrSetConfig(modify, "spawner-holograms-countdown", true);
-        checkOrSetConfig(modify, "damage-when-player-is-not-in-arena", false);
-        checkOrSetConfig(modify, "remove-unused-target-blocks", true);
-        checkOrSetConfig(modify, "allow-block-falling", true);
-        checkOrSetConfig(modify, "game-start-items", false);
-        checkOrSetConfig(modify, "player-respawn-items", false);
-        checkOrSetConfig(modify, "gived-game-start-items", new ArrayList<>());
-        checkOrSetConfig(modify, "gived-player-respawn-items", new ArrayList<>());
-        checkOrSetConfig(modify, "disable-hunger", false);
-        checkOrSetConfig(modify, "automatic-coloring-in-shop", true);
-        checkOrSetConfig(modify, "sell-max-64-per-click-in-shop", true);
-        checkOrSetConfig(modify, "destroy-placed-blocks-by-explosion", true);
-        checkOrSetConfig(modify, "holo-above-bed", true);
-        checkOrSetConfig(modify, "allow-spectator-join", false);
-        checkOrSetConfig(modify, "disable-server-message.player-join", false);
-        checkOrSetConfig(modify, "disable-server-message.player-leave", false);
-        checkOrSetConfig(modify, "respawn-cooldown.enabled", true);
-        checkOrSetConfig(modify, "respawn-cooldown.time", 5);
-        checkOrSetConfig(modify, "stop-team-spawners-on-die", false);
+
+        checkOrSetConfig(modify, "damage-when-player-is-not-in-arena", false); //wtf is this
 
         checkOrSetConfig(modify, "allowed-commands", new ArrayList<>());
         checkOrSetConfig(modify, "change-allowed-commands-to-blacklist", false);

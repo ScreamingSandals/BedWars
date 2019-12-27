@@ -356,7 +356,6 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 
         I18n.load(this, configurator.config.getString("locale"));
 
-        PaperLib.suggestPaper(this);
 
         screamingCommands = new ScreamingCommands(this, Main.class, "org/screamingsandals/bedwars");
         screamingCommands.loadAllCommands();

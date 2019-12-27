@@ -1,0 +1,65 @@
+language: en #language code only
+debug: false
+
+game-features:
+  global:
+    automaticly-color-colorable-items: true # automatic-coloring-in-shop
+    allow-in-game-crafting: false # allow-crafting
+    allow-physics: true # allow-block-falling
+    allow-friendly-fire: false # friendlyfire
+    allow-item-drops-on-player-death: true #player-drops
+    prevent-players-from-hitting-villagers: true #prevent-killing-villagers
+    prevent-mobs-from-spawning-in-arena: true # prevent-spawning-mobs
+    prevent-mobs-from-spawning-in-lobby:
+      enabled: true
+      radius: 16 # prevent-lobby-spawn-mobs-in-radius
+    remove-target-blocks-of-empty-teams: true # remove-unused-target-blocks
+    keep-items-in-inventory-after-death: false # keep-inventory-on-death
+    disable-hunger-decreasing: false # disable-hunger
+    explosions:
+      destroy-placed-blocks-by-player: true # destroy-placed-blocks-by-explosion
+  spectators:
+    enabled: true
+    allow-join-to-game: true
+  player-respawn:
+    cooldown:
+      enabled: true
+      time: 5
+    protection:
+      enabled: false
+      time 5
+  lobby:
+    on-team-join:
+      give-leather-armor: true # in-lobby-colored-leather-by-team
+      give-colored-wool: true # add-wool-to-inventory-on-join
+    join-random-team-after-end-of-countdown: false # join-randomly-after-lobby-timeout
+    join-entity:
+      show-name: true #jointeam-entity-show-name
+  spawners:
+    holograms:
+      enable: true # spawner-holograms
+      height: 0.25 # spawner-holo-height
+      show-countdown-to-next-item-spawn: true # spawner-holograms-countdown
+    disable-item-merge: true # spawner-disable-merge
+    stop-spawning-if-team-is-dead: false # stop-team-spawners-on-die
+  target:
+    holograms: # holo-above-bed
+      enable: true
+      height: 0.25
+  shop:
+    max-stack-size: 64
+  give-items-to-player:
+    on-respawn:
+      enabled: true
+      items: []
+    on-game-start:
+      enabled: true
+      items: []
+
+
+
+server:
+  disable-server-messages:
+    player-join: false
+    player-leave: false
+version: 3
