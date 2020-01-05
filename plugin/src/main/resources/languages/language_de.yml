@@ -25,8 +25,8 @@ game:
         waiting: "&cDas Spiel beginnt in Kürze!"
         running: "&aDas Spiel startet! Viel Glück!"
     player:
-      already_running: "&cSpiel &7%arena% &cläuft bereits!"
-      full: "&cSpiel &7%arena% &cist voll!"
+      already_running: "&cSpiel &7%arena% &cläuft bereits! Du kannst kein laufendes Spiel betreten!"
+      full: "&cSpiel &7%arena% &cist voll! Bitte warte auf das Spielende!"
       rebuilding: "%arena% wird neu aufgebaut."
       vip:
         not_enough_players: "&cEs sind nicht genügend Spieler in der Arena!"
@@ -38,7 +38,7 @@ game:
         full: "&cTeam %team% ist voll!"
         you_won: "&aDein Team hat gewonnen!"
         you_lost: "&cDein Team hat verloren!"
-      vault_deposite: "&aAdded &7%coins% %currency%&a to your account!"
+      vault_deposite: "&7%coins% %currency%&a wurden zu deinem Konto hinzugefügt!"
       respawn_protection:
         remaining: "&aRespawn Schutz wird in &f%time% &aweg sein!"
         end: "&cRespawn Schutz ist weg!"
@@ -76,23 +76,23 @@ game:
       lore_join: "Klicke um dem Team beizutreten!"
   items:
     leave: "&cSpiel verlassen"
-    start_game: "&eStart game"
+    start_game: "&eSpiel starten"
     team_selector: "&aWähle dein Team"
   specials:
-    already_active: "&cYou already activated this!"
+    already_active: "&cDu hast dies bereits aktiviert!"
     delay: "&cDu musst %time% Sekunden warten, bevor du dieses Item wieder benutzen kannst!"
     trap:
       built: "&aDeine Falle wurde platziert!"
       caught: "&cDu wurdest in der Falle von Team &f%team% &cgefangen!"
       broadcast: "&f%player%&c wurde in der Falle deines Teams gefangen!"
     warp_powder:
-      canceled: "&cTeleporting was canceled."
-      started: "&aTeleporting.. Please don't move for &7%time%&a seconds!"
+      canceled: "&cTeleportieren wurde abgebrochen."
+      started: "&aTeleportiere.. Bitte bewegen dich nicht für &7%time%&a Sekunden!"
     tracker:
       no_one: "&cKein Ziel gefunden!"
       found: "&a&f%target% has been found &f%distance% &ablocks away!"
     rescue_platform:
-      not_in_air: "&cYou need to be in the air."
+      not_in_air: "&cDu musst in der Luft sein."
       destroyed_in: "&cPlattform wird in &f%time% &cSekunden zerstört."
       created_unbreakable: "&aUnzerstörbare Plattform wurde erstellt!"
       created: "&aPlattform ist erstellt und wird in &f%time% &aSekunden zerstört."
@@ -119,7 +119,7 @@ signs:
   created: "&aSchild wurde erstellt!"
   not_created: "&cSchild wurde nicht erstellt! Prüfe den Namen des Spiels!"
   cannot_destroy: "&cDu hast nicht die Berechtigung dieses Schild zu zerstören!"
-  game_not_exists: "&cThe game that is written on the sign doesn't exist! Please contact an admin!"
+  game_not_exists: "&cSpiel auf dem Schild existiert nicht. Bitte kontaktiere einen Admin!"
   status:
     disabled:
       line1: "&cSpiel"
@@ -134,7 +134,7 @@ signs:
       line1: "&6Wartend"
       line2: "&a%players%&8/&a%maxplayers%"
 holograms:
-  not_enabled: "&cHolograms are disabled."
+  not_enabled: "&cHologramme sind deaktiviert."
   holo_removed: "&aHologram has been &lsuccessfully &aremoved!"
   game:
     beds:
