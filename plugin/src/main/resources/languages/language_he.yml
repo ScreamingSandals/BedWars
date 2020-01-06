@@ -64,8 +64,8 @@ game:
     iron: "ברזל"
     gold: "זהב"
   spawners:
-    countdown: "&e%seconds% &bseconds"
-    every_second: "&bevery second"
+    countdown: "שניותe%seconds% &b&"
+    every_second: "כל שנייהb&"
     depleted: "§c§lSpawner is depleted"
     not_enough_levels: "§cSpawner can't work! You need to upgrade by %levels% levels."
   guis:
