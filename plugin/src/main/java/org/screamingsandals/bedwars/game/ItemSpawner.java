@@ -96,6 +96,7 @@ public class ItemSpawner implements org.screamingsandals.bedwars.api.game.ItemSp
     		if (!spawnerIsFullHologram || currentLevelOnHologram != currentLevel) {
     			spawnerIsFullHologram = true;
     			currentLevelOnHologram = currentLevel; 
+                        if (countdown != null)
     			countdown.setLine(1, i18nonly("spawner_not_enough_level").replace("%levels%", String.valueOf((currentLevelOnHologram * (-1)) + 1)));
     		}
     		return 0;
@@ -121,6 +122,7 @@ public class ItemSpawner implements org.screamingsandals.bedwars.api.game.ItemSp
     	if (spawned >= maxSpawnedResources) {
     		if (countdown != null && !spawnerIsFullHologram) {
         		spawnerIsFullHologram = true;
+                        if (countdown != null)
     			countdown.setLine(1, i18nonly("spawner_is_full"));
     		}
     		return 0;
@@ -132,6 +134,7 @@ public class ItemSpawner implements org.screamingsandals.bedwars.api.game.ItemSp
     			spawnerIsFullHologram = false;
     		} else if ((calculated + spawned) == maxSpawnedResources) {
         		spawnerIsFullHologram = true;
+                        if (countdown != null)
     			countdown.setLine(1, i18nonly("spawner_is_full"));
     		}
     		return calculated;
