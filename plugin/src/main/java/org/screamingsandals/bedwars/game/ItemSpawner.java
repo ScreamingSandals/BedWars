@@ -122,7 +122,6 @@ public class ItemSpawner implements org.screamingsandals.bedwars.api.game.ItemSp
     	if (spawned >= maxSpawnedResources) {
     		if (countdown != null && !spawnerIsFullHologram) {
         		spawnerIsFullHologram = true;
-                        if (countdown != null)
     			countdown.setLine(1, i18nonly("spawner_is_full"));
     		}
     		return 0;
