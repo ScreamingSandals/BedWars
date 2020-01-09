@@ -75,7 +75,7 @@ public class StatsCommand extends BaseCommand {
         player.sendMessage(i18n("statistics_deaths", false).replace("%deaths%",
                 Integer.toString(statistic.getDeaths() + statistic.getCurrentDeaths())));
         player.sendMessage(i18n("statistics_kd", false).replace("%kd%",
-                Double.toString(statistic.getKD() + statistic.getCurrentKD())));
+                Double.toString(statistic.getCurrentKD())));
         player.sendMessage(i18n("statistics_wins", false).replace("%wins%",
                 Integer.toString(statistic.getWins() + statistic.getCurrentWins())));
         player.sendMessage(i18n("statistics_loses", false).replace("%loses%",
