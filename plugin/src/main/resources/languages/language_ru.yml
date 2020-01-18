@@ -45,7 +45,7 @@ vip_game_is_full: "&cАрена &7%arena% &cзаполнена VIP игрока�
 buy_succes: "&aУспешно куплен предмет &7%item%&a за &7%material%&a!"
 buy_failed: "&cНедостаточно материалов для покупки предмета &7%item%&c! Нужно &7%material%&c!"
 compass_selector_team: "&aВыбрать команду"
-leave_from_game_item: "&cПокинуть игры"
+leave_from_game_item: "&cПокинуть игру"
 start_game_item: "&2Начать игру"
 team_selection_name: "Выбор команды - %arena%"
 team_selected: "&aВыбрана команда: %team%&r &7[&a%players%&7/&a%maxplayers%&7]"
