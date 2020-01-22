@@ -49,15 +49,15 @@ game:
       chests:
         name: "&a&lTakım sandığı"
         not_yours: "&eBu takım sandığı senin değil!"
-        placed: "&aNew team chest was placed!"
-        broken: "&cYour team chest was broken!"
+        placed: "&aYeni takım sandığı yerleştirildi!"
+        broken: "&cTakım sandığın kırıldı!"
   shop:
     succes: "&aSuccessfully purchased &7%item%&a for &7%material%&a!"
     failed: "&cLack of material to buy &7%item%&c! Needed &7%material%&c!"
     price: "Fiyat:"
     amount: "Miktar:"
     page_back: "Geri sayfa"
-    page_forward: "Ileri sayfa"
+    page_forward: "İleri sayfa"
     category_back: "kategori listesine geri dön"
   resources:
     bronze: "Bronz"
@@ -67,7 +67,7 @@ game:
     countdown: "&e%seconds% &bsaniye"
     every_second: "&bher saniye"
     depleted: "§c§lSpawner tükendi"
-    not_enough_levels: "§cSpawner can't work! You need to upgrade by %levels% levels."
+    not_enough_levels: "§cSpawner çalışamaz! %levels% seviyeye yükseltmeniz gerekiyor."
   guis:
     team_selector:
       name: "%teamName% &7(&e%inTeam% &f/ &e%maxInTeam%&7)"
@@ -122,10 +122,10 @@ signs:
   game_not_exists: "&cThe game that is written on the sign doesn't exist! Please contact an admin!"
   status:
     disabled:
-      line1: "&cGame"
+      line1: "&cOyun"
       line2: "&cdisabled"
     rebuilding:
-      line1: "&cGame"
+      line1: "&cOyun"
       line2: "&6rebuilding"
     running:
       line1: "&aRunning"
@@ -204,18 +204,18 @@ commands:
         min_players: "&7Minimal players of the game: &r%minplayers%"
         countdown_time: "&7Countdown before the game starts: &f%time% s"
         game_length: "&7Length of the game: &f%time% s"
-        true_value: "&aTrue"
-        false_value: "&cFalse"
+        true_value: "&aDoğru"
+        false_value: "&cYanlış"
         inherit: "&eInherited from plugin configuration"
         teams:
-          header: "&7Teams:"
+          header: "&7Takımlar:"
           info: "- %team%&r (Maximal players in team: &7%maxplayers%&r)"
           spawn: "  &7Team spawn: &fXYZ: &7%x%&r/&7%y%&r/&7%z%"
           target: "  &7Target block: &fXYZ: &7%x%&r/&7%y%&r/&7%z%"
         spawners:
           header: "&7Spawners:"
           info: "- %resource% &7- %team% &7- &eHolo: &f%holo% &7- XYZ: &7%x%&r/&7%y%&r/&7%z%"
-          no_team: "no team"
+          no_team: "takım yok"
         stores:
           header: "&7Stores:"
           position: "- XYZ: &7%x%&r/&7%y%&r/&7%z%"
