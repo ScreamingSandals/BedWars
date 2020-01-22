@@ -1,9 +1,9 @@
 ---
 lang_name: "Türkçe"
-prefix: "&7[&fBed&4Wars&7]&r"
+prefix: "&7[&fYatak &4Savaşları&7]&r"
 item_shop_name: "Market"
 plugin:
-  version_info: "Version: %version%"
+  version_info: "Sürüm: %version%"
 game:
   info:
     global:
