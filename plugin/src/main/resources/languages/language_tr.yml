@@ -7,8 +7,8 @@ plugin:
 game:
   info:
     global:
-      joined: "%name% &ajoined the game!&r &7[&a%players%&7/&a%maxplayers%&7]"
-      leaved: "%name% &cleft the game!"
+      joined: "%name% &aoyuna katıldı!&r &7[&a%players%&7/&a%maxplayers%&7]"
+      leaved: "%name% &coyundan ayrıldı!"
       game_win: "&aTeam &r%team%&a won game in &7%time%"
       game_end: "&cGame ended! Thanks for playing!"
       players:
@@ -339,5 +339,5 @@ commands:
       invalid_bar_color: "&cWrong color for Boss Bar!"
       bar_color_set: "&aColor set to &7%color%&a for bossbar &7%type%&a!"
       wrong_living_entity_type: "&cWrong living entity type!"
-      store_living_entity_type_set: "&aStore's living entity type has been set to &7%type%&a!"
-      upgrades: "&aUpgrades has been set to &7%bool%&a!"
+      store_living_entity_type_set: "&aMarketin canlı varlık türü &7%type% &aolarak ayarlandı!"
+      upgrades: "&aYükseltmeler &7%bool% &aolarak ayarlandı!"
