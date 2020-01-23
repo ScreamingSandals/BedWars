@@ -16,11 +16,11 @@ game:
         killed: "&cOyuncu %killer% &cöldürdü %victim%&c!"
       titles:
         start: "&aOyun başladı!"
-        start_subtitle: "&aGame &7%arena%&a has started! Enjoy the game!"
-        bed_is_destroyed: "Bed of %team%&r is destroyed!"
-        target_is_destroyed: "Target block of %team%&r is destroyed!"
-        bed_is_destroyed_subtitle: "You can now kill the team members!"
-        bed_is_destroyed_subtitle_for_victim: "Now you will never be respawned!"
+        start_subtitle: "&aOyun &7%arena%&a başladı! Oyunun tadını Çıkar!"
+        bed_is_destroyed: "%team%&r takımın yatağı yok edildi!"
+        target_is_destroyed: "%team%&r takımın hedef bloğu yok edildi!"
+        bed_is_destroyed_subtitle: "Artık ekip üyelerini öldürebilirsiniz!"
+        bed_is_destroyed_subtitle_for_victim: "Artık asla yeniden doğmayacaksınız!"
       bossbar:
         waiting: "&cOyun kısa süre içinde başlayacak!"
         running: "&aOyun başladı! İyi şanslar!"
@@ -29,9 +29,9 @@ game:
       full: "&cGame &7%arena% &cis full! Please wait for game end!"
       rebuilding: "Game %arena% is rebuilding now."
       vip:
-        not_enough_players: "&cNot enough players in arena!"
+        not_enough_players: "&cArenada yeterince oyuncu yok!"
         full: "&cGame &7%arena% &cis full of VIP players. Please wait for game end!"
-        kicked_by_vip: "&cYou were kicked by VIP player!"
+        kicked_by_vip: "&cVIP oyuncusu tarafından atıldınız!"
       team:
         selected: "&aSelected team: %team%&r &7[&a%players%&7/&a%maxplayers%&7]"
         already_selected: "&aYou are already in team: %team%&r &7[&a%players%&7/&a%maxplayers%&7]"
@@ -43,7 +43,7 @@ game:
         remaining: "&aRespawn protection will be gone in &f%time% &aseconds!"
         end: "&cRespawn protection is gone!"
       respawn_cooldown:
-        title: "&aRespawn in: &c%time%"
+        title: "&aYeniden doğacaksınız &c%time% &aiçinde"
         title_cancel: "&cTakım öldü :("
         respawned: "&aYeniden canlandın!"
       chests:
