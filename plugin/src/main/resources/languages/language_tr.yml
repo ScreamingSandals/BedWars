@@ -126,12 +126,12 @@ signs:
       line2: "&cdevre dışı"
     rebuilding:
       line1: "&cOyun"
-      line2: "&6rebuilding"
+      line2: "&6yeniden inşa ediliyor"
     running:
-      line1: "&aRunning"
+      line1: "&aYürütülüyor"
       line2: "&c%players%&8/&c%maxplayers%"
     waiting:
-      line1: "&6Waiting"
+      line1: "&6Bekleniyor"
       line2: "&a%players%&8/&a%maxplayers%"
 holograms:
   not_enabled: "&cHolograms are disabled."
@@ -165,7 +165,7 @@ commands:
   leave:
     not_in_game: "&cYou are not in game!"
   list:
-    header: "&aAvailable arenas:"
+    header: "&aMevcut arenalar:"
   main_lobby:
     info: "&cWARNING&f: You need to execute /bw reload to make Mainlobby work!"
   rejoin:
@@ -190,7 +190,7 @@ commands:
     usage: "&cUsage: &f/bw admin <arena> <add|edit|remove|save|...> ..."
     arena:
       errors:
-        not_found: "&cArena not found!"
+        not_found: "&cArena bulunamadı!"
         not_in_edit_mode: "&cArena must be in edit mode!"
       info:
         header: "&aDetails of the arena:"
@@ -219,17 +219,17 @@ commands:
         stores:
           header: "&7Stores:"
           position: "- XYZ: &7%x%&r/&7%y%&r/&7%z%"
-          entity_type: "  Type: &a%type%"
+          entity_type: "  Tür: &a%type%"
           custom_shop: "  Has own shop: &7%bool%"
           name: "  Shop name: &6%file%&r (inherit from main: &7%bool%&r)"
           name_above: "  Custom name above head: &6%name%&r"
-          no_name_above: "&cNo name is set"
+          no_name_above: "&cİsim belirlenmedi"
         config:
           header: "&7Constants configuration:"
           constant: "- &7%constant%&r: &7%value%"
     add:
-      added: "&aArena added!"
-      already_exists: "&cArena already exists!"
+      added: "&aArena eklendi!"
+      already_exists: "&cArena zaten var!"
       not_saved: "&cArena already exists but it's not saved!"
     remove:
       removed: "&c&lArena removed!"
