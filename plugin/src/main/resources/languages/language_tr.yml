@@ -76,20 +76,20 @@ game:
       lore_join: "Takıma katılmak için tıklayın!"
   items:
     leave: "&cOyundan ayrıl"
-    start_game: "&eStart game"
+    start_game: "&eOyun başlat"
     team_selector: "&aTakım seç"
   specials:
-    already_active: "&cYou already activated this!"
+    already_active: "&cBu zaten etkinleştirilmiş!"
     delay: "&cYou need to wait %time% seconds before using this item again!"
     trap:
       built: "&aYou've built a trap! Now wait for someone to get caught in it!"
       caught: "&cYou got caught in trap of team &f%team%&c!"
       broadcast: "&f%player%&c got caught in your team's trap!"
     warp_powder:
-      canceled: "&cTeleporting was canceled."
+      canceled: "&cIşınlanma iptal edildi."
       started: "&aTeleporting.. Please don't move for &7%time%&a seconds!"
     tracker:
-      no_one: "&cNo target found!"
+      no_one: "&cHiçbir hedef bulunamadı!"
       found: "&f%target% &ahas been found &f%distance% &ablocks away!"
     rescue_platform:
       not_in_air: "&cYou need to be in the air."
@@ -108,22 +108,22 @@ game:
       already_activated: "&cArrow blocker is already activated!"
       ended: "&cArrow blocker is no longer activated!"
     golem:
-      created: "&aGolem has been spawned."
+      created: "&aGolem doğdu."
 arena:
   status:
-    disabled: "&cDISABLED"
-    waiting: "&eWAITING"
-    running: "&aRUNNING"
-    rebuilding: "&eREBUILDING"
+    disabled: "&cDEVRE DIŞI"
+    waiting: "&eBEKLENİYOR"
+    running: "&aYÜRÜTÜLÜYOR"
+    rebuilding: "&eYENİDEN İNŞA EDİLİYOR"
 signs:
-  created: "&aSign was successfully created!"
+  created: "&aTabela başarıyla oluşturuldu!"
   not_created: "&cSign couldn't be created! Please check the name of the arena!"
   cannot_destroy: "&cYou don't have permissions to destroy this sign!"
   game_not_exists: "&cThe game that is written on the sign doesn't exist! Please contact an admin!"
   status:
     disabled:
       line1: "&cOyun"
-      line2: "&cdisabled"
+      line2: "&cdevre dışı"
     rebuilding:
       line1: "&cOyun"
       line2: "&6rebuilding"
