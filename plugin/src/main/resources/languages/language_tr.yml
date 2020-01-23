@@ -27,7 +27,7 @@ game:
     player:
       already_running: "&cGame &7%arena% &cis already running! You can't join a running game!"
       full: "&cGame &7%arena% &cis full! Please wait for game end!"
-      rebuilding: "Game %arena% is rebuilding now."
+      rebuilding: "Oyun %arena% şimdi yeniden inşa ediliyor."
       vip:
         not_enough_players: "&cArenada yeterince oyuncu yok!"
         full: "&cGame &7%arena% &cis full of VIP players. Please wait for game end!"
@@ -41,7 +41,7 @@ game:
       vault_deposite: "&aAdded &7%coins% %currency%&a to your account!"
       respawn_protection:
         remaining: "&aRespawn protection will be gone in &f%time% &aseconds!"
-        end: "&cRespawn protection is gone!"
+        end: "&cYeniden doğma koruması gitti!"
       respawn_cooldown:
         title: "&aYeniden doğacaksınız &c%time% &aiçinde"
         title_cancel: "&cTakım öldü :("
@@ -92,7 +92,7 @@ game:
       no_one: "&cHiçbir hedef bulunamadı!"
       found: "&f%target% &ahas been found &f%distance% &ablocks away!"
     rescue_platform:
-      not_in_air: "&cYou need to be in the air."
+      not_in_air: "&cHavada olmalısın."
       destroyed_in: "&cPlatform will be destroyed in &f%time% &cseconds."
       created_unbreakable: "&aUnbreakable Platform was created!"
       created: "&aPlatform is created and will be destroyed in &f%time% &aseconds."
