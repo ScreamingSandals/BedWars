@@ -135,7 +135,7 @@ signs:
       line2: "&a%players%&8/&a%maxplayers%"
 holograms:
   not_enabled: "&cHologramme sind deaktiviert."
-  holo_removed: "&aHologram has been &lsuccessfully &aremoved!"
+  holo_removed: "&aDas Hologramm wurde&l erfolgreich &agelöscht!"
   game:
     beds:
       protect_your_bed: "%teamcolor%&lSchütze dein Bett!"
@@ -152,25 +152,25 @@ commands:
     unknown_usage: "&cAnzahl der Argumente stimmt nicht mit der richtigen Anzahl oder unbekannten Argumenten überein! Geben Sie &4/bw Hilfe &cfür Hilfe ein!"
     no_permissions: "&cDu hast nicht die Berechtigung das zu tun!"
     not_allowed: "&cDieser Befehl ist während des Spiels nicht verfügbar!"
-    not_for_console: "&cThis command is not supported for the console."
+    not_for_console: "&cDieser Command wird nicht von der Console unterstützt."
   holograms:
-    added: "&aHologram has been added to your position!"
-    click_to_remove: "&eNow click the &ahologram &eyou want to remove!"
+    added: "&aDas Hologramm wurde an deine Position gesetzt!"
+    click_to_remove: "&eKlicke nun das &aHologramm&e, welches &edu entfernen möchtest, an!"
   auto_join:
     already_in_game: "&cDu bist bereits in einem Spiel."
-    no_empty_game: "&cThere's no game empty game!"
+    no_empty_game: "&cEs gibt derzeit keine aktiven Spiele!"
   join:
     already_in_game: "&cDu bist bereits in einem Spiel."
     not_found: "&cArena existiert nicht!"
   leave:
-    not_in_game: "&cYou are not in game!"
+    not_in_game: "&cDu bist derzeit in keinem Spiel!"
   list:
-    header: "&aAvailable arenas:"
+    header: "&aVerfügbare Spiele:"
   main_lobby:
     info: "&cWARNUNG&f: Du musst /bw reload ausführen, um Mainlobby zum Laufen zu bringen!"
   rejoin:
     already_in_game: "&cDu bist bereits in einem Spiel."
-    no_game_found: "&cNo previous game found."
+    no_game_found: "&cKein vorheriges Spiel gefunden."
   reload:
     safe: "&aWaiting for safe stop of all games or for 60 seconds before reload!"
     failed: "&cEinige Spiele sind nicht innerhalb des Zeit-Limits geendet, also könnte deren Arena beschädigt sein!"
