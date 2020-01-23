@@ -338,6 +338,6 @@ commands:
       arena_weather_set: "&aArena's world weather has been set to &7%weather%&a!"
       invalid_bar_color: "&cWrong color for Boss Bar!"
       bar_color_set: "&aColor set to &7%color%&a for bossbar &7%type%&a!"
-      wrong_living_entity_type: "&cWrong living entity type!"
+      wrong_living_entity_type: "&cYanlış varlık türü!"
       store_living_entity_type_set: "&aMarketin canlı varlık türü &7%type% &aolarak ayarlandı!"
       upgrades: "&aYükseltmeler &7%bool% &aolarak ayarlandı!"
