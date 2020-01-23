@@ -161,7 +161,7 @@ commands:
     no_empty_game: "&cThere's no game empty game!"
   join:
     already_in_game: "&cDu bist bereits in einem Spiel."
-    not_found: "&cArena does not exists!"
+    not_found: "&cArena existiert nicht!"
   leave:
     not_in_game: "&cYou are not in game!"
   list:
@@ -190,7 +190,7 @@ commands:
     usage: "&cUsage: &f/bw admin <arena> <add|edit|remove|save|...> ..."
     arena:
       errors:
-        not_found: "&cArena not found!"
+        not_found: "&cArena nicht gefunden!"
         not_in_edit_mode: "&cSpiel muss sich im edit-Modus befinden: &7/bw admin <Spiel> edit!"
       info:
         header: "&aDetails des Spiels:"
@@ -201,7 +201,7 @@ commands:
         pos2: "&7Position 2: &fXYZ: &7%x%&r/&7%y%&r/&7%z%"
         spectator: "&7Zuschauerposition: &fXYZ: &7%x%&r/&7%y%&r/&7%z%"
         lobby: "&7Lobbyposition: &fSvět: &7%world% &fXYZ: &7%x%&r/&7%y%&r/&7%z%"
-        min_players: "&7Minimal players of the game: &r%minplayers%"
+        min_players: "&7Minimale Spieler des Spiels: &r%minplayers%"
         countdown_time: "&7Countdown vor Spielstart: &f%time% s"
         game_length: "&7Länge des Spiels: &f%time% s"
         true_value: "&aJa"
