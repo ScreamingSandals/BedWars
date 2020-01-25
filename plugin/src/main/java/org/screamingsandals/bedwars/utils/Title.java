@@ -1,7 +1,7 @@
 package org.screamingsandals.bedwars.utils;
 
 import org.screamingsandals.bedwars.Main;
-import misat11.lib.nms.NMSUtils;
+import org.screamingsandals.lib.nms.NMSUtils;
 import org.bukkit.entity.Player;
 
 public class Title {

@@ -1,6 +1,5 @@
 package org.screamingsandals.bedwars.game;
 
-import misat11.lib.nms.Hologram;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -10,6 +9,7 @@ import org.bukkit.inventory.Inventory;
 import org.screamingsandals.bedwars.api.RunningTeam;
 import org.screamingsandals.bedwars.api.TeamColor;
 import org.screamingsandals.bedwars.api.game.Game;
+import org.screamingsandals.lib.nms.holograms.Hologram;
 
 import java.util.ArrayList;
 import java.util.List;

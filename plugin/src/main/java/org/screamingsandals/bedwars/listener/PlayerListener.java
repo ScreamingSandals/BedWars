@@ -1,6 +1,5 @@
 package org.screamingsandals.bedwars.listener;
 
-import misat11.lib.nms.NMSUtils;
 import net.milkbowl.vault.chat.Chat;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -37,6 +36,7 @@ import org.screamingsandals.bedwars.game.*;
 import org.screamingsandals.bedwars.inventories.TeamSelectorInventory;
 import org.screamingsandals.bedwars.statistics.PlayerStatistic;
 import org.screamingsandals.bedwars.utils.*;
+import org.screamingsandals.lib.nms.NMSUtils;
 
 import java.util.ArrayList;
 import java.util.Iterator;

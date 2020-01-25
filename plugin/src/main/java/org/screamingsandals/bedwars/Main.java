@@ -1,7 +1,6 @@
 package org.screamingsandals.bedwars;
 
 import misat11.lib.lang.I18n;
-import misat11.lib.nms.NMSUtils;
 import misat11.lib.sgui.InventoryListener;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
@@ -39,6 +38,8 @@ import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.bedwars.utils.BedWarsSignOwner;
 import org.screamingsandals.bedwars.config.Configurator;
 import org.screamingsandals.lib.debug.Debug;
+import org.screamingsandals.lib.nms.holograms.HologramManager;
+import org.screamingsandals.lib.nms.utils.ClassStorage;
 import org.screamingsandals.lib.signmanager.SignListener;
 import org.screamingsandals.lib.signmanager.SignManager;
 
@@ -69,6 +70,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
     private SpigetUpdate spigetUpdate;
     private ColorChanger colorChanger;
     private SignManager signManager;
+    private HologramManager manager;
     public static List<String> autoColoredMaterials = new ArrayList<>();
 
     static {
@@ -310,14 +312,18 @@ public class Main extends JavaPlugin implements BedwarsAPI {
     public static SignManager getSignManager() {
     	return instance.signManager;
     }
+    
+    public static HologramManager getHologramManager() {
+    	return instance.manager;
+    }
 
     public void onEnable() {
         instance = this;
         version = this.getDescription().getVersion();
         snapshot = version.toLowerCase().contains("pre") || version.toLowerCase().contains("snapshot");
-        isNMS = NMSUtils.NMS_BASED_SERVER;
-        nmsVersion = NMSUtils.NMS_VERSION;
-        isSpigot = NMSUtils.IS_SPIGOT_SERVER;
+        isNMS = ClassStorage.NMS_BASED_SERVER;
+        nmsVersion = ClassStorage.NMS_VERSION;
+        isSpigot = ClassStorage.IS_SPIGOT_SERVER;
         colorChanger = new org.screamingsandals.bedwars.utils.ColorChanger();
 
         try {
@@ -408,7 +414,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         getServer().getPluginManager().registerEvents(new WorldListener(), this);
         getServer().getPluginManager().registerEvents(new InventoryListener(), this);
 
-        NMSUtils.init(this);
+        this.manager = new HologramManager(this);
 
         SpecialRegister.onEnable(this);
 

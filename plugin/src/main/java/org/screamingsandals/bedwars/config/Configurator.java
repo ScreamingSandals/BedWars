@@ -53,12 +53,7 @@ public class Configurator {
         }
         /* Move this out of Configurator */
         if (!shopFile.exists()) {
-            if (Main.isLegacy()) {
-                main.saveResource("shop_legacy.yml", false);
-                new File(dataFolder, "shop_legacy.yml").renameTo(shopFile);
-            } else {
-                main.saveResource("shop.yml", false);
-            }
+            main.saveResource("shop.yml", false);
         }
         if (!signsFile.exists()) {
             try {

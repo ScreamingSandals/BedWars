@@ -5,7 +5,7 @@ import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.api.Team;
 import org.screamingsandals.bedwars.game.TeamColor;
 import org.screamingsandals.bedwars.utils.MiscUtils;
-import misat11.lib.nms.NMSUtils;
+import org.screamingsandals.lib.nms.NMSUtils;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.entity.*;
@@ -74,7 +74,8 @@ public class TNTSheep extends SpecialItem implements org.screamingsandals.bedwar
         }
 
         entity = sheep;
-        NMSUtils.makeMobAttackTarget(sheep, speed, followRange, 0).attackTarget(target);
+        NMSUtils.makeMobAttackTarget(sheep, speed, followRange, 0)
+        	.getTargetSelector().attackTarget(target);
 
         tnt = (TNTPrimed) loc.getWorld().spawnEntity(loc, EntityType.PRIMED_TNT);
         tnt.setFuseTicks(explosionTime);

@@ -2,9 +2,9 @@ package org.screamingsandals.bedwars.utils;
 
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.game.Game;
+import org.screamingsandals.lib.nms.NMSUtils;
 import org.screamingsandals.bedwars.api.events.BedwarsPostSpawnEffectEvent;
 import org.screamingsandals.bedwars.api.events.BedwarsPreSpawnEffectEvent;
-import misat11.lib.nms.NMSUtils;
 import org.bukkit.Effect;
 import org.bukkit.FireworkEffect;
 import org.bukkit.configuration.ConfigurationSection;

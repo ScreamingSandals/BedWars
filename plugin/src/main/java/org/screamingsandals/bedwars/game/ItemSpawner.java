@@ -1,8 +1,7 @@
 package org.screamingsandals.bedwars.game;
 
 import org.screamingsandals.bedwars.api.Team;
-
-import misat11.lib.nms.Hologram;
+import org.screamingsandals.lib.nms.holograms.Hologram;
 
 import static misat11.lib.lang.I.i18nonly;
 
@@ -93,10 +92,9 @@ public class ItemSpawner implements org.screamingsandals.bedwars.api.game.ItemSp
     
     public int nextMaxSpawn(int calculated, Hologram countdown) {
     	if (currentLevel <= 0) {
-    		if (!spawnerIsFullHologram || currentLevelOnHologram != currentLevel) {
+    		if (countdown != null && (!spawnerIsFullHologram || currentLevelOnHologram != currentLevel)) {
     			spawnerIsFullHologram = true;
     			currentLevelOnHologram = currentLevel; 
-                        if (countdown != null)
     			countdown.setLine(1, i18nonly("spawner_not_enough_level").replace("%levels%", String.valueOf((currentLevelOnHologram * (-1)) + 1)));
     		}
     		return 0;
@@ -131,9 +129,8 @@ public class ItemSpawner implements org.screamingsandals.bedwars.api.game.ItemSp
     		if (spawnerIsFullHologram && !rerenderHologram) {
     			rerenderHologram = true;
     			spawnerIsFullHologram = false;
-    		} else if ((calculated + spawned) == maxSpawnedResources) {
+    		} else if (countdown != null && (calculated + spawned) == maxSpawnedResources) {
         		spawnerIsFullHologram = true;
-                        if (countdown != null)
     			countdown.setLine(1, i18nonly("spawner_is_full"));
     		}
     		return calculated;

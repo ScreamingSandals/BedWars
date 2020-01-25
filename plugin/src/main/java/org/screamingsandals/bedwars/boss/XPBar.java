@@ -1,7 +1,7 @@
 package org.screamingsandals.bedwars.boss;
 
-import misat11.lib.nms.NMSUtils;
 import org.bukkit.entity.Player;
+import org.screamingsandals.lib.nms.NMSUtils;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -2,8 +2,6 @@ package org.screamingsandals.bedwars.game;
 
 import com.onarandombox.MultiverseCore.api.Core;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
-import misat11.lib.nms.Hologram;
-import misat11.lib.nms.NMSUtils;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -50,6 +48,8 @@ import org.screamingsandals.bedwars.region.FlatteningRegion;
 import org.screamingsandals.bedwars.region.LegacyRegion;
 import org.screamingsandals.bedwars.statistics.PlayerStatistic;
 import org.screamingsandals.bedwars.utils.*;
+import org.screamingsandals.lib.nms.NMSUtils;
+import org.screamingsandals.lib.nms.holograms.Hologram;
 import org.screamingsandals.lib.signmanager.SignBlock;
 
 import java.io.File;
@@ -862,7 +862,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 		game.removeUnusedTargetBlocks = readBooleanConstant(
 			configMap.getString("constant." + REMOVE_UNUSED_TARGET_BLOCKS, "inherit"));
 		game.allowBlockFalling = readBooleanConstant(
-			configMap.getString("constants." + ALLOW_BLOCK_FALLING, "inherit"));
+			configMap.getString("constant." + ALLOW_BLOCK_FALLING, "inherit"));
 		game.holoAboveBed = readBooleanConstant(configMap.getString("constant." + HOLO_ABOVE_BED, "inherit"));
 		game.spectatorJoin = readBooleanConstant(configMap.getString("constant." + SPECTATOR_JOIN, "inherit"));
 
@@ -1010,7 +1010,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 		configMap.set("constant." + DAMAGE_WHEN_PLAYER_IS_NOT_IN_ARENA,
 			writeBooleanConstant(damageWhenPlayerIsNotInArena));
 		configMap.set("constant." + REMOVE_UNUSED_TARGET_BLOCKS, writeBooleanConstant(removeUnusedTargetBlocks));
-		configMap.set("constants." + ALLOW_BLOCK_FALLING, writeBooleanConstant(allowBlockFalling));
+		configMap.set("constant." + ALLOW_BLOCK_FALLING, writeBooleanConstant(allowBlockFalling));
 		configMap.set("constant." + HOLO_ABOVE_BED, writeBooleanConstant(holoAboveBed));
 		configMap.set("constant." + SPECTATOR_JOIN, writeBooleanConstant(spectatorJoin));
 
@@ -1555,7 +1555,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 							if (spawner.getHologramEnabled()) {
 								Location loc = spawner.loc.clone().add(0,
 									Main.getConfigurator().config.getDouble("spawner-holo-height", 0.25), 0);
-								Hologram holo = NMSUtils.spawnHologram(getConnectedPlayers(), loc,
+								Hologram holo = Main.getHologramManager().spawnHologram(getConnectedPlayers(), loc,
 									spawner.type.getItemBoldName());
 								createdHolograms.add(holo);
 								if (getOriginalOrInheritedSpawnerHologramsCountdown()) {
@@ -1630,12 +1630,12 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 							boolean isBlockTypeBed = region.isBedBlock(bed.getState());
 							List<Player> enemies = getConnectedPlayers();
 							enemies.removeAll(team.getConnectedPlayers());
-							Hologram holo = NMSUtils.spawnHologram(enemies, loc,
+							Hologram holo = Main.getHologramManager().spawnHologram(enemies, loc,
 								i18nonly(isBlockTypeBed ? "destroy_this_bed" : "destroy_this_target")
 									.replace("%teamcolor%", team.teamInfo.color.chatColor.toString()));
 							createdHolograms.add(holo);
 							team.setBedHolo(holo);
-							Hologram protectHolo = NMSUtils.spawnHologram(team.getConnectedPlayers(), loc,
+							Hologram protectHolo = Main.getHologramManager().spawnHologram(team.getConnectedPlayers(), loc,
 								i18nonly(isBlockTypeBed ? "protect_your_bed" : "protect_your_target")
 									.replace("%teamcolor%", team.teamInfo.color.chatColor.toString()));
 							createdHolograms.add(protectHolo);
