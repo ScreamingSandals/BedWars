@@ -95,6 +95,7 @@ public class GolemListener implements Listener {
         }
     }
 
+    @EventHandler
     public void onGolemDamage(EntityDamageByEntityEvent event) {
         if (!(event.getEntity() instanceof IronGolem)) {
             return;
@@ -129,8 +130,9 @@ public class GolemListener implements Listener {
         }
     }
 
+    @EventHandler
     public void onGolemTarget(EntityTargetEvent event) {
-        if (!(event.getEntity() instanceof IronGolem)) {
+    	if (!(event.getEntity() instanceof IronGolem)) {
             return;
         }
 
@@ -147,11 +149,11 @@ public class GolemListener implements Listener {
                                 Player player = (Player) event.getTarget();
                                 if (Main.isPlayerInGame(player)) {
                                     if (golem.getTeam() == game.getTeamOfPlayer(player)) {
-                                        event.setCancelled(true);
+                                    	event.setCancelled(true);
                                         // Try to find enemy
                                         Player playerTarget = MiscUtils.findTarget(game, player, golem.getFollowRange());
                                         if (playerTarget != null) {
-                                            // Oh. We found enemy!
+                                        	// Oh. We found enemy!
                                             ironGolem.setTarget(playerTarget);
                                         }
                                     } else {
