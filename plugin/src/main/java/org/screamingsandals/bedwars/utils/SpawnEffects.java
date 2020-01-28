@@ -2,7 +2,7 @@ package org.screamingsandals.bedwars.utils;
 
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.game.Game;
-import org.screamingsandals.lib.nms.NMSUtils;
+import org.screamingsandals.lib.nms.particles.Particles;
 import org.screamingsandals.bedwars.api.events.BedwarsPostSpawnEffectEvent;
 import org.screamingsandals.bedwars.api.events.BedwarsPreSpawnEffectEvent;
 import org.bukkit.Effect;
@@ -58,7 +58,7 @@ public class SpawnEffects {
                 double offsetZ = (double) effect.getOrDefault("offsetZ", 0);
                 double extra = (double) effect.getOrDefault("extra", 1);
 
-                NMSUtils.sendParticles(game.getConnectedPlayers(), value, player.getLocation(), count, offsetX, offsetY, offsetZ, extra);
+                Particles.sendParticles(game.getConnectedPlayers(), value, player.getLocation(), count, offsetX, offsetY, offsetZ, extra);
             }
         } else if (type.equalsIgnoreCase("Effect")) {
             if (effect.containsKey("value")) {

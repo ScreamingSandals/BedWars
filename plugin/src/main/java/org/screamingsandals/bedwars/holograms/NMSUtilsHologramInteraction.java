@@ -18,7 +18,7 @@ import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.statistics.PlayerStatistic;
 import org.screamingsandals.bedwars.commands.AdminCommand;
 import org.screamingsandals.lib.nms.holograms.Hologram;
-import org.screamingsandals.lib.nms.touch.TouchHandler;
+import org.screamingsandals.lib.nms.holograms.TouchHandler;
 
 public class NMSUtilsHologramInteraction implements IHologramInteraction, TouchHandler {
 

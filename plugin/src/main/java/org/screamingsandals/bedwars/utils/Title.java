@@ -1,7 +1,6 @@
 package org.screamingsandals.bedwars.utils;
 
 import org.screamingsandals.bedwars.Main;
-import org.screamingsandals.lib.nms.NMSUtils;
 import org.bukkit.entity.Player;
 
 public class Title {
@@ -10,6 +9,6 @@ public class Title {
         int stay = Main.getConfigurator().config.getInt("title.stay");
         int fadeOut = Main.getConfigurator().config.getInt("title.fadeOut");
 
-        NMSUtils.sendTitle(player, title, subtitle, fadeIn, stay, fadeOut);
+        org.screamingsandals.lib.nms.title.Title.sendTitle(player, title, subtitle, fadeIn, stay, fadeOut);
     }
 }
