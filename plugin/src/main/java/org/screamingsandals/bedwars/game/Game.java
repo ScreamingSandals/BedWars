@@ -48,7 +48,7 @@ import org.screamingsandals.bedwars.region.FlatteningRegion;
 import org.screamingsandals.bedwars.region.LegacyRegion;
 import org.screamingsandals.bedwars.statistics.PlayerStatistic;
 import org.screamingsandals.bedwars.utils.*;
-import org.screamingsandals.lib.nms.NMSUtils;
+import org.screamingsandals.lib.nms.entity.EntityUtils;
 import org.screamingsandals.lib.nms.holograms.Hologram;
 import org.screamingsandals.lib.signmanager.SignBlock;
 
@@ -1539,7 +1539,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 						LivingEntity villager = store.spawn();
 						if (villager != null) {
 							Main.registerGameEntity(villager, this);
-							NMSUtils.disableEntityAI(villager);
+							EntityUtils.disableEntityAI(villager);
 						}
 					}
 

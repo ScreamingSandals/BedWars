@@ -8,7 +8,7 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffect;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.utils.BungeeUtils;
-import org.screamingsandals.bedwars.utils.PaperUtils;
+import org.screamingsandals.lib.nms.entity.PlayerUtils;
 
 public class GamePlayer {
     public final Player player;
@@ -145,7 +145,7 @@ public class GamePlayer {
     }
 
     public void teleport(Location location) {
-        PaperUtils.teleport(player, location);
+    	PlayerUtils.teleportPlayer(player, location);
     }
 
 }

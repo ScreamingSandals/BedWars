@@ -36,7 +36,7 @@ import org.screamingsandals.bedwars.game.*;
 import org.screamingsandals.bedwars.inventories.TeamSelectorInventory;
 import org.screamingsandals.bedwars.statistics.PlayerStatistic;
 import org.screamingsandals.bedwars.utils.*;
-import org.screamingsandals.lib.nms.NMSUtils;
+import org.screamingsandals.lib.nms.entity.PlayerUtils;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -166,7 +166,7 @@ public class PlayerListener implements Listener {
                     }
                 }
             }
-            NMSUtils.respawn(Main.getInstance(), victim, 5L);
+            PlayerUtils.respawn(Main.getInstance(), victim, 5L);
             if (Main.getConfigurator().config.getBoolean("respawn-cooldown.enabled")
                     && victimTeam.isAlive()
                     && !gVictim.isSpectator) {

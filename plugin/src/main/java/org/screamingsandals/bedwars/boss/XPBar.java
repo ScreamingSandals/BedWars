@@ -1,7 +1,7 @@
 package org.screamingsandals.bedwars.boss;
 
 import org.bukkit.entity.Player;
-import org.screamingsandals.lib.nms.NMSUtils;
+import org.screamingsandals.lib.nms.entity.PlayerUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +18,7 @@ public class XPBar implements org.screamingsandals.bedwars.api.boss.XPBar {
         if (!players.contains(player)) {
             players.add(player);
             if (visible) {
-                NMSUtils.fakeExp(player, progress, seconds);
+                PlayerUtils.fakeExp(player, progress, seconds);
             }
         }
 
@@ -28,7 +28,7 @@ public class XPBar implements org.screamingsandals.bedwars.api.boss.XPBar {
     public void removePlayer(Player player) {
         if (players.contains(player)) {
             players.remove(player);
-            NMSUtils.fakeExp(player, player.getExp(), player.getLevel());
+            PlayerUtils.fakeExp(player, player.getExp(), player.getLevel());
         }
 
     }
@@ -43,7 +43,7 @@ public class XPBar implements org.screamingsandals.bedwars.api.boss.XPBar {
         this.progress = (float) progress;
         if (visible) {
             for (Player player : players) {
-                NMSUtils.fakeExp(player, this.progress, seconds);
+            	PlayerUtils.fakeExp(player, this.progress, seconds);
             }
         }
     }
@@ -68,11 +68,11 @@ public class XPBar implements org.screamingsandals.bedwars.api.boss.XPBar {
         if (this.visible != visible) {
             if (visible) {
                 for (Player player : players) {
-                    NMSUtils.fakeExp(player, progress, seconds);
+                	PlayerUtils.fakeExp(player, progress, seconds);
                 }
             } else {
                 for (Player player : players) {
-                    NMSUtils.fakeExp(player, player.getExp(), player.getLevel());
+                	PlayerUtils.fakeExp(player, player.getExp(), player.getLevel());
                 }
             }
         }
@@ -84,7 +84,7 @@ public class XPBar implements org.screamingsandals.bedwars.api.boss.XPBar {
         this.seconds = seconds;
         if (visible) {
             for (Player player : players) {
-                NMSUtils.fakeExp(player, this.progress, seconds);
+            	PlayerUtils.fakeExp(player, this.progress, seconds);
             }
         }
     }
