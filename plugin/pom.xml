@@ -97,7 +97,7 @@
 		<dependency>
 			<groupId>org.screamingsandals.lib.nms</groupId>
 			<artifactId>NMSUtils</artifactId>
-			<version>1.1.4</version>
+			<version>1.1.5</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
