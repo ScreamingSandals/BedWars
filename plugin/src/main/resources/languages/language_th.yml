@@ -85,7 +85,7 @@ admin_command_invalid_spawner_type: "&cSpawner ต้องเป็น บร�
 admin_command_invalid_spawner_level: "&fจำนวนเลเวลผิด, เลเวลพื้นฐาน 1 ถูกใช้แล้ว!"
 admin_command_invalid_color: "&cสีนี้ไม่ถูกต้อง!(ไม่มี)"
 admin_command_block_is_not_bed: "&cบล็อกเป้าหมายไม่ใช่เตียง!"
-admin_command_max_players_fail: "&cMax players count must be >= 1!"
+admin_command_max_players_fail: "&cจำนวนผู้เล่นสูงสุดต้องเป็น >= 1!"
 admin_command_need_min_2_teems: "&cThe game needs 2 or more teams!"
 admin_command_spawners_needed: "&cThe game must have >= 1 item spawner!"
 admin_command_team_is_not_exists: "&cThis team doesn't exist!"
