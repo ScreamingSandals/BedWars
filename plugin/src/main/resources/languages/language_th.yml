@@ -3,7 +3,7 @@ lang_name: "English"
 prefix: "&7[&fBed&4Wars&7]&r"
 item_shop_name: "ร้านค้า"
 plugin:
-  version_info: "Version: %version%"
+  version_info: "เวอร์ชั่น: %version%"
 game:
   info:
     global:
@@ -27,7 +27,7 @@ game:
     player:
       already_running: "&cเกมส์ &7%arena% &cกำลังทำงานอยู่! คุณไม่สามารถเข้าร่วมเกมส์นี้ได้"
       full: "&cเกมส์ &7%arena% &cเต็มแล้ว! โปรดรอจนกว่าเกมส์จะจบ!"
-      rebuilding: "Game %arena% is rebuilding now."
+      rebuilding: "เกมส์ %arena% กำลังสร้างใหม่"
       vip:
         not_enough_players: "&cยังมีผู้เล่นไม่พอในเกมส์นี้!"
         full: "&cเกมส์ &7%arena% &cมีผู้เล่น VIP เต็มแล้ว! โปรดรอจนกว่าเกมส์จะจบ!"
@@ -38,14 +38,14 @@ game:
         full: "&cทีม %team% เต็มแล้ว!"
         you_won: "&aทีมของคุณได้รับชัยชนะ!"
         you_lost: "&cทีมของคุณพ่ายแพ้แล้ว!"
-      vault_deposite: "&aAdded &7%coins% %currency%&a to your account!"
+      vault_deposite: "&aเพิ่ม &7%coins% %currency% &aมาที่บัญชีของคุณ!"
       respawn_protection:
         remaining: "&aอมตะจะหายไปใน &f%time% &aวินาที!"
         end: "&cเอฟเฟค อมตะหายไปแล้ว!"
       respawn_cooldown:
         title: "&aเกิดใหม่ใน &c%time% &aวินาที"
         title_cancel: "&cทีมตายแล้ว :("
-        respawned: "&aRespawned!"
+        respawned: "&aเกิดใหม่แล้ว!"
       chests:
         name: "&aกล่องทีม"
         not_yours: "&eนี่ไม่ใช่กล่องของทีมคุณ!"
@@ -76,10 +76,10 @@ game:
       lore_join: "คลิกเพื่อเข้าร่วมทีม!"
   items:
     leave: "&cออกจากเกมส์"
-    start_game: "&eStart game"
+    start_game: "&eเริ่มเกมส์"
     team_selector: "&aเลือกทีม"
   specials:
-    already_active: "&cYou already activated this!"
+    already_active: "&cคุณได้เปิดใช้งานสิ่งนี้ไปแล้ว!"
     delay: "&cYou need to wait %time% seconds before using this item again!"
     trap:
       built: "&aคุณได้สร้างกับดัก! รอดูคนที่จะมาติดกับดักสิ!"
