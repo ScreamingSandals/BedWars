@@ -130,7 +130,8 @@ public class GamePlayer {
         this.player.setFoodLevel(20);
         this.player.setSaturation(10);
         this.player.setExhaustion(0);
-        this.player.setHealth(20.0D);
+        this.player.setMaxHealth(20D);
+        this.player.setHealth(this.player.getMaxHealth());
         this.player.setFireTicks(0);
         this.player.setGameMode(GameMode.SURVIVAL);
 

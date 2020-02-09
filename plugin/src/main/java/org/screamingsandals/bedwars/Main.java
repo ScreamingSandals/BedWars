@@ -2,7 +2,6 @@ package org.screamingsandals.bedwars;
 
 import io.papermc.lib.PaperLib;
 import misat11.lib.lang.I18n;
-import misat11.lib.nms.NMSUtils;
 import misat11.lib.sgui.InventoryListener;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
@@ -35,6 +34,7 @@ import org.screamingsandals.bedwars.special.SpecialRegister;
 import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.bedwars.utils.BedWarsSignOwner;
 import org.screamingsandals.lib.debug.Debug;
+import org.screamingsandals.lib.nms.utils.ClassStorage;
 import org.screamingsandals.lib.screamingcommands.ScreamingCommands;
 import org.screamingsandals.lib.signmanager.SignListener;
 import org.screamingsandals.lib.signmanager.SignManager;
@@ -66,6 +66,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
     private ColorChanger colorChanger;
     private SignManager signManager;
     private ScreamingCommands screamingCommands;
+    private org.screamingsandals.lib.nms.holograms.HologramManager superHologramManager;
     public static List<String> autoColoredMaterials = new ArrayList<>();
 
     static {
@@ -306,6 +307,10 @@ public class Main extends JavaPlugin implements BedwarsAPI {
     public static HologramManager getHologramInteraction() {
         return instance.hologramInteraction;
     }
+    
+    public static org.screamingsandals.lib.nms.holograms.HologramManager getSuperHologramManager() {
+    	return instance.superHologramManager;
+    }
 
     public static List<Entity> getGameEntities(Game game) {
         List<Entity> entityList = new ArrayList<>();
@@ -329,8 +334,8 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         instance = this;
         version = this.getDescription().getVersion();
         snapshot = version.toLowerCase().contains("pre") || version.toLowerCase().contains("snapshot");
-        isNMS = NMSUtils.NMS_BASED_SERVER;
-        nmsVersion = NMSUtils.NMS_VERSION;
+        isNMS = ClassStorage.NMS_BASED_SERVER;
+        nmsVersion = ClassStorage.NMS_VERSION;
         colorChanger = new org.screamingsandals.bedwars.utils.ColorChanger();
 
         if (!getServer().getPluginManager().isPluginEnabled("Vault")) {
@@ -376,6 +381,8 @@ public class Main extends JavaPlugin implements BedwarsAPI {
             }
         } catch (Throwable ignored) {
         }
+        
+        superHologramManager = new org.screamingsandals.lib.nms.holograms.HologramManager(this);
 
         try {
             if (configurator.config.getBoolean("holograms.enabled")) {
@@ -397,8 +404,6 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         getServer().getPluginManager().registerEvents(new VillagerListener(), this);
         getServer().getPluginManager().registerEvents(new WorldListener(), this);
         getServer().getPluginManager().registerEvents(new InventoryListener(), this);
-
-        NMSUtils.init(this);
 
         SpecialRegister.onEnable(this);
 

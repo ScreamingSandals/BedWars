@@ -95,6 +95,7 @@ public class GolemListener implements Listener {
         }
     }
 
+    @EventHandler
     public void onGolemDamage(EntityDamageByEntityEvent event) {
         if (!(event.getEntity() instanceof IronGolem)) {
             return;
@@ -129,6 +130,7 @@ public class GolemListener implements Listener {
         }
     }
 
+    @EventHandler
     public void onGolemTarget(EntityTargetEvent event) {
         if (!(event.getEntity() instanceof IronGolem)) {
             return;

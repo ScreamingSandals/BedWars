@@ -222,7 +222,7 @@ public class BedwarsExpansion extends PlaceholderExpansion {
             case "stats_games":
                 return Integer.toString(stats.getCurrentGames() + stats.getGames());
             case "stats_kd":
-                return Double.toString(stats.getCurrentKD() + stats.getKD());
+                return Double.toString(stats.getCurrentKD());
         }
 
         return null;

@@ -17,10 +17,9 @@ import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.statistics.PlayerStatistic;
 
-import misat11.lib.nms.Hologram;
-import misat11.lib.nms.NMSUtils;
-import misat11.lib.nms.TouchHandler;
 import org.screamingsandals.bedwars.utils.Permissions;
+import org.screamingsandals.lib.nms.holograms.Hologram;
+import org.screamingsandals.lib.nms.holograms.TouchHandler;
 
 public class HologramManager implements TouchHandler {
 
@@ -143,7 +142,7 @@ public class HologramManager implements TouchHandler {
 	}
 
     private Hologram createPlayerStatisticHologram(Player player, Location holoLocation) {
-        final Hologram holo = NMSUtils.spawnHologramTouchable(player, holoLocation);
+        final Hologram holo = Main.getSuperHologramManager().spawnHologramTouchable(player, holoLocation);
         holo.addHandler(this);
 
         String headline = Main.getConfigurator().config.getString("holograms.headline", "Your §eBEDWARS§f stats");

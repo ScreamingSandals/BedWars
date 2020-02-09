@@ -2,8 +2,6 @@ package org.screamingsandals.bedwars.game;
 
 import com.onarandombox.MultiverseCore.api.Core;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
-import misat11.lib.nms.Hologram;
-import misat11.lib.nms.NMSUtils;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -50,6 +48,8 @@ import org.screamingsandals.bedwars.region.FlatteningRegion;
 import org.screamingsandals.bedwars.region.LegacyRegion;
 import org.screamingsandals.bedwars.statistics.PlayerStatistic;
 import org.screamingsandals.bedwars.utils.*;
+import org.screamingsandals.lib.nms.entity.EntityUtils;
+import org.screamingsandals.lib.nms.holograms.Hologram;
 import org.screamingsandals.lib.signmanager.SignBlock;
 
 import java.io.File;
@@ -1398,7 +1398,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                         LivingEntity villager = store.spawn();
                         if (villager != null) {
                             Main.registerGameEntity(villager, this);
-                            NMSUtils.disableEntityAI(villager);
+                            EntityUtils.disableEntityAI(villager);
                         }
                     }
 
@@ -1414,7 +1414,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                             if (spawner.getHologramEnabled()) {
                                 Location loc = spawner.loc.clone().add(0,
                                         Main.getConfigurator().config.getDouble("spawner-holo-height", 0.25), 0);
-                                Hologram holo = NMSUtils.spawnHologram(getConnectedPlayers(), loc,
+                                Hologram holo = Main.getSuperHologramManager().spawnHologram(getConnectedPlayers(), loc,
                                         spawner.type.getItemBoldName());
                                 createdHolograms.add(holo);
                                 if (getOriginalOrInheritedSpawnerHologramsCountdown()) {
@@ -1490,13 +1490,13 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                             boolean isBlockTypeBed = region.isBedBlock(bed.getState());
                             List<Player> enemies = getConnectedPlayers();
                             enemies.removeAll(team.getConnectedPlayers());
-                            Hologram holo = NMSUtils.spawnHologram(enemies, loc,
+                            Hologram holo = Main.getSuperHologramManager().spawnHologram(enemies, loc,
                                     m(isBlockTypeBed ? "hologram.game.beds.destroy_this_bed" : "hologram.game.beds.destroy_this_target")
                                             .replace("%teamcolor%", team.teamInfo.color.chatColor.toString())
                                             .get());
                             createdHolograms.add(holo);
                             team.setBedHolo(holo);
-                            Hologram protectHolo = NMSUtils.spawnHologram(team.getConnectedPlayers(), loc,
+                            Hologram protectHolo = Main.getSuperHologramManager().spawnHologram(team.getConnectedPlayers(), loc,
                                     m(isBlockTypeBed ? "hologram.game.beds.protect_your_bed" : "hologram.game.beds.protect_your_target")
                                             .replace("%teamcolor%", team.teamInfo.color.chatColor.toString())
                                             .get());

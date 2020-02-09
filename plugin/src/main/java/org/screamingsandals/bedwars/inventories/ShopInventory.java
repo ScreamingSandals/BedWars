@@ -136,12 +136,7 @@ public class ShopInventory implements Listener {
         
         File file = new File(Main.getInstance().getDataFolder(), "shop.yml");
         if (!file.exists()) {
-            if (Main.isLegacy()) {
-            	Main.getInstance().saveResource("shop_legacy.yml", false);
-                new File(Main.getInstance().getDataFolder(), "shop_legacy.yml").renameTo(file);
-            } else {
-            	Main.getInstance().saveResource("shop.yml", false);
-            }
+            Main.getInstance().saveResource("shop.yml", false);
         }
         
         loadNewShop("default", null, true);

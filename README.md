@@ -6,7 +6,9 @@
 
 Complete rewrite of the BedWarsRel plugin.
 
-Supported versions: \[1.9 - 1.14.4\]. Recommended version: \[1.14.4\]
+## This branch is currently work in progress, use 0.x.x instead
+
+Supported versions: \[1.9 - 1.15.2\]. Recommended version: \[1.15.2\]
 
 ## Support
 If you need any help, you can contact us on [Discord](https://discord.gg/VgrFUbV). Please make sure to look into older messages. There are many question already answered. It is really anoying to repeat the same thing over and over.

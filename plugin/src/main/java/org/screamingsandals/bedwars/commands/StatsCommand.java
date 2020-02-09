@@ -132,7 +132,7 @@ public class StatsCommand implements IBasicCommand {
                 .replace("%deaths%", Integer.toString(statistic.getDeaths() + statistic.getCurrentDeaths()))
                 .send(player);
         m("commands.statistics.kd")
-                .replace("%kd%", Double.toString(statistic.getKD() + statistic.getCurrentKD()))
+                .replace("%kd%", Double.toString(statistic.getCurrentKD()))
                 .send(player);
         m("commands.statistics.wins")
                 .replace("%wins%", Integer.toString(statistic.getWins() + statistic.getCurrentWins()))

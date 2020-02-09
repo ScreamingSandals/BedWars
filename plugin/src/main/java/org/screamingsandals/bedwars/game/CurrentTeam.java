@@ -1,6 +1,6 @@
 package org.screamingsandals.bedwars.game;
 
-import misat11.lib.nms.Hologram;
+import org.screamingsandals.lib.nms.holograms.Hologram;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;

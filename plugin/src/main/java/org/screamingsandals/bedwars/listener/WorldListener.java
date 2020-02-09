@@ -4,9 +4,11 @@ import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.game.Game;
 import org.screamingsandals.bedwars.game.GameCreator;
+import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.EntityType;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -18,6 +20,7 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.event.world.StructureGrowEvent;
 
 public class WorldListener implements Listener {
@@ -212,5 +215,21 @@ public class WorldListener implements Listener {
     		event.setCancelled(false);
     	}
         return;
+    }
+    
+    @EventHandler
+    public void onChunkUnload(ChunkUnloadEvent unload) {
+    	if (unload instanceof Cancellable) {
+    		Chunk chunk = unload.getChunk();
+
+    		for (String name : Main.getGameNames()) {
+    			Game game = Main.getGame(name);
+    			if (game.getStatus() != GameStatus.DISABLED && game.getStatus() != GameStatus.WAITING 
+    				&& GameCreator.isChunkInArea(chunk, game.getPos1(), game.getPos2())) {
+    				((Cancellable) unload).setCancelled(false);
+    				return;
+    			}
+    		}
+    	}
     }
 }
