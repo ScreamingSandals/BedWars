@@ -13,7 +13,7 @@ game:
       game_end: "&cเกมส์จบแล้ว! ขอบคุณที่เล่น!"
       players:
         self_killed: "&cผู้เล่น %victim% &cตายแล้ว!"
-        killed: "&cผู้เล่น %killer% &cฆ่า %victim%&c!"
+        killed: "&cผู้เล่น %killer% &cสังหาร %victim%&c!"
       titles:
         start: "&aเกมส์เริ่มขึ้นแล้ว!"
         start_subtitle: "&aเกมส์ &7%arena%&a ได้เริ่มขึ้นแล้ว! ขอให้สนุก!"
