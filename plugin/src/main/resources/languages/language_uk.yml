@@ -1,23 +1,23 @@
 ---
 lang_name: "Українська мова"
 prefix: "&7[&fBed&4Wars&7]&r"
-item_shop_name: "Shop"
+item_shop_name: "Магазин"
 plugin:
-  version_info: "Version: %version%"
+  version_info: "Версія: %version%"
 game:
   info:
     global:
-      joined: "%name% &ajoined the game!&r &7[&a%players%&7/&a%maxplayers%&7]"
-      leaved: "%name% &cleft the game!"
-      game_win: "&aTeam &r%team%&a won game in &7%time%"
-      game_end: "&cGame ended! Thanks for playing!"
+      joined: "%name% &aПідключився до гри!&r &7[&a%players%&7/&a%maxplayers%&7]"
+      leaved: "%name% &cВийшов з гри!"
+      game_win: "&aКоманда &r%team%&aвиграла в грі за час &7%time%"
+      game_end: "&cГра закінчилась! Дякуємо за гру!"
       players:
-        self_killed: "&cPlayer %victim% &cdied!"
-        killed: "&cPlayer %killer% &ckilled %victim%&c!"
+        self_killed: "&cГравець %victim% &cпомер!"
+        killed: "&cГравець %killer% &cвбив %victim%&c!"
       titles:
-        start: "&aGame started!"
-        start_subtitle: "&aGame &7%arena%&a has started! Enjoy the game!"
-        bed_is_destroyed: "Bed of %team%&r is destroyed!"
+        start: "&aГра почалсь!"
+        start_subtitle: "&aГра &7%arena% почалась! Насолоджуйтесь грою!"
+        bed_is_destroyed: "Ліжко команди %team%&r було знищено!"
         target_is_destroyed: "Target block of %team%&r is destroyed!"
         bed_is_destroyed_subtitle: "You can now kill the team members!"
         bed_is_destroyed_subtitle_for_victim: "Now you will never be respawned!"

@@ -25,8 +25,8 @@ game:
         waiting: "&cDas Spiel beginnt in Kürze!"
         running: "&aDas Spiel startet! Viel Glück!"
     player:
-      already_running: "&cSpiel &7%arena% &cläuft bereits!"
-      full: "&cSpiel &7%arena% &cist voll!"
+      already_running: "&cSpiel &7%arena% &cläuft bereits! Du kannst kein laufendes Spiel betreten!"
+      full: "&cSpiel &7%arena% &cist voll! Bitte warte auf das Spielende!"
       rebuilding: "%arena% wird neu aufgebaut."
       vip:
         not_enough_players: "&cEs sind nicht genügend Spieler in der Arena!"
@@ -38,7 +38,7 @@ game:
         full: "&cTeam %team% ist voll!"
         you_won: "&aDein Team hat gewonnen!"
         you_lost: "&cDein Team hat verloren!"
-      vault_deposite: "&aAdded &7%coins% %currency%&a to your account!"
+      vault_deposite: "&7%coins% %currency%&a wurden zu deinem Konto hinzugefügt!"
       respawn_protection:
         remaining: "&aRespawn Schutz wird in &f%time% &aweg sein!"
         end: "&cRespawn Schutz ist weg!"
@@ -76,23 +76,23 @@ game:
       lore_join: "Klicke um dem Team beizutreten!"
   items:
     leave: "&cSpiel verlassen"
-    start_game: "&eStart game"
+    start_game: "&eSpiel starten"
     team_selector: "&aWähle dein Team"
   specials:
-    already_active: "&cYou already activated this!"
+    already_active: "&cDu hast dies bereits aktiviert!"
     delay: "&cDu musst %time% Sekunden warten, bevor du dieses Item wieder benutzen kannst!"
     trap:
       built: "&aDeine Falle wurde platziert!"
       caught: "&cDu wurdest in der Falle von Team &f%team% &cgefangen!"
       broadcast: "&f%player%&c wurde in der Falle deines Teams gefangen!"
     warp_powder:
-      canceled: "&cTeleporting was canceled."
-      started: "&aTeleporting.. Please don't move for &7%time%&a seconds!"
+      canceled: "&cTeleportieren wurde abgebrochen."
+      started: "&aTeleportiere.. Bitte bewegen dich nicht für &7%time%&a Sekunden!"
     tracker:
       no_one: "&cKein Ziel gefunden!"
       found: "&a&f%target% has been found &f%distance% &ablocks away!"
     rescue_platform:
-      not_in_air: "&cYou need to be in the air."
+      not_in_air: "&cDu musst in der Luft sein."
       destroyed_in: "&cPlattform wird in &f%time% &cSekunden zerstört."
       created_unbreakable: "&aUnzerstörbare Plattform wurde erstellt!"
       created: "&aPlattform ist erstellt und wird in &f%time% &aSekunden zerstört."
@@ -119,7 +119,7 @@ signs:
   created: "&aSchild wurde erstellt!"
   not_created: "&cSchild wurde nicht erstellt! Prüfe den Namen des Spiels!"
   cannot_destroy: "&cDu hast nicht die Berechtigung dieses Schild zu zerstören!"
-  game_not_exists: "&cThe game that is written on the sign doesn't exist! Please contact an admin!"
+  game_not_exists: "&cSpiel auf dem Schild existiert nicht. Bitte kontaktiere einen Admin!"
   status:
     disabled:
       line1: "&cSpiel"
@@ -134,8 +134,8 @@ signs:
       line1: "&6Wartend"
       line2: "&a%players%&8/&a%maxplayers%"
 holograms:
-  not_enabled: "&cHolograms are disabled."
-  holo_removed: "&aHologram has been &lsuccessfully &aremoved!"
+  not_enabled: "&cHologramme sind deaktiviert."
+  holo_removed: "&aDas Hologramm wurde&l erfolgreich &agelöscht!"
   game:
     beds:
       protect_your_bed: "%teamcolor%&lSchütze dein Bett!"
@@ -152,25 +152,25 @@ commands:
     unknown_usage: "&cAnzahl der Argumente stimmt nicht mit der richtigen Anzahl oder unbekannten Argumenten überein! Geben Sie &4/bw Hilfe &cfür Hilfe ein!"
     no_permissions: "&cDu hast nicht die Berechtigung das zu tun!"
     not_allowed: "&cDieser Befehl ist während des Spiels nicht verfügbar!"
-    not_for_console: "&cThis command is not supported for the console."
+    not_for_console: "&cDieser Command wird nicht von der Console unterstützt."
   holograms:
-    added: "&aHologram has been added to your position!"
-    click_to_remove: "&eNow click the &ahologram &eyou want to remove!"
+    added: "&aDas Hologramm wurde an deine Position gesetzt!"
+    click_to_remove: "&eKlicke nun das &aHologramm&e, welches &edu entfernen möchtest, an!"
   auto_join:
     already_in_game: "&cDu bist bereits in einem Spiel."
-    no_empty_game: "&cThere's no game empty game!"
+    no_empty_game: "&cEs gibt derzeit keine aktiven Spiele!"
   join:
     already_in_game: "&cDu bist bereits in einem Spiel."
-    not_found: "&cArena does not exists!"
+    not_found: "&cArena existiert nicht!"
   leave:
-    not_in_game: "&cYou are not in game!"
+    not_in_game: "&cDu bist derzeit in keinem Spiel!"
   list:
-    header: "&aAvailable arenas:"
+    header: "&aVerfügbare Spiele:"
   main_lobby:
     info: "&cWARNUNG&f: Du musst /bw reload ausführen, um Mainlobby zum Laufen zu bringen!"
   rejoin:
     already_in_game: "&cDu bist bereits in einem Spiel."
-    no_game_found: "&cNo previous game found."
+    no_game_found: "&cKein vorheriges Spiel gefunden."
   reload:
     safe: "&aWaiting for safe stop of all games or for 60 seconds before reload!"
     failed: "&cEinige Spiele sind nicht innerhalb des Zeit-Limits geendet, also könnte deren Arena beschädigt sein!"
@@ -190,7 +190,7 @@ commands:
     usage: "&cUsage: &f/bw admin <arena> <add|edit|remove|save|...> ..."
     arena:
       errors:
-        not_found: "&cArena not found!"
+        not_found: "&cArena nicht gefunden!"
         not_in_edit_mode: "&cSpiel muss sich im edit-Modus befinden: &7/bw admin <Spiel> edit!"
       info:
         header: "&aDetails des Spiels:"
@@ -201,7 +201,7 @@ commands:
         pos2: "&7Position 2: &fXYZ: &7%x%&r/&7%y%&r/&7%z%"
         spectator: "&7Zuschauerposition: &fXYZ: &7%x%&r/&7%y%&r/&7%z%"
         lobby: "&7Lobbyposition: &fSvět: &7%world% &fXYZ: &7%x%&r/&7%y%&r/&7%z%"
-        min_players: "&7Minimal players of the game: &r%minplayers%"
+        min_players: "&7Minimale Spieler des Spiels: &r%minplayers%"
         countdown_time: "&7Countdown vor Spielstart: &f%time% s"
         game_length: "&7Länge des Spiels: &f%time% s"
         true_value: "&aJa"

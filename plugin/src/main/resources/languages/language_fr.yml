@@ -18,8 +18,8 @@ game:
         start: "&aLa partie commence  !"
         start_subtitle: "&aLe partie &7%arena%&a a commencé ! Profitez du jeu !"
         bed_is_destroyed: "Le lit des %team%&r est détruit !"
-        target_is_destroyed: "Target block of %team%&r is destroyed!"
-        bed_is_destroyed_subtitle: "You can now kill the team members!"
+        target_is_destroyed: "Le lit des %team%&r est détruit !"
+        bed_is_destroyed_subtitle: "Vous pouvez maintenant tuer les membres de l'équipe!"
         bed_is_destroyed_subtitle_for_victim: "Now you will never be respawned!"
       bossbar:
         waiting: "&cThe game will begin shortly!"
