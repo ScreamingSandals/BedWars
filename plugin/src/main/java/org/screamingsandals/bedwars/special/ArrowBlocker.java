@@ -66,6 +66,7 @@ public class ArrowBlocker extends SpecialItem implements org.screamingsandals.be
             runTask();
 
             item.setAmount(item.getAmount() - 1);
+            player.getInventory().setItem(player.getInventory().getHeldItemSlot(), item); // legacy fix
             player.updateInventory();
 
             MiscUtils.sendActionBarMessage(player, i18nonly("specials_arrow_blocker_started").replace("%time%", Integer.toString(protectionTime)));

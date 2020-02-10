@@ -80,6 +80,7 @@ public class Golem extends SpecialItem implements org.screamingsandals.bedwars.a
         MiscUtils.sendActionBarMessage(player, i18nonly("specials_golem_created"));
 
         item.setAmount(item.getAmount() - 1);
+        player.getInventory().setItem(player.getInventory().getHeldItemSlot(), item); // legacy fix
         player.updateInventory();
     }
 }
