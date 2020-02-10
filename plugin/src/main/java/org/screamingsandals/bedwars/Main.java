@@ -23,7 +23,7 @@ import org.screamingsandals.bedwars.api.BedwarsAPI;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.api.game.GameStore;
 import org.screamingsandals.bedwars.api.utils.ColorChanger;
-import org.screamingsandals.bedwars.config.Configurator;
+import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.database.DatabaseManager;
 import org.screamingsandals.bedwars.game.*;
 import org.screamingsandals.bedwars.holograms.HologramManager;
@@ -56,7 +56,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
     private HashMap<Player, GamePlayer> playersInGame = new HashMap<>();
     private HashMap<Entity, Game> entitiesInGame = new HashMap<>();
     private HashMap<String, GameCreator> gamesInCreator = new HashMap<>();
-    private Configurator configurator;
+    private MainConfig mainConfig;
     private ShopInventory menu;
     private HashMap<String, ItemSpawnerType> spawnerTypes = new HashMap<>();
     private DatabaseManager databaseManager;
@@ -85,8 +85,8 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         return instance;
     }
 
-    public static Configurator getConfigurator() {
-        return instance.configurator;
+    public static MainConfig getConfigurator() {
+        return instance.mainConfig;
     }
 
     public static String getVersion() {
@@ -123,7 +123,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 
     public static void depositPlayer(Player player, double coins) {
         try {
-            if (isVault() && instance.configurator.config.getBoolean("vault.enable")) {
+            if (isVault() && instance.mainConfig.config.getBoolean("vault.enable")) {
                 EconomyResponse response = instance.econ.depositPlayer(player, coins);
                 if (response.transactionSuccess()) {
                     mpr("game.info.player.vault_deposite")
@@ -138,11 +138,11 @@ public class Main extends JavaPlugin implements BedwarsAPI {
     }
 
     public static int getVaultKillReward() {
-        return instance.configurator.config.getInt("vault.reward.kill");
+        return instance.mainConfig.config.getInt("vault.reward.kill");
     }
 
     public static int getVaultWinReward() {
-        return instance.configurator.config.getInt("vault.reward.win");
+        return instance.mainConfig.config.getInt("vault.reward.win");
     }
 
     public static Game getGame(String string) {
@@ -222,8 +222,8 @@ public class Main extends JavaPlugin implements BedwarsAPI {
     }
 
     public static boolean isFarmBlock(Material mat) {
-        if (instance.configurator.config.getBoolean("farmBlocks.enable")) {
-            List<String> list = (List<String>) instance.configurator.config.getList("farmBlocks.blocks");
+        if (instance.mainConfig.config.getBoolean("farmBlocks.enable")) {
+            List<String> list = (List<String>) instance.mainConfig.config.getList("farmBlocks.blocks");
             assert list != null;
             return list.contains(mat.name());
         }
@@ -231,9 +231,9 @@ public class Main extends JavaPlugin implements BedwarsAPI {
     }
 
     public static boolean isBreakableBlock(Material mat) {
-        if (instance.configurator.config.getBoolean("breakable.enabled")) {
-            List<String> list = (List<String>) instance.configurator.config.getList("breakable.blocks");
-            boolean asblacklist = instance.configurator.config.getBoolean("breakable.asblacklist", false);
+        if (instance.mainConfig.config.getBoolean("breakable.enabled")) {
+            List<String> list = (List<String>) instance.mainConfig.config.getList("breakable.blocks");
+            boolean asblacklist = instance.mainConfig.config.getBoolean("breakable.asblacklist", false);
             assert list != null;
             return list.contains(mat.name()) != asblacklist;
         }
@@ -241,8 +241,8 @@ public class Main extends JavaPlugin implements BedwarsAPI {
     }
 
     public static boolean isCommandLeaveShortcut(String command) {
-        if (instance.configurator.config.getBoolean("leaveshortcuts.enabled")) {
-            List<String> commands = (List<String>) instance.configurator.config.getList("leaveshortcuts.list");
+        if (instance.mainConfig.config.getBoolean("leaveshortcuts.enabled")) {
+            List<String> commands = (List<String>) instance.mainConfig.config.getList("leaveshortcuts.list");
             assert commands != null;
             for (String comm : commands) {
                 if (!comm.startsWith("/")) {
@@ -260,16 +260,16 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         if ("/bw".equals(commandPref) || "/bedwars".equals(commandPref)) {
             return true;
         }
-        List<String> commands = instance.configurator.config.getStringList("allowed-commands");
+        List<String> commands = instance.mainConfig.config.getStringList("allowed-commands");
         for (String comm : commands) {
             if (!comm.startsWith("/")) {
                 comm = "/" + comm;
             }
             if (comm.equals(commandPref)) {
-                return !instance.configurator.config.getBoolean("change-allowed-commands-to-blacklist", false);
+                return !instance.mainConfig.config.getBoolean("change-allowed-commands-to-blacklist", false);
             }
         }
-        return instance.configurator.config.getBoolean("change-allowed-commands-to-blacklist", false);
+        return instance.mainConfig.config.getBoolean("change-allowed-commands-to-blacklist", false);
     }
 
     public static ItemSpawnerType getSpawnerType(String key) {
@@ -297,11 +297,11 @@ public class Main extends JavaPlugin implements BedwarsAPI {
     }
 
     public static boolean isPlayerStatisticsEnabled() {
-        return instance.configurator.config.getBoolean("statistics.enabled");
+        return instance.mainConfig.config.getBoolean("statistics.enabled");
     }
 
     public static boolean isHologramsEnabled() {
-        return instance.configurator.config.getBoolean("holograms.enabled") && instance.hologramInteraction != null;
+        return instance.mainConfig.config.getBoolean("holograms.enabled") && instance.hologramInteraction != null;
     }
 
     public static HologramManager getHologramInteraction() {
@@ -352,23 +352,23 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 
         isLegacy = versionNumber < 113;
 
-        configurator = new Configurator(this);
+        mainConfig = new MainConfig(this);
 
-        configurator.createFiles();
+        mainConfig.createFiles();
 
         Debug.init(getName());
-        Debug.setDebug(configurator.config.getBoolean("debug"));
+        Debug.setDebug(mainConfig.config.getBoolean("debug"));
 
-        I18n.load(this, configurator.config.getString("locale"));
+        I18n.load(this, mainConfig.config.getString("locale"));
 
 
         screamingCommands = new ScreamingCommands(this, Main.class, "org/screamingsandals/bedwars");
         screamingCommands.loadAllCommands();
 
-        databaseManager = new DatabaseManager(configurator.config.getString("database.host"),
-                configurator.config.getInt("database.port"), configurator.config.getString("database.user"),
-                configurator.config.getString("database.password"), configurator.config.getString("database.db"),
-                configurator.config.getString("database.table-prefix", "bw_"));
+        databaseManager = new DatabaseManager(mainConfig.config.getString("database.host"),
+                mainConfig.config.getInt("database.port"), mainConfig.config.getString("database.user"),
+                mainConfig.config.getString("database.password"), mainConfig.config.getString("database.db"),
+                mainConfig.config.getString("database.table-prefix", "bw_"));
 
         if (isPlayerStatisticsEnabled()) {
             playerStatisticsManager = new PlayerStatisticManager();
@@ -385,7 +385,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         superHologramManager = new org.screamingsandals.lib.nms.holograms.HologramManager(this);
 
         try {
-            if (configurator.config.getBoolean("holograms.enabled")) {
+            if (mainConfig.config.getBoolean("holograms.enabled")) {
                 hologramInteraction = new HologramManager();
                 hologramInteraction.loadHolograms();
             }
@@ -409,15 +409,15 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 
         getServer().getServicesManager().register(BedwarsAPI.class, this, this, ServicePriority.Normal);
 
-        for (String spawnerN : configurator.config.getConfigurationSection("resources").getKeys(false)) {
+        for (String spawnerN : mainConfig.getConfigurationSection("resources").getKeys(false)) {
 
-            String name = Main.getConfigurator().config.getString("resources." + spawnerN + ".name");
-            String translate = Main.getConfigurator().config.getString("resources." + spawnerN + ".translate");
-            int interval = Main.getConfigurator().config.getInt("resources." + spawnerN + ".interval", 1);
-            double spread = Main.getConfigurator().config.getDouble("resources." + spawnerN + ".spread");
-            int damage = Main.getConfigurator().config.getInt("resources." + spawnerN + ".damage");
-            String materialName = Main.getConfigurator().config.getString("resources." + spawnerN + ".material", "AIR");
-            String colorName = Main.getConfigurator().config.getString("resources." + spawnerN + ".color", "WHITE");
+            String name = Main.getConfigurator().getString("resources." + spawnerN + ".name");
+            String translate = Main.getConfigurator().getString("resources." + spawnerN + ".translate");
+            int interval = Main.getConfigurator().getInt("resources." + spawnerN + ".interval", 1);
+            double spread = Main.getConfigurator().getDouble("resources." + spawnerN + ".spread");
+            int damage = Main.getConfigurator().getInt("resources." + spawnerN + ".damage");
+            String materialName = Main.getConfigurator().getString("resources." + spawnerN + ".material", "AIR");
+            String colorName = Main.getConfigurator().getString("resources." + spawnerN + ".color", "WHITE");
 
             Material material = Material.valueOf(materialName);
             if (material == Material.AIR) {
@@ -431,7 +431,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 
         menu = new ShopInventory();
 
-        if (getConfigurator().config.getBoolean("bungee.enabled")) {
+        if (getConfigurator().getBoolean("bungee.enabled")) {
             Bukkit.getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
         }
 
@@ -467,7 +467,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         }
 
         BedWarsSignOwner signOwner = new BedWarsSignOwner();
-        signManager = new SignManager(signOwner, configurator.signsConfig, configurator.signsFile);
+        signManager = new SignManager(signOwner, mainConfig.signsConfig, mainConfig.signsFile);
         getServer().getPluginManager().registerEvents(new SignListener(signOwner, signManager), this);
 
         try {
