@@ -65,7 +65,7 @@ public class MiscUtils {
         new BukkitRunnable() {
             @Override
             public void run() {
-                if (Main.isSpigot() && !Main.isLegacy() && Main.getConfigurator().config.getBoolean("specials.action-bar-messages")) {
+                if (Main.isSpigot() && !Main.isLegacy() && Main.getMainConfig().getBoolean("specials.action-bar-messages")) {
                     player.spigot().sendMessage(ChatMessageType.ACTION_BAR,
                             TextComponent.fromLegacyText(message));
                 } else {
@@ -79,7 +79,7 @@ public class MiscUtils {
         try {
             return event.getIntProperty(name);
         } catch (NullPointerException e) {
-            return Main.getConfigurator().config.getInt(fallback);
+            return Main.getMainConfig().getInt(fallback);
         }
     }
 
@@ -87,7 +87,7 @@ public class MiscUtils {
         try {
             return event.getDoubleProperty(name);
         } catch (NullPointerException e) {
-            return Main.getConfigurator().config.getDouble(fallback);
+            return Main.getMainConfig().getDouble(fallback);
         }
     }
 
@@ -95,7 +95,7 @@ public class MiscUtils {
         try {
             return event.getBooleanProperty(name);
         } catch (NullPointerException e) {
-            return Main.getConfigurator().config.getBoolean(fallback);
+            return Main.getMainConfig().getBoolean(fallback);
         }
     }
 
@@ -103,7 +103,7 @@ public class MiscUtils {
         try {
             return event.getStringProperty(name);
         } catch (NullPointerException e) {
-            return Main.getConfigurator().config.getString(fallback);
+            return Main.getMainConfig().getString(fallback);
         }
     }
 
@@ -111,7 +111,7 @@ public class MiscUtils {
         try {
             return event.getStringProperty(name);
         } catch (NullPointerException e) {
-            return Main.getConfigurator().config.getString(fallback, Main.isLegacy() ? "SANDSTONE" : "CUT_SANDSTONE");
+            return Main.getMainConfig().getString(fallback, Main.isLegacy() ? "SANDSTONE" : "CUT_SANDSTONE");
         }
     }
 
@@ -254,9 +254,9 @@ public class MiscUtils {
     }
     
     public static void sendTitle(Player player, String title, String subtitle) {
-        int fadeIn = Main.getConfigurator().config.getInt("title.fadeIn");
-        int stay = Main.getConfigurator().config.getInt("title.stay");
-        int fadeOut = Main.getConfigurator().config.getInt("title.fadeOut");
+        int fadeIn = Main.getMainConfig().getInt("title.fadeIn");
+        int stay = Main.getMainConfig().getInt("title.stay");
+        int fadeOut = Main.getMainConfig().getInt("title.fadeOut");
 
         Title.sendTitle(player, title, subtitle, fadeIn, stay, fadeOut);
     }

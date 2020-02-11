@@ -41,28 +41,28 @@ public class ShopInventory implements Listener {
     public ShopInventory() {
         Bukkit.getServer().getPluginManager().registerEvents(this, Main.getInstance());
 
-        ItemStack backItem = Main.getConfigurator().readDefinedItem("shopback", "BARRIER");
+        ItemStack backItem = Main.getMainConfig().readDefinedItem("shopback", "BARRIER");
         ItemMeta backItemMeta = backItem.getItemMeta();
         backItemMeta.setDisplayName(i18n("shop_back", false));
         backItem.setItemMeta(backItemMeta);
         options.setBackItem(backItem);
 
-        ItemStack pageBackItem = Main.getConfigurator().readDefinedItem("pageback", "ARROW");
+        ItemStack pageBackItem = Main.getMainConfig().readDefinedItem("pageback", "ARROW");
         ItemMeta pageBackItemMeta = backItem.getItemMeta();
         pageBackItemMeta.setDisplayName(i18n("page_back", false));
         pageBackItem.setItemMeta(pageBackItemMeta);
         options.setPageBackItem(pageBackItem);
 
-        ItemStack pageForwardItem = Main.getConfigurator().readDefinedItem("pageforward", "ARROW");
+        ItemStack pageForwardItem = Main.getMainConfig().readDefinedItem("pageforward", "ARROW");
         ItemMeta pageForwardItemMeta = backItem.getItemMeta();
         pageForwardItemMeta.setDisplayName(i18n("page_forward", false));
         pageForwardItem.setItemMeta(pageForwardItemMeta);
         options.setPageForwardItem(pageForwardItem);
 
-        ItemStack cosmeticItem = Main.getConfigurator().readDefinedItem("shopcosmetic", "AIR");
+        ItemStack cosmeticItem = Main.getMainConfig().readDefinedItem("shopcosmetic", "AIR");
         options.setCosmeticItem(cosmeticItem);
 
-        options.setRender_actual_rows(Main.getConfigurator().config.getInt("secretShopSetRows", 6));
+        options.setRender_actual_rows(Main.getMainConfig().getInt("secretShopSetRows", 6));
         options.setPrefix(i18nonly("item_shop_name", "[BW] Shop"));
         options.setGenericShop(true);
         options.setGenericShopPriceTypeRequired(true);
@@ -181,11 +181,11 @@ public class ShopInventory implements Listener {
                 return;
             }
 
-            boolean enabled = Main.getConfigurator().config.getBoolean("lore.generate-automatically", true);
+            boolean enabled = Main.getMainConfig().getBoolean("lore.generate-automatically", true);
             enabled = reader.getBoolean("generate-lore", enabled);
 
             List<String> loreText = reader.getStringList("generated-lore-text",
-                    Main.getConfigurator().config.getStringList("lore.text"));
+                    Main.getMainConfig().getStringList("lore.text"));
 
             if (enabled) {
                 ItemStack stack = event.getStack();
@@ -257,7 +257,7 @@ public class ShopInventory implements Listener {
             Player player = event.getPlayer();
             CurrentTeam team = (CurrentTeam) event.getGame().getTeamOfPlayer(player);
 
-            if (Main.getConfigurator().config.getBoolean("automatic-coloring-in-shop")) {
+            if (Main.getMainConfig().getBoolean("automatic-coloring-in-shop")) {
                 event.setStack(Main.applyColor(team.teamInfo.color, event.getStack()));
             }
         }
@@ -350,7 +350,7 @@ public class ShopInventory implements Listener {
                     inInventory = inInventory + itemStack.getAmount();
                 }
             }
-            if (Main.getConfigurator().config.getBoolean("sell-max-64-per-click-in-shop")) {
+            if (Main.getMainConfig().getBoolean("sell-max-64-per-click-in-shop")) {
                 maxStackSize = Math.min(inInventory / priceOfOne, 64);
             } else {
                 maxStackSize = inInventory / priceOfOne;
@@ -385,7 +385,7 @@ public class ShopInventory implements Listener {
                     i18n("buy_succes").replace("%item%", amount + "x " + getNameOrCustomNameOfItem(newItem))
                             .replace("%material%", price + " " + type.getItemName()));
             Sounds.playSound(player, player.getLocation(),
-                    Main.getConfigurator().config.getString("sounds.on_item_buy"), Sounds.ENTITY_ITEM_PICKUP, 1, 1);
+                    Main.getMainConfig().getString("sounds.on_item_buy"), Sounds.ENTITY_ITEM_PICKUP, 1, 1);
         } else {
             player.sendMessage(
                     i18n("buy_failed").replace("%item%", amount + "x " + getNameOrCustomNameOfItem(newItem))
@@ -480,14 +480,14 @@ public class ShopInventory implements Listener {
                         player1.sendMessage(i18n("buy_succes").replace("%item%", itemName).replace("%material%",
                                 price + " " + itemSpawnerType.getItemName()));
                         Sounds.playSound(player1, player1.getLocation(),
-                                Main.getConfigurator().config.getString("sounds.on_upgrade_buy"),
+                                Main.getMainConfig().getString("sounds.on_upgrade_buy"),
                                 Sounds.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
                     }
                 } else {
                     player.sendMessage(i18n("buy_succes").replace("%item%", itemName).replace("%material%",
                             price + " " + itemSpawnerType.getItemName()));
                     Sounds.playSound(player, player.getLocation(),
-                            Main.getConfigurator().config.getString("sounds.on_upgrade_buy"),
+                            Main.getMainConfig().getString("sounds.on_upgrade_buy"),
                             Sounds.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
                 }
             }

@@ -9,7 +9,6 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffect;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.utils.BungeeUtils;
-import org.screamingsandals.bedwars.utils.PaperUtils;
 import org.screamingsandals.bedwars.utils.Permissions;
 
 public class GamePlayer {
@@ -84,7 +83,7 @@ public class GamePlayer {
 
     public void restoreInv() {
         isTeleportingFromGame_justForInventoryPlugins = true;
-        if (!Main.getConfigurator().config.getBoolean("mainlobby.enabled")) {
+        if (!Main.getMainConfig().config.getBoolean("mainlobby.enabled")) {
             teleport(oldInventory.leftLocation);
         }
 

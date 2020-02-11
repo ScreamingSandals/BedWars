@@ -145,7 +145,7 @@ public class HologramManager implements TouchHandler {
         final Hologram holo = Main.getSuperHologramManager().spawnHologramTouchable(player, holoLocation);
         holo.addHandler(this);
 
-        String headline = Main.getConfigurator().config.getString("holograms.headline", "Your §eBEDWARS§f stats");
+        String headline = Main.getMainConfig().getString("holograms.headline", "Your §eBEDWARS§f stats");
         assert headline != null;
         if (!headline.trim().isEmpty()) {
             holo.addLine(headline);

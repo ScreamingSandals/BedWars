@@ -36,7 +36,7 @@ public class BungeeUtils {
     }
 
     private static void internalMove(Player player) {
-        String server = Main.getConfigurator().config.getString("bungee.server");
+        String server = Main.getMainConfig().getString("bungee.server");
         ByteArrayDataOutput out = ByteStreams.newDataOutput();
 
         out.writeUTF("Connect");

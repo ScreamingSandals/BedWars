@@ -77,7 +77,7 @@ public class GameConfigManager implements org.screamingsandals.bedwars.api.game.
 	@Override
 	public boolean get(String key) {
 		return gameChanges.containsKey(key) ? gameChanges.get(key)
-			: Main.getConfigurator().config.getBoolean(CONFIG_YML_KEYS.get(key));
+			: Main.getMainConfig().getBoolean(CONFIG_YML_KEYS.get(key));
 	}
 
 	@Override

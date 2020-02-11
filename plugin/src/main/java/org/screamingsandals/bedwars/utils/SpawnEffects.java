@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 public class SpawnEffects {
+    @SuppressWarnings("unchecked")
     public static void spawnEffect(Game game, Player player, String particleName) {
         BedwarsPreSpawnEffectEvent firstEvent = new BedwarsPreSpawnEffectEvent(game, player, particleName);
         Main.getInstance().getServer().getPluginManager().callEvent(firstEvent);
@@ -25,11 +26,14 @@ public class SpawnEffects {
             return;
         }
 
-        ConfigurationSection effect = Main.getConfigurator().config.getConfigurationSection(particleName);
+        ConfigurationSection effect = Main.getMainConfig().getConfigurationSection(particleName);
         if (effect != null && effect.isSet("type")) {
             try {
                 String type = effect.getString("type");
-                if (type.equalsIgnoreCase("List")) {
+                if (type == null) {
+                    return;
+                }
+                if ("List".equalsIgnoreCase(type)) {
                     if (effect.isSet("list")) {
                         List<Map<String, Object>> sections = (List<Map<String, Object>>) effect.getList("list");
                         for (Map<String, Object> section : sections) {
@@ -48,6 +52,7 @@ public class SpawnEffects {
         Main.getInstance().getServer().getPluginManager().callEvent(secondEvent);
     }
 
+    @SuppressWarnings("unchecked")
     private static void useEffect(String type, Map<String, Object> effect, Player player, Game game) throws Throwable {
         if (type.equalsIgnoreCase("Particle")) {
             if (effect.containsKey("value")) {

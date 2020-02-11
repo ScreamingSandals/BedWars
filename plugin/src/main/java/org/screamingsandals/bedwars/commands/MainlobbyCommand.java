@@ -45,8 +45,8 @@ public class MainlobbyCommand implements IBasicCommand {
     public boolean onPlayerCommand(Player player, List<String> args) {
         if (args.size() == 1) {
             if (args.contains("enable")) {
-                Main.getConfigurator().config.set("mainlobby.enabled", true);
-                Main.getConfigurator().saveConfig();
+                Main.getMainConfig().set("mainlobby.enabled", true);
+                Main.getMainConfig().save();
 
                 mpr("commands.success.done.list.header").send(player);
                 mpr("commands.admin.main_lobby.info").send(player);
@@ -54,9 +54,9 @@ public class MainlobbyCommand implements IBasicCommand {
             } else if (args.contains("set")) {
                 Location location = player.getLocation();
 
-                Main.getConfigurator().config.set("mainlobby.location", MiscUtils.setLocationToString(location));
-                Main.getConfigurator().config.set("mainlobby.world", location.getWorld().getName());
-                Main.getConfigurator().saveConfig();
+                Main.getMainConfig().set("mainlobby.location", MiscUtils.setLocationToString(location));
+                Main.getMainConfig().set("mainlobby.world", location.getWorld().getName());
+                Main.getMainConfig().save();
 
                 mpr("commands.success.done.list.header").send(player);
                 return true;

@@ -75,7 +75,7 @@ public class TeamSelectorInventory implements Listener {
     	}
         FormatBuilder builder = new FormatBuilder();
         
-        ItemStack stack = Main.getConfigurator().readDefinedItem("team-select", Main.isLegacy() ? "WOOL" : "WHITE_WOOL");
+        ItemStack stack = Main.getMainConfig().readDefinedItem("team-select", Main.isLegacy() ? "WOOL" : "WHITE_WOOL");
         
         for (Team team : game.getTeams()) {
             ItemStack teamStack = Main.applyColor(team.color, stack, true);

@@ -1,10 +1,10 @@
-language: en #language code only
+language_code: en
 debug: false
 
 game-features:
   global:
     automaticly-color-colorable-items: true # automatic-coloring-in-shop
-    allow-in-game-crafting: false # allow-crafting
+    allow-crafting: false # allow-crafting
     allow-physics: true # allow-block-falling
     allow-friendly-fire: false # friendlyfire
     allow-item-drops-on-player-death: true #player-drops
@@ -18,16 +18,27 @@ game-features:
     disable-hunger-decreasing: false # disable-hunger
     explosions:
       destroy-placed-blocks-by-player: true # destroy-placed-blocks-by-explosion
-  spectators:
-    enabled: true
-    allow-join-to-game: true
-  player-respawn:
-    cooldown:
-      enabled: true
-      time: 5
-    protection:
+    destroyable-blocks: #farmBlocks.enable
       enabled: false
-      time 5
+      list: []
+    allowed-in-game-commands: []
+    allowed-in-game-commands-as-blacklist: false
+
+  items:
+    in-lobby:
+      leave-team: "SLIME_BALL"
+      join-team: "COMPASS"
+      start-game: "DIAMOND"
+      team-select: "WOOL"
+    shop:
+      cosmetic: "GRAY_STAINED_GLASS_PANE"
+      shop-back: "BARRIER"
+      page-back: "ARROW"
+      page-forward: "ARROW"
+  titles:
+    fade-in: 0
+    stay: 10
+    fade-out: 0
   lobby:
     on-team-join:
       give-leather-armor: true # in-lobby-colored-leather-by-team
@@ -35,6 +46,23 @@ game-features:
     join-random-team-after-end-of-countdown: false # join-randomly-after-lobby-timeout
     join-entity:
       show-name: true #jointeam-entity-show-name
+  spectators:
+    enabled: true
+    allow-join-to-game: true
+  on-player-respawn:
+    cooldown:
+      enabled: true
+      time: 5
+    protection:
+      enabled: false
+      time: 5
+
+  vault-rewards:
+    use: true
+    rewards:
+      win: 25
+      kill: 10
+      lost: 5
   spawners:
     holograms:
       enable: true # spawner-holograms
@@ -56,10 +84,17 @@ game-features:
       enabled: true
       items: []
 
-
-
 server:
   disable-server-messages:
     player-join: false
     player-leave: false
+
+bungeecord:
+  use: false
+  automaticaly-connect-players-to-game: false
+  on-game-end:
+    restart-server: true
+    stop-server: false
+    move-players-to-server: "hub"
+
 version: 3

@@ -56,7 +56,7 @@ public class PlayerListener implements Listener {
             CurrentTeam victimTeam = game.getPlayerTeam(gVictim);
             ChatColor victimColor = victimTeam.teamInfo.color.chatColor;
             List<ItemStack> drops = new ArrayList<>(event.getDrops());
-            int respawnTime = Main.getConfigurator().config.getInt("respawn-cooldown.time", 5);
+            int respawnTime = Main.getMainConfig().getInt("respawn-cooldown.time", 5);
 
             event.setKeepInventory(game.getOriginalOrInheritedKeepInventory());
             event.setDroppedExp(0);
@@ -66,9 +66,9 @@ public class PlayerListener implements Listener {
                     event.getDrops().clear();
                 }
 
-                if (Main.getConfigurator().config.getBoolean("chat.send-death-messages-just-in-game")) {
+                if (Main.getMainConfig().getBoolean("chat.send-death-messages-just-in-game")) {
                     String deathMessage = event.getDeathMessage();
-                    if (Main.getConfigurator().config.getBoolean("chat.send-custom-death-messages")) {
+                    if (Main.getMainConfig().getBoolean("chat.send-custom-death-messages")) {
                         if (event.getEntity().getKiller() != null) {
                             Player killer = event.getEntity().getKiller();
                             GamePlayer gKiller = Main.getPlayerGameProfile(killer);
@@ -105,13 +105,13 @@ public class PlayerListener implements Listener {
                         PlayerStatistic statistic = Main.getPlayerStatisticsManager().getStatistic(victim);
                         statistic.setCurrentLoses(statistic.getCurrentLoses() + 1);
                         statistic.setCurrentScore(statistic.getCurrentScore()
-                                + Main.getConfigurator().config.getInt("statistics.scores.lose", 0));
+                                + Main.getMainConfig().getInt("statistics.scores.lose", 0));
 
                     }
                     game.updateScoreboard();
                 }
 
-                boolean onlyOnBedDestroy = Main.getConfigurator().config.getBoolean("statistics.bed-destroyed-kills",
+                boolean onlyOnBedDestroy = Main.getMainConfig().getBoolean("statistics.bed-destroyed-kills",
                         false);
 
                 Player killer = victim.getKiller();
@@ -120,16 +120,16 @@ public class PlayerListener implements Listener {
                     if (gKiller.getGame() == game) {
                         if (!onlyOnBedDestroy || !team.isBed) {
                             game.dispatchRewardCommands("player-kill", killer,
-                                    Main.getConfigurator().config.getInt("statistics.scores.kill", 10));
+                                    Main.getMainConfig().getInt("statistics.scores.kill", 10));
                         }
                         if (team.isDead()) {
                             SpawnEffects.spawnEffect(game, victim, "game-effects.teamkill");
                             Sounds.playSound(killer, killer.getLocation(),
-                                    Main.getConfigurator().config.getString("sounds.on_team_kill"),
+                                    Main.getMainConfig().getString("sounds.on_team_kill"),
                                     Sounds.ENTITY_PLAYER_LEVELUP, 1, 1);
                         } else {
                             Sounds.playSound(killer, killer.getLocation(),
-                                    Main.getConfigurator().config.getString("sounds.on_player_kill"),
+                                    Main.getMainConfig().getString("sounds.on_player_kill"),
                                     Sounds.ENTITY_PLAYER_BIG_FALL, 1, 1);
                             Main.depositPlayer(killer, Main.getVaultKillReward());
                         }
@@ -150,7 +150,7 @@ public class PlayerListener implements Listener {
                     if (!onlyOnBedDestroy || teamIsDead) {
                         diePlayer.setCurrentDeaths(diePlayer.getCurrentDeaths() + 1);
                         diePlayer.setCurrentScore(diePlayer.getCurrentScore()
-                                + Main.getConfigurator().config.getInt("statistics.scores.die", 0));
+                                + Main.getMainConfig().getInt("statistics.scores.die", 0));
                     }
 
                     if (killer != null) {
@@ -159,14 +159,14 @@ public class PlayerListener implements Listener {
                             if (killerPlayer != null) {
                                 killerPlayer.setCurrentKills(killerPlayer.getCurrentKills() + 1);
                                 killerPlayer.setCurrentScore(killerPlayer.getCurrentScore()
-                                        + Main.getConfigurator().config.getInt("statistics.scores.kill", 10));
+                                        + Main.getMainConfig().getInt("statistics.scores.kill", 10));
                             }
                         }
                     }
                 }
             }
             PlayerUtils.respawn(Main.getInstance(), victim, 5L);
-            if (Main.getConfigurator().config.getBoolean("respawn-cooldown.enabled")
+            if (Main.getMainConfig().getBoolean("respawn-cooldown.enabled")
                     && victimTeam.isAlive()
                     && !gVictim.isSpectator) {
                 game.makeSpectator(gVictim, false);
@@ -182,7 +182,7 @@ public class PlayerListener implements Listener {
                         	MiscUtils.sendTitle(player,
                                     i18nonly("respawn_cooldown_title").replace("%time%", String.valueOf(livingTime)), "");
                             Sounds.playSound(player, player.getLocation(),
-                                    Main.getConfigurator().config.getString("sounds.on_respawn_cooldown_wait"),
+                                    Main.getMainConfig().getString("sounds.on_respawn_cooldown_wait"),
                                     Sounds.BLOCK_STONE_BUTTON_CLICK_ON, 1, 1);
                         }
 
@@ -190,7 +190,7 @@ public class PlayerListener implements Listener {
                         if (livingTime == 0) {
                             game.makePlayerFromSpectator(gamePlayer);
                             Sounds.playSound(player, player.getLocation(),
-                                    Main.getConfigurator().config.getString("sounds.on_respawn_cooldown_done"),
+                                    Main.getMainConfig().getString("sounds.on_respawn_cooldown_done"),
                                     Sounds.UI_BUTTON_CLICK, 1, 1);
 
                             this.cancel();
@@ -210,7 +210,7 @@ public class PlayerListener implements Listener {
             Main.unloadPlayerGameProfile(event.getPlayer());
         }
 
-        if (Main.getConfigurator().config.getBoolean("disable-server-message.player-join")) {
+        if (Main.getMainConfig().getBoolean("disable-server-message.player-join")) {
             event.setQuitMessage(null);
         }
     }
@@ -220,7 +220,7 @@ public class PlayerListener implements Listener {
         Player player = event.getPlayer();
         Game game = (Game) Main.getInstance().getFirstWaitingGame();
 
-        if (Game.isBungeeEnabled() && Main.getConfigurator().config.getBoolean("bungee.auto-game-connect", false)) {
+        if (Game.isBungeeEnabled() && Main.getMainConfig().getBoolean("bungee.auto-game-connect", false)) {
             new BukkitRunnable() {
                 public void run() {
                     try {
@@ -232,11 +232,12 @@ public class PlayerListener implements Listener {
             }.runTaskLater(Main.getInstance(), 1L);
         }
 
-        if (Main.getConfigurator().config.getBoolean("disable-server-message.player-join")) {
+        if (Main.getMainConfig().getBoolean("disable-server-message.player-join")) {
             event.setJoinMessage(null);
         }
     }
 
+    @SuppressWarnings("unchecked")
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerRespawn(PlayerRespawnEvent event) {
         if (Main.isPlayerInGame(event.getPlayer())) {
@@ -257,15 +258,14 @@ public class PlayerListener implements Listener {
             } else {
                 event.setRespawnLocation(gPlayer.getGame().getPlayerTeam(gPlayer).teamInfo.spawn);
 
-                if (Main.getConfigurator().config.getBoolean("respawn.protection-enabled", true)) {
+                if (Main.getMainConfig().getBoolean("respawn.protection-enabled", true)) {
                     RespawnProtection respawnProtection = game.addProtectedPlayer(gPlayer.player);
                     respawnProtection.runProtection();
                 }
 
                 SpawnEffects.spawnEffect(gPlayer.getGame(), gPlayer.player, "game-effects.respawn");
                 if (gPlayer.getGame().getOriginalOrInheritedPlayerRespawnItems()) {
-                    List<ItemStack> givedGameStartItems = (List<ItemStack>) Main.getConfigurator().config
-                            .getList("gived-player-respawn-items");
+                    List<ItemStack> givedGameStartItems = (List<ItemStack>) Main.getMainConfig().getList("gived-player-respawn-items");
                     for (ItemStack stack : givedGameStartItems) {
                         gPlayer.player.getInventory().addItem(Main.applyColor(team.getColor(), stack));
                     }
@@ -304,10 +304,10 @@ public class PlayerListener implements Listener {
             if (game.getStatus() == GameStatus.RUNNING
                     && GameCreator.isInArea(event.getBlock().getLocation(), game.getPos1(), game.getPos2())) {
                 Block block = event.getBlock();
-                int explosionTime = Main.getConfigurator().config.getInt("tnt.explosion-time", 8) * 20;
+                int explosionTime = Main.getMainConfig().getInt("tnt.explosion-time", 8) * 20;
 
                 if (block.getType() == Material.TNT
-                        && Main.getConfigurator().config.getBoolean("tnt.auto-ignite", false)) {
+                        && Main.getMainConfig().getBoolean("tnt.auto-ignite", false)) {
                     block.setType(Material.AIR);
                     Location location = block.getLocation().add(0.5, 0.5, 0.5);
                     ;
@@ -394,7 +394,7 @@ public class PlayerListener implements Listener {
                 event.setCancelled(true);
             }
 
-            if (game.getStatus() == GameStatus.RUNNING && Main.getConfigurator().config.getBoolean("disable-hunger")) {
+            if (game.getStatus() == GameStatus.RUNNING && Main.getMainConfig().getBoolean("disable-hunger")) {
                 event.setCancelled(true);
             }
         }
@@ -563,7 +563,7 @@ public class PlayerListener implements Listener {
                 if (game.getStatus() == GameStatus.WAITING || gPlayer.isSpectator) {
                     event.setCancelled(true);
                     if (event.getMaterial() == Material
-                            .valueOf(Main.getConfigurator().config.getString("items.jointeam", "COMPASS"))) {
+                            .valueOf(Main.getMainConfig().getString("items.jointeam", "COMPASS"))) {
                         if (game.getStatus() == GameStatus.WAITING) {
                             TeamSelectorInventory inv = game.getTeamSelectorInventory();
                             if (inv == null) {
@@ -574,7 +574,7 @@ public class PlayerListener implements Listener {
                             // TODO
                         }
                     } else if (event.getMaterial() == Material
-                            .valueOf(Main.getConfigurator().config.getString("items.startgame", "DIAMOND"))) {
+                            .valueOf(Main.getMainConfig().getString("items.startgame", "DIAMOND"))) {
                         if (game.getStatus() == GameStatus.WAITING && (player.hasPermission(Permissions.VIP.permission)
                                 || player.hasPermission(Permissions.VIP_START_ITEM.permission))) {
                             if (game.checkMinPlayers()) {
@@ -584,7 +584,7 @@ public class PlayerListener implements Listener {
                             }
                         }
                     } else if (event.getMaterial() == Material
-                            .valueOf(Main.getConfigurator().config.getString("items.leavegame", "SLIME_BALL"))) {
+                            .valueOf(Main.getMainConfig().getString("items.leavegame", "SLIME_BALL"))) {
                         game.leaveFromGame(player);
                     }
                 }
@@ -767,7 +767,7 @@ public class PlayerListener implements Listener {
             living.setRemoveWhenFarAway(false);
             living.setCanPickupItems(false);
             living.setCustomName(value.getTeam().color.chatColor + value.getTeam().name);
-            living.setCustomNameVisible(Main.getConfigurator().config.getBoolean("jointeam-entity-show-name", true));
+            living.setCustomNameVisible(Main.getMainConfig().getBoolean("jointeam-entity-show-name", true));
 
             if (living instanceof ArmorStand) {
                 ArmorStandUtils.equipArmorStand((ArmorStand) living, value.getTeam());
@@ -791,7 +791,7 @@ public class PlayerListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onChat(AsyncPlayerChatEvent event) {
-        if (event.isCancelled() || !Main.getConfigurator().config.getBoolean("chat.override")) {
+        if (event.isCancelled() || !Main.getMainConfig().getBoolean("chat.override")) {
             return;
         }
 
@@ -807,7 +807,7 @@ public class PlayerListener implements Listener {
             String displayName = player.getDisplayName();
             String playerListName = player.getPlayerListName();
 
-            String format = Main.getConfigurator().config.getString("chat.format", "<%teamcolor%%name%§r> ");
+            String format = Main.getMainConfig().getString("chat.format", "<%teamcolor%%name%§r> ");
             if (team != null) {
                 format = format.replace("%teamcolor%", team.teamInfo.color.chatColor.toString());
                 format = format.replace("%team%", team.teamInfo.name);
@@ -838,11 +838,11 @@ public class PlayerListener implements Listener {
 
             format = ChatColor.translateAlternateColorCodes('&', format);
 
-            boolean teamChat = Main.getConfigurator().config.getBoolean("chat.default-team-chat-while-running", true)
+            boolean teamChat = Main.getMainConfig().getBoolean("chat.default-team-chat-while-running", true)
                     && game.getStatus() == GameStatus.RUNNING && (team != null || spectator);
 
-            String allChat = Main.getConfigurator().config.getString("chat.all-chat-prefix", "@a");
-            String tChat = Main.getConfigurator().config.getString("chat.team-chat-prefix", "@t");
+            String allChat = Main.getMainConfig().getString("chat.all-chat-prefix", "@a");
+            String tChat = Main.getMainConfig().getString("chat.team-chat-prefix", "@t");
 
             if (message.startsWith(allChat)) {
                 teamChat = false;
@@ -854,12 +854,12 @@ public class PlayerListener implements Listener {
 
             if (teamChat) {
                 if (spectator) {
-                    format = Main.getConfigurator().config.getString("chat.death-chat", "[DEATH] ") + format;
+                    format = Main.getMainConfig().getString("chat.death-chat", "[DEATH] ") + format;
                 } else {
-                    format = Main.getConfigurator().config.getString("chat.team-chat", "[TEAM] ") + format;
+                    format = Main.getMainConfig().getString("chat.team-chat", "[TEAM] ") + format;
                 }
             } else {
-                format = Main.getConfigurator().config.getString("chat.all-chat", "[ALL] ") + format;
+                format = Main.getMainConfig().getString("chat.all-chat", "[ALL] ") + format;
             }
 
             event.setFormat(format + message.replaceAll("%", "%%")); // Fix using % in chat
@@ -868,14 +868,14 @@ public class PlayerListener implements Listener {
                 Player recipient = recipients.next();
                 GamePlayer recipientgPlayer = Main.getPlayerGameProfile(recipient);
                 Game recipientGame = recipientgPlayer.getGame();
-                if (recipientGame != game && Main.getConfigurator().config.getBoolean("chat.separate-game-chat")) {
+                if (recipientGame != game && Main.getMainConfig().getBoolean("chat.separate-game-chat")) {
                     recipients.remove();
                 } else if (game.getPlayerTeam(recipientgPlayer) != team && teamChat) {
                     recipients.remove();
                 }
             }
         } else {
-            if (Main.getConfigurator().config.getBoolean("chat.separate-game-chat")) {
+            if (Main.getMainConfig().getBoolean("chat.separate-game-chat")) {
                 Iterator<Player> recipients = event.getRecipients().iterator();
                 while (recipients.hasNext()) {
                     Player recipient = recipients.next();

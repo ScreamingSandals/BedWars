@@ -4,7 +4,6 @@ import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.ArenaTime;
 import org.screamingsandals.bedwars.api.game.ConfigVariables;
 import org.screamingsandals.bedwars.api.game.GameStore;
-import org.screamingsandals.bedwars.api.InGameConfigBooleanConstants;
 import org.screamingsandals.bedwars.region.FlatteningBedUtils;
 import org.screamingsandals.bedwars.region.LegacyBedUtils;
 import org.screamingsandals.bedwars.utils.TeamJoinMetaDataValue;
@@ -32,14 +31,14 @@ public class GameCreator {
     public static final String BEDWARS_TEAM_JOIN_METADATA = "bw-addteamjoin";
 
     private Game game;
-    private HashMap<String, GameStore> villagerstores = new HashMap<>();
+    private HashMap<String, GameStore> villagerStores = new HashMap<>();
 
     public GameCreator(Game game) {
         this.game = game;
         List<GameStore> gs = game.getGameStores();
         if (!gs.isEmpty()) {
             for (GameStore store : gs) {
-                villagerstores.put(store.getStoreLocation().getBlockX() + ";" + store.getStoreLocation().getBlockY()
+                villagerStores.put(store.getStoreLocation().getBlockX() + ";" + store.getStoreLocation().getBlockY()
                         + ";" + store.getStoreLocation().getBlockZ(), store);
             }
         }
@@ -204,7 +203,7 @@ public class GameCreator {
             }
         } else if (action.equalsIgnoreCase("save")) {
             List<GameStore> gamestores = new ArrayList<>();
-            for (Map.Entry<String, GameStore> vloc : villagerstores.entrySet()) {
+            for (Map.Entry<String, GameStore> vloc : villagerStores.entrySet()) {
                 gamestores.add(vloc.getValue());
             }
             boolean isTeamsSetCorrectly = true;
@@ -597,13 +596,13 @@ public class GameCreator {
             return i18n("admin_command_spawn_must_be_in_area");
         }
         String location = loc.getBlockX() + ";" + loc.getBlockY() + ";" + loc.getBlockZ();
-        if (villagerstores.containsKey(location)) {
+        if (villagerStores.containsKey(location)) {
             return i18n("admin_command_store_already_exists");
         }
         if (name != null) {
             name = ChatColor.translateAlternateColorCodes('&', name);
         }
-        villagerstores.put(location, new GameStore(loc, shop, useParent, name, name != null));
+        villagerStores.put(location, new GameStore(loc, shop, useParent, name, name != null));
         return i18n("admin_command_store_added").replace("%x%", Double.toString(loc.getX()))
                 .replace("%y%", Double.toString(loc.getY())).replace("%z%", Double.toString(loc.getZ()))
                 .replace("%yaw%", Float.toString(loc.getYaw())).replace("%pitch%", Float.toString(loc.getPitch()));
@@ -613,7 +612,7 @@ public class GameCreator {
         type = type.toUpperCase();
 
         String location = loc.getBlockX() + ";" + loc.getBlockY() + ";" + loc.getBlockZ();
-        if (villagerstores.containsKey(location)) {
+        if (villagerStores.containsKey(location)) {
             EntityType t = null;
             try {
                 t = EntityType.valueOf(type);
@@ -627,7 +626,7 @@ public class GameCreator {
                 return i18n("admin_command_wrong_living_entity_type");
             }
 
-            villagerstores.get(location).setEntityType(t);
+            villagerStores.get(location).setEntityType(t);
 
             return i18n("admin_command_store_living_entity_type_set").replace("%type%", t.toString());
         }
@@ -640,10 +639,10 @@ public class GameCreator {
             return i18n("admin_command_must_be_in_same_world");
         }
         String location = loc.getBlockX() + ";" + loc.getBlockY() + ";" + loc.getBlockZ();
-        if (!villagerstores.containsKey(location)) {
+        if (!villagerStores.containsKey(location)) {
             return i18n("admin_command_store_not_exists");
         }
-        villagerstores.remove(location);
+        villagerStores.remove(location);
         return i18n("admin_command_store_removed").replace("%x%", Double.toString(loc.getX()))
                 .replace("%y%", Double.toString(loc.getY())).replace("%z%", Double.toString(loc.getZ()))
                 .replace("%yaw%", Float.toString(loc.getYaw())).replace("%pitch%", Float.toString(loc.getPitch()));

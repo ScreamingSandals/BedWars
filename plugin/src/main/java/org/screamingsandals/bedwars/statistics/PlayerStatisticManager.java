@@ -39,11 +39,11 @@ public class PlayerStatisticManager {
     }
 
     public void initialize() {
-        if (!Main.getConfigurator().config.getBoolean("statistics.enabled", false)) {
+        if (!Main.getMainConfig().config.getBoolean("statistics.enabled", false)) {
             return;
         }
 
-        if (Main.getConfigurator().config.getString("statistics.type").equalsIgnoreCase("database")) {
+        if (Main.getMainConfig().config.getString("statistics.type").equalsIgnoreCase("database")) {
             this.initializeDatabase();
         } else {
             File file = new File(Main.getInstance().getDataFolder() + "/database/bw_stats_players.yml");
@@ -117,7 +117,7 @@ public class PlayerStatisticManager {
     }
 
     public PlayerStatistic loadStatistic(UUID uuid) {
-        if (Main.getConfigurator().config.getString("statistics.type").equalsIgnoreCase("database")) {
+        if (Main.getMainConfig().config.getString("statistics.type").equalsIgnoreCase("database")) {
             return this.loadDatabaseStatistic(uuid);
         } else {
             return this.loadYamlStatistic(uuid);
@@ -205,7 +205,7 @@ public class PlayerStatisticManager {
             return;
         }
 
-        if (Main.getConfigurator().config.getString("statistics.type").equalsIgnoreCase("database")) {
+        if (Main.getMainConfig().config.getString("statistics.type").equalsIgnoreCase("database")) {
             this.storeDatabaseStatistic(statistic);
         } else {
             this.storeYamlStatistic(statistic);
@@ -223,7 +223,7 @@ public class PlayerStatisticManager {
     }
 
     public void unloadStatistic(OfflinePlayer player) {
-        if (Main.getConfigurator().config.getString("statistics.type").equalsIgnoreCase("database")) {
+        if (Main.getMainConfig().config.getString("statistics.type").equalsIgnoreCase("database")) {
             this.playerStatistic.remove(player.getUniqueId());
         }
     }

@@ -95,7 +95,7 @@ public class WorldListener implements Listener {
             Game game = Main.getGame(s);
             if (game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) {
                 if (GameCreator.isInArea(event.getLocation(), game.getPos1(), game.getPos2())) {
-                    if (Main.getConfigurator().config.getBoolean("destroy-placed-blocks-by-explosion", true)) {
+                    if (Main.getMainConfig().getBoolean("destroy-placed-blocks-by-explosion", true)) {
                         event.blockList().removeIf(block -> !game.isBlockAddedDuringGame(block.getLocation()));
                     } else {
                         event.blockList().clear();
@@ -139,7 +139,7 @@ public class WorldListener implements Listener {
             } else /*if (game.getStatus() == GameStatus.WAITING) {*/
                 if (game.getLobbyWorld() == event.getLocation().getWorld()) {
                     if (event.getLocation().distanceSquared(game.getLobbySpawn()) <= Math
-                            .pow(Main.getConfigurator().config.getInt("prevent-lobby-spawn-mobs-in-radius"), 2)) {
+                            .pow(Main.getMainConfig().getInt("prevent-lobby-spawn-mobs-in-radius"), 2)) {
                         event.setCancelled(true);
                         return;
                     }

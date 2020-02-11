@@ -103,7 +103,7 @@ public abstract class BaseConfig {
         return yamlConfiguration.getConfigurationSection(path);
     }
 
-    public File createConfigFile(File dataFolder, String fileName) {
+    public static File createConfigFile(File dataFolder, String fileName) {
         dataFolder.mkdirs();
 
         File configFile = new File(dataFolder, fileName);
