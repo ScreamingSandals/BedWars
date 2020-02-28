@@ -3,7 +3,7 @@ lang_name: "Chinese"
 prefix: "&7[&fBed&4Wars&7]&r"
 item_shop_name: "商店"
 plugin:
-  version_info: "Version: %version%"
+  version_info: "版本: %version%"
 game:
   info:
     global:
@@ -27,13 +27,13 @@ game:
     player:
       already_running: "&c游戏 &7%arena% &c正在进行! 你不可以加入一个进行中的游戏!"
       full: "&c游戏玩家 &7%arena% &c已满! 请等待下一轮!"
-      rebuilding: "Game %arena% is rebuilding now."
+      rebuilding: "地圖 %arena% 正在重建中"
       vip:
         not_enough_players: "&c游戏人数不足!"
-        full: "&cGame &7%arena% &cis full of VIP players. Please wait for game end!"
+        full: "&c地圖 &7%arena% &c充滿了VIP玩家。請等待遊戲結束"
         kicked_by_vip: "&cYou were kicked by VIP player!"
       team:
-        selected: "&aSelected team: %team%&r &7[&a%players%&7/&a%maxplayers%&7]"
+        selected: "&a選擇隊伍: %team%&r &7[&a%players%&7/&a%maxplayers%&7]"
         already_selected: "&a你已经在: %team%&r队中 &7[&a%players%&7/&a%maxplayers%&7]"
         full: "&c队伍 %team% 已满!"
         you_won: "&a你的队伍赢得了比赛!"
