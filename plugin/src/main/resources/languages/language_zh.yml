@@ -66,27 +66,27 @@ game:
   spawners:
     countdown: "&e%seconds% &b秒"
     every_second: "&b每秒"
-    depleted: "§c§lSpawner is depleted"
-    not_enough_levels: "§cSpawner can't work! You need to upgrade by %levels% levels."
+    depleted: "§c§l重生器已耗盡"
+    not_enough_levels: "§c重生器無法運作! 你必須升級到 %levels% 等"
   guis:
     team_selector:
       name: "%teamName% &7(&e%inTeam% &f/ &e%maxInTeam%&7)"
       lore: "&f---------------------"
-      lore_full: "&fTeam is full!"
-      lore_join: "Click to join the team!"
+      lore_full: "&f該隊伍已經滿人"
+      lore_join: "點擊加入隊伍!"
   items:
     leave: "&c退出游戏"
-    start_game: "&eStart game"
+    start_game: "開始遊戲"
     team_selector: "&a选择队伍"
   specials:
-    already_active: "&cYou already activated this!"
+    already_active: "&c您已經啟動此授權"
     delay: "&c你要等待 %time% 才能再用这个物品!"
     trap:
       built: "&a 你已经设置了一个陷阱! 等待被触发吧!"
       caught: "&c你被 &f%team%&c的陷阱发现!"
       broadcast: "&f%player%&c 被你的陷阱抓住!"
     warp_powder:
-      canceled: "&cTeleporting was canceled."
+      canceled: "&c傳送已經取消"
       started: "&aTeleporting.. Please don't move for &7%time%&a seconds!"
     tracker:
       no_one: "&c目标未找到!"
