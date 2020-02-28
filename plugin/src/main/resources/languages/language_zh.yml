@@ -38,14 +38,14 @@ game:
         full: "&c队伍 %team% 已满!"
         you_won: "&a你的队伍赢得了比赛!"
         you_lost: "&c你的队伍输了比赛!"
-      vault_deposite: "&aAdded &7%coins% %currency%&a to your account!"
+      vault_deposite: "&a添加了 &7%coins% %currency%&a 到你的帳戶!"
       respawn_protection:
-        remaining: "&aRespawn protection will be gone in &f%time% &aseconds!"
-        end: "&cRespawn protection is gone!"
+        remaining: "&a重生保護將在 &f%time% &a秒後消失!"
+        end: "&c重生保護已消失!"
       respawn_cooldown:
-        title: "&aRespawn in: &c%time%"
-        title_cancel: "&cTeam is dead :("
-        respawned: "&aRespawned!"
+        title: "&a在 &c%time% &a秒後重生"
+        title_cancel: "&c 全滅 :("
+        respawned: "&a重生!!"
       chests:
         name: "&a&l队伍箱"
         not_yours: "&e这不是你们队的箱子!"
@@ -205,24 +205,24 @@ commands:
         countdown_time: "&7开始倒计时: &f%time% s"
         game_length: "&7游戏时长: &f%time% s"
         true_value: "&aTrue"
-        false_value: "&cFalse"
+        false_value: "&c否"
         inherit: "&e从插件配置获得"
         teams:
           header: "&7队伍:"
-          info: "- %team%&r (Maximal players in team: &7%maxplayers%&r)"
+          info: "- %team%&r (玩家上限: &7%maxplayers%&r)"
           spawn: "  &7队伍重生点: &fXYZ: &7%x%&r/&7%y%&r/&7%z%"
-          target: "  &7Target block: &fXYZ: &7%x%&r/&7%y%&r/&7%z%"
+          target: "  &7目標方塊: &fXYZ: &7%x%&r/&7%y%&r/&7%z%"
         spawners:
           header: "&7资源点:"
           info: "- %resource% &fXYZ: &7%x%&r/&7%y%&r/&7%z%"
-          no_team: "no team"
+          no_team: "未選擇隊伍"
         stores:
           header: "&7商店:"
           position: "- XYZ: &7%x%&r/&7%y%&r/&7%z%"
           entity_type: " 类型: &a%type%"
           custom_shop: "独立商店: &7%bool%"
           name: "商店名: &6%file%&r (inherit from main: &7%bool%&r)"
-          name_above: "  Custom name above head: &6%name%&r"
+          name_above: "  商店顯示名字: &6%name%&r"
           no_name_above: "&c名字未定"
         config:
           header: "&7常数配置:"
@@ -230,11 +230,11 @@ commands:
     add:
       added: "&a地图已添加!"
       already_exists: "&c地图名已存在!"
-      not_saved: "&cArena already exists but it's not saved!"
+      not_saved: "&c地圖名已經存在，但未完成配置!"
     remove:
       removed: "&c&l删除地图!"
     edit:
-      switched: "&aArena was switched to edit mode!"
+      switched: "&a地圖已經進入編輯模式!"
     info_sender:
       header: "&a请选择的信息部分 &7%arena%&a:"
       base: "&a基本信息&f - &7/bw admin %arena% info base"
