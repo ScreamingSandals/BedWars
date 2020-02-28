@@ -250,7 +250,7 @@ commands:
       join: "/bw join <arena> - &a加入游戏"
       leave: "/bw leave - &a离开了游戏"
       rejoin: "/bw rejoin - &a再次加入了游戏"
-      auto_join: "/bw autojoin - &aJoin to first waiting game"
+      auto_join: "/bw autojoin - &a加入第一個等待的遊戲"
       stats: "/bw stats - &a显示你的数据"
       stats_others: "/bw stats [player] - &a给其他玩家展示你的数据"
       admin:
@@ -282,7 +282,7 @@ commands:
         save: "/bw admin <arena> save - &a保存游戏并激活!"
         addholo: "/bw addholo - &e在玩家的位置添加一个全息图"
         removeholo: "/bw removeholo - &e执行此命令后，玩家可以右键单击全息统计数据来删除它."
-        mainlobby: "/bw mainlobby [enable|set] - &eEnables main lobby or sets main lobby location"
+        mainlobby: "/bw mainlobby [enable|set] - &e啟用主大廳或設置主大廳的位置"
         reload: "/bw reload - &c重新载入插件"
     messages:
       must_be_in_same_world: "&c所有命令要在一个世界中执行!"
@@ -293,7 +293,7 @@ commands:
       store_already_exists: "&c存储区已存在!"
       store_not_exists: "&c存储区不存在!"
       invalid_spawner_type: "&c出生点必须有 铜,铁,金,或其他!"
-      invalid_spawner_level: "&fWrong level number, default level 1 was used."
+      invalid_spawner_level: "&f錯誤的級別號，使用默認級別1。"
       invalid_color: "&c颜色不存在!"
       block_is_not_bed: "&c标记方块不是床!"
       max_players_fail: "&c最大玩家数量应 >= 1!"
