@@ -2988,6 +2988,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 		try {
 			respawnProtection.cancel();
 		} catch (Exception ignored) {
+			ignored.printStackTrace(); // we need to check errors
 		}
 
 		respawnProtectionMap.remove(player);
