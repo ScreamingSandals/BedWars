@@ -176,8 +176,8 @@ commands:
     failed: "&cEinige Spiele sind nicht innerhalb des Zeit-Limits geendet, also könnte deren Arena beschädigt sein!"
   statistics:
     header: "&aStatistiken von Spieler &7%player%&a:"
-    disabled: "&cPlayer statistics are disabled!"
-    not_found: "&cStatistics for this player were not found!"
+    disabled: "&cSpielerstatistiken sind deaktiviert!"
+    not_found: "&cStatistiken für diesen Spieler wurden nicht gefunden!"
     kills: "&7Kills: &a%kills%"
     deaths: "&7Tode: &e%deaths%"
     kd: "&7K/D: &a%kd%"
