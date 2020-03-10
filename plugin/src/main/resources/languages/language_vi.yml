@@ -1,14 +1,14 @@
 ---
 lang_name: "Tiếng Việt"
 prefix: "&7[&fBed&4Wars&7]&r"
-item_shop_name: "Shop"
+item_shop_name: "Cửa hàng"
 plugin:
-  version_info: "Version: %version%"
+  version_info: "Phiên Bản: %version%"
 game:
   info:
     global:
-      joined: "%name% &ajoined the game!&r &7[&a%players%&7/&a%maxplayers%&7]"
-      leaved: "%name% &cleft the game!"
+      joined: "%name% &đã tham gia!&r &7[a%players%&7/&a%maxplayers%&7]"
+      leaved: "%name% &đã rời khỏi trò chơi!"
       game_win: "&aTeam &r%team%&a won game in &7%time%"
       game_end: "&cGame ended! Thanks for playing!"
       players:
