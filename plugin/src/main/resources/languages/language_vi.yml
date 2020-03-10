@@ -217,26 +217,26 @@ commands:
           info: "- %resource% &7- %team% &7- &eHolo: &f%holo% &7- XYZ: &7%x%&r/&7%y%&r/&7%z%"
           no_team: "no team"
         stores:
-          header: "&7Stores:"
+          header: "&7Cửa hàng:"
           position: "- XYZ: &7%x%&r/&7%y%&r/&7%z%"
           entity_type: "  Type: &a%type%"
-          custom_shop: "  Has own shop: &7%bool%"
-          name: "  Shop name: &6%file%&r (inherit from main: &7%bool%&r)"
-          name_above: "  Custom name above head: &6%name%&r"
-          no_name_above: "&cNo name is set"
+          custom_shop: "  Có cửa hàng riêng: &7%bool%"
+          name: "  Cửa hàng tên: &6%file%&r (thừa kế từ chính: &7%bool%&r)"
+          name_above: "  Tên tùy chỉnh ở trên: &6%name%&r"
+          no_name_above: "&cKhông tên nào được đặt"
         config:
-          header: "&7Constants configuration:"
+          header: "&7Cấu hình hằng:"
           constant: "- &7%constant%&r: &7%value%"
     add:
-      added: "&aArena added!"
-      already_exists: "&cArena already exists!"
-      not_saved: "&cArena already exists but it's not saved!"
+      added: "&aĐã thêm đấu trường!"
+      already_exists: "&cĐấu trường này đã tồn tại!"
+      not_saved: "&cĐấu trường đã tồn tại nhưng nó chưa được lưu!"
     remove:
-      removed: "&c&lArena removed!"
+      removed: "&c&Đấu trường đã bị xóa!"
     edit:
-      switched: "&aArena was switched to edit mode!"
+      switched: "&aĐấu trường đã sang chế độ chỉnh sửa!"
     info_sender:
-      header: "&aPlease select information section of &7%arena%&a:"
+      header: "&aVui lòng chọn phần thông tin của &7%arena%&a:"
       base: "&aBase information&f - &7/bw admin %arena% info base"
       stores: "&aList of stores&f - &7/bw admin %arena% info stores"
       spawners: "&aList of spawners&f - &7/bw admin %arena% info spawners"
