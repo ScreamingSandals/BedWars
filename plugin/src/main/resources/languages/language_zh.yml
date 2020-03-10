@@ -211,7 +211,7 @@ commands:
           header: "&7队伍:"
           info: "- %team%&r (玩家上限: &7%maxplayers%&r)"
           spawn: "  &7队伍重生点: &fXYZ: &7%x%&r/&7%y%&r/&7%z%"
-          target: "  &7目標方塊: &fXYZ: &7%x%&r/&7%y%&r/&7%z%"
+          target: "  &7khối: &fXYZ: &7%x%&r/&7%y%&r/&7%z%"
         spawners:
           header: "&7资源点:"
           info: "- %resource% &fXYZ: &7%x%&r/&7%y%&r/&7%z%"
