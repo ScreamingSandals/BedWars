@@ -80,19 +80,19 @@ game:
     team_selector: "&aChọn đội"
   specials:
     already_active: "&cBạn đã kích hoạt điều này!"
-    delay: "&cYou need to wait %time% seconds before using this item again!"
+    delay: "&cBạn cần đợi %time% giây để sử dụng lại!"
     trap:
-      built: "&aYou've built a trap! Now wait for someone to get caught in it!"
-      caught: "&cYou got caught in trap of team &f%team%&c!"
-      broadcast: "&f%player%&c got caught in your team's trap!"
+      built: "&aBạn đã tạo ra một cái bẫy! Bây giờ hay đợi ai đó mắc bẫy của bạn!"
+      caught: "&cBạn đã bị mắc bẫy của đội &f%team%&c!"
+      broadcast: "&f%player%&c đã mắc bẫy của team bạn!"
     warp_powder:
-      canceled: "&cTeleporting was canceled."
-      started: "&aTeleporting.. Please don't move for &7%time%&a seconds!"
+      canceled: "&cDịch chuyển đã bị hủy."
+      started: "&aDịch chuyển.. Đừng chuyển động, hãy đợi &7%time%&a giây!"
     tracker:
-      no_one: "&cNo target found!"
-      found: "&f%target% &ahas been found &f%distance% &ablocks away!"
+      no_one: "&cKhông tìm thấy mục tiêu!"
+      found: "&f%target% &ađã được tìm thấy cách &f%distance% &akhối!"
     rescue_platform:
-      not_in_air: "&cYou need to be in the air."
+      not_in_air: "&cBạn cần phải ở trên không trung."
       destroyed_in: "&cPlatform will be destroyed in &f%time% &cseconds."
       created_unbreakable: "&aUnbreakable Platform was created!"
       created: "&aPlatform is created and will be destroyed in &f%time% &aseconds."
@@ -138,7 +138,7 @@ holograms:
   holo_removed: "&aHologram has been &lsuccessfully &aremoved!"
   game:
     beds:
-      protect_your_bed: "%teamcolor%&lProtect your bed!"
+      protect_your_bed: "%teamcolor%&lBảo vệ giường của bạn!"
       protect_your_target: "%teamcolor%&lProtect your target block!"
       protect_your_bed_destroyed: "&7&lBed is destroyed."
       protect_your_target_destroyed: "&7&lTarget block is destroyed."
