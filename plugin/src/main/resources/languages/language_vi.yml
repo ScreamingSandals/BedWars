@@ -79,7 +79,7 @@ game:
     start_game: "&eBắt đầu trò chơi"
     team_selector: "&aChọn đội"
   specials:
-    already_active: "&cYou already activated this!"
+    already_active: "&cBạn đã kích hoạt điều này!"
     delay: "&cYou need to wait %time% seconds before using this item again!"
     trap:
       built: "&aYou've built a trap! Now wait for someone to get caught in it!"
