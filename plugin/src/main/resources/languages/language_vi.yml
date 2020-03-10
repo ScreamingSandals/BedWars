@@ -93,89 +93,89 @@ game:
       found: "&f%target% &ađã được tìm thấy cách &f%distance% &akhối!"
     rescue_platform:
       not_in_air: "&cBạn cần phải ở trên không trung."
-      destroyed_in: "&cPlatform will be destroyed in &f%time% &cseconds."
-      created_unbreakable: "&aUnbreakable Platform was created!"
-      created: "&aPlatform is created and will be destroyed in &f%time% &aseconds."
+      destroyed_in: "&cPlatform sẽ bị hủy trong &f%time% &cgiây."
+      created_unbreakable: "&aPlatform không bị phá vỡ đã được tạo!"
+      created: "&cPlatform sẽ bị hủy trong &f%time% &cgiây."
     protection_wall:
-      not_usable_here: "&cThere is no space left for creating Protection Wall."
-      destroyed_in: "&cProtection Wall will be destroyed in &f%time% &cseconds."
-      created_unbreakable: "&aUnbreakable Protection Wall was created!"
-      created: "&aProtection Wall is created and will be destroyed in &f%time% &aseconds."
+      not_usable_here: "&cKhông còn chỗ trống để tạo tường bảo vệ."
+      destroyed_in: "&cTường bảo vệ sẽ bị hủy trong &f%time% &cgiây."
+      created_unbreakable: "&aPlatform không bị phá vỡ đã được tạo!"
+      created: "&Tường bảo vệ dã được tạo và sẽ bị hủy trong &f%time% &cgiây."
     tnt_sheep:
-      no_target_found: "&cNo target found!"
+      no_target_found: "&cKhông tìm thấy mục tiêu!"
     arror_blocker:
-      activated: "&aArrow blocker has been activated for %time% seconds!"
-      already_activated: "&cArrow blocker is already activated!"
-      ended: "&cArrow blocker is no longer activated!"
+      activated: "&aChặn mũi tên sẽ được kích hoạt trong %time% giây!"
+      already_activated: "&cChặn mũi tên đã được kíck hoạt!"
+      ended: "&cChặn mũi tên không còn được kíck hoạt!"
     golem:
-      created: "&aGolem has been spawned."
+      created: "&aGolem đã được triệu hội."
 arena:
   status:
     disabled: "&cDISABLED"
-    waiting: "&eWAITING"
-    running: "&aRUNNING"
+    waiting: "&eĐỢI"
+    running: "&aCHẠY"
     rebuilding: "&eREBUILDING"
 signs:
-  created: "&aSign was successfully created!"
-  not_created: "&cSign couldn't be created! Please check the name of the arena!"
-  cannot_destroy: "&cYou don't have permissions to destroy this sign!"
-  game_not_exists: "&cThe game that is written on the sign doesn't exist! Please contact an admin!"
+  created: "&aĐăng nhập đã được tạo thành công!"
+  not_created: "&cĐăng nhập chưa được tạo! Hãy kiểm tra lại trên đấu trường!"
+  cannot_destroy: "&cBạn không có quyền để hủy đăng nhập!"
+  game_not_exists: "&cTrò chơi được viết trên bảng hiệu không tồn tại! Vui lòng liên hệ với Admin!"
   status:
     disabled:
       line1: "&cGame"
       line2: "&cdisabled"
     rebuilding:
       line1: "&cGame"
-      line2: "&6rebuilding"
+      line2: "v"
     running:
       line1: "&aRunning"
       line2: "&c%players%&8/&c%maxplayers%"
     waiting:
-      line1: "&6Waiting"
+      line1: "&c%players%&8/&c%maxplayers%"
       line2: "&a%players%&8/&a%maxplayers%"
 holograms:
-  not_enabled: "&cHolograms are disabled."
-  holo_removed: "&aHologram has been &lsuccessfully &aremoved!"
+  not_enabled: "&cHình ba chiều bị vô hiệu hóa."
+  holo_removed: "&aHình ba chiều &lđã bị xóa &athành công!"
   game:
     beds:
       protect_your_bed: "%teamcolor%&lBảo vệ giường của bạn!"
-      protect_your_target: "%teamcolor%&lProtect your target block!"
-      protect_your_bed_destroyed: "&7&lBed is destroyed."
-      protect_your_target_destroyed: "&7&lTarget block is destroyed."
-      destroy_this_bed: "%teamcolor%&lDestroy this bed!"
-      destroy_this_target: "%teamcolor%&lDestroy this target block!"
+      protect_your_target: "%teamcolor%&lBảo vệ khối của bạn!"
+      protect_your_bed_destroyed: "&7&lGiường đã bị phá hủy."
+      protect_your_target_destroyed: "&7&lKhối đã bị phá hủy."
+      destroy_this_bed: "%teamcolor%&lPhá hủy chiếc giường này!"
+      destroy_this_target: "%teamcolor%&lPhá hủy khối này!"
 commands:
   success:
-    done: "&aCommand executed successfully!"
+    done: "&aLệnh thực hiện thành công!"
   errors:
-    unknown_command: "&cCommand unknown! Type &4/bw help &cfor help!"
-    unknown_usage: "&cNumber of arguments does not match the correct amount or unknown arguments! Type &4/bw help &cfor help!"
-    no_permissions: "&cYou don't have the permission to do that!"
-    not_allowed: "&cThis command is blocked while the game is running!"
-    not_for_console: "&cThis command is not supported for the console."
+    unknown_command: "&cLệnh không xác đinh! Bấm &4/bw help &cđể nhận trợ giúp!"
+    unknown_usage: "&cSố lượng đối số không khớp với số lượng chính xác hoặc đối số không xác định! Bấm &4/bw help &cđể nhận trợ giúp!"
+    no_permissions: "&cBạn không có quyền làm điều này!"
+    not_allowed: "&cLệnh này bị khóa vì bạn đang ở trong trò chơi!"
+    not_for_console: "&cLệnh này không được hỗ trợ cho giao diện điều khiển."
   holograms:
-    added: "&aHologram has been added to your position!"
-    click_to_remove: "&eNow click the &ahologram &eyou want to remove!"
+    added: "&aHologram đã được thêm vào vị trí của bạn!"
+    click_to_remove: "&eBây giờ bấm vào &ahologram &emà bạn muốn loại bỏ!"
   auto_join:
-    already_in_game: "&cYou are already in some game."
-    no_empty_game: "&cThere's no game empty game!"
+    already_in_game: "&cBạn đã ở trong một số trò chơi."
+    no_empty_game: "&cKhông có game trống game!"
   join:
-    already_in_game: "&cYou are already in some game."
-    not_found: "&cArena does not exists!"
+    already_in_game: "&cBạn đã ở trong một số trò chơi."
+    not_found: "&cĐấu trường không tồn tại!"
   leave:
-    not_in_game: "&cYou are not in game!"
+    not_in_game: "&cBạn không ở trong trò chơi!"
   list:
-    header: "&aAvailable arenas:"
+    header: "&aĐấu trường có sẵn:"
   main_lobby:
-    info: "&cWARNING&f: You need to execute /bw reload to make Mainlobby work!"
+    info: "&cCẢNH BÁO&f: Bạn cần thực thi /bw reload đẻ làm Mainlobby hoạt động!"
   rejoin:
-    already_in_game: "&cYou are already in some game."
-    no_game_found: "&cNo previous game found."
+    already_in_game: "&cBạn đã ở trong một số trò chơi."
+    no_game_found: "&cKhông tìm thấy trò chơi trước."
   reload:
     safe: "&aWaiting for safe stop of all games or for 60 seconds before reload!"
-    failed: "&cSome games have not ended within the time limit, so their arena may have been damaged!"
+    failed: "&cMột số trò chơi chưa kết thúc trong thời gian giới hạn, vì vậy đấu trường của chúng có thể đã bị hỏng!"
   statistics:
-    header: "&aStatistics of &7%player%&a:"
+    header: "&athống kê cho &7%player%&a:"
     disabled: "&cPlayer statistics are disabled!"
     not_found: "&cStatistics for this player were not found!"
     kills: "&7Kills: &a%kills%"
@@ -204,8 +204,8 @@ commands:
         min_players: "&7Minimal players of the game: &r%minplayers%"
         countdown_time: "&7Countdown before the game starts: &f%time% s"
         game_length: "&7Length of the game: &f%time% s"
-        true_value: "&aTrue"
-        false_value: "&cFalse"
+        true_value: "&aĐúng"
+        false_value: "&cSai"
         inherit: "&eInherited from plugin configuration"
         teams:
           header: "&7Teams:"
