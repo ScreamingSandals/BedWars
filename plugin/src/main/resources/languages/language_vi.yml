@@ -1,8 +1,8 @@
 ---
 lang_name: "Tiếng Việt"
-prefix: "[BW]"
-item_shop_name: "Shop"
-join: "%name% &ajoined the game!&r &7[&a%players%&7/&a%maxplayers%&7]"
+prefix: "[Bw]"
+item_shop_name: "Cửa hàng"
+join: "%name% &aĐã tham gia!&r &7[&a%players%&7/&a%maxplayers%&7]"
 leave: "%name% &cleft the game!"
 game_already_running: "&cGame &7%arena% &cis already running! You can't join a running game!"
 game_is_full: "&cGame &7%arena% &cis full! Please wait for game end!"
