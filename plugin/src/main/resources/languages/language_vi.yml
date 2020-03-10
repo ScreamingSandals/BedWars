@@ -72,12 +72,12 @@ game:
     team_selector:
       name: "%teamName% &7(&e%inTeam% &f/ &e%maxInTeam%&7)"
       lore: "&f---------------------"
-      lore_full: "&fTeam is full!"
-      lore_join: "Click to join the team!"
+      lore_full: "&fĐội! đã đầy!"
+      lore_join: "Bấm để tham gia team!"
   items:
-    leave: "&cLeave the game"
-    start_game: "&eStart game"
-    team_selector: "&aSelect team"
+    leave: "&cThoát trò chơi"
+    start_game: "&eBắt đầu trò chơi"
+    team_selector: "&aChọn đội"
   specials:
     already_active: "&cYou already activated this!"
     delay: "&cYou need to wait %time% seconds before using this item again!"
