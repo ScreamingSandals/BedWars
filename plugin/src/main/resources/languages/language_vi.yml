@@ -176,18 +176,18 @@ commands:
     failed: "&cMột số trò chơi chưa kết thúc trong thời gian giới hạn, vì vậy đấu trường của chúng có thể đã bị hỏng!"
   statistics:
     header: "&athống kê cho &7%player%&a:"
-    disabled: "&cPlayer statistics are disabled!"
-    not_found: "&cStatistics for this player were not found!"
-    kills: "&7Kills: &a%kills%"
-    deaths: "&7Deaths: &e%deaths%"
+    disabled: "&cThông kê người chơi bị vô hiệu hóa!"
+    not_found: "&cSố liệu thống kê cho người chơi này không được tìm thấy!"
+    kills: "&7Giết chết: &a%kills%"
+    deaths: "&7Chết: &e%deaths%"
     kd: "&7K/D: &a%kd%"
-    wins: "&7Wins: &a%wins%"
-    loses: "&7Loses: &c%loses%"
-    games: "&7Played games: &b%games%"
-    beds: "&7Destroyed beds: &a%beds%"
-    score: "&7Total score: &a%score%"
+    wins: "&7Thắng: &a%wins%"
+    loses: "&7Thua: &c%loses%"
+    games: "&7Đã chơi: &b%games%"
+    beds: "&7Phá hủy giường: &a%beds%"
+    score: "&7Tổng điểm: &a%score%"
   admin:
-    usage: "&cUsage: &f/bw admin <arena> <add|edit|remove|save|...> ..."
+    usage: "&cSử dụng: &f/bw admin <arena> <add|edit|remove|save|...> ..."
     arena:
       errors:
         not_found: "&cArena not found!"
