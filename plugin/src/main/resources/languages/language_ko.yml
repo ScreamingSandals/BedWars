@@ -1,13 +1,13 @@
 ---
 lang_name: "한국어"
-prefix: "&7[&fBed&4Wars&7]&r"
-item_shop_name: "Shop"
+prefix: "&7[&f베드&4워즈&7]&r"
+item_shop_name: "상점"
 plugin:
-  version_info: "Version: %version%"
+  version_info: "버전: %version%"
 game:
   info:
     global:
-      joined: "%name% &ajoined the game!&r &7[&a%players%&7/&a%maxplayers%&7]"
+      joined: "%name% &a이/가 게임에 참여했습니다!&r &7[&a%players%&7/&a%maxplayers%&7]"
       leaved: "%name%&c님이 나갔습니다!"
       game_win: "&aTeam &r%team%&a won game in &7%time%"
       game_end: "&cGame ended! Thanks for playing!"
