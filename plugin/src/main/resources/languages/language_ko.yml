@@ -54,15 +54,15 @@ game:
   shop:
     succes: "&aSuccessfully purchased &7%item%&a for &7%material%&a!"
     failed: "&cLack of material to buy &7%item%&c! Needed &7%material%&c!"
-    price: "Price:"
-    amount: "Amount:"
+    price: "가격:"
+    amount: "수량:"
     page_back: "Page back"
     page_forward: "Page forward"
     category_back: "&cBack to category list"
   resources:
-    bronze: "Bronze"
-    iron: "Iron"
-    gold: "Gold"
+    bronze: "브론즈"
+    iron: "철"
+    gold: "골드"
   spawners:
     countdown: "&e%seconds% &bseconds"
     every_second: "&bevery second"
