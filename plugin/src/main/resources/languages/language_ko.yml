@@ -10,7 +10,7 @@ game:
       joined: "%name% &a이/가 게임에 참여했습니다!&r &7[&a%players%&7/&a%maxplayers%&7]"
       leaved: "%name%&c님이 나갔습니다!"
       game_win: "&aTeam &r%team%&a won game in &7%time%"
-      game_end: "&cGame ended! Thanks for playing!"
+      game_end: "&c게임이 끝났습니다! 플레이 해주셔서 감사합니다!"
       players:
         self_killed: "&cPlayer %victim% &cdied!"
         killed: "&cPlayer %killer% &ckilled %victim%&c!"
