@@ -1,6 +1,6 @@
 ---
 lang_name: "German"
-prefix: "[BW]"
+prefix: "[CrackBedwars]"
 item_shop_name: "Geschäft"
 join: "%name% &atritt dem Spiel bei!&r &7[&a%players%&7/&a%maxplayers%&7]"
 leave: "%name% &chat das Spiel verlassen!"
