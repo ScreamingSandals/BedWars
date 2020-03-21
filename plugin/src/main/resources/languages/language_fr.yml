@@ -38,7 +38,7 @@ game:
         full: "&cL'équipe %team% est pleine!"
         you_won: "Votre équipe a gagné !"
         you_lost: "&c Votre équipe a perdu!"
-      vault_deposite: "&aAdded &7%coins% %currency%&a to your account!"
+      vault_deposite: "&7%coins% %currency%&a ont été ajoutés à votre compte!"
       respawn_protection:
         remaining: "&aRespawn protection will be gone in &f%time% &aseconds!"
         end: "&cRespawn protection is gone!"
