@@ -176,8 +176,8 @@ commands:
     failed: "&cEinige Spiele sind nicht innerhalb des Zeit-Limits geendet, also könnte deren Arena beschädigt sein!"
   statistics:
     header: "&aStatistiken von Spieler &7%player%&a:"
-    disabled: "&cPlayer statistics are disabled!"
-    not_found: "&cStatistics for this player were not found!"
+    disabled: "&cSpielerstatistiken sind deaktiviert!"
+    not_found: "&cStatistiken für diesen Spieler wurden nicht gefunden!"
     kills: "&7Kills: &a%kills%"
     deaths: "&7Tode: &e%deaths%"
     kd: "&7K/D: &a%kd%"
@@ -187,7 +187,7 @@ commands:
     beds: "&7Zerstörte Betten: &a%beds%"
     score: "&7Punktzahl: &a%score%"
   admin:
-    usage: "&cUsage: &f/bw admin <arena> <add|edit|remove|save|...> ..."
+    usage: "&cBenutze: &f/bw admin <arena> <add|edit|remove|save|...>..."
     arena:
       errors:
         not_found: "&cArena nicht gefunden!"
@@ -209,9 +209,9 @@ commands:
         inherit: "&eÜbernehmen von Plugin Konfiguration"
         teams:
           header: "&7Teams:"
-          info: "- %team%&r (Maximal players in team: &7%maxplayers%&r)"
+          info: "- %team%&r (Maximale Spieleranzahl: &7%maxplayers%&r)"
           spawn: "  &7Team Spawn: &fXYZ: &7%x%&r/&7%y%&r/&7%z%"
-          target: "  &7Target block: &fXYZ: &7%x%&r/&7%y%&r/&7%z%"
+          target: "  &7Zielblock: &fXYZ: &7%x%&r/&7%y%&r/&7%z%"
         spawners:
           header: "&7Spawner:"
           info: "- %resource% &fXYZ: &7%x%&r/&7%y%&r/&7%z%"
@@ -222,7 +222,7 @@ commands:
           entity_type: "  Typ: &a%type%"
           custom_shop: "  Eigener Shop: &7%bool%"
           name: "  Shopname: &6%file%&r (Übernehmen von: &7%bool%&r)"
-          name_above: "  Custom name above head: &6%name%&r"
+          name_above: "  Name über dem Kopf: &6%name%&r"
           no_name_above: "&cKein Name ist gesetzt"
         config:
           header: "&7Optionen Konfiguration:"
@@ -230,11 +230,11 @@ commands:
     add:
       added: "&aSpiel wurde hinzugefügt!"
       already_exists: "&cDieses Spiel existiert bereits!"
-      not_saved: "&cArena already exists but it's not saved!"
+      not_saved: "&cArena existiert bereits, aber ist nicht gespeichert!"
     remove:
       removed: "&c&lSpiel wurde entfernt!"
     edit:
-      switched: "&aArena was switched to edit mode!"
+      switched: "&aArena wurde in den Bearbeitungsmodus gewechselt!"
     info_sender:
       header: "&aBitte wähle den Infotypen von &7%arena%&a:"
       base: "&aBasisinformation&f - &7/bw admin %arena% info base"

@@ -1,37 +1,37 @@
 ---
 lang_name: "한국어"
-prefix: "&7[&fBed&4Wars&7]&r"
-item_shop_name: "Shop"
+prefix: "&7[&f베드&4워즈&7]&r"
+item_shop_name: "상점"
 plugin:
-  version_info: "Version: %version%"
+  version_info: "버전: %version%"
 game:
   info:
     global:
-      joined: "%name% &ajoined the game!&r &7[&a%players%&7/&a%maxplayers%&7]"
+      joined: "%name% &a이/가 게임에 참여했습니다!&r &7[&a%players%&7/&a%maxplayers%&7]"
       leaved: "%name%&c님이 나갔습니다!"
-      game_win: "&aTeam &r%team%&a won game in &7%time%"
-      game_end: "&cGame ended! Thanks for playing!"
+      game_win: "&r%team%&a &a팀이 게임을 &7%time%에 이겼습니다."
+      game_end: "&c게임이 끝났습니다! 플레이 해주셔서 감사합니다!"
       players:
-        self_killed: "&cPlayer %victim% &cdied!"
-        killed: "&cPlayer %killer% &ckilled %victim%&c!"
+        self_killed: "%victim%이 &c죽었습니다!"
+        killed: "%killer%가 %victim%&c를 죽였습니다!"
       titles:
-        start: "&aGame started!"
-        start_subtitle: "&aGame &7%arena%&a has started! Enjoy the game!"
-        bed_is_destroyed: "Bed of %team%&r is destroyed!"
+        start: "&a게임 시작!"
+        start_subtitle: "&게임 &7%arena%&a 가 시작되었습니다! 게임을 즐기세요!"
+        bed_is_destroyed: "%team%&r의 침대가 부서졌습니다!"
         target_is_destroyed: "Target block of %team%&r is destroyed!"
-        bed_is_destroyed_subtitle: "You can now kill the team members!"
-        bed_is_destroyed_subtitle_for_victim: "Now you will never be respawned!"
+        bed_is_destroyed_subtitle: "이제 팀킬을 할 수 있습니다!"
+        bed_is_destroyed_subtitle_for_victim: "이제 다시 부활하지 못할 것입니다!"
       bossbar:
-        waiting: "&cThe game will begin shortly!"
-        running: "&aGame started! Good luck!"
+        waiting: "&c게임이 잠시후에 시작됩니다!"
+        running: "%a게임 시작! 행운을 빕니다!"
     player:
       already_running: "&cGame &7%arena% &c은 이미 시작했습니다! 시작한 게임에는 참여할수 없습니다!"
       full: "&cGame &7%arena% &c가 초과하였습니다. 게임이 끝날때까지 기다리세요!"
-      rebuilding: "Game %arena% is rebuilding now."
+      rebuilding: "게임 %arena%가 지금 다시 지어지고 있습니다."
       vip:
         not_enough_players: "&cNot enough players in arena!"
-        full: "&cGame &7%arena% &cis full of VIP players. Please wait for game end!"
-        kicked_by_vip: "&cYou were kicked by VIP player!"
+        full: "&c게임 &7%arena%&c가 VIP 플레이에들에 의해 꽉 찼습니다! 게임이 끝날때까지 기다려주세요!"
+        kicked_by_vip: "&cVIP 플레이어에 의해 강퇴되었습니다!"
       team:
         selected: "&aSelected team: %team%&r &7[&a%players%&7/&a%maxplayers%&7]"
         already_selected: "&aYou are already in team: %team%&r &7[&a%players%&7/&a%maxplayers%&7]"
@@ -54,15 +54,15 @@ game:
   shop:
     succes: "&aSuccessfully purchased &7%item%&a for &7%material%&a!"
     failed: "&cLack of material to buy &7%item%&c! Needed &7%material%&c!"
-    price: "Price:"
-    amount: "Amount:"
+    price: "가격:"
+    amount: "수량:"
     page_back: "Page back"
     page_forward: "Page forward"
     category_back: "&cBack to category list"
   resources:
-    bronze: "Bronze"
-    iron: "Iron"
-    gold: "Gold"
+    bronze: "브론즈"
+    iron: "철"
+    gold: "골드"
   spawners:
     countdown: "&e%seconds% &bseconds"
     every_second: "&bevery second"

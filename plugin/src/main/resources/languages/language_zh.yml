@@ -3,7 +3,7 @@ lang_name: "Chinese"
 prefix: "&7[&fBed&4Wars&7]&r"
 item_shop_name: "商店"
 plugin:
-  version_info: "Version: %version%"
+  version_info: "版本: %version%"
 game:
   info:
     global:
@@ -27,25 +27,25 @@ game:
     player:
       already_running: "&c游戏 &7%arena% &c正在进行! 你不可以加入一个进行中的游戏!"
       full: "&c游戏玩家 &7%arena% &c已满! 请等待下一轮!"
-      rebuilding: "Game %arena% is rebuilding now."
+      rebuilding: "地圖 %arena% 正在重建中"
       vip:
         not_enough_players: "&c游戏人数不足!"
-        full: "&cGame &7%arena% &cis full of VIP players. Please wait for game end!"
+        full: "&c地圖 &7%arena% &c充滿了VIP玩家。請等待遊戲結束"
         kicked_by_vip: "&cYou were kicked by VIP player!"
       team:
-        selected: "&aSelected team: %team%&r &7[&a%players%&7/&a%maxplayers%&7]"
+        selected: "&a選擇隊伍: %team%&r &7[&a%players%&7/&a%maxplayers%&7]"
         already_selected: "&a你已经在: %team%&r队中 &7[&a%players%&7/&a%maxplayers%&7]"
         full: "&c队伍 %team% 已满!"
         you_won: "&a你的队伍赢得了比赛!"
         you_lost: "&c你的队伍输了比赛!"
-      vault_deposite: "&aAdded &7%coins% %currency%&a to your account!"
+      vault_deposite: "&a添加了 &7%coins% %currency%&a 到你的帳戶!"
       respawn_protection:
-        remaining: "&aRespawn protection will be gone in &f%time% &aseconds!"
-        end: "&cRespawn protection is gone!"
+        remaining: "&a重生保護將在 &f%time% &a秒後消失!"
+        end: "&c重生保護已消失!"
       respawn_cooldown:
-        title: "&aRespawn in: &c%time%"
-        title_cancel: "&cTeam is dead :("
-        respawned: "&aRespawned!"
+        title: "&a在 &c%time% &a秒後重生"
+        title_cancel: "&c 全滅 :("
+        respawned: "&a重生!!"
       chests:
         name: "&a&l队伍箱"
         not_yours: "&e这不是你们队的箱子!"
@@ -66,27 +66,27 @@ game:
   spawners:
     countdown: "&e%seconds% &b秒"
     every_second: "&b每秒"
-    depleted: "§c§lSpawner is depleted"
-    not_enough_levels: "§cSpawner can't work! You need to upgrade by %levels% levels."
+    depleted: "§c§l重生器已耗盡"
+    not_enough_levels: "§c重生器無法運作! 你必須升級到 %levels% 等"
   guis:
     team_selector:
       name: "%teamName% &7(&e%inTeam% &f/ &e%maxInTeam%&7)"
       lore: "&f---------------------"
-      lore_full: "&fTeam is full!"
-      lore_join: "Click to join the team!"
+      lore_full: "&f該隊伍已經滿人"
+      lore_join: "點擊加入隊伍!"
   items:
     leave: "&c退出游戏"
-    start_game: "&eStart game"
+    start_game: "開始遊戲"
     team_selector: "&a选择队伍"
   specials:
-    already_active: "&cYou already activated this!"
+    already_active: "&c您已經啟動此授權"
     delay: "&c你要等待 %time% 才能再用这个物品!"
     trap:
       built: "&a 你已经设置了一个陷阱! 等待被触发吧!"
       caught: "&c你被 &f%team%&c的陷阱发现!"
       broadcast: "&f%player%&c 被你的陷阱抓住!"
     warp_powder:
-      canceled: "&cTeleporting was canceled."
+      canceled: "&c傳送已經取消"
       started: "&aTeleporting.. Please don't move for &7%time%&a seconds!"
     tracker:
       no_one: "&c目标未找到!"
@@ -205,24 +205,24 @@ commands:
         countdown_time: "&7开始倒计时: &f%time% s"
         game_length: "&7游戏时长: &f%time% s"
         true_value: "&aTrue"
-        false_value: "&cFalse"
+        false_value: "&c否"
         inherit: "&e从插件配置获得"
         teams:
           header: "&7队伍:"
-          info: "- %team%&r (Maximal players in team: &7%maxplayers%&r)"
+          info: "- %team%&r (玩家上限: &7%maxplayers%&r)"
           spawn: "  &7队伍重生点: &fXYZ: &7%x%&r/&7%y%&r/&7%z%"
-          target: "  &7Target block: &fXYZ: &7%x%&r/&7%y%&r/&7%z%"
+          target: "  &7khối: &fXYZ: &7%x%&r/&7%y%&r/&7%z%"
         spawners:
           header: "&7资源点:"
           info: "- %resource% &fXYZ: &7%x%&r/&7%y%&r/&7%z%"
-          no_team: "no team"
+          no_team: "未選擇隊伍"
         stores:
           header: "&7商店:"
           position: "- XYZ: &7%x%&r/&7%y%&r/&7%z%"
           entity_type: " 类型: &a%type%"
           custom_shop: "独立商店: &7%bool%"
           name: "商店名: &6%file%&r (inherit from main: &7%bool%&r)"
-          name_above: "  Custom name above head: &6%name%&r"
+          name_above: "  商店顯示名字: &6%name%&r"
           no_name_above: "&c名字未定"
         config:
           header: "&7常数配置:"
@@ -230,11 +230,11 @@ commands:
     add:
       added: "&a地图已添加!"
       already_exists: "&c地图名已存在!"
-      not_saved: "&cArena already exists but it's not saved!"
+      not_saved: "&c地圖名已經存在，但未完成配置!"
     remove:
       removed: "&c&l删除地图!"
     edit:
-      switched: "&aArena was switched to edit mode!"
+      switched: "&a地圖已經進入編輯模式!"
     info_sender:
       header: "&a请选择的信息部分 &7%arena%&a:"
       base: "&a基本信息&f - &7/bw admin %arena% info base"
@@ -250,7 +250,7 @@ commands:
       join: "/bw join <arena> - &a加入游戏"
       leave: "/bw leave - &a离开了游戏"
       rejoin: "/bw rejoin - &a再次加入了游戏"
-      auto_join: "/bw autojoin - &aJoin to first waiting game"
+      auto_join: "/bw autojoin - &a加入第一個等待的遊戲"
       stats: "/bw stats - &a显示你的数据"
       stats_others: "/bw stats [player] - &a给其他玩家展示你的数据"
       admin:
@@ -282,7 +282,7 @@ commands:
         save: "/bw admin <arena> save - &a保存游戏并激活!"
         addholo: "/bw addholo - &e在玩家的位置添加一个全息图"
         removeholo: "/bw removeholo - &e执行此命令后，玩家可以右键单击全息统计数据来删除它."
-        mainlobby: "/bw mainlobby [enable|set] - &eEnables main lobby or sets main lobby location"
+        mainlobby: "/bw mainlobby [enable|set] - &e啟用主大廳或設置主大廳的位置"
         reload: "/bw reload - &c重新载入插件"
     messages:
       must_be_in_same_world: "&c所有命令要在一个世界中执行!"
@@ -293,7 +293,7 @@ commands:
       store_already_exists: "&c存储区已存在!"
       store_not_exists: "&c存储区不存在!"
       invalid_spawner_type: "&c出生点必须有 铜,铁,金,或其他!"
-      invalid_spawner_level: "&fWrong level number, default level 1 was used."
+      invalid_spawner_level: "&f錯誤的級別號，使用默認級別1。"
       invalid_color: "&c颜色不存在!"
       block_is_not_bed: "&c标记方块不是床!"
       max_players_fail: "&c最大玩家数量应 >= 1!"
