@@ -94,13 +94,13 @@ game:
     rescue_platform:
       not_in_air: "&cYou need to be in the air."
       destroyed_in: "&c平台将会在&f%time% &c秒后损坏."
-      created_unbreakable: "&aUnbreakable Platform was created!"
+      created_unbreakable: "&a牢不可破的平台已創建!"
       created: "&c平台已创建并会在 &f%time% &c秒后损坏."
     protection_wall:
-      not_usable_here: "&cThere is no space left for creating Protection Wall."
-      destroyed_in: "&cProtection Wall will be destroyed in &f%time% &cseconds."
-      created_unbreakable: "&aUnbreakable Protection Wall was created!"
-      created: "&aProtection Wall is created and will be destroyed in &f%time% &aseconds."
+      not_usable_here: "&c沒有空間可用於創建保護牆"
+      destroyed_in: "&c防護牆將在&f%time%&c秒鐘內被摧毀"
+      created_unbreakable: "&a牢不可破的保護牆已創建！"
+      created: "&a保護牆已創建，將在&f%time%&a秒內銷毀。"
     tnt_sheep:
       no_target_found: "&ctarget未找到!"
     arror_blocker:
@@ -108,7 +108,7 @@ game:
       already_activated: "&c挡箭牌已激活!"
       ended: "&c挡箭牌未激活!"
     golem:
-      created: "&aGolem has been spawned."
+      created: "&a鐵巨人已生成"
 arena:
   status:
     disabled: "&c禁用"
@@ -138,12 +138,12 @@ holograms:
   holo_removed: "&aHologram has been &lsuccessfully &aremoved!"
   game:
     beds:
-      protect_your_bed: "%teamcolor%&lProtect your bed!"
-      protect_your_target: "%teamcolor%&lProtect your target block!"
-      protect_your_bed_destroyed: "&7&lBed is destroyed."
-      protect_your_target_destroyed: "&7&lTarget block is destroyed."
-      destroy_this_bed: "%teamcolor%&lDestroy this bed!"
-      destroy_this_target: "%teamcolor%&lDestroy this target block!"
+      protect_your_bed: "%teamcolor%&l保護床!"
+      protect_your_target: "%teamcolor%&l保護目標方塊!"
+      protect_your_bed_destroyed: "&7&l床已被破壞"
+      protect_your_target_destroyed: "&7&l目標方塊已被摧毀"
+      destroy_this_bed: "%teamcolor%&l破壞這個床!"
+      destroy_this_target: "%teamcolor%&l破壞這個目標方塊!"
 commands:
   success:
     done: "&a命令执行成功!"
@@ -167,7 +167,7 @@ commands:
   list:
     header: "&aAvailable arenas:"
   main_lobby:
-    info: "&cWARNING&f: You need to execute /bw reload to make Mainlobby work!"
+    info: "&c警告&f: 您需要執行/ bw reload才能使大廳運作！"
   rejoin:
     already_in_game: "&c你已经在其他游戏中了."
     no_game_found: "&cNo previous game found."
@@ -197,14 +197,14 @@ commands:
         name: "&7名字: &r%name%"
         status: "&7状态: &r%status%"
         world: "&7世界: &r%world%"
-        pos1: "&7Position 1: &fXYZ: &7%x%&r/&7%y%&r/&7%z%"
-        pos2: "&7Position 2: &fXYZ: &7%x%&r/&7%y%&r/&7%z%"
+        pos1: "&7位置 1: &fXYZ: &7%x%&r/&7%y%&r/&7%z%"
+        pos2: "&7位置 2: &fXYZ: &7%x%&r/&7%y%&r/&7%z%"
         spectator: "&7观察者出生点: &fXYZ: &7%x%&r/&7%y%&r/&7%z%"
         lobby: "&7大厅: &fWorld: &7%world% &fXYZ: &7%x%&r/&7%y%&r/&7%z%"
         min_players: "&7Minimal players of the game: &r%minplayers%"
         countdown_time: "&7开始倒计时: &f%time% s"
         game_length: "&7游戏时长: &f%time% s"
-        true_value: "&aTrue"
+        true_value: "&a是"
         false_value: "&c否"
         inherit: "&e从插件配置获得"
         teams:
