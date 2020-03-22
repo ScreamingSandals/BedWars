@@ -1,8 +1,8 @@
 ---
 lang_name: "한국어"
-prefix: "[BW]"
-item_shop_name: "Shop"
-join: "%name% &ajoined the game!&r &7[&a%players%&7/&a%maxplayers%&7]"
+prefix: "[베드워즈]"
+item_shop_name: "상점"
+join: "%name% &a이/가 게임에 참여했습니다!&r &7[&a%players%&7/&a%maxplayers%&7]"
 leave: "%name%&c님이 나갔습니다!"
 game_already_running: "&cGame &7%arena% &c은 이미 시작했습니다! 시작한 게임에는 참여할수 없습니다!"
 game_is_full: "&cGame &7%arena% &c가 초과하였습니다. 게임이 끝날때까지 기다리세요!"
