@@ -868,6 +868,11 @@ public class PlayerListener implements Listener {
                     recipients.remove();
                 }
             }
+            
+            for (Player p : event.getRecipients()) {
+            	p.sendMessage(event.getFormat());
+            }
+            event.setCancelled(true);
         } else {
             if (Main.getConfigurator().config.getBoolean("chat.separate-chat.lobby") || Main.getConfigurator().config.getBoolean("chat.separate-chat.game")) {
                 Iterator<Player> recipients = event.getRecipients().iterator();
