@@ -15,7 +15,7 @@ game:
         self_killed: "&cJoueur %victim% &cest mort !"
         killed: "&cJoueur %killer% &cà tué %victim%&c !"
       titles:
-        start: "&aLa partie commence  !"
+        start: "&aLa partie commence !"
         start_subtitle: "&aLe partie &7%arena%&a a commencé ! Profitez du jeu !"
         bed_is_destroyed: "Le lit des %team%&r est détruit !"
         target_is_destroyed: "Le lit des %team%&r est détruit !"
@@ -23,7 +23,7 @@ game:
         bed_is_destroyed_subtitle_for_victim: "Maintenant, vous ne pouvez pas réapparaître !"
       bossbar:
         waiting: "&c La partie va commencer sous peu !"
-        running: "&ala partie commence ! bonne chance !"
+        running: "&c La partie va commencer sous peu !"
     player:
       already_running: "&cLa partie &7%arena% &c A déjà commencer ! Vous ne pouvez pas rejoindre la partie court !"
       full: "&cLa partie &7%arena% &c est complète ! Merci d'attendre la fin !"
@@ -209,9 +209,9 @@ commands:
         inherit: "&eHérité de la configuration du plugin"
         teams:
           header: "&7L'équipe:"
-          info: "- %team%&r (Maximal players in team: &7%maxplayers%&r)"
+          info: "- %team%&r (Nombre maximum de joueurs : &7%maxplayers%&r)"
           spawn: "  &7Apparition de l'équipe : &fXYZ: &7%x%&r/&7%y%&r/&7%z%"
-          target: "  &7Target block: &fXYZ: &7%x%&r/&7%y%&r/&7%z%"
+          target: "  &7Apparition de l'équipe : &fXYZ: &7%x%&r/&7%y%&r/&7%z%"
         spawners:
           header: "&7Spawners :"
           info: "- %resource% &7- %team% &7- &eHolo: &f%holo% &7- XYZ: &7%x%&r/&7%y%&r/&7%z%"
@@ -230,7 +230,7 @@ commands:
     add:
       added: "&aArène ajoutée !"
       already_exists: "&cL'arène existe déjà !"
-      not_saved: "&cArena already exists but it's not saved!"
+      not_saved: "&cL'arène existe déjà mais n'est pas terminée !"
     remove:
       removed: "&c&lArène supprimer !"
     edit:
