@@ -155,27 +155,27 @@ commands:
     not_for_console: "&cQuesto comando non è supportato per la console."
   holograms:
     added: "%aL'ologramma è stato aggiunto alla tua posizione!"
-    click_to_remove: "&eNow click the &ahologram &eyou want to remove!"
+    click_to_remove: "&eOra clicca l'&aologramma &eche vuoi rimuovere!"
   auto_join:
     already_in_game: "&cSei già in una partita."
-    no_empty_game: "&cThere's no game empty game!"
+    no_empty_game: "&cNon ci sono partite disponibili!"
   join:
     already_in_game: "&cSei già in una partita."
-    not_found: "&cArena does not exists!"
+    not_found: "&cL'arena non esiste!"
   leave:
-    not_in_game: "&cYou are not in game!"
+    not_in_game: "&cNon sei in partita!"
   list:
-    header: "&aAvailable arenas:"
+    header: "&aArene disponibili:"
   main_lobby:
-    info: "&cWARNING&f: You need to execute /bw reload to make Mainlobby work!"
+    info: "&cATTENZIONE&f: Devi eseguire /bw reload per far funzionare la lobby!"
   rejoin:
     already_in_game: "&cSei già in una partita."
-    no_game_found: "&cNo previous game found."
+    no_game_found: "&cNessuna partita precedente trovata."
   reload:
-    safe: "&aWaiting for safe stop of all games or for 60 seconds before reload!"
-    failed: "&cSome games have not ended within the time limit, so their arena may have been damaged!"
+    safe: "&aIn attesa di una chiusura sicura di tutti i giochi o per 60 secondi prima di ricaricare!"
+    failed: "&cAlcune partite non sono finite entro il limite di tempo, quindi la loro arena potrebbe essere stata danneggiata!"
   statistics:
-    header: "&aStatistics of &7%player%&a:"
+    header: "&aStatistiche di &7%player%&a:"
     disabled: "&cPlayer statistics are disabled!"
     not_found: "&cStatistics for this player were not found!"
     kills: "&7Kills: &a%kills%"
