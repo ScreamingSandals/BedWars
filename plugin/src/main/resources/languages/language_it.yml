@@ -141,17 +141,17 @@ holograms:
       protect_your_bed: "%teamcolor%&lProteggi il tuo letto!"
       protect_your_target: "%teamcolor%&lProteggi il tuo blocco bersaglio!"
       protect_your_bed_destroyed: "&7&lIl letto è distrutto."
-      protect_your_target_destroyed: "&7&lTarget block is destroyed."
-      destroy_this_bed: "%teamcolor%&lDestroy this bed!"
-      destroy_this_target: "%teamcolor%&lDestroy this target block!"
+      protect_your_target_destroyed: "&Il bersaglio della squadra &r è stato annientato."
+      destroy_this_bed: "%teamcolor%&lDistruggi questo letto!"
+      destroy_this_target: "%teamcolor%&lDistruggi questo blocco!"
 commands:
   success:
-    done: "&aCommand executed successfully!"
+    done: "&aCommando eseguito con successo!"
   errors:
     unknown_command: "&cComando sconosciuto! Scrivi &4/bw help &cper vedere la lista completa!"
     unknown_usage: "&cQualcosa non corrisponde, l'argomento è sbagliato o sconosciuto! Scrivi &4/bw help &cper altri comandi e contenuti!"
     no_permissions: "&cNon hai il permesso di fare questo!"
-    not_allowed: "&cThis command is blocked while the game is running!"
+    not_allowed: "&cNon puoi eseguire questo comando in partita!"
     not_for_console: "&cThis command is not supported for the console."
   holograms:
     added: "&aHologram has been added to your position!"
