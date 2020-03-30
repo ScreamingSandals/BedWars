@@ -12,14 +12,14 @@ game:
       game_win: "&aSquadra &r%team%&a Vince la partità in &7%time%"
       game_end: "&cGioco finito! Grazie per aver partecipato!"
       players:
-        self_killed: "&cGiocatori sconfitti %victim% &c!"
-        killed: "&c%killer% &cgioctori &cuccidono %victim%&c!"
+        self_killed: "&cIl giocatore %victim% &cè stato sconfitto!"
+        killed: "&c%killer% &cil giocatore ha &ucciso %victim%&c!"
       titles:
         start: "&aPartita iniziata!"
         start_subtitle: "&aPartita &7%arena%&a iniziata! Partecipa adesso!"
         bed_is_destroyed: "Il letto della squadra %team%&r è stato distrutto!"
         target_is_destroyed: "Il bersaglio della squadra %team%&r è stato agnentato!"
-        bed_is_destroyed_subtitle: "Ora puoi uccidere i compagni di squadra!"
+        bed_is_destroyed_subtitle: "Ora puoi uccidere i membri del team!"
         bed_is_destroyed_subtitle_for_victim: "Da questo momento non è più possibile rinascere!"
       bossbar:
         waiting: "&cLa partita inizierà a breve!"
