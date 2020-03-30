@@ -29,7 +29,7 @@ game:
       full: "&cИгра &7%arena% &cзаполнена! Подождите конца игры!"
       rebuilding: "Игра %arena% перезапускается."
       vip:
-        not_enough_players: "&cНедостаточно игроков для старта!"
+        not_enough_players: "&cНедостаточно игроков для начала!"
         full: "&cИгра &7%arena%&c заполнена VIP игроками. Подождите конца игры!"
         kicked_by_vip: "&cВы кикнуты зашедшим VIP игроком!"
       team:
@@ -44,8 +44,8 @@ game:
         end: "&cЗащита отключена!"
       respawn_cooldown:
         title: "&aВозрождение через: &c%time%"
-        title_cancel: "&cКоманда проиграла :("
-        respawned: "&aВы возродились!"
+        title_cancel: "&cКоманда мертва :("
+        respawned: "&aВозрождено!"
       chests:
         name: "&a&lКомандный сундук"
         not_yours: "&eСундук не принадлежит вашей команде!"
@@ -65,7 +65,7 @@ game:
     gold: "Золото"
   spawners:
     countdown: "&e%seconds% &bсек."
-    every_second: "&bкаждую секунду"
+    every_second: "&bежесекундно"
     depleted: "&c&lСпавнер истощён"
     not_enough_levels: "&cСпавнер не работает! Прокачайте его до %levels% уровня."
   guis:
@@ -269,7 +269,7 @@ commands:
         team_spawn: "/bw admin <арена> team spawn <team> - &eЗадать точку возрождения команды"
         team_bed: "/bw admin <арена> team bed <team> - &eЗадать главный блок команды (любой блок, не тольео кровать)"
         join_team: "/bw admin <арена> jointeam <team> - &eЗадать возможность"
-        spawner_add: "/bw admin <арена> spawner add <bronze|gold|iron> [hologram] [первый уровень] [имя] - &eДобавить спавнер ресурсов на ваших координатах"
+        spawner_add: "/bw admin <арена> spawner add <bronze|gold|iron> [голограма] [первый уровень] [имя] [команда] [максимум] - &eДобавить спавнер ресурсов на ваших координатах"
         spawner_reset: "/bw admin <арена> spawner reset - &eУбрать все спавнеры"
         store_add: "/bw admin <арена> store add [имя торговца] [файл] [использовать оригинал] - &eДобавить торговца"
         store_remove: "/bw admin <арена> store remove - &eУбрать торговца с ваших координат"
@@ -292,8 +292,8 @@ commands:
       game_saved_and_started: "&aАрена успешно сохранена! Теперь вы можете присоединиться к ней!"
       store_already_exists: "&cТорговец уже существует!"
       store_not_exists: "&cТорговец не существует!"
-      invalid_spawner_type: "&cСпавнер должен быть бронзой, железом, золотом или любым другим ресурсом из config.yml!"
-      invalid_spawner_level: "&fНеверный номер уровня, используется стандартный - 1."
+      invalid_spawner_type: "&cДанный тип спавнера ресурсов не существует!"
+      invalid_spawner_level: "&fНеверный номер уровня, использован стандартный - 1."
       invalid_color: "&cНеправильный цвет!"
       block_is_not_bed: "&cВыбранный блок не кровать!"
       max_players_fail: "&cМаксимальное кол-во игроков должно быть >= 1!"
