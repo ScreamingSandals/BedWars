@@ -3,7 +3,7 @@ lang_name: "(uʍop ǝpᴉsdn) ɥsᴉlƃuƎ"
 prefix: "&7[&4sɹɐM&fpǝq&7]"
 item_shop_name: "doɥS"
 plugin:
-  version_info: "Version: %version%"
+  version_info: "%version% :uoᴉsɹǝΛ"
 game:
   info:
     global:
@@ -26,8 +26,8 @@ game:
         running: "&a¡ʞɔnl pooפ ¡pǝʇɹɐʇs ǝɯɐפ"
     player:
       already_running: "&c¡ǝɯɐƃ ƃuᴉuunɹ ɐ uᴉoɾ ʇ,uɐɔ no⅄ ¡ƃuᴉuunɹ ʎpɐǝɹlɐ sᴉ &7%arena% &cǝɯɐפ"
-      full: "&cGame &7%arena% &cis full! Please wait for game end!"
-      rebuilding: "Game %arena% is rebuilding now."
+      full: "¡puǝ ǝɯɐƃ ɹoɟ ʇᴉɐʍ ǝsɐǝlԀ ¡llnɟ sᴉɔ⅋ %arena%ㄥ⅋ ǝɯɐפɔ⅋"
+      rebuilding: "˙ʍou ƃuᴉplᴉnqǝɹ sᴉ %arena% ǝɯɐפ"
       vip:
         not_enough_players: "&cNot enough players in arena!"
         full: "&cGame &7%arena% &cis full of VIP players. Please wait for game end!"
