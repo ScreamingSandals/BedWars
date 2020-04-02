@@ -23,6 +23,7 @@ import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.api.game.GameStore;
 import org.screamingsandals.bedwars.api.utils.ColorChanger;
 import org.screamingsandals.bedwars.commands.*;
+import org.screamingsandals.bedwars.config.Configurator;
 import org.screamingsandals.bedwars.database.DatabaseManager;
 import org.screamingsandals.bedwars.game.Game;
 import org.screamingsandals.bedwars.game.GamePlayer;
@@ -36,7 +37,6 @@ import org.screamingsandals.bedwars.placeholderapi.BedwarsExpansion;
 import org.screamingsandals.bedwars.special.SpecialRegister;
 import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.bedwars.utils.BedWarsSignOwner;
-import org.screamingsandals.bedwars.config.Configurator;
 import org.screamingsandals.lib.debug.Debug;
 import org.screamingsandals.lib.nms.holograms.HologramManager;
 import org.screamingsandals.lib.nms.utils.ClassStorage;
@@ -44,7 +44,13 @@ import org.screamingsandals.lib.signmanager.SignListener;
 import org.screamingsandals.lib.signmanager.SignManager;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static misat11.lib.lang.I18n.i18n;
 
@@ -223,7 +229,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         }
         return false;
     }
-    
+
     public static boolean isCommandLeaveShortcut(String command) {
         if (instance.configurator.config.getBoolean("leaveshortcuts.enabled")) {
             List<String> commands = (List<String>) instance.configurator.config.getList("leaveshortcuts.list");
@@ -232,7 +238,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
                     comm = "/" + comm;
                 }
                 if (comm.equals(command)) {
-                	return true;
+                    return true;
                 }
             }
         }
@@ -308,13 +314,13 @@ public class Main extends JavaPlugin implements BedwarsAPI {
     public static int getVersionNumber() {
         return instance.versionNumber;
     }
-    
+
     public static SignManager getSignManager() {
-    	return instance.signManager;
+        return instance.signManager;
     }
-    
+
     public static HologramManager getHologramManager() {
-    	return instance.manager;
+        return instance.manager;
     }
 
     public void onEnable() {
@@ -372,10 +378,10 @@ public class Main extends JavaPlugin implements BedwarsAPI {
             }
         } catch (Throwable ignored) {
         }
-        
+
         try {
             if (configurator.config.getBoolean("holograms.enabled")) {
-            	hologramInteraction = new NMSUtilsHologramInteraction();
+                hologramInteraction = new NMSUtilsHologramInteraction();
 
                 if (hologramInteraction != null) {
                     hologramInteraction.loadHolograms();
@@ -408,7 +414,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         if (versionNumber >= 112) {
             getServer().getPluginManager().registerEvents(new Player112Listener(), this);
         } else {
-        	getServer().getPluginManager().registerEvents(new PlayerBefore112Listener(), this);
+            getServer().getPluginManager().registerEvents(new PlayerBefore112Listener(), this);
         }
         getServer().getPluginManager().registerEvents(new VillagerListener(), this);
         getServer().getPluginManager().registerEvents(new WorldListener(), this);
@@ -461,18 +467,29 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 
         if (versionNumber < 109) {
             Bukkit.getConsoleSender().sendMessage(
-                    "§c[B§fW] §cIMPORTANT WARNING: You are using version older than 1.9! This version is not officially supported and some features may not work at all!");
+                    "§c[B§fW] §cIMPORTANT WARNING: You are using version older than 1.9! This version is not officially supported, and some features may not work at all!");
         }
 
-        File folder = new File(getDataFolder().toString(), "arenas");
-        if (folder.exists()) {
-            File[] listOfFiles = folder.listFiles();
-            if (listOfFiles.length > 0) {
-                for (File listOfFile : listOfFiles) {
-                    if (listOfFile.isFile()) {
-                        Game.loadGame(listOfFile);
+
+        final File arenasFolder = new File(getDataFolder(), "arenas");
+        if (arenasFolder.exists()) {
+            try (Stream<Path> stream = Files.walk(Paths.get(new File(getDataFolder(), "arenas").getAbsolutePath()))) {
+                final List<String> results = stream.filter(Files::isRegularFile)
+                        .map(Path::toString)
+                        .collect(Collectors.toList());
+
+                if (results.isEmpty()) {
+                    Debug.info("No arenas have been found!", true);
+                } else {
+                    for (String result : results) {
+                        File file = new File(result);
+                        if (file.exists() && file.isFile()) {
+                            Game.loadGame(file);
+                        }
                     }
                 }
+            } catch (IOException e) {
+                e.printStackTrace(); // maybe remove after testing
             }
         }
 
@@ -497,7 +514,6 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 
         } catch (Throwable ignored) {
             // maybe something here can cause exception
-
         }
 
         spigetUpdate = new SpigetUpdate(this, 63714);
@@ -658,16 +674,16 @@ public class Main extends JavaPlugin implements BedwarsAPI {
     public ColorChanger getColorChanger() {
         return colorChanger;
     }
-    
+
     public static ItemStack applyColor(TeamColor color, ItemStack itemStack) {
-    	return applyColor(color, itemStack, false);
+        return applyColor(color, itemStack, false);
     }
 
     public static ItemStack applyColor(TeamColor color, ItemStack itemStack, boolean clone) {
         org.screamingsandals.bedwars.api.TeamColor teamColor = color.toApiColor();
         if (clone) {
-        	itemStack = itemStack.clone();
-        } 
+            itemStack = itemStack.clone();
+        }
         return instance.getColorChanger().applyColor(teamColor, itemStack);
     }
 

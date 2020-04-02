@@ -1,5 +1,6 @@
 package org.screamingsandals.bedwars.game;
 
+import org.bukkit.entity.Entity;
 import org.screamingsandals.bedwars.api.Team;
 import org.screamingsandals.lib.nms.holograms.Hologram;
 
@@ -109,11 +110,7 @@ public class ItemSpawner implements org.screamingsandals.bedwars.api.game.ItemSp
     	}
     	
     	/* Update spawned items */
-    	for (Item item : new ArrayList<>(spawnedItems)) {
-    		if (item.isDead()) {
-    			spawnedItems.remove(item);
-    		}
-    	}
+        spawnedItems.removeIf(Entity::isDead);
     	
     	int spawned = spawnedItems.size();
     	
