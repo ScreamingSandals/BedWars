@@ -48,6 +48,7 @@ import org.screamingsandals.bedwars.region.FlatteningRegion;
 import org.screamingsandals.bedwars.region.LegacyRegion;
 import org.screamingsandals.bedwars.statistics.PlayerStatistic;
 import org.screamingsandals.bedwars.utils.*;
+import org.screamingsandals.lib.debug.Debug;
 import org.screamingsandals.lib.nms.entity.EntityUtils;
 import org.screamingsandals.lib.nms.holograms.Hologram;
 import org.screamingsandals.lib.signmanager.SignBlock;
@@ -1348,6 +1349,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	public void makePlayerFromSpectator(GamePlayer gamePlayer) {
 		Player player = gamePlayer.player;
 		CurrentTeam currentTeam = getPlayerTeam(gamePlayer);
@@ -1370,9 +1372,11 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 	                if (gamePlayer.getGame().getOriginalOrInheritedPlayerRespawnItems()) {
 	                    List<ItemStack> givedGameStartItems = (List<ItemStack>) Main.getConfigurator().config
 	                            .getList("gived-player-respawn-items");
-	                    for (ItemStack stack : givedGameStartItems) {
-	                    	gamePlayer.player.getInventory().addItem(Main.applyColor(currentTeam.getColor(), stack));
-	                    }
+	                    if (givedGameStartItems != null) {
+	                    	MiscUtils.giveItemsToPlayer(givedGameStartItems, player);
+						} else {
+							Debug.warn("You have wrongly configured gived-player-respawn-items!", true);
+						}
 	                }
 				}
 			}.runTask(Main.getInstance());
@@ -1388,6 +1392,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public void run() {
 		// Phase 1: Check if game is running
 		if (status == GameStatus.DISABLED) { // Game is not running, why cycle is still running?
@@ -1586,8 +1591,10 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 							if (getOriginalOrInheritedGameStartItems()) {
 								List<ItemStack> givedGameStartItems = (List<ItemStack>) Main.getConfigurator().config
 									.getList("gived-game-start-items");
-								for (ItemStack stack : givedGameStartItems) {
-									player.player.getInventory().addItem(Main.applyColor(team.getColor(), stack));
+								if (givedGameStartItems != null) {
+									MiscUtils.giveItemsToPlayer(givedGameStartItems, player.player);
+								} else {
+									Debug.warn("You have wrongly configured gived-player-start-items!", true);
 								}
 							}
 							SpawnEffects.spawnEffect(this, player.player, "game-effects.start");

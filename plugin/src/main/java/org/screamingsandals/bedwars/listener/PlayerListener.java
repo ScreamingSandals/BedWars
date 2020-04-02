@@ -36,6 +36,7 @@ import org.screamingsandals.bedwars.game.*;
 import org.screamingsandals.bedwars.inventories.TeamSelectorInventory;
 import org.screamingsandals.bedwars.statistics.PlayerStatistic;
 import org.screamingsandals.bedwars.utils.*;
+import org.screamingsandals.lib.debug.Debug;
 import org.screamingsandals.lib.nms.entity.PlayerUtils;
 
 import java.util.ArrayList;
@@ -241,6 +242,7 @@ public class PlayerListener implements Listener {
         }
     }
 
+    @SuppressWarnings("unchecked")
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerRespawn(PlayerRespawnEvent event) {
         if (Main.isPlayerInGame(event.getPlayer())) {
@@ -270,8 +272,10 @@ public class PlayerListener implements Listener {
                 if (gPlayer.getGame().getOriginalOrInheritedPlayerRespawnItems()) {
                     List<ItemStack> givedGameStartItems = (List<ItemStack>) Main.getConfigurator().config
                             .getList("gived-player-respawn-items");
-                    for (ItemStack stack : givedGameStartItems) {
-                        gPlayer.player.getInventory().addItem(Main.applyColor(team.getColor(), stack));
+                    if (givedGameStartItems != null) {
+                        MiscUtils.giveItemsToPlayer(givedGameStartItems, gPlayer.player);
+                    } else {
+                        Debug.warn("You have wrongly configured gived-player-respawn-items!", true);
                     }
                 }
             }

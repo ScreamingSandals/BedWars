@@ -1,5 +1,6 @@
 package org.screamingsandals.bedwars.utils;
 
+import misat11.lib.lang.I;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Location;
@@ -7,6 +8,9 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 import org.screamingsandals.bedwars.Main;
@@ -17,6 +21,7 @@ import org.screamingsandals.bedwars.game.GamePlayer;
 import org.screamingsandals.bedwars.game.Team;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import static misat11.lib.lang.I18n.i18nonly;
@@ -250,5 +255,24 @@ public class MiscUtils {
             direction.normalize();
         }
         return direction;
+    }
+
+    public static void giveItemsToPlayer(List<ItemStack> itemStackList, Player player) {
+        for (ItemStack itemStack : itemStackList) {
+            final String materialName = itemStack.getType().toString();
+            final PlayerInventory playerInventory = player.getInventory();
+
+            if (materialName.contains("HELMET")) {
+                playerInventory.setHelmet(itemStack);
+            } else if (materialName.contains("CHESTPLATE")) {
+                playerInventory.setChestplate(itemStack);
+            } else if (materialName.contains("LEGGINS")) {
+                playerInventory.setLeggings(itemStack);
+            } else if (materialName.contains("BOOTS")) {
+                playerInventory.setBoots(itemStack);
+            } else {
+                playerInventory.all(itemStack);
+            }
+        }
     }
 }
