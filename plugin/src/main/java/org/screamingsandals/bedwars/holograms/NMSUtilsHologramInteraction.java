@@ -59,9 +59,8 @@ public class NMSUtilsHologramInteraction implements IHologramInteraction, TouchH
         if (file.exists()) {
             YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
             List<Location> locations = (List<Location>) config.get("locations");
-            for (Location location : locations) {
-                this.hologramLocations.add(location);
-            }
+            assert locations != null;
+            this.hologramLocations.addAll(locations);
         }
 
         if (this.hologramLocations.size() == 0) {

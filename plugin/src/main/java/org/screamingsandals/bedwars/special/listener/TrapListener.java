@@ -66,12 +66,8 @@ public class TrapListener implements Listener {
 
     @EventHandler
     public void onTrapBreak(BedwarsPlayerBreakBlock event) {
-        Player player = event.getPlayer();
+        final Player player = event.getPlayer();
         if (!Main.isPlayerInGame(player)) {
-            return;
-        }
-
-        if (!Main.isPlayerInGame(event.getPlayer())) {
             return;
         }
 

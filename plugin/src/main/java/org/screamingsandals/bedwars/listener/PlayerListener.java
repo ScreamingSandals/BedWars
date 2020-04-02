@@ -44,6 +44,7 @@ import java.util.List;
 
 import static misat11.lib.lang.I18n.i18n;
 import static misat11.lib.lang.I18n.i18nonly;
+import static org.screamingsandals.bedwars.commands.BaseCommand.ADMIN_PERMISSION;
 
 public class PlayerListener implements Listener {
 
@@ -227,7 +228,9 @@ public class PlayerListener implements Listener {
                     try {
                         game.joinToGame(player);
                     } catch (NullPointerException ignored) {
-                        BungeeUtils.movePlayerToBungeeServer(player, false);
+                        if (!player.hasPermission(ADMIN_PERMISSION)) {
+                            BungeeUtils.movePlayerToBungeeServer(player, false);
+                        }
                     }
                 }
             }.runTaskLater(Main.getInstance(), 1L);
@@ -737,7 +740,7 @@ public class PlayerListener implements Listener {
                     return;
                 }
             }
-        } else if (player.hasPermission(BaseCommand.ADMIN_PERMISSION)) {
+        } else if (player.hasPermission(ADMIN_PERMISSION)) {
             List<MetadataValue> values = player.getMetadata(GameCreator.BEDWARS_TEAM_JOIN_METADATA);
             if (values.size() == 0) {
                 return;

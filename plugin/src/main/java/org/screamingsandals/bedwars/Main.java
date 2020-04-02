@@ -473,7 +473,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 
         final File arenasFolder = new File(getDataFolder(), "arenas");
         if (arenasFolder.exists()) {
-            try (Stream<Path> stream = Files.walk(Paths.get(new File(getDataFolder(), "arenas").getAbsolutePath()))) {
+            try (Stream<Path> stream = Files.walk(Paths.get(arenasFolder.getAbsolutePath()))) {
                 final List<String> results = stream.filter(Files::isRegularFile)
                         .map(Path::toString)
                         .collect(Collectors.toList());
