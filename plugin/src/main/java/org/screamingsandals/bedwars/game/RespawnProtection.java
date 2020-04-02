@@ -11,6 +11,7 @@ public class RespawnProtection extends BukkitRunnable {
     private Game game;
     private Player player;
     private int length;
+    private boolean running = true;
 
     public RespawnProtection(Game game, Player player, int seconds) {
         this.game = game;
@@ -20,6 +21,7 @@ public class RespawnProtection extends BukkitRunnable {
 
     @Override
     public void run() {
+    	if (!running) return;
         if (length > 0) {
             MiscUtils.sendActionBarMessage(player, i18nonly("respawn_protection_remaining").replace("%time%", String.valueOf(this.length)));
 
@@ -27,6 +29,7 @@ public class RespawnProtection extends BukkitRunnable {
         if (length <= 0) {
             MiscUtils.sendActionBarMessage(player, i18nonly("respawn_protection_end"));
             game.removeProtectedPlayer(player);
+            running = false;
         }
         length--;
     }
