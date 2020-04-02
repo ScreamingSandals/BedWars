@@ -1373,7 +1373,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 	                    List<ItemStack> givedGameStartItems = (List<ItemStack>) Main.getConfigurator().config
 	                            .getList("gived-player-respawn-items");
 	                    if (givedGameStartItems != null) {
-	                    	MiscUtils.giveItemsToPlayer(givedGameStartItems, player);
+	                    	MiscUtils.giveItemsToPlayer(givedGameStartItems, player, currentTeam.getColor());
 						} else {
 							Debug.warn("You have wrongly configured gived-player-respawn-items!", true);
 						}
@@ -1592,7 +1592,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 								List<ItemStack> givedGameStartItems = (List<ItemStack>) Main.getConfigurator().config
 									.getList("gived-game-start-items");
 								if (givedGameStartItems != null) {
-									MiscUtils.giveItemsToPlayer(givedGameStartItems, player.player);
+									MiscUtils.giveItemsToPlayer(givedGameStartItems, player.player, team.getColor());
 								} else {
 									Debug.warn("You have wrongly configured gived-player-start-items!", true);
 								}

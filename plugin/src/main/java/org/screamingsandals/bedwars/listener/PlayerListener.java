@@ -273,7 +273,7 @@ public class PlayerListener implements Listener {
                     List<ItemStack> givedGameStartItems = (List<ItemStack>) Main.getConfigurator().config
                             .getList("gived-player-respawn-items");
                     if (givedGameStartItems != null) {
-                        MiscUtils.giveItemsToPlayer(givedGameStartItems, gPlayer.player);
+                        MiscUtils.giveItemsToPlayer(givedGameStartItems, gPlayer.player, team.getColor());
                     } else {
                         Debug.warn("You have wrongly configured gived-player-respawn-items!", true);
                     }

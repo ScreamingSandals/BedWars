@@ -15,6 +15,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.RunningTeam;
+import org.screamingsandals.bedwars.api.TeamColor;
 import org.screamingsandals.bedwars.api.events.BedwarsApplyPropertyToBoughtItem;
 import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.game.GamePlayer;
@@ -257,7 +258,7 @@ public class MiscUtils {
         return direction;
     }
 
-    public static void giveItemsToPlayer(List<ItemStack> itemStackList, Player player) {
+    public static void giveItemsToPlayer(List<ItemStack> itemStackList, Player player, TeamColor teamColor) {
         for (ItemStack itemStack : itemStackList) {
             final String materialName = itemStack.getType().toString();
             final PlayerInventory playerInventory = player.getInventory();
@@ -266,12 +267,12 @@ public class MiscUtils {
                 playerInventory.setHelmet(itemStack);
             } else if (materialName.contains("CHESTPLATE")) {
                 playerInventory.setChestplate(itemStack);
-            } else if (materialName.contains("LEGGINS")) {
+            } else if (materialName.contains("LEGGINGS")) {
                 playerInventory.setLeggings(itemStack);
             } else if (materialName.contains("BOOTS")) {
                 playerInventory.setBoots(itemStack);
             } else {
-                playerInventory.all(itemStack);
+                playerInventory.addItem(Main.applyColor(teamColor, itemStack));
             }
         }
     }
