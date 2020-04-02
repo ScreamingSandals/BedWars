@@ -3,7 +3,7 @@ lang_name: "Polski"
 prefix: "&7[&fBed&4Wars&7]&r"
 item_shop_name: "Sklep"
 plugin:
-  version_info: "Version: %version%"
+  version_info: "Wersja %%version%%"
 game:
   info:
     global:
