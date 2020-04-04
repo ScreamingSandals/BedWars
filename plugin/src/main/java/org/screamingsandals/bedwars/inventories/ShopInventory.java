@@ -24,6 +24,7 @@ import org.screamingsandals.bedwars.game.Game;
 import org.screamingsandals.bedwars.game.GamePlayer;
 import org.screamingsandals.bedwars.utils.Debugger;
 import org.screamingsandals.bedwars.utils.Sounds;
+import org.screamingsandals.lib.debug.Debug;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -266,13 +267,12 @@ public class ShopInventory implements Listener {
 			if (fileName != null) {
 				format.loadFromDataFolder(Main.getInstance().getDataFolder(), fileName);
 			}
-		} catch (Exception e) {
-			System.out.println("Wrong shop.yml configuration!");
-			e.printStackTrace();
+		} catch (Exception ignored) {
+			Debug.warn("Wrong shop.yml configuration!", true);
+			Debug.warn("Your villagers won't work, check validity of your YAML!", true);
 		}
 
 		format.generateData();
-
 		shopMap.put(name, format);
 	}
 

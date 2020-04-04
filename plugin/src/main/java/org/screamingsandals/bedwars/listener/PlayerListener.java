@@ -168,7 +168,9 @@ public class PlayerListener implements Listener {
                     }
                 }
             }
-            PlayerUtils.respawn(Main.getInstance(), victim, 5L);
+            if (Main.getVersionNumber() < 115) {
+                PlayerUtils.respawn(Main.getInstance(), victim, 5L);
+            }
             if (Main.getConfigurator().config.getBoolean("respawn-cooldown.enabled")
                     && victimTeam.isAlive()
                     && !gVictim.isSpectator) {
