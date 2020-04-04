@@ -469,6 +469,18 @@ public class Main extends JavaPlugin implements BedwarsAPI {
             Bukkit.getConsoleSender().sendMessage(
                     "§c[B§fW] §cIMPORTANT WARNING: You are using version older than 1.9! This version is not officially supported, and some features may not work at all!");
         }
+        try {
+        	float javaVer = Float.parseFloat(System.getProperty("java.class.version"));
+        	if (javaVer < 55) {
+        		getLogger().warning("Future versions of plugins from ScreamingSandals will require at least Java 11. "
+        			+ "Your server is not prepared for it. Update your Java or contact your hosting."
+        			+ "Java 8 for commercial usage is already out of casual support, for personal usage it's supported until December 2020!"
+        			+ "Java 9 and Java 10 were short-term support versions, these versions are already not supported.");
+        		getLogger().warning("Future versions of Java will require Minecraft version at least 1.12");
+        		
+        	}
+        } catch (Throwable t) { // What if it fails? Why it should fail I don't know :D
+        }
 
 
         final File arenasFolder = new File(getDataFolder(), "arenas");
