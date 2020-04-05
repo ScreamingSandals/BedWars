@@ -713,6 +713,11 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         return null;
     }
 
+    @Override
+    public String getHubServerName() {
+        return configurator.config.getString("bungee.server");
+    }
+
     public static boolean isDisabling() {
         return instance.isDisabling;
     }

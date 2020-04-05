@@ -146,7 +146,12 @@ public class GolemListener implements Listener {
                         Golem golem = (Golem) item;
                         if (golem.getEntity().equals(ironGolem)) {
                             if (event.getTarget() instanceof Player) {
-                                Player player = (Player) event.getTarget();
+                                final Player player = (Player) event.getTarget();
+                                if (game.isProtectionActive(player)) {
+                                    event.setCancelled(true);
+                                    return;
+                                }
+
                                 if (Main.isPlayerInGame(player)) {
                                     if (golem.getTeam() == game.getTeamOfPlayer(player)) {
                                     	event.setCancelled(true);
@@ -155,17 +160,11 @@ public class GolemListener implements Listener {
                                         if (playerTarget != null) {
                                         	// Oh. We found enemy!
                                             ironGolem.setTarget(playerTarget);
+                                            return;
                                         }
-                                    } else {
-                                        return;
                                     }
                                 }
-                                if (game.isProtectionActive(player)) {
-                                    event.setCancelled(true);
-                                }
                             }
-                            event.setCancelled(true);
-                            return;
                         }
                     }
                 }

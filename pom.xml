@@ -43,7 +43,8 @@
 	<modules>
 		<module>api</module>
 		<module>plugin</module>
-	</modules>
+        <module>addons</module>
+    </modules>
 
 	<build>
 		<defaultGoal>clean install</defaultGoal>
