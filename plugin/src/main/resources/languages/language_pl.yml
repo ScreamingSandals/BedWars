@@ -27,7 +27,7 @@ game:
     player:
       already_running: "&cNie można dołączyć do gry: Gra na arenie &7%arena% &cjest w toku!"
       full: "&cNie można dołączyć do gry: Arena &7%arena% &cjest już pełna!"
-      rebuilding: "Game %arena% is rebuilding now."
+      rebuilding: "Arena %arena% jest w trakcie odbudowy."
       vip:
         not_enough_players: "&cNiewystarczająca ilość graczy!"
         full: "&cGra &7%arena% &cjest już pełna!"
@@ -38,7 +38,7 @@ game:
         full: "&cBrak wolnych miejsc w drużynie: %team%!"
         you_won: "&aTwoja drużyna wygrała grę!"
         you_lost: "&cTwoja drużyna została wyeliminowana!"
-      vault_deposite: "&aDodano &7%coins% %currency%&a na twoje konto!"
+      vault_deposite: "&aZarobiłeś &7%coins% %currency%&a!"
       respawn_protection:
         remaining: "&aKoniec ochrony za &f%time% &as."
         end: "&cKoniec ochrony!"
