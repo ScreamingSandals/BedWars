@@ -18,7 +18,6 @@ public class Main extends JavaPlugin {
         Bukkit.getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 
         getServer().getPluginManager().registerEvents(new PlayerListener(), this);
-
         getServer().getLogger().log(Level.INFO, "Enabled!");
     }
 
