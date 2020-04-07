@@ -30,6 +30,7 @@
     <build>
         <sourceDirectory>src/main/java</sourceDirectory>
         <defaultGoal>clean install</defaultGoal>
+        <finalName>BedWars-Addons</finalName>
 
         <resources>
             <resource>

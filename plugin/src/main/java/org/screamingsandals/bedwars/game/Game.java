@@ -763,11 +763,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 		}
 
 		if (Main.getVersionNumber() >= 115) {
-			try {
 				game.world.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
-			} catch (NoSuchFieldError ignored) {
-				// Non 1.15 servers
-			}
 		}
 
 		game.pos1 = MiscUtils.readLocationFromString(game.world, configMap.getString("pos1"));
@@ -1674,6 +1670,10 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 								}
 							}
 						}
+					}
+
+					if (Main.getVersionNumber() >= 115) {
+						world.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
 					}
 
 					BedwarsGameStartedEvent startedEvent = new BedwarsGameStartedEvent(this);
