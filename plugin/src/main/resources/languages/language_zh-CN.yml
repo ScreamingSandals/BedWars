@@ -1,6 +1,6 @@
 ---
 lang_name: "English"
-prefix: "&7[&fBed&4Wars&7]&r"
+prefix: "&7[&f床&4战&7]&r"
 item_shop_name: "商店"
 plugin:
   version_info: "版本：%version%"
@@ -9,13 +9,13 @@ game:
     global:
       joined: "%name% &ajoined the game!&r &7[&a%players%&7/&a%maxplayers%&7]"
       leaved: "%name% &c退出游戏！"
-      game_win: "&aTeam &r%team%&a won game in &7%time%"
-      game_end: "&cGame ended! Thanks for playing!"
+      game_win: "&a球队 &r%team%&在&7%time% 赢得了游戏"
+      game_end: "&cGame 结束！感谢您的参与！"
       players:
-        self_killed: "&cPlayer %victim% &cdied!"
-        killed: "&cPlayer %killer% &ckilled %victim%&c!"
+        self_killed: "&c玩家 %victim% &c死了！"
+        killed: "&c玩家 %killer% &c杀了 %victim%&c!"
       titles:
-        start: "&aGame started!"
+        start: "&a游戏开始了！"
         start_subtitle: "&aGame &7%arena%&a has started! Enjoy the game!"
         bed_is_destroyed: "Bed of %team%&r is destroyed!"
         target_is_destroyed: "Target block of %team%&r is destroyed!"
@@ -44,8 +44,8 @@ game:
         end: "&cRespawn protection is gone!"
       respawn_cooldown:
         title: "&aRespawn in: &c%time%"
-        title_cancel: "&cTeam is dead :("
-        respawned: "&aRespawned!"
+        title_cancel: "&c球队覆灭了 :("
+        respawned: "&a重生了！"
       chests:
         name: "&a&lTeam chest"
         not_yours: "&eThis team chest isn't yours!"
