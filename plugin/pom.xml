@@ -90,9 +90,9 @@
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>misat11.lib.sgui</groupId>
-			<artifactId>SimpleGuiFormat</artifactId>
-			<version>0.0.10-snap7</version>
+			<groupId>org.screamingsandals.simpleinventories</groupId>
+			<artifactId>SimpleInventories-Core</artifactId>
+			<version>1.0.0</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
@@ -169,6 +169,10 @@
 								<relocation>
 									<pattern>org.screamingsandals.lib</pattern>
 									<shadedPattern>${project.groupId}.lib</shadedPattern>
+								</relocation>
+								<relocation>
+									<pattern>org.screamingsandals.simpleinventories</pattern>
+									<shadedPattern>${project.groupId}.lib.sgui</shadedPattern>
 								</relocation>
 							</relocations>
 						</configuration>

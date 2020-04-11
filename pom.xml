@@ -32,6 +32,10 @@
 			<id>codemc-repo</id>
 			<url>https://repo.codemc.org/repository/maven-public/</url>
 		</repository>
+		<repository>
+			<id>screaming-repo</id>
+			<url>https://repo.screamingsandals.org</url>
+		</repository>
 	</repositories>
 
 	<properties>

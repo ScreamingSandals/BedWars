@@ -1,7 +1,6 @@
 package org.screamingsandals.bedwars;
 
 import misat11.lib.lang.I18n;
-import misat11.lib.sgui.InventoryListener;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;
@@ -42,6 +41,7 @@ import org.screamingsandals.lib.nms.holograms.HologramManager;
 import org.screamingsandals.lib.nms.utils.ClassStorage;
 import org.screamingsandals.lib.signmanager.SignListener;
 import org.screamingsandals.lib.signmanager.SignManager;
+import org.screamingsandals.simpleinventories.listeners.InventoryListener;
 
 import java.io.File;
 import java.io.IOException;
@@ -418,7 +418,8 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         }
         getServer().getPluginManager().registerEvents(new VillagerListener(), this);
         getServer().getPluginManager().registerEvents(new WorldListener(), this);
-        getServer().getPluginManager().registerEvents(new InventoryListener(), this);
+        
+        InventoryListener.init(this);
 
         this.manager = new HologramManager(this);
 

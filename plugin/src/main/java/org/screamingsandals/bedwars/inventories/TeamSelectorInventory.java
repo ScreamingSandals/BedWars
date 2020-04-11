@@ -1,11 +1,5 @@
 package org.screamingsandals.bedwars.inventories;
 
-import misat11.lib.sgui.GuiHolder;
-import misat11.lib.sgui.MapReader;
-import misat11.lib.sgui.Options;
-import misat11.lib.sgui.SimpleGuiFormat;
-import misat11.lib.sgui.builder.FormatBuilder;
-import misat11.lib.sgui.events.PostActionEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -19,6 +13,12 @@ import org.screamingsandals.bedwars.api.events.BedwarsPlayerLeaveEvent;
 import org.screamingsandals.bedwars.game.Game;
 import org.screamingsandals.bedwars.game.GamePlayer;
 import org.screamingsandals.bedwars.game.Team;
+import org.screamingsandals.simpleinventories.SimpleInventories;
+import org.screamingsandals.simpleinventories.builder.FormatBuilder;
+import org.screamingsandals.simpleinventories.events.PostActionEvent;
+import org.screamingsandals.simpleinventories.inventory.GuiHolder;
+import org.screamingsandals.simpleinventories.inventory.Options;
+import org.screamingsandals.simpleinventories.utils.MapReader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +27,7 @@ import static misat11.lib.lang.I18n.i18nonly;
 
 public class TeamSelectorInventory implements Listener {
     private Game game;
-    private SimpleGuiFormat simpleGuiFormat;
+    private SimpleInventories simpleGuiFormat;
     private Options options;
     private List<Player> openedForPlayers = new ArrayList<>();
 
@@ -70,7 +70,7 @@ public class TeamSelectorInventory implements Listener {
     }
 
     private void createData() {
-        SimpleGuiFormat simpleGuiFormat = new SimpleGuiFormat(options);
+    	SimpleInventories simpleGuiFormat = new SimpleInventories(options);
         FormatBuilder builder = new FormatBuilder();
         
         ItemStack stack = Main.getConfigurator().readDefinedItem("team-select", Main.isLegacy() ? "WOOL" : "WHITE_WOOL");

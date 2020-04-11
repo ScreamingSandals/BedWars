@@ -1,9 +1,5 @@
 package org.screamingsandals.bedwars.inventories;
 
-import misat11.lib.sgui.*;
-import misat11.lib.sgui.events.GenerateItemEvent;
-import misat11.lib.sgui.events.PreActionEvent;
-import misat11.lib.sgui.events.ShopTransactionEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -25,6 +21,14 @@ import org.screamingsandals.bedwars.game.GamePlayer;
 import org.screamingsandals.bedwars.utils.Debugger;
 import org.screamingsandals.bedwars.utils.Sounds;
 import org.screamingsandals.lib.debug.Debug;
+import org.screamingsandals.simpleinventories.SimpleInventories;
+import org.screamingsandals.simpleinventories.events.GenerateItemEvent;
+import org.screamingsandals.simpleinventories.events.PreActionEvent;
+import org.screamingsandals.simpleinventories.events.ShopTransactionEvent;
+import org.screamingsandals.simpleinventories.inventory.Options;
+import org.screamingsandals.simpleinventories.item.ItemProperty;
+import org.screamingsandals.simpleinventories.item.PlayerItemInfo;
+import org.screamingsandals.simpleinventories.utils.MapReader;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,7 +39,7 @@ import static misat11.lib.lang.I18n.i18n;
 import static misat11.lib.lang.I18n.i18nonly;
 
 public class ShopInventory implements Listener {
-	private Map<String, SimpleGuiFormat> shopMap = new HashMap<>();
+	private Map<String, SimpleInventories> shopMap = new HashMap<>();
 	private Options options = new Options();
 
 	public ShopInventory() {
@@ -152,7 +156,7 @@ public class ShopInventory implements Listener {
 			if (!shopMap.containsKey(name)) {
 				loadNewShop(name, file + ".yml", parent);
 			}
-			SimpleGuiFormat shop = shopMap.get(name);
+			SimpleInventories shop = shopMap.get(name);
 			shop.openForPlayer(p);
 		} else {
 			shopMap.get("default").openForPlayer(p);
@@ -200,7 +204,7 @@ public class ShopInventory implements Listener {
 				event.setStack(stack);
 			}
 			if (item.hasProperties()) {
-				for (Property property : item.getProperties()) {
+				for (ItemProperty property : item.getProperties()) {
 					if (property.hasName()) {
 						ItemStack newItem = event.getStack();
 						BedwarsApplyPropertyToDisplayedItem applyEvent = new BedwarsApplyPropertyToDisplayedItem(game,
@@ -259,7 +263,7 @@ public class ShopInventory implements Listener {
 	}
 
 	private void loadNewShop(String name, String fileName, boolean useParent) {
-		SimpleGuiFormat format = new SimpleGuiFormat(options);
+		SimpleInventories format = new SimpleInventories(options);
 		try {
 			if (useParent) {
 				format.loadFromDataFolder(Main.getInstance().getDataFolder(), "shop.yml");
@@ -359,7 +363,7 @@ public class ShopInventory implements Listener {
 		ItemStack materialItem = type.getStack(price);
 		if (event.hasPlayerInInventory(materialItem)) {
 			if (event.hasProperties()) {
-				for (Property property : event.getProperties()) {
+				for (ItemProperty property : event.getProperties()) {
 					if (property.hasName()) {
 						BedwarsApplyPropertyToBoughtItem applyEvent = new BedwarsApplyPropertyToBoughtItem(game, player,
 							newItem, property.getReader(player).convertToMap());
