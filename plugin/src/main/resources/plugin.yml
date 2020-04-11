@@ -13,6 +13,7 @@ softdepend:
 - PlaceholderAPI
 - BarAPI
 - PerWorldInventory
+- SlimeWorldManager
 
 commands:
   bw:

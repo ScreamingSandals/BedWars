@@ -109,6 +109,12 @@ public interface BedwarsAPI {
     ColorChanger getColorChanger();
 
     /**
+     *
+     * @return hub server name from config
+     */
+    String getHubServerName();
+
+    /**
      * @return Bedwars instance
      */
     static BedwarsAPI getInstance() {

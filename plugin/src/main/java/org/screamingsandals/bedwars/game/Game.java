@@ -760,14 +760,12 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 						"§c[B§fW] §cArena " + game.name + " can't be loaded, because world " + worldName + " is missing!");
 				return null;
 			}
-		} 
-		
-		try {
-			game.world.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
-		} catch (Throwable ignored) {
-			// Non 1.15 servers
 		}
-		
+
+		if (Main.getVersionNumber() >= 115) {
+				game.world.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
+		}
+
 		game.pos1 = MiscUtils.readLocationFromString(game.world, configMap.getString("pos1"));
 		game.pos2 = MiscUtils.readLocationFromString(game.world, configMap.getString("pos2"));
 		game.specSpawn = MiscUtils.readLocationFromString(game.world, configMap.getString("specSpawn"));
@@ -1672,6 +1670,10 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 								}
 							}
 						}
+					}
+
+					if (Main.getVersionNumber() >= 115) {
+						world.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
 					}
 
 					BedwarsGameStartedEvent startedEvent = new BedwarsGameStartedEvent(this);
