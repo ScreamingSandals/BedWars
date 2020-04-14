@@ -340,4 +340,4 @@ commands:
       bar_color_set: "&aKolor pasku bossa &7%type%&a został zmieniony na &7%color%&a!"
       wrong_living_entity_type: "&cPodano błędny typ bytu!"
       store_living_entity_type_set: "&aTyp bytu sklepu został zmieniony na &7%type%&a!"
-      upgrades: "&aMożliwość kupowania ulepszeń została ustawiona na wartość &7%bool%&a!"
+      upgrades: "&aUlepszenia zostały ustawione na &7%bool%&a!"
