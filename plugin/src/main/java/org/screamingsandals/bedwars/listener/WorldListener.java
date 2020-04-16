@@ -99,7 +99,7 @@ public class WorldListener implements Listener {
             if (game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) {
                 if (GameCreator.isInArea(event.getLocation(), game.getPos1(), game.getPos2())) {
                     if (destroyPlacedBlocksByExplosion) {
-                        event.blockList().removeIf(block -> (explosionExceptionTypeName!=null && explosionExceptionTypeName!="" && block.getType().name().contains(explosionExceptionTypeName)) || !game.isBlockAddedDuringGame(block.getLocation()));
+                        event.blockList().removeIf(block -> (explosionExceptionTypeName!=null && !explosionExceptionTypeName.equals("") && block.getType().name().contains(explosionExceptionTypeName)) || !game.isBlockAddedDuringGame(block.getLocation()));
                     } else {
                         event.blockList().clear();
                     }
