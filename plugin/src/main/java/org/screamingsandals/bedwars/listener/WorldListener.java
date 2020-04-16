@@ -92,14 +92,14 @@ public class WorldListener implements Listener {
         }
         
         String explosionExceptionTypeName = Main.getConfigurator().config.getString("destroy-placed-blocks-by-explosion-except", null);
-        Boolean destroyPlacedBlocksByExplosion = Main.getConfigurator().config.getBoolean("destroy-placed-blocks-by-explosion", true);
+        boolean destroyPlacedBlocksByExplosion = Main.getConfigurator().config.getBoolean("destroy-placed-blocks-by-explosion", true);
 
         for (String s : Main.getGameNames()) {
             Game game = Main.getGame(s);
             if (game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) {
                 if (GameCreator.isInArea(event.getLocation(), game.getPos1(), game.getPos2())) {
                     if (destroyPlacedBlocksByExplosion) {
-                        event.blockList().removeIf(block -> (explosionExceptionTypeName!=null && block.getType().name().contains(explosionExceptionTypeName)) || !game.isBlockAddedDuringGame(block.getLocation()));
+                        event.blockList().removeIf(block -> (explosionExceptionTypeName!=null && explosionExceptionTypeName!="" && block.getType().name().contains(explosionExceptionTypeName)) || !game.isBlockAddedDuringGame(block.getLocation()));
                     } else {
                         event.blockList().clear();
                     }
