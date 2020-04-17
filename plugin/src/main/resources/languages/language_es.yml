@@ -172,7 +172,7 @@ commands:
     already_in_game: "§c¡Ya estás en una partida!"
     no_game_found: "&cNo se encontró una partida anterior."
   reload:
-    safe: "&aWaiting for safe stop of all games or for 60 seconds before reload!"
+    safe: "§a¡Espera 60 segundos antes de volver a cargar las Arenas!"
     failed: "§c¡Algunos juegos no han terminado dentro del límite de tiempo, por lo que su arena puede haber sido dañada!"
   statistics:
     header: "§aEstadísticas de §7%player%§a:"
@@ -215,7 +215,7 @@ commands:
         spawners:
           header: "§7Spawners:"
           info: "- %resource% §fXYZ: §7%x%§r/§7%y%§r/§7%z%"
-          no_team: "no team"
+          no_team: "ningún equipo"
         stores:
           header: "§7Tienda:"
           position: "- XYZ: §7%x%§r/§7%y%§r/§7%z%"
