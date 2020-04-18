@@ -294,6 +294,10 @@ public class PlayerListener implements Listener {
                 gPlayer.changeGame(null);
             }
         }
+
+        if (Main.isHologramsEnabled()) {
+            Main.getHologramInteraction().updateHolograms(event.getPlayer(), 10L);
+        }
     }
 
     @EventHandler

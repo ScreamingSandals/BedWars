@@ -92,7 +92,6 @@ public class ProtectionWall extends SpecialItem implements org.screamingsandals.
                         block.getChunk().load(false);
                         block.setType(Material.AIR);
 
-                        removeBlockFromList(block);
                         game.getRegion().removeBlockBuiltDuringGame(block.getLocation());
                     }
                     game.unregisterSpecialItem(ProtectionWall.this);
@@ -110,10 +109,6 @@ public class ProtectionWall extends SpecialItem implements org.screamingsandals.
     private void addBlockToList(Block block) {
         wallBlocks.add(block);
         game.getRegion().addBuiltDuringGame(block.getLocation());
-    }
-
-    private void removeBlockFromList(Block block) {
-        game.getRegion().removeBlockBuiltDuringGame(block.getLocation());
     }
 
     public void createWall(boolean bre, int time, int wid, int hei, int dis, Material mat) {

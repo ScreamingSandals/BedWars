@@ -3,6 +3,7 @@ package org.screamingsandals.bedwars.special.listener;
 
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.APIUtils;
+import org.screamingsandals.bedwars.api.events.BedwarsPlayerBreakBlock;
 import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.api.events.BedwarsApplyPropertyToBoughtItem;
@@ -94,24 +95,11 @@ public class ProtectionWallListener implements Listener {
         }
     }
 
-    @EventHandler
-    public void onBlockBreak(BlockBreakEvent event) {
-        Player player = event.getPlayer();
-        if (!Main.isPlayerInGame(player)) {
-            return;
-        }
-
-        GamePlayer gPlayer = Main.getPlayerGameProfile(player);
-        Game game = gPlayer.getGame();
-        if (gPlayer.isSpectator) {
-            return;
-        }
-
-        Block block = event.getBlock();
-        for (ProtectionWall checkedWall : getCreatedWalls(game, player)) {
+    public void onBlockBreak(BedwarsPlayerBreakBlock event) {
+        for (ProtectionWall checkedWall : getCreatedWalls(event.getGame(), event.getPlayer())) {
             if (checkedWall != null) {
                 for (Block wallBlock : checkedWall.getWallBlocks()) {
-                    if (wallBlock.equals(block) && !checkedWall.canBreak()) {
+                    if (wallBlock.equals(event.getBlock()) && !checkedWall.canBreak()) {
                         event.setCancelled(true);
                     }
 
