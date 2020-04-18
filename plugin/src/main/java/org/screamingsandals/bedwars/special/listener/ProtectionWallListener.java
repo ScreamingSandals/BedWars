@@ -95,6 +95,7 @@ public class ProtectionWallListener implements Listener {
         }
     }
 
+    @EventHandler
     public void onBlockBreak(BedwarsPlayerBreakBlock event) {
         for (ProtectionWall checkedWall : getCreatedWalls(event.getGame(), event.getPlayer())) {
             if (checkedWall != null) {
