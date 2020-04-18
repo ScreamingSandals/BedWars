@@ -123,15 +123,15 @@ signs:
   status:
     disabled:
       line1: "&cSpel"
-      line2: "&cdisabled"
+      line2: "&cuitgeschakeld"
     rebuilding:
-      line1: "&cGame"
-      line2: "&6rebuilding"
+      line1: "&cSpel"
+      line2: "&6Herbouwen..."
     running:
-      line1: "&aRunning"
+      line1: "&aBezig"
       line2: "&c%players%&8/&c%maxplayers%"
     waiting:
-      line1: "&6Waiting"
+      line1: "&6Wachten..."
       line2: "&a%players%&8/&a%maxplayers%"
 holograms:
   not_enabled: "&cHolograms are disabled."
