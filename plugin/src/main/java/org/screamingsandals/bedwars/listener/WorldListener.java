@@ -90,13 +90,16 @@ public class WorldListener implements Listener {
         if (event.isCancelled()) {
             return;
         }
+        
+        String explosionExceptionTypeName = Main.getConfigurator().config.getString("destroy-placed-blocks-by-explosion-except", null);
+        boolean destroyPlacedBlocksByExplosion = Main.getConfigurator().config.getBoolean("destroy-placed-blocks-by-explosion", true);
 
         for (String s : Main.getGameNames()) {
             Game game = Main.getGame(s);
             if (game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) {
                 if (GameCreator.isInArea(event.getLocation(), game.getPos1(), game.getPos2())) {
-                    if (Main.getConfigurator().config.getBoolean("destroy-placed-blocks-by-explosion", true)) {
-                        event.blockList().removeIf(block -> !game.isBlockAddedDuringGame(block.getLocation()));
+                    if (destroyPlacedBlocksByExplosion) {
+                        event.blockList().removeIf(block -> (explosionExceptionTypeName!=null && !explosionExceptionTypeName.equals("") && block.getType().name().contains(explosionExceptionTypeName)) || !game.isBlockAddedDuringGame(block.getLocation()));
                     } else {
                         event.blockList().clear();
                     }
