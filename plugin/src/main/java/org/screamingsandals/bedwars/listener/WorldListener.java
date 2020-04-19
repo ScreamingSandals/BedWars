@@ -1,9 +1,5 @@
 package org.screamingsandals.bedwars.listener;
 
-import org.screamingsandals.bedwars.Main;
-import org.screamingsandals.bedwars.api.game.GameStatus;
-import org.screamingsandals.bedwars.game.Game;
-import org.screamingsandals.bedwars.game.GameCreator;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -22,6 +18,10 @@ import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.event.world.StructureGrowEvent;
+import org.screamingsandals.bedwars.Main;
+import org.screamingsandals.bedwars.api.game.GameStatus;
+import org.screamingsandals.bedwars.game.Game;
+import org.screamingsandals.bedwars.game.GameCreator;
 
 public class WorldListener implements Listener {
     @EventHandler
@@ -90,16 +90,16 @@ public class WorldListener implements Listener {
         if (event.isCancelled()) {
             return;
         }
-        
-        String explosionExceptionTypeName = Main.getConfigurator().config.getString("destroy-placed-blocks-by-explosion-except", null);
-        boolean destroyPlacedBlocksByExplosion = Main.getConfigurator().config.getBoolean("destroy-placed-blocks-by-explosion", true);
 
-        for (String s : Main.getGameNames()) {
-            Game game = Main.getGame(s);
+        final String explosionExceptionTypeName = Main.getConfigurator().config.getString("destroy-placed-blocks-by-explosion-except", null);
+        final boolean destroyPlacedBlocksByExplosion = Main.getConfigurator().config.getBoolean("destroy-placed-blocks-by-explosion", true);
+
+        for (String gameName : Main.getGameNames()) {
+            Game game = Main.getGame(gameName);
             if (game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) {
                 if (GameCreator.isInArea(event.getLocation(), game.getPos1(), game.getPos2())) {
                     if (destroyPlacedBlocksByExplosion) {
-                        event.blockList().removeIf(block -> (explosionExceptionTypeName!=null && !explosionExceptionTypeName.equals("") && block.getType().name().contains(explosionExceptionTypeName)) || !game.isBlockAddedDuringGame(block.getLocation()));
+                        event.blockList().removeIf(block -> (explosionExceptionTypeName != null && !explosionExceptionTypeName.equals("") && block.getType().name().contains(explosionExceptionTypeName)) || !game.isBlockAddedDuringGame(block.getLocation()));
                     } else {
                         event.blockList().clear();
                     }
@@ -115,8 +115,8 @@ public class WorldListener implements Listener {
             return;
         }
 
-        for (String s : Main.getGameNames()) {
-            Game game = Main.getGame(s);
+        for (String gameName : Main.getGameNames()) {
+            Game game = Main.getGame(gameName);
             if (game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) {
                 if (GameCreator.isInArea(event.getLocation(), game.getPos1(), game.getPos2())) {
                     event.setCancelled(true);
@@ -129,27 +129,27 @@ public class WorldListener implements Listener {
     @EventHandler
     public void onCreatureSpawn(CreatureSpawnEvent event) {
         if (event.isCancelled() || event.getSpawnReason() == SpawnReason.CUSTOM) {
-        	return;
+            return;
         }
-        
+
         for (String gameName : Main.getGameNames()) {
             Game game = Main.getGame(gameName);
             if (game.getStatus() != GameStatus.DISABLED)
-            // prevent creature spawn everytime, not just in game
-            if (/*(game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) &&*/ game.getOriginalOrInheritedPreventSpawningMobs()) {
-                if (GameCreator.isInArea(event.getLocation(), game.getPos1(), game.getPos2())) {
-                    event.setCancelled(true);
-                    return;
-                //}
-            } else /*if (game.getStatus() == GameStatus.WAITING) {*/
-                if (game.getLobbyWorld() == event.getLocation().getWorld()) {
-                    if (event.getLocation().distanceSquared(game.getLobbySpawn()) <= Math
-                            .pow(Main.getConfigurator().config.getInt("prevent-lobby-spawn-mobs-in-radius"), 2)) {
+                // prevent creature spawn everytime, not just in game
+                if (/*(game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) &&*/ game.getOriginalOrInheritedPreventSpawningMobs()) {
+                    if (GameCreator.isInArea(event.getLocation(), game.getPos1(), game.getPos2())) {
                         event.setCancelled(true);
                         return;
-                    }
+                        //}
+                    } else /*if (game.getStatus() == GameStatus.WAITING) {*/
+                        if (game.getLobbyWorld() == event.getLocation().getWorld()) {
+                            if (event.getLocation().distanceSquared(game.getLobbySpawn()) <= Math
+                                    .pow(Main.getConfigurator().config.getInt("prevent-lobby-spawn-mobs-in-radius"), 2)) {
+                                event.setCancelled(true);
+                                return;
+                            }
+                        }
                 }
-            }
         }
     }
 
@@ -209,32 +209,32 @@ public class WorldListener implements Listener {
             }
         }
     }
-    
+
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onBedWarsSpawnIsCancelled(CreatureSpawnEvent event) {
-    	if (!event.isCancelled()) {
-    		return;
-    	}
-    	// Fix for uSkyBlock plugin
-    	if (event.getSpawnReason() == SpawnReason.CUSTOM && Main.getInstance().isEntityInGame(event.getEntity())) {
-    		event.setCancelled(false);
-    	}
+        if (!event.isCancelled()) {
+            return;
+        }
+        // Fix for uSkyBlock plugin
+        if (event.getSpawnReason() == SpawnReason.CUSTOM && Main.getInstance().isEntityInGame(event.getEntity())) {
+            event.setCancelled(false);
+        }
         return;
     }
-    
+
     @EventHandler
     public void onChunkUnload(ChunkUnloadEvent unload) {
-    	if (unload instanceof Cancellable) {
-    		Chunk chunk = unload.getChunk();
-    		
-    		for (String name : Main.getGameNames()) {
-    			Game game = Main.getGame(name);
-    			if (game.getStatus() != GameStatus.DISABLED && game.getStatus() != GameStatus.WAITING 
-    				&& GameCreator.isChunkInArea(chunk, game.getPos1(), game.getPos2())) {
-    				((Cancellable) unload).setCancelled(false);
-    				return;
-    			}
-    		}
-    	}
+        if (unload instanceof Cancellable) {
+            Chunk chunk = unload.getChunk();
+
+            for (String name : Main.getGameNames()) {
+                Game game = Main.getGame(name);
+                if (game.getStatus() != GameStatus.DISABLED && game.getStatus() != GameStatus.WAITING
+                        && GameCreator.isChunkInArea(chunk, game.getPos1(), game.getPos2())) {
+                    ((Cancellable) unload).setCancelled(false);
+                    return;
+                }
+            }
+        }
     }
 }

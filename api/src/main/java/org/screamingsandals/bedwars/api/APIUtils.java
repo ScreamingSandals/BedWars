@@ -75,11 +75,11 @@ public class APIUtils {
 	}
 
 	private static String convertToInvisibleString(String s) {
-		String hidden = "";
+		StringBuilder hidden = new StringBuilder();
 		for (char c : s.toCharArray()) {
-			hidden += ChatColor.COLOR_CHAR + "" + c;
+			hidden.append(ChatColor.COLOR_CHAR + "").append(c);
 		}
-		return hidden;
+		return hidden.toString();
 	}
 
 	private static String returnFromInvisibleString(String s) {
