@@ -141,25 +141,29 @@ public class ShopInventory implements Listener {
 		loadNewShop("default", null, true);
 	}
 
-	public void show(Player p, GameStore store) {
-		boolean parent = true;
-		String file = null;
-		if (store != null) {
-			parent = store.getUseParent();
-			file = store.getShopFile();
-		}
-		if (file != null) {
-			if (file.endsWith(".yml")) {
-				file = file.substring(0, file.length() - 4);
+	public void show(Player player, GameStore store) {
+		try {
+			boolean parent = true;
+			String file = null;
+			if (store != null) {
+				parent = store.getUseParent();
+				file = store.getShopFile();
 			}
-			String name = (parent ? "+" : "-") + file;
-			if (!shopMap.containsKey(name)) {
-				loadNewShop(name, file + ".yml", parent);
+			if (file != null) {
+				if (file.endsWith(".yml")) {
+					file = file.substring(0, file.length() - 4);
+				}
+				String name = (parent ? "+" : "-") + file;
+				if (!shopMap.containsKey(name)) {
+					loadNewShop(name, file + ".yml", parent);
+				}
+				SimpleInventories shop = shopMap.get(name);
+				shop.openForPlayer(player);
+			} else {
+				shopMap.get("default").openForPlayer(player);
 			}
-			SimpleInventories shop = shopMap.get(name);
-			shop.openForPlayer(p);
-		} else {
-			shopMap.get("default").openForPlayer(p);
+		} catch (Throwable ignored) {
+			player.sendMessage(i18nonly("prefix") + " Your shop.yml is invalid! Check it out or contact us on Discord.");
 		}
 	}
 
