@@ -97,10 +97,13 @@ public class ProtectionWallListener implements Listener {
 
     @EventHandler
     public void onBlockBreak(BedwarsPlayerBreakBlock event) {
-        for (ProtectionWall checkedWall : getCreatedWalls(event.getGame(), event.getPlayer())) {
+        final Game game = event.getGame();
+        final Block block = event.getBlock();
+
+        for (ProtectionWall checkedWall : getCreatedWalls(game)) {
             if (checkedWall != null) {
                 for (Block wallBlock : checkedWall.getWallBlocks()) {
-                    if (wallBlock.equals(event.getBlock()) && !checkedWall.canBreak()) {
+                    if (wallBlock.equals(block) && !checkedWall.canBreak()) {
                         event.setCancelled(true);
                     }
 
@@ -109,9 +112,9 @@ public class ProtectionWallListener implements Listener {
         }
     }
 
-    private ArrayList<ProtectionWall> getCreatedWalls(Game game, Player player) {
+    private ArrayList<ProtectionWall> getCreatedWalls(Game game) {
         ArrayList<ProtectionWall> createdWalls = new ArrayList<>();
-        for (SpecialItem specialItem : game.getActivedSpecialItemsOfPlayer(player)) {
+        for (SpecialItem specialItem : game.getActivedSpecialItems(ProtectionWall.class)) {
             if (specialItem instanceof ProtectionWall) {
                 ProtectionWall wall = (ProtectionWall) specialItem;
                 createdWalls.add(wall);
