@@ -46,7 +46,7 @@ public class WarpPowder extends SpecialItem implements org.screamingsandals.bedw
         }
 
         if (decrementStack) {
-            if(item.getAmount() > 1) {
+            if (item.getAmount() > 1) {
         		item.setAmount(item.getAmount() - 1);
         	} else {
         		player.getInventory().remove(item);
