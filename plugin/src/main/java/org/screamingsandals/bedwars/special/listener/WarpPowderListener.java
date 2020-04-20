@@ -73,10 +73,10 @@ public class WarpPowderListener implements Listener {
                                 warpPowder.runTask();
 
                                 if (stack.getAmount() > 1) {
-        		            stack.setAmount(item.getAmount() - 1);
-        	                } else {
-        		            player.getInventory().remove(stack);
-        	                }
+                                    stack.setAmount(stack.getAmount() - 1);
+                                } else {
+                                    player.getInventory().remove(stack);
+                                }
 
                                 player.updateInventory();
                             } else {
