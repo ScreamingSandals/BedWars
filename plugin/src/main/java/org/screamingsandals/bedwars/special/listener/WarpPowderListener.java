@@ -71,6 +71,14 @@ public class WarpPowderListener implements Listener {
                                 }
 
                                 warpPowder.runTask();
+
+                                if (stack.getAmount() > 1) {
+        		            stack.setAmount(item.getAmount() - 1);
+        	                } else {
+        		            player.getInventory().remove(stack);
+        	                }
+
+                                player.updateInventory();
                             } else {
                                 event.setCancelled(true);
 
@@ -105,7 +113,7 @@ public class WarpPowderListener implements Listener {
 
         WarpPowder warpPowder = (WarpPowder) game.getFirstActivedSpecialItemOfPlayer(player, WarpPowder.class);
         if (warpPowder != null) {
-            warpPowder.cancelTeleport(true, true, false);
+            warpPowder.cancelTeleport(true, true);
         }
     }
 
