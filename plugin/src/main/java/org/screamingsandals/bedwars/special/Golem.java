@@ -79,7 +79,7 @@ public class Golem extends SpecialItem implements org.screamingsandals.bedwars.a
         Main.registerGameEntity(golem, (org.screamingsandals.bedwars.game.Game) game);
         MiscUtils.sendActionBarMessage(player, i18nonly("specials_golem_created"));
 
-        if(item.getAmount() > 1) {
+        if (item.getAmount() > 1) {
         	item.setAmount(item.getAmount() - 1);
         } else {
             player.getInventory().remove(item);
