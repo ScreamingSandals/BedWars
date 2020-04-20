@@ -38,8 +38,10 @@ import org.screamingsandals.bedwars.statistics.PlayerStatistic;
 import org.screamingsandals.bedwars.utils.*;
 import org.screamingsandals.lib.debug.Debug;
 import org.screamingsandals.lib.nms.entity.PlayerUtils;
+import org.screamingsandals.simpleinventories.utils.StackParser;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -272,8 +274,8 @@ public class PlayerListener implements Listener {
 
                 SpawnEffects.spawnEffect(gPlayer.getGame(), gPlayer.player, "game-effects.respawn");
                 if (gPlayer.getGame().getOriginalOrInheritedPlayerRespawnItems()) {
-                    List<ItemStack> givedGameStartItems = (List<ItemStack>) Main.getConfigurator().config
-                            .getList("gived-player-respawn-items");
+                    List<ItemStack> givedGameStartItems = StackParser.parseAll((Collection<Object>) Main.getConfigurator().config
+                            .getList("gived-player-respawn-items"));
                     if (givedGameStartItems != null) {
                         MiscUtils.giveItemsToPlayer(givedGameStartItems, gPlayer.player, team.getColor());
                     } else {
