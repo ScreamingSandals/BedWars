@@ -134,7 +134,7 @@ signs:
       line1: "&6Wachten..."
       line2: "&a%players%&8/&a%maxplayers%"
 holograms:
-  not_enabled: "&cHolograms are disabled."
+  not_enabled: "&cHologrammen zijn uitgeschakeld."
   holo_removed: "&aHologram has been &lsuccessfully &aremoved!"
   game:
     beds:
