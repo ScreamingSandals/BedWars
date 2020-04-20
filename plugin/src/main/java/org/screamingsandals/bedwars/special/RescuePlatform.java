@@ -144,7 +144,7 @@ public class RescuePlatform extends SpecialItem implements org.screamingsandals.
             MiscUtils.sendActionBarMessage(player, i18nonly("specials_rescue_platform_created").replace("%time%", Integer.toString(breakingTime)));
 
             item.setAmount(item.getAmount() - 1);
-            if(item.getAmount() > 1) {
+            if (item.getAmount() > 1) {
         		item.setAmount(item.getAmount() - 1);
         	} else {
         		player.getInventory().remove(item);
@@ -155,7 +155,7 @@ public class RescuePlatform extends SpecialItem implements org.screamingsandals.
 
             MiscUtils.sendActionBarMessage(player, i18nonly("specials_rescue_platform_created_unbreakable"));
             item.setAmount(item.getAmount() - 1);
-            if(item.getAmount() > 1) {
+            if (item.getAmount() > 1) {
         		item.setAmount(item.getAmount() - 1);
         	} else {
         		player.getInventory().remove(item);
