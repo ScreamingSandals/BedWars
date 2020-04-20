@@ -86,8 +86,11 @@ public class TNTSheep extends SpecialItem implements org.screamingsandals.bedwar
         Main.registerGameEntity(sheep, (org.screamingsandals.bedwars.game.Game) game);
         Main.registerGameEntity(tnt, (org.screamingsandals.bedwars.game.Game) game);
 
-        item.setAmount(item.getAmount() - 1);
-        player.getInventory().setItem(player.getInventory().getHeldItemSlot(), item); // legacy fix
+        if (item.getAmount() > 1) {
+        	item.setAmount(item.getAmount() - 1);
+        } else {
+        	player.getInventory().remove(item);
+        }
         player.updateInventory();
 
         new BukkitRunnable() {
