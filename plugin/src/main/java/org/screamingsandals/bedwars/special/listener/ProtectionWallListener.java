@@ -106,7 +106,6 @@ public class ProtectionWallListener implements Listener {
                     if (wallBlock.equals(block) && !checkedWall.canBreak()) {
                         event.setCancelled(true);
                     }
-
                 }
             }
         }

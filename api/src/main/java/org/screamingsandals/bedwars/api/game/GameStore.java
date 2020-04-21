@@ -55,6 +55,7 @@ public class GameStore {
     public LivingEntity spawn() {
         if (entity == null) {
             entity = (LivingEntity) loc.getWorld().spawnEntity(loc, type);
+            entity.setRemoveWhenFarAway(false);
             if (enableCustomName) {
                 entity.setCustomName(shopName);
                 entity.setCustomNameVisible(true);

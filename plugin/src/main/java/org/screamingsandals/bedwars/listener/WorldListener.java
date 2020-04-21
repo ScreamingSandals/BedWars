@@ -219,7 +219,6 @@ public class WorldListener implements Listener {
         if (event.getSpawnReason() == SpawnReason.CUSTOM && Main.getInstance().isEntityInGame(event.getEntity())) {
             event.setCancelled(false);
         }
-        return;
     }
 
     @EventHandler
