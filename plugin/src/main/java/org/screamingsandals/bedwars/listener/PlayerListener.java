@@ -31,7 +31,7 @@ import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.events.BedwarsPlayerKilledEvent;
 import org.screamingsandals.bedwars.api.events.BedwarsTeamChestOpenEvent;
 import org.screamingsandals.bedwars.api.game.GameStatus;
-import org.screamingsandals.bedwars.commands.BaseCommand;
+import org.screamingsandals.bedwars.commands.BwCommandsExecutor;
 import org.screamingsandals.bedwars.game.*;
 import org.screamingsandals.bedwars.inventories.TeamSelectorInventory;
 import org.screamingsandals.bedwars.statistics.PlayerStatistic;
@@ -345,32 +345,55 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
-        if (event.isCancelled())
+        if (event.isCancelled()) {
             return;
+        }
+
         if (Main.isPlayerInGame(event.getPlayer())) {
-            Game game = Main.getPlayerGameProfile(event.getPlayer()).getGame();
+            final Player player = event.getPlayer();
+            final GamePlayer gamePlayer = Main.getPlayerGameProfile(player);
+            final Game game = gamePlayer.getGame();
+            final Block block = event.getBlock();
+
             if (game.getStatus() == GameStatus.WAITING) {
                 event.setCancelled(true);
                 return;
             }
+
             if (!game.blockBreak(Main.getPlayerGameProfile(event.getPlayer()), event.getBlock(), event)) {
                 event.setCancelled(true);
+            }
+
+            //Fix for obsidian dropping
+            if (game.getStatus() == GameStatus.RUNNING && gamePlayer.isInGame()) {
+                if (block.getType() == Material.ENDER_CHEST) {
+                    event.setDropItems(false);
+                }
             }
         }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onCommandExecuted(PlayerCommandPreprocessEvent event) {
-        if (event.isCancelled())
+        if (event.isCancelled()) {
             return;
-        if (Main.isPlayerInGame(event.getPlayer())) {
-        	if (Main.isCommandLeaveShortcut(event.getMessage())) {
-        		event.setCancelled(true);
-            	Main.getPlayerGameProfile(event.getPlayer()).changeGame(null);
-        	} else if (!Main.isCommandAllowedInGame(event.getMessage().split(" ")[0])) {
+        }
+
+        final Player player = event.getPlayer();
+        if (Main.isPlayerInGame(player)) {
+            //Allow players with permissions to use all commands
+            if (player.hasPermission(ADMIN_PERMISSION)) {
+                return;
+            }
+
+            final String message = event.getMessage();
+            if (Main.isCommandLeaveShortcut(message)) {
+                event.setCancelled(true);
+                Main.getPlayerGameProfile(event.getPlayer()).changeGame(null);
+            } else if (!Main.isCommandAllowedInGame(message.split(" ")[0])) {
                 event.setCancelled(true);
                 event.getPlayer().sendMessage(i18n("command_is_not_allowed"));
-            } 
+            }
         }
     }
 
@@ -555,7 +578,7 @@ public class PlayerListener implements Listener {
     }
 
     @SuppressWarnings("deprecation")
-	@EventHandler
+    @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
         if (event.isCancelled() && event.getAction() != Action.RIGHT_CLICK_AIR) {
             return;
@@ -603,7 +626,7 @@ public class PlayerListener implements Listener {
                             event.setCancelled(true);
 
                             if (team == null) {
-                            	player.openInventory(game.getFakeEnderChest(gPlayer));
+                                player.openInventory(game.getFakeEnderChest(gPlayer));
                                 return;
                             }
 
@@ -622,7 +645,7 @@ public class PlayerListener implements Listener {
 
                             player.openInventory(team.getTeamChestInventory());
                         } else if (event.getClickedBlock().getState() instanceof InventoryHolder) {
-                        	InventoryHolder holder = (InventoryHolder) event.getClickedBlock().getState();
+                            InventoryHolder holder = (InventoryHolder) event.getClickedBlock().getState();
                             game.addChestForFutureClear(event.getClickedBlock().getLocation(), holder.getInventory());
                         }
                     }
@@ -655,7 +678,7 @@ public class PlayerListener implements Listener {
                                     if (bevent.isCancelled()) {
                                         originalState.update(true, false);
                                     } else {
-                                    	stack.setAmount(stack.getAmount() - 1);
+                                        stack.setAmount(stack.getAmount() - 1);
                                         // TODO get right block place sound
                                         Sounds.BLOCK_STONE_PLACE.playSound(player, block.getLocation(), 1, 1);
                                     }
@@ -875,17 +898,17 @@ public class PlayerListener implements Listener {
                 GamePlayer recipientgPlayer = Main.getPlayerGameProfile(recipient);
                 Game recipientGame = recipientgPlayer.getGame();
                 if (recipientGame != game) {
-                	if ((game.getStatus() == GameStatus.WAITING && Main.getConfigurator().config.getBoolean("chat.separate-chat.lobby"))
-                		|| (game.getStatus() != GameStatus.WAITING && Main.getConfigurator().config.getBoolean("chat.separate-chat.game"))) {
+                    if ((game.getStatus() == GameStatus.WAITING && Main.getConfigurator().config.getBoolean("chat.separate-chat.lobby"))
+                            || (game.getStatus() != GameStatus.WAITING && Main.getConfigurator().config.getBoolean("chat.separate-chat.game"))) {
                         recipients.remove();
-                	}
+                    }
                 } else if (game.getPlayerTeam(recipientgPlayer) != team && teamChat) {
                     recipients.remove();
                 }
             }
-            
+
             for (Player p : event.getRecipients()) {
-            	p.sendMessage(event.getFormat());
+                p.sendMessage(event.getFormat());
             }
             event.setCancelled(true);
         } else {
@@ -896,10 +919,10 @@ public class PlayerListener implements Listener {
                     GamePlayer recipientgPlayer = Main.getPlayerGameProfile(recipient);
                     Game recipientGame = recipientgPlayer.getGame();
                     if (recipientGame != null) {
-	                    if ((recipientGame.getStatus() == GameStatus.WAITING && Main.getConfigurator().config.getBoolean("chat.separate-chat.lobby"))
-	                		|| (recipientGame.getStatus() != GameStatus.WAITING && Main.getConfigurator().config.getBoolean("chat.separate-chat.game"))) {
-	                        recipients.remove();
-	                    }
+                        if ((recipientGame.getStatus() == GameStatus.WAITING && Main.getConfigurator().config.getBoolean("chat.separate-chat.lobby"))
+                                || (recipientGame.getStatus() != GameStatus.WAITING && Main.getConfigurator().config.getBoolean("chat.separate-chat.game"))) {
+                            recipients.remove();
+                        }
                     }
                 }
             }
@@ -951,24 +974,24 @@ public class PlayerListener implements Listener {
             }
         }
     }
-    
+
     /* This event was replaced on 1.12 with newer (event handling is devided between Player112Listener and PlayerBefore112Listener) */
     public static void onItemPickup(Player player, Item item, Cancellable cancel) {
-    	if (cancel.isCancelled()) {
-    		return;
-    	}
-    	
+        if (cancel.isCancelled()) {
+            return;
+        }
+
         if (Main.isPlayerInGame(player)) {
             GamePlayer gPlayer = Main.getPlayerGameProfile(player);
             Game game = gPlayer.getGame();
             if (game.getStatus() == GameStatus.WAITING || gPlayer.isSpectator) {
                 cancel.setCancelled(true);
             } else {
-            	for (ItemSpawner spawner : game.getSpawners()) {
-            		if (spawner.getMaxSpawnedResources() > 0) {
-            			spawner.remove(item);
-            		}
-            	}
+                for (ItemSpawner spawner : game.getSpawners()) {
+                    if (spawner.getMaxSpawnedResources() > 0) {
+                        spawner.remove(item);
+                    }
+                }
             }
         }
     }

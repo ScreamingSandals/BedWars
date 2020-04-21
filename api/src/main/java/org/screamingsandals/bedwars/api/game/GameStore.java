@@ -56,10 +56,12 @@ public class GameStore {
         if (entity == null) {
             entity = (LivingEntity) loc.getWorld().spawnEntity(loc, type);
             entity.setRemoveWhenFarAway(false);
+
             if (enableCustomName) {
                 entity.setCustomName(shopName);
                 entity.setCustomNameVisible(true);
             }
+
             if (entity instanceof Villager) {
                 ((Villager) entity).setProfession(Villager.Profession.FARMER);
             }
@@ -68,30 +70,31 @@ public class GameStore {
     }
 
     /**
-     * @return
+     * @return killed entity
      */
     public LivingEntity kill() {
-        LivingEntity en = entity;
+        final LivingEntity livingEntity = entity;
         if (entity != null) {
-            Chunk chunk = entity.getLocation().getChunk();
+            final Chunk chunk = entity.getLocation().getChunk();
+
             if (!chunk.isLoaded()) {
                 chunk.load();
             }
             entity.remove();
             entity = null;
         }
-        return en;
+        return livingEntity;
     }
 
     /**
-     * @return
+     * @return shop entity
      */
     public LivingEntity getEntity() {
         return entity;
     }
 
     /**
-     * @return
+     * @return entity type used for the shop
      */
     public EntityType getEntityType() {
         return type;

@@ -18,11 +18,9 @@ public class APIUtils {
 	 */
 	public static void hashIntoInvisibleString(ItemStack stack, String hash) {
 		ItemMeta meta = stack.getItemMeta();
-
 		List<String> lore = meta.hasLore() ? meta.getLore() : new ArrayList<>();
 
 		lore.add(convertToInvisibleString(hash));
-
 		meta.setLore(lore);
 
 		stack.setItemMeta(meta);
