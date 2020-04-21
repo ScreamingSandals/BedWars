@@ -9,9 +9,8 @@ public interface WarpPowder extends SpecialItem {
     /**
      * @param removeSpecial
      * @param showMessage
-     * @param decrementStack
      */
-    public void cancelTeleport(boolean removeSpecial, boolean showMessage, boolean decrementStack);
+    public void cancelTeleport(boolean removeSpecial, boolean showMessage);
 
     /**
      * @return

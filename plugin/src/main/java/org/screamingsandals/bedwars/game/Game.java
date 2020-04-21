@@ -52,13 +52,11 @@ import org.screamingsandals.lib.debug.Debug;
 import org.screamingsandals.lib.nms.entity.EntityUtils;
 import org.screamingsandals.lib.nms.holograms.Hologram;
 import org.screamingsandals.lib.signmanager.SignBlock;
+import org.screamingsandals.simpleinventories.utils.StackParser;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static misat11.lib.lang.I.*;
 
@@ -1375,8 +1373,8 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 					}
 
 					if (gamePlayer.getGame().getOriginalOrInheritedPlayerRespawnItems()) {
-						List<ItemStack> givedGameStartItems = (List<ItemStack>) Main.getConfigurator().config
-								.getList("gived-player-respawn-items");
+						List<ItemStack> givedGameStartItems = StackParser.parseAll((Collection<Object>) Main.getConfigurator().config
+								.getList("gived-player-respawn-items"));
 						if (givedGameStartItems != null) {
 							MiscUtils.giveItemsToPlayer(givedGameStartItems, player, currentTeam.getColor());
 						} else {
@@ -1594,8 +1592,8 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 						} else {
 							player.teleport(team.teamInfo.spawn);
 							if (getOriginalOrInheritedGameStartItems()) {
-								List<ItemStack> givedGameStartItems = (List<ItemStack>) Main.getConfigurator().config
-										.getList("gived-game-start-items");
+								List<ItemStack> givedGameStartItems = StackParser.parseAll((Collection<Object>) Main.getConfigurator().config
+										.getList("gived-game-start-items"));
 								if (givedGameStartItems != null) {
 									MiscUtils.giveItemsToPlayer(givedGameStartItems, player.player, team.getColor());
 								} else {
