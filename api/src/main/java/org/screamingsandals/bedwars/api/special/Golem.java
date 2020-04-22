@@ -22,4 +22,10 @@ public interface Golem extends SpecialItem {
      */
     double getFollowRange();
 
+    /**
+     *
+     * @return
+     */
+    double getHealth();
+
 }

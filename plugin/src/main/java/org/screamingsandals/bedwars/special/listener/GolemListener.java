@@ -63,7 +63,7 @@ public class GolemListener implements Listener {
                         double health = Double.parseDouble(unhidden.split(":")[4]);
                         boolean showName = Boolean.parseBoolean(unhidden.split(":")[5]);
                         int delay = Integer.parseInt(unhidden.split(":")[6]);
-                        boolean collidable = Boolean.parseBoolean((unhidden.split(":")[7]));
+                        boolean collidable = Boolean.parseBoolean((unhidden.split(":")[7])); //keeping this to keep configs compatible
                         String name = unhidden.split(":", 9)[8];
 
                         Location location;
@@ -75,7 +75,7 @@ public class GolemListener implements Listener {
                                     .getLocation().add(0.5, 0.5, 0.5);
                         }
                         Golem golem = new Golem(game, player, game.getTeamOfPlayer(player),
-                                stack, location, speed, follow, health, name, showName, collidable);
+                                stack, location, speed, follow, health, name, showName);
 
                         if (delay > 0) {
                             DelayFactory delayFactory = new DelayFactory(delay, golem, player, game);
