@@ -548,6 +548,9 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 
         final int pluginId = 7147;
         metrics = new Metrics(this, pluginId);
+
+        Bukkit.getConsoleSender().sendMessage("Everything is loaded! If you like our work, consider visiting our Patreon! <3");
+        Bukkit.getConsoleSender().sendMessage("https://www.patreon.com/screamingsandals");
     }
 
     public void onDisable() {
