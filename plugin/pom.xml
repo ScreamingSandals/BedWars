@@ -95,6 +95,12 @@
 			<version>1.0.0</version>
 			<scope>compile</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.bstats</groupId>
+			<artifactId>bstats-bukkit</artifactId>
+			<version>1.7</version>
+			<scope>compile</scope>
+		</dependency>
 		<!--
 		Libraries: LanguageTool, NMS, Debug, SignManager and SpigetUpdate are already inside this repo
 		(because there are old versions)
@@ -147,6 +153,10 @@
 								<relocation>
 									<pattern>org.screamingsandals.simpleinventories</pattern>
 									<shadedPattern>${project.groupId}.lib.sgui</shadedPattern>
+								</relocation>
+								<relocation>
+									<pattern>org.bstats</pattern>
+									<shadedPattern>${project.groupId}.lib.bstats</shadedPattern>
 								</relocation>
 							</relocations>
 						</configuration>

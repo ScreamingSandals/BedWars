@@ -3,6 +3,7 @@ package org.screamingsandals.bedwars;
 import misat11.lib.lang.I18n;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -78,6 +79,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
     private SignManager signManager;
     private HologramManager manager;
     public static List<String> autoColoredMaterials = new ArrayList<>();
+    private Metrics metrics;
 
     static {
         // ColorChanger list of materials
@@ -382,10 +384,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         try {
             if (configurator.config.getBoolean("holograms.enabled")) {
                 hologramInteraction = new NMSUtilsHologramInteraction();
-
-                if (hologramInteraction != null) {
-                    hologramInteraction.loadHolograms();
-                }
+                hologramInteraction.loadHolograms();
             }
         } catch (Throwable ignored) {
         }
@@ -407,6 +406,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         BwCommandsExecutor cmd = new BwCommandsExecutor();
         getCommand("bw").setExecutor(cmd);
         getCommand("bw").setTabCompleter(cmd);
+
         getServer().getPluginManager().registerEvents(new PlayerListener(), this);
         if (versionNumber >= 109) {
             getServer().getPluginManager().registerEvents(new Player19Listener(), this);
@@ -545,6 +545,9 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 
             }
         });
+
+        final int pluginId = 7147;
+        metrics = new Metrics(this, pluginId);
     }
 
     public void onDisable() {
@@ -560,6 +563,8 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         if (isHologramsEnabled() && hologramInteraction != null) {
             hologramInteraction.unloadHolograms();
         }
+
+        metrics = null;
     }
 
     public static boolean isPaper() {
