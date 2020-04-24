@@ -327,6 +327,15 @@ data:
        - "Use the TNT-Sheep! It will"
        - "walk towards your closest enemy"
        - "and explode within 8 seconds!"
+   - price: 40 of iron
+     properties: "ThrowableFireball"
+     stack:
+       type: FIRE_CHARGE
+       display-name: "Fireball"
+       lore:
+         - "Is it a bird? Is it a plane?"
+         - "By the time you know"
+         - "you are death!"
 
 - stack: "DIAMOND_PICKAXE;1;Pickaxes;Destroy others blocks? Use these pickaxes."
   column: right
