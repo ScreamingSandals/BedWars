@@ -67,7 +67,11 @@ public class Golem extends SpecialItem implements org.screamingsandals.bedwars.a
                 .replace("%team%", team.getName()));
         golem.setCustomNameVisible(showName);
         golem.setPlayerCreated(true);
-        golem.setInvulnerable(false);
+        try {
+            golem.setInvulnerable(false);
+        } catch (Throwable ignored) {
+            // Still can throw an exception on some old versions
+        }
         entity = golem;
 
         EntityUtils.makeMobAttackTarget(golem, speed, followRange, -1)

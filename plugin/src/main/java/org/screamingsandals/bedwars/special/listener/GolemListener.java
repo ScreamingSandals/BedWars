@@ -1,5 +1,7 @@
 package org.screamingsandals.bedwars.special.listener;
 
+import org.bukkit.entity.Projectile;
+import org.bukkit.projectiles.ProjectileSource;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.APIUtils;
 import org.screamingsandals.bedwars.api.game.Game;
@@ -63,8 +65,8 @@ public class GolemListener implements Listener {
                         double health = Double.parseDouble(unhidden.split(":")[4]);
                         boolean showName = Boolean.parseBoolean(unhidden.split(":")[5]);
                         int delay = Integer.parseInt(unhidden.split(":")[6]);
-                        boolean collidable = Boolean.parseBoolean((unhidden.split(":")[7])); //keeping this to keep configs compatible
-                        String name = unhidden.split(":", 9)[8];
+                        //boolean collidable = Boolean.parseBoolean((unhidden.split(":")[7])); //keeping this to keep configs compatible
+                        String name = unhidden.split(":")[8];
 
                         Location location;
 
@@ -113,13 +115,22 @@ public class GolemListener implements Listener {
                             if (event.getDamager() instanceof Player) {
                                 Player player = (Player) event.getDamager();
                                 if (Main.isPlayerInGame(player)) {
-                                    if (golem.getTeam() == game.getTeamOfPlayer(player)) {
-                                        event.setCancelled(true);
-                                    } else {
+                                    if (golem.getTeam() != game.getTeamOfPlayer(player)) {
                                         return;
                                     }
                                 }
+                            } else if (event.getDamager() instanceof Projectile) {
+                                ProjectileSource shooter = ((Projectile) event.getDamager()).getShooter();
+                                if (shooter instanceof Player) {
+                                    Player player = (Player) event.getDamager();
+                                    if (Main.isPlayerInGame(player)) {
+                                        if (golem.getTeam() != game.getTeamOfPlayer(player)) {
+                                            return;
+                                        }
+                                    }
+                                }
                             }
+
                             event.setCancelled(true);
                             return;
                         }
