@@ -13,6 +13,7 @@ public class SpecialRegister {
         plugin.getServer().getPluginManager().registerEvents(new ProtectionWallListener(), plugin);
         plugin.getServer().getPluginManager().registerEvents(new RescuePlatformListener(), plugin);
         plugin.getServer().getPluginManager().registerEvents(new TeamChestListener(), plugin);
+        plugin.getServer().getPluginManager().registerEvents(new ThrowableFireballListener(), plugin);
         plugin.getServer().getPluginManager().registerEvents(new TNTSheepListener(), plugin);
         plugin.getServer().getPluginManager().registerEvents(new TrackerListener(), plugin);
         plugin.getServer().getPluginManager().registerEvents(new TrapListener(), plugin);

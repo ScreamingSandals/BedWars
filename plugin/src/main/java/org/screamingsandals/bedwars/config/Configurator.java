@@ -249,6 +249,7 @@ public class Configurator {
         checkOrSetConfig(modify, "specials.golem.delay", 0);
         checkOrSetConfig(modify, "specials.golem.collidable", false);
         checkOrSetConfig(modify, "specials.teamchest.turn-all-enderchests-to-teamchests", true);
+        checkOrSetConfig(modify, "specials.throwable-fireball.explosion", 3.0);
 
         checkOrSetConfig(modify, "tnt.auto-ignite", false);
         checkOrSetConfig(modify, "tnt.explosion-time", 8);
