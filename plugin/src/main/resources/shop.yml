@@ -335,7 +335,7 @@ data:
        lore:
          - "Is it a bird? Is it a plane?"
          - "By the time you know"
-         - "you are death!"
+         - "you are dead!"
 
 - stack: "DIAMOND_PICKAXE;1;Pickaxes;Destroy others blocks? Use these pickaxes."
   column: right
