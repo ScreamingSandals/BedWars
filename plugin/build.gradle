@@ -1,0 +1,4 @@
+dependencies {
+    implementation project(':api')
+    implementation 'org.screamingsandals.lib.gamecore:1.1.1'
+}

@@ -1,0 +1,37 @@
+defaultTasks 'screamCompile'
+
+allprojects {
+    group = 'org.screamingsandals.bedwars'
+    version = '1.0.0-SNAPSHOT'
+}
+
+buildscript {
+    repositories {
+        jcenter()
+        maven {
+            url = 'https://repo.screamingsandals.org'
+        }
+    }
+    dependencies {
+		classpath 'org.screamingsandals.gradle.builder:screaming-plugin-builder:1.0.1'
+    }
+}
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'org.screamingsandals.gradle.builder'
+
+    repositories {
+        maven { url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/'  }
+    }
+    
+    dependencies {
+    	compileOnly paper()
+    }
+
+	shadowJar {
+	   relocate 'com.univocity', 'org.screamingsandals.simpleinventories.univocity'
+	}
+
+    sourceCompatibility = '1.8'
+}
