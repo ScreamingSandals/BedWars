@@ -16,6 +16,7 @@ import static org.screamingsandals.lib.lang.I.m;
 
 public class Scoreboards {
     public static void createForPlayer(GamePlayer gamePlayer) {
+        //TODO - redo this
         final ScoreboardManager scoreboardManager = gamePlayer.getActiveGame().getScoreboardManager();
         final String scoreboardDisplayedName = m(VisualsConfig.PATH_SCOREBOARDS_NAME).get();
         Scoreboard lobbyScoreboard = ScoreboardCreator.get(GameState.WAITING.getName())
