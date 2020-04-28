@@ -1,2 +1,3 @@
 dependencies {
+    compileOnly 'org.screamingsandals.lib:gamecore:1.1.8'
 }
