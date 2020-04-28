@@ -23,6 +23,7 @@ public class MainConfig extends SpigotConfigAdapter {
     public void loadDefaults() {
         DefaultConfigBuilder.start(this)
                 .put("debug", true) //for now, true.
+                .put("prefix", "[BedWars]") //big news
                 .put("bungeecord.enabled", false)
                 .put("bungeecord.multi-arena-setup", false)
                 .put("bungeecord.lobby-server-name", "hub")

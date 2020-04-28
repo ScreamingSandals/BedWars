@@ -30,6 +30,7 @@ public class Main extends JavaPlugin {
         Debug.init(getName());
         Debug.setDebug(mainConfig.getBoolean("debug"));
 
+
         gameCore = new GameCore(this);
         gameCore.load(new File(getDataFolder(), "games"), Game.class);
 

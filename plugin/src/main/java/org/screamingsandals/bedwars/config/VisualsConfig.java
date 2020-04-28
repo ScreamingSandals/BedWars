@@ -3,7 +3,6 @@ package org.screamingsandals.bedwars.config;
 import org.screamingsandals.lib.config.DefaultConfigBuilder;
 
 import java.io.File;
-import java.util.List;
 
 public class VisualsConfig extends org.screamingsandals.lib.gamecore.config.VisualsConfig {
 
@@ -22,22 +21,12 @@ public class VisualsConfig extends org.screamingsandals.lib.gamecore.config.Visu
     }
 
     public void loadDefaults() {
+        //Alot of this will be moved to language file!
         DefaultConfigBuilder.start(this)
                 .put(PATH_SCOREBOARDS_ENABLED, true)
                 .put(PATH_SCOREBOARDS_NAME, "%prefix%")
-                .put(PATH_SCOREBOARDS_CONTENT_LOBBY, List.of(" ", "&eMap: &a%game%", "&fPlayers: &2%players%&f/&2%maxplayers%", "&4Need more %playersToStart% players!"))
-                //if line contains %teams%, delete it and put teams after it
-                .put(PATH_SCOREBOARDS_CONTENT_GAME, List.of(" ", "&eMap: &a%game%", " ", "%teams%", "My ass is amazing!"))
-                .put(PATH_SCOREBOARDS_CONTENT_DEATHMATCH, List.of(" ", "&c&lDEATHMATCH", " ", "%teams%", "My ass is amazing!"))
-                .put(PATH_SCOREBOARDS_CONTENT_END_GAME, List.of(" ", "%isWinner%", " ", "some ", "content")) //replace %isWinner% with "You won" or "You lost"
 
                 .put(PATH_BOSSBARS_ENABLED, true)
-                .put(PATH_BOSSBARS_CONTENT_LOBBY, "Game is starting soon! Needed players: %players%, Team: %selectedTeam%")
-                .put(PATH_BOSSBARS_CONTENT_STARTING, "Starting in: %time%")
-                .put(PATH_BOSSBARS_CONTENT_IN_GAME, "Let's play! Remaining time: %time%")
-                .put(PATH_BOSSBARS_CONTENT_DEATHMATCH, "NOW LET'S SEE! Remaining time: %time%")
-                .put(PATH_BOSSBARS_CONTENT_END_GAME, "Whooosh! Team %team% won!")
-
                 .put(PATH_BOSSBARS_COLOR_LOBBY, "YELLOW")
                 .put(PATH_BOSSBARS_COLOR_STARTING, "YELLOW")
                 .put(PATH_BOSSBARS_COLOR_IN_GAME, "YELLOW")

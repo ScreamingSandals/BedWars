@@ -1,0 +1,39 @@
+language_code: en
+language_name: "English"
+
+game:
+  messages:
+    your-team-won: "&aYou won! :)"
+    your-team-lost: "&cYou lost! :("
+scoreboards:
+  name: "%prefix%"
+  content:
+    lobby:
+      - " "
+      - "&eMap: &a%game%"
+      - " "
+      - "&fPlayers: &2%players%&f/&2%maxplayers"
+      - "&4Need more %playersToStart% players!"
+    game:
+      - " "
+      - "&eMap: &a%game%"
+      - " "
+      - "%teams%"
+    deathmatch:
+      - " "
+      - "&c&lDEATHMATCH"
+      - " "
+      - "%&eRemaining players: %players%%"
+    end-game:
+      - " "
+      - "%winnerMessage%"
+      - " "
+      - "Finished in: %time%"
+bossbars:
+  content:
+    lobby: "Game is starting soon! Needed players: %players%, Team: %selectedTeam%"
+    starting: "Starting in: %time%"
+    game: "Let's play! Remaining time: %time%"
+    deathmatch: "NOW LET'S SEE! Remaining time: %time%"
+    end-game: "%winnerMessage%"
+

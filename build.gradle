@@ -27,6 +27,7 @@ subprojects {
     
     dependencies {
     	compileOnly paper()
+        implementation 'org.screamingsandals.lib:gamecore:1.1.6'
     }
 
 	shadowJar {
