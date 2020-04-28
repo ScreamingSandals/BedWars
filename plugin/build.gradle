@@ -1,8 +1,8 @@
 dependencies {
     implementation project(':api')
-    implementation 'org.screamingsandals.lib:lang:1.1.6'
-    implementation 'org.screamingsandals.lib:debug:1.1.6'
-    implementation 'org.screamingsandals.lib:config:1.1.6'
-    implementation 'org.screamingsandals.lib:scoreboards:1.1.6'
-    implementation 'org.screamingsandals.lib:bossbars:1.1.6'
+    implementation 'org.screamingsandals.lib:lang:1.1.7'
+    implementation 'org.screamingsandals.lib:debug:1.1.7'
+    implementation 'org.screamingsandals.lib:config:1.1.7'
+    implementation 'org.screamingsandals.lib:scoreboards:1.1.7'
+    implementation 'org.screamingsandals.lib:bossbars:1.1.7'
 }

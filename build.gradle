@@ -13,7 +13,7 @@ buildscript {
         }
     }
     dependencies {
-		classpath 'org.screamingsandals.gradle.builder:screaming-plugin-builder:1.0.1'
+		classpath 'org.screamingsandals.gradle.builder:screaming-plugin-builder:1.0.3'
     }
 }
 
@@ -27,12 +27,12 @@ subprojects {
     
     dependencies {
     	compileOnly paper()
-        implementation 'org.screamingsandals.lib:gamecore:1.1.6'
+        implementation 'org.screamingsandals.lib:gamecore:1.1.7'
     }
 
 	shadowJar {
-	   relocate 'com.univocity', 'org.screamingsandals.simpleinventories.univocity'
+	   //relocate 'org.screamingsandals.lib', 'org.screamingsandals.bedwars.lib' // - now think about api, then uncomment it
 	}
 
-    sourceCompatibility = '1.8'
+    sourceCompatibility = '11'
 }

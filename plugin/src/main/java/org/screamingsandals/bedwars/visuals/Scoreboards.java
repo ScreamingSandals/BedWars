@@ -8,8 +8,10 @@ import org.screamingsandals.lib.gamecore.core.GameState;
 import org.screamingsandals.lib.gamecore.player.GamePlayer;
 import org.screamingsandals.lib.gamecore.visuals.ScoreboardManager;
 import org.screamingsandals.lib.scoreboards.scoreboard.Scoreboard;
+import org.screamingsandals.lib.scoreboards.scoreboard.ScoreboardCreator;
 
 import java.util.List;
+import static org.screamingsandals.lib.lang.I.m;
 
 public class Scoreboards {
     public static void createForPlayer(GamePlayer gamePlayer) {
