@@ -1,4 +1,4 @@
-defaultTasks 'screamCompile'
+defaultTasks 'clean', 'screamCompile'
 
 allprojects {
     group = 'org.screamingsandals.bedwars'
