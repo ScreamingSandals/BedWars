@@ -1,6 +1,8 @@
 language_code: en
 language_name: "English"
 
+prefix: "BW"
+
 game:
   messages:
     your-team-won: "&aYou won! :)"

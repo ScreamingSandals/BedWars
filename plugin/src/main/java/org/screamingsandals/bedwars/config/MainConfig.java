@@ -11,13 +11,10 @@ public class MainConfig extends SpigotConfigAdapter {
         super(configFile);
     }
 
+    @Override
     public void load() {
-        if (!getConfigFile().exists()) {
-            getConfigFile().mkdirs();
-            loadDefaults();
-        }
-
         super.load();
+        loadDefaults();
     }
 
     public void loadDefaults() {

@@ -12,12 +12,8 @@ public class VisualsConfig extends org.screamingsandals.lib.gamecore.config.Visu
 
     @Override
     public void load() {
-        if (!getConfigFile().exists()) {
-            getConfigFile().mkdirs();
-            loadDefaults();
-        }
-
         super.load();
+        loadDefaults();
     }
 
     public void loadDefaults() {
@@ -55,6 +51,7 @@ public class VisualsConfig extends org.screamingsandals.lib.gamecore.config.Visu
                 .put(PATH_TITLES_END_GAME_FADE_OUT, 0.2)
                 .put(PATH_TITLES_END_GAME_STAY, 1)
                 .put(PATH_TITLES_END_GAME_TITLE, "Team %team% won!")
-                .put(PATH_TITLES_END_GAME_SUBTITLE, "");
+                .put(PATH_TITLES_END_GAME_SUBTITLE, "")
+                .end();
     }
 }
