@@ -1548,6 +1548,11 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 						if (villager != null) {
 							Main.registerGameEntity(villager, this);
 							EntityUtils.disableEntityAI(villager);
+							villager.getLocation().getWorld().getNearbyEntities(villager.getLocation(), 1,1,1).forEach(entity -> {
+								if (entity.getType() == villager.getType() && entity.getLocation().getBlock().equals(villager.getLocation().getBlock())) {
+									entity.remove();
+								}
+							});
 						}
 					}
 
