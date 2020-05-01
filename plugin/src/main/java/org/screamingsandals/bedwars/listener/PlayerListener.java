@@ -216,6 +216,10 @@ public class PlayerListener implements Listener {
             Main.unloadPlayerGameProfile(event.getPlayer());
         }
 
+        if (Main.isPlayerStatisticsEnabled()) {
+            Main.getPlayerStatisticsManager().unloadStatistic(event.getPlayer());
+        }
+
         if (Main.getConfigurator().config.getBoolean("disable-server-message.player-join")) {
             event.setQuitMessage(null);
         }
