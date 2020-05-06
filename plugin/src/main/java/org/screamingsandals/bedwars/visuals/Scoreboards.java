@@ -22,7 +22,7 @@ public class Scoreboards {
                 .create(scoreboardDisplayedName, DisplaySlot.SIDEBAR, Scoreboard.sortLines(m(VisualsConfig.PATH_SCOREBOARDS_CONTENT_LOBBY).getList()));
 
         Scoreboard gameScoreboard = ScoreboardCreator.get(GameState.IN_GAME.getName())
-                .create(scoreboardDisplayedName, DisplaySlot.SIDEBAR, Scoreboard.sortLines(m(VisualsConfig.PATH_SCOREBOARDS_CONTENT_GAME).getList()));
+                .create(scoreboardDisplayedName, DisplaySlot.SIDEBAR, Scoreboard.sortLines(m(VisualsConfig.PATH_SCOREBOARDS_CONTENT_IN_GAME).getList()));
 
         Scoreboard deathmatchScoreboard = ScoreboardCreator.get(GameState.DEATHMATCH.getName())
                 .create(scoreboardDisplayedName, DisplaySlot.SIDEBAR, Scoreboard.sortLines(m(VisualsConfig.PATH_SCOREBOARDS_CONTENT_DEATHMATCH).getList()));

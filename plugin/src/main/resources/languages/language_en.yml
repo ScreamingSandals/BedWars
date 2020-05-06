@@ -38,4 +38,10 @@ bossbars:
     game: "Let's play! Remaining time: %time%"
     deathmatch: "NOW LET'S SEE! Remaining time: %time%"
     end-game: "%winnerMessage%"
+commands:
+  base:
+    list:
+      no_arenas_found: "&cActually, there is no arena loaded right now &e:("
+      arenas_list_header: "7a&lWow&a, we have &e%count% 7&aof arenas! Check them names out:"
+      arenas_list_text: "&e%game_name% &a- &e%game_state%"
 
