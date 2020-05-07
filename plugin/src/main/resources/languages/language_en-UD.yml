@@ -29,16 +29,16 @@ game:
       full: "¡puǝ ǝɯɐƃ ɹoɟ ʇᴉɐʍ ǝsɐǝlԀ ¡llnɟ sᴉɔ⅋ %arena%ㄥ⅋ ǝɯɐפɔ⅋"
       rebuilding: "˙ʍou ƃuᴉplᴉnqǝɹ sᴉ %arena% ǝɯɐפ"
       vip:
-        not_enough_players: "&cNot enough players in arena!"
-        full: "&cGame &7%arena% &cis full of VIP players. Please wait for game end!"
-        kicked_by_vip: "&cYou were kicked by VIP player!"
+        not_enough_players: "&c¡ɐuǝɹɐ uᴉ sɹǝʎɐld ɥƃnouǝ ʇoN"
+        full: "&cǝɯɐƃ &7%arena% &c¡puǝ ǝɯɐƃ ɹoɟ ʇᴉɐʍ ǝsɐǝlԀ ˙sɹǝʎɐld ԀIΛ ɟo llnɟ sᴉ"
+        kicked_by_vip: "&c¡ɹǝʎɐld ԀIΛ ʎq pǝʞɔᴉʞ ǝɹǝʍ no⅄"
       team:
-        selected: "&aSelected team: %team%&r &7[&a%players%&7/&a%maxplayers%&7]"
-        already_selected: "&aYou are already in team: %team%&r &7[&a%players%&7/&a%maxplayers%&7]"
-        full: "&cTeam %team% is full!"
-        you_won: "&aYour team won!"
-        you_lost: "&cYour team lost!"
-      vault_deposite: "&aAdded &7%coins% %currency%&a to your account!"
+        selected: "&a:ɯɐǝʇ pǝʇɔǝlǝS %team%&r &7[&a%players%&7/&a%maxplayers%&7]"
+        already_selected: "&a:ɯɐǝʇ uᴉ ʎpɐǝɹlɐ ǝɹɐ no⅄ %team%&r &7[&a%players%&7/&a%maxplayers%&7]"
+        full: "&cɯɐǝʇ %team% ¡llnɟ sᴉ"
+        you_won: "&a¡uoʍ ɯɐǝʇ ɹno⅄"
+        you_lost: "&c¡ʇsol ɯɐǝʇ ɹno⅄"
+      vault_deposite: "&a pǝpp∀&7%coins% %currency%&a ¡ʇunoɔɔɐ ɹnoʎ oʇ"
       respawn_protection:
         remaining: "&aRespawn protection will be gone in &f%time% &aseconds!"
         end: "&cRespawn protection is gone!"
@@ -82,7 +82,7 @@ game:
     already_active: "&cYou already activated this!"
     delay: "&cYou need to wait %time% seconds before using this item again!"
     trap:
-      built: "&aYou've built a trap! Now wait for someone to get caught in it!"
+      built: "&a¡ʇᴉ uᴉ ʇɥƃnɐɔ ʇǝƃ oʇ ǝuoǝɯos ɹoɟ ʇᴉɐʍ ʍoN ¡dɐɹʇ ɐ ʇlᴉnq ǝʌ,no⅄"
       caught: "&cYou got caught in trap of team &f%team%&c!"
       broadcast: "&f%player%&c got caught in your team's trap!"
     warp_powder:
