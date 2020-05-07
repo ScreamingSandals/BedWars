@@ -3,7 +3,7 @@ lang_name: "Magyar nyelv"
 prefix: "&7[&fBed&4Wars&7]&r"
 item_shop_name: "Bolt\n"
 plugin:
-  version_info: "Version: %version%"
+  version_info: "Verzió: %version%"
 game:
   info:
     global:
@@ -45,7 +45,7 @@ game:
       respawn_cooldown:
         title: "&a Újraéledés: &c%time%"
         title_cancel: "&c A csapat meghalt :("
-        respawned: "&aRespawned!"
+        respawned: "&aÚjraéledve!"
       chests:
         name: "&a&lCsapat láda"
         not_yours: "&eA csapat láda nem a tiéd!"
@@ -76,7 +76,7 @@ game:
       lore_join: "Csapatba való csatlakozáshoz kattints! "
   items:
     leave: "&cJáték elhagyása "
-    start_game: "&eStart game"
+    start_game: "&eJáték elkezdése"
     team_selector: "&aCsapat választás"
   specials:
     already_active: "&cYou already activated this!"
@@ -86,8 +86,8 @@ game:
       caught: "&cYou got caught in trap of team &f%team%&c!"
       broadcast: "&f%player%&c got caught in your team's trap!"
     warp_powder:
-      canceled: "&cTeleporting was canceled."
-      started: "&aTeleporting.. Please don't move for &7%time%&a seconds!"
+      canceled: "&cA teleportálás elmaradt."
+      started: "&aTeleportálás.. Kérlek ne mozogj &7%time%&a másodpercig!"
     tracker:
       no_one: "&cNem található cél!"
       found: "&f%target% &ahas been found &f%distance% &ablocks away!"
@@ -98,7 +98,7 @@ game:
       created: "&aPlatform is created and will be destroyed in &f%time% &aseconds."
     protection_wall:
       not_usable_here: "&cThere is no space left for creating Protection Wall."
-      destroyed_in: "&cProtection Wall will be destroyed in &f%time% &cseconds."
+      destroyed_in: "&cA védelmi fal eltűnik &f%time% &cmásodperc múlva."
       created_unbreakable: "&aUnbreakable Protection Wall was created!"
       created: "&aProtection Wall is created and will be destroyed in &f%time% &aseconds."
     tnt_sheep:
@@ -112,11 +112,11 @@ game:
 arena:
   status:
     disabled: "&cKIKAPCSOLVA"
-    waiting: "&eWAITING"
-    running: "&aRUNNING"
+    waiting: "&eVÁRAKOZÁS"
+    running: "&aFUT"
     rebuilding: "&eÚJRAÉPÍTÉS\n"
 signs:
-  created: "&aSign was successfully created!"
+  created: "&aA tábla sikeresen létrehozva!"
   not_created: "&cSign couldn't be created! Please check the name of the arena!"
   cannot_destroy: "&cYou don't have permissions to destroy this sign!"
   game_not_exists: "&cThe game that is written on the sign doesn't exist! Please contact an admin!"
@@ -134,7 +134,7 @@ signs:
       line1: "&6Várakozás.."
       line2: "&a%players%&8/&a%maxplayers%"
 holograms:
-  not_enabled: "&cHolograms are disabled."
+  not_enabled: "&cA hologrammok letiltva."
   holo_removed: "&aHologram has been &lsuccessfully &aremoved!"
   game:
     beds:
@@ -165,7 +165,7 @@ commands:
   leave:
     not_in_game: "&cYou are not in game!"
   list:
-    header: "&aAvailable arenas:"
+    header: "&aElérhető arénák:"
   main_lobby:
     info: "&cVIGYÁZAT&f: Használd a /bw reload parancsot hogy a Főlobby újra működjön!"
   rejoin:
@@ -190,7 +190,7 @@ commands:
     usage: "&cUsage: &f/bw admin <arena> <add|edit|remove|save|...> ..."
     arena:
       errors:
-        not_found: "&cArena not found!"
+        not_found: "&cA aréna nem található!"
         not_in_edit_mode: "&cAz arénának készítő módban kell lennie! "
       info:
         header: "&aAz aréna részletei:"
@@ -311,7 +311,7 @@ commands:
       spawner_added: "&aA &7%resource%&a spawner sikeresen elhelyezve XYZ: &7%x%/%y%/%z% &apozícióra"
       store_added: "&aA villager was added to your position: &7%x%/%y%/%z% &aYAW: &7%yaw% &aPITCH: &7%pitch%"
       store_removed: "&aVillager from position XYZ: &7%x%/%y%/%z%&a was successfully removed!"
-      lobby_spawn_setted: "&aLobby spawn was successfully set to position XYZ: &7%x%/%y%/%z% &aYAW: &7%yaw% &aPITCH: &7%pitch%"
+      lobby_spawn_setted: "&aA lobbby sikeresen beállítva a XYZ: &7%x%/%y%/%z% &aYAW: &7%yaw% &aPITCH: &7%pitch% kordinátára"
       spec_spawn_setted: "&aSpectator spawn was successfully set to position XYZ: &7%x%/%y%/%z% &aYAW: &7%yaw% &aPITCH: &7%pitch%"
       pos1_setted: "&aPosition 1 of arena &7%arena%&a was set to XYZ: &7%x%/%y%/%z%"
       pos2_setted: "&aPosition 2 of arena &7%arena%&a was set to XYZ: &7%x%/%y%/%z%"
@@ -327,8 +327,8 @@ commands:
       click_right_on_entity_to_set_join: "&aNow use right click on the desired entity for which you want to set up join to team: &7%team%"
       jointeam_entitynotcompatible: "&cThe Entity you are trying to use is not compatible! Only Living entities or Armor Stands can be used!"
       jointeam_entity_added: "&aEntity to join team added!"
-      invalid_min_players: "&cMinimum players must be 2 or higher!"
-      min_players_set: "&aSuccessfully set minimum players to &7%min%&a!"
+      invalid_min_players: "&cA szükséges játékosok: 2 ember vagy több!"
+      min_players_set: "&aSikeresen beállítva &7%min% &aminimum játékosra!"
       invalid_config_value: "&cWrong value! It could be &7true&c, &7false&c or &7inherit&c!"
       invalid_config_variable_name: "&cWrong name of constant!"
       config_variable_set_to: "&aConstant &7%config%&a was successfully set to &7%value%&a!"
