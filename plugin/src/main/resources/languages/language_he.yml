@@ -7,8 +7,8 @@ plugin:
 game:
   info:
     global:
-      joined: "%name% &ajoined the game!&r &7[&a%players%&7/&a%maxplayers%&7]"
-      leaved: "%name% &cleft the game!"
+      joined: "&7[&a%players%&7/&a%maxplayers%&7] &a!קחשמל ףרטצה &r%name%"
+      leaved: "&cקחשמה תא בזע &r%name%"
       game_win: "&aTeam &r%team%&a won game in &7%time%"
       game_end: "&cGame ended! Thanks for playing!"
       players:
@@ -33,9 +33,9 @@ game:
         full: "&cGame &7%arena% &cis full of VIP players. Please wait for game end!"
         kicked_by_vip: "&cYou were kicked by VIP player!"
       team:
-        selected: "&aSelected team: %team%&r &7[&a%players%&7/&a%maxplayers%&7]"
-        already_selected: "&aYou are already in team: %team%&r &7[&a%players%&7/&a%maxplayers%&7]"
-        full: "&cTeam %team% is full!"
+        selected: "&r&7[&a%players%&7/&a%maxplayers%&7] &a%team% :רחבנש תווצ"
+        already_selected: "&r&7[&a%players%&7/&a%maxplayers%&7] &a%team% :תווצהמ קלח רבכ התא"
+        full: "&c!םיאלמ %team% תווצה"
         you_won: "&aYour team won!"
         you_lost: "&cYour team lost!"
       vault_deposite: "&aAdded &7%coins% %currency%&a to your account!"
