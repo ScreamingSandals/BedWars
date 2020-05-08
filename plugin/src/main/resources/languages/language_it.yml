@@ -9,7 +9,7 @@ game:
     global:
       joined: "%name% &aè entrato/a in gioco!&r &7[&a%players%&7/&a%maxplayers%&7]"
       leaved: "%name% &cè uscito/a dal gioco!"
-      game_win: "&aSquadra &r%team%&a Vince la partità in &7%time%"
+      game_win: "&aSquadra &r%team%&a Vince la partita in &7%time%"
       game_end: "&cGioco finito! Grazie per aver partecipato!"
       players:
         self_killed: "&cIl giocatore %victim% &cè stato sconfitto!"
