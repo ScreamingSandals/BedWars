@@ -72,6 +72,7 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                 } else {
                     return "none";
                 }
+            case "current_aviable_teams": // Wow, you found an easter egg
             case "current_available_teams":
                 if (Main.isPlayerInGame(player)) {
                     return Integer.toString(Main.getPlayerGameProfile(player).getGame().countAvailableTeams());

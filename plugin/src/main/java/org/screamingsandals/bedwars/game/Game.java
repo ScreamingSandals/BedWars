@@ -715,8 +715,12 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	public static Game loadGame(File file) {
+		return loadGame(file, true);
+	}
+
+	@SuppressWarnings("unchecked")
+	public static Game loadGame(File file, boolean firstAttempt) {
 		if (!file.exists()) {
 			return null;
 		}
@@ -753,6 +757,11 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 							+ " can't be loaded, because world " + worldName + " is missing!");
 					return null;
 				}
+			} else if (firstAttempt) {
+				Bukkit.getConsoleSender().sendMessage(
+						"§c[B§fW] §eArena " + game.name + " can't be loaded, because world " + worldName + " is missing! We will try it again after all plugins will be loaded!");
+				Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> loadGame(file, false), 10L);
+				return null;
 			} else {
 				Bukkit.getConsoleSender().sendMessage(
 						"§c[B§fW] §cArena " + game.name + " can't be loaded, because world " + worldName + " is missing!");
@@ -786,6 +795,11 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 							+ " can't be loaded, because world " + spawnWorld + " is missing!");
 					return null;
 				}
+			} else if (firstAttempt) {
+				Bukkit.getConsoleSender().sendMessage(
+						"§c[B§fW] §eArena " + game.name + " can't be loaded, because world " + worldName + " is missing! We will try it again after all plugins will be loaded!");
+				Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> loadGame(file, false), 10L);
+				return null;
 			} else {
 				Bukkit.getConsoleSender().sendMessage(
 						"§c[B§fW] §cArena " + game.name + " can't be loaded, because world " + spawnWorld + " is missing!");
