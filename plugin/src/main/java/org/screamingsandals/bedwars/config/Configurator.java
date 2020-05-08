@@ -20,7 +20,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Configurator {
     public File configFile, shopFile, signsFile, recordFile, langFolder;
-    public FileConfiguration config, shopConfig, signsConfig, recordConfig;
+    public FileConfiguration config, signsConfig, recordConfig;
 
     public final File dataFolder;
     public final Main main;
@@ -34,13 +34,11 @@ public class Configurator {
         dataFolder.mkdirs();
 
         configFile = new File(dataFolder, "config.yml");
-        shopFile = new File(dataFolder, "shop.yml");
         signsFile = new File(dataFolder, "sign.yml");
         recordFile = new File(dataFolder, "record.yml");
         langFolder = new File(dataFolder.toString(), "languages");
 
         config = new YamlConfiguration();
-        shopConfig = new YamlConfiguration();
         signsConfig = new YamlConfiguration();
         recordConfig = new YamlConfiguration();
 
@@ -50,10 +48,6 @@ public class Configurator {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
-        /* Move this out of Configurator */
-        if (!shopFile.exists()) {
-            main.saveResource("shop.yml", false);
         }
         if (!signsFile.exists()) {
             try {
@@ -86,11 +80,19 @@ public class Configurator {
 
         try {
             config.load(configFile);
-            shopConfig.load(shopFile);
             signsConfig.load(signsFile);
             recordConfig.load(recordFile);
         } catch (IOException | InvalidConfigurationException e) {
             e.printStackTrace();
+        }
+
+        String shopFileName = "shop.yml";
+        if (config.getBoolean("turnOnExperimentalGroovyShop", false)) {
+            shopFileName = "shop.groovy";
+        }
+        shopFile = new File(dataFolder, shopFileName);
+        if (!shopFile.exists()) {
+            main.saveResource(shopFileName, false);
         }
 
         AtomicBoolean modify = new AtomicBoolean(false);
@@ -382,6 +384,8 @@ public class Configurator {
         checkOrSetConfig(modify, "mainlobby.enabled", false);
         checkOrSetConfig(modify, "mainlobby.location", "");
         checkOrSetConfig(modify, "mainlobby.world", "");
+
+        checkOrSetConfig(modify, "turnOnExperimentalGroovyShop", false);
 
         checkOrSetConfig(modify, "version", 2);
 

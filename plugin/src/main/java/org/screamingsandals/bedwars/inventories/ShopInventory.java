@@ -30,6 +30,7 @@ import org.screamingsandals.simpleinventories.item.ItemProperty;
 import org.screamingsandals.simpleinventories.item.PlayerItemInfo;
 import org.screamingsandals.simpleinventories.utils.MapReader;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -155,7 +156,11 @@ public class ShopInventory implements Listener {
 				}
 				String name = (parent ? "+" : "-") + file;
 				if (!shopMap.containsKey(name)) {
-					loadNewShop(name, file + ".yml", parent);
+					if (Main.getConfigurator().config.getBoolean("turnOnExperimentalGroovyShop", false) && new File(Main.getInstance().getDataFolder(), file + ".groovy").exists()) {
+						loadNewShop(name, file + ".groovy", parent);
+					} else {
+						loadNewShop(name, file + ".yml", parent);
+					}
 				}
 				SimpleInventories shop = shopMap.get(name);
 				shop.openForPlayer(player);
@@ -270,7 +275,11 @@ public class ShopInventory implements Listener {
 		SimpleInventories format = new SimpleInventories(options);
 		try {
 			if (useParent) {
-				format.loadFromDataFolder(Main.getInstance().getDataFolder(), "shop.yml");
+				String shopFileName = "shop.yml";
+				if (Main.getConfigurator().config.getBoolean("turnOnExperimentalGroovyShop", false)) {
+					shopFileName = "shop.groovy";
+				}
+				format.loadFromDataFolder(Main.getInstance().getDataFolder(), shopFileName);
 			}
 			if (fileName != null) {
 				format.loadFromDataFolder(Main.getInstance().getDataFolder(), fileName);
