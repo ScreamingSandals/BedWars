@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import static org.screamingsandals.lib.lang.I.m;
 import static org.screamingsandals.lib.lang.I.mpr;
 
 @RegisterCommand(subCommand = true)
@@ -33,7 +34,7 @@ public class ListCommand implements ScreamingCommand {
                     .send(commandSender);
             names.forEach(name -> mpr("commands.base.list.arenas_list_text")
                     .replace("%game_name%", name)
-                    .replace("%game_state%", games.get(name).getActiveState()) //TODO - language
+                    .replace("%game_state%", m("game.state." + games.get(name).getActiveState().getName()).get())
                     .send(commandSender));
         } else {
             mpr("commands.base.list.no_arenas_found").send(commandSender);

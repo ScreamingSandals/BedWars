@@ -49,10 +49,9 @@ public class Main extends JavaPlugin {
             return;
         }
 
-        language = new Language(this, mainConfig.getString("language"));
-        language.setCustomPrefix(mainConfig.getString("prefix"));
+        language = new Language(this, mainConfig.getString("language"), mainConfig.getString("prefix"));
 
-        Debug.init(language.getCustomPrefix());
+        Debug.init(getName());
         Debug.setDebug(mainConfig.getBoolean("debug"));
 
         commands = new Commands(this);
@@ -99,6 +98,10 @@ public class Main extends JavaPlugin {
 
     private void registerListeners() {
         getServer().getPluginManager().registerEvents(new PlayerCoreListener(), this);
+    }
+
+    public static Main getInstance() {
+        return instance;
     }
 
     public static MainConfig getMainConfig() {

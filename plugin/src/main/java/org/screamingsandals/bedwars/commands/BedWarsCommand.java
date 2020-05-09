@@ -18,9 +18,7 @@ public class BedWarsCommand implements ScreamingCommand {
                 .handlePlayerCommand((player, args) -> {
                     player.sendMessage("Will send help commands here :(");
                 })
-                .handleConsoleCommand((console, args) -> {
-                    console.sendMessage("Will send help commands here :(");
-                })
+                .handleConsoleCommand((console, args) -> console.sendMessage("Will send help commands here :("))
                 .register();
     }
 }

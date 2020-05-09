@@ -20,7 +20,7 @@ public class MainConfig extends SpigotConfigAdapter {
     public void loadDefaults() {
         DefaultConfigBuilder.start(this)
                 .put("debug", true) //for now, true.
-                .put("prefix", "[BedWars]") //big news
+                .put("prefix", "&7[&bS&c&lBed&f&lWars&7]&r") //big news
                 .put("language", "en")
                 .put("bungeecord.enabled", false)
                 .put("bungeecord.multi-arena-setup", false)
