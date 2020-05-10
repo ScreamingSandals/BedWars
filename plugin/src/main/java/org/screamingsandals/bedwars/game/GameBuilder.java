@@ -2,6 +2,7 @@ package org.screamingsandals.bedwars.game;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.game.team.GameTeam;
 import org.screamingsandals.lib.gamecore.team.TeamColor;
 
@@ -10,26 +11,25 @@ import static org.screamingsandals.lib.lang.I.mpr;
 public class GameBuilder extends org.screamingsandals.lib.gamecore.core.GameBuilder<Game> {
 
     @Override
-    public void create(String arenaName) {
-        setGameFrame(new Game(arenaName));
+    public boolean create(String arenaName, Player player) {
+        if (super.create(arenaName, player)) {
+            setGameFrame(new Game(arenaName));
+            return true;
+        }
+        return false;
     }
 
-    public void create(Game game) {
-        setGameFrame(game);
+    @Override
+    public void save(Player player) {
+        if (getGameFrame().checkIntegrity()) {
+            Main.getGameManager().registerGame(getGameFrame().getGameName(), getGameFrame());
+        } else {
+            checkWhatsWrong(player);
+        }
     }
 
     public void addTeam(String teamName, TeamColor teamColor, int players) {
         super.addTeam(new GameTeam(teamName, teamColor, players));
-    }
-
-    @Override
-    public Game get(Player player) {
-        if (isReadyToSave()) {
-            return getGameFrame();
-        } else {
-            checkWhatsWrong(player);
-            return null;
-        }
     }
 
     private void checkWhatsWrong(CommandSender sender) {

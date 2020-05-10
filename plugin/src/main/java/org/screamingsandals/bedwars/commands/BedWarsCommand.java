@@ -9,10 +9,11 @@ import java.util.List;
 
 @RegisterCommand
 public class BedWarsCommand implements ScreamingCommand {
+    public static String commandName = "sbw";
 
     @Override
     public void register() {
-        CommandBuilder.bukkitCommand().create("sbw", Permissions.BASE_COMMAND, List.of("bedwars", "bw", "screamingbedwars"))
+        CommandBuilder.bukkitCommand().create(commandName, Permissions.BASE_COMMAND, List.of("bedwars", "bw", "screamingbedwars"))
                 .setDescription("Base command for the ScreamingBedWars plugin")
                 .setUsage("/sbw")
                 .handlePlayerCommand((player, args) -> {

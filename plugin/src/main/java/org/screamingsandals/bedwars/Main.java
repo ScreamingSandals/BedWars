@@ -4,6 +4,7 @@ import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.screamingsandals.bedwars.commands.CommandsLanguage;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.config.VisualsConfig;
 import org.screamingsandals.bedwars.game.Game;
@@ -26,7 +27,6 @@ public class Main extends JavaPlugin {
     private VisualsConfig visualsConfig;
     @Getter
     private GameCore gameCore;
-    @Getter
     private GameManager<Game> gameManager;
     private PlayerManager playerManager;
     @Getter
@@ -36,7 +36,7 @@ public class Main extends JavaPlugin {
     @Override
     @SuppressWarnings("unchecked")
     public void onEnable() {
-        Debug.setFallbackName("[BedWars] ");
+        Debug.setFallbackName("[SBedWars] ");
         instance = this;
         try {
             mainConfig = new MainConfig(ConfigAdapter.createFile(getDataFolder(), "config.yml"));
@@ -56,6 +56,7 @@ public class Main extends JavaPlugin {
 
         commands = new Commands(this);
         commands.load();
+        commands.setCommandLanguage(new CommandsLanguage());
 
         //Make sure that we destroy existing instance of the  core, fucking reloads
         if (gameCore != null) {
@@ -102,6 +103,10 @@ public class Main extends JavaPlugin {
 
     public static Main getInstance() {
         return instance;
+    }
+
+    public static GameManager<Game> getGameManager() {
+        return instance.gameManager;
     }
 
     public static MainConfig getMainConfig() {

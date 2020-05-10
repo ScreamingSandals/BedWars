@@ -3,6 +3,7 @@ package org.screamingsandals.bedwars.commands.base;
 import org.bukkit.command.CommandSender;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.Permissions;
+import org.screamingsandals.bedwars.commands.BedWarsCommand;
 import org.screamingsandals.lib.commands.common.RegisterCommand;
 import org.screamingsandals.lib.commands.common.SubCommandBuilder;
 import org.screamingsandals.lib.commands.common.interfaces.ScreamingCommand;
@@ -17,7 +18,7 @@ public class VersionCommand implements ScreamingCommand {
 
     @Override
     public void register() {
-        SubCommandBuilder.bukkitSubCommand().createSubCommand("sbw", "version", Permissions.BASE_VERSION_COMMAND, Collections.emptyList())
+        SubCommandBuilder.bukkitSubCommand().createSubCommand(BedWarsCommand.commandName, "version", Permissions.BASE_VERSION_COMMAND, Collections.emptyList())
                 .handleSubPlayerCommand(this::handle)
                 .handleSubConsoleCommand(this::handle);
     }

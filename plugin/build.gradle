@@ -13,7 +13,7 @@ dependencies {
 tasks.spigotPluginYaml.enabled = true;
 
 spigot {
-    name = 'ScreamingBedWars'
+    name = 'SBedWars'
     authors = ['ScreamingSandals']
     apiVersion = '1.13'
     load = POST_WORLD
