@@ -239,7 +239,7 @@ commands:
       header: "&aSeleziona la sezione informazioni di &7%arena%&a:"
       base: "&aBase information&f - &7/bw admin %arena% info base"
       stores: "&aList of stores&f - &7/bw admin %arena% info stores"
-      spawners: "&aList of spawners&f - &7/bw admin %arena% info spawners"
+      spawners: "&aElenco degli spawners&f - &7/bw admin %arena% info spawners"
       teams: "&aList of teams&f - &7/bw admin %arena% info teams"
       config: "&aConfiguration&f - &7/bw admin %arena% info config"
       click: "&bClick for execute this command!"
