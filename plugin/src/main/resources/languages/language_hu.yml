@@ -221,7 +221,7 @@ specials_rescue_platform_destroy: "&cPlatform will be destroyed in &f%time% &cse
 specials_rescue_platform_created_unbreakable: "&aUnbreakable Platform was created!"
 specials_rescue_platform_created: "&aPlatform is created and will be destroyed in &f%time% &aseconds."
 specials_protection_wall_not_usable_here: "&cThere is no space left for creating Protection Wall."
-specials_protection_wall_destroy: "&cProtection Wall will be destroyed in &f%time% &cseconds."
+specials_protection_wall_destroy: "&cA védelmi fal eltűnik &f%time% &cmásodperc múlva."
 specials_protection_wall_created_unbreakable: "&aUnbreakable Protection Wall was created!"
 specials_protection_wall_created: "&aProtection Wall is created and will be destroyed in &f%time% &aseconds."
 specials_tntsheep_no_target_found: "&cNem található cél!"
