@@ -148,7 +148,7 @@ commands:
   success:
     done: "&aCommand executed successfully!"
   errors:
-    unknown_command: "&cCommand unknown! Type &4/bw help &cfor help!"
+    unknown_command: "&cƆoɯɯɐup nuʞuoʍu¡ ┴ʎdǝ &4/qʍ ɥǝld &cɟoɹ ɥǝld¡"
     unknown_usage: "&cNumber of arguments does not match the correct amount or unknown arguments! Type &4/bw help &cfor help!"
     no_permissions: "&cYou don't have the permission to do that!"
     not_allowed: "&cThis command is blocked while the game is running!"
