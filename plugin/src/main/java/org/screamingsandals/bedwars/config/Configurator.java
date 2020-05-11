@@ -386,6 +386,8 @@ public class Configurator {
         checkOrSetConfig(modify, "mainlobby.world", "");
 
         checkOrSetConfig(modify, "turnOnExperimentalGroovyShop", false);
+        checkOrSetConfig(modify, "preventSpectatorFlyingAway", false);
+        checkOrSetConfig(modify, "removePurchaseMessages", false);
 
         checkOrSetConfig(modify, "version", 2);
 

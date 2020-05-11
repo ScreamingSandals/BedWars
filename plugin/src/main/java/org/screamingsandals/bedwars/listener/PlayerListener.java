@@ -947,6 +947,10 @@ public class PlayerListener implements Listener {
                 if (!GameCreator.isInArea(event.getTo(), game.getPos1(), game.getPos2())) {
                     player.damage(5);
                 }
+            } else if (Main.getConfigurator().config.getBoolean("preventSpectatorFlyingAway", false) && gPlayer.isSpectator && (game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING)) {
+                if (!GameCreator.isInArea(event.getTo(), game.getPos1(), game.getPos2())) {
+                    event.setCancelled(true);
+                }
             }
         }
     }

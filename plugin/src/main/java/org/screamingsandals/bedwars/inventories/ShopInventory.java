@@ -390,13 +390,17 @@ public class ShopInventory implements Listener {
 			event.sellStack(materialItem);
 			event.buyStack(newItem);
 
-			player.sendMessage(i18n("buy_succes").replace("%item%", amount + "x " + getNameOrCustomNameOfItem(newItem))
-				.replace("%material%", price + " " + type.getItemName()));
+			if (!Main.getConfigurator().config.getBoolean("removePurchaseMessages", false)) {
+				player.sendMessage(i18n("buy_succes").replace("%item%", amount + "x " + getNameOrCustomNameOfItem(newItem))
+						.replace("%material%", price + " " + type.getItemName()));
+			}
 			Sounds.playSound(player, player.getLocation(),
 				Main.getConfigurator().config.getString("sounds.on_item_buy"), Sounds.ENTITY_ITEM_PICKUP, 1, 1);
 		} else {
-			player.sendMessage(i18n("buy_failed").replace("%item%", amount + "x " + getNameOrCustomNameOfItem(newItem))
-				.replace("%material%", price + " " + type.getItemName()));
+			if (!Main.getConfigurator().config.getBoolean("removePurchaseMessages", false)) {
+				player.sendMessage(i18n("buy_failed").replace("%item%", amount + "x " + getNameOrCustomNameOfItem(newItem))
+						.replace("%material%", price + " " + type.getItemName()));
+			}
 		}
 	}
 
@@ -486,23 +490,29 @@ public class ShopInventory implements Listener {
 
 				if (sendToAll) {
 					for (Player player1 : game.getTeamOfPlayer(event.getPlayer()).getConnectedPlayers()) {
-						player1.sendMessage(i18n("buy_succes").replace("%item%", itemName).replace("%material%",
-							price + " " + itemSpawnerType.getItemName()));
+						if (!Main.getConfigurator().config.getBoolean("removePurchaseMessages", false)) {
+							player1.sendMessage(i18n("buy_succes").replace("%item%", itemName).replace("%material%",
+									price + " " + itemSpawnerType.getItemName()));
+						}
 						Sounds.playSound(player1, player1.getLocation(),
 							Main.getConfigurator().config.getString("sounds.on_upgrade_buy"),
 							Sounds.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
 					}
 				} else {
-					player.sendMessage(i18n("buy_succes").replace("%item%", itemName).replace("%material%",
-						price + " " + itemSpawnerType.getItemName()));
+					if (!Main.getConfigurator().config.getBoolean("removePurchaseMessages", false)) {
+						player.sendMessage(i18n("buy_succes").replace("%item%", itemName).replace("%material%",
+								price + " " + itemSpawnerType.getItemName()));
+					}
 					Sounds.playSound(player, player.getLocation(),
 						Main.getConfigurator().config.getString("sounds.on_upgrade_buy"),
 						Sounds.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
 				}
 			}
 		} else {
-			player.sendMessage(i18n("buy_failed").replace("%item%", "UPGRADE").replace("%material%",
-				price + " " + itemSpawnerType.getItemName()));
+			if (!Main.getConfigurator().config.getBoolean("removePurchaseMessages", false)) {
+				player.sendMessage(i18n("buy_failed").replace("%item%", "UPGRADE").replace("%material%",
+						price + " " + itemSpawnerType.getItemName()));
+			}
 		}
 	}
 }
