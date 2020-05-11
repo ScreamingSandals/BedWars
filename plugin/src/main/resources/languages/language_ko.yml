@@ -102,7 +102,7 @@ game:
       created_unbreakable: "&a파괴가 불가능한 방어용 벽이 생성되었습니다!"
       created: "&a번역하기 귀찮아 대충 몇 초 후에 방어벽 파괴된다는 소리"
     tnt_sheep:
-      no_target_found: "&cNo target found!"
+      no_target_found: "&c타겟이 없는데여 -_-"
     arror_blocker:
       activated: "&aArrow blocker has been activated for %time% seconds!"
       already_activated: "&cArrow blocker is already activated!"
