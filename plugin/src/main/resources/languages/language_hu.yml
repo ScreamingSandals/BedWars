@@ -38,7 +38,7 @@ game:
         full: "&c%team%, tele van!"
         you_won: "&aA csapatod nyerte a meccset!"
         you_lost: "&cA te csapatod vesztett!"
-      vault_deposite: "&aAdded &7%coins% %currency%&a to your account!"
+      vault_deposite: "%coins% %currency%&aHozzáadódott a számládhoz!"
       respawn_protection:
         remaining: "&aÚjjáéledési védelmed lejár &f%time% &amásodperc múlva! "
         end: "&cÚjjáéledési védelmed eltűnt! "
