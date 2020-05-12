@@ -271,7 +271,7 @@ help_bw_admin_spawner_reset: "/bw admin <arena> spawner reset - &eMinden spawner
 help_bw_admin_store_add: "/bw admin <arena> store add [name above dealer head] [file with shop] [use main shop] - &eBolt létrehozása."
 help_bw_admin_store_remove: "/bw admin <arena> store remove - &eBolt eltüntetése."
 help_bw_admin_store_type: "/bw admin <arena> store type <living entity> - &eBolt típusának beállítása (Villager, Horse, Cow, Pig stb.)"
-help_bw_admin_config: "/bw admin <arena> config <constant> <value> - &eSets value of constant variable for game"
+help_bw_admin_config: "/bw admin <arena> config <constant> <value> - &eÁllandó változó beállítása."
 help_bw_admin_arena_time: "/bw admin <arena> arenatime <type> - &eSets time in arena (DAY, NIGHT, etc.)"
 help_bw_admin_arena_weather: "/bw admin <arena> arenaweather <type> - &eSets weather in arena (default, CLEAN, DOWNFALL)"
 help_bw_admin_remove: "/bw admin <arena> remove - &cRemove the arena"
