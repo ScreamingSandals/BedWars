@@ -27,7 +27,7 @@ game:
     player:
       already_running: "&7%arena% &c már el van indítva! Nem tudsz csatlakozni, ha éppen megy a játék."
       full: "&7%arena% &cmegtelt! Kérlek várd meg még véget ér!"
-      rebuilding: "Game %arena% is rebuilding now."
+      rebuilding: "%arena% aréna karbantartás alatt."
       vip:
         not_enough_players: "&c Nincs elég ember az arénába!\n"
         full: "&7%arena% %ctele van VIP játékosokkal. Kérlek várj még véget ér a játék!"
@@ -79,36 +79,36 @@ game:
     start_game: "&eJáték elkezdése"
     team_selector: "&aCsapat választás"
   specials:
-    already_active: "&cYou already activated this!"
-    delay: "&cYou need to wait %time% seconds before using this item again!"
+    already_active: "&cEzt egyszer már aktiváltad!"
+    delay: "&cVárnod kell &f%time% &cmásodpercet, mielőtt használhatnád ezt!"
     trap:
       built: "&aCsapdát aktiváltál! Most várd meg még valaki belemegy."
-      caught: "&cYou got caught in trap of team &f%team%&c!"
-      broadcast: "&f%player%&c got caught in your team's trap!"
+      caught: "&cBele estél a &f%team% &ccsapdájába!"
+      broadcast: "&f%player% &cbele sétált a csapatod csapdájába!"
     warp_powder:
       canceled: "&cA teleportálás elmaradt."
       started: "&aTeleportálás.. Kérlek ne mozogj &7%time%&a másodpercig!"
     tracker:
       no_one: "&cNem található cél!"
-      found: "&f%target% &ahas been found &f%distance% &ablocks away!"
+      found: "&f%target% &aészrevéve &f%distance% &ablokk távolságban!"
     rescue_platform:
-      not_in_air: "&cYou need to be in the air."
-      destroyed_in: "&cPlatform will be destroyed in &f%time% &cseconds."
-      created_unbreakable: "&aUnbreakable Platform was created!"
-      created: "&aPlatform is created and will be destroyed in &f%time% &aseconds."
+      not_in_air: "&cEhhez a levegőben kell lenned!"
+      destroyed_in: "&cA fal &f%time% &cmásodperc múlva eltűnik."
+      created_unbreakable: "&aÁttörhetetlen fal létrehozva!"
+      created: "&cA fal &f%time% &cmásodperc múlva eltűnik."
     protection_wall:
-      not_usable_here: "&cThere is no space left for creating Protection Wall."
+      not_usable_here: "&cNincs elég hely védelmi fal létrehozására."
       destroyed_in: "&cA védelmi fal eltűnik &f%time% &cmásodperc múlva."
-      created_unbreakable: "&aUnbreakable Protection Wall was created!"
-      created: "&aProtection Wall is created and will be destroyed in &f%time% &aseconds."
+      created_unbreakable: "&aÁttörhetetlen védelmi fal létrehozva!"
+      created: "&cA védelmi fal eltűnik &f%time% &cmásodperc múlva."
     tnt_sheep:
       no_target_found: "&cNem található cél!"
     arror_blocker:
-      activated: "&aArrow blocker has been activated for %time% seconds!"
-      already_activated: "&cArrow blocker is already activated!"
-      ended: "&cArrow blocker is no longer activated!"
+      activated: "&aNyílgátló aktiválva &f%time% &amásodpercre!"
+      already_activated: "&cA nyílgátló még mindig aktív!"
+      ended: "&cA nyílgátló mostantól már nem aktív!"
     golem:
-      created: "&aGolem has been spawned."
+      created: "&aGólem megidézve."
 arena:
   status:
     disabled: "&cKIKAPCSOLVA"
@@ -119,7 +119,7 @@ signs:
   created: "&aA tábla sikeresen létrehozva!"
   not_created: "&cA tábla nem tud elkészülni! Kérlek ellenőrizd az aréna nevét!"
   cannot_destroy: "Nincs jogosultsága végrehajtani ezt a műveletet."
-  game_not_exists: "&cThe game that is written on the sign doesn't exist! Please contact an admin!"
+  game_not_exists: "&cEz az aréna nem elérhető! Segítségért keress fel egy staff tagot!"
   status:
     disabled:
       line1: "&cJáték"
@@ -135,15 +135,15 @@ signs:
       line2: "&a%players%&8/&a%maxplayers%"
 holograms:
   not_enabled: "&cA hologrammok letiltva."
-  holo_removed: "&aHologram has been &lsuccessfully &aremoved!"
+  holo_removed: "&aHologram &lsikeresen &aeltávolítva!"
   game:
     beds:
       protect_your_bed: "%teamcolor%&lMegvédte az ágyad!"
       protect_your_target: "%teamcolor%&lMegvégte a célblokkot!"
       protect_your_bed_destroyed: "&7&lÁgy összetörve."
-      protect_your_target_destroyed: "&7&lTarget block is destroyed."
+      protect_your_target_destroyed: "&7&lAz ellenség blokkja elpusztítva."
       destroy_this_bed: "%teamcolor%&lÁgya kiütve"
-      destroy_this_target: "%teamcolor%&lDestroy this target block!"
+      destroy_this_target: "%teamcolor% csapat elpusztította a az ellenség blokkját!"
 commands:
   success:
     done: "&aA parancs sikeresen bevágva! "
@@ -152,25 +152,25 @@ commands:
     unknown_usage: "Az érvek száma nem egyezik meg a helyes összeggel vagy az ismeretlen érvekkel! írd &4/bw help &csegítségért!"
     no_permissions: "&cNincs jogod ehhez! "
     not_allowed: "&cEz a parancs le van tíltva játék közben! "
-    not_for_console: "&cThis command is not supported for the console."
+    not_for_console: "&cEzt a parancsot a konzol nem támogatja."
   holograms:
-    added: "&aHologram has been added to your position!"
-    click_to_remove: "&eNow click the &ahologram &eyou want to remove!"
+    added: "&aHologram sikeresen hozzáadva!"
+    click_to_remove: "&eMost kattints az eltávolítani kívánt hologramra!"
   auto_join:
     already_in_game: "&cMár bentvagy egy játékban. "
-    no_empty_game: "&cThere's no game empty game!"
+    no_empty_game: "&cNincs egy üres aréna sem!"
   join:
     already_in_game: "&cMár bentvagy egy játékban. "
-    not_found: "&cArena does not exists!"
+    not_found: "&cEz az aréna nem létezik!"
   leave:
-    not_in_game: "&cYou are not in game!"
+    not_in_game: "&cNem vagy játékba!"
   list:
     header: "&aElérhető arénák:"
   main_lobby:
     info: "&cVIGYÁZAT&f: Használd a /bw reload parancsot hogy a Főlobby újra működjön!"
   rejoin:
     already_in_game: "&cMár bentvagy egy játékban. "
-    no_game_found: "&cNo previous game found."
+    no_game_found: "&cNem található korábbi játék!"
   reload:
     safe: "&aWaiting for safe stop of all games or for 60 seconds before reload!"
     failed: "&cNéhány aréna nem végződött az idő alatt ezért lehet hogy megsérültek/hinányosak!"
