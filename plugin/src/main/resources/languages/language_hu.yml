@@ -177,7 +177,7 @@ commands:
   statistics:
     header: "&7%player% &astatisztikái:"
     disabled: "&cA játékos statisztikák le vannak tiltva!"
-    not_found: "&cStatistics for this player were not found!"
+    not_found: "&cEnnek a játékosnak a statisztikái nem elérhetők!"
     kills: "&7Ölések: &a%kills%"
     deaths: "&7Halálok: &e%deaths%"
     kd: "&7K/D: &a%kd%"
@@ -187,7 +187,7 @@ commands:
     beds: "&7Kiütött ágyak: &a%beds%"
     score: "&7Összesített pontszám: &a%score%"
   admin:
-    usage: "&cUsage: &f/bw admin <arena> <add|edit|remove|save|...> ..."
+    usage: "&cHasználd: /bw admin <aréna> <add|edit|remove|save|...>"
     arena:
       errors:
         not_found: "&cA aréna nem található!"
@@ -201,7 +201,7 @@ commands:
         pos2: "&rPozíció 2: &fXYZ &7%x%&r/&7%y%&r/&7%z%"
         spectator: "&rNéző pozíció: &fXYZ &7%x%&r/&7%y%&r/&7%z%"
         lobby: "&4Lobby pozíció: &fVilág: &7%world% &fXYZ: &7%x%&r/&7%y%&r/&7%z%"
-        min_players: "&7Minimal players of the game: &r%minplayers%"
+        min_players: "&7Minimum játékos szám: &r%minplayer%"
         countdown_time: "&7Visszaszámlálás a játék kezdete előtt: &f%time% másodperc"
         game_length: "&7A játék hossza: &f%time% másodperc"
         true_value: "&aIgaz"
@@ -209,7 +209,7 @@ commands:
         inherit: "&eÁtvéve a plugin konfigurációból"
         teams:
           header: "&7Csapatok:"
-          info: "- %team%&r (Maximal players in team: &7%maxplayers%&r)"
+          info: "- %team%&r ( Max játékosok száma egy csapatban: &7%maxplayers%&r )"
           spawn: " &7Csapat spawn: &fXYZ: &7%x%&r/&7%y%&r/&7%z%"
           target: "  &7Target block: &fXYZ: &7%x%&r/&7%y%&r/&7%z%"
         spawners:
