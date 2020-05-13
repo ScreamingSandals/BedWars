@@ -275,5 +275,5 @@ help_bw_admin_config: "/bw admin <arena> config <constant> <value> - &eÁllandó
 help_bw_admin_arena_time: "/bw admin <arena> arenatime <type> - &eIdő beállítása egy arénában. (DAY, NIGHT, stb.)"
 help_bw_admin_arena_weather: "/bw admin <arena> arenaweather <type> - &eIdőjárás beállítása egy arénában. (default, CLEAN, DOWNFALL)"
 help_bw_admin_remove: "/bw admin <arena> remove - &cAréna eltávolítása."
-help_bw_admin_edit: "/bw admin <arena> edit - &eTurns the game off and switches the arena to edit mode"
-help_bw_admin_save: "/bw admin <arena> save - &aSaves the game and activates it!"
+help_bw_admin_edit: "/bw admin <arena> edit - &eAréna szerkesztése."
+help_bw_admin_save: "/bw admin <arena> save - &aAréna mentése."
