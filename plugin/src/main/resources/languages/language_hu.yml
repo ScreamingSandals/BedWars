@@ -172,11 +172,11 @@ commands:
     already_in_game: "&cMár bentvagy egy játékban. "
     no_game_found: "&cNem található korábbi játék!"
   reload:
-    safe: "&aWaiting for safe stop of all games or for 60 seconds before reload!"
+    safe: "&aVárakozás az arénák újraindítására. Újraindítás 60 másodperc múlva..."
     failed: "&cNéhány aréna nem végződött az idő alatt ezért lehet hogy megsérültek/hinányosak!"
   statistics:
-    header: "&aStatistics of &7%player%&a:"
-    disabled: "&cPlayer statistics are disabled!"
+    header: "&7%player% &astatisztikái:"
+    disabled: "&cA játékos statisztikák le vannak tiltva!"
     not_found: "&cStatistics for this player were not found!"
     kills: "&7Ölések: &a%kills%"
     deaths: "&7Halálok: &e%deaths%"
