@@ -211,18 +211,18 @@ commands:
           header: "&7Csapatok:"
           info: "- %team%&r ( Max játékosok száma egy csapatban: &7%maxplayers%&r )"
           spawn: " &7Csapat spawn: &fXYZ: &7%x%&r/&7%y%&r/&7%z%"
-          target: "  &7Target block: &fXYZ: &7%x%&r/&7%y%&r/&7%z%"
+          target: " &7Csapat blokkja: &fXYZ: &7%x%&r/&7%y%&r/&7%z%"
         spawners:
           header: "&7Spawnerek:"
           info: "- %resource% &7-%team% &7- &eHolo: &f%holo% &7-XYZ: &7%x%&r/&7%y%&r/&7%z%"
-          no_team: "no team"
+          no_team: "Nincs csapat."
         stores:
           header: "&7Boltok:"
           position: "- XYZ: &7%x%&r/&7%y%&r/&7%z%"
           entity_type: " Típus: &a%type%"
           custom_shop: " Saját bolt: &7%bool%"
           name: "Bolt neve: &6%file%&r (inherit from main: &7%bool%&r)"
-          name_above: "  Custom name above head: &6%name%&r"
+          name_above: "Egyéni név: &6%name%&r"
           no_name_above: "&cNincs név megadva"
         config:
           header: "&7Állandó konfiguráció:"
@@ -230,11 +230,11 @@ commands:
     add:
       added: "&aAréna hozzáadva! "
       already_exists: "&cAz aréna már elkezdődött! "
-      not_saved: "&cArena already exists but it's not saved!"
+      not_saved: "Az aréna már létezik, de nincs mentve!"
     remove:
       removed: "&c&lAz aréna törlődött! "
     edit:
-      switched: "&aArena was switched to edit mode!"
+      switched: "&aAz aréna átkerült szerkesztő módba!"
     info_sender:
       header: "&aKérlek válaszd ki az információ szekciót a &7%arena%&a:"
       base: "&aBázis információ&f - &7/bw admin %arena% info base"
@@ -254,13 +254,13 @@ commands:
       stats: "/bw stats - &aMegmutatja a statisztikád "
       stats_others: "/bw stats <játékos> - &aMegmutatja az adott játékos statisztikáját"
       admin:
-        info: "/bw admin <arena> info [section] - &eShows you all information about arena"
+        info: "/bw admin <arena> info [section] - &e&eInformációk az arénákról."
         add: "/bw admin <arena> add - &eAréna létrehozása"
         lobby: "/bw admin <arena> lobby - &eAréna lobbyjának létrehozása"
-        spec: "/bw admin <arena> spec - &eSets specatator's spawn to your position"
-        pos1: "/bw admin <arena> pos1 - &eSets the extreme point of the arena to your position"
-        pos2: "/bw admin <arena> pos2 - &eSets the second extreme point of the arena to your position"
-        pausecountdown: "/bw admin <arena> pausecountdown <seconds> - &eSets the pause duration before game starts"
+        spec: "/bw admin <arena> spec - &eSzemlélők spawnolási helyének megadása."
+        pos1: "/bw admin <arena> pos1 - &eAréna 1. pozíciójának beállítása."
+        pos2: "/bw admin <arena> pos1 - &eAréna 2. pozíciójának beállítása."
+        pausecountdown: "/bw admin <arena> pausecountdown <seconds> - &eSzünet időtartamának beállítása."
         minplayers: "/bw admin <arena> minplayers <minimum> - &eSets minimum of players needed to start the game"
         time: "/bw admin <arena> time <seconds> - &eJáték idejének létrehozása"
         team_add: "/bw admin <arena> team add <team> <color> <max players> - &eAdd a team to the game"
@@ -339,5 +339,5 @@ commands:
       invalid_bar_color: "&cRossz szín a Boss Bar-hoz!"
       bar_color_set: "&aSzín belett állítva&7%color%&a a bossbar &7%type%&a!"
       wrong_living_entity_type: "&cHibás élőlény érték!"
-      store_living_entity_type_set: "&aA bolt stílusa belett állítva &7%type%&a-ra!"
-      upgrades: "&aUpgrades has been set to &7%bool%&a!"
+      store_living_entity_type_set: "&aA bolt stílusa be lett állítva &7%type%&a-ra!"
+      upgrades: "&aFejlesztések átállítva &7%bool%&a-ra!"
