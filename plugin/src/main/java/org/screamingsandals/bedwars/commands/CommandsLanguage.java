@@ -1,6 +1,6 @@
 package org.screamingsandals.bedwars.commands;
 
-import static org.screamingsandals.lib.lang.I.mpr;
+import static org.screamingsandals.lib.gamecore.language.GameLanguage.mpr;
 
 public class CommandsLanguage extends org.screamingsandals.lib.commands.common.language.CommandsLanguage {
 

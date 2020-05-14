@@ -9,7 +9,7 @@ core:
     game_shop: "&cYour shop configuration is invalid. Please check validity of your current file."
     game_loading: "&c&lOh, damn. &cLoading some arena file went wrong. &a&lPlease report this error log to GitHub or Discord!"
     game_world_does_not_exists: "&cGame world for game %game% &cdoes not exists!"
-    game-already-created: "&cGame &e%game% &calready exists! Please use &ldifferent &cname."
+    game-already-created: "&cGame &e%game% &calready exists! Use &ldifferent &cname."
     game-does-not-exists: "&cThat game does not exists. Bad name?"
 
 game:
@@ -32,6 +32,10 @@ game:
 game-builder:
   check-integrity:
     errors:
+      not-created-yet: "&cYou did not created game yet."
+      invalid-game-name:
+        - "&cYou provided invalid name of the game."
+        - "&cCurrent game in editor is: &e%game%"
       not-enough-teams: "&You don't have enough teams added. Please add at least &e2 &cteams."
       not-enough-teams-line2: "&cThere are &e%count% &cteams ready."
       not-enough-stores: "&cWell well, you need at least &e1 &cstore added."
@@ -40,6 +44,7 @@ game-builder:
       game-world-spectator-not-set: "&cSpectator spawn is not set. &lDo it!"
       lobby-world-not-set: "&cOh my, lobby-world is not set. Define spawn or set lobby world!"
       lobby-world-spawn-not-set: "&cOh my, lobby spawn is not set. &lDo it!"
+  created: "&aNew game &e%game% &awas created! &lYAY!"
 
 scoreboards:
   name: "%prefix%"
@@ -96,5 +101,30 @@ commands:
     actions:
       create:
         invalid_game_type: "&cYou surely need to provide valid GameType.."
-
-
+      add:
+        not-enough-args: "&cYou did not provided enough arguments."
+        unknown-parameter: "&cCan't add this, that parameter does not exists."
+        team:
+          invalid-entry:
+            - "&eYou need to be more specific.."
+            - "&eCommand should look like:"
+            - "&a/sbw admin &e%gameName% &aadd team <name> <color> <max players>"
+          invalid-color:
+            - "&cColor &e%color% &cis invalid!"
+            - "&c&lGoogle &e&n'spigot chatcolor enum'&c for more help."
+          invalid-number: "&cUh, that's bad. &e%entry% &cis &lnot&c valid number!"
+          created: "&aTeam %color%%name% &awas created!"
+          already-registered: "&cTeam &e%name% &cis already created!"
+        store:
+          invalid-entry:
+            - "&eYou need to be more specific.."
+            - "&eCommand should look like:"
+            - "&a/sbw admin &e%gameName% &aadd store <type> <name>"
+          invalid-store-type: "&cYou entered invalid store type.. &lTry again!"
+          invalid-team: "&cTeam &e%team% &cdoes not exists."
+          invalid-store-file: "&cStore file &e%file% &cdoes not exists."
+          not-custom-store:
+            - "&eYou don't have enough arguments for custom store."
+            - "&eCommand should look like:"
+            - "&a/sbw admin &e%gameName% &aadd store CUSTOM <name> <team> <file>"
+          created: "&aNew game store has been created!"

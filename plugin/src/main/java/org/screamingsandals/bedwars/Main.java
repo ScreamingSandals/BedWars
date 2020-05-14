@@ -4,6 +4,7 @@ import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.screamingsandals.bedwars.api.Permissions;
 import org.screamingsandals.bedwars.commands.CommandsLanguage;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.config.VisualsConfig;
@@ -15,8 +16,8 @@ import org.screamingsandals.lib.debug.Debug;
 import org.screamingsandals.lib.gamecore.GameCore;
 import org.screamingsandals.lib.gamecore.core.GameManager;
 import org.screamingsandals.lib.gamecore.exceptions.GameCoreException;
+import org.screamingsandals.lib.gamecore.language.GameLanguage;
 import org.screamingsandals.lib.gamecore.player.PlayerManager;
-import org.screamingsandals.lib.lang.Language;
 
 import java.io.File;
 import java.util.Collection;
@@ -30,8 +31,11 @@ public class Main extends JavaPlugin {
     private GameManager<Game> gameManager;
     private PlayerManager playerManager;
     @Getter
-    private Language language;
+    private GameLanguage language;
     private Commands commands;
+
+    private File shopFile;
+    private File upgradesFile;
 
     @Override
     @SuppressWarnings("unchecked")
@@ -49,7 +53,7 @@ public class Main extends JavaPlugin {
             return;
         }
 
-        language = new Language(this, mainConfig.getString("language"), mainConfig.getString("prefix"));
+        language = new GameLanguage(this, mainConfig.getString("language"), mainConfig.getString("prefix"));
 
         Debug.init(getName());
         Debug.setDebug(mainConfig.getBoolean("debug"));
@@ -64,7 +68,7 @@ public class Main extends JavaPlugin {
             Debug.info("GameCore already exists, destroying and loading new!");
         }
 
-        gameCore = new GameCore(this);
+        gameCore = new GameCore(this, Permissions.ADMIN_COMMAND, true); //TODO: configurable
 
         try {
             gameCore.load(new File(getDataFolder(), "games"), Game.class);

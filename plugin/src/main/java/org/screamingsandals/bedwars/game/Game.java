@@ -10,12 +10,13 @@ import org.screamingsandals.bedwars.game.phase.WaitingPhase;
 import org.screamingsandals.lib.gamecore.GameCore;
 import org.screamingsandals.lib.gamecore.core.GameFrame;
 import org.screamingsandals.lib.gamecore.core.GameState;
+import org.screamingsandals.lib.gamecore.core.GameType;
 import org.screamingsandals.lib.gamecore.core.cycle.GameCycle;
 
 public class Game extends GameFrame {
 
-    public Game(String gameName) {
-        super(gameName);
+    public Game(String gameName, GameType gameType) {
+        super(gameName, gameType);
     }
 
     @Override
@@ -23,9 +24,7 @@ public class Game extends GameFrame {
         super.prepare();
 
         final GameCycle gameCycle = prepareGameCycle();
-
         setGameCycle(gameCycle);
-        setCycleType(gameCycle.getType());
 
         gameCycle.getGamePhases().put(GameState.LOADING, new LoadingPhase(gameCycle, -1));
         gameCycle.getGamePhases().put(GameState.WAITING, new WaitingPhase(gameCycle, getLobbyTime()));
@@ -33,7 +32,8 @@ public class Game extends GameFrame {
 
     private GameCycle prepareGameCycle() {
         GameCycle toReturn = null;
-        final BedWarsGameCyclePrepareEvent event = new BedWarsGameCyclePrepareEvent(this);
+        final var gameType = getGameType();
+        final var event = new BedWarsGameCyclePrepareEvent(this);
         if (GameCore.fireEvent(event)) {
             toReturn = event.getGameCycle();
         }
@@ -43,12 +43,15 @@ public class Game extends GameFrame {
         }
 
         if (Main.getMainConfig().getBoolean("bungeecord.enabled")) {
-            if (Main.getMainConfig().getBoolean("bungeecord.multi-arena-setup")) {
+            if (gameType == GameType.MULTI_GAME_BUNGEE) {
                 toReturn = new MultiGameBungeeCycle(this);
-            } else {
+            } else if (gameType == GameType.SINGLE_GAME_BUNGEE) {
                 toReturn = new SingleGameBungeeCycle(this);
             }
-        } else {
+            return toReturn;
+        }
+
+        if (gameType == GameType.MULTI_GAME) {
             toReturn = new MultiGameCycle(this);
         }
 

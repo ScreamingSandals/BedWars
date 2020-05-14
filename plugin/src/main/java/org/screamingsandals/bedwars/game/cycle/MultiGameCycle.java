@@ -7,6 +7,5 @@ public class MultiGameCycle extends GameCycle {
 
     public MultiGameCycle(GameFrame gameFrame) {
         super(gameFrame);
-        setType(Type.MULTI_GAME);
     }
 }

@@ -59,9 +59,4 @@ public interface GameCycle {
      * @param gamePhase the phase itself
      */
     void addCustomPhase(GamePhase gamePhase);
-
-    /**
-     * @return active type of the cycle, you can't change that while running
-     */
-    org.screamingsandals.lib.gamecore.core.cycle.GameCycle.Type getType();
 }

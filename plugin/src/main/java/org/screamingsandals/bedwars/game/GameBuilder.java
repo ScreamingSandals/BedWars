@@ -4,16 +4,20 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.game.team.GameTeam;
-import org.screamingsandals.lib.gamecore.team.TeamColor;
+import org.screamingsandals.lib.gamecore.core.GameType;
+import org.screamingsandals.lib.gamecore.store.GameStore;
 
-import static org.screamingsandals.lib.lang.I.mpr;
+import static org.screamingsandals.lib.gamecore.language.GameLanguage.mpr;
 
 public class GameBuilder extends org.screamingsandals.lib.gamecore.core.GameBuilder<Game> {
 
     @Override
-    public boolean create(String arenaName, Player player) {
-        if (super.create(arenaName, player)) {
-            setGameFrame(new Game(arenaName));
+    public boolean create(String arenaName, GameType gameType, Player player) {
+        if (super.create(arenaName, gameType, player)) {
+            setGameFrame(new Game(arenaName, gameType));
+            mpr("game-builder.created")
+                    .replace("%game%", arenaName)
+                    .send(player);
             return true;
         }
         return false;
@@ -28,8 +32,12 @@ public class GameBuilder extends org.screamingsandals.lib.gamecore.core.GameBuil
         }
     }
 
-    public void addTeam(String teamName, TeamColor teamColor, int players) {
-        super.addTeam(new GameTeam(teamName, teamColor, players));
+    public void addTeam(GameTeam gameTeam) {
+        getGameFrame().getTeams().add(gameTeam);
+    }
+
+    public void addShop(GameStore gameStore) {
+        getGameFrame().getStores().add(gameStore);
     }
 
     private void checkWhatsWrong(CommandSender sender) {
