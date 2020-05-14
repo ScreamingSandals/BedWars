@@ -3,7 +3,7 @@ lang_name: "Slovenčina"
 prefix: "&7[&fBed&4Wars&7]&r"
 item_shop_name: "Obchod"
 plugin:
-  version_info: "Version: %version%"
+  version_info: "Verzia: %version%"
 game:
   info:
     global:
@@ -27,7 +27,7 @@ game:
     player:
       already_running: "&cHra &7%arena% &cpráve prebieha! Nemôžeš sa napojiť do prebiehajúcej hry!"
       full: "&cHra &7%arena% &cje plná! Počkaj prosím, kým hra skončí!"
-      rebuilding: "Game %arena% is rebuilding now."
+      rebuilding: "Hra %arena% sa teraz obnovuje."
       vip:
         not_enough_players: "&cV aréne nie je dostatok hráčov!"
         full: "&cHra &7%arena% &cje plná VIP hráčov. Prosím počkaj kým skončí!"
@@ -38,14 +38,14 @@ game:
         full: "&cTím %team% je plný!"
         you_won: "&aTvoj tím vyhral!"
         you_lost: "&Tvoj tím prehral!"
-      vault_deposite: "&aAdded &7%coins% %currency%&a to your account!"
+      vault_deposite: "&aZískal si &7%coins% %currency%&a do svojho účtu!"
       respawn_protection:
         remaining: "&aRespawn ochrana skončí o &f%time% &asekúnd!"
         end: "&cRespawn ochrana skončila!"
       respawn_cooldown:
         title: "&aRespawn o: &c%time%"
         title_cancel: "&cTím je mŕtvy :("
-        respawned: "&aRespawned!"
+        respawned: "&aOživený!"
       chests:
         name: "&a&lTímová truhlica"
         not_yours: "&eTáto tímová truhlica nie je tvoja!"
@@ -76,10 +76,10 @@ game:
       lore_join: "Klikni aby si sa pripojil do tímu!"
   items:
     leave: "&cOpusť hru"
-    start_game: "&eStart game"
+    start_game: "&eZačať hru"
     team_selector: "&aVyber tím"
   specials:
-    already_active: "&cYou already activated this!"
+    already_active: "&cUž si to už aktivoval!"
     delay: "&cPred použitím tohto predmetu musíš počkať %time% sekúnd!"
     trap:
       built: "&aPostavil si pascu! Teraz počkaj, kým sa do nej niekto chytí!"
