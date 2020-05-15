@@ -653,6 +653,8 @@ public class PlayerListener implements Listener {
                             game.addChestForFutureClear(event.getClickedBlock().getLocation(), holder.getInventory());
                         } else if (event.getClickedBlock().getType().name().contains("CAKE") && Main.getConfigurator().config.getBoolean("disableCakeEating", true)) {
                             event.setCancelled(true);
+                        } else if (event.getClickedBlock().getType() == Material.DRAGON_EGG && Main.getConfigurator().config.getBoolean("disableDragonEggTeleport", true)) {
+                            event.setCancelled(true);
                         }
                     }
                 }
