@@ -25,6 +25,7 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.Cake;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.screamingsandals.bedwars.Main;
@@ -650,6 +651,8 @@ public class PlayerListener implements Listener {
                         } else if (event.getClickedBlock().getState() instanceof InventoryHolder) {
                             InventoryHolder holder = (InventoryHolder) event.getClickedBlock().getState();
                             game.addChestForFutureClear(event.getClickedBlock().getLocation(), holder.getInventory());
+                        } else if (event.getClickedBlock().getType().name().contains("CAKE") && Main.getConfigurator().config.getBoolean("disableCakeEating", true)) {
+                            event.setCancelled(true);
                         }
                     }
                 }

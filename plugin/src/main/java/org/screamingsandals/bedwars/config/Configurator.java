@@ -386,6 +386,7 @@ public class Configurator {
         checkOrSetConfig(modify, "turnOnExperimentalGroovyShop", false);
         checkOrSetConfig(modify, "preventSpectatorFlyingAway", false);
         checkOrSetConfig(modify, "removePurchaseMessages", false);
+        checkOrSetConfig(modify, "disableCakeEating", true);
 
         checkOrSetConfig(modify, "version", 2);
 
