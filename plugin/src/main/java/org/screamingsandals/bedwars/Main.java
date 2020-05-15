@@ -507,7 +507,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         }
 
         BedWarsSignOwner signOwner = new BedWarsSignOwner();
-        signManager = new SignManager(signOwner, configurator.signsConfig, configurator.signsFile);
+        signManager = new SignManager(signOwner, configurator.signsFile);
         getServer().getPluginManager().registerEvents(new SignListener(signOwner, signManager), this);
 
         try {

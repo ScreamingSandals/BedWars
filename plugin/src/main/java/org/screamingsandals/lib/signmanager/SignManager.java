@@ -1,7 +1,10 @@
 package org.screamingsandals.lib.signmanager;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.screamingsandals.bedwars.Main;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,16 +15,25 @@ import java.util.Map;
 
 public class SignManager {
 
-    private final FileConfiguration config;
+    private final FileConfiguration config = new YamlConfiguration();
     private final File configFile;
     private final HashMap<Location, SignBlock> signs = new HashMap<>();
     private boolean modify = false;
     private SignOwner owner;
 
-    public SignManager(SignOwner owner, FileConfiguration config, File configFile) {
+    public SignManager(SignOwner owner, File configFile) {
         this.owner = owner;
-    	this.config = config;
         this.configFile = configFile;
+
+        Bukkit.getScheduler().runTaskLater(Main.getInstance(), this::loadConfig, 5L);
+    }
+
+    public void loadConfig() {
+        try {
+            config.load(configFile);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
 
         List<Map<String, Object>> conf = (List<Map<String, Object>>) config.getList("sign");
         if (conf != null) {

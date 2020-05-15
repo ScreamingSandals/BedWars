@@ -20,7 +20,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Configurator {
     public File configFile, shopFile, signsFile, recordFile, langFolder;
-    public FileConfiguration config, signsConfig, recordConfig;
+    public FileConfiguration config, recordConfig;
 
     public final File dataFolder;
     public final Main main;
@@ -39,7 +39,6 @@ public class Configurator {
         langFolder = new File(dataFolder.toString(), "languages");
 
         config = new YamlConfiguration();
-        signsConfig = new YamlConfiguration();
         recordConfig = new YamlConfiguration();
 
         if (!configFile.exists()) {
@@ -80,7 +79,6 @@ public class Configurator {
 
         try {
             config.load(configFile);
-            signsConfig.load(signsFile);
             recordConfig.load(recordFile);
         } catch (IOException | InvalidConfigurationException e) {
             e.printStackTrace();
