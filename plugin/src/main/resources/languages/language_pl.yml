@@ -1,7 +1,7 @@
 ---
 lang_name: "Polski"
 prefix: "[BW]"
-item_shop_name: "Sklepy"
+item_shop_name: "Sklep"
 join: "%name% &adołączył do gry!&r &7[&a%players%&7/&a%maxplayers%&7]"
 leave: "%name% &copuścił grę!"
 game_already_running: "&cNie można dołączyć do gry: Gra na arenie &7%arena% &cjest w toku!"
