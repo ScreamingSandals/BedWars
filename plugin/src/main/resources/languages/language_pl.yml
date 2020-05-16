@@ -101,7 +101,7 @@ admin_command_spawner_added: "&aGenerator &7%resource%&a został pomyślnie usta
 admin_command_store_added: "&aDodano sklep na pozycji: &7%x%/%y%/%z% &aYAW: &7%yaw% &aPITCH: &7%pitch%"
 admin_command_store_removed: "&aUsunięto sklep z pozycji: &7%x%/%y%/%z%&a!"
 admin_command_lobby_spawn_setted: "&aPunkt spawnu lobby został pomyślnie ustawiony na pozycji: &7%x%/%y%/%z% &aYAW: &7%yaw% &aPITCH: &7%pitch%"
-admin_command_spec_spawn_setted: "&cBrak wolnych miejsc w drużynie: %team%"
+admin_command_spec_spawn_setted: "&aPunkt spawnu obserwatora został pomyślnie ustawiony na pozycji: &7%x%/%y%/%z% &aYAW: &7%yaw% &aPITCH: &7%pitch%"
 admin_command_pos1_setted: "&aPozycja 1 na arenie &7%arena%&a została ustawiona na pozycji: &7%x%/%y%/%z%"
 admin_command_pos2_setted: "&aPozycja 2 na arenie &7%arena%&a została ustawiona na pozycji: &7%x%/%y%/%z%"
 admin_command_pausecontdown_setted: "&aCzas odliczania do rozpoczęcia gry został ustawiony na &7%countdown%"
