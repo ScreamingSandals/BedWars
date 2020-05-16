@@ -73,7 +73,7 @@ public class Main extends JavaPlugin {
         try {
             gameCore.load(new File(getDataFolder(), "games"), Game.class);
         } catch (GameCoreException e) {
-            Debug.info("This is some way of fuckup.. Please report that to our GitHub or Discord!", true);
+            Debug.info("This is some way of fuck up.. Please report that to our GitHub or Discord!", true);
             e.printStackTrace();
             return;
         }
