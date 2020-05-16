@@ -703,7 +703,11 @@ public class PlayerListener implements Listener {
                 if (blockBreakEvent.isCancelled()) {
                     return;
                 }
-                event.getClickedBlock().breakNaturally();
+                if (blockBreakEvent.isDropItems()) {
+                    event.getClickedBlock().breakNaturally();
+                } else {
+                    event.getClickedBlock().setType(Material.AIR);
+                }
             }
         }
     }
