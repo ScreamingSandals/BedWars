@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import static org.screamingsandals.lib.gamecore.language.GameLanguage.m;
 import static org.screamingsandals.lib.gamecore.language.GameLanguage.mpr;
 
 public class AddStoreAction implements Action {
@@ -112,7 +113,7 @@ public class AddStoreAction implements Action {
         }
 
         gameBuilder.addShop(gameStore);
-        gameStore.spawn("&a&lGameBuilder - " + storeName);
+        gameStore.spawn(gameBuilder.getGameFrame(), "&a&lGameBuilder - " + storeName);
 
         mpr("commands.admin.actions.add.store.created").game(currentGame).send(player);
         System.out.println(currentGame.getStores());
@@ -139,11 +140,11 @@ public class AddStoreAction implements Action {
         }
 
         if (argsSize == 2) {
-            return Collections.singletonList("WRITE STORE NAME"); //todo LANGUAGE
+            return Collections.singletonList(m("commands.admin.actions.add.store.write-custom-name").get());
         }
 
         if (typed.equalsIgnoreCase("custom") && argsSize == 3) {
-            return Collections.singletonList("WRITE CUSTOM SHOP FILE NAME"); //todo LANGUAGE
+            return Collections.singletonList(m("commands.admin.actions.add.write-custom-file-name").get());
         }
 
         return toReturn;

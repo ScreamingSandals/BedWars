@@ -30,6 +30,9 @@ subprojects {
     }
 
 	shadowJar {
+        relocate 'com.google.gson', 'org.screamingsandals.lib.gson'
+        relocate 'io.papermc.lib', 'org.screamingsandals.lib.papermc'
+        relocate 'reactor', 'org.screamingsandals.lib.reactor'
 	   //relocate 'org.screamingsandals.lib', 'org.screamingsandals.bedwars.lib' // - now think about api, then uncomment it
 	}
 

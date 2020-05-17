@@ -2,7 +2,6 @@ package org.screamingsandals.bedwars.commands.game.actions.add;
 
 import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.commands.game.actions.Action;
-import org.screamingsandals.bedwars.commands.game.actions.ActionType;
 import org.screamingsandals.bedwars.game.GameBuilder;
 import org.screamingsandals.bedwars.game.team.GameTeam;
 import org.screamingsandals.lib.gamecore.team.TeamColor;
@@ -14,7 +13,6 @@ import java.util.List;
 import static org.screamingsandals.lib.gamecore.language.GameLanguage.mpr;
 
 public class AddTeamAction implements Action {
-    public static ActionType actionType = ActionType.TEAM;
 
     @Override
     public void handleCommand(GameBuilder gameBuilder, Player player, List<String> args) {

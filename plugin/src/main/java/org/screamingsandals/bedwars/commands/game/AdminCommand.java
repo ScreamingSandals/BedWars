@@ -22,7 +22,8 @@ import static org.screamingsandals.lib.gamecore.language.GameLanguage.mpr;
 
 @RegisterCommand(subCommand = true)
 public class AdminCommand implements ScreamingCommand {
-    private final Map<ActionType, Action> actions = new HashMap<>();
+    private final Map<ActionType.Add, Action> addActions = new HashMap<>();
+    private final Map<ActionType.Set, Action> setActions = new HashMap<>();
 
     @Override
     public void register() {
@@ -31,12 +32,12 @@ public class AdminCommand implements ScreamingCommand {
                 .handleSubPlayerCommand(this::handleCommand)
                 .handleSubPlayerTab(this::handleTab);
 
-        actions.put(ActionType.GAME, new GameAction());
-        actions.put(ActionType.LOBBY, new LobbyAction());
-        //TODO
-        actions.put(ActionType.STORE, new AddStoreAction());
-        actions.put(ActionType.SPAWNER, new AddSpawnerAction());
-        actions.put(ActionType.TEAM, new AddTeamAction());
+        setActions.put(ActionType.Set.GAME, new GameAction());
+        setActions.put(ActionType.Set.LOBBY, new LobbyAction());
+
+        addActions.put(ActionType.Add.STORE, new AddStoreAction());
+        addActions.put(ActionType.Add.SPAWNER, new AddSpawnerAction());
+        addActions.put(ActionType.Add.TEAM, new AddTeamAction());
     }
 
     private void handleCommand(Player player, List<String> args) {
@@ -205,15 +206,16 @@ public class AdminCommand implements ScreamingCommand {
 
         switch (whatToAdd) {
             case "team": {
-                actions.get(ActionType.TEAM).handleCommand(gameBuilder, player, subList);
+                addActions.get(ActionType.Add.TEAM).handleCommand(gameBuilder, player, subList);
                 break;
             }
             case "spawner": {
+                addActions.get(ActionType.Add.SPAWNER).handleCommand(gameBuilder, player, subList);
                 break;
             }
             case "store":
             case "shop": {
-                actions.get(ActionType.STORE).handleCommand(gameBuilder, player, subList);
+                addActions.get(ActionType.Add.STORE).handleCommand(gameBuilder, player, subList);
                 break;
             }
             default:
@@ -247,10 +249,10 @@ public class AdminCommand implements ScreamingCommand {
         System.out.println(subList);
         switch (action) {
             case "team":
-                return actions.get(ActionType.TEAM).handleTab(gameBuilder, player, subList);
+                return addActions.get(ActionType.Add.TEAM).handleTab(gameBuilder, player, subList);
             case "store":
             case "shop":
-                return actions.get(ActionType.STORE).handleTab(gameBuilder, player, subList);
+                return addActions.get(ActionType.Add.STORE).handleTab(gameBuilder, player, subList);
         }
 
         return toReturn;

@@ -81,7 +81,11 @@ commands:
     no_permissions: "&Not enough permissions for this command.. &8Sad!"
     command_does_not_exists: "&cThis one, we don't know. Invalid command!"
     somethings_fucked: "&cWell, execution of this command failed.. &eStrange :("
-    not_for_console: "&cYou are console, you can't use this command.."
+    not_for_console: "&cConsole can't use this command.."
+  main:
+    - "by &b&lScreamingSandals&f."
+    - "&eDon't know what to do? Hit &l/bw help"
+    - "&eWhat version do you have? Hit &l/bw version"
   base:
     list:
       no_arenas_found: "&cActually, no arena is available right now &e:("
@@ -125,3 +129,5 @@ commands:
             - "&eCommand should look like:"
             - "&a/sbw admin &e%gameName% &aadd store CUSTOM <name> <team> <file>"
           created: "&aNew game store has been created!"
+          write-custom-name: "Write shop name"
+          write-custom-file-name: "Write file name"

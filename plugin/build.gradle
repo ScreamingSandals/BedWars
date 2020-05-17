@@ -1,13 +1,13 @@
 dependencies {
     implementation project(':api')
-    implementation 'org.screamingsandals.lib:lang:1.1.21'
-    implementation 'org.screamingsandals.lib:commands:1.1.21'
-    implementation 'org.screamingsandals.lib:debug:1.1.21'
-    implementation 'org.screamingsandals.lib:config:1.1.21'
-    implementation 'org.screamingsandals.lib:scoreboards:1.1.21'
-    implementation 'org.screamingsandals.lib:bossbars:1.1.21'
-    implementation 'org.screamingsandals.lib:gamecore:1.1.21'
-    implementation 'org.screamingsandals.lib:tasker:1.1.21'
+    implementation 'org.screamingsandals.lib:lang:1.1.22'
+    implementation 'org.screamingsandals.lib:commands:1.1.22'
+    implementation 'org.screamingsandals.lib:debug:1.1.22'
+    implementation 'org.screamingsandals.lib:config:1.1.22'
+    implementation 'org.screamingsandals.lib:scoreboards:1.1.22'
+    implementation 'org.screamingsandals.lib:bossbars:1.1.22'
+    implementation 'org.screamingsandals.lib:gamecore:1.1.22'
+    implementation 'org.screamingsandals.lib:tasker:1.1.22'
 }
 
 tasks.spigotPluginYaml.enabled = true;
