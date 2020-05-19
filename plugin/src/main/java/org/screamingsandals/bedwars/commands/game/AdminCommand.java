@@ -54,7 +54,7 @@ public class AdminCommand implements ScreamingCommand {
 
         GameBuilder gameBuilder = null;
         if (!action.equals("create")) {
-            if (!gameManager.isBuilderRegistered(gameName)) {
+            if (!gameManager.isInBuilder(gameName)) {
                 mpr("game-builder.check-integrity.errors.not-created-yet").send(player);
                 return;
             }
@@ -123,7 +123,7 @@ public class AdminCommand implements ScreamingCommand {
 
 
         GameBuilder gameBuilder = null;
-        if (gameManager.isBuilderRegistered(gameName)) {
+        if (gameManager.isInBuilder(gameName)) {
             gameBuilder = gameManager.getGameBuilder(gameName);
         }
 
@@ -150,7 +150,7 @@ public class AdminCommand implements ScreamingCommand {
     private void handleCreateAction(String gameName, Player player, List<String> args) {
         Optional<GameType> gameType;
 
-        if (Main.getGameManager().isGameRegistered(gameName) || GameCore.getGameManager().isBuilderRegistered(gameName)) {
+        if (Main.getGameManager().isGameRegistered(gameName) || GameCore.getGameManager().isInBuilder(gameName)) {
             mpr("core.errors.game-already-created")
                     .replace("%game%", gameName)
                     .send(player);
@@ -236,7 +236,11 @@ public class AdminCommand implements ScreamingCommand {
         final List<String> toReturn = new LinkedList<>();
 
         if (argsSize == 1) {
-            final List<String> available = List.of("team", "spawner", "store");
+            final List<String> available = new ArrayList<>(List.of("team", "spawner", "store"));
+            if (gameBuilder.isReadyToSave(false)) {
+                available.add("save");
+            }
+
             for (String found : available) {
                 if (found.startsWith(action)) {
                     toReturn.add(found);
@@ -246,10 +250,11 @@ public class AdminCommand implements ScreamingCommand {
         }
 
         final var subList = args.subList(1, argsSize);
-        System.out.println(subList);
         switch (action) {
             case "team":
                 return addActions.get(ActionType.Add.TEAM).handleTab(gameBuilder, player, subList);
+            case "spawner":
+                return addActions.get(ActionType.Add.SPAWNER).handleTab(gameBuilder, player, subList);
             case "store":
             case "shop":
                 return addActions.get(ActionType.Add.STORE).handleTab(gameBuilder, player, subList);

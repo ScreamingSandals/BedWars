@@ -33,7 +33,6 @@ public class AddStoreAction implements Action {
         final var location = new LocationAdapter(player.getLocation());
         final var store = StoreType.get(args.get(0));
         final var storeName = args.get(1);
-        final var defaultStore = new File(Main.getInstance().getDataFolder(), "shop.yml"); //TODO - better way
 
         if (store.isEmpty()) {
             mpr("commands.admin.actions.add.store.invalid-store-type")
@@ -53,6 +52,7 @@ public class AddStoreAction implements Action {
                 final var enteredStoreName = args.get(3);
                 final var team = currentGame.getRegisteredTeam(enteredTeamName);
                 final var customStore = new File(Main.getInstance().getDataFolder(), enteredStoreName);
+
 
                 if (team.isEmpty()) {
                     mpr("commands.admin.actions.add.store.invalid-team")
@@ -80,12 +80,19 @@ public class AddStoreAction implements Action {
                 return;
             }
 
+            final File defaultStore;
+            if (storeType == StoreType.NORMAL) {
+                defaultStore = Main.getInstance().getShopFile();
+            } else {
+                defaultStore = Main.getInstance().getUpgradesFile();
+            }
+
             if (argsSize == 3) {
                 final var enteredTeamName = args.get(2);
                 final var team = currentGame.getRegisteredTeam(enteredTeamName);
 
                 if (team.isEmpty()) {
-                    mpr("commands.admin.actions.add.store.invalid-team")
+                    mpr("general.errors.invalid-team")
                             .game(currentGame)
                             .replace("%team%", enteredTeamName)
                             .sendList(player);

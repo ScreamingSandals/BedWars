@@ -25,7 +25,7 @@ public class GameBuilder extends org.screamingsandals.lib.gamecore.core.GameBuil
 
     @Override
     public void save(Player player) {
-        if (getGameFrame().checkIntegrity()) {
+        if (getGameFrame().checkIntegrity(true)) {
             Main.getGameManager().registerGame(getGameFrame().getGameName(), getGameFrame());
         } else {
             checkWhatsWrong(player);

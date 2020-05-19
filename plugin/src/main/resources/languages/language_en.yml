@@ -11,8 +11,6 @@ core:
     game_world_does_not_exists: "&cGame world for game %game% &cdoes not exists!"
     game-already-created: "&cGame &e%game% &calready exists! Use &ldifferent &cname."
     game-does-not-exists: "&cThat game does not exists. Bad name?"
-
-game:
   state:
     loading: "Loading"
     lobby: "Waiting"
@@ -25,9 +23,24 @@ game:
     custom: "Custom"
     disabled: "Disabled"
 
-  messages:
-    your-team-won: "&aYou won! :)"
-    your-team-lost: "&cYou lost! :("
+general:
+  errors:
+    invalid-boolean-value: "&cValue &e%enteredValue%&c is invalid. Use &etrue &cor &efalse!"
+    invalid-number: "&cUh, that's bad. &e%entry% &cis &lnot&c valid number!"
+    invalid-team: "&cTeam &e%team% &cdoes not exists."
+    invalid-spawner-type: "&e%type% &cis invalid spawner type!"
+  null-translated: "None"
+  booleans:
+    true: "True"
+    false: "False"
+  infinity: "Infinity"
+  time-units:
+    tick: "Tick"
+    ticks: "Tick"
+    second: "Second"
+    seconds: "Seconds"
+    minute: "Minute"
+    minutes: "Minutes"
 
 game-builder:
   check-integrity:
@@ -42,6 +55,31 @@ game-builder:
       lobby-world-not-set: "&cOh my, lobby-world is not set. Define spawn or set lobby world!"
       lobby-world-spawn-not-set: "&cOh my, lobby spawn is not set. &lDo it!"
   created: "&aGame &e%game% &ahas been created! &lYAY!"
+  spawners:
+    hologram:
+      - "&eSpawner: %color%%type%&f, &eMaterial: &f%mat%"
+      - "&f%spawnAmount% &eitem per &f%time-unit%"
+      - "&eTeam: &f%team%"
+      - "&eMax spawned resources: &f%amount%"
+      - "&eHologram enabled: &f%booleanValue%"
+    editor:
+      started:
+        - "&aYou just opened spawner editor!"
+        - "&aType &ehelp &aif you don't know what to do. &l:)"
+      already-active:
+        - "&cSpawner editor is already active."
+        - "&cType &eexit &cor &esave&c to edit another!"
+      changed: "&aValue &e%value% &awas changed to &e%newValue%"
+      invalid-value: "&cValue &e%value% &cis invalid!"
+      invalid-action:
+        - "&cAction &e%action% &cis invalid."
+        - "&eEnter valid action or type &ahelp"
+      invalid-entry:
+        - "&cThis is invalid.. Weird.."
+        - "&a&lType help for.. well.. help!"
+      save: "&aSpawner was saved. &lYAY!"
+      exit: "&eNothing was saved. &lUmm :("
+      location: "&aLocation was changed to your position."
 
 scoreboards:
   name: "%prefix%"
@@ -113,7 +151,6 @@ commands:
           invalid-color:
             - "&cColor &e%color% &cis invalid!"
             - "&c&lGoogle &e&n'spigot chatcolor enum'&c for more help."
-          invalid-number: "&cUh, that's bad. &e%entry% &cis &lnot&c valid number!"
           created: "&aTeam %color%%name% &awas created!"
           already-registered: "&cTeam &e%name% &cis already created!"
         store:
@@ -122,7 +159,6 @@ commands:
             - "&eCommand should look like:"
             - "&a/sbw admin &e%gameName% &aadd store <type> <name>"
           invalid-store-type: "&cYou entered invalid store type.. &lTry again!"
-          invalid-team: "&cTeam &e%team% &cdoes not exists."
           invalid-store-file: "&cStore file &e%file% &cdoes not exists."
           not-custom-store:
             - "&eYou don't have enough arguments for custom store."
@@ -131,3 +167,8 @@ commands:
           created: "&aNew game store has been created!"
           write-custom-name: "Write shop name"
           write-custom-file-name: "Write file name"
+        spawner:
+          invalid-entry:
+            - "&eYou need to be more specific.."
+            - "&eCommand should look like:"
+            - "&a/sbw admin &e%gameName% &aadd spawner <type>"

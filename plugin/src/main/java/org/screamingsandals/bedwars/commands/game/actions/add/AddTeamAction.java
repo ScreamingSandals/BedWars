@@ -48,7 +48,7 @@ public class AddTeamAction implements Action {
         try {
             maxPlayer = Integer.parseInt(args.get(2));
         } catch (NumberFormatException ignored) {
-            mpr("commands.admin.actions.add.team.invalid-number")
+            mpr("general.errors.invalid-number")
                     .game(currentGame)
                     .send(player);
             return;

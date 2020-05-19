@@ -34,7 +34,9 @@ public class Main extends JavaPlugin {
     private GameLanguage language;
     private Commands commands;
 
+    @Getter
     private File shopFile;
+    @Getter
     private File upgradesFile;
 
     @Override
@@ -48,6 +50,18 @@ public class Main extends JavaPlugin {
 
             visualsConfig = new VisualsConfig(ConfigAdapter.createFile(getDataFolder(), "visuals.yml"));
             visualsConfig.load();
+
+            var shopFileName = "shop.yml";
+            var upgradesFileName = "upgrades.yml";
+
+            if (mainConfig.getBoolean(MainConfig.ConfigPaths.GROOVY)) {
+                shopFileName = "shop.groovy";
+                upgradesFileName = "upgrades.groovy";
+            }
+
+            shopFile = checkIfExistsOrCopyDefault(getDataFolder(), shopFileName);
+            upgradesFile = checkIfExistsOrCopyDefault(getDataFolder(), upgradesFileName);
+
         } catch (Exception e) {
             e.printStackTrace();
             return;
@@ -103,6 +117,17 @@ public class Main extends JavaPlugin {
 
     private void registerListeners() {
         getServer().getPluginManager().registerEvents(new PlayerCoreListener(), this);
+    }
+
+    private File checkIfExistsOrCopyDefault(File folder, String fileName) {
+        final var file = new File(folder, fileName);
+        if (file.exists()) {
+            return file;
+        } else {
+           saveResource(fileName, false);
+        }
+
+        return file;
     }
 
     public static Main getInstance() {
