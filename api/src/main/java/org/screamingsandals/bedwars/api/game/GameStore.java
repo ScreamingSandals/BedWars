@@ -5,6 +5,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Villager;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 
 /**
  * @author Bedwars Team
@@ -54,7 +55,7 @@ public class GameStore {
      */
     public LivingEntity spawn() {
         if (entity == null) {
-            entity = (LivingEntity) loc.getWorld().spawnEntity(loc, type);
+            entity = (LivingEntity) loc.getWorld().spawnEntity(loc, type, CreatureSpawnEvent.SpawnReason.CUSTOM);
             entity.setRemoveWhenFarAway(false);
 
             if (enableCustomName) {
