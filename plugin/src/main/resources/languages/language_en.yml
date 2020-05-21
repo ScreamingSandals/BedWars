@@ -5,12 +5,14 @@ prefix: "&7[&bS&c&lBed&f&lWars&7]&r"
 
 core:
   errors:
-    game_core: "&cSomething went wrong with the GameCore instance. &a&lPlease report this error log to GitHub or Discord!"
-    game_shop: "&cYour shop configuration is invalid. Please check validity of your current file."
-    game_loading: "&c&lOh, damn. &cLoading the arena file failed. &a&lPlease report this error log to GitHub or Discord!"
-    game_world_does_not_exists: "&cGame world for game %game% &cdoes not exists!"
-    game-already-created: "&cGame &e%game% &calready exists! Use &ldifferent &cname."
+    game-core: "&cSomething went wrong with the GameCore instance. &a&lPlease report this error log to GitHub or Discord!"
+    game-shop: "&cYour shop configuration is invalid. Please check validity of your current file."
+    game-loading: "&c&lOh, damn. &cLoading the arena file failed. &a&lPlease report this error log to GitHub or Discord!"
+    game-world-does-not-exists: "&cGame world for game %game% &cdoes not exists!"
+    game-already-created: "&cGame &e%gameName% &calready exists! Use &ldifferent &cname."
     game-does-not-exists: "&cThat game does not exists. Bad name?"
+    spectator-spawn-not-set: "&cSpectator spawn for the game %gameName% is not set!"
+
   state:
     loading: "Loading"
     lobby: "Waiting"
@@ -65,21 +67,34 @@ game-builder:
     editor:
       started:
         - "&aYou just opened spawner editor!"
-        - "&aType &ehelp &aif you don't know what to do. &l:)"
+        - "&aType &e/sce &aif you don't know what to do. &l:)"
       already-active:
         - "&cSpawner editor is already active."
         - "&cType &eexit &cor &esave&c to edit another!"
+      nothing-active:
+        - "&cTNo spawner is in edit mode."
+        - "&eRight-click on some spawner to enter edit mode."
       changed: "&aValue &e%value% &awas changed to &e%newValue%"
       invalid-value: "&cValue &e%value% &cis invalid!"
       invalid-action:
         - "&cAction &e%action% &cis invalid."
-        - "&eEnter valid action or type &ahelp"
+        - "&eEnter valid action or type &a/sce"
       invalid-entry:
         - "&cThis is invalid.. Weird.."
-        - "&a&lType help for.. well.. help!"
+        - "&aType help for.. well.. &lhelp!"
       save: "&aSpawner was saved. &lYAY!"
       exit: "&eNothing was saved. &lUmm :("
       location: "&aLocation was changed to your position."
+      help:
+        - "Available actions:"
+        - "&a--> &emax-spawned <number value> &a- the max spawned amount"
+        - "&a--> &eamount <number value> &a- amount of items that are spawned"
+        - "&a--> &eperiod <number value> &a- spawning period (2 seconds for example)"
+        - "&a--> &eteam <existing team or null> &a- links the spawner to the team"
+        - "&a--> &etime-unit <tick/seconds/minutes> &a- changes the period's time unit"
+        - "&a--> &elocation &a- changes location of the spawner"
+        - "&a--> &esave &a- saves the edited spawner"
+        - "&a--> &eexit &a- leaves editor without changes"
 
 scoreboards:
   name: "%prefix%"
