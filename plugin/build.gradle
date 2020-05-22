@@ -1,7 +1,6 @@
 dependencies {
     implementation project(':api')
     implementation 'org.screamingsandals.lib:gamecore:1.1.22'
-    implementation 'org.screamingsandals.lib:commands:1.1.22'
 }
 
 tasks.spigotPluginYaml.enabled = true

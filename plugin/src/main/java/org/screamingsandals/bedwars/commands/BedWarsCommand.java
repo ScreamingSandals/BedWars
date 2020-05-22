@@ -12,11 +12,11 @@ import static org.screamingsandals.lib.gamecore.language.GameLanguage.mpr;
 
 @RegisterCommand
 public class BedWarsCommand implements ScreamingCommand {
-    public static String commandName = "sbw";
+    public static String COMMAND_NAME = "sbw";
 
     @Override
     public void register() {
-        CommandBuilder.bukkitCommand().create(commandName, Permissions.BASE_COMMAND, List.of("bedwars", "bw", "screamingbedwars"))
+        CommandBuilder.bukkitCommand().create(COMMAND_NAME, Permissions.BASE_COMMAND, List.of("bedwars", "bw", "screamingbedwars"))
                 .setDescription("Base command for the ScreamingBedWars plugin")
                 .setUsage("/sbw")
                 .handlePlayerCommand((player, args) -> execute(player))

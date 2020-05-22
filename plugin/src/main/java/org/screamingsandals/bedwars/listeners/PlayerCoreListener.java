@@ -16,7 +16,6 @@ public class PlayerCoreListener implements Listener {
     @EventHandler
     public void onRegister(SPlayerRegisteredEvent event) {
         System.out.println("Player registered!");
-
         System.out.println(event.getGamePlayer().toString());
     }
 

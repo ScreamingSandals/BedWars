@@ -22,6 +22,7 @@ public class MainConfig extends SpigotConfigAdapter {
                 .put(ConfigPaths.DEBUG, true) //for now, true.
                 .put(ConfigPaths.PREFIX, "&7[&bS&c&lBed&f&lWars&7]&r") //big news, whoosh
                 .put(ConfigPaths.LANG, "en")
+                .put(ConfigPaths.VERBOSE, true)
                 .put(ConfigPaths.GROOVY, false)
                 .put(ConfigPaths.BUNGEE_ENABLED, false)
                 .put(ConfigPaths.BUNGEE_LOBBY_SERVER, "your_hub_server_name_here")
@@ -38,6 +39,7 @@ public class MainConfig extends SpigotConfigAdapter {
         String DEBUG = "debug";
         String PREFIX = "prefix";
         String LANG = "language";
+        String VERBOSE = "verbose-to-admins";
         String GROOVY = "use-groovy-for-shops";
 
         String BUNGEE_ENABLED = "bungeecord.enabled";

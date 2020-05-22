@@ -20,7 +20,7 @@ public class ListCommand implements ScreamingCommand {
 
     @Override
     public void register() {
-        SubCommandBuilder.bukkitSubCommand().createSubCommand(BedWarsCommand.commandName, "list", Permissions.BASE_LIST_COMMAND, Collections.emptyList())
+        SubCommandBuilder.bukkitSubCommand().createSubCommand(BedWarsCommand.COMMAND_NAME, "list", Permissions.BASE_LIST_COMMAND, Collections.emptyList())
                 .handleSubPlayerCommand(this::handle)
                 .handleSubConsoleCommand(this::handle);
     }

@@ -5,6 +5,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.screamingsandals.bedwars.api.Permissions;
+import org.screamingsandals.bedwars.commands.BedWarsCommand;
 import org.screamingsandals.bedwars.commands.CommandsLanguage;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.config.VisualsConfig;
@@ -20,6 +21,8 @@ import org.screamingsandals.lib.gamecore.language.GameLanguage;
 import org.screamingsandals.lib.gamecore.player.PlayerManager;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.Collection;
 
 public class Main extends JavaPlugin {
@@ -82,7 +85,12 @@ public class Main extends JavaPlugin {
             Debug.info("GameCore already exists, destroying and loading new!");
         }
 
-        gameCore = new GameCore(this, Permissions.ADMIN_COMMAND, true); //TODO: configurable
+        gameCore = new GameCore(this, BedWarsCommand.COMMAND_NAME, Permissions.ADMIN_COMMAND, mainConfig.getBoolean(MainConfig.ConfigPaths.VERBOSE));
+        try {
+            commands.loadScreamingCommands(gameCore.getClass());
+        } catch (URISyntaxException | IOException e) {
+            e.printStackTrace();
+        }
 
         try {
             gameCore.load(new File(getDataFolder(), "games"), Game.class);
@@ -124,7 +132,7 @@ public class Main extends JavaPlugin {
         if (file.exists()) {
             return file;
         } else {
-           saveResource(fileName, false);
+            saveResource(fileName, false);
         }
 
         return file;

@@ -18,7 +18,7 @@ public class VersionCommand implements ScreamingCommand {
 
     @Override
     public void register() {
-        SubCommandBuilder.bukkitSubCommand().createSubCommand(BedWarsCommand.commandName, "version", Permissions.BASE_VERSION_COMMAND, Collections.emptyList())
+        SubCommandBuilder.bukkitSubCommand().createSubCommand(BedWarsCommand.COMMAND_NAME, "version", Permissions.BASE_VERSION_COMMAND, Collections.emptyList())
                 .handleSubPlayerCommand(this::handle)
                 .handleSubConsoleCommand(this::handle);
     }

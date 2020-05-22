@@ -28,7 +28,7 @@ public class AdminCommand implements ScreamingCommand {
     @Override
     public void register() {
         SubCommandBuilder.bukkitSubCommand()
-                .createSubCommand(BedWarsCommand.commandName, "admin", Permissions.ADMIN_COMMAND, Collections.emptyList())
+                .createSubCommand(BedWarsCommand.COMMAND_NAME, "admin", Permissions.ADMIN_COMMAND, Collections.emptyList())
                 .handleSubPlayerCommand(this::handleCommand)
                 .handleSubPlayerTab(this::handleTab);
 

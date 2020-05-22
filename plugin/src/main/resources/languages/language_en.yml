@@ -1,4 +1,4 @@
-language_code: en
+language_code: "en"
 language_name: "English"
 
 prefix: "&7[&bS&c&lBed&f&lWars&7]&r"
@@ -24,6 +24,12 @@ core:
     maintenance: "Maintenance"
     custom: "Custom"
     disabled: "Disabled"
+
+  materials:
+    bronze: "&4Bronzeee"
+    iron: "&7Iron"
+    gold: "&6Gold"
+    diamond: "&bDiamond"
 
 general:
   errors:
@@ -66,30 +72,28 @@ game-builder:
       - "&eHologram enabled: &f%booleanValue%"
     editor:
       started:
-        - "&aYou just opened spawner editor!"
-        - "&aType &e/sce &aif you don't know what to do. &l:)"
+        - "&aSpawner editor has been opened!"
+        - "&aType &e/sbw sedit &aif you don't know what to do. &l:)"
       already-active:
         - "&cSpawner editor is already active."
-        - "&cType &eexit &cor &esave&c to edit another!"
+        - "&eType &a/sbw sedit exit &eto exit without saving"
+        - "&eor &a/sbw sedit save &eto save changes."
       nothing-active:
-        - "&cTNo spawner is in edit mode."
+        - "&cSpawner editor not found."
         - "&eRight-click on some spawner to enter edit mode."
       changed: "&aValue &e%value% &awas changed to &e%newValue%"
       invalid-value: "&cValue &e%value% &cis invalid!"
       invalid-action:
-        - "&cAction &e%action% &cis invalid."
-        - "&eEnter valid action or type &a/sce"
-      invalid-entry:
-        - "&cThis is invalid.. Weird.."
-        - "&aType help for.. well.. &lhelp!"
+        - "&cThis action is invalid.."
+        - "&eYou did something wrong? Help is at &a/sbw sedit"
       save: "&aSpawner was saved. &lYAY!"
-      exit: "&eNothing was saved. &lUmm :("
+      exit: "&cNothing was saved. &e&lUmm :("
       location: "&aLocation was changed to your position."
       help:
         - "Available actions:"
         - "&a--> &emax-spawned <number value> &a- the max spawned amount"
         - "&a--> &eamount <number value> &a- amount of items that are spawned"
-        - "&a--> &eperiod <number value> &a- spawning period (2 seconds for example)"
+        - "&a--> &eperiod <number value> &a- spawning period (2 example) per time-unit"
         - "&a--> &eteam <existing team or null> &a- links the spawner to the team"
         - "&a--> &etime-unit <tick/seconds/minutes> &a- changes the period's time unit"
         - "&a--> &elocation &a- changes location of the spawner"
