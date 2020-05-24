@@ -1,7 +1,7 @@
-package org.screamingsandals.bedwars.commands.game.actions;
+package org.screamingsandals.bedwars.commands.game.admin.actions;
 
 public enum ActionType {
-    CREATE;
+    EDIT;
 
     public enum Add {
         STORE,
@@ -11,7 +11,6 @@ public enum ActionType {
 
     public enum Set {
         BORDER,
-        SPECTATORS_SPAWN,
-        LOBBY_SPAWN
+        SPAWN
     }
 }

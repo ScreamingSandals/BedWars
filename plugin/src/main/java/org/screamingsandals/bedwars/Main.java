@@ -19,7 +19,6 @@ import org.screamingsandals.lib.gamecore.core.GameManager;
 import org.screamingsandals.lib.gamecore.core.GameType;
 import org.screamingsandals.lib.gamecore.exceptions.GameCoreException;
 import org.screamingsandals.lib.gamecore.language.GameLanguage;
-import org.screamingsandals.lib.gamecore.player.PlayerManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,7 +32,6 @@ public class Main extends JavaPlugin {
     @Getter
     private GameCore gameCore;
     private GameManager<Game> gameManager;
-    private PlayerManager playerManager;
     @Getter
     private GameLanguage language;
     private Commands commands;
@@ -97,7 +95,6 @@ public class Main extends JavaPlugin {
         }
 
         try {
-
             gameCore.load(new File(getDataFolder(), "games"), Game.class, getGameType());
         } catch (GameCoreException e) {
             Debug.info("This is some way of fuck up.. Please report that to our GitHub or Discord!", true);
@@ -108,12 +105,11 @@ public class Main extends JavaPlugin {
         gameManager = (GameManager<Game>) GameCore.getGameManager();
         gameManager.loadGames();
 
-        playerManager = new PlayerManager();
-
         //Beware of plugin reloading..
         final Collection<Player> onlinePlayers = (Collection<Player>) Bukkit.getOnlinePlayers();
         if (onlinePlayers.size() > 0) {
-            onlinePlayers.forEach(player -> playerManager.registerPlayer(player));
+            onlinePlayers.forEach(player -> GameCore.getPlayerManager().registerPlayer(player));
+            System.out.println(GameCore.getPlayerManager().getRegisteredPlayers());
         }
 
         registerListeners();

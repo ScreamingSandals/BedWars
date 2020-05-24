@@ -1,7 +1,7 @@
-package org.screamingsandals.bedwars.commands.game.actions.set;
+package org.screamingsandals.bedwars.commands.game.admin.actions.set;
 
 import org.bukkit.entity.Player;
-import org.screamingsandals.bedwars.commands.game.actions.Action;
+import org.screamingsandals.bedwars.commands.game.admin.actions.Action;
 import org.screamingsandals.bedwars.game.GameBuilder;
 import org.screamingsandals.lib.debug.Debug;
 import org.screamingsandals.lib.gamecore.utils.GameUtils;

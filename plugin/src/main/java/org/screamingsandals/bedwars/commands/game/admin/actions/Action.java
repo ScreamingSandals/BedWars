@@ -1,4 +1,4 @@
-package org.screamingsandals.bedwars.commands.game.actions;
+package org.screamingsandals.bedwars.commands.game.admin.actions;
 
 import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.game.GameBuilder;

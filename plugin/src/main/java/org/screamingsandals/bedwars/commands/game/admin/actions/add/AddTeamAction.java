@@ -1,7 +1,7 @@
-package org.screamingsandals.bedwars.commands.game.actions.add;
+package org.screamingsandals.bedwars.commands.game.admin.actions.add;
 
 import org.bukkit.entity.Player;
-import org.screamingsandals.bedwars.commands.game.actions.Action;
+import org.screamingsandals.bedwars.commands.game.admin.actions.Action;
 import org.screamingsandals.bedwars.game.GameBuilder;
 import org.screamingsandals.bedwars.game.team.GameTeam;
 import org.screamingsandals.lib.gamecore.team.TeamColor;
@@ -18,6 +18,7 @@ public class AddTeamAction implements Action {
     public void handleCommand(GameBuilder gameBuilder, Player player, List<String> args) {
         final var currentGame = gameBuilder.getGameFrame();
         final var argsSize = args.size();
+
         if (argsSize < 3) {
             mpr("commands.admin.actions.add.team.invalid-entry")
                     .game(currentGame)
@@ -82,6 +83,7 @@ public class AddTeamAction implements Action {
                 if (name.startsWith(typed)) {
                     toReturn.add(name);
                 }
+                return toReturn;
             }
         }
 

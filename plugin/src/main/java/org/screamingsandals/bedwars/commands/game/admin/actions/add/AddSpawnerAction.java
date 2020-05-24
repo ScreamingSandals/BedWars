@@ -1,7 +1,7 @@
-package org.screamingsandals.bedwars.commands.game.actions.add;
+package org.screamingsandals.bedwars.commands.game.admin.actions.add;
 
 import org.bukkit.entity.Player;
-import org.screamingsandals.bedwars.commands.game.actions.Action;
+import org.screamingsandals.bedwars.commands.game.admin.actions.Action;
 import org.screamingsandals.bedwars.game.GameBuilder;
 import org.screamingsandals.lib.gamecore.adapter.LocationAdapter;
 import org.screamingsandals.lib.gamecore.resources.ResourceSpawner;
@@ -18,6 +18,13 @@ public class AddSpawnerAction implements Action {
     public void handleCommand(GameBuilder gameBuilder, Player player, List<String> args) {
         final var currentGame = gameBuilder.getGameFrame();
         final var argsSize = args.size();
+        final var playerLocation = player.getLocation();
+
+        if (!gameBuilder.isLocationInsideGame(playerLocation)) {
+            mpr("general.errors.outside-of-the-border").send(player);
+            return;
+        }
+
         if (argsSize < 1) {
             mpr("commands.admin.actions.add.spawner.invalid-entry")
                     .game(currentGame)
@@ -38,7 +45,7 @@ public class AddSpawnerAction implements Action {
         }
 
         final ResourceSpawner spawner;
-        final var location = new LocationAdapter(player.getLocation());
+        final var locationAdapter = new LocationAdapter(playerLocation);
 
         if (argsSize >= 2) {
             final var enteredValue = args.get(1);
@@ -52,7 +59,7 @@ public class AddSpawnerAction implements Action {
                         .send(player);
             }
 
-            spawner = new ResourceSpawner(location, spawnerType, hologramEnabled);
+            spawner = new ResourceSpawner(locationAdapter, spawnerType, hologramEnabled);
 
             if (argsSize == 3) {
                 final var enteredTeam = args.get(2);
@@ -68,7 +75,7 @@ public class AddSpawnerAction implements Action {
             }
 
         } else {
-            spawner = new ResourceSpawner(location, spawnerType);
+            spawner = new ResourceSpawner(locationAdapter, spawnerType);
         }
 
         gameBuilder.addSpawner(spawner, player);

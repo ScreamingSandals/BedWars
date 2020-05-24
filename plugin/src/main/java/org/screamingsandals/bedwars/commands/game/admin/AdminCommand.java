@@ -1,17 +1,16 @@
-package org.screamingsandals.bedwars.commands.game;
+package org.screamingsandals.bedwars.commands.game.admin;
 
 import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.Permissions;
 import org.screamingsandals.bedwars.commands.BedWarsCommand;
-import org.screamingsandals.bedwars.commands.game.actions.Action;
-import org.screamingsandals.bedwars.commands.game.actions.ActionType;
-import org.screamingsandals.bedwars.commands.game.actions.add.AddSpawnerAction;
-import org.screamingsandals.bedwars.commands.game.actions.add.AddStoreAction;
-import org.screamingsandals.bedwars.commands.game.actions.add.AddTeamAction;
-import org.screamingsandals.bedwars.commands.game.actions.set.SetBorderAction;
-import org.screamingsandals.bedwars.commands.game.actions.set.SetLobbySpawnAction;
-import org.screamingsandals.bedwars.commands.game.actions.set.SetSpectatorsSpawnAction;
+import org.screamingsandals.bedwars.commands.game.admin.actions.Action;
+import org.screamingsandals.bedwars.commands.game.admin.actions.ActionType;
+import org.screamingsandals.bedwars.commands.game.admin.actions.add.AddSpawnerAction;
+import org.screamingsandals.bedwars.commands.game.admin.actions.add.AddStoreAction;
+import org.screamingsandals.bedwars.commands.game.admin.actions.add.AddTeamAction;
+import org.screamingsandals.bedwars.commands.game.admin.actions.set.SetBorderAction;
+import org.screamingsandals.bedwars.commands.game.admin.actions.set.SetSpawnAction;
 import org.screamingsandals.bedwars.game.GameBuilder;
 import org.screamingsandals.lib.commands.common.RegisterCommand;
 import org.screamingsandals.lib.commands.common.SubCommandBuilder;
@@ -36,8 +35,7 @@ public class AdminCommand implements ScreamingCommand {
                 .handleSubPlayerTab(this::handleTab);
 
         setActions.put(ActionType.Set.BORDER, new SetBorderAction());
-        setActions.put(ActionType.Set.SPECTATORS_SPAWN, new SetSpectatorsSpawnAction());
-        setActions.put(ActionType.Set.LOBBY_SPAWN, new SetLobbySpawnAction());
+        setActions.put(ActionType.Set.SPAWN, new SetSpawnAction());
 
         addActions.put(ActionType.Add.STORE, new AddStoreAction());
         addActions.put(ActionType.Add.SPAWNER, new AddSpawnerAction());
@@ -222,12 +220,8 @@ public class AdminCommand implements ScreamingCommand {
                         setActions.get(ActionType.Set.BORDER).handleCommand(gameBuilder, player, subList);
                         break;
                     }
-                    case "spectators-spawn": {
-                        setActions.get(ActionType.Set.SPECTATORS_SPAWN).handleCommand(gameBuilder, player, subList);
-                        break;
-                    }
-                    case "lobby-spawn": {
-                        setActions.get(ActionType.Set.LOBBY_SPAWN).handleCommand(gameBuilder, player, subList);
+                    case "spawn": {
+                        setActions.get(ActionType.Set.SPAWN).handleCommand(gameBuilder, player, subList);
                         break;
                     }
                     default:
@@ -289,7 +283,7 @@ public class AdminCommand implements ScreamingCommand {
         final List<String> toReturn = new LinkedList<>();
 
         if (argsSize == 1) {
-            final List<String> available = new ArrayList<>(List.of("border", "spectators-spawn", "lobby-spawn"));
+            final List<String> available = new ArrayList<>(List.of("border", "spawn"));
 
             for (String found : available) {
                 if (found.startsWith(action)) {
@@ -304,9 +298,7 @@ public class AdminCommand implements ScreamingCommand {
             case "border":
                 return setActions.get(ActionType.Set.BORDER).handleTab(gameBuilder, player, subList);
             case "spectators-spawn":
-                return setActions.get(ActionType.Set.SPECTATORS_SPAWN).handleTab(gameBuilder, player, subList);
-            case "lobby-spawn":
-                return setActions.get(ActionType.Set.LOBBY_SPAWN).handleTab(gameBuilder, player, subList);
+                return setActions.get(ActionType.Set.SPAWN).handleTab(gameBuilder, player, subList);
         }
 
         return toReturn;

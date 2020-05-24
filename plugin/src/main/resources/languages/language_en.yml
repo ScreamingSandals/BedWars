@@ -42,6 +42,8 @@ general:
     unknown-parameter: "&cCan't do this, that parameter does not exists."
     different-world: "&cCan't do, you are trying to set this into different world."
     outside-of-the-border: "&cThis stuff needs to be inside the game border. &eUnderstand?"
+    invalid-game: "&cGame &e%gameName%&c does not exists!"
+    no-game-found: "&cNo game has been found."
   null-translated: "None"
   booleans:
     true: "True"
@@ -159,13 +161,23 @@ commands:
       header: "You are running on version &e%version%"
       latest: "&a&lLatest version, yay!"
       behind: "&cYou are &e%count% &cversions behind! &c&lEw!"
+  join:
+    success: "&aYou just joined into game &e%gameName%&a!"
+    failed: "&cYou are already in some game!"
+  leave:
+    success: "&aYou just left game &e%gameName%&a!"
+    failed: "&cYou aren't in any game."
   admin:
     errors:
       not_enough_arguments: "&cYou must provide valid arena name and valid action!"
       invalid_action: "&e%action% &eis invalid action. Please enter valid one."
     actions:
-      create:
-        invalid_game_type: "&cYou surely need to provide valid GameType.."
+      edit:
+        invalid-entry:
+          - "&eYou need to be more specific.."
+          - "&eCommand should look like:"
+          - "&a/sbw admin &e%gameName% &aedit"
+        success: "&aGame &e%gameName% &ais now in edit mode."
       add:
         team:
           invalid-entry:
@@ -201,11 +213,13 @@ commands:
           invalid-entry:
             - "&eYou need to be more specific.."
             - "&eCommand should look like:"
-            - "&a/sbw admin &e%gameName% &aset border &e<game or lobby> <1 or 2>"
+            - "&a/sbw admin &e%gameName% &aset spawn &e<game or lobby> <1 or 2>"
           done: "&aPoint &e%number%&a of the &e%type%&a border was set!"
-        spectators-spawn:
-          done: "&aYay! Spectators spawn has been set!"
-        lobby-spawn:
-          done: "&aYay! Lobby spawn has been set!"
+        spawn:
+          invalid-entry:
+            - "&eYou need to be more specific.."
+            - "&eCommand should look like:"
+            - "&a/sbw admin &e%gameName% &aset spawn &e<lobby/team/spectators>"
+          done: "&aYay! Spawn for &e%type%&a has been set!"
       save:
         cannot-save: "Uh oh, you missing something. Cannot save!"

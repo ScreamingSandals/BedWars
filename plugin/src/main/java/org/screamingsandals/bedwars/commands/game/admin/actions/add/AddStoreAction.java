@@ -1,8 +1,8 @@
-package org.screamingsandals.bedwars.commands.game.actions.add;
+package org.screamingsandals.bedwars.commands.game.admin.actions.add;
 
 import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.Main;
-import org.screamingsandals.bedwars.commands.game.actions.Action;
+import org.screamingsandals.bedwars.commands.game.admin.actions.Action;
 import org.screamingsandals.bedwars.game.GameBuilder;
 import org.screamingsandals.lib.gamecore.adapter.LocationAdapter;
 import org.screamingsandals.lib.gamecore.store.GameStore;
@@ -22,6 +22,13 @@ public class AddStoreAction implements Action {
     public void handleCommand(GameBuilder gameBuilder, Player player, List<String> args) {
         final var currentGame = gameBuilder.getGameFrame();
         final var argsSize = args.size();
+        final var playerLocation = player.getLocation();
+
+        if (!gameBuilder.isLocationInsideGame(playerLocation)) {
+            mpr("general.errors.outside-of-the-border").send(player);
+            return;
+        }
+
         if (argsSize < 2) {
             mpr("commands.admin.actions.add.store.invalid-entry")
                     .game(currentGame)
@@ -30,7 +37,7 @@ public class AddStoreAction implements Action {
         }
 
         GameStore gameStore = null;
-        final var location = new LocationAdapter(player.getLocation());
+        final var location = new LocationAdapter(playerLocation);
         final var store = StoreType.get(args.get(0));
         final var storeName = args.get(1);
 
