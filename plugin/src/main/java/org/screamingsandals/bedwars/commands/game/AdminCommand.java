@@ -4,11 +4,14 @@ import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.Permissions;
 import org.screamingsandals.bedwars.commands.BedWarsCommand;
-import org.screamingsandals.bedwars.commands.game.actions.*;
+import org.screamingsandals.bedwars.commands.game.actions.Action;
+import org.screamingsandals.bedwars.commands.game.actions.ActionType;
 import org.screamingsandals.bedwars.commands.game.actions.add.AddSpawnerAction;
 import org.screamingsandals.bedwars.commands.game.actions.add.AddStoreAction;
 import org.screamingsandals.bedwars.commands.game.actions.add.AddTeamAction;
-import org.screamingsandals.bedwars.config.MainConfig;
+import org.screamingsandals.bedwars.commands.game.actions.set.SetBorderAction;
+import org.screamingsandals.bedwars.commands.game.actions.set.SetLobbySpawnAction;
+import org.screamingsandals.bedwars.commands.game.actions.set.SetSpectatorsSpawnAction;
 import org.screamingsandals.bedwars.game.GameBuilder;
 import org.screamingsandals.lib.commands.common.RegisterCommand;
 import org.screamingsandals.lib.commands.common.SubCommandBuilder;
@@ -32,8 +35,9 @@ public class AdminCommand implements ScreamingCommand {
                 .handleSubPlayerCommand(this::handleCommand)
                 .handleSubPlayerTab(this::handleTab);
 
-        setActions.put(ActionType.Set.GAME, new GameAction());
-        setActions.put(ActionType.Set.LOBBY, new LobbyAction());
+        setActions.put(ActionType.Set.BORDER, new SetBorderAction());
+        setActions.put(ActionType.Set.SPECTATORS_SPAWN, new SetSpectatorsSpawnAction());
+        setActions.put(ActionType.Set.LOBBY_SPAWN, new SetLobbySpawnAction());
 
         addActions.put(ActionType.Add.STORE, new AddStoreAction());
         addActions.put(ActionType.Add.SPAWNER, new AddSpawnerAction());
@@ -50,7 +54,7 @@ public class AdminCommand implements ScreamingCommand {
         final var gameManager = GameCore.getGameManager();
         final var gameName = args.get(1);
         final var action = args.get(2).toLowerCase();
-        final List<String> subList = args.subList(3, argsSize);
+        final List<String> subList = args.subList(2, argsSize);
 
         GameBuilder gameBuilder = null;
         if (!action.equals("create")) {
@@ -71,8 +75,12 @@ public class AdminCommand implements ScreamingCommand {
             case "create":
                 handleCreateAction(gameName, player, subList);
                 break;
+            case "set":
             case "add":
-                handleAddAction(gameBuilder, player, subList);
+                handleActions(gameBuilder, player, subList);
+                break;
+            case "save":
+                handleSave(gameBuilder, player);
                 break;
             default:
                 mpr("commands.admin.errors.invalid_action")
@@ -96,8 +104,8 @@ public class AdminCommand implements ScreamingCommand {
         if (argsSize == 2) {
             final List<String> available = new LinkedList<>();
 
-            available.addAll(gameManager.getGameBuilders().keySet());
-            available.addAll(gameManager.getRegisteredGamesMap().keySet());
+            available.addAll(gameManager.getRegisteredGamesNames());
+            available.addAll(gameManager.getRegisteredBuildersNames());
 
             for (String found : available) {
                 if (found.startsWith(gameName)) {
@@ -110,7 +118,10 @@ public class AdminCommand implements ScreamingCommand {
 
         if (argsSize == 3) {
             final var typed = args.get(2);
-            final List<String> available = List.of("create", "add");
+            final List<String> available = List.of("create", "add", "set");
+            //TODO: edit this to be more good while we have multiple games
+            //list.of(stop, start, maintenance) if no game is in edit mode
+            //list.of(save) if we have something that we can save
 
             for (String found : available) {
                 if (found.startsWith(typed)) {
@@ -121,15 +132,11 @@ public class AdminCommand implements ScreamingCommand {
             return toReturn;
         }
 
-
         GameBuilder gameBuilder = null;
         if (gameManager.isInBuilder(gameName)) {
             gameBuilder = gameManager.getGameBuilder(gameName);
         }
 
-        if (gameBuilder == null) {
-            return toReturn;
-        }
         final var action = args.get(2);
         final var subList = args.subList(3, argsSize);
 
@@ -141,6 +148,11 @@ public class AdminCommand implements ScreamingCommand {
         if (action.equalsIgnoreCase("add")
                 && checkPermissions(player, Permissions.ADMIN_COMMAND_ACTION_ADD)) {
             return handleAddTab(gameBuilder, player, subList);
+        }
+
+        if (action.equalsIgnoreCase("set")
+                && checkPermissions(player, Permissions.ADMIN_COMMAND_ACTION_SET)) {
+            return handleSetTab(gameBuilder, player, subList);
         }
 
 
@@ -157,69 +169,77 @@ public class AdminCommand implements ScreamingCommand {
             return;
         }
 
-        if (args.isEmpty()) {
-            if (Main.getMainConfig().getBoolean(MainConfig.ConfigPaths.BUNGEE_ENABLED)) {
-                mpr("commands.admin.actions.create.invalid_game_type").send(player);
-                return;
-            }
-            gameType = Optional.of(GameType.MULTI_GAME);
-        } else {
-            gameType = GameType.get(args.get(0));
-        }
-
-        if (gameType.isEmpty()) {
-            mpr("commands.admin.actions.create.invalid_game_type").send(player);
-            return;
-        }
-
         final var gameBuilder = new GameBuilder();
-        gameBuilder.create(gameName, gameType.get(), player);
+        gameBuilder.create(gameName, player);
 
-        GameCore.getGameManager().registerBuilder(gameName, gameBuilder);
+        GameCore.getGameManager().registerBuilder(gameBuilder.getGameFrame().getUuid(), gameBuilder);
     }
 
     private List<String> handleCreateTab(List<String> args) {
-        final List<String> emptyList = Collections.emptyList();
-
-        if (args.isEmpty()) {
-            return emptyList;
-        }
-
-        if (Main.getMainConfig().getBoolean(MainConfig.ConfigPaths.BUNGEE_ENABLED)) {
-            return List.of("SINGLE_GAME_BUNGEE", "MULTI_GAME_BUNGEE");
-        }
-
-        return emptyList;
+        return Collections.emptyList();
     }
 
-    private void handleAddAction(GameBuilder gameBuilder, Player player, List<String> args) {
+    private void handleActions(GameBuilder gameBuilder, Player player, List<String> args) {
         final var currentGame = gameBuilder.getGameFrame();
         final var argsSize = args.size();
 
-        if (argsSize == 0) {
-            mpr("admin.actions.add.not-enough-args").send(player);
+        if (argsSize == 1) {
+            mpr("general.errors.not-enough-args").send(player);
             return;
         }
 
-        final var whatToAdd = args.get(0);
-        final var subList = args.subList(1, argsSize);
+        final var action = args.get(0);
+        final var whatToDo = args.get(1);
+        final var subList = args.subList(2, argsSize);
 
-        switch (whatToAdd) {
-            case "team": {
-                addActions.get(ActionType.Add.TEAM).handleCommand(gameBuilder, player, subList);
+        switch (action) {
+            case "add": {
+                switch (whatToDo) {
+                    case "team": {
+                        addActions.get(ActionType.Add.TEAM).handleCommand(gameBuilder, player, subList);
+                        break;
+                    }
+                    case "spawner": {
+                        addActions.get(ActionType.Add.SPAWNER).handleCommand(gameBuilder, player, subList);
+                        break;
+                    }
+                    case "store":
+                    case "shop": {
+                        addActions.get(ActionType.Add.STORE).handleCommand(gameBuilder, player, subList);
+                        break;
+                    }
+                    default:
+                        mpr("general.errors.unknown-parameter")
+                                .game(currentGame)
+                                .send(player);
+                        break;
+                }
                 break;
             }
-            case "spawner": {
-                addActions.get(ActionType.Add.SPAWNER).handleCommand(gameBuilder, player, subList);
-                break;
-            }
-            case "store":
-            case "shop": {
-                addActions.get(ActionType.Add.STORE).handleCommand(gameBuilder, player, subList);
+            case "set": {
+                switch (whatToDo) {
+                    case "border": {
+                        setActions.get(ActionType.Set.BORDER).handleCommand(gameBuilder, player, subList);
+                        break;
+                    }
+                    case "spectators-spawn": {
+                        setActions.get(ActionType.Set.SPECTATORS_SPAWN).handleCommand(gameBuilder, player, subList);
+                        break;
+                    }
+                    case "lobby-spawn": {
+                        setActions.get(ActionType.Set.LOBBY_SPAWN).handleCommand(gameBuilder, player, subList);
+                        break;
+                    }
+                    default:
+                        mpr("general.errors.unknown-parameter")
+                                .game(currentGame)
+                                .send(player);
+                        break;
+                }
                 break;
             }
             default:
-                mpr("admin.actions.add.unknown-parameter")
+                mpr("general.errors.unknown-parameter")
                         .game(currentGame)
                         .send(player);
                 break;
@@ -237,10 +257,6 @@ public class AdminCommand implements ScreamingCommand {
 
         if (argsSize == 1) {
             final List<String> available = new ArrayList<>(List.of("team", "spawner", "store"));
-            if (gameBuilder.isReadyToSave(false)) {
-                available.add("save");
-            }
-
             for (String found : available) {
                 if (found.startsWith(action)) {
                     toReturn.add(found);
@@ -261,6 +277,48 @@ public class AdminCommand implements ScreamingCommand {
         }
 
         return toReturn;
+    }
+
+    private List<String> handleSetTab(GameBuilder gameBuilder, Player player, List<String> args) {
+        final var argsSize = args.size();
+        if (argsSize == 0) {
+            return Collections.emptyList();
+        }
+
+        final var action = args.get(0);
+        final List<String> toReturn = new LinkedList<>();
+
+        if (argsSize == 1) {
+            final List<String> available = new ArrayList<>(List.of("border", "spectators-spawn", "lobby-spawn"));
+
+            for (String found : available) {
+                if (found.startsWith(action)) {
+                    toReturn.add(found);
+                }
+            }
+            return toReturn;
+        }
+
+        final var subList = args.subList(1, argsSize);
+        switch (action) {
+            case "border":
+                return setActions.get(ActionType.Set.BORDER).handleTab(gameBuilder, player, subList);
+            case "spectators-spawn":
+                return setActions.get(ActionType.Set.SPECTATORS_SPAWN).handleTab(gameBuilder, player, subList);
+            case "lobby-spawn":
+                return setActions.get(ActionType.Set.LOBBY_SPAWN).handleTab(gameBuilder, player, subList);
+        }
+
+        return toReturn;
+    }
+
+    public void handleSave(GameBuilder gameBuilder, Player player) {
+        if (gameBuilder == null) {
+            mpr("commands.admin.actions.save.cannot-save").sendList(player);
+            return;
+        }
+
+        gameBuilder.save(player);
     }
 
     private boolean checkPermissions(Player player, String permission) {

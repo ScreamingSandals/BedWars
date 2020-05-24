@@ -16,6 +16,7 @@ import org.screamingsandals.lib.config.ConfigAdapter;
 import org.screamingsandals.lib.debug.Debug;
 import org.screamingsandals.lib.gamecore.GameCore;
 import org.screamingsandals.lib.gamecore.core.GameManager;
+import org.screamingsandals.lib.gamecore.core.GameType;
 import org.screamingsandals.lib.gamecore.exceptions.GameCoreException;
 import org.screamingsandals.lib.gamecore.language.GameLanguage;
 import org.screamingsandals.lib.gamecore.player.PlayerManager;
@@ -41,6 +42,8 @@ public class Main extends JavaPlugin {
     private File shopFile;
     @Getter
     private File upgradesFile;
+    @Getter
+    private boolean bungee;
 
     @Override
     @SuppressWarnings("unchecked")
@@ -50,6 +53,7 @@ public class Main extends JavaPlugin {
         try {
             mainConfig = new MainConfig(ConfigAdapter.createFile(getDataFolder(), "config.yml"));
             mainConfig.load();
+            bungee = mainConfig.getBoolean(MainConfig.ConfigPaths.BUNGEE_ENABLED);
 
             visualsConfig = new VisualsConfig(ConfigAdapter.createFile(getDataFolder(), "visuals.yml"));
             visualsConfig.load();
@@ -93,7 +97,8 @@ public class Main extends JavaPlugin {
         }
 
         try {
-            gameCore.load(new File(getDataFolder(), "games"), Game.class);
+
+            gameCore.load(new File(getDataFolder(), "games"), Game.class, getGameType());
         } catch (GameCoreException e) {
             Debug.info("This is some way of fuck up.. Please report that to our GitHub or Discord!", true);
             e.printStackTrace();
@@ -136,6 +141,17 @@ public class Main extends JavaPlugin {
         }
 
         return file;
+    }
+
+    private GameType getGameType() {
+        if (bungee) {
+            if (mainConfig.getBoolean(MainConfig.ConfigPaths.BUNGEE_MULTI_GAME_MODE)) {
+                return GameType.MULTI_GAME_BUNGEE;
+            }
+            return GameType.SINGLE_GAME_BUNGEE;
+        } else {
+            return GameType.MULTI_GAME;
+        }
     }
 
     public static Main getInstance() {

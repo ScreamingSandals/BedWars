@@ -4,7 +4,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.game.team.GameTeam;
-import org.screamingsandals.lib.gamecore.core.GameType;
+import org.screamingsandals.lib.gamecore.GameCore;
 import org.screamingsandals.lib.gamecore.store.GameStore;
 
 import static org.screamingsandals.lib.gamecore.language.GameLanguage.mpr;
@@ -12,12 +12,17 @@ import static org.screamingsandals.lib.gamecore.language.GameLanguage.mpr;
 public class GameBuilder extends org.screamingsandals.lib.gamecore.core.GameBuilder<Game> {
 
     @Override
-    public boolean create(String arenaName, GameType gameType, Player player) {
-        if (super.create(arenaName, gameType, player)) {
-            setGameFrame(new Game(arenaName, gameType));
+    public boolean create(String arenaName, Player player) {
+        if (super.create(arenaName, player)) {
+            gameFrame = new Game(arenaName);
             mpr("game-builder.created")
                     .replace("%game%", arenaName)
                     .send(player);
+
+
+            storeListener = new StoreListener(gameFrame);
+            GameCore.registerListener(storeListener);
+
             return true;
         }
         return false;
@@ -25,40 +30,52 @@ public class GameBuilder extends org.screamingsandals.lib.gamecore.core.GameBuil
 
     @Override
     public void save(Player player) {
-        if (getGameFrame().checkIntegrity(true)) {
-            Main.getGameManager().registerGame(getGameFrame().getGameName(), getGameFrame());
+        super.save(player);
+
+        if (gameFrame.checkIntegrity(true)) {
+            final var gameManager = Main.getGameManager();
+            gameManager.saveGame(gameFrame);
+            gameManager.registerGame(gameFrame.getUuid(), gameFrame);
+
+            final var uuid = gameFrame.getUuid();
+            GameCore.getEntityManager().unregisterAll(uuid);
+            GameCore.getHologramManager().destroyAll(uuid);
+
+            GameCore.unregisterListener(storeListener);
+            storeListener = null;
+
+            player.sendMessage("Saved");
         } else {
             checkWhatsWrong(player);
         }
     }
 
     public void addTeam(GameTeam gameTeam) {
-        getGameFrame().getTeams().add(gameTeam);
+        gameFrame.getTeams().add(gameTeam);
     }
 
     public void addShop(GameStore gameStore) {
-        getGameFrame().getStores().add(gameStore);
+        gameFrame.getStores().add(gameStore);
     }
 
     private void checkWhatsWrong(CommandSender sender) {
-        final var game = getGameFrame();
-        final var gameWorld = game.getGameWorld();
-        final var lobbyWorld = game.getLobbyWorld();
-        final var teamsSize = game.getTeams().size();
-        final var gameStoresSize = game.getStores().size();
+        final var gameWorld = gameFrame.getGameWorld();
+        final var lobbyWorld = gameFrame.getLobbyWorld();
+        final var teamsSize = gameFrame.getTeams().size();
+        final var gameStoresSize = gameFrame.getStores().size();
 
         if (gameWorld == null) {
             mpr("game-builder.check-integrity.errors.game-world-does-not-exists").send(sender);
             return;
         }
 
-        if (gameWorld.getPosition1() == null) {
+        if (gameWorld.getBorder1() == null) {
             mpr("game-builder.check-integrity.errors.game-world-position-not-set")
                     .replace("%whatPosition%", "1").send(sender);
             return;
         }
 
-        if (gameWorld.getPosition2() == null) {
+        if (gameWorld.getBorder2() == null) {
             mpr("game-builder.check-integrity.errors.game-world-position-not-set")
                     .replace("%whatPosition%", "2").send(sender);
             return;

@@ -7,12 +7,12 @@ import org.screamingsandals.lib.commands.common.RegisterCommand;
 import org.screamingsandals.lib.commands.common.SubCommandBuilder;
 import org.screamingsandals.lib.commands.common.interfaces.ScreamingCommand;
 import org.screamingsandals.lib.gamecore.GameCore;
+import org.screamingsandals.lib.gamecore.utils.GameUtils;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import static org.screamingsandals.lib.lang.I.m;
 import static org.screamingsandals.lib.lang.I.mpr;
 
 @RegisterCommand(subCommand = true)
@@ -26,17 +26,24 @@ public class ListCommand implements ScreamingCommand {
     }
 
     private void handle(CommandSender commandSender, List<String> args) {
-        final var games = GameCore.getGameManager().getRegisteredGamesMap();
-        final Collection<String> names = games.keySet();
-        final int size = games.values().size();
+        final var gameManager = GameCore.getGameManager();
+        final Collection<String> names = gameManager.getRegisteredGamesNames();
+        final int size = names.size();
         if (size > 0) {
             mpr("commands.base.list.arenas_list_header")
                     .replace("%count%", size)
                     .send(commandSender);
-            names.forEach(name -> mpr("commands.base.list.arenas_list_text")
-                    .replace("%game_name%", name)
-                    .replace("%game_state%", m("game.state." + games.get(name).getActiveState().getName()).get())
-                    .send(commandSender));
+            names.forEach(name -> {
+                final var game = gameManager.getRegisteredGame(name);
+                if (game.isEmpty()) {
+                    return;
+                }
+
+                mpr("commands.base.list.arenas_list_text")
+                        .replace("%game_name%", name)
+                        .replace("%game_state%", GameUtils.getTranslatedGameState(game.get().getActiveState()))
+                        .send(commandSender);
+            });
         } else {
             mpr("commands.base.list.no_arenas_found").send(commandSender);
         }

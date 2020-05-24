@@ -25,6 +25,7 @@ public class MainConfig extends SpigotConfigAdapter {
                 .put(ConfigPaths.VERBOSE, true)
                 .put(ConfigPaths.GROOVY, false)
                 .put(ConfigPaths.BUNGEE_ENABLED, false)
+                .put(ConfigPaths.BUNGEE_MULTI_GAME_MODE, false)
                 .put(ConfigPaths.BUNGEE_LOBBY_SERVER, "your_hub_server_name_here")
                 .put(ConfigPaths.BUNGEE_RESTART_ON_GAME_END, false)
                 .put(ConfigPaths.GAME_DEFAULT_LOBBY_TIME, 60)
@@ -43,6 +44,7 @@ public class MainConfig extends SpigotConfigAdapter {
         String GROOVY = "use-groovy-for-shops";
 
         String BUNGEE_ENABLED = "bungeecord.enabled";
+        String BUNGEE_MULTI_GAME_MODE = "bungeecord.multi-game-mode";
         String BUNGEE_LOBBY_SERVER = "bungeecord.lobby-server-name";
         String BUNGEE_RESTART_ON_GAME_END = "bungeecord.restart-server-after-game-end";
 

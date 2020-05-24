@@ -1,6 +1,5 @@
 package org.screamingsandals.bedwars.game;
 
-import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.events.game.BedWarsGameCyclePrepareEvent;
 import org.screamingsandals.bedwars.game.cycle.MultiGameBungeeCycle;
 import org.screamingsandals.bedwars.game.cycle.MultiGameCycle;
@@ -10,51 +9,64 @@ import org.screamingsandals.bedwars.game.phase.WaitingPhase;
 import org.screamingsandals.lib.gamecore.GameCore;
 import org.screamingsandals.lib.gamecore.core.GameFrame;
 import org.screamingsandals.lib.gamecore.core.GameState;
-import org.screamingsandals.lib.gamecore.core.GameType;
 import org.screamingsandals.lib.gamecore.core.cycle.GameCycle;
+
+import java.util.Optional;
 
 public class Game extends GameFrame {
 
-    public Game(String gameName, GameType gameType) {
-        super(gameName, gameType);
+    public Game(String gameName) {
+        super(gameName);
     }
 
     @Override
-    public void prepare() {
-        super.prepare();
+    public boolean prepare() {
+        if (!super.prepare()) {
+            return false;
+        }
 
-        final GameCycle gameCycle = prepareGameCycle();
-        setGameCycle(gameCycle);
+        final var preparedCycle = prepareGameCycle();
 
-        gameCycle.getGamePhases().put(GameState.LOADING, new LoadingPhase(gameCycle, -1));
-        gameCycle.getGamePhases().put(GameState.WAITING, new WaitingPhase(gameCycle, getLobbyTime()));
+        if (preparedCycle.isEmpty()) {
+            return false;
+        }
+
+        gameCycle = preparedCycle.get();
+        gameCycle.addPhase(GameState.LOADING, new LoadingPhase(gameCycle, -1));
+        gameCycle.addPhase(GameState.WAITING, new WaitingPhase(gameCycle, lobbyTime));
+
+        return true;
     }
 
-    private GameCycle prepareGameCycle() {
+    private Optional<GameCycle> prepareGameCycle() {
         GameCycle toReturn = null;
-        final var gameType = getGameType();
+        final var gameType = GameCore.getGameManager().getGameType();
         final var event = new BedWarsGameCyclePrepareEvent(this);
         if (GameCore.fireEvent(event)) {
             toReturn = event.getGameCycle();
         }
 
         if (toReturn != null) {
-            return toReturn;
+            return Optional.of(toReturn);
         }
 
-        if (Main.getMainConfig().getBoolean("bungeecord.enabled")) {
-            if (gameType == GameType.MULTI_GAME_BUNGEE) {
+        switch (gameType) {
+            case MULTI_GAME:
+                toReturn = new MultiGameCycle(this);
+                break;
+
+            case MULTI_GAME_BUNGEE:
                 toReturn = new MultiGameBungeeCycle(this);
-            } else if (gameType == GameType.SINGLE_GAME_BUNGEE) {
+                break;
+            case SINGLE_GAME_BUNGEE:
                 toReturn = new SingleGameBungeeCycle(this);
-            }
-            return toReturn;
+                break;
         }
 
-        if (gameType == GameType.MULTI_GAME) {
-            toReturn = new MultiGameCycle(this);
+        if (toReturn == null) {
+            return Optional.empty();
         }
 
-        return toReturn;
+        return Optional.of(toReturn);
     }
 }

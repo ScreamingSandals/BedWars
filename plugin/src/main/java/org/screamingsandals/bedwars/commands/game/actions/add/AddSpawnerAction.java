@@ -6,13 +6,13 @@ import org.screamingsandals.bedwars.game.GameBuilder;
 import org.screamingsandals.lib.gamecore.adapter.LocationAdapter;
 import org.screamingsandals.lib.gamecore.resources.ResourceSpawner;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
 import static org.screamingsandals.lib.gamecore.language.GameLanguage.mpr;
 
 public class AddSpawnerAction implements Action {
-
 
     @Override
     public void handleCommand(GameBuilder gameBuilder, Player player, List<String> args) {
@@ -37,9 +37,8 @@ public class AddSpawnerAction implements Action {
             return;
         }
 
-        ResourceSpawner spawner;
-        final var location = LocationAdapter.create(player.getLocation());
-
+        final ResourceSpawner spawner;
+        final var location = new LocationAdapter(player.getLocation());
 
         if (argsSize >= 2) {
             final var enteredValue = args.get(1);
@@ -77,6 +76,10 @@ public class AddSpawnerAction implements Action {
 
     @Override
     public List<String> handleTab(GameBuilder gameBuilder, Player player, List<String> args) {
+        if (gameBuilder == null) {
+            return Collections.emptyList();
+        }
+
         final var currentGame = gameBuilder.getGameFrame();
         final var resourceTypes = currentGame.getResourceManager().getResourceTypes();
         final var argsSize = args.size();
@@ -88,7 +91,7 @@ public class AddSpawnerAction implements Action {
 
         final var typed = args.get(0);
         if (argsSize == 1) {
-            final var resourceType = resourceTypes.getSpawnerTypes().values(); //shit, this is long
+            final var resourceType = resourceTypes.getSpawnerTypes().values();
             for (ResourceSpawner.Type type : resourceType) {
                 final var name = type.getName();
 

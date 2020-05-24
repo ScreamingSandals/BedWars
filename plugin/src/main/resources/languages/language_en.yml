@@ -8,22 +8,23 @@ core:
     game-core: "&cSomething went wrong with the GameCore instance. &a&lPlease report this error log to GitHub or Discord!"
     game-shop: "&cYour shop configuration is invalid. Please check validity of your current file."
     game-loading: "&c&lOh, damn. &cLoading the arena file failed. &a&lPlease report this error log to GitHub or Discord!"
-    game-world-does-not-exists: "&cGame world for game %game% &cdoes not exists!"
+    game-world-does-not-exists: "&eGame world for game %gameName% &cis not defined!"
+    lobby-world-does-not-exists: "&eLobby world for game %gameName% &cis not defined!"
     game-already-created: "&cGame &e%gameName% &calready exists! Use &ldifferent &cname."
     game-does-not-exists: "&cThat game does not exists. Bad name?"
     spectator-spawn-not-set: "&cSpectator spawn for the game %gameName% is not set!"
 
   state:
-    loading: "Loading"
-    lobby: "Waiting"
-    starting: "Starting"
-    game: "In game"
-    deathmatch: "Deathmatch"
-    end_game: "Finishing"
-    restart: "Restarting"
-    maintenance: "Maintenance"
-    custom: "Custom"
-    disabled: "Disabled"
+    LOADING: "Loading"
+    WAITING: "Waiting"
+    PRE_GAME_COUNTDOWN: "Starting"
+    IN_GAME: "In game"
+    DEATHMATCH: "Deathmatch"
+    AFTER_GAME_COUNTDOWN: "Finishing"
+    RESTART: "Restarting"
+    MAINTENANCE: "Maintenance"
+    CUSTOM: "Custom"
+    DISABLED: "Disabled"
 
   materials:
     bronze: "&4Bronzeee"
@@ -37,6 +38,10 @@ general:
     invalid-number: "&cUh, that's bad. &e%entry% &cis &lnot&c valid number!"
     invalid-team: "&cTeam &e%team% &cdoes not exists."
     invalid-spawner-type: "&e%type% &cis invalid spawner type!"
+    not-enough-args: "&cYou did not provided enough arguments."
+    unknown-parameter: "&cCan't do this, that parameter does not exists."
+    different-world: "&cCan't do, you are trying to set this into different world."
+    outside-of-the-border: "&cThis stuff needs to be inside the game border. &eUnderstand?"
   null-translated: "None"
   booleans:
     true: "True"
@@ -54,7 +59,7 @@ game-builder:
   check-integrity:
     errors:
       not-created-yet: "&cYou have not created the game yet."
-      not-enough-teams: "&You don't have enough teams added. Please add at least &e2 &cteams."
+      not-enough-teams: "&cYou don't have enough teams added. Please add at least &e2 &cteams."
       not-enough-teams-line2: "&cThere are &e%count% &cteams ready."
       not-enough-stores: "&cWell well, you need at least &e1 &cstore added."
       game-world-does-not-exists: "&cOh my, game-world is not set. Define positions or set game world."
@@ -63,6 +68,8 @@ game-builder:
       lobby-world-not-set: "&cOh my, lobby-world is not set. Define spawn or set lobby world!"
       lobby-world-spawn-not-set: "&cOh my, lobby spawn is not set. &lDo it!"
   created: "&aGame &e%game% &ahas been created! &lYAY!"
+  store:
+    why-are-you-punching-your-shop: "&c&lSTOP! &eDon't punch me &6:("
   spawners:
     hologram:
       - "&eSpawner: %color%%type%&f, &eMaterial: &f%mat%"
@@ -160,8 +167,6 @@ commands:
       create:
         invalid_game_type: "&cYou surely need to provide valid GameType.."
       add:
-        not-enough-args: "&cYou did not provided enough arguments."
-        unknown-parameter: "&cCan't add this, that parameter does not exists."
         team:
           invalid-entry:
             - "&eYou need to be more specific.."
@@ -191,3 +196,16 @@ commands:
             - "&eYou need to be more specific.."
             - "&eCommand should look like:"
             - "&a/sbw admin &e%gameName% &aadd spawner <type>"
+      set:
+        border:
+          invalid-entry:
+            - "&eYou need to be more specific.."
+            - "&eCommand should look like:"
+            - "&a/sbw admin &e%gameName% &aset border &e<game or lobby> <1 or 2>"
+          done: "&aPoint &e%number%&a of the &e%type%&a border was set!"
+        spectators-spawn:
+          done: "&aYay! Spectators spawn has been set!"
+        lobby-spawn:
+          done: "&aYay! Lobby spawn has been set!"
+      save:
+        cannot-save: "Uh oh, you missing something. Cannot save!"

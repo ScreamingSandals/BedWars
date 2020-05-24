@@ -10,7 +10,8 @@ public enum ActionType {
     }
 
     public enum Set {
-        GAME,
-        LOBBY;
+        BORDER,
+        SPECTATORS_SPAWN,
+        LOBBY_SPAWN
     }
 }
