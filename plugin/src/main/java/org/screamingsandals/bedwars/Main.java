@@ -714,12 +714,20 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 
     @Override
     public org.screamingsandals.bedwars.api.game.Game getFirstWaitingGame() {
-        for (Game game : games.values()) {
-            if (game.getStatus() == GameStatus.WAITING) {
-                return game;
+        final TreeMap<Integer, Game> availableGames = new TreeMap<>();
+        games.values().forEach(game -> {
+            if (game.getStatus() != GameStatus.WAITING) {
+                return;
             }
+
+            availableGames.put(game.getConnectedPlayers().size(), game);
+        });
+
+        if (availableGames.isEmpty()) {
+            return null;
         }
-        return null;
+
+        return availableGames.lastEntry().getValue();
     }
 
     @Override

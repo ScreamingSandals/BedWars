@@ -1156,9 +1156,14 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 				kickPlayer.changeGame(null);
 			} else {
 				if (isBungeeEnabled()) {
-					BungeeUtils.sendPlayerBungeeMessage(player,
-							i18n("game_is_full").replace("%arena%", Game.this.name));
 					BungeeUtils.movePlayerToBungeeServer(player, false);
+					new BukkitRunnable() {
+						@Override
+						public void run() {
+							BungeeUtils.sendPlayerBungeeMessage(player,
+									i18n("game_is_full").replace("%arena%", Game.this.name));
+						}
+					}.runTaskLater(Main.getInstance(), 5L);
 				} else {
 					player.sendMessage(i18n("game_is_full").replace("%arena%", this.name));
 				}
