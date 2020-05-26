@@ -41,7 +41,7 @@ import static misat11.lib.lang.I18n.i18nonly;
 
 public class ShopInventory implements Listener {
 	private Map<String, SimpleInventories> shopMap = new HashMap<>();
-	private Options options = new Options();
+	private Options options = new Options(Main.getInstance());
 
 	public ShopInventory() {
 		Bukkit.getServer().getPluginManager().registerEvents(this, Main.getInstance());
@@ -71,7 +71,7 @@ public class ShopInventory implements Listener {
 		options.setPrefix(i18nonly("item_shop_name", "[BW] Shop"));
 		options.setGenericShop(true);
 		options.setGenericShopPriceTypeRequired(true);
-		options.setAnimationsEnabled(true, Main.getInstance());
+		options.setAnimationsEnabled(true);
 		options.registerPlaceholder("team", (key, player, arguments) -> {
 			GamePlayer gPlayer = Main.getPlayerGameProfile(player);
 			CurrentTeam team = gPlayer.getGame().getPlayerTeam(gPlayer);

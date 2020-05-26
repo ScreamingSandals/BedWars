@@ -34,7 +34,7 @@ public class TeamSelectorInventory implements Listener {
     public TeamSelectorInventory(Main plugin, Game game) {
         this.game = game;
 
-        options = new Options();
+        options = new Options(Main.getInstance());
         options.setPrefix(i18nonly("team_selection_name", "Select team - %arena%").replace("%arena%", game.getName()));
         options.setShowPageNumber(false);
         options.setRender_header_start(54); // Disable header
