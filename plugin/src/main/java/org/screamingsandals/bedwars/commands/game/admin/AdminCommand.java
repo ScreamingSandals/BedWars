@@ -11,12 +11,13 @@ import org.screamingsandals.bedwars.commands.game.admin.actions.add.AddStoreActi
 import org.screamingsandals.bedwars.commands.game.admin.actions.add.AddTeamAction;
 import org.screamingsandals.bedwars.commands.game.admin.actions.set.SetBorderAction;
 import org.screamingsandals.bedwars.commands.game.admin.actions.set.SetSpawnAction;
+import org.screamingsandals.bedwars.game.Game;
 import org.screamingsandals.bedwars.game.GameBuilder;
 import org.screamingsandals.lib.commands.common.RegisterCommand;
 import org.screamingsandals.lib.commands.common.SubCommandBuilder;
 import org.screamingsandals.lib.commands.common.interfaces.ScreamingCommand;
-import org.screamingsandals.lib.gamecore.GameCore;
-import org.screamingsandals.lib.gamecore.core.GameType;
+import org.screamingsandals.lib.gamecore.core.GameManager;
+import org.screamingsandals.lib.gamecore.core.GameState;
 
 import java.util.*;
 
@@ -49,13 +50,14 @@ public class AdminCommand implements ScreamingCommand {
             return;
         }
 
-        final var gameManager = GameCore.getGameManager();
+        final var gameManager = Main.getGameManager();
         final var gameName = args.get(1);
         final var action = args.get(2).toLowerCase();
         final List<String> subList = args.subList(2, argsSize);
 
         GameBuilder gameBuilder = null;
-        if (!action.equals("create")) {
+        if (!action.equals("create")
+                && !action.equals("edit")) {
             if (!gameManager.isInBuilder(gameName)) {
                 mpr("game-builder.check-integrity.errors.not-created-yet").send(player);
                 return;
@@ -71,7 +73,7 @@ public class AdminCommand implements ScreamingCommand {
 
         switch (action) {
             case "create":
-                handleCreateAction(gameName, player, subList);
+                handleCreate(gameName, player);
                 break;
             case "set":
             case "add":
@@ -79,6 +81,9 @@ public class AdminCommand implements ScreamingCommand {
                 break;
             case "save":
                 handleSave(gameBuilder, player);
+                break;
+            case "edit":
+                handleEdit(gameManager, gameName, player);
                 break;
             default:
                 mpr("commands.admin.errors.invalid_action")
@@ -89,7 +94,7 @@ public class AdminCommand implements ScreamingCommand {
     }
 
     private List<String> handleTab(Player player, List<String> args) {
-        final var gameManager = GameCore.getGameManager();
+        final var gameManager = Main.getGameManager();
         final List<String> toReturn = new LinkedList<>();
         final var argsSize = args.size();
 
@@ -116,10 +121,22 @@ public class AdminCommand implements ScreamingCommand {
 
         if (argsSize == 3) {
             final var typed = args.get(2);
-            final List<String> available = List.of("create", "add", "set");
+            final List<String> available = new ArrayList<>(List.of("add", "set"));
+
+            if (!gameManager.isInBuilder(gameName) && !gameManager.isGameRegistered(gameName)) {
+                available.add("create");
+            }
+
+            if (gameManager.isInBuilder(gameName) && gameManager.getGameBuilder(gameName).isReadyToSave(false)) {
+                available.add("save");
+            }
+
+            if (gameManager.isGameRegistered(gameName)) {
+                available.add("edit");
+            }
+
             //TODO: edit this to be more good while we have multiple games
             //list.of(stop, start, maintenance) if no game is in edit mode
-            //list.of(save) if we have something that we can save
 
             for (String found : available) {
                 if (found.startsWith(typed)) {
@@ -135,32 +152,33 @@ public class AdminCommand implements ScreamingCommand {
             gameBuilder = gameManager.getGameBuilder(gameName);
         }
 
-        final var action = args.get(2);
+        final var action = args.get(2).toLowerCase();
         final var subList = args.subList(3, argsSize);
 
-        if (action.equalsIgnoreCase("create")
-                && checkPermissions(player, Permissions.ADMIN_COMMAND_ACTION_CREATE)) {
-            return handleCreateTab(subList);
+        if (gameBuilder == null) {
+            return toReturn;
         }
 
-        if (action.equalsIgnoreCase("add")
-                && checkPermissions(player, Permissions.ADMIN_COMMAND_ACTION_ADD)) {
-            return handleAddTab(gameBuilder, player, subList);
+        switch (action) {
+            case "add": {
+                if (checkPermissions(player, Permissions.ADMIN_COMMAND_ACTION_ADD)) {
+                    return handleAddTab(gameBuilder, player, subList);
+                }
+                break;
+            }
+            case "set": {
+                if (checkPermissions(player, Permissions.ADMIN_COMMAND_ACTION_SET)) {
+                    return handleSetTab(gameBuilder, player, subList);
+                }
+                break;
+            }
         }
-
-        if (action.equalsIgnoreCase("set")
-                && checkPermissions(player, Permissions.ADMIN_COMMAND_ACTION_SET)) {
-            return handleSetTab(gameBuilder, player, subList);
-        }
-
-
         return toReturn;
     }
 
-    private void handleCreateAction(String gameName, Player player, List<String> args) {
-        Optional<GameType> gameType;
-
-        if (Main.getGameManager().isGameRegistered(gameName) || GameCore.getGameManager().isInBuilder(gameName)) {
+    private void handleCreate(String gameName, Player player) {
+        final var gameManager = Main.getGameManager();
+        if (gameManager.isGameRegistered(gameName) || gameManager.isInBuilder(gameName)) {
             mpr("core.errors.game-already-created")
                     .replace("%game%", gameName)
                     .send(player);
@@ -170,11 +188,7 @@ public class AdminCommand implements ScreamingCommand {
         final var gameBuilder = new GameBuilder();
         gameBuilder.create(gameName, player);
 
-        GameCore.getGameManager().registerBuilder(gameBuilder.getGameFrame().getUuid(), gameBuilder);
-    }
-
-    private List<String> handleCreateTab(List<String> args) {
-        return Collections.emptyList();
+        gameManager.registerBuilder(gameBuilder.getGameFrame().getUuid(), gameBuilder);
     }
 
     private void handleActions(GameBuilder gameBuilder, Player player, List<String> args) {
@@ -311,6 +325,43 @@ public class AdminCommand implements ScreamingCommand {
         }
 
         gameBuilder.save(player);
+    }
+
+    public void handleEdit(GameManager<?> gameManager, String gameName, Player player) {
+        if (!gameManager.isGameRegistered(gameName)) {
+            mpr("commands.admin.actions.edit.invalid-entry")
+                    .replace("%gameName%", gameName)
+                    .sendList(player);
+            return;
+        }
+
+        final var game = gameManager.getRegisteredGame(gameName);
+
+        if (game.isEmpty()) {
+            mpr("commands.admin.actions.edit.invalid-entry")
+                    .replace("%gameName%", gameName)
+                    .sendList(player);
+            return;
+        }
+
+        final var gameFrame = game.get();
+
+        if (gameFrame.getActiveState() != GameState.DISABLED) {
+            mpr("commands.admin.actions.edit.running").send(player);
+            if (gameFrame.getActiveState() == GameState.MAINTENANCE) {
+                gameFrame.stopMaintenance();
+            }
+            gameFrame.stop();
+            mpr("commands.admin.actions.edit.stopped").send(player);
+        }
+
+        mpr("commands.admin.actions.edit.success")
+                .replace("%gameName%", gameName)
+                .send(player);
+
+        final var builder = new GameBuilder();
+        builder.load((Game) gameFrame, player);
+        gameManager.registerBuilder(gameFrame.getUuid(),builder);
     }
 
     private boolean checkPermissions(Player player, String permission) {

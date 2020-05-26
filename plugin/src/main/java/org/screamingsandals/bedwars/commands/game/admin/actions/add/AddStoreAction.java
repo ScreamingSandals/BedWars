@@ -126,8 +126,7 @@ public class AddStoreAction implements Action {
             return;
         }
 
-        gameBuilder.addShop(gameStore);
-        gameStore.spawn(gameBuilder.getGameFrame(), "&a&lGameBuilder - " + storeName);
+        gameBuilder.addStore(gameStore);
 
         mpr("commands.admin.actions.add.store.created").game(currentGame).send(player);
         System.out.println(currentGame.getStores());

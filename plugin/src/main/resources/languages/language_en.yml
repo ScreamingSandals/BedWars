@@ -15,16 +15,16 @@ core:
     spectator-spawn-not-set: "&cSpectator spawn for the game %gameName% is not set!"
 
   state:
-    LOADING: "Loading"
-    WAITING: "Waiting"
-    PRE_GAME_COUNTDOWN: "Starting"
-    IN_GAME: "In game"
-    DEATHMATCH: "Deathmatch"
-    AFTER_GAME_COUNTDOWN: "Finishing"
-    RESTART: "Restarting"
-    MAINTENANCE: "Maintenance"
-    CUSTOM: "Custom"
-    DISABLED: "Disabled"
+    LOADING: "&6Loading"
+    WAITING: "&aWaiting"
+    PRE_GAME_COUNTDOWN: "&aStarting"
+    IN_GAME: "&bIn game"
+    DEATHMATCH: "&cDeathmatch"
+    AFTER_GAME_COUNTDOWN: "&6Finishing"
+    RESTART: "&6Restarting"
+    MAINTENANCE: "&4Maintenance"
+    CUSTOM: "&6Custom"
+    DISABLED: "&4Disabled"
 
   materials:
     bronze: "&4Bronzeee"
@@ -177,6 +177,8 @@ commands:
           - "&eYou need to be more specific.."
           - "&eCommand should look like:"
           - "&a/sbw admin &e%gameName% &aedit"
+        running: "&eGame is running, stopping..."
+        stopped: "&aGame has been stopped."
         success: "&aGame &e%gameName% &ais now in edit mode."
       add:
         team:

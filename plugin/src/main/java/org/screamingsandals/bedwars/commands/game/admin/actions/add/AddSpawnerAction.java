@@ -90,7 +90,7 @@ public class AddSpawnerAction implements Action {
         final var currentGame = gameBuilder.getGameFrame();
         final var resourceTypes = currentGame.getResourceManager().getResourceTypes();
         final var argsSize = args.size();
-        final List<String> toReturn = new LinkedList<>();
+        final var toReturn = new LinkedList<String>();
 
         if (argsSize == 0) {
             return toReturn;

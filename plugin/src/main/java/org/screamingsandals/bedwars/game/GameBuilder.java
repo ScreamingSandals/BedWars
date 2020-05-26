@@ -5,7 +5,6 @@ import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.game.team.GameTeam;
 import org.screamingsandals.lib.gamecore.GameCore;
-import org.screamingsandals.lib.gamecore.store.GameStore;
 
 import static org.screamingsandals.lib.gamecore.language.GameLanguage.mpr;
 
@@ -18,7 +17,6 @@ public class GameBuilder extends org.screamingsandals.lib.gamecore.core.GameBuil
             mpr("game-builder.created")
                     .replace("%game%", arenaName)
                     .send(player);
-
 
             storeListener = new StoreListener(gameFrame);
             GameCore.registerListener(storeListener);
@@ -52,10 +50,6 @@ public class GameBuilder extends org.screamingsandals.lib.gamecore.core.GameBuil
 
     public void addTeam(GameTeam gameTeam) {
         gameFrame.getTeams().add(gameTeam);
-    }
-
-    public void addShop(GameStore gameStore) {
-        gameFrame.getStores().add(gameStore);
     }
 
     private void checkWhatsWrong(CommandSender sender) {

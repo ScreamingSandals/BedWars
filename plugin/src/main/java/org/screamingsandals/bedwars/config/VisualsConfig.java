@@ -5,6 +5,7 @@ import org.screamingsandals.lib.config.DefaultConfigBuilder;
 import java.io.File;
 
 public class VisualsConfig extends org.screamingsandals.lib.gamecore.config.VisualsConfig {
+    public static String PATH_SCOREBOARDS_CUSTOM_ENABLED = "scoreboards.custom.enabled";
 
     public VisualsConfig(File configFile) {
         super(configFile);

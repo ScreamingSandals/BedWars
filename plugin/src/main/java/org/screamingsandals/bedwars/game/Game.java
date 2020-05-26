@@ -6,10 +6,12 @@ import org.screamingsandals.bedwars.game.cycle.MultiGameCycle;
 import org.screamingsandals.bedwars.game.cycle.SingleGameBungeeCycle;
 import org.screamingsandals.bedwars.game.phase.LoadingPhase;
 import org.screamingsandals.bedwars.game.phase.WaitingPhase;
+import org.screamingsandals.bedwars.visuals.Scoreboards;
 import org.screamingsandals.lib.gamecore.GameCore;
 import org.screamingsandals.lib.gamecore.core.GameFrame;
 import org.screamingsandals.lib.gamecore.core.GameState;
 import org.screamingsandals.lib.gamecore.core.cycle.GameCycle;
+import org.screamingsandals.lib.gamecore.player.GamePlayer;
 
 import java.util.Optional;
 
@@ -68,5 +70,15 @@ public class Game extends GameFrame {
         }
 
         return Optional.of(toReturn);
+    }
+
+    @Override
+    protected void createScoreboards(GamePlayer gamePlayer) {
+        final var uuid = gamePlayer.getUuid();
+        scoreboardManager.saveScoreboard(uuid, Scoreboards.ContentBuilder.get(uuid, GameState.WAITING));
+        scoreboardManager.saveScoreboard(uuid, Scoreboards.ContentBuilder.get(uuid, GameState.PRE_GAME_COUNTDOWN));
+        scoreboardManager.saveScoreboard(uuid, Scoreboards.ContentBuilder.get(uuid, GameState.IN_GAME));
+        scoreboardManager.saveScoreboard(uuid, Scoreboards.ContentBuilder.get(uuid, GameState.DEATHMATCH));
+        scoreboardManager.saveScoreboard(uuid, Scoreboards.ContentBuilder.get(uuid, GameState.AFTER_GAME_COUNTDOWN));
     }
 }
