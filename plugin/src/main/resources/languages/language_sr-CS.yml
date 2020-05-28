@@ -1,0 +1,220 @@
+---
+language_code: "en"
+language_name: "English"
+prefix: "&7[&bS&c&lBed&f&lWars&7]&r"
+core:
+  errors:
+    game-core: "&cSomething went wrong with the GameCore instance. &a&lPlease report this error log to GitHub or Discord!"
+    game-shop: "&cYour shop configuration is invalid. Please check validity of your current file."
+    game-loading: "&c&lOh, damn. &cLoading the arena file failed. &a&lPlease report this error log to GitHub or Discord!"
+    game-world-does-not-exists: "&eGame world for game %gameName% &cis not defined!"
+    lobby-world-does-not-exists: "&eLobby world for game %gameName% &cis not defined!"
+    game-already-created: "&cGame &e%gameName% &calready exists! Use &ldifferent &cname."
+    game-does-not-exists: "&cThat game does not exists. Bad name?"
+    spectator-spawn-not-set: "&cSpectator spawn for the game %gameName% is not set!"
+  state:
+    LOADING: "&6Loading"
+    WAITING: "&aWaiting"
+    PRE_GAME_COUNTDOWN: "&aStarting"
+    IN_GAME: "&bIn game"
+    DEATHMATCH: "&cDeathmatch"
+    AFTER_GAME_COUNTDOWN: "&6Finishing"
+    RESTART: "&6Restarting"
+    MAINTENANCE: "&4Maintenance"
+    CUSTOM: "&6Custom"
+    DISABLED: "&4Disabled"
+  materials:
+    bronze: "&4Bronzeee"
+    iron: "&7Iron"
+    gold: "&6Gold"
+    diamond: "&bDiamond"
+general:
+  errors:
+    invalid-boolean-value: "&cValue &e%enteredValue%&c is invalid. Use &etrue &cor &efalse!"
+    invalid-number: "&cUh, that's bad. &e%entry% &cis &lnot&c valid number!"
+    invalid-team: "&cTeam &e%team% &cdoes not exists."
+    invalid-spawner-type: "&e%type% &cis invalid spawner type!"
+    not-enough-args: "&cYou did not provided enough arguments."
+    unknown-parameter: "&cCan't do this, that parameter does not exists."
+    different-world: "&cCan't do, you are trying to set this into different world."
+    outside-of-the-border: "&cThis stuff needs to be inside the game border. &eUnderstand?"
+    invalid-game: "&cGame &e%gameName%&c does not exists!"
+    no-game-found: "&cNo game has been found."
+  null-translated: "None"
+  booleans:
+    true: "True"
+    false: "False"
+  infinity: "Infinity"
+  time-units:
+    tick: "Tick"
+    ticks: "Tick"
+    second: "Second"
+    seconds: "Seconds"
+    minute: "Minute"
+    minutes: "Minutes"
+game-builder:
+  check-integrity:
+    errors:
+      not-created-yet: "&cYou have not created the game yet."
+      not-enough-teams: "&cYou don't have enough teams added. Please add at least &e2 &cteams."
+      not-enough-teams-line2: "&cThere are &e%count% &cteams ready."
+      not-enough-stores: "&cWell well, you need at least &e1 &cstore added."
+      game-world-does-not-exists: "&cOh my, game-world is not set. Define positions or set game world."
+      game-world-position-not-set: "&cOh my, position%whatPosition% is not set. Define it!"
+      game-world-spectator-not-set: "&cSpectator spawn is not set. &lDo it!"
+      lobby-world-not-set: "&cOh my, lobby-world is not set. Define spawn or set lobby world!"
+      lobby-world-spawn-not-set: "&cOh my, lobby spawn is not set. &lDo it!"
+  created: "&aGame &e%game% &ahas been created! &lYAY!"
+  store:
+    why-are-you-punching-your-shop: "&c&lSTOP! &eDon't punch me &6:("
+  spawners:
+    hologram:
+      - "&eSpawner: %color%%type%&f, &eMaterial: &f%mat%"
+      - "&f%spawnAmount% &eitem per &f%time-unit%"
+      - "&eTeam: &f%team%"
+      - " spawned resources: &f%amount%"
+      - " enabled: &f%booleanValue%"
+    editor:
+      started:
+        - "&aSpawner editor has been opened!"
+        - "&aType &e/sbw sedit &aif you don't know what to do. &l:)"
+      already-active:
+        - "&cSpawner editor is already active."
+        - "&eType &a/sbw sedit exit &eto exit without saving"
+        - "&eor &a/sbw sedit save &eto save changes."
+      nothing-active:
+        - "&cSpawner editor not found."
+        - "&eRight-click on some spawner to enter edit mode."
+      changed: "&aValue &e%value% &awas changed to &e%newValue%"
+      invalid-value: "&cValue &e%value% &cis invalid!"
+      invalid-action:
+        - "&cThis action is invalid.."
+        - "&eYou did something wrong? Help is at &a/sbw sedit"
+      save: "&aSpawner was saved. &lYAY!"
+      exit: "&cNothing was saved. &e&lUmm :("
+      location: "&aLocation was changed to your position."
+      help:
+        - "Available actions:"
+        - "&a--> &emax-spawned <number value> &a- the max spawned amount"
+        - "&a--> &eamount <number value> &a- amount of items that are spawned"
+        - "&a--> &eperiod <number value> &a- spawning period (2 example) per time-unit"
+        - "&a--> &eteam <existing team or null> &a- links the spawner to the team"
+        - "&a--> &etime-unit <tick/seconds/minutes> &a- changes the period's time unit"
+        - "&a--> &elocation &a- changes location of the spawner"
+        - "&a--> &esave &a- saves the edited spawner"
+        - "&a--> &eexit &a- leaves editor without changes"
+scoreboards:
+  name: "%prefix%"
+  content:
+    lobby:
+      - " "
+      - "&eMap: &a%game%"
+      - " "
+      - "&fPlayers: &2%players%&f/&2%maxplayers"
+      - "&4Need more %playersToStart% players!"
+    game:
+      - " "
+      - "&eMap: &a%game%"
+      - " "
+      - "%teams%"
+    deathmatch:
+      - " "
+      - "&c&lDEATHMATCH"
+      - " "
+      - "%&eRemaining players: %players%%"
+    end-game:
+      - " "
+      - "%winnerMessage%"
+      - " "
+      - "Finished in: %time%"
+      - " "
+bossbars:
+  content:
+    lobby: "Game is starting soon! Needed players: %players%, Team: %selectedTeam%"
+    starting: "Starting in: %time%"
+    game: "Let's play! Remaining time: %time%"
+    deathmatch: "NOW LET'S SEE! Remaining time: %time%"
+    end-game: "%winnerMessage%"
+commands:
+  errors:
+    no_permissions: "&Not enough permissions for this command.. &8Sad!"
+    command_does_not_exists: "&cThis one, we don't know. Invalid command!"
+    somethings_fucked: "&cWell, execution of this command failed.. &eStrange :("
+    not_for_console: "&cConsole can't use this command.."
+  main:
+    - "by &b&lScreamingSandals&f."
+    - "&eDon't know what to do? Hit &l/bw help"
+    - "&eWhat version do you have? Hit &l/bw version"
+  base:
+    list:
+      no_arenas_found: "&cActually, no arena is available right now &e:("
+      arenas_list_header: "&lWow&a, we have &e%count% &aof arenas! Here they are!"
+      arenas_list_text: "&l&a--> &e%game_name% &a- &e%game_state%"
+    version:
+      header: "You are running on version &e%version%"
+      latest: "&a&lLatest version, yay!"
+      behind: "&cYou are &e%count% &cversions behind! &c&lEw!"
+  join:
+    success: "&aYou just joined into game &e%gameName%&a!"
+    failed: "&cYou are already in some game!"
+  leave:
+    success: "&aYou just left game &e%gameName%&a!"
+    failed: "&cYou aren't in any game."
+  admin:
+    errors:
+      not_enough_arguments: "&cYou must provide valid arena name and valid action!"
+      invalid_action: "&e%action% &eis invalid action. Please enter valid one."
+    actions:
+      edit:
+        invalid-entry:
+          - "&eYou need to be more specific.."
+          - "&eCommand should look like:"
+          - "&a/sbw admin &e%gameName% &aedit"
+        running: "&eGame is running, stopping..."
+        stopped: "&aGame has been stopped."
+        success: "&aGame &e%gameName% &ais now in edit mode."
+      add:
+        team:
+          invalid-entry:
+            - "&eYou need to be more specific.."
+            - "&eCommand should look like:"
+            - "&a/sbw admin &e%gameName% &aadd team <name> <color> <max players>"
+          invalid-color:
+            - "&cColor &e%color% &cis invalid!"
+            - "&c&lGoogle &e&n'spigot chatcolor enum'&c for more help."
+          created: "&aTeam %color%%name% &awas created!"
+          already-registered: "&cTeam &e%name% &cis already created!"
+        store:
+          invalid-entry:
+            - "&eYou need to be more specific.."
+            - "&eCommand should look like:"
+            - "&a/sbw admin &e%gameName% &aadd store <type> <name>"
+          invalid-store-type: "&cYou entered invalid store type.. &lTry again!"
+          invalid-store-file: "&cStore file &e%file% &cdoes not exists."
+          not-custom-store:
+            - "&eYou don't have enough arguments for custom store."
+            - "&eCommand should look like:"
+            - "&a/sbw admin &e%gameName% &aadd store CUSTOM <name> <team> <file>"
+          created: "&aNew game store has been created!"
+          write-custom-name: "Write shop name"
+          write-custom-file-name: "Write file name"
+        spawner:
+          invalid-entry:
+            - "&eYou need to be more specific.."
+            - "&eCommand should look like:"
+            - "&a/sbw admin &e%gameName% &aadd spawner <type>"
+      set:
+        border:
+          invalid-entry:
+            - "&eYou need to be more specific.."
+            - "&eCommand should look like:"
+            - "&a/sbw admin &e%gameName% &aset spawn &e<game or lobby> <1 or 2>"
+          done: "&aPoint &e%number%&a of the &e%type%&a border was set!"
+        spawn:
+          invalid-entry:
+            - "&eYou need to be more specific.."
+            - "&eCommand should look like:"
+            - "&a/sbw admin &e%gameName% &aset spawn &e<lobby/team/spectators>"
+          done: "&aYay! Spawn for &e%type%&a has been set!"
+      save:
+        cannot-save: "Uh oh, you missing something. Cannot save!"
