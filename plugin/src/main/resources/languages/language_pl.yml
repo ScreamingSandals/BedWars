@@ -1,10 +1,10 @@
 ---
-language_code: "en"
-language_name: "English"
+language_code: "pl"
+language_name: "Polski"
 prefix: "&7[&bS&c&lBed&f&lWars&7]&r"
 core:
   errors:
-    game-core: "&cSomething went wrong with the GameCore instance. &a&lPlease report this error log to GitHub or Discord!"
+    game-core: "&cCoś poszło nie tak z instancją GameCore. &a&lProszę zaraportuj ten error log na GitHub or Discord!\n \ncore -> errors -> game-core!"
     game-shop: "&cYour shop configuration is invalid. Please check validity of your current file."
     game-loading: "&c&lOh, damn. &cLoading the arena file failed. &a&lPlease report this error log to GitHub or Discord!"
     game-world-does-not-exists: "&eGame world for game %gameName% &cis not defined!"
@@ -156,7 +156,7 @@ commands:
       behind: "&cYou are &e%count% &cversions behind! &c&lEw!"
   join:
     success: "&aYou just joined into game &e%gameName%&a!"
-    failed: "&cYou are already in some game!"
+    failed: "&cJesteś już w innej grze!"
   leave:
     success: "&aYou just left game &e%gameName%&a!"
     failed: "&cYou aren't in any game."
