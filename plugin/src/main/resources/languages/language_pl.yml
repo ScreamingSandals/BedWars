@@ -194,27 +194,27 @@ commands:
           not-custom-store:
             - "&eNie podałeś wystarczającej ilości argumentów dla niestandardowego sklepu."
             - "&eKomenda powinna wyglądać tak jak:"
-            - "&a/sbw admin &e%gameName% &aadd store CUSTOM <name> <team> <file>"
-          created: "&aNew game store has been created!"
-          write-custom-name: "Write shop name"
-          write-custom-file-name: "Write file name"
+            - "&a/sbw admin &e%gameName% &aadd store CUSTOM <nazwa> <drużyna> <plik>"
+          created: "&aNowy sklep został utworzony!"
+          write-custom-name: "Wpisz nazwę sklepu"
+          write-custom-file-name: "Wpisz nazwę pliku"
         spawner:
           invalid-entry:
-            - "&eYou need to be more specific.."
-            - "&eCommand should look like:"
-            - "&a/sbw admin &e%gameName% &aadd spawner <type>"
+            - "&eMusisz być bardziej dokładny.."
+            - "&eKomenda powinna wyglądać tak jak:"
+            - "&a/sbw admin &e%gameName% &aadd spawner <typ>"
       set:
         border:
           invalid-entry:
-            - "&eYou need to be more specific.."
-            - "&eCommand should look like:"
-            - "&a/sbw admin &e%gameName% &aset spawn &e<game or lobby> <1 or 2>"
-          done: "&aPoint &e%number%&a of the &e%type%&a border was set!"
+            - "&eMusisz być bardziej dokładny.."
+            - "&eKomenda powinna wyglądać tak jak:"
+            - "&a/sbw admin &e%gameName% &aset spawn &e<gra lub lobby> <1 lub 2>"
+          done: "&aPunkt &e%number%&a &e%type%&a granicy został ustawiony!"
         spawn:
           invalid-entry:
-            - "&eYou need to be more specific.."
-            - "&eCommand should look like:"
+            - "&eMusisz być bardziej dokładny.."
+            - "&eKomenda powinna wyglądać tak jak:"
             - "&a/sbw admin &e%gameName% &aset spawn &e<lobby/team/spectators>"
-          done: "&aYay! Spawn for &e%type%&a has been set!"
+          done: "&aYay! Spawn dla &e%type%&a został ustawiony!"
       save:
-        cannot-save: "Uh oh, you missing something. Cannot save!"
+        cannot-save: "Uh oh, czegoś brakuje. Nie mogę zapisać!"
