@@ -1,6 +1,6 @@
 ---
 language_code: "en"
-language_name: "English"
+language_name: "Français"
 prefix: "&7[&bS&c&lBed&f&lWars&7]&r"
 core:
   errors:
@@ -156,7 +156,7 @@ commands:
       behind: "&cYou are &e%count% &cversions behind! &c&lEw!"
   join:
     success: "&aYou just joined into game &e%gameName%&a!"
-    failed: "&cYou are already in some game!"
+    failed: "&cVous êtes déjà dans une partie!"
   leave:
     success: "&aYou just left game &e%gameName%&a!"
     failed: "&cYou aren't in any game."
