@@ -576,7 +576,7 @@ public class PlayerListener implements Listener {
 
         Player player = event.getPlayer();
         if (Main.isPlayerInGame(player) && !Main.getPlayerGameProfile(player).isSpectator
-               && (!player.hasPermission("bw.bypass.flight") || Main.getConfigurator().config.getBoolean("disable-flight"))) {
+               && (!player.hasPermission("bw.bypass.flight") && Main.getConfigurator().config.getBoolean("disable-flight"))) {
             event.setCancelled(true);
         }
     }
