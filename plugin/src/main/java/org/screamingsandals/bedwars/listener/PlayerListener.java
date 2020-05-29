@@ -573,11 +573,11 @@ public class PlayerListener implements Listener {
         if (event.isCancelled()) {
             return;
         }
+
         Player player = event.getPlayer();
-        if (Main.isPlayerInGame(player)) {
-            if (!Main.getPlayerGameProfile(player).isSpectator) {
-                event.setCancelled(true);
-            }
+        if (Main.isPlayerInGame(player) && !Main.getPlayerGameProfile(player).isSpectator
+               && (!player.hasPermission("bw.bypass.flight") || Main.getConfigurator().config.getBoolean("disable-flight"))) {
+            event.setCancelled(true);
         }
     }
 
