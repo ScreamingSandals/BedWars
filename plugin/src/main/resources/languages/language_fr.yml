@@ -104,30 +104,37 @@ game-builder:
         - "&a--> &esave &a- sauvegarder le spawner édité"
         - "&a--> &eexit &a- quitter l'éditeur sans effectuer de changements"
 scoreboards:
-  name: "%prefix%"
+  name: "&bS&c&lBed&f&lWars"
   content:
     lobby:
-      - " "
-      - "&aCarte : &a%game%"
-      - " "
-      - "&fJoueurs: &2%players%&f/&2%maxplayers"
-      - "&4Nécéssite encore %playersToStart% joueurs !"
+      - "&eMap: &a%gameName%"
+      - ""
+      - "&fPlayers: &a%playersCount%&f/&a%maxPlayers%"
+      - ""
+      - "&cNeed &a&l%remainingPlayersToJoin%&c more players!"
+    starting:
+      - "&eMap: &a%gameName%"
+      - ""
+      - "&aStarting in &e%timeToStart%"
+      - ""
+      - "&fPlayers: &a%playersCount%&f/&a%maxPlayers%"
     game:
-      - " "
-      - "&eCarte: &a%game%"
-      - " "
+      - "%remainingTime%"
+      - ""
+      - "&eMap: &a%gameName%"
+      - ""
       - "%teams%"
     deathmatch:
-      - " "
+      - ""
       - "&c&lMATCH À MORT"
-      - " "
+      - ""
       - "%&eJoueurs restants: %players%%"
-    end-game:
-      - " "
+    end_game:
+      - ""
       - "%winnerMessage%"
-      - " "
-      - "Fin dans: %time%"
-      - " "
+      - ""
+      - "Finished in: %time%"
+      - ""
 bossbars:
   content:
     lobby: "La partie démarre bientôt ! Joueurs nécessaires: %players%, Équipe: %selectedTeam%"
