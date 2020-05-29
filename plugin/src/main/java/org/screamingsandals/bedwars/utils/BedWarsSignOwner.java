@@ -28,35 +28,38 @@ public class BedWarsSignOwner implements SignOwner {
 		String name = sign.getName();
 		if (Main.isGameExists(name)) {
 			new BukkitRunnable() {
-				
+
 				@Override
 				public void run() {
 					Main.getGame(name).updateSigns();
 				}
 			}.runTask(Main.getInstance());
 		} else if ("leave".equalsIgnoreCase(name)) {
-			updateLeaveSign(sign);
+			new BukkitRunnable() {
+
+				@Override
+				public void run() {
+					updateLeaveSign(sign);
+				}
+			}.runTask(Main.getInstance());
 		}
 	}
 
 	private void updateLeaveSign(SignBlock sign) {
+		System.out.println("Updating the leave sign");
 		List<String> texts = new ArrayList<>(Main.getConfigurator().config.getStringList("sign"));
 
-		for (int i = 0; i < texts.size(); i++) {
-			String text = texts.get(i);
-			texts.set(i, text.replaceAll("%arena%", i18n("leave_from_game_item")).replaceAll("%status%", "")
-					.replaceAll("%players%", ""));
-		}
+		Block block = sign.getLocation().getBlock();
+		if (block.getState() instanceof Sign) {
+			Sign state = (Sign) block.getState();
 
-		if (sign.getLocation().getChunk().isLoaded()) {
-			Block block = sign.getLocation().getBlock();
-			if (block.getState() instanceof Sign) {
-				Sign state = (Sign) block.getState();
-				for (int i = 0; i < texts.size() && i < 4; i++) {
-					state.setLine(i, texts.get(i));
-				}
-				state.update();
+			for (int i = 0; i < texts.size(); i++) {
+				String text = texts.get(i);
+				state.setLine(i, text.replaceAll("%arena%", i18nonly("leave_from_game_item")).replaceAll("%status%", "")
+						.replaceAll("%players%", ""));
 			}
+
+			state.update();
 		}
 	}
 
