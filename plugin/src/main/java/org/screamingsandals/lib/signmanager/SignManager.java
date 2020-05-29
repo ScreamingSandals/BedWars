@@ -44,6 +44,7 @@ public class SignManager {
                 }
                 Location loc = (Location) c.get("location");
                 signs.put(loc, new SignBlock(loc, name));
+                owner.updateSign(signs.get(loc));
             }
         }
     }
