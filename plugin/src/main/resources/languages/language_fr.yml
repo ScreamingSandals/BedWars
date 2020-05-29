@@ -57,12 +57,12 @@ game-builder:
     errors:
       not-created-yet: "&cVous n'avez pas encore crée la partie pour le moment."
       not-enough-teams: "&cVous n'avez pas ajouté assez d'équipes. Veuillez au minimum en ajouter &e2&c."
-      not-enough-teams-line2: "&cThere are &e%count% &cteams ready."
-      not-enough-stores: "&cWell well, you need at least &e1 &cstore added."
-      game-world-does-not-exists: "&cOh my, game-world is not set. Define positions or set game world."
-      game-world-position-not-set: "&cOh my, position%whatPosition% is not set. Define it!"
-      game-world-spectator-not-set: "&cSpectator spawn is not set. &lDo it!"
-      lobby-world-not-set: "&cOh my, lobby-world is not set. Define spawn or set lobby world!"
+      not-enough-teams-line2: "&cIl y a &e%count% &céquipes prêtes."
+      not-enough-stores: "&cBon, vous devez au minimum ajouter &e1 &cboutique."
+      game-world-does-not-exists: "&cOh mon dieu, le monde de la partie n'est pas défini. Veuillez définir les positions des bordures ou définir un monde."
+      game-world-position-not-set: "&cOn mon dieu, la position %whatPosition% n'est pas définie. Veuillez la définir !"
+      game-world-spectator-not-set: "&cLe point d'apparition des spectateurs n'est pas défini. &lVeuillez le définir !"
+      lobby-world-not-set: "&cOh mon dieu, le monde du lobby n'est pas défini. Veuillez définir un point d'apparition ou définir le monde du lobby !"
       lobby-world-spawn-not-set: "&cOh my, lobby spawn is not set. &lDo it!"
   created: "&aGame &e%game% &ahas been created! &lYAY!"
   store:
@@ -142,54 +142,54 @@ commands:
     somethings_fucked: "&cWell, execution of this command failed.. &eStrange :("
     not_for_console: "&cConsole can't use this command.."
   main:
-    - "by &b&lScreamingSandals&f."
-    - "&eDon't know what to do? Hit &l/bw help"
-    - "&eWhat version do you have? Hit &l/bw version"
+    - "par &b&lScreamingSandals&f."
+    - "&eVous ne s'avez pas par quoi commencer ? Faites la commande &l/bw help"
+    - "&eQuelle version avez-vous ? Faites la commande &l/bw version"
   base:
     list:
-      no_arenas_found: "&cActually, no arena is available right now &e:("
-      arenas_list_header: "&lWow&a, we have &e%count% &aof arenas! Here they are!"
+      no_arenas_found: "&cActuellement, aucune arène disponible pour le moment &e:("
+      arenas_list_header: "&lWow&a, nous avons &e%count% &aarènes ! Les voici !"
       arenas_list_text: "&l&a--> &e%game_name% &a- &e%game_state%"
     version:
-      header: "You are running on version &e%version%"
-      latest: "&a&lLatest version, yay!"
-      behind: "&cYou are &e%count% &cversions behind! &c&lEw!"
+      header: "Vous êtes sous la version &e%version%"
+      latest: "&a&lVous êtes sous la dernière version, yay !"
+      behind: "&cVous êtes en retard de &e%count% &cversions ! &c&lEw !"
   join:
-    success: "&aYou just joined into game &e%gameName%&a!"
+    success: "&aVous venez de rejoindre la partie &e%gameName% &a!"
     failed: "&cVous êtes déjà dans une partie!"
   leave:
-    success: "&aYou just left game &e%gameName%&a!"
-    failed: "&cYou aren't in any game."
+    success: "&aVous venez de quitter la partie &e%gameName% &a!"
+    failed: "&cVous n'êtes pas en jeu."
   admin:
     errors:
-      not_enough_arguments: "&cYou must provide valid arena name and valid action!"
-      invalid_action: "&e%action% &eis invalid action. Please enter valid one."
+      not_enough_arguments: "&cVous devez fournir un nom d'arène valide et une action valide !"
+      invalid_action: "&eL'action %action% n'est pas valide. Veuillez en entrer une qui l'est."
     actions:
       edit:
         invalid-entry:
-          - "&eYou need to be more specific.."
-          - "&eCommand should look like:"
+          - "&eVous devez être plus précis.."
+          - "&eLa commande devrait ressembler à ça :"
           - "&a/sbw admin &e%gameName% &aedit"
-        running: "&eGame is running, stopping..."
-        stopped: "&aGame has been stopped."
-        success: "&aGame &e%gameName% &ais now in edit mode."
+        running: "&eLa partie est en cours, arrêt en cours..."
+        stopped: "&aLa partie a été arrêtée."
+        success: "&aLa partie &e%gameName% &aest désormais en mode édition."
       add:
         team:
           invalid-entry:
-            - "&eYou need to be more specific.."
-            - "&eCommand should look like:"
+            - "&eVous devez être plus précis.."
+            - "&eLa commande devrait ressembler à ça :"
             - "&a/sbw admin &e%gameName% &aadd team <name> <color> <max players>"
           invalid-color:
-            - "&cColor &e%color% &cis invalid!"
-            - "&c&lGoogle &e&n'spigot chatcolor enum'&c for more help."
-          created: "&aTeam %color%%name% &awas created!"
-          already-registered: "&cTeam &e%name% &cis already created!"
+            - "&cLa couleur &e%color% &cn'est pas valide !"
+            - "&cCherchez sur &lGoogle &e&n'spigot chatcolor enum' &cpour plus d'aide."
+          created: "&aL'équipe %color%%name% &aa été crée !"
+          already-registered: "&cL'équipe &e%name% &cexiste déjà !"
         store:
           invalid-entry:
-            - "&eYou need to be more specific.."
-            - "&eCommand should look like:"
+            - "&eVous devez être plus précis.."
+            - "&eLa commande devrait ressembler à ça :"
             - "&a/sbw admin &e%gameName% &aadd store <type> <name>"
-          invalid-store-type: "&cYou entered invalid store type.. &lTry again!"
+          invalid-store-type: "&cVous avez entré un nom de boutique invalide... &lEssayez encore !"
           invalid-store-file: "&cStore file &e%file% &cdoes not exists."
           not-custom-store:
             - "&eYou don't have enough arguments for custom store."
