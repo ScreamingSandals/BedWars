@@ -62,8 +62,8 @@ game-builder:
       game-world-does-not-exists: "&cО нет, главный мир для игры не задан. Определите позиции или игровой мир."
       game-world-position-not-set: "&cО нет, позиция %whatPosition% не определена. Задайте её!"
       game-world-spectator-not-set: "&cТочка появления наблюдателей не задана."
-      lobby-world-not-set: "&cО нет, вы не задали лобби ожидания!"
-      lobby-world-spawn-not-set: "&cOh my, lobby spawn is not set. &lDo it!"
+      lobby-world-not-set: "&cО нет, вы не задали мир для лобби ожидания!"
+      lobby-world-spawn-not-set: "&cО нет, вы не задали точку возрождения в лобби ожидания!"
   created: "&aGame &e%game% &ahas been created! &lYAY!"
   store:
     why-are-you-punching-your-shop: "&c&lХВАТИТ! &eХорош бить меня &6:("
