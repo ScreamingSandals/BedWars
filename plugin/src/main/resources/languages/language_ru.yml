@@ -64,14 +64,14 @@ game-builder:
       game-world-spectator-not-set: "&cТочка появления наблюдателей не задана."
       lobby-world-not-set: "&cО нет, вы не задали мир для лобби ожидания!"
       lobby-world-spawn-not-set: "&cО нет, вы не задали точку возрождения в лобби ожидания!"
-  created: "&aGame &e%game% &ahas been created! &lYAY!"
+  created: "&aИгра &e%game% &aбыла создана! &lъеь!"
   store:
     why-are-you-punching-your-shop: "&c&lХВАТИТ! &eХорош бить меня &6:("
   spawners:
     hologram:
-      - "&eSpawner: %color%%type%&f, &eMaterial: &f%mat%"
-      - "&f%spawnAmount% &eitem per &f%time-unit%"
-      - "&eTeam: &f%team%"
+      - "&eГенератор: %color%%type%&f, &eРесурс: &f%mat%"
+      - "&f%spawnAmount% &eпредметов в &f%time-unit%"
+      - "&eКоманда: &f%team%"
       - " spawned resources: &f%amount%"
       - " enabled: &f%booleanValue%"
     editor:
