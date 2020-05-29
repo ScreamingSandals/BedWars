@@ -6,7 +6,7 @@ core:
   errors:
     game-core: "&cС GameCore произошла ошибка. &a&lПожалуйста, сообщите об этом через Github или Discord!"
     game-shop: "&cФайл конфигурации магазина неверен. Пожалуйста, проверьте его на правильность."
-    game-loading: "&c&lOh, damn. &cLoading the arena file failed. &a&lPlease report this error log to GitHub or Discord!"
+    game-loading: "&c&lВот те на! &cНе удалось загрузить арену. &a&lПожалуйста, сообщите об этом через Github или Discord!"
     game-world-does-not-exists: "&eGame world for game %gameName% &cis not defined!"
     lobby-world-does-not-exists: "&eLobby world for game %gameName% &cis not defined!"
     game-already-created: "&cGame &e%gameName% &calready exists! Use &ldifferent &cname."
