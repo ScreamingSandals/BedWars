@@ -190,31 +190,31 @@ commands:
             - "&eLa commande devrait ressembler à ça :"
             - "&a/sbw admin &e%gameName% &aadd store <type> <name>"
           invalid-store-type: "&cVous avez entré un nom de boutique invalide... &lEssayez encore !"
-          invalid-store-file: "&cStore file &e%file% &cdoes not exists."
+          invalid-store-file: "&cLe fichier de la boutique &e%file% &cn'existe pas."
           not-custom-store:
-            - "&eYou don't have enough arguments for custom store."
-            - "&eCommand should look like:"
+            - "&eVous n'avez pas assez d'arguments pour la boutique personnalisée."
+            - "&eLa commande devrait ressembler à ça :"
             - "&a/sbw admin &e%gameName% &aadd store CUSTOM <name> <team> <file>"
-          created: "&aNew game store has been created!"
-          write-custom-name: "Write shop name"
-          write-custom-file-name: "Write file name"
+          created: "&aLa nouvelle boutique a été crée !"
+          write-custom-name: "Écrivez un nom pour la boutique"
+          write-custom-file-name: "Écrivez un nom pour le fichier"
         spawner:
           invalid-entry:
-            - "&eYou need to be more specific.."
-            - "&eCommand should look like:"
+            - "&eVous devez être plus précis.."
+            - "&eLa commande devrait ressembler à ça :"
             - "&a/sbw admin &e%gameName% &aadd spawner <type>"
       set:
         border:
           invalid-entry:
-            - "&eYou need to be more specific.."
-            - "&eCommand should look like:"
+            - "&eVous devez être plus précis.."
+            - "&eLa commande devrait ressembler à ça :"
             - "&a/sbw admin &e%gameName% &aset spawn &e<game or lobby> <1 or 2>"
-          done: "&aPoint &e%number%&a of the &e%type%&a border was set!"
+          done: "&aLe point &e%number% &ade la bordure &e%type% &aa été défini !"
         spawn:
           invalid-entry:
-            - "&eYou need to be more specific.."
-            - "&eCommand should look like:"
+            - "&eVous devez être plus précis.."
+            - "&eLa commande devrait ressembler à ça :"
             - "&a/sbw admin &e%gameName% &aset spawn &e<lobby/team/spectators>"
-          done: "&aYay! Spawn for &e%type%&a has been set!"
+          done: "&aYay ! Le point d'apparition pour &e%type% &aa été défini !"
       save:
-        cannot-save: "Uh oh, you missing something. Cannot save!"
+        cannot-save: "Oh oh, vous avez manqué quelque chose. Il est impossible de sauvegarder !"
