@@ -133,7 +133,7 @@ scoreboards:
       - ""
       - "%winnerMessage%"
       - ""
-      - "Finished in: %time%"
+      - "Fini dans: %time%"
       - ""
 bossbars:
   content:
