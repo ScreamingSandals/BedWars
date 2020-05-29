@@ -1,8 +1,11 @@
 package org.screamingsandals.bedwars.utils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.bukkit.block.Block;
+import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.screamingsandals.bedwars.Main;
@@ -31,6 +34,29 @@ public class BedWarsSignOwner implements SignOwner {
 					Main.getGame(name).updateSigns();
 				}
 			}.runTask(Main.getInstance());
+		} else if ("leave".equalsIgnoreCase(name)) {
+			updateLeaveSign(sign);
+		}
+	}
+
+	private void updateLeaveSign(SignBlock sign) {
+		List<String> texts = new ArrayList<>(Main.getConfigurator().config.getStringList("sign"));
+
+		for (int i = 0; i < texts.size(); i++) {
+			String text = texts.get(i);
+			texts.set(i, text.replaceAll("%arena%", i18n("leave_from_game_item")).replaceAll("%status%", "")
+					.replaceAll("%players%", ""));
+		}
+
+		if (sign.getLocation().getChunk().isLoaded()) {
+			Block block = sign.getLocation().getBlock();
+			if (block.getState() instanceof Sign) {
+				Sign state = (Sign) block.getState();
+				for (int i = 0; i < texts.size() && i < 4; i++) {
+					state.setLine(i, texts.get(i));
+				}
+				state.update();
+			}
 		}
 	}
 
