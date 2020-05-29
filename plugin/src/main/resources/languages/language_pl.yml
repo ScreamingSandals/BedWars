@@ -104,30 +104,37 @@ game-builder:
         - "&a--> &esave &a- zapisuje edytowany spawner"
         - "&a--> &eexit &a-upuszcza edytor bez wprowadzania zmian"
 scoreboards:
-  name: "%prefix%"
+  name: "&bS&c&lBed&f&lWars"
   content:
     lobby:
-      - " "
-      - "&eMapa: &a%game%"
-      - " "
-      - "&fGracze: &2%players%&f/&2%maxplayers"
-      - "&4Potrzeba więcej %playersToStart% graczy!"
+      - "&eMap: &a%gameName%"
+      - ""
+      - "&fPlayers: &a%playersCount%&f/&a%maxPlayers%"
+      - ""
+      - "&cNeed &a&l%remainingPlayersToJoin%&c more players!"
+    starting:
+      - "&eMap: &a%gameName%"
+      - ""
+      - "&aStarting in &e%timeToStart%"
+      - ""
+      - "&fPlayers: &a%playersCount%&f/&a%maxPlayers%"
     game:
-      - " "
-      - "&eMapa: &a%game%"
-      - " "
+      - "%remainingTime%"
+      - ""
+      - "&eMap: &a%gameName%"
+      - ""
       - "%teams%"
     deathmatch:
-      - " "
+      - ""
       - "&c&lDEATHMATCH"
-      - " "
+      - ""
       - "%&ePozostało graczy: %players%%"
-    end-game:
-      - " "
+    end_game:
+      - ""
       - "%winnerMessage%"
-      - " "
-      - "Koniec za: %time%"
-      - " "
+      - ""
+      - "Finished in: %time%"
+      - ""
 bossbars:
   content:
     lobby: "Gra wkrótce się rozpocznie! Potrzebuję graczy: %players%, Drużyn: %selectedTeam%"
