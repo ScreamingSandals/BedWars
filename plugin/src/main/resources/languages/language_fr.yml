@@ -4,7 +4,7 @@ language_name: "Français"
 prefix: "&7[&bS&c&lBed&f&lWars&7]&r"
 core:
   errors:
-    game-core: "&cSomething went wrong with the GameCore instance. &a&lPlease report this error log to GitHub or Discord!"
+    game-core: "&cUne erreur est survenue avec l'instance GameCore. &a&lVeuillez signaler celle-ci sur GitHub ou Discord !"
     game-shop: "&cYour shop configuration is invalid. Please check validity of your current file."
     game-loading: "&c&lOh, damn. &cLoading the arena file failed. &a&lPlease report this error log to GitHub or Discord!"
     game-world-does-not-exists: "&eGame world for game %gameName% &cis not defined!"
