@@ -561,44 +561,54 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 					.replace("maxplayers", calculatedMaxPlayers)
 					.send(getConnectedPlayers());
 
-			gamePlayer.teleport(lobbySpawn);
-			SpawnEffects.spawnEffect(this, gamePlayer.player, "game-effects.lobbyjoin");
+			final BukkitRunnable joinTask = new BukkitRunnable() {
+				@Override
+				public void run() {
+					SpawnEffects.spawnEffect(Game.this, gamePlayer.player, "game-effects.lobbyjoin");
 
-			if (getOriginalOrInheritedJoinRandomTeamOnJoin()) {
-				joinRandomTeam(gamePlayer);
-			}
+					if (getOriginalOrInheritedJoinRandomTeamOnJoin()) {
+						joinRandomTeam(gamePlayer);
+					}
 
-			if (getOriginalOrInheritedCompassEnabled()) {
-				int compassPosition = Main.getConfigurator().config.getInt("hotbar.selector", 0);
-				if (compassPosition >= 0 && compassPosition <= 8) {
-					ItemStack compass = Main.getConfigurator().readDefinedItem("jointeam", "COMPASS");
-					ItemMeta metaCompass = compass.getItemMeta();
-					metaCompass.setDisplayName(i18n("compass_selector_team", false));
-					compass.setItemMeta(metaCompass);
-					gamePlayer.player.getInventory().setItem(compassPosition, compass);
+					if (getOriginalOrInheritedCompassEnabled()) {
+						int compassPosition = Main.getConfigurator().config.getInt("hotbar.selector", 0);
+						if (compassPosition >= 0 && compassPosition <= 8) {
+							ItemStack compass = Main.getConfigurator().readDefinedItem("jointeam", "COMPASS");
+							ItemMeta metaCompass = compass.getItemMeta();
+							metaCompass.setDisplayName(i18n("compass_selector_team", false));
+							compass.setItemMeta(metaCompass);
+							gamePlayer.player.getInventory().setItem(compassPosition, compass);
+						}
+					}
+
+					int leavePosition = Main.getConfigurator().config.getInt("hotbar.leave", 8);
+					if (leavePosition >= 0 && leavePosition <= 8) {
+						ItemStack leave = Main.getConfigurator().readDefinedItem("leavegame", "SLIME_BALL");
+						ItemMeta leaveMeta = leave.getItemMeta();
+						leaveMeta.setDisplayName(i18n("leave_from_game_item", false));
+						leave.setItemMeta(leaveMeta);
+						gamePlayer.player.getInventory().setItem(leavePosition, leave);
+					}
+
+					if (gamePlayer.player.hasPermission("bw.vip.startitem")
+							|| gamePlayer.player.hasPermission("misat11.bw.vip.startitem")) {
+						int vipPosition = Main.getConfigurator().config.getInt("hotbar.start", 1);
+						if (vipPosition >= 0 && vipPosition <= 8) {
+							ItemStack startGame = Main.getConfigurator().readDefinedItem("startgame", "DIAMOND");
+							ItemMeta startGameMeta = startGame.getItemMeta();
+							startGameMeta.setDisplayName(i18n("start_game_item", false));
+							startGame.setItemMeta(startGameMeta);
+
+							gamePlayer.player.getInventory().setItem(vipPosition, startGame);
+						}
+					}
 				}
-			}
+			};
 
-			int leavePosition = Main.getConfigurator().config.getInt("hotbar.leave", 8);
-			if (leavePosition >= 0 && leavePosition <= 8) {
-				ItemStack leave = Main.getConfigurator().readDefinedItem("leavegame", "SLIME_BALL");
-				ItemMeta leaveMeta = leave.getItemMeta();
-				leaveMeta.setDisplayName(i18n("leave_from_game_item", false));
-				leave.setItemMeta(leaveMeta);
-				gamePlayer.player.getInventory().setItem(leavePosition, leave);
-			}
-
-			if (gamePlayer.player.hasPermission("bw.vip.startitem")
-					|| gamePlayer.player.hasPermission("misat11.bw.vip.startitem")) {
-				int vipPosition = Main.getConfigurator().config.getInt("hotbar.start", 1);
-				if (vipPosition >= 0 && vipPosition <= 8) {
-					ItemStack startGame = Main.getConfigurator().readDefinedItem("startgame", "DIAMOND");
-					ItemMeta startGameMeta = startGame.getItemMeta();
-					startGameMeta.setDisplayName(i18n("start_game_item", false));
-					startGame.setItemMeta(startGameMeta);
-
-					gamePlayer.player.getInventory().setItem(vipPosition, startGame);
-				}
+			if (gamePlayer.teleport(lobbySpawn)) {
+				joinTask.runTaskLater(Main.getInstance(), 1L);
+			} else {
+				joinTask.runTaskLater(Main.getInstance(), 10L);
 			}
 
 			if (isEmpty) {

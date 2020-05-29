@@ -144,8 +144,8 @@ public class GamePlayer {
         this.player.updateInventory();
     }
 
-    public void teleport(Location location) {
-    	PlayerUtils.teleportPlayer(player, location);
+    public boolean teleport(Location location) {
+    	return PlayerUtils.teleportPlayer(player, location);
     }
 
 }

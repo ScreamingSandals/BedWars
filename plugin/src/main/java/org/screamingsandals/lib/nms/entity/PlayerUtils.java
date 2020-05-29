@@ -40,11 +40,12 @@ public class PlayerUtils {
 		}
 	}
 
-	public static void teleportPlayer(Player player, Location location) {
+	public static boolean teleportPlayer(Player player, Location location) {
 		try {
-			player.teleportAsync(location);
+			return player.teleportAsync(location).isDone();
 		} catch (Throwable t) {
 			player.teleport(location);
+			return true;
 		}
 	}
 }
