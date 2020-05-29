@@ -55,7 +55,12 @@ public class GameStore {
      */
     public LivingEntity spawn() {
         if (entity == null) {
-            entity = (LivingEntity) loc.getWorld().spawnEntity(loc, type, CreatureSpawnEvent.SpawnReason.CUSTOM);
+            try {
+                entity = (LivingEntity) loc.getWorld().spawnEntity(loc, type, CreatureSpawnEvent.SpawnReason.CUSTOM);
+            } catch (Throwable throwable) {
+                entity = (LivingEntity) loc.getWorld().spawnEntity(loc, type);
+            }
+
             entity.setRemoveWhenFarAway(false);
 
             if (enableCustomName) {
