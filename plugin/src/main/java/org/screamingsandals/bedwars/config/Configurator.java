@@ -159,7 +159,7 @@ public class Configurator {
         
         checkOrSetConfig(modify, "shop.rows", 4);
         checkOrSetConfig(modify, "shop.render-actual-rows", 6);
-        checkOrSetConfig(modify, "shop.render-offset", 6);
+        checkOrSetConfig(modify, "shop.render-offset", 9);
         checkOrSetConfig(modify, "shop.render-header-start", 0);
         checkOrSetConfig(modify, "shop.render-footer-start", 45);
         checkOrSetConfig(modify, "shop.items-on-row", 9);
