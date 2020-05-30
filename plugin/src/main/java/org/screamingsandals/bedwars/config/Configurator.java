@@ -157,7 +157,7 @@ public class Configurator {
         checkOrSetConfig(modify, "title.stay", 20);
         checkOrSetConfig(modify, "title.fadeOut", 0);
         
-        checkOrSetConfig(modify, "shop.rows", 6);
+        checkOrSetConfig(modify, "shop.rows", 4);
         checkOrSetConfig(modify, "shop.render-actual-rows", 6);
         checkOrSetConfig(modify, "shop.render-offset", 6);
         checkOrSetConfig(modify, "shop.render-header-start", 0);
