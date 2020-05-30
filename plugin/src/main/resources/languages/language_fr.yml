@@ -115,13 +115,13 @@ scoreboards:
     starting:
       - "&eCarte: &a%gameName%"
       - ""
-      - "&aStarting in &e%timeToStart%"
+      - "&aDémarrage dans &e%timeToStart%"
       - ""
-      - "&fPlayers: &a%playersCount%&f/&a%maxPlayers%"
+      - "&fJoueurs: &a%playersCount%&f/&a%maxPlayers%"
     game:
       - "%remainingTime%"
       - ""
-      - "&eMap: &a%gameName%"
+      - "&eCarte: &a%gameName%"
       - ""
       - "%teams%"
     deathmatch:
