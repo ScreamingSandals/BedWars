@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.screamingsandals.bedwars.Main;
@@ -66,12 +67,21 @@ public class ShopInventory implements Listener {
 
 		ItemStack cosmeticItem = Main.getConfigurator().readDefinedItem("shopcosmetic", "AIR");
 		options.setCosmeticItem(cosmeticItem);
-
-		options.setRender_actual_rows(Main.getConfigurator().config.getInt("secretShopSetRows", 6));
+        
+        options.setRows(Main.getConfigurator().config.getInt("shop.rows", 6));
+		options.setRender_actual_rows(Main.getConfigurator().config.getInt("shop.render-actual-rows", 6));
+		options.setRender_offset(Main.getConfigurator().config.getInt("shop.render-offset", 9));
+		options.setRender_header_start(Main.getConfigurator().config.getInt("shop.render-header-start", 0));
+		options.setRender_footer_start(Main.getConfigurator().config.getInt("shop.render-footer-start", 45));
+		options.setItems_on_row(Main.getConfigurator().config.getInt("shop.items-on-row", 9));
+		options.setShowPageNumber(Main.getConfigurator().config.getBoolean("shop.show-page-numbers", true));
+		options.setInventoryType(InventoryType.valueOf(Main.getConfigurator().config.getString("shop.inventory-type", "CHEST")));
+		
 		options.setPrefix(i18nonly("item_shop_name", "[BW] Shop"));
 		options.setGenericShop(true);
 		options.setGenericShopPriceTypeRequired(true);
 		options.setAnimationsEnabled(true);
+		
 		options.registerPlaceholder("team", (key, player, arguments) -> {
 			GamePlayer gPlayer = Main.getPlayerGameProfile(player);
 			CurrentTeam team = gPlayer.getGame().getPlayerTeam(gPlayer);
