@@ -68,7 +68,7 @@ public class ShopInventory implements Listener {
 		ItemStack cosmeticItem = Main.getConfigurator().readDefinedItem("shopcosmetic", "AIR");
 		options.setCosmeticItem(cosmeticItem);
         
-        options.setRows(Main.getConfigurator().config.getInt("shop.rows", 6));
+		options.setRows(Main.getConfigurator().config.getInt("shop.rows", 6));
 		options.setRender_actual_rows(Main.getConfigurator().config.getInt("shop.render-actual-rows", 6));
 		options.setRender_offset(Main.getConfigurator().config.getInt("shop.render-offset", 9));
 		options.setRender_header_start(Main.getConfigurator().config.getInt("shop.render-header-start", 0));
