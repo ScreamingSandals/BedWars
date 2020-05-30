@@ -107,13 +107,13 @@ scoreboards:
   name: "&bS&c&lBed&f&lWars"
   content:
     lobby:
-      - "&eMap: &a%gameName%"
+      - "&eCarte: &a%gameName%"
       - ""
-      - "&fPlayers: &a%playersCount%&f/&a%maxPlayers%"
+      - "&fJoueurs: &a%playersCount%&f/&a%maxPlayers%"
       - ""
-      - "&cNeed &a&l%remainingPlayersToJoin%&c more players!"
+      - "&cBesoin de &a&l%remainingPlayersToJoin% &cjoueurs pour commencer !"
     starting:
-      - "&eMap: &a%gameName%"
+      - "&eCarte: &a%gameName%"
       - ""
       - "&aStarting in &e%timeToStart%"
       - ""
