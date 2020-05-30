@@ -72,18 +72,18 @@ game-builder:
       - "&eГенератор: %color%%type%&f, &eРесурс: &f%mat%"
       - "&f%spawnAmount% &eпредметов в &f%time-unit%"
       - "&eКоманда: &f%team%"
-      - " spawned resources: &f%amount%"
-      - " enabled: &f%booleanValue%"
+      - " ресурсов: &f%amount%"
+      - " включено: &f%booleanValue%"
     editor:
       started:
-        - "&aSpawner editor has been opened!"
-        - "&aType &e/sbw sedit &aif you don't know what to do. &l:)"
+        - "&aРедактор генераторов включен!"
+        - "&aНапишите &e/sbw sedit &a, если вы не знаете, что делать. &l:)"
       already-active:
-        - "&cSpawner editor is already active."
-        - "&eType &a/sbw sedit exit &eto exit without saving"
-        - "&eor &a/sbw sedit save &eto save changes."
+        - "&cРедактор генераторов уже включён."
+        - "&eНапишите &a/sbw sedit exit &eчтобы выйти без сохранения"
+        - "&eили &a/sbw sedit save &eдля применения изменений."
       nothing-active:
-        - "&cSpawner editor not found."
+        - "&cРедактор генератора не найден."
         - "&eRight-click on some spawner to enter edit mode."
       changed: "&aValue &e%value% &awas changed to &e%newValue%"
       invalid-value: "&cValue &e%value% &cis invalid!"
