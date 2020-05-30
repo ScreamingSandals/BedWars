@@ -482,13 +482,16 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 					team.isBed = false;
 					updateScoreboard();
 					for (GamePlayer player : players) {
+						String colored_broker = getPlayerTeam(Main.getPlayerGameProfile(broker)).teamInfo.color.chatColor + broker.getDisplayName();
 						Title.send(player.player,
-								i18n(isItBedBlock ? "bed_is_destroyed" : "target_is_destroyed", false).replace("%team%",
-										team.teamInfo.color.chatColor + team.teamInfo.name),
+								i18n(isItBedBlock ? "bed_is_destroyed" : "target_is_destroyed", false)
+								.replace("%team%", team.teamInfo.color.chatColor + team.teamInfo.name)
+								.replace("%broker%", colored_broker),
 								i18n(getPlayerTeam(player) == team ? "bed_is_destroyed_subtitle_for_victim"
 										: "bed_is_destroyed_subtitle", false));
 						player.player.sendMessage(i18n(isItBedBlock ? "bed_is_destroyed" : "target_is_destroyed")
-								.replace("%team%", team.teamInfo.color.chatColor + team.teamInfo.name));
+								.replace("%team%", team.teamInfo.color.chatColor + team.teamInfo.name)
+								.replace("%broker%", colored_broker));
 						SpawnEffects.spawnEffect(this, player.player, "game-effects.beddestroy");
 						Sounds.playSound(player.player, player.player.getLocation(),
 								Main.getConfigurator().config.getString("sounds.on_bed_destroyed"),

@@ -148,15 +148,24 @@ public class Configurator {
         checkOrSetConfig(modify, "farmBlocks.blocks", new ArrayList<>());
 
         checkOrSetConfig(modify, "scoreboard.enable", true);
-        checkOrSetConfig(modify, "scoreboard.title", "Â§a%game%Â§r - %time%");
-        checkOrSetConfig(modify, "scoreboard.bedLost", "Â§c\u2718");
-        checkOrSetConfig(modify, "scoreboard.bedExists", "Â§a\u2714");
+        checkOrSetConfig(modify, "scoreboard.title", "§a%game%§r - %time%");
+        checkOrSetConfig(modify, "scoreboard.bedLost", "§c\u2718");
+        checkOrSetConfig(modify, "scoreboard.bedExists", "§a\u2714");
         checkOrSetConfig(modify, "scoreboard.teamTitle", "%bed%%color%%team%");
 
         checkOrSetConfig(modify, "title.fadeIn", 0);
         checkOrSetConfig(modify, "title.stay", 20);
         checkOrSetConfig(modify, "title.fadeOut", 0);
-
+        
+        checkOrSetConfig(modify, "shop.rows", 4);
+        checkOrSetConfig(modify, "shop.render-actual-rows", 6);
+        checkOrSetConfig(modify, "shop.render-offset", 9);
+        checkOrSetConfig(modify, "shop.render-header-start", 0);
+        checkOrSetConfig(modify, "shop.render-footer-start", 45);
+        checkOrSetConfig(modify, "shop.items-on-row", 9);
+        checkOrSetConfig(modify, "shop.show-page-numbers", true);
+        checkOrSetConfig(modify, "shop.inventory-type", "CHEST");
+        
         checkOrSetConfig(modify, "items.jointeam", "COMPASS");
         checkOrSetConfig(modify, "items.leavegame", "SLIME_BALL");
         checkOrSetConfig(modify, "items.startgame", "DIAMOND");
@@ -287,9 +296,9 @@ public class Configurator {
         checkOrSetConfig(modify, "game-effects.warppowdertick", new HashMap<String, Object>());
 
         checkOrSetConfig(modify, "lobby-scoreboard.enabled", true);
-        checkOrSetConfig(modify, "lobby-scoreboard.title", "Â§eBEDWARS");
-        checkOrSetConfig(modify, "lobby-scoreboard.content", Arrays.asList(" ", "Â§fMap: Â§2%arena%",
-                "Â§fPlayers: Â§2%players%Â§f/Â§2%maxplayers%", " ", "Â§fWaiting ...", " "));
+        checkOrSetConfig(modify, "lobby-scoreboard.title", "§eBEDWARS");
+        checkOrSetConfig(modify, "lobby-scoreboard.content", Arrays.asList(" ", "§fMap: §2%arena%",
+                "§fPlayers: §2%players%§f/§2%maxplayers%", " ", "§fWaiting ...", " "));
 
         checkOrSetConfig(modify, "statistics.enabled", true);
         checkOrSetConfig(modify, "statistics.type", "yaml");
@@ -318,10 +327,10 @@ public class Configurator {
         checkOrSetConfig(modify, "bossbar.game.style", "SEGMENTED_20");
 
         checkOrSetConfig(modify, "holograms.enabled", true);
-        checkOrSetConfig(modify, "holograms.headline", "Your Â§eBEDWARSÂ§f stats");
+        checkOrSetConfig(modify, "holograms.headline", "Your §eBEDWARS§f stats");
 
         checkOrSetConfig(modify, "chat.override", true);
-        checkOrSetConfig(modify, "chat.format", "<%teamcolor%%name%Â§r> ");
+        checkOrSetConfig(modify, "chat.format", "<%teamcolor%%name%§r> ");
         checkOrSetConfig(modify, "chat.separate-chat.lobby", config.get("chat.separate-game-chat", false));
         checkOrSetConfig(modify, "chat.separate-chat.game", config.get("chat.separate-game-chat", false));
         if (config.isSet("chat.separate-game-chat")) {
@@ -361,8 +370,8 @@ public class Configurator {
 
         checkOrSetConfig(modify, "lore.generate-automatically", true);
         checkOrSetConfig(modify, "lore.text",
-                Arrays.asList("Â§7Price:", "Â§7%price% %resource%", "Â§7Amount:", "Â§7%amount%"));
-        checkOrSetConfig(modify, "sign", Arrays.asList("Â§cÂ§l[BedWars]", "%arena%", "%status%", "%players%"));
+                Arrays.asList("§7Price:", "§7%price% %resource%", "§7Amount:", "§7%amount%"));
+        checkOrSetConfig(modify, "sign", Arrays.asList("§c§l[BedWars]", "%arena%", "%status%", "%players%"));
 
         checkOrSetConfig(modify, "hotbar.selector", 0);
         checkOrSetConfig(modify, "hotbar.color", 1);
