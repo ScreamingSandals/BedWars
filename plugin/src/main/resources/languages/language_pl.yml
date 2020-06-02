@@ -4,10 +4,10 @@ language_name: "Polski"
 prefix: "&7[&bS&c&lBed&f&lWars&7]&r"
 core:
   errors:
-    game-core: "&cCoś poszło nie tak z instancją GameCore. &a&lProszę zaraportuj ten error log na GitHub or Discord!"
+    game-core: "&cCoś poszło nie tak z instancją GameRore. &a&lProszę zgłosić ten dziennik błędów do GitHub lub Discorda!"
     game-store: "&cKonfiguracja Twojego sklepu jest niepoprawna. Sprawdź poprawność swojego pliku sklepu."
-    game-loading: "&c&lOh, mama. &cZaładowanie pliku areny nie powiodło się. &a&lProszę zaraportuj ten error log na GitHub lub Discord!"
-    game-world-not-defined: "&eGame world for game %gameName% &cis not defined!"
+    game-loading: "&c&lOh, damn. &cŁadowanie pliku areny nie powiodło się. &a&lProszę zgłosić ten log błędów na GitHub lub Discordzie!"
+    game-world-not-defined: "&eŚwiat dla gry %gameName% &cis nie jest zdefiniowany!"
     game-world-does-not-exists: "&cGame world &e%world% &cfor the game &e%gameName% &cdoes not exists!"
     game-world-bad-border: "&cBorder for the game &e%gameName% &cis wrong. &lPlease re-do it!"
     lobby-world-not-defined: "&eLobby world for game %gameName% &cis not defined!"
