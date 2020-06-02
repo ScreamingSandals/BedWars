@@ -147,19 +147,20 @@ bossbars:
     end-game: "%winnerMessage%"
 commands:
   errors:
-    no_permissions: "&Not enough permissions for this command.. &8Sad!"
-    command_does_not_exists: "&cThis one, we don't know. Invalid command!"
-    somethings_fucked: "&cWell, execution of this command failed.. &eStrange :("
-    not_for_console: "&cConsole can't use this command.."
+    no-permissions: "&Not enough permissions for this command.. &8Sad!"
+    command-does-not-exists: "&cThis one, we don't know. Invalid command!"
+    somethings-fucked: "&cWell, execution of this command failed.. &eStrange :("
+    not-for-console: "&cConsole can't use this command.."
   main:
     - "by &b&lScreamingSandals&f."
     - "&eDon't know what to do? Hit &l/bw help"
     - "&eWhat version do you have? Hit &l/bw version"
   base:
     list:
-      no_arenas_found: "&cActually, no arena is available right now &e:("
-      arenas_list_header: "&lWow&a, we have &e%count% &aof arenas! Here they are!"
-      arenas_list_text: "&l&a--> &e%game_name% &a- &e%game_state%"
+      no-arenas-found: "&cActually, no arena is available right now &e:("
+      arenas-list-header: "&lWow&a, we have &e%count% &aof arenas! Here they are!"
+      arenas-list-text: "&l&a--> &e%gameName% &a- &e%gameState%"
+      arenas-list-footer: " "
     version:
       header: "You are running on version &e%version%"
       latest: "&a&lLatest version, yay!"
@@ -228,3 +229,4 @@ commands:
           done: "&aYay! Spawn for &e%type%&a has been set!"
       save:
         cannot-save: "Uh oh, you missing something. Cannot save!"
+        done: "&a&lWHOOSH! &aGame &e%gameName% &ais saved and running!"
