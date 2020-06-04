@@ -147,18 +147,18 @@ bossbars:
     end-game: "%winnerMessage%"
 commands:
   errors:
-    no-permissions: "&Not enough permissions for this command.. &8Sad!"
-    command-does-not-exists: "&cThis one, we don't know. Invalid command!"
-    somethings-fucked: "&cWell, execution of this command failed.. &eStrange :("
-    not-for-console: "&cConsole can't use this command.."
+    no-permissions: "&cVous n'avez pas la permission requise pour cette commande. &8C'est triste !"
+    command-does-not-exists: "&cCette commande est inconnue !"
+    somethings-fucked: "&cEh bien, l'exécution de cette commande a échouée. &eÉtrange :("
+    not-for-console: "&cLa console ne peut pas utiliser cette commande.."
   main:
     - "par &b&lScreamingSandals&f."
     - "&eVous ne s'avez pas par quoi commencer ? Faites la commande &l/bw help"
     - "&eQuelle version avez-vous ? Faites la commande &l/bw version"
   base:
     list:
-      no-arenas-found: "&cActually, no arena is available right now &e:("
-      arenas-list-header: "&lWow&a, we have &e%count% &aof arenas! Here they are!"
+      no-arenas-found: "&cActuellement, aucune arène n'est disponible pour le moment &e:("
+      arenas-list-header: "&lWow&a, nous avons &e%count% &aarènes ! Les voici !"
       arenas-list-text: "&l&a--> &e%gameName% &a- &e%gameState%"
       arenas-list-footer: " "
     version:
@@ -229,4 +229,4 @@ commands:
           done: "&aYay ! Le point d'apparition pour &e%type% &aa été défini !"
       save:
         cannot-save: "Oh oh, vous avez manqué quelque chose. Il est impossible de sauvegarder !"
-        done: "&a&lWHOOSH! &aGame &e%gameName% &ais saved and running!"
+        done: "&a&lWOOSH! &aLa partie &e%gameName% &aest sauvegardée et démarrée !"
