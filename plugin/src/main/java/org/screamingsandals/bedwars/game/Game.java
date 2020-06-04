@@ -622,6 +622,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 		}
 
 		if (status == GameStatus.RUNNING || status == GameStatus.GAME_END_CELEBRATING) {
+
 			makeSpectator(gamePlayer, true);
 			createdHolograms.forEach(hologram -> hologram.addViewer(gamePlayer.player));
 		}
@@ -962,7 +963,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 	public void saveToConfig() {
 		File dir = new File(Main.getInstance().getDataFolder(), "arenas");
 		if (!dir.exists())
-			dir.mkdir();
+			dir.mkdirs();
 		File file = new File(dir, name + ".yml");
 		if (!file.exists()) {
 			try {
@@ -1365,22 +1366,32 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 	public Location makeSpectator(GamePlayer gamePlayer, boolean leaveItem) {
 		Player player = gamePlayer.player;
 		gamePlayer.isSpectator = true;
-		gamePlayer.teleport(specSpawn);
+		BukkitRunnable spectatorCreationTask = new BukkitRunnable() {
+			@Override
+			public void run() {
+				player.setAllowFlight(true);
+				player.setFlying(true);
+				player.setGameMode(GameMode.SPECTATOR);
 
-		player.setAllowFlight(true);
-		player.setFlying(true);
-		player.setGameMode(GameMode.SPECTATOR);
-
-		if (leaveItem) {
-			int leavePosition = Main.getConfigurator().config.getInt("hotbar.leave", 8);
-			if (leavePosition >= 0 && leavePosition <= 8) {
-				ItemStack leave = Main.getConfigurator().readDefinedItem("leavegame", "SLIME_BALL");
-				ItemMeta leaveMeta = leave.getItemMeta();
-				leaveMeta.setDisplayName(i18n("leave_from_game_item", false));
-				leave.setItemMeta(leaveMeta);
-				gamePlayer.player.getInventory().setItem(leavePosition, leave);
+				if (leaveItem) {
+					int leavePosition = Main.getConfigurator().config.getInt("hotbar.leave", 8);
+					if (leavePosition >= 0 && leavePosition <= 8) {
+						ItemStack leave = Main.getConfigurator().readDefinedItem("leavegame", "SLIME_BALL");
+						ItemMeta leaveMeta = leave.getItemMeta();
+						leaveMeta.setDisplayName(i18n("leave_from_game_item", false));
+						leave.setItemMeta(leaveMeta);
+						gamePlayer.player.getInventory().setItem(leavePosition, leave);
+					}
+				}
 			}
+		};
+
+		if (gamePlayer.teleport(specSpawn)) {
+			spectatorCreationTask.runTaskLater(Main.getInstance(), 1L);
+		} else {
+			spectatorCreationTask.runTaskLater(Main.getInstance(), 10L);
 		}
+
 		return specSpawn;
 	}
 
