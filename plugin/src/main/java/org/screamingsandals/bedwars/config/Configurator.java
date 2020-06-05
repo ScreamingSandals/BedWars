@@ -398,6 +398,7 @@ public class Configurator {
         checkOrSetConfig(modify, "removePurchaseMessages", false);
         checkOrSetConfig(modify, "disableCakeEating", true);
         checkOrSetConfig(modify, "disableDragonEggTeleport", true);
+        checkOrSetConfig(modify, "preventArenaFromGriefing", false);
 
         checkOrSetConfig(modify, "version", 2);
 

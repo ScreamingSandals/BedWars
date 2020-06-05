@@ -344,6 +344,14 @@ public class PlayerListener implements Listener {
                     }.runTaskLater(Main.getInstance(), explosionTime + 10);
                 }
             }
+        } else if (Main.getConfigurator().config.getBoolean("preventArenaFromGriefing")) {
+            for (String gameN : Main.getGameNames()) {
+                Game game = Main.getGame(gameN);
+                if (game.getStatus() != GameStatus.DISABLED && GameCreator.isInArea(event.getBlock().getLocation(), game.getPos1(), game.getPos2())) {
+                    event.setCancelled(true);
+                    return;
+                }
+            }
         }
     }
 
@@ -372,6 +380,14 @@ public class PlayerListener implements Listener {
             if (game.getStatus() == GameStatus.RUNNING && gamePlayer.isInGame()) {
                 if (block.getType() == Material.ENDER_CHEST) {
                     event.setDropItems(false);
+                }
+            }
+        } else if (Main.getConfigurator().config.getBoolean("preventArenaFromGriefing")) {
+            for (String gameN : Main.getGameNames()) {
+                Game game = Main.getGame(gameN);
+                if (game.getStatus() != GameStatus.DISABLED && GameCreator.isInArea(event.getBlock().getLocation(), game.getPos1(), game.getPos2())) {
+                    event.setCancelled(true);
+                    return;
                 }
             }
         }
@@ -736,6 +752,14 @@ public class PlayerListener implements Listener {
 
         if (Main.isPlayerInGame(event.getPlayer())) {
             event.setCancelled(true);
+        } else {
+            for (String gameN : Main.getGameNames()) {
+                Game game = Main.getGame(gameN);
+                if (GameCreator.isInArea(event.getBed().getLocation(), game.getPos1(), game.getPos2())) {
+                    event.setCancelled(true);
+                    return;
+                }
+            }
         }
     }
 
@@ -996,6 +1020,14 @@ public class PlayerListener implements Listener {
                 }
             } else if (game.getStatus() != GameStatus.DISABLED) {
                 event.setCancelled(true);
+            }
+        } else if (Main.getConfigurator().config.getBoolean("preventArenaFromGriefing")) {
+            for (String gameN : Main.getGameNames()) {
+                Game game = Main.getGame(gameN);
+                if (game.getStatus() != GameStatus.DISABLED && GameCreator.isInArea(event.getBlockClicked().getLocation(), game.getPos1(), game.getPos2())) {
+                    event.setCancelled(true);
+                    return;
+                }
             }
         }
     }
