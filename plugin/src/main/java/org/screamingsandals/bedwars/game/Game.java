@@ -1737,8 +1737,10 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 				}
 				if (runningTeams <= 1) {
 					if (runningTeams == 1) {
+						CurrentTeam winner = null;
 						for (CurrentTeam t : teamsInGame) {
 							if (t.isAlive()) {
+								winner = t;
 								String time = getFormattedTimeLeft(gameTime - countdown);
 								String message = i18n("team_win")
 										.replace("%team%", TeamColor.fromApiColor(t.getColor()).chatColor + t.getName())
@@ -1809,6 +1811,10 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 								break;
 							}
 						}
+
+						BedwarsGameEndingEvent endingEvent = new BedwarsGameEndingEvent(this, winner);
+						Bukkit.getPluginManager().callEvent(endingEvent);
+
 						tick.setNextCountdown(Game.POST_GAME_WAITING);
 						tick.setNextStatus(GameStatus.GAME_END_CELEBRATING);
 					} else {
