@@ -335,6 +335,8 @@ public class PlayerListener implements Listener {
                     TNTPrimed tnt = (TNTPrimed) location.getWorld().spawnEntity(location, EntityType.PRIMED_TNT);
                     tnt.setFuseTicks(explosionTime);
 
+                    tnt.setMetadata(event.getPlayer().getUniqueId().toString(), new FixedMetadataValue(Main.getInstance(), null));
+
                     Main.registerGameEntity(tnt, game);
 
                     new BukkitRunnable() {
@@ -547,6 +549,10 @@ public class PlayerListener implements Listener {
                 } else if (edbee.getDamager() instanceof Firework) {
                     if (Main.isPlayerInGame(player)) {
                         event.setCancelled(true);
+                    }
+                } else if (edbee.getDamager() instanceof TNTPrimed) {
+                    if (edbee.getDamager().hasMetadata(player.getUniqueId().toString())) {
+                        edbee.setCancelled(Main.getConfigurator().config.getBoolean("tnt.dont-damage-placer", false));
                     }
                 }
             }
