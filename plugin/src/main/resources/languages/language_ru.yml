@@ -10,6 +10,8 @@ core:
     game-world-not-defined: "&eОсновной мир для игры %gameName% &cне задан!"
     game-world-does-not-exists: "&cОсновной мир &e%world% &cдля игры &e%gameName% &cне существует!"
     game-world-bad-border: "&cБарьер игры &e%gameName% &cневерно задан. &lПеределайте его!"
+    not-enough-teams: "&cNot enough teams defined for the game &e%gameName%. &c&lYou need at least 2!"
+    team-spawn-not-set: "&cTeam &e%teamName% &cdoes not have spawn point! &lPlease set it."
     lobby-world-not-defined: "&eЛобби ожидания для игры %gameName% &cне задано!"
     lobby-world-does-not-exists: "&cМир лобби ожидания &e%world% &cдля игры &e%gameName% &cне существует!"
     spectator-spawn-not-set: "&cТочка появления наблюдателей для игры %gameName% не задана!"
@@ -122,7 +124,7 @@ scoreboards:
       - ""
       - "&fPlayers: &a%playersCount%&f/&a%maxPlayers%"
     game:
-      - "%remainingTime%"
+      - " left: &e%formattedRemainingTime%"
       - ""
       - "&eMap: &a%gameName%"
       - ""
@@ -132,19 +134,28 @@ scoreboards:
       - "&c&lDEATHMATCH"
       - ""
       - "%&eRemaining players: %players%%"
-    end_game:
+    end-game:
       - ""
       - "%winnerMessage%"
       - ""
       - "Finished in: %time%"
       - ""
+  teams:
+    alive: "&a✔&r %teamColor%%teamName%"
+    dead: "✖"
 bossbars:
   content:
-    lobby: "Game is starting soon! Needed players: %players%, Team: %selectedTeam%"
-    starting: "Starting in: %time%"
-    game: "Let's play! Remaining time: %time%"
+    lobby: "&eGame is starting soon! &lNeeded players: &a%remainingPlayersToJoin%"
+    starting: "&aStarting in &e%timeToStart%"
+    game: "Let's play! Remaining time: %formattedRemainingTime%"
     deathmatch: "NOW LET'S SEE! Remaining time: %time%"
     end-game: "%winnerMessage%"
+  color:
+    lobby: "YELLOW"
+    starting: "GREEN"
+    game: "BLUE"
+    deathmatch: "RED"
+    end-game: "WHITE"
 commands:
   errors:
     no-permissions: "&Not enough permissions for this command.. &8Sad!"
