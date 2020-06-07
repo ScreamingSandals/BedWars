@@ -10,6 +10,8 @@ core:
     game-world-not-defined: "&eLe monde pour la partie %gameName% &cn'est pas défini !"
     game-world-does-not-exists: "&cLe monde de jeu &e%world% &cpour la partie &e%gameName% &cn'existe pas !"
     game-world-bad-border: "&cLa bordure du jeu &e%gameName% &cest incorrecte. &lVeuillez le faire à nouveau !"
+    not-enough-teams: "&cNot enough teams defined for the game &e%gameName%. &c&lYou need at least 2!"
+    team-spawn-not-set: "&cTeam &e%teamName% &cdoes not have spawn point! &lPlease set it."
     lobby-world-not-defined: "&eLe monde du lobby pour la partie %gameName% &cn'est pas défini !"
     lobby-world-does-not-exists: "&cLe monde de jeu &e%world% &cpour la partie &e%gameName% &cn'existe pas !"
     spectator-spawn-not-set: "&cLe point d'apparition des spectateurs pour la partie %gameName% n'est pas défini !"
@@ -122,7 +124,7 @@ scoreboards:
       - ""
       - "&fJoueurs: &a%playersCount%&f/&a%maxPlayers%"
     game:
-      - "%remainingTime%"
+      - " left: &e%formattedRemainingTime%"
       - ""
       - "&eCarte: &a%gameName%"
       - ""
@@ -132,19 +134,28 @@ scoreboards:
       - "&c&lMATCH À MORT"
       - ""
       - "%&eJoueurs restants: %players%%"
-    end_game:
+    end-game:
       - ""
       - "%winnerMessage%"
       - ""
-      - "Fini dans: %time%"
+      - "Finished in: %time%"
       - ""
+  teams:
+    alive: "&a✔&r %teamColor%%teamName%"
+    dead: "✖"
 bossbars:
   content:
-    lobby: "La partie démarre bientôt ! Joueurs nécessaires: %players%, Équipe: %selectedTeam%"
-    starting: "Démarrage dans: %time%"
-    game: "Jouons ! Temps restant: %time%"
+    lobby: "&eGame is starting soon! &lNeeded players: &a%remainingPlayersToJoin%"
+    starting: "&aStarting in &e%timeToStart%"
+    game: "Let's play! Remaining time: %formattedRemainingTime%"
     deathmatch: "VOYONS VOIR ! Temps restant: %time%"
     end-game: "%winnerMessage%"
+  color:
+    lobby: "YELLOW"
+    starting: "GREEN"
+    game: "BLUE"
+    deathmatch: "RED"
+    end-game: "WHITE"
 commands:
   errors:
     no-permissions: "&cVous n'avez pas la permission requise pour cette commande. &8C'est triste !"
