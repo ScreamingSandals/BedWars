@@ -148,4 +148,8 @@ public class GamePlayer {
     	return PlayerUtils.teleportPlayer(player, location);
     }
 
+    public boolean teleport(Location location, Runnable runnable) {
+        return PlayerUtils.teleportPlayer(player, location, runnable);
+    }
+
 }

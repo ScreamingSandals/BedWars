@@ -1638,17 +1638,19 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 						if (team == null) {
 							makeSpectator(player, true);
 						} else {
-							player.teleport(team.teamInfo.spawn);
-							if (getOriginalOrInheritedGameStartItems()) {
-								List<ItemStack> givedGameStartItems = StackParser.parseAll((Collection<Object>) Main.getConfigurator().config
-										.getList("gived-game-start-items"));
-								if (givedGameStartItems != null) {
-									MiscUtils.giveItemsToPlayer(givedGameStartItems, player.player, team.getColor());
-								} else {
-									Debug.warn("You have wrongly configured gived-player-start-items!", true);
+							player.teleport(team.teamInfo.spawn, () -> {
+								player.player.setGameMode(GameMode.SURVIVAL);
+								if (getOriginalOrInheritedGameStartItems()) {
+									List<ItemStack> givedGameStartItems = StackParser.parseAll((Collection<Object>) Main.getConfigurator().config
+											.getList("gived-game-start-items"));
+									if (givedGameStartItems != null) {
+										MiscUtils.giveItemsToPlayer(givedGameStartItems, player.player, team.getColor());
+									} else {
+										Debug.warn("You have wrongly configured gived-player-start-items!", true);
+									}
 								}
-							}
-							SpawnEffects.spawnEffect(this, player.player, "game-effects.start");
+								SpawnEffects.spawnEffect(this, player.player, "game-effects.start");
+							});
 						}
 						Sounds.playSound(player.player, player.player.getLocation(),
 								Main.getConfigurator().config.getString("sounds.on_game_start"),

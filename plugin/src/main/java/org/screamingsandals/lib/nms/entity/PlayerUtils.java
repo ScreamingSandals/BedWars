@@ -3,10 +3,13 @@ package org.screamingsandals.lib.nms.entity;
 import static org.screamingsandals.lib.nms.utils.ClassStorage.*;
 import static org.screamingsandals.lib.nms.utils.ClassStorage.NMS.*;
 
+import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.screamingsandals.bedwars.Main;
 
 public class PlayerUtils {
 	public static void respawn(Plugin instance, Player player, long delay) {
@@ -45,6 +48,16 @@ public class PlayerUtils {
 			return player.teleportAsync(location).isDone();
 		} catch (Throwable t) {
 			player.teleport(location);
+			return true;
+		}
+	}
+
+	public static boolean teleportPlayer(Player player, Location location, Runnable runnable) {
+		try {
+			return player.teleportAsync(location).thenRun(runnable).isDone();
+		} catch (Throwable t) {
+			player.teleport(location);
+			Bukkit.getScheduler().runTaskLater(Main.getInstance(), runnable, 10L);
 			return true;
 		}
 	}
