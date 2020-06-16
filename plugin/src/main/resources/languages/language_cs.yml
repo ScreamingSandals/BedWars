@@ -45,6 +45,7 @@ general:
     invalid-game: "&cHra &e%gameName%&c neexistuje!"
     no-game-found: "&cŽádná hra nebyla nalezena."
     game-already-created: "&cGame &e%gameName% &calready exists! Use &ldifferent &cname."
+    wrong-bossbar-color: "Color %color% is invalid! Fix this in your config."
   null-translated: "Žádný"
   booleans:
     true: "Ano"
@@ -116,7 +117,7 @@ scoreboards:
       - ""
       - "&fPlayers: &a%playersCount%&f/&a%maxPlayers%"
       - ""
-      - "&cNeed &a&l%remainingPlayersToJoin%&c more players!"
+      - "&cNeed &a&l%playersToStart%&c more players!"
     starting:
       - "&eMap: &a%gameName%"
       - ""
@@ -128,12 +129,12 @@ scoreboards:
       - ""
       - "&eMap: &a%gameName%"
       - ""
-      - "%teams%"
+      - " teams: &a%teamsCount%"
     deathmatch:
       - ""
       - "&c&lDEATHMATCH"
       - ""
-      - "%&eRemaining players: %players%%"
+      - "%&eRemaining players: %playersCount%%"
     end-game:
       - ""
       - "%winnerMessage%"
@@ -142,16 +143,16 @@ scoreboards:
       - ""
   teams:
     alive: "&a✔&r %teamColor%%teamName%"
-    dead: "✖"
+    dead: "&c✖&r %teamColor%%teamName%"
 bossbars:
   content:
-    lobby: "&eGame is starting soon! &lNeeded players: &a%remainingPlayersToJoin%"
+    lobby: "&eGame is starting soon! &lNeeded players: &a%playersToStart%"
     starting: "&aStarting in &e%timeToStart%"
     game: "Let's play! Remaining time: %formattedRemainingTime%"
     deathmatch: "NOW LET'S SEE! Remaining time: %time%"
     end-game: "%winnerMessage%"
   color:
-    lobby: "YELLOW"
+    lobby: "OIIII"
     starting: "GREEN"
     game: "BLUE"
     deathmatch: "RED"
