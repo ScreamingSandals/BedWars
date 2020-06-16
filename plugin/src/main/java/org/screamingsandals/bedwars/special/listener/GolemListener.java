@@ -122,7 +122,7 @@ public class GolemListener implements Listener {
                             } else if (event.getDamager() instanceof Projectile) {
                                 ProjectileSource shooter = ((Projectile) event.getDamager()).getShooter();
                                 if (shooter instanceof Player) {
-                                    Player player = (Player) event.getDamager();
+                                    Player player = (Player) shooter;
                                     if (Main.isPlayerInGame(player)) {
                                         if (golem.getTeam() != game.getTeamOfPlayer(player)) {
                                             return;
