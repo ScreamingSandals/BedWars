@@ -45,6 +45,7 @@ general:
     invalid-game: "&cLa partie &e%gameName% &cn'existe pas !"
     no-game-found: "&cAucune partie n'a été trouvée."
     game-already-created: "&cLa partie &e%gameName% &cexiste déjà ! Utilisez un nom &ldifférent."
+    wrong-bossbar-color: "Color %color% is invalid! Fix this in your config."
   null-translated: "Aucun"
   booleans:
     true: "Vrai"
@@ -116,7 +117,7 @@ scoreboards:
       - ""
       - "&fJoueurs: &a%playersCount%&f/&a%maxPlayers%"
       - ""
-      - "&cBesoin de &a&l%remainingPlayersToJoin% &cjoueurs pour commencer !"
+      - "&cNeed &a&l%playersToStart%&c more players!"
     starting:
       - "&eCarte: &a%gameName%"
       - ""
@@ -128,12 +129,12 @@ scoreboards:
       - ""
       - "&eCarte: &a%gameName%"
       - ""
-      - "%teams%"
+      - " teams: &a%teamsCount%"
     deathmatch:
       - ""
       - "&c&lMATCH À MORT"
       - ""
-      - "%&eJoueurs restants: %players%%"
+      - "%&eRemaining players: %playersCount%%"
     end-game:
       - ""
       - "%winnerMessage%"
@@ -142,16 +143,16 @@ scoreboards:
       - ""
   teams:
     alive: "&a✔&r %teamColor%%teamName%"
-    dead: "✖"
+    dead: "&c✖&r %teamColor%%teamName%"
 bossbars:
   content:
-    lobby: "&eGame is starting soon! &lNeeded players: &a%remainingPlayersToJoin%"
+    lobby: "&eGame is starting soon! &lNeeded players: &a%playersToStart%"
     starting: "&aStarting in &e%timeToStart%"
     game: "Let's play! Remaining time: %formattedRemainingTime%"
     deathmatch: "VOYONS VOIR ! Temps restant: %time%"
     end-game: "%winnerMessage%"
   color:
-    lobby: "YELLOW"
+    lobby: "OIIII"
     starting: "GREEN"
     game: "BLUE"
     deathmatch: "RED"
