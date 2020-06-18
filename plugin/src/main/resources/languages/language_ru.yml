@@ -277,3 +277,8 @@ help_bw_admin_arena_weather: "/bw admin <арена> arenaweather <type> - &eП�
 help_bw_admin_remove: "/bw admin <арена> remove - &cУдалить арену"
 help_bw_admin_edit: "/bw admin <арена> edit - &eПереключить арену в режим редактирования"
 help_bw_admin_save: "/bw admin <арена> save - &aСохранить арену и запускить её"
+update_checker_zero: "§aNew RELEASE version %version% of BedWars is available!"
+update_checker_zero_second: "Download it from %url%"
+update_checker_one: "§bSBedWars and SBedWars+ are officially out! More information: %url%"
+update_checker_one_second_good: "§bYour server is prepared for this release! Download it right now!"
+update_checker_one_second_bad: "§bSadly, your server is outdated! You will need Minecraft version at least 1.12 and Java at least 11!"
