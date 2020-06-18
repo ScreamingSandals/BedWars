@@ -277,3 +277,8 @@ help_bw_admin_arena_weather: "/bw admin <aréna> arenaweather <typ> - &eNastaví
 help_bw_admin_remove: "/bw admin <aréna> remove - &cOdstraní arénu"
 help_bw_admin_edit: "/bw admin <aréna> edit - &eVypne hru a přepne arénu do módu úprav"
 help_bw_admin_save: "/bw admin <aréna> save - &aUloží hru a aktivuje jí!"
+update_checker_zero: "§aNew RELEASE version %version% of BedWars is available!"
+update_checker_zero_second: "Download it from %url%"
+update_checker_one: "§bSBedWars and SBedWars+ are officially out! More information: %url%"
+update_checker_one_second_good: "§bYour server is prepared for this release! Download it right now!"
+update_checker_one_second_bad: "§bSadly, your server is outdated! You will need Minecraft version at least 1.12 and Java at least 11!"
