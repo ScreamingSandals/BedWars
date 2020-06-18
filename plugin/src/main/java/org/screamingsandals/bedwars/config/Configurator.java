@@ -401,6 +401,11 @@ public class Configurator {
         checkOrSetConfig(modify, "disableDragonEggTeleport", true);
         checkOrSetConfig(modify, "preventArenaFromGriefing", false);
 
+        checkOrSetConfig(modify, "update-checker.zero.console", true);
+        checkOrSetConfig(modify, "update-checker.zero.oped-players", true);
+        checkOrSetConfig(modify, "update-checker.one.console", true);
+        checkOrSetConfig(modify, "update-checker.one.oped-players", true);
+
         checkOrSetConfig(modify, "version", 2);
 
         if (modify.get()) {

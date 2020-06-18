@@ -15,9 +15,6 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.inventivetalent.update.spiget.SpigetUpdate;
-import org.inventivetalent.update.spiget.UpdateCallback;
-import org.inventivetalent.update.spiget.comparator.VersionComparator;
 import org.screamingsandals.bedwars.api.BedwarsAPI;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.api.game.GameStore;
@@ -37,6 +34,7 @@ import org.screamingsandals.bedwars.placeholderapi.BedwarsExpansion;
 import org.screamingsandals.bedwars.special.SpecialRegister;
 import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.bedwars.utils.BedWarsSignOwner;
+import org.screamingsandals.bedwars.utils.UpdateChecker;
 import org.screamingsandals.lib.debug.Debug;
 import org.screamingsandals.lib.nms.holograms.HologramManager;
 import org.screamingsandals.lib.nms.utils.ClassStorage;
@@ -74,7 +72,6 @@ public class Main extends JavaPlugin implements BedwarsAPI {
     private PlayerStatisticManager playerStatisticsManager;
     private IHologramInteraction hologramInteraction;
     private HashMap<String, BaseCommand> commands;
-    private SpigetUpdate spigetUpdate;
     private ColorChanger colorChanger;
     private SignManager signManager;
     private HologramManager manager;
@@ -463,11 +460,11 @@ public class Main extends JavaPlugin implements BedwarsAPI {
             Bukkit.getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
         }
 
-        Bukkit.getConsoleSender().sendMessage("§c=====§f======  by ScreamingSandals <Misat11, Ceph>)");
+        Bukkit.getConsoleSender().sendMessage("§c=====§f===========  by ScreamingSandals <Misat11, Ceph>");
         Bukkit.getConsoleSender()
-                .sendMessage("§c+ Bed§fWars +  §6Version: " + version);
+                .sendMessage("§c+ Bed§fWars Zero +   §6Version: " + version);
         Bukkit.getConsoleSender()
-                .sendMessage("§c=====§f======  " + (snapshot ? "§cSNAPSHOT VERSION" : "§aSTABLE VERSION"));
+                .sendMessage("§c=====§f===========  " + (snapshot ? "§cSNAPSHOT VERSION" : "§aSTABLE VERSION"));
         if (isVault) {
             Bukkit.getConsoleSender().sendMessage("§c[B§fW] §6Found Vault");
         }
@@ -539,22 +536,12 @@ public class Main extends JavaPlugin implements BedwarsAPI {
             // maybe something here can cause exception
         }
 
-        spigetUpdate = new SpigetUpdate(this, 63714);
-
-        spigetUpdate.setVersionComparator(VersionComparator.SEM_VER_SNAPSHOT);
-
-        spigetUpdate.checkForUpdate(new UpdateCallback() {
-            @Override
-            public void updateAvailable(String newVersion, String downloadUrl, boolean hasDirectDownload) {
-                Bukkit.getConsoleSender().sendMessage("§c[B§fW] §aNew RELEASE version " + newVersion
-                        + " of BedWars is available! Download it from " + downloadUrl);
-            }
-
-            @Override
-            public void upToDate() {
-
-            }
-        });
+        if (Main.getConfigurator().config.getBoolean("update-checker.zero.console")
+                || Main.getConfigurator().config.getBoolean("update-checker.zero.oped-players")
+        || Main.getConfigurator().config.getBoolean("update-checker.one.console")
+                || Main.getConfigurator().config.getBoolean("update-checker.one.oped-players")) {
+            UpdateChecker.run();
+        }
 
         final int pluginId = 7147;
         metrics = new Metrics(this, pluginId);
