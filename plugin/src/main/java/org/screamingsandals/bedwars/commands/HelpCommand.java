@@ -31,14 +31,14 @@ public class HelpCommand extends BaseCommand {
     }
 
     public void sendConsoleHelp(ConsoleCommandSender console) {
-        console.sendMessage(i18nonly("help_title_console").replace("%version%", Main.getVersion()));
+        console.sendMessage(i18nonly("help_title_console").replace("%version%", "Zero " + Main.getVersion()));
         console.sendMessage(i18nonly("help_bw_list"));
         console.sendMessage(i18nonly("help_bw_stats_other"));
         console.sendMessage(i18nonly("help_bw_reload"));
     }
 
     public void sendHelp(Player player) {
-        player.sendMessage(i18nonly("help_title").replace("%version%", Main.getVersion()));
+        player.sendMessage(i18nonly("help_title").replace("%version%", "Zero " + Main.getVersion()));
         player.sendMessage(i18nonly("help_bw_join"));
         player.sendMessage(i18nonly("help_bw_leave"));
         player.sendMessage(i18nonly("help_bw_rejoin"));

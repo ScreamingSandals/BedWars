@@ -46,7 +46,6 @@ public class BedWarsSignOwner implements SignOwner {
 	}
 
 	private void updateLeaveSign(SignBlock sign) {
-		System.out.println("Updating the leave sign");
 		List<String> texts = new ArrayList<>(Main.getConfigurator().config.getStringList("sign"));
 
 		Block block = sign.getLocation().getBlock();
