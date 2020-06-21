@@ -525,7 +525,7 @@ public class PlayerListener implements Listener {
                     gPlayer.teleport(game.getLobbySpawn());
                 }
                 event.setCancelled(true);
-            } else if (game.getStatus() == GameStatus.RUNNING) {
+            } else if (game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) {
                 if (gPlayer.isSpectator) {
                     event.setCancelled(true);
                 }
@@ -536,24 +536,33 @@ public class PlayerListener implements Listener {
 
                 if (event.getCause() == DamageCause.VOID) {
                     player.setHealth(0.5);
-                }
-
-            } else if (event instanceof EntityDamageByEntityEvent) {
-                EntityDamageByEntityEvent edbee = (EntityDamageByEntityEvent) event;
-                if (edbee.getDamager() instanceof Player) {
-                    Player damager = (Player) edbee.getDamager();
-                    if (Main.isPlayerInGame(damager)) {
-                        if (Main.getPlayerGameProfile(damager).isSpectator) {
-                            event.setCancelled(true);
+                } else if (event instanceof EntityDamageByEntityEvent) {
+                    EntityDamageByEntityEvent edbee = (EntityDamageByEntityEvent) event;
+                    if (edbee.getDamager() instanceof Player) {
+                        Player damager = (Player) edbee.getDamager();
+                        if (Main.isPlayerInGame(damager)) {
+                            GamePlayer gDamager = Main.getPlayerGameProfile(damager);
+                            if (gDamager.isSpectator || (gDamager.getGame().getPlayerTeam(gDamager) == game.getPlayerTeam(gPlayer) && !game.getOriginalOrInheritedFriendlyfire())) {
+                                event.setCancelled(true);
+                            }
                         }
-                    }
-                } else if (edbee.getDamager() instanceof Firework) {
-                    if (Main.isPlayerInGame(player)) {
+                    } else if (edbee.getDamager() instanceof Firework && game.getStatus() == GameStatus.GAME_END_CELEBRATING) {
                         event.setCancelled(true);
-                    }
-                } else if (edbee.getDamager() instanceof TNTPrimed) {
-                    if (edbee.getDamager().hasMetadata(player.getUniqueId().toString())) {
-                        edbee.setCancelled(Main.getConfigurator().config.getBoolean("tnt.dont-damage-placer", false));
+                    } else if (edbee.getDamager() instanceof TNTPrimed) {
+                        if (edbee.getDamager().hasMetadata(player.getUniqueId().toString())) {
+                            edbee.setCancelled(Main.getConfigurator().config.getBoolean("tnt.dont-damage-placer", false));
+                        }
+                    } else if (edbee.getDamager() instanceof Projectile) {
+                        Projectile projectile = (Projectile) edbee.getDamager();
+                        if (projectile.getShooter() instanceof Player) {
+                            Player damager = (Player) projectile.getShooter();
+                            if (Main.isPlayerInGame(damager)) {
+                                GamePlayer gDamager = Main.getPlayerGameProfile(damager);
+                                if (gDamager.isSpectator || gDamager.getGame().getPlayerTeam(gDamager) == game.getPlayerTeam(gPlayer) && !game.getOriginalOrInheritedFriendlyfire()) {
+                                    event.setCancelled(true);
+                                }
+                            }
+                        }
                     }
                 }
             }

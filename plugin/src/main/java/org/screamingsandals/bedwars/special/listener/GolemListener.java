@@ -131,7 +131,7 @@ public class GolemListener implements Listener {
                                 }
                             }
 
-                            event.setCancelled(true);
+                            event.setCancelled(game.getOriginalOrInheritedFriendlyfire());
                             return;
                         }
                         return;
