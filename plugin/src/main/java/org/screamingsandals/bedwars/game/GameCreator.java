@@ -158,6 +158,8 @@ public class GameCreator {
                     } else {
                         response = addSpawner(args[1], player.getLocation(), null, true, 1, null, -1);
                     }
+                } else if (args[0].equalsIgnoreCase("remove")) {
+                    response = removeSpawner(player.getLocation());
                 } else if (args[0].equalsIgnoreCase("reset")) {
                     response = resetAllSpawners();
                 }
@@ -670,6 +672,27 @@ public class GameCreator {
         } else {
             return i18n("admin_command_invalid_spawner_type");
         }
+    }
+
+    private String removeSpawner(Location loc) {
+        if (game.getPos1() == null || game.getPos2() == null) {
+            return i18n("admin_command_set_pos1_pos2_first");
+        }
+        if (game.getWorld() != loc.getWorld()) {
+            return i18n("admin_command_must_be_in_same_world");
+        }
+        if (!isInArea(loc, game.getPos1(), game.getPos2())) {
+            return i18n("admin_command_spawn_must_be_in_area");
+        }
+        int count = 0;
+        for (ItemSpawner spawner : new ArrayList<>(game.getSpawners())) {
+            if (spawner.getLocation().getBlock().equals(loc.getBlock())) {
+                game.getSpawners().remove(spawner);
+                count++;
+            }
+        }
+        return i18n("admin_command_removed_spawners").replace("%count%", Integer.toString(count)).replace("%x%", Integer.toString(loc.getBlockX())).replace("%y%", Integer.toString(loc.getBlockY()))
+                .replace("%z%", Integer.toString(loc.getBlockZ()));
     }
 
     public String addStore(Location loc, String shop, boolean useParent, String name) {

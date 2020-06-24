@@ -49,6 +49,8 @@ public class AllJoinCommand extends BaseCommand {
 
     @Override
     public void completeTab(List<String> completion, CommandSender sender, List<String> args) {
-
+        if (args.size() == 1) {
+            completion.addAll(Main.getGameNames());
+        }
     }
 }

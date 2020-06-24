@@ -158,8 +158,6 @@ public class AdminCommand extends BaseCommand {
                                 Location loc_spawner = spawner.loc;
                                 org.screamingsandals.bedwars.api.Team team = spawner.getTeam();
 
-                                DecimalFormat numFormat = new DecimalFormat("##");
-
                                 String spawnerTeam;
 
                                 if (team != null) {
@@ -170,11 +168,11 @@ public class AdminCommand extends BaseCommand {
 
                                 String spawnerM = i18n("arena_info_spawner", false)
                                         .replace("%resource%", spawner.type.getItemName())
-                                        .replace("%x%", numFormat.format(loc_spawner.getX()))
-                                        .replace("%y%", numFormat.format(loc_spawner.getY()))
-                                        .replace("%z%", numFormat.format(loc_spawner.getZ()))
-                                        .replace("%yaw%", numFormat.format(loc_spawner.getYaw()))
-                                        .replace("%pitch%", numFormat.format(loc_spawner.getPitch()))
+                                        .replace("%x%", String.valueOf(loc_spawner.getBlockX()))
+                                        .replace("%y%", String.valueOf(loc_spawner.getBlockY()))
+                                        .replace("%z%", String.valueOf(loc_spawner.getBlockZ()))
+                                        .replace("%yaw%", String.valueOf(loc_spawner.getYaw()))
+                                        .replace("%pitch%", String.valueOf(loc_spawner.getPitch()))
                                         .replace("%world%", loc_spawner.getWorld().getName())
                                         .replace("%team%", spawnerTeam)
                                         .replace("%holo%", String.valueOf(spawner.getHologramEnabled()));
@@ -533,26 +531,28 @@ public class AdminCommand extends BaseCommand {
             }
         } else if (args.get(1).equalsIgnoreCase("spawner")) {
             if (args.size() == 3) {
-                completion.addAll(Arrays.asList("add", "reset"));
+                completion.addAll(Arrays.asList("add", "remove", "reset"));
             }
-            if (args.size() == 4) {
-                completion.addAll(Main.getAllSpawnerTypes());
-            }
-            if (args.size() == 5) {
-                completion.addAll(Arrays.asList("false", "true"));
-            }
-            if (args.size() == 6) {
-                completion.addAll(Collections.singletonList("1"));
-            }
-            if (args.size() == 8) {
-                if (gc.containsKey(args.get(0))) {
-	                for (Team t : gc.get(args.get(0)).getGame().getTeams()) {
-	                    completion.add(t.name);
-	                }
+            if (args.get(2).equalsIgnoreCase("add")) {
+                if (args.size() == 4) {
+                    completion.addAll(Main.getAllSpawnerTypes());
                 }
-            }
-            if (args.size() == 8 || args.size() == 9) {
-                completion.addAll(Arrays.asList("5", "10", "20"));
+                if (args.size() == 5) {
+                    completion.addAll(Arrays.asList("false", "true"));
+                }
+                if (args.size() == 6) {
+                    completion.addAll(Collections.singletonList("1"));
+                }
+                if (args.size() == 8) {
+                    if (gc.containsKey(args.get(0))) {
+                        for (Team t : gc.get(args.get(0)).getGame().getTeams()) {
+                            completion.add(t.name);
+                        }
+                    }
+                }
+                if (args.size() == 8 || args.size() == 9) {
+                    completion.addAll(Arrays.asList("5", "10", "20"));
+                }
             }
         } else if (args.get(1).equalsIgnoreCase("team")) {
             if (args.size() == 3) {

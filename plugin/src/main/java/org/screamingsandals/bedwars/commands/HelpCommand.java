@@ -34,6 +34,7 @@ public class HelpCommand extends BaseCommand {
         console.sendMessage(i18nonly("help_title_console").replace("%version%", "Zero " + Main.getVersion()));
         console.sendMessage(i18nonly("help_bw_list"));
         console.sendMessage(i18nonly("help_bw_stats_other"));
+        console.sendMessage(i18nonly("help_bw_alljoin"));
         console.sendMessage(i18nonly("help_bw_reload"));
     }
 
@@ -49,6 +50,10 @@ public class HelpCommand extends BaseCommand {
             player.sendMessage(i18nonly("help_bw_stats_other"));
         } else {
             player.sendMessage(i18nonly("help_bw_stats"));
+        }
+
+        if (player.hasPermission("bw.admin.alljoin")) {
+            player.sendMessage(i18nonly("help_bw_alljoin"));
         }
 
         if (player.hasPermission(ADMIN_PERMISSION)) {
@@ -72,6 +77,7 @@ public class HelpCommand extends BaseCommand {
             player.sendMessage(i18nonly("help_bw_admin_team_bed"));
             player.sendMessage(i18nonly("help_bw_admin_jointeam"));
             player.sendMessage(i18nonly("help_bw_admin_spawner_add"));
+            player.sendMessage(i18nonly("help_bw_admin_spawner_remove"));
             player.sendMessage(i18nonly("help_bw_admin_spawner_reset"));
             player.sendMessage(i18nonly("help_bw_admin_store_add"));
             player.sendMessage(i18nonly("help_bw_admin_store_remove"));
