@@ -33,7 +33,6 @@ public class EntityUtils {
 			
 			return entityLiving;
 		} catch (Throwable ignored) {
-			ignored.printStackTrace(); // TODO remove after testing on all minor versions from 1.8 to 1.15
 		}
 		return null;
 	}

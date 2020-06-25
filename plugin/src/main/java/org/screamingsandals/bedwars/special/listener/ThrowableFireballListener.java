@@ -44,10 +44,8 @@ public class ThrowableFireballListener implements Listener {
                 float explosion = (float) Double.parseDouble(properties[2]);
 
                 Fireball fireball = player.launchProjectile(Fireball.class);
-                Vector newVelocity = fireball.getVelocity().add(new Vector(0.1, 0.1, 0.1)).multiply(1.0);
                 fireball.setIsIncendiary(false);
                 fireball.setYield(explosion);
-                fireball.setVelocity(newVelocity);
                 Main.registerGameEntity(fireball, Main.getPlayerGameProfile(player).getGame());
 
                 event.setCancelled(true);

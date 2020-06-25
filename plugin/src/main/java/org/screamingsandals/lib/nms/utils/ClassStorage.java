@@ -52,6 +52,9 @@ public class ClassStorage {
 		public static final Class<?> PlayerConnection = safeGetClass("{nms}.PlayerConnection", "{f:net}.play.ServerPlayNetHandler", "{f:net}.NetHandlerPlayServer");
 		public static final Class<?> ServerConnection = safeGetClass("{nms}.ServerConnection", "{f:net}.NetworkSystem");
 		public static final Class<?> World = safeGetClass("{nms}.World", "{f:world}.World");
+
+		// 1.16
+		public static final Class<?> AttributeModifiable = safeGetClass("{nms}.AttributeModifiable", "{f:ent}.ai.attributes.ModifiableAttributeInstance");
 	}
 	
 	private static String checkNMSVersion() {
