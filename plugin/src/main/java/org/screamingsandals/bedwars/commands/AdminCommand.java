@@ -176,7 +176,8 @@ public class AdminCommand extends BaseCommand {
                                         .replace("%world%", loc_spawner.getWorld().getName())
                                         .replace("%team%", spawnerTeam)
                                         .replace("%holo%", String.valueOf(spawner.getHologramEnabled()));
-
+    
+                                
                                 player.sendMessage(spawnerM);
                             }
                         } else if (args.get(2).equalsIgnoreCase("stores")) {

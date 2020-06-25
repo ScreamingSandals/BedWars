@@ -2,10 +2,12 @@ package org.screamingsandals.lib.nms.utils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.function.Supplier;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.screamingsandals.bedwars.Main;
 
 public class ClassStorage {
 
@@ -28,7 +30,7 @@ public class ClassStorage {
 		public static final Class<?> EnumTitleAction = safeGetClass("{nms}.PacketPlayOutTitle$EnumTitleAction", "{nms}.EnumTitleAction", "{f:net}.play.server.STitlePacket$Type", "{f:net}.play.server.SPacketTitle$Type");
 		public static final Class<?> GenericAttributes = safeGetClass("{nms}.GenericAttributes", "{f:ent}.SharedMonsterAttributes");
 		public static final Class<?> IChatBaseComponent = safeGetClass("{nms}.IChatBaseComponent", "{f:util}.text.ITextComponent");
-		public static final Class<?> IAttribute = safeGetClass("{nms}.IAttribute", "{f:ent}.ai.attributes.IAttribute");
+		public static final Class<?> IAttribute = safeGetClass("{nms}.IAttribute", "{nms}.AttributeBase", "{f:ent}.ai.attributes.IAttribute", "{f:ent}.ai.attributes.Attribute"); // since 1.16, IAttribute no longer exists
 		public static final Class<?> MinecraftServer = safeGetClass("{nms}.MinecraftServer", "{f:nms}.MinecraftServer");
 		public static final Class<?> NBTTagCompound = safeGetClass("{nms}.NBTTagCompound", "{f:nbt}.CompoundNBT", "{f:nbt}.NBTTagCompound");
 		public static final Class<?> NetworkManager = safeGetClass("{nms}.NetworkManager", "{f:net}.NetworkManager");
@@ -271,8 +273,15 @@ public class ClassStorage {
 	public static Object obtainNewPathfinderSelector(Object handler) {
 		try {
 			Object world = getMethod(handler, "getWorld,func_130014_f_").invoke();
-			return NMS.PathfinderGoalSelector.getConstructors()[0].newInstance(getMethodProfiler(world));
+			try {
+				// 1.16
+				return NMS.PathfinderGoalSelector.getConstructor(Supplier.class).newInstance((Supplier<?>) () -> getMethodProfiler(world));
+			} catch (Throwable ignored) {
+				// Pre 1.16
+				return NMS.PathfinderGoalSelector.getConstructors()[0].newInstance(getMethodProfiler(world));
+			}
 		} catch (Throwable t) {
+			t.printStackTrace();
 		}
 		return null;
 	}
