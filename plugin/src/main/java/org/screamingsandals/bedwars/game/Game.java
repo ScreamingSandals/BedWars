@@ -331,7 +331,9 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         }
 
         if (replaced.getType() != Material.AIR) {
-            if (Main.isBreakableBlock(replaced.getType()) || region.isLiquid(replaced.getType()) || region.isBlockAddedDuringGame(replaced.getLocation())) {
+            if (region.isBlockAddedDuringGame(replaced.getLocation())) {
+                return true;
+            } else if (Main.isBreakableBlock(replaced.getType()) || region.isLiquid(replaced.getType())) {
                 region.putOriginalBlock(block.getLocation(), replaced);
             } else {
                 return false;
