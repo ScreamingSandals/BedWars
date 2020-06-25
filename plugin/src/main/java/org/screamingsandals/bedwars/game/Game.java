@@ -6,6 +6,7 @@ import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
+import org.bukkit.block.data.type.RespawnAnchor;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.configuration.ConfigurationSection;
@@ -330,9 +331,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         }
 
         if (replaced.getType() != Material.AIR) {
-            if (Main.isBreakableBlock(replaced.getType())) {
-                region.putOriginalBlock(block.getLocation(), replaced);
-            } else if (region.isLiquid(replaced.getType())) {
+            if (Main.isBreakableBlock(replaced.getType()) || region.isLiquid(replaced.getType()) || region.isBlockAddedDuringGame(replaced.getLocation())) {
                 region.putOriginalBlock(block.getLocation(), replaced);
             } else {
                 return false;
@@ -405,7 +404,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 if (getPlayerTeam(player).teamInfo.bed.equals(loc)) {
                     return false;
                 }
-                bedDestroyed(loc, player.player, true);
+                bedDestroyed(loc, player.player, true, false);
                 region.putOriginalBlock(block.getLocation(), block.getState());
                 if (block.getLocation().equals(loc)) {
                     Block neighbor = region.getBedNeighbor(block);
@@ -427,7 +426,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 if (getPlayerTeam(player).teamInfo.bed.equals(loc)) {
                     return false;
                 }
-                bedDestroyed(loc, player.player, false);
+                bedDestroyed(loc, player.player, false, "RESPAWN_ANCHOR".equals(block.getType().name()));
                 region.putOriginalBlock(loc, block.getState());
                 try {
                     event.setDropItems(false);
@@ -475,7 +474,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         return null;
     }
 
-    private void bedDestroyed(Location loc, Player broker, boolean isItBedBlock) {
+    private void bedDestroyed(Location loc, Player broker, boolean isItBedBlock, boolean isItAnchor) {
         if (status == GameStatus.RUNNING) {
             for (CurrentTeam team : teamsInGame) {
                 if (team.teamInfo.bed.equals(loc)) {
@@ -484,12 +483,12 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                     for (GamePlayer player : players) {
                         String colored_broker = getPlayerTeam(Main.getPlayerGameProfile(broker)).teamInfo.color.chatColor + broker.getDisplayName();
                         Title.send(player.player,
-                                i18n(isItBedBlock ? "bed_is_destroyed" : "target_is_destroyed", false)
+                                i18n(isItBedBlock ? "bed_is_destroyed" : (isItAnchor ? "anchor_is_destroyed" : "target_is_destroyed"), false)
                                         .replace("%team%", team.teamInfo.color.chatColor + team.teamInfo.name)
                                         .replace("%broker%", colored_broker),
                                 i18n(getPlayerTeam(player) == team ? "bed_is_destroyed_subtitle_for_victim"
                                         : "bed_is_destroyed_subtitle", false));
-                        player.player.sendMessage(i18n(isItBedBlock ? "bed_is_destroyed" : "target_is_destroyed")
+                        player.player.sendMessage(i18n(isItBedBlock ? "bed_is_destroyed" : (isItAnchor ? "anchor_is_destroyed" : "target_is_destroyed"))
                                 .replace("%team%", team.teamInfo.color.chatColor + team.teamInfo.name)
                                 .replace("%broker%", colored_broker));
                         SpawnEffects.spawnEffect(this, player.player, "game-effects.beddestroy");
@@ -500,7 +499,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
                     if (team.hasBedHolo()) {
                         team.getBedHolo().setLine(0,
-                                i18nonly(isItBedBlock ? "protect_your_bed_destroyed" : "protect_your_target_destroyed"));
+                                i18nonly(isItBedBlock ? "protect_your_bed_destroyed" : (isItAnchor ? "protect_your_anchor_destroyed": "protect_your_target_destroyed")));
                         team.getBedHolo().addViewers(team.getConnectedPlayers());
                     }
 
@@ -1661,20 +1660,42 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                         }
                     }
 
+                    for (CurrentTeam team : teamsInGame) {
+                        Block block = team.getTargetBlock().getBlock();
+                        if (block != null && "RESPAWN_ANCHOR".equals(block.getType().name())) { // don't break the game for older servers
+                            RespawnAnchor anchor = (RespawnAnchor) block.getBlockData();
+                            anchor.setCharges(0);
+                            block.setBlockData(anchor);
+                            if (Main.getConfigurator().config.getBoolean("target-block.respawn-anchor.fill-on-start")) {
+                                new BukkitRunnable() {
+                                    public void run() {
+                                        anchor.setCharges(anchor.getCharges() + 1);
+                                        block.getWorld().playSound(block.getLocation(), Sound.BLOCK_RESPAWN_ANCHOR_CHARGE, 1, 1);
+                                        block.setBlockData(anchor);
+                                        if (anchor.getCharges() >= anchor.getMaximumCharges()) {
+                                            this.cancel();
+                                        }
+                                    }
+                                }.runTaskTimer(Main.getInstance(), 50L, 10L);
+                            }
+                        }
+                    }
+
                     if (getOriginalOrInheritedHoloAboveBed()) {
                         for (CurrentTeam team : teamsInGame) {
                             Block bed = team.teamInfo.bed.getBlock();
                             Location loc = team.teamInfo.bed.clone().add(0.5, 1.5, 0.5);
                             boolean isBlockTypeBed = region.isBedBlock(bed.getState());
+                            boolean isAnchor = "RESPAWN_ANCHOR".equals(bed.getType().name());
                             List<Player> enemies = getConnectedPlayers();
                             enemies.removeAll(team.getConnectedPlayers());
                             Hologram holo = Main.getHologramManager().spawnHologram(enemies, loc,
-                                    i18nonly(isBlockTypeBed ? "destroy_this_bed" : "destroy_this_target")
+                                    i18nonly(isBlockTypeBed ? "destroy_this_bed" : (isAnchor ? "destroy_this_anchor" : "destroy_this_target"))
                                             .replace("%teamcolor%", team.teamInfo.color.chatColor.toString()));
                             createdHolograms.add(holo);
                             team.setBedHolo(holo);
                             Hologram protectHolo = Main.getHologramManager().spawnHologram(team.getConnectedPlayers(), loc,
-                                    i18nonly(isBlockTypeBed ? "protect_your_bed" : "protect_your_target")
+                                    i18nonly(isBlockTypeBed ? "protect_your_bed" : (isAnchor ? "protect_your_anchor" : "protect_your_target"))
                                             .replace("%teamcolor%", team.teamInfo.color.chatColor.toString()));
                             createdHolograms.add(protectHolo);
                             team.setProtectHolo(protectHolo);

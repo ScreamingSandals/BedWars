@@ -406,6 +406,9 @@ public class Configurator {
         checkOrSetConfig(modify, "update-checker.one.console", true);
         checkOrSetConfig(modify, "update-checker.one.admins", true);
 
+        checkOrSetConfig(modify, "target-block.respawn-anchor.fill-on-start", true);
+        checkOrSetConfig(modify, "target-block.respawn-anchor.enable-decrease", true);
+
         checkOrSetConfig(modify, "version", 2);
 
         if (modify.get()) {

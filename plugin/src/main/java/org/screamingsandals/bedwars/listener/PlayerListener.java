@@ -1,13 +1,11 @@
 package org.screamingsandals.bedwars.listener;
 
 import net.milkbowl.vault.chat.Chat;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
+import org.bukkit.block.data.type.RespawnAnchor;
 import org.bukkit.entity.*;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
@@ -25,7 +23,6 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.Cake;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -103,7 +100,18 @@ public class PlayerListener implements Listener {
 
                 CurrentTeam team = game.getPlayerTeam(gVictim);
                 SpawnEffects.spawnEffect(game, victim, "game-effects.kill");
-                if (!team.isBed) {
+                boolean isBed = team.isBed;
+                if (isBed && Main.getConfigurator().config.getBoolean("target-block.respawn-anchor.enable-decrease") && "RESPAWN_ANCHOR".equals(team.teamInfo.bed.getBlock().getType().name())) {
+                    RespawnAnchor anchor = (RespawnAnchor) team.teamInfo.bed.getBlock().getBlockData();
+                    int charges = anchor.getCharges();
+                    if (charges <= 0) {
+                        isBed = false;
+                    } else {
+                        anchor.setCharges(charges - 1);
+                        team.teamInfo.bed.getBlock().setBlockData(anchor);
+                    }
+                }
+                if (!isBed) {
                     gVictim.isSpectator = true;
                     team.players.remove(gVictim);
                     team.getScoreboardTeam().removeEntry(victim.getName());
@@ -124,7 +132,7 @@ public class PlayerListener implements Listener {
                 if (Main.isPlayerInGame(killer)) {
                     GamePlayer gKiller = Main.getPlayerGameProfile(killer);
                     if (gKiller.getGame() == game) {
-                        if (!onlyOnBedDestroy || !team.isBed) {
+                        if (!onlyOnBedDestroy || !isBed) {
                             game.dispatchRewardCommands("player-kill", killer,
                                     Main.getConfigurator().config.getInt("statistics.scores.kill", 10));
                         }
@@ -151,16 +159,14 @@ public class PlayerListener implements Listener {
                     PlayerStatistic diePlayer = Main.getPlayerStatisticsManager().getStatistic(victim);
                     PlayerStatistic killerPlayer;
 
-                    boolean teamIsDead = !team.isBed;
-
-                    if (!onlyOnBedDestroy || teamIsDead) {
+                    if (!onlyOnBedDestroy || !isBed) {
                         diePlayer.setCurrentDeaths(diePlayer.getCurrentDeaths() + 1);
                         diePlayer.setCurrentScore(diePlayer.getCurrentScore()
                                 + Main.getConfigurator().config.getInt("statistics.scores.die", 0));
                     }
 
                     if (killer != null) {
-                        if (!onlyOnBedDestroy || teamIsDead) {
+                        if (!onlyOnBedDestroy || !isBed) {
                             killerPlayer = Main.getPlayerStatisticsManager().getStatistic(killer);
                             if (killerPlayer != null) {
                                 killerPlayer.setCurrentKills(killerPlayer.getCurrentKills() + 1);
@@ -652,9 +658,7 @@ public class PlayerListener implements Listener {
                             .valueOf(Main.getConfigurator().config.getString("items.leavegame", "SLIME_BALL"))) {
                         game.leaveFromGame(player);
                     }
-                }
-
-                if (game.getStatus() == GameStatus.RUNNING) {
+                } else if (game.getStatus() == GameStatus.RUNNING) {
                     if (event.getClickedBlock() != null) {
                         if (event.getClickedBlock().getType() == Material.ENDER_CHEST) {
                             Block chest = event.getClickedBlock();
@@ -690,35 +694,54 @@ public class PlayerListener implements Listener {
                 }
 
                 if (event.getClickedBlock() != null) {
-                    if (game.getRegion().isBedBlock(event.getClickedBlock().getState())) {
+                    if (game.getRegion().isBedBlock(event.getClickedBlock().getState()) || event.getClickedBlock().getType().name().equals("RESPAWN_ANCHOR")) {
                         // prevent Essentials to set home in arena
                         event.setCancelled(true);
 
                         if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
                             ItemStack stack = event.getItem();
-                            if (stack != null && stack.getAmount() > 0 && stack.getType().isBlock()) {
-                                BlockFace face = event.getBlockFace();
-                                Block block = event.getClickedBlock().getLocation().clone().add(MiscUtils.getDirection(face))
-                                        .getBlock();
-                                if (block.getType() == Material.AIR) {
-                                    BlockState originalState = block.getState();
-                                    block.setType(stack.getType());
-                                    try {
-                                        // The method is no longer in API, but in legacy versions exists
-                                        Block.class.getMethod("setData", byte.class).invoke(block,
-                                                (byte) stack.getDurability());
-                                    } catch (Exception e) {
-                                    }
-                                    BlockPlaceEvent bevent = new BlockPlaceEvent(block, originalState,
-                                            event.getClickedBlock(), stack, player, true);
-                                    Bukkit.getPluginManager().callEvent(bevent);
-
-                                    if (bevent.isCancelled()) {
-                                        originalState.update(true, false);
-                                    } else {
+                            if (stack != null && stack.getAmount() > 0) {
+                                boolean anchorFilled = false;
+                                if (Main.getConfigurator().config.getBoolean("target-block.respawn-anchor.enable-decrease")
+                                        && event.getClickedBlock().getType().name().equals("RESPAWN_ANCHOR")
+                                        && game.getPlayerTeam(gPlayer).teamInfo.bed.equals(event.getClickedBlock().getLocation())
+                                        && event.getItem() != null && event.getItem().getType() == Material.GLOWSTONE) {
+                                    RespawnAnchor anchor = (RespawnAnchor) event.getClickedBlock().getBlockData();
+                                    int charges = anchor.getCharges();
+                                    charges++;
+                                    if (charges <= anchor.getMaximumCharges()) {
+                                        anchorFilled = true;
+                                        anchor.setCharges(charges);
+                                        event.getClickedBlock().setBlockData(anchor);
                                         stack.setAmount(stack.getAmount() - 1);
-                                        // TODO get right block place sound
-                                        Sounds.BLOCK_STONE_PLACE.playSound(player, block.getLocation(), 1, 1);
+                                        event.getClickedBlock().getWorld().playSound(event.getClickedBlock().getLocation(), Sound.BLOCK_RESPAWN_ANCHOR_CHARGE, 1,1);
+                                    }
+                                }
+
+                                if (!anchorFilled && stack.getType().isBlock()) {
+                                    BlockFace face = event.getBlockFace();
+                                    Block block = event.getClickedBlock().getLocation().clone().add(MiscUtils.getDirection(face))
+                                            .getBlock();
+                                    if (block.getType() == Material.AIR) {
+                                        BlockState originalState = block.getState();
+                                        block.setType(stack.getType());
+                                        try {
+                                            // The method is no longer in API, but in legacy versions exists
+                                            Block.class.getMethod("setData", byte.class).invoke(block,
+                                                    (byte) stack.getDurability());
+                                        } catch (Exception e) {
+                                        }
+                                        BlockPlaceEvent bevent = new BlockPlaceEvent(block, originalState,
+                                                event.getClickedBlock(), stack, player, true);
+                                        Bukkit.getPluginManager().callEvent(bevent);
+
+                                        if (bevent.isCancelled()) {
+                                            originalState.update(true, false);
+                                        } else {
+                                            stack.setAmount(stack.getAmount() - 1);
+                                            // TODO get right block place sound
+                                            Sounds.BLOCK_STONE_PLACE.playSound(player, block.getLocation(), 1, 1);
+                                        }
                                     }
                                 }
                             }
