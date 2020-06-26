@@ -292,4 +292,4 @@ help_bw_admin_spawner_remove: "/bw admin <aréna> spawner remove - &eSmaže vše
 arena_info_spawner_no_team: "&cŽádný tým"
 help_bw_admin_store_child: "/bw admin <aréna> store child - &eOznačí entitu daného obchodníka jako mládě"
 help_bw_admin_store_adult: "/bw admin <aréna> store adult - &eOznačí daného obchodníka jako dospělého"
-admin_command_store_child_state: "&aVariable isBaby for this shopkeeper has been changed to &7%value%"
+admin_command_store_child_state: "&aProměnná isBaby pro tohoto obchodníka byla nastavena na &7%value%"
