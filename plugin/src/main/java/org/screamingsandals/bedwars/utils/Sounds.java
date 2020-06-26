@@ -1001,7 +1001,9 @@ public enum Sounds {
     UI_TOAST_IN("UI_TOAST_IN"),
     UI_TOAST_OUT("UI_TOAST_OUT"),
     WEATHER_RAIN("AMBIENCE_RAIN", "WEATHER_RAIN"),
-    WEATHER_RAIN_ABOVE("WEATHER_RAIN_ABOVE");
+    WEATHER_RAIN_ABOVE("WEATHER_RAIN_ABOVE"),
+    BLOCK_RESPAWN_ANCHOR_CHARGE("BLOCK_RESPAWN_ANCHOR_CHARGE"),
+    BLOCK_RESPAWN_ANCHOR_DEPLETE("BLOCK_RESPAWN_ANCHOR_DEPLETE");
 
     private String[] versionDependentNames;
     private Sound cached = null;
@@ -1025,6 +1027,21 @@ public enum Sounds {
         }
     }
 
+    public void playSound(Location location, float volume, float pitch) {
+        if (cached != null) {
+            location.getWorld().playSound(location, cached, volume, pitch);
+        }
+        for (String name : versionDependentNames) {
+            try {
+                cached = Sound.valueOf(name);
+                location.getWorld().playSound(location, cached, volume, pitch);
+                return;
+            } catch (IllegalArgumentException ignore2) {
+
+            }
+        }
+    }
+
     public static void playSound(Player player, Location location, String name, Sounds fallbackSound, float volume, float pitch) {
         try {
             Sounds sound = Sounds.valueOf(name.toUpperCase());
@@ -1037,6 +1054,23 @@ public enum Sounds {
             } catch (IllegalArgumentException t) {
                 if (fallbackSound != null) {
                     fallbackSound.playSound(player, location, volume, pitch);
+                }
+            }
+        }
+    }
+
+    public static void playSound(Location location, String name, Sounds fallbackSound, float volume, float pitch) {
+        try {
+            Sounds sound = Sounds.valueOf(name.toUpperCase());
+            sound.playSound(location, volume, pitch);
+        } catch (IllegalArgumentException | NullPointerException ex) {
+            try {
+                // If something is exists in bukkit, but not in this mapping
+                Sound s = Sound.valueOf(name);
+                location.getWorld().playSound(location, s, volume, pitch);
+            } catch (IllegalArgumentException t) {
+                if (fallbackSound != null) {
+                    fallbackSound.playSound(location, volume, pitch);
                 }
             }
         }

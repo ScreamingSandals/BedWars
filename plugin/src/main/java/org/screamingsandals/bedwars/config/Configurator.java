@@ -150,6 +150,7 @@ public class Configurator {
         checkOrSetConfig(modify, "scoreboard.enable", true);
         checkOrSetConfig(modify, "scoreboard.title", "§a%game%§r - %time%");
         checkOrSetConfig(modify, "scoreboard.bedLost", "§c\u2718");
+        checkOrSetConfig(modify, "scoreboard.anchorEmpty", "§e\u2718");
         checkOrSetConfig(modify, "scoreboard.bedExists", "§a\u2714");
         checkOrSetConfig(modify, "scoreboard.teamTitle", "%bed%%color%%team%");
 
@@ -408,6 +409,9 @@ public class Configurator {
 
         checkOrSetConfig(modify, "target-block.respawn-anchor.fill-on-start", true);
         checkOrSetConfig(modify, "target-block.respawn-anchor.enable-decrease", true);
+        checkOrSetConfig(modify, "target-block.respawn-anchor.sound.charge", "BLOCK_RESPAWN_ANCHOR_CHARGE");
+        checkOrSetConfig(modify, "target-block.respawn-anchor.sound.used", "BLOCK_GLASS_BREAK");
+        checkOrSetConfig(modify, "target-block.respawn-anchor.sound.deplete", "BLOCK_RESPAWN_ANCHOR_DEPLETE");
 
         checkOrSetConfig(modify, "version", 2);
 

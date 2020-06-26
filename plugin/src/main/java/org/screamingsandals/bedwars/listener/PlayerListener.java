@@ -109,6 +109,12 @@ public class PlayerListener implements Listener {
                     } else {
                         anchor.setCharges(charges - 1);
                         team.teamInfo.bed.getBlock().setBlockData(anchor);
+                        if (anchor.getCharges() == 0) {
+                            Sounds.playSound(team.teamInfo.bed, Main.getConfigurator().config.getString("target-block.respawn-anchor.sound.deplete"), Sounds.BLOCK_RESPAWN_ANCHOR_DEPLETE, 1, 1);
+                            game.updateScoreboard();
+                        } else {
+                            Sounds.playSound(team.teamInfo.bed, Main.getConfigurator().config.getString("target-block.respawn-anchor.sound.used"), Sounds.BLOCK_GLASS_BREAK, 1, 1);
+                        }
                     }
                 }
                 if (!isBed) {
@@ -698,7 +704,7 @@ public class PlayerListener implements Listener {
                         // prevent Essentials to set home in arena
                         event.setCancelled(true);
 
-                        if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+                        if (event.getAction() == Action.RIGHT_CLICK_BLOCK && game.getStatus() == GameStatus.RUNNING && !gPlayer.isSpectator) {
                             ItemStack stack = event.getItem();
                             if (stack != null && stack.getAmount() > 0) {
                                 boolean anchorFilled = false;
@@ -714,7 +720,8 @@ public class PlayerListener implements Listener {
                                         anchor.setCharges(charges);
                                         event.getClickedBlock().setBlockData(anchor);
                                         stack.setAmount(stack.getAmount() - 1);
-                                        event.getClickedBlock().getWorld().playSound(event.getClickedBlock().getLocation(), Sound.BLOCK_RESPAWN_ANCHOR_CHARGE, 1,1);
+                                        Sounds.playSound(event.getClickedBlock().getLocation(), Main.getConfigurator().config.getString("target-block.respawn-anchor.sound.charge"), Sounds.BLOCK_RESPAWN_ANCHOR_CHARGE, 1, 1);
+                                        game.updateScoreboard();
                                     }
                                 }
 

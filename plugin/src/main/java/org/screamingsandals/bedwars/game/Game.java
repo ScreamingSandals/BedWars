@@ -1672,9 +1672,10 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                                 new BukkitRunnable() {
                                     public void run() {
                                         anchor.setCharges(anchor.getCharges() + 1);
-                                        block.getWorld().playSound(block.getLocation(), Sound.BLOCK_RESPAWN_ANCHOR_CHARGE, 1, 1);
+                                        Sounds.playSound(team.getTargetBlock(), Main.getConfigurator().config.getString("target-block.respawn-anchor.sound.charge"), Sounds.BLOCK_RESPAWN_ANCHOR_CHARGE, 1, 1);
                                         block.setBlockData(anchor);
                                         if (anchor.getCharges() >= anchor.getMaximumCharges()) {
+                                            updateScoreboard();
                                             this.cancel();
                                         }
                                     }
@@ -2128,10 +2129,11 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         obj.setDisplayName(this.formatScoreboardTitle());
 
         for (CurrentTeam team : teamsInGame) {
-            this.gameScoreboard.resetScores(this.formatScoreboardTeam(team, false));
-            this.gameScoreboard.resetScores(this.formatScoreboardTeam(team, true));
+            this.gameScoreboard.resetScores(this.formatScoreboardTeam(team, false, false));
+            this.gameScoreboard.resetScores(this.formatScoreboardTeam(team, false, true));
+            this.gameScoreboard.resetScores(this.formatScoreboardTeam(team, true, false));
 
-            Score score = obj.getScore(this.formatScoreboardTeam(team, !team.isBed));
+            Score score = obj.getScore(this.formatScoreboardTeam(team, !team.isBed, team.isBed && "RESPAWN_ANCHOR".equals(team.teamInfo.bed.getBlock().getType().name()) && ((RespawnAnchor) team.teamInfo.bed.getBlock().getBlockData()).getCharges() == 0));
             score.setScore(team.players.size());
         }
 
@@ -2140,14 +2142,14 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         }
     }
 
-    private String formatScoreboardTeam(CurrentTeam team, boolean destroy) {
+    private String formatScoreboardTeam(CurrentTeam team, boolean destroy, boolean empty) {
         if (team == null) {
             return "";
         }
 
         return Main.getConfigurator().config.getString("scoreboard.teamTitle")
                 .replace("%color%", team.teamInfo.color.chatColor.toString()).replace("%team%", team.teamInfo.name)
-                .replace("%bed%", destroy ? bedLostString() : bedExistString());
+                .replace("%bed%", destroy ? bedLostString() : (empty ? anchorEmptyString() : bedExistString()));
     }
 
     public static String bedExistString() {
@@ -2156,6 +2158,10 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
     public static String bedLostString() {
         return Main.getConfigurator().config.getString("scoreboard.bedLost");
+    }
+
+    public static String anchorEmptyString() {
+        return Main.getConfigurator().config.getString("scoreboard.anchorEmpty");
     }
 
     private void updateScoreboardTimer() {

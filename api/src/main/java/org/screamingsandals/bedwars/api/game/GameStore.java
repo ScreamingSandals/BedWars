@@ -71,6 +71,11 @@ public class GameStore {
             if (entity instanceof Villager) {
                 ((Villager) entity).setProfession(Villager.Profession.FARMER);
             }
+
+            try {
+                entity.getClass().getMethod("setBaby", boolean.class).invoke(entity, false);
+            } catch (Throwable ignored) {
+            }
         }
         return entity;
     }
