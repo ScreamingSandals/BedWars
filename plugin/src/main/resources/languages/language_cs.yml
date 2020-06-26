@@ -290,6 +290,6 @@ help_bw_alljoin: "/bw alljoin [aréna] -  &aPřipojí všechny hráče na server
 admin_command_removed_spawners: "&7%count% &aspawnerů bylo smazáno z &7%x%&a/&7%y%&a/&7%z%"
 help_bw_admin_spawner_remove: "/bw admin <aréna> spawner remove - &eSmaže všechny spawnery v dané lokaci"
 arena_info_spawner_no_team: "&cŽádný tým"
-help_bw_admin_store_child: "/bw admin <arena> store child - &eMark this shopkeeper as child"
-help_bw_admin_store_adult: "/bw admin <arena> store adult - &eMark this shopkeeper as adult"
+help_bw_admin_store_child: "/bw admin <aréna> store child - &eOznačí entitu daného obchodníka jako mládě"
+help_bw_admin_store_adult: "/bw admin <aréna> store adult - &eOznačí daného obchodníka jako dospělého"
 admin_command_store_child_state: "&aVariable isBaby for this shopkeeper has been changed to &7%value%"
