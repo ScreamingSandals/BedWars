@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static misat11.lib.lang.I.i18nonly;
 import static misat11.lib.lang.I18n.i18n;
 
 public class GameCreator {
@@ -182,6 +183,10 @@ public class GameCreator {
                     }
                 } else if (args[0].equalsIgnoreCase("remove")) {
                     response = removeStore(player.getLocation());
+                } else if (args[0].equalsIgnoreCase("child")) {
+                    response = setStoreAge(player.getLocation(), true);
+                } else if (args[0].equalsIgnoreCase("adult")) {
+                    response = setStoreAge(player.getLocation(), false);
                 } else if (args[0].equalsIgnoreCase("type")) {
                     if (args.length >= 2) {
                         response = changeStoreEntityType(player.getLocation(), args[1]);
@@ -712,7 +717,7 @@ public class GameCreator {
         if (name != null) {
             name = ChatColor.translateAlternateColorCodes('&', name);
         }
-        villagerstores.put(location, new GameStore(loc, shop, useParent, name, name != null));
+        villagerstores.put(location, new GameStore(loc, shop, useParent, name, name != null, false));
         return i18n("admin_command_store_added").replace("%x%", Double.toString(loc.getX()))
                 .replace("%y%", Double.toString(loc.getY())).replace("%z%", Double.toString(loc.getZ()))
                 .replace("%yaw%", Float.toString(loc.getYaw())).replace("%pitch%", Float.toString(loc.getPitch()));
@@ -739,6 +744,17 @@ public class GameCreator {
             villagerstores.get(location).setEntityType(t);
 
             return i18n("admin_command_store_living_entity_type_set").replace("%type%", t.toString());
+        }
+
+        return i18n("admin_command_store_not_exists");
+    }
+
+    private String setStoreAge(Location loc, boolean child) {
+        String location = loc.getBlockX() + ";" + loc.getBlockY() + ";" + loc.getBlockZ();
+        if (villagerstores.containsKey(location)) {
+            villagerstores.get(location).setBaby(child);
+
+            return i18n("admin_command_store_child_state").replace("%value%", i18nonly(child ? "arena_info_config_true" : "arena_info_config_false"));
         }
 
         return i18n("admin_command_store_not_exists");

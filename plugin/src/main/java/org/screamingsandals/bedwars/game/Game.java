@@ -851,10 +851,10 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                     game.gameStore.add(new GameStore(MiscUtils.readLocationFromString(game.world, map.get("loc")),
                             map.get("shop"), "true".equals(map.getOrDefault("parent", "true")),
                             EntityType.valueOf(map.getOrDefault("type", "VILLAGER").toUpperCase()),
-                            map.getOrDefault("name", ""), map.containsKey("name")));
+                            map.getOrDefault("name", ""), map.containsKey("name"), "true".equals(map.getOrDefault("isBaby", "false"))));
                 } else if (store instanceof String) {
                     game.gameStore.add(new GameStore(MiscUtils.readLocationFromString(game.world, (String) store), null,
-                            true, EntityType.VILLAGER, "", false));
+                            true, EntityType.VILLAGER, "", false, false));
                 }
             }
         }
@@ -1012,6 +1012,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 if (store.isShopCustomName()) {
                     map.put("name", store.getShopCustomName());
                 }
+                map.put("isBaby",store.isBaby() ? "true" : "false");
                 nL.add(map);
             }
             configMap.set("stores", nL);

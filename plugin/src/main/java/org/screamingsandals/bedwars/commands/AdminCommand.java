@@ -499,7 +499,7 @@ public class AdminCommand extends BaseCommand {
             }
         } else if (args.get(1).equalsIgnoreCase("store")) {
             if (args.size() == 3) {
-                completion.addAll(Arrays.asList("add", "remove", "type"));
+                completion.addAll(Arrays.asList("add", "remove", "type", "child", "adult"));
             }
             if (args.size() == 4 && args.get(2).equalsIgnoreCase("type")) {
                 for (EntityType type : EntityType.values()) {

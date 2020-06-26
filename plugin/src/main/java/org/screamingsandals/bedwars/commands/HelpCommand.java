@@ -80,6 +80,9 @@ public class HelpCommand extends BaseCommand {
             player.sendMessage(i18nonly("help_bw_admin_spawner_remove"));
             player.sendMessage(i18nonly("help_bw_admin_spawner_reset"));
             player.sendMessage(i18nonly("help_bw_admin_store_add"));
+            player.sendMessage(i18nonly("help_bw_admin_store_type"));
+            player.sendMessage(i18nonly("help_bw_admin_store_child"));
+            player.sendMessage(i18nonly("help_bw_admin_store_adult"));
             player.sendMessage(i18nonly("help_bw_admin_store_remove"));
             player.sendMessage(i18nonly("help_bw_admin_config"));
             player.sendMessage(i18nonly("help_bw_admin_arena_time"));
