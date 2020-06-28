@@ -101,7 +101,7 @@ public class PlayerListener implements Listener {
                 CurrentTeam team = game.getPlayerTeam(gVictim);
                 SpawnEffects.spawnEffect(game, victim, "game-effects.kill");
                 boolean isBed = team.isBed;
-                if (isBed && Main.getConfigurator().config.getBoolean("target-block.respawn-anchor.enable-decrease") && "RESPAWN_ANCHOR".equals(team.teamInfo.bed.getBlock().getType().name())) {
+                if (isBed && game.getOriginalOrInheritedAnchorDecreasing() && "RESPAWN_ANCHOR".equals(team.teamInfo.bed.getBlock().getType().name())) {
                     RespawnAnchor anchor = (RespawnAnchor) team.teamInfo.bed.getBlock().getBlockData();
                     int charges = anchor.getCharges();
                     if (charges <= 0) {
@@ -708,7 +708,7 @@ public class PlayerListener implements Listener {
                             ItemStack stack = event.getItem();
                             if (stack != null && stack.getAmount() > 0) {
                                 boolean anchorFilled = false;
-                                if (Main.getConfigurator().config.getBoolean("target-block.respawn-anchor.enable-decrease")
+                                if (game.getOriginalOrInheritedAnchorDecreasing()
                                         && event.getClickedBlock().getType().name().equals("RESPAWN_ANCHOR")
                                         && game.getPlayerTeam(gPlayer).teamInfo.bed.equals(event.getClickedBlock().getLocation())
                                         && event.getItem() != null && event.getItem().getType() == Material.GLOWSTONE) {

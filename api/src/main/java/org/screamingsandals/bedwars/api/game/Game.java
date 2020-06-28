@@ -645,5 +645,27 @@ public interface Game {
      */
     boolean isProtectionActive(Player player);
 
+    /* --- ANCHOR WARS --- */
+
+    /**
+     * @return
+     */
+    InGameConfigBooleanConstants getAnchorAutoFill();
+
+    /**
+     * @return
+     */
+    boolean getOriginalOrInheritedAnchorAutoFill();
+
+    /**
+     * @return
+     */
+    InGameConfigBooleanConstants getAnchorDecreasing();
+
+    /**
+     * @return
+     */
+    boolean getOriginalOrInheritedAnchorDecreasing();
+
 
 }

@@ -164,6 +164,14 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     public static final String STOP_TEAM_SPAWNERS_ON_DIE = "stop-team-spawners-on-die";
     private InGameConfigBooleanConstants stopTeamSpawnersOnDie = InGameConfigBooleanConstants.INHERIT;
 
+    public static final String GLOBAL_ANCHOR_AUTO_FILL = "target-block.respawn-anchor.fill-on-start";
+    public static final String ANCHOR_AUTO_FILL = "anchor-auto-fill";
+    private InGameConfigBooleanConstants anchorAutoFill = InGameConfigBooleanConstants.INHERIT;
+
+    public static final String GLOBAL_ANCHOR_DECREASING = "target-block.respawn-anchor.enable-decrease";
+    public static final String ANCHOR_DECREASING = "anchor-decreasing";
+    private InGameConfigBooleanConstants anchorDecreasing = InGameConfigBooleanConstants.INHERIT;
+
     public boolean gameStartItem;
     private boolean preServerRestart = false;
     public static final int POST_GAME_WAITING = 3;
@@ -896,6 +904,8 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 configMap.getString("constant." + ALLOW_BLOCK_FALLING, "inherit"));
         game.holoAboveBed = readBooleanConstant(configMap.getString("constant." + HOLO_ABOVE_BED, "inherit"));
         game.spectatorJoin = readBooleanConstant(configMap.getString("constant." + SPECTATOR_JOIN, "inherit"));
+        game.anchorAutoFill = readBooleanConstant(configMap.getString("constant." + ANCHOR_AUTO_FILL, "inherit"));
+        game.anchorDecreasing = readBooleanConstant(configMap.getString("constant." + ANCHOR_DECREASING, "inherit"));
 
         game.arenaTime = ArenaTime.valueOf(configMap.getString("arenaTime", ArenaTime.WORLD.name()).toUpperCase());
         game.arenaWeather = loadWeather(configMap.getString("arenaWeather", "default").toUpperCase());
@@ -1045,6 +1055,8 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         configMap.set("constant." + ALLOW_BLOCK_FALLING, writeBooleanConstant(allowBlockFalling));
         configMap.set("constant." + HOLO_ABOVE_BED, writeBooleanConstant(holoAboveBed));
         configMap.set("constant." + SPECTATOR_JOIN, writeBooleanConstant(spectatorJoin));
+        configMap.set("constant." + ANCHOR_AUTO_FILL, writeBooleanConstant(anchorAutoFill));
+        configMap.set("constant." + ANCHOR_DECREASING, writeBooleanConstant(anchorDecreasing));
 
         configMap.set("arenaTime", arenaTime.name());
         configMap.set("arenaWeather", arenaWeather == null ? "default" : arenaWeather.name());
@@ -1669,7 +1681,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                             RespawnAnchor anchor = (RespawnAnchor) block.getBlockData();
                             anchor.setCharges(0);
                             block.setBlockData(anchor);
-                            if (Main.getConfigurator().config.getBoolean("target-block.respawn-anchor.fill-on-start")) {
+                            if (getOriginalOrInheritedAnchorAutoFill()) {
                                 new BukkitRunnable() {
                                     public void run() {
                                         anchor.setCharges(anchor.getCharges() + 1);
@@ -3074,6 +3086,36 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     @Override
     public boolean isProtectionActive(Player player) {
         return (respawnProtectionMap.containsKey(player));
+    }
+
+    @Override
+    public InGameConfigBooleanConstants getAnchorAutoFill() {
+        return anchorAutoFill;
+    }
+
+    @Override
+    public boolean getOriginalOrInheritedAnchorAutoFill() {
+        return anchorAutoFill.isOriginal() ? anchorAutoFill.getValue()
+                : Main.getConfigurator().config.getBoolean(GLOBAL_ANCHOR_AUTO_FILL);
+    }
+
+    @Override
+    public InGameConfigBooleanConstants getAnchorDecreasing() {
+        return anchorDecreasing;
+    }
+
+    @Override
+    public boolean getOriginalOrInheritedAnchorDecreasing() {
+        return anchorDecreasing.isOriginal() ? anchorDecreasing.getValue()
+                : Main.getConfigurator().config.getBoolean(GLOBAL_ANCHOR_DECREASING);
+    }
+
+    public void setAnchorAutoFill(InGameConfigBooleanConstants anchorAutoFill) {
+        this.anchorAutoFill = anchorAutoFill;
+    }
+
+    public void setAnchorDecreasing(InGameConfigBooleanConstants anchorDecreasing) {
+        this.anchorDecreasing = anchorDecreasing;
     }
 
     public List<GamePlayer> getPlayersWithoutVIP() {
