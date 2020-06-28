@@ -238,7 +238,7 @@ public class NMSUtilsHologramInteraction implements IHologramInteraction, TouchH
         lines.add(i18n("statistics_deaths", false).replace("%deaths%",
                 Integer.toString(statistic.getDeaths() + statistic.getCurrentDeaths())));
         lines.add(i18n("statistics_kd", false).replace("%kd%",
-                Double.toString(statistic.getKD() + statistic.getCurrentKD())));
+                Double.toString(statistic.getCurrentKD())));
         lines.add(i18n("statistics_wins", false).replace("%wins%",
                 Integer.toString(statistic.getWins() + statistic.getCurrentWins())));
         lines.add(i18n("statistics_loses", false).replace("%loses%",
