@@ -166,7 +166,7 @@ public class ShopInventory implements Listener {
 				}
 				String name = (parent ? "+" : "-") + file;
 				if (!shopMap.containsKey(name)) {
-					if (Main.getConfigurator().config.getBoolean("turnOnExperimentalGroovyShop", false) && new File(Main.getInstance().getDataFolder(), file + ".groovy").exists()) {
+					if (/*Main.getConfigurator().config.getBoolean("turnOnExperimentalGroovyShop", false) &&*/ new File(Main.getInstance().getDataFolder(), file + ".groovy").exists()) {
 						loadNewShop(name, file + ".groovy", parent);
 					} else {
 						loadNewShop(name, file + ".yml", parent);
