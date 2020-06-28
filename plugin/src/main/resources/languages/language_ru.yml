@@ -134,21 +134,21 @@ scoreboards:
       - ""
       - "&c&lБОЙ НАСМЕРТЬ"
       - ""
-      - "%&eRemaining players: %playersCount%%"
+      - "%&eОсталось игроков: %playersCount%%"
     end-game:
       - ""
       - "%winnerMessage%"
       - ""
-      - "Finished in: %time%"
+      - "Завершено за: %time%"
       - ""
   teams:
     alive: "&a✔&r %teamColor%%teamName%"
     dead: "&c✖&r %teamColor%%teamName%"
 bossbars:
   content:
-    lobby: "&eGame is starting soon! &lNeeded players: &a%playersToStart%"
-    starting: "&aStarting in &e%timeToStart%"
-    game: "Let's play! Remaining time: %formattedRemainingTime%"
+    lobby: "&eИгра скоро начнется! &lНужно игроков: &a%playersToStart%"
+    starting: "&aНачало через &e%timeToStart%"
+    game: "Сыграем! Осталось времени: %formattedRemainingTime%"
     deathmatch: "NOW LET'S SEE! Remaining time: %time%"
     end-game: "%winnerMessage%"
   color:
