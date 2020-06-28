@@ -319,10 +319,16 @@ public class PlayerListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onBlockPlace(BlockPlaceEvent event) {
-        if (event.isCancelled())
-            return;
+        if (event.isCancelled()) {
+            if (Main.getConfigurator().config.getBoolean("event-hacks.place") && Main.isPlayerInGame(event.getPlayer())) {
+                event.setCancelled(false);
+            } else {
+                return;
+            }
+        }
+
         if (Main.isPlayerInGame(event.getPlayer())) {
             Game game = Main.getPlayerGameProfile(event.getPlayer()).getGame();
             if (game.getStatus() == GameStatus.WAITING) {
@@ -370,10 +376,14 @@ public class PlayerListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onBlockBreak(BlockBreakEvent event) {
         if (event.isCancelled()) {
-            return;
+            if (Main.getConfigurator().config.getBoolean("event-hacks.destroy") && Main.isPlayerInGame(event.getPlayer())) {
+                event.setCancelled(false);
+            } else {
+                return;
+            }
         }
 
         if (Main.isPlayerInGame(event.getPlayer())) {
@@ -494,7 +504,11 @@ public class PlayerListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onDamage(EntityDamageEvent event) {
         if (event.isCancelled()) {
-            return;
+            if (Main.getConfigurator().config.getBoolean("event-hacks.damage") && event.getEntity() instanceof Player && Main.isPlayerInGame((Player) event.getEntity())) {
+                event.setCancelled(false);
+            } else {
+                return;
+            }
         }
 
         if (!(event.getEntity() instanceof Player)) {
