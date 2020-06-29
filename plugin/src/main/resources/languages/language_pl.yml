@@ -62,28 +62,28 @@ game-builder:
   check-integrity:
     errors:
       not-created-yet: "&cNie stworzyłeś jeszcze gry."
-      not-enough-teams: "&cNie dodałeś wystarczającej liczby drużyn. Proszę dodaj conajmniej &e2 &cdrużyny."
-      not-enough-teams-line2: "&cSą już &e%count% &cgotowe drużyny."
-      not-enough-stores: "&cTak więc, musisz dodać co najmniej &e1 &cssklep."
+      not-enough-teams: "&cNie dodałeś wystarczającej liczby drużyn. Proszę dodaj co najmniej &e2 &cdrużyny."
+      not-enough-teams-line2: "&cIstnieje &e%count% &cgotowych drużyn."
+      not-enough-stores: "&cMusisz dodać co najmniej &e1 &csklep."
       game-world-does-not-exists: "&cOj, Świat gry nie jest ustawiony. Zdefiniuj pozycje lub świat gry."
       game-world-position-not-set: "&cO rany, pozycja %whatPosition% nie jest ustawiona. Zdefiniuj ją!"
       game-world-spectator-not-set: "&cSpawn spectatora nie jest ustawiony. &lZrób to!"
-      lobby-world-not-set: "&cOh ja, lobby-world nie jest ustawione. Zdefiniuj spawn lub ustaw lobby world!"
+      lobby-world-not-set: "&cOj, nie ustawiłeś w którym świecie znajduje się lobby. Zdefiniuj spawn lub świat, w którym się znajduje!"
       lobby-world-spawn-not-set: "&cOh ja, lobby spawn nie jest ustawiony. &lUstaw go!"
   created: "&aGra &e%game% &azostała utworzona! &lYAY!"
   store:
-    why-are-you-punching-your-shop: "&c&lSTÓJ! &ePrzestań mnie tłuc &6:("
+    why-are-you-punching-your-shop: "&c&lPRZESTAŃ! &eNie bij mnie &6:("
   spawners:
     hologram:
-      - "&eSpawner: %color%%type%&f, &eMateriał: &f%mat%"
-      - "&f%spawnAmount% &ena &f%time-unit%"
+      - "&eSpawner: %color%%type%&f, &eSurowiec: &f%mat%"
+      - "&f%spawnAmount% &eprzedmiot(ów) na &f%time-unit%"
       - "&eDrużyna: &f%team%"
-      - " zespawnowane zasoby: &f%amount%"
+      - "Wyprodukowano &f%amount% &rsurowców"
       - " włączone: &f%booleanValue%"
     editor:
       started:
         - "&aEdytor Spawnerów został otwarty!"
-        - "&aWpisz &e/sbw sedit &anie wiesz co robić. &l:)"
+        - "&aWpisz &e/sbw sedit &ajeżeli nie wiesz co robić. &l:)"
       already-active:
         - "&cEdytor spawnerów jest już aktywny."
         - "&eWpisz &a/sbw sedit exit &eaby wyjść bez zapisywania"
@@ -101,14 +101,14 @@ game-builder:
       location: "&aLokalizacja została zmieniona na Twoją pozycję."
       help:
         - "Dostępne akcje:"
-        - "&a--> &emax-spawned <number value> &a- maksymalna ilość do zespawnowania"
-        - "&a--> &eamount <number value> &a- ilość na raz, która się spawnuje"
-        - "&a--> &eperiod <number value> &a- okres spawnowania (np. 2) na jednostkę czasu (time-unit)"
-        - "&a--> &eteam <existing team or null> &a- linkuje spawner z drużyną"
+        - "&a--> &emax-spawned <liczba> &a- maksymalna ilość do zespawnowania"
+        - "&a--> &eamount <liczba> &a- ilość na raz, która się spawnuje"
+        - "&a--> &eperiod <liczba> &a- okres spawnowania (np. 2) na jednostkę czasu (time-unit)"
+        - "&a--> &eteam <drużyna|null> &a- linkuje spawner z drużyną"
         - "&a--> &etime-unit <tick/seconds/minutes> &a- zmienia jednostkę czasu"
         - "&a--> &elocation &a- zmienia lokalizację spawnera"
         - "&a--> &esave &a- zapisuje edytowany spawner"
-        - "&a--> &eexit &a-upuszcza edytor bez wprowadzania zmian"
+        - "&a--> &eexit &a - opuszcza edytor bez wprowadzania zmian"
 scoreboards:
   name: "&bS&c&lBed&f&lWars"
   content:
@@ -149,7 +149,7 @@ bossbars:
     lobby: "&eGra wkrótce się rozpocznie - &lpotrzeba &a%playersToStart% &e&lgraczy!"
     starting: "&aStart za &e%timeToStart% &asekund"
     game: "Gramy! Pozostały czas: %formattedRemainingTime%"
-    deathmatch: "Teraz zobaczymy! Pozostało czasu: %time%"
+    deathmatch: "TERAZ ZOBACZYMY! Pozostały czas: %time%"
     end-game: "%winnerMessage%"
   color:
     lobby: "OIIII"
@@ -166,7 +166,7 @@ commands:
   main:
     - "przez &b&lScreamingSandals&f."
     - "&eNie wiesz co robić? Napisz &l/bw help"
-    - "&eJaką wersję masz? Napisz &l/bw version"
+    - "&eNie wiesz jaką wersję pluginu masz zainstalowaną? Napisz &l/bw version"
   base:
     list:
       no-arenas-found: "&cWszystkie areny są zajęte... &e:("
@@ -175,8 +175,8 @@ commands:
       arenas-list-footer: " "
     version:
       header: "Pracujesz na wersji &e%version%"
-      latest: "&a&lNajnowsza wersja, yay!"
-      behind: "&cJesteś &e%count% &cwersja do tyłu! &c&lEw!"
+      latest: "&a&lJesteś na aktualnej wersji!"
+      behind: "&cJesteś &e%count% &cwersji do tyłu!"
   join:
     success: "&aDołączyłeś do gry &e%gameName%&a!"
     failed: "&cJesteś już w innej grze!"
@@ -186,12 +186,12 @@ commands:
   admin:
     errors:
       not_enough_arguments: "&cMusisz podać poprawną nazwę areny i poprawną akcję!"
-      invalid_action: "&e%action% &ejest nipoprawną akcją. Wprowadź poprawną."
+      invalid_action: "&ePodano niepoprawną akcję: %action%. Wprowadź poprawną."
     actions:
       edit:
         invalid-entry:
           - "&eMusisz być bardziej dokładny.."
-          - "&eKomenda powinna wyglądać tak jak:"
+          - "&eKomenda powinna wyglądać w następujący sposób:"
           - "&a/sbw admin &e%gameName% &aedit"
         running: "&eGra w trakcie, zatrzymuję..."
         stopped: "&aGra została zatrzymana."
@@ -200,7 +200,7 @@ commands:
         team:
           invalid-entry:
             - "&eMusisz być bardziej dokładny.."
-            - "&eKomenda powinna wyglądać tak jak:"
+            - "&eKomenda powinna wyglądać w następujący sposób:"
             - "&a/sbw admin &e%gameName% &aadd team <nazwa> <kolor> <max liczba graczy>"
           invalid-color:
             - "&cKolor &e%color% &cjest niepoprawny!"
