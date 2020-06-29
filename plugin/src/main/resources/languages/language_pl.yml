@@ -204,19 +204,19 @@ commands:
             - "&a/sbw admin &e%gameName% &aadd team <nazwa> <kolor> <max liczba graczy>"
           invalid-color:
             - "&cKolor &e%color% &cjest niepoprawny!"
-            - "&c&lGoogle &e&n'spigot chatcolor enum'&c dla podpowiedzi."
+            - "&c&lNie wiesz jakie wartości są poprawne? Wyszukaj frazę &e&n'spigot chatcolor enum'&c w Google."
           created: "&aDrużyna %color%%name% &azostała stworzona!"
           already-registered: "&cZespół &e%name% &cjest już utworzony!"
         store:
           invalid-entry:
             - "&eMusisz być bardziej dokładny.."
-            - "&eKomenda powinna wyglądać tak jak:"
+            - "&eKomenda powinna wyglądać w następujący sposób:"
             - "&a/sbw admin &e%gameName% &aadd store <typ> <nazwa>"
           invalid-store-type: "&cWprowadziłeś nieprawidłowy typ sklepu.. &lSpróbuj ponownie!"
           invalid-store-file: "&cPlik sklepu &e%file% &cnie istnieje."
           not-custom-store:
-            - "&eNie podałeś wystarczającej ilości argumentów dla niestandardowego sklepu."
-            - "&eKomenda powinna wyglądać tak jak:"
+            - "&eNie podałeś wystarczającej ilości argumentów dla sklepu."
+            - "&eKomenda powinna wyglądać w następujący sposób:"
             - "&a/sbw admin &e%gameName% &aadd store CUSTOM <nazwa> <drużyna> <plik>"
           created: "&aNowy sklep został utworzony!"
           write-custom-name: "Wpisz nazwę sklepu"
@@ -224,7 +224,7 @@ commands:
         spawner:
           invalid-entry:
             - "&eMusisz być bardziej dokładny.."
-            - "&eKomenda powinna wyglądać tak jak:"
+            - "&eKomenda powinna wyglądać w następujący sposób:"
             - "&a/sbw admin &e%gameName% &aadd spawner <typ>"
       set:
         border:
@@ -236,7 +236,7 @@ commands:
         spawn:
           invalid-entry:
             - "&eMusisz być bardziej dokładny.."
-            - "&eKomenda powinna wyglądać tak jak:"
+            - "&eKomenda powinna wyglądać w następujący sposób:"
             - "&a/sbw admin &e%gameName% &aset spawn &e<lobby/team/spectators>"
           done: "&aYay! Spawn dla &e%type%&a został ustawiony!"
       save:
