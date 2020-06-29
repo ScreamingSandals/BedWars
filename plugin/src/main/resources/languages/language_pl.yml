@@ -25,10 +25,10 @@ core:
     end_game: "&6Kończenie"
     restart: "&6Resetowanie"
     maintenance: "&4Wyłączona"
-    custom: "&6Własna"
-    disabled: "&4Disabled"
+    custom: "&6Własne"
+    disabled: "&4Wyłączone"
   materials:
-    bronze: "&4Bronze"
+    bronze: "&4Brąz"
     iron: "&7Żelazo"
     gold: "&6Złoto"
     diamond: "&bDiament"
@@ -44,8 +44,8 @@ general:
     outside-of-the-border: "&cTo musi być wewnątrz granic gry. &eRozumiesz?"
     invalid-game: "&cGra &e%gameName%&c nie istnieje!"
     no-game-found: "&cNie znaleziono żadnej gry."
-    game-already-created: "&cGame &e%gameName% &calready exists! Use &ldifferent &cname."
-    wrong-bossbar-color: "Color %color% is invalid! Fix this in your config."
+    game-already-created: "&cGra &e%gameName% &cjuż istnieje! Użyj &linnej &cnazwy."
+    wrong-bossbar-color: "Kolor %color% jest niepoprawny! Popraw to w pliku konfiguracyjnym."
   null-translated: "Żadne"
   booleans:
     true: "Prawda"
@@ -66,7 +66,7 @@ game-builder:
       not-enough-teams-line2: "&cSą już &e%count% &cgotowe drużyny."
       not-enough-stores: "&cTak więc, musisz dodać co najmniej &e1 &cssklep."
       game-world-does-not-exists: "&cOj, Świat gry nie jest ustawiony. Zdefiniuj pozycje lub świat gry."
-      game-world-position-not-set: "&cO rany, pozycja %whatPosition% nie jest ustawiona. zdefiniuj ją!"
+      game-world-position-not-set: "&cO rany, pozycja %whatPosition% nie jest ustawiona. Zdefiniuj ją!"
       game-world-spectator-not-set: "&cSpawn spectatora nie jest ustawiony. &lZrób to!"
       lobby-world-not-set: "&cOh ja, lobby-world nie jest ustawione. Zdefiniuj spawn lub ustaw lobby world!"
       lobby-world-spawn-not-set: "&cOh ja, lobby spawn nie jest ustawiony. &lUstaw go!"
@@ -113,42 +113,42 @@ scoreboards:
   name: "&bS&c&lBed&f&lWars"
   content:
     lobby:
-      - "&eMap: &a%gameName%"
+      - "&eMapa: &a%gameName%"
       - ""
-      - "&fPlayers: &a%playersCount%&f/&a%maxPlayers%"
+      - "&fGracze: &a%playersCount%&f/&a%maxPlayers%"
       - ""
-      - "&cNeed &a&l%playersToStart%&c more players!"
+      - "&cPotrzeba jeszcze &a&l%playersToStart%&c graczy!"
     starting:
-      - "&eMap: &a%gameName%"
+      - "&eMapa: &a%gameName%"
       - ""
-      - "&aStarting in &e%timeToStart%"
+      - "&aStart za &e%timeToStart% &asekund"
       - ""
-      - "&fPlayers: &a%playersCount%&f/&a%maxPlayers%"
+      - "&fGracze: &a%playersCount%&f/&a%maxPlayers%"
     game:
-      - " left: &e%formattedRemainingTime%"
+      - "Pozostało &e%formattedRemainingTime%"
       - ""
-      - "&eMap: &a%gameName%"
+      - "&eMapa: &a%gameName%"
       - ""
-      - " teams: &a%teamsCount%"
+      - "Drużyn: &a%teamsCount%"
     deathmatch:
       - ""
       - "&c&lDEATHMATCH"
       - ""
-      - "%&eRemaining players: %playersCount%%"
+      - "%&ePozostało graczy: %playersCount%%"
     end-game:
       - ""
       - "%winnerMessage%"
       - ""
-      - "Finished in: %time%"
+      - "Czas gry: %time%"
       - ""
   teams:
     alive: "&a✔&r %teamColor%%teamName%"
     dead: "&c✖&r %teamColor%%teamName%"
 bossbars:
   content:
-    lobby: "&eGame is starting soon! &lNeeded players: &a%playersToStart%"
-    starting: "&aStarting in &e%timeToStart%"
-    game: "Let's play! Remaining time: %formattedRemainingTime%"
+    lobby: "&eGra wkrótce się rozpocznie - &lpotrzeba &a%playersToStart% &e&lgraczy!"
+    starting: "&aStart za &e%timeToStart% &asekund"
+    game: "Gramy! Pozostały czas: %formattedRemainingTime%"
     deathmatch: "Teraz zobaczymy! Pozostało czasu: %time%"
     end-game: "%winnerMessage%"
   color:
@@ -159,18 +159,18 @@ bossbars:
     end-game: "WHITE"
 commands:
   errors:
-    no-permissions: "&Not enough permissions for this command.. &8Sad!"
-    command-does-not-exists: "&cThis one, we don't know. Invalid command!"
-    somethings-fucked: "&cWell, execution of this command failed.. &eStrange :("
-    not-for-console: "&cConsole can't use this command.."
+    no-permissions: "&4Nie masz uprawnień do użycia tej komendy."
+    command-does-not-exists: "&cNiewłaściwa komenda!"
+    somethings-fucked: "&cDziwne, wystąpił błąd podczas wykonywania tej komendy..."
+    not-for-console: "&cNie możesz użyć tej komendy z poziomu konsoli."
   main:
     - "przez &b&lScreamingSandals&f."
     - "&eNie wiesz co robić? Napisz &l/bw help"
     - "&eJaką wersję masz? Napisz &l/bw version"
   base:
     list:
-      no-arenas-found: "&cActually, no arena is available right now &e:("
-      arenas-list-header: "&lWow&a, we have &e%count% &aof arenas! Here they are!"
+      no-arenas-found: "&cWszystkie areny są zajęte... &e:("
+      arenas-list-header: "&aDostępnych jest &e%count% &aaren:"
       arenas-list-text: "&l&a--> &e%gameName% &a- &e%gameState%"
       arenas-list-footer: " "
     version:
@@ -241,4 +241,4 @@ commands:
           done: "&aYay! Spawn dla &e%type%&a został ustawiony!"
       save:
         cannot-save: "Uh oh, czegoś brakuje. Nie mogę zapisać!"
-        done: "&a&lWHOOSH! &aGame &e%gameName% &ais saved and running!"
+        done: "&aArena &e%gameName% &azostała poprawnie zapisana!"
