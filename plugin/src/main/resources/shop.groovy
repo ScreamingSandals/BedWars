@@ -236,7 +236,7 @@ inventory {
 
             property 'tracker'
         }
-        item('BLAZE_ROD;1;Rescue Platform for 15 of iron') {
+        item('BLAZE_ROD;1;"Rescue Platform" for 15 of iron') {
             stack.lore([
                     "Protect yourself from falling into",
                     "void with a Rescue Platform.",
