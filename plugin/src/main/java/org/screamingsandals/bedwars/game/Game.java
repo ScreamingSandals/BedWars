@@ -45,6 +45,7 @@ import org.screamingsandals.bedwars.api.utils.DelayFactory;
 import org.screamingsandals.bedwars.boss.BossBarSelector;
 import org.screamingsandals.bedwars.boss.XPBar;
 import org.screamingsandals.bedwars.inventories.TeamSelectorInventory;
+import org.screamingsandals.bedwars.listener.Player116ListenerUtils;
 import org.screamingsandals.bedwars.region.FlatteningRegion;
 import org.screamingsandals.bedwars.region.LegacyRegion;
 import org.screamingsandals.bedwars.statistics.PlayerStatistic;
@@ -1678,22 +1679,26 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                     for (CurrentTeam team : teamsInGame) {
                         Block block = team.getTargetBlock().getBlock();
                         if (block != null && "RESPAWN_ANCHOR".equals(block.getType().name())) { // don't break the game for older servers
-                            RespawnAnchor anchor = (RespawnAnchor) block.getBlockData();
-                            anchor.setCharges(0);
-                            block.setBlockData(anchor);
-                            if (getOriginalOrInheritedAnchorAutoFill()) {
-                                new BukkitRunnable() {
-                                    public void run() {
-                                        anchor.setCharges(anchor.getCharges() + 1);
-                                        Sounds.playSound(team.getTargetBlock(), Main.getConfigurator().config.getString("target-block.respawn-anchor.sound.charge"), Sounds.BLOCK_RESPAWN_ANCHOR_CHARGE, 1, 1);
-                                        block.setBlockData(anchor);
-                                        if (anchor.getCharges() >= anchor.getMaximumCharges()) {
-                                            updateScoreboard();
-                                            this.cancel();
-                                        }
+                            new BukkitRunnable() {
+                                public void run() {
+                                    RespawnAnchor anchor = (RespawnAnchor) block.getBlockData();
+                                    anchor.setCharges(0);
+                                    block.setBlockData(anchor);
+                                    if (getOriginalOrInheritedAnchorAutoFill()) {
+                                        new BukkitRunnable() {
+                                            public void run() {
+                                                anchor.setCharges(anchor.getCharges() + 1);
+                                                Sounds.playSound(team.getTargetBlock(), Main.getConfigurator().config.getString("target-block.respawn-anchor.sound.charge"), Sounds.BLOCK_RESPAWN_ANCHOR_CHARGE, 1, 1);
+                                                block.setBlockData(anchor);
+                                                if (anchor.getCharges() >= anchor.getMaximumCharges()) {
+                                                    updateScoreboard();
+                                                    this.cancel();
+                                                }
+                                            }
+                                        }.runTaskTimer(Main.getInstance(), 50L, 10L);
                                     }
-                                }.runTaskTimer(Main.getInstance(), 50L, 10L);
-                            }
+                                }
+                            }.runTask(Main.getInstance());
                         }
                     }
 
@@ -2146,7 +2151,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             this.gameScoreboard.resetScores(this.formatScoreboardTeam(team, false, true));
             this.gameScoreboard.resetScores(this.formatScoreboardTeam(team, true, false));
 
-            Score score = obj.getScore(this.formatScoreboardTeam(team, !team.isBed, team.isBed && "RESPAWN_ANCHOR".equals(team.teamInfo.bed.getBlock().getType().name()) && ((RespawnAnchor) team.teamInfo.bed.getBlock().getBlockData()).getCharges() == 0));
+            Score score = obj.getScore(this.formatScoreboardTeam(team, !team.isBed, team.isBed && "RESPAWN_ANCHOR".equals(team.teamInfo.bed.getBlock().getType().name()) && Player116ListenerUtils.isAnchorEmpty(team.teamInfo.bed.getBlock())));
             score.setScore(team.players.size());
         }
 

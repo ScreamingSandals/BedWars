@@ -102,20 +102,7 @@ public class PlayerListener implements Listener {
                 SpawnEffects.spawnEffect(game, victim, "game-effects.kill");
                 boolean isBed = team.isBed;
                 if (isBed && game.getOriginalOrInheritedAnchorDecreasing() && "RESPAWN_ANCHOR".equals(team.teamInfo.bed.getBlock().getType().name())) {
-                    RespawnAnchor anchor = (RespawnAnchor) team.teamInfo.bed.getBlock().getBlockData();
-                    int charges = anchor.getCharges();
-                    if (charges <= 0) {
-                        isBed = false;
-                    } else {
-                        anchor.setCharges(charges - 1);
-                        team.teamInfo.bed.getBlock().setBlockData(anchor);
-                        if (anchor.getCharges() == 0) {
-                            Sounds.playSound(team.teamInfo.bed, Main.getConfigurator().config.getString("target-block.respawn-anchor.sound.deplete"), Sounds.BLOCK_RESPAWN_ANCHOR_DEPLETE, 1, 1);
-                            game.updateScoreboard();
-                        } else {
-                            Sounds.playSound(team.teamInfo.bed, Main.getConfigurator().config.getString("target-block.respawn-anchor.sound.used"), Sounds.BLOCK_GLASS_BREAK, 1, 1);
-                        }
-                    }
+                    isBed = Player116ListenerUtils.processAnchorDeath(game, team, isBed);
                 }
                 if (!isBed) {
                     gVictim.isSpectator = true;
@@ -726,17 +713,7 @@ public class PlayerListener implements Listener {
                                         && event.getClickedBlock().getType().name().equals("RESPAWN_ANCHOR")
                                         && game.getPlayerTeam(gPlayer).teamInfo.bed.equals(event.getClickedBlock().getLocation())
                                         && event.getItem() != null && event.getItem().getType() == Material.GLOWSTONE) {
-                                    RespawnAnchor anchor = (RespawnAnchor) event.getClickedBlock().getBlockData();
-                                    int charges = anchor.getCharges();
-                                    charges++;
-                                    if (charges <= anchor.getMaximumCharges()) {
-                                        anchorFilled = true;
-                                        anchor.setCharges(charges);
-                                        event.getClickedBlock().setBlockData(anchor);
-                                        stack.setAmount(stack.getAmount() - 1);
-                                        Sounds.playSound(event.getClickedBlock().getLocation(), Main.getConfigurator().config.getString("target-block.respawn-anchor.sound.charge"), Sounds.BLOCK_RESPAWN_ANCHOR_CHARGE, 1, 1);
-                                        game.updateScoreboard();
-                                    }
+                                    anchorFilled = Player116ListenerUtils.anchorCharge(event, game, stack);
                                 }
 
                                 if (!anchorFilled && stack.getType().isBlock()) {
