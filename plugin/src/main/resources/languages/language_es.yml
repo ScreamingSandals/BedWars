@@ -146,8 +146,8 @@ scoreboards:
     dead: "&c✖&r %teamColor%%teamName%"
 bossbars:
   content:
-    lobby: "&eGame is starting soon! &lNeeded players: &a%playersToStart%"
-    starting: "&aStarting in &e%timeToStart%"
+    lobby: "&c¡El juego comenzara pronto! &lJugadores necesarios: &a%playersToStart%"
+    starting: "&aComenzando en &e%timeToStart%"
     game: "Let's play! Remaining time: %formattedRemainingTime%"
     deathmatch: "NOW LET'S SEE! Remaining time: %time%"
     end-game: "%winnerMessage%"
