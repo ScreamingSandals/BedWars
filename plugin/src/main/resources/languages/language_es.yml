@@ -148,8 +148,8 @@ bossbars:
   content:
     lobby: "&c¡El juego comenzara pronto! &lJugadores necesarios: &a%playersToStart%"
     starting: "&aComenzando en &e%timeToStart%"
-    game: "Let's play! Remaining time: %formattedRemainingTime%"
-    deathmatch: "NOW LET'S SEE! Remaining time: %time%"
+    game: "¡A jugar! Tiempo restante: %formattedRemainingTime%"
+    deathmatch: "¡AHORA VEAMOS! Tiempo restante: %time%"
     end-game: "%winnerMessage%"
   color:
     lobby: "OIIII"
@@ -159,12 +159,12 @@ bossbars:
     end-game: "WHITE"
 commands:
   errors:
-    no-permissions: "&Not enough permissions for this command.. &8Sad!"
-    command-does-not-exists: "&cThis one, we don't know. Invalid command!"
-    somethings-fucked: "&cWell, execution of this command failed.. &eStrange :("
-    not-for-console: "&cConsole can't use this command.."
+    no-permissions: "&cNo tienes permiso para ese comando.. &8:("
+    command-does-not-exists: "&cEste... no lo sabemos. ¡Comando invalido!"
+    somethings-fucked: "&cBueno, la ejecución de ese comando fallo.. &eExtraño :("
+    not-for-console: "&cLa consola no puede usar este comando.."
   main:
-    - "by &b&lScreamingSandals&f."
+    - "por &b&lScreamingSandals&f."
     - "&eDon't know what to do? Hit &l/bw help"
     - "&eWhat version do you have? Hit &l/bw version"
   base:
