@@ -10,7 +10,7 @@ core:
     game-world-not-defined: "&eLe monde pour la partie %gameName% &cn'est pas défini !"
     game-world-does-not-exists: "&cLe monde de jeu &e%world% &cpour la partie &e%gameName% &cn'existe pas !"
     game-world-bad-border: "&cLa bordure du jeu &e%gameName% &cest incorrecte. &lVeuillez le faire à nouveau !"
-    not-enough-teams: "&cNot enough teams defined for the game &e%gameName%. &c&lYou need at least 2!"
+    not-enough-teams: "&cPas assez d'équipes définies pour la partie &e%gameName%. &c&lVous avez besoin d'au moins 2!"
     team-spawn-not-set: "&cL'équipe &e%teamName% &cn'a pas de point d'apparition ! &lVeuillez le définir."
     lobby-world-not-defined: "&eLe monde du lobby pour la partie %gameName% &cn'est pas défini !"
     lobby-world-does-not-exists: "&cLe monde de jeu &e%world% &cpour la partie &e%gameName% &cn'existe pas !"
