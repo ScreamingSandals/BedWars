@@ -11,7 +11,7 @@ core:
     game-world-does-not-exists: "&cLe monde de jeu &e%world% &cpour la partie &e%gameName% &cn'existe pas !"
     game-world-bad-border: "&cLa bordure du jeu &e%gameName% &cest incorrecte. &lVeuillez le faire à nouveau !"
     not-enough-teams: "&cNot enough teams defined for the game &e%gameName%. &c&lYou need at least 2!"
-    team-spawn-not-set: "&cTeam &e%teamName% &cdoes not have spawn point! &lPlease set it."
+    team-spawn-not-set: "&cL'équipe &e%teamName% &cn'a pas de point d'apparition ! &lVeuillez le définir."
     lobby-world-not-defined: "&eLe monde du lobby pour la partie %gameName% &cn'est pas défini !"
     lobby-world-does-not-exists: "&cLe monde de jeu &e%world% &cpour la partie &e%gameName% &cn'existe pas !"
     spectator-spawn-not-set: "&cLe point d'apparition des spectateurs pour la partie %gameName% n'est pas défini !"
@@ -45,7 +45,7 @@ general:
     invalid-game: "&cLa partie &e%gameName% &cn'existe pas !"
     no-game-found: "&cAucune partie n'a été trouvée."
     game-already-created: "&cLa partie &e%gameName% &cexiste déjà ! Utilisez un nom &ldifférent."
-    wrong-bossbar-color: "Color %color% is invalid! Fix this in your config."
+    wrong-bossbar-color: "La couleur %color% n'est pas valide ! Corrigez-la dans votre configuration."
   null-translated: "Aucun"
   booleans:
     true: "Vrai"
@@ -117,7 +117,7 @@ scoreboards:
       - ""
       - "&fJoueurs: &a%playersCount%&f/&a%maxPlayers%"
       - ""
-      - "&cNeed &a&l%playersToStart%&c more players!"
+      - "&cBesoin de &a&l%playersToStart% &cjoueurs pour commencer !"
     starting:
       - "&eCarte: &a%gameName%"
       - ""
@@ -125,38 +125,38 @@ scoreboards:
       - ""
       - "&fJoueurs: &a%playersCount%&f/&a%maxPlayers%"
     game:
-      - " left: &e%formattedRemainingTime%"
+      - " Restant: &e%formattedRemainingTime%"
       - ""
       - "&eCarte: &a%gameName%"
       - ""
-      - " teams: &a%teamsCount%"
+      - " équipes : &a%teamsCount%"
     deathmatch:
       - ""
       - "&c&lMATCH À MORT"
       - ""
-      - "%&eRemaining players: %playersCount%%"
+      - "%&eJoueurs restants: %playersCount%%"
     end-game:
       - ""
       - "%winnerMessage%"
       - ""
-      - "Finished in: %time%"
+      - "Fin dans: %time%"
       - ""
   teams:
     alive: "&a✔&r %teamColor%%teamName%"
     dead: "&c✖&r %teamColor%%teamName%"
 bossbars:
   content:
-    lobby: "&eGame is starting soon! &lNeeded players: &a%playersToStart%"
-    starting: "&aStarting in &e%timeToStart%"
-    game: "Let's play! Remaining time: %formattedRemainingTime%"
+    lobby: "&La partie démarre bientôt ! Joueurs nécessaires: %playersToStart%, Équipe"
+    starting: "&aDémarrage dans &e%timeToStart%"
+    game: "Jouons ! Temps restant : %formattedRemainingTime%"
     deathmatch: "VOYONS VOIR ! Temps restant: %time%"
     end-game: "%winnerMessage%"
   color:
     lobby: "OIIII"
-    starting: "GREEN"
-    game: "BLUE"
-    deathmatch: "RED"
-    end-game: "WHITE"
+    starting: "VERT"
+    game: "BLEUE"
+    deathmatch: "ROUGE"
+    end-game: "BLANC"
 commands:
   errors:
     no-permissions: "&cVous n'avez pas la permission requise pour cette commande. &8C'est triste !"
