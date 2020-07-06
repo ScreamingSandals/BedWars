@@ -154,6 +154,7 @@ public class Configurator {
         checkOrSetConfig(modify, "scoreboard.bedExists", "§a\u2714");
         checkOrSetConfig(modify, "scoreboard.teamTitle", "%bed%%color%%team%");
 
+        checkOrSetConfig(modify, "title.enabled", true);
         checkOrSetConfig(modify, "title.fadeIn", 0);
         checkOrSetConfig(modify, "title.stay", 20);
         checkOrSetConfig(modify, "title.fadeOut", 0);
