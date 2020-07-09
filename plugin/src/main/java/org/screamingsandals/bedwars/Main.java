@@ -365,7 +365,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         databaseManager = new DatabaseManager(configurator.config.getString("database.host"),
                 configurator.config.getInt("database.port"), configurator.config.getString("database.user"),
                 configurator.config.getString("database.password"), configurator.config.getString("database.db"),
-                configurator.config.getString("database.table-prefix", "bw_"));
+                configurator.config.getString("database.table-prefix", "bw_"), configurator.config.getBoolean("database.useSSL"));
 
         if (isPlayerStatisticsEnabled()) {
             playerStatisticsManager = new PlayerStatisticManager();

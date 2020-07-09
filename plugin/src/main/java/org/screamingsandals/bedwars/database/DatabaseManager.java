@@ -15,20 +15,22 @@ public class DatabaseManager {
     private String password;
     private int port;
     private String user;
+    private boolean useSSL;
 
-    public DatabaseManager(String host, int port, String user, String password, String database, String tablePrefix) {
+    public DatabaseManager(String host, int port, String user, String password, String database, String tablePrefix, boolean useSSL) {
         this.host = host;
         this.port = port;
         this.user = user;
         this.password = password;
         this.database = database;
         this.tablePrefix = tablePrefix;
+        this.useSSL = useSSL;
     }
 
     public void initialize() {
         HikariConfig config = new HikariConfig();
         config.setJdbcUrl("jdbc:mysql://" + this.host + ":" + this.port + "/" + this.database
-                + "?autoReconnect=true&serverTimezone=" + TimeZone.getDefault().getID());
+                + "?autoReconnect=true&serverTimezone=" + TimeZone.getDefault().getID() + "&useSSL=" + useSSL);
         config.setUsername(this.user);
         config.setPassword(this.password);
         config.addDataSourceProperty("cachePrepStmts", "true");
