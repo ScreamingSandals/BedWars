@@ -167,6 +167,7 @@ public class Configurator {
         checkOrSetConfig(modify, "shop.items-on-row", 9);
         checkOrSetConfig(modify, "shop.show-page-numbers", true);
         checkOrSetConfig(modify, "shop.inventory-type", "CHEST");
+        checkOrSetConfig(modify, "shop.citizens-enabled", false);
         
         checkOrSetConfig(modify, "items.jointeam", "COMPASS");
         checkOrSetConfig(modify, "items.leavegame", "SLIME_BALL");
