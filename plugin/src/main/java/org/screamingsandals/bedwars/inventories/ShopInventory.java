@@ -359,7 +359,7 @@ public class ShopInventory implements Listener {
 			newItem = changeItemType.getStack();
 		}
 
-		if (clickType.isShiftClick()) {
+		if (clickType.isShiftClick() && newItem.getMaxStackSize() > 1) {
 			double priceOfOne = (double) price / amount;
 			double maxStackSize;
 			int finalStackSize;
@@ -370,7 +370,7 @@ public class ShopInventory implements Listener {
 				}
 			}
 			if (Main.getConfigurator().config.getBoolean("sell-max-64-per-click-in-shop")) {
-				maxStackSize = Math.min(inInventory / priceOfOne, 64);
+				maxStackSize = Math.min(inInventory / priceOfOne, newItem.getMaxStackSize());
 			} else {
 				maxStackSize = inInventory / priceOfOne;
 			}
@@ -398,7 +398,10 @@ public class ShopInventory implements Listener {
 			}
 
 			event.sellStack(materialItem);
-			event.buyStack(newItem);
+			Map<Integer, ItemStack> notFit = event.buyStack(newItem);
+			if (!notFit.isEmpty()) {
+				notFit.forEach((i, stack) -> player.getLocation().getWorld().dropItem(player.getLocation(), stack));
+			}
 
 			if (!Main.getConfigurator().config.getBoolean("removePurchaseMessages", false)) {
 				player.sendMessage(i18n("buy_succes").replace("%item%", amount + "x " + getNameOrCustomNameOfItem(newItem))

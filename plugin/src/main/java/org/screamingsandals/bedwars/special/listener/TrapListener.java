@@ -77,6 +77,7 @@ public class TrapListener implements Listener {
 
             if (trapBlock.isPlaced()
                     && event.getBlock().getLocation().equals(trapBlock.getLocation())) {
+                event.setDrops(false);
                 trapBlock.process(event.getPlayer(), runningTeam, true);
             }
         }
