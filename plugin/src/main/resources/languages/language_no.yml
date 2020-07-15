@@ -46,7 +46,7 @@ general:
     no-game-found: "&cNo game has been found."
     game-already-created: "&cGame &e%gameName% &calready exists! Use &ldifferent &cname."
     wrong-bossbar-color: "Color %color% is invalid! Fix this in your config."
-  null-translated: "None"
+  null-translated: "Ingen"
   booleans:
     true: "True"
     false: "False"
