@@ -152,37 +152,37 @@ bossbars:
     deathmatch: "NOW LET'S SEE! Remaining time: %time%"
     end-game: "%winnerMessage%"
   color:
-    lobby: "OIIII"
-    starting: "GREEN"
-    game: "BLUE"
-    deathmatch: "RED"
-    end-game: "WHITE"
+    lobby: "ОЙЙЙЙ"
+    starting: "ЗЕЛЁНЫЙ"
+    game: "СИНИЙ"
+    deathmatch: "КРАСНЫЙ"
+    end-game: "БЕЛЫЙ"
 commands:
   errors:
-    no-permissions: "&Not enough permissions for this command.. &8Sad!"
-    command-does-not-exists: "&cThis one, we don't know. Invalid command!"
+    no-permissions: "&cНедостаточно прав для этой команда.. &8Грустно!"
+    command-does-not-exists: "&cМы не знаем, что это. Неверная команда!"
     somethings-fucked: "&cWell, execution of this command failed.. &eStrange :("
     not-for-console: "&cConsole can't use this command.."
   main:
-    - "by &b&lScreamingSandals&f."
-    - "&eDon't know what to do? Hit &l/bw help"
-    - "&eWhat version do you have? Hit &l/bw version"
+    - "от &b&lScreamingSandals&f."
+    - "&eНе знаете, что делать? Напишите &l/bw help"
+    - "&eЧто за версия у вас? Напишите &l/bw version"
   base:
     list:
-      no-arenas-found: "&cActually, no arena is available right now &e:("
+      no-arenas-found: "&cНа данный момент нет свободных арен &e:("
       arenas-list-header: "&lWow&a, we have &e%count% &aof arenas! Here they are!"
       arenas-list-text: "&l&a--> &e%gameName% &a- &e%gameState%"
       arenas-list-footer: " "
     version:
       header: "You are running on version &e%version%"
-      latest: "&a&lLatest version, yay!"
+      latest: "&a&lПоследняя версия, круто!"
       behind: "&cYou are &e%count% &cversions behind! &c&lEw!"
   join:
     success: "&aYou just joined into game &e%gameName%&a!"
     failed: "&cВы уже находитесь в игре!"
   leave:
     success: "&aYou just left game &e%gameName%&a!"
-    failed: "&cYou aren't in any game."
+    failed: "&cВы не в игре."
   admin:
     errors:
       not_enough_arguments: "&cYou must provide valid arena name and valid action!"
@@ -191,11 +191,11 @@ commands:
       edit:
         invalid-entry:
           - "&eYou need to be more specific.."
-          - "&eCommand should look like:"
+          - "&eКоманда должна выглядеть так:"
           - "&a/sbw admin &e%gameName% &aedit"
-        running: "&eGame is running, stopping..."
-        stopped: "&aGame has been stopped."
-        success: "&aGame &e%gameName% &ais now in edit mode."
+        running: "&eИгра запущена, останавливаем..."
+        stopped: "&aИгра остановлена."
+        success: "&aИгра &e%gameName% &aтеперь в режиме редактирования."
       add:
         team:
           invalid-entry:
