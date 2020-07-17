@@ -33,6 +33,6 @@ public class BedwarsGameChangedStatusEvent extends Event {
 	
 	public static HandlerList getHandlerList() {
         return BedwarsGameChangedStatusEvent.handlers;
-    }
-	
+	}
+
 }
