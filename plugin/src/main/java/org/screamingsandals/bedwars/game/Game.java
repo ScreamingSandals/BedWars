@@ -1438,7 +1438,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             cancelTask();
             return;
         }
-
+        BedwarsGameChangedStatusEvent statusE = new BedwarsGameChangedStatusEvent(this);
         // Phase 2: If this is first tick, prepare waiting lobby
         if (countdown == -1 && status == GameStatus.WAITING) {
             previousCountdown = countdown = pauseCountdown;
@@ -1544,6 +1544,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             if (tick.getNextStatus() == GameStatus.RUNNING) {
                 BedwarsGameStartEvent startE = new BedwarsGameStartEvent(this);
                 Main.getInstance().getServer().getPluginManager().callEvent(startE);
+                Main.getInstance().getServer().getPluginManager().callEvent(statusE);
 
                 if (startE.isCancelled()) {
                     tick.setNextCountdown(pauseCountdown);
@@ -1746,6 +1747,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
                     BedwarsGameStartedEvent startedEvent = new BedwarsGameStartedEvent(this);
                     Main.getInstance().getServer().getPluginManager().callEvent(startedEvent);
+                    Main.getInstance().getServer().getPluginManager().callEvent(statusE);
                     updateScoreboard();
                 }
             }
@@ -1836,6 +1838,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
                         BedwarsGameEndingEvent endingEvent = new BedwarsGameEndingEvent(this, winner);
                         Bukkit.getPluginManager().callEvent(endingEvent);
+                        Main.getInstance().getServer().getPluginManager().callEvent(statusE);
 
                         tick.setNextCountdown(Game.POST_GAME_WAITING);
                         tick.setNextStatus(GameStatus.GAME_END_CELEBRATING);
@@ -1931,6 +1934,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         if (status == GameStatus.REBUILDING) {
             BedwarsGameEndEvent event = new BedwarsGameEndEvent(this);
             Main.getInstance().getServer().getPluginManager().callEvent(event);
+            Main.getInstance().getServer().getPluginManager().callEvent(statusE);
 
             String message = i18n("game_end");
             for (GamePlayer player : (List<GamePlayer>) ((ArrayList<GamePlayer>) players).clone()) {
