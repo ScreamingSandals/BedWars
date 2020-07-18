@@ -173,6 +173,14 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     public static final String ANCHOR_DECREASING = "anchor-decreasing";
     private InGameConfigBooleanConstants anchorDecreasing = InGameConfigBooleanConstants.INHERIT;
 
+    public static final String GLOBAL_CAKE_TARGET_BLOCK_EATING = "target-block.cake.destroy-by-eating";
+    public static final String CAKE_TARGET_BLOCK_EATING = "cake-target-block-eating";
+    private InGameConfigBooleanConstants cakeTargetBlockEating = InGameConfigBooleanConstants.INHERIT;
+
+    public static final String GLOBAL_TARGET_BLOCK_EXPLOSIONS = "target-block.allow-destroying-with-explosions";
+    public static final String TARGET_BLOCK_EXPLOSIONS = "target-block-explosions";
+    private InGameConfigBooleanConstants targetBlockExplosions = InGameConfigBooleanConstants.INHERIT;
+
     public boolean gameStartItem;
     private boolean preServerRestart = false;
     public static final int POST_GAME_WAITING = 3;
@@ -415,7 +423,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 if (getPlayerTeam(player).teamInfo.bed.equals(loc)) {
                     return false;
                 }
-                bedDestroyed(loc, player.player, true, false);
+                bedDestroyed(loc, player.player, true, false, false);
                 region.putOriginalBlock(block.getLocation(), block.getState());
                 if (block.getLocation().equals(loc)) {
                     Block neighbor = region.getBedNeighbor(block);
@@ -433,11 +441,13 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                     }
                 }
                 return true;
+            } else if (getOriginalOrInheritedCakeTargetBlockEating() && block.getType().name().contains("CAKE")) {
+                return false; // when CAKES are in eating mode, don't allow to just break it
             } else {
                 if (getPlayerTeam(player).teamInfo.bed.equals(loc)) {
                     return false;
                 }
-                bedDestroyed(loc, player.player, false, "RESPAWN_ANCHOR".equals(block.getType().name()));
+                bedDestroyed(loc, player.player, false, "RESPAWN_ANCHOR".equals(block.getType().name()), block.getType().name().contains("CAKE"));
                 region.putOriginalBlock(loc, block.getState());
                 try {
                     event.setDropItems(false);
@@ -452,6 +462,37 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             return true;
         }
         return false;
+    }
+
+    public void targetBlockExplode(RunningTeam team) {
+        Location loc = team.getTargetBlock();
+        Block block = loc.getBlock();
+        if (region.isBedBlock(block.getState())) {
+            if (!region.isBedHead(block.getState())) {
+                loc = region.getBedNeighbor(block).getLocation();
+            }
+        }
+        if (isTargetBlock(loc)) {
+            if (region.isBedBlock(block.getState())) {
+                bedDestroyed(loc, null, true, false, false);
+                region.putOriginalBlock(block.getLocation(), block.getState());
+                if (block.getLocation().equals(loc)) {
+                    Block neighbor = region.getBedNeighbor(block);
+                    region.putOriginalBlock(neighbor.getLocation(), neighbor.getState());
+                } else {
+                    region.putOriginalBlock(loc, region.getBedNeighbor(block).getState());
+                }
+                if (region.isBedHead(block.getState())) {
+                    region.getBedNeighbor(block).setType(Material.AIR);
+                } else {
+                    block.setType(Material.AIR);
+                }
+            } else {
+                bedDestroyed(loc, null, false, "RESPAWN_ANCHOR".equals(block.getType().name()), block.getType().name().contains("CAKE"));
+                region.putOriginalBlock(loc, block.getState());
+                block.setType(Material.AIR);
+            }
+        }
     }
 
     private boolean isTargetBlock(Location loc) {
@@ -485,21 +526,25 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         return null;
     }
 
-    private void bedDestroyed(Location loc, Player broker, boolean isItBedBlock, boolean isItAnchor) {
+    public void bedDestroyed(Location loc, Player broker, boolean isItBedBlock, boolean isItAnchor, boolean isItCake) {
         if (status == GameStatus.RUNNING) {
             for (CurrentTeam team : teamsInGame) {
                 if (team.teamInfo.bed.equals(loc)) {
                     team.isBed = false;
                     updateScoreboard();
+                    String colored_broker = "explosion";
+                    if (broker != null) {
+                        colored_broker = getPlayerTeam(Main.getPlayerGameProfile(broker)).teamInfo.color.chatColor + broker.getDisplayName();
+                    }
                     for (GamePlayer player : players) {
-                        String colored_broker = getPlayerTeam(Main.getPlayerGameProfile(broker)).teamInfo.color.chatColor + broker.getDisplayName();
+                        final String key = isItBedBlock ? "bed_is_destroyed" : (isItAnchor ? "anchor_is_destroyed" : (isItCake ? "cake_is_destroyed" : "target_is_destroyed"));
                         Title.send(player.player,
-                                i18n(isItBedBlock ? "bed_is_destroyed" : (isItAnchor ? "anchor_is_destroyed" : "target_is_destroyed"), false)
+                                i18n(key, false)
                                         .replace("%team%", team.teamInfo.color.chatColor + team.teamInfo.name)
                                         .replace("%broker%", colored_broker),
                                 i18n(getPlayerTeam(player) == team ? "bed_is_destroyed_subtitle_for_victim"
                                         : "bed_is_destroyed_subtitle", false));
-                        player.player.sendMessage(i18n(isItBedBlock ? "bed_is_destroyed" : (isItAnchor ? "anchor_is_destroyed" : "target_is_destroyed"))
+                        player.player.sendMessage(i18n(key)
                                 .replace("%team%", team.teamInfo.color.chatColor + team.teamInfo.name)
                                 .replace("%broker%", colored_broker));
                         SpawnEffects.spawnEffect(this, player.player, "game-effects.beddestroy");
@@ -510,7 +555,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
                     if (team.hasBedHolo()) {
                         team.getBedHolo().setLine(0,
-                                i18nonly(isItBedBlock ? "protect_your_bed_destroyed" : (isItAnchor ? "protect_your_anchor_destroyed": "protect_your_target_destroyed")));
+                                i18nonly(isItBedBlock ? "protect_your_bed_destroyed" : (isItAnchor ? "protect_your_anchor_destroyed": (isItCake ? "protect_your_cake_destroyed" : "protect_your_target_destroyed"))));
                         team.getBedHolo().addViewers(team.getConnectedPlayers());
                     }
 
@@ -522,15 +567,17 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                             broker, team);
                     Main.getInstance().getServer().getPluginManager().callEvent(targetBlockDestroyed);
 
-                    if (Main.isPlayerStatisticsEnabled()) {
-                        PlayerStatistic statistic = Main.getPlayerStatisticsManager().getStatistic(broker);
-                        statistic.setCurrentDestroyedBeds(statistic.getCurrentDestroyedBeds() + 1);
-                        statistic.setCurrentScore(statistic.getCurrentScore()
-                                + Main.getConfigurator().config.getInt("statistics.scores.bed-destroy", 25));
-                    }
+                    if (broker != null) {
+                        if (Main.isPlayerStatisticsEnabled()) {
+                            PlayerStatistic statistic = Main.getPlayerStatisticsManager().getStatistic(broker);
+                            statistic.setCurrentDestroyedBeds(statistic.getCurrentDestroyedBeds() + 1);
+                            statistic.setCurrentScore(statistic.getCurrentScore()
+                                    + Main.getConfigurator().config.getInt("statistics.scores.bed-destroy", 25));
+                        }
 
-                    dispatchRewardCommands("player-destroy-bed", broker,
-                            Main.getConfigurator().config.getInt("statistics.scores.bed-destroy", 25));
+                        dispatchRewardCommands("player-destroy-bed", broker,
+                                Main.getConfigurator().config.getInt("statistics.scores.bed-destroy", 25));
+                    }
                 }
             }
         }
@@ -907,6 +954,8 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         game.spectatorJoin = readBooleanConstant(configMap.getString("constant." + SPECTATOR_JOIN, "inherit"));
         game.anchorAutoFill = readBooleanConstant(configMap.getString("constant." + ANCHOR_AUTO_FILL, "inherit"));
         game.anchorDecreasing = readBooleanConstant(configMap.getString("constant." + ANCHOR_DECREASING, "inherit"));
+        game.cakeTargetBlockEating = readBooleanConstant(configMap.getString("constant." + CAKE_TARGET_BLOCK_EATING, "inherit"));
+        game.targetBlockExplosions = readBooleanConstant(configMap.getString("constant." + TARGET_BLOCK_EXPLOSIONS, "inherit"));
 
         game.arenaTime = ArenaTime.valueOf(configMap.getString("arenaTime", ArenaTime.WORLD.name()).toUpperCase());
         game.arenaWeather = loadWeather(configMap.getString("arenaWeather", "default").toUpperCase());
@@ -1058,6 +1107,8 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         configMap.set("constant." + SPECTATOR_JOIN, writeBooleanConstant(spectatorJoin));
         configMap.set("constant." + ANCHOR_AUTO_FILL, writeBooleanConstant(anchorAutoFill));
         configMap.set("constant." + ANCHOR_DECREASING, writeBooleanConstant(anchorDecreasing));
+        configMap.set("constant." + CAKE_TARGET_BLOCK_EATING, writeBooleanConstant(cakeTargetBlockEating));
+        configMap.set("constant." + TARGET_BLOCK_EXPLOSIONS, writeBooleanConstant(targetBlockExplosions));
 
         configMap.set("arenaTime", arenaTime.name());
         configMap.set("arenaWeather", arenaWeather == null ? "default" : arenaWeather.name());
@@ -1709,15 +1760,16 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                             Location loc = team.teamInfo.bed.clone().add(0.5, 1.5, 0.5);
                             boolean isBlockTypeBed = region.isBedBlock(bed.getState());
                             boolean isAnchor = "RESPAWN_ANCHOR".equals(bed.getType().name());
+                            boolean isCake = bed.getType().name().contains("CAKE");
                             List<Player> enemies = getConnectedPlayers();
                             enemies.removeAll(team.getConnectedPlayers());
                             Hologram holo = Main.getHologramManager().spawnHologram(enemies, loc,
-                                    i18nonly(isBlockTypeBed ? "destroy_this_bed" : (isAnchor ? "destroy_this_anchor" : "destroy_this_target"))
+                                    i18nonly(isBlockTypeBed ? "destroy_this_bed" : (isAnchor ? "destroy_this_anchor" : (isCake ? "destroy_this_cake" : "destroy_this_target")))
                                             .replace("%teamcolor%", team.teamInfo.color.chatColor.toString()));
                             createdHolograms.add(holo);
                             team.setBedHolo(holo);
                             Hologram protectHolo = Main.getHologramManager().spawnHologram(team.getConnectedPlayers(), loc,
-                                    i18nonly(isBlockTypeBed ? "protect_your_bed" : (isAnchor ? "protect_your_anchor" : "protect_your_target"))
+                                    i18nonly(isBlockTypeBed ? "protect_your_bed" : (isAnchor ? "protect_your_anchor" : (isCake ? "protect_your_cake" : "protect_your_target")))
                                             .replace("%teamcolor%", team.teamInfo.color.chatColor.toString()));
                             createdHolograms.add(protectHolo);
                             team.setProtectHolo(protectHolo);
@@ -2284,28 +2336,26 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         if (status != GameStatus.WAITING || !getOriginalOrInheritedLobbyScoreaboard()) {
             return;
         }
-        gameScoreboard.clearSlot(DisplaySlot.SIDEBAR);
-
         Objective obj = gameScoreboard.getObjective("lobby");
-        if (obj != null) {
-            obj.unregister();
+        if (obj == null) {
+            obj = gameScoreboard.registerNewObjective("lobby", "dummy");
+            obj.setDisplaySlot(DisplaySlot.SIDEBAR);
+            obj.setDisplayName(this.formatLobbyScoreboardString(
+                    Main.getConfigurator().config.getString("lobby-scoreboard.title", "§eBEDWARS")));
         }
 
-        obj = gameScoreboard.registerNewObjective("lobby", "dummy");
-        obj.setDisplaySlot(DisplaySlot.SIDEBAR);
-        obj.setDisplayName(this.formatLobbyScoreboardString(
-                Main.getConfigurator().config.getString("lobby-scoreboard.title", "§eBEDWARS")));
+        gameScoreboard.getEntries().forEach(gameScoreboard::resetScores);
 
         List<String> rows = Main.getConfigurator().config.getStringList("lobby-scoreboard.content");
         int rowMax = rows.size();
-        if (rows == null || rows.isEmpty()) {
+        if (rows.isEmpty()) {
             return;
         }
 
         for (String row : rows) {
             if (row.trim().equals("")) {
                 for (int i = 0; i <= rowMax; i++) {
-                    row = row + " ";
+                    row += " ";
                 }
             }
 
@@ -2314,9 +2364,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             rowMax--;
         }
 
-        for (GamePlayer player : players) {
-            player.player.setScoreboard(gameScoreboard);
-        }
+        players.forEach(player -> player.player.setScoreboard(gameScoreboard));
     }
 
     private String formatLobbyScoreboardString(String str) {
@@ -3122,12 +3170,42 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 : Main.getConfigurator().config.getBoolean(GLOBAL_ANCHOR_DECREASING);
     }
 
+    @Override
+    public InGameConfigBooleanConstants getCakeTargetBlockEating() {
+        return cakeTargetBlockEating;
+    }
+
+    @Override
+    public boolean getOriginalOrInheritedCakeTargetBlockEating() {
+        return cakeTargetBlockEating.isOriginal() ? cakeTargetBlockEating.getValue()
+                : Main.getConfigurator().config.getBoolean(GLOBAL_CAKE_TARGET_BLOCK_EATING);
+    }
+
+    @Override
+    public InGameConfigBooleanConstants getTargetBlockExplosions() {
+        return targetBlockExplosions;
+    }
+
+    @Override
+    public boolean getOriginalOrInheritedTargetBlockExplosions() {
+        return targetBlockExplosions.isOriginal() ? targetBlockExplosions.getValue()
+                : Main.getConfigurator().config.getBoolean(GLOBAL_TARGET_BLOCK_EXPLOSIONS);
+    }
+
     public void setAnchorAutoFill(InGameConfigBooleanConstants anchorAutoFill) {
         this.anchorAutoFill = anchorAutoFill;
     }
 
     public void setAnchorDecreasing(InGameConfigBooleanConstants anchorDecreasing) {
         this.anchorDecreasing = anchorDecreasing;
+    }
+
+    public void setCakeTargetBlockEating(InGameConfigBooleanConstants cakeTargetBlockEating) {
+        this.cakeTargetBlockEating = cakeTargetBlockEating;
+    }
+
+    public void setTargetBlockExplosions(InGameConfigBooleanConstants targetBlockExplosions) {
+        this.targetBlockExplosions = targetBlockExplosions;
     }
 
     public List<GamePlayer> getPlayersWithoutVIP() {

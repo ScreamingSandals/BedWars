@@ -66,7 +66,7 @@ public class TNTSheepListener implements Listener {
                     if (event.getClickedBlock() == null) {
                         startLocation = player.getLocation();
                     } else {
-                        startLocation = event.getClickedBlock().getRelative(BlockFace.UP).getLocation();
+                        startLocation = event.getClickedBlock().getRelative(event.getBlockFace()).getLocation();
                     }
                     TNTSheep sheep = new TNTSheep(game, player, game.getTeamOfPlayer(player),
                             startLocation, stack, speed, follow, maxTargetDistance, explosionTime);

@@ -5,7 +5,7 @@ import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
-import org.bukkit.block.data.type.RespawnAnchor;
+import org.bukkit.block.data.type.Cake;
 import org.bukkit.entity.*;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
@@ -27,6 +27,7 @@ import org.bukkit.metadata.MetadataValue;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.screamingsandals.bedwars.Main;
+import org.screamingsandals.bedwars.api.RunningTeam;
 import org.screamingsandals.bedwars.api.events.BedwarsPlayerKilledEvent;
 import org.screamingsandals.bedwars.api.events.BedwarsTeamChestOpenEvent;
 import org.screamingsandals.bedwars.api.game.GameStatus;
@@ -694,8 +695,55 @@ public class PlayerListener implements Listener {
                         } else if (event.getClickedBlock().getState() instanceof InventoryHolder) {
                             InventoryHolder holder = (InventoryHolder) event.getClickedBlock().getState();
                             game.addChestForFutureClear(event.getClickedBlock().getLocation(), holder.getInventory());
-                        } else if (event.getClickedBlock().getType().name().contains("CAKE") && Main.getConfigurator().config.getBoolean("disableCakeEating", true)) {
-                            event.setCancelled(true);
+                        } else if (event.getClickedBlock().getType().name().contains("CAKE")) {
+                            if (game.getOriginalOrInheritedCakeTargetBlockEating()) {
+                                if (game.getTeamOfPlayer(event.getPlayer()).getTargetBlock().equals(event.getClickedBlock().getLocation())) {
+                                    event.setCancelled(true);
+                                } else {
+                                    if (Main.getConfigurator().config.getBoolean("disableCakeEating", true)) {
+                                        event.setCancelled(true);
+                                    }
+                                    for (RunningTeam team : game.getRunningTeams()) {
+                                        if (team.getTargetBlock().equals(event.getClickedBlock().getLocation())) {
+                                            event.setCancelled(true);
+                                            if (Main.isLegacy()) {
+                                                if (event.getClickedBlock().getState().getData() instanceof org.bukkit.material.Cake) {
+                                                    org.bukkit.material.Cake cake = (org.bukkit.material.Cake) event.getClickedBlock().getState().getData();
+                                                    if (cake.getSlicesEaten() == 0) {
+                                                        game.getRegion().putOriginalBlock(event.getClickedBlock().getLocation(), event.getClickedBlock().getState());
+                                                    }
+                                                    cake.setSlicesEaten(cake.getSlicesEaten() + 1);
+                                                    if (cake.getSlicesEaten() >= 6) {
+                                                        game.bedDestroyed(event.getClickedBlock().getLocation(), event.getPlayer(), false, false, true);
+                                                        event.getClickedBlock().setType(Material.AIR);
+                                                    } else {
+                                                        BlockState state = event.getClickedBlock().getState();
+                                                        state.setData(cake);
+                                                        state.update();
+                                                    }
+                                                }
+                                            } else {
+                                                if (event.getClickedBlock().getBlockData() instanceof Cake) {
+                                                    Cake cake = (Cake) event.getClickedBlock().getBlockData();
+                                                    if (cake.getBites() == 0) {
+                                                        game.getRegion().putOriginalBlock(event.getClickedBlock().getLocation(), event.getClickedBlock().getState());
+                                                    }
+                                                    cake.setBites(cake.getBites() + 1);
+                                                    if (cake.getBites() >= cake.getMaximumBites()) {
+                                                        game.bedDestroyed(event.getClickedBlock().getLocation(), event.getPlayer(), false, false, true);
+                                                        event.getClickedBlock().setType(Material.AIR);
+                                                    } else {
+                                                        event.getClickedBlock().setBlockData(cake);
+                                                    }
+                                                }
+                                            }
+                                            break;
+                                        }
+                                    }
+                                }
+                            } else if (Main.getConfigurator().config.getBoolean("disableCakeEating", true)) {
+                                event.setCancelled(true);
+                            }
                         }
                     }
                 }

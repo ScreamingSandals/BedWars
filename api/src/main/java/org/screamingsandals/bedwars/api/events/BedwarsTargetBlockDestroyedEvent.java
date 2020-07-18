@@ -43,7 +43,7 @@ public class BedwarsTargetBlockDestroyedEvent extends Event {
     }
 
     /**
-     * @return player
+     * @return player or null if target block has been destroyed by explosion
      */
     public Player getPlayer() {
         return this.player;
@@ -54,6 +54,13 @@ public class BedwarsTargetBlockDestroyedEvent extends Event {
      */
     public RunningTeam getTeam() {
         return this.team;
+    }
+
+    /**
+     * @return true if block has been destroyed by explosion
+     */
+    public boolean destroyedByExplosion() {
+        return this.player == null;
     }
 
 }

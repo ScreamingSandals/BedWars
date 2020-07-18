@@ -469,6 +469,13 @@ public class GameCreator {
             case "anchorenabledescrease":
                 game.setAnchorDecreasing(cons);
                 break;
+            case "caketargetblockeating":
+            case "cakeeating":
+                game.setCakeTargetBlockEating(cons);
+                break;
+            case "targetblockexplosions":
+                game.setTargetBlockExplosions(cons);
+                break;
             default:
                 return i18n("admin_command_invalid_config_variable_name");
         }

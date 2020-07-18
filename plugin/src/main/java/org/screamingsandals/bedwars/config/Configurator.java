@@ -410,11 +410,13 @@ public class Configurator {
         checkOrSetConfig(modify, "update-checker.one.console", true);
         checkOrSetConfig(modify, "update-checker.one.admins", true);
 
+        checkOrSetConfig(modify, "target-block.allow-destroying-with-explosions", false);
         checkOrSetConfig(modify, "target-block.respawn-anchor.fill-on-start", true);
         checkOrSetConfig(modify, "target-block.respawn-anchor.enable-decrease", true);
         checkOrSetConfig(modify, "target-block.respawn-anchor.sound.charge", "BLOCK_RESPAWN_ANCHOR_CHARGE");
         checkOrSetConfig(modify, "target-block.respawn-anchor.sound.used", "BLOCK_GLASS_BREAK");
         checkOrSetConfig(modify, "target-block.respawn-anchor.sound.deplete", "BLOCK_RESPAWN_ANCHOR_DEPLETE");
+        checkOrSetConfig(modify, "target-block.cake.destroy-by-eating", true);
 
         checkOrSetConfig(modify, "event-hacks.damage", false);
         checkOrSetConfig(modify, "event-hacks.destroy", false);

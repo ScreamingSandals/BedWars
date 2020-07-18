@@ -667,5 +667,25 @@ public interface Game {
      */
     boolean getOriginalOrInheritedAnchorDecreasing();
 
+    /**
+     * @return
+     */
+    InGameConfigBooleanConstants getCakeTargetBlockEating();
+
+    /**
+     * @return
+     */
+    boolean getOriginalOrInheritedCakeTargetBlockEating();
+
+    /**
+     * @return
+     */
+    InGameConfigBooleanConstants getTargetBlockExplosions();
+
+    /**
+     * @return
+     */
+    boolean getOriginalOrInheritedTargetBlockExplosions();
+
 
 }
