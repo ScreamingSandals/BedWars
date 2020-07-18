@@ -66,9 +66,9 @@ game-builder:
       not-enough-teams-line2: "&cHay &e%count% &cequipos listos."
       not-enough-stores: "&cBueno bueno, necesitas agregar al menos &e1 &ctienda."
       game-world-does-not-exists: "&cOh mi, el mundo de juego no esta establecido. Establece las posiciones o el mundo de juego."
-      game-world-position-not-set: "&cOh my, position%whatPosition% is not set. Define it!"
-      game-world-spectator-not-set: "&cSpectator spawn is not set. &lDo it!"
-      lobby-world-not-set: "&cOh my, lobby-world is not set. Define spawn or set lobby world!"
+      game-world-position-not-set: "&cOh mi, la posición %whatPosition% no ha sido establecida. ¡Establecela!"
+      game-world-spectator-not-set: "&cEl punto de aparición de los espectadores no ha sido establecido. &l¡Hazlo!"
+      lobby-world-not-set: "&cOh mi, el mundo del lobby no ha sido establecido. ¡Establece el spawn o el mundo del lobby!"
       lobby-world-spawn-not-set: "&cOh my, lobby spawn is not set. &lDo it!"
   created: "&aGame &e%game% &ahas been created! &lYAY!"
   store:
