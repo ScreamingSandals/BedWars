@@ -13,7 +13,7 @@ import static misat11.lib.lang.I18n.i18n;
 public class ReloadCommand extends BaseCommand {
 
     public ReloadCommand() {
-        super("reload", ADMIN_PERMISSION, true);
+        super("reload", ADMIN_PERMISSION, true, false);
     }
 
     @Override

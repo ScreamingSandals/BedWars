@@ -11,7 +11,7 @@ import static misat11.lib.lang.I18n.i18n;
 public class AddholoCommand extends BaseCommand {
 
     public AddholoCommand() {
-        super("addholo", ADMIN_PERMISSION, false);
+        super("addholo", ADMIN_PERMISSION, false, false);
     }
 
     @Override

@@ -40,23 +40,35 @@ public class HelpCommand extends BaseCommand {
 
     public void sendHelp(Player player) {
         player.sendMessage(i18nonly("help_title").replace("%version%", "Zero " + Main.getVersion()));
-        player.sendMessage(i18nonly("help_bw_join"));
-        player.sendMessage(i18nonly("help_bw_leave"));
-        player.sendMessage(i18nonly("help_bw_rejoin"));
-        player.sendMessage(i18nonly("help_bw_autojoin"));
-        player.sendMessage(i18nonly("help_bw_list"));
+        if (hasPermission(player, JOIN_PERMISSION, Main.getConfigurator().config.getBoolean("default-permissions.join"))) {
+            player.sendMessage(i18nonly("help_bw_join"));
+        }
+        if (hasPermission(player, LEAVE_PERMISSION, Main.getConfigurator().config.getBoolean("default-permissions.leave"))) {
+            player.sendMessage(i18nonly("help_bw_leave"));
+        }
+        if (hasPermission(player, REJOIN_PERMISSION, Main.getConfigurator().config.getBoolean("default-permissions.rejoin"))) {
+            player.sendMessage(i18nonly("help_bw_rejoin"));
+        }
+        if (hasPermission(player, AUTOJOIN_PERMISSION, Main.getConfigurator().config.getBoolean("default-permissions.autojoin"))) {
+            player.sendMessage(i18nonly("help_bw_autojoin"));
+        }
+        if (hasPermission(player, LIST_PERMISSION, Main.getConfigurator().config.getBoolean("default-permissions.list"))) {
+            player.sendMessage(i18nonly("help_bw_list"));
+        }
 
-        if (player.hasPermission(ADMIN_PERMISSION) || player.hasPermission(OTHER_STATS_PERMISSION)) {
-            player.sendMessage(i18nonly("help_bw_stats_other"));
-        } else {
-            player.sendMessage(i18nonly("help_bw_stats"));
+        if ((hasPermission(player, STATS_PERMISSION, Main.getConfigurator().config.getBoolean("default-permissions.stats")))) {
+            if (hasPermission(player, ADMIN_PERMISSION, false) || hasPermission(player, OTHER_STATS_PERMISSION, false)) {
+                player.sendMessage(i18nonly("help_bw_stats_other"));
+            } else {
+                player.sendMessage(i18nonly("help_bw_stats"));
+            }
         }
 
         if (player.hasPermission("bw.admin.alljoin")) {
             player.sendMessage(i18nonly("help_bw_alljoin"));
         }
 
-        if (player.hasPermission(ADMIN_PERMISSION)) {
+        if (hasPermission(player, ADMIN_PERMISSION, false)) {
             player.sendMessage(i18nonly("help_bw_addholo"));
             player.sendMessage(i18nonly("help_bw_removeholo"));
             player.sendMessage(i18nonly("help_bw_mainlobby"));

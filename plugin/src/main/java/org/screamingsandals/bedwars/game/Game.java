@@ -44,6 +44,7 @@ import org.screamingsandals.bedwars.api.upgrades.UpgradeStorage;
 import org.screamingsandals.bedwars.api.utils.DelayFactory;
 import org.screamingsandals.bedwars.boss.BossBarSelector;
 import org.screamingsandals.bedwars.boss.XPBar;
+import org.screamingsandals.bedwars.commands.StatsCommand;
 import org.screamingsandals.bedwars.inventories.TeamSelectorInventory;
 import org.screamingsandals.bedwars.listener.Player116ListenerUtils;
 import org.screamingsandals.bedwars.region.FlatteningRegion;
@@ -1852,8 +1853,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
                                             if (Main.getConfigurator().config
                                                     .getBoolean("statistics.show-on-game-end")) {
-                                                Main.getInstance().getServer().dispatchCommand(player.player,
-                                                        "bw stats");
+                                                StatsCommand.sendStats(player.player, Main.getPlayerStatisticsManager().getStatistic(player.player));
                                             }
 
                                         }

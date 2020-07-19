@@ -8,6 +8,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.screamingsandals.bedwars.commands.BaseCommand;
 
 import java.util.List;
 
@@ -45,7 +46,7 @@ public class SignListener implements Listener {
         if (event.getBlock().getState() instanceof Sign) {
             Location loc = event.getBlock().getLocation();
             if (manager.isSignRegistered(loc)) {
-                if (event.getPlayer().hasPermission(owner.getSignCreationPermission())) {
+                if (BaseCommand.hasPermission(event.getPlayer(), owner.getSignCreationPermissions(), false)) {
                     manager.unregisterSign(loc);
                 } else {
                     event.getPlayer().sendMessage(owner.returnTranslate("sign_can_not_been_destroyed"));
@@ -64,7 +65,7 @@ public class SignListener implements Listener {
         if (event.getBlock().getState() instanceof Sign) {
             Location loc = event.getBlock().getLocation();
             if (SIGN_PREFIX.contains(event.getLine(0).toLowerCase())) {
-                if (event.getPlayer().hasPermission(owner.getSignCreationPermission())) {
+                if (BaseCommand.hasPermission(event.getPlayer(), owner.getSignCreationPermissions(), false)) {
                     if (manager.registerSign(loc, event.getLine(1))) {
                         event.getPlayer().sendMessage(owner.returnTranslate("sign_successfully_created"));
                     } else {

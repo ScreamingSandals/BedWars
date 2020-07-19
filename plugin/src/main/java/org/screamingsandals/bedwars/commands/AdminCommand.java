@@ -27,7 +27,7 @@ public class AdminCommand extends BaseCommand {
     public HashMap<String, GameCreator> gc = new HashMap<>();
 
     public AdminCommand() {
-        super("admin", ADMIN_PERMISSION, false);
+        super("admin", ADMIN_PERMISSION, false, false);
     }
 
     @Override

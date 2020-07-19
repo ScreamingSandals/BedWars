@@ -12,7 +12,7 @@ import static misat11.lib.lang.I18n.i18n;
 public class RemoveholoCommand extends BaseCommand {
 
     public RemoveholoCommand() {
-        super("removeholo", ADMIN_PERMISSION, false);
+        super("removeholo", ADMIN_PERMISSION, false, false);
     }
 
     @Override

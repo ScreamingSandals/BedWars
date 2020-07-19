@@ -14,7 +14,7 @@ import static misat11.lib.lang.I18n.i18n;
 public class StatsCommand extends BaseCommand {
 
     public StatsCommand() {
-        super("stats", null, true);
+        super("stats", STATS_PERMISSION, true, Main.getConfigurator().config.getBoolean("default-permissions.stats"));
     }
 
     @Override
@@ -23,7 +23,7 @@ public class StatsCommand extends BaseCommand {
             sender.sendMessage(i18n("statistics_is_disabled"));
         } else {
             if (args.size() >= 1) {
-                if (!sender.hasPermission(OTHER_STATS_PERMISSION) && !sender.hasPermission(ADMIN_PERMISSION)) {
+                if (!hasPermission(sender, OTHER_STATS_PERMISSION, false) && !hasPermission(sender, ADMIN_PERMISSION, false)) {
                     sender.sendMessage(i18n("no_permissions"));
                 } else {
                     String name = args.get(0);
@@ -36,7 +36,7 @@ public class StatsCommand extends BaseCommand {
                         if (statistic == null) {
                             sender.sendMessage(i18n("statistics_not_found"));
                         } else {
-                            this.sendStats(sender, statistic);
+                            sendStats(sender, statistic);
                         }
                     }
                 }
@@ -47,7 +47,7 @@ public class StatsCommand extends BaseCommand {
                     if (statistic == null) {
                         player.sendMessage(i18n("statistics_not_found"));
                     } else {
-                        this.sendStats(player, statistic);
+                        sendStats(player, statistic);
                     }
                 } else {
                     return false;
@@ -60,14 +60,14 @@ public class StatsCommand extends BaseCommand {
     @Override
     public void completeTab(List<String> completion, CommandSender sender, List<String> args) {
         if (args.size() == 1 && Main.isPlayerStatisticsEnabled()
-                && (sender.hasPermission(OTHER_STATS_PERMISSION) || sender.hasPermission(ADMIN_PERMISSION))) {
+                && (hasPermission(sender, OTHER_STATS_PERMISSION, false) && hasPermission(sender, ADMIN_PERMISSION, false))) {
             for (Player p : Bukkit.getOnlinePlayers()) {
                 completion.add(p.getName());
             }
         }
     }
 
-    private void sendStats(CommandSender player, PlayerStatistic statistic) {
+    public static void sendStats(CommandSender player, PlayerStatistic statistic) {
         player.sendMessage(i18n("statistics_header").replace("%player%", statistic.getName()));
 
         player.sendMessage(i18n("statistics_kills", false).replace("%kills%",

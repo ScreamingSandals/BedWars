@@ -11,7 +11,7 @@ import static misat11.lib.lang.I18n.i18n;
 public class JoinCommand extends BaseCommand {
 
     public JoinCommand() {
-        super("join", null, false);
+        super("join", JOIN_PERMISSION, false, Main.getConfigurator().config.getBoolean("default-permissions.join"));
     }
 
     @Override

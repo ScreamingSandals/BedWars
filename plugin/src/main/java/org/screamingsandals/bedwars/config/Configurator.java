@@ -422,6 +422,13 @@ public class Configurator {
         checkOrSetConfig(modify, "event-hacks.destroy", false);
         checkOrSetConfig(modify, "event-hacks.place", false);
 
+        checkOrSetConfig(modify, "default-permissions.join", true);
+        checkOrSetConfig(modify, "default-permissions.leave", true);
+        checkOrSetConfig(modify, "default-permissions.stats", true);
+        checkOrSetConfig(modify, "default-permissions.list", true);
+        checkOrSetConfig(modify, "default-permissions.rejoin", true);
+        checkOrSetConfig(modify, "default-permissions.autojoin", true);
+
         checkOrSetConfig(modify, "version", 2);
 
         if (modify.get()) {

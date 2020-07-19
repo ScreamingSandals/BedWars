@@ -31,6 +31,7 @@ import org.screamingsandals.bedwars.api.RunningTeam;
 import org.screamingsandals.bedwars.api.events.BedwarsPlayerKilledEvent;
 import org.screamingsandals.bedwars.api.events.BedwarsTeamChestOpenEvent;
 import org.screamingsandals.bedwars.api.game.GameStatus;
+import org.screamingsandals.bedwars.commands.BaseCommand;
 import org.screamingsandals.bedwars.game.*;
 import org.screamingsandals.bedwars.inventories.TeamSelectorInventory;
 import org.screamingsandals.bedwars.statistics.PlayerStatistic;
@@ -238,7 +239,7 @@ public class PlayerListener implements Listener {
                     try {
                         game.joinToGame(player);
                     } catch (NullPointerException ignored) {
-                        if (!player.hasPermission(ADMIN_PERMISSION)) {
+                        if (!BaseCommand.hasPermission(player, ADMIN_PERMISSION, false)) {
                             BungeeUtils.movePlayerToBungeeServer(player, false);
                         }
                     }
@@ -415,7 +416,7 @@ public class PlayerListener implements Listener {
         final Player player = event.getPlayer();
         if (Main.isPlayerInGame(player)) {
             //Allow players with permissions to use all commands
-            if (player.hasPermission(ADMIN_PERMISSION)) {
+            if (BaseCommand.hasPermission(player, ADMIN_PERMISSION, false)) {
                 return;
             }
 
@@ -905,7 +906,7 @@ public class PlayerListener implements Listener {
                     return;
                 }
             }
-        } else if (player.hasPermission(ADMIN_PERMISSION)) {
+        } else if (BaseCommand.hasPermission(player, ADMIN_PERMISSION, false)) {
             List<MetadataValue> values = player.getMetadata(GameCreator.BEDWARS_TEAM_JOIN_METADATA);
             if (values.size() == 0) {
                 return;

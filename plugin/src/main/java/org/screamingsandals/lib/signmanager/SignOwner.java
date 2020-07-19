@@ -13,7 +13,7 @@ public interface SignOwner {
 	
 	public void onClick(Player player, SignBlock sign);
 	
-	public String getSignCreationPermission();
+	public List<String> getSignCreationPermissions();
 	
 	public String returnTranslate(String key);
 }
