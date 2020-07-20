@@ -2300,8 +2300,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
         String statusLine = "";
         String playersLine = "";
-        Material blockBehindMaterial = Material.RED_STAINED_GLASS;
-
+        Material blockBehindMaterial = null;
         switch (status) {
             case DISABLED:
                 statusLine = i18nonly("sign_status_disabled");
@@ -2337,19 +2336,21 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                     .replaceAll("%players%", playersLine));
         }
 
-        for (SignBlock sign : gameSigns) {
-            if (sign.getLocation().getChunk().isLoaded()) {
-                final Block block = sign.getLocation().getBlock();
-                if (block.getState() instanceof Sign) {
-                    Sign state = (Sign) block.getState();
+        for (SignBlock signBlock : gameSigns) {
+            if (signBlock.getLocation().getChunk().isLoaded()) {
+                BlockState blockState = signBlock.getLocation().getBlock().getState();
+                if (blockState instanceof Sign) {
+                    Sign sign = (Sign) blockState;
                     for (int i = 0; i < texts.size() && i < 4; i++) {
-                        state.setLine(i, texts.get(i));
+                        System.out.println("Setting sign line: " + i);
+                        System.out.println("Setting sign text: " + texts.get(i));
+                        sign.setLine(i, texts.get(i));
                     }
-                    state.update();
+                    sign.update();
                 }
 
                 if (config.getBoolean("sign.block-behind.enabled", false)) {
-                    final Optional<Block> optionalBlock = sign.getBlockBehindSign();
+                    final Optional<Block> optionalBlock = signBlock.getBlockBehindSign();
                     if (optionalBlock.isPresent()) {
                         final Block glassBlock = optionalBlock.get();
                         glassBlock.setType(blockBehindMaterial);

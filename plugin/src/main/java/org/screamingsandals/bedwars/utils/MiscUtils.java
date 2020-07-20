@@ -20,6 +20,7 @@ import org.screamingsandals.bedwars.api.events.BedwarsApplyPropertyToBoughtItem;
 import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.game.GamePlayer;
 import org.screamingsandals.bedwars.game.Team;
+import org.screamingsandals.lib.debug.Debug;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -129,7 +130,7 @@ public class MiscUtils {
                     material = mat;
                 }
             } catch (NullPointerException e) {
-                System.out.println("Wrong material configured: " + name);
+                Debug.warn("Wrong material configured: " + name, true);
                 e.printStackTrace();
             }
         }

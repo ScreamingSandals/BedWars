@@ -25,7 +25,6 @@ public class ReloadCommand extends BaseCommand {
         }
 
         new BukkitRunnable() {
-
             public int timer = 60;
 
             @Override

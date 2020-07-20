@@ -30,21 +30,15 @@ public class SignBlock {
     }
 
     private Block getGlassBehind() {
-        final Block block = loc.getBlock();
+        Block block = loc.getBlock();
 
-        if (!(block instanceof Sign)) {
+        if (!(block.getState() instanceof Sign)) {
+            System.out.println("Block is not instance of sign");
             return null;
         }
 
-        final WallSign wallSign = (WallSign) block.getState().getBlockData();
-        final BlockFace blockFace = wallSign.getFacing().getOppositeFace();
-
-        final Block glassBlock = block.getRelative(blockFace);
-
-        if (glassBlock.getType().name().contains("GLASS")) {
-            return glassBlock;
-        }
-
-        return null;
+        WallSign wallSign = (WallSign) block.getState().getBlockData();
+        BlockFace blockFace = wallSign.getFacing().getOppositeFace();
+        return block.getRelative(blockFace);
     }
 }

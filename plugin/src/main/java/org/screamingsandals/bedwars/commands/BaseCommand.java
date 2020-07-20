@@ -2,6 +2,7 @@ package org.screamingsandals.bedwars.commands;
 
 import org.screamingsandals.bedwars.Main;
 import org.bukkit.command.CommandSender;
+import org.screamingsandals.lib.debug.Debug;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -57,17 +58,7 @@ public abstract class BaseCommand {
     }
 
     public boolean hasPermission(CommandSender sender) {
-        if (permissions == null || permissions.isEmpty()) {
-            return true; // There's no permissions required
-        }
-
-        for (String permission : permissions) {
-            if (permission != null && sender.isPermissionSet(permission)) {
-                return sender.hasPermission(permission);
-            }
-        }
-
-        return defaultAllowed;
+        return hasPermission(sender, permissions, defaultAllowed);
     }
 
     public static boolean hasPermission(CommandSender sender, List<String> permissions, boolean defaultAllowed) {
@@ -76,6 +67,10 @@ public abstract class BaseCommand {
         }
 
         for (String permission : permissions) {
+            if (permission == null) {
+                return true;
+            }
+
             if (sender.isPermissionSet(permission)) {
                 return sender.hasPermission(permission);
             }
