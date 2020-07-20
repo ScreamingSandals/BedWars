@@ -377,7 +377,7 @@ public class Configurator {
         checkOrSetConfig(modify, "lore.text",
                 Arrays.asList("§7Price:", "§7%price% %resource%", "§7Amount:", "§7%amount%"));
 
-        checkOrSetConfig(modify, "sign", Arrays.asList("§c§l[BedWars]", "%arena%", "%status%", "%players%"));
+        checkOrSetConfig(modify, "sign.lines", config.getList("sign", Arrays.asList("§c§l[BedWars]", "%arena%", "%status%", "%players%")));
 
         checkOrSetConfig(modify, "sign.block-behind.enabled", false);
         checkOrSetConfig(modify, "sign.block-behind.waiting", "ORANGE_STAINED_GLASS");

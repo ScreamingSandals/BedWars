@@ -33,7 +33,6 @@ public class SignBlock {
         Block block = loc.getBlock();
 
         if (!(block.getState() instanceof Sign)) {
-            System.out.println("Block is not instance of sign");
             return null;
         }
 

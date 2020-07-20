@@ -1641,7 +1641,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                         gameScoreboard.getObjective("lobby").unregister();
                     }
                     gameScoreboard.clearSlot(DisplaySlot.SIDEBAR);
-                    updateSigns();
+                    Bukkit.getScheduler().runTaskLater(Main.getInstance(), this::updateSigns, 3L);
                     for (GameStore store : gameStore) {
                         LivingEntity villager = store.spawn();
                         if (villager != null) {
@@ -2328,7 +2328,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         playersLine = playersLine.replace("%players%", Integer.toString(players.size()));
         playersLine = playersLine.replace("%maxplayers%", Integer.toString(calculatedMaxPlayers));
 
-        final List<String> texts = new ArrayList<>(Main.getConfigurator().config.getStringList("sign"));
+        final List<String> texts = new ArrayList<>(Main.getConfigurator().config.getStringList("sign.lines"));
 
         for (int i = 0; i < texts.size(); i++) {
             String text = texts.get(i);
@@ -2342,8 +2342,6 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 if (blockState instanceof Sign) {
                     Sign sign = (Sign) blockState;
                     for (int i = 0; i < texts.size() && i < 4; i++) {
-                        System.out.println("Setting sign line: " + i);
-                        System.out.println("Setting sign text: " + texts.get(i));
                         sign.setLine(i, texts.get(i));
                     }
                     sign.update();
