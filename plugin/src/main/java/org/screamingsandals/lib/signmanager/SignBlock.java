@@ -6,7 +6,7 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
-import org.bukkit.block.data.type.WallSign;
+import org.bukkit.block.data.Directional;
 
 public class SignBlock {
     private final Location loc;
@@ -37,8 +37,11 @@ public class SignBlock {
             return null;
         }
 
-        WallSign wallSign = (WallSign) block.getState().getBlockData();
-        BlockFace blockFace = wallSign.getFacing().getOppositeFace();
-        return block.getRelative(blockFace);
+        if (block.getState().getBlockData() instanceof Directional) {
+            Directional directional = (Directional) block.getState().getBlockData();
+            BlockFace blockFace = directional.getFacing().getOppositeFace();
+            return block.getRelative(blockFace);
+        }
+        return block.getRelative(BlockFace.DOWN);
     }
 }

@@ -9,10 +9,10 @@ Thia project is now under complete rewrite and we don't have much of time, so be
 
 This is the stable branch with bugfixes supporting all versions since 1.9! For new branch visit [1.x.x_dev](https://github.com/ScreamingSandals/BedWars/tree/1.x.x_dev)
 
-Supported versions: \[1.9 - 1.15.2\]. Recommended version: \[1.15.2\]
+Supported versions: \[1.9 - 1.16.1\]. Recommended version: \[1.15.2/1.16.1\]
 
 ## Support
-If you need any help, you can contact us on [Discord](https://discord.gg/VgrFUbV). Please make sure to look into older messages. There are many question already answered. It is really anoying to repeat the same thing over and over.
+If you need any help, you can contact us on [Discord](https://discord.gg/4xB54Ts). Please make sure to look into older messages. There are many question already answered. It is really anoying to repeat the same thing over and over.
 
 Make sure to check out our [Wiki](https://github.com/ScreamingSandals/BedWars/wiki) before contacting us on Discord. It will save our time, you know. O:)
 
@@ -20,6 +20,7 @@ If you have found any bug, feel free to report is into [Issues](https://github.c
 
 ## Features
 -   All the basics of BedWars game (Beds, Teams and so on)
+-   Other BedWars variants: CakeWars/EggWars/AnchorWars
 -   Shop that supports multi-shop per arena!
 -   BungeeCord
 -   Vault rewards
@@ -34,4 +35,5 @@ If you have found any bug, feel free to report is into [Issues](https://github.c
 -   Auto coloring items (like armor and so)
 -   Resource Spawners (you can have as much as you want)
 -   Player statistics
+-   In fact everything is customizable
 -   And many more useful features..

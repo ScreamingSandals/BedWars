@@ -12,7 +12,7 @@ import static misat11.lib.lang.I.i18n;
 public class AllJoinCommand extends BaseCommand {
 
     public AllJoinCommand() {
-        super("alljoin", "bw.admin.alljoin", true);
+        super("alljoin", ALL_JOIN_PERMISSION, true, false);
     }
 
     @Override

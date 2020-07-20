@@ -5,6 +5,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.Collections;
 import java.util.List;
 
 import static misat11.lib.lang.I18n.i18nonly;
@@ -12,7 +13,7 @@ import static misat11.lib.lang.I18n.i18nonly;
 public class HelpCommand extends BaseCommand {
 
     public HelpCommand() {
-        super("help", null, true);
+        super("help", Collections.EMPTY_LIST, true, true);
     }
 
     @Override
