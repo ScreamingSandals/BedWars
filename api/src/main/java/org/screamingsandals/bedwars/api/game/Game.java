@@ -687,5 +687,7 @@ public interface Game {
      */
     boolean getOriginalOrInheritedTargetBlockExplosions();
 
+    int getPostGameWaiting();
+
 
 }

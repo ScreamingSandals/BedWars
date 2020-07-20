@@ -60,6 +60,7 @@ import org.screamingsandals.lib.debug.Debug;
 import org.screamingsandals.lib.nms.entity.EntityUtils;
 import org.screamingsandals.lib.nms.holograms.Hologram;
 import org.screamingsandals.lib.signmanager.SignBlock;
+import org.screamingsandals.simpleinventories.utils.MaterialSearchEngine;
 import org.screamingsandals.simpleinventories.utils.StackParser;
 
 import com.onarandombox.MultiverseCore.api.Core;
@@ -186,7 +187,6 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
     public boolean gameStartItem;
     private boolean preServerRestart = false;
-    public static final int POST_GAME_WAITING = 3; //why is this hardcoded misat? :)
 
     // STATUS
     private GameStatus previousStatus = GameStatus.DISABLED;
@@ -206,6 +206,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     private List<Hologram> createdHolograms = new ArrayList<>();
     private Map<ItemSpawner, Hologram> countdownHolograms = new HashMap<>();
     private Map<GamePlayer, Inventory> fakeEnderChests = new HashMap<>();
+    private int postGameWaiting = 3;
 
     private Game() {
 
@@ -965,6 +966,8 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             game.arenaTime = ArenaTime.valueOf(configMap.getString("arenaTime", ArenaTime.WORLD.name()).toUpperCase());
             game.arenaWeather = loadWeather(configMap.getString("arenaWeather", "default").toUpperCase());
 
+            game.postGameWaiting = configMap.getInt("postGameWaiting", 3);
+
             try {
                 game.lobbyBossBarColor = loadBossBarColor(
                         configMap.getString("lobbyBossBarColor", "default").toUpperCase());
@@ -1045,6 +1048,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         configMap.set("lobbySpawn", MiscUtils.setLocationToString(lobbySpawn));
         configMap.set("lobbySpawnWorld", lobbySpawn.getWorld().getName());
         configMap.set("minPlayers", minPlayers);
+        configMap.set("postGameWaiting", postGameWaiting);
         if (!teams.isEmpty()) {
             for (Team t : teams) {
                 configMap.set("teams." + t.name + ".isNewColor", t.isNewColor());
@@ -1573,7 +1577,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             updateLobbyScoreboard();
         } else if (status == GameStatus.RUNNING) {
             if (countdown == 0) {
-                nextCountdown = POST_GAME_WAITING;
+                nextCountdown = postGameWaiting;
                 nextStatus = GameStatus.GAME_END_CELEBRATING;
             } else {
                 nextCountdown--;
@@ -1587,7 +1591,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             } else {
                 nextCountdown--;
             }
-            setBossbarProgress(countdown, POST_GAME_WAITING);
+            setBossbarProgress(countdown, postGameWaiting);
         }
 
         // Phase 4: Call Tick Event
@@ -1884,7 +1888,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                                                     }
                                                 }
 
-                                            }.runTaskLater(Main.getInstance(), (2 + Game.POST_GAME_WAITING) * 20);
+                                            }.runTaskLater(Main.getInstance(), (2 + postGameWaiting) * 20);
                                         }
                                     } else {
                                         Title.send(player.player, i18n("you_lost", false), subtitle);
@@ -1902,7 +1906,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                         Bukkit.getPluginManager().callEvent(endingEvent);
                         Main.getInstance().getServer().getPluginManager().callEvent(statusE);
 
-                        tick.setNextCountdown(Game.POST_GAME_WAITING);
+                        tick.setNextCountdown(postGameWaiting);
                         tick.setNextStatus(GameStatus.GAME_END_CELEBRATING);
                     } else {
                         tick.setNextStatus(GameStatus.REBUILDING);
@@ -2300,7 +2304,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
         String statusLine = "";
         String playersLine = "";
-        Material blockBehindMaterial = null;
+        MaterialSearchEngine.Result blockBehindMaterial = null;
         switch (status) {
             case DISABLED:
                 statusLine = i18nonly("sign_status_disabled");
@@ -2351,7 +2355,14 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                     final Optional<Block> optionalBlock = signBlock.getBlockBehindSign();
                     if (optionalBlock.isPresent()) {
                         final Block glassBlock = optionalBlock.get();
-                        glassBlock.setType(blockBehindMaterial);
+                        glassBlock.setType(blockBehindMaterial.getMaterial());
+                        if (Main.isLegacy()) {
+                            try {
+                                // The method is no longer in API, but in legacy versions exists
+                                Block.class.getMethod("setData", byte.class).invoke(glassBlock, (byte) blockBehindMaterial.getDamage());
+                            } catch (Exception e) {
+                            }
+                        }
                     }
                 }
             }
@@ -3291,5 +3302,14 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             fakeEnderChests.put(player, Bukkit.createInventory(player.player, InventoryType.ENDER_CHEST));
         }
         return fakeEnderChests.get(player);
+    }
+
+    public void setPostGameWaiting(int time) {
+        this.postGameWaiting = time;
+    }
+
+    @Override
+    public int getPostGameWaiting() {
+        return this.postGameWaiting;
     }
 }

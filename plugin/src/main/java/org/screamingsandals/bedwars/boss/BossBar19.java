@@ -38,7 +38,7 @@ public class BossBar19 implements org.screamingsandals.bedwars.api.boss.BossBar1
 
     @Override
     public void setProgress(double progress) {
-        if (progress > 1) {
+        if (Double.isNaN(progress) || progress > 1) {
             progress = 1;
         } else if (progress < 0) {
             progress = 0;

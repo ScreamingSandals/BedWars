@@ -67,6 +67,10 @@ public class GameCreator {
             if (args.length >= 1) {
                 response = setGameTime(Integer.parseInt(args[0]));
             }
+        } else if (action.equalsIgnoreCase("postgamewaiting")) {
+            if (args.length >= 1) {
+                response = setPostGameWaiting(Integer.parseInt(args[0]));
+            }
         } else if (action.equalsIgnoreCase("arenatime")) {
             if (args.length >= 1) {
                 response = setArenaTime(args[0]);
@@ -251,6 +255,14 @@ public class GameCreator {
         }
         player.sendMessage(response);
         return isArenaSaved;
+    }
+
+    private String setPostGameWaiting(int time) {
+        if (time >= 0) {
+            game.setPostGameWaiting(time);
+            return i18n("admin_command_post_game_waiting").replace("%number%", String.valueOf(time));
+        }
+        return i18n("admin_command_invalid_time").replace("%number%", String.valueOf(time));
     }
 
     private String setGameBossBarColor(String color) {

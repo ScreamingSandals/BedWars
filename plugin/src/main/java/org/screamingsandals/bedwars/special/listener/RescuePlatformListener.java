@@ -22,6 +22,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.screamingsandals.simpleinventories.utils.MaterialSearchEngine;
 
 import java.util.ArrayList;
 
@@ -62,7 +63,9 @@ public class RescuePlatformListener implements Listener {
                         int delay = Integer.parseInt(unhidden.split(":")[3]);
                         int breakTime = Integer.parseInt(unhidden.split(":")[4]);
                         int distance = Integer.parseInt(unhidden.split(":")[5]);
-                        Material material = MiscUtils.getMaterialFromString(unhidden.split(":")[6], "GLASS");
+                        MaterialSearchEngine.Result result = MiscUtils.getMaterialFromString(unhidden.split(":")[6], "GLASS");
+                        Material material = result.getMaterial();
+                        short damage = result.getDamage();
 
                         RescuePlatform rescuePlatform = new RescuePlatform(game, player,
                                 game.getTeamOfPlayer(player), stack);
@@ -78,7 +81,7 @@ public class RescuePlatformListener implements Listener {
                             game.registerDelay(delayFactory);
                         }
 
-                        rescuePlatform.createPlatform(isBreakable, breakTime, distance, material);
+                        rescuePlatform.createPlatform(isBreakable, breakTime, distance, material, damage);
                     } else {
                         event.setCancelled(true);
 

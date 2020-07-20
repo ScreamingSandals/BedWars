@@ -9,6 +9,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.lib.debug.Debug;
+import org.screamingsandals.simpleinventories.utils.StackParser;
 
 import java.io.File;
 import java.io.IOException;
@@ -471,22 +472,11 @@ public class Configurator {
     }
 
     public ItemStack readDefinedItem(String item, String def) {
-        ItemStack material = new ItemStack(Material.valueOf(def));
-
-        if (config.isSet("items." + item)) {
+        if (config.isSet("items." + item) && config.get("items." + item) != null) {
             Object obj = config.get("items." + item);
-            if (obj instanceof ItemStack) {
-                material = (ItemStack) obj;
-            } else {
-                try {
-                    material.setType(Material.valueOf((String) obj));
-                } catch (IllegalArgumentException e) {
-                    Debug.warn("DEFINED ITEM " + obj + " DOES NOT EXISTS.", true);
-                    Debug.warn("Check config variable: items." + item);
-                }
-            }
+            return StackParser.parse(obj);
         }
 
-        return material;
+        return StackParser.parse(def);
     }
 }

@@ -1,6 +1,5 @@
 package org.screamingsandals.bedwars.utils;
 
-import misat11.lib.lang.I;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Location;
@@ -8,7 +7,6 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -21,6 +19,7 @@ import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.game.GamePlayer;
 import org.screamingsandals.bedwars.game.Team;
 import org.screamingsandals.lib.debug.Debug;
+import org.screamingsandals.simpleinventories.utils.MaterialSearchEngine;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -121,20 +120,15 @@ public class MiscUtils {
         }
     }
 
-    public static Material getMaterialFromString(String name, String fallback) {
-        Material material = Material.getMaterial(fallback);
+    public static MaterialSearchEngine.Result getMaterialFromString(String name, String fallback) {
         if (name != null) {
-            try {
-                Material mat = Material.getMaterial(name);
-                if (mat != null) {
-                    material = mat;
-                }
-            } catch (NullPointerException e) {
+            MaterialSearchEngine.Result result = MaterialSearchEngine.find(fallback);
+            if (result.getMaterial() == Material.AIR) {
                 Debug.warn("Wrong material configured: " + name, true);
-                e.printStackTrace();
             }
         }
-        return material;
+
+        return MaterialSearchEngine.find(fallback);
     }
 
     public static Player findTarget(Game game, Player player, double maxDist) {

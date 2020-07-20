@@ -35,7 +35,7 @@ public class XPBar implements org.screamingsandals.bedwars.api.boss.XPBar {
 
     @Override
     public void setProgress(double progress) {
-        if (progress < 0) {
+        if (Double.isNaN(progress) || progress < 0) {
             progress = 0;
         } else if (progress > 1) {
             progress = 1;
