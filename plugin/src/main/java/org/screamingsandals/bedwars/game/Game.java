@@ -186,7 +186,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
     public boolean gameStartItem;
     private boolean preServerRestart = false;
-    public static final int POST_GAME_WAITING = 3;
+    public static final int POST_GAME_WAITING = 3; //why is this hardcoded misat? :)
 
     // STATUS
     private GameStatus previousStatus = GameStatus.DISABLED;
@@ -378,7 +378,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             return false;
         }
 
-        BedwarsPlayerBreakBlock breakEvent = new BedwarsPlayerBreakBlock(this, player.player, getPlayerTeam(player),
+        final BedwarsPlayerBreakBlock breakEvent = new BedwarsPlayerBreakBlock(this, player.player, getPlayerTeam(player),
                 block);
         Main.getInstance().getServer().getPluginManager().callEvent(breakEvent);
 
@@ -1557,6 +1557,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                     nextCountdown--;
 
                     if (countdown <= 10 && countdown >= 1 && countdown != previousCountdown) {
+
                         for (GamePlayer player : players) {
                             Title.send(player.player, ChatColor.YELLOW + Integer.toString(countdown), "");
                             Sounds.playSound(player.player, player.player.getLocation(),
@@ -2265,7 +2266,8 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     }
 
     private String formatScoreboardTitle() {
-        return Main.getConfigurator().config.getString("scoreboard.title").replace("%game%", this.name)
+        return Objects.requireNonNull(Main.getConfigurator().config.getString("scoreboard.title"))
+                .replace("%game%", this.name)
                 .replace("%time%", this.getFormattedTimeLeft());
     }
 
