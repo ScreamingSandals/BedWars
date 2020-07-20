@@ -28,15 +28,14 @@ public class BedWarsSignOwner implements SignOwner {
 		String name = sign.getName();
 		if (Main.isGameExists(name)) {
 			new BukkitRunnable() {
-
 				@Override
 				public void run() {
 					Main.getGame(name).updateSigns();
 				}
 			}.runTask(Main.getInstance());
+
 		} else if ("leave".equalsIgnoreCase(name)) {
 			new BukkitRunnable() {
-
 				@Override
 				public void run() {
 					updateLeaveSign(sign);

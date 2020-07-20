@@ -120,16 +120,16 @@ public class MiscUtils {
         }
     }
 
-    public static Material getMaterialFromString(String path, String fallback) {
+    public static Material getMaterialFromString(String name, String fallback) {
         Material material = Material.getMaterial(fallback);
-        if (path != null) {
+        if (name != null) {
             try {
-                Material mat = Material.getMaterial(path);
+                Material mat = Material.getMaterial(name);
                 if (mat != null) {
                     material = mat;
                 }
             } catch (NullPointerException e) {
-                System.out.println("Wrong material configured: " + path);
+                System.out.println("Wrong material configured: " + name);
                 e.printStackTrace();
             }
         }

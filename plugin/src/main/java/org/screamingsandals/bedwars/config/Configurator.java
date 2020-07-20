@@ -376,7 +376,13 @@ public class Configurator {
         checkOrSetConfig(modify, "lore.generate-automatically", true);
         checkOrSetConfig(modify, "lore.text",
                 Arrays.asList("§7Price:", "§7%price% %resource%", "§7Amount:", "§7%amount%"));
+
         checkOrSetConfig(modify, "sign", Arrays.asList("§c§l[BedWars]", "%arena%", "%status%", "%players%"));
+        checkOrSetConfig(modify, "sign.block-behind.enabled", false);
+
+        checkOrSetConfig(modify, "sign.block-behind.waiting", "ORANGE_STAINED_GLASS");
+        checkOrSetConfig(modify, "sign.block-behind.in-game", "GREEN_STAINED_GLASS");
+        checkOrSetConfig(modify, "sign.block-behind.game-disabled", "RED_STAINED_GLASS");
 
         checkOrSetConfig(modify, "hotbar.selector", 0);
         checkOrSetConfig(modify, "hotbar.color", 1);

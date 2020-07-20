@@ -49,6 +49,7 @@ import org.screamingsandals.bedwars.api.utils.DelayFactory;
 import org.screamingsandals.bedwars.boss.BossBarSelector;
 import org.screamingsandals.bedwars.boss.XPBar;
 import org.screamingsandals.bedwars.commands.StatsCommand;
+import org.screamingsandals.bedwars.config.Configurator;
 import org.screamingsandals.bedwars.inventories.TeamSelectorInventory;
 import org.screamingsandals.bedwars.listener.Player116ListenerUtils;
 import org.screamingsandals.bedwars.region.FlatteningRegion;
@@ -2288,7 +2289,8 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     }
 
     public void updateSigns() {
-        List<SignBlock> gameSigns = Main.getSignManager().getSignsForName(this.name);
+        final FileConfiguration config = Main.getConfigurator().config;
+        final List<SignBlock> gameSigns = Main.getSignManager().getSignsForName(this.name);
 
         if (gameSigns.isEmpty()) {
             return;
@@ -2296,29 +2298,36 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
         String statusLine = "";
         String playersLine = "";
+        Material blockBehindMaterial = Material.RED_STAINED_GLASS;
+
         switch (status) {
             case DISABLED:
                 statusLine = i18nonly("sign_status_disabled");
                 playersLine = i18nonly("sign_status_disabled_players");
+                blockBehindMaterial = MiscUtils.getMaterialFromString(config.getString("sign.block-behind.game-disabled"), "RED_STAINED_GLASS");
                 break;
             case REBUILDING:
                 statusLine = i18nonly("sign_status_rebuilding");
                 playersLine = i18nonly("sign_status_rebuilding_players");
+                blockBehindMaterial = MiscUtils.getMaterialFromString(config.getString("sign.block-behind.game-disabled"), "RED_STAINED_GLASS");
                 break;
             case RUNNING:
             case GAME_END_CELEBRATING:
                 statusLine = i18nonly("sign_status_running");
                 playersLine = i18nonly("sign_status_running_players");
+                blockBehindMaterial = MiscUtils.getMaterialFromString(config.getString("sign.block-behind.in-game"), "GREEN_STAINED_GLASS");
                 break;
             case WAITING:
                 statusLine = i18nonly("sign_status_waiting");
                 playersLine = i18nonly("sign_status_waiting_players");
+                blockBehindMaterial = MiscUtils.getMaterialFromString(config.getString("sign.block-behind.waiting"), "ORANGE_STAINED_GLASS");
                 break;
         }
+
         playersLine = playersLine.replace("%players%", Integer.toString(players.size()));
         playersLine = playersLine.replace("%maxplayers%", Integer.toString(calculatedMaxPlayers));
 
-        List<String> texts = new ArrayList<>(Main.getConfigurator().config.getStringList("sign"));
+        final List<String> texts = new ArrayList<>(Main.getConfigurator().config.getStringList("sign"));
 
         for (int i = 0; i < texts.size(); i++) {
             String text = texts.get(i);
@@ -2328,13 +2337,21 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
         for (SignBlock sign : gameSigns) {
             if (sign.getLocation().getChunk().isLoaded()) {
-                Block block = sign.getLocation().getBlock();
+                final Block block = sign.getLocation().getBlock();
                 if (block.getState() instanceof Sign) {
                     Sign state = (Sign) block.getState();
                     for (int i = 0; i < texts.size() && i < 4; i++) {
                         state.setLine(i, texts.get(i));
                     }
                     state.update();
+                }
+
+                if (config.getBoolean("sign.block-behind.enabled", false)) {
+                    final Optional<Block> optionalBlock = sign.getBlockBehindSign();
+                    if (optionalBlock.isPresent()) {
+                        final Block glassBlock = optionalBlock.get();
+                        glassBlock.setType(blockBehindMaterial);
+                    }
                 }
             }
         }

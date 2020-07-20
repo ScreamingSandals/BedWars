@@ -5,15 +5,15 @@ import java.util.List;
 import org.bukkit.entity.Player;
 
 public interface SignOwner {
-	public boolean isNameExists(String name);
+	boolean isNameExists(String name);
 	
-	public void updateSign(SignBlock sign);
+	void updateSign(SignBlock sign);
 	
-	public List<String> getSignPrefixes();
+	List<String> getSignPrefixes();
 	
-	public void onClick(Player player, SignBlock sign);
+	void onClick(Player player, SignBlock sign);
 	
-	public List<String> getSignCreationPermissions();
+	List<String> getSignCreationPermissions();
 	
-	public String returnTranslate(String key);
+	String returnTranslate(String key);
 }
