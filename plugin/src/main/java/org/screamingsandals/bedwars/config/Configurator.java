@@ -381,6 +381,7 @@ public class Configurator {
         checkOrSetConfig(modify, "sign.block-behind.enabled", false);
 
         checkOrSetConfig(modify, "sign.block-behind.waiting", "ORANGE_STAINED_GLASS");
+        checkOrSetConfig(modify, "sign.block-behind.rebuilding", "BROWN_STAINED_GLASS");
         checkOrSetConfig(modify, "sign.block-behind.in-game", "GREEN_STAINED_GLASS");
         checkOrSetConfig(modify, "sign.block-behind.game-disabled", "RED_STAINED_GLASS");
 

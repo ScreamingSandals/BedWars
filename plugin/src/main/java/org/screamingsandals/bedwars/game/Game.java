@@ -2309,7 +2309,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             case REBUILDING:
                 statusLine = i18nonly("sign_status_rebuilding");
                 playersLine = i18nonly("sign_status_rebuilding_players");
-                blockBehindMaterial = MiscUtils.getMaterialFromString(config.getString("sign.block-behind.game-disabled"), "RED_STAINED_GLASS");
+                blockBehindMaterial = MiscUtils.getMaterialFromString(config.getString("sign.block-behind.rebuilding"), "BROWN_STAINED_GLASS");
                 break;
             case RUNNING:
             case GAME_END_CELEBRATING:
