@@ -829,11 +829,10 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                             "§c[B§fW] §eArena " + game.name + " can't be loaded, because world " + worldName + " is missing! We will try it again after all plugins will be loaded!");
                     Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> loadGame(file, false), 10L);
                     return null;
-                } else {
-                    Bukkit.getConsoleSender().sendMessage(
-                            "§c[B§fW] §cArena " + game.name + " can't be loaded, because world " + worldName + " is missing!");
-                    return null;
                 }
+                Bukkit.getConsoleSender().sendMessage(
+                        "§c[B§fW] §cArena " + game.name + " can't be loaded, because world " + worldName + " is missing!");
+                return null;
             }
 
             if (Main.getVersionNumber() >= 115) {
