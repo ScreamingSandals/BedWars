@@ -1,7 +1,11 @@
 package org.screamingsandals.bedwars.game;
 
-import com.onarandombox.MultiverseCore.api.Core;
-import com.onarandombox.MultiverseCore.api.MVWorldManager;
+import static misat11.lib.lang.I.*;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
+
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -57,11 +61,8 @@ import org.screamingsandals.lib.nms.holograms.Hologram;
 import org.screamingsandals.lib.signmanager.SignBlock;
 import org.screamingsandals.simpleinventories.utils.StackParser;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.*;
-
-import static misat11.lib.lang.I.*;
+import com.onarandombox.MultiverseCore.api.Core;
+import com.onarandombox.MultiverseCore.api.MVWorldManager;
 
 public class Game implements org.screamingsandals.bedwars.api.game.Game {
     private String name;
@@ -556,7 +557,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
                     if (team.hasBedHolo()) {
                         team.getBedHolo().setLine(0,
-                                i18nonly(isItBedBlock ? "protect_your_bed_destroyed" : (isItAnchor ? "protect_your_anchor_destroyed": (isItCake ? "protect_your_cake_destroyed" : "protect_your_target_destroyed"))));
+                                i18nonly(isItBedBlock ? "protect_your_bed_destroyed" : (isItAnchor ? "protect_your_anchor_destroyed" : (isItCake ? "protect_your_cake_destroyed" : "protect_your_target_destroyed"))));
                         team.getBedHolo().addViewers(team.getConnectedPlayers());
                     }
 
@@ -782,197 +783,205 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         return loadGame(file, true);
     }
 
-    @SuppressWarnings("unchecked")
     public static Game loadGame(File file, boolean firstAttempt) {
-        if (!file.exists()) {
-            return null;
-        }
-        FileConfiguration configMap = new YamlConfiguration();
         try {
-            configMap.load(file);
-        } catch (IOException | InvalidConfigurationException e) {
-            e.printStackTrace();
-            return null;
-        }
+            if (!file.exists()) {
+                return null;
+            }
 
-        Game game = new Game();
-        game.name = configMap.getString("name");
-        game.pauseCountdown = configMap.getInt("pauseCountdown");
-        game.gameTime = configMap.getInt("gameTime");
-        String worldName = configMap.getString("world");
-        game.world = Bukkit.getWorld(worldName);
-        if (game.world == null) {
-            if (Bukkit.getPluginManager().isPluginEnabled("Multiverse-Core")) {
-                Bukkit.getConsoleSender().sendMessage("§c[B§fW] §cWorld " + worldName
-                        + " was not found, but we found Multiverse-Core, so we will try to load this world.");
+            final FileConfiguration configMap = new YamlConfiguration();
+            try {
+                configMap.load(file);
+            } catch (IOException | InvalidConfigurationException e) {
+                e.printStackTrace();
+                return null;
+            }
 
-                Core multiverse = (Core) Bukkit.getPluginManager().getPlugin("Multiverse-Core");
-                if (multiverse != null) {
+            final Game game = new Game();
+            game.name = configMap.getString("name");
+            game.pauseCountdown = configMap.getInt("pauseCountdown");
+            game.gameTime = configMap.getInt("gameTime");
+
+            String worldName = configMap.getString("world");
+            game.world = Bukkit.getWorld(worldName);
+
+            if (game.world == null) {
+                if (Bukkit.getPluginManager().isPluginEnabled("Multiverse-Core")) {
+                    Bukkit.getConsoleSender().sendMessage("§c[B§fW] §cWorld " + worldName
+                            + " was not found, but we found Multiverse-Core, so we will try to load this world.");
+
+                    Core multiverse = (Core) Bukkit.getPluginManager().getPlugin("Multiverse-Core");
+                    if (multiverse != null) {
+                        MVWorldManager manager = multiverse.getMVWorldManager();
+                        if (manager.loadWorld(worldName)) {
+                            Bukkit.getConsoleSender().sendMessage("§c[B§fW] §aWorld " + worldName
+                                    + " was succesfully loaded with Multiverse-Core, continue in arena loading.");
+
+                            game.world = Bukkit.getWorld(worldName);
+                        }
+                    } else {
+                        Bukkit.getConsoleSender().sendMessage("§c[B§fW] §cArena " + game.name
+                                + " can't be loaded, because world " + worldName + " is missing!");
+                        return null;
+                    }
+                } else if (firstAttempt) {
+                    Bukkit.getConsoleSender().sendMessage(
+                            "§c[B§fW] §eArena " + game.name + " can't be loaded, because world " + worldName + " is missing! We will try it again after all plugins will be loaded!");
+                    Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> loadGame(file, false), 10L);
+                    return null;
+                } else {
+                    Bukkit.getConsoleSender().sendMessage(
+                            "§c[B§fW] §cArena " + game.name + " can't be loaded, because world " + worldName + " is missing!");
+                    return null;
+                }
+            }
+
+            if (Main.getVersionNumber() >= 115) {
+                game.world.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
+            }
+
+            game.pos1 = MiscUtils.readLocationFromString(game.world, configMap.getString("pos1"));
+            game.pos2 = MiscUtils.readLocationFromString(game.world, configMap.getString("pos2"));
+            game.specSpawn = MiscUtils.readLocationFromString(game.world, configMap.getString("specSpawn"));
+            String spawnWorld = configMap.getString("lobbySpawnWorld");
+            World lobbySpawnWorld = Bukkit.getWorld(spawnWorld);
+            if (lobbySpawnWorld == null) {
+                if (Bukkit.getPluginManager().isPluginEnabled("Multiverse-Core")) {
+                    Bukkit.getConsoleSender().sendMessage("§c[B§fW] §cWorld " + spawnWorld
+                            + " was not found, but we found Multiverse-Core, so we will try to load this world.");
+
+                    Core multiverse = (Core) Bukkit.getPluginManager().getPlugin("Multiverse-Core");
                     MVWorldManager manager = multiverse.getMVWorldManager();
-                    if (manager.loadWorld(worldName)) {
-                        Bukkit.getConsoleSender().sendMessage("§c[B§fW] §aWorld " + worldName
+                    if (manager.loadWorld(spawnWorld)) {
+                        Bukkit.getConsoleSender().sendMessage("§c[B§fW] §aWorld " + spawnWorld
                                 + " was succesfully loaded with Multiverse-Core, continue in arena loading.");
 
-                        game.world = Bukkit.getWorld(worldName);
+                        lobbySpawnWorld = Bukkit.getWorld(spawnWorld);
+                    } else {
+                        Bukkit.getConsoleSender().sendMessage("§c[B§fW] §cArena " + game.name
+                                + " can't be loaded, because world " + spawnWorld + " is missing!");
+                        return null;
                     }
+                } else if (firstAttempt) {
+                    Bukkit.getConsoleSender().sendMessage(
+                            "§c[B§fW] §eArena " + game.name + " can't be loaded, because world " + worldName + " is missing! We will try it again after all plugins will be loaded!");
+                    Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> loadGame(file, false), 10L);
+                    return null;
                 } else {
-                    Bukkit.getConsoleSender().sendMessage("§c[B§fW] §cArena " + game.name
-                            + " can't be loaded, because world " + worldName + " is missing!");
+                    Bukkit.getConsoleSender().sendMessage(
+                            "§c[B§fW] §cArena " + game.name + " can't be loaded, because world " + spawnWorld + " is missing!");
                     return null;
                 }
-            } else if (firstAttempt) {
-                Bukkit.getConsoleSender().sendMessage(
-                        "§c[B§fW] §eArena " + game.name + " can't be loaded, because world " + worldName + " is missing! We will try it again after all plugins will be loaded!");
-                Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> loadGame(file, false), 10L);
-                return null;
-            } else {
-                Bukkit.getConsoleSender().sendMessage(
-                        "§c[B§fW] §cArena " + game.name + " can't be loaded, because world " + worldName + " is missing!");
-                return null;
             }
-        }
+            game.lobbySpawn = MiscUtils.readLocationFromString(lobbySpawnWorld, configMap.getString("lobbySpawn"));
+            game.minPlayers = configMap.getInt("minPlayers", 2);
+            if (configMap.isSet("teams")) {
+                for (String teamN : configMap.getConfigurationSection("teams").getKeys(false)) {
+                    ConfigurationSection team = configMap.getConfigurationSection("teams").getConfigurationSection(teamN);
+                    Team t = new Team();
+                    t.newColor = team.getBoolean("isNewColor", false);
+                    t.color = TeamColor.valueOf(MiscUtils.convertColorToNewFormat(team.getString("color"), t));
+                    t.name = teamN;
+                    t.bed = MiscUtils.readLocationFromString(game.world, team.getString("bed"));
+                    t.maxPlayers = team.getInt("maxPlayers");
+                    t.spawn = MiscUtils.readLocationFromString(game.world, team.getString("spawn"));
+                    t.game = game;
 
-        if (Main.getVersionNumber() >= 115) {
-            game.world.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
-        }
-
-        game.pos1 = MiscUtils.readLocationFromString(game.world, configMap.getString("pos1"));
-        game.pos2 = MiscUtils.readLocationFromString(game.world, configMap.getString("pos2"));
-        game.specSpawn = MiscUtils.readLocationFromString(game.world, configMap.getString("specSpawn"));
-        String spawnWorld = configMap.getString("lobbySpawnWorld");
-        World lobbySpawnWorld = Bukkit.getWorld(spawnWorld);
-        if (lobbySpawnWorld == null) {
-            if (Bukkit.getPluginManager().isPluginEnabled("Multiverse-Core")) {
-                Bukkit.getConsoleSender().sendMessage("§c[B§fW] §cWorld " + spawnWorld
-                        + " was not found, but we found Multiverse-Core, so we will try to load this world.");
-
-                Core multiverse = (Core) Bukkit.getPluginManager().getPlugin("Multiverse-Core");
-                MVWorldManager manager = multiverse.getMVWorldManager();
-                if (manager.loadWorld(spawnWorld)) {
-                    Bukkit.getConsoleSender().sendMessage("§c[B§fW] §aWorld " + spawnWorld
-                            + " was succesfully loaded with Multiverse-Core, continue in arena loading.");
-
-                    lobbySpawnWorld = Bukkit.getWorld(spawnWorld);
-                } else {
-                    Bukkit.getConsoleSender().sendMessage("§c[B§fW] §cArena " + game.name
-                            + " can't be loaded, because world " + spawnWorld + " is missing!");
-                    return null;
-                }
-            } else if (firstAttempt) {
-                Bukkit.getConsoleSender().sendMessage(
-                        "§c[B§fW] §eArena " + game.name + " can't be loaded, because world " + worldName + " is missing! We will try it again after all plugins will be loaded!");
-                Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> loadGame(file, false), 10L);
-                return null;
-            } else {
-                Bukkit.getConsoleSender().sendMessage(
-                        "§c[B§fW] §cArena " + game.name + " can't be loaded, because world " + spawnWorld + " is missing!");
-                return null;
-            }
-        }
-        game.lobbySpawn = MiscUtils.readLocationFromString(lobbySpawnWorld, configMap.getString("lobbySpawn"));
-        game.minPlayers = configMap.getInt("minPlayers", 2);
-        if (configMap.isSet("teams")) {
-            for (String teamN : configMap.getConfigurationSection("teams").getKeys(false)) {
-                ConfigurationSection team = configMap.getConfigurationSection("teams").getConfigurationSection(teamN);
-                Team t = new Team();
-                t.newColor = team.getBoolean("isNewColor", false);
-                t.color = TeamColor.valueOf(MiscUtils.convertColorToNewFormat(team.getString("color"), t));
-                t.name = teamN;
-                t.bed = MiscUtils.readLocationFromString(game.world, team.getString("bed"));
-                t.maxPlayers = team.getInt("maxPlayers");
-                t.spawn = MiscUtils.readLocationFromString(game.world, team.getString("spawn"));
-                t.game = game;
-
-                t.newColor = true;
-                game.teams.add(t);
-            }
-        }
-        if (configMap.isSet("spawners")) {
-            List<Map<String, Object>> spawners = (List<Map<String, Object>>) configMap.getList("spawners");
-            for (Map<String, Object> spawner : spawners) {
-                ItemSpawner sa = new ItemSpawner(
-                        MiscUtils.readLocationFromString(game.world, (String) spawner.get("location")),
-                        Main.getSpawnerType(((String) spawner.get("type")).toLowerCase()),
-                        (String) spawner.get("customName"), ((Boolean) spawner.getOrDefault("hologramEnabled", true)),
-                        ((Number) spawner.getOrDefault("startLevel", 1)).doubleValue(),
-                        game.getTeamFromName((String) spawner.get("team")),
-                        (int) spawner.getOrDefault("maxSpawnedResources", -1));
-                game.spawners.add(sa);
-            }
-        }
-        if (configMap.isSet("stores")) {
-            List<Object> stores = (List<Object>) configMap.getList("stores");
-            for (Object store : stores) {
-                if (store instanceof Map) {
-                    Map<String, String> map = (Map<String, String>) store;
-                    game.gameStore.add(new GameStore(MiscUtils.readLocationFromString(game.world, map.get("loc")),
-                            map.get("shop"), "true".equals(map.getOrDefault("parent", "true")),
-                            EntityType.valueOf(map.getOrDefault("type", "VILLAGER").toUpperCase()),
-                            map.getOrDefault("name", ""), map.containsKey("name"), "true".equals(map.getOrDefault("isBaby", "false"))));
-                } else if (store instanceof String) {
-                    game.gameStore.add(new GameStore(MiscUtils.readLocationFromString(game.world, (String) store), null,
-                            true, EntityType.VILLAGER, "", false, false));
+                    t.newColor = true;
+                    game.teams.add(t);
                 }
             }
+            if (configMap.isSet("spawners")) {
+                List<Map<String, Object>> spawners = (List<Map<String, Object>>) configMap.getList("spawners");
+                for (Map<String, Object> spawner : spawners) {
+                    ItemSpawner sa = new ItemSpawner(
+                            MiscUtils.readLocationFromString(game.world, (String) spawner.get("location")),
+                            Main.getSpawnerType(((String) spawner.get("type")).toLowerCase()),
+                            (String) spawner.get("customName"), ((Boolean) spawner.getOrDefault("hologramEnabled", true)),
+                            ((Number) spawner.getOrDefault("startLevel", 1)).doubleValue(),
+                            game.getTeamFromName((String) spawner.get("team")),
+                            (int) spawner.getOrDefault("maxSpawnedResources", -1));
+                    game.spawners.add(sa);
+                }
+            }
+            if (configMap.isSet("stores")) {
+                List<Object> stores = (List<Object>) configMap.getList("stores");
+                for (Object store : stores) {
+                    if (store instanceof Map) {
+                        Map<String, String> map = (Map<String, String>) store;
+                        game.gameStore.add(new GameStore(MiscUtils.readLocationFromString(game.world, map.get("loc")),
+                                map.get("shop"), "true".equals(map.getOrDefault("parent", "true")),
+                                EntityType.valueOf(map.getOrDefault("type", "VILLAGER").toUpperCase()),
+                                map.getOrDefault("name", ""), map.containsKey("name"), "true".equals(map.getOrDefault("isBaby", "false"))));
+                    } else if (store instanceof String) {
+                        game.gameStore.add(new GameStore(MiscUtils.readLocationFromString(game.world, (String) store), null,
+                                true, EntityType.VILLAGER, "", false, false));
+                    }
+                }
+            }
+
+            game.compassEnabled = readBooleanConstant(configMap.getString("constant." + COMPASS_ENABLED, "inherit"));
+            game.addWoolToInventoryOnJoin = readBooleanConstant(
+                    configMap.getString("constant." + ADD_WOOL_TO_INVENTORY_ON_JOIN, "inherit"));
+            game.coloredLeatherByTeamInLobby = readBooleanConstant(
+                    configMap.getString("constant." + COLORED_LEATHER_BY_TEAM_IN_LOBBY, "inherit"));
+            game.crafting = readBooleanConstant(configMap.getString("constant." + CRAFTING, "inherit"));
+            game.friendlyfire = readBooleanConstant(configMap.getString("constant." + FRIENDLY_FIRE, "inherit"));
+            game.joinRandomTeamAfterLobby = readBooleanConstant(
+                    configMap.getString("constant." + JOIN_RANDOM_TEAM_AFTER_LOBBY, "inherit"));
+            game.joinRandomTeamOnJoin = readBooleanConstant(
+                    configMap.getString("constant." + JOIN_RANDOM_TEAM_ON_JOIN, "inherit"));
+            game.keepInventory = readBooleanConstant(configMap.getString("constant." + KEEP_INVENTORY, "inherit"));
+            game.preventKillingVillagers = readBooleanConstant(
+                    configMap.getString("constant." + PREVENT_KILLING_VILLAGERS, "inherit"));
+            game.playerDrops = readBooleanConstant(configMap.getString("constant." + PLAYER_DROPS, "inherit"));
+            game.lobbybossbar = readBooleanConstant(configMap.getString("constant." + LOBBY_BOSSBAR, "inherit"));
+            game.gamebossbar = readBooleanConstant(configMap.getString("constant." + GAME_BOSSBAR, "inherit"));
+            game.ascoreboard = readBooleanConstant(configMap.getString("constant." + SCOREBOARD, "inherit"));
+            game.lobbyscoreboard = readBooleanConstant(configMap.getString("constant." + LOBBY_SCOREBOARD, "inherit"));
+            game.preventSpawningMobs = readBooleanConstant(
+                    configMap.getString("constant." + PREVENT_SPAWNING_MOBS, "inherit"));
+            game.spawnerHolograms = readBooleanConstant(configMap.getString("constant." + SPAWNER_HOLOGRAMS, "inherit"));
+            game.spawnerDisableMerge = readBooleanConstant(
+                    configMap.getString("constant." + SPAWNER_DISABLE_MERGE, "inherit"));
+            game.gameStartItems = readBooleanConstant(configMap.getString("constant." + GAME_START_ITEMS, "inherit"));
+            game.playerRespawnItems = readBooleanConstant(
+                    configMap.getString("constant." + PLAYER_RESPAWN_ITEMS, "inherit"));
+            game.spawnerHologramsCountdown = readBooleanConstant(
+                    configMap.getString("constant." + SPAWNER_HOLOGRAMS_COUNTDOWN, "inherit"));
+            game.damageWhenPlayerIsNotInArena = readBooleanConstant(
+                    configMap.getString("constant." + DAMAGE_WHEN_PLAYER_IS_NOT_IN_ARENA, "inherit"));
+            game.removeUnusedTargetBlocks = readBooleanConstant(
+                    configMap.getString("constant." + REMOVE_UNUSED_TARGET_BLOCKS, "inherit"));
+            game.allowBlockFalling = readBooleanConstant(
+                    configMap.getString("constant." + ALLOW_BLOCK_FALLING, "inherit"));
+            game.holoAboveBed = readBooleanConstant(configMap.getString("constant." + HOLO_ABOVE_BED, "inherit"));
+            game.spectatorJoin = readBooleanConstant(configMap.getString("constant." + SPECTATOR_JOIN, "inherit"));
+            game.anchorAutoFill = readBooleanConstant(configMap.getString("constant." + ANCHOR_AUTO_FILL, "inherit"));
+            game.anchorDecreasing = readBooleanConstant(configMap.getString("constant." + ANCHOR_DECREASING, "inherit"));
+            game.cakeTargetBlockEating = readBooleanConstant(configMap.getString("constant." + CAKE_TARGET_BLOCK_EATING, "inherit"));
+            game.targetBlockExplosions = readBooleanConstant(configMap.getString("constant." + TARGET_BLOCK_EXPLOSIONS, "inherit"));
+
+            game.arenaTime = ArenaTime.valueOf(configMap.getString("arenaTime", ArenaTime.WORLD.name()).toUpperCase());
+            game.arenaWeather = loadWeather(configMap.getString("arenaWeather", "default").toUpperCase());
+
+            try {
+                game.lobbyBossBarColor = loadBossBarColor(
+                        configMap.getString("lobbyBossBarColor", "default").toUpperCase());
+                game.gameBossBarColor = loadBossBarColor(configMap.getString("gameBossBarColor", "default").toUpperCase());
+            } catch (Throwable t) {
+                // We're using 1.8
+            }
+
+            Main.addGame(game);
+            game.start();
+            Bukkit.getConsoleSender().sendMessage("§c[B§fW] §aArena §f" + game.name + "§a loaded!");
+            return game;
+        } catch (Throwable throwable) {
+            Debug.warn("Something went wrong while loading arena file " + file.getName() + ". Please report this to our Discord or GitHub!", true);
+            throwable.printStackTrace();
+            return null;
         }
-
-        game.compassEnabled = readBooleanConstant(configMap.getString("constant." + COMPASS_ENABLED, "inherit"));
-        game.addWoolToInventoryOnJoin = readBooleanConstant(
-                configMap.getString("constant." + ADD_WOOL_TO_INVENTORY_ON_JOIN, "inherit"));
-        game.coloredLeatherByTeamInLobby = readBooleanConstant(
-                configMap.getString("constant." + COLORED_LEATHER_BY_TEAM_IN_LOBBY, "inherit"));
-        game.crafting = readBooleanConstant(configMap.getString("constant." + CRAFTING, "inherit"));
-        game.friendlyfire = readBooleanConstant(configMap.getString("constant." + FRIENDLY_FIRE, "inherit"));
-        game.joinRandomTeamAfterLobby = readBooleanConstant(
-                configMap.getString("constant." + JOIN_RANDOM_TEAM_AFTER_LOBBY, "inherit"));
-        game.joinRandomTeamOnJoin = readBooleanConstant(
-                configMap.getString("constant." + JOIN_RANDOM_TEAM_ON_JOIN, "inherit"));
-        game.keepInventory = readBooleanConstant(configMap.getString("constant." + KEEP_INVENTORY, "inherit"));
-        game.preventKillingVillagers = readBooleanConstant(
-                configMap.getString("constant." + PREVENT_KILLING_VILLAGERS, "inherit"));
-        game.playerDrops = readBooleanConstant(configMap.getString("constant." + PLAYER_DROPS, "inherit"));
-        game.lobbybossbar = readBooleanConstant(configMap.getString("constant." + LOBBY_BOSSBAR, "inherit"));
-        game.gamebossbar = readBooleanConstant(configMap.getString("constant." + GAME_BOSSBAR, "inherit"));
-        game.ascoreboard = readBooleanConstant(configMap.getString("constant." + SCOREBOARD, "inherit"));
-        game.lobbyscoreboard = readBooleanConstant(configMap.getString("constant." + LOBBY_SCOREBOARD, "inherit"));
-        game.preventSpawningMobs = readBooleanConstant(
-                configMap.getString("constant." + PREVENT_SPAWNING_MOBS, "inherit"));
-        game.spawnerHolograms = readBooleanConstant(configMap.getString("constant." + SPAWNER_HOLOGRAMS, "inherit"));
-        game.spawnerDisableMerge = readBooleanConstant(
-                configMap.getString("constant." + SPAWNER_DISABLE_MERGE, "inherit"));
-        game.gameStartItems = readBooleanConstant(configMap.getString("constant." + GAME_START_ITEMS, "inherit"));
-        game.playerRespawnItems = readBooleanConstant(
-                configMap.getString("constant." + PLAYER_RESPAWN_ITEMS, "inherit"));
-        game.spawnerHologramsCountdown = readBooleanConstant(
-                configMap.getString("constant." + SPAWNER_HOLOGRAMS_COUNTDOWN, "inherit"));
-        game.damageWhenPlayerIsNotInArena = readBooleanConstant(
-                configMap.getString("constant." + DAMAGE_WHEN_PLAYER_IS_NOT_IN_ARENA, "inherit"));
-        game.removeUnusedTargetBlocks = readBooleanConstant(
-                configMap.getString("constant." + REMOVE_UNUSED_TARGET_BLOCKS, "inherit"));
-        game.allowBlockFalling = readBooleanConstant(
-                configMap.getString("constant." + ALLOW_BLOCK_FALLING, "inherit"));
-        game.holoAboveBed = readBooleanConstant(configMap.getString("constant." + HOLO_ABOVE_BED, "inherit"));
-        game.spectatorJoin = readBooleanConstant(configMap.getString("constant." + SPECTATOR_JOIN, "inherit"));
-        game.anchorAutoFill = readBooleanConstant(configMap.getString("constant." + ANCHOR_AUTO_FILL, "inherit"));
-        game.anchorDecreasing = readBooleanConstant(configMap.getString("constant." + ANCHOR_DECREASING, "inherit"));
-        game.cakeTargetBlockEating = readBooleanConstant(configMap.getString("constant." + CAKE_TARGET_BLOCK_EATING, "inherit"));
-        game.targetBlockExplosions = readBooleanConstant(configMap.getString("constant." + TARGET_BLOCK_EXPLOSIONS, "inherit"));
-
-        game.arenaTime = ArenaTime.valueOf(configMap.getString("arenaTime", ArenaTime.WORLD.name()).toUpperCase());
-        game.arenaWeather = loadWeather(configMap.getString("arenaWeather", "default").toUpperCase());
-
-        try {
-            game.lobbyBossBarColor = loadBossBarColor(
-                    configMap.getString("lobbyBossBarColor", "default").toUpperCase());
-            game.gameBossBarColor = loadBossBarColor(configMap.getString("gameBossBarColor", "default").toUpperCase());
-        } catch (Throwable t) {
-            // We're using 1.8
-        }
-
-        Main.addGame(game);
-        game.start();
-        Bukkit.getConsoleSender().sendMessage("§c[B§fW] §aArena §f" + game.name + "§a loaded!");
-        return game;
     }
 
     public static WeatherType loadWeather(String weather) {
@@ -1073,7 +1082,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 if (store.isShopCustomName()) {
                     map.put("name", store.getShopCustomName());
                 }
-                map.put("isBaby",store.isBaby() ? "true" : "false");
+                map.put("isBaby", store.isBaby() ? "true" : "false");
                 nL.add(map);
             }
             configMap.set("stores", nL);
@@ -3109,7 +3118,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
     @Override
     public boolean isEntityShop(Entity entity) {
-        if(Main.getConfigurator().config.getBoolean("shop.citizens-enabled", false))
+        if (Main.getConfigurator().config.getBoolean("shop.citizens-enabled", false))
             return false;
 
         for (GameStore store : gameStore) {
