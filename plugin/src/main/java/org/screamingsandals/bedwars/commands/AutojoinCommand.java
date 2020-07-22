@@ -12,7 +12,7 @@ import static misat11.lib.lang.I18n.i18n;
 public class AutojoinCommand extends BaseCommand {
 
     public AutojoinCommand() {
-        super("autojoin", null, false);
+        super("autojoin", AUTOJOIN_PERMISSION, false, Main.getConfigurator().config.getBoolean("default-permissions.autojoin"));
     }
 
     @Override

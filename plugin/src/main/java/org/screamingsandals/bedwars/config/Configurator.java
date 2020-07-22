@@ -9,6 +9,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.lib.debug.Debug;
+import org.screamingsandals.simpleinventories.utils.StackParser;
 
 import java.io.File;
 import java.io.IOException;
@@ -376,7 +377,14 @@ public class Configurator {
         checkOrSetConfig(modify, "lore.generate-automatically", true);
         checkOrSetConfig(modify, "lore.text",
                 Arrays.asList("§7Price:", "§7%price% %resource%", "§7Amount:", "§7%amount%"));
-        checkOrSetConfig(modify, "sign", Arrays.asList("§c§l[BedWars]", "%arena%", "%status%", "%players%"));
+
+        checkOrSetConfig(modify, "sign.lines", config.getList("sign", Arrays.asList("§c§l[BedWars]", "%arena%", "%status%", "%players%")));
+
+        checkOrSetConfig(modify, "sign.block-behind.enabled", false);
+        checkOrSetConfig(modify, "sign.block-behind.waiting", "ORANGE_STAINED_GLASS");
+        checkOrSetConfig(modify, "sign.block-behind.rebuilding", "BROWN_STAINED_GLASS");
+        checkOrSetConfig(modify, "sign.block-behind.in-game", "GREEN_STAINED_GLASS");
+        checkOrSetConfig(modify, "sign.block-behind.game-disabled", "RED_STAINED_GLASS");
 
         checkOrSetConfig(modify, "hotbar.selector", 0);
         checkOrSetConfig(modify, "hotbar.color", 1);
@@ -410,15 +418,24 @@ public class Configurator {
         checkOrSetConfig(modify, "update-checker.one.console", true);
         checkOrSetConfig(modify, "update-checker.one.admins", true);
 
+        checkOrSetConfig(modify, "target-block.allow-destroying-with-explosions", false);
         checkOrSetConfig(modify, "target-block.respawn-anchor.fill-on-start", true);
         checkOrSetConfig(modify, "target-block.respawn-anchor.enable-decrease", true);
         checkOrSetConfig(modify, "target-block.respawn-anchor.sound.charge", "BLOCK_RESPAWN_ANCHOR_CHARGE");
         checkOrSetConfig(modify, "target-block.respawn-anchor.sound.used", "BLOCK_GLASS_BREAK");
         checkOrSetConfig(modify, "target-block.respawn-anchor.sound.deplete", "BLOCK_RESPAWN_ANCHOR_DEPLETE");
+        checkOrSetConfig(modify, "target-block.cake.destroy-by-eating", true);
 
         checkOrSetConfig(modify, "event-hacks.damage", false);
         checkOrSetConfig(modify, "event-hacks.destroy", false);
         checkOrSetConfig(modify, "event-hacks.place", false);
+
+        checkOrSetConfig(modify, "default-permissions.join", true);
+        checkOrSetConfig(modify, "default-permissions.leave", true);
+        checkOrSetConfig(modify, "default-permissions.stats", true);
+        checkOrSetConfig(modify, "default-permissions.list", true);
+        checkOrSetConfig(modify, "default-permissions.rejoin", true);
+        checkOrSetConfig(modify, "default-permissions.autojoin", true);
 
         checkOrSetConfig(modify, "version", 2);
 
@@ -455,22 +472,11 @@ public class Configurator {
     }
 
     public ItemStack readDefinedItem(String item, String def) {
-        ItemStack material = new ItemStack(Material.valueOf(def));
-
-        if (config.isSet("items." + item)) {
+        if (config.isSet("items." + item) && config.get("items." + item) != null) {
             Object obj = config.get("items." + item);
-            if (obj instanceof ItemStack) {
-                material = (ItemStack) obj;
-            } else {
-                try {
-                    material.setType(Material.valueOf((String) obj));
-                } catch (IllegalArgumentException e) {
-                    Debug.warn("DEFINED ITEM " + obj + " DOES NOT EXISTS.", true);
-                    Debug.warn("Check config variable: items." + item);
-                }
-            }
+            return StackParser.parse(obj);
         }
 
-        return material;
+        return StackParser.parse(def);
     }
 }

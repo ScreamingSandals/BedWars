@@ -102,7 +102,7 @@ public class UpdateChecker {
         @EventHandler
         public void onPlayerJoin(PlayerJoinEvent event) {
             Player player = event.getPlayer();
-            if (player.hasPermission(BaseCommand.ADMIN_PERMISSION)) {
+            if (BaseCommand.hasPermission(player, BaseCommand.ADMIN_PERMISSION, false)) {
                 if (Main.getConfigurator().config.getBoolean("update-checker.zero.admins") && result.isUpdateAvailable) {
                     mpr("update_checker_zero").replace("version", result.currentZeroVersion).send(player);
                     mpr("update_checker_zero_second").replace("url", result.download).send(player);

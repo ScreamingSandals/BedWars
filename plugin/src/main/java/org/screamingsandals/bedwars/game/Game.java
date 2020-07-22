@@ -1,7 +1,11 @@
 package org.screamingsandals.bedwars.game;
 
-import com.onarandombox.MultiverseCore.api.Core;
-import com.onarandombox.MultiverseCore.api.MVWorldManager;
+import static misat11.lib.lang.I.*;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
+
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -44,6 +48,8 @@ import org.screamingsandals.bedwars.api.upgrades.UpgradeStorage;
 import org.screamingsandals.bedwars.api.utils.DelayFactory;
 import org.screamingsandals.bedwars.boss.BossBarSelector;
 import org.screamingsandals.bedwars.boss.XPBar;
+import org.screamingsandals.bedwars.commands.StatsCommand;
+import org.screamingsandals.bedwars.config.Configurator;
 import org.screamingsandals.bedwars.inventories.TeamSelectorInventory;
 import org.screamingsandals.bedwars.listener.Player116ListenerUtils;
 import org.screamingsandals.bedwars.region.FlatteningRegion;
@@ -54,13 +60,11 @@ import org.screamingsandals.lib.debug.Debug;
 import org.screamingsandals.lib.nms.entity.EntityUtils;
 import org.screamingsandals.lib.nms.holograms.Hologram;
 import org.screamingsandals.lib.signmanager.SignBlock;
+import org.screamingsandals.simpleinventories.utils.MaterialSearchEngine;
 import org.screamingsandals.simpleinventories.utils.StackParser;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.*;
-
-import static misat11.lib.lang.I.*;
+import com.onarandombox.MultiverseCore.api.Core;
+import com.onarandombox.MultiverseCore.api.MVWorldManager;
 
 public class Game implements org.screamingsandals.bedwars.api.game.Game {
     private String name;
@@ -173,9 +177,16 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     public static final String ANCHOR_DECREASING = "anchor-decreasing";
     private InGameConfigBooleanConstants anchorDecreasing = InGameConfigBooleanConstants.INHERIT;
 
+    public static final String GLOBAL_CAKE_TARGET_BLOCK_EATING = "target-block.cake.destroy-by-eating";
+    public static final String CAKE_TARGET_BLOCK_EATING = "cake-target-block-eating";
+    private InGameConfigBooleanConstants cakeTargetBlockEating = InGameConfigBooleanConstants.INHERIT;
+
+    public static final String GLOBAL_TARGET_BLOCK_EXPLOSIONS = "target-block.allow-destroying-with-explosions";
+    public static final String TARGET_BLOCK_EXPLOSIONS = "target-block-explosions";
+    private InGameConfigBooleanConstants targetBlockExplosions = InGameConfigBooleanConstants.INHERIT;
+
     public boolean gameStartItem;
     private boolean preServerRestart = false;
-    public static final int POST_GAME_WAITING = 3;
 
     // STATUS
     private GameStatus previousStatus = GameStatus.DISABLED;
@@ -195,6 +206,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     private List<Hologram> createdHolograms = new ArrayList<>();
     private Map<ItemSpawner, Hologram> countdownHolograms = new HashMap<>();
     private Map<GamePlayer, Inventory> fakeEnderChests = new HashMap<>();
+    private int postGameWaiting = 3;
 
     private Game() {
 
@@ -367,7 +379,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             return false;
         }
 
-        BedwarsPlayerBreakBlock breakEvent = new BedwarsPlayerBreakBlock(this, player.player, getPlayerTeam(player),
+        final BedwarsPlayerBreakBlock breakEvent = new BedwarsPlayerBreakBlock(this, player.player, getPlayerTeam(player),
                 block);
         Main.getInstance().getServer().getPluginManager().callEvent(breakEvent);
 
@@ -415,7 +427,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 if (getPlayerTeam(player).teamInfo.bed.equals(loc)) {
                     return false;
                 }
-                bedDestroyed(loc, player.player, true, false);
+                bedDestroyed(loc, player.player, true, false, false);
                 region.putOriginalBlock(block.getLocation(), block.getState());
                 if (block.getLocation().equals(loc)) {
                     Block neighbor = region.getBedNeighbor(block);
@@ -433,11 +445,13 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                     }
                 }
                 return true;
+            } else if (getOriginalOrInheritedCakeTargetBlockEating() && block.getType().name().contains("CAKE")) {
+                return false; // when CAKES are in eating mode, don't allow to just break it
             } else {
                 if (getPlayerTeam(player).teamInfo.bed.equals(loc)) {
                     return false;
                 }
-                bedDestroyed(loc, player.player, false, "RESPAWN_ANCHOR".equals(block.getType().name()));
+                bedDestroyed(loc, player.player, false, "RESPAWN_ANCHOR".equals(block.getType().name()), block.getType().name().contains("CAKE"));
                 region.putOriginalBlock(loc, block.getState());
                 try {
                     event.setDropItems(false);
@@ -452,6 +466,37 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             return true;
         }
         return false;
+    }
+
+    public void targetBlockExplode(RunningTeam team) {
+        Location loc = team.getTargetBlock();
+        Block block = loc.getBlock();
+        if (region.isBedBlock(block.getState())) {
+            if (!region.isBedHead(block.getState())) {
+                loc = region.getBedNeighbor(block).getLocation();
+            }
+        }
+        if (isTargetBlock(loc)) {
+            if (region.isBedBlock(block.getState())) {
+                bedDestroyed(loc, null, true, false, false);
+                region.putOriginalBlock(block.getLocation(), block.getState());
+                if (block.getLocation().equals(loc)) {
+                    Block neighbor = region.getBedNeighbor(block);
+                    region.putOriginalBlock(neighbor.getLocation(), neighbor.getState());
+                } else {
+                    region.putOriginalBlock(loc, region.getBedNeighbor(block).getState());
+                }
+                if (region.isBedHead(block.getState())) {
+                    region.getBedNeighbor(block).setType(Material.AIR);
+                } else {
+                    block.setType(Material.AIR);
+                }
+            } else {
+                bedDestroyed(loc, null, false, "RESPAWN_ANCHOR".equals(block.getType().name()), block.getType().name().contains("CAKE"));
+                region.putOriginalBlock(loc, block.getState());
+                block.setType(Material.AIR);
+            }
+        }
     }
 
     private boolean isTargetBlock(Location loc) {
@@ -485,21 +530,25 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         return null;
     }
 
-    private void bedDestroyed(Location loc, Player broker, boolean isItBedBlock, boolean isItAnchor) {
+    public void bedDestroyed(Location loc, Player broker, boolean isItBedBlock, boolean isItAnchor, boolean isItCake) {
         if (status == GameStatus.RUNNING) {
             for (CurrentTeam team : teamsInGame) {
                 if (team.teamInfo.bed.equals(loc)) {
                     team.isBed = false;
                     updateScoreboard();
+                    String colored_broker = "explosion";
+                    if (broker != null) {
+                        colored_broker = getPlayerTeam(Main.getPlayerGameProfile(broker)).teamInfo.color.chatColor + broker.getDisplayName();
+                    }
                     for (GamePlayer player : players) {
-                        String colored_broker = getPlayerTeam(Main.getPlayerGameProfile(broker)).teamInfo.color.chatColor + broker.getDisplayName();
+                        final String key = isItBedBlock ? "bed_is_destroyed" : (isItAnchor ? "anchor_is_destroyed" : (isItCake ? "cake_is_destroyed" : "target_is_destroyed"));
                         Title.send(player.player,
-                                i18n(isItBedBlock ? "bed_is_destroyed" : (isItAnchor ? "anchor_is_destroyed" : "target_is_destroyed"), false)
+                                i18n(key, false)
                                         .replace("%team%", team.teamInfo.color.chatColor + team.teamInfo.name)
                                         .replace("%broker%", colored_broker),
                                 i18n(getPlayerTeam(player) == team ? "bed_is_destroyed_subtitle_for_victim"
                                         : "bed_is_destroyed_subtitle", false));
-                        player.player.sendMessage(i18n(isItBedBlock ? "bed_is_destroyed" : (isItAnchor ? "anchor_is_destroyed" : "target_is_destroyed"))
+                        player.player.sendMessage(i18n(key)
                                 .replace("%team%", team.teamInfo.color.chatColor + team.teamInfo.name)
                                 .replace("%broker%", colored_broker));
                         SpawnEffects.spawnEffect(this, player.player, "game-effects.beddestroy");
@@ -510,7 +559,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
                     if (team.hasBedHolo()) {
                         team.getBedHolo().setLine(0,
-                                i18nonly(isItBedBlock ? "protect_your_bed_destroyed" : (isItAnchor ? "protect_your_anchor_destroyed": "protect_your_target_destroyed")));
+                                i18nonly(isItBedBlock ? "protect_your_bed_destroyed" : (isItAnchor ? "protect_your_anchor_destroyed" : (isItCake ? "protect_your_cake_destroyed" : "protect_your_target_destroyed"))));
                         team.getBedHolo().addViewers(team.getConnectedPlayers());
                     }
 
@@ -522,15 +571,17 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                             broker, team);
                     Main.getInstance().getServer().getPluginManager().callEvent(targetBlockDestroyed);
 
-                    if (Main.isPlayerStatisticsEnabled()) {
-                        PlayerStatistic statistic = Main.getPlayerStatisticsManager().getStatistic(broker);
-                        statistic.setCurrentDestroyedBeds(statistic.getCurrentDestroyedBeds() + 1);
-                        statistic.setCurrentScore(statistic.getCurrentScore()
-                                + Main.getConfigurator().config.getInt("statistics.scores.bed-destroy", 25));
-                    }
+                    if (broker != null) {
+                        if (Main.isPlayerStatisticsEnabled()) {
+                            PlayerStatistic statistic = Main.getPlayerStatisticsManager().getStatistic(broker);
+                            statistic.setCurrentDestroyedBeds(statistic.getCurrentDestroyedBeds() + 1);
+                            statistic.setCurrentScore(statistic.getCurrentScore()
+                                    + Main.getConfigurator().config.getInt("statistics.scores.bed-destroy", 25));
+                        }
 
-                    dispatchRewardCommands("player-destroy-bed", broker,
-                            Main.getConfigurator().config.getInt("statistics.scores.bed-destroy", 25));
+                        dispatchRewardCommands("player-destroy-bed", broker,
+                                Main.getConfigurator().config.getInt("statistics.scores.bed-destroy", 25));
+                    }
                 }
             }
         }
@@ -734,195 +785,206 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         return loadGame(file, true);
     }
 
-    @SuppressWarnings("unchecked")
     public static Game loadGame(File file, boolean firstAttempt) {
-        if (!file.exists()) {
-            return null;
-        }
-        FileConfiguration configMap = new YamlConfiguration();
         try {
-            configMap.load(file);
-        } catch (IOException | InvalidConfigurationException e) {
-            e.printStackTrace();
-            return null;
-        }
+            if (!file.exists()) {
+                return null;
+            }
 
-        Game game = new Game();
-        game.name = configMap.getString("name");
-        game.pauseCountdown = configMap.getInt("pauseCountdown");
-        game.gameTime = configMap.getInt("gameTime");
-        String worldName = configMap.getString("world");
-        game.world = Bukkit.getWorld(worldName);
-        if (game.world == null) {
-            if (Bukkit.getPluginManager().isPluginEnabled("Multiverse-Core")) {
-                Bukkit.getConsoleSender().sendMessage("§c[B§fW] §cWorld " + worldName
-                        + " was not found, but we found Multiverse-Core, so we will try to load this world.");
+            final FileConfiguration configMap = new YamlConfiguration();
+            try {
+                configMap.load(file);
+            } catch (IOException | InvalidConfigurationException e) {
+                e.printStackTrace();
+                return null;
+            }
 
-                Core multiverse = (Core) Bukkit.getPluginManager().getPlugin("Multiverse-Core");
-                if (multiverse != null) {
-                    MVWorldManager manager = multiverse.getMVWorldManager();
-                    if (manager.loadWorld(worldName)) {
-                        Bukkit.getConsoleSender().sendMessage("§c[B§fW] §aWorld " + worldName
-                                + " was succesfully loaded with Multiverse-Core, continue in arena loading.");
+            final Game game = new Game();
+            game.name = configMap.getString("name");
+            game.pauseCountdown = configMap.getInt("pauseCountdown");
+            game.gameTime = configMap.getInt("gameTime");
 
-                        game.world = Bukkit.getWorld(worldName);
+            String worldName = configMap.getString("world");
+            game.world = Bukkit.getWorld(worldName);
+
+            if (game.world == null) {
+                if (Bukkit.getPluginManager().isPluginEnabled("Multiverse-Core")) {
+                    Bukkit.getConsoleSender().sendMessage("§c[B§fW] §cWorld " + worldName
+                            + " was not found, but we found Multiverse-Core, so we will try to load this world.");
+
+                    Core multiverse = (Core) Bukkit.getPluginManager().getPlugin("Multiverse-Core");
+                    if (multiverse != null) {
+                        MVWorldManager manager = multiverse.getMVWorldManager();
+                        if (manager.loadWorld(worldName)) {
+                            Bukkit.getConsoleSender().sendMessage("§c[B§fW] §aWorld " + worldName
+                                    + " was succesfully loaded with Multiverse-Core, continue in arena loading.");
+
+                            game.world = Bukkit.getWorld(worldName);
+                        }
+                    } else {
+                        Bukkit.getConsoleSender().sendMessage("§c[B§fW] §cArena " + game.name
+                                + " can't be loaded, because world " + worldName + " is missing!");
+                        return null;
                     }
-                } else {
-                    Bukkit.getConsoleSender().sendMessage("§c[B§fW] §cArena " + game.name
-                            + " can't be loaded, because world " + worldName + " is missing!");
+                } else if (firstAttempt) {
+                    Bukkit.getConsoleSender().sendMessage(
+                            "§c[B§fW] §eArena " + game.name + " can't be loaded, because world " + worldName + " is missing! We will try it again after all plugins will be loaded!");
+                    Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> loadGame(file, false), 10L);
                     return null;
                 }
-            } else if (firstAttempt) {
-                Bukkit.getConsoleSender().sendMessage(
-                        "§c[B§fW] §eArena " + game.name + " can't be loaded, because world " + worldName + " is missing! We will try it again after all plugins will be loaded!");
-                Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> loadGame(file, false), 10L);
-                return null;
-            } else {
                 Bukkit.getConsoleSender().sendMessage(
                         "§c[B§fW] §cArena " + game.name + " can't be loaded, because world " + worldName + " is missing!");
                 return null;
             }
-        }
 
-        if (Main.getVersionNumber() >= 115) {
-            game.world.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
-        }
+            if (Main.getVersionNumber() >= 115) {
+                game.world.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
+            }
 
-        game.pos1 = MiscUtils.readLocationFromString(game.world, configMap.getString("pos1"));
-        game.pos2 = MiscUtils.readLocationFromString(game.world, configMap.getString("pos2"));
-        game.specSpawn = MiscUtils.readLocationFromString(game.world, configMap.getString("specSpawn"));
-        String spawnWorld = configMap.getString("lobbySpawnWorld");
-        World lobbySpawnWorld = Bukkit.getWorld(spawnWorld);
-        if (lobbySpawnWorld == null) {
-            if (Bukkit.getPluginManager().isPluginEnabled("Multiverse-Core")) {
-                Bukkit.getConsoleSender().sendMessage("§c[B§fW] §cWorld " + spawnWorld
-                        + " was not found, but we found Multiverse-Core, so we will try to load this world.");
+            game.pos1 = MiscUtils.readLocationFromString(game.world, configMap.getString("pos1"));
+            game.pos2 = MiscUtils.readLocationFromString(game.world, configMap.getString("pos2"));
+            game.specSpawn = MiscUtils.readLocationFromString(game.world, configMap.getString("specSpawn"));
+            String spawnWorld = configMap.getString("lobbySpawnWorld");
+            World lobbySpawnWorld = Bukkit.getWorld(spawnWorld);
+            if (lobbySpawnWorld == null) {
+                if (Bukkit.getPluginManager().isPluginEnabled("Multiverse-Core")) {
+                    Bukkit.getConsoleSender().sendMessage("§c[B§fW] §cWorld " + spawnWorld
+                            + " was not found, but we found Multiverse-Core, so we will try to load this world.");
 
-                Core multiverse = (Core) Bukkit.getPluginManager().getPlugin("Multiverse-Core");
-                MVWorldManager manager = multiverse.getMVWorldManager();
-                if (manager.loadWorld(spawnWorld)) {
-                    Bukkit.getConsoleSender().sendMessage("§c[B§fW] §aWorld " + spawnWorld
-                            + " was succesfully loaded with Multiverse-Core, continue in arena loading.");
+                    Core multiverse = (Core) Bukkit.getPluginManager().getPlugin("Multiverse-Core");
+                    MVWorldManager manager = multiverse.getMVWorldManager();
+                    if (manager.loadWorld(spawnWorld)) {
+                        Bukkit.getConsoleSender().sendMessage("§c[B§fW] §aWorld " + spawnWorld
+                                + " was succesfully loaded with Multiverse-Core, continue in arena loading.");
 
-                    lobbySpawnWorld = Bukkit.getWorld(spawnWorld);
+                        lobbySpawnWorld = Bukkit.getWorld(spawnWorld);
+                    } else {
+                        Bukkit.getConsoleSender().sendMessage("§c[B§fW] §cArena " + game.name
+                                + " can't be loaded, because world " + spawnWorld + " is missing!");
+                        return null;
+                    }
+                } else if (firstAttempt) {
+                    Bukkit.getConsoleSender().sendMessage(
+                            "§c[B§fW] §eArena " + game.name + " can't be loaded, because world " + worldName + " is missing! We will try it again after all plugins will be loaded!");
+                    Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> loadGame(file, false), 10L);
+                    return null;
                 } else {
-                    Bukkit.getConsoleSender().sendMessage("§c[B§fW] §cArena " + game.name
-                            + " can't be loaded, because world " + spawnWorld + " is missing!");
+                    Bukkit.getConsoleSender().sendMessage(
+                            "§c[B§fW] §cArena " + game.name + " can't be loaded, because world " + spawnWorld + " is missing!");
                     return null;
                 }
-            } else if (firstAttempt) {
-                Bukkit.getConsoleSender().sendMessage(
-                        "§c[B§fW] §eArena " + game.name + " can't be loaded, because world " + worldName + " is missing! We will try it again after all plugins will be loaded!");
-                Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> loadGame(file, false), 10L);
-                return null;
-            } else {
-                Bukkit.getConsoleSender().sendMessage(
-                        "§c[B§fW] §cArena " + game.name + " can't be loaded, because world " + spawnWorld + " is missing!");
-                return null;
             }
-        }
-        game.lobbySpawn = MiscUtils.readLocationFromString(lobbySpawnWorld, configMap.getString("lobbySpawn"));
-        game.minPlayers = configMap.getInt("minPlayers", 2);
-        if (configMap.isSet("teams")) {
-            for (String teamN : configMap.getConfigurationSection("teams").getKeys(false)) {
-                ConfigurationSection team = configMap.getConfigurationSection("teams").getConfigurationSection(teamN);
-                Team t = new Team();
-                t.newColor = team.getBoolean("isNewColor", false);
-                t.color = TeamColor.valueOf(MiscUtils.convertColorToNewFormat(team.getString("color"), t));
-                t.name = teamN;
-                t.bed = MiscUtils.readLocationFromString(game.world, team.getString("bed"));
-                t.maxPlayers = team.getInt("maxPlayers");
-                t.spawn = MiscUtils.readLocationFromString(game.world, team.getString("spawn"));
-                t.game = game;
+            game.lobbySpawn = MiscUtils.readLocationFromString(lobbySpawnWorld, configMap.getString("lobbySpawn"));
+            game.minPlayers = configMap.getInt("minPlayers", 2);
+            if (configMap.isSet("teams")) {
+                for (String teamN : configMap.getConfigurationSection("teams").getKeys(false)) {
+                    ConfigurationSection team = configMap.getConfigurationSection("teams").getConfigurationSection(teamN);
+                    Team t = new Team();
+                    t.newColor = team.getBoolean("isNewColor", false);
+                    t.color = TeamColor.valueOf(MiscUtils.convertColorToNewFormat(team.getString("color"), t));
+                    t.name = teamN;
+                    t.bed = MiscUtils.readLocationFromString(game.world, team.getString("bed"));
+                    t.maxPlayers = team.getInt("maxPlayers");
+                    t.spawn = MiscUtils.readLocationFromString(game.world, team.getString("spawn"));
+                    t.game = game;
 
-                t.newColor = true;
-                game.teams.add(t);
-            }
-        }
-        if (configMap.isSet("spawners")) {
-            List<Map<String, Object>> spawners = (List<Map<String, Object>>) configMap.getList("spawners");
-            for (Map<String, Object> spawner : spawners) {
-                ItemSpawner sa = new ItemSpawner(
-                        MiscUtils.readLocationFromString(game.world, (String) spawner.get("location")),
-                        Main.getSpawnerType(((String) spawner.get("type")).toLowerCase()),
-                        (String) spawner.get("customName"), ((Boolean) spawner.getOrDefault("hologramEnabled", true)),
-                        ((Number) spawner.getOrDefault("startLevel", 1)).doubleValue(),
-                        game.getTeamFromName((String) spawner.get("team")),
-                        (int) spawner.getOrDefault("maxSpawnedResources", -1));
-                game.spawners.add(sa);
-            }
-        }
-        if (configMap.isSet("stores")) {
-            List<Object> stores = (List<Object>) configMap.getList("stores");
-            for (Object store : stores) {
-                if (store instanceof Map) {
-                    Map<String, String> map = (Map<String, String>) store;
-                    game.gameStore.add(new GameStore(MiscUtils.readLocationFromString(game.world, map.get("loc")),
-                            map.get("shop"), "true".equals(map.getOrDefault("parent", "true")),
-                            EntityType.valueOf(map.getOrDefault("type", "VILLAGER").toUpperCase()),
-                            map.getOrDefault("name", ""), map.containsKey("name"), "true".equals(map.getOrDefault("isBaby", "false"))));
-                } else if (store instanceof String) {
-                    game.gameStore.add(new GameStore(MiscUtils.readLocationFromString(game.world, (String) store), null,
-                            true, EntityType.VILLAGER, "", false, false));
+                    t.newColor = true;
+                    game.teams.add(t);
                 }
             }
+            if (configMap.isSet("spawners")) {
+                List<Map<String, Object>> spawners = (List<Map<String, Object>>) configMap.getList("spawners");
+                for (Map<String, Object> spawner : spawners) {
+                    ItemSpawner sa = new ItemSpawner(
+                            MiscUtils.readLocationFromString(game.world, (String) spawner.get("location")),
+                            Main.getSpawnerType(((String) spawner.get("type")).toLowerCase()),
+                            (String) spawner.get("customName"), ((Boolean) spawner.getOrDefault("hologramEnabled", true)),
+                            ((Number) spawner.getOrDefault("startLevel", 1)).doubleValue(),
+                            game.getTeamFromName((String) spawner.get("team")),
+                            (int) spawner.getOrDefault("maxSpawnedResources", -1));
+                    game.spawners.add(sa);
+                }
+            }
+            if (configMap.isSet("stores")) {
+                List<Object> stores = (List<Object>) configMap.getList("stores");
+                for (Object store : stores) {
+                    if (store instanceof Map) {
+                        Map<String, String> map = (Map<String, String>) store;
+                        game.gameStore.add(new GameStore(MiscUtils.readLocationFromString(game.world, map.get("loc")),
+                                map.get("shop"), "true".equals(map.getOrDefault("parent", "true")),
+                                EntityType.valueOf(map.getOrDefault("type", "VILLAGER").toUpperCase()),
+                                map.getOrDefault("name", ""), map.containsKey("name"), "true".equals(map.getOrDefault("isBaby", "false"))));
+                    } else if (store instanceof String) {
+                        game.gameStore.add(new GameStore(MiscUtils.readLocationFromString(game.world, (String) store), null,
+                                true, EntityType.VILLAGER, "", false, false));
+                    }
+                }
+            }
+
+            game.compassEnabled = readBooleanConstant(configMap.getString("constant." + COMPASS_ENABLED, "inherit"));
+            game.addWoolToInventoryOnJoin = readBooleanConstant(
+                    configMap.getString("constant." + ADD_WOOL_TO_INVENTORY_ON_JOIN, "inherit"));
+            game.coloredLeatherByTeamInLobby = readBooleanConstant(
+                    configMap.getString("constant." + COLORED_LEATHER_BY_TEAM_IN_LOBBY, "inherit"));
+            game.crafting = readBooleanConstant(configMap.getString("constant." + CRAFTING, "inherit"));
+            game.friendlyfire = readBooleanConstant(configMap.getString("constant." + FRIENDLY_FIRE, "inherit"));
+            game.joinRandomTeamAfterLobby = readBooleanConstant(
+                    configMap.getString("constant." + JOIN_RANDOM_TEAM_AFTER_LOBBY, "inherit"));
+            game.joinRandomTeamOnJoin = readBooleanConstant(
+                    configMap.getString("constant." + JOIN_RANDOM_TEAM_ON_JOIN, "inherit"));
+            game.keepInventory = readBooleanConstant(configMap.getString("constant." + KEEP_INVENTORY, "inherit"));
+            game.preventKillingVillagers = readBooleanConstant(
+                    configMap.getString("constant." + PREVENT_KILLING_VILLAGERS, "inherit"));
+            game.playerDrops = readBooleanConstant(configMap.getString("constant." + PLAYER_DROPS, "inherit"));
+            game.lobbybossbar = readBooleanConstant(configMap.getString("constant." + LOBBY_BOSSBAR, "inherit"));
+            game.gamebossbar = readBooleanConstant(configMap.getString("constant." + GAME_BOSSBAR, "inherit"));
+            game.ascoreboard = readBooleanConstant(configMap.getString("constant." + SCOREBOARD, "inherit"));
+            game.lobbyscoreboard = readBooleanConstant(configMap.getString("constant." + LOBBY_SCOREBOARD, "inherit"));
+            game.preventSpawningMobs = readBooleanConstant(
+                    configMap.getString("constant." + PREVENT_SPAWNING_MOBS, "inherit"));
+            game.spawnerHolograms = readBooleanConstant(configMap.getString("constant." + SPAWNER_HOLOGRAMS, "inherit"));
+            game.spawnerDisableMerge = readBooleanConstant(
+                    configMap.getString("constant." + SPAWNER_DISABLE_MERGE, "inherit"));
+            game.gameStartItems = readBooleanConstant(configMap.getString("constant." + GAME_START_ITEMS, "inherit"));
+            game.playerRespawnItems = readBooleanConstant(
+                    configMap.getString("constant." + PLAYER_RESPAWN_ITEMS, "inherit"));
+            game.spawnerHologramsCountdown = readBooleanConstant(
+                    configMap.getString("constant." + SPAWNER_HOLOGRAMS_COUNTDOWN, "inherit"));
+            game.damageWhenPlayerIsNotInArena = readBooleanConstant(
+                    configMap.getString("constant." + DAMAGE_WHEN_PLAYER_IS_NOT_IN_ARENA, "inherit"));
+            game.removeUnusedTargetBlocks = readBooleanConstant(
+                    configMap.getString("constant." + REMOVE_UNUSED_TARGET_BLOCKS, "inherit"));
+            game.allowBlockFalling = readBooleanConstant(
+                    configMap.getString("constant." + ALLOW_BLOCK_FALLING, "inherit"));
+            game.holoAboveBed = readBooleanConstant(configMap.getString("constant." + HOLO_ABOVE_BED, "inherit"));
+            game.spectatorJoin = readBooleanConstant(configMap.getString("constant." + SPECTATOR_JOIN, "inherit"));
+            game.anchorAutoFill = readBooleanConstant(configMap.getString("constant." + ANCHOR_AUTO_FILL, "inherit"));
+            game.anchorDecreasing = readBooleanConstant(configMap.getString("constant." + ANCHOR_DECREASING, "inherit"));
+            game.cakeTargetBlockEating = readBooleanConstant(configMap.getString("constant." + CAKE_TARGET_BLOCK_EATING, "inherit"));
+            game.targetBlockExplosions = readBooleanConstant(configMap.getString("constant." + TARGET_BLOCK_EXPLOSIONS, "inherit"));
+
+            game.arenaTime = ArenaTime.valueOf(configMap.getString("arenaTime", ArenaTime.WORLD.name()).toUpperCase());
+            game.arenaWeather = loadWeather(configMap.getString("arenaWeather", "default").toUpperCase());
+
+            game.postGameWaiting = configMap.getInt("postGameWaiting", 3);
+
+            try {
+                game.lobbyBossBarColor = loadBossBarColor(
+                        configMap.getString("lobbyBossBarColor", "default").toUpperCase());
+                game.gameBossBarColor = loadBossBarColor(configMap.getString("gameBossBarColor", "default").toUpperCase());
+            } catch (Throwable t) {
+                // We're using 1.8
+            }
+
+            Main.addGame(game);
+            game.start();
+            Bukkit.getConsoleSender().sendMessage("§c[B§fW] §aArena §f" + game.name + "§a loaded!");
+            return game;
+        } catch (Throwable throwable) {
+            Debug.warn("Something went wrong while loading arena file " + file.getName() + ". Please report this to our Discord or GitHub!", true);
+            throwable.printStackTrace();
+            return null;
         }
-
-        game.compassEnabled = readBooleanConstant(configMap.getString("constant." + COMPASS_ENABLED, "inherit"));
-        game.addWoolToInventoryOnJoin = readBooleanConstant(
-                configMap.getString("constant." + ADD_WOOL_TO_INVENTORY_ON_JOIN, "inherit"));
-        game.coloredLeatherByTeamInLobby = readBooleanConstant(
-                configMap.getString("constant." + COLORED_LEATHER_BY_TEAM_IN_LOBBY, "inherit"));
-        game.crafting = readBooleanConstant(configMap.getString("constant." + CRAFTING, "inherit"));
-        game.friendlyfire = readBooleanConstant(configMap.getString("constant." + FRIENDLY_FIRE, "inherit"));
-        game.joinRandomTeamAfterLobby = readBooleanConstant(
-                configMap.getString("constant." + JOIN_RANDOM_TEAM_AFTER_LOBBY, "inherit"));
-        game.joinRandomTeamOnJoin = readBooleanConstant(
-                configMap.getString("constant." + JOIN_RANDOM_TEAM_ON_JOIN, "inherit"));
-        game.keepInventory = readBooleanConstant(configMap.getString("constant." + KEEP_INVENTORY, "inherit"));
-        game.preventKillingVillagers = readBooleanConstant(
-                configMap.getString("constant." + PREVENT_KILLING_VILLAGERS, "inherit"));
-        game.playerDrops = readBooleanConstant(configMap.getString("constant." + PLAYER_DROPS, "inherit"));
-        game.lobbybossbar = readBooleanConstant(configMap.getString("constant." + LOBBY_BOSSBAR, "inherit"));
-        game.gamebossbar = readBooleanConstant(configMap.getString("constant." + GAME_BOSSBAR, "inherit"));
-        game.ascoreboard = readBooleanConstant(configMap.getString("constant." + SCOREBOARD, "inherit"));
-        game.lobbyscoreboard = readBooleanConstant(configMap.getString("constant." + LOBBY_SCOREBOARD, "inherit"));
-        game.preventSpawningMobs = readBooleanConstant(
-                configMap.getString("constant." + PREVENT_SPAWNING_MOBS, "inherit"));
-        game.spawnerHolograms = readBooleanConstant(configMap.getString("constant." + SPAWNER_HOLOGRAMS, "inherit"));
-        game.spawnerDisableMerge = readBooleanConstant(
-                configMap.getString("constant." + SPAWNER_DISABLE_MERGE, "inherit"));
-        game.gameStartItems = readBooleanConstant(configMap.getString("constant." + GAME_START_ITEMS, "inherit"));
-        game.playerRespawnItems = readBooleanConstant(
-                configMap.getString("constant." + PLAYER_RESPAWN_ITEMS, "inherit"));
-        game.spawnerHologramsCountdown = readBooleanConstant(
-                configMap.getString("constant." + SPAWNER_HOLOGRAMS_COUNTDOWN, "inherit"));
-        game.damageWhenPlayerIsNotInArena = readBooleanConstant(
-                configMap.getString("constant." + DAMAGE_WHEN_PLAYER_IS_NOT_IN_ARENA, "inherit"));
-        game.removeUnusedTargetBlocks = readBooleanConstant(
-                configMap.getString("constant." + REMOVE_UNUSED_TARGET_BLOCKS, "inherit"));
-        game.allowBlockFalling = readBooleanConstant(
-                configMap.getString("constant." + ALLOW_BLOCK_FALLING, "inherit"));
-        game.holoAboveBed = readBooleanConstant(configMap.getString("constant." + HOLO_ABOVE_BED, "inherit"));
-        game.spectatorJoin = readBooleanConstant(configMap.getString("constant." + SPECTATOR_JOIN, "inherit"));
-        game.anchorAutoFill = readBooleanConstant(configMap.getString("constant." + ANCHOR_AUTO_FILL, "inherit"));
-        game.anchorDecreasing = readBooleanConstant(configMap.getString("constant." + ANCHOR_DECREASING, "inherit"));
-
-        game.arenaTime = ArenaTime.valueOf(configMap.getString("arenaTime", ArenaTime.WORLD.name()).toUpperCase());
-        game.arenaWeather = loadWeather(configMap.getString("arenaWeather", "default").toUpperCase());
-
-        try {
-            game.lobbyBossBarColor = loadBossBarColor(
-                    configMap.getString("lobbyBossBarColor", "default").toUpperCase());
-            game.gameBossBarColor = loadBossBarColor(configMap.getString("gameBossBarColor", "default").toUpperCase());
-        } catch (Throwable t) {
-            // We're using 1.8
-        }
-
-        Main.addGame(game);
-        game.start();
-        Bukkit.getConsoleSender().sendMessage("§c[B§fW] §aArena §f" + game.name + "§a loaded!");
-        return game;
     }
 
     public static WeatherType loadWeather(String weather) {
@@ -986,6 +1048,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         configMap.set("lobbySpawn", MiscUtils.setLocationToString(lobbySpawn));
         configMap.set("lobbySpawnWorld", lobbySpawn.getWorld().getName());
         configMap.set("minPlayers", minPlayers);
+        configMap.set("postGameWaiting", postGameWaiting);
         if (!teams.isEmpty()) {
             for (Team t : teams) {
                 configMap.set("teams." + t.name + ".isNewColor", t.isNewColor());
@@ -1023,7 +1086,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 if (store.isShopCustomName()) {
                     map.put("name", store.getShopCustomName());
                 }
-                map.put("isBaby",store.isBaby() ? "true" : "false");
+                map.put("isBaby", store.isBaby() ? "true" : "false");
                 nL.add(map);
             }
             configMap.set("stores", nL);
@@ -1058,6 +1121,8 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         configMap.set("constant." + SPECTATOR_JOIN, writeBooleanConstant(spectatorJoin));
         configMap.set("constant." + ANCHOR_AUTO_FILL, writeBooleanConstant(anchorAutoFill));
         configMap.set("constant." + ANCHOR_DECREASING, writeBooleanConstant(anchorDecreasing));
+        configMap.set("constant." + CAKE_TARGET_BLOCK_EATING, writeBooleanConstant(cakeTargetBlockEating));
+        configMap.set("constant." + TARGET_BLOCK_EXPLOSIONS, writeBooleanConstant(targetBlockExplosions));
 
         configMap.set("arenaTime", arenaTime.name());
         configMap.set("arenaWeather", arenaWeather == null ? "default" : arenaWeather.name());
@@ -1496,6 +1561,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                     nextCountdown--;
 
                     if (countdown <= 10 && countdown >= 1 && countdown != previousCountdown) {
+
                         for (GamePlayer player : players) {
                             Title.send(player.player, ChatColor.YELLOW + Integer.toString(countdown), "");
                             Sounds.playSound(player.player, player.player.getLocation(),
@@ -1511,7 +1577,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             updateLobbyScoreboard();
         } else if (status == GameStatus.RUNNING) {
             if (countdown == 0) {
-                nextCountdown = POST_GAME_WAITING;
+                nextCountdown = postGameWaiting;
                 nextStatus = GameStatus.GAME_END_CELEBRATING;
             } else {
                 nextCountdown--;
@@ -1525,7 +1591,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             } else {
                 nextCountdown--;
             }
-            setBossbarProgress(countdown, POST_GAME_WAITING);
+            setBossbarProgress(countdown, postGameWaiting);
         }
 
         // Phase 4: Call Tick Event
@@ -1579,7 +1645,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                         gameScoreboard.getObjective("lobby").unregister();
                     }
                     gameScoreboard.clearSlot(DisplaySlot.SIDEBAR);
-                    updateSigns();
+                    Bukkit.getScheduler().runTaskLater(Main.getInstance(), this::updateSigns, 3L);
                     for (GameStore store : gameStore) {
                         LivingEntity villager = store.spawn();
                         if (villager != null) {
@@ -1709,15 +1775,16 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                             Location loc = team.teamInfo.bed.clone().add(0.5, 1.5, 0.5);
                             boolean isBlockTypeBed = region.isBedBlock(bed.getState());
                             boolean isAnchor = "RESPAWN_ANCHOR".equals(bed.getType().name());
+                            boolean isCake = bed.getType().name().contains("CAKE");
                             List<Player> enemies = getConnectedPlayers();
                             enemies.removeAll(team.getConnectedPlayers());
                             Hologram holo = Main.getHologramManager().spawnHologram(enemies, loc,
-                                    i18nonly(isBlockTypeBed ? "destroy_this_bed" : (isAnchor ? "destroy_this_anchor" : "destroy_this_target"))
+                                    i18nonly(isBlockTypeBed ? "destroy_this_bed" : (isAnchor ? "destroy_this_anchor" : (isCake ? "destroy_this_cake" : "destroy_this_target")))
                                             .replace("%teamcolor%", team.teamInfo.color.chatColor.toString()));
                             createdHolograms.add(holo);
                             team.setBedHolo(holo);
                             Hologram protectHolo = Main.getHologramManager().spawnHologram(team.getConnectedPlayers(), loc,
-                                    i18nonly(isBlockTypeBed ? "protect_your_bed" : (isAnchor ? "protect_your_anchor" : "protect_your_target"))
+                                    i18nonly(isBlockTypeBed ? "protect_your_bed" : (isAnchor ? "protect_your_anchor" : (isCake ? "protect_your_cake" : "protect_your_target")))
                                             .replace("%teamcolor%", team.teamInfo.color.chatColor.toString()));
                             createdHolograms.add(protectHolo);
                             team.setProtectHolo(protectHolo);
@@ -1800,8 +1867,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
                                             if (Main.getConfigurator().config
                                                     .getBoolean("statistics.show-on-game-end")) {
-                                                Main.getInstance().getServer().dispatchCommand(player.player,
-                                                        "bw stats");
+                                                StatsCommand.sendStats(player.player, Main.getPlayerStatisticsManager().getStatistic(player.player));
                                             }
 
                                         }
@@ -1822,7 +1888,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                                                     }
                                                 }
 
-                                            }.runTaskLater(Main.getInstance(), (2 + Game.POST_GAME_WAITING) * 20);
+                                            }.runTaskLater(Main.getInstance(), (2 + postGameWaiting) * 20);
                                         }
                                     } else {
                                         Title.send(player.player, i18n("you_lost", false), subtitle);
@@ -1840,7 +1906,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                         Bukkit.getPluginManager().callEvent(endingEvent);
                         Main.getInstance().getServer().getPluginManager().callEvent(statusE);
 
-                        tick.setNextCountdown(Game.POST_GAME_WAITING);
+                        tick.setNextCountdown(postGameWaiting);
                         tick.setNextStatus(GameStatus.GAME_END_CELEBRATING);
                     } else {
                         tick.setNextStatus(GameStatus.REBUILDING);
@@ -2204,7 +2270,8 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     }
 
     private String formatScoreboardTitle() {
-        return Main.getConfigurator().config.getString("scoreboard.title").replace("%game%", this.name)
+        return Objects.requireNonNull(Main.getConfigurator().config.getString("scoreboard.title"))
+                .replace("%game%", this.name)
                 .replace("%time%", this.getFormattedTimeLeft());
     }
 
@@ -2228,7 +2295,8 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     }
 
     public void updateSigns() {
-        List<SignBlock> gameSigns = Main.getSignManager().getSignsForName(this.name);
+        final FileConfiguration config = Main.getConfigurator().config;
+        final List<SignBlock> gameSigns = Main.getSignManager().getSignsForName(this.name);
 
         if (gameSigns.isEmpty()) {
             return;
@@ -2236,29 +2304,35 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
         String statusLine = "";
         String playersLine = "";
+        MaterialSearchEngine.Result blockBehindMaterial = null;
         switch (status) {
             case DISABLED:
                 statusLine = i18nonly("sign_status_disabled");
                 playersLine = i18nonly("sign_status_disabled_players");
+                blockBehindMaterial = MiscUtils.getMaterialFromString(config.getString("sign.block-behind.game-disabled"), "RED_STAINED_GLASS");
                 break;
             case REBUILDING:
                 statusLine = i18nonly("sign_status_rebuilding");
                 playersLine = i18nonly("sign_status_rebuilding_players");
+                blockBehindMaterial = MiscUtils.getMaterialFromString(config.getString("sign.block-behind.rebuilding"), "BROWN_STAINED_GLASS");
                 break;
             case RUNNING:
             case GAME_END_CELEBRATING:
                 statusLine = i18nonly("sign_status_running");
                 playersLine = i18nonly("sign_status_running_players");
+                blockBehindMaterial = MiscUtils.getMaterialFromString(config.getString("sign.block-behind.in-game"), "GREEN_STAINED_GLASS");
                 break;
             case WAITING:
                 statusLine = i18nonly("sign_status_waiting");
                 playersLine = i18nonly("sign_status_waiting_players");
+                blockBehindMaterial = MiscUtils.getMaterialFromString(config.getString("sign.block-behind.waiting"), "ORANGE_STAINED_GLASS");
                 break;
         }
+
         playersLine = playersLine.replace("%players%", Integer.toString(players.size()));
         playersLine = playersLine.replace("%maxplayers%", Integer.toString(calculatedMaxPlayers));
 
-        List<String> texts = new ArrayList<>(Main.getConfigurator().config.getStringList("sign"));
+        final List<String> texts = new ArrayList<>(Main.getConfigurator().config.getStringList("sign.lines"));
 
         for (int i = 0; i < texts.size(); i++) {
             String text = texts.get(i);
@@ -2266,15 +2340,30 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                     .replaceAll("%players%", playersLine));
         }
 
-        for (SignBlock sign : gameSigns) {
-            if (sign.getLocation().getChunk().isLoaded()) {
-                Block block = sign.getLocation().getBlock();
-                if (block.getState() instanceof Sign) {
-                    Sign state = (Sign) block.getState();
+        for (SignBlock signBlock : gameSigns) {
+            if (signBlock.getLocation().getChunk().isLoaded()) {
+                BlockState blockState = signBlock.getLocation().getBlock().getState();
+                if (blockState instanceof Sign) {
+                    Sign sign = (Sign) blockState;
                     for (int i = 0; i < texts.size() && i < 4; i++) {
-                        state.setLine(i, texts.get(i));
+                        sign.setLine(i, texts.get(i));
                     }
-                    state.update();
+                    sign.update();
+                }
+
+                if (config.getBoolean("sign.block-behind.enabled", false)) {
+                    final Optional<Block> optionalBlock = signBlock.getBlockBehindSign();
+                    if (optionalBlock.isPresent()) {
+                        final Block glassBlock = optionalBlock.get();
+                        glassBlock.setType(blockBehindMaterial.getMaterial());
+                        if (Main.isLegacy()) {
+                            try {
+                                // The method is no longer in API, but in legacy versions exists
+                                Block.class.getMethod("setData", byte.class).invoke(glassBlock, (byte) blockBehindMaterial.getDamage());
+                            } catch (Exception e) {
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -2284,28 +2373,26 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         if (status != GameStatus.WAITING || !getOriginalOrInheritedLobbyScoreaboard()) {
             return;
         }
-        gameScoreboard.clearSlot(DisplaySlot.SIDEBAR);
-
         Objective obj = gameScoreboard.getObjective("lobby");
-        if (obj != null) {
-            obj.unregister();
+        if (obj == null) {
+            obj = gameScoreboard.registerNewObjective("lobby", "dummy");
+            obj.setDisplaySlot(DisplaySlot.SIDEBAR);
+            obj.setDisplayName(this.formatLobbyScoreboardString(
+                    Main.getConfigurator().config.getString("lobby-scoreboard.title", "§eBEDWARS")));
         }
 
-        obj = gameScoreboard.registerNewObjective("lobby", "dummy");
-        obj.setDisplaySlot(DisplaySlot.SIDEBAR);
-        obj.setDisplayName(this.formatLobbyScoreboardString(
-                Main.getConfigurator().config.getString("lobby-scoreboard.title", "§eBEDWARS")));
+        gameScoreboard.getEntries().forEach(gameScoreboard::resetScores);
 
         List<String> rows = Main.getConfigurator().config.getStringList("lobby-scoreboard.content");
         int rowMax = rows.size();
-        if (rows == null || rows.isEmpty()) {
+        if (rows.isEmpty()) {
             return;
         }
 
         for (String row : rows) {
             if (row.trim().equals("")) {
                 for (int i = 0; i <= rowMax; i++) {
-                    row = row + " ";
+                    row += " ";
                 }
             }
 
@@ -2314,9 +2401,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             rowMax--;
         }
 
-        for (GamePlayer player : players) {
-            player.player.setScoreboard(gameScoreboard);
-        }
+        players.forEach(player -> player.player.setScoreboard(gameScoreboard));
     }
 
     private String formatLobbyScoreboardString(String str) {
@@ -3061,7 +3146,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
     @Override
     public boolean isEntityShop(Entity entity) {
-        if(Main.getConfigurator().config.getBoolean("shop.citizens-enabled", false))
+        if (Main.getConfigurator().config.getBoolean("shop.citizens-enabled", false))
             return false;
 
         for (GameStore store : gameStore) {
@@ -3122,12 +3207,42 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 : Main.getConfigurator().config.getBoolean(GLOBAL_ANCHOR_DECREASING);
     }
 
+    @Override
+    public InGameConfigBooleanConstants getCakeTargetBlockEating() {
+        return cakeTargetBlockEating;
+    }
+
+    @Override
+    public boolean getOriginalOrInheritedCakeTargetBlockEating() {
+        return cakeTargetBlockEating.isOriginal() ? cakeTargetBlockEating.getValue()
+                : Main.getConfigurator().config.getBoolean(GLOBAL_CAKE_TARGET_BLOCK_EATING);
+    }
+
+    @Override
+    public InGameConfigBooleanConstants getTargetBlockExplosions() {
+        return targetBlockExplosions;
+    }
+
+    @Override
+    public boolean getOriginalOrInheritedTargetBlockExplosions() {
+        return targetBlockExplosions.isOriginal() ? targetBlockExplosions.getValue()
+                : Main.getConfigurator().config.getBoolean(GLOBAL_TARGET_BLOCK_EXPLOSIONS);
+    }
+
     public void setAnchorAutoFill(InGameConfigBooleanConstants anchorAutoFill) {
         this.anchorAutoFill = anchorAutoFill;
     }
 
     public void setAnchorDecreasing(InGameConfigBooleanConstants anchorDecreasing) {
         this.anchorDecreasing = anchorDecreasing;
+    }
+
+    public void setCakeTargetBlockEating(InGameConfigBooleanConstants cakeTargetBlockEating) {
+        this.cakeTargetBlockEating = cakeTargetBlockEating;
+    }
+
+    public void setTargetBlockExplosions(InGameConfigBooleanConstants targetBlockExplosions) {
+        this.targetBlockExplosions = targetBlockExplosions;
     }
 
     public List<GamePlayer> getPlayersWithoutVIP() {
@@ -3187,5 +3302,14 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             fakeEnderChests.put(player, Bukkit.createInventory(player.player, InventoryType.ENDER_CHEST));
         }
         return fakeEnderChests.get(player);
+    }
+
+    public void setPostGameWaiting(int time) {
+        this.postGameWaiting = time;
+    }
+
+    @Override
+    public int getPostGameWaiting() {
+        return this.postGameWaiting;
     }
 }

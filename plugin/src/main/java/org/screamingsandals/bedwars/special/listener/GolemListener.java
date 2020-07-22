@@ -73,7 +73,7 @@ public class GolemListener implements Listener {
                         if (event.getClickedBlock() == null) {
                             location = player.getLocation();
                         } else {
-                            location = event.getClickedBlock().getRelative(BlockFace.UP)
+                            location = event.getClickedBlock().getRelative(event.getBlockFace())
                                     .getLocation().add(0.5, 0.5, 0.5);
                         }
                         Golem golem = new Golem(game, player, game.getTeamOfPlayer(player),

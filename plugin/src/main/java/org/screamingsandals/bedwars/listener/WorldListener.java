@@ -19,6 +19,7 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.event.world.StructureGrowEvent;
 import org.screamingsandals.bedwars.Main;
+import org.screamingsandals.bedwars.api.RunningTeam;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.game.Game;
 import org.screamingsandals.bedwars.game.GameCreator;
@@ -98,11 +99,20 @@ public class WorldListener implements Listener {
             Game game = Main.getGame(gameName);
             if (game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) {
                 if (GameCreator.isInArea(event.getLocation(), game.getPos1(), game.getPos2())) {
-                    if (destroyPlacedBlocksByExplosion) {
-                        event.blockList().removeIf(block -> (explosionExceptionTypeName != null && !explosionExceptionTypeName.equals("") && block.getType().name().contains(explosionExceptionTypeName)) || !game.isBlockAddedDuringGame(block.getLocation()));
-                    } else {
-                        event.blockList().clear();
-                    }
+                    event.blockList().removeIf(block -> {
+                        if (!game.isBlockAddedDuringGame(block.getLocation())) {
+                            if (game.getOriginalOrInheritedTargetBlockExplosions()) {
+                                for (RunningTeam team : game.getRunningTeams()) {
+                                    if (team.getTargetBlock().equals(block.getLocation())) {
+                                        game.targetBlockExplode(team);
+                                        break;
+                                    }
+                                }
+                            }
+                            return true;
+                        }
+                        return (explosionExceptionTypeName != null && !explosionExceptionTypeName.equals("") && block.getType().name().contains(explosionExceptionTypeName)) || !destroyPlacedBlocksByExplosion;
+                    });
                 }
             }
         }

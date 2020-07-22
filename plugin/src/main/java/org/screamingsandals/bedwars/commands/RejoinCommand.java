@@ -11,7 +11,7 @@ import static misat11.lib.lang.I18n.i18n;
 public class RejoinCommand extends BaseCommand {
 
     public RejoinCommand() {
-        super("rejoin", null, false);
+        super("rejoin", REJOIN_PERMISSION, false, Main.getConfigurator().config.getBoolean("default-permissions.rejoin"));
     }
 
     @Override

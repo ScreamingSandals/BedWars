@@ -11,7 +11,7 @@ import static misat11.lib.lang.I18n.i18n;
 public class LeaveCommand extends BaseCommand {
 
     public LeaveCommand() {
-        super("leave", null, false);
+        super("leave", LEAVE_PERMISSION, false, Main.getConfigurator().config.getBoolean("default-permissions.leave"));
     }
 
     @Override

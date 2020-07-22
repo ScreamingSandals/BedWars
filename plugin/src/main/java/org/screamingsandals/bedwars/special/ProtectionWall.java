@@ -111,7 +111,7 @@ public class ProtectionWall extends SpecialItem implements org.screamingsandals.
         game.getRegion().addBuiltDuringGame(block.getLocation());
     }
 
-    public void createWall(boolean bre, int time, int wid, int hei, int dis, Material mat) {
+    public void createWall(boolean bre, int time, int wid, int hei, int dis, Material mat, short legacyData) {
         canBreak = bre;
         breakingTime = time;
         width = wid;
@@ -175,7 +175,7 @@ public class ProtectionWall extends SpecialItem implements org.screamingsandals.
                 }
 
                 ItemStack coloredStack = Main.applyColor(
-                        TeamColor.fromApiColor(team.getColor()), new ItemStack(buildingMaterial));
+                        TeamColor.fromApiColor(team.getColor()), new ItemStack(buildingMaterial, 1, legacyData));
                 if (Main.isLegacy()) {
                     placedBlock.setType(coloredStack.getType());
                     try {

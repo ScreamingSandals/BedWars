@@ -18,9 +18,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.screamingsandals.simpleinventories.utils.MaterialSearchEngine;
 
 import java.util.ArrayList;
 
@@ -63,12 +63,10 @@ public class ProtectionWallListener implements Listener {
                         int width = Integer.parseInt(unhidden.split(":")[5]);
                         int height = Integer.parseInt(unhidden.split(":")[6]);
                         int distance = Integer.parseInt(unhidden.split(":")[7]);
-                        Material material;
-                        if (Main.isLegacy()) {
-                            material = MiscUtils.getMaterialFromString(unhidden.split(":")[8], "SANDSTONE");
-                        } else {
-                            material = MiscUtils.getMaterialFromString(unhidden.split(":")[8], "CUT_SANDSTONE");
-                        }
+                        MaterialSearchEngine.Result result = MiscUtils.getMaterialFromString(unhidden.split(":")[8], "CUT_SANDSTONE");
+                        Material material = result.getMaterial();
+                        short damage = result.getDamage();
+
 
                         ProtectionWall protectionWall = new ProtectionWall(game, event.getPlayer(),
                                 game.getTeamOfPlayer(event.getPlayer()), stack);
@@ -83,7 +81,7 @@ public class ProtectionWallListener implements Listener {
                             game.registerDelay(delayFactory);
                         }
 
-                        protectionWall.createWall(isBreakable, breakTime, width, height, distance, material);
+                        protectionWall.createWall(isBreakable, breakTime, width, height, distance, material, damage);
                     } else {
                         event.setCancelled(true);
 

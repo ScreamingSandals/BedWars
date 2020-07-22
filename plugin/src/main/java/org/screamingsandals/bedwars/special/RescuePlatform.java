@@ -103,7 +103,7 @@ public class RescuePlatform extends SpecialItem implements org.screamingsandals.
         game.getRegion().removeBlockBuiltDuringGame(block.getLocation());
     }
 
-    public void createPlatform(boolean bre, int time, int dist, Material bMat) {
+    public void createPlatform(boolean bre, int time, int dist, Material bMat, short legacyData) {
         canBreak = bre;
         breakingTime = time;
         buildingMaterial = bMat;
@@ -123,7 +123,7 @@ public class RescuePlatform extends SpecialItem implements org.screamingsandals.
             }
 
             ItemStack coloredStack = Main.applyColor(
-                    TeamColor.fromApiColor(team.getColor()), new ItemStack(buildingMaterial));
+                    TeamColor.fromApiColor(team.getColor()), new ItemStack(buildingMaterial, 1, legacyData));
             if (Main.isLegacy()) {
                 placedBlock.setType(coloredStack.getType());
                 try {

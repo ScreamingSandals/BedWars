@@ -19,6 +19,7 @@ import java.io.File;
 import java.text.DecimalFormat;
 import java.util.*;
 
+import static misat11.lib.lang.I.m;
 import static misat11.lib.lang.I18n.i18n;
 import static misat11.lib.lang.I18n.i18nonly;
 
@@ -27,7 +28,7 @@ public class AdminCommand extends BaseCommand {
     public HashMap<String, GameCreator> gc = new HashMap<>();
 
     public AdminCommand() {
-        super("admin", ADMIN_PERMISSION, false);
+        super("admin", ADMIN_PERMISSION, false, false);
     }
 
     @Override
@@ -118,6 +119,7 @@ public class AdminCommand extends BaseCommand {
                                     Integer.toString(game.getPauseCountdown())));
                             player.sendMessage(i18n("arena_info_game_time", false).replace("%time%",
                                     Integer.toString(game.getGameTime())));
+                            m("arena_info_postgamewaiting").replace("time", game.getPostGameWaiting()).send(player);
 
                         } else if (args.get(2).equalsIgnoreCase("teams")) {
                             player.sendMessage(i18n("arena_info_header"));
@@ -382,6 +384,18 @@ public class AdminCommand extends BaseCommand {
                                             "arena_info_config_" + game.getAnchorDecreasing().name().toLowerCase(),
                                             false)));
 
+                            player.sendMessage(i18n("arena_info_config_constant", false)
+                                    .replace("%constant%", "cakeTargetBlockEating")
+                                    .replace("%value%", i18n(
+                                            "arena_info_config_" + game.getCakeTargetBlockEating().name().toLowerCase(),
+                                            false)));
+
+                            player.sendMessage(i18n("arena_info_config_constant", false)
+                                    .replace("%constant%", "targetBlockExplosions")
+                                    .replace("%value%", i18n(
+                                            "arena_info_config_" + game.getTargetBlockExplosions().name().toLowerCase(),
+                                            false)));
+
                             // NON-BOOLEAN CONSTANTS
 
                             player.sendMessage(i18n("arena_info_config_constant", false)
@@ -482,7 +496,7 @@ public class AdminCommand extends BaseCommand {
         } else if (args.size() == 2) {
             completion.addAll(Arrays.asList("add", "lobby", "spec", "pos1", "pos2", "pausecountdown", "team", "spawner",
                     "time", "store", "save", "remove", "edit", "jointeam", "minplayers", "info", "config", "arenatime",
-                    "arenaweather", "lobbybossbarcolor", "gamebossbarcolor"));
+                    "arenaweather", "lobbybossbarcolor", "gamebossbarcolor", "postgamewaiting"));
         } else if (args.get(1).equalsIgnoreCase("pausecountdown") && args.size() == 3) {
             completion.addAll(Arrays.asList("30", "60"));
         } else if (args.get(1).equalsIgnoreCase("time") && args.size() == 3) {
@@ -537,7 +551,7 @@ public class AdminCommand extends BaseCommand {
                         "lobbybossbar", "gamescoreboard", "lobbyscoreboard", "preventspawningmobs", "spawnerholograms",
                         "spawnerDisableMerge", "gamestartitems", "playerrespawnitems", "spawnerhologramscountdown",
                         "damagewhenplayerisnotinarena", "removeunusedtargetblocks", "holoabovebed", "allowblockfall",
-                        "spectatorjoin", "stopTeamSpawnersOnDie", "anchorAutoFill", "anchorDecreasing"));
+                        "spectatorjoin", "stopTeamSpawnersOnDie", "anchorAutoFill", "anchorDecreasing", "cakeTargetBlockEating", "targetBlockExplosions"));
             }
             if (args.size() == 4) {
                 completion.addAll(Arrays.asList("true", "false", "inherit"));

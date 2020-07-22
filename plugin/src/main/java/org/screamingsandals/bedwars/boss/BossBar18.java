@@ -58,7 +58,7 @@ public class BossBar18 implements org.screamingsandals.bedwars.api.boss.BossBar1
     public void setProgress(double progress) {
         if (!isPluginForLegacyBossBarEnabled()) return;
         this.progress = progress;
-        if (progress < 0) {
+        if (Double.isNaN(progress) || progress < 0) {
             progress = 0;
         } else if (progress > 1) {
             progress = 1;

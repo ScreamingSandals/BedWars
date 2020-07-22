@@ -14,7 +14,7 @@ import static misat11.lib.lang.I18n.i18n;
 public class MainlobbyCommand extends BaseCommand {
 
     public MainlobbyCommand() {
-        super("mainlobby", ADMIN_PERMISSION, false);
+        super("mainlobby", ADMIN_PERMISSION, false, false);
     }
 
     @Override
