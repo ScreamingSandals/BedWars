@@ -264,6 +264,8 @@ public class PlayerListener implements Listener {
                 event.setRespawnLocation(gPlayer.getGame().getLobbySpawn());
                 return;
             }
+            // clear inventory to fix issue 148
+            event.getPlayer().getInventory().clear();
             if (gPlayer.isSpectator) {
                 if (team == null) {
                     event.setRespawnLocation(gPlayer.getGame().makeSpectator(gPlayer, true));
