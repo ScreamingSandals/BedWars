@@ -449,7 +449,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         try {
             menu = new ShopInventory();
         } catch (Exception e) {
-            Debug.warn("Your shop.yml is wrong!", true);
+            Debug.warn("Your shop.yml/shop.groovy is wrong!", true);
             Debug.warn("Disabling plugin..", true);
 
             Bukkit.getPluginManager().disablePlugin(this);
@@ -481,8 +481,8 @@ public class Main extends JavaPlugin implements BedwarsAPI {
             float javaVer = Float.parseFloat(System.getProperty("java.class.version"));
             if (javaVer < 55) {
                 getLogger().warning("Future versions of plugins from ScreamingSandals will require at least Java 11. "
-                        + "Your server is not prepared for it. Update your Java or contact your hosting."
-                        + "Java 8 for commercial usage is already out of casual support, for personal usage it's supported until December 2020!"
+                        + "Your server is not prepared for it. Update your Java or contact your hosting. "
+                        + "Java 8 for commercial usage is already out of casual support, for personal usage it's supported until December 2020! "
                         + "Java 9 and Java 10 were short-term support versions, these versions are already not supported.");
                 getLogger().warning("Future versions of Java will require Minecraft version at least 1.12");
 
@@ -546,8 +546,8 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         final int pluginId = 7147;
         metrics = new Metrics(this, pluginId);
 
-        Bukkit.getConsoleSender().sendMessage("Everything is loaded! If you like our work, consider visiting our Patreon! <3");
-        Bukkit.getConsoleSender().sendMessage("https://www.patreon.com/screamingsandals");
+        Bukkit.getConsoleSender().sendMessage("§fEverything is loaded! If you like our work, consider visiting our Patreon! <3");
+        Bukkit.getConsoleSender().sendMessage("§fhttps://www.patreon.com/screamingsandals");
     }
 
     public void onDisable() {
