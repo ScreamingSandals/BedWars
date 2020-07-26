@@ -146,7 +146,11 @@ public class RescuePlatform extends SpecialItem implements org.screamingsandals.
             if (item.getAmount() > 1) {
         		item.setAmount(item.getAmount() - 1);
         	} else {
-        		player.getInventory().remove(item);
+        		if(player.getInventory().getItemInOffHand().equals(item)) {
+        			player.getInventory().setItemInOffHand(new ItemStack(Material.AIR));
+        		}else {
+        			player.getInventory().remove(item);
+        		}
         	}
             player.updateInventory();
         } else {
