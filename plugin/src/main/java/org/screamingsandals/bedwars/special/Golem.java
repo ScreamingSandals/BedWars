@@ -1,6 +1,7 @@
 package org.screamingsandals.bedwars.special;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.IronGolem;
 import org.bukkit.entity.LivingEntity;
@@ -86,7 +87,15 @@ public class Golem extends SpecialItem implements org.screamingsandals.bedwars.a
         if (item.getAmount() > 1) {
             item.setAmount(item.getAmount() - 1);
         } else {
-            player.getInventory().remove(item);
+            try {
+                if (player.getInventory().getItemInOffHand().equals(item)) {
+                    player.getInventory().setItemInOffHand(new ItemStack(Material.AIR));
+                } else {
+                    player.getInventory().remove(item);
+                }
+            } catch (Throwable e) {
+                player.getInventory().remove(item);
+            }
         }
 
         player.updateInventory();

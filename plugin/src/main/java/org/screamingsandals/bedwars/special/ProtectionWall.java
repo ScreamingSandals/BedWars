@@ -197,9 +197,17 @@ public class ProtectionWall extends SpecialItem implements org.screamingsandals.
             MiscUtils.sendActionBarMessage(player, i18nonly("specials_protection_wall_created").replace("%time%", Integer.toString(breakingTime)));
 
             if (item.getAmount() > 1) {
-        		item.setAmount(item.getAmount() - 1);
-        	} else {
-        		player.getInventory().remove(item);
+                item.setAmount(item.getAmount() - 1);
+            } else {
+                try {
+                    if (player.getInventory().getItemInOffHand().equals(item)) {
+                        player.getInventory().setItemInOffHand(new ItemStack(Material.AIR));
+                    } else {
+                        player.getInventory().remove(item);
+                    }
+                } catch (Throwable e) {
+                    player.getInventory().remove(item);
+                }
             }
             player.updateInventory();
         } else {
@@ -207,10 +215,18 @@ public class ProtectionWall extends SpecialItem implements org.screamingsandals.
 
             MiscUtils.sendActionBarMessage(player, i18nonly("specials_protection_wall_created_unbreakable"));
             if (item.getAmount() > 1) {
-        		item.setAmount(item.getAmount() - 1);
-        	} else {
-        		player.getInventory().remove(item);
-        	}
+                item.setAmount(item.getAmount() - 1);
+            } else {
+                try {
+                    if (player.getInventory().getItemInOffHand().equals(item)) {
+                        player.getInventory().setItemInOffHand(new ItemStack(Material.AIR));
+                    } else {
+                        player.getInventory().remove(item);
+                    }
+                } catch (Throwable e) {
+                    player.getInventory().remove(item);
+                }
+            }
             player.updateInventory();
         }
     }

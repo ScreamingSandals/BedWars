@@ -8,6 +8,7 @@ import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.lib.nms.entity.EntityUtils;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -75,7 +76,7 @@ public class TNTSheep extends SpecialItem implements org.screamingsandals.bedwar
 
         entity = sheep;
         EntityUtils.makeMobAttackTarget(sheep, speed, followRange, 0)
-        	.getTargetSelector().attackTarget(target);
+            .getTargetSelector().attackTarget(target);
 
         tnt = (TNTPrimed) loc.getWorld().spawnEntity(loc, EntityType.PRIMED_TNT);
         tnt.setFuseTicks(explosionTime);
@@ -87,9 +88,17 @@ public class TNTSheep extends SpecialItem implements org.screamingsandals.bedwar
         Main.registerGameEntity(tnt, (org.screamingsandals.bedwars.game.Game) game);
 
         if (item.getAmount() > 1) {
-        	item.setAmount(item.getAmount() - 1);
+            item.setAmount(item.getAmount() - 1);
         } else {
-        	player.getInventory().remove(item);
+            try {
+                if (player.getInventory().getItemInOffHand().equals(item)) {
+                    player.getInventory().setItemInOffHand(new ItemStack(Material.AIR));
+                } else {
+                    player.getInventory().remove(item);
+                }
+            } catch (Throwable e) {
+                player.getInventory().remove(item);
+            }
         }
         player.updateInventory();
 
