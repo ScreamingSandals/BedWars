@@ -54,11 +54,15 @@ public class ThrowableFireballListener implements Listener {
                 if (stack.getAmount() > 1) {
                     stack.setAmount(stack.getAmount() - 1);
                 } else {
-                	if(player.getInventory().getItemInOffHand().equals(stack)) {
-            			player.getInventory().setItemInOffHand(new ItemStack(Material.AIR));
-            		}else {
-            			player.getInventory().remove(stack);
-            		}
+                    try {
+                        if(player.getInventory().getItemInOffHand().equals(stack)) {
+                            player.getInventory().setItemInOffHand(new ItemStack(Material.AIR));
+                        }else {
+                            player.getInventory().remove(stack);
+                        }
+                    }catch(Throwable e) {
+                        player.getInventory().remove(stack);
+                    }
                 }
 
                 player.updateInventory();

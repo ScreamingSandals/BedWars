@@ -76,7 +76,7 @@ public class TNTSheep extends SpecialItem implements org.screamingsandals.bedwar
 
         entity = sheep;
         EntityUtils.makeMobAttackTarget(sheep, speed, followRange, 0)
-        	.getTargetSelector().attackTarget(target);
+            .getTargetSelector().attackTarget(target);
 
         tnt = (TNTPrimed) loc.getWorld().spawnEntity(loc, EntityType.PRIMED_TNT);
         tnt.setFuseTicks(explosionTime);
@@ -88,13 +88,17 @@ public class TNTSheep extends SpecialItem implements org.screamingsandals.bedwar
         Main.registerGameEntity(tnt, (org.screamingsandals.bedwars.game.Game) game);
 
         if (item.getAmount() > 1) {
-        	item.setAmount(item.getAmount() - 1);
+            item.setAmount(item.getAmount() - 1);
         } else {
-        	if(player.getInventory().getItemInOffHand().equals(item)) {
-    			player.getInventory().setItemInOffHand(new ItemStack(Material.AIR));
-    		}else {
-    			player.getInventory().remove(item);
-    		}
+            try {
+                if(player.getInventory().getItemInOffHand().equals(item)) {
+                    player.getInventory().setItemInOffHand(new ItemStack(Material.AIR));
+                }else {
+                    player.getInventory().remove(item);
+                }
+            }catch(Throwable e) {
+                player.getInventory().remove(item);
+            }
         }
         player.updateInventory();
 
