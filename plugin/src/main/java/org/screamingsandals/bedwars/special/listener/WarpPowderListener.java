@@ -75,7 +75,11 @@ public class WarpPowderListener implements Listener {
                                 if (stack.getAmount() > 1) {
                                     stack.setAmount(stack.getAmount() - 1);
                                 } else {
-                                    player.getInventory().remove(stack);
+                                	if(player.getInventory().getItemInOffHand().equals(stack)) {
+                            			player.getInventory().setItemInOffHand(new ItemStack(Material.AIR));
+                            		}else {
+                            			player.getInventory().remove(stack);
+                            		}
                                 }
 
                                 player.updateInventory();

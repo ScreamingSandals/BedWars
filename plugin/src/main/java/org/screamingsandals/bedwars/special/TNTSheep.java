@@ -8,6 +8,7 @@ import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.lib.nms.entity.EntityUtils;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -89,7 +90,11 @@ public class TNTSheep extends SpecialItem implements org.screamingsandals.bedwar
         if (item.getAmount() > 1) {
         	item.setAmount(item.getAmount() - 1);
         } else {
-        	player.getInventory().remove(item);
+        	if(player.getInventory().getItemInOffHand().equals(item)) {
+    			player.getInventory().setItemInOffHand(new ItemStack(Material.AIR));
+    		}else {
+    			player.getInventory().remove(item);
+    		}
         }
         player.updateInventory();
 

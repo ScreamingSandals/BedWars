@@ -4,6 +4,7 @@ import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.api.Team;
 import org.screamingsandals.bedwars.utils.MiscUtils;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -68,7 +69,11 @@ public class ArrowBlocker extends SpecialItem implements org.screamingsandals.be
             if (item.getAmount() > 1) {
         		item.setAmount(item.getAmount() - 1);
         	} else {
-        		player.getInventory().remove(item);
+        		if(player.getInventory().getItemInOffHand().equals(item)) {
+        			player.getInventory().setItemInOffHand(new ItemStack(Material.AIR));
+        		}else {
+        			player.getInventory().remove(item);
+        		}
         	}
             player.updateInventory();
 
