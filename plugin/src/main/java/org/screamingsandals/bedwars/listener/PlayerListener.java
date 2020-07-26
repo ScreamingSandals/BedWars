@@ -5,7 +5,6 @@ import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
-import org.bukkit.block.data.type.Cake;
 import org.bukkit.entity.*;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
@@ -728,19 +727,7 @@ public class PlayerListener implements Listener {
                                                     }
                                                 }
                                             } else {
-                                                if (event.getClickedBlock().getBlockData() instanceof Cake) {
-                                                    Cake cake = (Cake) event.getClickedBlock().getBlockData();
-                                                    if (cake.getBites() == 0) {
-                                                        game.getRegion().putOriginalBlock(event.getClickedBlock().getLocation(), event.getClickedBlock().getState());
-                                                    }
-                                                    cake.setBites(cake.getBites() + 1);
-                                                    if (cake.getBites() >= cake.getMaximumBites()) {
-                                                        game.bedDestroyed(event.getClickedBlock().getLocation(), event.getPlayer(), false, false, true);
-                                                        event.getClickedBlock().setType(Material.AIR);
-                                                    } else {
-                                                        event.getClickedBlock().setBlockData(cake);
-                                                    }
-                                                }
+                                                Player113ListenerUtils.yummyCake(event, game);
                                             }
                                             break;
                                         }
