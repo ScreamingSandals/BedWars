@@ -90,10 +90,10 @@ public class Golem extends SpecialItem implements org.screamingsandals.bedwars.a
             try {
                 if (player.getInventory().getItemInOffHand().equals(item)) {
                     player.getInventory().setItemInOffHand(new ItemStack(Material.AIR));
-                }else {
+                } else {
                     player.getInventory().remove(item);
                 }
-            }catch (Throwable e) {
+            } catch (Throwable e) {
                 player.getInventory().remove(item);
             }
         }
