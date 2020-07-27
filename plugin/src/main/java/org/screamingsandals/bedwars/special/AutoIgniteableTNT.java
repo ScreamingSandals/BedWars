@@ -36,7 +36,7 @@ public class AutoIgniteableTNT extends SpecialItem
     public void spawn(Location location) {
         TNTPrimed tnt = (TNTPrimed) location.getWorld().spawnEntity(location, EntityType.PRIMED_TNT);
         Main.getInstance().registerEntityToGame(tnt, game);
-        tnt.setFuseTicks(explosionTime);
+        tnt.setFuseTicks(explosionTime * 20);
         if (!damagePlacer)
             tnt.setMetadata(player.getUniqueId().toString(), new FixedMetadataValue(Main.getInstance(), null));
         tnt.setMetadata("autoignited", new FixedMetadataValue(Main.getInstance(), null));
