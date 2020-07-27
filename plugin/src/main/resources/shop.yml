@@ -212,6 +212,12 @@ data:
   items:
    - CHEST for 1 of iron
    - ENDER_CHEST for 1 of gold
+   - price: 3 of iron
+     stack: "TNT;1;Autoigniteable TNT"
+     properties:
+      - name: "AutoIgniteableTnt"
+        explosion-time: 5
+        damage-placer: false
    - price: 7 of iron
      properties:
       - name: "WarpPowder"

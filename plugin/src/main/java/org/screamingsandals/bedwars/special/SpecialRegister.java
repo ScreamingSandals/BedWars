@@ -18,6 +18,7 @@ public class SpecialRegister {
         plugin.getServer().getPluginManager().registerEvents(new TrackerListener(), plugin);
         plugin.getServer().getPluginManager().registerEvents(new TrapListener(), plugin);
         plugin.getServer().getPluginManager().registerEvents(new WarpPowderListener(), plugin);
+        plugin.getServer().getPluginManager().registerEvents(new AutoIgniteableTNTListener(), plugin);
     }
 
 }
