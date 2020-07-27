@@ -166,7 +166,7 @@ public class ShopInventory implements Listener {
 				}
 				String name = (parent ? "+" : "-") + file;
 				if (!shopMap.containsKey(name)) {
-					if (/*Main.getConfigurator().config.getBoolean("turnOnExperimentalGroovyShop", false) &&*/ new File(Main.getInstance().getDataFolder(), file + ".groovy").exists()) {
+					if (new File(Main.getInstance().getDataFolder(), file + ".groovy").exists()) {
 						loadNewShop(name, file + ".groovy", parent);
 					} else {
 						loadNewShop(name, file + ".yml", parent);
@@ -178,7 +178,7 @@ public class ShopInventory implements Listener {
 				shopMap.get("default").openForPlayer(player);
 			}
 		} catch (Throwable ignored) {
-			player.sendMessage(i18nonly("prefix") + " Your shop.yml is invalid! Check it out or contact us on Discord.");
+			player.sendMessage(i18nonly("prefix") + " Your shop.yml/shop.groovy is invalid! Check it out or contact us on Discord.");
 		}
 	}
 
@@ -295,8 +295,8 @@ public class ShopInventory implements Listener {
 				format.loadFromDataFolder(Main.getInstance().getDataFolder(), fileName);
 			}
 		} catch (Exception ignored) {
-			Debug.warn("Wrong shop.yml configuration!", true);
-			Debug.warn("Your villagers won't work, check validity of your YAML!", true);
+			Debug.warn("Wrong shop.yml/shop.groovy configuration!", true);
+			Debug.warn("Your villagers won't work, check validity of your YAML/Groovy!", true);
 		}
 
 		format.generateData();
