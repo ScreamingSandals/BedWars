@@ -7,6 +7,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 import org.bukkit.block.data.Directional;
+import org.screamingsandals.bedwars.Main;
 
 public class SignBlock {
     private final Location loc;
@@ -36,10 +37,18 @@ public class SignBlock {
             return null;
         }
 
-        if (block.getState().getBlockData() instanceof Directional) {
-            Directional directional = (Directional) block.getState().getBlockData();
-            BlockFace blockFace = directional.getFacing().getOppositeFace();
-            return block.getRelative(blockFace);
+        if (!Main.isLegacy()) {
+            if (block.getState().getBlockData() instanceof Directional) {
+                Directional directional = (Directional) block.getState().getBlockData();
+                BlockFace blockFace = directional.getFacing().getOppositeFace();
+                return block.getRelative(blockFace);
+            }
+        } else {
+            if (block.getState().getData() instanceof org.bukkit.material.Directional) {
+                org.bukkit.material.Directional directional = (org.bukkit.material.Directional) block.getState().getData();
+                BlockFace blockFace = directional.getFacing().getOppositeFace();
+                return block.getRelative(blockFace);
+            }
         }
         return block.getRelative(BlockFace.DOWN);
     }
