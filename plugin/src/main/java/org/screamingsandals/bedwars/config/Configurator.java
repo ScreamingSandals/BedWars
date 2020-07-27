@@ -264,8 +264,23 @@ public class Configurator {
         checkOrSetConfig(modify, "specials.golem.collidable", false);
         checkOrSetConfig(modify, "specials.teamchest.turn-all-enderchests-to-teamchests", true);
         checkOrSetConfig(modify, "specials.throwable-fireball.explosion", 3.0);
-        checkOrSetConfig(modify, "specials.auto-igniteable-tnt.explosion-time", 8);
-        checkOrSetConfig(modify, "specials.auto-igniteable-tnt.damage-placer", false);
+        checkOrSetConfig(modify, "specials.auto-igniteable-tnt.explosion-time", config.getInt("tnt.explosion-time", 8));
+        checkOrSetConfig(modify, "specials.auto-igniteable-tnt.damage-placer", !config.getBoolean("tnt.dont-damage-placer"));
+
+        if (config.isSet("tnt.auto-ignite")) {
+            /* Config migration: tnt.auto-ignite has been replaced with special item */
+            config.set("tnt.auto-ignite", null);
+        }
+
+        if (config.isSet("tnt.explosion-time")) {
+            /* Config migration: tnt.explosion-time has been replaced with specials.auto-igniteable-tnt.explosion-time */
+            config.set("tnt.explosion-time", null);
+        }
+
+        if (config.isSet("tnt.dont-damage-placer")) {
+            /* Config migration: tnt.dont-damage-placer has been replaced with specials.auto-igniteable-tnt.damage-placer with inverted value */
+            config.set("tnt.dont-damage-placer", null);
+        }
         
         checkOrSetConfig(modify, "sounds.on_bed_destroyed", "ENTITY_ENDER_DRAGON_GROWL");
         checkOrSetConfig(modify, "sounds.on_countdown", "UI_BUTTON_CLICK");

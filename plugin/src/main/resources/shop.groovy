@@ -160,6 +160,12 @@ inventory {
 
         item('CHEST for 1 of iron')
         item('ENDER_CHEST for 1 of gold')
+        item('TNT;1;Autoigniteable TNT for price 3 of iron') {
+            property 'AutoIgniteableTnt', [
+                    'explosion-time': 5,
+                    'damage-placer': false
+            ]
+        }
         item('GUNPOWDER;1;Warp Powder for 7 of iron') {
             stack.lore ([
                     "When using this powder you'll get",

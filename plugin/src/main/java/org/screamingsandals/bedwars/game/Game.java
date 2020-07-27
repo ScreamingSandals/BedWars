@@ -1668,6 +1668,11 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
                     if (getOriginalOrInheritedSpawnerHolograms()) {
                         for (ItemSpawner spawner : spawners) {
+                            CurrentTeam spawnerTeam = getCurrentTeamFromTeam(spawner.getTeam());
+                            if (getOriginalOrInheritedStopTeamSpawnersOnDie() && spawner.getTeam() != null && spawnerTeam == null) {
+                                continue; // team of this spawner is not available. Fix #147
+                            }
+
                             if (spawner.getHologramEnabled()) {
                                 Location loc = spawner.loc.clone().add(0,
                                         Main.getConfigurator().config.getDouble("spawner-holo-height", 0.25), 0);
@@ -1915,6 +1920,10 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 } else if (countdown != gameTime /* Prevent spawning resources on game start */) {
                     for (ItemSpawner spawner : spawners) {
                         CurrentTeam spawnerTeam = getCurrentTeamFromTeam(spawner.getTeam());
+                        if (getOriginalOrInheritedStopTeamSpawnersOnDie() && spawner.getTeam() != null && spawnerTeam == null) {
+                            continue; // team of this spawner is not available. Fix #147
+                        }
+
                         ItemSpawnerType type = spawner.type;
                         int cycle = type.getInterval();
                         /*
