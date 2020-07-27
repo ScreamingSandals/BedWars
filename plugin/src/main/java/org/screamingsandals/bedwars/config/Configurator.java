@@ -264,11 +264,9 @@ public class Configurator {
         checkOrSetConfig(modify, "specials.golem.collidable", false);
         checkOrSetConfig(modify, "specials.teamchest.turn-all-enderchests-to-teamchests", true);
         checkOrSetConfig(modify, "specials.throwable-fireball.explosion", 3.0);
-
-        checkOrSetConfig(modify, "tnt.auto-ignite", false);
-        checkOrSetConfig(modify, "tnt.explosion-time", 8);
-        checkOrSetConfig(modify, "tnt.dont-damage-placer", false);
-
+        checkOrSetConfig(modify, "specials.auto-igniteable-tnt.explosion-time", 8);
+        checkOrSetConfig(modify, "specials.auto-igniteable-tnt.damage-placer", false);
+        
         checkOrSetConfig(modify, "sounds.on_bed_destroyed", "ENTITY_ENDER_DRAGON_GROWL");
         checkOrSetConfig(modify, "sounds.on_countdown", "UI_BUTTON_CLICK");
         checkOrSetConfig(modify, "sounds.on_game_start", "ENTITY_PLAYER_LEVELUP");

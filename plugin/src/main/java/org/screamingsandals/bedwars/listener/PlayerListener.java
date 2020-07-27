@@ -331,32 +331,6 @@ public class PlayerListener implements Listener {
                     event.getBlockReplacedState(), event.getItemInHand())) {
                 event.setCancelled(true);
             }
-
-            if (game.getStatus() == GameStatus.RUNNING
-                    && GameCreator.isInArea(event.getBlock().getLocation(), game.getPos1(), game.getPos2())) {
-                Block block = event.getBlock();
-                int explosionTime = Main.getConfigurator().config.getInt("tnt.explosion-time", 8) * 20;
-
-                if (block.getType() == Material.TNT
-                        && Main.getConfigurator().config.getBoolean("tnt.auto-ignite", false)) {
-                    block.setType(Material.AIR);
-                    Location location = block.getLocation().add(0.5, 0.5, 0.5);
-                    ;
-
-                    TNTPrimed tnt = (TNTPrimed) location.getWorld().spawnEntity(location, EntityType.PRIMED_TNT);
-                    tnt.setFuseTicks(explosionTime);
-
-                    tnt.setMetadata(event.getPlayer().getUniqueId().toString(), new FixedMetadataValue(Main.getInstance(), null));
-
-                    Main.registerGameEntity(tnt, game);
-
-                    new BukkitRunnable() {
-                        public void run() {
-                            Main.unregisterGameEntity(tnt);
-                        }
-                    }.runTaskLater(Main.getInstance(), explosionTime + 10);
-                }
-            }
         } else if (Main.getConfigurator().config.getBoolean("preventArenaFromGriefing")) {
             for (String gameN : Main.getGameNames()) {
                 Game game = Main.getGame(gameN);
@@ -566,10 +540,6 @@ public class PlayerListener implements Listener {
                         }
                     } else if (edbee.getDamager() instanceof Firework && game.getStatus() == GameStatus.GAME_END_CELEBRATING) {
                         event.setCancelled(true);
-                    } else if (edbee.getDamager() instanceof TNTPrimed) {
-                        if (edbee.getDamager().hasMetadata(player.getUniqueId().toString())) {
-                            edbee.setCancelled(Main.getConfigurator().config.getBoolean("tnt.dont-damage-placer", false));
-                        }
                     } else if (edbee.getDamager() instanceof Projectile) {
                         Projectile projectile = (Projectile) edbee.getDamager();
                         if (projectile.getShooter() instanceof Player) {
