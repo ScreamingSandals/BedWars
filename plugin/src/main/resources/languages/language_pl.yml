@@ -1,7 +1,7 @@
 ---
 language_code: "pl"
 language_name: "Polski"
-prefix: "&7[&bS&c&lBed&f&lWars&7]&r"
+prefix: "&c& &f&"
 core:
   errors:
     game-core: "&cCoś poszło nie tak z instancją GameRore. &a&lProszę zgłosić ten dziennik błędów do GitHub lub Discorda!"
