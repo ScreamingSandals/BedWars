@@ -246,7 +246,7 @@ public class Configurator {
         checkOrSetConfig(modify, "specials.protection-wall.height", 3);
         checkOrSetConfig(modify, "specials.protection-wall.distance", 2);
         checkOrSetConfig(modify, "specials.protection-wall.material", Main.isLegacy() ? "SANDSTONE" : "CUT_SANDSTONE");
-        checkOrSetConfig(modify, "specials.tnt-sheep.speed", 2.0);
+        checkOrSetConfig(modify, "specials.tnt-sheep.speed", 0.25);
         checkOrSetConfig(modify, "specials.tnt-sheep.follow-range", 10.0);
         checkOrSetConfig(modify, "specials.tnt-sheep.max-target-distance", 32);
         checkOrSetConfig(modify, "specials.tnt-sheep.explosion-time", 8);

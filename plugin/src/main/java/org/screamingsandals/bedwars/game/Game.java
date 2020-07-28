@@ -49,7 +49,6 @@ import org.screamingsandals.bedwars.api.utils.DelayFactory;
 import org.screamingsandals.bedwars.boss.BossBarSelector;
 import org.screamingsandals.bedwars.boss.XPBar;
 import org.screamingsandals.bedwars.commands.StatsCommand;
-import org.screamingsandals.bedwars.config.Configurator;
 import org.screamingsandals.bedwars.inventories.TeamSelectorInventory;
 import org.screamingsandals.bedwars.listener.Player116ListenerUtils;
 import org.screamingsandals.bedwars.region.FlatteningRegion;
@@ -64,7 +63,6 @@ import org.screamingsandals.simpleinventories.utils.MaterialSearchEngine;
 import org.screamingsandals.simpleinventories.utils.StackParser;
 
 import com.onarandombox.MultiverseCore.api.Core;
-import com.onarandombox.MultiverseCore.api.MVWorldManager;
 
 public class Game implements org.screamingsandals.bedwars.api.game.Game {
     private String name;
@@ -813,14 +811,11 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                             + " was not found, but we found Multiverse-Core, so we will try to load this world.");
 
                     Core multiverse = (Core) Bukkit.getPluginManager().getPlugin("Multiverse-Core");
-                    if (multiverse != null) {
-                        MVWorldManager manager = multiverse.getMVWorldManager();
-                        if (manager.loadWorld(worldName)) {
-                            Bukkit.getConsoleSender().sendMessage("§c[B§fW] §aWorld " + worldName
-                                    + " was succesfully loaded with Multiverse-Core, continue in arena loading.");
+                    if (multiverse != null && multiverse.getMVWorldManager().loadWorld(worldName)) {
+                        Bukkit.getConsoleSender().sendMessage("§c[B§fW] §aWorld " + worldName
+                                + " was succesfully loaded with Multiverse-Core, continue in arena loading.");
 
-                            game.world = Bukkit.getWorld(worldName);
-                        }
+                        game.world = Bukkit.getWorld(worldName);
                     } else {
                         Bukkit.getConsoleSender().sendMessage("§c[B§fW] §cArena " + game.name
                                 + " can't be loaded, because world " + worldName + " is missing!");
@@ -831,10 +826,11 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                             "§c[B§fW] §eArena " + game.name + " can't be loaded, because world " + worldName + " is missing! We will try it again after all plugins will be loaded!");
                     Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> loadGame(file, false), 10L);
                     return null;
+                } else {
+                    Bukkit.getConsoleSender().sendMessage(
+                            "§c[B§fW] §cArena " + game.name + " can't be loaded, because world " + worldName + " is missing!");
+                    return null;
                 }
-                Bukkit.getConsoleSender().sendMessage(
-                        "§c[B§fW] §cArena " + game.name + " can't be loaded, because world " + worldName + " is missing!");
-                return null;
             }
 
             if (Main.getVersionNumber() >= 115) {
@@ -852,8 +848,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                             + " was not found, but we found Multiverse-Core, so we will try to load this world.");
 
                     Core multiverse = (Core) Bukkit.getPluginManager().getPlugin("Multiverse-Core");
-                    MVWorldManager manager = multiverse.getMVWorldManager();
-                    if (manager.loadWorld(spawnWorld)) {
+                    if (multiverse != null && multiverse.getMVWorldManager().loadWorld(spawnWorld)) {
                         Bukkit.getConsoleSender().sendMessage("§c[B§fW] §aWorld " + spawnWorld
                                 + " was succesfully loaded with Multiverse-Core, continue in arena loading.");
 
