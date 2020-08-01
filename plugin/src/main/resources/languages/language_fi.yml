@@ -4,10 +4,10 @@ language_name: "Suomen kieli"
 prefix: "&7[&bS&c&lBed&f&lWars&7]&r"
 core:
   errors:
-    game-core: "&cSomething went wrong with the GameCore instance. &a&lPlease report this error log to GitHub or Discord!"
-    game-store: "&cYour shop configuration is invalid. Please check validity of your current file."
-    game-loading: "&c&lOh, damn. &cLoading the arena file failed. &a&lPlease report this error log to GitHub or Discord!"
-    game-world-not-defined: "&eGame world for game %gameName% &cis not defined!"
+    game-core: "&cJotain meni vikaan. &a&lKerro tästä GitHubssa tai Discordssa!"
+    game-store: "&cShop config tiedostosi on viallinen. Palaa tarkistamaan asia."
+    game-loading: "&c&lOh, damn. &cAreenan lataus tiedosto ei toimi. &a&lKerro tästä GitHubssa tai Discordssa!"
+    game-world-not-defined: "&ePelin maailmaa %gameName% &cEi löydy!"
     game-world-does-not-exists: "&cGame world &e%world% &cfor the game &e%gameName% &cdoes not exists!"
     game-world-bad-border: "&cBorder for the game &e%gameName% &cis wrong. &lPlease re-do it!"
     not-enough-teams: "&cNot enough teams defined for the game &e%gameName%. &c&lYou need at least 2!"
@@ -55,13 +55,13 @@ general:
     tick: "Tick"
     ticks: "Tick"
     second: "Second"
-    seconds: "Seconds"
-    minute: "Minute"
-    minutes: "Minutes"
+    seconds: "Sekuntia"
+    minute: "Minuutti"
+    minutes: "Minuuttia"
 game-builder:
   check-integrity:
     errors:
-      not-created-yet: "&cYou have not created the game yet."
+      not-created-yet: "&cEt ole luonut pelejä vielä."
       not-enough-teams: "&cYou don't have enough teams added. Please add at least &e2 &cteams."
       not-enough-teams-line2: "&cThere are &e%count% &cteams ready."
       not-enough-stores: "&cWell well, you need at least &e1 &cstore added."
