@@ -69,32 +69,32 @@ game-builder:
       game-world-position-not-set: "&cOh mi, la posición %whatPosition% no ha sido establecida. ¡Establecela!"
       game-world-spectator-not-set: "&cEl punto de aparición de los espectadores no ha sido establecido. &l¡Hazlo!"
       lobby-world-not-set: "&cOh mi, el mundo del lobby no ha sido establecido. ¡Establece el spawn o el mundo del lobby!"
-      lobby-world-spawn-not-set: "&cOh my, lobby spawn is not set. &lDo it!"
-  created: "&aGame &e%game% &ahas been created! &lYAY!"
+      lobby-world-spawn-not-set: "&cOh no, el spawn del lobby no está establecido. &lHazlo!"
+  created: "&a¡El juego &e%game% &aha sido creado! &l¡Sí!"
   store:
     why-are-you-punching-your-shop: "&c&l¡DETENTE! &eNo me golpees &6:("
   spawners:
     hologram:
-      - "&eSpawner: %color%%type%&f, &eMaterial: &f%mat%"
+      - "&eGenerador: %color%%type%&f, &eMaterial: &f%mat%"
       - "&f%spawnAmount% &eobjeto por &f%time-unit%"
       - "&eEquipo: &f%team%"
       - " recursos generados: &f%amount%"
       - " habilitado: &f%booleanValue%"
     editor:
       started:
-        - "&aSpawner editor has been opened!"
-        - "&aType &e/sbw sedit &aif you don't know what to do. &l:)"
+        - "&a¡El editor de generador ha sido abierto!"
+        - "&aEscribe &e/sbw sedit &asi no sabes qué hacer. &l:)"
       already-active:
-        - "&cSpawner editor is already active."
-        - "&eType &a/sbw sedit exit &eto exit without saving"
-        - "&eor &a/sbw sedit save &eto save changes."
+        - "&cEl editor de generadores ya está activo."
+        - "&eEscribe &a/sbw sedit exit &epara salir sin guardar"
+        - "&eo &a/sbw sedit save &epara guardar los cambios."
       nothing-active:
-        - "&cSpawner editor not found."
-        - "&eRight-click on some spawner to enter edit mode."
-      changed: "&aValue &e%value% &awas changed to &e%newValue%"
-      invalid-value: "&cValue &e%value% &cis invalid!"
+        - "&cEditor de generadores no encontrado."
+        - "&eDa click derecho en algún generador para entrar en el modo edición."
+      changed: "&aEl valor &e%value% &aha sido cambiado a &e%newValue%"
+      invalid-value: "&c¡El valor &e%value% &cno es válido!"
       invalid-action:
-        - "&cThis action is invalid.."
+        - "&cEsta acción no es válida..."
         - "&eYou did something wrong? Help is at &a/sbw sedit"
       save: "&aSpawner was saved. &lYAY!"
       exit: "&cNothing was saved. &e&lUmm :("
