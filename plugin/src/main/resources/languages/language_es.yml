@@ -20,8 +20,8 @@ core:
     loading: "&6Cargando"
     lobby: "&aEsperando"
     starting: "&aComenzando"
-    game: "&bEn juego"
-    deathmatch: "&cDeathmatch"
+    game: "&bEn partida"
+    deathmatch: "&cMuerte súbita"
     end_game: "&6Finalizando"
     restart: "&6Reiniciando"
     maintenance: "&4Mantenimiento"
@@ -34,23 +34,23 @@ core:
     diamond: "&bDiamante"
 general:
   errors:
-    invalid-boolean-value: "&cEl valor &e%enteredValue% &ces inválido. ¡Usa &etrue &co &efalse&c!"
+    invalid-boolean-value: "&cEl valor &e%enteredValue% &cno es válido. ¡Usa &etrue &co &efalse!"
     invalid-number: "&cUh, eso es malo. &c¡&e%entry% &c&lno &ces un número válido!"
     invalid-team: "&cEl equipo &e%team% &cno existe."
-    invalid-spawner-type: "&c¡&e%type% &cno es un tipo de spawner válido!"
+    invalid-spawner-type: "&c¡&e%type% &cno es un tipo de generador válido!"
     not-enough-args: "&cNo has proporcionado suficientes argumentos."
-    unknown-parameter: "&cNo se puede hacer esto, ese parámetro no existe."
-    different-world: "&cNo se puede hace, estás intentando establecer esto en otro mundo."
-    outside-of-the-border: "&cEsto debe estar dentro del borde de juego. &e¿Entiendes?"
+    unknown-parameter: "&cNo se puede hacer eso, ese parámetro no existe."
+    different-world: "&cNo se puede hacer eso, estás intentando establecer esto en otro mundo."
+    outside-of-the-border: "&cEsto debe estar dentro del borde del juego. &e¿Entiendes?"
     invalid-game: "&c¡El juego &e%gameName% &cno existe!"
-    no-game-found: "&cNingún juego encontrado."
-    game-already-created: "&c¡Ya existe un juego llamado &e%gameName%&c! Usa un nombre &ldiferente&c."
-    wrong-bossbar-color: "¡El color %color% es inválido! Arregla esto en tu configuración."
+    no-game-found: "&cNo se ha encontrado ninguna partida."
+    game-already-created: "&c¡Ya existe una partida llamada &e%gameName%&c! Usa un nombre &ldiferente&c."
+    wrong-bossbar-color: "¡El color %color% no es válido! Arregla esto en tu configuración."
   null-translated: "Ninguno"
   booleans:
     true: "Verdadero"
     false: "Falso"
-  infinity: "Infinito"
+  infinity: "Infinidad"
   time-units:
     tick: "Tick"
     ticks: "Ticks"
@@ -61,7 +61,7 @@ general:
 game-builder:
   check-integrity:
     errors:
-      not-created-yet: "&cNo has creado el juego aún."
+      not-created-yet: "&cNo has creado la partida aún."
       not-enough-teams: "&cNo has agregado suficientes equipos. Por favor agrega al menos &e2 &cequipos."
       not-enough-teams-line2: "&cHay &e%count% &cequipos listos."
       not-enough-stores: "&cBueno bueno, necesitas agregar al menos &e1 &ctienda."
@@ -119,27 +119,27 @@ scoreboards:
       - ""
       - "&c¡Necesitas &a&l%playersToStart%&c jugadores más!"
     starting:
-      - "&eMap: &a%gameName%"
+      - "&eMapa: &a%gameName%"
       - ""
-      - "&aStarting in &e%timeToStart%"
+      - "&aComenzando en &e%timeToStart%"
       - ""
-      - "&fPlayers: &a%playersCount%&f/&a%maxPlayers%"
+      - "&fJugadores: &a%playersCount%&f/&a%maxPlayers%"
     game:
-      - " left: &e%formattedRemainingTime%"
+      - " restante: &e%formattedRemainingTime%"
       - ""
-      - "&eMap: &a%gameName%"
+      - "&eMapa: &a%gameName%"
       - ""
-      - " teams: &a%teamsCount%"
+      - " equipos: &a%teamsCount%"
     deathmatch:
       - ""
-      - "&c&lDEATHMATCH"
+      - "&c&lMUERTE SÚBITA"
       - ""
-      - "%&eRemaining players: %playersCount%%"
+      - "%&eJugadores restantes: %playersCount%%"
     end-game:
       - ""
       - "%winnerMessage%"
       - ""
-      - "Finished in: %time%"
+      - "Terminado en: %time%"
       - ""
   teams:
     alive: "&a✔&r %teamColor%%teamName%"
@@ -153,10 +153,10 @@ bossbars:
     end-game: "%winnerMessage%"
   color:
     lobby: "OIIII"
-    starting: "GREEN"
-    game: "BLUE"
-    deathmatch: "RED"
-    end-game: "WHITE"
+    starting: "VERDE"
+    game: "AZUL"
+    deathmatch: "ROJO"
+    end-game: "BLANCO"
 commands:
   errors:
     no-permissions: "&cNo tienes permiso para ese comando.. &8:("
@@ -185,13 +185,13 @@ commands:
     failed: "&cNo estás en un juego."
   admin:
     errors:
-      not_enough_arguments: "&cYou must provide valid arena name and valid action!"
-      invalid_action: "&e%action% &eis invalid action. Please enter valid one."
+      not_enough_arguments: "&c¡Debes proporcionar un nombre de arena válido y una acción válida!"
+      invalid_action: "&e%action% &ees una acción no válida. Por favor, introduce una válida."
     actions:
       edit:
         invalid-entry:
-          - "&eYou need to be more specific.."
-          - "&eCommand should look like:"
+          - "&eTienes que ser más específico.."
+          - "&eEl comando debería ser así:"
           - "&a/sbw admin &e%gameName% &aedit"
         running: "&eGame is running, stopping..."
         stopped: "&aGame has been stopped."
