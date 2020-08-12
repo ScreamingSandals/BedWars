@@ -30,7 +30,11 @@
 		</repository>
 		<repository>
 			<id>screaming-repo</id>
-			<url>https://repo.screamingsandals.org</url>
+			<url>https://repo.screamingsandals.org/repository/maven-public/</url>
+		</repository>
+		<repository>
+			<id>jitpack.io</id>
+			<url>https://jitpack.io</url>
 		</repository>
 	</repositories>
 
@@ -60,5 +64,16 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<distributionManagement>
+		<repository>
+			<id>nexus-releases</id>
+			<url>https://repo.screamingsandals.org/repository/maven-releases/</url>
+		</repository>
+		<snapshotRepository>
+			<id>nexus-snapshots</id>
+			<url>https://repo.screamingsandals.org/repository/maven-snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement>
 
 </project>
