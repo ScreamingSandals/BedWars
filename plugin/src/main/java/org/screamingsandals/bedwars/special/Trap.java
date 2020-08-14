@@ -44,9 +44,8 @@ public class Trap extends SpecialItem implements org.screamingsandals.bedwars.ap
     }
 
     public void process(Player player, RunningTeam runningTeam, boolean forceDestroy) {
-        game.unregisterSpecialItem(this);
-
         if (runningTeam == game.getTeamOfPlayer(this.player) || forceDestroy) {
+            game.unregisterSpecialItem(this);
             location.getBlock().setType(Material.AIR);
             return;
         }
