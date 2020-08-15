@@ -160,7 +160,7 @@ inventory {
 
         item('CHEST for 1 of iron')
         item('ENDER_CHEST for 1 of gold')
-        item('TNT;1;Autoigniteable TNT for price 3 of iron') {
+        item('TNT;1;Autoigniteable TNT for 3 of iron') {
             property 'AutoIgniteableTnt', [
                     'explosion-time': 5,
                     'damage-placer': false
