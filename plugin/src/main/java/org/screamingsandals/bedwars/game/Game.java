@@ -624,6 +624,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                     .send(getConnectedPlayers());
 
             gamePlayer.teleport(lobbySpawn, () -> {
+                gamePlayer.clean(); // temp fix for inventory issues?
                 SpawnEffects.spawnEffect(Game.this, gamePlayer.player, "game-effects.lobbyjoin");
 
                 if (getOriginalOrInheritedJoinRandomTeamOnJoin()) {
@@ -1436,6 +1437,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             player.setAllowFlight(true);
             player.setFlying(true);
             player.setGameMode(GameMode.SPECTATOR);
+            gamePlayer.clean(); // temp fix for inventory issues?
 
             if (leaveItem) {
                 int leavePosition = Main.getConfigurator().config.getInt("hotbar.leave", 8);
