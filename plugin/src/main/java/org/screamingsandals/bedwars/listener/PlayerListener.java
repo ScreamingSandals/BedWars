@@ -478,14 +478,16 @@ public class PlayerListener implements Listener {
         }
 
         if (!(event.getEntity() instanceof Player)) {
-            if (event instanceof EntityDamageByEntityEvent) {
+            if (event.getCause() != DamageCause.VOID) {
                 Game game = Main.getInGameEntity(event.getEntity());
                 if (game != null) {
                     if (game.isEntityShop(event.getEntity()) && game.getOriginalOrInheritedPreventKillingVillagers()) {
                         event.setCancelled(true);
                     }
                 }
+            }
 
+            if (event instanceof EntityDamageByEntityEvent) {
                 if (event.getEntity() instanceof ArmorStand) {
                     Entity damager = ((EntityDamageByEntityEvent) event).getDamager();
                     if (damager instanceof Player) {

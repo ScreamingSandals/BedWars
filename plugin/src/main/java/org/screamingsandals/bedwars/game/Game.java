@@ -715,10 +715,15 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
         if (Main.getConfigurator().config.getBoolean("mainlobby.enabled")
                 && !Main.getConfigurator().config.getBoolean("bungee.enabled")) {
-            Location mainLobbyLocation = MiscUtils.readLocationFromString(
-                    Bukkit.getWorld(Main.getConfigurator().config.getString("mainlobby.world")),
-                    Main.getConfigurator().config.getString("mainlobby.location"));
-            gamePlayer.teleport(mainLobbyLocation);
+            try {
+                Location mainLobbyLocation = MiscUtils.readLocationFromString(
+                        Bukkit.getWorld(Main.getConfigurator().config.getString("mainlobby.world")),
+                        Main.getConfigurator().config.getString("mainlobby.location"));
+                gamePlayer.teleport(mainLobbyLocation);
+                gamePlayer.mainLobbyUsed = true;
+            } catch (Throwable t) {
+                Bukkit.getLogger().severe("You didn't setup properly the mainlobby! Do it via commands not directly in config.yml");
+            }
         }
 
         if (status == GameStatus.RUNNING || status == GameStatus.WAITING) {
@@ -1735,7 +1740,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                                     region.putOriginalBlock(block.getLocation(), block.getState());
                                     Block neighbor = region.getBedNeighbor(block);
                                     region.putOriginalBlock(neighbor.getLocation(), neighbor.getState());
-                                    neighbor.setType(Material.AIR);
+                                    neighbor.setType(Material.AIR, false);
                                     block.setType(Material.AIR);
                                 } else {
                                     region.putOriginalBlock(loc, block.getState());

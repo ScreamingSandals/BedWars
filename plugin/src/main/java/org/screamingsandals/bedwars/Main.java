@@ -55,11 +55,11 @@ import static misat11.lib.lang.I18n.i18n;
 
 public class Main extends JavaPlugin implements BedwarsAPI {
     private static Main instance;
-    private String version, nmsVersion;
-    private boolean isPaper;
+    private String version;
     private boolean isDisabling = false;
     private boolean isSpigot, isLegacy;
-    private boolean snapshot, isVault, isNMS;
+    private boolean isVault;
+    private boolean isNMS;
     private int versionNumber = 0;
     private Economy econ = null;
     private HashMap<String, Game> games = new HashMap<>();
@@ -102,10 +102,6 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         return instance.version;
     }
 
-    public static boolean isSnapshot() {
-        return instance.snapshot;
-    }
-
     public static boolean isSpigot() {
         return instance.isSpigot;
     }
@@ -120,10 +116,6 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 
     public static boolean isNMS() {
         return instance.isNMS;
-    }
-
-    public static String getNMSVersion() {
-        return isNMS() ? instance.nmsVersion : null;
     }
 
     public static void depositPlayer(Player player, double coins) {
@@ -325,18 +317,10 @@ public class Main extends JavaPlugin implements BedwarsAPI {
     public void onEnable() {
         instance = this;
         version = this.getDescription().getVersion();
-        snapshot = version.toLowerCase().contains("pre") || version.toLowerCase().contains("snapshot");
+        boolean snapshot = version.toLowerCase().contains("pre") || version.toLowerCase().contains("snapshot");
         isNMS = ClassStorage.NMS_BASED_SERVER;
-        nmsVersion = ClassStorage.NMS_VERSION;
         isSpigot = ClassStorage.IS_SPIGOT_SERVER;
         colorChanger = new org.screamingsandals.bedwars.utils.ColorChanger();
-
-        try {
-            Class.forName("com.destroystokyo.paper.PaperConfig");
-            isPaper = true;
-        } catch (ClassNotFoundException ignored) {
-            isPaper = false;
-        }
 
         if (!getServer().getPluginManager().isPluginEnabled("Vault")) {
             isVault = false;
@@ -565,10 +549,6 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         }
 
         metrics = null;
-    }
-
-    public static boolean isPaper() {
-        return instance.isPaper;
     }
 
     private boolean setupEconomy() {

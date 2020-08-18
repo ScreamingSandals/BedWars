@@ -18,6 +18,7 @@ public class GamePlayer {
 
     public boolean isSpectator = false;
     public boolean isTeleportingFromGame_justForInventoryPlugins = false;
+    public boolean mainLobbyUsed = false;
 
     public GamePlayer(Player player) {
         this.player = player;
@@ -39,6 +40,7 @@ public class GamePlayer {
             this.clean();
             this.game = game;
             this.isSpectator = false;
+            this.mainLobbyUsed = false;
             this.game.internalJoinPlayer(this);
             this.latestGame = this.game.getName();
         } else if (this.game != null) {
@@ -46,6 +48,7 @@ public class GamePlayer {
             this.game = game;
             this.isSpectator = false;
             this.clean();
+            this.mainLobbyUsed = false;
             this.game.internalJoinPlayer(this);
             this.latestGame = this.game.getName();
         }
@@ -82,9 +85,10 @@ public class GamePlayer {
 
     public void restoreInv() {
         isTeleportingFromGame_justForInventoryPlugins = true;
-        if (!Main.getConfigurator().config.getBoolean("mainlobby.enabled")) {
+        if (!mainLobbyUsed) {
             teleport(oldInventory.leftLocation);
         }
+        mainLobbyUsed = false;
 
         player.getInventory().setContents(oldInventory.inventory);
         player.getInventory().setArmorContents(oldInventory.armor);
