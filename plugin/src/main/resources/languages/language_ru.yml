@@ -101,14 +101,14 @@ game-builder:
       location: "&aМестоположение было изменено на ваше."
       help:
         - "Доступные действия:"
-        - "&a--> &emax-spawned <number value> &a- the max spawned amount"
-        - "&a--> &eamount <number value> &a- amount of items that are spawned"
-        - "&a--> &eperiod <number value> &a- spawning period (2 example) per time-unit"
-        - "&a--> &eteam <existing team or null> &a- links the spawner to the team"
-        - "&a--> &etime-unit <tick/seconds/minutes> &a- changes the period's time unit"
-        - "&a--> &elocation &a- changes location of the spawner"
-        - "&a--> &esave &a- saves the edited spawner"
-        - "&a--> &eexit &a- leaves editor without changes"
+        - "&a--> &emax-spawned <числовое значение> &a- максимальное количество спавнов"
+        - "&a--> &eamount <числовое значение> &a- количество появившихся предметов"
+        - "&a--> &eperiod <number value> &a- период спавна (2 примера) за единицу времени"
+        - "&a--> &eteam <существующая команда или пусто> &a- ссылка на спавнер команды"
+        - "&a--> &etime-unit <tick/seconds/minutes> &a- изменить период необходимого времени"
+        - "&a--> &elocation &a- изменить местонахождение спавнера"
+        - "&a--> &esave &a- сохранить изменённый спавнер"
+        - "&a--> &eexit &a- выйти из редактора без сохранения изменений"
 scoreboards:
   name: "&bS&c&lBed&f&lWars"
   content:
@@ -149,7 +149,7 @@ bossbars:
     lobby: "&eИгра скоро начнется! &lНужно игроков: &a%playersToStart%"
     starting: "&aНачало через &e%timeToStart%"
     game: "Сыграем! Осталось времени: %formattedRemainingTime%"
-    deathmatch: "NOW LET'S SEE! Remaining time: %time%"
+    deathmatch: "Сыграем! Осталось времени: %time%"
     end-game: "%winnerMessage%"
   color:
     lobby: "ОЙЙЙЙ"
@@ -161,8 +161,8 @@ commands:
   errors:
     no-permissions: "&cНедостаточно прав для этой команда.. &8Грустно!"
     command-does-not-exists: "&cМы не знаем, что это. Неверная команда!"
-    somethings-fucked: "&cWell, execution of this command failed.. &eStrange :("
-    not-for-console: "&cConsole can't use this command.."
+    somethings-fucked: "&cПри выполнении данной команды возникла ошибка..."
+    not-for-console: "&cКонсоль не может использовать эту команду."
   main:
     - "от &b&lScreamingSandals&f."
     - "&eНе знаете, что делать? Напишите &l/bw help"
@@ -170,7 +170,7 @@ commands:
   base:
     list:
       no-arenas-found: "&cНа данный момент нет свободных арен &e:("
-      arenas-list-header: "&lWow&a, we have &e%count% &aof arenas! Here they are!"
+      arenas-list-header: "&aМы имеем &e%count% &aарен! Вот они!"
       arenas-list-text: "&l&a--> &e%gameName% &a- &e%gameState%"
       arenas-list-footer: " "
     version:
