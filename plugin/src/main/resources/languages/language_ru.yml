@@ -190,7 +190,7 @@ commands:
     actions:
       edit:
         invalid-entry:
-          - "&eВы должны быть более конкретными..."
+          - "&eВы должны быть более конкретными.."
           - "&eКоманда должна выглядеть так:"
           - "&a/sbw admin &e%gameName% &aedit"
         running: "&eИгра запущена, останавливаем..."
@@ -201,9 +201,9 @@ commands:
           invalid-entry:
             - "&eВы должны быть более конкретными..."
             - "&eКоманда должна выглядеть так:"
-            - "&a/sbw admin &e%gameName% &aadd team <название> <цвет> <макс. игроков>"
+            - "&a/sbw admin &e%gameName% &aadd team <имя> <цвет> <макс. игроков>"
           invalid-color:
-            - "&cЗначение &e%color% &cневерно!"
+            - "&cНеверный цвет: &e%color%&c!"
             - "&cНеверное значение цвета."
           created: "&aКоманда %color%%name% &aбыла создана!"
           already-registered: "&cTeam &e%name% &cis already created!"
