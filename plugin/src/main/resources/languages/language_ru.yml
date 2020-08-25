@@ -229,16 +229,16 @@ commands:
       set:
         border:
           invalid-entry:
-            - "&eYou need to be more specific.."
-            - "&eCommand should look like:"
-            - "&a/sbw admin &e%gameName% &aset spawn &e<game or lobby> <1 or 2>"
-          done: "&aPoint &e%number%&a of the &e%type%&a border was set!"
+            - "&eВы должны быть более конкретными..."
+            - "&eКоманда должна выглядеть так:"
+            - "&a/sbw admin &e%gameName% &aset spawn &e<игра или лобби> <1 или 2>"
+          done: "&aТочке &e%number%&a из &e%type%&a была установлена граница!"
         spawn:
           invalid-entry:
-            - "&eYou need to be more specific.."
-            - "&eCommand should look like:"
+            - "&eВы должны быть более конкретными..."
+            - "&eКоманда должна выглядеть так:"
             - "&a/sbw admin &e%gameName% &aset spawn &e<lobby/team/spectators>"
-          done: "&aYay! Spawn for &e%type%&a has been set!"
+          done: "&aУра! Точка возрождения для &e%type%&a была установлена!"
       save:
-        cannot-save: "Uh oh, you missing something. Cannot save!"
-        done: "&a&lWHOOSH! &aGame &e%gameName% &ais saved and running!"
+        cannot-save: "Вы что-то пропустили. Невозможно сохранить!"
+        done: "&aИгра &e%gameName% &aсохранена и запущена!"
