@@ -206,26 +206,26 @@ commands:
             - "&cНеверный цвет: &e%color%&c!"
             - "&cНеверное значение цвета."
           created: "&aКоманда %color%%name% &aбыла создана!"
-          already-registered: "&cTeam &e%name% &cis already created!"
+          already-registered: "&cКоманда &e%name% &cуже создана!"
         store:
           invalid-entry:
-            - "&eYou need to be more specific.."
-            - "&eCommand should look like:"
-            - "&a/sbw admin &e%gameName% &aadd store <type> <name>"
-          invalid-store-type: "&cYou entered invalid store type.. &lTry again!"
-          invalid-store-file: "&cStore file &e%file% &cdoes not exists."
+            - "&eВы должны быть более конкретными..."
+            - "&eКоманда должна выглядеть так:"
+            - "&a/sbw admin &e%gameName% &aadd store <тип> <название>"
+          invalid-store-type: "&cВы ввели недопустимый тип магазина.. &lПопробуйте снова!"
+          invalid-store-file: "&cФайл магазина &e%file% &cне существует."
           not-custom-store:
-            - "&eYou don't have enough arguments for custom store."
-            - "&eCommand should look like:"
-            - "&a/sbw admin &e%gameName% &aadd store CUSTOM <name> <team> <file>"
-          created: "&aNew game store has been created!"
-          write-custom-name: "Write shop name"
-          write-custom-file-name: "Write file name"
+            - "&eУ вас недостаточно аргументов для пользовательского магазина."
+            - "&eКоманда должна выглядеть так:"
+            - "&a/sbw admin &e%gameName% &aadd store <тип> <название>"
+          created: "&aИгровой магазин был создан!"
+          write-custom-name: "Напишите название магазина"
+          write-custom-file-name: "Напишите название файла"
         spawner:
           invalid-entry:
-            - "&eYou need to be more specific.."
-            - "&eCommand should look like:"
-            - "&a/sbw admin &e%gameName% &aadd spawner <type>"
+            - "&eВы должны быть более конкретными..."
+            - "&eКоманда должна выглядеть так:"
+            - "&a/sbw admin &e%gameName% &aadd store <тип> <название>"
       set:
         border:
           invalid-entry:
