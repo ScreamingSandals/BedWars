@@ -204,7 +204,7 @@ commands:
             - "&a/sbw admin &e%gameName% &aadd team <название> <цвет> <макс. игроков>"
           invalid-color:
             - "&cЗначение &e%color% &cневерно!"
-            - "&c&lGoogle &e&n'spigot цвет чата неправильный'&c для большей помощи."
+            - "&cНеверное значение цвета."
           created: "&aКоманда %color%%name% &aбыла создана!"
           already-registered: "&cTeam &e%name% &cis already created!"
         store:
