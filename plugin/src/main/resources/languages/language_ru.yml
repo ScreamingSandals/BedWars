@@ -170,7 +170,7 @@ commands:
   base:
     list:
       no-arenas-found: "&cНа данный момент нет свободных арен &e:("
-      arenas-list-header: "&aМы имеем &e%count% &aарен! Вот они!"
+      arenas-list-header: "&lВау&a, у нас &e%count% &aарен! Вот они!"
       arenas-list-text: "&l&a--> &e%gameName% &a- &e%gameState%"
       arenas-list-footer: " "
     version:
