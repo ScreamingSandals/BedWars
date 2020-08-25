@@ -49,7 +49,7 @@ general:
   null-translated: "None"
   booleans:
     true: "True"
-    false: "False"
+    false: "Falsch"
   infinity: "Infinity"
   time-units:
     tick: "Tick"
