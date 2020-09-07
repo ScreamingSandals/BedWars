@@ -3157,9 +3157,6 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
     @Override
     public boolean isEntityShop(Entity entity) {
-        if (Main.getConfigurator().config.getBoolean("shop.citizens-enabled", false))
-            return false;
-
         for (GameStore store : gameStore) {
             if (store.getEntity().equals(entity)) {
                 return true;

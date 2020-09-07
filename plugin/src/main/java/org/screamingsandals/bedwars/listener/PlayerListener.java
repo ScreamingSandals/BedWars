@@ -470,18 +470,22 @@ public class PlayerListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onDamage(EntityDamageEvent event) {
         if (event.isCancelled()) {
-            if (Main.getConfigurator().config.getBoolean("event-hacks.damage") && event.getEntity() instanceof Player && Main.isPlayerInGame((Player) event.getEntity())) {
+            if (Main.getConfigurator().config.getBoolean("event-hacks.damage")
+                    && event.getEntity() instanceof Player
+                    && Main.isPlayerInGame((Player) event.getEntity())) {
                 event.setCancelled(false);
             } else {
                 return;
             }
         }
 
-        if (!(event.getEntity() instanceof Player)) {
+        final Entity entity = event.getEntity();
+
+        if (!(entity instanceof Player)) {
             if (event.getCause() != DamageCause.VOID) {
-                Game game = Main.getInGameEntity(event.getEntity());
+                Game game = Main.getInGameEntity(entity);
                 if (game != null) {
-                    if (game.isEntityShop(event.getEntity()) && game.getOriginalOrInheritedPreventKillingVillagers()) {
+                    if (game.isEntityShop(entity) && game.getOriginalOrInheritedPreventKillingVillagers()) {
                         event.setCancelled(true);
                     }
                 }
@@ -501,7 +505,6 @@ public class PlayerListener implements Listener {
                     }
                 }
             }
-
             return;
         }
 
