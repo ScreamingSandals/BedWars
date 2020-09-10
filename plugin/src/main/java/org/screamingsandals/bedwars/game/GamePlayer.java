@@ -42,7 +42,9 @@ public class GamePlayer {
             this.isSpectator = false;
             this.mainLobbyUsed = false;
             this.game.internalJoinPlayer(this);
-            this.latestGame = this.game.getName();
+            if (this.game != null) {
+                this.latestGame = this.game.getName();
+            }
         } else if (this.game != null) {
             this.game.internalLeavePlayer(this);
             this.game = game;
@@ -50,7 +52,9 @@ public class GamePlayer {
             this.clean();
             this.mainLobbyUsed = false;
             this.game.internalJoinPlayer(this);
-            this.latestGame = this.game.getName();
+            if (this.game != null) {
+                this.latestGame = this.game.getName();
+            }
         }
     }
 
