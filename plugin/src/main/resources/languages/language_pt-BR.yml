@@ -1,6 +1,6 @@
 ---
-language_code: "pt-BR"
-language_name: "Português (Brasileiro)"
+language_code: "pt-br"
+language_name: "Portuguese-Brazil"
 prefix: "&7[&bS&c&lBed&f&lWars&7]&r"
 core:
   errors:
@@ -134,7 +134,7 @@ scoreboards:
       - ""
       - "&c&lDEATHMATCH"
       - ""
-      - "%&eRemaining players: %playersCount%%"
+      - "%&eJogadores restantes: %playersCount%%"
     end-game:
       - ""
       - "%winnerMessage%"
@@ -216,29 +216,29 @@ commands:
           invalid-store-file: "&cStore file &e%file% &cdoes not exists."
           not-custom-store:
             - "&eYou don't have enough arguments for custom store."
-            - "&eCommand should look like:"
+            - "&eO Comando deve se parecer com:"
             - "&a/sbw admin &e%gameName% &aadd store CUSTOM <name> <team> <file>"
-          created: "&aNew game store has been created!"
-          write-custom-name: "Write shop name"
-          write-custom-file-name: "Write file name"
+          created: "&aNova Loja de Jogos foi criada!"
+          write-custom-name: "Escreva o nome da loja"
+          write-custom-file-name: "Escrever nome do arquivo"
         spawner:
           invalid-entry:
-            - "&eYou need to be more specific.."
-            - "&eCommand should look like:"
+            - "&eVocê precisa ser mais específico.."
+            - "&eO Comando deve se parecer com:"
             - "&a/sbw admin &e%gameName% &aadd spawner <type>"
       set:
         border:
           invalid-entry:
-            - "&eYou need to be more specific.."
-            - "&eCommand should look like:"
-            - "&a/sbw admin &e%gameName% &aset spawn &e<game or lobby> <1 or 2>"
-          done: "&aPoint &e%number%&a of the &e%type%&a border was set!"
+            - "&eVocê precisa ser mais específico.."
+            - "&eO Comando deve se parecer com:"
+            - "&a/sbw admin &e%gameName% &aset spawn &e<game or lobby> <1 ou 2>"
+          done: "&aPonto &e%number%&a da &e%type%&a borda foi definida!"
         spawn:
           invalid-entry:
-            - "&eYou need to be more specific.."
-            - "&eCommand should look like:"
-            - "&a/sbw admin &e%gameName% &aset spawn &e<lobby/team/spectators>"
-          done: "&aYay! Spawn for &e%type%&a has been set!"
+            - "&eVocê precisa ser mais específico.."
+            - "&eO Comando deve se parecer com:"
+            - "&a/sbw admin &e%gameName% &aadd spawner <lobby/team/spectators>"
+          done: "&aYay! Spawn por &e%type%&a foi definido!"
       save:
-        cannot-save: "Uh oh, you missing something. Cannot save!"
-        done: "&a&lWHOOSH! &aGame &e%gameName% &ais saved and running!"
+        cannot-save: "Uh oh, Está faltando algo, não pode salvar!"
+        done: "&a&lWHOOSH! &aJogo &e%gameName% &afoi salvo e executando!"
