@@ -139,17 +139,17 @@ scoreboards:
       - ""
       - "%winnerMessage%"
       - ""
-      - "Finished in: %time%"
+      - "Terminado em: %time%"
       - ""
   teams:
     alive: "&a✔&r %teamColor%%teamName%"
     dead: "&c✖&r %teamColor%%teamName%"
 bossbars:
   content:
-    lobby: "&eGame is starting soon! &lNeeded players: &a%playersToStart%"
-    starting: "&aStarting in &e%timeToStart%"
-    game: "Let's play! Remaining time: %formattedRemainingTime%"
-    deathmatch: "NOW LET'S SEE! Remaining time: %time%"
+    lobby: "&eO jogo inicia em breve! &lNecessário jogadores: &a%playersToStart%"
+    starting: "&aComeçando em &e%timeToStart%"
+    game: "Vamos jogar! Tempo restante: %formattedRemainingTime%"
+    deathmatch: "Vamos jogar! Tempo restante: %time%"
     end-game: "%winnerMessage%"
   color:
     lobby: "OIIII"
@@ -159,63 +159,63 @@ bossbars:
     end-game: "WHITE"
 commands:
   errors:
-    no-permissions: "&Not enough permissions for this command.. &8Sad!"
-    command-does-not-exists: "&cThis one, we don't know. Invalid command!"
-    somethings-fucked: "&cWell, execution of this command failed.. &eStrange :("
-    not-for-console: "&cConsole can't use this command.."
+    no-permissions: "&Não há permissões suficientes para esse comando.. &8Sad!"
+    command-does-not-exists: "&ceste, nós não sabemos. Comando inválido!"
+    somethings-fucked: "&cBem, execução deste comando falhou.. &eEstranho :("
+    not-for-console: "&cConsole não pode usar este comando.."
   main:
-    - "by &b&lScreamingSandals&f."
-    - "&eDon't know what to do? Hit &l/bw help"
-    - "&eWhat version do you have? Hit &l/bw version"
+    - "por &b&lScreamingSandals&f."
+    - "&eNão sabe o que fazer? Aperte &l/bw help"
+    - "&eQual a versão que você tem? &l/bw version"
   base:
     list:
-      no-arenas-found: "&cActually, no arena is available right now &e:("
-      arenas-list-header: "&lWow&a, we have &e%count% &aof arenas! Here they are!"
+      no-arenas-found: "&cNa verdade, nenhuma arena está disponível neste momento &e:("
+      arenas-list-header: "&lWow&a, temos &e%count% &ade arenas! Aqui está!"
       arenas-list-text: "&l&a--> &e%gameName% &a- &e%gameState%"
       arenas-list-footer: " "
     version:
-      header: "You are running on version &e%version%"
-      latest: "&a&lLatest version, yay!"
-      behind: "&cYou are &e%count% &cversions behind! &c&lEw!"
+      header: "Você está executando na versão &e%version%"
+      latest: "&a&versão mais recente, tudo bem!"
+      behind: "&cVocê está &e%count% &cversões atrás de &c&!"
   join:
-    success: "&aYou just joined into game &e%gameName%&a!"
+    success: "&aVocê acabou de entrar no jogo &e%gameName%&a!"
     failed: "&cVocê já está em algum jogo!"
   leave:
-    success: "&aYou just left game &e%gameName%&a!"
-    failed: "&cYou aren't in any game."
+    success: "&aVocê acabou de sair da partida &e%gameName%&a!"
+    failed: "&cVocê não está em jogo."
   admin:
     errors:
-      not_enough_arguments: "&cYou must provide valid arena name and valid action!"
-      invalid_action: "&e%action% &eis invalid action. Please enter valid one."
+      not_enough_arguments: "&cVocê deve fornecer um nome de arena válido e uma ação válida!"
+      invalid_action: "&e%action% e ação inválida. Por favor, insira uma válida."
     actions:
       edit:
         invalid-entry:
-          - "&eYou need to be more specific.."
-          - "&eCommand should look like:"
+          - "&eVocê precisa ser mais específico.."
+          - "&eO Comando deve se parecer com:"
           - "&a/sbw admin &e%gameName% &aedit"
-        running: "&eGame is running, stopping..."
-        stopped: "&aGame has been stopped."
-        success: "&aGame &e%gameName% &ais now in edit mode."
+        running: "&eO jogo está rodando, parando..."
+        stopped: "&aO jogo foi interrompido."
+        success: "&aJogo &e%gameName% &aesta agora no modo de edição."
       add:
         team:
           invalid-entry:
-            - "&eYou need to be more specific.."
-            - "&eCommand should look like:"
-            - "&a/sbw admin &e%gameName% &aadd team <name> <color> <max players>"
+            - "&eVocê precisa ser mais específico.."
+            - "&eO Comando deve se parecer com:"
+            - "&a/sbw admin &e%gameName% &aadd store <name> <color> <max players>"
           invalid-color:
-            - "&cColor &e%color% &cis invalid!"
-            - "&c&lGoogle &e&n'spigot chatcolor enum'&c for more help."
-          created: "&aTeam %color%%name% &awas created!"
-          already-registered: "&cTeam &e%name% &cis already created!"
+            - "&cCor &e%color% &cesta inválido!"
+            - "&c&lGoogle &e&n'spigot chatcolor enum'&c para mais ajuda."
+          created: "&aEquipe %color%%name% &afoi criada!"
+          already-registered: "&cEquipe &e%name% &cjá esta criada!"
         store:
           invalid-entry:
-            - "&eYou need to be more specific.."
-            - "&eCommand should look like:"
+            - "&eVocê precisa ser mais específico.."
+            - "&eO Comando deve se parecer com:"
             - "&a/sbw admin &e%gameName% &aadd store <type> <name>"
-          invalid-store-type: "&cYou entered invalid store type.. &lTry again!"
-          invalid-store-file: "&cStore file &e%file% &cdoes not exists."
+          invalid-store-type: "&cVocê digitou um tipo de loja inválido. &lTente novamente!"
+          invalid-store-file: "&cStore arquivo &e%file% &cnão existe."
           not-custom-store:
-            - "&eYou don't have enough arguments for custom store."
+            - "&eVocê não tem argumentos suficientes para uma loja personalizada."
             - "&eO Comando deve se parecer com:"
             - "&a/sbw admin &e%gameName% &aadd store CUSTOM <name> <team> <file>"
           created: "&aNova Loja de Jogos foi criada!"
