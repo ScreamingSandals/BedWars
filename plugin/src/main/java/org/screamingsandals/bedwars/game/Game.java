@@ -1439,10 +1439,10 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         Player player = gamePlayer.player;
         gamePlayer.isSpectator = true;
         gamePlayer.teleport(specSpawn, () -> {
+            gamePlayer.clean(); // temp fix for inventory issues?
             player.setAllowFlight(true);
             player.setFlying(true);
             player.setGameMode(GameMode.SPECTATOR);
-            gamePlayer.clean(); // temp fix for inventory issues?
 
             if (leaveItem) {
                 int leavePosition = Main.getConfigurator().config.getInt("hotbar.leave", 8);
