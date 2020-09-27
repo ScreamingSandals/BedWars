@@ -1439,7 +1439,9 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         Player player = gamePlayer.player;
         gamePlayer.isSpectator = true;
         gamePlayer.teleport(specSpawn, () -> {
-            gamePlayer.clean(); // temp fix for inventory issues?
+            if (!getOriginalOrInheritedKeepInventory() || leaveItem) {
+                gamePlayer.clean(); // temp fix for inventory issues?
+            }
             player.setAllowFlight(true);
             player.setFlying(true);
             player.setGameMode(GameMode.SPECTATOR);
