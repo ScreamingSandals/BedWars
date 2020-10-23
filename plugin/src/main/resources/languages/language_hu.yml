@@ -46,18 +46,18 @@ general:
     no-game-found: "&cNo game has been found."
     game-already-created: "&cGame &e%gameName% &calready exists! Use &ldifferent &cname."
     wrong-bossbar-color: "Color %color% is invalid! Fix this in your config."
-  null-translated: "None"
+  null-translated: "Nincs"
   booleans:
-    true: "True"
-    false: "False"
-  infinity: "Infinity"
+    true: "Igaz"
+    false: "Hamis"
+  infinity: "Végtelen"
   time-units:
     tick: "Tick"
     ticks: "Tick"
-    second: "Second"
-    seconds: "Seconds"
+    second: "Másodperc"
+    seconds: "Másodperc"
     minute: "Minute"
-    minutes: "Minutes"
+    minutes: "Perc"
 game-builder:
   check-integrity:
     errors:
