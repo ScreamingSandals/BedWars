@@ -7,6 +7,7 @@ import static org.screamingsandals.lib.nms.utils.ClassStorage.*;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.bukkit.Location;
@@ -82,7 +83,7 @@ public class Hologram {
 	}
 
 	public Hologram addViewer(Player player) {
-		return addViewers(Arrays.asList(player));
+		return addViewers(Collections.singletonList(player));
 	}
 
 	public Hologram addViewers(List<Player> players) {

@@ -347,6 +347,9 @@ public class Configurator {
 
         checkOrSetConfig(modify, "holograms.enabled", true);
         checkOrSetConfig(modify, "holograms.headline", "Your §eBEDWARS§f stats");
+        checkOrSetConfig(modify, "holograms.leaderboard.headline", "&6Bedwars Leaderboard");
+        checkOrSetConfig(modify, "holograms.leaderboard.format", "&l%order%. &7%name% - &a%score%");
+        checkOrSetConfig(modify, "holograms.leaderboard.size", 10);
 
         checkOrSetConfig(modify, "chat.override", true);
         checkOrSetConfig(modify, "chat.format", "<%teamcolor%%name%§r> ");
@@ -449,6 +452,7 @@ public class Configurator {
         checkOrSetConfig(modify, "default-permissions.list", true);
         checkOrSetConfig(modify, "default-permissions.rejoin", true);
         checkOrSetConfig(modify, "default-permissions.autojoin", true);
+        checkOrSetConfig(modify, "default-permissions.leaderboard", true);
 
         checkOrSetConfig(modify, "version", 2);
 

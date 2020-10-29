@@ -56,6 +56,9 @@ public class HelpCommand extends BaseCommand {
         if (hasPermission(player, LIST_PERMISSION, Main.getConfigurator().config.getBoolean("default-permissions.list"))) {
             player.sendMessage(i18nonly("help_bw_list"));
         }
+        if (hasPermission(player, LEADERBOARD_PERMISSION, Main.getConfigurator().config.getBoolean("default-permissions.leaderboard"))) {
+            player.sendMessage(i18nonly("help_bw_leaderboard"));
+        }
 
         if ((hasPermission(player, STATS_PERMISSION, Main.getConfigurator().config.getBoolean("default-permissions.stats")))) {
             if (hasPermission(player, ADMIN_PERMISSION, false) || hasPermission(player, OTHER_STATS_PERMISSION, false)) {

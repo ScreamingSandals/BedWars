@@ -63,6 +63,10 @@ public class DatabaseManager {
                 + "stats_players(uuid, name, deaths, destroyedBeds, kills, loses, score, wins) VALUES (?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE uuid=VALUES(uuid),name=VALUES(name),deaths=deaths+VALUES(deaths),destroyedBeds=destroyedBeds+VALUES(destroyedBeds),kills=kills+VALUES(kills),loses=loses+VALUES(loses),score=score+VALUES(score),wins=wins+VALUES(wins)";
     }
 
+    public String getScoresSql() {
+        return "SELECT uuid, score FROM " + tablePrefix + "stats_players";
+    }
+
     public String getTablePrefix() {
         return tablePrefix;
     }

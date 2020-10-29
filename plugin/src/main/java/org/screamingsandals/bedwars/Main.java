@@ -18,6 +18,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.screamingsandals.bedwars.api.BedwarsAPI;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.api.game.GameStore;
+import org.screamingsandals.bedwars.api.statistics.PlayerStatisticsManager;
 import org.screamingsandals.bedwars.api.utils.ColorChanger;
 import org.screamingsandals.bedwars.commands.*;
 import org.screamingsandals.bedwars.config.Configurator;
@@ -26,8 +27,8 @@ import org.screamingsandals.bedwars.game.Game;
 import org.screamingsandals.bedwars.game.GamePlayer;
 import org.screamingsandals.bedwars.game.ItemSpawnerType;
 import org.screamingsandals.bedwars.game.TeamColor;
-import org.screamingsandals.bedwars.holograms.IHologramInteraction;
-import org.screamingsandals.bedwars.holograms.NMSUtilsHologramInteraction;
+import org.screamingsandals.bedwars.holograms.LeaderboardHolograms;
+import org.screamingsandals.bedwars.holograms.StatisticsHolograms;
 import org.screamingsandals.bedwars.inventories.ShopInventory;
 import org.screamingsandals.bedwars.listener.*;
 import org.screamingsandals.bedwars.placeholderapi.BedwarsExpansion;
@@ -70,11 +71,12 @@ public class Main extends JavaPlugin implements BedwarsAPI {
     private HashMap<String, ItemSpawnerType> spawnerTypes = new HashMap<>();
     private DatabaseManager databaseManager;
     private PlayerStatisticManager playerStatisticsManager;
-    private IHologramInteraction hologramInteraction;
+    private StatisticsHolograms hologramInteraction;
     private HashMap<String, BaseCommand> commands;
     private ColorChanger colorChanger;
     private SignManager signManager;
     private HologramManager manager;
+    private LeaderboardHolograms leaderboardHolograms;
     public static List<String> autoColoredMaterials = new ArrayList<>();
     private Metrics metrics;
 
@@ -284,7 +286,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         return instance.configurator.config.getBoolean("holograms.enabled") && instance.hologramInteraction != null;
     }
 
-    public static IHologramInteraction getHologramInteraction() {
+    public static StatisticsHolograms getHologramInteraction() {
         return instance.hologramInteraction;
     }
 
@@ -312,6 +314,10 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 
     public static HologramManager getHologramManager() {
         return instance.manager;
+    }
+
+    public static LeaderboardHolograms getLeaderboardHolograms() {
+        return instance.leaderboardHolograms;
     }
 
     public void onEnable() {
@@ -365,8 +371,11 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 
         try {
             if (configurator.config.getBoolean("holograms.enabled")) {
-                hologramInteraction = new NMSUtilsHologramInteraction();
+                hologramInteraction = new StatisticsHolograms();
                 hologramInteraction.loadHolograms();
+
+                leaderboardHolograms = new LeaderboardHolograms();
+                leaderboardHolograms.loadHolograms();
             }
         } catch (Throwable ignored) {
         }
@@ -385,6 +394,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         new RemoveholoCommand();
         new StatsCommand();
         new MainlobbyCommand();
+        new LeaderboardCommand();
 
         BwCommandsExecutor cmd = new BwCommandsExecutor();
         getCommand("bw").setExecutor(cmd);
@@ -546,6 +556,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 
         if (isHologramsEnabled() && hologramInteraction != null) {
             hologramInteraction.unloadHolograms();
+            leaderboardHolograms.unloadHolograms();
         }
 
         metrics = null;
@@ -710,6 +721,11 @@ public class Main extends JavaPlugin implements BedwarsAPI {
     @Override
     public String getHubServerName() {
         return configurator.config.getString("bungee.server");
+    }
+
+    @Override
+    public PlayerStatisticsManager getStatisticsManager() {
+        return isPlayerStatisticsEnabled() ? playerStatisticsManager : null;
     }
 
     public static boolean isDisabling() {

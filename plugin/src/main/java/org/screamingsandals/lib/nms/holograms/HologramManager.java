@@ -5,16 +5,14 @@ import static org.screamingsandals.lib.nms.utils.ClassStorage.NMS.PacketPlayInUs
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerChangedWorldEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.screamingsandals.lib.nms.network.inbound.AutoPacketInboundListener;
@@ -44,6 +42,14 @@ public class HologramManager implements Listener {
 				return packet;
 			}
 		};
+	}
+
+	public Hologram spawnHologram(Location loc, String... lines) {
+		return new Hologram(this, Collections.emptyList(), loc, lines);
+	}
+
+	public Hologram spawnHologramTouchable(Location loc, String... lines) {
+		return new Hologram(this, Collections.emptyList(), loc, lines, true);
 	}
 	
 	public Hologram spawnHologram(Player player, Location loc, String... lines) {
@@ -182,6 +188,23 @@ public class HologramManager implements Listener {
 					}
 				}
 			} catch (Throwable t) {
+			}
+		}
+	}
+
+	@EventHandler
+	public void onPlayersQuit(PlayerQuitEvent event) {
+		if (HOLOGRAMS.isEmpty()) {
+			return;
+		}
+
+		List<Hologram> copy = new ArrayList<>(HOLOGRAMS);
+		for (Hologram hologram : copy) {
+			if (hologram.getViewers().contains(event.getPlayer())) {
+				hologram.removeViewer(event.getPlayer());
+			}
+			if (hologram.isEmpty() || !hologram.hasViewers()) {
+				HOLOGRAMS.remove(hologram);
 			}
 		}
 	}

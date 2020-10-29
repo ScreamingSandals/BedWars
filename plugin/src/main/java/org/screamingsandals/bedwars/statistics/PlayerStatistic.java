@@ -4,29 +4,21 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
+import org.screamingsandals.bedwars.Main;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-/*
-Thanks to BedWarsRel for this
- */
 public class PlayerStatistic implements ConfigurationSerializable, org.screamingsandals.bedwars.api.statistics.PlayerStatistic {
-    private int currentDeaths = 0;
-    private int currentDestroyedBeds = 0;
-    private int currentKills = 0;
-    private int currentLoses = 0;
-    private int currentScore = 0;
-    private int currentWins = 0;
-    private int deaths = 0;
-    private int destroyedBeds = 0;
-    private int kills = 0;
-    private int loses = 0;
-    private String name = "";
-    private int score = 0;
     private UUID uuid;
-    private int wins = 0;
+    private String name = "";
+    private int deaths;
+    private int destroyedBeds;
+    private int kills;
+    private int loses;
+    private int score;
+    private int wins;
 
     public PlayerStatistic(UUID uuid) {
         this.uuid = uuid;
@@ -35,15 +27,6 @@ public class PlayerStatistic implements ConfigurationSerializable, org.screaming
         if (player != null && !this.name.equals(player.getName())) {
             this.name = player.getName();
         }
-    }
-
-    public PlayerStatistic(OfflinePlayer player) {
-        this.uuid = player.getUniqueId();
-        this.name = player.getName();
-    }
-
-    public PlayerStatistic() {
-
     }
 
     public PlayerStatistic(Map<String, Object> deserialize) {
@@ -73,43 +56,39 @@ public class PlayerStatistic implements ConfigurationSerializable, org.screaming
         }
     }
 
-    public void addCurrentValues() {
-        this.deaths = this.deaths + this.currentDeaths;
-        this.currentDeaths = 0;
-        this.destroyedBeds = this.destroyedBeds + this.currentDestroyedBeds;
-        this.currentDestroyedBeds = 0;
-        this.kills = this.kills + this.currentKills;
-        this.currentKills = 0;
-        this.loses = this.loses + this.currentLoses;
-        this.currentLoses = 0;
-        this.score = this.score + this.currentScore;
-        this.currentScore = 0;
-        this.wins = this.wins + this.currentWins;
-        this.currentWins = 0;
-
-    }
-
-    public int getCurrentGames() {
-        return this.getCurrentWins() + this.getCurrentLoses();
-    }
-
-    public double getCurrentKD() {
-        double kd = 0.0;
-        if (this.getDeaths() + this.getCurrentDeaths() == 0) {
-            kd = this.getKills();
-        } else if (this.getKills() + this.getCurrentKills() == 0) {
-            kd = 0.0;
-        } else {
-            kd = ((double) this.getKills() + this.getCurrentKills())
-                    / ((double) this.getDeaths() + this.getCurrentDeaths());
-        }
-        kd = Math.round(kd * 100.0) / 100.0;
-
-        return kd;
-    }
-
     public int getGames() {
         return this.getWins() + this.getLoses();
+    }
+
+    @Override
+    public void addDeaths(int deaths) {
+        this.deaths += deaths;
+    }
+
+    @Override
+    public void addDestroyedBeds(int destroyedBeds) {
+        this.destroyedBeds += destroyedBeds;
+    }
+
+    @Override
+    public void addKills(int kills) {
+        this.kills += kills;
+    }
+
+    @Override
+    public void addLoses(int loses) {
+        this.loses += loses;
+    }
+
+    @Override
+    public void addScore(int score) {
+        this.score += score;
+        Main.getPlayerStatisticsManager().updateScore(this);
+    }
+
+    @Override
+    public void addWins(int wins) {
+        this.wins += wins;
     }
 
     public UUID getId() {
@@ -122,12 +101,10 @@ public class PlayerStatistic implements ConfigurationSerializable, org.screaming
 
     public double getKD() {
         double kd = 0.0;
-        if (this.getDeaths() == 0) {
-            kd = this.getKills();
-        } else if (this.getKills() == 0) {
-            kd = 0.0;
-        } else {
-            kd = ((double) this.getKills()) / ((double) this.getDeaths());
+        if (deaths == 0) {
+            kd = kills;
+        } else if (kills != 0) {
+            kd = ((double) kills) / ((double) deaths);
         }
         kd = Math.round(kd * 100.0) / 100.0;
 
@@ -145,54 +122,6 @@ public class PlayerStatistic implements ConfigurationSerializable, org.screaming
         playerStatistic.put("wins", this.wins);
         playerStatistic.put("name", this.name);
         return playerStatistic;
-    }
-
-    public int getCurrentDeaths() {
-        return currentDeaths;
-    }
-
-    public void setCurrentDeaths(int currentDeaths) {
-        this.currentDeaths = currentDeaths;
-    }
-
-    public int getCurrentDestroyedBeds() {
-        return currentDestroyedBeds;
-    }
-
-    public void setCurrentDestroyedBeds(int currentDestroyedBeds) {
-        this.currentDestroyedBeds = currentDestroyedBeds;
-    }
-
-    public int getCurrentKills() {
-        return currentKills;
-    }
-
-    public void setCurrentKills(int currentKills) {
-        this.currentKills = currentKills;
-    }
-
-    public int getCurrentLoses() {
-        return currentLoses;
-    }
-
-    public void setCurrentLoses(int currentLoses) {
-        this.currentLoses = currentLoses;
-    }
-
-    public int getCurrentScore() {
-        return currentScore;
-    }
-
-    public void setCurrentScore(int currentScore) {
-        this.currentScore = currentScore;
-    }
-
-    public int getCurrentWins() {
-        return currentWins;
-    }
-
-    public void setCurrentWins(int currentWins) {
-        this.currentWins = currentWins;
     }
 
     public int getDeaths() {

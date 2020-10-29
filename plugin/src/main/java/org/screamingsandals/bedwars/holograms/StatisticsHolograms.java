@@ -16,30 +16,18 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.statistics.PlayerStatistic;
-import org.screamingsandals.bedwars.commands.AdminCommand;
 import org.screamingsandals.bedwars.commands.BaseCommand;
 import org.screamingsandals.lib.nms.holograms.Hologram;
 import org.screamingsandals.lib.nms.holograms.TouchHandler;
 
-public class NMSUtilsHologramInteraction implements IHologramInteraction, TouchHandler {
+public class StatisticsHolograms implements TouchHandler {
 
     private ArrayList<Location> hologramLocations = null;
     private Map<Player, List<Hologram>> holograms = null;
 
-	@Override
 	public void addHologramLocation(Location eyeLocation) {
         this.hologramLocations.add(eyeLocation.subtract(0, 3, 0));
         this.updateHologramDatabase();
-	}
-
-	@Override
-	public ArrayList<Location> getHologramLocations() {
-		return hologramLocations;
-	}
-
-	@Override
-	public String getType() {
-        return "NMSUtils.Holograms";
 	}
 
     @SuppressWarnings("unchecked")
@@ -71,25 +59,6 @@ public class NMSUtilsHologramInteraction implements IHologramInteraction, TouchH
         this.updateHolograms();
     }
 
-	@Override
-	public void onHologramTouch(Player player, Location holoLocation) {
-        // NOT NEEDED HERE
-	}
-
-	@Override
-	public void unloadAllHolograms(Player player) {
-        if (!this.holograms.containsKey(player)) {
-            return;
-        }
-
-        for (Hologram holo : this.holograms.get(player)) {
-            holo.destroy();
-        }
-
-        this.holograms.remove(player);
-	}
-
-	@Override
 	public void unloadHolograms() {
         if (Main.isHologramsEnabled()) {
         	for (List<Hologram> holos : holograms.values()) {
@@ -100,28 +69,25 @@ public class NMSUtilsHologramInteraction implements IHologramInteraction, TouchH
         }
 	}
 
-	@Override
 	public void updateHolograms(Player player) {
         Main.getInstance().getServer().getScheduler().runTask(Main.getInstance(), () -> {
-            for (Location holoLocation : NMSUtilsHologramInteraction.this.hologramLocations) {
-            	NMSUtilsHologramInteraction.this.updatePlayerHologram(player, holoLocation);
+            for (Location holoLocation : StatisticsHolograms.this.hologramLocations) {
+            	StatisticsHolograms.this.updatePlayerHologram(player, holoLocation);
             }
         });
 	}
 
-	@Override
 	public void updateHolograms(Player player, long delay) {
         Main.getInstance().getServer().getScheduler().runTaskLater(Main.getInstance(), () -> {
-        	NMSUtilsHologramInteraction.this.updateHolograms(player);
+        	StatisticsHolograms.this.updateHolograms(player);
         }, delay);
 	}
 
-	@Override
 	public void updateHolograms() {
         for (final Player player : Bukkit.getServer().getOnlinePlayers()) {
             Main.getInstance().getServer().getScheduler().runTask(Main.getInstance(), () -> {
-                for (Location holoLocation : NMSUtilsHologramInteraction.this.hologramLocations) {
-                	NMSUtilsHologramInteraction.this.updatePlayerHologram(player, holoLocation);
+                for (Location holoLocation : StatisticsHolograms.this.hologramLocations) {
+                	StatisticsHolograms.this.updatePlayerHologram(player, holoLocation);
                 }
             });
         }
@@ -235,21 +201,21 @@ public class NMSUtilsHologramInteraction implements IHologramInteraction, TouchH
         List<String> lines = new ArrayList<>();
 
         lines.add(i18n("statistics_kills", false).replace("%kills%",
-                Integer.toString(statistic.getKills() + statistic.getCurrentKills())));
+                Integer.toString(statistic.getKills())));
         lines.add(i18n("statistics_deaths", false).replace("%deaths%",
-                Integer.toString(statistic.getDeaths() + statistic.getCurrentDeaths())));
+                Integer.toString(statistic.getDeaths())));
         lines.add(i18n("statistics_kd", false).replace("%kd%",
-                Double.toString(statistic.getCurrentKD())));
+                Double.toString(statistic.getKD())));
         lines.add(i18n("statistics_wins", false).replace("%wins%",
-                Integer.toString(statistic.getWins() + statistic.getCurrentWins())));
+                Integer.toString(statistic.getWins())));
         lines.add(i18n("statistics_loses", false).replace("%loses%",
-                Integer.toString(statistic.getLoses() + statistic.getCurrentLoses())));
+                Integer.toString(statistic.getLoses())));
         lines.add(i18n("statistics_games", false).replace("%games%",
-                Integer.toString(statistic.getGames() + statistic.getCurrentGames())));
+                Integer.toString(statistic.getGames())));
         lines.add(i18n("statistics_beds", false).replace("%beds%",
-                Integer.toString(statistic.getDestroyedBeds() + statistic.getCurrentDestroyedBeds())));
+                Integer.toString(statistic.getDestroyedBeds())));
         lines.add(i18n("statistics_score", false).replace("%score%",
-                Integer.toString(statistic.getScore() + statistic.getCurrentScore())));
+                Integer.toString(statistic.getScore())));
         
         int size = holo.length();
         int increment = 0;

@@ -1,25 +1,25 @@
 package org.screamingsandals.bedwars.statistics;
 
+import org.bukkit.Bukkit;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.events.BedwarsSavePlayerStatisticEvent;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.screamingsandals.bedwars.api.statistics.LeaderboardEntry;
+import org.screamingsandals.bedwars.api.statistics.PlayerStatisticsManager;
 
 import java.io.File;
 import java.sql.*;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
-/*
-Thanks to BedWarsRel for this
- */
-public class PlayerStatisticManager {
+public class PlayerStatisticManager implements PlayerStatisticsManager {
     private File databaseFile = null;
     private FileConfiguration fileDatabase;
     private Map<UUID, PlayerStatistic> playerStatistic;
+    private Map<UUID, Integer> allScores = new HashMap<>();
 
     public PlayerStatisticManager() {
         this.playerStatistic = new HashMap<>();
@@ -49,6 +49,8 @@ public class PlayerStatisticManager {
             File file = new File(Main.getInstance().getDataFolder() + "/database/bw_stats_players.yml");
             this.loadYml(file);
         }
+
+        this.initializeLeaderboard();
     }
 
     public void initializeDatabase() {
@@ -69,6 +71,45 @@ public class PlayerStatisticManager {
             ex.printStackTrace();
         }
 
+    }
+
+    private void initializeLeaderboard() {
+        allScores.clear();
+
+        if (Main.getConfigurator().config.getString("statistics.type").equalsIgnoreCase("database")) {
+            try {
+                Connection connection = Main.getDatabaseManager().getConnection();
+                connection.setAutoCommit(false);
+                PreparedStatement preparedStatement = connection
+                        .prepareStatement(Main.getDatabaseManager().getScoresSql());
+                ResultSet resultSet = preparedStatement.executeQuery();
+                if (resultSet.first()) {
+                    do {
+                        allScores.put(UUID.fromString(resultSet.getString("uuid")), resultSet.getInt("score"));
+                    } while (resultSet.next());
+                }
+                connection.commit();
+                preparedStatement.close();
+                connection.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        } else {
+            for (String key : fileDatabase.getConfigurationSection("data").getKeys(false)) {
+                allScores.put(UUID.fromString(key), fileDatabase.getInt("data." + key + ".score"));
+            }
+        }
+    }
+
+    public List<LeaderboardEntry> getLeaderboard(int count) {
+        List<LeaderboardEntry> entries = new ArrayList<>();
+
+        allScores.entrySet().stream()
+                .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+                .limit(count)
+                .forEach(entry -> entries.add(new org.screamingsandals.bedwars.statistics.LeaderboardEntry(Bukkit.getOfflinePlayer(entry.getKey()), entry.getValue())));
+
+        return entries;
     }
 
     private PlayerStatistic loadDatabaseStatistic(UUID uuid) {
@@ -111,6 +152,7 @@ public class PlayerStatisticManager {
         if (player != null && !playerStatistic.getName().equals(player.getName())) {
             playerStatistic.setName(player.getName());
         }
+        allScores.put(uuid, playerStatistic.getScore());
 
         this.playerStatistic.put(playerStatistic.getId(), playerStatistic);
         return playerStatistic;
@@ -141,6 +183,7 @@ public class PlayerStatisticManager {
             playerStatistic.setName(player.getName());
         }
         this.playerStatistic.put(uuid, playerStatistic);
+        allScores.put(uuid, playerStatistic.getScore());
         return playerStatistic;
     }
 
@@ -180,17 +223,16 @@ public class PlayerStatisticManager {
 
             preparedStatement.setString(1, playerStatistic.getId().toString());
             preparedStatement.setString(2, playerStatistic.getName());
-            preparedStatement.setInt(3, playerStatistic.getCurrentDeaths());
-            preparedStatement.setInt(4, playerStatistic.getCurrentDestroyedBeds());
-            preparedStatement.setInt(5, playerStatistic.getCurrentKills());
-            preparedStatement.setInt(6, playerStatistic.getCurrentLoses());
-            preparedStatement.setInt(7, playerStatistic.getCurrentScore());
-            preparedStatement.setInt(8, playerStatistic.getCurrentWins());
+            preparedStatement.setInt(3, playerStatistic.getDeaths());
+            preparedStatement.setInt(4, playerStatistic.getDestroyedBeds());
+            preparedStatement.setInt(5, playerStatistic.getKills());
+            preparedStatement.setInt(6, playerStatistic.getLoses());
+            preparedStatement.setInt(7, playerStatistic.getScore());
+            preparedStatement.setInt(8, playerStatistic.getWins());
             preparedStatement.executeUpdate();
             connection.commit();
             preparedStatement.close();
             connection.close();
-            playerStatistic.addCurrentValues();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -213,7 +255,6 @@ public class PlayerStatisticManager {
     }
 
     private synchronized void storeYamlStatistic(PlayerStatistic statistic) {
-        statistic.addCurrentValues();
         this.fileDatabase.set("data." + statistic.getId().toString(), statistic.serialize());
         try {
             this.fileDatabase.save(this.databaseFile);
@@ -226,5 +267,10 @@ public class PlayerStatisticManager {
         if (Main.getConfigurator().config.getString("statistics.type").equalsIgnoreCase("database")) {
             this.playerStatistic.remove(player.getUniqueId());
         }
+    }
+
+    public void updateScore(PlayerStatistic playerStatistic) {
+        allScores.put(playerStatistic.getId(), playerStatistic.getScore());
+        Main.getLeaderboardHolograms().updateEntries();
     }
 }

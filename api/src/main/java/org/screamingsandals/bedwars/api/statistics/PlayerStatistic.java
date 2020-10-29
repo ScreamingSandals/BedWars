@@ -7,122 +7,166 @@ import java.util.UUID;
  */
 public interface PlayerStatistic {
     /**
-     * @return
-     */
-    int getCurrentDeaths();
-
-    /**
-     * @param currentDeaths
-     */
-    void setCurrentDeaths(int currentDeaths);
-
-    /**
-     * @return
-     */
-    int getCurrentDestroyedBeds();
-
-    /**
-     * @param currentDestroyedBeds
-     */
-    void setCurrentDestroyedBeds(int currentDestroyedBeds);
-
-    /**
-     * @return
-     */
-    int getCurrentKills();
-
-    /**
-     * @param currentKills
-     */
-    void setCurrentKills(int currentKills);
-
-    /**
-     * @return
-     */
-    int getCurrentLoses();
-
-    /**
-     * @param currentLoses
-     */
-    void setCurrentLoses(int currentLoses);
-
-    /**
-     * @return
-     */
-    int getCurrentScore();
-
-    /**
-     * @param currentScore
-     */
-    void setCurrentScore(int currentScore);
-
-    /**
-     * @return
-     */
-    int getCurrentWins();
-
-    /**
-     * @param currentWins
-     */
-    void setCurrentWins(int currentWins);
-
-    /**
-     * @return
-     */
-    double getCurrentKD();
-
-    /**
-     * @return
-     */
-    int getCurrentGames();
-
-    /**
-     * @return
+     * @return player's deaths
      */
     int getDeaths();
 
     /**
-     * @return
+     * @return number of beds destroyed by this player
      */
     int getDestroyedBeds();
 
     /**
-     * @return
+     * @return player's kills
      */
     int getKills();
 
     /**
-     * @return
+     * @return player's loses
      */
     int getLoses();
 
     /**
-     * @return
+     * @return player's name
      */
     String getName();
 
     /**
-     * @return
+     * @return player's score
      */
     int getScore();
 
     /**
-     * @return
+     * @return uuid of this player
      */
     UUID getUuid();
 
     /**
-     * @return
+     * @return number of wins
      */
     int getWins();
 
     /**
-     * @return
+     * @return K/D ratio
      */
     double getKD();
 
     /**
-     * @return
+     * @return number of played games
      */
     int getGames();
+
+    /**
+     * @param deaths Number of new deaths
+     */
+    void addDeaths(int deaths);
+
+    /**
+     * @param destroyedBeds Number of new destroyed beds
+     */
+    void addDestroyedBeds(int destroyedBeds);
+
+    /**
+     * @param kills Number of new kills
+     */
+    void addKills(int kills);
+
+    /**
+     * @param loses Number of new loses
+     */
+    void addLoses(int loses);
+
+    /**
+     * @param score Number of new score
+     */
+    void addScore(int score);
+
+    /**
+     * @param wins Number of new wins
+     */
+    void addWins(int wins);
+
+    /**
+     * @see PlayerStatistic#getDeaths()
+     */
+    //@Deprecated
+    //int getCurrentDeaths();
+
+    /**
+     * @see PlayerStatistic#addDeaths(int)
+     */
+    //@Deprecated
+    //void setCurrentDeaths(int currentDeaths);
+
+    /**
+     * @see PlayerStatistic#getDestroyedBeds()
+     */
+    //@Deprecated
+    //int getCurrentDestroyedBeds();
+
+    /**
+     * @see PlayerStatistic#addDestroyedBeds(int)
+     */
+    //@Deprecated
+    //void setCurrentDestroyedBeds(int currentDestroyedBeds);
+
+    /**
+     * @see PlayerStatistic#getKills()
+     */
+    //@Deprecated
+    //int getCurrentKills();
+
+    /**
+     * @see PlayerStatistic#addKills(int)
+     */
+    //@Deprecated
+    //void setCurrentKills(int currentKills);
+
+    /**
+     * @see PlayerStatistic#getLoses()
+     */
+    //@Deprecated
+    //int getCurrentLoses();
+
+    /**
+     * @see PlayerStatistic#addLoses(int)
+     */
+    //@Deprecated
+    //void setCurrentLoses(int currentLoses);
+
+    /**
+     * @see PlayerStatistic#getScore()
+     */
+    //@Deprecated
+    //int getCurrentScore();
+
+    /**
+     * @see PlayerStatistic#addScore(int)
+     */
+    //@Deprecated
+    //void setCurrentScore(int currentScore);
+
+    /**
+     * @see PlayerStatistic#getWins()
+     */
+    //@Deprecated
+    //int getCurrentWins();
+
+    /**
+     * @see PlayerStatistic#addWins(int)
+     */
+    //@Deprecated
+    //void setCurrentWins(int currentWins);
+
+    /**
+     * @see PlayerStatistic#getKD()
+     */
+    //@Deprecated
+   // double getCurrentKD();
+
+    /**
+     * @see PlayerStatistic#getGames()
+     */
+    //@Deprecated
+    //int getCurrentGames();
 }

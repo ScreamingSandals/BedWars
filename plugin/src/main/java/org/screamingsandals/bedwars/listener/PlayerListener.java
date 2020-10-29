@@ -111,9 +111,8 @@ public class PlayerListener implements Listener {
                     team.getScoreboardTeam().removeEntry(victim.getName());
                     if (Main.isPlayerStatisticsEnabled()) {
                         PlayerStatistic statistic = Main.getPlayerStatisticsManager().getStatistic(victim);
-                        statistic.setCurrentLoses(statistic.getCurrentLoses() + 1);
-                        statistic.setCurrentScore(statistic.getCurrentScore()
-                                + Main.getConfigurator().config.getInt("statistics.scores.lose", 0));
+                        statistic.addLoses(1);
+                        statistic.addScore(Main.getConfigurator().config.getInt("statistics.scores.lose", 0));
 
                     }
                     game.updateScoreboard();
@@ -154,18 +153,16 @@ public class PlayerListener implements Listener {
                     PlayerStatistic killerPlayer;
 
                     if (!onlyOnBedDestroy || !isBed) {
-                        diePlayer.setCurrentDeaths(diePlayer.getCurrentDeaths() + 1);
-                        diePlayer.setCurrentScore(diePlayer.getCurrentScore()
-                                + Main.getConfigurator().config.getInt("statistics.scores.die", 0));
+                        diePlayer.addDeaths(1);
+                        diePlayer.addScore(Main.getConfigurator().config.getInt("statistics.scores.die", 0));
                     }
 
                     if (killer != null) {
                         if (!onlyOnBedDestroy || !isBed) {
                             killerPlayer = Main.getPlayerStatisticsManager().getStatistic(killer);
                             if (killerPlayer != null) {
-                                killerPlayer.setCurrentKills(killerPlayer.getCurrentKills() + 1);
-                                killerPlayer.setCurrentScore(killerPlayer.getCurrentScore()
-                                        + Main.getConfigurator().config.getInt("statistics.scores.kill", 10));
+                                killerPlayer.addKills(1);
+                                killerPlayer.addScore(Main.getConfigurator().config.getInt("statistics.scores.kill", 10));
                             }
                         }
                     }
@@ -911,7 +908,7 @@ public class PlayerListener implements Listener {
 
         if (Main.isHologramsEnabled()) {
             Main.getHologramInteraction().updateHolograms(player, 10L);
-
+            Main.getLeaderboardHolograms().addViewer(player);
         }
     }
 

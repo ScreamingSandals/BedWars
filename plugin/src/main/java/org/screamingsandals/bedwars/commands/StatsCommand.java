@@ -71,21 +71,21 @@ public class StatsCommand extends BaseCommand {
         player.sendMessage(i18n("statistics_header").replace("%player%", statistic.getName()));
 
         player.sendMessage(i18n("statistics_kills", false).replace("%kills%",
-                Integer.toString(statistic.getKills() + statistic.getCurrentKills())));
+                Integer.toString(statistic.getKills())));
         player.sendMessage(i18n("statistics_deaths", false).replace("%deaths%",
-                Integer.toString(statistic.getDeaths() + statistic.getCurrentDeaths())));
+                Integer.toString(statistic.getDeaths())));
         player.sendMessage(i18n("statistics_kd", false).replace("%kd%",
-                Double.toString(statistic.getCurrentKD())));
+                Double.toString(statistic.getKD())));
         player.sendMessage(i18n("statistics_wins", false).replace("%wins%",
-                Integer.toString(statistic.getWins() + statistic.getCurrentWins())));
+                Integer.toString(statistic.getWins())));
         player.sendMessage(i18n("statistics_loses", false).replace("%loses%",
-                Integer.toString(statistic.getLoses() + statistic.getCurrentLoses())));
+                Integer.toString(statistic.getLoses())));
         player.sendMessage(i18n("statistics_games", false).replace("%games%",
-                Integer.toString(statistic.getGames() + statistic.getCurrentGames())));
+                Integer.toString(statistic.getGames())));
         player.sendMessage(i18n("statistics_beds", false).replace("%beds%",
-                Integer.toString(statistic.getDestroyedBeds() + statistic.getCurrentDestroyedBeds())));
+                Integer.toString(statistic.getDestroyedBeds())));
         player.sendMessage(i18n("statistics_score", false).replace("%score%",
-                Integer.toString(statistic.getScore() + statistic.getCurrentScore())));
+                Integer.toString(statistic.getScore())));
     }
 
 }

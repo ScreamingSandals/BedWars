@@ -572,9 +572,8 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                     if (broker != null) {
                         if (Main.isPlayerStatisticsEnabled()) {
                             PlayerStatistic statistic = Main.getPlayerStatisticsManager().getStatistic(broker);
-                            statistic.setCurrentDestroyedBeds(statistic.getCurrentDestroyedBeds() + 1);
-                            statistic.setCurrentScore(statistic.getCurrentScore()
-                                    + Main.getConfigurator().config.getInt("statistics.scores.bed-destroy", 25));
+                            statistic.addDestroyedBeds(1);
+                            statistic.addScore(Main.getConfigurator().config.getInt("statistics.scores.bed-destroy", 25));
                         }
 
                         dispatchRewardCommands("player-destroy-bed", broker,
@@ -1860,14 +1859,11 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                                         if (Main.isPlayerStatisticsEnabled()) {
                                             PlayerStatistic statistic = Main.getPlayerStatisticsManager()
                                                     .getStatistic(player.player);
-                                            statistic.setCurrentWins(statistic.getCurrentWins() + 1);
-                                            statistic.setCurrentScore(statistic.getCurrentScore()
-                                                    + Main.getConfigurator().config.getInt("statistics.scores.win", 50));
+                                            statistic.addWins(1);
+                                            statistic.addScore(Main.getConfigurator().config.getInt("statistics.scores.win", 50));
 
                                             if (madeRecord) {
-                                                statistic.setCurrentScore(
-                                                        statistic.getCurrentScore() + Main.getConfigurator().config
-                                                                .getInt("statistics.scores.record", 100));
+                                                statistic.addScore(Main.getConfigurator().config.getInt("statistics.scores.record", 100));
                                             }
 
                                             if (Main.isHologramsEnabled()) {
@@ -1891,7 +1887,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                                                         PlayerStatistic statistic = Main.getPlayerStatisticsManager()
                                                                 .getStatistic(player.player);
                                                         Game.this.dispatchRewardCommands("player-win", pl,
-                                                                statistic.getCurrentScore());
+                                                                statistic.getScore());
                                                     } else {
                                                         Game.this.dispatchRewardCommands("player-win", pl, 0);
                                                     }
@@ -2029,7 +2025,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                             if (Main.isPlayerStatisticsEnabled()) {
                                 PlayerStatistic statistic = Main.getPlayerStatisticsManager()
                                         .getStatistic(player.player);
-                                Game.this.dispatchRewardCommands("player-end-game", pl, statistic.getCurrentScore());
+                                Game.this.dispatchRewardCommands("player-end-game", pl, statistic.getScore());
                             } else {
                                 Game.this.dispatchRewardCommands("player-end-game", pl, 0);
                             }

@@ -2,6 +2,7 @@ package org.screamingsandals.bedwars.api;
 
 import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.api.game.ItemSpawnerType;
+import org.screamingsandals.bedwars.api.statistics.PlayerStatisticsManager;
 import org.screamingsandals.bedwars.api.utils.ColorChanger;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
@@ -113,6 +114,12 @@ public interface BedwarsAPI {
      * @return hub server name from config
      */
     String getHubServerName();
+
+    /**
+     *
+     * @return PlayerStatisticsManager if statistics are enabled; otherwise null
+     */
+    PlayerStatisticsManager getStatisticsManager();
 
     /**
      * @return Bedwars instance
