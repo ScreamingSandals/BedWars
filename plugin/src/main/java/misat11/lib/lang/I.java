@@ -35,6 +35,14 @@ public class I {
 			return customContainer.translate(key, def);
 		}
 	}
+
+	public static String i18nc(String key, String customPrefix) {
+		return i18nc(key, null, customPrefix);
+	}
+
+	public static String i18nc(String key, String def, String customPrefix) {
+		return customContainer.translateWithPrefix(key, def, customPrefix);
+	}
 	
 	public static Message mpr() {
 		return m(null, null, true);

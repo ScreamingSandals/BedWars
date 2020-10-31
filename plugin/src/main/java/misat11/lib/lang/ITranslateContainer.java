@@ -18,6 +18,10 @@ public interface ITranslateContainer {
 	String translate(String key, String def);
 
 	default String translate(String key, String def, boolean prefix) {
+		return translate(key, def, prefix, null);
+	}
+
+	default String translate(String key, String def, boolean prefix, String customPrefix) {
 		if (prefix) {
 			return translateWithPrefix(key, def);
 		} else {
@@ -38,8 +42,12 @@ public interface ITranslateContainer {
 	}
 
 	default String translateWithPrefix(String key, String def) {
+		return translateWithPrefix(key, def, null);
+	}
+
+	default String translateWithPrefix(String key, String def, String customPrefix) {
 		String value = "";
-		String prefix = getPrefix();
+		String prefix = customPrefix != null ? customPrefix : getPrefix();
 		if (prefix != null && prefix.length() > 0) {
 			value += prefix + " ";
 		}

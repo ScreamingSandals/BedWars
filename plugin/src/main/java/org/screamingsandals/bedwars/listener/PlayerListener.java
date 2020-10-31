@@ -24,7 +24,6 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.metadata.FixedMetadataValue;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.RunningTeam;
 import org.screamingsandals.bedwars.api.events.BedwarsPlayerKilledEvent;
@@ -44,8 +43,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import static misat11.lib.lang.I18n.i18n;
-import static misat11.lib.lang.I18n.i18nonly;
+import static misat11.lib.lang.I18n.*;
 import static org.screamingsandals.bedwars.commands.BaseCommand.ADMIN_PERMISSION;
 
 public class PlayerListener implements Listener {
@@ -79,13 +77,13 @@ public class PlayerListener implements Listener {
                             CurrentTeam killerTeam = game.getPlayerTeam(gKiller);
                             ChatColor killerColor = killerTeam.teamInfo.color.chatColor;
 
-                            deathMessage = i18n("player_killed")
+                            deathMessage = i18nc("player_killed", game.getCustomPrefix())
                                     .replace("%victim%", victimColor + victim.getDisplayName())
                                     .replace("%killer%", killerColor + killer.getDisplayName())
                                     .replace("%victimTeam%", victimColor + victimTeam.getName())
                                     .replace("%killerTeam%", killerColor + killerTeam.getName());
                         } else {
-                            deathMessage = i18n("player_self_killed")
+                            deathMessage = i18nc("player_self_killed", game.getCustomPrefix())
                                     .replace("%victim%", victimColor + victim.getDisplayName())
                                     .replace("%victimTeam%", victimColor + victimTeam.getName());
                         }
@@ -395,12 +393,13 @@ public class PlayerListener implements Listener {
             }
 
             final String message = event.getMessage();
+            final GamePlayer gamePlayer = Main.getPlayerGameProfile(event.getPlayer());
             if (Main.isCommandLeaveShortcut(message)) {
                 event.setCancelled(true);
-                Main.getPlayerGameProfile(event.getPlayer()).changeGame(null);
+                gamePlayer.changeGame(null);
             } else if (!Main.isCommandAllowedInGame(message.split(" ")[0])) {
                 event.setCancelled(true);
-                event.getPlayer().sendMessage(i18n("command_is_not_allowed"));
+                event.getPlayer().sendMessage(i18nc("command_is_not_allowed", gamePlayer.getGame().getCustomPrefix()));
             }
         }
     }
@@ -635,7 +634,7 @@ public class PlayerListener implements Listener {
                             if (game.checkMinPlayers()) {
                                 game.gameStartItem = true;
                             } else {
-                                player.sendMessage(i18n("vip_not_enough_players"));
+                                player.sendMessage(i18nc("vip_not_enough_players", game.getCustomPrefix()));
                             }
                         }
                     } else if (event.getMaterial() == Material
@@ -655,7 +654,7 @@ public class PlayerListener implements Listener {
                             }
 
                             if (!team.players.contains(gPlayer)) {
-                                player.sendMessage(i18n("team_chest_is_not_your"));
+                                player.sendMessage(i18nc("team_chest_is_not_your", game.getCustomPrefix()));
                                 return;
                             }
 

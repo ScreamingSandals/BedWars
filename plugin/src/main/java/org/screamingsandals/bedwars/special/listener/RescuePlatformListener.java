@@ -26,6 +26,7 @@ import org.screamingsandals.simpleinventories.utils.MaterialSearchEngine;
 
 import java.util.ArrayList;
 
+import static misat11.lib.lang.I.i18nc;
 import static misat11.lib.lang.I18n.i18n;
 import static misat11.lib.lang.I18n.i18nonly;
 
@@ -72,7 +73,7 @@ public class RescuePlatformListener implements Listener {
 
                         if (player.getLocation().getBlock().getRelative(BlockFace.DOWN)
                                 .getType() != Material.AIR) {
-                            player.sendMessage(i18n("specials_rescue_platform_not_in_air"));
+                            player.sendMessage(i18nc("specials_rescue_platform_not_in_air", game.getCustomPrefix()));
                             return;
                         }
 

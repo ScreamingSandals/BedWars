@@ -689,5 +689,9 @@ public interface Game {
 
     int getPostGameWaiting();
 
+    default boolean hasCustomPrefix() {
+        return getCustomPrefix() != null;
+    }
 
+    String getCustomPrefix();
 }

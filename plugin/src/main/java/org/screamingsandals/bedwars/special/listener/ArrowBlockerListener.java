@@ -20,6 +20,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
+import static misat11.lib.lang.I.i18nc;
 import static misat11.lib.lang.I18n.i18n;
 import static misat11.lib.lang.I18n.i18nonly;
 
@@ -59,7 +60,7 @@ public class ArrowBlockerListener implements Listener {
                                 game.getTeamOfPlayer(event.getPlayer()), stack, protectionTime);
 
                         if (arrowBlocker.isActivated()) {
-                            event.getPlayer().sendMessage(i18n("specials_arrow_blocker_already_activated"));
+                            event.getPlayer().sendMessage(i18nc("specials_arrow_blocker_already_activated", game.getCustomPrefix()));
                             return;
                         }
 

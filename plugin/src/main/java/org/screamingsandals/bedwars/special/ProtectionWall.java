@@ -16,6 +16,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.ArrayList;
 import java.util.List;
 
+import static misat11.lib.lang.I.i18nc;
 import static misat11.lib.lang.I18n.i18n;
 import static misat11.lib.lang.I18n.i18nonly;
 
@@ -121,7 +122,7 @@ public class ProtectionWall extends SpecialItem implements org.screamingsandals.
         wallBlocks = new ArrayList<>();
 
         if (width % 2 == 0) {
-            player.sendMessage(i18n("The width of a protection block has to be odd! " + width + " is not an odd number."));
+            player.sendMessage(i18nc("The width of a protection block has to be odd! " + width + " is not an odd number.", game.getCustomPrefix()));
             width = width + 1;
             if (width % 2 == 0) {
                 return;

@@ -13,6 +13,7 @@ import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import static misat11.lib.lang.I.i18nc;
 import static misat11.lib.lang.I18n.i18n;
 
 public class TNTSheep extends SpecialItem implements org.screamingsandals.bedwars.api.special.TNTSheep {
@@ -69,7 +70,7 @@ public class TNTSheep extends SpecialItem implements org.screamingsandals.bedwar
         sheep.setColor(DyeColor.getByWoolData((byte) color.woolData));
 
         if (target == null) {
-            player.sendMessage(i18n("specials_tntsheep_no_target_found"));
+            player.sendMessage(i18nc("specials_tntsheep_no_target_found", game.getCustomPrefix()));
             sheep.remove();
             return;
         }

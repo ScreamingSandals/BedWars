@@ -12,6 +12,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 
+import static misat11.lib.lang.I.i18nc;
 import static misat11.lib.lang.I18n.i18n;
 
 public class TeamChestListener implements Listener {
@@ -44,7 +45,7 @@ public class TeamChestListener implements Listener {
 
         if (unhidden != null || Main.getConfigurator().config.getBoolean("specials.teamchest.turn-all-enderchests-to-teamchests")) {
             team.addTeamChest(block);
-            String message = i18n("team_chest_placed");
+            String message = i18nc("team_chest_placed", event.getGame().getCustomPrefix());
             for (Player pl : team.getConnectedPlayers()) {
                 pl.sendMessage(message);
             }

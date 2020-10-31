@@ -209,6 +209,10 @@ public class GameCreator {
             if (args.length >= 1) {
                 response = setGameBossBarColor(args[0]);
             }
+        } else if (action.equalsIgnoreCase("customprefix")) {
+            if (args.length >= 1) {
+                response = setCustomPrefix(args[0]);
+            }
         } else if (action.equalsIgnoreCase("save")) {
             List<GameStore> gamestores = new ArrayList<>();
             for (Map.Entry<String, GameStore> vloc : villagerstores.entrySet()) {
@@ -255,6 +259,16 @@ public class GameCreator {
         }
         player.sendMessage(response);
         return isArenaSaved;
+    }
+
+    private String setCustomPrefix(String arg) {
+        if (arg.equalsIgnoreCase("off")) {
+            game.setCustomPrefix(null);
+            return i18n("admin_command_customprefix_disabled");
+        } else {
+            game.setCustomPrefix(arg);
+            return i18n("admin_command_customprefix_enabled").replace("%prefix%", arg);
+        }
     }
 
     private String setPostGameWaiting(int time) {

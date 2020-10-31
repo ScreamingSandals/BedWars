@@ -14,13 +14,13 @@ import org.screamingsandals.lib.nms.holograms.Hologram;
 import java.util.ArrayList;
 import java.util.List;
 
-import static misat11.lib.lang.I18n.i18n;
+import static misat11.lib.lang.I.i18nc;
 
 public class CurrentTeam implements RunningTeam {
     public final Team teamInfo;
     public final List<GamePlayer> players = new ArrayList<>();
     private org.bukkit.scoreboard.Team scoreboardTeam;
-    private Inventory chestInventory = Bukkit.createInventory(null, InventoryType.ENDER_CHEST, i18n("team_chest"));
+    private Inventory chestInventory;
     private List<Block> chests = new ArrayList<>();
     private Game game;
     private Hologram holo;
@@ -31,6 +31,7 @@ public class CurrentTeam implements RunningTeam {
     public CurrentTeam(Team team, Game game) {
         this.teamInfo = team;
         this.game = game;
+        this.chestInventory = Bukkit.createInventory(null, InventoryType.ENDER_CHEST, i18nc("team_chest", game.getCustomPrefix()));
     }
 
     public boolean isDead() {

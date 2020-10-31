@@ -10,6 +10,7 @@ import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.utils.SpawnEffects;
 import org.screamingsandals.lib.nms.entity.PlayerUtils;
 
+import static misat11.lib.lang.I.i18nc;
 import static misat11.lib.lang.I18n.i18n;
 
 public class WarpPowder extends SpecialItem implements org.screamingsandals.bedwars.api.special.WarpPowder {
@@ -42,7 +43,7 @@ public class WarpPowder extends SpecialItem implements org.screamingsandals.bedw
         }
 
         if (showMessage) {
-            player.sendMessage(i18n("specials_warp_powder_canceled"));
+            player.sendMessage(i18nc("specials_warp_powder_canceled", game.getCustomPrefix()));
         }
     }
 
@@ -50,7 +51,7 @@ public class WarpPowder extends SpecialItem implements org.screamingsandals.bedw
     public void runTask() {
         game.registerSpecialItem(this);
 
-        player.sendMessage(i18n("specials_warp_powder_started").replace("%time%", Double.toString(teleportingTime)));
+        player.sendMessage(i18nc("specials_warp_powder_started", game.getCustomPrefix()).replace("%time%", Double.toString(teleportingTime)));
 
         teleportingTask = new BukkitRunnable() {
 

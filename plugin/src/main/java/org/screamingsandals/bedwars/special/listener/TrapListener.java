@@ -20,6 +20,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.List;
 import java.util.Map;
 
+import static misat11.lib.lang.I.i18nc;
 import static misat11.lib.lang.I18n.i18n;
 
 public class TrapListener implements Listener {
@@ -56,7 +57,7 @@ public class TrapListener implements Listener {
                 Trap trap = (Trap) special;
                 if (System.identityHashCode(trap) == classID) {
                     trap.place(event.getBlock().getLocation());
-                    event.getPlayer().sendMessage(i18n("trap_built"));
+                    event.getPlayer().sendMessage(i18nc("trap_built", event.getGame().getCustomPrefix()));
                     return;
                 }
             }

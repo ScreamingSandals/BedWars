@@ -74,7 +74,7 @@ public class MiscUtils {
                     player.spigot().sendMessage(ChatMessageType.ACTION_BAR,
                             TextComponent.fromLegacyText(message));
                 } else {
-                    player.sendMessage(i18nonly("prefix") + " " + message);
+                    player.sendMessage(message);
                 }
             }
         }.runTask(Main.getInstance());

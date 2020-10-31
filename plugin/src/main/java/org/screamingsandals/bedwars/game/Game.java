@@ -83,6 +83,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     private WeatherType arenaWeather = null;
     private BarColor lobbyBossBarColor = null;
     private BarColor gameBossBarColor = null;
+    private String customPrefix = null;
 
     // Boolean settings
     public static final String COMPASS_ENABLED = "compass-enabled";
@@ -392,7 +393,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 CurrentTeam team = getTeamOfChest(block);
                 if (team != null) {
                     team.removeTeamChest(block);
-                    String message = i18n("team_chest_broken");
+                    String message = i18nc("team_chest_broken", customPrefix);
                     for (GamePlayer gp : team.players) {
                         gp.player.sendMessage(message);
                     }
@@ -546,7 +547,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                                         .replace("%broker%", colored_broker),
                                 i18n(getPlayerTeam(player) == team ? "bed_is_destroyed_subtitle_for_victim"
                                         : "bed_is_destroyed_subtitle", false));
-                        player.player.sendMessage(i18n(key)
+                        player.player.sendMessage(i18nc(key, customPrefix)
                                 .replace("%team%", team.teamInfo.color.chatColor + team.teamInfo.name)
                                 .replace("%broker%", colored_broker));
                         SpawnEffects.spawnEffect(this, player.player, "game-effects.beddestroy");
@@ -617,7 +618,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         }
 
         if (status == GameStatus.WAITING) {
-            mpr("join").replace("name", gamePlayer.player.getDisplayName())
+            mpr("join").prefix(customPrefix).replace("name", gamePlayer.player.getDisplayName())
                     .replace("players", players.size())
                     .replace("maxplayers", calculatedMaxPlayers)
                     .send(getConnectedPlayers());
@@ -690,7 +691,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 getPlayerTeam(gamePlayer));
         Main.getInstance().getServer().getPluginManager().callEvent(playerLeaveEvent);
 
-        String message = i18n("leave").replace("%name%", gamePlayer.player.getDisplayName())
+        String message = i18nc("leave", customPrefix).replace("%name%", gamePlayer.player.getDisplayName())
                 .replace("%players%", Integer.toString(players.size()))
                 .replaceAll("%maxplayers%", Integer.toString(calculatedMaxPlayers));
 
@@ -967,6 +968,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             game.arenaWeather = loadWeather(configMap.getString("arenaWeather", "default").toUpperCase());
 
             game.postGameWaiting = configMap.getInt("postGameWaiting", 3);
+            game.customPrefix = configMap.getString("customPrefix", null);
 
             try {
                 game.lobbyBossBarColor = loadBossBarColor(
@@ -1049,6 +1051,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         configMap.set("lobbySpawnWorld", lobbySpawn.getWorld().getName());
         configMap.set("minPlayers", minPlayers);
         configMap.set("postGameWaiting", postGameWaiting);
+        configMap.set("customPrefix", customPrefix);
         if (!teams.isEmpty()) {
             for (Team t : teams) {
                 configMap.set("teams." + t.name + ".isNewColor", t.isNewColor());
@@ -1359,19 +1362,19 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         }
         if (cur == current) {
             player.player.sendMessage(
-                    i18n("team_already_selected").replace("%team%", teamForJoin.color.chatColor + teamForJoin.name)
+                    i18nc("team_already_selected", customPrefix).replace("%team%", teamForJoin.color.chatColor + teamForJoin.name)
                             .replace("%players%", Integer.toString(current.players.size()))
                             .replaceAll("%maxplayers%", Integer.toString(current.teamInfo.maxPlayers)));
             return;
         }
         if (current.players.size() >= current.teamInfo.maxPlayers) {
             if (cur != null) {
-                player.player.sendMessage(i18n("team_is_full_you_are_staying")
+                player.player.sendMessage(i18nc("team_is_full_you_are_staying", customPrefix)
                         .replace("%team%", teamForJoin.color.chatColor + teamForJoin.name)
                         .replace("%oldteam%", cur.teamInfo.color.chatColor + cur.teamInfo.name));
             } else {
                 player.player.sendMessage(
-                        i18n("team_is_full").replace("%team%", teamForJoin.color.chatColor + teamForJoin.name));
+                        i18nc("team_is_full", customPrefix).replace("%team%", teamForJoin.color.chatColor + teamForJoin.name));
             }
             return;
         }
@@ -1386,7 +1389,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         current.players.add(player);
         current.getScoreboardTeam().addEntry(player.player.getName());
         player.player
-                .sendMessage(i18n("team_selected").replace("%team%", teamForJoin.color.chatColor + teamForJoin.name)
+                .sendMessage(i18nc("team_selected", customPrefix).replace("%team%", teamForJoin.color.chatColor + teamForJoin.name)
                         .replace("%players%", Integer.toString(current.players.size()))
                         .replaceAll("%maxplayers%", Integer.toString(current.teamInfo.maxPlayers)));
 
@@ -1841,7 +1844,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                             if (t.isAlive()) {
                                 winner = t;
                                 String time = getFormattedTimeLeft(gameTime - countdown);
-                                String message = i18n("team_win")
+                                String message = i18nc("team_win", customPrefix)
                                         .replace("%team%", TeamColor.fromApiColor(t.getColor()).chatColor + t.getName())
                                         .replace("%time%", time);
                                 String subtitle = i18n("team_win", false)
@@ -2011,7 +2014,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             Main.getInstance().getServer().getPluginManager().callEvent(event);
             Main.getInstance().getServer().getPluginManager().callEvent(statusE);
 
-            String message = i18n("game_end");
+            String message = i18nc("game_end", customPrefix);
             for (GamePlayer player : (List<GamePlayer>) ((ArrayList<GamePlayer>) players).clone()) {
                 player.player.sendMessage(message);
                 player.changeGame(null);
@@ -3317,5 +3320,14 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     @Override
     public int getPostGameWaiting() {
         return this.postGameWaiting;
+    }
+
+    @Override
+    public String getCustomPrefix() {
+        return customPrefix;
+    }
+
+    public void setCustomPrefix(String customPrefix) {
+        this.customPrefix = customPrefix;
     }
 }

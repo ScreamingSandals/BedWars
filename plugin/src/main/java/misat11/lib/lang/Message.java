@@ -13,6 +13,7 @@ public class Message {
 	private ITranslateContainer container;
 	private String def;
 	private boolean prefix;
+	private String prefixTranslate = null;
 	private Map<String, MessageReplacement> replaces = new HashMap<>();
 	
 	public Message(String key, ITranslateContainer container) {
@@ -120,6 +121,12 @@ public class Message {
 		this.prefix = prefix;
 		return this;
 	}
+
+	public Message prefix(String prefixTranslate) {
+		this.prefixTranslate = prefixTranslate;
+		this.prefix = true;
+		return this;
+	}
 	
 	public Message unprefix() {
 		return prefix(false);
@@ -169,7 +176,7 @@ public class Message {
 	}
 	
 	public String get(MessageReceiver receiver) {
-		String message = container.translate(key, def, prefix);
+		String message = container.translate(key, def, prefix, prefixTranslate);
 		
 		for (Map.Entry<String, MessageReplacement> replace : replaces.entrySet()) {
 			message = message.replaceAll("%" + replace.getKey() + "%", replace.getValue().replace(receiver));
