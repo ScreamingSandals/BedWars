@@ -17,7 +17,7 @@ import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.screamingsandals.bedwars.api.BedwarsAPI;
 import org.screamingsandals.bedwars.api.game.GameStatus;
-import org.screamingsandals.bedwars.api.game.GameStore;
+import org.screamingsandals.bedwars.game.GameStore;
 import org.screamingsandals.bedwars.api.statistics.PlayerStatisticsManager;
 import org.screamingsandals.bedwars.api.utils.ColorChanger;
 import org.screamingsandals.bedwars.commands.*;
@@ -35,6 +35,7 @@ import org.screamingsandals.bedwars.placeholderapi.BedwarsExpansion;
 import org.screamingsandals.bedwars.special.SpecialRegister;
 import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.bedwars.utils.BedWarsSignOwner;
+import org.screamingsandals.bedwars.utils.CitizensUtils;
 import org.screamingsandals.bedwars.utils.UpdateChecker;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.lib.nms.holograms.HologramManager;
@@ -476,9 +477,9 @@ public class Main extends JavaPlugin implements BedwarsAPI {
             if (javaVer < 55) {
                 getLogger().warning("Future versions of plugins from ScreamingSandals will require at least Java 11. "
                         + "Your server is not prepared for it. Update your Java or contact your hosting. "
-                        + "Java 8 for commercial usage is already out of casual support, for personal usage it's supported until December 2020! "
+                        + "Java 8 for commercial usage is already out of casual support! "
                         + "Java 9 and Java 10 were short-term support versions, these versions are already not supported.");
-                getLogger().warning("Future versions of Java will require Minecraft version at least 1.12");
+                getLogger().warning("Future versions of BedWars will require Minecraft version at least 1.13 and Java at least 11");
 
             }
         } catch (Throwable t) { // What if it fails? Why it should fail I don't know :D

@@ -12,7 +12,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.ArenaTime;
-import org.screamingsandals.bedwars.api.game.GameStore;
 import org.screamingsandals.bedwars.game.*;
 
 import java.io.File;
@@ -185,7 +184,7 @@ public class AdminCommand extends BaseCommand {
                             player.sendMessage(i18n("arena_info_header"));
 
                             player.sendMessage(i18n("arena_info_villagers", false));
-                            for (GameStore store : game.getGameStores()) {
+                            for (GameStore store : game.getGameStoreList()) {
 
                                 Location loc_store = store.getStoreLocation();
                                 String storeM = i18n("arena_info_villager_pos", false)
@@ -529,7 +528,11 @@ public class AdminCommand extends BaseCommand {
             if (args.size() == 4 && args.get(2).equalsIgnoreCase("type")) {
                 for (EntityType type : EntityType.values()) {
                     if (type.isAlive()) {
-                        completion.add(type.name());
+                        if (type == EntityType.PLAYER) {
+                            completion.add(type.name() + ":");
+                        } else {
+                            completion.add(type.name());
+                        }
                     }
                 }
             }

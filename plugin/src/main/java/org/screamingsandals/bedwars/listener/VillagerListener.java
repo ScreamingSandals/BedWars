@@ -1,8 +1,9 @@
 package org.screamingsandals.bedwars.listener;
 
+import org.bukkit.Bukkit;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.game.GameStatus;
-import org.screamingsandals.bedwars.api.game.GameStore;
+import org.screamingsandals.bedwars.game.GameStore;
 import org.screamingsandals.bedwars.api.events.BedwarsOpenShopEvent;
 import org.screamingsandals.bedwars.api.events.BedwarsOpenShopEvent.Result;
 import org.screamingsandals.bedwars.game.Game;
@@ -10,6 +11,7 @@ import org.screamingsandals.bedwars.game.GamePlayer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.screamingsandals.bedwars.utils.CitizensUtils;
 
 public class VillagerListener implements Listener {
 
@@ -20,24 +22,37 @@ public class VillagerListener implements Listener {
             Game game = gPlayer.getGame();
             if (event.getRightClicked().getType().isAlive() && !gPlayer.isSpectator
                     && gPlayer.getGame().getStatus() == GameStatus.RUNNING) {
-                for (GameStore store : game.getGameStores()) {
+
+                if (Bukkit.getPluginManager().isPluginEnabled("Citizens")) {
+                    // .equals doesn't work with Citizens
+                    GameStore npcStore = CitizensUtils.getFromNPC(event.getRightClicked());
+                    if (npcStore != null) {
+                        event.setCancelled(true);
+                        open(npcStore, event, game);
+                        return;
+                    }
+                }
+
+                for (GameStore store : game.getGameStoreList()) {
                     if (store.getEntity().equals(event.getRightClicked())) {
                         event.setCancelled(true);
-
-                        BedwarsOpenShopEvent openShopEvent = new BedwarsOpenShopEvent(gPlayer.getGame(),
-                                event.getPlayer(), store, event.getRightClicked());
-                        Main.getInstance().getServer().getPluginManager().callEvent(openShopEvent);
-
-                        if (openShopEvent.getResult() != Result.ALLOW) {
-                            return;
-                        }
-
-                        Main.openStore(event.getPlayer(), store);
-                        return;
+                        open(store, event, game);
                     }
                 }
 
             }
         }
+    }
+
+    public void open(GameStore store, PlayerInteractEntityEvent event, Game game) {
+        BedwarsOpenShopEvent openShopEvent = new BedwarsOpenShopEvent(game,
+                event.getPlayer(), store, event.getRightClicked());
+        Main.getInstance().getServer().getPluginManager().callEvent(openShopEvent);
+
+        if (openShopEvent.getResult() != Result.ALLOW) {
+            return;
+        }
+
+        Main.openStore(event.getPlayer(), store);
     }
 }

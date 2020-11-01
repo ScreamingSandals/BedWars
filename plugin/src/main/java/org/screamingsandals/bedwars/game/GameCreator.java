@@ -2,7 +2,6 @@ package org.screamingsandals.bedwars.game;
 
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.ArenaTime;
-import org.screamingsandals.bedwars.api.game.GameStore;
 import org.screamingsandals.bedwars.api.InGameConfigBooleanConstants;
 import org.screamingsandals.bedwars.region.FlatteningBedUtils;
 import org.screamingsandals.bedwars.region.LegacyBedUtils;
@@ -35,7 +34,7 @@ public class GameCreator {
 
     public GameCreator(Game game) {
         this.game = game;
-        List<GameStore> gs = game.getGameStores();
+        List<GameStore> gs = game.getGameStoreList();
         if (!gs.isEmpty()) {
             for (GameStore store : gs) {
                 villagerstores.put(store.getStoreLocation().getBlockX() + ";" + store.getStoreLocation().getBlockY()
@@ -240,7 +239,7 @@ public class GameCreator {
                     response = i18n("admin_command_set_lobby_before_save");
                 } else if (game.getSpecSpawn() == null) {
                     response = i18n("admin_command_set_spec_before_save");
-                } else if (game.getGameStores().isEmpty()) {
+                } else if (game.getGameStoreList().isEmpty()) {
                     response = i18n("admin_command_set_stores_before_save");
                 } else if (game.getSpawners().isEmpty()) {
                     response = i18n("admin_command_set_spawners_before_save");
@@ -765,17 +764,25 @@ public class GameCreator {
     }
 
     private String changeStoreEntityType(Location loc, String type) {
-        type = type.toUpperCase();
-
         String location = loc.getBlockX() + ";" + loc.getBlockY() + ";" + loc.getBlockZ();
         if (villagerstores.containsKey(location)) {
             EntityType t = null;
             try {
-                t = EntityType.valueOf(type);
+                t = EntityType.valueOf(type.split(":", 2)[0].toUpperCase());
                 if (!t.isAlive()) {
                     t = null;
                 }
             } catch (Exception e) {
+            }
+
+            if (t == EntityType.PLAYER) {
+                String[] splitted = type.split(":", 2);
+                if (splitted.length != 2 || splitted[1].trim().equals("")) {
+                    return i18n("admin_command_npc_must_have_skinname");
+                }
+
+                villagerstores.get(location).setEntityTypeNPC(splitted[1]);
+                return i18n("admin_command_store_living_entity_type_set").replace("%type%", splitted[1]);
             }
 
             if (t == null) {

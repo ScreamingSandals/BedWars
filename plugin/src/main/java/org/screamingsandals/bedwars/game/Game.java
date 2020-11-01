@@ -41,7 +41,6 @@ import org.screamingsandals.bedwars.api.boss.BossBar19;
 import org.screamingsandals.bedwars.api.boss.StatusBar;
 import org.screamingsandals.bedwars.api.events.*;
 import org.screamingsandals.bedwars.api.game.GameStatus;
-import org.screamingsandals.bedwars.api.game.GameStore;
 import org.screamingsandals.bedwars.api.special.SpecialItem;
 import org.screamingsandals.bedwars.api.upgrades.UpgradeRegistry;
 import org.screamingsandals.bedwars.api.upgrades.UpgradeStorage;
@@ -277,7 +276,12 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         return this.players.size();
     }
 
-    public List<GameStore> getGameStores() {
+    @Override
+    public List<org.screamingsandals.bedwars.api.game.GameStore> getGameStores() {
+        return new ArrayList<>(gameStore);
+    }
+
+    public List<GameStore> getGameStoreList() {
         return gameStore;
     }
 
@@ -914,10 +918,10 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                         game.gameStore.add(new GameStore(MiscUtils.readLocationFromString(game.world, map.get("loc")),
                                 map.get("shop"), "true".equals(map.getOrDefault("parent", "true")),
                                 EntityType.valueOf(map.getOrDefault("type", "VILLAGER").toUpperCase()),
-                                map.getOrDefault("name", ""), map.containsKey("name"), "true".equals(map.getOrDefault("isBaby", "false"))));
+                                map.getOrDefault("name", ""), map.containsKey("name"), "true".equals(map.getOrDefault("isBaby", "false")), map.get("skin")));
                     } else if (store instanceof String) {
                         game.gameStore.add(new GameStore(MiscUtils.readLocationFromString(game.world, (String) store), null,
-                                true, EntityType.VILLAGER, "", false, false));
+                                true, EntityType.VILLAGER, "", false, false, null));
                     }
                 }
             }
@@ -1090,6 +1094,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                     map.put("name", store.getShopCustomName());
                 }
                 map.put("isBaby", store.isBaby() ? "true" : "false");
+                map.put("skin", store.getSkinName());
                 nL.add(map);
             }
             configMap.set("stores", nL);
