@@ -43,6 +43,7 @@ import org.screamingsandals.bedwars.lib.nms.utils.ClassStorage;
 import org.screamingsandals.bedwars.lib.signmanager.SignListener;
 import org.screamingsandals.bedwars.lib.signmanager.SignManager;
 import org.screamingsandals.simpleinventories.listeners.InventoryListener;
+import org.screamingsandals.simpleinventories.utils.MaterialSearchEngine;
 
 import java.io.File;
 import java.io.IOException;
@@ -431,14 +432,18 @@ public class Main extends JavaPlugin implements BedwarsAPI {
             String materialName = Main.getConfigurator().config.getString("resources." + spawnerN + ".material", "AIR");
             String colorName = Main.getConfigurator().config.getString("resources." + spawnerN + ".color", "WHITE");
 
-            Material material = Material.valueOf(materialName);
-            if (material == Material.AIR) {
+            if (damage != 0) {
+                materialName += ":" + damage;
+            }
+
+            MaterialSearchEngine.Result result = MaterialSearchEngine.find(materialName);
+            if (result.getMaterial() == Material.AIR) {
                 continue;
             }
 
             ChatColor color = ChatColor.valueOf(colorName);
             spawnerTypes.put(spawnerN.toLowerCase(), new ItemSpawnerType(spawnerN.toLowerCase(), name, translate,
-                    spread, material, color, interval, damage));
+                    spread, result.getMaterial(), color, interval, result.getDamage()));
         }
 
         try {
