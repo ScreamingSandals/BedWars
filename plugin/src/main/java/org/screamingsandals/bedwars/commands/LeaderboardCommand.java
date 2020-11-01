@@ -7,7 +7,7 @@ import org.screamingsandals.bedwars.api.statistics.LeaderboardEntry;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static misat11.lib.lang.I18n.*;
+import static org.screamingsandals.bedwars.lib.lang.I18n.*;
 
 public class LeaderboardCommand extends BaseCommand {
 

@@ -5,7 +5,7 @@ import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import static misat11.lib.lang.I18n.i18nonly;
+import static org.screamingsandals.bedwars.lib.lang.I18n.i18nonly;
 
 public class RespawnProtection extends BukkitRunnable {
     private Game game;

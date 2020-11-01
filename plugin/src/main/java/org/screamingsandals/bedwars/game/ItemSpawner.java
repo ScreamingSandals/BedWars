@@ -2,9 +2,9 @@ package org.screamingsandals.bedwars.game;
 
 import org.bukkit.entity.Entity;
 import org.screamingsandals.bedwars.api.Team;
-import org.screamingsandals.lib.nms.holograms.Hologram;
+import org.screamingsandals.bedwars.lib.nms.holograms.Hologram;
 
-import static misat11.lib.lang.I.i18nonly;
+import static org.screamingsandals.bedwars.lib.lang.I.i18nonly;
 
 import java.util.ArrayList;
 import java.util.List;

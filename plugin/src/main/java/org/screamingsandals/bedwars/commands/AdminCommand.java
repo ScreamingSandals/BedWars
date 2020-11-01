@@ -16,12 +16,11 @@ import org.screamingsandals.bedwars.api.game.GameStore;
 import org.screamingsandals.bedwars.game.*;
 
 import java.io.File;
-import java.text.DecimalFormat;
 import java.util.*;
 
-import static misat11.lib.lang.I.m;
-import static misat11.lib.lang.I18n.i18n;
-import static misat11.lib.lang.I18n.i18nonly;
+import static org.screamingsandals.bedwars.lib.lang.I.m;
+import static org.screamingsandals.bedwars.lib.lang.I18n.i18n;
+import static org.screamingsandals.bedwars.lib.lang.I18n.i18nonly;
 
 public class AdminCommand extends BaseCommand {
 

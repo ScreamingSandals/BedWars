@@ -1,6 +1,6 @@
 package org.screamingsandals.bedwars;
 
-import misat11.lib.lang.I18n;
+import org.screamingsandals.bedwars.lib.lang.I18n;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bstats.bukkit.Metrics;
@@ -36,11 +36,11 @@ import org.screamingsandals.bedwars.special.SpecialRegister;
 import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.bedwars.utils.BedWarsSignOwner;
 import org.screamingsandals.bedwars.utils.UpdateChecker;
-import org.screamingsandals.lib.debug.Debug;
-import org.screamingsandals.lib.nms.holograms.HologramManager;
-import org.screamingsandals.lib.nms.utils.ClassStorage;
-import org.screamingsandals.lib.signmanager.SignListener;
-import org.screamingsandals.lib.signmanager.SignManager;
+import org.screamingsandals.bedwars.lib.debug.Debug;
+import org.screamingsandals.bedwars.lib.nms.holograms.HologramManager;
+import org.screamingsandals.bedwars.lib.nms.utils.ClassStorage;
+import org.screamingsandals.bedwars.lib.signmanager.SignListener;
+import org.screamingsandals.bedwars.lib.signmanager.SignManager;
 import org.screamingsandals.simpleinventories.listeners.InventoryListener;
 
 import java.io.File;
@@ -52,7 +52,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static misat11.lib.lang.I18n.i18n;
+import static org.screamingsandals.bedwars.lib.lang.I18n.i18n;
 
 public class Main extends JavaPlugin implements BedwarsAPI {
     private static Main instance;

@@ -21,7 +21,7 @@ import org.screamingsandals.bedwars.game.Game;
 import org.screamingsandals.bedwars.game.GamePlayer;
 import org.screamingsandals.bedwars.utils.Debugger;
 import org.screamingsandals.bedwars.utils.Sounds;
-import org.screamingsandals.lib.debug.Debug;
+import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.simpleinventories.SimpleInventories;
 import org.screamingsandals.simpleinventories.events.GenerateItemEvent;
 import org.screamingsandals.simpleinventories.events.PreActionEvent;
@@ -37,9 +37,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static misat11.lib.lang.I.i18nc;
-import static misat11.lib.lang.I18n.i18n;
-import static misat11.lib.lang.I18n.i18nonly;
+import static org.screamingsandals.bedwars.lib.lang.I.i18nc;
+import static org.screamingsandals.bedwars.lib.lang.I18n.i18n;
+import static org.screamingsandals.bedwars.lib.lang.I18n.i18nonly;
 
 public class ShopInventory implements Listener {
 	private Map<String, SimpleInventories> shopMap = new HashMap<>();

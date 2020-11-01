@@ -26,9 +26,9 @@ import org.screamingsandals.simpleinventories.utils.MaterialSearchEngine;
 
 import java.util.ArrayList;
 
-import static misat11.lib.lang.I.i18nc;
-import static misat11.lib.lang.I18n.i18n;
-import static misat11.lib.lang.I18n.i18nonly;
+import static org.screamingsandals.bedwars.lib.lang.I.i18nc;
+import static org.screamingsandals.bedwars.lib.lang.I18n.i18n;
+import static org.screamingsandals.bedwars.lib.lang.I18n.i18nonly;
 
 public class RescuePlatformListener implements Listener {
     private static final String RESCUE_PLATFORM_PREFIX = "Module:RescuePlatform:";

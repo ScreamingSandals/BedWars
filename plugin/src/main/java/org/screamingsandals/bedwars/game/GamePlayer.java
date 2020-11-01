@@ -8,7 +8,7 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffect;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.utils.BungeeUtils;
-import org.screamingsandals.lib.nms.entity.PlayerUtils;
+import org.screamingsandals.bedwars.lib.nms.entity.PlayerUtils;
 
 public class GamePlayer {
     public final Player player;

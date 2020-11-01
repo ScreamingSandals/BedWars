@@ -8,15 +8,15 @@ import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.statistics.LeaderboardEntry;
 import org.screamingsandals.bedwars.commands.BaseCommand;
-import org.screamingsandals.lib.nms.holograms.Hologram;
-import org.screamingsandals.lib.nms.holograms.TouchHandler;
+import org.screamingsandals.bedwars.lib.nms.holograms.Hologram;
+import org.screamingsandals.bedwars.lib.nms.holograms.TouchHandler;
 
 import java.io.File;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static misat11.lib.lang.I.i18n;
-import static misat11.lib.lang.I.i18nonly;
+import static org.screamingsandals.bedwars.lib.lang.I.i18n;
+import static org.screamingsandals.bedwars.lib.lang.I.i18nonly;
 
 public class LeaderboardHolograms implements TouchHandler {
     private ArrayList<Location> hologramLocations;
@@ -68,8 +68,7 @@ public class LeaderboardHolograms implements TouchHandler {
             return;
         }
 
-        this.updateEntries();
-        this.updateHolograms();
+        Bukkit.getScheduler().runTask(Main.getInstance(), this::updateEntries);
     }
 
     private void updateHologramDatabase() {

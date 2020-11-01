@@ -18,14 +18,14 @@ import org.screamingsandals.bedwars.api.events.BedwarsApplyPropertyToBoughtItem;
 import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.game.GamePlayer;
 import org.screamingsandals.bedwars.game.Team;
-import org.screamingsandals.lib.debug.Debug;
+import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.simpleinventories.utils.MaterialSearchEngine;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import static misat11.lib.lang.I18n.i18nonly;
+import static org.screamingsandals.bedwars.lib.lang.I18n.i18nonly;
 
 public class MiscUtils {
     /**

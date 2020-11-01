@@ -9,12 +9,12 @@ import org.bukkit.inventory.Inventory;
 import org.screamingsandals.bedwars.api.RunningTeam;
 import org.screamingsandals.bedwars.api.TeamColor;
 import org.screamingsandals.bedwars.api.game.Game;
-import org.screamingsandals.lib.nms.holograms.Hologram;
+import org.screamingsandals.bedwars.lib.nms.holograms.Hologram;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static misat11.lib.lang.I.i18nc;
+import static org.screamingsandals.bedwars.lib.lang.I.i18nc;
 
 public class CurrentTeam implements RunningTeam {
     public final Team teamInfo;

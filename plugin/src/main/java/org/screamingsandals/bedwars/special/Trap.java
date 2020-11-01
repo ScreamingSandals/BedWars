@@ -2,7 +2,6 @@ package org.screamingsandals.bedwars.special;
 
 import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.api.RunningTeam;
-import org.screamingsandals.bedwars.api.Team;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.bedwars.utils.Sounds;
 import org.bukkit.Location;
@@ -13,7 +12,7 @@ import org.bukkit.potion.PotionEffect;
 import java.util.List;
 import java.util.Map;
 
-import static misat11.lib.lang.I18n.i18nonly;
+import static org.screamingsandals.bedwars.lib.lang.I18n.i18nonly;
 
 public class Trap extends SpecialItem implements org.screamingsandals.bedwars.api.special.Trap {
     private List<Map<String, Object>> trapData;

@@ -8,10 +8,10 @@ import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.Team;
 import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.utils.SpawnEffects;
-import org.screamingsandals.lib.nms.entity.PlayerUtils;
+import org.screamingsandals.bedwars.lib.nms.entity.PlayerUtils;
 
-import static misat11.lib.lang.I.i18nc;
-import static misat11.lib.lang.I18n.i18n;
+import static org.screamingsandals.bedwars.lib.lang.I.i18nc;
+import static org.screamingsandals.bedwars.lib.lang.I18n.i18n;
 
 public class WarpPowder extends SpecialItem implements org.screamingsandals.bedwars.api.special.WarpPowder {
     private BukkitTask teleportingTask = null;

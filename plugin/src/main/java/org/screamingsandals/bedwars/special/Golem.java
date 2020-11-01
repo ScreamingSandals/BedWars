@@ -12,9 +12,9 @@ import org.screamingsandals.bedwars.api.Team;
 import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.game.TeamColor;
 import org.screamingsandals.bedwars.utils.MiscUtils;
-import org.screamingsandals.lib.nms.entity.EntityUtils;
+import org.screamingsandals.bedwars.lib.nms.entity.EntityUtils;
 
-import static misat11.lib.lang.I18n.i18nonly;
+import static org.screamingsandals.bedwars.lib.lang.I18n.i18nonly;
 
 public class Golem extends SpecialItem implements org.screamingsandals.bedwars.api.special.Golem {
     private LivingEntity entity;

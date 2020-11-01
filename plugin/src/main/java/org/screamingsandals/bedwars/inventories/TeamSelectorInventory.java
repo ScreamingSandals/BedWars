@@ -23,7 +23,7 @@ import org.screamingsandals.simpleinventories.utils.MapReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import static misat11.lib.lang.I18n.i18nonly;
+import static org.screamingsandals.bedwars.lib.lang.I18n.i18nonly;
 
 public class TeamSelectorInventory implements Listener {
     private Game game;

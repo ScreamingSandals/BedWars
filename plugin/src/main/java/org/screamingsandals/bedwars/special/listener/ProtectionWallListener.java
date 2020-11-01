@@ -24,7 +24,7 @@ import org.screamingsandals.simpleinventories.utils.MaterialSearchEngine;
 
 import java.util.ArrayList;
 
-import static misat11.lib.lang.I18n.i18nonly;
+import static org.screamingsandals.bedwars.lib.lang.I18n.i18nonly;
 
 public class ProtectionWallListener implements Listener {
     private static final String PROTECTION_WALL_PREFIX = "Module:ProtectionWall:";

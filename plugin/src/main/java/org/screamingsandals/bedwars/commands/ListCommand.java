@@ -5,7 +5,7 @@ import org.bukkit.command.CommandSender;
 
 import java.util.List;
 
-import static misat11.lib.lang.I18n.i18n;
+import static org.screamingsandals.bedwars.lib.lang.I18n.i18n;
 
 public class ListCommand extends BaseCommand {
 

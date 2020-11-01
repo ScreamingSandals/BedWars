@@ -11,10 +11,10 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.commands.AdminCommand;
 import org.screamingsandals.bedwars.game.Game;
-import org.screamingsandals.lib.signmanager.SignBlock;
-import org.screamingsandals.lib.signmanager.SignOwner;
+import org.screamingsandals.bedwars.lib.signmanager.SignBlock;
+import org.screamingsandals.bedwars.lib.signmanager.SignOwner;
 
-import static misat11.lib.lang.I.*;
+import static org.screamingsandals.bedwars.lib.lang.I.*;
 
 public class BedWarsSignOwner implements SignOwner {
 

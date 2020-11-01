@@ -3,10 +3,8 @@ package org.screamingsandals.bedwars.commands;
 import org.bukkit.command.ConsoleCommandSender;
 import org.screamingsandals.bedwars.Main;
 import org.bukkit.command.CommandSender;
-import org.screamingsandals.lib.debug.Debug;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public abstract class BaseCommand {

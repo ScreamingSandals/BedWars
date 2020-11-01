@@ -24,8 +24,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static misat11.lib.lang.I.i18nonly;
-import static misat11.lib.lang.I18n.i18n;
+import static org.screamingsandals.bedwars.lib.lang.I.i18nonly;
+import static org.screamingsandals.bedwars.lib.lang.I18n.i18n;
 
 public class GameCreator {
     public static final String BEDWARS_TEAM_JOIN_METADATA = "bw-addteamjoin";
@@ -211,7 +211,7 @@ public class GameCreator {
             }
         } else if (action.equalsIgnoreCase("customprefix")) {
             if (args.length >= 1) {
-                response = setCustomPrefix(args[0]);
+                response = setCustomPrefix(String.join(" ", args));
             }
         } else if (action.equalsIgnoreCase("save")) {
             List<GameStore> gamestores = new ArrayList<>();

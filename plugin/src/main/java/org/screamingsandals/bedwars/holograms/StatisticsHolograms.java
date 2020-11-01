@@ -1,6 +1,6 @@
 package org.screamingsandals.bedwars.holograms;
 
-import static misat11.lib.lang.I.i18n;
+import static org.screamingsandals.bedwars.lib.lang.I.i18n;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -17,8 +17,8 @@ import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.statistics.PlayerStatistic;
 import org.screamingsandals.bedwars.commands.BaseCommand;
-import org.screamingsandals.lib.nms.holograms.Hologram;
-import org.screamingsandals.lib.nms.holograms.TouchHandler;
+import org.screamingsandals.bedwars.lib.nms.holograms.Hologram;
+import org.screamingsandals.bedwars.lib.nms.holograms.TouchHandler;
 
 public class StatisticsHolograms implements TouchHandler {
 

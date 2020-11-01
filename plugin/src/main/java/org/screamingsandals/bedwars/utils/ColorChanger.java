@@ -5,7 +5,7 @@ import org.screamingsandals.bedwars.game.TeamColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
-import org.screamingsandals.lib.debug.Debug;
+import org.screamingsandals.bedwars.lib.debug.Debug;
 
 public class ColorChanger implements org.screamingsandals.bedwars.api.utils.ColorChanger {
     public static ItemStack changeLegacyStackColor(ItemStack itemStack, TeamColor teamColor) {

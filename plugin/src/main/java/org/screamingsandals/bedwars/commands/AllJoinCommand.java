@@ -7,7 +7,7 @@ import org.screamingsandals.bedwars.api.game.Game;
 
 import java.util.List;
 
-import static misat11.lib.lang.I.i18n;
+import static org.screamingsandals.bedwars.lib.lang.I.i18n;
 
 public class AllJoinCommand extends BaseCommand {
 

@@ -148,15 +148,15 @@
 									<shadedPattern>${project.groupId}.lib.spiget</shadedPattern>
 								</relocation>
 								<!-- OLD Libraries -->
-								<relocation>
+								<!--<relocation>
 									<pattern>misat11.lib</pattern>
 									<shadedPattern>${project.groupId}.lib</shadedPattern>
-								</relocation>
+								</relocation>-->
 								<!-- NEW Libraries -->
-								<relocation>
+								<!--<relocation>
 									<pattern>org.screamingsandals.lib</pattern>
 									<shadedPattern>${project.groupId}.lib</shadedPattern>
-								</relocation>
+								</relocation>-->
 								<relocation>
 									<pattern>org.screamingsandals.simpleinventories</pattern>
 									<shadedPattern>${project.groupId}.lib.sgui</shadedPattern>

@@ -13,6 +13,6 @@ public class Title {
         int stay = Main.getConfigurator().config.getInt("title.stay");
         int fadeOut = Main.getConfigurator().config.getInt("title.fadeOut");
 
-        org.screamingsandals.lib.nms.title.Title.sendTitle(player, title, subtitle, fadeIn, stay, fadeOut);
+        org.screamingsandals.bedwars.lib.nms.title.Title.sendTitle(player, title, subtitle, fadeIn, stay, fadeOut);
     }
 }

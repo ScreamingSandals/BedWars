@@ -20,9 +20,9 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
-import static misat11.lib.lang.I.i18nc;
-import static misat11.lib.lang.I18n.i18n;
-import static misat11.lib.lang.I18n.i18nonly;
+import static org.screamingsandals.bedwars.lib.lang.I.i18nc;
+import static org.screamingsandals.bedwars.lib.lang.I18n.i18n;
+import static org.screamingsandals.bedwars.lib.lang.I18n.i18nonly;
 
 public class ArrowBlockerListener implements Listener {
     private static final String ARROW_BLOCKER_PREFIX = "Module:ArrowBlocker:";

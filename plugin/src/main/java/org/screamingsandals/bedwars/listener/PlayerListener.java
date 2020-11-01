@@ -34,8 +34,8 @@ import org.screamingsandals.bedwars.game.*;
 import org.screamingsandals.bedwars.inventories.TeamSelectorInventory;
 import org.screamingsandals.bedwars.statistics.PlayerStatistic;
 import org.screamingsandals.bedwars.utils.*;
-import org.screamingsandals.lib.debug.Debug;
-import org.screamingsandals.lib.nms.entity.PlayerUtils;
+import org.screamingsandals.bedwars.lib.debug.Debug;
+import org.screamingsandals.bedwars.lib.nms.entity.PlayerUtils;
 import org.screamingsandals.simpleinventories.utils.StackParser;
 
 import java.util.ArrayList;
@@ -43,7 +43,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import static misat11.lib.lang.I18n.*;
+import static org.screamingsandals.bedwars.lib.lang.I18n.*;
 import static org.screamingsandals.bedwars.commands.BaseCommand.ADMIN_PERMISSION;
 
 public class PlayerListener implements Listener {

@@ -1,7 +1,7 @@
 package org.screamingsandals.bedwars.boss;
 
 import org.bukkit.entity.Player;
-import org.screamingsandals.lib.nms.entity.PlayerUtils;
+import org.screamingsandals.bedwars.lib.nms.entity.PlayerUtils;
 
 import java.util.ArrayList;
 import java.util.List;

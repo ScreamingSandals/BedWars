@@ -1,6 +1,6 @@
 package org.screamingsandals.bedwars.game;
 
-import static misat11.lib.lang.I.*;
+import static org.screamingsandals.bedwars.lib.lang.I.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -55,10 +55,10 @@ import org.screamingsandals.bedwars.region.FlatteningRegion;
 import org.screamingsandals.bedwars.region.LegacyRegion;
 import org.screamingsandals.bedwars.statistics.PlayerStatistic;
 import org.screamingsandals.bedwars.utils.*;
-import org.screamingsandals.lib.debug.Debug;
-import org.screamingsandals.lib.nms.entity.EntityUtils;
-import org.screamingsandals.lib.nms.holograms.Hologram;
-import org.screamingsandals.lib.signmanager.SignBlock;
+import org.screamingsandals.bedwars.lib.debug.Debug;
+import org.screamingsandals.bedwars.lib.nms.entity.EntityUtils;
+import org.screamingsandals.bedwars.lib.nms.holograms.Hologram;
+import org.screamingsandals.bedwars.lib.signmanager.SignBlock;
 import org.screamingsandals.simpleinventories.utils.MaterialSearchEngine;
 import org.screamingsandals.simpleinventories.utils.StackParser;
 

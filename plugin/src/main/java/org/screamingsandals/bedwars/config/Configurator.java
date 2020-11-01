@@ -8,7 +8,6 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
-import org.screamingsandals.lib.debug.Debug;
 import org.screamingsandals.simpleinventories.utils.StackParser;
 
 import java.io.File;

@@ -16,7 +16,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import static misat11.lib.lang.I.*;
+import static org.screamingsandals.bedwars.lib.lang.I.*;
 
 public class UpdateChecker {
     public static void run() {

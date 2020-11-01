@@ -13,7 +13,6 @@ import org.screamingsandals.bedwars.special.Golem;
 import org.screamingsandals.bedwars.utils.DelayFactory;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.bukkit.Location;
-import org.bukkit.block.BlockFace;
 import org.bukkit.entity.IronGolem;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -28,7 +27,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
-import static misat11.lib.lang.I18n.i18nonly;
+import static org.screamingsandals.bedwars.lib.lang.I18n.i18nonly;
 
 public class GolemListener implements Listener {
     private static final String GOLEM_PREFIX = "Module:Golem:";

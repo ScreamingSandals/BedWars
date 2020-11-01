@@ -12,8 +12,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 
-import static misat11.lib.lang.I.i18nc;
-import static misat11.lib.lang.I18n.i18n;
+import static org.screamingsandals.bedwars.lib.lang.I.i18nc;
+import static org.screamingsandals.bedwars.lib.lang.I18n.i18n;
 
 public class TeamChestListener implements Listener {
 

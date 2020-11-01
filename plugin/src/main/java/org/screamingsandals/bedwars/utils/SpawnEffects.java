@@ -2,7 +2,7 @@ package org.screamingsandals.bedwars.utils;
 
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.game.Game;
-import org.screamingsandals.lib.nms.particles.Particles;
+import org.screamingsandals.bedwars.lib.nms.particles.Particles;
 import org.screamingsandals.bedwars.api.events.BedwarsPostSpawnEffectEvent;
 import org.screamingsandals.bedwars.api.events.BedwarsPreSpawnEffectEvent;
 import org.bukkit.Effect;
