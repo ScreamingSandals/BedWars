@@ -1,6 +1,8 @@
 package org.screamingsandals.bedwars.inventories;
 
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -32,6 +34,8 @@ import org.screamingsandals.simpleinventories.item.PlayerItemInfo;
 import org.screamingsandals.simpleinventories.utils.MapReader;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -282,6 +286,17 @@ public class ShopInventory implements Listener {
 		}
 	}
 
+	private void loadDefault(SimpleInventories format) {
+		format.purgeData();
+		YamlConfiguration configuration = new YamlConfiguration();
+		try {
+			configuration.load(new InputStreamReader(ShopInventory.class.getResourceAsStream("shop.yml")));
+		} catch (IOException | InvalidConfigurationException ioException) {
+			ioException.printStackTrace();
+		}
+		format.load((List<Object>) configuration.getList("data"));
+	}
+
 	private void loadNewShop(String name, String fileName, boolean useParent) {
 		SimpleInventories format = new SimpleInventories(options);
 		try {
@@ -297,10 +312,17 @@ public class ShopInventory implements Listener {
 			}
 		} catch (Exception ignored) {
 			Debug.warn("Wrong shop.yml/shop.groovy configuration!", true);
-			Debug.warn("Your villagers won't work, check validity of your YAML/Groovy!", true);
+			Debug.warn("Check validity of your YAML/Groovy!", true);
+			loadDefault(format);
 		}
 
-		format.generateData();
+		try {
+			format.generateData();
+		} catch (Throwable t) {
+			Debug.warn("Your shop.yml/shop.groovy is wrong! Loading default one instead", true);
+			loadDefault(format);
+			format.generateData();
+		}
 		shopMap.put(name, format);
 	}
 

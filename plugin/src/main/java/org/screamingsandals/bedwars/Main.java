@@ -446,15 +446,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
                     spread, result.getMaterial(), color, interval, result.getDamage()));
         }
 
-        try {
-            menu = new ShopInventory();
-        } catch (Exception e) {
-            Debug.warn("Your shop.yml/shop.groovy is wrong!", true);
-            Debug.warn("Disabling plugin..", true);
-
-            Bukkit.getPluginManager().disablePlugin(this);
-            return;
-        }
+        menu = new ShopInventory();
 
         if (getConfigurator().config.getBoolean("bungee.enabled")) {
             Bukkit.getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");

@@ -201,6 +201,23 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                     } else {
                         return ChatColor.RED + "none";
                     }
+                case "team_color":
+                    if (Main.isPlayerInGame(player)) {
+                        GamePlayer gPlayer = Main.getPlayerGameProfile(player);
+                        Game game = gPlayer.getGame();
+                        if (gPlayer.isSpectator) {
+                            return ChatColor.GRAY.toString();
+                        } else {
+                            CurrentTeam team = game.getPlayerTeam(gPlayer);
+                            if (team != null) {
+                                return team.teamInfo.color.chatColor.toString();
+                            } else {
+                                return ChatColor.GRAY.toString();
+                            }
+                        }
+                    } else {
+                        return "";
+                    }
                 case "team_players":
                     if (Main.isPlayerInGame(player)) {
                         GamePlayer gPlayer = Main.getPlayerGameProfile(player);
