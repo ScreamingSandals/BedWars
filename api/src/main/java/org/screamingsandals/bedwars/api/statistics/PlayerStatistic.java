@@ -89,84 +89,112 @@ public interface PlayerStatistic {
     /**
      * @see PlayerStatistic#getDeaths()
      */
-    //@Deprecated
-    //int getCurrentDeaths();
+    @Deprecated
+    default int getCurrentDeaths() {
+        return getDeaths();
+    }
 
     /**
      * @see PlayerStatistic#addDeaths(int)
      */
-    //@Deprecated
-    //void setCurrentDeaths(int currentDeaths);
+    @Deprecated
+    default void setCurrentDeaths(int currentDeaths) {
+        addDeaths(getDeaths() - currentDeaths);
+    }
 
     /**
      * @see PlayerStatistic#getDestroyedBeds()
      */
-    //@Deprecated
-    //int getCurrentDestroyedBeds();
+    @Deprecated
+    default int getCurrentDestroyedBeds() {
+        return getDestroyedBeds();
+    }
 
     /**
      * @see PlayerStatistic#addDestroyedBeds(int)
      */
-    //@Deprecated
-    //void setCurrentDestroyedBeds(int currentDestroyedBeds);
+    @Deprecated
+    default void setCurrentDestroyedBeds(int currentDestroyedBeds) {
+        addDestroyedBeds(getDestroyedBeds() - currentDestroyedBeds);
+    }
 
     /**
      * @see PlayerStatistic#getKills()
      */
-    //@Deprecated
-    //int getCurrentKills();
+    @Deprecated
+    default int getCurrentKills() {
+        return getKills();
+    }
 
     /**
      * @see PlayerStatistic#addKills(int)
      */
-    //@Deprecated
-    //void setCurrentKills(int currentKills);
+    @Deprecated
+    default void setCurrentKills(int currentKills) {
+        addKills(getKills() - currentKills);
+    }
 
     /**
      * @see PlayerStatistic#getLoses()
      */
-    //@Deprecated
-    //int getCurrentLoses();
+    @Deprecated
+    default int getCurrentLoses() {
+        return getLoses();
+    }
 
     /**
      * @see PlayerStatistic#addLoses(int)
      */
-    //@Deprecated
-    //void setCurrentLoses(int currentLoses);
+    @Deprecated
+    default void setCurrentLoses(int currentLoses) {
+        addLoses(getLoses() - currentLoses);
+    }
 
     /**
      * @see PlayerStatistic#getScore()
      */
-    //@Deprecated
-    //int getCurrentScore();
+    @Deprecated
+    default int getCurrentScore() {
+        return getScore();
+    }
 
     /**
      * @see PlayerStatistic#addScore(int)
      */
-    //@Deprecated
-    //void setCurrentScore(int currentScore);
+    @Deprecated
+    default void setCurrentScore(int currentScore) {
+        addScore(getScore() - currentScore);
+    }
 
     /**
      * @see PlayerStatistic#getWins()
      */
-    //@Deprecated
-    //int getCurrentWins();
+    @Deprecated
+    default int getCurrentWins() {
+        return getWins();
+    }
 
     /**
      * @see PlayerStatistic#addWins(int)
      */
-    //@Deprecated
-    //void setCurrentWins(int currentWins);
+    @Deprecated
+    default void setCurrentWins(int currentWins) {
+        addWins(getWins() - currentWins);
+    }
 
     /**
      * @see PlayerStatistic#getKD()
      */
-    //@Deprecated
-   // double getCurrentKD();
+    @Deprecated
+    default double getCurrentKD() {
+        return getKD();
+    }
 
     /**
      * @see PlayerStatistic#getGames()
      */
-    //@Deprecated
-    //int getCurrentGames();
+    @Deprecated
+    default int getCurrentGames() {
+        return getGames();
+    }
 }

@@ -330,7 +330,7 @@ public class Configurator {
 
         checkOrSetConfig(modify, "database.host", "localhost");
         checkOrSetConfig(modify, "database.port", 3306);
-        checkOrSetConfig(modify, "database.db", "databse");
+        checkOrSetConfig(modify, "database.db", "database");
         checkOrSetConfig(modify, "database.user", "root");
         checkOrSetConfig(modify, "database.password", "secret");
         checkOrSetConfig(modify, "database.table-prefix", "bw_");
