@@ -1,6 +1,6 @@
 ---
 lang_name: "Afrikaans"
-prefix: "[BW]"
+prefix: "[&eBedwars]"
 item_shop_name: "Shop"
 join: "%name% &ajoined the game!&r &7[&a%players%&7/&a%maxplayers%&7]"
 leave: "%name% &cleft the game!"
