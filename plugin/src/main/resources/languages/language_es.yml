@@ -306,7 +306,7 @@ admin_command_post_game_waiting: "&aTiempo de espera después de que el juego ha
 arena_info_postgamewaiting: "&7Tiempo de espera después de la partida: &f%time% s"
 leaderboard_no_scores: "&7¡No hay registros todavía!"
 leaderboard_holo_added: "&a¡El holograma de la lista de puntos ha sido añadido a tu posición!"
-leaderboard_header: "&6BedWars Leaderboard - Top %number% players"
+leaderboard_header: "&6Tabla de BedWars - Los %number% mejores jugadores"
 leaderboard_line: "&l%order%. &7%player% - &a%score%"
 admin_command_customprefix_enabled: "&aEl prefijo personalizado ha sido establecido con éxito a &7%prefix%&a."
 admin_command_customprefix_disabled: "&aEl prefijo personalizado ha sido deshabilitado."
