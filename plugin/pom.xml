@@ -75,6 +75,13 @@
 			<version>4.1.42.Final</version>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>net.citizensnpcs</groupId>
+			<artifactId>citizens</artifactId>
+			<version>2.0.27-SNAPSHOT</version>
+			<type>jar</type>
+			<scope>provided</scope>
+		</dependency>
 
 		<!-- COMPILE -->
 		<dependency>
@@ -92,7 +99,7 @@
 		<dependency>
 			<groupId>org.screamingsandals.simpleinventories</groupId>
 			<artifactId>SimpleInventories-Core</artifactId>
-			<version>1.0.6.3</version>
+			<version>1.0.6.4</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
@@ -100,13 +107,6 @@
 			<artifactId>bstats-bukkit</artifactId>
 			<version>1.7</version>
 			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>net.citizensnpcs</groupId>
-			<artifactId>citizens</artifactId>
-			<version>2.0.27-SNAPSHOT</version>
-			<type>jar</type>
-			<scope>provided</scope>
 		</dependency>
 		<!--
 		Libraries: LanguageTool, NMS, Debug, SignManager and SpigetUpdate are already inside this repo
