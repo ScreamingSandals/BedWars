@@ -1,5 +1,5 @@
 # BedWars
-[![Build Status](https://jenkins.mtorus.cz/job/BedWars-0.x.x/badge/icon)](https://jenkins.mtorus.cz/job/BedWars-0.x.x/)
+[![Build Status](https://ci.screamingsandals.org/job/BedWars-0.x.x/badge/icon)](https://ci.screamingsandals.org/job/BedWars-0.x.x/)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/472077c84c9d40de8b0e9efc55e64b19?branch=master)](https://www.codacy.com/manual/Misat11/BedWars?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ScreamingSandals/BedWars&amp;utm_campaign=Badge_Grade&bid=14860338)
 [![Crowdin](https://badges.crowdin.net/screamingbedwars/localized.svg)](https://crowdin.com/project/screamingbedwars)
 [![Discord](https://img.shields.io/discord/582271436845219842?logo=discord)](https://discord.gg/4xB54Ts)
