@@ -89,6 +89,11 @@ public interface BedwarsAPI {
     Game getFirstWaitingGame();
 
     /**
+     * @return Game in running state or null
+     */
+    Game getFirstRunningGame();
+
+    /**
      * @param entity Entity
      * @param game   Game
      */

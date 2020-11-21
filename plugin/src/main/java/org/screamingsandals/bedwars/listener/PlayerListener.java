@@ -225,12 +225,16 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        Game game = (Game) Main.getInstance().getFirstWaitingGame();
 
         if (Game.isBungeeEnabled() && Main.getConfigurator().config.getBoolean("bungee.auto-game-connect", false)) {
             new BukkitRunnable() {
                 public void run() {
                     try {
+                        Game game = (Game) Main.getInstance().getFirstWaitingGame();
+                        if (game == null) {
+                            game = (Game) Main.getInstance().getFirstRunningGame();
+                        }
+
                         game.joinToGame(player);
                     } catch (NullPointerException ignored) {
                         if (!BaseCommand.hasPermission(player, ADMIN_PERMISSION, false)) {

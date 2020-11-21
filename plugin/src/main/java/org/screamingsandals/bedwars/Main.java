@@ -719,6 +719,23 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         return availableGames.lastEntry().getValue();
     }
 
+    public org.screamingsandals.bedwars.api.game.Game getFirstRunningGame() {
+        final TreeMap<Integer, Game> availableGames = new TreeMap<>();
+        games.values().forEach(game -> {
+            if (game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) {
+                return;
+            }
+
+            availableGames.put(game.getConnectedPlayers().size(), game);
+        });
+
+        if (availableGames.isEmpty()) {
+            return null;
+        }
+
+        return availableGames.lastEntry().getValue();
+    }
+
     @Override
     public String getHubServerName() {
         return configurator.config.getString("bungee.server");
