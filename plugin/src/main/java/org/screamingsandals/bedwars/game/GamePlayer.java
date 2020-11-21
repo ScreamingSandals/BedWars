@@ -10,11 +10,16 @@ import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.utils.BungeeUtils;
 import org.screamingsandals.bedwars.lib.nms.entity.PlayerUtils;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
+
 public class GamePlayer {
     public final Player player;
     private Game game = null;
     private String latestGame = null;
     private StoredInventory oldInventory = new StoredInventory();
+    private List<Player> hiddenPlayers = new ArrayList<>();
 
     public boolean isSpectator = false;
     public boolean isTeleportingFromGame_justForInventoryPlugins = false;
@@ -140,6 +145,7 @@ public class GamePlayer {
         this.player.setHealth(this.player.getMaxHealth());
         this.player.setFireTicks(0);
         this.player.setGameMode(GameMode.SURVIVAL);
+        new ArrayList<>(this.hiddenPlayers).forEach(this::showPlayer);
 
         if (this.player.isInsideVehicle()) {
             this.player.leaveVehicle();
@@ -158,6 +164,21 @@ public class GamePlayer {
 
     public boolean teleport(Location location, Runnable runnable) {
         return PlayerUtils.teleportPlayer(player, location, runnable);
+    }
+
+    public void hidePlayer(Player player) {
+        if (!hiddenPlayers.contains(player) && !player.equals(this.player)) {
+            hiddenPlayers.add(player);
+            this.player.hidePlayer(Main.getInstance(), player);
+        }
+    }
+
+    public void showPlayer(Player player) {
+        if (hiddenPlayers.contains(player) && !player.equals(this.player)) {
+            hiddenPlayers.remove(player);
+            this.player.showPlayer(Main.getInstance(), player);
+        }
+
     }
 
 }

@@ -12,10 +12,7 @@ import org.screamingsandals.simpleinventories.utils.StackParser;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Configurator {
@@ -450,6 +447,13 @@ public class Configurator {
         checkOrSetConfig(modify, "event-hacks.damage", false);
         checkOrSetConfig(modify, "event-hacks.destroy", false);
         checkOrSetConfig(modify, "event-hacks.place", false);
+
+        checkOrSetConfig(modify, "tab.enable", false);
+        checkOrSetConfig(modify, "tab.header.enabled", true);
+        checkOrSetConfig(modify, "tab.header.contents", Arrays.asList("&aMy awesome BedWars server", "&bMap: %map%", "&cPlayers: %respawnable%/%max%"));
+        checkOrSetConfig(modify, "tab.footer.enabled", true);
+        checkOrSetConfig(modify, "tab.footer.contents", Arrays.asList("&eexample.com", "&fWow!!", "§a%spectators% are watching this match"));
+        checkOrSetConfig(modify, "tab.hide-spectators", true);
 
         checkOrSetConfig(modify, "default-permissions.join", true);
         checkOrSetConfig(modify, "default-permissions.leave", true);

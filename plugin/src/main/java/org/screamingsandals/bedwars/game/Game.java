@@ -276,6 +276,22 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         return this.players.size();
     }
 
+    public int countSpectators() {
+        return (int) this.players.stream().filter(t -> t.isSpectator && getPlayerTeam(t) == null).count();
+    }
+
+    public int countSpectating() {
+        return (int) this.players.stream().filter(t -> t.isSpectator).count();
+    }
+
+    public int countRespawnable() {
+        return (int) this.players.stream().filter(t -> getPlayerTeam(t) != null).count();
+    }
+
+    public int countAlive() {
+        return (int) this.players.stream().filter(t -> !t.isSpectator).count();
+    }
+
     @Override
     public List<org.screamingsandals.bedwars.api.game.GameStore> getGameStores() {
         return new ArrayList<>(gameStore);
@@ -621,6 +637,10 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             gamePlayer.player.setPlayerWeather(arenaWeather);
         }
 
+        if (Main.getTabManager() != null) {
+            players.forEach(Main.getTabManager()::modifyForPlayer);
+        }
+
         if (status == GameStatus.WAITING) {
             mpr("join").prefix(customPrefix).replace("name", gamePlayer.player.getDisplayName())
                     .replace("players", players.size())
@@ -679,7 +699,11 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         if (status == GameStatus.RUNNING || status == GameStatus.GAME_END_CELEBRATING) {
 
             makeSpectator(gamePlayer, true);
-            createdHolograms.forEach(hologram -> hologram.addViewer(gamePlayer.player));
+            createdHolograms.forEach(hologram -> {
+                if (teamsInGame.stream().noneMatch(t -> t.getProtectHolo().equals(hologram))) {
+                    hologram.addViewer(gamePlayer.player);
+                }
+            });
         }
 
         BedwarsPlayerJoinedEvent joinedEvent = new BedwarsPlayerJoinedEvent(this, getPlayerTeam(gamePlayer), gamePlayer.player);
@@ -710,6 +734,11 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
         if (status == GameStatus.WAITING) {
             SpawnEffects.spawnEffect(this, gamePlayer.player, "game-effects.lobbyleave");
+        }
+
+        if (Main.getTabManager() != null) {
+            Main.getTabManager().clear(gamePlayer);
+            players.forEach(Main.getTabManager()::modifyForPlayer);
         }
 
         statusbar.removePlayer(gamePlayer.player);
@@ -1454,6 +1483,10 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             player.setGameMode(GameMode.SPECTATOR);
 
             if (leaveItem) {
+                if (Main.getConfigurator().config.getBoolean("tab.enable") && Main.getConfigurator().config.getBoolean("tab.hide-spectators")) {
+                    players.forEach(p -> p.hidePlayer(player));
+                }
+
                 int leavePosition = Main.getConfigurator().config.getInt("hotbar.leave", 8);
                 if (leavePosition >= 0 && leavePosition <= 8) {
                     ItemStack leave = Main.getConfigurator().readDefinedItem("leavegame", "SLIME_BALL");
@@ -1462,6 +1495,10 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                     leave.setItemMeta(leaveMeta);
                     gamePlayer.player.getInventory().setItem(leavePosition, leave);
                 }
+            }
+
+            if (Main.getTabManager() != null) {
+                players.forEach(Main.getTabManager()::modifyForPlayer);
             }
         });
 
@@ -1480,6 +1517,10 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 player.setFlying(false);
                 player.setGameMode(GameMode.SURVIVAL);
 
+                if (Main.getConfigurator().config.getBoolean("tab.enable") && Main.getConfigurator().config.getBoolean("tab.hide-spectators")) {
+                    players.forEach(p -> p.showPlayer(player));
+                }
+
                 if (Main.getConfigurator().config.getBoolean("respawn.protection-enabled", true)) {
                     RespawnProtection respawnProtection = addProtectedPlayer(player);
                     respawnProtection.runProtection();
@@ -1493,6 +1534,10 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                     } else {
                         Debug.warn("You have wrongly configured gived-player-respawn-items!", true);
                     }
+                }
+
+                if (Main.getTabManager() != null) {
+                    players.forEach(Main.getTabManager()::modifyForPlayer);
                 }
             });
         }

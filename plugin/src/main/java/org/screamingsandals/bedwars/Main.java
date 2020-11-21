@@ -34,6 +34,7 @@ import org.screamingsandals.bedwars.listener.*;
 import org.screamingsandals.bedwars.placeholderapi.BedwarsExpansion;
 import org.screamingsandals.bedwars.special.SpecialRegister;
 import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
+import org.screamingsandals.bedwars.tab.TabManager;
 import org.screamingsandals.bedwars.utils.BedWarsSignOwner;
 import org.screamingsandals.bedwars.utils.CitizensUtils;
 import org.screamingsandals.bedwars.utils.UpdateChecker;
@@ -79,6 +80,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
     private SignManager signManager;
     private HologramManager manager;
     private LeaderboardHolograms leaderboardHolograms;
+    private TabManager tabManager;
     public static List<String> autoColoredMaterials = new ArrayList<>();
     private Metrics metrics;
 
@@ -322,6 +324,10 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         return instance.leaderboardHolograms;
     }
 
+    public static TabManager getTabManager() {
+        return instance.tabManager;
+    }
+
     public void onEnable() {
         instance = this;
         version = this.getDescription().getVersion();
@@ -529,6 +535,10 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 
         } catch (Throwable ignored) {
             // maybe something here can cause exception
+        }
+
+        if (Main.getConfigurator().config.getBoolean("tab.enable")) {
+            tabManager = new TabManager();
         }
 
         if (Main.getConfigurator().config.getBoolean("update-checker.zero.console")
