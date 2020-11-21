@@ -425,6 +425,34 @@ public class PlayerListener implements Listener {
                 Game game = gPlayer.getGame();
                 if (game.getStatus() == GameStatus.WAITING || gPlayer.isSpectator) {
                     event.setCancelled(true);
+                    ItemStack item = event.getCurrentItem();
+                    if (item != null) {
+                        if (item.getType() == Material
+                                .valueOf(Main.getConfigurator().config.getString("items.jointeam", "COMPASS"))) {
+                            if (game.getStatus() == GameStatus.WAITING) {
+                                TeamSelectorInventory inv = game.getTeamSelectorInventory();
+                                if (inv == null) {
+                                    return;
+                                }
+                                inv.openForPlayer(p);
+                            } else if (gPlayer.isSpectator) {
+                                // TODO
+                            }
+                        } else if (item.getType()  == Material
+                                .valueOf(Main.getConfigurator().config.getString("items.startgame", "DIAMOND"))) {
+                            if (game.getStatus() == GameStatus.WAITING && (p.hasPermission("bw.vip.startitem")
+                                    || p.hasPermission("misat11.bw.vip.startitem"))) {
+                                if (game.checkMinPlayers()) {
+                                    game.gameStartItem = true;
+                                } else {
+                                    p.sendMessage(i18nc("vip_not_enough_players", game.getCustomPrefix()));
+                                }
+                            }
+                        } else if (item.getType()  == Material
+                                .valueOf(Main.getConfigurator().config.getString("items.leavegame", "SLIME_BALL"))) {
+                            game.leaveFromGame(p);
+                        }
+                    }
                 }
             }
         }
