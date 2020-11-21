@@ -722,7 +722,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
     public org.screamingsandals.bedwars.api.game.Game getFirstRunningGame() {
         final TreeMap<Integer, Game> availableGames = new TreeMap<>();
         games.values().forEach(game -> {
-            if (game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) {
+            if (game.getStatus() != GameStatus.RUNNING && game.getStatus() != GameStatus.GAME_END_CELEBRATING) {
                 return;
             }
 
