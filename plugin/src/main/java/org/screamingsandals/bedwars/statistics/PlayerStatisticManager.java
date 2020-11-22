@@ -56,16 +56,21 @@ public class PlayerStatisticManager implements PlayerStatisticsManager {
     public void initializeDatabase() {
         Main.getInstance().getLogger().info("Loading statistics from database ...");
 
-        try (Connection connection = Main.getDatabaseManager().getConnection()) {
+        try {
             Main.getDatabaseManager().initialize();
-            connection.setAutoCommit(false);
-            PreparedStatement preparedStatement = connection
-                    .prepareStatement(Main.getDatabaseManager().getCreateTableSql());
-            preparedStatement.executeUpdate();
-            connection.commit();
-            preparedStatement.close();
-        } catch (Exception ex) {
-            ex.printStackTrace();
+
+            try (Connection connection = Main.getDatabaseManager().getConnection()) {
+                connection.setAutoCommit(false);
+                PreparedStatement preparedStatement = connection
+                        .prepareStatement(Main.getDatabaseManager().getCreateTableSql());
+                preparedStatement.executeUpdate();
+                connection.commit();
+                preparedStatement.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
     }
