@@ -56,17 +56,14 @@ public class PlayerStatisticManager implements PlayerStatisticsManager {
     public void initializeDatabase() {
         Main.getInstance().getLogger().info("Loading statistics from database ...");
 
-        try {
+        try (Connection connection = Main.getDatabaseManager().getConnection()) {
             Main.getDatabaseManager().initialize();
-
-            Connection connection = Main.getDatabaseManager().getConnection();
             connection.setAutoCommit(false);
             PreparedStatement preparedStatement = connection
                     .prepareStatement(Main.getDatabaseManager().getCreateTableSql());
             preparedStatement.executeUpdate();
             connection.commit();
             preparedStatement.close();
-            connection.close();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -77,8 +74,7 @@ public class PlayerStatisticManager implements PlayerStatisticsManager {
         allScores.clear();
 
         if (Main.getConfigurator().config.getString("statistics.type").equalsIgnoreCase("database")) {
-            try {
-                Connection connection = Main.getDatabaseManager().getConnection();
+            try (Connection connection = Main.getDatabaseManager().getConnection()) {
                 connection.setAutoCommit(false);
                 PreparedStatement preparedStatement = connection
                         .prepareStatement(Main.getDatabaseManager().getScoresSql());
@@ -90,7 +86,6 @@ public class PlayerStatisticManager implements PlayerStatisticsManager {
                 }
                 connection.commit();
                 preparedStatement.close();
-                connection.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -118,8 +113,7 @@ public class PlayerStatisticManager implements PlayerStatisticsManager {
         }
         HashMap<String, Object> deserialize = new HashMap<>();
 
-        try {
-            Connection connection = Main.getDatabaseManager().getConnection();
+        try (Connection connection = Main.getDatabaseManager().getConnection()) {
             PreparedStatement preparedStatement = connection
                     .prepareStatement(Main.getDatabaseManager().getReadObjectSql());
             preparedStatement.setString(1, uuid.toString());
@@ -136,7 +130,6 @@ public class PlayerStatisticManager implements PlayerStatisticsManager {
 
             resultSet.close();
             preparedStatement.close();
-            connection.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -214,8 +207,7 @@ public class PlayerStatisticManager implements PlayerStatisticsManager {
     }
 
     private void storeDatabaseStatistic(PlayerStatistic playerStatistic) {
-        try {
-            Connection connection = Main.getDatabaseManager().getConnection();
+        try (Connection connection = Main.getDatabaseManager().getConnection()) {
             connection.setAutoCommit(false);
 
             PreparedStatement preparedStatement = connection
@@ -232,7 +224,6 @@ public class PlayerStatisticManager implements PlayerStatisticsManager {
             preparedStatement.executeUpdate();
             connection.commit();
             preparedStatement.close();
-            connection.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
