@@ -291,6 +291,7 @@ public class PlayerListener implements Listener {
                     }
                 }
             }
+            gPlayer.reloadHidden();
         }
     }
 

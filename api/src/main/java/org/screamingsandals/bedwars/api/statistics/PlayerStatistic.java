@@ -99,7 +99,7 @@ public interface PlayerStatistic {
      */
     @Deprecated
     default void setCurrentDeaths(int currentDeaths) {
-        addDeaths(getDeaths() - currentDeaths);
+        addDeaths(currentDeaths - getDeaths());
     }
 
     /**
@@ -115,7 +115,7 @@ public interface PlayerStatistic {
      */
     @Deprecated
     default void setCurrentDestroyedBeds(int currentDestroyedBeds) {
-        addDestroyedBeds(getDestroyedBeds() - currentDestroyedBeds);
+        addDestroyedBeds(currentDestroyedBeds - getDestroyedBeds());
     }
 
     /**
@@ -131,7 +131,7 @@ public interface PlayerStatistic {
      */
     @Deprecated
     default void setCurrentKills(int currentKills) {
-        addKills(getKills() - currentKills);
+        addKills(currentKills - getKills());
     }
 
     /**
@@ -147,7 +147,7 @@ public interface PlayerStatistic {
      */
     @Deprecated
     default void setCurrentLoses(int currentLoses) {
-        addLoses(getLoses() - currentLoses);
+        addLoses(currentLoses - getLoses());
     }
 
     /**
@@ -163,7 +163,7 @@ public interface PlayerStatistic {
      */
     @Deprecated
     default void setCurrentScore(int currentScore) {
-        addScore(getScore() - currentScore);
+        addScore(currentScore - getScore());
     }
 
     /**
@@ -179,7 +179,7 @@ public interface PlayerStatistic {
      */
     @Deprecated
     default void setCurrentWins(int currentWins) {
-        addWins(getWins() - currentWins);
+        addWins(currentWins - getWins());
     }
 
     /**

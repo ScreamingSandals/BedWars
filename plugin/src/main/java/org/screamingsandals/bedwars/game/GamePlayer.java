@@ -189,4 +189,16 @@ public class GamePlayer {
 
     }
 
+    public void reloadHidden() {
+        hiddenPlayers.forEach(player1 -> {
+            if (player1.isOnline()) {
+                try {
+                    this.player.hidePlayer(Main.getInstance(), player);
+                } catch (Throwable t) {
+                    this.player.hidePlayer(player);
+                }
+            }
+        });
+    }
+
 }
