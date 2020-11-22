@@ -169,14 +169,22 @@ public class GamePlayer {
     public void hidePlayer(Player player) {
         if (!hiddenPlayers.contains(player) && !player.equals(this.player)) {
             hiddenPlayers.add(player);
-            this.player.hidePlayer(Main.getInstance(), player);
+            try {
+                this.player.hidePlayer(Main.getInstance(), player);
+            } catch (Throwable t) {
+                this.player.hidePlayer(player);
+            }
         }
     }
 
     public void showPlayer(Player player) {
         if (hiddenPlayers.contains(player) && !player.equals(this.player)) {
             hiddenPlayers.remove(player);
-            this.player.showPlayer(Main.getInstance(), player);
+            try {
+                this.player.showPlayer(Main.getInstance(), player);
+            } catch (Throwable t) {
+                this.player.showPlayer(player);
+            }
         }
 
     }
