@@ -51,11 +51,15 @@ public class FakeDeath {
             Bukkit.broadcastMessage(deathMessage);
         }
 
+        // TODO: find better way how to broadcast this effect and don't break the game
+
+        /*
         try {
             ClassStorage.getMethod(ClassStorage.getHandle(deathWorld), "broadcastEntityEffect,func_72960_a", ClassStorage.NMS.Entity, byte.class)
                     .invoke(ClassStorage.getHandle(player), (byte) 3);
         } catch (Throwable t) {
         }
+         */
 
         // ignoring PacketPlayOutCombatEvent, client mustn't know that he died
 

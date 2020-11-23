@@ -719,13 +719,15 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 getPlayerTeam(gamePlayer));
         Main.getInstance().getServer().getPluginManager().callEvent(playerLeaveEvent);
 
-        String message = i18nc("leave", customPrefix).replace("%name%", gamePlayer.player.getDisplayName())
-                .replace("%players%", Integer.toString(players.size()))
-                .replaceAll("%maxplayers%", Integer.toString(calculatedMaxPlayers));
+        if (!gamePlayer.isSpectator) {
+            String message = i18nc("leave", customPrefix).replace("%name%", gamePlayer.player.getDisplayName())
+                    .replace("%players%", Integer.toString(players.size()))
+                    .replaceAll("%maxplayers%", Integer.toString(calculatedMaxPlayers));
 
-        if (!preServerRestart) {
-            for (GamePlayer p : players) {
-                p.player.sendMessage(message);
+            if (!preServerRestart) {
+                for (GamePlayer p : players) {
+                    p.player.sendMessage(message);
+                }
             }
         }
 
