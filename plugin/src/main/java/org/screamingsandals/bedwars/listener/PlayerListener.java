@@ -1003,7 +1003,7 @@ public class PlayerListener implements Listener {
             String allChat = Main.getConfigurator().config.getString("chat.all-chat-prefix", "@a");
             String tChat = Main.getConfigurator().config.getString("chat.team-chat-prefix", "@t");
 
-            if (message.startsWith(allChat)) {
+            if (message.startsWith(allChat) && (!spectator || !Main.getConfigurator().config.getBoolean("chat.disable-all-chat-for-spectators"))) {
                 teamChat = false;
                 message = message.substring(allChat.length()).trim();
             } else if (message.startsWith(tChat) && (team != null || spectator)) {

@@ -370,6 +370,7 @@ public class Configurator {
         checkOrSetConfig(modify, "chat.all-chat", "[ALL] ");
         checkOrSetConfig(modify, "chat.team-chat", "[TEAM] ");
         checkOrSetConfig(modify, "chat.death-chat", "[DEATH] ");
+        checkOrSetConfig(modify, "chat.disable-all-chat-for-spectators", false);
 
         checkOrSetConfig(modify, "rewards.enabled", false);
         checkOrSetConfig(modify, "rewards.player-win", new ArrayList<String>() {
