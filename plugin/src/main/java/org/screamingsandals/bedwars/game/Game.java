@@ -1476,7 +1476,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         gamePlayer.isSpectator = true;
         gamePlayer.teleport(specSpawn, () -> {
             if (!getOriginalOrInheritedKeepInventory() || leaveItem) {
-                gamePlayer.clean(); // temp fix for inventory issues?
+                gamePlayer.invClean(); // temp fix for inventory issues?
             }
             player.setAllowFlight(true);
             player.setFlying(true);
@@ -1869,7 +1869,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                         }
                     }
 
-                    if (Main.getVersionNumber() >= 115) {
+                    if (Main.getVersionNumber() >= 115 && !Main.getConfigurator().config.getBoolean("allow-fake-death")) {
                         world.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
                     }
 

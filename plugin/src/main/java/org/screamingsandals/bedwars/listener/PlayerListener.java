@@ -166,7 +166,7 @@ public class PlayerListener implements Listener {
                     }
                 }
             }
-            if (Main.getVersionNumber() < 115) {
+            if (Main.getVersionNumber() < 115 && !Main.getConfigurator().config.getBoolean("allow-fake-death")) {
                 PlayerUtils.respawn(Main.getInstance(), victim, 3L);
             }
             if (Main.getConfigurator().config.getBoolean("respawn-cooldown.enabled")
@@ -291,7 +291,6 @@ public class PlayerListener implements Listener {
                     }
                 }
             }
-            gPlayer.reloadHidden();
         }
     }
 
@@ -542,11 +541,13 @@ public class PlayerListener implements Listener {
             Game game = gPlayer.getGame();
             if (gPlayer.isSpectator) {
                 if (event.getCause() == DamageCause.VOID) {
+                    gPlayer.player.setFallDistance(0);
                     gPlayer.teleport(game.getSpecSpawn());
                 }
                 event.setCancelled(true);
             } else if (game.getStatus() == GameStatus.WAITING) {
                 if (event.getCause() == DamageCause.VOID) {
+                    gPlayer.player.setFallDistance(0);
                     gPlayer.teleport(game.getLobbySpawn());
                 }
                 event.setCancelled(true);
@@ -585,6 +586,11 @@ public class PlayerListener implements Listener {
                             }
                         }
                     }
+                }
+
+                if (Main.getConfigurator().config.getBoolean("allow-fake-death") && !event.isCancelled() && (player.getHealth() - event.getFinalDamage()) <= 0) {
+                    event.setCancelled(true);
+                    FakeDeath.die(gPlayer);
                 }
             }
         }

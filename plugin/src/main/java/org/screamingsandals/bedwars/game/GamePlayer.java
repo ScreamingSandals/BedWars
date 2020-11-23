@@ -127,11 +127,7 @@ public class GamePlayer {
         player.resetPlayerWeather();
     }
 
-    public void clean() {
-        PlayerInventory inv = this.player.getInventory();
-        inv.setArmorContents(new ItemStack[4]);
-        inv.setContents(new ItemStack[]{});
-
+    public void resetLife() {
         this.player.setAllowFlight(false);
         this.player.setFlying(false);
         this.player.setExp(0.0F);
@@ -144,8 +140,8 @@ public class GamePlayer {
         this.player.setMaxHealth(20D);
         this.player.setHealth(this.player.getMaxHealth());
         this.player.setFireTicks(0);
+        this.player.setFallDistance(0);
         this.player.setGameMode(GameMode.SURVIVAL);
-        new ArrayList<>(this.hiddenPlayers).forEach(this::showPlayer);
 
         if (this.player.isInsideVehicle()) {
             this.player.leaveVehicle();
@@ -154,8 +150,20 @@ public class GamePlayer {
         for (PotionEffect e : this.player.getActivePotionEffects()) {
             this.player.removePotionEffect(e.getType());
         }
+    }
+
+    public void invClean() {
+        PlayerInventory inv = this.player.getInventory();
+        inv.setArmorContents(new ItemStack[4]);
+        inv.setContents(new ItemStack[]{});
 
         this.player.updateInventory();
+    }
+
+    public void clean() {
+        invClean();
+        resetLife();
+        new ArrayList<>(this.hiddenPlayers).forEach(this::showPlayer);
     }
 
     public boolean teleport(Location location) {
@@ -187,18 +195,6 @@ public class GamePlayer {
             }
         }
 
-    }
-
-    public void reloadHidden() {
-        hiddenPlayers.forEach(player1 -> {
-            if (player1.isOnline()) {
-                try {
-                    this.player.hidePlayer(Main.getInstance(), player);
-                } catch (Throwable t) {
-                    this.player.hidePlayer(player);
-                }
-            }
-        });
     }
 
 }

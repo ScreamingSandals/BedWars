@@ -131,6 +131,7 @@ public class Configurator {
         checkOrSetConfig(modify, "respawn-cooldown.enabled", true);
         checkOrSetConfig(modify, "respawn-cooldown.time", 5);
         checkOrSetConfig(modify, "stop-team-spawners-on-die", false);
+        checkOrSetConfig(modify, "allow-fake-death", false);
 
         checkOrSetConfig(modify, "allowed-commands", new ArrayList<>());
         checkOrSetConfig(modify, "change-allowed-commands-to-blacklist", false);
