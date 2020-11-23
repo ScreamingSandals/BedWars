@@ -4,17 +4,17 @@ language_name: "Polski"
 prefix: "&c& &f&"
 core:
   errors:
-    game-core: "&cCoś poszło nie tak z instancją GameRore. &a&lProszę zgłosić ten dziennik błędów do GitHub lub Discorda!"
+    game-core: "&cCoś poszło nie tak z instancją GameCore. &a&lProszę zaraportuj ten error log na GitHub or Discord!"
     game-store: "&cKonfiguracja Twojego sklepu jest niepoprawna. Sprawdź poprawność swojego pliku sklepu."
     game-loading: "&c&lOh, damn. &cŁadowanie pliku areny nie powiodło się. &a&lProszę zgłosić ten log błędów na GitHub lub Discordzie!"
-    game-world-not-defined: "&eŚwiat dla gry %gameName% &cis nie jest zdefiniowany!"
+    game-world-not-defined: "&eŚwiat dla gry %gameName% &cnie jest zdefiniowany!"
     game-world-does-not-exists: "&cŚwiat &e%world% &cdla gry &e%gameName% &cnie istnieje!"
     game-world-bad-border: "&cUstalono błędną granicę dla gry &e%gameName%. &lProszę spróbuj ponownie!"
-    not-enough-teams: "&cNiewystarczająca ilość drużyn w grze &e%gameName& &c&l(wymagane co najmniej 2)"
+    not-enough-teams: "&cNiewystarczająca ilość drużyn w grze &e%gameName% &c&l(wymagane co najmniej 2)"
     team-spawn-not-set: "&cDrużyna &e%teamName% &cnie ma ustawionego punktu spawnu! &lProszę popraw."
     lobby-world-not-defined: "&eNie ustalono świata w jakim znajduje się lobby gry %gameName%!"
     lobby-world-does-not-exists: "&cLobby na świecie &e%world% &cdla gry &e%gameName% &cnie istnieje!"
-    spectator-spawn-not-set: "&cSpawn Spectatora dla gry %gameName% nie został ustawiony!"
+    spectator-spawn-not-set: "&cSpawn dla obserwatorów w grze %gameName% nie został ustawiony!"
     unknown: "&cWystąpił błąd. Sprawdź konsolę w celu uzyskania szczegółów. &a&lZgłoś ten błąd na GitHub lub na serwerze pluginu na Discordzie!"
   state:
     loading: "&6Ładowanie"
@@ -35,7 +35,7 @@ core:
 general:
   errors:
     invalid-boolean-value: "&cWartość &e%enteredValue%&c jest niepoprawna. Użyj &etrue &club &efalse!"
-    invalid-number: "&cUh, źle. &e%entry% &lnie &cjest &c poprawną liczbą!"
+    invalid-number: "&cUh, źle. &e%entry% &lnie &cjest poprawną liczbą!"
     invalid-team: "&cDrużyna &e%team% &cnie istnieje."
     invalid-spawner-type: "&e%type% &cnie jest poprawnym typem spawnera!"
     not-enough-args: "&cNie podałeś wystarczającej liczby argumentów."
