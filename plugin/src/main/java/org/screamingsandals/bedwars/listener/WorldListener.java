@@ -240,7 +240,7 @@ public class WorldListener implements Listener {
                 Game game = Main.getGame(name);
                 if (game.getStatus() != GameStatus.DISABLED && game.getStatus() != GameStatus.WAITING
                         && GameCreator.isChunkInArea(chunk, game.getPos1(), game.getPos2())) {
-                    ((Cancellable) unload).setCancelled(false);
+                    ((Cancellable) unload).setCancelled(true);
                     return;
                 }
             }
