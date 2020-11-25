@@ -290,7 +290,7 @@ public class ShopInventory implements Listener {
 		format.purgeData();
 		YamlConfiguration configuration = new YamlConfiguration();
 		try {
-			configuration.load(new InputStreamReader(ShopInventory.class.getResourceAsStream("shop.yml")));
+			configuration.load(new InputStreamReader(ShopInventory.class.getResourceAsStream("/shop.yml")));
 		} catch (IOException | InvalidConfigurationException ioException) {
 			ioException.printStackTrace();
 		}
@@ -310,9 +310,10 @@ public class ShopInventory implements Listener {
 			if (fileName != null) {
 				format.loadFromDataFolder(Main.getInstance().getDataFolder(), fileName);
 			}
-		} catch (Exception ignored) {
+		} catch (Exception ex) {
 			Debug.warn("Wrong shop.yml/shop.groovy configuration!", true);
 			Debug.warn("Check validity of your YAML/Groovy!", true);
+			ex.printStackTrace();
 			loadDefault(format);
 		}
 
