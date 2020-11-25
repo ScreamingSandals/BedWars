@@ -267,6 +267,8 @@ public class PlayerStatisticManager implements PlayerStatisticsManager {
 
     public void updateScore(PlayerStatistic playerStatistic) {
         allScores.put(playerStatistic.getId(), playerStatistic.getScore());
-        Main.getLeaderboardHolograms().updateEntries();
+        if (Main.getLeaderboardHolograms() != null) {
+            Main.getLeaderboardHolograms().updateEntries();
+        }
     }
 }
