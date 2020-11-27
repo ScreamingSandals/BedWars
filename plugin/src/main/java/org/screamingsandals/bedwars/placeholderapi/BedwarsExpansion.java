@@ -5,7 +5,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.Main;
-import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.api.statistics.PlayerStatistic;
 import org.screamingsandals.bedwars.game.CurrentTeam;
 import org.screamingsandals.bedwars.game.Game;
@@ -92,7 +91,7 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                 return null;
             }
 
-            switch (identifier.toLowerCase().substring(11)) {
+            switch (operation) {
                 case "deaths":
                     return Integer.toString(stats.getDeaths());
                 case "destroyed_beds":
