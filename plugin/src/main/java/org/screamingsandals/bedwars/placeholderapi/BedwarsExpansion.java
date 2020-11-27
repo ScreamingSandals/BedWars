@@ -39,7 +39,11 @@ public class BedwarsExpansion extends PlaceholderExpansion {
         if (identifier.startsWith("game_")) {
             String gameName = identifier.substring(5);
             int index = gameName.lastIndexOf("_");
-            String operation = gameName.substring(index).toLowerCase();
+            String operation = gameName.substring(index + 1).toLowerCase();
+            if (operation.equals("teams")) {
+                index = gameName.lastIndexOf("_", index - 1);
+                operation = gameName.substring(index + 1).toLowerCase();
+            }
             gameName = gameName.substring(0, index);
             Game game = Main.getGame(gameName);
             if (game != null) {
@@ -75,10 +79,10 @@ public class BedwarsExpansion extends PlaceholderExpansion {
             }
             String playerName = identifier.substring(5);
             int index = playerName.lastIndexOf("_");
-            String operation = playerName.substring(index).toLowerCase();
+            String operation = playerName.substring(index + 1).toLowerCase();
             if (operation.equals("beds")) {
                 index = playerName.lastIndexOf("_", index - 1);
-                operation = playerName.substring(index).toLowerCase();
+                operation = playerName.substring(index + 1).toLowerCase();
             }
             playerName = playerName.substring(0, index);
 
