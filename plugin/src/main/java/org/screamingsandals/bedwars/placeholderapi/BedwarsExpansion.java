@@ -77,7 +77,7 @@ public class BedwarsExpansion extends PlaceholderExpansion {
             if (!Main.isPlayerStatisticsEnabled()) {
                 return null;
             }
-            String playerName = identifier.substring(5);
+            String playerName = identifier.substring(11);
             int index = playerName.lastIndexOf("_");
             String operation = playerName.substring(index + 1).toLowerCase();
             if (operation.equals("beds")) {
