@@ -18,7 +18,7 @@ public interface AutoIgniteableTNT extends SpecialItem {
     boolean isAllowedDamagingPlacer();
     
     /**
-     * @return spawn an entity tnt
+     * spawn an entity tnt
      */
     void spawn(Location location);
     
