@@ -23,3 +23,10 @@ out/
 # Misc
 .DS_Store
 CraftBukkit/
+
+# Gradle
+/.gradle
+*/build/
+gradle-app.setting
+!gradle-wrapper.jar
+.gradletasknamecache

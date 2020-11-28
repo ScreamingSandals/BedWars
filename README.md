@@ -7,9 +7,9 @@
 Complete rewrite of the BedWarsRel plugin.
 Thia project is now under complete rewrite and we don't have much of time, so be patient :)
 
-This is the stable branch with bugfixes supporting all versions since 1.9! For new branch visit [1.x.x_dev](https://github.com/ScreamingSandals/BedWars/tree/1.x.x_dev)
+~~This is the stable branch with bugfixes supporting all versions since 1.9! For new branch visit [1.x.x_dev](https://github.com/ScreamingSandals/BedWars/tree/1.x.x_dev)~~ (1.x.x dev is currently paused, use stable version instead)
 
-Supported versions: \[1.9 - 1.16.3\]. Recommended version: \[1.15.2/1.16.3\]
+Supported versions: \[1.9 - 1.16.4\]. Recommended version: \[1.15.2/1.16.4\]
 
 ## Support
 If you need any help, you can contact us on [Discord](https://discord.gg/4xB54Ts). Please make sure to look into older messages. There are many question already answered. It is really anoying to repeat the same thing over and over.

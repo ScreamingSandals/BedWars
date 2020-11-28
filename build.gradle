@@ -1,0 +1,47 @@
+defaultTasks 'clean', 'screamCompile'
+
+allprojects {
+    group = 'org.screamingsandals.bedwars'
+    version = '0.2.15-SNAPSHOT'
+}
+
+buildscript {
+    repositories {
+        maven { url 'https://repo.screamingsandals.org/public/' }
+    }
+    dependencies {
+		classpath 'org.screamingsandals.gradle.builder:screaming-plugin-builder:1.0.30'
+    }
+}
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'org.screamingsandals.gradle.builder'
+
+    repositories {
+        maven { url 'https://repo.extendedclip.com/content/repositories/placeholderapi/'  }
+        maven { url 'http://repo.onarandombox.com/content/groups/public'  }
+        maven { url 'https://ci.frostcast.net/plugin/repository/everything'  }
+        maven { url 'https://repo.codemc.org/repository/maven-public/'  }
+        maven { url 'https://jitpack.io'  }
+        maven { url 'https://repo.citizensnpcs.co'  }
+    }
+    
+    dependencies {
+    	compileOnly paper("1.16.4")
+    }
+
+    shadowJar {
+        relocate 'com.zaxxer', 'org.screamingsandals.bedwars.lib.HikariCP'
+        relocate 'org.screamingsandals.simpleinventories', 'org.screamingsandals.bedwars.lib.sgui'
+        relocate 'org.bstats', 'org.screamingsandals.bedwars.lib.bstats'
+
+        if (System.getenv('BUILD_NUMBER') != null) {
+            archiveClassifier.set(System.getenv('BUILD_NUMBER'))
+        } else {
+            archiveClassifier.set('dev')
+        }
+    }
+
+    sourceCompatibility = '1.8'
+}

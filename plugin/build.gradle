@@ -1,0 +1,50 @@
+dependencies {
+    /* PROVIDED */
+    compileOnly 'net.milkbowl.vault:VaultAPI:1.7'
+    compileOnly 'com.onarandombox.multiversecore:Multiverse-Core:4.0.0'
+    compileOnly 'me.confuser:BarAPI:3.5'
+    compileOnly 'me.clip:placeholderapi:2.9.2'
+    compileOnly('me.ebonjaeger:perworldinventory-kt:2.3.1')  {
+        exclude group: '*', module: '*'
+    }
+    compileOnly('me.gnat008:perworldinventory:1.11.5') {
+        exclude group: '*', module: '*'
+    }
+    compileOnly 'io.netty:netty-all:4.1.42.Final'
+    compileOnly 'net.citizensnpcs:citizens-main:2.0.27-SNAPSHOT'
+
+    /* SHADED */
+    shade project(':BedWars-API')
+    shade 'com.zaxxer:HikariCP:3.3.0'
+    shade 'org.screamingsandals.simpleinventories:SimpleInventories-Core:1.0.6.5'
+    shade 'org.bstats:bstats-bukkit:1.7'
+}
+
+enableSpigradleSpigot()
+
+spigot {
+    name = 'BedWars'
+    authors = ['ScreamingSandals <Misat11, Ceph>']
+    apiVersion = '1.13'
+    load = POST_WORLD
+    softDepends = [
+            'Vault',
+            'Multiverse-Core',
+            'Multiworld',
+            'MultiWorld',
+            'UltimateCore',
+            'PlaceholderAPI',
+            'BarAPI',
+            'PerWorldInventory',
+            'SlimeWorldManager',
+            'My_Worlds',
+            'Citizens'
+    ]
+    commands {
+        bw {
+            aliases = ['bedwars']
+            description = 'Command of BW plugin'
+            usage = '/bw [subcommand]'
+        }
+    }
+}
