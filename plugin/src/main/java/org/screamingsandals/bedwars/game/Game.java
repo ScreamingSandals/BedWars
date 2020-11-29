@@ -641,6 +641,11 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             players.forEach(Main.getTabManager()::modifyForPlayer);
         }
 
+        if (Main.getConfigurator().config.getBoolean("tab.enable") && Main.getConfigurator().config.getBoolean("tab.hide-foreign-players")) {
+            Bukkit.getOnlinePlayers().stream().filter(p -> Main.getInstance().getGameOfPlayer(p) != this).forEach(gamePlayer::hidePlayer);
+            players.forEach(p -> p.showPlayer(gamePlayer.player));
+        }
+
         if (status == GameStatus.WAITING) {
             mpr("join").prefix(customPrefix).replace("name", gamePlayer.player.getDisplayName())
                     .replace("players", players.size())
@@ -648,7 +653,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                     .send(getConnectedPlayers());
 
             gamePlayer.teleport(lobbySpawn, () -> {
-                gamePlayer.clean(); // temp fix for inventory issues?
+                gamePlayer.invClean(); // temp fix for inventory issues?
                 SpawnEffects.spawnEffect(Game.this, gamePlayer.player, "game-effects.lobbyjoin");
 
                 if (getOriginalOrInheritedJoinRandomTeamOnJoin()) {
@@ -697,6 +702,9 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         }
 
         if (status == GameStatus.RUNNING || status == GameStatus.GAME_END_CELEBRATING) {
+            if (Main.getConfigurator().config.getBoolean("tab.enable") && Main.getConfigurator().config.getBoolean("tab.hide-spectators")) {
+                players.stream().filter(p -> p.isSpectator && !isPlayerInAnyTeam(p.player)).forEach(p -> gamePlayer.hidePlayer(p.player));
+            }
 
             makeSpectator(gamePlayer, true);
             createdHolograms.forEach(hologram -> {
@@ -741,6 +749,10 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         if (Main.getTabManager() != null) {
             Main.getTabManager().clear(gamePlayer);
             players.forEach(Main.getTabManager()::modifyForPlayer);
+        }
+
+        if (Main.getConfigurator().config.getBoolean("tab.enable") && Main.getConfigurator().config.getBoolean("tab.hide-foreign-players")) {
+            players.forEach(p -> p.hidePlayer(gamePlayer.player));
         }
 
         statusbar.removePlayer(gamePlayer.player);

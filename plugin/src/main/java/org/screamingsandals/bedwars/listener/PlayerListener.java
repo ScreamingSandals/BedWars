@@ -248,6 +248,10 @@ public class PlayerListener implements Listener {
         if (Main.getConfigurator().config.getBoolean("disable-server-message.player-join")) {
             event.setJoinMessage(null);
         }
+
+        if (Main.getConfigurator().config.getBoolean("tab.enable") && Main.getConfigurator().config.getBoolean("tab.hide-foreign-players")) {
+            Bukkit.getOnlinePlayers().stream().filter(Main::isPlayerInGame).forEach(p -> Main.getPlayerGameProfile(p).hidePlayer(player));
+        }
     }
 
     @SuppressWarnings("unchecked")

@@ -456,6 +456,7 @@ public class Configurator {
         checkOrSetConfig(modify, "tab.footer.enabled", true);
         checkOrSetConfig(modify, "tab.footer.contents", Arrays.asList("&eexample.com", "&fWow!!", "§a%spectators% are watching this match"));
         checkOrSetConfig(modify, "tab.hide-spectators", true);
+        checkOrSetConfig(modify, "tab.hide-foreign-players", false);
 
         checkOrSetConfig(modify, "default-permissions.join", true);
         checkOrSetConfig(modify, "default-permissions.leave", true);
