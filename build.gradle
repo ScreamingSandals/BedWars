@@ -2,7 +2,7 @@ defaultTasks 'clean', 'screamCompile'
 
 allprojects {
     group = 'org.screamingsandals.bedwars'
-    version = '0.2.15-SNAPSHOT'
+    version = '0.2.15'
 }
 
 buildscript {
