@@ -2426,7 +2426,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             obj = gameScoreboard.registerNewObjective("lobby", "dummy");
             obj.setDisplaySlot(DisplaySlot.SIDEBAR);
             obj.setDisplayName(this.formatLobbyScoreboardString(
-                    Main.getConfigurator().config.getString("lobby-scoreboard.title", "§eBEDWARS")));
+                    Main.getConfigurator().config.getString("lobby-scoreboard.title", "§e§lBEDWARS")));
         }
 
         List<String> rows = Main.getConfigurator().config.getStringList("lobby-scoreboard.content");
@@ -2438,15 +2438,15 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
         //reset only scores that are changed instead of resetting all entries every tick
         //helps resolve scoreboard flickering
-        for (int i = 15; i > 0; i--) {
+        int i = 15;
+        for(String row : rows){
             try {
-                final String element = rows.get(i);
-                final Score score = obj.getScore(element);
+                final Score score = obj.getScore(row);
 
                 if (score.getScore() != i) {
                     score.setScore(i);
                     for (String entry : gameScoreboard.getEntries()) {
-                        if (obj.getScore(entry).getScore() == i && !entry.equalsIgnoreCase(element)) {
+                        if (obj.getScore(entry).getScore() == i && !entry.equalsIgnoreCase(row)) {
                             gameScoreboard.resetScores(entry);
                         }
                     }
@@ -2454,6 +2454,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             } catch (IllegalArgumentException | IllegalStateException e){
                 e.printStackTrace();
             }
+            i--;
         }
 
 
@@ -2482,6 +2483,10 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             }
             content.add(builder.toString());
         });
+
+        if(content.size() > 15){
+            return content.subList(0, 15);
+        }
 
         return content;
     }
