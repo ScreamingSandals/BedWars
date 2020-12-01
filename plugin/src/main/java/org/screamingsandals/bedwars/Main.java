@@ -385,7 +385,9 @@ public class Main extends JavaPlugin implements BedwarsAPI {
                 leaderboardHolograms = new LeaderboardHolograms();
                 leaderboardHolograms.loadHolograms();
             }
-        } catch (Throwable ignored) {
+        } catch (Throwable exception) {
+            getLogger().severe("Failed to load holograms");
+            exception.printStackTrace();
         }
 
         commands = new HashMap<>();
