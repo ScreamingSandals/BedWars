@@ -1,6 +1,7 @@
 package org.screamingsandals.bedwars.game;
 
 import com.onarandombox.MultiverseCore.api.Core;
+import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -1055,6 +1056,23 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 gameScoreboard.getObjective("lobby").unregister();
             }
             gameScoreboard.clearSlot(DisplaySlot.SIDEBAR);
+
+            for(GamePlayer gPlayer : players) {
+                Scoreboard board = gPlayer.player.getScoreboard();
+                if(board != null) {
+                    if(board.getObjective("display") != null){
+                        board.getObjective("display").unregister();
+                    }
+
+                    if(board.getObjective("lobby") != null) {
+                        board.getObjective("lobby").unregister();
+                    }
+                }
+
+                board.clearSlot(DisplaySlot.SIDEBAR);
+                gPlayer.player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
+            }
+
             for (CurrentTeam team : teamsInGame) {
                 team.getScoreboardTeam().unregister();
             }
@@ -2268,6 +2286,177 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             return;
         }
 
+        if(!Main.getConfigurator().config.getBoolean("scoreboard.force-anti-flicker.enabled", true)){
+            updateScoreboardOld();
+            return;
+        }
+
+        final List<String> content = new ArrayList<>();
+
+        final List<String> teamInformation = new ArrayList<>();
+        for (CurrentTeam team : teamsInGame) {
+            String formattedTeamTitle = this.formatScoreboardTeam(team, !team.isBed, team.isBed
+                    && "RESPAWN_ANCHOR".equals(team.teamInfo.bed.getBlock().getType().name())
+                    && Player116ListenerUtils.isAnchorEmpty(team.teamInfo.bed.getBlock()))
+                       .replace("%size%", String.valueOf(team.players.size()));
+
+            teamInformation.add(formattedTeamTitle);
+        }
+
+        for (String lines : Main.getConfigurator()
+                .config.getStringList("scoreboard.force-anti-flicker.content")) {
+
+            if(lines.contains("%team_status%")){
+                content.addAll(teamInformation);
+                continue;
+            }
+
+            content.add(lines);
+        }
+
+        for(GamePlayer gPlayer : players) {
+            List<String> rows = new ArrayList<>(content);
+            final Player player = gPlayer.player;
+            Scoreboard board = player.getScoreboard();
+
+            if(board == null || board == Bukkit.getScoreboardManager().getMainScoreboard()) {
+                board = Bukkit.getScoreboardManager().getNewScoreboard();
+            }
+
+            Objective obj = board.getObjective("display");
+            if(obj == null) {
+                obj = board.registerNewObjective("display", "dummy");
+                obj.setDisplaySlot(DisplaySlot.SIDEBAR);
+                obj.setDisplayName(this.formatScoreboardTitle());
+            }
+            
+            rows = resizeAndMakeUnique(rows, player);
+
+            int i = 15;
+            for(String row : rows) {
+
+                try {
+                    final Score score = obj.getScore(row);
+
+                    if (score.getScore() != i) {
+                        score.setScore(i);
+                        for (String entry : board.getEntries()) {
+                            if (obj.getScore(entry).getScore() == i && !entry.equalsIgnoreCase(row)) {
+                                board.resetScores(entry);
+                            }
+                        }
+                    }
+                } catch (IllegalArgumentException | IllegalStateException e) {
+                    e.printStackTrace();
+                }
+                i--;
+            }
+            player.setScoreboard(board);
+        }
+
+    }
+
+    private void updateLobbyScoreboard() {
+        if (status != GameStatus.WAITING || !getOriginalOrInheritedLobbyScoreaboard()) {
+            return;
+        }
+
+        if(!Main.getConfigurator().config.getBoolean("lobby-scoreboard.force-anti-flicker", true)) {
+            updateLobbyScoreboardOld();
+            return;
+        }
+
+        for(GamePlayer gPlayer : players){
+            final Player player = gPlayer.player;
+            Scoreboard sboard = player.getScoreboard();
+
+            if(sboard == null || sboard == Bukkit.getScoreboardManager().getMainScoreboard()) {
+                sboard = Bukkit.getScoreboardManager().getNewScoreboard();
+            }
+
+            Objective obj = sboard.getObjective("lobby");
+            if(obj == null){
+                obj = sboard.registerNewObjective("lobby", "dummy");
+                obj.setDisplaySlot(DisplaySlot.SIDEBAR);
+                obj.setDisplayName(this.formatLobbyScoreboardString(
+                        Main.getConfigurator().config.getString("lobby-scoreboard.title", "§e§lBEDWARS")));
+            }
+
+            List<String> rows = Main.getConfigurator().config.getStringList("lobby-scoreboard.content");
+            if (rows.isEmpty()) {
+                return;
+            }
+
+            rows = resizeAndMakeUnique(rows, player);
+
+            //reset only scores that are changed instead of resetting all entries every tick
+            //helps resolve scoreboard flickering
+            int i = 15;
+            for(String row : rows) {
+                try {
+                    final String element = formatLobbyScoreboardString(row);
+                    final Score score = obj.getScore(element);
+
+                    if (score.getScore() != i) {
+                        score.setScore(i);
+                        for (String entry : sboard.getEntries()) {
+                            if (obj.getScore(entry).getScore() == i && !entry.equalsIgnoreCase(element)) {
+                                sboard.resetScores(entry);
+                            }
+                        }
+                    }
+                } catch (IllegalArgumentException | IllegalStateException e) {
+                    e.printStackTrace();
+                }
+                i--;
+            }
+
+            player.setScoreboard(sboard);
+
+
+        }
+    }
+
+    private void updateLobbyScoreboardOld() {
+        if (status != GameStatus.WAITING || !getOriginalOrInheritedLobbyScoreaboard()) {
+            return;
+        }
+        Objective obj = gameScoreboard.getObjective("lobby");
+        if (obj == null) {
+            obj = gameScoreboard.registerNewObjective("lobby", "dummy");
+            obj.setDisplaySlot(DisplaySlot.SIDEBAR);
+            obj.setDisplayName(this.formatLobbyScoreboardString(
+                    Main.getConfigurator().config.getString("lobby-scoreboard.title", "§eBEDWARS")));
+        }
+
+        gameScoreboard.getEntries().forEach(gameScoreboard::resetScores);
+
+        List<String> rows = Main.getConfigurator().config.getStringList("lobby-scoreboard.content");
+        int rowMax = rows.size();
+        if (rows.isEmpty()) {
+            return;
+        }
+
+        for (String row : rows) {
+            if (row.trim().equals("")) {
+                for (int i = 0; i <= rowMax; i++) {
+                    row += " ";
+                }
+            }
+
+            Score score = obj.getScore(this.formatLobbyScoreboardString(row));
+            score.setScore(rowMax);
+            rowMax--;
+        }
+
+        players.forEach(player -> player.player.setScoreboard(gameScoreboard));
+    }
+
+    public void updateScoreboardOld() {
+        if (!getOriginalOrInheritedScoreaboard()) {
+            return;
+        }
+
         Objective obj = this.gameScoreboard.getObjective("display");
         if (obj == null) {
             obj = this.gameScoreboard.registerNewObjective("display", "dummy");
@@ -2290,20 +2479,53 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         }
     }
 
+
+
+
     private String formatScoreboardTeam(CurrentTeam team, boolean destroy, boolean empty) {
-        if (team == null) {
+        String formattedStr = ChatColor.translateAlternateColorCodes('&', Main.getConfigurator().config
+                .getBoolean("scoreboard.force-anti-flicker.enabled", true) ?
+                Main.getConfigurator().config.getString("scoreboard.force-anti-flicker.teamTitle") :
+                Main.getConfigurator().config.getString("scoreboard.teamTitle"));
+
+
+        if (team == null || formattedStr == null) {
             return "";
         }
 
-        return Main.getConfigurator().config.getString("scoreboard.teamTitle")
+        return formattedStr
                 .replace("%color%", team.teamInfo.color.chatColor.toString()).replace("%team%", team.teamInfo.name)
-                .replace("%bed%", destroy ? bedLostString() : (empty ? anchorEmptyString() : bedExistString()));
+                .replace("%bed%", destroy ? bedLostString() : (empty ? anchorEmptyString() : bedExistString()))
+                .replace("%size%" , String.valueOf(team.players.size()));
     }
 
     private void updateScoreboardTimer() {
         if (this.status != GameStatus.RUNNING || !getOriginalOrInheritedScoreaboard()) {
             return;
         }
+
+        if(Main.getConfigurator().config.getBoolean("scoreboard.force-anti-flicker.enabled", true)) {
+            for(GamePlayer gPlayer : players){
+                Scoreboard sboard = gPlayer.player.getScoreboard();
+
+                if(sboard == null || sboard == Bukkit.getScoreboardManager().getMainScoreboard()) {
+                    sboard = Bukkit.getScoreboardManager().getNewScoreboard();
+                }
+
+                Objective obj = sboard.getObjective("display");
+                if(obj == null) {
+                    obj = sboard.registerNewObjective("display", "dummy");
+                    obj.setDisplaySlot(DisplaySlot.SIDEBAR);
+                }
+
+                obj.setDisplayName(this.formatScoreboardTitle());
+
+                gPlayer.player.setScoreboard(sboard);
+            }
+
+            return;
+        }
+
 
         Objective obj = this.gameScoreboard.getObjective("display");
         if (obj == null) {
@@ -2417,51 +2639,10 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         }
     }
 
-    private void updateLobbyScoreboard() {
-        if (status != GameStatus.WAITING || !getOriginalOrInheritedLobbyScoreaboard()) {
-            return;
-        }
-        Objective obj = gameScoreboard.getObjective("lobby");
-        if (obj == null) {
-            obj = gameScoreboard.registerNewObjective("lobby", "dummy");
-            obj.setDisplaySlot(DisplaySlot.SIDEBAR);
-            obj.setDisplayName(this.formatLobbyScoreboardString(
-                    Main.getConfigurator().config.getString("lobby-scoreboard.title", "§e§lBEDWARS")));
-        }
-
-        List<String> rows = Main.getConfigurator().config.getStringList("lobby-scoreboard.content");
-        if (rows.isEmpty()) {
-            return;
-        }
-
-        rows = resizeAndMakeUnique(rows);
-
-        //reset only scores that are changed instead of resetting all entries every tick
-        //helps resolve scoreboard flickering
-        int i = 15;
-        for(String row : rows){
-            try {
-                final Score score = obj.getScore(row);
-
-                if (score.getScore() != i) {
-                    score.setScore(i);
-                    for (String entry : gameScoreboard.getEntries()) {
-                        if (obj.getScore(entry).getScore() == i && !entry.equalsIgnoreCase(row)) {
-                            gameScoreboard.resetScores(entry);
-                        }
-                    }
-                }
-            } catch (IllegalArgumentException | IllegalStateException e){
-                e.printStackTrace();
-            }
-            i--;
-        }
 
 
-        players.forEach(player -> player.player.setScoreboard(gameScoreboard));
-    }
-
-    public List<String> resizeAndMakeUnique(List<String> lines) {
+    public List<String> resizeAndMakeUnique(List<String> lines,
+                                            Player player) {
         final List<String> content = new ArrayList<>();
 
         lines.forEach(line -> {
@@ -2475,7 +2656,9 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 copy = copy.substring(40);
             }
 
-            copy = formatLobbyScoreboardString(copy);
+            if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+                copy = PlaceholderAPI.setPlaceholders(player, copy);
+            }
 
             final StringBuilder builder = new StringBuilder(copy);
             while (content.contains(builder.toString())) {
@@ -2484,7 +2667,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             content.add(builder.toString());
         });
 
-        if(content.size() > 15){
+        if(content.size() > 15) {
             return content.subList(0, 15);
         }
 
