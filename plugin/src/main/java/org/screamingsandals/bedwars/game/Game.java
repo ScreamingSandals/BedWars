@@ -2285,9 +2285,10 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
             //reset only scores that are changed instead of resetting all entries every tick
             //helps resolve scoreboard flickering
-            for (int i = 15; i > 0; i--) {
+            int i = 15;
+            for (String row : rows) {
                 try {
-                    final String element = rows.get(i);
+                    final String element = row;
                     final Score score = obj.getScore(element);
 
                     if (score.getScore() != i) {
@@ -2301,6 +2302,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 } catch (IllegalArgumentException | IllegalStateException e){
                     e.printStackTrace();
                 }
+                i--;
             }
 
             Score score = obj.getScore(this.formatScoreboardTeam(team, !team.isBed, team.isBed && "RESPAWN_ANCHOR".equals(team.teamInfo.bed.getBlock().getType().name()) && Player116ListenerUtils.isAnchorEmpty(team.teamInfo.bed.getBlock())));
@@ -2462,9 +2464,10 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
         //reset only scores that are changed instead of resetting all entries every tick
         //helps resolve scoreboard flickering
-        for (int i = 15; i > 0; i--) {
+        int i = 15;
+        for (String row : rows) {
             try {
-                final String element = formatLobbyScoreboardString(rows.get(i));
+                final String element = formatLobbyScoreboardString(row);
                 final Score score = obj.getScore(element);
 
                 if (score.getScore() != i) {
@@ -2478,6 +2481,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             } catch (IllegalArgumentException | IllegalStateException e){
                 e.printStackTrace();
             }
+            i--;
         }
 
 
@@ -2506,6 +2510,9 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             content.add(builder.toString());
         });
 
+        if(content.size() > 15) {
+            return content.subList(0, 15);
+        }
         return content;
     }
 
