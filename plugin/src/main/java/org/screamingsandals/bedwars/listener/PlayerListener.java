@@ -234,6 +234,12 @@ public class PlayerListener implements Listener {
                         if (game == null) {
                             game = (Game) Main.getInstance().getFirstRunningGame();
                         }
+                        if (game == null) { // still nothing?
+                            if (!BaseCommand.hasPermission(player, ADMIN_PERMISSION, false)) {
+                                BungeeUtils.movePlayerToBungeeServer(player, false);
+                            }
+                            return;
+                        }
 
                         game.joinToGame(player);
                     } catch (NullPointerException ignored) {
