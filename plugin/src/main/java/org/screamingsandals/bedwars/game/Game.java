@@ -2277,38 +2277,12 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         obj.setDisplayName(this.formatScoreboardTitle());
 
         for (CurrentTeam team : teamsInGame) {
-            List<String> rows = new ArrayList<>();
-            rows.add(this.formatScoreboardTeam(team, false, false));
-            rows.add(this.formatScoreboardTeam(team, false, true));
-            rows.add(this.formatScoreboardTeam(team, true, false));
-            rows = resizeAndMakeUnique(rows);
-
-            //reset only scores that are changed instead of resetting all entries every tick
-            //helps resolve scoreboard flickering
-            int i = 15;
-            for (String row : rows) {
-                try {
-                    final String element = row;
-                    final Score score = obj.getScore(element);
-
-                    if (score.getScore() != i) {
-                        score.setScore(i);
-                        for (String entry : gameScoreboard.getEntries()) {
-                            if (obj.getScore(entry).getScore() == i && !entry.equalsIgnoreCase(element)) {
-                                gameScoreboard.resetScores(entry);
-                            }
-                        }
-                    }
-                } catch (IllegalArgumentException | IllegalStateException e){
-                    e.printStackTrace();
-                }
-                i--;
-            }
+            this.gameScoreboard.resetScores(this.formatScoreboardTeam(team, false, false));
+            this.gameScoreboard.resetScores(this.formatScoreboardTeam(team, false, true));
+            this.gameScoreboard.resetScores(this.formatScoreboardTeam(team, true, false));
 
             Score score = obj.getScore(this.formatScoreboardTeam(team, !team.isBed, team.isBed && "RESPAWN_ANCHOR".equals(team.teamInfo.bed.getBlock().getType().name()) && Player116ListenerUtils.isAnchorEmpty(team.teamInfo.bed.getBlock())));
-            if(score.getScore() != team.players.size()) {
-                score.setScore(team.players.size());
-            }
+            score.setScore(team.players.size());
         }
 
         for (GamePlayer player : players) {
