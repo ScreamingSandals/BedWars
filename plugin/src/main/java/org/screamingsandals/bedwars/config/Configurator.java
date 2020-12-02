@@ -157,10 +157,6 @@ public class Configurator {
         checkOrSetConfig(modify, "scoreboard.anchorEmpty", "§e\u2718");
         checkOrSetConfig(modify, "scoreboard.bedExists", "§a\u2714");
         checkOrSetConfig(modify, "scoreboard.teamTitle", "%bed%%color%%team%");
-        checkOrSetConfig(modify, "scoreboard.force-anti-flicker.enabled", true);
-        checkOrSetConfig(modify, "scoreboard.force-anti-flicker.teamTitle", "%bed%%color%%team% &7(%size%)");
-        checkOrSetConfig(modify, "scoreboard.force-anti-flicker.content",
-                Arrays.asList(" ", "%team_status%", " "));
 
         checkOrSetConfig(modify, "title.enabled", true);
         checkOrSetConfig(modify, "title.fadeIn", 0);
@@ -324,7 +320,6 @@ public class Configurator {
         checkOrSetConfig(modify, "lobby-scoreboard.title", "§eBEDWARS");
         checkOrSetConfig(modify, "lobby-scoreboard.content", Arrays.asList(" ", "§fMap: §2%arena%",
                 "§fPlayers: §2%players%§f/§2%maxplayers%", " ", "§fWaiting ...", " "));
-        checkOrSetConfig(modify, "lobby-scoreboard.force-anti-flicker", true);
 
         checkOrSetConfig(modify, "statistics.enabled", true);
         checkOrSetConfig(modify, "statistics.type", "yaml");
