@@ -1,5 +1,6 @@
 package org.screamingsandals.bedwars.special;
 
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -45,6 +46,13 @@ public class WarpPowder extends SpecialItem implements org.screamingsandals.bedw
         if (showMessage) {
             player.sendMessage(i18nc("specials_warp_powder_canceled", game.getCustomPrefix()));
         }
+
+        if (player.getInventory().firstEmpty() == -1 || !player.getInventory().contains(item)) {
+            player.getWorld().dropItemNaturally(player.getLocation(), item);
+        } else {
+            player.getInventory().addItem(item);
+        }
+        player.updateInventory();
     }
 
     @Override
@@ -52,6 +60,21 @@ public class WarpPowder extends SpecialItem implements org.screamingsandals.bedw
         game.registerSpecialItem(this);
 
         player.sendMessage(i18nc("specials_warp_powder_started", game.getCustomPrefix()).replace("%time%", Double.toString(teleportingTime)));
+
+        if (item.getAmount() > 1) {
+            item.setAmount(item.getAmount() - 1);
+        } else {
+            try {
+                if (player.getInventory().getItemInOffHand().equals(item)) {
+                    player.getInventory().setItemInOffHand(new ItemStack(Material.AIR));
+                } else {
+                    player.getInventory().remove(item);
+                }
+            } catch (Throwable e) {
+                player.getInventory().remove(item);
+            }
+        }
+        player.updateInventory();
 
         teleportingTask = new BukkitRunnable() {
 
