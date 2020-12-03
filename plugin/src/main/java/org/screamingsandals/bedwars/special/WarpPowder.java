@@ -47,7 +47,7 @@ public class WarpPowder extends SpecialItem implements org.screamingsandals.bedw
             player.sendMessage(i18nc("specials_warp_powder_canceled", game.getCustomPrefix()));
         }
 
-        if (player.getInventory().firstEmpty() == -1 || !player.getInventory().contains(item)) {
+        if (player.getInventory().firstEmpty() == -1 && !player.getInventory().contains(item)) {
             player.getWorld().dropItemNaturally(player.getLocation(), item);
         } else {
             player.getInventory().addItem(item);
@@ -81,7 +81,7 @@ public class WarpPowder extends SpecialItem implements org.screamingsandals.bedw
             @Override
             public void run() {
                 if (teleportingTime == 0) {
-                    cancelTeleport(true, false);
+                    game.unregisterSpecialItem(WarpPowder.this);
                     PlayerUtils.teleportPlayer(player, team.getTeamSpawn());
                 } else {
                     SpawnEffects.spawnEffect(game, player, "game-effects.warppowdertick");

@@ -103,6 +103,7 @@ public class WarpPowderListener implements Listener {
 
         WarpPowder warpPowder = (WarpPowder) game.getFirstActivedSpecialItemOfPlayer(player, WarpPowder.class);
         if (warpPowder != null) {
+            player.sendMessage("cancelled");
             warpPowder.cancelTeleport(true, true);
         }
     }
@@ -126,6 +127,7 @@ public class WarpPowderListener implements Listener {
 
         WarpPowder warpPowder = (WarpPowder) game.getFirstActivedSpecialItemOfPlayer(player, WarpPowder.class);
         if (warpPowder != null) {
+            player.sendMessage("cancelled");
             warpPowder.cancelTeleport(true, true);
         }
     }
