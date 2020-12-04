@@ -96,6 +96,7 @@ public class Configurator {
 
         checkOrSetConfig(modify, "allow-crafting", false);
         checkOrSetConfig(modify, "keep-inventory-on-death", false);
+        checkOrSetConfig(modify, "keep-armor-on-death", false);
         checkOrSetConfig(modify, "in-lobby-colored-leather-by-team", true);
         checkOrSetConfig(modify, "jointeam-entity-show-name", true);
         checkOrSetConfig(modify, "friendlyfire", false);

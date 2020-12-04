@@ -20,6 +20,7 @@ public class GamePlayer {
     private String latestGame = null;
     private StoredInventory oldInventory = new StoredInventory();
     private List<Player> hiddenPlayers = new ArrayList<>();
+    private ItemStack[] armorContents = null;
 
     public boolean isSpectator = false;
     public boolean isTeleportingFromGame_justForInventoryPlugins = false;
@@ -195,6 +196,14 @@ public class GamePlayer {
             }
         }
 
+    }
+
+    public void setGameArmorContents(ItemStack[] armorContents) {
+        this.armorContents = armorContents;
+    }
+
+    public ItemStack[] getGameArmorContents() {
+        return armorContents;
     }
 
 }

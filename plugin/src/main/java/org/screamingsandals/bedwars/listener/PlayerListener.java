@@ -60,6 +60,10 @@ public class PlayerListener implements Listener {
             List<ItemStack> drops = new ArrayList<>(event.getDrops());
             int respawnTime = Main.getConfigurator().config.getInt("respawn-cooldown.time", 5);
 
+            if (game.getOriginalOrInheritedKeepArmor()) {
+                gVictim.setGameArmorContents(victim.getInventory().getArmorContents());
+            }
+
             event.setKeepInventory(game.getOriginalOrInheritedKeepInventory());
             event.setDroppedExp(0);
 

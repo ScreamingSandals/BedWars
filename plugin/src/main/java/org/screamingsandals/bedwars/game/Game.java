@@ -73,6 +73,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     public static final String FRIENDLY_FIRE = "friendlyfire";
     public static final String COLORED_LEATHER_BY_TEAM_IN_LOBBY = "in-lobby-colored-leather-by-team";
     public static final String KEEP_INVENTORY = "keep-inventory-on-death";
+    public static final String KEEP_ARMOR = "keep-armor-on-death";
     public static final String CRAFTING = "allow-crafting";
     public static final String GLOBAL_LOBBY_BOSSBAR = "bossbar.lobby.enable";
     public static final String LOBBY_BOSSBAR = "lobbybossbar";
@@ -131,6 +132,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     private InGameConfigBooleanConstants friendlyfire = InGameConfigBooleanConstants.INHERIT;
     private InGameConfigBooleanConstants coloredLeatherByTeamInLobby = InGameConfigBooleanConstants.INHERIT;
     private InGameConfigBooleanConstants keepInventory = InGameConfigBooleanConstants.INHERIT;
+    private InGameConfigBooleanConstants keepArmor = InGameConfigBooleanConstants.INHERIT;
     private InGameConfigBooleanConstants crafting = InGameConfigBooleanConstants.INHERIT;
     private InGameConfigBooleanConstants lobbybossbar = InGameConfigBooleanConstants.INHERIT;
     private InGameConfigBooleanConstants gamebossbar = InGameConfigBooleanConstants.INHERIT;
@@ -327,6 +329,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             game.joinRandomTeamOnJoin = readBooleanConstant(
                     configMap.getString("constant." + JOIN_RANDOM_TEAM_ON_JOIN, "inherit"));
             game.keepInventory = readBooleanConstant(configMap.getString("constant." + KEEP_INVENTORY, "inherit"));
+            game.keepArmor = readBooleanConstant(configMap.getString("constant." + KEEP_ARMOR, "inherit"));
             game.preventKillingVillagers = readBooleanConstant(
                     configMap.getString("constant." + PREVENT_KILLING_VILLAGERS, "inherit"));
             game.playerDrops = readBooleanConstant(configMap.getString("constant." + PLAYER_DROPS, "inherit"));
@@ -1145,6 +1148,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         configMap.set("constant." + JOIN_RANDOM_TEAM_AFTER_LOBBY, writeBooleanConstant(joinRandomTeamAfterLobby));
         configMap.set("constant." + JOIN_RANDOM_TEAM_ON_JOIN, writeBooleanConstant(joinRandomTeamOnJoin));
         configMap.set("constant." + KEEP_INVENTORY, writeBooleanConstant(keepInventory));
+        configMap.set("constant." + KEEP_ARMOR, writeBooleanConstant(keepArmor));
         configMap.set("constant." + PREVENT_KILLING_VILLAGERS, writeBooleanConstant(preventKillingVillagers));
         configMap.set("constant." + PLAYER_DROPS, writeBooleanConstant(playerDrops));
         configMap.set("constant." + FRIENDLY_FIRE, writeBooleanConstant(friendlyfire));
@@ -1531,6 +1535,13 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                         MiscUtils.giveItemsToPlayer(givedGameStartItems, player, currentTeam.getColor());
                     } else {
                         Debug.warn("You have wrongly configured gived-player-respawn-items!", true);
+                    }
+                }
+
+                if (getOriginalOrInheritedKeepArmor()) {
+                    final ItemStack[] armorContents = gamePlayer.getGameArmorContents();
+                    if (armorContents != null) {
+                        gamePlayer.player.getInventory().setArmorContents(armorContents);
                     }
                 }
 
@@ -2882,9 +2893,18 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         return keepInventory;
     }
 
+    public InGameConfigBooleanConstants getKeepArmor() {
+        return keepArmor;
+    }
+
     public void setKeepInventory(InGameConfigBooleanConstants keepInventory) {
         this.keepInventory = keepInventory;
     }
+
+    public void setKeepArmor(InGameConfigBooleanConstants keepArmor) {
+        this.keepArmor = keepArmor;
+    }
+
 
     public InGameConfigBooleanConstants getCrafting() {
         return crafting;
@@ -2946,6 +2966,12 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     public boolean getOriginalOrInheritedKeepInventory() {
         return keepInventory.isOriginal() ? keepInventory.getValue()
                 : Main.getConfigurator().config.getBoolean(KEEP_INVENTORY);
+    }
+
+    @Override
+    public boolean getOriginalOrInheritedKeepArmor() {
+        return keepArmor.isOriginal() ? keepArmor.getValue()
+                : Main.getConfigurator().config.getBoolean(KEEP_ARMOR);
     }
 
     @Override

@@ -448,6 +448,16 @@ public interface Game {
     /**
      * @return
      */
+    InGameConfigBooleanConstants getKeepArmor();
+
+    /**
+     * @return
+     */
+    boolean getOriginalOrInheritedKeepArmor();
+
+    /**
+     * @return
+     */
 	InGameConfigBooleanConstants getCrafting();
 
     /**

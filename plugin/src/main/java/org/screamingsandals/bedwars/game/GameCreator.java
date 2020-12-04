@@ -418,6 +418,10 @@ public class GameCreator {
             case "inlobbycoloredleatherbyteam":
                 game.setColoredLeatherByTeamInLobby(cons);
                 break;
+            case "keeparmor":
+            case "keeparmorondeath":
+                game.setKeepArmor(cons);
+                break;
             case "keepinventory":
             case "keepinventoryondeath":
                 game.setKeepInventory(cons);
