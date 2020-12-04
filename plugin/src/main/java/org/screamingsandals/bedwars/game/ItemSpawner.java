@@ -190,10 +190,17 @@ public class ItemSpawner implements org.screamingsandals.bedwars.api.game.ItemSp
             } catch (Throwable t){
                 helmetStack = new ItemStack(type.getMaterial());
             }
-            floatingGenStand.setDisabledSlots(EquipmentSlot.HEAD);
+
             floatingGenStand.setHelmet(helmetStack);
             floatingGenStand.setGravity(false);
             floatingGenStand.setVisible(false);
+            if (!Main.isLegacy())
+                floatingGenStand.setDisabledSlots(EquipmentSlot.OFF_HAND);
+            floatingGenStand.setDisabledSlots(EquipmentSlot.HEAD);
+            floatingGenStand.setDisabledSlots(EquipmentSlot.FEET);
+            floatingGenStand.setDisabledSlots(EquipmentSlot.HAND);
+            floatingGenStand.setDisabledSlots(EquipmentSlot.CHEST);
+            floatingGenStand.setDisabledSlots(EquipmentSlot.LEGS);
             floatingGenStand.setCustomName(ARMOR_STAND_DISPLAY_NAME_HIDDEN);
         }
     }
