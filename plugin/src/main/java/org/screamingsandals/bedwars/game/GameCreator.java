@@ -109,6 +109,7 @@ public class GameCreator {
                 }
             }
         } else if (action.equalsIgnoreCase("spawner")) {
+            //TODO: add floatingEnabled param to command add
             if (args.length >= 1) {
                 if (args[0].equalsIgnoreCase("add")) {
                     if (args.length >= 3) {
@@ -700,6 +701,7 @@ public class GameCreator {
         return i18n("admin_command_spawners_reseted").replace("%arena%", game.getName());
     }
 
+    //TODO: add floatingEnabled param
     private String addSpawner(String type, Location loc, String customName, boolean hologramEnabled, double startLevel, org.screamingsandals.bedwars.api.Team team, int maxSpawnedResources) {
         if (game.getPos1() == null || game.getPos2() == null) {
             return i18n("admin_command_set_pos1_pos2_first");
@@ -714,7 +716,7 @@ public class GameCreator {
         loc.setPitch(0);
         ItemSpawnerType spawnerType = Main.getSpawnerType(type);
         if (spawnerType != null) {
-            game.getSpawners().add(new ItemSpawner(loc, spawnerType, customName, hologramEnabled, startLevel, team, maxSpawnedResources));
+            game.getSpawners().add(new ItemSpawner(loc, spawnerType, customName, hologramEnabled, startLevel, team, maxSpawnedResources, false));
             return i18n("admin_command_spawner_added").replace("%resource%", spawnerType.getItemName())
                     .replace("%x%", Integer.toString(loc.getBlockX())).replace("%y%", Integer.toString(loc.getBlockY()))
                     .replace("%z%", Integer.toString(loc.getBlockZ()));

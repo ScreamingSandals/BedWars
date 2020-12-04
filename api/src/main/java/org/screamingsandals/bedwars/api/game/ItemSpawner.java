@@ -44,6 +44,11 @@ public interface ItemSpawner extends Upgrade {
     boolean getHologramEnabled();
 
     /**
+     * @return
+     */
+    boolean getFloatingEnabled();
+
+    /**
      * Sets team of this upgrade
      *
      * @param team current team

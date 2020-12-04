@@ -297,7 +297,8 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                             (String) spawner.get("customName"), ((Boolean) spawner.getOrDefault("hologramEnabled", true)),
                             ((Number) spawner.getOrDefault("startLevel", 1)).doubleValue(),
                             game.getTeamFromName((String) spawner.get("team")),
-                            (int) spawner.getOrDefault("maxSpawnedResources", -1));
+                            (int) spawner.getOrDefault("maxSpawnedResources", -1),
+                            (Boolean) spawner.getOrDefault("floatingEnabled", false));
                     game.spawners.add(sa);
                 }
             }
@@ -1738,11 +1739,23 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                                 continue; // team of this spawner is not available. Fix #147
                             }
 
+
                             if (spawner.getHologramEnabled()) {
-                                Location loc = spawner.loc.clone().add(0,
-                                        Main.getConfigurator().config.getDouble("spawner-holo-height", 0.25), 0);
+                                Location loc;
+
+                                if (spawner.getFloatingEnabled() &&
+                                        Main.getConfigurator().config.getBoolean("floating-generator.enabled", true)) {
+                                    loc = spawner.loc.clone().add(0,
+                                            Main.getConfigurator().config.getDouble("floating-generator.holo-height", 1.0), 0);
+                                    spawner.spawnFloatingStand();
+                                } else {
+                                    loc = spawner.loc.clone().add(0,
+                                            Main.getConfigurator().config.getDouble("spawner-holo-height", 0.25), 0);
+                                }
+
                                 Hologram holo = Main.getHologramManager().spawnHologram(getConnectedPlayers(), loc,
                                         spawner.type.getItemBoldName());
+
                                 createdHolograms.add(holo);
                                 if (getOriginalOrInheritedSpawnerHologramsCountdown()) {
                                     holo.addLine(spawner.type.getInterval() < 2 ? i18nonly("every_second_spawning")
@@ -2138,6 +2151,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         for (ItemSpawner spawner : spawners) {
             spawner.currentLevel = spawner.startLevel;
             spawner.spawnedItems.clear();
+            spawner.destroy();
         }
         for (GameStore store : gameStore) {
             LivingEntity villager = store.kill();
@@ -2156,6 +2170,17 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                         chunk.load();
                     }
                     e.remove();
+                }
+
+                if (e instanceof ArmorStand) {
+                    final String customName = e.getCustomName();
+                    if (customName != null && customName.equals(ItemSpawner.ARMOR_STAND_DISPLAY_NAME_HIDDEN)) {
+                        Chunk chunk = e.getLocation().getChunk();
+                        if (!chunk.isLoaded()) {
+                            chunk.load();
+                        }
+                        e.remove();
+                    }
                 }
             }
         }

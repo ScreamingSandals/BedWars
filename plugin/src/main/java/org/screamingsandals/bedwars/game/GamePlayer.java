@@ -158,6 +158,7 @@ public class GamePlayer {
         inv.setArmorContents(new ItemStack[4]);
         inv.setContents(new ItemStack[]{});
 
+        this.armorContents = null;
         this.player.updateInventory();
     }
 

@@ -1,6 +1,13 @@
 package org.screamingsandals.bedwars.game;
 
+import org.bukkit.Material;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.Team;
 import org.screamingsandals.bedwars.lib.nms.holograms.Hologram;
 
@@ -20,13 +27,18 @@ public class ItemSpawner implements org.screamingsandals.bedwars.api.game.ItemSp
     public double currentLevel;
     public int maxSpawnedResources;
     public boolean hologramEnabled;
+    public boolean floatingEnabled;
     public Team team;
     public List<Item> spawnedItems;
     public boolean spawnerIsFullHologram = false;
     public boolean rerenderHologram = false;
     public double currentLevelOnHologram = -1;
+    private ArmorStand floatingGenStand;
+    public final static String ARMOR_STAND_DISPLAY_NAME_HIDDEN = "BEDWARS_FLOATING_ROT_ENTITY";
 
-    public ItemSpawner(Location loc, ItemSpawnerType type, String customName, boolean hologramEnabled, double startLevel, Team team, int maxSpawnedResources) {
+    public ItemSpawner(Location loc, ItemSpawnerType type, String customName,
+                       boolean hologramEnabled, double startLevel, Team team,
+                       int maxSpawnedResources, boolean floatingEnabled) {
         this.loc = loc;
         this.type = type;
         this.customName = customName;
@@ -35,6 +47,7 @@ public class ItemSpawner implements org.screamingsandals.bedwars.api.game.ItemSp
         this.team = team;
         this.spawnedItems = new ArrayList<>();
         this.maxSpawnedResources = maxSpawnedResources;
+        this.floatingEnabled = floatingEnabled;
     }
 
     @Override
@@ -70,6 +83,11 @@ public class ItemSpawner implements org.screamingsandals.bedwars.api.game.ItemSp
     @Override
     public boolean getHologramEnabled() {
         return hologramEnabled;
+    }
+
+    @Override
+    public boolean getFloatingEnabled() {
+        return floatingEnabled;
     }
 
     @Override
@@ -156,4 +174,36 @@ public class ItemSpawner implements org.screamingsandals.bedwars.api.game.ItemSp
     		}
     	}
     }
+
+    public void spawnFloatingStand(){
+        if (floatingEnabled) {
+            floatingGenStand = (ArmorStand) loc.getWorld().spawnEntity(loc.clone().add(0,
+                    Main.getConfigurator().config.getDouble("floating-generator.generator-height",
+                            0.25), 0), EntityType.ARMOR_STAND
+            );
+
+            ItemStack helmetStack;
+            try{
+                //try to get block of item
+                final String name = type.getMaterial().name().substring(0, type.getMaterial().name().indexOf("_"));
+                helmetStack = new ItemStack(Material.valueOf(name.toUpperCase() + "_BLOCK"));
+            } catch (Throwable t){
+                helmetStack = new ItemStack(type.getMaterial());
+            }
+            floatingGenStand.setDisabledSlots(EquipmentSlot.HEAD);
+            floatingGenStand.setHelmet(helmetStack);
+            floatingGenStand.setGravity(false);
+            floatingGenStand.setVisible(false);
+            floatingGenStand.setCustomName(ARMOR_STAND_DISPLAY_NAME_HIDDEN);
+        }
+    }
+
+    public void destroy() {
+        if (floatingGenStand != null)
+            floatingGenStand.remove();
+    }
+
+
+
+
 }
