@@ -167,7 +167,8 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     private final List<CurrentTeam> teamsInGame = new ArrayList<>();
     private final Region region = Main.isLegacy() ? new LegacyRegion() : new FlatteningRegion();
     private TeamSelectorInventory teamSelectorInventory;
-    private final Scoreboard gameScoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
+    private final Scoreboard gameScoreboard = Main.getConfigurator().config.getBoolean("experimental.new-scoreboard-system.enabled", false )  ?
+            null : Bukkit.getScoreboardManager().getNewScoreboard();
     private StatusBar statusbar;
     private final Map<Location, ItemStack[]> usedChests = new HashMap<>();
     private final List<SpecialItem> activeSpecialItems = new ArrayList<>();
@@ -1020,11 +1021,18 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             if (team != null) {
                 team.players.remove(gamePlayer);
                 if (status == GameStatus.WAITING) {
-                    team.getScoreboardTeam().removeEntry(gamePlayer.player.getName());
+                    if (!Main.getConfigurator().config.getBoolean("experimental.new-scoreboard-system.enabled", false))
+                        team.getScoreboardTeam().removeEntry(gamePlayer.player.getName());
                     if (team.players.isEmpty()) {
                         teamsInGame.remove(team);
-                        team.getScoreboardTeam().unregister();
+                        if (!Main.getConfigurator().config.getBoolean("experimental.new-scoreboard-system.enabled", false))
+                            team.getScoreboardTeam().unregister();
                     }
+
+                    if (Main.getConfigurator().config.getBoolean("experimental.new-scoreboard-system.enabled", false)) {
+                        experimentalBoard.handlePlayerLeave(gamePlayer.player);
+                    }
+
                 } else {
                     updateScoreboard();
                 }
@@ -1054,17 +1062,22 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 cancelTask();
             }
             countdown = -1;
-            if (gameScoreboard.getObjective("display") != null) {
-                gameScoreboard.getObjective("display").unregister();
-            }
-            if (gameScoreboard.getObjective("lobby") != null) {
-                gameScoreboard.getObjective("lobby").unregister();
-            }
-            gameScoreboard.clearSlot(DisplaySlot.SIDEBAR);
-            for (CurrentTeam team : teamsInGame) {
-                team.getScoreboardTeam().unregister();
+
+            if (!Main.getConfigurator().config.getBoolean("experimental.new-scoreboard-system.enabled", false)) {
+                if (gameScoreboard.getObjective("display") != null) {
+                    gameScoreboard.getObjective("display").unregister();
+                }
+                if (gameScoreboard.getObjective("lobby") != null) {
+                    gameScoreboard.getObjective("lobby").unregister();
+                }
+                gameScoreboard.clearSlot(DisplaySlot.SIDEBAR);
+
+                for (CurrentTeam team : teamsInGame) {
+                    team.getScoreboardTeam().unregister();
+                }
             }
             teamsInGame.clear();
+
             for (GameStore store : gameStore) {
                 LivingEntity villager = store.kill();
                 if (villager != null) {
@@ -1389,18 +1402,20 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
         if (current == null) {
             current = new CurrentTeam(teamForJoin, this);
-            org.bukkit.scoreboard.Team scoreboardTeam = gameScoreboard.getTeam(teamForJoin.name);
-            if (scoreboardTeam == null) {
-                scoreboardTeam = gameScoreboard.registerNewTeam(teamForJoin.name);
-            }
-            if (!Main.isLegacy()) {
-                scoreboardTeam.setColor(teamForJoin.color.chatColor);
-            } else {
-                scoreboardTeam.setPrefix(teamForJoin.color.chatColor.toString());
-            }
-            scoreboardTeam.setAllowFriendlyFire(getOriginalOrInheritedFriendlyfire());
+            if (!Main.getConfigurator().config.getBoolean("experimental.new-scoreboard-system.enabled", false)) {
+                org.bukkit.scoreboard.Team scoreboardTeam = gameScoreboard.getTeam(teamForJoin.name);
+                if (scoreboardTeam == null) {
+                    scoreboardTeam = gameScoreboard.registerNewTeam(teamForJoin.name);
+                }
+                if (!Main.isLegacy()) {
+                    scoreboardTeam.setColor(teamForJoin.color.chatColor);
+                } else {
+                    scoreboardTeam.setPrefix(teamForJoin.color.chatColor.toString());
+                }
+                scoreboardTeam.setAllowFriendlyFire(getOriginalOrInheritedFriendlyfire());
 
-            current.setScoreboardTeam(scoreboardTeam);
+                current.setScoreboardTeam(scoreboardTeam);
+            }
         }
         if (cur == current) {
             player.player.sendMessage(
@@ -1422,14 +1437,18 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         }
         if (cur != null) {
             cur.players.remove(player);
-            cur.getScoreboardTeam().removeEntry(player.player.getName());
+            if (!Main.getConfigurator().config.getBoolean("experimental.new-scoreboard-system.enabled", false))
+                cur.getScoreboardTeam().removeEntry(player.player.getName());
             if (cur.players.isEmpty()) {
                 teamsInGame.remove(cur);
-                cur.getScoreboardTeam().unregister();
+                if (!Main.getConfigurator().config.getBoolean("experimental.new-scoreboard-system.enabled", false))
+                    cur.getScoreboardTeam().unregister();
             }
         }
         current.players.add(player);
-        current.getScoreboardTeam().addEntry(player.player.getName());
+        if (!Main.getConfigurator().config.getBoolean("experimental.new-scoreboard-system.enabled", false))
+            current.getScoreboardTeam().addEntry(player.player.getName());
+
         player.player
                 .sendMessage(i18nc("team_selected", customPrefix).replace("%team%", teamForJoin.color.chatColor + teamForJoin.name)
                         .replace("%players%", Integer.toString(current.players.size()))
@@ -1712,10 +1731,12 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                     if (teamSelectorInventory != null)
                         teamSelectorInventory.destroy();
                     teamSelectorInventory = null;
-                    if (gameScoreboard.getObjective("lobby") != null) {
-                        gameScoreboard.getObjective("lobby").unregister();
+                    if (!Main.getConfigurator().config.getBoolean("experimental.new-scoreboard-system.enabled", false)) {
+                        if (gameScoreboard.getObjective("lobby") != null) {
+                            gameScoreboard.getObjective("lobby").unregister();
+                        }
+                        gameScoreboard.clearSlot(DisplaySlot.SIDEBAR);
                     }
-                    gameScoreboard.clearSlot(DisplaySlot.SIDEBAR);
                     Bukkit.getScheduler().runTaskLater(Main.getInstance(), this::updateSigns, 3L);
                     for (GameStore store : gameStore) {
                         LivingEntity villager = store.spawn();

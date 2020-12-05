@@ -179,7 +179,7 @@ public class ScreamingBoard {
                 //register team
                 if (scoreboardTeam == null) {
                     scoreboardTeam = board.registerNewTeam(team.getName());
-                    scoreboardTeam.setAllowFriendlyFire(false);
+                    scoreboardTeam.setAllowFriendlyFire(game.getOriginalOrInheritedFriendlyfire());
                     scoreboardTeam.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.NEVER);
                     if (!Main.isLegacy()) {
                         scoreboardTeam.setColor(TeamColor.fromApiColor(team.getColor()).chatColor);
@@ -208,6 +208,26 @@ public class ScreamingBoard {
             }
         }
     }
+
+    public void handlePlayerLeave(Player left) {
+        for (Player player : game.getConnectedPlayers()){
+            registerBoard(LOBBY_OBJECTIVE, player);
+            Scoreboard board = player.getScoreboard();
+            Objective obj = board.getObjective(LOBBY_OBJECTIVE);
+            if (obj != null) {
+                for (Team team : new HashSet<>(board.getTeams())) {
+                    if (team == null) {
+                        continue;
+                    }
+
+                    if (team.hasEntry(left.getName())) {
+                        team.removeEntry(left.getName());
+                    }
+                }
+            }
+        }
+    }
+
 
     public void registerBoard(String obj_name, Player player) {
         Scoreboard board = player.getScoreboard();
