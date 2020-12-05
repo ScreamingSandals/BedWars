@@ -1475,7 +1475,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             experimentalBoard.registerPlayerInTeam(player.player, teamForJoin);
 
         Debug.info(name + ": player " + player.player.getName() + " joined the team " + current.getName());
-        current.getScoreboardTeam().addEntry(player.player.getName());
+
         player.player
                 .sendMessage(i18nc("team_selected", customPrefix).replace("%team%", teamForJoin.color.chatColor + teamForJoin.name)
                         .replace("%players%", Integer.toString(current.players.size()))
