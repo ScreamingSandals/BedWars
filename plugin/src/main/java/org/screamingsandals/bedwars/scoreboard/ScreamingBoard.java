@@ -393,6 +393,8 @@ public class ScreamingBoard {
                         scoreboardTeam.addEntry(toJoin.getName());
                 }
             }
+
+            player.setScoreboard(board);
         }
 
     }
