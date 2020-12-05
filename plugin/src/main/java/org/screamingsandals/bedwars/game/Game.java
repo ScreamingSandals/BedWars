@@ -1217,7 +1217,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         if (status == GameStatus.DISABLED) {
             preparing = true;
             status = GameStatus.WAITING;
-            if (experimentalBoard == null) {
+            if (experimentalBoard == null && Main.getConfigurator().config.getBoolean("experimental.new-scoreboard-system.enabled", false)) {
                 experimentalBoard = new ScreamingBoard(this);
             }
             countdown = -1;
