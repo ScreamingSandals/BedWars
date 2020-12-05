@@ -51,6 +51,7 @@ import org.screamingsandals.bedwars.lib.signmanager.SignBlock;
 import org.screamingsandals.bedwars.listener.Player116ListenerUtils;
 import org.screamingsandals.bedwars.region.FlatteningRegion;
 import org.screamingsandals.bedwars.region.LegacyRegion;
+import org.screamingsandals.bedwars.scoreboard.ScreamingBoard;
 import org.screamingsandals.bedwars.statistics.PlayerStatistic;
 import org.screamingsandals.bedwars.utils.*;
 import org.screamingsandals.simpleinventories.utils.MaterialSearchEngine;
@@ -175,6 +176,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     private final Map<ItemSpawner, Hologram> countdownHolograms = new HashMap<>();
     private final Map<GamePlayer, Inventory> fakeEnderChests = new HashMap<>();
     private int postGameWaiting = 3;
+    private ScreamingBoard experimentalBoard = null;
 
     private Game() {
 
@@ -1194,6 +1196,9 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     public void start() {
         if (status == GameStatus.DISABLED) {
             status = GameStatus.WAITING;
+            if (experimentalBoard == null) {
+                experimentalBoard = new ScreamingBoard(this);
+            }
             countdown = -1;
             calculatedMaxPlayers = 0;
             for (Team team : teams) {
@@ -2304,7 +2309,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             return;
         }
 
-        if (Main.getConfigurator().config.getBoolean("experimental.new-scoreboard-system", false)) {
+        if (Main.getConfigurator().config.getBoolean("experimental.new-scoreboard-system.enabled", false)) {
             return;
         }
 
@@ -2345,7 +2350,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             return;
         }
 
-        if (Main.getConfigurator().config.getBoolean("experimental.new-scoreboard-system", false)) {
+        if (Main.getConfigurator().config.getBoolean("experimental.new-scoreboard-system.enabled", false)) {
             return;
         }
 
@@ -2466,7 +2471,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             return;
         }
 
-        if (Main.getConfigurator().config.getBoolean("experimental.new-scoreboard-system", false)) {
+        if (Main.getConfigurator().config.getBoolean("experimental.new-scoreboard-system.enabled", false)) {
             return;
         }
 

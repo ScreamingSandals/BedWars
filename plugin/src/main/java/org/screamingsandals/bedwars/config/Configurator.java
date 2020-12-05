@@ -467,8 +467,8 @@ public class Configurator {
         checkOrSetConfig(modify, "default-permissions.autojoin", true);
         checkOrSetConfig(modify, "default-permissions.leaderboard", true);
 
-        checkOrSetConfig(modify, "experimental.new-scoreboard-system", false);
-
+        checkOrSetConfig(modify, "experimental.new-scoreboard-system.enabled", false);
+        checkOrSetConfig(modify, "experimental.new-scoreboard-system.content", Arrays.asList(" ", "%team_status%", "", "§6www.screamingsandals.org"));
 
 
         checkOrSetConfig(modify, "floating-generator.enabled", true);
