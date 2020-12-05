@@ -176,6 +176,8 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     private final Map<GamePlayer, Inventory> fakeEnderChests = new HashMap<>();
     private int postGameWaiting = 3;
 
+    private boolean preparing = false;
+
     private Game() {
 
     }
@@ -1193,6 +1195,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
     public void start() {
         if (status == GameStatus.DISABLED) {
+            preparing = true;
             status = GameStatus.WAITING;
             countdown = -1;
             calculatedMaxPlayers = 0;
@@ -1210,6 +1213,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             } else {
                 statusbar = BossBarSelector.getBossBar();
             }
+            preparing = false;
         }
     }
 
@@ -1231,6 +1235,10 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     public void joinToGame(Player player) {
         if (status == GameStatus.DISABLED) {
             return;
+        }
+
+        if (preparing) {
+            Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> joinToGame(player), 1L);
         }
 
         if (status == GameStatus.REBUILDING) {
@@ -1674,6 +1682,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         if (status != tick.getNextStatus()) {
             // Phase 6.1.1: Prepare game if next status is RUNNING
             if (tick.getNextStatus() == GameStatus.RUNNING) {
+                preparing = true;
                 BedwarsGameStartEvent startE = new BedwarsGameStartEvent(this);
                 Main.getInstance().getServer().getPluginManager().callEvent(startE);
                 Main.getInstance().getServer().getPluginManager().callEvent(statusE);
@@ -1681,6 +1690,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 if (startE.isCancelled()) {
                     tick.setNextCountdown(pauseCountdown);
                     tick.setNextStatus(GameStatus.WAITING);
+                    preparing = false;
                 } else {
 
                     if (getOriginalOrInheritedJoinRandomTeamAfterLobby()) {
@@ -1894,6 +1904,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                     if (Main.getVersionNumber() >= 115 && !Main.getConfigurator().config.getBoolean("allow-fake-death")) {
                         world.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
                     }
+                    preparing = false;
 
                     BedwarsGameStartedEvent startedEvent = new BedwarsGameStartedEvent(this);
                     Main.getInstance().getServer().getPluginManager().callEvent(startedEvent);
