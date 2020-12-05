@@ -32,6 +32,7 @@ import org.screamingsandals.bedwars.holograms.StatisticsHolograms;
 import org.screamingsandals.bedwars.inventories.ShopInventory;
 import org.screamingsandals.bedwars.listener.*;
 import org.screamingsandals.bedwars.placeholderapi.BedwarsExpansion;
+import org.screamingsandals.bedwars.premium.PremiumBedwars;
 import org.screamingsandals.bedwars.special.SpecialRegister;
 import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.bedwars.tab.TabManager;
@@ -430,6 +431,8 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         this.manager = new HologramManager(this);
 
         SpecialRegister.onEnable(this);
+
+        PremiumBedwars.init();
 
         getServer().getServicesManager().register(BedwarsAPI.class, this, this, ServicePriority.Normal);
 

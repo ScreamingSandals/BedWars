@@ -10,6 +10,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ItemMergeEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
+import org.screamingsandals.bedwars.lib.debug.Debug;
 
 public class Player19Listener implements Listener {
     @EventHandler
@@ -19,6 +20,7 @@ public class Player19Listener implements Listener {
             GamePlayer gPlayer = Main.getPlayerGameProfile(player);
             if (gPlayer.getGame().getStatus() == GameStatus.WAITING) {
                 event.setCancelled(true);
+                Debug.info(event.getPlayer().getName() + " tried to swap his hands in lobby, cancelling");
             }
         }
     }

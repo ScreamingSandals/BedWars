@@ -6,6 +6,7 @@ import org.screamingsandals.bedwars.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.screamingsandals.bedwars.lib.debug.Debug;
 
 public class BungeeUtils {
     public static void movePlayerToBungeeServer(Player player, boolean serverRestart) {
@@ -43,5 +44,6 @@ public class BungeeUtils {
         out.writeUTF(server);
 
         player.sendPluginMessage(Main.getInstance(), "BungeeCord", out.toByteArray());
+        Debug.info("player " + player.getName() + " has been moved to hub server ");
     }
 }
