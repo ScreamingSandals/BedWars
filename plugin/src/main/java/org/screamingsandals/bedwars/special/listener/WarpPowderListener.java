@@ -47,13 +47,12 @@ public class WarpPowderListener implements Listener {
         if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             if (game.getStatus() == GameStatus.RUNNING && !gPlayer.isSpectator) {
                 if (event.getItem() != null) {
-                    if (!game.isDelayActive(player, WarpPowder.class)) {
-                        ItemStack stack = event.getItem();
-                        String unhidden = APIUtils.unhashFromInvisibleStringStartsWith(stack, WARP_POWDER_PREFIX);
+                    ItemStack stack = event.getItem();
+                    String unhidden = APIUtils.unhashFromInvisibleStringStartsWith(stack, WARP_POWDER_PREFIX);
 
-                        if (unhidden != null) {
-                            event.setCancelled(true);
-
+                    if (unhidden != null) {
+                        event.setCancelled(true);
+                        if (!game.isDelayActive(player, WarpPowder.class)) {
                             int teleportTime = Integer.parseInt(unhidden.split(":")[2]);
                             int delay = Integer.parseInt(unhidden.split(":")[3]);
                             WarpPowder warpPowder = new WarpPowder(game, event.getPlayer(),
@@ -71,8 +70,7 @@ public class WarpPowderListener implements Listener {
 
                             warpPowder.runTask();
                         } else {
-                            event.setCancelled(true);
-                            int delay = game.getActiveDelay(player, RescuePlatform.class).getRemainDelay();
+                            int delay = game.getActiveDelay(player, WarpPowder.class).getRemainDelay();
                             MiscUtils.sendActionBarMessage(player, i18nonly("special_item_delay").replace("%time%", String.valueOf(delay)));
                         }
                     }
