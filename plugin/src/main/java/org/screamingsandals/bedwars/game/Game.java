@@ -795,6 +795,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         if (status == GameStatus.RUNNING) {
             for (CurrentTeam team : teamsInGame) {
                 if (team.teamInfo.bed.equals(loc)) {
+                    Debug.info(name + ": target block of  " + team.teamInfo.getName() + " has been destroyed");
                     team.isBed = false;
                     updateScoreboard();
                     String colored_broker = "explosion";
@@ -852,6 +853,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         Main.getInstance().getServer().getPluginManager().callEvent(joinEvent);
 
         if (joinEvent.isCancelled()) {
+            Debug.info(gamePlayer.player.getName() + " can't join to the game: event cancelled");
             String message = joinEvent.getCancelMessage();
             if (message != null && !message.equals("")) {
                 gamePlayer.player.sendMessage(message);
@@ -859,6 +861,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             gamePlayer.changeGame(null);
             return;
         }
+        Debug.info(gamePlayer.player.getName() + " joined bedwars match " + name);
 
         boolean isEmpty = players.isEmpty();
         if (!players.contains(gamePlayer)) {
@@ -889,6 +892,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         }
 
         if (status == GameStatus.WAITING) {
+            Debug.info(gamePlayer.player.getName() + " moving to lobby");
             mpr("join").prefix(customPrefix).replace("name", gamePlayer.player.getDisplayName())
                     .replace("players", players.size())
                     .replace("maxplayers", calculatedMaxPlayers)
@@ -968,6 +972,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         BedwarsPlayerLeaveEvent playerLeaveEvent = new BedwarsPlayerLeaveEvent(this, gamePlayer.player,
                 getPlayerTeam(gamePlayer));
         Main.getInstance().getServer().getPluginManager().callEvent(playerLeaveEvent);
+        Debug.info(name + ": player  " + gamePlayer.player.getName() + " is leaving the game");
 
         if (!gamePlayer.isSpectator) {
             String message = i18nc("leave", customPrefix).replace("%name%", gamePlayer.player.getDisplayName())
@@ -1431,8 +1436,10 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 teamsInGame.remove(cur);
                 cur.getScoreboardTeam().unregister();
             }
+            Debug.info(name + ": player " + player.player.getName() + " left the team " + cur.getName());
         }
         current.players.add(player);
+        Debug.info(name + ": player " + player.player.getName() + " joined the team " + current.getName());
         current.getScoreboardTeam().addEntry(player.player.getName());
         player.player
                 .sendMessage(i18nc("team_selected", customPrefix).replace("%team%", teamForJoin.color.chatColor + teamForJoin.name)
@@ -1484,6 +1491,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     }
 
     public Location makeSpectator(GamePlayer gamePlayer, boolean leaveItem) {
+        Debug.info(gamePlayer.player.getName() + " spawning as spectator");
         Player player = gamePlayer.player;
         gamePlayer.isSpectator = true;
         gamePlayer.teleport(specSpawn, () -> {
@@ -1519,6 +1527,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
     @SuppressWarnings("unchecked")
     public void makePlayerFromSpectator(GamePlayer gamePlayer) {
+        Debug.info(gamePlayer.player.getName() + " changing spectator to regular player");
         Player player = gamePlayer.player;
         CurrentTeam currentTeam = getPlayerTeam(gamePlayer);
 
@@ -1581,6 +1590,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         BedwarsGameChangedStatusEvent statusE = new BedwarsGameChangedStatusEvent(this);
         // Phase 2: If this is first tick, prepare waiting lobby
         if (countdown == -1 && status == GameStatus.WAITING) {
+            Debug.info(name + ": preparing lobby");
             previousCountdown = countdown = pauseCountdown;
             previousStatus = GameStatus.WAITING;
             String title = i18nonly("bossbar_waiting");
@@ -1604,6 +1614,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 teamSelectorInventory = new TeamSelectorInventory(Main.getInstance(), this);
             }
             updateSigns();
+            Debug.info(name + ": lobby prepared");
         }
 
         // Phase 3: Prepare information about next tick for tick event and update
@@ -1673,6 +1684,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         BedwarsGameTickEvent tick = new BedwarsGameTickEvent(this, previousCountdown, previousStatus, countdown, status,
                 nextCountdown, nextStatus);
         Bukkit.getPluginManager().callEvent(tick);
+        Debug.info(name + ": tick passed: " + tick.getPreviousCountdown() + "," + tick.getCountdown() + "," + tick.getNextCountdown() + " (" + tick.getPreviousStatus() + "," + tick.getStatus() + "," + tick.getNextStatus() + ")");
 
         // Phase 5: Update Previous information
         previousCountdown = countdown;
@@ -1683,6 +1695,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         if (status != tick.getNextStatus()) {
             // Phase 6.1.1: Prepare game if next status is RUNNING
             if (tick.getNextStatus() == GameStatus.RUNNING) {
+                Debug.info(name + ": preparing game");
                 preparing = true;
                 BedwarsGameStartEvent startE = new BedwarsGameStartEvent(this);
                 Main.getInstance().getServer().getPluginManager().callEvent(startE);
@@ -1781,6 +1794,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                     String gameStartTitle = i18nonly("game_start_title");
                     String gameStartSubtitle = i18nonly("game_start_subtitle").replace("%arena%", this.name);
                     for (GamePlayer player : this.players) {
+                        Debug.info(name + ": moving " + player.player.getName() + " into game");
                         CurrentTeam team = getPlayerTeam(player);
                         player.player.getInventory().clear();
                         // Player still had armor on legacy versions
@@ -1911,6 +1925,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                     Main.getInstance().getServer().getPluginManager().callEvent(startedEvent);
                     Main.getInstance().getServer().getPluginManager().callEvent(statusE);
                     updateScoreboard();
+                    Debug.info(name + ": game prepared");
                 }
             }
             // Phase 6.2: If status is same as before
@@ -1997,6 +2012,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                         BedwarsGameEndingEvent endingEvent = new BedwarsGameEndingEvent(this, winner);
                         Bukkit.getPluginManager().callEvent(endingEvent);
                         Main.getInstance().getServer().getPluginManager().callEvent(statusE);
+                        Debug.info(name + ": game is ending");
 
                         tick.setNextCountdown(postGameWaiting);
                         tick.setNextStatus(GameStatus.GAME_END_CELEBRATING);
@@ -2153,6 +2169,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     }
 
     public void rebuild() {
+        Debug.info(name + ": rebuilding starts");
         teamsInGame.clear();
         activeSpecialItems.clear();
         activeDelays.clear();
@@ -2245,6 +2262,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         this.countdown = -1;
         updateSigns();
         cancelTask();
+        Debug.info(name + ": rebuilding ends");
 
     }
 

@@ -24,7 +24,7 @@ enableSpigradleSpigot()
 
 spigot {
     name = 'BedWars'
-    authors = ['ScreamingSandals <Misat11, Ceph>']
+    authors = ['ScreamingSandals <Misat11, Ceph, Pronze>']
     apiVersion = '1.13'
     load = POST_WORLD
     softDepends = [

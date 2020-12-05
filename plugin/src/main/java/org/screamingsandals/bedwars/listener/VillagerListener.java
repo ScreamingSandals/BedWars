@@ -11,6 +11,7 @@ import org.screamingsandals.bedwars.game.GamePlayer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.utils.CitizensUtils;
 
 public class VillagerListener implements Listener {
@@ -52,6 +53,7 @@ public class VillagerListener implements Listener {
         if (openShopEvent.getResult() != Result.ALLOW) {
             return;
         }
+        Debug.info(event.getPlayer().getName() + " opened villager");
 
         Main.openStore(event.getPlayer(), store);
     }
