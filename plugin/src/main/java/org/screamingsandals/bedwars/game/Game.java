@@ -1239,6 +1239,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
         if (preparing) {
             Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> joinToGame(player), 1L);
+            return;
         }
 
         if (status == GameStatus.REBUILDING) {
