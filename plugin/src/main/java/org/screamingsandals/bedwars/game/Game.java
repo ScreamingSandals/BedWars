@@ -1746,7 +1746,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                                 if (spawner.getFloatingEnabled() &&
                                         Main.getConfigurator().config.getBoolean("floating-generator.enabled", true)) {
                                     loc = spawner.loc.clone().add(0,
-                                            Main.getConfigurator().config.getDouble("floating-generator.holo-height", 1.0), 0);
+                                            Main.getConfigurator().config.getDouble("floating-generator.holo-height", 2.0), 0);
                                     spawner.spawnFloatingStand();
                                 } else {
                                     loc = spawner.loc.clone().add(0,
@@ -2304,6 +2304,10 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             return;
         }
 
+        if (Main.getConfigurator().config.getBoolean("experimental.new-scoreboard-system", false)) {
+            return;
+        }
+
         Objective obj = this.gameScoreboard.getObjective("display");
         if (obj == null) {
             obj = this.gameScoreboard.registerNewObjective("display", "dummy");
@@ -2341,6 +2345,10 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             return;
         }
 
+        if (Main.getConfigurator().config.getBoolean("experimental.new-scoreboard-system", false)) {
+            return;
+        }
+
         Objective obj = this.gameScoreboard.getObjective("display");
         if (obj == null) {
             obj = this.gameScoreboard.registerNewObjective("display", "dummy");
@@ -2353,7 +2361,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         }
     }
 
-    private String formatScoreboardTitle() {
+    public String formatScoreboardTitle() {
         return Objects.requireNonNull(Main.getConfigurator().config.getString("scoreboard.title"))
                 .replace("%game%", this.name)
                 .replace("%time%", this.getFormattedTimeLeft());
@@ -2457,6 +2465,11 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         if (status != GameStatus.WAITING || !getOriginalOrInheritedLobbyScoreaboard()) {
             return;
         }
+
+        if (Main.getConfigurator().config.getBoolean("experimental.new-scoreboard-system", false)) {
+            return;
+        }
+
         Objective obj = gameScoreboard.getObjective("lobby");
         if (obj == null) {
             obj = gameScoreboard.registerNewObjective("lobby", "dummy");
@@ -2526,7 +2539,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         return content;
     }
 
-    private String formatLobbyScoreboardString(String str) {
+    public String formatLobbyScoreboardString(String str) {
         String finalStr = str;
 
         finalStr = finalStr.replace("%arena%", name);

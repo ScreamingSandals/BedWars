@@ -467,6 +467,10 @@ public class Configurator {
         checkOrSetConfig(modify, "default-permissions.autojoin", true);
         checkOrSetConfig(modify, "default-permissions.leaderboard", true);
 
+        checkOrSetConfig(modify, "experimental.new-scoreboard-system", false);
+
+
+
         checkOrSetConfig(modify, "floating-generator.enabled", true);
         checkOrSetConfig(modify, "floating-generator.holo-height", 2.0);
         checkOrSetConfig(modify, "floating-generator.generator-height", 0.25);
