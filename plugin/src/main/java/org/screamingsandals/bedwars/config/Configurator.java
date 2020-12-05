@@ -469,6 +469,7 @@ public class Configurator {
 
         checkOrSetConfig(modify, "experimental.new-scoreboard-system.enabled", false);
         checkOrSetConfig(modify, "experimental.new-scoreboard-system.content", Arrays.asList(" ", "%team_status%", "", "§6www.screamingsandals.org"));
+        checkOrSetConfig(modify, "experimental.new-scoreboard-system.teamTitle", "%bed%%color%%team% §7(%team_size%)");
 
 
         checkOrSetConfig(modify, "floating-generator.enabled", true);

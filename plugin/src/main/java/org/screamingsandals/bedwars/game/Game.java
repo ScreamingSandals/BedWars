@@ -1415,8 +1415,11 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 scoreboardTeam.setAllowFriendlyFire(getOriginalOrInheritedFriendlyfire());
 
                 current.setScoreboardTeam(scoreboardTeam);
+            } else{
+                experimentalBoard.registerCurrentTeam(teamForJoin);
             }
         }
+
         if (cur == current) {
             player.player.sendMessage(
                     i18nc("team_already_selected", customPrefix).replace("%team%", teamForJoin.color.chatColor + teamForJoin.name)
@@ -1439,15 +1442,22 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             cur.players.remove(player);
             if (!Main.getConfigurator().config.getBoolean("experimental.new-scoreboard-system.enabled", false))
                 cur.getScoreboardTeam().removeEntry(player.player.getName());
+            else
+                experimentalBoard.handlePlayerLeave(player.player);
+
             if (cur.players.isEmpty()) {
                 teamsInGame.remove(cur);
                 if (!Main.getConfigurator().config.getBoolean("experimental.new-scoreboard-system.enabled", false))
                     cur.getScoreboardTeam().unregister();
+                else
+                    experimentalBoard.unregisterTeam(cur.teamInfo, ScreamingBoard.LOBBY_OBJECTIVE);
             }
         }
         current.players.add(player);
         if (!Main.getConfigurator().config.getBoolean("experimental.new-scoreboard-system.enabled", false))
             current.getScoreboardTeam().addEntry(player.player.getName());
+        else
+            experimentalBoard.registerPlayerInTeam(player.player, teamForJoin);
 
         player.player
                 .sendMessage(i18nc("team_selected", customPrefix).replace("%team%", teamForJoin.color.chatColor + teamForJoin.name)
@@ -2167,6 +2177,10 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     }
 
     public void rebuild() {
+        if (experimentalBoard != null) {
+            experimentalBoard.forceStop();
+            experimentalBoard = null;
+        }
         teamsInGame.clear();
         activeSpecialItems.clear();
         activeDelays.clear();

@@ -4,6 +4,7 @@ import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.*;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.RunningTeam;
@@ -20,6 +21,7 @@ import java.util.List;
 public class ScreamingBoard {
 
     private final Game game;
+    private BukkitTask bukkitTask;
 
     public static final String GAME_OBJECTIVE = "bedwars_game";
     public static final String LOBBY_OBJECTIVE = "bedwars_lobby";
@@ -27,7 +29,7 @@ public class ScreamingBoard {
     public ScreamingBoard(Game game) {
             this.game = game;
 
-            new BukkitRunnable(){
+            bukkitTask = new BukkitRunnable(){
                 @Override
                 public void run() {
                     switch (game.getStatus()) {
@@ -39,6 +41,7 @@ public class ScreamingBoard {
                             break;
                         default:
                             destroy();
+                            this.cancel();
                             break;
 
                     }
@@ -46,6 +49,15 @@ public class ScreamingBoard {
             }.runTaskTimer(Main.getInstance(), 0L, 20L);
     }
 
+    public void forceStop () {
+        try {
+            if (bukkitTask != null && !bukkitTask.isCancelled()) {
+                bukkitTask.cancel();
+            }
+        } catch (Throwable t){
+            t.printStackTrace();
+        }
+    }
     private void updateLobbyBoard() {
         if (!game.getOriginalOrInheritedLobbyScoreaboard()) {
             return;
@@ -97,10 +109,15 @@ public class ScreamingBoard {
 
         final List<String> teamStatus = new ArrayList<>();
 
+        final List<String> scoresToReset = new ArrayList<>();
         //lets process team status first
         for (RunningTeam team : game.getRunningTeams()) {
             String formattedScore = formatScoreboardTeam(team, !team.isTargetBlockExists(), team.isTargetBlockExists() && "RESPAWN_ANCHOR".equals(team.getTargetBlock().getBlock().getType().name()) && Player116ListenerUtils.isAnchorEmpty(team.getTargetBlock().getBlock()));
             teamStatus.add(formattedScore);
+
+            scoresToReset.add(this.formatScoreboardTeam(team, false, false));
+            scoresToReset.add(this.formatScoreboardTeam(team, false, true));
+            scoresToReset.add(this.formatScoreboardTeam(team, true, false));
         }
 
 
@@ -108,9 +125,11 @@ public class ScreamingBoard {
             registerBoard(GAME_OBJECTIVE, player);
             org.bukkit.scoreboard.Scoreboard board = player.getScoreboard();
             final Objective obj = board.getObjective(GAME_OBJECTIVE);
+            scoresToReset.forEach(board::resetScores);
+            
             obj.setDisplayName(game.formatScoreboardTitle());
             game.getRunningTeams().forEach(team->registerTeam(team, GAME_OBJECTIVE));
-
+            
             List<String> content = Main.getConfigurator().config.getStringList("experimental.new-scoreboard-system.content");
 
             if (content.isEmpty()) {
@@ -130,6 +149,8 @@ public class ScreamingBoard {
                 //Process more placeholders here if required
                 finalContent.add(line);
             });
+
+           
 
 
             int i = 15;
@@ -162,12 +183,35 @@ public class ScreamingBoard {
             return "";
         }
 
-        return Main.getConfigurator().config.getString("scoreboard.teamTitle")
+        return Main.getConfigurator().config.getString("experimental.new-scoreboard-system.teamTitle")
+                .replace("%team_size%", String.valueOf(
+                        team.getConnectedPlayers().size()))
                 .replace("%color%", TeamColor.fromApiColor(team.getColor())
                         .chatColor.toString()).replace("%team%", team.getName())
                 .replace("%bed%", destroy ? game.bedLostString() : (empty ? game.anchorEmptyString() : game.bedExistString()));
     }
 
+    public void registerCurrentTeam(org.screamingsandals.bedwars.game.Team team) {
+        for (Player player : game.getConnectedPlayers()) {
+            registerBoard(LOBBY_OBJECTIVE, player);
+            Scoreboard board = player.getScoreboard();
+            Objective obj = board.getObjective(LOBBY_OBJECTIVE);
+            if (obj != null) {
+                org.bukkit.scoreboard.Team scoreboardTeam = board.getTeam(team.name);
+                if (scoreboardTeam == null) {
+                    scoreboardTeam = board.registerNewTeam(team.name);
+                }
+                if (!Main.isLegacy()) {
+                    scoreboardTeam.setColor(team.color.chatColor);
+                } else {
+                    scoreboardTeam.setPrefix(team.color.chatColor.toString());
+                }
+                scoreboardTeam.setAllowFriendlyFire(game.getOriginalOrInheritedFriendlyfire());
+            }
+
+            player.setScoreboard(board);
+        }
+    }
     public void registerTeam(RunningTeam team, String obj_name) {
         for (Player player : game.getConnectedPlayers()) {
             registerBoard(obj_name, player);
@@ -225,13 +269,15 @@ public class ScreamingBoard {
                     }
                 }
             }
+
+            player.setScoreboard(board);
         }
     }
 
 
     public void registerBoard(String obj_name, Player player) {
         Scoreboard board = player.getScoreboard();
-        if (board == null || board == Bukkit.getScoreboardManager().getMainScoreboard() ||
+        if (board == null || board.equals(Bukkit.getScoreboardManager().getMainScoreboard()) ||
            board.getObjective(obj_name) == null) {
 
             board = Bukkit.getScoreboardManager().getNewScoreboard();
@@ -269,10 +315,12 @@ public class ScreamingBoard {
                     }
                 }
             }
+
+            player.setScoreboard(board);
         }
     }
 
-    public void unregisterTeam(Team team, String OBJECTIVE) {
+    public void unregisterTeam(org.screamingsandals.bedwars.game.Team team, String OBJECTIVE) {
         for (Player player : game.getConnectedPlayers()) {
             registerBoard(OBJECTIVE, player);
             Scoreboard board = player.getScoreboard();
@@ -333,6 +381,19 @@ public class ScreamingBoard {
     }
 
 
+    public void registerPlayerInTeam(Player toJoin, org.screamingsandals.bedwars.game.Team teamForJoin) {
+        for (Player player : game.getConnectedPlayers()) {
+            registerBoard(LOBBY_OBJECTIVE, player);
+            Scoreboard board = player.getScoreboard();
+            Objective obj = board.getObjective(LOBBY_OBJECTIVE);
+            if (obj != null) {
+                Team scoreboardTeam = board.getTeam(teamForJoin.name);
+                if (scoreboardTeam != null) {
+                    if (!scoreboardTeam.hasEntry(toJoin.getName()))
+                        scoreboardTeam.addEntry(toJoin.getName());
+                }
+            }
+        }
 
-
+    }
 }
