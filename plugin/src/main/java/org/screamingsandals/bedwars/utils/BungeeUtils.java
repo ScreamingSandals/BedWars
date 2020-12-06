@@ -11,13 +11,13 @@ import org.screamingsandals.bedwars.lib.debug.Debug;
 public class BungeeUtils {
     public static void movePlayerToBungeeServer(Player player, boolean serverRestart) {
         if (serverRestart) {
-            internalMove(player);
+            internalMove(player, true);
             return;
         }
 
         new BukkitRunnable() {
             public void run() {
-               internalMove(player);
+               internalMove(player, false);
             }
         }.runTask(Main.getInstance());
     }
@@ -36,7 +36,7 @@ public class BungeeUtils {
         }.runTaskLater(Main.getInstance(), 30L);
     }
 
-    private static void internalMove(Player player) {
+    private static void internalMove(Player player, boolean restart) {
         String server = Main.getConfigurator().config.getString("bungee.server");
         ByteArrayDataOutput out = ByteStreams.newDataOutput();
 
@@ -45,5 +45,12 @@ public class BungeeUtils {
 
         player.sendPluginMessage(Main.getInstance(), "BungeeCord", out.toByteArray());
         Debug.info("player " + player.getName() + " has been moved to hub server ");
+        if (!restart) {
+            Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
+                if (player.isOnline()) {
+                    player.kickPlayer("Bedwars can't properly transfer player through bungee network. Contact server admin.");
+                }
+            }, 20L);
+        }
     }
 }

@@ -332,8 +332,8 @@ public class PlayerListener implements Listener {
             if (game.getWorld() != event.getPlayer().getWorld()
                     && game.getLobbySpawn().getWorld() != event.getPlayer().getWorld()) {
                 gPlayer.changeGame(null);
+                Debug.info(event.getPlayer().getName() + " changed world while in BedWars arena. Kicking...");
             }
-            Debug.info(event.getPlayer().getName() + " changed world while in BedWars arena. Kicking...");
         }
 
         if (Main.isHologramsEnabled()) {
