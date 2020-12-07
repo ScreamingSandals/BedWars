@@ -20,6 +20,7 @@ import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.event.world.StructureGrowEvent;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.RunningTeam;
+import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.game.Game;
 import org.screamingsandals.bedwars.game.GameCreator;
@@ -101,7 +102,7 @@ public class WorldListener implements Listener {
                 if (GameCreator.isInArea(event.getLocation(), game.getPos1(), game.getPos2())) {
                     event.blockList().removeIf(block -> {
                         if (!game.isBlockAddedDuringGame(block.getLocation())) {
-                            if (game.getOriginalOrInheritedTargetBlockExplosions()) {
+                            if (game.getConfigurationContainer().getOrDefault(ConfigurationContainer.TARGET_BLOCK_EXPLOSIONS, Boolean.class, false)) {
                                 for (RunningTeam team : game.getRunningTeams()) {
                                     if (team.getTargetBlock().equals(block.getLocation())) {
                                         game.targetBlockExplode(team);
@@ -146,7 +147,7 @@ public class WorldListener implements Listener {
             Game game = Main.getGame(gameName);
             if (game.getStatus() != GameStatus.DISABLED)
                 // prevent creature spawn everytime, not just in game
-                if (/*(game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) &&*/ game.getOriginalOrInheritedPreventSpawningMobs()) {
+                if (/*(game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) &&*/ game.getConfigurationContainer().getOrDefault(ConfigurationContainer.PREVENT_SPAWNING_MOBS, Boolean.class, false)) {
                     if (GameCreator.isInArea(event.getLocation(), game.getPos1(), game.getPos2())) {
                         event.setCancelled(true);
                         return;
@@ -199,7 +200,7 @@ public class WorldListener implements Listener {
             if (GameCreator.isInArea(event.getBlock().getLocation(), game.getPos1(), game.getPos2())) {
                 if (game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) {
                     if (event.getEntityType() == EntityType.FALLING_BLOCK
-                            && game.getOriginalOrInheritedAllowBlockFalling()) {
+                            && game.getConfigurationContainer().getOrDefault(ConfigurationContainer.BLOCK_FALLING, Boolean.class, false)) {
                         if (event.getBlock().getType() != event.getTo()) {
                             if (!game.getRegion().isBlockAddedDuringGame(event.getBlock().getLocation())) {
                                 if (event.getBlock().getType() != Material.AIR) {

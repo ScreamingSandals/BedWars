@@ -2,6 +2,7 @@ package org.screamingsandals.bedwars.special.listener;
 
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.APIUtils;
+import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
 import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.api.events.BedwarsApplyPropertyToBoughtItem;
@@ -10,7 +11,6 @@ import org.screamingsandals.bedwars.game.GamePlayer;
 import org.screamingsandals.bedwars.special.TNTSheep;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.bukkit.Location;
-import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -91,7 +91,7 @@ public class TNTSheepListener implements Listener {
             if (Main.isPlayerInGame(player)) {
                 GamePlayer gamePlayer = Main.getPlayerGameProfile(player);
                 Game game = gamePlayer.getGame();
-                if (event.getDamager() instanceof TNTPrimed && !game.getOriginalOrInheritedFriendlyfire()) {
+                if (event.getDamager() instanceof TNTPrimed && !game.getConfigurationContainer().getOrDefault(ConfigurationContainer.FRIENDLY_FIRE, Boolean.class, false)) {
                     TNTPrimed tnt = (TNTPrimed) event.getDamager();
                     List<SpecialItem> sheeps = game.getActivedSpecialItems(TNTSheep.class);
                     for (SpecialItem item : sheeps) {

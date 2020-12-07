@@ -4,6 +4,7 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.projectiles.ProjectileSource;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.APIUtils;
+import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
 import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.api.events.BedwarsApplyPropertyToBoughtItem;
@@ -130,7 +131,7 @@ public class GolemListener implements Listener {
                                 }
                             }
 
-                            event.setCancelled(game.getOriginalOrInheritedFriendlyfire());
+                            event.setCancelled(game.getConfigurationContainer().getOrDefault(ConfigurationContainer.FRIENDLY_FIRE, Boolean.class, false));
                             return;
                         }
                         return;

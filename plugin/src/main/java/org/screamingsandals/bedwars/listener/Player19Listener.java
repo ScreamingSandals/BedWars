@@ -1,6 +1,7 @@
 package org.screamingsandals.bedwars.listener;
 
 import org.screamingsandals.bedwars.Main;
+import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.game.Game;
 import org.screamingsandals.bedwars.game.GameCreator;
@@ -34,7 +35,7 @@ public class Player19Listener implements Listener {
 
         for (String s : Main.getGameNames()) {
             Game game = Main.getGame(s);
-            if (game.getStatus() == GameStatus.RUNNING && game.getOriginalOrInheritedSpawnerDisableMerge()) {
+            if (game.getStatus() == GameStatus.RUNNING && game.getConfigurationContainer().getOrDefault(ConfigurationContainer.SPAWNER_DISABLE_MERGE, Boolean.class, false)) {
                 if (GameCreator.isInArea(event.getEntity().getLocation(), game.getPos1(), game.getPos2()) || GameCreator.isInArea(event.getTarget().getLocation(), game.getPos1(), game.getPos2())) {
                     event.setCancelled(true);
                     return;

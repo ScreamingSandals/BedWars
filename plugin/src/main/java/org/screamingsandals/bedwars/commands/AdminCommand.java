@@ -3,6 +3,7 @@ package org.screamingsandals.bedwars.commands;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.WeatherType;
 import org.bukkit.boss.BarColor;
@@ -12,7 +13,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.ArenaTime;
+import org.screamingsandals.bedwars.api.config.Configuration;
 import org.screamingsandals.bedwars.game.*;
+import org.screamingsandals.bedwars.lib.lang.Message;
 
 import java.io.File;
 import java.util.*;
@@ -23,10 +26,11 @@ import static org.screamingsandals.bedwars.lib.lang.I18n.i18nonly;
 
 public class AdminCommand extends BaseCommand {
 
-    public HashMap<String, GameCreator> gc = new HashMap<>();
+    public static HashMap<String, GameCreator> gc;
 
     public AdminCommand() {
         super("admin", ADMIN_PERMISSION, false, false);
+        gc = new HashMap<>();
     }
 
     @Override
@@ -222,177 +226,24 @@ public class AdminCommand extends BaseCommand {
 
                             player.sendMessage(i18n("arena_info_config", false));
 
-                            player.sendMessage(i18n("arena_info_config_constant", false)
-                                    .replace("%constant%", "compassEnabled").replace("%value%",
-                                            i18n("arena_info_config_" + game.getCompassEnabled().name().toLowerCase(),
-                                                    false)));
+                            Message msg = m("arena_info_config_constant");
 
-                            player.sendMessage(
-                                    i18n("arena_info_config_constant", false)
-                                            .replace("%constant%", "joinRandomTeamAfterLobby").replace("%value%",
-                                            i18n("arena_info_config_"
-                                                            + game.getJoinRandomTeamAfterLobby().name().toLowerCase(),
-                                                    false)));
-
-                            player.sendMessage(i18n("arena_info_config_constant", false)
-                                    .replace("%constant%", "joinRandomTeamOnJoin")
-                                    .replace("%value%", i18n(
-                                            "arena_info_config_" + game.getJoinRandomTeamOnJoin().name().toLowerCase(),
-                                            false)));
-
-                            player.sendMessage(
-                                    i18n("arena_info_config_constant", false)
-                                            .replace("%constant%", "addWoolToInventoryOnJoin").replace("%value%",
-                                            i18n("arena_info_config_"
-                                                            + game.getAddWoolToInventoryOnJoin().name().toLowerCase(),
-                                                    false)));
-
-                            player.sendMessage(
-                                    i18n("arena_info_config_constant", false)
-                                            .replace("%constant%", "preventKillingVillagers").replace("%value%",
-                                            i18n("arena_info_config_"
-                                                            + game.getPreventKillingVillagers().name().toLowerCase(),
-                                                    false)));
-
-                            player.sendMessage(i18n("arena_info_config_constant", false)
-                                    .replace("%constant%", "playerDrops").replace("%value%", i18n(
-                                            "arena_info_config_" + game.getPlayerDrops().name().toLowerCase(), false)));
-
-                            player.sendMessage(
-                                    i18n("arena_info_config_constant", false).replace("%constant%", "friendlyfire")
-                                            .replace("%value%", i18n(
-                                                    "arena_info_config_" + game.getFriendlyfire().name().toLowerCase(),
-                                                    false)));
-
-                            player.sendMessage(i18n("arena_info_config_constant", false)
-                                    .replace("%constant%", "coloredLeatherByTeamInLobby").replace("%value%",
-                                            i18n("arena_info_config_"
-                                                            + game.getColoredLeatherByTeamInLobby().name().toLowerCase(),
-                                                    false)));
-
-                            player.sendMessage(
-                                    i18n("arena_info_config_constant", false).replace("%constant%", "keepInventory")
-                                            .replace("%value%", i18n(
-                                                    "arena_info_config_" + game.getKeepInventory().name().toLowerCase(),
-                                                    false)));
-
-                            player.sendMessage(i18n("arena_info_config_constant", false)
-                                    .replace("%constant%", "crafting").replace("%value%", i18n(
-                                            "arena_info_config_" + game.getCrafting().name().toLowerCase(), false)));
-
-                            player.sendMessage(i18n("arena_info_config_constant", false)
-                                    .replace("%constant%", "gameScoreboard").replace("%value%", i18n(
-                                            "arena_info_config_" + game.getScoreboard().name().toLowerCase(), false)));
-
-                            player.sendMessage(i18n("arena_info_config_constant", false)
-                                    .replace("%constant%", "lobbyScoreboard").replace("%value%",
-                                            i18n("arena_info_config_" + game.getLobbyScoreboard().name().toLowerCase(),
-                                                    false)));
-
-                            player.sendMessage(i18n("arena_info_config_constant", false)
-                                    .replace("%constant%", "gameBossbar").replace("%value%", i18n(
-                                            "arena_info_config_" + game.getGameBossbar().name().toLowerCase(), false)));
-
-                            player.sendMessage(
-                                    i18n("arena_info_config_constant", false).replace("%constant%", "lobbyScoreboard")
-                                            .replace("%value%", i18n(
-                                                    "arena_info_config_" + game.getLobbyBossbar().name().toLowerCase(),
-                                                    false)));
-
-                            player.sendMessage(i18n("arena_info_config_constant", false)
-                                    .replace("%constant%", "preventSpawningMobs")
-                                    .replace("%value%", i18n(
-                                            "arena_info_config_" + game.getPreventSpawningMobs().name().toLowerCase(),
-                                            false)));
-
-                            player.sendMessage(i18n("arena_info_config_constant", false)
-                                    .replace("%constant%", "spawnerholograms").replace("%value%",
-                                            i18n("arena_info_config_" + game.getSpawnerHolograms().name().toLowerCase(),
-                                                    false)));
-
-                            player.sendMessage(i18n("arena_info_config_constant", false)
-                                    .replace("%constant%", "spawnerDisableMerge")
-                                    .replace("%value%", i18n(
-                                            "arena_info_config_" + game.getSpawnerDisableMerge().name().toLowerCase(),
-                                            false)));
-
-                            player.sendMessage(i18n("arena_info_config_constant", false)
-                                    .replace("%constant%", "give gameStartItems").replace("%value%",
-                                            i18n("arena_info_config_" + game.getGameStartItems().name().toLowerCase(),
-                                                    false)));
-
-                            player.sendMessage(i18n("arena_info_config_constant", false)
-                                    .replace("%constant%", "give playerRespawnItems")
-                                    .replace("%value%", i18n(
-                                            "arena_info_config_" + game.getPlayerRespawnItems().name().toLowerCase(),
-                                            false)));
-
-                            player.sendMessage(i18n("arena_info_config_constant", false)
-                                    .replace("%constant%", "spawnerHologramsCountdown").replace("%value%",
-                                            i18n("arena_info_config_"
-                                                            + game.getSpawnerHologramsCountdown().name().toLowerCase(),
-                                                    false)));
-
-                            player.sendMessage(i18n("arena_info_config_constant", false)
-                                    .replace("%constant%", "damageWhenPlayerIsNotInArena").replace("%value%",
-                                            i18n("arena_info_config_"
-                                                            + game.getDamageWhenPlayerIsNotInArena().name().toLowerCase(),
-                                                    false)));
-
-                            player.sendMessage(
-                                    i18n("arena_info_config_constant", false)
-                                            .replace("%constant%", "removeunusedtargetblocks").replace("%value%",
-                                            i18n("arena_info_config_"
-                                                            + game.getRemoveUnusedTargetBlocks().name().toLowerCase(),
-                                                    false)));
-
-                            player.sendMessage(i18n("arena_info_config_constant", false)
-                                    .replace("%constant%", "allowblockfalling")
-                                    .replace("%value%", i18n(
-                                            "arena_info_config_" + game.getAllowBlockFalling().name().toLowerCase(),
-                                            false)));
-
-                            player.sendMessage(i18n("arena_info_config_constant", false)
-                                    .replace("%constant%", "holoAboveBed")
-                                    .replace("%value%", i18n(
-                                            "arena_info_config_" + game.getHoloAboveBed().name().toLowerCase(),
-                                            false)));
-
-                            player.sendMessage(i18n("arena_info_config_constant", false)
-                                    .replace("%constant%", "spectatorJoin")
-                                    .replace("%value%", i18n(
-                                            "arena_info_config_" + game.getSpectatorJoin().name().toLowerCase(),
-                                            false)));
-
-                            player.sendMessage(i18n("arena_info_config_constant", false)
-                                    .replace("%constant%", "stopTeamSpawnersOnDie")
-                                    .replace("%value%", i18n(
-                                            "arena_info_config_" + game.getStopTeamSpawnersOnDie().name().toLowerCase(),
-                                            false)));
-
-                            player.sendMessage(i18n("arena_info_config_constant", false)
-                                    .replace("%constant%", "anchorAutoFill")
-                                    .replace("%value%", i18n(
-                                            "arena_info_config_" + game.getAnchorAutoFill().name().toLowerCase(),
-                                            false)));
-
-                            player.sendMessage(i18n("arena_info_config_constant", false)
-                                    .replace("%constant%", "anchorDecreasing")
-                                    .replace("%value%", i18n(
-                                            "arena_info_config_" + game.getAnchorDecreasing().name().toLowerCase(),
-                                            false)));
-
-                            player.sendMessage(i18n("arena_info_config_constant", false)
-                                    .replace("%constant%", "cakeTargetBlockEating")
-                                    .replace("%value%", i18n(
-                                            "arena_info_config_" + game.getCakeTargetBlockEating().name().toLowerCase(),
-                                            false)));
-
-                            player.sendMessage(i18n("arena_info_config_constant", false)
-                                    .replace("%constant%", "targetBlockExplosions")
-                                    .replace("%value%", i18n(
-                                            "arena_info_config_" + game.getTargetBlockExplosions().name().toLowerCase(),
-                                            false)));
+                            game.getConfigurationContainer().getRegisteredKeys().forEach(s -> {
+                                Configuration<?> opt = game.getConfigurationContainer().get(s, Object.class).get();
+                                msg.replace("constant", s);
+                                String val = String.valueOf(opt.get());
+                                if (val.equalsIgnoreCase("true")) {
+                                    val = i18nonly("arena_info_config_true");
+                                } else if (val.equalsIgnoreCase("false")) {
+                                    val = i18nonly("arena_info_config_false");
+                                }
+                                if (!opt.isSet()) {
+                                    msg.replace("value", i18nonly("arena_info_config_inherit") + ChatColor.RESET + val);
+                                } else {
+                                    msg.replace("value", ChatColor.RESET + val);
+                                }
+                                msg.send(player);
+                            });
 
                             // NON-BOOLEAN CONSTANTS
 
@@ -547,16 +398,12 @@ public class AdminCommand extends BaseCommand {
             }
         } else if (args.get(1).equalsIgnoreCase("config")) {
             if (args.size() == 3) {
-                completion.addAll(Arrays.asList("compassEnabled", "joinRandomTeamAfterLobby", "joinRandomTeamOnJoin",
-                        "addWoolToInventoryOnJoin", "preventKillingVillagers", "playerDrops",
-                        "friendlyfire", "coloredLeatherByTeamInLobby", "keepInventory", "crafting", "gamebossbar",
-                        "lobbybossbar", "gamescoreboard", "lobbyscoreboard", "preventspawningmobs", "spawnerholograms",
-                        "spawnerDisableMerge", "gamestartitems", "playerrespawnitems", "spawnerhologramscountdown",
-                        "damagewhenplayerisnotinarena", "removeunusedtargetblocks", "holoabovebed", "allowblockfall",
-                        "spectatorjoin", "stopTeamSpawnersOnDie", "anchorAutoFill", "anchorDecreasing", "cakeTargetBlockEating", "targetBlockExplosions"));
+                if (gc.containsKey(args.get(0))) {
+                    completion.addAll(gc.get(args.get(0)).getGame().getConfigurationContainer().getRegisteredKeys());
+                }
             }
             if (args.size() == 4) {
-                completion.addAll(Arrays.asList("true", "false", "inherit"));
+                completion.addAll(Arrays.asList("true", "false", "inherit")); // this is not necessary right
             }
         } else if (args.get(1).equalsIgnoreCase("spawner")) {
             if (args.size() == 3) {

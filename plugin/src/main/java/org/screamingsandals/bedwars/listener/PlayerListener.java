@@ -26,6 +26,7 @@ import org.bukkit.metadata.MetadataValue;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.RunningTeam;
+import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
 import org.screamingsandals.bedwars.api.events.BedwarsPlayerKilledEvent;
 import org.screamingsandals.bedwars.api.events.BedwarsTeamChestOpenEvent;
 import org.screamingsandals.bedwars.api.game.GameStatus;
@@ -61,16 +62,16 @@ public class PlayerListener implements Listener {
             List<ItemStack> drops = new ArrayList<>(event.getDrops());
             int respawnTime = Main.getConfigurator().config.getInt("respawn-cooldown.time", 5);
 
-            if (game.getOriginalOrInheritedKeepArmor()) {
+            if (game.getConfigurationContainer().getOrDefault(ConfigurationContainer.KEEP_ARMOR, Boolean.class, false)) {
                 gVictim.setGameArmorContents(victim.getInventory().getArmorContents());
             }
 
-            event.setKeepInventory(game.getOriginalOrInheritedKeepInventory());
+            event.setKeepInventory(game.getConfigurationContainer().getOrDefault(ConfigurationContainer.KEEP_INVENTORY, Boolean.class, false));
             event.setDroppedExp(0);
 
             if (game.getStatus() == GameStatus.RUNNING) {
                 Debug.info(victim.getName() + " died while game was running");
-                if (!game.getOriginalOrInheritedPlayerDrops()) {
+                if (!game.getConfigurationContainer().getOrDefault(ConfigurationContainer.PLAYER_DROPS, Boolean.class, false)) {
                     event.getDrops().clear();
                 }
 
@@ -107,7 +108,7 @@ public class PlayerListener implements Listener {
                 CurrentTeam team = game.getPlayerTeam(gVictim);
                 SpawnEffects.spawnEffect(game, victim, "game-effects.kill");
                 boolean isBed = team.isBed;
-                if (isBed && game.getOriginalOrInheritedAnchorDecreasing() && "RESPAWN_ANCHOR".equals(team.teamInfo.bed.getBlock().getType().name())) {
+                if (isBed && game.getConfigurationContainer().getOrDefault(ConfigurationContainer.ANCHOR_DECREASING, Boolean.class, false) && "RESPAWN_ANCHOR".equals(team.teamInfo.bed.getBlock().getType().name())) {
                     isBed = Player116ListenerUtils.processAnchorDeath(game, team, isBed);
                 }
                 if (!isBed) {
@@ -291,7 +292,7 @@ public class PlayerListener implements Listener {
             }
             Debug.info(event.getPlayer().getName() + " is in game");
             // clear inventory to fix issue 148
-            if (!game.getOriginalOrInheritedKeepInventory()) {
+            if (!game.getConfigurationContainer().getOrDefault(ConfigurationContainer.KEEP_INVENTORY, Boolean.class, false)) {
                 event.getPlayer().getInventory().clear();
             }
             if (gPlayer.isSpectator) {
@@ -311,7 +312,7 @@ public class PlayerListener implements Listener {
                 }
 
                 SpawnEffects.spawnEffect(gPlayer.getGame(), gPlayer.player, "game-effects.respawn");
-                if (gPlayer.getGame().getOriginalOrInheritedPlayerRespawnItems()) {
+                if (gPlayer.getGame().getConfigurationContainer().getOrDefault(ConfigurationContainer.ENABLE_PLAYER_RESPAWN_ITEMS, Boolean.class, false)) {
                     List<ItemStack> givedGameStartItems = StackParser.parseAll((Collection<Object>) Main.getConfigurator().config
                             .getList("gived-player-respawn-items"));
                     if (givedGameStartItems != null) {
@@ -537,7 +538,7 @@ public class PlayerListener implements Listener {
             if (gPlayer.getGame().getStatus() != GameStatus.RUNNING) {
                 event.setCancelled(true);
                 Debug.info(player.getName() + " tried to craft while crafting is not allowed");
-            } else if (!gPlayer.getGame().getOriginalOrInheritedCrafting()) {
+            } else if (!gPlayer.getGame().getConfigurationContainer().getOrDefault(ConfigurationContainer.CRAFTING, Boolean.class, false)) {
                 event.setCancelled(true);
                 Debug.info(player.getName() + " tried to craft while crafting is not allowed");
             }
@@ -562,7 +563,7 @@ public class PlayerListener implements Listener {
             if (event.getCause() != DamageCause.VOID) {
                 Game game = Main.getInGameEntity(entity);
                 if (game != null) {
-                    if (game.isEntityShop(entity) && game.getOriginalOrInheritedPreventKillingVillagers()) {
+                    if (game.isEntityShop(entity) && game.getConfigurationContainer().getOrDefault(ConfigurationContainer.PROTECT_SHOP, Boolean.class, false)) {
                         Debug.info("Game entity was damaged, cancelling");
                         event.setCancelled(true);
                     }
@@ -613,7 +614,7 @@ public class PlayerListener implements Listener {
                     return;
                 }
 
-                if (event.getCause() == DamageCause.VOID) {
+                if (event.getCause() == DamageCause.VOID && player.getHealth() > 0.5) {
                     player.setHealth(0.5);
                 } else if (event instanceof EntityDamageByEntityEvent) {
                     EntityDamageByEntityEvent edbee = (EntityDamageByEntityEvent) event;
@@ -621,7 +622,7 @@ public class PlayerListener implements Listener {
                         Player damager = (Player) edbee.getDamager();
                         if (Main.isPlayerInGame(damager)) {
                             GamePlayer gDamager = Main.getPlayerGameProfile(damager);
-                            if (gDamager.isSpectator || (gDamager.getGame().getPlayerTeam(gDamager) == game.getPlayerTeam(gPlayer) && !game.getOriginalOrInheritedFriendlyfire())) {
+                            if (gDamager.isSpectator || (gDamager.getGame().getPlayerTeam(gDamager) == game.getPlayerTeam(gPlayer) && !game.getConfigurationContainer().getOrDefault(ConfigurationContainer.FRIENDLY_FIRE, Boolean.class, false))) {
                                 event.setCancelled(true);
                             }
                         }
@@ -633,7 +634,7 @@ public class PlayerListener implements Listener {
                             Player damager = (Player) projectile.getShooter();
                             if (Main.isPlayerInGame(damager)) {
                                 GamePlayer gDamager = Main.getPlayerGameProfile(damager);
-                                if (gDamager.isSpectator || gDamager.getGame().getPlayerTeam(gDamager) == game.getPlayerTeam(gPlayer) && !game.getOriginalOrInheritedFriendlyfire()) {
+                                if (gDamager.isSpectator || gDamager.getGame().getPlayerTeam(gDamager) == game.getPlayerTeam(gPlayer) && !game.getConfigurationContainer().getOrDefault(ConfigurationContainer.FRIENDLY_FIRE, Boolean.class, false)) {
                                     event.setCancelled(true);
                                 }
                             }
@@ -771,7 +772,7 @@ public class PlayerListener implements Listener {
                             game.addChestForFutureClear(event.getClickedBlock().getLocation(), holder.getInventory());
                             Debug.info(player.getName() + " used chest in BedWars game");
                         } else if (event.getClickedBlock().getType().name().contains("CAKE")) {
-                            if (game.getOriginalOrInheritedCakeTargetBlockEating()) {
+                            if (game.getConfigurationContainer().getOrDefault(ConfigurationContainer.CAKE_TARGET_BLOCK_EATING, Boolean.class, false)) {
                                 if (game.getTeamOfPlayer(event.getPlayer()).getTargetBlock().equals(event.getClickedBlock().getLocation())) {
                                     event.setCancelled(true);
                                 } else {
@@ -821,7 +822,7 @@ public class PlayerListener implements Listener {
                             ItemStack stack = event.getItem();
                             if (stack != null && stack.getAmount() > 0) {
                                 boolean anchorFilled = false;
-                                if (game.getOriginalOrInheritedAnchorDecreasing()
+                                if (game.getConfigurationContainer().getOrDefault(ConfigurationContainer.ANCHOR_DECREASING, Boolean.class, false)
                                         && event.getClickedBlock().getType().name().equals("RESPAWN_ANCHOR")
                                         && game.getPlayerTeam(gPlayer).teamInfo.bed.equals(event.getClickedBlock().getLocation())
                                         && event.getItem() != null && event.getItem().getType() == Material.GLOWSTONE) {
@@ -937,7 +938,7 @@ public class PlayerListener implements Listener {
                         || event.getInventory().getType() == InventoryType.BREWING
                         || event.getInventory().getType() == InventoryType.FURNACE
                         || event.getInventory().getType() == InventoryType.WORKBENCH) {
-                    if (!gProfile.getGame().getOriginalOrInheritedCrafting()) {
+                    if (!gProfile.getGame().getConfigurationContainer().getOrDefault(ConfigurationContainer.CRAFTING, Boolean.class, false)) {
                         event.setCancelled(true);
                         Debug.info(player.getName() + " tried to open prohibited inventory");
                     }
@@ -1139,7 +1140,7 @@ public class PlayerListener implements Listener {
         if (Main.isPlayerInGame(player)) {
             GamePlayer gPlayer = Main.getPlayerGameProfile(player);
             Game game = gPlayer.getGame();
-            if (game.getOriginalOrInheritedDamageWhenPlayerIsNotInArena() && game.getStatus() == GameStatus.RUNNING
+            if (game.getConfigurationContainer().getOrDefault(ConfigurationContainer.DAMAGE_WHEN_PLAYER_IS_NOT_IN_ARENA, Boolean.class, false) && game.getStatus() == GameStatus.RUNNING
                     && !gPlayer.isSpectator) {
                 if (!GameCreator.isInArea(event.getTo(), game.getPos1(), game.getPos2())) {
                     player.damage(5);

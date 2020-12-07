@@ -18,10 +18,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.screamingsandals.bedwars.lib.lang.I.i18nonly;
 import static org.screamingsandals.bedwars.lib.lang.I18n.i18n;
@@ -344,172 +341,62 @@ public class GameCreator {
     }
 
     private String setLocalConfigVariable(String config, String value) {
-        value = value.toLowerCase();
-        InGameConfigBooleanConstants cons;
-        switch (value) {
-            case "t":
-            case "tr":
-            case "tru":
-            case "true":
-            case "y":
-            case "ye":
-            case "yes":
-            case "1":
-                cons = InGameConfigBooleanConstants.TRUE;
-                value = "true";
-                break;
-            case "f":
-            case "fa":
-            case "fal":
-            case "fals":
-            case "false":
-            case "n":
-            case "no":
-            case "0":
-                cons = InGameConfigBooleanConstants.FALSE;
-                value = "false";
-                break;
-            case "i":
-            case "in":
-            case "inh":
-            case "inhe":
-            case "inher":
-            case "inheri":
-            case "inherit":
-            case "d":
-            case "de":
-            case "def":
-            case "defa":
-            case "defau":
-            case "defaul":
-            case "default":
-                cons = InGameConfigBooleanConstants.INHERIT;
-                value = "inherit";
-                break;
-            default:
-                return i18n("admin_command_invalid_config_value");
+        Optional<String> key = game.getConfigurationContainer().getRegisteredKeys().stream().filter(t -> t.replace("-", "").equalsIgnoreCase(config)).findFirst();
+        if (!key.isPresent()) {
+            return i18n("admin_command_invalid_config_variable_name");
+        } else {
+            Class<?> type = game.getConfigurationContainer().getType(key.get());
+            if (type.isAssignableFrom(Boolean.class)) {
+                switch (value.toLowerCase()) {
+                    case "t":
+                    case "tr":
+                    case "tru":
+                    case "true":
+                    case "y":
+                    case "ye":
+                    case "yes":
+                    case "1":
+                        game.getConfigurationContainer().update(key.get(), Boolean.TRUE);
+                        value = "true";
+                        break;
+                    case "f":
+                    case "fa":
+                    case "fal":
+                    case "fals":
+                    case "false":
+                    case "n":
+                    case "no":
+                    case "0":
+                        game.getConfigurationContainer().update(key.get(), Boolean.FALSE);
+                        value = "false";
+                        break;
+                    case "i":
+                    case "in":
+                    case "inh":
+                    case "inhe":
+                    case "inher":
+                    case "inheri":
+                    case "inherit":
+                    case "d":
+                    case "de":
+                    case "def":
+                    case "defa":
+                    case "defau":
+                    case "defaul":
+                    case "default":
+                        game.getConfigurationContainer().update(key.get(), null);
+                        value = "inherit";
+                        break;
+                    default:
+                        return i18n("admin_command_invalid_config_value");
+                }
+                return i18n("admin_command_config_variable_set_to").replace("%config%", config).replace("%value%", value);
+            } else {
+                // here we need to somehow determinate which type is it
+                game.getConfigurationContainer().update(key.get(), value);
+                return i18n("admin_command_config_variable_set_to").replace("%config%", config).replace("%value%", value);
+            }
         }
-
-        config = config.toLowerCase().replaceAll("-", "");
-        switch (config) {
-            case "compassenabled":
-                game.setCompassEnabled(cons);
-                break;
-            case "joinrandomteamafterlobby":
-            case "joinrandomlyafterlobbytimeout":
-                game.setJoinRandomTeamAfterLobby(cons);
-                break;
-            case "joinrandomteamonjoin":
-            case "joinrandomlyonlobbyjoin":
-                game.setJoinRandomTeamOnJoin(cons);
-                break;
-            case "addwooltoinventoryonjoin":
-                game.setAddWoolToInventoryOnJoin(cons);
-                break;
-            case "preventkillingvillagers":
-                game.setPreventKillingVillagers(cons);
-                break;
-            case "playerdrops":
-                game.setPlayerDrops(cons);
-                break;
-            case "friendlyfire":
-                game.setFriendlyfire(cons);
-                break;
-            case "coloredleatherbyteaminlobby":
-            case "inlobbycoloredleatherbyteam":
-                game.setColoredLeatherByTeamInLobby(cons);
-                break;
-            case "keeparmor":
-            case "keeparmorondeath":
-                game.setKeepArmor(cons);
-                break;
-            case "keepinventory":
-            case "keepinventoryondeath":
-                game.setKeepInventory(cons);
-                break;
-            case "crafting":
-            case "allowcrafting":
-                game.setCrafting(cons);
-                break;
-            case "bossbar":
-            case "gamebossbar":
-                game.setGameBossbar(cons);
-                break;
-            case "lobbybossbar":
-                game.setLobbyBossbar(cons);
-                break;
-            case "scoreboard":
-            case "gamescoreboard":
-                game.setAscoreboard(cons);
-                break;
-            case "lobbyscoreboard":
-                game.setLobbyScoreboard(cons);
-                break;
-            case "preventspawningmobs":
-            case "preventmobs":
-            case "mobs":
-                game.setPreventSpawningMobs(cons);
-                break;
-            case "spawnerholograms":
-                game.setSpawnerHolograms(cons);
-                break;
-            case "spawnerdisablemerge":
-                game.setSpawnerDisableMerge(cons);
-                break;
-            case "gamestartitems":
-            case "giveitemsongamestart":
-                game.setGameStartItems(cons);
-                break;
-            case "playerrespawnitems":
-            case "giveitemsonplayerrespawn":
-                game.setPlayerRespawnItems(cons);
-                break;
-            case "spawnerhologramscountdown":
-                game.setSpawnerHologramsCountdown(cons);
-                break;
-            case "damagewhenplayerisnotinarena":
-                game.setDamageWhenPlayerIsNotInArena(cons);
-                break;
-            case "removeunusedtargetblocks":
-                game.setRemoveUnusedTargetBlocks(cons);
-                break;
-            case "allowblockfall":
-            case "allowblockfalling":
-                game.setAllowBlockFalling(cons);
-                break;
-            case "holoabovebed":
-            case "hologramabovebed":
-            case "holobed":
-            case "hologrambed":
-                game.setHoloAboveBed(cons);
-                break;
-            case "spectatorjoin":
-            case "allowspectatorjoin":
-            	game.setSpectatorJoin(cons);
-            	break;
-            case "stopteamspawnersondie":
-            case "stopdeathspawners":
-                game.setStopTeamSpawnersOnDie(cons);
-                break;
-            case "anchorautofill":
-            case "anchorfillonstart":
-                game.setAnchorAutoFill(cons);
-                break;
-            case "anchordecreasing":
-            case "anchorenabledescrease":
-                game.setAnchorDecreasing(cons);
-                break;
-            case "caketargetblockeating":
-            case "cakeeating":
-                game.setCakeTargetBlockEating(cons);
-                break;
-            case "targetblockexplosions":
-                game.setTargetBlockExplosions(cons);
-                break;
-            default:
-                return i18n("admin_command_invalid_config_variable_name");
-        }
-        return i18n("admin_command_config_variable_set_to").replace("%config%", config).replace("%value%", value);
     }
 
     private String setMinPlayers(int minPlayers) {

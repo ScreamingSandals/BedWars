@@ -3,6 +3,7 @@ package org.screamingsandals.bedwars.api;
 /**
  * @author Bedwars Team
  */
+@Deprecated
 public enum InGameConfigBooleanConstants {
     INHERIT(false, false),
     TRUE(true, true),
@@ -19,6 +20,7 @@ public enum InGameConfigBooleanConstants {
     /**
      * @return
      */
+    @Deprecated
     public boolean isInherited() {
         return !original;
     }
@@ -26,6 +28,7 @@ public enum InGameConfigBooleanConstants {
     /**
      * @return
      */
+    @Deprecated
     public boolean isOriginal() {
         return original;
     }
@@ -33,6 +36,7 @@ public enum InGameConfigBooleanConstants {
     /**
      * @return
      */
+    @Deprecated
     public boolean getValue() {
         return value;
     }

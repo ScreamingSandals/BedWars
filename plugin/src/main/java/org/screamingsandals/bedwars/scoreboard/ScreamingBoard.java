@@ -8,6 +8,7 @@ import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.*;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.RunningTeam;
+import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.game.CurrentTeam;
 import org.screamingsandals.bedwars.game.Game;
@@ -59,7 +60,7 @@ public class ScreamingBoard {
         }
     }
     private void updateLobbyBoard() {
-        if (!game.getOriginalOrInheritedLobbyScoreaboard()) {
+        if (!game.getConfigurationContainer().getOrDefault(ConfigurationContainer.LOBBY_SCOREBOARD, Boolean.class, false)) {
             return;
         }
 
@@ -103,7 +104,7 @@ public class ScreamingBoard {
     }
 
     public void updateGameBoard() {
-        if (!game.getOriginalOrInheritedScoreaboard()) {
+        if (!game.getConfigurationContainer().getOrDefault(ConfigurationContainer.GAME_SCOREBOARD, Boolean.class, false)) {
             return;
         }
 
@@ -206,7 +207,7 @@ public class ScreamingBoard {
                 } else {
                     scoreboardTeam.setPrefix(team.color.chatColor.toString());
                 }
-                scoreboardTeam.setAllowFriendlyFire(game.getOriginalOrInheritedFriendlyfire());
+                scoreboardTeam.setAllowFriendlyFire(game.getConfigurationContainer().getOrDefault(ConfigurationContainer.FRIENDLY_FIRE, Boolean.class, false));
             }
 
             player.setScoreboard(board);
@@ -223,7 +224,7 @@ public class ScreamingBoard {
                 //register team
                 if (scoreboardTeam == null) {
                     scoreboardTeam = board.registerNewTeam(team.getName());
-                    scoreboardTeam.setAllowFriendlyFire(game.getOriginalOrInheritedFriendlyfire());
+                    scoreboardTeam.setAllowFriendlyFire(game.getConfigurationContainer().getOrDefault(ConfigurationContainer.FRIENDLY_FIRE, Boolean.class, false));
                     scoreboardTeam.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.NEVER);
                     if (!Main.isLegacy()) {
                         scoreboardTeam.setColor(TeamColor.fromApiColor(team.getColor()).chatColor);
