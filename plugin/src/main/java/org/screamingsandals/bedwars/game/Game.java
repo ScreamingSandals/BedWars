@@ -1,6 +1,7 @@
 package org.screamingsandals.bedwars.game;
 
 import com.onarandombox.MultiverseCore.api.Core;
+import io.papermc.lib.PaperLib;
 import lombok.Getter;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -180,6 +181,16 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
             game.pos1 = MiscUtils.readLocationFromString(game.world, configMap.getString("pos1"));
             game.pos2 = MiscUtils.readLocationFromString(game.world, configMap.getString("pos2"));
+
+            if (Main.getConfigurator().config.getBoolean("prevent-spawning-mobs", true)) {
+                for (Entity e : game.world.getEntitiesByClass(Monster.class)) {
+                    if (GameCreator.isInArea(e.getLocation(), game.pos1, game.pos2)) {
+                        PaperLib.getChunkAtAsync(e.getLocation())
+                                .thenAccept(chunk -> e.remove());
+                    }
+                }
+            }
+
             game.specSpawn = MiscUtils.readLocationFromString(game.world, configMap.getString("specSpawn"));
             String spawnWorld = configMap.getString("lobbySpawnWorld");
             World lobbySpawnWorld = Bukkit.getWorld(spawnWorld);
@@ -291,6 +302,14 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             return null;
         }
     }
+
+    public void removeEntityAsync(Entity e) {
+        if (GameCreator.isInArea(e.getLocation(), pos1, pos2)) {
+            PaperLib.getChunkAtAsync(e.getLocation())
+                    .thenAccept(chunk -> e.remove());
+        }
+    }
+
 
     public static WeatherType loadWeather(String weather) {
         try {
@@ -2085,21 +2104,13 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         for (Entity e : this.world.getEntities()) {
             if (GameCreator.isInArea(e.getLocation(), pos1, pos2)) {
                 if (e instanceof Item) {
-                    Chunk chunk = e.getLocation().getChunk();
-                    if (!chunk.isLoaded()) {
-                        chunk.load();
-                    }
-                    e.remove();
+                    removeEntityAsync(e);
                 }
 
                 if (e instanceof ArmorStand) {
                     final String customName = e.getCustomName();
                     if (customName != null && customName.equals(ItemSpawner.ARMOR_STAND_DISPLAY_NAME_HIDDEN)) {
-                        Chunk chunk = e.getLocation().getChunk();
-                        if (!chunk.isLoaded()) {
-                            chunk.load();
-                        }
-                        e.remove();
+                        removeEntityAsync(e);
                     }
                 }
             }
