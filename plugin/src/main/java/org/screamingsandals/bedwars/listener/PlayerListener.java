@@ -28,6 +28,7 @@ import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.RunningTeam;
 import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
 import org.screamingsandals.bedwars.api.events.BedwarsPlayerKilledEvent;
+import org.screamingsandals.bedwars.api.events.BedwarsPlayerRespawnedEvent;
 import org.screamingsandals.bedwars.api.events.BedwarsTeamChestOpenEvent;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.commands.BaseCommand;
@@ -305,6 +306,10 @@ public class PlayerListener implements Listener {
             } else {
                 Debug.info(event.getPlayer().getName() + " is going to play the game");
                 event.setRespawnLocation(gPlayer.getGame().getPlayerTeam(gPlayer).teamInfo.spawn);
+
+
+                BedwarsPlayerRespawnedEvent respawnEvent = new BedwarsPlayerRespawnedEvent(game, event.getPlayer());
+                Main.getInstance().getServer().getPluginManager().callEvent(respawnEvent);
 
                 if (Main.getConfigurator().config.getBoolean("respawn.protection-enabled", true)) {
                     RespawnProtection respawnProtection = game.addProtectedPlayer(gPlayer.player);
