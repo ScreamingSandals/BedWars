@@ -88,6 +88,14 @@ public class BedwarsApplyPropertyToItem extends Event {
      * @param key
      * @return
      */
+    public boolean hasProperty(String key) {
+        return this.properties.containsKey(key);
+    }
+
+    /**
+     * @param key
+     * @return
+     */
     public String getStringProperty(String key) {
         return this.properties.get(key).toString();
     }

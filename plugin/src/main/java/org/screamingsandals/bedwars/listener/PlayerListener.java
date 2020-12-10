@@ -321,6 +321,7 @@ public class PlayerListener implements Listener {
                         Debug.warn("You have wrongly configured gived-player-respawn-items!", true);
                     }
                 }
+                MiscUtils.giveItemsToPlayer(gPlayer.getPermaItemsPurchased(), gPlayer.player, team.getColor());
             }
         }
     }
