@@ -1436,6 +1436,9 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         CurrentTeam currentTeam = getPlayerTeam(gamePlayer);
 
         if (gamePlayer.getGame() == this && currentTeam != null) {
+            BedwarsPlayerRespawnedEvent event = new BedwarsPlayerRespawnedEvent(this, player);
+            Main.getInstance().getServer().getPluginManager().callEvent(event);
+
             gamePlayer.isSpectator = false;
             gamePlayer.teleport(currentTeam.getTeamSpawn(), () -> {
                 player.setAllowFlight(false);
