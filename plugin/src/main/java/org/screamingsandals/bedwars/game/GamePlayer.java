@@ -20,6 +20,7 @@ public class GamePlayer {
     private Game game = null;
     private String latestGame = null;
     private StoredInventory oldInventory = new StoredInventory();
+    private List<ItemStack> permaItemsPurchased = new ArrayList<>();
     private List<Player> hiddenPlayers = new ArrayList<>();
     private ItemStack[] armorContents = null;
 
@@ -79,6 +80,18 @@ public class GamePlayer {
 
     public boolean canJoinFullGame() {
         return player.hasPermission("bw.vip.forcejoin");
+    }
+
+    public List<ItemStack> getPermaItemsPurchased() {
+        return permaItemsPurchased;
+    }
+
+    private void resetPermaItems() {
+        this.permaItemsPurchased.clear();
+    }
+
+    public void addPermaItem(ItemStack stack) {
+        this.permaItemsPurchased.add(stack);
     }
 
     public void storeInv() {
@@ -166,6 +179,7 @@ public class GamePlayer {
     public void clean() {
         invClean();
         resetLife();
+        resetPermaItems();
         new ArrayList<>(this.hiddenPlayers).forEach(this::showPlayer);
     }
 

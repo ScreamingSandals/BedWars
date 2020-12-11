@@ -1460,6 +1460,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                         Debug.warn("You have wrongly configured gived-player-respawn-items!", true);
                     }
                 }
+                MiscUtils.giveItemsToPlayer(gamePlayer.getPermaItemsPurchased(), player, currentTeam.getColor());
 
                 if (configurationContainer.getOrDefault(ConfigurationContainer.KEEP_ARMOR, Boolean.class, false)) {
                     final ItemStack[] armorContents = gamePlayer.getGameArmorContents();

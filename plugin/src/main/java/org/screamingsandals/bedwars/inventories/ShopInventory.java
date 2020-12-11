@@ -21,6 +21,7 @@ import org.screamingsandals.bedwars.api.upgrades.UpgradeStorage;
 import org.screamingsandals.bedwars.game.CurrentTeam;
 import org.screamingsandals.bedwars.game.Game;
 import org.screamingsandals.bedwars.game.GamePlayer;
+import org.screamingsandals.bedwars.special.listener.PermaItemListener;
 import org.screamingsandals.bedwars.utils.Debugger;
 import org.screamingsandals.bedwars.utils.Sounds;
 import org.screamingsandals.bedwars.lib.debug.Debug;
@@ -409,16 +410,29 @@ public class ShopInventory implements Listener {
 
 		ItemStack materialItem = type.getStack(price);
 		if (event.hasPlayerInInventory(materialItem)) {
+			Map<String, Object> permaItemPropertyData = new HashMap<>();
 			if (event.hasProperties()) {
 				for (ItemProperty property : event.getProperties()) {
+					final Map<String, Object> propertyData = property.getReader(player).convertToMap();
 					if (property.hasName()) {
 						BedwarsApplyPropertyToBoughtItem applyEvent = new BedwarsApplyPropertyToBoughtItem(game, player,
-							newItem, property.getReader(player).convertToMap());
+							newItem, propertyData);
 						Main.getInstance().getServer().getPluginManager().callEvent(applyEvent);
 
 						newItem = applyEvent.getStack();
 					}
+					// Checks if the player is buying a permanent item. Setting name to empty string to prevent other listeners from erroring out.
+					else if (propertyData.get(PermaItemListener.getPermItemPropKey()) != null) {
+						permaItemPropertyData = propertyData;
+						permaItemPropertyData.put("name", "");
+					}
 				}
+			}
+
+			if (!permaItemPropertyData.isEmpty()) {
+				BedwarsApplyPropertyToBoughtItem applyEvent = new BedwarsApplyPropertyToBoughtItem(game, player,
+						newItem, permaItemPropertyData);
+				Main.getInstance().getServer().getPluginManager().callEvent(applyEvent);
 			}
 
 			event.sellStack(materialItem);
