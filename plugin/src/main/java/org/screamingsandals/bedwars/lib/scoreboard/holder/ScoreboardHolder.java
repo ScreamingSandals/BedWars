@@ -1,13 +1,11 @@
 package org.screamingsandals.bedwars.lib.scoreboard.holder;
 
 import lombok.Data;
-import lombok.var;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
-import sun.reflect.generics.tree.Tree;
 
 import java.util.Collections;
 import java.util.List;

@@ -2,7 +2,6 @@ package org.screamingsandals.bedwars.lib.scoreboard.paint;
 
 import lombok.Data;
 import lombok.NonNull;
-import lombok.var;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
@@ -33,9 +32,9 @@ public class LinePainter {
 
         bukkitScoreboard.getEntries().forEach(bukkitScoreboard::resetScores);
 
-        for (var entry : lines.entrySet()) {
-            var value = entry.getValue();
-            final var valueCharCount = value.toCharArray().length;
+        for (Map.Entry<Integer, String> entry : lines.entrySet()) {
+            String value = entry.getValue();
+            final int valueCharCount = value.toCharArray().length;
 
             if (valueCharCount > 40) {
                 value = "error!";
@@ -48,7 +47,7 @@ public class LinePainter {
     }
 
     public void paintLine(int line, String content) {
-        final var objective = getObjective();
+        final Objective objective = getObjective();
 
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
         final Score score = objective.getScore(content);
@@ -62,10 +61,10 @@ public class LinePainter {
     }
 
     private Objective getObjective() {
-        final var holder = scoreboard.getScoreboardHolder();
-        final var bukkitScoreboard = holder.getBukkitScoreboard();
-        final var displayedName = holder.getDisplayedName();
-        var objective = bukkitScoreboard.getObjective(objectiveName);
+        final ScoreboardHolder holder = scoreboard.getScoreboardHolder();
+        final Scoreboard bukkitScoreboard = holder.getBukkitScoreboard();
+        final String displayedName = holder.getDisplayedName();
+        Objective objective = bukkitScoreboard.getObjective(objectiveName);
 
         if (objective == null) {
             objective = bukkitScoreboard.registerNewObjective(objectiveName, "dummy");
