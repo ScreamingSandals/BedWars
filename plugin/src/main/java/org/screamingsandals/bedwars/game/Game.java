@@ -910,6 +910,9 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         statusbar.removePlayer(gamePlayer.player);
         createdHolograms.forEach(holo -> holo.removeViewer(gamePlayer.player));
 
+        if (experimentalBoard != null) {
+            experimentalBoard.handlePlayerLeave(gamePlayer.player);
+        }
         gamePlayer.player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
 
         if (Main.getConfigurator().config.getBoolean("mainlobby.enabled")

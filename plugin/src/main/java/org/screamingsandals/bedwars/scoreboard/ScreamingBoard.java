@@ -84,8 +84,6 @@ public class ScreamingBoard {
                 sboard.getLinePainter().paintLine(i, game.formatLobbyScoreboardString(row));
                 i--;
             }
-
-            sboard.addTeams(game.getRunningTeams());
             player.setScoreboard(sboard.getBukkitScoreboard());
         });
     }
@@ -172,6 +170,15 @@ public class ScreamingBoard {
         playerBoards.put(player, new ScreamingScoreboard(player, LOBBY_OBJECTIVE,
                 Main.getConfigurator().config.getString("lobby-scoreboard.title", "§eBEDWARS")));
     }
+
+    public void handlePlayerLeave(Player player) {
+        playerBoards.forEach((p, board) ->{
+            board.removePlayer(player);
+            p.setScoreboard(board.getBukkitScoreboard());
+        });
+        playerBoards.remove(player);
+    }
+
 
     public void handleTeamLeave(Player left) {
         playerBoards.forEach((player, board) -> {

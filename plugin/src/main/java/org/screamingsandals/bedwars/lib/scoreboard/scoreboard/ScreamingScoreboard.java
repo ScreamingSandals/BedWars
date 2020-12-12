@@ -8,6 +8,7 @@ import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.RunningTeam;
+import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
 import org.screamingsandals.bedwars.game.Game;
 import org.screamingsandals.bedwars.game.TeamColor;
 import org.screamingsandals.bedwars.lib.scoreboard.holder.ScoreboardHolder;
@@ -35,11 +36,6 @@ public class ScreamingScoreboard {
         linePainter = new LinePainter(this, objectiveName);
     }
 
-    public void addTeams(List<RunningTeam> gameTeams) {
-        gameTeams.forEach(gameTeam -> addTeam(gameTeam.getName(), TeamColor.fromApiColor(
-                gameTeam.getColor()).chatColor));
-    }
-
     public void paintLines() {
         linePainter.paintLines();
     }
@@ -65,7 +61,7 @@ public class ScreamingScoreboard {
                 team.setPrefix(color.toString());
             }
             team.setDisplayName(name);
-            team.setAllowFriendlyFire(false);
+            team.setAllowFriendlyFire(game.getConfigurationContainer().getOrDefault(ConfigurationContainer.FRIENDLY_FIRE, Boolean.class, false));
             if (!activeTeams.contains(team))
                 activeTeams.add(team);
         }
