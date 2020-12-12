@@ -100,8 +100,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     private final List<CurrentTeam> teamsInGame = new ArrayList<>();
     private final Region region = Main.isLegacy() ? new LegacyRegion() : new FlatteningRegion();
     private TeamSelectorInventory teamSelectorInventory;
-    private final Scoreboard gameScoreboard = Main.getConfigurator().config.getBoolean("experimental.new-scoreboard-system.enabled", false )  ?
-            null : Bukkit.getScoreboardManager().getNewScoreboard();
+    private final Scoreboard gameScoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
     private StatusBar statusbar;
     private final Map<Location, ItemStack[]> usedChests = new HashMap<>();
     private final List<SpecialItem> activeSpecialItems = new ArrayList<>();
@@ -839,6 +838,10 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                         gamePlayer.player.getInventory().setItem(vipPosition, startGame);
                     }
                 }
+
+
+                if (experimentalBoard != null)
+                    experimentalBoard.handlePlayerJoin(gamePlayer.player);
             });
 
             if (isEmpty) {
@@ -860,6 +863,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 }
             });
         }
+
 
         BedwarsPlayerJoinedEvent joinedEvent = new BedwarsPlayerJoinedEvent(this, getPlayerTeam(gamePlayer), gamePlayer.player);
         Main.getInstance().getServer().getPluginManager().callEvent(joinedEvent);
@@ -926,16 +930,17 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             if (team != null) {
                 team.players.remove(gamePlayer);
                 if (status == GameStatus.WAITING) {
-                    if (!Main.getConfigurator().config.getBoolean("experimental.new-scoreboard-system.enabled", false))
-                        team.getScoreboardTeam().removeEntry(gamePlayer.player.getName());
+                    team.getScoreboardTeam().removeEntry(gamePlayer.player.getName());
                     if (team.players.isEmpty()) {
                         teamsInGame.remove(team);
-                        if (!Main.getConfigurator().config.getBoolean("experimental.new-scoreboard-system.enabled", false))
-                            team.getScoreboardTeam().unregister();
+                        team.getScoreboardTeam().unregister();
+                        if (experimentalBoard != null) {
+                            experimentalBoard.unregisterTeam(team.teamInfo);
+                        }
                     }
 
-                    if (Main.getConfigurator().config.getBoolean("experimental.new-scoreboard-system.enabled", false)) {
-                        experimentalBoard.handlePlayerLeave(gamePlayer.player);
+                    if (experimentalBoard != null) {
+                        experimentalBoard.handleTeamLeave(gamePlayer.player);
                     }
 
                 } else {
@@ -968,18 +973,16 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             }
             countdown = -1;
 
-            if (!Main.getConfigurator().config.getBoolean("experimental.new-scoreboard-system.enabled", false)) {
-                if (gameScoreboard.getObjective("display") != null) {
-                    gameScoreboard.getObjective("display").unregister();
-                }
-                if (gameScoreboard.getObjective("lobby") != null) {
-                    gameScoreboard.getObjective("lobby").unregister();
-                }
-                gameScoreboard.clearSlot(DisplaySlot.SIDEBAR);
+            if (gameScoreboard.getObjective("display") != null) {
+                gameScoreboard.getObjective("display").unregister();
+            }
+            if (gameScoreboard.getObjective("lobby") != null) {
+                gameScoreboard.getObjective("lobby").unregister();
+            }
+            gameScoreboard.clearSlot(DisplaySlot.SIDEBAR);
 
-                for (CurrentTeam team : teamsInGame) {
-                    team.getScoreboardTeam().unregister();
-                }
+            for (CurrentTeam team : teamsInGame) {
+                team.getScoreboardTeam().unregister();
             }
             teamsInGame.clear();
 
@@ -1285,21 +1288,19 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
         if (current == null) {
             current = new CurrentTeam(teamForJoin, this);
-            if (!Main.getConfigurator().config.getBoolean("experimental.new-scoreboard-system.enabled", false)) {
-                org.bukkit.scoreboard.Team scoreboardTeam = gameScoreboard.getTeam(teamForJoin.name);
-                if (scoreboardTeam == null) {
-                    scoreboardTeam = gameScoreboard.registerNewTeam(teamForJoin.name);
-                }
-                if (!Main.isLegacy()) {
-                    scoreboardTeam.setColor(teamForJoin.color.chatColor);
-                } else {
-                    scoreboardTeam.setPrefix(teamForJoin.color.chatColor.toString());
-                }
-                scoreboardTeam.setAllowFriendlyFire(configurationContainer.getOrDefault(ConfigurationContainer.FRIENDLY_FIRE, Boolean.class, false));
-
-                current.setScoreboardTeam(scoreboardTeam);
-            } else{
-                experimentalBoard.registerCurrentTeam(teamForJoin);
+            org.bukkit.scoreboard.Team scoreboardTeam = gameScoreboard.getTeam(teamForJoin.name);
+            if (scoreboardTeam == null) {
+                scoreboardTeam = gameScoreboard.registerNewTeam(teamForJoin.name);
+            }
+            if (!Main.isLegacy()) {
+                scoreboardTeam.setColor(teamForJoin.color.chatColor);
+            } else {
+                scoreboardTeam.setPrefix(teamForJoin.color.chatColor.toString());
+            }
+            scoreboardTeam.setAllowFriendlyFire(configurationContainer.getOrDefault(ConfigurationContainer.FRIENDLY_FIRE, Boolean.class, false));
+            current.setScoreboardTeam(scoreboardTeam);
+            if (experimentalBoard != null){
+                experimentalBoard.registerTeam(teamForJoin);
             }
         }
 
@@ -1321,26 +1322,25 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             }
             return;
         }
+
         if (cur != null) {
             cur.players.remove(player);
-            if (!Main.getConfigurator().config.getBoolean("experimental.new-scoreboard-system.enabled", false))
-                cur.getScoreboardTeam().removeEntry(player.player.getName());
-            else
-                experimentalBoard.handlePlayerLeave(player.player);
+            cur.getScoreboardTeam().removeEntry(player.player.getName());
+            if (experimentalBoard != null)
+                experimentalBoard.handleTeamLeave(player.player);
 
             if (cur.players.isEmpty()) {
                 teamsInGame.remove(cur);
-                if (!Main.getConfigurator().config.getBoolean("experimental.new-scoreboard-system.enabled", false))
-                    cur.getScoreboardTeam().unregister();
-                else
-                    experimentalBoard.unregisterTeam(cur.teamInfo, ScreamingBoard.LOBBY_OBJECTIVE);
+                cur.getScoreboardTeam().unregister();
+                if (experimentalBoard != null)
+                    experimentalBoard.unregisterTeam(cur.teamInfo);
             }
             Debug.info(name + ": player " + player.player.getName() + " left the team " + cur.getName());
         }
+
         current.players.add(player);
-        if (!Main.getConfigurator().config.getBoolean("experimental.new-scoreboard-system.enabled", false))
-            current.getScoreboardTeam().addEntry(player.player.getName());
-        else
+        current.getScoreboardTeam().addEntry(player.player.getName());
+        if (experimentalBoard != null)
             experimentalBoard.registerPlayerInTeam(player.player, teamForJoin);
 
         Debug.info(name + ": player " + player.player.getName() + " joined the team " + current.getName());
@@ -1636,12 +1636,11 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                     if (teamSelectorInventory != null)
                         teamSelectorInventory.destroy();
                     teamSelectorInventory = null;
-                    if (!Main.getConfigurator().config.getBoolean("experimental.new-scoreboard-system.enabled", false)) {
-                        if (gameScoreboard.getObjective("lobby") != null) {
-                            gameScoreboard.getObjective("lobby").unregister();
-                        }
-                        gameScoreboard.clearSlot(DisplaySlot.SIDEBAR);
+
+                    if (gameScoreboard.getObjective("lobby") != null) {
+                        gameScoreboard.getObjective("lobby").unregister();
                     }
+                    gameScoreboard.clearSlot(DisplaySlot.SIDEBAR);
                     Bukkit.getScheduler().runTaskLater(Main.getInstance(), this::updateSigns, 3L);
                     for (GameStore store : gameStore) {
                         LivingEntity villager = store.spawn();
