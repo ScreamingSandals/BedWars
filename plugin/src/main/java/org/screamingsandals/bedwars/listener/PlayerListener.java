@@ -658,6 +658,17 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler
+    public void onPlayerArmorStandManipulateEvent (PlayerArmorStandManipulateEvent  e) {
+        final ArmorStand armorStand = e.getRightClicked();
+
+        //this will make sure no players can interact with the rotating generators.
+        if (armorStand.getCustomName() != null && armorStand.getCustomName().equalsIgnoreCase(ItemSpawner.ARMOR_STAND_DISPLAY_NAME_HIDDEN)) {
+            e.setCancelled(true);
+        }
+    }
+
+
+    @EventHandler
     public void onLaunchProjectile(ProjectileLaunchEvent event) {
         if (event.isCancelled()) {
             return;
