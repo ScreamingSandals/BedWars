@@ -30,10 +30,11 @@ public class ScreamingScoreboard {
 
     private LinePainter linePainter;
 
-    public ScreamingScoreboard(Player owner, String objectiveName, String displayName) {
+    public ScreamingScoreboard(Player owner, String objectiveName, String displayName, Game game) {
         scoreboardHolder = new ScoreboardHolder(owner, displayName);
         activeTeams = new LinkedList<>();
         linePainter = new LinePainter(this, objectiveName);
+        this.game = game;
     }
 
     public void paintLines() {

@@ -1092,9 +1092,6 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         if (status == GameStatus.DISABLED) {
             preparing = true;
             status = GameStatus.WAITING;
-            if (experimentalBoard == null && Main.getConfigurator().config.getBoolean("experimental.new-scoreboard-system.enabled", false)) {
-                experimentalBoard = new ScreamingBoard(this);
-            }
             countdown = -1;
             calculatedMaxPlayers = 0;
             for (Team team : teams) {
@@ -1520,6 +1517,10 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             }
             if (teamSelectorInventory == null) {
                 teamSelectorInventory = new TeamSelectorInventory(Main.getInstance(), this);
+            }
+
+            if (experimentalBoard == null && Main.getConfigurator().config.getBoolean("experimental.new-scoreboard-system.enabled", false)) {
+                experimentalBoard = new ScreamingBoard(this);
             }
             updateSigns();
             Debug.info(name + ": lobby prepared");

@@ -33,7 +33,7 @@ public class ScreamingBoard {
 
         game.getConnectedPlayers().forEach(player-> { playerBoards.put(player,
                 new ScreamingScoreboard(player, LOBBY_OBJECTIVE,
-                        Main.getConfigurator().config.getString("lobby-scoreboard.title", "§eBEDWARS"))); });
+                        Main.getConfigurator().config.getString("lobby-scoreboard.title", "§eBEDWARS"), game)); });
 
             bukkitTask = new BukkitRunnable(){
                 @Override
@@ -168,7 +168,7 @@ public class ScreamingBoard {
 
     public void handlePlayerJoin(Player player) {
         playerBoards.put(player, new ScreamingScoreboard(player, LOBBY_OBJECTIVE,
-                Main.getConfigurator().config.getString("lobby-scoreboard.title", "§eBEDWARS")));
+                Main.getConfigurator().config.getString("lobby-scoreboard.title", "§eBEDWARS"), game));
     }
 
     public void handlePlayerLeave(Player player) {
