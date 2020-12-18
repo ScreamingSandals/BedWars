@@ -326,6 +326,14 @@ public class PlayerListener implements Listener {
                         Debug.warn("You have wrongly configured gived-player-respawn-items!", true);
                     }
                 }
+
+                if (game.getConfigurationContainer().getOrDefault(ConfigurationContainer.KEEP_ARMOR, Boolean.class, false)) {
+                    final ItemStack[] armorContents = gPlayer.getGameArmorContents();
+                    if (armorContents != null) {
+                        gPlayer.player.getInventory().setArmorContents(armorContents);
+                    }
+                }
+
                 MiscUtils.giveItemsToPlayer(gPlayer.getPermaItemsPurchased(), gPlayer.player, team.getColor());
             }
         }
