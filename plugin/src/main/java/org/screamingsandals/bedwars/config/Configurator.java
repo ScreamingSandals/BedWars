@@ -472,6 +472,9 @@ public class Configurator {
         checkOrSetConfig(modify, "experimental.new-scoreboard-system.teamTitle", "%bed%%color%%team% §7(%team_size%)");
 
 
+        checkOrSetConfig(modify, "party.enabled", false);
+        checkOrSetConfig(modify, "party.autojoin-members", true);
+
         checkOrSetConfig(modify, "floating-generator.enabled", true);
         checkOrSetConfig(modify, "floating-generator.holo-height", 2.0);
         checkOrSetConfig(modify, "floating-generator.generator-height", 0.25);
