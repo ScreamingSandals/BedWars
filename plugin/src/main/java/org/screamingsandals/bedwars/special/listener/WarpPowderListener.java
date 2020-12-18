@@ -124,7 +124,7 @@ public class WarpPowderListener implements Listener {
 
         WarpPowder warpPowder = (WarpPowder) game.getFirstActivedSpecialItemOfPlayer(player, WarpPowder.class);
         if (warpPowder != null) {
-            warpPowder.cancelTeleport(false, true);
+            warpPowder.cancelTeleport(true, true);
         }
     }
 
