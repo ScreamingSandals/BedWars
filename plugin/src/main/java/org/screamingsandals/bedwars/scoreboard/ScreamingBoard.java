@@ -128,7 +128,8 @@ public class ScreamingBoard {
 
             int i = 15;
             for (String element : finalContent) {
-                board.getLinePainter().paintLine(i, element);
+                board.getLinePainter().paintLine(i,
+                        parseInternalPlaceholders(element));
                 i--;
             }
 
@@ -137,6 +138,10 @@ public class ScreamingBoard {
 
         });
 
+    }
+
+    private String parseInternalPlaceholders(String toParse) {
+        return toParse.replace("%time%", game.getFormattedTimeLeft());
     }
 
     private String formatScoreboardTeam(RunningTeam team, boolean destroy, boolean empty) {
