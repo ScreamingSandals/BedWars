@@ -5,6 +5,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.Main;
+import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.api.statistics.PlayerStatistic;
 import org.screamingsandals.bedwars.game.CurrentTeam;
 import org.screamingsandals.bedwars.game.Game;
@@ -59,7 +60,6 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                         return game.getWorld().getName();
                     case "state":
                         return game.getStatus().name().toLowerCase();
-                    case "aviable_teams": // Wow, you found an easter egg
                     case "available_teams":
                         return Integer.toString(game.countAvailableTeams());
                     case "connected_teams":
@@ -127,6 +127,11 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                     } else {
                         return "0";
                     }
+                case "game_time":
+                    Game m_Game = Main.getPlayerGameProfile(player).getGame();
+                    if (m_Game == null || m_Game.getStatus() != GameStatus.RUNNING)
+                        return "0";
+                    return m_Game.getFormattedTimeLeft();
                 case "game_maxplayers":
                     if (Main.isPlayerInGame(player)) {
                         return Integer.toString(Main.getPlayerGameProfile(player).getGame().getMaxPlayers());
@@ -151,7 +156,6 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                     } else {
                         return "none";
                     }
-                case "aviable_teams": // Wow, you found an easter egg
                 case "available_teams":
                     if (Main.isPlayerInGame(player)) {
                         return Integer.toString(Main.getPlayerGameProfile(player).getGame().countAvailableTeams());
