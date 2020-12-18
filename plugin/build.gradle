@@ -12,7 +12,7 @@ dependencies {
     }
     compileOnly 'io.netty:netty-all:4.1.42.Final'
     compileOnly 'net.citizensnpcs:citizens-main:2.0.27-SNAPSHOT'
-    compileOnly group: 'com.alessiodp.parties', name: 'parties-api', version: '2.6.16'
+    compileOnly 'com.alessiodp.parties:parties-api:2.6.16'
 
     /* SHADED */
     shade project(':BedWars-API')

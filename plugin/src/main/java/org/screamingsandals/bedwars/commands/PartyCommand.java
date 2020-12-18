@@ -6,6 +6,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.lib.nms.entity.PlayerUtils;
+import org.screamingsandals.bedwars.utils.MiscUtils;
 
 import java.util.List;
 
@@ -48,32 +49,44 @@ public class PartyCommand extends BaseCommand {
                         return true;
                     }
 
-                    final var players = party.getMembers();
+                    final var players = MiscUtils.getOnlinePlayers(party.getMembers());
 
-                    if (!players.isEmpty()) {
-                        players.forEach(uuid -> {
-                            final var partyMember = Bukkit.getPlayer(uuid);
-                            if (partyMember != null) {
+                    if (players.size() == 1) {
+                        player.sendMessage(i18n("party_command_is_empty", true));
+                        return true;
+                    }
 
-                                if (game == null) {
-                                    partyMember.sendMessage(i18n("party_warped", true));
-                                    PlayerUtils.teleportPlayer(partyMember, player.getLocation());
+                    players.forEach(partyMember -> {
+                        if (partyMember != null) {
+                            if (partyMember.getUniqueId().equals(player.getUniqueId())) {
+                                return;
+                            }
+
+                            final var gameOfPlayer = Main.getPlayerGameProfile(partyMember).getGame();
+
+                            if (game == null) {
+                                partyMember.sendMessage(i18n("party_warped", true));
+                                if (gameOfPlayer != null) {
+                                    gameOfPlayer.leaveFromGame(partyMember);
+                                }
+                                PlayerUtils.teleportPlayer(partyMember, player.getLocation());
+                                return;
+                            }
+
+                            partyMember.sendMessage(i18n("party_inform_game_join", true));
+                            if (gameOfPlayer != null) {
+                                if (gameOfPlayer.getName().equalsIgnoreCase(game.getName())) {
                                     return;
                                 }
 
-                                partyMember.sendMessage(i18n("party_inform_game_join", true));
-                                final var gameOfPlayer = Main.getPlayerGameProfile(partyMember).getGame();
-                                if (gameOfPlayer != null) {
-                                    if (gameOfPlayer.equals(game)) {
-                                        return;
-                                    }
-
-                                    gameOfPlayer.leaveFromGame(partyMember);
-                                }
-
-                                game.joinToGame(player);
+                                gameOfPlayer.leaveFromGame(partyMember);
                             }
-                        });
+
+                            game.joinToGame(partyMember);
+                        }
+                    });
+                    if (Main.getConfigurator().config.getBoolean("party.notify-when-warped", true)) {
+                        player.sendMessage(i18n("party_command_warped", true));
                     }
                 }
 
@@ -87,6 +100,6 @@ public class PartyCommand extends BaseCommand {
 
     @Override
     public void completeTab(List<String> completion, CommandSender sender, List<String> args) {
-            completion.add("warp");
+        completion.add("warp");
     }
 }

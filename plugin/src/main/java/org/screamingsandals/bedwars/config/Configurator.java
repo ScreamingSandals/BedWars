@@ -474,6 +474,7 @@ public class Configurator {
 
         checkOrSetConfig(modify, "party.enabled", false);
         checkOrSetConfig(modify, "party.autojoin-members", true);
+        checkOrSetConfig(modify, "party.notify-when-warped", true);
 
         checkOrSetConfig(modify, "floating-generator.enabled", true);
         checkOrSetConfig(modify, "floating-generator.holo-height", 2.0);

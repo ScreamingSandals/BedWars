@@ -6,6 +6,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.events.BedwarsPlayerJoinedEvent;
+import org.screamingsandals.bedwars.utils.MiscUtils;
+
 import static org.screamingsandals.bedwars.lib.lang.I.i18n;
 
 public class PartyListener implements Listener {
@@ -31,24 +33,30 @@ public class PartyListener implements Listener {
                 if (leaderUUID != null) {
                     //Player who joined is party leader
                     if (leaderUUID.equals(player.getUniqueId())) {
-                        final var players = party.getMembers();
+                        final var players = MiscUtils.getOnlinePlayers(party.getMembers());
 
-                        if (!players.isEmpty()) {
-                            players.forEach(uuid->{
-                                final var partyMember = Bukkit.getPlayer(uuid);
+                        if (players.size() > 1) {
+                            players.forEach(partyMember -> {
                                 if (partyMember != null) {
+                                    if (partyMember.getUniqueId().equals(player.getUniqueId())) {
+                                        return;
+                                    }
                                     partyMember.sendMessage(i18n("party_inform_game_join", true));
 
                                     final var gameOfPlayer = Main.getPlayerGameProfile(partyMember).getGame();
                                     if (gameOfPlayer != null) {
-                                        if (gameOfPlayer.equals(game)) {
+                                        if (gameOfPlayer.getName().equalsIgnoreCase(game.getName())) {
                                             return;
                                         }
                                         gameOfPlayer.leaveFromGame(partyMember);
                                     }
-                                    game.joinToGame(player);
+                                    game.joinToGame(partyMember);
                                 }
                             });
+
+                            if (Main.getConfigurator().config.getBoolean("party.notify-when-warped", true)) {
+                                player.sendMessage(i18n("party_command_warped", true));
+                            }
                         }
                     }
                 }
