@@ -42,9 +42,10 @@ public class PartyCommand extends BaseCommand {
                 final var leaderUUID = party.getLeader();
 
                 if (leaderUUID != null) {
-                    //Player who joined is party leader
+
                     if (!leaderUUID.equals(player.getUniqueId())) {
                         player.sendMessage(i18n("party_command_not_party_leader", true));
+                        return true;
                     }
 
                     final var players = party.getMembers();
@@ -86,8 +87,6 @@ public class PartyCommand extends BaseCommand {
 
     @Override
     public void completeTab(List<String> completion, CommandSender sender, List<String> args) {
-        if (args.size() == 1) {
             completion.add("warp");
-        }
     }
 }

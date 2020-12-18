@@ -44,10 +44,8 @@ public class PartyListener implements Listener {
                                         if (gameOfPlayer.equals(game)) {
                                             return;
                                         }
-
                                         gameOfPlayer.leaveFromGame(partyMember);
                                     }
-
                                     game.joinToGame(player);
                                 }
                             });

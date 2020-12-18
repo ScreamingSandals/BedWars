@@ -393,7 +393,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 
         var partiesEnabled = false;
 
-        if (Main.getConfigurator().config.getBoolean("party.enabled")) {
+        if (Main.getConfigurator().config.getBoolean("party.enabled", false)) {
             final var partyPlugin = getServer().getPluginManager().getPlugin("Parties");
             if (partyPlugin != null && partyPlugin.isEnabled()) {
                 partiesEnabled = true;
@@ -438,11 +438,8 @@ public class Main extends JavaPlugin implements BedwarsAPI {
             pluginManager.registerEvents(new BungeeMotdListener(), this);
         }
 
-        if (Main.getConfigurator().config.getBoolean("party.enabled")) {
-            final var partyPlugin = pluginManager.getPlugin("Parties");
-            if (partyPlugin != null && partyPlugin.isEnabled()) {
-                pluginManager.registerEvents(new PartyListener(), this);
-            }
+        if (partiesEnabled) {
+            pluginManager.registerEvents(new PartyListener(), this);
         }
 
         InventoryListener.init(this);
