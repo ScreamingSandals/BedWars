@@ -45,7 +45,7 @@ general:
     invalid-game: "&cTeam &e%gameName% &cexistiert nicht!"
     no-game-found: "&cKein Spiel gefunden."
     game-already-created: "&cSpiel &e%gameName% &calready vorhanden! &ldifferent &cname."
-    wrong-bossbar-color: "Color %color% is invalid! Fix this in your config."
+    wrong-bossbar-color: "Die Farbe %color% ist ungültig! Behebe das bitte in der Konfiguration."
   null-translated: "None"
   booleans:
     true: "True"
@@ -61,11 +61,11 @@ general:
 game-builder:
   check-integrity:
     errors:
-      not-created-yet: "&cYou have not created the game yet."
-      not-enough-teams: "&cYou don't have enough teams added. Please add at least &e2 &cteams."
-      not-enough-teams-line2: "&cThere are &e%count% &cteams ready."
+      not-created-yet: "&cDas Spiel wurde noch nicht erstellt."
+      not-enough-teams: "&cDu hast nicht genügend Teams hinzugefügt. Bitte füge mindestens &e2 &cTeams hinzu."
+      not-enough-teams-line2: "&cEs sind &e%count% &cteams bereit."
       not-enough-stores: "&cWell well, you need at least &e1 &cstore added."
-      game-world-does-not-exists: "&cOh my, game-world is not set. Define positions or set game world."
+      game-world-does-not-exists: "&cOh, die Spielwelt wurde noch nicht eingestellt. Definiere Positionen oder wähle eine Spielwelt."
       game-world-position-not-set: "&cOh my, position%whatPosition% is not set. Define it!"
       game-world-spectator-not-set: "&cSpectator spawn is not set. &lDo it!"
       lobby-world-not-set: "&cOh my, lobby-world is not set. Define spawn or set lobby world!"
