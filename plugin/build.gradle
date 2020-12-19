@@ -12,13 +12,14 @@ dependencies {
     }
     compileOnly 'io.netty:netty-all:4.1.42.Final'
     compileOnly 'net.citizensnpcs:citizens-main:2.0.27-SNAPSHOT'
+    compileOnly 'com.alessiodp.parties:parties-api:2.6.16'
 
     /* SHADED */
     shade project(':BedWars-API')
     shade 'com.zaxxer:HikariCP:3.3.0'
     shade 'org.screamingsandals.simpleinventories:SimpleInventories-Core:1.0.6.5'
     shade 'org.bstats:bstats-bukkit:1.7'
-    shade "io.papermc:paperlib:1.0.6"
+    shade paperlib()
 
 }
 
@@ -40,7 +41,8 @@ spigot {
             'PerWorldInventory',
             'SlimeWorldManager',
             'My_Worlds',
-            'Citizens'
+            'Citizens',
+            'Parties'
     ]
     commands {
         bw {

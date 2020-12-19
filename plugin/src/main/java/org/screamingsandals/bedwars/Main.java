@@ -1,5 +1,6 @@
 package org.screamingsandals.bedwars;
 
+import org.bukkit.event.Listener;
 import org.screamingsandals.bedwars.lib.lang.I18n;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
@@ -332,7 +333,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
     public void onEnable() {
         instance = this;
         version = this.getDescription().getVersion();
-        boolean snapshot = version.toLowerCase().contains("pre") || version.toLowerCase().contains("snapshot");
+        var snapshot = version.toLowerCase().contains("pre") || version.toLowerCase().contains("snapshot");
         isNMS = ClassStorage.NMS_BASED_SERVER;
         isSpigot = ClassStorage.IS_SPIGOT_SERVER;
         colorChanger = new org.screamingsandals.bedwars.utils.ColorChanger();
@@ -353,7 +354,6 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         isLegacy = versionNumber < 113;
 
         configurator = new Configurator(this);
-
         configurator.createFiles();
 
         Debug.init(getName());
@@ -391,6 +391,15 @@ public class Main extends JavaPlugin implements BedwarsAPI {
             exception.printStackTrace();
         }
 
+        var partiesEnabled = false;
+
+        if (Main.getConfigurator().config.getBoolean("party.enabled", false)) {
+            final var partyPlugin = getServer().getPluginManager().getPlugin("Parties");
+            if (partyPlugin != null && partyPlugin.isEnabled()) {
+                partiesEnabled = true;
+            }
+        }
+
         commands = new HashMap<>();
         new AddholoCommand();
         new AdminCommand();
@@ -406,24 +415,31 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         new StatsCommand();
         new MainlobbyCommand();
         new LeaderboardCommand();
+        if (partiesEnabled)
+            new PartyCommand();
 
         BwCommandsExecutor cmd = new BwCommandsExecutor();
         getCommand("bw").setExecutor(cmd);
         getCommand("bw").setTabCompleter(cmd);
 
-        getServer().getPluginManager().registerEvents(new PlayerListener(), this);
+        final var pluginManager = getServer().getPluginManager();
+
+        pluginManager.registerEvents(new PlayerListener(), this);
         if (versionNumber >= 109) {
-            getServer().getPluginManager().registerEvents(new Player19Listener(), this);
+            pluginManager.registerEvents(new Player19Listener(), this);
         }
-        if (versionNumber >= 112) {
-            getServer().getPluginManager().registerEvents(new Player112Listener(), this);
-        } else {
-            getServer().getPluginManager().registerEvents(new PlayerBefore112Listener(), this);
-        }
-        getServer().getPluginManager().registerEvents(new VillagerListener(), this);
-        getServer().getPluginManager().registerEvents(new WorldListener(), this);
+
+        final var playerBeforeOrAfter112Listener = versionNumber >= 122 ? new Player112Listener() : new PlayerBefore112Listener();
+        pluginManager.registerEvents(playerBeforeOrAfter112Listener, this);
+
+        pluginManager.registerEvents(new VillagerListener(), this);
+        pluginManager.registerEvents(new WorldListener(), this);
         if (Main.getConfigurator().config.getBoolean("bungee.enabled") && Main.getConfigurator().config.getBoolean("bungee.motd.enabled")) {
-            getServer().getPluginManager().registerEvents(new BungeeMotdListener(), this);
+            pluginManager.registerEvents(new BungeeMotdListener(), this);
+        }
+
+        if (partiesEnabled) {
+            pluginManager.registerEvents(new PartyListener(), this);
         }
 
         InventoryListener.init(this);
@@ -531,10 +547,10 @@ public class Main extends JavaPlugin implements BedwarsAPI {
                 Plugin pwi = Bukkit.getPluginManager().getPlugin("PerWorldInventory");
                 if (pwi.getClass().getName().equals("me.ebonjaeger.perworldinventory.PerWorldInventory")) {
                     // Kotlin version
-                    getServer().getPluginManager().registerEvents(new PerWorldInventoryKotlinListener(), this);
+                    pluginManager.registerEvents(new PerWorldInventoryKotlinListener(), this);
                 } else {
                     // Legacy version
-                    getServer().getPluginManager().registerEvents(new PerWorldInventoryLegacyListener(), this);
+                    pluginManager.registerEvents(new PerWorldInventoryLegacyListener(), this);
                 }
             }
 
