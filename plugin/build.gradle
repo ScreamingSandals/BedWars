@@ -12,6 +12,7 @@ dependencies {
     }
     compileOnly 'io.netty:netty-all:4.1.42.Final'
     compileOnly 'net.citizensnpcs:citizens-main:2.0.27-SNAPSHOT'
+    compileOnly 'com.alessiodp.parties:parties-api:2.6.16'
 
     /* SHADED */
     shade project(':BedWars-API')
@@ -40,7 +41,8 @@ spigot {
             'PerWorldInventory',
             'SlimeWorldManager',
             'My_Worlds',
-            'Citizens'
+            'Citizens',
+            'Parties'
     ]
     commands {
         bw {

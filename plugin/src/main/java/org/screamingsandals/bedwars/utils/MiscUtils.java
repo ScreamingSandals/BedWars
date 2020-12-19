@@ -2,6 +2,7 @@ package org.screamingsandals.bedwars.utils;
 
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -21,9 +22,7 @@ import org.screamingsandals.bedwars.game.Team;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.simpleinventories.utils.MaterialSearchEngine;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 import static org.screamingsandals.bedwars.lib.lang.I18n.i18nonly;
 
@@ -270,5 +269,22 @@ public class MiscUtils {
                 playerInventory.addItem(Main.applyColor(teamColor, itemStack));
             }
         }
+    }
+
+    public static List<Player> getOnlinePlayers(List<UUID> uuids) {
+        if (uuids == null) {
+            return Collections.emptyList();
+        }
+
+        final List<Player> players = new ArrayList<>();
+
+        uuids.forEach(uuid-> {
+            final var pl = Bukkit.getPlayer(uuid);
+            if (pl != null && pl.isOnline()) {
+                players.add(pl);
+            }
+        });
+
+        return players;
     }
 }
