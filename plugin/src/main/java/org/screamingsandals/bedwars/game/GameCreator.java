@@ -2,7 +2,6 @@ package org.screamingsandals.bedwars.game;
 
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.ArenaTime;
-import org.screamingsandals.bedwars.api.InGameConfigBooleanConstants;
 import org.screamingsandals.bedwars.region.FlatteningBedUtils;
 import org.screamingsandals.bedwars.region.LegacyBedUtils;
 import org.screamingsandals.bedwars.utils.TeamJoinMetaDataValue;
