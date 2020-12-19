@@ -98,8 +98,8 @@ public class WorldListener implements Listener {
 
         for (String gameName : Main.getGameNames()) {
             Game game = Main.getGame(gameName);
-            if (game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) {
-                if (GameCreator.isInArea(event.getLocation(), game.getPos1(), game.getPos2())) {
+            if (GameCreator.isInArea(event.getLocation(), game.getPos1(), game.getPos2())) {
+                if (game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) {
                     event.blockList().removeIf(block -> {
                         if (!game.isBlockAddedDuringGame(block.getLocation())) {
                             if (game.getConfigurationContainer().getOrDefault(ConfigurationContainer.TARGET_BLOCK_EXPLOSIONS, Boolean.class, false)) {
@@ -114,6 +114,8 @@ public class WorldListener implements Listener {
                         }
                         return (explosionExceptionTypeName != null && !explosionExceptionTypeName.equals("") && block.getType().name().contains(explosionExceptionTypeName)) || !destroyPlacedBlocksByExplosion;
                     });
+                } else {
+                    event.setCancelled(true);
                 }
             }
         }
