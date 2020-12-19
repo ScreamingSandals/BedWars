@@ -35,6 +35,7 @@ subprojects {
         relocate 'com.zaxxer', 'org.screamingsandals.bedwars.lib.HikariCP'
         relocate 'org.screamingsandals.simpleinventories', 'org.screamingsandals.bedwars.lib.sgui'
         relocate 'org.bstats', 'org.screamingsandals.bedwars.lib.bstats'
+        relocate 'io.papermc.lib', 'org.screamingsandals.lib.paperlib'
 
         if (System.getenv('BUILD_NUMBER') != null) {
             archiveClassifier.set(System.getenv('BUILD_NUMBER'))
