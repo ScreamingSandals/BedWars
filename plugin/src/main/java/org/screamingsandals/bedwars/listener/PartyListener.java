@@ -19,13 +19,13 @@ public class PartyListener implements Listener {
         }
 
         final var player = e.getPlayer();
-        final var PartyAPI = Parties.getApi();
-        final var partyPlayer = PartyAPI.getPartyPlayer(player.getUniqueId());
+        final var partyApi = Parties.getApi();
+        final var partyPlayer = partyApi.getPartyPlayer(player.getUniqueId());
 
         final var game = e.getGame();
 
         if (!partyPlayer.getPartyName().isEmpty()) {
-            final var party = PartyAPI.getParty(partyPlayer.getPartyName());
+            final var party = partyApi.getParty(partyPlayer.getPartyName());
 
             if (party != null) {
                 final var leaderUUID = party.getLeader();

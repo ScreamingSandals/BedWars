@@ -28,8 +28,8 @@ public class PartyCommand extends BaseCommand {
         }
 
         if (args.get(0).equalsIgnoreCase("warp")) {
-            final var PartyAPI = Parties.getApi();
-            final var partyPlayer = PartyAPI.getPartyPlayer(player.getUniqueId());
+            final var partyApi = Parties.getApi();
+            final var partyPlayer = partyApi.getPartyPlayer(player.getUniqueId());
             final var game = Main.getPlayerGameProfile(player).getGame();
 
             if (partyPlayer.getPartyName().isEmpty()) {
@@ -37,7 +37,7 @@ public class PartyCommand extends BaseCommand {
                 return true;
             }
 
-            final var party = PartyAPI.getParty(partyPlayer.getPartyName());
+            final var party = partyApi.getParty(partyPlayer.getPartyName());
 
             if (party != null) {
                 final var leaderUUID = party.getLeader();
