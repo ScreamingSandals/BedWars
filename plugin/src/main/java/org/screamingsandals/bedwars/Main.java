@@ -1,6 +1,5 @@
 package org.screamingsandals.bedwars;
 
-import org.bukkit.event.Listener;
 import org.screamingsandals.bedwars.lib.lang.I18n;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
@@ -38,7 +37,6 @@ import org.screamingsandals.bedwars.special.SpecialRegister;
 import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.bedwars.tab.TabManager;
 import org.screamingsandals.bedwars.utils.BedWarsSignOwner;
-import org.screamingsandals.bedwars.utils.CitizensUtils;
 import org.screamingsandals.bedwars.utils.UpdateChecker;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.lib.nms.holograms.HologramManager;
@@ -344,7 +342,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
             isVault = setupEconomy();
         }
 
-        String[] bukkitVersion = Bukkit.getBukkitVersion().split("-")[0].split("\\.");
+        var bukkitVersion = Bukkit.getBukkitVersion().split("-")[0].split("\\.");
         versionNumber = 0;
 
         for (int i = 0; i < 2; i++) {
@@ -418,7 +416,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         if (partiesEnabled)
             new PartyCommand();
 
-        BwCommandsExecutor cmd = new BwCommandsExecutor();
+        final var cmd = new BwCommandsExecutor();
         getCommand("bw").setExecutor(cmd);
         getCommand("bw").setTabCompleter(cmd);
 
@@ -452,26 +450,31 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 
         getServer().getServicesManager().register(BedwarsAPI.class, this, this, ServicePriority.Normal);
 
-        for (String spawnerN : configurator.config.getConfigurationSection("resources").getKeys(false)) {
+        for (var spawnerN : configurator.config.getConfigurationSection("resources").getKeys(false)) {
 
-            String name = Main.getConfigurator().config.getString("resources." + spawnerN + ".name");
-            String translate = Main.getConfigurator().config.getString("resources." + spawnerN + ".translate");
-            int interval = Main.getConfigurator().config.getInt("resources." + spawnerN + ".interval", 1);
-            double spread = Main.getConfigurator().config.getDouble("resources." + spawnerN + ".spread");
-            int damage = Main.getConfigurator().config.getInt("resources." + spawnerN + ".damage");
-            String materialName = Main.getConfigurator().config.getString("resources." + spawnerN + ".material", "AIR");
-            String colorName = Main.getConfigurator().config.getString("resources." + spawnerN + ".color", "WHITE");
+            var name = Main.getConfigurator().config.getString("resources." + spawnerN + ".name");
+            var translate = Main.getConfigurator().config.getString("resources." + spawnerN + ".translate");
+            var interval = Main.getConfigurator().config.getInt("resources." + spawnerN + ".interval", 1);
+            var spread = Main.getConfigurator().config.getDouble("resources." + spawnerN + ".spread");
+            var damage = Main.getConfigurator().config.getInt("resources." + spawnerN + ".damage");
+            var materialName = Main.getConfigurator().config.getString("resources." + spawnerN + ".material", "AIR");
+            var colorName = Main.getConfigurator().config.getString("resources." + spawnerN + ".color", "WHITE");
 
             if (damage != 0) {
                 materialName += ":" + damage;
             }
 
-            MaterialSearchEngine.Result result = MaterialSearchEngine.find(materialName);
+            var result = MaterialSearchEngine.find(materialName);
             if (result.getMaterial() == Material.AIR) {
                 continue;
             }
 
-            ChatColor color = ChatColor.valueOf(colorName);
+            ChatColor color;
+            try {
+                color = ChatColor.valueOf(colorName);
+            } catch (IllegalArgumentException ignored) {
+                color = ChatColor.WHITE;
+            }
             spawnerTypes.put(spawnerN.toLowerCase(), new ItemSpawnerType(spawnerN.toLowerCase(), name, translate,
                     spread, result.getMaterial(), color, interval, result.getDamage()));
         }
@@ -482,41 +485,28 @@ public class Main extends JavaPlugin implements BedwarsAPI {
             Bukkit.getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
         }
 
-        Bukkit.getConsoleSender().sendMessage("§c=====§f===========  by ScreamingSandals <Misat11, Ceph>");
+        Bukkit.getConsoleSender().sendMessage(ChatColor.AQUA + "============" + ChatColor.RED + "===" + ChatColor.WHITE + "======  by ScreamingSandals <Misat11, Ceph, Pronze>");
         Bukkit.getConsoleSender()
-                .sendMessage("§c+ Bed§fWars Zero +  §6Version: " + version);
+                .sendMessage(ChatColor.AQUA + "+ Screaming " + ChatColor.RED + "Bed" + ChatColor.WHITE + "Wars +  " + ChatColor.GOLD + "Version: " + version + " " + (PremiumBedwars.isPremium() ? ChatColor.AQUA + "PREMIUM" : ChatColor.GREEN + "FREE"));
         Bukkit.getConsoleSender()
-                .sendMessage("§c=====§f===========  " + (snapshot ? "§cSNAPSHOT VERSION" : "§aSTABLE VERSION"));
+                .sendMessage(ChatColor.AQUA + "============" + ChatColor.RED + "===" + ChatColor.WHITE + "======  " + (snapshot ? ChatColor.RED + "SNAPSHOT VERSION - Use at your own risk" : ChatColor.GREEN + "STABLE VERSION"));
         if (isVault) {
-            Bukkit.getConsoleSender().sendMessage("§c[B§fW] §6Found Vault");
+            Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[B" + ChatColor.WHITE + "W] " + ChatColor.GOLD + "Found Vault");
         }
         if (!isSpigot) {
             Bukkit.getConsoleSender()
-                    .sendMessage("§c[B§fW] §cWARNING: You are not using Spigot. Some features may not work properly.");
+                    .sendMessage(ChatColor.RED + "[B" + ChatColor.WHITE + "W] " + ChatColor.RED + "WARNING: You are not using Spigot. Some features may not work properly.");
         }
 
         if (versionNumber < 109) {
             Bukkit.getConsoleSender().sendMessage(
-                    "§c[B§fW] §cIMPORTANT WARNING: You are using version older than 1.9! This version is not officially supported, and some features may not work at all!");
-        }
-        try {
-            float javaVer = Float.parseFloat(System.getProperty("java.class.version"));
-            if (javaVer < 55) {
-                getLogger().warning("Future versions of plugins from ScreamingSandals will require at least Java 11. "
-                        + "Your server is not prepared for it. Update your Java or contact your hosting. "
-                        + "Java 8 for commercial usage is already out of casual support! "
-                        + "Java 9 and Java 10 were short-term support versions, these versions are already not supported.");
-                getLogger().warning("Future versions of BedWars will require Minecraft version at least 1.13 and Java at least 11");
-
-            }
-        } catch (Throwable t) { // What if it fails? Why it should fail I don't know :D
+                    ChatColor.RED + "[B" + ChatColor.WHITE + "W] " + ChatColor.RED + "IMPORTANT WARNING: You are using version older than 1.9! This version is not officially supported, and some features may not work at all!");
         }
 
-
-        final File arenasFolder = new File(getDataFolder(), "arenas");
+        final var arenasFolder = new File(getDataFolder(), "arenas");
         if (arenasFolder.exists()) {
-            try (Stream<Path> stream = Files.walk(Paths.get(arenasFolder.getAbsolutePath()))) {
-                final List<String> results = stream.filter(Files::isRegularFile)
+            try (var stream = Files.walk(Paths.get(arenasFolder.getAbsolutePath()))) {
+                final var results = stream.filter(Files::isRegularFile)
                         .map(Path::toString)
                         .collect(Collectors.toList());
 
@@ -535,7 +525,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
             }
         }
 
-        BedWarsSignOwner signOwner = new BedWarsSignOwner();
+        final var signOwner = new BedWarsSignOwner();
         signManager = new SignManager(signOwner, configurator.signsFile);
         getServer().getPluginManager().registerEvents(new SignListener(signOwner, signManager), this);
 
@@ -544,7 +534,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 
             // PerWorldInventory
             if (Bukkit.getPluginManager().isPluginEnabled("PerWorldInventory")) {
-                Plugin pwi = Bukkit.getPluginManager().getPlugin("PerWorldInventory");
+                final var pwi = Bukkit.getPluginManager().getPlugin("PerWorldInventory");
                 if (pwi.getClass().getName().equals("me.ebonjaeger.perworldinventory.PerWorldInventory")) {
                     // Kotlin version
                     pluginManager.registerEvents(new PerWorldInventoryKotlinListener(), this);
@@ -569,11 +559,11 @@ public class Main extends JavaPlugin implements BedwarsAPI {
             UpdateChecker.run();
         }
 
-        final int pluginId = 7147;
+        final var pluginId = 7147;
         metrics = new Metrics(this, pluginId);
 
-        Bukkit.getConsoleSender().sendMessage("§fEverything is loaded! If you like our work, consider visiting our Patreon! <3");
-        Bukkit.getConsoleSender().sendMessage("§fhttps://www.patreon.com/screamingsandals");
+        Bukkit.getConsoleSender().sendMessage(ChatColor.WHITE + "Everything is loaded! If you like our work, consider visiting our Patreon! <3");
+        Bukkit.getConsoleSender().sendMessage(ChatColor.WHITE + "https://www.patreon.com/screamingsandals");
     }
 
     public void onDisable() {
@@ -581,7 +571,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         if (signManager != null) {
             signManager.save();
         }
-        for (Game game : games.values()) {
+        for (var game : games.values()) {
             game.stop();
         }
         this.getServer().getServicesManager().unregisterAll(this);

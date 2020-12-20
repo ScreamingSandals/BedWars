@@ -114,8 +114,8 @@ public class GameConfigurationContainer implements ConfigurationContainer {
 
     @Override
     public <T> T getOrDefault(String key, Class<T> type, T defaultObject) {
-        Optional<Configuration<T>> opt = get(key, type);
-        if (!opt.isPresent()) {
+        var opt = get(key, type);
+        if (opt.isEmpty()) {
             return defaultObject;
         } else {
             return opt.get().get();
