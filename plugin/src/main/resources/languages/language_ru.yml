@@ -313,7 +313,7 @@ admin_command_customprefix_disabled: "&aПрефикс для арены был 
 admin_command_npc_must_have_skinname: "&cЕсли вы используете тип сущности PLAYER, то вам также необходимо указать имя игрока в виде &7PLAYER:[псевдоним]"
 party_inform_game_join: "&aПрисоединение к игре лидера группы"
 party_warped: "&aЛидер группы телепортировал вас сюда"
-party_command_invalid_arguments: "&cНеверное количество аргументов!, введите /bw party help чтобы узнать больше"
+party_command_invalid_arguments: "&cНеверное количество аргументов! Введите /bw party help для подробностей"
 party_command_help: "/bw party warp - &eТелепортирует всех членов группы к вам или в вашу игру"
 party_command_not_in_party: "&cВы должны быть в группе для использования данной команды!"
 party_command_not_party_leader: "Вы не лидер группы!"
