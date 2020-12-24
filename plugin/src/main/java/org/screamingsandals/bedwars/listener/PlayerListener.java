@@ -39,11 +39,8 @@ import org.screamingsandals.bedwars.utils.*;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.lib.nms.entity.PlayerUtils;
 import org.screamingsandals.simpleinventories.utils.StackParser;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.screamingsandals.bedwars.lib.lang.I18n.*;
 import static org.screamingsandals.bedwars.commands.BaseCommand.ADMIN_PERMISSION;
@@ -56,15 +53,23 @@ public class PlayerListener implements Listener {
 
         if (Main.isPlayerInGame(victim)) {
             Debug.info(victim.getName() + " died in BedWars Game, Processing his dead...");
-            GamePlayer gVictim = Main.getPlayerGameProfile(victim);
-            Game game = gVictim.getGame();
-            CurrentTeam victimTeam = game.getPlayerTeam(gVictim);
-            ChatColor victimColor = victimTeam.teamInfo.color.chatColor;
-            List<ItemStack> drops = new ArrayList<>(event.getDrops());
+            final var gVictim = Main.getPlayerGameProfile(victim);
+            final var game = gVictim.getGame();
+            final var victimTeam = game.getPlayerTeam(gVictim);
+            final var victimColor = victimTeam.teamInfo.color.chatColor;
+            final var drops = List.copyOf(event.getDrops());
             int respawnTime = Main.getConfigurator().config.getInt("respawn-cooldown.time", 5);
 
             if (game.getConfigurationContainer().getOrDefault(ConfigurationContainer.KEEP_ARMOR, Boolean.class, false)) {
-                gVictim.setGameArmorContents(victim.getInventory().getArmorContents());
+               final var armorContents = victim.getInventory().getArmorContents();
+               if (armorContents != null) {
+                   gVictim.setGameArmorContents(armorContents);
+                   Debug.info(victim.getName() + "'s armor contents: " +
+                           Arrays.stream(armorContents)
+                           .filter(Objects::nonNull)
+                           .map(stack -> stack.getType().name())
+                           .collect(Collectors.toList()));
+               }
             }
 
             event.setKeepInventory(game.getConfigurationContainer().getOrDefault(ConfigurationContainer.KEEP_INVENTORY, Boolean.class, false));
@@ -77,14 +82,14 @@ public class PlayerListener implements Listener {
                 }
 
                 if (Main.getConfigurator().config.getBoolean("chat.send-death-messages-just-in-game")) {
-                    String deathMessage = event.getDeathMessage();
+                    var deathMessage = event.getDeathMessage();
+                    final var killer = event.getEntity().getKiller();
                     if (Main.getConfigurator().config.getBoolean("chat.send-custom-death-messages")) {
-                        if (event.getEntity().getKiller() != null) {
+                        if (killer != null) {
                             Debug.info(victim.getName() + " died because entity " + event.getEntity().getKiller() + " killed him");
-                            Player killer = event.getEntity().getKiller();
-                            GamePlayer gKiller = Main.getPlayerGameProfile(killer);
-                            CurrentTeam killerTeam = game.getPlayerTeam(gKiller);
-                            ChatColor killerColor = killerTeam.teamInfo.color.chatColor;
+                            final var gKiller = Main.getPlayerGameProfile(killer);
+                            final var killerTeam = game.getPlayerTeam(gKiller);
+                            final var killerColor = killerTeam.teamInfo.color.chatColor;
 
                             deathMessage = i18nc("player_killed", game.getCustomPrefix())
                                     .replace("%victim%", victimColor + victim.getDisplayName())
@@ -121,7 +126,6 @@ public class PlayerListener implements Listener {
                         PlayerStatistic statistic = Main.getPlayerStatisticsManager().getStatistic(victim);
                         statistic.addLoses(1);
                         statistic.addScore(Main.getConfigurator().config.getInt("statistics.scores.lose", 0));
-
                     }
                     game.updateScoreboard();
                 }
@@ -328,9 +332,9 @@ public class PlayerListener implements Listener {
                 }
 
                 if (game.getConfigurationContainer().getOrDefault(ConfigurationContainer.KEEP_ARMOR, Boolean.class, false)) {
-                    final ItemStack[] armorContents = gPlayer.getGameArmorContents();
+                    final var armorContents = gPlayer.getGameArmorContents();
                     if (armorContents != null) {
-                        gPlayer.player.getInventory().setArmorContents(armorContents);
+                        gPlayer.setGameArmorContents(armorContents);
                     }
                 }
 

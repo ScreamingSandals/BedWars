@@ -1463,9 +1463,9 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 MiscUtils.giveItemsToPlayer(gamePlayer.getPermaItemsPurchased(), player, currentTeam.getColor());
 
                 if (configurationContainer.getOrDefault(ConfigurationContainer.KEEP_ARMOR, Boolean.class, false)) {
-                    final ItemStack[] armorContents = gamePlayer.getGameArmorContents();
+                    final var armorContents = gamePlayer.getGameArmorContents();
                     if (armorContents != null) {
-                        gamePlayer.player.getInventory().setArmorContents(armorContents);
+                        player.getInventory().setArmorContents(armorContents);
                     }
                 }
 

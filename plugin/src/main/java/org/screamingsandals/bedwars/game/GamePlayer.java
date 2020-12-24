@@ -168,11 +168,10 @@ public class GamePlayer {
     }
 
     public void invClean() {
+        Debug.info("Cleaning inventory of: " + player.getName());
         PlayerInventory inv = this.player.getInventory();
         inv.setArmorContents(new ItemStack[4]);
         inv.setContents(new ItemStack[]{});
-
-        this.armorContents = null;
         this.player.updateInventory();
     }
 
@@ -180,6 +179,7 @@ public class GamePlayer {
         invClean();
         resetLife();
         resetPermaItems();
+        this.armorContents = null;
         new ArrayList<>(this.hiddenPlayers).forEach(this::showPlayer);
     }
 
