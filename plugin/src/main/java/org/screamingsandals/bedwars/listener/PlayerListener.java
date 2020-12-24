@@ -334,7 +334,7 @@ public class PlayerListener implements Listener {
                 if (game.getConfigurationContainer().getOrDefault(ConfigurationContainer.KEEP_ARMOR, Boolean.class, false)) {
                     final var armorContents = gPlayer.getGameArmorContents();
                     if (armorContents != null) {
-                        gPlayer.setGameArmorContents(armorContents);
+                        gPlayer.player.getInventory().setArmorContents(armorContents);
                     }
                 }
 
