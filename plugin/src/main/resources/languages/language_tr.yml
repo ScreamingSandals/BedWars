@@ -99,7 +99,7 @@ admin_command_team_maxplayers_setted: "&7%team% &aTakımındaki maksimum oyuncu 
 admin_command_team_color_setted: "&7%team% &aTakımının rengi başarıyla %teamcolor% &aolarak ayarlandı!"
 admin_command_team_removed: "&7%team% &aTakımı başarıyla kaldırıldı!"
 admin_command_team_created: "&7%team% &aTakımı başarıyla oluşturuldu, rengi %teamcolor% &aolarak ayarlandı ve maksimum oyuncu sayısı &7%maxplayers% &aolarak ayarlandı"
-admin_command_spawners_reseted: "&aAll itemspawners for game &7%arena%&a were removed!"
+admin_command_spawners_reseted: "&7%arena%&a için bütün eşya üreticileri kaldırıldı!"
 admin_command_spawner_added: "&aSpawner &7%resource%&a was successfully added to position XYZ: &7%x%/%y%/%z%"
 admin_command_store_added: "&aA villager was added to your position: &7%x%/%y%/%z% &aYAW: &7%yaw% &aPITCH: &7%pitch%"
 admin_command_store_removed: "&aVillager from position XYZ: &7%x%/%y%/%z%&a was successfully removed!"
