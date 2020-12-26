@@ -648,7 +648,10 @@ public class PlayerListener implements Listener {
                         event.setCancelled(true);
                     } else if (edbee.getDamager() instanceof Projectile) {
                         Projectile projectile = (Projectile) edbee.getDamager();
-                        if (projectile.getShooter() instanceof Player) {
+                        if (projectile instanceof Fireball  && game.getStatus() == GameStatus.RUNNING) {
+                            final double damage = Main.getConfigurator().config.getDouble("specials.throwable-fireball.damage");
+                            event.setDamage(damage);
+                        } else if (projectile.getShooter() instanceof Player) {
                             Player damager = (Player) projectile.getShooter();
                             if (Main.isPlayerInGame(damager)) {
                                 GamePlayer gDamager = Main.getPlayerGameProfile(damager);

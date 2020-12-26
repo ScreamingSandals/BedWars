@@ -268,6 +268,7 @@ public class Configurator {
         checkOrSetConfig(modify, "specials.golem.collidable", false);
         checkOrSetConfig(modify, "specials.teamchest.turn-all-enderchests-to-teamchests", true);
         checkOrSetConfig(modify, "specials.throwable-fireball.explosion", 3.0);
+        checkOrSetConfig(modify, "specials.throwable-fireball.damage", 2.0);
         checkOrSetConfig(modify, "specials.auto-igniteable-tnt.explosion-time", config.getInt("tnt.explosion-time", 8));
         checkOrSetConfig(modify, "specials.auto-igniteable-tnt.damage-placer", !config.getBoolean("tnt.dont-damage-placer"));
 
