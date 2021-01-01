@@ -142,6 +142,7 @@ public class Configurator {
         checkOrSetConfig(modify, "bungee.serverStop", false);
         checkOrSetConfig(modify, "bungee.server", "hub");
         checkOrSetConfig(modify, "bungee.auto-game-connect", false);
+        checkOrSetConfig(modify, "bungee.kick-when-proxy-too-slow", true);
         checkOrSetConfig(modify, "bungee.motd.enabled", false);
         checkOrSetConfig(modify, "bungee.motd.waiting", "%name%: Waiting for players [%current%/%max%]");
         checkOrSetConfig(modify, "bungee.motd.waiting_full", "%name%: Game is full [%current%/%max%]");

@@ -45,7 +45,7 @@ public class BungeeUtils {
 
         player.sendPluginMessage(Main.getInstance(), "BungeeCord", out.toByteArray());
         Debug.info("player " + player.getName() + " has been moved to hub server ");
-        if (!restart) {
+        if (!restart && Main.getConfigurator().config.getBoolean("bungee.kick-when-proxy-too-slow")) {
             Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
                 if (player.isOnline()) {
                     player.kickPlayer("Bedwars can't properly transfer player through bungee network. Contact server admin.");
