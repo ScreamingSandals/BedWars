@@ -319,3 +319,7 @@ party_command_not_in_party: "&cDu må være i et party for å utføre denne komm
 party_command_not_party_leader: "&cDu er ikke leder av dette partyet!"
 party_command_is_empty: "&cPartyet er tom, kan ikke teleportere noen!"
 party_command_warped: "&aParty medlemmer har blitt teleportert"
+arena_info_file: "&7&oFile: %file%"
+help_bw_dump: "/bw dump - &eDumps the server and gives you link to the dump. This link can be useful for support"
+dump_success: "&aSuccessfully dumped server. Link: "
+dump_failed: "&cDump failed!"
