@@ -13,6 +13,7 @@ import org.bukkit.boss.BarColor;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
+import java.io.File;
 import java.util.List;
 
 
@@ -416,4 +417,12 @@ public interface Game {
      * @since 0.3.0
      */
     void saveToConfig();
+
+    /**
+     * Gets file with this game
+     *
+     * @since 0.3.0
+     * @return file where game is saved
+     */
+    File getFile();
 }

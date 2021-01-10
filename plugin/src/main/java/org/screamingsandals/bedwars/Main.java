@@ -1,5 +1,7 @@
 package org.screamingsandals.bedwars;
 
+import lombok.Getter;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.screamingsandals.bedwars.lib.lang.I18n;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
@@ -11,7 +13,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -48,12 +49,12 @@ import org.screamingsandals.simpleinventories.utils.MaterialSearchEngine;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static org.screamingsandals.bedwars.lib.lang.I18n.i18n;
 
@@ -83,6 +84,8 @@ public class Main extends JavaPlugin implements BedwarsAPI {
     private TabManager tabManager;
     public static List<String> autoColoredMaterials = new ArrayList<>();
     private Metrics metrics;
+    @Getter
+    private String buildInfo;
 
     static {
         // ColorChanger list of materials
@@ -336,6 +339,14 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         isSpigot = ClassStorage.IS_SPIGOT_SERVER;
         colorChanger = new org.screamingsandals.bedwars.utils.ColorChanger();
 
+        try {
+            var conf = new YamlConfiguration();
+            conf.load(new InputStreamReader(Main.class.getResourceAsStream("/build_info.yml")));
+            buildInfo = conf.getString("build");
+        } catch (Exception exception) {
+            buildInfo = "invalid";
+        }
+
         if (!getServer().getPluginManager().isPluginEnabled("Vault")) {
             isVault = false;
         } else {
@@ -413,6 +424,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         new StatsCommand();
         new MainlobbyCommand();
         new LeaderboardCommand();
+        new DumpCommand();
         if (partiesEnabled)
             new PartyCommand();
 
@@ -489,7 +501,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         Bukkit.getConsoleSender()
                 .sendMessage(ChatColor.AQUA + "+ Screaming " + ChatColor.RED + "Bed" + ChatColor.WHITE + "Wars +  " + ChatColor.GOLD + "Version: " + version + " " + (PremiumBedwars.isPremium() ? ChatColor.AQUA + "PREMIUM" : ChatColor.GREEN + "FREE"));
         Bukkit.getConsoleSender()
-                .sendMessage(ChatColor.AQUA + "============" + ChatColor.RED + "===" + ChatColor.WHITE + "======  " + (snapshot ? ChatColor.RED + "SNAPSHOT VERSION - Use at your own risk" : ChatColor.GREEN + "STABLE VERSION"));
+                .sendMessage(ChatColor.AQUA + "============" + ChatColor.RED + "===" + ChatColor.WHITE + "======  " + (snapshot ? ChatColor.RED + "SNAPSHOT VERSION (" + buildInfo + ") - Use at your own risk" : ChatColor.GREEN + "STABLE VERSION"));
         if (isVault) {
             Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[B" + ChatColor.WHITE + "W] " + ChatColor.GOLD + "Found Vault");
         }

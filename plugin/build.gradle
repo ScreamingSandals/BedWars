@@ -23,6 +23,20 @@ dependencies {
 
 }
 
+processResources {
+    doFirst {
+        def resourcesDir = sourceSets.main.output.resourcesDir
+        resourcesDir.mkdirs()
+        def contents = "build: "
+        if (System.getenv('BUILD_NUMBER') != null) {
+            contents += System.getenv('BUILD_NUMBER')
+        } else {
+            contents += "custom"
+        }
+        new File(resourcesDir, "build_info.yml").text = contents
+    }
+}
+
 enableSpigradleSpigot()
 
 spigot {
