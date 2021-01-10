@@ -319,3 +319,7 @@ party_command_not_in_party: "&cВы должны быть в группе для
 party_command_not_party_leader: "Вы не лидер группы!"
 party_command_is_empty: "&cВаша группа пуста, некого телепортировать!"
 party_command_warped: "&aЧлены группы телепортированы"
+arena_info_file: "&7&oFile: %file%"
+help_bw_dump: "/bw dump - &eDumps the server and gives you link to the dump. This link can be useful for support"
+dump_success: "&aSuccessfully dumped server. Link: "
+dump_failed: "&cDump failed!"
