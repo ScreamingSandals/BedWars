@@ -44,8 +44,10 @@ public class DumpCommand extends BaseCommand {
                     "version", Bukkit.getVersion()
                 // TODO: some useful information about servers
                 ));
-        // TOOD: worlds
-        // TODO: plugins
+        // TODO: worlds
+        var pluginList = new ArrayList<>();
+        Arrays.stream(Bukkit.getPluginManager().getPlugins()).forEach(plugin -> pluginList.add(plugin.getDescription()));
+        map.put("plugins", pluginList);
         // TODO: arena dump
         // TODO: add config file, censor secrets
         // TODO: all shop files
