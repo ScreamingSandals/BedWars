@@ -319,3 +319,7 @@ party_command_not_in_party: "&cDu musst in einer Party sein, um diesen Befehl au
 party_command_not_party_leader: "&cDu bist nicht der Leiter dieser Party!"
 party_command_is_empty: "&cDeine Party ist leer, konnte niemanden teleportieren!"
 party_command_warped: "&aGruppenmitglieder wurden teleportiert"
+arena_info_file: "&7&oFile: %file%"
+help_bw_dump: "/bw dump - &eDumps the server and gives you link to the dump. This link can be useful for support"
+dump_success: "&aSuccessfully dumped server. Link: "
+dump_failed: "&cDump failed!"
