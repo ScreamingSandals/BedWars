@@ -23,17 +23,26 @@ dependencies {
 
 }
 
-processResources {
+task generateBuildInfoFile {
+    def outputDir = new File(projectDir, "build/generated/buildinfo")
     doFirst {
-        def resourcesDir = sourceSets.main.output.resourcesDir
-        resourcesDir.mkdirs()
-        def contents = "build: "
-        if (System.getenv('BUILD_NUMBER') != null) {
-            contents += System.getenv('BUILD_NUMBER')
-        } else {
-            contents += "custom"
+        mkdir outputDir
+
+        new File(outputDir, "build_info.yml").withWriter { writer ->
+            def contents = "build: "
+            if (System.getenv('BUILD_NUMBER') != null) {
+                contents += System.getenv('BUILD_NUMBER')
+            } else {
+                contents += "custom"
+            }
+            writer.write(contents)
         }
-        new File(resourcesDir, "build_info.yml").text = contents
+    }
+}
+
+sourceSets {
+    main {
+        output.dir(new File(projectDir, "build/generated/buildinfo"), builtBy: 'generateBuildInfoFile')
     }
 }
 

@@ -61,84 +61,92 @@ public class DumpCommand extends BaseCommand {
                         .registerTypeAdapter(World.class, (JsonSerializer<World>) (world, type, context) -> context.serialize(world.getName()))
                         .registerTypeAdapter(File.class, (JsonSerializer<File>) (file, type, context) -> context.serialize(file.getAbsolutePath()))
                         .setPrettyPrinting().create();
-                var map = new HashMap<>();
-                map.put("bedwars", Map.of(
-                        "version", Main.getVersion(),
-                        "build", Main.getInstance().getBuildInfo(),
-                        "edition", PremiumBedwars.isPremium() ? "premium" : "free"
-                ));
-                map.put("server", Map.of(
-                        "version", Bukkit.getVersion(),
-                        "javaVersion", System.getProperty("java.version"),
-                        "os", System.getProperty("os.name")
-                ));
-                map.put("worlds", Bukkit.getWorlds().stream().map(world -> Map.of(
-                        "name", world.getName(),
-                        "difficulty", world.getDifficulty(),
-                        "spawning", Map.of(
-                                "animals", world.getAllowAnimals(),
-                                "monsters", world.getAllowMonsters()
-                        ),
-                        "maxHeight", world.getMaxHeight(),
-                        "keepSpawnInMemory", world.getKeepSpawnInMemory()
-                )).collect(Collectors.toList()));
-                map.put("plugins", Arrays.stream(Bukkit.getPluginManager().getPlugins()).map(plugin -> Map.of(
-                        "enabled", plugin.isEnabled(),
-                        "name", plugin.getName(),
-                        "version", plugin.getDescription().getVersion(),
-                        "main", plugin.getDescription().getMain(),
-                        "authors", plugin.getDescription().getAuthors()
-                )).collect(Collectors.toList()));
-                map.put("games", Main.getGameNames().stream().map(Main::getGame).map(game ->
-                        nullValuesAllowingMap(
-                                "file", game.getFile(),
-                                "name", game.getName(),
-                                "minPlayers", game.getMinPlayers(),
-                                "maxPlayers", game.getMaxPlayers(),
-                                "lobby", nullValuesAllowingMap(
-                                        "spawn", game.getLobbySpawn(),
-                                        "countdown", game.getLobbyCountdown(),
-                                        "bossbar", game.getLobbyBossBarColor()
-                                ),
-                                "arena", nullValuesAllowingMap(
-                                        "spectator", game.getSpectatorSpawn(),
-                                        "countdown", game.getGameTime(),
-                                        "pos1", game.getPos1(),
-                                        "pos2", game.getPos2(),
-                                        "bossbar", game.getGameBossBarColor(),
-                                        "arenaTime", game.getArenaTime(),
-                                        "weather", game.getArenaWeather(),
-                                        "customPrefix", game.getCustomPrefix(),
-                                        "spawners", game.getSpawners().stream().map(itemSpawner -> nullValuesAllowingMap(
-                                                "type", itemSpawner.getItemSpawnerType().getConfigKey(),
-                                                "location", itemSpawner.getLocation(),
-                                                "maxSpawnedResources", itemSpawner.getMaxSpawnedResources(),
-                                                "startLevel", itemSpawner.getStartLevel(),
-                                                "name", itemSpawner.getCustomName(),
-                                                "team", itemSpawner.getTeam().map(Team::getName).orElse("no team"),
-                                                "hologramEnabled", itemSpawner.getHologramEnabled(),
-                                                "floatingEnabled", itemSpawner.getFloatingEnabled()
+                var files = new ArrayList<>();
+                files.add(Map.of(
+                        "name", "dump.json",
+                        "content", Map.of(
+                                "format", "text",
+                                "highlight_language", "json",
+                                "value", gson.toJson(Map.of(
+                                        "bedwars", Map.of(
+                                                "version", Main.getVersion(),
+                                                "build", Main.getInstance().getBuildInfo(),
+                                                "edition", PremiumBedwars.isPremium() ? "premium" : "free"
+                                        ),
+                                        "server", Map.of(
+                                                "version", Bukkit.getVersion(),
+                                                "javaVersion", System.getProperty("java.version"),
+                                                "os", System.getProperty("os.name")
+                                        ),
+                                        "worlds", Bukkit.getWorlds().stream().map(world -> Map.of(
+                                                "name", world.getName(),
+                                                "difficulty", world.getDifficulty(),
+                                                "spawning", Map.of(
+                                                        "animals", world.getAllowAnimals(),
+                                                        "monsters", world.getAllowMonsters()
+                                                ),
+                                                "maxHeight", world.getMaxHeight(),
+                                                "keepSpawnInMemory", world.getKeepSpawnInMemory()
                                         )).collect(Collectors.toList()),
-                                        "teams", game.getTeams().stream().map(team -> nullValuesAllowingMap(
-                                                "name", team.getName(),
-                                                "color", team.getColor(),
-                                                "spawn", team.getTeamSpawn(),
-                                                "targetBlock", team.getTargetBlock(),
-                                                "maxPlayers", team.getMaxPlayers()
+                                        "plugins", Arrays.stream(Bukkit.getPluginManager().getPlugins()).map(plugin -> Map.of(
+                                                "enabled", plugin.isEnabled(),
+                                                "name", plugin.getName(),
+                                                "version", plugin.getDescription().getVersion(),
+                                                "main", plugin.getDescription().getMain(),
+                                                "authors", plugin.getDescription().getAuthors()
                                         )).collect(Collectors.toList()),
-                                        "stores", game.getGameStores().stream().map(gameStore -> nullValuesAllowingMap(
-                                                "entityType", gameStore.getEntityType(),
-                                                "location", gameStore.getStoreLocation(),
-                                                "shopFile", gameStore.getShopFile(),
-                                                "customName", gameStore.getShopCustomName(),
-                                                "useParent", gameStore.getUseParent(),
-                                                "baby", gameStore.isBaby(),
-                                                "skinName", gameStore.getSkinName()
-                                        )).collect(Collectors.toList()),
-                                        "configs", game.getConfigurationContainer().getSaved()
-                                )
+                                        "games", Main.getGameNames().stream().map(Main::getGame).map(game ->
+                                                nullValuesAllowingMap(
+                                                        "file", game.getFile(),
+                                                        "name", game.getName(),
+                                                        "minPlayers", game.getMinPlayers(),
+                                                        "maxPlayers", game.getMaxPlayers(),
+                                                        "lobby", nullValuesAllowingMap(
+                                                                "spawn", game.getLobbySpawn(),
+                                                                "countdown", game.getLobbyCountdown(),
+                                                                "bossbar", game.getLobbyBossBarColor()
+                                                        ),
+                                                        "arena", nullValuesAllowingMap(
+                                                                "spectator", game.getSpectatorSpawn(),
+                                                                "countdown", game.getGameTime(),
+                                                                "pos1", game.getPos1(),
+                                                                "pos2", game.getPos2(),
+                                                                "bossbar", game.getGameBossBarColor(),
+                                                                "arenaTime", game.getArenaTime(),
+                                                                "weather", game.getArenaWeather(),
+                                                                "customPrefix", game.getCustomPrefix(),
+                                                                "spawners", game.getSpawners().stream().map(itemSpawner -> nullValuesAllowingMap(
+                                                                        "type", itemSpawner.getItemSpawnerType().getConfigKey(),
+                                                                        "location", itemSpawner.getLocation(),
+                                                                        "maxSpawnedResources", itemSpawner.getMaxSpawnedResources(),
+                                                                        "startLevel", itemSpawner.getStartLevel(),
+                                                                        "name", itemSpawner.getCustomName(),
+                                                                        "team", itemSpawner.getTeam().map(Team::getName).orElse("no team"),
+                                                                        "hologramEnabled", itemSpawner.getHologramEnabled(),
+                                                                        "floatingEnabled", itemSpawner.getFloatingEnabled()
+                                                                )).collect(Collectors.toList()),
+                                                                "teams", game.getTeams().stream().map(team -> nullValuesAllowingMap(
+                                                                        "name", team.getName(),
+                                                                        "color", team.getColor(),
+                                                                        "spawn", team.getTeamSpawn(),
+                                                                        "targetBlock", team.getTargetBlock(),
+                                                                        "maxPlayers", team.getMaxPlayers()
+                                                                )).collect(Collectors.toList()),
+                                                                "stores", game.getGameStores().stream().map(gameStore -> nullValuesAllowingMap(
+                                                                        "entityType", gameStore.getEntityType(),
+                                                                        "location", gameStore.getStoreLocation(),
+                                                                        "shopFile", gameStore.getShopFile(),
+                                                                        "customName", gameStore.getShopCustomName(),
+                                                                        "useParent", gameStore.getUseParent(),
+                                                                        "baby", gameStore.isBaby(),
+                                                                        "skinName", gameStore.getSkinName()
+                                                                )).collect(Collectors.toList()),
+                                                                "configurationContainer", game.getConfigurationContainer().getSaved()
+                                                        )
+                                                )
+                                        ).collect(Collectors.toList())))
                         )
-                ).collect(Collectors.toList()));
+                ));
                 var config = new YamlConfiguration();
                 try {
                     config.load(new File(Main.getInstance().getDataFolder(), "config.yml"));
@@ -150,10 +158,18 @@ public class DumpCommand extends BaseCommand {
                     config.set("database.password", "SECRET");
                     config.set("database.table-prefix", "bw_");
                     config.set("database.useSSL", false);
+
+                    files.add(Map.of(
+                            "name", "config.yml",
+                            "content", Map.of(
+                                    "format", "text",
+                                    "highlight_language", "yaml",
+                                    "value", config.saveToString()
+                            )
+                    ));
                 } catch (IOException | InvalidConfigurationException e) {
                     e.printStackTrace();
                 }
-                var files = new ArrayList<>();
                 var mainShop = Map.of(
                         "name", Main.getConfigurator().config.getBoolean("turnOnExperimentalGroovyShop", false) ? "shop.groovy" : "shop.yml",
                         "content", Map.of(
@@ -187,22 +203,6 @@ public class DumpCommand extends BaseCommand {
                                 e.printStackTrace();
                             }
                         });
-                files.add(Map.of(
-                        "name", "dump.json",
-                        "content", Map.of(
-                                "format", "text",
-                                "highlight_language", "json",
-                                "value", gson.toJson(map)
-                        )
-                ));
-                files.add(Map.of(
-                        "name", "config.yml",
-                        "content", Map.of(
-                                "format", "text",
-                                "highlight_language", "yaml",
-                                "value", config.saveToString()
-                        )
-                ));
 
                 client.sendAsync(HttpRequest.newBuilder()
                         .uri(URI.create("https://api.paste.gg/v1/pastes"))
