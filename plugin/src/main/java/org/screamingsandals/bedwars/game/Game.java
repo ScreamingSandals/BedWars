@@ -1047,8 +1047,8 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             spawnerMap.put("customName", spawner.customName);
             spawnerMap.put("startLevel", spawner.startLevel);
             spawnerMap.put("hologramEnabled", spawner.hologramEnabled);
-            if (spawner.getTeam() != null) {
-                spawnerMap.put("team", spawner.getTeam().getName());
+            if (spawner.getTeam().isPresent()) {
+                spawnerMap.put("team", spawner.getTeam().get());
             } else {
                 spawnerMap.put("team", null);
             }
@@ -1675,7 +1675,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
                     if (configurationContainer.getOrDefault(ConfigurationContainer.SPAWNER_HOLOGRAMS, Boolean.class, false)) {
                         for (ItemSpawner spawner : spawners) {
-                            CurrentTeam spawnerTeam = getCurrentTeamFromTeam(spawner.getTeam());
+                            CurrentTeam spawnerTeam = getCurrentTeamFromTeam(spawner.getTeam().orElse(null));
                             if (configurationContainer.getOrDefault(ConfigurationContainer.STOP_TEAM_SPAWNERS_ON_DIE, Boolean.class, false) && spawner.getTeam() != null && spawnerTeam == null) {
                                 continue; // team of this spawner is not available. Fix #147
                             }
@@ -1939,7 +1939,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                     }
                 } else if (countdown != gameTime /* Prevent spawning resources on game start */) {
                     for (ItemSpawner spawner : spawners) {
-                        CurrentTeam spawnerTeam = getCurrentTeamFromTeam(spawner.getTeam());
+                        CurrentTeam spawnerTeam = getCurrentTeamFromTeam(spawner.getTeam().orElse(null));
                         if (configurationContainer.getOrDefault(ConfigurationContainer.STOP_TEAM_SPAWNERS_ON_DIE, Boolean.class, false) && spawner.getTeam() != null && spawnerTeam == null) {
                             continue; // team of this spawner is not available. Fix #147
                         }

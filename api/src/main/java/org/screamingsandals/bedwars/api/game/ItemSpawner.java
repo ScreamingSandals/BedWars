@@ -4,6 +4,8 @@ import org.screamingsandals.bedwars.api.Team;
 import org.screamingsandals.bedwars.api.upgrades.Upgrade;
 import org.bukkit.Location;
 
+import java.util.Optional;
+
 /**
  * @author Bedwars Team
  */
@@ -57,9 +59,9 @@ public interface ItemSpawner extends Upgrade {
 
     /**
      *
-     * @return registered team for this upgrade
+     * @return registered team for this upgrade in optional or empty optional
      */
-    Team getTeam();
+    Optional<Team> getTeam();
 
     /**
      * @param level

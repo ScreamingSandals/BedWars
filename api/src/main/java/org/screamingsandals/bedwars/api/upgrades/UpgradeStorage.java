@@ -179,7 +179,7 @@ public final class UpgradeStorage {
                         continue;
                     }
 
-                    if (team.getName().equals(itemSpawner.getTeam().getName())) {
+                    if (team.getName().equals(itemSpawner.getTeam().map(Team::getName).orElse(null))) {
                         upgrades.add(upgrade);
                     }
                 }
@@ -199,7 +199,7 @@ public final class UpgradeStorage {
                         continue;
                     }
 
-                    if (team.getName().equals(itemSpawner.getTeam().getName()) && itemSpawnerType.getName().equals(itemSpawner.getItemSpawnerType().getName())) {
+                    if (team.getName().equals(itemSpawner.getTeam().map(Team::getName).orElse(null)) && itemSpawnerType.getName().equals(itemSpawner.getItemSpawnerType().getName())) {
                         upgrades.add(upgrade);
                     }
                 }

@@ -161,7 +161,7 @@ public class AdminCommand extends BaseCommand {
                             player.sendMessage(i18n("arena_info_spawners", false));
                             for (ItemSpawner spawner : game.getSpawners()) {
                                 Location loc_spawner = spawner.loc;
-                                org.screamingsandals.bedwars.api.Team team = spawner.getTeam();
+                                org.screamingsandals.bedwars.api.Team team = spawner.getTeam().orElse(null);
 
                                 String spawnerTeam;
 
