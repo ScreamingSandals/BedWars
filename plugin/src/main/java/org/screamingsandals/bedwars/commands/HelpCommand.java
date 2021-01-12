@@ -109,6 +109,7 @@ public class HelpCommand extends BaseCommand {
             player.sendMessage(i18nonly("help_bw_admin_edit"));
             player.sendMessage(i18nonly("help_bw_admin_save"));
             player.sendMessage(i18nonly("help_bw_reload"));
+            player.sendMessage(i18nonly("help_bw_dump"));
         }
     }
 

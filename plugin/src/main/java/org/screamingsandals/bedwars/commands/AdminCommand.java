@@ -46,6 +46,7 @@ public class AdminCommand extends BaseCommand {
                             player.sendMessage(i18n("arena_info_header"));
 
                             player.sendMessage(i18n("arena_info_name", false).replace("%name%", game.getName()));
+                            player.sendMessage(i18n("arena_info_file", false).replace("%file%", game.getFile().getName()));
                             String status = i18n("arena_info_status", false);
                             switch (game.getStatus()) {
                                 case DISABLED:
@@ -160,7 +161,7 @@ public class AdminCommand extends BaseCommand {
                             player.sendMessage(i18n("arena_info_spawners", false));
                             for (ItemSpawner spawner : game.getSpawners()) {
                                 Location loc_spawner = spawner.loc;
-                                org.screamingsandals.bedwars.api.Team team = spawner.getTeam();
+                                org.screamingsandals.bedwars.api.Team team = spawner.getTeam().orElse(null);
 
                                 String spawnerTeam;
 

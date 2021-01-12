@@ -15,6 +15,7 @@ import static org.screamingsandals.bedwars.lib.lang.I.i18nonly;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Item;
@@ -96,8 +97,8 @@ public class ItemSpawner implements org.screamingsandals.bedwars.api.game.ItemSp
     }
 
     @Override
-    public Team getTeam() {
-        return team;
+    public Optional<Team> getTeam() {
+        return Optional.ofNullable(team);
     }
 
     @Override

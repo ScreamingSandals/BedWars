@@ -24,6 +24,29 @@ dependencies {
 
 }
 
+task generateBuildInfoFile {
+    def outputDir = new File(projectDir, "build/generated/buildinfo")
+    doFirst {
+        mkdir outputDir
+
+        new File(outputDir, "build_info.yml").withWriter { writer ->
+            def contents = "build: "
+            if (System.getenv('BUILD_NUMBER') != null) {
+                contents += System.getenv('BUILD_NUMBER')
+            } else {
+                contents += "custom"
+            }
+            writer.write(contents)
+        }
+    }
+}
+
+sourceSets {
+    main {
+        output.dir(new File(projectDir, "build/generated/buildinfo"), builtBy: 'generateBuildInfoFile')
+    }
+}
+
 enableSpigradleSpigot()
 
 spigot {
