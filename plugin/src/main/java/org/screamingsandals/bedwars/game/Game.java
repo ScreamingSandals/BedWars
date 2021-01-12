@@ -55,7 +55,7 @@ import org.screamingsandals.bedwars.lib.signmanager.SignBlock;
 import org.screamingsandals.bedwars.listener.Player116ListenerUtils;
 import org.screamingsandals.bedwars.region.FlatteningRegion;
 import org.screamingsandals.bedwars.region.LegacyRegion;
-import org.screamingsandals.bedwars.scoreboard.ScreamingBoard;
+import org.screamingsandals.bedwars.scoreboard.ScreamingScoreboard;
 import org.screamingsandals.bedwars.statistics.PlayerStatistic;
 import org.screamingsandals.bedwars.utils.*;
 import org.screamingsandals.simpleinventories.utils.MaterialSearchEngine;
@@ -109,7 +109,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     private final Map<ItemSpawner, Hologram> countdownHolograms = new HashMap<>();
     private final Map<GamePlayer, Inventory> fakeEnderChests = new HashMap<>();
     private int postGameWaiting = 3;
-    private ScreamingBoard experimentalBoard = null;
+    private ScreamingScoreboard experimentalBoard = null;
 
     @Getter
     private final GameConfigurationContainer configurationContainer = new GameConfigurationContainer();
@@ -838,10 +838,6 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                         gamePlayer.player.getInventory().setItem(vipPosition, startGame);
                     }
                 }
-
-
-                if (experimentalBoard != null)
-                    experimentalBoard.handlePlayerJoin(gamePlayer.player);
             });
 
             if (isEmpty) {
@@ -864,6 +860,9 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             });
         }
 
+        if (experimentalBoard != null) {
+            experimentalBoard.addPlayer(gamePlayer.player);
+        }
 
         BedwarsPlayerJoinedEvent joinedEvent = new BedwarsPlayerJoinedEvent(this, getPlayerTeam(gamePlayer), gamePlayer.player);
         Main.getInstance().getServer().getPluginManager().callEvent(joinedEvent);
@@ -878,6 +877,10 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 getPlayerTeam(gamePlayer));
         Main.getInstance().getServer().getPluginManager().callEvent(playerLeaveEvent);
         Debug.info(name + ": player  " + gamePlayer.player.getName() + " is leaving the game");
+
+        if (experimentalBoard != null) {
+            experimentalBoard.removePlayer(gamePlayer.player);
+        }
 
         if (!gamePlayer.isSpectator) {
             String message = i18nc("leave", customPrefix).replace("%name%", gamePlayer.player.getDisplayName())
@@ -909,10 +912,6 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
         statusbar.removePlayer(gamePlayer.player);
         createdHolograms.forEach(holo -> holo.removeViewer(gamePlayer.player));
-
-        if (experimentalBoard != null) {
-            experimentalBoard.handlePlayerLeave(gamePlayer.player);
-        }
         gamePlayer.player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
 
         if (Main.getConfigurator().config.getBoolean("mainlobby.enabled")
@@ -937,15 +936,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                     if (team.players.isEmpty()) {
                         teamsInGame.remove(team);
                         team.getScoreboardTeam().unregister();
-                        if (experimentalBoard != null) {
-                            experimentalBoard.unregisterTeam(team.teamInfo);
-                        }
                     }
-
-                    if (experimentalBoard != null) {
-                        experimentalBoard.handleTeamLeave(gamePlayer.player);
-                    }
-
                 } else {
                     updateScoreboard();
                 }
@@ -1299,9 +1290,6 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             }
             scoreboardTeam.setAllowFriendlyFire(configurationContainer.getOrDefault(ConfigurationContainer.FRIENDLY_FIRE, Boolean.class, false));
             current.setScoreboardTeam(scoreboardTeam);
-            if (experimentalBoard != null){
-                experimentalBoard.registerTeam(teamForJoin);
-            }
         }
 
         if (cur == current) {
@@ -1326,22 +1314,16 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         if (cur != null) {
             cur.players.remove(player);
             cur.getScoreboardTeam().removeEntry(player.player.getName());
-            if (experimentalBoard != null)
-                experimentalBoard.handleTeamLeave(player.player);
 
             if (cur.players.isEmpty()) {
                 teamsInGame.remove(cur);
                 cur.getScoreboardTeam().unregister();
-                if (experimentalBoard != null)
-                    experimentalBoard.unregisterTeam(cur.teamInfo);
             }
             Debug.info(name + ": player " + player.player.getName() + " left the team " + cur.getName());
         }
 
         current.players.add(player);
         current.getScoreboardTeam().addEntry(player.player.getName());
-        if (experimentalBoard != null)
-            experimentalBoard.registerPlayerInTeam(player.player, teamForJoin);
 
         Debug.info(name + ": player " + player.player.getName() + " joined the team " + current.getName());
 
@@ -1520,7 +1502,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             }
 
             if (experimentalBoard == null && Main.getConfigurator().config.getBoolean("experimental.new-scoreboard-system.enabled", false)) {
-                experimentalBoard = new ScreamingBoard(this);
+                experimentalBoard = new ScreamingScoreboard(this);
             }
             updateSigns();
             Debug.info(name + ": lobby prepared");
@@ -2080,7 +2062,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
     public void rebuild() {
         if (experimentalBoard != null) {
-            experimentalBoard.forceStop();
+            experimentalBoard.destroy();
             experimentalBoard = null;
         }
         Debug.info(name + ": rebuilding starts");

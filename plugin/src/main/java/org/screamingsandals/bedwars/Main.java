@@ -45,6 +45,7 @@ import org.screamingsandals.bedwars.lib.signmanager.SignListener;
 import org.screamingsandals.bedwars.lib.signmanager.SignManager;
 import org.screamingsandals.simpleinventories.listeners.InventoryListener;
 import org.screamingsandals.simpleinventories.utils.MaterialSearchEngine;
+import pronze.lib.scoreboards.ScoreboardManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -558,6 +559,9 @@ public class Main extends JavaPlugin implements BedwarsAPI {
                 || Main.getConfigurator().config.getBoolean("update-checker.one.oped-players")) {
             UpdateChecker.run();
         }
+
+        /* Initialize our ScoreboardLib*/
+        ScoreboardManager.init(this);
 
         final var pluginId = 7147;
         metrics = new Metrics(this, pluginId);
