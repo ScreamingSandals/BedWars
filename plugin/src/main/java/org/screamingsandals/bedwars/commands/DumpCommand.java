@@ -18,6 +18,7 @@ import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.Team;
 import org.screamingsandals.bedwars.api.game.GameStore;
 import org.screamingsandals.bedwars.game.Game;
+import org.screamingsandals.bedwars.inventories.ShopInventory;
 import org.screamingsandals.bedwars.premium.PremiumBedwars;
 
 import java.io.File;
@@ -189,14 +190,13 @@ public class DumpCommand extends BaseCommand {
                         .filter(s -> !mainShop.get("name").equals(s))
                         .forEach(s -> {
                             try {
-                                var groovy = new File(Main.getInstance().getDataFolder(), s + ".groovy").exists();
-                                var fileName = groovy ? (s + ".groovy") : (s + ".yml");
+                                var file = ShopInventory.normalizeShopFile(s);
                                 files.add(Map.of(
-                                        "name", fileName,
+                                        "name", file.getName(),
                                         "content", Map.of(
                                                 "format", "text",
-                                                "highlight_language", groovy ? "groovy" : "yaml",
-                                                "value", String.join("\n", Files.readAllLines(new File(Main.getInstance().getDataFolder(), fileName).toPath(), StandardCharsets.UTF_8))
+                                                "highlight_language", file.getName().endsWith(".groovy") ? "groovy" : "yaml",
+                                                "value", String.join("\n", Files.readAllLines(file.toPath(), StandardCharsets.UTF_8))
                                         )
                                 ));
                             } catch (IOException e) {
