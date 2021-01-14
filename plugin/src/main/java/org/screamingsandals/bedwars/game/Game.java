@@ -1039,7 +1039,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             spawnerMap.put("startLevel", spawner.startLevel);
             spawnerMap.put("hologramEnabled", spawner.hologramEnabled);
             if (spawner.getTeam().isPresent()) {
-                spawnerMap.put("team", spawner.getTeam().get());
+                spawnerMap.put("team", spawner.getTeam().get().getName());
             } else {
                 spawnerMap.put("team", null);
             }
