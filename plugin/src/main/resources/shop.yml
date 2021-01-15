@@ -84,17 +84,17 @@ data:
      stack:
       type: STONE_SWORD
       enchants:
-       DAMAGE_ALL: 2
+       DAMAGE_ALL: 1
    - price: 7 of iron
      stack:
       type: IRON_SWORD
       enchants:
-       DAMAGE_ALL: 3
+       DAMAGE_ALL: 1
    - price: 3 of gold
      stack:
       type: IRON_SWORD
       enchants:
-       DAMAGE_ALL: 2
+       DAMAGE_ALL: 1
        KNOCKBACK: 1
        
 - stack: "BOW;1;Bows;Prove yourself as a marksman with these wonderful bows"
