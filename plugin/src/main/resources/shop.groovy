@@ -49,30 +49,23 @@ inventory {
             stack.enchant 'KNOCKBACK'
         }
 
-        item('GOLDEN_SWORD for 1 of iron') {
+        item('WOODEN_SWORD for 1 of iron') {
             stack.enchant 'DAMAGE_ALL'
         }
 
-        item('GOLDEN_SWORD for 3 of iron') {
-            stack.enchant 'DAMAGE_ALL', 2
+        item('STONE_SWORD for 3 of iron') {
+            stack.enchant 'DAMAGE_ALL'
         }
 
-        item('GOLDEN_SWORD for 7 of iron') {
-            stack.enchant 'DAMAGE_ALL', 3
+        item('IRON_SWORD for 7 of iron') {
+            stack.enchant 'DAMAGE_ALL' 
         }
 
-        item('GOLDEN_SWORD for 3 of gold') {
+        item('IRON_SWORD for 3 of gold') {
             stack.enchant ([
-                    'DAMAGE_ALL': 2,
+                    'DAMAGE_ALL': 1,
                     'KNOCKBACK': 1
             ])
-        }
-
-        item('GOLDEN_AXE for 15 of gold') {
-            stack {
-                name 'Axe of Infinity'
-                enchant (['DAMAGE_ALL', 'DURABILITY', 'KNOCKBACK'])
-            }
         }
 
     }
@@ -95,11 +88,11 @@ inventory {
             ])
         }
 
-        item('BOW for 14 of gold') {
+        item('BOW for 16 of gold') {
             stack.enchant (['ARROW_INFINITE',  'ARROW_FIRE'])
         }
 
-        item('BOW for 15 of gold') {
+        item('BOW for 18 of gold') {
             stack.enchant (['ARROW_INFINITE',  'ARROW_FIRE', 'ARROW_KNOCKBACK'])
         }
 
@@ -111,8 +104,7 @@ inventory {
         column 2
 
         item ('COOKED_PORKCHOP;2 for 4 of bronze')
-        item ('GOLDEN_APPLE for 2 of iron')
-        item ('BREAD;10 for 5 of gold')
+        item ('GOLDEN_APPLE for 16 of iron')
     }
 
     /* THIS PART IS NOT DONE, NOW I'M WORKING ON POTION-TYPE INTEGRATION */
@@ -130,17 +122,14 @@ inventory {
             stack.potion 'strong_healing'
         }
 
-        item ('POTION for 7 of iron') {
+        item ('POTION for 1 of gold') {
             stack.potion 'swiftness'
         }
 
-        item ('POTION for 1 of gold') {
+        item ('POTION for 5 of gold') {
             stack.potion 'strength'
         }
 
-        item ('POTION for 3 of gold') {
-            stack.potion 'regeneration'
-        }
     }
 
     category ('SANDSTONE;1;Blocks;Get to the others! Possible with blocks.') {
@@ -153,6 +142,8 @@ inventory {
         item('GLASS for 4 of bronze') {
             property 'applycolorbyteam'
         }
+        item('LADDER for 2 of bronze')
+
     }
 
     category ('TNT;1;Useful Stuff;Looking for useful stuff? Here are some!') {
@@ -261,7 +252,7 @@ inventory {
             ])
 
             property 'arrowblocker', [
-                    delay: 5
+                    delay: 10
             ]
         }
         item('BRICKS;1;Protection Wall for 64 of bronze') {
@@ -307,16 +298,16 @@ inventory {
     category ('DIAMOND_PICKAXE;1;Pickaxes;Destroy others blocks? Use these pickaxes.') {
         column 'right'
 
-        item('IRON_PICKAXE for 4 of bronze') {
-            stack.enchant 'LOOT_BONUS_BLOCKS'
+        item('WOODEN_PICKAXE for 4 of bronze') {
+            stack.enchant 'EFFICIENCY'
         }
 
-        item('IRON_PICKAXE for 2 of iron') {
-            stack.enchant 'LOOT_BONUS_BLOCKS', 2
+        item('STONE_PICKAXE for 2 of iron') {
+            stack.enchant 'EFFICIENCY'
         }
 
         item('IRON_PICKAXE for 1 of gold') {
-            stack.enchant 'LOOT_BONUS_BLOCKS', 3
+            stack.enchant 'EFFICIENCY'
         }
     }
 

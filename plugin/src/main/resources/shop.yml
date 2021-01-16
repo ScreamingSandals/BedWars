@@ -77,32 +77,24 @@ data:
        KNOCKBACK: 1
    - price: 1 of iron
      stack:
-      type: GOLDEN_SWORD
+      type: WOODEN_SWORD
       enchants:
        DAMAGE_ALL: 1
    - price: 3 of iron
      stack:
-      type: GOLDEN_SWORD
-      enchants:
-       DAMAGE_ALL: 2
-   - price: 7 of iron
-     stack:
-      type: GOLDEN_SWORD
-      enchants:
-       DAMAGE_ALL: 3
-   - price: 3 of gold
-     stack:
-      type: GOLDEN_SWORD
-      enchants:
-       DAMAGE_ALL: 2
-       KNOCKBACK: 1
-   - price: 15 of gold
-     stack:
-      type: GOLDEN_AXE
-      display-name: "Axe of Infinity"
+      type: STONE_SWORD
       enchants:
        DAMAGE_ALL: 1
-       DURABILITY: 1
+   - price: 7 of iron
+     stack:
+      type: IRON_SWORD
+      enchants:
+       DAMAGE_ALL: 1
+   - price: 3 of gold
+     stack:
+      type: IRON_SWORD
+      enchants:
+       DAMAGE_ALL: 1
        KNOCKBACK: 1
        
 - stack: "BOW;1;Bows;Prove yourself as a marksman with these wonderful bows"
@@ -125,13 +117,13 @@ data:
       enchants:
        ARROW_INFINITE: 1
        ARROW_DAMAGE: 2
-   - price: 14 of gold
+   - price: 16 of gold
      stack:
       type: BOW
       enchants:
        ARROW_INFINITE: 1
        ARROW_FIRE: 1
-   - price: 15 of gold
+   - price: 18 of gold
      stack:
       type: BOW
       enchants:
@@ -145,8 +137,7 @@ data:
   column: 2
   items:
    - COOKED_PORKCHOP;2 for 4 of bronze
-   - GOLDEN_APPLE for 2 of iron
-   - BREAD;10 for 5 of gold
+   - GOLDEN_APPLE for 16 of iron
 
 - stack:
    type: POTION
@@ -180,21 +171,14 @@ data:
        ==: ItemMeta
        meta-type: POTION
        potion-type: swiftness
-     price: 7 of iron
-   - stack:
-      type: POTION
-      meta:
-       ==: ItemMeta
-       meta-type: POTION
-       potion-type: strength
      price: 1 of gold
    - stack:
       type: POTION
       meta:
        ==: ItemMeta
        meta-type: POTION
-       potion-type: regeneration
-     price: 3 of gold
+       potion-type: strength
+     price: 5 of gold
 
 - stack: "SANDSTONE;1;Blocks;Get to the others! Possible with blocks."
   linebreak: before
@@ -206,6 +190,7 @@ data:
    - price: 4 of bronze
      properties: "applycolorbyteam"
      stack: GLASS
+   - LADDER for 2 of bronze
 
 - stack: "TNT;1;Useful Stuff;Looking for useful stuff? Here are some!"
   column: center
@@ -296,7 +281,7 @@ data:
    - price: 5 of gold
      properties:
       - name: "arrowblocker"
-        delay: 5
+        delay: 10
      stack:
       type: ENDER_EYE
       display-name: "Arrow Blocker"
@@ -348,16 +333,16 @@ data:
   items:
    - price: 4 of bronze
      stack:
-      type: IRON_PICKAXE
+      type: WOODEN_PICKAXE
       enchants:
-       LOOT_BONUS_BLOCKS: 1
+       EFFICIENCY: 1
    - price: 2 of iron
      stack:
-      type: IRON_PICKAXE
+      type: STONE_PICKAXE
       enchants:
-       LOOT_BONUS_BLOCKS: 2
+       EFFICIENCY: 1
    - price: 1 of gold
      stack:
       type: IRON_PICKAXE
       enchants:
-       LOOT_BONUS_BLOCKS: 3
+       EFFICIENCY: 1
