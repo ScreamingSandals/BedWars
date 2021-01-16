@@ -174,19 +174,6 @@ data:
      price: 1 of gold
    - stack:
       type: POTION
-      display-name: "§rPotion of Leaping I"
-      meta:
-       ==: ItemMeta
-       meta-type: POTION
-       potion-type: water
-       custom-effects:
-       - ==: PotionEffect
-          effect: 8
-          duration: 45
-          amplifier: 5
-     price: 1 of gold
-   - stack:
-      type: POTION
       meta:
        ==: ItemMeta
        meta-type: POTION
@@ -203,7 +190,7 @@ data:
    - price: 4 of bronze
      properties: "applycolorbyteam"
      stack: GLASS
-   - LADDER;1 for 2 of bronze
+   - LADDER for 2 of bronze
 
 - stack: "TNT;1;Useful Stuff;Looking for useful stuff? Here are some!"
   column: center
