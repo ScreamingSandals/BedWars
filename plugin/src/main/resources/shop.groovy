@@ -104,7 +104,7 @@ inventory {
         column 2
 
         item ('COOKED_PORKCHOP;2 for 4 of bronze')
-        item ('GOLDEN_APPLE for 2 of iron')
+        item ('GOLDEN_APPLE for 16 of iron')
     }
 
     /* THIS PART IS NOT DONE, NOW I'M WORKING ON POTION-TYPE INTEGRATION */
@@ -252,7 +252,7 @@ inventory {
             ])
 
             property 'arrowblocker', [
-                    delay: 5
+                    delay: 10
             ]
         }
         item('BRICKS;1;Protection Wall for 64 of bronze') {
