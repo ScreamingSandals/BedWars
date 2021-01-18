@@ -55,11 +55,18 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import static org.screamingsandals.bedwars.lib.lang.I18n.i18n;
 
 public class Main extends JavaPlugin implements BedwarsAPI {
+    public final static List<String> autoColoredMaterials = new LinkedList<>();
+    private final Map<String, Game> games = new HashMap<>();
+    private final Map<Player, GamePlayer> playersInGame = new HashMap<>();
+    private final Map<Entity, Game> entitiesInGame = new HashMap<>();
+    private final Map<String, ItemSpawnerType> spawnerTypes = new HashMap<>();
+
     private static Main instance;
     private String version;
     private boolean isDisabling = false;
@@ -68,12 +75,8 @@ public class Main extends JavaPlugin implements BedwarsAPI {
     private boolean isNMS;
     private int versionNumber = 0;
     private Economy econ = null;
-    private HashMap<String, Game> games = new HashMap<>();
-    private HashMap<Player, GamePlayer> playersInGame = new HashMap<>();
-    private HashMap<Entity, Game> entitiesInGame = new HashMap<>();
     private Configurator configurator;
     private ShopInventory menu;
-    private HashMap<String, ItemSpawnerType> spawnerTypes = new HashMap<>();
     private DatabaseManager databaseManager;
     private PlayerStatisticManager playerStatisticsManager;
     private StatisticsHolograms hologramInteraction;
@@ -83,7 +86,6 @@ public class Main extends JavaPlugin implements BedwarsAPI {
     private HologramManager manager;
     private LeaderboardHolograms leaderboardHolograms;
     private TabManager tabManager;
-    public static List<String> autoColoredMaterials = new ArrayList<>();
     private Metrics metrics;
     @Getter
     private String buildInfo;
@@ -216,7 +218,11 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 
     public static boolean isFarmBlock(Material mat) {
         if (instance.configurator.config.getBoolean("farmBlocks.enable")) {
-            List<String> list = (List<String>) instance.configurator.config.getList("farmBlocks.blocks");
+            final var list = instance.configurator.config.getList("farmBlocks.blocks");
+            if (list == null || list.isEmpty()) {
+                return false;
+            }
+
             return list.contains(mat.name());
         }
         return false;
@@ -224,24 +230,35 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 
     public static boolean isBreakableBlock(Material mat) {
         if (instance.configurator.config.getBoolean("breakable.enabled")) {
-            List<String> list = (List<String>) instance.configurator.config.getList("breakable.blocks");
-            boolean asblacklist = instance.configurator.config.getBoolean("breakable.asblacklist", false);
-            return list.contains(mat.name()) ? !asblacklist : asblacklist;
+            final var list = instance.configurator.config.getList("breakable.blocks");
+            if (list == null || list.isEmpty()) {
+                return false;
+            }
+
+            boolean asBlackList = instance.configurator.config.getBoolean("breakable.asblacklist", false);
+            return list.contains(mat.name()) != asBlackList;
         }
         return false;
     }
 
     public static boolean isCommandLeaveShortcut(String command) {
         if (instance.configurator.config.getBoolean("leaveshortcuts.enabled")) {
-            List<String> commands = (List<String>) instance.configurator.config.getList("leaveshortcuts.list");
-            for (String comm : commands) {
-                if (!comm.startsWith("/")) {
-                    comm = "/" + comm;
-                }
-                if (comm.equals(command)) {
-                    return true;
-                }
+            final var list = instance.configurator.config.getList("leaveshortcuts.list");
+            if (list == null || list.isEmpty()) {
+                return false;
             }
+
+            final var toReturn = new AtomicBoolean();
+            list.forEach(item -> {
+                var casted = (String) item;
+                if (!casted.startsWith("/")) {
+                    casted = "/" + casted;
+                }
+                if (casted.equals(command)) {
+                    toReturn.set(true);
+                }
+            });
+            return toReturn.get();
         }
         return false;
     }
@@ -250,16 +267,20 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         if ("/bw".equals(commandPref) || "/bedwars".equals(commandPref)) {
             return true;
         }
-        List<String> commands = instance.configurator.config.getStringList("allowed-commands");
-        for (String comm : commands) {
-            if (!comm.startsWith("/")) {
-                comm = "/" + comm;
-            }
-            if (comm.equals(commandPref)) {
-                return !instance.configurator.config.getBoolean("change-allowed-commands-to-blacklist", false);
-            }
-        }
-        return instance.configurator.config.getBoolean("change-allowed-commands-to-blacklist", false);
+
+        final var asBlackList = instance.configurator.config.getBoolean("change-allowed-commands-to-blacklist", false);
+        return instance.configurator.config.getStringList("allowed-commands")
+                .stream()
+                .map(input -> {
+                    if (!input.startsWith("/")) {
+                        return "/" + input;
+                    }
+                    return input;
+                })
+                .filter(input -> input.equals(commandPref))
+                .findAny()
+                .map(input -> !asBlackList)
+                .orElse(asBlackList);
     }
 
     public static ItemSpawnerType getSpawnerType(String key) {
@@ -271,11 +292,10 @@ public class Main extends JavaPlugin implements BedwarsAPI {
     }
 
     public static List<String> getGameNames() {
-        List<String> list = new ArrayList<>();
-        for (Game game : instance.games.values()) {
-            list.add(game.getName());
-        }
-        return list;
+        return instance.games.values()
+                .stream()
+                .map(Game::getName)
+                .collect(Collectors.toList());
     }
 
     public static DatabaseManager getDatabaseManager() {
@@ -303,13 +323,11 @@ public class Main extends JavaPlugin implements BedwarsAPI {
     }
 
     public static List<Entity> getGameEntities(Game game) {
-        List<Entity> entityList = new ArrayList<>();
-        for (Map.Entry<Entity, Game> entry : instance.entitiesInGame.entrySet()) {
-            if (entry.getValue() == game) {
-                entityList.add(entry.getKey());
-            }
-        }
-        return entityList;
+        return instance.entitiesInGame.entrySet()
+                .stream()
+                .filter(entry -> entry.getValue() == game)
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
     }
 
     public static int getVersionNumber() {
@@ -402,7 +420,6 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         }
 
         var partiesEnabled = false;
-
         if (Main.getConfigurator().config.getBoolean("party.enabled", false)) {
             final var partyPlugin = getServer().getPluginManager().getPlugin("Parties");
             if (partyPlugin != null && partyPlugin.isEnabled()) {
@@ -426,15 +443,15 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         new MainlobbyCommand();
         new LeaderboardCommand();
         new DumpCommand();
-        if (partiesEnabled)
+        if (partiesEnabled) {
             new PartyCommand();
+        }
 
         final var cmd = new BwCommandsExecutor();
-        getCommand("bw").setExecutor(cmd);
-        getCommand("bw").setTabCompleter(cmd);
+        Objects.requireNonNull(getCommand("bw")).setExecutor(cmd);
+        Objects.requireNonNull(getCommand("bw")).setTabCompleter(cmd);
 
         final var pluginManager = getServer().getPluginManager();
-
         pluginManager.registerEvents(new PlayerListener(), this);
         if (versionNumber >= 109) {
             pluginManager.registerEvents(new Player19Listener(), this);
@@ -463,34 +480,46 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 
         getServer().getServicesManager().register(BedwarsAPI.class, this, this, ServicePriority.Normal);
 
-        for (var spawnerN : configurator.config.getConfigurationSection("resources").getKeys(false)) {
+        final var resourcesSection = configurator.config.getConfigurationSection("resources");
+        if (resourcesSection == null || resourcesSection.getKeys(false).isEmpty()) {
+            Debug.warn("Invalid Resources configured! Make sure to have valid Resources!", true);
+            Bukkit.getPluginManager().disablePlugin(this);
+            return;
+        }
 
-            var name = Main.getConfigurator().config.getString("resources." + spawnerN + ".name");
-            var translate = Main.getConfigurator().config.getString("resources." + spawnerN + ".translate");
-            var interval = Main.getConfigurator().config.getInt("resources." + spawnerN + ".interval", 1);
-            var spread = Main.getConfigurator().config.getDouble("resources." + spawnerN + ".spread");
-            var damage = Main.getConfigurator().config.getInt("resources." + spawnerN + ".damage");
-            var materialName = Main.getConfigurator().config.getString("resources." + spawnerN + ".material", "AIR");
-            var colorName = Main.getConfigurator().config.getString("resources." + spawnerN + ".color", "WHITE");
+        resourcesSection.getKeys(false).forEach(resource -> {
+            var name = Main.getConfigurator().config.getString("resources." + resource + ".name");
+            var translate = Main.getConfigurator().config.getString("resources." + resource + ".translate");
+            var interval = Main.getConfigurator().config.getInt("resources." + resource + ".interval", 1);
+            var spread = Main.getConfigurator().config.getDouble("resources." + resource + ".spread");
+            var damage = Main.getConfigurator().config.getInt("resources." + resource + ".damage");
+            var materialName = Main.getConfigurator().config.getString("resources." + resource + ".material", "AIR");
+            var colorName = Main.getConfigurator().config.getString("resources." + resource + ".color", "WHITE");
+
+            if (materialName == null) {
+                Debug.warn("Invalid resource configured! Name: " + name);
+                return;
+            }
 
             if (damage != 0) {
                 materialName += ":" + damage;
             }
 
-            var result = MaterialSearchEngine.find(materialName);
+            final var result = MaterialSearchEngine.find(materialName);
             if (result.getMaterial() == Material.AIR) {
-                continue;
+                return;
             }
 
             ChatColor color;
             try {
                 color = ChatColor.valueOf(colorName);
             } catch (IllegalArgumentException ignored) {
+                Debug.warn("Invalid resource color configured! Color: " + colorName);
                 color = ChatColor.WHITE;
             }
-            spawnerTypes.put(spawnerN.toLowerCase(), new ItemSpawnerType(spawnerN.toLowerCase(), name, translate,
+            spawnerTypes.put(resource.toLowerCase(), new ItemSpawnerType(resource.toLowerCase(), name, translate,
                     spread, result.getMaterial(), color, interval, result.getDamage()));
-        }
+        });
 
         menu = new ShopInventory();
 
@@ -548,12 +577,14 @@ public class Main extends JavaPlugin implements BedwarsAPI {
             // PerWorldInventory
             if (Bukkit.getPluginManager().isPluginEnabled("PerWorldInventory")) {
                 final var pwi = Bukkit.getPluginManager().getPlugin("PerWorldInventory");
-                if (pwi.getClass().getName().equals("me.ebonjaeger.perworldinventory.PerWorldInventory")) {
-                    // Kotlin version
-                    pluginManager.registerEvents(new PerWorldInventoryKotlinListener(), this);
-                } else {
-                    // Legacy version
-                    pluginManager.registerEvents(new PerWorldInventoryLegacyListener(), this);
+                if (pwi != null) {
+                    if (pwi.getClass().getName().equals("me.ebonjaeger.perworldinventory.PerWorldInventory")) {
+                        // Kotlin version
+                        pluginManager.registerEvents(new PerWorldInventoryKotlinListener(), this);
+                    } else {
+                        // Legacy version
+                        pluginManager.registerEvents(new PerWorldInventoryLegacyListener(), this);
+                    }
                 }
             }
 
@@ -567,7 +598,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 
         if (Main.getConfigurator().config.getBoolean("update-checker.zero.console")
                 || Main.getConfigurator().config.getBoolean("update-checker.zero.oped-players")
-        || Main.getConfigurator().config.getBoolean("update-checker.one.console")
+                || Main.getConfigurator().config.getBoolean("update-checker.one.console")
                 || Main.getConfigurator().config.getBoolean("update-checker.one.oped-players")) {
             UpdateChecker.run();
         }
@@ -635,41 +666,27 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 
     @Override
     public org.screamingsandals.bedwars.api.game.Game getGameWithHighestPlayers() {
-        TreeMap<Integer, org.screamingsandals.bedwars.api.game.Game> gameList = new TreeMap<>();
-        for (org.screamingsandals.bedwars.api.game.Game game : getGames()) {
-            if (game.getStatus() != GameStatus.WAITING) {
-                continue;
-            }
-            if (game.getConnectedPlayers().size() >= game.getMaxPlayers()) {
-                continue;
-            }
-            gameList.put(game.countConnectedPlayers(), game);
+        final var games = getGamesTree();
+        if (games.isEmpty()) {
+            return null;
         }
 
-        Map.Entry<Integer, org.screamingsandals.bedwars.api.game.Game> lastEntry = gameList.lastEntry();
-        return lastEntry.getValue();
+        return games.lastEntry().getValue();
     }
 
     @Override
     public org.screamingsandals.bedwars.api.game.Game getGameWithLowestPlayers() {
-        TreeMap<Integer, org.screamingsandals.bedwars.api.game.Game> gameList = new TreeMap<>();
-        for (org.screamingsandals.bedwars.api.game.Game game : getGames()) {
-            if (game.getStatus() != GameStatus.WAITING) {
-                continue;
-            }
-            if (game.getConnectedPlayers().size() >= game.getMaxPlayers()) {
-                continue;
-            }
-            gameList.put(game.countConnectedPlayers(), game);
+        final var games = getGamesTree();
+        if (games.isEmpty()) {
+            return null;
         }
 
-        Map.Entry<Integer, org.screamingsandals.bedwars.api.game.Game> lastEntry = gameList.firstEntry();
-        return lastEntry.getValue();
+        return games.firstEntry().getValue();
     }
 
     @Override
     public List<org.screamingsandals.bedwars.api.game.ItemSpawnerType> getItemSpawnerTypes() {
-        return new ArrayList<>(spawnerTypes.values());
+        return List.copyOf(spawnerTypes.values());
     }
 
     @Override
@@ -702,9 +719,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 
     @Override
     public void unregisterEntityFromGame(Entity entity) {
-        if (entitiesInGame.containsKey(entity)) {
-            entitiesInGame.remove(entity);
-        }
+        entitiesInGame.remove(entity);
     }
 
     @Override
@@ -727,7 +742,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
     }
 
     public static ItemStack applyColor(TeamColor color, ItemStack itemStack, boolean clone) {
-        org.screamingsandals.bedwars.api.TeamColor teamColor = color.toApiColor();
+        final var teamColor = color.toApiColor();
         if (clone) {
             itemStack = itemStack.clone();
         }
@@ -785,5 +800,21 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 
     public static boolean isDisabling() {
         return instance.isDisabling;
+    }
+
+    private TreeMap<Integer, Game> getGamesTree() {
+        final var gameList = new TreeMap<Integer, Game>();
+
+        getGames().forEach(game -> {
+            if (game.getStatus() != GameStatus.WAITING) {
+                return;
+            }
+            if (game.getConnectedPlayers().size() >= game.getMaxPlayers()) {
+                return;
+            }
+            gameList.put(game.countConnectedPlayers(), (Game) game);
+        });
+
+        return gameList;
     }
 }
