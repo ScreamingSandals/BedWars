@@ -19,6 +19,7 @@ import org.screamingsandals.bedwars.api.Team;
 import org.screamingsandals.bedwars.api.game.GameStore;
 import org.screamingsandals.bedwars.game.Game;
 import org.screamingsandals.bedwars.inventories.ShopInventory;
+import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.premium.PremiumBedwars;
 
 import java.io.File;
@@ -190,7 +191,11 @@ public class DumpCommand extends BaseCommand {
                         .filter(s -> !mainShop.get("name").equals(s))
                         .forEach(s -> {
                             try {
-                                var file = ShopInventory.normalizeShopFile(s);
+                                final var file = ShopInventory.normalizeShopFile(s);
+                                if (!file.exists()) {
+                                    return;
+                                }
+
                                 files.add(Map.of(
                                         "name", file.getName(),
                                         "content", Map.of(
@@ -200,6 +205,7 @@ public class DumpCommand extends BaseCommand {
                                         )
                                 ));
                             } catch (IOException e) {
+                                Debug.warn("Cannot add shop file to dump, it probably does not exists..", true);
                                 e.printStackTrace();
                             }
                         });
