@@ -2,8 +2,6 @@ package org.screamingsandals.bedwars.scoreboard;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.RunningTeam;
 import org.screamingsandals.bedwars.api.game.GameStatus;
@@ -39,7 +37,6 @@ public class ScreamingScoreboard {
         final var scoreboard = Scoreboard.builder()
                 .animate(false)
                 .player(player)
-                .async(false)
                 .title(Main.getConfigurator().config.getString("lobby-scoreboard.title", "§eBEDWARS"))
                 .displayObjective(LOBBY_OBJECTIVE)
                 .updateInterval(20L)
