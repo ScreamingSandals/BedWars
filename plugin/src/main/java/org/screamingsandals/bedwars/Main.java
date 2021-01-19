@@ -47,6 +47,7 @@ import org.screamingsandals.bedwars.lib.signmanager.SignManager;
 import org.screamingsandals.lib.material.MaterialMapping;
 import org.screamingsandals.lib.material.builder.ItemBuilder;
 import org.screamingsandals.lib.material.builder.ItemFactory;
+import org.screamingsandals.lib.utils.InitUtils;
 import org.screamingsandals.simpleinventories.bukkit.SimpleInventoriesBukkit;
 import pronze.lib.scoreboards.ScoreboardManager;
 
@@ -455,7 +456,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
             pluginManager.registerEvents(new PartyListener(), this);
         }
 
-        SimpleInventoriesBukkit.init(this);
+        InitUtils.doIfNot(SimpleInventoriesBukkit::isInitialized, () -> SimpleInventoriesBukkit.init(this));
 
         this.manager = new HologramManager(this);
 
