@@ -443,6 +443,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         new MainlobbyCommand();
         new LeaderboardCommand();
         new DumpCommand();
+        new LanguageCommand();
         if (partiesEnabled) {
             new PartyCommand();
         }
