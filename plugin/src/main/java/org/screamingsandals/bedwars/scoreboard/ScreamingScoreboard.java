@@ -68,7 +68,7 @@ public class ScreamingScoreboard {
         }
 
         if (game.getStatus() == GameStatus.RUNNING) {
-            if (!GAME_OBJECTIVE.equals(holder.getBaseData().getObjectiveName())) {
+            if (!GAME_OBJECTIVE.equals(holder.getObjectiveName())) {
                 holder.registerObjective(GAME_OBJECTIVE);
             }
             holder.setDisplayName(game.formatScoreboardTitle());
