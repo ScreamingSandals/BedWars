@@ -11,10 +11,11 @@ import java.util.Map;
 public class BedwarsApplyPropertyToItem extends Event {
 
     private static final HandlerList handlers = new HandlerList();
-    private Game game = null;
-    private Player player = null;
-    private ItemStack stack = null;
-    private Map<String, Object> properties = null;
+    private Game game;
+    private Player player;
+    private ItemStack stack;
+    private String name;
+    private Map<String, Object> properties;
 
     /**
      * @param game
@@ -22,10 +23,11 @@ public class BedwarsApplyPropertyToItem extends Event {
      * @param stack
      * @param properties
      */
-    public BedwarsApplyPropertyToItem(Game game, Player player, ItemStack stack, Map<String, Object> properties) {
+    public BedwarsApplyPropertyToItem(Game game, Player player, ItemStack stack, String name, Map<String, Object> properties) {
         this.game = game;
         this.player = player;
         this.stack = stack;
+        this.name = name;
         this.properties = properties;
     }
 
@@ -73,7 +75,7 @@ public class BedwarsApplyPropertyToItem extends Event {
      * @return
      */
     public String getPropertyName() {
-        return (String) this.properties.get("name");
+        return this.name;
     }
 
     /**

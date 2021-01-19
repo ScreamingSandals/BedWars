@@ -58,12 +58,13 @@ import org.screamingsandals.bedwars.region.LegacyRegion;
 import org.screamingsandals.bedwars.scoreboard.ScreamingScoreboard;
 import org.screamingsandals.bedwars.statistics.PlayerStatistic;
 import org.screamingsandals.bedwars.utils.*;
-import org.screamingsandals.simpleinventories.utils.MaterialSearchEngine;
-import org.screamingsandals.simpleinventories.utils.StackParser;
+import org.screamingsandals.lib.material.MaterialHolder;
+import org.screamingsandals.lib.material.builder.ItemFactory;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.screamingsandals.bedwars.lib.lang.I.*;
 
@@ -812,7 +813,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 if (configurationContainer.getOrDefault(ConfigurationContainer.COMPASS, Boolean.class, false)) {
                     int compassPosition = Main.getConfigurator().config.getInt("hotbar.selector", 0);
                     if (compassPosition >= 0 && compassPosition <= 8) {
-                        ItemStack compass = Main.getConfigurator().readDefinedItem("jointeam", "COMPASS");
+                        ItemStack compass = Main.getConfigurator().readDefinedItem("jointeam", "COMPASS").as(ItemStack.class);
                         ItemMeta metaCompass = compass.getItemMeta();
                         metaCompass.setDisplayName(i18n("compass_selector_team", false));
                         compass.setItemMeta(metaCompass);
@@ -822,7 +823,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
                 int leavePosition = Main.getConfigurator().config.getInt("hotbar.leave", 8);
                 if (leavePosition >= 0 && leavePosition <= 8) {
-                    ItemStack leave = Main.getConfigurator().readDefinedItem("leavegame", "SLIME_BALL");
+                    ItemStack leave = Main.getConfigurator().readDefinedItem("leavegame", "SLIME_BALL").as(ItemStack.class);
                     ItemMeta leaveMeta = leave.getItemMeta();
                     leaveMeta.setDisplayName(i18n("leave_from_game_item", false));
                     leave.setItemMeta(leaveMeta);
@@ -833,7 +834,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                         || gamePlayer.player.hasPermission("misat11.bw.vip.startitem")) {
                     int vipPosition = Main.getConfigurator().config.getInt("hotbar.start", 1);
                     if (vipPosition >= 0 && vipPosition <= 8) {
-                        ItemStack startGame = Main.getConfigurator().readDefinedItem("startgame", "DIAMOND");
+                        ItemStack startGame = Main.getConfigurator().readDefinedItem("startgame", "DIAMOND").as(ItemStack.class);
                         ItemMeta startGameMeta = startGame.getItemMeta();
                         startGameMeta.setDisplayName(i18n("start_game_item", false));
                         startGame.setItemMeta(startGameMeta);
@@ -1334,6 +1335,9 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
         Debug.info(name + ": player " + player.player.getName() + " joined the team " + current.getName());
 
+        var joinedEvent = new BedwarsPlayerJoinedTeamEvent(current, player.player, this, cur);
+        Bukkit.getPluginManager().callEvent(joinedEvent);
+
         player.player
                 .sendMessage(i18nc("team_selected", customPrefix).replace("%team%", teamForJoin.color.chatColor + teamForJoin.name)
                         .replace("%players%", Integer.toString(current.players.size()))
@@ -1402,7 +1406,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
                 int leavePosition = Main.getConfigurator().config.getInt("hotbar.leave", 8);
                 if (leavePosition >= 0 && leavePosition <= 8) {
-                    ItemStack leave = Main.getConfigurator().readDefinedItem("leavegame", "SLIME_BALL");
+                    ItemStack leave = Main.getConfigurator().readDefinedItem("leavegame", "SLIME_BALL").as(ItemStack.class);
                     ItemMeta leaveMeta = leave.getItemMeta();
                     leaveMeta.setDisplayName(i18n("leave_from_game_item", false));
                     leave.setItemMeta(leaveMeta);
@@ -1441,9 +1445,9 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 }
 
                 if (configurationContainer.getOrDefault(ConfigurationContainer.ENABLE_PLAYER_RESPAWN_ITEMS, Boolean.class, false)) {
-                    List<ItemStack> givedGameStartItems = StackParser.parseAll((Collection<Object>) Main.getConfigurator().config
-                            .getList("gived-player-respawn-items"));
-                    if (givedGameStartItems != null) {
+                    List<ItemStack> givedGameStartItems = ItemFactory.buildAll((List<Object>) Main.getConfigurator().config
+                            .getList("gived-player-respawn-items")).stream().map(item -> item.as(ItemStack.class)).collect(Collectors.toList());
+                    if (!givedGameStartItems.isEmpty()) {
                         MiscUtils.giveItemsToPlayer(givedGameStartItems, player, currentTeam.getColor());
                     } else {
                         Debug.warn("You have wrongly configured gived-player-respawn-items!", true);
@@ -1708,9 +1712,9 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                             player.teleport(team.teamInfo.spawn, () -> {
                                 player.player.setGameMode(GameMode.SURVIVAL);
                                 if (configurationContainer.getOrDefault(ConfigurationContainer.ENABLE_GAME_START_ITEMS, Boolean.class, false)) {
-                                    List<ItemStack> givedGameStartItems = StackParser.parseAll((Collection<Object>) Main.getConfigurator().config
-                                            .getList("gived-game-start-items"));
-                                    if (givedGameStartItems != null) {
+                                    List<ItemStack> givedGameStartItems = ItemFactory.buildAll((List<Object>) Main.getConfigurator().config
+                                            .getList("gived-game-start-items")).stream().map(item -> item.as(ItemStack.class)).collect(Collectors.toList());
+                                    if (!givedGameStartItems.isEmpty()) {
                                         MiscUtils.giveItemsToPlayer(givedGameStartItems, player.player, team.getColor());
                                     } else {
                                         Debug.warn("You have wrongly configured gived-player-start-items!", true);
@@ -2321,7 +2325,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
         String statusLine = "";
         String playersLine = "";
-        MaterialSearchEngine.Result blockBehindMaterial = null;
+        MaterialHolder blockBehindMaterial = null;
         switch (status) {
             case DISABLED:
                 statusLine = i18nonly("sign_status_disabled");
@@ -2372,11 +2376,11 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                     final Optional<Block> optionalBlock = signBlock.getBlockBehindSign();
                     if (optionalBlock.isPresent()) {
                         final Block glassBlock = optionalBlock.get();
-                        glassBlock.setType(blockBehindMaterial.getMaterial());
+                        glassBlock.setType(blockBehindMaterial.as(Material.class));
                         if (Main.isLegacy()) {
                             try {
                                 // The method is no longer in API, but in legacy versions exists
-                                Block.class.getMethod("setData", byte.class).invoke(glassBlock, (byte) blockBehindMaterial.getDamage());
+                                Block.class.getMethod("setData", byte.class).invoke(glassBlock, (byte) blockBehindMaterial.getDurability());
                             } catch (Exception e) {
                             }
                         }

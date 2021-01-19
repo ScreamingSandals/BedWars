@@ -17,7 +17,7 @@ public class BedwarsApplyPropertyToDisplayedItem extends BedwarsApplyPropertyToI
      * @param stack
      * @param properties
      */
-    public BedwarsApplyPropertyToDisplayedItem(Game game, Player player, ItemStack stack, Map<String, Object> properties) {
-        super(game, player, stack, properties);
+    public BedwarsApplyPropertyToDisplayedItem(Game game, Player player, ItemStack stack, String name, Map<String, Object> properties) {
+        super(game, player, stack, name, properties);
     }
 }

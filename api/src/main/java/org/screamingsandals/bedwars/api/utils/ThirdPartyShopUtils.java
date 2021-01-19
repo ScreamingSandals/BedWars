@@ -49,9 +49,9 @@ public class ThirdPartyShopUtils {
 
         BedwarsApplyPropertyToItem event;
         if (onBuy) {
-            event = new BedwarsApplyPropertyToBoughtItem(game, player, stack, map);
+            event = new BedwarsApplyPropertyToBoughtItem(game, player, stack, propertyName, map);
         } else {
-            event = new BedwarsApplyPropertyToDisplayedItem(game, player, stack, map);
+            event = new BedwarsApplyPropertyToDisplayedItem(game, player, stack, propertyName, map);
         }
         Bukkit.getPluginManager().callEvent(event);
 

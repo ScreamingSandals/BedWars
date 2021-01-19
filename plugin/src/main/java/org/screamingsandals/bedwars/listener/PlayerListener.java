@@ -38,7 +38,8 @@ import org.screamingsandals.bedwars.statistics.PlayerStatistic;
 import org.screamingsandals.bedwars.utils.*;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.lib.nms.entity.PlayerUtils;
-import org.screamingsandals.simpleinventories.utils.StackParser;
+import org.screamingsandals.lib.material.builder.ItemFactory;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -322,9 +323,9 @@ public class PlayerListener implements Listener {
 
                 SpawnEffects.spawnEffect(gPlayer.getGame(), gPlayer.player, "game-effects.respawn");
                 if (gPlayer.getGame().getConfigurationContainer().getOrDefault(ConfigurationContainer.ENABLE_PLAYER_RESPAWN_ITEMS, Boolean.class, false)) {
-                    List<ItemStack> givedGameStartItems = StackParser.parseAll((Collection<Object>) Main.getConfigurator().config
-                            .getList("gived-player-respawn-items"));
-                    if (givedGameStartItems != null) {
+                    List<ItemStack> givedGameStartItems = ItemFactory.buildAll((List<Object>) Main.getConfigurator().config
+                            .getList("gived-player-respawn-items")).stream().map(item -> item.as(ItemStack.class)).collect(Collectors.toList());
+                    if (!givedGameStartItems.isEmpty()) {
                         MiscUtils.giveItemsToPlayer(givedGameStartItems, gPlayer.player, team.getColor());
                     } else {
                         Debug.warn("You have wrongly configured gived-player-respawn-items!", true);

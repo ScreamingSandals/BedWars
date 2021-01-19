@@ -8,7 +8,8 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
-import org.screamingsandals.simpleinventories.utils.StackParser;
+import org.screamingsandals.lib.material.Item;
+import org.screamingsandals.lib.material.builder.ItemFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -516,12 +517,12 @@ public class Configurator {
         }
     }
 
-    public ItemStack readDefinedItem(String item, String def) {
+    public Item readDefinedItem(String item, String def) {
         if (config.isSet("items." + item) && config.get("items." + item) != null) {
             Object obj = config.get("items." + item);
-            return StackParser.parse(obj);
+            return ItemFactory.build(obj).orElse(ItemFactory.getAir());
         }
 
-        return StackParser.parse(def);
+        return ItemFactory.build(def).orElse(ItemFactory.getAir());
     }
 }

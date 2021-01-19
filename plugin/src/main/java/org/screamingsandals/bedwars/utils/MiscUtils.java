@@ -20,11 +20,10 @@ import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.game.GamePlayer;
 import org.screamingsandals.bedwars.game.Team;
 import org.screamingsandals.bedwars.lib.debug.Debug;
-import org.screamingsandals.simpleinventories.utils.MaterialSearchEngine;
+import org.screamingsandals.lib.material.MaterialHolder;
+import org.screamingsandals.lib.material.MaterialMapping;
 
 import java.util.*;
-
-import static org.screamingsandals.bedwars.lib.lang.I18n.i18nonly;
 
 public class MiscUtils {
     /**
@@ -119,15 +118,17 @@ public class MiscUtils {
         }
     }
 
-    public static MaterialSearchEngine.Result getMaterialFromString(String name, String fallback) {
+    public static MaterialHolder getMaterialFromString(String name, String fallback) {
         if (name != null) {
-            MaterialSearchEngine.Result result = MaterialSearchEngine.find(fallback);
-            if (result.getMaterial() == Material.AIR) {
+            var result = MaterialMapping.resolve(name);
+            if (result.isEmpty()) {
                 Debug.warn("Wrong material configured: " + name, true);
+            } else {
+                return result.get();
             }
         }
 
-        return MaterialSearchEngine.find(fallback);
+        return MaterialMapping.resolve(fallback).orElseThrow();
     }
 
     public static Player findTarget(Game game, Player player, double maxDist) {

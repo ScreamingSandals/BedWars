@@ -18,6 +18,11 @@ subprojects {
     apply plugin: 'java'
     apply plugin: 'org.screamingsandals.gradle.builder'
 
+    configurations.all {
+        // Check for updates every build
+        resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+    }
+
     repositories {
         maven { url 'https://repo.extendedclip.com/content/repositories/placeholderapi/'  }
         maven { url 'http://repo.onarandombox.com/content/groups/public'  }
@@ -36,6 +41,7 @@ subprojects {
     shadowJar {
         relocate 'com.zaxxer', 'org.screamingsandals.bedwars.lib.HikariCP'
         relocate 'org.screamingsandals.simpleinventories', 'org.screamingsandals.bedwars.lib.sgui'
+        relocate 'org.screamingsandals.lib', 'org.screamingsandals.bedwars.lib'
         relocate 'org.bstats', 'org.screamingsandals.bedwars.lib.bstats'
         relocate 'io.papermc.lib', 'org.screamingsandals.lib.paperlib'
         relocate 'pronze.lib', 'org.screamingsandals.lib.pronze'

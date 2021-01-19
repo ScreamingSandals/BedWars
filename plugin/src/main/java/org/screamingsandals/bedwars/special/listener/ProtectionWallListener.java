@@ -20,7 +20,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.screamingsandals.simpleinventories.utils.MaterialSearchEngine;
 
 import java.util.ArrayList;
 
@@ -63,9 +62,9 @@ public class ProtectionWallListener implements Listener {
                         int width = Integer.parseInt(unhidden.split(":")[5]);
                         int height = Integer.parseInt(unhidden.split(":")[6]);
                         int distance = Integer.parseInt(unhidden.split(":")[7]);
-                        MaterialSearchEngine.Result result = MiscUtils.getMaterialFromString(unhidden.split(":")[8], "CUT_SANDSTONE");
-                        Material material = result.getMaterial();
-                        short damage = result.getDamage();
+                        var result = MiscUtils.getMaterialFromString(unhidden.split(":")[8], "CUT_SANDSTONE");
+                        Material material = result.as(Material.class);
+                        short damage = (short) result.getDurability();
 
 
                         ProtectionWall protectionWall = new ProtectionWall(game, event.getPlayer(),

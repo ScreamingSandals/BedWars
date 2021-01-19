@@ -17,7 +17,7 @@ dependencies {
     /* SHADED */
     shade project(':BedWars-API')
     shade 'com.zaxxer:HikariCP:3.3.0'
-    shade 'org.screamingsandals.simpleinventories:SimpleInventories-Core:1.0.6.5'
+    shade 'org.screamingsandals.simpleinventories:core-bukkit:2.0.0-SNAPSHOT'
     shade 'org.bstats:bstats-bukkit:1.7'
     shade 'pronze.lib:scoreboard:1.0.0'
     shade paperlib()

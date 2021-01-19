@@ -44,8 +44,10 @@ import org.screamingsandals.bedwars.lib.nms.holograms.HologramManager;
 import org.screamingsandals.bedwars.lib.nms.utils.ClassStorage;
 import org.screamingsandals.bedwars.lib.signmanager.SignListener;
 import org.screamingsandals.bedwars.lib.signmanager.SignManager;
-import org.screamingsandals.simpleinventories.listeners.InventoryListener;
-import org.screamingsandals.simpleinventories.utils.MaterialSearchEngine;
+import org.screamingsandals.lib.material.MaterialMapping;
+import org.screamingsandals.lib.material.builder.ItemBuilder;
+import org.screamingsandals.lib.material.builder.ItemFactory;
+import org.screamingsandals.simpleinventories.bukkit.SimpleInventoriesBukkit;
 import pronze.lib.scoreboards.ScoreboardManager;
 
 import java.io.File;
@@ -453,7 +455,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
             pluginManager.registerEvents(new PartyListener(), this);
         }
 
-        InventoryListener.init(this);
+        SimpleInventoriesBukkit.init(this);
 
         this.manager = new HologramManager(this);
 
@@ -477,19 +479,19 @@ public class Main extends JavaPlugin implements BedwarsAPI {
                 materialName += ":" + damage;
             }
 
-            var result = MaterialSearchEngine.find(materialName);
-            if (result.getMaterial() == Material.AIR) {
+            var result = MaterialMapping.resolve(materialName).orElse(MaterialMapping.getAir());
+            if (result.as(Material.class) == Material.AIR) {
                 continue;
             }
 
             ChatColor color;
             try {
-                color = ChatColor.valueOf(colorName);
-            } catch (IllegalArgumentException ignored) {
+                color = ChatColor.valueOf(colorName.toUpperCase());
+            } catch (IllegalArgumentException | NullPointerException ignored) {
                 color = ChatColor.WHITE;
             }
             spawnerTypes.put(spawnerN.toLowerCase(), new ItemSpawnerType(spawnerN.toLowerCase(), name, translate,
-                    spread, result.getMaterial(), color, interval, result.getDamage()));
+                    spread, result.as(Material.class), color, interval, result.getDurability()));
         }
 
         menu = new ShopInventory();

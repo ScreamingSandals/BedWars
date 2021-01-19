@@ -22,12 +22,10 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.screamingsandals.simpleinventories.utils.MaterialSearchEngine;
 
 import java.util.ArrayList;
 
 import static org.screamingsandals.bedwars.lib.lang.I.i18nc;
-import static org.screamingsandals.bedwars.lib.lang.I18n.i18n;
 import static org.screamingsandals.bedwars.lib.lang.I18n.i18nonly;
 
 public class RescuePlatformListener implements Listener {
@@ -64,9 +62,9 @@ public class RescuePlatformListener implements Listener {
                         int delay = Integer.parseInt(unhidden.split(":")[3]);
                         int breakTime = Integer.parseInt(unhidden.split(":")[4]);
                         int distance = Integer.parseInt(unhidden.split(":")[5]);
-                        MaterialSearchEngine.Result result = MiscUtils.getMaterialFromString(unhidden.split(":")[6], "GLASS");
-                        Material material = result.getMaterial();
-                        short damage = result.getDamage();
+                        var result = MiscUtils.getMaterialFromString(unhidden.split(":")[6], "GLASS");
+                        Material material = result.as(Material.class);
+                        short damage = (short) result.getDurability();
 
                         RescuePlatform rescuePlatform = new RescuePlatform(game, player,
                                 game.getTeamOfPlayer(player), stack);
