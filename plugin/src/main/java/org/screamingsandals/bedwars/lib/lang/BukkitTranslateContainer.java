@@ -1,9 +1,6 @@
 package org.screamingsandals.bedwars.lib.lang;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -30,7 +27,13 @@ public class BukkitTranslateContainer implements ITranslateContainer {
             try {
                 config.load(new InputStreamReader(in, StandardCharsets.UTF_8));
             } catch (IOException | InvalidConfigurationException e) {
-                e.printStackTrace();
+                //Let's load it via the languages directory instead
+				try {
+					final var file = new File(plugin.getDataFolder().toString() + "/languages", "language_" + key + ".yml");
+					config.load(file);
+				} catch (IOException | InvalidConfigurationException | IllegalArgumentException exception) {
+					exception.printStackTrace();
+				}
             }
         }
 	}
