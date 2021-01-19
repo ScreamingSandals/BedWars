@@ -325,5 +325,5 @@ dump_success: "&cУспешно создан снимок сервера. Ссы
 dump_failed: "&cНе удалось создать снимок!"
 usage_bw_lang: "Использование: /bw lang <locale> - &eЗадаёт язык &cBed&fWars"
 language_invalid: "&cДанный язык не может быть загружен!"
-language_already_set: "Language: [%lang%] is already set as the default language!"
+language_already_set: "%lang% уже задан как язык по-умолчанию!"
 language_success: "&aУспешно установлен &f%lang% &aязык"
