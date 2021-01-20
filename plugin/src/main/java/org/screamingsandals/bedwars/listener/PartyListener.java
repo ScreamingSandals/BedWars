@@ -1,7 +1,6 @@
 package org.screamingsandals.bedwars.listener;
 
 import com.alessiodp.parties.api.Parties;
-import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.screamingsandals.bedwars.Main;
@@ -24,8 +23,8 @@ public class PartyListener implements Listener {
 
         final var game = e.getGame();
 
-        if (!partyPlayer.getPartyName().isEmpty()) {
-            final var party = partyApi.getParty(partyPlayer.getPartyName());
+        if (partyPlayer.getPartyId() != null) {
+            final var party = partyApi.getParty(partyPlayer.getPartyId());
 
             if (party != null) {
                 final var leaderUUID = party.getLeader();
