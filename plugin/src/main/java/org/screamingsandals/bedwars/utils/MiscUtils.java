@@ -272,7 +272,7 @@ public class MiscUtils {
         }
     }
 
-    public static List<Player> getOnlinePlayers(List<UUID> uuids) {
+    public static List<Player> getOnlinePlayers(Collection<UUID> uuids) {
         if (uuids == null) {
             return Collections.emptyList();
         }

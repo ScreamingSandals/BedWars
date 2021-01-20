@@ -28,6 +28,7 @@ subprojects {
         maven { url 'http://repo.onarandombox.com/content/groups/public'  }
         maven { url 'https://ci.frostcast.net/plugin/repository/everything'  }
         maven { url 'https://repo.codemc.org/repository/maven-public/'  }
+        maven { url 'https://repo.alessiodp.com/releases/'  }
         maven { url 'https://jitpack.io' }
         maven { url 'https://repo.citizensnpcs.co'  }
         /* Our gitlab repo for scoreboard lib*/

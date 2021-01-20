@@ -32,12 +32,12 @@ public class PartyCommand extends BaseCommand {
             final var partyPlayer = partyApi.getPartyPlayer(player.getUniqueId());
             final var game = Main.getPlayerGameProfile(player).getGame();
 
-            if (partyPlayer.getPartyName().isEmpty()) {
+            if (partyPlayer.getPartyId() == null) {
                 player.sendMessage(i18n("party_command_not_in_party", true));
                 return true;
             }
 
-            final var party = partyApi.getParty(partyPlayer.getPartyName());
+            final var party = partyApi.getParty(partyPlayer.getPartyId());
 
             if (party != null) {
                 final var leaderUUID = party.getLeader();
