@@ -38,7 +38,7 @@ public class UpdateChecker {
                         }
                         if (Main.getConfigurator().config.getBoolean("update-checker.zero.admins")) {
                             updateListener = new UpdateListener(result);
-                            Bukkit.getPluginManager().registerEvents(updateListener, Main.getInstance());
+                            Main.getInstance().registerBedwarsListener(updateListener);
                         }
                     }
                     if (result.isOneAvailable) {
@@ -54,7 +54,7 @@ public class UpdateChecker {
                         if (Main.getConfigurator().config.getBoolean("update-checker.one.admins")) {
                             if (updateListener == null) {
                                 updateListener = new UpdateListener(result);
-                                Bukkit.getPluginManager().registerEvents(updateListener, Main.getInstance());
+                                Main.getInstance().registerBedwarsListener(updateListener);
                             }
                             updateListener.javaVer = javaVer;
                         }

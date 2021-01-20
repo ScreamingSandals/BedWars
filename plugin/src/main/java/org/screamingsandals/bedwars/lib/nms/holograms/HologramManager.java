@@ -15,6 +15,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.*;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.lib.nms.network.inbound.AutoPacketInboundListener;
 
 public class HologramManager implements Listener {
@@ -26,7 +27,7 @@ public class HologramManager implements Listener {
 	
 	public HologramManager(Plugin pl) {
 		this.pl = pl;
-		this.pl.getServer().getPluginManager().registerEvents(this, this.pl);
+		Main.getInstance().registerBedwarsListener(this);
 		new AutoPacketInboundListener(pl) {
 			
 			@Override

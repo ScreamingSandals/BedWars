@@ -7,10 +7,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.plugin.Plugin;
+import org.screamingsandals.bedwars.Main;
 
 public abstract class AutoPacketInboundListener extends PacketInboundListener implements Listener {
 	public AutoPacketInboundListener(Plugin plugin) {
-		Bukkit.getPluginManager().registerEvents(this, plugin);
+		Main.getInstance().registerBedwarsListener(this);
 		Bukkit.getOnlinePlayers().forEach(player -> addPlayer(player));
 	}
 

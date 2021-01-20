@@ -1,5 +1,6 @@
 package org.screamingsandals.bedwars.commands;
 
+import org.bukkit.event.HandlerList;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.bukkit.Bukkit;
@@ -43,8 +44,21 @@ public class ReloadCommand extends BaseCommand {
 
                 if (!gameRuns || timer == 0) {
                     this.cancel();
-                    Bukkit.getServer().getPluginManager().disablePlugin(Main.getInstance());
-                    Bukkit.getServer().getPluginManager().enablePlugin(Main.getInstance());
+                    Main.getInstance().onDisable();
+                    Bukkit.getScheduler().cancelTasks(Main.getInstance());
+                    Bukkit.getServicesManager().unregisterAll(Main.getInstance());
+                    Bukkit.getMessenger().unregisterIncomingPluginChannel(Main.getInstance());
+                    Bukkit.getMessenger().unregisterOutgoingPluginChannel(Main.getInstance());
+                    Main.getInstance().getRegisteredListeners().forEach(HandlerList::unregisterAll);
+                    HandlerList.unregisterAll();
+                    Main.getInstance().getRegisteredListeners().clear();
+                        Bukkit.getWorlds().forEach(world -> {
+                            try {
+                                world.removePluginChunkTickets(Main.getInstance());
+                            } catch (Throwable ignored) {
+                            }
+                        });
+                    Main.getInstance().onEnable();
                     sender.sendMessage("Plugin reloaded!");
                     return;
                 }

@@ -2,6 +2,7 @@ package org.screamingsandals.bedwars;
 
 import lombok.Getter;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.event.Listener;
 import org.screamingsandals.bedwars.lib.lang.I18n;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
@@ -45,8 +46,6 @@ import org.screamingsandals.bedwars.lib.nms.utils.ClassStorage;
 import org.screamingsandals.bedwars.lib.signmanager.SignListener;
 import org.screamingsandals.bedwars.lib.signmanager.SignManager;
 import org.screamingsandals.lib.material.MaterialMapping;
-import org.screamingsandals.lib.material.builder.ItemBuilder;
-import org.screamingsandals.lib.material.builder.ItemFactory;
 import org.screamingsandals.lib.utils.InitUtils;
 import org.screamingsandals.simpleinventories.bukkit.SimpleInventoriesBukkit;
 import pronze.lib.scoreboards.ScoreboardManager;
@@ -90,6 +89,8 @@ public class Main extends JavaPlugin implements BedwarsAPI {
     private Metrics metrics;
     @Getter
     private String buildInfo;
+    @Getter
+    private final List<Listener> registeredListeners = new ArrayList<>();
 
     static {
         // ColorChanger list of materials
@@ -437,24 +438,22 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         getCommand("bw").setExecutor(cmd);
         getCommand("bw").setTabCompleter(cmd);
 
-        final var pluginManager = getServer().getPluginManager();
-
-        pluginManager.registerEvents(new PlayerListener(), this);
+        registerBedwarsListener(new PlayerListener());
         if (versionNumber >= 109) {
-            pluginManager.registerEvents(new Player19Listener(), this);
+            registerBedwarsListener(new Player19Listener());
         }
 
         final var playerBeforeOrAfter112Listener = versionNumber >= 122 ? new Player112Listener() : new PlayerBefore112Listener();
-        pluginManager.registerEvents(playerBeforeOrAfter112Listener, this);
+        registerBedwarsListener(playerBeforeOrAfter112Listener);
 
-        pluginManager.registerEvents(new VillagerListener(), this);
-        pluginManager.registerEvents(new WorldListener(), this);
+        registerBedwarsListener(new VillagerListener());
+        registerBedwarsListener(new WorldListener());
         if (Main.getConfigurator().config.getBoolean("bungee.enabled") && Main.getConfigurator().config.getBoolean("bungee.motd.enabled")) {
-            pluginManager.registerEvents(new BungeeMotdListener(), this);
+            registerBedwarsListener(new BungeeMotdListener());
         }
 
         if (partiesEnabled) {
-            pluginManager.registerEvents(new PartyListener(), this);
+            registerBedwarsListener(new PartyListener());
         }
 
         InitUtils.doIfNot(SimpleInventoriesBukkit::isInitialized, () -> SimpleInventoriesBukkit.init(this));
@@ -544,7 +543,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 
         final var signOwner = new BedWarsSignOwner();
         signManager = new SignManager(signOwner, configurator.signsFile);
-        getServer().getPluginManager().registerEvents(new SignListener(signOwner, signManager), this);
+        registerBedwarsListener(new SignListener(signOwner, signManager));
 
         try {
             // Fixing bugs created by third party plugin
@@ -554,10 +553,10 @@ public class Main extends JavaPlugin implements BedwarsAPI {
                 final var pwi = Bukkit.getPluginManager().getPlugin("PerWorldInventory");
                 if (pwi.getClass().getName().equals("me.ebonjaeger.perworldinventory.PerWorldInventory")) {
                     // Kotlin version
-                    pluginManager.registerEvents(new PerWorldInventoryKotlinListener(), this);
+                    registerBedwarsListener(new PerWorldInventoryKotlinListener());
                 } else {
                     // Legacy version
-                    pluginManager.registerEvents(new PerWorldInventoryLegacyListener(), this);
+                    registerBedwarsListener(new PerWorldInventoryLegacyListener());
                 }
             }
 
@@ -789,5 +788,10 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 
     public static boolean isDisabling() {
         return instance.isDisabling;
+    }
+
+    public void registerBedwarsListener(Listener listener) {
+        getServer().getPluginManager().registerEvents(listener, this);
+        registeredListeners.add(listener);
     }
 }

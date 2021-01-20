@@ -3,17 +3,11 @@ package org.screamingsandals.bedwars.inventories;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.ClickType;
-import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.screamingsandals.bedwars.Main;
-import org.screamingsandals.bedwars.api.Team;
 import org.screamingsandals.bedwars.api.events.*;
 import org.screamingsandals.bedwars.commands.DumpCommand;
 import org.screamingsandals.bedwars.game.GameStore;
@@ -29,7 +23,6 @@ import org.screamingsandals.bedwars.utils.Debugger;
 import org.screamingsandals.bedwars.utils.Sounds;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.lib.material.Item;
-import org.screamingsandals.lib.material.builder.ItemBuilder;
 import org.screamingsandals.lib.material.builder.ItemFactory;
 import org.screamingsandals.lib.player.PlayerUtils;
 import org.screamingsandals.lib.utils.ConfigurateUtils;
@@ -39,8 +32,6 @@ import org.screamingsandals.simpleinventories.events.OnTradeEvent;
 import org.screamingsandals.simpleinventories.events.PreClickEvent;
 import org.screamingsandals.simpleinventories.inventory.Include;
 import org.screamingsandals.simpleinventories.inventory.InventorySet;
-import org.screamingsandals.simpleinventories.inventory.LocalOptions;
-import org.screamingsandals.simpleinventories.inventory.PlayerItemInfo;
 import org.spongepowered.configurate.ConfigurationNode;
 
 import java.io.File;
@@ -55,7 +46,7 @@ public class ShopInventory implements Listener {
     private final Map<String, InventorySet> shopMap = new HashMap<>();
 
     public ShopInventory() {
-        Bukkit.getServer().getPluginManager().registerEvents(this, Main.getInstance());
+        Main.getInstance().registerBedwarsListener(this);
 
         loadNewShop("default", null, true);
     }

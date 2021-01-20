@@ -9,7 +9,6 @@ import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.RunningTeam;
 import org.screamingsandals.bedwars.api.events.BedwarsOpenTeamSelectionEvent;
-import org.screamingsandals.bedwars.api.events.BedwarsPlayerJoinTeamEvent;
 import org.screamingsandals.bedwars.api.events.BedwarsPlayerJoinedTeamEvent;
 import org.screamingsandals.bedwars.api.events.BedwarsPlayerLeaveEvent;
 import org.screamingsandals.bedwars.game.CurrentTeam;
@@ -92,7 +91,7 @@ public class TeamSelectorInventory implements Listener {
                 .process()
                 .getInventorySet();
 
-        Bukkit.getServer().getPluginManager().registerEvents(this, plugin);
+        Main.getInstance().registerBedwarsListener(this);
     }
 
     public void destroy() {
