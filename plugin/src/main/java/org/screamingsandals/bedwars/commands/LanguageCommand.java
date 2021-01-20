@@ -49,6 +49,8 @@ public class LanguageCommand extends BaseCommand {
                             .replace("%lang%", langName));
                     return true;
                 }
+                Main.getConfigurator().config.set("locale", locale);
+                Main.getConfigurator().saveConfig();
                 Bukkit.getServer().getPluginManager().disablePlugin(Main.getInstance());
                 Bukkit.getServer().getPluginManager().enablePlugin(Main.getInstance());
                 player.sendMessage(i18n("language_success")
