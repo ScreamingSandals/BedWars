@@ -14,7 +14,7 @@ import org.screamingsandals.bedwars.api.events.BedwarsPlayerLeaveEvent;
 import org.screamingsandals.bedwars.game.CurrentTeam;
 import org.screamingsandals.bedwars.game.Game;
 import org.screamingsandals.bedwars.game.Team;
-import org.screamingsandals.lib.player.PlayerUtils;
+import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.simpleinventories.SimpleInventoriesCore;
 import org.screamingsandals.simpleinventories.inventory.GenericItemInfo;
 import org.screamingsandals.simpleinventories.inventory.InventorySet;
@@ -107,7 +107,7 @@ public class TeamSelectorInventory implements Listener {
             return;
         }
 
-        PlayerUtils.wrapPlayer(player).openInventory(inventorySet);
+        PlayerMapper.wrapPlayer(player).openInventory(inventorySet);
     }
 
     private List<String> formatLore(Team team, Game game) {

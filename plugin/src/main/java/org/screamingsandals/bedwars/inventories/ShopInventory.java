@@ -24,7 +24,7 @@ import org.screamingsandals.bedwars.utils.Sounds;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.lib.material.Item;
 import org.screamingsandals.lib.material.builder.ItemFactory;
-import org.screamingsandals.lib.player.PlayerUtils;
+import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.utils.ConfigurateUtils;
 import org.screamingsandals.simpleinventories.SimpleInventoriesCore;
 import org.screamingsandals.simpleinventories.events.ItemRenderEvent;
@@ -65,9 +65,9 @@ public class ShopInventory implements Listener {
                 if (!shopMap.containsKey(name)) {
                     loadNewShop(name, file, parent);
                 }
-                PlayerUtils.wrapPlayer(player).openInventory(shopMap.get(name));
+                PlayerMapper.wrapPlayer(player).openInventory(shopMap.get(name));
             } else {
-                PlayerUtils.wrapPlayer(player).openInventory(shopMap.get("default"));
+                PlayerMapper.wrapPlayer(player).openInventory(shopMap.get("default"));
             }
         } catch (Throwable ignored) {
             player.sendMessage(i18nonly("prefix") + " Your shop.yml/shop.groovy is invalid! Check it out or contact us on Discord.");
