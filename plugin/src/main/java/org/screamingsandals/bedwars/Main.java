@@ -580,6 +580,8 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 
         final var pluginId = 7147;
         metrics = new Metrics(this, pluginId);
+        metrics.addCustomChart(new Metrics.SimplePie("edition", () -> PremiumBedwars.isPremium() ? "Premium" : "Free"));
+        metrics.addCustomChart(new Metrics.SimplePie("build_number", () -> buildInfo));
 
         Bukkit.getConsoleSender().sendMessage(ChatColor.WHITE + "Everything is loaded! If you like our work, consider visiting our Patreon! <3");
         Bukkit.getConsoleSender().sendMessage(ChatColor.WHITE + "https://www.patreon.com/screamingsandals");
