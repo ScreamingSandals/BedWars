@@ -1335,9 +1335,6 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
         Debug.info(name + ": player " + player.player.getName() + " joined the team " + current.getName());
 
-        var joinedEvent = new BedwarsPlayerJoinedTeamEvent(current, player.player, this, cur);
-        Bukkit.getPluginManager().callEvent(joinedEvent);
-
         player.player
                 .sendMessage(i18nc("team_selected", customPrefix).replace("%team%", teamForJoin.color.chatColor + teamForJoin.name)
                         .replace("%players%", Integer.toString(current.players.size()))
@@ -1365,6 +1362,9 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         if (!teamsInGame.contains(current)) {
             teamsInGame.add(current);
         }
+
+        var joinedEvent = new BedwarsPlayerJoinedTeamEvent(current, player.player, this, cur);
+        Bukkit.getPluginManager().callEvent(joinedEvent);
     }
 
     public void joinRandomTeam(GamePlayer player) {
