@@ -114,11 +114,7 @@ public class ShopInventory implements Listener {
                                 .replaceAll("%amount%", Integer.toString(item.getAmount())))
                         .collect(Collectors.toList());
 
-                if (item.getLore() != null) {
-                    item.getLore().addAll(loreText);
-                } else {
-                    item.setLore(loreText);
-                }
+                item.getLore().addAll(loreText);
             }
         }
 

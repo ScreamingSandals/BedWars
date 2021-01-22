@@ -172,7 +172,8 @@ public class TeamSelectorInventory implements Listener {
                         .replace("%maxInTeam%", String.valueOf(team.maxPlayers))
         );
 
-        item.setLore(formatLore(team, game));
+        item.getLore().clear();
+        item.getLore().addAll(formatLore(team, game));
 
         itemInfo.repaint();
     }
