@@ -14,6 +14,7 @@ import org.screamingsandals.bedwars.lib.nms.utils.ClassStorage;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public class FakeDeath {
     public static void die(GamePlayer gamePlayer) {
@@ -24,6 +25,7 @@ public class FakeDeath {
 
         List<ItemStack> loot = new ArrayList<>();
         Collections.addAll(loot, player.getInventory().getContents());
+        loot.removeIf(Objects::isNull); // remove nulls;
 
         World deathWorld = player.getWorld();
         Location deathLoc = player.getLocation();

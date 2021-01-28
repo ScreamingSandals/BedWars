@@ -68,7 +68,7 @@ public class ScreamingScoreboard {
             if (!GAME_OBJECTIVE.equals(holder.getObjectiveName())) {
                 holder.registerObjective(GAME_OBJECTIVE);
             }
-            holder.setDisplayName(game.formatScoreboardTitle());
+            holder.setTitle(game.formatScoreboardTitle());
 
             final var teamStatus = new ArrayList<String>();
             //lets process team status first

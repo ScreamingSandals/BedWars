@@ -20,6 +20,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.*;
+import org.bukkit.event.vehicle.VehicleCreateEvent;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.MetadataValue;
@@ -1222,6 +1223,23 @@ public class PlayerListener implements Listener {
                     event.setCancelled(true);
                     Debug.info(player.getName() + " is doing prohibited actions in protected area while not playing BedWars");
                     return;
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    public void onVehicleCreated(VehicleCreateEvent event) {
+        if (event.isCancelled()) {
+            return;
+        }
+
+        for (String s : Main.getGameNames()) {
+            Game game = Main.getGame(s);
+            if (game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) {
+                if (GameCreator.isInArea(event.getVehicle().getLocation(), game.getPos1(), game.getPos2())) {
+                    Main.registerGameEntity(event.getVehicle(), game);
+                    break;
                 }
             }
         }

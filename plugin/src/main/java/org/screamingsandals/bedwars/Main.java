@@ -460,7 +460,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 
         if (controllable == null) {
             controllable = InitUtils.pluginlessEnvironment(controllable1 ->
-                SimpleInventoriesBukkit.init(this, controllable1)
+                SimpleInventoriesBukkit.init(this, controllable1.child())
             );
         } else {
             controllable.enable();
