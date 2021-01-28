@@ -46,6 +46,7 @@ import org.screamingsandals.bedwars.lib.nms.utils.ClassStorage;
 import org.screamingsandals.bedwars.lib.signmanager.SignListener;
 import org.screamingsandals.bedwars.lib.signmanager.SignManager;
 import org.screamingsandals.lib.material.MaterialMapping;
+import org.screamingsandals.lib.utils.ControllableImpl;
 import org.screamingsandals.lib.utils.InitUtils;
 import org.screamingsandals.simpleinventories.bukkit.SimpleInventoriesBukkit;
 import pronze.lib.scoreboards.ScoreboardManager;
@@ -91,6 +92,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
     private String buildInfo;
     @Getter
     private final List<Listener> registeredListeners = new ArrayList<>();
+    private ControllableImpl controllable;
 
     static {
         // ColorChanger list of materials
@@ -456,7 +458,14 @@ public class Main extends JavaPlugin implements BedwarsAPI {
             registerBedwarsListener(new PartyListener());
         }
 
-        InitUtils.doIfNot(SimpleInventoriesBukkit::isInitialized, () -> SimpleInventoriesBukkit.init(this));
+        if (controllable == null) {
+            controllable = InitUtils.pluginlessEnvironment(controllable1 ->
+                SimpleInventoriesBukkit.init(this, controllable1)
+            );
+        } else {
+            controllable.enable();
+            controllable.postEnable();
+        }
 
         this.manager = new HologramManager(this);
 
@@ -588,6 +597,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
     }
 
     public void onDisable() {
+        controllable.preDisable();
         isDisabling = true;
         if (signManager != null) {
             signManager.save();
@@ -603,6 +613,8 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         }
 
         metrics = null;
+
+        controllable.disable();
     }
 
     private boolean setupEconomy() {
