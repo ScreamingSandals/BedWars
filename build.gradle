@@ -43,11 +43,16 @@ subprojects {
         relocate 'com.zaxxer', 'org.screamingsandals.bedwars.lib.HikariCP'
         relocate 'org.screamingsandals.simpleinventories', 'org.screamingsandals.bedwars.lib.sgui'
         relocate 'org.screamingsandals.lib', 'org.screamingsandals.bedwars.lib'
-        relocate 'org.bstats', 'org.screamingsandals.bedwars.lib.bstats'
-        relocate 'io.papermc.lib', 'org.screamingsandals.bedwars.lib.paperlib'
-        relocate 'pronze.lib', 'org.screamingsandals.bedwars.lib.pronze'
-        relocate 'org.spongepowered.configurate', 'org.screamingsandals.bedwars.lib.configurate'
-        relocate 'org.yaml.snakeyaml', 'org.screamingsandals.bedwars.lib.snakeyaml'
+        relocate 'org.bstats', 'org.screamingsandals.bedwars.lib.ext.bstats'
+        relocate 'io.papermc.lib', 'org.screamingsandals.bedwars.lib.ext.paperlib'
+        relocate 'pronze.lib', 'org.screamingsandals.bedwars.lib.ext.pronze'
+        relocate 'org.spongepowered.configurate', 'org.screamingsandals.bedwars.lib.ext.configurate'
+        relocate 'org.yaml.snakeyaml', 'org.screamingsandals.bedwars.lib.ext.snakeyaml'
+        relocate 'com.google.gson', 'org.screamingsandals.bedwars.lib.ext.gson'
+        relocate 'com.typesafe.config', 'org.screamingsandals.bedwars.lib.ext.typesafe'
+        relocate 'io.leangen.geantyref', 'org.screamingsandals.bedwars.lib.ext.geantyref'
+        relocate 'net.kyori', 'org.screamingsandals.bedwars.lib.ext.kyori'
+        relocate 'org.checkerframework', 'org.screamingsandals.bedwars.lib.ext.checkerframework'
 
         if (System.getenv('BUILD_NUMBER') != null) {
             archiveClassifier.set(System.getenv('BUILD_NUMBER'))
