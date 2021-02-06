@@ -1,9 +1,10 @@
 package org.screamingsandals.bedwars.utils;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
@@ -13,6 +14,7 @@ import org.screamingsandals.bedwars.commands.AdminCommand;
 import org.screamingsandals.bedwars.game.Game;
 import org.screamingsandals.bedwars.lib.signmanager.SignBlock;
 import org.screamingsandals.bedwars.lib.signmanager.SignOwner;
+import org.spongepowered.configurate.ConfigurationNode;
 
 import static org.screamingsandals.bedwars.lib.lang.I.*;
 
@@ -45,19 +47,22 @@ public class BedWarsSignOwner implements SignOwner {
 	}
 
 	private void updateLeaveSign(SignBlock sign) {
-		List<String> texts = new ArrayList<>(Main.getConfigurator().config.getStringList("sign"));
+		List<String> texts = Main.getConfigurator().node("sign", "lines").childrenList().stream().map(ConfigurationNode::getString).collect(Collectors.toList());
 
-		Block block = sign.getLocation().getBlock();
-		if (block.getState() instanceof Sign) {
-			Sign state = (Sign) block.getState();
+		var opt = sign.getLocation().asOptional(Location.class);
+		if (opt.isPresent()) {
+			Block block = opt.get().getBlock();
+			if (block.getState() instanceof Sign) {
+				Sign state = (Sign) block.getState();
 
-			for (int i = 0; i < texts.size(); i++) {
-				String text = texts.get(i);
-				state.setLine(i, text.replaceAll("%arena%", i18nonly("leave_from_game_item")).replaceAll("%status%", "")
-						.replaceAll("%players%", ""));
+				for (int i = 0; i < texts.size(); i++) {
+					String text = texts.get(i);
+					state.setLine(i, text.replaceAll("%arena%", i18nonly("leave_from_game_item")).replaceAll("%status%", "")
+							.replaceAll("%players%", ""));
+				}
+
+				state.update();
 			}
-
-			state.update();
 		}
 	}
 

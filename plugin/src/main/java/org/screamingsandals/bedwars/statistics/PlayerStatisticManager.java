@@ -4,26 +4,25 @@ import org.bukkit.Bukkit;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.events.BedwarsSavePlayerStatisticEvent;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.api.statistics.LeaderboardEntry;
 import org.screamingsandals.bedwars.api.statistics.PlayerStatisticsManager;
+import org.spongepowered.configurate.ConfigurationNode;
+import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
 import java.io.File;
 import java.sql.*;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class PlayerStatisticManager implements PlayerStatisticsManager {
+    private YamlConfigurationLoader loader;
     private File databaseFile = null;
-    private FileConfiguration fileDatabase;
+    private ConfigurationNode fileDatabase;
     private Map<UUID, PlayerStatistic> playerStatistic;
     private Map<UUID, Integer> allScores = new HashMap<>();
 
     public PlayerStatisticManager() {
         this.playerStatistic = new HashMap<>();
-        this.fileDatabase = null;
     }
 
     public PlayerStatistic getStatistic(OfflinePlayer player) {
@@ -39,11 +38,11 @@ public class PlayerStatisticManager implements PlayerStatisticsManager {
     }
 
     public void initialize() {
-        if (!Main.getConfigurator().config.getBoolean("statistics.enabled", false)) {
+        if (!Main.getConfigurator().node("statistics", "enabled").getBoolean()) {
             return;
         }
 
-        if (Main.getConfigurator().config.getString("statistics.type").equalsIgnoreCase("database")) {
+        if (Main.getConfigurator().node("statistics", "type").getString("").equalsIgnoreCase("database")) {
             this.initializeDatabase();
         } else {
             File file = new File(Main.getInstance().getDataFolder() + "/database/bw_stats_players.yml");
@@ -78,7 +77,7 @@ public class PlayerStatisticManager implements PlayerStatisticsManager {
     private void initializeLeaderboard() {
         allScores.clear();
 
-        if (Main.getConfigurator().config.getString("statistics.type").equalsIgnoreCase("database")) {
+        if (Main.getConfigurator().node("statistics", "type").getString("").equalsIgnoreCase("database")) {
             try (Connection connection = Main.getDatabaseManager().getConnection()) {
                 connection.setAutoCommit(false);
                 PreparedStatement preparedStatement = connection
@@ -95,9 +94,9 @@ public class PlayerStatisticManager implements PlayerStatisticsManager {
                 ex.printStackTrace();
             }
         } else {
-            for (String key : fileDatabase.getConfigurationSection("data").getKeys(false)) {
-                allScores.put(UUID.fromString(key), fileDatabase.getInt("data." + key + ".score"));
-            }
+            fileDatabase.childrenMap().forEach((key, node) -> {
+                allScores.put(UUID.fromString(key.toString()), node.node("score").getInt());
+            });
         }
     }
 
@@ -157,7 +156,7 @@ public class PlayerStatisticManager implements PlayerStatisticsManager {
     }
 
     public PlayerStatistic loadStatistic(UUID uuid) {
-        if (Main.getConfigurator().config.getString("statistics.type").equalsIgnoreCase("database")) {
+        if (Main.getConfigurator().node("statistics", "type").getString("").equalsIgnoreCase("database")) {
             return this.loadDatabaseStatistic(uuid);
         } else {
             return this.loadYamlStatistic(uuid);
@@ -166,17 +165,16 @@ public class PlayerStatisticManager implements PlayerStatisticsManager {
 
     private PlayerStatistic loadYamlStatistic(UUID uuid) {
 
-        if (this.fileDatabase == null || !this.fileDatabase.contains("data." + uuid.toString())) {
+        if (this.fileDatabase == null || this.fileDatabase.node("data", uuid.toString()).empty()) {
             PlayerStatistic playerStatistic = new PlayerStatistic(uuid);
             this.playerStatistic.put(uuid, playerStatistic);
             return playerStatistic;
         }
 
-        HashMap<String, Object> deserialize = new HashMap<>();
-        deserialize.putAll(this.fileDatabase.getConfigurationSection("data." + uuid.toString()).getValues(false));
-        PlayerStatistic playerStatistic = new PlayerStatistic(deserialize);
+        var node = this.fileDatabase.node("data", uuid.toString());
+        var playerStatistic = new PlayerStatistic(node);
         playerStatistic.setId(uuid);
-        Player player = Main.getInstance().getServer().getPlayer(uuid);
+        var player = Bukkit.getServer().getPlayer(uuid);
         if (player != null && !playerStatistic.getName().equals(player.getName())) {
             playerStatistic.setName(player.getName());
         }
@@ -189,7 +187,9 @@ public class PlayerStatisticManager implements PlayerStatisticsManager {
         try {
             Main.getInstance().getLogger().info("Loading statistics from YAML-File ...");
 
-            YamlConfiguration config;
+            loader = YamlConfigurationLoader.builder()
+                    .file(ymlFile)
+                    .build();
 
             this.databaseFile = ymlFile;
 
@@ -197,14 +197,10 @@ public class PlayerStatisticManager implements PlayerStatisticsManager {
                 ymlFile.getParentFile().mkdirs();
                 ymlFile.createNewFile();
 
-                config = new YamlConfiguration();
-                config.createSection("data");
-                config.save(ymlFile);
+                this.fileDatabase = loader.createNode();
             } else {
-                config = YamlConfiguration.loadConfiguration(ymlFile);
+                this.fileDatabase = loader.load();
             }
-
-            this.fileDatabase = config;
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -243,7 +239,7 @@ public class PlayerStatisticManager implements PlayerStatisticsManager {
             return;
         }
 
-        if (Main.getConfigurator().config.getString("statistics.type").equalsIgnoreCase("database")) {
+        if (Main.getConfigurator().node("statistics", "type").getString("").equalsIgnoreCase("database")) {
             this.storeDatabaseStatistic(statistic);
         } else {
             this.storeYamlStatistic(statistic);
@@ -251,16 +247,17 @@ public class PlayerStatisticManager implements PlayerStatisticsManager {
     }
 
     private synchronized void storeYamlStatistic(PlayerStatistic statistic) {
-        this.fileDatabase.set("data." + statistic.getId().toString(), statistic.serialize());
+        var node = this.fileDatabase.node("data", statistic.getId().toString());
+        statistic.serializeTo(node);
         try {
-            this.fileDatabase.save(this.databaseFile);
+            this.loader.save(this.fileDatabase);
         } catch (Exception ex) {
             Main.getInstance().getLogger().warning("Couldn't store statistic data for player with uuid: " + statistic.getId().toString());
         }
     }
 
     public void unloadStatistic(OfflinePlayer player) {
-        if (Main.getConfigurator().config.getString("statistics.type").equalsIgnoreCase("database")) {
+        if (Main.getConfigurator().node("statistics", "type").getString("").equalsIgnoreCase("database")) {
             this.playerStatistic.remove(player.getUniqueId());
         }
     }

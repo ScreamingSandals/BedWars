@@ -3,6 +3,7 @@ package org.screamingsandals.bedwars.game;
 import com.onarandombox.MultiverseCore.api.Core;
 import io.papermc.lib.PaperLib;
 import lombok.Getter;
+import lombok.SneakyThrows;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -10,10 +11,6 @@ import org.bukkit.block.Sign;
 import org.bukkit.block.data.type.RespawnAnchor;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.*;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.inventory.InventoryType;
@@ -47,11 +44,11 @@ import org.screamingsandals.bedwars.boss.XPBar;
 import org.screamingsandals.bedwars.commands.AdminCommand;
 import org.screamingsandals.bedwars.commands.StatsCommand;
 import org.screamingsandals.bedwars.config.GameConfigurationContainer;
+import org.screamingsandals.bedwars.config.RecordSave;
 import org.screamingsandals.bedwars.inventories.TeamSelectorInventory;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.lib.nms.entity.EntityUtils;
 import org.screamingsandals.bedwars.lib.nms.holograms.Hologram;
-import org.screamingsandals.bedwars.lib.signmanager.SignBlock;
 import org.screamingsandals.bedwars.listener.Player116ListenerUtils;
 import org.screamingsandals.bedwars.region.FlatteningRegion;
 import org.screamingsandals.bedwars.region.LegacyRegion;
@@ -60,6 +57,9 @@ import org.screamingsandals.bedwars.statistics.PlayerStatistic;
 import org.screamingsandals.bedwars.utils.*;
 import org.screamingsandals.lib.material.MaterialHolder;
 import org.screamingsandals.lib.material.builder.ItemFactory;
+import org.spongepowered.configurate.ConfigurateException;
+import org.spongepowered.configurate.ConfigurationNode;
+import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
 import java.io.File;
 import java.io.IOException;
@@ -133,21 +133,25 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 return null;
             }
 
-            final FileConfiguration configMap = new YamlConfiguration();
+            final var loader = YamlConfigurationLoader.builder()
+                    .file(file)
+                    .build();
+
+            final ConfigurationNode configMap;
             try {
-                configMap.load(file);
-            } catch (IOException | InvalidConfigurationException e) {
+                 configMap = loader.load();
+            } catch (ConfigurateException e) {
                 e.printStackTrace();
                 return null;
             }
 
-            final Game game = new Game();
+            final var game = new Game();
             game.file = file;
-            game.name = configMap.getString("name");
-            game.pauseCountdown = configMap.getInt("pauseCountdown");
-            game.gameTime = configMap.getInt("gameTime");
+            game.name = configMap.node("name").getString();
+            game.pauseCountdown = configMap.node("pauseCountdown").getInt();
+            game.gameTime = configMap.node("gameTime").getInt();
 
-            String worldName = configMap.getString("world");
+            var worldName = Objects.requireNonNull(configMap.node("world").getString());
             game.world = Bukkit.getWorld(worldName);
 
             if (game.world == null) {
@@ -182,10 +186,10 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 game.world.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
             }
 
-            game.pos1 = MiscUtils.readLocationFromString(game.world, configMap.getString("pos1"));
-            game.pos2 = MiscUtils.readLocationFromString(game.world, configMap.getString("pos2"));
+            game.pos1 = MiscUtils.readLocationFromString(game.world, Objects.requireNonNull(configMap.node("pos1").getString()));
+            game.pos2 = MiscUtils.readLocationFromString(game.world, Objects.requireNonNull(configMap.node("pos2").getString()));
 
-            if (Main.getConfigurator().config.getBoolean("prevent-spawning-mobs", true)) {
+            if (Main.getConfigurator().node("prevent-spawning-mobs").getBoolean(true)) {
                 for (Entity e : game.world.getEntitiesByClass(Monster.class)) {
                     if (GameCreator.isInArea(e.getLocation(), game.pos1, game.pos2)) {
                         PaperLib.getChunkAtAsync(e.getLocation())
@@ -194,9 +198,9 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 }
             }
 
-            game.specSpawn = MiscUtils.readLocationFromString(game.world, configMap.getString("specSpawn"));
-            String spawnWorld = configMap.getString("lobbySpawnWorld");
-            World lobbySpawnWorld = Bukkit.getWorld(spawnWorld);
+            game.specSpawn = MiscUtils.readLocationFromString(game.world, Objects.requireNonNull(configMap.node("specSpawn").getString()));
+            var spawnWorld = configMap.node("lobbySpawnWorld").getString();
+            var lobbySpawnWorld = Bukkit.getWorld(Objects.requireNonNull(spawnWorld));
             if (lobbySpawnWorld == null) {
                 if (Bukkit.getPluginManager().isPluginEnabled("Multiverse-Core")) {
                     Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[B" + ChatColor.WHITE + "W] " + ChatColor.RED + "World " + spawnWorld
@@ -224,73 +228,69 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                     return null;
                 }
             }
-            game.lobbySpawn = MiscUtils.readLocationFromString(lobbySpawnWorld, configMap.getString("lobbySpawn"));
-            game.minPlayers = configMap.getInt("minPlayers", 2);
-            if (configMap.isSet("teams")) {
-                for (String teamN : configMap.getConfigurationSection("teams").getKeys(false)) {
-                    ConfigurationSection team = configMap.getConfigurationSection("teams").getConfigurationSection(teamN);
-                    Team t = new Team();
-                    t.newColor = team.getBoolean("isNewColor", false);
-                    t.color = TeamColor.valueOf(MiscUtils.convertColorToNewFormat(team.getString("color"), t));
-                    t.name = teamN;
-                    t.bed = MiscUtils.readLocationFromString(game.world, team.getString("bed"));
-                    t.maxPlayers = team.getInt("maxPlayers");
-                    t.spawn = MiscUtils.readLocationFromString(game.world, team.getString("spawn"));
-                    t.game = game;
+            game.lobbySpawn = MiscUtils.readLocationFromString(lobbySpawnWorld, Objects.requireNonNull(configMap.node("lobbySpawn").getString()));
+            game.minPlayers = configMap.node("minPlayers").getInt(2);
+            configMap.node("teams").childrenMap().forEach((teamN, team) -> {
+                var t = new Team();
+                t.color = TeamColor.valueOf(MiscUtils.convertColorToNewFormat(team.node("color").getString(), team.node("isNewColor").getBoolean()));
+                t.name = teamN.toString();
+                t.bed = MiscUtils.readLocationFromString(game.world, Objects.requireNonNull(team.node("bed").getString()));
+                t.maxPlayers = team.node("maxPlayers").getInt();
+                t.spawn = MiscUtils.readLocationFromString(game.world, Objects.requireNonNull(team.node("spawn").getString()));
+                t.game = game;
 
-                    t.newColor = true;
-                    game.teams.add(t);
+                game.teams.add(t);
+            });
+            configMap.node("spawners").childrenList().forEach(spawner ->
+                game.spawners.add(new ItemSpawner(
+                    MiscUtils.readLocationFromString(game.world, Objects.requireNonNull(spawner.node("location").getString())),
+                    Main.getSpawnerType((Objects.requireNonNull(spawner.node("type").getString())).toLowerCase()),
+                    spawner.node("customName").getString(),
+                    spawner.node("hologramEnabled").getBoolean(true),
+                    spawner.node("startLevel").getDouble(1),
+                    game.getTeamFromName(spawner.node("team").getString()),
+                    spawner.node("maxSpawnedResources").getInt(-1),
+                    spawner.node("floatingEnabled").getBoolean()
+                ))
+            );
+            configMap.node("stores").childrenList().forEach(store -> {
+                if (store.isMap()) {
+                    game.gameStore.add(new GameStore(
+                        MiscUtils.readLocationFromString(game.world, Objects.requireNonNull(store.node("loc").getString())),
+                        store.node("shop").getString(),
+                        store.node("parent").getBoolean(true),
+                        EntityType.valueOf(store.node("type").getString("VILLAGER").toUpperCase()),
+                        store.node("name").getString(""),
+                        !store.node("name").empty(),
+                        store.node("isBaby").getBoolean(),
+                        store.node("skin").getString()
+                    ));
+                } else {
+                    game.gameStore.add(new GameStore(
+                        MiscUtils.readLocationFromString(game.world, Objects.requireNonNull(store.getString())),
+                        null,
+                        true,
+                        EntityType.VILLAGER,
+                        "",
+                        false,
+                        false,
+                        null
+                    ));
                 }
-            }
-            if (configMap.isSet("spawners")) {
-                List<Map<String, Object>> spawners = (List<Map<String, Object>>) configMap.getList("spawners");
-                for (Map<String, Object> spawner : spawners) {
-                    ItemSpawner sa = new ItemSpawner(
-                            MiscUtils.readLocationFromString(game.world, (String) spawner.get("location")),
-                            Main.getSpawnerType(((String) spawner.get("type")).toLowerCase()),
-                            (String) spawner.get("customName"), ((Boolean) spawner.getOrDefault("hologramEnabled", true)),
-                            ((Number) spawner.getOrDefault("startLevel", 1)).doubleValue(),
-                            game.getTeamFromName((String) spawner.get("team")),
-                            (int) spawner.getOrDefault("maxSpawnedResources", -1),
-                            (Boolean) spawner.getOrDefault("floatingEnabled", false));
-                    game.spawners.add(sa);
-                }
-            }
-            if (configMap.isSet("stores")) {
-                List<Object> stores = (List<Object>) configMap.getList("stores");
-                for (Object store : stores) {
-                    if (store instanceof Map) {
-                        Map<String, String> map = (Map<String, String>) store;
-                        game.gameStore.add(new GameStore(MiscUtils.readLocationFromString(game.world, map.get("loc")),
-                                map.get("shop"), "true".equals(map.getOrDefault("parent", "true")),
-                                EntityType.valueOf(map.getOrDefault("type", "VILLAGER").toUpperCase()),
-                                map.getOrDefault("name", ""), map.containsKey("name"), "true".equals(map.getOrDefault("isBaby", "false")), map.get("skin")));
-                    } else if (store instanceof String) {
-                        game.gameStore.add(new GameStore(MiscUtils.readLocationFromString(game.world, (String) store), null,
-                                true, EntityType.VILLAGER, "", false, false, null));
-                    }
-                }
-            }
+            });
 
-            ConfigurationSection constants = configMap.getConfigurationSection("constant");
-            if (constants != null) {
-                Set<String> keys = constants.getKeys(false);
+            game.configurationContainer.applyNode(configMap.node("constant"));
 
-                for (String key : keys) {
-                    game.configurationContainer.update(key, constants.get(key));
-                }
-            }
+            game.arenaTime = ArenaTime.valueOf(configMap.node("arenaTime").getString(ArenaTime.WORLD.name()).toUpperCase());
+            game.arenaWeather = loadWeather(configMap.node("arenaWeather").getString("default").toUpperCase());
 
-            game.arenaTime = ArenaTime.valueOf(configMap.getString("arenaTime", ArenaTime.WORLD.name()).toUpperCase());
-            game.arenaWeather = loadWeather(configMap.getString("arenaWeather", "default").toUpperCase());
-
-            game.postGameWaiting = configMap.getInt("postGameWaiting", 3);
-            game.customPrefix = configMap.getString("customPrefix", null);
+            game.postGameWaiting = configMap.node("postGameWaiting").getInt(3);
+            game.customPrefix = configMap.node("customPrefix").getString();
 
             try {
                 game.lobbyBossBarColor = loadBossBarColor(
-                        configMap.getString("lobbyBossBarColor", "default").toUpperCase());
-                game.gameBossBarColor = loadBossBarColor(configMap.getString("gameBossBarColor", "default").toUpperCase());
+                        configMap.node("lobbyBossBarColor").getString("default").toUpperCase());
+                game.gameBossBarColor = loadBossBarColor(configMap.node("gameBossBarColor").getString("default").toUpperCase());
             } catch (Throwable t) {
                 // We're using 1.8
             }
@@ -341,19 +341,19 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     }
 
     public static String bedExistString() {
-        return Main.getConfigurator().config.getString("scoreboard.bedExists");
+        return Main.getConfigurator().node("scoreboard", "bedExists").getString();
     }
 
     public static String bedLostString() {
-        return Main.getConfigurator().config.getString("scoreboard.bedLost");
+        return Main.getConfigurator().node("scoreboard", "bedLost").getString();
     }
 
     public static String anchorEmptyString() {
-        return Main.getConfigurator().config.getString("scoreboard.anchorEmpty");
+        return Main.getConfigurator().node("scoreboard", "anchorEmpty").getString();
     }
 
     public static boolean isBungeeEnabled() {
-        return Main.getConfigurator().config.getBoolean("bungee.enabled");
+        return Main.getConfigurator().node("bungee", "enabled").getBoolean();
     }
 
     public String getName() {
@@ -469,6 +469,10 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
     @Override
     public org.screamingsandals.bedwars.api.Team getTeamFromName(String name) {
+        if (name == null) {
+            return null;
+        }
+
         Team team = null;
         for (Team t : getTeams()) {
             if (t.getName().equalsIgnoreCase(name)) {
@@ -719,7 +723,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                                 .replace("%broker%", colored_broker));
                         SpawnEffects.spawnEffect(this, player.player, "game-effects.beddestroy");
                         Sounds.playSound(player.player, player.player.getLocation(),
-                                Main.getConfigurator().config.getString("sounds.on_bed_destroyed"),
+                                Main.getConfigurator().node("sounds", "bed_destroyed").getString(),
                                 Sounds.ENTITY_ENDER_DRAGON_GROWL, 1, 1);
                     }
 
@@ -741,11 +745,11 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                         if (Main.isPlayerStatisticsEnabled()) {
                             PlayerStatistic statistic = Main.getPlayerStatisticsManager().getStatistic(broker);
                             statistic.addDestroyedBeds(1);
-                            statistic.addScore(Main.getConfigurator().config.getInt("statistics.scores.bed-destroy", 25));
+                            statistic.addScore(Main.getConfigurator().node("statistics", "scores", "bed-destroy").getInt(25));
                         }
 
                         dispatchRewardCommands("player-destroy-bed", broker,
-                                Main.getConfigurator().config.getInt("statistics.scores.bed-destroy", 25));
+                                Main.getConfigurator().node("statistics", "scores", "bed-destroy").getInt(25));
                     }
                 }
             }
@@ -790,7 +794,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             players.forEach(Main.getTabManager()::modifyForPlayer);
         }
 
-        if (Main.getConfigurator().config.getBoolean("tab.enable") && Main.getConfigurator().config.getBoolean("tab.hide-foreign-players")) {
+        if (Main.getConfigurator().node("tab", "enabled").getBoolean() && Main.getConfigurator().node("tab", "hide-foreign-players").getBoolean()) {
             Bukkit.getOnlinePlayers().stream().filter(p -> Main.getInstance().getGameOfPlayer(p) != this).forEach(gamePlayer::hidePlayer);
             players.forEach(p -> p.showPlayer(gamePlayer.player));
         }
@@ -811,7 +815,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 }
 
                 if (configurationContainer.getOrDefault(ConfigurationContainer.COMPASS, Boolean.class, false)) {
-                    int compassPosition = Main.getConfigurator().config.getInt("hotbar.selector", 0);
+                    int compassPosition = Main.getConfigurator().node("hotbar", "selector").getInt(0);
                     if (compassPosition >= 0 && compassPosition <= 8) {
                         ItemStack compass = Main.getConfigurator().readDefinedItem("jointeam", "COMPASS").as(ItemStack.class);
                         ItemMeta metaCompass = compass.getItemMeta();
@@ -821,7 +825,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                     }
                 }
 
-                int leavePosition = Main.getConfigurator().config.getInt("hotbar.leave", 8);
+                int leavePosition = Main.getConfigurator().node("hotbar", "leave").getInt(8);
                 if (leavePosition >= 0 && leavePosition <= 8) {
                     ItemStack leave = Main.getConfigurator().readDefinedItem("leavegame", "SLIME_BALL").as(ItemStack.class);
                     ItemMeta leaveMeta = leave.getItemMeta();
@@ -832,7 +836,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
                 if (gamePlayer.player.hasPermission("bw.vip.startitem")
                         || gamePlayer.player.hasPermission("misat11.bw.vip.startitem")) {
-                    int vipPosition = Main.getConfigurator().config.getInt("hotbar.start", 1);
+                    int vipPosition = Main.getConfigurator().node("hotbar", "start").getInt(1);
                     if (vipPosition >= 0 && vipPosition <= 8) {
                         ItemStack startGame = Main.getConfigurator().readDefinedItem("startgame", "DIAMOND").as(ItemStack.class);
                         ItemMeta startGameMeta = startGame.getItemMeta();
@@ -852,7 +856,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         }
 
         if (status == GameStatus.RUNNING || status == GameStatus.GAME_END_CELEBRATING) {
-            if (Main.getConfigurator().config.getBoolean("tab.enable") && Main.getConfigurator().config.getBoolean("tab.hide-spectators")) {
+            if (Main.getConfigurator().node("tab", "enabled").getBoolean() && Main.getConfigurator().node("tab", "hide-spectators").getBoolean()) {
                 players.stream().filter(p -> p.isSpectator && !isPlayerInAnyTeam(p.player)).forEach(p -> gamePlayer.hidePlayer(p.player));
             }
 
@@ -910,7 +914,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             players.forEach(Main.getTabManager()::modifyForPlayer);
         }
 
-        if (Main.getConfigurator().config.getBoolean("tab.enable") && Main.getConfigurator().config.getBoolean("tab.hide-foreign-players")) {
+        if (Main.getConfigurator().node("tab", "enabled").getBoolean() && Main.getConfigurator().node("tab", "hide-foreign-players").getBoolean()) {
             players.forEach(p -> p.hidePlayer(gamePlayer.player));
         }
 
@@ -918,12 +922,12 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         createdHolograms.forEach(holo -> holo.removeViewer(gamePlayer.player));
         gamePlayer.player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
 
-        if (Main.getConfigurator().config.getBoolean("mainlobby.enabled")
-                && !Main.getConfigurator().config.getBoolean("bungee.enabled")) {
+        if (Main.getConfigurator().node("mainlobby", "enabled").getBoolean()
+                && !Main.getConfigurator().node("bungee", "enabled").getBoolean()) {
             try {
                 Location mainLobbyLocation = MiscUtils.readLocationFromString(
-                        Bukkit.getWorld(Main.getConfigurator().config.getString("mainlobby.world")),
-                        Main.getConfigurator().config.getString("mainlobby.location"));
+                        Bukkit.getWorld(Main.getConfigurator().node("mainlobby", "world").getString()),
+                        Main.getConfigurator().node("mainlobby", "location").getString());
                 gamePlayer.teleport(mainLobbyLocation);
                 gamePlayer.mainLobbyUsed = true;
             } catch (Throwable t) {
@@ -993,6 +997,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         }
     }
 
+    @SneakyThrows
     public void saveToConfig() {
         File dir = new File(Main.getInstance().getDataFolder(), "arenas");
         if (!dir.exists())
@@ -1009,79 +1014,70 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 e.printStackTrace();
             }
         }
-        FileConfiguration configMap = new YamlConfiguration();
-        configMap.set("name", name);
-        configMap.set("pauseCountdown", pauseCountdown);
-        configMap.set("gameTime", gameTime);
-        configMap.set("world", world.getName());
-        configMap.set("pos1", MiscUtils.setLocationToString(pos1));
-        configMap.set("pos2", MiscUtils.setLocationToString(pos2));
-        configMap.set("specSpawn", MiscUtils.setLocationToString(specSpawn));
-        configMap.set("lobbySpawn", MiscUtils.setLocationToString(lobbySpawn));
-        configMap.set("lobbySpawnWorld", lobbySpawn.getWorld().getName());
-        configMap.set("minPlayers", minPlayers);
-        configMap.set("postGameWaiting", postGameWaiting);
-        configMap.set("customPrefix", customPrefix);
+        var loader = YamlConfigurationLoader.builder()
+                .file(file)
+                .build();
+
+        var configMap = loader.createNode();
+        configMap.node("name").set(name);
+        configMap.node("pauseCountdown").set(pauseCountdown);
+        configMap.node("gameTime").set(gameTime);
+        configMap.node("world").set(world.getName());
+        configMap.node("pos1").set(MiscUtils.setLocationToString(pos1));
+        configMap.node("pos2").set(MiscUtils.setLocationToString(pos2));
+        configMap.node("specSpawn").set(MiscUtils.setLocationToString(specSpawn));
+        configMap.node("lobbySpawn").set(MiscUtils.setLocationToString(lobbySpawn));
+        configMap.node("lobbySpawnWorld").set(lobbySpawn.getWorld().getName());
+        configMap.node("minPlayers").set(minPlayers);
+        configMap.node("postGameWaiting").set(postGameWaiting);
+        configMap.node("customPrefix").set(customPrefix);
         if (!teams.isEmpty()) {
-            for (Team t : teams) {
-                configMap.set("teams." + t.name + ".isNewColor", t.isNewColor());
-                configMap.set("teams." + t.name + ".color", t.color.name());
-                configMap.set("teams." + t.name + ".maxPlayers", t.maxPlayers);
-                configMap.set("teams." + t.name + ".bed", MiscUtils.setLocationToString(t.bed));
-                configMap.set("teams." + t.name + ".spawn", MiscUtils.setLocationToString(t.spawn));
+            for (var t : teams) {
+                var teamNode = configMap.node("teams", t.name);
+                teamNode.node("isNewColor").set(true);
+                teamNode.node("color").set(t.color.name());
+                teamNode.node("maxPlayers").set(t.maxPlayers);
+                teamNode.node("bed").set(MiscUtils.setLocationToString(t.bed));
+                teamNode.node("spawn").set(MiscUtils.setLocationToString(t.spawn));
             }
         }
-        List<Map<String, Object>> nS = new ArrayList<>();
-        for (ItemSpawner spawner : spawners) {
-            Map<String, Object> spawnerMap = new HashMap<>();
-            spawnerMap.put("location", MiscUtils.setLocationToString(spawner.loc));
-            spawnerMap.put("type", spawner.type.getConfigKey());
-            spawnerMap.put("customName", spawner.customName);
-            spawnerMap.put("startLevel", spawner.startLevel);
-            spawnerMap.put("hologramEnabled", spawner.hologramEnabled);
-            if (spawner.getTeam().isPresent()) {
-                spawnerMap.put("team", spawner.getTeam().get().getName());
-            } else {
-                spawnerMap.put("team", null);
-            }
-            spawnerMap.put("maxSpawnedResources", spawner.maxSpawnedResources);
-            nS.add(spawnerMap);
+        for (var spawner : spawners) {
+            var spawnerNode = configMap.node("spawners").appendListNode();
+            spawnerNode.node("location").set(MiscUtils.setLocationToString(spawner.loc));
+            spawnerNode.node("type").set(spawner.type.getConfigKey());
+            spawnerNode.node("customName").set(spawner.customName);
+            spawnerNode.node("startLevel").set(spawner.startLevel);
+            spawnerNode.node("hologramEnabled").set(spawner.hologramEnabled);
+            spawnerNode.node("team").set(spawner.getTeam().map(org.screamingsandals.bedwars.api.Team::getName).orElse(null));
+            spawnerNode.node("maxSpawnedResources").set(spawner.maxSpawnedResources);
         }
-        configMap.set("spawners", nS);
-        if (!gameStore.isEmpty()) {
-            List<Map<String, String>> nL = new ArrayList<>();
-            for (GameStore store : gameStore) {
-                Map<String, String> map = new HashMap<>();
-                map.put("loc", MiscUtils.setLocationToString(store.getStoreLocation()));
-                map.put("shop", store.getShopFile());
-                map.put("parent", store.getUseParent() ? "true" : "false");
-                map.put("type", store.getEntityType().name());
-                if (store.isShopCustomName()) {
-                    map.put("name", store.getShopCustomName());
-                }
-                map.put("isBaby", store.isBaby() ? "true" : "false");
-                map.put("skin", store.getSkinName());
-                nL.add(map);
+        for (var store : gameStore) {
+            var storeNode = configMap.node("stores").appendListNode();
+            storeNode.node("loc").set(MiscUtils.setLocationToString(store.getStoreLocation()));
+            storeNode.node("shop").set(store.getShopFile());
+            storeNode.node("parent").set(store.getUseParent() ? "true" : "false");
+            storeNode.node("type").set(store.getEntityType().name());
+            if (store.isShopCustomName()) {
+                storeNode.node("name").set(store.getShopCustomName());
             }
-            configMap.set("stores", nL);
+            storeNode.node("isBaby").set(store.isBaby() ? "true" : "false");
+            storeNode.node("skin").set(store.getSkinName());
         }
 
-        configurationContainer.getSaved().forEach((key, value) -> {
-            configMap.set("constant." + key, value);
-        });
+        configMap.node("constant").from(configurationContainer.getSaved());
 
-        configMap.set("arenaTime", arenaTime.name());
-        configMap.set("arenaWeather", arenaWeather == null ? "default" : arenaWeather.name());
+        configMap.node("arenaTime").set(arenaTime.name());
+        configMap.node("arenaWeather").set(arenaWeather == null ? "default" : arenaWeather.name());
 
         try {
-            configMap.set("lobbyBossBarColor", lobbyBossBarColor == null ? "default" : lobbyBossBarColor.name());
-            configMap.set("gameBossBarColor", gameBossBarColor == null ? "default" : gameBossBarColor.name());
+            configMap.node("lobbyBossBarColor").set(lobbyBossBarColor == null ? "default" : lobbyBossBarColor.name());
+            configMap.node("gameBossBarColor").set(gameBossBarColor == null ? "default" : gameBossBarColor.name());
         } catch (Throwable t) {
             // We're using 1.8
         }
 
         try {
-            configMap.save(file);
+            loader.save(configMap);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -1102,7 +1098,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 }
             }.runTask(Main.getInstance());
 
-            if (Main.getConfigurator().config.getBoolean("bossbar.use-xp-bar", false)) {
+            if (Main.getConfigurator().node("bossbar", "use-xp-bar").getBoolean(false)) {
                 statusbar = new XPBar();
             } else {
                 statusbar = BossBarSelector.getBossBar();
@@ -1341,7 +1337,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                         .replaceAll("%maxplayers%", Integer.toString(current.teamInfo.maxPlayers)));
 
         if (configurationContainer.getOrDefault(ConfigurationContainer.ADD_WOOL_TO_INVENTORY_ON_JOIN, Boolean.class, false)) {
-            int colorPosition = Main.getConfigurator().config.getInt("hotbar.color", 1);
+            int colorPosition = Main.getConfigurator().node("hotbar", "color").getInt(1);
             if (colorPosition >= 0 && colorPosition <= 8) {
                 ItemStack stack = teamForJoin.color.getWool();
                 ItemMeta stackMeta = stack.getItemMeta();
@@ -1400,11 +1396,11 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             player.setGameMode(GameMode.SPECTATOR);
 
             if (leaveItem) {
-                if (Main.getConfigurator().config.getBoolean("tab.enable") && Main.getConfigurator().config.getBoolean("tab.hide-spectators")) {
+                if (Main.getConfigurator().node("tab", "enabled").getBoolean() && Main.getConfigurator().node("tab", "hide-spectators").getBoolean()) {
                     players.forEach(p -> p.hidePlayer(player));
                 }
 
-                int leavePosition = Main.getConfigurator().config.getInt("hotbar.leave", 8);
+                int leavePosition = Main.getConfigurator().node("hotbar", "leave").getInt(8);
                 if (leavePosition >= 0 && leavePosition <= 8) {
                     ItemStack leave = Main.getConfigurator().readDefinedItem("leavegame", "SLIME_BALL").as(ItemStack.class);
                     ItemMeta leaveMeta = leave.getItemMeta();
@@ -1435,22 +1431,28 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 player.setFlying(false);
                 player.setGameMode(GameMode.SURVIVAL);
 
-                if (Main.getConfigurator().config.getBoolean("tab.enable") && Main.getConfigurator().config.getBoolean("tab.hide-spectators")) {
+                if (Main.getConfigurator().node("tab", "enabled").getBoolean() && Main.getConfigurator().node("tab", "hide-spectators").getBoolean()) {
                     players.forEach(p -> p.showPlayer(player));
                 }
 
-                if (Main.getConfigurator().config.getBoolean("respawn.protection-enabled", true)) {
+                if (Main.getConfigurator().node("respawn", "protection-enabled").getBoolean(true)) {
                     RespawnProtection respawnProtection = addProtectedPlayer(player);
                     respawnProtection.runProtection();
                 }
 
                 if (configurationContainer.getOrDefault(ConfigurationContainer.ENABLE_PLAYER_RESPAWN_ITEMS, Boolean.class, false)) {
-                    List<ItemStack> givedGameStartItems = ItemFactory.buildAll((List<Object>) Main.getConfigurator().config
-                            .getList("gived-player-respawn-items")).stream().map(item -> item.as(ItemStack.class)).collect(Collectors.toList());
-                    if (!givedGameStartItems.isEmpty()) {
-                        MiscUtils.giveItemsToPlayer(givedGameStartItems, player, currentTeam.getColor());
+                    var playerRespawnItems = Main.getConfigurator().node("player-respawn-items", "items")
+                            .childrenList()
+                            .stream()
+                            .map(ItemFactory::build)
+                            .filter(Optional::isPresent)
+                            .map(Optional::get)
+                            .map(item -> item.as(ItemStack.class))
+                            .collect(Collectors.toList());
+                    if (!playerRespawnItems.isEmpty()) {
+                        MiscUtils.giveItemsToPlayer(playerRespawnItems, player, currentTeam.getColor());
                     } else {
-                        Debug.warn("You have wrongly configured gived-player-respawn-items!", true);
+                        Debug.warn("You have wrongly configured player-respawn-items.items!", true);
                     }
                 }
                 MiscUtils.giveItemsToPlayer(gamePlayer.getPermaItemsPurchased(), player, currentTeam.getColor());
@@ -1503,16 +1505,16 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 if (bossbar instanceof BossBar19) {
                     BossBar19 bossbar19 = (BossBar19) bossbar;
                     bossbar19.setColor(lobbyBossBarColor != null ? lobbyBossBarColor
-                            : BarColor.valueOf(Main.getConfigurator().config.getString("bossbar.lobby.color")));
+                            : BarColor.valueOf(Main.getConfigurator().node("bossbar", "lobby", "color").getString()));
                     bossbar19
-                            .setStyle(BarStyle.valueOf(Main.getConfigurator().config.getString("bossbar.lobby.style")));
+                            .setStyle(BarStyle.valueOf(Main.getConfigurator().node("bossbar", "lobby", "style").getString()));
                 }
             }
             if (teamSelectorInventory == null) {
                 teamSelectorInventory = new TeamSelectorInventory(Main.getInstance(), this);
             }
 
-            if (experimentalBoard == null && Main.getConfigurator().config.getBoolean("experimental.new-scoreboard-system.enabled", false)) {
+            if (experimentalBoard == null && Main.getConfigurator().node("experimental", "new-scoreboard-system", "enabled").getBoolean(false)) {
                 experimentalBoard = new ScreamingScoreboard(this);
             }
             updateSigns();
@@ -1553,7 +1555,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                         for (GamePlayer player : players) {
                             Title.send(player.player, ChatColor.YELLOW + Integer.toString(countdown), "");
                             Sounds.playSound(player.player, player.player.getLocation(),
-                                    Main.getConfigurator().config.getString("sounds.on_countdown"), Sounds.UI_BUTTON_CLICK,
+                                    Main.getConfigurator().node("sounds", "countdown").getString(), Sounds.UI_BUTTON_CLICK,
                                     1, 1);
                         }
                     }
@@ -1625,9 +1627,9 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                         if (bossbar instanceof BossBar19) {
                             BossBar19 bossbar19 = (BossBar19) bossbar;
                             bossbar19.setColor(gameBossBarColor != null ? gameBossBarColor
-                                    : BarColor.valueOf(Main.getConfigurator().config.getString("bossbar.game.color")));
+                                    : BarColor.valueOf(Main.getConfigurator().node("bossbar", "game", "color").getString()));
                             bossbar19.setStyle(
-                                    BarStyle.valueOf(Main.getConfigurator().config.getString("bossbar.game.style")));
+                                    BarStyle.valueOf(Main.getConfigurator().node("bossbar", "game", "style").getString()));
                         }
                     }
                     if (teamSelectorInventory != null)
@@ -1671,13 +1673,13 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                                 Location loc;
 
                                 if (spawner.getFloatingEnabled() &&
-                                        Main.getConfigurator().config.getBoolean("floating-generator.enabled", true)) {
+                                        Main.getConfigurator().node("floating-generator", "enabled").getBoolean(true)) {
                                     loc = spawner.loc.clone().add(0,
-                                            Main.getConfigurator().config.getDouble("floating-generator.holo-height", 2.0), 0);
+                                            Main.getConfigurator().node("floating-generator", "holo-height").getDouble(2.0), 0);
                                     spawner.spawnFloatingStand();
                                 } else {
                                     loc = spawner.loc.clone().add(0,
-                                            Main.getConfigurator().config.getDouble("spawner-holo-height", 0.25), 0);
+                                            Main.getConfigurator().node("spawner-holo-height").getDouble(0.25), 0);
                                 }
 
                                 Hologram holo = Main.getHologramManager().spawnHologram(getConnectedPlayers(), loc,
@@ -1712,19 +1714,25 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                             player.teleport(team.teamInfo.spawn, () -> {
                                 player.player.setGameMode(GameMode.SURVIVAL);
                                 if (configurationContainer.getOrDefault(ConfigurationContainer.ENABLE_GAME_START_ITEMS, Boolean.class, false)) {
-                                    List<ItemStack> givedGameStartItems = ItemFactory.buildAll((List<Object>) Main.getConfigurator().config
-                                            .getList("gived-game-start-items")).stream().map(item -> item.as(ItemStack.class)).collect(Collectors.toList());
+                                    List<ItemStack> givedGameStartItems = Main.getConfigurator().node("game-start-items", "items")
+                                            .childrenList()
+                                            .stream()
+                                            .map(ItemFactory::build)
+                                            .filter(Optional::isPresent)
+                                            .map(Optional::get)
+                                            .map(item -> item.as(ItemStack.class))
+                                            .collect(Collectors.toList());
                                     if (!givedGameStartItems.isEmpty()) {
                                         MiscUtils.giveItemsToPlayer(givedGameStartItems, player.player, team.getColor());
                                     } else {
-                                        Debug.warn("You have wrongly configured gived-player-start-items!", true);
+                                        Debug.warn("You have wrongly configured game-start-items.items!", true);
                                     }
                                 }
                                 SpawnEffects.spawnEffect(this, player.player, "game-effects.start");
                             });
                         }
                         Sounds.playSound(player.player, player.player.getLocation(),
-                                Main.getConfigurator().config.getString("sounds.on_game_start"),
+                                Main.getConfigurator().node("sounds", "game_start").getString(),
                                 Sounds.ENTITY_PLAYER_LEVELUP, 1, 1);
                     }
 
@@ -1766,7 +1774,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                                         new BukkitRunnable() {
                                             public void run() {
                                                 anchor.setCharges(anchor.getCharges() + 1);
-                                                Sounds.playSound(team.getTargetBlock(), Main.getConfigurator().config.getString("target-block.respawn-anchor.sound.charge"), Sounds.BLOCK_RESPAWN_ANCHOR_CHARGE, 1, 1);
+                                                Sounds.playSound(team.getTargetBlock(), Main.getConfigurator().node("target-block", "respawn-anchor", "sound", "charge").getString(), Sounds.BLOCK_RESPAWN_ANCHOR_CHARGE, 1, 1);
                                                 block.setBlockData(anchor);
                                                 if (anchor.getCharges() >= anchor.getMaximumCharges()) {
                                                     updateScoreboard();
@@ -1819,7 +1827,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                         }
                     }
 
-                    if (Main.getVersionNumber() >= 115 && !Main.getConfigurator().config.getBoolean("allow-fake-death")) {
+                    if (Main.getVersionNumber() >= 115 && !Main.getConfigurator().node("allow-fake-death").getBoolean()) {
                         world.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
                     }
                     preparing = false;
@@ -1865,24 +1873,24 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                                             PlayerStatistic statistic = Main.getPlayerStatisticsManager()
                                                     .getStatistic(player.player);
                                             statistic.addWins(1);
-                                            statistic.addScore(Main.getConfigurator().config.getInt("statistics.scores.win", 50));
+                                            statistic.addScore(Main.getConfigurator().node("statistics", "scores", "win").getInt(50));
 
                                             if (madeRecord) {
-                                                statistic.addScore(Main.getConfigurator().config.getInt("statistics.scores.record", 100));
+                                                statistic.addScore(Main.getConfigurator().node("statistics", "scores", "record").getInt(100));
                                             }
 
                                             if (Main.isHologramsEnabled()) {
                                                 Main.getHologramInteraction().updateHolograms(player.player);
                                             }
 
-                                            if (Main.getConfigurator().config
-                                                    .getBoolean("statistics.show-on-game-end")) {
+                                            if (Main.getConfigurator().node("statistics", "show-on-game-end")
+                                                    .getBoolean()) {
                                                 StatsCommand.sendStats(player.player, Main.getPlayerStatisticsManager().getStatistic(player.player));
                                             }
 
                                         }
 
-                                        if (Main.getConfigurator().config.getBoolean("rewards.enabled")) {
+                                        if (Main.getConfigurator().node("rewards", "enabled").getBoolean()) {
                                             final Player pl = player.player;
                                             new BukkitRunnable() {
 
@@ -2022,7 +2030,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 player.player.sendMessage(message);
                 player.changeGame(null);
 
-                if (Main.getConfigurator().config.getBoolean("rewards.enabled")) {
+                if (Main.getConfigurator().node("rewards", "enabled").getBoolean()) {
                     final Player pl = player.player;
                     new BukkitRunnable() {
 
@@ -2055,13 +2063,13 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 new BukkitRunnable() {
                     @Override
                     public void run() {
-                        if (Main.getConfigurator().config.getBoolean("bungee.serverRestart")) {
+                        if (Main.getConfigurator().node("bungee", "serverRestart").getBoolean()) {
                             BedWarsServerRestartEvent serverRestartEvent = new BedWarsServerRestartEvent();
                             Main.getInstance().getServer().getPluginManager().callEvent(serverRestartEvent);
 
                             Main.getInstance().getServer()
                                     .dispatchCommand(Main.getInstance().getServer().getConsoleSender(), "restart");
-                        } else if (Main.getConfigurator().config.getBoolean("bungee.serverStop")) {
+                        } else if (Main.getConfigurator().node("bungee", "serverStop").getBoolean()) {
                             Bukkit.shutdown();
                         }
                     }
@@ -2166,21 +2174,15 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     }
 
     public boolean processRecord(CurrentTeam t, int wonTime) {
-        int time = Main.getConfigurator().recordConfig.getInt("record." + this.getName() + ".time", Integer.MAX_VALUE);
-        if (time > wonTime) {
-            Main.getConfigurator().recordConfig.set("record." + this.getName() + ".time", wonTime);
-            Main.getConfigurator().recordConfig.set("record." + this.getName() + ".team",
-                    t.teamInfo.color.chatColor + t.teamInfo.name);
-            List<String> winners = new ArrayList<String>();
-            for (GamePlayer p : t.players) {
-                winners.add(p.player.getName());
-            }
-            Main.getConfigurator().recordConfig.set("record." + this.getName() + ".winners", winners);
-            try {
-                Main.getConfigurator().recordConfig.save(Main.getConfigurator().recordFile);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        var record = Main.getRecordSave().getRecord(this.getName());
+        if (record.map(RecordSave.Record::getTime).orElse(Integer.MAX_VALUE) > wonTime) {
+            Main.getRecordSave().saveRecord(RecordSave.Record.builder()
+                    .game(this.getName())
+                    .time(wonTime)
+                    .team(t.teamInfo.color.chatColor + t.teamInfo.name)
+                    .winners(t.players.stream().map(gamePlayer -> gamePlayer.player.getName()).collect(Collectors.toList()))
+                    .build()
+            );
             return true;
         }
         return false;
@@ -2233,7 +2235,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             return;
         }
 
-        if (Main.getConfigurator().config.getBoolean("experimental.new-scoreboard-system.enabled", false)) {
+        if (Main.getConfigurator().node("experimental", "new-scoreboard-system", "enabled").getBoolean(false)) {
             return;
         }
 
@@ -2264,7 +2266,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             return "";
         }
 
-        return Main.getConfigurator().config.getString("scoreboard.teamTitle")
+        return Main.getConfigurator().node("scoreboard", "teamTitle").getString()
                 .replace("%color%", team.teamInfo.color.chatColor.toString()).replace("%team%", team.teamInfo.name)
                 .replace("%bed%", destroy ? bedLostString() : (empty ? anchorEmptyString() : bedExistString()));
     }
@@ -2274,7 +2276,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             return;
         }
 
-        if (Main.getConfigurator().config.getBoolean("experimental.new-scoreboard-system.enabled", false)) {
+        if (Main.getConfigurator().node("experimental", "new-scoreboard-system", "enabled").getBoolean(false)) {
             return;
         }
 
@@ -2291,7 +2293,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     }
 
     public String formatScoreboardTitle() {
-        return Objects.requireNonNull(Main.getConfigurator().config.getString("scoreboard.title"))
+        return Objects.requireNonNull(Main.getConfigurator().node("scoreboard", "title").getString())
                 .replace("%game%", this.name)
                 .replace("%time%", this.getFormattedTimeLeft());
     }
@@ -2316,77 +2318,82 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     }
 
     public void updateSigns() {
-        final FileConfiguration config = Main.getConfigurator().config;
-        final List<SignBlock> gameSigns = Main.getSignManager().getSignsForName(this.name);
+        final var config = Main.getConfigurator();
+        final var gameSigns = Main.getSignManager().getSignsForName(this.name);
 
         if (gameSigns.isEmpty()) {
             return;
         }
 
-        String statusLine = "";
-        String playersLine = "";
+        var statusLine = "";
+        var playersLine = "";
         MaterialHolder blockBehindMaterial = null;
         switch (status) {
             case DISABLED:
                 statusLine = i18nonly("sign_status_disabled");
                 playersLine = i18nonly("sign_status_disabled_players");
-                blockBehindMaterial = MiscUtils.getMaterialFromString(config.getString("sign.block-behind.game-disabled"), "RED_STAINED_GLASS");
+                blockBehindMaterial = MiscUtils.getMaterialFromString(config.node("sign", "block-behind", "game-disabled").getString(), "RED_STAINED_GLASS");
                 break;
             case REBUILDING:
                 statusLine = i18nonly("sign_status_rebuilding");
                 playersLine = i18nonly("sign_status_rebuilding_players");
-                blockBehindMaterial = MiscUtils.getMaterialFromString(config.getString("sign.block-behind.rebuilding"), "BROWN_STAINED_GLASS");
+                blockBehindMaterial = MiscUtils.getMaterialFromString(config.node("sign", "block-behind", "rebuilding").getString(), "BROWN_STAINED_GLASS");
                 break;
             case RUNNING:
             case GAME_END_CELEBRATING:
                 statusLine = i18nonly("sign_status_running");
                 playersLine = i18nonly("sign_status_running_players");
-                blockBehindMaterial = MiscUtils.getMaterialFromString(config.getString("sign.block-behind.in-game"), "GREEN_STAINED_GLASS");
+                blockBehindMaterial = MiscUtils.getMaterialFromString(config.node("sign", "block-behind", "in-game").getString(), "GREEN_STAINED_GLASS");
                 break;
             case WAITING:
                 statusLine = i18nonly("sign_status_waiting");
                 playersLine = i18nonly("sign_status_waiting_players");
-                blockBehindMaterial = MiscUtils.getMaterialFromString(config.getString("sign.block-behind.waiting"), "ORANGE_STAINED_GLASS");
+                blockBehindMaterial = MiscUtils.getMaterialFromString(config.node("sign", "block-behind", "waiting").getString(), "ORANGE_STAINED_GLASS");
                 break;
         }
 
         playersLine = playersLine.replace("%players%", Integer.toString(players.size()));
         playersLine = playersLine.replace("%maxplayers%", Integer.toString(calculatedMaxPlayers));
 
-        final List<String> texts = new ArrayList<>(Main.getConfigurator().config.getStringList("sign.lines"));
+        final var finalStatusLine = statusLine;
+        final var finalPlayersLine = playersLine;
+        final var texts = Main.getConfigurator().node("sign", "lines").childrenList().stream()
+                .map(ConfigurationNode::getString)
+                .map(s -> Objects.requireNonNullElse(s, "")
+                        .replaceAll("%arena%", this.getName())
+                        .replaceAll("%status%", finalStatusLine)
+                        .replaceAll("%players%", finalPlayersLine))
+                .collect(Collectors.toList());
 
-        for (int i = 0; i < texts.size(); i++) {
-            String text = texts.get(i);
-            texts.set(i, text.replaceAll("%arena%", this.getName()).replaceAll("%status%", statusLine)
-                    .replaceAll("%players%", playersLine));
-        }
-
-        for (SignBlock signBlock : gameSigns) {
-            if (signBlock.getLocation().getChunk().isLoaded()) {
-                BlockState blockState = signBlock.getLocation().getBlock().getState();
-                if (blockState instanceof Sign) {
-                    Sign sign = (Sign) blockState;
-                    for (int i = 0; i < texts.size() && i < 4; i++) {
-                        sign.setLine(i, texts.get(i));
+        final var finalBlockBehindMaterial = blockBehindMaterial;
+        for (var signBlock : gameSigns) {
+            signBlock.getLocation().asOptional(Location.class).ifPresent(location -> {
+                if (location.getChunk().isLoaded()) {
+                    BlockState blockState = location.getBlock().getState();
+                    if (blockState instanceof Sign) {
+                        Sign sign = (Sign) blockState;
+                        for (int i = 0; i < texts.size() && i < 4; i++) {
+                            sign.setLine(i, texts.get(i));
+                        }
+                        sign.update();
                     }
-                    sign.update();
-                }
 
-                if (config.getBoolean("sign.block-behind.enabled", false)) {
-                    final Optional<Block> optionalBlock = signBlock.getBlockBehindSign();
-                    if (optionalBlock.isPresent()) {
-                        final Block glassBlock = optionalBlock.get();
-                        glassBlock.setType(blockBehindMaterial.as(Material.class));
-                        if (Main.isLegacy()) {
-                            try {
-                                // The method is no longer in API, but in legacy versions exists
-                                Block.class.getMethod("setData", byte.class).invoke(glassBlock, (byte) blockBehindMaterial.getDurability());
-                            } catch (Exception e) {
+                    if (config.node("sign", "block-behind", "enabled").getBoolean(false)) {
+                        final Optional<Block> optionalBlock = signBlock.getBlockBehindSign();
+                        if (optionalBlock.isPresent()) {
+                            final Block glassBlock = optionalBlock.get();
+                            glassBlock.setType(finalBlockBehindMaterial.as(Material.class));
+                            if (Main.isLegacy()) {
+                                try {
+                                    // The method is no longer in API, but in legacy versions exists
+                                    Block.class.getMethod("setData", byte.class).invoke(glassBlock, (byte) finalBlockBehindMaterial.getDurability());
+                                } catch (Exception e) {
+                                }
                             }
                         }
                     }
                 }
-            }
+            });
         }
     }
 
@@ -2395,7 +2402,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             return;
         }
 
-        if (Main.getConfigurator().config.getBoolean("experimental.new-scoreboard-system.enabled", false)) {
+        if (Main.getConfigurator().node("experimental", "new-scoreboard-system", "enabled").getBoolean(false)) {
             return;
         }
 
@@ -2404,10 +2411,14 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             obj = gameScoreboard.registerNewObjective("lobby", "dummy");
             obj.setDisplaySlot(DisplaySlot.SIDEBAR);
             obj.setDisplayName(this.formatLobbyScoreboardString(
-                    Main.getConfigurator().config.getString("lobby-scoreboard.title", "§eBEDWARS")));
+                    Main.getConfigurator().node("lobby-scoreboard", "title").getString("§eBEDWARS")));
         }
 
-        List<String> rows = Main.getConfigurator().config.getStringList("lobby-scoreboard.content");
+        var rows = Main.getConfigurator().node("lobby-scoreboard", "content").childrenList()
+                .stream()
+                .map(ConfigurationNode::getString)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
         if (rows.isEmpty()) {
             return;
         }
@@ -2834,17 +2845,20 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     }
 
     public void dispatchRewardCommands(String type, Player player, int score) {
-        if (!Main.getConfigurator().config.getBoolean("rewards.enabled")) {
+        if (!Main.getConfigurator().node("rewards", "enabled").getBoolean()) {
             return;
         }
 
-        List<String> list = Main.getConfigurator().config.getStringList("rewards." + type);
-        for (String command : list) {
-            command = command.replaceAll("\\{player}", player.getName());
-            command = command.replaceAll("\\{score}", Integer.toString(score));
-            command = command.startsWith("/") ? command.substring(1) : command;
-            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
-        }
+        Main.getConfigurator().node("rewards", type).childrenList()
+                .stream()
+                .map(ConfigurationNode::getString)
+                .filter(Objects::nonNull)
+                .map(s -> s
+                        .replaceAll("\\{player}", player.getName())
+                        .replaceAll("\\{score}", Integer.toString(score))
+                )
+                .map(s -> s.startsWith("/") ? s.substring(1) : s)
+                .forEach(s -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), s));
     }
 
     @Override
@@ -2865,7 +2879,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
     @Override
     public boolean getBungeeEnabled() {
-        return Main.getConfigurator().config.getBoolean("bungee.enabled");
+        return Main.getConfigurator().node("bungee", "enabled").getBoolean();
     }
 
     @Override
@@ -2879,7 +2893,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     }
 
     public RespawnProtection addProtectedPlayer(Player player) {
-        int time = Main.getConfigurator().config.getInt("respawn.protection-time", 10);
+        int time = Main.getConfigurator().node("respawn", "protection-time").getInt(10);
 
         RespawnProtection respawnProtection = new RespawnProtection(this, player, time);
         respawnProtectionMap.put(player, respawnProtection);

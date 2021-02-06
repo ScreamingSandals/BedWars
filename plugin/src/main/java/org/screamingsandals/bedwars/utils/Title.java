@@ -5,13 +5,13 @@ import org.bukkit.entity.Player;
 
 public class Title {
     public static void send(Player player, String title, String subtitle) {
-        if (!Main.getConfigurator().config.getBoolean("title.enabled")) {
+        if (!Main.getConfigurator().node("title", "enabled").getBoolean()) {
             return;
         }
 
-        int fadeIn = Main.getConfigurator().config.getInt("title.fadeIn");
-        int stay = Main.getConfigurator().config.getInt("title.stay");
-        int fadeOut = Main.getConfigurator().config.getInt("title.fadeOut");
+        int fadeIn = Main.getConfigurator().node("title", "fadeIn").getInt();
+        int stay = Main.getConfigurator().node("title", "stay").getInt();
+        int fadeOut = Main.getConfigurator().node("title", "fadeOut").getInt();
 
         org.screamingsandals.bedwars.lib.nms.title.Title.sendTitle(player, title, subtitle, fadeIn, stay, fadeOut);
     }

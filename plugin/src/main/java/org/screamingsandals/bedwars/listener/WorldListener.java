@@ -93,8 +93,8 @@ public class WorldListener implements Listener {
             return;
         }
 
-        final String explosionExceptionTypeName = Main.getConfigurator().config.getString("destroy-placed-blocks-by-explosion-except", null);
-        final boolean destroyPlacedBlocksByExplosion = Main.getConfigurator().config.getBoolean("destroy-placed-blocks-by-explosion", true);
+        final String explosionExceptionTypeName = Main.getConfigurator().node("destroy-placed-blocks-by-explosion-except").getString();
+        final boolean destroyPlacedBlocksByExplosion = Main.getConfigurator().node("destroy-placed-blocks-by-explosion").getBoolean(true);
 
         for (String gameName : Main.getGameNames()) {
             Game game = Main.getGame(gameName);
@@ -157,7 +157,7 @@ public class WorldListener implements Listener {
                     } else /*if (game.getStatus() == GameStatus.WAITING) {*/
                         if (game.getLobbyWorld() == event.getLocation().getWorld()) {
                             if (event.getLocation().distanceSquared(game.getLobbySpawn()) <= Math
-                                    .pow(Main.getConfigurator().config.getInt("prevent-lobby-spawn-mobs-in-radius"), 2)) {
+                                    .pow(Main.getConfigurator().node("prevent-lobby-spawn-mobs-in-radius").getInt(), 2)) {
                                 event.setCancelled(true);
                                 return;
                             }

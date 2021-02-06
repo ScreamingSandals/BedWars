@@ -12,21 +12,23 @@ import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.statistics.PlayerStatistic;
 import org.screamingsandals.bedwars.commands.BaseCommand;
 import org.screamingsandals.bedwars.lib.nms.holograms.Hologram;
 import org.screamingsandals.bedwars.lib.nms.holograms.TouchHandler;
+import org.screamingsandals.bedwars.utils.PreparedLocation;
+import org.spongepowered.configurate.ConfigurateException;
+import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
 public class StatisticsHolograms implements TouchHandler {
 
-    private ArrayList<Location> hologramLocations = null;
+    private ArrayList<PreparedLocation> hologramLocations = null;
     private Map<Player, List<Hologram>> holograms = null;
 
 	public void addHologramLocation(Location eyeLocation) {
-        this.hologramLocations.add(eyeLocation.subtract(0, 3, 0));
+        this.hologramLocations.add(new PreparedLocation(eyeLocation.subtract(0, 3, 0)));
         this.updateHologramDatabase();
 	}
 
@@ -45,11 +47,18 @@ public class StatisticsHolograms implements TouchHandler {
         this.hologramLocations = new ArrayList<>();
 
         File file = new File(Main.getInstance().getDataFolder(), "holodb.yml");
+
+        var loader = YamlConfigurationLoader.builder()
+                .file(file)
+                .build();
         if (file.exists()) {
-            YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
-            List<Location> locations = (List<Location>) config.get("locations");
-            assert locations != null;
-            this.hologramLocations.addAll(locations);
+            try {
+                var config = loader.load();
+                var locations = config.node("locations").getList(PreparedLocation.class);
+                this.hologramLocations.addAll(locations);
+            } catch (ConfigurateException e) {
+                e.printStackTrace();
+            }
         }
 
         if (this.hologramLocations.size() == 0) {
@@ -70,26 +79,32 @@ public class StatisticsHolograms implements TouchHandler {
 	}
 
 	public void updateHolograms(Player player) {
-        Main.getInstance().getServer().getScheduler().runTask(Main.getInstance(), () -> {
-            for (Location holoLocation : StatisticsHolograms.this.hologramLocations) {
-            	StatisticsHolograms.this.updatePlayerHologram(player, holoLocation);
-            }
-        });
+        Main.getInstance().getServer().getScheduler().runTask(Main.getInstance(), () ->
+            this.hologramLocations.forEach(holoLocation ->
+                    holoLocation.asOptional(Location.class).ifPresent(location ->
+                        this.updatePlayerHologram(player, location)
+                    )
+            )
+        );
 	}
 
 	public void updateHolograms(Player player, long delay) {
-        Main.getInstance().getServer().getScheduler().runTaskLater(Main.getInstance(), () -> {
-        	StatisticsHolograms.this.updateHolograms(player);
-        }, delay);
+        Main.getInstance().getServer().getScheduler().runTaskLater(
+                Main.getInstance(),
+                () -> this.updateHolograms(player),
+                delay
+        );
 	}
 
 	public void updateHolograms() {
         for (final Player player : Bukkit.getServer().getOnlinePlayers()) {
-            Main.getInstance().getServer().getScheduler().runTask(Main.getInstance(), () -> {
-                for (Location holoLocation : StatisticsHolograms.this.hologramLocations) {
-                	StatisticsHolograms.this.updatePlayerHologram(player, holoLocation);
-                }
-            });
+            Main.getInstance().getServer().getScheduler().runTask(Main.getInstance(), () ->
+                this.hologramLocations.forEach(holoLocation ->
+                        holoLocation.asOptional(Location.class).ifPresent(location ->
+                                this.updatePlayerHologram(player, location)
+                        )
+                )
+            );
         }
 	}
 
@@ -128,7 +143,7 @@ public class StatisticsHolograms implements TouchHandler {
         final Hologram holo = Main.getHologramManager().spawnHologramTouchable(player, holoLocation);
         holo.addHandler(this);
 
-        String headline = Main.getConfigurator().config.getString("holograms.headline", "Your §eBEDWARS§f stats");
+        String headline = Main.getConfigurator().node("holograms", "headline").getString("Your §eBEDWARS§f stats");
         if (!headline.trim().isEmpty()) {
             holo.addLine(headline);
         }
@@ -141,28 +156,28 @@ public class StatisticsHolograms implements TouchHandler {
         try {
             // update hologram-database file
             File file = new File(Main.getInstance().getDataFolder(), "holodb.yml");
-            YamlConfiguration config = new YamlConfiguration();
+            var loader = YamlConfigurationLoader.builder()
+                    .file(file)
+                    .build();
 
-            if (!file.exists()) {
-                file.createNewFile();
+            var node = loader.createNode();
+
+            for (var location : hologramLocations) {
+                node.node("locations").appendListNode().set(location);
             }
-
-            config.set("locations", hologramLocations);
-            config.save(file);
+            loader.save(node);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
 
-    private Location getHologramLocationByLocation(Location holoLocation) {
-        for (Location loc : this.hologramLocations) {
-            if (loc.getX() == holoLocation.getX() && loc.getY() == holoLocation.getY()
-                    && loc.getZ() == holoLocation.getZ()) {
-                return loc;
-            }
-        }
-
-        return null;
+    private PreparedLocation getHologramLocationByLocation(Location holoLocation) {
+        return hologramLocations.stream()
+                .filter(loc -> loc.getX() == holoLocation.getX()
+                                && loc.getY() == holoLocation.getY()
+                                && loc.getZ() == holoLocation.getZ()
+                )
+                .findFirst().orElse(null);
     }
 
 	@Override
@@ -186,7 +201,7 @@ public class StatisticsHolograms implements TouchHandler {
                 }
             }
 
-            Location holoLocation = getHologramLocationByLocation(holo.getLocation());
+            var holoLocation = getHologramLocationByLocation(holo.getLocation());
             if (holoLocation != null) {
                 hologramLocations.remove(holoLocation);
                 updateHologramDatabase();

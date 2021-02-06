@@ -2,7 +2,6 @@ package org.screamingsandals.bedwars.commands;
 
 import com.google.gson.*;
 import lombok.Data;
-import lombok.SneakyThrows;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -12,8 +11,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.Team;
 import org.screamingsandals.bedwars.api.game.GameStore;
@@ -21,16 +18,19 @@ import org.screamingsandals.bedwars.game.Game;
 import org.screamingsandals.bedwars.inventories.ShopInventory;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.premium.PremiumBedwars;
+import org.spongepowered.configurate.ConfigurateException;
+import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -149,35 +149,46 @@ public class DumpCommand extends BaseCommand {
                                         ).collect(Collectors.toList())))
                         )
                 ));
-                var config = new YamlConfiguration();
                 try {
-                    config.load(new File(Main.getInstance().getDataFolder(), "config.yml"));
+                    var loader = YamlConfigurationLoader.builder()
+                            .path(Main.getInstance().getDataFolder().toPath().resolve("config.yml"))
+                            .build();
 
-                    config.set("database.host", "SECRET");
-                    config.set("database.port", 3306);
-                    config.set("database.db", "SECRET");
-                    config.set("database.user", "SECRET");
-                    config.set("database.password", "SECRET");
-                    config.set("database.table-prefix", "bw_");
-                    config.set("database.useSSL", false);
+                    var writer = new StringWriter();
+
+                    var configToString = YamlConfigurationLoader.builder()
+                            .sink(() -> new BufferedWriter(writer))
+                            .build();
+
+                    var config = loader.load();
+
+                    config.node("database", "host").set("SECRET");
+                    config.node("database", "port").set(3306);
+                    config.node("database", "db").set("SECRET");
+                    config.node("database", "user").set("SECRET");
+                    config.node("database", "password").set("SECRET");
+                    config.node("database", "table-prefix").set("bw_");
+                    config.node("database", "useSSL").set(false);
+
+                    configToString.save(config);
 
                     files.add(Map.of(
                             "name", "config.yml",
                             "content", Map.of(
                                     "format", "text",
                                     "highlight_language", "yaml",
-                                    "value", config.saveToString()
+                                    "value", writer.toString()
                             )
                     ));
-                } catch (IOException | InvalidConfigurationException e) {
+                } catch (ConfigurateException e) {
                     e.printStackTrace();
                 }
                 var mainShop = Map.of(
-                        "name", Main.getConfigurator().config.getBoolean("turnOnExperimentalGroovyShop", false) ? "shop.groovy" : "shop.yml",
+                        "name", Main.getConfigurator().node("turnOnExperimentalGroovyShop").getBoolean() ? "shop.groovy" : "shop.yml",
                         "content", Map.of(
                                 "format", "text",
-                                "highlight_language", Main.getConfigurator().config.getBoolean("turnOnExperimentalGroovyShop", false) ? "groovy" : "yaml",
-                                "value", String.join("\n", Files.readAllLines(new File(Main.getInstance().getDataFolder(), Main.getConfigurator().config.getBoolean("turnOnExperimentalGroovyShop", false) ? "shop.groovy" : "shop.yml").toPath(), StandardCharsets.UTF_8))
+                                "highlight_language", Main.getConfigurator().node("turnOnExperimentalGroovyShop").getBoolean() ? "groovy" : "yaml",
+                                "value", String.join("\n", Files.readAllLines(new File(Main.getInstance().getDataFolder(), Main.getConfigurator().node("turnOnExperimentalGroovyShop").getBoolean() ? "shop.groovy" : "shop.yml").toPath(), StandardCharsets.UTF_8))
                         )
                 );
                 files.add(mainShop);

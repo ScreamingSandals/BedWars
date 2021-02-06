@@ -24,20 +24,20 @@ public class BungeeMotdListener implements Listener {
 
         switch (game.getStatus()) {
             case DISABLED:
-                string = Main.getConfigurator().config.getString("bungee.motd.disabled");
+                string = Main.getConfigurator().node("bungee", "motd", "disabled").getString();
                 break;
             case GAME_END_CELEBRATING:
             case RUNNING:
-                string = Main.getConfigurator().config.getString("bungee.motd.running");
+                string = Main.getConfigurator().node("bungee", "motd", "running").getString();
                 break;
             case REBUILDING:
-                string = Main.getConfigurator().config.getString("bungee.motd.rebuilding");
+                string = Main.getConfigurator().node("bungee", "motd", "rebuilding").getString();
                 break;
             case WAITING:
                 if (game.countPlayers() >= game.getMaxPlayers()) {
-                    string = Main.getConfigurator().config.getString("bungee.motd.waiting_full");
+                    string = Main.getConfigurator().node("bungee", "motd", "waiting_full").getString();
                 } else {
-                    string = Main.getConfigurator().config.getString("bungee.motd.waiting");
+                    string = Main.getConfigurator().node("bungee", "motd", "waiting").getString();
                 }
                 break;
         }

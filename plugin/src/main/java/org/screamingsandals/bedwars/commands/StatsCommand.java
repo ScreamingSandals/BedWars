@@ -14,7 +14,7 @@ import static org.screamingsandals.bedwars.lib.lang.I18n.i18n;
 public class StatsCommand extends BaseCommand {
 
     public StatsCommand() {
-        super("stats", STATS_PERMISSION, true, Main.getConfigurator().config.getBoolean("default-permissions.stats"));
+        super("stats", STATS_PERMISSION, true, Main.getConfigurator().node("default-permissions", "stats").getBoolean());
     }
 
     @Override

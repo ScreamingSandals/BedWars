@@ -43,7 +43,7 @@ public class TeamChestListener implements Listener {
 
         String unhidden = APIUtils.unhashFromInvisibleStringStartsWith(event.getItemInHand(), TEAM_CHEST_PREFIX);
 
-        if (unhidden != null || Main.getConfigurator().config.getBoolean("specials.teamchest.turn-all-enderchests-to-teamchests")) {
+        if (unhidden != null || Main.getConfigurator().node("specials", "teamchest", "turn-all-enderchests-to-teamchests").getBoolean()) {
             team.addTeamChest(block);
             String message = i18nc("team_chest_placed", event.getGame().getCustomPrefix());
             for (Player pl : team.getConnectedPlayers()) {

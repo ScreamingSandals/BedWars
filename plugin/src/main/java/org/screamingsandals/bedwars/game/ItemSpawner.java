@@ -179,8 +179,7 @@ public class ItemSpawner implements org.screamingsandals.bedwars.api.game.ItemSp
     public void spawnFloatingStand(){
         if (floatingEnabled) {
             floatingGenStand = (ArmorStand) loc.getWorld().spawnEntity(loc.clone().add(0,
-                    Main.getConfigurator().config.getDouble("floating-generator.generator-height",
-                            0.25), 0), EntityType.ARMOR_STAND
+                    Main.getConfigurator().node("floating-generator", "generator-height").getDouble(0.25), 0), EntityType.ARMOR_STAND
             );
 
             ItemStack helmetStack;

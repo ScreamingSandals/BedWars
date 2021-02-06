@@ -12,7 +12,7 @@ import static org.screamingsandals.bedwars.lib.lang.I18n.i18n;
 public class AutojoinCommand extends BaseCommand {
 
     public AutojoinCommand() {
-        super("autojoin", AUTOJOIN_PERMISSION, false, Main.getConfigurator().config.getBoolean("default-permissions.autojoin"));
+        super("autojoin", AUTOJOIN_PERMISSION, false, Main.getConfigurator().node("default-permissions", "autojoin").getBoolean());
     }
 
     @Override

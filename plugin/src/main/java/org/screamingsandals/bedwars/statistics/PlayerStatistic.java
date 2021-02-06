@@ -1,13 +1,15 @@
 package org.screamingsandals.bedwars.statistics;
 
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.Main;
+import org.spongepowered.configurate.ConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 public class PlayerStatistic implements ConfigurationSerializable, org.screamingsandals.bedwars.api.statistics.PlayerStatistic {
@@ -54,6 +56,17 @@ public class PlayerStatistic implements ConfigurationSerializable, org.screaming
         if (deserialize.containsKey("uuid")) {
             this.uuid = UUID.fromString((String) deserialize.get("uuid"));
         }
+    }
+
+    public PlayerStatistic(ConfigurationNode configurationNode) {
+        this.deaths = configurationNode.node("deaths").getInt();
+        this.destroyedBeds = configurationNode.node("destroyedBeds").getInt();
+        this.kills = configurationNode.node("kills").getInt();
+        this.loses = configurationNode.node("loses").getInt();
+        this.score = configurationNode.node("score").getInt();
+        this.wins = configurationNode.node("wins").getInt();
+        this.name = configurationNode.node("name").getString();
+        this.uuid = UUID.fromString(Objects.requireNonNull(configurationNode.node("uuid").getString()));
     }
 
     public int getGames() {
@@ -122,6 +135,20 @@ public class PlayerStatistic implements ConfigurationSerializable, org.screaming
         playerStatistic.put("wins", this.wins);
         playerStatistic.put("name", this.name);
         return playerStatistic;
+    }
+
+    public void serializeTo(ConfigurationNode playerStatistic) {
+        try {
+            playerStatistic.node("deaths").set(this.deaths);
+            playerStatistic.node("destroyedBeds").set(this.destroyedBeds);
+            playerStatistic.node("kills").set(this.kills);
+            playerStatistic.node("loses").set(this.loses);
+            playerStatistic.node("score").set(this.score);
+            playerStatistic.node("wins").set(this.wins);
+            playerStatistic.node("name").set(this.name);
+        } catch (SerializationException e) {
+            e.printStackTrace();
+        }
     }
 
     public int getDeaths() {

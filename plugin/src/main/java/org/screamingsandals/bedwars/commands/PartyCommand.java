@@ -85,7 +85,7 @@ public class PartyCommand extends BaseCommand {
                             game.joinToGame(partyMember);
                         }
                     });
-                    if (Main.getConfigurator().config.getBoolean("party.notify-when-warped", true)) {
+                    if (Main.getConfigurator().node("party", "notify-when-warped").getBoolean(true)) {
                         player.sendMessage(i18n("party_command_warped", true));
                     }
                 }

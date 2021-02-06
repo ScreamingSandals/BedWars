@@ -12,7 +12,7 @@ import static org.screamingsandals.bedwars.lib.lang.I18n.*;
 public class LeaderboardCommand extends BaseCommand {
 
     public LeaderboardCommand() {
-        super("leaderboard", LEADERBOARD_PERMISSION, true, Main.getConfigurator().config.getBoolean("default-permissions.leaderboard"));
+        super("leaderboard", LEADERBOARD_PERMISSION, true, Main.getConfigurator().node("default-permissions", "leaderboard").getBoolean());
     }
 
     @Override
@@ -20,7 +20,7 @@ public class LeaderboardCommand extends BaseCommand {
         if (!Main.isPlayerStatisticsEnabled()) {
             mpr("statistics_is_disabled").send(sender);
         } else {
-            int max = Main.getConfigurator().config.getInt("holograms.leaderboard.size");
+            int max = Main.getConfigurator().node("holograms", "leaderboard", "size").getInt();
             mpr("leaderboard_header").replace("number", max).send(sender);
 
             List<LeaderboardEntry> statistics = Main.getPlayerStatisticsManager().getLeaderboard(max);

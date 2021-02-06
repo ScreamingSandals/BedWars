@@ -3,13 +3,15 @@ package org.screamingsandals.bedwars.holograms;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.statistics.LeaderboardEntry;
 import org.screamingsandals.bedwars.commands.BaseCommand;
 import org.screamingsandals.bedwars.lib.nms.holograms.Hologram;
 import org.screamingsandals.bedwars.lib.nms.holograms.TouchHandler;
+import org.screamingsandals.bedwars.utils.PreparedLocation;
+import org.spongepowered.configurate.ConfigurateException;
+import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
 import java.io.File;
 import java.util.*;
@@ -19,12 +21,12 @@ import static org.screamingsandals.bedwars.lib.lang.I.i18n;
 import static org.screamingsandals.bedwars.lib.lang.I.i18nonly;
 
 public class LeaderboardHolograms implements TouchHandler {
-    private ArrayList<Location> hologramLocations;
+    private ArrayList<PreparedLocation> hologramLocations;
     private Map<Location, Hologram> holograms;
     private List<LeaderboardEntry> entries;
 
     public void addHologramLocation(Location eyeLocation) {
-        this.hologramLocations.add(eyeLocation.subtract(0, 3, 0));
+        this.hologramLocations.add(new PreparedLocation(eyeLocation.subtract(0, 3, 0)));
         this.updateHologramDatabase();
 
         if (entries == null) {
@@ -39,7 +41,7 @@ public class LeaderboardHolograms implements TouchHandler {
             return;
         }
 
-        this.entries = Main.getPlayerStatisticsManager().getLeaderboard(Main.getConfigurator().config.getInt("holograms.leaderboard.size"));
+        this.entries = Main.getPlayerStatisticsManager().getLeaderboard(Main.getConfigurator().node("holograms", "leaderboard", "size").getInt());
         updateHolograms();
     }
 
@@ -58,10 +60,16 @@ public class LeaderboardHolograms implements TouchHandler {
 
         File file = new File(Main.getInstance().getDataFolder(), "holodb_leaderboard.yml");
         if (file.exists()) {
-            YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
-            List<Location> locations = (List<Location>) config.get("locations");
-            assert locations != null;
-            this.hologramLocations.addAll(locations);
+            var loader = YamlConfigurationLoader.builder()
+                    .file(file)
+                    .build();
+            try {
+                var config = loader.load();
+                var locations = config.node("locations").getList(PreparedLocation.class);
+                this.hologramLocations.addAll(locations);
+            } catch (ConfigurateException e) {
+                e.printStackTrace();
+            }
         }
 
         if (this.hologramLocations.size() == 0) {
@@ -74,14 +82,16 @@ public class LeaderboardHolograms implements TouchHandler {
     private void updateHologramDatabase() {
         try {
             File file = new File(Main.getInstance().getDataFolder(), "holodb_leaderboard.yml");
-            YamlConfiguration config = new YamlConfiguration();
+            var loader = YamlConfigurationLoader.builder()
+                    .file(file)
+                    .build();
 
-            if (!file.exists()) {
-                file.createNewFile();
+            var node = loader.createNode();
+
+            for (var location : hologramLocations) {
+                node.node("locations").appendListNode().set(location);
             }
-
-            config.set("locations", hologramLocations);
-            config.save(file);
+            loader.save(node);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -105,30 +115,36 @@ public class LeaderboardHolograms implements TouchHandler {
     }
 
     private void updateHolograms() {
-        hologramLocations.forEach(location -> {
-            if (!holograms.containsKey(location)) {
-                holograms.put(location, Main.getHologramManager().spawnHologramTouchable(location));
-                holograms.get(location).addHandler(this);
-            }
-            updateHologram(holograms.get(location));
-        });
+        hologramLocations.forEach(location ->
+            location.asOptional(Location.class).ifPresent(bukkitLocation -> {
+                if (!holograms.containsKey(bukkitLocation)) {
+                    holograms.put(bukkitLocation, Main.getHologramManager().spawnHologramTouchable(bukkitLocation));
+                    holograms.get(bukkitLocation).addHandler(this);
+                }
+                updateHologram(holograms.get(bukkitLocation));
+            })
+        );
         Bukkit.getOnlinePlayers().forEach(this::addViewer);
     }
 
     private void updateHologram(final Hologram holo) {
         List<String> lines = new ArrayList<>();
 
-        lines.add(ChatColor.translateAlternateColorCodes('&', Main.getConfigurator().config.getString("holograms.leaderboard.headline")));
+        lines.add(ChatColor.translateAlternateColorCodes('&', Main.getConfigurator().node("holograms", "leaderboard", "headline").getString("")));
 
-        String line = ChatColor.translateAlternateColorCodes('&', Main.getConfigurator().config.getString("holograms.leaderboard.format"));
+        String line = ChatColor.translateAlternateColorCodes('&', Main.getConfigurator().node("holograms", "leaderboard", "format").getString(""));
 
         if (entries == null || entries.isEmpty()) {
             lines.add(i18nonly("leaderboard_no_scores"));
         } else {
             AtomicInteger l = new AtomicInteger(1);
-            entries.forEach(leaderboardEntry -> {
-                lines.add(line.replace("%name%", leaderboardEntry.getPlayer().getName() != null ? leaderboardEntry.getPlayer().getName() : leaderboardEntry.getPlayer().getUniqueId().toString()).replace("%score%", Integer.toString(leaderboardEntry.getTotalScore())).replace("%order%", Integer.toString(l.getAndIncrement())));
-            });
+            entries.forEach(leaderboardEntry ->
+                lines.add(line
+                        .replace("%name%", leaderboardEntry.getPlayer().getName() != null ? leaderboardEntry.getPlayer().getName() : leaderboardEntry.getPlayer().getUniqueId().toString())
+                        .replace("%score%", Integer.toString(leaderboardEntry.getTotalScore()))
+                        .replace("%order%", Integer.toString(l.getAndIncrement()))
+                )
+            );
         }
 
         for (int i = 0; i < lines.size(); i++) {
@@ -145,14 +161,16 @@ public class LeaderboardHolograms implements TouchHandler {
         player.removeMetadata("bw-remove-holo", Main.getInstance());
         Main.getInstance().getServer().getScheduler().runTask(Main.getInstance(), () -> {
             hologram.destroy();
-            new ArrayList<>(hologramLocations).forEach((location) -> {
-                if (hologram.getLocation().getX() == location.getX() && hologram.getLocation().getY() == location.getY()
-                        && hologram.getLocation().getZ() == location.getZ()) {
-                    hologramLocations.remove(location);
-                    holograms.remove(location);
-                    updateHologramDatabase();
-                }
-            });
+            List.copyOf(hologramLocations).forEach(location ->
+                location.asOptional(Location.class).ifPresent(bukkitLocation -> {
+                    if (hologram.getLocation().getX() == bukkitLocation.getX() && hologram.getLocation().getY() == bukkitLocation.getY()
+                            && hologram.getLocation().getZ() == bukkitLocation.getZ()) {
+                        hologramLocations.remove(location);
+                        holograms.remove(bukkitLocation);
+                        updateHologramDatabase();
+                    }
+                })
+            );
             player.sendMessage(i18n("holo_removed"));
         });
     }

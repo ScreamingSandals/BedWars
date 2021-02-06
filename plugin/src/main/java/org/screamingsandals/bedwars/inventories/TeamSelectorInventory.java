@@ -1,6 +1,6 @@
 package org.screamingsandals.bedwars.inventories;
 
-import org.bukkit.Bukkit;
+import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
@@ -15,6 +15,7 @@ import org.screamingsandals.bedwars.game.CurrentTeam;
 import org.screamingsandals.bedwars.game.Game;
 import org.screamingsandals.bedwars.game.Team;
 import org.screamingsandals.lib.player.PlayerMapper;
+import org.screamingsandals.lib.utils.AdventureHelper;
 import org.screamingsandals.simpleinventories.SimpleInventoriesCore;
 import org.screamingsandals.simpleinventories.inventory.GenericItemInfo;
 import org.screamingsandals.simpleinventories.inventory.InventorySet;
@@ -26,6 +27,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.screamingsandals.bedwars.lib.lang.I18n.i18nonly;
 
@@ -110,7 +112,7 @@ public class TeamSelectorInventory implements Listener {
         PlayerMapper.wrapPlayer(player).openInventory(inventorySet);
     }
 
-    private List<String> formatLore(Team team, Game game) {
+    private List<Component> formatLore(Team team, Game game) {
         var loreList = new ArrayList<String>();
         var playersInTeam = game.getPlayersInTeam(team);
         var playersInTeamCount = playersInTeam.size();
@@ -128,7 +130,7 @@ public class TeamSelectorInventory implements Listener {
             );
         }
 
-        return loreList;
+        return loreList.stream().map(AdventureHelper::toComponent).collect(Collectors.toList());
     }
 
     @EventHandler
@@ -166,10 +168,10 @@ public class TeamSelectorInventory implements Listener {
         var item = itemInfo.getItem();
 
         item.setDisplayName(
-                i18nonly("team_select_item")
+                AdventureHelper.toComponent(i18nonly("team_select_item")
                         .replace("%teamName%", team.color.chatColor + team.getName())
                         .replace("%inTeam%", String.valueOf(playersInTeamCount))
-                        .replace("%maxInTeam%", String.valueOf(team.maxPlayers))
+                        .replace("%maxInTeam%", String.valueOf(team.maxPlayers)))
         );
 
         item.getLore().clear();

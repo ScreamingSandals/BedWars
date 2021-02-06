@@ -5,6 +5,7 @@ import org.screamingsandals.bedwars.api.config.Configuration;
 
 @AllArgsConstructor
 public class GameConfiguration<T> implements Configuration<T> {
+    private final Class<T> type;
     private final GameConfigurationContainer configurationContainer;
     private final String key;
     private final T implicitValue;
@@ -12,7 +13,7 @@ public class GameConfiguration<T> implements Configuration<T> {
     @SuppressWarnings("unchecked")
     @Override
     public T get() {
-        return !isSet() ? implicitValue : (T) configurationContainer.getSaved(key);
+        return !isSet() ? implicitValue : configurationContainer.getSaved(key, type);
     }
 
     @Override

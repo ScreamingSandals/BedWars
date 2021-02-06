@@ -68,7 +68,7 @@ public class MiscUtils {
         new BukkitRunnable() {
             @Override
             public void run() {
-                if (Main.isSpigot() && !Main.isLegacy() && Main.getConfigurator().config.getBoolean("specials.action-bar-messages")) {
+                if (Main.isSpigot() && !Main.isLegacy() && Main.getConfigurator().node("specials", "action-bar-messages").getBoolean()) {
                     player.spigot().sendMessage(ChatMessageType.ACTION_BAR,
                             TextComponent.fromLegacyText(message));
                 } else {
@@ -82,7 +82,7 @@ public class MiscUtils {
         try {
             return event.getIntProperty(name);
         } catch (NullPointerException e) {
-            return Main.getConfigurator().config.getInt(fallback);
+            return Main.getConfigurator().node((Object[]) fallback.split("\\.")).getInt();
         }
     }
 
@@ -90,7 +90,7 @@ public class MiscUtils {
         try {
             return event.getDoubleProperty(name);
         } catch (NullPointerException e) {
-            return Main.getConfigurator().config.getDouble(fallback);
+            return Main.getConfigurator().node((Object[]) fallback.split("\\.")).getDouble();
         }
     }
 
@@ -98,7 +98,7 @@ public class MiscUtils {
         try {
             return event.getBooleanProperty(name);
         } catch (NullPointerException e) {
-            return Main.getConfigurator().config.getBoolean(fallback);
+            return Main.getConfigurator().node((Object[]) fallback.split("\\.")).getBoolean();
         }
     }
 
@@ -106,7 +106,7 @@ public class MiscUtils {
         try {
             return event.getStringProperty(name);
         } catch (NullPointerException e) {
-            return Main.getConfigurator().config.getString(fallback);
+            return Main.getConfigurator().node((Object[]) fallback.split("\\.")).getString();
         }
     }
 
@@ -114,7 +114,7 @@ public class MiscUtils {
         try {
             return event.getStringProperty(name);
         } catch (NullPointerException e) {
-            return Main.getConfigurator().config.getString(fallback, Main.isLegacy() ? "SANDSTONE" : "CUT_SANDSTONE");
+            return Main.getConfigurator().node((Object[]) fallback.split("\\.")).getString(Main.isLegacy() ? "SANDSTONE" : "CUT_SANDSTONE");
         }
     }
 
@@ -197,10 +197,10 @@ public class MiscUtils {
                 + location.getPitch();
     }
 
-    public static String convertColorToNewFormat(String oldColor, Team team) {
+    public static String convertColorToNewFormat(String oldColor, boolean isNewColor) {
         String newColor = oldColor;
 
-        if (team.isNewColor()) {
+        if (isNewColor) {
             return oldColor;
         }
 

@@ -3,9 +3,11 @@ package org.screamingsandals.bedwars.tab;
 import org.bukkit.ChatColor;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.game.GamePlayer;
+import org.spongepowered.configurate.ConfigurationNode;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.screamingsandals.bedwars.lib.nms.utils.ClassStorage.NMS.*;
 import static org.screamingsandals.bedwars.lib.nms.utils.ClassStorage.*;
@@ -15,11 +17,11 @@ public class TabManager {
     private List<String> footer;
 
     public TabManager() {
-        if (Main.getConfigurator().config.getBoolean("tab.header.enabled")) {
-            header = Main.getConfigurator().config.getStringList("tab.header.contents");
+        if (Main.getConfigurator().node("tab", "header", "enabled").getBoolean()) {
+            header = Main.getConfigurator().node("tab", "header", "contents").childrenList().stream().map(ConfigurationNode::getString).collect(Collectors.toList());
         }
-        if (Main.getConfigurator().config.getBoolean("tab.footer.enabled")) {
-            footer = Main.getConfigurator().config.getStringList("tab.footer.contents");
+        if (Main.getConfigurator().node("tab", "footer", "enabled").getBoolean()) {
+            footer = Main.getConfigurator().node("tab", "footer", "contents").childrenList().stream().map(ConfigurationNode::getString).collect(Collectors.toList());
         }
     }
 

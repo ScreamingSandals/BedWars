@@ -2,11 +2,11 @@ package org.screamingsandals.bedwars.lib.signmanager;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.screamingsandals.bedwars.Main;
+import org.screamingsandals.bedwars.utils.PreparedLocation;
+import org.spongepowered.configurate.loader.ConfigurationLoader;
+import org.spongepowered.configurate.serialize.SerializationException;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,55 +15,55 @@ import java.util.Map;
 
 public class SignManager {
 
-    private final FileConfiguration config = new YamlConfiguration();
-    private final File configFile;
-    private final Map<Location, SignBlock> signs = new HashMap<>();
+    private final ConfigurationLoader<?> loader;
+    private final Map<PreparedLocation, SignBlock> signs = new HashMap<>();
     private boolean modify = false;
     private SignOwner owner;
 
-    public SignManager(SignOwner owner, File configFile) {
+    public SignManager(SignOwner owner, ConfigurationLoader<?> loader) {
         this.owner = owner;
-        this.configFile = configFile;
+        this.loader = loader;
 
         Bukkit.getScheduler().runTaskLater(Main.getInstance(), this::loadConfig, 5L);
     }
 
     public void loadConfig() {
         try {
-            config.load(configFile);
+            var config = loader.load();
+
+            config.node("sign").childrenList().forEach(sign -> {
+                var name = sign.node("name").getString();
+                if (name == null || name.isBlank()) {
+                    name = sign.node("game").getString("invalid"); // Compatibility with old BedWars sign.yml
+                }
+                try {
+                    var loc = sign.node("location").get(PreparedLocation.class);
+                    signs.put(loc, new SignBlock(loc, name));
+                    owner.updateSign(signs.get(loc));
+                } catch (SerializationException e) {
+                    e.printStackTrace();
+                }
+            });
         } catch (Exception ex) {
             ex.printStackTrace();
-        }
-
-        List<Map<String, Object>> conf = (List<Map<String, Object>>) config.getList("sign");
-        if (conf != null) {
-            for (Map<String, Object> c : conf) {
-                String name = (String) c.get("name");
-                if (name == null || name.trim().equals("")) {
-                	name = (String) c.get("game"); // Compatibility with old BedWars sign.yml
-                }
-                Location loc = (Location) c.get("location");
-                signs.put(loc, new SignBlock(loc, name));
-                owner.updateSign(signs.get(loc));
-            }
         }
     }
 
     public boolean isSignRegistered(Location location) {
-        return signs.containsKey(location);
+        return signs.containsKey(new PreparedLocation(location));
     }
 
     public void unregisterSign(Location location) {
-        if (signs.containsKey(location)) {
-            signs.remove(location);
+        if (signs.containsKey(new PreparedLocation(location))) {
+            signs.remove(new PreparedLocation(location));
             modify = true;
         }
     }
 
     public boolean registerSign(Location location, String game) {
         if (owner.isNameExists(game)) {
-        	SignBlock block = new SignBlock(location, game);
-            signs.put(location, block);
+        	SignBlock block = new SignBlock(new PreparedLocation(location), game);
+            signs.put(new PreparedLocation(location), block);
             modify = true;
             owner.updateSign(block);
             return true;
@@ -91,18 +91,20 @@ public class SignManager {
 
     public void save(boolean force) {
         if (modify || force) {
-            List<Map<String, Object>> list = new ArrayList<>();
-            for (SignBlock sign : signs.values()) {
-                Map<String, Object> map = new HashMap<>();
-                map.put("location", sign.getLocation());
-                map.put("name", sign.getName());
-                list.add(map);
-            }
+            var config = loader.createNode();
 
-            config.set("sign", list);
+            signs.values().forEach(sign -> {
+                try {
+                    var signNode = config.node("sign").appendListNode();
+                    signNode.node("location").set(sign.getLocation());
+                    signNode.node("name").set(sign.getName());
+                } catch (SerializationException e) {
+                    e.printStackTrace();
+                }
+            });
 
             try {
-                config.save(configFile);
+                loader.save(config);
             } catch (IOException e) {
                 e.printStackTrace();
             }

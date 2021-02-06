@@ -5,6 +5,7 @@ import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.Arrays;
 import java.util.List;
@@ -23,20 +24,28 @@ public class MainlobbyCommand extends BaseCommand {
 
         if (args.size() == 1) {
             if (args.contains("enable")) {
-                Main.getConfigurator().config.set("mainlobby.enabled", true);
-                Main.getConfigurator().saveConfig();
+                try {
+                    Main.getConfigurator().node("mainlobby", "enabled").set(true);
+                    Main.getConfigurator().saveConfig();
 
-                player.sendMessage(i18n("admin_command_success"));
-                player.sendMessage(i18n("admin_command_mainlobby_info"));
+                    player.sendMessage(i18n("admin_command_success"));
+                    player.sendMessage(i18n("admin_command_mainlobby_info"));
+                } catch (SerializationException e) {
+                    e.printStackTrace();
+                }
                 return true;
             } else if (args.contains("set")) {
                 Location location = player.getLocation();
 
-                Main.getConfigurator().config.set("mainlobby.location", MiscUtils.setLocationToString(location));
-                Main.getConfigurator().config.set("mainlobby.world", location.getWorld().getName());
-                Main.getConfigurator().saveConfig();
+                try {
+                    Main.getConfigurator().node("mainlobby", "location").set(MiscUtils.setLocationToString(location));
+                    Main.getConfigurator().node("mainlobby", "world").set(location.getWorld().getName());
+                    Main.getConfigurator().saveConfig();
 
-                player.sendMessage(i18n("admin_command_success"));
+                    player.sendMessage(i18n("admin_command_success"));
+                } catch (SerializationException e) {
+                    e.printStackTrace();
+                }
                 return true;
             }
         }

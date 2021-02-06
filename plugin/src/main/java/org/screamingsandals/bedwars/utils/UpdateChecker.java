@@ -1,9 +1,6 @@
 package org.screamingsandals.bedwars.utils;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.annotations.SerializedName;
+import lombok.Data;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -11,113 +8,69 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.commands.BaseCommand;
+import org.spongepowered.configurate.ConfigurateException;
+import org.spongepowered.configurate.ConfigurationNode;
+import org.spongepowered.configurate.gson.GsonConfigurationLoader;
 
+import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 
 import static org.screamingsandals.bedwars.lib.lang.I.*;
 
 public class UpdateChecker {
     public static void run() {
-        Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
-            try {
-                URL url = new URL("https://screamingsandals.org/bedwars-zero-update-checker.php?version=" + Main.getVersion());
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.setRequestProperty("User-Agent", "SpigetResourceUpdater");
-                JsonObject jsonObject = new JsonParser().parse(new InputStreamReader(connection.getInputStream()))
-                        .getAsJsonObject();
-                Result result = new Gson().fromJson(jsonObject, Result.class);
+        HttpClient.newHttpClient().sendAsync(HttpRequest.newBuilder()
+                .uri(URI.create("https://screamingsandals.org/bedwars-zero-update-checker.php?version=" + Main.getVersion()))
+                .build(), HttpResponse.BodyHandlers.ofInputStream())
+                .thenAccept(inputStreamHttpResponse -> {
+                    var loader = GsonConfigurationLoader.builder()
+                            .source(() -> new BufferedReader(new InputStreamReader(inputStreamHttpResponse.body())))
+                            .build();
+                    try {
+                        var result = loader.load();
 
-                if ("ok".equalsIgnoreCase(result.status)) {
-                    UpdateListener updateListener = null;
-                    if (result.isUpdateAvailable) {
-                        if (Main.getConfigurator().config.getBoolean("update-checker.zero.console")) {
-                            mpr("update_checker_zero").replace("version", result.currentZeroVersion).send(Bukkit.getConsoleSender());
-                            mpr("update_checker_zero_second").replace("url", result.download).send(Bukkit.getConsoleSender());
-                        }
-                        if (Main.getConfigurator().config.getBoolean("update-checker.zero.admins")) {
-                            updateListener = new UpdateListener(result);
-                            Main.getInstance().registerBedwarsListener(updateListener);
-                        }
-                    }
-                    if (result.isOneAvailable) {
-                        float javaVer = Float.parseFloat(System.getProperty("java.class.version"));
-                        if (Main.getConfigurator().config.getBoolean("update-checker.one.console")) {
-                            mpr("update_checker_one").replace("url", result.oneWebsite).send(Bukkit.getConsoleSender());
-                            if (javaVer < 55.0F) {
-                                mpr("update_checker_one_second_bad").send(Bukkit.getConsoleSender());
-                            } else {
-                                mpr("update_checker_one_second_good").send(Bukkit.getConsoleSender());
+                        if ("ok".equalsIgnoreCase(result.node("status").getString())) {
+                            if (result.node("zero_update").getBoolean()) {
+                                if (Main.getConfigurator().node("update-checker", "console").getBoolean()) {
+                                    mpr("update_checker_zero")
+                                            .replace("version", result.node("version").getString())
+                                            .send(Bukkit.getConsoleSender());
+                                    mpr("update_checker_zero_second")
+                                            .replace("url", result.node("zero_download_url").getString())
+                                            .send(Bukkit.getConsoleSender());
+                                }
+                                if (Main.getConfigurator().node("update-checker", "admins").getBoolean()) {
+                                    Main.getInstance().registerBedwarsListener(new UpdateListener(result));
+                                }
                             }
                         }
-                        if (Main.getConfigurator().config.getBoolean("update-checker.one.admins")) {
-                            if (updateListener == null) {
-                                updateListener = new UpdateListener(result);
-                                Main.getInstance().registerBedwarsListener(updateListener);
-                            }
-                            updateListener.javaVer = javaVer;
-                        }
+                    } catch (ConfigurateException e) {
+                        e.printStackTrace();
                     }
-                }
-            } catch (Exception ignored) {
-            }
-        });
+                });
     }
 
-    public static class Result {
-        public String status;
-        @SerializedName("version")
-        public String currentZeroVersion;
-        @SerializedName("zero_update")
-        public boolean isUpdateAvailable;
-        @SerializedName("one_available")
-        public boolean isOneAvailable;
-        @SerializedName("one_page")
-        public String oneWebsite;
-        @SerializedName("zero_download_url")
-        public String download;
-
-        @Override
-        public String toString() {
-            return "Result{" +
-                    "status=" + status +
-                    ", currentZeroVersion='" + currentZeroVersion + '\'' +
-                    ", isUpdateAvailable=" + isUpdateAvailable +
-                    ", isOneAvailable=" + isOneAvailable +
-                    ", oneWebsite='" + oneWebsite + '\'' +
-                    ", download='" + download + '\'' +
-                    '}';
-        }
-    }
-
+    @Data
     public static class UpdateListener implements Listener {
-        public float javaVer;
-        private Result result;
-
-        public UpdateListener(Result result) {
-            this.result = result;
-        }
+        private final ConfigurationNode result;
 
         @EventHandler
         public void onPlayerJoin(PlayerJoinEvent event) {
             Player player = event.getPlayer();
             if (BaseCommand.hasPermission(player, BaseCommand.ADMIN_PERMISSION, false)) {
-                if (Main.getConfigurator().config.getBoolean("update-checker.zero.admins") && result.isUpdateAvailable) {
-                    mpr("update_checker_zero").replace("version", result.currentZeroVersion).send(player);
-                    mpr("update_checker_zero_second").replace("url", result.download).send(player);
-                }
-
-                if (Main.getConfigurator().config.getBoolean("update-checker.one.admins") && result.isOneAvailable) {
-                    mpr("update_checker_one").replace("url", result.oneWebsite).send(player);
-                    if (javaVer < 55.0F) {
-                        mpr("update_checker_one_second_bad").send(player);
-                    } else {
-                        mpr("update_checker_one_second_good").send(player);
-                    }
+                if (Main.getConfigurator().node("update-checker", "admins").getBoolean() && result.node("zero_update").getBoolean()) {
+                    mpr("update_checker_zero")
+                            .replace("version", result.node("version").getString())
+                            .send(player);
+                    mpr("update_checker_zero_second")
+                            .replace("url", result.node("zero_download_url").getString())
+                            .send(player);
                 }
             }
-
         }
     }
 }

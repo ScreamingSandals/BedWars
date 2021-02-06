@@ -43,13 +43,13 @@ public class LanguageCommand extends BaseCommand {
                 }
                 final var langName = Objects.requireNonNull(config.getString("lang_name"));
 
-                if (Objects.requireNonNull(Main.getConfigurator().config.getString("locale"))
+                if (Objects.requireNonNull(Main.getConfigurator().node("locale").getString())
                         .equalsIgnoreCase(locale)) {
                     player.sendMessage(i18n("language_already_set")
                             .replace("%lang%", langName));
                     return true;
                 }
-                Main.getConfigurator().config.set("locale", locale);
+                Main.getConfigurator().node("locale").set(locale);
                 Main.getConfigurator().saveConfig();
                 Bukkit.getServer().getPluginManager().disablePlugin(Main.getInstance());
                 Bukkit.getServer().getPluginManager().enablePlugin(Main.getInstance());

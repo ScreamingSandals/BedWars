@@ -85,11 +85,6 @@ public class CurrentTeam implements RunningTeam {
     }
 
     @Override
-    public boolean isNewColor() {
-        return teamInfo.newColor;
-    }
-
-    @Override
     public Location getTeamSpawn() {
         return teamInfo.spawn;
     }

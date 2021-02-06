@@ -11,7 +11,7 @@ import static org.screamingsandals.bedwars.lib.lang.I18n.i18n;
 public class RejoinCommand extends BaseCommand {
 
     public RejoinCommand() {
-        super("rejoin", REJOIN_PERMISSION, false, Main.getConfigurator().config.getBoolean("default-permissions.rejoin"));
+        super("rejoin", REJOIN_PERMISSION, false, Main.getConfigurator().node("default-permissions", "rejoin").getBoolean());
     }
 
     @Override

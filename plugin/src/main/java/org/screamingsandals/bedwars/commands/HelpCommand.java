@@ -32,7 +32,7 @@ public class HelpCommand extends BaseCommand {
     }
 
     public void sendConsoleHelp(ConsoleCommandSender console) {
-        console.sendMessage(i18nonly("help_title_console").replace("%version%", "Zero " + Main.getVersion()));
+        console.sendMessage(i18nonly("help_title_console").replace("%version%", Main.getVersion()));
         console.sendMessage(i18nonly("help_bw_list"));
         console.sendMessage(i18nonly("help_bw_stats_other"));
         console.sendMessage(i18nonly("help_bw_alljoin"));
@@ -40,27 +40,27 @@ public class HelpCommand extends BaseCommand {
     }
 
     public void sendHelp(Player player) {
-        player.sendMessage(i18nonly("help_title").replace("%version%", "Zero " + Main.getVersion()));
-        if (hasPermission(player, JOIN_PERMISSION, Main.getConfigurator().config.getBoolean("default-permissions.join"))) {
+        player.sendMessage(i18nonly("help_title").replace("%version%", Main.getVersion()));
+        if (hasPermission(player, JOIN_PERMISSION, Main.getConfigurator().node("default-permissions", "join").getBoolean())) {
             player.sendMessage(i18nonly("help_bw_join"));
         }
-        if (hasPermission(player, LEAVE_PERMISSION, Main.getConfigurator().config.getBoolean("default-permissions.leave"))) {
+        if (hasPermission(player, LEAVE_PERMISSION, Main.getConfigurator().node("default-permissions", "leave").getBoolean())) {
             player.sendMessage(i18nonly("help_bw_leave"));
         }
-        if (hasPermission(player, REJOIN_PERMISSION, Main.getConfigurator().config.getBoolean("default-permissions.rejoin"))) {
+        if (hasPermission(player, REJOIN_PERMISSION, Main.getConfigurator().node("default-permissions", "rejoin").getBoolean())) {
             player.sendMessage(i18nonly("help_bw_rejoin"));
         }
-        if (hasPermission(player, AUTOJOIN_PERMISSION, Main.getConfigurator().config.getBoolean("default-permissions.autojoin"))) {
+        if (hasPermission(player, AUTOJOIN_PERMISSION, Main.getConfigurator().node("default-permissions", "autojoin").getBoolean())) {
             player.sendMessage(i18nonly("help_bw_autojoin"));
         }
-        if (hasPermission(player, LIST_PERMISSION, Main.getConfigurator().config.getBoolean("default-permissions.list"))) {
+        if (hasPermission(player, LIST_PERMISSION, Main.getConfigurator().node("default-permissions", "list").getBoolean())) {
             player.sendMessage(i18nonly("help_bw_list"));
         }
-        if (hasPermission(player, LEADERBOARD_PERMISSION, Main.getConfigurator().config.getBoolean("default-permissions.leaderboard"))) {
+        if (hasPermission(player, LEADERBOARD_PERMISSION, Main.getConfigurator().node("default-permissions", "leaderboard").getBoolean())) {
             player.sendMessage(i18nonly("help_bw_leaderboard"));
         }
 
-        if ((hasPermission(player, STATS_PERMISSION, Main.getConfigurator().config.getBoolean("default-permissions.stats")))) {
+        if ((hasPermission(player, STATS_PERMISSION, Main.getConfigurator().node("default-permissions", "stats").getBoolean()))) {
             if (hasPermission(player, ADMIN_PERMISSION, false) || hasPermission(player, OTHER_STATS_PERMISSION, false)) {
                 player.sendMessage(i18nonly("help_bw_stats_other"));
             } else {

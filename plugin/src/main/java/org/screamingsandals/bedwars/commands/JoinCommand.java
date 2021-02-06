@@ -11,7 +11,7 @@ import static org.screamingsandals.bedwars.lib.lang.I18n.i18n;
 public class JoinCommand extends BaseCommand {
 
     public JoinCommand() {
-        super("join", JOIN_PERMISSION, false, Main.getConfigurator().config.getBoolean("default-permissions.join"));
+        super("join", JOIN_PERMISSION, false, Main.getConfigurator().node("default-permissions", "join").getBoolean());
     }
 
     @Override

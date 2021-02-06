@@ -9,6 +9,7 @@ import org.screamingsandals.bedwars.game.Game;
 import org.screamingsandals.bedwars.game.TeamColor;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.listener.Player116ListenerUtils;
+import org.spongepowered.configurate.ConfigurationNode;
 import pronze.lib.scoreboards.Scoreboard;
 import pronze.lib.scoreboards.ScoreboardManager;
 
@@ -37,7 +38,7 @@ public class ScreamingScoreboard {
         final var scoreboard = Scoreboard.builder()
                 .animate(false)
                 .player(player)
-                .title(Main.getConfigurator().config.getString("lobby-scoreboard.title", "§eBEDWARS"))
+                .title(Main.getConfigurator().node("lobby-scoreboard", "title").getString("§eBEDWARS"))
                 .displayObjective(LOBBY_OBJECTIVE)
                 .updateInterval(20L)
                 .placeholderHook(hook -> parseInternalPlaceholders(game.formatLobbyScoreboardString(hook.getLine())))
@@ -54,8 +55,8 @@ public class ScreamingScoreboard {
 
         //lobby stages
         if (game.getStatus() == GameStatus.WAITING) {
-            var rows = Main.getConfigurator().config
-                    .getStringList("lobby-scoreboard.content");
+            var rows = Main.getConfigurator().node("lobby-scoreboard", "content")
+                    .childrenList().stream().map(ConfigurationNode::getString).collect(Collectors.toList());
             if (rows.isEmpty()) {
                 return List.of();
             }
@@ -78,7 +79,8 @@ public class ScreamingScoreboard {
             });
 
             final var finalContent = new ArrayList<String>();
-            List<String> content = Main.getConfigurator().config.getStringList("experimental.new-scoreboard-system.content");
+            List<String> content = Main.getConfigurator().node("experimental", "new-scoreboard-system", "content")
+                    .childrenList().stream().map(ConfigurationNode::getString).collect(Collectors.toList());
 
             content.forEach(line -> {
                 if (line.contains("%team_status%")) {
@@ -126,7 +128,7 @@ public class ScreamingScoreboard {
             return "";
         }
 
-        return Main.getConfigurator().config.getString("experimental.new-scoreboard-system.teamTitle")
+        return Main.getConfigurator().node("experimental", "new-scoreboard-system", "teamTitle").getString("")
                 .replace("%team_size%", String.valueOf(
                         team.getConnectedPlayers().size()))
                 .replace("%color%", TeamColor.fromApiColor(team.getColor())

@@ -23,11 +23,6 @@ public interface Team {
     TeamColor getColor();
 
     /**
-     * @return isNewColor boolean u
-     */
-    boolean isNewColor();
-
-    /**
      * @return
      */
     Location getTeamSpawn();

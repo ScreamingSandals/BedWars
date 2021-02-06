@@ -10,7 +10,7 @@ import static org.screamingsandals.bedwars.lib.lang.I18n.i18n;
 public class ListCommand extends BaseCommand {
 
     public ListCommand() {
-        super("list", LIST_PERMISSION, true, Main.getConfigurator().config.getBoolean("default-permissions.list"));
+        super("list", LIST_PERMISSION, true, Main.getConfigurator().node("default-permissions", "list").getBoolean());
     }
 
     @Override

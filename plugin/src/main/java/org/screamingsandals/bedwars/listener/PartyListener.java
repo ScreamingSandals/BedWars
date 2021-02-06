@@ -13,7 +13,7 @@ public class PartyListener implements Listener {
 
     @EventHandler
     public void onBedWarsPlayerJoined(BedwarsPlayerJoinedEvent e) {
-        if (!Main.getConfigurator().config.getBoolean("party.autojoin-members", false)) {
+        if (!Main.getConfigurator().node("party", "autojoin-members").getBoolean()) {
             return;
         }
 
@@ -53,7 +53,7 @@ public class PartyListener implements Listener {
                                 }
                             });
 
-                            if (Main.getConfigurator().config.getBoolean("party.notify-when-warped", true)) {
+                            if (Main.getConfigurator().node("party", "notify-when-warped").getBoolean(true)) {
                                 player.sendMessage(i18n("party_command_warped", true));
                             }
                         }
