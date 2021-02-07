@@ -94,7 +94,7 @@ public class PlayerStatisticManager implements PlayerStatisticsManager {
                 ex.printStackTrace();
             }
         } else {
-            fileDatabase.childrenMap().forEach((key, node) -> {
+            fileDatabase.node("data").childrenMap().forEach((key, node) -> {
                 allScores.put(UUID.fromString(key.toString()), node.node("score").getInt());
             });
         }
