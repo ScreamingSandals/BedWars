@@ -3,11 +3,7 @@ package org.screamingsandals.bedwars.holograms;
 import static org.screamingsandals.bedwars.lib.lang.I.i18n;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
@@ -25,7 +21,7 @@ import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 public class StatisticsHolograms implements TouchHandler {
 
     private ArrayList<PreparedLocation> hologramLocations = null;
-    private Map<Player, List<Hologram>> holograms = null;
+    private Map<UUID, List<Hologram>> holograms = null;
 
 	public void addHologramLocation(Location eyeLocation) {
         this.hologramLocations.add(new PreparedLocation(eyeLocation.subtract(0, 3, 0)));
@@ -121,11 +117,11 @@ public class StatisticsHolograms implements TouchHandler {
 	
 	public void updatePlayerHologram(Player player, Location holoLocation) {
         List<Hologram> holograms;
-        if (!this.holograms.containsKey(player)) {
-            this.holograms.put(player, new ArrayList<>());
+        if (!this.holograms.containsKey(player.getUniqueId())) {
+            this.holograms.put(player.getUniqueId(), new ArrayList<>());
         }
 
-        holograms = this.holograms.get(player);
+        holograms = this.holograms.get(player.getUniqueId());
         Hologram holo = this.getHologramByLocation(holograms, holoLocation);
         if (holo == null && player.getWorld() == holoLocation.getWorld()) {
             holograms.add(this.createPlayerStatisticHologram(player, holoLocation));
@@ -189,7 +185,7 @@ public class StatisticsHolograms implements TouchHandler {
         player.removeMetadata("bw-remove-holo", Main.getInstance());
         Main.getInstance().getServer().getScheduler().runTask(Main.getInstance(), () -> {
             // remove all player holograms on this location
-            for (Entry<Player, List<Hologram>> entry : holograms.entrySet()) {
+            for (Entry<UUID, List<Hologram>> entry : holograms.entrySet()) {
                 Iterator<Hologram> iterator = entry.getValue().iterator();
                 while (iterator.hasNext()) {
                     Hologram hologram = iterator.next();

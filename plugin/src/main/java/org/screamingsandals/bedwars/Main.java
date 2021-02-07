@@ -94,8 +94,6 @@ public class Main extends JavaPlugin implements BedwarsAPI {
     private Metrics metrics;
     @Getter
     private String buildInfo;
-    @Getter
-    private final List<Listener> registeredListeners = new ArrayList<>();
     private ControllableImpl controllable;
     private RecordSave recordSave;
 
@@ -844,6 +842,5 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 
     public void registerBedwarsListener(Listener listener) {
         getServer().getPluginManager().registerEvents(listener, this);
-        registeredListeners.add(listener);
     }
 }

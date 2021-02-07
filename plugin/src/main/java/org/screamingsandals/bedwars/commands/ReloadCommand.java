@@ -44,21 +44,8 @@ public class ReloadCommand extends BaseCommand {
 
                 if (!gameRuns || timer == 0) {
                     this.cancel();
-                    Main.getInstance().onDisable();
-                    Bukkit.getScheduler().cancelTasks(Main.getInstance());
-                    Bukkit.getServicesManager().unregisterAll(Main.getInstance());
-                    Bukkit.getMessenger().unregisterIncomingPluginChannel(Main.getInstance());
-                    Bukkit.getMessenger().unregisterOutgoingPluginChannel(Main.getInstance());
-                    Main.getInstance().getRegisteredListeners().forEach(HandlerList::unregisterAll);
-                    HandlerList.unregisterAll();
-                    Main.getInstance().getRegisteredListeners().clear();
-                        Bukkit.getWorlds().forEach(world -> {
-                            try {
-                                world.removePluginChunkTickets(Main.getInstance());
-                            } catch (Throwable ignored) {
-                            }
-                        });
-                    Main.getInstance().onEnable();
+                    Main.getInstance().getPluginLoader().disablePlugin(Main.getInstance());
+                    Main.getInstance().getPluginLoader().enablePlugin(Main.getInstance());
                     sender.sendMessage("Plugin reloaded!");
                     return;
                 }
