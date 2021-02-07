@@ -58,7 +58,7 @@ public class LeaderboardHolograms implements TouchHandler {
         this.holograms = new HashMap<>();
         this.hologramLocations = new ArrayList<>();
 
-        File file = new File(Main.getInstance().getDataFolder(), "holodb_leaderboard.yml");
+        File file = new File(Main.getInstance().getDataFolder(), "database/holodb_leaderboard.yml");
         if (file.exists()) {
             var loader = YamlConfigurationLoader.builder()
                     .file(file)
@@ -81,7 +81,7 @@ public class LeaderboardHolograms implements TouchHandler {
 
     private void updateHologramDatabase() {
         try {
-            File file = new File(Main.getInstance().getDataFolder(), "holodb_leaderboard.yml");
+            File file = new File(Main.getInstance().getDataFolder(), "database/holodb_leaderboard.yml");
             var loader = YamlConfigurationLoader.builder()
                     .file(file)
                     .build();

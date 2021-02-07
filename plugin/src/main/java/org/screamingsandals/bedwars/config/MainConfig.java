@@ -52,6 +52,33 @@ public class MainConfig {
             }
         }
 
+        var database = new File(dataFolder, "database");
+        database.mkdirs();
+
+        var recordFile = new File(dataFolder, "record.yml");
+        var newRecordFile = new File(database, "record.yml");
+        if (recordFile.exists() && !newRecordFile.exists()) {
+            recordFile.renameTo(newRecordFile);
+        }
+
+        var signFile = new File(dataFolder, "sign.yml");
+        var newSignFile = new File(database, "sign.yml");
+        if (signFile.exists() && !newSignFile.exists()) {
+            signFile.renameTo(newSignFile);
+        }
+
+        var holodbFile = new File(dataFolder, "holodb.yml");
+        var newHolodbFile = new File(database, "holodb.yml");
+        if (holodbFile.exists() && !newHolodbFile.exists()) {
+            holodbFile.renameTo(newHolodbFile);
+        }
+
+        var holodbLeaderboardFile = new File(dataFolder, "holodb_leaderboard.yml");
+        var newHolodbLeaderboardFile = new File(database, "holodb_leaderboard.yml");
+        if (holodbLeaderboardFile.exists() && !newHolodbLeaderboardFile.exists()) {
+            holodbLeaderboardFile.renameTo(newHolodbLeaderboardFile);
+        }
+
         try {
             this.configurationNode = loader.load();
 

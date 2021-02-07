@@ -19,6 +19,7 @@ import org.screamingsandals.bedwars.inventories.ShopInventory;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.premium.PremiumBedwars;
 import org.spongepowered.configurate.ConfigurateException;
+import org.spongepowered.configurate.yaml.NodeStyle;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
 import java.io.BufferedWriter;
@@ -158,6 +159,7 @@ public class DumpCommand extends BaseCommand {
 
                     var configToString = YamlConfigurationLoader.builder()
                             .sink(() -> new BufferedWriter(writer))
+                            .nodeStyle(NodeStyle.BLOCK)
                             .build();
 
                     var config = loader.load();

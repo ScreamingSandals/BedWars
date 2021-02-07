@@ -42,7 +42,7 @@ public class StatisticsHolograms implements TouchHandler {
         this.holograms = new HashMap<>();
         this.hologramLocations = new ArrayList<>();
 
-        File file = new File(Main.getInstance().getDataFolder(), "holodb.yml");
+        File file = new File(Main.getInstance().getDataFolder(), "database/holodb.yml");
 
         var loader = YamlConfigurationLoader.builder()
                 .file(file)
@@ -151,7 +151,7 @@ public class StatisticsHolograms implements TouchHandler {
     private void updateHologramDatabase() {
         try {
             // update hologram-database file
-            File file = new File(Main.getInstance().getDataFolder(), "holodb.yml");
+            File file = new File(Main.getInstance().getDataFolder(), "database/holodb.yml");
             var loader = YamlConfigurationLoader.builder()
                     .file(file)
                     .build();

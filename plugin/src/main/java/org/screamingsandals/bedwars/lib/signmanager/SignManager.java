@@ -72,7 +72,7 @@ public class SignManager {
     }
 
     public SignBlock getSign(Location location) {
-        return signs.get(location);
+        return signs.get(new PreparedLocation(location));
     }
 
     public List<SignBlock> getSignsForName(String name) {

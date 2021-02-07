@@ -400,7 +400,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         configurator.load();
 
         recordSave = new RecordSave(YamlConfigurationLoader.builder()
-                .path(getDataFolder().toPath().resolve("record.yml"))
+                .path(getDataFolder().toPath().resolve("database/record.yml"))
                 .build()
         );
         recordSave.load();
@@ -492,10 +492,9 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         }
 
         if (controllable == null) {
-            controllable = InitUtils.pluginlessEnvironment(controllable1 -> {
-                EventManager.init(controllable1.child());
-                SimpleInventoriesBukkit.init(this, controllable1.child());
-            });
+            controllable = InitUtils.pluginlessEnvironment(controllable1 ->
+                SimpleInventoriesBukkit.init(this, controllable1.child())
+            );
         } else {
             controllable.enable();
             controllable.postEnable();
@@ -587,7 +586,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 
         final var signOwner = new BedWarsSignOwner();
         signManager = new SignManager(signOwner, YamlConfigurationLoader.builder()
-                .path(getDataFolder().toPath().resolve("sign.yml"))
+                .path(getDataFolder().toPath().resolve("database/sign.yml"))
                 .build()
         );
         registerBedwarsListener(new SignListener(signOwner, signManager));
