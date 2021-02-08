@@ -1,6 +1,7 @@
 package org.screamingsandals.bedwars.listener;
 
 import org.bukkit.Chunk;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.EntityType;
@@ -8,10 +9,7 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockBurnEvent;
-import org.bukkit.event.block.BlockFadeEvent;
-import org.bukkit.event.block.BlockFormEvent;
-import org.bukkit.event.block.BlockFromToEvent;
+import org.bukkit.event.block.*;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
@@ -25,6 +23,8 @@ import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.game.Game;
 import org.screamingsandals.bedwars.game.GameCreator;
 
+import java.util.List;
+
 public class WorldListener implements Listener {
     @EventHandler
     public void onBurn(BlockBurnEvent event) {
@@ -32,17 +32,7 @@ public class WorldListener implements Listener {
             return;
         }
 
-        for (String s : Main.getGameNames()) {
-            Game game = Main.getGame(s);
-            if (game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) {
-                if (GameCreator.isInArea(event.getBlock().getLocation(), game.getPos1(), game.getPos2())) {
-                    if (!game.isBlockAddedDuringGame(event.getBlock().getLocation())) {
-                        event.setCancelled(true);
-                    }
-                    return;
-                }
-            }
-        }
+        onBlockChange(event.getBlock(), event);
     }
 
     @EventHandler
@@ -51,21 +41,20 @@ public class WorldListener implements Listener {
             return;
         }
 
-        for (String s : Main.getGameNames()) {
-            Game game = Main.getGame(s);
-            if (game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) {
-                if (GameCreator.isInArea(event.getBlock().getLocation(), game.getPos1(), game.getPos2())) {
-                    if (!game.isBlockAddedDuringGame(event.getBlock().getLocation())) {
-                        event.setCancelled(true);
-                    }
-                    return;
-                }
-            }
-        }
+        onBlockChange(event.getBlock(), event);
     }
 
     @EventHandler
-    public void onForm(BlockFormEvent event) {
+    public void onLeavesDecay(LeavesDecayEvent event) {
+        if (event.isCancelled()) {
+            return;
+        }
+
+        onBlockChange(event.getBlock(), event);
+    }
+
+    @EventHandler
+    public void onGrow(BlockGrowEvent event) {
         if (event.isCancelled()) {
             return;
         }
@@ -74,12 +63,16 @@ public class WorldListener implements Listener {
             return;
         }
 
-        for (String s : Main.getGameNames()) {
-            Game game = Main.getGame(s);
+        onBlockChange(event.getBlock(), event);
+    }
+
+    public void onBlockChange(Block block, Cancellable cancellable) {
+        for (var s : Main.getGameNames()) {
+            var game = Main.getGame(s);
             if (game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) {
-                if (GameCreator.isInArea(event.getBlock().getLocation(), game.getPos1(), game.getPos2())) {
-                    if (!game.isBlockAddedDuringGame(event.getBlock().getLocation())) {
-                        event.setCancelled(true);
+                if (GameCreator.isInArea(block.getLocation(), game.getPos1(), game.getPos2())) {
+                    if (!Main.isFarmBlock(block.getType()) && !game.isBlockAddedDuringGame(block.getLocation())) {
+                        cancellable.setCancelled(true);
                     }
                     return;
                 }
@@ -88,19 +81,48 @@ public class WorldListener implements Listener {
     }
 
     @EventHandler
-    public void onExplode(EntityExplodeEvent event) {
+    public void onFertilize(BlockFertilizeEvent event) {
         if (event.isCancelled()) {
             return;
         }
 
-        final String explosionExceptionTypeName = Main.getConfigurator().node("destroy-placed-blocks-by-explosion-except").getString();
-        final boolean destroyPlacedBlocksByExplosion = Main.getConfigurator().node("destroy-placed-blocks-by-explosion").getBoolean(true);
-
-        for (String gameName : Main.getGameNames()) {
-            Game game = Main.getGame(gameName);
-            if (GameCreator.isInArea(event.getLocation(), game.getPos1(), game.getPos2())) {
+        event.getBlocks().removeIf(blockState -> {
+            for (var s : Main.getGameNames()) {
+                var game = Main.getGame(s);
                 if (game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) {
-                    event.blockList().removeIf(block -> {
+                    if (GameCreator.isInArea(blockState.getLocation(), game.getPos1(), game.getPos2())) {
+                        return !game.isBlockAddedDuringGame(blockState.getLocation());
+                    }
+                }
+            }
+            return false;
+        });
+    }
+
+    @EventHandler
+    public void onExplode(EntityExplodeEvent event) {
+        if (event.isCancelled()) {
+            return;
+        }
+        onExplode(event.getLocation(), event.blockList(), event);
+    }
+
+    @EventHandler
+    public void onExplode(BlockExplodeEvent event) {
+        if (event.isCancelled()) {
+            return;
+        }
+        onExplode(event.getBlock().getLocation(), event.blockList(), event);
+    }
+
+    public void onExplode(Location location, List<Block> blockList, Cancellable cancellable) {
+        final var explosionExceptionTypeName = Main.getConfigurator().node("destroy-placed-blocks-by-explosion-except").getString();
+        final var destroyPlacedBlocksByExplosion = Main.getConfigurator().node("destroy-placed-blocks-by-explosion").getBoolean(true);
+
+        Main.getGameNames().stream().map(Main::getGame).forEach(game -> {
+            if (GameCreator.isInArea(location, game.getPos1(), game.getPos2())) {
+                if (game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) {
+                    blockList.removeIf(block -> {
                         if (!game.isBlockAddedDuringGame(block.getLocation())) {
                             if (game.getConfigurationContainer().getOrDefault(ConfigurationContainer.TARGET_BLOCK_EXPLOSIONS, Boolean.class, false)) {
                                 for (RunningTeam team : game.getRunningTeams()) {
@@ -115,11 +137,10 @@ public class WorldListener implements Listener {
                         return (explosionExceptionTypeName != null && !explosionExceptionTypeName.equals("") && block.getType().name().contains(explosionExceptionTypeName)) || !destroyPlacedBlocksByExplosion;
                     });
                 } else {
-                    event.setCancelled(true);
+                    cancellable.setCancelled(true);
                 }
             }
-        }
-
+        });
     }
 
     @EventHandler
