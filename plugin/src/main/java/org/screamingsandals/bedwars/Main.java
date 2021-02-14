@@ -47,8 +47,15 @@ import org.screamingsandals.bedwars.lib.signmanager.SignListener;
 import org.screamingsandals.bedwars.lib.signmanager.SignManager;
 import org.screamingsandals.lib.event.EventManager;
 import org.screamingsandals.lib.material.MaterialMapping;
+import org.screamingsandals.lib.plugin.PluginContainer;
+import org.screamingsandals.lib.plugin.PluginManager;
 import org.screamingsandals.lib.utils.ControllableImpl;
 import org.screamingsandals.lib.utils.InitUtils;
+import org.screamingsandals.lib.utils.PlatformType;
+import org.screamingsandals.lib.utils.annotations.Init;
+import org.screamingsandals.lib.utils.annotations.Plugin;
+import org.screamingsandals.lib.utils.annotations.PluginDependencies;
+import org.screamingsandals.simpleinventories.SimpleInventoriesCore;
 import org.screamingsandals.simpleinventories.bukkit.SimpleInventoriesBukkit;
 import org.spongepowered.configurate.serialize.SerializationException;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
@@ -66,7 +73,34 @@ import java.util.stream.Collectors;
 
 import static org.screamingsandals.bedwars.lib.lang.I18n.i18n;
 
-public class Main extends JavaPlugin implements BedwarsAPI {
+@Plugin(
+        id = "BedWars",
+        authors = {"ScreamingSandals <Misat11, Ceph, Pronze>"},
+        version = VersionInfo.VERSION,
+        loadTime = Plugin.LoadTime.POSTWORLD
+)
+@PluginDependencies(platform = PlatformType.BUKKIT, softDependencies = {
+        "Vault",
+        "Multiverse-Core",
+        "Multiworld",
+        "MultiWorld",
+        "UltimateCore",
+        "PlaceholderAPI",
+        "BarAPI",
+        "PerWorldInventory",
+        "SlimeWorldManager",
+        "My_Worlds",
+        "Citizens",
+        "Parties"
+})
+@Init(services = {
+        SimpleInventoriesCore.class,
+        EventManager.class
+})
+public class Main extends PluginContainer implements BedwarsAPI {
+    @Getter
+    private static final String buildInfo = VersionInfo.BUILD_NUMBER;
+
     private static Main instance;
     private String version;
     private boolean isDisabling = false;
@@ -92,8 +126,6 @@ public class Main extends JavaPlugin implements BedwarsAPI {
     private TabManager tabManager;
     public static List<String> autoColoredMaterials = new ArrayList<>();
     private Metrics metrics;
-    @Getter
-    private String buildInfo;
     private ControllableImpl controllable;
     private RecordSave recordSave;
 
@@ -362,24 +394,13 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 
     public void onEnable() {
         instance = this;
-        version = this.getDescription().getVersion();
+        version = this.getPluginDescription().getVersion();
         var snapshot = version.toLowerCase().contains("pre") || version.toLowerCase().contains("snapshot");
         isNMS = ClassStorage.NMS_BASED_SERVER;
         isSpigot = ClassStorage.IS_SPIGOT_SERVER;
         colorChanger = new org.screamingsandals.bedwars.utils.ColorChanger();
 
-        try {
-            buildInfo = YamlConfigurationLoader.builder()
-                    .source(() -> new BufferedReader(new InputStreamReader(Main.class.getResourceAsStream("/build_info.yml"))))
-                    .build()
-                    .load()
-                    .node("build")
-                    .getString();
-        } catch (Exception exception) {
-            buildInfo = "invalid";
-        }
-
-        if (!getServer().getPluginManager().isPluginEnabled("Vault")) {
+        if (!PluginManager.isEnabled(PluginManager.createKey("Vault").orElseThrow())) {
             isVault = false;
         } else {
             isVault = setupEconomy();
@@ -395,20 +416,20 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         isLegacy = versionNumber < 113;
 
         configurator = new MainConfig(YamlConfigurationLoader.builder()
-                .path(getDataFolder().toPath().resolve("config.yml"))
+                .path(getPluginDescription().getDataFolder().resolve("config.yml"))
         );
         configurator.load();
 
         recordSave = new RecordSave(YamlConfigurationLoader.builder()
-                .path(getDataFolder().toPath().resolve("database/record.yml"))
+                .path(getPluginDescription().getDataFolder().resolve("database/record.yml"))
                 .build()
         );
         recordSave.load();
 
-        Debug.init(getName());
+        Debug.init(getPluginDescription().getName());
         Debug.setDebug(configurator.node("debug").getBoolean());
 
-        I18n.load(this, configurator.node("locale").getString("en"));
+        I18n.load(this.getPluginDescription().as(JavaPlugin.class), configurator.node("locale").getString("en"));
 
         databaseManager = new DatabaseManager(configurator.node("database", "host").getString(),
                 configurator.node("database", "port").getInt(), configurator.node("database", "user").getString(),
@@ -436,15 +457,15 @@ public class Main extends JavaPlugin implements BedwarsAPI {
                 leaderboardHolograms.loadHolograms();
             }
         } catch (Throwable exception) {
-            getLogger().severe("Failed to load holograms");
+            getLogger().error("Failed to load holograms");
             exception.printStackTrace();
         }
 
         var partiesEnabled = false;
 
         if (Main.getConfigurator().node("party", "enabled").getBoolean()) {
-            final var partyPlugin = getServer().getPluginManager().getPlugin("Parties");
-            if (partyPlugin != null && partyPlugin.isEnabled()) {
+            final var partyPlugin = PluginManager.getPlugin(PluginManager.createKey("Parties").orElseThrow());
+            if (partyPlugin.isPresent() && partyPlugin.get().isEnabled()) {
                 partiesEnabled = true;
             }
         }
@@ -493,20 +514,20 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 
         if (controllable == null) {
             controllable = InitUtils.pluginlessEnvironment(controllable1 ->
-                SimpleInventoriesBukkit.init(this, controllable1.child())
+                SimpleInventoriesBukkit.init(this.getPluginDescription().as(JavaPlugin.class), controllable1.child())
             );
         } else {
             controllable.enable();
             controllable.postEnable();
         }
 
-        this.manager = new HologramManager(this);
+        this.manager = new HologramManager(this.getPluginDescription().as(JavaPlugin.class));
 
-        SpecialRegister.onEnable(this);
+        SpecialRegister.onEnable(this.getPluginDescription().as(JavaPlugin.class));
 
         PremiumBedwars.init();
 
-        getServer().getServicesManager().register(BedwarsAPI.class, this, this, ServicePriority.Normal);
+        Bukkit.getServer().getServicesManager().register(BedwarsAPI.class, this, this.getPluginDescription().as(JavaPlugin.class), ServicePriority.Normal);
 
         configurator.node("resources").childrenMap().forEach((spawnerK, node) -> {
                 var name = node.node("name").getString();
@@ -541,7 +562,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         menu = new ShopInventory();
 
         if (getConfigurator().node("bungee", "enabled").getBoolean()) {
-            Bukkit.getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
+            Bukkit.getMessenger().registerOutgoingPluginChannel(this.getPluginDescription().as(JavaPlugin.class), "BungeeCord");
         }
 
         Bukkit.getConsoleSender().sendMessage(ChatColor.AQUA + "============" + ChatColor.RED + "===" + ChatColor.WHITE + "======  by ScreamingSandals <Misat11, Ceph, Pronze>");
@@ -562,7 +583,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
                     ChatColor.RED + "[B" + ChatColor.WHITE + "W] " + ChatColor.RED + "IMPORTANT WARNING: You are using version older than 1.9! This version is not officially supported, and some features may not work at all!");
         }
 
-        final var arenasFolder = new File(getDataFolder(), "arenas");
+        final var arenasFolder = getPluginDescription().getDataFolder().resolve("arenas").toFile();
         if (arenasFolder.exists()) {
             try (var stream = Files.walk(Paths.get(arenasFolder.getAbsolutePath()))) {
                 final var results = stream.filter(Files::isRegularFile)
@@ -586,7 +607,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 
         final var signOwner = new BedWarsSignOwner();
         signManager = new SignManager(signOwner, YamlConfigurationLoader.builder()
-                .path(getDataFolder().toPath().resolve("database/sign.yml"))
+                .path(getPluginDescription().getDataFolder().resolve("database/sign.yml"))
                 .build()
         );
         registerBedwarsListener(new SignListener(signOwner, signManager));
@@ -620,10 +641,10 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         }
 
         /* Initialize our ScoreboardLib*/
-        ScoreboardManager.init(this);
+        ScoreboardManager.init(this.getPluginDescription().as(JavaPlugin.class));
 
         final var pluginId = 7147;
-        metrics = new Metrics(this, pluginId);
+        metrics = new Metrics(this.getPluginDescription().as(JavaPlugin.class), pluginId);
         metrics.addCustomChart(new Metrics.SimplePie("edition", () -> PremiumBedwars.isPremium() ? "Premium" : "Free"));
         metrics.addCustomChart(new Metrics.SimplePie("build_number", () -> buildInfo));
 
@@ -640,7 +661,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         for (var game : games.values()) {
             game.stop();
         }
-        this.getServer().getServicesManager().unregisterAll(this);
+        Bukkit.getServer().getServicesManager().unregisterAll(this.getPluginDescription().as(JavaPlugin.class));
 
         if (isHologramsEnabled() && hologramInteraction != null) {
             hologramInteraction.unloadHolograms();
@@ -653,10 +674,11 @@ public class Main extends JavaPlugin implements BedwarsAPI {
     }
 
     private boolean setupEconomy() {
-        if (getServer().getPluginManager().getPlugin("Vault") == null) {
+        var plugin = PluginManager.getPlugin(PluginManager.createKey("Vault").orElseThrow());
+        if (plugin.isEmpty()) {
             return false;
         }
-        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+        RegisteredServiceProvider<Economy> rsp = Bukkit.getServer().getServicesManager().getRegistration(Economy.class);
         if (rsp == null) {
             return false;
         }
@@ -840,6 +862,6 @@ public class Main extends JavaPlugin implements BedwarsAPI {
     }
 
     public void registerBedwarsListener(Listener listener) {
-        getServer().getPluginManager().registerEvents(listener, this);
+        Bukkit.getServer().getPluginManager().registerEvents(listener, this.getPluginDescription().as(JavaPlugin.class));
     }
 }

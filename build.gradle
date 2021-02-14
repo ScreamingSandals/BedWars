@@ -2,21 +2,26 @@ defaultTasks 'clean', 'screamCompile'
 
 allprojects {
     group = 'org.screamingsandals.bedwars'
-    version = '0.3.0-SNAPSHOT'
+    version = BEDWARS_VERSION
 }
 
 buildscript {
     repositories {
+        mavenLocal()
         maven { url 'https://repo.screamingsandals.org/public/' }
+        maven { url 'https://plugins.gradle.org/m2' }
     }
     dependencies {
-		classpath 'org.screamingsandals.gradle.builder:screaming-plugin-builder:1.0.32'
+		classpath 'org.screamingsandals.gradle.builder:screaming-plugin-builder:1.0.39'
+        classpath 'gradle.plugin.de.fuerstenau:BuildConfigPlugin:1.1.8'
     }
 }
 
 subprojects {
     apply plugin: 'java'
     apply plugin: 'org.screamingsandals.gradle.builder'
+
+    enableShadowPlugin()
 
     configurations.all {
         // Check for updates every build
@@ -36,7 +41,7 @@ subprojects {
     }
     
     dependencies {
-    	compileOnly paper("1.16.4")
+    	compileOnly paper(PAPER_VERSIOn)
     }
 
     shadowJar {
