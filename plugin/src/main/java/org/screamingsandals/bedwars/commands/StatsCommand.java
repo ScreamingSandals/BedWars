@@ -1,91 +1,101 @@
 package org.screamingsandals.bedwars.commands;
 
+import cloud.commandframework.Command;
+import cloud.commandframework.CommandManager;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.HumanEntity;
+import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.statistics.PlayerStatistic;
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
+import org.screamingsandals.lib.sender.CommandSenderWrapper;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
-import static org.screamingsandals.bedwars.lib.lang.I18n.i18n;
+import static org.screamingsandals.bedwars.lib.lang.I.i18n;
 
 public class StatsCommand extends BaseCommand {
-
-    public StatsCommand() {
-        super("stats", STATS_PERMISSION, true, Main.getConfigurator().node("default-permissions", "stats").getBoolean());
+    public StatsCommand(CommandManager<CommandSenderWrapper> manager) {
+        super(manager, "stats", BedWarsPermission.STATS_PERMISSION, true);
     }
 
     @Override
-    public boolean execute(CommandSender sender, List<String> args) {
-        if (!Main.isPlayerStatisticsEnabled()) {
-            sender.sendMessage(i18n("statistics_is_disabled"));
-        } else {
-            if (args.size() >= 1) {
-                if (!hasPermission(sender, OTHER_STATS_PERMISSION, false) && !hasPermission(sender, ADMIN_PERMISSION, false)) {
-                    sender.sendMessage(i18n("no_permissions"));
-                } else {
-                    String name = args.get(0);
-                    OfflinePlayer off = Main.getInstance().getServer().getPlayerExact(name);
+    protected void construct(Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder) {
+        manager.command(
+                commandSenderWrapperBuilder
+                        .argument(manager
+                        .argumentBuilder(String.class, "player")
+                                .withSuggestionsProvider((c, s) -> {
+                                    if (Main.isPlayerStatisticsEnabled()
+                                            && (c.getSender().hasPermission(BedWarsPermission.OTHER_STATS_PERMISSION.asPermission()) && !c.getSender().hasPermission(BedWarsPermission.ADMIN_PERMISSION.asPermission()))) {
+                                        return Bukkit.getOnlinePlayers().stream().map(HumanEntity::getName).collect(Collectors.toList());
+                                    }
+                                    return List.of();
+                                })
+                                .asOptional()
+                        )
+                    .handler(commandContext -> {
+                        var sender = commandContext.getSender();
 
-                    if (off == null) {
-                        sender.sendMessage(i18n("statistics_player_is_not_exists"));
-                    } else {
-                        PlayerStatistic statistic = Main.getPlayerStatisticsManager().getStatistic(off);
-                        if (statistic == null) {
-                            sender.sendMessage(i18n("statistics_not_found"));
+                        if (!Main.isPlayerStatisticsEnabled()) {
+                            sender.sendMessage(i18n("statistics_is_disabled"));
                         } else {
-                            sendStats(sender, statistic);
+                            Optional<String> playerName = commandContext.getOptional("player");
+
+                            if (playerName.isPresent()) {
+                                if (!sender.hasPermission(BedWarsPermission.OTHER_STATS_PERMISSION.asPermission()) && !sender.hasPermission(BedWarsPermission.ADMIN_PERMISSION.asPermission())) {
+                                    sender.sendMessage(i18n("no_permissions"));
+                                } else {
+                                    var name = playerName.get();
+                                    var off = Bukkit.getServer().getPlayerExact(name);
+
+                                    if (off == null) {
+                                        sender.sendMessage(i18n("statistics_player_is_not_exists"));
+                                    } else {
+                                        var statistic = Main.getPlayerStatisticsManager().getStatistic(off);
+                                        if (statistic == null) {
+                                            sender.sendMessage(i18n("statistics_not_found"));
+                                        } else {
+                                            sendStats(sender, statistic);
+                                        }
+                                    }
+                                }
+                            } else {
+                                if (sender.getType() == CommandSenderWrapper.Type.PLAYER) {
+                                    // TODO: use wrapper
+                                    var player = sender.as(Player.class);
+                                    var statistic = Main.getPlayerStatisticsManager().getStatistic(player);
+                                    if (statistic == null) {
+                                        player.sendMessage(i18n("statistics_not_found"));
+                                    } else {
+                                        sendStats(sender, statistic);
+                                    }
+                                }
+                            }
                         }
-                    }
-                }
-            } else {
-                if (sender instanceof Player) {
-                    Player player = (Player) sender;
-                    PlayerStatistic statistic = Main.getPlayerStatisticsManager().getStatistic(player);
-                    if (statistic == null) {
-                        player.sendMessage(i18n("statistics_not_found"));
-                    } else {
-                        sendStats(player, statistic);
-                    }
-                } else {
-                    return false;
-                }
-            }
-        }
-        return true;
+                    })
+        );
     }
 
-    @Override
-    public void completeTab(List<String> completion, CommandSender sender, List<String> args) {
-        if (args.size() == 1 && Main.isPlayerStatisticsEnabled()
-                && (hasPermission(sender, OTHER_STATS_PERMISSION, false) && hasPermission(sender, ADMIN_PERMISSION, false))) {
-            for (Player p : Bukkit.getOnlinePlayers()) {
-                completion.add(p.getName());
-            }
-        }
-    }
+    public static void sendStats(CommandSenderWrapper sender, PlayerStatistic statistic) {
+        sender.sendMessage(i18n("statistics_header").replace("%player%", statistic.getName()));
 
-    public static void sendStats(CommandSender player, PlayerStatistic statistic) {
-        player.sendMessage(i18n("statistics_header").replace("%player%", statistic.getName()));
-
-        player.sendMessage(i18n("statistics_kills", false).replace("%kills%",
+        sender.sendMessage(i18n("statistics_kills", false).replace("%kills%",
                 Integer.toString(statistic.getKills())));
-        player.sendMessage(i18n("statistics_deaths", false).replace("%deaths%",
+        sender.sendMessage(i18n("statistics_deaths", false).replace("%deaths%",
                 Integer.toString(statistic.getDeaths())));
-        player.sendMessage(i18n("statistics_kd", false).replace("%kd%",
+        sender.sendMessage(i18n("statistics_kd", false).replace("%kd%",
                 Double.toString(statistic.getKD())));
-        player.sendMessage(i18n("statistics_wins", false).replace("%wins%",
+        sender.sendMessage(i18n("statistics_wins", false).replace("%wins%",
                 Integer.toString(statistic.getWins())));
-        player.sendMessage(i18n("statistics_loses", false).replace("%loses%",
+        sender.sendMessage(i18n("statistics_loses", false).replace("%loses%",
                 Integer.toString(statistic.getLoses())));
-        player.sendMessage(i18n("statistics_games", false).replace("%games%",
+        sender.sendMessage(i18n("statistics_games", false).replace("%games%",
                 Integer.toString(statistic.getGames())));
-        player.sendMessage(i18n("statistics_beds", false).replace("%beds%",
+        sender.sendMessage(i18n("statistics_beds", false).replace("%beds%",
                 Integer.toString(statistic.getDestroyedBeds())));
-        player.sendMessage(i18n("statistics_score", false).replace("%score%",
+        sender.sendMessage(i18n("statistics_score", false).replace("%score%",
                 Integer.toString(statistic.getScore())));
     }
-
 }

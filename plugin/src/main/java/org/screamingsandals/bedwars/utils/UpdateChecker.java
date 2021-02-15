@@ -1,15 +1,12 @@
 package org.screamingsandals.bedwars.utils;
 
-import lombok.Data;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.screamingsandals.bedwars.Main;
-import org.screamingsandals.bedwars.commands.BaseCommand;
+import org.screamingsandals.bedwars.commands.old.BaseCommand;
+import org.screamingsandals.lib.event.EventManager;
+import org.screamingsandals.lib.player.PlayerMapper;
+import org.screamingsandals.lib.player.event.SPlayerJoinEvent;
 import org.spongepowered.configurate.ConfigurateException;
-import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.gson.GsonConfigurationLoader;
 
 import java.io.BufferedReader;
@@ -38,13 +35,25 @@ public class UpdateChecker {
                                 if (Main.getConfigurator().node("update-checker", "console").getBoolean()) {
                                     mpr("update_checker_zero")
                                             .replace("version", result.node("version").getString())
-                                            .send(Bukkit.getConsoleSender());
+                                            .send(PlayerMapper.getConsoleSender());
                                     mpr("update_checker_zero_second")
                                             .replace("url", result.node("zero_download_url").getString())
-                                            .send(Bukkit.getConsoleSender());
+                                            .send(PlayerMapper.getConsoleSender());
                                 }
                                 if (Main.getConfigurator().node("update-checker", "admins").getBoolean()) {
-                                    Main.getInstance().registerBedwarsListener(new UpdateListener(result));
+                                    EventManager.getDefaultEventManager().register(SPlayerJoinEvent.class, event -> {
+                                        var player = event.getPlayer();
+                                        if (BaseCommand.hasPermission(player.as(Player.class), BaseCommand.ADMIN_PERMISSION, false)) {
+                                            if (Main.getConfigurator().node("update-checker", "admins").getBoolean() && result.node("zero_update").getBoolean()) {
+                                                mpr("update_checker_zero")
+                                                        .replace("version", result.node("version").getString())
+                                                        .send(player);
+                                                mpr("update_checker_zero_second")
+                                                        .replace("url", result.node("zero_download_url").getString())
+                                                        .send(player);
+                                            }
+                                        }
+                                    });
                                 }
                             }
                         }
@@ -52,25 +61,5 @@ public class UpdateChecker {
                         e.printStackTrace();
                     }
                 });
-    }
-
-    @Data
-    public static class UpdateListener implements Listener {
-        private final ConfigurationNode result;
-
-        @EventHandler
-        public void onPlayerJoin(PlayerJoinEvent event) {
-            Player player = event.getPlayer();
-            if (BaseCommand.hasPermission(player, BaseCommand.ADMIN_PERMISSION, false)) {
-                if (Main.getConfigurator().node("update-checker", "admins").getBoolean() && result.node("zero_update").getBoolean()) {
-                    mpr("update_checker_zero")
-                            .replace("version", result.node("version").getString())
-                            .send(player);
-                    mpr("update_checker_zero_second")
-                            .replace("url", result.node("zero_download_url").getString())
-                            .send(player);
-                }
-            }
-        }
     }
 }

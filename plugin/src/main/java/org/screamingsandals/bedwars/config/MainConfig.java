@@ -33,15 +33,15 @@ public class MainConfig {
     }
 
     public void load() {
-        var dataFolder = Main.getInstance().getDataFolder();
-        dataFolder.mkdirs();
+        var dataFolder = Main.getInstance().getPluginDescription().getDataFolder();
+        dataFolder.toFile().mkdirs();
 
-        var langFolder = new File(dataFolder, "languages");
+        var langFolder = dataFolder.resolve("languages").toFile();
 
         if (!langFolder.exists()) {
             langFolder.mkdirs();
 
-            File[] listOfFiles = dataFolder.listFiles();
+            File[] listOfFiles = dataFolder.toFile().listFiles();
             if (listOfFiles != null && listOfFiles.length > 0) {
                 for (File file : listOfFiles) {
                     if (file.isFile() && file.getName().startsWith("messages_") && file.getName().endsWith(".yml")) {
@@ -52,29 +52,29 @@ public class MainConfig {
             }
         }
 
-        var database = new File(dataFolder, "database");
-        database.mkdirs();
+        var database = dataFolder.resolve("database");
+        database.toFile().mkdirs();
 
-        var recordFile = new File(dataFolder, "record.yml");
-        var newRecordFile = new File(database, "record.yml");
+        var recordFile = dataFolder.resolve("record.yml").toFile();
+        var newRecordFile = database.resolve("record.yml").toFile();
         if (recordFile.exists() && !newRecordFile.exists()) {
             recordFile.renameTo(newRecordFile);
         }
 
-        var signFile = new File(dataFolder, "sign.yml");
-        var newSignFile = new File(database, "sign.yml");
+        var signFile = dataFolder.resolve("sign.yml").toFile();
+        var newSignFile = database.resolve("sign.yml").toFile();
         if (signFile.exists() && !newSignFile.exists()) {
             signFile.renameTo(newSignFile);
         }
 
-        var holodbFile = new File(dataFolder, "holodb.yml");
-        var newHolodbFile = new File(database, "holodb.yml");
+        var holodbFile = dataFolder.resolve("holodb.yml").toFile();
+        var newHolodbFile = database.resolve("holodb.yml").toFile();
         if (holodbFile.exists() && !newHolodbFile.exists()) {
             holodbFile.renameTo(newHolodbFile);
         }
 
-        var holodbLeaderboardFile = new File(dataFolder, "holodb_leaderboard.yml");
-        var newHolodbLeaderboardFile = new File(database, "holodb_leaderboard.yml");
+        var holodbLeaderboardFile = dataFolder.resolve( "holodb_leaderboard.yml").toFile();
+        var newHolodbLeaderboardFile = database.resolve("holodb_leaderboard.yml").toFile();
         if (holodbLeaderboardFile.exists() && !newHolodbLeaderboardFile.exists()) {
             holodbLeaderboardFile.renameTo(newHolodbLeaderboardFile);
         }
@@ -528,6 +528,7 @@ public class MainConfig {
                     .key("rejoin").defValue(true)
                     .key("autojoin").defValue(true)
                     .key("leaderboard").defValue(true)
+                    .key("party").defValue(true)
                     .back()
                 .section("experimental")
                     .section("new-scoreboard-system")

@@ -1,32 +1,31 @@
 package org.screamingsandals.bedwars.commands;
 
-import org.screamingsandals.bedwars.Main;
-import org.bukkit.command.CommandSender;
+import cloud.commandframework.Command;
+import cloud.commandframework.CommandManager;
 import org.bukkit.entity.Player;
+import org.screamingsandals.bedwars.Main;
+import org.screamingsandals.lib.sender.CommandSenderWrapper;
 
-import java.util.List;
-
-import static org.screamingsandals.bedwars.lib.lang.I18n.i18n;
+import static org.screamingsandals.bedwars.lib.lang.I.i18n;
 
 public class LeaveCommand extends BaseCommand {
-
-    public LeaveCommand() {
-        super("leave", LEAVE_PERMISSION, false, Main.getConfigurator().node("default-permissions", "leave").getBoolean());
+    public LeaveCommand(CommandManager<CommandSenderWrapper> manager) {
+        super(manager, "leave", BedWarsPermission.LEAVE_PERMISSION, false);
     }
 
     @Override
-    public boolean execute(CommandSender sender, List<String> args) {
-        Player player = (Player) sender;
-        if (Main.isPlayerInGame(player)) {
-            Main.getPlayerGameProfile(player).changeGame(null);
-        } else {
-            player.sendMessage(i18n("you_arent_in_game"));
-        }
-        return true;
+    protected void construct(Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder) {
+        manager.command(
+                commandSenderWrapperBuilder
+                .handler(commandContext -> {
+                    // TODO: Use Wrapper (bedwars changes needed)
+                    var player = commandContext.getSender().as(Player.class);
+                    if (Main.isPlayerInGame(player)) {
+                        Main.getPlayerGameProfile(player).changeGame(null);
+                    } else {
+                        player.sendMessage(i18n("you_arent_in_game"));
+                    }
+                })
+        );
     }
-
-    @Override
-    public void completeTab(List<String> completion, CommandSender sender, List<String> args) {
-    }
-
 }

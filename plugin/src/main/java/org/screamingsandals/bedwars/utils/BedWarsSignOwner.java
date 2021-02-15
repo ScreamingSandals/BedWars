@@ -10,7 +10,7 @@ import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.screamingsandals.bedwars.Main;
-import org.screamingsandals.bedwars.commands.AdminCommand;
+import org.screamingsandals.bedwars.commands.old.AdminCommand;
 import org.screamingsandals.bedwars.game.Game;
 import org.screamingsandals.bedwars.lib.signmanager.SignBlock;
 import org.screamingsandals.bedwars.lib.signmanager.SignOwner;

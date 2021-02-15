@@ -8,7 +8,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.screamingsandals.bedwars.commands.BaseCommand;
+import org.screamingsandals.bedwars.commands.old.BaseCommand;
 
 import java.util.List;
 

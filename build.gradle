@@ -7,7 +7,6 @@ allprojects {
 
 buildscript {
     repositories {
-        mavenLocal()
         maven { url 'https://repo.screamingsandals.org/public/' }
         maven { url 'https://plugins.gradle.org/m2' }
     }
@@ -29,6 +28,7 @@ subprojects {
     }
 
     repositories {
+        mavenLocal() // remove after testing
         maven { url 'https://repo.extendedclip.com/content/repositories/placeholderapi/'  }
         maven { url 'http://repo.onarandombox.com/content/groups/public'  }
         maven { url 'https://ci.frostcast.net/plugin/repository/everything'  }

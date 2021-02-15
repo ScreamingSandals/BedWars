@@ -32,7 +32,7 @@ import org.screamingsandals.bedwars.api.events.BedwarsPlayerKilledEvent;
 import org.screamingsandals.bedwars.api.events.BedwarsPlayerRespawnedEvent;
 import org.screamingsandals.bedwars.api.events.BedwarsTeamChestOpenEvent;
 import org.screamingsandals.bedwars.api.game.GameStatus;
-import org.screamingsandals.bedwars.commands.BaseCommand;
+import org.screamingsandals.bedwars.commands.old.BaseCommand;
 import org.screamingsandals.bedwars.game.*;
 import org.screamingsandals.bedwars.inventories.TeamSelectorInventory;
 import org.screamingsandals.bedwars.statistics.PlayerStatistic;
@@ -45,7 +45,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.screamingsandals.bedwars.lib.lang.I18n.*;
-import static org.screamingsandals.bedwars.commands.BaseCommand.ADMIN_PERMISSION;
+import static org.screamingsandals.bedwars.commands.old.BaseCommand.ADMIN_PERMISSION;
 
 public class PlayerListener implements Listener {
 

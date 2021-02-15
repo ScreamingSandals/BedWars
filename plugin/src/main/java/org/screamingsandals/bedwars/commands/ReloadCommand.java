@@ -1,64 +1,63 @@
 package org.screamingsandals.bedwars.commands;
 
-import org.bukkit.event.HandlerList;
+import cloud.commandframework.Command;
+import cloud.commandframework.CommandManager;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.game.GameStatus;
-import org.bukkit.Bukkit;
-import org.bukkit.command.CommandSender;
-import org.bukkit.scheduler.BukkitRunnable;
+import org.screamingsandals.lib.sender.CommandSenderWrapper;
 
-import java.util.List;
-
-import static org.screamingsandals.bedwars.lib.lang.I18n.i18n;
+import static org.screamingsandals.bedwars.lib.lang.I.i18n;
 
 public class ReloadCommand extends BaseCommand {
-
-    public ReloadCommand() {
-        super("reload", ADMIN_PERMISSION, true, false);
+    public ReloadCommand(CommandManager<CommandSenderWrapper> manager) {
+        super(manager, "reload", BedWarsPermission.ADMIN_PERMISSION, true);
     }
 
     @Override
-    public boolean execute(CommandSender sender, List<String> args) {
-        sender.sendMessage(i18n("safe_reload"));
+    protected void construct(Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder) {
+        manager.command(
+                commandSenderWrapperBuilder
+                    .handler(commandContext -> {
+                        var sender = commandContext.getSender();
 
-        for (String game : Main.getGameNames()) {
-            Main.getGame(game).stop();
-        }
+                        sender.sendMessage(i18n("safe_reload"));
 
-        new BukkitRunnable() {
-            public int timer = 60;
+                        for (String game : Main.getGameNames()) {
+                            Main.getGame(game).stop();
+                        }
+                        var plugin = Main.getInstance().getPluginDescription().as(JavaPlugin.class);
 
-            @Override
-            public void run() {
-                boolean gameRuns = false;
-                for (String game : Main.getGameNames()) {
-                    if (Main.getGame(game).getStatus() != GameStatus.DISABLED) {
-                        gameRuns = true;
-                        break;
-                    }
-                }
+                        new BukkitRunnable() {
+                            public int timer = 60;
 
-                if (gameRuns && timer == 0) {
-                    sender.sendMessage(i18n("safe_reload_failed_to_stop_game"));
-                }
+                            @Override
+                            public void run() {
+                                boolean gameRuns = false;
+                                for (String game : Main.getGameNames()) {
+                                    if (Main.getGame(game).getStatus() != GameStatus.DISABLED) {
+                                        gameRuns = true;
+                                        break;
+                                    }
+                                }
 
-                if (!gameRuns || timer == 0) {
-                    this.cancel();
-                    Main.getInstance().getPluginLoader().disablePlugin(Main.getInstance());
-                    Main.getInstance().getPluginLoader().enablePlugin(Main.getInstance());
-                    sender.sendMessage("Plugin reloaded!");
-                    return;
-                }
-                timer--;
-            }
+                                if (gameRuns && timer == 0) {
+                                    sender.sendMessage(i18n("safe_reload_failed_to_stop_game"));
+                                }
 
-        }.runTaskTimer(Main.getInstance(), 0L, 20L);
-        return true;
+                                if (!gameRuns || timer == 0) {
+                                    this.cancel();
+                                    plugin.getPluginLoader().disablePlugin(plugin);
+                                    plugin.getPluginLoader().enablePlugin(plugin);
+                                    sender.sendMessage("Plugin reloaded!");
+                                    return;
+                                }
+                                timer--;
+                            }
+
+                        }.runTaskTimer(plugin, 0L, 20L);
+                    })
+        );
     }
-
-    @Override
-    public void completeTab(List<String> completion, CommandSender sender, List<String> args) {
-        // Nothing to add.
-    }
-
 }

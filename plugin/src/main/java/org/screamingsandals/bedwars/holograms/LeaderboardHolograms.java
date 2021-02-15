@@ -6,7 +6,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.statistics.LeaderboardEntry;
-import org.screamingsandals.bedwars.commands.BaseCommand;
+import org.screamingsandals.bedwars.commands.old.BaseCommand;
 import org.screamingsandals.bedwars.lib.nms.holograms.Hologram;
 import org.screamingsandals.bedwars.lib.nms.holograms.TouchHandler;
 import org.screamingsandals.bedwars.utils.PreparedLocation;
