@@ -11,6 +11,11 @@ public class SaveCommand extends BaseAdminSubCommand {
 
     @Override
     public void construct(Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder) {
+        manager.command(
+                commandSenderWrapperBuilder
+                        .handler(commandContext -> editMode(commandContext, (sender, game) -> {
 
+                        }))
+        );
     }
 }
