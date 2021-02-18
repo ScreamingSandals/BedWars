@@ -2,7 +2,7 @@ package org.screamingsandals.bedwars.utils;
 
 import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.Main;
-import org.screamingsandals.bedwars.commands.old.BaseCommand;
+import org.screamingsandals.bedwars.commands.BedWarsPermission;
 import org.screamingsandals.lib.event.EventManager;
 import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.player.event.SPlayerJoinEvent;
@@ -43,7 +43,7 @@ public class UpdateChecker {
                                 if (Main.getConfigurator().node("update-checker", "admins").getBoolean()) {
                                     EventManager.getDefaultEventManager().register(SPlayerJoinEvent.class, event -> {
                                         var player = event.getPlayer();
-                                        if (BaseCommand.hasPermission(player.as(Player.class), BaseCommand.ADMIN_PERMISSION, false)) {
+                                        if (player.hasPermission(BedWarsPermission.ADMIN_PERMISSION.asPermission())) {
                                             if (Main.getConfigurator().node("update-checker", "admins").getBoolean() && result.node("zero_update").getBoolean()) {
                                                 mpr("update_checker_zero")
                                                         .replace("version", result.node("version").getString())

@@ -1,5 +1,6 @@
 package org.screamingsandals.bedwars.special;
 
+import org.bukkit.plugin.java.JavaPlugin;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.api.Team;
@@ -111,6 +112,6 @@ public class TNTSheep extends SpecialItem implements org.screamingsandals.bedwar
                 sheep.remove();
                 game.unregisterSpecialItem(TNTSheep.this);
             }
-        }.runTaskLater(Main.getInstance(), (explosionTime + 13));
+        }.runTaskLater(Main.getInstance().getPluginDescription().as(JavaPlugin.class), (explosionTime + 13));
     }
 }

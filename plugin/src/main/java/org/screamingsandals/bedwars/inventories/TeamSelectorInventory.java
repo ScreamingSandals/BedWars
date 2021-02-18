@@ -1,6 +1,7 @@
 package org.screamingsandals.bedwars.inventories;
 
 import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
@@ -103,7 +104,7 @@ public class TeamSelectorInventory implements Listener {
 
     public void openForPlayer(Player player) {
         var event = new BedwarsOpenTeamSelectionEvent(this.game, player);
-        Main.getInstance().getServer().getPluginManager().callEvent(event);
+        Bukkit.getServer().getPluginManager().callEvent(event);
 
         if (event.isCancelled()) {
             return;

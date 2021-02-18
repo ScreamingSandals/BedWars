@@ -10,6 +10,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 import org.screamingsandals.bedwars.Main;
@@ -75,7 +76,7 @@ public class MiscUtils {
                     player.sendMessage(message);
                 }
             }
-        }.runTask(Main.getInstance());
+        }.runTask(Main.getInstance().getPluginDescription().as(JavaPlugin.class));
     }
 
     public static int getIntFromProperty(String name, String fallback, BedwarsApplyPropertyToBoughtItem event) {

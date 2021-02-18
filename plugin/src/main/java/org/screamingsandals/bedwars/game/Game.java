@@ -19,6 +19,7 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.DisplaySlot;
@@ -41,8 +42,8 @@ import org.screamingsandals.bedwars.api.upgrades.UpgradeStorage;
 import org.screamingsandals.bedwars.api.utils.DelayFactory;
 import org.screamingsandals.bedwars.boss.BossBarSelector;
 import org.screamingsandals.bedwars.boss.XPBar;
+import org.screamingsandals.bedwars.commands.AdminCommand;
 import org.screamingsandals.bedwars.commands.StatsCommand;
-import org.screamingsandals.bedwars.commands.old.AdminCommand;
 import org.screamingsandals.bedwars.config.GameConfigurationContainer;
 import org.screamingsandals.bedwars.config.RecordSave;
 import org.screamingsandals.bedwars.inventories.TeamSelectorInventory;
@@ -57,6 +58,7 @@ import org.screamingsandals.bedwars.statistics.PlayerStatistic;
 import org.screamingsandals.bedwars.utils.*;
 import org.screamingsandals.lib.material.MaterialHolder;
 import org.screamingsandals.lib.material.builder.ItemFactory;
+import org.screamingsandals.lib.player.PlayerMapper;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
@@ -173,7 +175,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 } else if (firstAttempt) {
                     Bukkit.getConsoleSender().sendMessage(
                             ChatColor.RED + "[B" + ChatColor.WHITE + "W] " + ChatColor.YELLOW + "Arena " + game.name + " can't be loaded, because world " + worldName + " is missing! We will try it again after all plugins will be loaded!");
-                    Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> loadGame(file, false), 10L);
+                    Bukkit.getScheduler().runTaskLater(Main.getInstance().getPluginDescription().as(JavaPlugin.class), () -> loadGame(file, false), 10L);
                     return null;
                 } else {
                     Bukkit.getConsoleSender().sendMessage(
@@ -191,7 +193,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
             if (Main.getConfigurator().node("prevent-spawning-mobs").getBoolean(true)) {
                 for (Entity e : game.world.getEntitiesByClass(Monster.class)) {
-                    if (GameCreator.isInArea(e.getLocation(), game.pos1, game.pos2)) {
+                    if (ArenaUtils.isInArea(e.getLocation(), game.pos1, game.pos2)) {
                         PaperLib.getChunkAtAsync(e.getLocation())
                                 .thenAccept(chunk -> e.remove());
                     }
@@ -220,7 +222,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 } else if (firstAttempt) {
                     Bukkit.getConsoleSender().sendMessage(
                             ChatColor.RED + "[B" + ChatColor.WHITE + "W] " + ChatColor.YELLOW + "Arena " + game.name + " can't be loaded, because world " + worldName + " is missing! We will try it again after all plugins will be loaded!");
-                    Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> loadGame(file, false), 10L);
+                    Bukkit.getScheduler().runTaskLater(Main.getInstance().getPluginDescription().as(JavaPlugin.class), () -> loadGame(file, false), 10L);
                     return null;
                 } else {
                     Bukkit.getConsoleSender().sendMessage(
@@ -307,7 +309,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     }
 
     public void removeEntityAsync(Entity e) {
-        if (GameCreator.isInArea(e.getLocation(), pos1, pos2)) {
+        if (ArenaUtils.isInArea(e.getLocation(), pos1, pos2)) {
             PaperLib.getChunkAtAsync(e.getLocation())
                     .thenAccept(chunk -> e.remove());
         }
@@ -468,7 +470,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     }
 
     @Override
-    public org.screamingsandals.bedwars.api.Team getTeamFromName(String name) {
+    public Team getTeamFromName(String name) {
         if (name == null) {
             return null;
         }
@@ -508,13 +510,13 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         if (Main.isFarmBlock(block.getType())) {
             return true;
         }
-        if (!GameCreator.isInArea(block.getLocation(), pos1, pos2)) {
+        if (!ArenaUtils.isInArea(block.getLocation(), pos1, pos2)) {
             return false;
         }
 
         BedwarsPlayerBuildBlock event = new BedwarsPlayerBuildBlock(this, player.player, getPlayerTeam(player), block,
                 itemInHand, replaced);
-        Main.getInstance().getServer().getPluginManager().callEvent(event);
+        Bukkit.getServer().getPluginManager().callEvent(event);
 
         if (event.isCancelled()) {
             return false;
@@ -544,13 +546,13 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         if (Main.isFarmBlock(block.getType())) {
             return true;
         }
-        if (!GameCreator.isInArea(block.getLocation(), pos1, pos2)) {
+        if (!ArenaUtils.isInArea(block.getLocation(), pos1, pos2)) {
             return false;
         }
 
         final BedwarsPlayerBreakBlock breakEvent = new BedwarsPlayerBreakBlock(this, player.player, getPlayerTeam(player),
                 block);
-        Main.getInstance().getServer().getPluginManager().callEvent(breakEvent);
+        Bukkit.getServer().getPluginManager().callEvent(breakEvent);
 
         if (breakEvent.isCancelled()) {
             return false;
@@ -739,7 +741,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
                     BedwarsTargetBlockDestroyedEvent targetBlockDestroyed = new BedwarsTargetBlockDestroyedEvent(this,
                             broker, team);
-                    Main.getInstance().getServer().getPluginManager().callEvent(targetBlockDestroyed);
+                    Bukkit.getServer().getPluginManager().callEvent(targetBlockDestroyed);
 
                     if (broker != null) {
                         if (Main.isPlayerStatisticsEnabled()) {
@@ -758,7 +760,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
     public void internalJoinPlayer(GamePlayer gamePlayer) {
         BedwarsPlayerJoinEvent joinEvent = new BedwarsPlayerJoinEvent(this, gamePlayer.player);
-        Main.getInstance().getServer().getPluginManager().callEvent(joinEvent);
+        Bukkit.getServer().getPluginManager().callEvent(joinEvent);
 
         if (joinEvent.isCancelled()) {
             Debug.info(gamePlayer.player.getName() + " can't join to the game: event cancelled");
@@ -873,7 +875,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         }
 
         BedwarsPlayerJoinedEvent joinedEvent = new BedwarsPlayerJoinedEvent(this, getPlayerTeam(gamePlayer), gamePlayer.player);
-        Main.getInstance().getServer().getPluginManager().callEvent(joinedEvent);
+        Bukkit.getServer().getPluginManager().callEvent(joinedEvent);
     }
 
     public void internalLeavePlayer(GamePlayer gamePlayer) {
@@ -883,7 +885,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
         BedwarsPlayerLeaveEvent playerLeaveEvent = new BedwarsPlayerLeaveEvent(this, gamePlayer.player,
                 getPlayerTeam(gamePlayer));
-        Main.getInstance().getServer().getPluginManager().callEvent(playerLeaveEvent);
+        Bukkit.getServer().getPluginManager().callEvent(playerLeaveEvent);
         Debug.info(name + ": player  " + gamePlayer.player.getName() + " is leaving the game");
 
         if (experimentalBoard != null) {
@@ -962,7 +964,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             if (!preServerRestart) {
                 BedWarsPlayerLastLeaveEvent playerLastLeaveEvent = new BedWarsPlayerLastLeaveEvent(this, gamePlayer.player,
                         getPlayerTeam(gamePlayer));
-                Main.getInstance().getServer().getPluginManager().callEvent(playerLastLeaveEvent);
+                Bukkit.getServer().getPluginManager().callEvent(playerLastLeaveEvent);
             }
 
             if (status != GameStatus.WAITING) {
@@ -999,7 +1001,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
     @SneakyThrows
     public void saveToConfig() {
-        File dir = new File(Main.getInstance().getDataFolder(), "arenas");
+        var dir = Main.getInstance().getPluginDescription().getDataFolder().resolve("arenas").toFile();
         if (!dir.exists())
             dir.mkdirs();
         if (file == null) {
@@ -1096,7 +1098,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 public void run() {
                     updateSigns();
                 }
-            }.runTask(Main.getInstance());
+            }.runTask(Main.getInstance().getPluginDescription().as(JavaPlugin.class));
 
             if (Main.getConfigurator().node("bossbar", "use-xp-bar").getBoolean(false)) {
                 statusbar = new XPBar();
@@ -1128,7 +1130,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         }
 
         if (preparing) {
-            Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> joinToGame(player), 1L);
+            Bukkit.getScheduler().runTaskLater(Main.getInstance().getPluginDescription().as(JavaPlugin.class), () -> joinToGame(player), 1L);
             return;
         }
 
@@ -1187,7 +1189,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                             BungeeUtils.sendPlayerBungeeMessage(player,
                                     i18n("game_is_full").replace("%arena%", Game.this.name));
                         }
-                    }.runTaskLater(Main.getInstance(), 5L);
+                    }.runTaskLater(Main.getInstance().getPluginDescription().as(JavaPlugin.class), 5L);
                 } else {
                     player.sendMessage(i18n("game_is_full").replace("%arena%", this.name));
                 }
@@ -1275,7 +1277,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
         CurrentTeam cur = getPlayerTeam(player);
         BedwarsPlayerJoinTeamEvent event = new BedwarsPlayerJoinTeamEvent(current, player.player, this, cur);
-        Main.getInstance().getServer().getPluginManager().callEvent(event);
+        Bukkit.getServer().getPluginManager().callEvent(event);
 
         if (event.isCancelled()) {
             return;
@@ -1602,8 +1604,8 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 Debug.info(name + ": preparing game");
                 preparing = true;
                 BedwarsGameStartEvent startE = new BedwarsGameStartEvent(this);
-                Main.getInstance().getServer().getPluginManager().callEvent(startE);
-                Main.getInstance().getServer().getPluginManager().callEvent(statusE);
+                Bukkit.getServer().getPluginManager().callEvent(startE);
+                Bukkit.getServer().getPluginManager().callEvent(statusE);
 
                 if (startE.isCancelled()) {
                     tick.setNextCountdown(pauseCountdown);
@@ -1640,7 +1642,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                         gameScoreboard.getObjective("lobby").unregister();
                     }
                     gameScoreboard.clearSlot(DisplaySlot.SIDEBAR);
-                    Bukkit.getScheduler().runTaskLater(Main.getInstance(), this::updateSigns, 3L);
+                    Bukkit.getScheduler().runTaskLater(Main.getInstance().getPluginDescription().as(JavaPlugin.class), this::updateSigns, 3L);
                     for (GameStore store : gameStore) {
                         LivingEntity villager = store.spawn();
                         if (villager != null) {
@@ -1781,10 +1783,10 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                                                     this.cancel();
                                                 }
                                             }
-                                        }.runTaskTimer(Main.getInstance(), 50L, 10L);
+                                        }.runTaskTimer(Main.getInstance().getPluginDescription().as(JavaPlugin.class), 50L, 10L);
                                     }
                                 }
-                            }.runTask(Main.getInstance());
+                            }.runTask(Main.getInstance().getPluginDescription().as(JavaPlugin.class));
                         }
                     }
 
@@ -1833,8 +1835,8 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                     preparing = false;
 
                     BedwarsGameStartedEvent startedEvent = new BedwarsGameStartedEvent(this);
-                    Main.getInstance().getServer().getPluginManager().callEvent(startedEvent);
-                    Main.getInstance().getServer().getPluginManager().callEvent(statusE);
+                    Bukkit.getServer().getPluginManager().callEvent(startedEvent);
+                    Bukkit.getServer().getPluginManager().callEvent(statusE);
                     updateScoreboard();
                     Debug.info(name + ": game prepared");
                 }
@@ -1885,7 +1887,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
                                             if (Main.getConfigurator().node("statistics", "show-on-game-end")
                                                     .getBoolean()) {
-                                                StatsCommand.sendStats(player.player, Main.getPlayerStatisticsManager().getStatistic(player.player));
+                                                StatsCommand.sendStats(PlayerMapper.wrapPlayer(player.player), Main.getPlayerStatisticsManager().getStatistic(player.player));
                                             }
 
                                         }
@@ -1906,7 +1908,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                                                     }
                                                 }
 
-                                            }.runTaskLater(Main.getInstance(), (2 + postGameWaiting) * 20);
+                                            }.runTaskLater(Main.getInstance().getPluginDescription().as(JavaPlugin.class), (2 + postGameWaiting) * 20);
                                         }
                                     } else {
                                         Title.send(player.player, i18n("you_lost", false), subtitle);
@@ -1922,7 +1924,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
                         BedwarsGameEndingEvent endingEvent = new BedwarsGameEndingEvent(this, winner);
                         Bukkit.getPluginManager().callEvent(endingEvent);
-                        Main.getInstance().getServer().getPluginManager().callEvent(statusE);
+                        Bukkit.getServer().getPluginManager().callEvent(statusE);
                         Debug.info(name + ": game is ending");
 
                         tick.setNextCountdown(postGameWaiting);
@@ -1981,7 +1983,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
                             BedwarsResourceSpawnEvent resourceSpawnEvent = new BedwarsResourceSpawnEvent(this, spawner,
                                     type.getStack(calculatedStack));
-                            Main.getInstance().getServer().getPluginManager().callEvent(resourceSpawnEvent);
+                            Bukkit.getServer().getPluginManager().callEvent(resourceSpawnEvent);
 
                             if (resourceSpawnEvent.isCancelled()) {
                                 continue;
@@ -2022,8 +2024,8 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         // Phase 9: Check if status is rebuilding and rebuild game
         if (status == GameStatus.REBUILDING) {
             BedwarsGameEndEvent event = new BedwarsGameEndEvent(this);
-            Main.getInstance().getServer().getPluginManager().callEvent(event);
-            Main.getInstance().getServer().getPluginManager().callEvent(statusE);
+            Bukkit.getServer().getPluginManager().callEvent(event);
+            Bukkit.getServer().getPluginManager().callEvent(statusE);
 
             String message = i18nc("game_end", customPrefix);
             for (GamePlayer player : (List<GamePlayer>) ((ArrayList<GamePlayer>) players).clone()) {
@@ -2045,7 +2047,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                             }
                         }
 
-                    }.runTaskLater(Main.getInstance(), 40);
+                    }.runTaskLater(Main.getInstance().getPluginDescription().as(JavaPlugin.class), 40);
                 }
             }
 
@@ -2065,16 +2067,16 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                     public void run() {
                         if (Main.getConfigurator().node("bungee", "serverRestart").getBoolean()) {
                             BedWarsServerRestartEvent serverRestartEvent = new BedWarsServerRestartEvent();
-                            Main.getInstance().getServer().getPluginManager().callEvent(serverRestartEvent);
+                            Bukkit.getServer().getPluginManager().callEvent(serverRestartEvent);
 
-                            Main.getInstance().getServer()
-                                    .dispatchCommand(Main.getInstance().getServer().getConsoleSender(), "restart");
+                            Bukkit.getServer()
+                                    .dispatchCommand(Bukkit.getServer().getConsoleSender(), "restart");
                         } else if (Main.getConfigurator().node("bungee", "serverStop").getBoolean()) {
                             Bukkit.shutdown();
                         }
                     }
 
-                }.runTaskLater(Main.getInstance(), 30L);
+                }.runTaskLater(Main.getInstance().getPluginDescription().as(JavaPlugin.class), 30L);
             }
         }
     }
@@ -2090,7 +2092,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         activeDelays.clear();
 
         BedwarsPreRebuildingEvent preRebuildingEvent = new BedwarsPreRebuildingEvent(this);
-        Main.getInstance().getServer().getPluginManager().callEvent(preRebuildingEvent);
+        Bukkit.getServer().getPluginManager().callEvent(preRebuildingEvent);
 
         for (ItemSpawner spawner : spawners) {
             spawner.currentLevel = spawner.startLevel;
@@ -2107,7 +2109,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         region.regen();
         // Remove items
         for (Entity e : this.world.getEntities()) {
-            if (GameCreator.isInArea(e.getLocation(), pos1, pos2)) {
+            if (ArenaUtils.isInArea(e.getLocation(), pos1, pos2)) {
                 if (e instanceof Item) {
                     removeEntityAsync(e);
                 }
@@ -2163,7 +2165,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         UpgradeRegistry.clearAll(this);
 
         BedwarsPostRebuildingEvent postRebuildingEvent = new BedwarsPostRebuildingEvent(this);
-        Main.getInstance().getServer().getPluginManager().callEvent(postRebuildingEvent);
+        Bukkit.getServer().getPluginManager().callEvent(postRebuildingEvent);
 
         this.status = this.afterRebuild;
         this.countdown = -1;
@@ -2205,7 +2207,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 Game.this.run();
             }
 
-        }.runTaskTimer(Main.getInstance(), 0, 20));
+        }.runTaskTimer(Main.getInstance().getPluginDescription().as(JavaPlugin.class), 0, 20));
     }
 
     private void cancelTask() {
@@ -2546,7 +2548,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
     @Override
     public boolean isLocationInArena(Location location) {
-        return GameCreator.isInArea(location, pos1, pos2);
+        return ArenaUtils.isInArea(location, pos1, pos2);
     }
 
     @Override

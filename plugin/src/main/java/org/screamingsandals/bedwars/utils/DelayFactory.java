@@ -1,5 +1,6 @@
 package org.screamingsandals.bedwars.utils;
 
+import org.bukkit.plugin.java.JavaPlugin;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.api.special.SpecialItem;
@@ -56,6 +57,6 @@ public class DelayFactory implements org.screamingsandals.bedwars.api.utils.Dela
                     }
                 }
             }
-        }.runTaskTimer(Main.getInstance(), 0L, 20L);
+        }.runTaskTimer(Main.getInstance().getPluginDescription().as(JavaPlugin.class), 0L, 20L);
     }
 }

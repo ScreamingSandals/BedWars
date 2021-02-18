@@ -2,19 +2,20 @@ package org.screamingsandals.bedwars.holograms;
 
 import static org.screamingsandals.bedwars.lib.lang.I.i18n;
 
-import java.io.File;
 import java.util.*;
 import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.statistics.PlayerStatistic;
-import org.screamingsandals.bedwars.commands.old.BaseCommand;
+import org.screamingsandals.bedwars.commands.BedWarsPermission;
 import org.screamingsandals.bedwars.lib.nms.holograms.Hologram;
 import org.screamingsandals.bedwars.lib.nms.holograms.TouchHandler;
 import org.screamingsandals.bedwars.utils.PreparedLocation;
+import org.screamingsandals.lib.player.PlayerMapper;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
@@ -42,7 +43,7 @@ public class StatisticsHolograms implements TouchHandler {
         this.holograms = new HashMap<>();
         this.hologramLocations = new ArrayList<>();
 
-        File file = new File(Main.getInstance().getDataFolder(), "database/holodb.yml");
+        var file = Main.getInstance().getPluginDescription().getDataFolder().resolve("database").resolve("holodb.yml").toFile();
 
         var loader = YamlConfigurationLoader.builder()
                 .file(file)
@@ -75,7 +76,7 @@ public class StatisticsHolograms implements TouchHandler {
 	}
 
 	public void updateHolograms(Player player) {
-        Main.getInstance().getServer().getScheduler().runTask(Main.getInstance(), () ->
+        Bukkit.getServer().getScheduler().runTask(Main.getInstance().getPluginDescription().as(JavaPlugin.class), () ->
             this.hologramLocations.forEach(holoLocation ->
                     holoLocation.asOptional(Location.class).ifPresent(location ->
                         this.updatePlayerHologram(player, location)
@@ -85,8 +86,8 @@ public class StatisticsHolograms implements TouchHandler {
 	}
 
 	public void updateHolograms(Player player, long delay) {
-        Main.getInstance().getServer().getScheduler().runTaskLater(
-                Main.getInstance(),
+        Bukkit.getServer().getScheduler().runTaskLater(
+                Main.getInstance().getPluginDescription().as(JavaPlugin.class),
                 () -> this.updateHolograms(player),
                 delay
         );
@@ -94,7 +95,7 @@ public class StatisticsHolograms implements TouchHandler {
 
 	public void updateHolograms() {
         for (final Player player : Bukkit.getServer().getOnlinePlayers()) {
-            Main.getInstance().getServer().getScheduler().runTask(Main.getInstance(), () ->
+            Bukkit.getServer().getScheduler().runTask(Main.getInstance().getPluginDescription().as(JavaPlugin.class), () ->
                 this.hologramLocations.forEach(holoLocation ->
                         holoLocation.asOptional(Location.class).ifPresent(location ->
                                 this.updatePlayerHologram(player, location)
@@ -151,7 +152,7 @@ public class StatisticsHolograms implements TouchHandler {
     private void updateHologramDatabase() {
         try {
             // update hologram-database file
-            File file = new File(Main.getInstance().getDataFolder(), "database/holodb.yml");
+            var file = Main.getInstance().getPluginDescription().getDataFolder().resolve("database").resolve("holodb.yml").toFile();
             var loader = YamlConfigurationLoader.builder()
                     .file(file)
                     .build();
@@ -178,12 +179,12 @@ public class StatisticsHolograms implements TouchHandler {
 
 	@Override
 	public void handle(Player player, Hologram holo) {
-        if (!player.hasMetadata("bw-remove-holo") || (!player.isOp() && !BaseCommand.hasPermission(player, BaseCommand.ADMIN_PERMISSION, false))) {
+        if (!player.hasMetadata("bw-remove-holo") || (!player.isOp() && !PlayerMapper.wrapPlayer(player).hasPermission(BedWarsPermission.ADMIN_PERMISSION.asPermission()))) {
             return;
         }
 
-        player.removeMetadata("bw-remove-holo", Main.getInstance());
-        Main.getInstance().getServer().getScheduler().runTask(Main.getInstance(), () -> {
+        player.removeMetadata("bw-remove-holo", Main.getInstance().getPluginDescription().as(JavaPlugin.class));
+        Bukkit.getServer().getScheduler().runTask(Main.getInstance().getPluginDescription().as(JavaPlugin.class), () -> {
             // remove all player holograms on this location
             for (Entry<UUID, List<Hologram>> entry : holograms.entrySet()) {
                 Iterator<Hologram> iterator = entry.getValue().iterator();

@@ -7,6 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.screamingsandals.bedwars.Main;
 
@@ -56,7 +57,7 @@ public class PlayerUtils {
 			return player.teleportAsync(location).thenRun(runnable).isDone();
 		} catch (Throwable t) {
 			player.teleport(location);
-			Bukkit.getScheduler().runTaskLater(Main.getInstance(), runnable, 2); // player.teleport is synchronized, we don't have to wait
+			Bukkit.getScheduler().runTaskLater(Main.getInstance().getPluginDescription().as(JavaPlugin.class), runnable, 2); // player.teleport is synchronized, we don't have to wait
 			return true;
 		}
 	}

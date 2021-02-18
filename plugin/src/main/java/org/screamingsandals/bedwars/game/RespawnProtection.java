@@ -1,5 +1,6 @@
 package org.screamingsandals.bedwars.game;
 
+import org.bukkit.plugin.java.JavaPlugin;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.bukkit.entity.Player;
@@ -35,7 +36,7 @@ public class RespawnProtection extends BukkitRunnable {
     }
 
     public void runProtection() {
-        runTaskTimerAsynchronously(Main.getInstance(), 5L, 20L);
+        runTaskTimerAsynchronously(Main.getInstance().getPluginDescription().as(JavaPlugin.class), 5L, 20L);
     }
 
 

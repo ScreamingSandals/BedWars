@@ -15,7 +15,7 @@ public class BedwarsExpansion extends PlaceholderExpansion {
 
     @Override
     public String getAuthor() {
-        return String.join(", ", Main.getInstance().getDescription().getAuthors());
+        return String.join(", ", Main.getInstance().getPluginDescription().getAuthors());
     }
 
     @Override
@@ -30,7 +30,7 @@ public class BedwarsExpansion extends PlaceholderExpansion {
 
     @Override
     public String getPlugin() {
-        return Main.getInstance().getName();
+        return Main.getInstance().getPluginDescription().getName();
     }
 
     @Override

@@ -8,12 +8,14 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.screamingsandals.bedwars.Main;
-import org.screamingsandals.bedwars.commands.old.AdminCommand;
+import org.screamingsandals.bedwars.commands.BedWarsPermission;
 import org.screamingsandals.bedwars.game.Game;
 import org.screamingsandals.bedwars.lib.signmanager.SignBlock;
 import org.screamingsandals.bedwars.lib.signmanager.SignOwner;
+import org.screamingsandals.lib.sender.permissions.Permission;
 import org.spongepowered.configurate.ConfigurationNode;
 
 import static org.screamingsandals.bedwars.lib.lang.I.*;
@@ -34,7 +36,7 @@ public class BedWarsSignOwner implements SignOwner {
 				public void run() {
 					Main.getGame(name).updateSigns();
 				}
-			}.runTask(Main.getInstance());
+			}.runTask(Main.getInstance().getPluginDescription().as(JavaPlugin.class));
 
 		} else if ("leave".equalsIgnoreCase(name)) {
 			new BukkitRunnable() {
@@ -42,7 +44,7 @@ public class BedWarsSignOwner implements SignOwner {
 				public void run() {
 					updateLeaveSign(sign);
 				}
-			}.runTask(Main.getInstance());
+			}.runTask(Main.getInstance().getPluginDescription().as(JavaPlugin.class));
 		}
 	}
 
@@ -88,8 +90,8 @@ public class BedWarsSignOwner implements SignOwner {
 	}
 
 	@Override
-	public List<String> getSignCreationPermissions() {
-		return AdminCommand.ADMIN_PERMISSION;
+	public Permission getSignCreationPermissions() {
+		return BedWarsPermission.ADMIN_PERMISSION.asPermission();
 	}
 
 	@Override

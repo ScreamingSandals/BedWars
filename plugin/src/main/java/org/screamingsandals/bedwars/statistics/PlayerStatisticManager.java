@@ -45,7 +45,7 @@ public class PlayerStatisticManager implements PlayerStatisticsManager {
         if (Main.getConfigurator().node("statistics", "type").getString("").equalsIgnoreCase("database")) {
             this.initializeDatabase();
         } else {
-            File file = new File(Main.getInstance().getDataFolder() + "/database/bw_stats_players.yml");
+            var file = Main.getInstance().getPluginDescription().getDataFolder().resolve("database").resolve("bw_stats_players.yml").toFile();
             this.loadYml(file);
         }
 
@@ -145,7 +145,7 @@ public class PlayerStatisticManager implements PlayerStatisticsManager {
         } else {
             playerStatistic = new PlayerStatistic(deserialize);
         }
-        Player player = Main.getInstance().getServer().getPlayer(uuid);
+        Player player = Bukkit.getServer().getPlayer(uuid);
         if (player != null && !playerStatistic.getName().equals(player.getName())) {
             playerStatistic.setName(player.getName());
         }
@@ -233,7 +233,7 @@ public class PlayerStatisticManager implements PlayerStatisticsManager {
 
     public void storeStatistic(PlayerStatistic statistic) {
         BedwarsSavePlayerStatisticEvent savePlayerStatisticEvent = new BedwarsSavePlayerStatisticEvent(statistic);
-        Main.getInstance().getServer().getPluginManager().callEvent(savePlayerStatisticEvent);
+        Bukkit.getServer().getPluginManager().callEvent(savePlayerStatisticEvent);
 
         if (savePlayerStatisticEvent.isCancelled()) {
             return;
@@ -252,7 +252,7 @@ public class PlayerStatisticManager implements PlayerStatisticsManager {
         try {
             this.loader.save(this.fileDatabase);
         } catch (Exception ex) {
-            Main.getInstance().getLogger().warning("Couldn't store statistic data for player with uuid: " + statistic.getId().toString());
+            Main.getInstance().getLogger().warn("Couldn't store statistic data for player with uuid: " + statistic.getId().toString());
         }
     }
 

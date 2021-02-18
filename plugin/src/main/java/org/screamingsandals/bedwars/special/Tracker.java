@@ -1,5 +1,6 @@
 package org.screamingsandals.bedwars.special;
 
+import org.bukkit.plugin.java.JavaPlugin;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.api.Team;
@@ -37,6 +38,6 @@ public class Tracker extends SpecialItem implements org.screamingsandals.bedwars
                     player.setCompassTarget(game.getTeamOfPlayer(player).getTeamSpawn());
                 }
             }
-        }.runTask(Main.getInstance());
+        }.runTask(Main.getInstance().getPluginDescription().as(JavaPlugin.class));
     }
 }

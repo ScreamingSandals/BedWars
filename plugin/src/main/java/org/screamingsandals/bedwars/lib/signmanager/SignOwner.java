@@ -3,6 +3,7 @@ package org.screamingsandals.bedwars.lib.signmanager;
 import java.util.List;
 
 import org.bukkit.entity.Player;
+import org.screamingsandals.lib.sender.permissions.Permission;
 
 public interface SignOwner {
 	boolean isNameExists(String name);
@@ -13,7 +14,7 @@ public interface SignOwner {
 	
 	void onClick(Player player, SignBlock sign);
 	
-	List<String> getSignCreationPermissions();
+	Permission getSignCreationPermissions();
 	
 	String returnTranslate(String key);
 }

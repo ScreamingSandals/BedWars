@@ -9,7 +9,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.events.*;
-import org.screamingsandals.bedwars.commands.old.DumpCommand;
+import org.screamingsandals.bedwars.commands.DumpCommand;
 import org.screamingsandals.bedwars.game.GameStore;
 import org.screamingsandals.bedwars.api.game.ItemSpawnerType;
 import org.screamingsandals.bedwars.api.upgrades.Upgrade;
@@ -53,7 +53,7 @@ public class ShopInventory implements Listener {
         if (Main.getConfigurator().node("turnOnExperimentalGroovyShop").getBoolean()) {
             shopFileName = "shop.groovy";
         }
-        var shopFile = new File(Main.getInstance().getDataFolder(), shopFileName);
+        var shopFile = Main.getInstance().getPluginDescription().getDataFolder().resolve(shopFileName).toFile();
         if (!shopFile.exists()) {
             Main.getInstance().saveResource(shopFileName, false);
         }
@@ -85,15 +85,16 @@ public class ShopInventory implements Listener {
     }
 
     public static File normalizeShopFile(String name) {
+        var dataFolder = Main.getInstance().getPluginDescription().getDataFolder();
         if (name.split("\\.").length > 1) {
-            return new File(Main.getInstance().getDataFolder(), name);
+            return dataFolder.resolve(name).toFile();
         }
 
-        var fileg = new File(Main.getInstance().getDataFolder(), name + ".groovy");
+        var fileg = dataFolder.resolve(name + ".groovy").toFile();
         if (fileg.exists()) {
             return fileg;
         }
-        return new File(Main.getInstance().getDataFolder(), name + ".yml");
+        return dataFolder.resolve(name + ".yml").toFile();
     }
 
     public void onGeneratingItem(ItemRenderEvent event) {
@@ -140,7 +141,7 @@ public class ShopInventory implements Listener {
                 //noinspection unchecked
                 var applyEvent = new BedwarsApplyPropertyToDisplayedItem(game,
                         player, item.as(ItemStack.class), property.getPropertyName(), (Map<String, Object>) converted);
-                Main.getInstance().getServer().getPluginManager().callEvent(applyEvent);
+                Bukkit.getServer().getPluginManager().callEvent(applyEvent);
 
                 event.setStack(ItemFactory.build(applyEvent.getStack()).orElse(item));
             }
@@ -416,7 +417,7 @@ public class ShopInventory implements Listener {
                 if (property.hasName()) {
                     var applyEvent = new BedwarsApplyPropertyToBoughtItem(game, player,
                             newItem.as(ItemStack.class), property.getPropertyName(), propertyData);
-                    Main.getInstance().getServer().getPluginManager().callEvent(applyEvent);
+                    Bukkit.getServer().getPluginManager().callEvent(applyEvent);
 
                     newItem = ItemFactory.build(applyEvent.getStack()).orElse(newItem);
                 }
@@ -429,7 +430,7 @@ public class ShopInventory implements Listener {
             if (!permaItemPropertyData.isEmpty()) {
                 BedwarsApplyPropertyToBoughtItem applyEvent = new BedwarsApplyPropertyToBoughtItem(game, player,
                         newItem.as(ItemStack.class), "", permaItemPropertyData);
-                Main.getInstance().getServer().getPluginManager().callEvent(applyEvent);
+                Bukkit.getServer().getPluginManager().callEvent(applyEvent);
             }
 
             event.sellStack(materialItem);
