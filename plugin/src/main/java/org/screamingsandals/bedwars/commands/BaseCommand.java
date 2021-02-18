@@ -25,7 +25,9 @@ public abstract class BaseCommand {
                 .literal(name);
         if (possiblePermission != null) {
             builder = builder.permission(
-                    PredicatePermission.of(SimpleCloudKey.of(name), possiblePermission.asPermission()::hasPermission)
+                    PredicatePermission.of(SimpleCloudKey.of(name), perm ->
+                            perm.getType() == CommandSenderWrapper.Type.CONSOLE || possiblePermission.asPermission().hasPermission(perm)
+                    )
             );
         }
         if (!allowConsole) {

@@ -2,7 +2,6 @@ package org.screamingsandals.bedwars.config;
 
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
-import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.lib.material.Item;
 import org.screamingsandals.lib.material.builder.ItemFactory;

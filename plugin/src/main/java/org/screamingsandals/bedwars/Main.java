@@ -50,14 +50,11 @@ import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.plugin.PluginContainer;
 import org.screamingsandals.lib.plugin.PluginManager;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
-import org.screamingsandals.lib.utils.ControllableImpl;
-import org.screamingsandals.lib.utils.InitUtils;
 import org.screamingsandals.lib.utils.PlatformType;
 import org.screamingsandals.lib.utils.annotations.Init;
 import org.screamingsandals.lib.utils.annotations.Plugin;
 import org.screamingsandals.lib.utils.annotations.PluginDependencies;
 import org.screamingsandals.simpleinventories.SimpleInventoriesCore;
-import org.screamingsandals.simpleinventories.bukkit.SimpleInventoriesBukkit;
 import org.spongepowered.configurate.serialize.SerializationException;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 import pronze.lib.scoreboards.ScoreboardManager;
@@ -124,7 +121,6 @@ public class Main extends PluginContainer implements BedwarsAPI {
     private TabManager tabManager;
     public static List<String> autoColoredMaterials = new ArrayList<>();
     private Metrics metrics;
-    private ControllableImpl controllable;
     private RecordSave recordSave;
 
     static {
@@ -386,7 +382,8 @@ public class Main extends PluginContainer implements BedwarsAPI {
         return instance.recordSave;
     }
 
-    public void onEnable() {
+    @Override
+    public void enable() {
         instance = this;
         version = this.getPluginDescription().getVersion();
         var snapshot = version.toLowerCase().contains("pre") || version.toLowerCase().contains("snapshot");
@@ -480,15 +477,6 @@ public class Main extends PluginContainer implements BedwarsAPI {
 
         if (partiesEnabled) {
             registerBedwarsListener(new PartyListener());
-        }
-
-        if (controllable == null) {
-            controllable = InitUtils.pluginlessEnvironment(controllable1 ->
-                SimpleInventoriesBukkit.init(this.getPluginDescription().as(JavaPlugin.class), controllable1.child())
-            );
-        } else {
-            controllable.enable();
-            controllable.postEnable();
         }
 
         this.manager = new HologramManager(this.getPluginDescription().as(JavaPlugin.class));
@@ -622,8 +610,8 @@ public class Main extends PluginContainer implements BedwarsAPI {
         PlayerMapper.getConsoleSender().sendMessage(ChatColor.WHITE + "https://www.patreon.com/screamingsandals");
     }
 
-    public void onDisable() {
-        controllable.preDisable();
+    @Override
+    public void disable() {
         isDisabling = true;
         if (signManager != null) {
             signManager.save();
@@ -639,8 +627,6 @@ public class Main extends PluginContainer implements BedwarsAPI {
         }
 
         metrics = null;
-
-        controllable.disable();
     }
 
     private boolean setupEconomy() {

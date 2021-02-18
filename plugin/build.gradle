@@ -30,7 +30,9 @@ dependencies {
     implementation 'org.bstats:bstats-bukkit:1.7'
     implementation 'pronze.lib:scoreboard:1.0.1-SNAPSHOT'
     implementation paperlib()
-
+    implementation 'me.lucko:commodore:1.9', {
+        exclude group: 'com.mojang', module: 'brigadier'
+    }
 }
 
 buildConfig {
