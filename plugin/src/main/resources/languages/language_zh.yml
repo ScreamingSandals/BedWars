@@ -79,7 +79,7 @@ admin_command_must_be_in_same_world: "&c所有命令要在一个世界中执行!
 admin_command_invalid_countdown: "&c必须在 10 < x < 600 秒内!"
 admin_command_invalid_countdown2: "&c必须在 10 < x < 3600 内!"
 admin_command_spawn_must_be_in_area: "&c位置必须在游戏中 (pos1和pos2坐标)!"
-admin_command_set_pos1_pos2_first: "&c在设置出生点钱，请先设置pos1点和pos2点 (确定游戏区域的大小和位置 )!"
+admin_command_set_pos1_pos2_first: "&c在设置出生点前，请先设置pos1点和pos2点 (确定游戏区域的大小和位置 )!"
 admin_command_pos1_pos2_difference_must_be_higher: "&cpos1 和 pos2 的高度差太小! 至少是五个方块!"
 admin_command_game_saved_and_started: "&a地图保存成功并已在运行! 现在你可以加入游戏了!"
 admin_command_store_already_exists: "&c存储区已存在!"
