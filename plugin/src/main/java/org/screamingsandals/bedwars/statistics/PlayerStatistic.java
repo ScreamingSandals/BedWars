@@ -66,7 +66,7 @@ public class PlayerStatistic implements ConfigurationSerializable, org.screaming
         this.score = configurationNode.node("score").getInt();
         this.wins = configurationNode.node("wins").getInt();
         this.name = configurationNode.node("name").getString();
-        this.uuid = UUID.fromString(Objects.requireNonNull(configurationNode.node("uuid").getString()));
+        this.uuid = UUID.fromString(Objects.requireNonNull(configurationNode.key()).toString());
     }
 
     public int getGames() {

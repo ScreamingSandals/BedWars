@@ -23,6 +23,7 @@ import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.premium.PremiumBedwars;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
 import org.screamingsandals.lib.utils.AdventureHelper;
+import org.screamingsandals.lib.utils.ConfigurateUtils;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.yaml.NodeStyle;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
@@ -152,7 +153,7 @@ public class DumpCommand extends BaseCommand {
                                                                                             "baby", gameStore.isBaby(),
                                                                                             "skinName", gameStore.getSkinName()
                                                                                     )).collect(Collectors.toList()),
-                                                                                    "configurationContainer", game.getConfigurationContainer().getSaved()
+                                                                                    "configurationContainer", ConfigurateUtils.toMap(game.getConfigurationContainer().getSaved())
                                                                             )
                                                                     )
                                                             ).collect(Collectors.toList())))
@@ -246,9 +247,9 @@ public class DumpCommand extends BaseCommand {
                                                     var message = gson.fromJson(stringHttpResponse.body(), Message.class);
                                                     sender.sendMessage(AdventureHelper
                                                             .toComponent(i18n("dump_success"))
-                                                            .color(NamedTextColor.GRAY)
                                                             .append(Component
                                                                         .text("https://paste.gg/" + message.getResult().getId())
+                                                                        .color(NamedTextColor.GRAY)
                                                                         .clickEvent(ClickEvent.openUrl("https://paste.gg/" + message.getResult().getId()))
                                                                         .hoverEvent(HoverEvent.showText(Component.text("Open this link")))
                                                             )

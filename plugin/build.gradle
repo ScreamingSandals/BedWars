@@ -27,6 +27,7 @@ dependencies {
     implementation project(':BedWars-API')
     implementation 'com.zaxxer:HikariCP:3.3.0'
     implementation 'org.screamingsandals.simpleinventories:core-bukkit:2.0.0-SNAPSHOT'
+    implementation 'cloud.commandframework:cloud-minecraft-extras:1.4.0'
     implementation 'org.bstats:bstats-bukkit:1.7'
     implementation 'pronze.lib:scoreboard:1.0.1-SNAPSHOT'
     implementation paperlib()

@@ -1,7 +1,7 @@
 package org.screamingsandals.bedwars;
 
 import org.bukkit.event.Listener;
-import org.screamingsandals.bedwars.commands.CommandGenerator;
+import org.screamingsandals.bedwars.commands.CommandService;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.config.RecordSave;
 import org.screamingsandals.bedwars.lib.lang.I18n;
@@ -92,8 +92,7 @@ import static org.screamingsandals.bedwars.lib.lang.I18n.i18n;
 @Init(services = {
         SimpleInventoriesCore.class,
         EventManager.class,
-        CloudConstructor.class,
-        CommandGenerator.class
+        CommandService.class
 })
 public class Main extends PluginContainer implements BedwarsAPI {
     private static Main instance;
