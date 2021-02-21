@@ -4,6 +4,7 @@ import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.commands.AdminCommand;
+import org.screamingsandals.bedwars.game.GameManager;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
 
 import static org.screamingsandals.bedwars.lib.lang.I.i18n;
@@ -41,7 +42,7 @@ public class SaveCommand extends BaseAdminSubCommand {
                                 sender.sendMessage(i18n("admin_command_set_spawners_before_save"));
                             } else {
                                 game.saveToConfig();
-                                Main.addGame(game);
+                                GameManager.getInstance().addGame(game);
                                 game.start();
                                 sender.sendMessage(i18n("admin_command_game_saved_and_started"));
                                 AdminCommand.gc.remove(commandContext.<String>get("game"));

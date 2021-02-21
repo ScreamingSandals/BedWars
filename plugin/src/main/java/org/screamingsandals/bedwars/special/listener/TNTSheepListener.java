@@ -7,6 +7,7 @@ import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.api.events.BedwarsApplyPropertyToBoughtItem;
 import org.screamingsandals.bedwars.api.special.SpecialItem;
+import org.screamingsandals.bedwars.game.GameManager;
 import org.screamingsandals.bedwars.game.GamePlayer;
 import org.screamingsandals.bedwars.special.TNTSheep;
 import org.screamingsandals.bedwars.utils.MiscUtils;
@@ -109,8 +110,7 @@ public class TNTSheepListener implements Listener {
             }
         } else if (event.getEntity() instanceof Creature) {
             Creature mob = (Creature) event.getEntity();
-            for (String name : Main.getGameNames()) {
-                Game game = Main.getGame(name);
+            for (var game : GameManager.getInstance().getGames()) {
                 if (game.getStatus() == GameStatus.RUNNING && mob.getWorld().equals(game.getGameWorld())) {
                     List<SpecialItem> sheeps = game.getActivedSpecialItems(TNTSheep.class);
                     for (SpecialItem item : sheeps) {

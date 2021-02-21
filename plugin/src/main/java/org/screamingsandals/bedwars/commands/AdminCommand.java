@@ -2,9 +2,9 @@ package org.screamingsandals.bedwars.commands;
 
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
-import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.commands.admin.*;
 import org.screamingsandals.bedwars.game.Game;
+import org.screamingsandals.bedwars.game.GameManager;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
 
 import java.util.HashMap;
@@ -26,7 +26,7 @@ public class AdminCommand extends BaseCommand {
                 .argument(manager
                         .argumentBuilder(String.class, "game")
                         .withSuggestionsProvider((c, s) ->
-                            Stream.concat(Main.getGameNames().stream(), gc.keySet().stream()).distinct().collect(Collectors.toList())
+                            Stream.concat(GameManager.getInstance().getGameNames().stream(), gc.keySet().stream()).distinct().collect(Collectors.toList())
                         )
                 );
 

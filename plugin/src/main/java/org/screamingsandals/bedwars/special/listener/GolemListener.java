@@ -9,6 +9,7 @@ import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.api.events.BedwarsApplyPropertyToBoughtItem;
 import org.screamingsandals.bedwars.api.special.SpecialItem;
+import org.screamingsandals.bedwars.game.GameManager;
 import org.screamingsandals.bedwars.game.GamePlayer;
 import org.screamingsandals.bedwars.special.Golem;
 import org.screamingsandals.bedwars.utils.DelayFactory;
@@ -104,8 +105,7 @@ public class GolemListener implements Listener {
         }
 
         IronGolem ironGolem = (IronGolem) event.getEntity();
-        for (String name : Main.getGameNames()) {
-            Game game = Main.getGame(name);
+        for (var game : GameManager.getInstance().getGames()) {
             if (game.getStatus() == GameStatus.RUNNING && ironGolem.getWorld().equals(game.getGameWorld())) {
                 List<SpecialItem> golems = game.getActivedSpecialItems(Golem.class);
                 for (SpecialItem item : golems) {
@@ -148,8 +148,7 @@ public class GolemListener implements Listener {
         }
 
         IronGolem ironGolem = (IronGolem) event.getEntity();
-        for (String name : Main.getGameNames()) {
-            Game game = Main.getGame(name);
+        for (var game : GameManager.getInstance().getGames()) {
             if ((game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) && ironGolem.getWorld().equals(game.getGameWorld())) {
                 List<SpecialItem> golems = game.getActivedSpecialItems(Golem.class);
                 for (SpecialItem item : golems) {
@@ -206,8 +205,7 @@ public class GolemListener implements Listener {
         }
 
         IronGolem ironGolem = (IronGolem) event.getEntity();
-        for (String name : Main.getGameNames()) {
-            Game game = Main.getGame(name);
+        for (var game : GameManager.getInstance().getGames()) {
             if ((game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) && ironGolem.getWorld().equals(game.getGameWorld())) {
                 List<SpecialItem> golems = game.getActivedSpecialItems(Golem.class);
                 for (SpecialItem item : golems) {

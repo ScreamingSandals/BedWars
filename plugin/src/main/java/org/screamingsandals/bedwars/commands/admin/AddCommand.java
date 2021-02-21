@@ -5,6 +5,7 @@ import cloud.commandframework.CommandManager;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.commands.AdminCommand;
 import org.screamingsandals.bedwars.game.Game;
+import org.screamingsandals.bedwars.game.GameManager;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
 
 import static org.screamingsandals.bedwars.lib.lang.I.i18n;
@@ -22,7 +23,7 @@ public class AddCommand extends BaseAdminSubCommand {
                             String gameName = commandContext.get("game");
                             var sender = commandContext.getSender();
 
-                            if (Main.isGameExists(gameName)) {
+                            if (GameManager.getInstance().hasGame(gameName)) {
                                 sender.sendMessage(i18n("allready_exists"));
                             } else if (AdminCommand.gc.containsKey(gameName)) {
                                 sender.sendMessage(i18n("allready_working_on_it"));

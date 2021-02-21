@@ -6,6 +6,7 @@ import net.kyori.adventure.text.event.ClickEvent;
 import org.bukkit.ChatColor;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.commands.AdminCommand;
+import org.screamingsandals.bedwars.game.GameManager;
 import org.screamingsandals.bedwars.game.TeamColor;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
 import org.screamingsandals.lib.utils.AdventureHelper;
@@ -27,12 +28,13 @@ public class InfoCommand extends BaseAdminSubCommand {
                             String gameName = commandContext.get("game");
                             var sender = commandContext.getSender();
 
-                            if (!Main.isGameExists(gameName)) {
+                            var gameOpt = GameManager.getInstance().getGame(gameName);
+                            if (gameOpt.isEmpty()) {
                                 sender.sendMessage(i18n("no_arena_found"));
                                 return;
                             }
 
-                            var game = Main.getGame(gameName);
+                            var game = gameOpt.get();
 
                             sender.sendMessage(i18n("arena_info_header"));
 
@@ -124,12 +126,13 @@ public class InfoCommand extends BaseAdminSubCommand {
                             String gameName = commandContext.get("game");
                             var sender = commandContext.getSender();
 
-                            if (!Main.isGameExists(gameName)) {
+                            var gameOpt = GameManager.getInstance().getGame(gameName);
+                            if (gameOpt.isEmpty()) {
                                 sender.sendMessage(i18n("no_arena_found"));
                                 return;
                             }
 
-                            var game = Main.getGame(gameName);
+                            var game = gameOpt.get();
 
                             sender.sendMessage(i18n("arena_info_header"));
 
@@ -171,12 +174,13 @@ public class InfoCommand extends BaseAdminSubCommand {
                             String gameName = commandContext.get("game");
                             var sender = commandContext.getSender();
 
-                            if (!Main.isGameExists(gameName)) {
+                            var gameOpt = GameManager.getInstance().getGame(gameName);
+                            if (gameOpt.isEmpty()) {
                                 sender.sendMessage(i18n("no_arena_found"));
                                 return;
                             }
 
-                            var game = Main.getGame(gameName);
+                            var game = gameOpt.get();
 
                             sender.sendMessage(i18n("arena_info_header"));
 
@@ -217,12 +221,13 @@ public class InfoCommand extends BaseAdminSubCommand {
                             String gameName = commandContext.get("game");
                             var sender = commandContext.getSender();
 
-                            if (!Main.isGameExists(gameName)) {
+                            var gameOpt = GameManager.getInstance().getGame(gameName);
+                            if (gameOpt.isEmpty()) {
                                 sender.sendMessage(i18n("no_arena_found"));
                                 return;
                             }
 
-                            var game = Main.getGame(gameName);
+                            var game = gameOpt.get();
 
                             sender.sendMessage(i18n("arena_info_header"));
 
@@ -269,12 +274,13 @@ public class InfoCommand extends BaseAdminSubCommand {
                             String gameName = commandContext.get("game");
                             var sender = commandContext.getSender();
 
-                            if (!Main.isGameExists(gameName)) {
+                            var gameOpt = GameManager.getInstance().getGame(gameName);
+                            if (gameOpt.isEmpty()) {
                                 sender.sendMessage(i18n("no_arena_found"));
                                 return;
                             }
 
-                            var game = Main.getGame(gameName);
+                            var game = gameOpt.get();
 
                             sender.sendMessage(i18n("arena_info_header"));
 
@@ -327,7 +333,8 @@ public class InfoCommand extends BaseAdminSubCommand {
                             String gameName = commandContext.get("game");
                             var sender = commandContext.getSender();
 
-                            if (!Main.isGameExists(gameName)) {
+                            var gameOpt = GameManager.getInstance().getGame(gameName);
+                            if (gameOpt.isEmpty()) {
                                 sender.sendMessage(i18n("no_arena_found"));
                                 return;
                             }

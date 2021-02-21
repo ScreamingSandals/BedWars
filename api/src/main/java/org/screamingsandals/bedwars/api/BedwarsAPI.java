@@ -1,6 +1,7 @@
 package org.screamingsandals.bedwars.api;
 
 import org.screamingsandals.bedwars.api.game.Game;
+import org.screamingsandals.bedwars.api.game.GameManager;
 import org.screamingsandals.bedwars.api.game.ItemSpawnerType;
 import org.screamingsandals.bedwars.api.statistics.PlayerStatisticsManager;
 import org.screamingsandals.bedwars.api.utils.ColorChanger;
@@ -14,39 +15,16 @@ import java.util.List;
  * @author Bedwars Team
  */
 public interface BedwarsAPI {
-
     /**
-     * @return List of available games
+     * @return Game manager of the bedwars plugin
      */
-    List<Game> getGames();
-
-    /**
-     * @param name Name of game
-     * @return true if game is exists
-     */
-    boolean isGameWithNameExists(String name);
-
-    /**
-     * @param name Name of game
-     * @return Game or null if game is not exists
-     */
-    Game getGameByName(String name);
+    GameManager<?> getGameManager();
 
     /**
      * @param player Player
      * @return Player's Game or null if player isn't in game
      */
     Game getGameOfPlayer(Player player);
-
-    /**
-     * @return Free game that has highest players in it
-     */
-    Game getGameWithHighestPlayers();
-
-    /**
-     * @return Free game that has lowest players in it
-     */
-    Game getGameWithLowestPlayers();
 
     /**
      * @param player Player
@@ -82,16 +60,6 @@ public interface BedwarsAPI {
      * @return Game of entity or null
      */
     Game getGameOfEntity(Entity entity);
-
-    /**
-     * @return Game in waiting state or null
-     */
-    Game getFirstWaitingGame();
-
-    /**
-     * @return Game in running state or null
-     */
-    Game getFirstRunningGame();
 
     /**
      * @param entity Entity

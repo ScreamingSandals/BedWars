@@ -251,20 +251,18 @@ public class PlayerListener implements Listener {
                 public void run() {
                     try {
                         Debug.info("Selecting game for " + event.getPlayer().getName());
-                        Game game = (Game) Main.getInstance().getFirstWaitingGame();
-                        if (game == null) {
-                            game = (Game) Main.getInstance().getFirstRunningGame();
-                        }
-                        if (game == null) { // still nothing?
+                        var gameManager = GameManager.getInstance();
+                        var game = gameManager.getFirstWaitingGame().or(gameManager::getFirstRunningGame);
+                        if (game.isEmpty()) { // still nothing?
                             if (!PlayerMapper.wrapPlayer(player).hasPermission(BedWarsPermission.ADMIN_PERMISSION.asPermission())) {
                                 Debug.info(event.getPlayer().getName() + " is not connecting to any game! Kicking...");
                                 BungeeUtils.movePlayerToBungeeServer(player, false);
                             }
                             return;
                         }
-                        Debug.info(event.getPlayer().getName() + " is connecting to " + game.getName());
+                        Debug.info(event.getPlayer().getName() + " is connecting to " + game.get().getName());
 
-                        game.joinToGame(player);
+                        game.get().joinToGame(player);
                     } catch (NullPointerException ignored) {
                         if (!PlayerMapper.wrapPlayer(player).hasPermission(BedWarsPermission.ADMIN_PERMISSION.asPermission())) {
                             Debug.info(event.getPlayer().getName() + " is not connecting to any game! Kicking...");
@@ -394,8 +392,7 @@ public class PlayerListener implements Listener {
                 Debug.info(event.getPlayer().getName() + " attempted to place a block, allowed");
             }
         } else if (Main.getConfigurator().node("preventArenaFromGriefing").getBoolean()) {
-            for (String gameN : Main.getGameNames()) {
-                Game game = Main.getGame(gameN);
+            for (var game : GameManager.getInstance().getGames()) {
                 if (game.getStatus() != GameStatus.DISABLED && ArenaUtils.isInArea(event.getBlock().getLocation(), game.getPos1(), game.getPos2())) {
                     event.setCancelled(true);
                     Debug.info(event.getPlayer().getName() + " attempted to place a block in protected area while not playing BedWars game, canceled");
@@ -441,8 +438,7 @@ public class PlayerListener implements Listener {
                 }
             }
         } else if (Main.getConfigurator().node("preventArenaFromGriefing").getBoolean()) {
-            for (String gameN : Main.getGameNames()) {
-                Game game = Main.getGame(gameN);
+            for (var game : GameManager.getInstance().getGames()) {
                 if (game.getStatus() != GameStatus.DISABLED && ArenaUtils.isInArea(event.getBlock().getLocation(), game.getPos1(), game.getPos2())) {
                     event.setCancelled(true);
                     Debug.info(event.getPlayer().getName() + " attempted to break a block in protected area while not in BedWars game, canceled");
@@ -947,8 +943,7 @@ public class PlayerListener implements Listener {
         if (Main.isPlayerInGame(event.getPlayer())) {
             event.setCancelled(true);
         } else {
-            for (String gameN : Main.getGameNames()) {
-                Game game = Main.getGame(gameN);
+            for (var game : GameManager.getInstance().getGames()) {
                 if (ArenaUtils.isInArea(event.getBed().getLocation(), game.getPos1(), game.getPos2())) {
                     event.setCancelled(true);
                     Debug.info(event.getPlayer().getName() + " tried to sleep");
@@ -1224,8 +1219,7 @@ public class PlayerListener implements Listener {
                 Debug.info(player.getName() + " placed liquid, cancelling");
             }
         } else if (Main.getConfigurator().node("preventArenaFromGriefing").getBoolean()) {
-            for (String gameN : Main.getGameNames()) {
-                Game game = Main.getGame(gameN);
+            for (var game : GameManager.getInstance().getGames()) {
                 if (game.getStatus() != GameStatus.DISABLED && ArenaUtils.isInArea(event.getBlockClicked().getLocation(), game.getPos1(), game.getPos2())) {
                     event.setCancelled(true);
                     Debug.info(player.getName() + " is doing prohibited actions in protected area while not playing BedWars");
@@ -1241,8 +1235,7 @@ public class PlayerListener implements Listener {
             return;
         }
 
-        for (String s : Main.getGameNames()) {
-            Game game = Main.getGame(s);
+        for (var game : GameManager.getInstance().getGames()) {
             if (game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) {
                 if (ArenaUtils.isInArea(event.getVehicle().getLocation(), game.getPos1(), game.getPos2())) {
                     Main.registerGameEntity(event.getVehicle(), game);

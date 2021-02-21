@@ -47,6 +47,7 @@ subprojects {
     shadowJar {
         relocate 'com.zaxxer', 'org.screamingsandals.bedwars.lib.HikariCP'
         relocate 'org.screamingsandals.simpleinventories', 'org.screamingsandals.bedwars.lib.sgui'
+        relocate 'org.screamingsandals.lib.utils.Wrapper', 'org.screamingsandals.bedwars.api.utils.Wrapper'
         relocate 'org.screamingsandals.lib', 'org.screamingsandals.bedwars.lib'
         relocate 'org.bstats', 'org.screamingsandals.bedwars.lib.ext.bstats'
         relocate 'io.papermc.lib', 'org.screamingsandals.bedwars.lib.ext.paperlib'

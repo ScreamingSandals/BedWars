@@ -18,6 +18,7 @@ import org.screamingsandals.bedwars.VersionInfo;
 import org.screamingsandals.bedwars.api.Team;
 import org.screamingsandals.bedwars.api.game.GameStore;
 import org.screamingsandals.bedwars.game.Game;
+import org.screamingsandals.bedwars.game.GameManager;
 import org.screamingsandals.bedwars.inventories.ShopInventory;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.premium.PremiumBedwars;
@@ -107,7 +108,7 @@ public class DumpCommand extends BaseCommand {
                                                                     "main", plugin.getDescription().getMain(),
                                                                     "authors", plugin.getDescription().getAuthors()
                                                             )).collect(Collectors.toList()),
-                                                            "games", Main.getGameNames().stream().map(Main::getGame).map(game ->
+                                                            "games", GameManager.getInstance().getGames().stream().map(game ->
                                                                     nullValuesAllowingMap(
                                                                             "file", game.getFile(),
                                                                             "name", game.getName(),
@@ -203,8 +204,9 @@ public class DumpCommand extends BaseCommand {
                                             )
                                     );
                                     files.add(mainShop);
-                                    Main.getGameNames().stream()
-                                            .map(Main::getGame)
+                                    GameManager.getInstance()
+                                            .getGames()
+                                            .stream()
                                             .map(Game::getGameStores)
                                             .flatMap(Collection::stream)
                                             .map(GameStore::getShopFile)

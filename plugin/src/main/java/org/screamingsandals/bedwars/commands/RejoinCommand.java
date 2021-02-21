@@ -4,6 +4,7 @@ import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
 import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.Main;
+import org.screamingsandals.bedwars.game.GameManager;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
 
 import static org.screamingsandals.bedwars.lib.lang.I.i18n;
@@ -32,11 +33,11 @@ public class RejoinCommand extends BaseCommand {
                         if (name == null) {
                             player.sendMessage(i18n("you_are_not_in_game_yet"));
                         } else {
-                            if (Main.isGameExists(name)) {
-                                Main.getGame(name).joinToGame(player);
-                            } else {
-                                player.sendMessage(i18n("game_is_gone"));
-                            }
+                            GameManager.getInstance().getGame(name)
+                                    .ifPresentOrElse(
+                                            game -> game.joinToGame(player),
+                                            () -> player.sendMessage(i18n("game_is_gone"))
+                                    );
                         }
                     })
         );

@@ -4,6 +4,7 @@ import org.bukkit.event.Listener;
 import org.screamingsandals.bedwars.commands.CommandService;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.config.RecordSave;
+import org.screamingsandals.bedwars.game.*;
 import org.screamingsandals.bedwars.lib.lang.I18n;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
@@ -19,14 +20,9 @@ import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.screamingsandals.bedwars.api.BedwarsAPI;
 import org.screamingsandals.bedwars.api.game.GameStatus;
-import org.screamingsandals.bedwars.game.GameStore;
 import org.screamingsandals.bedwars.api.statistics.PlayerStatisticsManager;
 import org.screamingsandals.bedwars.api.utils.ColorChanger;
 import org.screamingsandals.bedwars.database.DatabaseManager;
-import org.screamingsandals.bedwars.game.Game;
-import org.screamingsandals.bedwars.game.GamePlayer;
-import org.screamingsandals.bedwars.game.ItemSpawnerType;
-import org.screamingsandals.bedwars.game.TeamColor;
 import org.screamingsandals.bedwars.holograms.LeaderboardHolograms;
 import org.screamingsandals.bedwars.holograms.StatisticsHolograms;
 import org.screamingsandals.bedwars.inventories.ShopInventory;
@@ -43,7 +39,6 @@ import org.screamingsandals.bedwars.lib.nms.holograms.HologramManager;
 import org.screamingsandals.bedwars.lib.nms.utils.ClassStorage;
 import org.screamingsandals.bedwars.lib.signmanager.SignListener;
 import org.screamingsandals.bedwars.lib.signmanager.SignManager;
-import org.screamingsandals.lib.command.CloudConstructor;
 import org.screamingsandals.lib.event.EventManager;
 import org.screamingsandals.lib.material.MaterialMapping;
 import org.screamingsandals.lib.player.PlayerMapper;
@@ -59,13 +54,7 @@ import org.spongepowered.configurate.serialize.SerializationException;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 import pronze.lib.scoreboards.ScoreboardManager;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static org.screamingsandals.bedwars.lib.lang.I18n.i18n;
 
@@ -92,7 +81,8 @@ import static org.screamingsandals.bedwars.lib.lang.I18n.i18n;
 @Init(services = {
         SimpleInventoriesCore.class,
         EventManager.class,
-        CommandService.class
+        CommandService.class,
+        GameManager.class
 })
 public class Main extends PluginContainer implements BedwarsAPI {
     private static Main instance;
@@ -104,7 +94,6 @@ public class Main extends PluginContainer implements BedwarsAPI {
     private boolean isNMS;
     private int versionNumber = 0;
     private Economy econ = null;
-    private HashMap<String, Game> games = new HashMap<>();
     private HashMap<Player, GamePlayer> playersInGame = new HashMap<>();
     private HashMap<Entity, Game> entitiesInGame = new HashMap<>();
     private MainConfig configurator;
@@ -184,22 +173,6 @@ public class Main extends PluginContainer implements BedwarsAPI {
         return instance.configurator.node("vault", "reward", "win").getInt();
     }
 
-    public static Game getGame(String string) {
-        return instance.games.get(string);
-    }
-
-    public static boolean isGameExists(String string) {
-        return instance.games.containsKey(string);
-    }
-
-    public static void addGame(Game game) {
-        instance.games.put(game.getName(), game);
-    }
-
-    public static void removeGame(Game game) {
-        instance.games.remove(game.getName());
-    }
-
     public static Game getInGameEntity(Entity entity) {
         return instance.entitiesInGame.getOrDefault(entity, null);
     }
@@ -235,13 +208,6 @@ public class Main extends PluginContainer implements BedwarsAPI {
 
     public static boolean isPlayerGameProfileRegistered(Player player) {
         return instance.playersInGame.containsKey(player);
-    }
-
-    public static void sendGameListInfo(CommandSenderWrapper senderWrapper) {
-        for (Game game : instance.games.values()) {
-            senderWrapper.sendMessage((game.getStatus() == GameStatus.DISABLED ? "§c" : "§a") + game.getName() + "§f "
-                    + game.countPlayers());
-        }
     }
 
     public static void openStore(Player player, GameStore store) {
@@ -317,14 +283,6 @@ public class Main extends PluginContainer implements BedwarsAPI {
 
     public static List<String> getAllSpawnerTypes() {
         return new ArrayList<>(instance.spawnerTypes.keySet());
-    }
-
-    public static List<String> getGameNames() {
-        List<String> list = new ArrayList<>();
-        for (Game game : instance.games.values()) {
-            list.add(game.getName());
-        }
-        return list;
     }
 
     public static DatabaseManager getDatabaseManager() {
@@ -540,28 +498,6 @@ public class Main extends PluginContainer implements BedwarsAPI {
                     ChatColor.RED + "[B" + ChatColor.WHITE + "W] " + ChatColor.RED + "IMPORTANT WARNING: You are using version older than 1.9! This version is not officially supported, and some features may not work at all!");
         }
 
-        final var arenasFolder = getPluginDescription().getDataFolder().resolve("arenas").toFile();
-        if (arenasFolder.exists()) {
-            try (var stream = Files.walk(Paths.get(arenasFolder.getAbsolutePath()))) {
-                final var results = stream.filter(Files::isRegularFile)
-                        .map(Path::toString)
-                        .collect(Collectors.toList());
-
-                if (results.isEmpty()) {
-                    Debug.info("No arenas have been found!", true);
-                } else {
-                    for (String result : results) {
-                        File file = new File(result);
-                        if (file.exists() && file.isFile()) {
-                            Game.loadGame(file);
-                        }
-                    }
-                }
-            } catch (IOException e) {
-                e.printStackTrace(); // maybe remove after testing
-            }
-        }
-
         final var signOwner = new BedWarsSignOwner();
         signManager = new SignManager(signOwner, YamlConfigurationLoader.builder()
                 .path(getPluginDescription().getDataFolder().resolve("database/sign.yml"))
@@ -615,9 +551,6 @@ public class Main extends PluginContainer implements BedwarsAPI {
         if (signManager != null) {
             signManager.save();
         }
-        for (var game : games.values()) {
-            game.stop();
-        }
         Bukkit.getServer().getServicesManager().unregisterAll(this.getPluginDescription().as(JavaPlugin.class));
 
         if (isHologramsEnabled() && hologramInteraction != null) {
@@ -643,8 +576,8 @@ public class Main extends PluginContainer implements BedwarsAPI {
     }
 
     @Override
-    public List<org.screamingsandals.bedwars.api.game.Game> getGames() {
-        return new ArrayList<>(games.values());
+    public org.screamingsandals.bedwars.api.game.GameManager<?> getGameManager() {
+        return GameManager.getInstance();
     }
 
     @Override
@@ -652,49 +585,6 @@ public class Main extends PluginContainer implements BedwarsAPI {
         return isPlayerInGame(player) ? getPlayerGameProfile(player).getGame() : null;
     }
 
-    @Override
-    public boolean isGameWithNameExists(String name) {
-        return games.containsKey(name);
-    }
-
-    @Override
-    public org.screamingsandals.bedwars.api.game.Game getGameByName(String name) {
-        return games.get(name);
-    }
-
-    @Override
-    public org.screamingsandals.bedwars.api.game.Game getGameWithHighestPlayers() {
-        TreeMap<Integer, org.screamingsandals.bedwars.api.game.Game> gameList = new TreeMap<>();
-        for (org.screamingsandals.bedwars.api.game.Game game : getGames()) {
-            if (game.getStatus() != GameStatus.WAITING) {
-                continue;
-            }
-            if (game.getConnectedPlayers().size() >= game.getMaxPlayers()) {
-                continue;
-            }
-            gameList.put(game.countConnectedPlayers(), game);
-        }
-
-        Map.Entry<Integer, org.screamingsandals.bedwars.api.game.Game> lastEntry = gameList.lastEntry();
-        return lastEntry.getValue();
-    }
-
-    @Override
-    public org.screamingsandals.bedwars.api.game.Game getGameWithLowestPlayers() {
-        TreeMap<Integer, org.screamingsandals.bedwars.api.game.Game> gameList = new TreeMap<>();
-        for (org.screamingsandals.bedwars.api.game.Game game : getGames()) {
-            if (game.getStatus() != GameStatus.WAITING) {
-                continue;
-            }
-            if (game.getConnectedPlayers().size() >= game.getMaxPlayers()) {
-                continue;
-            }
-            gameList.put(game.countConnectedPlayers(), game);
-        }
-
-        Map.Entry<Integer, org.screamingsandals.bedwars.api.game.Game> lastEntry = gameList.firstEntry();
-        return lastEntry.getValue();
-    }
 
     @Override
     public List<org.screamingsandals.bedwars.api.game.ItemSpawnerType> getItemSpawnerTypes() {
@@ -765,41 +655,6 @@ public class Main extends PluginContainer implements BedwarsAPI {
 
     public static ItemStack applyColor(org.screamingsandals.bedwars.api.TeamColor teamColor, ItemStack itemStack) {
         return instance.getColorChanger().applyColor(teamColor, itemStack);
-    }
-
-    @Override
-    public org.screamingsandals.bedwars.api.game.Game getFirstWaitingGame() {
-        final TreeMap<Integer, Game> availableGames = new TreeMap<>();
-        games.values().forEach(game -> {
-            if (game.getStatus() != GameStatus.WAITING) {
-                return;
-            }
-
-            availableGames.put(game.getConnectedPlayers().size(), game);
-        });
-
-        if (availableGames.isEmpty()) {
-            return null;
-        }
-
-        return availableGames.lastEntry().getValue();
-    }
-
-    public org.screamingsandals.bedwars.api.game.Game getFirstRunningGame() {
-        final TreeMap<Integer, Game> availableGames = new TreeMap<>();
-        games.values().forEach(game -> {
-            if (game.getStatus() != GameStatus.RUNNING && game.getStatus() != GameStatus.GAME_END_CELEBRATING) {
-                return;
-            }
-
-            availableGames.put(game.getConnectedPlayers().size(), game);
-        });
-
-        if (availableGames.isEmpty()) {
-            return null;
-        }
-
-        return availableGames.lastEntry().getValue();
     }
 
     @Override

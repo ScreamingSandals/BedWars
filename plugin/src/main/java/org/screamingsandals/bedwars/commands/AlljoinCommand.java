@@ -4,7 +4,7 @@ import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
 import org.bukkit.Bukkit;
 import org.screamingsandals.bedwars.Main;
-import org.screamingsandals.bedwars.api.game.Game;
+import org.screamingsandals.bedwars.game.GameManager;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
 
 import java.util.Optional;
@@ -22,21 +22,18 @@ public class AlljoinCommand extends BaseCommand {
                 commandSenderWrapperBuilder
                         .argument(manager
                                 .argumentBuilder(String.class, "game")
-                                .withSuggestionsProvider((c, s) -> Main.getGameNames())
+                                .withSuggestionsProvider((c, s) -> GameManager.getInstance().getGameNames())
                                 .asOptional()
                         )
                         .handler(commandContext -> {
                             Optional<String> gameName = commandContext.getOptional("game");
 
                             var sender = commandContext.getSender();
-                            var game = gameName.map(s -> {
-                                if (Main.isGameExists(s)) {
-                                    return (Game) Main.getGame(s);
-                                }
-                                return null;
-                            }).orElseGet(Main.getInstance()::getGameWithHighestPlayers);
+                            var game = gameName
+                                    .flatMap(GameManager.getInstance()::getGame)
+                                    .or(GameManager.getInstance()::getGameWithHighestPlayers);
 
-                            if (game == null) {
+                            if (game.isEmpty()) {
                                 sender.sendMessage(i18n("no_arena_found"));
                                 return;
                             }
@@ -50,7 +47,7 @@ public class AlljoinCommand extends BaseCommand {
                                 if (Main.isPlayerInGame(player)) {
                                     Main.getPlayerGameProfile(player).getGame().leaveFromGame(player);
                                 }
-                                game.joinToGame(player);
+                                game.get().joinToGame(player);
                             });
                         })
         );

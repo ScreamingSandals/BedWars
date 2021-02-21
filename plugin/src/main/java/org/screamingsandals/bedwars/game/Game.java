@@ -297,7 +297,6 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 // We're using 1.8
             }
 
-            Main.addGame(game);
             game.start();
             Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[B" + ChatColor.WHITE + "W] " + ChatColor.GREEN + "Arena " + ChatColor.WHITE + game.name + " (" + file.getName() + ")" + ChatColor.GREEN + " loaded!");
             return game;

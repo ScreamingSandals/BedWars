@@ -1,6 +1,5 @@
 package org.screamingsandals.bedwars.utils;
 
-import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.commands.BedWarsPermission;
 import org.screamingsandals.lib.event.EventManager;

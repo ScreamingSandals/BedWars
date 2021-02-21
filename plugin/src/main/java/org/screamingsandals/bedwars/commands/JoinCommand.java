@@ -4,6 +4,7 @@ import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
 import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.Main;
+import org.screamingsandals.bedwars.game.GameManager;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
 
 import java.util.Optional;
@@ -21,7 +22,7 @@ public class JoinCommand extends BaseCommand {
                 commandSenderWrapperBuilder
                         .argument(manager
                                 .argumentBuilder(String.class, "game")
-                                .withSuggestionsProvider((c, s) -> Main.getGameNames())
+                                .withSuggestionsProvider((c, s) -> GameManager.getInstance().getGameNames())
                                 .asOptional()
                         )
                         .handler(commandContext -> {
@@ -36,13 +37,15 @@ public class JoinCommand extends BaseCommand {
 
                             if (game.isPresent()) {
                                 var arenaN = game.get();
-                                if (Main.isGameExists(arenaN)) {
-                                    Main.getGame(arenaN).joinToGame(player);
-                                } else {
-                                    player.sendMessage(i18n("no_arena_found"));
-                                }
+                                GameManager.getInstance().getGame(arenaN).ifPresentOrElse(
+                                        game1 -> game1.joinToGame(player),
+                                        () -> player.sendMessage(i18n("no_arena_found"))
+                                );
                             } else {
-                                Main.getInstance().getGameWithHighestPlayers().joinToGame(player);
+                                GameManager.getInstance().getGameWithHighestPlayers().ifPresentOrElse(
+                                        game1 -> game1.joinToGame(player),
+                                        () -> player.sendMessage(i18n("no_arena_found"))
+                                );
                             }
                         })
         );
