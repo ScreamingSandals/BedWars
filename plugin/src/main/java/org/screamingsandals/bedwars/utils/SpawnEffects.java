@@ -1,6 +1,6 @@
 package org.screamingsandals.bedwars.utils;
 
-import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.game.Game;
@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 public class SpawnEffects {
     public static void spawnEffect(Game game, Player player, String particleName) {
         BedwarsPreSpawnEffectEvent firstEvent = new BedwarsPreSpawnEffectEvent(game, player, particleName);
-        Main.getInstance().getServer().getPluginManager().callEvent(firstEvent);
+        Bukkit.getServer().getPluginManager().callEvent(firstEvent);
 
         if (firstEvent.isCancelled()) {
             return;
@@ -50,7 +50,7 @@ public class SpawnEffects {
         }
 
         BedwarsPostSpawnEffectEvent secondEvent = new BedwarsPostSpawnEffectEvent(game, player, particleName);
-        Main.getInstance().getServer().getPluginManager().callEvent(secondEvent);
+        Bukkit.getServer().getPluginManager().callEvent(secondEvent);
     }
 
     private static void useEffect(String type, ConfigurationNode effect, Player player, Game game) throws Throwable {

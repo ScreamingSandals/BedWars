@@ -1,46 +1,53 @@
 package org.screamingsandals.bedwars.commands;
 
-import org.screamingsandals.bedwars.Main;
-import org.bukkit.command.CommandSender;
+import cloud.commandframework.Command;
+import cloud.commandframework.CommandManager;
 import org.bukkit.entity.Player;
+import org.screamingsandals.bedwars.Main;
+import org.screamingsandals.bedwars.game.GameManager;
+import org.screamingsandals.lib.sender.CommandSenderWrapper;
 
-import java.util.List;
+import java.util.Optional;
 
-import static org.screamingsandals.bedwars.lib.lang.I18n.i18n;
+import static org.screamingsandals.bedwars.lib.lang.I.i18n;
 
 public class JoinCommand extends BaseCommand {
-
-    public JoinCommand() {
-        super("join", JOIN_PERMISSION, false, Main.getConfigurator().node("default-permissions", "join").getBoolean());
+    public JoinCommand(CommandManager<CommandSenderWrapper> manager) {
+        super(manager, "join", BedWarsPermission.JOIN_PERMISSION, false);
     }
 
     @Override
-    public boolean execute(CommandSender sender, List<String> args) {
-        Player player = (Player) sender;
-        if (Main.isPlayerInGame(player)) {
-            player.sendMessage(i18n("you_are_already_in_some_game"));
-            return true;
-        }
+    protected void construct(Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder) {
+        manager.command(
+                commandSenderWrapperBuilder
+                        .argument(manager
+                                .argumentBuilder(String.class, "game")
+                                .withSuggestionsProvider((c, s) -> GameManager.getInstance().getGameNames())
+                                .asOptional()
+                        )
+                        .handler(commandContext -> {
+                            Optional<String> game = commandContext.getOptional("game");
 
-        if (args.size() >= 1) {
-            String arenaN = args.get(0);
-            if (Main.isGameExists(arenaN)) {
-                Main.getGame(arenaN).joinToGame(player);
-            } else {
-                player.sendMessage(i18n("no_arena_found"));
-            }
-        } else {
-            Main.getInstance().getGameWithHighestPlayers().joinToGame(player);
-            return true;
-        }
-        return true;
+                            // TODO: Use Wrapper (bedwars changes needed)
+                            var player = commandContext.getSender().as(Player.class);
+                            if (Main.isPlayerInGame(player)) {
+                                player.sendMessage(i18n("you_are_already_in_some_game"));
+                                return;
+                            }
+
+                            if (game.isPresent()) {
+                                var arenaN = game.get();
+                                GameManager.getInstance().getGame(arenaN).ifPresentOrElse(
+                                        game1 -> game1.joinToGame(player),
+                                        () -> player.sendMessage(i18n("no_arena_found"))
+                                );
+                            } else {
+                                GameManager.getInstance().getGameWithHighestPlayers().ifPresentOrElse(
+                                        game1 -> game1.joinToGame(player),
+                                        () -> player.sendMessage(i18n("no_arena_found"))
+                                );
+                            }
+                        })
+        );
     }
-
-    @Override
-    public void completeTab(List<String> completion, CommandSender sender, List<String> args) {
-        if (args.size() == 1) {
-            completion.addAll(Main.getGameNames());
-        }
-    }
-
 }

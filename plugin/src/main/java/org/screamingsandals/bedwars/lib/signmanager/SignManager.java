@@ -2,6 +2,7 @@ package org.screamingsandals.bedwars.lib.signmanager;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.utils.PreparedLocation;
 import org.spongepowered.configurate.loader.ConfigurationLoader;
@@ -24,7 +25,7 @@ public class SignManager {
         this.owner = owner;
         this.loader = loader;
 
-        Bukkit.getScheduler().runTaskLater(Main.getInstance(), this::loadConfig, 5L);
+        Bukkit.getScheduler().runTaskLater(Main.getInstance().getPluginDescription().as(JavaPlugin.class), this::loadConfig, 5L);
     }
 
     public void loadConfig() {

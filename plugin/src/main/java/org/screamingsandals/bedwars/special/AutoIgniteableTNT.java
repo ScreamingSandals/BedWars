@@ -5,6 +5,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.Team;
@@ -38,13 +39,13 @@ public class AutoIgniteableTNT extends SpecialItem
         Main.getInstance().registerEntityToGame(tnt, game);
         tnt.setFuseTicks(explosionTime * 20);
         if (!damagePlacer)
-            tnt.setMetadata(player.getUniqueId().toString(), new FixedMetadataValue(Main.getInstance(), null));
-        tnt.setMetadata("autoignited", new FixedMetadataValue(Main.getInstance(), null));
+            tnt.setMetadata(player.getUniqueId().toString(), new FixedMetadataValue(Main.getInstance().getPluginDescription().as(JavaPlugin.class), null));
+        tnt.setMetadata("autoignited", new FixedMetadataValue(Main.getInstance().getPluginDescription().as(JavaPlugin.class), null));
         new BukkitRunnable() {
             public void run() {
                 Main.getInstance().unregisterEntityFromGame(tnt);
             }
-        }.runTaskLater(Main.getInstance(), explosionTime + 10);
+        }.runTaskLater(Main.getInstance().getPluginDescription().as(JavaPlugin.class), explosionTime + 10);
     }
 
 }

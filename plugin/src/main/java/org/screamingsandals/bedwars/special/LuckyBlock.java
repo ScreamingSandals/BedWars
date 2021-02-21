@@ -1,5 +1,6 @@
 package org.screamingsandals.bedwars.special;
 
+import org.bukkit.plugin.java.JavaPlugin;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.api.Team;
@@ -60,7 +61,7 @@ public class LuckyBlock extends SpecialItem implements org.screamingsandals.bedw
                         TNTPrimed tnt = (TNTPrimed) placedLocation.getWorld().spawnEntity(placedLocation, EntityType.PRIMED_TNT);
                         tnt.setFuseTicks(0);
                     }
-                }.runTaskLater(Main.getInstance(), 10L);
+                }.runTaskLater(Main.getInstance().getPluginDescription().as(JavaPlugin.class), 10L);
                 break;
             case "teleport":
                 broker.teleport(broker.getLocation().add(0, (int) map.get("height"), 0));

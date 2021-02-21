@@ -1,5 +1,6 @@
 package org.screamingsandals.bedwars.special;
 
+import org.bukkit.plugin.java.JavaPlugin;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.api.Team;
@@ -99,7 +100,7 @@ public class ProtectionWall extends SpecialItem implements org.screamingsandals.
                     this.cancel();
                 }
             }
-        }.runTaskTimer(Main.getInstance(), 20L, 20L);
+        }.runTaskTimer(Main.getInstance().getPluginDescription().as(JavaPlugin.class), 20L, 20L);
     }
 
     @Override

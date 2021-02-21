@@ -4,16 +4,17 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.statistics.LeaderboardEntry;
-import org.screamingsandals.bedwars.commands.BaseCommand;
+import org.screamingsandals.bedwars.commands.BedWarsPermission;
 import org.screamingsandals.bedwars.lib.nms.holograms.Hologram;
 import org.screamingsandals.bedwars.lib.nms.holograms.TouchHandler;
 import org.screamingsandals.bedwars.utils.PreparedLocation;
+import org.screamingsandals.lib.player.PlayerMapper;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
-import java.io.File;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -58,7 +59,7 @@ public class LeaderboardHolograms implements TouchHandler {
         this.holograms = new HashMap<>();
         this.hologramLocations = new ArrayList<>();
 
-        File file = new File(Main.getInstance().getDataFolder(), "database/holodb_leaderboard.yml");
+        var file = Main.getInstance().getPluginDescription().getDataFolder().resolve("database").resolve("holodb_leaderboard.yml").toFile();
         if (file.exists()) {
             var loader = YamlConfigurationLoader.builder()
                     .file(file)
@@ -76,12 +77,12 @@ public class LeaderboardHolograms implements TouchHandler {
             return;
         }
 
-        Bukkit.getScheduler().runTask(Main.getInstance(), this::updateEntries);
+        Bukkit.getScheduler().runTask(Main.getInstance().getPluginDescription().as(JavaPlugin.class), this::updateEntries);
     }
 
     private void updateHologramDatabase() {
         try {
-            File file = new File(Main.getInstance().getDataFolder(), "database/holodb_leaderboard.yml");
+            var file = Main.getInstance().getPluginDescription().getDataFolder().resolve("database").resolve("holodb_leaderboard.yml").toFile();
             var loader = YamlConfigurationLoader.builder()
                     .file(file)
                     .build();
@@ -109,7 +110,7 @@ public class LeaderboardHolograms implements TouchHandler {
     public void addViewer(Player player) {
         holograms.values().forEach(hologram -> {
             if (!hologram.getViewers().contains(player)) {
-                Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> hologram.addViewer(player), 10L);
+                Bukkit.getScheduler().runTaskLater(Main.getInstance().getPluginDescription().as(JavaPlugin.class), () -> hologram.addViewer(player), 10L);
             }
         });
     }
@@ -154,12 +155,12 @@ public class LeaderboardHolograms implements TouchHandler {
 
     @Override
     public void handle(Player player, Hologram hologram) {
-        if (!player.hasMetadata("bw-remove-holo") || (!player.isOp() && !BaseCommand.hasPermission(player, BaseCommand.ADMIN_PERMISSION, false))) {
+        if (!player.hasMetadata("bw-remove-holo") || (!player.isOp() && !PlayerMapper.wrapPlayer(player).hasPermission(BedWarsPermission.ADMIN_PERMISSION.asPermission()))) {
             return;
         }
 
-        player.removeMetadata("bw-remove-holo", Main.getInstance());
-        Main.getInstance().getServer().getScheduler().runTask(Main.getInstance(), () -> {
+        player.removeMetadata("bw-remove-holo", Main.getInstance().getPluginDescription().as(JavaPlugin.class));
+        Bukkit.getServer().getScheduler().runTask(Main.getInstance().getPluginDescription().as(JavaPlugin.class), () -> {
             hologram.destroy();
             List.copyOf(hologramLocations).forEach(location ->
                 location.asOptional(Location.class).ifPresent(bukkitLocation -> {

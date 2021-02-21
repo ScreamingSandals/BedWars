@@ -1,3 +1,12 @@
+apply plugin: 'de.fuerstenau.buildconfig'
+
+ScreamingLibBuilder()
+        .platforms('bukkit')
+        .modules('player', 'event', 'material', 'entity', 'world', 'command', 'tasker')
+        .version(SCREAMING_LIB_VERSION)
+        .enableAnnotationProcessor()
+        .build()
+
 dependencies {
     /* PROVIDED */
     compileOnly 'net.milkbowl.vault:VaultAPI:1.7'
@@ -15,40 +24,34 @@ dependencies {
     compileOnly 'com.alessiodp.parties:parties-api:3.0.0-rc.2'
 
     /* SHADED */
-    shade project(':BedWars-API')
-    shade 'com.zaxxer:HikariCP:3.3.0'
-    shade 'org.screamingsandals.simpleinventories:core-bukkit:2.0.0-SNAPSHOT'
-    shade 'org.bstats:bstats-bukkit:1.7'
-    shade 'pronze.lib:scoreboard:1.0.1-SNAPSHOT'
-    shade paperlib()
-
+    implementation project(':BedWars-API')
+    implementation 'com.zaxxer:HikariCP:3.3.0'
+    implementation 'org.screamingsandals.simpleinventories:core-bukkit:2.0.0-SNAPSHOT'
+    implementation 'cloud.commandframework:cloud-minecraft-extras:1.4.0'
+    implementation 'org.bstats:bstats-bukkit:1.7'
+    implementation 'pronze.lib:scoreboard:1.0.1-SNAPSHOT'
+    implementation paperlib()
+    implementation 'me.lucko:commodore:1.9', {
+        exclude group: 'com.mojang', module: 'brigadier'
+    }
 }
 
-task generateBuildInfoFile {
-    def outputDir = new File(projectDir, "build/generated/buildinfo")
-    doFirst {
-        mkdir outputDir
-
-        new File(outputDir, "build_info.yml").withWriter { writer ->
-            def contents = "build: "
-            if (System.getenv('BUILD_NUMBER') != null) {
-                contents += System.getenv('BUILD_NUMBER')
-            } else {
-                contents += "custom"
-            }
-            writer.write(contents)
+buildConfig {
+    version = project.version
+    buildConfigField 'String', 'BUILD_NUMBER', {
+        if (System.getenv('BUILD_NUMBER') != null) {
+            return System.getenv('BUILD_NUMBER')
+        } else {
+            return "custom"
         }
     }
+
+    clsName = 'VersionInfo'
+    packageName = 'org.screamingsandals.bedwars'
+    charset = 'UTF-8'
 }
 
-sourceSets {
-    main {
-        output.dir(new File(projectDir, "build/generated/buildinfo"), builtBy: 'generateBuildInfoFile')
-    }
-}
-
-enableSpigradleSpigot()
-
+/*
 spigot {
     name = 'BedWars'
     authors = ['ScreamingSandals <Misat11, Ceph, Pronze>']
@@ -75,4 +78,4 @@ spigot {
             usage = '/bw [subcommand]'
         }
     }
-}
+}*/

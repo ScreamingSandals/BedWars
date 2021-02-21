@@ -9,13 +9,14 @@ import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.api.statistics.PlayerStatistic;
 import org.screamingsandals.bedwars.game.CurrentTeam;
 import org.screamingsandals.bedwars.game.Game;
+import org.screamingsandals.bedwars.game.GameManager;
 import org.screamingsandals.bedwars.game.GamePlayer;
 
 public class BedwarsExpansion extends PlaceholderExpansion {
 
     @Override
     public String getAuthor() {
-        return String.join(", ", Main.getInstance().getDescription().getAuthors());
+        return String.join(", ", Main.getInstance().getPluginDescription().getAuthors());
     }
 
     @Override
@@ -30,7 +31,7 @@ public class BedwarsExpansion extends PlaceholderExpansion {
 
     @Override
     public String getPlugin() {
-        return Main.getInstance().getName();
+        return Main.getInstance().getPluginDescription().getName();
     }
 
     @Override
@@ -45,8 +46,9 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                 operation = gameName.substring(index + 1).toLowerCase();
             }
             gameName = gameName.substring(0, index);
-            Game game = Main.getGame(gameName);
-            if (game != null) {
+            var gameOpt = GameManager.getInstance().getGame(gameName);
+            if (gameOpt.isPresent()) {
+                var game = gameOpt.get();
                 switch (operation) {
                     case "name":
                         return game.getName();

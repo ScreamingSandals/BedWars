@@ -3,6 +3,7 @@ package org.screamingsandals.bedwars.special;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.screamingsandals.bedwars.Main;
@@ -87,6 +88,6 @@ public class WarpPowder extends SpecialItem implements org.screamingsandals.bedw
                     teleportingTime--;
                 }
             }
-        }.runTaskTimer(Main.getInstance(), 0L, 20L);
+        }.runTaskTimer(Main.getInstance().getPluginDescription().as(JavaPlugin.class), 0L, 20L);
     }
 }

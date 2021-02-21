@@ -1,75 +1,38 @@
 package org.screamingsandals.bedwars.commands;
 
-import org.bukkit.command.ConsoleCommandSender;
-import org.screamingsandals.bedwars.Main;
-import org.bukkit.command.CommandSender;
+import cloud.commandframework.Command;
+import cloud.commandframework.CommandManager;
+import cloud.commandframework.keys.SimpleCloudKey;
+import cloud.commandframework.permission.PredicatePermission;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import org.screamingsandals.lib.player.PlayerWrapper;
+import org.screamingsandals.lib.sender.CommandSenderWrapper;
 
-import java.util.Arrays;
-import java.util.List;
-
+@RequiredArgsConstructor
+@Getter
 public abstract class BaseCommand {
 
-    public static final List<String> ADMIN_PERMISSION = Arrays.asList("misat11.bw.admin", "bw.admin");
-    public static final List<String> OTHER_STATS_PERMISSION =  Arrays.asList("misat11.bw.otherstats", "bw.otherstats");
+    protected final CommandManager<CommandSenderWrapper> manager;
+    protected final String name;
+    protected final BedWarsPermission possiblePermission;
+    protected final boolean allowConsole;
 
-    public static final List<String> JOIN_PERMISSION =  Arrays.asList("misat11.bw.cmd.join", "bw.cmd.join");
-    public static final List<String> LEAVE_PERMISSION =  Arrays.asList("misat11.bw.cmd.leave", "bw.cmd.leave");
-    public static final List<String> AUTOJOIN_PERMISSION =  Arrays.asList("misat11.bw.cmd.autojoin", "bw.cmd.autojoin");
-    public static final List<String> LIST_PERMISSION =  Arrays.asList("misat11.bw.cmd.list", "bw.cmd.list");
-    public static final List<String> REJOIN_PERMISSION =  Arrays.asList("misat11.bw.cmd.rejoin", "bw.cmd.rejoin");
-    public static final List<String> STATS_PERMISSION =  Arrays.asList("misat11.bw.cmd.stats", "bw.cmd.stats");
-    public static final List<String> LEADERBOARD_PERMISSION =  Arrays.asList("misat11.bw.cmd.leaderboard", "bw.cmd.leaderboard");
-    public static final List<String> ALL_JOIN_PERMISSION =  Arrays.asList("misat11.bw.admin.alljoin", "bw.admin.alljoin");
+    protected abstract void construct(Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder);
 
-    private String name;
-    private List<String> permissions;
-    private boolean allowConsole;
-    private boolean defaultAllowed;
-
-    protected BaseCommand(String name, List<String> permissions, boolean allowConsole, boolean defaultAllowed) {
-        this.name = name.toLowerCase();
-        this.permissions = permissions;
-        this.allowConsole = allowConsole;
-        this.defaultAllowed = defaultAllowed;
-        Main.getCommands().put(this.name, this);
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public boolean isConsoleCommand() {
-        return this.allowConsole;
-    }
-
-    public List<String> getPossiblePermissions() {
-        return this.permissions;
-    }
-
-    public abstract boolean execute(CommandSender sender, List<String> args);
-
-    public abstract void completeTab(List<String> completion, CommandSender sender, List<String> args);
-
-    public boolean isDefaultAllowed() {
-        return this.defaultAllowed;
-    }
-
-    public boolean hasPermission(CommandSender sender) {
-        return hasPermission(sender, permissions, defaultAllowed);
-    }
-
-    public static boolean hasPermission(CommandSender sender, List<String> permissions, boolean defaultAllowed) {
-        if (permissions == null || permissions.isEmpty() || sender instanceof ConsoleCommandSender || sender.isOp()) {
-            return true;
+    public void construct() {
+        var builder = manager.commandBuilder("bw")
+                .literal(name);
+        if (possiblePermission != null) {
+            builder = builder.permission(
+                    PredicatePermission.of(SimpleCloudKey.of(name), perm ->
+                            perm.getType() == CommandSenderWrapper.Type.CONSOLE || possiblePermission.asPermission().hasPermission(perm)
+                    )
+            );
         }
-
-        for (String permission : permissions) {
-            if (sender.isPermissionSet(permission)) {
-                return sender.hasPermission(permission);
-            }
+        if (!allowConsole) {
+            builder = builder.senderType(PlayerWrapper.class);
         }
-
-        return defaultAllowed;
+        construct(builder);
     }
-
 }

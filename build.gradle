@@ -2,15 +2,17 @@ defaultTasks 'clean', 'screamCompile'
 
 allprojects {
     group = 'org.screamingsandals.bedwars'
-    version = '0.3.0-SNAPSHOT'
+    version = BEDWARS_VERSION
 }
 
 buildscript {
     repositories {
         maven { url 'https://repo.screamingsandals.org/public/' }
+        maven { url 'https://plugins.gradle.org/m2' }
     }
     dependencies {
-		classpath 'org.screamingsandals.gradle.builder:screaming-plugin-builder:1.0.32'
+		classpath 'org.screamingsandals.gradle.builder:screaming-plugin-builder:1.0.39'
+        classpath 'gradle.plugin.de.fuerstenau:BuildConfigPlugin:1.1.8'
     }
 }
 
@@ -18,12 +20,15 @@ subprojects {
     apply plugin: 'java'
     apply plugin: 'org.screamingsandals.gradle.builder'
 
+    enableShadowPlugin()
+
     configurations.all {
         // Check for updates every build
         resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
     }
 
     repositories {
+        mavenLocal() // remove after testing
         maven { url 'https://repo.extendedclip.com/content/repositories/placeholderapi/'  }
         maven { url 'http://repo.onarandombox.com/content/groups/public'  }
         maven { url 'https://ci.frostcast.net/plugin/repository/everything'  }
@@ -36,12 +41,13 @@ subprojects {
     }
     
     dependencies {
-    	compileOnly paper("1.16.4")
+    	compileOnly paper(PAPER_VERSIOn)
     }
 
     shadowJar {
         relocate 'com.zaxxer', 'org.screamingsandals.bedwars.lib.HikariCP'
         relocate 'org.screamingsandals.simpleinventories', 'org.screamingsandals.bedwars.lib.sgui'
+        relocate 'org.screamingsandals.lib.utils.Wrapper', 'org.screamingsandals.bedwars.api.utils.Wrapper'
         relocate 'org.screamingsandals.lib', 'org.screamingsandals.bedwars.lib'
         relocate 'org.bstats', 'org.screamingsandals.bedwars.lib.ext.bstats'
         relocate 'io.papermc.lib', 'org.screamingsandals.bedwars.lib.ext.paperlib'
@@ -53,6 +59,8 @@ subprojects {
         relocate 'io.leangen.geantyref', 'org.screamingsandals.bedwars.lib.ext.geantyref'
         relocate 'net.kyori', 'org.screamingsandals.bedwars.lib.ext.kyori'
         relocate 'org.checkerframework', 'org.screamingsandals.bedwars.lib.ext.checkerframework'
+        relocate 'cloud.commandframework', 'org.screamingsandals.bedwars.lib.ext.cloud'
+        relocate 'me.lucko.commodore', 'org.screamingsandals.bedwars.lib.ext.commodore'
 
         if (System.getenv('BUILD_NUMBER') != null) {
             archiveClassifier.set(System.getenv('BUILD_NUMBER'))

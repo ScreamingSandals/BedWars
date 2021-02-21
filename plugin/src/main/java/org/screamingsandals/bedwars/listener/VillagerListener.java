@@ -48,7 +48,7 @@ public class VillagerListener implements Listener {
     public void open(GameStore store, PlayerInteractEntityEvent event, Game game) {
         BedwarsOpenShopEvent openShopEvent = new BedwarsOpenShopEvent(game,
                 event.getPlayer(), store, event.getRightClicked());
-        Main.getInstance().getServer().getPluginManager().callEvent(openShopEvent);
+        Bukkit.getServer().getPluginManager().callEvent(openShopEvent);
 
         if (openShopEvent.getResult() != Result.ALLOW) {
             return;

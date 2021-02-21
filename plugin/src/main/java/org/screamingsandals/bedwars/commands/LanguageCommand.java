@@ -1,10 +1,13 @@
 package org.screamingsandals.bedwars.commands;
 
+import cloud.commandframework.Command;
+import cloud.commandframework.CommandManager;
 import org.bukkit.Bukkit;
-import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.screamingsandals.bedwars.Main;
+import org.screamingsandals.lib.sender.CommandSenderWrapper;
 
 import java.io.File;
 import java.io.InputStreamReader;
@@ -20,54 +23,49 @@ public class LanguageCommand extends BaseCommand {
             "nl", "no", "pl", "pt", "pt-BR", "ro", "ru", "sk", "sl", "sr", "sr-CS", "sv", "th",
             "tr", "uk", "vi", "zh", "zh-CN");
 
-    public LanguageCommand() {
-        super("lang", ADMIN_PERMISSION, false, false);
+    public LanguageCommand(CommandManager<CommandSenderWrapper> manager) {
+        super(manager, "lang", BedWarsPermission.ADMIN_PERMISSION, true);
     }
 
     @Override
-    public boolean execute(CommandSender sender, List<String> args) {
-        final var player = (Player) sender;
-        if (args.size() == 1) {
-            try {
-                final var locale = args.get(0);
-                final var config = new YamlConfiguration();
-                var file = new File(Main.getInstance().getDataFolder().toString()
-                        + "/languages", "language_" + locale + ".yml");
+    protected void construct(Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder) {
+        manager.command(
+                commandSenderWrapperBuilder
+                        .argument(manager
+                                .argumentBuilder(String.class, "language")
+                                .withSuggestionsProvider((c, s) -> languages)
+                        )
+                    .handler(commandContext -> {
+                        final var sender = commandContext.getSender();
+                        try {
+                            final String locale = commandContext.get("language");
+                            final var config = new YamlConfiguration();
+                            var file = Main.getInstance().getPluginDescription().getDataFolder().resolve("languages").resolve("language_" + locale + ".yml").toFile();
 
-                if (file.exists()) {
-                    config.load(file);
-                } else {
-                    final var ins = Main.getInstance()
-                            .getResource("languages/language_" + locale + ".yml");
-                    config.load(new InputStreamReader(Objects.requireNonNull(ins)));
-                }
-                final var langName = Objects.requireNonNull(config.getString("lang_name"));
+                            if (file.exists()) {
+                                config.load(file);
+                            } else {
+                                final var ins = Main.class.getResourceAsStream("languages/language_" + locale + ".yml");
+                                config.load(new InputStreamReader(ins));
+                            }
+                            final var langName = Objects.requireNonNull(config.getString("lang_name"));
 
-                if (Objects.requireNonNull(Main.getConfigurator().node("locale").getString())
-                        .equalsIgnoreCase(locale)) {
-                    player.sendMessage(i18n("language_already_set")
-                            .replace("%lang%", langName));
-                    return true;
-                }
-                Main.getConfigurator().node("locale").set(locale);
-                Main.getConfigurator().saveConfig();
-                Bukkit.getServer().getPluginManager().disablePlugin(Main.getInstance());
-                Bukkit.getServer().getPluginManager().enablePlugin(Main.getInstance());
-                player.sendMessage(i18n("language_success")
-                        .replace("%lang%", langName));
-            } catch (Exception e) {
-                player.sendMessage(i18n("usage_bw_lang"));
-            }
-        } else {
-            player.sendMessage(i18n("usage_bw_lang"));
-        }
-        return true;
-    }
-
-    @Override
-    public void completeTab(List<String> completion, CommandSender sender, List<String> args) {
-        if (args.size() == 1) {
-            args.addAll(languages);
-        }
+                            if (Objects.requireNonNull(Main.getConfigurator().node("locale").getString())
+                                    .equalsIgnoreCase(locale)) {
+                                sender.sendMessage(i18n("language_already_set")
+                                        .replace("%lang%", langName));
+                                return;
+                            }
+                            Main.getConfigurator().node("locale").set(locale);
+                            Main.getConfigurator().saveConfig();
+                            Bukkit.getServer().getPluginManager().disablePlugin(Main.getInstance().getPluginDescription().as(JavaPlugin.class));
+                            Bukkit.getServer().getPluginManager().enablePlugin(Main.getInstance().getPluginDescription().as(JavaPlugin.class));
+                            sender.sendMessage(i18n("language_success")
+                                    .replace("%lang%", langName));
+                        } catch (Exception e) {
+                            sender.sendMessage(i18n("usage_bw_lang"));
+                        }
+                    })
+        );
     }
 }

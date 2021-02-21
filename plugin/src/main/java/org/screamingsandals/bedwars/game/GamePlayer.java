@@ -5,6 +5,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.lib.debug.Debug;
@@ -195,7 +196,7 @@ public class GamePlayer {
         if (!hiddenPlayers.contains(player) && !player.equals(this.player)) {
             hiddenPlayers.add(player);
             try {
-                this.player.hidePlayer(Main.getInstance(), player);
+                this.player.hidePlayer(Main.getInstance().getPluginDescription().as(JavaPlugin.class), player);
             } catch (Throwable t) {
                 this.player.hidePlayer(player);
             }
@@ -206,7 +207,7 @@ public class GamePlayer {
         if (hiddenPlayers.contains(player) && !player.equals(this.player)) {
             hiddenPlayers.remove(player);
             try {
-                this.player.showPlayer(Main.getInstance(), player);
+                this.player.showPlayer(Main.getInstance().getPluginDescription().as(JavaPlugin.class), player);
             } catch (Throwable t) {
                 this.player.showPlayer(player);
             }

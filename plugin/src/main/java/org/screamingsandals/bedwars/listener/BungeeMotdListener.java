@@ -5,16 +5,18 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.server.ServerListPingEvent;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.game.Game;
+import org.screamingsandals.bedwars.game.GameManager;
 
 public class BungeeMotdListener implements Listener {
 
     @EventHandler
     public void onServerListPing(ServerListPingEvent slpe) {
-        if (Main.getGameNames().isEmpty()) {
+        var games = GameManager.getInstance().getGames();
+        if (games.isEmpty()) {
             return;
         }
 
-        Game game = Main.getGame(Main.getGameNames().get(0));
+        Game game = games.get(0);
 
         if (game == null) {
             return;
