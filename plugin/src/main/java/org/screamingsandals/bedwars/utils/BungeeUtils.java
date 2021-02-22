@@ -2,6 +2,7 @@ package org.screamingsandals.bedwars.utils;
 
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
+import lombok.experimental.UtilityClass;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.screamingsandals.bedwars.Main;
 import org.bukkit.Bukkit;
@@ -9,8 +10,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 
+@UtilityClass
 public class BungeeUtils {
-    public static void movePlayerToBungeeServer(Player player, boolean serverRestart) {
+    public void movePlayerToBungeeServer(Player player, boolean serverRestart) {
         if (serverRestart) {
             internalMove(player, true);
             return;
@@ -23,7 +25,7 @@ public class BungeeUtils {
         }.runTask(Main.getInstance().getPluginDescription().as(JavaPlugin.class));
     }
 
-    public static void sendPlayerBungeeMessage(Player player, String string) {
+    public void sendPlayerBungeeMessage(Player player, String string) {
         new BukkitRunnable() {
             public void run() {
                 ByteArrayDataOutput out = ByteStreams.newDataOutput();
@@ -37,7 +39,7 @@ public class BungeeUtils {
         }.runTaskLater(Main.getInstance().getPluginDescription().as(JavaPlugin.class), 30L);
     }
 
-    private static void internalMove(Player player, boolean restart) {
+    private void internalMove(Player player, boolean restart) {
         String server = Main.getConfigurator().node("bungee", "server").getString();
         ByteArrayDataOutput out = ByteStreams.newDataOutput();
 

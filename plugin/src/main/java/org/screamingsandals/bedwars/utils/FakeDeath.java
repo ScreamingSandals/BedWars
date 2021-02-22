@@ -1,5 +1,6 @@
 package org.screamingsandals.bedwars.utils;
 
+import lombok.experimental.UtilityClass;
 import org.bukkit.*;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ExperienceOrb;
@@ -16,8 +17,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+@UtilityClass
 public class FakeDeath {
-    public static void die(GamePlayer gamePlayer) {
+    public void die(GamePlayer gamePlayer) {
         Player player = gamePlayer.player;
         if (player.isDead()) {
             return;
@@ -117,7 +119,7 @@ public class FakeDeath {
         gamePlayer.teleport(respawnEvent.getRespawnLocation());
     }
 
-    public static int getOrbValue(int i) {
+    public int getOrbValue(int i) {
         if (i > 162670129) return i - 100000;
         if (i > 81335063) return 81335063;
         if (i > 40667527) return 40667527;

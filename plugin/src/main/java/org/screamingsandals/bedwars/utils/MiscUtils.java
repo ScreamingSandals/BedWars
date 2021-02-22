@@ -1,10 +1,10 @@
 package org.screamingsandals.bedwars.utils;
 
+import lombok.experimental.UtilityClass;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
@@ -19,23 +19,23 @@ import org.screamingsandals.bedwars.api.TeamColor;
 import org.screamingsandals.bedwars.api.events.BedwarsApplyPropertyToBoughtItem;
 import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.game.GamePlayer;
-import org.screamingsandals.bedwars.game.Team;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.lib.material.MaterialHolder;
 import org.screamingsandals.lib.material.MaterialMapping;
 
 import java.util.*;
 
+@UtilityClass
 public class MiscUtils {
     /**
      * From BedWarsRel
      */
-    public static int randInt(int min, int max) {
+    public int randInt(int min, int max) {
         Random rand = new Random();
         return rand.nextInt((max - min) + 1) + min;
     }
 
-    public static BlockFace getCardinalDirection(Location location) {
+    public BlockFace getCardinalDirection(Location location) {
         double rotation = (location.getYaw() - 90) % 360;
         if (rotation < 0) {
             rotation += 360.0;
@@ -65,7 +65,7 @@ public class MiscUtils {
     /* End of BedWarsRel */
 
     /* Special items  - CEPH*/
-    public static void sendActionBarMessage(Player player, String message) {
+    public void sendActionBarMessage(Player player, String message) {
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -79,7 +79,7 @@ public class MiscUtils {
         }.runTask(Main.getInstance().getPluginDescription().as(JavaPlugin.class));
     }
 
-    public static int getIntFromProperty(String name, String fallback, BedwarsApplyPropertyToBoughtItem event) {
+    public int getIntFromProperty(String name, String fallback, BedwarsApplyPropertyToBoughtItem event) {
         try {
             return event.getIntProperty(name);
         } catch (NullPointerException e) {
@@ -87,7 +87,7 @@ public class MiscUtils {
         }
     }
 
-    public static double getDoubleFromProperty(String name, String fallback, BedwarsApplyPropertyToBoughtItem event) {
+    public double getDoubleFromProperty(String name, String fallback, BedwarsApplyPropertyToBoughtItem event) {
         try {
             return event.getDoubleProperty(name);
         } catch (NullPointerException e) {
@@ -95,7 +95,7 @@ public class MiscUtils {
         }
     }
 
-    public static boolean getBooleanFromProperty(String name, String fallback, BedwarsApplyPropertyToBoughtItem event) {
+    public boolean getBooleanFromProperty(String name, String fallback, BedwarsApplyPropertyToBoughtItem event) {
         try {
             return event.getBooleanProperty(name);
         } catch (NullPointerException e) {
@@ -103,7 +103,7 @@ public class MiscUtils {
         }
     }
 
-    public static String getStringFromProperty(String name, String fallback, BedwarsApplyPropertyToBoughtItem event) {
+    public String getStringFromProperty(String name, String fallback, BedwarsApplyPropertyToBoughtItem event) {
         try {
             return event.getStringProperty(name);
         } catch (NullPointerException e) {
@@ -111,7 +111,7 @@ public class MiscUtils {
         }
     }
 
-    public static String getMaterialFromProperty(String name, String fallback, BedwarsApplyPropertyToBoughtItem event) {
+    public String getMaterialFromProperty(String name, String fallback, BedwarsApplyPropertyToBoughtItem event) {
         try {
             return event.getStringProperty(name);
         } catch (NullPointerException e) {
@@ -119,7 +119,7 @@ public class MiscUtils {
         }
     }
 
-    public static MaterialHolder getMaterialFromString(String name, String fallback) {
+    public MaterialHolder getMaterialFromString(String name, String fallback) {
         if (name != null) {
             var result = MaterialMapping.resolve(name);
             if (result.isEmpty()) {
@@ -132,7 +132,7 @@ public class MiscUtils {
         return MaterialMapping.resolve(fallback).orElseThrow();
     }
 
-    public static Player findTarget(Game game, Player player, double maxDist) {
+    public Player findTarget(Game game, Player player, double maxDist) {
         Player playerTarget = null;
         RunningTeam team = game.getTeamOfPlayer(player);
 
@@ -161,7 +161,7 @@ public class MiscUtils {
 
     /* End of Special Items */
 
-    public static Location readLocationFromString(World world, String location) {
+    public Location readLocationFromString(World world, String location) {
         int lpos = 0;
         double x = 0;
         double y = 0;
@@ -193,12 +193,12 @@ public class MiscUtils {
         return new Location(world, x, y, z, yaw, pitch);
     }
 
-    public static String setLocationToString(Location location) {
+    public String setLocationToString(Location location) {
         return location.getX() + ";" + location.getY() + ";" + location.getZ() + ";" + location.getYaw() + ";"
                 + location.getPitch();
     }
 
-    public static String convertColorToNewFormat(String oldColor, boolean isNewColor) {
+    public String convertColorToNewFormat(String oldColor, boolean isNewColor) {
         String newColor = oldColor;
 
         if (isNewColor) {
@@ -243,7 +243,7 @@ public class MiscUtils {
         return newColor;
     }
     
-    public static Vector getDirection(BlockFace face) {
+    public Vector getDirection(BlockFace face) {
     	int modX = face.getModX();
     	int modY = face.getModY();
     	int modZ = face.getModZ();
@@ -254,7 +254,7 @@ public class MiscUtils {
         return direction;
     }
 
-    public static void giveItemsToPlayer(List<ItemStack> itemStackList, Player player, TeamColor teamColor) {
+    public void giveItemsToPlayer(List<ItemStack> itemStackList, Player player, TeamColor teamColor) {
         for (ItemStack itemStack : itemStackList) {
             final String materialName = itemStack.getType().toString();
             final PlayerInventory playerInventory = player.getInventory();
@@ -273,7 +273,7 @@ public class MiscUtils {
         }
     }
 
-    public static List<Player> getOnlinePlayers(Collection<UUID> uuids) {
+    public List<Player> getOnlinePlayers(Collection<UUID> uuids) {
         if (uuids == null) {
             return Collections.emptyList();
         }

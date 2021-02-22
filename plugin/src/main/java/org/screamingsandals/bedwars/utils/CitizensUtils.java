@@ -1,5 +1,6 @@
 package org.screamingsandals.bedwars.utils;
 
+import lombok.experimental.UtilityClass;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.event.SpawnReason;
 import net.citizensnpcs.api.npc.MemoryNPCDataStore;
@@ -12,8 +13,9 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.screamingsandals.bedwars.game.GameStore;
 
+@UtilityClass
 public class CitizensUtils {
-    public static LivingEntity spawnNPC(GameStore store) {
+    public LivingEntity spawnNPC(GameStore store) {
         if (Bukkit.getPluginManager().isPluginEnabled("Citizens")) {
             try {
                 NPCRegistry npcRegistry = CitizensAPI.getNamedNPCRegistry(CitizensUtils.class.getName());
@@ -35,7 +37,7 @@ public class CitizensUtils {
         return null;
     }
 
-    public static GameStore getFromNPC(Entity entity) {
+    public GameStore getFromNPC(Entity entity) {
         if (entity.hasMetadata("NPC") && Bukkit.getPluginManager().isPluginEnabled("Citizens")) {
             try {
                 NPCRegistry npcRegistry = CitizensAPI.getNamedNPCRegistry(CitizensUtils.class.getName());
@@ -55,7 +57,7 @@ public class CitizensUtils {
         return null;
     }
 
-    public static void remove(Entity entity) {
+    public void remove(Entity entity) {
         if (entity.hasMetadata("NPC") && Bukkit.getPluginManager().isPluginEnabled("Citizens")) {
             try {
                 NPCRegistry npcRegistry = CitizensAPI.getNamedNPCRegistry(CitizensUtils.class.getName());

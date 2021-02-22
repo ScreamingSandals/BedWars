@@ -201,7 +201,7 @@ public class PlayerListener implements Listener {
                     @Override
                     public void run() {
                         if (livingTime > 0) {
-                            Title.send(player,
+                            TitleUtils.send(PlayerMapper.wrapPlayer(player),
                                     i18nonly("respawn_cooldown_title").replace("%time%", String.valueOf(livingTime)), "");
                             Sounds.playSound(player, player.getLocation(),
                                     Main.getConfigurator().node("sounds", "respawn_cooldown_wait").getString(),

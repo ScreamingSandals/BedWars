@@ -19,7 +19,6 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.screamingsandals.bedwars.api.BedwarsAPI;
-import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.api.statistics.PlayerStatisticsManager;
 import org.screamingsandals.bedwars.api.utils.ColorChanger;
 import org.screamingsandals.bedwars.database.DatabaseManager;
@@ -44,7 +43,6 @@ import org.screamingsandals.lib.material.MaterialMapping;
 import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.plugin.PluginContainer;
 import org.screamingsandals.lib.plugin.PluginManager;
-import org.screamingsandals.lib.sender.CommandSenderWrapper;
 import org.screamingsandals.lib.utils.PlatformType;
 import org.screamingsandals.lib.utils.annotations.Init;
 import org.screamingsandals.lib.utils.annotations.Plugin;
@@ -82,7 +80,8 @@ import static org.screamingsandals.bedwars.lib.lang.I18n.i18n;
         SimpleInventoriesCore.class,
         EventManager.class,
         CommandService.class,
-        GameManager.class
+        GameManager.class,
+        UpdateChecker.class
 })
 public class Main extends PluginContainer implements BedwarsAPI {
     private static Main instance;
@@ -526,11 +525,6 @@ public class Main extends PluginContainer implements BedwarsAPI {
 
         if (Main.getConfigurator().node("tab", "enabled").getBoolean()) {
             tabManager = new TabManager();
-        }
-
-        if (Main.getConfigurator().node("update-checker", "console").getBoolean()
-                || Main.getConfigurator().node("update-checker", "admins").getBoolean()) {
-            UpdateChecker.run();
         }
 
         /* Initialize our ScoreboardLib*/

@@ -2,6 +2,7 @@ package org.screamingsandals.bedwars.commands;
 
 import cloud.commandframework.execution.CommandExecutionCoordinator;
 import cloud.commandframework.minecraft.extras.MinecraftExceptionHandler;
+import lombok.experimental.UtilityClass;
 import org.screamingsandals.lib.command.CloudConstructor;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
 import org.screamingsandals.lib.utils.AdventureHelper;
@@ -13,10 +14,11 @@ import static org.screamingsandals.bedwars.lib.lang.I.i18n;
 @Service(dependsOn = {
         CloudConstructor.class
 })
+@UtilityClass
 public class CommandService {
 
     @OnPostEnable
-    public static void postEnable() {
+    public void postEnable() {
         try {
             var manager = CloudConstructor.construct(CommandExecutionCoordinator.simpleCoordinator());
 
