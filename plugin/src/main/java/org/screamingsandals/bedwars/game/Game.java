@@ -46,6 +46,7 @@ import org.screamingsandals.bedwars.commands.AdminCommand;
 import org.screamingsandals.bedwars.commands.StatsCommand;
 import org.screamingsandals.bedwars.config.GameConfigurationContainer;
 import org.screamingsandals.bedwars.config.RecordSave;
+import org.screamingsandals.bedwars.holograms.StatisticsHolograms;
 import org.screamingsandals.bedwars.inventories.TeamSelectorInventory;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.lib.nms.entity.EntityUtils;
@@ -1880,8 +1881,8 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                                                 statistic.addScore(Main.getConfigurator().node("statistics", "scores", "record").getInt(100));
                                             }
 
-                                            if (Main.isHologramsEnabled()) {
-                                                Main.getHologramInteraction().updateHolograms(player.player);
+                                            if (StatisticsHolograms.isEnabled()) {
+                                                StatisticsHolograms.getInstance().updateHolograms(PlayerMapper.wrapPlayer(player.player));
                                             }
 
                                             if (Main.getConfigurator().node("statistics", "show-on-game-end")
@@ -1912,8 +1913,8 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                                     } else {
                                         TitleUtils.send(PlayerMapper.wrapPlayer(player.player), i18n("you_lost", false), subtitle);
 
-                                        if (Main.isPlayerStatisticsEnabled() && Main.isHologramsEnabled()) {
-                                            Main.getHologramInteraction().updateHolograms(player.player);
+                                        if (StatisticsHolograms.isEnabled()) {
+                                            StatisticsHolograms.getInstance().updateHolograms(PlayerMapper.wrapPlayer(player.player));
                                         }
                                     }
                                 }

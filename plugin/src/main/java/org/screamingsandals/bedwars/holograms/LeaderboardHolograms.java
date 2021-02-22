@@ -47,7 +47,7 @@ public class LeaderboardHolograms implements TouchHandler {
     }
 
     public void loadHolograms() {
-        if (!Main.isHologramsEnabled()) {
+        if (!StatisticsHolograms.isEnabled()) {
             return;
         }
 
@@ -99,7 +99,7 @@ public class LeaderboardHolograms implements TouchHandler {
     }
 
     public void unloadHolograms() {
-        if (Main.isHologramsEnabled()) {
+        if (StatisticsHolograms.isEnabled()) {
             for (Hologram holo : holograms.values()) {
                 holo.destroy();
             }

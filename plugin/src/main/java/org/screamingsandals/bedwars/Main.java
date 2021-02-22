@@ -81,7 +81,8 @@ import static org.screamingsandals.bedwars.lib.lang.I18n.i18n;
         EventManager.class,
         CommandService.class,
         GameManager.class,
-        UpdateChecker.class
+        UpdateChecker.class,
+        StatisticsHolograms.class
 })
 public class Main extends PluginContainer implements BedwarsAPI {
     private static Main instance;
@@ -100,7 +101,6 @@ public class Main extends PluginContainer implements BedwarsAPI {
     private HashMap<String, ItemSpawnerType> spawnerTypes = new HashMap<>();
     private DatabaseManager databaseManager;
     private PlayerStatisticManager playerStatisticsManager;
-    private StatisticsHolograms hologramInteraction;
     private ColorChanger colorChanger;
     private SignManager signManager;
     private HologramManager manager;
@@ -296,14 +296,6 @@ public class Main extends PluginContainer implements BedwarsAPI {
         return instance.configurator.node("statistics", "enabled").getBoolean();
     }
 
-    public static boolean isHologramsEnabled() {
-        return instance.configurator.node("holograms", "enabled").getBoolean() && instance.hologramInteraction != null;
-    }
-
-    public static StatisticsHolograms getHologramInteraction() {
-        return instance.hologramInteraction;
-    }
-
     public static List<Entity> getGameEntities(Game game) {
         List<Entity> entityList = new ArrayList<>();
         for (Map.Entry<Entity, Game> entry : instance.entitiesInGame.entrySet()) {
@@ -397,9 +389,6 @@ public class Main extends PluginContainer implements BedwarsAPI {
 
         try {
             if (configurator.node("holograms", "enabled").getBoolean()) {
-                hologramInteraction = new StatisticsHolograms();
-                hologramInteraction.loadHolograms();
-
                 leaderboardHolograms = new LeaderboardHolograms();
                 leaderboardHolograms.loadHolograms();
             }
@@ -547,8 +536,7 @@ public class Main extends PluginContainer implements BedwarsAPI {
         }
         Bukkit.getServer().getServicesManager().unregisterAll(this.getPluginDescription().as(JavaPlugin.class));
 
-        if (isHologramsEnabled() && hologramInteraction != null) {
-            hologramInteraction.unloadHolograms();
+        if (leaderboardHolograms != null) {
             leaderboardHolograms.unloadHolograms();
         }
 

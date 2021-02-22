@@ -2,38 +2,37 @@ apply plugin: 'de.fuerstenau.buildconfig'
 
 ScreamingLibBuilder()
         .platforms('bukkit')
-        .modules('player', 'event', 'material', 'entity', 'world', 'command', 'tasker')
+        .modules('player', 'event', 'material', 'entity', 'world', 'command', 'tasker', 'hologram')
         .version(SCREAMING_LIB_VERSION)
         .enableAnnotationProcessor()
         .build()
 
 dependencies {
     /* PROVIDED */
-    compileOnly 'net.milkbowl.vault:VaultAPI:1.7'
-    compileOnly 'com.onarandombox.multiversecore:Multiverse-Core:4.0.0'
+    compileOnly vault(VAULT_VERSION)
+    compileOnly 'com.onarandombox.multiversecore:Multiverse-Core:' + MULTIVERSE_VERSION
     compileOnly 'me.confuser:BarAPI:3.5'
-    compileOnly 'me.clip:placeholderapi:2.9.2'
-    compileOnly('me.ebonjaeger:perworldinventory-kt:2.3.1')  {
+    compileOnly placeholderapi(PLACEHOLDERAPI_VERSION)
+    compileOnly('me.ebonjaeger:perworldinventory-kt:' + PERWORLDINVENTORY_KT_VERSION)  {
         exclude group: '*', module: '*'
     }
-    compileOnly('me.gnat008:perworldinventory:1.11.5') {
+    compileOnly('me.gnat008:perworldinventory:' + PERWORLDINVENTORY_VERSION) {
         exclude group: '*', module: '*'
     }
-    compileOnly 'io.netty:netty-all:4.1.42.Final'
-    compileOnly 'net.citizensnpcs:citizens-main:2.0.27-SNAPSHOT'
-    compileOnly 'com.alessiodp.parties:parties-api:3.0.0-rc.2'
+    compileOnly 'io.netty:netty-all:' + NETTY_VERSION
+    compileOnly 'net.citizensnpcs:citizens-main:' + CITIZENS_VERSION
+    compileOnly 'com.alessiodp.parties:parties-api:' + PARTIES_VERSION
 
     /* SHADED */
     implementation project(':BedWars-API')
     implementation 'com.zaxxer:HikariCP:3.3.0'
-    implementation 'org.screamingsandals.simpleinventories:core-bukkit:2.0.0-SNAPSHOT', {
+    implementation 'org.screamingsandals.simpleinventories:core-bukkit:' + SIMPLE_INVENTORIES_VERSION, {
         exclude group: 'org.screamingsandals.lib' // causes problems
     }
-    implementation 'cloud.commandframework:cloud-minecraft-extras:1.4.0'
-    implementation 'org.bstats:bstats-bukkit:1.7'
+    implementation 'cloud.commandframework:cloud-minecraft-extras:' + CLOUD_EXTRAS_VERSION
+    implementation bStats(BSTATS_VERSION)
     implementation 'pronze.lib:scoreboard:1.0.1-SNAPSHOT'
-    implementation paperlib()
-    implementation 'me.lucko:commodore:1.9', {
+    implementation 'me.lucko:commodore:' + COMMODORE_VERSION, {
         exclude group: 'com.mojang', module: 'brigadier'
     }
 }

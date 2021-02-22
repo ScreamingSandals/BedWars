@@ -4,7 +4,9 @@ import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
 import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.Main;
+import org.screamingsandals.bedwars.holograms.StatisticsHolograms;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
+import org.screamingsandals.lib.world.LocationMapper;
 
 import java.util.List;
 import java.util.Optional;
@@ -29,15 +31,16 @@ public class AddholoCommand extends BaseCommand {
                             Optional<String> type = commandContext.getOptional("type");
                             // TODO Use Wrapper in the code - Add EyeLocation to PlayerWrapper in ScreamingLib
                             var player = commandContext.getSender().as(Player.class);
-                            if (!Main.isHologramsEnabled()) {
+                            if (!StatisticsHolograms.isEnabled()) {
                                 player.sendMessage(i18n("holo_not_enabled"));
                             } else {
                                 if (type.isPresent() && "leaderboard".equalsIgnoreCase(type.get())) {
                                     Main.getLeaderboardHolograms().addHologramLocation(player.getEyeLocation());
                                     player.sendMessage(i18n("leaderboard_holo_added"));
                                 } else {
-                                    Main.getHologramInteraction().addHologramLocation(player.getEyeLocation());
-                                    Main.getHologramInteraction().updateHolograms();
+                                    var statisticHolograms = StatisticsHolograms.getInstance();
+                                    statisticHolograms.addHologramLocation(LocationMapper.wrapLocation(player.getEyeLocation()));
+                                    statisticHolograms.updateHolograms();
                                     player.sendMessage(i18n("holo_added"));
                                 }
                             }

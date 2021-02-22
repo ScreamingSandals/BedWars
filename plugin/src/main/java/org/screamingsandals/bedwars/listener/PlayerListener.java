@@ -36,6 +36,7 @@ import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.commands.BedWarsPermission;
 import org.screamingsandals.bedwars.commands.admin.JoinTeamCommand;
 import org.screamingsandals.bedwars.game.*;
+import org.screamingsandals.bedwars.holograms.StatisticsHolograms;
 import org.screamingsandals.bedwars.inventories.TeamSelectorInventory;
 import org.screamingsandals.bedwars.statistics.PlayerStatistic;
 import org.screamingsandals.bedwars.utils.*;
@@ -360,10 +361,6 @@ public class PlayerListener implements Listener {
                 gPlayer.changeGame(null);
                 Debug.info(event.getPlayer().getName() + " changed world while in BedWars arena. Kicking...");
             }
-        }
-
-        if (Main.isHologramsEnabled()) {
-            Main.getHologramInteraction().updateHolograms(event.getPlayer(), 10L);
         }
     }
 
@@ -1049,8 +1046,7 @@ public class PlayerListener implements Listener {
 
         final Player player = je.getPlayer();
 
-        if (Main.isHologramsEnabled()) {
-            Main.getHologramInteraction().updateHolograms(player, 10L);
+        if (StatisticsHolograms.isEnabled()) {
             Main.getLeaderboardHolograms().addViewer(player);
         }
     }
