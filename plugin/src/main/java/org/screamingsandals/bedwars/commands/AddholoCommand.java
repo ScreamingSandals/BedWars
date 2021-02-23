@@ -3,7 +3,7 @@ package org.screamingsandals.bedwars.commands;
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
 import org.bukkit.entity.Player;
-import org.screamingsandals.bedwars.Main;
+import org.screamingsandals.bedwars.holograms.LeaderboardHolograms;
 import org.screamingsandals.bedwars.holograms.StatisticsHolograms;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
 import org.screamingsandals.lib.world.LocationMapper;
@@ -35,7 +35,7 @@ public class AddholoCommand extends BaseCommand {
                                 player.sendMessage(i18n("holo_not_enabled"));
                             } else {
                                 if (type.isPresent() && "leaderboard".equalsIgnoreCase(type.get())) {
-                                    Main.getLeaderboardHolograms().addHologramLocation(player.getEyeLocation());
+                                    LeaderboardHolograms.getInstance().addHologramLocation(LocationMapper.wrapLocation(player.getEyeLocation()));
                                     player.sendMessage(i18n("leaderboard_holo_added"));
                                 } else {
                                     var statisticHolograms = StatisticsHolograms.getInstance();

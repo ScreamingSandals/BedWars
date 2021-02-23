@@ -5,6 +5,7 @@ import org.bukkit.block.data.type.RespawnAnchor;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.bedwars.Main;
+import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.game.CurrentTeam;
 import org.screamingsandals.bedwars.game.Game;
 import org.screamingsandals.bedwars.game.Team;
@@ -20,10 +21,10 @@ public class Player116ListenerUtils {
             anchor.setCharges(charges - 1);
             team.teamInfo.bed.getBlock().setBlockData(anchor);
             if (anchor.getCharges() == 0) {
-                Sounds.playSound(team.teamInfo.bed, Main.getConfigurator().node("target-block", "respawn-anchor", "sound", "deplete").getString(), Sounds.BLOCK_RESPAWN_ANCHOR_DEPLETE, 1, 1);
+                Sounds.playSound(team.teamInfo.bed, MainConfig.getInstance().node("target-block", "respawn-anchor", "sound", "deplete").getString(), Sounds.BLOCK_RESPAWN_ANCHOR_DEPLETE, 1, 1);
                 game.updateScoreboard();
             } else {
-                Sounds.playSound(team.teamInfo.bed, Main.getConfigurator().node("target-block", "respawn-anchor", "sound", "used").getString(), Sounds.BLOCK_GLASS_BREAK, 1, 1);
+                Sounds.playSound(team.teamInfo.bed, MainConfig.getInstance().node("target-block", "respawn-anchor", "sound", "used").getString(), Sounds.BLOCK_GLASS_BREAK, 1, 1);
             }
         }
         return isBed;
@@ -39,7 +40,7 @@ public class Player116ListenerUtils {
             anchor.setCharges(charges);
             event.getClickedBlock().setBlockData(anchor);
             stack.setAmount(stack.getAmount() - 1);
-            Sounds.playSound(event.getClickedBlock().getLocation(), Main.getConfigurator().node("target-block", "respawn-anchor", "sound", "charge").getString(), Sounds.BLOCK_RESPAWN_ANCHOR_CHARGE, 1, 1);
+            Sounds.playSound(event.getClickedBlock().getLocation(), MainConfig.getInstance().node("target-block", "respawn-anchor", "sound", "charge").getString(), Sounds.BLOCK_RESPAWN_ANCHOR_CHARGE, 1, 1);
             game.updateScoreboard();
         }
         return anchorFilled;

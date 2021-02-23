@@ -9,6 +9,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.Team;
+import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.lib.nms.holograms.Hologram;
 
 import static org.screamingsandals.bedwars.lib.lang.I.i18nonly;
@@ -179,7 +180,7 @@ public class ItemSpawner implements org.screamingsandals.bedwars.api.game.ItemSp
     public void spawnFloatingStand(){
         if (floatingEnabled) {
             floatingGenStand = (ArmorStand) loc.getWorld().spawnEntity(loc.clone().add(0,
-                    Main.getConfigurator().node("floating-generator", "generator-height").getDouble(0.25), 0), EntityType.ARMOR_STAND
+                    MainConfig.getInstance().node("floating-generator", "generator-height").getDouble(0.25), 0), EntityType.ARMOR_STAND
             );
 
             ItemStack helmetStack;

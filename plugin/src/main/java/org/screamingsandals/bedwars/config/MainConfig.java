@@ -1,10 +1,15 @@
 package org.screamingsandals.bedwars.config;
 
+import lombok.RequiredArgsConstructor;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.lib.material.Item;
 import org.screamingsandals.lib.material.builder.ItemFactory;
+import org.screamingsandals.lib.plugin.PluginDescription;
+import org.screamingsandals.lib.plugin.ServiceManager;
+import org.screamingsandals.lib.utils.annotations.Service;
+import org.screamingsandals.lib.utils.annotations.methods.OnEnable;
 import org.screamingsandals.simpleinventories.inventory.LocalOptions;
 import org.spongepowered.configurate.BasicConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
@@ -16,23 +21,30 @@ import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 import java.io.File;
 import java.util.*;
 
+@Service
+@RequiredArgsConstructor
 public class MainConfig {
+    private final PluginDescription pluginDescription;
 
-    private final YamlConfigurationLoader loader;
+    private YamlConfigurationLoader loader;
     private ConfigurationNode configurationNode;
 
-    public MainConfig(YamlConfigurationLoader.Builder builder) {
-        loader = builder
-                .nodeStyle(NodeStyle.BLOCK)
-                .build();
+    public static MainConfig getInstance() {
+        return ServiceManager.get(MainConfig.class);
     }
 
     public ConfigurationNode node(Object... keys) {
         return configurationNode.node(keys);
     }
 
+    @OnEnable
     public void load() {
-        var dataFolder = Main.getInstance().getPluginDescription().getDataFolder();
+        loader = YamlConfigurationLoader.builder()
+                .path(pluginDescription.getDataFolder().resolve("config.yml"))
+                .nodeStyle(NodeStyle.BLOCK)
+                .build();
+
+        var dataFolder = pluginDescription.getDataFolder();
         dataFolder.toFile().mkdirs();
 
         var langFolder = dataFolder.resolve("languages").toFile();
@@ -40,11 +52,11 @@ public class MainConfig {
         if (!langFolder.exists()) {
             langFolder.mkdirs();
 
-            File[] listOfFiles = dataFolder.toFile().listFiles();
+            var listOfFiles = dataFolder.toFile().listFiles();
             if (listOfFiles != null && listOfFiles.length > 0) {
-                for (File file : listOfFiles) {
+                for (var file : listOfFiles) {
                     if (file.isFile() && file.getName().startsWith("messages_") && file.getName().endsWith(".yml")) {
-                        File dest = new File(langFolder, "language_" + file.getName().substring(9));
+                        var dest = new File(langFolder, "language_" + file.getName().substring(9));
                         file.renameTo(dest);
                     }
                 }

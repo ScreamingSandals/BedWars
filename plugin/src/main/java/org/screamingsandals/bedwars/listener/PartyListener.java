@@ -5,6 +5,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.events.BedwarsPlayerJoinedEvent;
+import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 
 import static org.screamingsandals.bedwars.lib.lang.I.i18n;
@@ -13,7 +14,7 @@ public class PartyListener implements Listener {
 
     @EventHandler
     public void onBedWarsPlayerJoined(BedwarsPlayerJoinedEvent e) {
-        if (!Main.getConfigurator().node("party", "autojoin-members").getBoolean()) {
+        if (!MainConfig.getInstance().node("party", "autojoin-members").getBoolean()) {
             return;
         }
 
@@ -53,7 +54,7 @@ public class PartyListener implements Listener {
                                 }
                             });
 
-                            if (Main.getConfigurator().node("party", "notify-when-warped").getBoolean(true)) {
+                            if (MainConfig.getInstance().node("party", "notify-when-warped").getBoolean(true)) {
                                 player.sendMessage(i18n("party_command_warped", true));
                             }
                         }

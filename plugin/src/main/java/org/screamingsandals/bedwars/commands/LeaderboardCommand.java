@@ -4,6 +4,7 @@ import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.statistics.LeaderboardEntry;
+import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
 
 import java.util.List;
@@ -26,7 +27,7 @@ public class LeaderboardCommand extends BaseCommand {
                     if (!Main.isPlayerStatisticsEnabled()) {
                         mpr("statistics_is_disabled").send(sender);
                     } else {
-                        int max = Main.getConfigurator().node("holograms", "leaderboard", "size").getInt();
+                        int max = MainConfig.getInstance().node("holograms", "leaderboard", "size").getInt();
                         mpr("leaderboard_header").replace("number", max).send(sender);
 
                         List<LeaderboardEntry> statistics = Main.getPlayerStatisticsManager().getLeaderboard(max);

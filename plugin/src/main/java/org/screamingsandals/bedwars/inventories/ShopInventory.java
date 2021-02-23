@@ -10,6 +10,7 @@ import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.events.*;
 import org.screamingsandals.bedwars.commands.DumpCommand;
+import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.game.GameStore;
 import org.screamingsandals.bedwars.api.game.ItemSpawnerType;
 import org.screamingsandals.bedwars.api.upgrades.Upgrade;
@@ -49,7 +50,7 @@ public class ShopInventory implements Listener {
         Main.getInstance().registerBedwarsListener(this);
 
         var shopFileName = "shop.yml";
-        if (Main.getConfigurator().node("turnOnExperimentalGroovyShop").getBoolean()) {
+        if (MainConfig.getInstance().node("turnOnExperimentalGroovyShop").getBoolean()) {
             shopFileName = "shop.groovy";
         }
         var shopFile = Main.getInstance().getPluginDescription().getDataFolder().resolve(shopFileName).toFile();
@@ -113,12 +114,12 @@ public class ShopInventory implements Listener {
 
             var enabled = itemInfo.getFirstPropertyByName("generateLore")
                     .map(property -> property.getPropertyData().getBoolean())
-                    .orElseGet(() -> Main.getConfigurator().node("lore", "generate-automatically").getBoolean(true));
+                    .orElseGet(() -> MainConfig.getInstance().node("lore", "generate-automatically").getBoolean(true));
 
             if (enabled) {
                 var loreText = itemInfo.getFirstPropertyByName("generatedLoreText")
                         .map(property -> property.getPropertyData().childrenList().stream().map(ConfigurationNode::getString))
-                        .orElseGet(() -> Main.getConfigurator().node("lore", "text").childrenList().stream().map(ConfigurationNode::getString))
+                        .orElseGet(() -> MainConfig.getInstance().node("lore", "text").childrenList().stream().map(ConfigurationNode::getString))
                         .filter(Objects::nonNull)
                         .map(s -> s.replaceAll("%price%", Integer.toString(price))
                                 .replaceAll("%resource%", type.getItemName())
@@ -181,7 +182,7 @@ public class ShopInventory implements Listener {
             Player player = event.getPlayer();
             CurrentTeam team = (CurrentTeam) event.getGame().getTeamOfPlayer(player);
 
-            if (Main.getConfigurator().node("automatic-coloring-in-shop").getBoolean()) {
+            if (MainConfig.getInstance().node("automatic-coloring-in-shop").getBoolean()) {
                 event.setStack(Main.applyColor(team.teamInfo.color, event.getStack()));
             }
         }
@@ -201,24 +202,24 @@ public class ShopInventory implements Listener {
                 .animationsEnabled(true)
                 .categoryOptions(localOptionsBuilder ->
                     localOptionsBuilder
-                            .backItem(Main.getConfigurator().readDefinedItem("shopback", "BARRIER"), itemBuilder ->
+                            .backItem(MainConfig.getInstance().readDefinedItem("shopback", "BARRIER"), itemBuilder ->
                                 itemBuilder.name(i18nonly("shop_back"))
                             )
-                            .pageBackItem(Main.getConfigurator().readDefinedItem("pageback", "ARROW"), itemBuilder ->
+                            .pageBackItem(MainConfig.getInstance().readDefinedItem("pageback", "ARROW"), itemBuilder ->
                                 itemBuilder.name(i18nonly("page_back"))
                             )
-                            .pageForwardItem(Main.getConfigurator().readDefinedItem("pageforward", "BARRIER"), itemBuilder ->
+                            .pageForwardItem(MainConfig.getInstance().readDefinedItem("pageforward", "BARRIER"), itemBuilder ->
                                 itemBuilder.name(i18nonly("page_forward"))
                             )
-                            .cosmeticItem(Main.getConfigurator().readDefinedItem("shopcosmetic", "AIR"))
-                            .rows(Main.getConfigurator().node("shop", "rows").getInt(4))
-                            .renderActualRows(Main.getConfigurator().node("shop", "render-actual-rows").getInt(6))
-                            .renderOffset(Main.getConfigurator().node("shop", "render-offset").getInt(9))
-                            .renderHeaderStart(Main.getConfigurator().node("shop", "render-header-start").getInt(0))
-                            .renderFooterStart(Main.getConfigurator().node("shop", "render-footer-start").getInt(45))
-                            .itemsOnRow(Main.getConfigurator().node("shop", "items-on-row").getInt(9))
-                            .showPageNumber(Main.getConfigurator().node("shop", "show-page-numbers").getBoolean(true))
-                            .inventoryType(Main.getConfigurator().node("shop", "inventory-type").getString("CHEST"))
+                            .cosmeticItem(MainConfig.getInstance().readDefinedItem("shopcosmetic", "AIR"))
+                            .rows(MainConfig.getInstance().node("shop", "rows").getInt(4))
+                            .renderActualRows(MainConfig.getInstance().node("shop", "render-actual-rows").getInt(6))
+                            .renderOffset(MainConfig.getInstance().node("shop", "render-offset").getInt(9))
+                            .renderHeaderStart(MainConfig.getInstance().node("shop", "render-header-start").getInt(0))
+                            .renderFooterStart(MainConfig.getInstance().node("shop", "render-footer-start").getInt(45))
+                            .itemsOnRow(MainConfig.getInstance().node("shop", "items-on-row").getInt(9))
+                            .showPageNumber(MainConfig.getInstance().node("shop", "show-page-numbers").getBoolean(true))
+                            .inventoryType(MainConfig.getInstance().node("shop", "inventory-type").getString("CHEST"))
                             .prefix(i18nonly("item_shop_name", "[BW] Shop"))
                 )
 
@@ -300,7 +301,7 @@ public class ShopInventory implements Listener {
                 .call(categoryBuilder -> {
                     if (useParent) {
                         var shopFileName = "shop.yml";
-                        if (Main.getConfigurator().node("turnOnExperimentalGroovyShop").getBoolean(false)) {
+                        if (MainConfig.getInstance().node("turnOnExperimentalGroovyShop").getBoolean(false)) {
                             shopFileName = "shop.groovy";
                         }
                         categoryBuilder.include(shopFileName);
@@ -389,7 +390,7 @@ public class ShopInventory implements Listener {
                     inInventory = inInventory + itemStack.getAmount();
                 }
             }
-            if (Main.getConfigurator().node("sell-max-64-per-click-in-shop").getBoolean()) {
+            if (MainConfig.getInstance().node("sell-max-64-per-click-in-shop").getBoolean()) {
                 maxStackSize = Math.min(inInventory / priceOfOne, originalMaxStackSize);
             } else {
                 maxStackSize = inInventory / priceOfOne;
@@ -438,14 +439,14 @@ public class ShopInventory implements Listener {
                 notFit.forEach(stack -> player.getLocation().getWorld().dropItem(player.getLocation(), stack.as(ItemStack.class)));
             }
 
-            if (!Main.getConfigurator().node("removePurchaseMessages").getBoolean()) {
+            if (!MainConfig.getInstance().node("removePurchaseMessages").getBoolean()) {
                 player.sendMessage(i18nc("buy_succes", game.getCustomPrefix()).replace("%item%", amount + "x " + getNameOrCustomNameOfItem(newItem))
                         .replace("%material%", priceAmount + " " + type.getItemName()));
             }
             Sounds.playSound(player, player.getLocation(),
-                    Main.getConfigurator().node("sounds", "item_buy").getString(), Sounds.ENTITY_ITEM_PICKUP, 1, 1);
+                    MainConfig.getInstance().node("sounds", "item_buy").getString(), Sounds.ENTITY_ITEM_PICKUP, 1, 1);
         } else {
-            if (!Main.getConfigurator().node("removePurchaseMessages").getBoolean()) {
+            if (!MainConfig.getInstance().node("removePurchaseMessages").getBoolean()) {
                 player.sendMessage(i18nc("buy_failed", game.getCustomPrefix()).replace("%item%", amount + "x " + getNameOrCustomNameOfItem(newItem))
                         .replace("%material%", priceAmount + " " + type.getItemName()));
             }
@@ -543,26 +544,26 @@ public class ShopInventory implements Listener {
 
                 if (sendToAll) {
                     for (Player player1 : game.getTeamOfPlayer(player).getConnectedPlayers()) {
-                        if (!Main.getConfigurator().node("removePurchaseMessages").getBoolean()) {
+                        if (!MainConfig.getInstance().node("removePurchaseMessages").getBoolean()) {
                             player1.sendMessage(i18nc("buy_succes", game.getCustomPrefix()).replace("%item%", itemName).replace("%material%",
                                     priceAmount + " " + type.getItemName()));
                         }
                         Sounds.playSound(player1, player1.getLocation(),
-                                Main.getConfigurator().node("sounds", "upgrade_buy").getString(),
+                                MainConfig.getInstance().node("sounds", "upgrade_buy").getString(),
                                 Sounds.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
                     }
                 } else {
-                    if (!Main.getConfigurator().node("removePurchaseMessages").getBoolean()) {
+                    if (!MainConfig.getInstance().node("removePurchaseMessages").getBoolean()) {
                         player.sendMessage(i18nc("buy_succes", game.getCustomPrefix()).replace("%item%", itemName).replace("%material%",
                                 priceAmount + " " + type.getItemName()));
                     }
                     Sounds.playSound(player, player.getLocation(),
-                            Main.getConfigurator().node("sounds", "upgrade_buy").getString(),
+                            MainConfig.getInstance().node("sounds", "upgrade_buy").getString(),
                             Sounds.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
                 }
             }
         } else {
-            if (!Main.getConfigurator().node("removePurchaseMessages").getBoolean()) {
+            if (!MainConfig.getInstance().node("removePurchaseMessages").getBoolean()) {
                 player.sendMessage(i18nc("buy_failed", game.getCustomPrefix()).replace("%item%", "UPGRADE").replace("%material%",
                         priceAmount + " " + type.getItemName()));
             }

@@ -9,7 +9,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.commands.BedWarsPermission;
+import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.utils.PreparedLocation;
+import org.screamingsandals.lib.event.EventPriority;
 import org.screamingsandals.lib.hologram.Hologram;
 import org.screamingsandals.lib.hologram.HologramManager;
 import org.screamingsandals.lib.hologram.event.HologramTouchEvent;
@@ -39,11 +41,13 @@ import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
         PlayerMapper.class,
         LocationMapper.class,
         HologramManager.class,
-        AbstractTaskInitializer.class
+        AbstractTaskInitializer.class,
+        MainConfig.class
 })
 @RequiredArgsConstructor
 public class StatisticsHolograms {
     private final PluginDescription pluginDescription;
+    private final MainConfig mainConfig;
 
     private ArrayList<PreparedLocation> hologramLocations = null;
     private Map<UUID, List<Hologram>> holograms = null;
@@ -55,7 +59,7 @@ public class StatisticsHolograms {
 
     @ShouldRunControllable
     public static boolean isEnabled() {
-        return Main.isPlayerStatisticsEnabled() && Main.getConfigurator().node("holograms", "enabled").getBoolean();
+        return Main.isPlayerStatisticsEnabled() && MainConfig.getInstance().node("holograms", "enabled").getBoolean();
     }
 
     public static StatisticsHolograms getInstance() {
@@ -103,7 +107,7 @@ public class StatisticsHolograms {
         holograms.values().forEach(Holograms -> Holograms.forEach(Hologram::destroy));
     }
 
-    @OnEvent
+    @OnEvent(priority = EventPriority.HIGHEST)
     public void onJoin(SPlayerJoinEvent event) {
         updateHolograms(event.getPlayer(), 10L);
     }
@@ -189,7 +193,7 @@ public class StatisticsHolograms {
     private Hologram createPlayerStatisticHologram(PlayerWrapper player, LocationHolder holoLocation) {
         final var holo = HologramManager
                 .hologram(holoLocation)
-                .firstLine(AdventureHelper.toComponent(Main.getConfigurator().node("holograms", "headline").getString("Your §eBEDWARS§f stats")))
+                .firstLine(AdventureHelper.toComponent(mainConfig.node("holograms", "headline").getString("Your §eBEDWARS§f stats")))
                 .setTouchable(true);
         HologramManager.addHologram(holo);
 
@@ -231,7 +235,7 @@ public class StatisticsHolograms {
     public void handle(HologramTouchEvent event) {
         var player = event.getPlayer();
         var holo = event.getHologram();
-        if (!holograms.get(player.getUuid()).contains(holo) || holo.getLocation().isEmpty()) {
+        if (!holograms.containsKey(player.getUuid()) || !holograms.get(player.getUuid()).contains(holo) || holo.getLocation().isEmpty()) {
             return;
         }
 

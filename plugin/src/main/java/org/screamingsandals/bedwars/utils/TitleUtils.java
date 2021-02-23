@@ -2,7 +2,7 @@ package org.screamingsandals.bedwars.utils;
 
 import lombok.experimental.UtilityClass;
 import net.kyori.adventure.title.Title;
-import org.screamingsandals.bedwars.Main;
+import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.utils.AdventureHelper;
 
@@ -11,13 +11,13 @@ import java.time.Duration;
 @UtilityClass
 public class TitleUtils {
     public void send(PlayerWrapper player, String title, String subtitle) {
-        if (!Main.getConfigurator().node("title", "enabled").getBoolean()) {
+        if (!MainConfig.getInstance().node("title", "enabled").getBoolean()) {
             return;
         }
 
-        int fadeIn = Main.getConfigurator().node("title", "fadeIn").getInt();
-        int stay = Main.getConfigurator().node("title", "stay").getInt();
-        int fadeOut = Main.getConfigurator().node("title", "fadeOut").getInt();
+        int fadeIn = MainConfig.getInstance().node("title", "fadeIn").getInt();
+        int stay = MainConfig.getInstance().node("title", "stay").getInt();
+        int fadeOut = MainConfig.getInstance().node("title", "fadeOut").getInt();
 
         var titleComponent = Title.title(
                 AdventureHelper.toComponent(title),

@@ -7,6 +7,8 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.api.statistics.LeaderboardEntry;
 import org.screamingsandals.bedwars.api.statistics.PlayerStatisticsManager;
+import org.screamingsandals.bedwars.config.MainConfig;
+import org.screamingsandals.bedwars.holograms.LeaderboardHolograms;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
@@ -38,11 +40,11 @@ public class PlayerStatisticManager implements PlayerStatisticsManager {
     }
 
     public void initialize() {
-        if (!Main.getConfigurator().node("statistics", "enabled").getBoolean()) {
+        if (!MainConfig.getInstance().node("statistics", "enabled").getBoolean()) {
             return;
         }
 
-        if (Main.getConfigurator().node("statistics", "type").getString("").equalsIgnoreCase("database")) {
+        if (MainConfig.getInstance().node("statistics", "type").getString("").equalsIgnoreCase("database")) {
             this.initializeDatabase();
         } else {
             var file = Main.getInstance().getPluginDescription().getDataFolder().resolve("database").resolve("bw_stats_players.yml").toFile();
@@ -77,7 +79,7 @@ public class PlayerStatisticManager implements PlayerStatisticsManager {
     private void initializeLeaderboard() {
         allScores.clear();
 
-        if (Main.getConfigurator().node("statistics", "type").getString("").equalsIgnoreCase("database")) {
+        if (MainConfig.getInstance().node("statistics", "type").getString("").equalsIgnoreCase("database")) {
             try (Connection connection = Main.getDatabaseManager().getConnection()) {
                 connection.setAutoCommit(false);
                 PreparedStatement preparedStatement = connection
@@ -156,7 +158,7 @@ public class PlayerStatisticManager implements PlayerStatisticsManager {
     }
 
     public PlayerStatistic loadStatistic(UUID uuid) {
-        if (Main.getConfigurator().node("statistics", "type").getString("").equalsIgnoreCase("database")) {
+        if (MainConfig.getInstance().node("statistics", "type").getString("").equalsIgnoreCase("database")) {
             return this.loadDatabaseStatistic(uuid);
         } else {
             return this.loadYamlStatistic(uuid);
@@ -239,7 +241,7 @@ public class PlayerStatisticManager implements PlayerStatisticsManager {
             return;
         }
 
-        if (Main.getConfigurator().node("statistics", "type").getString("").equalsIgnoreCase("database")) {
+        if (MainConfig.getInstance().node("statistics", "type").getString("").equalsIgnoreCase("database")) {
             this.storeDatabaseStatistic(statistic);
         } else {
             this.storeYamlStatistic(statistic);
@@ -257,15 +259,15 @@ public class PlayerStatisticManager implements PlayerStatisticsManager {
     }
 
     public void unloadStatistic(OfflinePlayer player) {
-        if (Main.getConfigurator().node("statistics", "type").getString("").equalsIgnoreCase("database")) {
+        if (MainConfig.getInstance().node("statistics", "type").getString("").equalsIgnoreCase("database")) {
             this.playerStatistic.remove(player.getUniqueId());
         }
     }
 
     public void updateScore(PlayerStatistic playerStatistic) {
         allScores.put(playerStatistic.getId(), playerStatistic.getScore());
-        if (Main.getLeaderboardHolograms() != null) {
-            Main.getLeaderboardHolograms().updateEntries();
+        if (LeaderboardHolograms.isEnabled()) {
+            LeaderboardHolograms.getInstance().updateEntries();
         }
     }
 }

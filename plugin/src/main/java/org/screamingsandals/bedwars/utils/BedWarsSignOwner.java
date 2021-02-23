@@ -12,6 +12,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.commands.BedWarsPermission;
+import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.game.Game;
 import org.screamingsandals.bedwars.game.GameManager;
 import org.screamingsandals.bedwars.lib.signmanager.SignBlock;
@@ -51,7 +52,7 @@ public class BedWarsSignOwner implements SignOwner {
     }
 
     private void updateLeaveSign(SignBlock sign) {
-        List<String> texts = Main.getConfigurator().node("sign", "lines").childrenList().stream().map(ConfigurationNode::getString).collect(Collectors.toList());
+        List<String> texts = MainConfig.getInstance().node("sign", "lines").childrenList().stream().map(ConfigurationNode::getString).collect(Collectors.toList());
 
         var opt = sign.getLocation().asOptional(Location.class);
         if (opt.isPresent()) {

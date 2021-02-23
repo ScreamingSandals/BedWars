@@ -17,6 +17,7 @@ import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.VersionInfo;
 import org.screamingsandals.bedwars.api.Team;
 import org.screamingsandals.bedwars.api.game.GameStore;
+import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.game.Game;
 import org.screamingsandals.bedwars.game.GameManager;
 import org.screamingsandals.bedwars.inventories.ShopInventory;
@@ -196,11 +197,11 @@ public class DumpCommand extends BaseCommand {
                                         e.printStackTrace();
                                     }
                                     var mainShop = Map.of(
-                                            "name", Main.getConfigurator().node("turnOnExperimentalGroovyShop").getBoolean() ? "shop.groovy" : "shop.yml",
+                                            "name", MainConfig.getInstance().node("turnOnExperimentalGroovyShop").getBoolean() ? "shop.groovy" : "shop.yml",
                                             "content", Map.of(
                                                     "format", "text",
-                                                    "highlight_language", Main.getConfigurator().node("turnOnExperimentalGroovyShop").getBoolean() ? "groovy" : "yaml",
-                                                    "value", String.join("\n", Files.readAllLines(Main.getInstance().getPluginDescription().getDataFolder().resolve(Main.getConfigurator().node("turnOnExperimentalGroovyShop").getBoolean() ? "shop.groovy" : "shop.yml"), StandardCharsets.UTF_8))
+                                                    "highlight_language", MainConfig.getInstance().node("turnOnExperimentalGroovyShop").getBoolean() ? "groovy" : "yaml",
+                                                    "value", String.join("\n", Files.readAllLines(Main.getInstance().getPluginDescription().getDataFolder().resolve(MainConfig.getInstance().node("turnOnExperimentalGroovyShop").getBoolean() ? "shop.groovy" : "shop.yml"), StandardCharsets.UTF_8))
                                             )
                                     );
                                     files.add(mainShop);

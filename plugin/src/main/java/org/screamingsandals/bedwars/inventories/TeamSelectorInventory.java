@@ -12,6 +12,7 @@ import org.screamingsandals.bedwars.api.RunningTeam;
 import org.screamingsandals.bedwars.api.events.BedwarsOpenTeamSelectionEvent;
 import org.screamingsandals.bedwars.api.events.BedwarsPlayerJoinedTeamEvent;
 import org.screamingsandals.bedwars.api.events.BedwarsPlayerLeaveEvent;
+import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.game.CurrentTeam;
 import org.screamingsandals.bedwars.game.Game;
 import org.screamingsandals.bedwars.game.Team;
@@ -55,7 +56,7 @@ public class TeamSelectorInventory implements Listener {
                     }
                 })
                 .call(categoryBuilder -> {
-                    var item = Main.getConfigurator().readDefinedItem("team-select", "WHITE_WOOL");
+                    var item = MainConfig.getInstance().readDefinedItem("team-select", "WHITE_WOOL");
 
                     game.getTeams().forEach(team -> {
                         var playersInTeam = game.getPlayersInTeam(team);

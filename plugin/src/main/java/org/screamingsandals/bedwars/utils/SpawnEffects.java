@@ -5,6 +5,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.game.Game;
+import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.lib.nms.particles.Particles;
 import org.screamingsandals.bedwars.api.events.BedwarsPostSpawnEffectEvent;
 import org.screamingsandals.bedwars.api.events.BedwarsPreSpawnEffectEvent;
@@ -29,7 +30,7 @@ public class SpawnEffects {
             return;
         }
 
-        var effect = Main.getConfigurator().node((Object[]) particleName.split("\\."));
+        var effect = MainConfig.getInstance().node((Object[]) particleName.split("\\."));
         if (effect.hasChild("type")) {
             try {
                 var type = effect.node("type").getString("");

@@ -56,7 +56,7 @@ public class GameConfigurationContainer implements ConfigurationContainer {
         if (registered.containsKey(key) && type.isAssignableFrom(registered.get(key))) {
             try {
                 return Optional.of(new GameConfiguration<>(type,this, key,
-                        globalConfigKeys.containsKey(key) ? Main.getConfigurator().node((Object[]) globalConfigKeys.get(key)).get(type) : null)
+                        globalConfigKeys.containsKey(key) ? MainConfig.getInstance().node((Object[]) globalConfigKeys.get(key)).get(type) : null)
                 );
             } catch (SerializationException e) {
                 e.printStackTrace();

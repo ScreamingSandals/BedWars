@@ -18,6 +18,7 @@ import org.screamingsandals.bedwars.api.RunningTeam;
 import org.screamingsandals.bedwars.api.TeamColor;
 import org.screamingsandals.bedwars.api.events.BedwarsApplyPropertyToBoughtItem;
 import org.screamingsandals.bedwars.api.game.Game;
+import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.game.GamePlayer;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.lib.material.MaterialHolder;
@@ -69,7 +70,7 @@ public class MiscUtils {
         new BukkitRunnable() {
             @Override
             public void run() {
-                if (Main.isSpigot() && !Main.isLegacy() && Main.getConfigurator().node("specials", "action-bar-messages").getBoolean()) {
+                if (Main.isSpigot() && !Main.isLegacy() && MainConfig.getInstance().node("specials", "action-bar-messages").getBoolean()) {
                     player.spigot().sendMessage(ChatMessageType.ACTION_BAR,
                             TextComponent.fromLegacyText(message));
                 } else {
@@ -83,7 +84,7 @@ public class MiscUtils {
         try {
             return event.getIntProperty(name);
         } catch (NullPointerException e) {
-            return Main.getConfigurator().node((Object[]) fallback.split("\\.")).getInt();
+            return MainConfig.getInstance().node((Object[]) fallback.split("\\.")).getInt();
         }
     }
 
@@ -91,7 +92,7 @@ public class MiscUtils {
         try {
             return event.getDoubleProperty(name);
         } catch (NullPointerException e) {
-            return Main.getConfigurator().node((Object[]) fallback.split("\\.")).getDouble();
+            return MainConfig.getInstance().node((Object[]) fallback.split("\\.")).getDouble();
         }
     }
 
@@ -99,7 +100,7 @@ public class MiscUtils {
         try {
             return event.getBooleanProperty(name);
         } catch (NullPointerException e) {
-            return Main.getConfigurator().node((Object[]) fallback.split("\\.")).getBoolean();
+            return MainConfig.getInstance().node((Object[]) fallback.split("\\.")).getBoolean();
         }
     }
 
@@ -107,7 +108,7 @@ public class MiscUtils {
         try {
             return event.getStringProperty(name);
         } catch (NullPointerException e) {
-            return Main.getConfigurator().node((Object[]) fallback.split("\\.")).getString();
+            return MainConfig.getInstance().node((Object[]) fallback.split("\\.")).getString();
         }
     }
 
@@ -115,7 +116,7 @@ public class MiscUtils {
         try {
             return event.getStringProperty(name);
         } catch (NullPointerException e) {
-            return Main.getConfigurator().node((Object[]) fallback.split("\\.")).getString(Main.isLegacy() ? "SANDSTONE" : "CUT_SANDSTONE");
+            return MainConfig.getInstance().node((Object[]) fallback.split("\\.")).getString(Main.isLegacy() ? "SANDSTONE" : "CUT_SANDSTONE");
         }
     }
 

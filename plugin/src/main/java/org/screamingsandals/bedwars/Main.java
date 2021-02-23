@@ -82,7 +82,10 @@ import static org.screamingsandals.bedwars.lib.lang.I18n.i18n;
         CommandService.class,
         GameManager.class,
         UpdateChecker.class,
-        StatisticsHolograms.class
+        StatisticsHolograms.class,
+        LeaderboardHolograms.class,
+        MainConfig.class,
+        TabManager.class
 })
 public class Main extends PluginContainer implements BedwarsAPI {
     private static Main instance;
@@ -96,7 +99,6 @@ public class Main extends PluginContainer implements BedwarsAPI {
     private Economy econ = null;
     private HashMap<Player, GamePlayer> playersInGame = new HashMap<>();
     private HashMap<Entity, Game> entitiesInGame = new HashMap<>();
-    private MainConfig configurator;
     private ShopInventory menu;
     private HashMap<String, ItemSpawnerType> spawnerTypes = new HashMap<>();
     private DatabaseManager databaseManager;
@@ -104,8 +106,6 @@ public class Main extends PluginContainer implements BedwarsAPI {
     private ColorChanger colorChanger;
     private SignManager signManager;
     private HologramManager manager;
-    private LeaderboardHolograms leaderboardHolograms;
-    private TabManager tabManager;
     public static List<String> autoColoredMaterials = new ArrayList<>();
     private Metrics metrics;
     private RecordSave recordSave;
@@ -124,10 +124,6 @@ public class Main extends PluginContainer implements BedwarsAPI {
 
     public static Main getInstance() {
         return instance;
-    }
-
-    public static MainConfig getConfigurator() {
-        return instance.configurator;
     }
 
     public static String getVersion() {
@@ -152,7 +148,7 @@ public class Main extends PluginContainer implements BedwarsAPI {
 
     public static void depositPlayer(Player player, double coins) {
         try {
-            if (isVault() && instance.configurator.node("vault", "enabled").getBoolean()) {
+            if (isVault() && MainConfig.getInstance().node("vault", "enabled").getBoolean()) {
                 EconomyResponse response = instance.econ.depositPlayer(player, coins);
                 if (response.transactionSuccess()) {
                     player.sendMessage(i18n("vault_deposite").replace("%coins%", Double.toString(coins)).replace(
@@ -165,11 +161,11 @@ public class Main extends PluginContainer implements BedwarsAPI {
     }
 
     public static int getVaultKillReward() {
-        return instance.configurator.node("vault", "reward", "kill").getInt();
+        return MainConfig.getInstance().node("vault", "reward", "kill").getInt();
     }
 
     public static int getVaultWinReward() {
-        return instance.configurator.node("vault", "reward", "win").getInt();
+        return MainConfig.getInstance().node("vault", "reward", "win").getInt();
     }
 
     public static Game getInGameEntity(Entity entity) {
@@ -214,9 +210,9 @@ public class Main extends PluginContainer implements BedwarsAPI {
     }
 
     public static boolean isFarmBlock(Material mat) {
-        if (instance.configurator.node("ignored-blocks", "enabled").getBoolean()) {
+        if (MainConfig.getInstance().node("ignored-blocks", "enabled").getBoolean()) {
             try {
-                return instance.configurator.node("ignored-blocks", "blocks").getList(String.class).contains(mat.name());
+                return MainConfig.getInstance().node("ignored-blocks", "blocks").getList(String.class).contains(mat.name());
             } catch (SerializationException | NullPointerException e) {
                 e.printStackTrace();
             }
@@ -225,10 +221,10 @@ public class Main extends PluginContainer implements BedwarsAPI {
     }
 
     public static boolean isBreakableBlock(Material mat) {
-        if (instance.configurator.node("breakable", "enabled").getBoolean()) {
+        if (MainConfig.getInstance().node("breakable", "enabled").getBoolean()) {
             try {
-                var list = instance.configurator.node("breakable", "blocks").getList(String.class);
-                boolean asblacklist = instance.configurator.node("breakable", "blacklist-mode").getBoolean();
+                var list = MainConfig.getInstance().node("breakable", "blocks").getList(String.class);
+                boolean asblacklist = MainConfig.getInstance().node("breakable", "blacklist-mode").getBoolean();
                 return list.contains(mat.name()) != asblacklist;
             } catch (SerializationException | NullPointerException e) {
                 e.printStackTrace();
@@ -238,9 +234,9 @@ public class Main extends PluginContainer implements BedwarsAPI {
     }
 
     public static boolean isCommandLeaveShortcut(String command) {
-        if (instance.configurator.node("leaveshortcuts", "enabled").getBoolean()) {
+        if (MainConfig.getInstance().node("leaveshortcuts", "enabled").getBoolean()) {
             try {
-                var commands = instance.configurator.node("leaveshortcuts", "list").getList(String.class);
+                var commands = MainConfig.getInstance().node("leaveshortcuts", "list").getList(String.class);
                 for (var comm : commands) {
                     if (!comm.startsWith("/")) {
                         comm = "/" + comm;
@@ -261,19 +257,19 @@ public class Main extends PluginContainer implements BedwarsAPI {
             return true;
         }
         try {
-            var commands = instance.configurator.node("commands", "list").getList(String.class);
+            var commands = MainConfig.getInstance().node("commands", "list").getList(String.class);
             for (var comm : commands) {
                 if (!comm.startsWith("/")) {
                     comm = "/" + comm;
                 }
                 if (comm.equals(commandPref)) {
-                    return !instance.configurator.node("commands", "blacklist-mode").getBoolean();
+                    return !MainConfig.getInstance().node("commands", "blacklist-mode").getBoolean();
                 }
             }
         } catch (SerializationException e) {
             e.printStackTrace();
         }
-        return instance.configurator.node("commands", "blacklist-mode").getBoolean();
+        return MainConfig.getInstance().node("commands", "blacklist-mode").getBoolean();
     }
 
     public static ItemSpawnerType getSpawnerType(String key) {
@@ -293,7 +289,7 @@ public class Main extends PluginContainer implements BedwarsAPI {
     }
 
     public static boolean isPlayerStatisticsEnabled() {
-        return instance.configurator.node("statistics", "enabled").getBoolean();
+        return MainConfig.getInstance().node("statistics", "enabled").getBoolean();
     }
 
     public static List<Entity> getGameEntities(Game game) {
@@ -316,14 +312,6 @@ public class Main extends PluginContainer implements BedwarsAPI {
 
     public static HologramManager getHologramManager() {
         return instance.manager;
-    }
-
-    public static LeaderboardHolograms getLeaderboardHolograms() {
-        return instance.leaderboardHolograms;
-    }
-
-    public static TabManager getTabManager() {
-        return instance.tabManager;
     }
 
     public static RecordSave getRecordSave() {
@@ -354,11 +342,6 @@ public class Main extends PluginContainer implements BedwarsAPI {
 
         isLegacy = versionNumber < 113;
 
-        configurator = new MainConfig(YamlConfigurationLoader.builder()
-                .path(getPluginDescription().getDataFolder().resolve("config.yml"))
-        );
-        configurator.load();
-
         recordSave = new RecordSave(YamlConfigurationLoader.builder()
                 .path(getPluginDescription().getDataFolder().resolve("database/record.yml"))
                 .build()
@@ -366,14 +349,14 @@ public class Main extends PluginContainer implements BedwarsAPI {
         recordSave.load();
 
         Debug.init(getPluginDescription().getName());
-        Debug.setDebug(configurator.node("debug").getBoolean());
+        Debug.setDebug(MainConfig.getInstance().node("debug").getBoolean());
 
-        I18n.load(this.getPluginDescription().as(JavaPlugin.class), configurator.node("locale").getString("en"));
+        I18n.load(this.getPluginDescription().as(JavaPlugin.class), MainConfig.getInstance().node("locale").getString("en"));
 
-        databaseManager = new DatabaseManager(configurator.node("database", "host").getString(),
-                configurator.node("database", "port").getInt(), configurator.node("database", "user").getString(),
-                configurator.node("database", "password").getString(), configurator.node("database", "db").getString(),
-                configurator.node("database", "table-prefix").getString(), configurator.node("database", "useSSL").getBoolean());
+        databaseManager = new DatabaseManager(MainConfig.getInstance().node("database", "host").getString(),
+                MainConfig.getInstance().node("database", "port").getInt(), MainConfig.getInstance().node("database", "user").getString(),
+                MainConfig.getInstance().node("database", "password").getString(), MainConfig.getInstance().node("database", "db").getString(),
+                MainConfig.getInstance().node("database", "table-prefix").getString(), MainConfig.getInstance().node("database", "useSSL").getBoolean());
 
         if (isPlayerStatisticsEnabled()) {
             playerStatisticsManager = new PlayerStatisticManager();
@@ -387,19 +370,9 @@ public class Main extends PluginContainer implements BedwarsAPI {
         } catch (Throwable ignored) {
         }
 
-        try {
-            if (configurator.node("holograms", "enabled").getBoolean()) {
-                leaderboardHolograms = new LeaderboardHolograms();
-                leaderboardHolograms.loadHolograms();
-            }
-        } catch (Throwable exception) {
-            getLogger().error("Failed to load holograms");
-            exception.printStackTrace();
-        }
-
         var partiesEnabled = false;
 
-        if (Main.getConfigurator().node("party", "enabled").getBoolean()) {
+        if (MainConfig.getInstance().node("party", "enabled").getBoolean()) {
             final var partyPlugin = PluginManager.getPlugin(PluginManager.createKey("Parties").orElseThrow());
             if (partyPlugin.isPresent() && partyPlugin.get().isEnabled()) {
                 partiesEnabled = true;
@@ -416,7 +389,7 @@ public class Main extends PluginContainer implements BedwarsAPI {
 
         registerBedwarsListener(new VillagerListener());
         registerBedwarsListener(new WorldListener());
-        if (Main.getConfigurator().node("bungee", "enabled").getBoolean() && Main.getConfigurator().node("bungee", "motd", "enabled").getBoolean()) {
+        if (MainConfig.getInstance().node("bungee", "enabled").getBoolean() && MainConfig.getInstance().node("bungee", "motd", "enabled").getBoolean()) {
             registerBedwarsListener(new BungeeMotdListener());
         }
 
@@ -432,7 +405,7 @@ public class Main extends PluginContainer implements BedwarsAPI {
 
         Bukkit.getServer().getServicesManager().register(BedwarsAPI.class, this, this.getPluginDescription().as(JavaPlugin.class), ServicePriority.Normal);
 
-        configurator.node("resources").childrenMap().forEach((spawnerK, node) -> {
+        MainConfig.getInstance().node("resources").childrenMap().forEach((spawnerK, node) -> {
                 var name = node.node("name").getString();
                 var translate = node.node("translate").getString();
                 var interval = node.node("interval").getInt(1);
@@ -464,7 +437,7 @@ public class Main extends PluginContainer implements BedwarsAPI {
 
         menu = new ShopInventory();
 
-        if (getConfigurator().node("bungee", "enabled").getBoolean()) {
+        if (MainConfig.getInstance().node("bungee", "enabled").getBoolean()) {
             Bukkit.getMessenger().registerOutgoingPluginChannel(this.getPluginDescription().as(JavaPlugin.class), "BungeeCord");
         }
 
@@ -512,10 +485,6 @@ public class Main extends PluginContainer implements BedwarsAPI {
             // maybe something here can cause exception
         }
 
-        if (Main.getConfigurator().node("tab", "enabled").getBoolean()) {
-            tabManager = new TabManager();
-        }
-
         /* Initialize our ScoreboardLib*/
         ScoreboardManager.init(this.getPluginDescription().as(JavaPlugin.class));
 
@@ -535,10 +504,6 @@ public class Main extends PluginContainer implements BedwarsAPI {
             signManager.save();
         }
         Bukkit.getServer().getServicesManager().unregisterAll(this.getPluginDescription().as(JavaPlugin.class));
-
-        if (leaderboardHolograms != null) {
-            leaderboardHolograms.unloadHolograms();
-        }
 
         metrics = null;
     }
@@ -641,7 +606,7 @@ public class Main extends PluginContainer implements BedwarsAPI {
 
     @Override
     public String getHubServerName() {
-        return configurator.node("bungee", "server").getString();
+        return MainConfig.getInstance().node("bungee", "server").getString();
     }
 
     @Override
