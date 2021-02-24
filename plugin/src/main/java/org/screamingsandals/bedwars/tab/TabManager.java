@@ -17,7 +17,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 @Service(dependsOn = {
-        MainConfig.class
+        MainConfig.class,
+        PlayerMapper.class
 })
 @RequiredArgsConstructor
 public class TabManager {

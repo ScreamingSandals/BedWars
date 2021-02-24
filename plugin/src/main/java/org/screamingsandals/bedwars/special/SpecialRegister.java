@@ -1,12 +1,17 @@
 package org.screamingsandals.bedwars.special;
 
-import org.bukkit.plugin.Plugin;
+import lombok.experimental.UtilityClass;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.special.listener.*;
+import org.screamingsandals.lib.utils.annotations.Service;
+import org.screamingsandals.lib.utils.annotations.methods.OnPostEnable;
 
+@Service
+@UtilityClass
 public class SpecialRegister {
 
-    public static void onEnable(Plugin plugin) {
+    @OnPostEnable
+    public void onEnable() {
         Main.getInstance().registerBedwarsListener(new ArrowBlockerListener());
         Main.getInstance().registerBedwarsListener(new GolemListener());
         Main.getInstance().registerBedwarsListener(new LuckyBlockAddonListener());

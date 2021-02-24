@@ -6,11 +6,9 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.game.GameStatus;
-import org.screamingsandals.bedwars.api.statistics.PlayerStatistic;
-import org.screamingsandals.bedwars.game.CurrentTeam;
-import org.screamingsandals.bedwars.game.Game;
 import org.screamingsandals.bedwars.game.GameManager;
-import org.screamingsandals.bedwars.game.GamePlayer;
+import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
+import org.screamingsandals.lib.player.PlayerMapper;
 
 public class BedwarsExpansion extends PlaceholderExpansion {
 
@@ -38,9 +36,9 @@ public class BedwarsExpansion extends PlaceholderExpansion {
     public String onPlaceholderRequest(Player player, String identifier) {
         // any game
         if (identifier.startsWith("game_")) {
-            String gameName = identifier.substring(5);
-            int index = gameName.lastIndexOf("_");
-            String operation = gameName.substring(index + 1).toLowerCase();
+            var gameName = identifier.substring(5);
+            var index = gameName.lastIndexOf("_");
+            var operation = gameName.substring(index + 1).toLowerCase();
             if (operation.equals("teams")) {
                 index = gameName.lastIndexOf("_", index - 1);
                 operation = gameName.substring(index + 1).toLowerCase();
@@ -75,19 +73,21 @@ public class BedwarsExpansion extends PlaceholderExpansion {
         // other player stats
 
         if (identifier.startsWith("otherstats_")) {
-            if (!Main.isPlayerStatisticsEnabled()) {
+            if (!PlayerStatisticManager.isEnabled()) {
                 return null;
             }
-            String playerName = identifier.substring(11);
-            int index = playerName.lastIndexOf("_");
-            String operation = playerName.substring(index + 1).toLowerCase();
+            var playerName = identifier.substring(11);
+            var index = playerName.lastIndexOf("_");
+            var operation = playerName.substring(index + 1).toLowerCase();
             if (operation.equals("beds")) {
                 index = playerName.lastIndexOf("_", index - 1);
                 operation = playerName.substring(index + 1).toLowerCase();
             }
             playerName = playerName.substring(0, index);
 
-            PlayerStatistic stats = Main.getPlayerStatisticsManager().getStatistic(Bukkit.getOfflinePlayer(playerName));
+            var stats = PlayerStatisticManager.getInstance().getStatistic(
+                    PlayerMapper.wrapOfflinePlayer(Bukkit.getOfflinePlayer(playerName))
+            );
 
             if (stats == null) {
                 return null;
@@ -130,7 +130,7 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                         return "0";
                     }
                 case "game_time":
-                    Game m_Game = Main.getPlayerGameProfile(player).getGame();
+                    var m_Game = Main.getPlayerGameProfile(player).getGame();
                     if (m_Game == null || m_Game.getStatus() != GameStatus.RUNNING)
                         return "0";
                     return m_Game.getFormattedTimeLeft();
@@ -178,12 +178,12 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                     }
                 case "team":
                     if (Main.isPlayerInGame(player)) {
-                        GamePlayer gPlayer = Main.getPlayerGameProfile(player);
-                        Game game = gPlayer.getGame();
+                        var gPlayer = Main.getPlayerGameProfile(player);
+                        var game = gPlayer.getGame();
                         if (gPlayer.isSpectator) {
                             return "spectator";
                         } else {
-                            CurrentTeam team = game.getPlayerTeam(gPlayer);
+                            var team = game.getPlayerTeam(gPlayer);
                             if (team != null) {
                                 return team.getName();
                             } else {
@@ -195,12 +195,12 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                     }
                 case "team_colored":
                     if (Main.isPlayerInGame(player)) {
-                        GamePlayer gPlayer = Main.getPlayerGameProfile(player);
-                        Game game = gPlayer.getGame();
+                        var gPlayer = Main.getPlayerGameProfile(player);
+                        var game = gPlayer.getGame();
                         if (gPlayer.isSpectator) {
                             return ChatColor.GRAY + "spectator";
                         } else {
-                            CurrentTeam team = game.getPlayerTeam(gPlayer);
+                            var team = game.getPlayerTeam(gPlayer);
                             if (team != null) {
                                 return team.teamInfo.color.chatColor + team.getName();
                             } else {
@@ -212,12 +212,12 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                     }
                 case "team_color":
                     if (Main.isPlayerInGame(player)) {
-                        GamePlayer gPlayer = Main.getPlayerGameProfile(player);
-                        Game game = gPlayer.getGame();
+                        var gPlayer = Main.getPlayerGameProfile(player);
+                        var game = gPlayer.getGame();
                         if (gPlayer.isSpectator) {
                             return ChatColor.GRAY.toString();
                         } else {
-                            CurrentTeam team = game.getPlayerTeam(gPlayer);
+                            var team = game.getPlayerTeam(gPlayer);
                             if (team != null) {
                                 return team.teamInfo.color.chatColor.toString();
                             } else {
@@ -229,12 +229,12 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                     }
                 case "team_players":
                     if (Main.isPlayerInGame(player)) {
-                        GamePlayer gPlayer = Main.getPlayerGameProfile(player);
-                        Game game = gPlayer.getGame();
+                        var gPlayer = Main.getPlayerGameProfile(player);
+                        var game = gPlayer.getGame();
                         if (gPlayer.isSpectator) {
                             return "0";
                         } else {
-                            CurrentTeam team = game.getPlayerTeam(gPlayer);
+                            var team = game.getPlayerTeam(gPlayer);
                             if (team != null) {
                                 return Integer.toString(team.countConnectedPlayers());
                             } else {
@@ -246,12 +246,12 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                     }
                 case "team_maxplayers":
                     if (Main.isPlayerInGame(player)) {
-                        GamePlayer gPlayer = Main.getPlayerGameProfile(player);
-                        Game game = gPlayer.getGame();
+                        var gPlayer = Main.getPlayerGameProfile(player);
+                        var game = gPlayer.getGame();
                         if (gPlayer.isSpectator) {
                             return "0";
                         } else {
-                            CurrentTeam team = game.getPlayerTeam(gPlayer);
+                            var team = game.getPlayerTeam(gPlayer);
                             if (team != null) {
                                 return Integer.toString(team.getMaxPlayers());
                             } else {
@@ -263,12 +263,12 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                     }
                 case "team_bed":
                     if (Main.isPlayerInGame(player)) {
-                        GamePlayer gPlayer = Main.getPlayerGameProfile(player);
-                        Game game = gPlayer.getGame();
+                        var gPlayer = Main.getPlayerGameProfile(player);
+                        var game = gPlayer.getGame();
                         if (gPlayer.isSpectator) {
                             return "no";
                         } else {
-                            CurrentTeam team = game.getPlayerTeam(gPlayer);
+                            var team = game.getPlayerTeam(gPlayer);
                             if (team != null) {
                                 return team.isBed ? "yes" : "no";
                             } else {
@@ -280,12 +280,12 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                     }
                 case "team_teamchests":
                     if (Main.isPlayerInGame(player)) {
-                        GamePlayer gPlayer = Main.getPlayerGameProfile(player);
-                        Game game = gPlayer.getGame();
+                        var gPlayer = Main.getPlayerGameProfile(player);
+                        var game = gPlayer.getGame();
                         if (gPlayer.isSpectator) {
                             return "0";
                         } else {
-                            CurrentTeam team = game.getPlayerTeam(gPlayer);
+                            var team = game.getPlayerTeam(gPlayer);
                             if (team != null) {
                                 return Integer.toString(team.countTeamChests());
                             } else {
@@ -301,11 +301,11 @@ public class BedwarsExpansion extends PlaceholderExpansion {
         // Stats
 
         if (identifier.startsWith("stats_")) {
-            if (!Main.isPlayerStatisticsEnabled()) {
+            if (!PlayerStatisticManager.isEnabled()) {
                 return null;
             }
 
-            PlayerStatistic stats = Main.getPlayerStatisticsManager().getStatistic(player);
+            var stats = PlayerStatisticManager.getInstance().getStatistic(PlayerMapper.wrapPlayer(player));
 
             if (stats == null) {
                 return null;

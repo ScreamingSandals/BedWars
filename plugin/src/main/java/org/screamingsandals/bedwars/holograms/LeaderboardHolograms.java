@@ -4,16 +4,17 @@ import lombok.RequiredArgsConstructor;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.statistics.LeaderboardEntry;
 import org.screamingsandals.bedwars.commands.BedWarsPermission;
 import org.screamingsandals.bedwars.config.MainConfig;
+import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.bedwars.utils.PreparedLocation;
 import org.screamingsandals.lib.event.EventPriority;
 import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.hologram.Hologram;
 import org.screamingsandals.lib.hologram.HologramManager;
 import org.screamingsandals.lib.hologram.event.HologramTouchEvent;
+import org.screamingsandals.lib.player.OfflinePlayerWrapper;
 import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.player.event.SPlayerJoinEvent;
@@ -26,11 +27,14 @@ import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.utils.annotations.methods.OnPostEnable;
 import org.screamingsandals.lib.utils.annotations.methods.OnPreDisable;
 import org.screamingsandals.lib.utils.annotations.methods.ShouldRunControllable;
+import org.screamingsandals.lib.utils.annotations.parameters.ConfigFile;
 import org.screamingsandals.lib.world.LocationHolder;
 import org.screamingsandals.lib.world.LocationMapper;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -42,20 +46,23 @@ import static org.screamingsandals.bedwars.lib.lang.I.i18nonly;
         LocationMapper.class,
         HologramManager.class,
         Tasker.class,
-        MainConfig.class
+        MainConfig.class,
+        PlayerStatisticManager.class
 })
 @RequiredArgsConstructor
 public class LeaderboardHolograms {
     private final PluginDescription pluginDescription;
+    @ConfigFile("database/holodb_leaderboard.yml")
+    private final Path databasePath;
     private final MainConfig mainConfig;
 
     private ArrayList<PreparedLocation> hologramLocations;
     private Map<LocationHolder, Hologram> holograms;
-    private List<LeaderboardEntry> entries;
+    private List<LeaderboardEntry<OfflinePlayerWrapper>> entries;
 
     @ShouldRunControllable
     public static boolean isEnabled() {
-        return Main.isPlayerStatisticsEnabled() && MainConfig.getInstance().node("holograms", "enabled").getBoolean();
+        return PlayerStatisticManager.isEnabled() && MainConfig.getInstance().node("holograms", "enabled").getBoolean();
     }
 
     public static LeaderboardHolograms getInstance() {
@@ -81,7 +88,7 @@ public class LeaderboardHolograms {
             return;
         }
 
-        this.entries = Main.getPlayerStatisticsManager().getLeaderboard(mainConfig.node("holograms", "leaderboard", "size").getInt());
+        this.entries = PlayerStatisticManager.getInstance().getLeaderboard(mainConfig.node("holograms", "leaderboard", "size").getInt());
         updateHolograms();
     }
 
@@ -95,10 +102,9 @@ public class LeaderboardHolograms {
         this.holograms = new HashMap<>();
         this.hologramLocations = new ArrayList<>();
 
-        var file = pluginDescription.getDataFolder().resolve("database").resolve("holodb_leaderboard.yml").toFile();
-        if (file.exists()) {
+        if (Files.exists(databasePath)) {
             var loader = YamlConfigurationLoader.builder()
-                    .file(file)
+                    .path(databasePath)
                     .build();
             try {
                 var config = loader.load();
@@ -120,9 +126,8 @@ public class LeaderboardHolograms {
 
     private void updateHologramDatabase() {
         try {
-            var file = pluginDescription.getDataFolder().resolve("database").resolve("holodb_leaderboard.yml").toFile();
             var loader = YamlConfigurationLoader.builder()
-                    .file(file)
+                    .path(databasePath)
                     .build();
 
             var node = loader.createNode();
@@ -187,7 +192,7 @@ public class LeaderboardHolograms {
             var l = new AtomicInteger(1);
             entries.forEach(leaderboardEntry ->
                     lines.add(line
-                            .replace("%name%", leaderboardEntry.getPlayer().getName() != null ? leaderboardEntry.getPlayer().getName() : leaderboardEntry.getPlayer().getUniqueId().toString())
+                            .replace("%name%", leaderboardEntry.getPlayer().getLastName().orElse(leaderboardEntry.getPlayer().getUuid().toString()))
                             .replace("%score%", Integer.toString(leaderboardEntry.getTotalScore()))
                             .replace("%order%", Integer.toString(l.getAndIncrement()))
                     )

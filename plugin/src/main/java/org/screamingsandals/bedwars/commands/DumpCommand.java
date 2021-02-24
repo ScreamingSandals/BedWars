@@ -216,7 +216,7 @@ public class DumpCommand extends BaseCommand {
                                             .filter(s -> !mainShop.get("name").equals(s))
                                             .forEach(s -> {
                                                 try {
-                                                    final var file = ShopInventory.normalizeShopFile(s);
+                                                    final var file = ShopInventory.getInstance().normalizeShopFile(s);
                                                     if (!file.exists()) {
                                                         return;
                                                     }

@@ -1,9 +1,9 @@
 package org.screamingsandals.bedwars.api.statistics;
 
-import org.bukkit.OfflinePlayer;
+import org.screamingsandals.lib.utils.Wrapper;
 
-public interface LeaderboardEntry {
-    OfflinePlayer getPlayer();
+public interface LeaderboardEntry<OP extends Wrapper> {
+    OP getPlayer();
 
     int getTotalScore();
 

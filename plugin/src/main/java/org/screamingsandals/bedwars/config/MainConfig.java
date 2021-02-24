@@ -10,6 +10,7 @@ import org.screamingsandals.lib.plugin.PluginDescription;
 import org.screamingsandals.lib.plugin.ServiceManager;
 import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.utils.annotations.methods.OnEnable;
+import org.screamingsandals.lib.utils.annotations.parameters.DataFolder;
 import org.screamingsandals.simpleinventories.inventory.LocalOptions;
 import org.spongepowered.configurate.BasicConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
@@ -19,12 +20,14 @@ import org.spongepowered.configurate.yaml.NodeStyle;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.*;
 
 @Service
 @RequiredArgsConstructor
 public class MainConfig {
-    private final PluginDescription pluginDescription;
+    @DataFolder
+    private final Path dataFolder;
 
     private YamlConfigurationLoader loader;
     private ConfigurationNode configurationNode;
@@ -39,13 +42,12 @@ public class MainConfig {
 
     @OnEnable
     public void load() {
+        dataFolder.toFile().mkdirs();
+
         loader = YamlConfigurationLoader.builder()
-                .path(pluginDescription.getDataFolder().resolve("config.yml"))
+                .path(dataFolder.resolve("config.yml"))
                 .nodeStyle(NodeStyle.BLOCK)
                 .build();
-
-        var dataFolder = pluginDescription.getDataFolder();
-        dataFolder.toFile().mkdirs();
 
         var langFolder = dataFolder.resolve("languages").toFile();
 

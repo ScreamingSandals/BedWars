@@ -2,14 +2,16 @@ package org.screamingsandals.bedwars.holograms;
 
 import static org.screamingsandals.bedwars.lib.lang.I.i18n;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 
 import lombok.RequiredArgsConstructor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.commands.BedWarsPermission;
 import org.screamingsandals.bedwars.config.MainConfig;
+import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.bedwars.utils.PreparedLocation;
 import org.screamingsandals.lib.event.EventPriority;
 import org.screamingsandals.lib.hologram.Hologram;
@@ -29,6 +31,7 @@ import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.utils.annotations.methods.OnPostEnable;
 import org.screamingsandals.lib.utils.annotations.methods.OnPreDisable;
 import org.screamingsandals.lib.utils.annotations.methods.ShouldRunControllable;
+import org.screamingsandals.lib.utils.annotations.parameters.ConfigFile;
 import org.screamingsandals.lib.world.LocationHolder;
 import org.screamingsandals.lib.world.LocationMapper;
 import org.screamingsandals.lib.world.WorldHolder;
@@ -41,11 +44,14 @@ import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
         LocationMapper.class,
         HologramManager.class,
         Tasker.class,
-        MainConfig.class
+        MainConfig.class,
+        PlayerStatisticManager.class
 })
 @RequiredArgsConstructor
 public class StatisticsHolograms {
     private final PluginDescription pluginDescription;
+    @ConfigFile("database/holodb.yml")
+    private final Path databasePath;
     private final MainConfig mainConfig;
 
     private ArrayList<PreparedLocation> hologramLocations = null;
@@ -58,7 +64,7 @@ public class StatisticsHolograms {
 
     @ShouldRunControllable
     public static boolean isEnabled() {
-        return Main.isPlayerStatisticsEnabled() && MainConfig.getInstance().node("holograms", "enabled").getBoolean();
+        return PlayerStatisticManager.isEnabled() && MainConfig.getInstance().node("holograms", "enabled").getBoolean();
     }
 
     public static StatisticsHolograms getInstance() {
@@ -79,12 +85,10 @@ public class StatisticsHolograms {
         this.holograms = new HashMap<>();
         this.hologramLocations = new ArrayList<>();
 
-        var file = pluginDescription.getDataFolder().resolve("database").resolve("holodb.yml").toFile();
-
         var loader = YamlConfigurationLoader.builder()
-                .file(file)
+                .path(databasePath)
                 .build();
-        if (file.exists()) {
+        if (Files.exists(databasePath)) {
             try {
                 var config = loader.load();
                 var locations = config.node("locations").getList(PreparedLocation.class);
@@ -203,9 +207,8 @@ public class StatisticsHolograms {
     private void updateHologramDatabase() {
         try {
             // update hologram-database file
-            var file = pluginDescription.getDataFolder().resolve("database").resolve("holodb.yml").toFile();
             var loader = YamlConfigurationLoader.builder()
-                    .file(file)
+                    .path(databasePath)
                     .build();
 
             var node = loader.createNode();
@@ -277,7 +280,7 @@ public class StatisticsHolograms {
     }
 
     private void updatePlayerStatisticHologram(PlayerWrapper player, final Hologram holo) {
-        var statistic = Main.getPlayerStatisticsManager().getStatistic(player.as(Player.class));
+        var statistic = PlayerStatisticManager.getInstance().getStatistic(player);
 
         var lines = List.of(
                 i18n("statistics_kills", false).replace("%kills%",

@@ -39,6 +39,7 @@ import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.game.*;
 import org.screamingsandals.bedwars.inventories.TeamSelectorInventory;
 import org.screamingsandals.bedwars.statistics.PlayerStatistic;
+import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.bedwars.utils.*;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.lib.nms.entity.PlayerUtils;
@@ -127,8 +128,8 @@ public class PlayerListener implements Listener {
                     gVictim.isSpectator = true;
                     team.players.remove(gVictim);
                     team.getScoreboardTeam().removeEntry(victim.getName());
-                    if (Main.isPlayerStatisticsEnabled()) {
-                        PlayerStatistic statistic = Main.getPlayerStatisticsManager().getStatistic(victim);
+                    if (PlayerStatisticManager.isEnabled()) {
+                        var statistic = PlayerStatisticManager.getInstance().getStatistic(PlayerMapper.wrapPlayer(victim));
                         statistic.addLoses(1);
                         statistic.addScore(MainConfig.getInstance().node("statistics", "scores", "lose").getInt(0));
                     }
@@ -164,8 +165,8 @@ public class PlayerListener implements Listener {
                         Main.isPlayerInGame(killer) ? killer : null, drops);
                 Bukkit.getServer().getPluginManager().callEvent(killedEvent);
 
-                if (Main.isPlayerStatisticsEnabled()) {
-                    PlayerStatistic diePlayer = Main.getPlayerStatisticsManager().getStatistic(victim);
+                if (PlayerStatisticManager.isEnabled()) {
+                    var diePlayer = PlayerStatisticManager.getInstance().getStatistic(PlayerMapper.wrapPlayer(victim));
                     PlayerStatistic killerPlayer;
 
                     if (!onlyOnBedDestroy || !isBed) {
@@ -175,7 +176,7 @@ public class PlayerListener implements Listener {
 
                     if (killer != null) {
                         if (!onlyOnBedDestroy || !isBed) {
-                            killerPlayer = Main.getPlayerStatisticsManager().getStatistic(killer);
+                            killerPlayer = PlayerStatisticManager.getInstance().getStatistic(PlayerMapper.wrapPlayer(killer));
                             if (killerPlayer != null) {
                                 killerPlayer.addKills(1);
                                 killerPlayer.addScore(MainConfig.getInstance().node("statistics", "scores", "kill").getInt(10));
@@ -231,10 +232,6 @@ public class PlayerListener implements Listener {
             if (gPlayer.isInGame())
                 gPlayer.changeGame(null);
             Main.unloadPlayerGameProfile(event.getPlayer());
-        }
-
-        if (Main.isPlayerStatisticsEnabled()) {
-            Main.getPlayerStatisticsManager().unloadStatistic(event.getPlayer());
         }
 
         if (MainConfig.getInstance().node("disable-server-message", "player-join").getBoolean()) {

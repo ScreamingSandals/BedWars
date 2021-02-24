@@ -54,7 +54,7 @@ import org.screamingsandals.bedwars.listener.Player116ListenerUtils;
 import org.screamingsandals.bedwars.region.FlatteningRegion;
 import org.screamingsandals.bedwars.region.LegacyRegion;
 import org.screamingsandals.bedwars.scoreboard.ScreamingScoreboard;
-import org.screamingsandals.bedwars.statistics.PlayerStatistic;
+import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.bedwars.tab.TabManager;
 import org.screamingsandals.bedwars.utils.*;
 import org.screamingsandals.lib.material.MaterialHolder;
@@ -744,8 +744,8 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                     Bukkit.getServer().getPluginManager().callEvent(targetBlockDestroyed);
 
                     if (broker != null) {
-                        if (Main.isPlayerStatisticsEnabled()) {
-                            PlayerStatistic statistic = Main.getPlayerStatisticsManager().getStatistic(broker);
+                        if (PlayerStatisticManager.isEnabled()) {
+                            var statistic = PlayerStatisticManager.getInstance().getStatistic(PlayerMapper.wrapPlayer(broker));
                             statistic.addDestroyedBeds(1);
                             statistic.addScore(MainConfig.getInstance().node("statistics", "scores", "bed-destroy").getInt(25));
                         }
@@ -779,9 +779,9 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         }
         updateSigns();
 
-        if (Main.isPlayerStatisticsEnabled()) {
+        if (PlayerStatisticManager.isEnabled()) {
             // Load
-            Main.getPlayerStatisticsManager().getStatistic(gamePlayer.player);
+            PlayerStatisticManager.getInstance().getStatistic(PlayerMapper.wrapPlayer(gamePlayer.player));
         }
 
         if (arenaTime.time >= 0) {
@@ -953,11 +953,12 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             }
         }
 
-        if (Main.isPlayerStatisticsEnabled()) {
-            PlayerStatistic statistic = Main.getPlayerStatisticsManager().getStatistic(gamePlayer.player);
-            Main.getPlayerStatisticsManager().storeStatistic(statistic);
+        if (PlayerStatisticManager.isEnabled()) {
+            var playerStatisticManager = PlayerStatisticManager.getInstance();
+            var statistic = playerStatisticManager.getStatistic(PlayerMapper.wrapPlayer(gamePlayer.player));
+            playerStatisticManager.storeStatistic(statistic);
 
-            Main.getPlayerStatisticsManager().unloadStatistic(gamePlayer.player);
+            playerStatisticManager.unloadStatistic(PlayerMapper.wrapPlayer(gamePlayer.player));
         }
 
         if (players.isEmpty()) {
@@ -1868,9 +1869,9 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
                                         SpawnEffects.spawnEffect(this, player.player, "game-effects.end");
 
-                                        if (Main.isPlayerStatisticsEnabled()) {
-                                            PlayerStatistic statistic = Main.getPlayerStatisticsManager()
-                                                    .getStatistic(player.player);
+                                        if (PlayerStatisticManager.isEnabled()) {
+                                            var statistic = PlayerStatisticManager.getInstance()
+                                                    .getStatistic(PlayerMapper.wrapPlayer(player.player));
                                             statistic.addWins(1);
                                             statistic.addScore(MainConfig.getInstance().node("statistics", "scores", "win").getInt(50));
 
@@ -1884,7 +1885,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
                                             if (MainConfig.getInstance().node("statistics", "show-on-game-end")
                                                     .getBoolean()) {
-                                                StatsCommand.sendStats(PlayerMapper.wrapPlayer(player.player), Main.getPlayerStatisticsManager().getStatistic(player.player));
+                                                StatsCommand.sendStats(PlayerMapper.wrapPlayer(player.player), PlayerStatisticManager.getInstance().getStatistic(PlayerMapper.wrapPlayer(player.player)));
                                             }
 
                                         }
@@ -1895,9 +1896,9 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
                                                 @Override
                                                 public void run() {
-                                                    if (Main.isPlayerStatisticsEnabled()) {
-                                                        PlayerStatistic statistic = Main.getPlayerStatisticsManager()
-                                                                .getStatistic(player.player);
+                                                    if (PlayerStatisticManager.isEnabled()) {
+                                                        var statistic = PlayerStatisticManager.getInstance()
+                                                                .getStatistic(PlayerMapper.wrapPlayer(player.player));
                                                         Game.this.dispatchRewardCommands("player-win", pl,
                                                                 statistic.getScore());
                                                     } else {
@@ -2035,9 +2036,9 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
                         @Override
                         public void run() {
-                            if (Main.isPlayerStatisticsEnabled()) {
-                                PlayerStatistic statistic = Main.getPlayerStatisticsManager()
-                                        .getStatistic(player.player);
+                            if (PlayerStatisticManager.isEnabled()) {
+                                var statistic = PlayerStatisticManager.getInstance()
+                                        .getStatistic(PlayerMapper.wrapPlayer(player.player));
                                 Game.this.dispatchRewardCommands("player-end-game", pl, statistic.getScore());
                             } else {
                                 Game.this.dispatchRewardCommands("player-end-game", pl, 0);
@@ -2173,9 +2174,9 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     }
 
     public boolean processRecord(CurrentTeam t, int wonTime) {
-        var record = Main.getRecordSave().getRecord(this.getName());
+        var record = RecordSave.getInstance().getRecord(this.getName());
         if (record.map(RecordSave.Record::getTime).orElse(Integer.MAX_VALUE) > wonTime) {
-            Main.getRecordSave().saveRecord(RecordSave.Record.builder()
+            RecordSave.getInstance().saveRecord(RecordSave.Record.builder()
                     .game(this.getName())
                     .time(wonTime)
                     .team(t.teamInfo.color.chatColor + t.teamInfo.name)

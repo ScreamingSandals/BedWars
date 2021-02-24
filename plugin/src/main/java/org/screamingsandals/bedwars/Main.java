@@ -47,7 +47,6 @@ import org.screamingsandals.lib.utils.PlatformType;
 import org.screamingsandals.lib.utils.annotations.Init;
 import org.screamingsandals.lib.utils.annotations.Plugin;
 import org.screamingsandals.lib.utils.annotations.PluginDependencies;
-import org.screamingsandals.simpleinventories.SimpleInventoriesCore;
 import org.spongepowered.configurate.serialize.SerializationException;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 import pronze.lib.scoreboards.ScoreboardManager;
@@ -77,15 +76,19 @@ import static org.screamingsandals.bedwars.lib.lang.I18n.i18n;
         "Parties"
 })
 @Init(services = {
-        SimpleInventoriesCore.class,
         EventManager.class,
         CommandService.class,
         GameManager.class,
         UpdateChecker.class,
+        PlayerStatisticManager.class,
         StatisticsHolograms.class,
         LeaderboardHolograms.class,
         MainConfig.class,
-        TabManager.class
+        TabManager.class,
+        ShopInventory.class,
+        SpecialRegister.class,
+        RecordSave.class,
+        DatabaseManager.class
 })
 public class Main extends PluginContainer implements BedwarsAPI {
     private static Main instance;
@@ -99,16 +102,12 @@ public class Main extends PluginContainer implements BedwarsAPI {
     private Economy econ = null;
     private HashMap<Player, GamePlayer> playersInGame = new HashMap<>();
     private HashMap<Entity, Game> entitiesInGame = new HashMap<>();
-    private ShopInventory menu;
     private HashMap<String, ItemSpawnerType> spawnerTypes = new HashMap<>();
-    private DatabaseManager databaseManager;
-    private PlayerStatisticManager playerStatisticsManager;
     private ColorChanger colorChanger;
     private SignManager signManager;
     private HologramManager manager;
     public static List<String> autoColoredMaterials = new ArrayList<>();
     private Metrics metrics;
-    private RecordSave recordSave;
 
     static {
         // ColorChanger list of materials
@@ -206,7 +205,7 @@ public class Main extends PluginContainer implements BedwarsAPI {
     }
 
     public static void openStore(Player player, GameStore store) {
-        instance.menu.show(player, store);
+        ShopInventory.getInstance().show(PlayerMapper.wrapPlayer(player), store);
     }
 
     public static boolean isFarmBlock(Material mat) {
@@ -280,18 +279,6 @@ public class Main extends PluginContainer implements BedwarsAPI {
         return new ArrayList<>(instance.spawnerTypes.keySet());
     }
 
-    public static DatabaseManager getDatabaseManager() {
-        return instance.databaseManager;
-    }
-
-    public static PlayerStatisticManager getPlayerStatisticsManager() {
-        return instance.playerStatisticsManager;
-    }
-
-    public static boolean isPlayerStatisticsEnabled() {
-        return MainConfig.getInstance().node("statistics", "enabled").getBoolean();
-    }
-
     public static List<Entity> getGameEntities(Game game) {
         List<Entity> entityList = new ArrayList<>();
         for (Map.Entry<Entity, Game> entry : instance.entitiesInGame.entrySet()) {
@@ -312,10 +299,6 @@ public class Main extends PluginContainer implements BedwarsAPI {
 
     public static HologramManager getHologramManager() {
         return instance.manager;
-    }
-
-    public static RecordSave getRecordSave() {
-        return instance.recordSave;
     }
 
     @Override
@@ -342,26 +325,10 @@ public class Main extends PluginContainer implements BedwarsAPI {
 
         isLegacy = versionNumber < 113;
 
-        recordSave = new RecordSave(YamlConfigurationLoader.builder()
-                .path(getPluginDescription().getDataFolder().resolve("database/record.yml"))
-                .build()
-        );
-        recordSave.load();
-
         Debug.init(getPluginDescription().getName());
         Debug.setDebug(MainConfig.getInstance().node("debug").getBoolean());
 
         I18n.load(this.getPluginDescription().as(JavaPlugin.class), MainConfig.getInstance().node("locale").getString("en"));
-
-        databaseManager = new DatabaseManager(MainConfig.getInstance().node("database", "host").getString(),
-                MainConfig.getInstance().node("database", "port").getInt(), MainConfig.getInstance().node("database", "user").getString(),
-                MainConfig.getInstance().node("database", "password").getString(), MainConfig.getInstance().node("database", "db").getString(),
-                MainConfig.getInstance().node("database", "table-prefix").getString(), MainConfig.getInstance().node("database", "useSSL").getBoolean());
-
-        if (isPlayerStatisticsEnabled()) {
-            playerStatisticsManager = new PlayerStatisticManager();
-            playerStatisticsManager.initialize();
-        }
 
         try {
             if (PluginManager.isEnabled(PluginManager.createKey("PlaceholderAPI").orElseThrow())) {
@@ -399,8 +366,6 @@ public class Main extends PluginContainer implements BedwarsAPI {
 
         this.manager = new HologramManager(this.getPluginDescription().as(JavaPlugin.class));
 
-        SpecialRegister.onEnable(this.getPluginDescription().as(JavaPlugin.class));
-
         PremiumBedwars.init();
 
         Bukkit.getServer().getServicesManager().register(BedwarsAPI.class, this, this.getPluginDescription().as(JavaPlugin.class), ServicePriority.Normal);
@@ -434,8 +399,6 @@ public class Main extends PluginContainer implements BedwarsAPI {
                 spawnerTypes.put(spawnerN.toLowerCase(), new ItemSpawnerType(spawnerN.toLowerCase(), name, translate,
                         spread, result.as(Material.class), color, interval, result.getDurability()));
         });
-
-        menu = new ShopInventory();
 
         if (MainConfig.getInstance().node("bungee", "enabled").getBoolean()) {
             Bukkit.getMessenger().registerOutgoingPluginChannel(this.getPluginDescription().as(JavaPlugin.class), "BungeeCord");
@@ -610,8 +573,8 @@ public class Main extends PluginContainer implements BedwarsAPI {
     }
 
     @Override
-    public PlayerStatisticsManager getStatisticsManager() {
-        return isPlayerStatisticsEnabled() ? playerStatisticsManager : null;
+    public PlayerStatisticsManager<?> getStatisticsManager() {
+        return PlayerStatisticManager.isEnabled() ? PlayerStatisticManager.getInstance() : null;
     }
 
     public static boolean isDisabling() {

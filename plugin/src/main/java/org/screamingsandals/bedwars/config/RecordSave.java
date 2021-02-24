@@ -3,21 +3,38 @@ package org.screamingsandals.bedwars.config;
 import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.screamingsandals.lib.plugin.ServiceManager;
+import org.screamingsandals.lib.utils.annotations.Service;
+import org.screamingsandals.lib.utils.annotations.methods.OnPostEnable;
+import org.screamingsandals.lib.utils.annotations.parameters.ConfigFile;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
+@Service(dependsOn = {
+        MainConfig.class
+})
 public class RecordSave {
-    private final YamlConfigurationLoader loader;
+    @ConfigFile("database/record.yml")
+    private final Path databasePath;
+    private YamlConfigurationLoader loader;
     private ConfigurationNode records;
-    private boolean modified;
 
+    public static RecordSave getInstance() {
+        return ServiceManager.get(RecordSave.class);
+    }
+
+    @OnPostEnable
     public void load() {
+        loader = YamlConfigurationLoader.builder()
+                .path(databasePath)
+                .build();
         try {
             records = loader.load();
         } catch (ConfigurateException e) {
@@ -37,7 +54,6 @@ public class RecordSave {
         } catch (ConfigurateException e) {
             e.printStackTrace();
         }
-
     }
 
     public Optional<Record> getRecord(String game) {

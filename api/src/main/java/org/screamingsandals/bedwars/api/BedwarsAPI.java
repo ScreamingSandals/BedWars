@@ -92,7 +92,7 @@ public interface BedwarsAPI {
      *
      * @return PlayerStatisticsManager if statistics are enabled; otherwise null
      */
-    PlayerStatisticsManager getStatisticsManager();
+    PlayerStatisticsManager<?> getStatisticsManager();
 
     /**
      * @return Bedwars instance
