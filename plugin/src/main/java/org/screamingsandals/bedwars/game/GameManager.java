@@ -5,10 +5,10 @@ import org.jetbrains.annotations.NotNull;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.lib.plugin.PluginDescription;
 import org.screamingsandals.lib.plugin.ServiceManager;
-import org.screamingsandals.lib.plugin.logger.LoggerWrapper;
 import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.utils.annotations.methods.OnPostEnable;
 import org.screamingsandals.lib.utils.annotations.methods.OnPreDisable;
+import org.screamingsandals.lib.utils.logger.LoggerWrapper;
 
 import java.io.File;
 import java.io.IOException;

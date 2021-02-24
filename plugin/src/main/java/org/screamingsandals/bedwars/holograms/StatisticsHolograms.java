@@ -24,7 +24,6 @@ import org.screamingsandals.lib.plugin.PluginDescription;
 import org.screamingsandals.lib.plugin.ServiceManager;
 import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
-import org.screamingsandals.lib.tasker.initializer.AbstractTaskInitializer;
 import org.screamingsandals.lib.utils.AdventureHelper;
 import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.utils.annotations.methods.OnPostEnable;
@@ -41,7 +40,7 @@ import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
         PlayerMapper.class,
         LocationMapper.class,
         HologramManager.class,
-        AbstractTaskInitializer.class,
+        Tasker.class,
         MainConfig.class
 })
 @RequiredArgsConstructor
