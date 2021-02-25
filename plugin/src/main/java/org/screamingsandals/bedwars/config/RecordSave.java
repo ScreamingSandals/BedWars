@@ -11,7 +11,6 @@ import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
-import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -21,9 +20,8 @@ import java.util.stream.Collectors;
         MainConfig.class
 })
 public class RecordSave {
-    @ConfigFile("database/record.yml")
-    private final Path databasePath;
-    private YamlConfigurationLoader loader;
+    @ConfigFile(value = "database/record.yml", old = "record.yml")
+    private final YamlConfigurationLoader loader;
     private ConfigurationNode records;
 
     public static RecordSave getInstance() {
@@ -32,9 +30,6 @@ public class RecordSave {
 
     @OnPostEnable
     public void load() {
-        loader = YamlConfigurationLoader.builder()
-                .path(databasePath)
-                .build();
         try {
             records = loader.load();
         } catch (ConfigurateException e) {

@@ -51,6 +51,7 @@ import org.spongepowered.configurate.serialize.SerializationException;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 import pronze.lib.scoreboards.ScoreboardManager;
 
+import java.io.File;
 import java.util.*;
 
 import static org.screamingsandals.bedwars.lib.lang.I18n.i18n;
@@ -309,6 +310,31 @@ public class Main extends PluginContainer implements BedwarsAPI {
         isNMS = ClassStorage.NMS_BASED_SERVER;
         isSpigot = ClassStorage.IS_SPIGOT_SERVER;
         colorChanger = new org.screamingsandals.bedwars.utils.ColorChanger();
+
+        var langFolder = getDataFolder().resolve("languages").toFile();
+
+        if (!langFolder.exists()) {
+            langFolder.mkdirs();
+
+            var listOfFiles = getDataFolder().toFile().listFiles();
+            if (listOfFiles != null && listOfFiles.length > 0) {
+                for (var file : listOfFiles) {
+                    if (file.isFile() && file.getName().startsWith("messages_") && file.getName().endsWith(".yml")) {
+                        var dest = new File(langFolder, "language_" + file.getName().substring(9));
+                        file.renameTo(dest);
+                    }
+                }
+            }
+        }
+
+        var database = getDataFolder().resolve("database");
+        database.toFile().mkdirs();
+
+        var signFile = getDataFolder().resolve("sign.yml").toFile();
+        var newSignFile = database.resolve("sign.yml").toFile();
+        if (signFile.exists() && !newSignFile.exists()) {
+            signFile.renameTo(newSignFile);
+        }
 
         if (!PluginManager.isEnabled(PluginManager.createKey("Vault").orElseThrow())) {
             isVault = false;

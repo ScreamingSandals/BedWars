@@ -33,8 +33,6 @@ import org.screamingsandals.lib.world.LocationMapper;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -52,8 +50,8 @@ import static org.screamingsandals.bedwars.lib.lang.I.i18nonly;
 @RequiredArgsConstructor
 public class LeaderboardHolograms {
     private final PluginDescription pluginDescription;
-    @ConfigFile("database/holodb_leaderboard.yml")
-    private final Path databasePath;
+    @ConfigFile(value = "database/holodb_leaderboard.yml", old = "holodb_leaderboard.yml")
+    private final YamlConfigurationLoader loader;
     private final MainConfig mainConfig;
 
     private ArrayList<PreparedLocation> hologramLocations;
@@ -102,17 +100,12 @@ public class LeaderboardHolograms {
         this.holograms = new HashMap<>();
         this.hologramLocations = new ArrayList<>();
 
-        if (Files.exists(databasePath)) {
-            var loader = YamlConfigurationLoader.builder()
-                    .path(databasePath)
-                    .build();
-            try {
-                var config = loader.load();
-                var locations = config.node("locations").getList(PreparedLocation.class);
-                this.hologramLocations.addAll(locations);
-            } catch (ConfigurateException e) {
-                e.printStackTrace();
-            }
+        try {
+            var config = loader.load();
+            var locations = config.node("locations").getList(PreparedLocation.class);
+            this.hologramLocations.addAll(locations);
+        } catch (ConfigurateException e) {
+            e.printStackTrace();
         }
 
         if (this.hologramLocations.size() == 0) {
@@ -126,10 +119,6 @@ public class LeaderboardHolograms {
 
     private void updateHologramDatabase() {
         try {
-            var loader = YamlConfigurationLoader.builder()
-                    .path(databasePath)
-                    .build();
-
             var node = loader.createNode();
 
             for (var location : hologramLocations) {

@@ -28,36 +28,7 @@ public class BossBar implements org.screamingsandals.bedwars.api.boss.BossBar {
                     1,
                     net.kyori.adventure.bossbar.BossBar.Color.PURPLE,
                     net.kyori.adventure.bossbar.BossBar.Overlay.PROGRESS
-            )
-            .addListener(new net.kyori.adventure.bossbar.BossBar.Listener() {
-                @Override
-                public void bossBarNameChanged(net.kyori.adventure.bossbar.@NonNull BossBar bar, @NonNull Component oldName, @NonNull Component newName) {
-                    if (visible) {
-                        viewers.forEach(playerWrapper -> playerWrapper.showBossBar(bar));
-                    }
-                }
-
-                @Override
-                public void bossBarProgressChanged(net.kyori.adventure.bossbar.@NonNull BossBar bar, float oldProgress, float newProgress) {
-                    if (visible) {
-                        viewers.forEach(playerWrapper -> playerWrapper.showBossBar(bar));
-                    }
-                }
-
-                @Override
-                public void bossBarColorChanged(net.kyori.adventure.bossbar.@NonNull BossBar bar, net.kyori.adventure.bossbar.BossBar.@NonNull Color oldColor, net.kyori.adventure.bossbar.BossBar.@NonNull Color newColor) {
-                    if (visible) {
-                        viewers.forEach(playerWrapper -> playerWrapper.showBossBar(bar));
-                    }
-                }
-
-                @Override
-                public void bossBarOverlayChanged(net.kyori.adventure.bossbar.@NonNull BossBar bar, net.kyori.adventure.bossbar.BossBar.@NonNull Overlay oldOverlay, net.kyori.adventure.bossbar.BossBar.@NonNull Overlay newOverlay) {
-                    if (visible) {
-                        viewers.forEach(playerWrapper -> playerWrapper.showBossBar(bar));
-                    }
-                }
-            });
+            );
     private final List<PlayerWrapper> viewers = new LinkedList<>();
     private boolean visible;
 

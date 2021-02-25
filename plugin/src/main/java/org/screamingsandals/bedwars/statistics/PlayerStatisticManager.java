@@ -22,8 +22,6 @@ import org.screamingsandals.lib.utils.logger.LoggerWrapper;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.sql.*;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -36,12 +34,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PlayerStatisticManager implements PlayerStatisticsManager<OfflinePlayerWrapper> {
     @ConfigFile("database/bw_stats_players.yml")
-    private final Path databasePath;
+    private final YamlConfigurationLoader loader;
     private final MainConfig mainConfig;
     private final DatabaseManager databaseManager;
     private final LoggerWrapper logger;
 
-    private YamlConfigurationLoader loader;
     private ConfigurationNode fileDatabase;
     private StatisticType statisticType;
     private final Map<UUID, PlayerStatistic> playerStatistic = new HashMap<>();
@@ -229,17 +226,7 @@ public class PlayerStatisticManager implements PlayerStatisticsManager<OfflinePl
         try {
             logger.info("Loading statistics from YAML-File ...");
 
-            loader = YamlConfigurationLoader.builder()
-                    .path(databasePath)
-                    .build();
-
-            if (!Files.exists(databasePath)) {
-                databasePath.getParent().toFile().mkdirs();
-                
-                this.fileDatabase = loader.createNode();
-            } else {
-                this.fileDatabase = loader.load();
-            }
+            this.fileDatabase = loader.load();
 
         } catch (Exception ex) {
             ex.printStackTrace();
