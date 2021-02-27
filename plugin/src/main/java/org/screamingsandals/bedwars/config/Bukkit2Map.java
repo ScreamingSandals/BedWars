@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 // TODO: somehow manage to implement this into Configurate
+// TODO: ScreamingLib candidate
 public class Bukkit2Map {
     public static Map<String,Object> serialize(ConfigurationSerializable object) {
         var map = object.serialize().entrySet().stream()
