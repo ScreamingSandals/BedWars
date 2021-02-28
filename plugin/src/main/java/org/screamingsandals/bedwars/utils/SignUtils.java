@@ -1,38 +1,24 @@
-package org.screamingsandals.bedwars.lib.signmanager;
+package org.screamingsandals.bedwars.utils;
 
-import java.util.Optional;
-
+import lombok.experimental.UtilityClass;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
-import org.bukkit.block.data.Directional;
+import org.bukkit.material.Directional;
 import org.screamingsandals.bedwars.Main;
-import org.screamingsandals.bedwars.utils.PreparedLocation;
+import org.screamingsandals.lib.signs.ClickableSign;
 
-public class SignBlock {
-    private final PreparedLocation loc;
-    private final String name;
+import java.util.Optional;
 
-    public SignBlock(PreparedLocation loc, String name) {
-        this.loc = loc;
-        this.name = name;
+@UtilityClass
+public class SignUtils {
+    public Optional<Block> getBlockBehindSign(ClickableSign sign) {
+        return Optional.ofNullable(getGlassBehind(sign));
     }
 
-    public PreparedLocation getLocation() {
-        return loc;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public Optional<Block> getBlockBehindSign() {
-        return Optional.ofNullable(getGlassBehind());
-    }
-
-    private Block getGlassBehind() {
-        var bukkitLoc = loc.asOptional(Location.class);
+    private Block getGlassBehind(ClickableSign sign) {
+        var bukkitLoc = sign.getLocation().asOptional(Location.class);
         if (bukkitLoc.isPresent()) {
             Block block = bukkitLoc.get().getBlock();
 

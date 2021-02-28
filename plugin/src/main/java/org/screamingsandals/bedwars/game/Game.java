@@ -2319,7 +2319,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
     public void updateSigns() {
         final var config = MainConfig.getInstance();
-        final var gameSigns = Main.getSignManager().getSignsForName(this.name);
+        final var gameSigns = BedWarsSignService.getInstance().getSignsForKey(this.name);
 
         if (gameSigns.isEmpty()) {
             return;
@@ -2379,7 +2379,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                     }
 
                     if (config.node("sign", "block-behind", "enabled").getBoolean(false)) {
-                        final Optional<Block> optionalBlock = signBlock.getBlockBehindSign();
+                        final Optional<Block> optionalBlock = SignUtils.getBlockBehindSign(signBlock);
                         if (optionalBlock.isPresent()) {
                             final Block glassBlock = optionalBlock.get();
                             glassBlock.setType(finalBlockBehindMaterial.as(Material.class));

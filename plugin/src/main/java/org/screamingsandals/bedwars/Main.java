@@ -31,13 +31,12 @@ import org.screamingsandals.bedwars.premium.PremiumBedwars;
 import org.screamingsandals.bedwars.special.SpecialRegister;
 import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.bedwars.tab.TabManager;
-import org.screamingsandals.bedwars.utils.BedWarsSignOwner;
+import org.screamingsandals.bedwars.utils.BedWarsSignService;
+import org.screamingsandals.bedwars.utils.BukkitBStatsMetrics;
 import org.screamingsandals.bedwars.utils.UpdateChecker;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.lib.nms.holograms.HologramManager;
 import org.screamingsandals.bedwars.lib.nms.utils.ClassStorage;
-import org.screamingsandals.bedwars.lib.signmanager.SignListener;
-import org.screamingsandals.bedwars.lib.signmanager.SignManager;
 import org.screamingsandals.lib.event.EventManager;
 import org.screamingsandals.lib.material.MaterialMapping;
 import org.screamingsandals.lib.player.PlayerMapper;
@@ -48,7 +47,6 @@ import org.screamingsandals.lib.utils.annotations.Init;
 import org.screamingsandals.lib.utils.annotations.Plugin;
 import org.screamingsandals.lib.utils.annotations.PluginDependencies;
 import org.spongepowered.configurate.serialize.SerializationException;
-import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 import pronze.lib.scoreboards.ScoreboardManager;
 
 import java.io.File;
@@ -89,7 +87,9 @@ import static org.screamingsandals.bedwars.lib.lang.I18n.i18n;
         ShopInventory.class,
         SpecialRegister.class,
         RecordSave.class,
-        DatabaseManager.class
+        DatabaseManager.class,
+        BedWarsSignService.class,
+        BukkitBStatsMetrics.class
 })
 public class Main extends PluginContainer implements BedwarsAPI {
     private static Main instance;
@@ -105,10 +105,8 @@ public class Main extends PluginContainer implements BedwarsAPI {
     private HashMap<Entity, Game> entitiesInGame = new HashMap<>();
     private HashMap<String, ItemSpawnerType> spawnerTypes = new HashMap<>();
     private ColorChanger colorChanger;
-    private SignManager signManager;
     private HologramManager manager;
     public static List<String> autoColoredMaterials = new ArrayList<>();
-    private Metrics metrics;
 
     static {
         // ColorChanger list of materials
@@ -294,10 +292,6 @@ public class Main extends PluginContainer implements BedwarsAPI {
         return instance.versionNumber;
     }
 
-    public static SignManager getSignManager() {
-        return instance.signManager;
-    }
-
     public static HologramManager getHologramManager() {
         return instance.manager;
     }
@@ -325,15 +319,6 @@ public class Main extends PluginContainer implements BedwarsAPI {
                     }
                 }
             }
-        }
-
-        var database = getDataFolder().resolve("database");
-        database.toFile().mkdirs();
-
-        var signFile = getDataFolder().resolve("sign.yml").toFile();
-        var newSignFile = database.resolve("sign.yml").toFile();
-        if (signFile.exists() && !newSignFile.exists()) {
-            signFile.renameTo(newSignFile);
         }
 
         if (!PluginManager.isEnabled(PluginManager.createKey("Vault").orElseThrow())) {
@@ -448,13 +433,6 @@ public class Main extends PluginContainer implements BedwarsAPI {
                     ChatColor.RED + "[B" + ChatColor.WHITE + "W] " + ChatColor.RED + "IMPORTANT WARNING: You are using version older than 1.9! This version is not officially supported, and some features may not work at all!");
         }
 
-        final var signOwner = new BedWarsSignOwner();
-        signManager = new SignManager(signOwner, YamlConfigurationLoader.builder()
-                .path(getPluginDescription().getDataFolder().resolve("database/sign.yml"))
-                .build()
-        );
-        registerBedwarsListener(new SignListener(signOwner, signManager));
-
         try {
             // Fixing bugs created by third party plugin
 
@@ -477,11 +455,6 @@ public class Main extends PluginContainer implements BedwarsAPI {
         /* Initialize our ScoreboardLib*/
         ScoreboardManager.init(this.getPluginDescription().as(JavaPlugin.class));
 
-        final var pluginId = 7147;
-        metrics = new Metrics(this.getPluginDescription().as(JavaPlugin.class), pluginId);
-        metrics.addCustomChart(new Metrics.SimplePie("edition", () -> PremiumBedwars.isPremium() ? "Premium" : "Free"));
-        metrics.addCustomChart(new Metrics.SimplePie("build_number", () -> VersionInfo.BUILD_NUMBER));
-
         PlayerMapper.getConsoleSender().sendMessage(ChatColor.WHITE + "Everything is loaded! If you like our work, consider visiting our Patreon! <3");
         PlayerMapper.getConsoleSender().sendMessage(ChatColor.WHITE + "https://www.patreon.com/screamingsandals");
     }
@@ -489,12 +462,7 @@ public class Main extends PluginContainer implements BedwarsAPI {
     @Override
     public void disable() {
         isDisabling = true;
-        if (signManager != null) {
-            signManager.save();
-        }
         Bukkit.getServer().getServicesManager().unregisterAll(this.getPluginDescription().as(JavaPlugin.class));
-
-        metrics = null;
     }
 
     private boolean setupEconomy() {

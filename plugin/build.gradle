@@ -35,6 +35,7 @@ dependencies {
     implementation 'me.lucko:commodore:' + COMMODORE_VERSION, {
         exclude group: 'com.mojang', module: 'brigadier'
     }
+    implementation screaming('signs', SCREAMING_LIB_VERSION) // TODO: Update Screaming plugin builder to add modules without -common with ScreamingLibBuilder
 }
 
 buildConfig {
