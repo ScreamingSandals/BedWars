@@ -1,5 +1,7 @@
 package org.screamingsandals.bedwars;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.event.Listener;
 import org.screamingsandals.bedwars.commands.CommandService;
 import org.screamingsandals.bedwars.config.MainConfig;
@@ -8,7 +10,6 @@ import org.screamingsandals.bedwars.game.*;
 import org.screamingsandals.bedwars.lib.lang.I18n;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
-import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -297,6 +298,11 @@ public class Main extends PluginContainer implements BedwarsAPI {
     }
 
     @Override
+    public void load() {
+        instance = this;
+    }
+
+    @Override
     public void enable() {
         instance = this;
         version = this.getPluginDescription().getVersion();
@@ -382,55 +388,147 @@ public class Main extends PluginContainer implements BedwarsAPI {
         Bukkit.getServer().getServicesManager().register(BedwarsAPI.class, this, this.getPluginDescription().as(JavaPlugin.class), ServicePriority.Normal);
 
         MainConfig.getInstance().node("resources").childrenMap().forEach((spawnerK, node) -> {
-                var name = node.node("name").getString();
-                var translate = node.node("translate").getString();
-                var interval = node.node("interval").getInt(1);
-                var spread = node.node("spread").getDouble();
-                var damage = node.node("damage").getInt();
-                var materialName = node.node("material").getString();
-                var colorName = node.node("color").getString();
+            var name = node.node("name").getString();
+            var translate = node.node("translate").getString();
+            var interval = node.node("interval").getInt(1);
+            var spread = node.node("spread").getDouble();
+            var damage = node.node("damage").getInt();
+            var materialName = node.node("material").getString();
+            var colorName = node.node("color").getString();
 
-                var spawnerN = spawnerK.toString();
+            var spawnerN = spawnerK.toString();
 
-                if (damage != 0) {
-                    materialName += ":" + damage;
-                }
+            if (damage != 0) {
+                materialName += ":" + damage;
+            }
 
-                var result = MaterialMapping.resolve(materialName).orElse(MaterialMapping.getAir());
-                if (result.as(Material.class) == Material.AIR) {
-                    return;
-                }
+            var result = MaterialMapping.resolve(materialName).orElse(MaterialMapping.getAir());
+            if (result.as(Material.class) == Material.AIR) {
+                return;
+            }
 
-                ChatColor color;
-                try {
-                    color = ChatColor.valueOf(colorName.toUpperCase());
-                } catch (IllegalArgumentException | NullPointerException ignored) {
-                    color = ChatColor.WHITE;
-                }
-                spawnerTypes.put(spawnerN.toLowerCase(), new ItemSpawnerType(spawnerN.toLowerCase(), name, translate,
-                        spread, result.as(Material.class), color, interval, result.getDurability()));
+            ChatColor color;
+            try {
+                color = ChatColor.valueOf(colorName.toUpperCase());
+            } catch (IllegalArgumentException | NullPointerException ignored) {
+                color = ChatColor.WHITE;
+            }
+            spawnerTypes.put(spawnerN.toLowerCase(), new ItemSpawnerType(spawnerN.toLowerCase(), name, translate,
+                    spread, result.as(Material.class), color, interval, result.getDurability()));
         });
 
         if (MainConfig.getInstance().node("bungee", "enabled").getBoolean()) {
             Bukkit.getMessenger().registerOutgoingPluginChannel(this.getPluginDescription().as(JavaPlugin.class), "BungeeCord");
         }
 
-        PlayerMapper.getConsoleSender().sendMessage(ChatColor.AQUA + "============" + ChatColor.RED + "===" + ChatColor.WHITE + "======  by ScreamingSandals <Misat11, Ceph, Pronze>");
-        PlayerMapper.getConsoleSender()
-                .sendMessage(ChatColor.AQUA + "+ Screaming " + ChatColor.RED + "Bed" + ChatColor.WHITE + "Wars +  " + ChatColor.GOLD + "Version: " + version + " " + (PremiumBedwars.isPremium() ? ChatColor.AQUA + "PREMIUM" : ChatColor.GREEN + "FREE"));
-        PlayerMapper.getConsoleSender()
-                .sendMessage(ChatColor.AQUA + "============" + ChatColor.RED + "===" + ChatColor.WHITE + "======  " + (snapshot ? ChatColor.RED + "SNAPSHOT VERSION (" + VersionInfo.BUILD_NUMBER + ") - Use at your own risk" : ChatColor.GREEN + "STABLE VERSION"));
+        PlayerMapper.getConsoleSender().sendMessage(Component
+                .text("============")
+                .color(NamedTextColor.AQUA)
+                .append(
+                        Component
+                                .text("===")
+                                .color(NamedTextColor.RED)
+                )
+                .append(
+                        Component
+                                .text("======  by ScreamingSandals <Misat11, Iamceph, Pronze>")
+                                .color(NamedTextColor.WHITE)
+                )
+        );
+
+        PlayerMapper.getConsoleSender().sendMessage(Component
+                .text("+ Screaming ")
+                .color(NamedTextColor.AQUA)
+                .append(
+                        Component
+                                .text("Bed")
+                                .color(NamedTextColor.RED)
+                )
+                .append(
+                        Component
+                                .text("Wars +  ")
+                                .color(NamedTextColor.WHITE)
+                )
+                .append(
+                        Component
+                                .text("Version: " + version + " ")
+                                .color(NamedTextColor.GOLD)
+                )
+                .append(
+                        Component
+                                .text(PremiumBedwars.isPremium() ? "PREMIUM" : "FREE")
+                                .color(PremiumBedwars.isPremium() ? NamedTextColor.AQUA : NamedTextColor.GREEN)
+                )
+        );
+
+        PlayerMapper.getConsoleSender().sendMessage(Component
+                .text("============")
+                .color(NamedTextColor.AQUA)
+                .append(
+                        Component
+                                .text("===")
+                                .color(NamedTextColor.RED)
+                )
+                .append(
+                        Component
+                                .text("======  ")
+                                .color(NamedTextColor.WHITE)
+                )
+                .append(
+                        Component
+                                .text(snapshot ? "SNAPSHOT VERSION (" + VersionInfo.BUILD_NUMBER + ") - Use at your own risk" : "STABLE VERSION")
+                                .color(snapshot ? NamedTextColor.RED : NamedTextColor.GREEN)
+                )
+        );
+
         if (isVault) {
-            PlayerMapper.getConsoleSender().sendMessage(ChatColor.RED + "[B" + ChatColor.WHITE + "W] " + ChatColor.GOLD + "Found Vault");
+            PlayerMapper.getConsoleSender().sendMessage(
+                    Component
+                            .text("[B")
+                            .color(NamedTextColor.RED)
+                            .append(
+                                    Component
+                                            .text("W] ")
+                                            .color(NamedTextColor.WHITE)
+                            )
+                            .append(
+                                    Component
+                                            .text("Found Vault")
+                                            .color(NamedTextColor.GOLD)
+                            ));
         }
         if (!isSpigot) {
-            PlayerMapper.getConsoleSender()
-                    .sendMessage(ChatColor.RED + "[B" + ChatColor.WHITE + "W] " + ChatColor.RED + "WARNING: You are not using Spigot. Some features may not work properly.");
+            PlayerMapper.getConsoleSender().sendMessage(
+                    Component
+                            .text("[B")
+                            .color(NamedTextColor.RED)
+                            .append(
+                                    Component
+                                            .text("W] ")
+                                            .color(NamedTextColor.WHITE)
+                            )
+                            .append(
+                                    Component
+                                            .text("WARNING: You are not using Spigot. Some features may not work properly.")
+                                            .color(NamedTextColor.RED)
+                            ));
         }
 
         if (versionNumber < 109) {
             PlayerMapper.getConsoleSender().sendMessage(
-                    ChatColor.RED + "[B" + ChatColor.WHITE + "W] " + ChatColor.RED + "IMPORTANT WARNING: You are using version older than 1.9! This version is not officially supported, and some features may not work at all!");
+                    Component
+                            .text("[B")
+                            .color(NamedTextColor.RED)
+                            .append(
+                                    Component
+                                            .text("W] ")
+                                            .color(NamedTextColor.WHITE)
+                            )
+                            .append(
+                                    Component
+                                            .text("IMPORTANT WARNING: You are using version older than 1.9! This version is not officially supported, and some features may not work at all!")
+                                            .color(NamedTextColor.RED)
+                            ));
         }
 
         try {
@@ -455,8 +553,8 @@ public class Main extends PluginContainer implements BedwarsAPI {
         /* Initialize our ScoreboardLib*/
         ScoreboardManager.init(this.getPluginDescription().as(JavaPlugin.class));
 
-        PlayerMapper.getConsoleSender().sendMessage(ChatColor.WHITE + "Everything is loaded! If you like our work, consider visiting our Patreon! <3");
-        PlayerMapper.getConsoleSender().sendMessage(ChatColor.WHITE + "https://www.patreon.com/screamingsandals");
+        PlayerMapper.getConsoleSender().sendMessage(Component.text("Everything is loaded! If you like our work, consider visiting our Patreon! <3").color(NamedTextColor.WHITE));
+        PlayerMapper.getConsoleSender().sendMessage(Component.text("https://www.patreon.com/screamingsandals").color(NamedTextColor.WHITE));
     }
 
     @Override

@@ -132,7 +132,10 @@ public class LeaderboardHolograms {
 
     @OnPreDisable
     public void unloadHolograms() {
-        holograms.values().forEach(Hologram::destroy);
+        holograms.values().forEach(holo -> {
+            holo.hide();
+            HologramManager.removeHologram(holo);
+        });
         holograms.clear();
     }
 
@@ -160,6 +163,7 @@ public class LeaderboardHolograms {
                                 .hologram(locationHolder)
                                 .setTouchable(true);
                         HologramManager.addHologram(hologram);
+                        hologram.show();
                         holograms.put(locationHolder, hologram);
                     }
                     updateHologram(holograms.get(locationHolder));
@@ -211,7 +215,8 @@ public class LeaderboardHolograms {
         player.as(Player.class).removeMetadata("bw-remove-holo", pluginDescription.as(JavaPlugin.class));
         Tasker
                 .build(() -> {
-                    hologram.destroy();
+                    hologram.hide();
+                    HologramManager.removeHologram(hologram);
                     List.copyOf(hologramLocations).forEach(preparedLocation ->
                             preparedLocation.asOptional(LocationHolder.class).ifPresent(locationHolder -> {
                                 if (locationHolder.getWorld().getUuid().equals(location.getWorld().getUuid())

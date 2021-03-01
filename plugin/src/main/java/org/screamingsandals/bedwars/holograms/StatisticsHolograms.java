@@ -100,7 +100,10 @@ public class StatisticsHolograms {
 
     @OnPreDisable
     public void unloadHolograms() {
-        holograms.values().forEach(Holograms -> Holograms.forEach(Hologram::destroy));
+        holograms.values().forEach(Holograms -> Holograms.forEach(holo -> {
+            holo.hide();
+            HologramManager.removeHologram(holo);
+        }));
     }
 
     @OnEvent(priority = EventPriority.HIGHEST)
@@ -117,7 +120,10 @@ public class StatisticsHolograms {
     public void onLeave(SPlayerLeaveEvent event) {
         Tasker
                 .build(() -> {
-                    holograms.get(event.getPlayer().getUuid()).forEach(Hologram::destroy);
+                    holograms.get(event.getPlayer().getUuid()).forEach(holo -> {
+                        holo.hide();
+                        HologramManager.removeHologram(holo);
+                    });
                     holograms.remove(event.getPlayer().getUuid());
                 })
                 .async()
@@ -181,7 +187,8 @@ public class StatisticsHolograms {
                 this.updatePlayerStatisticHologram(player, holo.get());
             } else {
                 holograms.remove(holo.get());
-                holo.get().destroy();
+                holo.get().hide();
+                HologramManager.removeHologram(holo.get());
             }
         }
     }
@@ -190,8 +197,10 @@ public class StatisticsHolograms {
         final var holo = HologramManager
                 .hologram(holoLocation)
                 .firstLine(AdventureHelper.toComponent(mainConfig.node("holograms", "headline").getString("Your §eBEDWARS§f stats")))
-                .setTouchable(true);
+                .setTouchable(true)
+                .addViewer(player);
         HologramManager.addHologram(holo);
+        holo.show();
 
         this.updatePlayerStatisticHologram(player, holo);
         return holo;
