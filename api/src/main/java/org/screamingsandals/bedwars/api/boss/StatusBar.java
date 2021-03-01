@@ -8,17 +8,17 @@ import org.screamingsandals.lib.utils.Wrapper;
  * @author Bedwars Team
  *
  */
-public interface StatusBar {
+public interface StatusBar<P extends Wrapper> {
 	
 	/**
 	 * @param player
 	 */
-	void addPlayer(Wrapper player);
+	void addPlayer(P player);
 	
 	/**
 	 * @param player
 	 */
-	void removePlayer(Wrapper player);
+	void removePlayer(P player);
 	
 	/**
 	 * @param progress
@@ -28,7 +28,7 @@ public interface StatusBar {
 	/**
 	 * @return list of all viewers
 	 */
-	List<Wrapper> getViewers();
+	List<P> getViewers();
 	
 	/**
 	 * @return progress of status bar

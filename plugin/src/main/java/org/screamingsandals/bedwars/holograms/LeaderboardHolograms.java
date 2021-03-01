@@ -161,6 +161,7 @@ public class LeaderboardHolograms {
                     if (!holograms.containsKey(locationHolder)) {
                         var hologram = HologramManager
                                 .hologram(locationHolder)
+                                .firstLine(AdventureHelper.toComponent(i18nonly("leaderboard_no_scores")))
                                 .setTouchable(true);
                         HologramManager.addHologram(hologram);
                         hologram.show();
@@ -173,15 +174,13 @@ public class LeaderboardHolograms {
     }
 
     private void updateHologram(final Hologram holo) {
-        var lines = new ArrayList<String>();
+        if (entries != null && !entries.isEmpty()) {
+            var lines = new ArrayList<String>();
 
-        lines.add(ChatColor.translateAlternateColorCodes('&', mainConfig.node("holograms", "leaderboard", "headline").getString("")));
+            lines.add(ChatColor.translateAlternateColorCodes('&', mainConfig.node("holograms", "leaderboard", "headline").getString("")));
 
-        var line = ChatColor.translateAlternateColorCodes('&', mainConfig.node("holograms", "leaderboard", "format").getString(""));
+            var line = ChatColor.translateAlternateColorCodes('&', mainConfig.node("holograms", "leaderboard", "format").getString(""));
 
-        if (entries == null || entries.isEmpty()) {
-            lines.add(i18nonly("leaderboard_no_scores"));
-        } else {
             var l = new AtomicInteger(1);
             entries.forEach(leaderboardEntry ->
                     lines.add(line
@@ -190,10 +189,10 @@ public class LeaderboardHolograms {
                             .replace("%order%", Integer.toString(l.getAndIncrement()))
                     )
             );
-        }
 
-        for (int i = 0; i < lines.size(); i++) {
-            holo.setLine(i, AdventureHelper.toComponent(lines.get(i)));
+            for (int i = 0; i < lines.size(); i++) {
+                holo.setLine(i, AdventureHelper.toComponent(lines.get(i)));
+            }
         }
     }
 

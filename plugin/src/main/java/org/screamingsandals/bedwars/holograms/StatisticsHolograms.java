@@ -118,16 +118,18 @@ public class StatisticsHolograms {
 
     @OnEvent
     public void onLeave(SPlayerLeaveEvent event) {
-        Tasker
-                .build(() -> {
-                    holograms.get(event.getPlayer().getUuid()).forEach(holo -> {
-                        holo.hide();
-                        HologramManager.removeHologram(holo);
-                    });
-                    holograms.remove(event.getPlayer().getUuid());
-                })
-                .async()
-                .start();
+        if (holograms.containsKey(event.getPlayer().getUuid())) {
+            Tasker
+                    .build(() -> {
+                        holograms.get(event.getPlayer().getUuid()).forEach(holo -> {
+                            holo.hide();
+                            HologramManager.removeHologram(holo);
+                        });
+                        holograms.remove(event.getPlayer().getUuid());
+                    })
+                    .async()
+                    .start();
+        }
     }
 
     public void updateHolograms(PlayerWrapper player) {

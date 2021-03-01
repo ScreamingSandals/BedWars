@@ -60,6 +60,8 @@ import org.screamingsandals.bedwars.utils.*;
 import org.screamingsandals.lib.material.MaterialHolder;
 import org.screamingsandals.lib.material.builder.ItemFactory;
 import org.screamingsandals.lib.player.PlayerMapper;
+import org.screamingsandals.lib.player.PlayerWrapper;
+import org.screamingsandals.lib.world.LocationHolder;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
@@ -107,7 +109,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     private final Region region = Main.isLegacy() ? new LegacyRegion() : new FlatteningRegion();
     private TeamSelectorInventory teamSelectorInventory;
     private final Scoreboard gameScoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
-    private StatusBar statusbar;
+    private StatusBar<PlayerWrapper> statusbar;
     private final Map<Location, ItemStack[]> usedChests = new HashMap<>();
     private final List<SpecialItem> activeSpecialItems = new ArrayList<>();
     private final List<DelayFactory> activeDelays = new ArrayList<>();
@@ -142,7 +144,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
             final ConfigurationNode configMap;
             try {
-                 configMap = loader.load();
+                configMap = loader.load();
             } catch (ConfigurateException e) {
                 e.printStackTrace();
                 return null;
@@ -245,39 +247,39 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 game.teams.add(t);
             });
             configMap.node("spawners").childrenList().forEach(spawner ->
-                game.spawners.add(new ItemSpawner(
-                    MiscUtils.readLocationFromString(game.world, Objects.requireNonNull(spawner.node("location").getString())),
-                    Main.getSpawnerType((Objects.requireNonNull(spawner.node("type").getString())).toLowerCase()),
-                    spawner.node("customName").getString(),
-                    spawner.node("hologramEnabled").getBoolean(true),
-                    spawner.node("startLevel").getDouble(1),
-                    game.getTeamFromName(spawner.node("team").getString()),
-                    spawner.node("maxSpawnedResources").getInt(-1),
-                    spawner.node("floatingEnabled").getBoolean()
-                ))
+                    game.spawners.add(new ItemSpawner(
+                            MiscUtils.readLocationFromString(game.world, Objects.requireNonNull(spawner.node("location").getString())),
+                            Main.getSpawnerType((Objects.requireNonNull(spawner.node("type").getString())).toLowerCase()),
+                            spawner.node("customName").getString(),
+                            spawner.node("hologramEnabled").getBoolean(true),
+                            spawner.node("startLevel").getDouble(1),
+                            game.getTeamFromName(spawner.node("team").getString()),
+                            spawner.node("maxSpawnedResources").getInt(-1),
+                            spawner.node("floatingEnabled").getBoolean()
+                    ))
             );
             configMap.node("stores").childrenList().forEach(store -> {
                 if (store.isMap()) {
                     game.gameStore.add(new GameStore(
-                        MiscUtils.readLocationFromString(game.world, Objects.requireNonNull(store.node("loc").getString())),
-                        store.node("shop").getString(),
-                        store.node("parent").getBoolean(true),
-                        EntityType.valueOf(store.node("type").getString("VILLAGER").toUpperCase()),
-                        store.node("name").getString(""),
-                        !store.node("name").empty(),
-                        store.node("isBaby").getBoolean(),
-                        store.node("skin").getString()
+                            MiscUtils.readLocationFromString(game.world, Objects.requireNonNull(store.node("loc").getString())),
+                            store.node("shop").getString(),
+                            store.node("parent").getBoolean(true),
+                            EntityType.valueOf(store.node("type").getString("VILLAGER").toUpperCase()),
+                            store.node("name").getString(""),
+                            !store.node("name").empty(),
+                            store.node("isBaby").getBoolean(),
+                            store.node("skin").getString()
                     ));
                 } else {
                     game.gameStore.add(new GameStore(
-                        MiscUtils.readLocationFromString(game.world, Objects.requireNonNull(store.getString())),
-                        null,
-                        true,
-                        EntityType.VILLAGER,
-                        "",
-                        false,
-                        false,
-                        null
+                            MiscUtils.readLocationFromString(game.world, Objects.requireNonNull(store.getString())),
+                            null,
+                            true,
+                            EntityType.VILLAGER,
+                            "",
+                            false,
+                            false,
+                            null
                     ));
                 }
             });
@@ -1509,9 +1511,9 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 var bossbar = (BossBar) statusbar;
                 bossbar.setMessage(title);
                 bossbar.setColor(lobbyBossBarColor != null ? lobbyBossBarColor
-                            : BarColor.valueOf(MainConfig.getInstance().node("bossbar", "lobby", "color").getString()));
+                        : BarColor.valueOf(MainConfig.getInstance().node("bossbar", "lobby", "color").getString()));
                 bossbar
-                            .setStyle(BarStyle.valueOf(MainConfig.getInstance().node("bossbar", "lobby", "style").getString()));
+                        .setStyle(BarStyle.valueOf(MainConfig.getInstance().node("bossbar", "lobby", "style").getString()));
             }
             if (teamSelectorInventory == null) {
                 teamSelectorInventory = new TeamSelectorInventory(Main.getInstance(), this);
@@ -1628,9 +1630,9 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                         var bossbar = (BossBar) statusbar;
                         bossbar.setMessage(i18n("bossbar_running", false));
                         bossbar.setColor(gameBossBarColor != null ? gameBossBarColor
-                                    : BarColor.valueOf(MainConfig.getInstance().node("bossbar", "game", "color").getString()));
+                                : BarColor.valueOf(MainConfig.getInstance().node("bossbar", "game", "color").getString()));
                         bossbar.setStyle(
-                                    BarStyle.valueOf(MainConfig.getInstance().node("bossbar", "game", "style").getString()));
+                                BarStyle.valueOf(MainConfig.getInstance().node("bossbar", "game", "style").getString()));
                     }
                     if (teamSelectorInventory != null)
                         teamSelectorInventory.destroy();
@@ -2367,33 +2369,35 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
         final var finalBlockBehindMaterial = blockBehindMaterial;
         for (var signBlock : gameSigns) {
-            signBlock.getLocation().asOptional(Location.class).ifPresent(location -> {
-                if (location.getChunk().isLoaded()) {
-                    BlockState blockState = location.getBlock().getState();
-                    if (blockState instanceof Sign) {
-                        Sign sign = (Sign) blockState;
-                        for (int i = 0; i < texts.size() && i < 4; i++) {
-                            sign.setLine(i, texts.get(i));
-                        }
-                        sign.update();
-                    }
+            signBlock.getLocation().asOptional(LocationHolder.class)
+                    .flatMap(locationHolder -> locationHolder.asOptional(Location.class))
+                    .ifPresent(location -> {
+                        if (location.getChunk().isLoaded()) {
+                            BlockState blockState = location.getBlock().getState();
+                            if (blockState instanceof Sign) {
+                                Sign sign = (Sign) blockState;
+                                for (int i = 0; i < texts.size() && i < 4; i++) {
+                                    sign.setLine(i, texts.get(i));
+                                }
+                                sign.update();
+                            }
 
-                    if (config.node("sign", "block-behind", "enabled").getBoolean(false)) {
-                        final Optional<Block> optionalBlock = SignUtils.getBlockBehindSign(signBlock);
-                        if (optionalBlock.isPresent()) {
-                            final Block glassBlock = optionalBlock.get();
-                            glassBlock.setType(finalBlockBehindMaterial.as(Material.class));
-                            if (Main.isLegacy()) {
-                                try {
-                                    // The method is no longer in API, but in legacy versions exists
-                                    Block.class.getMethod("setData", byte.class).invoke(glassBlock, (byte) finalBlockBehindMaterial.getDurability());
-                                } catch (Exception e) {
+                            if (config.node("sign", "block-behind", "enabled").getBoolean(false)) {
+                                final Optional<Block> optionalBlock = SignUtils.getBlockBehindSign(signBlock);
+                                if (optionalBlock.isPresent()) {
+                                    final Block glassBlock = optionalBlock.get();
+                                    glassBlock.setType(finalBlockBehindMaterial.as(Material.class));
+                                    if (Main.isLegacy()) {
+                                        try {
+                                            // The method is no longer in API, but in legacy versions exists
+                                            Block.class.getMethod("setData", byte.class).invoke(glassBlock, (byte) finalBlockBehindMaterial.getDurability());
+                                        } catch (Exception e) {
+                                        }
+                                    }
                                 }
                             }
                         }
-                    }
-                }
-            });
+                    });
         }
     }
 
@@ -2441,7 +2445,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                         }
                     }
                 }
-            } catch (IllegalArgumentException | IllegalStateException e){
+            } catch (IllegalArgumentException | IllegalStateException e) {
                 e.printStackTrace();
             }
             i--;
@@ -2473,7 +2477,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             content.add(builder.toString());
         });
 
-        if(content.size() > 15) {
+        if (content.size() > 15) {
             return content.subList(0, 15);
         }
         return content;

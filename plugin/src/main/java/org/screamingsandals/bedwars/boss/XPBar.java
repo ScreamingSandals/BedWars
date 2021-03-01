@@ -4,13 +4,12 @@ import lombok.Getter;
 import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.lib.nms.entity.PlayerUtils;
 import org.screamingsandals.lib.player.PlayerWrapper;
-import org.screamingsandals.lib.utils.Wrapper;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-public class XPBar implements org.screamingsandals.bedwars.api.boss.XPBar {
+public class XPBar implements org.screamingsandals.bedwars.api.boss.XPBar<PlayerWrapper> {
 
     private boolean visible = false;
     private float progress = 0F;
@@ -18,25 +17,21 @@ public class XPBar implements org.screamingsandals.bedwars.api.boss.XPBar {
     private final List<PlayerWrapper> viewers = new ArrayList<>();
 
     @Override
-    public void addPlayer(Wrapper wrapper) {
-        wrapper.asOptional(PlayerWrapper.class).ifPresent(player -> {
-            if (!viewers.contains(player)) {
-                viewers.add(player);
-                if (visible) {
-                    PlayerUtils.fakeExp(player.as(Player.class), progress, seconds);
-                }
+    public void addPlayer(PlayerWrapper player) {
+        if (!viewers.contains(player)) {
+            viewers.add(player);
+            if (visible) {
+                PlayerUtils.fakeExp(player.as(Player.class), progress, seconds);
             }
-        });
+        }
     }
 
     @Override
-    public void removePlayer(Wrapper wrapper) {
-        wrapper.asOptional(PlayerWrapper.class).ifPresent(player -> {
-            if (viewers.contains(player)) {
-                viewers.remove(player);
-                PlayerUtils.fakeExp(player.as(Player.class), player.as(Player.class).getExp(), player.as(Player.class).getLevel());
-            }
-        });
+    public void removePlayer(PlayerWrapper player) {
+        if (viewers.contains(player)) {
+            viewers.remove(player);
+            PlayerUtils.fakeExp(player.as(Player.class), player.as(Player.class).getExp(), player.as(Player.class).getLevel());
+        }
     }
 
     @Override
@@ -78,11 +73,5 @@ public class XPBar implements org.screamingsandals.bedwars.api.boss.XPBar {
             	PlayerUtils.fakeExp(player.as(Player.class), this.progress, seconds);
             }
         }
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public List<Wrapper> getViewers() {
-        return (List<Wrapper>) (List<?>) viewers;
     }
 }

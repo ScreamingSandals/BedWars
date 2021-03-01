@@ -1,18 +1,18 @@
 package org.screamingsandals.bedwars.boss;
 
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.utils.AdventureHelper;
-import org.screamingsandals.lib.utils.Wrapper;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class BossBar implements org.screamingsandals.bedwars.api.boss.BossBar {
+@Getter
+public class BossBar implements org.screamingsandals.bedwars.api.boss.BossBar<PlayerWrapper> {
 
     public static final Map<BarStyle, net.kyori.adventure.bossbar.BossBar.Overlay> STYLE_OVERLAY_MAP = Map.of(
             BarStyle.SOLID, net.kyori.adventure.bossbar.BossBar.Overlay.PROGRESS,
@@ -51,27 +51,23 @@ public class BossBar implements org.screamingsandals.bedwars.api.boss.BossBar {
     }
 
     @Override
-    public void addPlayer(Wrapper player) {
-        player.asOptional(PlayerWrapper.class).ifPresent(playerWrapper -> {
-            if (!viewers.contains(playerWrapper)) {
-                viewers.add(playerWrapper);
-                if (visible) {
-                    playerWrapper.showBossBar(boss);
-                }
+    public void addPlayer(PlayerWrapper player) {
+        if (!viewers.contains(player)) {
+            viewers.add(player);
+            if (visible) {
+                player.showBossBar(boss);
             }
-        });
+        }
     }
 
     @Override
-    public void removePlayer(Wrapper player) {
-        player.asOptional(PlayerWrapper.class).ifPresent(playerWrapper -> {
-            if (viewers.contains(playerWrapper)) {
-                viewers.remove(playerWrapper);
-                if (visible) {
-                    playerWrapper.showBossBar(boss);
-                }
+    public void removePlayer(PlayerWrapper player) {
+        if (viewers.contains(player)) {
+            viewers.remove(player);
+            if (visible) {
+                player.hideBossBar(boss);
             }
-        });
+        }
     }
 
     @Override
@@ -84,20 +80,9 @@ public class BossBar implements org.screamingsandals.bedwars.api.boss.BossBar {
         boss.progress(progress);
     }
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public List<Wrapper> getViewers() {
-        return (List<Wrapper>) (List<?>) viewers;
-    }
-
     @Override
     public float getProgress() {
         return boss.progress();
-    }
-
-    @Override
-    public boolean isVisible() {
-        return visible;
     }
 
     @Override
