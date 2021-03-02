@@ -8,7 +8,7 @@ import org.screamingsandals.bedwars.api.statistics.LeaderboardEntry;
 import org.screamingsandals.bedwars.commands.BedWarsPermission;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
-import org.screamingsandals.bedwars.utils.PreparedLocation;
+import org.screamingsandals.bedwars.utils.HologramLocation;
 import org.screamingsandals.lib.event.EventPriority;
 import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.hologram.Hologram;
@@ -54,7 +54,7 @@ public class LeaderboardHolograms {
     private final YamlConfigurationLoader loader;
     private final MainConfig mainConfig;
 
-    private ArrayList<PreparedLocation> hologramLocations;
+    private ArrayList<HologramLocation> hologramLocations;
     private Map<LocationHolder, Hologram> holograms;
     private List<LeaderboardEntry<OfflinePlayerWrapper>> entries;
 
@@ -71,7 +71,7 @@ public class LeaderboardHolograms {
     }
 
     public void addHologramLocation(LocationHolder eyeLocation) {
-        this.hologramLocations.add(new PreparedLocation(eyeLocation.add(0, -3, 0)));
+        this.hologramLocations.add(new HologramLocation(eyeLocation.add(0, -3, 0)));
         this.updateHologramDatabase();
 
         if (entries == null) {
@@ -102,7 +102,7 @@ public class LeaderboardHolograms {
 
         try {
             var config = loader.load();
-            var locations = config.node("locations").getList(PreparedLocation.class);
+            var locations = config.node("locations").getList(HologramLocation.class);
             this.hologramLocations.addAll(locations);
         } catch (ConfigurateException e) {
             e.printStackTrace();

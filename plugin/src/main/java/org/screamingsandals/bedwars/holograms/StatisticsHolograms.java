@@ -10,7 +10,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.screamingsandals.bedwars.commands.BedWarsPermission;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
-import org.screamingsandals.bedwars.utils.PreparedLocation;
+import org.screamingsandals.bedwars.utils.HologramLocation;
 import org.screamingsandals.lib.event.EventPriority;
 import org.screamingsandals.lib.hologram.Hologram;
 import org.screamingsandals.lib.hologram.HologramManager;
@@ -52,11 +52,11 @@ public class StatisticsHolograms {
     private final YamlConfigurationLoader loader;
     private final MainConfig mainConfig;
 
-    private ArrayList<PreparedLocation> hologramLocations = null;
+    private ArrayList<HologramLocation> hologramLocations = null;
     private Map<UUID, List<Hologram>> holograms = null;
 
     public void addHologramLocation(LocationHolder eyeLocation) {
-        this.hologramLocations.add(new PreparedLocation(eyeLocation.add(0, -3, 0)));
+        this.hologramLocations.add(new HologramLocation(eyeLocation.add(0, -3, 0)));
         this.updateHologramDatabase();
     }
 
@@ -85,7 +85,7 @@ public class StatisticsHolograms {
 
         try {
             var config = loader.load();
-            var locations = config.node("locations").getList(PreparedLocation.class);
+            var locations = config.node("locations").getList(HologramLocation.class);
             this.hologramLocations.addAll(locations);
         } catch (ConfigurateException e) {
             e.printStackTrace();
@@ -222,7 +222,7 @@ public class StatisticsHolograms {
         }
     }
 
-    private PreparedLocation getHologramLocationByLocation(LocationHolder holoLocation) {
+    private HologramLocation getHologramLocationByLocation(LocationHolder holoLocation) {
         return hologramLocations.stream()
                 .filter(loc -> loc.getWorld().equals(holoLocation.getWorld().getName())
                         && loc.getX() == holoLocation.getX()
