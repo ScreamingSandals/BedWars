@@ -260,7 +260,8 @@ public class StatisticsHolograms {
                                         && locationHolder.getX() == location.getX()
                                         && locationHolder.getY() == location.getY()
                                         && locationHolder.getZ() == location.getZ()) {
-                                    hologram.destroy();
+                                    hologram.hide();
+                                    HologramManager.removeHologram(hologram);
                                     iterator.remove();
                                 }
                             });
@@ -275,7 +276,6 @@ public class StatisticsHolograms {
                     player.sendMessage(i18n("holo_removed"));
                 })
                 .async()
-                .afterOneTick()
                 .start();
     }
 

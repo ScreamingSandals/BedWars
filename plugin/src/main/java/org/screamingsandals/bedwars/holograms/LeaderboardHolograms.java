@@ -86,7 +86,7 @@ public class LeaderboardHolograms {
             return;
         }
 
-        this.entries = PlayerStatisticManager.getInstance().getLeaderboard(mainConfig.node("holograms", "leaderboard", "size").getInt());
+        this.entries = PlayerStatisticManager.getInstance().getLeaderboard(mainConfig.node("holograms", "leaderboard", "size").getInt(10));
         updateHolograms();
     }
 
@@ -149,7 +149,7 @@ public class LeaderboardHolograms {
             if (!hologram.getViewers().contains(player)) {
                 Tasker.build(() -> hologram.addViewer(player))
                         .async()
-                        .delay(10, TaskerTime.TICKS)
+                        .delay(30, TaskerTime.TICKS)
                         .start();
             }
         });
@@ -224,6 +224,7 @@ public class LeaderboardHolograms {
                                         && locationHolder.getZ() == location.getZ()) {
                                     hologramLocations.remove(preparedLocation);
                                     holograms.remove(locationHolder);
+                                    hologram.hide();
                                     updateHologramDatabase();
                                 }
                             })
