@@ -5,6 +5,7 @@ import cloud.commandframework.CommandManager;
 import com.alessiodp.parties.api.Parties;
 import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.Main;
+import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.lib.nms.entity.PlayerUtils;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
@@ -98,7 +99,7 @@ public class PartyCommand extends BaseCommand {
                                     game.joinToGame(partyMember);
                                 }
                             });
-                            if (Main.getConfigurator().node("party", "notify-when-warped").getBoolean(true)) {
+                            if (MainConfig.getInstance().node("party", "notify-when-warped").getBoolean(true)) {
                                 player.sendMessage(i18n("party_command_warped", true));
                             }
                         }

@@ -54,16 +54,16 @@ public class SpawnerCommand extends BaseAdminSubCommand {
                                             return List.of();
                                         })
                         )
-                        .argument(IntegerArgument.optional("maxSpawnedResources", -1))
-                        .argument(BooleanArgument.optional("floatingHologram", false))
+                        .argument(IntegerArgument.optional("maxSpawnedResources"))
+                        .argument(BooleanArgument.optional("floatingHologram"))
                         .handler(commandContext -> editMode(commandContext, (sender, game) -> {
                             String type = commandContext.get("type");
                             String customName = commandContext.getOrDefault("customName", null);
                             boolean hologramEnabled = commandContext.get("hologramEnabled");
                             double startLevel = commandContext.get("startLevel");
                             var team = commandContext.<String>getOptional("team").map(game::getTeamFromName).orElse(null); // saved as nullable
-                            int maxSpawnedResources = commandContext.get("maxSpawnedResources");
-                            boolean floatingHologram = commandContext.get("floatingHologram");
+                            int maxSpawnedResources = commandContext.getOrDefault("maxSpawnedResources", -1);
+                            boolean floatingHologram = commandContext.getOrDefault("floatingHologram", false);
 
                             var loc = sender.as(Player.class).getLocation();
 

@@ -1,9 +1,7 @@
 package org.screamingsandals.bedwars.statistics;
 
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
-import org.bukkit.entity.Player;
-import org.screamingsandals.bedwars.Main;
+import org.screamingsandals.lib.player.PlayerMapper;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 
@@ -25,10 +23,9 @@ public class PlayerStatistic implements ConfigurationSerializable, org.screaming
     public PlayerStatistic(UUID uuid) {
         this.uuid = uuid;
 
-        Player player = Bukkit.getPlayer(uuid);
-        if (player != null && !this.name.equals(player.getName())) {
-            this.name = player.getName();
-        }
+        PlayerMapper
+                .getPlayer(uuid)
+                .ifPresent(playerWrapper -> this.name = playerWrapper.getName());
     }
 
     public PlayerStatistic(Map<String, Object> deserialize) {
@@ -96,7 +93,7 @@ public class PlayerStatistic implements ConfigurationSerializable, org.screaming
     @Override
     public void addScore(int score) {
         this.score += score;
-        Main.getPlayerStatisticsManager().updateScore(this);
+        PlayerStatisticManager.getInstance().updateScore(this);
     }
 
     @Override
@@ -126,7 +123,7 @@ public class PlayerStatistic implements ConfigurationSerializable, org.screaming
 
     @Override
     public Map<String, Object> serialize() {
-        HashMap<String, Object> playerStatistic = new HashMap<>();
+        var playerStatistic = new HashMap<String, Object>();
         playerStatistic.put("deaths", this.deaths);
         playerStatistic.put("destroyedBeds", this.destroyedBeds);
         playerStatistic.put("kills", this.kills);

@@ -1,17 +1,35 @@
 package org.screamingsandals.bedwars.holograms;
 
-import org.bukkit.Bukkit;
+import lombok.RequiredArgsConstructor;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.statistics.LeaderboardEntry;
 import org.screamingsandals.bedwars.commands.BedWarsPermission;
-import org.screamingsandals.bedwars.lib.nms.holograms.Hologram;
-import org.screamingsandals.bedwars.lib.nms.holograms.TouchHandler;
-import org.screamingsandals.bedwars.utils.PreparedLocation;
+import org.screamingsandals.bedwars.config.MainConfig;
+import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
+import org.screamingsandals.bedwars.utils.HologramLocation;
+import org.screamingsandals.lib.event.EventPriority;
+import org.screamingsandals.lib.event.OnEvent;
+import org.screamingsandals.lib.hologram.Hologram;
+import org.screamingsandals.lib.hologram.HologramManager;
+import org.screamingsandals.lib.hologram.event.HologramTouchEvent;
+import org.screamingsandals.lib.player.OfflinePlayerWrapper;
 import org.screamingsandals.lib.player.PlayerMapper;
+import org.screamingsandals.lib.player.PlayerWrapper;
+import org.screamingsandals.lib.player.event.SPlayerJoinEvent;
+import org.screamingsandals.lib.plugin.PluginDescription;
+import org.screamingsandals.lib.plugin.ServiceManager;
+import org.screamingsandals.lib.tasker.Tasker;
+import org.screamingsandals.lib.tasker.TaskerTime;
+import org.screamingsandals.lib.utils.AdventureHelper;
+import org.screamingsandals.lib.utils.annotations.Service;
+import org.screamingsandals.lib.utils.annotations.methods.OnPostEnable;
+import org.screamingsandals.lib.utils.annotations.methods.OnPreDisable;
+import org.screamingsandals.lib.utils.annotations.methods.ShouldRunControllable;
+import org.screamingsandals.lib.utils.annotations.parameters.ConfigFile;
+import org.screamingsandals.lib.world.LocationHolder;
+import org.screamingsandals.lib.world.LocationMapper;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
@@ -21,13 +39,39 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static org.screamingsandals.bedwars.lib.lang.I.i18n;
 import static org.screamingsandals.bedwars.lib.lang.I.i18nonly;
 
-public class LeaderboardHolograms implements TouchHandler {
-    private ArrayList<PreparedLocation> hologramLocations;
-    private Map<Location, Hologram> holograms;
-    private List<LeaderboardEntry> entries;
+@Service(dependsOn = {
+        PlayerMapper.class,
+        LocationMapper.class,
+        HologramManager.class,
+        Tasker.class,
+        MainConfig.class,
+        PlayerStatisticManager.class
+})
+@RequiredArgsConstructor
+public class LeaderboardHolograms {
+    private final PluginDescription pluginDescription;
+    @ConfigFile(value = "database/holodb_leaderboard.yml", old = "holodb_leaderboard.yml")
+    private final YamlConfigurationLoader loader;
+    private final MainConfig mainConfig;
 
-    public void addHologramLocation(Location eyeLocation) {
-        this.hologramLocations.add(new PreparedLocation(eyeLocation.subtract(0, 3, 0)));
+    private ArrayList<HologramLocation> hologramLocations;
+    private Map<LocationHolder, Hologram> holograms;
+    private List<LeaderboardEntry<OfflinePlayerWrapper>> entries;
+
+    @ShouldRunControllable
+    public static boolean isEnabled() {
+        return PlayerStatisticManager.isEnabled() && MainConfig.getInstance().node("holograms", "enabled").getBoolean();
+    }
+
+    public static LeaderboardHolograms getInstance() {
+        if (!isEnabled()) {
+            throw new UnsupportedOperationException("LeaderboardHolograms are not enabled!");
+        }
+        return ServiceManager.get(LeaderboardHolograms.class);
+    }
+
+    public void addHologramLocation(LocationHolder eyeLocation) {
+        this.hologramLocations.add(new HologramLocation(eyeLocation.add(0, -3, 0)));
         this.updateHologramDatabase();
 
         if (entries == null) {
@@ -42,15 +86,12 @@ public class LeaderboardHolograms implements TouchHandler {
             return;
         }
 
-        this.entries = Main.getPlayerStatisticsManager().getLeaderboard(Main.getConfigurator().node("holograms", "leaderboard", "size").getInt());
+        this.entries = PlayerStatisticManager.getInstance().getLeaderboard(mainConfig.node("holograms", "leaderboard", "size").getInt(10));
         updateHolograms();
     }
 
+    @OnPostEnable
     public void loadHolograms() {
-        if (!Main.isHologramsEnabled()) {
-            return;
-        }
-
         if (this.hologramLocations != null || this.holograms != null) {
             // first unload all holograms
             this.unloadHolograms();
@@ -59,34 +100,25 @@ public class LeaderboardHolograms implements TouchHandler {
         this.holograms = new HashMap<>();
         this.hologramLocations = new ArrayList<>();
 
-        var file = Main.getInstance().getPluginDescription().getDataFolder().resolve("database").resolve("holodb_leaderboard.yml").toFile();
-        if (file.exists()) {
-            var loader = YamlConfigurationLoader.builder()
-                    .file(file)
-                    .build();
-            try {
-                var config = loader.load();
-                var locations = config.node("locations").getList(PreparedLocation.class);
-                this.hologramLocations.addAll(locations);
-            } catch (ConfigurateException e) {
-                e.printStackTrace();
-            }
+        try {
+            var config = loader.load();
+            var locations = config.node("locations").getList(HologramLocation.class);
+            this.hologramLocations.addAll(locations);
+        } catch (ConfigurateException e) {
+            e.printStackTrace();
         }
 
         if (this.hologramLocations.size() == 0) {
             return;
         }
 
-        Bukkit.getScheduler().runTask(Main.getInstance().getPluginDescription().as(JavaPlugin.class), this::updateEntries);
+        Tasker.build(this::updateEntries)
+                .async()
+                .start();
     }
 
     private void updateHologramDatabase() {
         try {
-            var file = Main.getInstance().getPluginDescription().getDataFolder().resolve("database").resolve("holodb_leaderboard.yml").toFile();
-            var loader = YamlConfigurationLoader.builder()
-                    .file(file)
-                    .build();
-
             var node = loader.createNode();
 
             for (var location : hologramLocations) {
@@ -98,81 +130,108 @@ public class LeaderboardHolograms implements TouchHandler {
         }
     }
 
+    @OnPreDisable
     public void unloadHolograms() {
-        if (Main.isHologramsEnabled()) {
-            for (Hologram holo : holograms.values()) {
-                holo.destroy();
-            }
-            holograms.clear();
-        }
+        holograms.values().forEach(holo -> {
+            holo.hide();
+            HologramManager.removeHologram(holo);
+        });
+        holograms.clear();
     }
 
-    public void addViewer(Player player) {
+    @OnEvent(priority = EventPriority.HIGHEST)
+    public void onJoin(SPlayerJoinEvent event) {
+        addViewer(event.getPlayer());
+    }
+
+    public void addViewer(PlayerWrapper player) {
         holograms.values().forEach(hologram -> {
             if (!hologram.getViewers().contains(player)) {
-                Bukkit.getScheduler().runTaskLater(Main.getInstance().getPluginDescription().as(JavaPlugin.class), () -> hologram.addViewer(player), 10L);
+                Tasker.build(() -> hologram.addViewer(player))
+                        .async()
+                        .delay(30, TaskerTime.TICKS)
+                        .start();
             }
         });
     }
 
     private void updateHolograms() {
         hologramLocations.forEach(location ->
-            location.asOptional(Location.class).ifPresent(bukkitLocation -> {
-                if (!holograms.containsKey(bukkitLocation)) {
-                    holograms.put(bukkitLocation, Main.getHologramManager().spawnHologramTouchable(bukkitLocation));
-                    holograms.get(bukkitLocation).addHandler(this);
-                }
-                updateHologram(holograms.get(bukkitLocation));
-            })
+                location.asOptional(LocationHolder.class).ifPresent(locationHolder -> {
+                    if (!holograms.containsKey(locationHolder)) {
+                        var hologram = HologramManager
+                                .hologram(locationHolder)
+                                .firstLine(AdventureHelper.toComponent(i18nonly("leaderboard_no_scores")))
+                                .setTouchable(true);
+                        HologramManager.addHologram(hologram);
+                        hologram.show();
+                        holograms.put(locationHolder, hologram);
+                    }
+                    updateHologram(holograms.get(locationHolder));
+                })
         );
-        Bukkit.getOnlinePlayers().forEach(this::addViewer);
+        PlayerMapper.getPlayers().forEach(this::addViewer);
     }
 
     private void updateHologram(final Hologram holo) {
-        List<String> lines = new ArrayList<>();
+        if (entries != null && !entries.isEmpty()) {
+            var lines = new ArrayList<String>();
 
-        lines.add(ChatColor.translateAlternateColorCodes('&', Main.getConfigurator().node("holograms", "leaderboard", "headline").getString("")));
+            lines.add(ChatColor.translateAlternateColorCodes('&', mainConfig.node("holograms", "leaderboard", "headline").getString("")));
 
-        String line = ChatColor.translateAlternateColorCodes('&', Main.getConfigurator().node("holograms", "leaderboard", "format").getString(""));
+            var line = ChatColor.translateAlternateColorCodes('&', mainConfig.node("holograms", "leaderboard", "format").getString(""));
 
-        if (entries == null || entries.isEmpty()) {
-            lines.add(i18nonly("leaderboard_no_scores"));
-        } else {
-            AtomicInteger l = new AtomicInteger(1);
+            var l = new AtomicInteger(1);
             entries.forEach(leaderboardEntry ->
-                lines.add(line
-                        .replace("%name%", leaderboardEntry.getPlayer().getName() != null ? leaderboardEntry.getPlayer().getName() : leaderboardEntry.getPlayer().getUniqueId().toString())
-                        .replace("%score%", Integer.toString(leaderboardEntry.getTotalScore()))
-                        .replace("%order%", Integer.toString(l.getAndIncrement()))
-                )
+                    lines.add(line
+                            .replace("%name%", leaderboardEntry.getPlayer().getLastName().orElse(leaderboardEntry.getPlayer().getUuid().toString()))
+                            .replace("%score%", Integer.toString(leaderboardEntry.getTotalScore()))
+                            .replace("%order%", Integer.toString(l.getAndIncrement()))
+                    )
             );
-        }
 
-        for (int i = 0; i < lines.size(); i++) {
-            holo.setLine(i, lines.get(i));
+            for (int i = 0; i < lines.size(); i++) {
+                holo.setLine(i, AdventureHelper.toComponent(lines.get(i)));
+            }
         }
     }
 
-    @Override
-    public void handle(Player player, Hologram hologram) {
-        if (!player.hasMetadata("bw-remove-holo") || (!player.isOp() && !PlayerMapper.wrapPlayer(player).hasPermission(BedWarsPermission.ADMIN_PERMISSION.asPermission()))) {
+    @OnEvent
+    public void handle(HologramTouchEvent event) {
+        var player = event.getPlayer();
+        var hologram = event.getHologram();
+
+        if (hologram.getLocation().isEmpty() || !holograms.containsKey(hologram.getLocation().get())) {
             return;
         }
 
-        player.removeMetadata("bw-remove-holo", Main.getInstance().getPluginDescription().as(JavaPlugin.class));
-        Bukkit.getServer().getScheduler().runTask(Main.getInstance().getPluginDescription().as(JavaPlugin.class), () -> {
-            hologram.destroy();
-            List.copyOf(hologramLocations).forEach(location ->
-                location.asOptional(Location.class).ifPresent(bukkitLocation -> {
-                    if (hologram.getLocation().getX() == bukkitLocation.getX() && hologram.getLocation().getY() == bukkitLocation.getY()
-                            && hologram.getLocation().getZ() == bukkitLocation.getZ()) {
-                        hologramLocations.remove(location);
-                        holograms.remove(bukkitLocation);
-                        updateHologramDatabase();
-                    }
+        if (!player.as(Player.class).hasMetadata("bw-remove-holo") || !PlayerMapper.wrapPlayer(player).hasPermission(BedWarsPermission.ADMIN_PERMISSION.asPermission())) {
+            return;
+        }
+
+        var location = hologram.getLocation().get();
+
+        player.as(Player.class).removeMetadata("bw-remove-holo", pluginDescription.as(JavaPlugin.class));
+        Tasker
+                .build(() -> {
+                    hologram.hide();
+                    HologramManager.removeHologram(hologram);
+                    List.copyOf(hologramLocations).forEach(preparedLocation ->
+                            preparedLocation.asOptional(LocationHolder.class).ifPresent(locationHolder -> {
+                                if (locationHolder.getWorld().getUuid().equals(location.getWorld().getUuid())
+                                        && locationHolder.getX() == location.getX()
+                                        && locationHolder.getY() == location.getY()
+                                        && locationHolder.getZ() == location.getZ()) {
+                                    hologramLocations.remove(preparedLocation);
+                                    holograms.remove(locationHolder);
+                                    hologram.hide();
+                                    updateHologramDatabase();
+                                }
+                            })
+                    );
+                    player.sendMessage(i18n("holo_removed"));
                 })
-            );
-            player.sendMessage(i18n("holo_removed"));
-        });
+                .async()
+                .start();
     }
 }

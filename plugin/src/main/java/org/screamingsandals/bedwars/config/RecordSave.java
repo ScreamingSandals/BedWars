@@ -3,6 +3,10 @@ package org.screamingsandals.bedwars.config;
 import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.screamingsandals.lib.plugin.ServiceManager;
+import org.screamingsandals.lib.utils.annotations.Service;
+import org.screamingsandals.lib.utils.annotations.methods.OnPostEnable;
+import org.screamingsandals.lib.utils.annotations.parameters.ConfigFile;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
@@ -12,11 +16,19 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
+@Service(dependsOn = {
+        MainConfig.class
+})
 public class RecordSave {
+    @ConfigFile(value = "database/record.yml", old = "record.yml")
     private final YamlConfigurationLoader loader;
     private ConfigurationNode records;
-    private boolean modified;
 
+    public static RecordSave getInstance() {
+        return ServiceManager.get(RecordSave.class);
+    }
+
+    @OnPostEnable
     public void load() {
         try {
             records = loader.load();
@@ -37,7 +49,6 @@ public class RecordSave {
         } catch (ConfigurateException e) {
             e.printStackTrace();
         }
-
     }
 
     public Optional<Record> getRecord(String game) {

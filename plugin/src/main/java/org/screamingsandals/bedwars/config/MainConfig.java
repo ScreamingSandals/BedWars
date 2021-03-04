@@ -1,82 +1,42 @@
 package org.screamingsandals.bedwars.config;
 
+import lombok.RequiredArgsConstructor;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.lib.material.Item;
 import org.screamingsandals.lib.material.builder.ItemFactory;
+import org.screamingsandals.lib.plugin.ServiceManager;
+import org.screamingsandals.lib.utils.annotations.Service;
+import org.screamingsandals.lib.utils.annotations.methods.OnEnable;
+import org.screamingsandals.lib.utils.annotations.parameters.ConfigFile;
 import org.screamingsandals.simpleinventories.inventory.LocalOptions;
 import org.spongepowered.configurate.BasicConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
-import org.spongepowered.configurate.yaml.NodeStyle;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
-import java.io.File;
 import java.util.*;
 
+@Service
+@RequiredArgsConstructor
 public class MainConfig {
-
+    @ConfigFile("config.yml")
     private final YamlConfigurationLoader loader;
+
     private ConfigurationNode configurationNode;
 
-    public MainConfig(YamlConfigurationLoader.Builder builder) {
-        loader = builder
-                .nodeStyle(NodeStyle.BLOCK)
-                .build();
+    public static MainConfig getInstance() {
+        return ServiceManager.get(MainConfig.class);
     }
 
     public ConfigurationNode node(Object... keys) {
         return configurationNode.node(keys);
     }
 
+    @OnEnable
     public void load() {
-        var dataFolder = Main.getInstance().getPluginDescription().getDataFolder();
-        dataFolder.toFile().mkdirs();
-
-        var langFolder = dataFolder.resolve("languages").toFile();
-
-        if (!langFolder.exists()) {
-            langFolder.mkdirs();
-
-            File[] listOfFiles = dataFolder.toFile().listFiles();
-            if (listOfFiles != null && listOfFiles.length > 0) {
-                for (File file : listOfFiles) {
-                    if (file.isFile() && file.getName().startsWith("messages_") && file.getName().endsWith(".yml")) {
-                        File dest = new File(langFolder, "language_" + file.getName().substring(9));
-                        file.renameTo(dest);
-                    }
-                }
-            }
-        }
-
-        var database = dataFolder.resolve("database");
-        database.toFile().mkdirs();
-
-        var recordFile = dataFolder.resolve("record.yml").toFile();
-        var newRecordFile = database.resolve("record.yml").toFile();
-        if (recordFile.exists() && !newRecordFile.exists()) {
-            recordFile.renameTo(newRecordFile);
-        }
-
-        var signFile = dataFolder.resolve("sign.yml").toFile();
-        var newSignFile = database.resolve("sign.yml").toFile();
-        if (signFile.exists() && !newSignFile.exists()) {
-            signFile.renameTo(newSignFile);
-        }
-
-        var holodbFile = dataFolder.resolve("holodb.yml").toFile();
-        var newHolodbFile = database.resolve("holodb.yml").toFile();
-        if (holodbFile.exists() && !newHolodbFile.exists()) {
-            holodbFile.renameTo(newHolodbFile);
-        }
-
-        var holodbLeaderboardFile = dataFolder.resolve( "holodb_leaderboard.yml").toFile();
-        var newHolodbLeaderboardFile = database.resolve("holodb_leaderboard.yml").toFile();
-        if (holodbLeaderboardFile.exists() && !newHolodbLeaderboardFile.exists()) {
-            holodbLeaderboardFile.renameTo(newHolodbLeaderboardFile);
-        }
 
         try {
             this.configurationNode = loader.load();

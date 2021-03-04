@@ -309,7 +309,7 @@ public interface Game {
     /**
      * @return
      */
-	StatusBar getStatusBar();
+	StatusBar<?> getStatusBar();
 
     // LOBBY
 

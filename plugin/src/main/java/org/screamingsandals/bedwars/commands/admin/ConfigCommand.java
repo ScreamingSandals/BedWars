@@ -36,7 +36,7 @@ public class ConfigCommand extends BaseAdminSubCommand {
 
                             var key = game.getConfigurationContainer().getRegisteredKeys()
                                     .stream()
-                                    .filter(t -> t.replace("-", "").equalsIgnoreCase(keyString))
+                                    .filter(t -> t.equalsIgnoreCase(keyString))
                                     .findFirst();
 
                             if (key.isEmpty()) {

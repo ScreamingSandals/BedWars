@@ -2,12 +2,23 @@ package org.screamingsandals.bedwars.database;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import lombok.RequiredArgsConstructor;
+import org.screamingsandals.bedwars.config.MainConfig;
+import org.screamingsandals.lib.plugin.ServiceManager;
+import org.screamingsandals.lib.utils.annotations.Service;
+import org.screamingsandals.lib.utils.annotations.methods.OnEnable;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.TimeZone;
 
+@Service(dependsOn = {
+        MainConfig.class
+})
+@RequiredArgsConstructor
 public class DatabaseManager {
+    private final MainConfig mainConfig;
+
     private String tablePrefix;
     private String database;
     private HikariDataSource dataSource = null;
@@ -17,18 +28,23 @@ public class DatabaseManager {
     private String user;
     private boolean useSSL;
 
-    public DatabaseManager(String host, int port, String user, String password, String database, String tablePrefix, boolean useSSL) {
-        this.host = host;
-        this.port = port;
-        this.user = user;
-        this.password = password;
-        this.database = database;
-        this.tablePrefix = tablePrefix;
-        this.useSSL = useSSL;
+    public static DatabaseManager getInstance() {
+        return ServiceManager.get(DatabaseManager.class);
+    }
+
+    @OnEnable
+    public void onEnable() {
+        this.host = mainConfig.node("database", "host").getString();
+        this.port = mainConfig.node("database", "port").getInt();
+        this.user = mainConfig.node("database", "user").getString();
+        this.password = mainConfig.node("database", "password").getString();
+        this.database = mainConfig.node("database", "db").getString();
+        this.tablePrefix = mainConfig.node("database", "table-prefix").getString();
+        this.useSSL = mainConfig.node("database", "useSSL").getBoolean();
     }
 
     public void initialize() {
-        HikariConfig config = new HikariConfig();
+        var config = new HikariConfig();
         config.setJdbcUrl("jdbc:mysql://" + this.host + ":" + this.port + "/" + this.database
                 + "?autoReconnect=true&serverTimezone=" + TimeZone.getDefault().getID() + "&useSSL=" + useSSL);
         config.setUsername(this.user);
@@ -65,9 +81,5 @@ public class DatabaseManager {
 
     public String getScoresSql() {
         return "SELECT uuid, score FROM " + tablePrefix + "stats_players";
-    }
-
-    public String getTablePrefix() {
-        return tablePrefix;
     }
 }

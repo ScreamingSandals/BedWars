@@ -41,7 +41,7 @@ subprojects {
     }
     
     dependencies {
-    	compileOnly paper(PAPER_VERSIOn)
+    	compileOnly paper(PAPER_VERSION)
     }
 
     shadowJar {

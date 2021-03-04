@@ -35,9 +35,11 @@ import org.screamingsandals.bedwars.api.events.BedwarsTeamChestOpenEvent;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.commands.BedWarsPermission;
 import org.screamingsandals.bedwars.commands.admin.JoinTeamCommand;
+import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.game.*;
 import org.screamingsandals.bedwars.inventories.TeamSelectorInventory;
 import org.screamingsandals.bedwars.statistics.PlayerStatistic;
+import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.bedwars.utils.*;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.lib.nms.entity.PlayerUtils;
@@ -62,7 +64,7 @@ public class PlayerListener implements Listener {
             final var victimTeam = game.getPlayerTeam(gVictim);
             final var victimColor = victimTeam.teamInfo.color.chatColor;
             final var drops = List.copyOf(event.getDrops());
-            int respawnTime = Main.getConfigurator().node("respawn-cooldown", "time").getInt(5);
+            int respawnTime = MainConfig.getInstance().node("respawn-cooldown", "time").getInt(5);
 
             if (game.getConfigurationContainer().getOrDefault(ConfigurationContainer.KEEP_ARMOR, Boolean.class, false)) {
                final var armorContents = victim.getInventory().getArmorContents();
@@ -85,10 +87,10 @@ public class PlayerListener implements Listener {
                     event.getDrops().clear();
                 }
 
-                if (Main.getConfigurator().node("chat", "send-death-messages-just-in-game").getBoolean()) {
+                if (MainConfig.getInstance().node("chat", "send-death-messages-just-in-game").getBoolean()) {
                     var deathMessage = event.getDeathMessage();
                     final var killer = event.getEntity().getKiller();
-                    if (Main.getConfigurator().node("chat", "send-custom-death-messages").getBoolean()) {
+                    if (MainConfig.getInstance().node("chat", "send-custom-death-messages").getBoolean()) {
                         if (killer != null) {
                             Debug.info(victim.getName() + " died because entity " + event.getEntity().getKiller() + " killed him");
                             final var gKiller = Main.getPlayerGameProfile(killer);
@@ -126,15 +128,15 @@ public class PlayerListener implements Listener {
                     gVictim.isSpectator = true;
                     team.players.remove(gVictim);
                     team.getScoreboardTeam().removeEntry(victim.getName());
-                    if (Main.isPlayerStatisticsEnabled()) {
-                        PlayerStatistic statistic = Main.getPlayerStatisticsManager().getStatistic(victim);
+                    if (PlayerStatisticManager.isEnabled()) {
+                        var statistic = PlayerStatisticManager.getInstance().getStatistic(PlayerMapper.wrapPlayer(victim));
                         statistic.addLoses(1);
-                        statistic.addScore(Main.getConfigurator().node("statistics", "scores", "lose").getInt(0));
+                        statistic.addScore(MainConfig.getInstance().node("statistics", "scores", "lose").getInt(0));
                     }
                     game.updateScoreboard();
                 }
 
-                boolean onlyOnBedDestroy = Main.getConfigurator().node("statistics", "bed-destroyed-kills").getBoolean();
+                boolean onlyOnBedDestroy = MainConfig.getInstance().node("statistics", "bed-destroyed-kills").getBoolean();
 
                 Player killer = victim.getKiller();
                 if (Main.isPlayerInGame(killer)) {
@@ -142,16 +144,16 @@ public class PlayerListener implements Listener {
                     if (gKiller.getGame() == game) {
                         if (!onlyOnBedDestroy || !isBed) {
                             game.dispatchRewardCommands("player-kill", killer,
-                                    Main.getConfigurator().node("statistics", "scores", "kill").getInt(10));
+                                    MainConfig.getInstance().node("statistics", "scores", "kill").getInt(10));
                         }
                         if (team.isDead()) {
                             SpawnEffects.spawnEffect(game, victim, "game-effects.teamkill");
                             Sounds.playSound(killer, killer.getLocation(),
-                                    Main.getConfigurator().node("sounds", "team_kill").getString(),
+                                    MainConfig.getInstance().node("sounds", "team_kill").getString(),
                                     Sounds.ENTITY_PLAYER_LEVELUP, 1, 1);
                         } else {
                             Sounds.playSound(killer, killer.getLocation(),
-                                    Main.getConfigurator().node("sounds", "player_kill").getString(),
+                                    MainConfig.getInstance().node("sounds", "player_kill").getString(),
                                     Sounds.ENTITY_PLAYER_BIG_FALL, 1, 1);
                             Main.depositPlayer(killer, Main.getVaultKillReward());
                         }
@@ -163,31 +165,31 @@ public class PlayerListener implements Listener {
                         Main.isPlayerInGame(killer) ? killer : null, drops);
                 Bukkit.getServer().getPluginManager().callEvent(killedEvent);
 
-                if (Main.isPlayerStatisticsEnabled()) {
-                    PlayerStatistic diePlayer = Main.getPlayerStatisticsManager().getStatistic(victim);
+                if (PlayerStatisticManager.isEnabled()) {
+                    var diePlayer = PlayerStatisticManager.getInstance().getStatistic(PlayerMapper.wrapPlayer(victim));
                     PlayerStatistic killerPlayer;
 
                     if (!onlyOnBedDestroy || !isBed) {
                         diePlayer.addDeaths(1);
-                        diePlayer.addScore(Main.getConfigurator().node("statistics", "scores", "die").getInt(0));
+                        diePlayer.addScore(MainConfig.getInstance().node("statistics", "scores", "die").getInt(0));
                     }
 
                     if (killer != null) {
                         if (!onlyOnBedDestroy || !isBed) {
-                            killerPlayer = Main.getPlayerStatisticsManager().getStatistic(killer);
+                            killerPlayer = PlayerStatisticManager.getInstance().getStatistic(PlayerMapper.wrapPlayer(killer));
                             if (killerPlayer != null) {
                                 killerPlayer.addKills(1);
-                                killerPlayer.addScore(Main.getConfigurator().node("statistics", "scores", "kill").getInt(10));
+                                killerPlayer.addScore(MainConfig.getInstance().node("statistics", "scores", "kill").getInt(10));
                             }
                         }
                     }
                 }
             }
-            if (Main.getVersionNumber() < 115 && !Main.getConfigurator().node("allow-fake-death").getBoolean()) {
+            if (Main.getVersionNumber() < 115 && !MainConfig.getInstance().node("allow-fake-death").getBoolean()) {
                 Debug.info(victim.getName() + " is going to be respawned via spigot api");
                 PlayerUtils.respawn(Main.getInstance().getPluginDescription().as(JavaPlugin.class), victim, 3L);
             }
-            if (Main.getConfigurator().node("respawn-cooldown", "enabled").getBoolean()
+            if (MainConfig.getInstance().node("respawn-cooldown", "enabled").getBoolean()
                     && victimTeam.isAlive()
                     && !gVictim.isSpectator) {
                 game.makeSpectator(gVictim, false);
@@ -201,10 +203,10 @@ public class PlayerListener implements Listener {
                     @Override
                     public void run() {
                         if (livingTime > 0) {
-                            Title.send(player,
+                            TitleUtils.send(PlayerMapper.wrapPlayer(player),
                                     i18nonly("respawn_cooldown_title").replace("%time%", String.valueOf(livingTime)), "");
                             Sounds.playSound(player, player.getLocation(),
-                                    Main.getConfigurator().node("sounds", "respawn_cooldown_wait").getString(),
+                                    MainConfig.getInstance().node("sounds", "respawn_cooldown_wait").getString(),
                                     Sounds.BLOCK_STONE_BUTTON_CLICK_ON, 1, 1);
                         }
 
@@ -212,7 +214,7 @@ public class PlayerListener implements Listener {
                         if (livingTime == 0) {
                             game.makePlayerFromSpectator(gamePlayer);
                             Sounds.playSound(player, player.getLocation(),
-                                    Main.getConfigurator().node("sounds", "respawn_cooldown_done").getString(),
+                                    MainConfig.getInstance().node("sounds", "respawn_cooldown_done").getString(),
                                     Sounds.UI_BUTTON_CLICK, 1, 1);
 
                             this.cancel();
@@ -232,11 +234,7 @@ public class PlayerListener implements Listener {
             Main.unloadPlayerGameProfile(event.getPlayer());
         }
 
-        if (Main.isPlayerStatisticsEnabled()) {
-            Main.getPlayerStatisticsManager().unloadStatistic(event.getPlayer());
-        }
-
-        if (Main.getConfigurator().node("disable-server-message", "player-join").getBoolean()) {
+        if (MainConfig.getInstance().node("disable-server-message", "player-join").getBoolean()) {
             event.setQuitMessage(null);
         }
     }
@@ -245,7 +243,7 @@ public class PlayerListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
 
-        if (Game.isBungeeEnabled() && Main.getConfigurator().node("bungee", "auto-game-connect").getBoolean()) {
+        if (Game.isBungeeEnabled() && MainConfig.getInstance().node("bungee", "auto-game-connect").getBoolean()) {
             Debug.info(event.getPlayer() + " joined the server and auto-game-connect is enabled. Registering task...");
             new BukkitRunnable() {
                 public void run() {
@@ -273,11 +271,11 @@ public class PlayerListener implements Listener {
             }.runTaskLater(Main.getInstance().getPluginDescription().as(JavaPlugin.class), 1L);
         }
 
-        if (Main.getConfigurator().node("disable-server-message", "player-join").getBoolean()) {
+        if (MainConfig.getInstance().node("disable-server-message", "player-join").getBoolean()) {
             event.setJoinMessage(null);
         }
 
-        if (Main.getConfigurator().node("tab", "enabled").getBoolean() && Main.getConfigurator().node("tab", "hide-foreign-players").getBoolean()) {
+        if (MainConfig.getInstance().node("tab", "enabled").getBoolean() && MainConfig.getInstance().node("tab", "hide-foreign-players").getBoolean()) {
             Bukkit.getOnlinePlayers().stream().filter(Main::isPlayerInGame).forEach(p -> Main.getPlayerGameProfile(p).hidePlayer(player));
         }
     }
@@ -316,14 +314,14 @@ public class PlayerListener implements Listener {
                 BedwarsPlayerRespawnedEvent respawnEvent = new BedwarsPlayerRespawnedEvent(game, event.getPlayer());
                 Bukkit.getServer().getPluginManager().callEvent(respawnEvent);
 
-                if (Main.getConfigurator().node("respawn", "protection-enabled").getBoolean(true)) {
+                if (MainConfig.getInstance().node("respawn", "protection-enabled").getBoolean(true)) {
                     RespawnProtection respawnProtection = game.addProtectedPlayer(gPlayer.player);
                     respawnProtection.runProtection();
                 }
 
                 SpawnEffects.spawnEffect(gPlayer.getGame(), gPlayer.player, "game-effects.respawn");
                 if (gPlayer.getGame().getConfigurationContainer().getOrDefault(ConfigurationContainer.ENABLE_PLAYER_RESPAWN_ITEMS, Boolean.class, false)) {
-                    var playerRespawnItems = Main.getConfigurator().node("player-respawn-items", "items")
+                    var playerRespawnItems = MainConfig.getInstance().node("player-respawn-items", "items")
                             .childrenList()
                             .stream()
                             .map(ItemFactory::build)
@@ -361,16 +359,12 @@ public class PlayerListener implements Listener {
                 Debug.info(event.getPlayer().getName() + " changed world while in BedWars arena. Kicking...");
             }
         }
-
-        if (Main.isHologramsEnabled()) {
-            Main.getHologramInteraction().updateHolograms(event.getPlayer(), 10L);
-        }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onBlockPlace(BlockPlaceEvent event) {
         if (event.isCancelled()) {
-            if (Main.getConfigurator().node("event-hacks", "place").getBoolean() && Main.isPlayerInGame(event.getPlayer())) {
+            if (MainConfig.getInstance().node("event-hacks", "place").getBoolean() && Main.isPlayerInGame(event.getPlayer())) {
                 event.setCancelled(false);
             } else {
                 return;
@@ -391,7 +385,7 @@ public class PlayerListener implements Listener {
             } else {
                 Debug.info(event.getPlayer().getName() + " attempted to place a block, allowed");
             }
-        } else if (Main.getConfigurator().node("preventArenaFromGriefing").getBoolean()) {
+        } else if (MainConfig.getInstance().node("preventArenaFromGriefing").getBoolean()) {
             for (var game : GameManager.getInstance().getGames()) {
                 if (game.getStatus() != GameStatus.DISABLED && ArenaUtils.isInArea(event.getBlock().getLocation(), game.getPos1(), game.getPos2())) {
                     event.setCancelled(true);
@@ -405,7 +399,7 @@ public class PlayerListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onBlockBreak(BlockBreakEvent event) {
         if (event.isCancelled()) {
-            if (Main.getConfigurator().node("event-hacks", "destroy").getBoolean() && Main.isPlayerInGame(event.getPlayer())) {
+            if (MainConfig.getInstance().node("event-hacks", "destroy").getBoolean() && Main.isPlayerInGame(event.getPlayer())) {
                 event.setCancelled(false);
             } else {
                 return;
@@ -437,7 +431,7 @@ public class PlayerListener implements Listener {
                     event.setDropItems(false);
                 }
             }
-        } else if (Main.getConfigurator().node("preventArenaFromGriefing").getBoolean()) {
+        } else if (MainConfig.getInstance().node("preventArenaFromGriefing").getBoolean()) {
             for (var game : GameManager.getInstance().getGames()) {
                 if (game.getStatus() != GameStatus.DISABLED && ArenaUtils.isInArea(event.getBlock().getLocation(), game.getPos1(), game.getPos2())) {
                     event.setCancelled(true);
@@ -496,7 +490,7 @@ public class PlayerListener implements Listener {
                         if (item != null) {
                             p.closeInventory();
                             if (item.getType() == Material
-                                    .valueOf(Main.getConfigurator().node("items", "jointeam").getString("COMPASS"))) {
+                                    .valueOf(MainConfig.getInstance().node("items", "jointeam").getString("COMPASS"))) {
                                 if (game.getStatus() == GameStatus.WAITING) {
                                     TeamSelectorInventory inv = game.getTeamSelectorInventory();
                                     if (inv == null) {
@@ -507,7 +501,7 @@ public class PlayerListener implements Listener {
                                     // TODO
                                 }
                             } else if (item.getType() == Material
-                                    .valueOf(Main.getConfigurator().node("items", "startgame").getString("DIAMOND"))) {
+                                    .valueOf(MainConfig.getInstance().node("items", "startgame").getString("DIAMOND"))) {
                                 if (game.getStatus() == GameStatus.WAITING && (p.hasPermission("bw.vip.startitem")
                                         || p.hasPermission("misat11.bw.vip.startitem"))) {
                                     if (game.checkMinPlayers()) {
@@ -517,7 +511,7 @@ public class PlayerListener implements Listener {
                                     }
                                 }
                             } else if (item.getType() == Material
-                                    .valueOf(Main.getConfigurator().node("items", "leavegame").getString("SLIME_BALL"))) {
+                                    .valueOf(MainConfig.getInstance().node("items", "leavegame").getString("SLIME_BALL"))) {
                                 game.leaveFromGame(p);
                             }
                         }
@@ -542,7 +536,7 @@ public class PlayerListener implements Listener {
                 Debug.info(player.getName() + " tried to eat while eating is not allowed");
             }
 
-            if (game.getStatus() == GameStatus.RUNNING && Main.getConfigurator().node("disable-hunger").getBoolean()) {
+            if (game.getStatus() == GameStatus.RUNNING && MainConfig.getInstance().node("disable-hunger").getBoolean()) {
                 event.setCancelled(true);
                 Debug.info(player.getName() + " tried to eat while eating is not allowed");
             }
@@ -571,7 +565,7 @@ public class PlayerListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onDamage(EntityDamageEvent event) {
         if (event.isCancelled()) {
-            if (Main.getConfigurator().node("event-hacks", "damage").getBoolean()
+            if (MainConfig.getInstance().node("event-hacks", "damage").getBoolean()
                     && event.getEntity() instanceof Player
                     && Main.isPlayerInGame((Player) event.getEntity())) {
                 event.setCancelled(false);
@@ -654,7 +648,7 @@ public class PlayerListener implements Listener {
                     } else if (edbee.getDamager() instanceof Projectile) {
                         Projectile projectile = (Projectile) edbee.getDamager();
                         if (projectile instanceof Fireball  && game.getStatus() == GameStatus.RUNNING) {
-                            final double damage = Main.getConfigurator().node("specials", "throwable-fireball", "damage").getDouble();
+                            final double damage = MainConfig.getInstance().node("specials", "throwable-fireball", "damage").getDouble();
                             event.setDamage(damage);
                         } else if (projectile.getShooter() instanceof Player) {
                             Player damager = (Player) projectile.getShooter();
@@ -668,7 +662,7 @@ public class PlayerListener implements Listener {
                     }
                 }
 
-                if (Main.getConfigurator().node("allow-fake-death").getBoolean() && !event.isCancelled() && (player.getHealth() - event.getFinalDamage()) <= 0) {
+                if (MainConfig.getInstance().node("allow-fake-death").getBoolean() && !event.isCancelled() && (player.getHealth() - event.getFinalDamage()) <= 0) {
                     event.setCancelled(true);
                     Debug.info(player.getName() + " is going to be respawned via FakeDeath");
                     FakeDeath.die(gPlayer);
@@ -729,7 +723,7 @@ public class PlayerListener implements Listener {
 
         Player player = event.getPlayer();
         if (Main.isPlayerInGame(player) && !Main.getPlayerGameProfile(player).isSpectator
-               && (!player.hasPermission("bw.bypass.flight") && Main.getConfigurator().node("disable-flight").getBoolean())) {
+               && (!player.hasPermission("bw.bypass.flight") && MainConfig.getInstance().node("disable-flight").getBoolean())) {
             event.setCancelled(true);
             Debug.info(player.getName() + " tried to fly, canceled");
         }
@@ -751,7 +745,7 @@ public class PlayerListener implements Listener {
                     Debug.info(player.getName() + " used item in lobby or as spectator");
                     event.setCancelled(true);
                     if (event.getMaterial() == Material
-                            .valueOf(Main.getConfigurator().node("items", "jointeam").getString("COMPASS"))) {
+                            .valueOf(MainConfig.getInstance().node("items", "jointeam").getString("COMPASS"))) {
                         if (game.getStatus() == GameStatus.WAITING) {
                             TeamSelectorInventory inv = game.getTeamSelectorInventory();
                             if (inv == null) {
@@ -762,7 +756,7 @@ public class PlayerListener implements Listener {
                             // TODO
                         }
                     } else if (event.getMaterial() == Material
-                            .valueOf(Main.getConfigurator().node("items", "startgame").getString("DIAMOND"))) {
+                            .valueOf(MainConfig.getInstance().node("items", "startgame").getString("DIAMOND"))) {
                         if (game.getStatus() == GameStatus.WAITING && (player.hasPermission("bw.vip.startitem")
                                 || player.hasPermission("misat11.bw.vip.startitem"))) {
                             if (game.checkMinPlayers()) {
@@ -772,7 +766,7 @@ public class PlayerListener implements Listener {
                             }
                         }
                     } else if (event.getMaterial() == Material
-                            .valueOf(Main.getConfigurator().node("items", "leavegame").getString("SLIME_BALL"))) {
+                            .valueOf(MainConfig.getInstance().node("items", "leavegame").getString("SLIME_BALL"))) {
                         game.leaveFromGame(player);
                     }
                 } else if (game.getStatus() == GameStatus.RUNNING) {
@@ -813,7 +807,7 @@ public class PlayerListener implements Listener {
                                 if (game.getTeamOfPlayer(event.getPlayer()).getTargetBlock().equals(event.getClickedBlock().getLocation())) {
                                     event.setCancelled(true);
                                 } else {
-                                    if (Main.getConfigurator().node("disableCakeEating").getBoolean(true)) {
+                                    if (MainConfig.getInstance().node("disableCakeEating").getBoolean(true)) {
                                         event.setCancelled(true);
                                     }
                                     Debug.info(player.getName() + " is eating cake");
@@ -843,7 +837,7 @@ public class PlayerListener implements Listener {
                                         }
                                     }
                                 }
-                            } else if (Main.getConfigurator().node("disableCakeEating").getBoolean(true)) {
+                            } else if (MainConfig.getInstance().node("disableCakeEating").getBoolean(true)) {
                                 event.setCancelled(true);
                             }
                         }
@@ -900,7 +894,7 @@ public class PlayerListener implements Listener {
             } else if (event.getAction() == Action.LEFT_CLICK_BLOCK &&
                     game.getStatus() == GameStatus.RUNNING && !gPlayer.isSpectator
                     && event.getClickedBlock() != null && event.getClickedBlock().getType() == Material.DRAGON_EGG
-                    && Main.getConfigurator().node("disableDragonEggTeleport").getBoolean(true)) {
+                    && MainConfig.getInstance().node("disableDragonEggTeleport").getBoolean(true)) {
                 event.setCancelled(true);
                 Debug.info(player.getName() + " interacts with dragon egg");
                 BlockBreakEvent blockBreakEvent = new BlockBreakEvent(event.getClickedBlock(), player);
@@ -1033,7 +1027,7 @@ public class PlayerListener implements Listener {
             living.setRemoveWhenFarAway(false);
             living.setCanPickupItems(false);
             living.setCustomName(value.getTeam().color.chatColor + value.getTeam().name);
-            living.setCustomNameVisible(Main.getConfigurator().node("jointeam-entity-show-name").getBoolean(true));
+            living.setCustomNameVisible(MainConfig.getInstance().node("jointeam-entity-show-name").getBoolean(true));
 
             if (living instanceof ArmorStand) {
                 ArmorStandUtils.equipArmorStand((ArmorStand) living, value.getTeam());
@@ -1045,19 +1039,8 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onJoin(PlayerJoinEvent je) {
-
-        final Player player = je.getPlayer();
-
-        if (Main.isHologramsEnabled()) {
-            Main.getHologramInteraction().updateHolograms(player, 10L);
-            Main.getLeaderboardHolograms().addViewer(player);
-        }
-    }
-
-    @EventHandler(priority = EventPriority.HIGHEST)
     public void onChat(AsyncPlayerChatEvent event) {
-        if (event.isCancelled() || !Main.getConfigurator().node("chat", "override").getBoolean()) {
+        if (event.isCancelled() || !MainConfig.getInstance().node("chat", "override").getBoolean()) {
             return;
         }
 
@@ -1073,7 +1056,7 @@ public class PlayerListener implements Listener {
             String displayName = player.getDisplayName();
             String playerListName = player.getPlayerListName();
 
-            String format = Main.getConfigurator().node("chat", "format").getString("<%teamcolor%%name%§r> ");
+            String format = MainConfig.getInstance().node("chat", "format").getString("<%teamcolor%%name%§r> ");
             if (team != null) {
                 format = format.replace("%teamcolor%", team.teamInfo.color.chatColor.toString());
                 format = format.replace("%team%", team.teamInfo.name);
@@ -1104,13 +1087,13 @@ public class PlayerListener implements Listener {
 
             format = ChatColor.translateAlternateColorCodes('&', format);
 
-            boolean teamChat = Main.getConfigurator().node("chat", "default-team-chat-while-running").getBoolean(true)
+            boolean teamChat = MainConfig.getInstance().node("chat", "default-team-chat-while-running").getBoolean(true)
                     && game.getStatus() == GameStatus.RUNNING && (team != null || spectator);
 
-            String allChat = Main.getConfigurator().node("chat", "all-chat-prefix").getString("@a");
-            String tChat = Main.getConfigurator().node("chat", "team-chat-prefix").getString("@t");
+            String allChat = MainConfig.getInstance().node("chat", "all-chat-prefix").getString("@a");
+            String tChat = MainConfig.getInstance().node("chat", "team-chat-prefix").getString("@t");
 
-            if (message.startsWith(allChat) && (!spectator || !Main.getConfigurator().node("chat", "disable-all-chat-for-spectators").getBoolean())) {
+            if (message.startsWith(allChat) && (!spectator || !MainConfig.getInstance().node("chat", "disable-all-chat-for-spectators").getBoolean())) {
                 teamChat = false;
                 message = message.substring(allChat.length()).trim();
             } else if (message.startsWith(tChat) && (team != null || spectator)) {
@@ -1120,12 +1103,12 @@ public class PlayerListener implements Listener {
 
             if (teamChat) {
                 if (spectator) {
-                    format = Main.getConfigurator().node("chat", "death-chat").getString("[DEATH] ") + format;
+                    format = MainConfig.getInstance().node("chat", "death-chat").getString("[DEATH] ") + format;
                 } else {
-                    format = Main.getConfigurator().node("chat", "team-chat").getString("[TEAM] ") + format;
+                    format = MainConfig.getInstance().node("chat", "team-chat").getString("[TEAM] ") + format;
                 }
             } else {
-                format = Main.getConfigurator().node("chat", "all-chat").getString("[ALL] ") + format;
+                format = MainConfig.getInstance().node("chat", "all-chat").getString("[ALL] ") + format;
             }
 
             event.setFormat(format + message.replaceAll("%", "%%")); // Fix using % in chat
@@ -1135,8 +1118,8 @@ public class PlayerListener implements Listener {
                 GamePlayer recipientgPlayer = Main.getPlayerGameProfile(recipient);
                 Game recipientGame = recipientgPlayer.getGame();
                 if (recipientGame != game) {
-                    if ((game.getStatus() == GameStatus.WAITING && Main.getConfigurator().node("chat", "separate-chat", "lobby").getBoolean())
-                            || (game.getStatus() != GameStatus.WAITING && Main.getConfigurator().node("chat", "separate-chat", "game").getBoolean())) {
+                    if ((game.getStatus() == GameStatus.WAITING && MainConfig.getInstance().node("chat", "separate-chat", "lobby").getBoolean())
+                            || (game.getStatus() != GameStatus.WAITING && MainConfig.getInstance().node("chat", "separate-chat", "game").getBoolean())) {
                         recipients.remove();
                     }
                 } else if (game.getPlayerTeam(recipientgPlayer) != team && teamChat) {
@@ -1149,15 +1132,15 @@ public class PlayerListener implements Listener {
             }
             event.setCancelled(true);
         } else {
-            if (Main.getConfigurator().node("chat", "separate-chat", "lobby").getBoolean() || Main.getConfigurator().node("chat", "separate-chat", "game").getBoolean()) {
+            if (MainConfig.getInstance().node("chat", "separate-chat", "lobby").getBoolean() || MainConfig.getInstance().node("chat", "separate-chat", "game").getBoolean()) {
                 Iterator<Player> recipients = event.getRecipients().iterator();
                 while (recipients.hasNext()) {
                     Player recipient = recipients.next();
                     GamePlayer recipientgPlayer = Main.getPlayerGameProfile(recipient);
                     Game recipientGame = recipientgPlayer.getGame();
                     if (recipientGame != null) {
-                        if ((recipientGame.getStatus() == GameStatus.WAITING && Main.getConfigurator().node("chat", "separate-chat", "lobby").getBoolean())
-                                || (recipientGame.getStatus() != GameStatus.WAITING && Main.getConfigurator().node("chat", "separate-chat", "game").getBoolean())) {
+                        if ((recipientGame.getStatus() == GameStatus.WAITING && MainConfig.getInstance().node("chat", "separate-chat", "lobby").getBoolean())
+                                || (recipientGame.getStatus() != GameStatus.WAITING && MainConfig.getInstance().node("chat", "separate-chat", "game").getBoolean())) {
                             recipients.remove();
                         }
                     }
@@ -1182,7 +1165,7 @@ public class PlayerListener implements Listener {
                     player.damage(5);
                     Debug.info(player.getName() + " is doing prohibited move, damaging");
                 }
-            } else if (Main.getConfigurator().node("preventSpectatorFlyingAway").getBoolean() && gPlayer.isSpectator && (game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING)) {
+            } else if (MainConfig.getInstance().node("preventSpectatorFlyingAway").getBoolean() && gPlayer.isSpectator && (game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING)) {
                 if (!ArenaUtils.isInArea(event.getTo(), game.getPos1(), game.getPos2())) {
                     event.setCancelled(true);
                     Debug.info(player.getName() + " is doing prohibited move, cancelling");
@@ -1218,7 +1201,7 @@ public class PlayerListener implements Listener {
                 event.setCancelled(true);
                 Debug.info(player.getName() + " placed liquid, cancelling");
             }
-        } else if (Main.getConfigurator().node("preventArenaFromGriefing").getBoolean()) {
+        } else if (MainConfig.getInstance().node("preventArenaFromGriefing").getBoolean()) {
             for (var game : GameManager.getInstance().getGames()) {
                 if (game.getStatus() != GameStatus.DISABLED && ArenaUtils.isInArea(event.getBlockClicked().getLocation(), game.getPos1(), game.getPos2())) {
                     event.setCancelled(true);

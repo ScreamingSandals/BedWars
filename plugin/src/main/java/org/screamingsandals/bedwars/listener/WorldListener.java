@@ -20,6 +20,7 @@ import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.RunningTeam;
 import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
 import org.screamingsandals.bedwars.api.game.GameStatus;
+import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.game.Game;
 import org.screamingsandals.bedwars.game.GameManager;
 import org.screamingsandals.bedwars.utils.ArenaUtils;
@@ -115,8 +116,8 @@ public class WorldListener implements Listener {
     }
 
     public void onExplode(Location location, List<Block> blockList, Cancellable cancellable) {
-        final var explosionExceptionTypeName = Main.getConfigurator().node("destroy-placed-blocks-by-explosion-except").getString();
-        final var destroyPlacedBlocksByExplosion = Main.getConfigurator().node("destroy-placed-blocks-by-explosion").getBoolean(true);
+        final var explosionExceptionTypeName = MainConfig.getInstance().node("destroy-placed-blocks-by-explosion-except").getString();
+        final var destroyPlacedBlocksByExplosion = MainConfig.getInstance().node("destroy-placed-blocks-by-explosion").getBoolean(true);
 
         GameManager.getInstance().getGames().forEach(game -> {
             if (ArenaUtils.isInArea(location, game.getPos1(), game.getPos2())) {
@@ -175,7 +176,7 @@ public class WorldListener implements Listener {
                     } else /*if (game.getStatus() == GameStatus.WAITING) {*/
                         if (game.getLobbyWorld() == event.getLocation().getWorld()) {
                             if (event.getLocation().distanceSquared(game.getLobbySpawn()) <= Math
-                                    .pow(Main.getConfigurator().node("prevent-lobby-spawn-mobs-in-radius").getInt(), 2)) {
+                                    .pow(MainConfig.getInstance().node("prevent-lobby-spawn-mobs-in-radius").getInt(), 2)) {
                                 event.setCancelled(true);
                                 return;
                             }

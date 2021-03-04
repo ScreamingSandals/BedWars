@@ -1,67 +1,108 @@
 package org.screamingsandals.bedwars.statistics;
 
+import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
-import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.events.BedwarsSavePlayerStatisticEvent;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.api.statistics.LeaderboardEntry;
 import org.screamingsandals.bedwars.api.statistics.PlayerStatisticsManager;
+import org.screamingsandals.bedwars.config.MainConfig;
+import org.screamingsandals.bedwars.database.DatabaseManager;
+import org.screamingsandals.bedwars.holograms.LeaderboardHolograms;
+import org.screamingsandals.lib.event.OnEvent;
+import org.screamingsandals.lib.player.OfflinePlayerWrapper;
+import org.screamingsandals.lib.player.PlayerMapper;
+import org.screamingsandals.lib.player.PlayerWrapper;
+import org.screamingsandals.lib.player.event.SPlayerLeaveEvent;
+import org.screamingsandals.lib.plugin.ServiceManager;
+import org.screamingsandals.lib.utils.annotations.Service;
+import org.screamingsandals.lib.utils.annotations.methods.OnEnable;
+import org.screamingsandals.lib.utils.annotations.methods.ShouldRunControllable;
+import org.screamingsandals.lib.utils.annotations.parameters.ConfigFile;
+import org.screamingsandals.lib.utils.logger.LoggerWrapper;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
-import java.io.File;
 import java.sql.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
-public class PlayerStatisticManager implements PlayerStatisticsManager {
-    private YamlConfigurationLoader loader;
-    private File databaseFile = null;
+@Service(dependsOn = {
+        MainConfig.class,
+        DatabaseManager.class,
+        PlayerMapper.class
+})
+@RequiredArgsConstructor
+public class PlayerStatisticManager implements PlayerStatisticsManager<OfflinePlayerWrapper> {
+    @ConfigFile("database/bw_stats_players.yml")
+    private final YamlConfigurationLoader loader;
+    private final MainConfig mainConfig;
+    private final DatabaseManager databaseManager;
+    private final LoggerWrapper logger;
+
     private ConfigurationNode fileDatabase;
-    private Map<UUID, PlayerStatistic> playerStatistic;
-    private Map<UUID, Integer> allScores = new HashMap<>();
+    private StatisticType statisticType;
+    private final Map<UUID, PlayerStatistic> playerStatistic = new HashMap<>();
+    private final Map<UUID, Integer> allScores = new HashMap<>();
 
-    public PlayerStatisticManager() {
-        this.playerStatistic = new HashMap<>();
+    @ShouldRunControllable
+    public static boolean isEnabled() {
+        return MainConfig.getInstance().node("statistics", "enabled").getBoolean();
     }
 
-    public PlayerStatistic getStatistic(OfflinePlayer player) {
+    public static PlayerStatisticManager getInstance() {
+        if (!isEnabled()) {
+            throw new UnsupportedOperationException("PlayerStatisticManager are not enabled!");
+        }
+        return ServiceManager.get(PlayerStatisticManager.class);
+    }
+
+    public PlayerStatistic getStatistic(OfflinePlayerWrapper player) {
         if (player == null) {
             return null;
         }
 
-        if (!this.playerStatistic.containsKey(player.getUniqueId())) {
-            return this.loadStatistic(player.getUniqueId());
+        if (!this.playerStatistic.containsKey(player.getUuid())) {
+            return this.loadStatistic(player.getUuid());
         }
 
-        return this.playerStatistic.get(player.getUniqueId());
+        return this.playerStatistic.get(player.getUuid());
     }
 
+    @OnEnable
     public void initialize() {
-        if (!Main.getConfigurator().node("statistics", "enabled").getBoolean()) {
+        if (!mainConfig.node("statistics", "enabled").getBoolean()) {
             return;
         }
 
-        if (Main.getConfigurator().node("statistics", "type").getString("").equalsIgnoreCase("database")) {
+        statisticType = 
+                mainConfig.node("statistics", "type").getString("").equalsIgnoreCase("database") ? 
+                        StatisticType.DATABASE : 
+                        StatisticType.YAML;
+        
+        if (statisticType == StatisticType.DATABASE) {
             this.initializeDatabase();
         } else {
-            var file = Main.getInstance().getPluginDescription().getDataFolder().resolve("database").resolve("bw_stats_players.yml").toFile();
-            this.loadYml(file);
+            this.loadYml();
         }
 
         this.initializeLeaderboard();
     }
 
+    @OnEvent
+    public void onLeave(SPlayerLeaveEvent event) {
+        unloadStatistic(event.getPlayer());
+    }
+
     public void initializeDatabase() {
-        Main.getInstance().getLogger().info("Loading statistics from database ...");
+        logger.info("Loading statistics from database ...");
 
         try {
-            Main.getDatabaseManager().initialize();
+            databaseManager.initialize();
 
-            try (Connection connection = Main.getDatabaseManager().getConnection()) {
+            try (Connection connection = databaseManager.getConnection()) {
                 connection.setAutoCommit(false);
                 PreparedStatement preparedStatement = connection
-                        .prepareStatement(Main.getDatabaseManager().getCreateTableSql());
+                        .prepareStatement(databaseManager.getCreateTableSql());
                 preparedStatement.executeUpdate();
                 connection.commit();
                 preparedStatement.close();
@@ -77,11 +118,11 @@ public class PlayerStatisticManager implements PlayerStatisticsManager {
     private void initializeLeaderboard() {
         allScores.clear();
 
-        if (Main.getConfigurator().node("statistics", "type").getString("").equalsIgnoreCase("database")) {
-            try (Connection connection = Main.getDatabaseManager().getConnection()) {
+        if (statisticType == StatisticType.DATABASE) {
+            try (Connection connection = databaseManager.getConnection()) {
                 connection.setAutoCommit(false);
                 PreparedStatement preparedStatement = connection
-                        .prepareStatement(Main.getDatabaseManager().getScoresSql());
+                        .prepareStatement(databaseManager.getScoresSql());
                 ResultSet resultSet = preparedStatement.executeQuery();
                 if (resultSet.first()) {
                     do {
@@ -100,34 +141,32 @@ public class PlayerStatisticManager implements PlayerStatisticsManager {
         }
     }
 
-    public List<LeaderboardEntry> getLeaderboard(int count) {
-        List<LeaderboardEntry> entries = new ArrayList<>();
-
-        allScores.entrySet().stream()
+    public List<LeaderboardEntry<OfflinePlayerWrapper>> getLeaderboard(int count) {
+        return allScores.entrySet()
+                .stream()
                 .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
                 .limit(count)
-                .forEach(entry -> entries.add(new org.screamingsandals.bedwars.statistics.LeaderboardEntry(Bukkit.getOfflinePlayer(entry.getKey()), entry.getValue())));
-
-        return entries;
+                .map(entry -> new org.screamingsandals.bedwars.statistics.LeaderboardEntry(PlayerMapper.getOfflinePlayer(entry.getKey()), entry.getValue()))
+                .collect(Collectors.toList());
     }
 
     private PlayerStatistic loadDatabaseStatistic(UUID uuid) {
         if (this.playerStatistic.containsKey(uuid)) {
             return this.playerStatistic.get(uuid);
         }
-        HashMap<String, Object> deserialize = new HashMap<>();
+        var deserialize = new HashMap<String, Object>();
 
-        try (Connection connection = Main.getDatabaseManager().getConnection()) {
-            PreparedStatement preparedStatement = connection
-                    .prepareStatement(Main.getDatabaseManager().getReadObjectSql());
+        try (var connection = databaseManager.getConnection()) {
+            var preparedStatement = connection
+                    .prepareStatement(databaseManager.getReadObjectSql());
             preparedStatement.setString(1, uuid.toString());
-            ResultSet resultSet = preparedStatement.executeQuery();
+            var resultSet = preparedStatement.executeQuery();
 
-            ResultSetMetaData meta = resultSet.getMetaData();
+            var meta = resultSet.getMetaData();
             while (resultSet.next()) {
                 for (int i = 1; i <= meta.getColumnCount(); i++) {
-                    String key = meta.getColumnName(i);
-                    Object value = resultSet.getObject(key);
+                    var key = meta.getColumnName(i);
+                    var value = resultSet.getObject(key);
                     deserialize.put(key, value);
                 }
             }
@@ -145,18 +184,19 @@ public class PlayerStatisticManager implements PlayerStatisticsManager {
         } else {
             playerStatistic = new PlayerStatistic(deserialize);
         }
-        Player player = Bukkit.getServer().getPlayer(uuid);
-        if (player != null && !playerStatistic.getName().equals(player.getName())) {
-            playerStatistic.setName(player.getName());
-        }
-        allScores.put(uuid, playerStatistic.getScore());
+
+        PlayerMapper
+                .getPlayer(uuid)
+                .map(PlayerWrapper::getName)
+                .ifPresent(playerStatistic::setName);
 
         this.playerStatistic.put(playerStatistic.getId(), playerStatistic);
+        this.allScores.put(uuid, playerStatistic.getScore());
         return playerStatistic;
     }
 
     public PlayerStatistic loadStatistic(UUID uuid) {
-        if (Main.getConfigurator().node("statistics", "type").getString("").equalsIgnoreCase("database")) {
+        if (statisticType == StatisticType.DATABASE) {
             return this.loadDatabaseStatistic(uuid);
         } else {
             return this.loadYamlStatistic(uuid);
@@ -164,9 +204,8 @@ public class PlayerStatisticManager implements PlayerStatisticsManager {
     }
 
     private PlayerStatistic loadYamlStatistic(UUID uuid) {
-
         if (this.fileDatabase == null || this.fileDatabase.node("data", uuid.toString()).empty()) {
-            PlayerStatistic playerStatistic = new PlayerStatistic(uuid);
+            var playerStatistic = new PlayerStatistic(uuid);
             this.playerStatistic.put(uuid, playerStatistic);
             return playerStatistic;
         }
@@ -174,33 +213,20 @@ public class PlayerStatisticManager implements PlayerStatisticsManager {
         var node = this.fileDatabase.node("data", uuid.toString());
         var playerStatistic = new PlayerStatistic(node);
         playerStatistic.setId(uuid);
-        var player = Bukkit.getServer().getPlayer(uuid);
-        if (player != null && !playerStatistic.getName().equals(player.getName())) {
-            playerStatistic.setName(player.getName());
-        }
+        PlayerMapper
+                .getPlayer(uuid)
+                .map(PlayerWrapper::getName)
+                .ifPresent(playerStatistic::setName);
         this.playerStatistic.put(uuid, playerStatistic);
-        allScores.put(uuid, playerStatistic.getScore());
+        this.allScores.put(uuid, playerStatistic.getScore());
         return playerStatistic;
     }
 
-    private void loadYml(File ymlFile) {
+    private void loadYml() {
         try {
-            Main.getInstance().getLogger().info("Loading statistics from YAML-File ...");
+            logger.info("Loading statistics from YAML-File ...");
 
-            loader = YamlConfigurationLoader.builder()
-                    .file(ymlFile)
-                    .build();
-
-            this.databaseFile = ymlFile;
-
-            if (!ymlFile.exists()) {
-                ymlFile.getParentFile().mkdirs();
-                ymlFile.createNewFile();
-
-                this.fileDatabase = loader.createNode();
-            } else {
-                this.fileDatabase = loader.load();
-            }
+            this.fileDatabase = loader.load();
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -208,11 +234,11 @@ public class PlayerStatisticManager implements PlayerStatisticsManager {
     }
 
     private void storeDatabaseStatistic(PlayerStatistic playerStatistic) {
-        try (Connection connection = Main.getDatabaseManager().getConnection()) {
+        try (var connection = databaseManager.getConnection()) {
             connection.setAutoCommit(false);
 
-            PreparedStatement preparedStatement = connection
-                    .prepareStatement(Main.getDatabaseManager().getWriteObjectSql());
+            var preparedStatement = connection
+                    .prepareStatement(databaseManager.getWriteObjectSql());
 
             preparedStatement.setString(1, playerStatistic.getId().toString());
             preparedStatement.setString(2, playerStatistic.getName());
@@ -232,14 +258,14 @@ public class PlayerStatisticManager implements PlayerStatisticsManager {
     }
 
     public void storeStatistic(PlayerStatistic statistic) {
-        BedwarsSavePlayerStatisticEvent savePlayerStatisticEvent = new BedwarsSavePlayerStatisticEvent(statistic);
+        var savePlayerStatisticEvent = new BedwarsSavePlayerStatisticEvent(statistic);
         Bukkit.getServer().getPluginManager().callEvent(savePlayerStatisticEvent);
 
         if (savePlayerStatisticEvent.isCancelled()) {
             return;
         }
 
-        if (Main.getConfigurator().node("statistics", "type").getString("").equalsIgnoreCase("database")) {
+        if (statisticType == StatisticType.DATABASE) {
             this.storeDatabaseStatistic(statistic);
         } else {
             this.storeYamlStatistic(statistic);
@@ -252,20 +278,25 @@ public class PlayerStatisticManager implements PlayerStatisticsManager {
         try {
             this.loader.save(this.fileDatabase);
         } catch (Exception ex) {
-            Main.getInstance().getLogger().warn("Couldn't store statistic data for player with uuid: " + statistic.getId().toString());
+            logger.warn("Couldn't store statistic data for player with uuid: {}", statistic.getId().toString());
         }
     }
 
-    public void unloadStatistic(OfflinePlayer player) {
-        if (Main.getConfigurator().node("statistics", "type").getString("").equalsIgnoreCase("database")) {
-            this.playerStatistic.remove(player.getUniqueId());
+    public void unloadStatistic(OfflinePlayerWrapper player) {
+        if (statisticType == StatisticType.DATABASE) {
+            this.playerStatistic.remove(player.getUuid());
         }
     }
 
     public void updateScore(PlayerStatistic playerStatistic) {
         allScores.put(playerStatistic.getId(), playerStatistic.getScore());
-        if (Main.getLeaderboardHolograms() != null) {
-            Main.getLeaderboardHolograms().updateEntries();
+        if (LeaderboardHolograms.isEnabled()) {
+            LeaderboardHolograms.getInstance().updateEntries();
         }
+    }
+    
+    public enum StatisticType {
+        DATABASE,
+        YAML
     }
 }

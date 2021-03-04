@@ -3,38 +3,78 @@ package org.screamingsandals.bedwars.holograms;
 import static org.screamingsandals.bedwars.lib.lang.I.i18n;
 
 import java.util.*;
-import java.util.Map.Entry;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
+import lombok.RequiredArgsConstructor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.screamingsandals.bedwars.Main;
-import org.screamingsandals.bedwars.api.statistics.PlayerStatistic;
 import org.screamingsandals.bedwars.commands.BedWarsPermission;
-import org.screamingsandals.bedwars.lib.nms.holograms.Hologram;
-import org.screamingsandals.bedwars.lib.nms.holograms.TouchHandler;
-import org.screamingsandals.bedwars.utils.PreparedLocation;
+import org.screamingsandals.bedwars.config.MainConfig;
+import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
+import org.screamingsandals.bedwars.utils.HologramLocation;
+import org.screamingsandals.lib.event.EventPriority;
+import org.screamingsandals.lib.hologram.Hologram;
+import org.screamingsandals.lib.hologram.HologramManager;
+import org.screamingsandals.lib.hologram.event.HologramTouchEvent;
 import org.screamingsandals.lib.player.PlayerMapper;
+import org.screamingsandals.lib.player.PlayerWrapper;
+import org.screamingsandals.lib.player.event.SPlayerJoinEvent;
+import org.screamingsandals.lib.player.event.SPlayerLeaveEvent;
+import org.screamingsandals.lib.player.event.SPlayerWorldChangeEvent;
+import org.screamingsandals.lib.plugin.PluginDescription;
+import org.screamingsandals.lib.plugin.ServiceManager;
+import org.screamingsandals.lib.tasker.Tasker;
+import org.screamingsandals.lib.tasker.TaskerTime;
+import org.screamingsandals.lib.utils.AdventureHelper;
+import org.screamingsandals.lib.utils.annotations.Service;
+import org.screamingsandals.lib.utils.annotations.methods.OnPostEnable;
+import org.screamingsandals.lib.utils.annotations.methods.OnPreDisable;
+import org.screamingsandals.lib.utils.annotations.methods.ShouldRunControllable;
+import org.screamingsandals.lib.utils.annotations.parameters.ConfigFile;
+import org.screamingsandals.lib.world.LocationHolder;
+import org.screamingsandals.lib.world.LocationMapper;
+import org.screamingsandals.lib.world.WorldHolder;
+import org.screamingsandals.lib.event.OnEvent;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
-public class StatisticsHolograms implements TouchHandler {
+@Service(dependsOn = {
+        PlayerMapper.class,
+        LocationMapper.class,
+        HologramManager.class,
+        Tasker.class,
+        MainConfig.class,
+        PlayerStatisticManager.class
+})
+@RequiredArgsConstructor
+public class StatisticsHolograms {
+    private final PluginDescription pluginDescription;
+    @ConfigFile(value = "database/holodb.yml", old = "holodb.yml")
+    private final YamlConfigurationLoader loader;
+    private final MainConfig mainConfig;
 
-    private ArrayList<PreparedLocation> hologramLocations = null;
+    private ArrayList<HologramLocation> hologramLocations = null;
     private Map<UUID, List<Hologram>> holograms = null;
 
-	public void addHologramLocation(Location eyeLocation) {
-        this.hologramLocations.add(new PreparedLocation(eyeLocation.subtract(0, 3, 0)));
+    public void addHologramLocation(LocationHolder eyeLocation) {
+        this.hologramLocations.add(new HologramLocation(eyeLocation.add(0, -3, 0)));
         this.updateHologramDatabase();
-	}
+    }
 
+    @ShouldRunControllable
+    public static boolean isEnabled() {
+        return PlayerStatisticManager.isEnabled() && MainConfig.getInstance().node("holograms", "enabled").getBoolean();
+    }
+
+    public static StatisticsHolograms getInstance() {
+        if (!isEnabled()) {
+            throw new UnsupportedOperationException("StatisticsHolograms are not enabled!");
+        }
+        return ServiceManager.get(StatisticsHolograms.class);
+    }
+
+    @OnPostEnable
     @SuppressWarnings("unchecked")
     public void loadHolograms() {
-        if (!Main.isHologramsEnabled()) {
-            return;
-        }
-
         if (this.holograms != null && this.hologramLocations != null) {
             // first unload all holograms
             this.unloadHolograms();
@@ -43,19 +83,12 @@ public class StatisticsHolograms implements TouchHandler {
         this.holograms = new HashMap<>();
         this.hologramLocations = new ArrayList<>();
 
-        var file = Main.getInstance().getPluginDescription().getDataFolder().resolve("database").resolve("holodb.yml").toFile();
-
-        var loader = YamlConfigurationLoader.builder()
-                .file(file)
-                .build();
-        if (file.exists()) {
-            try {
-                var config = loader.load();
-                var locations = config.node("locations").getList(PreparedLocation.class);
-                this.hologramLocations.addAll(locations);
-            } catch (ConfigurateException e) {
-                e.printStackTrace();
-            }
+        try {
+            var config = loader.load();
+            var locations = config.node("locations").getList(HologramLocation.class);
+            this.hologramLocations.addAll(locations);
+        } catch (ConfigurateException e) {
+            e.printStackTrace();
         }
 
         if (this.hologramLocations.size() == 0) {
@@ -65,85 +98,111 @@ public class StatisticsHolograms implements TouchHandler {
         this.updateHolograms();
     }
 
-	public void unloadHolograms() {
-        if (Main.isHologramsEnabled()) {
-        	for (List<Hologram> holos : holograms.values()) {
-        		for (Hologram holo : holos) {
-        			holo.destroy();
-        		}
-        	}
+    @OnPreDisable
+    public void unloadHolograms() {
+        holograms.values().forEach(Holograms -> Holograms.forEach(holo -> {
+            holo.hide();
+            HologramManager.removeHologram(holo);
+        }));
+    }
+
+    @OnEvent(priority = EventPriority.HIGHEST)
+    public void onJoin(SPlayerJoinEvent event) {
+        updateHolograms(event.getPlayer(), 10L);
+    }
+
+    @OnEvent
+    public void onWorldChange(SPlayerWorldChangeEvent event) {
+        updateHolograms(event.getPlayer(), 10L);
+    }
+
+    @OnEvent
+    public void onLeave(SPlayerLeaveEvent event) {
+        if (holograms.containsKey(event.getPlayer().getUuid())) {
+            Tasker
+                    .build(() -> {
+                        holograms.get(event.getPlayer().getUuid()).forEach(holo -> {
+                            holo.hide();
+                            HologramManager.removeHologram(holo);
+                        });
+                        holograms.remove(event.getPlayer().getUuid());
+                    })
+                    .async()
+                    .start();
         }
-	}
+    }
 
-	public void updateHolograms(Player player) {
-        Bukkit.getServer().getScheduler().runTask(Main.getInstance().getPluginDescription().as(JavaPlugin.class), () ->
-            this.hologramLocations.forEach(holoLocation ->
-                    holoLocation.asOptional(Location.class).ifPresent(location ->
-                        this.updatePlayerHologram(player, location)
-                    )
-            )
-        );
-	}
-
-	public void updateHolograms(Player player, long delay) {
-        Bukkit.getServer().getScheduler().runTaskLater(
-                Main.getInstance().getPluginDescription().as(JavaPlugin.class),
-                () -> this.updateHolograms(player),
-                delay
-        );
-	}
-
-	public void updateHolograms() {
-        for (final Player player : Bukkit.getServer().getOnlinePlayers()) {
-            Bukkit.getServer().getScheduler().runTask(Main.getInstance().getPluginDescription().as(JavaPlugin.class), () ->
+    public void updateHolograms(PlayerWrapper player) {
+        Tasker.build(() ->
                 this.hologramLocations.forEach(holoLocation ->
-                        holoLocation.asOptional(Location.class).ifPresent(location ->
+                        holoLocation.asOptional(LocationHolder.class).ifPresent(location ->
                                 this.updatePlayerHologram(player, location)
                         )
-                )
-            );
-        }
-	}
-
-    private Hologram getHologramByLocation(List<Hologram> holograms, Location holoLocation) {
-        for (Hologram holo : holograms) {
-            if (holo.getLocation().getX() == holoLocation.getX() && holo.getLocation().getY() == holoLocation.getY()
-                    && holo.getLocation().getZ() == holoLocation.getZ()) {
-                return holo;
-            }
-        }
-
-        return null;
+                ))
+                .async()
+                .start();
     }
-	
-	public void updatePlayerHologram(Player player, Location holoLocation) {
-        List<Hologram> holograms;
-        if (!this.holograms.containsKey(player.getUniqueId())) {
-            this.holograms.put(player.getUniqueId(), new ArrayList<>());
+
+    public void updateHolograms(PlayerWrapper player, long delay) {
+        Tasker.build(() -> this.updateHolograms(player))
+                .async()
+                .delay(delay, TaskerTime.TICKS)
+                .start();
+    }
+
+    public void updateHolograms() {
+        PlayerMapper.getPlayers().forEach(player ->
+                Tasker.build(() ->
+                        this.hologramLocations.forEach(holoLocation ->
+                                holoLocation.asOptional(LocationHolder.class).ifPresent(location ->
+                                        this.updatePlayerHologram(player, location)
+                                )
+                        ))
+                        .async()
+                        .start()
+        );
+    }
+
+    private Optional<Hologram> getHologramByLocation(List<Hologram> holograms, LocationHolder holoLocation) {
+        return holograms.stream()
+                .filter(hologram -> {
+                    var loc = hologram.getLocation().orElseGet(LocationHolder::new);
+                    return loc.getWorld().getUuid().equals(holoLocation.getWorld().getUuid())
+                            && loc.getX() == holoLocation.getX()
+                            && loc.getY() == holoLocation.getY()
+                            && loc.getZ() == holoLocation.getZ();
+                })
+                .findFirst();
+    }
+
+    public void updatePlayerHologram(PlayerWrapper player, LocationHolder holoLocation) {
+        if (!this.holograms.containsKey(player.getUuid())) {
+            this.holograms.put(player.getUuid(), new ArrayList<>());
         }
 
-        holograms = this.holograms.get(player.getUniqueId());
-        Hologram holo = this.getHologramByLocation(holograms, holoLocation);
-        if (holo == null && player.getWorld() == holoLocation.getWorld()) {
+        var holograms = this.holograms.get(player.getUuid());
+        var holo = this.getHologramByLocation(holograms, holoLocation);
+        if (holo.isEmpty() && player.getLocation().getWorld().getUuid().equals(holoLocation.getWorld().getUuid())) {
             holograms.add(this.createPlayerStatisticHologram(player, holoLocation));
-        } else if (holo != null) {
-            if (holo.getLocation().getWorld() == player.getWorld()) {
-                this.updatePlayerStatisticHologram(player, holo);
+        } else if (holo.isPresent()) {
+            if (player.getLocation().getWorld().getUuid().equals(holo.get().getLocation().map(LocationHolder::getWorld).map(WorldHolder::getUuid).orElse(null))) {
+                this.updatePlayerStatisticHologram(player, holo.get());
             } else {
-                holograms.remove(holo);
-                holo.destroy();
+                holograms.remove(holo.get());
+                holo.get().hide();
+                HologramManager.removeHologram(holo.get());
             }
         }
-	}
+    }
 
-    private Hologram createPlayerStatisticHologram(Player player, Location holoLocation) {
-        final Hologram holo = Main.getHologramManager().spawnHologramTouchable(player, holoLocation);
-        holo.addHandler(this);
-
-        String headline = Main.getConfigurator().node("holograms", "headline").getString("Your §eBEDWARS§f stats");
-        if (!headline.trim().isEmpty()) {
-            holo.addLine(headline);
-        }
+    private Hologram createPlayerStatisticHologram(PlayerWrapper player, LocationHolder holoLocation) {
+        final var holo = HologramManager
+                .hologram(holoLocation)
+                .firstLine(AdventureHelper.toComponent(mainConfig.node("holograms", "headline").getString("Your §eBEDWARS§f stats")))
+                .setTouchable(true)
+                .addViewer(player);
+        HologramManager.addHologram(holo);
+        holo.show();
 
         this.updatePlayerStatisticHologram(player, holo);
         return holo;
@@ -152,11 +211,6 @@ public class StatisticsHolograms implements TouchHandler {
     private void updateHologramDatabase() {
         try {
             // update hologram-database file
-            var file = Main.getInstance().getPluginDescription().getDataFolder().resolve("database").resolve("holodb.yml").toFile();
-            var loader = YamlConfigurationLoader.builder()
-                    .file(file)
-                    .build();
-
             var node = loader.createNode();
 
             for (var location : hologramLocations) {
@@ -168,75 +222,89 @@ public class StatisticsHolograms implements TouchHandler {
         }
     }
 
-    private PreparedLocation getHologramLocationByLocation(Location holoLocation) {
+    private HologramLocation getHologramLocationByLocation(LocationHolder holoLocation) {
         return hologramLocations.stream()
-                .filter(loc -> loc.getX() == holoLocation.getX()
-                                && loc.getY() == holoLocation.getY()
-                                && loc.getZ() == holoLocation.getZ()
+                .filter(loc -> loc.getWorld().equals(holoLocation.getWorld().getName())
+                        && loc.getX() == holoLocation.getX()
+                        && loc.getY() == holoLocation.getY()
+                        && loc.getZ() == holoLocation.getZ()
                 )
-                .findFirst().orElse(null);
+                .findFirst()
+                .orElse(null);
     }
 
-	@Override
-	public void handle(Player player, Hologram holo) {
-        if (!player.hasMetadata("bw-remove-holo") || (!player.isOp() && !PlayerMapper.wrapPlayer(player).hasPermission(BedWarsPermission.ADMIN_PERMISSION.asPermission()))) {
+    @OnEvent
+    public void handle(HologramTouchEvent event) {
+        var player = event.getPlayer();
+        var holo = event.getHologram();
+        if (!holograms.containsKey(player.getUuid()) || !holograms.get(player.getUuid()).contains(holo) || holo.getLocation().isEmpty()) {
             return;
         }
 
-        player.removeMetadata("bw-remove-holo", Main.getInstance().getPluginDescription().as(JavaPlugin.class));
-        Bukkit.getServer().getScheduler().runTask(Main.getInstance().getPluginDescription().as(JavaPlugin.class), () -> {
-            // remove all player holograms on this location
-            for (Entry<UUID, List<Hologram>> entry : holograms.entrySet()) {
-                Iterator<Hologram> iterator = entry.getValue().iterator();
-                while (iterator.hasNext()) {
-                    Hologram hologram = iterator.next();
-                    if (hologram.getLocation().getX() == holo.getLocation().getX() && hologram.getLocation().getY() == holo.getLocation().getY()
-                            && hologram.getLocation().getZ() == holo.getLocation().getZ()) {
-                        hologram.destroy();
-                        iterator.remove();
-                    }
-                }
-            }
-
-            var holoLocation = getHologramLocationByLocation(holo.getLocation());
-            if (holoLocation != null) {
-                hologramLocations.remove(holoLocation);
-                updateHologramDatabase();
-            }
-            player.sendMessage(i18n("holo_removed"));
-        });
-	}
-
-    private void updatePlayerStatisticHologram(Player player, final Hologram holo) {
-        PlayerStatistic statistic = Main.getPlayerStatisticsManager().getStatistic(player);
-        
-        List<String> lines = new ArrayList<>();
-
-        lines.add(i18n("statistics_kills", false).replace("%kills%",
-                Integer.toString(statistic.getKills())));
-        lines.add(i18n("statistics_deaths", false).replace("%deaths%",
-                Integer.toString(statistic.getDeaths())));
-        lines.add(i18n("statistics_kd", false).replace("%kd%",
-                Double.toString(statistic.getKD())));
-        lines.add(i18n("statistics_wins", false).replace("%wins%",
-                Integer.toString(statistic.getWins())));
-        lines.add(i18n("statistics_loses", false).replace("%loses%",
-                Integer.toString(statistic.getLoses())));
-        lines.add(i18n("statistics_games", false).replace("%games%",
-                Integer.toString(statistic.getGames())));
-        lines.add(i18n("statistics_beds", false).replace("%beds%",
-                Integer.toString(statistic.getDestroyedBeds())));
-        lines.add(i18n("statistics_score", false).replace("%score%",
-                Integer.toString(statistic.getScore())));
-        
-        int size = holo.length();
-        int increment = 0;
-        if (size == 1 || size > lines.size()) {
-        	increment = 1;
+        if (!player.as(Player.class).hasMetadata("bw-remove-holo") || !player.hasPermission(BedWarsPermission.ADMIN_PERMISSION.asPermission())) {
+            return;
         }
 
+        var location = holo.getLocation().get();
+
+        player.as(Player.class).removeMetadata("bw-remove-holo", pluginDescription.as(JavaPlugin.class));
+        Tasker
+                .build(() -> {
+                    // remove all player holograms on this location
+                    for (var entry : holograms.entrySet()) {
+                        var iterator = entry.getValue().iterator();
+                        while (iterator.hasNext()) {
+                            var hologram = iterator.next();
+                            hologram.getLocation().ifPresent(locationHolder -> {
+                                if (locationHolder.getWorld().getUuid().equals(location.getWorld().getUuid())
+                                        && locationHolder.getX() == location.getX()
+                                        && locationHolder.getY() == location.getY()
+                                        && locationHolder.getZ() == location.getZ()) {
+                                    hologram.hide();
+                                    HologramManager.removeHologram(hologram);
+                                    iterator.remove();
+                                }
+                            });
+                        }
+                    }
+
+                    var holoLocation = getHologramLocationByLocation(location);
+                    if (holoLocation != null) {
+                        hologramLocations.remove(holoLocation);
+                        updateHologramDatabase();
+                    }
+                    player.sendMessage(i18n("holo_removed"));
+                })
+                .async()
+                .start();
+    }
+
+    private void updatePlayerStatisticHologram(PlayerWrapper player, final Hologram holo) {
+        var statistic = PlayerStatisticManager.getInstance().getStatistic(player);
+
+        var lines = List.of(
+                i18n("statistics_kills", false).replace("%kills%",
+                        Integer.toString(statistic.getKills())),
+                i18n("statistics_deaths", false).replace("%deaths%",
+                        Integer.toString(statistic.getDeaths())),
+                i18n("statistics_kd", false).replace("%kd%",
+                        Double.toString(statistic.getKD())),
+                i18n("statistics_wins", false).replace("%wins%",
+                        Integer.toString(statistic.getWins())),
+                i18n("statistics_loses", false).replace("%loses%",
+                        Integer.toString(statistic.getLoses())),
+                i18n("statistics_games", false).replace("%games%",
+                        Integer.toString(statistic.getGames())),
+                i18n("statistics_beds", false).replace("%beds%",
+                        Integer.toString(statistic.getDestroyedBeds())),
+                i18n("statistics_score", false).replace("%score%",
+                        Integer.toString(statistic.getScore()))
+        );
+        var size = holo.getLines().size();
+        var increment = size == 1 || size > lines.size() ? 1 : 0;
+
         for (int i = 0; i < lines.size(); i++) {
-        	holo.setLine(i + increment, lines.get(i));
+            holo.setLine(i + increment, AdventureHelper.toComponent(lines.get(i)));
         }
     }
 

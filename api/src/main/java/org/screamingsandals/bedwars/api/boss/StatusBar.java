@@ -2,46 +2,46 @@ package org.screamingsandals.bedwars.api.boss;
 
 import java.util.List;
 
-import org.bukkit.entity.Player;
+import org.screamingsandals.lib.utils.Wrapper;
 
 /**
  * @author Bedwars Team
  *
  */
-public interface StatusBar {
+public interface StatusBar<P extends Wrapper> {
 	
 	/**
 	 * @param player
 	 */
-	public void addPlayer(Player player);
+	void addPlayer(P player);
 	
 	/**
 	 * @param player
 	 */
-	public void removePlayer(Player player);
+	void removePlayer(P player);
 	
 	/**
 	 * @param progress
 	 */
-	public void setProgress(double progress);
+	void setProgress(float progress);
 	
 	/**
 	 * @return list of all viewers
 	 */
-	public List<Player> getViewers();
+	List<P> getViewers();
 	
 	/**
 	 * @return progress of status bar
 	 */
-	public double getProgress();
+	float getProgress();
 	
 	/**
 	 * @return visibility of status bar
 	 */
-	public boolean isVisible();
+	boolean isVisible();
 	
 	/**
 	 * @param visible
 	 */
-	public void setVisible(boolean visible);
+	void setVisible(boolean visible);
 }

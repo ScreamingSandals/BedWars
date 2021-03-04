@@ -1,30 +1,16 @@
 package org.screamingsandals.bedwars.statistics;
 
-import org.bukkit.OfflinePlayer;
-import org.screamingsandals.bedwars.Main;
+import lombok.Data;
 import org.screamingsandals.bedwars.api.statistics.PlayerStatistic;
+import org.screamingsandals.lib.player.OfflinePlayerWrapper;
 
-public class LeaderboardEntry implements org.screamingsandals.bedwars.api.statistics.LeaderboardEntry {
-    private final OfflinePlayer offlinePlayer;
-    private final int currentScore;
-
-    public LeaderboardEntry(OfflinePlayer offlinePlayer, int currentScore) {
-        this.offlinePlayer = offlinePlayer;
-        this.currentScore = currentScore;
-    }
-
-    @Override
-    public OfflinePlayer getPlayer() {
-        return this.offlinePlayer;
-    }
-
-    @Override
-    public int getTotalScore() {
-        return this.currentScore;
-    }
+@Data
+public class LeaderboardEntry implements org.screamingsandals.bedwars.api.statistics.LeaderboardEntry<OfflinePlayerWrapper> {
+    private final OfflinePlayerWrapper player;
+    private final int totalScore;
 
     @Override
     public PlayerStatistic fetchStatistics() {
-        return Main.getPlayerStatisticsManager().getStatistic(offlinePlayer);
+        return PlayerStatisticManager.getInstance().getStatistic(player);
     }
 }

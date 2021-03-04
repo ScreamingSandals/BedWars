@@ -7,6 +7,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.screamingsandals.bedwars.Main;
+import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
 
 import java.io.File;
@@ -50,14 +51,14 @@ public class LanguageCommand extends BaseCommand {
                             }
                             final var langName = Objects.requireNonNull(config.getString("lang_name"));
 
-                            if (Objects.requireNonNull(Main.getConfigurator().node("locale").getString())
+                            if (Objects.requireNonNull(MainConfig.getInstance().node("locale").getString())
                                     .equalsIgnoreCase(locale)) {
                                 sender.sendMessage(i18n("language_already_set")
                                         .replace("%lang%", langName));
                                 return;
                             }
-                            Main.getConfigurator().node("locale").set(locale);
-                            Main.getConfigurator().saveConfig();
+                            MainConfig.getInstance().node("locale").set(locale);
+                            MainConfig.getInstance().saveConfig();
                             Bukkit.getServer().getPluginManager().disablePlugin(Main.getInstance().getPluginDescription().as(JavaPlugin.class));
                             Bukkit.getServer().getPluginManager().enablePlugin(Main.getInstance().getPluginDescription().as(JavaPlugin.class));
                             sender.sendMessage(i18n("language_success")

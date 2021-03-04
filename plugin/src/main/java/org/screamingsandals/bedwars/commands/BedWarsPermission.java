@@ -2,6 +2,7 @@ package org.screamingsandals.bedwars.commands;
 
 import lombok.RequiredArgsConstructor;
 import org.screamingsandals.bedwars.Main;
+import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.lib.sender.permissions.OrPermission;
 import org.screamingsandals.lib.sender.permissions.Permission;
 import org.screamingsandals.lib.sender.permissions.SimplePermission;
@@ -29,7 +30,7 @@ public enum BedWarsPermission {
     public Permission asPermission() {
         var defaultAllowed = false;
         if (!defaultAllowedConfigurationKeys.isEmpty()) {
-            defaultAllowed = Main.getConfigurator().node(defaultAllowedConfigurationKeys.toArray()).getBoolean();
+            defaultAllowed = MainConfig.getInstance().node(defaultAllowedConfigurationKeys.toArray()).getBoolean();
         }
 
         final var finalDefaultAllowed = defaultAllowed;

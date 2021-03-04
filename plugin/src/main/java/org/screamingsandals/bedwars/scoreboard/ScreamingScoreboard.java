@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.RunningTeam;
 import org.screamingsandals.bedwars.api.game.GameStatus;
+import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.game.Game;
 import org.screamingsandals.bedwars.game.TeamColor;
 import org.screamingsandals.bedwars.lib.debug.Debug;
@@ -38,7 +39,7 @@ public class ScreamingScoreboard {
         final var scoreboard = Scoreboard.builder()
                 .animate(false)
                 .player(player)
-                .title(Main.getConfigurator().node("lobby-scoreboard", "title").getString("§eBEDWARS"))
+                .title(MainConfig.getInstance().node("lobby-scoreboard", "title").getString("§eBEDWARS"))
                 .displayObjective(LOBBY_OBJECTIVE)
                 .updateInterval(20L)
                 .placeholderHook(hook -> parseInternalPlaceholders(game.formatLobbyScoreboardString(hook.getLine())))
@@ -55,7 +56,7 @@ public class ScreamingScoreboard {
 
         //lobby stages
         if (game.getStatus() == GameStatus.WAITING) {
-            var rows = Main.getConfigurator().node("lobby-scoreboard", "content")
+            var rows = MainConfig.getInstance().node("lobby-scoreboard", "content")
                     .childrenList().stream().map(ConfigurationNode::getString).collect(Collectors.toList());
             if (rows.isEmpty()) {
                 return List.of();
@@ -79,7 +80,7 @@ public class ScreamingScoreboard {
             });
 
             final var finalContent = new ArrayList<String>();
-            List<String> content = Main.getConfigurator().node("experimental", "new-scoreboard-system", "content")
+            List<String> content = MainConfig.getInstance().node("experimental", "new-scoreboard-system", "content")
                     .childrenList().stream().map(ConfigurationNode::getString).collect(Collectors.toList());
 
             content.forEach(line -> {
@@ -128,7 +129,7 @@ public class ScreamingScoreboard {
             return "";
         }
 
-        return Main.getConfigurator().node("experimental", "new-scoreboard-system", "teamTitle").getString("")
+        return MainConfig.getInstance().node("experimental", "new-scoreboard-system", "teamTitle").getString("")
                 .replace("%team_size%", String.valueOf(
                         team.getConnectedPlayers().size()))
                 .replace("%color%", TeamColor.fromApiColor(team.getColor())

@@ -4,6 +4,7 @@ import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
 import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.Main;
+import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
 import org.spongepowered.configurate.serialize.SerializationException;
@@ -31,8 +32,8 @@ public class MainlobbyCommand extends BaseCommand {
 
                     if (action.contains("enable")) {
                         try {
-                            Main.getConfigurator().node("mainlobby", "enabled").set(true);
-                            Main.getConfigurator().saveConfig();
+                            MainConfig.getInstance().node("mainlobby", "enabled").set(true);
+                            MainConfig.getInstance().saveConfig();
 
                             sender.sendMessage(i18n("admin_command_success"));
                             sender.sendMessage(i18n("admin_command_mainlobby_info"));
@@ -43,9 +44,9 @@ public class MainlobbyCommand extends BaseCommand {
                         var location = sender.as(Player.class).getLocation();
 
                         try {
-                            Main.getConfigurator().node("mainlobby", "location").set(MiscUtils.setLocationToString(location));
-                            Main.getConfigurator().node("mainlobby", "world").set(location.getWorld().getName());
-                            Main.getConfigurator().saveConfig();
+                            MainConfig.getInstance().node("mainlobby", "location").set(MiscUtils.setLocationToString(location));
+                            MainConfig.getInstance().node("mainlobby", "world").set(location.getWorld().getName());
+                            MainConfig.getInstance().saveConfig();
 
                             sender.sendMessage(i18n("admin_command_success"));
                         } catch (SerializationException e) {

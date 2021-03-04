@@ -1,6 +1,5 @@
 package org.screamingsandals.bedwars.special.listener;
 
-import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.APIUtils;
 import org.screamingsandals.bedwars.api.RunningTeam;
 import org.screamingsandals.bedwars.api.events.BedwarsApplyPropertyToBoughtItem;
@@ -11,9 +10,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
+import org.screamingsandals.bedwars.config.MainConfig;
 
 import static org.screamingsandals.bedwars.lib.lang.I.i18nc;
-import static org.screamingsandals.bedwars.lib.lang.I18n.i18n;
 
 public class TeamChestListener implements Listener {
 
@@ -43,7 +42,7 @@ public class TeamChestListener implements Listener {
 
         String unhidden = APIUtils.unhashFromInvisibleStringStartsWith(event.getItemInHand(), TEAM_CHEST_PREFIX);
 
-        if (unhidden != null || Main.getConfigurator().node("specials", "teamchest", "turn-all-enderchests-to-teamchests").getBoolean()) {
+        if (unhidden != null || MainConfig.getInstance().node("specials", "teamchest", "turn-all-enderchests-to-teamchests").getBoolean()) {
             team.addTeamChest(block);
             String message = i18nc("team_chest_placed", event.getGame().getCustomPrefix());
             for (Player pl : team.getConnectedPlayers()) {

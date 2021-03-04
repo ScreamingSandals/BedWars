@@ -1,78 +1,96 @@
 package org.screamingsandals.bedwars.tab;
 
-import org.bukkit.ChatColor;
-import org.screamingsandals.bedwars.Main;
+import lombok.RequiredArgsConstructor;
+import net.kyori.adventure.text.Component;
+import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.game.GamePlayer;
+import org.screamingsandals.lib.player.PlayerMapper;
+import org.screamingsandals.lib.plugin.ServiceManager;
+import org.screamingsandals.lib.utils.AdventureHelper;
+import org.screamingsandals.lib.utils.annotations.Service;
+import org.screamingsandals.lib.utils.annotations.methods.OnEnable;
+import org.screamingsandals.lib.utils.annotations.methods.ShouldRunControllable;
 import org.spongepowered.configurate.ConfigurationNode;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
-import static org.screamingsandals.bedwars.lib.nms.utils.ClassStorage.NMS.*;
-import static org.screamingsandals.bedwars.lib.nms.utils.ClassStorage.*;
-
+@Service(dependsOn = {
+        MainConfig.class,
+        PlayerMapper.class
+})
+@RequiredArgsConstructor
 public class TabManager {
+    private final MainConfig mainConfig;
+
     private List<String> header;
     private List<String> footer;
 
-    public TabManager() {
-        if (Main.getConfigurator().node("tab", "header", "enabled").getBoolean()) {
-            header = Main.getConfigurator().node("tab", "header", "contents").childrenList().stream().map(ConfigurationNode::getString).collect(Collectors.toList());
+    @ShouldRunControllable
+    public static boolean isEnabled() {
+        return MainConfig.getInstance().node("tab", "enabled").getBoolean();
+    }
+
+    public static TabManager getInstance() {
+        if (!isEnabled()) {
+            throw new UnsupportedOperationException("TabManager are not enabled!");
         }
-        if (Main.getConfigurator().node("tab", "footer", "enabled").getBoolean()) {
-            footer = Main.getConfigurator().node("tab", "footer", "contents").childrenList().stream().map(ConfigurationNode::getString).collect(Collectors.toList());
+        return ServiceManager.get(TabManager.class);
+    }
+
+    @OnEnable
+    public void onEnable() {
+        if (mainConfig.node("tab", "header", "enabled").getBoolean()) {
+            header = mainConfig.node("tab", "header", "contents").childrenList().stream().map(ConfigurationNode::getString).collect(Collectors.toList());
+        }
+        if (mainConfig.node("tab", "footer", "enabled").getBoolean()) {
+            footer = mainConfig.node("tab", "footer", "contents").childrenList().stream().map(ConfigurationNode::getString).collect(Collectors.toList());
         }
     }
 
     public void modifyForPlayer(GamePlayer player) {
         if (player.player.isOnline() && (header != null || footer != null)) {
-            try {
-                Object packet = PacketPlayOutPlayerListHeaderFooter.getConstructor().newInstance();
-                if (header != null) {
-                    setField(packet, "header, a, field_179703_a", getMethod(ChatSerializer, "a,field_150700_a", String.class)
-                            .invokeStatic("{\"text\": \"" + ChatColor.translateAlternateColorCodes('&', String.join("\n", translate(player, header))) + "\"}"));
-                } else {
-                    setField(packet, "header, a, field_179703_a", getMethod(ChatSerializer, "a,field_150700_a", String.class)
-                            .invokeStatic("{\"text\": \"\"}"));
-                }
-                if (footer != null) {
-                    setField(packet, "footer, b, field_179702_b", getMethod(ChatSerializer, "a,field_150700_a", String.class)
-                            .invokeStatic("{\"text\": \"" + ChatColor.translateAlternateColorCodes('&', String.join("\n", translate(player, footer))) + "\"}"));
-                } else {
-                    setField(packet, "footer, b, field_179702_b", getMethod(ChatSerializer, "a,field_150700_a", String.class)
-                            .invokeStatic("{\"text\": \"\"}"));
-                }
-                sendPacket(player.player, packet);
-            } catch (Exception ignored) {
-
+            var wrappedPlayer = PlayerMapper.wrapPlayer(player.player);
+            if (header != null) {
+                wrappedPlayer.sendPlayerListHeader(translate(player, header));
+            } else {
+                wrappedPlayer.sendPlayerListHeader(Component.empty());
+            }
+            if (header != null) {
+                wrappedPlayer.sendPlayerListFooter(translate(player, footer));
+            } else {
+                wrappedPlayer.sendPlayerListFooter(Component.empty());
             }
         }
     }
 
     public void clear(GamePlayer player) {
         if (player.player.isOnline() && (header != null || footer != null)) {
-            try {
-                Object packet = PacketPlayOutPlayerListHeaderFooter.getConstructor().newInstance();
-                setField(packet, "header, a, field_179703_a", getMethod(ChatSerializer, "a,field_150700_a", String.class)
-                        .invokeStatic("{\"text\": \"\"}"));
-                setField(packet, "footer, b, field_179702_b", getMethod(ChatSerializer, "a,field_150700_a", String.class)
-                        .invokeStatic("{\"text\": \"\"}"));
-                sendPacket(player.player, packet);
-            } catch (Exception ignored) {
-            }
+            PlayerMapper.wrapPlayer(player.player).sendPlayerListHeaderAndFooter(Component.empty(), Component.empty());
         }
     }
 
-    public List<String> translate(GamePlayer gamePlayer, List<String> origin) {
-        List<String> list = new ArrayList<>();
-        origin.forEach(a -> list.add(a.replace("%players%", String.valueOf(gamePlayer.getGame().countPlayers()))
-                .replace("%alive%", String.valueOf(gamePlayer.getGame().countAlive()))
-                .replace("%spectating%", String.valueOf(gamePlayer.getGame().countSpectating()))
-                .replace("%spectators%", String.valueOf(gamePlayer.getGame().countSpectators()))
-                .replace("%respawnable%", String.valueOf(gamePlayer.getGame().countRespawnable()))
-                .replace("%max%", String.valueOf(gamePlayer.getGame().getMaxPlayers()))
-                .replace("%map%", gamePlayer.getGame().getName())));
-        return list;
+    public Component translate(GamePlayer gamePlayer, List<String> origin) {
+        var component = Component.text();
+        var first = new AtomicBoolean(true);
+        origin.forEach(a -> {
+            if (!first.get()) {
+                component.append(Component.text("\n"));
+            } else {
+                first.set(false);
+            }
+            component.append(
+                    AdventureHelper.toComponent(
+                            a.replace("%players%", String.valueOf(gamePlayer.getGame().countPlayers()))
+                                    .replace("%alive%", String.valueOf(gamePlayer.getGame().countAlive()))
+                                    .replace("%spectating%", String.valueOf(gamePlayer.getGame().countSpectating()))
+                                    .replace("%spectators%", String.valueOf(gamePlayer.getGame().countSpectators()))
+                                    .replace("%respawnable%", String.valueOf(gamePlayer.getGame().countRespawnable()))
+                                    .replace("%max%", String.valueOf(gamePlayer.getGame().getMaxPlayers()))
+                                    .replace("%map%", gamePlayer.getGame().getName()))
+            );
+        });
+        return component.asComponent();
     }
 }

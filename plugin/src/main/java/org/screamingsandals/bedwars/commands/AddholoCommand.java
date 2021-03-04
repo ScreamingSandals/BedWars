@@ -2,12 +2,12 @@ package org.screamingsandals.bedwars.commands;
 
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
-import org.bukkit.entity.Player;
-import org.screamingsandals.bedwars.Main;
+import cloud.commandframework.context.CommandContext;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.screamingsandals.bedwars.holograms.LeaderboardHolograms;
+import org.screamingsandals.bedwars.holograms.StatisticsHolograms;
+import org.screamingsandals.lib.entity.EntityHuman;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
-
-import java.util.List;
-import java.util.Optional;
 
 import static org.screamingsandals.bedwars.lib.lang.I.i18n;
 
@@ -20,28 +20,41 @@ public class AddholoCommand extends BaseCommand {
     protected void construct(Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder) {
         manager.command(
                 commandSenderWrapperBuilder
-                        .argument(manager
-                                .argumentBuilder(String.class, "type")
-                                .asOptional()
-                                .withSuggestionsProvider((c, s) -> List.of("leaderboard", "stats"))
-                        )
+                        .handler(this::executeStatsHologram)
+        );
+
+        manager.command(
+                commandSenderWrapperBuilder
+                        .literal("stats")
+                        .handler(this::executeStatsHologram)
+        );
+
+        manager.command(
+                commandSenderWrapperBuilder
+                        .literal("leaderboard")
                         .handler(commandContext -> {
-                            Optional<String> type = commandContext.getOptional("type");
-                            // TODO Use Wrapper in the code - Add EyeLocation to PlayerWrapper in ScreamingLib
-                            var player = commandContext.getSender().as(Player.class);
-                            if (!Main.isHologramsEnabled()) {
-                                player.sendMessage(i18n("holo_not_enabled"));
+                            var sender = commandContext.getSender();
+                            var eyeLocation = sender.as(EntityHuman.class).getEyeLocation();
+                            if (!LeaderboardHolograms.isEnabled()) {
+                                sender.sendMessage(i18n("holo_not_enabled"));
                             } else {
-                                if (type.isPresent() && "leaderboard".equalsIgnoreCase(type.get())) {
-                                    Main.getLeaderboardHolograms().addHologramLocation(player.getEyeLocation());
-                                    player.sendMessage(i18n("leaderboard_holo_added"));
-                                } else {
-                                    Main.getHologramInteraction().addHologramLocation(player.getEyeLocation());
-                                    Main.getHologramInteraction().updateHolograms();
-                                    player.sendMessage(i18n("holo_added"));
-                                }
+                                LeaderboardHolograms.getInstance().addHologramLocation(eyeLocation);
+                                sender.sendMessage(i18n("leaderboard_holo_added"));
                             }
                         })
         );
+    }
+
+    private void executeStatsHologram(@NonNull CommandContext<CommandSenderWrapper> commandContext) {
+        var sender = commandContext.getSender();
+        var eyeLocation = sender.as(EntityHuman.class).getEyeLocation();
+        if (!StatisticsHolograms.isEnabled()) {
+            sender.sendMessage(i18n("holo_not_enabled"));
+        } else {
+            var statisticHolograms = StatisticsHolograms.getInstance();
+            statisticHolograms.addHologramLocation(eyeLocation);
+            statisticHolograms.updateHolograms();
+            sender.sendMessage(i18n("holo_added"));
+        }
     }
 }

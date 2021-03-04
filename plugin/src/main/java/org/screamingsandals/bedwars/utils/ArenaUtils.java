@@ -1,10 +1,12 @@
 package org.screamingsandals.bedwars.utils;
 
+import lombok.experimental.UtilityClass;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 
+@UtilityClass
 public class ArenaUtils {
-    public static boolean isInArea(Location l, Location p1, Location p2) {
+    public boolean isInArea(Location l, Location p1, Location p2) {
         if (!p1.getWorld().equals(l.getWorld())) {
             return false;
         }
@@ -17,7 +19,7 @@ public class ArenaUtils {
                 && max.getY() >= l.getY() && max.getZ() >= l.getZ());
     }
 
-    public static boolean isChunkInArea(Chunk l, Location p1, Location p2) {
+    public boolean isChunkInArea(Chunk l, Location p1, Location p2) {
         if (!p1.getWorld().equals(l.getWorld())) {
             return false;
         }

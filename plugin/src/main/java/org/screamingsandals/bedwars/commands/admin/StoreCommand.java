@@ -34,12 +34,12 @@ public class StoreCommand extends BaseAdminSubCommand {
                                 .withSuggestionsProvider((c,s) -> List.of("Villager_shop", "Dealer", "Seller", "&a&lVillager_shop", "&4Barter"))
                         )
                         .argument(StringArgument.optional("file"))
-                        .argument(BooleanArgument.optional("useParent", true))
+                        .argument(BooleanArgument.optional("useParent"))
                         .handler(commandContext -> editMode(commandContext, (sender, game) -> {
                             var name = commandContext.<String>getOptional("name")
                                     .map(s -> ChatColor.translateAlternateColorCodes('&', s));
                             var file = commandContext.<String>getOptional("file");
-                            boolean useParent = commandContext.get("useParent");
+                            boolean useParent = commandContext.getOrDefault("useParent", true);
                             var loc = sender.as(Player.class).getLocation();
 
                             if (game.getPos1() == null || game.getPos2() == null) {
