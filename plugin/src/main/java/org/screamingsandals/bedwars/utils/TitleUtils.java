@@ -10,15 +10,18 @@ import java.time.Duration;
 
 @UtilityClass
 public class TitleUtils {
-    public void send(PlayerWrapper player, String title, String subtitle) {
-        if (!MainConfig.getInstance().node("title", "enabled").getBoolean()) {
-            return;
-        }
 
+    public void send(PlayerWrapper player, String title, String subtitle) {
         int fadeIn = MainConfig.getInstance().node("title", "fadeIn").getInt();
         int stay = MainConfig.getInstance().node("title", "stay").getInt();
         int fadeOut = MainConfig.getInstance().node("title", "fadeOut").getInt();
+        send(player, title, subtitle, fadeIn, stay, fadeOut);
+    }
 
+    public void send(PlayerWrapper player, String title, String subtitle, int fadeIn, int stay, int fadeOut) {
+        if (!MainConfig.getInstance().node("title", "enabled").getBoolean()) {
+            return;
+        }
         var titleComponent = Title.title(
                 AdventureHelper.toComponent(title),
                 AdventureHelper.toComponent(subtitle),
