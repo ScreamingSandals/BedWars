@@ -16,6 +16,7 @@ import java.util.UUID;
 import org.bukkit.Location;
 import org.bukkit.entity.Item;
 import org.screamingsandals.lib.bukkit.hologram.BukkitHologram;
+import org.screamingsandals.lib.hologram.HologramManager;
 import org.screamingsandals.lib.material.MaterialHolder;
 import org.screamingsandals.lib.material.MaterialMapping;
 import org.screamingsandals.lib.material.builder.ItemBuilder;
@@ -36,7 +37,7 @@ public class ItemSpawner implements org.screamingsandals.bedwars.api.game.ItemSp
     public boolean spawnerIsFullHologram = false;
     public boolean rerenderHologram = false;
     public double currentLevelOnHologram = -1;
-    private BukkitHologram floatingStand;
+    private org.screamingsandals.lib.hologram.Hologram floatingStand;
     public final static String ARMOR_STAND_DISPLAY_NAME_HIDDEN = "BEDWARS_FLOATING_ROT_ENTITY";
 
     public ItemSpawner(Location loc, ItemSpawnerType type, String customName,
@@ -180,11 +181,13 @@ public class ItemSpawner implements org.screamingsandals.bedwars.api.game.ItemSp
 
     public void spawnFloatingStand(List<Player> viewers) {
         try {
-            floatingStand = new BukkitHologram(UUID.randomUUID(), LocationMapper.wrapLocation(loc), false);
-            viewers.forEach(player -> {
-                final var playerWrapper = PlayerMapper.wrapPlayer(player);
-                floatingStand.addViewer(playerWrapper);
-            });
+            final var holo = org.screamingsandals.lib.hologram.Hologram
+                    .of(LocationMapper.wrapLocation(loc));
+
+            viewers.stream()
+                    .map(PlayerMapper::wrapPlayer)
+                    .forEach(holo::addViewer);
+
             MaterialHolder helmetMaterial;
             try {
                 //try to get block of item
@@ -193,8 +196,14 @@ public class ItemSpawner implements org.screamingsandals.bedwars.api.game.ItemSp
             } catch (Throwable t) {
                 helmetMaterial = MaterialMapping.resolve(type.getMaterial()).orElseThrow();
             }
-            floatingStand.item(ItemBuilder.of(helmetMaterial).build().orElseThrow());
-            floatingStand.show();
+
+            floatingStand = holo.item(
+                    ItemBuilder
+                            .of(helmetMaterial)
+                            .build()
+                            .orElseThrow()
+            ).show();
+
         } catch (Throwable t) {
             t.printStackTrace();
             destroy();
