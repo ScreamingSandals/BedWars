@@ -1678,7 +1678,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                                         MainConfig.getInstance().node("floating-generator", "enabled").getBoolean(true)) {
                                     loc = spawner.loc.clone().add(0,
                                             MainConfig.getInstance().node("floating-generator", "holo-height").getDouble(2.0), 0);
-                                    spawner.spawnFloatingStand();
+                                    spawner.spawnFloatingStand(getConnectedPlayers());
                                 } else {
                                     loc = spawner.loc.clone().add(0,
                                             MainConfig.getInstance().node("spawner-holo-height").getDouble(0.25), 0);

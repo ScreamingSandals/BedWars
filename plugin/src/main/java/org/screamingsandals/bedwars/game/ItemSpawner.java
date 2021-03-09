@@ -1,15 +1,9 @@
 package org.screamingsandals.bedwars.game;
 
 import org.bukkit.Material;
-import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.scoreboard.DisplaySlot;
-import org.screamingsandals.bedwars.Main;
+import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.api.Team;
-import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.lib.nms.holograms.Hologram;
 
 import static org.screamingsandals.bedwars.lib.lang.I.i18nonly;
@@ -17,9 +11,16 @@ import static org.screamingsandals.bedwars.lib.lang.I.i18nonly;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Item;
+import org.screamingsandals.lib.bukkit.hologram.BukkitHologram;
+import org.screamingsandals.lib.material.MaterialHolder;
+import org.screamingsandals.lib.material.MaterialMapping;
+import org.screamingsandals.lib.material.builder.ItemBuilder;
+import org.screamingsandals.lib.player.PlayerMapper;
+import org.screamingsandals.lib.world.LocationMapper;
 
 public class ItemSpawner implements org.screamingsandals.bedwars.api.game.ItemSpawner {
     public Location loc;
@@ -35,7 +36,7 @@ public class ItemSpawner implements org.screamingsandals.bedwars.api.game.ItemSp
     public boolean spawnerIsFullHologram = false;
     public boolean rerenderHologram = false;
     public double currentLevelOnHologram = -1;
-    private ArmorStand floatingGenStand;
+    private BukkitHologram floatingStand;
     public final static String ARMOR_STAND_DISPLAY_NAME_HIDDEN = "BEDWARS_FLOATING_ROT_ENTITY";
 
     public ItemSpawner(Location loc, ItemSpawnerType type, String customName,
@@ -177,34 +178,33 @@ public class ItemSpawner implements org.screamingsandals.bedwars.api.game.ItemSp
     	}
     }
 
-    public void spawnFloatingStand(){
-        if (floatingEnabled) {
-            floatingGenStand = (ArmorStand) loc.getWorld().spawnEntity(loc.clone().add(0,
-                    MainConfig.getInstance().node("floating-generator", "generator-height").getDouble(0.25), 0), EntityType.ARMOR_STAND
-            );
-
-            ItemStack helmetStack;
-            try{
+    public void spawnFloatingStand(List<Player> viewers) {
+        try {
+            floatingStand = new BukkitHologram(UUID.randomUUID(), LocationMapper.wrapLocation(loc), false);
+            viewers.forEach(player -> {
+                final var playerWrapper = PlayerMapper.wrapPlayer(player);
+                floatingStand.addViewer(playerWrapper);
+            });
+            MaterialHolder helmetMaterial;
+            try {
                 //try to get block of item
                 final String name = type.getMaterial().name().substring(0, type.getMaterial().name().indexOf("_"));
-                helmetStack = new ItemStack(Material.valueOf(name.toUpperCase() + "_BLOCK"));
-            } catch (Throwable t){
-                helmetStack = new ItemStack(type.getMaterial());
+                helmetMaterial = MaterialMapping.resolve(Material.valueOf(name.toUpperCase() + "_BLOCK")).orElseThrow();
+            } catch (Throwable t) {
+                helmetMaterial = MaterialMapping.resolve(type.getMaterial()).orElseThrow();
             }
-
-            floatingGenStand.setHelmet(helmetStack);
-            floatingGenStand.setGravity(false);
-            floatingGenStand.setVisible(false);
-            floatingGenStand.setCustomName(ARMOR_STAND_DISPLAY_NAME_HIDDEN);
+            floatingStand.item(ItemBuilder.of(helmetMaterial).build().orElseThrow());
+            floatingStand.show();
+        } catch (Throwable t) {
+            t.printStackTrace();
+            destroy();
         }
     }
 
     public void destroy() {
-        if (floatingGenStand != null)
-            floatingGenStand.remove();
+        if (floatingStand != null) {
+            floatingStand.destroy();
+            floatingStand =  null;
+        }
     }
-
-
-
-
 }
