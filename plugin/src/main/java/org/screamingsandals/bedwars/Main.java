@@ -526,7 +526,7 @@ public class Main extends PluginContainer implements BedwarsAPI {
                             )
                             .append(
                                     Component
-                                            .text("IMPORTANT WARNING: You are using version older than 1.9! This version is not officially supported, and some features may not work at all!")
+                                            .text("IMPORTANT WARNING: You are using a version which is older than 1.9! This version is not officially supported and some features may not work at all! Update your server version to remove this message.")
                                             .color(NamedTextColor.RED)
                             ));
         }
