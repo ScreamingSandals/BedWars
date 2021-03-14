@@ -255,7 +255,8 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                             spawner.node("startLevel").getDouble(1),
                             game.getTeamFromName(spawner.node("team").getString()),
                             spawner.node("maxSpawnedResources").getInt(-1),
-                            spawner.node("floatingEnabled").getBoolean()
+                            spawner.node("floatingEnabled").getBoolean(),
+                            org.screamingsandals.lib.hologram.Hologram.RotationMode.valueOf(spawner.node("rotationMode").getString("Y"))
                     ))
             );
             configMap.node("stores").childrenList().forEach(store -> {
@@ -1055,6 +1056,8 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             spawnerNode.node("hologramEnabled").set(spawner.hologramEnabled);
             spawnerNode.node("team").set(spawner.getTeam().map(org.screamingsandals.bedwars.api.Team::getName).orElse(null));
             spawnerNode.node("maxSpawnedResources").set(spawner.maxSpawnedResources);
+            spawnerNode.node("floatingEnabled").set(spawner.maxSpawnedResources);
+            spawnerNode.node("rotationMode").set(spawner.rotationMode);
         }
         for (var store : gameStore) {
             var storeNode = configMap.node("stores").appendListNode();

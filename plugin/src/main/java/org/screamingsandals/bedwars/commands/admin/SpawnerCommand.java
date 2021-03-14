@@ -3,10 +3,7 @@ package org.screamingsandals.bedwars.commands.admin;
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
 import cloud.commandframework.arguments.parser.ArgumentParseResult;
-import cloud.commandframework.arguments.standard.BooleanArgument;
-import cloud.commandframework.arguments.standard.DoubleArgument;
-import cloud.commandframework.arguments.standard.IntegerArgument;
-import cloud.commandframework.arguments.standard.StringArgument;
+import cloud.commandframework.arguments.standard.*;
 import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.commands.AdminCommand;
@@ -14,6 +11,7 @@ import org.screamingsandals.bedwars.game.ItemSpawner;
 import org.screamingsandals.bedwars.game.ItemSpawnerType;
 import org.screamingsandals.bedwars.game.Team;
 import org.screamingsandals.bedwars.utils.ArenaUtils;
+import org.screamingsandals.lib.hologram.Hologram;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
 
 import java.util.ArrayList;
@@ -56,6 +54,7 @@ public class SpawnerCommand extends BaseAdminSubCommand {
                         )
                         .argument(IntegerArgument.optional("maxSpawnedResources"))
                         .argument(BooleanArgument.optional("floatingHologram"))
+                        .argument(EnumArgument.optional(Hologram.RotationMode.class, "rotationMode"))
                         .handler(commandContext -> editMode(commandContext, (sender, game) -> {
                             String type = commandContext.get("type");
                             String customName = commandContext.getOrDefault("customName", null);
@@ -64,6 +63,7 @@ public class SpawnerCommand extends BaseAdminSubCommand {
                             var team = commandContext.<String>getOptional("team").map(game::getTeamFromName).orElse(null); // saved as nullable
                             int maxSpawnedResources = commandContext.getOrDefault("maxSpawnedResources", -1);
                             boolean floatingHologram = commandContext.getOrDefault("floatingHologram", false);
+                            Hologram.RotationMode rotationMode = commandContext.getOrDefault("rotationMode", Hologram.RotationMode.Y);
 
                             var loc = sender.as(Player.class).getLocation();
 
@@ -83,7 +83,7 @@ public class SpawnerCommand extends BaseAdminSubCommand {
                             loc.setPitch(0);
                             var spawnerType = Main.getSpawnerType(type);
                             if (spawnerType != null) {
-                                game.getSpawners().add(new ItemSpawner(loc, spawnerType, customName, hologramEnabled, startLevel, team, maxSpawnedResources, floatingHologram));
+                                game.getSpawners().add(new ItemSpawner(loc, spawnerType, customName, hologramEnabled, startLevel, team, maxSpawnedResources, floatingHologram, rotationMode));
                                 sender.sendMessage(
                                         i18n("admin_command_spawner_added")
                                                 .replace("%resource%", spawnerType.getItemName())

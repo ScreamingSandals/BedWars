@@ -52,32 +52,3 @@ buildConfig {
     packageName = 'org.screamingsandals.bedwars'
     charset = 'UTF-8'
 }
-
-/*
-spigot {
-    name = 'BedWars'
-    authors = ['ScreamingSandals <Misat11, Ceph, Pronze>']
-    apiVersion = '1.13'
-    load = POST_WORLD
-    softDepends = [
-            'Vault',
-            'Multiverse-Core',
-            'Multiworld',
-            'MultiWorld',
-            'UltimateCore',
-            'PlaceholderAPI',
-            'BarAPI',
-            'PerWorldInventory',
-            'SlimeWorldManager',
-            'My_Worlds',
-            'Citizens',
-            'Parties'
-    ]
-    commands {
-        bw {
-            aliases = ['bedwars']
-            description = 'Command of BW plugin'
-            usage = '/bw [subcommand]'
-        }
-    }
-}*/
