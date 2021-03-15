@@ -36,8 +36,7 @@ import org.screamingsandals.bedwars.utils.BedWarsSignService;
 import org.screamingsandals.bedwars.utils.BukkitBStatsMetrics;
 import org.screamingsandals.bedwars.utils.UpdateChecker;
 import org.screamingsandals.bedwars.lib.debug.Debug;
-import org.screamingsandals.bedwars.lib.nms.holograms.HologramManager;
-import org.screamingsandals.bedwars.lib.nms.utils.ClassStorage;
+import org.screamingsandals.lib.bukkit.utils.nms.ClassStorage;
 import org.screamingsandals.lib.event.EventManager;
 import org.screamingsandals.lib.material.MaterialMapping;
 import org.screamingsandals.lib.player.PlayerMapper;
@@ -106,7 +105,6 @@ public class Main extends PluginContainer implements BedwarsAPI {
     private HashMap<Entity, Game> entitiesInGame = new HashMap<>();
     private HashMap<String, ItemSpawnerType> spawnerTypes = new HashMap<>();
     private ColorChanger colorChanger;
-    private HologramManager manager;
     public static List<String> autoColoredMaterials = new ArrayList<>();
 
     static {
@@ -293,10 +291,6 @@ public class Main extends PluginContainer implements BedwarsAPI {
         return instance.versionNumber;
     }
 
-    public static HologramManager getHologramManager() {
-        return instance.manager;
-    }
-
     @Override
     public void load() {
         instance = this;
@@ -380,8 +374,6 @@ public class Main extends PluginContainer implements BedwarsAPI {
         if (partiesEnabled) {
             registerBedwarsListener(new PartyListener());
         }
-
-        this.manager = new HologramManager(this.getPluginDescription().as(JavaPlugin.class));
 
         PremiumBedwars.init();
 

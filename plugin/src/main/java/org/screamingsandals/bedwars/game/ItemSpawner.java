@@ -1,9 +1,9 @@
 package org.screamingsandals.bedwars.game;
 
+import lombok.Getter;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.api.Team;
-import org.screamingsandals.bedwars.lib.nms.holograms.Hologram;
 
 import static org.screamingsandals.bedwars.lib.lang.I.i18nonly;
 
@@ -13,10 +13,14 @@ import java.util.Optional;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Item;
+import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
+import org.screamingsandals.bedwars.config.MainConfig;
+import org.screamingsandals.lib.hologram.Hologram;
 import org.screamingsandals.lib.hologram.HologramManager;
 import org.screamingsandals.lib.material.builder.ItemFactory;
 import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.tasker.TaskerTime;
+import org.screamingsandals.lib.utils.AdventureHelper;
 import org.screamingsandals.lib.utils.Pair;
 import org.screamingsandals.lib.world.LocationMapper;
 
@@ -35,7 +39,8 @@ public class ItemSpawner implements org.screamingsandals.bedwars.api.game.ItemSp
     public boolean rerenderHologram = false;
     public double currentLevelOnHologram = -1;
     public org.screamingsandals.lib.hologram.Hologram.RotationMode rotationMode;
-    private org.screamingsandals.lib.hologram.Hologram floatingStand;
+    @Getter
+    private org.screamingsandals.lib.hologram.Hologram hologram;
     public final static String ARMOR_STAND_DISPLAY_NAME_HIDDEN = "BEDWARS_FLOATING_ROT_ENTITY";
 
     public ItemSpawner(Location loc, ItemSpawnerType type, String customName,
@@ -112,12 +117,12 @@ public class ItemSpawner implements org.screamingsandals.bedwars.api.game.ItemSp
         return maxSpawnedResources;
     }
 
-    public int nextMaxSpawn(int calculated, Hologram countdown) {
+    public int nextMaxSpawn(int calculated) {
         if (currentLevel <= 0) {
-            if (countdown != null && (!spawnerIsFullHologram || currentLevelOnHologram != currentLevel)) {
+            if (hologram != null && (!spawnerIsFullHologram || currentLevelOnHologram != currentLevel)) {
                 spawnerIsFullHologram = true;
                 currentLevelOnHologram = currentLevel;
-                countdown.setLine(1, i18nonly("spawner_not_enough_level").replace("%levels%", String.valueOf((currentLevelOnHologram * (-1)) + 1)));
+                hologram.setLine(1, AdventureHelper.toComponent(i18nonly("spawner_not_enough_level").replace("%levels%", String.valueOf((currentLevelOnHologram * (-1)) + 1))));
             }
             return 0;
         }
@@ -136,9 +141,9 @@ public class ItemSpawner implements org.screamingsandals.bedwars.api.game.ItemSp
         int spawned = spawnedItems.size();
 
         if (spawned >= maxSpawnedResources) {
-            if (countdown != null && !spawnerIsFullHologram) {
+            if (hologram != null && !spawnerIsFullHologram) {
                 spawnerIsFullHologram = true;
-                countdown.setLine(1, i18nonly("spawner_is_full"));
+                hologram.setLine(1, AdventureHelper.toComponent(i18nonly("spawner_is_full")));
             }
             return 0;
         }
@@ -147,16 +152,16 @@ public class ItemSpawner implements org.screamingsandals.bedwars.api.game.ItemSp
             if (spawnerIsFullHologram && !rerenderHologram) {
                 rerenderHologram = true;
                 spawnerIsFullHologram = false;
-            } else if (countdown != null && (calculated + spawned) == maxSpawnedResources) {
+            } else if (hologram != null && (calculated + spawned) == maxSpawnedResources) {
                 spawnerIsFullHologram = true;
-                countdown.setLine(1, i18nonly("spawner_is_full"));
+                hologram.setLine(1, AdventureHelper.toComponent(i18nonly("spawner_is_full")));
             }
             return calculated;
         }
 
-        if (countdown != null && !spawnerIsFullHologram) {
+        if (hologram != null && !spawnerIsFullHologram) {
             spawnerIsFullHologram = true;
-            countdown.setLine(1, i18nonly("spawner_is_full"));
+            hologram.setLine(1, AdventureHelper.toComponent(i18nonly("spawner_is_full")));
         }
 
         return maxSpawnedResources - spawned;
@@ -178,23 +183,49 @@ public class ItemSpawner implements org.screamingsandals.bedwars.api.game.ItemSp
         }
     }
 
-    public void spawnFloatingStand(List<Player> viewers) {
+    public void spawnHologram(List<Player> viewers, boolean countdownHologram) {
         try {
-            floatingStand = HologramManager
+            Location loc;
+            if (floatingEnabled &&
+                    MainConfig.getInstance().node("floating-generator", "enabled").getBoolean(true)) {
+                loc = this.loc.clone().add(0, MainConfig.getInstance().node("floating-generator", "holo-height").getDouble(0.5), 0);
+            } else {
+                loc = this.loc.clone().add(0,
+                        MainConfig.getInstance().node("spawner-holo-height").getDouble(0.25), 0);
+            }
+            hologram = HologramManager
                     .hologram(LocationMapper.wrapLocation(loc))
-                    .item(
-                            ItemFactory
-                                    .build(type.getMaterial().name().substring(0, type.getMaterial().name().indexOf("_")) + "_BLOCK")
-                                    .or(() -> ItemFactory.build(type.getMaterial().name()))
-                                    .orElseThrow()
-                    )
-                    .rotationMode(rotationMode)
-                    .rotationTime(Pair.of(2, TaskerTime.TICKS))
-                    .show();
+                    .firstLine(AdventureHelper.toComponent(type.getItemBoldName()));
+
+            if (countdownHologram) {
+                hologram.newLine(
+                        AdventureHelper.toComponent(
+                                type.getInterval() < 2 ? i18nonly("every_second_spawning")
+                                        : i18nonly("countdown_spawning").replace("%seconds%",
+                                        Integer.toString(type.getInterval()))
+                        )
+                );
+            }
+
+            if (floatingEnabled &&
+                    MainConfig.getInstance().node("floating-generator", "enabled").getBoolean(true)) {
+                hologram
+                        .item(
+                                ItemFactory
+                                        .build(type.getMaterial().name().substring(0, type.getMaterial().name().indexOf("_")) + "_BLOCK")
+                                        .or(() -> ItemFactory.build(type.getMaterial().name()))
+                                        .orElseThrow()
+                        )
+                        .itemLocation(Hologram.ItemLocation.BELOW)
+                        .rotationMode(rotationMode)
+                        .rotationTime(Pair.of(2, TaskerTime.TICKS));
+            }
+
+            hologram.show();
 
             viewers.stream()
                     .map(PlayerMapper::wrapPlayer)
-                    .forEach(floatingStand::addViewer);
+                    .forEach(hologram::addViewer);
 
         } catch (Throwable t) {
             t.printStackTrace();
@@ -203,9 +234,9 @@ public class ItemSpawner implements org.screamingsandals.bedwars.api.game.ItemSp
     }
 
     public void destroy() {
-        if (floatingStand != null) {
-            floatingStand.destroy();
-            floatingStand = null;
+        if (hologram != null) {
+            hologram.destroy();
+            hologram = null;
         }
     }
 }

@@ -9,7 +9,7 @@ import org.bukkit.inventory.Inventory;
 import org.screamingsandals.bedwars.api.RunningTeam;
 import org.screamingsandals.bedwars.api.TeamColor;
 import org.screamingsandals.bedwars.api.game.Game;
-import org.screamingsandals.bedwars.lib.nms.holograms.Hologram;
+import org.screamingsandals.lib.hologram.Hologram;
 
 import java.util.ArrayList;
 import java.util.List;
