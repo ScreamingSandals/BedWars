@@ -62,6 +62,7 @@ import org.screamingsandals.lib.material.builder.ItemFactory;
 import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.utils.AdventureHelper;
+import org.screamingsandals.lib.utils.visual.TextEntry;
 import org.screamingsandals.lib.world.LocationHolder;
 import org.screamingsandals.lib.world.LocationMapper;
 import org.spongepowered.configurate.ConfigurateException;
@@ -734,7 +735,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
                     if (team.hasBedHolo()) {
                         team.getBedHolo().setLine(0,
-                                AdventureHelper.toComponent(i18nonly(isItBedBlock ? "protect_your_bed_destroyed" : (isItAnchor ? "protect_your_anchor_destroyed" : (isItCake ? "protect_your_cake_destroyed" : "protect_your_target_destroyed")))));
+                                TextEntry.of(AdventureHelper.toComponent(i18nonly(isItBedBlock ? "protect_your_bed_destroyed" : (isItAnchor ? "protect_your_anchor_destroyed" : (isItCake ? "protect_your_cake_destroyed" : "protect_your_target_destroyed"))))));
                         team.getConnectedPlayers().stream().map(PlayerMapper::wrapPlayer).forEach(team.getBedHolo()::addViewer);
                     }
 
@@ -1804,17 +1805,17 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                                     .collect(Collectors.toList());
                             var holo = HologramManager
                                     .hologram(LocationMapper.wrapLocation(loc))
-                                    .firstLine(AdventureHelper.toComponent(i18nonly(isBlockTypeBed ? "destroy_this_bed" : (isAnchor ? "destroy_this_anchor" : (isCake ? "destroy_this_cake" : "destroy_this_target")))
+                                    .firstLine(TextEntry.of(AdventureHelper.toComponent(i18nonly(isBlockTypeBed ? "destroy_this_bed" : (isAnchor ? "destroy_this_anchor" : (isCake ? "destroy_this_cake" : "destroy_this_target")))
                                             .replace("%teamcolor%", team.teamInfo.color.chatColor.toString()))
-                                    );
+                                    ));
                             enemies.forEach(holo::addViewer);
                             holo.show();
                             team.setBedHolo(holo);
                             var protectHolo = HologramManager
                                     .hologram(LocationMapper.wrapLocation(loc))
-                                    .firstLine(AdventureHelper.toComponent(i18nonly(isBlockTypeBed ? "protect_your_bed" : (isAnchor ? "protect_your_anchor" : (isCake ? "protect_your_cake" : "protect_your_target")))
+                                    .firstLine(TextEntry.of(AdventureHelper.toComponent(i18nonly(isBlockTypeBed ? "protect_your_bed" : (isAnchor ? "protect_your_anchor" : (isCake ? "protect_your_cake" : "protect_your_target")))
                                             .replace("%teamcolor%", team.teamInfo.color.chatColor.toString())
-                                    ));
+                                    )));
                             team.getConnectedPlayers().stream().map(PlayerMapper::wrapPlayer).forEach(protectHolo::addViewer);
                             protectHolo.show();
                             team.setProtectHolo(protectHolo);
@@ -1966,10 +1967,10 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                                 if (cycle > 1) {
                                     int modulo = cycle - elapsedTime % cycle;
                                     spawner.getHologram().setLine(1,
-                                            AdventureHelper.toComponent(i18nonly("countdown_spawning").replace("%seconds%", Integer.toString(modulo)))
+                                            TextEntry.of(AdventureHelper.toComponent(i18nonly("countdown_spawning").replace("%seconds%", Integer.toString(modulo))))
                                     );
                                 } else if (spawner.rerenderHologram) {
-                                    spawner.getHologram().setLine(1, AdventureHelper.toComponent(i18nonly("every_second_spawning")));
+                                    spawner.getHologram().setLine(1, TextEntry.of(AdventureHelper.toComponent(i18nonly("every_second_spawning"))));
                                     spawner.rerenderHologram = false;
                                 }
                             }

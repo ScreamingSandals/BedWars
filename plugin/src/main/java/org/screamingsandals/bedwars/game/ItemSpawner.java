@@ -22,6 +22,7 @@ import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.tasker.TaskerTime;
 import org.screamingsandals.lib.utils.AdventureHelper;
 import org.screamingsandals.lib.utils.Pair;
+import org.screamingsandals.lib.utils.visual.TextEntry;
 import org.screamingsandals.lib.world.LocationMapper;
 
 public class ItemSpawner implements org.screamingsandals.bedwars.api.game.ItemSpawner {
@@ -122,7 +123,7 @@ public class ItemSpawner implements org.screamingsandals.bedwars.api.game.ItemSp
             if (hologram != null && (!spawnerIsFullHologram || currentLevelOnHologram != currentLevel)) {
                 spawnerIsFullHologram = true;
                 currentLevelOnHologram = currentLevel;
-                hologram.setLine(1, AdventureHelper.toComponent(i18nonly("spawner_not_enough_level").replace("%levels%", String.valueOf((currentLevelOnHologram * (-1)) + 1))));
+                hologram.setLine(1, TextEntry.of(AdventureHelper.toComponent(i18nonly("spawner_not_enough_level").replace("%levels%", String.valueOf((currentLevelOnHologram * (-1)) + 1)))));
             }
             return 0;
         }
@@ -143,7 +144,7 @@ public class ItemSpawner implements org.screamingsandals.bedwars.api.game.ItemSp
         if (spawned >= maxSpawnedResources) {
             if (hologram != null && !spawnerIsFullHologram) {
                 spawnerIsFullHologram = true;
-                hologram.setLine(1, AdventureHelper.toComponent(i18nonly("spawner_is_full")));
+                hologram.setLine(1, TextEntry.of(AdventureHelper.toComponent(i18nonly("spawner_is_full"))));
             }
             return 0;
         }
@@ -154,14 +155,14 @@ public class ItemSpawner implements org.screamingsandals.bedwars.api.game.ItemSp
                 spawnerIsFullHologram = false;
             } else if (hologram != null && (calculated + spawned) == maxSpawnedResources) {
                 spawnerIsFullHologram = true;
-                hologram.setLine(1, AdventureHelper.toComponent(i18nonly("spawner_is_full")));
+                hologram.setLine(1, TextEntry.of(AdventureHelper.toComponent(i18nonly("spawner_is_full"))));
             }
             return calculated;
         }
 
         if (hologram != null && !spawnerIsFullHologram) {
             spawnerIsFullHologram = true;
-            hologram.setLine(1, AdventureHelper.toComponent(i18nonly("spawner_is_full")));
+            hologram.setLine(1, TextEntry.of(AdventureHelper.toComponent(i18nonly("spawner_is_full"))));
         }
 
         return maxSpawnedResources - spawned;
@@ -195,16 +196,16 @@ public class ItemSpawner implements org.screamingsandals.bedwars.api.game.ItemSp
             }
             hologram = HologramManager
                     .hologram(LocationMapper.wrapLocation(loc))
-                    .firstLine(AdventureHelper.toComponent(type.getItemBoldName()));
+                    .firstLine(TextEntry.of(AdventureHelper.toComponent(type.getItemBoldName())));
 
             if (countdownHologram) {
-                hologram.newLine(
+                hologram.newLine(TextEntry.of(
                         AdventureHelper.toComponent(
                                 type.getInterval() < 2 ? i18nonly("every_second_spawning")
                                         : i18nonly("countdown_spawning").replace("%seconds%",
                                         Integer.toString(type.getInterval()))
                         )
-                );
+                ));
             }
 
             if (floatingEnabled &&
@@ -216,7 +217,7 @@ public class ItemSpawner implements org.screamingsandals.bedwars.api.game.ItemSp
                                         .or(() -> ItemFactory.build(type.getMaterial().name()))
                                         .orElseThrow()
                         )
-                        .itemLocation(Hologram.ItemLocation.BELOW)
+                        .itemPosition(Hologram.ItemPosition.BELOW)
                         .rotationMode(rotationMode)
                         .rotationTime(Pair.of(2, TaskerTime.TICKS));
             }

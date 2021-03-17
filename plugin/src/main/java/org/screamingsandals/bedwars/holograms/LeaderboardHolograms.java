@@ -28,6 +28,7 @@ import org.screamingsandals.lib.utils.annotations.methods.OnPostEnable;
 import org.screamingsandals.lib.utils.annotations.methods.OnPreDisable;
 import org.screamingsandals.lib.utils.annotations.methods.ShouldRunControllable;
 import org.screamingsandals.lib.utils.annotations.parameters.ConfigFile;
+import org.screamingsandals.lib.utils.visual.TextEntry;
 import org.screamingsandals.lib.world.LocationHolder;
 import org.screamingsandals.lib.world.LocationMapper;
 import org.spongepowered.configurate.ConfigurateException;
@@ -161,7 +162,7 @@ public class LeaderboardHolograms {
                     if (!holograms.containsKey(locationHolder)) {
                         var hologram = HologramManager
                                 .hologram(locationHolder)
-                                .firstLine(AdventureHelper.toComponent(i18nonly("leaderboard_no_scores")))
+                                .firstLine(TextEntry.of(AdventureHelper.toComponent(i18nonly("leaderboard_no_scores"))))
                                 .setTouchable(true);
                         HologramManager.addHologram(hologram);
                         hologram.show();
@@ -191,7 +192,7 @@ public class LeaderboardHolograms {
             );
 
             for (int i = 0; i < lines.size(); i++) {
-                holo.setLine(i, AdventureHelper.toComponent(lines.get(i)));
+                holo.setLine(i, TextEntry.of(AdventureHelper.toComponent(lines.get(i))));
             }
         }
     }
