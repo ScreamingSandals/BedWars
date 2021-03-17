@@ -518,7 +518,7 @@ public class Main extends PluginContainer implements BedwarsAPI {
                             )
                             .append(
                                     Component
-                                            .text("IMPORTANT WARNING: You are using version older than 1.9! This version is not officially supported, and some features may not work at all!")
+                                            .text("IMPORTANT WARNING: You are using a version which is older than 1.9! This version is not officially supported and some features may not work at all! Update your server version to remove this message.")
                                             .color(NamedTextColor.RED)
                             ));
         }
@@ -545,7 +545,7 @@ public class Main extends PluginContainer implements BedwarsAPI {
         /* Initialize our ScoreboardLib*/
         ScoreboardManager.init(this.getPluginDescription().as(JavaPlugin.class));
 
-        PlayerMapper.getConsoleSender().sendMessage(Component.text("Everything is loaded! If you like our work, consider visiting our Patreon! <3").color(NamedTextColor.WHITE));
+        PlayerMapper.getConsoleSender().sendMessage(Component.text("Everything has finished loading! If you like our work, consider subscribing to our Patreon! <3").color(NamedTextColor.WHITE));
         PlayerMapper.getConsoleSender().sendMessage(Component.text("https://www.patreon.com/screamingsandals").color(NamedTextColor.WHITE));
     }
 
