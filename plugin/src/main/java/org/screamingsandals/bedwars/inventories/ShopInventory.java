@@ -9,6 +9,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.bedwars.Main;
+import org.screamingsandals.bedwars.api.PurchaseType;
 import org.screamingsandals.bedwars.api.events.*;
 import org.screamingsandals.bedwars.commands.DumpCommand;
 import org.screamingsandals.bedwars.config.MainConfig;
@@ -148,6 +149,9 @@ public class ShopInventory implements Listener {
                 item.getLore().addAll(loreText);
             }
         }
+        final var preScanEvent = new BedwarsPrePropertyScanEvent(event);
+        Bukkit.getServer().getPluginManager().callEvent(preScanEvent);
+        if (preScanEvent.isCancelled()) return;
 
         itemInfo.getProperties().forEach(property -> {
             if (property.hasName()) {
@@ -164,6 +168,9 @@ public class ShopInventory implements Listener {
                 event.setStack(ItemFactory.build(applyEvent.getStack()).orElse(item));
             }
         });
+
+        final var postScanEvent = new BedwarsPostPropertyScanEvent(event);
+        Bukkit.getServer().getPluginManager().callEvent(postScanEvent);
     }
 
     public void onPreAction(PreClickEvent event) {
@@ -317,6 +324,11 @@ public class ShopInventory implements Listener {
                     return "";
                 })
                 .call(categoryBuilder -> {
+                    final var includeEvent = new BedwarsStoreIncludeEvent(categoryBuilder);
+                    Bukkit.getServer().getPluginManager().callEvent(includeEvent);
+                    if (includeEvent.isCancelled()) {
+                        return;
+                    }
                     if (useParent) {
                         var shopFileName = "shop.yml";
                         if (mainConfig.node("turnOnExperimentalGroovyShop").getBoolean(false)) {
@@ -424,6 +436,11 @@ public class ShopInventory implements Listener {
 
         var materialItem = ItemFactory.build(type.getStack(priceAmount)).orElseThrow();
         if (event.hasPlayerInInventory(materialItem)) {
+            final var prePurchaseEvent = new BedwarsStorePrePurchaseEvent(event, PurchaseType.NORMAL_ITEM);
+            Bukkit.getServer().getPluginManager().callEvent(prePurchaseEvent);
+            if (prePurchaseEvent.isCancelled()) {
+                return;
+            }
             Map<String, Object> permaItemPropertyData = new HashMap<>();
             for (var property : itemInfo.getProperties()) {
                 var converted = ConfigurateUtils.raw(property.getPropertyData());
@@ -463,7 +480,14 @@ public class ShopInventory implements Listener {
             }
             Sounds.playSound(player, player.getLocation(),
                     mainConfig.node("sounds", "item_buy").getString(), Sounds.ENTITY_ITEM_PICKUP, 1, 1);
+
+            final var postPurchaseEvent = new BedwarsStorePostPurchaseEvent(event, PurchaseType.NORMAL_ITEM);
+            Bukkit.getServer().getPluginManager().callEvent(postPurchaseEvent);
         } else {
+            final var purchaseFailedEvent = new BedwarsPurchaseFailedEvent(event, PurchaseType.NORMAL_ITEM);
+            Bukkit.getServer().getPluginManager().callEvent(purchaseFailedEvent);
+            if (purchaseFailedEvent.isCancelled()) return;
+
             if (!mainConfig.node("removePurchaseMessages").getBoolean()) {
                 player.sendMessage(i18nc("buy_failed", game.getCustomPrefix()).replace("%item%", amount + "x " + getNameOrCustomNameOfItem(newItem))
                         .replace("%material%", priceAmount + " " + type.getItemName()));
@@ -491,6 +515,10 @@ public class ShopInventory implements Listener {
         var materialItem = ItemFactory.build(type.getStack(priceAmount)).orElseThrow();
 
         if (event.hasPlayerInInventory(materialItem)) {
+            final var upgradePurchasedEvent  = new BedwarsStorePrePurchaseEvent(event, PurchaseType.UPGRADES);
+            Bukkit.getServer().getPluginManager().callEvent(upgradePurchasedEvent);
+            if (upgradePurchasedEvent.isCancelled()) return;
+
             event.sellStack(materialItem);
             for (var entity : entities) {
                 var configuredType = entity.node("type").getString();
@@ -580,7 +608,12 @@ public class ShopInventory implements Listener {
                             Sounds.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
                 }
             }
+            final var postPurchaseEvent = new BedwarsStorePostPurchaseEvent(event, PurchaseType.UPGRADES);
+            Bukkit.getServer().getPluginManager().callEvent(postPurchaseEvent);
         } else {
+            final var purchaseFailedEvent = new BedwarsPurchaseFailedEvent(event, PurchaseType.UPGRADES);
+            Bukkit.getServer().getPluginManager().callEvent(purchaseFailedEvent);
+            if (purchaseFailedEvent.isCancelled()) return;
             if (!mainConfig.node("removePurchaseMessages").getBoolean()) {
                 player.sendMessage(i18nc("buy_failed", game.getCustomPrefix()).replace("%item%", "UPGRADE").replace("%material%",
                         priceAmount + " " + type.getItemName()));
