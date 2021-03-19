@@ -18,6 +18,8 @@ import org.bukkit.inventory.meta.FireworkMeta;
 import org.screamingsandals.lib.utils.ConfigurateUtils;
 import org.spongepowered.configurate.ConfigurationNode;
 
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @UtilityClass
@@ -81,6 +83,11 @@ public class SpawnEffects {
             meta.setPower(power);
             var fireworkEffects = effect.node("effects").childrenList().stream()
                     .map(ConfigurateUtils::toMap)
+
+                    // TODO: make better solution for mixing configurate and bukkit configuration serializable
+                    .peek(stringMap -> ((Map<String,Object>) stringMap).put("colors", ((List) stringMap.get("colors")).stream().map(o -> ConfigurationSerialization.deserializeObject((Map<String,?>) o)).collect(Collectors.toList())))
+                    .peek(stringMap -> ((Map<String,Object>) stringMap).put("fade-colors", ((List) stringMap.get("fade-colors")).stream().map(o -> ConfigurationSerialization.deserializeObject((Map<String,?>) o)).collect(Collectors.toList())))
+
                     .map(ConfigurationSerialization::deserializeObject)
                     .filter(obj -> obj instanceof FireworkEffect)
                     .map(obj -> (FireworkEffect) obj)

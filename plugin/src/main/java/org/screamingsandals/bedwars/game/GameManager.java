@@ -52,7 +52,7 @@ public class GameManager implements org.screamingsandals.bedwars.api.game.GameMa
     public Optional<Game> getGameWithHighestPlayers() {
         return games.stream()
                 .filter(game -> game.getStatus() == GameStatus.WAITING)
-                .filter(game -> game.countConnectedPlayers() >= game.getMaxPlayers())
+                .filter(game -> !(game.countConnectedPlayers() >= game.getMaxPlayers()))
                 .max(Comparator.comparingInt(Game::countConnectedPlayers));
     }
 
@@ -60,7 +60,7 @@ public class GameManager implements org.screamingsandals.bedwars.api.game.GameMa
     public Optional<Game> getGameWithLowestPlayers() {
         return games.stream()
                 .filter(game -> game.getStatus() == GameStatus.WAITING)
-                .filter(game -> game.countConnectedPlayers() >= game.getMaxPlayers())
+                .filter(game -> !(game.countConnectedPlayers() >= game.getMaxPlayers()))
                 .min(Comparator.comparingInt(Game::countConnectedPlayers));
     }
 

@@ -1,26 +1,28 @@
 package org.screamingsandals.bedwars.game;
 
-import org.bukkit.Material;
+import lombok.Getter;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.api.Team;
-import org.screamingsandals.bedwars.lib.nms.holograms.Hologram;
 
 import static org.screamingsandals.bedwars.lib.lang.I.i18nonly;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Item;
-import org.screamingsandals.lib.bukkit.hologram.BukkitHologram;
+import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
+import org.screamingsandals.bedwars.config.MainConfig;
+import org.screamingsandals.lib.hologram.Hologram;
 import org.screamingsandals.lib.hologram.HologramManager;
-import org.screamingsandals.lib.material.MaterialHolder;
-import org.screamingsandals.lib.material.MaterialMapping;
-import org.screamingsandals.lib.material.builder.ItemBuilder;
+import org.screamingsandals.lib.material.builder.ItemFactory;
 import org.screamingsandals.lib.player.PlayerMapper;
+import org.screamingsandals.lib.tasker.TaskerTime;
+import org.screamingsandals.lib.utils.AdventureHelper;
+import org.screamingsandals.lib.utils.Pair;
+import org.screamingsandals.lib.utils.visual.TextEntry;
 import org.screamingsandals.lib.world.LocationMapper;
 
 public class ItemSpawner implements org.screamingsandals.bedwars.api.game.ItemSpawner {
@@ -37,12 +39,14 @@ public class ItemSpawner implements org.screamingsandals.bedwars.api.game.ItemSp
     public boolean spawnerIsFullHologram = false;
     public boolean rerenderHologram = false;
     public double currentLevelOnHologram = -1;
-    private org.screamingsandals.lib.hologram.Hologram floatingStand;
+    public org.screamingsandals.lib.hologram.Hologram.RotationMode rotationMode;
+    @Getter
+    private org.screamingsandals.lib.hologram.Hologram hologram;
     public final static String ARMOR_STAND_DISPLAY_NAME_HIDDEN = "BEDWARS_FLOATING_ROT_ENTITY";
 
     public ItemSpawner(Location loc, ItemSpawnerType type, String customName,
                        boolean hologramEnabled, double startLevel, Team team,
-                       int maxSpawnedResources, boolean floatingEnabled) {
+                       int maxSpawnedResources, boolean floatingEnabled, org.screamingsandals.lib.hologram.Hologram.RotationMode rotationMode) {
         this.loc = loc;
         this.type = type;
         this.customName = customName;
@@ -52,6 +56,7 @@ public class ItemSpawner implements org.screamingsandals.bedwars.api.game.ItemSp
         this.spawnedItems = new ArrayList<>();
         this.maxSpawnedResources = maxSpawnedResources;
         this.floatingEnabled = floatingEnabled;
+        this.rotationMode = rotationMode;
     }
 
     @Override
@@ -108,101 +113,120 @@ public class ItemSpawner implements org.screamingsandals.bedwars.api.game.ItemSp
     public void setTeam(Team team) {
         this.team = team;
     }
-    
+
     public int getMaxSpawnedResources() {
-    	return maxSpawnedResources;
-    }
-    
-    public int nextMaxSpawn(int calculated, Hologram countdown) {
-    	if (currentLevel <= 0) {
-    		if (countdown != null && (!spawnerIsFullHologram || currentLevelOnHologram != currentLevel)) {
-    			spawnerIsFullHologram = true;
-    			currentLevelOnHologram = currentLevel; 
-    			countdown.setLine(1, i18nonly("spawner_not_enough_level").replace("%levels%", String.valueOf((currentLevelOnHologram * (-1)) + 1)));
-    		}
-    		return 0;
-    	}
-    	
-    	if (maxSpawnedResources <= 0) {
-    		if (spawnerIsFullHologram && !rerenderHologram) {
-    			spawnerIsFullHologram = false;
-    			rerenderHologram = true;
-    		}
-    		return calculated;
-    	}
-    	
-    	/* Update spawned items */
-        spawnedItems.removeIf(Entity::isDead);
-    	
-    	int spawned = spawnedItems.size();
-    	
-    	if (spawned >= maxSpawnedResources) {
-    		if (countdown != null && !spawnerIsFullHologram) {
-        		spawnerIsFullHologram = true;
-    			countdown.setLine(1, i18nonly("spawner_is_full"));
-    		}
-    		return 0;
-    	}
-    	
-    	if ((maxSpawnedResources - spawned) >= calculated) {
-    		if (spawnerIsFullHologram && !rerenderHologram) {
-    			rerenderHologram = true;
-    			spawnerIsFullHologram = false;
-    		} else if (countdown != null && (calculated + spawned) == maxSpawnedResources) {
-        		spawnerIsFullHologram = true;
-    			countdown.setLine(1, i18nonly("spawner_is_full"));
-    		}
-    		return calculated;
-    	}
-    	
-		if (countdown != null && !spawnerIsFullHologram) {
-    		spawnerIsFullHologram = true;
-			countdown.setLine(1, i18nonly("spawner_is_full"));
-		}
-    	
-    	return maxSpawnedResources - spawned;
-    }
-    
-    public void add(Item item) {
-    	if (maxSpawnedResources > 0 && !spawnedItems.contains(item)) {
-    		spawnedItems.add(item);
-    	}
-    }
-    
-    public void remove(Item item) {
-    	if (maxSpawnedResources > 0 && spawnedItems.contains(item)) {
-    		spawnedItems.remove(item);
-    		if (spawnerIsFullHologram && maxSpawnedResources > spawnedItems.size()) {
-    			spawnerIsFullHologram = false;
-    			rerenderHologram = true;
-    		}
-    	}
+        return maxSpawnedResources;
     }
 
-    public void spawnFloatingStand(List<Player> viewers) {
+    public int nextMaxSpawn(int calculated) {
+        if (currentLevel <= 0) {
+            if (hologram != null && (!spawnerIsFullHologram || currentLevelOnHologram != currentLevel)) {
+                spawnerIsFullHologram = true;
+                currentLevelOnHologram = currentLevel;
+                hologram.setLine(1, TextEntry.of(AdventureHelper.toComponent(i18nonly("spawner_not_enough_level").replace("%levels%", String.valueOf((currentLevelOnHologram * (-1)) + 1)))));
+            }
+            return 0;
+        }
+
+        if (maxSpawnedResources <= 0) {
+            if (spawnerIsFullHologram && !rerenderHologram) {
+                spawnerIsFullHologram = false;
+                rerenderHologram = true;
+            }
+            return calculated;
+        }
+
+        /* Update spawned items */
+        spawnedItems.removeIf(Entity::isDead);
+
+        int spawned = spawnedItems.size();
+
+        if (spawned >= maxSpawnedResources) {
+            if (hologram != null && !spawnerIsFullHologram) {
+                spawnerIsFullHologram = true;
+                hologram.setLine(1, TextEntry.of(AdventureHelper.toComponent(i18nonly("spawner_is_full"))));
+            }
+            return 0;
+        }
+
+        if ((maxSpawnedResources - spawned) >= calculated) {
+            if (spawnerIsFullHologram && !rerenderHologram) {
+                rerenderHologram = true;
+                spawnerIsFullHologram = false;
+            } else if (hologram != null && (calculated + spawned) == maxSpawnedResources) {
+                spawnerIsFullHologram = true;
+                hologram.setLine(1, TextEntry.of(AdventureHelper.toComponent(i18nonly("spawner_is_full"))));
+            }
+            return calculated;
+        }
+
+        if (hologram != null && !spawnerIsFullHologram) {
+            spawnerIsFullHologram = true;
+            hologram.setLine(1, TextEntry.of(AdventureHelper.toComponent(i18nonly("spawner_is_full"))));
+        }
+
+        return maxSpawnedResources - spawned;
+    }
+
+    public void add(Item item) {
+        if (maxSpawnedResources > 0 && !spawnedItems.contains(item)) {
+            spawnedItems.add(item);
+        }
+    }
+
+    public void remove(Item item) {
+        if (maxSpawnedResources > 0 && spawnedItems.contains(item)) {
+            spawnedItems.remove(item);
+            if (spawnerIsFullHologram && maxSpawnedResources > spawnedItems.size()) {
+                spawnerIsFullHologram = false;
+                rerenderHologram = true;
+            }
+        }
+    }
+
+    public void spawnHologram(List<Player> viewers, boolean countdownHologram) {
         try {
-            final var holo = org.screamingsandals.lib.hologram.Hologram
-                    .of(LocationMapper.wrapLocation(loc));
+            Location loc;
+            if (floatingEnabled &&
+                    MainConfig.getInstance().node("floating-generator", "enabled").getBoolean(true)) {
+                loc = this.loc.clone().add(0, MainConfig.getInstance().node("floating-generator", "holo-height").getDouble(0.5), 0);
+            } else {
+                loc = this.loc.clone().add(0,
+                        MainConfig.getInstance().node("spawner-holo-height").getDouble(0.25), 0);
+            }
+            hologram = HologramManager
+                    .hologram(LocationMapper.wrapLocation(loc))
+                    .firstLine(TextEntry.of(AdventureHelper.toComponent(type.getItemBoldName())));
+
+            if (countdownHologram) {
+                hologram.newLine(TextEntry.of(
+                        AdventureHelper.toComponent(
+                                type.getInterval() < 2 ? i18nonly("every_second_spawning")
+                                        : i18nonly("countdown_spawning").replace("%seconds%",
+                                        Integer.toString(type.getInterval()))
+                        )
+                ));
+            }
+
+            if (floatingEnabled &&
+                    MainConfig.getInstance().node("floating-generator", "enabled").getBoolean(true)) {
+                hologram
+                        .item(
+                                ItemFactory
+                                        .build(type.getMaterial().name().substring(0, type.getMaterial().name().indexOf("_")) + "_BLOCK")
+                                        .or(() -> ItemFactory.build(type.getMaterial().name()))
+                                        .orElseThrow()
+                        )
+                        .itemPosition(Hologram.ItemPosition.BELOW)
+                        .rotationMode(rotationMode)
+                        .rotationTime(Pair.of(2, TaskerTime.TICKS));
+            }
+
+            hologram.show();
 
             viewers.stream()
                     .map(PlayerMapper::wrapPlayer)
-                    .forEach(holo::addViewer);
-
-            MaterialHolder helmetMaterial;
-            try {
-                //try to get block of item
-                final String name = type.getMaterial().name().substring(0, type.getMaterial().name().indexOf("_"));
-                helmetMaterial = MaterialMapping.resolve(Material.valueOf(name.toUpperCase() + "_BLOCK")).orElseThrow();
-            } catch (Throwable t) {
-                helmetMaterial = MaterialMapping.resolve(type.getMaterial()).orElseThrow();
-            }
-
-            floatingStand = holo.item(
-                    ItemBuilder
-                            .of(helmetMaterial)
-                            .build()
-                            .orElseThrow()
-            ).show();
+                    .forEach(hologram::addViewer);
 
         } catch (Throwable t) {
             t.printStackTrace();
@@ -211,9 +235,9 @@ public class ItemSpawner implements org.screamingsandals.bedwars.api.game.ItemSp
     }
 
     public void destroy() {
-        if (floatingStand != null) {
-            floatingStand.destroy();
-            floatingStand =  null;
+        if (hologram != null) {
+            hologram.destroy();
+            hologram = null;
         }
     }
 }

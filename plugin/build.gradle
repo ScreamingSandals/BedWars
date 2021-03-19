@@ -4,6 +4,8 @@ ScreamingLibBuilder()
         .platforms('bukkit')
         .modules('player', 'event', 'material', 'entity', 'world', 'command', 'tasker', 'hologram')
         .version(SCREAMING_LIB_VERSION)
+        .simpleInventories(SIMPLE_INVENTORIES_VERSION)
+        .universalModules('signs')
         .enableAnnotationProcessor()
         .build()
 
@@ -11,7 +13,6 @@ dependencies {
     /* PROVIDED */
     compileOnly vault(VAULT_VERSION)
     compileOnly 'com.onarandombox.multiversecore:Multiverse-Core:' + MULTIVERSE_VERSION
-    compileOnly 'me.confuser:BarAPI:3.5'
     compileOnly placeholderapi(PLACEHOLDERAPI_VERSION)
     compileOnly('me.ebonjaeger:perworldinventory-kt:' + PERWORLDINVENTORY_KT_VERSION)  {
         exclude group: '*', module: '*'
@@ -26,16 +27,12 @@ dependencies {
     /* SHADED */
     implementation project(':BedWars-API')
     implementation 'com.zaxxer:HikariCP:3.3.0'
-    implementation 'org.screamingsandals.simpleinventories:core-bukkit:' + SIMPLE_INVENTORIES_VERSION, {
-        exclude group: 'org.screamingsandals.lib' // causes problems
-    }
     implementation 'cloud.commandframework:cloud-minecraft-extras:' + CLOUD_EXTRAS_VERSION
     implementation bStats(BSTATS_VERSION)
     implementation 'pronze.lib:scoreboard:1.0.1-SNAPSHOT'
     implementation 'me.lucko:commodore:' + COMMODORE_VERSION, {
         exclude group: 'com.mojang', module: 'brigadier'
     }
-    implementation screaming('signs', SCREAMING_LIB_VERSION) // TODO: Update Screaming plugin builder to add modules without -common with ScreamingLibBuilder
 }
 
 buildConfig {
@@ -52,32 +49,3 @@ buildConfig {
     packageName = 'org.screamingsandals.bedwars'
     charset = 'UTF-8'
 }
-
-/*
-spigot {
-    name = 'BedWars'
-    authors = ['ScreamingSandals <Misat11, Ceph, Pronze>']
-    apiVersion = '1.13'
-    load = POST_WORLD
-    softDepends = [
-            'Vault',
-            'Multiverse-Core',
-            'Multiworld',
-            'MultiWorld',
-            'UltimateCore',
-            'PlaceholderAPI',
-            'BarAPI',
-            'PerWorldInventory',
-            'SlimeWorldManager',
-            'My_Worlds',
-            'Citizens',
-            'Parties'
-    ]
-    commands {
-        bw {
-            aliases = ['bedwars']
-            description = 'Command of BW plugin'
-            usage = '/bw [subcommand]'
-        }
-    }
-}*/

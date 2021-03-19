@@ -49,7 +49,6 @@ import org.screamingsandals.bedwars.holograms.StatisticsHolograms;
 import org.screamingsandals.bedwars.inventories.TeamSelectorInventory;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.lib.nms.entity.EntityUtils;
-import org.screamingsandals.bedwars.lib.nms.holograms.Hologram;
 import org.screamingsandals.bedwars.listener.Player116ListenerUtils;
 import org.screamingsandals.bedwars.region.FlatteningRegion;
 import org.screamingsandals.bedwars.region.LegacyRegion;
@@ -57,11 +56,15 @@ import org.screamingsandals.bedwars.scoreboard.ScreamingScoreboard;
 import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.bedwars.tab.TabManager;
 import org.screamingsandals.bedwars.utils.*;
+import org.screamingsandals.lib.hologram.HologramManager;
 import org.screamingsandals.lib.material.MaterialHolder;
 import org.screamingsandals.lib.material.builder.ItemFactory;
 import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.player.PlayerWrapper;
+import org.screamingsandals.lib.utils.AdventureHelper;
+import org.screamingsandals.lib.utils.visual.TextEntry;
 import org.screamingsandals.lib.world.LocationHolder;
+import org.screamingsandals.lib.world.LocationMapper;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
@@ -113,8 +116,6 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     private final Map<Location, ItemStack[]> usedChests = new HashMap<>();
     private final List<SpecialItem> activeSpecialItems = new ArrayList<>();
     private final List<DelayFactory> activeDelays = new ArrayList<>();
-    private final List<Hologram> createdHolograms = new ArrayList<>();
-    private final Map<ItemSpawner, Hologram> countdownHolograms = new HashMap<>();
     private final Map<GamePlayer, Inventory> fakeEnderChests = new HashMap<>();
     private int postGameWaiting = 3;
     private ScreamingScoreboard experimentalBoard = null;
@@ -255,7 +256,8 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                             spawner.node("startLevel").getDouble(1),
                             game.getTeamFromName(spawner.node("team").getString()),
                             spawner.node("maxSpawnedResources").getInt(-1),
-                            spawner.node("floatingEnabled").getBoolean()
+                            spawner.node("floatingEnabled").getBoolean(),
+                            org.screamingsandals.lib.hologram.Hologram.RotationMode.valueOf(spawner.node("rotationMode").getString("Y"))
                     ))
             );
             configMap.node("stores").childrenList().forEach(store -> {
@@ -733,12 +735,13 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
                     if (team.hasBedHolo()) {
                         team.getBedHolo().setLine(0,
-                                i18nonly(isItBedBlock ? "protect_your_bed_destroyed" : (isItAnchor ? "protect_your_anchor_destroyed" : (isItCake ? "protect_your_cake_destroyed" : "protect_your_target_destroyed"))));
-                        team.getBedHolo().addViewers(team.getConnectedPlayers());
+                                TextEntry.of(AdventureHelper.toComponent(i18nonly(isItBedBlock ? "protect_your_bed_destroyed" : (isItAnchor ? "protect_your_anchor_destroyed" : (isItCake ? "protect_your_cake_destroyed" : "protect_your_target_destroyed"))))));
+                        team.getConnectedPlayers().stream().map(PlayerMapper::wrapPlayer).forEach(team.getBedHolo()::addViewer);
                     }
 
                     if (team.hasProtectHolo()) {
                         team.getProtectHolo().destroy();
+                        team.setProtectHolo(null);
                     }
 
                     BedwarsTargetBlockDestroyedEvent targetBlockDestroyed = new BedwarsTargetBlockDestroyedEvent(this,
@@ -865,9 +868,17 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             }
 
             makeSpectator(gamePlayer, true);
-            createdHolograms.forEach(hologram -> {
-                if (teamsInGame.stream().noneMatch(t -> t.getProtectHolo().equals(hologram))) {
-                    hologram.addViewer(gamePlayer.player);
+
+            var wrapper = PlayerMapper.wrapPlayer(gamePlayer.player);
+
+            spawners.forEach(itemSpawner -> {
+                if (itemSpawner.getHologram() != null) {
+                    itemSpawner.getHologram().addViewer(wrapper);
+                }
+            });
+            teamsInGame.forEach(currentTeam -> {
+                if (currentTeam.hasBedHolo()) {
+                    currentTeam.getBedHolo().addViewer(wrapper);
                 }
             });
         }
@@ -922,8 +933,21 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             players.forEach(p -> p.hidePlayer(gamePlayer.player));
         }
 
-        statusbar.removePlayer(PlayerMapper.wrapPlayer(gamePlayer.player));
-        createdHolograms.forEach(holo -> holo.removeViewer(gamePlayer.player));
+        var wrapper = PlayerMapper.wrapPlayer(gamePlayer.player);
+        statusbar.removePlayer(wrapper);
+        spawners.forEach(spawner -> {
+            if (spawner.getHologram() != null) {
+                spawner.getHologram().removeViewer(wrapper);
+            }
+        });
+        teamsInGame.forEach(team -> {
+            if (team.hasBedHolo() && team.getConnectedPlayers().contains(gamePlayer.player)) {
+                team.getBedHolo().removeViewer(wrapper);
+            }
+            if (team.hasProtectHolo() && team.getConnectedPlayers().contains(gamePlayer.player)) {
+                team.getProtectHolo().removeViewer(wrapper);
+            }
+        });
         gamePlayer.player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
 
         if (MainConfig.getInstance().node("mainlobby", "enabled").getBoolean()
@@ -975,7 +999,6 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 updateSigns();
                 rebuild();
             } else {
-                status = GameStatus.WAITING;
                 cancelTask();
             }
             countdown = -1;
@@ -1055,6 +1078,8 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             spawnerNode.node("hologramEnabled").set(spawner.hologramEnabled);
             spawnerNode.node("team").set(spawner.getTeam().map(org.screamingsandals.bedwars.api.Team::getName).orElse(null));
             spawnerNode.node("maxSpawnedResources").set(spawner.maxSpawnedResources);
+            spawnerNode.node("floatingEnabled").set(spawner.maxSpawnedResources);
+            spawnerNode.node("rotationMode").set(spawner.rotationMode);
         }
         for (var store : gameStore) {
             var storeNode = configMap.node("stores").appendListNode();
@@ -1666,35 +1691,11 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                     if (configurationContainer.getOrDefault(ConfigurationContainer.SPAWNER_HOLOGRAMS, Boolean.class, false)) {
                         for (ItemSpawner spawner : spawners) {
                             CurrentTeam spawnerTeam = getCurrentTeamFromTeam(spawner.getTeam().orElse(null));
-                            if (configurationContainer.getOrDefault(ConfigurationContainer.STOP_TEAM_SPAWNERS_ON_DIE, Boolean.class, false) && spawner.getTeam() != null && spawnerTeam == null) {
+                            if (configurationContainer.getOrDefault(ConfigurationContainer.STOP_TEAM_SPAWNERS_ON_DIE, Boolean.class, false) && spawner.getTeam().isPresent() && spawnerTeam == null) {
                                 continue; // team of this spawner is not available. Fix #147
                             }
 
-
-                            if (spawner.getHologramEnabled()) {
-                                Location loc;
-
-                                if (spawner.getFloatingEnabled() &&
-                                        MainConfig.getInstance().node("floating-generator", "enabled").getBoolean(true)) {
-                                    loc = spawner.loc.clone().add(0,
-                                            MainConfig.getInstance().node("floating-generator", "holo-height").getDouble(2.0), 0);
-                                    spawner.spawnFloatingStand(getConnectedPlayers());
-                                } else {
-                                    loc = spawner.loc.clone().add(0,
-                                            MainConfig.getInstance().node("spawner-holo-height").getDouble(0.25), 0);
-                                }
-
-                                Hologram holo = Main.getHologramManager().spawnHologram(getConnectedPlayers(), loc,
-                                        spawner.type.getItemBoldName());
-
-                                createdHolograms.add(holo);
-                                if (configurationContainer.getOrDefault(ConfigurationContainer.SPAWNER_COUNTDOWN_HOLOGRAM, Boolean.class, false)) {
-                                    holo.addLine(spawner.type.getInterval() < 2 ? i18nonly("every_second_spawning")
-                                            : i18nonly("countdown_spawning").replace("%seconds%",
-                                            Integer.toString(spawner.type.getInterval())));
-                                    countdownHolograms.put(spawner, holo);
-                                }
-                            }
+                            spawner.spawnHologram(getConnectedPlayers(), configurationContainer.getOrDefault(ConfigurationContainer.SPAWNER_COUNTDOWN_HOLOGRAM, Boolean.class, false));
                         }
                     }
 
@@ -1797,17 +1798,26 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                             boolean isBlockTypeBed = region.isBedBlock(bed.getState());
                             boolean isAnchor = "RESPAWN_ANCHOR".equals(bed.getType().name());
                             boolean isCake = bed.getType().name().contains("CAKE");
-                            List<Player> enemies = getConnectedPlayers();
-                            enemies.removeAll(team.getConnectedPlayers());
-                            Hologram holo = Main.getHologramManager().spawnHologram(enemies, loc,
-                                    i18nonly(isBlockTypeBed ? "destroy_this_bed" : (isAnchor ? "destroy_this_anchor" : (isCake ? "destroy_this_cake" : "destroy_this_target")))
-                                            .replace("%teamcolor%", team.teamInfo.color.chatColor.toString()));
-                            createdHolograms.add(holo);
+                            var enemies = getConnectedPlayers() // getConnectedPlayers is copy
+                                    .stream()
+                                    .filter(player -> !team.getConnectedPlayers().contains(player))
+                                    .map(PlayerMapper::wrapPlayer)
+                                    .collect(Collectors.toList());
+                            var holo = HologramManager
+                                    .hologram(LocationMapper.wrapLocation(loc))
+                                    .firstLine(TextEntry.of(AdventureHelper.toComponent(i18nonly(isBlockTypeBed ? "destroy_this_bed" : (isAnchor ? "destroy_this_anchor" : (isCake ? "destroy_this_cake" : "destroy_this_target")))
+                                            .replace("%teamcolor%", team.teamInfo.color.chatColor.toString()))
+                                    ));
+                            enemies.forEach(holo::addViewer);
+                            holo.show();
                             team.setBedHolo(holo);
-                            Hologram protectHolo = Main.getHologramManager().spawnHologram(team.getConnectedPlayers(), loc,
-                                    i18nonly(isBlockTypeBed ? "protect_your_bed" : (isAnchor ? "protect_your_anchor" : (isCake ? "protect_your_cake" : "protect_your_target")))
-                                            .replace("%teamcolor%", team.teamInfo.color.chatColor.toString()));
-                            createdHolograms.add(protectHolo);
+                            var protectHolo = HologramManager
+                                    .hologram(LocationMapper.wrapLocation(loc))
+                                    .firstLine(TextEntry.of(AdventureHelper.toComponent(i18nonly(isBlockTypeBed ? "protect_your_bed" : (isAnchor ? "protect_your_anchor" : (isCake ? "protect_your_cake" : "protect_your_target")))
+                                            .replace("%teamcolor%", team.teamInfo.color.chatColor.toString())
+                                    )));
+                            team.getConnectedPlayers().stream().map(PlayerMapper::wrapPlayer).forEach(protectHolo::addViewer);
+                            protectHolo.show();
                             team.setProtectHolo(protectHolo);
                         }
                     }
@@ -1935,8 +1945,11 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                     }
                 } else if (countdown != gameTime /* Prevent spawning resources on game start */) {
                     for (ItemSpawner spawner : spawners) {
+
+                        // TODO: Split spawners to async tasks with synchronized drops
+
                         CurrentTeam spawnerTeam = getCurrentTeamFromTeam(spawner.getTeam().orElse(null));
-                        if (configurationContainer.getOrDefault(ConfigurationContainer.STOP_TEAM_SPAWNERS_ON_DIE, Boolean.class, false) && spawner.getTeam() != null && spawnerTeam == null) {
+                        if (configurationContainer.getOrDefault(ConfigurationContainer.STOP_TEAM_SPAWNERS_ON_DIE, Boolean.class, false) && spawner.getTeam().isPresent() && spawnerTeam == null) {
                             continue; // team of this spawner is not available. Fix #147
                         }
 
@@ -1947,16 +1960,17 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                          */
                         int elapsedTime = gameTime - countdown;
 
-                        if (spawner.getHologramEnabled()) {
+                        if (spawner.getHologram() != null) {
                             if (configurationContainer.getOrDefault(ConfigurationContainer.SPAWNER_HOLOGRAMS, Boolean.class, false)
                                     && configurationContainer.getOrDefault(ConfigurationContainer.SPAWNER_COUNTDOWN_HOLOGRAM, Boolean.class, false)
                                     && !spawner.spawnerIsFullHologram) {
                                 if (cycle > 1) {
                                     int modulo = cycle - elapsedTime % cycle;
-                                    countdownHolograms.get(spawner).setLine(1,
-                                            i18nonly("countdown_spawning").replace("%seconds%", Integer.toString(modulo)));
+                                    spawner.getHologram().setLine(1,
+                                            TextEntry.of(AdventureHelper.toComponent(i18nonly("countdown_spawning").replace("%seconds%", Integer.toString(modulo))))
+                                    );
                                 } else if (spawner.rerenderHologram) {
-                                    countdownHolograms.get(spawner).setLine(1, i18nonly("every_second_spawning"));
+                                    spawner.getHologram().setLine(1, TextEntry.of(AdventureHelper.toComponent(i18nonly("every_second_spawning"))));
                                     spawner.rerenderHologram = false;
                                 }
                             }
@@ -1991,7 +2005,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
                             ItemStack resource = resourceSpawnEvent.getResource();
 
-                            resource.setAmount(spawner.nextMaxSpawn(resource.getAmount(), countdownHolograms.get(spawner)));
+                            resource.setAmount(spawner.nextMaxSpawn(resource.getAmount()));
 
                             if (resource.getAmount() > 0) {
                                 Location loc = spawner.getLocation().clone().add(0, 0.05, 0);
@@ -2087,6 +2101,17 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             experimentalBoard = null;
         }
         Debug.info(name + ": rebuilding starts");
+        teamsInGame.forEach(currentTeam -> {
+            if (currentTeam.hasBedHolo()) {
+                currentTeam.getBedHolo().destroy();
+                currentTeam.setBedHolo(null);
+            }
+
+            if (currentTeam.hasProtectHolo()) {
+                currentTeam.getProtectHolo().destroy();
+                currentTeam.setProtectHolo(null);
+            }
+        });
         teamsInGame.clear();
         activeSpecialItems.clear();
         activeDelays.clear();
@@ -2154,13 +2179,6 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             entity.remove();
             Main.unregisterGameEntity(entity);
         }
-
-        // Holograms destroy
-        for (Hologram holo : createdHolograms) {
-            holo.destroy();
-        }
-        createdHolograms.clear();
-        countdownHolograms.clear();
 
         UpgradeRegistry.clearAll(this);
 

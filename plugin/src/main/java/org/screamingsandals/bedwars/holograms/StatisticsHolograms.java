@@ -30,6 +30,7 @@ import org.screamingsandals.lib.utils.annotations.methods.OnPostEnable;
 import org.screamingsandals.lib.utils.annotations.methods.OnPreDisable;
 import org.screamingsandals.lib.utils.annotations.methods.ShouldRunControllable;
 import org.screamingsandals.lib.utils.annotations.parameters.ConfigFile;
+import org.screamingsandals.lib.utils.visual.TextEntry;
 import org.screamingsandals.lib.world.LocationHolder;
 import org.screamingsandals.lib.world.LocationMapper;
 import org.screamingsandals.lib.world.WorldHolder;
@@ -198,7 +199,7 @@ public class StatisticsHolograms {
     private Hologram createPlayerStatisticHologram(PlayerWrapper player, LocationHolder holoLocation) {
         final var holo = HologramManager
                 .hologram(holoLocation)
-                .firstLine(AdventureHelper.toComponent(mainConfig.node("holograms", "headline").getString("Your §eBEDWARS§f stats")))
+                .firstLine(TextEntry.of(AdventureHelper.toComponent(mainConfig.node("holograms", "headline").getString("Your §eBEDWARS§f stats"))))
                 .setTouchable(true)
                 .addViewer(player);
         HologramManager.addHologram(holo);
@@ -304,7 +305,7 @@ public class StatisticsHolograms {
         var increment = size == 1 || size > lines.size() ? 1 : 0;
 
         for (int i = 0; i < lines.size(); i++) {
-            holo.setLine(i + increment, AdventureHelper.toComponent(lines.get(i)));
+            holo.setLine(i + increment, TextEntry.of(AdventureHelper.toComponent(lines.get(i))));
         }
     }
 

@@ -507,7 +507,7 @@ public class MainConfig {
                     .key("notify-when-warped").defValue(true)
                     .back()
                 .section("floating-generator").key("enabled").defValue(true)
-                    .key("holo-height").defValue(2.0)
+                    .key("holo-height").defValue(0.5)
                     .key("generator-height").defValue(0.25)
                     .back()
                 .drop("version");
