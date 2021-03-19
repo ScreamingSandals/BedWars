@@ -734,8 +734,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                     }
 
                     if (team.hasBedHolo()) {
-                        team.getBedHolo().setLine(0,
-                                TextEntry.of(AdventureHelper.toComponent(i18nonly(isItBedBlock ? "protect_your_bed_destroyed" : (isItAnchor ? "protect_your_anchor_destroyed" : (isItCake ? "protect_your_cake_destroyed" : "protect_your_target_destroyed"))))));
+                        team.getBedHolo().firstLine(TextEntry.of(AdventureHelper.toComponent(i18nonly(isItBedBlock ? "protect_your_bed_destroyed" : (isItAnchor ? "protect_your_anchor_destroyed" : (isItCake ? "protect_your_cake_destroyed" : "protect_your_target_destroyed"))))));
                         team.getConnectedPlayers().stream().map(PlayerMapper::wrapPlayer).forEach(team.getBedHolo()::addViewer);
                     }
 
@@ -1966,11 +1965,11 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                                     && !spawner.spawnerIsFullHologram) {
                                 if (cycle > 1) {
                                     int modulo = cycle - elapsedTime % cycle;
-                                    spawner.getHologram().setLine(1,
+                                    spawner.getHologram().replaceLine(1,
                                             TextEntry.of(AdventureHelper.toComponent(i18nonly("countdown_spawning").replace("%seconds%", Integer.toString(modulo))))
                                     );
                                 } else if (spawner.rerenderHologram) {
-                                    spawner.getHologram().setLine(1, TextEntry.of(AdventureHelper.toComponent(i18nonly("every_second_spawning"))));
+                                    spawner.getHologram().replaceLine(1, TextEntry.of(AdventureHelper.toComponent(i18nonly("every_second_spawning"))));
                                     spawner.rerenderHologram = false;
                                 }
                             }
