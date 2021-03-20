@@ -168,7 +168,7 @@ public class StatisticsHolograms {
         return holograms.stream()
                 .filter(hologram -> {
                     var loc = hologram.getLocation();
-                    return loc.getWorld().getUuid().equals(holoLocation.getWorld().getUuid())
+                    return loc != null && loc.getWorld().getUuid().equals(holoLocation.getWorld().getUuid())
                             && loc.getX() == holoLocation.getX()
                             && loc.getY() == holoLocation.getY()
                             && loc.getZ() == holoLocation.getZ();
