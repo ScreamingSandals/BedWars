@@ -436,7 +436,7 @@ public class ShopInventory implements Listener {
 
         var materialItem = ItemFactory.build(type.getStack(priceAmount)).orElseThrow();
         if (event.hasPlayerInInventory(materialItem)) {
-            final var prePurchaseEvent = new BedwarsStorePrePurchaseEvent(event, PurchaseType.NORMAL_ITEM);
+            final var prePurchaseEvent = new BedwarsStorePrePurchaseEvent(event, PurchaseType.NORMAL_ITEM, materialItem, type, newItem);
             Bukkit.getServer().getPluginManager().callEvent(prePurchaseEvent);
             if (prePurchaseEvent.isCancelled()) {
                 return;
@@ -515,7 +515,7 @@ public class ShopInventory implements Listener {
         var materialItem = ItemFactory.build(type.getStack(priceAmount)).orElseThrow();
 
         if (event.hasPlayerInInventory(materialItem)) {
-            final var upgradePurchasedEvent  = new BedwarsStorePrePurchaseEvent(event, PurchaseType.UPGRADES);
+            final var upgradePurchasedEvent  = new BedwarsStorePrePurchaseEvent(event, PurchaseType.UPGRADES, materialItem, type, null);
             Bukkit.getServer().getPluginManager().callEvent(upgradePurchasedEvent);
             if (upgradePurchasedEvent.isCancelled()) return;
 

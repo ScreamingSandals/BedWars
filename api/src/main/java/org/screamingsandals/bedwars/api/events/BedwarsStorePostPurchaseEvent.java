@@ -15,7 +15,7 @@ import org.screamingsandals.simpleinventories.events.OnTradeEvent;
 @RequiredArgsConstructor
 public class BedwarsStorePostPurchaseEvent extends Event implements Cancellable {
     private static final HandlerList handlerList = new HandlerList();
-    private final OnTradeEvent event;
+    private final OnTradeEvent tradeEvent;
     private final PurchaseType type;
     private boolean cancelled;
 
@@ -23,8 +23,8 @@ public class BedwarsStorePostPurchaseEvent extends Event implements Cancellable 
      *
      * @return
      */
-    public OnTradeEvent getEvent() {
-        return event;
+    public OnTradeEvent getTradeEvent() {
+        return tradeEvent;
     }
 
     /**
