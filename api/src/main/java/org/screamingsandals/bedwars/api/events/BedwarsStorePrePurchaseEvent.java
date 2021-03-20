@@ -25,6 +25,22 @@ public class BedwarsStorePrePurchaseEvent extends Event implements Cancellable {
      *
      * @return
      */
+    public ItemSpawnerType getSpawnerType() {
+        return spawnerType;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public Item getNewItem() {
+        return newItem;
+    }
+
+    /**
+     *
+     * @return
+     */
     public OnTradeEvent getTradeEvent() {
         return tradeEvent;
     }
