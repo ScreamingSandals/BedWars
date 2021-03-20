@@ -324,7 +324,7 @@ public class ShopInventory implements Listener {
                     return "";
                 })
                 .call(categoryBuilder -> {
-                    final var includeEvent = new BedwarsStoreIncludeEvent(categoryBuilder);
+                    final var includeEvent = new BedwarsStoreIncludeEvent(categoryBuilder, name, file, useParent);
                     Bukkit.getServer().getPluginManager().callEvent(includeEvent);
                     if (includeEvent.isCancelled()) {
                         return;

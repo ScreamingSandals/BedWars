@@ -7,6 +7,8 @@ import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 import org.screamingsandals.simpleinventories.builder.CategoryBuilder;
 
+import java.io.File;
+
 /**
  * @author Bedwars Team
  *
@@ -15,7 +17,34 @@ import org.screamingsandals.simpleinventories.builder.CategoryBuilder;
 public class BedwarsStoreIncludeEvent extends Event implements Cancellable {
     private static final HandlerList handlerList = new HandlerList();
     private final CategoryBuilder builder;
+    private final String name;
+    private final File file;
+    private final boolean useParent;
     private boolean cancelled;
+
+    /**
+     *
+     * @return
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public boolean isUseParent() {
+        return useParent;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public File getFile() {
+        return file;
+    }
 
     /**
      *
