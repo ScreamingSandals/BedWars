@@ -8,9 +8,9 @@ import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.game.Game;
 import org.screamingsandals.bedwars.game.GameManager;
+import org.screamingsandals.bedwars.lang.LangKeys;
+import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
-
-import static org.screamingsandals.bedwars.lib.lang.I.i18n;
 
 public class ReloadCommand extends BaseCommand {
     public ReloadCommand(CommandManager<CommandSenderWrapper> manager) {
@@ -24,7 +24,7 @@ public class ReloadCommand extends BaseCommand {
                     .handler(commandContext -> {
                         var sender = commandContext.getSender();
 
-                        sender.sendMessage(i18n("safe_reload"));
+                        sender.sendMessage(Message.of(LangKeys.SAFE_RELOAD).defaultPrefix());
 
                         GameManager.getInstance().getGames().forEach(Game::stop);
                         var plugin = Main.getInstance().getPluginDescription().as(JavaPlugin.class);
@@ -43,7 +43,7 @@ public class ReloadCommand extends BaseCommand {
                                 }
 
                                 if (gameRuns && timer == 0) {
-                                    sender.sendMessage(i18n("safe_reload_failed_to_stop_game"));
+                                    sender.sendMessage(Message.of(LangKeys.SAFE_RELOAD_FAILED_TO_STOP_GAME).defaultPrefix());
                                 }
 
                                 if (!gameRuns || timer == 0) {

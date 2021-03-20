@@ -3,9 +3,9 @@ package org.screamingsandals.bedwars.commands;
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
 import org.screamingsandals.bedwars.Main;
+import org.screamingsandals.bedwars.lang.LangKeys;
+import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
-
-import static org.screamingsandals.bedwars.lib.lang.I.i18nonly;
 
 public class HelpCommand extends BaseCommand {
     public HelpCommand(CommandManager<CommandSenderWrapper> manager) {
@@ -19,83 +19,87 @@ public class HelpCommand extends BaseCommand {
                     // TODO: use more generic way
                     var sender = commandContext.getSender();
                     if (sender.getType() == CommandSenderWrapper.Type.PLAYER) {
-                        sender.sendMessage(i18nonly("help_title").replace("%version%", Main.getVersion()));
+                        Message.of(LangKeys.HELP_TITLE).placeholder("version", Main.getVersion()).send(sender);
                         if (sender.hasPermission(BedWarsPermission.JOIN_PERMISSION.asPermission())) {
-                            sender.sendMessage(i18nonly("help_bw_join"));
+                            Message.of(LangKeys.HELP_BW_JOIN).send(sender);
                         }
                         if (sender.hasPermission(BedWarsPermission.LEAVE_PERMISSION.asPermission())) {
-                            sender.sendMessage(i18nonly("help_bw_leave"));
+                            Message.of(LangKeys.HELP_BW_LEAVE).send(sender);
                         }
                         if (sender.hasPermission(BedWarsPermission.REJOIN_PERMISSION.asPermission())) {
-                            sender.sendMessage(i18nonly("help_bw_rejoin"));
+                            Message.of(LangKeys.HELP_BW_REJOIN).send(sender);
                         }
                         if (sender.hasPermission(BedWarsPermission.AUTOJOIN_PERMISSION.asPermission())) {
-                            sender.sendMessage(i18nonly("help_bw_autojoin"));
+                            Message.of(LangKeys.HELP_BW_AUTOJOIN).send(sender);
                         }
                         if (sender.hasPermission(BedWarsPermission.LIST_PERMISSION.asPermission())) {
-                            sender.sendMessage(i18nonly("help_bw_list"));
+                            Message.of(LangKeys.HELP_BW_LIST).send(sender);
                         }
                         if (sender.hasPermission(BedWarsPermission.LEADERBOARD_PERMISSION.asPermission())) {
-                            sender.sendMessage(i18nonly("help_bw_leaderboard"));
+                            Message.of(LangKeys.HELP_BW_LEADERBOARD).send(sender);
                         }
 
-                        if ((sender.hasPermission(BedWarsPermission.STATS_PERMISSION.asPermission()))) {
+                        if (sender.hasPermission(BedWarsPermission.STATS_PERMISSION.asPermission())) {
                             if (sender.hasPermission(BedWarsPermission.ADMIN_PERMISSION.asPermission()) || sender.hasPermission(BedWarsPermission.OTHER_STATS_PERMISSION.asPermission())) {
-                                sender.sendMessage(i18nonly("help_bw_stats_other"));
+                                Message.of(LangKeys.HELP_BW_STATS_OTHER).send(sender);
                             } else {
-                                sender.sendMessage(i18nonly("help_bw_stats"));
+                                Message.of(LangKeys.HELP_BW_STATS).send(sender);
                             }
                         }
 
-                        if (sender.hasPermission("bw.admin.alljoin")) {
-                            sender.sendMessage(i18nonly("help_bw_alljoin"));
+                        if (sender.hasPermission(BedWarsPermission.ALL_JOIN_PERMISSION.asPermission())) {
+                            Message.of(LangKeys.HELP_BW_ALLJOIN).send(sender);
                         }
 
                         if (sender.hasPermission(BedWarsPermission.ADMIN_PERMISSION.asPermission())) {
-                            sender.sendMessage(i18nonly("help_bw_addholo"));
-                            sender.sendMessage(i18nonly("help_bw_removeholo"));
-                            sender.sendMessage(i18nonly("help_bw_mainlobby"));
-
-                            sender.sendMessage(i18nonly("help_bw_admin_info"));
-                            sender.sendMessage(i18nonly("help_bw_admin_add"));
-                            sender.sendMessage(i18nonly("help_bw_admin_lobby"));
-                            sender.sendMessage(i18nonly("help_bw_admin_spec"));
-                            sender.sendMessage(i18nonly("help_bw_admin_pos1"));
-                            sender.sendMessage(i18nonly("help_bw_admin_pos2"));
-                            sender.sendMessage(i18nonly("help_bw_admin_pausecountdown"));
-                            sender.sendMessage(i18nonly("help_bw_admin_post_game_waiting"));
-                            sender.sendMessage(i18nonly("help_bw_admin_customprefix"));
-                            sender.sendMessage(i18nonly("help_bw_admin_minplayers"));
-                            sender.sendMessage(i18nonly("help_bw_admin_time"));
-                            sender.sendMessage(i18nonly("help_bw_admin_team_add"));
-                            sender.sendMessage(i18nonly("help_bw_admin_team_color"));
-                            sender.sendMessage(i18nonly("help_bw_admin_team_maxplayers"));
-                            sender.sendMessage(i18nonly("help_bw_admin_team_spawn"));
-                            sender.sendMessage(i18nonly("help_bw_admin_team_bed"));
-                            sender.sendMessage(i18nonly("help_bw_admin_jointeam"));
-                            sender.sendMessage(i18nonly("help_bw_admin_spawner_add"));
-                            sender.sendMessage(i18nonly("help_bw_admin_spawner_remove"));
-                            sender.sendMessage(i18nonly("help_bw_admin_spawner_reset"));
-                            sender.sendMessage(i18nonly("help_bw_admin_store_add"));
-                            sender.sendMessage(i18nonly("help_bw_admin_store_type"));
-                            sender.sendMessage(i18nonly("help_bw_admin_store_child"));
-                            sender.sendMessage(i18nonly("help_bw_admin_store_adult"));
-                            sender.sendMessage(i18nonly("help_bw_admin_store_remove"));
-                            sender.sendMessage(i18nonly("help_bw_admin_config"));
-                            sender.sendMessage(i18nonly("help_bw_admin_arena_time"));
-                            sender.sendMessage(i18nonly("help_bw_admin_arena_weather"));
-                            sender.sendMessage(i18nonly("help_bw_admin_remove"));
-                            sender.sendMessage(i18nonly("help_bw_admin_edit"));
-                            sender.sendMessage(i18nonly("help_bw_admin_save"));
-                            sender.sendMessage(i18nonly("help_bw_reload"));
-                            sender.sendMessage(i18nonly("help_bw_dump"));
+                            Message.
+                                    of(LangKeys.HELP_BW_ADDHOLO).
+                                    join(LangKeys.HELP_BW_REMOVEHOLO).
+                                    join(LangKeys.HELP_BW_MAINLOBBY).
+                                    join(LangKeys.HELP_BW_ADMIN_INFO).
+                                    join(LangKeys.HELP_BW_ADMIN_ADD).
+                                    join(LangKeys.HELP_BW_ADMIN_LOBBY).
+                                    join(LangKeys.HELP_BW_ADMIN_SPEC).
+                                    join(LangKeys.HELP_BW_ADMIN_POS1).
+                                    join(LangKeys.HELP_BW_ADMIN_POS2).
+                                    join(LangKeys.HELP_BW_ADMIN_PAUSECOUNTDOWN).
+                                    join(LangKeys.HELP_BW_ADMIN_POST_GAME_WAITING).
+                                    join(LangKeys.HELP_BW_ADMIN_CUSTOMPREFIX).
+                                    join(LangKeys.HELP_BW_ADMIN_MINPLAYERS).
+                                    join(LangKeys.HELP_BW_ADMIN_TIME).
+                                    join(LangKeys.HELP_BW_ADMIN_TEAM_ADD).
+                                    join(LangKeys.HELP_BW_ADMIN_TEAM_COLOR).
+                                    join(LangKeys.HELP_BW_ADMIN_TEAM_MAXPLAYERS).
+                                    join(LangKeys.HELP_BW_ADMIN_TEAM_SPAWN).
+                                    join(LangKeys.HELP_BW_ADMIN_TEAM_BED).
+                                    join(LangKeys.HELP_BW_ADMIN_JOINTEAM).
+                                    join(LangKeys.HELP_BW_ADMIN_SPAWNER_ADD).
+                                    join(LangKeys.HELP_BW_ADMIN_SPAWNER_REMOVE).
+                                    join(LangKeys.HELP_BW_ADMIN_SPAWNER_RESET).
+                                    join(LangKeys.HELP_BW_ADMIN_STORE_ADD).
+                                    join(LangKeys.HELP_BW_ADMIN_STORE_TYPE).
+                                    join(LangKeys.HELP_BW_ADMIN_STORE_CHILD).
+                                    join(LangKeys.HELP_BW_ADMIN_STORE_ADULT).
+                                    join(LangKeys.HELP_BW_ADMIN_STORE_REMOVE).
+                                    join(LangKeys.HELP_BW_ADMIN_CONFIG).
+                                    join(LangKeys.HELP_BW_ADMIN_ARENA_TIME).
+                                    join(LangKeys.HELP_BW_ADMIN_ARENA_WEATHER).
+                                    join(LangKeys.HELP_BW_ADMIN_REMOVE).
+                                    join(LangKeys.HELP_BW_ADMIN_EDIT).
+                                    join(LangKeys.HELP_BW_ADMIN_SAVE).
+                                    join(LangKeys.HELP_BW_RELOAD).
+                                    join(LangKeys.HELP_BW_DUMP)
+                                    .send(sender);
                         }
                     } else {
-                        sender.sendMessage(i18nonly("help_title_console").replace("%version%", Main.getVersion()));
-                        sender.sendMessage(i18nonly("help_bw_list"));
-                        sender.sendMessage(i18nonly("help_bw_stats_other"));
-                        sender.sendMessage(i18nonly("help_bw_alljoin"));
-                        sender.sendMessage(i18nonly("help_bw_reload"));
+                        Message
+                                .of(LangKeys.HELP_TITLE_CONSOLE)
+                                .placeholder("version", Main.getVersion())
+                                .join(LangKeys.HELP_BW_LIST)
+                                .join(LangKeys.HELP_BW_STATS_OTHER)
+                                .join(LangKeys.HELP_BW_ALLJOIN)
+                                .join(LangKeys.HELP_BW_RELOAD)
+                                .send(sender);
                     }
                 })
         );

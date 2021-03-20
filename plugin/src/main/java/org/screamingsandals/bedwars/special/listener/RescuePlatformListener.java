@@ -7,6 +7,7 @@ import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.api.events.BedwarsApplyPropertyToBoughtItem;
 import org.screamingsandals.bedwars.api.special.SpecialItem;
 import org.screamingsandals.bedwars.game.GamePlayer;
+import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.special.RescuePlatform;
 import org.screamingsandals.bedwars.utils.DelayFactory;
 import org.screamingsandals.bedwars.utils.MiscUtils;
@@ -22,11 +23,10 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.screamingsandals.lib.lang.Message;
+import org.screamingsandals.lib.player.PlayerMapper;
 
 import java.util.ArrayList;
-
-import static org.screamingsandals.bedwars.lib.lang.I.i18nc;
-import static org.screamingsandals.bedwars.lib.lang.I18n.i18nonly;
 
 public class RescuePlatformListener implements Listener {
     private static final String RESCUE_PLATFORM_PREFIX = "Module:RescuePlatform:";
@@ -71,7 +71,7 @@ public class RescuePlatformListener implements Listener {
 
                         if (player.getLocation().getBlock().getRelative(BlockFace.DOWN)
                                 .getType() != Material.AIR) {
-                            player.sendMessage(i18nc("specials_rescue_platform_not_in_air", game.getCustomPrefix()));
+                            MiscUtils.sendActionBarMessage(PlayerMapper.wrapPlayer(player), Message.of(LangKeys.SPECIALS_RESCUE_PLATFORM_NOT_IN_AIR).placeholder("time", delay));
                             return;
                         }
 
@@ -85,7 +85,7 @@ public class RescuePlatformListener implements Listener {
                         event.setCancelled(true);
 
                         int delay = game.getActiveDelay(player, RescuePlatform.class).getRemainDelay();
-                        MiscUtils.sendActionBarMessage(player, i18nonly("special_item_delay").replace("%time%", String.valueOf(delay)));
+                        MiscUtils.sendActionBarMessage(PlayerMapper.wrapPlayer(player), Message.of(LangKeys.SPECIALS_ITEM_DELAY).placeholder("time", delay));
                     }
                 }
             }

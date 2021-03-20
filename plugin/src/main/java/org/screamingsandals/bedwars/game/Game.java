@@ -4,6 +4,7 @@ import com.onarandombox.MultiverseCore.api.Core;
 import io.papermc.lib.PaperLib;
 import lombok.Getter;
 import lombok.SneakyThrows;
+import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -47,6 +48,7 @@ import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.config.RecordSave;
 import org.screamingsandals.bedwars.holograms.StatisticsHolograms;
 import org.screamingsandals.bedwars.inventories.TeamSelectorInventory;
+import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.lib.nms.entity.EntityUtils;
 import org.screamingsandals.bedwars.listener.Player116ListenerUtils;
@@ -57,12 +59,12 @@ import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.bedwars.tab.TabManager;
 import org.screamingsandals.bedwars.utils.*;
 import org.screamingsandals.lib.hologram.HologramManager;
+import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.material.MaterialHolder;
 import org.screamingsandals.lib.material.builder.ItemFactory;
 import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.utils.AdventureHelper;
-import org.screamingsandals.lib.utils.visual.TextEntry;
 import org.screamingsandals.lib.world.LocationHolder;
 import org.screamingsandals.lib.world.LocationMapper;
 import org.spongepowered.configurate.ConfigurateException;
@@ -73,8 +75,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static org.screamingsandals.bedwars.lib.lang.I.*;
 
 public class Game implements org.screamingsandals.bedwars.api.game.Game {
     public boolean gameStartItem;
@@ -569,9 +569,9 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 CurrentTeam team = getTeamOfChest(block);
                 if (team != null) {
                     team.removeTeamChest(block);
-                    String message = i18nc("team_chest_broken", customPrefix);
+                    var message = Message.of(LangKeys.SPECIALS_TEAM_CHEST_BROKEN).prefixOrDefault(getCustomPrefixComponent());
                     for (GamePlayer gp : team.players) {
-                        gp.player.sendMessage(message);
+                        PlayerMapper.wrapPlayer(gp.player).sendMessage(message);
                     }
 
                     if (breakEvent.isDrops()) {
@@ -717,16 +717,16 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                         colored_broker = getPlayerTeam(Main.getPlayerGameProfile(broker)).teamInfo.color.chatColor + broker.getDisplayName();
                     }
                     for (GamePlayer player : players) {
-                        final String key = isItBedBlock ? "bed_is_destroyed" : (isItAnchor ? "anchor_is_destroyed" : (isItCake ? "cake_is_destroyed" : "target_is_destroyed"));
-                        TitleUtils.send(PlayerMapper.wrapPlayer(player.player),
-                                i18n(key, false)
-                                        .replace("%team%", team.teamInfo.color.chatColor + team.teamInfo.name)
-                                        .replace("%broker%", colored_broker),
-                                i18n(getPlayerTeam(player) == team ? "bed_is_destroyed_subtitle_for_victim"
-                                        : "bed_is_destroyed_subtitle", false));
-                        player.player.sendMessage(i18nc(key, customPrefix)
-                                .replace("%team%", team.teamInfo.color.chatColor + team.teamInfo.name)
-                                .replace("%broker%", colored_broker));
+                        final var wrapped = PlayerMapper.wrapPlayer(player.player);
+                        Message
+                                .of(isItBedBlock ? LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_BED : (isItAnchor ? LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_ANCHOR : (isItCake ? LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_CAKE : LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_ANY)))
+                                .placeholder("team", AdventureHelper.toComponent(team.teamInfo.color.chatColor + team.teamInfo.name))
+                                .placeholder("broker", AdventureHelper.toComponent(colored_broker))
+                                .send(wrapped)
+                                .join(getPlayerTeam(player) == team ? LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_SUBTITLE_VICTIM : LangKeys.IN_GAME_GAME_START_SUBTITLE)
+                                .times(TitleUtils.defaultTimes())
+                                .title(wrapped);
+
                         SpawnEffects.spawnEffect(this, player.player, "game-effects.beddestroy");
                         Sounds.playSound(player.player, player.player.getLocation(),
                                 MainConfig.getInstance().node("sounds", "bed_destroyed").getString(),
@@ -734,7 +734,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                     }
 
                     if (team.hasBedHolo()) {
-                        team.getBedHolo().firstLine(TextEntry.of(AdventureHelper.toComponent(i18nonly(isItBedBlock ? "protect_your_bed_destroyed" : (isItAnchor ? "protect_your_anchor_destroyed" : (isItCake ? "protect_your_cake_destroyed" : "protect_your_target_destroyed"))))));
+                        team.getBedHolo().firstLine(Message.of(isItBedBlock ? LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_DESTROYED_BED : (isItAnchor ? LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_DESTROYED_ANCHOR : (isItCake ? LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_DESTROYED_CAKE : LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_DESTROYED_ANY))).asTextEntry(null));
                         team.getConnectedPlayers().stream().map(PlayerMapper::wrapPlayer).forEach(team.getBedHolo()::addViewer);
                     }
 
@@ -807,14 +807,19 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
         if (status == GameStatus.WAITING) {
             Debug.info(gamePlayer.player.getName() + " moving to lobby");
-            mpr("join").prefix(customPrefix).replace("name", gamePlayer.player.getDisplayName())
-                    .replace("players", players.size())
-                    .replace("maxplayers", calculatedMaxPlayers)
-                    .send(getConnectedPlayers());
+            Message
+                    .of(LangKeys.IN_GAME_JOIN)
+                    .placeholder("name", AdventureHelper.toComponent(gamePlayer.player.getDisplayName()))
+                    .placeholder("players", players.size())
+                    .placeholder("maxplayers", calculatedMaxPlayers)
+                    .prefixOrDefault(getCustomPrefixComponent())
+                    .send(getConnectedPlayers().stream().map(PlayerMapper::wrapPlayer).collect(Collectors.toList()));
 
             gamePlayer.teleport(lobbySpawn, () -> {
                 gamePlayer.invClean(); // temp fix for inventory issues?
                 SpawnEffects.spawnEffect(Game.this, gamePlayer.player, "game-effects.lobbyjoin");
+
+                var wrapper = PlayerMapper.wrapPlayer(gamePlayer.player);
 
                 if (configurationContainer.getOrDefault(ConfigurationContainer.JOIN_RANDOM_TEAM_ON_JOIN, Boolean.class, false)) {
                     joinRandomTeam(gamePlayer);
@@ -823,33 +828,26 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 if (configurationContainer.getOrDefault(ConfigurationContainer.COMPASS, Boolean.class, false)) {
                     int compassPosition = MainConfig.getInstance().node("hotbar", "selector").getInt(0);
                     if (compassPosition >= 0 && compassPosition <= 8) {
-                        ItemStack compass = MainConfig.getInstance().readDefinedItem("jointeam", "COMPASS").as(ItemStack.class);
-                        ItemMeta metaCompass = compass.getItemMeta();
-                        metaCompass.setDisplayName(i18n("compass_selector_team", false));
-                        compass.setItemMeta(metaCompass);
-                        gamePlayer.player.getInventory().setItem(compassPosition, compass);
+                        var compass = MainConfig.getInstance().readDefinedItem("jointeam", "COMPASS");
+                        compass.setDisplayName(Message.of(LangKeys.IN_GAME_LOBBY_ITEMS_COMPASS_SELECTOR_TEAM).asComponent(wrapper));
+                        wrapper.getPlayerInventory().setItem(compassPosition, compass);
                     }
                 }
 
                 int leavePosition = MainConfig.getInstance().node("hotbar", "leave").getInt(8);
                 if (leavePosition >= 0 && leavePosition <= 8) {
-                    ItemStack leave = MainConfig.getInstance().readDefinedItem("leavegame", "SLIME_BALL").as(ItemStack.class);
-                    ItemMeta leaveMeta = leave.getItemMeta();
-                    leaveMeta.setDisplayName(i18n("leave_from_game_item", false));
-                    leave.setItemMeta(leaveMeta);
-                    gamePlayer.player.getInventory().setItem(leavePosition, leave);
+                    var leave = MainConfig.getInstance().readDefinedItem("leavegame", "SLIME_BALL");
+                    leave.setDisplayName(Message.of(LangKeys.IN_GAME_LOBBY_ITEMS_LEAVE_FROM_GAME_ITEM).asComponent(wrapper));
+                    wrapper.getPlayerInventory().setItem(leavePosition, leave);
                 }
 
                 if (gamePlayer.player.hasPermission("bw.vip.startitem")
                         || gamePlayer.player.hasPermission("misat11.bw.vip.startitem")) {
                     int vipPosition = MainConfig.getInstance().node("hotbar", "start").getInt(1);
                     if (vipPosition >= 0 && vipPosition <= 8) {
-                        ItemStack startGame = MainConfig.getInstance().readDefinedItem("startgame", "DIAMOND").as(ItemStack.class);
-                        ItemMeta startGameMeta = startGame.getItemMeta();
-                        startGameMeta.setDisplayName(i18n("start_game_item", false));
-                        startGame.setItemMeta(startGameMeta);
-
-                        gamePlayer.player.getInventory().setItem(vipPosition, startGame);
+                        var startGame = MainConfig.getInstance().readDefinedItem("startgame", "DIAMOND");
+                        startGame.setDisplayName(Message.of(LangKeys.IN_GAME_LOBBY_ITEMS_START_GAME_ITEM).asComponent(wrapper));
+                        wrapper.getPlayerInventory().setItem(vipPosition, startGame);
                     }
                 }
             });
@@ -904,16 +902,13 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             experimentalBoard.removePlayer(gamePlayer.player);
         }
 
-        if (!gamePlayer.isSpectator) {
-            String message = i18nc("leave", customPrefix).replace("%name%", gamePlayer.player.getDisplayName())
-                    .replace("%players%", Integer.toString(players.size()))
-                    .replaceAll("%maxplayers%", Integer.toString(calculatedMaxPlayers));
-
-            if (!preServerRestart) {
-                for (GamePlayer p : players) {
-                    p.player.sendMessage(message);
-                }
-            }
+        if (!gamePlayer.isSpectator && !preServerRestart) {
+            Message.of(LangKeys.IN_GAME_LEAVE)
+                    .prefixOrDefault(getCustomPrefixComponent())
+                    .placeholder("name", AdventureHelper.toComponent(gamePlayer.player.getDisplayName()))
+                    .placeholder("players", players.size())
+                    .placeholder("maxplayers", calculatedMaxPlayers)
+                    .send(players.stream().map(p -> PlayerMapper.wrapPlayer(p.player)).collect(Collectors.toList()));
         }
 
         players.remove(gamePlayer);
@@ -1164,10 +1159,18 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         if (status == GameStatus.REBUILDING) {
             if (isBungeeEnabled()) {
                 BungeeUtils.movePlayerToBungeeServer(player, false);
-                BungeeUtils.sendPlayerBungeeMessage(player,
-                        i18n("game_is_rebuilding").replace("%arena%", Game.this.name));
+                BungeeUtils.sendPlayerBungeeMessage(player, AdventureHelper.toLegacy(Message
+                                .of(LangKeys.IN_GAME_ERRORS_GAME_IS_REBUILDING)
+                                .prefixOrDefault(getCustomPrefixComponent())
+                                .placeholder("arena", this.name)
+                                .asComponent(PlayerMapper.wrapPlayer(player))
+                        ));
             } else {
-                player.sendMessage(i18n("game_is_rebuilding").replace("%arena%", this.name));
+                Message
+                        .of(LangKeys.IN_GAME_ERRORS_GAME_IS_REBUILDING)
+                        .placeholder("arena", this.name)
+                        .prefixOrDefault(getCustomPrefixComponent())
+                        .send(PlayerMapper.wrapPlayer(player));
             }
             return;
         }
@@ -1176,10 +1179,19 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 && !configurationContainer.getOrDefault(ConfigurationContainer.SPECTATOR_JOIN, Boolean.class, false)) {
             if (isBungeeEnabled()) {
                 BungeeUtils.movePlayerToBungeeServer(player, false);
-                BungeeUtils.sendPlayerBungeeMessage(player,
-                        i18n("game_already_running").replace("%arena%", Game.this.name));
+                BungeeUtils.sendPlayerBungeeMessage(player, AdventureHelper.toLegacy(
+                        Message
+                                .of(LangKeys.IN_GAME_ERRORS_GAME_ALREADY_RUNNING)
+                                .placeholder("arena", this.name)
+                                .prefixOrDefault(getCustomPrefixComponent())
+                                .asComponent(PlayerMapper.wrapPlayer(player))
+                ));
             } else {
-                player.sendMessage(i18n("game_already_running").replace("%arena%", this.name));
+                Message
+                        .of(LangKeys.IN_GAME_ERRORS_GAME_ALREADY_RUNNING)
+                        .placeholder("arena", this.name)
+                        .prefixOrDefault(getCustomPrefixComponent())
+                        .send(PlayerMapper.wrapPlayer(player));
             }
             return;
         }
@@ -1189,7 +1201,10 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 List<GamePlayer> withoutVIP = getPlayersWithoutVIP();
 
                 if (withoutVIP.size() == 0) {
-                    player.sendMessage(i18n("vip_game_is_full"));
+                    Message
+                            .of(LangKeys.IN_GAME_ERRORS_VIP_GAME_IS_FULL)
+                            .prefixOrDefault(getCustomPrefixComponent())
+                            .send(PlayerMapper.wrapPlayer(player));
                     return;
                 }
 
@@ -1201,10 +1216,19 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 }
 
                 if (isBungeeEnabled()) {
-                    BungeeUtils.sendPlayerBungeeMessage(kickPlayer.player,
-                            i18n("game_kicked_by_vip").replace("%arena%", Game.this.name));
+                    BungeeUtils.sendPlayerBungeeMessage(kickPlayer.player, AdventureHelper.toLegacy(
+                            Message
+                                    .of(LangKeys.IN_GAME_ERRORS_GAME_KICKED_BY_VIP)
+                                    .placeholder("arena", this.name)
+                                    .prefixOrDefault(getCustomPrefixComponent())
+                                    .asComponent(PlayerMapper.wrapPlayer(kickPlayer.player))
+                    ));
                 } else {
-                    kickPlayer.player.sendMessage(i18n("game_kicked_by_vip").replace("%arena%", this.name));
+                    Message
+                            .of(LangKeys.IN_GAME_ERRORS_GAME_KICKED_BY_VIP)
+                            .placeholder("arena", this.name)
+                            .prefixOrDefault(getCustomPrefixComponent())
+                            .send(PlayerMapper.wrapPlayer(kickPlayer.player));
                 }
                 kickPlayer.changeGame(null);
             } else {
@@ -1213,12 +1237,21 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                     new BukkitRunnable() {
                         @Override
                         public void run() {
-                            BungeeUtils.sendPlayerBungeeMessage(player,
-                                    i18n("game_is_full").replace("%arena%", Game.this.name));
+                            BungeeUtils.sendPlayerBungeeMessage(player, AdventureHelper.toLegacy(
+                                    Message
+                                            .of(LangKeys.IN_GAME_ERRORS_GAME_IS_FULL)
+                                            .placeholder("arena", Game.this.name)
+                                            .prefixOrDefault(getCustomPrefixComponent())
+                                            .asComponent(PlayerMapper.wrapPlayer(player))
+                            ));
                         }
                     }.runTaskLater(Main.getInstance().getPluginDescription().as(JavaPlugin.class), 5L);
                 } else {
-                    player.sendMessage(i18n("game_is_full").replace("%arena%", this.name));
+                    Message
+                            .of(LangKeys.IN_GAME_ERRORS_GAME_IS_FULL)
+                            .placeholder("arena", this.name)
+                            .prefixOrDefault(getCustomPrefixComponent())
+                            .send(PlayerMapper.wrapPlayer(player));
                 }
                 return;
             }
@@ -1325,21 +1358,32 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             current.setScoreboardTeam(scoreboardTeam);
         }
 
+        var wrapper = PlayerMapper.wrapPlayer(player.player);
+
         if (cur == current) {
-            player.player.sendMessage(
-                    i18nc("team_already_selected", customPrefix).replace("%team%", teamForJoin.color.chatColor + teamForJoin.name)
-                            .replace("%players%", Integer.toString(current.players.size()))
-                            .replaceAll("%maxplayers%", Integer.toString(current.teamInfo.maxPlayers)));
+            Message
+                    .of(LangKeys.IN_GAME_TEAM_SELECTION_ALREADY_SELECTED)
+                    .prefixOrDefault(getCustomPrefixComponent())
+                    .placeholder("team", AdventureHelper.toComponent(teamForJoin.color.chatColor + teamForJoin.name))
+                    .placeholder("players", current.players.size())
+                    .placeholder("maxplayers", current.teamInfo.maxPlayers)
+                    .send(wrapper);
             return;
         }
         if (current.players.size() >= current.teamInfo.maxPlayers) {
             if (cur != null) {
-                player.player.sendMessage(i18nc("team_is_full_you_are_staying", customPrefix)
-                        .replace("%team%", teamForJoin.color.chatColor + teamForJoin.name)
-                        .replace("%oldteam%", cur.teamInfo.color.chatColor + cur.teamInfo.name));
+                Message
+                        .of(LangKeys.IN_GAME_TEAM_SELECTION_FULL_NO_CHANGE)
+                        .prefixOrDefault(getCustomPrefixComponent())
+                        .placeholder("team", AdventureHelper.toComponent(teamForJoin.color.chatColor + teamForJoin.name))
+                        .placeholder("oldteam", AdventureHelper.toComponent(cur.teamInfo.color.chatColor + cur.teamInfo.name))
+                        .send(wrapper);
             } else {
-                player.player.sendMessage(
-                        i18nc("team_is_full", customPrefix).replace("%team%", teamForJoin.color.chatColor + teamForJoin.name));
+                Message
+                        .of(LangKeys.IN_GAME_TEAM_SELECTION_FULL)
+                        .prefixOrDefault(getCustomPrefixComponent())
+                        .placeholder("team", AdventureHelper.toComponent(teamForJoin.color.chatColor + teamForJoin.name))
+                        .send(wrapper);
             }
             return;
         }
@@ -1360,19 +1404,20 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
         Debug.info(name + ": player " + player.player.getName() + " joined the team " + current.getName());
 
-        player.player
-                .sendMessage(i18nc("team_selected", customPrefix).replace("%team%", teamForJoin.color.chatColor + teamForJoin.name)
-                        .replace("%players%", Integer.toString(current.players.size()))
-                        .replaceAll("%maxplayers%", Integer.toString(current.teamInfo.maxPlayers)));
+        Message
+                .of(LangKeys.IN_GAME_TEAM_SELECTION_SELECTED)
+                .prefixOrDefault(getCustomPrefixComponent())
+                .placeholder("team", AdventureHelper.toComponent(teamForJoin.color.chatColor + teamForJoin.name))
+                .placeholder("players", current.players.size())
+                .placeholder("maxplayers", current.teamInfo.maxPlayers)
+                .send(wrapper);
 
         if (configurationContainer.getOrDefault(ConfigurationContainer.ADD_WOOL_TO_INVENTORY_ON_JOIN, Boolean.class, false)) {
             int colorPosition = MainConfig.getInstance().node("hotbar", "color").getInt(1);
             if (colorPosition >= 0 && colorPosition <= 8) {
-                ItemStack stack = teamForJoin.color.getWool();
-                ItemMeta stackMeta = stack.getItemMeta();
-                stackMeta.setDisplayName(teamForJoin.color.chatColor + teamForJoin.name);
-                stack.setItemMeta(stackMeta);
-                player.player.getInventory().setItem(colorPosition, stack);
+                var item = ItemFactory.build(teamForJoin.color.material1_13 + "_WOOL").orElse(ItemFactory.getAir());
+                item.setDisplayName(AdventureHelper.toComponent(teamForJoin.color.chatColor + teamForJoin.name));
+                wrapper.getPlayerInventory().setItem(colorPosition, item);
             }
         }
 
@@ -1431,11 +1476,10 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
                 int leavePosition = MainConfig.getInstance().node("hotbar", "leave").getInt(8);
                 if (leavePosition >= 0 && leavePosition <= 8) {
-                    ItemStack leave = MainConfig.getInstance().readDefinedItem("leavegame", "SLIME_BALL").as(ItemStack.class);
-                    ItemMeta leaveMeta = leave.getItemMeta();
-                    leaveMeta.setDisplayName(i18n("leave_from_game_item", false));
-                    leave.setItemMeta(leaveMeta);
-                    gamePlayer.player.getInventory().setItem(leavePosition, leave);
+                    var wrapper = PlayerMapper.wrapPlayer(player);
+                    var leave = MainConfig.getInstance().readDefinedItem("leavegame", "SLIME_BALL");
+                    leave.setDisplayName(Message.of(LangKeys.IN_GAME_LOBBY_ITEMS_LEAVE_FROM_GAME_ITEM).asComponent(wrapper));
+                    wrapper.getPlayerInventory().setItem(leavePosition, leave);
                 }
             }
 
@@ -1525,7 +1569,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             Debug.info(name + ": preparing lobby");
             previousCountdown = countdown = pauseCountdown;
             previousStatus = GameStatus.WAITING;
-            String title = i18nonly("bossbar_waiting");
+            var title = AdventureHelper.toLegacy(Message.of(LangKeys.IN_GAME_BOSSBAR_WAITING).asComponent());
             statusbar.setProgress(0);
             statusbar.setVisible(configurationContainer.getOrDefault(ConfigurationContainer.LOBBY_BOSSBAR, Boolean.class, false));
             for (GamePlayer p : players) {
@@ -1540,7 +1584,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                         .setStyle(BarStyle.valueOf(MainConfig.getInstance().node("bossbar", "lobby", "style").getString()));
             }
             if (teamSelectorInventory == null) {
-                teamSelectorInventory = new TeamSelectorInventory(Main.getInstance(), this);
+                teamSelectorInventory = new TeamSelectorInventory(this);
             }
 
             if (experimentalBoard == null && MainConfig.getInstance().node("experimental", "new-scoreboard-system", "enabled").getBoolean(false)) {
@@ -1652,7 +1696,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                     statusbar.setVisible(configurationContainer.getOrDefault(ConfigurationContainer.GAME_BOSSBAR, Boolean.class, false));
                     if (statusbar instanceof BossBar) {
                         var bossbar = (BossBar) statusbar;
-                        bossbar.setMessage(i18n("bossbar_running", false));
+                        bossbar.setMessage(AdventureHelper.toLegacy(Message.of(LangKeys.IN_GAME_BOSSBAR_RUNNING).asComponent()));
                         bossbar.setColor(gameBossBarColor != null ? gameBossBarColor
                                 : BarColor.valueOf(MainConfig.getInstance().node("bossbar", "game", "color").getString()));
                         bossbar.setStyle(
@@ -1698,8 +1742,11 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                         }
                     }
 
-                    String gameStartTitle = i18nonly("game_start_title");
-                    String gameStartSubtitle = i18nonly("game_start_subtitle").replace("%arena%", this.name);
+                    var title = Message
+                                    .of(LangKeys.IN_GAME_GAME_START_TITLE)
+                                    .join(LangKeys.IN_GAME_GAME_START_SUBTITLE)
+                                    .placeholder("arena", this.name)
+                                    .times(TitleUtils.defaultTimes());
                     for (GamePlayer player : this.players) {
                         Debug.info(name + ": moving " + player.player.getName() + " into game");
                         CurrentTeam team = getPlayerTeam(player);
@@ -1709,7 +1756,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                         player.player.getInventory().setChestplate(null);
                         player.player.getInventory().setLeggings(null);
                         player.player.getInventory().setBoots(null);
-                        TitleUtils.send(PlayerMapper.wrapPlayer(player.player), gameStartTitle, gameStartSubtitle);
+                        PlayerMapper.wrapPlayer(player.player).showTitle(title);
                         if (team == null) {
                             makeSpectator(player, true);
                         } else {
@@ -1804,17 +1851,23 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                                     .collect(Collectors.toList());
                             var holo = HologramManager
                                     .hologram(LocationMapper.wrapLocation(loc))
-                                    .firstLine(TextEntry.of(AdventureHelper.toComponent(i18nonly(isBlockTypeBed ? "destroy_this_bed" : (isAnchor ? "destroy_this_anchor" : (isCake ? "destroy_this_cake" : "destroy_this_target")))
-                                            .replace("%teamcolor%", team.teamInfo.color.chatColor.toString()))
-                                    ));
+                                    .firstLine(
+                                            Message
+                                                    .of(isBlockTypeBed ? LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_DESTROY_BED : (isAnchor ? LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_DESTROY_ANCHOR : (isCake ? LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_DESTROY_CAKE : LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_DESTROY_ANY)))
+                                            .placeholder("teamcolor", AdventureHelper.toComponent(team.teamInfo.color.chatColor.toString()))
+                                            .asTextEntry(null)
+                                    );
                             enemies.forEach(holo::addViewer);
                             holo.show();
                             team.setBedHolo(holo);
                             var protectHolo = HologramManager
                                     .hologram(LocationMapper.wrapLocation(loc))
-                                    .firstLine(TextEntry.of(AdventureHelper.toComponent(i18nonly(isBlockTypeBed ? "protect_your_bed" : (isAnchor ? "protect_your_anchor" : (isCake ? "protect_your_cake" : "protect_your_target")))
-                                            .replace("%teamcolor%", team.teamInfo.color.chatColor.toString())
-                                    )));
+                                    .firstLine(
+                                            Message
+                                                    .of(isBlockTypeBed ? LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_PROTECT_BED : (isAnchor ? LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_PROTECT_ANCHOR : (isCake ? LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_PROTECT_CAKE : LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_PROTECT_ANY)))
+                                                    .placeholder("teamcolor", AdventureHelper.toComponent(team.teamInfo.color.chatColor.toString()))
+                                                    .asTextEntry(null)
+                                    );
                             team.getConnectedPlayers().stream().map(PlayerMapper::wrapPlayer).forEach(protectHolo::addViewer);
                             protectHolo.show();
                             team.setProtectHolo(protectHolo);
@@ -1865,17 +1918,22 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                             if (t.isAlive()) {
                                 winner = t;
                                 String time = getFormattedTimeLeft(gameTime - countdown);
-                                String message = i18nc("team_win", customPrefix)
-                                        .replace("%team%", TeamColor.fromApiColor(t.getColor()).chatColor + t.getName())
-                                        .replace("%time%", time);
-                                String subtitle = i18n("team_win", false)
-                                        .replace("%team%", TeamColor.fromApiColor(t.getColor()).chatColor + t.getName())
-                                        .replace("%time%", time);
+                                var message = Message
+                                        .of(LangKeys.IN_GAME_END_TEAM_WIN)
+                                        .prefixOrDefault(getCustomPrefixComponent())
+                                        .placeholder("team", AdventureHelper.toComponent(TeamColor.fromApiColor(t.getColor()).chatColor + t.getName()))
+                                        .placeholder("time", time);
                                 boolean madeRecord = processRecord(t, gameTime - countdown);
                                 for (GamePlayer player : players) {
-                                    player.player.sendMessage(message);
+                                    var wrapper = PlayerMapper.wrapPlayer(player.player);
+                                    wrapper.sendMessage(message);
                                     if (getPlayerTeam(player) == t) {
-                                        TitleUtils.send(PlayerMapper.wrapPlayer(player.player), i18nonly("you_won"), subtitle);
+                                        Message.of(LangKeys.IN_GAME_END_YOU_WON)
+                                                .join(LangKeys.IN_GAME_END_TEAM_WIN)
+                                                .placeholder("team", AdventureHelper.toComponent(TeamColor.fromApiColor(t.getColor()).chatColor + t.getName()))
+                                                .placeholder("time", time)
+                                                .times(TitleUtils.defaultTimes())
+                                                .title(wrapper);
                                         Main.depositPlayer(player.player, Main.getVaultWinReward());
 
                                         SpawnEffects.spawnEffect(this, player.player, "game-effects.end");
@@ -1920,7 +1978,12 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                                             }.runTaskLater(Main.getInstance().getPluginDescription().as(JavaPlugin.class), (2 + postGameWaiting) * 20);
                                         }
                                     } else {
-                                        TitleUtils.send(PlayerMapper.wrapPlayer(player.player), i18n("you_lost", false), subtitle);
+                                        Message.of(LangKeys.IN_GAME_END_YOU_LOST)
+                                                .join(LangKeys.IN_GAME_END_TEAM_WIN)
+                                                .placeholder("team", AdventureHelper.toComponent(TeamColor.fromApiColor(t.getColor()).chatColor + t.getName()))
+                                                .placeholder("time", time)
+                                                .times(TitleUtils.defaultTimes())
+                                                .title(wrapper);
 
                                         if (StatisticsHolograms.isEnabled()) {
                                             StatisticsHolograms.getInstance().updateHolograms(PlayerMapper.wrapPlayer(player.player));
@@ -1965,11 +2028,9 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                                     && !spawner.spawnerIsFullHologram) {
                                 if (cycle > 1) {
                                     int modulo = cycle - elapsedTime % cycle;
-                                    spawner.getHologram().replaceLine(1,
-                                            TextEntry.of(AdventureHelper.toComponent(i18nonly("countdown_spawning").replace("%seconds%", Integer.toString(modulo))))
-                                    );
+                                    spawner.getHologram().replaceLine(1, Message.of(LangKeys.IN_GAME_SPAWNER_COUNTDOWN).placeholder("seconds", modulo).asTextEntry(null));
                                 } else if (spawner.rerenderHologram) {
-                                    spawner.getHologram().replaceLine(1, TextEntry.of(AdventureHelper.toComponent(i18nonly("every_second_spawning"))));
+                                    spawner.getHologram().replaceLine(1, Message.of(LangKeys.IN_GAME_SPAWNER_EVERY_SECOND).asTextEntry(null));
                                     spawner.rerenderHologram = false;
                                 }
                             }
@@ -2040,9 +2101,12 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             Bukkit.getServer().getPluginManager().callEvent(event);
             Bukkit.getServer().getPluginManager().callEvent(statusE);
 
-            String message = i18nc("game_end", customPrefix);
-            for (GamePlayer player : (List<GamePlayer>) ((ArrayList<GamePlayer>) players).clone()) {
-                player.player.sendMessage(message);
+            var message = Message
+                    .of(LangKeys.IN_GAME_END_GAME_END)
+                    .prefixOrDefault(getCustomPrefixComponent());
+            for (GamePlayer player : List.copyOf(players)) {
+                var wrapper = PlayerMapper.wrapPlayer(player.player);
+                wrapper.sendMessage(message);
                 player.changeGame(null);
 
                 if (MainConfig.getInstance().node("rewards", "enabled").getBoolean()) {
@@ -2053,7 +2117,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                         public void run() {
                             if (PlayerStatisticManager.isEnabled()) {
                                 var statistic = PlayerStatisticManager.getInstance()
-                                        .getStatistic(PlayerMapper.wrapPlayer(player.player));
+                                        .getStatistic(wrapper);
                                 Game.this.dispatchRewardCommands("player-end-game", pl, statistic.getScore());
                             } else {
                                 Game.this.dispatchRewardCommands("player-end-game", pl, 0);
@@ -2344,44 +2408,45 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             return;
         }
 
-        var statusLine = "";
-        var playersLine = "";
-        MaterialHolder blockBehindMaterial = null;
+        String[] statusLine;
+        String[] playersLine;
+        MaterialHolder blockBehindMaterial;
         switch (status) {
-            case DISABLED:
-                statusLine = i18nonly("sign_status_disabled");
-                playersLine = i18nonly("sign_status_disabled_players");
-                blockBehindMaterial = MiscUtils.getMaterialFromString(config.node("sign", "block-behind", "game-disabled").getString(), "RED_STAINED_GLASS");
-                break;
             case REBUILDING:
-                statusLine = i18nonly("sign_status_rebuilding");
-                playersLine = i18nonly("sign_status_rebuilding_players");
+                statusLine = LangKeys.SIGN_STATUS_REBUILDING_STATUS;
+                playersLine = LangKeys.SIGN_STATUS_REBUILDING_PLAYERS;
                 blockBehindMaterial = MiscUtils.getMaterialFromString(config.node("sign", "block-behind", "rebuilding").getString(), "BROWN_STAINED_GLASS");
                 break;
             case RUNNING:
             case GAME_END_CELEBRATING:
-                statusLine = i18nonly("sign_status_running");
-                playersLine = i18nonly("sign_status_running_players");
+                statusLine = LangKeys.SIGN_STATUS_RUNNING_STATUS;
+                playersLine = LangKeys.SIGN_STATUS_RUNNING_PLAYERS;
                 blockBehindMaterial = MiscUtils.getMaterialFromString(config.node("sign", "block-behind", "in-game").getString(), "GREEN_STAINED_GLASS");
                 break;
             case WAITING:
-                statusLine = i18nonly("sign_status_waiting");
-                playersLine = i18nonly("sign_status_waiting_players");
+                statusLine = LangKeys.SIGN_STATUS_WAITING_STATUS;
+                playersLine = LangKeys.SIGN_STATUS_WAITING_PLAYERS;
                 blockBehindMaterial = MiscUtils.getMaterialFromString(config.node("sign", "block-behind", "waiting").getString(), "ORANGE_STAINED_GLASS");
+                break;
+            case DISABLED:
+            default:
+                statusLine = LangKeys.SIGN_STATUS_DISABLED_STATUS;
+                playersLine = LangKeys.SIGN_STATUS_DISABLED_PLAYERS;
+                blockBehindMaterial = MiscUtils.getMaterialFromString(config.node("sign", "block-behind", "game-disabled").getString(), "RED_STAINED_GLASS");
                 break;
         }
 
-        playersLine = playersLine.replace("%players%", Integer.toString(players.size()));
-        playersLine = playersLine.replace("%maxplayers%", Integer.toString(calculatedMaxPlayers));
+        var statusMessage = Message.of(statusLine);
+        var playerMessage = Message.of(playersLine)
+                .placeholder("players", players.size())
+                .placeholder("maxplayers", calculatedMaxPlayers);
 
-        final var finalStatusLine = statusLine;
-        final var finalPlayersLine = playersLine;
         final var texts = MainConfig.getInstance().node("sign", "lines").childrenList().stream()
                 .map(ConfigurationNode::getString)
                 .map(s -> Objects.requireNonNullElse(s, "")
                         .replaceAll("%arena%", this.getName())
-                        .replaceAll("%status%", finalStatusLine)
-                        .replaceAll("%players%", finalPlayersLine))
+                        .replaceAll("%status%", AdventureHelper.toLegacy(statusMessage.asComponent()))
+                        .replaceAll("%players%", AdventureHelper.toLegacy(playerMessage.asComponent())))
                 .collect(Collectors.toList());
 
         final var finalBlockBehindMaterial = blockBehindMaterial;
@@ -2967,6 +3032,10 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     @Override
     public String getCustomPrefix() {
         return customPrefix;
+    }
+
+    public Component getCustomPrefixComponent() {
+        return AdventureHelper.toComponentNullable(customPrefix);
     }
 
     @Override

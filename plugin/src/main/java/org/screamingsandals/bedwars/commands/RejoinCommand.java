@@ -5,9 +5,9 @@ import cloud.commandframework.CommandManager;
 import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.game.GameManager;
+import org.screamingsandals.bedwars.lang.LangKeys;
+import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
-
-import static org.screamingsandals.bedwars.lib.lang.I.i18n;
 
 public class RejoinCommand extends BaseCommand {
     public RejoinCommand(CommandManager<CommandSenderWrapper> manager) {
@@ -22,7 +22,7 @@ public class RejoinCommand extends BaseCommand {
                         // TODO: Use Wrapper (bedwars changes needed)
                         var player = commandContext.getSender().as(Player.class);
                         if (Main.isPlayerInGame(player)) {
-                            player.sendMessage(i18n("you_are_already_in_some_game"));
+                            player.sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_ALREADY_IN_GAME).defaultPrefix());
                             return;
                         }
 
@@ -31,12 +31,12 @@ public class RejoinCommand extends BaseCommand {
                             name = Main.getPlayerGameProfile(player).getLatestGameName();
                         }
                         if (name == null) {
-                            player.sendMessage(i18n("you_are_not_in_game_yet"));
+                            player.sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_YOU_ARE_NOT_IN_GAME).defaultPrefix());
                         } else {
                             GameManager.getInstance().getGame(name)
                                     .ifPresentOrElse(
                                             game -> game.joinToGame(player),
-                                            () -> player.sendMessage(i18n("game_is_gone"))
+                                            () -> player.sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_GAME_IS_GONE).defaultPrefix())
                                     );
                         }
                     })

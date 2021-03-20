@@ -47,6 +47,7 @@ public class MainConfig {
 
             generator.start()
                 .key("locale").defValue("en")
+                .key("prefix").defValue("[BW]")
                 .key("debug").defValue(false)
                 .key("allow-crafting").defValue(false)
                 .key("keep-inventory-on-death").defValue(false)

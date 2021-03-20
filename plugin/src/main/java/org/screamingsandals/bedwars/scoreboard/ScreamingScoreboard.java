@@ -2,7 +2,6 @@ package org.screamingsandals.bedwars.scoreboard;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.RunningTeam;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.config.MainConfig;

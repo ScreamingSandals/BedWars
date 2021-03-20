@@ -5,6 +5,7 @@ import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.api.Team;
 import org.screamingsandals.bedwars.game.TeamColor;
+import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -13,13 +14,11 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.screamingsandals.lib.lang.Message;
+import org.screamingsandals.lib.player.PlayerMapper;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.screamingsandals.bedwars.lib.lang.I.i18nc;
-import static org.screamingsandals.bedwars.lib.lang.I18n.i18n;
-import static org.screamingsandals.bedwars.lib.lang.I18n.i18nonly;
 
 public class ProtectionWall extends SpecialItem implements org.screamingsandals.bedwars.api.special.ProtectionWall {
     private Game game;
@@ -86,7 +85,7 @@ public class ProtectionWall extends SpecialItem implements org.screamingsandals.
 
                 if (time < 6 && time > 0) {
                     MiscUtils.sendActionBarMessage(
-                            player, i18nonly("specials_protection_wall_destroy").replace("%time%", Integer.toString(time)));
+                            PlayerMapper.wrapPlayer(player), Message.of(LangKeys.SPECIALS_PROTECTION_WALL_DESTROY).placeholder("time", time));
                 }
 
                 if (livingTime == breakingTime) {
@@ -123,7 +122,7 @@ public class ProtectionWall extends SpecialItem implements org.screamingsandals.
         wallBlocks = new ArrayList<>();
 
         if (width % 2 == 0) {
-            player.sendMessage(i18nc("The width of a protection block has to be odd! " + width + " is not an odd number.", game.getCustomPrefix()));
+            player.sendMessage("The width of a protection block has to be odd! " + width + " is not an odd number.");
             width = width + 1;
             if (width % 2 == 0) {
                 return;
@@ -196,7 +195,7 @@ public class ProtectionWall extends SpecialItem implements org.screamingsandals.
             game.registerSpecialItem(this);
             runTask();
 
-            MiscUtils.sendActionBarMessage(player, i18nonly("specials_protection_wall_created").replace("%time%", Integer.toString(breakingTime)));
+            MiscUtils.sendActionBarMessage(PlayerMapper.wrapPlayer(player), Message.of(LangKeys.SPECIALS_PROTECTION_WALL_CREATED).placeholder("time", breakingTime));
 
             if (item.getAmount() > 1) {
                 item.setAmount(item.getAmount() - 1);
@@ -215,7 +214,7 @@ public class ProtectionWall extends SpecialItem implements org.screamingsandals.
         } else {
             game.registerSpecialItem(this);
 
-            MiscUtils.sendActionBarMessage(player, i18nonly("specials_protection_wall_created_unbreakable"));
+            MiscUtils.sendActionBarMessage(PlayerMapper.wrapPlayer(player), Message.of(LangKeys.SPECIALS_PROTECTION_WALL_CREATED_UNBREAKABLE));
             if (item.getAmount() > 1) {
                 item.setAmount(item.getAmount() - 1);
             } else {

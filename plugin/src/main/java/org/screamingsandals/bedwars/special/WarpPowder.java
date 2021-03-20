@@ -9,11 +9,11 @@ import org.bukkit.scheduler.BukkitTask;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.Team;
 import org.screamingsandals.bedwars.api.game.Game;
+import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.utils.SpawnEffects;
 import org.screamingsandals.bedwars.lib.nms.entity.PlayerUtils;
-
-import static org.screamingsandals.bedwars.lib.lang.I.i18nc;
-import static org.screamingsandals.bedwars.lib.lang.I18n.i18n;
+import org.screamingsandals.lib.lang.Message;
+import org.screamingsandals.lib.player.PlayerMapper;
 
 public class WarpPowder extends SpecialItem implements org.screamingsandals.bedwars.api.special.WarpPowder {
     private BukkitTask teleportingTask = null;
@@ -51,7 +51,9 @@ public class WarpPowder extends SpecialItem implements org.screamingsandals.bedw
         }
 
         if (showMessage) {
-            player.sendMessage(i18nc("specials_warp_powder_canceled", game.getCustomPrefix()));
+            Message.of(LangKeys.SPECIALS_WARP_POWDER_CANCELED)
+                    .prefixOrDefault(((org.screamingsandals.bedwars.game.Game) game).getCustomPrefixComponent())
+                    .send(PlayerMapper.wrapPlayer(player));
         }
     }
 
@@ -59,7 +61,10 @@ public class WarpPowder extends SpecialItem implements org.screamingsandals.bedw
     public void runTask() {
         game.registerSpecialItem(this);
 
-        player.sendMessage(i18nc("specials_warp_powder_started", game.getCustomPrefix()).replace("%time%", Double.toString(teleportingTime)));
+        Message.of(LangKeys.SPECIALS_WARP_POWDER_STARTED)
+                .prefixOrDefault(((org.screamingsandals.bedwars.game.Game) game).getCustomPrefixComponent())
+                .placeholder("time", teleportingTime)
+                .send(PlayerMapper.wrapPlayer(player));
 
         if (item.getAmount() > 1) {
             item.setAmount(item.getAmount() - 1);

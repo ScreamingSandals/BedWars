@@ -7,6 +7,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.screamingsandals.bedwars.api.statistics.LeaderboardEntry;
 import org.screamingsandals.bedwars.commands.BedWarsPermission;
 import org.screamingsandals.bedwars.config.MainConfig;
+import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.bedwars.utils.HologramLocation;
 import org.screamingsandals.lib.event.EventPriority;
@@ -14,6 +15,7 @@ import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.hologram.Hologram;
 import org.screamingsandals.lib.hologram.HologramManager;
 import org.screamingsandals.lib.hologram.event.HologramTouchEvent;
+import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.player.OfflinePlayerWrapper;
 import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.player.PlayerWrapper;
@@ -36,9 +38,6 @@ import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import static org.screamingsandals.bedwars.lib.lang.I.i18n;
-import static org.screamingsandals.bedwars.lib.lang.I.i18nonly;
 
 @Service(dependsOn = {
         PlayerMapper.class,
@@ -162,7 +161,7 @@ public class LeaderboardHolograms {
                     if (!holograms.containsKey(locationHolder)) {
                         var hologram = HologramManager
                                 .hologram(locationHolder)
-                                .firstLine(TextEntry.of(AdventureHelper.toComponent(i18nonly("leaderboard_no_scores"))))
+                                .firstLine(Message.of(LangKeys.LEADERBOARD_NO_SCORES).asTextEntry(null))
                                 .setTouchable(true);
                         HologramManager.addHologram(hologram);
                         hologram.show();
@@ -230,7 +229,7 @@ public class LeaderboardHolograms {
                                 }
                             })
                     );
-                    player.sendMessage(i18n("holo_removed"));
+                    Message.of(LangKeys.ADMIN_HOLO_REMOVED).defaultPrefix().send(player);
                 })
                 .async()
                 .start();

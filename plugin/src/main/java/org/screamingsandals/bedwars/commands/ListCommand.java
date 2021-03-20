@@ -6,9 +6,9 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.game.GameManager;
+import org.screamingsandals.bedwars.lang.LangKeys;
+import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
-
-import static org.screamingsandals.bedwars.lib.lang.I.i18n;
 
 public class ListCommand extends BaseCommand {
     public ListCommand(CommandManager<CommandSenderWrapper> manager) {
@@ -21,7 +21,7 @@ public class ListCommand extends BaseCommand {
                 commandSenderWrapperBuilder
                         .handler(commandContext -> {
                             var sender = commandContext.getSender();
-                            sender.sendMessage(i18n("list_header"));
+                            sender.sendMessage(Message.of(LangKeys.LIST_HEADER).defaultPrefix());
                             GameManager.getInstance().getGames().forEach(game ->
                                     sender.sendMessage(Component
                                             .text(game.getName())

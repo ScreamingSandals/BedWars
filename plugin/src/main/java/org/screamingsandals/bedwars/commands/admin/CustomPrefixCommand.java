@@ -3,9 +3,9 @@ package org.screamingsandals.bedwars.commands.admin;
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
 import cloud.commandframework.arguments.standard.StringArgument;
+import org.screamingsandals.bedwars.lang.LangKeys;
+import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
-
-import static org.screamingsandals.bedwars.lib.lang.I.i18n;
 
 public class CustomPrefixCommand extends BaseAdminSubCommand {
     public CustomPrefixCommand(CommandManager<CommandSenderWrapper> manager, Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder) {
@@ -21,10 +21,10 @@ public class CustomPrefixCommand extends BaseAdminSubCommand {
                             String customPrefix = commandContext.get("customPrefix");
                             if (customPrefix.trim().equalsIgnoreCase("off")) {
                                 game.setCustomPrefix(null);
-                                sender.sendMessage(i18n("admin_command_customprefix_disabled"));
+                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_CUSTOM_PREFIX_DISABLED).defaultPrefix());
                             } else {
                                 game.setCustomPrefix(customPrefix);
-                                sender.sendMessage(i18n("admin_command_customprefix_enabled").replace("%prefix%", customPrefix));
+                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_CUSTOM_PREFIX_ENABLED).placeholder("prefix", customPrefix).defaultPrefix());
                             }
                         }))
         );

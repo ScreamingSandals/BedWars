@@ -5,6 +5,7 @@
   "safe_reload": "<green>I'm waiting for safe stop of all games or for 60 seconds before reload!",
   "safe_reload_failed_to_stop_game": "<red>Some games have not ended within the time limit, so their arena may have been damaged!",
   "list_header": "<green>Availible arenas:",
+  "success": "<green>Command was successful!",
   "sign": {
     "admin": {
       "created": "<green>Sign was successfully created!",
@@ -366,7 +367,7 @@
       "caught_team": "<white><player><red> got caught in your team's trap!",
       "built": "<green>You've built a trap! Now wait for someone to get caught in it!"
     },
-    "wrap_powder": {
+    "warp_powder": {
       "multiuse": "<red>Another WarpPowder is already actived!",
       "canceled": "<red>WarpPowder was canceled!",
       "started": "<green>WarpPowder was started! Please don't move for <gray><time><green> seconds!"
@@ -425,7 +426,7 @@
     }
   },
   "dump": {
-    "success": "<green>Successfully dumped server. Link: ",
+    "success": "<green>Successfully dumped server. Link: <dump>",
     "failed": "<red>Dump failed!"
   },
   "language": {

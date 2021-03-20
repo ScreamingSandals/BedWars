@@ -3,7 +3,6 @@ package org.screamingsandals.bedwars.listener;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
 import org.screamingsandals.bedwars.api.game.GameStatus;
-import org.screamingsandals.bedwars.game.Game;
 import org.screamingsandals.bedwars.game.GameManager;
 import org.screamingsandals.bedwars.game.GamePlayer;
 import org.bukkit.entity.Player;

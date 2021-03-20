@@ -9,6 +9,7 @@ import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.api.events.BedwarsApplyPropertyToBoughtItem;
 import org.screamingsandals.bedwars.api.special.SpecialItem;
 import org.screamingsandals.bedwars.game.GamePlayer;
+import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.special.ProtectionWall;
 import org.screamingsandals.bedwars.utils.DelayFactory;
 import org.screamingsandals.bedwars.utils.MiscUtils;
@@ -20,10 +21,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.screamingsandals.lib.lang.Message;
+import org.screamingsandals.lib.player.PlayerMapper;
 
 import java.util.ArrayList;
-
-import static org.screamingsandals.bedwars.lib.lang.I18n.i18nonly;
 
 public class ProtectionWallListener implements Listener {
     private static final String PROTECTION_WALL_PREFIX = "Module:ProtectionWall:";
@@ -71,7 +72,7 @@ public class ProtectionWallListener implements Listener {
                                 game.getTeamOfPlayer(event.getPlayer()), stack);
 
                         if (event.getPlayer().getEyeLocation().getBlock().getType() != Material.AIR) {
-                            MiscUtils.sendActionBarMessage(event.getPlayer(), i18nonly("specials_protection_wall_not_usable_here"));
+                            MiscUtils.sendActionBarMessage(PlayerMapper.wrapPlayer(player), Message.of(LangKeys.SPECIALS_PROTECTION_WALL_NOT_USABLE_HERE));
                             return;
                         }
 
@@ -85,7 +86,7 @@ public class ProtectionWallListener implements Listener {
                         event.setCancelled(true);
 
                         int delay = game.getActiveDelay(player, ProtectionWall.class).getRemainDelay();
-                        MiscUtils.sendActionBarMessage(player, i18nonly("special_item_delay").replace("%time%", String.valueOf(delay)));
+                        MiscUtils.sendActionBarMessage(PlayerMapper.wrapPlayer(player), Message.of(LangKeys.SPECIALS_ITEM_DELAY).placeholder("time", delay));
                     }
                 }
             }

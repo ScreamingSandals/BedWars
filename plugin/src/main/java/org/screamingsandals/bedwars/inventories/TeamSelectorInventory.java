@@ -1,6 +1,7 @@
 package org.screamingsandals.bedwars.inventories;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -16,6 +17,8 @@ import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.game.CurrentTeam;
 import org.screamingsandals.bedwars.game.Game;
 import org.screamingsandals.bedwars.game.Team;
+import org.screamingsandals.bedwars.lang.LangKeys;
+import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.utils.AdventureHelper;
 import org.screamingsandals.simpleinventories.SimpleInventoriesCore;
@@ -29,21 +32,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-
-import static org.screamingsandals.bedwars.lib.lang.I18n.i18nonly;
 
 public class TeamSelectorInventory implements Listener {
     private final Game game;
     private final InventorySet inventorySet;
     private final Map<Team, GenericItemInfo> items = new HashMap<>();
 
-    public TeamSelectorInventory(Main plugin, Game game) {
+    public TeamSelectorInventory(Game game) {
         this.game = game;
 
         inventorySet = SimpleInventoriesCore.builder()
                 .categoryOptions(localOptions -> {
-                    localOptions.prefix(i18nonly("team_selection_name", "Select team - %arena%").replace("%arena%", game.getName()))
+                    localOptions.prefix(Message.of(LangKeys.IN_GAME_TEAM_SELECTION_INVENTORY_NAME).placeholder("arena", game.getName()).asComponent())
                             .showPageNumber(false)
                             .renderHeaderStart(54)
                             .renderOffset(0);
@@ -66,12 +66,12 @@ public class TeamSelectorInventory implements Listener {
                         categoryBuilder.item(Main.applyColor(team.color, item.as(ItemStack.class), true), itemInfoBuilder -> {
                             try {
                                 itemInfoBuilder.stack(itemBuilder ->
-                                    itemBuilder.name(
-                                            i18nonly("team_select_item")
-                                                    .replace("%teamName%", team.color.chatColor + team.getName())
-                                                    .replace("%inTeam%", String.valueOf(playersInTeamCount))
-                                                    .replace("%maxInTeam%", String.valueOf(team.maxPlayers))
-                                            ).lore(formatLore(team, game))
+                                        itemBuilder.name(Message.of(LangKeys.IN_GAME_TEAM_SELECTION_SELECT_ITEM)
+                                                .placeholder("teamName", AdventureHelper.toComponent(team.color.chatColor + team.getName()))
+                                                .placeholder("inTeam", playersInTeamCount)
+                                                .placeholder("maxInTeam", team.maxPlayers)
+                                                .asComponent()
+                                        ).lore(formatLore(team, game))
                                 ).property("selector", BasicConfigurationNode.root().set(team));
                             } catch (SerializationException e) {
                                 e.printStackTrace();
@@ -115,24 +115,24 @@ public class TeamSelectorInventory implements Listener {
     }
 
     private List<Component> formatLore(Team team, Game game) {
-        var loreList = new ArrayList<String>();
+        var loreList = new ArrayList<Component>();
         var playersInTeam = game.getPlayersInTeam(team);
         var playersInTeamCount = playersInTeam.size();
 
         if (playersInTeamCount >= team.maxPlayers) {
-            loreList.add(team.color.chatColor + i18nonly("team_select_item_lore_full"));
+            loreList.add(Message.of(LangKeys.IN_GAME_TEAM_SELECTION_SELECT_ITEM_LORE_FULL).asComponent().color(NamedTextColor.NAMES.value(team.color.chatColor.name())));
         } else {
-            loreList.add(team.color.chatColor + i18nonly("team_select_item_lore_join"));
+            loreList.add(Message.of(LangKeys.IN_GAME_TEAM_SELECTION_SELECT_ITEM_LORE_JOIN).asComponent().color(NamedTextColor.NAMES.value(team.color.chatColor.name())));
         }
 
         if (!playersInTeam.isEmpty()) {
-            loreList.add(i18nonly("team_select_item_lore"));
+            loreList.add(Message.of(LangKeys.IN_GAME_TEAM_SELECTION_SELECT_ITEM_LORE).asComponent());
             playersInTeam.forEach(gamePlayer ->
-                loreList.add(team.color.chatColor + gamePlayer.player.getDisplayName())
+                    loreList.add(AdventureHelper.toComponent(team.color.chatColor + gamePlayer.player.getDisplayName()))
             );
         }
 
-        return loreList.stream().map(AdventureHelper::toComponent).collect(Collectors.toList());
+        return loreList;
     }
 
     @EventHandler
@@ -170,10 +170,11 @@ public class TeamSelectorInventory implements Listener {
         var item = itemInfo.getItem();
 
         item.setDisplayName(
-                AdventureHelper.toComponent(i18nonly("team_select_item")
-                        .replace("%teamName%", team.color.chatColor + team.getName())
-                        .replace("%inTeam%", String.valueOf(playersInTeamCount))
-                        .replace("%maxInTeam%", String.valueOf(team.maxPlayers)))
+                Message.of(LangKeys.IN_GAME_TEAM_SELECTION_SELECT_ITEM)
+                        .placeholder("teamName", AdventureHelper.toComponent(team.color.chatColor + team.getName()))
+                        .placeholder("inTeam", playersInTeamCount)
+                        .placeholder("maxInTeam", team.maxPlayers)
+                        .asComponent()
         );
 
         item.getLore().clear();

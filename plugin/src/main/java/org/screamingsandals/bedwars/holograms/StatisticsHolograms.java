@@ -1,7 +1,4 @@
 package org.screamingsandals.bedwars.holograms;
-
-import static org.screamingsandals.bedwars.lib.lang.I.i18n;
-
 import java.util.*;
 
 import lombok.RequiredArgsConstructor;
@@ -9,12 +6,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.screamingsandals.bedwars.commands.BedWarsPermission;
 import org.screamingsandals.bedwars.config.MainConfig;
+import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.bedwars.utils.HologramLocation;
 import org.screamingsandals.lib.event.EventPriority;
 import org.screamingsandals.lib.hologram.Hologram;
 import org.screamingsandals.lib.hologram.HologramManager;
 import org.screamingsandals.lib.hologram.event.HologramTouchEvent;
+import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.player.event.SPlayerJoinEvent;
@@ -33,7 +32,6 @@ import org.screamingsandals.lib.utils.annotations.parameters.ConfigFile;
 import org.screamingsandals.lib.utils.visual.TextEntry;
 import org.screamingsandals.lib.world.LocationHolder;
 import org.screamingsandals.lib.world.LocationMapper;
-import org.screamingsandals.lib.world.WorldHolder;
 import org.screamingsandals.lib.event.OnEvent;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
@@ -273,7 +271,7 @@ public class StatisticsHolograms {
                         hologramLocations.remove(holoLocation);
                         updateHologramDatabase();
                     }
-                    player.sendMessage(i18n("holo_removed"));
+                    Message.of(LangKeys.ADMIN_HOLO_REMOVED).defaultPrefix().send(player);
                 })
                 .async()
                 .start();
@@ -282,29 +280,31 @@ public class StatisticsHolograms {
     private void updatePlayerStatisticHologram(PlayerWrapper player, final Hologram holo) {
         var statistic = PlayerStatisticManager.getInstance().getStatistic(player);
 
-        var lines = List.of(
-                i18n("statistics_kills", false).replace("%kills%",
-                        Integer.toString(statistic.getKills())),
-                i18n("statistics_deaths", false).replace("%deaths%",
-                        Integer.toString(statistic.getDeaths())),
-                i18n("statistics_kd", false).replace("%kd%",
-                        Double.toString(statistic.getKD())),
-                i18n("statistics_wins", false).replace("%wins%",
-                        Integer.toString(statistic.getWins())),
-                i18n("statistics_loses", false).replace("%loses%",
-                        Integer.toString(statistic.getLoses())),
-                i18n("statistics_games", false).replace("%games%",
-                        Integer.toString(statistic.getGames())),
-                i18n("statistics_beds", false).replace("%beds%",
-                        Integer.toString(statistic.getDestroyedBeds())),
-                i18n("statistics_score", false).replace("%score%",
-                        Integer.toString(statistic.getScore()))
-        );
+        var lines = Message
+                .of(LangKeys.STATISTICS_KILLS)
+                .join(LangKeys.STATISTICS_DEATHS)
+                .join(LangKeys.STATISTICS_KD)
+                .join(LangKeys.STATISTICS_WINS)
+                .join(LangKeys.STATISTICS_LOSES)
+                .join(LangKeys.STATISTICS_GAMES)
+                .join(LangKeys.STATISTICS_BEDS)
+                .join(LangKeys.STATISTICS_SCORE)
+                .placeholder("player", statistic.getName())
+                .placeholder("kills", statistic.getKills())
+                .placeholder("deaths", statistic.getDeaths())
+                .placeholder("kd", statistic.getKD())
+                .placeholder("wins", statistic.getWins())
+                .placeholder("loses", statistic.getLoses())
+                .placeholder("games", statistic.getGames())
+                .placeholder("beds", statistic.getDestroyedBeds())
+                .placeholder("score", statistic.getScore())
+                .getFor(player);
+
         var size = holo.getLines().size();
         var increment = size == 1 || size > lines.size() ? 1 : 0;
 
         for (int i = 0; i < lines.size(); i++) {
-            holo.replaceLine(i + increment, TextEntry.of(AdventureHelper.toComponent(lines.get(i))));
+            holo.replaceLine(i + increment, lines.get(i));
         }
     }
 

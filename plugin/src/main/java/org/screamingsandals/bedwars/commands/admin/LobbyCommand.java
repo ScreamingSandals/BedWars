@@ -3,9 +3,9 @@ package org.screamingsandals.bedwars.commands.admin;
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
 import org.bukkit.entity.Player;
+import org.screamingsandals.bedwars.lang.LangKeys;
+import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
-
-import static org.screamingsandals.bedwars.lib.lang.I.i18n;
 
 public class LobbyCommand extends BaseAdminSubCommand {
     public LobbyCommand(CommandManager<CommandSenderWrapper> manager, Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder) {
@@ -21,14 +21,15 @@ public class LobbyCommand extends BaseAdminSubCommand {
                             var loc = player.getLocation();
 
                             game.setLobbySpawn(loc);
-                            sender.sendMessage(
-                                    i18n("admin_command_lobby_spawn_setted")
-                                            .replace("%x%", Double.toString(loc.getX()))
-                                            .replace("%y%", Double.toString(loc.getY()))
-                                            .replace("%z%", Double.toString(loc.getZ()))
-                                            .replace("%yaw%", Float.toString(loc.getYaw()))
-                                            .replace("%pitch%", Float.toString(loc.getPitch()))
-                            );
+                            Message
+                                    .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_LOBBY_SPAWN_SET)
+                                    .defaultPrefix()
+                                    .placeholder("x", loc.getX(), 2)
+                                    .placeholder("y", loc.getY(), 2)
+                                    .placeholder("z", loc.getZ(), 2)
+                                    .placeholder("yaw", loc.getYaw(), 5)
+                                    .placeholder("pitch", loc.getPitch(), 5)
+                                    .send(sender);
                         }))
         );
     }

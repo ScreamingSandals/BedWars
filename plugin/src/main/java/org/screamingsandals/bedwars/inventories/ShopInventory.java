@@ -21,9 +21,11 @@ import org.screamingsandals.bedwars.api.upgrades.UpgradeStorage;
 import org.screamingsandals.bedwars.game.CurrentTeam;
 import org.screamingsandals.bedwars.game.Game;
 import org.screamingsandals.bedwars.game.GamePlayer;
+import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.special.listener.PermaItemListener;
 import org.screamingsandals.bedwars.utils.Sounds;
 import org.screamingsandals.bedwars.lib.debug.Debug;
+import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.material.Item;
 import org.screamingsandals.lib.material.builder.ItemFactory;
 import org.screamingsandals.lib.player.PlayerWrapper;
@@ -45,9 +47,6 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static org.screamingsandals.bedwars.lib.lang.I.i18nc;
-import static org.screamingsandals.bedwars.lib.lang.I18n.i18nonly;
 
 // TODO: remake methods in this class so there won't be too many bukkit api calls
 @Service(dependsOn = {
@@ -100,7 +99,7 @@ public class ShopInventory implements Listener {
                 player.openInventory(shopMap.get("default"));
             }
         } catch (Throwable ignored) {
-            player.sendMessage(i18nonly("prefix") + " Your shop.yml/shop.groovy is invalid! Check it out or contact us on Discord.");
+            player.sendMessage("[BW] Your shop.yml/shop.groovy is invalid! Check it out or contact us on Discord.");
         }
     }
 
@@ -228,13 +227,13 @@ public class ShopInventory implements Listener {
                 .categoryOptions(localOptionsBuilder ->
                     localOptionsBuilder
                             .backItem(mainConfig.readDefinedItem("shopback", "BARRIER"), itemBuilder ->
-                                itemBuilder.name(i18nonly("shop_back"))
+                                itemBuilder.name(Message.of(LangKeys.IN_GAME_SHOP_SHOP_BACK).asComponent())
                             )
                             .pageBackItem(mainConfig.readDefinedItem("pageback", "ARROW"), itemBuilder ->
-                                itemBuilder.name(i18nonly("page_back"))
+                                itemBuilder.name(Message.of(LangKeys.IN_GAME_SHOP_PAGE_BACK).asComponent())
                             )
                             .pageForwardItem(mainConfig.readDefinedItem("pageforward", "BARRIER"), itemBuilder ->
-                                itemBuilder.name(i18nonly("page_forward"))
+                                itemBuilder.name(Message.of(LangKeys.IN_GAME_SHOP_PAGE_FORWARD).asComponent())
                             )
                             .cosmeticItem(mainConfig.readDefinedItem("shopcosmetic", "AIR"))
                             .rows(mainConfig.node("shop", "rows").getInt(4))
@@ -245,7 +244,7 @@ public class ShopInventory implements Listener {
                             .itemsOnRow(mainConfig.node("shop", "items-on-row").getInt(9))
                             .showPageNumber(mainConfig.node("shop", "show-page-numbers").getBoolean(true))
                             .inventoryType(mainConfig.node("shop", "inventory-type").getString("CHEST"))
-                            .prefix(i18nonly("item_shop_name", "[BW] Shop"))
+                            .prefix(Message.of(LangKeys.IN_GAME_SHOP_NAME).asComponent())
                 )
 
                 // old shop format compatibility
@@ -475,8 +474,11 @@ public class ShopInventory implements Listener {
             }
 
             if (!mainConfig.node("removePurchaseMessages").getBoolean()) {
-                player.sendMessage(i18nc("buy_succes", game.getCustomPrefix()).replace("%item%", amount + "x " + getNameOrCustomNameOfItem(newItem))
-                        .replace("%material%", priceAmount + " " + type.getItemName()));
+                Message.of(LangKeys.IN_GAME_SHOP_BUY_SUCCESS)
+                        .prefixOrDefault(game.getCustomPrefixComponent())
+                        .placeholder("item", AdventureHelper.toComponent(amount + "x " + getNameOrCustomNameOfItem(newItem)))
+                        .placeholder("material", AdventureHelper.toComponent(priceAmount + " " + type.getItemName()))
+                        .send(event.getPlayer());
             }
             Sounds.playSound(player, player.getLocation(),
                     mainConfig.node("sounds", "item_buy").getString(), Sounds.ENTITY_ITEM_PICKUP, 1, 1);
@@ -489,8 +491,11 @@ public class ShopInventory implements Listener {
             if (purchaseFailedEvent.isCancelled()) return;
 
             if (!mainConfig.node("removePurchaseMessages").getBoolean()) {
-                player.sendMessage(i18nc("buy_failed", game.getCustomPrefix()).replace("%item%", amount + "x " + getNameOrCustomNameOfItem(newItem))
-                        .replace("%material%", priceAmount + " " + type.getItemName()));
+                Message.of(LangKeys.IN_GAME_SHOP_BUY_FAILED)
+                        .prefixOrDefault(game.getCustomPrefixComponent())
+                        .placeholder("item", AdventureHelper.toComponent(amount + "x " + getNameOrCustomNameOfItem(newItem)))
+                        .placeholder("material", AdventureHelper.toComponent(priceAmount + " " + type.getItemName()))
+                        .send(event.getPlayer());
             }
         }
     }
@@ -591,8 +596,11 @@ public class ShopInventory implements Listener {
                 if (sendToAll) {
                     for (Player player1 : game.getTeamOfPlayer(player).getConnectedPlayers()) {
                         if (!mainConfig.node("removePurchaseMessages").getBoolean()) {
-                            player1.sendMessage(i18nc("buy_succes", game.getCustomPrefix()).replace("%item%", itemName).replace("%material%",
-                                    priceAmount + " " + type.getItemName()));
+                            Message.of(LangKeys.IN_GAME_SHOP_BUY_SUCCESS)
+                                    .prefixOrDefault(game.getCustomPrefixComponent())
+                                    .placeholder("item", AdventureHelper.toComponent(itemName))
+                                    .placeholder("material", AdventureHelper.toComponent(priceAmount + " " + type.getItemName()))
+                                    .send(event.getPlayer());
                         }
                         Sounds.playSound(player1, player1.getLocation(),
                                 mainConfig.node("sounds", "upgrade_buy").getString(),
@@ -600,8 +608,11 @@ public class ShopInventory implements Listener {
                     }
                 } else {
                     if (!mainConfig.node("removePurchaseMessages").getBoolean()) {
-                        player.sendMessage(i18nc("buy_succes", game.getCustomPrefix()).replace("%item%", itemName).replace("%material%",
-                                priceAmount + " " + type.getItemName()));
+                        Message.of(LangKeys.IN_GAME_SHOP_BUY_SUCCESS)
+                                .prefixOrDefault(game.getCustomPrefixComponent())
+                                .placeholder("item", AdventureHelper.toComponent(itemName))
+                                .placeholder("material", AdventureHelper.toComponent(priceAmount + " " + type.getItemName()))
+                                .send(event.getPlayer());
                     }
                     Sounds.playSound(player, player.getLocation(),
                             mainConfig.node("sounds", "upgrade_buy").getString(),
@@ -615,8 +626,11 @@ public class ShopInventory implements Listener {
             Bukkit.getServer().getPluginManager().callEvent(purchaseFailedEvent);
             if (purchaseFailedEvent.isCancelled()) return;
             if (!mainConfig.node("removePurchaseMessages").getBoolean()) {
-                player.sendMessage(i18nc("buy_failed", game.getCustomPrefix()).replace("%item%", "UPGRADE").replace("%material%",
-                        priceAmount + " " + type.getItemName()));
+                Message.of(LangKeys.IN_GAME_SHOP_BUY_FAILED)
+                        .prefixOrDefault(game.getCustomPrefixComponent())
+                        .placeholder("item", AdventureHelper.toComponent(itemName))
+                        .placeholder("material", AdventureHelper.toComponent(priceAmount + " " + type.getItemName()))
+                        .send(event.getPlayer());
             }
         }
     }

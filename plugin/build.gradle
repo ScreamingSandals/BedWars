@@ -5,7 +5,7 @@ ScreamingLibBuilder()
         .modules('player', 'event', 'material', 'entity', 'world', 'command', 'tasker', 'hologram')
         .version(SCREAMING_LIB_VERSION)
         .simpleInventories(SIMPLE_INVENTORIES_VERSION)
-        .universalModules('signs')
+        .universalModules('signs', 'lang')
         .enableAnnotationProcessor()
         .build()
 

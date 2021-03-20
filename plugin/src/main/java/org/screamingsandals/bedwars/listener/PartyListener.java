@@ -6,9 +6,10 @@ import org.bukkit.event.Listener;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.events.BedwarsPlayerJoinedEvent;
 import org.screamingsandals.bedwars.config.MainConfig;
+import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.utils.MiscUtils;
-
-import static org.screamingsandals.bedwars.lib.lang.I.i18n;
+import org.screamingsandals.lib.lang.Message;
+import org.screamingsandals.lib.player.PlayerMapper;
 
 public class PartyListener implements Listener {
 
@@ -41,7 +42,7 @@ public class PartyListener implements Listener {
                                     if (partyMember.getUniqueId().equals(player.getUniqueId())) {
                                         return;
                                     }
-                                    partyMember.sendMessage(i18n("party_inform_game_join", true));
+                                    PlayerMapper.wrapPlayer(player).sendMessage(Message.of(LangKeys.PARTY_INFORM_GAME_JOIN).defaultPrefix());
 
                                     final var gameOfPlayer = Main.getPlayerGameProfile(partyMember).getGame();
                                     if (gameOfPlayer != null) {
@@ -55,7 +56,7 @@ public class PartyListener implements Listener {
                             });
 
                             if (MainConfig.getInstance().node("party", "notify-when-warped").getBoolean(true)) {
-                                player.sendMessage(i18n("party_command_warped", true));
+                                PlayerMapper.wrapPlayer(player).sendMessage(Message.of(LangKeys.PARTY_WARPED).defaultPrefix());
                             }
                         }
                     }

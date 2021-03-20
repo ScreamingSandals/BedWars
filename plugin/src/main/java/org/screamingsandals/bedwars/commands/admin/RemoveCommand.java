@@ -2,12 +2,11 @@ package org.screamingsandals.bedwars.commands.admin;
 
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
-import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.commands.AdminCommand;
 import org.screamingsandals.bedwars.game.GameManager;
+import org.screamingsandals.bedwars.lang.LangKeys;
+import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
-
-import static org.screamingsandals.bedwars.lib.lang.I.i18n;
 
 public class RemoveCommand extends BaseAdminSubCommand {
     public RemoveCommand(CommandManager<CommandSenderWrapper> manager, Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder) {
@@ -24,7 +23,7 @@ public class RemoveCommand extends BaseAdminSubCommand {
 
                     GameManager.getInstance().getGame(gameName).ifPresentOrElse(game -> {
                         if (!AdminCommand.gc.containsKey(gameName)) {
-                            sender.sendMessage(i18n("arena_must_be_in_edit_mode"));
+                            sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_ERROR_ARENA_MUST_BE_IN_EDIT_MODE).defaultPrefix());
                         } else {
                             AdminCommand.gc.remove(gameName);
                             var file = game.getFile();
@@ -32,14 +31,14 @@ public class RemoveCommand extends BaseAdminSubCommand {
                                 file.delete();
                             }
                             GameManager.getInstance().removeGame(game);
-                            sender.sendMessage(i18n("arena_removed"));
+                            sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_SUCCESS_REMOVED).defaultPrefix());
                         }
                     }, () -> {
                         if (AdminCommand.gc.containsKey(gameName)) {
                             AdminCommand.gc.remove(gameName);
-                            sender.sendMessage(i18n("arena_removed"));
+                            sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_SUCCESS_REMOVED).defaultPrefix());
                         } else {
-                            sender.sendMessage(i18n("no_arena_found"));
+                            sender.sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_GAME_NOT_FOUND).defaultPrefix());
                         }
                     });
                 })

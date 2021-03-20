@@ -1,7 +1,6 @@
 package org.screamingsandals.bedwars.commands;
 
 import lombok.RequiredArgsConstructor;
-import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.lib.sender.permissions.OrPermission;
 import org.screamingsandals.lib.sender.permissions.Permission;

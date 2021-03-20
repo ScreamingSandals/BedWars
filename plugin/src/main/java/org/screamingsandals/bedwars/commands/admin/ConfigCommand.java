@@ -4,11 +4,11 @@ import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
 import cloud.commandframework.arguments.standard.StringArgument;
 import org.screamingsandals.bedwars.commands.AdminCommand;
+import org.screamingsandals.bedwars.lang.LangKeys;
+import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
 
 import java.util.List;
-
-import static org.screamingsandals.bedwars.lib.lang.I.i18n;
 
 public class ConfigCommand extends BaseAdminSubCommand {
     public ConfigCommand(CommandManager<CommandSenderWrapper> manager, Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder) {
@@ -40,7 +40,7 @@ public class ConfigCommand extends BaseAdminSubCommand {
                                     .findFirst();
 
                             if (key.isEmpty()) {
-                                sender.sendMessage(i18n("admin_command_invalid_config_variable_name"));
+                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_INVALID_CONSTANT_NAME).defaultPrefix());
                             } else {
                                 var type = game.getConfigurationContainer().getType(key.get());
                                 if (type.isAssignableFrom(Boolean.class)) {
@@ -85,14 +85,19 @@ public class ConfigCommand extends BaseAdminSubCommand {
                                             value = "inherit";
                                             break;
                                         default:
-                                            sender.sendMessage(i18n("admin_command_invalid_config_value"));
+                                            sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_INVALID_CONSTANT_VALUE).defaultPrefix());
                                             return;
                                     }
                                 } else {
                                     // here we need to somehow determinate which type is it
                                     game.getConfigurationContainer().update(key.get(), value);
                                 }
-                                sender.sendMessage(i18n("admin_command_config_variable_set_to").replace("%config%", keyString).replace("%value%", value));
+                                Message
+                                        .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_CONSTANT_SET)
+                                        .placeholder("config", keyString)
+                                        .placeholder("value", value)
+                                        .defaultPrefix()
+                                        .send(sender);
                             }
                         }))
         );

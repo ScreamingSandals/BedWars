@@ -2,24 +2,21 @@ package org.screamingsandals.bedwars.commands.admin;
 
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
-import cloud.commandframework.arguments.parser.ArgumentParseResult;
 import cloud.commandframework.arguments.standard.*;
 import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.commands.AdminCommand;
 import org.screamingsandals.bedwars.game.ItemSpawner;
-import org.screamingsandals.bedwars.game.ItemSpawnerType;
 import org.screamingsandals.bedwars.game.Team;
+import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.utils.ArenaUtils;
 import org.screamingsandals.lib.hologram.Hologram;
+import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static org.screamingsandals.bedwars.lib.lang.I.i18n;
 
 public class SpawnerCommand extends BaseAdminSubCommand {
     public SpawnerCommand(CommandManager<CommandSenderWrapper> manager, Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder) {
@@ -68,15 +65,15 @@ public class SpawnerCommand extends BaseAdminSubCommand {
                             var loc = sender.as(Player.class).getLocation();
 
                             if (game.getPos1() == null || game.getPos2() == null) {
-                                sender.sendMessage(i18n("admin_command_set_pos1_pos2_first"));
+                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_SET_BOUNDS_FIRST).defaultPrefix());
                                 return;
                             }
                             if (game.getWorld() != loc.getWorld()) {
-                                sender.sendMessage(i18n("admin_command_must_be_in_same_world"));
+                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_MUST_BE_IN_SAME_WORLD).defaultPrefix());
                                 return;
                             }
                             if (!ArenaUtils.isInArea(loc, game.getPos1(), game.getPos2())) {
-                                sender.sendMessage(i18n("admin_command_spawn_must_be_in_area"));
+                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_MUST_BE_IN_BOUNDS).defaultPrefix());
                                 return;
                             }
                             loc.setYaw(0);
@@ -85,14 +82,16 @@ public class SpawnerCommand extends BaseAdminSubCommand {
                             if (spawnerType != null) {
                                 game.getSpawners().add(new ItemSpawner(loc, spawnerType, customName, hologramEnabled, startLevel, team, maxSpawnedResources, floatingHologram, rotationMode));
                                 sender.sendMessage(
-                                        i18n("admin_command_spawner_added")
-                                                .replace("%resource%", spawnerType.getItemName())
-                                                .replace("%x%", Integer.toString(loc.getBlockX()))
-                                                .replace("%y%", Integer.toString(loc.getBlockY()))
-                                                .replace("%z%", Integer.toString(loc.getBlockZ()))
+                                        Message
+                                        .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_SPAWNER_ADDED)
+                                                .defaultPrefix()
+                                                .placeholder("resource", spawnerType.getItemName())
+                                                .placeholder("x", loc.getBlockX())
+                                                .placeholder("y", loc.getBlockY())
+                                                .placeholder("z", loc.getBlockZ())
                                 );
                             } else {
-                                sender.sendMessage(i18n("admin_command_invalid_spawner_type"));
+                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_INVALID_SPAWNER_TYPE).defaultPrefix());
                             }
                         }))
         );
@@ -104,15 +103,15 @@ public class SpawnerCommand extends BaseAdminSubCommand {
                             var loc = sender.as(Player.class).getLocation();
 
                             if (game.getPos1() == null || game.getPos2() == null) {
-                                sender.sendMessage(i18n("admin_command_set_pos1_pos2_first"));
+                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_SET_BOUNDS_FIRST).defaultPrefix());
                                 return;
                             }
                             if (game.getWorld() != loc.getWorld()) {
-                                sender.sendMessage(i18n("admin_command_must_be_in_same_world"));
+                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_MUST_BE_IN_SAME_WORLD).defaultPrefix());
                                 return;
                             }
                             if (!ArenaUtils.isInArea(loc, game.getPos1(), game.getPos2())) {
-                                sender.sendMessage(i18n("admin_command_spawn_must_be_in_area"));
+                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_MUST_BE_IN_BOUNDS).defaultPrefix());
                                 return;
                             }
                             var count = List.copyOf(game.getSpawners())
@@ -121,11 +120,13 @@ public class SpawnerCommand extends BaseAdminSubCommand {
                                     .peek(game.getSpawners()::remove)
                                     .count();
                             sender.sendMessage(
-                                    i18n("admin_command_removed_spawners")
-                                            .replace("%count%", Long.toString(count))
-                                            .replace("%x%", Integer.toString(loc.getBlockX()))
-                                            .replace("%y%", Integer.toString(loc.getBlockY()))
-                                            .replace("%z%", Integer.toString(loc.getBlockZ()))
+                                    Message
+                                            .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_REMOVED_SPAWNERS)
+                                            .defaultPrefix()
+                                            .placeholder("count", count)
+                                            .placeholder("x", loc.getBlockX())
+                                            .placeholder("y", loc.getBlockY())
+                                            .placeholder("z", loc.getBlockZ())
                             );
                         }))
         );
@@ -136,8 +137,10 @@ public class SpawnerCommand extends BaseAdminSubCommand {
                         .handler(commandContext -> editMode(commandContext, (sender, game) -> {
                             game.getSpawners().clear();
                             sender.sendMessage(
-                                    i18n("admin_command_spawners_reseted")
-                                            .replace("%arena%", game.getName())
+                                    Message
+                                    .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_SPAWNERS_REMOVED)
+                                    .defaultPrefix()
+                                    .placeholder("arena", game.getName())
                             );
                         }))
         );

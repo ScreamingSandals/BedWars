@@ -2,11 +2,12 @@ package org.screamingsandals.bedwars.game;
 
 import org.bukkit.plugin.java.JavaPlugin;
 import org.screamingsandals.bedwars.Main;
+import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
-
-import static org.screamingsandals.bedwars.lib.lang.I18n.i18nonly;
+import org.screamingsandals.lib.lang.Message;
+import org.screamingsandals.lib.player.PlayerMapper;
 
 public class RespawnProtection extends BukkitRunnable {
     private Game game;
@@ -24,11 +25,11 @@ public class RespawnProtection extends BukkitRunnable {
     public void run() {
     	if (!running) return;
         if (length > 0) {
-            MiscUtils.sendActionBarMessage(player, i18nonly("respawn_protection_remaining").replace("%time%", String.valueOf(this.length)));
+            MiscUtils.sendActionBarMessage(PlayerMapper.wrapPlayer(player), Message.of(LangKeys.IN_GAME_RESPAWN_PROTECTION_REMAINING).placeholder("time", this.length));
 
         }
         if (length <= 0) {
-            MiscUtils.sendActionBarMessage(player, i18nonly("respawn_protection_end"));
+            MiscUtils.sendActionBarMessage(PlayerMapper.wrapPlayer(player), Message.of(LangKeys.IN_GAME_RESPAWN_PROTECTION_END));
             game.removeProtectedPlayer(player);
             running = false;
         }

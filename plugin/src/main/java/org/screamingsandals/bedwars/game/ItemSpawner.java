@@ -5,18 +5,17 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.api.Team;
 
-import static org.screamingsandals.bedwars.lib.lang.I.i18nonly;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Item;
-import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
 import org.screamingsandals.bedwars.config.MainConfig;
+import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.lib.hologram.Hologram;
 import org.screamingsandals.lib.hologram.HologramManager;
+import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.material.builder.ItemFactory;
 import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.tasker.TaskerTime;
@@ -123,7 +122,7 @@ public class ItemSpawner implements org.screamingsandals.bedwars.api.game.ItemSp
             if (hologram != null && (!spawnerIsFullHologram || currentLevelOnHologram != currentLevel)) {
                 spawnerIsFullHologram = true;
                 currentLevelOnHologram = currentLevel;
-                hologram.replaceLine(1, TextEntry.of(AdventureHelper.toComponent(i18nonly("spawner_not_enough_level").replace("%levels%", String.valueOf((currentLevelOnHologram * (-1)) + 1)))));
+                hologram.replaceLine(1, Message.of(LangKeys.IN_GAME_SPAWNER_NOT_ENOUGH_LEVEL).placeholder("levels", (currentLevelOnHologram * (-1)) + 1).asTextEntry(null));
             }
             return 0;
         }
@@ -144,7 +143,7 @@ public class ItemSpawner implements org.screamingsandals.bedwars.api.game.ItemSp
         if (spawned >= maxSpawnedResources) {
             if (hologram != null && !spawnerIsFullHologram) {
                 spawnerIsFullHologram = true;
-                hologram.replaceLine(1, TextEntry.of(AdventureHelper.toComponent(i18nonly("spawner_is_full"))));
+                hologram.replaceLine(1, Message.of(LangKeys.IN_GAME_SPAWNER_FULL).asTextEntry(null));
             }
             return 0;
         }
@@ -155,14 +154,14 @@ public class ItemSpawner implements org.screamingsandals.bedwars.api.game.ItemSp
                 spawnerIsFullHologram = false;
             } else if (hologram != null && (calculated + spawned) == maxSpawnedResources) {
                 spawnerIsFullHologram = true;
-                hologram.replaceLine(1, TextEntry.of(AdventureHelper.toComponent(i18nonly("spawner_is_full"))));
+                hologram.replaceLine(1, Message.of(LangKeys.IN_GAME_SPAWNER_FULL).asTextEntry(null));
             }
             return calculated;
         }
 
         if (hologram != null && !spawnerIsFullHologram) {
             spawnerIsFullHologram = true;
-            hologram.replaceLine(1, TextEntry.of(AdventureHelper.toComponent(i18nonly("spawner_is_full"))));
+            hologram.replaceLine(1, Message.of(LangKeys.IN_GAME_SPAWNER_FULL).asTextEntry(null));
         }
 
         return maxSpawnedResources - spawned;
@@ -199,13 +198,13 @@ public class ItemSpawner implements org.screamingsandals.bedwars.api.game.ItemSp
                     .firstLine(TextEntry.of(AdventureHelper.toComponent(type.getItemBoldName())));
 
             if (countdownHologram) {
-                hologram.bottomLine(TextEntry.of(
-                        AdventureHelper.toComponent(
-                                type.getInterval() < 2 ? i18nonly("every_second_spawning")
-                                        : i18nonly("countdown_spawning").replace("%seconds%",
-                                        Integer.toString(type.getInterval()))
-                        )
-                ));
+                hologram.bottomLine((
+                                type.getInterval() < 2 ? Message.of(LangKeys.IN_GAME_SPAWNER_EVERY_SECOND)
+                                        : Message.of(LangKeys.IN_GAME_SPAWNER_COUNTDOWN).placeholder("seconds",
+                                        type.getInterval())
+                        ).asTextEntry(null)
+
+                );
             }
 
             if (floatingEnabled &&

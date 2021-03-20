@@ -9,13 +9,13 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.commands.AdminCommand;
 import org.screamingsandals.bedwars.game.Team;
+import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.utils.TeamJoinMetaDataValue;
+import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static org.screamingsandals.bedwars.lib.lang.I.i18n;
 
 public class JoinTeamCommand extends BaseAdminSubCommand {
     public static final String BEDWARS_TEAM_JOIN_METADATA = "bw-addteamjoin";
@@ -60,11 +60,11 @@ public class JoinTeamCommand extends BaseAdminSubCommand {
                                             player.removeMetadata(BEDWARS_TEAM_JOIN_METADATA, Main.getInstance().getPluginDescription().as(JavaPlugin.class));
                                         }
                                     }.runTaskLater(Main.getInstance().getPluginDescription().as(JavaPlugin.class), 200L);
-                                    sender.sendMessage(i18n("admin_command_click_right_on_entity_to_set_join").replace("%team%", t.name));
+                                    sender.sendMessage(Message.of(LangKeys.ADMIN_TEAM_JOIN_ENTITY_CLICK_RIGHT_ON_ENTITY).defaultPrefix().placeholder("team", t.name));
                                     return;
                                 }
                             }
-                            sender.sendMessage(i18n("admin_command_team_is_not_exists"));
+                            sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_TEAM_DOES_NOT_EXIST).defaultPrefix());
                         }))
         );
     }

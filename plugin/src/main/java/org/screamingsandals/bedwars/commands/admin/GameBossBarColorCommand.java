@@ -4,13 +4,13 @@ import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
 import cloud.commandframework.arguments.standard.StringArgument;
 import org.bukkit.boss.BarColor;
+import org.screamingsandals.bedwars.lang.LangKeys;
+import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import static org.screamingsandals.bedwars.lib.lang.I.i18n;
 
 public class GameBossBarColorCommand extends BaseAdminSubCommand {
     public GameBossBarColorCommand(CommandManager<CommandSenderWrapper> manager, Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder) {
@@ -34,16 +34,16 @@ public class GameBossBarColorCommand extends BaseAdminSubCommand {
                                     var c = BarColor.valueOf(barColor.toUpperCase());
                                     game.setGameBossBarColor(c);
 
-                                    sender.sendMessage(i18n("admin_command_bar_color_set").replace("%color%", c.name())
-                                            .replace("%type%", "GAME"));
+                                    sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_BAR_COLOR_SET).defaultPrefix().placeholder("color", c.name())
+                                            .placeholder("type", "GAME"));
                                 } catch (Exception e) {
-                                    sender.sendMessage(i18n("admin_command_invalid_bar_color"));
+                                    sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_INVALID_BAR_COLOR).defaultPrefix());
                                 }
                             } else {
                                 game.setGameBossBarColor(null);
 
-                                sender.sendMessage(i18n("admin_command_bar_color_set").replace("%color%", "default")
-                                        .replace("%type%", "GAME"));
+                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_BAR_COLOR_SET).placeholder("color", "default")
+                                        .placeholder("type", "GAME").defaultPrefix());
                             }
                         }))
         );

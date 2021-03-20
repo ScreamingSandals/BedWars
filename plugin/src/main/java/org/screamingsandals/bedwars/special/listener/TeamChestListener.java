@@ -11,8 +11,12 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.bedwars.config.MainConfig;
+import org.screamingsandals.bedwars.game.Game;
+import org.screamingsandals.bedwars.lang.LangKeys;
+import org.screamingsandals.lib.lang.Message;
+import org.screamingsandals.lib.player.PlayerMapper;
 
-import static org.screamingsandals.bedwars.lib.lang.I.i18nc;
+import java.util.stream.Collectors;
 
 public class TeamChestListener implements Listener {
 
@@ -44,10 +48,10 @@ public class TeamChestListener implements Listener {
 
         if (unhidden != null || MainConfig.getInstance().node("specials", "teamchest", "turn-all-enderchests-to-teamchests").getBoolean()) {
             team.addTeamChest(block);
-            String message = i18nc("team_chest_placed", event.getGame().getCustomPrefix());
-            for (Player pl : team.getConnectedPlayers()) {
-                pl.sendMessage(message);
-            }
+            Message
+                    .of(LangKeys.SPECIALS_TEAM_CHEST_PLACED)
+                    .prefixOrDefault(((Game) event.getGame()).getCustomPrefixComponent())
+                    .send(team.getConnectedPlayers().stream().map(PlayerMapper::wrapPlayer).collect(Collectors.toList()));
         }
     }
 

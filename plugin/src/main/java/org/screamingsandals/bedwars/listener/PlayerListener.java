@@ -38,18 +38,19 @@ import org.screamingsandals.bedwars.commands.admin.JoinTeamCommand;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.game.*;
 import org.screamingsandals.bedwars.inventories.TeamSelectorInventory;
+import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.statistics.PlayerStatistic;
 import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.bedwars.utils.*;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.lib.nms.entity.PlayerUtils;
+import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.material.builder.ItemFactory;
 import org.screamingsandals.lib.player.PlayerMapper;
+import org.screamingsandals.lib.utils.AdventureHelper;
 
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static org.screamingsandals.bedwars.lib.lang.I18n.*;
 
 public class PlayerListener implements Listener {
 
@@ -89,6 +90,7 @@ public class PlayerListener implements Listener {
 
                 if (MainConfig.getInstance().node("chat", "send-death-messages-just-in-game").getBoolean()) {
                     var deathMessage = event.getDeathMessage();
+                    Message deathMessageMsg = null;
                     final var killer = event.getEntity().getKiller();
                     if (MainConfig.getInstance().node("chat", "send-custom-death-messages").getBoolean()) {
                         if (killer != null) {
@@ -97,22 +99,28 @@ public class PlayerListener implements Listener {
                             final var killerTeam = game.getPlayerTeam(gKiller);
                             final var killerColor = killerTeam.teamInfo.color.chatColor;
 
-                            deathMessage = i18nc("player_killed", game.getCustomPrefix())
-                                    .replace("%victim%", victimColor + victim.getDisplayName())
-                                    .replace("%killer%", killerColor + killer.getDisplayName())
-                                    .replace("%victimTeam%", victimColor + victimTeam.getName())
-                                    .replace("%killerTeam%", killerColor + killerTeam.getName());
+                            deathMessageMsg = Message.of(LangKeys.IN_GAME_PLAYER_KILLED)
+                                    .prefixOrDefault(game.getCustomPrefixComponent())
+                                    .placeholder("victim", AdventureHelper.toComponent(victimColor + victim.getDisplayName()))
+                                    .placeholder("killer", AdventureHelper.toComponent(killerColor + killer.getDisplayName()))
+                                    .placeholder("victimTeam", AdventureHelper.toComponent(victimColor + victimTeam.getName()))
+                                    .placeholder("killerTeam", AdventureHelper.toComponent(killerColor + killerTeam.getName()));
                         } else {
-                            deathMessage = i18nc("player_self_killed", game.getCustomPrefix())
-                                    .replace("%victim%", victimColor + victim.getDisplayName())
-                                    .replace("%victimTeam%", victimColor + victimTeam.getName());
+                            deathMessageMsg = Message.of(LangKeys.IN_GAME_PLAYER_SELF_KILLED)
+                                    .prefixOrDefault(game.getCustomPrefixComponent())
+                                    .placeholder("victim", AdventureHelper.toComponent(victimColor + victim.getDisplayName()))
+                                    .placeholder("victimTeam", AdventureHelper.toComponent(victimColor + victimTeam.getName()));
                         }
 
                     }
                     if (deathMessage != null) {
                         event.setDeathMessage(null);
-                        for (Player player : game.getConnectedPlayers()) {
-                            player.sendMessage(deathMessage);
+                        if (deathMessageMsg != null) {
+                            deathMessageMsg.send(game.getConnectedPlayers().stream().map(PlayerMapper::wrapPlayer).collect(Collectors.toList()));
+                        } else {
+                            for (Player player : game.getConnectedPlayers()) {
+                                player.sendMessage(deathMessage);
+                            }
                         }
                     }
                 }
@@ -203,8 +211,11 @@ public class PlayerListener implements Listener {
                     @Override
                     public void run() {
                         if (livingTime > 0) {
-                            TitleUtils.send(PlayerMapper.wrapPlayer(player),
-                                    i18nonly("respawn_cooldown_title").replace("%time%", String.valueOf(livingTime)), "");
+                            Message
+                                    .of(LangKeys.IN_GAME_RESPAWN_COOLDOWN_TITLE)
+                                    .placeholder("time", livingTime)
+                                    .times(TitleUtils.defaultTimes())
+                                    .title(PlayerMapper.wrapPlayer(player));
                             Sounds.playSound(player, player.getLocation(),
                                     MainConfig.getInstance().node("sounds", "respawn_cooldown_wait").getString(),
                                     Sounds.BLOCK_STONE_BUTTON_CLICK_ON, 1, 1);
@@ -464,7 +475,7 @@ public class PlayerListener implements Listener {
             } else if (!Main.isCommandAllowedInGame(message.split(" ")[0])) {
                 Debug.info(event.getPlayer().getName() + " attempted to execute a command, canceled");
                 event.setCancelled(true);
-                event.getPlayer().sendMessage(i18nc("command_is_not_allowed", gamePlayer.getGame().getCustomPrefix()));
+                PlayerMapper.wrapPlayer(player).sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_COMMAND_IS_NOT_ALLOWED).prefixOrDefault(gamePlayer.getGame().getCustomPrefixComponent()));
                 return;
             }
             Debug.info(event.getPlayer().getName() + " attempted to execute a command, allowed");
@@ -507,7 +518,7 @@ public class PlayerListener implements Listener {
                                     if (game.checkMinPlayers()) {
                                         game.gameStartItem = true;
                                     } else {
-                                        p.sendMessage(i18nc("vip_not_enough_players", game.getCustomPrefix()));
+                                        PlayerMapper.wrapPlayer(p).sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_VIP_NOT_ENOUGH_PLAYERS).prefixOrDefault(game.getCustomPrefixComponent()));
                                     }
                                 }
                             } else if (item.getType() == Material
@@ -762,7 +773,7 @@ public class PlayerListener implements Listener {
                             if (game.checkMinPlayers()) {
                                 game.gameStartItem = true;
                             } else {
-                                player.sendMessage(i18nc("vip_not_enough_players", game.getCustomPrefix()));
+                                PlayerMapper.wrapPlayer(player).sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_VIP_NOT_ENOUGH_PLAYERS).prefixOrDefault(game.getCustomPrefixComponent()));
                             }
                         }
                     } else if (event.getMaterial() == Material
@@ -783,7 +794,7 @@ public class PlayerListener implements Listener {
                             }
 
                             if (!team.players.contains(gPlayer)) {
-                                player.sendMessage(i18nc("team_chest_is_not_your", game.getCustomPrefix()));
+                                PlayerMapper.wrapPlayer(player).sendMessage(Message.of(LangKeys.SPECIALS_TEAM_CHEST_NOT_YOURS).prefixOrDefault(game.getCustomPrefixComponent()));
                                 Debug.info(player.getName() + " tried to open foreign team chest");
                                 return;
                             }
@@ -1019,7 +1030,7 @@ public class PlayerListener implements Listener {
             }
 
             if (!(entity instanceof LivingEntity)) {
-                player.sendMessage(i18n("admin_command_jointeam_entitynotcompatible"));
+                PlayerMapper.wrapPlayer(player).sendMessage(Message.of(LangKeys.ADMIN_TEAM_JOIN_ENTITY_ENTITY_NOT_COMPATIBLE).defaultPrefix());
                 return;
             }
 
@@ -1034,7 +1045,7 @@ public class PlayerListener implements Listener {
             }
 
             player.removeMetadata(JoinTeamCommand.BEDWARS_TEAM_JOIN_METADATA, Main.getInstance().getPluginDescription().as(JavaPlugin.class));
-            player.sendMessage(i18n("admin_command_jointeam_entity_added"));
+            PlayerMapper.wrapPlayer(player).sendMessage(Message.of(LangKeys.ADMIN_TEAM_JOIN_ENTITY_ENTITY_ADDED).defaultPrefix());
         }
     }
 
