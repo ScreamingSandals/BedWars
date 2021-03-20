@@ -167,7 +167,7 @@ public class StatisticsHolograms {
     private Optional<Hologram> getHologramByLocation(List<Hologram> holograms, LocationHolder holoLocation) {
         return holograms.stream()
                 .filter(hologram -> {
-                    var loc = hologram.getLocation().orElseGet(LocationHolder::new);
+                    var loc = hologram.getLocation();
                     return loc.getWorld().getUuid().equals(holoLocation.getWorld().getUuid())
                             && loc.getX() == holoLocation.getX()
                             && loc.getY() == holoLocation.getY()
@@ -186,7 +186,7 @@ public class StatisticsHolograms {
         if (holo.isEmpty() && player.getLocation().getWorld().getUuid().equals(holoLocation.getWorld().getUuid())) {
             holograms.add(this.createPlayerStatisticHologram(player, holoLocation));
         } else if (holo.isPresent()) {
-            if (player.getLocation().getWorld().getUuid().equals(holo.get().getLocation().map(LocationHolder::getWorld).map(WorldHolder::getUuid).orElse(null))) {
+            if (player.getLocation().getWorld().getUuid().equals(holo.get().getLocation().getWorld().getUuid())) {
                 this.updatePlayerStatisticHologram(player, holo.get());
             } else {
                 holograms.remove(holo.get());
@@ -238,7 +238,7 @@ public class StatisticsHolograms {
     public void handle(HologramTouchEvent event) {
         var player = event.getPlayer();
         var holo = event.getHologram();
-        if (!holograms.containsKey(player.getUuid()) || !holograms.get(player.getUuid()).contains(holo) || holo.getLocation().isEmpty()) {
+        if (!holograms.containsKey(player.getUuid()) || !holograms.get(player.getUuid()).contains(holo) || holo.getLocation() == null) {
             return;
         }
 
@@ -246,7 +246,7 @@ public class StatisticsHolograms {
             return;
         }
 
-        var location = holo.getLocation().get();
+        var location = holo.getLocation();
 
         player.as(Player.class).removeMetadata("bw-remove-holo", pluginDescription.as(JavaPlugin.class));
         Tasker
@@ -256,16 +256,15 @@ public class StatisticsHolograms {
                         var iterator = entry.getValue().iterator();
                         while (iterator.hasNext()) {
                             var hologram = iterator.next();
-                            hologram.getLocation().ifPresent(locationHolder -> {
-                                if (locationHolder.getWorld().getUuid().equals(location.getWorld().getUuid())
-                                        && locationHolder.getX() == location.getX()
-                                        && locationHolder.getY() == location.getY()
-                                        && locationHolder.getZ() == location.getZ()) {
-                                    hologram.hide();
-                                    HologramManager.removeHologram(hologram);
-                                    iterator.remove();
-                                }
-                            });
+
+                            if (location.getWorld().getUuid().equals(location.getWorld().getUuid())
+                                    && location.getX() == location.getX()
+                                    && location.getY() == location.getY()
+                                    && location.getZ() == location.getZ()) {
+                                hologram.hide();
+                                HologramManager.removeHologram(hologram);
+                                iterator.remove();
+                            }
                         }
                     }
 
@@ -305,7 +304,7 @@ public class StatisticsHolograms {
         var increment = size == 1 || size > lines.size() ? 1 : 0;
 
         for (int i = 0; i < lines.size(); i++) {
-            holo.setLine(i + increment, TextEntry.of(AdventureHelper.toComponent(lines.get(i))));
+            holo.replaceLine(i + increment, TextEntry.of(AdventureHelper.toComponent(lines.get(i))));
         }
     }
 

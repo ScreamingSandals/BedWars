@@ -123,7 +123,7 @@ public class ItemSpawner implements org.screamingsandals.bedwars.api.game.ItemSp
             if (hologram != null && (!spawnerIsFullHologram || currentLevelOnHologram != currentLevel)) {
                 spawnerIsFullHologram = true;
                 currentLevelOnHologram = currentLevel;
-                hologram.setLine(1, TextEntry.of(AdventureHelper.toComponent(i18nonly("spawner_not_enough_level").replace("%levels%", String.valueOf((currentLevelOnHologram * (-1)) + 1)))));
+                hologram.replaceLine(1, TextEntry.of(AdventureHelper.toComponent(i18nonly("spawner_not_enough_level").replace("%levels%", String.valueOf((currentLevelOnHologram * (-1)) + 1)))));
             }
             return 0;
         }
@@ -144,7 +144,7 @@ public class ItemSpawner implements org.screamingsandals.bedwars.api.game.ItemSp
         if (spawned >= maxSpawnedResources) {
             if (hologram != null && !spawnerIsFullHologram) {
                 spawnerIsFullHologram = true;
-                hologram.setLine(1, TextEntry.of(AdventureHelper.toComponent(i18nonly("spawner_is_full"))));
+                hologram.replaceLine(1, TextEntry.of(AdventureHelper.toComponent(i18nonly("spawner_is_full"))));
             }
             return 0;
         }
@@ -155,14 +155,14 @@ public class ItemSpawner implements org.screamingsandals.bedwars.api.game.ItemSp
                 spawnerIsFullHologram = false;
             } else if (hologram != null && (calculated + spawned) == maxSpawnedResources) {
                 spawnerIsFullHologram = true;
-                hologram.setLine(1, TextEntry.of(AdventureHelper.toComponent(i18nonly("spawner_is_full"))));
+                hologram.replaceLine(1, TextEntry.of(AdventureHelper.toComponent(i18nonly("spawner_is_full"))));
             }
             return calculated;
         }
 
         if (hologram != null && !spawnerIsFullHologram) {
             spawnerIsFullHologram = true;
-            hologram.setLine(1, TextEntry.of(AdventureHelper.toComponent(i18nonly("spawner_is_full"))));
+            hologram.replaceLine(1, TextEntry.of(AdventureHelper.toComponent(i18nonly("spawner_is_full"))));
         }
 
         return maxSpawnedResources - spawned;
@@ -199,7 +199,7 @@ public class ItemSpawner implements org.screamingsandals.bedwars.api.game.ItemSp
                     .firstLine(TextEntry.of(AdventureHelper.toComponent(type.getItemBoldName())));
 
             if (countdownHologram) {
-                hologram.newLine(TextEntry.of(
+                hologram.bottomLine(TextEntry.of(
                         AdventureHelper.toComponent(
                                 type.getInterval() < 2 ? i18nonly("every_second_spawning")
                                         : i18nonly("countdown_spawning").replace("%seconds%",

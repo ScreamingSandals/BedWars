@@ -192,7 +192,7 @@ public class LeaderboardHolograms {
             );
 
             for (int i = 0; i < lines.size(); i++) {
-                holo.setLine(i, TextEntry.of(AdventureHelper.toComponent(lines.get(i))));
+                holo.replaceLine(i, TextEntry.of(AdventureHelper.toComponent(lines.get(i))));
             }
         }
     }
@@ -202,7 +202,7 @@ public class LeaderboardHolograms {
         var player = event.getPlayer();
         var hologram = event.getHologram();
 
-        if (hologram.getLocation().isEmpty() || !holograms.containsKey(hologram.getLocation().get())) {
+        if (hologram.getLocation() == null || !holograms.containsKey(hologram.getLocation())) {
             return;
         }
 
@@ -210,7 +210,7 @@ public class LeaderboardHolograms {
             return;
         }
 
-        var location = hologram.getLocation().get();
+        var location = hologram.getLocation();
 
         player.as(Player.class).removeMetadata("bw-remove-holo", pluginDescription.as(JavaPlugin.class));
         Tasker
