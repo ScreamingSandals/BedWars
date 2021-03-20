@@ -210,10 +210,12 @@ public class ItemSpawner implements org.screamingsandals.bedwars.api.game.ItemSp
 
             if (floatingEnabled &&
                     MainConfig.getInstance().node("floating-generator", "enabled").getBoolean(true)) {
+                var materialName = type.getMaterial().name();
+                var indexOfUnderscore = type.getMaterial().name().indexOf("_");
                 hologram
                         .item(
                                 ItemFactory
-                                        .build(type.getMaterial().name().substring(0, type.getMaterial().name().indexOf("_")) + "_BLOCK")
+                                        .build(materialName.substring(0, (indexOfUnderscore != -1 ? indexOfUnderscore : materialName.length())) + "_BLOCK")
                                         .or(() -> ItemFactory.build(type.getMaterial().name()))
                                         .orElseThrow()
                         )
