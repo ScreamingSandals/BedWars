@@ -55,7 +55,7 @@ import java.util.*;
 
 @Plugin(
         id = "BedWars",
-        authors = {"ScreamingSandals <Misat11, Ceph, Pronze>"},
+        authors = {"ScreamingSandals <Misat11, iamceph, Pronze>"},
         version = VersionInfo.VERSION,
         loadTime = Plugin.LoadTime.POSTWORLD
 )
