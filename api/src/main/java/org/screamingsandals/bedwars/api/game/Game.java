@@ -1,5 +1,6 @@
 package org.screamingsandals.bedwars.api.game;
 
+import net.kyori.adventure.text.Component;
 import org.screamingsandals.bedwars.api.*;
 import org.screamingsandals.bedwars.api.boss.StatusBar;
 import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
@@ -425,4 +426,10 @@ public interface Game {
      * @return file where game is saved
      */
     File getFile();
+
+    /**
+     * @since 0.3.0
+     * @return
+     */
+    Component getCustomPrefixComponent();
 }

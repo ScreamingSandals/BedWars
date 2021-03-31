@@ -3034,6 +3034,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         return customPrefix;
     }
 
+    @Override
     public Component getCustomPrefixComponent() {
         return AdventureHelper.toComponentNullable(customPrefix);
     }

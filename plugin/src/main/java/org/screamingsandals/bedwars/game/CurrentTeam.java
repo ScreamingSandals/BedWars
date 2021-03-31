@@ -32,7 +32,7 @@ public class CurrentTeam implements RunningTeam {
     public CurrentTeam(Team team, Game game) {
         this.teamInfo = team;
         this.game = game;
-        this.chestInventory = Bukkit.createInventory(null, InventoryType.ENDER_CHEST, Message.of(LangKeys.SPECIALS_TEAM_CHEST_NAME).prefix(AdventureHelper.toComponent(game.getCustomPrefix())).asComponent());
+        this.chestInventory = Bukkit.createInventory(null, InventoryType.ENDER_CHEST, Message.of(LangKeys.SPECIALS_TEAM_CHEST_NAME).prefixOrDefault(game.getCustomPrefixComponent()).asComponent());
     }
 
     public boolean isDead() {
