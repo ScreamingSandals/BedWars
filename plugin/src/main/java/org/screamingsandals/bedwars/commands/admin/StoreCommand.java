@@ -8,15 +8,14 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.game.GameStore;
+import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.utils.ArenaUtils;
+import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static org.screamingsandals.bedwars.lib.lang.I.i18n;
-import static org.screamingsandals.bedwars.lib.lang.I.i18nonly;
 
 public class StoreCommand extends BaseAdminSubCommand {
     public StoreCommand(CommandManager<CommandSenderWrapper> manager, Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder) {
@@ -43,15 +42,15 @@ public class StoreCommand extends BaseAdminSubCommand {
                             var loc = sender.as(Player.class).getLocation();
 
                             if (game.getPos1() == null || game.getPos2() == null) {
-                                sender.sendMessage(i18n("admin_command_set_pos1_pos2_first"));
+                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_SET_BOUNDS_FIRST).defaultPrefix());
                                 return;
                             }
                             if (game.getWorld() != loc.getWorld()) {
-                                sender.sendMessage(i18n("admin_command_must_be_in_same_world"));
+                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_MUST_BE_IN_SAME_WORLD).defaultPrefix());
                                 return;
                             }
                             if (!ArenaUtils.isInArea(loc, game.getPos1(), game.getPos2())) {
-                                sender.sendMessage(i18n("admin_command_spawn_must_be_in_area"));
+                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_MUST_BE_IN_BOUNDS).defaultPrefix());
                                 return;
                             }
                             var store = game.getGameStoreList()
@@ -60,17 +59,19 @@ public class StoreCommand extends BaseAdminSubCommand {
                                     .findFirst();
 
                             if (store.isPresent()) {
-                                sender.sendMessage(i18n("admin_command_store_already_exists"));
+                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_STORE_ALREADY_EXIST).defaultPrefix());
                                 return;
                             }
                             game.getGameStoreList().add(new GameStore(loc, file.orElse(null), useParent, name.orElse(null), name.isPresent(), false));
                             sender.sendMessage(
-                                    i18n("admin_command_store_added")
-                                            .replace("%x%", Double.toString(loc.getX()))
-                                            .replace("%y%", Double.toString(loc.getY()))
-                                            .replace("%z%", Double.toString(loc.getZ()))
-                                            .replace("%yaw%", Float.toString(loc.getYaw()))
-                                            .replace("%pitch%", Float.toString(loc.getPitch()))
+                                    Message
+                                    .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_STORE_ADDED)
+                                    .defaultPrefix()
+                                    .placeholder("x", loc.getX(), 2)
+                                    .placeholder("y", loc.getY(), 2)
+                                    .placeholder("z", loc.getZ(), 2)
+                                    .placeholder("yaw", loc.getYaw(), 5)
+                                    .placeholder("pitch", loc.getPitch(), 5)
                             );
                         }))
         );
@@ -82,7 +83,7 @@ public class StoreCommand extends BaseAdminSubCommand {
                             var loc = sender.as(Player.class).getLocation();
 
                             if (game.getWorld() != loc.getWorld()) {
-                                sender.sendMessage(i18n("admin_command_must_be_in_same_world"));
+                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_MUST_BE_IN_SAME_WORLD).defaultPrefix());
                                 return;
                             }
                             var store = game.getGameStoreList()
@@ -91,17 +92,19 @@ public class StoreCommand extends BaseAdminSubCommand {
                                     .findFirst();
 
                             if (store.isEmpty()) {
-                                sender.sendMessage(i18n("admin_command_store_not_exists"));
+                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_STORE_DOES_NOT_EXIST).defaultPrefix());
                                 return;
                             }
                             game.getGameStoreList().remove(store.get());
                             sender.sendMessage(
-                                    i18n("admin_command_store_removed")
-                                            .replace("%x%", Double.toString(loc.getX()))
-                                            .replace("%y%", Double.toString(loc.getY()))
-                                            .replace("%z%", Double.toString(loc.getZ()))
-                                            .replace("%yaw%", Float.toString(loc.getYaw()))
-                                            .replace("%pitch%", Float.toString(loc.getPitch()))
+                                    Message
+                                            .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_STORE_REMOVED)
+                                            .defaultPrefix()
+                                            .placeholder("x", loc.getX(), 2)
+                                            .placeholder("y", loc.getY(), 2)
+                                            .placeholder("z", loc.getZ(), 2)
+                                            .placeholder("yaw", loc.getYaw(), 5)
+                                            .placeholder("pitch", loc.getPitch(), 5)
                             );
                         }))
         );
@@ -121,13 +124,15 @@ public class StoreCommand extends BaseAdminSubCommand {
                                 store.get().setBaby(true);
 
                                 sender.sendMessage(
-                                        i18n("admin_command_store_child_state")
-                                                .replace("%value%", i18nonly("arena_info_config_true"))
+                                        Message
+                                                .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_CHILD_STATE)
+                                                .defaultPrefix()
+                                                .placeholder("value", Message.of(LangKeys.ADMIN_INFO_CONSTANT_TRUE))
                                 );
                                 return;
                             }
 
-                            sender.sendMessage(i18n("admin_command_store_not_exists"));
+                            sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_STORE_DOES_NOT_EXIST).defaultPrefix());
                         }))
         );
 
@@ -146,13 +151,15 @@ public class StoreCommand extends BaseAdminSubCommand {
                                 store.get().setBaby(false);
 
                                 sender.sendMessage(
-                                        i18n("admin_command_store_child_state")
-                                                .replace("%value%", i18nonly("arena_info_config_false"))
+                                        Message
+                                                .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_CHILD_STATE)
+                                                .defaultPrefix()
+                                                .placeholder("value", Message.of(LangKeys.ADMIN_INFO_CONSTANT_FALSE))
                                 );
                                 return;
                             }
 
-                            sender.sendMessage(i18n("admin_command_store_not_exists"));
+                            sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_STORE_DOES_NOT_EXIST).defaultPrefix());
                         }))
         );
 
@@ -185,27 +192,27 @@ public class StoreCommand extends BaseAdminSubCommand {
                                 if (t == EntityType.PLAYER) {
                                     String[] splitted = type.split(":", 2);
                                     if (splitted.length != 2 || splitted[1].trim().equals("")) {
-                                        sender.sendMessage(i18n("admin_command_npc_must_have_skinname"));
+                                        sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_NPC_MUST_HAVE_SKIN_NAME).defaultPrefix());
                                         return;
                                     }
 
                                     store.get().setEntityTypeNPC(splitted[1]);
-                                    sender.sendMessage(i18n("admin_command_store_living_entity_type_set").replace("%type%", splitted[1]));
+                                    sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_STORE_ENTITY_TYPE_SET).defaultPrefix().placeholder("type", splitted[1]));
                                     return;
                                 }
 
                                 if (t == null) {
-                                    sender.sendMessage(i18n("admin_command_wrong_living_entity_type"));
+                                    sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_INVALID_ENTITY_TYPE).defaultPrefix());
                                     return;
                                 }
 
                                 store.get().setEntityType(t);
 
-                                sender.sendMessage(i18n("admin_command_store_living_entity_type_set").replace("%type%", t.toString()));
+                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_STORE_ENTITY_TYPE_SET).defaultPrefix().placeholder("type", t.toString()));
                                 return;
                             }
 
-                            sender.sendMessage(i18n("admin_command_store_not_exists"));
+                            sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_STORE_DOES_NOT_EXIST).defaultPrefix());
                         }))
         );
     }

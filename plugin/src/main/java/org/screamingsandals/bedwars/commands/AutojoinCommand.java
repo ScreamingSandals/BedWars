@@ -5,9 +5,9 @@ import cloud.commandframework.CommandManager;
 import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.game.GameManager;
+import org.screamingsandals.bedwars.lang.LangKeys;
+import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
-
-import static org.screamingsandals.bedwars.lib.lang.I.i18n;
 
 public class AutojoinCommand extends BaseCommand {
     public AutojoinCommand(CommandManager<CommandSenderWrapper> manager) {
@@ -22,13 +22,13 @@ public class AutojoinCommand extends BaseCommand {
                             // TODO: Use Wrapper (bedwars changes needed)
                             var player = commandContext.getSender().as(Player.class);
                             if (Main.isPlayerInGame(player)) {
-                                player.sendMessage(i18n("you_are_already_in_some_game"));
+                                commandContext.getSender().sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_ALREADY_IN_GAME).defaultPrefix());
                                 return;
                             }
 
                             GameManager.getInstance().getFirstWaitingGame().ifPresentOrElse(
                                     game -> game.joinToGame(player),
-                                    () -> player.sendMessage(i18n("there_is_no_empty_game"))
+                                    () -> commandContext.getSender().sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_THERE_IS_NO_EMPTY_GAME).defaultPrefix())
                             );
                         })
         );

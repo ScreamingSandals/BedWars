@@ -11,6 +11,7 @@ import org.screamingsandals.bedwars.api.events.BedwarsApplyPropertyToBoughtItem;
 import org.screamingsandals.bedwars.api.special.SpecialItem;
 import org.screamingsandals.bedwars.game.GameManager;
 import org.screamingsandals.bedwars.game.GamePlayer;
+import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.special.Golem;
 import org.screamingsandals.bedwars.utils.DelayFactory;
 import org.screamingsandals.bedwars.utils.MiscUtils;
@@ -26,10 +27,10 @@ import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.screamingsandals.lib.lang.Message;
+import org.screamingsandals.lib.player.PlayerMapper;
 
 import java.util.List;
-
-import static org.screamingsandals.bedwars.lib.lang.I18n.i18nonly;
 
 public class GolemListener implements Listener {
     private static final String GOLEM_PREFIX = "Module:Golem:";
@@ -90,7 +91,7 @@ public class GolemListener implements Listener {
                         event.setCancelled(true);
 
                         int delay = game.getActiveDelay(player, Golem.class).getRemainDelay();
-                        MiscUtils.sendActionBarMessage(player, i18nonly("special_item_delay").replace("%time%", String.valueOf(delay)));
+                        MiscUtils.sendActionBarMessage(PlayerMapper.wrapPlayer(player), Message.of(LangKeys.SPECIALS_ITEM_DELAY).placeholder("time", delay));
                     }
                 }
 

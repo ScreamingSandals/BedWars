@@ -5,11 +5,11 @@ import cloud.commandframework.CommandManager;
 import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.game.GameManager;
+import org.screamingsandals.bedwars.lang.LangKeys;
+import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
 
 import java.util.Optional;
-
-import static org.screamingsandals.bedwars.lib.lang.I.i18n;
 
 public class JoinCommand extends BaseCommand {
     public JoinCommand(CommandManager<CommandSenderWrapper> manager) {
@@ -31,7 +31,7 @@ public class JoinCommand extends BaseCommand {
                             // TODO: Use Wrapper (bedwars changes needed)
                             var player = commandContext.getSender().as(Player.class);
                             if (Main.isPlayerInGame(player)) {
-                                player.sendMessage(i18n("you_are_already_in_some_game"));
+                                player.sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_ALREADY_IN_GAME).defaultPrefix());
                                 return;
                             }
 
@@ -39,12 +39,12 @@ public class JoinCommand extends BaseCommand {
                                 var arenaN = game.get();
                                 GameManager.getInstance().getGame(arenaN).ifPresentOrElse(
                                         game1 -> game1.joinToGame(player),
-                                        () -> player.sendMessage(i18n("no_arena_found"))
+                                        () -> player.sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_GAME_NOT_FOUND).defaultPrefix())
                                 );
                             } else {
                                 GameManager.getInstance().getGameWithHighestPlayers().ifPresentOrElse(
                                         game1 -> game1.joinToGame(player),
-                                        () -> player.sendMessage(i18n("no_arena_found"))
+                                        () -> player.sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_GAME_NOT_FOUND).defaultPrefix())
                                 );
                             }
                         })

@@ -5,6 +5,7 @@ import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.api.Team;
 import org.screamingsandals.bedwars.game.TeamColor;
+import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -13,11 +14,11 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.screamingsandals.lib.lang.Message;
+import org.screamingsandals.lib.player.PlayerMapper;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.screamingsandals.bedwars.lib.lang.I18n.i18nonly;
 
 public class RescuePlatform extends SpecialItem implements org.screamingsandals.bedwars.api.special.RescuePlatform {
     private Game game;
@@ -71,7 +72,7 @@ public class RescuePlatform extends SpecialItem implements org.screamingsandals.
 
                 if (time < 6 && time > 0) {
                     MiscUtils.sendActionBarMessage(
-                            player, i18nonly("specials_rescue_platform_destroy").replace("%time%", Integer.toString(time)));
+                            PlayerMapper.wrapPlayer(player), Message.of(LangKeys.SPECIALS_RESCUE_PLATFORM_DESTROY).placeholder("time", time));
                 }
 
                 if (livingTime == breakingTime) {
@@ -142,7 +143,7 @@ public class RescuePlatform extends SpecialItem implements org.screamingsandals.
             game.registerSpecialItem(this);
             runTask();
 
-            MiscUtils.sendActionBarMessage(player, i18nonly("specials_rescue_platform_created").replace("%time%", Integer.toString(breakingTime)));
+            MiscUtils.sendActionBarMessage(PlayerMapper.wrapPlayer(player), Message.of(LangKeys.SPECIALS_RESCUE_PLATFORM_CREATED).placeholder("time", breakingTime));
 
             if (item.getAmount() > 1) {
                 item.setAmount(item.getAmount() - 1);
@@ -161,7 +162,7 @@ public class RescuePlatform extends SpecialItem implements org.screamingsandals.
         } else {
             game.registerSpecialItem(this);
 
-            MiscUtils.sendActionBarMessage(player, i18nonly("specials_rescue_platform_created_unbreakable"));
+            MiscUtils.sendActionBarMessage(PlayerMapper.wrapPlayer(player), Message.of(LangKeys.SPECIALS_RESCUE_PLATFORM_CREATED_UNBREAKABLE));
             if (item.getAmount() > 1) {
                 item.setAmount(item.getAmount() - 1);
             } else {

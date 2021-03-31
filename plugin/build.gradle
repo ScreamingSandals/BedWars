@@ -5,7 +5,7 @@ ScreamingLibBuilder()
         .modules('player', 'event', 'material', 'entity', 'world', 'command', 'tasker', 'hologram')
         .version(SCREAMING_LIB_VERSION)
         .simpleInventories(SIMPLE_INVENTORIES_VERSION)
-        .universalModules('signs')
+        .universalModules('signs', 'lang')
         .enableAnnotationProcessor()
         .build()
 
@@ -26,6 +26,7 @@ dependencies {
 
     /* SHADED */
     implementation project(':BedWars-API')
+    implementation 'org.screamingsandals.language.bedwars:BedWarsLanguage:' + (BEDWARS_VERSION =~ /^\d+.\d+/).findAll()?.first() + '-SNAPSHOT'
     implementation 'com.zaxxer:HikariCP:3.3.0'
     implementation 'cloud.commandframework:cloud-minecraft-extras:' + CLOUD_EXTRAS_VERSION
     implementation bStats(BSTATS_VERSION)

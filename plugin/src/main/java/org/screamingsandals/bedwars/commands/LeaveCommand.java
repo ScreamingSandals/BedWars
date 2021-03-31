@@ -4,9 +4,9 @@ import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
 import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.Main;
+import org.screamingsandals.bedwars.lang.LangKeys;
+import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
-
-import static org.screamingsandals.bedwars.lib.lang.I.i18n;
 
 public class LeaveCommand extends BaseCommand {
     public LeaveCommand(CommandManager<CommandSenderWrapper> manager) {
@@ -23,7 +23,7 @@ public class LeaveCommand extends BaseCommand {
                     if (Main.isPlayerInGame(player)) {
                         Main.getPlayerGameProfile(player).changeGame(null);
                     } else {
-                        player.sendMessage(i18n("you_arent_in_game"));
+                        player.sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_YOU_ARE_NOT_IN_GAME).defaultPrefix());
                     }
                 })
         );

@@ -7,7 +7,8 @@ import org.screamingsandals.bedwars.commands.CommandService;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.config.RecordSave;
 import org.screamingsandals.bedwars.game.*;
-import org.screamingsandals.bedwars.lib.lang.I18n;
+import org.screamingsandals.bedwars.lang.BedWarsLangService;
+import org.screamingsandals.bedwars.lang.LangKeys;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;
@@ -38,6 +39,7 @@ import org.screamingsandals.bedwars.utils.UpdateChecker;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.lib.bukkit.utils.nms.ClassStorage;
 import org.screamingsandals.lib.event.EventManager;
+import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.material.MaterialMapping;
 import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.plugin.PluginContainer;
@@ -49,14 +51,11 @@ import org.screamingsandals.lib.utils.annotations.PluginDependencies;
 import org.spongepowered.configurate.serialize.SerializationException;
 import pronze.lib.scoreboards.ScoreboardManager;
 
-import java.io.File;
 import java.util.*;
-
-import static org.screamingsandals.bedwars.lib.lang.I18n.i18n;
 
 @Plugin(
         id = "BedWars",
-        authors = {"ScreamingSandals <Misat11, Ceph, Pronze>"},
+        authors = {"ScreamingSandals <Misat11, iamceph, Pronze>"},
         version = VersionInfo.VERSION,
         loadTime = Plugin.LoadTime.POSTWORLD
 )
@@ -83,6 +82,7 @@ import static org.screamingsandals.bedwars.lib.lang.I18n.i18n;
         StatisticsHolograms.class,
         LeaderboardHolograms.class,
         MainConfig.class,
+        BedWarsLangService.class,
         TabManager.class,
         ShopInventory.class,
         SpecialRegister.class,
@@ -148,9 +148,12 @@ public class Main extends PluginContainer implements BedwarsAPI {
             if (isVault() && MainConfig.getInstance().node("vault", "enabled").getBoolean()) {
                 EconomyResponse response = instance.econ.depositPlayer(player, coins);
                 if (response.transactionSuccess()) {
-                    player.sendMessage(i18n("vault_deposite").replace("%coins%", Double.toString(coins)).replace(
-                            "%currency%",
-                            (coins == 1 ? instance.econ.currencyNameSingular() : instance.econ.currencyNamePlural())));
+                    Message
+                            .of(LangKeys.IN_GAME_VAULT_DEPOSITE)
+                            .defaultPrefix()
+                            .placeholder("coins", coins)
+                            .placeholder("currency",  (coins == 1 ? instance.econ.currencyNameSingular() : instance.econ.currencyNamePlural()))
+                            .send(PlayerMapper.wrapPlayer(player));
                 }
             }
         } catch (Throwable ignored) {
@@ -305,22 +308,6 @@ public class Main extends PluginContainer implements BedwarsAPI {
         isSpigot = ClassStorage.IS_SPIGOT_SERVER;
         colorChanger = new org.screamingsandals.bedwars.utils.ColorChanger();
 
-        var langFolder = getDataFolder().resolve("languages").toFile();
-
-        if (!langFolder.exists()) {
-            langFolder.mkdirs();
-
-            var listOfFiles = getDataFolder().toFile().listFiles();
-            if (listOfFiles != null && listOfFiles.length > 0) {
-                for (var file : listOfFiles) {
-                    if (file.isFile() && file.getName().startsWith("messages_") && file.getName().endsWith(".yml")) {
-                        var dest = new File(langFolder, "language_" + file.getName().substring(9));
-                        file.renameTo(dest);
-                    }
-                }
-            }
-        }
-
         if (!PluginManager.isEnabled(PluginManager.createKey("Vault").orElseThrow())) {
             isVault = false;
         } else {
@@ -338,8 +325,6 @@ public class Main extends PluginContainer implements BedwarsAPI {
 
         Debug.init(getPluginDescription().getName());
         Debug.setDebug(MainConfig.getInstance().node("debug").getBoolean());
-
-        I18n.load(this.getPluginDescription().as(JavaPlugin.class), MainConfig.getInstance().node("locale").getString("en"));
 
         try {
             if (PluginManager.isEnabled(PluginManager.createKey("PlaceholderAPI").orElseThrow())) {

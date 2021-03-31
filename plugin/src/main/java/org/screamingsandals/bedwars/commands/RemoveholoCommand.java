@@ -7,9 +7,9 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.holograms.StatisticsHolograms;
+import org.screamingsandals.bedwars.lang.LangKeys;
+import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
-
-import static org.screamingsandals.bedwars.lib.lang.I.i18n;
 
 public class RemoveholoCommand extends BaseCommand {
     public RemoveholoCommand(CommandManager<CommandSenderWrapper> manager) {
@@ -21,13 +21,12 @@ public class RemoveholoCommand extends BaseCommand {
         manager.command(
                 commandSenderWrapperBuilder
                     .handler(commandContext -> {
-                        // TODO Use Wrapper in the code - Add EyeLocation to PlayerWrapper in ScreamingLib
                         var player = commandContext.getSender().as(Player.class);
                         if (!StatisticsHolograms.isEnabled()) {
-                            player.sendMessage(i18n("holo_not_enabled"));
+                            player.sendMessage(Message.of(LangKeys.ADMIN_HOLO_NOT_ENABLED).defaultPrefix());
                         } else {
                             player.setMetadata("bw-remove-holo", new FixedMetadataValue(Main.getInstance().getPluginDescription().as(JavaPlugin.class), true));
-                            player.sendMessage(i18n("click_to_holo_for_remove"));
+                            player.sendMessage(Message.of(LangKeys.ADMIN_HOLO_CLICK_TO_REMOVE).defaultPrefix());
                         }
                     })
         );

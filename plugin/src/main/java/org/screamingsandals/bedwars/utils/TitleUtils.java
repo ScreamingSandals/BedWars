@@ -34,4 +34,16 @@ public class TitleUtils {
 
         player.showTitle(titleComponent);
     }
+
+    public Title.Times defaultTimes() {
+        int fadeIn = MainConfig.getInstance().node("title", "fadeIn").getInt();
+        int stay = MainConfig.getInstance().node("title", "stay").getInt();
+        int fadeOut = MainConfig.getInstance().node("title", "fadeOut").getInt();
+
+        return Title.Times.of(
+                Duration.ofMillis(fadeIn * 50L),
+                Duration.ofMillis(stay * 50L),
+                Duration.ofMillis(fadeOut * 50L)
+        );
+    }
 }

@@ -4,9 +4,9 @@ import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
 import org.screamingsandals.bedwars.commands.AdminCommand;
 import org.screamingsandals.bedwars.game.GameManager;
+import org.screamingsandals.bedwars.lang.LangKeys;
+import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
-
-import static org.screamingsandals.bedwars.lib.lang.I.i18n;
 
 public class EditCommand extends BaseAdminSubCommand {
     public EditCommand(CommandManager<CommandSenderWrapper> manager, Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder) {
@@ -24,8 +24,8 @@ public class EditCommand extends BaseAdminSubCommand {
                             GameManager.getInstance().getGame(gameName).ifPresentOrElse(game -> {
                                 game.stop();
                                 AdminCommand.gc.put(gameName, game);
-                                sender.sendMessage(i18n("arena_switched_to_edit"));
-                            }, () -> sender.sendMessage(i18n("no_arena_found")));
+                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_SUCCESS_EDIT_MODE).defaultPrefix());
+                            }, () -> sender.sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_GAME_NOT_FOUND).defaultPrefix()));
                         })
         );
     }

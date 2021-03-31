@@ -4,25 +4,21 @@ import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.config.MainConfig;
+import org.screamingsandals.bedwars.lang.LangKeys;
+import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
 
-import java.io.File;
 import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Objects;
 
-import static org.screamingsandals.bedwars.lib.lang.I.i18n;
-
+// TODO: Rewrite this command
 public class LanguageCommand extends BaseCommand {
 
-    private static final List<String> languages = List.of("af", "ar", "bs", "ca", "cs", "da", "de",
-            "el", "en", "en-UD", "es", "fi", "fr", "he", "hr", "hu", "id", "it", "ja", "ko", "lv",
-            "nl", "no", "pl", "pt", "pt-BR", "ro", "ru", "sk", "sl", "sr", "sr-CS", "sv", "th",
-            "tr", "uk", "vi", "zh", "zh-CN");
+    private static final List<String> languages = List.of("en-US");
 
     public LanguageCommand(CommandManager<CommandSenderWrapper> manager) {
         super(manager, "lang", BedWarsPermission.ADMIN_PERMISSION, true);
@@ -53,18 +49,17 @@ public class LanguageCommand extends BaseCommand {
 
                             if (Objects.requireNonNull(MainConfig.getInstance().node("locale").getString())
                                     .equalsIgnoreCase(locale)) {
-                                sender.sendMessage(i18n("language_already_set")
-                                        .replace("%lang%", langName));
+                                sender.sendMessage(Message.of(LangKeys.LANGUAGE_ALREADY_SET).defaultPrefix()
+                                        .placeholder("lang", langName));
                                 return;
                             }
                             MainConfig.getInstance().node("locale").set(locale);
                             MainConfig.getInstance().saveConfig();
                             Bukkit.getServer().getPluginManager().disablePlugin(Main.getInstance().getPluginDescription().as(JavaPlugin.class));
                             Bukkit.getServer().getPluginManager().enablePlugin(Main.getInstance().getPluginDescription().as(JavaPlugin.class));
-                            sender.sendMessage(i18n("language_success")
-                                    .replace("%lang%", langName));
+                            sender.sendMessage(Message.of(LangKeys.LANGUAGE_SUCCESS).defaultPrefix().placeholder("lang", langName));
                         } catch (Exception e) {
-                            sender.sendMessage(i18n("usage_bw_lang"));
+                            sender.sendMessage(Message.of(LangKeys.LANGUAGE_USAGE_BW_LANG).defaultPrefix());
                         }
                     })
         );

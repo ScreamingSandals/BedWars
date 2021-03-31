@@ -3,10 +3,10 @@ package org.screamingsandals.bedwars.commands.admin;
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
 import org.bukkit.entity.Player;
+import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.utils.ArenaUtils;
+import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
-
-import static org.screamingsandals.bedwars.lib.lang.I.i18n;
 
 public class SpecCommand extends BaseAdminSubCommand {
     public SpecCommand(CommandManager<CommandSenderWrapper> manager, Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder) {
@@ -21,25 +21,27 @@ public class SpecCommand extends BaseAdminSubCommand {
                             var loc = sender.as(Player.class).getLocation();
 
                             if (game.getPos1() == null || game.getPos2() == null) {
-                                sender.sendMessage(i18n("admin_command_set_pos1_pos2_first"));
+                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_SET_BOUNDS_FIRST).defaultPrefix());
                                 return;
                             }
                             if (game.getWorld() != loc.getWorld()) {
-                                sender.sendMessage(i18n("admin_command_must_be_in_same_world"));
+                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_MUST_BE_IN_SAME_WORLD).defaultPrefix());
                                 return;
                             }
                             if (!ArenaUtils.isInArea(loc, game.getPos1(), game.getPos2())) {
-                                sender.sendMessage(i18n("admin_command_spawn_must_be_in_area"));
+                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_MUST_BE_IN_BOUNDS).defaultPrefix());
                                 return;
                             }
                             game.setSpecSpawn(loc);
                             sender.sendMessage(
-                                    i18n("admin_command_spec_spawn_setted")
-                                            .replace("%x%", Double.toString(loc.getX()))
-                                            .replace("%y%", Double.toString(loc.getY()))
-                                            .replace("%z%", Double.toString(loc.getZ()))
-                                            .replace("%yaw%", Float.toString(loc.getYaw()))
-                                            .replace("%pitch%", Float.toString(loc.getPitch()))
+                                    Message
+                                    .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_SPEC_SPAWN_SET)
+                                            .defaultPrefix()
+                                            .placeholder("x", loc.getX(), 2)
+                                            .placeholder("y", loc.getY(), 2)
+                                            .placeholder("z", loc.getZ(), 2)
+                                            .placeholder("yaw", loc.getYaw(), 5)
+                                            .placeholder("pitch", loc.getPitch(), 5)
                             );
                         }))
         );

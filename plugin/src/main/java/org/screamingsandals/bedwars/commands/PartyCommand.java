@@ -6,14 +6,14 @@ import com.alessiodp.parties.api.Parties;
 import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.config.MainConfig;
+import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.lib.nms.entity.PlayerUtils;
 import org.screamingsandals.bedwars.utils.MiscUtils;
+import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
 
 import java.util.List;
 import java.util.Optional;
-
-import static org.screamingsandals.bedwars.lib.lang.I.i18n;
 
 public class PartyCommand extends BaseCommand {
     public PartyCommand(CommandManager<CommandSenderWrapper> manager) {
@@ -35,7 +35,7 @@ public class PartyCommand extends BaseCommand {
                 Optional<String> action = commandContext.getOptional("action");
 
                 if (action.isEmpty()) {
-                    sender.sendMessage(i18n("party_command_invalid_arguments", true));
+                    sender.sendMessage(Message.of(LangKeys.PARTY_COMMAND_INVALID_ARGUMENTS).defaultPrefix());
                     return;
                 }
 
@@ -47,7 +47,7 @@ public class PartyCommand extends BaseCommand {
                     final var game = Main.getPlayerGameProfile(player).getGame();
 
                     if (partyPlayer.getPartyId() == null) {
-                        player.sendMessage(i18n("party_command_not_in_party", true));
+                        player.sendMessage(Message.of(LangKeys.PARTY_COMMAND_NOT_IN_PARTY).defaultPrefix());
                         return;
                     }
 
@@ -59,14 +59,14 @@ public class PartyCommand extends BaseCommand {
                         if (leaderUUID != null) {
 
                             if (!leaderUUID.equals(player.getUniqueId())) {
-                                player.sendMessage(i18n("party_command_not_party_leader", true));
+                                player.sendMessage(Message.of(LangKeys.PARTY_COMMAND_NOT_PARTY_LEADER).defaultPrefix());
                                 return;
                             }
 
                             final var players = MiscUtils.getOnlinePlayers(party.getMembers());
 
                             if (players.size() == 1) {
-                                player.sendMessage(i18n("party_command_is_empty", true));
+                                player.sendMessage(Message.of(LangKeys.PARTY_COMMAND_IS_EMPTY).defaultPrefix());
                                 return;
                             }
 
@@ -79,7 +79,7 @@ public class PartyCommand extends BaseCommand {
                                     final var gameOfPlayer = Main.getPlayerGameProfile(partyMember).getGame();
 
                                     if (game == null) {
-                                        partyMember.sendMessage(i18n("party_warped", true));
+                                        partyMember.sendMessage(Message.of(LangKeys.PARTY_WARPED).defaultPrefix());
                                         if (gameOfPlayer != null) {
                                             gameOfPlayer.leaveFromGame(partyMember);
                                         }
@@ -87,7 +87,7 @@ public class PartyCommand extends BaseCommand {
                                         return;
                                     }
 
-                                    partyMember.sendMessage(i18n("party_inform_game_join", true));
+                                    partyMember.sendMessage(Message.of(LangKeys.PARTY_INFORM_GAME_JOIN).defaultPrefix());
                                     if (gameOfPlayer != null) {
                                         if (gameOfPlayer.getName().equalsIgnoreCase(game.getName())) {
                                             return;
@@ -100,13 +100,13 @@ public class PartyCommand extends BaseCommand {
                                 }
                             });
                             if (MainConfig.getInstance().node("party", "notify-when-warped").getBoolean(true)) {
-                                player.sendMessage(i18n("party_command_warped", true));
+                                player.sendMessage(Message.of(LangKeys.PARTY_COMMAND_WARPED).defaultPrefix());
                             }
                         }
 
                     }
                 } else if (action.get().equalsIgnoreCase("help")) {
-                    player.sendMessage(i18n("party_command_help", true));
+                    player.sendMessage(Message.of(LangKeys.PARTY_COMMAND_HELP).defaultPrefix());
                 }
             })
         );

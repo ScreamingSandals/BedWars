@@ -3,15 +3,14 @@ package org.screamingsandals.bedwars.commands;
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
 import org.bukkit.entity.Player;
-import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.config.MainConfig;
+import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.utils.MiscUtils;
+import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
 import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.List;
-
-import static org.screamingsandals.bedwars.lib.lang.I.i18n;
 
 public class MainlobbyCommand extends BaseCommand {
     public MainlobbyCommand(CommandManager<CommandSenderWrapper> manager) {
@@ -35,8 +34,11 @@ public class MainlobbyCommand extends BaseCommand {
                             MainConfig.getInstance().node("mainlobby", "enabled").set(true);
                             MainConfig.getInstance().saveConfig();
 
-                            sender.sendMessage(i18n("admin_command_success"));
-                            sender.sendMessage(i18n("admin_command_mainlobby_info"));
+                            Message
+                                    .of(LangKeys.SUCCESS)
+                                    .join(LangKeys.ADMIN_MAINLOBBY_INFO)
+                                    .defaultPrefix()
+                                    .send(sender);
                         } catch (SerializationException e) {
                             e.printStackTrace();
                         }
@@ -48,7 +50,7 @@ public class MainlobbyCommand extends BaseCommand {
                             MainConfig.getInstance().node("mainlobby", "world").set(location.getWorld().getName());
                             MainConfig.getInstance().saveConfig();
 
-                            sender.sendMessage(i18n("admin_command_success"));
+                            sender.sendMessage(Message.of(LangKeys.SUCCESS).defaultPrefix());
                         } catch (SerializationException e) {
                             e.printStackTrace();
                         }

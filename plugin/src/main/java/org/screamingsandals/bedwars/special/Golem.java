@@ -11,10 +11,11 @@ import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.Team;
 import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.game.TeamColor;
+import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.bedwars.lib.nms.entity.EntityUtils;
-
-import static org.screamingsandals.bedwars.lib.lang.I18n.i18nonly;
+import org.screamingsandals.lib.lang.Message;
+import org.screamingsandals.lib.player.PlayerMapper;
 
 public class Golem extends SpecialItem implements org.screamingsandals.bedwars.api.special.Golem {
     private LivingEntity entity;
@@ -81,7 +82,7 @@ public class Golem extends SpecialItem implements org.screamingsandals.bedwars.a
 
         game.registerSpecialItem(this);
         Main.registerGameEntity(golem, (org.screamingsandals.bedwars.game.Game) game);
-        MiscUtils.sendActionBarMessage(player, i18nonly("specials_golem_created"));
+        MiscUtils.sendActionBarMessage(PlayerMapper.wrapPlayer(player), Message.of(LangKeys.SPECIALS_GOLEM_CREATED));
 
         //TODO - make this better by checking full inventory
         if (item.getAmount() > 1) {

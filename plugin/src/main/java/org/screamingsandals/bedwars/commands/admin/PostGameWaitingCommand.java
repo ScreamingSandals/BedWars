@@ -3,9 +3,9 @@ package org.screamingsandals.bedwars.commands.admin;
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
 import cloud.commandframework.arguments.standard.IntegerArgument;
+import org.screamingsandals.bedwars.lang.LangKeys;
+import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
-
-import static org.screamingsandals.bedwars.lib.lang.I.i18n;
 
 public class PostGameWaitingCommand extends BaseAdminSubCommand {
     public PostGameWaitingCommand(CommandManager<CommandSenderWrapper> manager, Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder) {
@@ -25,10 +25,10 @@ public class PostGameWaitingCommand extends BaseAdminSubCommand {
 
                             if (time >= 0) {
                                 game.setPostGameWaiting(time);
-                                sender.sendMessage(i18n("admin_command_post_game_waiting").replace("%number%", String.valueOf(time)));
+                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_POST_GAME_WAITING).defaultPrefix().placeholder("number", time));
                                 return;
                             }
-                            sender.sendMessage(i18n("admin_command_invalid_time").replace("%number%", String.valueOf(time)));
+                            sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_INVALID_TIME).defaultPrefix().placeholder("number", time));
                         }))
         );
     }

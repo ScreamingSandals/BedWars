@@ -9,12 +9,13 @@ import org.bukkit.inventory.Inventory;
 import org.screamingsandals.bedwars.api.RunningTeam;
 import org.screamingsandals.bedwars.api.TeamColor;
 import org.screamingsandals.bedwars.api.game.Game;
+import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.lib.hologram.Hologram;
+import org.screamingsandals.lib.lang.Message;
+import org.screamingsandals.lib.utils.AdventureHelper;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.screamingsandals.bedwars.lib.lang.I.i18nc;
 
 public class CurrentTeam implements RunningTeam {
     public final Team teamInfo;
@@ -31,7 +32,7 @@ public class CurrentTeam implements RunningTeam {
     public CurrentTeam(Team team, Game game) {
         this.teamInfo = team;
         this.game = game;
-        this.chestInventory = Bukkit.createInventory(null, InventoryType.ENDER_CHEST, i18nc("team_chest", game.getCustomPrefix()));
+        this.chestInventory = Bukkit.createInventory(null, InventoryType.ENDER_CHEST, Message.of(LangKeys.SPECIALS_TEAM_CHEST_NAME).prefix(AdventureHelper.toComponent(game.getCustomPrefix())).asComponent());
     }
 
     public boolean isDead() {

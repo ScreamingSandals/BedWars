@@ -1,7 +1,7 @@
 # BedWars
 [![Build Status](https://ci.screamingsandals.org/job/BedWars-0.x.x/badge/icon)](https://ci.screamingsandals.org/job/BedWars-0.x.x/)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/2b72901b108f4577a135faee054d0d6d)](https://www.codacy.com/gh/ScreamingSandals/BedWars/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ScreamingSandals/BedWars&amp;utm_campaign=Badge_Grade)
-[![Crowdin](https://badges.crowdin.net/screamingbedwars/localized.svg)](https://crowdin.com/project/screamingbedwars)
+[![Translation status](http://weblate.screamingsandals.org/widgets/bedwars/-/0-3-x/svg-badge.svg)](https://github.com/ScreamingSandals/BedWarsLanguage/tree/0.3.x)
 [![Discord](https://img.shields.io/discord/582271436845219842?logo=discord)](https://discord.gg/4xB54Ts)
 
 Complete rewrite of the BedWarsRel plugin.

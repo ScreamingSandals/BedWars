@@ -1,6 +1,8 @@
 package org.screamingsandals.bedwars.utils;
 
 import lombok.experimental.UtilityClass;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentLike;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
@@ -23,6 +25,8 @@ import org.screamingsandals.bedwars.game.GamePlayer;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.lib.material.MaterialHolder;
 import org.screamingsandals.lib.material.MaterialMapping;
+import org.screamingsandals.lib.player.PlayerWrapper;
+import org.screamingsandals.lib.sender.SenderMessage;
 
 import java.util.*;
 
@@ -78,6 +82,24 @@ public class MiscUtils {
                 }
             }
         }.runTask(Main.getInstance().getPluginDescription().as(JavaPlugin.class));
+    }
+
+    public void sendActionBarMessage(PlayerWrapper player, Component component) {
+        if (MainConfig.getInstance().node("specials", "action-bar-messages").getBoolean()) {
+            player.sendActionBar(component);
+        } else {
+            // TODO: custom game prefix
+            player.sendMessage(component);
+        }
+    }
+
+    public void sendActionBarMessage(PlayerWrapper player, SenderMessage senderMessage) {
+        if (MainConfig.getInstance().node("specials", "action-bar-messages").getBoolean()) {
+            player.sendActionBar(senderMessage);
+        } else {
+            // TODO: custom game prefix
+            player.sendMessage(senderMessage);
+        }
     }
 
     public int getIntFromProperty(String name, String fallback, BedwarsApplyPropertyToBoughtItem event) {

@@ -4,13 +4,14 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.api.Team;
+import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
-
-import static org.screamingsandals.bedwars.lib.lang.I18n.i18nonly;
+import org.screamingsandals.lib.lang.Message;
+import org.screamingsandals.lib.player.PlayerMapper;
 
 public class ArrowBlocker extends SpecialItem implements org.screamingsandals.bedwars.api.special.ArrowBlocker {
     private Game game;
@@ -53,7 +54,7 @@ public class ArrowBlocker extends SpecialItem implements org.screamingsandals.be
                 usedTime++;
                 if (usedTime == protectionTime) {
                     isActivated = false;
-                    MiscUtils.sendActionBarMessage(player, i18nonly("specials_arrow_blocker_ended"));
+                    MiscUtils.sendActionBarMessage(PlayerMapper.wrapPlayer(player), Message.of(LangKeys.SPECIALS_ARROW_BLOCKER_ENDED));
 
                     game.unregisterSpecialItem(ArrowBlocker.this);
                     this.cancel();
@@ -82,7 +83,7 @@ public class ArrowBlocker extends SpecialItem implements org.screamingsandals.be
             }
             player.updateInventory();
 
-            MiscUtils.sendActionBarMessage(player, i18nonly("specials_arrow_blocker_started").replace("%time%", Integer.toString(protectionTime)));
+            MiscUtils.sendActionBarMessage(PlayerMapper.wrapPlayer(player), Message.of(LangKeys.SPECIALS_ARROW_BLOCKER_STARTED).placeholder("time", protectionTime));
         }
     }
 }

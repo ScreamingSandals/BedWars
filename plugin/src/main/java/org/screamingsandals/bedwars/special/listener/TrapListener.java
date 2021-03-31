@@ -10,18 +10,18 @@ import org.screamingsandals.bedwars.api.events.BedwarsPlayerBuildBlock;
 import org.screamingsandals.bedwars.api.special.SpecialItem;
 import org.screamingsandals.bedwars.game.Game;
 import org.screamingsandals.bedwars.game.GamePlayer;
+import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.special.Trap;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
+import org.screamingsandals.lib.lang.Message;
+import org.screamingsandals.lib.player.PlayerMapper;
 
 import java.util.List;
 import java.util.Map;
-
-import static org.screamingsandals.bedwars.lib.lang.I.i18nc;
-import static org.screamingsandals.bedwars.lib.lang.I18n.i18n;
 
 public class TrapListener implements Listener {
     private static final String TRAP_PREFIX = "Module:Trap:";
@@ -57,7 +57,7 @@ public class TrapListener implements Listener {
                 Trap trap = (Trap) special;
                 if (System.identityHashCode(trap) == classID) {
                     trap.place(event.getBlock().getLocation());
-                    event.getPlayer().sendMessage(i18nc("trap_built", event.getGame().getCustomPrefix()));
+                    PlayerMapper.wrapPlayer(event.getPlayer()).sendMessage(Message.of(LangKeys.SPECIALS_TRAP_BUILT).prefixOrDefault(((Game) event.getGame()).getCustomPrefixComponent()));
                     return;
                 }
             }

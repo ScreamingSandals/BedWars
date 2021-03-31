@@ -2,17 +2,15 @@ package org.screamingsandals.bedwars.commands.admin;
 
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
-import org.bukkit.ChatColor;
-import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.commands.AdminCommand;
 import org.screamingsandals.bedwars.game.GameManager;
 import org.screamingsandals.bedwars.game.TeamColor;
+import org.screamingsandals.bedwars.lang.LangKeys;
+import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
 import org.screamingsandals.lib.utils.AdventureHelper;
-
-import static org.screamingsandals.bedwars.lib.lang.I.*;
-import static org.screamingsandals.bedwars.lib.lang.I.i18nonly;
 
 public class InfoCommand extends BaseAdminSubCommand {
     public InfoCommand(CommandManager<CommandSenderWrapper> manager, Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder) {
@@ -30,92 +28,103 @@ public class InfoCommand extends BaseAdminSubCommand {
 
                             var gameOpt = GameManager.getInstance().getGame(gameName);
                             if (gameOpt.isEmpty()) {
-                                sender.sendMessage(i18n("no_arena_found"));
+                                sender.sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_GAME_NOT_FOUND).defaultPrefix());
                                 return;
                             }
 
                             var game = gameOpt.get();
 
-                            sender.sendMessage(i18n("arena_info_header"));
-
-                            sender.sendMessage(i18n("arena_info_name", false).replace("%name%", game.getName()));
-                            sender.sendMessage(i18n("arena_info_file", false).replace("%file%", game.getFile().getName()));
-                            var status = i18n("arena_info_status", false);
-                            switch (game.getStatus()) {
-                                case DISABLED:
-                                    if (AdminCommand.gc.containsKey(gameName)) {
-                                        status = status.replace("%status%",
-                                                i18n("arena_info_status_disabled_in_edit", false));
-                                    } else {
-                                        status = status.replace("%status%", i18n("arena_info_status_disabled", false));
-                                    }
-                                    break;
-                                case REBUILDING:
-                                    status = status.replace("%status%", i18n("arena_info_status_rebuilding", false));
-                                    break;
-                                case RUNNING:
-                                case GAME_END_CELEBRATING:
-                                    status = status.replace("%status%", i18n("arena_info_status_running", false));
-                                    break;
-                                case WAITING:
-                                    status = status.replace("%status%", i18n("arena_info_status_waiting", false));
-                                    break;
-                            }
-                            sender.sendMessage(status);
-
-                            sender.sendMessage(
-                                    i18n("arena_info_world", false).replace("%world%", game.getWorld().getName()));
+                            Message
+                                    .of(LangKeys.ADMIN_INFO_HEADER)
+                                    .defaultPrefix()
+                                    .prefixPolicy(Message.PrefixPolicy.FIRST_MESSAGE)
+                                    .join(LangKeys.ADMIN_INFO_NAME)
+                                    .join(LangKeys.ADMIN_INFO_FILE)
+                                    .join(LangKeys.ADMIN_INFO_STATUS)
+                                    .join(LangKeys.ADMIN_INFO_WORLD)
+                                    .placeholder("name", game.getName())
+                                    .placeholder("file", game.getFile().getName())
+                                    .placeholder("status", senderWrapper -> {
+                                        switch (game.getStatus()) {
+                                            case DISABLED:
+                                                if (AdminCommand.gc.containsKey(gameName)) {
+                                                    return Message.of(LangKeys.ADMIN_INFO_STATUS_DISABLED_IN_EDIT).getForJoined(senderWrapper);
+                                                } else {
+                                                    return Message.of(LangKeys.ADMIN_INFO_STATUS_DISABLED).getForJoined(senderWrapper);
+                                                }
+                                            case REBUILDING:
+                                                return Message.of(LangKeys.ADMIN_INFO_STATUS_REBUILDING).getForJoined(senderWrapper);
+                                            case RUNNING:
+                                            case GAME_END_CELEBRATING:
+                                                return Message.of(LangKeys.ADMIN_INFO_STATUS_RUNNING).getForJoined(senderWrapper);
+                                            case WAITING:
+                                                return Message.of(LangKeys.ADMIN_INFO_STATUS_WAITING).getForJoined(senderWrapper);
+                                        }
+                                        return Component.empty(); //what??
+                                    })
+                                    .placeholder("world", game.getWorld().getName())
+                                    .send(sender);
 
                             var loc_pos1 = game.getPos1();
-                            var pos1 = i18n("arena_info_pos1", false)
-                                    .replace("%x%", Double.toString(loc_pos1.getX()))
-                                    .replace("%y%", Double.toString(loc_pos1.getY()))
-                                    .replace("%z%", Double.toString(loc_pos1.getZ()))
-                                    .replace("%yaw%", Float.toString(loc_pos1.getYaw()))
-                                    .replace("%pitch%", Float.toString(loc_pos1.getPitch()))
-                                    .replace("%world%", loc_pos1.getWorld().getName());
-
-                            sender.sendMessage(pos1);
+                            Message
+                                    .of(LangKeys.ADMIN_INFO_POS1)
+                                    .placeholder("x", loc_pos1.getX(), 2)
+                                    .placeholder("y", loc_pos1.getY(), 2)
+                                    .placeholder("z", loc_pos1.getZ(), 2)
+                                    .placeholder("yaw", loc_pos1.getYaw(), 5)
+                                    .placeholder("pitch", loc_pos1.getPitch(), 5)
+                                    .placeholder("world", loc_pos1.getWorld().getName())
+                                    .send(sender);
 
                             var loc_pos2 = game.getPos2();
-                            var pos2 = i18n("arena_info_pos2", false)
-                                    .replace("%x%", Double.toString(loc_pos2.getX()))
-                                    .replace("%y%", Double.toString(loc_pos2.getY()))
-                                    .replace("%z%", Double.toString(loc_pos2.getZ()))
-                                    .replace("%yaw%", Float.toString(loc_pos2.getYaw()))
-                                    .replace("%pitch%", Float.toString(loc_pos2.getPitch()))
-                                    .replace("%world%", loc_pos2.getWorld().getName());
-
-                            sender.sendMessage(pos2);
+                            Message
+                                    .of(LangKeys.ADMIN_INFO_POS2)
+                                    .placeholder("x", loc_pos2.getX(), 2)
+                                    .placeholder("y", loc_pos2.getY(), 2)
+                                    .placeholder("z", loc_pos2.getZ(), 2)
+                                    .placeholder("yaw", loc_pos2.getYaw(), 5)
+                                    .placeholder("pitch", loc_pos2.getPitch(), 5)
+                                    .placeholder("world", loc_pos2.getWorld().getName())
+                                    .send(sender);
 
                             var loc_spec = game.getSpecSpawn();
-                            var spec = i18n("arena_info_spec", false)
-                                    .replace("%x%", Double.toString(loc_spec.getX()))
-                                    .replace("%y%", Double.toString(loc_spec.getY()))
-                                    .replace("%z%", Double.toString(loc_spec.getZ()))
-                                    .replace("%yaw%", Float.toString(loc_spec.getYaw()))
-                                    .replace("%pitch%", Float.toString(loc_spec.getPitch()))
-                                    .replace("%world%", loc_spec.getWorld().getName());
-
-                            sender.sendMessage(spec);
+                            Message
+                                    .of(LangKeys.ADMIN_INFO_SPEC)
+                                    .placeholder("x", loc_spec.getX(), 2)
+                                    .placeholder("y", loc_spec.getY(), 2)
+                                    .placeholder("z", loc_spec.getZ(), 2)
+                                    .placeholder("yaw", loc_spec.getYaw(), 5)
+                                    .placeholder("pitch", loc_spec.getPitch(), 5)
+                                    .placeholder("world", loc_spec.getWorld().getName())
+                                    .send(sender);
 
                             var loc_lobby = game.getLobbySpawn();
-                            var lobby = i18n("arena_info_lobby", false)
-                                    .replace("%x%", Double.toString(loc_lobby.getX()))
-                                    .replace("%y%", Double.toString(loc_lobby.getY()))
-                                    .replace("%z%", Double.toString(loc_lobby.getZ()))
-                                    .replace("%yaw%", Float.toString(loc_lobby.getYaw()))
-                                    .replace("%pitch%", Float.toString(loc_lobby.getPitch()))
-                                    .replace("%world%", loc_lobby.getWorld().getName());
+                            Message
+                                    .of(LangKeys.ADMIN_INFO_LOBBY)
+                                    .placeholder("x", loc_lobby.getX(), 2)
+                                    .placeholder("y", loc_lobby.getY(), 2)
+                                    .placeholder("z", loc_lobby.getZ(), 2)
+                                    .placeholder("yaw", loc_lobby.getYaw(), 5)
+                                    .placeholder("pitch", loc_lobby.getPitch(), 5)
+                                    .placeholder("world", loc_lobby.getWorld().getName())
+                                    .send(sender);
 
-                            sender.sendMessage(lobby);
-                            sender.sendMessage(i18n("arena_info_min_players", false).replace("%minplayers%",
-                                    Integer.toString(game.getMinPlayers())));
-                            sender.sendMessage(i18n("arena_info_lobby_countdown", false).replace("%time%",
-                                    Integer.toString(game.getPauseCountdown())));
-                            sender.sendMessage(i18n("arena_info_game_time", false).replace("%time%",
-                                    Integer.toString(game.getGameTime())));
-                            m("arena_info_postgamewaiting").replace("time", game.getPostGameWaiting()).send(sender);
+                            Message
+                                    .of(LangKeys.ADMIN_INFO_MIN_PLAYERS)
+                                    .join(LangKeys.ADMIN_INFO_LOBBY_COUNTDOWN)
+                                    .placeholder("minplayers", game.getMinPlayers())
+                                    .placeholder("time", game.getPauseCountdown())
+                                    .send(sender);
+
+                            Message
+                                    .of(LangKeys.ADMIN_INFO_GAME_TIME)
+                                    .placeholder("time", game.getGameTime())
+                                    .send(sender);
+
+                            Message
+                                    .of(LangKeys.ADMIN_INFO_POST_GAME_WAITING)
+                                    .placeholder("time", game.getPostGameWaiting())
+                                    .send(sender);
                         })
         );
 
@@ -128,41 +137,47 @@ public class InfoCommand extends BaseAdminSubCommand {
 
                             var gameOpt = GameManager.getInstance().getGame(gameName);
                             if (gameOpt.isEmpty()) {
-                                sender.sendMessage(i18n("no_arena_found"));
+                                sender.sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_GAME_NOT_FOUND).defaultPrefix());
                                 return;
                             }
 
                             var game = gameOpt.get();
 
-                            sender.sendMessage(i18n("arena_info_header"));
+                            Message
+                                    .of(LangKeys.ADMIN_INFO_HEADER)
+                                    .defaultPrefix()
+                                    .prefixPolicy(Message.PrefixPolicy.FIRST_MESSAGE)
+                                    .join(LangKeys.ADMIN_INFO_TEAMS)
+                                    .send(sender);
 
-                            sender.sendMessage(i18n("arena_info_teams", false));
                             game.getTeams().forEach(team -> {
-                                sender.sendMessage(i18n("arena_info_team", false)
-                                        .replace("%team%", team.color.chatColor.toString() + team.name)
-                                        .replace("%maxplayers%", Integer.toString(team.maxPlayers)));
+                                Message
+                                        .of(LangKeys.ADMIN_INFO_TEAM)
+                                        .placeholder("team", AdventureHelper.toComponent(team.color.chatColor.toString() + team.name))
+                                        .placeholder("maxplayers", team.maxPlayers)
+                                        .send(sender);
 
                                 var loc_spawn = team.spawn;
-                                var spawn = i18n("arena_info_team_spawn", false)
-                                        .replace("%x%", Double.toString(loc_spawn.getX()))
-                                        .replace("%y%", Double.toString(loc_spawn.getY()))
-                                        .replace("%z%", Double.toString(loc_spawn.getZ()))
-                                        .replace("%yaw%", Float.toString(loc_spawn.getYaw()))
-                                        .replace("%pitch%", Float.toString(loc_spawn.getPitch()))
-                                        .replace("%world%", loc_spawn.getWorld().getName());
-
-                                sender.sendMessage(spawn);
+                                Message
+                                        .of(LangKeys.ADMIN_INFO_TEAM_SPAWN)
+                                        .placeholder("x", loc_spawn.getX(), 2)
+                                        .placeholder("y", loc_spawn.getY(), 2)
+                                        .placeholder("z", loc_spawn.getZ(), 2)
+                                        .placeholder("yaw", loc_spawn.getYaw(), 5)
+                                        .placeholder("pitch", loc_spawn.getPitch(), 5)
+                                        .placeholder("world", loc_spawn.getWorld().getName())
+                                        .send(sender);
 
                                 var loc_target = team.bed;
-                                var target = i18n("arena_info_team_target", false)
-                                        .replace("%x%", Double.toString(loc_target.getX()))
-                                        .replace("%y%", Double.toString(loc_target.getY()))
-                                        .replace("%z%", Double.toString(loc_target.getZ()))
-                                        .replace("%yaw%", Float.toString(loc_target.getYaw()))
-                                        .replace("%pitch%", Float.toString(loc_target.getPitch()))
-                                        .replace("%world%", loc_target.getWorld().getName());
-
-                                sender.sendMessage(target);
+                                Message
+                                        .of(LangKeys.ADMIN_INFO_TEAM_TARGET)
+                                        .placeholder("x", loc_target.getX(), 2)
+                                        .placeholder("y", loc_target.getY(), 2)
+                                        .placeholder("z", loc_target.getZ(), 2)
+                                        .placeholder("yaw", loc_target.getYaw(), 5)
+                                        .placeholder("pitch", loc_target.getPitch(), 5)
+                                        .placeholder("world", loc_target.getWorld().getName())
+                                        .send(sender);
                             });
                         })
         );
@@ -176,40 +191,43 @@ public class InfoCommand extends BaseAdminSubCommand {
 
                             var gameOpt = GameManager.getInstance().getGame(gameName);
                             if (gameOpt.isEmpty()) {
-                                sender.sendMessage(i18n("no_arena_found"));
+                                sender.sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_GAME_NOT_FOUND).defaultPrefix());
                                 return;
                             }
 
                             var game = gameOpt.get();
 
-                            sender.sendMessage(i18n("arena_info_header"));
+                            Message
+                                    .of(LangKeys.ADMIN_INFO_HEADER)
+                                    .join(LangKeys.ADMIN_INFO_SPAWNERS)
+                                    .defaultPrefix()
+                                    .prefixPolicy(Message.PrefixPolicy.FIRST_MESSAGE)
+                                    .send(sender);
 
-                            sender.sendMessage(i18n("arena_info_spawners", false));
                             game.getSpawners().forEach(spawner -> {
                                 var loc_spawner = spawner.loc;
                                 var team = spawner.getTeam().orElse(null);
 
-                                String spawnerTeam;
+                                Component spawnerTeam;
 
                                 if (team != null) {
-                                    spawnerTeam = TeamColor.fromApiColor(team.getColor()).chatColor + team.getName();
+                                    spawnerTeam = AdventureHelper.toComponent(TeamColor.fromApiColor(team.getColor()).chatColor + team.getName());
                                 } else {
-                                    spawnerTeam = i18nonly("arena_info_spawner_no_team");
+                                    spawnerTeam = Message.of(LangKeys.ADMIN_INFO_SPAWNER_NO_TEAM).asComponent(sender);
                                 }
 
-                                var spawnerM = i18n("arena_info_spawner", false)
-                                        .replace("%resource%", spawner.type.getItemName())
-                                        .replace("%x%", String.valueOf(loc_spawner.getBlockX()))
-                                        .replace("%y%", String.valueOf(loc_spawner.getBlockY()))
-                                        .replace("%z%", String.valueOf(loc_spawner.getBlockZ()))
-                                        .replace("%yaw%", String.valueOf(loc_spawner.getYaw()))
-                                        .replace("%pitch%", String.valueOf(loc_spawner.getPitch()))
-                                        .replace("%world%", loc_spawner.getWorld().getName())
-                                        .replace("%team%", spawnerTeam)
-                                        .replace("%holo%", String.valueOf(spawner.getHologramEnabled()));
-
-
-                                sender.sendMessage(spawnerM);
+                                Message
+                                        .of(LangKeys.ADMIN_INFO_SPAWNER)
+                                        .placeholder("resource", spawner.type.getItemName())
+                                        .placeholder("x", loc_spawner.getBlockX())
+                                        .placeholder("y", loc_spawner.getBlockY())
+                                        .placeholder("z", loc_spawner.getBlockZ())
+                                        .placeholder("yaw", loc_spawner.getYaw())
+                                        .placeholder("pitch", loc_spawner.getPitch())
+                                        .placeholder("world", loc_spawner.getWorld().getName())
+                                        .placeholder("team", spawnerTeam)
+                                        .placeholder("holo", spawner.getHologramEnabled())
+                                        .send(sender);
                             });
                         })
         );
@@ -223,46 +241,64 @@ public class InfoCommand extends BaseAdminSubCommand {
 
                             var gameOpt = GameManager.getInstance().getGame(gameName);
                             if (gameOpt.isEmpty()) {
-                                sender.sendMessage(i18n("no_arena_found"));
+                                sender.sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_GAME_NOT_FOUND).defaultPrefix());
                                 return;
                             }
 
                             var game = gameOpt.get();
 
-                            sender.sendMessage(i18n("arena_info_header"));
+                            Message
+                                    .of(LangKeys.ADMIN_INFO_HEADER)
+                                    .join(LangKeys.ADMIN_INFO_VILLAGERS)
+                                    .defaultPrefix()
+                                    .prefixPolicy(Message.PrefixPolicy.FIRST_MESSAGE)
+                                    .send(sender);
 
-                            sender.sendMessage(i18n("arena_info_villagers", false));
                             game.getGameStoreList().forEach(store -> {
                                 var loc_store = store.getStoreLocation();
-                                var storeM = i18n("arena_info_villager_pos", false)
-                                        .replace("%x%", Double.toString(loc_store.getX()))
-                                        .replace("%y%", Double.toString(loc_store.getY()))
-                                        .replace("%z%", Double.toString(loc_store.getZ()))
-                                        .replace("%yaw%", Float.toString(loc_store.getYaw()))
-                                        .replace("%pitch%", Float.toString(loc_store.getPitch()))
-                                        .replace("%world%", loc_store.getWorld().getName());
+                                Message
+                                        .of(LangKeys.ADMIN_INFO_VILLAGER_POS)
+                                        .join(LangKeys.ADMIN_INFO_VILLAGER_ENTITY_TYPE)
+                                        .placeholder("x", loc_store.getX(), 2)
+                                        .placeholder("y", loc_store.getY(), 2)
+                                        .placeholder("z", loc_store.getZ(), 2)
+                                        .placeholder("yaw", loc_store.getYaw(), 5)
+                                        .placeholder("pitch", loc_store.getPitch(), 5)
+                                        .placeholder("world", loc_store.getWorld().getName())
+                                        .placeholder("type", store.getEntityType().name())
+                                        .send(sender);
 
-                                sender.sendMessage(storeM);
+                                Message
+                                        .of(LangKeys.ADMIN_INFO_VILLAGER_SHOP)
+                                        .placeholder("bool", Message
+                                                .of(store.getShopFile() != null
+                                                        ? LangKeys.ADMIN_INFO_CONSTANT_TRUE
+                                                        : LangKeys.ADMIN_INFO_CONSTANT_FALSE
+                                                )
+                                        )
+                                        .send(sender);
 
-                                var storeM2 = i18n("arena_info_villager_entity_type", false).replace("%type%",
-                                        store.getEntityType().name());
-                                sender.sendMessage(storeM2);
-
-                                var storeM3 = i18n("arena_info_villager_shop", false).replace("%bool%",
-                                        store.getShopFile() != null ? i18n("arena_info_config_true", false)
-                                                : i18n("arena_info_config_false", false));
-                                sender.sendMessage(storeM3);
                                 if (store.getShopFile() != null) {
-                                    var storeM4 = i18n("arena_info_villager_shop_name", false)
-                                            .replace("%file%", store.getShopFile()).replace("%bool%",
-                                                    store.getUseParent() ? i18n("arena_info_config_true", false)
-                                                            : i18n("arena_info_config_false", false));
-                                    sender.sendMessage(storeM4);
+                                    Message
+                                            .of(LangKeys.ADMIN_INFO_VILLAGER_SHOP_NAME)
+                                            .placeholder("file", store.getShopFile())
+                                            .placeholder("bool", Message
+                                                    .of(store.getUseParent()
+                                                            ? LangKeys.ADMIN_INFO_CONSTANT_TRUE
+                                                            : LangKeys.ADMIN_INFO_CONSTANT_FALSE
+                                                    )
+                                            )
+                                            .send(sender);
                                 }
-                                var storeM5 = i18nonly("arena_info_villager_shop_dealer_name").replace("%name%",
-                                        store.isShopCustomName() ? store.getShopCustomName()
-                                                : i18nonly("arena_info_villager_shop_dealer_has_no_name"));
-                                sender.sendMessage(storeM5);
+                                Message
+                                        .of(LangKeys.ADMIN_INFO_VILLAGER_SHOP_DEALER_NAME)
+                                        .placeholder("name",
+                                                store.isShopCustomName()
+                                                        ? AdventureHelper.toComponent(store.getShopCustomName())
+                                                        : Message.of(LangKeys.ADMIN_INFO_VILLAGER_SHOP_DEALER_HAS_NO_NAME).asComponent(sender)
+
+                                        )
+                                        .send(sender);
                             });
                         })
         );
@@ -276,54 +312,70 @@ public class InfoCommand extends BaseAdminSubCommand {
 
                             var gameOpt = GameManager.getInstance().getGame(gameName);
                             if (gameOpt.isEmpty()) {
-                                sender.sendMessage(i18n("no_arena_found"));
+                                sender.sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_GAME_NOT_FOUND).defaultPrefix());
                                 return;
                             }
 
                             var game = gameOpt.get();
 
-                            sender.sendMessage(i18n("arena_info_header"));
-
-                            sender.sendMessage(i18n("arena_info_config", false));
-
-                            var msg = m("arena_info_config_constant");
+                            Message
+                                    .of(LangKeys.ADMIN_INFO_HEADER)
+                                    .join(LangKeys.ADMIN_INFO_CONSTANTS)
+                                    .defaultPrefix()
+                                    .prefixPolicy(Message.PrefixPolicy.FIRST_MESSAGE)
+                                    .send(sender);
 
                             game.getConfigurationContainer().getRegisteredKeys().forEach(s -> {
                                 var opt = game.getConfigurationContainer().get(s, Object.class).get();
-                                msg.replace("constant", s);
                                 var val = String.valueOf(opt.get());
+                                Component valC = Component.text(val);
                                 if (val.equalsIgnoreCase("true")) {
-                                    val = i18nonly("arena_info_config_true");
+                                    valC = Message.of(LangKeys.ADMIN_INFO_CONSTANT_TRUE).asComponent(sender);
                                 } else if (val.equalsIgnoreCase("false")) {
-                                    val = i18nonly("arena_info_config_false");
+                                    valC = Message.of(LangKeys.ADMIN_INFO_CONSTANT_FALSE).asComponent(sender);
                                 }
-                                if (!opt.isSet()) {
-                                    msg.replace("value", i18nonly("arena_info_config_inherit") + ChatColor.RESET + val);
-                                } else {
-                                    msg.replace("value", ChatColor.RESET + val);
-                                }
-                                msg.send(sender);
+                                final var finalValC = valC;
+                                Message
+                                        .of(LangKeys.ADMIN_INFO_CONSTANT)
+                                        .placeholder("constant", s)
+                                        .placeholder("value", senderWrapper -> {
+                                            if (!opt.isSet()) {
+                                                return Component.text()
+                                                        .append(Message.of(LangKeys.ADMIN_INFO_CONSTANT_INHERIT).asComponent(sender))
+                                                        .append(finalValC)
+                                                        .build();
+                                            } else {
+                                                return finalValC;
+                                            }
+                                        })
+                                        .send(sender);
                             });
 
                             // NON-BOOLEAN CONSTANTS
 
-                            sender.sendMessage(i18n("arena_info_config_constant", false)
-                                    .replace("%constant%", "arenaTime").replace("%value%", game.getArenaTime().name()));
+                            Message
+                                    .of(LangKeys.ADMIN_INFO_CONSTANT)
+                                    .placeholder("constant", "arenaTime")
+                                    .placeholder("value", game.getArenaTime().name())
+                                    .send(sender);
 
-                            sender.sendMessage(i18n("arena_info_config_constant", false)
-                                    .replace("%constant%", "arenaWeather")
-                                    .replace("%value%", game.getArenaWeather() != null ? game.getArenaWeather().name()
-                                            : "default"));
+                            Message
+                                    .of(LangKeys.ADMIN_INFO_CONSTANT)
+                                    .placeholder("constant", "arenaWeather")
+                                    .placeholder("value", game.getArenaWeather().name())
+                                    .send(sender);
 
-                            sender.sendMessage(i18n("arena_info_config_constant", false)
-                                    .replace("%constant%", "lobbybossbarcolor").replace("%value%",
-                                            game.getLobbyBossBarColor() != null ? game.getLobbyBossBarColor().name()
-                                                    : "default"));
+                            Message
+                                    .of(LangKeys.ADMIN_INFO_CONSTANT)
+                                    .placeholder("constant", "lobbybossbarcolor")
+                                    .placeholder("value", game.getLobbyBossBarColor() != null ? game.getLobbyBossBarColor().name() : "default")
+                                    .send(sender);
 
-                            sender.sendMessage(i18n("arena_info_config_constant", false)
-                                    .replace("%constant%", "gamebossbarcolor").replace("%value%",
-                                            game.getGameBossBarColor() != null ? game.getGameBossBarColor().name()
-                                                    : "default"));
+                            Message
+                                    .of(LangKeys.ADMIN_INFO_CONSTANT)
+                                    .placeholder("constant", "gamebossbarcolor")
+                                    .placeholder("value", game.getGameBossBarColor() != null ? game.getGameBossBarColor().name() : "default")
+                                    .send(sender);
                         })
         );
 
@@ -335,36 +387,80 @@ public class InfoCommand extends BaseAdminSubCommand {
 
                             var gameOpt = GameManager.getInstance().getGame(gameName);
                             if (gameOpt.isEmpty()) {
-                                sender.sendMessage(i18n("no_arena_found"));
+                                sender.sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_GAME_NOT_FOUND).defaultPrefix());
                                 return;
                             }
 
-                            sender.sendMessage(i18n("please_select_info_type").replace("%arena%", gameName));
+                            Message
+                                    .of(LangKeys.ADMIN_INFO_SELECT_HEADER)
+                                    .defaultPrefix()
+                                    .placeholder("arena", gameName)
+                                    .send(sender);
 
-                            sender.sendMessage(AdventureHelper
-                                    .toComponent(i18n("please_select_info_type_base", false).replace("%arena%", gameName))
-                                    .clickEvent(ClickEvent.runCommand("/bw admin " + gameName + " info base"))
-                            );
+                            Message
+                                    .of(LangKeys.ADMIN_INFO_SELECT_BASE)
+                                    .placeholder("command", Component
+                                            .text("/bw admin " + gameName + " info base")
+                                            .clickEvent(ClickEvent.runCommand("/bw admin " + gameName + " info base"))
+                                            .hoverEvent(Message
+                                                    .of(LangKeys.ADMIN_INFO_SELECT_CLICK)
+                                                    .placeholder("command", "/bw admin " + gameName + " info base")
+                                                    .asComponent(sender)
+                                            )
+                                    )
+                                    .send(sender);
 
-                            sender.sendMessage(AdventureHelper
-                                    .toComponent(i18n("please_select_info_type_stores", false).replace("%arena%", gameName))
-                                    .clickEvent(ClickEvent.runCommand("/bw admin " + gameName + " info stores"))
-                            );
+                            Message
+                                    .of(LangKeys.ADMIN_INFO_SELECT_STORES)
+                                    .placeholder("command", Component
+                                            .text("/bw admin " + gameName + " info stores")
+                                            .clickEvent(ClickEvent.runCommand("/bw admin " + gameName + " info stores"))
+                                            .hoverEvent(Message
+                                                    .of(LangKeys.ADMIN_INFO_SELECT_CLICK)
+                                                    .placeholder("command", "/bw admin " + gameName + " info stores")
+                                                    .asComponent(sender)
+                                            )
+                                    )
+                                    .send(sender);
 
-                            sender.sendMessage(AdventureHelper
-                                    .toComponent(i18n("please_select_info_type_spawners", false).replace("%arena%", gameName))
-                                    .clickEvent(ClickEvent.runCommand("/bw admin " + gameName + " info spawners"))
-                            );
+                            Message
+                                    .of(LangKeys.ADMIN_INFO_SELECT_SPAWNERS)
+                                    .placeholder("command", Component
+                                            .text("/bw admin " + gameName + " info spawners")
+                                            .clickEvent(ClickEvent.runCommand("/bw admin " + gameName + " info spawners"))
+                                            .hoverEvent(Message
+                                                    .of(LangKeys.ADMIN_INFO_SELECT_CLICK)
+                                                    .placeholder("command", "/bw admin " + gameName + " info spawners")
+                                                    .asComponent(sender)
+                                            )
+                                    )
+                                    .send(sender);
 
-                            sender.sendMessage(AdventureHelper
-                                    .toComponent(i18n("please_select_info_type_teams", false).replace("%arena%", gameName))
-                                    .clickEvent(ClickEvent.runCommand("/bw admin " + gameName + " info teams"))
-                            );
+                            Message
+                                    .of(LangKeys.ADMIN_INFO_SELECT_TEAMS)
+                                    .placeholder("command", Component
+                                            .text("/bw admin " + gameName + " info teams")
+                                            .clickEvent(ClickEvent.runCommand("/bw admin " + gameName + " info teams"))
+                                            .hoverEvent(Message
+                                                    .of(LangKeys.ADMIN_INFO_SELECT_CLICK)
+                                                    .placeholder("command", "/bw admin " + gameName + " info teams")
+                                                    .asComponent(sender)
+                                            )
+                                    )
+                                    .send(sender);
 
-                            sender.sendMessage(AdventureHelper.
-                                    toComponent(i18n("please_select_info_type_config", false).replace("%arena%", gameName))
-                                    .clickEvent(ClickEvent.runCommand("/bw admin " + gameName + " info config"))
-                            );
+                            Message
+                                    .of(LangKeys.ADMIN_INFO_SELECT_CONFIG)
+                                    .placeholder("command", Component
+                                            .text("/bw admin " + gameName + " info config")
+                                            .clickEvent(ClickEvent.runCommand("/bw admin " + gameName + " info config"))
+                                            .hoverEvent(Message
+                                                    .of(LangKeys.ADMIN_INFO_SELECT_CLICK)
+                                                    .placeholder("command", "/bw admin " + gameName + " info config")
+                                                    .asComponent(sender)
+                                            )
+                                    )
+                                    .send(sender);
                         })
         );
     }

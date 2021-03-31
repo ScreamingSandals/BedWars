@@ -21,10 +21,10 @@ import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.game.Game;
 import org.screamingsandals.bedwars.game.GameManager;
 import org.screamingsandals.bedwars.inventories.ShopInventory;
+import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.premium.PremiumBedwars;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
-import org.screamingsandals.lib.utils.AdventureHelper;
 import org.screamingsandals.lib.utils.ConfigurateUtils;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.yaml.NodeStyle;
@@ -44,8 +44,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static org.screamingsandals.bedwars.lib.lang.I.i18n;
 
 public class DumpCommand extends BaseCommand {
     public DumpCommand(CommandManager<CommandSenderWrapper> manager) {
@@ -248,22 +246,21 @@ public class DumpCommand extends BaseCommand {
                                             .thenAccept(stringHttpResponse -> {
                                                 if (stringHttpResponse.statusCode() >= 200 && stringHttpResponse.statusCode() <= 299) {
                                                     var message = gson.fromJson(stringHttpResponse.body(), Message.class);
-                                                    sender.sendMessage(AdventureHelper
-                                                            .toComponent(i18n("dump_success"))
-                                                            .append(Component
-                                                                        .text("https://paste.gg/" + message.getResult().getId())
-                                                                        .color(NamedTextColor.GRAY)
-                                                                        .clickEvent(ClickEvent.openUrl("https://paste.gg/" + message.getResult().getId()))
-                                                                        .hoverEvent(HoverEvent.showText(Component.text("Open this link")))
-                                                            )
-                                                    );
+                                                    org.screamingsandals.lib.lang.Message.of(LangKeys.DUMP_SUCCESS)
+                                                            .defaultPrefix()
+                                                            .placeholder("dump", Component
+                                                                    .text("https://paste.gg/" + message.getResult().getId())
+                                                                    .color(NamedTextColor.GRAY)
+                                                                    .clickEvent(ClickEvent.openUrl("https://paste.gg/" + message.getResult().getId()))
+                                                                    .hoverEvent(HoverEvent.showText(Component.text("Open this link"))))
+                                                            .send(sender);
                                                 } else {
-                                                    sender.sendMessage(i18n("dump_failed"));
+                                                    org.screamingsandals.lib.lang.Message.of(LangKeys.DUMP_FAILED).defaultPrefix().send(sender);
                                                 }
                                             });
                                 } catch (Exception ex) {
                                     ex.printStackTrace();
-                                    sender.sendMessage(i18n("dump_failed"));
+                                    org.screamingsandals.lib.lang.Message.of(LangKeys.DUMP_FAILED).defaultPrefix().send(sender);
                                 }
                             }).start();
                         })

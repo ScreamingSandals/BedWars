@@ -4,9 +4,9 @@ import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
 import cloud.commandframework.arguments.standard.EnumArgument;
 import org.screamingsandals.bedwars.api.ArenaTime;
+import org.screamingsandals.bedwars.lang.LangKeys;
+import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
-
-import static org.screamingsandals.bedwars.lib.lang.I.i18n;
 
 public class ArenaTimeCommand extends BaseAdminSubCommand {
     public ArenaTimeCommand(CommandManager<CommandSenderWrapper> manager, Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder) {
@@ -23,7 +23,7 @@ public class ArenaTimeCommand extends BaseAdminSubCommand {
 
                             game.setArenaTime(arenaTime);
 
-                            sender.sendMessage(i18n("admin_command_arena_time_set").replace("%time%", arenaTime.name()));
+                            sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_ARENA_TIME_SET).defaultPrefix().placeholder("time", arenaTime.name()));
                         }))
         );
     }

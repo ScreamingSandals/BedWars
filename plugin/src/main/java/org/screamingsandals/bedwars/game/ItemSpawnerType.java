@@ -4,8 +4,11 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.screamingsandals.lib.lang.Message;
+import org.screamingsandals.lib.lang.Translation;
+import org.screamingsandals.lib.utils.AdventureHelper;
 
-import static org.screamingsandals.bedwars.lib.lang.I18n.i18n;
+import java.util.Arrays;
 
 public class ItemSpawnerType implements org.screamingsandals.bedwars.api.game.ItemSpawnerType {
     private String configKey;
@@ -55,7 +58,7 @@ public class ItemSpawnerType implements org.screamingsandals.bedwars.api.game.It
 
     public String getTranslatableKey() {
         if (translatableKey != null && !translatableKey.equals("")) {
-            return i18n(translatableKey, name, false);
+            return AdventureHelper.toLegacy(Message.of(Translation.of(Arrays.asList(translatableKey.split("\\.")), AdventureHelper.toComponent(name))).asComponent());
         }
         return name;
     }

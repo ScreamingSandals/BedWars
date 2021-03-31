@@ -3,10 +3,11 @@ package org.screamingsandals.bedwars.special.listener;
 
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.APIUtils;
-import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.api.events.BedwarsApplyPropertyToBoughtItem;
+import org.screamingsandals.bedwars.game.Game;
 import org.screamingsandals.bedwars.game.GamePlayer;
+import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.special.ArrowBlocker;
 import org.screamingsandals.bedwars.utils.DelayFactory;
 import org.screamingsandals.bedwars.utils.MiscUtils;
@@ -19,10 +20,8 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-
-import static org.screamingsandals.bedwars.lib.lang.I.i18nc;
-import static org.screamingsandals.bedwars.lib.lang.I18n.i18n;
-import static org.screamingsandals.bedwars.lib.lang.I18n.i18nonly;
+import org.screamingsandals.lib.lang.Message;
+import org.screamingsandals.lib.player.PlayerMapper;
 
 public class ArrowBlockerListener implements Listener {
     private static final String ARROW_BLOCKER_PREFIX = "Module:ArrowBlocker:";
@@ -60,7 +59,7 @@ public class ArrowBlockerListener implements Listener {
                                 game.getTeamOfPlayer(event.getPlayer()), stack, protectionTime);
 
                         if (arrowBlocker.isActivated()) {
-                            event.getPlayer().sendMessage(i18nc("specials_arrow_blocker_already_activated", game.getCustomPrefix()));
+                            PlayerMapper.wrapPlayer(player).sendMessage(Message.of(LangKeys.SPECIALS_ARROW_BLOCKER_ALREADY_ACTIVATED).prefixOrDefault(game.getCustomPrefixComponent()));
                             return;
                         }
 
@@ -74,7 +73,7 @@ public class ArrowBlockerListener implements Listener {
                         event.setCancelled(true);
 
                         int delay = game.getActiveDelay(player, ArrowBlocker.class).getRemainDelay();
-                        MiscUtils.sendActionBarMessage(player, i18nonly("special_item_delay").replace("%time%", String.valueOf(delay)));
+                        MiscUtils.sendActionBarMessage(PlayerMapper.wrapPlayer(player), Message.of(LangKeys.SPECIALS_ITEM_DELAY).placeholder("time", delay));
                     }
                 }
             }

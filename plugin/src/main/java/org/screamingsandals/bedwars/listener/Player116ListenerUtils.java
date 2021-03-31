@@ -4,11 +4,9 @@ import org.bukkit.block.Block;
 import org.bukkit.block.data.type.RespawnAnchor;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.game.CurrentTeam;
 import org.screamingsandals.bedwars.game.Game;
-import org.screamingsandals.bedwars.game.Team;
 import org.screamingsandals.bedwars.utils.Sounds;
 
 public class Player116ListenerUtils {

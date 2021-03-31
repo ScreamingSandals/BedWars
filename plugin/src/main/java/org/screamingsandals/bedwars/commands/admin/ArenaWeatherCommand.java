@@ -4,13 +4,13 @@ import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
 import cloud.commandframework.arguments.standard.StringArgument;
 import org.bukkit.WeatherType;
+import org.screamingsandals.bedwars.lang.LangKeys;
+import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import static org.screamingsandals.bedwars.lib.lang.I.i18n;
 
 public class ArenaWeatherCommand extends BaseAdminSubCommand {
     public ArenaWeatherCommand(CommandManager<CommandSenderWrapper> manager, Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder) {
@@ -35,14 +35,14 @@ public class ArenaWeatherCommand extends BaseAdminSubCommand {
                                     var weatherType = WeatherType.valueOf(arenaWeather.toUpperCase());
                                     game.setArenaWeather(weatherType);
 
-                                    sender.sendMessage(i18n("admin_command_arena_weather_set").replace("%weather%", weatherType.name()));
+                                    sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_WEATHER_SET).defaultPrefix().placeholder("weather", weatherType.name()));
                                 } catch (Exception e) {
-                                    sender.sendMessage(i18n("admin_command_invalid_arena_weather"));
+                                    sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_INVALID_ARENA_WEATHER).defaultPrefix());
                                 }
                             } else {
                                 game.setArenaWeather(null);
 
-                                sender.sendMessage(i18n("admin_command_arena_weather_set").replace("%weather%", "default"));
+                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_WEATHER_SET).defaultPrefix().placeholder("weather", "default"));
                             }
 
                         }))

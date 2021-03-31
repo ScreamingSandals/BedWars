@@ -10,6 +10,8 @@ import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.commands.BedWarsPermission;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.game.GameManager;
+import org.screamingsandals.bedwars.lang.LangKeys;
+import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.plugin.ServiceManager;
 import org.screamingsandals.lib.signs.AbstractSignManager;
@@ -28,8 +30,6 @@ import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import static org.screamingsandals.bedwars.lib.lang.I.*;
 
 @Service(dependsOn = {
         MainConfig.class,
@@ -91,7 +91,7 @@ public class BedWarsSignService extends AbstractSignManager {
                 .stream()
                 .map(ConfigurationNode::getString)
                 .map(s -> Objects.requireNonNullElse(s, "")
-                        .replaceAll("%arena%", i18nonly("leave_from_game_item"))
+                        .replaceAll("%arena%", AdventureHelper.toLegacy(Message.of(LangKeys.IN_GAME_LOBBY_ITEMS_LEAVE_FROM_GAME_ITEM).getForAnyoneJoined()))
                         .replaceAll("%status%", "")
                         .replaceAll("%players%", "")
                 )
@@ -119,7 +119,7 @@ public class BedWarsSignService extends AbstractSignManager {
         } else {
             gameManager.getGame(sign.getKey()).ifPresentOrElse(
                     game -> game.joinToGame(player.as(Player.class)),
-                    () -> m("sign_game_not_exists").send(player)
+                    () -> Message.of(LangKeys.SIGN_ADMIN_UNKNOWN_GAME).defaultPrefix().send(player)
             );
         }
     }
@@ -132,16 +132,16 @@ public class BedWarsSignService extends AbstractSignManager {
 
     @Override
     protected Component signCreatedMessage(PlayerWrapper player) {
-        return AdventureHelper.toComponent(i18n("sign_successfully_created"));
+        return Message.of(LangKeys.SIGN_ADMIN_CREATED).defaultPrefix().asComponent(player);
     }
 
     @Override
     protected Component signCannotBeCreatedMessage(PlayerWrapper player) {
-        return AdventureHelper.toComponent(i18n("sign_can_not_been_created"));
+        return Message.of(LangKeys.SIGN_ADMIN_CANNOT_CREATE).defaultPrefix().asComponent(player);
     }
 
     @Override
     protected Component signCannotBeDestroyedMessage(PlayerWrapper player) {
-        return AdventureHelper.toComponent(i18n("sign_can_not_been_destroyed"));
+        return Message.of(LangKeys.SIGN_ADMIN_CANNOT_DESTROY).defaultPrefix().asComponent(player);
     }
 }

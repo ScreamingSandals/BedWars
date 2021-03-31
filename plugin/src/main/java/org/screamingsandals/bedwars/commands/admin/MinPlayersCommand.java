@@ -3,9 +3,9 @@ package org.screamingsandals.bedwars.commands.admin;
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
 import cloud.commandframework.arguments.standard.IntegerArgument;
+import org.screamingsandals.bedwars.lang.LangKeys;
+import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
-
-import static org.screamingsandals.bedwars.lib.lang.I.i18n;
 
 public class MinPlayersCommand extends BaseAdminSubCommand {
     public MinPlayersCommand(CommandManager<CommandSenderWrapper> manager, Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder) {
@@ -24,13 +24,14 @@ public class MinPlayersCommand extends BaseAdminSubCommand {
                             int minPlayers = commandContext.get("minPlayers");
 
                             if (minPlayers < 2) {
-                                sender.sendMessage(i18n("admin_command_invalid_min_players"));
+                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_INVALID_MIN_PLAYERS).defaultPrefix());
                                 return;
                             }
                             game.setMinPlayers(minPlayers);
                             sender.sendMessage(
-                                    i18n("admin_command_min_players_set")
-                                            .replace("%min%", Integer.toString(minPlayers))
+                                    Message.of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_MIN_PLAYERS_SET)
+                                            .placeholder("win", minPlayers)
+                                            .defaultPrefix()
                             );
                         }))
         );

@@ -3,9 +3,9 @@ package org.screamingsandals.bedwars.commands.admin;
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
 import cloud.commandframework.arguments.standard.IntegerArgument;
+import org.screamingsandals.bedwars.lang.LangKeys;
+import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
-
-import static org.screamingsandals.bedwars.lib.lang.I.i18n;
 
 public class PausecountdownCommand extends BaseAdminSubCommand {
     public PausecountdownCommand(CommandManager<CommandSenderWrapper> manager, Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder) {
@@ -26,10 +26,15 @@ public class PausecountdownCommand extends BaseAdminSubCommand {
 
                             if (countdown >= 10 && countdown <= 600) {
                                 game.setPauseCountdown(countdown);
-                                sender.sendMessage(i18n("admin_command_pausecontdown_setted").replace("%countdown%", Integer.toString(countdown)));
+                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_LOBBY_COUNTDOWN_SET).placeholder("countdown", countdown).defaultPrefix());
                                 return;
                             }
-                            sender.sendMessage(i18n("admin_command_invalid_countdown"));
+                            sender.sendMessage(Message
+                                    .of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_INVALID_COUNTDOWN)
+                                    .defaultPrefix()
+                                    .placeholder("lowest", 10)
+                                    .placeholder("highest", 600)
+                            );
                         }))
         );
     }

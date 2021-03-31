@@ -5,11 +5,11 @@ import cloud.commandframework.CommandManager;
 import org.bukkit.Bukkit;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.game.GameManager;
+import org.screamingsandals.bedwars.lang.LangKeys;
+import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
 
 import java.util.Optional;
-
-import static org.screamingsandals.bedwars.lib.lang.I.i18n;
 
 public class AlljoinCommand extends BaseCommand {
     public AlljoinCommand(CommandManager<CommandSenderWrapper> manager) {
@@ -34,7 +34,7 @@ public class AlljoinCommand extends BaseCommand {
                                     .or(GameManager.getInstance()::getGameWithHighestPlayers);
 
                             if (game.isEmpty()) {
-                                sender.sendMessage(i18n("no_arena_found"));
+                                sender.sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_GAME_NOT_FOUND).defaultPrefix());
                                 return;
                             }
 

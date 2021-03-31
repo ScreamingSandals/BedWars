@@ -5,6 +5,7 @@ import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.api.Team;
 import org.screamingsandals.bedwars.game.TeamColor;
+import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.bedwars.lib.nms.entity.EntityUtils;
 import org.bukkit.DyeColor;
@@ -13,9 +14,8 @@ import org.bukkit.Material;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
-
-import static org.screamingsandals.bedwars.lib.lang.I.i18nc;
-import static org.screamingsandals.bedwars.lib.lang.I18n.i18n;
+import org.screamingsandals.lib.lang.Message;
+import org.screamingsandals.lib.player.PlayerMapper;
 
 public class TNTSheep extends SpecialItem implements org.screamingsandals.bedwars.api.special.TNTSheep {
     private LivingEntity entity;
@@ -71,7 +71,10 @@ public class TNTSheep extends SpecialItem implements org.screamingsandals.bedwar
         sheep.setColor(DyeColor.getByWoolData((byte) color.woolData));
 
         if (target == null) {
-            player.sendMessage(i18nc("specials_tntsheep_no_target_found", game.getCustomPrefix()));
+            Message
+                    .of(LangKeys.SPECIALS_TNTSHEEP_NO_TARGET_FOUND)
+                    .prefixOrDefault(((org.screamingsandals.bedwars.game.Game) game).getCustomPrefixComponent())
+                    .send(PlayerMapper.wrapPlayer(player));
             sheep.remove();
             return;
         }

@@ -5,9 +5,9 @@ import cloud.commandframework.CommandManager;
 import cloud.commandframework.context.CommandContext;
 import org.screamingsandals.bedwars.commands.AdminCommand;
 import org.screamingsandals.bedwars.game.Game;
+import org.screamingsandals.bedwars.lang.LangKeys;
+import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
-
-import static org.screamingsandals.bedwars.lib.lang.I.i18n;
 
 public abstract class BaseAdminSubCommand {
 
@@ -27,7 +27,7 @@ public abstract class BaseAdminSubCommand {
         if (AdminCommand.gc.containsKey(gameName)) {
             handler.handle(sender, AdminCommand.gc.get(gameName));
         } else {
-            sender.sendMessage(i18n("arena_not_in_edit"));
+            sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_ERROR_ARENA_NOT_IN_EDIT).defaultPrefix());
         }
     }
 
