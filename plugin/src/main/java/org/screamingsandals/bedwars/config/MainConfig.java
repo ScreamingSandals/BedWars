@@ -70,6 +70,12 @@ public class MainConfig {
                 .key("remove-unused-target-blocks").defValue(true)
                 .key("allow-block-falling").defValue(true)
                 .key("game-start-items").moveIfAbsolute(ConfigurationNode::isList, "game-start-items", "enabled")
+                .section("tnt-jump")
+                    .key("enabled").defValue(true)
+                    .key("source-damage").defValue(0.5)
+                    .key("team-damage").defValue(false)
+                    .key("launch-power").defValue(1.5)
+
                 .section("game-start-items")
                     .key("enabled").defValue(false)
                     .key("items").migrateOldAbsoluteKey("gived-game-start-items").defValue(List::of)
