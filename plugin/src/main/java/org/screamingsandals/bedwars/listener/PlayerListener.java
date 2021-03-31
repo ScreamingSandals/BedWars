@@ -648,18 +648,20 @@ public class PlayerListener implements Listener {
                     EntityDamageByEntityEvent edbee = (EntityDamageByEntityEvent) event;
 
                     if (edbee.getDamager() instanceof Explosive) {
-                        if (edbee.getDamager() instanceof TNTPrimed) {
-                            final var tnt = (TNTPrimed) edbee.getDamager();
-                            final var tntSource = tnt.getSource();
-                            if (tntSource instanceof Player) {
-                                final var playerSource = (Player) tntSource;
-                                if (playerSource.equals(player)) {
-                                    event.setDamage(MainConfig.getInstance().node("tnt-jump", "source-damage").getDouble());
-                                    player.setVelocity(player.getLocation().getDirection().multiply(MainConfig.getInstance().node("tnt-jump", "launch-power").getDouble()));
-                                }
-                                if (MainConfig.getInstance().node("tnt-jump", "team-damage").getBoolean()) {
-                                    if (game.getTeamOfPlayer(player).equals(game.getTeamOfPlayer(playerSource))) {
-                                        event.setCancelled(true);
+                        if (MainConfig.getInstance().node("tnt-jump", "enabled").getBoolean()) {
+                            if (edbee.getDamager() instanceof TNTPrimed) {
+                                final var tnt = (TNTPrimed) edbee.getDamager();
+                                final var tntSource = tnt.getSource();
+                                if (tntSource instanceof Player) {
+                                    final var playerSource = (Player) tntSource;
+                                    if (playerSource.equals(player)) {
+                                        event.setDamage(MainConfig.getInstance().node("tnt-jump", "source-damage").getDouble());
+                                        player.setVelocity(player.getLocation().getDirection().multiply(MainConfig.getInstance().node("tnt-jump", "launch-power").getDouble()));
+                                    }
+                                    if (MainConfig.getInstance().node("tnt-jump", "team-damage").getBoolean()) {
+                                        if (game.getTeamOfPlayer(player).equals(game.getTeamOfPlayer(playerSource))) {
+                                            event.setCancelled(true);
+                                        }
                                     }
                                 }
                             }

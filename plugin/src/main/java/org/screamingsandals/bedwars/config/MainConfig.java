@@ -76,7 +76,7 @@ public class MainConfig {
                     .key("source-damage").defValue(0.5)
                     .key("team-damage").defValue(false)
                     .key("launch-power").defValue(1.5)
-
+                    .back()
                 .section("game-start-items")
                     .key("enabled").defValue(false)
                     .key("items").migrateOldAbsoluteKey("gived-game-start-items").defValue(List::of)
