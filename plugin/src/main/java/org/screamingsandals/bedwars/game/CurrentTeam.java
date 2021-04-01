@@ -1,11 +1,13 @@
 package org.screamingsandals.bedwars.game;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 import org.screamingsandals.bedwars.api.RunningTeam;
 import org.screamingsandals.bedwars.api.TeamColor;
 import org.screamingsandals.bedwars.api.game.Game;
@@ -13,6 +15,7 @@ import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.lib.hologram.Hologram;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.utils.AdventureHelper;
+import org.screamingsandals.lib.utils.reflect.Reflect;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +35,13 @@ public class CurrentTeam implements RunningTeam {
     public CurrentTeam(Team team, Game game) {
         this.teamInfo = team;
         this.game = game;
-        this.chestInventory = Bukkit.createInventory(null, InventoryType.ENDER_CHEST, Message.of(LangKeys.SPECIALS_TEAM_CHEST_NAME).prefixOrDefault(game.getCustomPrefixComponent()).asComponent());
+        final var message = Message.of(LangKeys.SPECIALS_TEAM_CHEST_NAME).prefixOrDefault(game.getCustomPrefixComponent()).asComponent();
+        if (Reflect.hasMethod(Bukkit.getServer(), "createInventory", InventoryHolder.class, InventoryType.class, Component.class)) {
+            this.chestInventory = Bukkit.createInventory(null, InventoryType.ENDER_CHEST, message);
+        }
+        else {
+            this.chestInventory = Bukkit.createInventory(null, InventoryType.ENDER_CHEST, AdventureHelper.toLegacyNullable(message));
+        }
     }
 
     public boolean isDead() {
