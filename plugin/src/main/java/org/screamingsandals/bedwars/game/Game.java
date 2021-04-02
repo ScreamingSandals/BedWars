@@ -247,18 +247,23 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
                 game.teams.add(t);
             });
-            configMap.node("spawners").childrenList().forEach(spawner ->
-                    game.spawners.add(new ItemSpawner(
-                            MiscUtils.readLocationFromString(game.world, Objects.requireNonNull(spawner.node("location").getString())),
-                            Main.getSpawnerType((Objects.requireNonNull(spawner.node("type").getString())).toLowerCase()),
-                            spawner.node("customName").getString(),
-                            spawner.node("hologramEnabled").getBoolean(true),
-                            spawner.node("startLevel").getDouble(1),
-                            game.getTeamFromName(spawner.node("team").getString()),
-                            spawner.node("maxSpawnedResources").getInt(-1),
-                            spawner.node("floatingEnabled").getBoolean(),
-                            org.screamingsandals.lib.hologram.Hologram.RotationMode.valueOf(spawner.node("rotationMode").getString("Y"))
-                    ))
+            configMap.node("spawners").childrenList().forEach(spawner -> {
+                var spawnerType = spawner.node("type").getString();
+                if (spawnerType == null || Main.getSpawnerType(spawnerType.toLowerCase()) == null) {
+                    throw new UnsupportedOperationException("Wrongly configured spawner type!");
+                }
+                game.spawners.add(new ItemSpawner(
+                        MiscUtils.readLocationFromString(game.world, Objects.requireNonNull(spawner.node("location").getString())),
+                        Main.getSpawnerType(spawnerType.toLowerCase()),
+                        spawner.node("customName").getString(),
+                        spawner.node("hologramEnabled").getBoolean(true),
+                        spawner.node("startLevel").getDouble(1),
+                        game.getTeamFromName(spawner.node("team").getString()),
+                        spawner.node("maxSpawnedResources").getInt(-1),
+                        spawner.node("floatingEnabled").getBoolean(),
+                        org.screamingsandals.lib.hologram.Hologram.RotationMode.valueOf(spawner.node("rotationMode").getString("Y"))
+                ));
+            }
             );
             configMap.node("stores").childrenList().forEach(store -> {
                 if (store.isMap()) {
