@@ -24,10 +24,10 @@ public class RemoveholoCommand extends BaseCommand {
                     .handler(commandContext -> {
                         var player = commandContext.getSender().as(Player.class);
                         if (!StatisticsHolograms.isEnabled()) {
-                            player.sendMessage(AdventureHelper.toLegacy(Message.of(LangKeys.ADMIN_HOLO_NOT_ENABLED).defaultPrefix().asComponent()));
+                            commandContext.getSender().sendMessage(Message.of(LangKeys.ADMIN_HOLO_NOT_ENABLED).defaultPrefix());
                         } else {
                             player.setMetadata("bw-remove-holo", new FixedMetadataValue(Main.getInstance().getPluginDescription().as(JavaPlugin.class), true));
-                            player.sendMessage(AdventureHelper.toLegacy(Message.of(LangKeys.ADMIN_HOLO_CLICK_TO_REMOVE).defaultPrefix().asComponent()));
+                            commandContext.getSender().sendMessage(Message.of(LangKeys.ADMIN_HOLO_CLICK_TO_REMOVE).defaultPrefix());
                         }
                     })
         );

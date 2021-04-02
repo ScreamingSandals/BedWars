@@ -23,7 +23,7 @@ public class RejoinCommand extends BaseCommand {
                         // TODO: Use Wrapper (bedwars changes needed)
                         var player = commandContext.getSender().as(Player.class);
                         if (Main.isPlayerInGame(player)) {
-                            player.sendMessage(AdventureHelper.toLegacy(Message.of(LangKeys.IN_GAME_ERRORS_ALREADY_IN_GAME).defaultPrefix().asComponent()));
+                            commandContext.getSender().sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_ALREADY_IN_GAME).defaultPrefix());
                             return;
                         }
 
@@ -32,12 +32,12 @@ public class RejoinCommand extends BaseCommand {
                             name = Main.getPlayerGameProfile(player).getLatestGameName();
                         }
                         if (name == null) {
-                            player.sendMessage(AdventureHelper.toLegacy(Message.of(LangKeys.IN_GAME_ERRORS_YOU_ARE_NOT_IN_GAME).defaultPrefix().asComponent()));
+                            commandContext.getSender().sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_YOU_ARE_NOT_IN_GAME).defaultPrefix());
                         } else {
                             GameManager.getInstance().getGame(name)
                                     .ifPresentOrElse(
                                             game -> game.joinToGame(player),
-                                            () -> player.sendMessage(AdventureHelper.toLegacy(Message.of(LangKeys.IN_GAME_ERRORS_GAME_IS_GONE).defaultPrefix().asComponent()))
+                                            () -> player.sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_GAME_IS_GONE).defaultPrefix())
                                     );
                         }
                     })
