@@ -8,7 +8,6 @@ import org.screamingsandals.bedwars.game.GameManager;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
-import org.screamingsandals.lib.utils.AdventureHelper;
 
 public class AutojoinCommand extends BaseCommand {
     public AutojoinCommand(CommandManager<CommandSenderWrapper> manager) {
@@ -23,13 +22,13 @@ public class AutojoinCommand extends BaseCommand {
                             // TODO: Use Wrapper (bedwars changes needed)
                             var player = commandContext.getSender().as(Player.class);
                             if (Main.isPlayerInGame(player)) {
-                                commandContext.getSender().sendMessage(AdventureHelper.toLegacy(Message.of(LangKeys.IN_GAME_ERRORS_ALREADY_IN_GAME).defaultPrefix().asComponent()));
+                                commandContext.getSender().sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_ALREADY_IN_GAME).defaultPrefix());
                                 return;
                             }
 
                             GameManager.getInstance().getFirstWaitingGame().ifPresentOrElse(
                                     game -> game.joinToGame(player),
-                                    () -> commandContext.getSender().sendMessage(AdventureHelper.toLegacy(Message.of(LangKeys.IN_GAME_ERRORS_THERE_IS_NO_EMPTY_GAME).defaultPrefix().asComponent()))
+                                    () -> commandContext.getSender().sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_THERE_IS_NO_EMPTY_GAME).defaultPrefix())
                             );
                         })
         );

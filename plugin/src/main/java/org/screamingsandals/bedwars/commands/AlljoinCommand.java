@@ -8,7 +8,6 @@ import org.screamingsandals.bedwars.game.GameManager;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
-import org.screamingsandals.lib.utils.AdventureHelper;
 
 import java.util.Optional;
 
@@ -35,7 +34,7 @@ public class AlljoinCommand extends BaseCommand {
                                     .or(GameManager.getInstance()::getGameWithHighestPlayers);
 
                             if (game.isEmpty()) {
-                                sender.sendMessage(AdventureHelper.toLegacy(Message.of(LangKeys.IN_GAME_ERRORS_GAME_NOT_FOUND).defaultPrefix().asComponent()));
+                                sender.sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_GAME_NOT_FOUND).defaultPrefix());
                                 return;
                             }
 
