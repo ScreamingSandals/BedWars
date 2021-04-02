@@ -2201,13 +2201,6 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 if (e instanceof Item) {
                     removeEntityAsync(e);
                 }
-
-                if (e instanceof ArmorStand) {
-                    final String customName = e.getCustomName();
-                    if (customName != null && customName.equals(ItemSpawner.ARMOR_STAND_DISPLAY_NAME_HIDDEN)) {
-                        removeEntityAsync(e);
-                    }
-                }
             }
         }
 

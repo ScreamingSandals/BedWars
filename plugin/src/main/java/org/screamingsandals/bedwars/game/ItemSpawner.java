@@ -39,9 +39,7 @@ public class ItemSpawner implements org.screamingsandals.bedwars.api.game.ItemSp
     public boolean rerenderHologram = false;
     public double currentLevelOnHologram = -1;
     public org.screamingsandals.lib.hologram.Hologram.RotationMode rotationMode;
-    @Getter
-    private org.screamingsandals.lib.hologram.Hologram hologram;
-    public final static String ARMOR_STAND_DISPLAY_NAME_HIDDEN = "BEDWARS_FLOATING_ROT_ENTITY";
+    @Getter private org.screamingsandals.lib.hologram.Hologram hologram;
 
     public ItemSpawner(Location loc, ItemSpawnerType type, String customName,
                        boolean hologramEnabled, double startLevel, Team team,
