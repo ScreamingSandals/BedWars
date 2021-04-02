@@ -10,6 +10,7 @@ import org.screamingsandals.bedwars.holograms.StatisticsHolograms;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
+import org.screamingsandals.lib.utils.AdventureHelper;
 
 public class RemoveholoCommand extends BaseCommand {
     public RemoveholoCommand(CommandManager<CommandSenderWrapper> manager) {
@@ -23,10 +24,10 @@ public class RemoveholoCommand extends BaseCommand {
                     .handler(commandContext -> {
                         var player = commandContext.getSender().as(Player.class);
                         if (!StatisticsHolograms.isEnabled()) {
-                            player.sendMessage(Message.of(LangKeys.ADMIN_HOLO_NOT_ENABLED).defaultPrefix());
+                            player.sendMessage(AdventureHelper.toLegacy(Message.of(LangKeys.ADMIN_HOLO_NOT_ENABLED).defaultPrefix().asComponent()));
                         } else {
                             player.setMetadata("bw-remove-holo", new FixedMetadataValue(Main.getInstance().getPluginDescription().as(JavaPlugin.class), true));
-                            player.sendMessage(Message.of(LangKeys.ADMIN_HOLO_CLICK_TO_REMOVE).defaultPrefix());
+                            player.sendMessage(AdventureHelper.toLegacy(Message.of(LangKeys.ADMIN_HOLO_CLICK_TO_REMOVE).defaultPrefix().asComponent()));
                         }
                     })
         );

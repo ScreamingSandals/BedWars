@@ -8,6 +8,7 @@ import org.screamingsandals.bedwars.game.GameManager;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
+import org.screamingsandals.lib.utils.AdventureHelper;
 
 import java.util.Optional;
 
@@ -31,7 +32,7 @@ public class JoinCommand extends BaseCommand {
                             // TODO: Use Wrapper (bedwars changes needed)
                             var player = commandContext.getSender().as(Player.class);
                             if (Main.isPlayerInGame(player)) {
-                                player.sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_ALREADY_IN_GAME).defaultPrefix());
+                                player.sendMessage(AdventureHelper.toLegacy(Message.of(LangKeys.IN_GAME_ERRORS_ALREADY_IN_GAME).defaultPrefix().asComponent()));
                                 return;
                             }
 
@@ -39,12 +40,12 @@ public class JoinCommand extends BaseCommand {
                                 var arenaN = game.get();
                                 GameManager.getInstance().getGame(arenaN).ifPresentOrElse(
                                         game1 -> game1.joinToGame(player),
-                                        () -> player.sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_GAME_NOT_FOUND).defaultPrefix())
+                                        () -> player.sendMessage(AdventureHelper.toLegacy(Message.of(LangKeys.IN_GAME_ERRORS_GAME_NOT_FOUND).defaultPrefix().asComponent()))
                                 );
                             } else {
                                 GameManager.getInstance().getGameWithHighestPlayers().ifPresentOrElse(
                                         game1 -> game1.joinToGame(player),
-                                        () -> player.sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_GAME_NOT_FOUND).defaultPrefix())
+                                        () -> player.sendMessage(AdventureHelper.toLegacy(Message.of(LangKeys.IN_GAME_ERRORS_GAME_NOT_FOUND).defaultPrefix().asComponent()))
                                 );
                             }
                         })

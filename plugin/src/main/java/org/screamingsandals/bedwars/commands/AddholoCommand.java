@@ -10,6 +10,7 @@ import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.lib.entity.EntityHuman;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
+import org.screamingsandals.lib.utils.AdventureHelper;
 
 public class AddholoCommand extends BaseCommand {
     public AddholoCommand(CommandManager<CommandSenderWrapper> manager) {
@@ -49,12 +50,12 @@ public class AddholoCommand extends BaseCommand {
         var sender = commandContext.getSender();
         var eyeLocation = sender.as(EntityHuman.class).getEyeLocation();
         if (!StatisticsHolograms.isEnabled()) {
-            sender.sendMessage(Message.of(LangKeys.ADMIN_HOLO_NOT_ENABLED).defaultPrefix());
+            sender.sendMessage(AdventureHelper.toLegacy(Message.of(LangKeys.ADMIN_HOLO_NOT_ENABLED).defaultPrefix().asComponent()));
         } else {
             var statisticHolograms = StatisticsHolograms.getInstance();
             statisticHolograms.addHologramLocation(eyeLocation);
             statisticHolograms.updateHolograms();
-            sender.sendMessage(Message.of(LangKeys.ADMIN_HOLO_ADDED).defaultPrefix());
+            sender.sendMessage(AdventureHelper.toLegacy(Message.of(LangKeys.ADMIN_HOLO_ADDED).defaultPrefix().asComponent()));
         }
     }
 }

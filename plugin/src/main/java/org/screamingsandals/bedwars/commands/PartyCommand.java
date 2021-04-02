@@ -11,6 +11,7 @@ import org.screamingsandals.bedwars.lib.nms.entity.PlayerUtils;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
+import org.screamingsandals.lib.utils.AdventureHelper;
 
 import java.util.List;
 import java.util.Optional;
@@ -47,7 +48,7 @@ public class PartyCommand extends BaseCommand {
                     final var game = Main.getPlayerGameProfile(player).getGame();
 
                     if (partyPlayer.getPartyId() == null) {
-                        player.sendMessage(Message.of(LangKeys.PARTY_COMMAND_NOT_IN_PARTY).defaultPrefix());
+                        player.sendMessage(AdventureHelper.toLegacy(Message.of(LangKeys.PARTY_COMMAND_NOT_IN_PARTY).defaultPrefix().asComponent()));
                         return;
                     }
 
@@ -59,14 +60,14 @@ public class PartyCommand extends BaseCommand {
                         if (leaderUUID != null) {
 
                             if (!leaderUUID.equals(player.getUniqueId())) {
-                                player.sendMessage(Message.of(LangKeys.PARTY_COMMAND_NOT_PARTY_LEADER).defaultPrefix());
+                                player.sendMessage(AdventureHelper.toLegacy(Message.of(LangKeys.PARTY_COMMAND_NOT_PARTY_LEADER).defaultPrefix().asComponent()));
                                 return;
                             }
 
                             final var players = MiscUtils.getOnlinePlayers(party.getMembers());
 
                             if (players.size() == 1) {
-                                player.sendMessage(Message.of(LangKeys.PARTY_COMMAND_IS_EMPTY).defaultPrefix());
+                                player.sendMessage(AdventureHelper.toLegacy(Message.of(LangKeys.PARTY_COMMAND_IS_EMPTY).defaultPrefix().asComponent()));
                                 return;
                             }
 
@@ -79,7 +80,7 @@ public class PartyCommand extends BaseCommand {
                                     final var gameOfPlayer = Main.getPlayerGameProfile(partyMember).getGame();
 
                                     if (game == null) {
-                                        partyMember.sendMessage(Message.of(LangKeys.PARTY_WARPED).defaultPrefix());
+                                        partyMember.sendMessage(AdventureHelper.toLegacy(Message.of(LangKeys.PARTY_WARPED).defaultPrefix().asComponent()));
                                         if (gameOfPlayer != null) {
                                             gameOfPlayer.leaveFromGame(partyMember);
                                         }
@@ -87,7 +88,7 @@ public class PartyCommand extends BaseCommand {
                                         return;
                                     }
 
-                                    partyMember.sendMessage(Message.of(LangKeys.PARTY_INFORM_GAME_JOIN).defaultPrefix());
+                                    partyMember.sendMessage(AdventureHelper.toLegacy(Message.of(LangKeys.PARTY_INFORM_GAME_JOIN).defaultPrefix().asComponent()));
                                     if (gameOfPlayer != null) {
                                         if (gameOfPlayer.getName().equalsIgnoreCase(game.getName())) {
                                             return;
@@ -100,13 +101,13 @@ public class PartyCommand extends BaseCommand {
                                 }
                             });
                             if (MainConfig.getInstance().node("party", "notify-when-warped").getBoolean(true)) {
-                                player.sendMessage(Message.of(LangKeys.PARTY_COMMAND_WARPED).defaultPrefix());
+                                player.sendMessage(AdventureHelper.toLegacy(Message.of(LangKeys.PARTY_COMMAND_WARPED).defaultPrefix().asComponent()));
                             }
                         }
 
                     }
                 } else if (action.get().equalsIgnoreCase("help")) {
-                    player.sendMessage(Message.of(LangKeys.PARTY_COMMAND_HELP).defaultPrefix());
+                    player.sendMessage(AdventureHelper.toLegacy(Message.of(LangKeys.PARTY_COMMAND_HELP).defaultPrefix().asComponent()));
                 }
             })
         );
