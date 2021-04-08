@@ -4,13 +4,14 @@ import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
 import com.alessiodp.parties.api.Parties;
 import org.bukkit.entity.Player;
-import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.lib.nms.entity.PlayerUtils;
+import org.screamingsandals.bedwars.player.PlayerManager;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.player.PlayerMapper;
+import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
 
 import java.util.List;
@@ -31,7 +32,7 @@ public class PartyCommand extends BaseCommand {
                             .asOptional()
                     )
             .handler(commandContext -> {
-                var sender = commandContext.getSender();
+                var sender = commandContext.getSender().as(PlayerWrapper.class);
 
                 Optional<String> action = commandContext.getOptional("action");
 
@@ -40,12 +41,13 @@ public class PartyCommand extends BaseCommand {
                     return;
                 }
 
+                var playerManager = PlayerManager.getInstance();
                 var player = sender.as(Player.class);
 
                 if (action.get().equalsIgnoreCase("warp")) {
                     final var partyApi = Parties.getApi();
                     final var partyPlayer = partyApi.getPartyPlayer(player.getUniqueId());
-                    final var game = Main.getPlayerGameProfile(player).getGame();
+                    final var game = playerManager.getGameOfPlayer(sender);
 
                     if (partyPlayer.getPartyId() == null) {
                         sender.sendMessage(Message.of(LangKeys.PARTY_COMMAND_NOT_IN_PARTY).defaultPrefix());
@@ -77,27 +79,26 @@ public class PartyCommand extends BaseCommand {
                                         return;
                                     }
 
-                                    final var gameOfPlayer = Main.getPlayerGameProfile(partyMember).getGame();
+                                    final var wrapper = PlayerMapper.wrapPlayer(partyMember);
+                                    final var gameOfPlayer = playerManager.getGameOfPlayer(wrapper);
 
-                                    if (game == null) {
+                                    if (game.isEmpty()) {
                                         PlayerMapper.wrapPlayer(partyMember).sendMessage(Message.of(LangKeys.PARTY_WARPED).defaultPrefix());
-                                        if (gameOfPlayer != null) {
-                                            gameOfPlayer.leaveFromGame(partyMember);
-                                        }
+                                        gameOfPlayer.ifPresent(value -> value.leaveFromGame(partyMember));
                                         PlayerUtils.teleportPlayer(partyMember, player.getLocation());
                                         return;
                                     }
 
                                     PlayerMapper.wrapPlayer(partyMember).sendMessage(Message.of(LangKeys.PARTY_INFORM_GAME_JOIN).defaultPrefix());
-                                    if (gameOfPlayer != null) {
-                                        if (gameOfPlayer.getName().equalsIgnoreCase(game.getName())) {
+                                    if (gameOfPlayer.isPresent()) {
+                                        if (gameOfPlayer.get().getName().equalsIgnoreCase(game.get().getName())) {
                                             return;
                                         }
 
-                                        gameOfPlayer.leaveFromGame(partyMember);
+                                        gameOfPlayer.get().leaveFromGame(partyMember);
                                     }
 
-                                    game.joinToGame(partyMember);
+                                    game.get().joinToGame(partyMember);
                                 }
                             });
                             if (MainConfig.getInstance().node("party", "notify-when-warped").getBoolean(true)) {

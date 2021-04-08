@@ -7,6 +7,7 @@ import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.events.BedwarsPlayerJoinedEvent;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.lang.LangKeys;
+import org.screamingsandals.bedwars.player.PlayerManager;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.player.PlayerMapper;
@@ -44,12 +45,12 @@ public class PartyListener implements Listener {
                                     }
                                     PlayerMapper.wrapPlayer(player).sendMessage(Message.of(LangKeys.PARTY_INFORM_GAME_JOIN).defaultPrefix());
 
-                                    final var gameOfPlayer = Main.getPlayerGameProfile(partyMember).getGame();
-                                    if (gameOfPlayer != null) {
-                                        if (gameOfPlayer.getName().equalsIgnoreCase(game.getName())) {
+                                    var gameOfPlayer = PlayerManager.getInstance().getGameOfPlayer(partyMember.getUniqueId());
+                                    if (gameOfPlayer.isPresent()) {
+                                        if (gameOfPlayer.get().getName().equalsIgnoreCase(game.getName())) {
                                             return;
                                         }
-                                        gameOfPlayer.leaveFromGame(partyMember);
+                                        gameOfPlayer.get().leaveFromGame(partyMember);
                                     }
                                     game.joinToGame(partyMember);
                                 }

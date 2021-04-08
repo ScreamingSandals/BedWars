@@ -2,7 +2,6 @@ package org.screamingsandals.bedwars.utils;
 
 import lombok.experimental.UtilityClass;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.ComponentLike;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
@@ -21,8 +20,9 @@ import org.screamingsandals.bedwars.api.TeamColor;
 import org.screamingsandals.bedwars.api.events.BedwarsApplyPropertyToBoughtItem;
 import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.config.MainConfig;
-import org.screamingsandals.bedwars.game.GamePlayer;
+import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.lib.debug.Debug;
+import org.screamingsandals.bedwars.player.PlayerManager;
 import org.screamingsandals.lib.material.MaterialHolder;
 import org.screamingsandals.lib.material.MaterialMapping;
 import org.screamingsandals.lib.player.PlayerWrapper;
@@ -164,12 +164,16 @@ public class MiscUtils {
 
 
         for (Player p : foundTargets) {
-            GamePlayer gamePlayer = Main.getPlayerGameProfile(p);
+            var gamePlayer = PlayerManager.getInstance().getPlayer(p.getUniqueId());
+            if (gamePlayer.isEmpty()) {
+                continue;
+            }
+
             if (player.getWorld() != p.getWorld()) {
                 continue;
             }
 
-            if (gamePlayer.isSpectator) {
+            if (gamePlayer.get().isSpectator) {
                 continue;
             }
 

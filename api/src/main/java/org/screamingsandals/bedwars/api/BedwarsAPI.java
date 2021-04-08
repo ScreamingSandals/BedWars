@@ -3,11 +3,11 @@ package org.screamingsandals.bedwars.api;
 import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.api.game.GameManager;
 import org.screamingsandals.bedwars.api.game.ItemSpawnerType;
+import org.screamingsandals.bedwars.api.player.PlayerManager;
 import org.screamingsandals.bedwars.api.statistics.PlayerStatisticsManager;
 import org.screamingsandals.bedwars.api.utils.ColorChanger;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
 
 import java.util.List;
 
@@ -21,16 +21,9 @@ public interface BedwarsAPI {
     GameManager<?> getGameManager();
 
     /**
-     * @param player Player
-     * @return Player's Game or null if player isn't in game
+     * @return Player manager of the bedwars plugin
      */
-    Game getGameOfPlayer(Player player);
-
-    /**
-     * @param player Player
-     * @return true if player is in any game
-     */
-    boolean isPlayerPlayingAnyGame(Player player);
+    PlayerManager<?, ?> getPlayerManager();
 
     /**
      * @return List of existing spawner types

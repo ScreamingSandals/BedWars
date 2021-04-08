@@ -29,6 +29,7 @@ import org.screamingsandals.bedwars.holograms.StatisticsHolograms;
 import org.screamingsandals.bedwars.inventories.ShopInventory;
 import org.screamingsandals.bedwars.listener.*;
 import org.screamingsandals.bedwars.placeholderapi.BedwarsExpansion;
+import org.screamingsandals.bedwars.player.PlayerManager;
 import org.screamingsandals.bedwars.premium.PremiumBedwars;
 import org.screamingsandals.bedwars.special.SpecialRegister;
 import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
@@ -89,7 +90,8 @@ import java.util.*;
         RecordSave.class,
         DatabaseManager.class,
         BedWarsSignService.class,
-        BukkitBStatsMetrics.class
+        BukkitBStatsMetrics.class,
+        PlayerManager.class
 })
 public class Main extends PluginContainer implements BedwarsAPI {
     private static Main instance;
@@ -101,7 +103,6 @@ public class Main extends PluginContainer implements BedwarsAPI {
     private boolean isNMS;
     private int versionNumber = 0;
     private Economy econ = null;
-    private HashMap<Player, GamePlayer> playersInGame = new HashMap<>();
     private HashMap<Entity, Game> entitiesInGame = new HashMap<>();
     private HashMap<String, ItemSpawnerType> spawnerTypes = new HashMap<>();
     private ColorChanger colorChanger;
@@ -178,31 +179,6 @@ public class Main extends PluginContainer implements BedwarsAPI {
 
     public static void unregisterGameEntity(Entity entity) {
         instance.entitiesInGame.remove(entity);
-    }
-
-    public static boolean isPlayerInGame(Player player) {
-        if (instance.playersInGame.containsKey(player))
-            return instance.playersInGame.get(player).isInGame();
-        return false;
-    }
-
-    public static GamePlayer getPlayerGameProfile(Player player) {
-        if (instance.playersInGame.containsKey(player))
-            return instance.playersInGame.get(player);
-        GamePlayer gPlayer = new GamePlayer(player);
-        instance.playersInGame.put(player, gPlayer);
-        return gPlayer;
-    }
-
-    public static void unloadPlayerGameProfile(Player player) {
-        if (instance.playersInGame.containsKey(player)) {
-            instance.playersInGame.get(player).changeGame(null);
-            instance.playersInGame.remove(player);
-        }
-    }
-
-    public static boolean isPlayerGameProfileRegistered(Player player) {
-        return instance.playersInGame.containsKey(player);
     }
 
     public static void openStore(Player player, GameStore store) {
@@ -560,10 +536,9 @@ public class Main extends PluginContainer implements BedwarsAPI {
     }
 
     @Override
-    public org.screamingsandals.bedwars.api.game.Game getGameOfPlayer(Player player) {
-        return isPlayerInGame(player) ? getPlayerGameProfile(player).getGame() : null;
+    public org.screamingsandals.bedwars.api.player.PlayerManager<?,?> getPlayerManager() {
+        return PlayerManager.getInstance();
     }
-
 
     @Override
     public List<org.screamingsandals.bedwars.api.game.ItemSpawnerType> getItemSpawnerTypes() {
@@ -603,11 +578,6 @@ public class Main extends PluginContainer implements BedwarsAPI {
         if (entitiesInGame.containsKey(entity)) {
             entitiesInGame.remove(entity);
         }
-    }
-
-    @Override
-    public boolean isPlayerPlayingAnyGame(Player player) {
-        return isPlayerInGame(player);
     }
 
     @Override

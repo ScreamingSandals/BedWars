@@ -6,7 +6,9 @@ import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.game.GameManager;
 import org.screamingsandals.bedwars.lang.LangKeys;
+import org.screamingsandals.bedwars.player.PlayerManager;
 import org.screamingsandals.lib.lang.Message;
+import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
 
 import java.util.Optional;
@@ -28,10 +30,11 @@ public class JoinCommand extends BaseCommand {
                         .handler(commandContext -> {
                             Optional<String> game = commandContext.getOptional("game");
 
+                            var sender = commandContext.getSender().as(PlayerWrapper.class);
                             // TODO: Use Wrapper (bedwars changes needed)
-                            var sender = commandContext.getSender();
                             var player = sender.as(Player.class);
-                            if (Main.isPlayerInGame(player)) {
+                            ;
+                            if (PlayerManager.getInstance().isPlayerInGame(sender)) {
                                 sender.sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_ALREADY_IN_GAME).defaultPrefix());
                                 return;
                             }

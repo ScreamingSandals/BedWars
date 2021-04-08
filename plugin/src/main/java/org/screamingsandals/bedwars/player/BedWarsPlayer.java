@@ -1,4 +1,4 @@
-package org.screamingsandals.bedwars.game;
+package org.screamingsandals.bedwars.player;
 
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -8,14 +8,19 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.screamingsandals.bedwars.Main;
+import org.screamingsandals.bedwars.api.player.BWPlayer;
+import org.screamingsandals.bedwars.game.Game;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.utils.BungeeUtils;
 import org.screamingsandals.bedwars.lib.nms.entity.PlayerUtils;
+import org.screamingsandals.lib.player.PlayerWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
-public class GamePlayer {
+public class BedWarsPlayer extends PlayerWrapper implements BWPlayer {
+    @Deprecated
     public final Player player;
     private Game game = null;
     private String latestGame = null;
@@ -28,8 +33,9 @@ public class GamePlayer {
     public boolean isTeleportingFromGame_justForInventoryPlugins = false;
     public boolean mainLobbyUsed = false;
 
-    public GamePlayer(Player player) {
-        this.player = player;
+    public BedWarsPlayer(String name, UUID uuid) {
+        super(name, uuid);
+        this.player = as(Player.class);
     }
 
     public void changeGame(Game game) {
@@ -221,5 +227,4 @@ public class GamePlayer {
     public ItemStack[] getGameArmorContents() {
         return armorContents;
     }
-
 }

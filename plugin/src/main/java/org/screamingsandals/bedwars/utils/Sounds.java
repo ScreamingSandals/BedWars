@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 
 /* Sound 1.8 - 1.13.2 list by @XxTreme_Creeper_ */
 
+@Deprecated
 public enum Sounds {
     AMBIENCE_CAVE("AMBIENCE_CAVE", "AMBIENT_CAVE"),
     AMBIENCE_RAIN("AMBIENCE_RAIN", "WEATHER_RAIN"),

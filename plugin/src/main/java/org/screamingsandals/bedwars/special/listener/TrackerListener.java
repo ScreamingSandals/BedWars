@@ -5,7 +5,8 @@ import org.screamingsandals.bedwars.api.APIUtils;
 import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.api.events.BedwarsApplyPropertyToBoughtItem;
-import org.screamingsandals.bedwars.game.GamePlayer;
+import org.screamingsandals.bedwars.player.BedWarsPlayer;
+import org.screamingsandals.bedwars.player.PlayerManager;
 import org.screamingsandals.bedwars.special.Tracker;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -30,11 +31,11 @@ public class TrackerListener implements Listener {
     @EventHandler
     public void onTrackerUse(PlayerInteractEvent event) {
         Player player = event.getPlayer();
-        if (!Main.isPlayerInGame(player)) {
+        if (!PlayerManager.getInstance().isPlayerInGame(player.getUniqueId())) {
             return;
         }
 
-        GamePlayer gamePlayer = Main.getPlayerGameProfile(player);
+        BedWarsPlayer gamePlayer = PlayerManager.getInstance().getPlayer(player.getUniqueId()).orElseThrow();
         Game game = gamePlayer.getGame();
         if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             if (game.getStatus() == GameStatus.RUNNING && !gamePlayer.isSpectator) {

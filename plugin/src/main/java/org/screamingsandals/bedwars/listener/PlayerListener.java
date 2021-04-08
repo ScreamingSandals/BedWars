@@ -39,6 +39,8 @@ import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.game.*;
 import org.screamingsandals.bedwars.inventories.TeamSelectorInventory;
 import org.screamingsandals.bedwars.lang.LangKeys;
+import org.screamingsandals.bedwars.player.BedWarsPlayer;
+import org.screamingsandals.bedwars.player.PlayerManager;
 import org.screamingsandals.bedwars.statistics.PlayerStatistic;
 import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.bedwars.utils.*;
@@ -58,9 +60,9 @@ public class PlayerListener implements Listener {
     public void onPlayerDeath(PlayerDeathEvent event) {
         final Player victim = event.getEntity();
 
-        if (Main.isPlayerInGame(victim)) {
+        if (PlayerManager.getInstance().isPlayerInGame(victim.getUniqueId())) {
             Debug.info(victim.getName() + " died in BedWars Game, Processing his dead...");
-            final var gVictim = Main.getPlayerGameProfile(victim);
+            final var gVictim = PlayerManager.getInstance().getPlayer(victim.getUniqueId()).get();
             final var game = gVictim.getGame();
             final var victimTeam = game.getPlayerTeam(gVictim);
             final var victimColor = victimTeam.teamInfo.color.chatColor;
@@ -93,9 +95,9 @@ public class PlayerListener implements Listener {
                     Message deathMessageMsg = null;
                     final var killer = event.getEntity().getKiller();
                     if (MainConfig.getInstance().node("chat", "send-custom-death-messages").getBoolean()) {
-                        if (killer != null) {
+                        if (killer != null && PlayerManager.getInstance().isPlayerInGame(killer.getUniqueId())) {
                             Debug.info(victim.getName() + " died because entity " + event.getEntity().getKiller() + " killed him");
-                            final var gKiller = Main.getPlayerGameProfile(killer);
+                            final var gKiller = PlayerManager.getInstance().getPlayer(killer.getUniqueId()).get();
                             final var killerTeam = game.getPlayerTeam(gKiller);
                             final var killerColor = killerTeam.teamInfo.color.chatColor;
 
@@ -147,8 +149,8 @@ public class PlayerListener implements Listener {
                 boolean onlyOnBedDestroy = MainConfig.getInstance().node("statistics", "bed-destroyed-kills").getBoolean();
 
                 Player killer = victim.getKiller();
-                if (Main.isPlayerInGame(killer)) {
-                    GamePlayer gKiller = Main.getPlayerGameProfile(killer);
+                if (killer != null && PlayerManager.getInstance().isPlayerInGame(killer.getUniqueId())) {
+                    BedWarsPlayer gKiller = PlayerManager.getInstance().getPlayer(killer.getUniqueId()).get();
                     if (gKiller.getGame() == game) {
                         if (!onlyOnBedDestroy || !isBed) {
                             game.dispatchRewardCommands("player-kill", killer,
@@ -170,7 +172,7 @@ public class PlayerListener implements Listener {
                 }
 
                 BedwarsPlayerKilledEvent killedEvent = new BedwarsPlayerKilledEvent(game, victim,
-                        Main.isPlayerInGame(killer) ? killer : null, drops);
+                        killer != null && PlayerManager.getInstance().isPlayerInGame(killer.getUniqueId()) ? killer : null, drops);
                 Bukkit.getServer().getPluginManager().callEvent(killedEvent);
 
                 if (PlayerStatisticManager.isEnabled()) {
@@ -205,7 +207,7 @@ public class PlayerListener implements Listener {
 
                 new BukkitRunnable() {
                     int livingTime = respawnTime;
-                    GamePlayer gamePlayer = gVictim;
+                    BedWarsPlayer gamePlayer = gVictim;
                     Player player = gamePlayer.player;
 
                     @Override
@@ -238,11 +240,11 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
-        if (Main.isPlayerGameProfileRegistered(event.getPlayer())) {
-            GamePlayer gPlayer = Main.getPlayerGameProfile(event.getPlayer());
+        if (PlayerManager.getInstance().isPlayerRegistered(event.getPlayer().getUniqueId())) {
+            BedWarsPlayer gPlayer = PlayerManager.getInstance().getPlayer(event.getPlayer().getUniqueId()).orElseThrow();
             if (gPlayer.isInGame())
                 gPlayer.changeGame(null);
-            Main.unloadPlayerGameProfile(event.getPlayer());
+            PlayerManager.getInstance().dropPlayer(gPlayer);
         }
 
         if (MainConfig.getInstance().node("disable-server-message", "player-join").getBoolean()) {
@@ -287,16 +289,16 @@ public class PlayerListener implements Listener {
         }
 
         if (MainConfig.getInstance().node("tab", "enabled").getBoolean() && MainConfig.getInstance().node("tab", "hide-foreign-players").getBoolean()) {
-            Bukkit.getOnlinePlayers().stream().filter(Main::isPlayerInGame).forEach(p -> Main.getPlayerGameProfile(p).hidePlayer(player));
+            PlayerMapper.getPlayers().stream().filter(PlayerManager.getInstance()::isPlayerInGame).forEach(p -> PlayerManager.getInstance().getPlayer(p).orElseThrow().hidePlayer(player));
         }
     }
 
     @SuppressWarnings("unchecked")
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerRespawn(PlayerRespawnEvent event) {
-        if (Main.isPlayerInGame(event.getPlayer())) {
+        if (PlayerManager.getInstance().isPlayerInGame(event.getPlayer().getUniqueId())) {
             Debug.info(event.getPlayer().getName() + " is respawning in BedWars game");
-            GamePlayer gPlayer = Main.getPlayerGameProfile(event.getPlayer());
+            BedWarsPlayer gPlayer = PlayerManager.getInstance().getPlayer(event.getPlayer().getUniqueId()).orElseThrow();
             Game game = gPlayer.getGame();
             CurrentTeam team = game.getPlayerTeam(gPlayer);
 
@@ -361,8 +363,8 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onPlayerWorldChange(PlayerChangedWorldEvent event) {
-        if (Main.isPlayerInGame(event.getPlayer())) {
-            GamePlayer gPlayer = Main.getPlayerGameProfile(event.getPlayer());
+        if (PlayerManager.getInstance().isPlayerInGame(event.getPlayer().getUniqueId())) {
+            BedWarsPlayer gPlayer = PlayerManager.getInstance().getPlayer(event.getPlayer().getUniqueId()).orElseThrow();
             Game game = gPlayer.getGame();
             if (game.getWorld() != event.getPlayer().getWorld()
                     && game.getLobbySpawn().getWorld() != event.getPlayer().getWorld()) {
@@ -375,21 +377,21 @@ public class PlayerListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onBlockPlace(BlockPlaceEvent event) {
         if (event.isCancelled()) {
-            if (MainConfig.getInstance().node("event-hacks", "place").getBoolean() && Main.isPlayerInGame(event.getPlayer())) {
+            if (MainConfig.getInstance().node("event-hacks", "place").getBoolean() && PlayerManager.getInstance().isPlayerInGame(event.getPlayer().getUniqueId())) {
                 event.setCancelled(false);
             } else {
                 return;
             }
         }
 
-        if (Main.isPlayerInGame(event.getPlayer())) {
-            Game game = Main.getPlayerGameProfile(event.getPlayer()).getGame();
+        if (PlayerManager.getInstance().isPlayerInGame(event.getPlayer().getUniqueId())) {
+            Game game = PlayerManager.getInstance().getGameOfPlayer(event.getPlayer().getUniqueId()).orElseThrow();
             if (game.getStatus() == GameStatus.WAITING) {
                 event.setCancelled(true);
                 Debug.info(event.getPlayer().getName() + " attempted to place a block, canceled");
                 return;
             }
-            if (!game.blockPlace(Main.getPlayerGameProfile(event.getPlayer()), event.getBlock(),
+            if (!game.blockPlace(PlayerManager.getInstance().getPlayer(event.getPlayer().getUniqueId()).orElseThrow(), event.getBlock(),
                     event.getBlockReplacedState(), event.getItemInHand())) {
                 event.setCancelled(true);
                 Debug.info(event.getPlayer().getName() + " attempted to place a block, canceled");
@@ -410,16 +412,16 @@ public class PlayerListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onBlockBreak(BlockBreakEvent event) {
         if (event.isCancelled()) {
-            if (MainConfig.getInstance().node("event-hacks", "destroy").getBoolean() && Main.isPlayerInGame(event.getPlayer())) {
+            if (MainConfig.getInstance().node("event-hacks", "destroy").getBoolean() && PlayerManager.getInstance().isPlayerInGame(event.getPlayer().getUniqueId())) {
                 event.setCancelled(false);
             } else {
                 return;
             }
         }
 
-        if (Main.isPlayerInGame(event.getPlayer())) {
+        if (PlayerManager.getInstance().isPlayerInGame(event.getPlayer().getUniqueId())) {
             final Player player = event.getPlayer();
-            final GamePlayer gamePlayer = Main.getPlayerGameProfile(player);
+            final BedWarsPlayer gamePlayer = PlayerManager.getInstance().getPlayer(player.getUniqueId()).orElseThrow();
             final Game game = gamePlayer.getGame();
             final Block block = event.getBlock();
 
@@ -429,7 +431,7 @@ public class PlayerListener implements Listener {
                 return;
             }
 
-            if (!game.blockBreak(Main.getPlayerGameProfile(event.getPlayer()), event.getBlock(), event)) {
+            if (!game.blockBreak(PlayerManager.getInstance().getPlayer(event.getPlayer().getUniqueId()).orElseThrow(), event.getBlock(), event)) {
                 event.setCancelled(true);
                 Debug.info(event.getPlayer().getName() + " attempted to break a block, canceled");
             } else {
@@ -460,7 +462,7 @@ public class PlayerListener implements Listener {
         }
 
         final Player player = event.getPlayer();
-        if (Main.isPlayerInGame(player)) {
+        if (PlayerManager.getInstance().isPlayerInGame(player.getUniqueId())) {
             //Allow players with permissions to use all commands
             if (PlayerMapper.wrapPlayer(player).hasPermission(BedWarsPermission.ADMIN_PERMISSION.asPermission())) {
                 Debug.info(event.getPlayer().getName() + " attempted to execute a command, allowed");
@@ -468,7 +470,7 @@ public class PlayerListener implements Listener {
             }
 
             final String message = event.getMessage();
-            final GamePlayer gamePlayer = Main.getPlayerGameProfile(event.getPlayer());
+            final BedWarsPlayer gamePlayer = PlayerManager.getInstance().getPlayer(event.getPlayer().getUniqueId()).orElseThrow();
             if (Main.isCommandLeaveShortcut(message)) {
                 event.setCancelled(true);
                 gamePlayer.changeGame(null);
@@ -490,8 +492,8 @@ public class PlayerListener implements Listener {
 
         if (event.getClickedInventory().getType() == InventoryType.PLAYER) {
             Player p = (Player) event.getWhoClicked();
-            if (Main.isPlayerInGame(p)) {
-                GamePlayer gPlayer = Main.getPlayerGameProfile(p);
+            if (PlayerManager.getInstance().isPlayerInGame(p.getUniqueId())) {
+                BedWarsPlayer gPlayer = PlayerManager.getInstance().getPlayer(p.getUniqueId()).orElseThrow();
                 Game game = gPlayer.getGame();
                 if (game.getStatus() == GameStatus.WAITING || gPlayer.isSpectator) {
                     event.setCancelled(true);
@@ -539,8 +541,8 @@ public class PlayerListener implements Listener {
         }
 
         Player player = (Player) event.getEntity();
-        if (Main.isPlayerInGame(player)) {
-            GamePlayer gPlayer = Main.getPlayerGameProfile(player);
+        if (PlayerManager.getInstance().isPlayerInGame(player.getUniqueId())) {
+            BedWarsPlayer gPlayer = PlayerManager.getInstance().getPlayer(player.getUniqueId()).orElseThrow();
             Game game = gPlayer.getGame();
             if (game.getStatus() == GameStatus.WAITING || gPlayer.isSpectator) {
                 event.setCancelled(true);
@@ -561,8 +563,8 @@ public class PlayerListener implements Listener {
         }
 
         Player player = (Player) event.getWhoClicked();
-        if (Main.isPlayerInGame(player)) {
-            GamePlayer gPlayer = Main.getPlayerGameProfile(player);
+        if (PlayerManager.getInstance().isPlayerInGame(player.getUniqueId())) {
+            BedWarsPlayer gPlayer = PlayerManager.getInstance().getPlayer(player.getUniqueId()).orElseThrow();
             if (gPlayer.getGame().getStatus() != GameStatus.RUNNING) {
                 event.setCancelled(true);
                 Debug.info(player.getName() + " tried to craft while crafting is not allowed");
@@ -578,7 +580,7 @@ public class PlayerListener implements Listener {
         if (event.isCancelled()) {
             if (MainConfig.getInstance().node("event-hacks", "damage").getBoolean()
                     && event.getEntity() instanceof Player
-                    && Main.isPlayerInGame((Player) event.getEntity())) {
+                    && PlayerManager.getInstance().isPlayerInGame(event.getEntity().getUniqueId())) {
                 event.setCancelled(false);
             } else {
                 return;
@@ -603,8 +605,8 @@ public class PlayerListener implements Listener {
                     Entity damager = ((EntityDamageByEntityEvent) event).getDamager();
                     if (damager instanceof Player) {
                         Player player = (Player) damager;
-                        if (Main.isPlayerInGame(player)) {
-                            GamePlayer gPlayer = Main.getPlayerGameProfile(player);
+                        if (PlayerManager.getInstance().isPlayerInGame(player.getUniqueId())) {
+                            BedWarsPlayer gPlayer = PlayerManager.getInstance().getPlayer(player.getUniqueId()).orElseThrow();
                             if (gPlayer.getGame().getStatus() == GameStatus.WAITING || gPlayer.isSpectator) {
                                 Debug.info(player.getName() + " damaged armor stand in lobby, cancelling");
                                 event.setCancelled(true);
@@ -617,9 +619,9 @@ public class PlayerListener implements Listener {
         }
 
         Player player = (Player) event.getEntity();
-        if (Main.isPlayerInGame(player)) {
+        if (PlayerManager.getInstance().isPlayerInGame(player.getUniqueId())) {
             Debug.info(player.getName() + " was damaged in game");
-            GamePlayer gPlayer = Main.getPlayerGameProfile(player);
+            BedWarsPlayer gPlayer = PlayerManager.getInstance().getPlayer(player.getUniqueId()).orElseThrow();
             Game game = gPlayer.getGame();
             if (gPlayer.isSpectator) {
                 if (event.getCause() == DamageCause.VOID) {
@@ -669,8 +671,8 @@ public class PlayerListener implements Listener {
                     }
                     else if (edbee.getDamager() instanceof Player) {
                         Player damager = (Player) edbee.getDamager();
-                        if (Main.isPlayerInGame(damager)) {
-                            GamePlayer gDamager = Main.getPlayerGameProfile(damager);
+                        if (PlayerManager.getInstance().isPlayerInGame(damager.getUniqueId())) {
+                            BedWarsPlayer gDamager = PlayerManager.getInstance().getPlayer(damager.getUniqueId()).orElseThrow();
                             if (gDamager.isSpectator || (gDamager.getGame().getPlayerTeam(gDamager) == game.getPlayerTeam(gPlayer) && !game.getConfigurationContainer().getOrDefault(ConfigurationContainer.FRIENDLY_FIRE, Boolean.class, false))) {
                                 event.setCancelled(true);
                             }
@@ -684,8 +686,8 @@ public class PlayerListener implements Listener {
                             event.setDamage(damage);
                         } else if (projectile.getShooter() instanceof Player) {
                             Player damager = (Player) projectile.getShooter();
-                            if (Main.isPlayerInGame(damager)) {
-                                GamePlayer gDamager = Main.getPlayerGameProfile(damager);
+                            if (PlayerManager.getInstance().isPlayerInGame(damager.getUniqueId())) {
+                                BedWarsPlayer gDamager = PlayerManager.getInstance().getPlayer(damager.getUniqueId()).orElseThrow();
                                 if (gDamager.isSpectator || gDamager.getGame().getPlayerTeam(gDamager) == game.getPlayerTeam(gPlayer) && !game.getConfigurationContainer().getOrDefault(ConfigurationContainer.FRIENDLY_FIRE, Boolean.class, false)) {
                                     event.setCancelled(true);
                                 }
@@ -712,8 +714,8 @@ public class PlayerListener implements Listener {
         Projectile projectile = event.getEntity();
         if (projectile.getShooter() instanceof Player) {
             Player damager = (Player) projectile.getShooter();
-            if (Main.isPlayerInGame(damager)) {
-                if (Main.getPlayerGameProfile(damager).isSpectator) {
+            if (PlayerManager.getInstance().isPlayerInGame(damager.getUniqueId())) {
+                if (PlayerManager.getInstance().getPlayer(damager.getUniqueId()).orElseThrow().isSpectator) {
                     event.setCancelled(true);
                     Debug.info(damager.getName() + " tried to launch projectile as spectator");
                 }
@@ -727,8 +729,8 @@ public class PlayerListener implements Listener {
             return;
         }
         Player player = event.getPlayer();
-        if (Main.isPlayerInGame(player)) {
-            GamePlayer gPlayer = Main.getPlayerGameProfile(player);
+        if (PlayerManager.getInstance().isPlayerInGame(player.getUniqueId())) {
+            BedWarsPlayer gPlayer = PlayerManager.getInstance().getPlayer(player.getUniqueId()).orElseThrow();
             if (gPlayer.getGame().getStatus() != GameStatus.RUNNING || gPlayer.isSpectator) {
                 event.setCancelled(true);
                 Debug.info(player.getName() + " tried to drop an item as spectator or in lobby");
@@ -743,7 +745,7 @@ public class PlayerListener implements Listener {
         }
 
         Player player = event.getPlayer();
-        if (Main.isPlayerInGame(player) && !Main.getPlayerGameProfile(player).isSpectator
+        if (PlayerManager.getInstance().isPlayerInGame(player.getUniqueId()) && !PlayerManager.getInstance().getPlayer(player.getUniqueId()).orElseThrow().isSpectator
                && (!player.hasPermission("bw.bypass.flight") && MainConfig.getInstance().node("disable-flight").getBoolean())) {
             event.setCancelled(true);
             Debug.info(player.getName() + " tried to fly, canceled");
@@ -758,8 +760,8 @@ public class PlayerListener implements Listener {
         }
 
         Player player = event.getPlayer();
-        if (Main.isPlayerInGame(player)) {
-            GamePlayer gPlayer = Main.getPlayerGameProfile(player);
+        if (PlayerManager.getInstance().isPlayerInGame(player.getUniqueId())) {
+            BedWarsPlayer gPlayer = PlayerManager.getInstance().getPlayer(player.getUniqueId()).orElseThrow();
             Game game = gPlayer.getGame();
             if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
                 if (game.getStatus() == GameStatus.WAITING || gPlayer.isSpectator) {
@@ -939,8 +941,8 @@ public class PlayerListener implements Listener {
         }
 
         Player player = event.getPlayer();
-        if (Main.isPlayerInGame(player)) {
-            GamePlayer gPlayer = Main.getPlayerGameProfile(player);
+        if (PlayerManager.getInstance().isPlayerInGame(player.getUniqueId())) {
+            BedWarsPlayer gPlayer = PlayerManager.getInstance().getPlayer(player.getUniqueId()).orElseThrow();
             Game game = gPlayer.getGame();
             if (game.getStatus() == GameStatus.WAITING || gPlayer.isSpectator) {
                 event.setCancelled(true);
@@ -955,7 +957,7 @@ public class PlayerListener implements Listener {
             return;
         }
 
-        if (Main.isPlayerInGame(event.getPlayer())) {
+        if (PlayerManager.getInstance().isPlayerInGame(event.getPlayer().getUniqueId())) {
             event.setCancelled(true);
         } else {
             for (var game : GameManager.getInstance().getGames()) {
@@ -975,8 +977,8 @@ public class PlayerListener implements Listener {
         }
 
         Player player = (Player) event.getPlayer();
-        if (Main.isPlayerInGame(player)) {
-            GamePlayer gProfile = Main.getPlayerGameProfile(player);
+        if (PlayerManager.getInstance().isPlayerInGame(player.getUniqueId())) {
+            BedWarsPlayer gProfile = PlayerManager.getInstance().getPlayer(player.getUniqueId()).orElseThrow();
             if (gProfile.getGame().getStatus() == GameStatus.RUNNING) {
                 if (gProfile.isSpectator) {
                     event.setCancelled(event.getInventory().getType() != InventoryType.PLAYER);
@@ -1007,8 +1009,8 @@ public class PlayerListener implements Listener {
         Player player = event.getPlayer();
         Entity entity = event.getRightClicked();
 
-        if (Main.isPlayerInGame(player)) {
-            Game game = Main.getPlayerGameProfile(player).getGame();
+        if (PlayerManager.getInstance().isPlayerInGame(player.getUniqueId())) {
+            Game game = PlayerManager.getInstance().getPlayer(player.getUniqueId()).orElseThrow().getGame();
             if (!(entity instanceof LivingEntity)) {
                 return;
             }
@@ -1023,7 +1025,7 @@ public class PlayerListener implements Listener {
                 if (team.name.equals(displayName)) {
                     event.setCancelled(true);
                     Debug.info(player.getName() + " selected his team with armor stand");
-                    game.selectTeam(Main.getPlayerGameProfile(player), displayName);
+                    game.selectTeam(PlayerManager.getInstance().getPlayer(player.getUniqueId()).orElseThrow(), displayName);
                     return;
                 }
             }
@@ -1066,8 +1068,8 @@ public class PlayerListener implements Listener {
         }
 
         Player player = event.getPlayer();
-        if (Main.isPlayerInGame(player)) {
-            GamePlayer gPlayer = Main.getPlayerGameProfile(player);
+        if (PlayerManager.getInstance().isPlayerInGame(player.getUniqueId())) {
+            BedWarsPlayer gPlayer = PlayerManager.getInstance().getPlayer(player.getUniqueId()).orElseThrow();
             Game game = gPlayer.getGame();
             CurrentTeam team = game.getPlayerTeam(gPlayer);
             String message = event.getMessage();
@@ -1136,14 +1138,13 @@ public class PlayerListener implements Listener {
             Iterator<Player> recipients = event.getRecipients().iterator();
             while (recipients.hasNext()) {
                 Player recipient = recipients.next();
-                GamePlayer recipientgPlayer = Main.getPlayerGameProfile(recipient);
-                Game recipientGame = recipientgPlayer.getGame();
-                if (recipientGame != game) {
+                var recipientGame = PlayerManager.getInstance().getGameOfPlayer(recipient.getUniqueId());
+                if (recipientGame.isEmpty() || recipientGame.get() != game) {
                     if ((game.getStatus() == GameStatus.WAITING && MainConfig.getInstance().node("chat", "separate-chat", "lobby").getBoolean())
                             || (game.getStatus() != GameStatus.WAITING && MainConfig.getInstance().node("chat", "separate-chat", "game").getBoolean())) {
                         recipients.remove();
                     }
-                } else if (game.getPlayerTeam(recipientgPlayer) != team && teamChat) {
+                } else if (game.getPlayerTeam(PlayerManager.getInstance().getPlayer(recipient.getUniqueId()).orElseThrow()) != team && teamChat) {
                     recipients.remove();
                 }
             }
@@ -1157,11 +1158,10 @@ public class PlayerListener implements Listener {
                 Iterator<Player> recipients = event.getRecipients().iterator();
                 while (recipients.hasNext()) {
                     Player recipient = recipients.next();
-                    GamePlayer recipientgPlayer = Main.getPlayerGameProfile(recipient);
-                    Game recipientGame = recipientgPlayer.getGame();
-                    if (recipientGame != null) {
-                        if ((recipientGame.getStatus() == GameStatus.WAITING && MainConfig.getInstance().node("chat", "separate-chat", "lobby").getBoolean())
-                                || (recipientGame.getStatus() != GameStatus.WAITING && MainConfig.getInstance().node("chat", "separate-chat", "game").getBoolean())) {
+                    var recipientGame = PlayerManager.getInstance().getGameOfPlayer(recipient.getUniqueId());
+                    if (recipientGame.isPresent()) {
+                        if ((recipientGame.get().getStatus() == GameStatus.WAITING && MainConfig.getInstance().node("chat", "separate-chat", "lobby").getBoolean())
+                                || (recipientGame.get().getStatus() != GameStatus.WAITING && MainConfig.getInstance().node("chat", "separate-chat", "game").getBoolean())) {
                             recipients.remove();
                         }
                     }
@@ -1177,8 +1177,8 @@ public class PlayerListener implements Listener {
         }
 
         Player player = event.getPlayer();
-        if (Main.isPlayerInGame(player)) {
-            GamePlayer gPlayer = Main.getPlayerGameProfile(player);
+        if (PlayerManager.getInstance().isPlayerInGame(player.getUniqueId())) {
+            BedWarsPlayer gPlayer = PlayerManager.getInstance().getPlayer(player.getUniqueId()).orElseThrow();
             Game game = gPlayer.getGame();
             if (game.getConfigurationContainer().getOrDefault(ConfigurationContainer.DAMAGE_WHEN_PLAYER_IS_NOT_IN_ARENA, Boolean.class, false) && game.getStatus() == GameStatus.RUNNING
                     && !gPlayer.isSpectator) {
@@ -1202,8 +1202,8 @@ public class PlayerListener implements Listener {
         }
 
         Player player = event.getPlayer();
-        if (Main.isPlayerInGame(player)) {
-            GamePlayer gPlayer = Main.getPlayerGameProfile(player);
+        if (PlayerManager.getInstance().isPlayerInGame(player.getUniqueId())) {
+            BedWarsPlayer gPlayer = PlayerManager.getInstance().getPlayer(player.getUniqueId()).orElseThrow();
             Game game = gPlayer.getGame();
             Location loc = event.getBlockClicked().getLocation();
 
@@ -1255,8 +1255,8 @@ public class PlayerListener implements Listener {
             return;
         }
 
-        if (Main.isPlayerInGame(player)) {
-            GamePlayer gPlayer = Main.getPlayerGameProfile(player);
+        if (PlayerManager.getInstance().isPlayerInGame(player.getUniqueId())) {
+            BedWarsPlayer gPlayer = PlayerManager.getInstance().getPlayer(player.getUniqueId()).orElseThrow();
             Game game = gPlayer.getGame();
             if (game.getStatus() == GameStatus.WAITING || gPlayer.isSpectator) {
                 cancel.setCancelled(true);

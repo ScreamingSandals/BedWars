@@ -6,9 +6,10 @@ import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.game.GameManager;
 import org.screamingsandals.bedwars.lang.LangKeys;
+import org.screamingsandals.bedwars.player.PlayerManager;
 import org.screamingsandals.lib.lang.Message;
+import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
-import org.screamingsandals.lib.utils.AdventureHelper;
 
 public class RejoinCommand extends BaseCommand {
     public RejoinCommand(CommandManager<CommandSenderWrapper> manager) {
@@ -20,23 +21,23 @@ public class RejoinCommand extends BaseCommand {
         manager.command(
                 commandSenderWrapperBuilder
                     .handler(commandContext -> {
-                        // TODO: Use Wrapper (bedwars changes needed)
-                        var player = commandContext.getSender().as(Player.class);
-                        if (Main.isPlayerInGame(player)) {
+                        var playerManager = PlayerManager.getInstance();
+                        var player = commandContext.getSender().as(PlayerWrapper.class);
+                        if (playerManager.isPlayerInGame(player)) {
                             commandContext.getSender().sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_ALREADY_IN_GAME).defaultPrefix());
                             return;
                         }
 
                         String name = null;
-                        if (Main.isPlayerGameProfileRegistered(player)) {
-                            name = Main.getPlayerGameProfile(player).getLatestGameName();
+                        if (playerManager.isPlayerRegistered(player)) {
+                            name = playerManager.getPlayer(player).get().getLatestGameName();
                         }
                         if (name == null) {
                             commandContext.getSender().sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_YOU_ARE_NOT_IN_GAME).defaultPrefix());
                         } else {
                             GameManager.getInstance().getGame(name)
                                     .ifPresentOrElse(
-                                            game -> game.joinToGame(player),
+                                            game -> game.joinToGame(player.as(Player.class)), // TODO
                                             () -> player.sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_GAME_IS_GONE).defaultPrefix())
                                     );
                         }

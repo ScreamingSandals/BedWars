@@ -1,24 +1,24 @@
 package org.screamingsandals.bedwars.listener;
 
-import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.game.GameManager;
-import org.screamingsandals.bedwars.game.GamePlayer;
+import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ItemMergeEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.screamingsandals.bedwars.lib.debug.Debug;
+import org.screamingsandals.bedwars.player.PlayerManager;
 import org.screamingsandals.bedwars.utils.ArenaUtils;
 
 public class Player19Listener implements Listener {
     @EventHandler
     public void onPlayerSwapHandItems(PlayerSwapHandItemsEvent event) {
         Player player = event.getPlayer();
-        if (Main.isPlayerInGame(player)) {
-            GamePlayer gPlayer = Main.getPlayerGameProfile(player);
+        if (PlayerManager.getInstance().isPlayerInGame(player.getUniqueId())) {
+            BedWarsPlayer gPlayer = PlayerManager.getInstance().getPlayer(player.getUniqueId()).orElseThrow();
             if (gPlayer.getGame().getStatus() == GameStatus.WAITING) {
                 event.setCancelled(true);
                 Debug.info(event.getPlayer().getName() + " tried to swap his hands in lobby, cancelling");

@@ -26,12 +26,12 @@ public class ThirdPartyShopUtils {
      */
     public static ItemStack applyPropertyToItem(Player player, ItemStack stack, String propertyName, boolean onBuy,
                                                 Object... entries) {
-        BedwarsAPI api = BedwarsAPI.getInstance();
-        if (!api.isPlayerPlayingAnyGame(player)) {
+        var api = BedwarsAPI.getInstance().getPlayerManager();
+        if (!api.isPlayerInGame(player.getUniqueId())) {
             return stack;
         }
 
-        Game game = api.getGameOfPlayer(player);
+        Game game = api.getGameOfPlayer(player.getUniqueId()).orElseThrow();
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("name", propertyName);
 

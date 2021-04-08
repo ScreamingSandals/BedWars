@@ -6,8 +6,9 @@ import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.api.events.BedwarsApplyPropertyToBoughtItem;
 import org.screamingsandals.bedwars.api.special.SpecialItem;
-import org.screamingsandals.bedwars.game.GamePlayer;
+import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.lang.LangKeys;
+import org.screamingsandals.bedwars.player.PlayerManager;
 import org.screamingsandals.bedwars.special.RescuePlatform;
 import org.screamingsandals.bedwars.utils.DelayFactory;
 import org.screamingsandals.bedwars.utils.MiscUtils;
@@ -42,11 +43,11 @@ public class RescuePlatformListener implements Listener {
     @EventHandler
     public void onPlayerUseItem(PlayerInteractEvent event) {
         Player player = event.getPlayer();
-        if (!Main.isPlayerInGame(player)) {
+        if (!PlayerManager.getInstance().isPlayerInGame(player.getUniqueId())) {
             return;
         }
 
-        GamePlayer gPlayer = Main.getPlayerGameProfile(player);
+        BedWarsPlayer gPlayer = PlayerManager.getInstance().getPlayer(player.getUniqueId()).orElseThrow();
         Game game = gPlayer.getGame();
 
         if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
@@ -100,11 +101,11 @@ public class RescuePlatformListener implements Listener {
         }
 
         Player player = ((Player) entity).getPlayer();
-        if (!Main.isPlayerInGame(player)) {
+        if (!PlayerManager.getInstance().isPlayerInGame(player.getUniqueId())) {
             return;
         }
 
-        GamePlayer gPlayer = Main.getPlayerGameProfile(player);
+        BedWarsPlayer gPlayer = PlayerManager.getInstance().getPlayer(player.getUniqueId()).orElseThrow();
         Game game = gPlayer.getGame();
         if (gPlayer.isSpectator) {
             return;
@@ -124,11 +125,11 @@ public class RescuePlatformListener implements Listener {
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
-        if (!Main.isPlayerInGame(player)) {
+        if (!PlayerManager.getInstance().isPlayerInGame(player.getUniqueId())) {
             return;
         }
 
-        GamePlayer gPlayer = Main.getPlayerGameProfile(player);
+        BedWarsPlayer gPlayer = PlayerManager.getInstance().getPlayer(player.getUniqueId()).orElseThrow();
         Game game = gPlayer.getGame();
         if (gPlayer.isSpectator) {
             return;

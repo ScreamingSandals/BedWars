@@ -12,6 +12,7 @@ import org.bukkit.util.Vector;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.APIUtils;
 import org.screamingsandals.bedwars.api.events.BedwarsApplyPropertyToBoughtItem;
+import org.screamingsandals.bedwars.player.PlayerManager;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 
 public class ThrowableFireballListener implements Listener {
@@ -32,7 +33,7 @@ public class ThrowableFireballListener implements Listener {
     public void onFireballThrow(PlayerInteractEvent event) {
         Player player = event.getPlayer();
 
-        if (!Main.isPlayerInGame(player)) {
+        if (!PlayerManager.getInstance().isPlayerInGame(player.getUniqueId())) {
             return;
         }
 
@@ -47,7 +48,7 @@ public class ThrowableFireballListener implements Listener {
                 Fireball fireball = player.launchProjectile(Fireball.class);
                 fireball.setIsIncendiary(false);
                 fireball.setYield(explosion);
-                Main.registerGameEntity(fireball, Main.getPlayerGameProfile(player).getGame());
+                Main.registerGameEntity(fireball, PlayerManager.getInstance().getGameOfPlayer(player.getUniqueId()).orElseThrow());
 
                 event.setCancelled(true);
 

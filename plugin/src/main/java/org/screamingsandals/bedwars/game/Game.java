@@ -18,7 +18,6 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -52,6 +51,8 @@ import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.lib.nms.entity.EntityUtils;
 import org.screamingsandals.bedwars.listener.Player116ListenerUtils;
+import org.screamingsandals.bedwars.player.BedWarsPlayer;
+import org.screamingsandals.bedwars.player.PlayerManager;
 import org.screamingsandals.bedwars.region.FlatteningRegion;
 import org.screamingsandals.bedwars.region.LegacyRegion;
 import org.screamingsandals.bedwars.scoreboard.ScreamingScoreboard;
@@ -89,7 +90,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     private int pauseCountdown;
     private int gameTime;
     private int minPlayers;
-    private final List<GamePlayer> players = new ArrayList<>();
+    private final List<BedWarsPlayer> players = new ArrayList<>();
     private World world;
     private List<GameStore> gameStore = new ArrayList<>();
     private ArenaTime arenaTime = ArenaTime.WORLD;
@@ -116,7 +117,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     private final Map<Location, ItemStack[]> usedChests = new HashMap<>();
     private final List<SpecialItem> activeSpecialItems = new ArrayList<>();
     private final List<DelayFactory> activeDelays = new ArrayList<>();
-    private final Map<GamePlayer, Inventory> fakeEnderChests = new HashMap<>();
+    private final Map<BedWarsPlayer, Inventory> fakeEnderChests = new HashMap<>();
     private int postGameWaiting = 3;
     private ScreamingScoreboard experimentalBoard = null;
 
@@ -509,7 +510,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         return status == GameStatus.RUNNING && region.isBlockAddedDuringGame(loc);
     }
 
-    public boolean blockPlace(GamePlayer player, Block block, BlockState replaced, ItemStack itemInHand) {
+    public boolean blockPlace(BedWarsPlayer player, Block block, BlockState replaced, ItemStack itemInHand) {
         if (status != GameStatus.RUNNING) {
             return false; // ?
         }
@@ -545,7 +546,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         return true;
     }
 
-    public boolean blockBreak(GamePlayer player, Block block, BlockBreakEvent event) {
+    public boolean blockBreak(BedWarsPlayer player, Block block, BlockBreakEvent event) {
         if (status != GameStatus.RUNNING) {
             return false; // ?
         }
@@ -575,7 +576,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 if (team != null) {
                     team.removeTeamChest(block);
                     var message = Message.of(LangKeys.SPECIALS_TEAM_CHEST_BROKEN).prefixOrDefault(getCustomPrefixComponent());
-                    for (GamePlayer gp : team.players) {
+                    for (BedWarsPlayer gp : team.players) {
                         PlayerMapper.wrapPlayer(gp.player).sendMessage(message);
                     }
 
@@ -692,7 +693,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         return region;
     }
 
-    public CurrentTeam getPlayerTeam(GamePlayer player) {
+    public CurrentTeam getPlayerTeam(BedWarsPlayer player) {
         for (CurrentTeam team : teamsInGame) {
             if (team.players.contains(player)) {
                 return team;
@@ -719,9 +720,9 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                     updateScoreboard();
                     String colored_broker = "explosion";
                     if (broker != null) {
-                        colored_broker = getPlayerTeam(Main.getPlayerGameProfile(broker)).teamInfo.color.chatColor + broker.getDisplayName();
+                        colored_broker = getPlayerTeam(PlayerManager.getInstance().getPlayer(broker.getUniqueId()).orElseThrow()).teamInfo.color.chatColor + broker.getDisplayName();
                     }
-                    for (GamePlayer player : players) {
+                    for (BedWarsPlayer player : players) {
                         final var wrapped = PlayerMapper.wrapPlayer(player.player);
                         Message
                                 .of(isItBedBlock ? LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_BED : (isItAnchor ? LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_ANCHOR : (isItCake ? LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_CAKE : LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_ANY)))
@@ -767,7 +768,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         }
     }
 
-    public void internalJoinPlayer(GamePlayer gamePlayer) {
+    public void internalJoinPlayer(BedWarsPlayer gamePlayer) {
         BedwarsPlayerJoinEvent joinEvent = new BedwarsPlayerJoinEvent(this, gamePlayer.player);
         Bukkit.getServer().getPluginManager().callEvent(joinEvent);
 
@@ -806,7 +807,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         }
 
         if (MainConfig.getInstance().node("tab", "enabled").getBoolean() && MainConfig.getInstance().node("tab", "hide-foreign-players").getBoolean()) {
-            Bukkit.getOnlinePlayers().stream().filter(p -> Main.getInstance().getGameOfPlayer(p) != this).forEach(gamePlayer::hidePlayer);
+            Bukkit.getOnlinePlayers().stream().filter(p -> PlayerManager.getInstance().getGameOfPlayer(p.getUniqueId()).orElse(null) != this).forEach(gamePlayer::hidePlayer);
             players.forEach(p -> p.showPlayer(gamePlayer.player));
         }
 
@@ -893,7 +894,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         Bukkit.getServer().getPluginManager().callEvent(joinedEvent);
     }
 
-    public void internalLeavePlayer(GamePlayer gamePlayer) {
+    public void internalLeavePlayer(BedWarsPlayer gamePlayer) {
         if (status == GameStatus.DISABLED) {
             return;
         }
@@ -1140,8 +1141,8 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         if (status == GameStatus.DISABLED) {
             return; // Game is already stopped
         }
-        List<GamePlayer> clonedPlayers = (List<GamePlayer>) ((ArrayList<GamePlayer>) players).clone();
-        for (GamePlayer p : clonedPlayers)
+        List<BedWarsPlayer> clonedPlayers = (List<BedWarsPlayer>) ((ArrayList<BedWarsPlayer>) players).clone();
+        for (BedWarsPlayer p : clonedPlayers)
             p.changeGame(null);
         if (status != GameStatus.REBUILDING) {
             status = GameStatus.DISABLED;
@@ -1202,8 +1203,8 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         }
 
         if (players.size() >= calculatedMaxPlayers && status == GameStatus.WAITING) {
-            if (Main.getPlayerGameProfile(player).canJoinFullGame()) {
-                List<GamePlayer> withoutVIP = getPlayersWithoutVIP();
+            if (PlayerManager.getInstance().getPlayerOrCreate(PlayerMapper.wrapPlayer(player)).canJoinFullGame()) {
+                List<BedWarsPlayer> withoutVIP = getPlayersWithoutVIP();
 
                 if (withoutVIP.size() == 0) {
                     Message
@@ -1213,7 +1214,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                     return;
                 }
 
-                GamePlayer kickPlayer;
+                BedWarsPlayer kickPlayer;
                 if (withoutVIP.size() == 1) {
                     kickPlayer = withoutVIP.get(0);
                 } else {
@@ -1262,7 +1263,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             }
         }
 
-        GamePlayer gPlayer = Main.getPlayerGameProfile(player);
+        BedWarsPlayer gPlayer = PlayerManager.getInstance().getPlayerOrCreate(PlayerMapper.wrapPlayer(player));
         gPlayer.changeGame(this);
     }
 
@@ -1270,8 +1271,8 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         if (status == GameStatus.DISABLED) {
             return;
         }
-        if (Main.isPlayerInGame(player)) {
-            GamePlayer gPlayer = Main.getPlayerGameProfile(player);
+        if (PlayerManager.getInstance().isPlayerInGame(player.getUniqueId())) {
+            BedWarsPlayer gPlayer = PlayerManager.getInstance().getPlayerOrCreate(PlayerMapper.wrapPlayer(player));
 
             if (gPlayer.getGame() == this) {
                 gPlayer.changeGame(null);
@@ -1316,7 +1317,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         return lowest;
     }
 
-    public List<GamePlayer> getPlayersInTeam(Team team) {
+    public List<BedWarsPlayer> getPlayersInTeam(Team team) {
         CurrentTeam currentTeam = null;
         for (CurrentTeam cTeam : teamsInGame) {
             if (cTeam.teamInfo == team) {
@@ -1331,7 +1332,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         }
     }
 
-    private void internalTeamJoin(GamePlayer player, Team teamForJoin) {
+    private void internalTeamJoin(BedWarsPlayer player, Team teamForJoin) {
         CurrentTeam current = null;
         for (CurrentTeam t : teamsInGame) {
             if (t.teamInfo == teamForJoin) {
@@ -1442,7 +1443,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         Bukkit.getPluginManager().callEvent(joinedEvent);
     }
 
-    public void joinRandomTeam(GamePlayer player) {
+    public void joinRandomTeam(BedWarsPlayer player) {
         Team teamForJoin;
         if (teamsInGame.size() < 2) {
             teamForJoin = getFirstTeamThatIsntInGame();
@@ -1462,7 +1463,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         internalTeamJoin(player, teamForJoin);
     }
 
-    public Location makeSpectator(GamePlayer gamePlayer, boolean leaveItem) {
+    public Location makeSpectator(BedWarsPlayer gamePlayer, boolean leaveItem) {
         Debug.info(gamePlayer.player.getName() + " spawning as spectator");
         Player player = gamePlayer.player;
         gamePlayer.isSpectator = true;
@@ -1497,7 +1498,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     }
 
     @SuppressWarnings("unchecked")
-    public void makePlayerFromSpectator(GamePlayer gamePlayer) {
+    public void makePlayerFromSpectator(BedWarsPlayer gamePlayer) {
         Debug.info(gamePlayer.player.getName() + " changing spectator to regular player");
         Player player = gamePlayer.player;
         CurrentTeam currentTeam = getPlayerTeam(gamePlayer);
@@ -1577,7 +1578,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             var title = AdventureHelper.toLegacy(Message.of(LangKeys.IN_GAME_BOSSBAR_WAITING).asComponent());
             statusbar.setProgress(0);
             statusbar.setVisible(configurationContainer.getOrDefault(ConfigurationContainer.LOBBY_BOSSBAR, Boolean.class, false));
-            for (GamePlayer p : players) {
+            for (BedWarsPlayer p : players) {
                 statusbar.addPlayer(PlayerMapper.wrapPlayer(p.player));
             }
             if (statusbar instanceof BossBar) {
@@ -1608,7 +1609,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             // Game start item
             if (gameStartItem) {
                 if (players.size() >= getMinPlayers()) {
-                    for (GamePlayer player : players) {
+                    for (BedWarsPlayer player : players) {
                         if (getPlayerTeam(player) == null) {
                             joinRandomTeam(player);
                         }
@@ -1630,7 +1631,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
                     if (countdown <= 10 && countdown >= 1 && countdown != previousCountdown) {
 
-                        for (GamePlayer player : players) {
+                        for (BedWarsPlayer player : players) {
                             TitleUtils.send(PlayerMapper.wrapPlayer(player.player), ChatColor.YELLOW + Integer.toString(countdown), "");
                             Sounds.playSound(player.player, player.player.getLocation(),
                                     MainConfig.getInstance().node("sounds", "countdown").getString(), Sounds.UI_BUTTON_CLICK,
@@ -1690,7 +1691,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 } else {
 
                     if (configurationContainer.getOrDefault(ConfigurationContainer.JOIN_RANDOM_TEAM_AFTER_LOBBY, Boolean.class, false)) {
-                        for (GamePlayer player : players) {
+                        for (BedWarsPlayer player : players) {
                             if (getPlayerTeam(player) == null) {
                                 joinRandomTeam(player);
                             }
@@ -1752,7 +1753,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                                     .join(LangKeys.IN_GAME_GAME_START_SUBTITLE)
                                     .placeholder("arena", this.name)
                                     .times(TitleUtils.defaultTimes());
-                    for (GamePlayer player : this.players) {
+                    for (BedWarsPlayer player : this.players) {
                         Debug.info(name + ": moving " + player.player.getName() + " into game");
                         CurrentTeam team = getPlayerTeam(player);
                         player.player.getInventory().clear();
@@ -1929,7 +1930,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                                         .placeholder("team", AdventureHelper.toComponent(TeamColor.fromApiColor(t.getColor()).chatColor + t.getName()))
                                         .placeholder("time", time);
                                 boolean madeRecord = processRecord(t, gameTime - countdown);
-                                for (GamePlayer player : players) {
+                                for (BedWarsPlayer player : players) {
                                     var wrapper = PlayerMapper.wrapPlayer(player.player);
                                     wrapper.sendMessage(message);
                                     if (getPlayerTeam(player) == t) {
@@ -2109,7 +2110,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             var message = Message
                     .of(LangKeys.IN_GAME_END_GAME_END)
                     .prefixOrDefault(getCustomPrefixComponent());
-            for (GamePlayer player : List.copyOf(players)) {
+            for (BedWarsPlayer player : List.copyOf(players)) {
                 var wrapper = PlayerMapper.wrapPlayer(player.player);
                 wrapper.sendMessage(message);
                 player.changeGame(null);
@@ -2298,7 +2299,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         }
     }
 
-    public void selectTeam(GamePlayer playerGameProfile, String displayName) {
+    public void selectTeam(BedWarsPlayer playerGameProfile, String displayName) {
         if (status == GameStatus.WAITING) {
             displayName = ChatColor.stripColor(displayName);
             playerGameProfile.player.closeInventory();
@@ -2337,7 +2338,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             score.setScore(team.players.size());
         }
 
-        for (GamePlayer player : players) {
+        for (BedWarsPlayer player : players) {
             player.player.setScoreboard(gameScoreboard);
         }
     }
@@ -2368,7 +2369,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
         obj.setDisplayName(this.formatScoreboardTitle());
 
-        for (GamePlayer player : players) {
+        for (BedWarsPlayer player : players) {
             player.player.setScoreboard(gameScoreboard);
         }
     }
@@ -2575,10 +2576,10 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
     @Override
     public void selectPlayerTeam(Player player, org.screamingsandals.bedwars.api.Team team) {
-        if (!Main.isPlayerInGame(player)) {
+        if (!PlayerManager.getInstance().isPlayerInGame(player.getUniqueId())) {
             return;
         }
-        GamePlayer profile = Main.getPlayerGameProfile(player);
+        BedWarsPlayer profile = PlayerManager.getInstance().getPlayer(player.getUniqueId()).orElseThrow();
         if (profile.getGame() != this) {
             return;
         }
@@ -2604,7 +2605,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     @Override
     public List<Player> getConnectedPlayers() {
         List<Player> playerList = new ArrayList<>();
-        for (GamePlayer player : players) {
+        for (BedWarsPlayer player : players) {
             playerList.add(player.player);
         }
         return playerList;
@@ -2622,10 +2623,10 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
     @Override
     public RunningTeam getTeamOfPlayer(Player player) {
-        if (!Main.isPlayerInGame(player)) {
+        if (!PlayerManager.getInstance().isPlayerInGame(player.getUniqueId())) {
             return null;
         }
-        return getPlayerTeam(Main.getPlayerGameProfile(player));
+        return getPlayerTeam(PlayerManager.getInstance().getPlayer(player.getUniqueId()).orElseThrow());
     }
 
     @Override
@@ -2947,7 +2948,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
     @Override
     public void selectPlayerRandomTeam(Player player) {
-        joinRandomTeam(Main.getPlayerGameProfile(player));
+        joinRandomTeam(PlayerManager.getInstance().getPlayerOrCreate(PlayerMapper.wrapPlayer(player)));
     }
 
     @Override
@@ -3004,14 +3005,14 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         return (respawnProtectionMap.containsKey(player));
     }
 
-    public List<GamePlayer> getPlayersWithoutVIP() {
-        List<GamePlayer> gamePlayerList = new ArrayList<>(this.players);
-        gamePlayerList.removeIf(GamePlayer::canJoinFullGame);
+    public List<BedWarsPlayer> getPlayersWithoutVIP() {
+        List<BedWarsPlayer> gamePlayerList = new ArrayList<>(this.players);
+        gamePlayerList.removeIf(BedWarsPlayer::canJoinFullGame);
 
         return gamePlayerList;
     }
 
-    public Inventory getFakeEnderChest(GamePlayer player) {
+    public Inventory getFakeEnderChest(BedWarsPlayer player) {
         if (!fakeEnderChests.containsKey(player)) {
             fakeEnderChests.put(player, Bukkit.createInventory(player.player, InventoryType.ENDER_CHEST));
         }

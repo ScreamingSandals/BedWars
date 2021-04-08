@@ -12,6 +12,7 @@ import org.screamingsandals.bedwars.api.RunningTeam;
 import org.screamingsandals.bedwars.api.TeamColor;
 import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.lang.LangKeys;
+import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.lib.hologram.Hologram;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.utils.AdventureHelper;
@@ -22,7 +23,7 @@ import java.util.List;
 
 public class CurrentTeam implements RunningTeam {
     public final Team teamInfo;
-    public final List<GamePlayer> players = new ArrayList<>();
+    public final List<BedWarsPlayer> players = new ArrayList<>();
     private org.bukkit.scoreboard.Team scoreboardTeam;
     private Inventory chestInventory;
     private List<Block> chests = new ArrayList<>();
@@ -117,7 +118,7 @@ public class CurrentTeam implements RunningTeam {
     @Override
     public List<Player> getConnectedPlayers() {
         List<Player> playerList = new ArrayList<>();
-        for (GamePlayer gamePlayer : players) {
+        for (BedWarsPlayer gamePlayer : players) {
             playerList.add(gamePlayer.player);
         }
         return playerList;
@@ -125,7 +126,7 @@ public class CurrentTeam implements RunningTeam {
 
     @Override
     public boolean isPlayerInTeam(Player player) {
-        for (GamePlayer gamePlayer : players) {
+        for (BedWarsPlayer gamePlayer : players) {
             if (gamePlayer.player.equals(player)) {
                 return true;
             }

@@ -7,19 +7,20 @@ import org.screamingsandals.bedwars.game.GameStore;
 import org.screamingsandals.bedwars.api.events.BedwarsOpenShopEvent;
 import org.screamingsandals.bedwars.api.events.BedwarsOpenShopEvent.Result;
 import org.screamingsandals.bedwars.game.Game;
-import org.screamingsandals.bedwars.game.GamePlayer;
+import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.screamingsandals.bedwars.lib.debug.Debug;
+import org.screamingsandals.bedwars.player.PlayerManager;
 import org.screamingsandals.bedwars.utils.CitizensUtils;
 
 public class VillagerListener implements Listener {
 
     @EventHandler
     public void onVillagerInteract(PlayerInteractEntityEvent event) {
-        if (Main.isPlayerInGame(event.getPlayer())) {
-            GamePlayer gPlayer = Main.getPlayerGameProfile(event.getPlayer());
+        if (PlayerManager.getInstance().isPlayerInGame(event.getPlayer().getUniqueId())) {
+            BedWarsPlayer gPlayer = PlayerManager.getInstance().getPlayer(event.getPlayer().getUniqueId()).get();
             Game game = gPlayer.getGame();
             if (event.getRightClicked().getType().isAlive() && !gPlayer.isSpectator
                     && gPlayer.getGame().getStatus() == GameStatus.RUNNING) {

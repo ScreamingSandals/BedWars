@@ -3,7 +3,7 @@ package org.screamingsandals.bedwars.tab;
 import lombok.RequiredArgsConstructor;
 import net.kyori.adventure.text.Component;
 import org.screamingsandals.bedwars.config.MainConfig;
-import org.screamingsandals.bedwars.game.GamePlayer;
+import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.plugin.ServiceManager;
 import org.screamingsandals.lib.utils.AdventureHelper;
@@ -49,7 +49,7 @@ public class TabManager {
         }
     }
 
-    public void modifyForPlayer(GamePlayer player) {
+    public void modifyForPlayer(BedWarsPlayer player) {
         if (player.player.isOnline() && (header != null || footer != null)) {
             var wrappedPlayer = PlayerMapper.wrapPlayer(player.player);
             if (header != null) {
@@ -65,13 +65,13 @@ public class TabManager {
         }
     }
 
-    public void clear(GamePlayer player) {
+    public void clear(BedWarsPlayer player) {
         if (player.player.isOnline() && (header != null || footer != null)) {
             PlayerMapper.wrapPlayer(player.player).sendPlayerListHeaderAndFooter(Component.empty(), Component.empty());
         }
     }
 
-    public Component translate(GamePlayer gamePlayer, List<String> origin) {
+    public Component translate(BedWarsPlayer gamePlayer, List<String> origin) {
         var component = Component.text();
         var first = new AtomicBoolean(true);
         origin.forEach(a -> {

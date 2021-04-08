@@ -10,7 +10,6 @@ import org.screamingsandals.bedwars.holograms.StatisticsHolograms;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
-import org.screamingsandals.lib.utils.AdventureHelper;
 
 public class RemoveholoCommand extends BaseCommand {
     public RemoveholoCommand(CommandManager<CommandSenderWrapper> manager) {

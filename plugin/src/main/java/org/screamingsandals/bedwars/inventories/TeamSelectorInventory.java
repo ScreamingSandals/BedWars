@@ -18,6 +18,7 @@ import org.screamingsandals.bedwars.game.CurrentTeam;
 import org.screamingsandals.bedwars.game.Game;
 import org.screamingsandals.bedwars.game.Team;
 import org.screamingsandals.bedwars.lang.LangKeys;
+import org.screamingsandals.bedwars.player.PlayerManager;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.utils.AdventureHelper;
@@ -82,11 +83,10 @@ public class TeamSelectorInventory implements Listener {
                     });
                 })
                 .click(event -> {
-                    var player = event.getPlayer().as(Player.class);
                     event.getItem().getFirstPropertyByName("selector").ifPresent(property -> {
                         try {
                             var team = property.getPropertyData().get(Team.class);
-                            game.selectTeam(Main.getPlayerGameProfile(player), team.getName());
+                            game.selectTeam(PlayerManager.getInstance().getPlayerOrCreate(event.getPlayer()), team.getName());
                         } catch (SerializationException | NullPointerException e) {
                             e.printStackTrace();
                         }

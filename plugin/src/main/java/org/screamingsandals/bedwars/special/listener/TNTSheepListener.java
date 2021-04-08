@@ -8,7 +8,8 @@ import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.api.events.BedwarsApplyPropertyToBoughtItem;
 import org.screamingsandals.bedwars.api.special.SpecialItem;
 import org.screamingsandals.bedwars.game.GameManager;
-import org.screamingsandals.bedwars.game.GamePlayer;
+import org.screamingsandals.bedwars.player.BedWarsPlayer;
+import org.screamingsandals.bedwars.player.PlayerManager;
 import org.screamingsandals.bedwars.special.TNTSheep;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.bukkit.Location;
@@ -43,11 +44,11 @@ public class TNTSheepListener implements Listener {
     @EventHandler
     public void onTNTSheepUsed(PlayerInteractEvent event) {
         Player player = event.getPlayer();
-        if (!Main.isPlayerInGame(player)) {
+        if (!PlayerManager.getInstance().isPlayerInGame(player.getUniqueId())) {
             return;
         }
 
-        GamePlayer gamePlayer = Main.getPlayerGameProfile(player);
+        BedWarsPlayer gamePlayer = PlayerManager.getInstance().getPlayer(player.getUniqueId()).orElseThrow();
         Game game = gamePlayer.getGame();
 
         if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
@@ -89,8 +90,8 @@ public class TNTSheepListener implements Listener {
 
         if (event.getEntity() instanceof Player) {
             Player player = (Player) event.getEntity();
-            if (Main.isPlayerInGame(player)) {
-                GamePlayer gamePlayer = Main.getPlayerGameProfile(player);
+            if (PlayerManager.getInstance().isPlayerInGame(player.getUniqueId())) {
+                BedWarsPlayer gamePlayer = PlayerManager.getInstance().getPlayer(player.getUniqueId()).orElseThrow();
                 Game game = gamePlayer.getGame();
                 if (event.getDamager() instanceof TNTPrimed && !game.getConfigurationContainer().getOrDefault(ConfigurationContainer.FRIENDLY_FIRE, Boolean.class, false)) {
                     TNTPrimed tnt = (TNTPrimed) event.getDamager();
@@ -131,8 +132,8 @@ public class TNTSheepListener implements Listener {
     @EventHandler
     public void onTNTSheepInteractOtherUser(PlayerInteractEntityEvent event) {
         Player player = event.getPlayer();
-        if (Main.isPlayerInGame(player)) {
-            GamePlayer gamePlayer = Main.getPlayerGameProfile(player);
+        if (PlayerManager.getInstance().isPlayerInGame(player.getUniqueId())) {
+            BedWarsPlayer gamePlayer = PlayerManager.getInstance().getPlayer(player.getUniqueId()).orElseThrow();
             Game game = gamePlayer.getGame();
 
             Entity rightClicked = event.getRightClicked();

@@ -20,8 +20,9 @@ import org.screamingsandals.bedwars.api.upgrades.UpgradeRegistry;
 import org.screamingsandals.bedwars.api.upgrades.UpgradeStorage;
 import org.screamingsandals.bedwars.game.CurrentTeam;
 import org.screamingsandals.bedwars.game.Game;
-import org.screamingsandals.bedwars.game.GamePlayer;
+import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.lang.LangKeys;
+import org.screamingsandals.bedwars.player.PlayerManager;
 import org.screamingsandals.bedwars.special.listener.PermaItemListener;
 import org.screamingsandals.bedwars.utils.Sounds;
 import org.screamingsandals.bedwars.lib.debug.Debug;
@@ -51,7 +52,8 @@ import java.util.stream.Collectors;
 // TODO: remake methods in this class so there won't be too many bukkit api calls
 @Service(dependsOn = {
         SimpleInventoriesCore.class,
-        MainConfig.class
+        MainConfig.class,
+        PlayerManager.class
 })
 @RequiredArgsConstructor
 public class ShopInventory implements Listener {
@@ -59,6 +61,7 @@ public class ShopInventory implements Listener {
     @DataFolder
     private final Path dataFolder;
     private final MainConfig mainConfig;
+    private final PlayerManager playerManager;
 
     public static ShopInventory getInstance() {
         return ServiceManager.get(ShopInventory.class);
@@ -119,7 +122,7 @@ public class ShopInventory implements Listener {
         var itemInfo = event.getItem();
         var item = itemInfo.getStack();
         var player = event.getPlayer().as(Player.class);
-        var game = Main.getPlayerGameProfile(player).getGame();
+        var game = playerManager.getGameOfPlayer(event.getPlayer());
         var prices = itemInfo.getOriginal().getPrices();
         if (!prices.isEmpty()) {
             // TODO: multi-price feature
@@ -160,7 +163,7 @@ public class ShopInventory implements Listener {
                 }
 
                 //noinspection unchecked
-                var applyEvent = new BedwarsApplyPropertyToDisplayedItem(game,
+                var applyEvent = new BedwarsApplyPropertyToDisplayedItem(game.orElse(null),
                         player, item.as(ItemStack.class), property.getPropertyName(), (Map<String, Object>) converted);
                 Bukkit.getServer().getPluginManager().callEvent(applyEvent);
 
@@ -177,12 +180,12 @@ public class ShopInventory implements Listener {
             return;
         }
 
-        var player = event.getPlayer().as(Player.class);
-        if (!Main.isPlayerInGame(player)) {
+        var player = event.getPlayer();
+        if (!playerManager.isPlayerInGame(player)) {
             event.setCancelled(true);
         }
 
-        if (Main.getPlayerGameProfile(player).isSpectator) {
+        if (playerManager.getPlayer(player).get().isSpectator) {
             event.setCancelled(true);
         }
     }
@@ -257,8 +260,8 @@ public class ShopInventory implements Listener {
                 .preClick(this::onPreAction)
                 .buy(this::onShopTransaction)
                 .define("team", (key, player, playerItemInfo, arguments) -> {
-                    GamePlayer gPlayer = Main.getPlayerGameProfile(player.as(Player.class));
-                    CurrentTeam team = gPlayer.getGame().getPlayerTeam(gPlayer);
+                    var gPlayer = playerManager.getPlayer(player);
+                    var team = gPlayer.get().getGame().getPlayerTeam(gPlayer.get());
                     if (arguments.length > 0) {
                         String fa = arguments[0];
                         switch (fa) {
@@ -277,8 +280,8 @@ public class ShopInventory implements Listener {
                     return team.getName();
                 })
                 .define("spawner", (key, player, playerItemInfo, arguments) -> {
-                    GamePlayer gPlayer = Main.getPlayerGameProfile(player.as(Player.class));
-                    Game game = gPlayer.getGame();
+                    var gPlayer = playerManager.getPlayer(player);
+                    Game game = gPlayer.get().getGame();
                     if (arguments.length > 2) {
                         String upgradeBy = arguments[0];
                         String upgrade = arguments[1];
@@ -292,7 +295,7 @@ public class ShopInventory implements Listener {
                                 upgrades = upgradeStorage.findItemSpawnerUpgrades(game, upgrade);
                                 break;
                             case "team":
-                                upgrades = upgradeStorage.findItemSpawnerUpgrades(game, game.getPlayerTeam(gPlayer));
+                                upgrades = upgradeStorage.findItemSpawnerUpgrades(game, game.getPlayerTeam(gPlayer.get()));
                                 break;
                         }
 
@@ -378,7 +381,7 @@ public class ShopInventory implements Listener {
 
     private void handleBuy(OnTradeEvent event) {
         var player = event.getPlayer().as(Player.class);
-        var game = Main.getPlayerGameProfile(player).getGame();
+        var game = playerManager.getGameOfPlayer(event.getPlayer()).orElseThrow();
         var clickType = event.getClickType();
         var itemInfo = event.getItem();
 
@@ -502,7 +505,7 @@ public class ShopInventory implements Listener {
 
     private void handleUpgrade(OnTradeEvent event) {
         var player = event.getPlayer().as(Player.class);
-        var game = Main.getPlayerGameProfile(player).getGame();
+        var game = playerManager.getGameOfPlayer(event.getPlayer()).orElseThrow();
         var itemInfo = event.getItem();
 
         // TODO: multi-price feature

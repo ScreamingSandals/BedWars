@@ -2,11 +2,12 @@ package org.screamingsandals.bedwars.commands;
 
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
-import org.bukkit.Bukkit;
-import org.screamingsandals.bedwars.Main;
+import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.game.GameManager;
 import org.screamingsandals.bedwars.lang.LangKeys;
+import org.screamingsandals.bedwars.player.PlayerManager;
 import org.screamingsandals.lib.lang.Message;
+import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
 
 import java.util.Optional;
@@ -38,16 +39,15 @@ public class AlljoinCommand extends BaseCommand {
                                 return;
                             }
 
-                            // TODO - Use Wrapper in the code (needed changes in BW)
-                            Bukkit.getOnlinePlayers().forEach(player -> {
-                                if (player.hasPermission("bw.disable.joinall")) {
+                            PlayerMapper.getPlayers().forEach(player -> {
+                                if (player.hasPermission(BedWarsPermission.DISABLE_ALL_JOIN_PERMISSION.asPermission())) {
                                     return;
                                 }
 
-                                if (Main.isPlayerInGame(player)) {
-                                    Main.getPlayerGameProfile(player).getGame().leaveFromGame(player);
+                                if (PlayerManager.getInstance().isPlayerInGame(player)) {
+                                    PlayerManager.getInstance().getPlayerOrCreate(player).getGame().leaveFromGame(player.as(Player.class)); // TODO
                                 }
-                                game.get().joinToGame(player);
+                                game.get().joinToGame(player.as(Player.class)); // TODO
                             });
                         })
         );

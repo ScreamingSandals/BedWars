@@ -9,8 +9,9 @@ import org.screamingsandals.bedwars.api.events.BedwarsPlayerBreakBlock;
 import org.screamingsandals.bedwars.api.events.BedwarsPlayerBuildBlock;
 import org.screamingsandals.bedwars.api.special.SpecialItem;
 import org.screamingsandals.bedwars.game.Game;
-import org.screamingsandals.bedwars.game.GamePlayer;
+import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.lang.LangKeys;
+import org.screamingsandals.bedwars.player.PlayerManager;
 import org.screamingsandals.bedwars.special.Trap;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -68,7 +69,7 @@ public class TrapListener implements Listener {
     @EventHandler
     public void onTrapBreak(BedwarsPlayerBreakBlock event) {
         final Player player = event.getPlayer();
-        if (!Main.isPlayerInGame(player)) {
+        if (!PlayerManager.getInstance().isPlayerInGame(player.getUniqueId())) {
             return;
         }
 
@@ -87,7 +88,7 @@ public class TrapListener implements Listener {
     @EventHandler
     public void onMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
-        if (event.isCancelled() || !Main.isPlayerInGame(player)) {
+        if (event.isCancelled() || !PlayerManager.getInstance().isPlayerInGame(player.getUniqueId())) {
             return;
         }
 
@@ -98,7 +99,7 @@ public class TrapListener implements Listener {
             return;
         }
 
-        GamePlayer gPlayer = Main.getPlayerGameProfile(player);
+        BedWarsPlayer gPlayer = PlayerManager.getInstance().getPlayer(player.getUniqueId()).orElseThrow();
         Game game = gPlayer.getGame();
         if (game.getStatus() == GameStatus.RUNNING && !gPlayer.isSpectator) {
             for (SpecialItem special : game.getActivedSpecialItems(Trap.class)) {

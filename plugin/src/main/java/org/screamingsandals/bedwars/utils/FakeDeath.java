@@ -9,7 +9,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.bedwars.Main;
-import org.screamingsandals.bedwars.game.GamePlayer;
+import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.lib.nms.utils.ClassStorage;
 import org.screamingsandals.lib.utils.reflect.Reflect;
 
@@ -20,7 +20,7 @@ import java.util.Objects;
 
 @UtilityClass
 public class FakeDeath {
-    public void die(GamePlayer gamePlayer) {
+    public void die(BedWarsPlayer gamePlayer) {
         Player player = gamePlayer.player;
         if (player.isDead()) {
             return;

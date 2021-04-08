@@ -11,6 +11,7 @@ import org.screamingsandals.bedwars.commands.BedWarsPermission;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.game.GameManager;
 import org.screamingsandals.bedwars.lang.LangKeys;
+import org.screamingsandals.bedwars.player.PlayerManager;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.plugin.ServiceManager;
@@ -34,7 +35,8 @@ import java.util.stream.Collectors;
 @Service(dependsOn = {
         MainConfig.class,
         GameManager.class,
-        Tasker.class
+        Tasker.class,
+        PlayerManager.class
 })
 @RequiredArgsConstructor
 public class BedWarsSignService extends AbstractSignManager {
@@ -43,6 +45,7 @@ public class BedWarsSignService extends AbstractSignManager {
     private final YamlConfigurationLoader loader;
     private final GameManager gameManager;
     private final MainConfig mainConfig;
+    private final PlayerManager playerManager;
 
     public static BedWarsSignService getInstance() {
         return ServiceManager.get(BedWarsSignService.class);
@@ -113,8 +116,8 @@ public class BedWarsSignService extends AbstractSignManager {
     @Override
     protected void onClick(PlayerWrapper player, ClickableSign sign) {
         if (sign.getKey().equalsIgnoreCase("leave")) {
-            if (Main.isPlayerInGame(player.as(Player.class))) {
-                Main.getPlayerGameProfile(player.as(Player.class)).changeGame(null);
+            if (playerManager.isPlayerInGame(player)) {
+                playerManager.getPlayer(player).get().changeGame(null);
             }
         } else {
             gameManager.getGame(sign.getKey()).ifPresentOrElse(

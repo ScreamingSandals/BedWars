@@ -1,4 +1,4 @@
-package org.screamingsandals.bedwars.game;
+package org.screamingsandals.bedwars.player;
 
 import org.bukkit.GameMode;
 import org.bukkit.Location;

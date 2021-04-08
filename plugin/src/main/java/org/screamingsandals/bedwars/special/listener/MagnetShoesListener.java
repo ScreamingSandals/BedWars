@@ -3,6 +3,7 @@ package org.screamingsandals.bedwars.special.listener;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.APIUtils;
 import org.screamingsandals.bedwars.api.events.BedwarsApplyPropertyToBoughtItem;
+import org.screamingsandals.bedwars.player.PlayerManager;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -31,7 +32,7 @@ public class MagnetShoesListener implements Listener {
         }
 
         Player player = (Player) event.getEntity();
-        if (Main.isPlayerInGame(player)) {
+        if (PlayerManager.getInstance().isPlayerInGame(player.getUniqueId())) {
             ItemStack boots = player.getInventory().getBoots();
             if (boots != null) {
                 String magnetShoes = APIUtils.unhashFromInvisibleStringStartsWith(boots, MAGNET_SHOES_PREFIX);

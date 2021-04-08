@@ -10,8 +10,9 @@ import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.api.events.BedwarsApplyPropertyToBoughtItem;
 import org.screamingsandals.bedwars.api.special.SpecialItem;
 import org.screamingsandals.bedwars.game.GameManager;
-import org.screamingsandals.bedwars.game.GamePlayer;
+import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.lang.LangKeys;
+import org.screamingsandals.bedwars.player.PlayerManager;
 import org.screamingsandals.bedwars.special.Golem;
 import org.screamingsandals.bedwars.utils.DelayFactory;
 import org.screamingsandals.bedwars.utils.MiscUtils;
@@ -46,11 +47,11 @@ public class GolemListener implements Listener {
     @EventHandler
     public void onGolemUse(PlayerInteractEvent event) {
         Player player = event.getPlayer();
-        if (!Main.isPlayerInGame(player)) {
+        if (!PlayerManager.getInstance().isPlayerInGame(player.getUniqueId())) {
             return;
         }
 
-        GamePlayer gamePlayer = Main.getPlayerGameProfile(player);
+        BedWarsPlayer gamePlayer = PlayerManager.getInstance().getPlayer(player.getUniqueId()).get();
         Game game = gamePlayer.getGame();
 
         if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
@@ -115,7 +116,7 @@ public class GolemListener implements Listener {
                         if (golem.getEntity().equals(ironGolem)) {
                             if (event.getDamager() instanceof Player) {
                                 Player player = (Player) event.getDamager();
-                                if (Main.isPlayerInGame(player)) {
+                                if (PlayerManager.getInstance().isPlayerInGame(player.getUniqueId())) {
                                     if (golem.getTeam() != game.getTeamOfPlayer(player)) {
                                         return;
                                     }
@@ -124,7 +125,7 @@ public class GolemListener implements Listener {
                                 ProjectileSource shooter = ((Projectile) event.getDamager()).getShooter();
                                 if (shooter instanceof Player) {
                                     Player player = (Player) shooter;
-                                    if (Main.isPlayerInGame(player)) {
+                                    if (PlayerManager.getInstance().isPlayerInGame(player.getUniqueId())) {
                                         if (golem.getTeam() != game.getTeamOfPlayer(player)) {
                                             return;
                                         }
@@ -163,7 +164,7 @@ public class GolemListener implements Listener {
                                     return;
                                 }
 
-                                if (Main.isPlayerInGame(player)) {
+                                if (PlayerManager.getInstance().isPlayerInGame(player.getUniqueId())) {
                                     if (golem.getTeam() == game.getTeamOfPlayer(player)) {
                                     	event.setCancelled(true);
                                         // Try to find enemy
@@ -185,8 +186,8 @@ public class GolemListener implements Listener {
 
     @EventHandler
     public void onGolemTargetDie(PlayerDeathEvent event) {
-        if (Main.isPlayerInGame(event.getEntity())) {
-            Game game = Main.getPlayerGameProfile(event.getEntity()).getGame();
+        if (PlayerManager.getInstance().isPlayerInGame(event.getEntity().getUniqueId())) {
+            var game = PlayerManager.getInstance().getGameOfPlayer(event.getEntity().getUniqueId()).orElseThrow();
 
             List<SpecialItem> golems = game.getActivedSpecialItems(Golem.class);
             for (SpecialItem item : golems) {

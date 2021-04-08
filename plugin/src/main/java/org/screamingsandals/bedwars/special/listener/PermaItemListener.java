@@ -12,8 +12,9 @@ import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.APIUtils;
 import org.screamingsandals.bedwars.api.events.BedwarsApplyPropertyToBoughtItem;
-import org.screamingsandals.bedwars.game.GamePlayer;
+import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.lib.debug.Debug;
+import org.screamingsandals.bedwars.player.PlayerManager;
 
 import java.util.HashSet;
 
@@ -24,7 +25,7 @@ public class PermaItemListener implements Listener {
 
     @EventHandler
     public void onItemRegister(BedwarsApplyPropertyToBoughtItem event) {
-        GamePlayer gamePlayer = Main.getPlayerGameProfile(event.getPlayer());
+        BedWarsPlayer gamePlayer = PlayerManager.getInstance().getPlayer(event.getPlayer().getUniqueId()).orElseThrow();
         if (event.hasProperty(PERMA_ITEM_PROPERTY_KEY)) {
             if (!event.getBooleanProperty(PERMA_ITEM_PROPERTY_KEY)) {
                 ItemStack stack = event.getStack();
@@ -43,7 +44,7 @@ public class PermaItemListener implements Listener {
     @EventHandler
     public void onItemRemoval(InventoryClickEvent event) {
         Player player = (Player) event.getWhoClicked();
-        if (!Main.isPlayerInGame(player)) {
+        if (!PlayerManager.getInstance().isPlayerInGame(player.getUniqueId())) {
             return;
         }
 
@@ -76,7 +77,7 @@ public class PermaItemListener implements Listener {
     @EventHandler
     public void onItemDrop(PlayerDropItemEvent event) {
         Player player = event.getPlayer();
-        if (!Main.isPlayerInGame(player)) {
+        if (!PlayerManager.getInstance().isPlayerInGame(player.getUniqueId())) {
             return;
         }
         
