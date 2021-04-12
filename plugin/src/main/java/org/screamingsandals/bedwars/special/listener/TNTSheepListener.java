@@ -5,8 +5,8 @@ import org.screamingsandals.bedwars.api.APIUtils;
 import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
 import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.api.game.GameStatus;
-import org.screamingsandals.bedwars.api.events.BedwarsApplyPropertyToBoughtItem;
 import org.screamingsandals.bedwars.api.special.SpecialItem;
+import org.screamingsandals.bedwars.events.ApplyPropertyToBoughtItemEventImpl;
 import org.screamingsandals.bedwars.game.GameManager;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.player.PlayerManager;
@@ -26,17 +26,27 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.screamingsandals.lib.event.OnEvent;
+import org.screamingsandals.lib.utils.annotations.Service;
+import org.screamingsandals.lib.utils.annotations.methods.OnPostEnable;
 
 import java.util.List;
 
+@Service
 public class TNTSheepListener implements Listener {
     private static final String TNT_SHEEP_PREFIX = "Module:TNTSheep:";
 
-    @EventHandler
-    public void onTNTSheepRegistered(BedwarsApplyPropertyToBoughtItem event) {
+    @OnPostEnable
+    private void postEnable() {
+        Main.getInstance().registerBedwarsListener(this); // TODO: get rid of platform events
+    }
+
+    @OnEvent
+    public void onTNTSheepRegistered(ApplyPropertyToBoughtItemEventImpl event) {
         if (event.getPropertyName().equalsIgnoreCase("tntsheep")) {
-            ItemStack stack = event.getStack();
+            var stack = event.getStack().as(ItemStack.class); // TODO: get rid of this transformation
             APIUtils.hashIntoInvisibleString(stack, applyProperty(event));
+            event.setStack(stack);
         }
 
     }
@@ -151,7 +161,7 @@ public class TNTSheepListener implements Listener {
         }
     }
 
-    private String applyProperty(BedwarsApplyPropertyToBoughtItem event) {
+    private String applyProperty(ApplyPropertyToBoughtItemEventImpl event) {
         return TNT_SHEEP_PREFIX
                 + MiscUtils.getDoubleFromProperty(
                 "speed", "specials.tnt-sheep.speed", event) + ":"

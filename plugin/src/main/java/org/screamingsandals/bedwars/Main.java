@@ -39,10 +39,12 @@ import org.screamingsandals.bedwars.utils.BukkitBStatsMetrics;
 import org.screamingsandals.bedwars.utils.UpdateChecker;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.lib.bukkit.utils.nms.ClassStorage;
+import org.screamingsandals.lib.entity.EntityMapper;
 import org.screamingsandals.lib.event.EventManager;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.material.MaterialMapping;
 import org.screamingsandals.lib.player.PlayerMapper;
+import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.plugin.PluginContainer;
 import org.screamingsandals.lib.plugin.PluginManager;
 import org.screamingsandals.lib.utils.PlatformType;
@@ -91,7 +93,9 @@ import java.util.*;
         DatabaseManager.class,
         BedWarsSignService.class,
         BukkitBStatsMetrics.class,
-        PlayerManager.class
+        PlayerManager.class,
+        PartyListener.class,
+        EntityMapper.class
 })
 public class Main extends PluginContainer implements BedwarsAPI {
     private static Main instance;
@@ -181,8 +185,8 @@ public class Main extends PluginContainer implements BedwarsAPI {
         instance.entitiesInGame.remove(entity);
     }
 
-    public static void openStore(Player player, GameStore store) {
-        ShopInventory.getInstance().show(PlayerMapper.wrapPlayer(player), store);
+    public static void openStore(PlayerWrapper player, GameStore store) {
+        ShopInventory.getInstance().show(player, store);
     }
 
     public static boolean isFarmBlock(Material mat) {
@@ -309,15 +313,6 @@ public class Main extends PluginContainer implements BedwarsAPI {
         } catch (Throwable ignored) {
         }
 
-        var partiesEnabled = false;
-
-        if (MainConfig.getInstance().node("party", "enabled").getBoolean()) {
-            final var partyPlugin = PluginManager.getPlugin(PluginManager.createKey("Parties").orElseThrow());
-            if (partyPlugin.isPresent() && partyPlugin.get().isEnabled()) {
-                partiesEnabled = true;
-            }
-        }
-
         registerBedwarsListener(new PlayerListener());
         if (versionNumber >= 109) {
             registerBedwarsListener(new Player19Listener());
@@ -330,10 +325,6 @@ public class Main extends PluginContainer implements BedwarsAPI {
         registerBedwarsListener(new WorldListener());
         if (MainConfig.getInstance().node("bungee", "enabled").getBoolean() && MainConfig.getInstance().node("bungee", "motd", "enabled").getBoolean()) {
             registerBedwarsListener(new BungeeMotdListener());
-        }
-
-        if (partiesEnabled) {
-            registerBedwarsListener(new PartyListener());
         }
 
         PremiumBedwars.init();

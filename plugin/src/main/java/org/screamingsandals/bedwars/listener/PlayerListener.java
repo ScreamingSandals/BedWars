@@ -29,13 +29,13 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.RunningTeam;
 import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
-import org.screamingsandals.bedwars.api.events.BedwarsPlayerKilledEvent;
-import org.screamingsandals.bedwars.api.events.BedwarsPlayerRespawnedEvent;
-import org.screamingsandals.bedwars.api.events.BedwarsTeamChestOpenEvent;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.commands.BedWarsPermission;
 import org.screamingsandals.bedwars.commands.admin.JoinTeamCommand;
 import org.screamingsandals.bedwars.config.MainConfig;
+import org.screamingsandals.bedwars.events.PlayerKilledEventImpl;
+import org.screamingsandals.bedwars.events.PlayerRespawnedEventImpl;
+import org.screamingsandals.bedwars.events.TeamChestOpenEventImpl;
 import org.screamingsandals.bedwars.game.*;
 import org.screamingsandals.bedwars.inventories.TeamSelectorInventory;
 import org.screamingsandals.bedwars.lang.LangKeys;
@@ -46,6 +46,7 @@ import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.bedwars.utils.*;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.lib.nms.entity.PlayerUtils;
+import org.screamingsandals.lib.event.EventManager;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.material.builder.ItemFactory;
 import org.screamingsandals.lib.player.PlayerMapper;
@@ -128,7 +129,7 @@ public class PlayerListener implements Listener {
                 }
 
                 CurrentTeam team = game.getPlayerTeam(gVictim);
-                SpawnEffects.spawnEffect(game, victim, "game-effects.kill");
+                SpawnEffects.spawnEffect(game, gVictim, "game-effects.kill");
                 boolean isBed = team.isBed;
                 if (isBed && game.getConfigurationContainer().getOrDefault(ConfigurationContainer.ANCHOR_DECREASING, Boolean.class, false) && "RESPAWN_ANCHOR".equals(team.teamInfo.bed.getBlock().getType().name())) {
                     isBed = Player116ListenerUtils.processAnchorDeath(game, team, isBed);
@@ -150,14 +151,14 @@ public class PlayerListener implements Listener {
 
                 Player killer = victim.getKiller();
                 if (killer != null && PlayerManager.getInstance().isPlayerInGame(killer.getUniqueId())) {
-                    BedWarsPlayer gKiller = PlayerManager.getInstance().getPlayer(killer.getUniqueId()).get();
+                    BedWarsPlayer gKiller = PlayerManager.getInstance().getPlayer(killer.getUniqueId()).orElseThrow();
                     if (gKiller.getGame() == game) {
                         if (!onlyOnBedDestroy || !isBed) {
                             game.dispatchRewardCommands("player-kill", killer,
                                     MainConfig.getInstance().node("statistics", "scores", "kill").getInt(10));
                         }
                         if (team.isDead()) {
-                            SpawnEffects.spawnEffect(game, victim, "game-effects.teamkill");
+                            SpawnEffects.spawnEffect(game, gVictim, "game-effects.teamkill");
                             Sounds.playSound(killer, killer.getLocation(),
                                     MainConfig.getInstance().node("sounds", "team_kill").getString(),
                                     Sounds.ENTITY_PLAYER_LEVELUP, 1, 1);
@@ -171,9 +172,9 @@ public class PlayerListener implements Listener {
                     }
                 }
 
-                BedwarsPlayerKilledEvent killedEvent = new BedwarsPlayerKilledEvent(game, victim,
-                        killer != null && PlayerManager.getInstance().isPlayerInGame(killer.getUniqueId()) ? killer : null, drops);
-                Bukkit.getServer().getPluginManager().callEvent(killedEvent);
+                var killedEvent = new PlayerKilledEventImpl(game, gVictim,
+                        killer != null && PlayerManager.getInstance().isPlayerInGame(killer.getUniqueId()) ? PlayerManager.getInstance().getPlayer(killer.getUniqueId()).orElseThrow() : null, drops.stream().map(ItemFactory::build).map(Optional::orElseThrow).collect(Collectors.toList()));
+                EventManager.fire(killedEvent);
 
                 if (PlayerStatisticManager.isEnabled()) {
                     var diePlayer = PlayerStatisticManager.getInstance().getStatistic(PlayerMapper.wrapPlayer(victim));
@@ -324,15 +325,15 @@ public class PlayerListener implements Listener {
                 event.setRespawnLocation(gPlayer.getGame().getPlayerTeam(gPlayer).teamInfo.spawn);
 
 
-                BedwarsPlayerRespawnedEvent respawnEvent = new BedwarsPlayerRespawnedEvent(game, event.getPlayer());
-                Bukkit.getServer().getPluginManager().callEvent(respawnEvent);
+                var respawnEvent = new PlayerRespawnedEventImpl(game, gPlayer);
+                EventManager.fire(respawnEvent);
 
                 if (MainConfig.getInstance().node("respawn", "protection-enabled").getBoolean(true)) {
                     RespawnProtection respawnProtection = game.addProtectedPlayer(gPlayer.player);
                     respawnProtection.runProtection();
                 }
 
-                SpawnEffects.spawnEffect(gPlayer.getGame(), gPlayer.player, "game-effects.respawn");
+                SpawnEffects.spawnEffect(gPlayer.getGame(), gPlayer, "game-effects.respawn");
                 if (gPlayer.getGame().getConfigurationContainer().getOrDefault(ConfigurationContainer.ENABLE_PLAYER_RESPAWN_ITEMS, Boolean.class, false)) {
                     var playerRespawnItems = MainConfig.getInstance().node("player-respawn-items", "items")
                             .childrenList()
@@ -509,7 +510,7 @@ public class PlayerListener implements Listener {
                                     if (inv == null) {
                                         return;
                                     }
-                                    inv.openForPlayer(p);
+                                    inv.openForPlayer(gPlayer);
                                 } else if (gPlayer.isSpectator) {
                                     // TODO
                                 }
@@ -774,7 +775,7 @@ public class PlayerListener implements Listener {
                             if (inv == null) {
                                 return;
                             }
-                            inv.openForPlayer(player);
+                            inv.openForPlayer(gPlayer);
                         } else if (gPlayer.isSpectator) {
                             // TODO
                         }
@@ -811,9 +812,8 @@ public class PlayerListener implements Listener {
                                 return;
                             }
 
-                            BedwarsTeamChestOpenEvent teamChestOpenEvent = new BedwarsTeamChestOpenEvent(game, player,
-                                    team);
-                            Bukkit.getServer().getPluginManager().callEvent(teamChestOpenEvent);
+                            var teamChestOpenEvent = new TeamChestOpenEventImpl(game, gPlayer, team);
+                            EventManager.fire(teamChestOpenEvent);
 
                             if (teamChestOpenEvent.isCancelled()) {
                                 return;

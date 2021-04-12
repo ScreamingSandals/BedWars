@@ -3,11 +3,11 @@ package org.screamingsandals.bedwars.special.listener;
 
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.APIUtils;
-import org.screamingsandals.bedwars.api.events.BedwarsPlayerBreakBlock;
 import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.api.game.GameStatus;
-import org.screamingsandals.bedwars.api.events.BedwarsApplyPropertyToBoughtItem;
 import org.screamingsandals.bedwars.api.special.SpecialItem;
+import org.screamingsandals.bedwars.events.ApplyPropertyToBoughtItemEventImpl;
+import org.screamingsandals.bedwars.events.PlayerBreakBlockEventImpl;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.PlayerManager;
@@ -22,19 +22,29 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.player.PlayerMapper;
+import org.screamingsandals.lib.utils.annotations.Service;
+import org.screamingsandals.lib.utils.annotations.methods.OnPostEnable;
 
 import java.util.ArrayList;
 
+@Service
 public class ProtectionWallListener implements Listener {
     private static final String PROTECTION_WALL_PREFIX = "Module:ProtectionWall:";
 
-    @EventHandler
-    public void onProtectionWallRegistered(BedwarsApplyPropertyToBoughtItem event) {
+    @OnPostEnable
+    private void postEnable() {
+        Main.getInstance().registerBedwarsListener(this); // TODO: get rid of platform events
+    }
+
+    @OnEvent
+    public void onProtectionWallRegistered(ApplyPropertyToBoughtItemEventImpl event) {
         if (event.getPropertyName().equalsIgnoreCase("protectionwall")) {
-            ItemStack stack = event.getStack();
+            var stack = event.getStack().as(ItemStack.class); // TODO: get rid of this transformation
             APIUtils.hashIntoInvisibleString(stack, applyProperty(event));
+            event.setStack(stack);
         }
 
     }
@@ -94,15 +104,15 @@ public class ProtectionWallListener implements Listener {
         }
     }
 
-    @EventHandler
-    public void onBlockBreak(BedwarsPlayerBreakBlock event) {
-        final Game game = event.getGame();
-        final Block block = event.getBlock();
+    @OnEvent
+    public void onBlockBreak(PlayerBreakBlockEventImpl event) {
+        final var game = event.getGame();
+        final var block = event.getBlock();
 
         for (ProtectionWall checkedWall : getCreatedWalls(game)) {
             if (checkedWall != null) {
                 for (Block wallBlock : checkedWall.getWallBlocks()) {
-                    if (wallBlock.equals(block) && !checkedWall.canBreak()) {
+                    if (wallBlock.equals(block.as(Block.class)) && !checkedWall.canBreak()) {
                         event.setCancelled(true);
                     }
                 }
@@ -121,7 +131,7 @@ public class ProtectionWallListener implements Listener {
         return createdWalls;
     }
 
-    private String applyProperty(BedwarsApplyPropertyToBoughtItem event) {
+    private String applyProperty(ApplyPropertyToBoughtItemEventImpl event) {
         return PROTECTION_WALL_PREFIX
                 + MiscUtils.getBooleanFromProperty(
                 "is-breakable", "specials.protection-wall.is-breakable", event) + ":"

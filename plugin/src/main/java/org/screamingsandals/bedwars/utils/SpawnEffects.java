@@ -3,18 +3,19 @@ package org.screamingsandals.bedwars.utils;
 import lombok.experimental.UtilityClass;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
-import org.screamingsandals.bedwars.Main;
-import org.screamingsandals.bedwars.api.game.Game;
+import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.config.MainConfig;
+import org.screamingsandals.bedwars.events.PostSpawnEffectEventImpl;
+import org.screamingsandals.bedwars.events.PreSpawnEffectEventImpl;
+import org.screamingsandals.bedwars.game.Game;
 import org.screamingsandals.bedwars.lib.nms.particles.Particles;
-import org.screamingsandals.bedwars.api.events.BedwarsPostSpawnEffectEvent;
-import org.screamingsandals.bedwars.api.events.BedwarsPreSpawnEffectEvent;
 import org.bukkit.Effect;
 import org.bukkit.FireworkEffect;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.FireworkMeta;
+import org.screamingsandals.bedwars.player.BedWarsPlayer;
+import org.screamingsandals.lib.event.EventManager;
 import org.screamingsandals.lib.utils.ConfigurateUtils;
 import org.spongepowered.configurate.ConfigurationNode;
 
@@ -24,9 +25,9 @@ import java.util.stream.Collectors;
 
 @UtilityClass
 public class SpawnEffects {
-    public void spawnEffect(Game game, Player player, String particleName) {
-        BedwarsPreSpawnEffectEvent firstEvent = new BedwarsPreSpawnEffectEvent(game, player, particleName);
-        Bukkit.getServer().getPluginManager().callEvent(firstEvent);
+    public void spawnEffect(Game game, BedWarsPlayer player, String particleName) {
+        var firstEvent = new PreSpawnEffectEventImpl(game, player, particleName);
+        EventManager.fire(firstEvent);
 
         if (firstEvent.isCancelled()) {
             return;
@@ -40,22 +41,21 @@ public class SpawnEffects {
                     if (effect.hasChild("list")) {
                         effect.node("list").childrenList().forEach(node -> {
                             try {
-                                useEffect(node.node("type").getString(""), node, player, game);
+                                useEffect(node.node("type").getString(""), node, player.as(Player.class), game);
                             } catch (Throwable throwable) {
                                 throwable.printStackTrace();
                             }
                         });
                     }
                 } else {
-                    useEffect(type, effect, player, game);
+                    useEffect(type, effect, player.as(Player.class), game);
                 }
 
             } catch (Throwable ignored) {
             }
         }
 
-        BedwarsPostSpawnEffectEvent secondEvent = new BedwarsPostSpawnEffectEvent(game, player, particleName);
-        Bukkit.getServer().getPluginManager().callEvent(secondEvent);
+        EventManager.fire(new PostSpawnEffectEventImpl(game, player, particleName));
     }
 
     private void useEffect(String type, ConfigurationNode effect, Player player, Game game) throws Throwable {

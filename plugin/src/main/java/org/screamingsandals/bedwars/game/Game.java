@@ -33,7 +33,6 @@ import org.screamingsandals.bedwars.api.RunningTeam;
 import org.screamingsandals.bedwars.api.boss.BossBar;
 import org.screamingsandals.bedwars.api.boss.StatusBar;
 import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
-import org.screamingsandals.bedwars.api.events.*;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.api.special.SpecialItem;
 import org.screamingsandals.bedwars.api.upgrades.UpgradeRegistry;
@@ -45,6 +44,7 @@ import org.screamingsandals.bedwars.commands.StatsCommand;
 import org.screamingsandals.bedwars.config.GameConfigurationContainer;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.config.RecordSave;
+import org.screamingsandals.bedwars.events.*;
 import org.screamingsandals.bedwars.holograms.StatisticsHolograms;
 import org.screamingsandals.bedwars.inventories.TeamSelectorInventory;
 import org.screamingsandals.bedwars.lang.LangKeys;
@@ -59,6 +59,7 @@ import org.screamingsandals.bedwars.scoreboard.ScreamingScoreboard;
 import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.bedwars.tab.TabManager;
 import org.screamingsandals.bedwars.utils.*;
+import org.screamingsandals.lib.event.EventManager;
 import org.screamingsandals.lib.hologram.HologramManager;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.material.MaterialHolder;
@@ -66,8 +67,10 @@ import org.screamingsandals.lib.material.builder.ItemFactory;
 import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.utils.AdventureHelper;
+import org.screamingsandals.lib.world.BlockMapper;
 import org.screamingsandals.lib.world.LocationHolder;
 import org.screamingsandals.lib.world.LocationMapper;
+import org.screamingsandals.lib.world.state.BlockStateMapper;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
@@ -524,9 +527,8 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             return false;
         }
 
-        BedwarsPlayerBuildBlock event = new BedwarsPlayerBuildBlock(this, player.player, getPlayerTeam(player), block,
-                itemInHand, replaced);
-        Bukkit.getServer().getPluginManager().callEvent(event);
+        var event = new PlayerBuildBlockEventImpl(this, player, getPlayerTeam(player), BlockMapper.wrapBlock(block), BlockStateMapper.wrapBlockState(replaced).orElse(null), ItemFactory.build(itemInHand).orElse(ItemFactory.getAir()));
+        EventManager.fire(event);
 
         if (event.isCancelled()) {
             return false;
@@ -560,9 +562,8 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             return false;
         }
 
-        final BedwarsPlayerBreakBlock breakEvent = new BedwarsPlayerBreakBlock(this, player.player, getPlayerTeam(player),
-                block);
-        Bukkit.getServer().getPluginManager().callEvent(breakEvent);
+        var breakEvent = new PlayerBreakBlockEventImpl(this, player, getPlayerTeam(player), BlockMapper.wrapBlock(block), true);
+        EventManager.fire(breakEvent);
 
         if (breakEvent.isCancelled()) {
             return false;
@@ -733,7 +734,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                                 .times(TitleUtils.defaultTimes())
                                 .title(wrapped);
 
-                        SpawnEffects.spawnEffect(this, player.player, "game-effects.beddestroy");
+                        SpawnEffects.spawnEffect(this, player, "game-effects.beddestroy");
                         Sounds.playSound(player.player, player.player.getLocation(),
                                 MainConfig.getInstance().node("sounds", "bed_destroyed").getString(),
                                 Sounds.ENTITY_ENDER_DRAGON_GROWL, 1, 1);
@@ -749,9 +750,8 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                         team.setProtectHolo(null);
                     }
 
-                    BedwarsTargetBlockDestroyedEvent targetBlockDestroyed = new BedwarsTargetBlockDestroyedEvent(this,
-                            broker, team);
-                    Bukkit.getServer().getPluginManager().callEvent(targetBlockDestroyed);
+                    var targetBlockDestroyed = new TargetBlockDestroyedEventImpl(this, broker != null ? PlayerManager.getInstance().getPlayer(broker.getUniqueId()).orElseThrow() : null, team);
+                    EventManager.fire(targetBlockDestroyed);
 
                     if (broker != null) {
                         if (PlayerStatisticManager.isEnabled()) {
@@ -769,19 +769,19 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     }
 
     public void internalJoinPlayer(BedWarsPlayer gamePlayer) {
-        BedwarsPlayerJoinEvent joinEvent = new BedwarsPlayerJoinEvent(this, gamePlayer.player);
-        Bukkit.getServer().getPluginManager().callEvent(joinEvent);
+        var joinEvent = new PlayerJoinEventImpl(this, gamePlayer);
+        EventManager.fire(joinEvent);
 
         if (joinEvent.isCancelled()) {
-            Debug.info(gamePlayer.player.getName() + " can't join to the game: event cancelled");
+            Debug.info(gamePlayer.getName() + " can't join to the game: event cancelled");
             String message = joinEvent.getCancelMessage();
             if (message != null && !message.equals("")) {
-                gamePlayer.player.sendMessage(message);
+                gamePlayer.sendMessage(message);
             }
             gamePlayer.changeGame(null);
             return;
         }
-        Debug.info(gamePlayer.player.getName() + " joined bedwars match " + name);
+        Debug.info(gamePlayer.getName() + " joined bedwars match " + name);
 
         boolean isEmpty = players.isEmpty();
         if (!players.contains(gamePlayer)) {
@@ -791,7 +791,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
         if (PlayerStatisticManager.isEnabled()) {
             // Load
-            PlayerStatisticManager.getInstance().getStatistic(PlayerMapper.wrapPlayer(gamePlayer.player));
+            PlayerStatisticManager.getInstance().getStatistic(gamePlayer);
         }
 
         if (arenaTime.time >= 0) {
@@ -823,7 +823,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
             gamePlayer.teleport(lobbySpawn, () -> {
                 gamePlayer.invClean(); // temp fix for inventory issues?
-                SpawnEffects.spawnEffect(Game.this, gamePlayer.player, "game-effects.lobbyjoin");
+                SpawnEffects.spawnEffect(Game.this, gamePlayer, "game-effects.lobbyjoin");
 
                 var wrapper = PlayerMapper.wrapPlayer(gamePlayer.player);
 
@@ -890,8 +890,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             experimentalBoard.addPlayer(gamePlayer.player);
         }
 
-        BedwarsPlayerJoinedEvent joinedEvent = new BedwarsPlayerJoinedEvent(this, getPlayerTeam(gamePlayer), gamePlayer.player);
-        Bukkit.getServer().getPluginManager().callEvent(joinedEvent);
+        EventManager.fire(new PlayerJoinedEventImpl(this, gamePlayer, getPlayerTeam(gamePlayer)));
     }
 
     public void internalLeavePlayer(BedWarsPlayer gamePlayer) {
@@ -899,10 +898,9 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             return;
         }
 
-        BedwarsPlayerLeaveEvent playerLeaveEvent = new BedwarsPlayerLeaveEvent(this, gamePlayer.player,
-                getPlayerTeam(gamePlayer));
-        Bukkit.getServer().getPluginManager().callEvent(playerLeaveEvent);
-        Debug.info(name + ": player  " + gamePlayer.player.getName() + " is leaving the game");
+        var playerLeaveEvent = new PlayerLeaveEventImpl(this, gamePlayer, getPlayerTeam(gamePlayer));
+        EventManager.fire(playerLeaveEvent);
+        Debug.info(name + ": player  " + gamePlayer.getName() + " is leaving the game");
 
         if (experimentalBoard != null) {
             experimentalBoard.removePlayer(gamePlayer.player);
@@ -921,7 +919,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         updateSigns();
 
         if (status == GameStatus.WAITING) {
-            SpawnEffects.spawnEffect(this, gamePlayer.player, "game-effects.lobbyleave");
+            SpawnEffects.spawnEffect(this, gamePlayer, "game-effects.lobbyleave");
         }
 
         if (TabManager.isEnabled()) {
@@ -989,9 +987,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
         if (players.isEmpty()) {
             if (!preServerRestart) {
-                BedWarsPlayerLastLeaveEvent playerLastLeaveEvent = new BedWarsPlayerLastLeaveEvent(this, gamePlayer.player,
-                        getPlayerTeam(gamePlayer));
-                Bukkit.getServer().getPluginManager().callEvent(playerLastLeaveEvent);
+                EventManager.fire(new PlayerLastLeaveEventImpl(this, gamePlayer, playerLeaveEvent.getTeam()));
             }
 
             if (status != GameStatus.WAITING) {
@@ -1342,8 +1338,8 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         }
 
         CurrentTeam cur = getPlayerTeam(player);
-        BedwarsPlayerJoinTeamEvent event = new BedwarsPlayerJoinTeamEvent(current, player.player, this, cur);
-        Bukkit.getServer().getPluginManager().callEvent(event);
+        var event = new PlayerJoinTeamEventImpl(this, player, current, cur);
+        EventManager.fire(event);
 
         if (event.isCancelled()) {
             return;
@@ -1439,8 +1435,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             teamsInGame.add(current);
         }
 
-        var joinedEvent = new BedwarsPlayerJoinedTeamEvent(current, player.player, this, cur);
-        Bukkit.getPluginManager().callEvent(joinedEvent);
+        EventManager.fire(new PlayerJoinedTeamEventImpl(this, player, current, cur));
     }
 
     public void joinRandomTeam(BedWarsPlayer player) {
@@ -1547,8 +1542,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                     players.forEach(TabManager.getInstance()::modifyForPlayer);
                 }
 
-                BedwarsPlayerRespawnedEvent respawnEvent = new BedwarsPlayerRespawnedEvent(this, gamePlayer.player);
-                Bukkit.getServer().getPluginManager().callEvent(respawnEvent);
+                EventManager.fire(new PlayerRespawnedEventImpl(this, gamePlayer));
             });
         }
     }
@@ -1569,7 +1563,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             cancelTask();
             return;
         }
-        BedwarsGameChangedStatusEvent statusE = new BedwarsGameChangedStatusEvent(this);
+        var statusE = new GameChangedStatusEventImpl(this);
         // Phase 2: If this is first tick, prepare waiting lobby
         if (countdown == -1 && status == GameStatus.WAITING) {
             Debug.info(name + ": preparing lobby");
@@ -1664,9 +1658,9 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         }
 
         // Phase 4: Call Tick Event
-        BedwarsGameTickEvent tick = new BedwarsGameTickEvent(this, previousCountdown, previousStatus, countdown, status,
-                nextCountdown, nextStatus);
-        Bukkit.getPluginManager().callEvent(tick);
+        var tick = new GameTickEventImpl(this, previousCountdown, previousStatus, countdown, status,
+                nextCountdown, nextStatus, nextCountdown, nextStatus);
+        EventManager.fire(tick);
         Debug.info(name + ": tick passed: " + tick.getPreviousCountdown() + "," + tick.getCountdown() + "," + tick.getNextCountdown() + " (" + tick.getPreviousStatus() + "," + tick.getStatus() + "," + tick.getNextStatus() + ")");
 
         // Phase 5: Update Previous information
@@ -1680,9 +1674,9 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             if (tick.getNextStatus() == GameStatus.RUNNING) {
                 Debug.info(name + ": preparing game");
                 preparing = true;
-                BedwarsGameStartEvent startE = new BedwarsGameStartEvent(this);
-                Bukkit.getServer().getPluginManager().callEvent(startE);
-                Bukkit.getServer().getPluginManager().callEvent(statusE);
+                var startE = new GameStartEventImpl(this);
+                EventManager.fire(startE);
+                EventManager.fire(statusE);
 
                 if (startE.isCancelled()) {
                     tick.setNextCountdown(pauseCountdown);
@@ -1783,7 +1777,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                                         Debug.warn("You have wrongly configured game-start-items.items!", true);
                                     }
                                 }
-                                SpawnEffects.spawnEffect(this, player.player, "game-effects.start");
+                                SpawnEffects.spawnEffect(this, player, "game-effects.start");
                             });
                         }
                         Sounds.playSound(player.player, player.player.getLocation(),
@@ -1902,9 +1896,9 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                     }
                     preparing = false;
 
-                    BedwarsGameStartedEvent startedEvent = new BedwarsGameStartedEvent(this);
-                    Bukkit.getServer().getPluginManager().callEvent(startedEvent);
-                    Bukkit.getServer().getPluginManager().callEvent(statusE);
+                    var startedEvent = new GameStartedEventImpl(this);
+                    EventManager.fire(startedEvent);
+                    EventManager.fire(statusE);
                     updateScoreboard();
                     Debug.info(name + ": game prepared");
                 }
@@ -1942,7 +1936,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                                                 .title(wrapper);
                                         Main.depositPlayer(player.player, Main.getVaultWinReward());
 
-                                        SpawnEffects.spawnEffect(this, player.player, "game-effects.end");
+                                        SpawnEffects.spawnEffect(this, player, "game-effects.end");
 
                                         if (PlayerStatisticManager.isEnabled()) {
                                             var statistic = PlayerStatisticManager.getInstance()
@@ -2000,9 +1994,9 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                             }
                         }
 
-                        BedwarsGameEndingEvent endingEvent = new BedwarsGameEndingEvent(this, winner);
-                        Bukkit.getPluginManager().callEvent(endingEvent);
-                        Bukkit.getServer().getPluginManager().callEvent(statusE);
+                        var endingEvent = new GameEndingEventImpl(this, winner);
+                        EventManager.fire(endingEvent);
+                        EventManager.fire(statusE);
                         Debug.info(name + ": game is ending");
 
                         tick.setNextCountdown(postGameWaiting);
@@ -2061,15 +2055,15 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                                 }
                             }
 
-                            BedwarsResourceSpawnEvent resourceSpawnEvent = new BedwarsResourceSpawnEvent(this, spawner,
-                                    type.getStack(calculatedStack));
-                            Bukkit.getServer().getPluginManager().callEvent(resourceSpawnEvent);
+                            var resourceSpawnEvent = new ResourceSpawnEventImpl(this, spawner, spawner.type,
+                                    ItemFactory.build(type.getStack(calculatedStack)).orElseThrow());
+                            EventManager.fire(resourceSpawnEvent);
 
                             if (resourceSpawnEvent.isCancelled()) {
                                 continue;
                             }
 
-                            ItemStack resource = resourceSpawnEvent.getResource();
+                            ItemStack resource = resourceSpawnEvent.getResource().as(ItemStack.class);
 
                             resource.setAmount(spawner.nextMaxSpawn(resource.getAmount()));
 
@@ -2103,9 +2097,9 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
         // Phase 9: Check if status is rebuilding and rebuild game
         if (status == GameStatus.REBUILDING) {
-            BedwarsGameEndEvent event = new BedwarsGameEndEvent(this);
-            Bukkit.getServer().getPluginManager().callEvent(event);
-            Bukkit.getServer().getPluginManager().callEvent(statusE);
+            var event = new GameEndEventImpl(this);
+            EventManager.fire(event);
+            EventManager.fire(statusE);
 
             var message = Message
                     .of(LangKeys.IN_GAME_END_GAME_END)
@@ -2149,8 +2143,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                     @Override
                     public void run() {
                         if (MainConfig.getInstance().node("bungee", "serverRestart").getBoolean()) {
-                            BedWarsServerRestartEvent serverRestartEvent = new BedWarsServerRestartEvent();
-                            Bukkit.getServer().getPluginManager().callEvent(serverRestartEvent);
+                            EventManager.fire(new ServerRestartEventImpl());
 
                             Bukkit.getServer()
                                     .dispatchCommand(Bukkit.getServer().getConsoleSender(), "restart");
@@ -2185,8 +2178,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         activeSpecialItems.clear();
         activeDelays.clear();
 
-        BedwarsPreRebuildingEvent preRebuildingEvent = new BedwarsPreRebuildingEvent(this);
-        Bukkit.getServer().getPluginManager().callEvent(preRebuildingEvent);
+        EventManager.fire(new PreRebuildingEventImpl(this));
 
         for (ItemSpawner spawner : spawners) {
             spawner.currentLevel = spawner.startLevel;
@@ -2244,8 +2236,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
         UpgradeRegistry.clearAll(this);
 
-        BedwarsPostRebuildingEvent postRebuildingEvent = new BedwarsPostRebuildingEvent(this);
-        Bukkit.getServer().getPluginManager().callEvent(postRebuildingEvent);
+        EventManager.fire(new PostRebuildingEventImpl(this));
 
         this.status = this.afterRebuild;
         this.countdown = -1;

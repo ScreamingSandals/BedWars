@@ -1,4 +1,3 @@
 dependencies {
     implementation screaming('api-utils', SCREAMING_LIB_VERSION)
-    compileOnly 'org.screamingsandals.simpleinventories:core-bukkit:' + SIMPLE_INVENTORIES_VERSION
 }

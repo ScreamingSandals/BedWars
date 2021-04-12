@@ -3,7 +3,7 @@ package org.screamingsandals.bedwars.special.listener;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.APIUtils;
 import org.screamingsandals.bedwars.api.game.GameStatus;
-import org.screamingsandals.bedwars.api.events.BedwarsApplyPropertyToBoughtItem;
+import org.screamingsandals.bedwars.events.ApplyPropertyToBoughtItemEventImpl;
 import org.screamingsandals.bedwars.game.Game;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.lang.LangKeys;
@@ -20,17 +20,27 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.player.PlayerMapper;
+import org.screamingsandals.lib.utils.annotations.Service;
+import org.screamingsandals.lib.utils.annotations.methods.OnPostEnable;
 
+@Service
 public class ArrowBlockerListener implements Listener {
     private static final String ARROW_BLOCKER_PREFIX = "Module:ArrowBlocker:";
 
-    @EventHandler
-    public void onArrowBlockerRegistered(BedwarsApplyPropertyToBoughtItem event) {
+    @OnPostEnable
+    private void postEnable() {
+        Main.getInstance().registerBedwarsListener(this); // TODO: get rid of platform events
+    }
+
+    @OnEvent
+    public void onArrowBlockerRegistered(ApplyPropertyToBoughtItemEventImpl event) {
         if (event.getPropertyName().equalsIgnoreCase("arrowblocker")) {
-            ItemStack stack = event.getStack();
+            var stack = event.getStack().as(ItemStack.class); // TODO: get rid of this transformation
             APIUtils.hashIntoInvisibleString(stack, applyProperty(event));
+            event.setStack(stack);
         }
     }
 
@@ -106,7 +116,7 @@ public class ArrowBlockerListener implements Listener {
         }
     }
 
-    private String applyProperty(BedwarsApplyPropertyToBoughtItem event) {
+    private String applyProperty(ApplyPropertyToBoughtItemEventImpl event) {
         return ARROW_BLOCKER_PREFIX
                 + MiscUtils.getIntFromProperty(
                 "protection-time", "specials.arrow-blocker.protection-time", event) + ":"

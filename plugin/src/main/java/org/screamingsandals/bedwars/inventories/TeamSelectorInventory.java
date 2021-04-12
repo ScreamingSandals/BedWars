@@ -2,25 +2,22 @@ package org.screamingsandals.bedwars.inventories;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.HandlerList;
-import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.RunningTeam;
-import org.screamingsandals.bedwars.api.events.BedwarsOpenTeamSelectionEvent;
-import org.screamingsandals.bedwars.api.events.BedwarsPlayerJoinedTeamEvent;
-import org.screamingsandals.bedwars.api.events.BedwarsPlayerLeaveEvent;
 import org.screamingsandals.bedwars.config.MainConfig;
+import org.screamingsandals.bedwars.events.OpenTeamSelectionEventImpl;
+import org.screamingsandals.bedwars.events.PlayerJoinedTeamEventImpl;
+import org.screamingsandals.bedwars.events.PlayerLeaveEventImpl;
 import org.screamingsandals.bedwars.game.CurrentTeam;
 import org.screamingsandals.bedwars.game.Game;
 import org.screamingsandals.bedwars.game.Team;
 import org.screamingsandals.bedwars.lang.LangKeys;
+import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.player.PlayerManager;
+import org.screamingsandals.lib.event.EventHandler;
+import org.screamingsandals.lib.event.EventManager;
 import org.screamingsandals.lib.lang.Message;
-import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.utils.AdventureHelper;
 import org.screamingsandals.simpleinventories.SimpleInventoriesCore;
 import org.screamingsandals.simpleinventories.inventory.GenericItemInfo;
@@ -34,10 +31,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class TeamSelectorInventory implements Listener {
+public class TeamSelectorInventory {
     private final Game game;
     private final InventorySet inventorySet;
     private final Map<Team, GenericItemInfo> items = new HashMap<>();
+    private final List<EventHandler<?>> handlers = new ArrayList<>();
 
     public TeamSelectorInventory(Game game) {
         this.game = game;
@@ -95,23 +93,24 @@ public class TeamSelectorInventory implements Listener {
                 .process()
                 .getInventorySet();
 
-        Main.getInstance().registerBedwarsListener(this);
+        handlers.add(EventManager.getDefaultEventManager().register(PlayerLeaveEventImpl.class, this::onPlayerLeave));
+        handlers.add(EventManager.getDefaultEventManager().register(PlayerJoinedTeamEventImpl.class, this::onTeamSelected));
     }
 
     public void destroy() {
-        HandlerList.unregisterAll(this);
+        handlers.forEach(EventManager.getDefaultEventManager()::unregister);
         SimpleInventoriesCore.getAllInventoryRenderersForInventorySet(this.inventorySet).forEach(InventoryRenderer::close);
     }
 
-    public void openForPlayer(Player player) {
-        var event = new BedwarsOpenTeamSelectionEvent(this.game, player);
-        Bukkit.getServer().getPluginManager().callEvent(event);
+    public void openForPlayer(BedWarsPlayer player) {
+        var event = new OpenTeamSelectionEventImpl(this.game, player);
+        EventManager.fire(event);
 
         if (event.isCancelled()) {
             return;
         }
 
-        PlayerMapper.wrapPlayer(player).openInventory(inventorySet);
+        player.openInventory(inventorySet);
     }
 
     private List<Component> formatLore(Team team, Game game) {
@@ -135,8 +134,7 @@ public class TeamSelectorInventory implements Listener {
         return loreList;
     }
 
-    @EventHandler
-    public void onPlayerLeave(BedwarsPlayerLeaveEvent event) {
+    public void onPlayerLeave(PlayerLeaveEventImpl event) {
         if (event.getGame() != game) {
             return;
         }
@@ -146,8 +144,7 @@ public class TeamSelectorInventory implements Listener {
         }
     }
 
-    @EventHandler
-    public void onTeamSelected(BedwarsPlayerJoinedTeamEvent event) {
+    public void onTeamSelected(PlayerJoinedTeamEventImpl event) {
         if (event.getGame() != game) {
             return;
         }

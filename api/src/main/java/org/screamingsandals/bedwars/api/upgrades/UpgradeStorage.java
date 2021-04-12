@@ -3,8 +3,6 @@ package org.screamingsandals.bedwars.api.upgrades;
 import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.api.game.ItemSpawner;
 import org.screamingsandals.bedwars.api.Team;
-import org.screamingsandals.bedwars.api.events.BedwarsUpgradeRegisteredEvent;
-import org.screamingsandals.bedwars.api.events.BedwarsUpgradeUnregisteredEvent;
 import org.screamingsandals.bedwars.api.game.ItemSpawnerType;
 import org.bukkit.Bukkit;
 
@@ -61,7 +59,7 @@ public final class UpgradeStorage {
         }
         if (!upgradeRegistry.get(game).contains(upgrade)) {
             upgrade.onUpgradeRegistered(game);
-            Bukkit.getPluginManager().callEvent(new BedwarsUpgradeRegisteredEvent(game, this, upgrade));
+            //Bukkit.getPluginManager().callEvent(new BedwarsUpgradeRegisteredEvent(game, this, upgrade));
             upgradeRegistry.get(game).add(upgrade);
         }
     }
@@ -80,7 +78,7 @@ public final class UpgradeStorage {
         if (upgradeRegistry.containsKey(game)) {
             if (upgradeRegistry.get(game).contains(upgrade)) {
                 upgrade.onUpgradeUnregistered(game);
-                Bukkit.getPluginManager().callEvent(new BedwarsUpgradeUnregisteredEvent(game, this, upgrade));
+                //Bukkit.getPluginManager().callEvent(new BedwarsUpgradeUnregisteredEvent(game, this, upgrade));
                 upgradeRegistry.get(game).remove(upgrade);
             }
         }
@@ -108,7 +106,7 @@ public final class UpgradeStorage {
         if (upgradeRegistry.containsKey(game)) {
             for (Upgrade upgrade : upgradeRegistry.get(game)) {
                 upgrade.onUpgradeUnregistered(game);
-                Bukkit.getPluginManager().callEvent(new BedwarsUpgradeUnregisteredEvent(game, this, upgrade));
+                //Bukkit.getPluginManager().callEvent(new BedwarsUpgradeUnregisteredEvent(game, this, upgrade));
             }
             upgradeRegistry.get(game).clear();
             upgradeRegistry.remove(game);

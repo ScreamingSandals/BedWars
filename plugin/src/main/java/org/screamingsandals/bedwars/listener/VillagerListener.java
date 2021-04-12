@@ -2,10 +2,10 @@ package org.screamingsandals.bedwars.listener;
 
 import org.bukkit.Bukkit;
 import org.screamingsandals.bedwars.Main;
+import org.screamingsandals.bedwars.api.events.OpenShopEvent;
 import org.screamingsandals.bedwars.api.game.GameStatus;
+import org.screamingsandals.bedwars.events.OpenShopEventImpl;
 import org.screamingsandals.bedwars.game.GameStore;
-import org.screamingsandals.bedwars.api.events.BedwarsOpenShopEvent;
-import org.screamingsandals.bedwars.api.events.BedwarsOpenShopEvent.Result;
 import org.screamingsandals.bedwars.game.Game;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.bukkit.event.EventHandler;
@@ -14,6 +14,8 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.player.PlayerManager;
 import org.screamingsandals.bedwars.utils.CitizensUtils;
+import org.screamingsandals.lib.entity.EntityMapper;
+import org.screamingsandals.lib.event.EventManager;
 
 public class VillagerListener implements Listener {
 
@@ -47,15 +49,14 @@ public class VillagerListener implements Listener {
     }
 
     public void open(GameStore store, PlayerInteractEntityEvent event, Game game) {
-        BedwarsOpenShopEvent openShopEvent = new BedwarsOpenShopEvent(game,
-                event.getPlayer(), store, event.getRightClicked());
-        Bukkit.getServer().getPluginManager().callEvent(openShopEvent);
+        var openShopEvent = new OpenShopEventImpl(game, EntityMapper.wrapEntity(event.getRightClicked()).orElseThrow(), PlayerManager.getInstance().getPlayer(event.getPlayer().getUniqueId()).orElseThrow(), store);
+        EventManager.fire(openShopEvent);
 
-        if (openShopEvent.getResult() != Result.ALLOW) {
+        if (openShopEvent.getResult() != OpenShopEvent.Result.ALLOW) {
             return;
         }
-        Debug.info(event.getPlayer().getName() + " opened villager");
+        Debug.info(openShopEvent.getPlayer().getName() + " opened villager");
 
-        Main.openStore(event.getPlayer(), store);
+        Main.openStore(openShopEvent.getPlayer(), store);
     }
 }

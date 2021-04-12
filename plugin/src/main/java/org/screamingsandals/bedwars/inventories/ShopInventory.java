@@ -5,14 +5,13 @@ import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.PurchaseType;
-import org.screamingsandals.bedwars.api.events.*;
 import org.screamingsandals.bedwars.commands.DumpCommand;
 import org.screamingsandals.bedwars.config.MainConfig;
+import org.screamingsandals.bedwars.events.*;
 import org.screamingsandals.bedwars.game.GameStore;
 import org.screamingsandals.bedwars.api.game.ItemSpawnerType;
 import org.screamingsandals.bedwars.api.upgrades.Upgrade;
@@ -20,12 +19,13 @@ import org.screamingsandals.bedwars.api.upgrades.UpgradeRegistry;
 import org.screamingsandals.bedwars.api.upgrades.UpgradeStorage;
 import org.screamingsandals.bedwars.game.CurrentTeam;
 import org.screamingsandals.bedwars.game.Game;
-import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.PlayerManager;
 import org.screamingsandals.bedwars.special.listener.PermaItemListener;
 import org.screamingsandals.bedwars.utils.Sounds;
 import org.screamingsandals.bedwars.lib.debug.Debug;
+import org.screamingsandals.lib.event.EventManager;
+import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.material.Item;
 import org.screamingsandals.lib.material.builder.ItemFactory;
@@ -151,8 +151,8 @@ public class ShopInventory implements Listener {
                 item.getLore().addAll(loreText);
             }
         }
-        final var preScanEvent = new BedwarsPrePropertyScanEvent(event);
-        Bukkit.getServer().getPluginManager().callEvent(preScanEvent);
+        final var preScanEvent = new PrePropertyScanEventImpl(event);
+        EventManager.fire(preScanEvent);
         if (preScanEvent.isCancelled()) return;
 
         itemInfo.getProperties().forEach(property -> {
@@ -163,16 +163,16 @@ public class ShopInventory implements Listener {
                 }
 
                 //noinspection unchecked
-                var applyEvent = new BedwarsApplyPropertyToDisplayedItem(game.orElse(null),
-                        player, item.as(ItemStack.class), property.getPropertyName(), (Map<String, Object>) converted);
-                Bukkit.getServer().getPluginManager().callEvent(applyEvent);
+                var applyEvent = new ApplyPropertyToDisplayedItemEventImpl(game.orElse(null), playerManager.getPlayer(event.getPlayer().getUuid()).orElseThrow(), property.getPropertyName(), (Map<String, Object>) converted, item);
+                EventManager.fire(applyEvent);
 
-                event.setStack(ItemFactory.build(applyEvent.getStack()).orElse(item));
+                if (applyEvent.getStack() != null) {
+                    event.setStack(applyEvent.getStack());
+                }
             }
         });
 
-        final var postScanEvent = new BedwarsPostPropertyScanEvent(event);
-        Bukkit.getServer().getPluginManager().callEvent(postScanEvent);
+        EventManager.fire(new PostPropertyScanEventImpl(event));
     }
 
     public void onPreAction(PreClickEvent event) {
@@ -202,15 +202,15 @@ public class ShopInventory implements Listener {
         }
     }
 
-    @EventHandler
-    public void onApplyPropertyToBoughtItem(BedwarsApplyPropertyToItem event) {
+    @OnEvent
+    public void onApplyPropertyToBoughtItem(ApplyPropertyToItemEventImpl event) {
         if (event.getPropertyName().equalsIgnoreCase("applycolorbyteam")
                 || event.getPropertyName().equalsIgnoreCase("transform::applycolorbyteam")) {
-            Player player = event.getPlayer();
-            CurrentTeam team = (CurrentTeam) event.getGame().getTeamOfPlayer(player);
+            var player = event.getPlayer();
+            CurrentTeam team = (CurrentTeam) event.getGame().getTeamOfPlayer(player.as(Player.class));
 
             if (mainConfig.node("automatic-coloring-in-shop").getBoolean()) {
-                event.setStack(Main.applyColor(team.teamInfo.color, event.getStack()));
+                event.setStack(ItemFactory.build(Main.applyColor(team.teamInfo.color, event.getStack().as(ItemStack.class))).orElse(event.getStack())); // TODO
             }
         }
     }
@@ -326,8 +326,8 @@ public class ShopInventory implements Listener {
                     return "";
                 })
                 .call(categoryBuilder -> {
-                    final var includeEvent = new BedwarsStoreIncludeEvent(categoryBuilder, name, file, useParent);
-                    Bukkit.getServer().getPluginManager().callEvent(includeEvent);
+                    final var includeEvent = new StoreIncludeEventImpl(name, file.toPath().toAbsolutePath(), useParent, categoryBuilder);
+                    EventManager.fire(includeEvent);
                     if (includeEvent.isCancelled()) {
                         return;
                     }
@@ -387,7 +387,7 @@ public class ShopInventory implements Listener {
 
         // TODO: multi-price feature
         var price = event.getPrices().get(0);
-        ItemSpawnerType type = Main.getSpawnerType(price.getCurrency().toLowerCase());
+        org.screamingsandals.bedwars.game.ItemSpawnerType type = Main.getSpawnerType(price.getCurrency().toLowerCase());
 
         var newItem = event.getStack();
 
@@ -438,8 +438,8 @@ public class ShopInventory implements Listener {
 
         var materialItem = ItemFactory.build(type.getStack(priceAmount)).orElseThrow();
         if (event.hasPlayerInInventory(materialItem)) {
-            final var prePurchaseEvent = new BedwarsStorePrePurchaseEvent(event, PurchaseType.NORMAL_ITEM, materialItem, type, newItem);
-            Bukkit.getServer().getPluginManager().callEvent(prePurchaseEvent);
+            final var prePurchaseEvent = new StorePrePurchaseEventImpl(game, playerManager.getPlayer(event.getPlayer().getUuid()).orElseThrow(), materialItem, newItem, type, PurchaseType.NORMAL_ITEM, event);
+            EventManager.fire(prePurchaseEvent);
             if (prePurchaseEvent.isCancelled()) {
                 return;
             }
@@ -452,9 +452,9 @@ public class ShopInventory implements Listener {
                 //noinspection unchecked
                 var propertyData = (Map<String, Object>) converted;
                 if (property.hasName()) {
-                    var applyEvent = new BedwarsApplyPropertyToBoughtItem(game, player,
-                            newItem.as(ItemStack.class), property.getPropertyName(), propertyData);
-                    Bukkit.getServer().getPluginManager().callEvent(applyEvent);
+                    var applyEvent = new ApplyPropertyToBoughtItemEventImpl(game, playerManager.getPlayer(event.getPlayer().getUuid()).orElseThrow(),
+                            property.getPropertyName(), propertyData, newItem);
+                    EventManager.fire(applyEvent);
 
                     newItem = ItemFactory.build(applyEvent.getStack()).orElse(newItem);
                 }
@@ -465,9 +465,9 @@ public class ShopInventory implements Listener {
             }
 
             if (!permaItemPropertyData.isEmpty()) {
-                BedwarsApplyPropertyToBoughtItem applyEvent = new BedwarsApplyPropertyToBoughtItem(game, player,
-                        newItem.as(ItemStack.class), "", permaItemPropertyData);
-                Bukkit.getServer().getPluginManager().callEvent(applyEvent);
+                var applyEvent = new ApplyPropertyToBoughtItemEventImpl(game, playerManager.getPlayer(event.getPlayer().getUuid()).orElseThrow(),
+                        "", permaItemPropertyData, newItem);
+                EventManager.fire(applyEvent);
             }
 
             event.sellStack(materialItem);
@@ -486,11 +486,10 @@ public class ShopInventory implements Listener {
             Sounds.playSound(player, player.getLocation(),
                     mainConfig.node("sounds", "item_buy").getString(), Sounds.ENTITY_ITEM_PICKUP, 1, 1);
 
-            final var postPurchaseEvent = new BedwarsStorePostPurchaseEvent(event, PurchaseType.NORMAL_ITEM);
-            Bukkit.getServer().getPluginManager().callEvent(postPurchaseEvent);
+            EventManager.fire(new StorePostPurchaseEventImpl(game, playerManager.getPlayer(event.getPlayer().getUuid()).orElseThrow(), PurchaseType.NORMAL_ITEM, event));
         } else {
-            final var purchaseFailedEvent = new BedwarsPurchaseFailedEvent(event, PurchaseType.NORMAL_ITEM);
-            Bukkit.getServer().getPluginManager().callEvent(purchaseFailedEvent);
+            final var purchaseFailedEvent = new PurchaseFailedEventImpl(game, playerManager.getPlayer(event.getPlayer().getUuid()).orElseThrow(), PurchaseType.NORMAL_ITEM, event);
+            EventManager.fire(purchaseFailedEvent);
             if (purchaseFailedEvent.isCancelled()) return;
 
             if (!mainConfig.node("removePurchaseMessages").getBoolean()) {
@@ -510,7 +509,7 @@ public class ShopInventory implements Listener {
 
         // TODO: multi-price feature
         var price = event.getPrices().get(0);
-        ItemSpawnerType type = Main.getSpawnerType(price.getCurrency().toLowerCase());
+        org.screamingsandals.bedwars.game.ItemSpawnerType type = Main.getSpawnerType(price.getCurrency().toLowerCase());
 
         var priceAmount = price.getAmount();
 
@@ -523,8 +522,8 @@ public class ShopInventory implements Listener {
         var materialItem = ItemFactory.build(type.getStack(priceAmount)).orElseThrow();
 
         if (event.hasPlayerInInventory(materialItem)) {
-            final var upgradePurchasedEvent  = new BedwarsStorePrePurchaseEvent(event, PurchaseType.UPGRADES, materialItem, type, null);
-            Bukkit.getServer().getPluginManager().callEvent(upgradePurchasedEvent);
+            final var upgradePurchasedEvent  = new StorePrePurchaseEventImpl(game, playerManager.getPlayer(event.getPlayer().getUuid()).orElseThrow(), materialItem, null, type, PurchaseType.UPGRADES, event);
+            EventManager.fire(upgradePurchasedEvent);
             if (upgradePurchasedEvent.isCancelled()) return;
 
             event.sellStack(materialItem);
@@ -576,9 +575,8 @@ public class ShopInventory implements Listener {
                     }
 
                     if (isUpgrade) {
-                        BedwarsUpgradeBoughtEvent bedwarsUpgradeBoughtEvent = new BedwarsUpgradeBoughtEvent(game,
-                                upgradeStorage, upgrades, player, addLevels);
-                        Bukkit.getPluginManager().callEvent(bedwarsUpgradeBoughtEvent);
+                        var bedwarsUpgradeBoughtEvent = new UpgradeBoughtEventImpl(game, playerManager.getPlayer(player.getUniqueId()).orElseThrow(), upgrades, addLevels, upgradeStorage);
+                        EventManager.fire(bedwarsUpgradeBoughtEvent);
 
                         if (bedwarsUpgradeBoughtEvent.isCancelled()) {
                             continue;
@@ -589,9 +587,9 @@ public class ShopInventory implements Listener {
                         }
 
                         for (var anUpgrade : upgrades) {
-                            BedwarsUpgradeImprovedEvent improvedEvent = new BedwarsUpgradeImprovedEvent(game,
-                                    upgradeStorage, anUpgrade, anUpgrade.getLevel(), anUpgrade.getLevel() + addLevels);
-                            Bukkit.getPluginManager().callEvent(improvedEvent);
+                            var improvedEvent = new UpgradeImprovedEventImpl(game, anUpgrade, upgradeStorage, anUpgrade.getLevel(), anUpgrade.getLevel() + addLevels);
+                            improvedEvent.setNewLevel(anUpgrade.getLevel() + addLevels);
+                            EventManager.fire(improvedEvent);
                         }
                     }
                 }
@@ -622,12 +620,12 @@ public class ShopInventory implements Listener {
                             Sounds.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
                 }
             }
-            final var postPurchaseEvent = new BedwarsStorePostPurchaseEvent(event, PurchaseType.UPGRADES);
-            Bukkit.getServer().getPluginManager().callEvent(postPurchaseEvent);
+            EventManager.fire(new StorePostPurchaseEventImpl(game, playerManager.getPlayer(event.getPlayer().getUuid()).orElseThrow(), PurchaseType.UPGRADES, event));
         } else {
-            final var purchaseFailedEvent = new BedwarsPurchaseFailedEvent(event, PurchaseType.UPGRADES);
-            Bukkit.getServer().getPluginManager().callEvent(purchaseFailedEvent);
+            final var purchaseFailedEvent = new PurchaseFailedEventImpl(game, playerManager.getPlayer(event.getPlayer().getUuid()).orElseThrow(), PurchaseType.UPGRADES, event);
+            EventManager.fire(purchaseFailedEvent);
             if (purchaseFailedEvent.isCancelled()) return;
+
             if (!mainConfig.node("removePurchaseMessages").getBoolean()) {
                 Message.of(LangKeys.IN_GAME_SHOP_BUY_FAILED)
                         .prefixOrDefault(game.getCustomPrefixComponent())

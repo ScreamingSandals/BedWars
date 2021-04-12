@@ -4,7 +4,7 @@ import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.APIUtils;
 import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.api.game.GameStatus;
-import org.screamingsandals.bedwars.api.events.BedwarsApplyPropertyToBoughtItem;
+import org.screamingsandals.bedwars.events.ApplyPropertyToBoughtItemEventImpl;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.PlayerManager;
@@ -21,17 +21,27 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
+import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.player.PlayerMapper;
+import org.screamingsandals.lib.utils.annotations.Service;
+import org.screamingsandals.lib.utils.annotations.methods.OnPostEnable;
 
+@Service
 public class WarpPowderListener implements Listener {
     private static final String WARP_POWDER_PREFIX = "Module:WarpPowder:";
 
-    @EventHandler
-    public void onPowderItemRegister(BedwarsApplyPropertyToBoughtItem event) {
+    @OnPostEnable
+    private void postEnable() {
+        Main.getInstance().registerBedwarsListener(this); // TODO: get rid of platform events
+    }
+
+    @OnEvent
+    public void onPowderItemRegister(ApplyPropertyToBoughtItemEventImpl event) {
         if (event.getPropertyName().equalsIgnoreCase("warppowder")) {
-            ItemStack stack = event.getStack();
+            var stack = event.getStack().as(ItemStack.class); // TODO: get rid of this transformation
             APIUtils.hashIntoInvisibleString(stack, applyProperty(event));
+            event.setStack(stack);
         }
     }
 
@@ -128,7 +138,7 @@ public class WarpPowderListener implements Listener {
         }
     }
 
-    private String applyProperty(BedwarsApplyPropertyToBoughtItem event) {
+    private String applyProperty(ApplyPropertyToBoughtItemEventImpl event) {
         return WARP_POWDER_PREFIX
                 + MiscUtils.getIntFromProperty(
                 "teleport-time", "specials.warp-powder.teleport-time", event) + ":"

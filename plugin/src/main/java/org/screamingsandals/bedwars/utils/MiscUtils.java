@@ -17,18 +17,19 @@ import org.bukkit.util.Vector;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.RunningTeam;
 import org.screamingsandals.bedwars.api.TeamColor;
-import org.screamingsandals.bedwars.api.events.BedwarsApplyPropertyToBoughtItem;
 import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.config.MainConfig;
-import org.screamingsandals.bedwars.player.BedWarsPlayer;
+import org.screamingsandals.bedwars.events.ApplyPropertyToItemEventImpl;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.player.PlayerManager;
 import org.screamingsandals.lib.material.MaterialHolder;
 import org.screamingsandals.lib.material.MaterialMapping;
+import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.sender.SenderMessage;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @UtilityClass
 public class MiscUtils {
@@ -102,7 +103,7 @@ public class MiscUtils {
         }
     }
 
-    public int getIntFromProperty(String name, String fallback, BedwarsApplyPropertyToBoughtItem event) {
+    public int getIntFromProperty(String name, String fallback, ApplyPropertyToItemEventImpl event) {
         try {
             return event.getIntProperty(name);
         } catch (NullPointerException e) {
@@ -110,7 +111,7 @@ public class MiscUtils {
         }
     }
 
-    public double getDoubleFromProperty(String name, String fallback, BedwarsApplyPropertyToBoughtItem event) {
+    public double getDoubleFromProperty(String name, String fallback, ApplyPropertyToItemEventImpl event) {
         try {
             return event.getDoubleProperty(name);
         } catch (NullPointerException e) {
@@ -118,7 +119,7 @@ public class MiscUtils {
         }
     }
 
-    public boolean getBooleanFromProperty(String name, String fallback, BedwarsApplyPropertyToBoughtItem event) {
+    public boolean getBooleanFromProperty(String name, String fallback, ApplyPropertyToItemEventImpl event) {
         try {
             return event.getBooleanProperty(name);
         } catch (NullPointerException e) {
@@ -126,7 +127,7 @@ public class MiscUtils {
         }
     }
 
-    public String getStringFromProperty(String name, String fallback, BedwarsApplyPropertyToBoughtItem event) {
+    public String getStringFromProperty(String name, String fallback, ApplyPropertyToItemEventImpl event) {
         try {
             return event.getStringProperty(name);
         } catch (NullPointerException e) {
@@ -134,7 +135,7 @@ public class MiscUtils {
         }
     }
 
-    public String getMaterialFromProperty(String name, String fallback, BedwarsApplyPropertyToBoughtItem event) {
+    public String getMaterialFromProperty(String name, String fallback, ApplyPropertyToItemEventImpl event) {
         try {
             return event.getStringProperty(name);
         } catch (NullPointerException e) {
@@ -315,5 +316,17 @@ public class MiscUtils {
         });
 
         return players;
+    }
+
+    public List<PlayerWrapper> getOnlinePlayersW(Collection<UUID> uuids) {
+        if (uuids == null || uuids.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        return uuids.stream()
+                .map(PlayerMapper::getPlayer)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toList());
     }
 }

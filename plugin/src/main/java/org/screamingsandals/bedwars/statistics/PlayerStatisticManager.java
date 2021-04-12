@@ -2,12 +2,13 @@ package org.screamingsandals.bedwars.statistics;
 
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
-import org.screamingsandals.bedwars.api.events.BedwarsSavePlayerStatisticEvent;
 import org.screamingsandals.bedwars.api.statistics.LeaderboardEntry;
 import org.screamingsandals.bedwars.api.statistics.PlayerStatisticsManager;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.database.DatabaseManager;
+import org.screamingsandals.bedwars.events.SavePlayerStatisticEventImpl;
 import org.screamingsandals.bedwars.holograms.LeaderboardHolograms;
+import org.screamingsandals.lib.event.EventManager;
 import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.player.OfflinePlayerWrapper;
 import org.screamingsandals.lib.player.PlayerMapper;
@@ -258,8 +259,8 @@ public class PlayerStatisticManager implements PlayerStatisticsManager<OfflinePl
     }
 
     public void storeStatistic(PlayerStatistic statistic) {
-        var savePlayerStatisticEvent = new BedwarsSavePlayerStatisticEvent(statistic);
-        Bukkit.getServer().getPluginManager().callEvent(savePlayerStatisticEvent);
+        var savePlayerStatisticEvent = new SavePlayerStatisticEventImpl(statistic);
+        EventManager.fire(savePlayerStatisticEvent);
 
         if (savePlayerStatisticEvent.isCancelled()) {
             return;

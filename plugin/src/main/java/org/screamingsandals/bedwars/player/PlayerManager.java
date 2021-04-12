@@ -19,7 +19,6 @@ import java.util.UUID;
 })
 @RequiredArgsConstructor
 public class PlayerManager implements org.screamingsandals.bedwars.api.player.PlayerManager<BedWarsPlayer, Game> {
-    private final GameManager gameManager;
     private final List<BedWarsPlayer> players = new ArrayList<>();
 
     {

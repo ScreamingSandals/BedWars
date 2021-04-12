@@ -4,8 +4,8 @@ import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.APIUtils;
 import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.api.game.GameStatus;
-import org.screamingsandals.bedwars.api.events.BedwarsApplyPropertyToBoughtItem;
 import org.screamingsandals.bedwars.api.special.SpecialItem;
+import org.screamingsandals.bedwars.events.ApplyPropertyToBoughtItemEventImpl;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.PlayerManager;
@@ -24,19 +24,29 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.player.PlayerMapper;
+import org.screamingsandals.lib.utils.annotations.Service;
+import org.screamingsandals.lib.utils.annotations.methods.OnPostEnable;
 
 import java.util.ArrayList;
 
+@Service
 public class RescuePlatformListener implements Listener {
     private static final String RESCUE_PLATFORM_PREFIX = "Module:RescuePlatform:";
 
-    @EventHandler
-    public void onRescuePlatformRegistered(BedwarsApplyPropertyToBoughtItem event) {
+    @OnPostEnable
+    private void postEnable() {
+        Main.getInstance().registerBedwarsListener(this); // TODO: get rid of platform events
+    }
+
+    @OnEvent
+    public void onRescuePlatformRegistered(ApplyPropertyToBoughtItemEventImpl event) {
         if (event.getPropertyName().equalsIgnoreCase("rescueplatform")) {
-            ItemStack stack = event.getStack();
+            var stack = event.getStack().as(ItemStack.class); // TODO: get rid of this transformation
             APIUtils.hashIntoInvisibleString(stack, applyProperty(event));
+            event.setStack(stack);
         }
     }
 
@@ -158,7 +168,7 @@ public class RescuePlatformListener implements Listener {
         return createdPlatforms;
     }
 
-    private String applyProperty(BedwarsApplyPropertyToBoughtItem event) {
+    private String applyProperty(ApplyPropertyToBoughtItemEventImpl event) {
         return RESCUE_PLATFORM_PREFIX
                 + MiscUtils.getBooleanFromProperty(
                 "is-breakable", "specials.rescue-platform.is-breakable", event) + ":"

@@ -8,24 +8,33 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.util.Vector;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.APIUtils;
-import org.screamingsandals.bedwars.api.events.BedwarsApplyPropertyToBoughtItem;
+import org.screamingsandals.bedwars.events.ApplyPropertyToBoughtItemEventImpl;
 import org.screamingsandals.bedwars.player.PlayerManager;
 import org.screamingsandals.bedwars.utils.MiscUtils;
+import org.screamingsandals.lib.event.OnEvent;
+import org.screamingsandals.lib.utils.annotations.Service;
+import org.screamingsandals.lib.utils.annotations.methods.OnPostEnable;
 
+@Service
 public class ThrowableFireballListener implements Listener {
 
     public static final String THROWABLE_FIREBALL_PREFIX = "Module:ThrowableFireball:";
 
+    @OnPostEnable
+    private void postEnable() {
+        Main.getInstance().registerBedwarsListener(this); // TODO: get rid of platform events
+    }
 
-    @EventHandler
-    public void onThrowableFireballRegistered(BedwarsApplyPropertyToBoughtItem event) {
+
+    @OnEvent
+    public void onThrowableFireballRegistered(ApplyPropertyToBoughtItemEventImpl event) {
         if (event.getPropertyName().equalsIgnoreCase("throwablefireball")) {
-            ItemStack stack = event.getStack();
+            var stack = event.getStack().as(ItemStack.class); // TODO: get rid of this transformation
 
             APIUtils.hashIntoInvisibleString(stack, applyProperty(event));
+            event.setStack(stack);
         }
     }
 
@@ -71,7 +80,7 @@ public class ThrowableFireballListener implements Listener {
         }
     }
 
-    private String applyProperty(BedwarsApplyPropertyToBoughtItem event) {
+    private String applyProperty(ApplyPropertyToBoughtItemEventImpl event) {
         return THROWABLE_FIREBALL_PREFIX
                 + MiscUtils.getDoubleFromProperty(
                 "explosion", "specials.throwable-fireball.explosion", event);
