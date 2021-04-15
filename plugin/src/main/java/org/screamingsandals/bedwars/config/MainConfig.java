@@ -76,7 +76,7 @@ public class MainConfig {
                     .key("source-damage").defValue(0.5)
                     .key("team-damage").defValue(true)
                     .key("launch-multiplier").defValue(3)
-                    .key("reduce-y").defValue(2.0)
+                    .key("reduce-y").defValue(2)
                     .key("acceleration-y").defValue(1)
                     .key("fall-damage").defValue(0.75)
                     .back()
