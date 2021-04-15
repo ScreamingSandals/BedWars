@@ -1,4 +1,4 @@
-defaultTasks 'clean', 'screamCompile'
+defaultTasks 'clean', 'screamCompile', 'allowJavadocUpload'
 
 allprojects {
     group = 'org.screamingsandals.bedwars'
