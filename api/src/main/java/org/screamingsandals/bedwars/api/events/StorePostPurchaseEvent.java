@@ -1,10 +1,11 @@
 package org.screamingsandals.bedwars.api.events;
 
+import org.screamingsandals.bedwars.api.BedwarsAPI;
 import org.screamingsandals.bedwars.api.PurchaseType;
 import org.screamingsandals.bedwars.api.game.Game;
-import org.screamingsandals.bedwars.api.game.ItemSpawnerType;
 import org.screamingsandals.bedwars.api.player.BWPlayer;
-import org.screamingsandals.lib.utils.Wrapper;
+
+import java.util.function.Consumer;
 
 public interface StorePostPurchaseEvent<G extends Game, P extends BWPlayer> extends BWCancellable {
     G getGame();
@@ -14,4 +15,9 @@ public interface StorePostPurchaseEvent<G extends Game, P extends BWPlayer> exte
     PurchaseType getType();
 
     // OnTradeEvent getTradeEvent() - just in class form, not interface
+
+    @SuppressWarnings("unchecked")
+    static void handle(Object plugin, Consumer<StorePostPurchaseEvent<Game, BWPlayer>> consumer) {
+        BedwarsAPI.getInstance().getEventUtils().handle(plugin, StorePostPurchaseEvent.class, (Consumer) consumer);
+    }
 }

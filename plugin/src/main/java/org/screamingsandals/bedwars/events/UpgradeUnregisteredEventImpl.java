@@ -2,7 +2,6 @@ package org.screamingsandals.bedwars.events;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.screamingsandals.bedwars.api.events.UpgradeRegisteredEvent;
 import org.screamingsandals.bedwars.api.events.UpgradeUnregisteredEvent;
 import org.screamingsandals.bedwars.api.upgrades.Upgrade;
 import org.screamingsandals.bedwars.api.upgrades.UpgradeStorage;

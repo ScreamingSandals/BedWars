@@ -3,7 +3,6 @@ package org.screamingsandals.bedwars.events;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.screamingsandals.bedwars.api.PurchaseType;
-import org.screamingsandals.bedwars.api.events.StorePostPurchaseEvent;
 import org.screamingsandals.bedwars.api.events.StorePrePurchaseEvent;
 import org.screamingsandals.bedwars.game.Game;
 import org.screamingsandals.bedwars.game.ItemSpawnerType;

@@ -36,6 +36,7 @@ import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.bedwars.tab.TabManager;
 import org.screamingsandals.bedwars.utils.BedWarsSignService;
 import org.screamingsandals.bedwars.utils.BukkitBStatsMetrics;
+import org.screamingsandals.bedwars.utils.EventUtils;
 import org.screamingsandals.bedwars.utils.UpdateChecker;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.lib.bukkit.utils.nms.ClassStorage;
@@ -95,7 +96,8 @@ import java.util.*;
         BukkitBStatsMetrics.class,
         PlayerManager.class,
         PartyListener.class,
-        EntityMapper.class
+        EntityMapper.class,
+        EventUtils.class
 })
 public class Main extends PluginContainer implements BedwarsAPI {
     private static Main instance;
@@ -529,6 +531,11 @@ public class Main extends PluginContainer implements BedwarsAPI {
     @Override
     public org.screamingsandals.bedwars.api.player.PlayerManager<?,?> getPlayerManager() {
         return PlayerManager.getInstance();
+    }
+
+    @Override
+    public org.screamingsandals.bedwars.api.utils.EventUtils getEventUtils() {
+        return EventUtils.getInstance();
     }
 
     @Override

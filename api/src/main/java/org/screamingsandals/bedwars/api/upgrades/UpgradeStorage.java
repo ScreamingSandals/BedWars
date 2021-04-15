@@ -1,10 +1,10 @@
 package org.screamingsandals.bedwars.api.upgrades;
 
+import org.screamingsandals.bedwars.api.BedwarsAPI;
 import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.api.game.ItemSpawner;
 import org.screamingsandals.bedwars.api.Team;
 import org.screamingsandals.bedwars.api.game.ItemSpawnerType;
-import org.bukkit.Bukkit;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -59,7 +59,7 @@ public final class UpgradeStorage {
         }
         if (!upgradeRegistry.get(game).contains(upgrade)) {
             upgrade.onUpgradeRegistered(game);
-            //Bukkit.getPluginManager().callEvent(new BedwarsUpgradeRegisteredEvent(game, this, upgrade));
+            BedwarsAPI.getInstance().getEventUtils().fireUpgradeRegisteredEvent(game, this, upgrade);
             upgradeRegistry.get(game).add(upgrade);
         }
     }
@@ -78,7 +78,7 @@ public final class UpgradeStorage {
         if (upgradeRegistry.containsKey(game)) {
             if (upgradeRegistry.get(game).contains(upgrade)) {
                 upgrade.onUpgradeUnregistered(game);
-                //Bukkit.getPluginManager().callEvent(new BedwarsUpgradeUnregisteredEvent(game, this, upgrade));
+                BedwarsAPI.getInstance().getEventUtils().fireUpgradeUnregisteredEvent(game, this, upgrade);
                 upgradeRegistry.get(game).remove(upgrade);
             }
         }
@@ -106,7 +106,7 @@ public final class UpgradeStorage {
         if (upgradeRegistry.containsKey(game)) {
             for (Upgrade upgrade : upgradeRegistry.get(game)) {
                 upgrade.onUpgradeUnregistered(game);
-                //Bukkit.getPluginManager().callEvent(new BedwarsUpgradeUnregisteredEvent(game, this, upgrade));
+                BedwarsAPI.getInstance().getEventUtils().fireUpgradeUnregisteredEvent(game, this, upgrade);
             }
             upgradeRegistry.get(game).clear();
             upgradeRegistry.remove(game);
@@ -173,7 +173,7 @@ public final class UpgradeStorage {
             for (Upgrade upgrade : upgradeRegistry.get(game)) {
                 if (upgrade instanceof ItemSpawner) {
                     ItemSpawner itemSpawner = (ItemSpawner) upgrade;
-                    if (itemSpawner.getTeam() == null) {
+                    if (itemSpawner.getTeam().isEmpty()) {
                         continue;
                     }
 
@@ -193,7 +193,7 @@ public final class UpgradeStorage {
             for (Upgrade upgrade : upgradeRegistry.get(game)) {
                 if (upgrade instanceof ItemSpawner) {
                     ItemSpawner itemSpawner = (ItemSpawner) upgrade;
-                    if (itemSpawner.getTeam() == null) {
+                    if (itemSpawner.getTeam().isEmpty()) {
                         continue;
                     }
 

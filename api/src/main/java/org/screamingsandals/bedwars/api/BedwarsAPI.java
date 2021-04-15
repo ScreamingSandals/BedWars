@@ -8,6 +8,7 @@ import org.screamingsandals.bedwars.api.statistics.PlayerStatisticsManager;
 import org.screamingsandals.bedwars.api.utils.ColorChanger;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
+import org.screamingsandals.bedwars.api.utils.EventUtils;
 
 import java.util.List;
 
@@ -24,6 +25,11 @@ public interface BedwarsAPI {
      * @return Player manager of the bedwars plugin
      */
     PlayerManager<?, ?> getPlayerManager();
+
+    /**
+     * @return Event utils used for registering handlers for bedwars' events
+     */
+    EventUtils getEventUtils();
 
     /**
      * @return List of existing spawner types

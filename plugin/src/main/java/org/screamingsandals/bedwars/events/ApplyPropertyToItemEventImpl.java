@@ -3,7 +3,6 @@ package org.screamingsandals.bedwars.events;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.jetbrains.annotations.NotNull;
 import org.screamingsandals.bedwars.api.events.ApplyPropertyToItemEvent;
 import org.screamingsandals.bedwars.game.Game;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;

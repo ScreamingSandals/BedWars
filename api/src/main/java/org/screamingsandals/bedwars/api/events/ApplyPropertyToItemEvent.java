@@ -1,10 +1,13 @@
 package org.screamingsandals.bedwars.api.events;
 
+import org.screamingsandals.bedwars.api.BedwarsAPI;
 import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.api.player.BWPlayer;
+import org.screamingsandals.bedwars.api.utils.EventUtils;
 import org.screamingsandals.lib.utils.Wrapper;
 
 import java.util.Map;
+import java.util.function.Consumer;
 
 public interface ApplyPropertyToItemEvent<G extends Game, P extends BWPlayer, I extends Wrapper> {
     G getGame();
@@ -23,6 +26,11 @@ public interface ApplyPropertyToItemEvent<G extends Game, P extends BWPlayer, I 
      * @param stack wrapper or platform item
      */
     void setStack(Object stack);
+
+    @SuppressWarnings("unchecked")
+    static void handle(Object plugin, Consumer<ApplyPropertyToItemEvent<Game, BWPlayer, Wrapper>> consumer) {
+        BedwarsAPI.getInstance().getEventUtils().handle(plugin, ApplyPropertyToItemEvent.class, (Consumer) consumer);
+    }
 
     default Object getProperty(String key) {
         return getProperties().get(key);

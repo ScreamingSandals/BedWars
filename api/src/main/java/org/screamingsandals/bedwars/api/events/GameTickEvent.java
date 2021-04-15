@@ -1,7 +1,10 @@
 package org.screamingsandals.bedwars.api.events;
 
+import org.screamingsandals.bedwars.api.BedwarsAPI;
 import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.api.game.GameStatus;
+
+import java.util.function.Consumer;
 
 public interface GameTickEvent<G extends Game> {
 
@@ -32,5 +35,10 @@ public interface GameTickEvent<G extends Game> {
 
     default boolean isNextTickChanged() {
         return isNextCountdownChanged() || isNextStatusChanged();
+    }
+
+    @SuppressWarnings("unchecked")
+    static void handle(Object plugin, Consumer<GameTickEvent<Game>> consumer) {
+        BedwarsAPI.getInstance().getEventUtils().handle(plugin, GameTickEvent.class, (Consumer) consumer);
     }
 }

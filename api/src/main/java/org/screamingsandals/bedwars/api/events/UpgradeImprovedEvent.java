@@ -1,8 +1,11 @@
 package org.screamingsandals.bedwars.api.events;
 
+import org.screamingsandals.bedwars.api.BedwarsAPI;
 import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.api.upgrades.Upgrade;
 import org.screamingsandals.bedwars.api.upgrades.UpgradeStorage;
+
+import java.util.function.Consumer;
 
 public interface UpgradeImprovedEvent<G extends Game> extends BWCancellable {
 
@@ -19,4 +22,9 @@ public interface UpgradeImprovedEvent<G extends Game> extends BWCancellable {
     double getOriginalNewLevel();
 
     void setNewLevel(double newLevel);
+
+    @SuppressWarnings("unchecked")
+    static void handle(Object plugin, Consumer<UpgradeImprovedEvent<Game>> consumer) {
+        BedwarsAPI.getInstance().getEventUtils().handle(plugin, UpgradeImprovedEvent.class, (Consumer) consumer);
+    }
 }

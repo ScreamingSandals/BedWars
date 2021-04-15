@@ -1,9 +1,12 @@
 package org.screamingsandals.bedwars.api.events;
 
+import org.screamingsandals.bedwars.api.BedwarsAPI;
 import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.api.game.GameStore;
 import org.screamingsandals.bedwars.api.player.BWPlayer;
 import org.screamingsandals.lib.utils.Wrapper;
+
+import java.util.function.Consumer;
 
 public interface OpenShopEvent<G extends Game, E extends Wrapper, P extends BWPlayer, S extends GameStore> extends BWCancellable {
 
@@ -36,5 +39,10 @@ public interface OpenShopEvent<G extends Game, E extends Wrapper, P extends BWPl
         DISALLOW_THIRD_PARTY_SHOP,
         DISALLOW_LOCKED_FOR_THIS_PLAYER,
         DISALLOW_UNKNOWN;
+    }
+
+    @SuppressWarnings("unchecked")
+    static void handle(Object plugin, Consumer<OpenShopEvent<Game, Wrapper, BWPlayer, GameStore>> consumer) {
+        BedwarsAPI.getInstance().getEventUtils().handle(plugin, OpenShopEvent.class, (Consumer) consumer);
     }
 }
