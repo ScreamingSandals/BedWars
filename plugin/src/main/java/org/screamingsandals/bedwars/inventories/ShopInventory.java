@@ -326,7 +326,7 @@ public class ShopInventory implements Listener {
                     return "";
                 })
                 .call(categoryBuilder -> {
-                    final var includeEvent = new StoreIncludeEventImpl(name, file.toPath().toAbsolutePath(), useParent, categoryBuilder);
+                    final var includeEvent = new StoreIncludeEventImpl(name, file == null ? null : file.toPath().toAbsolutePath(), useParent, categoryBuilder);
                     EventManager.fire(includeEvent);
                     if (includeEvent.isCancelled()) {
                         return;
