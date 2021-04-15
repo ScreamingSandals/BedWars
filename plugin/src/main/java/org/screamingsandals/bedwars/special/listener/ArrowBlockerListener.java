@@ -31,7 +31,7 @@ public class ArrowBlockerListener implements Listener {
     private static final String ARROW_BLOCKER_PREFIX = "Module:ArrowBlocker:";
 
     @OnPostEnable
-    private void postEnable() {
+    public void postEnable() {
         Main.getInstance().registerBedwarsListener(this); // TODO: get rid of platform events
     }
 

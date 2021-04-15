@@ -21,7 +21,6 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.lang.Message;
-import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.utils.annotations.methods.OnPostEnable;
 
@@ -33,7 +32,7 @@ public class TrapListener implements Listener {
     private static final String TRAP_PREFIX = "Module:Trap:";
 
     @OnPostEnable
-    private void postEnable() {
+    public void postEnable() {
         Main.getInstance().registerBedwarsListener(this); // TODO: get rid of platform events
     }
 
@@ -69,7 +68,7 @@ public class TrapListener implements Listener {
                 Trap trap = (Trap) special;
                 if (System.identityHashCode(trap) == classID) {
                     trap.place(event.getBlock().getLocation().as(Location.class));
-                    PlayerMapper.wrapPlayer(event.getPlayer()).sendMessage(Message.of(LangKeys.SPECIALS_TRAP_BUILT).prefixOrDefault(((Game) event.getGame()).getCustomPrefixComponent()));
+                    event.getPlayer().sendMessage(Message.of(LangKeys.SPECIALS_TRAP_BUILT).prefixOrDefault((event.getGame()).getCustomPrefixComponent()));
                     return;
                 }
             }

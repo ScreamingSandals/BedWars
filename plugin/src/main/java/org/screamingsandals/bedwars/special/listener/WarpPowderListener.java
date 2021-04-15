@@ -32,7 +32,7 @@ public class WarpPowderListener implements Listener {
     private static final String WARP_POWDER_PREFIX = "Module:WarpPowder:";
 
     @OnPostEnable
-    private void postEnable() {
+    public void postEnable() {
         Main.getInstance().registerBedwarsListener(this); // TODO: get rid of platform events
     }
 

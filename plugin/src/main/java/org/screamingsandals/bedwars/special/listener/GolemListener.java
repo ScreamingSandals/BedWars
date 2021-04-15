@@ -41,7 +41,7 @@ public class GolemListener implements Listener {
     private static final String GOLEM_PREFIX = "Module:Golem:";
 
     @OnPostEnable
-    private void postEnable() {
+    public void postEnable() {
         Main.getInstance().registerBedwarsListener(this); // TODO: get rid of platform events
     }
 

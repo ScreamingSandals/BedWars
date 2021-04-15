@@ -20,7 +20,7 @@ public class MagnetShoesListener implements Listener {
     public static final String MAGNET_SHOES_PREFIX = "Module:MagnetShoes:";
 
     @OnPostEnable
-    private void postEnable() {
+    public void postEnable() {
         Main.getInstance().registerBedwarsListener(this); // TODO: get rid of platform events
     }
 

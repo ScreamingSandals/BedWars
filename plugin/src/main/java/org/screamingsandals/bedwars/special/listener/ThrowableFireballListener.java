@@ -23,7 +23,7 @@ public class ThrowableFireballListener implements Listener {
     public static final String THROWABLE_FIREBALL_PREFIX = "Module:ThrowableFireball:";
 
     @OnPostEnable
-    private void postEnable() {
+    public void postEnable() {
         Main.getInstance().registerBedwarsListener(this); // TODO: get rid of platform events
     }
 

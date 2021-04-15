@@ -23,7 +23,7 @@ public class TrackerListener implements Listener {
     private static final String TRACKER_PREFIX = "Module:Tracker:";
 
     @OnPostEnable
-    private void postEnable() {
+    public void postEnable() {
         Main.getInstance().registerBedwarsListener(this); // TODO: get rid of platform events
     }
 

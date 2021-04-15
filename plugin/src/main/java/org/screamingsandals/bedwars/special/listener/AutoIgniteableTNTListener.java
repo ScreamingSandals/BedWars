@@ -30,11 +30,11 @@ public class AutoIgniteableTNTListener implements Listener {
     private static final String AUTO_IGNITEABLE_TNT_PREFIX = "Module:AutoIgniteableTnt:";
 
     @OnPostEnable
-    private void postEnable() {
+    public void postEnable() {
         Main.getInstance().registerBedwarsListener(this); // TODO: get rid of platform events
     }
 
-    @EventHandler
+    @OnEvent
     public void onAutoIgniteableTNTRegistered(ApplyPropertyToBoughtItemEventImpl event) {
         if (event.getPropertyName().equalsIgnoreCase("autoigniteabletnt")) {
             var stack = event.getStack().as(ItemStack.class); // TODO: get rid of this transformation

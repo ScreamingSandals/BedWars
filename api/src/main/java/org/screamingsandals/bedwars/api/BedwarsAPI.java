@@ -9,13 +9,14 @@ import org.screamingsandals.bedwars.api.utils.ColorChanger;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.screamingsandals.bedwars.api.utils.EventUtils;
+import org.screamingsandals.lib.utils.Wrapper;
 
 import java.util.List;
 
 /**
  * @author Bedwars Team
  */
-public interface BedwarsAPI {
+public interface BedwarsAPI extends Wrapper {
     /**
      * @return Game manager of the bedwars plugin
      */

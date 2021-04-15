@@ -37,7 +37,7 @@ public class TNTSheepListener implements Listener {
     private static final String TNT_SHEEP_PREFIX = "Module:TNTSheep:";
 
     @OnPostEnable
-    private void postEnable() {
+    public void postEnable() {
         Main.getInstance().registerBedwarsListener(this); // TODO: get rid of platform events
     }
 

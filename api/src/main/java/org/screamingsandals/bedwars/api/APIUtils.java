@@ -15,7 +15,9 @@ import org.bukkit.plugin.Plugin;
 /**
  * @author Bedwars Team
  *
+ * THIS CLASS WILL BE REPLACED WITH SCREAMING LIB EQUIVALENT
  */
+@Deprecated
 public class APIUtils {
 	public static final String BEDWARS_NAMESPACED_KEY = "screaming-bedwars-hidden-api";
 
@@ -26,7 +28,7 @@ public class APIUtils {
 	public static void hashIntoInvisibleString(ItemStack stack, String hash) {
 		ItemMeta meta = stack.getItemMeta();
 		try {
-			NamespacedKey key = new NamespacedKey((Plugin) BedwarsAPI.getInstance(), BEDWARS_NAMESPACED_KEY);
+			NamespacedKey key = new NamespacedKey(BedwarsAPI.getInstance().as(Plugin.class), BEDWARS_NAMESPACED_KEY);
 			PersistentDataContainer container = meta.getPersistentDataContainer();
 			List<String> propertyLines = new ArrayList<>();
 			if (container.has(key, PersistentDataType.STRING)) {
@@ -36,6 +38,7 @@ public class APIUtils {
 			propertyLines.add(hash);
 			container.set(key, PersistentDataType.STRING, new Gson().toJson(propertyLines));
 		} catch (Throwable ignored) {
+			ignored.printStackTrace();
 			// Use the Lore API instead
 			List<String> lore = meta.hasLore() ? meta.getLore() : new ArrayList<>();
 
@@ -53,7 +56,7 @@ public class APIUtils {
 	public static String unhashFromInvisibleStringStartsWith(ItemStack stack, String startsWith) {
 		ItemMeta meta = stack.getItemMeta();
 		try {
-			NamespacedKey key = new NamespacedKey((Plugin) BedwarsAPI.getInstance(), BEDWARS_NAMESPACED_KEY);
+			NamespacedKey key = new NamespacedKey(BedwarsAPI.getInstance().as(Plugin.class), BEDWARS_NAMESPACED_KEY);
 			PersistentDataContainer container = meta.getPersistentDataContainer();
 			if (container.has(key, PersistentDataType.STRING)) {
 				String oldString = container.get(key, PersistentDataType.STRING);
@@ -89,7 +92,7 @@ public class APIUtils {
 	public static boolean unhashFromInvisibleString(ItemStack stack, String hash) {
 		ItemMeta meta = stack.getItemMeta();
 		try {
-			NamespacedKey key = new NamespacedKey((Plugin) BedwarsAPI.getInstance(), BEDWARS_NAMESPACED_KEY);
+			NamespacedKey key = new NamespacedKey(BedwarsAPI.getInstance().as(Plugin.class), BEDWARS_NAMESPACED_KEY);
 			PersistentDataContainer container = meta.getPersistentDataContainer();
 			if (container.has(key, PersistentDataType.STRING)) {
 				String oldString = container.get(key, PersistentDataType.STRING);
