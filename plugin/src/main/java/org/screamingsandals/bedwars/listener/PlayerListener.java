@@ -26,6 +26,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.RunningTeam;
 import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
@@ -56,6 +57,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class PlayerListener implements Listener {
+    private final List<Player> explosionAffectedPlayers = new ArrayList<>();
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerDeath(PlayerDeathEvent event) {
@@ -647,6 +649,11 @@ public class PlayerListener implements Listener {
 
                 if (event.getCause() == DamageCause.VOID && player.getHealth() > 0.5) {
                     player.setHealth(0.5);
+                } else if (event.getCause() == DamageCause.FALL) {
+                    if (explosionAffectedPlayers.contains(player)) {
+                        event.setDamage(MainConfig.getInstance().node("tnt-jump", "fall-damage").getDouble(0.75));
+                        explosionAffectedPlayers.remove(player);
+                    }
                 } else if (event instanceof EntityDamageByEntityEvent) {
                     EntityDamageByEntityEvent edbee = (EntityDamageByEntityEvent) event;
 
@@ -658,10 +665,20 @@ public class PlayerListener implements Listener {
                                 if (tntSource instanceof Player) {
                                     final var playerSource = (Player) tntSource;
                                     if (playerSource.equals(player)) {
-                                        event.setDamage(MainConfig.getInstance().node("tnt-jump", "source-damage").getDouble());
-                                        player.setVelocity(player.getLocation().getDirection().multiply(MainConfig.getInstance().node("tnt-jump", "launch-power").getDouble()));
+                                        event.setDamage(MainConfig.getInstance().node("tnt-jump", "source-damage").getDouble(0.5));
+                                        Vector vector = player
+                                                .getLocation()
+                                                .clone()
+                                                .add(0, MainConfig.getInstance().node("tnt-jump", "acceleration-y").getInt() ,0)
+                                                .toVector()
+                                                .subtract(tnt.getLocation().toVector()).normalize();
+
+                                        vector.setY(vector.getY() /  MainConfig.getInstance().node("tnt-jump", "reduce-y").getDouble());
+                                        vector.multiply(MainConfig.getInstance().node("tnt-jump", "launch-multiplier").getInt());
+                                        player.setVelocity(vector);
+                                        explosionAffectedPlayers.add(player);
                                     }
-                                    if (MainConfig.getInstance().node("tnt-jump", "team-damage").getBoolean()) {
+                                    if (!MainConfig.getInstance().node("tnt-jump", "team-damage").getBoolean(true)) {
                                         if (game.getTeamOfPlayer(player).equals(game.getTeamOfPlayer(playerSource))) {
                                             event.setCancelled(true);
                                         }
