@@ -8,17 +8,19 @@ import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
+import org.screamingsandals.lib.utils.annotations.Service;
 import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.List;
 
+@Service
 public class MainlobbyCommand extends BaseCommand {
-    public MainlobbyCommand(CommandManager<CommandSenderWrapper> manager) {
-        super(manager, "mainlobby", BedWarsPermission.ADMIN_PERMISSION, false);
+    public MainlobbyCommand() {
+        super("mainlobby", BedWarsPermission.ADMIN_PERMISSION, false);
     }
 
     @Override
-    protected void construct(Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder) {
+    protected void construct(Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder, CommandManager<CommandSenderWrapper> manager) {
         manager.command(
                 commandSenderWrapperBuilder
                         .argument(manager

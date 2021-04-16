@@ -2,56 +2,62 @@ package org.screamingsandals.bedwars.commands;
 
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
+import lombok.Getter;
 import org.screamingsandals.bedwars.commands.admin.*;
 import org.screamingsandals.bedwars.game.Game;
 import org.screamingsandals.bedwars.game.GameManager;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
+import org.screamingsandals.lib.utils.annotations.Service;
+import org.screamingsandals.lib.utils.annotations.methods.Provider;
 
 import java.util.HashMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@Service(initAnother = {
+        AddCommand.class,
+        ArenaTimeCommand.class,
+        ArenaWeatherCommand.class,
+        ConfigCommand.class,
+        CustomPrefixCommand.class,
+        EditCommand.class,
+        GameBossBarColorCommand.class,
+        InfoCommand.class,
+        JoinTeamCommand.class,
+        LobbyBossBarColorCommand.class,
+        LobbyCommand.class,
+        MinPlayersCommand.class,
+        PausecountdownCommand.class,
+        Pos1Command.class,
+        Pos2Command.class,
+        PostGameWaitingCommand.class,
+        RemoveCommand.class,
+        SaveCommand.class,
+        SpawnerCommand.class,
+        SpecCommand.class,
+        StoreCommand.class,
+        TeamCommand.class,
+        TimeCommand.class
+})
 public class AdminCommand extends BaseCommand {
 
     public static HashMap<String, Game> gc;
+    @Getter(onMethod_ = @Provider(level = Provider.Level.POST_ENABLE))
+    private Command.Builder<CommandSenderWrapper> builder;
 
-    public AdminCommand(CommandManager<CommandSenderWrapper> manager) {
-        super(manager, "admin", BedWarsPermission.ADMIN_PERMISSION, false);
+    public AdminCommand() {
+        super("admin", BedWarsPermission.ADMIN_PERMISSION, false);
         gc = new HashMap<>();
     }
 
     @Override
-    protected void construct(Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder) {
-        var builder = commandSenderWrapperBuilder
+    protected void construct(Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder, CommandManager<CommandSenderWrapper> manager) {
+        builder = commandSenderWrapperBuilder
                 .argument(manager
                         .argumentBuilder(String.class, "game")
                         .withSuggestionsProvider((c, s) ->
                             Stream.concat(GameManager.getInstance().getGameNames().stream(), gc.keySet().stream()).distinct().collect(Collectors.toList())
                         )
                 );
-
-        new AddCommand(manager, builder);
-        new ArenaTimeCommand(manager, builder);
-        new ArenaWeatherCommand(manager, builder);
-        new ConfigCommand(manager, builder);
-        new CustomPrefixCommand(manager, builder);
-        new EditCommand(manager, builder);
-        new GameBossBarColorCommand(manager, builder);
-        new InfoCommand(manager, builder);
-        new JoinTeamCommand(manager, builder);
-        new LobbyBossBarColorCommand(manager, builder);
-        new LobbyCommand(manager, builder);
-        new MinPlayersCommand(manager, builder);
-        new PausecountdownCommand(manager, builder);
-        new Pos1Command(manager, builder);
-        new Pos2Command(manager, builder);
-        new PostGameWaitingCommand(manager, builder);
-        new RemoveCommand(manager, builder);
-        new SaveCommand(manager, builder);
-        new SpawnerCommand(manager, builder);
-        new SpecCommand(manager, builder);
-        new StoreCommand(manager, builder);
-        new TeamCommand(manager, builder);
-        new TimeCommand(manager, builder);
     }
 }

@@ -7,14 +7,16 @@ import org.screamingsandals.bedwars.player.PlayerManager;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
+import org.screamingsandals.lib.utils.annotations.Service;
 
+@Service
 public class LeaveCommand extends BaseCommand {
-    public LeaveCommand(CommandManager<CommandSenderWrapper> manager) {
-        super(manager, "leave", BedWarsPermission.LEAVE_PERMISSION, false);
+    public LeaveCommand() {
+        super("leave", BedWarsPermission.LEAVE_PERMISSION, false);
     }
 
     @Override
-    protected void construct(Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder) {
+    protected void construct(Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder, CommandManager<CommandSenderWrapper> manager) {
         manager.command(
                 commandSenderWrapperBuilder
                 .handler(commandContext -> {

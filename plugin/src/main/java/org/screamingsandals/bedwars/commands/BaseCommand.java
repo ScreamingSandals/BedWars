@@ -8,19 +8,25 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
+import org.screamingsandals.lib.utils.annotations.ServiceDependencies;
+import org.screamingsandals.lib.utils.annotations.methods.OnPostEnable;
+import org.screamingsandals.lib.utils.annotations.parameters.ProvidedBy;
 
 @RequiredArgsConstructor
 @Getter
+@ServiceDependencies(dependsOn = {
+        CommandService.class
+})
 public abstract class BaseCommand {
 
-    protected final CommandManager<CommandSenderWrapper> manager;
     protected final String name;
     protected final BedWarsPermission possiblePermission;
     protected final boolean allowConsole;
 
-    protected abstract void construct(Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder);
+    protected abstract void construct(Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder, CommandManager<CommandSenderWrapper> manager);
 
-    public void construct() {
+    @OnPostEnable
+    public void construct(@ProvidedBy(CommandService.class) CommandManager<CommandSenderWrapper> manager) {
         var builder = manager.commandBuilder("bw")
                 .literal(name);
         if (possiblePermission != null) {
@@ -33,6 +39,6 @@ public abstract class BaseCommand {
         if (!allowConsole) {
             builder = builder.senderType(PlayerWrapper.class);
         }
-        construct(builder);
+        construct(builder, manager);
     }
 }

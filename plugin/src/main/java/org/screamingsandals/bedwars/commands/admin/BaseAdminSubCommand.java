@@ -3,22 +3,31 @@ package org.screamingsandals.bedwars.commands.admin;
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
 import cloud.commandframework.context.CommandContext;
+import lombok.RequiredArgsConstructor;
 import org.screamingsandals.bedwars.commands.AdminCommand;
+import org.screamingsandals.bedwars.commands.CommandService;
 import org.screamingsandals.bedwars.game.Game;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
+import org.screamingsandals.lib.utils.annotations.ServiceDependencies;
+import org.screamingsandals.lib.utils.annotations.methods.OnPostEnable;
+import org.screamingsandals.lib.utils.annotations.parameters.ProvidedBy;
 
+@ServiceDependencies(dependsOn = {
+        AdminCommand.class
+})
+@RequiredArgsConstructor
 public abstract class BaseAdminSubCommand {
 
-    protected final CommandManager<CommandSenderWrapper> manager;
+    private final String name;
 
-    public BaseAdminSubCommand(CommandManager<CommandSenderWrapper> manager, Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder, String name) {
-        this.manager = manager;
-        construct(commandSenderWrapperBuilder.literal(name));
+    @OnPostEnable
+    public void onPostEnable(@ProvidedBy(CommandService.class) CommandManager<CommandSenderWrapper> manager, @ProvidedBy(AdminCommand.class) Command.Builder<CommandSenderWrapper> builder) {
+        construct(manager, builder.literal(name));
     }
 
-    public abstract void construct(Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder);
+    public abstract void construct(CommandManager<CommandSenderWrapper> manager, Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder);
 
     protected void editMode(CommandContext<CommandSenderWrapper> commandContext, EditModeHandler handler) {
         String gameName = commandContext.get("game");

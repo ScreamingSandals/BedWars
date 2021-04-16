@@ -26,6 +26,7 @@ import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.premium.PremiumBedwars;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
 import org.screamingsandals.lib.utils.ConfigurateUtils;
+import org.screamingsandals.lib.utils.annotations.Service;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.yaml.NodeStyle;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
@@ -45,13 +46,14 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Service
 public class DumpCommand extends BaseCommand {
-    public DumpCommand(CommandManager<CommandSenderWrapper> manager) {
-        super(manager, "dump", BedWarsPermission.ADMIN_PERMISSION, true);
+    public DumpCommand() {
+        super("dump", BedWarsPermission.ADMIN_PERMISSION, true);
     }
 
     @Override
-    protected void construct(Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder) {
+    protected void construct(Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder, CommandManager<CommandSenderWrapper> manager) {
         manager.command(
                 commandSenderWrapperBuilder
                         .handler(commandContext -> {

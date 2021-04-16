@@ -18,18 +18,19 @@ import org.screamingsandals.bedwars.utils.ArenaUtils;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
 import org.screamingsandals.lib.utils.AdventureHelper;
+import org.screamingsandals.lib.utils.annotations.Service;
 
-import java.lang.reflect.Member;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Service
 public class TeamCommand extends BaseAdminSubCommand {
-    public TeamCommand(CommandManager<CommandSenderWrapper> manager, Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder) {
-        super(manager, commandSenderWrapperBuilder, "team");
+    public TeamCommand() {
+        super("team");
     }
 
     @Override
-    public void construct(Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder) {
+    public void construct(CommandManager<CommandSenderWrapper> manager, Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder) {
         manager.command(
                 commandSenderWrapperBuilder
                         .literal("add")
