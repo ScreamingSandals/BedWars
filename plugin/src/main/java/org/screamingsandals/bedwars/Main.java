@@ -97,7 +97,8 @@ import java.util.*;
         PlayerManager.class,
         PartyListener.class,
         EntityMapper.class,
-        EventUtils.class
+        EventUtils.class,
+        LobbyInvisibilityListener.class
 })
 public class Main extends PluginContainer implements BedwarsAPI {
     private static Main instance;

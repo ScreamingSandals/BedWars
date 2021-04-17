@@ -329,4 +329,22 @@ public class MiscUtils {
                 .map(Optional::get)
                 .collect(Collectors.toList());
     }
+
+    public List<Location> getLocationsBetween(Location loc1, Location loc2){
+        int lowX = Math.min(loc1.getBlockX(), loc2.getBlockX());
+        int lowY = Math.min(loc1.getBlockY(), loc2.getBlockY());
+        int lowZ = Math.min(loc1.getBlockZ(), loc2.getBlockZ());
+
+        final var locationList = new ArrayList<Location>();
+
+        for(int x = 0; x<Math.abs(loc1.getBlockX()-loc2.getBlockX()); x++){
+            for(int y = 0; y<Math.abs(loc1.getBlockY()-loc2.getBlockY()); y++){
+                for(int z = 0; z<Math.abs(loc1.getBlockZ()-loc2.getBlockZ()); z++){
+                    locationList.add(new Location(loc1.getWorld(),lowX+x, lowY+y, lowZ+z));
+                }
+            }
+        }
+
+        return locationList;
+    }
 }
