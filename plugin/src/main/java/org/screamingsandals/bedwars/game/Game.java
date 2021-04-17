@@ -2643,6 +2643,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
     @Override
     public World getLobbyWorld() {
+        if (lobbySpawn == null) return null;
         return lobbySpawn.getWorld();
     }
 
