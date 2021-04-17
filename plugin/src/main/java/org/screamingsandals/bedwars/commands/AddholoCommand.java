@@ -8,16 +8,21 @@ import org.screamingsandals.bedwars.holograms.LeaderboardHolograms;
 import org.screamingsandals.bedwars.holograms.StatisticsHolograms;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.lib.entity.EntityHuman;
+import org.screamingsandals.lib.entity.EntityMapper;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
+import org.screamingsandals.lib.utils.annotations.Service;
 
+@Service(dependsOn = {
+        EntityMapper.class
+})
 public class AddholoCommand extends BaseCommand {
-    public AddholoCommand(CommandManager<CommandSenderWrapper> manager) {
-        super(manager, "addholo", BedWarsPermission.ADMIN_PERMISSION, false);
+    public AddholoCommand() {
+        super("addholo", BedWarsPermission.ADMIN_PERMISSION, false);
     }
 
     @Override
-    protected void construct(Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder) {
+    protected void construct(Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder, CommandManager<CommandSenderWrapper> manager) {
         manager.command(
                 commandSenderWrapperBuilder
                         .handler(this::executeStatsHologram)

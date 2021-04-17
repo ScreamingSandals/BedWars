@@ -7,16 +7,18 @@ import org.screamingsandals.bedwars.commands.AdminCommand;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
+import org.screamingsandals.lib.utils.annotations.Service;
 
 import java.util.List;
 
+@Service
 public class ConfigCommand extends BaseAdminSubCommand {
-    public ConfigCommand(CommandManager<CommandSenderWrapper> manager, Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder) {
-        super(manager, commandSenderWrapperBuilder, "config");
+    public ConfigCommand() {
+        super("config");
     }
 
     @Override
-    public void construct(Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder) {
+    public void construct(CommandManager<CommandSenderWrapper> manager, Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder) {
         manager.command(
                 commandSenderWrapperBuilder
                         .argument(StringArgument.<CommandSenderWrapper>newBuilder("key")

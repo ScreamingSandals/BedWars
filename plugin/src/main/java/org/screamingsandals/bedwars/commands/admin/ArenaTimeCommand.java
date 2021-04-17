@@ -7,14 +7,16 @@ import org.screamingsandals.bedwars.api.ArenaTime;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
+import org.screamingsandals.lib.utils.annotations.Service;
 
+@Service
 public class ArenaTimeCommand extends BaseAdminSubCommand {
-    public ArenaTimeCommand(CommandManager<CommandSenderWrapper> manager, Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder) {
-        super(manager, commandSenderWrapperBuilder, "arenatime");
+    public ArenaTimeCommand() {
+        super("arenatime");
     }
 
     @Override
-    public void construct(Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder) {
+    public void construct(CommandManager<CommandSenderWrapper> manager, Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder) {
         manager.command(
                 commandSenderWrapperBuilder
                         .argument(EnumArgument.of(ArenaTime.class, "arenaTime"))

@@ -7,16 +7,18 @@ import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
+import org.screamingsandals.lib.utils.annotations.Service;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+@Service
 public class LeaderboardCommand extends BaseCommand {
-    public LeaderboardCommand(CommandManager<CommandSenderWrapper> manager) {
-        super(manager, "leaderboard", BedWarsPermission.LEADERBOARD_PERMISSION, true);
+    public LeaderboardCommand() {
+        super("leaderboard", BedWarsPermission.LEADERBOARD_PERMISSION, true);
     }
 
     @Override
-    protected void construct(Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder) {
+    protected void construct(Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder, CommandManager<CommandSenderWrapper> manager) {
         manager.command(
                 commandSenderWrapperBuilder
                 .handler(commandContext -> {

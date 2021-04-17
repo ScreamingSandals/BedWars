@@ -6,14 +6,16 @@ import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
+import org.screamingsandals.lib.utils.annotations.Service;
 
+@Service
 public class LobbyCommand extends BaseAdminSubCommand {
-    public LobbyCommand(CommandManager<CommandSenderWrapper> manager, Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder) {
-        super(manager, commandSenderWrapperBuilder, "lobby");
+    public LobbyCommand() {
+        super("lobby");
     }
 
     @Override
-    public void construct(Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder) {
+    public void construct(CommandManager<CommandSenderWrapper> manager, Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder) {
         manager.command(
                 commandSenderWrapperBuilder
                         .handler(commandContext -> editMode(commandContext, (sender, game) -> {

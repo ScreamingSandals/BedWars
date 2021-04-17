@@ -1,25 +1,43 @@
 package org.screamingsandals.bedwars.commands;
 
+import cloud.commandframework.CommandManager;
 import cloud.commandframework.execution.CommandExecutionCoordinator;
 import cloud.commandframework.minecraft.extras.MinecraftExceptionHandler;
 import lombok.experimental.UtilityClass;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.lib.command.CloudConstructor;
-import org.screamingsandals.lib.entity.EntityMapper;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
 import org.screamingsandals.lib.utils.annotations.Service;
-import org.screamingsandals.lib.utils.annotations.methods.OnPostEnable;
+import org.screamingsandals.lib.utils.annotations.methods.Provider;
 
 @Service(dependsOn = {
-        CloudConstructor.class,
-        EntityMapper.class // AddholoCommand
+        CloudConstructor.class
+}, initAnother = {
+        AddholoCommand.class,
+        AdminCommand.class,
+        AlljoinCommand.class,
+        AutojoinCommand.class,
+        DumpCommand.class,
+        HelpCommand.class,
+        JoinCommand.class,
+        LanguageCommand.class,
+        LeaderboardCommand.class,
+        LeaveCommand.class,
+        ListCommand.class,
+        MainlobbyCommand.class,
+        PartyCommand.class,
+        RejoinCommand.class,
+        ReloadCommand.class,
+        RemoveholoCommand.class,
+        StatsCommand.class
+        
 })
 @UtilityClass
 public class CommandService {
 
-    @OnPostEnable
-    public void postEnable() {
+    @Provider(level = Provider.Level.POST_ENABLE)
+    public static CommandManager<CommandSenderWrapper> provideCommandManager() {
         try {
             var manager = CloudConstructor.construct(CommandExecutionCoordinator.simpleCoordinator());
 
@@ -33,25 +51,10 @@ public class CommandService {
                     )
                     .apply(manager, s -> s);
 
-            new AddholoCommand(manager).construct();
-            new AdminCommand(manager).construct();
-            new AlljoinCommand(manager).construct();
-            new AutojoinCommand(manager).construct();
-            new DumpCommand(manager).construct();
-            new HelpCommand(manager).construct();
-            new JoinCommand(manager).construct();
-            new LanguageCommand(manager).construct();
-            new LeaderboardCommand(manager).construct();
-            new LeaveCommand(manager).construct();
-            new ListCommand(manager).construct();
-            new MainlobbyCommand(manager).construct();
-            new PartyCommand(manager).construct();
-            new RejoinCommand(manager).construct();
-            new ReloadCommand(manager).construct();
-            new RemoveholoCommand(manager).construct();
-            new StatsCommand(manager).construct();
+            return manager;
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return null;
     }
 }

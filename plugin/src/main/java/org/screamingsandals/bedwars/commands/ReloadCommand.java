@@ -11,14 +11,16 @@ import org.screamingsandals.bedwars.game.GameManager;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
+import org.screamingsandals.lib.utils.annotations.Service;
 
+@Service
 public class ReloadCommand extends BaseCommand {
-    public ReloadCommand(CommandManager<CommandSenderWrapper> manager) {
-        super(manager, "reload", BedWarsPermission.ADMIN_PERMISSION, true);
+    public ReloadCommand() {
+        super("reload", BedWarsPermission.ADMIN_PERMISSION, true);
     }
 
     @Override
-    protected void construct(Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder) {
+    protected void construct(Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder, CommandManager<CommandSenderWrapper> manager) {
         manager.command(
                 commandSenderWrapperBuilder
                     .handler(commandContext -> {

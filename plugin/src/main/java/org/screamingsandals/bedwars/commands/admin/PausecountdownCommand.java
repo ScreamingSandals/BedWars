@@ -6,14 +6,16 @@ import cloud.commandframework.arguments.standard.IntegerArgument;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
+import org.screamingsandals.lib.utils.annotations.Service;
 
+@Service
 public class PausecountdownCommand extends BaseAdminSubCommand {
-    public PausecountdownCommand(CommandManager<CommandSenderWrapper> manager, Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder) {
-        super(manager, commandSenderWrapperBuilder, "pausecountdown");
+    public PausecountdownCommand() {
+        super("pausecountdown");
     }
 
     @Override
-    public void construct(Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder) {
+    public void construct(CommandManager<CommandSenderWrapper> manager, Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder) {
         manager.command(
                 commandSenderWrapperBuilder
                         .argument(IntegerArgument

@@ -1,6 +1,6 @@
 package org.screamingsandals.bedwars.utils;
 
-import lombok.RequiredArgsConstructor;
+import lombok.experimental.UtilityClass;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.commands.BedWarsPermission;
 import org.screamingsandals.bedwars.config.MainConfig;
@@ -25,12 +25,10 @@ import java.net.http.HttpResponse;
         MainConfig.class,
         PlayerMapper.class
 })
-@RequiredArgsConstructor
+@UtilityClass
 public class UpdateChecker {
-    private final MainConfig mainConfig;
-    
     @OnPostEnable
-    public void run() {
+    public void run(MainConfig mainConfig) {
         if (mainConfig.node("update-checker", "console").getBoolean()
                 || mainConfig.node("update-checker", "admins").getBoolean()) {
             HttpClient.newHttpClient().sendAsync(HttpRequest.newBuilder()

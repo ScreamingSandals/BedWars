@@ -9,16 +9,18 @@ import org.screamingsandals.bedwars.player.PlayerManager;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
+import org.screamingsandals.lib.utils.annotations.Service;
 
 import java.util.Optional;
 
+@Service
 public class AlljoinCommand extends BaseCommand {
-    public AlljoinCommand(CommandManager<CommandSenderWrapper> manager) {
-        super(manager, "alljoin", BedWarsPermission.ALL_JOIN_PERMISSION, true);
+    public AlljoinCommand() {
+        super("alljoin", BedWarsPermission.ALL_JOIN_PERMISSION, true);
     }
 
     @Override
-    protected void construct(Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder) {
+    protected void construct(Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder, CommandManager<CommandSenderWrapper> manager) {
         manager.command(
                 commandSenderWrapperBuilder
                         .argument(manager

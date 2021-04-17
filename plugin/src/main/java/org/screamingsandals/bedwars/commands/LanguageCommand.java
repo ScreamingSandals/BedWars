@@ -10,22 +10,24 @@ import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
+import org.screamingsandals.lib.utils.annotations.Service;
 
 import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Objects;
 
 // TODO: Rewrite this command
+@Service
 public class LanguageCommand extends BaseCommand {
 
     private static final List<String> languages = List.of("en-US");
 
-    public LanguageCommand(CommandManager<CommandSenderWrapper> manager) {
-        super(manager, "lang", BedWarsPermission.ADMIN_PERMISSION, true);
+    public LanguageCommand() {
+        super("lang", BedWarsPermission.ADMIN_PERMISSION, true);
     }
 
     @Override
-    protected void construct(Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder) {
+    protected void construct(Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder, CommandManager<CommandSenderWrapper> manager) {
         manager.command(
                 commandSenderWrapperBuilder
                         .argument(manager

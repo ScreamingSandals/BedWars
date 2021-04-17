@@ -6,14 +6,18 @@ import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
+import org.screamingsandals.lib.utils.annotations.Service;
+import org.screamingsandals.lib.utils.annotations.methods.OnPostEnable;
+import org.screamingsandals.lib.utils.annotations.parameters.ProvidedBy;
 
+@Service
 public class HelpCommand extends BaseCommand {
-    public HelpCommand(CommandManager<CommandSenderWrapper> manager) {
-        super(manager, "help", null, true);
+    public HelpCommand() {
+        super("help", null, true);
     }
 
     @Override
-    protected void construct(Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder) {
+    protected void construct(Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder, CommandManager<CommandSenderWrapper> manager) {
         manager.command(commandSenderWrapperBuilder
                 .handler(commandContext -> {
                     // TODO: use more generic way
@@ -109,10 +113,11 @@ public class HelpCommand extends BaseCommand {
      * Special case, only for help command
      */
     @Override
-    public void construct() {
+    @OnPostEnable
+    public void construct(@ProvidedBy(CommandService.class) CommandManager<CommandSenderWrapper> manager) {
         var builder = manager.commandBuilder("bw");
-        construct(builder);
+        construct(builder, manager);
 
-        super.construct();
+        super.construct(manager);
     }
 }

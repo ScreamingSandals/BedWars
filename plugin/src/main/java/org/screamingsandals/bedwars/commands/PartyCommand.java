@@ -13,17 +13,19 @@ import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
+import org.screamingsandals.lib.utils.annotations.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class PartyCommand extends BaseCommand {
-    public PartyCommand(CommandManager<CommandSenderWrapper> manager) {
-        super(manager, "party", BedWarsPermission.PARTY_PERMISSION, false);
+    public PartyCommand() {
+        super("party", BedWarsPermission.PARTY_PERMISSION, false);
     }
 
     @Override
-    protected void construct(Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder) {
+    protected void construct(Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder, CommandManager<CommandSenderWrapper> manager) {
         manager.command(
             commandSenderWrapperBuilder
                     .argument(manager

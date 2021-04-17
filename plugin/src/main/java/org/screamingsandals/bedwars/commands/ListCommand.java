@@ -9,14 +9,16 @@ import org.screamingsandals.bedwars.game.GameManager;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
+import org.screamingsandals.lib.utils.annotations.Service;
 
+@Service
 public class ListCommand extends BaseCommand {
-    public ListCommand(CommandManager<CommandSenderWrapper> manager) {
-        super(manager, "list", BedWarsPermission.LIST_PERMISSION, true);
+    public ListCommand() {
+        super("list", BedWarsPermission.LIST_PERMISSION, true);
     }
 
     @Override
-    protected void construct(Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder) {
+    protected void construct(Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder, CommandManager<CommandSenderWrapper> manager) {
         manager.command(
                 commandSenderWrapperBuilder
                         .handler(commandContext -> {

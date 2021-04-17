@@ -13,19 +13,21 @@ import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.utils.TeamJoinMetaDataValue;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
+import org.screamingsandals.lib.utils.annotations.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Service
 public class JoinTeamCommand extends BaseAdminSubCommand {
     public static final String BEDWARS_TEAM_JOIN_METADATA = "bw-addteamjoin";
 
-    public JoinTeamCommand(CommandManager<CommandSenderWrapper> manager, Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder) {
-        super(manager, commandSenderWrapperBuilder, "jointeam");
+    public JoinTeamCommand() {
+        super("jointeam");
     }
 
     @Override
-    public void construct(Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder) {
+    public void construct(CommandManager<CommandSenderWrapper> manager, Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder) {
         manager.command(
                 commandSenderWrapperBuilder
                         .argument(StringArgument.<CommandSenderWrapper>newBuilder("team")

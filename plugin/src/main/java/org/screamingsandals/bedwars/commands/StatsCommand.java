@@ -11,17 +11,19 @@ import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.player.OfflinePlayerWrapper;
 import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
+import org.screamingsandals.lib.utils.annotations.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Service
 public class StatsCommand extends BaseCommand {
-    public StatsCommand(CommandManager<CommandSenderWrapper> manager) {
-        super(manager, "stats", BedWarsPermission.STATS_PERMISSION, true);
+    public StatsCommand() {
+        super("stats", BedWarsPermission.STATS_PERMISSION, true);
     }
 
     @Override
-    protected void construct(Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder) {
+    protected void construct(Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder, CommandManager<CommandSenderWrapper> manager) {
         manager.command(
                 commandSenderWrapperBuilder
                         .argument(manager

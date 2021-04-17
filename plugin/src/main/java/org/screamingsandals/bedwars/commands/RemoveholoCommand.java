@@ -10,14 +10,16 @@ import org.screamingsandals.bedwars.holograms.StatisticsHolograms;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
+import org.screamingsandals.lib.utils.annotations.Service;
 
+@Service
 public class RemoveholoCommand extends BaseCommand {
-    public RemoveholoCommand(CommandManager<CommandSenderWrapper> manager) {
-        super(manager, "removeholo", BedWarsPermission.ADMIN_PERMISSION, false);
+    public RemoveholoCommand() {
+        super("removeholo", BedWarsPermission.ADMIN_PERMISSION, false);
     }
 
     @Override
-    protected void construct(Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder) {
+    protected void construct(Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder, CommandManager<CommandSenderWrapper> manager) {
         manager.command(
                 commandSenderWrapperBuilder
                     .handler(commandContext -> {
