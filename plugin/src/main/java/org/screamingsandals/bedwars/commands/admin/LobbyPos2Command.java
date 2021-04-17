@@ -20,8 +20,9 @@ public class LobbyPos2Command extends BaseAdminSubCommand {
                 commandSenderWrapperBuilder
                         .handler(commandContext -> editMode(commandContext, (sender, game) -> {
                             var loc = sender.as(Player.class).getLocation();
+                            var lobbyWorld = game.getLobbyWorld();
 
-                            if (game.getLobbyWorld() != loc.getWorld()) {
+                            if (lobbyWorld != null && (game.getLobbyWorld() != loc.getWorld())) {
                                 sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_MUST_BE_IN_SAME_WORLD).defaultPrefix());
                                 return;
                             }
