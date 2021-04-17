@@ -3055,6 +3055,14 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         return lobbyPos2;
     }
 
+    public void setLobbyPos1(Location pos1) {
+        lobbyPos1 = pos1;
+    }
+
+    public void setLobbyPos2(Location pos2) {
+        lobbyPos2 = pos2;
+    }
+
     @Override
     public boolean isInEditMode() {
         return AdminCommand.gc.containsKey(name);

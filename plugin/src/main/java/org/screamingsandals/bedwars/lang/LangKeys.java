@@ -133,6 +133,8 @@ public class LangKeys {
     public final String[] HELP_BW_ADMIN_SPEC = {"help", "bw_admin_spec"};
     public final String[] HELP_BW_ADMIN_POS1 = {"help", "bw_admin_pos1"};
     public final String[] HELP_BW_ADMIN_POS2 = {"help", "bw_admin_pos2"};
+    public final String[] HELP_BW_ADMIN_LOBBY_POS1 = {"help", "bw_admin_lobby_pos1"};
+    public final String[] HELP_BW_ADMIN_LOBBY_POS2 = {"help", "bw_admin_lobby_pos2"};
     public final String[] HELP_BW_ADMIN_PAUSECOUNTDOWN = {"help", "bw_admin_pausecountdown"};
     public final String[] HELP_BW_ADMIN_MINPLAYERS = {"help", "bw_admin_minplayers"};
     public final String[] HELP_BW_ADMIN_TIME = {"help", "bw_admin_time"};
@@ -217,6 +219,8 @@ public class LangKeys {
     public final String[] ADMIN_ARENA_EDIT_SUCCESS_SPEC_SPAWN_SET = {"admin", "arena", "edit", "success", "spec_spawn_set"};
     public final String[] ADMIN_ARENA_EDIT_SUCCESS_POS1_SET = {"admin", "arena", "edit", "success", "pos1_set"};
     public final String[] ADMIN_ARENA_EDIT_SUCCESS_POS2_SET = {"admin", "arena", "edit", "success", "pos2_set"};
+    public final String[] ADMIN_ARENA_EDIT_SUCCESS_LOBBY_POS1_SET = {"admin", "arena", "edit", "success", "lobby_pos1_set"};
+    public final String[] ADMIN_ARENA_EDIT_SUCCESS_LOBBY_POS2_SET = {"admin", "arena", "edit", "success", "lobby_pos2_set"};
     public final String[] ADMIN_ARENA_EDIT_SUCCESS_LOBBY_COUNTDOWN_SET = {"admin", "arena", "edit", "success", "lobby_countdown_set"};
     public final String[] ADMIN_ARENA_EDIT_SUCCESS_GAME_TIME_SET = {"admin", "arena", "edit", "success", "game_time_set"};
     public final String[] ADMIN_ARENA_EDIT_SUCCESS_MIN_PLAYERS_SET = {"admin", "arena", "edit", "success", "min_players_set"};
