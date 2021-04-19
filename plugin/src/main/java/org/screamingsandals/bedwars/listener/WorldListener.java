@@ -21,7 +21,6 @@ import org.screamingsandals.bedwars.api.RunningTeam;
 import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.config.MainConfig;
-import org.screamingsandals.bedwars.game.Game;
 import org.screamingsandals.bedwars.game.GameManager;
 import org.screamingsandals.bedwars.utils.ArenaUtils;
 

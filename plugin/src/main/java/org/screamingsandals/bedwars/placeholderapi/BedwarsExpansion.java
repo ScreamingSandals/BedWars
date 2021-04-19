@@ -1,41 +1,32 @@
 package org.screamingsandals.bedwars.placeholderapi;
 
-import me.clip.placeholderapi.expansion.PlaceholderExpansion;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
-import org.screamingsandals.bedwars.Main;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.game.Game;
 import org.screamingsandals.bedwars.game.GameManager;
 import org.screamingsandals.bedwars.player.PlayerManager;
 import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
+import org.screamingsandals.lib.placeholders.PlaceholderExpansion;
 import org.screamingsandals.lib.player.PlayerMapper;
+import org.screamingsandals.lib.sender.MultiPlatformOfflinePlayer;
+import org.screamingsandals.lib.utils.annotations.Service;
 
+@Service(dependsOn = {
+        PlayerMapper.class
+})
 public class BedwarsExpansion extends PlaceholderExpansion {
 
-    @Override
-    public String getAuthor() {
-        return String.join(", ", Main.getInstance().getPluginDescription().getAuthors());
+    public BedwarsExpansion() {
+        super("bedwars");
     }
 
     @Override
-    public String getIdentifier() {
-        return "bedwars";
-    }
-
-    @Override
-    public String getVersion() {
-        return Main.getVersion();
-    }
-
-    @Override
-    public String getPlugin() {
-        return Main.getInstance().getPluginDescription().getName();
-    }
-
-    @Override
-    public String onPlaceholderRequest(Player player, String identifier) {
+    @Nullable
+    public Component onRequest(@Nullable MultiPlatformOfflinePlayer player, @NotNull String identifier) {
         // any game
         if (identifier.startsWith("game_")) {
             var gameName = identifier.substring(5);
@@ -51,23 +42,23 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                 var game = gameOpt.get();
                 switch (operation) {
                     case "name":
-                        return game.getName();
+                        return Component.text(game.getName());
                     case "players":
-                        return Integer.toString(game.countConnectedPlayers());
+                        return Component.text(game.countConnectedPlayers());
                     case "maxplayers":
-                        return Integer.toString(game.getMaxPlayers());
+                        return Component.text(game.getMaxPlayers());
                     case "minplayers":
-                        return Integer.toString(game.getMinPlayers());
+                        return Component.text(game.getMinPlayers());
                     case "world":
-                        return game.getWorld().getName();
+                        return Component.text(game.getWorld().getName());
                     case "state":
-                        return game.getStatus().name().toLowerCase();
+                        return Component.text(game.getStatus().name().toLowerCase());
                     case "available_teams":
-                        return Integer.toString(game.countAvailableTeams());
+                        return Component.text(game.countAvailableTeams());
                     case "connected_teams":
-                        return Integer.toString(game.countRunningTeams());
+                        return Component.text(game.countRunningTeams());
                     case "teamchests":
-                        return Integer.toString(game.countTeamChests());
+                        return Component.text(game.countTeamChests());
                 }
             }
         }
@@ -97,173 +88,173 @@ public class BedwarsExpansion extends PlaceholderExpansion {
 
             switch (operation) {
                 case "deaths":
-                    return Integer.toString(stats.getDeaths());
+                    return Component.text(stats.getDeaths());
                 case "destroyed_beds":
-                    return Integer.toString(stats.getDestroyedBeds());
+                    return Component.text(stats.getDestroyedBeds());
                 case "kills":
-                    return Integer.toString(stats.getKills());
+                    return Component.text(stats.getKills());
                 case "loses":
-                    return Integer.toString(stats.getLoses());
+                    return Component.text(stats.getLoses());
                 case "score":
-                    return Integer.toString(stats.getScore());
+                    return Component.text(stats.getScore());
                 case "wins":
-                    return Integer.toString(stats.getWins());
+                    return Component.text(stats.getWins());
                 case "games":
-                    return Integer.toString(stats.getGames());
+                    return Component.text(stats.getGames());
                 case "kd":
-                    return Double.toString(stats.getKD());
+                    return Component.text(stats.getKD());
             }
         }
 
         // Player
         if (player == null) {
-            return "";
+            return Component.empty();
         }
 
         if (identifier.startsWith("current_")) {
             // current game
             switch (identifier.toLowerCase().substring(8)) {
                 case "game":
-                    return PlayerManager.getInstance().getGameOfPlayer(player.getUniqueId()).map(Game::getName).orElse("none");
+                    return Component.text(PlayerManager.getInstance().getGameOfPlayer(player.getUuid()).map(Game::getName).orElse("none"));
                 case "game_players":
-                    return PlayerManager.getInstance().getGameOfPlayer(player.getUniqueId()).map(g -> Integer.toString(g.countConnectedPlayers())).orElse("0");
+                    return PlayerManager.getInstance().getGameOfPlayer(player.getUuid()).map(g -> Component.text(g.countConnectedPlayers())).orElseGet(() -> Component.text("0"));
                 case "game_time":
-                    var m_Game = PlayerManager.getInstance().getGameOfPlayer(player.getUniqueId());
+                    var m_Game = PlayerManager.getInstance().getGameOfPlayer(player.getUuid());
                     if (m_Game.isEmpty() || m_Game.get().getStatus() != GameStatus.RUNNING)
-                        return "0";
-                    return m_Game.get().getFormattedTimeLeft();
+                        return Component.text("0");
+                    return Component.text(m_Game.get().getFormattedTimeLeft());
                 case "game_maxplayers":
-                    return PlayerManager.getInstance().getGameOfPlayer(player.getUniqueId()).map(g -> Integer.toString(g.getMaxPlayers())).orElse("0");
+                    return PlayerManager.getInstance().getGameOfPlayer(player.getUuid()).map(g -> Component.text(g.getMaxPlayers())).orElseGet(() -> Component.text("0"));
                 case "game_minplayers":
-                    return PlayerManager.getInstance().getGameOfPlayer(player.getUniqueId()).map(g -> Integer.toString(g.getMinPlayers())).orElse("0");
+                    return PlayerManager.getInstance().getGameOfPlayer(player.getUuid()).map(g -> Component.text(g.getMinPlayers())).orElseGet(() -> Component.text("0"));
                 case "game_world":
-                    return PlayerManager.getInstance().getGameOfPlayer(player.getUniqueId()).map(g -> g.getWorld().getName()).orElse("none");
+                    return Component.text(PlayerManager.getInstance().getGameOfPlayer(player.getUuid()).map(g -> g.getWorld().getName()).orElse("none"));
                 case "game_state":
-                    return PlayerManager.getInstance().getGameOfPlayer(player.getUniqueId()).map(g -> g.getStatus().name().toLowerCase()).orElse("none");
+                    return Component.text(PlayerManager.getInstance().getGameOfPlayer(player.getUuid()).map(g -> g.getStatus().name().toLowerCase()).orElse("none"));
                 case "available_teams":
-                    return PlayerManager.getInstance().getGameOfPlayer(player.getUniqueId()).map(g -> Integer.toString(g.countAvailableTeams())).orElse("0");
+                    return PlayerManager.getInstance().getGameOfPlayer(player.getUuid()).map(g -> Component.text(g.countAvailableTeams())).orElseGet(() -> Component.text("0"));
                 case "connected_teams":
-                    return PlayerManager.getInstance().getGameOfPlayer(player.getUniqueId()).map(g -> Integer.toString(g.countRunningTeams())).orElse("0");
+                    return PlayerManager.getInstance().getGameOfPlayer(player.getUuid()).map(g -> Component.text(g.countRunningTeams())).orElseGet(() -> Component.text("0"));
                 case "teamchests":
-                    return PlayerManager.getInstance().getGameOfPlayer(player.getUniqueId()).map(g -> Integer.toString(g.countTeamChests())).orElse("0");
+                    return PlayerManager.getInstance().getGameOfPlayer(player.getUuid()).map(g -> Component.text(g.countTeamChests())).orElseGet(() -> Component.text("0"));
                 case "team":
-                    if (PlayerManager.getInstance().isPlayerInGame(player.getUniqueId())) {
-                        var gPlayer = PlayerManager.getInstance().getPlayer(player.getUniqueId()).get();
+                    if (PlayerManager.getInstance().isPlayerInGame(player.getUuid())) {
+                        var gPlayer = PlayerManager.getInstance().getPlayer(player.getUuid()).get();
                         var game = gPlayer.getGame();
                         if (gPlayer.isSpectator) {
-                            return "spectator";
+                            return Component.text("spectator");
                         } else {
                             var team = game.getPlayerTeam(gPlayer);
                             if (team != null) {
-                                return team.getName();
+                                return Component.text(team.getName());
                             } else {
-                                return "none";
+                                return Component.text("none");
                             }
                         }
                     } else {
-                        return "none";
+                        return Component.text("none");
                     }
                 case "team_colored":
-                    if (PlayerManager.getInstance().isPlayerInGame(player.getUniqueId())) {
-                        var gPlayer = PlayerManager.getInstance().getPlayer(player.getUniqueId()).get();
+                    if (PlayerManager.getInstance().isPlayerInGame(player.getUuid())) {
+                        var gPlayer = PlayerManager.getInstance().getPlayer(player.getUuid()).get();
                         var game = gPlayer.getGame();
                         if (gPlayer.isSpectator) {
-                            return ChatColor.GRAY + "spectator";
+                            return Component.text("spectator", NamedTextColor.GRAY);
                         } else {
                             var team = game.getPlayerTeam(gPlayer);
                             if (team != null) {
-                                return team.teamInfo.color.chatColor + team.getName();
+                                return Component.text(team.getName(), NamedTextColor.NAMES.value(team.teamInfo.color.chatColor.name()));
                             } else {
-                                return ChatColor.RED + "none";
+                                return Component.text("none", NamedTextColor.RED);
                             }
                         }
                     } else {
-                        return ChatColor.RED + "none";
+                        return Component.text("none", NamedTextColor.RED);
                     }
                 case "team_color":
-                    if (PlayerManager.getInstance().isPlayerInGame(player.getUniqueId())) {
-                        var gPlayer = PlayerManager.getInstance().getPlayer(player.getUniqueId()).get();
+                    if (PlayerManager.getInstance().isPlayerInGame(player.getUuid())) {
+                        var gPlayer = PlayerManager.getInstance().getPlayer(player.getUuid()).get();
                         var game = gPlayer.getGame();
                         if (gPlayer.isSpectator) {
-                            return ChatColor.GRAY.toString();
+                            return Component.text("", NamedTextColor.GRAY);
                         } else {
                             var team = game.getPlayerTeam(gPlayer);
                             if (team != null) {
-                                return team.teamInfo.color.chatColor.toString();
+                                return Component.text("", NamedTextColor.NAMES.value(team.teamInfo.color.chatColor.name()));
                             } else {
-                                return ChatColor.GRAY.toString();
+                                return Component.text("", NamedTextColor.GRAY);
                             }
                         }
                     } else {
-                        return "";
+                        return Component.empty();
                     }
                 case "team_players":
-                    if (PlayerManager.getInstance().isPlayerInGame(player.getUniqueId())) {
-                        var gPlayer = PlayerManager.getInstance().getPlayer(player.getUniqueId()).get();
+                    if (PlayerManager.getInstance().isPlayerInGame(player.getUuid())) {
+                        var gPlayer = PlayerManager.getInstance().getPlayer(player.getUuid()).get();
                         var game = gPlayer.getGame();
                         if (gPlayer.isSpectator) {
-                            return "0";
+                            return Component.text("0");
                         } else {
                             var team = game.getPlayerTeam(gPlayer);
                             if (team != null) {
-                                return Integer.toString(team.countConnectedPlayers());
+                                return Component.text(team.countConnectedPlayers());
                             } else {
-                                return "0";
+                                return Component.text("0");
                             }
                         }
                     } else {
-                        return "0";
+                        return Component.text("0");
                     }
                 case "team_maxplayers":
-                    if (PlayerManager.getInstance().isPlayerInGame(player.getUniqueId())) {
-                        var gPlayer = PlayerManager.getInstance().getPlayer(player.getUniqueId()).get();
+                    if (PlayerManager.getInstance().isPlayerInGame(player.getUuid())) {
+                        var gPlayer = PlayerManager.getInstance().getPlayer(player.getUuid()).get();
                         var game = gPlayer.getGame();
                         if (gPlayer.isSpectator) {
-                            return "0";
+                            return Component.text("0");
                         } else {
                             var team = game.getPlayerTeam(gPlayer);
                             if (team != null) {
-                                return Integer.toString(team.getMaxPlayers());
+                                return Component.text(team.getMaxPlayers());
                             } else {
-                                return "0";
+                                return Component.text("0");
                             }
                         }
                     } else {
-                        return "0";
+                        return Component.text("0");
                     }
                 case "team_bed":
-                    if (PlayerManager.getInstance().isPlayerInGame(player.getUniqueId())) {
-                        var gPlayer = PlayerManager.getInstance().getPlayer(player.getUniqueId()).get();
+                    if (PlayerManager.getInstance().isPlayerInGame(player.getUuid())) {
+                        var gPlayer = PlayerManager.getInstance().getPlayer(player.getUuid()).get();
                         var game = gPlayer.getGame();
                         if (gPlayer.isSpectator) {
-                            return "no";
+                            return Component.text("no");
                         } else {
                             var team = game.getPlayerTeam(gPlayer);
                             if (team != null) {
-                                return team.isBed ? "yes" : "no";
+                                return Component.text(team.isBed ? "yes" : "no");
                             } else {
-                                return "no";
+                                return Component.text("no");
                             }
                         }
                     } else {
-                        return "no";
+                        return Component.text("no");
                     }
                 case "team_teamchests":
-                    if (PlayerManager.getInstance().isPlayerInGame(player.getUniqueId())) {
-                        var gPlayer = PlayerManager.getInstance().getPlayer(player.getUniqueId()).get();
+                    if (PlayerManager.getInstance().isPlayerInGame(player.getUuid())) {
+                        var gPlayer = PlayerManager.getInstance().getPlayer(player.getUuid()).get();
                         var game = gPlayer.getGame();
                         if (gPlayer.isSpectator) {
-                            return "0";
+                            return Component.text("0");
                         } else {
                             var team = game.getPlayerTeam(gPlayer);
                             if (team != null) {
-                                return Integer.toString(team.countTeamChests());
+                                return Component.text(team.countTeamChests());
                             } else {
-                                return "0";
+                                return Component.text("0");
                             }
                         }
                     } else {
-                        return "0";
+                        return Component.text("0");
                     }
             }
         }
@@ -283,21 +274,21 @@ public class BedwarsExpansion extends PlaceholderExpansion {
 
             switch (identifier.toLowerCase().substring(6)) {
                 case "deaths":
-                    return Integer.toString(stats.getDeaths());
+                    return Component.text(stats.getDeaths());
                 case "destroyed_beds":
-                    return Integer.toString(stats.getDestroyedBeds());
+                    return Component.text(stats.getDestroyedBeds());
                 case "kills":
-                    return Integer.toString(stats.getKills());
+                    return Component.text(stats.getKills());
                 case "loses":
-                    return Integer.toString(stats.getLoses());
+                    return Component.text(stats.getLoses());
                 case "score":
-                    return Integer.toString(stats.getScore());
+                    return Component.text(stats.getScore());
                 case "wins":
-                    return Integer.toString(stats.getWins());
+                    return Component.text(stats.getWins());
                 case "games":
-                    return Integer.toString(stats.getGames());
+                    return Component.text(stats.getGames());
                 case "kd":
-                    return Double.toString(stats.getKD());
+                    return Component.text(stats.getKD());
             }
         }
 

@@ -2,7 +2,7 @@ apply plugin: 'de.fuerstenau.buildconfig'
 
 ScreamingLibBuilder()
         .platforms('bukkit')
-        .modules('player', 'event', 'material', 'entity', 'world', 'command', 'tasker', 'hologram')
+        .modules('player', 'event', 'material', 'entity', 'world', 'command', 'tasker', 'hologram', 'placeholders')
         .version(SCREAMING_LIB_VERSION)
         .simpleInventories(SIMPLE_INVENTORIES_VERSION)
         .universalModules('signs', 'lang')
@@ -13,7 +13,6 @@ dependencies {
     /* PROVIDED */
     compileOnly vault(VAULT_VERSION)
     compileOnly 'com.onarandombox.multiversecore:Multiverse-Core:' + MULTIVERSE_VERSION
-    compileOnly placeholderapi(PLACEHOLDERAPI_VERSION)
     compileOnly('me.ebonjaeger:perworldinventory-kt:' + PERWORLDINVENTORY_KT_VERSION)  {
         exclude group: '*', module: '*'
     }

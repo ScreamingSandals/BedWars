@@ -6,8 +6,12 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.screamingsandals.bedwars.lib.debug.Debug;
+import org.screamingsandals.lib.material.Item;
+import org.screamingsandals.lib.material.MaterialMapping;
+import org.screamingsandals.lib.material.builder.ItemFactory;
 
-public class ColorChanger implements org.screamingsandals.bedwars.api.utils.ColorChanger {
+public class ColorChanger implements org.screamingsandals.bedwars.api.utils.ColorChanger<Item> {
+    @Deprecated
     public static ItemStack changeLegacyStackColor(ItemStack itemStack, TeamColor teamColor) {
         Material material = itemStack.getType();
         String materialName = material.name();
@@ -24,6 +28,7 @@ public class ColorChanger implements org.screamingsandals.bedwars.api.utils.Colo
         return itemStack;
     }
 
+    @Deprecated
     public static Material changeMaterialColor(Material material, TeamColor teamColor) {
         String materialName = material.name();
 
@@ -45,6 +50,7 @@ public class ColorChanger implements org.screamingsandals.bedwars.api.utils.Colo
 
     }
 
+    @Deprecated
     public static ItemStack changeLeatherArmorColor(ItemStack itemStack, TeamColor color) {
         Material material = itemStack.getType();
 
@@ -59,6 +65,7 @@ public class ColorChanger implements org.screamingsandals.bedwars.api.utils.Colo
         return itemStack;
     }
 
+    @Deprecated
     @Override
     public ItemStack applyColor(org.screamingsandals.bedwars.api.TeamColor apiColor, ItemStack stack) {
         try {
@@ -76,5 +83,17 @@ public class ColorChanger implements org.screamingsandals.bedwars.api.utils.Colo
             e.printStackTrace();
             return new ItemStack(Material.BLACK_WOOL);
         }
+    }
+
+    @Override
+    public Item applyColor(org.screamingsandals.bedwars.api.TeamColor apiColor, Object item) {
+        var color = TeamColor.fromApiColor(apiColor);
+        var newItem = item instanceof Item ? ((Item) item).clone() : ItemFactory.build(item).orElse(ItemFactory.getAir());
+        if (newItem.getMaterial().is("LEATHER_BOOTS", "LEATHER_CHESTPLATE", "LEATHER_HELMET", "LEATHER_LEGGINGS")) {
+            newItem.setColor(color.getLeatherColor());
+        } else {
+            newItem.setMaterial(MaterialMapping.colorize(newItem.getMaterial(), color.material1_13));
+        }
+        return newItem;
     }
 }

@@ -1,5 +1,7 @@
 package org.screamingsandals.bedwars.game;
 
+import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.util.RGBLike;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -61,5 +63,9 @@ public enum TeamColor {
 
     public static TeamColor fromApiColor(org.screamingsandals.bedwars.api.TeamColor color) {
         return TeamColor.valueOf(color.name());
+    }
+
+    public RGBLike getLeatherColor() {
+        return TextColor.color(leatherColor.getRed(), leatherColor.getGreen(), leatherColor.getBlue());
     }
 }

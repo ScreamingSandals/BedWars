@@ -43,6 +43,7 @@ import org.screamingsandals.lib.bukkit.utils.nms.ClassStorage;
 import org.screamingsandals.lib.entity.EntityMapper;
 import org.screamingsandals.lib.event.EventManager;
 import org.screamingsandals.lib.lang.Message;
+import org.screamingsandals.lib.material.Item;
 import org.screamingsandals.lib.material.MaterialMapping;
 import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.player.PlayerWrapper;
@@ -97,7 +98,8 @@ import java.util.*;
         PlayerManager.class,
         PartyListener.class,
         EntityMapper.class,
-        EventUtils.class
+        EventUtils.class,
+        BedwarsExpansion.class
 })
 public class Main extends PluginContainer implements BedwarsAPI {
     private static Main instance;
@@ -111,7 +113,7 @@ public class Main extends PluginContainer implements BedwarsAPI {
     private Economy econ = null;
     private HashMap<Entity, Game> entitiesInGame = new HashMap<>();
     private HashMap<String, ItemSpawnerType> spawnerTypes = new HashMap<>();
-    private ColorChanger colorChanger;
+    private ColorChanger<Item> colorChanger;
     public static List<String> autoColoredMaterials = new ArrayList<>();
 
     static {
@@ -307,13 +309,6 @@ public class Main extends PluginContainer implements BedwarsAPI {
 
         Debug.init(getPluginDescription().getName());
         Debug.setDebug(MainConfig.getInstance().node("debug").getBoolean());
-
-        try {
-            if (PluginManager.isEnabled(PluginManager.createKey("PlaceholderAPI").orElseThrow())) {
-                new BedwarsExpansion().register();
-            }
-        } catch (Throwable ignored) {
-        }
 
         registerBedwarsListener(new PlayerListener());
         if (versionNumber >= 109) {
@@ -584,24 +579,8 @@ public class Main extends PluginContainer implements BedwarsAPI {
     }
 
     @Override
-    public ColorChanger getColorChanger() {
+    public ColorChanger<Item> getColorChanger() {
         return colorChanger;
-    }
-
-    public static ItemStack applyColor(TeamColor color, ItemStack itemStack) {
-        return applyColor(color, itemStack, false);
-    }
-
-    public static ItemStack applyColor(TeamColor color, ItemStack itemStack, boolean clone) {
-        org.screamingsandals.bedwars.api.TeamColor teamColor = color.toApiColor();
-        if (clone) {
-            itemStack = itemStack.clone();
-        }
-        return instance.getColorChanger().applyColor(teamColor, itemStack);
-    }
-
-    public static ItemStack applyColor(org.screamingsandals.bedwars.api.TeamColor teamColor, ItemStack itemStack) {
-        return instance.getColorChanger().applyColor(teamColor, itemStack);
     }
 
     @Override

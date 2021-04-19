@@ -2,7 +2,6 @@ package org.screamingsandals.bedwars.inventories;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.RunningTeam;
 import org.screamingsandals.bedwars.config.MainConfig;
@@ -61,8 +60,7 @@ public class TeamSelectorInventory {
                         var playersInTeam = game.getPlayersInTeam(team);
                         var playersInTeamCount = playersInTeam.size();
 
-                        // TODO: teach BW how to color Item wrappers
-                        categoryBuilder.item(Main.applyColor(team.color, item.as(ItemStack.class), true), itemInfoBuilder -> {
+                        categoryBuilder.item(Main.getInstance().getColorChanger().applyColor(team.color.toApiColor(), item), itemInfoBuilder -> {
                             try {
                                 itemInfoBuilder.stack(itemBuilder ->
                                         itemBuilder.name(Message.of(LangKeys.IN_GAME_TEAM_SELECTION_SELECT_ITEM)

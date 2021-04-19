@@ -175,8 +175,8 @@ public class ProtectionWall extends SpecialItem implements org.screamingsandals.
                     continue;
                 }
 
-                ItemStack coloredStack = Main.applyColor(
-                        TeamColor.fromApiColor(team.getColor()), new ItemStack(buildingMaterial, 1, legacyData));
+                ItemStack coloredStack = Main.getInstance().getColorChanger().applyColor(
+                        team.getColor(), new ItemStack(buildingMaterial, 1, legacyData));
                 if (Main.isLegacy()) {
                     placedBlock.setType(coloredStack.getType());
                     try {

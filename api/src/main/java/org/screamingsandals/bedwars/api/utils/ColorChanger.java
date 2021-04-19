@@ -2,12 +2,14 @@ package org.screamingsandals.bedwars.api.utils;
 
 import org.screamingsandals.bedwars.api.TeamColor;
 import org.bukkit.inventory.ItemStack;
+import org.screamingsandals.lib.utils.Wrapper;
 
 
-/**
- * @author Bedwars Team
- */
-public interface ColorChanger {
+public interface ColorChanger<I extends Wrapper> {
+
+    @Deprecated
+    ItemStack applyColor(TeamColor color, ItemStack stack);
+
 
     /**
      * Apply color of team to ItemStack
@@ -16,5 +18,5 @@ public interface ColorChanger {
      * @param stack ItemStack that should be colored
      * @return colored ItemStack or normal ItemStack if ItemStack can't be colored
      */
-    ItemStack applyColor(TeamColor color, ItemStack stack);
+    I applyColor(TeamColor color, Object stack);
 }

@@ -50,24 +50,23 @@ public class TabManager {
     }
 
     public void modifyForPlayer(BedWarsPlayer player) {
-        if (player.player.isOnline() && (header != null || footer != null)) {
-            var wrappedPlayer = PlayerMapper.wrapPlayer(player.player);
+        if (player.isOnline() && (header != null || footer != null)) {
             if (header != null) {
-                wrappedPlayer.sendPlayerListHeader(translate(player, header));
+                player.sendPlayerListHeader(translate(player, header));
             } else {
-                wrappedPlayer.sendPlayerListHeader(Component.empty());
+                player.sendPlayerListHeader(Component.empty());
             }
             if (header != null) {
-                wrappedPlayer.sendPlayerListFooter(translate(player, footer));
+                player.sendPlayerListFooter(translate(player, footer));
             } else {
-                wrappedPlayer.sendPlayerListFooter(Component.empty());
+                player.sendPlayerListFooter(Component.empty());
             }
         }
     }
 
     public void clear(BedWarsPlayer player) {
-        if (player.player.isOnline() && (header != null || footer != null)) {
-            PlayerMapper.wrapPlayer(player.player).sendPlayerListHeaderAndFooter(Component.empty(), Component.empty());
+        if (player.isOnline() && (header != null || footer != null)) {
+            player.sendPlayerListHeaderAndFooter(Component.empty(), Component.empty());
         }
     }
 

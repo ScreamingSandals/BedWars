@@ -288,15 +288,15 @@ public class MiscUtils {
             final PlayerInventory playerInventory = player.getInventory();
 
             if (materialName.contains("HELMET")) {
-                playerInventory.setHelmet(Main.applyColor(teamColor, itemStack));
+                playerInventory.setHelmet(Main.getInstance().getColorChanger().applyColor(teamColor, itemStack));
             } else if (materialName.contains("CHESTPLATE")) {
-                playerInventory.setChestplate(Main.applyColor(teamColor, itemStack));
+                playerInventory.setChestplate(Main.getInstance().getColorChanger().applyColor(teamColor, itemStack));
             } else if (materialName.contains("LEGGINGS")) {
-                playerInventory.setLeggings(Main.applyColor(teamColor, itemStack));
+                playerInventory.setLeggings(Main.getInstance().getColorChanger().applyColor(teamColor, itemStack));
             } else if (materialName.contains("BOOTS")) {
-                playerInventory.setBoots(Main.applyColor(teamColor, itemStack));
+                playerInventory.setBoots(Main.getInstance().getColorChanger().applyColor(teamColor, itemStack));
             } else {
-                playerInventory.addItem(Main.applyColor(teamColor, itemStack));
+                playerInventory.addItem(Main.getInstance().getColorChanger().applyColor(teamColor, itemStack));
             }
         }
     }

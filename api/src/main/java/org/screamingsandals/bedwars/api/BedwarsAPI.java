@@ -80,7 +80,7 @@ public interface BedwarsAPI extends Wrapper {
     /**
      * @return Color changer for coloring ItemStacks
      */
-    ColorChanger getColorChanger();
+    ColorChanger<?> getColorChanger();
 
     /**
      *

@@ -2,7 +2,7 @@ package org.screamingsandals.bedwars.inventories;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import org.bukkit.Bukkit;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -121,7 +121,6 @@ public class ShopInventory implements Listener {
     public void onGeneratingItem(ItemRenderEvent event) {
         var itemInfo = event.getItem();
         var item = itemInfo.getStack();
-        var player = event.getPlayer().as(Player.class);
         var game = playerManager.getGameOfPlayer(event.getPlayer());
         var prices = itemInfo.getOriginal().getPrices();
         if (!prices.isEmpty()) {
@@ -210,7 +209,7 @@ public class ShopInventory implements Listener {
             CurrentTeam team = (CurrentTeam) event.getGame().getTeamOfPlayer(player.as(Player.class));
 
             if (mainConfig.node("automatic-coloring-in-shop").getBoolean()) {
-                event.setStack(ItemFactory.build(Main.applyColor(team.teamInfo.color, event.getStack().as(ItemStack.class))).orElse(event.getStack())); // TODO
+                event.setStack(Main.getInstance().getColorChanger().applyColor(team.teamInfo.color.toApiColor(), event.getStack()));
             }
         }
     }
@@ -358,13 +357,13 @@ public class ShopInventory implements Listener {
         shopMap.put(name, inventorySet);
     }
 
-    private static String getNameOrCustomNameOfItem(Item item) {
+    private static Component getNameOrCustomNameOfItem(Item item) {
         try {
             if (item.getDisplayName() != null) {
-                return AdventureHelper.toLegacy(item.getDisplayName());
+                return item.getDisplayName();
             }
             if (item.getLocalizedName() != null) {
-                return AdventureHelper.toLegacy(item.getLocalizedName());
+                return item.getLocalizedName();
             }
         } catch (Throwable ignored) {
         }
@@ -376,7 +375,7 @@ public class ShopInventory implements Listener {
         for (var s : sArray) {
             stringBuilder.append(Character.toUpperCase(s.charAt(0))).append(s.substring(1)).append(" ");
         }
-        return stringBuilder.toString().trim();
+        return AdventureHelper.toComponent(stringBuilder.toString().trim());
     }
 
     private void handleBuy(OnTradeEvent event) {
@@ -456,7 +455,7 @@ public class ShopInventory implements Listener {
                             property.getPropertyName(), propertyData, newItem);
                     EventManager.fire(applyEvent);
 
-                    newItem = ItemFactory.build(applyEvent.getStack()).orElse(newItem);
+                    newItem = applyEvent.getStack();
                 }
                 // Checks if the player is buying a permanent item. Setting name to empty string to prevent other listeners from erroring out.
                 else if (propertyData.get(PermaItemListener.getPermItemPropKey()) != null) {
@@ -471,7 +470,7 @@ public class ShopInventory implements Listener {
             }
 
             event.sellStack(materialItem);
-            List<Item> notFit = event.buyStack(newItem);
+            var notFit = event.buyStack(newItem);
             if (!notFit.isEmpty()) {
                 notFit.forEach(stack -> player.getLocation().getWorld().dropItem(player.getLocation(), stack.as(ItemStack.class)));
             }
@@ -479,7 +478,7 @@ public class ShopInventory implements Listener {
             if (!mainConfig.node("removePurchaseMessages").getBoolean()) {
                 Message.of(LangKeys.IN_GAME_SHOP_BUY_SUCCESS)
                         .prefixOrDefault(game.getCustomPrefixComponent())
-                        .placeholder("item", AdventureHelper.toComponent(amount + "x " + getNameOrCustomNameOfItem(newItem)))
+                        .placeholder("item", Component.text(amount + "x ").append(getNameOrCustomNameOfItem(newItem)))
                         .placeholder("material", AdventureHelper.toComponent(priceAmount + " " + type.getItemName()))
                         .send(event.getPlayer());
             }
@@ -495,7 +494,7 @@ public class ShopInventory implements Listener {
             if (!mainConfig.node("removePurchaseMessages").getBoolean()) {
                 Message.of(LangKeys.IN_GAME_SHOP_BUY_FAILED)
                         .prefixOrDefault(game.getCustomPrefixComponent())
-                        .placeholder("item", AdventureHelper.toComponent(amount + "x " + getNameOrCustomNameOfItem(newItem)))
+                        .placeholder("item", Component.text(amount + "x ").append(getNameOrCustomNameOfItem(newItem)))
                         .placeholder("material", AdventureHelper.toComponent(priceAmount + " " + type.getItemName()))
                         .send(event.getPlayer());
             }
