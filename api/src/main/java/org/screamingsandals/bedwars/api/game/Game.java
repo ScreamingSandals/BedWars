@@ -1,6 +1,7 @@
 package org.screamingsandals.bedwars.api.game;
 
 import net.kyori.adventure.text.Component;
+import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.api.*;
 import org.screamingsandals.bedwars.api.boss.StatusBar;
 import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
@@ -432,4 +433,16 @@ public interface Game {
      * @return
      */
     Component getCustomPrefixComponent();
+
+    /**
+     * @since 0.3.0
+     * @return
+     */
+    @Nullable Location getLobbyPos1();
+
+    /**
+     * @since 0.3.0
+     * @return
+     */
+    @Nullable Location getLobbyPos2();
 }

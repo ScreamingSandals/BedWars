@@ -26,6 +26,7 @@ import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
+import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.ArenaTime;
 import org.screamingsandals.bedwars.api.Region;
@@ -86,6 +87,8 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     private Location pos1;
     private Location pos2;
     private Location lobbySpawn;
+    private Location lobbyPos1;
+    private Location lobbyPos2;
     private Location specSpawn;
     private final List<Team> teams = new ArrayList<>();
     private final List<ItemSpawner> spawners = new ArrayList<>();
@@ -199,6 +202,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             game.pos1 = MiscUtils.readLocationFromString(game.world, Objects.requireNonNull(configMap.node("pos1").getString()));
             game.pos2 = MiscUtils.readLocationFromString(game.world, Objects.requireNonNull(configMap.node("pos2").getString()));
 
+
             if (MainConfig.getInstance().node("prevent-spawning-mobs").getBoolean(true)) {
                 for (Entity e : game.world.getEntitiesByClass(Monster.class)) {
                     if (ArenaUtils.isInArea(e.getLocation(), game.pos1, game.pos2)) {
@@ -238,6 +242,14 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                     return null;
                 }
             }
+
+            var lobbyPos1 = configMap.node("lobbyPos1").getString(null);
+            var lobbyPos2 = configMap.node("lobbyPos2").getString(null);
+            if (lobbyPos1 != null && lobbyPos2 != null) {
+                game.lobbyPos1 = MiscUtils.readLocationFromString(lobbySpawnWorld, lobbyPos1);
+                game.lobbyPos2 = MiscUtils.readLocationFromString(lobbySpawnWorld, lobbyPos2);
+            }
+
             game.lobbySpawn = MiscUtils.readLocationFromString(lobbySpawnWorld, Objects.requireNonNull(configMap.node("lobbySpawn").getString()));
             game.minPlayers = configMap.node("minPlayers").getInt(2);
             configMap.node("teams").childrenMap().forEach((teamN, team) -> {
@@ -1051,6 +1063,10 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         configMap.node("pos2").set(MiscUtils.setLocationToString(pos2));
         configMap.node("specSpawn").set(MiscUtils.setLocationToString(specSpawn));
         configMap.node("lobbySpawn").set(MiscUtils.setLocationToString(lobbySpawn));
+        if (lobbyPos1 != null)
+            configMap.node("lobbyPos1", MiscUtils.setLocationToString(lobbyPos1));
+        if (lobbyPos2 != null)
+            configMap.node("lobbyPos2", MiscUtils.setLocationToString(lobbyPos2));
         configMap.node("lobbySpawnWorld").set(lobbySpawn.getWorld().getName());
         configMap.node("minPlayers").set(minPlayers);
         configMap.node("postGameWaiting").set(postGameWaiting);
@@ -2627,6 +2643,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
     @Override
     public World getLobbyWorld() {
+        if (lobbySpawn == null) return null;
         return lobbySpawn.getWorld();
     }
 
@@ -3027,6 +3044,24 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     @Override
     public Component getCustomPrefixComponent() {
         return AdventureHelper.toComponentNullable(customPrefix);
+    }
+
+    @Override
+    public @Nullable Location getLobbyPos1() {
+        return lobbyPos1;
+    }
+
+    @Override
+    public @Nullable Location getLobbyPos2() {
+        return lobbyPos2;
+    }
+
+    public void setLobbyPos1(Location pos1) {
+        lobbyPos1 = pos1;
+    }
+
+    public void setLobbyPos2(Location pos2) {
+        lobbyPos2 = pos2;
     }
 
     @Override

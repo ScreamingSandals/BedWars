@@ -49,6 +49,7 @@ public class GameConfigurationContainer implements ConfigurationContainer {
         register(ConfigurationContainer.ANCHOR_DECREASING, Boolean.class, "target-block", "respawn-anchor", "enable-decrease");
         register(ConfigurationContainer.CAKE_TARGET_BLOCK_EATING, Boolean.class, "target-block", "cake", "destroy-by-eating");
         register(ConfigurationContainer.TARGET_BLOCK_EXPLOSIONS, Boolean.class, "target-block", "allow-destroying-with-explosions");
+        register(ConfigurationContainer.INVISIBLE_LOBBY_ON_GAME_START, Boolean.class, "invisible-lobby-on-game-start");
     }
 
     @Override

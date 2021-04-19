@@ -30,6 +30,8 @@ import java.util.stream.Stream;
         PausecountdownCommand.class,
         Pos1Command.class,
         Pos2Command.class,
+        LobbyPos1Command.class,
+        LobbyPos2Command.class,
         PostGameWaitingCommand.class,
         RemoveCommand.class,
         SaveCommand.class,

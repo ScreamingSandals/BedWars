@@ -99,6 +99,7 @@ import java.util.*;
         PartyListener.class,
         EntityMapper.class,
         EventUtils.class,
+        LobbyInvisibilityListener.class,
         BedwarsExpansion.class
 })
 public class Main extends PluginContainer implements BedwarsAPI {
@@ -113,7 +114,7 @@ public class Main extends PluginContainer implements BedwarsAPI {
     private Economy econ = null;
     private HashMap<Entity, Game> entitiesInGame = new HashMap<>();
     private HashMap<String, ItemSpawnerType> spawnerTypes = new HashMap<>();
-    private ColorChanger<Item> colorChanger;
+    private ColorChanger colorChanger;
     public static List<String> autoColoredMaterials = new ArrayList<>();
 
     static {
