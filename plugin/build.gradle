@@ -2,7 +2,7 @@ apply plugin: 'de.fuerstenau.buildconfig'
 
 ScreamingLibBuilder()
         .platforms('bukkit')
-        .modules('player', 'event', 'material', 'entity', 'world', 'command', 'tasker', 'hologram', 'placeholders')
+        .modules('player', 'event', 'material', 'entity', 'world', 'command', 'tasker', 'hologram', 'placeholders', 'sidebar')
         .version(SCREAMING_LIB_VERSION)
         .simpleInventories(SIMPLE_INVENTORIES_VERSION)
         .universalModules('signs', 'lang')
@@ -29,7 +29,6 @@ dependencies {
     implementation 'com.zaxxer:HikariCP:3.3.0'
     implementation 'cloud.commandframework:cloud-minecraft-extras:' + CLOUD_EXTRAS_VERSION
     implementation bStats(BSTATS_VERSION)
-    implementation 'pronze.lib:scoreboard:1.0.1-SNAPSHOT'
     implementation 'me.lucko:commodore:' + COMMODORE_VERSION, {
         exclude group: 'com.mojang', module: 'brigadier'
     }

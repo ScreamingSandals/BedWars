@@ -163,7 +163,7 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                         } else {
                             var team = game.getPlayerTeam(gPlayer);
                             if (team != null) {
-                                return Component.text(team.getName(), NamedTextColor.NAMES.value(team.teamInfo.color.chatColor.name()));
+                                return Component.text(team.getName(), NamedTextColor.NAMES.value(team.teamInfo.color.chatColor.name().toLowerCase()));
                             } else {
                                 return Component.text("none", NamedTextColor.RED);
                             }
@@ -180,7 +180,7 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                         } else {
                             var team = game.getPlayerTeam(gPlayer);
                             if (team != null) {
-                                return Component.text("", NamedTextColor.NAMES.value(team.teamInfo.color.chatColor.name()));
+                                return Component.text("", NamedTextColor.NAMES.value(team.teamInfo.color.chatColor.name().toLowerCase()));
                             } else {
                                 return Component.text("", NamedTextColor.GRAY);
                             }

@@ -117,9 +117,9 @@ public class TeamSelectorInventory {
         var playersInTeamCount = playersInTeam.size();
 
         if (playersInTeamCount >= team.maxPlayers) {
-            loreList.add(Message.of(LangKeys.IN_GAME_TEAM_SELECTION_SELECT_ITEM_LORE_FULL).asComponent().color(NamedTextColor.NAMES.value(team.color.chatColor.name())));
+            loreList.add(Message.of(LangKeys.IN_GAME_TEAM_SELECTION_SELECT_ITEM_LORE_FULL).asComponent().color(NamedTextColor.NAMES.value(team.color.chatColor.name().toLowerCase())));
         } else {
-            loreList.add(Message.of(LangKeys.IN_GAME_TEAM_SELECTION_SELECT_ITEM_LORE_JOIN).asComponent().color(NamedTextColor.NAMES.value(team.color.chatColor.name())));
+            loreList.add(Message.of(LangKeys.IN_GAME_TEAM_SELECTION_SELECT_ITEM_LORE_JOIN).asComponent().color(NamedTextColor.NAMES.value(team.color.chatColor.name().toLowerCase())));
         }
 
         if (!playersInTeam.isEmpty()) {

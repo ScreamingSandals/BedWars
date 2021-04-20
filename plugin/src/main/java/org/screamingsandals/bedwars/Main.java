@@ -49,12 +49,12 @@ import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.plugin.PluginContainer;
 import org.screamingsandals.lib.plugin.PluginManager;
+import org.screamingsandals.lib.sidebar.SidebarManager;
 import org.screamingsandals.lib.utils.PlatformType;
 import org.screamingsandals.lib.utils.annotations.Init;
 import org.screamingsandals.lib.utils.annotations.Plugin;
 import org.screamingsandals.lib.utils.annotations.PluginDependencies;
 import org.spongepowered.configurate.serialize.SerializationException;
-import pronze.lib.scoreboards.ScoreboardManager;
 
 import java.util.*;
 
@@ -100,7 +100,8 @@ import java.util.*;
         EntityMapper.class,
         EventUtils.class,
         LobbyInvisibilityListener.class,
-        BedwarsExpansion.class
+        BedwarsExpansion.class,
+        SidebarManager.class
 })
 public class Main extends PluginContainer implements BedwarsAPI {
     private static Main instance;
@@ -491,9 +492,6 @@ public class Main extends PluginContainer implements BedwarsAPI {
         } catch (Throwable ignored) {
             // maybe something here can cause exception
         }
-
-        /* Initialize our ScoreboardLib*/
-        ScoreboardManager.init(this.getPluginDescription().as(JavaPlugin.class));
 
         PlayerMapper.getConsoleSender().sendMessage(Component.text("Everything has finished loading! If you like our work, consider subscribing to our Patreon! <3").color(NamedTextColor.WHITE));
         PlayerMapper.getConsoleSender().sendMessage(Component.text("https://www.patreon.com/screamingsandals").color(NamedTextColor.WHITE));

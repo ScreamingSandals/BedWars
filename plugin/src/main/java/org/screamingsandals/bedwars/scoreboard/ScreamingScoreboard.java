@@ -1,126 +1,127 @@
 package org.screamingsandals.bedwars.scoreboard;
 
-import org.bukkit.Bukkit;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.api.RunningTeam;
+import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.game.Game;
 import org.screamingsandals.bedwars.game.TeamColor;
-import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.listener.Player116ListenerUtils;
+import org.screamingsandals.lib.lang.Message;
+import org.screamingsandals.lib.player.PlayerMapper;
+import org.screamingsandals.lib.player.PlayerWrapper;
+import org.screamingsandals.lib.sidebar.Sidebar;
+import org.screamingsandals.lib.tasker.Tasker;
+import org.screamingsandals.lib.tasker.TaskerTime;
+import org.screamingsandals.lib.tasker.task.TaskerTask;
+import org.screamingsandals.lib.utils.AdventureHelper;
 import org.spongepowered.configurate.ConfigurationNode;
-import pronze.lib.scoreboards.Scoreboard;
-import pronze.lib.scoreboards.ScoreboardManager;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class ScreamingScoreboard {
 
-    public static final String GAME_OBJECTIVE = "bedwars_game";
-    public static final String LOBBY_OBJECTIVE = "bedwars_lobby";
+    private GameStatus status = GameStatus.WAITING;
     private final Game game;
-    private final Map<UUID, Scoreboard> scoreboardMap = new HashMap<>();
+    private final Sidebar sidebar = Sidebar.of();
+    private final TaskerTask task;
 
     public ScreamingScoreboard(Game game) {
         this.game = game;
-        game.getConnectedPlayers().forEach(this::createBoard);
+        this.sidebar
+                .title(AdventureHelper.toComponent(MainConfig.getInstance().node("lobby-scoreboard", "title").getString("§eBEDWARS")));
+        MainConfig.getInstance().node("lobby-scoreboard", "content")
+                .childrenList()
+                .stream()
+                .map(ConfigurationNode::getString)
+                .filter(Objects::nonNull)
+                .map(message -> Message.ofPlainText(message)
+                        .placeholder("arena", game.getName())
+                        .placeholder("players", () -> Component.text(game.countConnectedPlayers()))
+                        .placeholder("maxplayers", game.getMaxPlayers())
+                        .placeholder("time", () -> Component.text(game.getFormattedTimeLeft()))
+                )
+                .forEach(sidebar::bottomLine);
+        sidebar.show();
+        game.getConnectedPlayers().forEach(player -> sidebar.addViewer(PlayerMapper.wrapPlayer(player)));
+
+        this.task = Tasker
+                .build(this::update)
+                .async()
+                .repeat(20, TaskerTime.TICKS)
+                .start();
     }
 
-    private void createBoard(Player player) {
-        Debug.info("Creating board for player: " + player.getName());
+    private void switchToRunning() {
+        sidebar.title(
+                Message.ofPlainText(MainConfig.getInstance().node("scoreboard", "title").getString(""))
+                        .placeholder("game", game.getName())
+                        .placeholder("time", () -> Component.text(game.getFormattedTimeLeft()))
+        );
 
-        final var scoreboardOptional = ScoreboardManager.getInstance()
-                .fromCache(player.getUniqueId());
-        scoreboardOptional.ifPresent(Scoreboard::destroy);
+        final var msgs = new ArrayList<Message>();
+        game.getRunningTeams().forEach(team ->
+                msgs.add(Message.ofPlainText(() ->
+                        List.of(formatScoreboardTeam(team,
+                                !team.isTargetBlockExists(),
+                                team.isTargetBlockExists()
+                                        && "RESPAWN_ANCHOR".equals(team.getTargetBlock().getBlock().getType().name())
+                                        && Player116ListenerUtils.isAnchorEmpty(team.getTargetBlock().getBlock()))
+                        )
+                )
+            )
+        );
 
-        final var scoreboard = Scoreboard.builder()
-                .animate(false)
-                .player(player)
-                .title(MainConfig.getInstance().node("lobby-scoreboard", "title").getString("§eBEDWARS"))
-                .displayObjective(LOBBY_OBJECTIVE)
-                .updateInterval(20L)
-                .placeholderHook(hook -> parseInternalPlaceholders(game.formatLobbyScoreboardString(hook.getLine())))
-                .updateCallback(board -> {
-                    board.setLines(process(board));
-                    return true;
-                })
-                .build();
-        scoreboardMap.put(player.getUniqueId(), scoreboard);
+        List<String> content = MainConfig.getInstance().node("experimental", "new-scoreboard-system", "content")
+                .childrenList().stream().map(ConfigurationNode::getString).collect(Collectors.toList());
+
+        content.forEach(line -> {
+            if (line.trim().equalsIgnoreCase("%team_status%")) {
+                msgs.forEach(sidebar::bottomLine);
+                return;
+            }
+            sidebar.bottomLine(
+                    Message.ofPlainText(line)
+                        .placeholder("time", () -> Component.text(game.getFormattedTimeLeft()))
+            );
+        });
     }
 
-    private List<String> process(Scoreboard board) {
-        final var holder = board.getHolder();
+    private void update() {
+        sidebar.update();
 
-        //lobby stages
-        if (game.getStatus() == GameStatus.WAITING) {
-            var rows = MainConfig.getInstance().node("lobby-scoreboard", "content")
-                    .childrenList().stream().map(ConfigurationNode::getString).collect(Collectors.toList());
-            if (rows.isEmpty()) {
-                return List.of();
-            }
-            rows = rows.stream()
-                    .map(game::formatLobbyScoreboardString).collect(Collectors.toList());
-            board.setLines(rows);
-        }
+        if (game.getStatus() == GameStatus.RUNNING && status != GameStatus.RUNNING) {
+            sidebar.setLines(List.of());
 
-        if (game.getStatus() == GameStatus.RUNNING) {
-            if (!GAME_OBJECTIVE.equals(holder.getObjectiveName())) {
-                holder.registerObjective(GAME_OBJECTIVE);
-            }
-            holder.setTitle(game.formatScoreboardTitle());
-
-            final var teamStatus = new ArrayList<String>();
-            //lets process team status first
-            game.getRunningTeams().forEach(team -> {
-                String formattedScore = formatScoreboardTeam(team, !team.isTargetBlockExists(), team.isTargetBlockExists() && "RESPAWN_ANCHOR".equals(team.getTargetBlock().getBlock().getType().name()) && Player116ListenerUtils.isAnchorEmpty(team.getTargetBlock().getBlock()));
-                teamStatus.add(formattedScore);
-            });
-
-            final var finalContent = new ArrayList<String>();
-            List<String> content = MainConfig.getInstance().node("experimental", "new-scoreboard-system", "content")
-                    .childrenList().stream().map(ConfigurationNode::getString).collect(Collectors.toList());
-
-            content.forEach(line -> {
-                if (line.contains("%team_status%")) {
-                    finalContent.addAll(teamStatus);
-                    return;
-                }
-                finalContent.add(line);
-            });
-            return finalContent;
+            switchToRunning();
+            status = GameStatus.RUNNING;
         }
 
         game.getRunningTeams().forEach(team -> {
-            if (!holder.hasTeamEntry(team.getName())) {
-                holder.addTeam(team.getName(), TeamColor.fromApiColor(team.getColor()).chatColor);
+            if (sidebar.getTeam(team.getName()).isEmpty()) {
+                sidebar.team(team.getName())
+                        .color(NamedTextColor.NAMES.value(TeamColor.fromApiColor(team.getColor()).chatColor.name().toLowerCase()))
+                        .friendlyFire(game.getConfigurationContainer().getOrDefault(ConfigurationContainer.FRIENDLY_FIRE, Boolean.class, false));
             }
-            final var scoreboardTeam = holder.getTeamOrRegister(team.getName());
+            var sidebarTeam = sidebar.getTeam(team.getName()).orElseThrow();
 
-            new HashSet<>(scoreboardTeam.getEntries())
-                    .stream()
-                    .filter(Objects::nonNull)
-                    .map(Bukkit::getPlayerExact)
-                    .filter(Objects::nonNull)
+            List.copyOf(sidebarTeam.players())
                     .forEach(teamPlayer -> {
-                        if (!team.getConnectedPlayers().contains(teamPlayer)) {
-                            scoreboardTeam.removeEntry(teamPlayer.getName());
+                        if (!team.getConnectedPlayers().contains(teamPlayer.as(Player.class))) {
+                            sidebarTeam.removePlayer(teamPlayer);
                         }
                     });
 
             team.getConnectedPlayers()
                     .stream()
-                    .map(Player::getName)
-                    .filter(playerName -> !scoreboardTeam.hasEntry(playerName))
-                    .forEach(scoreboardTeam::addEntry);
+                    .map(PlayerMapper::wrapPlayer)
+                    .filter(player -> !sidebarTeam.players().contains(player))
+                    .forEach(sidebarTeam::player);
         });
-
-        return List.of();
-    }
-
-    private String parseInternalPlaceholders(String toParse) {
-        return toParse.replace("%time%", game.getFormattedTimeLeft());
     }
 
     private String formatScoreboardTeam(RunningTeam team, boolean destroy, boolean empty) {
@@ -137,21 +138,15 @@ public class ScreamingScoreboard {
     }
 
     public void destroy() {
-        scoreboardMap.values().forEach(Scoreboard::destroy);
+        task.cancel();
+        sidebar.destroy();
     }
 
-    public void addPlayer(Player player) {
-        createBoard(player);
+    public void addPlayer(PlayerWrapper player) {
+        sidebar.addViewer(player);
     }
 
-    public void removePlayer(Player player) {
-        if (!scoreboardMap.containsKey(player.getUniqueId())) {
-            return;
-        }
-        final var scoreboard = scoreboardMap.get(player.getUniqueId());
-        if (scoreboard != null) {
-            scoreboard.destroy();
-        }
-        scoreboardMap.remove(player.getUniqueId());
+    public void removePlayer(PlayerWrapper player) {
+        sidebar.removeViewer(player);
     }
 }

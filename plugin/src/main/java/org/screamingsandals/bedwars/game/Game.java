@@ -899,7 +899,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         }
 
         if (experimentalBoard != null) {
-            experimentalBoard.addPlayer(gamePlayer.player);
+            experimentalBoard.addPlayer(gamePlayer);
         }
 
         EventManager.fire(new PlayerJoinedEventImpl(this, gamePlayer, getPlayerTeam(gamePlayer)));
@@ -915,7 +915,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         Debug.info(name + ": player  " + gamePlayer.getName() + " is leaving the game");
 
         if (experimentalBoard != null) {
-            experimentalBoard.removePlayer(gamePlayer.player);
+            experimentalBoard.removePlayer(gamePlayer);
         }
 
         if (!gamePlayer.isSpectator && !preServerRestart) {

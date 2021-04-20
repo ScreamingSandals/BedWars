@@ -30,14 +30,12 @@ subprojects {
     repositories {
         mavenLocal() // remove after testing
         maven { url 'https://repo.extendedclip.com/content/repositories/placeholderapi/'  }
-        maven { url 'http://repo.onarandombox.com/content/groups/public'  }
+        maven { url 'https://repo.onarandombox.com/content/groups/public'  }
         maven { url 'https://ci.frostcast.net/plugin/repository/everything'  }
         maven { url 'https://repo.codemc.org/repository/maven-public/'  }
         maven { url 'https://repo.alessiodp.com/releases/'  }
         maven { url 'https://jitpack.io' }
         maven { url 'https://repo.citizensnpcs.co'  }
-        /* Our gitlab repo for scoreboard lib*/
-        maven { url 'https://gitlab.hoznet.dev/api/v4/projects/13/packages/maven' }
     }
     
     dependencies {
@@ -51,7 +49,6 @@ subprojects {
         relocate 'org.screamingsandals.lib', 'org.screamingsandals.bedwars.lib'
         relocate 'org.bstats', 'org.screamingsandals.bedwars.lib.ext.bstats'
         relocate 'io.papermc.lib', 'org.screamingsandals.bedwars.lib.ext.paperlib'
-        relocate 'pronze.lib', 'org.screamingsandals.bedwars.lib.ext.pronze'
         relocate 'org.spongepowered.configurate', 'org.screamingsandals.bedwars.lib.ext.configurate'
         relocate 'org.yaml.snakeyaml', 'org.screamingsandals.bedwars.lib.ext.snakeyaml'
         relocate 'com.google.gson', 'org.screamingsandals.bedwars.lib.ext.gson'
