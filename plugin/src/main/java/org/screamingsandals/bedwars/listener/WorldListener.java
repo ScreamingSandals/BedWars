@@ -133,7 +133,7 @@ public class WorldListener implements Listener {
                             }
                             return true;
                         }
-                        return (explosionExceptionTypeName != null && !explosionExceptionTypeName.equals("") && block.getType().name().contains(explosionExceptionTypeName)) || !destroyPlacedBlocksByExplosion;
+                        return (explosionExceptionTypeName != null && !explosionExceptionTypeName.equals("") && explosionExceptionTypeName.contains(block.getType().name()) || !destroyPlacedBlocksByExplosion;
                     });
                 } else {
                     cancellable.setCancelled(true);
