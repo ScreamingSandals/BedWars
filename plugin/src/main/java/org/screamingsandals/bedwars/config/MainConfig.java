@@ -93,7 +93,20 @@ public class MainConfig {
                 .key("disable-hunger").defValue(false)
                 .key("automatic-coloring-in-shop").defValue(true)
                 .key("sell-max-64-per-click-in-shop").defValue(true)
-                .key("destroy-placed-blocks-by-explosion-except").defValue("")
+                // .key("destroy-placed-blocks-by-explosion-except").defValue("")
+                .key("destroy-placed-blocks-by-explosion-except")
+                .remap(node -> {
+                    if (!node.empty() && !node.isList()) {
+                        var str = node.getString();
+                        try {
+                            var data = str == null ? List.of() : List.of(str);
+                            node.set(data);
+                        } catch(SerializationException ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                })
+                .defValue(List::of)
                 .key("destroy-placed-blocks-by-explosion").defValue(true)
                 .key("holo-above-bed").defValue(true)
                 .key("allow-spectator-join").defValue(false)
