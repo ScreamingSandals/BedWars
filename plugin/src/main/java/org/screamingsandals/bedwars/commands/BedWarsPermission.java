@@ -22,7 +22,9 @@ public enum BedWarsPermission {
     LEADERBOARD_PERMISSION(List.of("misat11.bw.cmd.leaderboard", "bw.cmd.leaderboard"), List.of("default-permissions", "leaderboard")),
     PARTY_PERMISSION(List.of("misat11.bw.cmd.party", "bw.cmd.party"), List.of("default-permissions", "party")),
     ALL_JOIN_PERMISSION(List.of("misat11.bw.admin.alljoin", "bw.admin.alljoin"), List.of()),
-    DISABLE_ALL_JOIN_PERMISSION(List.of("misat11.bw.disable.joinall", "bw.disable.joinall"), List.of());
+    DISABLE_ALL_JOIN_PERMISSION(List.of("misat11.bw.disable.joinall", "bw.disable.joinall"), List.of()),
+    START_ITEM_PERMISSION(List.of("misat11.bw.vip.startitem", "bw.vip.startitem"), List.of()),
+    FORCE_JOIN_PERMISSION(List.of("misat11.bw.vip.forcejoin", "bw.vip.forcejoin"), List.of());
 
     private final List<String> permissions;
     private final List<String> defaultAllowedConfigurationKeys;

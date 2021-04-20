@@ -47,6 +47,7 @@ import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.bedwars.utils.*;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.lib.nms.entity.PlayerUtils;
+import org.screamingsandals.lib.entity.EntityHuman;
 import org.screamingsandals.lib.event.EventManager;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.material.builder.ItemFactory;
@@ -211,7 +212,7 @@ public class PlayerListener implements Listener {
                 new BukkitRunnable() {
                     int livingTime = respawnTime;
                     BedWarsPlayer gamePlayer = gVictim;
-                    Player player = gamePlayer.player;
+                    Player player = gamePlayer.as(Player.class);
 
                     @Override
                     public void run() {
@@ -331,7 +332,7 @@ public class PlayerListener implements Listener {
                 EventManager.fire(respawnEvent);
 
                 if (MainConfig.getInstance().node("respawn", "protection-enabled").getBoolean(true)) {
-                    RespawnProtection respawnProtection = game.addProtectedPlayer(gPlayer.player);
+                    RespawnProtection respawnProtection = game.addProtectedPlayer(gPlayer.as(Player.class));
                     respawnProtection.runProtection();
                 }
 
@@ -346,7 +347,7 @@ public class PlayerListener implements Listener {
                             .map(item -> item.as(ItemStack.class))
                             .collect(Collectors.toList());
                     if (!playerRespawnItems.isEmpty()) {
-                        MiscUtils.giveItemsToPlayer(playerRespawnItems, gPlayer.player, team.getColor());
+                        MiscUtils.giveItemsToPlayer(playerRespawnItems, gPlayer.as(Player.class), team.getColor());
                     } else {
                         Debug.warn("You have wrongly configured player-respawn-items.items!", true);
                     }
@@ -355,11 +356,11 @@ public class PlayerListener implements Listener {
                 if (game.getConfigurationContainer().getOrDefault(ConfigurationContainer.KEEP_ARMOR, Boolean.class, false)) {
                     final var armorContents = gPlayer.getGameArmorContents();
                     if (armorContents != null) {
-                        gPlayer.player.getInventory().setArmorContents(armorContents);
+                        gPlayer.as(Player.class).getInventory().setArmorContents(armorContents);
                     }
                 }
 
-                MiscUtils.giveItemsToPlayer(gPlayer.getPermaItemsPurchased(), gPlayer.player, team.getColor());
+                MiscUtils.giveItemsToPlayer(gPlayer.getPermaItemsPurchased(), gPlayer.as(Player.class), team.getColor());
             }
         }
     }
@@ -628,13 +629,13 @@ public class PlayerListener implements Listener {
             Game game = gPlayer.getGame();
             if (gPlayer.isSpectator) {
                 if (event.getCause() == DamageCause.VOID) {
-                    gPlayer.player.setFallDistance(0);
+                    gPlayer.as(EntityHuman.class).setFallDistance(0);
                     gPlayer.teleport(game.getSpecSpawn());
                 }
                 event.setCancelled(true);
             } else if (game.getStatus() == GameStatus.WAITING) {
                 if (event.getCause() == DamageCause.VOID) {
-                    gPlayer.player.setFallDistance(0);
+                    gPlayer.as(EntityHuman.class).setFallDistance(0);
                     gPlayer.teleport(game.getLobbySpawn());
                 }
                 event.setCancelled(true);

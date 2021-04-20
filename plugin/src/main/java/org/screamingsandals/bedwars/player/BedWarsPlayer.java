@@ -9,6 +9,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.player.BWPlayer;
+import org.screamingsandals.bedwars.commands.BedWarsPermission;
 import org.screamingsandals.bedwars.game.Game;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.utils.BungeeUtils;
@@ -20,8 +21,6 @@ import java.util.List;
 import java.util.UUID;
 
 public class BedWarsPlayer extends PlayerWrapper implements BWPlayer {
-    @Deprecated
-    public final Player player;
     private Game game = null;
     private String latestGame = null;
     private StoredInventory oldInventory = new StoredInventory();
@@ -35,7 +34,6 @@ public class BedWarsPlayer extends PlayerWrapper implements BWPlayer {
 
     public BedWarsPlayer(String name, UUID uuid) {
         super(name, uuid);
-        this.player = as(Player.class);
     }
 
     public void changeGame(Game game) {
@@ -45,7 +43,7 @@ public class BedWarsPlayer extends PlayerWrapper implements BWPlayer {
             this.isSpectator = false;
             this.clean();
             if (Game.isBungeeEnabled()) {
-                BungeeUtils.movePlayerToBungeeServer(player, Main.isDisabling());
+                BungeeUtils.movePlayerToBungeeServer(as(Player.class), Main.isDisabling());
             } else {
                 this.restoreInv();
             }
@@ -85,7 +83,7 @@ public class BedWarsPlayer extends PlayerWrapper implements BWPlayer {
     }
 
     public boolean canJoinFullGame() {
-        return player.hasPermission("bw.vip.forcejoin");
+        return hasPermission(BedWarsPermission.FORCE_JOIN_PERMISSION.asPermission());
     }
 
     public List<ItemStack> getPermaItemsPurchased() {
@@ -101,6 +99,8 @@ public class BedWarsPlayer extends PlayerWrapper implements BWPlayer {
     }
 
     public void storeInv() {
+        var player = as(Player.class);
+
         oldInventory.inventory = player.getInventory().getContents();
         oldInventory.armor = player.getInventory().getArmorContents();
         oldInventory.xp = player.getExp();
@@ -114,6 +114,8 @@ public class BedWarsPlayer extends PlayerWrapper implements BWPlayer {
     }
 
     public void restoreInv() {
+        var player = as(Player.class);
+
         isTeleportingFromGame_justForInventoryPlugins = true;
         if (!mainLobbyUsed) {
             teleport(oldInventory.leftLocation);
@@ -149,36 +151,39 @@ public class BedWarsPlayer extends PlayerWrapper implements BWPlayer {
     }
 
     public void resetLife() {
-        this.player.setAllowFlight(false);
-        this.player.setFlying(false);
-        this.player.setExp(0.0F);
-        this.player.setLevel(0);
-        this.player.setSneaking(false);
-        this.player.setSprinting(false);
-        this.player.setFoodLevel(20);
-        this.player.setSaturation(10);
-        this.player.setExhaustion(0);
-        this.player.setMaxHealth(20D);
-        this.player.setHealth(this.player.getMaxHealth());
-        this.player.setFireTicks(0);
-        this.player.setFallDistance(0);
-        this.player.setGameMode(GameMode.SURVIVAL);
+        var player = as(Player.class);
 
-        if (this.player.isInsideVehicle()) {
-            this.player.leaveVehicle();
+        player.setAllowFlight(false);
+        player.setFlying(false);
+        player.setExp(0.0F);
+        player.setLevel(0);
+        player.setSneaking(false);
+        player.setSprinting(false);
+        player.setFoodLevel(20);
+        player.setSaturation(10);
+        player.setExhaustion(0);
+        player.setMaxHealth(20D);
+        player.setHealth(player.getMaxHealth());
+        player.setFireTicks(0);
+        player.setFallDistance(0);
+        player.setGameMode(GameMode.SURVIVAL);
+
+        if (player.isInsideVehicle()) {
+            player.leaveVehicle();
         }
 
-        for (PotionEffect e : this.player.getActivePotionEffects()) {
-            this.player.removePotionEffect(e.getType());
+        for (PotionEffect e : player.getActivePotionEffects()) {
+            player.removePotionEffect(e.getType());
         }
     }
 
     public void invClean() {
+        var player = as(Player.class);
         Debug.info("Cleaning inventory of: " + player.getName());
-        PlayerInventory inv = this.player.getInventory();
+        PlayerInventory inv = player.getInventory();
         inv.setArmorContents(new ItemStack[4]);
         inv.setContents(new ItemStack[]{});
-        this.player.updateInventory();
+        player.updateInventory();
     }
 
     public void clean() {
@@ -190,31 +195,33 @@ public class BedWarsPlayer extends PlayerWrapper implements BWPlayer {
     }
 
     public boolean teleport(Location location) {
-    	return PlayerUtils.teleportPlayer(player, location);
+    	return PlayerUtils.teleportPlayer(as(Player.class), location);
     }
 
     public boolean teleport(Location location, Runnable runnable) {
-        return PlayerUtils.teleportPlayer(player, location, runnable);
+        return PlayerUtils.teleportPlayer(as(Player.class), location, runnable);
     }
 
     public void hidePlayer(Player player) {
-        if (!hiddenPlayers.contains(player) && !player.equals(this.player)) {
+        var thisPlayer = as(Player.class);
+        if (!hiddenPlayers.contains(player) && !player.equals(thisPlayer)) {
             hiddenPlayers.add(player);
             try {
-                this.player.hidePlayer(Main.getInstance().getPluginDescription().as(JavaPlugin.class), player);
+                thisPlayer.hidePlayer(Main.getInstance().getPluginDescription().as(JavaPlugin.class), player);
             } catch (Throwable t) {
-                this.player.hidePlayer(player);
+                thisPlayer.hidePlayer(player);
             }
         }
     }
 
     public void showPlayer(Player player) {
-        if (hiddenPlayers.contains(player) && !player.equals(this.player)) {
+        var thisPlayer = as(Player.class);
+        if (hiddenPlayers.contains(player) && !player.equals(thisPlayer)) {
             hiddenPlayers.remove(player);
             try {
-                this.player.showPlayer(Main.getInstance().getPluginDescription().as(JavaPlugin.class), player);
+                thisPlayer.showPlayer(Main.getInstance().getPluginDescription().as(JavaPlugin.class), player);
             } catch (Throwable t) {
-                this.player.showPlayer(player);
+                thisPlayer.showPlayer(player);
             }
         }
 

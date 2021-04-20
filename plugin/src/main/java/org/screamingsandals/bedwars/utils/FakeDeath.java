@@ -21,7 +21,7 @@ import java.util.Objects;
 @UtilityClass
 public class FakeDeath {
     public void die(BedWarsPlayer gamePlayer) {
-        Player player = gamePlayer.player;
+        Player player = gamePlayer.as(Player.class);
         if (player.isDead()) {
             return;
         }
