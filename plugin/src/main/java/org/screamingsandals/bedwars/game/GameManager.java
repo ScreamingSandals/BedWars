@@ -100,7 +100,10 @@ public class GameManager implements org.screamingsandals.bedwars.api.game.GameMa
                 } else {
                     results.forEach(file -> {
                         if (file.exists() && file.isFile()) {
-                            games.add(Game.loadGame(file));
+                            var game = Game.loadGame(file);
+                            if (game != null) {
+                                games.add(game);
+                            }
                         }
                     });
                 }
