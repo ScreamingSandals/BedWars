@@ -243,8 +243,8 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 }
             }
 
-            var lobbyPos1 = configMap.node("lobbyPos1").getString(null);
-            var lobbyPos2 = configMap.node("lobbyPos2").getString(null);
+            var lobbyPos1 = configMap.node("lobbyPos1").getString();
+            var lobbyPos2 = configMap.node("lobbyPos2").getString();
             if (lobbyPos1 != null && lobbyPos2 != null) {
                 game.lobbyPos1 = MiscUtils.readLocationFromString(lobbySpawnWorld, lobbyPos1);
                 game.lobbyPos2 = MiscUtils.readLocationFromString(lobbySpawnWorld, lobbyPos2);
