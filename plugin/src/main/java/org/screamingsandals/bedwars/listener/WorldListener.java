@@ -23,8 +23,10 @@ import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.game.GameManager;
 import org.screamingsandals.bedwars.utils.ArenaUtils;
+import org.spongepowered.configurate.ConfigurationNode;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class WorldListener implements Listener {
     @EventHandler
@@ -115,7 +117,7 @@ public class WorldListener implements Listener {
     }
 
     public void onExplode(Location location, List<Block> blockList, Cancellable cancellable) {
-        final var explosionExceptionTypeName = MainConfig.getInstance().node("destroy-placed-blocks-by-explosion-except").getString();
+        final var explosionExceptionTypeName = MainConfig.getInstance().node("destroy-placed-blocks-by-explosion-except").childrenList().stream().map(ConfigurationNode::getString).collect(Collectors.toList());
         final var destroyPlacedBlocksByExplosion = MainConfig.getInstance().node("destroy-placed-blocks-by-explosion").getBoolean(true);
 
         GameManager.getInstance().getGames().forEach(game -> {
@@ -133,7 +135,7 @@ public class WorldListener implements Listener {
                             }
                             return true;
                         }
-                        return (explosionExceptionTypeName != null && !explosionExceptionTypeName.equals("") && block.getType().name().contains(explosionExceptionTypeName)) || !destroyPlacedBlocksByExplosion;
+                        return (explosionExceptionTypeName != null && explosionExceptionTypeName.contains(block.getType().name())) || !destroyPlacedBlocksByExplosion;
                     });
                 } else {
                     cancellable.setCancelled(true);
