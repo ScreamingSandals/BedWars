@@ -5,9 +5,6 @@
 [![Discord](https://img.shields.io/discord/582271436845219842?logo=discord)](https://discord.gg/4xB54Ts)
 
 Complete rewrite of the BedWarsRel plugin.
-Thia project is now under complete rewrite and we don't have much of time, so be patient :)
-
-~~This is the stable branch with bugfixes supporting all versions since 1.9! For new branch visit [1.x.x_dev](https://github.com/ScreamingSandals/BedWars/tree/1.x.x_dev)~~ (1.x.x dev is currently paused, use stable version instead)
 
 Supported versions: \[1.9 - 1.16.4\]. Recommended version: \[1.15.2/1.16.4\]
 
@@ -16,7 +13,7 @@ If you need any help, you can contact us on [Discord](https://discord.gg/4xB54Ts
 
 Make sure to check out our [Wiki](https://github.com/ScreamingSandals/BedWars/wiki) before contacting us on Discord. It will save our time, you know. O:)
 
-If you have found any bug, feel free to report is into [Issues](https://github.com/ScreamingSandals/BedWars/issues), we will look into it.
+If you have found any bug, feel free to report it into [Issues](https://github.com/ScreamingSandals/BedWars/issues), we will look into it.
 
 ## Features
 -   All the basics of BedWars game (Beds, Teams and so on)
@@ -25,7 +22,7 @@ If you have found any bug, feel free to report is into [Issues](https://github.c
 -   BungeeCord
 -   Vault rewards
 -   Spectator mode (now, spectators can join running game!)
--   Arena rebuilding (fast af)
+-   Arena rebuilding (Incredibly quick!)
 -   BossBar or XP bar in lobby countdown or with game time
 -   Breakable (those are refreshing after arena rebuild) / ignored blocks
 -   SpecialItems (RescuePlatform, TNTSheep and so on) - they can be configured in shop too!
