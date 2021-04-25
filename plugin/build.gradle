@@ -2,7 +2,7 @@ apply plugin: 'de.fuerstenau.buildconfig'
 
 ScreamingLibBuilder()
         .platforms('bukkit')
-        .modules('player', 'event', 'material', 'entity', 'world', 'command', 'tasker', 'hologram', 'placeholders', 'sidebar')
+        .modules('player', 'event', 'material', 'entity', 'world', 'command', 'tasker', 'hologram', 'placeholders', 'sidebar', 'healthindicator')
         .version(SCREAMING_LIB_VERSION)
         .simpleInventories(SIMPLE_INVENTORIES_VERSION)
         .universalModules('signs', 'lang')

@@ -41,6 +41,7 @@ public interface ConfigurationContainer {
     String CAKE_TARGET_BLOCK_EATING = "cake-target-block-eating";
     String TARGET_BLOCK_EXPLOSIONS = "target-block-explosions";
     String INVISIBLE_LOBBY_ON_GAME_START = "invisible-lobby-on-game-start";
+    String HEALTH_INDICATOR = "health-indicator";
 
     /**
      * Gets configuration from the key

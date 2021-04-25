@@ -42,6 +42,8 @@ import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.lib.bukkit.utils.nms.ClassStorage;
 import org.screamingsandals.lib.entity.EntityMapper;
 import org.screamingsandals.lib.event.EventManager;
+import org.screamingsandals.lib.healthindicator.HealthIndicator;
+import org.screamingsandals.lib.healthindicator.HealthIndicatorManager;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.material.Item;
 import org.screamingsandals.lib.material.MaterialMapping;
@@ -101,7 +103,8 @@ import java.util.*;
         EventUtils.class,
         LobbyInvisibilityListener.class,
         BedwarsExpansion.class,
-        SidebarManager.class
+        SidebarManager.class,
+        HealthIndicatorManager.class
 })
 public class Main extends PluginContainer implements BedwarsAPI {
     private static Main instance;

@@ -5,6 +5,7 @@ import io.papermc.lib.PaperLib;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -18,7 +19,6 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -62,6 +62,7 @@ import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.bedwars.tab.TabManager;
 import org.screamingsandals.bedwars.utils.*;
 import org.screamingsandals.lib.event.EventManager;
+import org.screamingsandals.lib.healthindicator.HealthIndicator;
 import org.screamingsandals.lib.hologram.HologramManager;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.material.MaterialHolder;
@@ -69,6 +70,7 @@ import org.screamingsandals.lib.material.builder.ItemFactory;
 import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.player.SenderWrapper;
+import org.screamingsandals.lib.tasker.TaskerTime;
 import org.screamingsandals.lib.utils.AdventureHelper;
 import org.screamingsandals.lib.world.BlockMapper;
 import org.screamingsandals.lib.world.LocationHolder;
@@ -128,6 +130,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     private final Map<BedWarsPlayer, Inventory> fakeEnderChests = new HashMap<>();
     private int postGameWaiting = 3;
     private ScreamingScoreboard experimentalBoard = null;
+    private HealthIndicator healthIndicator = null;
 
     @Getter
     private final GameConfigurationContainer configurationContainer = new GameConfigurationContainer();
@@ -892,6 +895,10 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                     currentTeam.getBedHolo().addViewer(gamePlayer);
                 }
             });
+
+            if (healthIndicator != null) {
+                healthIndicator.addViewer(gamePlayer);
+            }
         }
 
         if (experimentalBoard != null) {
@@ -912,6 +919,11 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
         if (experimentalBoard != null) {
             experimentalBoard.removePlayer(gamePlayer);
+        }
+
+        if (healthIndicator != null) {
+            healthIndicator.removeTrackedPlayer(gamePlayer);
+            healthIndicator.removeViewer(gamePlayer);
         }
 
         if (!gamePlayer.isSpectator && !preServerRestart) {
@@ -1494,6 +1506,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             if (TabManager.isEnabled()) {
                 players.forEach(TabManager.getInstance()::modifyForPlayer);
             }
+            healthIndicator.removeTrackedPlayer(gamePlayer);
         });
 
         return specSpawn;
@@ -1548,6 +1561,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 if (TabManager.isEnabled()) {
                     players.forEach(TabManager.getInstance()::modifyForPlayer);
                 }
+                healthIndicator.addTrackedPlayer(gamePlayer);
 
                 EventManager.fire(new PlayerRespawnedEventImpl(this, gamePlayer));
             });
@@ -1908,6 +1922,15 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                     EventManager.fire(statusE);
                     updateScoreboard();
                     Debug.info(name + ": game prepared");
+
+                    if (configurationContainer.getOrDefault(ConfigurationContainer.HEALTH_INDICATOR, Boolean.class, false)) {
+                        healthIndicator = HealthIndicator.of()
+                                .symbol(Component.text("\u2665", NamedTextColor.RED))
+                                .show()
+                                .startUpdateTask(4, TaskerTime.TICKS);
+                        players.forEach(healthIndicator::addViewer);
+                        players.stream().filter(bedWarsPlayer -> !bedWarsPlayer.isSpectator).forEach(healthIndicator::addTrackedPlayer);
+                    }
                 }
             }
             // Phase 6.2: If status is same as before
@@ -2163,6 +2186,10 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     }
 
     public void rebuild() {
+        if (healthIndicator != null) {
+            healthIndicator.destroy();
+            healthIndicator = null;
+        }
         if (experimentalBoard != null) {
             experimentalBoard.destroy();
             experimentalBoard = null;
