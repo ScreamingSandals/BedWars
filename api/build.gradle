@@ -1,5 +1,3 @@
-defaultTasks 'clean', 'screamCompile', 'allowJavadocUpload'
-
 dependencies {
     implementation screaming('api-utils', SCREAMING_LIB_VERSION)
 }
