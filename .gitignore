@@ -27,6 +27,7 @@ CraftBukkit/
 # Gradle
 /.gradle
 */build/
+/plugin/test-environment/
 gradle-app.setting
 !gradle-wrapper.jar
 .gradletasknamecache

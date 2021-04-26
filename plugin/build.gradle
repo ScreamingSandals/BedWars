@@ -1,4 +1,4 @@
-apply plugin: 'de.fuerstenau.buildconfig'
+apply plugin: "com.github.gmazzo.buildconfig"
 
 ScreamingLibBuilder()
         .platforms('bukkit')
@@ -35,16 +35,16 @@ dependencies {
 }
 
 buildConfig {
-    version = project.version
-    buildConfigField 'String', 'BUILD_NUMBER', {
-        if (System.getenv('BUILD_NUMBER') != null) {
-            return System.getenv('BUILD_NUMBER')
-        } else {
-            return "custom"
-        }
-    }
+    className('VersionInfo')
+    packageName('org.screamingsandals.bedwars')
 
-    clsName = 'VersionInfo'
-    packageName = 'org.screamingsandals.bedwars'
-    charset = 'UTF-8'
+    buildConfigField('String', 'NAME', "\"${project.name}\"")
+    buildConfigField('String', 'VERSION', "\"${project.version}\"")
+    buildConfigField('String', 'BUILD_NUMBER', "\"${System.getenv('BUILD_NUMBER') ?: "custom"}\"")
 }
+
+prepareTestTask()
+    .versions('1.16.5', '1.15.2', '1.14.4', '1.13.2', '1.12.2', '1.11.2', '1.10.2', '1.9.4')
+    .onlineMode(false)
+    .pluginJar(shadowJar.archiveFile.get().asFile.toPath())
+    .build()
