@@ -32,7 +32,7 @@ public class MinPlayersCommand extends BaseAdminSubCommand {
                             game.setMinPlayers(minPlayers);
                             sender.sendMessage(
                                     Message.of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_MIN_PLAYERS_SET)
-                                            .placeholder("win", minPlayers)
+                                            .placeholder("min", minPlayers)
                                             .defaultPrefix()
                             );
                         }))
