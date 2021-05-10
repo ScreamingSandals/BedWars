@@ -175,8 +175,8 @@ public class PlayerListener implements Listener {
                     }
                 }
 
-                var killedEvent = new PlayerKilledEventImpl(game, gVictim,
-                        killer != null && PlayerManager.getInstance().isPlayerInGame(killer.getUniqueId()) ? PlayerManager.getInstance().getPlayer(killer.getUniqueId()).orElseThrow() : null, drops.stream().map(ItemFactory::build).map(Optional::orElseThrow).collect(Collectors.toList()));
+                var killedEvent = new PlayerKilledEventImpl(game,
+                    killer != null && PlayerManager.getInstance().isPlayerInGame(killer.getUniqueId()) ? PlayerManager.getInstance().getPlayer(killer.getUniqueId()).orElseThrow() : null, gVictim, drops.stream().map(ItemFactory::build).map(Optional::orElseThrow).collect(Collectors.toList()));
                 EventManager.fire(killedEvent);
 
                 if (PlayerStatisticManager.isEnabled()) {
