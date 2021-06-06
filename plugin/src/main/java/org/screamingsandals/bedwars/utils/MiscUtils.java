@@ -125,6 +125,8 @@ public class MiscUtils {
             MaterialSearchEngine.Result result = MaterialSearchEngine.find(fallback);
             if (result.getMaterial() == Material.AIR) {
                 Debug.warn("Wrong material configured: " + name, true);
+            } else {
+                return result;
             }
         }
 
