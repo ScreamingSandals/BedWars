@@ -1,15 +1,13 @@
 # BedWars
-[![Build Status](https://ci.screamingsandals.org/job/BedWars-0.x.x/badge/icon)](https://ci.screamingsandals.org/job/BedWars-0.x.x/)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/472077c84c9d40de8b0e9efc55e64b19?branch=master)](https://www.codacy.com/manual/Misat11/BedWars?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ScreamingSandals/BedWars&amp;utm_campaign=Badge_Grade&bid=14860338)
-[![Crowdin](https://badges.crowdin.net/screamingbedwars/localized.svg)](https://crowdin.com/project/screamingbedwars)
+[![Build Status](https://ci.screamingsandals.org/job/BW-0.2.16/badge/icon)](https://ci.screamingsandals.org/job/BedWars-0.x.x/)
 [![Discord](https://img.shields.io/discord/582271436845219842?logo=discord)](https://discord.gg/4xB54Ts)
+
+This branch includes bugfixes for Minecraft: Java Edition 1.17
 
 Complete rewrite of the BedWarsRel plugin.
 Thia project is now under complete rewrite and we don't have much of time, so be patient :)
 
-~~This is the stable branch with bugfixes supporting all versions since 1.9! For new branch visit [1.x.x_dev](https://github.com/ScreamingSandals/BedWars/tree/1.x.x_dev)~~ (1.x.x dev is currently paused, use stable version instead)
-
-Supported versions: \[1.9 - 1.16.4\]. Recommended version: \[1.15.2/1.16.4\]
+Supported versions: \[1.9 - 1.17\]. Recommended version: \[1.16.5/1.17\]
 
 ## Support
 If you need any help, you can contact us on [Discord](https://discord.gg/4xB54Ts). Please make sure to look into older messages. There are many question already answered. It is really anoying to repeat the same thing over and over.

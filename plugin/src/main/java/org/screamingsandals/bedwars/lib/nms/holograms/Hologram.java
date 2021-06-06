@@ -4,6 +4,7 @@ import static org.screamingsandals.bedwars.lib.nms.utils.ClassStorage.NMS.*;
 
 import static org.screamingsandals.bedwars.lib.nms.utils.ClassStorage.*;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -224,10 +225,17 @@ public class Hologram {
 				}
 			}
 
-			Object destroyPacket = PacketPlayOutEntityDestroy.getConstructor(int[].class)
-				.newInstance(forRemoval.stream().mapToInt(i -> i).toArray());
+			if (Version.isVersion(1, 17)) {
+				Constructor<?> constructor =  PacketPlayOutEntityDestroy.getConstructor(int.class);
+				for (Integer integer : forRemoval) {
+					packets.add(constructor.newInstance(integer));
+				}
+			} else {
+				Object destroyPacket = PacketPlayOutEntityDestroy.getConstructor(int[].class)
+						.newInstance(forRemoval.stream().mapToInt(i -> i).toArray());
 
-			packets.add(destroyPacket);
+				packets.add(destroyPacket);
+			}
 
 			viewers.forEach(player -> update(player, packets, true));
 

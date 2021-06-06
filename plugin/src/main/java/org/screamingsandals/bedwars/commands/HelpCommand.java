@@ -36,6 +36,7 @@ public class HelpCommand extends BaseCommand {
         console.sendMessage(i18nonly("help_bw_list"));
         console.sendMessage(i18nonly("help_bw_stats_other"));
         console.sendMessage(i18nonly("help_bw_alljoin"));
+        console.sendMessage(i18nonly("help_bw_dump"));
         console.sendMessage(i18nonly("help_bw_reload"));
     }
 
@@ -108,6 +109,7 @@ public class HelpCommand extends BaseCommand {
             player.sendMessage(i18nonly("help_bw_admin_remove"));
             player.sendMessage(i18nonly("help_bw_admin_edit"));
             player.sendMessage(i18nonly("help_bw_admin_save"));
+            player.sendMessage(i18nonly("help_bw_dump"));
             player.sendMessage(i18nonly("help_bw_reload"));
         }
     }

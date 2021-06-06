@@ -160,22 +160,16 @@ public class ShopInventory implements Listener {
 	public void show(Player player, GameStore store) {
 		try {
 			boolean parent = true;
-			String file = null;
+			String fileName = null;
 			if (store != null) {
 				parent = store.getUseParent();
-				file = store.getShopFile();
+				fileName = store.getShopFile();
 			}
-			if (file != null) {
-				if (file.endsWith(".yml")) {
-					file = file.substring(0, file.length() - 4);
-				}
-				String name = (parent ? "+" : "-") + file;
+			if (fileName != null) {
+				File file = normalizeShopFile(fileName);
+				String name = (parent ? "+" : "-") + file.getAbsolutePath();
 				if (!shopMap.containsKey(name)) {
-					if (new File(Main.getInstance().getDataFolder(), file + ".groovy").exists()) {
-						loadNewShop(name, file + ".groovy", parent);
-					} else {
-						loadNewShop(name, file + ".yml", parent);
-					}
+					loadNewShop(name, file, parent);
 				}
 				SimpleInventories shop = shopMap.get(name);
 				shop.openForPlayer(player);
@@ -185,6 +179,18 @@ public class ShopInventory implements Listener {
 		} catch (Throwable ignored) {
 			player.sendMessage(i18nonly("prefix") + " Your shop.yml/shop.groovy is invalid! Check it out or contact us on Discord.");
 		}
+	}
+
+	public static File normalizeShopFile(String name) {
+		if (name.split("\\.").length > 1) {
+			return Main.getInstance().getDataFolder().toPath().resolve(name).toFile();
+		}
+
+		File fileg = Main.getInstance().getDataFolder().toPath().resolve(name + ".groovy").toFile();
+		if (fileg.exists()) {
+			return fileg;
+		}
+		return Main.getInstance().getDataFolder().toPath().resolve(name + ".yml").toFile();
 	}
 
 	@EventHandler
@@ -297,7 +303,7 @@ public class ShopInventory implements Listener {
 		format.load((List<Object>) configuration.getList("data"));
 	}
 
-	private void loadNewShop(String name, String fileName, boolean useParent) {
+	private void loadNewShop(String name, File file, boolean useParent) {
 		SimpleInventories format = new SimpleInventories(options);
 		try {
 			if (useParent) {
@@ -307,8 +313,8 @@ public class ShopInventory implements Listener {
 				}
 				format.loadFromDataFolder(Main.getInstance().getDataFolder(), shopFileName);
 			}
-			if (fileName != null) {
-				format.loadFromDataFolder(Main.getInstance().getDataFolder(), fileName);
+			if (file != null) {
+				format.load(file);
 			}
 		} catch (Exception ex) {
 			Debug.warn("Wrong shop.yml/shop.groovy configuration!", true);

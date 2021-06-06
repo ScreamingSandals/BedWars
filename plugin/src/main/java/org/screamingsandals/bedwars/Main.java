@@ -385,7 +385,9 @@ public class Main extends JavaPlugin implements BedwarsAPI {
                 leaderboardHolograms = new LeaderboardHolograms();
                 leaderboardHolograms.loadHolograms();
             }
-        } catch (Throwable ignored) {
+        } catch (Throwable exception) {
+            getLogger().severe("Failed to load holograms");
+            exception.printStackTrace();
         }
 
         commands = new HashMap<>();
@@ -461,32 +463,28 @@ public class Main extends JavaPlugin implements BedwarsAPI {
             Bukkit.getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
         }
 
-        Bukkit.getConsoleSender().sendMessage("§c=====§f===========  by ScreamingSandals <Misat11, Ceph>");
+        Bukkit.getConsoleSender().sendMessage(ChatColor.AQUA + "============" + ChatColor.RED + "===" + ChatColor.WHITE + "======  by ScreamingSandals <Misat11, Iamceph, Pronze>");
         Bukkit.getConsoleSender()
-                .sendMessage("§c+ Bed§fWars Zero +  §6Version: " + version);
+                .sendMessage(ChatColor.AQUA + "+ Screaming " + ChatColor.RED + "Bed" + ChatColor.WHITE + "Wars +  " + ChatColor.GOLD + "Version: " + version + " " + ChatColor.GREEN + "FREE");
         Bukkit.getConsoleSender()
-                .sendMessage("§c=====§f===========  " + (snapshot ? "§cSNAPSHOT VERSION" : "§aSTABLE VERSION"));
+                .sendMessage(ChatColor.AQUA + "============" + ChatColor.RED + "===" + ChatColor.WHITE + "======  " + (snapshot ? ChatColor.RED + "SNAPSHOT VERSION - Use at your own risk" : ChatColor.GREEN + "STABLE VERSION"));
         if (isVault) {
-            Bukkit.getConsoleSender().sendMessage("§c[B§fW] §6Found Vault");
+            Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[B" + ChatColor.WHITE + "W] " + ChatColor.GOLD + "Found Vault");
         }
         if (!isSpigot) {
             Bukkit.getConsoleSender()
-                    .sendMessage("§c[B§fW] §cWARNING: You are not using Spigot. Some features may not work properly.");
+                    .sendMessage(ChatColor.RED + "[B" + ChatColor.WHITE + "W] " + ChatColor.RED + "WARNING: You are not using Spigot. Some features may not work properly.");
         }
 
         if (versionNumber < 109) {
             Bukkit.getConsoleSender().sendMessage(
-                    "§c[B§fW] §cIMPORTANT WARNING: You are using version older than 1.9! This version is not officially supported, and some features may not work at all!");
+                    ChatColor.RED + "[B" + ChatColor.WHITE + "W] " + ChatColor.RED + "IMPORTANT WARNING: You are using version older than 1.9! This version is not officially supported, and some features may not work at all! Future versions of BedWars won't even start!");
         }
         try {
             float javaVer = Float.parseFloat(System.getProperty("java.class.version"));
             if (javaVer < 55) {
-                getLogger().warning("Future versions of plugins from ScreamingSandals will require at least Java 11. "
-                        + "Your server is not prepared for it. Update your Java or contact your hosting. "
-                        + "Java 8 for commercial usage is already out of casual support! "
-                        + "Java 9 and Java 10 were short-term support versions, these versions are already not supported.");
-                getLogger().warning("Future versions of BedWars will require Minecraft version at least 1.13 and Java at least 11");
-
+                getLogger().warning("Bedwars 0.3.0 will require at least Java 11. Your server is not prepared for it. Update your Java or contact your hosting. ");
+                getLogger().warning("https://docs.screamingsandals.org/Other/java11.html");
             }
         } catch (Throwable t) { // What if it fails? Why it should fail I don't know :D
         }
@@ -550,6 +548,8 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 
         final int pluginId = 7147;
         metrics = new Metrics(this, pluginId);
+        metrics.addCustomChart(new Metrics.SimplePie("edition", () -> "Free"));
+        metrics.addCustomChart(new Metrics.SimplePie("build_number", () -> VersionInfo.BUILD_NUMBER));
 
         Bukkit.getConsoleSender().sendMessage("§fEverything is loaded! If you like our work, consider visiting our Patreon! <3");
         Bukkit.getConsoleSender().sendMessage("§fhttps://www.patreon.com/screamingsandals");

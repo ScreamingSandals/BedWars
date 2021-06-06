@@ -1,3 +1,7 @@
+import org.apache.tools.ant.filters.*
+
+apply plugin: "com.github.gmazzo.buildconfig"
+
 dependencies {
     /* PROVIDED */
     compileOnly 'net.milkbowl.vault:VaultAPI:1.7'
@@ -14,37 +18,29 @@ dependencies {
     compileOnly 'net.citizensnpcs:citizens-main:2.0.27-SNAPSHOT'
 
     /* SHADED */
-    shade project(':BedWars-API')
-    shade 'com.zaxxer:HikariCP:3.3.0'
-    shade 'org.screamingsandals.simpleinventories:SimpleInventories-Core:1.0.6.5'
-    shade 'org.bstats:bstats-bukkit:1.7'
+    implementation project(':BedWars-API')
+    implementation 'com.zaxxer:HikariCP:3.3.0'
+    implementation 'org.screamingsandals.simpleinventories:SimpleInventories-Core:1.0.6.5'
+    implementation 'org.bstats:bstats-bukkit:1.7'
 }
 
-enableSpigradleSpigot()
-
-spigot {
-    name = 'BedWars'
-    authors = ['ScreamingSandals <Misat11, Ceph>']
-    apiVersion = '1.13'
-    load = POST_WORLD
-    softDepends = [
-            'Vault',
-            'Multiverse-Core',
-            'Multiworld',
-            'MultiWorld',
-            'UltimateCore',
-            'PlaceholderAPI',
-            'BarAPI',
-            'PerWorldInventory',
-            'SlimeWorldManager',
-            'My_Worlds',
-            'Citizens'
+processResources {
+    filter ReplaceTokens, tokens: [
+            "version": project.version
     ]
-    commands {
-        bw {
-            aliases = ['bedwars']
-            description = 'Command of BW plugin'
-            usage = '/bw [subcommand]'
-        }
-    }
 }
+
+buildConfig {
+    className('VersionInfo')
+    packageName('org.screamingsandals.bedwars')
+
+    buildConfigField('String', 'NAME', "\"${project.name}\"")
+    buildConfigField('String', 'VERSION', "\"${project.version}\"")
+    buildConfigField('String', 'BUILD_NUMBER', "\"branch-0.2.16/${System.getenv('BUILD_NUMBER') ?: "custom"}\"")
+}
+
+prepareTestTask()
+        .versions('1.17', '1.16.5', '1.15.2', '1.14.4', '1.13.2', '1.12.2', '1.11.2', '1.10.2', '1.9.4')
+        .onlineMode(false)
+        .pluginJar(shadowJar.archiveFile.get().asFile.toPath())
+        .build()

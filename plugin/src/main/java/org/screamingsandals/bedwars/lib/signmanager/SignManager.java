@@ -35,16 +35,18 @@ public class SignManager {
             ex.printStackTrace();
         }
 
-        List<Map<String, Object>> conf = (List<Map<String, Object>>) config.getList("sign");
-        if (conf != null) {
-            for (Map<String, Object> c : conf) {
-                String name = (String) c.get("name");
-                if (name == null || name.trim().equals("")) {
-                	name = (String) c.get("game"); // Compatibility with old BedWars sign.yml
+        if (config.isSet("sign")) {
+            List<Map<String, Object>> conf = (List<Map<String, Object>>) config.getList("sign");
+            if (conf != null) {
+                for (Map<String, Object> c : conf) {
+                    String name = (String) c.get("name");
+                    if (name == null || name.trim().equals("")) {
+                        name = (String) c.get("game"); // Compatibility with old BedWars sign.yml
+                    }
+                    Location loc = (Location) c.get("location");
+                    signs.put(loc, new SignBlock(loc, name));
+                    owner.updateSign(signs.get(loc));
                 }
-                Location loc = (Location) c.get("location");
-                signs.put(loc, new SignBlock(loc, name));
-                owner.updateSign(signs.get(loc));
             }
         }
     }

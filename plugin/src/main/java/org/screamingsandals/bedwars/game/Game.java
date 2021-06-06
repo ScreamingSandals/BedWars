@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
+import lombok.Getter;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -64,6 +65,8 @@ import org.screamingsandals.simpleinventories.utils.StackParser;
 import com.onarandombox.MultiverseCore.api.Core;
 
 public class Game implements org.screamingsandals.bedwars.api.game.Game {
+    @Getter
+    private File file;
     private String name;
     private Location pos1;
     private Location pos2;
@@ -205,6 +208,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     private Map<ItemSpawner, Hologram> countdownHolograms = new HashMap<>();
     private Map<GamePlayer, Inventory> fakeEnderChests = new HashMap<>();
     private int postGameWaiting = 3;
+    private boolean preparing = false;
 
     private Game() {
 
@@ -851,6 +855,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             }
 
             final Game game = new Game();
+            game.file = file;
             game.name = configMap.getString("name");
             game.pauseCountdown = configMap.getInt("pauseCountdown");
             game.gameTime = configMap.getInt("gameTime");
@@ -1075,10 +1080,14 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     }
 
     public void saveToConfig() {
-        File dir = new File(Main.getInstance().getDataFolder(), "arenas");
+        File dir = Main.getInstance().getDataFolder().toPath().resolve("arenas").toFile();
         if (!dir.exists())
             dir.mkdirs();
-        File file = new File(dir, name + ".yml");
+        if (file == null) {
+            do {
+                file = new File(dir, UUID.randomUUID() + ".yml");
+            } while (file.exists());
+        }
         if (!file.exists()) {
             try {
                 file.createNewFile();
@@ -1204,6 +1213,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
     public void start() {
         if (status == GameStatus.DISABLED) {
+            preparing = true;
             status = GameStatus.WAITING;
             countdown = -1;
             calculatedMaxPlayers = 0;
@@ -1221,6 +1231,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             } else {
                 statusbar = BossBarSelector.getBossBar();
             }
+            preparing = false;
         }
     }
 
@@ -1241,6 +1252,11 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
     public void joinToGame(Player player) {
         if (status == GameStatus.DISABLED) {
+            return;
+        }
+
+        if (preparing) {
+            Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> joinToGame(player), 1L);
             return;
         }
 
@@ -1678,6 +1694,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         if (status != tick.getNextStatus()) {
             // Phase 6.1.1: Prepare game if next status is RUNNING
             if (tick.getNextStatus() == GameStatus.RUNNING) {
+                preparing = true;
                 BedwarsGameStartEvent startE = new BedwarsGameStartEvent(this);
                 Main.getInstance().getServer().getPluginManager().callEvent(startE);
                 Main.getInstance().getServer().getPluginManager().callEvent(statusE);
@@ -1685,6 +1702,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 if (startE.isCancelled()) {
                     tick.setNextCountdown(pauseCountdown);
                     tick.setNextStatus(GameStatus.WAITING);
+                    preparing = false;
                 } else {
 
                     if (getOriginalOrInheritedJoinRandomTeamAfterLobby()) {
@@ -1886,6 +1904,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                     if (Main.getVersionNumber() >= 115 && !Main.getConfigurator().config.getBoolean("allow-fake-death")) {
                         world.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
                     }
+                    preparing = false;
 
                     BedwarsGameStartedEvent startedEvent = new BedwarsGameStartedEvent(this);
                     Main.getInstance().getServer().getPluginManager().callEvent(startedEvent);

@@ -5,3 +5,4 @@ target/*
 .project
 .classpath
 dependency-reduced-pom.xml
+test-environment/

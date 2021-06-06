@@ -1,0 +1,26 @@
+main: org.screamingsandals.bedwars.Main
+name: BedWars
+version: "@version@"
+authors:
+  - "ScreamingSandals <Misat11, Iamceph, Pronze>"
+api-version: 1.13
+load: POSTWORLD
+softdepend:
+  - Vault
+  - Multiverse-Core
+  - Multiworld
+  - MultiWorld
+  - UltimateCore
+  - PlaceholderAPI
+  - BarAPI
+  - PerWorldInventory
+  - SlimeWorldManager
+  - My_Worlds
+  - Citizens
+  - Parties
+commands:
+  bw:
+    description: Command of BW plugin
+    usage: "/bw [subcommand]"
+    aliases:
+      - bedwars

@@ -127,7 +127,7 @@ public class LeaderboardHolograms implements TouchHandler {
         } else {
             AtomicInteger l = new AtomicInteger(1);
             entries.forEach(leaderboardEntry -> {
-                lines.add(line.replace("%name%", leaderboardEntry.getPlayer().getName()).replace("%score%", Integer.toString(leaderboardEntry.getTotalScore())).replace("%order%", Integer.toString(l.getAndIncrement())));
+                lines.add(line.replace("%name%", leaderboardEntry.getPlayer().getName() != null ? leaderboardEntry.getPlayer().getName() : leaderboardEntry.getPlayer().getUniqueId().toString()).replace("%score%", Integer.toString(leaderboardEntry.getTotalScore())).replace("%order%", Integer.toString(l.getAndIncrement())));
             });
         }
 
