@@ -127,6 +127,10 @@ public class PlayerListener implements Listener {
                             game.dispatchRewardCommands("player-kill", killer,
                                     Main.getConfigurator().config.getInt("statistics.scores.kill", 10));
                         }
+                        if (!isBed) {
+                            game.dispatchRewardCommands("player-final-kill", killer,
+                                    Main.getConfigurator().config.getInt("statistics.scores.final-kill", 0));
+                        }
                         if (team.isDead()) {
                             SpawnEffects.spawnEffect(game, victim, "game-effects.teamkill");
                             Sounds.playSound(killer, killer.getLocation(),
@@ -136,7 +140,11 @@ public class PlayerListener implements Listener {
                             Sounds.playSound(killer, killer.getLocation(),
                                     Main.getConfigurator().config.getString("sounds.on_player_kill"),
                                     Sounds.ENTITY_PLAYER_BIG_FALL, 1, 1);
-                            Main.depositPlayer(killer, Main.getVaultKillReward());
+                            if (!isBed) {
+                                Main.depositPlayer(killer, Main.getVaultFinalKillReward());
+                            } else {
+                                Main.depositPlayer(killer, Main.getVaultKillReward());
+                            }
                         }
 
                     }
@@ -161,6 +169,10 @@ public class PlayerListener implements Listener {
                             if (killerPlayer != null) {
                                 killerPlayer.addKills(1);
                                 killerPlayer.addScore(Main.getConfigurator().config.getInt("statistics.scores.kill", 10));
+                            }
+
+                            if (!isBed) {
+                                killerPlayer.addScore(Main.getConfigurator().config.getInt("statistics.scores.final-kill", 0));
                             }
                         }
                     }
