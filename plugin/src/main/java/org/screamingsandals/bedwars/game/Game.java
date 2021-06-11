@@ -741,6 +741,10 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                     p.player.sendMessage(message);
                 }
             }
+        } else {
+            if (gamePlayer.player.getSpectatorTarget() != null) {
+                gamePlayer.player.setSpectatorTarget(null);
+            }
         }
 
         players.remove(gamePlayer);
