@@ -28,17 +28,17 @@ public class TabManager {
             try {
                 Object packet = PacketPlayOutPlayerListHeaderFooter.getConstructor().newInstance();
                 if (header != null) {
-                    setField(packet, "header, a, field_179703_a", getMethod(ChatSerializer, "a,field_150700_a", String.class)
+                    setField(packet, "header,a,field_179703_a", getMethod(ChatSerializer, "a,field_150700_a", String.class)
                             .invokeStatic("{\"text\": \"" + ChatColor.translateAlternateColorCodes('&', String.join("\n", translate(player, header))) + "\"}"));
                 } else {
-                    setField(packet, "header, a, field_179703_a", getMethod(ChatSerializer, "a,field_150700_a", String.class)
+                    setField(packet, "header,a,field_179703_a", getMethod(ChatSerializer, "a,field_150700_a", String.class)
                             .invokeStatic("{\"text\": \"\"}"));
                 }
                 if (footer != null) {
-                    setField(packet, "footer, b, field_179702_b", getMethod(ChatSerializer, "a,field_150700_a", String.class)
+                    setField(packet, "footer,b,field_179702_b", getMethod(ChatSerializer, "a,field_150700_a", String.class)
                             .invokeStatic("{\"text\": \"" + ChatColor.translateAlternateColorCodes('&', String.join("\n", translate(player, footer))) + "\"}"));
                 } else {
-                    setField(packet, "footer, b, field_179702_b", getMethod(ChatSerializer, "a,field_150700_a", String.class)
+                    setField(packet, "footer,b,field_179702_b", getMethod(ChatSerializer, "a,field_150700_a", String.class)
                             .invokeStatic("{\"text\": \"\"}"));
                 }
                 sendPacket(player.player, packet);
@@ -52,9 +52,9 @@ public class TabManager {
         if (player.player.isOnline() && (header != null || footer != null)) {
             try {
                 Object packet = PacketPlayOutPlayerListHeaderFooter.getConstructor().newInstance();
-                setField(packet, "header, a, field_179703_a", getMethod(ChatSerializer, "a,field_150700_a", String.class)
+                setField(packet, "header,a,field_179703_a", getMethod(ChatSerializer, "a,field_150700_a", String.class)
                         .invokeStatic("{\"text\": \"\"}"));
-                setField(packet, "footer, b, field_179702_b", getMethod(ChatSerializer, "a,field_150700_a", String.class)
+                setField(packet, "footer,b,field_179702_b", getMethod(ChatSerializer, "a,field_150700_a", String.class)
                         .invokeStatic("{\"text\": \"\"}"));
                 sendPacket(player.player, packet);
             } catch (Exception ignored) {

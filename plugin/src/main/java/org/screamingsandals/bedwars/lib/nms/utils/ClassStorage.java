@@ -16,48 +16,47 @@ public class ClassStorage {
 	public static final String NMS_VERSION = checkNMSVersion();
 
 	public static final class NMS {
-		public static final Class<?> ChatSerializer = safeGetClass("{nms}.IChatBaseComponent$ChatSerializer", "{nms}.ChatSerializer", "{f:util}.text.ITextComponent$Serializer");
-		public static final Class<?> DataWatcher = safeGetClass("{nms}.DataWatcher", "{f:net}.datasync.EntityDataManager");
-		public static final Class<?> Entity = safeGetClass("{nms}.Entity", "{f:ent}.Entity");
-		public static final Class<?> EntityArmorStand = safeGetClass("{nms}.EntityArmorStand", "{f:ent}.item.ArmorStandEntity", "{f:ent}.item.EntityArmorStand");
-		public static final Class<?> EntityCreature = safeGetClass("{nms}.EntityCreature", "{f:ent}.CreatureEntity", "{f:ent}.EntityCreature");
-		public static final Class<?> EntityInsentient = safeGetClass("{nms}.EntityInsentient", "{f:ent}.MobEntity", "{f:ent}.EntityLiving");
-		public static final Class<?> EntityLiving = safeGetClass("{nms}.EntityLiving", "{f:ent}.LivingEntity", "{f:ent}.EntityLivingBase");
-		public static final Class<?> EntityPlayer = safeGetClass("{nms}.EntityPlayer", "{f:ent}.player.ServerPlayerEntity", "{f:ent}.player.EntityPlayerMP");
-		public static final Class<?> EnumClientCommand = safeGetClass("{nms}.PacketPlayInClientCommand$EnumClientCommand", "{nms}.EnumClientCommand", "{f:net}.play.client.CClientStatusPacket$State", "{f:net}.play.client.CPacketClientStatus$State");
+		public static final Class<?> ChatSerializer = safeGetClass("net.minecraft.network.chat.IChatBaseComponent$ComponentSerializer", "{nms}.IChatBaseComponent$ChatSerializer", "{nms}.ChatSerializer", "{f:util}.text.ITextComponent$Serializer");
+		public static final Class<?> DataWatcher = safeGetClass("net.minecraft.network.syncher.DataWatcher", "{nms}.DataWatcher", "{f:net}.datasync.EntityDataManager");
+		public static final Class<?> Entity = safeGetClass("net.minecraft.world.entity.Entity", "{nms}.Entity", "{f:ent}.Entity");
+		public static final Class<?> EntityArmorStand = safeGetClass("net.minecraft.world.entity.decoration.EntityArmorStand", "{nms}.EntityArmorStand", "{f:ent}.item.ArmorStandEntity", "{f:ent}.item.EntityArmorStand");
+		public static final Class<?> EntityCreature = safeGetClass("net.minecraft.world.entity.EntityCreature", "{nms}.EntityCreature", "{f:ent}.CreatureEntity", "{f:ent}.EntityCreature");
+		public static final Class<?> EntityInsentient = safeGetClass("net.minecraft.world.entity.EntityInsentient", "{nms}.EntityInsentient", "{f:ent}.MobEntity", "{f:ent}.EntityLiving");
+		public static final Class<?> EntityLiving = safeGetClass("net.minecraft.world.entity.EntityLiving", "{nms}.EntityLiving", "{f:ent}.LivingEntity", "{f:ent}.EntityLivingBase");
+		public static final Class<?> EntityPlayer = safeGetClass("net.minecraft.server.level.EntityPlayer", "{nms}.EntityPlayer", "{f:ent}.player.ServerPlayerEntity", "{f:ent}.player.EntityPlayerMP");
+		public static final Class<?> EnumClientCommand = safeGetClass("net.minecraft.network.protocol.game.PacketPlayInClientCommand$EnumClientCommand", "{nms}.PacketPlayInClientCommand$EnumClientCommand", "{nms}.EnumClientCommand", "{f:net}.play.client.CClientStatusPacket$State", "{f:net}.play.client.CPacketClientStatus$State");
+		/* not used by bw since 1.9 */
 		public static final Class<?> EnumParticle = safeGetClass("{nms}.EnumParticle");
+		/* does not exist in 1.17 */
 		public static final Class<?> EnumTitleAction = safeGetClass("{nms}.PacketPlayOutTitle$EnumTitleAction", "{nms}.EnumTitleAction", "{f:net}.play.server.STitlePacket$Type", "{f:net}.play.server.SPacketTitle$Type");
-		public static final Class<?> GenericAttributes = safeGetClass("{nms}.GenericAttributes", "{f:ent}.SharedMonsterAttributes");
-		public static final Class<?> IChatBaseComponent = safeGetClass("{nms}.IChatBaseComponent", "{f:util}.text.ITextComponent");
-		public static final Class<?> IAttribute = safeGetClass("{nms}.IAttribute", "{nms}.AttributeBase", "{f:ent}.ai.attributes.IAttribute", "{f:ent}.ai.attributes.Attribute"); // since 1.16, IAttribute no longer exists
-		public static final Class<?> MinecraftServer = safeGetClass("{nms}.MinecraftServer", "{f:nms}.MinecraftServer");
-		public static final Class<?> NBTTagCompound = safeGetClass("{nms}.NBTTagCompound", "{f:nbt}.CompoundNBT", "{f:nbt}.NBTTagCompound");
-		public static final Class<?> NetworkManager = safeGetClass("{nms}.NetworkManager", "{f:net}.NetworkManager");
-		public static final Class<?> Packet = safeGetClass("{nms}.Packet", "{f:net}.IPacket", "{f:net}.Packet");
-		public static final Class<?> PacketLoginInStart = safeGetClass("{nms}.PacketLoginInStart", "{f:net}.login.client.CLoginStartPacket", "{f:net}.login.client.CPacketLoginStart");
-		public static final Class<?> PacketPlayInClientCommand = safeGetClass("{nms}.PacketPlayInClientCommand", "{f:net}.play.client.CClientStatusPacket", "{f:net}.play.client.CPacketClientStatus");
-		public static final Class<?> PacketPlayInUseEntity = safeGetClass("{nms}.PacketPlayInUseEntity", "{f:net}.play.client.CUseEntityPacket", "{f:net}.play.client.CPacketUseEntity");
-		public static final Class<?> PacketPlayOutEntityDestroy = safeGetClass("{nms}.PacketPlayOutEntityDestroy", "{f:net}.play.server.SDestroyEntitiesPacket", "{f:net}.play.server.SPacketDestroyEntities");
-		public static final Class<?> PacketPlayOutEntityMetadata = safeGetClass("{nms}.PacketPlayOutEntityMetadata", "{f:net}.play.server.SEntityMetadataPacket", "{f:net}.play.server.SPacketEntityMetadata");
-		public static final Class<?> PacketPlayOutEntityTeleport = safeGetClass("{nms}.PacketPlayOutEntityTeleport", "{f:net}.play.server.SEntityTeleportPacket", "{f:net}.play.server.SPacketEntityTeleport");
-		public static final Class<?> PacketPlayOutExperience = safeGetClass("{nms}.PacketPlayOutExperience", "{f:net}.play.server.SSetExperiencePacket", "{f:net}.play.server.SPacketSetExperience");
-		public static final Class<?> PacketPlayOutSpawnEntityLiving = safeGetClass("{nms}.PacketPlayOutSpawnEntityLiving", "{f:net}.play.server.SSpawnMobPacket", "{f:net}.play.server.SPacketSpawnMob");
+		public static final Class<?> GenericAttributes = safeGetClass("net.minecraft.world.entity.ai.attributes.GenericAttributes", "{nms}.GenericAttributes", "{f:ent}.SharedMonsterAttributes");
+		public static final Class<?> IChatBaseComponent = safeGetClass("net.minecraft.network.chat.IChatBaseComponent", "{nms}.IChatBaseComponent", "{f:util}.text.ITextComponent");
+		public static final Class<?> IAttribute = safeGetClass("net.minecraft.world.entity.ai.attributes.AttributeBase", "{nms}.IAttribute", "{nms}.AttributeBase", "{f:ent}.ai.attributes.IAttribute", "{f:ent}.ai.attributes.Attribute"); // since 1.16, IAttribute no longer exists
+		public static final Class<?> NBTTagCompound = safeGetClass("net.minecraft.nbt.NBTTagCompound", "{nms}.NBTTagCompound", "{f:nbt}.CompoundNBT", "{f:nbt}.NBTTagCompound");
+		public static final Class<?> Packet = safeGetClass("net.minecraft.network.protocol.Packet", "{nms}.Packet", "{f:net}.IPacket", "{f:net}.Packet");
+		public static final Class<?> PacketPlayInClientCommand = safeGetClass("net.minecraft.network.protocol.game.PacketPlayInClientCommand", "{nms}.PacketPlayInClientCommand", "{f:net}.play.client.CClientStatusPacket", "{f:net}.play.client.CPacketClientStatus");
+		public static final Class<?> PacketPlayInUseEntity = safeGetClass("net.minecraft.network.protocol.game.PacketPlayInUseEntity", "{nms}.PacketPlayInUseEntity", "{f:net}.play.client.CUseEntityPacket", "{f:net}.play.client.CPacketUseEntity");
+		public static final Class<?> PacketPlayOutEntityDestroy = safeGetClass("net.minecraft.network.protocol.game.PacketPlayOutEntityDestroy", "{nms}.PacketPlayOutEntityDestroy", "{f:net}.play.server.SDestroyEntitiesPacket", "{f:net}.play.server.SPacketDestroyEntities");
+		public static final Class<?> PacketPlayOutEntityMetadata = safeGetClass("net.minecraft.network.protocol.game.PacketPlayOutEntityMetadata", "{nms}.PacketPlayOutEntityMetadata", "{f:net}.play.server.SEntityMetadataPacket", "{f:net}.play.server.SPacketEntityMetadata");
+		public static final Class<?> PacketPlayOutEntityTeleport = safeGetClass("net.minecraft.network.protocol.game.PacketPlayOutEntityTeleport", "{nms}.PacketPlayOutEntityTeleport", "{f:net}.play.server.SEntityTeleportPacket", "{f:net}.play.server.SPacketEntityTeleport");
+		public static final Class<?> PacketPlayOutExperience = safeGetClass("net.minecraft.network.protocol.game.PacketPlayOutExperience", "{nms}.PacketPlayOutExperience", "{f:net}.play.server.SSetExperiencePacket", "{f:net}.play.server.SPacketSetExperience");
+		public static final Class<?> PacketPlayOutSpawnEntityLiving = safeGetClass("net.minecraft.network.protocol.game.PacketPlayOutSpawnEntityLiving", "{nms}.PacketPlayOutSpawnEntityLiving", "{f:net}.play.server.SSpawnMobPacket", "{f:net}.play.server.SPacketSpawnMob");
+		/* does not exist in 1.17 */
 		public static final Class<?> PacketPlayOutTitle = safeGetClass("{nms}.PacketPlayOutTitle", "{f:net}.play.server.STitlePacket", "{f:net}.play.server.SPacketTitle");
-		public static final Class<?> PacketPlayOutWorldParticles = safeGetClass("{nms}.PacketPlayOutWorldParticles", "{f:net}.play.server.SSpawnParticlePacket", "{f:net}.play.server.SPacketParticles");
-		public static final Class<?> PathfinderGoal = safeGetClass("{nms}.PathfinderGoal", "{f:goal}.Goal", "{f:ent}.ai.EntityAIBase");
-		public static final Class<?> PathfinderGoalSelector = safeGetClass("{nms}.PathfinderGoalSelector", "{f:goal}.GoalSelector", "{f:ent}.ai.EntityAITasks");
-		public static final Class<?> PathfinderGoalMeleeAttack = safeGetClass("{nms}.PathfinderGoalMeleeAttack", "{f:goal}.MeleeAttackGoal", "{f:ent}.ai.EntityAIAttackMelee");
-		public static final Class<?> PathfinderGoalNearestAttackableTarget = safeGetClass("{nms}.PathfinderGoalNearestAttackableTarget", "{f:goal}.NearestAttackableTargetGoal", "{f:ent}.ai.EntityAINearestAttackableTarget");
-		public static final Class<?> PlayerConnection = safeGetClass("{nms}.PlayerConnection", "{f:net}.play.ServerPlayNetHandler", "{f:net}.NetHandlerPlayServer");
-		public static final Class<?> ServerConnection = safeGetClass("{nms}.ServerConnection", "{f:net}.NetworkSystem");
-		public static final Class<?> World = safeGetClass("{nms}.World", "{f:world}.World");
-		public static final Class<?> PacketPlayOutPlayerListHeaderFooter = safeGetClass("{nms}.PacketPlayOutPlayerListHeaderFooter", "{f:net}.play.server.SPlayerListHeaderFooterPacket", "{f:net}.play.server.SPacketPlayerListHeaderFooter");
+		public static final Class<?> PacketPlayOutWorldParticles = safeGetClass("net.minecraft.network.protocol.game.PacketPlayOutWorldParticles", "{nms}.PacketPlayOutWorldParticles", "{f:net}.play.server.SSpawnParticlePacket", "{f:net}.play.server.SPacketParticles");
+		public static final Class<?> PathfinderGoal = safeGetClass("net.minecraft.world.entity.ai.goal.PathfinderGoal", "{nms}.PathfinderGoal", "{f:goal}.Goal", "{f:ent}.ai.EntityAIBase");
+		public static final Class<?> PathfinderGoalSelector = safeGetClass("net.minecraft.world.entity.ai.goal.PathfinderGoalSelector", "{nms}.PathfinderGoalSelector", "{f:goal}.GoalSelector", "{f:ent}.ai.EntityAITasks");
+		public static final Class<?> PathfinderGoalMeleeAttack = safeGetClass("net.minecraft.world.entity.ai.goal.PathfinderGoalMeleeAttack", "{nms}.PathfinderGoalMeleeAttack", "{f:goal}.MeleeAttackGoal", "{f:ent}.ai.EntityAIAttackMelee");
+		public static final Class<?> PathfinderGoalNearestAttackableTarget = safeGetClass("net.minecraft.world.entity.ai.goal.target.PathfinderGoalNearestAttackableTarget", "{nms}.PathfinderGoalNearestAttackableTarget", "{f:goal}.NearestAttackableTargetGoal", "{f:ent}.ai.EntityAINearestAttackableTarget");
+		public static final Class<?> World = safeGetClass("net.minecraft.world.level.World", "{nms}.World", "{f:world}.World");
+		public static final Class<?> PacketPlayOutPlayerListHeaderFooter = safeGetClass("net.minecraft.network.protocol.game.PacketPlayOutPlayerListHeaderFooter", "{nms}.PacketPlayOutPlayerListHeaderFooter", "{f:net}.play.server.SPlayerListHeaderFooterPacket", "{f:net}.play.server.SPacketPlayerListHeaderFooter");
 
-		// 1.16
-		public static final Class<?> AttributeModifiable = safeGetClass("{nms}.AttributeModifiable", "{f:ent}.ai.attributes.ModifiableAttributeInstance");
+		// 1.16+
+		public static final Class<?> AttributeModifiable = safeGetClass("net.minecraft.world.entity.ai.attributes.AttributeModifiable", "{nms}.AttributeModifiable", "{f:ent}.ai.attributes.ModifiableAttributeInstance");
 	}
 	
 	private static String checkNMSVersion() {
+		/* Useless since MC 1.17 */
 		/* if NMS is not found, finding class will fail, but we still need some string */
 		String nmsVersion = "nms_not_found"; 
 		
@@ -73,7 +72,7 @@ public class ClassStorage {
 		for (String claz : clazz) {
 			try {
 				return Class.forName(claz
-					// CRAFTBUKKIT/SPIGOT/PAPER
+					// CRAFTBUKKIT/SPIGOT/PAPER before 1.17
 					.replace("{obc}", "org.bukkit.craftbukkit." + NMS_VERSION)
 					.replace("{nms}", "net.minecraft.server." + NMS_VERSION)
 					// CAULDRON BASED
@@ -225,7 +224,7 @@ public class ClassStorage {
 	public static Object getPlayerConnection(Player player) {
 		Object handler = getMethod(player, "getHandle").invoke();
 		if (handler != null) {
-			return getField(handler, "playerConnection,field_71135_a");
+			return getField(handler, "playerConnection,connection,field_71135_a");
 		}
 		return null;
 	}

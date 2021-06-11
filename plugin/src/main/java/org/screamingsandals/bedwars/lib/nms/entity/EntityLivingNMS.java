@@ -77,14 +77,14 @@ public class EntityLivingNMS extends EntityNMS {
 					attr0 = getMethod(attrMap, "b,func_111150_b", IAttribute).invoke(attr);
 					if (attr0 instanceof Boolean) {
 						// 1.16
-						Object provider = getField(attrMap,"d,field_233777_d_");
+						Object provider = getField(attrMap,"d,supplier,field_233777_d_");
 						Map<Object, Object> all = Maps
-								.newHashMap((Map<?, ?>) getField(provider, "a,field_233802_a_"));
+								.newHashMap((Map<?, ?>) getField(provider, "a,instances,field_233802_a_"));
 						attr0 = AttributeModifiable.getConstructor(IAttribute, Consumer.class).newInstance(attr, (Consumer) o -> {
 							// do nothing
 						});
 						all.put(attr, attr0);
-						setField(provider, "a,field_233802_a_", ImmutableMap.copyOf(all));
+						setField(provider, "a,instances,field_233802_a_", ImmutableMap.copyOf(all));
 					}
 				}
 				getMethod(attr0, "setValue,func_111128_a", double.class).invoke(value);

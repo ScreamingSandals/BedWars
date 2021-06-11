@@ -48,7 +48,7 @@ public abstract class PacketInboundListener{
 	
 	private Channel getChannel(Player player) {
 		try {
-			Object manager = getField(getPlayerConnection(player), "networkManager,field_147371_a");
+			Object manager = getField(getPlayerConnection(player), "networkManager,connection,field_147371_a");
 			Channel channel = (Channel) getField(manager, "channel,field_150746_k,k,m");
 			return channel;
 		} catch (Throwable t) {

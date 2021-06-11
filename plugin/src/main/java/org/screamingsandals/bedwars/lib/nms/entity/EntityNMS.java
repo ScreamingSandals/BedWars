@@ -5,6 +5,7 @@ import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.screamingsandals.bedwars.lib.nms.utils.ClassStorage;
 import org.screamingsandals.bedwars.lib.nms.utils.InstanceMethod;
+import org.screamingsandals.bedwars.lib.nms.utils.Version;
 
 public class EntityNMS {
 	protected Object handler;
@@ -18,22 +19,34 @@ public class EntityNMS {
 	}
 	
 	public Location getLocation() {
-		double locX = (double) ClassStorage.getField(handler, "locX,field_70165_t");
-		double locY = (double) ClassStorage.getField(handler, "locY,field_70163_u");
-		double locZ = (double) ClassStorage.getField(handler, "locZ,field_70161_v");
-		float yaw = (float) ClassStorage.getField(handler, "yaw,field_70177_z");
-		float pitch = (float) ClassStorage.getField(handler, "pitch,field_70125_A");
-		Object world = ClassStorage.getMethod(handler, "getWorld,func_130014_f_").invoke();
-		World craftWorld = (World) ClassStorage.getMethod(world, "getWorld").invoke();
-		
-		return new Location(craftWorld, locX, locY, locZ, yaw, pitch);
+		if (Version.isVersion(1, 17)) {
+			double locX = (double) ClassStorage.getMethod(handler, "locX").invoke();
+			double locY = (double) ClassStorage.getMethod(handler, "locY").invoke();
+			double locZ = (double) ClassStorage.getMethod(handler, "locZ").invoke();
+			float yaw = (float) ClassStorage.getMethod(handler, "getYRot").invoke();
+			float pitch = (float) ClassStorage.getMethod(handler, "getXRot").invoke();
+			Object world = ClassStorage.getMethod(handler, "getWorld,func_130014_f_").invoke();
+			World craftWorld = (World) ClassStorage.getMethod(world, "getWorld").invoke();
+
+			return new Location(craftWorld, locX, locY, locZ, yaw, pitch);
+		} else {
+			double locX = (double) ClassStorage.getField(handler, "locX,field_70165_t");
+			double locY = (double) ClassStorage.getField(handler, "locY,field_70163_u");
+			double locZ = (double) ClassStorage.getField(handler, "locZ,field_70161_v");
+			float yaw = (float) ClassStorage.getField(handler, "yaw,field_70177_z");
+			float pitch = (float) ClassStorage.getField(handler, "pitch,field_70125_A");
+			Object world = ClassStorage.getMethod(handler, "getWorld,func_130014_f_").invoke();
+			World craftWorld = (World) ClassStorage.getMethod(world, "getWorld").invoke();
+
+			return new Location(craftWorld, locX, locY, locZ, yaw, pitch);
+		}
 	}
 	
 	public void setLocation(Location location) {
 		Object world = ClassStorage.getMethod(handler, "getWorld,func_130014_f_").invoke();
 		World craftWorld = (World) ClassStorage.getMethod(world, "getWorld").invoke();
 		if (!location.getWorld().equals(craftWorld)) {
-			ClassStorage.setField(handler, "world,field_70170_p", ClassStorage.getHandle(location.getWorld()));
+			ClassStorage.setField(handler, "world,level,field_70170_p", ClassStorage.getHandle(location.getWorld()));
 		}
 		
 		ClassStorage.getMethod(handler, "setLocation,func_70080_a", double.class, double.class, double.class, float.class, float.class)

@@ -10,10 +10,11 @@ public class TargetSelector extends Selector {
 	}
 	
 	public TargetSelector attackTarget(LivingEntity target) {
-		ClassStorage.setField(handler, "goalTarget,field_70696_bz", target == null ? null : ClassStorage.getHandle(target));
+		ClassStorage.setField(handler, "goalTarget,target,field_70696_bz", target == null ? null : ClassStorage.getHandle(target));
 		return this;
 	}
-	
+
+	@Deprecated
 	public TargetSelector attackNearestTarget(int a, String targetClass) {
 		return attackNearestTarget(a, ClassStorage.safeGetClass("{nms}." + targetClass));
 	}

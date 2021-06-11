@@ -14,6 +14,7 @@ import java.util.List;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.lib.nms.entity.ArmorStandNMS;
+import org.screamingsandals.bedwars.lib.nms.utils.ClassStorage;
 import org.screamingsandals.bedwars.lib.nms.utils.InstanceMethod;
 import org.screamingsandals.bedwars.lib.nms.utils.Version;
 
@@ -258,11 +259,8 @@ public class Hologram {
 				return;
 			}
 
-			Object handler = getMethod(player, "getHandle").invoke();
-			Object connection = getField(handler, "playerConnection,field_71135_a");
-			InstanceMethod sendPacket = getMethod(connection, "sendPacket,func_147359_a", Packet);
 			for (Object packet : packets) {
-				sendPacket.invoke(packet);
+				ClassStorage.sendPacket(player, packet);
 			}
 		} catch (Throwable ignored) {
 			ignored.printStackTrace();

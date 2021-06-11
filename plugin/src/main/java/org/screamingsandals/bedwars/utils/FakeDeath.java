@@ -71,7 +71,7 @@ public class FakeDeath {
             try {
                 Boolean b = deathWorld.getGameRuleValue(GameRule.FORGIVE_DEAD_PLAYERS);
                 if (b != null && b) {
-                    ClassStorage.getMethod(ClassStorage.getHandle(player), "eW,func_241157_eT_").invoke();
+                    ClassStorage.getMethod(ClassStorage.getHandle(player), "eW,fH,func_241157_eT_").invoke();
                 }
             } catch (Throwable ignored) {}
         }

@@ -32,7 +32,7 @@ public class HologramManager implements Listener {
 			@Override
 			protected Object handle(Player sender, Object packet) throws Throwable {
 				if (PacketPlayInUseEntity.isInstance(packet)) {
-					int a = (int) getField(PacketPlayInUseEntity, "a,field_149567_a", packet);
+					int a = (int) getField(PacketPlayInUseEntity, "a,entityId,field_149567_a", packet);
 					for (Hologram h : HOLOGRAMS) {
 						if (h.handleTouch(sender, a)) {
 							break;
