@@ -599,6 +599,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                             PlayerStatistic statistic = Main.getPlayerStatisticsManager().getStatistic(broker);
                             statistic.addDestroyedBeds(1);
                             statistic.addScore(Main.getConfigurator().config.getInt("statistics.scores.bed-destroy", 25));
+                            Main.depositPlayer(broker, Main.getVaultBedDestroyReward());
                         }
 
                         dispatchRewardCommands("player-destroy-bed", broker,

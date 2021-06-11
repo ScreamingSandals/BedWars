@@ -142,6 +142,14 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         return instance.configurator.config.getInt("vault.reward.kill");
     }
 
+    public static int getVaultFinalKillReward() {
+        return instance.configurator.config.getInt("vault.reward.final-kill");
+    }
+
+    public static int getVaultBedDestroyReward() {
+        return instance.configurator.config.getInt("vault.reward.bed-destroy");
+    }
+
     public static int getVaultWinReward() {
         return instance.configurator.config.getInt("vault.reward.win");
     }

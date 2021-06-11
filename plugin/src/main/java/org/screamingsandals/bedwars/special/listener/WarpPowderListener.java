@@ -123,6 +123,13 @@ public class WarpPowderListener implements Listener {
         WarpPowder warpPowder = (WarpPowder) game.getFirstActivedSpecialItemOfPlayer(player, WarpPowder.class);
         if (warpPowder != null) {
             warpPowder.cancelTeleport(true, true);
+
+            if (player.getInventory().firstEmpty() == -1 && !player.getInventory().contains(warpPowder.getStack())) {
+                player.getWorld().dropItemNaturally(player.getLocation(), warpPowder.getStack());
+            } else {
+                player.getInventory().addItem(warpPowder.getStack());
+            }
+            player.updateInventory();
         }
     }
 

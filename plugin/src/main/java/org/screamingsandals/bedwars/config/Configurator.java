@@ -196,6 +196,8 @@ public class Configurator {
         checkOrSetConfig(modify, "vault.enable", true);
         checkOrSetConfig(modify, "vault.reward.kill", 5);
         checkOrSetConfig(modify, "vault.reward.win", 20);
+        checkOrSetConfig(modify, "vault.reward.final-kill", config.getInt("vault.reward.kill", 5));
+        checkOrSetConfig(modify, "vault.reward.bed-destroy", 0);
 
         checkOrSetConfig(modify, "resources", new HashMap<String, Object>() {
             {
@@ -334,6 +336,7 @@ public class Configurator {
         checkOrSetConfig(modify, "statistics.show-on-game-end", false);
         checkOrSetConfig(modify, "statistics.bed-destroyed-kills", false);
         checkOrSetConfig(modify, "statistics.scores.kill", 10);
+        checkOrSetConfig(modify, "statistics.scores.final-kill", 0);
         checkOrSetConfig(modify, "statistics.scores.die", 0);
         checkOrSetConfig(modify, "statistics.scores.win", 50);
         checkOrSetConfig(modify, "statistics.scores.bed-destroy", 25);
@@ -397,6 +400,11 @@ public class Configurator {
             }
         });
         checkOrSetConfig(modify, "rewards.player-kill", new ArrayList<String>() {
+            {
+                add("/example {player} 10");
+            }
+        });
+        checkOrSetConfig(modify, "rewards.player-final-kill", new ArrayList<String>() {
             {
                 add("/example {player} 10");
             }
