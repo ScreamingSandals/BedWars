@@ -94,7 +94,7 @@ public class HologramManager implements Listener {
 						hologram.update(player, hologram.getAllSpawnPackets(), false);
 					} else if (event.getTo().distanceSquared(loc) >= VISIBILITY_DISTANCE_SQUARED
 						&& event.getFrom().distanceSquared(loc) < VISIBILITY_DISTANCE_SQUARED) {
-						hologram.update(player, Arrays.asList(hologram.getFullDestroyPacket()), false);
+						hologram.update(player, hologram.getAllDestroyPackets(), false);
 					}
 				}
 			} catch (Throwable t) {
@@ -201,7 +201,7 @@ public class HologramManager implements Listener {
 						new BukkitRunnable() {
 							public void run() {
 								try {
-									hologram.update(player, Collections.singletonList(hologram.getFullDestroyPacket()), false);
+									hologram.update(player, hologram.getAllDestroyPackets(), false);
 								} catch (Throwable t) {
 								}
 							}

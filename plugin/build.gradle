@@ -20,7 +20,7 @@ dependencies {
     /* SHADED */
     implementation project(':BedWars-API')
     implementation 'com.zaxxer:HikariCP:3.3.0'
-    implementation 'org.screamingsandals.simpleinventories:SimpleInventories-Core:1.0.6.5'
+    implementation 'org.screamingsandals.simpleinventories:SimpleInventories-Core:1.0.6.6'
     implementation 'org.bstats:bstats-bukkit:1.7'
 }
 

@@ -20,7 +20,7 @@ public class PlayerUtils {
 					player.spigot().respawn();
 				} catch (Throwable t) {
 					try {
-						Object selectedObj = findEnumConstant(EnumClientCommand, "PERFORM_RESPAWN");
+						Object selectedObj = findEnumConstant(EnumClientCommand, "PERFORM_RESPAWN,a");
 						Object packet = PacketPlayInClientCommand.getDeclaredConstructor(EnumClientCommand)
 							.newInstance(selectedObj);
 						Object connection = getPlayerConnection(player);

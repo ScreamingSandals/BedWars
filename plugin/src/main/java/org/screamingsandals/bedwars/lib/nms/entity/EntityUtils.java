@@ -31,6 +31,7 @@ public class EntityUtils {
 			
 			return entityLiving;
 		} catch (Throwable ignored) {
+			ignored.printStackTrace();
 		}
 		return null;
 	}

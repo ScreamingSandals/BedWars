@@ -14,6 +14,7 @@ import java.util.List;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.lib.nms.entity.ArmorStandNMS;
+import org.screamingsandals.bedwars.lib.nms.entity.EntityNMS;
 import org.screamingsandals.bedwars.lib.nms.utils.ClassStorage;
 import org.screamingsandals.bedwars.lib.nms.utils.InstanceMethod;
 import org.screamingsandals.bedwars.lib.nms.utils.Version;
@@ -104,7 +105,7 @@ public class Hologram {
 			if (viewers.contains(player)) {
 				viewers.remove(player);
 				try {
-					update(player, Arrays.asList(getFullDestroyPacket()), true);
+					update(player, getAllDestroyPackets(), true);
 				} catch (Throwable ignored) {
 				}
 			}
@@ -267,13 +268,24 @@ public class Hologram {
 		}
 	}
 
-	public Object getFullDestroyPacket() throws InstantiationException, IllegalAccessException,
+	public List<Object> getAllDestroyPackets() throws InstantiationException, IllegalAccessException,
 		IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
-		int[] removal = new int[entities.size()];
-		for (int i = 0; i < entities.size(); i++) {
-			removal[i] = (int) entities.get(i).getId();
+		List<Object> packets = new ArrayList<>();
+
+		if (Version.isVersion(1, 17)) {
+			Constructor<?> constructor =  PacketPlayOutEntityDestroy.getConstructor(int.class);
+			for (EntityNMS integer : entities) {
+				packets.add(constructor.newInstance(integer.getId()));
+			}
+		} else {
+			int[] removal = new int[entities.size()];
+			for (int i = 0; i < entities.size(); i++) {
+				removal[i] = (int) entities.get(i).getId();
+			}
+
+			packets.add(PacketPlayOutEntityDestroy.getConstructor(int[].class).newInstance(removal));
 		}
-		return PacketPlayOutEntityDestroy.getConstructor(int[].class).newInstance(removal);
+		return packets;
 	}
 
 	public List<Object> getAllSpawnPackets() throws InstantiationException, IllegalAccessException,

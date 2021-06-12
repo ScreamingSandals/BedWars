@@ -6,11 +6,11 @@ import org.screamingsandals.bedwars.lib.nms.utils.ClassStorage;
 public class TargetSelector extends Selector {
 	
 	public TargetSelector(Object handler) {
-		super(handler, "targetSelector,field_70715_bh");
+		super(handler, "targetSelector,field_70715_bh,bP");
 	}
 	
 	public TargetSelector attackTarget(LivingEntity target) {
-		ClassStorage.setField(handler, "goalTarget,target,field_70696_bz", target == null ? null : ClassStorage.getHandle(target));
+		ClassStorage.setField(handler, "goalTarget,target,field_70696_bz,bU", target == null ? null : ClassStorage.getHandle(target));
 		return this;
 	}
 

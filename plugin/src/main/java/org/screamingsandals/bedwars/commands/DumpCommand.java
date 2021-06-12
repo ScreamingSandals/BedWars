@@ -239,8 +239,7 @@ public class DumpCommand extends BaseCommand {
                 URL url = new URL("https://api.paste.gg/v1/pastes");
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("POST");
-                connection.setRequestProperty("Content-Type", "application/json; utf-8");
-                connection.setRequestProperty("Accept", "application/json");
+                connection.setRequestProperty("Content-Type", "application/json");
                 connection.setDoOutput(true);
                 String json = gson.toJson(nullValuesAllowingMap(
                         "name", "Bedwars dump",
@@ -270,6 +269,7 @@ public class DumpCommand extends BaseCommand {
                     }
                 } else {
                     sender.sendMessage(i18n("dump_failed"));
+                    Bukkit.getLogger().severe(code + " - " + gson.fromJson(new InputStreamReader(connection.getErrorStream()), Map.class));
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();

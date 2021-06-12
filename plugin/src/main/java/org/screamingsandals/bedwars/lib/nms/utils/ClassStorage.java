@@ -2,7 +2,9 @@ package org.screamingsandals.bedwars.lib.nms.utils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -16,7 +18,7 @@ public class ClassStorage {
 	public static final String NMS_VERSION = checkNMSVersion();
 
 	public static final class NMS {
-		public static final Class<?> ChatSerializer = safeGetClass("net.minecraft.network.chat.IChatBaseComponent$ComponentSerializer", "{nms}.IChatBaseComponent$ChatSerializer", "{nms}.ChatSerializer", "{f:util}.text.ITextComponent$Serializer");
+		public static final Class<?> ChatSerializer = safeGetClass("net.minecraft.network.chat.IChatBaseComponent$ChatSerializer", "{nms}.IChatBaseComponent$ChatSerializer", "{nms}.ChatSerializer", "{f:util}.text.ITextComponent$Serializer");
 		public static final Class<?> DataWatcher = safeGetClass("net.minecraft.network.syncher.DataWatcher", "{nms}.DataWatcher", "{f:net}.datasync.EntityDataManager");
 		public static final Class<?> Entity = safeGetClass("net.minecraft.world.entity.Entity", "{nms}.Entity", "{f:ent}.Entity");
 		public static final Class<?> EntityArmorStand = safeGetClass("net.minecraft.world.entity.decoration.EntityArmorStand", "{nms}.EntityArmorStand", "{f:ent}.item.ArmorStandEntity", "{f:ent}.item.EntityArmorStand");
@@ -108,15 +110,18 @@ public class ClassStorage {
 				Method method = clazz.getMethod(name.trim(), params);
 				return new ClassMethod(method);
 			} catch (Throwable t) {
-				Class<?> claz2 = clazz;
-				do {
-					try {
-						Method method = claz2.getDeclaredMethod(name.trim(), params);
-						method.setAccessible(true);
-						return new ClassMethod(method);
-					} catch (Throwable t2) {
-					}
-				} while ((claz2 = claz2.getSuperclass()) != null && claz2 != Object.class);
+				try {
+					Class<?> claz2 = clazz;
+					do {
+						try {
+							Method method = claz2.getDeclaredMethod(name.trim(), params);
+							method.setAccessible(true);
+							return new ClassMethod(method);
+						} catch (Throwable t2) {
+						}
+					} while ((claz2 = claz2.getSuperclass()) != null && claz2 != Object.class);
+				} catch (Throwable t2) {
+				}
 			}
 		}
 		return new ClassMethod(null);
@@ -224,7 +229,7 @@ public class ClassStorage {
 	public static Object getPlayerConnection(Player player) {
 		Object handler = getMethod(player, "getHandle").invoke();
 		if (handler != null) {
-			return getField(handler, "playerConnection,connection,field_71135_a");
+			return getField(handler, "playerConnection,connection,field_71135_a,b");
 		}
 		return null;
 	}
@@ -276,11 +281,16 @@ public class ClassStorage {
 		try {
 			Object world = getMethod(handler, "getWorld,func_130014_f_").invoke();
 			try {
-				// 1.16
-				return NMS.PathfinderGoalSelector.getConstructor(Supplier.class).newInstance((Supplier<?>) () -> getMethodProfiler(world));
+				// 1.17
+				return NMS.PathfinderGoalSelector.getConstructor(Supplier.class).newInstance(getMethod(world, "getMethodProfilerSupplier").invoke());
 			} catch (Throwable ignored) {
-				// Pre 1.16
-				return NMS.PathfinderGoalSelector.getConstructors()[0].newInstance(getMethodProfiler(world));
+				try {
+					// 1.16
+					return NMS.PathfinderGoalSelector.getConstructor(Supplier.class).newInstance((Supplier<?>) () -> getMethodProfiler(world));
+				} catch (Throwable ignore) {
+					// Pre 1.16
+					return NMS.PathfinderGoalSelector.getConstructors()[0].newInstance(getMethodProfiler(world));
+				}
 			}
 		} catch (Throwable t) {
 			t.printStackTrace();

@@ -1,5 +1,6 @@
 package org.screamingsandals.bedwars;
 
+import org.jetbrains.annotations.NotNull;
 import org.screamingsandals.bedwars.lib.lang.I18n;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
@@ -30,6 +31,7 @@ import org.screamingsandals.bedwars.game.TeamColor;
 import org.screamingsandals.bedwars.holograms.LeaderboardHolograms;
 import org.screamingsandals.bedwars.holograms.StatisticsHolograms;
 import org.screamingsandals.bedwars.inventories.ShopInventory;
+import org.screamingsandals.bedwars.lib.nms.utils.Version;
 import org.screamingsandals.bedwars.listener.*;
 import org.screamingsandals.bedwars.placeholderapi.BedwarsExpansion;
 import org.screamingsandals.bedwars.special.SpecialRegister;
@@ -413,6 +415,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         new StatsCommand();
         new MainlobbyCommand();
         new LeaderboardCommand();
+        new DumpCommand();
 
         BwCommandsExecutor cmd = new BwCommandsExecutor();
         getCommand("bw").setExecutor(cmd);
@@ -475,7 +478,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         Bukkit.getConsoleSender()
                 .sendMessage(ChatColor.AQUA + "+ Screaming " + ChatColor.RED + "Bed" + ChatColor.WHITE + "Wars +  " + ChatColor.GOLD + "Version: " + version + " " + ChatColor.GREEN + "FREE");
         Bukkit.getConsoleSender()
-                .sendMessage(ChatColor.AQUA + "============" + ChatColor.RED + "===" + ChatColor.WHITE + "======  " + (snapshot ? ChatColor.RED + "SNAPSHOT VERSION - Use at your own risk" : ChatColor.GREEN + "STABLE VERSION"));
+                .sendMessage(ChatColor.AQUA + "============" + ChatColor.RED + "===" + ChatColor.WHITE + "======  " + (snapshot ? ChatColor.RED + "SNAPSHOT VERSION (" + VersionInfo.BUILD_NUMBER + ") - Use at your own risk" : ChatColor.GREEN + "STABLE VERSION"));
         if (isVault) {
             Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[B" + ChatColor.WHITE + "W] " + ChatColor.GOLD + "Found Vault");
         }
@@ -766,5 +769,9 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 
     public static boolean isDisabling() {
         return instance.isDisabling;
+    }
+
+    public void se(boolean bool) {
+        setEnabled(bool);
     }
 }

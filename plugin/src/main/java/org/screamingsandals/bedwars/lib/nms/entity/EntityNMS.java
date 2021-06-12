@@ -46,7 +46,7 @@ public class EntityNMS {
 		Object world = ClassStorage.getMethod(handler, "getWorld,func_130014_f_").invoke();
 		World craftWorld = (World) ClassStorage.getMethod(world, "getWorld").invoke();
 		if (!location.getWorld().equals(craftWorld)) {
-			ClassStorage.setField(handler, "world,level,field_70170_p", ClassStorage.getHandle(location.getWorld()));
+			ClassStorage.setField(handler, "world,level,field_70170_p,c", ClassStorage.getHandle(location.getWorld()));
 		}
 		
 		ClassStorage.getMethod(handler, "setLocation,func_70080_a", double.class, double.class, double.class, float.class, float.class)
