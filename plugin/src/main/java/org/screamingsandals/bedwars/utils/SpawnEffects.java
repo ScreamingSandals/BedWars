@@ -1,5 +1,6 @@
 package org.screamingsandals.bedwars.utils;
 
+import org.bukkit.Particle;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.lib.nms.particles.Particles;
@@ -58,7 +59,13 @@ public class SpawnEffects {
                 double offsetZ = (double) effect.getOrDefault("offsetZ", 0);
                 double extra = (double) effect.getOrDefault("extra", 1);
 
-                Particles.sendParticles(game.getConnectedPlayers(), value, player.getLocation(), count, offsetX, offsetY, offsetZ, extra);
+                if (effect.containsKey("data")) {
+                    Object data = effect.get("data");
+
+                    player.spawnParticle(Particle.valueOf(value.toUpperCase()), player.getLocation(), count, offsetX, offsetY, offsetZ, extra, data);
+                } else {
+                    Particles.sendParticles(game.getConnectedPlayers(), value, player.getLocation(), count, offsetX, offsetY, offsetZ, extra);
+                }
             }
         } else if (type.equalsIgnoreCase("Effect")) {
             if (effect.containsKey("value")) {

@@ -54,11 +54,11 @@ public class ReloadCommand extends BaseCommand {
 
                 if (!gameRuns || timer == 0) {
                     this.cancel();
-                    if (ClassStorage.IS_PAPER_SERVER) {
+                    /*if (ClassStorage.IS_PAPER_SERVER) {
                         Bukkit.getServer().getPluginManager().disablePlugin(Main.getInstance(), false);
                         Bukkit.getServer().getPluginManager().enablePlugin(Main.getInstance());
                         sender.sendMessage("Plugin reloaded!");
-                    } else {
+                    } else {*/
                         Plugin plugin = Main.getInstance();
                         try {
                             String message = String.format("Disabling %s", plugin.getDescription().getFullName());
@@ -99,11 +99,12 @@ public class ReloadCommand extends BaseCommand {
                                 world.removePluginChunkTickets(plugin);
                             }
                         } catch (Throwable ex) {
-                            Bukkit.getLogger().log(Level.SEVERE, "Error occurred (in the plugin loader) while removing chunk tickets for " + plugin.getDescription().getFullName() + " (Is it up to date?)", ex);
+                            // older versions don't even have chunk tickets
+                            //Bukkit.getLogger().log(Level.SEVERE, "Error occurred (in the plugin loader) while removing chunk tickets for " + plugin.getDescription().getFullName() + " (Is it up to date?)", ex);
                         }
                         Bukkit.getServer().getPluginManager().enablePlugin(Main.getInstance());
                         sender.sendMessage("Plugin reloaded! Keep in mind that restarting the server is safer!");
-                    }
+                    //}
                     return;
                 }
                 timer--;
