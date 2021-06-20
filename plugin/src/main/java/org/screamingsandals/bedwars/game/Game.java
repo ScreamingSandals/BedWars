@@ -575,9 +575,15 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                                 .replace("%team%", team.teamInfo.color.chatColor + team.teamInfo.name)
                                 .replace("%broker%", colored_broker));
                         SpawnEffects.spawnEffect(this, player.player, "game-effects.beddestroy");
-                        Sounds.playSound(player.player, player.player.getLocation(),
-                                Main.getConfigurator().config.getString("sounds.on_bed_destroyed"),
-                                Sounds.ENTITY_ENDER_DRAGON_GROWL, 1, 1);
+                        if (getPlayerTeam(player) == team) {
+                            Sounds.playSound(player.player, player.player.getLocation(),
+                                    Main.getConfigurator().config.getString("sounds.my_bed_destroyed.sound"),
+                                    Sounds.ENTITY_ENDER_DRAGON_GROWL, (float) Main.getConfigurator().config.getDouble("sounds.my_bed_destroyed.volume"), (float) Main.getConfigurator().config.getDouble("sounds.bed_destroyed.pitch"));
+                        } else {
+                            Sounds.playSound(player.player, player.player.getLocation(),
+                                    Main.getConfigurator().config.getString("sounds.bed_destroyed.sound"),
+                                    Sounds.ENTITY_ENDER_DRAGON_GROWL, (float) Main.getConfigurator().config.getDouble("sounds.bed_destroyed.volume"), (float) Main.getConfigurator().config.getDouble("sounds.bed_destroyed.pitch"));
+                        }
                     }
 
                     if (team.hasBedHolo()) {
@@ -1656,8 +1662,8 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                         for (GamePlayer player : players) {
                             Title.send(player.player, ChatColor.YELLOW + Integer.toString(countdown), "");
                             Sounds.playSound(player.player, player.player.getLocation(),
-                                    Main.getConfigurator().config.getString("sounds.on_countdown"), Sounds.UI_BUTTON_CLICK,
-                                    1, 1);
+                                    Main.getConfigurator().config.getString("sounds.countdown.sound"), Sounds.UI_BUTTON_CLICK,
+                                    (float) Main.getConfigurator().config.getDouble("sounds.countdown.volume"), (float) Main.getConfigurator().config.getDouble("sounds.countdown.pitch"));
                         }
                     }
                 }
@@ -1811,8 +1817,8 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                             });
                         }
                         Sounds.playSound(player.player, player.player.getLocation(),
-                                Main.getConfigurator().config.getString("sounds.on_game_start"),
-                                Sounds.ENTITY_PLAYER_LEVELUP, 1, 1);
+                                Main.getConfigurator().config.getString("sounds.game_start.sound"),
+                                Sounds.ENTITY_PLAYER_LEVELUP, (float) Main.getConfigurator().config.getDouble("sounds.game_start.volume"), (float) Main.getConfigurator().config.getDouble("sounds.game_start.pitch"));
                     }
 
                     if (getOriginalOrInheritedRemoveUnusedTargetBlocks()) {

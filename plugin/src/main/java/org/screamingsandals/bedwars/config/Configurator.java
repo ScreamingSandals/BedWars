@@ -295,15 +295,64 @@ public class Configurator {
             config.set("tnt.dont-damage-placer", null);
         }
         
-        checkOrSetConfig(modify, "sounds.on_bed_destroyed", "ENTITY_ENDER_DRAGON_GROWL");
-        checkOrSetConfig(modify, "sounds.on_countdown", "UI_BUTTON_CLICK");
-        checkOrSetConfig(modify, "sounds.on_game_start", "ENTITY_PLAYER_LEVELUP");
-        checkOrSetConfig(modify, "sounds.on_team_kill", "ENTITY_PLAYER_LEVELUP");
-        checkOrSetConfig(modify, "sounds.on_player_kill", "ENTITY_PLAYER_BIG_FALL");
-        checkOrSetConfig(modify, "sounds.on_item_buy", "ENTITY_ITEM_PICKUP");
-        checkOrSetConfig(modify, "sounds.on_upgrade_buy", "ENTITY_EXPERIENCE_ORB_PICKUP");
-        checkOrSetConfig(modify, "sounds.on_respawn_cooldown_wait", "UI_BUTTON_CLICK");
-        checkOrSetConfig(modify, "sounds.on_respawn_cooldown_done", "ENTITY_PLAYER_LEVELUP");
+        checkOrSetConfig(modify, "sounds.bed_destroyed.sound", config.getString("sounds.on_bed_destroyed", "ENTITY_ENDER_DRAGON_GROWL"));
+        checkOrSetConfig(modify, "sounds.bed_destroyed.volume", 1);
+        checkOrSetConfig(modify, "sounds.bed_destroyed.pitch", 1);
+        checkOrSetConfig(modify, "sounds.my_bed_destroyed.sound", config.getString("sounds.on_bed_destroyed", "ENTITY_ENDER_DRAGON_GROWL"));
+        checkOrSetConfig(modify, "sounds.my_bed_destroyed.volume", 1);
+        checkOrSetConfig(modify, "sounds.my_bed_destroyed.pitch", 1);
+        checkOrSetConfig(modify, "sounds.countdown.sound", config.getString("sounds.on_countdown", "UI_BUTTON_CLICK"));
+        checkOrSetConfig(modify, "sounds.countdown.volume", 1);
+        checkOrSetConfig(modify, "sounds.countdown.pitch", 1);
+        checkOrSetConfig(modify, "sounds.game_start.sound", config.getString("sounds.on_game_start", "ENTITY_PLAYER_LEVELUP"));
+        checkOrSetConfig(modify, "sounds.game_start.volume", 1);
+        checkOrSetConfig(modify, "sounds.game_start.pitch", 1);
+        checkOrSetConfig(modify, "sounds.team_kill.sound", config.getString("sounds.on_team_kill", "ENTITY_PLAYER_LEVELUP"));
+        checkOrSetConfig(modify, "sounds.team_kill.volume", 1);
+        checkOrSetConfig(modify, "sounds.team_kill.pitch", 1);
+        checkOrSetConfig(modify, "sounds.player_kill.sound", config.getString("sounds.on_player_kill", "ENTITY_PLAYER_BIG_FALL"));
+        checkOrSetConfig(modify, "sounds.player_kill.volume", 1);
+        checkOrSetConfig(modify, "sounds.player_kill.pitch", 1);
+        checkOrSetConfig(modify, "sounds.item_buy.sound", config.getString("sounds.on_item_buy", "ENTITY_ITEM_PICKUP"));
+        checkOrSetConfig(modify, "sounds.item_buy.volume", 1);
+        checkOrSetConfig(modify, "sounds.item_buy.pitch", 1);
+        checkOrSetConfig(modify, "sounds.upgrade_buy.sound", config.getString("sounds.on_upgrade_buy", "ENTITY_EXPERIENCE_ORB_PICKUP"));
+        checkOrSetConfig(modify, "sounds.upgrade_buy.volume", 1);
+        checkOrSetConfig(modify, "sounds.upgrade_buy.pitch", 1);
+        checkOrSetConfig(modify, "sounds.respawn_cooldown_wait.sound", config.getString("sounds.on_respawn_cooldown_wait", "UI_BUTTON_CLICK"));
+        checkOrSetConfig(modify, "sounds.respawn_cooldown_wait.volume", 1);
+        checkOrSetConfig(modify, "sounds.respawn_cooldown_wait.pitch", 1);
+        checkOrSetConfig(modify, "sounds.respawn_cooldown_done.sound", config.getString("sounds.on_respawn_cooldown_done", "ENTITY_PLAYER_LEVELUP"));
+        checkOrSetConfig(modify, "sounds.respawn_cooldown_done.volume", 1);
+        checkOrSetConfig(modify, "sounds.respawn_cooldown_done.pitch", 1);
+
+        if (config.isSet("sounds.on_bed_destroyed")) {
+            config.set("sounds.on_bed_destroyed", null);
+        }
+        if (config.isSet("sounds.on_countdown")) {
+            config.set("sounds.on_countdown", null);
+        }
+        if (config.isSet("sounds.on_game_start")) {
+            config.set("sounds.on_game_start", null);
+        }
+        if (config.isSet("sounds.on_team_kill")) {
+            config.set("sounds.on_team_kill", null);
+        }
+        if (config.isSet("sounds.on_player_kill")) {
+            config.set("sounds.on_player_kill", null);
+        }
+        if (config.isSet("sounds.on_item_buy")) {
+            config.set("sounds.on_item_buy", null);
+        }
+        if (config.isSet("sounds.on_upgrade_buy")) {
+            config.set("sounds.on_upgrade_buy", null);
+        }
+        if (config.isSet("sounds.on_respawn_cooldown_wait")) {
+            config.set("sounds.on_respawn_cooldown_wait", null);
+        }
+        if (config.isSet("sounds.on_respawn_cooldown_done")) {
+            config.set("sounds.on_respawn_cooldown_done", null);
+        }
 
         checkOrSetConfig(modify, "game-effects.end", new HashMap<String, Object>() {
             {

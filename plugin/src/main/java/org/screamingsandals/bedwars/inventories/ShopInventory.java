@@ -438,7 +438,7 @@ public class ShopInventory implements Listener {
 						.replace("%material%", price + " " + type.getItemName()));
 			}
 			Sounds.playSound(player, player.getLocation(),
-				Main.getConfigurator().config.getString("sounds.on_item_buy"), Sounds.ENTITY_ITEM_PICKUP, 1, 1);
+				Main.getConfigurator().config.getString("sounds.item_buy.sound"), Sounds.ENTITY_ITEM_PICKUP, (float) Main.getConfigurator().config.getDouble("sounds.item_buy.volume"), (float) Main.getConfigurator().config.getDouble("sounds.item_buy.pitch"));
 		} else {
 			if (!Main.getConfigurator().config.getBoolean("removePurchaseMessages", false)) {
 				player.sendMessage(i18nc("buy_failed", game.getCustomPrefix()).replace("%item%", amount + "x " + getNameOrCustomNameOfItem(newItem))
@@ -538,8 +538,8 @@ public class ShopInventory implements Listener {
 									price + " " + itemSpawnerType.getItemName()));
 						}
 						Sounds.playSound(player1, player1.getLocation(),
-							Main.getConfigurator().config.getString("sounds.on_upgrade_buy"),
-							Sounds.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
+							Main.getConfigurator().config.getString("sounds.upgrade_buy.sound"),
+							Sounds.ENTITY_EXPERIENCE_ORB_PICKUP, (float) Main.getConfigurator().config.getDouble("sounds.upgrade_buy.volume"), (float) Main.getConfigurator().config.getDouble("sounds.upgrade_buy.pitch"));
 					}
 				} else {
 					if (!Main.getConfigurator().config.getBoolean("removePurchaseMessages", false)) {
@@ -547,8 +547,8 @@ public class ShopInventory implements Listener {
 								price + " " + itemSpawnerType.getItemName()));
 					}
 					Sounds.playSound(player, player.getLocation(),
-						Main.getConfigurator().config.getString("sounds.on_upgrade_buy"),
-						Sounds.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
+						Main.getConfigurator().config.getString("sounds.upgrade_buy.sound"),
+						Sounds.ENTITY_EXPERIENCE_ORB_PICKUP,  (float) Main.getConfigurator().config.getDouble("sounds.upgrade_buy.volume"), (float) Main.getConfigurator().config.getDouble("sounds.upgrade_buy.pitch"));
 				}
 			}
 		} else {

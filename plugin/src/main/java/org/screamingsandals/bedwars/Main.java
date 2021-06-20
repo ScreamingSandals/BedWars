@@ -432,6 +432,9 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         }
         getServer().getPluginManager().registerEvents(new VillagerListener(), this);
         getServer().getPluginManager().registerEvents(new WorldListener(), this);
+        if (!Main.isLegacy()) {
+            getServer().getPluginManager().registerEvents(new World113Listener(), this);
+        }
         if (Main.getConfigurator().config.getBoolean("bungee.enabled") && Main.getConfigurator().config.getBoolean("bungee.motd.enabled")) {
             getServer().getPluginManager().registerEvents(new BungeeMotdListener(), this);
         }

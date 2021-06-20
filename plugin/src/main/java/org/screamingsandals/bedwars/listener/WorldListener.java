@@ -81,26 +81,6 @@ public class WorldListener implements Listener {
 
 
     @EventHandler
-    public void onFertilize(BlockFertilizeEvent event) {
-        if (event.isCancelled()) {
-            return;
-        }
-
-        event.getBlocks().removeIf(blockState -> {
-            for (String s : Main.getGameNames()) {
-                Game game = Main.getGame(s);
-                if (game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) {
-                    if (GameCreator.isInArea(blockState.getLocation(), game.getPos1(), game.getPos2())) {
-                        return !game.isBlockAddedDuringGame(blockState.getLocation());
-                    }
-                }
-            }
-            return false;
-        });
-    }
-
-
-    @EventHandler
     public void onExplode(EntityExplodeEvent event) {
         if (event.isCancelled()) {
             return;

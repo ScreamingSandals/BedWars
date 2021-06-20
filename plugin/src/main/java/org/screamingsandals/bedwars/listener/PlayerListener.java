@@ -134,12 +134,12 @@ public class PlayerListener implements Listener {
                         if (team.isDead()) {
                             SpawnEffects.spawnEffect(game, victim, "game-effects.teamkill");
                             Sounds.playSound(killer, killer.getLocation(),
-                                    Main.getConfigurator().config.getString("sounds.on_team_kill"),
-                                    Sounds.ENTITY_PLAYER_LEVELUP, 1, 1);
+                                    Main.getConfigurator().config.getString("sounds.team_kill.sound"),
+                                    Sounds.ENTITY_PLAYER_LEVELUP,  (float) Main.getConfigurator().config.getDouble("sounds.team_kill.volume"), (float) Main.getConfigurator().config.getDouble("sounds.team_kill.pitch"));
                         } else {
                             Sounds.playSound(killer, killer.getLocation(),
-                                    Main.getConfigurator().config.getString("sounds.on_player_kill"),
-                                    Sounds.ENTITY_PLAYER_BIG_FALL, 1, 1);
+                                    Main.getConfigurator().config.getString("sounds.player_kill.sound"),
+                                    Sounds.ENTITY_PLAYER_BIG_FALL, (float) Main.getConfigurator().config.getDouble("sounds.player_kill.volume"), (float) Main.getConfigurator().config.getDouble("sounds.player_kill.pitch"));
                             if (!isBed) {
                                 Main.depositPlayer(killer, Main.getVaultFinalKillReward());
                             } else {
@@ -197,16 +197,16 @@ public class PlayerListener implements Listener {
                             Title.send(player,
                                     i18nonly("respawn_cooldown_title").replace("%time%", String.valueOf(livingTime)), "");
                             Sounds.playSound(player, player.getLocation(),
-                                    Main.getConfigurator().config.getString("sounds.on_respawn_cooldown_wait"),
-                                    Sounds.BLOCK_STONE_BUTTON_CLICK_ON, 1, 1);
+                                    Main.getConfigurator().config.getString("sounds.respawn_cooldown_wait.sound"),
+                                    Sounds.BLOCK_STONE_BUTTON_CLICK_ON, (float) Main.getConfigurator().config.getDouble("sounds.respawn_cooldown_wait.volume"), (float) Main.getConfigurator().config.getDouble("sounds.respawn_cooldown_wait.pitch"));
                         }
 
                         livingTime--;
                         if (livingTime == 0) {
                             game.makePlayerFromSpectator(gamePlayer);
                             Sounds.playSound(player, player.getLocation(),
-                                    Main.getConfigurator().config.getString("sounds.on_respawn_cooldown_done"),
-                                    Sounds.UI_BUTTON_CLICK, 1, 1);
+                                    Main.getConfigurator().config.getString("sounds.respawn_cooldown_done.sound"),
+                                    Sounds.UI_BUTTON_CLICK, (float) Main.getConfigurator().config.getDouble("sounds.respawn_cooldown_done.volume"), (float) Main.getConfigurator().config.getDouble("sounds.respawn_cooldown_done.pitch"));
 
                             this.cancel();
                         }

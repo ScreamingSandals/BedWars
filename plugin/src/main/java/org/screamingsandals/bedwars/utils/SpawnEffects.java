@@ -1,13 +1,13 @@
 package org.screamingsandals.bedwars.utils;
 
-import org.bukkit.Particle;
+import org.bukkit.*;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.material.MaterialData;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.lib.nms.particles.Particles;
 import org.screamingsandals.bedwars.api.events.BedwarsPostSpawnEffectEvent;
 import org.screamingsandals.bedwars.api.events.BedwarsPreSpawnEffectEvent;
-import org.bukkit.Effect;
-import org.bukkit.FireworkEffect;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
@@ -42,6 +42,7 @@ public class SpawnEffects {
                 }
 
             } catch (Throwable ignored) {
+                ignored.printStackTrace();
             }
         }
 
@@ -54,15 +55,27 @@ public class SpawnEffects {
             if (effect.containsKey("value")) {
                 String value = (String) effect.get("value");
                 int count = (int) effect.getOrDefault("count", 1);
-                double offsetX = (double) effect.getOrDefault("offsetX", 0);
-                double offsetY = (double) effect.getOrDefault("offsetY", 0);
-                double offsetZ = (double) effect.getOrDefault("offsetZ", 0);
-                double extra = (double) effect.getOrDefault("extra", 1);
+                double offsetX = ((Number) effect.getOrDefault("offsetX", 0)).doubleValue();
+                double offsetY = ((Number) effect.getOrDefault("offsetY", 0)).doubleValue();
+                double offsetZ = ((Number) effect.getOrDefault("offsetZ", 0)).doubleValue();
+                double extra = ((Number) effect.getOrDefault("extra", 1)).doubleValue();
 
                 if (effect.containsKey("data")) {
                     Object data = effect.get("data");
 
-                    player.spawnParticle(Particle.valueOf(value.toUpperCase()), player.getLocation(), count, offsetX, offsetY, offsetZ, extra, data);
+                    Particle particle = Particle.valueOf(value);
+
+                    if (particle.getDataType().equals(MaterialData.class)) {
+                        data = Material.getMaterial(data.toString().toUpperCase()).getNewData((byte) 0);
+                    } else if (particle.getDataType().equals(Particle.DustOptions.class)) {
+                        Map<String, Object> map = (Map<String, Object>) data;
+                        data = new Particle.DustOptions((Color) map.get("color"), ((Number) map.get("size")).floatValue());
+                    } else if (!Main.isLegacy()) {
+                        data = SpawnEffectsFlattening.convert(particle, data);
+                    }
+
+                    Object finalData = data;
+                    game.getConnectedPlayers().forEach(p -> p.spawnParticle(particle, player.getLocation(), count, offsetX, offsetY, offsetZ, extra, finalData));
                 } else {
                     Particles.sendParticles(game.getConnectedPlayers(), value, player.getLocation(), count, offsetX, offsetY, offsetZ, extra);
                 }
