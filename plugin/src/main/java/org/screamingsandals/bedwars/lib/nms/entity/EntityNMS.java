@@ -17,14 +17,21 @@ public class EntityNMS {
 	public EntityNMS(Entity entity) {
 		this(ClassStorage.getHandle(entity));
 	}
-	
+
 	public Location getLocation() {
-		if (Version.isVersion(1, 17)) {
+		if (Version.isVersion(1, 16)) {
 			double locX = (double) ClassStorage.getMethod(handler, "locX").invoke();
 			double locY = (double) ClassStorage.getMethod(handler, "locY").invoke();
 			double locZ = (double) ClassStorage.getMethod(handler, "locZ").invoke();
-			float yaw = (float) ClassStorage.getMethod(handler, "getYRot").invoke();
-			float pitch = (float) ClassStorage.getMethod(handler, "getXRot").invoke();
+			float yaw, pitch;
+			if (Version.isVersion(1,17)) {
+				yaw = (float) ClassStorage.getMethod(handler, "getYRot").invoke();
+				pitch = (float) ClassStorage.getMethod(handler, "getXRot").invoke();
+			} else {
+				yaw = (float) ClassStorage.getField(handler, "yaw,field_70177_z");
+				pitch = (float) ClassStorage.getField(handler, "pitch,field_70125_A");
+			}
+
 			Object world = ClassStorage.getMethod(handler, "getWorld,func_130014_f_").invoke();
 			World craftWorld = (World) ClassStorage.getMethod(world, "getWorld").invoke();
 
@@ -41,6 +48,7 @@ public class EntityNMS {
 			return new Location(craftWorld, locX, locY, locZ, yaw, pitch);
 		}
 	}
+
 	
 	public void setLocation(Location location) {
 		Object world = ClassStorage.getMethod(handler, "getWorld,func_130014_f_").invoke();
