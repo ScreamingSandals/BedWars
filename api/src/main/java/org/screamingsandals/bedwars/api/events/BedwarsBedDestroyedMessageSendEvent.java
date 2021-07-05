@@ -18,14 +18,17 @@ import org.screamingsandals.bedwars.api.game.Game;
 public class BedwarsBedDestroyedMessageSendEvent extends Event implements Cancellable {
 
     private static final HandlerList handlers = new HandlerList();
+    private final Player destroyer;
     private final Player victim;
     private final Game game;
     private final Team destroyedTeam;
+
     @NotNull
     private String message;
     private boolean cancelled = false;
 
-    public BedwarsBedDestroyedMessageSendEvent(Player victim, Game game, Team destroyedTeam, @NotNull String message) {
+    public BedwarsBedDestroyedMessageSendEvent(Player destroyer, Player victim, Game game, Team destroyedTeam, @NotNull String message) {
+        this.destroyer = destroyer;
         this.victim = victim;
         this.game = game;
         this.destroyedTeam = destroyedTeam;

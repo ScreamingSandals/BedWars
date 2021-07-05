@@ -576,7 +576,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                                 .replace("%team%", team.teamInfo.color.chatColor + team.teamInfo.name)
                                 .replace("%broker%", colored_broker);
 
-                        final BedwarsBedDestroyedMessageSendEvent bbdmsEvent = new BedwarsBedDestroyedMessageSendEvent(player.player, this, team.teamInfo, destroyedMessage);
+                        final BedwarsBedDestroyedMessageSendEvent bbdmsEvent = new BedwarsBedDestroyedMessageSendEvent(broker, player.player, this, team.teamInfo, destroyedMessage);
                         Bukkit.getServer().getPluginManager().callEvent(bbdmsEvent);
                         if (!bbdmsEvent.isCancelled()) {
                             player.player.sendMessage(bbdmsEvent.getMessage());
