@@ -571,9 +571,17 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                                         .replace("%broker%", colored_broker),
                                 i18n(getPlayerTeam(player) == team ? "bed_is_destroyed_subtitle_for_victim"
                                         : "bed_is_destroyed_subtitle", false));
-                        player.player.sendMessage(i18nc(key, customPrefix)
+
+                        final String destroyedMessage = i18nc(key, customPrefix)
                                 .replace("%team%", team.teamInfo.color.chatColor + team.teamInfo.name)
-                                .replace("%broker%", colored_broker));
+                                .replace("%broker%", colored_broker);
+
+                        final BedwarsBedDestroyedMessageSendEvent bbdmsEvent = new BedwarsBedDestroyedMessageSendEvent(player.player, this, team.teamInfo, destroyedMessage);
+                        Bukkit.getServer().getPluginManager().callEvent(bbdmsEvent);
+                        if (!bbdmsEvent.isCancelled()) {
+                            player.player.sendMessage(bbdmsEvent.getMessage());
+                        }
+
                         SpawnEffects.spawnEffect(this, player.player, "game-effects.beddestroy");
                         if (getPlayerTeam(player) == team) {
                             Sounds.playSound(player.player, player.player.getLocation(),

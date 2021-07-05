@@ -26,6 +26,7 @@ import org.bukkit.metadata.MetadataValue;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.RunningTeam;
+import org.screamingsandals.bedwars.api.events.BedwarsPlayerDeathMessageSendEvent;
 import org.screamingsandals.bedwars.api.events.BedwarsPlayerKilledEvent;
 import org.screamingsandals.bedwars.api.events.BedwarsTeamChestOpenEvent;
 import org.screamingsandals.bedwars.api.game.GameStatus;
@@ -90,9 +91,13 @@ public class PlayerListener implements Listener {
 
                     }
                     if (deathMessage != null) {
-                        event.setDeathMessage(null);
-                        for (Player player : game.getConnectedPlayers()) {
-                            player.sendMessage(deathMessage);
+                        final BedwarsPlayerDeathMessageSendEvent bpdmsEvent = new BedwarsPlayerDeathMessageSendEvent(victim, game, deathMessage);
+                        Bukkit.getServer().getPluginManager().callEvent(bpdmsEvent);
+                        if (!bpdmsEvent.isCancelled()) {
+                            event.setDeathMessage(null);
+                            for (Player player : game.getConnectedPlayers()) {
+                                player.sendMessage(bpdmsEvent.getMessage());
+                            }
                         }
                     }
                 }
