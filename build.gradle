@@ -12,8 +12,8 @@ buildscript {
         maven { url 'https://plugins.gradle.org/m2' }
     }
     dependencies {
-		classpath 'org.screamingsandals.gradle.builder:screaming-plugin-builder:1.0.42'
-        classpath "com.github.gmazzo:gradle-buildconfig-plugin:3.0.0"
+		classpath 'org.screamingsandals.gradle.builder:screaming-plugin-builder:' + SCREAMING_PLUGIN_BUILDER_VERSION
+        classpath "com.github.gmazzo:gradle-buildconfig-plugin:" + BUILDCONFIG_VERSION
     }
 }
 
@@ -40,7 +40,7 @@ subprojects {
     }
     
     dependencies {
-    	compileOnly paper(PAPER_VERSION)
+    	compileOnly paperLegacy(PAPER_VERSION)
     }
 
     shadowJar {

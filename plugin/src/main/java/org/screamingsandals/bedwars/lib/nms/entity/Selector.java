@@ -1,6 +1,8 @@
 package org.screamingsandals.bedwars.lib.nms.entity;
 
-import org.screamingsandals.bedwars.lib.nms.utils.ClassStorage;
+
+import org.screamingsandals.lib.bukkit.utils.nms.ClassStorage;
+import org.screamingsandals.lib.utils.reflect.Reflect;
 
 public abstract class Selector {
 	protected final Object handler;
@@ -13,12 +15,12 @@ public abstract class Selector {
 		}
 		this.handler = handler;
 		this.keys = keys;
-		this.selector = ClassStorage.getField(this.handler, this.keys);
+		this.selector = Reflect.getField(this.handler, this.keys);
 	}
 	
 	
 	public void registerPathfinder(int position, Object pathfinder) {
-		ClassStorage.getMethod(this.selector, "a,func_75776_a", Integer.TYPE, ClassStorage.NMS.PathfinderGoal).invoke(position, pathfinder);
+		Reflect.getMethod(this.selector, "a,func_75776_a", Integer.TYPE, ClassStorage.NMS.PathfinderGoal).invoke(position, pathfinder);
 	}
 	
 	protected Object getNMSSelector() {
@@ -27,7 +29,7 @@ public abstract class Selector {
 
 	public void clearSelector() {
 		try {
-			this.selector = ClassStorage.setField(this.handler, this.keys, ClassStorage.obtainNewPathfinderSelector(handler));
+			this.selector = Reflect.setField(this.handler, this.keys, ClassStorage.obtainNewPathfinderSelector(handler));
 		} catch (Throwable t) {
 		}
 	}

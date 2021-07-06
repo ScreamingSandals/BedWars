@@ -160,16 +160,28 @@ public class PlayerListener implements Listener {
                             game.dispatchRewardCommands("player-kill", killer,
                                     MainConfig.getInstance().node("statistics", "scores", "kill").getInt(10));
                         }
+                        if (!isBed) {
+                            game.dispatchRewardCommands("player-final-kill", killer,
+                                    MainConfig.getInstance().node("statistics", "scores", "final-kill").getInt(10));
+                        }
                         if (team.isDead()) {
                             SpawnEffects.spawnEffect(game, gVictim, "game-effects.teamkill");
                             Sounds.playSound(killer, killer.getLocation(),
-                                    MainConfig.getInstance().node("sounds", "team_kill").getString(),
-                                    Sounds.ENTITY_PLAYER_LEVELUP, 1, 1);
+                                    MainConfig.getInstance().node("sounds", "team_kill", "sound").getString(),
+                                    Sounds.ENTITY_PLAYER_LEVELUP,
+                                    (float) MainConfig.getInstance().node("sounds", "team_kill", "volume").getDouble(),
+                                    (float) MainConfig.getInstance().node("sounds", "team_kill", "pitch").getDouble());
                         } else {
                             Sounds.playSound(killer, killer.getLocation(),
-                                    MainConfig.getInstance().node("sounds", "player_kill").getString(),
-                                    Sounds.ENTITY_PLAYER_BIG_FALL, 1, 1);
-                            Main.depositPlayer(killer, Main.getVaultKillReward());
+                                    MainConfig.getInstance().node("sounds", "player_kill", "sound").getString(),
+                                    Sounds.ENTITY_PLAYER_BIG_FALL,
+                                    (float) MainConfig.getInstance().node("sounds", "player_kill", "volume").getDouble(),
+                                    (float) MainConfig.getInstance().node("sounds", "player_kill", "pitch").getDouble());
+                            if (!isBed) {
+                                Main.depositPlayer(killer, MainConfig.getInstance().node("vault", "reward", "final-kill").getInt());
+                            } else {
+                                Main.depositPlayer(killer, Main.getVaultKillReward());
+                            }
                         }
 
                     }
@@ -194,6 +206,10 @@ public class PlayerListener implements Listener {
                             if (killerPlayer != null) {
                                 killerPlayer.addKills(1);
                                 killerPlayer.addScore(MainConfig.getInstance().node("statistics", "scores", "kill").getInt(10));
+
+                                if (!isBed) {
+                                    killerPlayer.addScore(MainConfig.getInstance().node("statistics", "scores", "final-kill").getInt());
+                                }
                             }
                         }
                     }
@@ -223,16 +239,20 @@ public class PlayerListener implements Listener {
                                     .times(TitleUtils.defaultTimes())
                                     .title(PlayerMapper.wrapPlayer(player));
                             Sounds.playSound(player, player.getLocation(),
-                                    MainConfig.getInstance().node("sounds", "respawn_cooldown_wait").getString(),
-                                    Sounds.BLOCK_STONE_BUTTON_CLICK_ON, 1, 1);
+                                    MainConfig.getInstance().node("sounds", "respawn_cooldown_wait", "sound").getString(),
+                                    Sounds.BLOCK_STONE_BUTTON_CLICK_ON,
+                                    (float) MainConfig.getInstance().node("sounds", "respawn_cooldown_wait", "volume").getDouble(),
+                                    (float) MainConfig.getInstance().node("sounds", "respawn_cooldown_wait", "pitch").getDouble());
                         }
 
                         livingTime--;
                         if (livingTime == 0) {
                             game.makePlayerFromSpectator(gamePlayer);
                             Sounds.playSound(player, player.getLocation(),
-                                    MainConfig.getInstance().node("sounds", "respawn_cooldown_done").getString(),
-                                    Sounds.UI_BUTTON_CLICK, 1, 1);
+                                    MainConfig.getInstance().node("sounds", "respawn_cooldown_done", "sound").getString(),
+                                    Sounds.UI_BUTTON_CLICK,
+                                    (float) MainConfig.getInstance().node("sounds", "respawn_cooldown_done", "volume").getDouble(),
+                                    (float) MainConfig.getInstance().node("sounds", "respawn_cooldown_done", "pitch").getDouble());
 
                             this.cancel();
                         }

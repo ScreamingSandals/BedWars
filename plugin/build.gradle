@@ -2,7 +2,7 @@ apply plugin: "com.github.gmazzo.buildconfig"
 
 ScreamingLibBuilder()
         .platforms('bukkit')
-        .modules('player', 'event', 'material', 'entity', 'world', 'command', 'tasker', 'hologram', 'placeholders', 'sidebar', 'healthindicator')
+        .modules('core', 'command', 'tasker', 'hologram', 'placeholders', 'sidebar', 'healthindicator')
         .version(SCREAMING_LIB_VERSION)
         .simpleInventories(SIMPLE_INVENTORIES_VERSION)
         .universalModules('signs', 'lang')
@@ -44,7 +44,7 @@ buildConfig {
 }
 
 prepareTestTask()
-    .versions('1.16.5', '1.15.2', '1.14.4', '1.13.2', '1.12.2', '1.11.2', '1.10.2', '1.9.4')
+    .versions('1.17', '1.16.5', '1.15.2', '1.14.4', '1.13.2', '1.12.2', '1.11.2', '1.10.2', '1.9.4')
     .onlineMode(false)
     .pluginJar(shadowJar.archiveFile.get().asFile.toPath())
     .build()

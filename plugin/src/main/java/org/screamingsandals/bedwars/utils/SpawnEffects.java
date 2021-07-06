@@ -1,16 +1,16 @@
 package org.screamingsandals.bedwars.utils;
 
 import lombok.experimental.UtilityClass;
-import org.bukkit.Bukkit;
+import org.bukkit.*;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
+import org.bukkit.material.MaterialData;
+import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.events.PostSpawnEffectEventImpl;
 import org.screamingsandals.bedwars.events.PreSpawnEffectEventImpl;
 import org.screamingsandals.bedwars.game.Game;
 import org.screamingsandals.bedwars.lib.nms.particles.Particles;
-import org.bukkit.Effect;
-import org.bukkit.FireworkEffect;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
 import org.bukkit.inventory.meta.FireworkMeta;
@@ -68,7 +68,25 @@ public class SpawnEffects {
                 var offsetZ = effect.node("offsetZ").getDouble();
                 var extra = effect.node("extra").getDouble(1);
 
-                Particles.sendParticles(game.getConnectedPlayers(), value, player.getLocation(), count, offsetX, offsetY, offsetZ, extra);
+                var data = effect.node("data");
+                if (!data.empty()) {
+                    Particle particle = Particle.valueOf(value);
+                    Object dataO = ConfigurateUtils.raw(data);
+
+                    if (particle.getDataType().equals(MaterialData.class)) {
+                        dataO = Material.getMaterial(dataO.toString().toUpperCase()).getNewData((byte) 0);
+                    } else if (particle.getDataType().equals(Particle.DustOptions.class)) {
+                        var map = (Map<String, Object>) dataO;
+                        dataO = new Particle.DustOptions((Color) map.get("color"), ((Number) map.get("size")).floatValue());
+                    } else if (!Main.isLegacy()) {
+                        dataO = SpawnEffectsFlattening.convert(particle, dataO);
+                    }
+
+                    var finalData = dataO;
+                    game.getConnectedPlayers().forEach(p -> p.spawnParticle(particle, player.getLocation(), count, offsetX, offsetY, offsetZ, extra, finalData));
+                } else {
+                    Particles.sendParticles(game.getConnectedPlayers(), value, player.getLocation(), count, offsetX, offsetY, offsetZ, extra);
+                }
             }
         } else if (type.equalsIgnoreCase("Effect")) {
             if (effect.hasChild("value")) {

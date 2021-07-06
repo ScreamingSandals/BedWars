@@ -751,9 +751,17 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                                 .title(player);
 
                         SpawnEffects.spawnEffect(this, player, "game-effects.beddestroy");
-                        Sounds.playSound(player.as(Player.class), player.as(Player.class).getLocation(),
-                                MainConfig.getInstance().node("sounds", "bed_destroyed").getString(),
-                                Sounds.ENTITY_ENDER_DRAGON_GROWL, 1, 1);
+                        if (getPlayerTeam(player) == team) {
+                            Sounds.playSound(player.as(Player.class), player.as(Player.class).getLocation(),
+                                    MainConfig.getInstance().node("sounds", "my_bed_destroyed", "sound").getString(),
+                                    Sounds.ENTITY_ENDER_DRAGON_GROWL, (float) MainConfig.getInstance().node("sounds", "my_bed_destroyed", "volume").getDouble(),
+                                    (float) MainConfig.getInstance().node("sounds", "my_bed_destroyed", "pitch").getDouble());
+                        } else {
+                            Sounds.playSound(player.as(Player.class), player.as(Player.class).getLocation(),
+                                    MainConfig.getInstance().node("sounds", "bed_destroyed", "sound").getString(),
+                                    Sounds.ENTITY_ENDER_DRAGON_GROWL, (float) MainConfig.getInstance().node("sounds", "bed_destroyed", "volume").getDouble(),
+                                    (float) MainConfig.getInstance().node("sounds", "bed_destroyed", "pitch").getDouble());
+                        }
                     }
 
                     if (team.hasBedHolo()) {
@@ -775,6 +783,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                             statistic.addDestroyedBeds(1);
                             statistic.addScore(MainConfig.getInstance().node("statistics", "scores", "bed-destroy").getInt(25));
                         }
+                        Main.depositPlayer(broker, MainConfig.getInstance().node("vault", "reward", "bed-destroy").getInt());
 
                         dispatchRewardCommands("player-destroy-bed", broker,
                                 MainConfig.getInstance().node("statistics", "scores", "bed-destroy").getInt(25));
@@ -926,13 +935,19 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             healthIndicator.removeViewer(gamePlayer);
         }
 
-        if (!gamePlayer.isSpectator && !preServerRestart) {
-            Message.of(LangKeys.IN_GAME_LEAVE)
-                    .prefixOrDefault(getCustomPrefixComponent())
-                    .placeholder("name", AdventureHelper.toComponent(gamePlayer.as(Player.class).getDisplayName()))
-                    .placeholder("players", players.size())
-                    .placeholder("maxplayers", calculatedMaxPlayers)
-                    .send(players);
+        if (!gamePlayer.isSpectator) {
+            if (!preServerRestart) {
+                Message.of(LangKeys.IN_GAME_LEAVE)
+                        .prefixOrDefault(getCustomPrefixComponent())
+                        .placeholder("name", AdventureHelper.toComponent(gamePlayer.as(Player.class).getDisplayName()))
+                        .placeholder("players", players.size())
+                        .placeholder("maxplayers", calculatedMaxPlayers)
+                        .send(players);
+            }
+        } else {
+            if (gamePlayer.as(Player.class).getSpectatorTarget() != null) {
+                gamePlayer.as(Player.class).setSpectatorTarget(null);
+            }
         }
 
         players.remove(gamePlayer);
@@ -1649,8 +1664,9 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                         for (BedWarsPlayer player : players) {
                             TitleUtils.send(player, ChatColor.YELLOW + Integer.toString(countdown), "");
                             Sounds.playSound(player.as(Player.class), player.as(Player.class).getLocation(),
-                                    MainConfig.getInstance().node("sounds", "countdown").getString(), Sounds.UI_BUTTON_CLICK,
-                                    1, 1);
+                                    MainConfig.getInstance().node("sounds", "countdown", "sound").getString(), Sounds.UI_BUTTON_CLICK,
+                                    (float) MainConfig.getInstance().node("sounds", "countdown", "volume").getDouble(),
+                                    (float) MainConfig.getInstance().node("sounds", "countdown", "pitch").getDouble());
                         }
                     }
                 }
@@ -1802,8 +1818,10 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                             });
                         }
                         Sounds.playSound(player.as(Player.class), player.as(Player.class).getLocation(),
-                                MainConfig.getInstance().node("sounds", "game_start").getString(),
-                                Sounds.ENTITY_PLAYER_LEVELUP, 1, 1);
+                                MainConfig.getInstance().node("sounds", "game_start", "sound").getString(),
+                                Sounds.ENTITY_PLAYER_LEVELUP,
+                                (float) MainConfig.getInstance().node("sounds", "game_start", "volume").getDouble(),
+                                (float) MainConfig.getInstance().node("sounds", "game_start", "pitch").getDouble());
                     }
 
                     if (configurationContainer.getOrDefault(ConfigurationContainer.REMOVE_UNUSED_TARGET_BLOCKS, Boolean.class, false)) {

@@ -14,6 +14,7 @@ import org.screamingsandals.bedwars.game.TeamColor;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.bedwars.lib.nms.entity.EntityUtils;
+import org.screamingsandals.lib.bukkit.utils.nms.ClassStorage;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.player.PlayerMapper;
 
@@ -78,7 +79,7 @@ public class Golem extends SpecialItem implements org.screamingsandals.bedwars.a
 
         EntityUtils.makeMobAttackTarget(golem, speed, followRange, -1)
                 .getTargetSelector()
-                .attackNearestTarget(0, "EntityPlayer");
+                .attackNearestTarget(0, ClassStorage.NMS.EntityPlayer);
 
         game.registerSpecialItem(this);
         Main.registerGameEntity(golem, (org.screamingsandals.bedwars.game.Game) game);

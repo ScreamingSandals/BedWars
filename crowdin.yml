@@ -1,3 +1,0 @@
-files:
-  - source: /plugin/src/main/resources/language_en-US.json
-    translation: /plugin/src/main/resources/languages/language_%locale%.json

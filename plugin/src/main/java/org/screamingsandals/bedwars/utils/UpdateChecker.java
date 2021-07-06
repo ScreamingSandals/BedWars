@@ -8,7 +8,7 @@ import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.lib.event.EventManager;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.player.PlayerMapper;
-import org.screamingsandals.lib.player.event.SPlayerJoinEvent;
+import org.screamingsandals.lib.event.player.SPlayerJoinEvent;
 import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.utils.annotations.methods.OnPostEnable;
 import org.spongepowered.configurate.ConfigurateException;

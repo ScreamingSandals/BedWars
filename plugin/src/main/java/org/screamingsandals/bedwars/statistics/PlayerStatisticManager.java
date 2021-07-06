@@ -13,7 +13,7 @@ import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.player.OfflinePlayerWrapper;
 import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.player.PlayerWrapper;
-import org.screamingsandals.lib.player.event.SPlayerLeaveEvent;
+import org.screamingsandals.lib.event.player.SPlayerLeaveEvent;
 import org.screamingsandals.lib.plugin.ServiceManager;
 import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.utils.annotations.methods.OnEnable;

@@ -10,7 +10,7 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
-import org.screamingsandals.bedwars.lib.nms.utils.ClassStorage;
+import org.screamingsandals.lib.bukkit.utils.nms.ClassStorage;
 import org.screamingsandals.lib.utils.reflect.Reflect;
 
 import java.util.ArrayList;

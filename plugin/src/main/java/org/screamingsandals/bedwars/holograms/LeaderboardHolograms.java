@@ -19,7 +19,7 @@ import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.player.OfflinePlayerWrapper;
 import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.player.PlayerWrapper;
-import org.screamingsandals.lib.player.event.SPlayerJoinEvent;
+import org.screamingsandals.lib.event.player.SPlayerJoinEvent;
 import org.screamingsandals.lib.plugin.PluginDescription;
 import org.screamingsandals.lib.plugin.ServiceManager;
 import org.screamingsandals.lib.tasker.Tasker;

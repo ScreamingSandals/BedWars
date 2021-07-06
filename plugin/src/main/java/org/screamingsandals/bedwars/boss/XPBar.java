@@ -21,7 +21,7 @@ public class XPBar implements org.screamingsandals.bedwars.api.boss.XPBar<Player
         if (!viewers.contains(player)) {
             viewers.add(player);
             if (visible) {
-                PlayerUtils.fakeExp(player.as(Player.class), progress, seconds);
+                PlayerUtils.fakeExp(player, progress, seconds);
             }
         }
     }
@@ -30,7 +30,7 @@ public class XPBar implements org.screamingsandals.bedwars.api.boss.XPBar<Player
     public void removePlayer(PlayerWrapper player) {
         if (viewers.contains(player)) {
             viewers.remove(player);
-            PlayerUtils.fakeExp(player.as(Player.class), player.as(Player.class).getExp(), player.as(Player.class).getLevel());
+            PlayerUtils.fakeExp(player, player.as(Player.class).getExp(), player.as(Player.class).getLevel());
         }
     }
 
@@ -44,7 +44,7 @@ public class XPBar implements org.screamingsandals.bedwars.api.boss.XPBar<Player
         this.progress = progress;
         if (visible) {
             for (var player : viewers) {
-            	PlayerUtils.fakeExp(player.as(Player.class), this.progress, seconds);
+            	PlayerUtils.fakeExp(player, this.progress, seconds);
             }
         }
     }
@@ -54,11 +54,11 @@ public class XPBar implements org.screamingsandals.bedwars.api.boss.XPBar<Player
         if (this.visible != visible) {
             if (visible) {
                 for (var player : viewers) {
-                	PlayerUtils.fakeExp(player.as(Player.class), progress, seconds);
+                	PlayerUtils.fakeExp(player, progress, seconds);
                 }
             } else {
                 for (var player : viewers) {
-                	PlayerUtils.fakeExp(player.as(Player.class), player.as(Player.class).getExp(), player.as(Player.class).getLevel());
+                	PlayerUtils.fakeExp(player, player.as(Player.class).getExp(), player.as(Player.class).getLevel());
                 }
             }
         }
@@ -70,7 +70,7 @@ public class XPBar implements org.screamingsandals.bedwars.api.boss.XPBar<Player
         this.seconds = seconds;
         if (visible) {
             for (var player : viewers) {
-            	PlayerUtils.fakeExp(player.as(Player.class), this.progress, seconds);
+            	PlayerUtils.fakeExp(player, this.progress, seconds);
             }
         }
     }

@@ -1,7 +1,8 @@
 package org.screamingsandals.bedwars.lib.nms.entity;
 
 import org.bukkit.entity.LivingEntity;
-import org.screamingsandals.bedwars.lib.nms.utils.ClassStorage;
+import org.screamingsandals.lib.bukkit.utils.nms.ClassStorage;
+import org.screamingsandals.lib.utils.reflect.Reflect;
 
 public class EntityUtils {
 
@@ -41,16 +42,16 @@ public class EntityUtils {
 		} catch (Throwable t) {
 			try {
 				Object handler = ClassStorage.getHandle(entity);
-				Object tag = ClassStorage.getMethod(handler, "getNBTTag").invoke(); // Can this really work? or it's always creating
+				Object tag = Reflect.getMethod(handler, "getNBTTag").invoke(); // Can this really work? or it's always creating
 																		// new
 																		// one?
 				if (tag == null) {
 					tag = ClassStorage.NMS.NBTTagCompound.getConstructor().newInstance();
 				}
-				ClassStorage.getMethod(handler, "c,func_184198_c", ClassStorage.NMS.NBTTagCompound).invoke(tag);
-				ClassStorage.getMethod(ClassStorage.NMS.NBTTagCompound, "setInt,func_74768_a", String.class, int.class).invokeInstance(tag, "NoAI",
+				Reflect.getMethod(handler, "c,func_184198_c", ClassStorage.NMS.NBTTagCompound).invoke(tag);
+				Reflect.getMethod(ClassStorage.NMS.NBTTagCompound, "setInt,func_74768_a", String.class, int.class).invokeInstance(tag, "NoAI",
 					1);
-				ClassStorage.getMethod(handler, "f,func_70020_e", ClassStorage.NMS.NBTTagCompound).invoke(tag);
+				Reflect.getMethod(handler, "f,func_70020_e", ClassStorage.NMS.NBTTagCompound).invoke(tag);
 			} catch (Throwable ignored) {
 			}
 		}

@@ -1,16 +1,17 @@
 package org.screamingsandals.bedwars.lib.nms.entity;
 
 import org.bukkit.entity.LivingEntity;
-import org.screamingsandals.bedwars.lib.nms.utils.ClassStorage;
+import org.screamingsandals.lib.bukkit.utils.nms.ClassStorage;
+import org.screamingsandals.lib.utils.reflect.Reflect;
 
 public class TargetSelector extends Selector {
 	
 	public TargetSelector(Object handler) {
-		super(handler, "targetSelector,field_70715_bh");
+		super(handler, "targetSelector,field_70715_bh,bP");
 	}
 	
 	public TargetSelector attackTarget(LivingEntity target) {
-		ClassStorage.setField(handler, "goalTarget,field_70696_bz", target == null ? null : ClassStorage.getHandle(target));
+		Reflect.setField(handler, "goalTarget,field_70696_bz,bU", target == null ? null : ClassStorage.getHandle(target));
 		return this;
 	}
 	
