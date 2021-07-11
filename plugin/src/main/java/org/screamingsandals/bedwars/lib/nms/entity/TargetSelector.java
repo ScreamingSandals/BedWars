@@ -1,16 +1,18 @@
 package org.screamingsandals.bedwars.lib.nms.entity;
 
 import org.bukkit.entity.LivingEntity;
+import org.screamingsandals.bedwars.lib.nms.accessors.EntityInsentientAccessor;
+import org.screamingsandals.bedwars.lib.nms.accessors.PathfinderGoalNearestAttackableTargetAccessor;
 import org.screamingsandals.bedwars.lib.nms.utils.ClassStorage;
 
 public class TargetSelector extends Selector {
 	
 	public TargetSelector(Object handler) {
-		super(handler, "targetSelector,field_70715_bh,bP");
+		super(handler, EntityInsentientAccessor.getFieldTargetSelector());
 	}
 	
 	public TargetSelector attackTarget(LivingEntity target) {
-		ClassStorage.setField(handler, "goalTarget,target,field_70696_bz,bU", target == null ? null : ClassStorage.getHandle(target));
+		ClassStorage.setField(handler, EntityInsentientAccessor.getFieldGoalTarget(), target == null ? null : ClassStorage.getHandle(target));
 		return this;
 	}
 
@@ -21,7 +23,7 @@ public class TargetSelector extends Selector {
 	
 	public TargetSelector attackNearestTarget(int a, Class<?> targetClass) {
 		try {
-			Object targetNear = ClassStorage.NMS.PathfinderGoalNearestAttackableTarget.getConstructor(ClassStorage.NMS.EntityInsentient, Class.class, Boolean.TYPE)
+			Object targetNear = PathfinderGoalNearestAttackableTargetAccessor.getConstructor0()
 					.newInstance(handler, targetClass, false);
 			registerPathfinder(a, targetNear);
 		} catch (Throwable ignored) {

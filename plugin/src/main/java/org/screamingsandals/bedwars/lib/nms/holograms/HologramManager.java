@@ -1,7 +1,6 @@
 package org.screamingsandals.bedwars.lib.nms.holograms;
 
 import static org.screamingsandals.bedwars.lib.nms.utils.ClassStorage.getField;
-import static org.screamingsandals.bedwars.lib.nms.utils.ClassStorage.NMS.PacketPlayInUseEntity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,6 +14,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.*;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.screamingsandals.bedwars.lib.nms.accessors.PacketPlayInUseEntityAccessor;
 import org.screamingsandals.bedwars.lib.nms.network.inbound.AutoPacketInboundListener;
 
 public class HologramManager implements Listener {
@@ -31,8 +31,8 @@ public class HologramManager implements Listener {
 			
 			@Override
 			protected Object handle(Player sender, Object packet) throws Throwable {
-				if (PacketPlayInUseEntity.isInstance(packet)) {
-					int a = (int) getField(PacketPlayInUseEntity, "a,entityId,field_149567_a", packet);
+				if (PacketPlayInUseEntityAccessor.getType().isInstance(packet)) {
+					int a = (int) getField(packet, PacketPlayInUseEntityAccessor.getFieldField_149567_a());
 					for (Hologram h : HOLOGRAMS) {
 						if (h.handleTouch(sender, a)) {
 							break;

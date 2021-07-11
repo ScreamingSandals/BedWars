@@ -1,9 +1,5 @@
 package org.screamingsandals.bedwars.lib.nms.holograms;
 
-import static org.screamingsandals.bedwars.lib.nms.utils.ClassStorage.NMS.*;
-
-import static org.screamingsandals.bedwars.lib.nms.utils.ClassStorage.*;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -13,10 +9,13 @@ import java.util.List;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.screamingsandals.bedwars.lib.nms.accessors.PacketPlayOutEntityDestroyAccessor;
+import org.screamingsandals.bedwars.lib.nms.accessors.PacketPlayOutEntityMetadataAccessor;
+import org.screamingsandals.bedwars.lib.nms.accessors.PacketPlayOutEntityTeleportAccessor;
+import org.screamingsandals.bedwars.lib.nms.accessors.PacketPlayOutSpawnEntityLivingAccessor;
 import org.screamingsandals.bedwars.lib.nms.entity.ArmorStandNMS;
 import org.screamingsandals.bedwars.lib.nms.entity.EntityNMS;
 import org.screamingsandals.bedwars.lib.nms.utils.ClassStorage;
-import org.screamingsandals.bedwars.lib.nms.utils.InstanceMethod;
 import org.screamingsandals.bedwars.lib.nms.utils.Version;
 
 public class Hologram {
@@ -181,15 +180,15 @@ public class Hologram {
 				if (i < this.entities.size() && this.entities.get(i) != null) {
 					ArmorStandNMS stand = this.entities.get(i);
 					stand.setCustomName(line);
-					Object metadataPacket = PacketPlayOutEntityMetadata
-						.getConstructor(int.class, DataWatcher, boolean.class).newInstance(stand.getId(),
+					Object metadataPacket = PacketPlayOutEntityMetadataAccessor.getConstructor0()
+							.newInstance(stand.getId(),
 							stand.getDataWatcher(), false);
 					packets.add(metadataPacket);
 					if (positionChanged) {
 						Location localLoc = loc.clone().add(0, (this.lines.size() - i) * .30, 0);
 						stand.setLocation(localLoc);;
-						Object teleportPacket = PacketPlayOutEntityTeleport
-							.getConstructor(Entity).newInstance(stand.getHandler());
+						Object teleportPacket = PacketPlayOutEntityTeleportAccessor.getConstructor0()
+								.newInstance(stand.getHandler());
 						packets.add(teleportPacket);
 					}
 				} else {
@@ -203,12 +202,12 @@ public class Hologram {
 					stand.setBasePlate(false);
 					stand.setGravity(false);
 					stand.setMarker(!touchable);
-					Object spawnLivingPacket = PacketPlayOutSpawnEntityLiving.getConstructor(EntityLiving)
+					Object spawnLivingPacket = PacketPlayOutSpawnEntityLivingAccessor.getConstructor0()
 						.newInstance(stand.getHandler());
 					packets.add(spawnLivingPacket);
 					if (Version.isVersion(1, 15)) {
-						Object metadataPacket = PacketPlayOutEntityMetadata
-							.getConstructor(int.class, DataWatcher, boolean.class).newInstance(stand.getId(),
+						Object metadataPacket = PacketPlayOutEntityMetadataAccessor.getConstructor0()
+								.newInstance(stand.getId(),
 								stand.getDataWatcher(), false);
 						packets.add(metadataPacket);
 					}
@@ -227,13 +226,13 @@ public class Hologram {
 				}
 			}
 
-			if (Version.isVersion(1, 17)) {
-				Constructor<?> constructor =  PacketPlayOutEntityDestroy.getConstructor(int.class);
+			if (PacketPlayOutEntityDestroyAccessor.getConstructor0() != null) { // weird 1.17 version
+				Constructor<?> constructor = PacketPlayOutEntityDestroyAccessor.getConstructor0();
 				for (Integer integer : forRemoval) {
 					packets.add(constructor.newInstance(integer));
 				}
 			} else {
-				Object destroyPacket = PacketPlayOutEntityDestroy.getConstructor(int[].class)
+				Object destroyPacket = PacketPlayOutEntityDestroyAccessor.getConstructor1()
 						.newInstance(forRemoval.stream().mapToInt(i -> i).toArray());
 
 				packets.add(destroyPacket);
@@ -272,8 +271,8 @@ public class Hologram {
 		IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
 		List<Object> packets = new ArrayList<>();
 
-		if (Version.isVersion(1, 17)) {
-			Constructor<?> constructor =  PacketPlayOutEntityDestroy.getConstructor(int.class);
+		if (PacketPlayOutEntityDestroyAccessor.getConstructor0() != null) {
+			Constructor<?> constructor =  PacketPlayOutEntityDestroyAccessor.getConstructor0(); // weird 1.17 version
 			for (EntityNMS integer : entities) {
 				packets.add(constructor.newInstance(integer.getId()));
 			}
@@ -283,19 +282,19 @@ public class Hologram {
 				removal[i] = (int) entities.get(i).getId();
 			}
 
-			packets.add(PacketPlayOutEntityDestroy.getConstructor(int[].class).newInstance(removal));
+			packets.add(PacketPlayOutEntityDestroyAccessor.getConstructor1().newInstance(removal));
 		}
 		return packets;
 	}
 
 	public List<Object> getAllSpawnPackets() throws InstantiationException, IllegalAccessException,
-		IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+		IllegalArgumentException, InvocationTargetException, SecurityException {
 		List<Object> packets = new ArrayList<>();
 		for (ArmorStandNMS entity : entities) {
-			packets.add(PacketPlayOutSpawnEntityLiving.getConstructor(EntityLiving).newInstance(entity.getHandler()));
+			packets.add(PacketPlayOutSpawnEntityLivingAccessor.getConstructor0().newInstance(entity.getHandler()));
 			if (Version.isVersion(1, 15)) {
-				Object metadataPacket = PacketPlayOutEntityMetadata
-					.getConstructor(int.class, DataWatcher, boolean.class).newInstance(
+				Object metadataPacket = PacketPlayOutEntityMetadataAccessor.getConstructor0()
+					.newInstance(
 						entity.getId(), entity.getDataWatcher(), true);
 				packets.add(metadataPacket);
 			}

@@ -1,11 +1,11 @@
 package org.screamingsandals.bedwars.lib.nms.entity;
 
 import static org.screamingsandals.bedwars.lib.nms.utils.ClassStorage.*;
-import static org.screamingsandals.bedwars.lib.nms.utils.ClassStorage.NMS.*;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import org.bukkit.entity.LivingEntity;
+import org.screamingsandals.bedwars.lib.nms.accessors.*;
 
 import java.util.Map;
 import java.util.function.Consumer;
@@ -14,7 +14,7 @@ public class EntityLivingNMS extends EntityNMS {
 
 	public EntityLivingNMS(Object handler) {
 		super(handler);
-		if (!EntityInsentient.isInstance(handler)) {
+		if (!EntityInsentientAccessor.getType().isInstance(handler)) {
 			throw new IllegalArgumentException("Entity must be instance of EntityInsentient!!");
 		}
 	}
@@ -32,13 +32,12 @@ public class EntityLivingNMS extends EntityNMS {
 	}
 	
 	public boolean hasAttribute(Attribute attribute) {
-		return hasAttribute(attribute.getKeys());
+		return hasAttribute(attribute.getObject().get());
 	}
 	
-	public boolean hasAttribute(String keys) {
+	public boolean hasAttribute(Object attr) {
 		try {
-			Object attr = getField(GenericAttributes, keys);
-			Object attr0 = getMethod(handler, "getAttributeInstance,func_110148_a", IAttribute)
+			Object attr0 = getMethod(handler, EntityLivingAccessor.getMethodGetAttributeInstance1())
 				.invoke(attr);
 			return attr0 != null;
 		} catch (Throwable t) {
@@ -47,47 +46,45 @@ public class EntityLivingNMS extends EntityNMS {
 	}
 	
 	public double getAttribute(Attribute attribute) {
-		return getAttribute(attribute.getKeys());
+		return getAttribute(attribute.getObject().get());
 	}
 	
-	public double getAttribute(String keys) {
+	public double getAttribute(Object attr) {
 		try {
-			Object attr = getField(GenericAttributes, keys);
-			Object attr0 = getMethod(handler, "getAttributeInstance,func_110148_a", IAttribute)
+			Object attr0 = getMethod(handler, EntityLivingAccessor.getMethodGetAttributeInstance1())
 				.invoke(attr);
-			return (double) getMethod(attr0, "getValue,func_111126_e").invoke();
+			return (double) getMethod(attr0, AttributeModifiableAccessor.getMethodGetValue1()).invoke();
 		} catch (Throwable t) {
 		}
 		return 0;
 	}
 	
 	public void setAttribute(Attribute attribute, double value) {
-		setAttribute(attribute.getKeys(), value);
+		setAttribute(attribute.getObject().get(), value);
 	}
 	
-	public void setAttribute(String keys, double value) {
+	public void setAttribute(Object attr, double value) {
 		try {
 			if (value >= 0) {
-				Object attr = getField(GenericAttributes, keys);
-				Object attr0 = getMethod(handler, "getAttributeInstance,func_110148_a", IAttribute)
+				Object attr0 = getMethod(handler, EntityLivingAccessor.getMethodGetAttributeInstance1())
 					.invoke(attr);
 				if (attr0 == null) {
-					Object attrMap = getMethod(handler, "getAttributeMap,func_110140_aT").invoke();
+					Object attrMap = getMethod(handler, EntityLivingAccessor.getMethodGetAttributeMap1()).invoke();
 					// Pre 1.16
-					attr0 = getMethod(attrMap, "b,func_111150_b", IAttribute).invoke(attr);
-					if (attr0 instanceof Boolean) {
+					attr0 = getMethod(attrMap, AttributeMapBaseAccessor.getMethodFunc_111150_b1()).invoke(attr);
+					if (attr0 == null || !AttributeModifiableAccessor.getType().isInstance(attr0)) {
 						// 1.16
-						Object provider = getField(attrMap,"d,supplier,field_233777_d_");
+						Object provider = getField(attrMap,AttributeMapBaseAccessor.getFieldField_233777_d_());
 						Map<Object, Object> all = Maps
-								.newHashMap((Map<?, ?>) getField(provider, "a,instances,field_233802_a_"));
-						attr0 = AttributeModifiable.getConstructor(IAttribute, Consumer.class).newInstance(attr, (Consumer) o -> {
+								.newHashMap((Map<?, ?>) getField(provider, AttributeProviderAccessor.getFieldField_233802_a_()));
+						attr0 = AttributeModifiableAccessor.getConstructor0().newInstance(attr, (Consumer) o -> {
 							// do nothing
 						});
 						all.put(attr, attr0);
-						setField(provider, "a,instances,field_233802_a_", ImmutableMap.copyOf(all));
+						setField(provider, AttributeProviderAccessor.getFieldField_233802_a_(), ImmutableMap.copyOf(all));
 					}
 				}
-				getMethod(attr0, "setValue,func_111128_a", double.class).invoke(value);
+				getMethod(attr0, AttributeModifiableAccessor.getMethodSetValue1()).invoke(value);
 			}
 		} catch (Throwable ignore) {
 		}

@@ -1,6 +1,9 @@
 package org.screamingsandals.bedwars.lib.nms.title;
 
 import org.bukkit.entity.Player;
+import org.screamingsandals.bedwars.lib.nms.accessors.IChatBaseComponent_i_ChatSerializerAccessor;
+import org.screamingsandals.bedwars.lib.nms.accessors.PacketPlayOutTitleAccessor;
+import org.screamingsandals.bedwars.lib.nms.accessors.PacketPlayOutTitle_i_EnumTitleActionAccessor;
 import org.screamingsandals.bedwars.lib.nms.utils.ClassStorage;
 
 public class Title {
@@ -9,18 +12,17 @@ public class Title {
 			player.sendTitle(title, subtitle, fadeIn, stay, fadeOut);
 		} catch (Throwable t) {
 			try {
-				Object titleComponent = ClassStorage.getMethod(ClassStorage.NMS.ChatSerializer, "a,field_150700_a", String.class)
+				Object titleComponent = ClassStorage.getMethod(IChatBaseComponent_i_ChatSerializerAccessor.getMethodM_130701_1())
 					.invokeStatic("{\"text\": \"" + title + "\"}");
-				Object subtitleComponent = ClassStorage.getMethod(ClassStorage.NMS.ChatSerializer, "a,field_150700_a", String.class)
+				Object subtitleComponent = ClassStorage.getMethod(IChatBaseComponent_i_ChatSerializerAccessor.getMethodM_130701_1())
 					.invokeStatic("{\"text\": \"" + subtitle + "\"}");
 				
-				Object titlePacket = ClassStorage.NMS.PacketPlayOutTitle.getConstructor(ClassStorage.NMS.EnumTitleAction, ClassStorage.NMS.IChatBaseComponent)
-					.newInstance(ClassStorage.findEnumConstant(ClassStorage.NMS.EnumTitleAction, "TITLE"), titleComponent);
-				Object subtitlePacket = ClassStorage.NMS.PacketPlayOutTitle.getConstructor(ClassStorage.NMS.EnumTitleAction, ClassStorage.NMS.IChatBaseComponent)
-					.newInstance(ClassStorage.findEnumConstant(ClassStorage.NMS.EnumTitleAction, "SUBTITLE"), subtitleComponent);
-				Object timesPacket = ClassStorage.NMS.PacketPlayOutTitle
-					.getConstructor(ClassStorage.NMS.EnumTitleAction, ClassStorage.NMS.IChatBaseComponent, int.class, int.class, int.class)
-					.newInstance(ClassStorage.findEnumConstant(ClassStorage.NMS.EnumTitleAction, "TIMES"), null, fadeIn, stay, fadeOut);
+				Object titlePacket = PacketPlayOutTitleAccessor.getConstructor0()
+					.newInstance(PacketPlayOutTitle_i_EnumTitleActionAccessor.getFieldTITLE(), titleComponent);
+				Object subtitlePacket = PacketPlayOutTitleAccessor.getConstructor0()
+					.newInstance(PacketPlayOutTitle_i_EnumTitleActionAccessor.getFieldSUBTITLE(), subtitleComponent);
+				Object timesPacket = PacketPlayOutTitleAccessor.getConstructor1()
+					.newInstance(PacketPlayOutTitle_i_EnumTitleActionAccessor.getFieldTIMES(), null, fadeIn, stay, fadeOut);
 				
 				ClassStorage.sendPacket(player, titlePacket);
 				ClassStorage.sendPacket(player, subtitlePacket);

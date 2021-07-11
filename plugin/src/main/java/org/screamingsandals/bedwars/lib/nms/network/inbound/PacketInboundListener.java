@@ -5,6 +5,8 @@ import org.bukkit.entity.Player;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
+import org.screamingsandals.bedwars.lib.nms.accessors.NetworkManagerAccessor;
+import org.screamingsandals.bedwars.lib.nms.accessors.PlayerConnectionAccessor;
 
 import static org.screamingsandals.bedwars.lib.nms.utils.ClassStorage.*;
 
@@ -48,8 +50,8 @@ public abstract class PacketInboundListener{
 	
 	private Channel getChannel(Player player) {
 		try {
-			Object manager = getField(getPlayerConnection(player), "networkManager,connection,field_147371_a,a");
-			Channel channel = (Channel) getField(manager, "channel,field_150746_k,k,m");
+			Object manager = getField(getPlayerConnection(player), PlayerConnectionAccessor.getFieldNetworkManager());
+			Channel channel = (Channel) getField(manager, NetworkManagerAccessor.getFieldChannel());
 			return channel;
 		} catch (Throwable t) {
 		}

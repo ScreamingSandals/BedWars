@@ -1,7 +1,6 @@
 package org.screamingsandals.bedwars.lib.nms.entity;
 
 import static org.screamingsandals.bedwars.lib.nms.utils.ClassStorage.*;
-import static org.screamingsandals.bedwars.lib.nms.utils.ClassStorage.NMS.*;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -9,6 +8,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.screamingsandals.bedwars.Main;
+import org.screamingsandals.bedwars.lib.nms.accessors.PacketPlayInClientCommandAccessor;
+import org.screamingsandals.bedwars.lib.nms.accessors.PacketPlayInClientCommand_i_EnumClientCommandAccessor;
+import org.screamingsandals.bedwars.lib.nms.accessors.PacketPlayOutExperienceAccessor;
+import org.screamingsandals.bedwars.lib.nms.accessors.PlayerConnectionAccessor;
 
 public class PlayerUtils {
 	public static void respawn(Plugin instance, Player player, long delay) {
@@ -20,11 +23,11 @@ public class PlayerUtils {
 					player.spigot().respawn();
 				} catch (Throwable t) {
 					try {
-						Object selectedObj = findEnumConstant(EnumClientCommand, "PERFORM_RESPAWN,a");
-						Object packet = PacketPlayInClientCommand.getDeclaredConstructor(EnumClientCommand)
+						Object selectedObj = PacketPlayInClientCommand_i_EnumClientCommandAccessor.getFieldPERFORM_RESPAWN();
+						Object packet = PacketPlayInClientCommandAccessor.getConstructor0()
 							.newInstance(selectedObj);
 						Object connection = getPlayerConnection(player);
-						getMethod(connection, "a,func_147342_a", PacketPlayInClientCommand).invoke(packet);
+						getMethod(connection, PlayerConnectionAccessor.getMethodFunc_147342_a1()).invoke(packet);
 					} catch (Throwable ignored) {
 						t.printStackTrace();
 					}
@@ -35,7 +38,7 @@ public class PlayerUtils {
 
 	public static void fakeExp(Player player, float percentage, int levels) {
 		try {
-			Object packet = PacketPlayOutExperience.getConstructor(float.class, int.class, int.class)
+			Object packet = PacketPlayOutExperienceAccessor.getConstructor0()
 				.newInstance(percentage, player.getTotalExperience(), levels);
 			sendPacket(player, packet);
 		} catch (Throwable t) {

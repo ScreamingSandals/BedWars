@@ -1,16 +1,16 @@
 package org.screamingsandals.bedwars.lib.nms.entity;
 
 import static org.screamingsandals.bedwars.lib.nms.utils.ClassStorage.*;
-import static org.screamingsandals.bedwars.lib.nms.utils.ClassStorage.NMS.*;
 
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
+import org.screamingsandals.bedwars.lib.nms.accessors.EntityArmorStandAccessor;
 
 public class ArmorStandNMS extends EntityNMS {
 
 	public ArmorStandNMS(Object handler) {
 		super(handler);
-		if (!EntityArmorStand.isInstance(handler)) {
+		if (!EntityArmorStandAccessor.getType().isInstance(handler)) {
 			throw new IllegalArgumentException("Entity must be instance of EntityArmorStand!!");
 		}
 	}
@@ -20,41 +20,41 @@ public class ArmorStandNMS extends EntityNMS {
 	}
 	
 	public ArmorStandNMS(Location loc) throws Throwable {
-		this(EntityArmorStand.getConstructor(World, double.class, double.class, double.class)
-					.newInstance(getMethod(loc.getWorld(), "getHandle").invoke(), loc.getX(), loc.getY(), loc.getZ()));
+		this(EntityArmorStandAccessor.getConstructor0()
+					.newInstance(getHandle(loc.getWorld()), loc.getX(), loc.getY(), loc.getZ()));
 		this.setLocation(loc); // Update rotation
 	}
 	
 	public void setSmall(boolean small) {
-		getMethod(handler, "setSmall,func_175420_a", boolean.class).invoke(small);
+		getMethod(handler, EntityArmorStandAccessor.getMethodSetSmall1()).invoke(small);
 	}
 	
 	public boolean isSmall() {
-		return (boolean) getMethod(handler, "isSmall,func_175410_n").invoke();
+		return (boolean) getMethod(handler, EntityArmorStandAccessor.getMethodIsSmall1()).invoke();
 	}
 	
 	public void setArms(boolean arms) {
-		getMethod(handler, "setArms,func_175413_k", boolean.class).invoke(arms);
+		getMethod(handler, EntityArmorStandAccessor.getMethodSetArms1()).invoke(arms);
 	}
 	
 	public boolean isArms() {
-		return (boolean) getMethod(handler, "hasArms,func_175402_q").invoke();
+		return (boolean) getMethod(handler, EntityArmorStandAccessor.getMethodHasArms1()).invoke();
 	}
 	
 	public void setBasePlate(boolean basePlate) {
-		getMethod(handler, "setBasePlate,func_175426_l", boolean.class).invoke(basePlate);
+		getMethod(handler, EntityArmorStandAccessor.getMethodSetBasePlate1()).invoke(basePlate);
 	}
 	
 	public boolean isBasePlate() {
-		return (boolean) getMethod(handler, "hasBasePlate,func_175414_r").invoke();
+		return (boolean) getMethod(handler, EntityArmorStandAccessor.getMethodHasBasePlate1()).invoke();
 	}
 	
 	public void setMarker(boolean marker) {
-		getMethod(handler, "setMarker,func_181027_m,n", boolean.class).invoke(marker);
+		getMethod(handler, EntityArmorStandAccessor.getMethodSetMarker1()).invoke(marker);
 	}
 	
 	public boolean isMarker() {
-		return (boolean) getMethod(handler, "isMarker,func_175426_l,s").invoke();
+		return (boolean) getMethod(handler, EntityArmorStandAccessor.getMethodIsMarker1()).invoke();
 	}
 
 }

@@ -9,6 +9,7 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.game.GamePlayer;
+import org.screamingsandals.bedwars.lib.nms.accessors.*;
 import org.screamingsandals.bedwars.lib.nms.utils.ClassStorage;
 
 import java.util.ArrayList;
@@ -30,9 +31,9 @@ public class FakeDeath {
 
         String message = null;
         try {
-            Object combatTracker = ClassStorage.getMethod(ClassStorage.getHandle(player), "getCombatTracker,bs,func_110142_aN").invoke();
-            Object component = ClassStorage.getMethod(combatTracker, "getDeathMessage,b,func_151521_b").invoke();
-            message = (String) ClassStorage.getMethod(component, "getString,c").invoke();
+            Object combatTracker = ClassStorage.getMethod(ClassStorage.getHandle(player), EntityLivingAccessor.getMethodGetCombatTracker1()).invoke();
+            Object component = ClassStorage.getMethod(combatTracker, CombatTrackerAccessor.getMethodGetDeathMessage1()).invoke();
+            message = (String) ClassStorage.getMethod(component, IChatBaseComponentAccessor.getMethodGetString1()).invoke();
         } catch (Throwable ignored) {}
 
         PlayerDeathEvent event = new PlayerDeathEvent(player, loot, player.getTotalExperience(), 0, message);
@@ -64,14 +65,14 @@ public class FakeDeath {
         // ignoring PacketPlayOutCombatEvent, client mustn't know that he died
 
         try {
-            ClassStorage.getMethod(ClassStorage.getHandle(player), "releaseShoulderEntities,func_192030_dh").invoke();
+            ClassStorage.getMethod(ClassStorage.getHandle(player), EntityHumanAccessor.getMethodReleaseShoulderEntities1()).invoke();
         } catch (Throwable ignored) {}
 
         if (Main.getVersionNumber() >= 116) {
             try {
                 Boolean b = deathWorld.getGameRuleValue(GameRule.FORGIVE_DEAD_PLAYERS);
                 if (b != null && b) {
-                    ClassStorage.getMethod(ClassStorage.getHandle(player), "eW,fH,func_241157_eT_").invoke();
+                    ClassStorage.getMethod(ClassStorage.getHandle(player), EntityPlayerAccessor.getMethodTellNeutralMobsThatIDied1()).invoke();
                 }
             } catch (Throwable ignored) {}
         }
@@ -100,12 +101,12 @@ public class FakeDeath {
         }
 
         try {
-            ClassStorage.getMethod(ClassStorage.getHandle(player), "setSpectatorTarget,func_175399_e", ClassStorage.NMS.Entity).invoke(ClassStorage.getHandle(player));
+            ClassStorage.getMethod(ClassStorage.getHandle(player), EntityPlayerAccessor.getMethodSetSpectatorTarget1()).invoke(ClassStorage.getHandle(player));
         } catch (Throwable ignored) {}
 
         try {
-            Object combatTracker = ClassStorage.getMethod(ClassStorage.getHandle(player), "getCombatTracker,bs,func_110142_aN").invoke();
-            ClassStorage.getMethod(combatTracker, "g,func_94549_h").invoke();
+            Object combatTracker = ClassStorage.getMethod(ClassStorage.getHandle(player), EntityLivingAccessor.getMethodGetCombatTracker1()).invoke();
+            ClassStorage.getMethod(combatTracker, CombatTrackerAccessor.getMethodRecheckStatus1()).invoke();
         } catch (Throwable ignored) {}
 
         // respawn location will be changed by PlayerListener

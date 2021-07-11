@@ -9,6 +9,7 @@ import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 
+// we are not using this class anyways (unless someone run bw on 1.8)
 public class Particles {
 	public static void sendParticles(List<Player> viewers, String particleName, Location loc, int count, double offsetX,
 		double offsetY, double offsetZ, double extra) {

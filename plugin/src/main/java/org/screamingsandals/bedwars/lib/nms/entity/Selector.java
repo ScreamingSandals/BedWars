@@ -1,24 +1,28 @@
 package org.screamingsandals.bedwars.lib.nms.entity;
 
+import org.screamingsandals.bedwars.lib.nms.accessors.EntityInsentientAccessor;
+import org.screamingsandals.bedwars.lib.nms.accessors.PathfinderGoalSelectorAccessor;
 import org.screamingsandals.bedwars.lib.nms.utils.ClassStorage;
+
+import java.lang.reflect.Field;
 
 public abstract class Selector {
 	protected final Object handler;
-	protected final String keys;
+	protected final Field field;
 	protected Object selector;
 	
-	protected Selector(Object handler, String keys) {
-		if (!ClassStorage.NMS.EntityInsentient.isInstance(handler)) {
+	protected Selector(Object handler, Field field) {
+		if (!EntityInsentientAccessor.getType().isInstance(handler)) {
 			throw new IllegalArgumentException("Invalid mob type");
 		}
 		this.handler = handler;
-		this.keys = keys;
-		this.selector = ClassStorage.getField(this.handler, this.keys);
+		this.field = field;
+		this.selector = ClassStorage.getField(this.handler, this.field);
 	}
 	
 	
 	public void registerPathfinder(int position, Object pathfinder) {
-		ClassStorage.getMethod(this.selector, "a,func_75776_a", Integer.TYPE, ClassStorage.NMS.PathfinderGoal).invoke(position, pathfinder);
+		ClassStorage.getMethod(this.selector, PathfinderGoalSelectorAccessor.getMethodFunc_75776_a1()).invoke(position, pathfinder);
 	}
 	
 	protected Object getNMSSelector() {
@@ -27,7 +31,7 @@ public abstract class Selector {
 
 	public void clearSelector() {
 		try {
-			this.selector = ClassStorage.setField(this.handler, this.keys, ClassStorage.obtainNewPathfinderSelector(handler));
+			this.selector = ClassStorage.setField(this.handler, this.field, ClassStorage.obtainNewPathfinderSelector(handler));
 		} catch (Throwable t) {
 		}
 	}

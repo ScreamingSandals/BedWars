@@ -3,11 +3,13 @@ package org.screamingsandals.bedwars.tab;
 import org.bukkit.ChatColor;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.game.GamePlayer;
+import org.screamingsandals.bedwars.lib.nms.accessors.IChatBaseComponent_i_ChatSerializerAccessor;
+import org.screamingsandals.bedwars.lib.nms.accessors.PacketPlayOutPlayerListHeaderFooterAccessor;
+import org.screamingsandals.bedwars.lib.nms.utils.ClassStorage;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.screamingsandals.bedwars.lib.nms.utils.ClassStorage.NMS.*;
 import static org.screamingsandals.bedwars.lib.nms.utils.ClassStorage.*;
 
 public class TabManager {
@@ -26,19 +28,19 @@ public class TabManager {
     public void modifyForPlayer(GamePlayer player) {
         if (player.player.isOnline() && (header != null || footer != null)) {
             try {
-                Object packet = PacketPlayOutPlayerListHeaderFooter.getConstructor().newInstance();
+                Object packet = ClassStorage.forceConstruct(PacketPlayOutPlayerListHeaderFooterAccessor.getType());
                 if (header != null) {
-                    setField(packet, "header,a,field_179703_a", getMethod(ChatSerializer, "a,field_150700_a", String.class)
+                    setField(packet, PacketPlayOutPlayerListHeaderFooterAccessor.getFieldHeader(), getMethod(IChatBaseComponent_i_ChatSerializerAccessor.getMethodM_130701_1())
                             .invokeStatic("{\"text\": \"" + ChatColor.translateAlternateColorCodes('&', String.join("\n", translate(player, header))) + "\"}"));
                 } else {
-                    setField(packet, "header,a,field_179703_a", getMethod(ChatSerializer, "a,field_150700_a", String.class)
+                    setField(packet, PacketPlayOutPlayerListHeaderFooterAccessor.getFieldHeader(), getMethod(IChatBaseComponent_i_ChatSerializerAccessor.getMethodM_130701_1())
                             .invokeStatic("{\"text\": \"\"}"));
                 }
                 if (footer != null) {
-                    setField(packet, "footer,b,field_179702_b", getMethod(ChatSerializer, "a,field_150700_a", String.class)
+                    setField(packet, PacketPlayOutPlayerListHeaderFooterAccessor.getFieldFooter(), getMethod(IChatBaseComponent_i_ChatSerializerAccessor.getMethodM_130701_1())
                             .invokeStatic("{\"text\": \"" + ChatColor.translateAlternateColorCodes('&', String.join("\n", translate(player, footer))) + "\"}"));
                 } else {
-                    setField(packet, "footer,b,field_179702_b", getMethod(ChatSerializer, "a,field_150700_a", String.class)
+                    setField(packet, PacketPlayOutPlayerListHeaderFooterAccessor.getFieldFooter(), getMethod(IChatBaseComponent_i_ChatSerializerAccessor.getMethodM_130701_1())
                             .invokeStatic("{\"text\": \"\"}"));
                 }
                 sendPacket(player.player, packet);
@@ -51,10 +53,10 @@ public class TabManager {
     public void clear(GamePlayer player) {
         if (player.player.isOnline() && (header != null || footer != null)) {
             try {
-                Object packet = PacketPlayOutPlayerListHeaderFooter.getConstructor().newInstance();
-                setField(packet, "header,a,field_179703_a", getMethod(ChatSerializer, "a,field_150700_a", String.class)
+                Object packet = ClassStorage.forceConstruct(PacketPlayOutPlayerListHeaderFooterAccessor.getType());
+                setField(packet, PacketPlayOutPlayerListHeaderFooterAccessor.getFieldHeader(), getMethod(IChatBaseComponent_i_ChatSerializerAccessor.getMethodM_130701_1())
                         .invokeStatic("{\"text\": \"\"}"));
-                setField(packet, "footer,b,field_179702_b", getMethod(ChatSerializer, "a,field_150700_a", String.class)
+                setField(packet, PacketPlayOutPlayerListHeaderFooterAccessor.getFieldFooter(), getMethod(IChatBaseComponent_i_ChatSerializerAccessor.getMethodM_130701_1())
                         .invokeStatic("{\"text\": \"\"}"));
                 sendPacket(player.player, packet);
             } catch (Exception ignored) {
