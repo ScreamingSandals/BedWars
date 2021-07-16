@@ -53,7 +53,7 @@ public class EntityLivingNMS extends EntityNMS {
 		try {
 			Object attr0 = getMethod(handler, EntityLivingAccessor.getMethodGetAttributeInstance1())
 				.invoke(attr);
-			return (double) getMethod(attr0, AttributeModifiableAccessor.getMethodGetValue1()).invoke();
+			return (double) getMethod(attr0, AttributeInstanceAccessor.getMethodGetValue1()).invoke();
 		} catch (Throwable t) {
 		}
 		return 0;
@@ -72,19 +72,19 @@ public class EntityLivingNMS extends EntityNMS {
 					Object attrMap = getMethod(handler, EntityLivingAccessor.getMethodGetAttributeMap1()).invoke();
 					// Pre 1.16
 					attr0 = getMethod(attrMap, AttributeMapBaseAccessor.getMethodFunc_111150_b1()).invoke(attr);
-					if (attr0 == null || !AttributeModifiableAccessor.getType().isInstance(attr0)) {
+					if (attr0 == null || !AttributeInstanceAccessor.getType().isInstance(attr0)) {
 						// 1.16
 						Object provider = getField(attrMap,AttributeMapBaseAccessor.getFieldField_233777_d_());
 						Map<Object, Object> all = Maps
 								.newHashMap((Map<?, ?>) getField(provider, AttributeProviderAccessor.getFieldField_233802_a_()));
-						attr0 = AttributeModifiableAccessor.getConstructor0().newInstance(attr, (Consumer) o -> {
+						attr0 = AttributeInstanceAccessor.getConstructor0().newInstance(attr, (Consumer) o -> {
 							// do nothing
 						});
 						all.put(attr, attr0);
 						setField(provider, AttributeProviderAccessor.getFieldField_233802_a_(), ImmutableMap.copyOf(all));
 					}
 				}
-				getMethod(attr0, AttributeModifiableAccessor.getMethodSetValue1()).invoke(value);
+				getMethod(attr0, AttributeInstanceAccessor.getMethodSetValue1()).invoke(value);
 			}
 		} catch (Throwable ignore) {
 		}

@@ -138,7 +138,7 @@ nmsGen {
     reqClass('spigot:PacketPlayOutPlayerListHeaderFooter')
         .reqField('spigot:header')
         .reqField('spigot:footer')
-    reqClass('spigot:AttributeModifiable')
+    reqClass('net.minecraft.world.entity.ai.attributes.AttributeInstance')
         .reqConstructor(IAttribute, Consumer)
         .reqMethod('spigot:setValue', double)
         .reqMethod('spigot:getValue')

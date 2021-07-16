@@ -314,3 +314,7 @@ admin_command_npc_must_have_skinname: "&cIf you use entity type PLAYER, you must
 help_bw_dump: "/bw dump - &eDumps the server and gives you link to the dump. This link can be useful for support"
 dump_success: "&aSuccessfully dumped server. Link: "
 dump_failed: "&cDump failed!"
+cheat_please_provide_valid_cheat_type: "&cProvided cheat type isn't valid or is missing!"
+cheat_invalid_player: "&cSpecified player is not in game or is spectator!"
+cheat_received_give: "&aPlayer &7%player%&a got &7%amount%&a of &7%resource%"
+cheat_received_kill: "&aPlayer &7%player%&a killed by cheat!"
