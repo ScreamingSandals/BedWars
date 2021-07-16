@@ -1,6 +1,5 @@
 package org.screamingsandals.bedwars.lib.nms.utils;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.function.Supplier;
@@ -9,7 +8,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.lib.nms.accessors.*;
-import sun.reflect.ReflectionFactory;
 
 public class ClassStorage {
 
@@ -295,25 +293,5 @@ public class ClassStorage {
 			t.printStackTrace();
 		}
 		return null;
-	}
-
-	/**
-	 * @deprecated Using internal jvm api, may not work correctly
-	 */
-	@Deprecated
-	public static <T> T forceConstruct(Class<T> clazz) {
-		try {
-			ReflectionFactory rf =
-					ReflectionFactory.getReflectionFactory();
-			Constructor<?> objDef = Object.class.getDeclaredConstructor();
-			Constructor<?> intConstr = rf.newConstructorForSerialization(
-					clazz, objDef
-			);
-			return clazz.cast(intConstr.newInstance());
-		} catch (RuntimeException e) {
-			throw e;
-		} catch (Exception e) {
-			throw new IllegalStateException("Cannot create object", e);
-		}
 	}
 }

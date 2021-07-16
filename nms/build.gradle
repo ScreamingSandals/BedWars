@@ -136,6 +136,8 @@ nmsGen {
     reqClass('spigot:NetworkManager')
         .reqField('spigot:channel')
     reqClass('spigot:PacketPlayOutPlayerListHeaderFooter')
+        .reqConstructor()
+        .reqConstructor(IChatBaseComponent, IChatBaseComponent)
         .reqField('spigot:header')
         .reqField('spigot:footer')
     reqClass('net.minecraft.world.entity.ai.attributes.AttributeInstance')

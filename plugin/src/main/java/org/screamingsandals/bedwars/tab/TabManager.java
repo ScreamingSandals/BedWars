@@ -28,20 +28,31 @@ public class TabManager {
     public void modifyForPlayer(GamePlayer player) {
         if (player.player.isOnline() && (header != null || footer != null)) {
             try {
-                Object packet = ClassStorage.forceConstruct(PacketPlayOutPlayerListHeaderFooterAccessor.getType());
+                Object headerComponent;
                 if (header != null) {
-                    setField(packet, PacketPlayOutPlayerListHeaderFooterAccessor.getFieldHeader(), getMethod(IChatBaseComponent_i_ChatSerializerAccessor.getMethodM_130701_1())
-                            .invokeStatic("{\"text\": \"" + ChatColor.translateAlternateColorCodes('&', String.join("\n", translate(player, header))) + "\"}"));
+                    headerComponent = getMethod(IChatBaseComponent_i_ChatSerializerAccessor.getMethodM_130701_1())
+                            .invokeStatic("{\"text\": \"" + ChatColor.translateAlternateColorCodes('&', String.join("\n", translate(player, header))) + "\"}");
                 } else {
-                    setField(packet, PacketPlayOutPlayerListHeaderFooterAccessor.getFieldHeader(), getMethod(IChatBaseComponent_i_ChatSerializerAccessor.getMethodM_130701_1())
-                            .invokeStatic("{\"text\": \"\"}"));
+                    headerComponent = getMethod(IChatBaseComponent_i_ChatSerializerAccessor.getMethodM_130701_1())
+                            .invokeStatic("{\"text\": \"\"}");
                 }
+
+                Object footerComponent;
                 if (footer != null) {
-                    setField(packet, PacketPlayOutPlayerListHeaderFooterAccessor.getFieldFooter(), getMethod(IChatBaseComponent_i_ChatSerializerAccessor.getMethodM_130701_1())
-                            .invokeStatic("{\"text\": \"" + ChatColor.translateAlternateColorCodes('&', String.join("\n", translate(player, footer))) + "\"}"));
+                    footerComponent = getMethod(IChatBaseComponent_i_ChatSerializerAccessor.getMethodM_130701_1())
+                            .invokeStatic("{\"text\": \"" + ChatColor.translateAlternateColorCodes('&', String.join("\n", translate(player, footer))) + "\"}");
                 } else {
-                    setField(packet, PacketPlayOutPlayerListHeaderFooterAccessor.getFieldFooter(), getMethod(IChatBaseComponent_i_ChatSerializerAccessor.getMethodM_130701_1())
-                            .invokeStatic("{\"text\": \"\"}"));
+                    footerComponent = getMethod(IChatBaseComponent_i_ChatSerializerAccessor.getMethodM_130701_1())
+                            .invokeStatic("{\"text\": \"\"}");
+                }
+
+                Object packet;
+                if (PacketPlayOutPlayerListHeaderFooterAccessor.getConstructor1() != null) {
+                    packet = PacketPlayOutPlayerListHeaderFooterAccessor.getConstructor1().newInstance(headerComponent, footerComponent);
+                } else {
+                    packet = PacketPlayOutPlayerListHeaderFooterAccessor.getConstructor0().newInstance();
+                    setField(packet, PacketPlayOutPlayerListHeaderFooterAccessor.getFieldHeader(), headerComponent);
+                    setField(packet, PacketPlayOutPlayerListHeaderFooterAccessor.getFieldFooter(), footerComponent);
                 }
                 sendPacket(player.player, packet);
             } catch (Exception ignored) {
@@ -53,11 +64,16 @@ public class TabManager {
     public void clear(GamePlayer player) {
         if (player.player.isOnline() && (header != null || footer != null)) {
             try {
-                Object packet = ClassStorage.forceConstruct(PacketPlayOutPlayerListHeaderFooterAccessor.getType());
-                setField(packet, PacketPlayOutPlayerListHeaderFooterAccessor.getFieldHeader(), getMethod(IChatBaseComponent_i_ChatSerializerAccessor.getMethodM_130701_1())
-                        .invokeStatic("{\"text\": \"\"}"));
-                setField(packet, PacketPlayOutPlayerListHeaderFooterAccessor.getFieldFooter(), getMethod(IChatBaseComponent_i_ChatSerializerAccessor.getMethodM_130701_1())
-                        .invokeStatic("{\"text\": \"\"}"));
+                Object blankComponent = getMethod(IChatBaseComponent_i_ChatSerializerAccessor.getMethodM_130701_1())
+                        .invokeStatic("{\"text\": \"\"}");
+                Object packet;
+                if (PacketPlayOutPlayerListHeaderFooterAccessor.getConstructor1() != null) {
+                    packet = PacketPlayOutPlayerListHeaderFooterAccessor.getConstructor1().newInstance(blankComponent, blankComponent);
+                } else {
+                    packet = PacketPlayOutPlayerListHeaderFooterAccessor.getConstructor0().newInstance();
+                    setField(packet, PacketPlayOutPlayerListHeaderFooterAccessor.getFieldHeader(), blankComponent);
+                    setField(packet, PacketPlayOutPlayerListHeaderFooterAccessor.getFieldFooter(), blankComponent);
+                }
                 sendPacket(player.player, packet);
             } catch (Exception ignored) {
             }
