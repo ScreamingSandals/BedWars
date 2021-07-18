@@ -5,6 +5,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.bedwars.Main;
+import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.game.Game;
 import org.screamingsandals.bedwars.game.GamePlayer;
 import org.screamingsandals.bedwars.game.ItemSpawnerType;
@@ -24,6 +25,11 @@ public class CheatCommand extends BaseCommand {
 
     @Override
     public boolean execute(CommandSender sender, List<String> args) {
+        if (!Main.getConfigurator().config.getBoolean("enable-cheat-command-for-admins")) {
+            sender.sendMessage(i18n("cheat_disabled"));
+            return true;
+        }
+
         if (args.size() >= 1) {
             Player player = (Player) sender;
             if (!Main.isPlayerInGame(player)) {
@@ -31,6 +37,10 @@ public class CheatCommand extends BaseCommand {
                 return true;
             }
             Game game = Main.getPlayerGameProfile(player).getGame();
+            if (game.getStatus() != GameStatus.RUNNING) {
+                sender.sendMessage(i18n("cheat_game_not_running"));
+                return true;
+            }
 
             switch (args.get(0).toLowerCase()) {
                 case "give":
@@ -100,6 +110,10 @@ public class CheatCommand extends BaseCommand {
 
     @Override
     public void completeTab(List<String> completion, CommandSender sender, List<String> args) {
+        if (!Main.getConfigurator().config.getBoolean("enable-cheat-command-for-admins")) {
+            return;
+        }
+
         if (args.size() == 1) {
             completion.addAll(Arrays.asList("give", "kill"));
         }

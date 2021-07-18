@@ -318,3 +318,7 @@ cheat_please_provide_valid_cheat_type: "&cProvided cheat type isn't valid or is 
 cheat_invalid_player: "&cSpecified player is not in game or is spectator!"
 cheat_received_give: "&aPlayer &7%player%&a got &7%amount%&a of &7%resource%"
 cheat_received_kill: "&aPlayer &7%player%&a killed by cheat!"
+cheat_disabled: "&cCheats are disabled on this server!"
+cheat_game_not_running: "&cYou can't cheat in lobby!"
+help_bw_cheat_give: "/bw cheat give <resource> [amount] [player] - &cGives player specified amount of resource"
+help_bw_cheat_kill: "/bw cheat kill [player] - &cKills specified player"

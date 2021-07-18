@@ -78,6 +78,11 @@ public class HelpCommand extends BaseCommand {
             player.sendMessage(i18nonly("help_bw_removeholo"));
             player.sendMessage(i18nonly("help_bw_mainlobby"));
 
+            if (Main.getConfigurator().config.getBoolean("enable-cheat-command-for-admins")) {
+                player.sendMessage(i18nonly("help_bw_cheat_give"));
+                player.sendMessage(i18nonly("help_bw_cheat_kill"));
+            }
+
             player.sendMessage(i18nonly("help_bw_admin_info"));
             player.sendMessage(i18nonly("help_bw_admin_add"));
             player.sendMessage(i18nonly("help_bw_admin_lobby"));
