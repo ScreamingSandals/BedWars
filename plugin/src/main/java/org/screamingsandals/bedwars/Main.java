@@ -552,6 +552,8 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 
         if (Main.getConfigurator().config.getBoolean("tab.enable")) {
             tabManager = new TabManager();
+        } else {
+            tabManager = null; // fix tab is not disabled on /bw reload
         }
 
         if (Main.getConfigurator().config.getBoolean("update-checker.zero.console")
