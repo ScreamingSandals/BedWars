@@ -5,8 +5,8 @@ import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.game.GamePlayer;
 import org.screamingsandals.bedwars.lib.nms.accessors.IChatBaseComponent_i_ChatSerializerAccessor;
 import org.screamingsandals.bedwars.lib.nms.accessors.PacketPlayOutPlayerListHeaderFooterAccessor;
-import org.screamingsandals.bedwars.lib.nms.utils.ClassStorage;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,19 +30,19 @@ public class TabManager {
             try {
                 Object headerComponent;
                 if (header != null) {
-                    headerComponent = getMethod(IChatBaseComponent_i_ChatSerializerAccessor.getMethodM_130701_1())
+                    headerComponent = getMethod(getCorrectSerializingMethod())
                             .invokeStatic("{\"text\": \"" + ChatColor.translateAlternateColorCodes('&', String.join("\n", translate(player, header))) + "\"}");
                 } else {
-                    headerComponent = getMethod(IChatBaseComponent_i_ChatSerializerAccessor.getMethodM_130701_1())
+                    headerComponent = getMethod(getCorrectSerializingMethod())
                             .invokeStatic("{\"text\": \"\"}");
                 }
 
                 Object footerComponent;
                 if (footer != null) {
-                    footerComponent = getMethod(IChatBaseComponent_i_ChatSerializerAccessor.getMethodM_130701_1())
+                    footerComponent = getMethod(getCorrectSerializingMethod())
                             .invokeStatic("{\"text\": \"" + ChatColor.translateAlternateColorCodes('&', String.join("\n", translate(player, footer))) + "\"}");
                 } else {
-                    footerComponent = getMethod(IChatBaseComponent_i_ChatSerializerAccessor.getMethodM_130701_1())
+                    footerComponent = getMethod(getCorrectSerializingMethod())
                             .invokeStatic("{\"text\": \"\"}");
                 }
 
@@ -64,7 +64,7 @@ public class TabManager {
     public void clear(GamePlayer player) {
         if (player.player.isOnline() && (header != null || footer != null)) {
             try {
-                Object blankComponent = getMethod(IChatBaseComponent_i_ChatSerializerAccessor.getMethodM_130701_1())
+                Object blankComponent = getMethod(getCorrectSerializingMethod())
                         .invokeStatic("{\"text\": \"\"}");
                 Object packet;
                 if (PacketPlayOutPlayerListHeaderFooterAccessor.getConstructor1() != null) {
@@ -90,5 +90,12 @@ public class TabManager {
                 .replace("%max%", String.valueOf(gamePlayer.getGame().getMaxPlayers()))
                 .replace("%map%", gamePlayer.getGame().getName())));
         return list;
+    }
+
+    public static Method getCorrectSerializingMethod() {
+        if (IChatBaseComponent_i_ChatSerializerAccessor.getMethodFunc_150699_a1() != null) {
+            return IChatBaseComponent_i_ChatSerializerAccessor.getMethodFunc_150699_a1();
+        }
+        return IChatBaseComponent_i_ChatSerializerAccessor.getMethodFunc_240643_a_1();
     }
 }

@@ -9,6 +9,7 @@ import org.screamingsandals.bedwars.lib.nms.accessors.IChatBaseComponent_i_ChatS
 import org.screamingsandals.bedwars.lib.nms.utils.ClassStorage;
 import org.screamingsandals.bedwars.lib.nms.utils.InstanceMethod;
 import org.screamingsandals.bedwars.lib.nms.utils.Version;
+import org.screamingsandals.bedwars.tab.TabManager;
 
 public class EntityNMS {
 	protected Object handler;
@@ -79,7 +80,7 @@ public class EntityNMS {
 	public void setCustomName(String name) {
 		InstanceMethod method = ClassStorage.getMethod(handler, EntityAccessor.getMethodSetCustomName1());
 		if (method.getReflectedMethod() != null) {
-			method.invoke(ClassStorage.getMethod(IChatBaseComponent_i_ChatSerializerAccessor.getMethodM_130701_1())
+			method.invoke(ClassStorage.getMethod(TabManager.getCorrectSerializingMethod())
 				.invokeStatic("{\"text\": \"" + name + "\"}"));
 		} else {
 			ClassStorage.getMethod(handler, EntityAccessor.getMethodSetCustomName2()).invoke(name);

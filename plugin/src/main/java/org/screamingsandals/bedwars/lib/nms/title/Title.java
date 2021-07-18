@@ -12,9 +12,9 @@ public class Title {
 			player.sendTitle(title, subtitle, fadeIn, stay, fadeOut);
 		} catch (Throwable t) {
 			try {
-				Object titleComponent = ClassStorage.getMethod(IChatBaseComponent_i_ChatSerializerAccessor.getMethodM_130701_1())
+				Object titleComponent = ClassStorage.getMethod(IChatBaseComponent_i_ChatSerializerAccessor.getMethodFunc_150699_a1())
 					.invokeStatic("{\"text\": \"" + title + "\"}");
-				Object subtitleComponent = ClassStorage.getMethod(IChatBaseComponent_i_ChatSerializerAccessor.getMethodM_130701_1())
+				Object subtitleComponent = ClassStorage.getMethod(IChatBaseComponent_i_ChatSerializerAccessor.getMethodFunc_150699_a1())
 					.invokeStatic("{\"text\": \"" + subtitle + "\"}");
 				
 				Object titlePacket = PacketPlayOutTitleAccessor.getConstructor0()

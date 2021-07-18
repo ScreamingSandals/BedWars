@@ -21,12 +21,13 @@ nmsGen {
             .reqMethod('getString')
     var IAttribute = reqClass('net.minecraft.world.entity.ai.attributes.Attribute')
     reqClass('spigot:IChatBaseComponent$ChatSerializer')
-        .reqMethod('searge:m_130701_', String) // spigot don't have mapping for that and I think obfuscated:a can successfully fail
+        .reqMethod('searge:func_150699_a', String) // spigot don't have mapping for that and I think obfuscated:a can successfully fail
+        .reqMethod('searge:func_240643_a_', String) // 1.16+
     var DataWatcher = reqClass('spigot:DataWatcher')
     var World = reqClass('spigot:World')
             .reqMethod('spigot:getMethodProfilerSupplier') // 1.17 and newer
             .reqMethod('spigot:getMethodProfiler') // for something between new and old versions
-            .reqField('spigot:methodProfiler') // for older versions
+            .reqField('spigot:methodProfiler:1.9.4') // for older versions
     var Entity = reqClass('spigot:Entity')
         .reqField('spigot:world')
         .reqMethod('spigot:getWorld')

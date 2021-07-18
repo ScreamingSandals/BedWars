@@ -82,7 +82,12 @@ public class TNTSheep extends SpecialItem implements org.screamingsandals.bedwar
         tnt = (TNTPrimed) loc.getWorld().spawnEntity(loc, EntityType.PRIMED_TNT);
         tnt.setFuseTicks(explosionTime);
         tnt.setIsIncendiary(false);
-        sheep.addPassenger(tnt);
+        try {
+            sheep.addPassenger(tnt);
+        } catch (Throwable t) {
+            // older versions
+            sheep.setPassenger(tnt);
+        }
 
         game.registerSpecialItem(this);
         Main.registerGameEntity(sheep, (org.screamingsandals.bedwars.game.Game) game);
