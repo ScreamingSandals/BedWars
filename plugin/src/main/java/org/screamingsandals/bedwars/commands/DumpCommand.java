@@ -260,7 +260,7 @@ public class DumpCommand extends BaseCommand {
                         msg1.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://paste.gg/" + message.getResult().getId()));
                         msg1.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder().append("Open this link").create()));
 
-                        sender.spigot().sendMessage(new ComponentBuilder()
+                        sender.spigot().sendMessage(new ComponentBuilder("")
                                 .append(TextComponent.fromLegacyText(i18n("dump_success") + ChatColor.GRAY))
                                 .append(msg1)
                                 .create());

@@ -2,7 +2,7 @@ defaultTasks 'clean', ':BedWars-NMS:generateNmsComponents', 'screamCompile'
 
 allprojects {
     group = 'org.screamingsandals.bedwars'
-    version = '0.2.19'
+    version = '0.2.20-SNAPSHOT'
 }
 
 buildscript {
