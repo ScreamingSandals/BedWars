@@ -12,7 +12,7 @@ buildscript {
     }
     dependencies {
         classpath 'org.screamingsandals.gradle.builder:screaming-plugin-builder:1.0.47'
-        classpath 'org.screamingsandals.nms:NMSMapper:1.0.1-SNAPSHOT'
+        classpath 'org.screamingsandals.nms:NMSMapper:1.0.2'
         classpath "com.github.gmazzo:gradle-buildconfig-plugin:3.0.0"
     }
 }
