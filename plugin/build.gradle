@@ -25,6 +25,7 @@ dependencies {
 
     /* SHADED */
     implementation project(':BedWars-API')
+    implementation project(':BedWars-NMS')
     implementation 'org.screamingsandals.language.bedwars:BedWarsLanguage:' + (BEDWARS_VERSION =~ /^\d+.\d+/).findAll()?.first() + '-SNAPSHOT'
     implementation 'com.zaxxer:HikariCP:3.3.0'
     implementation 'cloud.commandframework:cloud-minecraft-extras:' + CLOUD_EXTRAS_VERSION
@@ -44,7 +45,8 @@ buildConfig {
 }
 
 prepareTestTask()
-    .versions('1.17', '1.16.5', '1.15.2', '1.14.4', '1.13.2', '1.12.2', '1.11.2', '1.10.2', '1.9.4')
+    .versions('1.17.1', '1.16.5', '1.15.2', '1.14.4', '1.13.2', '1.12.2', '1.11.2', '1.10.2', '1.9.4')
+    .setSubdirectory('paper-master')
     .onlineMode(false)
     .pluginJar(shadowJar.archiveFile.get().asFile.toPath())
     .build()

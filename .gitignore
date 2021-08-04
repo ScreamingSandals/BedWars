@@ -28,6 +28,7 @@ CraftBukkit/
 /.gradle
 */build/
 /plugin/test-environment/
+/nms/src/generated/
 gradle-app.setting
 !gradle-wrapper.jar
 .gradletasknamecache

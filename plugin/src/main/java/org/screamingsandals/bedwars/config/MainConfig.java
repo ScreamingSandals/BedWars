@@ -73,6 +73,7 @@ public class MainConfig {
                 .key("game-start-items").moveIfAbsolute(ConfigurationNode::isList, "game-start-items", "enabled")
                 .key("invisible-lobby-on-game-start").defValue(true)
                 .key("enable-below-name-health-indicator").defValue(true)
+                .key("enable-cheat-command-for-admins").defValue(false)
                 .section("tnt-jump")
                     .key("enabled").defValue(true)
                     .key("source-damage").defValue(0.5)

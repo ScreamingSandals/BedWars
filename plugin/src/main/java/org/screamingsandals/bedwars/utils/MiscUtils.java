@@ -27,6 +27,7 @@ import org.screamingsandals.lib.material.MaterialMapping;
 import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.sender.SenderMessage;
+import org.screamingsandals.lib.utils.AdventureHelper;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -72,17 +73,7 @@ public class MiscUtils {
 
     /* Special items  - CEPH*/
     public void sendActionBarMessage(Player player, String message) {
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                if (Main.isSpigot() && !Main.isLegacy() && MainConfig.getInstance().node("specials", "action-bar-messages").getBoolean()) {
-                    player.spigot().sendMessage(ChatMessageType.ACTION_BAR,
-                            TextComponent.fromLegacyText(message));
-                } else {
-                    player.sendMessage(message);
-                }
-            }
-        }.runTask(Main.getInstance().getPluginDescription().as(JavaPlugin.class));
+        PlayerMapper.wrapPlayer(player).sendActionBar(AdventureHelper.toComponent(message));
     }
 
     public void sendActionBarMessage(PlayerWrapper player, Component component) {

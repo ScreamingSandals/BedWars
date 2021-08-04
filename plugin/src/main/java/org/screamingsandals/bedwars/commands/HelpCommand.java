@@ -3,6 +3,7 @@ package org.screamingsandals.bedwars.commands;
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
 import org.screamingsandals.bedwars.Main;
+import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
@@ -56,6 +57,12 @@ public class HelpCommand extends BaseCommand {
                         }
 
                         if (sender.hasPermission(BedWarsPermission.ADMIN_PERMISSION.asPermission())) {
+                            if (MainConfig.getInstance().node("enable-cheat-command-for-admins").getBoolean()) {
+                                Message.of(LangKeys.HELP_BW_CHEAT_GIVE)
+                                        .join(LangKeys.HELP_BW_CHEAT_KILL)
+                                        .send(sender);
+                            }
+
                             Message.
                                     of(LangKeys.HELP_BW_ADDHOLO).
                                     join(LangKeys.HELP_BW_REMOVEHOLO).

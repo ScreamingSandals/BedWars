@@ -1,25 +1,24 @@
 package org.screamingsandals.bedwars.lib.nms.entity;
 
-public enum Attribute {
-	MAX_HEALTH("MAX_HEALTH,field_111267_a,a"),
-	FOLLOW_RANGE("FOLLOW_RANGE,field_111265_b,b"),
-	KNOCKBACK_RESISTANCE("KNOCKBACK_RESISTANCE,field_111266_c,c"),
-	MOVEMENT_SPEED("MOVEMENT_SPEED,field_111263_d,d"),
-	FLYING_SPEED("FLYING_SPEED,field_193334_e,e"),
-	ATTACK_DAMAGE("ATTACK_DAMAGE,field_111264_e,f"),
-	ATTACK_KNOCKBACK("ATTACK_KNOCKBACK,field_221120_g,g"),
-	ATTACK_SPEED("ATTACK_SPEED,field_188790_f,h"),
-	ARMOR("ARMOR,field_188791_g,i"),
-	ARMOR_TOUGHNESS("ARMOR_TOUGHNESS,field_189429_h,j"),
-	LUCK("LUCK,field_188792_h,k");
-	
-	private String keys;
-	
-	Attribute(String keys) {
-		this.keys = keys;
-	}
-	
-	public String getKeys() {
-		return this.keys;
-	}
+import lombok.Data;
+import org.screamingsandals.bedwars.nms.accessors.AttributesAccessor;
+import org.screamingsandals.lib.utils.reflect.Reflect;
+
+import java.util.function.Supplier;
+
+@Data
+public class Attribute {
+	public static final Attribute MAX_HEALTH = new Attribute(() -> Reflect.getField(AttributesAccessor.getFieldMAX_HEALTH()));
+	public static final Attribute FOLLOW_RANGE = new Attribute(() -> Reflect.getField(AttributesAccessor.getFieldFOLLOW_RANGE()));
+	public static final Attribute KNOCKBACK_RESISTANCE = new Attribute(() -> Reflect.getField(AttributesAccessor.getFieldKNOCKBACK_RESISTANCE()));
+	public static final Attribute MOVEMENT_SPEED = new Attribute(() -> Reflect.getField(AttributesAccessor.getFieldMOVEMENT_SPEED()));
+	public static final Attribute FLYING_SPEED = new Attribute(() -> Reflect.getField(AttributesAccessor.getFieldFLYING_SPEED()));
+	public static final Attribute ATTACK_DAMAGE = new Attribute(() -> Reflect.getField(AttributesAccessor.getFieldATTACK_DAMAGE()));
+	public static final Attribute ATTACK_KNOCKBACK = new Attribute(() -> Reflect.getField(AttributesAccessor.getFieldATTACK_KNOCKBACK()));
+	public static final Attribute ATTACK_SPEED = new Attribute(() -> Reflect.getField(AttributesAccessor.getFieldATTACK_SPEED()));
+	public static final Attribute ARMOR = new Attribute(() -> Reflect.getField(AttributesAccessor.getFieldARMOR()));
+	public static final Attribute ARMOR_TOUGHNESS = new Attribute(() -> Reflect.getField(AttributesAccessor.getFieldARMOR_TOUGHNESS()));
+	public static final Attribute LUCK = new Attribute(() -> Reflect.getField(AttributesAccessor.getFieldLUCK()));
+
+	private final Supplier<Object> object;
 }

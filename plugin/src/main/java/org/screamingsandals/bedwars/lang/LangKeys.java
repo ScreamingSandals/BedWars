@@ -106,6 +106,11 @@ public class LangKeys {
     public final String[] IN_GAME_END_GAME_END = {"in_game", "end", "game_end"};
     public final String[] IN_GAME_RESPAWN_PROTECTION_REMAINING = {"in_game", "respawn_protection", "remaining"};
     public final String[] IN_GAME_RESPAWN_PROTECTION_END = {"in_game", "respawn_protection", "end"};
+    public final String[] IN_GAME_CHEAT_PLEASE_PROVIDE_VALID_CHEAT_TYPE = {"in_game", "cheat", "please_provide_valid_cheat_type"};
+    public final String[] IN_GAME_CHEAT_INVALID_PLAYER = {"in_game", "cheat", "invalid_player"};
+    public final String[] IN_GAME_CHEAT_RECEIVED_GIVE = {"in_game", "cheat", "received_give"};
+    public final String[] IN_GAME_CHEAT_RECEIVED_KILL = {"in_game", "cheat", "please_provide_valid_cheat_type"};
+    public final String[] IN_GAME_CHEAT_GAME_NOT_RUNNING = {"in_game", "cheat", "game_not_running"};
     public final String[] IN_GAME_JOIN = {"in_game", "join"};
     public final String[] IN_GAME_LEAVE = {"in_game", "leave"};
     public final String[] IN_GAME_PLAYER_SELF_KILLED = {"in_game", "player_self_killed"};
@@ -163,6 +168,8 @@ public class LangKeys {
     public final String[] HELP_BW_ADMIN_STORE_ADULT = {"help", "bw_admin_store_adult"};
     public final String[] HELP_BW_DUMP = {"help", "bw_dump"};
     public final String[] HELP_BW_ADMIN_INTERACTIVE = {"help", "bw_admin_interactive"};
+    public final String[] HELP_BW_CHEAT_GIVE = {"help", "bw_cheat_give"};
+    public final String[] HELP_BW_CHEAT_KILL = {"help", "bw_cheat_kill"};
     public final String[] UPDATE_NEW_RELEASE = {"update", "new_release"};
     public final String[] UPDATE_PATCH_RELEASE = {"update", "patch_release"};
     public final String[] ADMIN_USAGE = {"admin", "usage"};

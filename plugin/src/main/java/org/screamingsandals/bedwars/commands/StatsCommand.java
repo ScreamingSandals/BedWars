@@ -3,13 +3,13 @@ package org.screamingsandals.bedwars.commands;
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.HumanEntity;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.statistics.PlayerStatistic;
 import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.player.OfflinePlayerWrapper;
 import org.screamingsandals.lib.player.PlayerMapper;
+import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
 import org.screamingsandals.lib.utils.annotations.Service;
 
@@ -31,7 +31,7 @@ public class StatsCommand extends BaseCommand {
                                 .withSuggestionsProvider((c, s) -> {
                                     if (PlayerStatisticManager.isEnabled()
                                             && (c.getSender().hasPermission(BedWarsPermission.OTHER_STATS_PERMISSION.asPermission()) && !c.getSender().hasPermission(BedWarsPermission.ADMIN_PERMISSION.asPermission()))) {
-                                        return Bukkit.getOnlinePlayers().stream().map(HumanEntity::getName).collect(Collectors.toList());
+                                        return PlayerMapper.getPlayers().stream().map(PlayerWrapper::getName).collect(Collectors.toList());
                                     }
                                     return List.of();
                                 })

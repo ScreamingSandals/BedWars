@@ -1,4 +1,4 @@
-defaultTasks 'clean', 'screamCompile', ':BedWars-API:allowJavadocUpload'
+defaultTasks 'clean', ':BedWars-NMS:generateNmsComponents', 'screamCompile', ':BedWars-API:allowJavadocUpload'
 
 allprojects {
     group = 'org.screamingsandals.bedwars'
@@ -14,6 +14,7 @@ buildscript {
     dependencies {
 		classpath 'org.screamingsandals.gradle.builder:screaming-plugin-builder:' + SCREAMING_PLUGIN_BUILDER_VERSION
         classpath "com.github.gmazzo:gradle-buildconfig-plugin:" + BUILDCONFIG_VERSION
+        classpath 'org.screamingsandals.nms:NMSMapper:' + NMS_MAPPER_VERSION
     }
 }
 

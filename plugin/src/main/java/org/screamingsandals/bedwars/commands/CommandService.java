@@ -18,6 +18,7 @@ import org.screamingsandals.lib.utils.annotations.methods.Provider;
         AdminCommand.class,
         AlljoinCommand.class,
         AutojoinCommand.class,
+        CheatCommand.class,
         DumpCommand.class,
         HelpCommand.class,
         JoinCommand.class,

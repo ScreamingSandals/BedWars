@@ -729,26 +729,34 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         return null;
     }
 
-    public void bedDestroyed(Location loc, Player broker, boolean isItBedBlock, boolean isItAnchor, boolean isItCake) {
+    public void bedDestroyed(Location loc, Player destroyer, boolean isItBedBlock, boolean isItAnchor, boolean isItCake) {
         if (status == GameStatus.RUNNING) {
             for (CurrentTeam team : teamsInGame) {
                 if (team.teamInfo.bed.equals(loc)) {
                     Debug.info(name + ": target block of  " + team.teamInfo.getName() + " has been destroyed");
                     team.isBed = false;
                     updateScoreboard();
-                    String colored_broker = "explosion";
-                    if (broker != null) {
-                        colored_broker = getPlayerTeam(PlayerManager.getInstance().getPlayer(broker.getUniqueId()).orElseThrow()).teamInfo.color.chatColor + broker.getDisplayName();
+                    String coloredDestroyer = "explosion";
+                    if (destroyer != null) {
+                        coloredDestroyer = getPlayerTeam(PlayerManager.getInstance().getPlayer(destroyer.getUniqueId()).orElseThrow()).teamInfo.color.chatColor + destroyer.getDisplayName();
                     }
                     for (BedWarsPlayer player : players) {
-                        Message
+                        var message = Message
                                 .of(isItBedBlock ? LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_BED : (isItAnchor ? LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_ANCHOR : (isItCake ? LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_CAKE : LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_ANY)))
                                 .placeholder("team", AdventureHelper.toComponent(team.teamInfo.color.chatColor + team.teamInfo.name))
-                                .placeholder("broker", AdventureHelper.toComponent(colored_broker))
-                                .send(player)
+                                .placeholder("broker", AdventureHelper.toComponent(coloredDestroyer));
+
+                        message.clone()
                                 .join(getPlayerTeam(player) == team ? LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_SUBTITLE_VICTIM : LangKeys.IN_GAME_GAME_START_SUBTITLE)
                                 .times(TitleUtils.defaultTimes())
                                 .title(player);
+
+
+                        var bbdmsEvent = new BedDestroyedMessageSendEventImpl(this, player, PlayerManager.getInstance().getPlayer(destroyer.getUniqueId()).orElseThrow(), team, message);
+                        EventManager.fire(bbdmsEvent);
+                        if (!bbdmsEvent.isCancelled()) {
+                            bbdmsEvent.getMessage().send(player);
+                        }
 
                         SpawnEffects.spawnEffect(this, player, "game-effects.beddestroy");
                         if (getPlayerTeam(player) == team) {
@@ -774,18 +782,18 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                         team.setProtectHolo(null);
                     }
 
-                    var targetBlockDestroyed = new TargetBlockDestroyedEventImpl(this, broker != null ? PlayerManager.getInstance().getPlayer(broker.getUniqueId()).orElseThrow() : null, team);
+                    var targetBlockDestroyed = new TargetBlockDestroyedEventImpl(this, destroyer != null ? PlayerManager.getInstance().getPlayer(destroyer.getUniqueId()).orElseThrow() : null, team);
                     EventManager.fire(targetBlockDestroyed);
 
-                    if (broker != null) {
+                    if (destroyer != null) {
                         if (PlayerStatisticManager.isEnabled()) {
-                            var statistic = PlayerStatisticManager.getInstance().getStatistic(PlayerMapper.wrapPlayer(broker));
+                            var statistic = PlayerStatisticManager.getInstance().getStatistic(PlayerMapper.wrapPlayer(destroyer));
                             statistic.addDestroyedBeds(1);
                             statistic.addScore(MainConfig.getInstance().node("statistics", "scores", "bed-destroy").getInt(25));
                         }
-                        Main.depositPlayer(broker, MainConfig.getInstance().node("vault", "reward", "bed-destroy").getInt());
+                        Main.depositPlayer(destroyer, MainConfig.getInstance().node("vault", "reward", "bed-destroy").getInt());
 
-                        dispatchRewardCommands("player-destroy-bed", broker,
+                        dispatchRewardCommands("player-destroy-bed", destroyer,
                                 MainConfig.getInstance().node("statistics", "scores", "bed-destroy").getInt(25));
                     }
                 }
@@ -1752,7 +1760,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                         LivingEntity villager = store.spawn();
                         if (villager != null) {
                             Main.registerGameEntity(villager, this);
-                            EntityUtils.disableEntityAI(villager);
+                            villager.setAI(false);
                             villager.getLocation().getWorld().getNearbyEntities(villager.getLocation(), 1, 1, 1).forEach(entity -> {
                                 if (entity.getType() == villager.getType() && entity.getLocation().getBlock().equals(villager.getLocation().getBlock()) && !villager.equals(entity)) {
                                     entity.remove();

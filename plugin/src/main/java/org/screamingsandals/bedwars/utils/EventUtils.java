@@ -60,7 +60,9 @@ public class EventUtils implements org.screamingsandals.bedwars.api.utils.EventU
             Map.entry(UpgradeBoughtEvent.class, UpgradeBoughtEventImpl.class),
             Map.entry(UpgradeImprovedEvent.class, UpgradeImprovedEventImpl.class),
             Map.entry(UpgradeRegisteredEvent.class, UpgradeRegisteredEventImpl.class),
-            Map.entry(UpgradeUnregisteredEvent.class, UpgradeUnregisteredEventImpl.class)
+            Map.entry(UpgradeUnregisteredEvent.class, UpgradeUnregisteredEventImpl.class),
+            Map.entry(BedDestroyedMessageSendEvent.class, BedDestroyedMessageSendEventImpl.class),
+            Map.entry(PlayerDeathMessageSendEvent.class, PlayerDeathMessageSendEventImpl.class)
     );
 
     public static EventUtils getInstance() {

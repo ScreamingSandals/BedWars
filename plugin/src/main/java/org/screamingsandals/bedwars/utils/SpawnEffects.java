@@ -10,7 +10,6 @@ import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.events.PostSpawnEffectEventImpl;
 import org.screamingsandals.bedwars.events.PreSpawnEffectEventImpl;
 import org.screamingsandals.bedwars.game.Game;
-import org.screamingsandals.bedwars.lib.nms.particles.Particles;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
 import org.bukkit.inventory.meta.FireworkMeta;
@@ -85,7 +84,10 @@ public class SpawnEffects {
                     var finalData = dataO;
                     game.getConnectedPlayers().forEach(p -> p.spawnParticle(particle, player.getLocation(), count, offsetX, offsetY, offsetZ, extra, finalData));
                 } else {
-                    Particles.sendParticles(game.getConnectedPlayers(), value, player.getLocation(), count, offsetX, offsetY, offsetZ, extra);
+                    for (var player1 : game.getConnectedPlayers()) {
+                        player1.spawnParticle(Particle.valueOf(value.toUpperCase()), player.getLocation().getX(), player.getLocation().getY(), player.getLocation().getZ(),
+                                count, offsetX, offsetY, offsetZ, extra);
+                    }
                 }
             }
         } else if (type.equalsIgnoreCase("Effect")) {

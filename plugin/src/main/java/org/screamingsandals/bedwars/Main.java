@@ -16,7 +16,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -39,10 +38,9 @@ import org.screamingsandals.bedwars.utils.BukkitBStatsMetrics;
 import org.screamingsandals.bedwars.utils.EventUtils;
 import org.screamingsandals.bedwars.utils.UpdateChecker;
 import org.screamingsandals.bedwars.lib.debug.Debug;
+import org.screamingsandals.lib.Core;
 import org.screamingsandals.lib.bukkit.utils.nms.ClassStorage;
-import org.screamingsandals.lib.entity.EntityMapper;
 import org.screamingsandals.lib.event.EventManager;
-import org.screamingsandals.lib.healthindicator.HealthIndicator;
 import org.screamingsandals.lib.healthindicator.HealthIndicatorManager;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.material.Item;
@@ -82,6 +80,7 @@ import java.util.*;
 })
 @Init(services = {
         EventManager.class,
+        Core.class,
         CommandService.class,
         GameManager.class,
         UpdateChecker.class,
@@ -99,7 +98,6 @@ import java.util.*;
         BukkitBStatsMetrics.class,
         PlayerManager.class,
         PartyListener.class,
-        EntityMapper.class,
         EventUtils.class,
         LobbyInvisibilityListener.class,
         BedwarsExpansion.class,
@@ -111,7 +109,7 @@ public class Main extends PluginContainer implements BedwarsAPI {
 
     private String version;
     private boolean isDisabling = false;
-    private boolean isSpigot, isLegacy;
+    private boolean isLegacy;
     private boolean isVault;
     private boolean isNMS;
     private int versionNumber = 0;
@@ -139,10 +137,6 @@ public class Main extends PluginContainer implements BedwarsAPI {
 
     public static String getVersion() {
         return instance.version;
-    }
-
-    public static boolean isSpigot() {
-        return instance.isSpigot;
     }
 
     public static boolean isVault() {
@@ -294,7 +288,6 @@ public class Main extends PluginContainer implements BedwarsAPI {
         version = this.getPluginDescription().getVersion();
         var snapshot = version.toLowerCase().contains("pre") || version.toLowerCase().contains("snapshot");
         isNMS = ClassStorage.NMS_BASED_SERVER;
-        isSpigot = ClassStorage.IS_SPIGOT_SERVER;
         colorChanger = new org.screamingsandals.bedwars.utils.ColorChanger();
 
         if (!PluginManager.isEnabled(PluginManager.createKey("Vault").orElseThrow())) {
@@ -441,22 +434,6 @@ public class Main extends PluginContainer implements BedwarsAPI {
                                     Component
                                             .text("Found Vault")
                                             .color(NamedTextColor.GOLD)
-                            ));
-        }
-        if (!isSpigot) {
-            PlayerMapper.getConsoleSender().sendMessage(
-                    Component
-                            .text("[B")
-                            .color(NamedTextColor.RED)
-                            .append(
-                                    Component
-                                            .text("W] ")
-                                            .color(NamedTextColor.WHITE)
-                            )
-                            .append(
-                                    Component
-                                            .text("WARNING: You are not using Spigot. Some features may not work properly.")
-                                            .color(NamedTextColor.RED)
                             ));
         }
 

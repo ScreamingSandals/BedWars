@@ -1,0 +1,88 @@
+import java.util.function.Consumer
+
+apply plugin: 'org.screamingsandals.nms'
+
+sourceSets.main.java.srcDirs += 'src/generated/java'
+
+// after any changes in this file, please rebuild project to see changes in your ide
+
+nmsGen {
+    basePackage = "org.screamingsandals.bedwars.nms.accessors"
+    sourceSet = "src/generated/java"
+    cleanOnRebuild = true
+
+    reqClass('net.minecraft.world.entity.ai.attributes.Attributes')
+        .reqField('MAX_HEALTH')
+        .reqField('FOLLOW_RANGE')
+        .reqField('KNOCKBACK_RESISTANCE')
+        .reqField('MOVEMENT_SPEED')
+        .reqField('FLYING_SPEED')
+        .reqField('ATTACK_DAMAGE')
+        .reqField('ATTACK_KNOCKBACK')
+        .reqField('ATTACK_SPEED')
+        .reqField('ARMOR')
+        .reqField('ARMOR_TOUGHNESS')
+        .reqField('LUCK')
+
+    var Mob = reqClass('net.minecraft.world.entity.Mob')
+        .reqField('goalSelector')
+        .reqField('targetSelector')
+        .reqField('target')
+
+    var Attribute = reqClass('net.minecraft.world.entity.ai.attributes.Attribute')
+
+    var PathfinderMob = reqClass('net.minecraft.world.entity.PathfinderMob')
+
+    var ServerboundClientCommandPacket$Action = reqClass('net.minecraft.network.protocol.game.ServerboundClientCommandPacket$Action')
+            .reqEnumField('PERFORM_RESPAWN')
+
+    var ServerboundClientCommandPacket = reqClass('net.minecraft.network.protocol.game.ServerboundClientCommandPacket')
+        .reqConstructor(ServerboundClientCommandPacket$Action)
+
+    reqClass('net.minecraft.server.network.ServerGamePacketListenerImpl')
+        .reqMethod('handleClientCommand', ServerboundClientCommandPacket)
+
+    reqClass('net.minecraft.world.entity.LivingEntity')
+        .reqMethod('getAttribute', Attribute)
+        .reqMethod('getAttributes')
+        .reqMethod('getCombatTracker')
+
+    reqClass('net.minecraft.world.entity.ai.attributes.AttributeInstance')
+        .reqConstructor(Attribute, Consumer)
+        .reqMethod('setBaseValue', double)
+        .reqMethod('getValue')
+
+    reqClass('net.minecraft.world.entity.ai.attributes.AttributeSupplier')
+        .reqField('instances')
+
+    reqClass('net.minecraft.world.entity.ai.attributes.AttributeMap')
+        .reqMethod('registerAttribute', Attribute) // old
+        // new
+        .reqField('supplier')
+
+    reqClass('net.minecraft.world.entity.ai.goal.MeleeAttackGoal')
+            .reqConstructor(PathfinderMob, double, boolean)
+
+    var Goal = reqClass('net.minecraft.world.entity.ai.goal.Goal')
+
+    reqClass('net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal')
+        .reqConstructor(Mob, Class, boolean)
+
+    reqClass('net.minecraft.world.entity.ai.goal.GoalSelector')
+        .reqMethod('addGoal', int, Goal)
+
+    var Entity = reqClass('net.minecraft.world.entity.Entity');
+
+    reqClass('net.minecraft.server.level.ServerPlayer')
+        .reqMethod('setCamera', Entity)
+        .reqMethod('tellNeutralMobsThatIDied')
+
+    reqClass('net.minecraft.world.damagesource.CombatTracker')
+        .reqMethod('getDeathMessage')
+        .reqMethod('recheckStatus')
+
+    reqClass('net.minecraft.world.entity.player.Player')
+        .reqMethod('removeEntitiesOnShoulder')
+
+
+}

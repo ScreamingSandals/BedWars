@@ -34,6 +34,7 @@ import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.commands.BedWarsPermission;
 import org.screamingsandals.bedwars.commands.admin.JoinTeamCommand;
 import org.screamingsandals.bedwars.config.MainConfig;
+import org.screamingsandals.bedwars.events.PlayerDeathMessageSendEventImpl;
 import org.screamingsandals.bedwars.events.PlayerKilledEventImpl;
 import org.screamingsandals.bedwars.events.PlayerRespawnedEventImpl;
 import org.screamingsandals.bedwars.events.TeamChestOpenEventImpl;
@@ -120,13 +121,11 @@ public class PlayerListener implements Listener {
 
                     }
                     if (deathMessage != null) {
-                        event.setDeathMessage(null);
-                        if (deathMessageMsg != null) {
-                            deathMessageMsg.send(game.getConnectedPlayers().stream().map(PlayerMapper::wrapPlayer).collect(Collectors.toList()));
-                        } else {
-                            for (Player player : game.getConnectedPlayers()) {
-                                player.sendMessage(deathMessage);
-                            }
+                        var bpdmsEvent = new PlayerDeathMessageSendEventImpl(game, gVictim, deathMessageMsg != null ? deathMessageMsg : Message.ofPlainText(deathMessage));
+                        EventManager.fire(bpdmsEvent);
+                        if (!bpdmsEvent.isCancelled()) {
+                            event.setDeathMessage(null);
+                            bpdmsEvent.getMessage().send(game.getConnectedPlayers().stream().map(PlayerMapper::wrapPlayer).collect(Collectors.toList()));
                         }
                     }
                 }

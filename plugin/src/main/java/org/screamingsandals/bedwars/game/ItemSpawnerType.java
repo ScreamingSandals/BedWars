@@ -8,6 +8,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.lang.Translation;
+import org.screamingsandals.lib.material.Item;
+import org.screamingsandals.lib.material.builder.ItemFactory;
 import org.screamingsandals.lib.utils.AdventureHelper;
 
 import java.util.Arrays;
@@ -49,5 +51,13 @@ public class ItemSpawnerType implements org.screamingsandals.bedwars.api.game.It
         stackMeta.setDisplayName(getItemName());
         stack.setItemMeta(stackMeta);
         return stack;
+    }
+
+    public Item getItem() {
+        return getItem(1);
+    }
+
+    public Item getItem(int amount) {
+        return ItemFactory.build(getStack(amount)).orElseThrow();
     }
 }

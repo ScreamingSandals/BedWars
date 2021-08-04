@@ -3,17 +3,20 @@
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/2b72901b108f4577a135faee054d0d6d)](https://www.codacy.com/gh/ScreamingSandals/BedWars/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ScreamingSandals/BedWars&amp;utm_campaign=Badge_Grade)
 [![Translation status](http://weblate.screamingsandals.org/widgets/bedwars/-/0-3-x/svg-badge.svg)](https://github.com/ScreamingSandals/BedWarsLanguage/tree/0.3.x)
 [![Discord](https://img.shields.io/discord/582271436845219842?logo=discord)](https://discord.gg/4xB54Ts)
+[![Sonatype Nexus (Repository)](https://img.shields.io/nexus/maven-public/org.screamingsandals.bedwars/BedWars?server=https%3A%2F%2Frepo.screamingsandals.org)](https://repo.screamingsandals.org/#browse/browse:maven-public:org%2Fscreamingsandals%2Fbedwars)
 
-Flexible BedWars plugin formerly coded as replacement for BedwarsRel.
+Flexible BedWars plugin formerly coded as a replacement for BedwarsRel.
 
-Supported versions: \[1.9 - 1.16.5\]. Recommended version: \[1.16.4/5\]
+Supported versions: \[1.9.4 - 1.17.1\]. Recommended version: \[1.16.5/1.17.1\]
+
+If you are using version 0.2.x, you are probably looking for this [branch](https://github.com/ScreamingSandals/BedWars/tree/0.2.16)
 
 ## Support
-If you need any help, you can contact us on [Guilded](https://guilded.gg/ScreamingSandals) or [Discord](https://discord.gg/4xB54Ts). Please make sure to look into older messages. There are many question already answered. It is really anoying to repeat the same thing over and over.
+If you need any help, you can contact us on [Discord](https://discord.gg/4xB54Ts). Please make sure to look into older messages. There are many question already answered. It is really anoying to repeat the same thing over and over.
 
-Make sure to check out our [Wiki](https://github.com/ScreamingSandals/BedWars/wiki) and [Docs](https://docs.screamingsandals.org) before contacting us on Guilded or Discord. It will save our time, you know. O:)
+Make sure to check out our [Wiki](https://github.com/ScreamingSandals/BedWars/wiki) and [Docs](https://docs.screamingsandals.org) before contacting us on Discord. It will save our time, you know. O:)
 
-If you have found any bug, feel free to report it into [Issues](https://github.com/ScreamingSandals/BedWars/issues) or [Guilded Support channel](https://www.guilded.gg/ScreamingSandals/groups/1DvK81Ad/channels/8f2a6a34-8e74-4eed-b044-9bf53bbbc887/forums), we will look into it.
+If you have found any bug, feel free to report it into [Issues](https://github.com/ScreamingSandals/BedWars/issues), we will look into it.
 
 ## Features
 -   All the basics of BedWars game (Beds, Teams and so on)
