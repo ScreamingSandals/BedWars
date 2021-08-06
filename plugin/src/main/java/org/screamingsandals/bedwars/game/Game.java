@@ -51,7 +51,6 @@ import org.screamingsandals.bedwars.holograms.StatisticsHolograms;
 import org.screamingsandals.bedwars.inventories.TeamSelectorInventory;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.lib.debug.Debug;
-import org.screamingsandals.bedwars.lib.nms.entity.EntityUtils;
 import org.screamingsandals.bedwars.listener.Player116ListenerUtils;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.player.PlayerManager;
@@ -67,11 +66,14 @@ import org.screamingsandals.lib.hologram.HologramManager;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.material.MaterialHolder;
 import org.screamingsandals.lib.material.builder.ItemFactory;
+import org.screamingsandals.lib.npc.NPC;
 import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.player.SenderWrapper;
 import org.screamingsandals.lib.tasker.TaskerTime;
 import org.screamingsandals.lib.utils.AdventureHelper;
+import org.screamingsandals.lib.visuals.LocatableVisual;
+import org.screamingsandals.lib.visuals.Visual;
 import org.screamingsandals.lib.world.BlockMapper;
 import org.screamingsandals.lib.world.LocationHolder;
 import org.screamingsandals.lib.world.LocationMapper;
@@ -131,6 +133,8 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     private int postGameWaiting = 3;
     private ScreamingScoreboard experimentalBoard = null;
     private HealthIndicator healthIndicator = null;
+    @Getter
+    private final List<Visual<?>> otherVisuals = new ArrayList<>();
 
     @Getter
     private final GameConfigurationContainer configurationContainer = new GameConfigurationContainer();
@@ -526,6 +530,10 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         return teamSelectorInventory;
     }
 
+    public boolean isBlockAddedDuringGame(LocationHolder loc) {
+        return status == GameStatus.RUNNING && region.isBlockAddedDuringGame(loc.as(Location.class));
+    }
+
     public boolean isBlockAddedDuringGame(Location loc) {
         return status == GameStatus.RUNNING && region.isBlockAddedDuringGame(loc);
     }
@@ -913,6 +921,8 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 }
             });
 
+            otherVisuals.forEach(visual -> visual.addViewer(gamePlayer));
+
             if (healthIndicator != null) {
                 healthIndicator.addViewer(gamePlayer);
             }
@@ -981,13 +991,14 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             }
         });
         teamsInGame.forEach(team -> {
-            if (team.hasBedHolo() && team.getConnectedPlayers().contains(gamePlayer.as(Player.class))) {
+            if (team.hasBedHolo() && !team.getConnectedPlayers().contains(gamePlayer.as(Player.class))) {
                 team.getBedHolo().removeViewer(gamePlayer);
             }
             if (team.hasProtectHolo() && team.getConnectedPlayers().contains(gamePlayer.as(Player.class))) {
                 team.getProtectHolo().removeViewer(gamePlayer);
             }
         });
+        otherVisuals.forEach(visual -> visual.removeViewer(gamePlayer));
         gamePlayer.as(Player.class).setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
 
         if (MainConfig.getInstance().node("mainlobby", "enabled").getBoolean()
@@ -1757,15 +1768,17 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                     gameScoreboard.clearSlot(DisplaySlot.SIDEBAR);
                     Bukkit.getScheduler().runTaskLater(Main.getInstance().getPluginDescription().as(JavaPlugin.class), this::updateSigns, 3L);
                     for (GameStore store : gameStore) {
-                        LivingEntity villager = store.spawn();
-                        if (villager != null) {
-                            Main.registerGameEntity(villager, this);
-                            villager.setAI(false);
-                            villager.getLocation().getWorld().getNearbyEntities(villager.getLocation(), 1, 1, 1).forEach(entity -> {
-                                if (entity.getType() == villager.getType() && entity.getLocation().getBlock().equals(villager.getLocation().getBlock()) && !villager.equals(entity)) {
+                        var villager = store.spawn();
+                        if (villager instanceof LivingEntity) {
+                            Main.registerGameEntity((LivingEntity) villager, this);
+                            ((LivingEntity) villager).setAI(false);
+                            ((LivingEntity) villager).getLocation().getWorld().getNearbyEntities(((LivingEntity) villager).getLocation(), 1, 1, 1).forEach(entity -> {
+                                if (entity.getType() == ((LivingEntity) villager).getType() && entity.getLocation().getBlock().equals(((LivingEntity) villager).getLocation().getBlock()) && !villager.equals(entity)) {
                                     entity.remove();
                                 }
                             });
+                        } else if (villager instanceof NPC) {
+                            otherVisuals.add((NPC) villager);
                         }
                     }
 
@@ -2220,6 +2233,12 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             experimentalBoard.destroy();
             experimentalBoard = null;
         }
+        otherVisuals.forEach(visual -> {
+            if (visual.isShown()) {
+                visual.destroy();
+            }
+        });
+        otherVisuals.clear();
         Debug.info(name + ": rebuilding starts");
         teamsInGame.forEach(currentTeam -> {
             if (currentTeam.hasBedHolo()) {
@@ -3113,5 +3132,15 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
     public void setCustomPrefix(String customPrefix) {
         this.customPrefix = customPrefix;
+    }
+
+    public void showOtherVisual(Visual<?> visual) {
+        players.forEach(visual::addViewer);
+        otherVisuals.add(visual);
+    }
+
+    public void removeOtherVisual(Visual<?> visual) {
+        visual.destroy();
+        otherVisuals.remove(visual);
     }
 }

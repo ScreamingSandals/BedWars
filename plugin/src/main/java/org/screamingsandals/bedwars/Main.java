@@ -39,11 +39,11 @@ import org.screamingsandals.bedwars.utils.EventUtils;
 import org.screamingsandals.bedwars.utils.UpdateChecker;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.lib.Core;
-import org.screamingsandals.lib.bukkit.utils.nms.ClassStorage;
 import org.screamingsandals.lib.event.EventManager;
 import org.screamingsandals.lib.healthindicator.HealthIndicatorManager;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.material.Item;
+import org.screamingsandals.lib.material.MaterialHolder;
 import org.screamingsandals.lib.material.MaterialMapping;
 import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.player.PlayerWrapper;
@@ -75,7 +75,6 @@ import java.util.*;
         "PerWorldInventory",
         "SlimeWorldManager",
         "My_Worlds",
-        "Citizens",
         "Parties"
 })
 @Init(services = {
@@ -102,7 +101,11 @@ import java.util.*;
         LobbyInvisibilityListener.class,
         BedwarsExpansion.class,
         SidebarManager.class,
-        HealthIndicatorManager.class
+        HealthIndicatorManager.class,
+        BungeeMotdListener.class,
+        WorldListener.class,
+        VillagerListener.class,
+        PlayerListener.class
 })
 public class Main extends PluginContainer implements BedwarsAPI {
     private static Main instance;
@@ -111,7 +114,6 @@ public class Main extends PluginContainer implements BedwarsAPI {
     private boolean isDisabling = false;
     private boolean isLegacy;
     private boolean isVault;
-    private boolean isNMS;
     private int versionNumber = 0;
     private Economy econ = null;
     private HashMap<Entity, Game> entitiesInGame = new HashMap<>();
@@ -145,10 +147,6 @@ public class Main extends PluginContainer implements BedwarsAPI {
 
     public static boolean isLegacy() {
         return instance.isLegacy;
-    }
-
-    public static boolean isNMS() {
-        return instance.isNMS;
     }
 
     public static void depositPlayer(Player player, double coins) {
@@ -188,14 +186,22 @@ public class Main extends PluginContainer implements BedwarsAPI {
         instance.entitiesInGame.remove(entity);
     }
 
-    public static void openStore(PlayerWrapper player, GameStore store) {
-        ShopInventory.getInstance().show(player, store);
-    }
-
+    @Deprecated
     public static boolean isFarmBlock(Material mat) {
         if (MainConfig.getInstance().node("ignored-blocks", "enabled").getBoolean()) {
             try {
                 return MainConfig.getInstance().node("ignored-blocks", "blocks").getList(String.class).contains(mat.name());
+            } catch (SerializationException | NullPointerException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
+
+    public static boolean isFarmBlock(MaterialHolder mat) {
+        if (MainConfig.getInstance().node("ignored-blocks", "enabled").getBoolean()) {
+            try {
+                return mat.is(MainConfig.getInstance().node("ignored-blocks", "blocks").getList(String.class).toArray());
             } catch (SerializationException | NullPointerException e) {
                 e.printStackTrace();
             }
@@ -287,7 +293,6 @@ public class Main extends PluginContainer implements BedwarsAPI {
         instance = this;
         version = this.getPluginDescription().getVersion();
         var snapshot = version.toLowerCase().contains("pre") || version.toLowerCase().contains("snapshot");
-        isNMS = ClassStorage.NMS_BASED_SERVER;
         colorChanger = new org.screamingsandals.bedwars.utils.ColorChanger();
 
         if (!PluginManager.isEnabled(PluginManager.createKey("Vault").orElseThrow())) {
@@ -308,19 +313,12 @@ public class Main extends PluginContainer implements BedwarsAPI {
         Debug.init(getPluginDescription().getName());
         Debug.setDebug(MainConfig.getInstance().node("debug").getBoolean());
 
-        registerBedwarsListener(new PlayerListener());
         if (versionNumber >= 109) {
             registerBedwarsListener(new Player19Listener());
         }
 
         final var playerBeforeOrAfter112Listener = versionNumber >= 122 ? new Player112Listener() : new PlayerBefore112Listener();
         registerBedwarsListener(playerBeforeOrAfter112Listener);
-
-        registerBedwarsListener(new VillagerListener());
-        registerBedwarsListener(new WorldListener());
-        if (MainConfig.getInstance().node("bungee", "enabled").getBoolean() && MainConfig.getInstance().node("bungee", "motd", "enabled").getBoolean()) {
-            registerBedwarsListener(new BungeeMotdListener());
-        }
 
         PremiumBedwars.init();
 

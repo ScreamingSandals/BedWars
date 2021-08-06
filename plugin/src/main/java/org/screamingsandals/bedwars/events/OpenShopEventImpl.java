@@ -3,6 +3,7 @@ package org.screamingsandals.bedwars.events;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.api.events.OpenShopEvent;
 import org.screamingsandals.bedwars.game.Game;
 import org.screamingsandals.bedwars.game.GameStore;
@@ -14,6 +15,7 @@ import org.screamingsandals.lib.event.AbstractEvent;
 @Data
 public class OpenShopEventImpl extends AbstractEvent implements OpenShopEvent<Game, EntityBasic, BedWarsPlayer, GameStore> {
     private final Game game;
+    @Nullable
     private final EntityBasic entity;
     private final BedWarsPlayer player;
     private final GameStore gameStore;

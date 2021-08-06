@@ -24,6 +24,7 @@ import org.bukkit.event.vehicle.VehicleCreateEvent;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.MetadataValue;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
@@ -54,11 +55,20 @@ import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.material.builder.ItemFactory;
 import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.utils.AdventureHelper;
+import org.screamingsandals.lib.utils.annotations.Service;
+import org.screamingsandals.lib.utils.annotations.methods.OnPostEnable;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Service
 public class PlayerListener implements Listener {
+
+    @OnPostEnable
+    public void onPostEnable(Plugin plugin) {
+        plugin.getServer().getPluginManager().registerEvents(this, plugin);
+    }
+
     private final List<Player> explosionAffectedPlayers = new ArrayList<>();
 
     @EventHandler(priority = EventPriority.HIGHEST)

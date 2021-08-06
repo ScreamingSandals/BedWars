@@ -1,5 +1,6 @@
 package org.screamingsandals.bedwars.api.events;
 
+import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.api.BedwarsAPI;
 import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.api.game.GameStore;
@@ -12,6 +13,7 @@ public interface OpenShopEvent<G extends Game, E extends Wrapper, P extends BWPl
 
     G getGame();
 
+    @Nullable
     E getEntity();
 
     P getPlayer();

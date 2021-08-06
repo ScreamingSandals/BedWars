@@ -1,5 +1,6 @@
 package org.screamingsandals.bedwars.game;
 
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -8,7 +9,8 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Villager;
 import org.bukkit.event.entity.CreatureSpawnEvent;
-import org.screamingsandals.bedwars.utils.CitizensUtils;
+import org.screamingsandals.bedwars.utils.NPCUtils;
+import org.screamingsandals.lib.npc.NPC;
 
 public class GameStore implements org.screamingsandals.bedwars.api.game.GameStore {
     private final Location loc;
@@ -17,6 +19,8 @@ public class GameStore implements org.screamingsandals.bedwars.api.game.GameStor
     private final boolean enableCustomName;
     private final boolean useParent;
     private LivingEntity entity;
+    @Getter
+    private NPC npc;
     private EntityType type;
     private boolean isBaby;
     private String skinName;
@@ -39,14 +43,14 @@ public class GameStore implements org.screamingsandals.bedwars.api.game.GameStor
         this.skinName = skinName;
     }
 
-    public LivingEntity spawn() {
+    public Object spawn() {
         if (entity == null) {
             EntityType typ = type;
             if (typ == EntityType.PLAYER) {
                 if (Bukkit.getPluginManager().isPluginEnabled("Citizens")) {
-                    LivingEntity npc = CitizensUtils.spawnNPC(this);
+                    npc = NPCUtils.spawnNPC(this);
                     if (npc != null) {
-                        this.entity = npc;
+                        // NPC spawned
                         return npc;
                     }
                 }
@@ -96,10 +100,11 @@ public class GameStore implements org.screamingsandals.bedwars.api.game.GameStor
                 chunk.load();
             }
             entity.remove();
-            if (Bukkit.getPluginManager().isPluginEnabled("Citizens")) {
-                CitizensUtils.remove(entity);
-            }
             entity = null;
+        }
+        if (npc != null) {
+            npc.destroy();
+            npc = null;
         }
         return livingEntity;
     }

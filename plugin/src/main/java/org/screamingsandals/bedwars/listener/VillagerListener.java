@@ -1,55 +1,69 @@
 package org.screamingsandals.bedwars.listener;
 
-import org.bukkit.Bukkit;
-import org.screamingsandals.bedwars.Main;
+import lombok.RequiredArgsConstructor;
+import org.bukkit.entity.Entity;
 import org.screamingsandals.bedwars.api.events.OpenShopEvent;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.events.OpenShopEventImpl;
 import org.screamingsandals.bedwars.game.GameStore;
 import org.screamingsandals.bedwars.game.Game;
-import org.screamingsandals.bedwars.player.BedWarsPlayer;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.screamingsandals.bedwars.inventories.ShopInventory;
 import org.screamingsandals.bedwars.lib.debug.Debug;
+import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.player.PlayerManager;
-import org.screamingsandals.bedwars.utils.CitizensUtils;
-import org.screamingsandals.lib.entity.EntityMapper;
+import org.screamingsandals.lib.entity.EntityBasic;
 import org.screamingsandals.lib.event.EventManager;
+import org.screamingsandals.lib.event.OnEvent;
+import org.screamingsandals.lib.event.player.SPlayerInteractEntityEvent;
+import org.screamingsandals.lib.npc.event.NPCInteractEvent;
+import org.screamingsandals.lib.utils.annotations.Service;
 
+@Service(dependsOn = {
+        PlayerManager.class,
+        ShopInventory.class
+})
+@RequiredArgsConstructor
 public class VillagerListener implements Listener {
+    private final PlayerManager playerManager;
+    private final ShopInventory shopInventory;
 
-    @EventHandler
-    public void onVillagerInteract(PlayerInteractEntityEvent event) {
-        if (PlayerManager.getInstance().isPlayerInGame(event.getPlayer().getUniqueId())) {
-            BedWarsPlayer gPlayer = PlayerManager.getInstance().getPlayer(event.getPlayer().getUniqueId()).get();
-            Game game = gPlayer.getGame();
-            if (event.getRightClicked().getType().isAlive() && !gPlayer.isSpectator
+    @OnEvent
+    public void onVillagerInteract(SPlayerInteractEntityEvent event) {
+        if (playerManager.isPlayerInGame(event.getPlayer())) {
+            var gPlayer = playerManager.getPlayer(event.getPlayer()).orElseThrow();
+            var game = gPlayer.getGame();
+            if (event.getClickedEntity().getEntityType().isAlive() && !gPlayer.isSpectator
                     && gPlayer.getGame().getStatus() == GameStatus.RUNNING) {
-
-                if (Bukkit.getPluginManager().isPluginEnabled("Citizens")) {
-                    // .equals doesn't work with Citizens
-                    GameStore npcStore = CitizensUtils.getFromNPC(event.getRightClicked());
-                    if (npcStore != null) {
+                for (var store : game.getGameStoreList()) {
+                    if (store.getEntity().equals(event.getClickedEntity().as(Entity.class))) {
                         event.setCancelled(true);
-                        open(npcStore, event, game);
+                        open(store, gPlayer, event.getClickedEntity(), game);
                         return;
                     }
                 }
-
-                for (GameStore store : game.getGameStoreList()) {
-                    if (store.getEntity().equals(event.getRightClicked())) {
-                        event.setCancelled(true);
-                        open(store, event, game);
-                    }
-                }
-
             }
         }
     }
 
-    public void open(GameStore store, PlayerInteractEntityEvent event, Game game) {
-        var openShopEvent = new OpenShopEventImpl(game, EntityMapper.wrapEntity(event.getRightClicked()).orElseThrow(), PlayerManager.getInstance().getPlayer(event.getPlayer().getUniqueId()).orElseThrow(), store);
+    @OnEvent
+    public void onNPCInteract(NPCInteractEvent event) {
+        if (playerManager.isPlayerInGame(event.getPlayer())) {
+            var gPlayer = playerManager.getPlayer(event.getPlayer()).orElseThrow();
+            var game = gPlayer.getGame();
+            if (!gPlayer.isSpectator && gPlayer.getGame().getStatus() == GameStatus.RUNNING) {
+                for (var store : game.getGameStoreList()) {
+                    if (store.getNpc().equals(event.getNpc())) {
+                        open(store, gPlayer, null, game);
+                        return;
+                    }
+                }
+            }
+        }
+    }
+
+    public void open(GameStore store, BedWarsPlayer player, EntityBasic clickedEntity, Game game) {
+        var openShopEvent = new OpenShopEventImpl(game, clickedEntity, player, store);
         EventManager.fire(openShopEvent);
 
         if (openShopEvent.getResult() != OpenShopEvent.Result.ALLOW) {
@@ -57,6 +71,6 @@ public class VillagerListener implements Listener {
         }
         Debug.info(openShopEvent.getPlayer().getName() + " opened villager");
 
-        Main.openStore(openShopEvent.getPlayer(), store);
+        shopInventory.show(openShopEvent.getPlayer(), store);
     }
 }

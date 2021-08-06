@@ -3,11 +3,26 @@ package org.screamingsandals.bedwars.listener;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.ServerListPingEvent;
+import org.bukkit.plugin.Plugin;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.game.Game;
 import org.screamingsandals.bedwars.game.GameManager;
+import org.screamingsandals.lib.utils.annotations.Service;
+import org.screamingsandals.lib.utils.annotations.methods.OnPostEnable;
+import org.screamingsandals.lib.utils.annotations.methods.ShouldRunControllable;
 
+@Service
 public class BungeeMotdListener implements Listener {
+
+    @ShouldRunControllable
+    public boolean isEnabled() {
+        return MainConfig.getInstance().node("bungee", "enabled").getBoolean() && MainConfig.getInstance().node("bungee", "motd", "enabled").getBoolean();
+    }
+
+    @OnPostEnable
+    public void onPostEnable(Plugin plugin) {
+        plugin.getServer().getPluginManager().registerEvents(this, plugin);
+    }
 
     @EventHandler
     public void onServerListPing(ServerListPingEvent slpe) {
