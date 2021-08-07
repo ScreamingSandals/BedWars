@@ -62,7 +62,7 @@ public class WarpPowderListener implements Listener {
 
                     if (unhidden != null) {
                         event.setCancelled(true);
-                        if (!game.isDelayActive(player, WarpPowder.class)) {
+                        if (!game.isDelayActive(PlayerManager.getInstance().getPlayer(player.getUniqueId()).orElseThrow(), WarpPowder.class)) {
                             int teleportTime = Integer.parseInt(unhidden.split(":")[2]);
                             int delay = Integer.parseInt(unhidden.split(":")[3]);
                             WarpPowder warpPowder = new WarpPowder(game, event.getPlayer(),
@@ -74,13 +74,13 @@ public class WarpPowderListener implements Listener {
                             }
 
                             if (delay > 0) {
-                                DelayFactory delayFactory = new DelayFactory(delay, warpPowder, player, game);
+                                DelayFactory delayFactory = new DelayFactory(delay, warpPowder, PlayerManager.getInstance().getPlayer(player.getUniqueId()).orElseThrow(), (org.screamingsandals.bedwars.game.Game) game);
                                 game.registerDelay(delayFactory);
                             }
 
                             warpPowder.runTask();
                         } else {
-                            int delay = game.getActiveDelay(player, WarpPowder.class).getRemainDelay();
+                            int delay = game.getActiveDelay(PlayerManager.getInstance().getPlayer(player.getUniqueId()).orElseThrow(), WarpPowder.class).getRemainDelay();
                             MiscUtils.sendActionBarMessage(PlayerMapper.wrapPlayer(player), Message.of(LangKeys.SPECIALS_ITEM_DELAY).placeholder("time", delay));
                         }
                     }

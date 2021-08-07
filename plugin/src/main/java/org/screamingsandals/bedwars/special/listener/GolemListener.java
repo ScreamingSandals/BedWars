@@ -70,7 +70,7 @@ public class GolemListener implements Listener {
                 String unhidden = APIUtils.unhashFromInvisibleStringStartsWith(stack, GOLEM_PREFIX);
 
                 if (unhidden != null) {
-                    if (!game.isDelayActive(player, Golem.class)) {
+                    if (!game.isDelayActive(PlayerManager.getInstance().getPlayer(player.getUniqueId()).orElseThrow(), Golem.class)) {
                         event.setCancelled(true);
 
                         double speed = Double.parseDouble(unhidden.split(":")[2]);
@@ -93,7 +93,7 @@ public class GolemListener implements Listener {
                                 stack, location, speed, follow, health, name, showName);
 
                         if (delay > 0) {
-                            DelayFactory delayFactory = new DelayFactory(delay, golem, player, game);
+                            DelayFactory delayFactory = new DelayFactory(delay, golem, PlayerManager.getInstance().getPlayer(player.getUniqueId()).orElseThrow(), (org.screamingsandals.bedwars.game.Game) game);
                             game.registerDelay(delayFactory);
                         }
 
@@ -101,7 +101,7 @@ public class GolemListener implements Listener {
                     } else {
                         event.setCancelled(true);
 
-                        int delay = game.getActiveDelay(player, Golem.class).getRemainDelay();
+                        int delay = game.getActiveDelay(PlayerManager.getInstance().getPlayer(player.getUniqueId()).orElseThrow(), Golem.class).getRemainDelay();
                         MiscUtils.sendActionBarMessage(PlayerMapper.wrapPlayer(player), Message.of(LangKeys.SPECIALS_ITEM_DELAY).placeholder("time", delay));
                     }
                 }

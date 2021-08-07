@@ -34,6 +34,7 @@ import org.screamingsandals.bedwars.api.RunningTeam;
 import org.screamingsandals.bedwars.api.boss.BossBar;
 import org.screamingsandals.bedwars.api.boss.StatusBar;
 import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
+import org.screamingsandals.bedwars.api.game.GameParticipant;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.api.special.SpecialItem;
 import org.screamingsandals.bedwars.api.upgrades.UpgradeRegistry;
@@ -2915,10 +2916,10 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     }
 
     @Override
-    public List<DelayFactory> getActiveDelaysOfPlayer(Player player) {
-        List<DelayFactory> delays = new ArrayList<>();
-        for (DelayFactory delay : activeDelays) {
-            if (delay.getPlayer() == player) {
+    public List<DelayFactory> getActiveDelaysOfPlayer(GameParticipant player) {
+        var delays = new ArrayList<DelayFactory>();
+        for (var delay : activeDelays) {
+            if (delay.getParticipant().equals(player)) {
                 delays.add(delay);
             }
         }
@@ -2926,8 +2927,8 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     }
 
     @Override
-    public DelayFactory getActiveDelay(Player player, Class<? extends SpecialItem> specialItem) {
-        for (DelayFactory delayFactory : getActiveDelaysOfPlayer(player)) {
+    public DelayFactory getActiveDelay(GameParticipant player, Class<? extends SpecialItem> specialItem) {
+        for (var delayFactory : getActiveDelaysOfPlayer(player)) {
             if (specialItem.isInstance(delayFactory.getSpecialItem())) {
                 return delayFactory;
             }
@@ -2948,10 +2949,10 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     }
 
     @Override
-    public boolean isDelayActive(Player player, Class<? extends SpecialItem> specialItem) {
-        for (DelayFactory delayFactory : getActiveDelaysOfPlayer(player)) {
+    public boolean isDelayActive(GameParticipant player, Class<? extends SpecialItem> specialItem) {
+        for (var delayFactory : getActiveDelaysOfPlayer(player)) {
             if (specialItem.isInstance(delayFactory.getSpecialItem())) {
-                return delayFactory.getDelayActive();
+                return delayFactory.isDelayActive();
             }
         }
         return false;

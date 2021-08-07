@@ -65,7 +65,7 @@ public class ProtectionWallListener implements Listener {
                 String unhidden = APIUtils.unhashFromInvisibleStringStartsWith(stack, PROTECTION_WALL_PREFIX);
 
                 if (unhidden != null) {
-                    if (!game.isDelayActive(player, ProtectionWall.class)) {
+                    if (!game.isDelayActive(PlayerManager.getInstance().getPlayer(player.getUniqueId()).orElseThrow(), ProtectionWall.class)) {
                         event.setCancelled(true);
 
                         boolean isBreakable = Boolean.parseBoolean(unhidden.split(":")[2]);
@@ -88,7 +88,7 @@ public class ProtectionWallListener implements Listener {
                         }
 
                         if (delay > 0) {
-                            DelayFactory delayFactory = new DelayFactory(delay, protectionWall, player, game);
+                            DelayFactory delayFactory = new DelayFactory(delay, protectionWall, PlayerManager.getInstance().getPlayer(player.getUniqueId()).orElseThrow(), (org.screamingsandals.bedwars.game.Game) game);
                             game.registerDelay(delayFactory);
                         }
 
@@ -96,7 +96,7 @@ public class ProtectionWallListener implements Listener {
                     } else {
                         event.setCancelled(true);
 
-                        int delay = game.getActiveDelay(player, ProtectionWall.class).getRemainDelay();
+                        int delay = game.getActiveDelay(PlayerManager.getInstance().getPlayer(player.getUniqueId()).orElseThrow(), ProtectionWall.class).getRemainDelay();
                         MiscUtils.sendActionBarMessage(PlayerMapper.wrapPlayer(player), Message.of(LangKeys.SPECIALS_ITEM_DELAY).placeholder("time", delay));
                     }
                 }

@@ -7,7 +7,7 @@ allprojects {
 
 buildscript {
     repositories {
-        mavenLocal()
+        //mavenLocal()
         maven { url 'https://repo.screamingsandals.org/public/' }
         maven { url 'https://plugins.gradle.org/m2' }
     }
@@ -37,7 +37,6 @@ subprojects {
         maven { url 'https://repo.codemc.org/repository/maven-public/'  }
         maven { url 'https://repo.alessiodp.com/releases/'  }
         maven { url 'https://jitpack.io' }
-        maven { url 'https://repo.citizensnpcs.co'  }
     }
     
     dependencies {

@@ -33,10 +33,7 @@ import org.screamingsandals.bedwars.premium.PremiumBedwars;
 import org.screamingsandals.bedwars.special.SpecialRegister;
 import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.bedwars.tab.TabManager;
-import org.screamingsandals.bedwars.utils.BedWarsSignService;
-import org.screamingsandals.bedwars.utils.BukkitBStatsMetrics;
-import org.screamingsandals.bedwars.utils.EventUtils;
-import org.screamingsandals.bedwars.utils.UpdateChecker;
+import org.screamingsandals.bedwars.utils.*;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.lib.Core;
 import org.screamingsandals.lib.event.EventManager;
@@ -105,7 +102,8 @@ import java.util.*;
         BungeeMotdListener.class,
         WorldListener.class,
         VillagerListener.class,
-        PlayerListener.class
+        PlayerListener.class,
+        NPCUtils.class
 })
 public class Main extends PluginContainer implements BedwarsAPI {
     private static Main instance;

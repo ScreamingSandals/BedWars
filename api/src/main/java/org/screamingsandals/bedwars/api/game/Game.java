@@ -256,14 +256,14 @@ public interface Game {
      * @param player
      * @return
      */
-    List<DelayFactory> getActiveDelaysOfPlayer(Player player);
+    List<DelayFactory> getActiveDelaysOfPlayer(GameParticipant player);
 
     /**
      * @param player
      * @param specialItem
      * @return
      */
-    DelayFactory getActiveDelay(Player player, Class<? extends SpecialItem> specialItem);
+    DelayFactory getActiveDelay(GameParticipant player, Class<? extends SpecialItem> specialItem);
 
     /**
      * @param delayFactory
@@ -280,7 +280,7 @@ public interface Game {
      * @param specialItem
      * @return
      */
-    boolean isDelayActive(Player player, Class<? extends SpecialItem> specialItem);
+    boolean isDelayActive(GameParticipant player, Class<? extends SpecialItem> specialItem);
 
     /**
      * @param item

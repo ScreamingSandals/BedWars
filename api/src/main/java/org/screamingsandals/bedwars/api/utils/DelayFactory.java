@@ -1,30 +1,30 @@
 package org.screamingsandals.bedwars.api.utils;
 
+import org.screamingsandals.bedwars.api.game.GameParticipant;
 import org.screamingsandals.bedwars.api.special.SpecialItem;
-import org.bukkit.entity.Player;
 
 /**
- * @author Bedwars Team
+ * @author ScreamingSandals
  */
 public interface DelayFactory {
 
     /**
-     * @return
+     * @return is delay active
      */
-    boolean getDelayActive();
+    boolean isDelayActive();
 
     /**
-     * @return
+     * @return special item for which this delay is used
      */
     SpecialItem getSpecialItem();
 
     /**
-     * @return
+     * @return remaining delay
      */
     int getRemainDelay();
 
     /**
-     * @return
+     * @return the game participant using this delay factory
      */
-    Player getPlayer();
+    GameParticipant getParticipant();
 }

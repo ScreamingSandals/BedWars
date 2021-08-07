@@ -66,7 +66,7 @@ public class RescuePlatformListener implements Listener {
                 String unhidden = APIUtils.unhashFromInvisibleStringStartsWith(stack, RESCUE_PLATFORM_PREFIX);
 
                 if (unhidden != null) {
-                    if (!game.isDelayActive(player, RescuePlatform.class)) {
+                    if (!game.isDelayActive(PlayerManager.getInstance().getPlayer(player.getUniqueId()).orElseThrow(), RescuePlatform.class)) {
                         event.setCancelled(true);
 
                         boolean isBreakable = Boolean.parseBoolean(unhidden.split(":")[2]);
@@ -87,7 +87,7 @@ public class RescuePlatformListener implements Listener {
                         }
 
                         if (delay > 0) {
-                            DelayFactory delayFactory = new DelayFactory(delay, rescuePlatform, player, game);
+                            DelayFactory delayFactory = new DelayFactory(delay, rescuePlatform, PlayerManager.getInstance().getPlayer(player.getUniqueId()).orElseThrow(), (org.screamingsandals.bedwars.game.Game) game);
                             game.registerDelay(delayFactory);
                         }
 
@@ -95,7 +95,7 @@ public class RescuePlatformListener implements Listener {
                     } else {
                         event.setCancelled(true);
 
-                        int delay = game.getActiveDelay(player, RescuePlatform.class).getRemainDelay();
+                        int delay = game.getActiveDelay(PlayerManager.getInstance().getPlayer(player.getUniqueId()).orElseThrow(), RescuePlatform.class).getRemainDelay();
                         MiscUtils.sendActionBarMessage(PlayerMapper.wrapPlayer(player), Message.of(LangKeys.SPECIALS_ITEM_DELAY).placeholder("time", delay));
                     }
                 }
