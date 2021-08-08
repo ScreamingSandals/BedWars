@@ -7,7 +7,7 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.screamingsandals.bedwars.Main;
+import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.GameManagerImpl;
@@ -35,7 +35,7 @@ public class ReloadCommand extends BaseCommand {
                         sender.sendMessage(Message.of(LangKeys.SAFE_RELOAD).defaultPrefix());
 
                         GameManagerImpl.getInstance().getGames().forEach(GameImpl::stop);
-                        var plugin = Main.getInstance().getPluginDescription().as(JavaPlugin.class);
+                        var plugin = BedWarsPlugin.getInstance().getPluginDescription().as(JavaPlugin.class);
 
                         new BukkitRunnable() {
                             public int timer = 60;

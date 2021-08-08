@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
-import org.screamingsandals.bedwars.Main;
+import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.nms.accessors.CombatTrackerAccessor;
 import org.screamingsandals.bedwars.nms.accessors.LivingEntityAccessor;
 import org.screamingsandals.bedwars.nms.accessors.PlayerAccessor;
@@ -77,7 +77,7 @@ public class FakeDeath {
             Reflect.fastInvoke(ClassStorage.getHandle(player), PlayerAccessor.getMethodRemoveEntitiesOnShoulder1());
         } catch (Throwable ignored) {}
 
-        if (Main.getVersionNumber() >= 116) {
+        if (BedWarsPlugin.getVersionNumber() >= 116) {
             try {
                 Boolean b = deathWorld.getGameRuleValue(GameRule.FORGIVE_DEAD_PLAYERS);
                 if (b != null && b) {

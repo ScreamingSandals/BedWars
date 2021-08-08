@@ -2,8 +2,8 @@ package org.screamingsandals.bedwars.special;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.special.TNTSheep;
+import org.screamingsandals.bedwars.entities.EntitiesManagerImpl;
 import org.screamingsandals.bedwars.game.CurrentTeam;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.TeamColor;
@@ -72,8 +72,9 @@ public class TNTSheepImpl extends SpecialItem implements TNTSheep<GameImpl, BedW
         sheep.addPassenger(tnt);
 
         game.registerSpecialItem(this);
-        Main.registerGameEntity(sheep.as(Entity.class), game);
-        Main.registerGameEntity(tnt.as(Entity.class), game);
+        var entitiesManager = EntitiesManagerImpl.getInstance();
+        entitiesManager.addEntityToGame(sheep, game);
+        entitiesManager.addEntityToGame(tnt, game);
 
         if (item.getAmount() > 1) {
             item.setAmount(item.getAmount() - 1);

@@ -5,7 +5,7 @@ import cloud.commandframework.CommandManager;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.screamingsandals.bedwars.Main;
+import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.lib.lang.Message;
@@ -39,12 +39,12 @@ public class LanguageCommand extends BaseCommand {
                         try {
                             final String locale = commandContext.get("language");
                             final var config = new YamlConfiguration();
-                            var file = Main.getInstance().getPluginDescription().getDataFolder().resolve("languages").resolve("language_" + locale + ".yml").toFile();
+                            var file = BedWarsPlugin.getInstance().getPluginDescription().getDataFolder().resolve("languages").resolve("language_" + locale + ".yml").toFile();
 
                             if (file.exists()) {
                                 config.load(file);
                             } else {
-                                final var ins = Main.class.getResourceAsStream("languages/language_" + locale + ".yml");
+                                final var ins = BedWarsPlugin.class.getResourceAsStream("languages/language_" + locale + ".yml");
                                 config.load(new InputStreamReader(ins));
                             }
                             final var langName = Objects.requireNonNull(config.getString("lang_name"));
@@ -57,8 +57,8 @@ public class LanguageCommand extends BaseCommand {
                             }
                             MainConfig.getInstance().node("locale").set(locale);
                             MainConfig.getInstance().saveConfig();
-                            Bukkit.getServer().getPluginManager().disablePlugin(Main.getInstance().getPluginDescription().as(JavaPlugin.class));
-                            Bukkit.getServer().getPluginManager().enablePlugin(Main.getInstance().getPluginDescription().as(JavaPlugin.class));
+                            Bukkit.getServer().getPluginManager().disablePlugin(BedWarsPlugin.getInstance().getPluginDescription().as(JavaPlugin.class));
+                            Bukkit.getServer().getPluginManager().enablePlugin(BedWarsPlugin.getInstance().getPluginDescription().as(JavaPlugin.class));
                             sender.sendMessage(Message.of(LangKeys.LANGUAGE_SUCCESS).defaultPrefix().placeholder("lang", langName));
                         } catch (Exception e) {
                             sender.sendMessage(Message.of(LangKeys.LANGUAGE_USAGE_BW_LANG).defaultPrefix());

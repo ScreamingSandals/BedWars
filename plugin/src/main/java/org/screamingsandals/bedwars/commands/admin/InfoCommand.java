@@ -267,7 +267,7 @@ public class InfoCommand extends BaseAdminSubCommand {
                                         .placeholder("yaw", loc_store.getYaw(), 5)
                                         .placeholder("pitch", loc_store.getPitch(), 5)
                                         .placeholder("world", loc_store.getWorld().getName())
-                                        .placeholder("type", store.getEntityType().name())
+                                        .placeholder("type", store.getEntityType().getPlatformName())
                                         .send(sender);
 
                                 Message
@@ -285,7 +285,7 @@ public class InfoCommand extends BaseAdminSubCommand {
                                             .of(LangKeys.ADMIN_INFO_VILLAGER_SHOP_NAME)
                                             .placeholder("file", store.getShopFile())
                                             .placeholder("bool", Message
-                                                    .of(store.getUseParent()
+                                                    .of(store.isUseParent()
                                                             ? LangKeys.ADMIN_INFO_CONSTANT_TRUE
                                                             : LangKeys.ADMIN_INFO_CONSTANT_FALSE
                                                     )
@@ -295,7 +295,7 @@ public class InfoCommand extends BaseAdminSubCommand {
                                 Message
                                         .of(LangKeys.ADMIN_INFO_VILLAGER_SHOP_DEALER_NAME)
                                         .placeholder("name",
-                                                store.isShopCustomName()
+                                                store.isEnabledCustomName()
                                                         ? AdventureHelper.toComponent(store.getShopCustomName())
                                                         : Message.of(LangKeys.ADMIN_INFO_VILLAGER_SHOP_DEALER_HAS_NO_NAME).asComponent(sender)
 

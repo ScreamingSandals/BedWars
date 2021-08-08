@@ -1,6 +1,6 @@
 package org.screamingsandals.bedwars.utils;
 
-import org.screamingsandals.bedwars.Main;
+import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.game.TeamColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -16,7 +16,7 @@ public class ColorChanger implements org.screamingsandals.bedwars.api.utils.Colo
         Material material = itemStack.getType();
         String materialName = material.name();
 
-        if (Main.autoColoredMaterials.contains(materialName)) {
+        if (BedWarsPlugin.autoColoredMaterials.contains(materialName)) {
             itemStack.setDurability((short) teamColor.woolData);
         } else if (material.toString().contains("GLASS")) {
             itemStack.setType(Material.getMaterial("STAINED_GLASS"));
@@ -39,7 +39,7 @@ public class ColorChanger implements org.screamingsandals.bedwars.api.utils.Colo
 
         String teamMaterialColor = teamColor.material1_13;
 
-        if (Main.autoColoredMaterials.contains(materialName)) {
+        if (BedWarsPlugin.autoColoredMaterials.contains(materialName)) {
             return Material.getMaterial(teamMaterialColor + "_" + materialName);
         } else if (material.toString().contains("GLASS")) {
             return Material.getMaterial(teamMaterialColor + "_STAINED_GLASS");
@@ -71,7 +71,7 @@ public class ColorChanger implements org.screamingsandals.bedwars.api.utils.Colo
         try {
             TeamColor color = TeamColor.fromApiColor(apiColor);
             Material material = stack.getType();
-            if (Main.isLegacy()) {
+            if (BedWarsPlugin.isLegacy()) {
                 stack = changeLegacyStackColor(stack, color);
             } else {
                 stack.setType(changeMaterialColor(material, color));

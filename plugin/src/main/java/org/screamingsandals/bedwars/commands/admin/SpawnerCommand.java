@@ -4,7 +4,7 @@ import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
 import cloud.commandframework.arguments.standard.*;
 import org.bukkit.entity.Player;
-import org.screamingsandals.bedwars.Main;
+import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.commands.AdminCommand;
 import org.screamingsandals.bedwars.game.ItemSpawner;
 import org.screamingsandals.bedwars.game.Team;
@@ -31,7 +31,7 @@ public class SpawnerCommand extends BaseAdminSubCommand {
                         .literal("add")
                         .argument(StringArgument
                                 .<CommandSenderWrapper>newBuilder("type")
-                                .withSuggestionsProvider((c,s) -> Main.getAllSpawnerTypes())
+                                .withSuggestionsProvider((c,s) -> BedWarsPlugin.getAllSpawnerTypes())
                         )
                         .argument(BooleanArgument.optional("hologramEnabled", true))
                         .argument(DoubleArgument.optional("startLevel", 1))
@@ -79,7 +79,7 @@ public class SpawnerCommand extends BaseAdminSubCommand {
                             }
                             loc.setYaw(0);
                             loc.setPitch(0);
-                            var spawnerType = Main.getSpawnerType(type);
+                            var spawnerType = BedWarsPlugin.getSpawnerType(type);
                             if (spawnerType != null) {
                                 game.getSpawners().add(new ItemSpawner(loc, spawnerType, customName, hologramEnabled, startLevel, team, maxSpawnedResources, floatingHologram, rotationMode));
                                 sender.sendMessage(

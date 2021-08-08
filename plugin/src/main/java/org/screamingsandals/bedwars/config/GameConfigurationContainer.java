@@ -1,7 +1,6 @@
 package org.screamingsandals.bedwars.config;
 
 import lombok.Getter;
-import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.config.Configuration;
 import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
 import org.spongepowered.configurate.BasicConfigurationNode;

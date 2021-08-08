@@ -1,27 +1,25 @@
 package org.screamingsandals.bedwars.api.game;
 
-import org.bukkit.Location;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
+import org.screamingsandals.lib.utils.Wrapper;
 
 /**
  * @author Bedwars Team
  */
-public interface GameStore {
+public interface GameStore<E extends Wrapper, T extends Wrapper, L extends Wrapper> {
     /**
      * @return shop entity
      */
-    LivingEntity getEntity();
+    E getEntity();
 
     /**
      * @return entity type used for the shop
      */
-    EntityType getEntityType();
+    T getEntityType();
 
     /**
      * @return location of this store
      */
-    Location getStoreLocation();
+    L getStoreLocation();
 
     /**
      * @return shop file
@@ -36,12 +34,12 @@ public interface GameStore {
     /**
      * @return true if shop file should be merged with custom shop file
      */
-    boolean getUseParent();
+    boolean isUseParent();
 
     /**
      * @return true if shopkeeper has name
      */
-    boolean isShopCustomName();
+    boolean isEnabledCustomName();
 
     /**
      * @return true if shopkeeper is baby

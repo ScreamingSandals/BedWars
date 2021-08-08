@@ -7,10 +7,12 @@ import cloud.commandframework.arguments.standard.StringArgument;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.screamingsandals.bedwars.game.GameStore;
+import org.screamingsandals.bedwars.game.GameStoreImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.utils.ArenaUtils;
+import org.screamingsandals.lib.entity.type.EntityTypeHolder;
 import org.screamingsandals.lib.lang.Message;
+import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
 import org.screamingsandals.lib.utils.annotations.Service;
 
@@ -41,7 +43,7 @@ public class StoreCommand extends BaseAdminSubCommand {
                                     .map(s -> ChatColor.translateAlternateColorCodes('&', s));
                             var file = commandContext.<String>getOptional("file");
                             boolean useParent = commandContext.getOrDefault("useParent", true);
-                            var loc = sender.as(Player.class).getLocation();
+                            var loc = sender.as(PlayerWrapper.class).getLocation();
 
                             if (game.getPos1() == null || game.getPos2() == null) {
                                 sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_SET_BOUNDS_FIRST).defaultPrefix());
@@ -64,7 +66,7 @@ public class StoreCommand extends BaseAdminSubCommand {
                                 sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_STORE_ALREADY_EXIST).defaultPrefix());
                                 return;
                             }
-                            game.getGameStoreList().add(new GameStore(loc, file.orElse(null), useParent, name.orElse(null), name.isPresent(), false));
+                            game.getGameStoreList().add(new GameStoreImpl(loc, file.orElse(null), useParent, name.orElse(null), name.isPresent(), false));
                             sender.sendMessage(
                                     Message
                                     .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_STORE_ADDED)
@@ -142,7 +144,7 @@ public class StoreCommand extends BaseAdminSubCommand {
                 commandSenderWrapperBuilder
                         .literal("adult")
                         .handler(commandContext -> editMode(commandContext, (sender, game) -> {
-                            var loc = sender.as(Player.class).getLocation();
+                            var loc = sender.as(PlayerWrapper.class).getLocation();
 
                             var store = game.getGameStoreList()
                                     .stream()
@@ -182,16 +184,13 @@ public class StoreCommand extends BaseAdminSubCommand {
                                     .findFirst();
 
                             if (store.isPresent()) {
-                                EntityType t = null;
-                                try {
-                                    t = EntityType.valueOf(type.split(":", 2)[0].toUpperCase());
-                                    if (!t.isAlive()) {
-                                        t = null;
-                                    }
-                                } catch (Exception e) {
+                                var t = EntityTypeHolder.ofOptional(type.split(":", 2)[0].toUpperCase()).orElse(null);
+                                if (t != null && !t.isAlive()) {
+                                    sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_INVALID_ENTITY_TYPE).defaultPrefix());
+                                    return;
                                 }
 
-                                if (t == EntityType.PLAYER) {
+                                if (t != null && t.is("player")) {
                                     String[] splitted = type.split(":", 2);
                                     if (splitted.length != 2 || splitted[1].trim().equals("")) {
                                         sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_NPC_MUST_HAVE_SKIN_NAME).defaultPrefix());

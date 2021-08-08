@@ -2,7 +2,7 @@ package org.screamingsandals.bedwars.commands;
 
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
-import org.screamingsandals.bedwars.Main;
+import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.lib.lang.Message;
@@ -24,7 +24,7 @@ public class HelpCommand extends BaseCommand {
                     // TODO: use more generic way
                     var sender = commandContext.getSender();
                     if (sender.getType() == CommandSenderWrapper.Type.PLAYER) {
-                        Message.of(LangKeys.HELP_TITLE).placeholder("version", Main.getVersion()).send(sender);
+                        Message.of(LangKeys.HELP_TITLE).placeholder("version", BedWarsPlugin.getVersion()).send(sender);
                         if (sender.hasPermission(BedWarsPermission.JOIN_PERMISSION.asPermission())) {
                             Message.of(LangKeys.HELP_BW_JOIN).send(sender);
                         }
@@ -107,7 +107,7 @@ public class HelpCommand extends BaseCommand {
                     } else {
                         Message
                                 .of(LangKeys.HELP_TITLE_CONSOLE)
-                                .placeholder("version", Main.getVersion())
+                                .placeholder("version", BedWarsPlugin.getVersion())
                                 .join(LangKeys.HELP_BW_LIST)
                                 .join(LangKeys.HELP_BW_STATS_OTHER)
                                 .join(LangKeys.HELP_BW_ALLJOIN)

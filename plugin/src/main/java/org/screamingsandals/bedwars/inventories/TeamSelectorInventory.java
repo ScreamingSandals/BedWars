@@ -3,7 +3,7 @@ package org.screamingsandals.bedwars.inventories;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
-import org.screamingsandals.bedwars.Main;
+import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.api.RunningTeam;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.events.OpenTeamSelectionEventImpl;
@@ -61,7 +61,7 @@ public class TeamSelectorInventory {
                         var playersInTeam = game.getPlayersInTeam(team);
                         var playersInTeamCount = playersInTeam.size();
 
-                        categoryBuilder.item(Main.getInstance().getColorChanger().applyColor(team.color.toApiColor(), item), itemInfoBuilder -> {
+                        categoryBuilder.item(BedWarsPlugin.getInstance().getColorChanger().applyColor(team.color.toApiColor(), item), itemInfoBuilder -> {
                             try {
                                 itemInfoBuilder.stack(itemBuilder ->
                                         itemBuilder.name(Message.of(LangKeys.IN_GAME_TEAM_SELECTION_SELECT_ITEM)

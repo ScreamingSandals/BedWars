@@ -6,7 +6,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.screamingsandals.bedwars.Main;
+import org.screamingsandals.bedwars.BedWarsPlugin;
 
 public enum TeamColor {
     BLACK(ChatColor.BLACK, 0xF, "BLACK", Color.BLACK),
@@ -38,7 +38,7 @@ public enum TeamColor {
     }
 
     public ItemStack getWool() {
-        if (Main.isLegacy()) {
+        if (BedWarsPlugin.isLegacy()) {
             return new ItemStack(Material.valueOf("WOOL"), 1, (short) woolData);
         } else {
             return new ItemStack(Material.valueOf(material1_13 + "_WOOL"));
@@ -47,7 +47,7 @@ public enum TeamColor {
     }
 
     public ItemStack getWool(ItemStack stack) {
-        if (Main.isLegacy()) {
+        if (BedWarsPlugin.isLegacy()) {
             stack.setType(Material.valueOf("WOOL"));
             stack.setDurability((short) woolData);
         } else {

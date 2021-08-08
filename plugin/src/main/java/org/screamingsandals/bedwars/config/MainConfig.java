@@ -3,7 +3,7 @@ package org.screamingsandals.bedwars.config;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
-import org.screamingsandals.bedwars.Main;
+import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.lib.material.Item;
 import org.screamingsandals.lib.material.builder.ItemFactory;
 import org.screamingsandals.lib.plugin.ServiceManager;
@@ -202,7 +202,7 @@ public class MainConfig {
                     .back()
                 .key("resources").defValue(() -> Map.of(
                             "bronze", Map.of(
-                                    "material", Main.isLegacy() ? "CLAY_BRICK" : "BRICK",
+                                    "material", BedWarsPlugin.isLegacy() ? "CLAY_BRICK" : "BRICK",
                                     "interval", 1,
                                     "name", "Bronze",
                                     "translate", "resource_bronze",

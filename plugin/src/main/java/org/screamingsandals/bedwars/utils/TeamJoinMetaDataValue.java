@@ -1,7 +1,7 @@
 package org.screamingsandals.bedwars.utils;
 
 import org.bukkit.plugin.java.JavaPlugin;
-import org.screamingsandals.bedwars.Main;
+import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.game.Team;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
@@ -56,7 +56,7 @@ public class TeamJoinMetaDataValue implements MetadataValue {
 
     @Override
     public Plugin getOwningPlugin() {
-        return Main.getInstance().getPluginDescription().as(JavaPlugin.class);
+        return BedWarsPlugin.getInstance().getPluginDescription().as(JavaPlugin.class);
     }
 
     public Team getTeam() {

@@ -5,7 +5,7 @@ import org.bukkit.*;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
 import org.bukkit.material.MaterialData;
-import org.screamingsandals.bedwars.Main;
+import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.events.PostSpawnEffectEventImpl;
 import org.screamingsandals.bedwars.events.PreSpawnEffectEventImpl;
@@ -77,7 +77,7 @@ public class SpawnEffects {
                     } else if (particle.getDataType().equals(Particle.DustOptions.class)) {
                         var map = (Map<String, Object>) dataO;
                         dataO = new Particle.DustOptions((Color) map.get("color"), ((Number) map.get("size")).floatValue());
-                    } else if (!Main.isLegacy()) {
+                    } else if (!BedWarsPlugin.isLegacy()) {
                         dataO = SpawnEffectsFlattening.convert(particle, dataO);
                     }
 

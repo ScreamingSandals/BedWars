@@ -3,8 +3,8 @@ package org.screamingsandals.bedwars.special;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.bukkit.entity.*;
-import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.special.Golem;
+import org.screamingsandals.bedwars.entities.EntitiesManagerImpl;
 import org.screamingsandals.bedwars.game.CurrentTeam;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.TeamColor;
@@ -66,7 +66,7 @@ public class GolemImpl extends SpecialItem implements Golem<GameImpl, BedWarsPla
                 .attackNearestTarget(0, ServerPlayerAccessor.getType());
 
         game.registerSpecialItem(this);
-        Main.registerGameEntity(golem.as(Entity.class), game);
+        EntitiesManagerImpl.getInstance().addEntityToGame(golem, game);
         MiscUtils.sendActionBarMessage(player, Message.of(LangKeys.SPECIALS_GOLEM_CREATED));
 
         //TODO - make this better by checking full inventory

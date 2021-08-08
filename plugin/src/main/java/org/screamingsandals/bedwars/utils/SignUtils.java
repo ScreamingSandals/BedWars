@@ -6,7 +6,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 import org.bukkit.material.Directional;
-import org.screamingsandals.bedwars.Main;
+import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.lib.signs.ClickableSign;
 
 import java.util.Optional;
@@ -26,7 +26,7 @@ public class SignUtils {
                 return null;
             }
 
-            if (!Main.isLegacy()) {
+            if (!BedWarsPlugin.isLegacy()) {
                 if (block.getState().getBlockData() instanceof Directional) {
                     Directional directional = (Directional) block.getState().getBlockData();
                     BlockFace blockFace = directional.getFacing().getOppositeFace();

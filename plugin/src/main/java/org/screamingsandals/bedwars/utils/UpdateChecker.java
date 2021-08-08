@@ -1,7 +1,7 @@
 package org.screamingsandals.bedwars.utils;
 
 import lombok.experimental.UtilityClass;
-import org.screamingsandals.bedwars.Main;
+import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.commands.BedWarsPermission;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.lang.LangKeys;
@@ -32,7 +32,7 @@ public class UpdateChecker {
         if (mainConfig.node("update-checker", "console").getBoolean()
                 || mainConfig.node("update-checker", "admins").getBoolean()) {
             HttpClient.newHttpClient().sendAsync(HttpRequest.newBuilder()
-                    .uri(URI.create("https://screamingsandals.org/bedwars-zero-update-checker.php?version=" + Main.getVersion()))
+                    .uri(URI.create("https://screamingsandals.org/bedwars-zero-update-checker.php?version=" + BedWarsPlugin.getVersion()))
                     .build(), HttpResponse.BodyHandlers.ofInputStream())
                     .thenAccept(inputStreamHttpResponse -> {
                         var loader = GsonConfigurationLoader.builder()

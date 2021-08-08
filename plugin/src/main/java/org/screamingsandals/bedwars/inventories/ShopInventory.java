@@ -7,12 +7,12 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
-import org.screamingsandals.bedwars.Main;
+import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.api.PurchaseType;
 import org.screamingsandals.bedwars.commands.DumpCommand;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.events.*;
-import org.screamingsandals.bedwars.game.GameStore;
+import org.screamingsandals.bedwars.game.GameStoreImpl;
 import org.screamingsandals.bedwars.api.game.ItemSpawnerType;
 import org.screamingsandals.bedwars.api.upgrades.Upgrade;
 import org.screamingsandals.bedwars.api.upgrades.UpgradeRegistry;
@@ -69,7 +69,7 @@ public class ShopInventory implements Listener {
 
     @OnPostEnable
     public void onEnable() {
-        Main.getInstance().registerBedwarsListener(this);
+        BedWarsPlugin.getInstance().registerBedwarsListener(this);
 
         var shopFileName = "shop.yml";
         if (mainConfig.node("turnOnExperimentalGroovyShop").getBoolean()) {
@@ -77,18 +77,18 @@ public class ShopInventory implements Listener {
         }
         var shopFile = dataFolder.resolve(shopFileName).toFile();
         if (!shopFile.exists()) {
-            Main.getInstance().saveResource(shopFileName, false);
+            BedWarsPlugin.getInstance().saveResource(shopFileName, false);
         }
 
         loadNewShop("default", null, true);
     }
 
-    public void show(PlayerWrapper player, GameStore store) {
+    public void show(PlayerWrapper player, GameStoreImpl store) {
         try {
             var parent = true;
             String fileName = null;
             if (store != null) {
-                parent = store.getUseParent();
+                parent = store.isUseParent();
                 fileName = store.getShopFile();
             }
             if (fileName != null) {
@@ -127,7 +127,7 @@ public class ShopInventory implements Listener {
             // TODO: multi-price feature
             var priceObject = prices.get(0);
             var price = priceObject.getAmount();
-            var type = Main.getSpawnerType(priceObject.getCurrency().toLowerCase());
+            var type = BedWarsPlugin.getSpawnerType(priceObject.getCurrency().toLowerCase());
             if (type == null) {
                 return;
             }
@@ -209,7 +209,7 @@ public class ShopInventory implements Listener {
             CurrentTeam team = (CurrentTeam) event.getGame().getTeamOfPlayer(player.as(Player.class));
 
             if (mainConfig.node("automatic-coloring-in-shop").getBoolean()) {
-                event.setStack(Main.getInstance().getColorChanger().applyColor(team.teamInfo.color.toApiColor(), event.getStack()));
+                event.setStack(BedWarsPlugin.getInstance().getColorChanger().applyColor(team.teamInfo.color.toApiColor(), event.getStack()));
             }
         }
     }
@@ -386,7 +386,7 @@ public class ShopInventory implements Listener {
 
         // TODO: multi-price feature
         var price = event.getPrices().get(0);
-        org.screamingsandals.bedwars.game.ItemSpawnerType type = Main.getSpawnerType(price.getCurrency().toLowerCase());
+        org.screamingsandals.bedwars.game.ItemSpawnerType type = BedWarsPlugin.getSpawnerType(price.getCurrency().toLowerCase());
 
         var newItem = event.getStack();
 
@@ -402,7 +402,7 @@ public class ShopInventory implements Listener {
                 return;
             }
 
-            changeItemType = Main.getSpawnerType(changeItemToName.toLowerCase());
+            changeItemType = BedWarsPlugin.getSpawnerType(changeItemToName.toLowerCase());
             if (changeItemType == null) {
                 return;
             }
@@ -510,7 +510,7 @@ public class ShopInventory implements Listener {
 
         // TODO: multi-price feature
         var price = event.getPrices().get(0);
-        org.screamingsandals.bedwars.game.ItemSpawnerType type = Main.getSpawnerType(price.getCurrency().toLowerCase());
+        org.screamingsandals.bedwars.game.ItemSpawnerType type = BedWarsPlugin.getSpawnerType(price.getCurrency().toLowerCase());
 
         var priceAmount = price.getAmount();
 
@@ -557,7 +557,7 @@ public class ShopInventory implements Listener {
                         upgrades = upgradeStorage.findItemSpawnerUpgrades(game, customName);
                     } else if (!spawnerTypeNode.empty()) {
                         String mapSpawnerType = spawnerTypeNode.getString();
-                        ItemSpawnerType spawnerType = Main.getSpawnerType(mapSpawnerType);
+                        ItemSpawnerType spawnerType = BedWarsPlugin.getSpawnerType(mapSpawnerType);
 
                         upgrades = upgradeStorage.findItemSpawnerUpgrades(game, team, spawnerType);
                     } else if (!teamUpgradeNode.empty()) {

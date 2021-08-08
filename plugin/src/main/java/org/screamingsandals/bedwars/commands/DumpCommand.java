@@ -13,7 +13,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.screamingsandals.bedwars.Main;
+import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.VersionInfo;
 import org.screamingsandals.bedwars.api.Team;
 import org.screamingsandals.bedwars.api.game.GameStore;
@@ -151,7 +151,7 @@ public class DumpCommand extends BaseCommand {
                                                                                             "location", gameStore.getStoreLocation(),
                                                                                             "shopFile", gameStore.getShopFile(),
                                                                                             "customName", gameStore.getShopCustomName(),
-                                                                                            "useParent", gameStore.getUseParent(),
+                                                                                            "useParent", gameStore.isUseParent(),
                                                                                             "baby", gameStore.isBaby(),
                                                                                             "skinName", gameStore.getSkinName()
                                                                                     )).collect(Collectors.toList()),
@@ -163,7 +163,7 @@ public class DumpCommand extends BaseCommand {
                                     ));
                                     try {
                                         var loader = YamlConfigurationLoader.builder()
-                                                .path(Main.getInstance().getPluginDescription().getDataFolder().resolve("config.yml"))
+                                                .path(BedWarsPlugin.getInstance().getPluginDescription().getDataFolder().resolve("config.yml"))
                                                 .build();
 
                                         var writer = new StringWriter();
@@ -201,7 +201,7 @@ public class DumpCommand extends BaseCommand {
                                             "content", Map.of(
                                                     "format", "text",
                                                     "highlight_language", MainConfig.getInstance().node("turnOnExperimentalGroovyShop").getBoolean() ? "groovy" : "yaml",
-                                                    "value", String.join("\n", Files.readAllLines(Main.getInstance().getPluginDescription().getDataFolder().resolve(MainConfig.getInstance().node("turnOnExperimentalGroovyShop").getBoolean() ? "shop.groovy" : "shop.yml"), StandardCharsets.UTF_8))
+                                                    "value", String.join("\n", Files.readAllLines(BedWarsPlugin.getInstance().getPluginDescription().getDataFolder().resolve(MainConfig.getInstance().node("turnOnExperimentalGroovyShop").getBoolean() ? "shop.groovy" : "shop.yml"), StandardCharsets.UTF_8))
                                             )
                                     );
                                     files.add(mainShop);

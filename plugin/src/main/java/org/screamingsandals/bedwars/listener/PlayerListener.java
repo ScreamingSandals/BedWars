@@ -28,13 +28,14 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
-import org.screamingsandals.bedwars.Main;
+import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.api.RunningTeam;
 import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.commands.BedWarsPermission;
 import org.screamingsandals.bedwars.commands.admin.JoinTeamCommand;
 import org.screamingsandals.bedwars.config.MainConfig;
+import org.screamingsandals.bedwars.entities.EntitiesManagerImpl;
 import org.screamingsandals.bedwars.events.PlayerDeathMessageSendEventImpl;
 import org.screamingsandals.bedwars.events.PlayerKilledEventImpl;
 import org.screamingsandals.bedwars.events.PlayerRespawnedEventImpl;
@@ -187,9 +188,9 @@ public class PlayerListener implements Listener {
                                     (float) MainConfig.getInstance().node("sounds", "player_kill", "volume").getDouble(),
                                     (float) MainConfig.getInstance().node("sounds", "player_kill", "pitch").getDouble());
                             if (!isBed) {
-                                Main.depositPlayer(killer, MainConfig.getInstance().node("vault", "reward", "final-kill").getInt());
+                                BedWarsPlugin.depositPlayer(killer, MainConfig.getInstance().node("vault", "reward", "final-kill").getInt());
                             } else {
-                                Main.depositPlayer(killer, Main.getVaultKillReward());
+                                BedWarsPlugin.depositPlayer(killer, BedWarsPlugin.getVaultKillReward());
                             }
                         }
 
@@ -224,9 +225,9 @@ public class PlayerListener implements Listener {
                     }
                 }
             }
-            if (Main.getVersionNumber() < 115 && !MainConfig.getInstance().node("allow-fake-death").getBoolean()) {
+            if (BedWarsPlugin.getVersionNumber() < 115 && !MainConfig.getInstance().node("allow-fake-death").getBoolean()) {
                 Debug.info(victim.getName() + " is going to be respawned via spigot api");
-                PlayerUtils.respawn(Main.getInstance().getPluginDescription().as(JavaPlugin.class), victim, 3L);
+                PlayerUtils.respawn(BedWarsPlugin.getInstance().getPluginDescription().as(JavaPlugin.class), victim, 3L);
             }
             if (MainConfig.getInstance().node("respawn-cooldown", "enabled").getBoolean()
                     && victimTeam.isAlive()
@@ -266,7 +267,7 @@ public class PlayerListener implements Listener {
                             this.cancel();
                         }
                     }
-                }.runTaskTimer(Main.getInstance().getPluginDescription().as(JavaPlugin.class), 20L, 20L);
+                }.runTaskTimer(BedWarsPlugin.getInstance().getPluginDescription().as(JavaPlugin.class), 20L, 20L);
             }
         }
     }
@@ -314,7 +315,7 @@ public class PlayerListener implements Listener {
                         }
                     }
                 }
-            }.runTaskLater(Main.getInstance().getPluginDescription().as(JavaPlugin.class), 1L);
+            }.runTaskLater(BedWarsPlugin.getInstance().getPluginDescription().as(JavaPlugin.class), 1L);
         }
 
         if (MainConfig.getInstance().node("disable-server-message", "player-join").getBoolean()) {
@@ -504,10 +505,10 @@ public class PlayerListener implements Listener {
 
             final String message = event.getMessage();
             final BedWarsPlayer gamePlayer = PlayerManagerImpl.getInstance().getPlayer(event.getPlayer().getUniqueId()).orElseThrow();
-            if (Main.isCommandLeaveShortcut(message)) {
+            if (BedWarsPlugin.isCommandLeaveShortcut(message)) {
                 event.setCancelled(true);
                 gamePlayer.changeGame(null);
-            } else if (!Main.isCommandAllowedInGame(message.split(" ")[0])) {
+            } else if (!BedWarsPlugin.isCommandAllowedInGame(message.split(" ")[0])) {
                 Debug.info(event.getPlayer().getName() + " attempted to execute a command, canceled");
                 event.setCancelled(true);
                 PlayerMapper.wrapPlayer(player).sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_COMMAND_IS_NOT_ALLOWED).prefixOrDefault(gamePlayer.getGame().getCustomPrefixComponent()));
@@ -624,9 +625,9 @@ public class PlayerListener implements Listener {
 
         if (!(entity instanceof Player)) {
             if (event.getCause() != DamageCause.VOID) {
-                GameImpl game = Main.getInGameEntity(entity);
-                if (game != null) {
-                    if (game.isEntityShop(entity) && game.getConfigurationContainer().getOrDefault(ConfigurationContainer.PROTECT_SHOP, Boolean.class, false)) {
+                var game = EntitiesManagerImpl.getInstance().getGameOfEntity(entity);
+                if (game.isPresent()) {
+                    if (game.get().isEntityShop(entity) && game.get().getConfigurationContainer().getOrDefault(ConfigurationContainer.PROTECT_SHOP, Boolean.class, false)) {
                         Debug.info("Game entity was damaged, cancelling");
                         event.setCancelled(true);
                     }
@@ -884,7 +885,7 @@ public class PlayerListener implements Listener {
                                     for (RunningTeam team : game.getRunningTeams()) {
                                         if (team.getTargetBlock().equals(event.getClickedBlock().getLocation())) {
                                             event.setCancelled(true);
-                                            if (Main.isLegacy()) {
+                                            if (BedWarsPlugin.isLegacy()) {
                                                 if (event.getClickedBlock().getState().getData() instanceof org.bukkit.material.Cake) {
                                                     org.bukkit.material.Cake cake = (org.bukkit.material.Cake) event.getClickedBlock().getState().getData();
                                                     if (cake.getSlicesEaten() == 0) {
@@ -1103,7 +1104,7 @@ public class PlayerListener implements Listener {
                 ArmorStandUtils.equipArmorStand((ArmorStand) living, value.getTeam());
             }
 
-            player.removeMetadata(JoinTeamCommand.BEDWARS_TEAM_JOIN_METADATA, Main.getInstance().getPluginDescription().as(JavaPlugin.class));
+            player.removeMetadata(JoinTeamCommand.BEDWARS_TEAM_JOIN_METADATA, BedWarsPlugin.getInstance().getPluginDescription().as(JavaPlugin.class));
             PlayerMapper.wrapPlayer(player).sendMessage(Message.of(LangKeys.ADMIN_TEAM_JOIN_ENTITY_ENTITY_ADDED).defaultPrefix());
         }
     }
@@ -1144,7 +1145,7 @@ public class PlayerListener implements Listener {
             format = format.replace("%displayName%", displayName);
             format = format.replace("%playerListName%", playerListName);
 
-            if (Main.isVault()) {
+            if (BedWarsPlugin.isVault()) {
                 Chat chat = Bukkit.getServer().getServicesManager().load(Chat.class);
                 if (chat != null) {
                     format = format.replace("%prefix%", chat.getPlayerPrefix(player));
@@ -1289,7 +1290,7 @@ public class PlayerListener implements Listener {
         for (var game : GameManagerImpl.getInstance().getGames()) {
             if (game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) {
                 if (ArenaUtils.isInArea(event.getVehicle().getLocation(), game.getPos1(), game.getPos2())) {
-                    Main.registerGameEntity(event.getVehicle(), game);
+                    EntitiesManagerImpl.getInstance().addEntityToGame(event.getVehicle(), game);
                     break;
                 }
             }

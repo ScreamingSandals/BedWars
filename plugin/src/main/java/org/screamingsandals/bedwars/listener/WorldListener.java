@@ -4,16 +4,16 @@ import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.BlockState;
-import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.plugin.Plugin;
-import org.screamingsandals.bedwars.Main;
+import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.api.RunningTeam;
 import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.config.MainConfig;
+import org.screamingsandals.bedwars.entities.EntitiesManagerImpl;
 import org.screamingsandals.bedwars.game.GameManagerImpl;
 import org.screamingsandals.bedwars.utils.ArenaUtils;
 import org.screamingsandals.lib.event.Cancellable;
@@ -85,7 +85,7 @@ public class WorldListener implements Listener {
         for (var game : GameManagerImpl.getInstance().getGames()) {
             if (game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) {
                 if (ArenaUtils.isInArea(block.getLocation(), game.getPos1(), game.getPos2())) {
-                    if (!Main.isFarmBlock(block.getType()) && !game.isBlockAddedDuringGame(block.getLocation())) {
+                    if (!BedWarsPlugin.isFarmBlock(block.getType()) && !game.isBlockAddedDuringGame(block.getLocation())) {
                         cancellable.setCancelled(true);
                     }
                     return;
@@ -259,7 +259,7 @@ public class WorldListener implements Listener {
             return;
         }
         // Fix for uSkyBlock plugin
-        if (event.getSpawnReason() == SCreatureSpawnEvent.SpawnReason.CUSTOM && Main.getInstance().isEntityInGame(event.getEntity().as(Entity.class))) {
+        if (event.getSpawnReason() == SCreatureSpawnEvent.SpawnReason.CUSTOM && EntitiesManagerImpl.getInstance().isEntityInGame(event.getEntity())) {
             event.setCancelled(false);
         }
     }

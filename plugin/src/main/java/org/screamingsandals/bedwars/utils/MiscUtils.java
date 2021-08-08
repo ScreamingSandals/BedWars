@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.util.Vector;
-import org.screamingsandals.bedwars.Main;
+import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.api.RunningTeam;
 import org.screamingsandals.bedwars.api.TeamColor;
 import org.screamingsandals.bedwars.api.game.Game;
@@ -126,7 +126,7 @@ public class MiscUtils {
         try {
             return event.getStringProperty(name);
         } catch (NullPointerException e) {
-            return MainConfig.getInstance().node((Object[]) fallback.split("\\.")).getString(Main.isLegacy() ? "SANDSTONE" : "CUT_SANDSTONE");
+            return MainConfig.getInstance().node((Object[]) fallback.split("\\.")).getString(BedWarsPlugin.isLegacy() ? "SANDSTONE" : "CUT_SANDSTONE");
         }
     }
 
@@ -275,15 +275,15 @@ public class MiscUtils {
             final PlayerInventory playerInventory = player.getInventory();
 
             if (materialName.contains("HELMET")) {
-                playerInventory.setHelmet(Main.getInstance().getColorChanger().applyColor(teamColor, itemStack));
+                playerInventory.setHelmet(BedWarsPlugin.getInstance().getColorChanger().applyColor(teamColor, itemStack));
             } else if (materialName.contains("CHESTPLATE")) {
-                playerInventory.setChestplate(Main.getInstance().getColorChanger().applyColor(teamColor, itemStack));
+                playerInventory.setChestplate(BedWarsPlugin.getInstance().getColorChanger().applyColor(teamColor, itemStack));
             } else if (materialName.contains("LEGGINGS")) {
-                playerInventory.setLeggings(Main.getInstance().getColorChanger().applyColor(teamColor, itemStack));
+                playerInventory.setLeggings(BedWarsPlugin.getInstance().getColorChanger().applyColor(teamColor, itemStack));
             } else if (materialName.contains("BOOTS")) {
-                playerInventory.setBoots(Main.getInstance().getColorChanger().applyColor(teamColor, itemStack));
+                playerInventory.setBoots(BedWarsPlugin.getInstance().getColorChanger().applyColor(teamColor, itemStack));
             } else {
-                playerInventory.addItem(Main.getInstance().getColorChanger().applyColor(teamColor, itemStack));
+                playerInventory.addItem(BedWarsPlugin.getInstance().getColorChanger().applyColor(teamColor, itemStack));
             }
         }
     }

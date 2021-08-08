@@ -5,7 +5,7 @@ import cloud.commandframework.CommandManager;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.screamingsandals.bedwars.Main;
+import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.holograms.StatisticsHolograms;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.lib.lang.Message;
@@ -27,7 +27,7 @@ public class RemoveholoCommand extends BaseCommand {
                         if (!StatisticsHolograms.isEnabled()) {
                             commandContext.getSender().sendMessage(Message.of(LangKeys.ADMIN_HOLO_NOT_ENABLED).defaultPrefix());
                         } else {
-                            player.setMetadata("bw-remove-holo", new FixedMetadataValue(Main.getInstance().getPluginDescription().as(JavaPlugin.class), true));
+                            player.setMetadata("bw-remove-holo", new FixedMetadataValue(BedWarsPlugin.getInstance().getPluginDescription().as(JavaPlugin.class), true));
                             commandContext.getSender().sendMessage(Message.of(LangKeys.ADMIN_HOLO_CLICK_TO_REMOVE).defaultPrefix());
                         }
                     })

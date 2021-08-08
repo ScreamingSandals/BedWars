@@ -4,7 +4,7 @@ import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import lombok.experimental.UtilityClass;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.screamingsandals.bedwars.Main;
+import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -23,7 +23,7 @@ public class BungeeUtils {
             public void run() {
                internalMove(player, false);
             }
-        }.runTask(Main.getInstance().getPluginDescription().as(JavaPlugin.class));
+        }.runTask(BedWarsPlugin.getInstance().getPluginDescription().as(JavaPlugin.class));
     }
 
     public void sendPlayerBungeeMessage(Player player, String string) {
@@ -35,9 +35,9 @@ public class BungeeUtils {
                 out.writeUTF(player.getName());
                 out.writeUTF(string);
 
-                Bukkit.getServer().sendPluginMessage(Main.getInstance().getPluginDescription().as(JavaPlugin.class), "BungeeCord", out.toByteArray());
+                Bukkit.getServer().sendPluginMessage(BedWarsPlugin.getInstance().getPluginDescription().as(JavaPlugin.class), "BungeeCord", out.toByteArray());
             }
-        }.runTaskLater(Main.getInstance().getPluginDescription().as(JavaPlugin.class), 30L);
+        }.runTaskLater(BedWarsPlugin.getInstance().getPluginDescription().as(JavaPlugin.class), 30L);
     }
 
     private void internalMove(Player player, boolean restart) {
@@ -47,10 +47,10 @@ public class BungeeUtils {
         out.writeUTF("Connect");
         out.writeUTF(server);
 
-        player.sendPluginMessage(Main.getInstance().getPluginDescription().as(JavaPlugin.class), "BungeeCord", out.toByteArray());
+        player.sendPluginMessage(BedWarsPlugin.getInstance().getPluginDescription().as(JavaPlugin.class), "BungeeCord", out.toByteArray());
         Debug.info("player " + player.getName() + " has been moved to hub server ");
         if (!restart && MainConfig.getInstance().node("bungee", "kick-when-proxy-too-slow").getBoolean()) {
-            Bukkit.getScheduler().runTaskLater(Main.getInstance().getPluginDescription().as(JavaPlugin.class), () -> {
+            Bukkit.getScheduler().runTaskLater(BedWarsPlugin.getInstance().getPluginDescription().as(JavaPlugin.class), () -> {
                 if (player.isOnline()) {
                     player.kickPlayer("Bedwars can't properly transfer player through bungee network. Contact server admin.");
                 }

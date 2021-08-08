@@ -3,9 +3,13 @@ package org.screamingsandals.bedwars;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.event.Listener;
+import org.screamingsandals.bedwars.api.entities.EntitiesManager;
+import org.screamingsandals.bedwars.api.game.GameManager;
+import org.screamingsandals.bedwars.api.player.PlayerManager;
 import org.screamingsandals.bedwars.commands.CommandService;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.config.RecordSave;
+import org.screamingsandals.bedwars.entities.EntitiesManagerImpl;
 import org.screamingsandals.bedwars.game.*;
 import org.screamingsandals.bedwars.lang.BedWarsLangService;
 import org.screamingsandals.bedwars.lang.LangKeys;
@@ -14,7 +18,6 @@ import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.ServicePriority;
@@ -102,10 +105,11 @@ import java.util.*;
         WorldListener.class,
         VillagerListener.class,
         PlayerListener.class,
-        NPCUtils.class
+        NPCUtils.class,
+        EntitiesManagerImpl.class
 })
-public class Main extends PluginContainer implements BedwarsAPI {
-    private static Main instance;
+public class BedWarsPlugin extends PluginContainer implements BedwarsAPI {
+    private static BedWarsPlugin instance;
 
     private String version;
     private boolean isDisabling = false;
@@ -113,7 +117,6 @@ public class Main extends PluginContainer implements BedwarsAPI {
     private boolean isVault;
     private int versionNumber = 0;
     private Economy econ = null;
-    private HashMap<Entity, GameImpl> entitiesInGame = new HashMap<>();
     private HashMap<String, ItemSpawnerType> spawnerTypes = new HashMap<>();
     private ColorChanger colorChanger;
     public static List<String> autoColoredMaterials = new ArrayList<>();
@@ -130,7 +133,7 @@ public class Main extends PluginContainer implements BedwarsAPI {
         autoColoredMaterials.add("STAINED_GLASS_PANE");
     }
 
-    public static Main getInstance() {
+    public static BedWarsPlugin getInstance() {
         return instance;
     }
 
@@ -169,18 +172,6 @@ public class Main extends PluginContainer implements BedwarsAPI {
 
     public static int getVaultWinReward() {
         return MainConfig.getInstance().node("vault", "reward", "win").getInt();
-    }
-
-    public static GameImpl getInGameEntity(Entity entity) {
-        return instance.entitiesInGame.getOrDefault(entity, null);
-    }
-
-    public static void registerGameEntity(Entity entity, GameImpl game) {
-        instance.entitiesInGame.put(entity, game);
-    }
-
-    public static void unregisterGameEntity(Entity entity) {
-        instance.entitiesInGame.remove(entity);
     }
 
     @Deprecated
@@ -264,16 +255,6 @@ public class Main extends PluginContainer implements BedwarsAPI {
 
     public static List<String> getAllSpawnerTypes() {
         return new ArrayList<>(instance.spawnerTypes.keySet());
-    }
-
-    public static List<Entity> getGameEntities(GameImpl game) {
-        List<Entity> entityList = new ArrayList<>();
-        for (Map.Entry<Entity, GameImpl> entry : instance.entitiesInGame.entrySet()) {
-            if (entry.getValue() == game) {
-                entityList.add(entry.getKey());
-            }
-        }
-        return entityList;
     }
 
     public static int getVersionNumber() {
@@ -493,13 +474,18 @@ public class Main extends PluginContainer implements BedwarsAPI {
     }
 
     @Override
-    public org.screamingsandals.bedwars.api.game.GameManager<?> getGameManager() {
+    public GameManager<?> getGameManager() {
         return GameManagerImpl.getInstance();
     }
 
     @Override
-    public org.screamingsandals.bedwars.api.player.PlayerManager<?,?> getPlayerManager() {
+    public PlayerManager<?,?> getPlayerManager() {
         return PlayerManagerImpl.getInstance();
+    }
+
+    @Override
+    public EntitiesManager<?, ?> getEntitiesManager() {
+        return EntitiesManagerImpl.getInstance();
     }
 
     @Override
@@ -520,31 +506,6 @@ public class Main extends PluginContainer implements BedwarsAPI {
     @Override
     public boolean isItemSpawnerTypeRegistered(String name) {
         return spawnerTypes.containsKey(name);
-    }
-
-    @Override
-    public boolean isEntityInGame(Entity entity) {
-        return entitiesInGame.containsKey(entity);
-    }
-
-    @Override
-    public org.screamingsandals.bedwars.api.game.Game getGameOfEntity(Entity entity) {
-        return entitiesInGame.get(entity);
-    }
-
-    @Override
-    public void registerEntityToGame(Entity entity, org.screamingsandals.bedwars.api.game.Game game) {
-        if (!(game instanceof GameImpl)) {
-            return;
-        }
-        entitiesInGame.put(entity, (GameImpl) game);
-    }
-
-    @Override
-    public void unregisterEntityFromGame(Entity entity) {
-        if (entitiesInGame.containsKey(entity)) {
-            entitiesInGame.remove(entity);
-        }
     }
 
     @Override

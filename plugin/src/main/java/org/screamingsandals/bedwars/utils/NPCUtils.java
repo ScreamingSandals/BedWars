@@ -1,7 +1,7 @@
 package org.screamingsandals.bedwars.utils;
 
 import lombok.experimental.UtilityClass;
-import org.screamingsandals.bedwars.game.GameStore;
+import org.screamingsandals.bedwars.game.GameStoreImpl;
 import org.screamingsandals.lib.npc.NPC;
 import org.screamingsandals.lib.npc.NPCManager;
 import org.screamingsandals.lib.npc.NPCSkin;
@@ -18,7 +18,7 @@ import java.util.List;
 })
 @UtilityClass
 public class NPCUtils {
-    public NPC spawnNPC(GameStore store) {
+    public NPC spawnNPC(GameStoreImpl store) {
         var npc = NPCManager
                 .npc(LocationMapper.resolve(store.getStoreLocation()).orElseThrow())
                 .setTouchable(true)

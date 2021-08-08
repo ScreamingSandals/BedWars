@@ -7,7 +7,7 @@ import cloud.commandframework.arguments.standard.IntegerArgument;
 import cloud.commandframework.arguments.standard.StringArgument;
 import org.bukkit.block.data.type.Bed;
 import org.bukkit.entity.Player;
-import org.screamingsandals.bedwars.Main;
+import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.commands.AdminCommand;
 import org.screamingsandals.bedwars.game.Team;
 import org.screamingsandals.bedwars.game.TeamColor;
@@ -237,7 +237,7 @@ public class TeamCommand extends BaseAdminSubCommand {
                                 return;
                             }
 
-                            if (Main.isLegacy()) {
+                            if (BedWarsPlugin.isLegacy()) {
                                 // Legacy
                                 if (block.getState().getData() instanceof org.bukkit.material.Bed) {
                                     org.bukkit.material.Bed bed = (org.bukkit.material.Bed) block.getState().getData();

@@ -1,13 +1,11 @@
 package org.screamingsandals.bedwars.listener;
 
 import lombok.RequiredArgsConstructor;
-import org.bukkit.entity.Entity;
 import org.screamingsandals.bedwars.api.events.OpenShopEvent;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.events.OpenShopEventImpl;
-import org.screamingsandals.bedwars.game.GameStore;
+import org.screamingsandals.bedwars.game.GameStoreImpl;
 import org.screamingsandals.bedwars.game.GameImpl;
-import org.bukkit.event.Listener;
 import org.screamingsandals.bedwars.inventories.ShopInventory;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
@@ -24,7 +22,7 @@ import org.screamingsandals.lib.utils.annotations.Service;
         ShopInventory.class
 })
 @RequiredArgsConstructor
-public class VillagerListener implements Listener {
+public class VillagerListener {
     private final PlayerManagerImpl playerManager;
     private final ShopInventory shopInventory;
 
@@ -36,7 +34,7 @@ public class VillagerListener implements Listener {
             if (event.getClickedEntity().getEntityType().isAlive() && !gPlayer.isSpectator
                     && gPlayer.getGame().getStatus() == GameStatus.RUNNING) {
                 for (var store : game.getGameStoreList()) {
-                    if (store.getEntity().equals(event.getClickedEntity().as(Entity.class))) {
+                    if (store.getEntity().equals(event.getClickedEntity())) {
                         event.setCancelled(true);
                         open(store, gPlayer, event.getClickedEntity(), game);
                         return;
@@ -62,7 +60,7 @@ public class VillagerListener implements Listener {
         }
     }
 
-    public void open(GameStore store, BedWarsPlayer player, EntityBasic clickedEntity, GameImpl game) {
+    public void open(GameStoreImpl store, BedWarsPlayer player, EntityBasic clickedEntity, GameImpl game) {
         var openShopEvent = new OpenShopEventImpl(game, clickedEntity, player, store);
         EventManager.fire(openShopEvent);
 

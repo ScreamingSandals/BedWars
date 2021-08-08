@@ -7,7 +7,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
-import org.screamingsandals.bedwars.Main;
+import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.api.player.BWPlayer;
 import org.screamingsandals.bedwars.commands.BedWarsPermission;
 import org.screamingsandals.bedwars.game.GameImpl;
@@ -43,7 +43,7 @@ public class BedWarsPlayer extends PlayerWrapper implements BWPlayer {
             this.isSpectator = false;
             this.clean();
             if (GameImpl.isBungeeEnabled()) {
-                BungeeUtils.movePlayerToBungeeServer(as(Player.class), Main.isDisabling());
+                BungeeUtils.movePlayerToBungeeServer(as(Player.class), BedWarsPlugin.isDisabling());
             } else {
                 this.restoreInv();
             }
@@ -207,7 +207,7 @@ public class BedWarsPlayer extends PlayerWrapper implements BWPlayer {
         if (!hiddenPlayers.contains(player) && !player.equals(thisPlayer)) {
             hiddenPlayers.add(player);
             try {
-                thisPlayer.hidePlayer(Main.getInstance().getPluginDescription().as(JavaPlugin.class), player);
+                thisPlayer.hidePlayer(BedWarsPlugin.getInstance().getPluginDescription().as(JavaPlugin.class), player);
             } catch (Throwable t) {
                 thisPlayer.hidePlayer(player);
             }
@@ -219,7 +219,7 @@ public class BedWarsPlayer extends PlayerWrapper implements BWPlayer {
         if (hiddenPlayers.contains(player) && !player.equals(thisPlayer)) {
             hiddenPlayers.remove(player);
             try {
-                thisPlayer.showPlayer(Main.getInstance().getPluginDescription().as(JavaPlugin.class), player);
+                thisPlayer.showPlayer(BedWarsPlugin.getInstance().getPluginDescription().as(JavaPlugin.class), player);
             } catch (Throwable t) {
                 thisPlayer.showPlayer(player);
             }

@@ -27,7 +27,7 @@ import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
 import org.jetbrains.annotations.Nullable;
-import org.screamingsandals.bedwars.Main;
+import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.api.ArenaTime;
 import org.screamingsandals.bedwars.api.Region;
 import org.screamingsandals.bedwars.api.RunningTeam;
@@ -48,6 +48,7 @@ import org.screamingsandals.bedwars.commands.StatsCommand;
 import org.screamingsandals.bedwars.config.GameConfigurationContainer;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.config.RecordSave;
+import org.screamingsandals.bedwars.entities.EntitiesManagerImpl;
 import org.screamingsandals.bedwars.events.*;
 import org.screamingsandals.bedwars.holograms.StatisticsHolograms;
 import org.screamingsandals.bedwars.inventories.TeamSelectorInventory;
@@ -62,6 +63,8 @@ import org.screamingsandals.bedwars.scoreboard.ScreamingScoreboard;
 import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.bedwars.tab.TabManager;
 import org.screamingsandals.bedwars.utils.*;
+import org.screamingsandals.lib.entity.EntityLiving;
+import org.screamingsandals.lib.entity.type.EntityTypeHolder;
 import org.screamingsandals.lib.event.EventManager;
 import org.screamingsandals.lib.healthindicator.HealthIndicator;
 import org.screamingsandals.lib.hologram.HologramManager;
@@ -105,7 +108,7 @@ public class GameImpl implements Game<BedWarsPlayer> {
     private int minPlayers;
     private final List<BedWarsPlayer> players = new ArrayList<>();
     private World world;
-    private List<GameStore> gameStore = new ArrayList<>();
+    private List<GameStoreImpl> gameStore = new ArrayList<>();
     private ArenaTime arenaTime = ArenaTime.WORLD;
     private WeatherType arenaWeather = null;
     private BarColor lobbyBossBarColor = null;
@@ -123,7 +126,7 @@ public class GameImpl implements Game<BedWarsPlayer> {
     private int calculatedMaxPlayers;
     private BukkitTask task;
     private final List<CurrentTeam> teamsInGame = new ArrayList<>();
-    private final Region region = Main.isLegacy() ? new LegacyRegion() : new FlatteningRegion();
+    private final Region region = BedWarsPlugin.isLegacy() ? new LegacyRegion() : new FlatteningRegion();
     private TeamSelectorInventory teamSelectorInventory;
     private final Scoreboard gameScoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
     private StatusBar<PlayerWrapper> statusbar;
@@ -196,7 +199,7 @@ public class GameImpl implements Game<BedWarsPlayer> {
                 } else if (firstAttempt) {
                     Bukkit.getConsoleSender().sendMessage(
                             ChatColor.RED + "[B" + ChatColor.WHITE + "W] " + ChatColor.YELLOW + "Arena " + game.name + " can't be loaded, because world " + worldName + " is missing! We will try it again after all plugins will be loaded!");
-                    Bukkit.getScheduler().runTaskLater(Main.getInstance().getPluginDescription().as(JavaPlugin.class), () -> loadGame(file, false), 10L);
+                    Bukkit.getScheduler().runTaskLater(BedWarsPlugin.getInstance().getPluginDescription().as(JavaPlugin.class), () -> loadGame(file, false), 10L);
                     return null;
                 } else {
                     Bukkit.getConsoleSender().sendMessage(
@@ -205,7 +208,7 @@ public class GameImpl implements Game<BedWarsPlayer> {
                 }
             }
 
-            if (Main.getVersionNumber() >= 115) {
+            if (BedWarsPlugin.getVersionNumber() >= 115) {
                 game.world.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
             }
 
@@ -244,7 +247,7 @@ public class GameImpl implements Game<BedWarsPlayer> {
                 } else if (firstAttempt) {
                     Bukkit.getConsoleSender().sendMessage(
                             ChatColor.RED + "[B" + ChatColor.WHITE + "W] " + ChatColor.YELLOW + "Arena " + game.name + " can't be loaded, because world " + worldName + " is missing! We will try it again after all plugins will be loaded!");
-                    Bukkit.getScheduler().runTaskLater(Main.getInstance().getPluginDescription().as(JavaPlugin.class), () -> loadGame(file, false), 10L);
+                    Bukkit.getScheduler().runTaskLater(BedWarsPlugin.getInstance().getPluginDescription().as(JavaPlugin.class), () -> loadGame(file, false), 10L);
                     return null;
                 } else {
                     Bukkit.getConsoleSender().sendMessage(
@@ -275,12 +278,12 @@ public class GameImpl implements Game<BedWarsPlayer> {
             });
             configMap.node("spawners").childrenList().forEach(spawner -> {
                 var spawnerType = spawner.node("type").getString();
-                if (spawnerType == null || Main.getSpawnerType(spawnerType.toLowerCase()) == null) {
+                if (spawnerType == null || BedWarsPlugin.getSpawnerType(spawnerType.toLowerCase()) == null) {
                     throw new UnsupportedOperationException("Wrongly configured spawner type!");
                 }
                 game.spawners.add(new ItemSpawner(
                         MiscUtils.readLocationFromString(game.world, Objects.requireNonNull(spawner.node("location").getString())),
-                        Main.getSpawnerType(spawnerType.toLowerCase()),
+                        BedWarsPlugin.getSpawnerType(spawnerType.toLowerCase()),
                         spawner.node("customName").getString(),
                         spawner.node("hologramEnabled").getBoolean(true),
                         spawner.node("startLevel").getDouble(1),
@@ -293,22 +296,22 @@ public class GameImpl implements Game<BedWarsPlayer> {
             );
             configMap.node("stores").childrenList().forEach(store -> {
                 if (store.isMap()) {
-                    game.gameStore.add(new GameStore(
-                            MiscUtils.readLocationFromString(game.world, Objects.requireNonNull(store.node("loc").getString())),
+                    game.gameStore.add(new GameStoreImpl(
+                            LocationMapper.wrapLocation(MiscUtils.readLocationFromString(game.world, Objects.requireNonNull(store.node("loc").getString()))),
                             store.node("shop").getString(),
                             store.node("parent").getBoolean(true),
-                            EntityType.valueOf(store.node("type").getString("VILLAGER").toUpperCase()),
+                            EntityTypeHolder.of(store.node("type").getString("VILLAGER").toUpperCase()),
                             store.node("name").getString(""),
                             !store.node("name").empty(),
                             store.node("isBaby").getBoolean(),
                             store.node("skin").getString()
                     ));
                 } else {
-                    game.gameStore.add(new GameStore(
-                            MiscUtils.readLocationFromString(game.world, Objects.requireNonNull(store.getString())),
+                    game.gameStore.add(new GameStoreImpl(
+                            LocationMapper.wrapLocation(MiscUtils.readLocationFromString(game.world, Objects.requireNonNull(store.getString()))),
                             null,
                             true,
-                            EntityType.VILLAGER,
+                            EntityTypeHolder.of("villager"),
                             "",
                             false,
                             false,
@@ -480,11 +483,11 @@ public class GameImpl implements Game<BedWarsPlayer> {
         return new ArrayList<>(gameStore);
     }
 
-    public void setGameStores(List<GameStore> gameStore) {
+    public void setGameStores(List<GameStoreImpl> gameStore) {
         this.gameStore = gameStore;
     }
 
-    public List<GameStore> getGameStoreList() {
+    public List<GameStoreImpl> getGameStoreList() {
         return gameStore;
     }
 
@@ -546,7 +549,7 @@ public class GameImpl implements Game<BedWarsPlayer> {
         if (player.isSpectator) {
             return false;
         }
-        if (Main.isFarmBlock(block.getType())) {
+        if (BedWarsPlugin.isFarmBlock(block.getType())) {
             return true;
         }
         if (!ArenaUtils.isInArea(block.getLocation(), pos1, pos2)) {
@@ -563,7 +566,7 @@ public class GameImpl implements Game<BedWarsPlayer> {
         if (replaced.getType() != Material.AIR) {
             if (region.isBlockAddedDuringGame(replaced.getLocation())) {
                 return true;
-            } else if (Main.isBreakableBlock(replaced.getType()) || region.isLiquid(replaced.getType())) {
+            } else if (BedWarsPlugin.isBreakableBlock(replaced.getType()) || region.isLiquid(replaced.getType())) {
                 region.putOriginalBlock(block.getLocation(), replaced);
             } else {
                 return false;
@@ -581,7 +584,7 @@ public class GameImpl implements Game<BedWarsPlayer> {
         if (player.isSpectator) {
             return false;
         }
-        if (Main.isFarmBlock(block.getType())) {
+        if (BedWarsPlugin.isFarmBlock(block.getType())) {
             return true;
         }
         if (!ArenaUtils.isInArea(block.getLocation(), pos1, pos2)) {
@@ -669,7 +672,7 @@ public class GameImpl implements Game<BedWarsPlayer> {
                 return true;
             }
         }
-        if (Main.isBreakableBlock(block.getType())) {
+        if (BedWarsPlugin.isBreakableBlock(block.getType())) {
             region.putOriginalBlock(block.getLocation(), block.getState());
             return true;
         }
@@ -800,7 +803,7 @@ public class GameImpl implements Game<BedWarsPlayer> {
                             statistic.addDestroyedBeds(1);
                             statistic.addScore(MainConfig.getInstance().node("statistics", "scores", "bed-destroy").getInt(25));
                         }
-                        Main.depositPlayer(destroyer, MainConfig.getInstance().node("vault", "reward", "bed-destroy").getInt());
+                        BedWarsPlugin.depositPlayer(destroyer, MainConfig.getInstance().node("vault", "reward", "bed-destroy").getInt());
 
                         dispatchRewardCommands("player-destroy-bed", destroyer,
                                 MainConfig.getInstance().node("statistics", "scores", "bed-destroy").getInt(25));
@@ -1066,10 +1069,10 @@ public class GameImpl implements Game<BedWarsPlayer> {
             }
             teamsInGame.clear();
 
-            for (GameStore store : gameStore) {
-                LivingEntity villager = store.kill();
+            for (GameStoreImpl store : gameStore) {
+                var villager = store.kill();
                 if (villager != null) {
-                    Main.unregisterGameEntity(villager);
+                    EntitiesManagerImpl.getInstance().removeEntityFromGame(villager);
                 }
             }
         }
@@ -1077,7 +1080,7 @@ public class GameImpl implements Game<BedWarsPlayer> {
 
     @SneakyThrows
     public void saveToConfig() {
-        var dir = Main.getInstance().getPluginDescription().getDataFolder().resolve("arenas").toFile();
+        var dir = BedWarsPlugin.getInstance().getPluginDescription().getDataFolder().resolve("arenas").toFile();
         if (!dir.exists())
             dir.mkdirs();
         if (file == null) {
@@ -1137,11 +1140,11 @@ public class GameImpl implements Game<BedWarsPlayer> {
         }
         for (var store : gameStore) {
             var storeNode = configMap.node("stores").appendListNode();
-            storeNode.node("loc").set(MiscUtils.setLocationToString(store.getStoreLocation()));
+            storeNode.node("loc").set(MiscUtils.setLocationToString(store.getStoreLocation().as(Location.class)));
             storeNode.node("shop").set(store.getShopFile());
-            storeNode.node("parent").set(store.getUseParent() ? "true" : "false");
-            storeNode.node("type").set(store.getEntityType().name());
-            if (store.isShopCustomName()) {
+            storeNode.node("parent").set(store.isUseParent() ? "true" : "false");
+            storeNode.node("type").set(store.getEntityType().getPlatformName());
+            if (store.isEnabledCustomName()) {
                 storeNode.node("name").set(store.getShopCustomName());
             }
             storeNode.node("isBaby").set(store.isBaby() ? "true" : "false");
@@ -1180,7 +1183,7 @@ public class GameImpl implements Game<BedWarsPlayer> {
                 public void run() {
                     updateSigns();
                 }
-            }.runTask(Main.getInstance().getPluginDescription().as(JavaPlugin.class));
+            }.runTask(BedWarsPlugin.getInstance().getPluginDescription().as(JavaPlugin.class));
 
             if (MainConfig.getInstance().node("bossbar", "use-xp-bar").getBoolean(false)) {
                 statusbar = new XPBar();
@@ -1212,7 +1215,7 @@ public class GameImpl implements Game<BedWarsPlayer> {
         }
 
         if (preparing) {
-            Bukkit.getScheduler().runTaskLater(Main.getInstance().getPluginDescription().as(JavaPlugin.class), () -> joinToGame(player), 1L);
+            Bukkit.getScheduler().runTaskLater(BedWarsPlugin.getInstance().getPluginDescription().as(JavaPlugin.class), () -> joinToGame(player), 1L);
             return;
         }
 
@@ -1305,7 +1308,7 @@ public class GameImpl implements Game<BedWarsPlayer> {
                                             .asComponent(PlayerMapper.wrapPlayer(player))
                             ));
                         }
-                    }.runTaskLater(Main.getInstance().getPluginDescription().as(JavaPlugin.class), 5L);
+                    }.runTaskLater(BedWarsPlugin.getInstance().getPluginDescription().as(JavaPlugin.class), 5L);
                 } else {
                     Message
                             .of(LangKeys.IN_GAME_ERRORS_GAME_IS_FULL)
@@ -1409,7 +1412,7 @@ public class GameImpl implements Game<BedWarsPlayer> {
             if (scoreboardTeam == null) {
                 scoreboardTeam = gameScoreboard.registerNewTeam(teamForJoin.name);
             }
-            if (!Main.isLegacy()) {
+            if (!BedWarsPlugin.isLegacy()) {
                 scoreboardTeam.setColor(teamForJoin.color.chatColor);
             } else {
                 scoreboardTeam.setPrefix(teamForJoin.color.chatColor.toString());
@@ -1767,14 +1770,14 @@ public class GameImpl implements Game<BedWarsPlayer> {
                         gameScoreboard.getObjective("lobby").unregister();
                     }
                     gameScoreboard.clearSlot(DisplaySlot.SIDEBAR);
-                    Bukkit.getScheduler().runTaskLater(Main.getInstance().getPluginDescription().as(JavaPlugin.class), this::updateSigns, 3L);
-                    for (GameStore store : gameStore) {
+                    Bukkit.getScheduler().runTaskLater(BedWarsPlugin.getInstance().getPluginDescription().as(JavaPlugin.class), this::updateSigns, 3L);
+                    for (GameStoreImpl store : gameStore) {
                         var villager = store.spawn();
-                        if (villager instanceof LivingEntity) {
-                            Main.registerGameEntity((LivingEntity) villager, this);
-                            ((LivingEntity) villager).setAI(false);
-                            ((LivingEntity) villager).getLocation().getWorld().getNearbyEntities(((LivingEntity) villager).getLocation(), 1, 1, 1).forEach(entity -> {
-                                if (entity.getType() == ((LivingEntity) villager).getType() && entity.getLocation().getBlock().equals(((LivingEntity) villager).getLocation().getBlock()) && !villager.equals(entity)) {
+                        if (villager instanceof EntityLiving) {
+                            EntitiesManagerImpl.getInstance().addEntityToGame(villager, this);
+                            ((EntityLiving) villager).setAI(false);
+                            ((EntityLiving) villager).getLocation().getWorld().as(World.class).getNearbyEntities(((EntityLiving) villager).getLocation().as(Location.class), 1, 1, 1).forEach(entity -> {
+                                if (entity.getType() == ((EntityLiving) villager).getEntityType().as(EntityType.class) && entity.getLocation().getBlock().equals(((EntityLiving) villager).getLocation().getBlock().as(Block.class)) && !villager.equals(entity)) {
                                     entity.remove();
                                 }
                             });
@@ -1891,10 +1894,10 @@ public class GameImpl implements Game<BedWarsPlayer> {
                                                     this.cancel();
                                                 }
                                             }
-                                        }.runTaskTimer(Main.getInstance().getPluginDescription().as(JavaPlugin.class), 50L, 10L);
+                                        }.runTaskTimer(BedWarsPlugin.getInstance().getPluginDescription().as(JavaPlugin.class), 50L, 10L);
                                     }
                                 }
-                            }.runTask(Main.getInstance().getPluginDescription().as(JavaPlugin.class));
+                            }.runTask(BedWarsPlugin.getInstance().getPluginDescription().as(JavaPlugin.class));
                         }
                     }
 
@@ -1942,7 +1945,7 @@ public class GameImpl implements Game<BedWarsPlayer> {
                             ItemStack stack = team.teamInfo.color.getWool();
                             Block placedBlock = targetLocation.getBlock();
                             placedBlock.setType(stack.getType());
-                            if (!Main.isLegacy()) {
+                            if (!BedWarsPlugin.isLegacy()) {
                                 try {
                                     // The method is no longer in API, but in legacy versions exists
                                     Block.class.getMethod("setData", byte.class).invoke(placedBlock, (byte) stack.getDurability());
@@ -1952,7 +1955,7 @@ public class GameImpl implements Game<BedWarsPlayer> {
                         }
                     }
 
-                    if (Main.getVersionNumber() >= 115 && !MainConfig.getInstance().node("allow-fake-death").getBoolean()) {
+                    if (BedWarsPlugin.getVersionNumber() >= 115 && !MainConfig.getInstance().node("allow-fake-death").getBoolean()) {
                         world.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
                     }
                     preparing = false;
@@ -2003,7 +2006,7 @@ public class GameImpl implements Game<BedWarsPlayer> {
                                                 .placeholder("time", time)
                                                 .times(TitleUtils.defaultTimes())
                                                 .title(player);
-                                        Main.depositPlayer(player.as(Player.class), Main.getVaultWinReward());
+                                        BedWarsPlugin.depositPlayer(player.as(Player.class), BedWarsPlugin.getVaultWinReward());
 
                                         SpawnEffects.spawnEffect(this, player, "game-effects.end");
 
@@ -2044,7 +2047,7 @@ public class GameImpl implements Game<BedWarsPlayer> {
                                                     }
                                                 }
 
-                                            }.runTaskLater(Main.getInstance().getPluginDescription().as(JavaPlugin.class), (2 + postGameWaiting) * 20);
+                                            }.runTaskLater(BedWarsPlugin.getInstance().getPluginDescription().as(JavaPlugin.class), (2 + postGameWaiting) * 20);
                                         }
                                     } else {
                                         Message.of(LangKeys.IN_GAME_END_YOU_LOST)
@@ -2192,7 +2195,7 @@ public class GameImpl implements Game<BedWarsPlayer> {
                             }
                         }
 
-                    }.runTaskLater(Main.getInstance().getPluginDescription().as(JavaPlugin.class), 40);
+                    }.runTaskLater(BedWarsPlugin.getInstance().getPluginDescription().as(JavaPlugin.class), 40);
                 }
             }
 
@@ -2220,7 +2223,7 @@ public class GameImpl implements Game<BedWarsPlayer> {
                         }
                     }
 
-                }.runTaskLater(Main.getInstance().getPluginDescription().as(JavaPlugin.class), 30L);
+                }.runTaskLater(BedWarsPlugin.getInstance().getPluginDescription().as(JavaPlugin.class), 30L);
             }
         }
     }
@@ -2263,10 +2266,10 @@ public class GameImpl implements Game<BedWarsPlayer> {
             spawner.spawnedItems.clear();
             spawner.destroy();
         }
-        for (GameStore store : gameStore) {
-            LivingEntity villager = store.kill();
+        for (GameStoreImpl store : gameStore) {
+            var villager = store.kill();
             if (villager != null) {
-                Main.unregisterGameEntity(villager);
+                EntitiesManagerImpl.getInstance().removeEntityFromGame(villager);
             }
         }
 
@@ -2303,13 +2306,13 @@ public class GameImpl implements Game<BedWarsPlayer> {
         fakeEnderChests.clear();
 
         // Remove remaining entities registered by other plugins
-        for (Entity entity : Main.getGameEntities(this)) {
-            Chunk chunk = entity.getLocation().getChunk();
+        for (var entity : EntitiesManagerImpl.getInstance().getEntities(this)) {
+            var chunk = entity.getEntity().getLocation().as(Location.class).getChunk();
             if (!chunk.isLoaded()) {
                 chunk.load();
             }
-            entity.remove();
-            Main.unregisterGameEntity(entity);
+            entity.getEntity().remove();
+            EntitiesManagerImpl.getInstance().removeEntityFromGame(entity);
         }
 
         UpgradeRegistry.clearAll(this);
@@ -2356,7 +2359,7 @@ public class GameImpl implements Game<BedWarsPlayer> {
                 GameImpl.this.run();
             }
 
-        }.runTaskTimer(Main.getInstance().getPluginDescription().as(JavaPlugin.class), 0, 20));
+        }.runTaskTimer(BedWarsPlugin.getInstance().getPluginDescription().as(JavaPlugin.class), 0, 20));
     }
 
     private void cancelTask() {
@@ -2537,7 +2540,7 @@ public class GameImpl implements Game<BedWarsPlayer> {
                                 if (optionalBlock.isPresent()) {
                                     final Block glassBlock = optionalBlock.get();
                                     glassBlock.setType(finalBlockBehindMaterial.as(Material.class));
-                                    if (Main.isLegacy()) {
+                                    if (BedWarsPlugin.isLegacy()) {
                                         try {
                                             // The method is no longer in API, but in legacy versions exists
                                             Block.class.getMethod("setData", byte.class).invoke(glassBlock, (byte) finalBlockBehindMaterial.getDurability());
@@ -3039,7 +3042,7 @@ public class GameImpl implements Game<BedWarsPlayer> {
 
     @Override
     public boolean isEntityShop(Entity entity) {
-        for (GameStore store : gameStore) {
+        for (GameStoreImpl store : gameStore) {
             if (store.getEntity().equals(entity)) {
                 return true;
             }
