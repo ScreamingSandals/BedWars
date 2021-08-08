@@ -7,7 +7,7 @@ import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.bedwars.api.APIUtils;
 import org.screamingsandals.bedwars.events.ApplyPropertyToBoughtItemEventImpl;
 import org.screamingsandals.bedwars.events.PlayerBuildBlockEventImpl;
-import org.screamingsandals.bedwars.player.PlayerManager;
+import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.bedwars.special.AutoIgniteableTNTImpl;
 import org.screamingsandals.lib.entity.EntityHuman;
@@ -54,7 +54,7 @@ public class AutoIgniteableTNTListener {
 
         var player = ((EntityHuman) event.getEntity()).asPlayer();
 
-        if (!PlayerManager.getInstance().isPlayerInGame(player)) {
+        if (!PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
             return;
         }
 

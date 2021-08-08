@@ -5,7 +5,7 @@ import cloud.commandframework.CommandManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import org.screamingsandals.bedwars.commands.AdminCommand;
-import org.screamingsandals.bedwars.game.GameManager;
+import org.screamingsandals.bedwars.game.GameManagerImpl;
 import org.screamingsandals.bedwars.game.TeamColor;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.lib.lang.Message;
@@ -28,7 +28,7 @@ public class InfoCommand extends BaseAdminSubCommand {
                             String gameName = commandContext.get("game");
                             var sender = commandContext.getSender();
 
-                            var gameOpt = GameManager.getInstance().getGame(gameName);
+                            var gameOpt = GameManagerImpl.getInstance().getGame(gameName);
                             if (gameOpt.isEmpty()) {
                                 sender.sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_GAME_NOT_FOUND).defaultPrefix());
                                 return;
@@ -137,7 +137,7 @@ public class InfoCommand extends BaseAdminSubCommand {
                             String gameName = commandContext.get("game");
                             var sender = commandContext.getSender();
 
-                            var gameOpt = GameManager.getInstance().getGame(gameName);
+                            var gameOpt = GameManagerImpl.getInstance().getGame(gameName);
                             if (gameOpt.isEmpty()) {
                                 sender.sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_GAME_NOT_FOUND).defaultPrefix());
                                 return;
@@ -191,7 +191,7 @@ public class InfoCommand extends BaseAdminSubCommand {
                             String gameName = commandContext.get("game");
                             var sender = commandContext.getSender();
 
-                            var gameOpt = GameManager.getInstance().getGame(gameName);
+                            var gameOpt = GameManagerImpl.getInstance().getGame(gameName);
                             if (gameOpt.isEmpty()) {
                                 sender.sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_GAME_NOT_FOUND).defaultPrefix());
                                 return;
@@ -241,7 +241,7 @@ public class InfoCommand extends BaseAdminSubCommand {
                             String gameName = commandContext.get("game");
                             var sender = commandContext.getSender();
 
-                            var gameOpt = GameManager.getInstance().getGame(gameName);
+                            var gameOpt = GameManagerImpl.getInstance().getGame(gameName);
                             if (gameOpt.isEmpty()) {
                                 sender.sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_GAME_NOT_FOUND).defaultPrefix());
                                 return;
@@ -312,7 +312,7 @@ public class InfoCommand extends BaseAdminSubCommand {
                             String gameName = commandContext.get("game");
                             var sender = commandContext.getSender();
 
-                            var gameOpt = GameManager.getInstance().getGame(gameName);
+                            var gameOpt = GameManagerImpl.getInstance().getGame(gameName);
                             if (gameOpt.isEmpty()) {
                                 sender.sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_GAME_NOT_FOUND).defaultPrefix());
                                 return;
@@ -387,7 +387,7 @@ public class InfoCommand extends BaseAdminSubCommand {
                             String gameName = commandContext.get("game");
                             var sender = commandContext.getSender();
 
-                            var gameOpt = GameManager.getInstance().getGame(gameName);
+                            var gameOpt = GameManagerImpl.getInstance().getGame(gameName);
                             if (gameOpt.isEmpty()) {
                                 sender.sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_GAME_NOT_FOUND).defaultPrefix());
                                 return;

@@ -3,9 +3,9 @@ package org.screamingsandals.bedwars.commands;
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
 import org.bukkit.entity.Player;
-import org.screamingsandals.bedwars.game.GameManager;
+import org.screamingsandals.bedwars.game.GameManagerImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
-import org.screamingsandals.bedwars.player.PlayerManager;
+import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
@@ -25,7 +25,7 @@ public class JoinCommand extends BaseCommand {
                 commandSenderWrapperBuilder
                         .argument(manager
                                 .argumentBuilder(String.class, "game")
-                                .withSuggestionsProvider((c, s) -> GameManager.getInstance().getGameNames())
+                                .withSuggestionsProvider((c, s) -> GameManagerImpl.getInstance().getGameNames())
                                 .asOptional()
                         )
                         .handler(commandContext -> {
@@ -35,19 +35,19 @@ public class JoinCommand extends BaseCommand {
                             // TODO: Use Wrapper (bedwars changes needed)
                             var player = sender.as(Player.class);
                             ;
-                            if (PlayerManager.getInstance().isPlayerInGame(sender)) {
+                            if (PlayerManagerImpl.getInstance().isPlayerInGame(sender)) {
                                 sender.sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_ALREADY_IN_GAME).defaultPrefix());
                                 return;
                             }
 
                             if (game.isPresent()) {
                                 var arenaN = game.get();
-                                GameManager.getInstance().getGame(arenaN).ifPresentOrElse(
+                                GameManagerImpl.getInstance().getGame(arenaN).ifPresentOrElse(
                                         game1 -> game1.joinToGame(player),
                                         () -> sender.sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_GAME_NOT_FOUND).defaultPrefix())
                                 );
                             } else {
-                                GameManager.getInstance().getGameWithHighestPlayers().ifPresentOrElse(
+                                GameManagerImpl.getInstance().getGameWithHighestPlayers().ifPresentOrElse(
                                         game1 -> game1.joinToGame(player),
                                         () -> sender.sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_GAME_NOT_FOUND).defaultPrefix())
                                 );

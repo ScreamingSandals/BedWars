@@ -5,8 +5,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.server.ServerListPingEvent;
 import org.bukkit.plugin.Plugin;
 import org.screamingsandals.bedwars.config.MainConfig;
-import org.screamingsandals.bedwars.game.Game;
-import org.screamingsandals.bedwars.game.GameManager;
+import org.screamingsandals.bedwars.game.GameImpl;
+import org.screamingsandals.bedwars.game.GameManagerImpl;
 import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.utils.annotations.methods.OnPostEnable;
 import org.screamingsandals.lib.utils.annotations.methods.ShouldRunControllable;
@@ -26,12 +26,12 @@ public class BungeeMotdListener implements Listener {
 
     @EventHandler
     public void onServerListPing(ServerListPingEvent slpe) {
-        var games = GameManager.getInstance().getGames();
+        var games = GameManagerImpl.getInstance().getGames();
         if (games.isEmpty()) {
             return;
         }
 
-        Game game = games.get(0);
+        GameImpl game = games.get(0);
 
         if (game == null) {
             return;

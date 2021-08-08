@@ -5,7 +5,7 @@ import lombok.Getter;
 import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.api.special.RescuePlatform;
 import org.screamingsandals.bedwars.game.CurrentTeam;
-import org.screamingsandals.bedwars.game.Game;
+import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.utils.MiscUtils;
@@ -28,7 +28,7 @@ import java.util.List;
 
 @Getter
 @EqualsAndHashCode(callSuper = true)
-public class RescuePlatformImpl extends SpecialItem implements RescuePlatform<Game, BedWarsPlayer, CurrentTeam, Item, MaterialHolder, BlockHolder> {
+public class RescuePlatformImpl extends SpecialItem implements RescuePlatform<GameImpl, BedWarsPlayer, CurrentTeam, Item, MaterialHolder, BlockHolder> {
     private final Item item;
     private List<BlockHolder> platformBlocks;
     private MaterialHolder material;
@@ -37,7 +37,7 @@ public class RescuePlatformImpl extends SpecialItem implements RescuePlatform<Ga
     private int livingTime;
     private TaskerTask task;
 
-    public RescuePlatformImpl(Game game, BedWarsPlayer player, CurrentTeam team, Item item) {
+    public RescuePlatformImpl(GameImpl game, BedWarsPlayer player, CurrentTeam team, Item item) {
         super(game, player, team);
         this.item = item;
     }

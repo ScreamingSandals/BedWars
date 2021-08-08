@@ -5,6 +5,7 @@ import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.api.upgrades.Upgrade;
 import org.screamingsandals.bedwars.api.upgrades.UpgradeStorage;
 import org.screamingsandals.bedwars.events.*;
+import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.lib.event.AbstractEvent;
 import org.screamingsandals.lib.event.EventManager;
 import org.screamingsandals.lib.plugin.PluginContainer;
@@ -101,14 +102,14 @@ public class EventUtils implements org.screamingsandals.bedwars.api.utils.EventU
 
     @Override
     public UpgradeRegisteredEvent<Game> fireUpgradeRegisteredEvent(Game game, UpgradeStorage storage, Upgrade upgrade) {
-        var event = new UpgradeRegisteredEventImpl((org.screamingsandals.bedwars.game.Game) game, upgrade, storage);
+        var event = new UpgradeRegisteredEventImpl((GameImpl) game, upgrade, storage);
         EventManager.fire(event);
         return (UpgradeRegisteredEvent) event;
     }
 
     @Override
     public UpgradeUnregisteredEvent<Game> fireUpgradeUnregisteredEvent(Game game, UpgradeStorage storage, Upgrade upgrade) {
-        var event = new UpgradeUnregisteredEventImpl((org.screamingsandals.bedwars.game.Game) game, upgrade, storage);
+        var event = new UpgradeUnregisteredEventImpl((GameImpl) game, upgrade, storage);
         EventManager.fire(event);
         return (UpgradeUnregisteredEvent) event;
     }

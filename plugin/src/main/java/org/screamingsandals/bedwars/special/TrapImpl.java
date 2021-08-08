@@ -4,7 +4,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.screamingsandals.bedwars.api.special.Trap;
 import org.screamingsandals.bedwars.game.CurrentTeam;
-import org.screamingsandals.bedwars.game.Game;
+import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.utils.MiscUtils;
@@ -23,11 +23,11 @@ import java.util.Map;
 
 @Getter
 @EqualsAndHashCode(callSuper = true)
-public class TrapImpl extends SpecialItem implements Trap<Game, BedWarsPlayer, CurrentTeam, LocationHolder> {
+public class TrapImpl extends SpecialItem implements Trap<GameImpl, BedWarsPlayer, CurrentTeam, LocationHolder> {
     private final List<Map<String, Object>> trapData;
     private LocationHolder location;
 
-    public TrapImpl(Game game, BedWarsPlayer player, CurrentTeam team, List<Map<String, Object>> trapData) {
+    public TrapImpl(GameImpl game, BedWarsPlayer player, CurrentTeam team, List<Map<String, Object>> trapData) {
         super(game, player, team);
         this.trapData = trapData;
 

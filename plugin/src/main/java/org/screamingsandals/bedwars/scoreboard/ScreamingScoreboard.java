@@ -7,7 +7,7 @@ import org.screamingsandals.bedwars.api.RunningTeam;
 import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.config.MainConfig;
-import org.screamingsandals.bedwars.game.Game;
+import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.TeamColor;
 import org.screamingsandals.bedwars.listener.Player116ListenerUtils;
 import org.screamingsandals.lib.lang.Message;
@@ -26,11 +26,11 @@ import java.util.stream.Collectors;
 public class ScreamingScoreboard {
 
     private GameStatus status = GameStatus.WAITING;
-    private final Game game;
+    private final GameImpl game;
     private final Sidebar sidebar = Sidebar.of();
     private final TaskerTask task;
 
-    public ScreamingScoreboard(Game game) {
+    public ScreamingScoreboard(GameImpl game) {
         this.game = game;
         this.sidebar
                 .title(AdventureHelper.toComponent(MainConfig.getInstance().node("lobby-scoreboard", "title").getString("§eBEDWARS")));
@@ -134,7 +134,7 @@ public class ScreamingScoreboard {
                         team.getConnectedPlayers().size()))
                 .replace("%color%", TeamColor.fromApiColor(team.getColor())
                         .chatColor.toString()).replace("%team%", team.getName())
-                .replace("%bed%", destroy ? Game.bedLostString() : (empty ? Game.anchorEmptyString() : Game.bedExistString()));
+                .replace("%bed%", destroy ? GameImpl.bedLostString() : (empty ? GameImpl.anchorEmptyString() : GameImpl.bedExistString()));
     }
 
     public void destroy() {

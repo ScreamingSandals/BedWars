@@ -6,12 +6,12 @@ import org.screamingsandals.bedwars.api.events.OpenShopEvent;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.events.OpenShopEventImpl;
 import org.screamingsandals.bedwars.game.GameStore;
-import org.screamingsandals.bedwars.game.Game;
+import org.screamingsandals.bedwars.game.GameImpl;
 import org.bukkit.event.Listener;
 import org.screamingsandals.bedwars.inventories.ShopInventory;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
-import org.screamingsandals.bedwars.player.PlayerManager;
+import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.lib.entity.EntityBasic;
 import org.screamingsandals.lib.event.EventManager;
 import org.screamingsandals.lib.event.OnEvent;
@@ -20,12 +20,12 @@ import org.screamingsandals.lib.npc.event.NPCInteractEvent;
 import org.screamingsandals.lib.utils.annotations.Service;
 
 @Service(dependsOn = {
-        PlayerManager.class,
+        PlayerManagerImpl.class,
         ShopInventory.class
 })
 @RequiredArgsConstructor
 public class VillagerListener implements Listener {
-    private final PlayerManager playerManager;
+    private final PlayerManagerImpl playerManager;
     private final ShopInventory shopInventory;
 
     @OnEvent
@@ -62,7 +62,7 @@ public class VillagerListener implements Listener {
         }
     }
 
-    public void open(GameStore store, BedWarsPlayer player, EntityBasic clickedEntity, Game game) {
+    public void open(GameStore store, BedWarsPlayer player, EntityBasic clickedEntity, GameImpl game) {
         var openShopEvent = new OpenShopEventImpl(game, clickedEntity, player, store);
         EventManager.fire(openShopEvent);
 

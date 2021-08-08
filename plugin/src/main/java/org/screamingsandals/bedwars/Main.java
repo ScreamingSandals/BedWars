@@ -28,7 +28,7 @@ import org.screamingsandals.bedwars.holograms.StatisticsHolograms;
 import org.screamingsandals.bedwars.inventories.ShopInventory;
 import org.screamingsandals.bedwars.listener.*;
 import org.screamingsandals.bedwars.placeholderapi.BedwarsExpansion;
-import org.screamingsandals.bedwars.player.PlayerManager;
+import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.bedwars.premium.PremiumBedwars;
 import org.screamingsandals.bedwars.special.SpecialRegister;
 import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
@@ -43,7 +43,6 @@ import org.screamingsandals.lib.material.Item;
 import org.screamingsandals.lib.material.MaterialHolder;
 import org.screamingsandals.lib.material.MaterialMapping;
 import org.screamingsandals.lib.player.PlayerMapper;
-import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.plugin.PluginContainer;
 import org.screamingsandals.lib.plugin.PluginManager;
 import org.screamingsandals.lib.sidebar.SidebarManager;
@@ -78,7 +77,7 @@ import java.util.*;
         EventManager.class,
         Core.class,
         CommandService.class,
-        GameManager.class,
+        GameManagerImpl.class,
         UpdateChecker.class,
         PlayerStatisticManager.class,
         StatisticsHolograms.class,
@@ -92,7 +91,7 @@ import java.util.*;
         DatabaseManager.class,
         BedWarsSignService.class,
         BukkitBStatsMetrics.class,
-        PlayerManager.class,
+        PlayerManagerImpl.class,
         PartyListener.class,
         EventUtils.class,
         LobbyInvisibilityListener.class,
@@ -114,7 +113,7 @@ public class Main extends PluginContainer implements BedwarsAPI {
     private boolean isVault;
     private int versionNumber = 0;
     private Economy econ = null;
-    private HashMap<Entity, Game> entitiesInGame = new HashMap<>();
+    private HashMap<Entity, GameImpl> entitiesInGame = new HashMap<>();
     private HashMap<String, ItemSpawnerType> spawnerTypes = new HashMap<>();
     private ColorChanger colorChanger;
     public static List<String> autoColoredMaterials = new ArrayList<>();
@@ -172,11 +171,11 @@ public class Main extends PluginContainer implements BedwarsAPI {
         return MainConfig.getInstance().node("vault", "reward", "win").getInt();
     }
 
-    public static Game getInGameEntity(Entity entity) {
+    public static GameImpl getInGameEntity(Entity entity) {
         return instance.entitiesInGame.getOrDefault(entity, null);
     }
 
-    public static void registerGameEntity(Entity entity, Game game) {
+    public static void registerGameEntity(Entity entity, GameImpl game) {
         instance.entitiesInGame.put(entity, game);
     }
 
@@ -267,9 +266,9 @@ public class Main extends PluginContainer implements BedwarsAPI {
         return new ArrayList<>(instance.spawnerTypes.keySet());
     }
 
-    public static List<Entity> getGameEntities(Game game) {
+    public static List<Entity> getGameEntities(GameImpl game) {
         List<Entity> entityList = new ArrayList<>();
-        for (Map.Entry<Entity, Game> entry : instance.entitiesInGame.entrySet()) {
+        for (Map.Entry<Entity, GameImpl> entry : instance.entitiesInGame.entrySet()) {
             if (entry.getValue() == game) {
                 entityList.add(entry.getKey());
             }
@@ -495,12 +494,12 @@ public class Main extends PluginContainer implements BedwarsAPI {
 
     @Override
     public org.screamingsandals.bedwars.api.game.GameManager<?> getGameManager() {
-        return GameManager.getInstance();
+        return GameManagerImpl.getInstance();
     }
 
     @Override
     public org.screamingsandals.bedwars.api.player.PlayerManager<?,?> getPlayerManager() {
-        return PlayerManager.getInstance();
+        return PlayerManagerImpl.getInstance();
     }
 
     @Override
@@ -535,10 +534,10 @@ public class Main extends PluginContainer implements BedwarsAPI {
 
     @Override
     public void registerEntityToGame(Entity entity, org.screamingsandals.bedwars.api.game.Game game) {
-        if (!(game instanceof Game)) {
+        if (!(game instanceof GameImpl)) {
             return;
         }
-        entitiesInGame.put(entity, (Game) game);
+        entitiesInGame.put(entity, (GameImpl) game);
     }
 
     @Override

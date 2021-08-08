@@ -6,12 +6,11 @@ import lombok.RequiredArgsConstructor;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainComponentSerializer;
 import org.bukkit.entity.Player;
-import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.commands.BedWarsPermission;
 import org.screamingsandals.bedwars.config.MainConfig;
-import org.screamingsandals.bedwars.game.GameManager;
+import org.screamingsandals.bedwars.game.GameManagerImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
-import org.screamingsandals.bedwars.player.PlayerManager;
+import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.plugin.ServiceManager;
@@ -34,18 +33,18 @@ import java.util.stream.Collectors;
 
 @Service(dependsOn = {
         MainConfig.class,
-        GameManager.class,
+        GameManagerImpl.class,
         Tasker.class,
-        PlayerManager.class
+        PlayerManagerImpl.class
 })
 @RequiredArgsConstructor
 public class BedWarsSignService extends AbstractSignManager {
     @ConfigFile(value = "database/sign.yml", old = "sign.yml")
     @Getter(AccessLevel.PROTECTED)
     private final YamlConfigurationLoader loader;
-    private final GameManager gameManager;
+    private final GameManagerImpl gameManager;
     private final MainConfig mainConfig;
-    private final PlayerManager playerManager;
+    private final PlayerManagerImpl playerManager;
 
     public static BedWarsSignService getInstance() {
         return ServiceManager.get(BedWarsSignService.class);

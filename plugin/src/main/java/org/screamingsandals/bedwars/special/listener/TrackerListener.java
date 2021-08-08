@@ -6,7 +6,7 @@ import org.screamingsandals.bedwars.api.APIUtils;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.events.ApplyPropertyToBoughtItemEventImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
-import org.screamingsandals.bedwars.player.PlayerManager;
+import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.lib.event.OnEvent;
@@ -34,11 +34,11 @@ public class TrackerListener {
     @OnEvent
     public void onTrackerUse(SPlayerInteractEvent event) {
         var player = event.getPlayer();
-        if (!PlayerManager.getInstance().isPlayerInGame(player)) {
+        if (!PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
             return;
         }
 
-        var gamePlayer = PlayerManager.getInstance().getPlayer(player).orElseThrow();
+        var gamePlayer = PlayerManagerImpl.getInstance().getPlayer(player).orElseThrow();
         var game = gamePlayer.getGame();
         if (event.getAction() == SPlayerInteractEvent.Action.RIGHT_CLICK_AIR || event.getAction() == SPlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
             if (game.getStatus() == GameStatus.RUNNING && !gamePlayer.isSpectator) {

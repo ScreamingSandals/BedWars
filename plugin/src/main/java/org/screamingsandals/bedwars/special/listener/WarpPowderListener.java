@@ -5,7 +5,7 @@ import org.screamingsandals.bedwars.api.APIUtils;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.events.ApplyPropertyToBoughtItemEventImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
-import org.screamingsandals.bedwars.player.PlayerManager;
+import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.bedwars.special.WarpPowderImpl;
 import org.screamingsandals.bedwars.utils.DelayFactory;
 import org.screamingsandals.bedwars.utils.MiscUtils;
@@ -37,11 +37,11 @@ public class WarpPowderListener {
     @OnEvent
     public void onPlayerUseItem(SPlayerInteractEvent event) {
         var player = event.getPlayer();
-        if (!PlayerManager.getInstance().isPlayerInGame(player)) {
+        if (!PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
             return;
         }
 
-        var gPlayer = PlayerManager.getInstance().getPlayer(player).orElseThrow();
+        var gPlayer = PlayerManagerImpl.getInstance().getPlayer(player).orElseThrow();
         var game = gPlayer.getGame();
         if (event.getAction() == SPlayerInteractEvent.Action.RIGHT_CLICK_AIR || event.getAction() == SPlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
             if (game.getStatus() == GameStatus.RUNNING && !gPlayer.isSpectator) {
@@ -85,11 +85,11 @@ public class WarpPowderListener {
 
         var player = ((EntityHuman) event.getEntity()).asPlayer();
 
-        if (!PlayerManager.getInstance().isPlayerInGame(player)) {
+        if (!PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
             return;
         }
 
-        var gPlayer = PlayerManager.getInstance().getPlayer(player).orElseThrow();
+        var gPlayer = PlayerManagerImpl.getInstance().getPlayer(player).orElseThrow();
         var game = gPlayer.getGame();
 
         if (gPlayer.isSpectator) {
@@ -105,7 +105,7 @@ public class WarpPowderListener {
     @OnEvent
     public void onMove(SPlayerMoveEvent event) {
         var player = event.getPlayer();
-        if (event.isCancelled() || !PlayerManager.getInstance().isPlayerInGame(player)) {
+        if (event.isCancelled() || !PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
             return;
         }
 
@@ -113,7 +113,7 @@ public class WarpPowderListener {
             return;
         }
 
-        var gPlayer = PlayerManager.getInstance().getPlayer(player).orElseThrow();
+        var gPlayer = PlayerManagerImpl.getInstance().getPlayer(player).orElseThrow();
         var game = gPlayer.getGame();
         if (gPlayer.isSpectator) {
             return;

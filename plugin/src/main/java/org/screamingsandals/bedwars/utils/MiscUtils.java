@@ -17,7 +17,7 @@ import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.events.ApplyPropertyToItemEventImpl;
 import org.screamingsandals.bedwars.lib.debug.Debug;
-import org.screamingsandals.bedwars.player.PlayerManager;
+import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.lib.material.MaterialHolder;
 import org.screamingsandals.lib.material.MaterialMapping;
 import org.screamingsandals.lib.player.PlayerMapper;
@@ -152,7 +152,7 @@ public class MiscUtils {
 
 
         for (Player p : foundTargets) {
-            var gamePlayer = PlayerManager.getInstance().getPlayer(p.getUniqueId());
+            var gamePlayer = PlayerManagerImpl.getInstance().getPlayer(p.getUniqueId());
             if (gamePlayer.isEmpty()) {
                 continue;
             }

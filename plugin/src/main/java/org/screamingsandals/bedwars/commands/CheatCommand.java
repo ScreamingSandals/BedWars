@@ -8,7 +8,7 @@ import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
-import org.screamingsandals.bedwars.player.PlayerManager;
+import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.lib.entity.EntityHuman;
 import org.screamingsandals.lib.entity.EntityMapper;
 import org.screamingsandals.lib.lang.Message;
@@ -21,10 +21,10 @@ import java.util.stream.Collectors;
 
 @Service
 public class CheatCommand extends BaseCommand {
-    private final PlayerManager playerManager;
+    private final PlayerManagerImpl playerManager;
     private final MainConfig mainConfig;
 
-    public CheatCommand(PlayerManager playerManager, MainConfig mainConfig) {
+    public CheatCommand(PlayerManagerImpl playerManager, MainConfig mainConfig) {
         super("cheat", BedWarsPermission.ADMIN_PERMISSION, false);
         this.playerManager = playerManager;
         this.mainConfig = mainConfig;

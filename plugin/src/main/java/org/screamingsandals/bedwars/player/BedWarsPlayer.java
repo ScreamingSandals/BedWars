@@ -10,7 +10,7 @@ import org.bukkit.potion.PotionEffect;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.player.BWPlayer;
 import org.screamingsandals.bedwars.commands.BedWarsPermission;
-import org.screamingsandals.bedwars.game.Game;
+import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.utils.BungeeUtils;
 import org.screamingsandals.bedwars.lib.nms.entity.PlayerUtils;
@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class BedWarsPlayer extends PlayerWrapper implements BWPlayer {
-    private Game game = null;
+    private GameImpl game = null;
     private String latestGame = null;
     private StoredInventory oldInventory = new StoredInventory();
     private List<ItemStack> permaItemsPurchased = new ArrayList<>();
@@ -36,13 +36,13 @@ public class BedWarsPlayer extends PlayerWrapper implements BWPlayer {
         super(name, uuid);
     }
 
-    public void changeGame(Game game) {
+    public void changeGame(GameImpl game) {
         if (this.game != null && game == null) {
             this.game.internalLeavePlayer(this);
             this.game = null;
             this.isSpectator = false;
             this.clean();
-            if (Game.isBungeeEnabled()) {
+            if (GameImpl.isBungeeEnabled()) {
                 BungeeUtils.movePlayerToBungeeServer(as(Player.class), Main.isDisabling());
             } else {
                 this.restoreInv();
@@ -70,7 +70,7 @@ public class BedWarsPlayer extends PlayerWrapper implements BWPlayer {
         }
     }
 
-    public Game getGame() {
+    public GameImpl getGame() {
         return game;
     }
 

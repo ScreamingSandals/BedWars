@@ -5,6 +5,7 @@ import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.api.*;
 import org.screamingsandals.bedwars.api.boss.StatusBar;
 import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
+import org.screamingsandals.bedwars.api.player.BWPlayer;
 import org.screamingsandals.bedwars.api.special.SpecialItem;
 import org.screamingsandals.bedwars.api.utils.DelayFactory;
 import org.bukkit.Location;
@@ -22,7 +23,7 @@ import java.util.List;
 /**
  * @author Bedwars Team
  */
-public interface Game {
+public interface Game<P extends BWPlayer> {
     /**
      * @return Arena name
      */
@@ -387,7 +388,7 @@ public interface Game {
     /**
      * @return
      */
-    boolean isProtectionActive(Player player);
+    boolean isProtectionActive(P player);
 
     int getPostGameWaiting();
 

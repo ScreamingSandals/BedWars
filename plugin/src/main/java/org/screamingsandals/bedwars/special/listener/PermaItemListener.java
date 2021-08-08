@@ -5,7 +5,7 @@ import org.bukkit.inventory.PlayerInventory;
 import org.screamingsandals.bedwars.api.APIUtils;
 import org.screamingsandals.bedwars.events.ApplyPropertyToBoughtItemEventImpl;
 import org.screamingsandals.bedwars.lib.debug.Debug;
-import org.screamingsandals.bedwars.player.PlayerManager;
+import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.event.player.SPlayerDropItemEvent;
 import org.screamingsandals.lib.event.player.SPlayerInventoryClickEvent;
@@ -48,7 +48,7 @@ public class PermaItemListener {
     @OnEvent
     public void onItemRemoval(SPlayerInventoryClickEvent event) {
         var player = event.getPlayer();
-        if (!PlayerManager.getInstance().isPlayerInGame(player)) {
+        if (!PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
             return;
         }
 
@@ -81,7 +81,7 @@ public class PermaItemListener {
     @OnEvent
     public void onItemDrop(SPlayerDropItemEvent event) {
         var player = event.getPlayer();
-        if (!PlayerManager.getInstance().isPlayerInGame(player)) {
+        if (!PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
             return;
         }
         

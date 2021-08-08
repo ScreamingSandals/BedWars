@@ -6,11 +6,11 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.game.CurrentTeam;
-import org.screamingsandals.bedwars.game.Game;
+import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.utils.Sounds;
 
 public class Player116ListenerUtils {
-    public static boolean processAnchorDeath(Game game, CurrentTeam team, boolean isBed) {
+    public static boolean processAnchorDeath(GameImpl game, CurrentTeam team, boolean isBed) {
         RespawnAnchor anchor = (RespawnAnchor) team.teamInfo.bed.getBlock().getBlockData();
         int charges = anchor.getCharges();
         if (charges <= 0) {
@@ -28,7 +28,7 @@ public class Player116ListenerUtils {
         return isBed;
     }
 
-    public static boolean anchorCharge(PlayerInteractEvent event, Game game, ItemStack stack) {
+    public static boolean anchorCharge(PlayerInteractEvent event, GameImpl game, ItemStack stack) {
         boolean anchorFilled = false;
         RespawnAnchor anchor = (RespawnAnchor) event.getClickedBlock().getBlockData();
         int charges = anchor.getCharges();

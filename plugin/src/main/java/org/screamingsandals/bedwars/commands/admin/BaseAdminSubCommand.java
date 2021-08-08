@@ -6,7 +6,7 @@ import cloud.commandframework.context.CommandContext;
 import lombok.RequiredArgsConstructor;
 import org.screamingsandals.bedwars.commands.AdminCommand;
 import org.screamingsandals.bedwars.commands.CommandService;
-import org.screamingsandals.bedwars.game.Game;
+import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
@@ -41,6 +41,6 @@ public abstract class BaseAdminSubCommand {
     }
 
     protected interface EditModeHandler {
-        void handle(CommandSenderWrapper sender, Game game);
+        void handle(CommandSenderWrapper sender, GameImpl game);
     }
 }

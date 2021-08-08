@@ -6,7 +6,7 @@ import org.screamingsandals.bedwars.events.ApplyPropertyToBoughtItemEventImpl;
 import org.screamingsandals.bedwars.events.PlayerBreakBlockEventImpl;
 import org.screamingsandals.bedwars.events.PlayerBuildBlockEventImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
-import org.screamingsandals.bedwars.player.PlayerManager;
+import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.bedwars.special.TrapImpl;
 import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.lib.event.OnEvent;
@@ -78,7 +78,7 @@ public class TrapListener {
     @OnEvent
     public void onMove(SPlayerMoveEvent event) {
         var player = event.getPlayer();
-        if (event.isCancelled() || !PlayerManager.getInstance().isPlayerInGame(player)) {
+        if (event.isCancelled() || !PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
             return;
         }
 
@@ -89,7 +89,7 @@ public class TrapListener {
             return;
         }
 
-        var gPlayer = PlayerManager.getInstance().getPlayer(player).orElseThrow();
+        var gPlayer = PlayerManagerImpl.getInstance().getPlayer(player).orElseThrow();
         var game = gPlayer.getGame();
         if (game.getStatus() == GameStatus.RUNNING && !gPlayer.isSpectator) {
             for (var special : game.getActivedSpecialItems(TrapImpl.class)) {

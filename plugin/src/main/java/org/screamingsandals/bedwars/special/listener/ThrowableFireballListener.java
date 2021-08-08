@@ -6,7 +6,7 @@ import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.APIUtils;
 import org.screamingsandals.bedwars.events.ApplyPropertyToBoughtItemEventImpl;
-import org.screamingsandals.bedwars.player.PlayerManager;
+import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.event.player.SPlayerInteractEvent;
@@ -32,7 +32,7 @@ public class ThrowableFireballListener {
     public void onFireballThrow(SPlayerInteractEvent event) {
         var player = event.getPlayer();
 
-        if (!PlayerManager.getInstance().isPlayerInGame(player)) {
+        if (!PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
             return;
         }
 
@@ -46,7 +46,7 @@ public class ThrowableFireballListener {
                 var fireball = player.as(Player.class).launchProjectile(Fireball.class);
                 fireball.setIsIncendiary(false);
                 fireball.setYield(explosion);
-                Main.registerGameEntity(fireball, PlayerManager.getInstance().getGameOfPlayer(player).orElseThrow());
+                Main.registerGameEntity(fireball, PlayerManagerImpl.getInstance().getGameOfPlayer(player).orElseThrow());
 
                 event.setCancelled(true);
 

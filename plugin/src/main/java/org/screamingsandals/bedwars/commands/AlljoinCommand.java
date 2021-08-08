@@ -3,9 +3,9 @@ package org.screamingsandals.bedwars.commands;
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
 import org.bukkit.entity.Player;
-import org.screamingsandals.bedwars.game.GameManager;
+import org.screamingsandals.bedwars.game.GameManagerImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
-import org.screamingsandals.bedwars.player.PlayerManager;
+import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
@@ -25,7 +25,7 @@ public class AlljoinCommand extends BaseCommand {
                 commandSenderWrapperBuilder
                         .argument(manager
                                 .argumentBuilder(String.class, "game")
-                                .withSuggestionsProvider((c, s) -> GameManager.getInstance().getGameNames())
+                                .withSuggestionsProvider((c, s) -> GameManagerImpl.getInstance().getGameNames())
                                 .asOptional()
                         )
                         .handler(commandContext -> {
@@ -33,8 +33,8 @@ public class AlljoinCommand extends BaseCommand {
 
                             var sender = commandContext.getSender();
                             var game = gameName
-                                    .flatMap(GameManager.getInstance()::getGame)
-                                    .or(GameManager.getInstance()::getGameWithHighestPlayers);
+                                    .flatMap(GameManagerImpl.getInstance()::getGame)
+                                    .or(GameManagerImpl.getInstance()::getGameWithHighestPlayers);
 
                             if (game.isEmpty()) {
                                 sender.sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_GAME_NOT_FOUND).defaultPrefix());
@@ -46,8 +46,8 @@ public class AlljoinCommand extends BaseCommand {
                                     return;
                                 }
 
-                                if (PlayerManager.getInstance().isPlayerInGame(player)) {
-                                    PlayerManager.getInstance().getPlayerOrCreate(player).getGame().leaveFromGame(player.as(Player.class)); // TODO
+                                if (PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
+                                    PlayerManagerImpl.getInstance().getPlayerOrCreate(player).getGame().leaveFromGame(player.as(Player.class)); // TODO
                                 }
                                 game.get().joinToGame(player.as(Player.class)); // TODO
                             });

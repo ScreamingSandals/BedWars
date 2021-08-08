@@ -4,7 +4,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.jetbrains.annotations.NotNull;
 import org.screamingsandals.bedwars.api.events.ResourceSpawnEvent;
-import org.screamingsandals.bedwars.game.Game;
+import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.ItemSpawner;
 import org.screamingsandals.bedwars.game.ItemSpawnerType;
 import org.screamingsandals.lib.event.CancellableAbstractEvent;
@@ -15,8 +15,8 @@ import org.screamingsandals.lib.world.LocationMapper;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class ResourceSpawnEventImpl extends CancellableAbstractEvent implements ResourceSpawnEvent<Game, ItemSpawner, ItemSpawnerType, Item, LocationHolder> {
-    private final Game game;
+public class ResourceSpawnEventImpl extends CancellableAbstractEvent implements ResourceSpawnEvent<GameImpl, ItemSpawner, ItemSpawnerType, Item, LocationHolder> {
+    private final GameImpl game;
     private final ItemSpawner itemSpawner;
     private final ItemSpawnerType type;
     @NotNull

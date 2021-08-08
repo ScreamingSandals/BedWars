@@ -34,6 +34,7 @@ import org.screamingsandals.bedwars.api.RunningTeam;
 import org.screamingsandals.bedwars.api.boss.BossBar;
 import org.screamingsandals.bedwars.api.boss.StatusBar;
 import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
+import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.api.game.GameParticipant;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.api.special.SpecialItem;
@@ -54,7 +55,7 @@ import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.listener.Player116ListenerUtils;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
-import org.screamingsandals.bedwars.player.PlayerManager;
+import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.bedwars.region.FlatteningRegion;
 import org.screamingsandals.bedwars.region.LegacyRegion;
 import org.screamingsandals.bedwars.scoreboard.ScreamingScoreboard;
@@ -73,7 +74,6 @@ import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.player.SenderWrapper;
 import org.screamingsandals.lib.tasker.TaskerTime;
 import org.screamingsandals.lib.utils.AdventureHelper;
-import org.screamingsandals.lib.visuals.LocatableVisual;
 import org.screamingsandals.lib.visuals.Visual;
 import org.screamingsandals.lib.world.BlockMapper;
 import org.screamingsandals.lib.world.LocationHolder;
@@ -88,7 +88,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class Game implements org.screamingsandals.bedwars.api.game.Game {
+public class GameImpl implements Game<BedWarsPlayer> {
     public boolean gameStartItem;
     private String name;
     private Location pos1;
@@ -99,7 +99,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     private Location specSpawn;
     private final List<Team> teams = new ArrayList<>();
     private final List<ItemSpawner> spawners = new ArrayList<>();
-    private final Map<Player, RespawnProtection> respawnProtectionMap = new HashMap<>();
+    private final Map<BedWarsPlayer, RespawnProtection> respawnProtectionMap = new HashMap<>();
     private int pauseCountdown;
     private int gameTime;
     private int minPlayers;
@@ -142,15 +142,15 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
     private boolean preparing = false;
 
-    private Game() {
+    private GameImpl() {
 
     }
 
-    public static Game loadGame(File file) {
+    public static GameImpl loadGame(File file) {
         return loadGame(file, true);
     }
 
-    public static Game loadGame(File file, boolean firstAttempt) {
+    public static GameImpl loadGame(File file, boolean firstAttempt) {
         try {
             if (!file.exists()) {
                 return null;
@@ -168,7 +168,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 return null;
             }
 
-            final var game = new Game();
+            final var game = new GameImpl();
             game.file = file;
             game.name = configMap.node("name").getString();
             game.pauseCountdown = configMap.node("pauseCountdown").getInt();
@@ -367,8 +367,8 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         }
     }
 
-    public static Game createGame(String name) {
-        Game game = new Game();
+    public static GameImpl createGame(String name) {
+        GameImpl game = new GameImpl();
         game.name = name;
         game.pauseCountdown = 60;
         game.gameTime = 3600;
@@ -747,7 +747,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                     updateScoreboard();
                     String coloredDestroyer = "explosion";
                     if (destroyer != null) {
-                        coloredDestroyer = getPlayerTeam(PlayerManager.getInstance().getPlayer(destroyer.getUniqueId()).orElseThrow()).teamInfo.color.chatColor + destroyer.getDisplayName();
+                        coloredDestroyer = getPlayerTeam(PlayerManagerImpl.getInstance().getPlayer(destroyer.getUniqueId()).orElseThrow()).teamInfo.color.chatColor + destroyer.getDisplayName();
                     }
                     for (BedWarsPlayer player : players) {
                         var message = Message
@@ -761,7 +761,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                                 .title(player);
 
 
-                        var bbdmsEvent = new BedDestroyedMessageSendEventImpl(this, player, PlayerManager.getInstance().getPlayer(destroyer.getUniqueId()).orElseThrow(), team, message);
+                        var bbdmsEvent = new BedDestroyedMessageSendEventImpl(this, player, PlayerManagerImpl.getInstance().getPlayer(destroyer.getUniqueId()).orElseThrow(), team, message);
                         EventManager.fire(bbdmsEvent);
                         if (!bbdmsEvent.isCancelled()) {
                             bbdmsEvent.getMessage().send(player);
@@ -791,7 +791,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                         team.setProtectHolo(null);
                     }
 
-                    var targetBlockDestroyed = new TargetBlockDestroyedEventImpl(this, destroyer != null ? PlayerManager.getInstance().getPlayer(destroyer.getUniqueId()).orElseThrow() : null, team);
+                    var targetBlockDestroyed = new TargetBlockDestroyedEventImpl(this, destroyer != null ? PlayerManagerImpl.getInstance().getPlayer(destroyer.getUniqueId()).orElseThrow() : null, team);
                     EventManager.fire(targetBlockDestroyed);
 
                     if (destroyer != null) {
@@ -849,7 +849,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         }
 
         if (MainConfig.getInstance().node("tab", "enabled").getBoolean() && MainConfig.getInstance().node("tab", "hide-foreign-players").getBoolean()) {
-            Bukkit.getOnlinePlayers().stream().filter(p -> PlayerManager.getInstance().getGameOfPlayer(p.getUniqueId()).orElse(null) != this).forEach(gamePlayer::hidePlayer);
+            Bukkit.getOnlinePlayers().stream().filter(p -> PlayerManagerImpl.getInstance().getGameOfPlayer(p.getUniqueId()).orElse(null) != this).forEach(gamePlayer::hidePlayer);
             players.forEach(p -> p.showPlayer(gamePlayer.as(Player.class)));
         }
 
@@ -865,7 +865,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
             gamePlayer.teleport(lobbySpawn, () -> {
                 gamePlayer.invClean(); // temp fix for inventory issues?
-                SpawnEffects.spawnEffect(Game.this, gamePlayer, "game-effects.lobbyjoin");
+                SpawnEffects.spawnEffect(GameImpl.this, gamePlayer, "game-effects.lobbyjoin");
 
                 if (configurationContainer.getOrDefault(ConfigurationContainer.JOIN_RANDOM_TEAM_ON_JOIN, Boolean.class, false)) {
                     joinRandomTeam(gamePlayer);
@@ -1257,7 +1257,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         }
 
         if (players.size() >= calculatedMaxPlayers && status == GameStatus.WAITING) {
-            if (PlayerManager.getInstance().getPlayerOrCreate(PlayerMapper.wrapPlayer(player)).canJoinFullGame()) {
+            if (PlayerManagerImpl.getInstance().getPlayerOrCreate(PlayerMapper.wrapPlayer(player)).canJoinFullGame()) {
                 List<BedWarsPlayer> withoutVIP = getPlayersWithoutVIP();
 
                 if (withoutVIP.size() == 0) {
@@ -1300,7 +1300,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                             BungeeUtils.sendPlayerBungeeMessage(player, AdventureHelper.toLegacy(
                                     Message
                                             .of(LangKeys.IN_GAME_ERRORS_GAME_IS_FULL)
-                                            .placeholder("arena", Game.this.name)
+                                            .placeholder("arena", GameImpl.this.name)
                                             .prefixOrDefault(getCustomPrefixComponent())
                                             .asComponent(PlayerMapper.wrapPlayer(player))
                             ));
@@ -1317,7 +1317,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             }
         }
 
-        BedWarsPlayer gPlayer = PlayerManager.getInstance().getPlayerOrCreate(PlayerMapper.wrapPlayer(player));
+        BedWarsPlayer gPlayer = PlayerManagerImpl.getInstance().getPlayerOrCreate(PlayerMapper.wrapPlayer(player));
         gPlayer.changeGame(this);
     }
 
@@ -1325,8 +1325,8 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         if (status == GameStatus.DISABLED) {
             return;
         }
-        if (PlayerManager.getInstance().isPlayerInGame(player.getUniqueId())) {
-            BedWarsPlayer gPlayer = PlayerManager.getInstance().getPlayerOrCreate(PlayerMapper.wrapPlayer(player));
+        if (PlayerManagerImpl.getInstance().isPlayerInGame(player.getUniqueId())) {
+            BedWarsPlayer gPlayer = PlayerManagerImpl.getInstance().getPlayerOrCreate(PlayerMapper.wrapPlayer(player));
 
             if (gPlayer.getGame() == this) {
                 gPlayer.changeGame(null);
@@ -1565,7 +1565,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 }
 
                 if (MainConfig.getInstance().node("respawn", "protection-enabled").getBoolean(true)) {
-                    RespawnProtection respawnProtection = addProtectedPlayer(player);
+                    RespawnProtection respawnProtection = addProtectedPlayer(gamePlayer);
                     respawnProtection.runProtection();
                 }
 
@@ -2037,10 +2037,10 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                                                     if (PlayerStatisticManager.isEnabled()) {
                                                         var statistic = PlayerStatisticManager.getInstance()
                                                                 .getStatistic(player);
-                                                        Game.this.dispatchRewardCommands("player-win", pl,
+                                                        GameImpl.this.dispatchRewardCommands("player-win", pl,
                                                                 statistic.getScore());
                                                     } else {
-                                                        Game.this.dispatchRewardCommands("player-win", pl, 0);
+                                                        GameImpl.this.dispatchRewardCommands("player-win", pl, 0);
                                                     }
                                                 }
 
@@ -2186,9 +2186,9 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                             if (PlayerStatisticManager.isEnabled()) {
                                 var statistic = PlayerStatisticManager.getInstance()
                                         .getStatistic(player);
-                                Game.this.dispatchRewardCommands("player-end-game", pl, statistic.getScore());
+                                GameImpl.this.dispatchRewardCommands("player-end-game", pl, statistic.getScore());
                             } else {
-                                Game.this.dispatchRewardCommands("player-end-game", pl, 0);
+                                GameImpl.this.dispatchRewardCommands("player-end-game", pl, 0);
                             }
                         }
 
@@ -2353,7 +2353,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         task = (new BukkitRunnable() {
 
             public void run() {
-                Game.this.run();
+                GameImpl.this.run();
             }
 
         }.runTaskTimer(Main.getInstance().getPluginDescription().as(JavaPlugin.class), 0, 20));
@@ -2645,10 +2645,10 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
     @Override
     public void selectPlayerTeam(Player player, org.screamingsandals.bedwars.api.Team team) {
-        if (!PlayerManager.getInstance().isPlayerInGame(player.getUniqueId())) {
+        if (!PlayerManagerImpl.getInstance().isPlayerInGame(player.getUniqueId())) {
             return;
         }
-        BedWarsPlayer profile = PlayerManager.getInstance().getPlayer(player.getUniqueId()).orElseThrow();
+        BedWarsPlayer profile = PlayerManagerImpl.getInstance().getPlayer(player.getUniqueId()).orElseThrow();
         if (profile.getGame() != this) {
             return;
         }
@@ -2692,10 +2692,10 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
     @Override
     public RunningTeam getTeamOfPlayer(Player player) {
-        if (!PlayerManager.getInstance().isPlayerInGame(player.getUniqueId())) {
+        if (!PlayerManagerImpl.getInstance().isPlayerInGame(player.getUniqueId())) {
             return null;
         }
-        return getPlayerTeam(PlayerManager.getInstance().getPlayer(player.getUniqueId()).orElseThrow());
+        return getPlayerTeam(PlayerManagerImpl.getInstance().getPlayer(player.getUniqueId()).orElseThrow());
     }
 
     @Override
@@ -3018,7 +3018,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
     @Override
     public void selectPlayerRandomTeam(Player player) {
-        joinRandomTeam(PlayerManager.getInstance().getPlayerOrCreate(PlayerMapper.wrapPlayer(player)));
+        joinRandomTeam(PlayerManagerImpl.getInstance().getPlayerOrCreate(PlayerMapper.wrapPlayer(player)));
     }
 
     @Override
@@ -3047,23 +3047,23 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         return false;
     }
 
-    public RespawnProtection addProtectedPlayer(Player player) {
+    public RespawnProtection addProtectedPlayer(BedWarsPlayer player) {
         int time = MainConfig.getInstance().node("respawn", "protection-time").getInt(10);
 
-        RespawnProtection respawnProtection = new RespawnProtection(this, player, time);
+        var respawnProtection = new RespawnProtection(this, player, time);
         respawnProtectionMap.put(player, respawnProtection);
 
         return respawnProtection;
     }
 
-    public void removeProtectedPlayer(Player player) {
-        RespawnProtection respawnProtection = respawnProtectionMap.get(player);
+    public void removeProtectedPlayer(BedWarsPlayer player) {
+        var respawnProtection = respawnProtectionMap.get(player);
         if (respawnProtection == null) {
             return;
         }
 
         try {
-            respawnProtection.cancel();
+            respawnProtection.getTask().cancel();
         } catch (Exception ignored) {
         }
 
@@ -3071,7 +3071,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     }
 
     @Override
-    public boolean isProtectionActive(Player player) {
+    public boolean isProtectionActive(BedWarsPlayer player) {
         return (respawnProtectionMap.containsKey(player));
     }
 

@@ -9,7 +9,7 @@ import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.events.PostSpawnEffectEventImpl;
 import org.screamingsandals.bedwars.events.PreSpawnEffectEventImpl;
-import org.screamingsandals.bedwars.game.Game;
+import org.screamingsandals.bedwars.game.GameImpl;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
 import org.bukkit.inventory.meta.FireworkMeta;
@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 
 @UtilityClass
 public class SpawnEffects {
-    public void spawnEffect(Game game, BedWarsPlayer player, String particleName) {
+    public void spawnEffect(GameImpl game, BedWarsPlayer player, String particleName) {
         var firstEvent = new PreSpawnEffectEventImpl(game, player, particleName);
         EventManager.fire(firstEvent);
 
@@ -57,7 +57,7 @@ public class SpawnEffects {
         EventManager.fire(new PostSpawnEffectEventImpl(game, player, particleName));
     }
 
-    private void useEffect(String type, ConfigurationNode effect, Player player, Game game) throws Throwable {
+    private void useEffect(String type, ConfigurationNode effect, Player player, GameImpl game) throws Throwable {
         if (type.equalsIgnoreCase("Particle")) {
             if (effect.hasChild("value")) {
                 var value = effect.node("value").getString("");

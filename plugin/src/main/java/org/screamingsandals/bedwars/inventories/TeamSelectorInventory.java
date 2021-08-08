@@ -10,11 +10,11 @@ import org.screamingsandals.bedwars.events.OpenTeamSelectionEventImpl;
 import org.screamingsandals.bedwars.events.PlayerJoinedTeamEventImpl;
 import org.screamingsandals.bedwars.events.PlayerLeaveEventImpl;
 import org.screamingsandals.bedwars.game.CurrentTeam;
-import org.screamingsandals.bedwars.game.Game;
+import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.Team;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
-import org.screamingsandals.bedwars.player.PlayerManager;
+import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.lib.event.EventHandler;
 import org.screamingsandals.lib.event.EventManager;
 import org.screamingsandals.lib.lang.Message;
@@ -32,12 +32,12 @@ import java.util.List;
 import java.util.Map;
 
 public class TeamSelectorInventory {
-    private final Game game;
+    private final GameImpl game;
     private final InventorySet inventorySet;
     private final Map<Team, GenericItemInfo> items = new HashMap<>();
     private final List<EventHandler<?>> handlers = new ArrayList<>();
 
-    public TeamSelectorInventory(Game game) {
+    public TeamSelectorInventory(GameImpl game) {
         this.game = game;
 
         inventorySet = SimpleInventoriesCore.builder()
@@ -83,7 +83,7 @@ public class TeamSelectorInventory {
                     event.getItem().getFirstPropertyByName("selector").ifPresent(property -> {
                         try {
                             var team = property.getPropertyData().get(Team.class);
-                            game.selectTeam(PlayerManager.getInstance().getPlayerOrCreate(event.getPlayer()), team.getName());
+                            game.selectTeam(PlayerManagerImpl.getInstance().getPlayerOrCreate(event.getPlayer()), team.getName());
                         } catch (SerializationException | NullPointerException e) {
                             e.printStackTrace();
                         }
@@ -112,7 +112,7 @@ public class TeamSelectorInventory {
         player.openInventory(inventorySet);
     }
 
-    private List<Component> formatLore(Team team, Game game) {
+    private List<Component> formatLore(Team team, GameImpl game) {
         var loreList = new ArrayList<Component>();
         var playersInTeam = game.getPlayersInTeam(team);
         var playersInTeamCount = playersInTeam.size();

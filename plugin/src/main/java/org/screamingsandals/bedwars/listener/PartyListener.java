@@ -6,7 +6,7 @@ import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.events.PlayerJoinedEventImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
-import org.screamingsandals.bedwars.player.PlayerManager;
+import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.lang.Message;
@@ -58,7 +58,7 @@ public class PartyListener {
                                     }
                                     player.sendMessage(Message.of(LangKeys.PARTY_INFORM_GAME_JOIN).defaultPrefix());
 
-                                    var gameOfPlayer = PlayerManager.getInstance().getGameOfPlayer(partyMember);
+                                    var gameOfPlayer = PlayerManagerImpl.getInstance().getGameOfPlayer(partyMember);
                                     if (gameOfPlayer.isPresent()) {
                                         if (gameOfPlayer.get().getName().equalsIgnoreCase(game.getName())) {
                                             return;

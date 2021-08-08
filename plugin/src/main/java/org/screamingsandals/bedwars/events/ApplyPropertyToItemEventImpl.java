@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.screamingsandals.bedwars.api.events.ApplyPropertyToItemEvent;
-import org.screamingsandals.bedwars.game.Game;
+import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.lib.event.AbstractEvent;
 import org.screamingsandals.lib.material.Item;
@@ -15,8 +15,8 @@ import java.util.Map;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @AllArgsConstructor
-public class ApplyPropertyToItemEventImpl extends AbstractEvent implements ApplyPropertyToItemEvent<Game, BedWarsPlayer, Item> {
-    private final Game game;
+public class ApplyPropertyToItemEventImpl extends AbstractEvent implements ApplyPropertyToItemEvent<GameImpl, BedWarsPlayer, Item> {
+    private final GameImpl game;
     private final BedWarsPlayer player;
     private final String propertyName;
     private final Map<String, Object> properties;

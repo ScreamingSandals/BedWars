@@ -5,7 +5,7 @@ import lombok.Getter;
 import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.api.special.ProtectionWall;
 import org.screamingsandals.bedwars.game.CurrentTeam;
-import org.screamingsandals.bedwars.game.Game;
+import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.utils.MiscUtils;
@@ -26,7 +26,7 @@ import java.util.List;
 
 @Getter
 @EqualsAndHashCode(callSuper = true)
-public class ProtectionWallImpl extends SpecialItem implements ProtectionWall<Game, BedWarsPlayer, CurrentTeam, MaterialHolder, BlockHolder> {
+public class ProtectionWallImpl extends SpecialItem implements ProtectionWall<GameImpl, BedWarsPlayer, CurrentTeam, MaterialHolder, BlockHolder> {
     private int breakingTime;
     private int livingTime;
     private int width;
@@ -39,7 +39,7 @@ public class ProtectionWallImpl extends SpecialItem implements ProtectionWall<Ga
     private List<BlockHolder> wallBlocks;
     private TaskerTask task;
 
-    public ProtectionWallImpl(Game game, BedWarsPlayer player, CurrentTeam team, Item item) {
+    public ProtectionWallImpl(GameImpl game, BedWarsPlayer player, CurrentTeam team, Item item) {
         super(game, player, team);
         this.item = item;
     }

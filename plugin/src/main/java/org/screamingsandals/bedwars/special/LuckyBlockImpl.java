@@ -5,7 +5,7 @@ import lombok.Getter;
 import org.bukkit.entity.TNTPrimed;
 import org.screamingsandals.bedwars.api.special.LuckyBlock;
 import org.screamingsandals.bedwars.game.CurrentTeam;
-import org.screamingsandals.bedwars.game.Game;
+import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.lib.entity.EntityMapper;
 import org.screamingsandals.lib.material.builder.ItemFactory;
@@ -21,13 +21,13 @@ import java.util.Random;
 
 @Getter
 @EqualsAndHashCode(callSuper = true)
-public class LuckyBlockImpl extends SpecialItem implements LuckyBlock<Game, BedWarsPlayer, CurrentTeam, LocationHolder> {
+public class LuckyBlockImpl extends SpecialItem implements LuckyBlock<GameImpl, BedWarsPlayer, CurrentTeam, LocationHolder> {
 
     private final List<Map<String, Object>> luckyBlockData;
     private LocationHolder blockLocation;
     private boolean placed;
 
-    public LuckyBlockImpl(Game game, BedWarsPlayer player, CurrentTeam team, List<Map<String, Object>> luckyBlockData) {
+    public LuckyBlockImpl(GameImpl game, BedWarsPlayer player, CurrentTeam team, List<Map<String, Object>> luckyBlockData) {
         super(game, player, team);
 
         this.luckyBlockData = luckyBlockData;

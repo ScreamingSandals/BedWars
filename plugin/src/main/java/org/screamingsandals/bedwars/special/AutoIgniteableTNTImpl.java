@@ -9,7 +9,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.special.AutoIgniteableTNT;
 import org.screamingsandals.bedwars.game.CurrentTeam;
-import org.screamingsandals.bedwars.game.Game;
+import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.lib.entity.EntityMapper;
 import org.screamingsandals.lib.entity.type.EntityTypeMapping;
@@ -20,12 +20,12 @@ import org.screamingsandals.lib.world.LocationMapper;
 
 @Getter
 @EqualsAndHashCode(callSuper = true)
-public class AutoIgniteableTNTImpl extends SpecialItem implements AutoIgniteableTNT<Game, BedWarsPlayer, CurrentTeam> {
+public class AutoIgniteableTNTImpl extends SpecialItem implements AutoIgniteableTNT<GameImpl, BedWarsPlayer, CurrentTeam> {
 
     private final int explosionTime;
     private final boolean allowedDamagingPlacer;
 
-    public AutoIgniteableTNTImpl(Game game, BedWarsPlayer player, CurrentTeam team, int explosionTime, boolean damagePlacer) {
+    public AutoIgniteableTNTImpl(GameImpl game, BedWarsPlayer player, CurrentTeam team, int explosionTime, boolean damagePlacer) {
         super(game, player, team);
         this.explosionTime = explosionTime;
         this.allowedDamagingPlacer = damagePlacer;

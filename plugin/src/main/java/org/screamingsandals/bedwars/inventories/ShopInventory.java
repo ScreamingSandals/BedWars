@@ -18,9 +18,9 @@ import org.screamingsandals.bedwars.api.upgrades.Upgrade;
 import org.screamingsandals.bedwars.api.upgrades.UpgradeRegistry;
 import org.screamingsandals.bedwars.api.upgrades.UpgradeStorage;
 import org.screamingsandals.bedwars.game.CurrentTeam;
-import org.screamingsandals.bedwars.game.Game;
+import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
-import org.screamingsandals.bedwars.player.PlayerManager;
+import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.bedwars.special.listener.PermaItemListener;
 import org.screamingsandals.bedwars.utils.Sounds;
 import org.screamingsandals.bedwars.lib.debug.Debug;
@@ -53,7 +53,7 @@ import java.util.stream.Collectors;
 @Service(dependsOn = {
         SimpleInventoriesCore.class,
         MainConfig.class,
-        PlayerManager.class
+        PlayerManagerImpl.class
 })
 @RequiredArgsConstructor
 public class ShopInventory implements Listener {
@@ -61,7 +61,7 @@ public class ShopInventory implements Listener {
     @DataFolder
     private final Path dataFolder;
     private final MainConfig mainConfig;
-    private final PlayerManager playerManager;
+    private final PlayerManagerImpl playerManager;
 
     public static ShopInventory getInstance() {
         return ServiceManager.get(ShopInventory.class);
@@ -280,7 +280,7 @@ public class ShopInventory implements Listener {
                 })
                 .define("spawner", (key, player, playerItemInfo, arguments) -> {
                     var gPlayer = playerManager.getPlayer(player);
-                    Game game = gPlayer.get().getGame();
+                    GameImpl game = gPlayer.get().getGame();
                     if (arguments.length > 2) {
                         String upgradeBy = arguments[0];
                         String upgrade = arguments[1];

@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.lib.nms.entity.PlayerUtils;
-import org.screamingsandals.bedwars.player.PlayerManager;
+import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.player.PlayerMapper;
@@ -43,7 +43,7 @@ public class PartyCommand extends BaseCommand {
                     return;
                 }
 
-                var playerManager = PlayerManager.getInstance();
+                var playerManager = PlayerManagerImpl.getInstance();
                 var player = sender.as(Player.class);
 
                 if (action.get().equalsIgnoreCase("warp")) {

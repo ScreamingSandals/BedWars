@@ -4,8 +4,8 @@ import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
 import lombok.Getter;
 import org.screamingsandals.bedwars.commands.admin.*;
-import org.screamingsandals.bedwars.game.Game;
-import org.screamingsandals.bedwars.game.GameManager;
+import org.screamingsandals.bedwars.game.GameImpl;
+import org.screamingsandals.bedwars.game.GameManagerImpl;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
 import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.utils.annotations.methods.Provider;
@@ -43,7 +43,7 @@ import java.util.stream.Stream;
 })
 public class AdminCommand extends BaseCommand {
 
-    public static HashMap<String, Game> gc;
+    public static HashMap<String, GameImpl> gc;
     @Getter(onMethod_ = @Provider(level = Provider.Level.POST_ENABLE))
     private Command.Builder<CommandSenderWrapper> builder;
 
@@ -58,7 +58,7 @@ public class AdminCommand extends BaseCommand {
                 .argument(manager
                         .argumentBuilder(String.class, "game")
                         .withSuggestionsProvider((c, s) ->
-                            Stream.concat(GameManager.getInstance().getGameNames().stream(), gc.keySet().stream()).distinct().collect(Collectors.toList())
+                            Stream.concat(GameManagerImpl.getInstance().getGameNames().stream(), gc.keySet().stream()).distinct().collect(Collectors.toList())
                         )
                 );
     }

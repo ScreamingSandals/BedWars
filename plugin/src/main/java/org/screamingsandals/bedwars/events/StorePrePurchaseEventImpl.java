@@ -4,7 +4,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.screamingsandals.bedwars.api.PurchaseType;
 import org.screamingsandals.bedwars.api.events.StorePrePurchaseEvent;
-import org.screamingsandals.bedwars.game.Game;
+import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.ItemSpawnerType;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.lib.event.CancellableAbstractEvent;
@@ -13,8 +13,8 @@ import org.screamingsandals.simpleinventories.events.OnTradeEvent;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class StorePrePurchaseEventImpl extends CancellableAbstractEvent implements StorePrePurchaseEvent<Game, BedWarsPlayer, Item, ItemSpawnerType> {
-    private final Game game;
+public class StorePrePurchaseEventImpl extends CancellableAbstractEvent implements StorePrePurchaseEvent<GameImpl, BedWarsPlayer, Item, ItemSpawnerType> {
+    private final GameImpl game;
     private final BedWarsPlayer player;
     private final Item materialItem;
     private final Item newItem;

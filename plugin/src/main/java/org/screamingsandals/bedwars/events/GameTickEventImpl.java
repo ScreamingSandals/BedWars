@@ -5,14 +5,14 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.screamingsandals.bedwars.api.events.GameTickEvent;
 import org.screamingsandals.bedwars.api.game.GameStatus;
-import org.screamingsandals.bedwars.game.Game;
+import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.lib.event.AbstractEvent;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
 @AllArgsConstructor
-public class GameTickEventImpl extends AbstractEvent implements GameTickEvent<Game> {
-    private final Game game;
+public class GameTickEventImpl extends AbstractEvent implements GameTickEvent<GameImpl> {
+    private final GameImpl game;
     private final int previousCountdown;
     private final GameStatus previousStatus;
     private final int countdown;

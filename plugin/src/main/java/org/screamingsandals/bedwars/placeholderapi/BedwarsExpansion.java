@@ -6,9 +6,9 @@ import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.api.game.GameStatus;
-import org.screamingsandals.bedwars.game.Game;
-import org.screamingsandals.bedwars.game.GameManager;
-import org.screamingsandals.bedwars.player.PlayerManager;
+import org.screamingsandals.bedwars.game.GameImpl;
+import org.screamingsandals.bedwars.game.GameManagerImpl;
+import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.lib.placeholders.PlaceholderExpansion;
 import org.screamingsandals.lib.player.PlayerMapper;
@@ -37,7 +37,7 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                 operation = gameName.substring(index + 1).toLowerCase();
             }
             gameName = gameName.substring(0, index);
-            var gameOpt = GameManager.getInstance().getGame(gameName);
+            var gameOpt = GameManagerImpl.getInstance().getGame(gameName);
             if (gameOpt.isPresent()) {
                 var game = gameOpt.get();
                 switch (operation) {
@@ -115,31 +115,31 @@ public class BedwarsExpansion extends PlaceholderExpansion {
             // current game
             switch (identifier.toLowerCase().substring(8)) {
                 case "game":
-                    return Component.text(PlayerManager.getInstance().getGameOfPlayer(player.getUuid()).map(Game::getName).orElse("none"));
+                    return Component.text(PlayerManagerImpl.getInstance().getGameOfPlayer(player.getUuid()).map(GameImpl::getName).orElse("none"));
                 case "game_players":
-                    return PlayerManager.getInstance().getGameOfPlayer(player.getUuid()).map(g -> Component.text(g.countConnectedPlayers())).orElseGet(() -> Component.text("0"));
+                    return PlayerManagerImpl.getInstance().getGameOfPlayer(player.getUuid()).map(g -> Component.text(g.countConnectedPlayers())).orElseGet(() -> Component.text("0"));
                 case "game_time":
-                    var m_Game = PlayerManager.getInstance().getGameOfPlayer(player.getUuid());
+                    var m_Game = PlayerManagerImpl.getInstance().getGameOfPlayer(player.getUuid());
                     if (m_Game.isEmpty() || m_Game.get().getStatus() != GameStatus.RUNNING)
                         return Component.text("0");
                     return Component.text(m_Game.get().getFormattedTimeLeft());
                 case "game_maxplayers":
-                    return PlayerManager.getInstance().getGameOfPlayer(player.getUuid()).map(g -> Component.text(g.getMaxPlayers())).orElseGet(() -> Component.text("0"));
+                    return PlayerManagerImpl.getInstance().getGameOfPlayer(player.getUuid()).map(g -> Component.text(g.getMaxPlayers())).orElseGet(() -> Component.text("0"));
                 case "game_minplayers":
-                    return PlayerManager.getInstance().getGameOfPlayer(player.getUuid()).map(g -> Component.text(g.getMinPlayers())).orElseGet(() -> Component.text("0"));
+                    return PlayerManagerImpl.getInstance().getGameOfPlayer(player.getUuid()).map(g -> Component.text(g.getMinPlayers())).orElseGet(() -> Component.text("0"));
                 case "game_world":
-                    return Component.text(PlayerManager.getInstance().getGameOfPlayer(player.getUuid()).map(g -> g.getWorld().getName()).orElse("none"));
+                    return Component.text(PlayerManagerImpl.getInstance().getGameOfPlayer(player.getUuid()).map(g -> g.getWorld().getName()).orElse("none"));
                 case "game_state":
-                    return Component.text(PlayerManager.getInstance().getGameOfPlayer(player.getUuid()).map(g -> g.getStatus().name().toLowerCase()).orElse("none"));
+                    return Component.text(PlayerManagerImpl.getInstance().getGameOfPlayer(player.getUuid()).map(g -> g.getStatus().name().toLowerCase()).orElse("none"));
                 case "available_teams":
-                    return PlayerManager.getInstance().getGameOfPlayer(player.getUuid()).map(g -> Component.text(g.countAvailableTeams())).orElseGet(() -> Component.text("0"));
+                    return PlayerManagerImpl.getInstance().getGameOfPlayer(player.getUuid()).map(g -> Component.text(g.countAvailableTeams())).orElseGet(() -> Component.text("0"));
                 case "connected_teams":
-                    return PlayerManager.getInstance().getGameOfPlayer(player.getUuid()).map(g -> Component.text(g.countRunningTeams())).orElseGet(() -> Component.text("0"));
+                    return PlayerManagerImpl.getInstance().getGameOfPlayer(player.getUuid()).map(g -> Component.text(g.countRunningTeams())).orElseGet(() -> Component.text("0"));
                 case "teamchests":
-                    return PlayerManager.getInstance().getGameOfPlayer(player.getUuid()).map(g -> Component.text(g.countTeamChests())).orElseGet(() -> Component.text("0"));
+                    return PlayerManagerImpl.getInstance().getGameOfPlayer(player.getUuid()).map(g -> Component.text(g.countTeamChests())).orElseGet(() -> Component.text("0"));
                 case "team":
-                    if (PlayerManager.getInstance().isPlayerInGame(player.getUuid())) {
-                        var gPlayer = PlayerManager.getInstance().getPlayer(player.getUuid()).get();
+                    if (PlayerManagerImpl.getInstance().isPlayerInGame(player.getUuid())) {
+                        var gPlayer = PlayerManagerImpl.getInstance().getPlayer(player.getUuid()).get();
                         var game = gPlayer.getGame();
                         if (gPlayer.isSpectator) {
                             return Component.text("spectator");
@@ -155,8 +155,8 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                         return Component.text("none");
                     }
                 case "team_colored":
-                    if (PlayerManager.getInstance().isPlayerInGame(player.getUuid())) {
-                        var gPlayer = PlayerManager.getInstance().getPlayer(player.getUuid()).get();
+                    if (PlayerManagerImpl.getInstance().isPlayerInGame(player.getUuid())) {
+                        var gPlayer = PlayerManagerImpl.getInstance().getPlayer(player.getUuid()).get();
                         var game = gPlayer.getGame();
                         if (gPlayer.isSpectator) {
                             return Component.text("spectator", NamedTextColor.GRAY);
@@ -172,8 +172,8 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                         return Component.text("none", NamedTextColor.RED);
                     }
                 case "team_color":
-                    if (PlayerManager.getInstance().isPlayerInGame(player.getUuid())) {
-                        var gPlayer = PlayerManager.getInstance().getPlayer(player.getUuid()).get();
+                    if (PlayerManagerImpl.getInstance().isPlayerInGame(player.getUuid())) {
+                        var gPlayer = PlayerManagerImpl.getInstance().getPlayer(player.getUuid()).get();
                         var game = gPlayer.getGame();
                         if (gPlayer.isSpectator) {
                             return Component.text("", NamedTextColor.GRAY);
@@ -189,8 +189,8 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                         return Component.empty();
                     }
                 case "team_players":
-                    if (PlayerManager.getInstance().isPlayerInGame(player.getUuid())) {
-                        var gPlayer = PlayerManager.getInstance().getPlayer(player.getUuid()).get();
+                    if (PlayerManagerImpl.getInstance().isPlayerInGame(player.getUuid())) {
+                        var gPlayer = PlayerManagerImpl.getInstance().getPlayer(player.getUuid()).get();
                         var game = gPlayer.getGame();
                         if (gPlayer.isSpectator) {
                             return Component.text("0");
@@ -206,8 +206,8 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                         return Component.text("0");
                     }
                 case "team_maxplayers":
-                    if (PlayerManager.getInstance().isPlayerInGame(player.getUuid())) {
-                        var gPlayer = PlayerManager.getInstance().getPlayer(player.getUuid()).get();
+                    if (PlayerManagerImpl.getInstance().isPlayerInGame(player.getUuid())) {
+                        var gPlayer = PlayerManagerImpl.getInstance().getPlayer(player.getUuid()).get();
                         var game = gPlayer.getGame();
                         if (gPlayer.isSpectator) {
                             return Component.text("0");
@@ -223,8 +223,8 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                         return Component.text("0");
                     }
                 case "team_bed":
-                    if (PlayerManager.getInstance().isPlayerInGame(player.getUuid())) {
-                        var gPlayer = PlayerManager.getInstance().getPlayer(player.getUuid()).get();
+                    if (PlayerManagerImpl.getInstance().isPlayerInGame(player.getUuid())) {
+                        var gPlayer = PlayerManagerImpl.getInstance().getPlayer(player.getUuid()).get();
                         var game = gPlayer.getGame();
                         if (gPlayer.isSpectator) {
                             return Component.text("no");
@@ -240,8 +240,8 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                         return Component.text("no");
                     }
                 case "team_teamchests":
-                    if (PlayerManager.getInstance().isPlayerInGame(player.getUuid())) {
-                        var gPlayer = PlayerManager.getInstance().getPlayer(player.getUuid()).get();
+                    if (PlayerManagerImpl.getInstance().isPlayerInGame(player.getUuid())) {
+                        var gPlayer = PlayerManagerImpl.getInstance().getPlayer(player.getUuid()).get();
                         var game = gPlayer.getGame();
                         if (gPlayer.isSpectator) {
                             return Component.text("0");

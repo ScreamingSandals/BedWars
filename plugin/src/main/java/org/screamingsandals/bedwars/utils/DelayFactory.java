@@ -3,7 +3,7 @@ package org.screamingsandals.bedwars.utils;
 import lombok.Data;
 import org.screamingsandals.bedwars.api.game.GameParticipant;
 import org.screamingsandals.bedwars.api.special.SpecialItem;
-import org.screamingsandals.bedwars.game.Game;
+import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
 import org.screamingsandals.lib.tasker.task.TaskerTask;
@@ -13,11 +13,11 @@ public class DelayFactory implements org.screamingsandals.bedwars.api.utils.Dela
     private int remainDelay;
     private final SpecialItem specialItem;
     private final GameParticipant participant;
-    private final Game game;
+    private final GameImpl game;
     private boolean delayActive;
     private TaskerTask task;
 
-    public DelayFactory(int remainDelay, SpecialItem specialItem, GameParticipant participant, Game game) {
+    public DelayFactory(int remainDelay, SpecialItem specialItem, GameParticipant participant, GameImpl game) {
         this.remainDelay = remainDelay;
         this.specialItem = specialItem;
         this.participant = participant;

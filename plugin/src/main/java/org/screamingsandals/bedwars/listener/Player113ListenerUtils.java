@@ -3,10 +3,10 @@ package org.screamingsandals.bedwars.listener;
 import org.bukkit.Material;
 import org.bukkit.block.data.type.Cake;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.screamingsandals.bedwars.game.Game;
+import org.screamingsandals.bedwars.game.GameImpl;
 
 public class Player113ListenerUtils {
-    public static void yummyCake(PlayerInteractEvent event, Game game) {
+    public static void yummyCake(PlayerInteractEvent event, GameImpl game) {
         if (event.getClickedBlock().getBlockData() instanceof Cake) {
             Cake cake = (Cake) event.getClickedBlock().getBlockData();
             if (cake.getBites() == 0) {

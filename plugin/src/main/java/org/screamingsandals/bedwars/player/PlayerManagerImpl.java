@@ -1,8 +1,9 @@
 package org.screamingsandals.bedwars.player;
 
 import lombok.RequiredArgsConstructor;
-import org.screamingsandals.bedwars.game.Game;
-import org.screamingsandals.bedwars.game.GameManager;
+import org.screamingsandals.bedwars.api.player.PlayerManager;
+import org.screamingsandals.bedwars.game.GameImpl;
+import org.screamingsandals.bedwars.game.GameManagerImpl;
 import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.plugin.ServiceManager;
@@ -14,11 +15,11 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service(dependsOn = {
-        GameManager.class,
+        GameManagerImpl.class,
         PlayerMapper.class
 })
 @RequiredArgsConstructor
-public class PlayerManager implements org.screamingsandals.bedwars.api.player.PlayerManager<BedWarsPlayer, Game> {
+public class PlayerManagerImpl implements PlayerManager<BedWarsPlayer, GameImpl> {
     private final List<BedWarsPlayer> players = new ArrayList<>();
 
     {
@@ -28,8 +29,8 @@ public class PlayerManager implements org.screamingsandals.bedwars.api.player.Pl
                 .registerW2P(BedWarsPlayer.class, playerWrapper -> getPlayer(playerWrapper).orElseThrow());
     }
 
-    public static PlayerManager getInstance() {
-        return ServiceManager.get(PlayerManager.class);
+    public static PlayerManagerImpl getInstance() {
+        return ServiceManager.get(PlayerManagerImpl.class);
     }
 
     public BedWarsPlayer getPlayerOrCreate(PlayerWrapper playerWrapper) {
@@ -73,11 +74,11 @@ public class PlayerManager implements org.screamingsandals.bedwars.api.player.Pl
     }
 
     @Override
-    public Optional<Game> getGameOfPlayer(UUID uuid) {
+    public Optional<GameImpl> getGameOfPlayer(UUID uuid) {
         return getPlayer(uuid).map(BedWarsPlayer::getGame);
     }
 
-    public Optional<Game> getGameOfPlayer(PlayerWrapper playerWrapper) {
+    public Optional<GameImpl> getGameOfPlayer(PlayerWrapper playerWrapper) {
         return getPlayer(playerWrapper).map(BedWarsPlayer::getGame);
     }
 }

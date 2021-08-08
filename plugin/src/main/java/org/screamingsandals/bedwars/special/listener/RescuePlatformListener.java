@@ -5,7 +5,7 @@ import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.events.ApplyPropertyToBoughtItemEventImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
-import org.screamingsandals.bedwars.player.PlayerManager;
+import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.bedwars.special.RescuePlatformImpl;
 import org.screamingsandals.bedwars.utils.DelayFactory;
 import org.screamingsandals.bedwars.utils.MiscUtils;
@@ -38,11 +38,11 @@ public class RescuePlatformListener {
     @OnEvent
     public void onPlayerUseItem(SPlayerInteractEvent event) {
         var player = event.getPlayer();
-        if (!PlayerManager.getInstance().isPlayerInGame(player)) {
+        if (!PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
             return;
         }
 
-        var gPlayer = PlayerManager.getInstance().getPlayer(player).orElseThrow();
+        var gPlayer = PlayerManagerImpl.getInstance().getPlayer(player).orElseThrow();
         var game = gPlayer.getGame();
 
         if (event.getAction() == SPlayerInteractEvent.Action.RIGHT_CLICK_AIR || event.getAction() == SPlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
@@ -92,11 +92,11 @@ public class RescuePlatformListener {
         }
 
         var player = ((EntityHuman) entity).asPlayer();
-        if (!PlayerManager.getInstance().isPlayerInGame(player)) {
+        if (!PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
             return;
         }
 
-        var gPlayer = PlayerManager.getInstance().getPlayer(player).orElseThrow();
+        var gPlayer = PlayerManagerImpl.getInstance().getPlayer(player).orElseThrow();
         var game = gPlayer.getGame();
         if (gPlayer.isSpectator) {
             return;
@@ -116,11 +116,11 @@ public class RescuePlatformListener {
     @OnEvent
     public void onBlockBreak(SPlayerBlockBreakEvent event) {
         var player = event.getPlayer();
-        if (!PlayerManager.getInstance().isPlayerInGame(player)) {
+        if (!PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
             return;
         }
 
-        var gPlayer = PlayerManager.getInstance().getPlayer(player).orElseThrow();
+        var gPlayer = PlayerManagerImpl.getInstance().getPlayer(player).orElseThrow();
         var game = gPlayer.getGame();
         if (gPlayer.isSpectator) {
             return;

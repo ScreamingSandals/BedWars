@@ -18,8 +18,8 @@ import org.screamingsandals.bedwars.VersionInfo;
 import org.screamingsandals.bedwars.api.Team;
 import org.screamingsandals.bedwars.api.game.GameStore;
 import org.screamingsandals.bedwars.config.MainConfig;
-import org.screamingsandals.bedwars.game.Game;
-import org.screamingsandals.bedwars.game.GameManager;
+import org.screamingsandals.bedwars.game.GameImpl;
+import org.screamingsandals.bedwars.game.GameManagerImpl;
 import org.screamingsandals.bedwars.inventories.ShopInventory;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.lib.debug.Debug;
@@ -109,7 +109,7 @@ public class DumpCommand extends BaseCommand {
                                                                     "main", plugin.getDescription().getMain(),
                                                                     "authors", plugin.getDescription().getAuthors()
                                                             )).collect(Collectors.toList()),
-                                                            "games", GameManager.getInstance().getGames().stream().map(game ->
+                                                            "games", GameManagerImpl.getInstance().getGames().stream().map(game ->
                                                                     nullValuesAllowingMap(
                                                                             "file", game.getFile(),
                                                                             "name", game.getName(),
@@ -205,10 +205,10 @@ public class DumpCommand extends BaseCommand {
                                             )
                                     );
                                     files.add(mainShop);
-                                    GameManager.getInstance()
+                                    GameManagerImpl.getInstance()
                                             .getGames()
                                             .stream()
-                                            .map(Game::getGameStores)
+                                            .map(GameImpl::getGameStores)
                                             .flatMap(Collection::stream)
                                             .map(GameStore::getShopFile)
                                             .filter(Objects::nonNull)

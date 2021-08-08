@@ -2,6 +2,7 @@ package org.screamingsandals.bedwars.game;
 
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
+import org.screamingsandals.bedwars.api.game.GameManager;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.lib.plugin.ServiceManager;
 import org.screamingsandals.lib.utils.annotations.Service;
@@ -18,29 +19,29 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class GameManager implements org.screamingsandals.bedwars.api.game.GameManager<Game> {
+public class GameManagerImpl implements GameManager<GameImpl> {
     @DataFolder("arenas")
     private final Path arenasFolder;
     private final LoggerWrapper logger;
-    private final List<Game> games = new LinkedList<>();
+    private final List<GameImpl> games = new LinkedList<>();
 
-    public static GameManager getInstance() {
-        return ServiceManager.get(GameManager.class);
+    public static GameManagerImpl getInstance() {
+        return ServiceManager.get(GameManagerImpl.class);
     }
 
     @Override
-    public Optional<Game> getGame(String name) {
+    public Optional<GameImpl> getGame(String name) {
         return games.stream().filter(game -> game.getName().equals(name)).findFirst();
     }
 
     @Override
-    public List<Game> getGames() {
+    public List<GameImpl> getGames() {
         return List.copyOf(games);
     }
 
     @Override
     public List<String> getGameNames() {
-        return games.stream().map(Game::getName).collect(Collectors.toList());
+        return games.stream().map(GameImpl::getName).collect(Collectors.toList());
     }
 
     @Override
@@ -49,42 +50,42 @@ public class GameManager implements org.screamingsandals.bedwars.api.game.GameMa
     }
 
     @Override
-    public Optional<Game> getGameWithHighestPlayers() {
+    public Optional<GameImpl> getGameWithHighestPlayers() {
         return games.stream()
                 .filter(game -> game.getStatus() == GameStatus.WAITING)
                 .filter(game -> game.countConnectedPlayers() < game.getMaxPlayers())
-                .max(Comparator.comparingInt(Game::countConnectedPlayers));
+                .max(Comparator.comparingInt(GameImpl::countConnectedPlayers));
     }
 
     @Override
-    public Optional<Game> getGameWithLowestPlayers() {
+    public Optional<GameImpl> getGameWithLowestPlayers() {
         return games.stream()
                 .filter(game -> game.getStatus() == GameStatus.WAITING)
                 .filter(game -> game.countConnectedPlayers() < game.getMaxPlayers())
-                .min(Comparator.comparingInt(Game::countConnectedPlayers));
+                .min(Comparator.comparingInt(GameImpl::countConnectedPlayers));
     }
 
     @Override
-    public Optional<Game> getFirstWaitingGame() {
+    public Optional<GameImpl> getFirstWaitingGame() {
         return games.stream()
                 .filter(game -> game.getStatus() == GameStatus.WAITING)
-                .max(Comparator.comparingInt(Game::countConnectedPlayers));
+                .max(Comparator.comparingInt(GameImpl::countConnectedPlayers));
     }
 
     @Override
-    public Optional<Game> getFirstRunningGame() {
+    public Optional<GameImpl> getFirstRunningGame() {
         return games.stream()
                 .filter(game -> game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING)
-                .max(Comparator.comparingInt(Game::countConnectedPlayers));
+                .max(Comparator.comparingInt(GameImpl::countConnectedPlayers));
     }
 
-    public void addGame(@NotNull Game game) {
+    public void addGame(@NotNull GameImpl game) {
         if (!games.contains(game)) {
             games.add(game);
         }
     }
 
-    public void removeGame(@NotNull Game game) {
+    public void removeGame(@NotNull GameImpl game) {
         games.remove(game);
     }
 
@@ -100,7 +101,7 @@ public class GameManager implements org.screamingsandals.bedwars.api.game.GameMa
                 } else {
                     results.forEach(file -> {
                         if (file.exists() && file.isFile()) {
-                            var game = Game.loadGame(file);
+                            var game = GameImpl.loadGame(file);
                             if (game != null) {
                                 games.add(game);
                             }
@@ -115,7 +116,7 @@ public class GameManager implements org.screamingsandals.bedwars.api.game.GameMa
 
     @OnPreDisable
     public void onPreDisable() {
-        games.forEach(Game::stop);
+        games.forEach(GameImpl::stop);
         games.clear();
     }
 }

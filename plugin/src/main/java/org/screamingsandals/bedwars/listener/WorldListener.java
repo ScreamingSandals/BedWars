@@ -14,7 +14,7 @@ import org.screamingsandals.bedwars.api.RunningTeam;
 import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.config.MainConfig;
-import org.screamingsandals.bedwars.game.GameManager;
+import org.screamingsandals.bedwars.game.GameManagerImpl;
 import org.screamingsandals.bedwars.utils.ArenaUtils;
 import org.screamingsandals.lib.event.Cancellable;
 import org.screamingsandals.lib.event.OnEvent;
@@ -82,7 +82,7 @@ public class WorldListener implements Listener {
     }
 
     public void onBlockChange(BlockHolder block, Cancellable cancellable) {
-        for (var game : GameManager.getInstance().getGames()) {
+        for (var game : GameManagerImpl.getInstance().getGames()) {
             if (game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) {
                 if (ArenaUtils.isInArea(block.getLocation(), game.getPos1(), game.getPos2())) {
                     if (!Main.isFarmBlock(block.getType()) && !game.isBlockAddedDuringGame(block.getLocation())) {
@@ -101,7 +101,7 @@ public class WorldListener implements Listener {
         }
 
         event.getChangedBlockStates().removeIf(blockState -> {
-            for (var game : GameManager.getInstance().getGames()) {
+            for (var game : GameManagerImpl.getInstance().getGames()) {
                 if (game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) {
                     if (ArenaUtils.isInArea(blockState.getLocation(), game.getPos1(), game.getPos2())) {
                         return !game.isBlockAddedDuringGame(blockState.getLocation());
@@ -132,7 +132,7 @@ public class WorldListener implements Listener {
         final var explosionExceptionTypeName = MainConfig.getInstance().node("destroy-placed-blocks-by-explosion-except").childrenList().stream().map(ConfigurationNode::getString).collect(Collectors.toList());
         final var destroyPlacedBlocksByExplosion = MainConfig.getInstance().node("destroy-placed-blocks-by-explosion").getBoolean(true);
 
-        GameManager.getInstance().getGames().forEach(game -> {
+        GameManagerImpl.getInstance().getGames().forEach(game -> {
             if (ArenaUtils.isInArea(location, game.getPos1(), game.getPos2())) {
                 if (game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) {
                     blockList.removeIf(block -> {
@@ -162,7 +162,7 @@ public class WorldListener implements Listener {
             return;
         }
 
-        for (var game : GameManager.getInstance().getGames()) {
+        for (var game : GameManagerImpl.getInstance().getGames()) {
             if (game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) {
                 if (ArenaUtils.isInArea(event.getLocation(), game.getPos1(), game.getPos2())) {
                     event.setCancelled(true);
@@ -178,7 +178,7 @@ public class WorldListener implements Listener {
             return;
         }
 
-        for (var game : GameManager.getInstance().getGames()) {
+        for (var game : GameManagerImpl.getInstance().getGames()) {
             if (game.getStatus() != GameStatus.DISABLED)
                 // prevent creature spawn everytime, not just in game
                 if (/*(game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) &&*/ game.getConfigurationContainer().getOrDefault(ConfigurationContainer.PREVENT_SPAWNING_MOBS, Boolean.class, false)) {
@@ -204,7 +204,7 @@ public class WorldListener implements Listener {
             return;
         }
 
-        for (var game : GameManager.getInstance().getGames()) {
+        for (var game : GameManagerImpl.getInstance().getGames()) {
             if (ArenaUtils.isInArea(event.getSourceBlock().getLocation(), game.getPos1(), game.getPos2())) {
                 if (game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) {
                     var block = event.getFacedBlock();
@@ -228,7 +228,7 @@ public class WorldListener implements Listener {
             return;
         }
 
-        for (var game : GameManager.getInstance().getGames()) {
+        for (var game : GameManagerImpl.getInstance().getGames()) {
             if (ArenaUtils.isInArea(event.getBlock().getLocation(), game.getPos1(), game.getPos2())) {
                 if (game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) {
                     if (event.getEntity().getEntityType().is("FALLING_BLOCK")
@@ -270,7 +270,7 @@ public class WorldListener implements Listener {
         if (unload instanceof org.bukkit.event.Cancellable) {
             Chunk chunk = unload.getChunk();
 
-            for (var game : GameManager.getInstance().getGames()) {
+            for (var game : GameManagerImpl.getInstance().getGames()) {
                 if (game.getStatus() != GameStatus.DISABLED && game.getStatus() != GameStatus.WAITING
                         && ArenaUtils.isChunkInArea(chunk, game.getPos1(), game.getPos2())) {
                     ((org.bukkit.event.Cancellable) unload).setCancelled(true);

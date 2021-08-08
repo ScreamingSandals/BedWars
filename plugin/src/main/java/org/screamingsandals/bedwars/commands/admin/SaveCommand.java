@@ -3,7 +3,7 @@ package org.screamingsandals.bedwars.commands.admin;
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
 import org.screamingsandals.bedwars.commands.AdminCommand;
-import org.screamingsandals.bedwars.game.GameManager;
+import org.screamingsandals.bedwars.game.GameManagerImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
@@ -43,7 +43,7 @@ public class SaveCommand extends BaseAdminSubCommand {
                                 sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_SET_SPAWNERS_BEFORE_SAVE).defaultPrefix());
                             } else {
                                 game.saveToConfig();
-                                GameManager.getInstance().addGame(game);
+                                GameManagerImpl.getInstance().addGame(game);
                                 game.start();
                                 sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_SAVED_AND_STARTED).defaultPrefix());
                                 AdminCommand.gc.remove(commandContext.<String>get("game"));

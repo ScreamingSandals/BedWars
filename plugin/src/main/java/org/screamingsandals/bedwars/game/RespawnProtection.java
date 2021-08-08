@@ -1,35 +1,32 @@
 package org.screamingsandals.bedwars.game;
 
-import org.bukkit.plugin.java.JavaPlugin;
-import org.screamingsandals.bedwars.Main;
+import lombok.Data;
 import org.screamingsandals.bedwars.lang.LangKeys;
+import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.utils.MiscUtils;
-import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.screamingsandals.lib.lang.Message;
-import org.screamingsandals.lib.player.PlayerMapper;
+import org.screamingsandals.lib.tasker.Tasker;
+import org.screamingsandals.lib.tasker.TaskerTime;
+import org.screamingsandals.lib.tasker.task.TaskerTask;
 
-public class RespawnProtection extends BukkitRunnable {
-    private Game game;
-    private Player player;
+@Data
+public class RespawnProtection implements Runnable {
+    private final GameImpl game;
+    private final BedWarsPlayer player;
+    private final int seconds;
     private int length;
-    private boolean running = true;
-
-    public RespawnProtection(Game game, Player player, int seconds) {
-        this.game = game;
-        this.player = player;
-        this.length = seconds;
-    }
+    private boolean running;
+    private TaskerTask task;
 
     @Override
     public void run() {
     	if (!running) return;
         if (length > 0) {
-            MiscUtils.sendActionBarMessage(PlayerMapper.wrapPlayer(player), Message.of(LangKeys.IN_GAME_RESPAWN_PROTECTION_REMAINING).placeholder("time", this.length));
+            MiscUtils.sendActionBarMessage(player, Message.of(LangKeys.IN_GAME_RESPAWN_PROTECTION_REMAINING).placeholder("time", this.length));
 
         }
         if (length <= 0) {
-            MiscUtils.sendActionBarMessage(PlayerMapper.wrapPlayer(player), Message.of(LangKeys.IN_GAME_RESPAWN_PROTECTION_END));
+            MiscUtils.sendActionBarMessage(player, Message.of(LangKeys.IN_GAME_RESPAWN_PROTECTION_END));
             game.removeProtectedPlayer(player);
             running = false;
         }
@@ -37,9 +34,14 @@ public class RespawnProtection extends BukkitRunnable {
     }
 
     public void runProtection() {
-        runTaskTimerAsynchronously(Main.getInstance().getPluginDescription().as(JavaPlugin.class), 5L, 20L);
+        if (!running) {
+            running = true;
+            this.task = Tasker.build(this)
+                    .async()
+                    .delay(5, TaskerTime.TICKS)
+                    .repeat(20, TaskerTime.TICKS)
+                    .start();
+        }
     }
-
-
 }
 
