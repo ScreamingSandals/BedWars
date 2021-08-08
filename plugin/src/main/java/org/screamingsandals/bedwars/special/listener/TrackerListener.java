@@ -1,31 +1,24 @@
 package org.screamingsandals.bedwars.special.listener;
 
-import org.screamingsandals.bedwars.Main;
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.api.APIUtils;
-import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.events.ApplyPropertyToBoughtItemEventImpl;
-import org.screamingsandals.bedwars.player.BedWarsPlayer;
+import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.PlayerManager;
-import org.screamingsandals.bedwars.special.Tracker;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.lib.event.OnEvent;
+import org.screamingsandals.lib.event.player.SPlayerInteractEvent;
+import org.screamingsandals.lib.lang.Message;
+import org.screamingsandals.lib.tasker.Tasker;
+import org.screamingsandals.lib.utils.AdventureHelper;
 import org.screamingsandals.lib.utils.annotations.Service;
-import org.screamingsandals.lib.utils.annotations.methods.OnPostEnable;
 
 @Service
-public class TrackerListener implements Listener {
+public class TrackerListener {
     private static final String TRACKER_PREFIX = "Module:Tracker:";
-
-    @OnPostEnable
-    public void postEnable() {
-        Main.getInstance().registerBedwarsListener(this); // TODO: get rid of platform events
-    }
 
     @OnEvent
     public void onTrackerRegistered(ApplyPropertyToBoughtItemEventImpl event) {
@@ -38,25 +31,38 @@ public class TrackerListener implements Listener {
 
     }
 
-    @EventHandler
-    public void onTrackerUse(PlayerInteractEvent event) {
-        Player player = event.getPlayer();
-        if (!PlayerManager.getInstance().isPlayerInGame(player.getUniqueId())) {
+    @OnEvent
+    public void onTrackerUse(SPlayerInteractEvent event) {
+        var player = event.getPlayer();
+        if (!PlayerManager.getInstance().isPlayerInGame(player)) {
             return;
         }
 
-        BedWarsPlayer gamePlayer = PlayerManager.getInstance().getPlayer(player.getUniqueId()).orElseThrow();
-        Game game = gamePlayer.getGame();
-        if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+        var gamePlayer = PlayerManager.getInstance().getPlayer(player).orElseThrow();
+        var game = gamePlayer.getGame();
+        if (event.getAction() == SPlayerInteractEvent.Action.RIGHT_CLICK_AIR || event.getAction() == SPlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
             if (game.getStatus() == GameStatus.RUNNING && !gamePlayer.isSpectator) {
                 if (event.getItem() != null) {
-                    ItemStack stack = event.getItem();
-                    String unhidden = APIUtils.unhashFromInvisibleStringStartsWith(stack, TRACKER_PREFIX);
+                    var stack = event.getItem();
+                    var unhidden = APIUtils.unhashFromInvisibleStringStartsWith(stack.as(ItemStack.class), TRACKER_PREFIX);
                     if (unhidden != null) {
                         event.setCancelled(true);
 
-                        Tracker tracker = new Tracker(game, player, game.getTeamOfPlayer(player));
-                        tracker.runTask();
+                        Tasker
+                                .build(() -> {
+                                    var target = MiscUtils.findTarget(game, player.as(Player.class), Double.MAX_VALUE);
+                                    if (target != null) {
+                                        player.as(Player.class).setCompassTarget(target.getLocation());
+
+                                        int distance = (int) player.getLocation().as(Location.class).distance(target.getLocation());
+                                        MiscUtils.sendActionBarMessage(player, Message.of(LangKeys.SPECIALS_TRACKER_TARGET_FOUND).placeholder("target", AdventureHelper.toComponent(target.getDisplayName())).placeholder("distance", distance));
+                                    } else {
+                                        MiscUtils.sendActionBarMessage(player, Message.of(LangKeys.SPECIALS_TRACKER_NO_TARGET_FOUND));
+                                        player.as(Player.class).setCompassTarget(game.getTeamOfPlayer(player.as(Player.class)).getTeamSpawn());
+                                    }
+                                })
+                                .afterOneTick()
+                                .start();
                     }
                 }
             }

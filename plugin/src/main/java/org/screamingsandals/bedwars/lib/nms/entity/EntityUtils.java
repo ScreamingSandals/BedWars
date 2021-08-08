@@ -4,6 +4,7 @@ import org.bukkit.entity.LivingEntity;
 import org.screamingsandals.bedwars.nms.accessors.MeleeAttackGoalAccessor;
 import org.screamingsandals.bedwars.nms.accessors.MobAccessor;
 import org.screamingsandals.lib.bukkit.utils.nms.ClassStorage;
+import org.screamingsandals.lib.entity.EntityLiving;
 import org.screamingsandals.lib.utils.reflect.Reflect;
 
 public class EntityUtils {
@@ -11,9 +12,9 @@ public class EntityUtils {
 	/*
 	 * @return EntityLivingNMS
 	 */
-	public static EntityLivingNMS makeMobAttackTarget(LivingEntity mob, double speed, double follow, double attackDamage) {
+	public static EntityLivingNMS makeMobAttackTarget(EntityLiving mob, double speed, double follow, double attackDamage) {
 		try {
-			var handler = ClassStorage.getHandle(mob);
+			var handler = ClassStorage.getHandle(mob.as(LivingEntity.class));
 			if (!MobAccessor.getType().isInstance(handler)) {
 				throw new IllegalArgumentException("Entity must be instance of EntityInsentient!!");
 			}

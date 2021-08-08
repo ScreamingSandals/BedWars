@@ -1,25 +1,25 @@
 package org.screamingsandals.bedwars.api.special;
 
-import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.api.Team;
-import org.bukkit.entity.Player;
+import org.screamingsandals.bedwars.api.game.Game;
+import org.screamingsandals.bedwars.api.player.BWPlayer;
 
 /**
- * @author Bedwars Team
+ * @author ScreamingSandals
  */
-public interface SpecialItem {
+public interface SpecialItem<G extends Game, P extends BWPlayer, T extends Team> {
     /**
-     * @return
+     * @return game where this special item is used
      */
-    Game getGame();
+    G getGame();
 
     /**
-     * @return
+     * @return the player who activated this special item
      */
-    Player getPlayer();
+    P getPlayer();
 
     /**
-     * @return
+     * @return the team of player who activated this item
      */
-    Team getTeam();
+    T getTeam();
 }

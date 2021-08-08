@@ -1,11 +1,13 @@
 package org.screamingsandals.bedwars.api.special;
 
-import org.bukkit.Location;
+import org.screamingsandals.bedwars.api.Team;
+import org.screamingsandals.bedwars.api.game.Game;
+import org.screamingsandals.bedwars.api.player.BWPlayer;
 
 /**
  * @author Bedwars Team
  */
-public interface AutoIgniteableTNT extends SpecialItem {
+public interface AutoIgniteableTNT<G extends Game, P extends BWPlayer, T extends Team> extends SpecialItem<G, P, T> {
 
     /**
      * @return explosion time in seconds
@@ -20,6 +22,6 @@ public interface AutoIgniteableTNT extends SpecialItem {
     /**
      * spawn an entity tnt
      */
-    void spawn(Location location);
+    void spawn(Object location);
     
 }

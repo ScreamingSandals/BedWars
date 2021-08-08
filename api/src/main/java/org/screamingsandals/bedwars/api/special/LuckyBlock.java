@@ -1,11 +1,14 @@
 package org.screamingsandals.bedwars.api.special;
 
-import org.bukkit.Location;
+import org.screamingsandals.bedwars.api.Team;
+import org.screamingsandals.bedwars.api.game.Game;
+import org.screamingsandals.bedwars.api.player.BWPlayer;
+import org.screamingsandals.lib.utils.Wrapper;
 
 /**
  * @author Bedwars Team
  */
-public interface LuckyBlock extends SpecialItem {
+public interface LuckyBlock<G extends Game, P extends BWPlayer, T extends Team, L extends Wrapper> extends SpecialItem<G, P, T> {
     /**
      * @return
      */
@@ -14,5 +17,5 @@ public interface LuckyBlock extends SpecialItem {
     /**
      * @return
      */
-    Location getBlockLocation();
+    L getBlockLocation();
 }

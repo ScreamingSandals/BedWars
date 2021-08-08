@@ -1,15 +1,16 @@
 package org.screamingsandals.bedwars.api.special;
 
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.inventory.ItemStack;
+import org.screamingsandals.bedwars.api.Team;
+import org.screamingsandals.bedwars.api.game.Game;
+import org.screamingsandals.bedwars.api.player.BWPlayer;
+import org.screamingsandals.lib.utils.Wrapper;
 
 import java.util.List;
 
 /**
  * @author Bedwars Team
  */
-public interface RescuePlatform extends SpecialItem {
+public interface RescuePlatform<G extends Game, P extends BWPlayer, T extends Team, I extends Wrapper, M extends Wrapper, B extends Wrapper> extends SpecialItem<G, P, T> {
     /**
      * @return
      */
@@ -18,17 +19,17 @@ public interface RescuePlatform extends SpecialItem {
     /**
      * @return
      */
-    boolean canBreak();
+    boolean isBreakable();
 
     /**
      * @return
      */
-    Material getMaterial();
+    M getMaterial();
 
     /**
      * @return
      */
-    ItemStack getStack();
+    I getItem();
 
     /**
      *
@@ -38,5 +39,5 @@ public interface RescuePlatform extends SpecialItem {
     /**
      * @return
      */
-    List<Block> getPlatformBlocks();
+    List<B> getPlatformBlocks();
 }

@@ -1,38 +1,24 @@
 package org.screamingsandals.bedwars.special.listener;
 
 import org.bukkit.Location;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.TNTPrimed;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
-import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.APIUtils;
 import org.screamingsandals.bedwars.events.ApplyPropertyToBoughtItemEventImpl;
 import org.screamingsandals.bedwars.events.PlayerBuildBlockEventImpl;
 import org.screamingsandals.bedwars.player.PlayerManager;
 import org.screamingsandals.bedwars.utils.MiscUtils;
-import org.screamingsandals.bedwars.special.AutoIgniteableTNT;
+import org.screamingsandals.bedwars.special.AutoIgniteableTNTImpl;
+import org.screamingsandals.lib.entity.EntityHuman;
 import org.screamingsandals.lib.event.OnEvent;
+import org.screamingsandals.lib.event.entity.SEntityDamageByEntityEvent;
 import org.screamingsandals.lib.material.MaterialMapping;
-import org.screamingsandals.lib.material.builder.ItemFactory;
 import org.screamingsandals.lib.utils.annotations.Service;
-import org.screamingsandals.lib.utils.annotations.methods.OnPostEnable;
-import org.screamingsandals.lib.world.BlockMapper;
 
-@Service(dependsOn = {
-        MaterialMapping.class,
-        BlockMapper.class,
-        ItemFactory.class
-})
-public class AutoIgniteableTNTListener implements Listener {
+@Service
+public class AutoIgniteableTNTListener {
     private static final String AUTO_IGNITEABLE_TNT_PREFIX = "Module:AutoIgniteableTnt:";
-
-    @OnPostEnable
-    public void postEnable() {
-        Main.getInstance().registerBedwarsListener(this); // TODO: get rid of platform events
-    }
 
     @OnEvent
     public void onAutoIgniteableTNTRegistered(ApplyPropertyToBoughtItemEventImpl event) {
@@ -55,26 +41,27 @@ public class AutoIgniteableTNTListener implements Listener {
             var location = block.getLocation().add(0.5, 0.5, 0.5);
             int explosionTime = Integer.parseInt(unhidden.split(":")[2]);
             boolean damagePlacer = Boolean.parseBoolean(unhidden.split(":")[3]);
-            AutoIgniteableTNT special = new AutoIgniteableTNT(game, player.as(Player.class), game.getPlayerTeam(player), explosionTime,
-                    damagePlacer);
+            AutoIgniteableTNTImpl special = new AutoIgniteableTNTImpl(game, player, game.getPlayerTeam(player), explosionTime, damagePlacer);
             special.spawn(location.as(Location.class));
         }
     }
 
-    @EventHandler
-    public void onDamage(EntityDamageByEntityEvent event) {
-        if (!(event.getEntity() instanceof Player)) {
+    @OnEvent
+    public void onDamage(SEntityDamageByEntityEvent event) {
+        if (!(event.getEntity() instanceof EntityHuman)) {
             return;
         }
 
-        Player player = (Player) event.getEntity();
-        if (!PlayerManager.getInstance().isPlayerInGame(player.getUniqueId())) {
+        var player = ((EntityHuman) event.getEntity()).asPlayer();
+
+        if (!PlayerManager.getInstance().isPlayerInGame(player)) {
             return;
         }
 
-        if (event.getDamager() instanceof TNTPrimed) {
-            TNTPrimed tnt = (TNTPrimed) event.getDamager();
-            if (tnt.hasMetadata(player.getUniqueId().toString()) && tnt.hasMetadata("autoignited")) {
+        var bukkitDamager = event.getDamager().as(Entity.class);
+        if (bukkitDamager instanceof TNTPrimed) {
+            var tnt = (TNTPrimed) bukkitDamager;
+            if (tnt.hasMetadata(player.getUuid().toString()) && tnt.hasMetadata("autoignited")) {
                 event.setCancelled(true);
             }
         }

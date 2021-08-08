@@ -6,7 +6,6 @@ import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.events.ApplyPropertyToBoughtItemEventImpl;
 import org.screamingsandals.bedwars.events.PlayerBuildBlockEventImpl;
-import org.screamingsandals.bedwars.game.Game;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.lang.Message;
@@ -49,7 +48,7 @@ public class TeamChestListener {
             team.addTeamChest(block.as(Block.class));
             Message
                     .of(LangKeys.SPECIALS_TEAM_CHEST_PLACED)
-                    .prefixOrDefault(((Game) event.getGame()).getCustomPrefixComponent())
+                    .prefixOrDefault(event.getGame().getCustomPrefixComponent())
                     .send(team.getConnectedPlayers().stream().map(PlayerMapper::wrapPlayer).collect(Collectors.toList()));
         }
     }

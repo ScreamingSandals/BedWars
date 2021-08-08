@@ -25,7 +25,7 @@ public class PlayerManager implements org.screamingsandals.bedwars.api.player.Pl
         PlayerMapper
                 .UNSAFE_getPlayerConverter()
                 .registerP2W(BedWarsPlayer.class, bwPlayer -> new PlayerWrapper(bwPlayer.getName(), bwPlayer.getUuid()))
-                .registerW2P(BedWarsPlayer.class, this::getPlayerOrCreate);
+                .registerW2P(BedWarsPlayer.class, playerWrapper -> getPlayer(playerWrapper).orElseThrow());
     }
 
     public static PlayerManager getInstance() {

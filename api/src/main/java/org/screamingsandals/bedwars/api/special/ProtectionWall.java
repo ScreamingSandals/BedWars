@@ -1,14 +1,16 @@
 package org.screamingsandals.bedwars.api.special;
 
-import org.bukkit.Material;
-import org.bukkit.block.Block;
+import org.screamingsandals.bedwars.api.Team;
+import org.screamingsandals.bedwars.api.game.Game;
+import org.screamingsandals.bedwars.api.player.BWPlayer;
+import org.screamingsandals.lib.utils.Wrapper;
 
 import java.util.List;
 
 /**
  * @author Bedwars Team
  */
-public interface ProtectionWall extends SpecialItem {
+public interface ProtectionWall<G extends Game, P extends BWPlayer, T extends Team, M extends Wrapper, B extends Wrapper> extends SpecialItem<G, P, T> {
     /**
      * @return
      */
@@ -32,12 +34,12 @@ public interface ProtectionWall extends SpecialItem {
     /**
      * @return
      */
-    boolean canBreak();
+    boolean isBreakable();
 
     /**
      * @return
      */
-    Material getMaterial();
+    M getMaterial();
 
     /**
      *
@@ -47,5 +49,5 @@ public interface ProtectionWall extends SpecialItem {
     /**
      * @return
      */
-    List<Block> getWallBlocks();
+    List<B> getWallBlocks();
 }

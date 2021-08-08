@@ -1,45 +1,30 @@
 package org.screamingsandals.bedwars.special.listener;
 
-import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.APIUtils;
 import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.api.game.GameStatus;
-import org.screamingsandals.bedwars.api.special.SpecialItem;
 import org.screamingsandals.bedwars.events.ApplyPropertyToBoughtItemEventImpl;
-import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.PlayerManager;
-import org.screamingsandals.bedwars.special.RescuePlatform;
+import org.screamingsandals.bedwars.special.RescuePlatformImpl;
 import org.screamingsandals.bedwars.utils.DelayFactory;
 import org.screamingsandals.bedwars.utils.MiscUtils;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.screamingsandals.lib.entity.EntityHuman;
 import org.screamingsandals.lib.event.OnEvent;
+import org.screamingsandals.lib.event.entity.SEntityDamageEvent;
+import org.screamingsandals.lib.event.player.SPlayerBlockBreakEvent;
+import org.screamingsandals.lib.event.player.SPlayerInteractEvent;
 import org.screamingsandals.lib.lang.Message;
-import org.screamingsandals.lib.player.PlayerMapper;
+import org.screamingsandals.lib.utils.BlockFace;
 import org.screamingsandals.lib.utils.annotations.Service;
-import org.screamingsandals.lib.utils.annotations.methods.OnPostEnable;
 
 import java.util.ArrayList;
 
 @Service
-public class RescuePlatformListener implements Listener {
+public class RescuePlatformListener {
     private static final String RESCUE_PLATFORM_PREFIX = "Module:RescuePlatform:";
-
-    @OnPostEnable
-    public void postEnable() {
-        Main.getInstance().registerBedwarsListener(this); // TODO: get rid of platform events
-    }
 
     @OnEvent
     public void onRescuePlatformRegistered(ApplyPropertyToBoughtItemEventImpl event) {
@@ -50,106 +35,102 @@ public class RescuePlatformListener implements Listener {
         }
     }
 
-    @EventHandler
-    public void onPlayerUseItem(PlayerInteractEvent event) {
-        Player player = event.getPlayer();
-        if (!PlayerManager.getInstance().isPlayerInGame(player.getUniqueId())) {
+    @OnEvent
+    public void onPlayerUseItem(SPlayerInteractEvent event) {
+        var player = event.getPlayer();
+        if (!PlayerManager.getInstance().isPlayerInGame(player)) {
             return;
         }
 
-        BedWarsPlayer gPlayer = PlayerManager.getInstance().getPlayer(player.getUniqueId()).orElseThrow();
-        Game game = gPlayer.getGame();
+        var gPlayer = PlayerManager.getInstance().getPlayer(player).orElseThrow();
+        var game = gPlayer.getGame();
 
-        if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+        if (event.getAction() == SPlayerInteractEvent.Action.RIGHT_CLICK_AIR || event.getAction() == SPlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
             if (game.getStatus() == GameStatus.RUNNING && !gPlayer.isSpectator && event.getItem() != null) {
-                ItemStack stack = event.getItem();
-                String unhidden = APIUtils.unhashFromInvisibleStringStartsWith(stack, RESCUE_PLATFORM_PREFIX);
+                var stack = event.getItem();
+                var unhidden = APIUtils.unhashFromInvisibleStringStartsWith(stack.as(ItemStack.class), RESCUE_PLATFORM_PREFIX);
 
                 if (unhidden != null) {
-                    if (!game.isDelayActive(PlayerManager.getInstance().getPlayer(player.getUniqueId()).orElseThrow(), RescuePlatform.class)) {
+                    if (!game.isDelayActive(gPlayer, RescuePlatformImpl.class)) {
                         event.setCancelled(true);
 
-                        boolean isBreakable = Boolean.parseBoolean(unhidden.split(":")[2]);
-                        int delay = Integer.parseInt(unhidden.split(":")[3]);
-                        int breakTime = Integer.parseInt(unhidden.split(":")[4]);
-                        int distance = Integer.parseInt(unhidden.split(":")[5]);
+                        var isBreakable = Boolean.parseBoolean(unhidden.split(":")[2]);
+                        var delay = Integer.parseInt(unhidden.split(":")[3]);
+                        var breakTime = Integer.parseInt(unhidden.split(":")[4]);
+                        var distance = Integer.parseInt(unhidden.split(":")[5]);
                         var result = MiscUtils.getMaterialFromString(unhidden.split(":")[6], "GLASS");
-                        Material material = result.as(Material.class);
-                        short damage = (short) result.getDurability();
 
-                        RescuePlatform rescuePlatform = new RescuePlatform(game, player,
-                                game.getTeamOfPlayer(player), stack);
+                        var rescuePlatform = new RescuePlatformImpl(game, gPlayer, game.getPlayerTeam(gPlayer), stack);
 
-                        if (player.getLocation().getBlock().getRelative(BlockFace.DOWN)
-                                .getType() != Material.AIR) {
-                            MiscUtils.sendActionBarMessage(PlayerMapper.wrapPlayer(player), Message.of(LangKeys.SPECIALS_RESCUE_PLATFORM_NOT_IN_AIR).placeholder("time", delay));
+                        if (player.getLocation().add(BlockFace.DOWN.getDirection()).getBlock().getType().isAir()) {
+                            MiscUtils.sendActionBarMessage(player, Message.of(LangKeys.SPECIALS_RESCUE_PLATFORM_NOT_IN_AIR).placeholder("time", delay));
                             return;
                         }
 
                         if (delay > 0) {
-                            DelayFactory delayFactory = new DelayFactory(delay, rescuePlatform, PlayerManager.getInstance().getPlayer(player.getUniqueId()).orElseThrow(), (org.screamingsandals.bedwars.game.Game) game);
+                            var delayFactory = new DelayFactory(delay, rescuePlatform, gPlayer, game);
                             game.registerDelay(delayFactory);
                         }
 
-                        rescuePlatform.createPlatform(isBreakable, breakTime, distance, material, damage);
+                        rescuePlatform.createPlatform(isBreakable, breakTime, distance, result);
                     } else {
                         event.setCancelled(true);
 
-                        int delay = game.getActiveDelay(PlayerManager.getInstance().getPlayer(player.getUniqueId()).orElseThrow(), RescuePlatform.class).getRemainDelay();
-                        MiscUtils.sendActionBarMessage(PlayerMapper.wrapPlayer(player), Message.of(LangKeys.SPECIALS_ITEM_DELAY).placeholder("time", delay));
+                        var delay = game.getActiveDelay(gPlayer, RescuePlatformImpl.class).getRemainDelay();
+                        MiscUtils.sendActionBarMessage(player, Message.of(LangKeys.SPECIALS_ITEM_DELAY).placeholder("time", delay));
                     }
                 }
             }
         }
     }
 
-    @EventHandler
-    public void onFallDamage(EntityDamageEvent event) {
-        Entity entity = event.getEntity();
-        if (event.isCancelled() || !(entity instanceof Player)) {
+    @OnEvent
+    public void onFallDamage(SEntityDamageEvent event) {
+        var entity = event.getEntity();
+        if (event.isCancelled() || !(entity instanceof EntityHuman)) {
             return;
         }
 
-        Player player = ((Player) entity).getPlayer();
-        if (!PlayerManager.getInstance().isPlayerInGame(player.getUniqueId())) {
+        var player = ((EntityHuman) entity).asPlayer();
+        if (!PlayerManager.getInstance().isPlayerInGame(player)) {
             return;
         }
 
-        BedWarsPlayer gPlayer = PlayerManager.getInstance().getPlayer(player.getUniqueId()).orElseThrow();
-        Game game = gPlayer.getGame();
+        var gPlayer = PlayerManager.getInstance().getPlayer(player).orElseThrow();
+        var game = gPlayer.getGame();
         if (gPlayer.isSpectator) {
             return;
         }
 
-        RescuePlatform rescuePlatform = (RescuePlatform) game.getFirstActivedSpecialItemOfPlayer(player, RescuePlatform.class);
-        if (rescuePlatform != null && event.getCause() == EntityDamageEvent.DamageCause.FALL) {
-            Block block = player.getLocation().getBlock().getRelative(BlockFace.DOWN);
+        var rescuePlatform = (RescuePlatformImpl) game.getFirstActivedSpecialItemOfPlayer(player.as(Player.class), RescuePlatformImpl.class);
+        if (rescuePlatform != null && event.getDamageCause().is("FALL")) {
+            var block = player.getLocation().add(BlockFace.DOWN.getDirection()).getBlock();
             if (block != null) {
-                if (block.getType() == rescuePlatform.getMaterial()) {
+                if (block.getType().is(rescuePlatform.getMaterial())) {
                     event.setCancelled(true);
                 }
             }
         }
     }
 
-    @EventHandler
-    public void onBlockBreak(BlockBreakEvent event) {
-        Player player = event.getPlayer();
-        if (!PlayerManager.getInstance().isPlayerInGame(player.getUniqueId())) {
+    @OnEvent
+    public void onBlockBreak(SPlayerBlockBreakEvent event) {
+        var player = event.getPlayer();
+        if (!PlayerManager.getInstance().isPlayerInGame(player)) {
             return;
         }
 
-        BedWarsPlayer gPlayer = PlayerManager.getInstance().getPlayer(player.getUniqueId()).orElseThrow();
-        Game game = gPlayer.getGame();
+        var gPlayer = PlayerManager.getInstance().getPlayer(player).orElseThrow();
+        var game = gPlayer.getGame();
         if (gPlayer.isSpectator) {
             return;
         }
 
-        Block block = event.getBlock();
-        for (RescuePlatform checkedPlatform : getCreatedPlatforms(game, player)) {
+        var block = event.getBlock();
+        for (var checkedPlatform : getCreatedPlatforms(game, player.as(Player.class))) {
             if (checkedPlatform != null) {
-                for (Block platformBlock : checkedPlatform.getPlatformBlocks()) {
-                    if (platformBlock.equals(block) && !checkedPlatform.canBreak()) {
+                for (var platformBlock : checkedPlatform.getPlatformBlocks()) {
+                    if (platformBlock.equals(block) && !checkedPlatform.isBreakable()) {
                         event.setCancelled(true);
                     }
                 }
@@ -157,11 +138,11 @@ public class RescuePlatformListener implements Listener {
         }
     }
 
-    private ArrayList<RescuePlatform> getCreatedPlatforms(Game game, Player player) {
-        ArrayList<RescuePlatform> createdPlatforms = new ArrayList<>();
-        for (SpecialItem specialItem : game.getActivedSpecialItemsOfPlayer(player)) {
-            if (specialItem instanceof RescuePlatform) {
-                RescuePlatform platform = (RescuePlatform) specialItem;
+    private ArrayList<RescuePlatformImpl> getCreatedPlatforms(Game game, Player player) {
+        var createdPlatforms = new ArrayList<RescuePlatformImpl>();
+        for (var specialItem : game.getActivedSpecialItemsOfPlayer(player)) {
+            if (specialItem instanceof RescuePlatformImpl) {
+                RescuePlatformImpl platform = (RescuePlatformImpl) specialItem;
                 createdPlatforms.add(platform);
             }
         }

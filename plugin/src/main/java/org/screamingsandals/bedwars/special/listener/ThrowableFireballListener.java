@@ -1,12 +1,7 @@
 package org.screamingsandals.bedwars.special.listener;
 
-import org.bukkit.Material;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.APIUtils;
@@ -14,19 +9,14 @@ import org.screamingsandals.bedwars.events.ApplyPropertyToBoughtItemEventImpl;
 import org.screamingsandals.bedwars.player.PlayerManager;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.lib.event.OnEvent;
+import org.screamingsandals.lib.event.player.SPlayerInteractEvent;
+import org.screamingsandals.lib.material.builder.ItemFactory;
 import org.screamingsandals.lib.utils.annotations.Service;
-import org.screamingsandals.lib.utils.annotations.methods.OnPostEnable;
 
 @Service
-public class ThrowableFireballListener implements Listener {
+public class ThrowableFireballListener {
 
     public static final String THROWABLE_FIREBALL_PREFIX = "Module:ThrowableFireball:";
-
-    @OnPostEnable
-    public void postEnable() {
-        Main.getInstance().registerBedwarsListener(this); // TODO: get rid of platform events
-    }
-
 
     @OnEvent
     public void onThrowableFireballRegistered(ApplyPropertyToBoughtItemEventImpl event) {
@@ -38,26 +28,25 @@ public class ThrowableFireballListener implements Listener {
         }
     }
 
-    @EventHandler
-    public void onFireballThrow(PlayerInteractEvent event) {
-        Player player = event.getPlayer();
+    @OnEvent
+    public void onFireballThrow(SPlayerInteractEvent event) {
+        var player = event.getPlayer();
 
-        if (!PlayerManager.getInstance().isPlayerInGame(player.getUniqueId())) {
+        if (!PlayerManager.getInstance().isPlayerInGame(player)) {
             return;
         }
 
         if (event.getItem() != null) {
-            ItemStack stack = event.getItem();
-            String unhash = APIUtils.unhashFromInvisibleStringStartsWith(stack, THROWABLE_FIREBALL_PREFIX);
-            if (unhash != null && (event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_AIR)) {
-                String[] properties = unhash.split(":");
-                double damage = Double.parseDouble(properties[2]);
-                float explosion = (float) Double.parseDouble(properties[2]);
+            var stack = event.getItem();
+            var unhash = APIUtils.unhashFromInvisibleStringStartsWith(stack.as(ItemStack.class), THROWABLE_FIREBALL_PREFIX);
+            if (unhash != null && (event.getAction() == SPlayerInteractEvent.Action.RIGHT_CLICK_BLOCK || event.getAction() == SPlayerInteractEvent.Action.RIGHT_CLICK_AIR)) {
+                var properties = unhash.split(":");
+                var explosion = (float) Double.parseDouble(properties[2]);
 
-                Fireball fireball = player.launchProjectile(Fireball.class);
+                var fireball = player.as(Player.class).launchProjectile(Fireball.class);
                 fireball.setIsIncendiary(false);
                 fireball.setYield(explosion);
-                Main.registerGameEntity(fireball, PlayerManager.getInstance().getGameOfPlayer(player.getUniqueId()).orElseThrow());
+                Main.registerGameEntity(fireball, PlayerManager.getInstance().getGameOfPlayer(player).orElseThrow());
 
                 event.setCancelled(true);
 
@@ -65,17 +54,17 @@ public class ThrowableFireballListener implements Listener {
                     stack.setAmount(stack.getAmount() - 1);
                 } else {
                     try {
-                        if (player.getInventory().getItemInOffHand().equals(stack)) {
-                            player.getInventory().setItemInOffHand(new ItemStack(Material.AIR));
+                        if (player.getPlayerInventory().getItemInOffHand().equals(stack)) {
+                            player.getPlayerInventory().setItemInOffHand(ItemFactory.getAir());
                         } else {
-                            player.getInventory().remove(stack);
+                            player.getPlayerInventory().removeItem(stack);
                         }
                     } catch (Throwable e) {
-                        player.getInventory().remove(stack);
+                        player.getPlayerInventory().removeItem(stack);
                     }
                 }
 
-                player.updateInventory();
+                player.as(Player.class).updateInventory();
             }
         }
     }

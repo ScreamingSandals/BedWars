@@ -68,9 +68,6 @@ public class GameConfigurationContainer implements ConfigurationContainer {
         return Optional.empty();
     }
 
-    private void convertOldFormat(String key) {
-    }
-
     @Override
     public <T> boolean register(String key, Class<T> typeToBeSaved) {
         if (key.contains(".") || key.contains(":")) {

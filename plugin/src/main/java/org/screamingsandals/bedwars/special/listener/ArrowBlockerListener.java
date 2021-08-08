@@ -5,16 +5,14 @@ import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.events.ApplyPropertyToBoughtItemEventImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.PlayerManager;
-import org.screamingsandals.bedwars.special.ArrowBlocker;
+import org.screamingsandals.bedwars.special.ArrowBlockerImpl;
 import org.screamingsandals.bedwars.utils.DelayFactory;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.screamingsandals.lib.entity.DamageCause;
 import org.screamingsandals.lib.entity.EntityHuman;
 import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.event.entity.SEntityDamageEvent;
-import org.screamingsandals.lib.event.player.SPlayerClickedBlockEvent;
 import org.screamingsandals.lib.event.player.SPlayerInteractEvent;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.utils.annotations.Service;
@@ -42,19 +40,18 @@ public class ArrowBlockerListener {
         var gPlayer = PlayerManager.getInstance().getPlayer(player).orElseThrow();
         var game = gPlayer.getGame();
 
-        if (event.getAction() == SPlayerClickedBlockEvent.Action.RIGHT_CLICK_AIR || event.getAction() == SPlayerClickedBlockEvent.Action.RIGHT_CLICK_BLOCK) {
+        if (event.getAction() == SPlayerInteractEvent.Action.RIGHT_CLICK_AIR || event.getAction() == SPlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
             if (game.getStatus() == GameStatus.RUNNING && !gPlayer.isSpectator && event.getItem() != null) {
-                var stack = event.getItem().as(ItemStack.class);
-                var unhidden = APIUtils.unhashFromInvisibleStringStartsWith(stack, ARROW_BLOCKER_PREFIX);
+                var stack = event.getItem();
+                var unhidden = APIUtils.unhashFromInvisibleStringStartsWith(stack.as(ItemStack.class), ARROW_BLOCKER_PREFIX);
 
                 if (unhidden != null) {
-                    if (!game.isDelayActive(gPlayer, ArrowBlocker.class)) {
+                    if (!game.isDelayActive(gPlayer, ArrowBlockerImpl.class)) {
                         event.setCancelled(true);
 
                         int protectionTime = Integer.parseInt(unhidden.split(":")[2]);
                         int delay = Integer.parseInt(unhidden.split(":")[3]);
-                        var arrowBlocker = new ArrowBlocker(game, event.getPlayer().as(Player.class),
-                                game.getTeamOfPlayer(event.getPlayer().as(Player.class)), stack, protectionTime);
+                        var arrowBlocker = new ArrowBlockerImpl(game, gPlayer, game.getPlayerTeam(gPlayer), stack, protectionTime);
 
                         if (arrowBlocker.isActivated()) {
                             player.sendMessage(Message.of(LangKeys.SPECIALS_ARROW_BLOCKER_ALREADY_ACTIVATED).prefixOrDefault(game.getCustomPrefixComponent()));
@@ -70,7 +67,7 @@ public class ArrowBlockerListener {
                     } else {
                         event.setCancelled(true);
 
-                        int delay = game.getActiveDelay(gPlayer, ArrowBlocker.class).getRemainDelay();
+                        int delay = game.getActiveDelay(gPlayer, ArrowBlockerImpl.class).getRemainDelay();
                         MiscUtils.sendActionBarMessage(player, Message.of(LangKeys.SPECIALS_ITEM_DELAY).placeholder("time", delay));
                     }
                 }
@@ -98,8 +95,8 @@ public class ArrowBlockerListener {
             return;
         }
 
-        var arrowBlocker = (ArrowBlocker) game.getFirstActivedSpecialItemOfPlayer(player.as(Player.class), ArrowBlocker.class);
-        if (arrowBlocker != null && event.getDamageCause() == DamageCause.PROJECTILE) {
+        var arrowBlocker = (ArrowBlockerImpl) game.getFirstActivedSpecialItemOfPlayer(player.as(Player.class), ArrowBlockerImpl.class);
+        if (arrowBlocker != null && event.getDamageCause().is("PROJECTILE")) {
             event.setCancelled(true);
         }
     }

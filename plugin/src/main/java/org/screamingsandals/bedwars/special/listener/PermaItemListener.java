@@ -1,35 +1,30 @@
 package org.screamingsandals.bedwars.special.listener;
 
-import org.bukkit.entity.Item;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryAction;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.inventory.ItemStack;
-import org.screamingsandals.bedwars.Main;
+import org.bukkit.inventory.PlayerInventory;
 import org.screamingsandals.bedwars.api.APIUtils;
 import org.screamingsandals.bedwars.events.ApplyPropertyToBoughtItemEventImpl;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.player.PlayerManager;
 import org.screamingsandals.lib.event.OnEvent;
+import org.screamingsandals.lib.event.player.SPlayerDropItemEvent;
+import org.screamingsandals.lib.event.player.SPlayerInventoryClickEvent;
+import org.screamingsandals.lib.utils.InventoryAction;
 import org.screamingsandals.lib.utils.annotations.Service;
-import org.screamingsandals.lib.utils.annotations.methods.OnPostEnable;
 
-import java.util.HashSet;
+import java.util.List;
 
 @Service
-public class PermaItemListener implements Listener {
+public class PermaItemListener {
     private static final String PERMA_ITEM_PREFIX = "Module:PermaItem:";
     private static final String PERMA_ITEM_PROPERTY_KEY = "lose-upon-death";
-    private static final HashSet<InventoryAction> blockedInventoryActions = initializeBlockedInventoryActions();
-
-    @OnPostEnable
-    public void postEnable() {
-        Main.getInstance().registerBedwarsListener(this); // TODO: get rid of platform events
-    }
+    private static final List<InventoryAction> blockedInventoryActions = List.of(
+            InventoryAction.DROP_ALL_CURSOR,
+            InventoryAction.DROP_ALL_SLOT,
+            InventoryAction.DROP_ONE_SLOT,
+            InventoryAction.DROP_ONE_CURSOR,
+            InventoryAction.MOVE_TO_OTHER_INVENTORY
+    );
 
     @OnEvent
     public void onItemRegister(ApplyPropertyToBoughtItemEventImpl event) {
@@ -50,32 +45,32 @@ public class PermaItemListener implements Listener {
         }
     }
 
-    @EventHandler
-    public void onItemRemoval(InventoryClickEvent event) {
-        Player player = (Player) event.getWhoClicked();
-        if (!PlayerManager.getInstance().isPlayerInGame(player.getUniqueId())) {
+    @OnEvent
+    public void onItemRemoval(SPlayerInventoryClickEvent event) {
+        var player = event.getPlayer();
+        if (!PlayerManager.getInstance().isPlayerInGame(player)) {
             return;
         }
 
-        if (event.getClickedInventory() != null) {
-            if (event.getClickedInventory().getType() != InventoryType.PLAYER) {
+        if (event.getInventory() != null) {
+            if (!(event.getInventory() instanceof PlayerInventory)) {
                 return;
             }
         }
 
-        ItemStack cursorItem = event.getCursor();
-        ItemStack slotItem = event.getCurrentItem();
-        InventoryAction action = event.getAction();
+        var cursorItem = event.getCursorItem();
+        var slotItem = event.getCurrentItem();
+        var action = event.getAction();
 
         String cursorItemUnhashedProp = null;
         String slotItemUnhashedProp = null;
 
         if (cursorItem != null) {
-            cursorItemUnhashedProp = APIUtils.unhashFromInvisibleStringStartsWith(cursorItem, PERMA_ITEM_PREFIX);
+            cursorItemUnhashedProp = APIUtils.unhashFromInvisibleStringStartsWith(cursorItem.as(ItemStack.class), PERMA_ITEM_PREFIX);
         }
 
         if (slotItem != null) {
-            slotItemUnhashedProp = APIUtils.unhashFromInvisibleStringStartsWith(slotItem, PERMA_ITEM_PREFIX);
+            slotItemUnhashedProp = APIUtils.unhashFromInvisibleStringStartsWith(slotItem.as(ItemStack.class), PERMA_ITEM_PREFIX);
         }
 
         if ((cursorItemUnhashedProp != null || slotItemUnhashedProp != null) && blockedInventoryActions.contains(action)) {
@@ -83,30 +78,18 @@ public class PermaItemListener implements Listener {
         }
     }
 
-    @EventHandler
-    public void onItemDrop(PlayerDropItemEvent event) {
-        Player player = event.getPlayer();
-        if (!PlayerManager.getInstance().isPlayerInGame(player.getUniqueId())) {
+    @OnEvent
+    public void onItemDrop(SPlayerDropItemEvent event) {
+        var player = event.getPlayer();
+        if (!PlayerManager.getInstance().isPlayerInGame(player)) {
             return;
         }
         
-        Item droppedItem = event.getItemDrop();
-        String unhashedProperty = APIUtils.unhashFromInvisibleStringStartsWith(droppedItem.getItemStack(), PERMA_ITEM_PREFIX);
+        var droppedItem = event.getItemDrop();
+        var unhashedProperty = APIUtils.unhashFromInvisibleStringStartsWith(droppedItem.as(ItemStack.class), PERMA_ITEM_PREFIX);
         if (unhashedProperty != null) {
             event.setCancelled(true);
         }
-    }
-
-    private static HashSet<InventoryAction> initializeBlockedInventoryActions() {
-        HashSet<InventoryAction> blockedInventoryActions = new HashSet<>();
-
-        blockedInventoryActions.add(InventoryAction.DROP_ALL_CURSOR);
-        blockedInventoryActions.add(InventoryAction.DROP_ALL_SLOT);
-        blockedInventoryActions.add(InventoryAction.DROP_ONE_SLOT);
-        blockedInventoryActions.add(InventoryAction.DROP_ONE_CURSOR);
-        blockedInventoryActions.add(InventoryAction.MOVE_TO_OTHER_INVENTORY);
-
-        return blockedInventoryActions;
     }
 
     public static String getPermItemPropKey() {

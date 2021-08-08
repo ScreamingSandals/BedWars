@@ -2,8 +2,6 @@ package org.screamingsandals.bedwars.utils;
 
 import lombok.experimental.UtilityClass;
 import net.kyori.adventure.text.Component;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -11,8 +9,6 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.RunningTeam;
@@ -28,6 +24,7 @@ import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.sender.SenderMessage;
 import org.screamingsandals.lib.utils.AdventureHelper;
+import org.screamingsandals.lib.world.LocationHolder;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -38,35 +35,34 @@ public class MiscUtils {
      * From BedWarsRel
      */
     public int randInt(int min, int max) {
-        Random rand = new Random();
-        return rand.nextInt((max - min) + 1) + min;
+        return new Random().nextInt((max - min) + 1) + min;
     }
 
-    public BlockFace getCardinalDirection(Location location) {
+    public org.screamingsandals.lib.utils.BlockFace getCardinalDirection(LocationHolder location) {
         double rotation = (location.getYaw() - 90) % 360;
         if (rotation < 0) {
             rotation += 360.0;
         }
         if (0 <= rotation && rotation < 22.5) {
-            return BlockFace.NORTH;
+            return org.screamingsandals.lib.utils.BlockFace.NORTH;
         } else if (22.5 <= rotation && rotation < 67.5) {
-            return BlockFace.NORTH_EAST;
+            return org.screamingsandals.lib.utils.BlockFace.NORTH_EAST;
         } else if (67.5 <= rotation && rotation < 112.5) {
-            return BlockFace.EAST;
+            return org.screamingsandals.lib.utils.BlockFace.EAST;
         } else if (112.5 <= rotation && rotation < 157.5) {
-            return BlockFace.SOUTH_EAST;
+            return org.screamingsandals.lib.utils.BlockFace.SOUTH_EAST;
         } else if (157.5 <= rotation && rotation < 202.5) {
-            return BlockFace.SOUTH;
+            return org.screamingsandals.lib.utils.BlockFace.SOUTH;
         } else if (202.5 <= rotation && rotation < 247.5) {
-            return BlockFace.SOUTH_WEST;
+            return org.screamingsandals.lib.utils.BlockFace.SOUTH_WEST;
         } else if (247.5 <= rotation && rotation < 292.5) {
-            return BlockFace.WEST;
+            return org.screamingsandals.lib.utils.BlockFace.WEST;
         } else if (292.5 <= rotation && rotation < 337.5) {
-            return BlockFace.NORTH_WEST;
+            return org.screamingsandals.lib.utils.BlockFace.NORTH_WEST;
         } else if (337.5 <= rotation && rotation < 360.0) {
-            return BlockFace.NORTH;
+            return org.screamingsandals.lib.utils.BlockFace.NORTH;
         } else {
-            return BlockFace.NORTH;
+            return org.screamingsandals.lib.utils.BlockFace.NORTH;
         }
     }
     /* End of BedWarsRel */

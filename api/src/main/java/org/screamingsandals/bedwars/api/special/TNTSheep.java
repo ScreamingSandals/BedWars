@@ -1,28 +1,29 @@
 package org.screamingsandals.bedwars.api.special;
 
-import org.bukkit.Location;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.TNTPrimed;
+import org.screamingsandals.bedwars.api.Team;
+import org.screamingsandals.bedwars.api.game.Game;
+import org.screamingsandals.bedwars.api.player.BWPlayer;
+import org.screamingsandals.lib.utils.Wrapper;
 
 /**
  * @author Bedwars Team
  *
  */
-public interface TNTSheep extends SpecialItem {
+public interface TNTSheep<G extends Game, P extends BWPlayer, T extends Team, E extends Wrapper, L extends Wrapper, LE extends Wrapper> extends SpecialItem<G, P, T> {
 	/**
 	 * @return
 	 */
-	LivingEntity getEntity();
+	LE getEntity();
 
 	/**
 	 * @return
 	 */
-	Location getInitialLocation();
+	L getInitialLocation();
 	
 	/**
 	 * @return
 	 */
-	TNTPrimed getTNT();
+	E getTnt();
 	
 	/**
 	 * @return
