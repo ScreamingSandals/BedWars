@@ -63,6 +63,7 @@ import org.screamingsandals.bedwars.scoreboard.ScreamingScoreboard;
 import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.bedwars.tab.TabManager;
 import org.screamingsandals.bedwars.utils.*;
+import org.screamingsandals.lib.entity.EntityBasic;
 import org.screamingsandals.lib.entity.EntityLiving;
 import org.screamingsandals.lib.entity.type.EntityTypeHolder;
 import org.screamingsandals.lib.event.EventManager;
@@ -3062,6 +3063,15 @@ public class GameImpl implements Game<BedWarsPlayer> {
     @Override
     public boolean isEntityShop(Entity entity) {
         for (GameStoreImpl store : gameStore) {
+            if (store.getEntity().as(Entity.class).equals(entity)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isEntityShop(EntityBasic entity) {
+        for (var store : gameStore) {
             if (store.getEntity().equals(entity)) {
                 return true;
             }

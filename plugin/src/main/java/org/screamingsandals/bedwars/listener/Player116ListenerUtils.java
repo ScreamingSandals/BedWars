@@ -1,13 +1,15 @@
 package org.screamingsandals.bedwars.listener;
 
+import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.type.RespawnAnchor;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.game.CurrentTeam;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.utils.Sounds;
+import org.screamingsandals.lib.event.player.SPlayerInteractEvent;
+import org.screamingsandals.lib.material.Item;
 
 public class Player116ListenerUtils {
     public static boolean processAnchorDeath(GameImpl game, CurrentTeam team) {
@@ -29,17 +31,17 @@ public class Player116ListenerUtils {
         return isBed;
     }
 
-    public static boolean anchorCharge(PlayerInteractEvent event, GameImpl game, ItemStack stack) {
+    public static boolean anchorCharge(SPlayerInteractEvent event, GameImpl game, Item stack) {
         boolean anchorFilled = false;
-        RespawnAnchor anchor = (RespawnAnchor) event.getClickedBlock().getBlockData();
+        RespawnAnchor anchor = (RespawnAnchor) event.getBlockClicked().as(Block.class).getBlockData();
         int charges = anchor.getCharges();
         charges++;
         if (charges <= anchor.getMaximumCharges()) {
             anchorFilled = true;
             anchor.setCharges(charges);
-            event.getClickedBlock().setBlockData(anchor);
+            event.getBlockClicked().as(Block.class).setBlockData(anchor);
             stack.setAmount(stack.getAmount() - 1);
-            Sounds.playSound(event.getClickedBlock().getLocation(), MainConfig.getInstance().node("target-block", "respawn-anchor", "sound", "charge").getString(), Sounds.BLOCK_RESPAWN_ANCHOR_CHARGE, 1, 1);
+            Sounds.playSound(event.getBlockClicked().getLocation().as(Location.class), MainConfig.getInstance().node("target-block", "respawn-anchor", "sound", "charge").getString(), Sounds.BLOCK_RESPAWN_ANCHOR_CHARGE, 1, 1);
             game.updateScoreboard();
         }
         return anchorFilled;
