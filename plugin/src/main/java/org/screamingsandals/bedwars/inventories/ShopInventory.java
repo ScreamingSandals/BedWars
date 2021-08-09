@@ -51,9 +51,7 @@ import java.util.stream.Collectors;
 
 // TODO: remake methods in this class so there won't be too many bukkit api calls
 @Service(dependsOn = {
-        SimpleInventoriesCore.class,
-        MainConfig.class,
-        PlayerManagerImpl.class
+        SimpleInventoriesCore.class
 })
 @RequiredArgsConstructor
 public class ShopInventory implements Listener {

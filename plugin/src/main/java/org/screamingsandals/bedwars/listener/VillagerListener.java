@@ -17,10 +17,7 @@ import org.screamingsandals.lib.event.player.SPlayerInteractEntityEvent;
 import org.screamingsandals.lib.npc.event.NPCInteractEvent;
 import org.screamingsandals.lib.utils.annotations.Service;
 
-@Service(dependsOn = {
-        PlayerManagerImpl.class,
-        ShopInventory.class
-})
+@Service
 @RequiredArgsConstructor
 public class VillagerListener {
     private final PlayerManagerImpl playerManager;

@@ -66,6 +66,7 @@ import org.screamingsandals.bedwars.utils.*;
 import org.screamingsandals.lib.entity.EntityLiving;
 import org.screamingsandals.lib.entity.type.EntityTypeHolder;
 import org.screamingsandals.lib.event.EventManager;
+import org.screamingsandals.lib.event.player.SPlayerBlockBreakEvent;
 import org.screamingsandals.lib.healthindicator.HealthIndicator;
 import org.screamingsandals.lib.hologram.HologramManager;
 import org.screamingsandals.lib.lang.Message;
@@ -577,7 +578,7 @@ public class GameImpl implements Game<BedWarsPlayer> {
         return true;
     }
 
-    public boolean blockBreak(BedWarsPlayer player, Block block, BlockBreakEvent event) {
+    public boolean blockBreak(BedWarsPlayer player, Block block, SPlayerBlockBreakEvent event) {
         if (status != GameStatus.RUNNING) {
             return false; // ?
         }
@@ -1590,9 +1591,9 @@ public class GameImpl implements Game<BedWarsPlayer> {
                 MiscUtils.giveItemsToPlayer(gamePlayer.getPermaItemsPurchased(), player, currentTeam.getColor());
 
                 if (configurationContainer.getOrDefault(ConfigurationContainer.KEEP_ARMOR, Boolean.class, false)) {
-                    final var armorContents = gamePlayer.getGameArmorContents();
+                    final var armorContents = gamePlayer.getArmorContents();
                     if (armorContents != null) {
-                        player.getInventory().setArmorContents(armorContents);
+                        gamePlayer.getPlayerInventory().setArmorContents(armorContents);
                     }
                 }
 
@@ -3002,7 +3003,25 @@ public class GameImpl implements Game<BedWarsPlayer> {
         return new ArrayList<>(spawners);
     }
 
+    @Deprecated
     public void dispatchRewardCommands(String type, Player player, int score) {
+        if (!MainConfig.getInstance().node("rewards", "enabled").getBoolean()) {
+            return;
+        }
+
+        MainConfig.getInstance().node("rewards", type).childrenList()
+                .stream()
+                .map(ConfigurationNode::getString)
+                .filter(Objects::nonNull)
+                .map(s -> s
+                        .replaceAll("\\{player}", player.getName())
+                        .replaceAll("\\{score}", Integer.toString(score))
+                )
+                .map(s -> s.startsWith("/") ? s.substring(1) : s)
+                .forEach(s -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), s));
+    }
+
+    public void dispatchRewardCommands(String type, PlayerWrapper player, int score) {
         if (!MainConfig.getInstance().node("rewards", "enabled").getBoolean()) {
             return;
         }

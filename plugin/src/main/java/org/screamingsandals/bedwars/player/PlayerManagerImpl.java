@@ -15,8 +15,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service(dependsOn = {
-        GameManagerImpl.class,
-        PlayerMapper.class
+        GameManagerImpl.class
 })
 @RequiredArgsConstructor
 public class PlayerManagerImpl implements PlayerManager<BedWarsPlayer, GameImpl> {

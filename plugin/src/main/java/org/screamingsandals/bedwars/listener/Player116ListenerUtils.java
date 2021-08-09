@@ -10,9 +10,10 @@ import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.utils.Sounds;
 
 public class Player116ListenerUtils {
-    public static boolean processAnchorDeath(GameImpl game, CurrentTeam team, boolean isBed) {
+    public static boolean processAnchorDeath(GameImpl game, CurrentTeam team) {
         RespawnAnchor anchor = (RespawnAnchor) team.teamInfo.bed.getBlock().getBlockData();
         int charges = anchor.getCharges();
+        boolean isBed = true;
         if (charges <= 0) {
             isBed = false;
         } else {

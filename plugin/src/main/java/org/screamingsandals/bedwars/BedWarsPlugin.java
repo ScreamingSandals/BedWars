@@ -38,14 +38,13 @@ import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.bedwars.tab.TabManager;
 import org.screamingsandals.bedwars.utils.*;
 import org.screamingsandals.bedwars.lib.debug.Debug;
-import org.screamingsandals.lib.Core;
-import org.screamingsandals.lib.event.EventManager;
 import org.screamingsandals.lib.healthindicator.HealthIndicatorManager;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.material.Item;
 import org.screamingsandals.lib.material.MaterialHolder;
 import org.screamingsandals.lib.material.MaterialMapping;
 import org.screamingsandals.lib.player.PlayerMapper;
+import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.plugin.PluginContainer;
 import org.screamingsandals.lib.plugin.PluginManager;
 import org.screamingsandals.lib.sidebar.SidebarManager;
@@ -77,8 +76,6 @@ import java.util.*;
         "Parties"
 })
 @Init(services = {
-        EventManager.class,
-        Core.class,
         CommandService.class,
         GameManagerImpl.class,
         UpdateChecker.class,
@@ -149,6 +146,7 @@ public class BedWarsPlugin extends PluginContainer implements BedwarsAPI {
         return instance.isLegacy;
     }
 
+    @Deprecated
     public static void depositPlayer(Player player, double coins) {
         try {
             if (isVault() && MainConfig.getInstance().node("vault", "enabled").getBoolean()) {
@@ -160,6 +158,23 @@ public class BedWarsPlugin extends PluginContainer implements BedwarsAPI {
                             .placeholder("coins", coins)
                             .placeholder("currency",  (coins == 1 ? instance.econ.currencyNameSingular() : instance.econ.currencyNamePlural()))
                             .send(PlayerMapper.wrapPlayer(player));
+                }
+            }
+        } catch (Throwable ignored) {
+        }
+    }
+
+    public static void depositPlayer(PlayerWrapper player, double coins) {
+        try {
+            if (isVault() && MainConfig.getInstance().node("vault", "enabled").getBoolean()) {
+                var response = instance.econ.depositPlayer(player.as(Player.class), coins);
+                if (response.transactionSuccess()) {
+                    Message
+                            .of(LangKeys.IN_GAME_VAULT_DEPOSITE)
+                            .defaultPrefix()
+                            .placeholder("coins", coins)
+                            .placeholder("currency",  (coins == 1 ? instance.econ.currencyNameSingular() : instance.econ.currencyNamePlural()))
+                            .send(player);
                 }
             }
         } catch (Throwable ignored) {

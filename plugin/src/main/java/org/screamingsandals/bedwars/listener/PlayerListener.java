@@ -16,11 +16,11 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.inventory.CraftItemEvent;
-import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.*;
 import org.bukkit.event.vehicle.VehicleCreateEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.MetadataValue;
@@ -50,16 +50,27 @@ import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.bedwars.utils.*;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.lib.nms.entity.PlayerUtils;
+import org.screamingsandals.lib.bukkit.utils.nms.Version;
 import org.screamingsandals.lib.entity.EntityHuman;
 import org.screamingsandals.lib.event.EventManager;
+import org.screamingsandals.lib.event.OnEvent;
+import org.screamingsandals.lib.event.entity.SFoodLevelChangeEvent;
+import org.screamingsandals.lib.event.player.*;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.material.builder.ItemFactory;
 import org.screamingsandals.lib.player.PlayerMapper;
+import org.screamingsandals.lib.player.PlayerWrapper;
+import org.screamingsandals.lib.tasker.Tasker;
+import org.screamingsandals.lib.tasker.TaskerTime;
+import org.screamingsandals.lib.tasker.task.TaskerTask;
 import org.screamingsandals.lib.utils.AdventureHelper;
 import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.utils.annotations.methods.OnPostEnable;
+import org.screamingsandals.lib.world.LocationMapper;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 @Service
@@ -72,13 +83,13 @@ public class PlayerListener implements Listener {
 
     private final List<Player> explosionAffectedPlayers = new ArrayList<>();
 
-    @EventHandler(priority = EventPriority.HIGHEST)
-    public void onPlayerDeath(PlayerDeathEvent event) {
-        final Player victim = event.getEntity();
+    @OnEvent(priority = org.screamingsandals.lib.event.EventPriority.HIGHEST)
+    public void onPlayerDeath(SPlayerDeathEvent event) {
+        final var victim = event.getPlayer();
 
-        if (PlayerManagerImpl.getInstance().isPlayerInGame(victim.getUniqueId())) {
+        if (PlayerManagerImpl.getInstance().isPlayerInGame(victim)) {
             Debug.info(victim.getName() + " died in BedWars Game, Processing his dead...");
-            final var gVictim = PlayerManagerImpl.getInstance().getPlayer(victim.getUniqueId()).get();
+            final var gVictim = victim.as(BedWarsPlayer.class);
             final var game = gVictim.getGame();
             final var victimTeam = game.getPlayerTeam(gVictim);
             final var victimColor = victimTeam.teamInfo.color.chatColor;
@@ -86,15 +97,15 @@ public class PlayerListener implements Listener {
             int respawnTime = MainConfig.getInstance().node("respawn-cooldown", "time").getInt(5);
 
             if (game.getConfigurationContainer().getOrDefault(ConfigurationContainer.KEEP_ARMOR, Boolean.class, false)) {
-               final var armorContents = victim.getInventory().getArmorContents();
-               if (armorContents != null) {
-                   gVictim.setGameArmorContents(armorContents);
-                   Debug.info(victim.getName() + "'s armor contents: " +
-                           Arrays.stream(armorContents)
-                           .filter(Objects::nonNull)
-                           .map(stack -> stack.getType().name())
-                           .collect(Collectors.toList()));
-               }
+                final var armorContents = victim.getPlayerInventory().getArmorContents();
+                if (armorContents != null) {
+                    gVictim.setArmorContents(armorContents);
+                    Debug.info(victim.getName() + "'s armor contents: " +
+                            Arrays.stream(armorContents)
+                                    .filter(Objects::nonNull)
+                                    .map(stack -> stack.getMaterial().getPlatformName())
+                                    .collect(Collectors.toList()));
+                }
             }
 
             event.setKeepInventory(game.getConfigurationContainer().getOrDefault(ConfigurationContainer.KEEP_INVENTORY, Boolean.class, false));
@@ -109,24 +120,24 @@ public class PlayerListener implements Listener {
                 if (MainConfig.getInstance().node("chat", "send-death-messages-just-in-game").getBoolean()) {
                     var deathMessage = event.getDeathMessage();
                     Message deathMessageMsg = null;
-                    final var killer = event.getEntity().getKiller();
+                    final var killer = event.getKiller();
                     if (MainConfig.getInstance().node("chat", "send-custom-death-messages").getBoolean()) {
-                        if (killer != null && PlayerManagerImpl.getInstance().isPlayerInGame(killer.getUniqueId())) {
-                            Debug.info(victim.getName() + " died because entity " + event.getEntity().getKiller() + " killed him");
-                            final var gKiller = PlayerManagerImpl.getInstance().getPlayer(killer.getUniqueId()).get();
+                        if (killer != null && PlayerManagerImpl.getInstance().isPlayerInGame(killer)) {
+                            Debug.info(victim.getName() + " died because entity " + killer.getName() + " killed him");
+                            final var gKiller = killer.as(BedWarsPlayer.class);
                             final var killerTeam = game.getPlayerTeam(gKiller);
                             final var killerColor = killerTeam.teamInfo.color.chatColor;
 
                             deathMessageMsg = Message.of(LangKeys.IN_GAME_PLAYER_KILLED)
                                     .prefixOrDefault(game.getCustomPrefixComponent())
-                                    .placeholder("victim", AdventureHelper.toComponent(victimColor + victim.getDisplayName()))
-                                    .placeholder("killer", AdventureHelper.toComponent(killerColor + killer.getDisplayName()))
+                                    .placeholder("victim", AdventureHelper.toComponent(victimColor + victim.as(Player.class).getDisplayName()))
+                                    .placeholder("killer", AdventureHelper.toComponent(killerColor + killer.as(Player.class).getDisplayName()))
                                     .placeholder("victimTeam", AdventureHelper.toComponent(victimColor + victimTeam.getName()))
                                     .placeholder("killerTeam", AdventureHelper.toComponent(killerColor + killerTeam.getName()));
                         } else {
                             deathMessageMsg = Message.of(LangKeys.IN_GAME_PLAYER_SELF_KILLED)
                                     .prefixOrDefault(game.getCustomPrefixComponent())
-                                    .placeholder("victim", AdventureHelper.toComponent(victimColor + victim.getDisplayName()))
+                                    .placeholder("victim", AdventureHelper.toComponent(victimColor + victim.as(Player.class).getDisplayName()))
                                     .placeholder("victimTeam", AdventureHelper.toComponent(victimColor + victimTeam.getName()));
                         }
 
@@ -141,11 +152,11 @@ public class PlayerListener implements Listener {
                     }
                 }
 
-                CurrentTeam team = game.getPlayerTeam(gVictim);
+                var team = game.getPlayerTeam(gVictim);
                 SpawnEffects.spawnEffect(game, gVictim, "game-effects.kill");
                 boolean isBed = team.isBed;
                 if (isBed && game.getConfigurationContainer().getOrDefault(ConfigurationContainer.ANCHOR_DECREASING, Boolean.class, false) && "RESPAWN_ANCHOR".equals(team.teamInfo.bed.getBlock().getType().name())) {
-                    isBed = Player116ListenerUtils.processAnchorDeath(game, team, isBed);
+                    isBed = Player116ListenerUtils.processAnchorDeath(game, team);
                 }
                 if (!isBed) {
                     Debug.info(victim.getName() + " died without bed, he's going to spectate the game");
@@ -153,7 +164,7 @@ public class PlayerListener implements Listener {
                     team.players.remove(gVictim);
                     team.getScoreboardTeam().removeEntry(victim.getName());
                     if (PlayerStatisticManager.isEnabled()) {
-                        var statistic = PlayerStatisticManager.getInstance().getStatistic(PlayerMapper.wrapPlayer(victim));
+                        var statistic = PlayerStatisticManager.getInstance().getStatistic(victim);
                         statistic.addLoses(1);
                         statistic.addScore(MainConfig.getInstance().node("statistics", "scores", "lose").getInt(0));
                     }
@@ -162,9 +173,9 @@ public class PlayerListener implements Listener {
 
                 boolean onlyOnBedDestroy = MainConfig.getInstance().node("statistics", "bed-destroyed-kills").getBoolean();
 
-                Player killer = victim.getKiller();
-                if (killer != null && PlayerManagerImpl.getInstance().isPlayerInGame(killer.getUniqueId())) {
-                    BedWarsPlayer gKiller = PlayerManagerImpl.getInstance().getPlayer(killer.getUniqueId()).orElseThrow();
+                var killer = event.getKiller();
+                if (killer != null && PlayerManagerImpl.getInstance().isPlayerInGame(killer)) {
+                    var gKiller = killer.as(BedWarsPlayer.class);
                     if (gKiller.getGame() == game) {
                         if (!onlyOnBedDestroy || !isBed) {
                             game.dispatchRewardCommands("player-kill", killer,
@@ -176,13 +187,13 @@ public class PlayerListener implements Listener {
                         }
                         if (team.isDead()) {
                             SpawnEffects.spawnEffect(game, gVictim, "game-effects.teamkill");
-                            Sounds.playSound(killer, killer.getLocation(),
+                            Sounds.playSound(killer.as(Player.class), killer.getLocation().as(Location.class),
                                     MainConfig.getInstance().node("sounds", "team_kill", "sound").getString(),
                                     Sounds.ENTITY_PLAYER_LEVELUP,
                                     (float) MainConfig.getInstance().node("sounds", "team_kill", "volume").getDouble(),
                                     (float) MainConfig.getInstance().node("sounds", "team_kill", "pitch").getDouble());
                         } else {
-                            Sounds.playSound(killer, killer.getLocation(),
+                            Sounds.playSound(killer.as(Player.class), killer.getLocation().as(Location.class),
                                     MainConfig.getInstance().node("sounds", "player_kill", "sound").getString(),
                                     Sounds.ENTITY_PLAYER_BIG_FALL,
                                     (float) MainConfig.getInstance().node("sounds", "player_kill", "volume").getDouble(),
@@ -197,12 +208,11 @@ public class PlayerListener implements Listener {
                     }
                 }
 
-                var killedEvent = new PlayerKilledEventImpl(game,
-                    killer != null && PlayerManagerImpl.getInstance().isPlayerInGame(killer.getUniqueId()) ? PlayerManagerImpl.getInstance().getPlayer(killer.getUniqueId()).orElseThrow() : null, gVictim, drops.stream().map(ItemFactory::build).map(Optional::orElseThrow).collect(Collectors.toList()));
+                var killedEvent = new PlayerKilledEventImpl(game, killer != null && PlayerManagerImpl.getInstance().isPlayerInGame(killer) ? killer.as(BedWarsPlayer.class) : null, gVictim, drops);
                 EventManager.fire(killedEvent);
 
                 if (PlayerStatisticManager.isEnabled()) {
-                    var diePlayer = PlayerStatisticManager.getInstance().getStatistic(PlayerMapper.wrapPlayer(victim));
+                    var diePlayer = PlayerStatisticManager.getInstance().getStatistic(victim);
                     PlayerStatistic killerPlayer;
 
                     if (!onlyOnBedDestroy || !isBed) {
@@ -212,7 +222,7 @@ public class PlayerListener implements Listener {
 
                     if (killer != null) {
                         if (!onlyOnBedDestroy || !isBed) {
-                            killerPlayer = PlayerStatisticManager.getInstance().getStatistic(PlayerMapper.wrapPlayer(killer));
+                            killerPlayer = PlayerStatisticManager.getInstance().getStatistic(killer);
                             if (killerPlayer != null) {
                                 killerPlayer.addKills(1);
                                 killerPlayer.addScore(MainConfig.getInstance().node("statistics", "scores", "kill").getInt(10));
@@ -225,9 +235,9 @@ public class PlayerListener implements Listener {
                     }
                 }
             }
-            if (BedWarsPlugin.getVersionNumber() < 115 && !MainConfig.getInstance().node("allow-fake-death").getBoolean()) {
+            if (!Version.isVersion(1, 15) && !MainConfig.getInstance().node("allow-fake-death").getBoolean()) {
                 Debug.info(victim.getName() + " is going to be respawned via spigot api");
-                PlayerUtils.respawn(BedWarsPlugin.getInstance().getPluginDescription().as(JavaPlugin.class), victim, 3L);
+                PlayerUtils.respawn(BedWarsPlugin.getInstance().as(JavaPlugin.class), victim.as(Player.class), 3L);
             }
             if (MainConfig.getInstance().node("respawn-cooldown", "enabled").getBoolean()
                     && victimTeam.isAlive()
@@ -235,87 +245,88 @@ public class PlayerListener implements Listener {
                 game.makeSpectator(gVictim, false);
                 Debug.info(victim.getName() + " is in respawn cooldown");
 
-                new BukkitRunnable() {
-                    int livingTime = respawnTime;
-                    BedWarsPlayer gamePlayer = gVictim;
-                    Player player = gamePlayer.as(Player.class);
+                final var livingTime = new AtomicInteger(respawnTime);
+                final var bukkitPlayer = gVictim.as(Player.class);
+                final var task = new AtomicReference<TaskerTask>();
+                task.set(
+                        Tasker.build(() -> {
+                                    if (livingTime.get() > 0) {
+                                        Message
+                                                .of(LangKeys.IN_GAME_RESPAWN_COOLDOWN_TITLE)
+                                                .placeholder("time", livingTime.get())
+                                                .times(TitleUtils.defaultTimes())
+                                                .title(gVictim);
+                                        Sounds.playSound(bukkitPlayer, bukkitPlayer.getLocation(),
+                                                MainConfig.getInstance().node("sounds", "respawn_cooldown_wait", "sound").getString(),
+                                                Sounds.BLOCK_STONE_BUTTON_CLICK_ON,
+                                                (float) MainConfig.getInstance().node("sounds", "respawn_cooldown_wait", "volume").getDouble(),
+                                                (float) MainConfig.getInstance().node("sounds", "respawn_cooldown_wait", "pitch").getDouble());
+                                    }
 
-                    @Override
-                    public void run() {
-                        if (livingTime > 0) {
-                            Message
-                                    .of(LangKeys.IN_GAME_RESPAWN_COOLDOWN_TITLE)
-                                    .placeholder("time", livingTime)
-                                    .times(TitleUtils.defaultTimes())
-                                    .title(PlayerMapper.wrapPlayer(player));
-                            Sounds.playSound(player, player.getLocation(),
-                                    MainConfig.getInstance().node("sounds", "respawn_cooldown_wait", "sound").getString(),
-                                    Sounds.BLOCK_STONE_BUTTON_CLICK_ON,
-                                    (float) MainConfig.getInstance().node("sounds", "respawn_cooldown_wait", "volume").getDouble(),
-                                    (float) MainConfig.getInstance().node("sounds", "respawn_cooldown_wait", "pitch").getDouble());
-                        }
+                                    livingTime.decrementAndGet();
+                                    if (livingTime.get() == 0) {
+                                        game.makePlayerFromSpectator(gVictim);
+                                        Sounds.playSound(bukkitPlayer, bukkitPlayer.getLocation(),
+                                                MainConfig.getInstance().node("sounds", "respawn_cooldown_done", "sound").getString(),
+                                                Sounds.UI_BUTTON_CLICK,
+                                                (float) MainConfig.getInstance().node("sounds", "respawn_cooldown_done", "volume").getDouble(),
+                                                (float) MainConfig.getInstance().node("sounds", "respawn_cooldown_done", "pitch").getDouble());
 
-                        livingTime--;
-                        if (livingTime == 0) {
-                            game.makePlayerFromSpectator(gamePlayer);
-                            Sounds.playSound(player, player.getLocation(),
-                                    MainConfig.getInstance().node("sounds", "respawn_cooldown_done", "sound").getString(),
-                                    Sounds.UI_BUTTON_CLICK,
-                                    (float) MainConfig.getInstance().node("sounds", "respawn_cooldown_done", "volume").getDouble(),
-                                    (float) MainConfig.getInstance().node("sounds", "respawn_cooldown_done", "pitch").getDouble());
-
-                            this.cancel();
-                        }
-                    }
-                }.runTaskTimer(BedWarsPlugin.getInstance().getPluginDescription().as(JavaPlugin.class), 20L, 20L);
+                                        task.get().cancel();
+                                    }
+                                })
+                                .delay(20, TaskerTime.TICKS)
+                                .repeat(20, TaskerTime.TICKS)
+                                .start()
+                );
             }
         }
     }
 
-    @EventHandler
-    public void onPlayerQuit(PlayerQuitEvent event) {
-        if (PlayerManagerImpl.getInstance().isPlayerRegistered(event.getPlayer().getUniqueId())) {
-            BedWarsPlayer gPlayer = PlayerManagerImpl.getInstance().getPlayer(event.getPlayer().getUniqueId()).orElseThrow();
+    @OnEvent
+    public void onPlayerQuit(SPlayerLeaveEvent event) {
+        if (PlayerManagerImpl.getInstance().isPlayerRegistered(event.getPlayer())) {
+            var gPlayer = event.getPlayer().as(BedWarsPlayer.class);
             if (gPlayer.isInGame())
                 gPlayer.changeGame(null);
             PlayerManagerImpl.getInstance().dropPlayer(gPlayer);
         }
 
         if (MainConfig.getInstance().node("disable-server-message", "player-join").getBoolean()) {
-            event.setQuitMessage(null);
+            event.setLeaveMessage(null);
         }
     }
 
-    @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent event) {
-        Player player = event.getPlayer();
+    @OnEvent
+    public void onPlayerJoin(SPlayerJoinEvent event) {
+        var player = event.getPlayer();
 
         if (GameImpl.isBungeeEnabled() && MainConfig.getInstance().node("bungee", "auto-game-connect").getBoolean()) {
-            Debug.info(event.getPlayer() + " joined the server and auto-game-connect is enabled. Registering task...");
-            new BukkitRunnable() {
-                public void run() {
-                    try {
-                        Debug.info("Selecting game for " + event.getPlayer().getName());
-                        var gameManager = GameManagerImpl.getInstance();
-                        var game = gameManager.getFirstWaitingGame().or(gameManager::getFirstRunningGame);
-                        if (game.isEmpty()) { // still nothing?
-                            if (!PlayerMapper.wrapPlayer(player).hasPermission(BedWarsPermission.ADMIN_PERMISSION.asPermission())) {
-                                Debug.info(event.getPlayer().getName() + " is not connecting to any game! Kicking...");
-                                BungeeUtils.movePlayerToBungeeServer(player, false);
+            Debug.info(event.getPlayer().getName() + " joined the server and auto-game-connect is enabled. Registering task...");
+            Tasker.build(() -> {
+                        try {
+                            Debug.info("Selecting game for " + event.getPlayer().getName());
+                            var gameManager = GameManagerImpl.getInstance();
+                            var game = gameManager.getFirstWaitingGame().or(gameManager::getFirstRunningGame);
+                            if (game.isEmpty()) { // still nothing?
+                                if (!player.hasPermission(BedWarsPermission.ADMIN_PERMISSION.asPermission())) {
+                                    Debug.info(event.getPlayer().getName() + " is not connecting to any game! Kicking...");
+                                    BungeeUtils.movePlayerToBungeeServer(player.as(Player.class), false);
+                                }
+                                return;
                             }
-                            return;
-                        }
-                        Debug.info(event.getPlayer().getName() + " is connecting to " + game.get().getName());
+                            Debug.info(event.getPlayer().getName() + " is connecting to " + game.get().getName());
 
-                        game.get().joinToGame(player);
-                    } catch (NullPointerException ignored) {
-                        if (!PlayerMapper.wrapPlayer(player).hasPermission(BedWarsPermission.ADMIN_PERMISSION.asPermission())) {
-                            Debug.info(event.getPlayer().getName() + " is not connecting to any game! Kicking...");
-                            BungeeUtils.movePlayerToBungeeServer(player, false);
+                            game.get().joinToGame(player.as(Player.class));
+                        } catch (NullPointerException ignored) {
+                            if (!player.hasPermission(BedWarsPermission.ADMIN_PERMISSION.asPermission())) {
+                                Debug.info(event.getPlayer().getName() + " is not connecting to any game! Kicking...");
+                                BungeeUtils.movePlayerToBungeeServer(player.as(Player.class), false);
+                            }
                         }
-                    }
-                }
-            }.runTaskLater(BedWarsPlugin.getInstance().getPluginDescription().as(JavaPlugin.class), 1L);
+                    })
+                    .delay(1, TaskerTime.TICKS)
+                    .start();
         }
 
         if (MainConfig.getInstance().node("disable-server-message", "player-join").getBoolean()) {
@@ -323,47 +334,45 @@ public class PlayerListener implements Listener {
         }
 
         if (MainConfig.getInstance().node("tab", "enabled").getBoolean() && MainConfig.getInstance().node("tab", "hide-foreign-players").getBoolean()) {
-            PlayerMapper.getPlayers().stream().filter(PlayerManagerImpl.getInstance()::isPlayerInGame).forEach(p -> PlayerManagerImpl.getInstance().getPlayer(p).orElseThrow().hidePlayer(player));
+            PlayerMapper.getPlayers().stream().filter(PlayerManagerImpl.getInstance()::isPlayerInGame).forEach(p -> PlayerManagerImpl.getInstance().getPlayer(p).orElseThrow().hidePlayer(player.as(Player.class)));
         }
     }
 
     @SuppressWarnings("unchecked")
-    @EventHandler(priority = EventPriority.HIGHEST)
-    public void onPlayerRespawn(PlayerRespawnEvent event) {
-        if (PlayerManagerImpl.getInstance().isPlayerInGame(event.getPlayer().getUniqueId())) {
+    @OnEvent(priority = org.screamingsandals.lib.event.EventPriority.HIGHEST)
+    public void onPlayerRespawn(SPlayerRespawnEvent event) {
+        if (PlayerManagerImpl.getInstance().isPlayerInGame(event.getPlayer())) {
             Debug.info(event.getPlayer().getName() + " is respawning in BedWars game");
-            BedWarsPlayer gPlayer = PlayerManagerImpl.getInstance().getPlayer(event.getPlayer().getUniqueId()).orElseThrow();
-            GameImpl game = gPlayer.getGame();
-            CurrentTeam team = game.getPlayerTeam(gPlayer);
+            var gPlayer = event.getPlayer().as(BedWarsPlayer.class);
+            var game = gPlayer.getGame();
+            var team = game.getPlayerTeam(gPlayer);
 
             if (game.getStatus() == GameStatus.WAITING) {
                 Debug.info(event.getPlayer().getName() + " is in lobby");
-                event.setRespawnLocation(gPlayer.getGame().getLobbySpawn());
+                event.setLocation(LocationMapper.wrapLocation(gPlayer.getGame().getLobbySpawn()));
                 return;
             }
             Debug.info(event.getPlayer().getName() + " is in game");
             // clear inventory to fix issue 148
             if (!game.getConfigurationContainer().getOrDefault(ConfigurationContainer.KEEP_INVENTORY, Boolean.class, false)) {
-                event.getPlayer().getInventory().clear();
+                event.getPlayer().getPlayerInventory().as(Inventory.class).clear();
             }
             if (gPlayer.isSpectator) {
                 Debug.info(event.getPlayer().getName() + " is going to be spectator");
                 if (team == null) {
-                    event.setRespawnLocation(gPlayer.getGame().makeSpectator(gPlayer, true));
+                    event.setLocation(LocationMapper.wrapLocation(gPlayer.getGame().makeSpectator(gPlayer, true)));
                 } else {
-                    event.setRespawnLocation(gPlayer.getGame().makeSpectator(gPlayer, false));
+                    event.setLocation(LocationMapper.wrapLocation(gPlayer.getGame().makeSpectator(gPlayer, false)));
                 }
             } else {
                 Debug.info(event.getPlayer().getName() + " is going to play the game");
-                event.setRespawnLocation(gPlayer.getGame().getPlayerTeam(gPlayer).teamInfo.spawn);
-
+                event.setLocation(LocationMapper.wrapLocation(gPlayer.getGame().getPlayerTeam(gPlayer).teamInfo.spawn));
 
                 var respawnEvent = new PlayerRespawnedEventImpl(game, gPlayer);
                 EventManager.fire(respawnEvent);
 
                 if (MainConfig.getInstance().node("respawn", "protection-enabled").getBoolean(true)) {
-                    RespawnProtection respawnProtection = game.addProtectedPlayer(gPlayer);
-                    respawnProtection.runProtection();
+                    game.addProtectedPlayer(gPlayer).runProtection();
                 }
 
                 SpawnEffects.spawnEffect(gPlayer.getGame(), gPlayer, "game-effects.respawn");
@@ -384,9 +393,9 @@ public class PlayerListener implements Listener {
                 }
 
                 if (game.getConfigurationContainer().getOrDefault(ConfigurationContainer.KEEP_ARMOR, Boolean.class, false)) {
-                    final var armorContents = gPlayer.getGameArmorContents();
+                    final var armorContents = gPlayer.getArmorContents();
                     if (armorContents != null) {
-                        gPlayer.as(Player.class).getInventory().setArmorContents(armorContents);
+                        gPlayer.getPlayerInventory().setArmorContents(armorContents);
                     }
                 }
 
@@ -395,38 +404,39 @@ public class PlayerListener implements Listener {
         }
     }
 
-    @EventHandler
-    public void onPlayerWorldChange(PlayerChangedWorldEvent event) {
-        if (PlayerManagerImpl.getInstance().isPlayerInGame(event.getPlayer().getUniqueId())) {
-            BedWarsPlayer gPlayer = PlayerManagerImpl.getInstance().getPlayer(event.getPlayer().getUniqueId()).orElseThrow();
-            GameImpl game = gPlayer.getGame();
-            if (game.getWorld() != event.getPlayer().getWorld()
-                    && game.getLobbySpawn().getWorld() != event.getPlayer().getWorld()) {
+    @OnEvent
+    public void onPlayerWorldChange(SPlayerWorldChangeEvent event) {
+        if (PlayerManagerImpl.getInstance().isPlayerInGame(event.getPlayer())) {
+            var gPlayer = event.getPlayer().as(BedWarsPlayer.class);
+            var game = gPlayer.getGame();
+            if (game.getWorld() != event.getPlayer().as(Player.class).getWorld()
+                    && game.getLobbySpawn().getWorld() != event.getPlayer().as(Player.class).getWorld()) {
                 gPlayer.changeGame(null);
                 Debug.info(event.getPlayer().getName() + " changed world while in BedWars arena. Kicking...");
             }
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
-    public void onBlockPlace(BlockPlaceEvent event) {
+    @OnEvent(priority = org.screamingsandals.lib.event.EventPriority.HIGHEST)
+    public void onBlockPlace(SPlayerBlockPlaceEvent event) {
         if (event.isCancelled()) {
-            if (MainConfig.getInstance().node("event-hacks", "place").getBoolean() && PlayerManagerImpl.getInstance().isPlayerInGame(event.getPlayer().getUniqueId())) {
+            if (MainConfig.getInstance().node("event-hacks", "place").getBoolean() && PlayerManagerImpl.getInstance().isPlayerInGame(event.getPlayer())) {
                 event.setCancelled(false);
             } else {
                 return;
             }
         }
 
-        if (PlayerManagerImpl.getInstance().isPlayerInGame(event.getPlayer().getUniqueId())) {
-            GameImpl game = PlayerManagerImpl.getInstance().getGameOfPlayer(event.getPlayer().getUniqueId()).orElseThrow();
+        if (PlayerManagerImpl.getInstance().isPlayerInGame(event.getPlayer())) {
+            var gPlayer = event.getPlayer().as(BedWarsPlayer.class);
+            var game = gPlayer.getGame();
             if (game.getStatus() == GameStatus.WAITING) {
                 event.setCancelled(true);
                 Debug.info(event.getPlayer().getName() + " attempted to place a block, canceled");
                 return;
             }
-            if (!game.blockPlace(PlayerManagerImpl.getInstance().getPlayer(event.getPlayer().getUniqueId()).orElseThrow(), event.getBlock(),
-                    event.getBlockReplacedState(), event.getItemInHand())) {
+            if (!game.blockPlace(gPlayer, event.getBlock().as(Block.class),
+                    event.getReplacedBlockState().as(BlockState.class), event.getItemInHand().as(ItemStack.class))) {
                 event.setCancelled(true);
                 Debug.info(event.getPlayer().getName() + " attempted to place a block, canceled");
             } else {
@@ -443,21 +453,20 @@ public class PlayerListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
-    public void onBlockBreak(BlockBreakEvent event) {
+    @OnEvent(priority = org.screamingsandals.lib.event.EventPriority.HIGHEST)
+    public void onBlockBreak(SPlayerBlockBreakEvent event) {
         if (event.isCancelled()) {
-            if (MainConfig.getInstance().node("event-hacks", "destroy").getBoolean() && PlayerManagerImpl.getInstance().isPlayerInGame(event.getPlayer().getUniqueId())) {
+            if (MainConfig.getInstance().node("event-hacks", "destroy").getBoolean() && PlayerManagerImpl.getInstance().isPlayerInGame(event.getPlayer())) {
                 event.setCancelled(false);
             } else {
                 return;
             }
         }
 
-        if (PlayerManagerImpl.getInstance().isPlayerInGame(event.getPlayer().getUniqueId())) {
-            final Player player = event.getPlayer();
-            final BedWarsPlayer gamePlayer = PlayerManagerImpl.getInstance().getPlayer(player.getUniqueId()).orElseThrow();
-            final GameImpl game = gamePlayer.getGame();
-            final Block block = event.getBlock();
+        if (PlayerManagerImpl.getInstance().isPlayerInGame(event.getPlayer())) {
+            final var gamePlayer = event.getPlayer().as(BedWarsPlayer.class);
+            final var game = gamePlayer.getGame();
+            final var block = event.getBlock();
 
             if (game.getStatus() == GameStatus.WAITING) {
                 Debug.info(event.getPlayer().getName() + " attempted to break a block, canceled");
@@ -465,7 +474,7 @@ public class PlayerListener implements Listener {
                 return;
             }
 
-            if (!game.blockBreak(PlayerManagerImpl.getInstance().getPlayer(event.getPlayer().getUniqueId()).orElseThrow(), event.getBlock(), event)) {
+            if (!game.blockBreak(gamePlayer, event.getBlock().as(Block.class), event)) {
                 event.setCancelled(true);
                 Debug.info(event.getPlayer().getName() + " attempted to break a block, canceled");
             } else {
@@ -474,7 +483,7 @@ public class PlayerListener implements Listener {
 
             //Fix for obsidian dropping
             if (game.getStatus() == GameStatus.RUNNING && gamePlayer.isInGame()) {
-                if (block.getType() == Material.ENDER_CHEST) {
+                if (block.getType().is("ender_chest")) {
                     event.setDropItems(false);
                 }
             }
@@ -489,57 +498,56 @@ public class PlayerListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
-    public void onCommandExecuted(PlayerCommandPreprocessEvent event) {
+    @OnEvent(priority = org.screamingsandals.lib.event.EventPriority.HIGHEST)
+    public void onCommandExecuted(SPlayerCommandPreprocessEvent event) {
         if (event.isCancelled()) {
             return;
         }
 
-        final Player player = event.getPlayer();
-        if (PlayerManagerImpl.getInstance().isPlayerInGame(player.getUniqueId())) {
+        final var player = event.getPlayer();
+        if (PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
             //Allow players with permissions to use all commands
-            if (PlayerMapper.wrapPlayer(player).hasPermission(BedWarsPermission.ADMIN_PERMISSION.asPermission())) {
+            if (player.hasPermission(BedWarsPermission.ADMIN_PERMISSION.asPermission())) {
                 Debug.info(event.getPlayer().getName() + " attempted to execute a command, allowed");
                 return;
             }
 
-            final String message = event.getMessage();
-            final BedWarsPlayer gamePlayer = PlayerManagerImpl.getInstance().getPlayer(event.getPlayer().getUniqueId()).orElseThrow();
+            final var message = event.getCommand();
+            final var gamePlayer = event.getPlayer().as(BedWarsPlayer.class);
             if (BedWarsPlugin.isCommandLeaveShortcut(message)) {
                 event.setCancelled(true);
                 gamePlayer.changeGame(null);
             } else if (!BedWarsPlugin.isCommandAllowedInGame(message.split(" ")[0])) {
                 Debug.info(event.getPlayer().getName() + " attempted to execute a command, canceled");
                 event.setCancelled(true);
-                PlayerMapper.wrapPlayer(player).sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_COMMAND_IS_NOT_ALLOWED).prefixOrDefault(gamePlayer.getGame().getCustomPrefixComponent()));
+                player.sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_COMMAND_IS_NOT_ALLOWED).prefixOrDefault(gamePlayer.getGame().getCustomPrefixComponent()));
                 return;
             }
             Debug.info(event.getPlayer().getName() + " attempted to execute a command, allowed");
         }
     }
 
-    @EventHandler
-    public void onInventoryClick(InventoryClickEvent event) {
-        if (event.getClickedInventory() == null) {
+    @OnEvent
+    public void onInventoryClick(SPlayerInventoryClickEvent event) {
+        if (event.getInventory() == null) {
             return;
         }
 
-        if (event.getClickedInventory().getType() == InventoryType.PLAYER) {
-            Player p = (Player) event.getWhoClicked();
-            if (PlayerManagerImpl.getInstance().isPlayerInGame(p.getUniqueId())) {
-                BedWarsPlayer gPlayer = PlayerManagerImpl.getInstance().getPlayer(p.getUniqueId()).orElseThrow();
-                GameImpl game = gPlayer.getGame();
+        if (event.getInventory().getType() == org.screamingsandals.lib.utils.InventoryType.PLAYER) {
+            var p = event.getPlayer();
+            if (PlayerManagerImpl.getInstance().isPlayerInGame(p)) {
+                var gPlayer = p.as(BedWarsPlayer.class);
+                var game = gPlayer.getGame();
                 if (game.getStatus() == GameStatus.WAITING || gPlayer.isSpectator) {
                     event.setCancelled(true);
                     Debug.info(p.getName() + " used item in lobby or as spectator");
-                    if (event.getClick().isLeftClick() || event.getClick().isRightClick()) {
-                        ItemStack item = event.getCurrentItem();
+                    if (event.getClickType().isLeftClick() || event.getClickType().isRightClick()) {
+                        var item = event.getCurrentItem();
                         if (item != null) {
                             p.closeInventory();
-                            if (item.getType() == Material
-                                    .valueOf(MainConfig.getInstance().node("items", "jointeam").getString("COMPASS"))) {
+                            if (item.getMaterial().is(MainConfig.getInstance().node("items", "jointeam").getString("COMPASS"))) {
                                 if (game.getStatus() == GameStatus.WAITING) {
-                                    TeamSelectorInventory inv = game.getTeamSelectorInventory();
+                                    var inv = game.getTeamSelectorInventory();
                                     if (inv == null) {
                                         return;
                                     }
@@ -547,19 +555,16 @@ public class PlayerListener implements Listener {
                                 } else if (gPlayer.isSpectator) {
                                     // TODO
                                 }
-                            } else if (item.getType() == Material
-                                    .valueOf(MainConfig.getInstance().node("items", "startgame").getString("DIAMOND"))) {
-                                if (game.getStatus() == GameStatus.WAITING && (p.hasPermission("bw.vip.startitem")
-                                        || p.hasPermission("misat11.bw.vip.startitem"))) {
+                            } else if (item.getMaterial().is(MainConfig.getInstance().node("items", "startgame").getString("DIAMOND"))) {
+                                if (game.getStatus() == GameStatus.WAITING && p.hasPermission(BedWarsPermission.START_ITEM_PERMISSION.asPermission())) {
                                     if (game.checkMinPlayers()) {
                                         game.gameStartItem = true;
                                     } else {
-                                        PlayerMapper.wrapPlayer(p).sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_VIP_NOT_ENOUGH_PLAYERS).prefixOrDefault(game.getCustomPrefixComponent()));
+                                        p.sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_VIP_NOT_ENOUGH_PLAYERS).prefixOrDefault(game.getCustomPrefixComponent()));
                                     }
                                 }
-                            } else if (item.getType() == Material
-                                    .valueOf(MainConfig.getInstance().node("items", "leavegame").getString("SLIME_BALL"))) {
-                                game.leaveFromGame(p);
+                            } else if (item.getMaterial().is(MainConfig.getInstance().node("items", "leavegame").getString("SLIME_BALL"))) {
+                                game.leaveFromGame(p.as(Player.class));
                             }
                         }
                     }
@@ -568,16 +573,16 @@ public class PlayerListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGH)
-    public void onHunger(FoodLevelChangeEvent event) {
-        if (!(event.getEntity() instanceof Player) || event.isCancelled()) {
+    @OnEvent(priority = org.screamingsandals.lib.event.EventPriority.HIGH)
+    public void onHunger(SFoodLevelChangeEvent event) {
+        if (!(event.getEntity().getEntityType().is("player")) || event.isCancelled()) {
             return;
         }
 
-        Player player = (Player) event.getEntity();
-        if (PlayerManagerImpl.getInstance().isPlayerInGame(player.getUniqueId())) {
-            BedWarsPlayer gPlayer = PlayerManagerImpl.getInstance().getPlayer(player.getUniqueId()).orElseThrow();
-            GameImpl game = gPlayer.getGame();
+        var player = ((EntityHuman) event.getEntity()).asPlayer();
+        if (PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
+            var gPlayer = player.as(BedWarsPlayer.class);
+            var game = gPlayer.getGame();
             if (game.getStatus() == GameStatus.WAITING || gPlayer.isSpectator) {
                 event.setCancelled(true);
                 Debug.info(player.getName() + " tried to eat while eating is not allowed");
@@ -700,11 +705,11 @@ public class PlayerListener implements Listener {
                                         Vector vector = player
                                                 .getLocation()
                                                 .clone()
-                                                .add(0, MainConfig.getInstance().node("tnt-jump", "acceleration-y").getInt() ,0)
+                                                .add(0, MainConfig.getInstance().node("tnt-jump", "acceleration-y").getInt(), 0)
                                                 .toVector()
                                                 .subtract(tnt.getLocation().toVector()).normalize();
 
-                                        vector.setY(vector.getY() /  MainConfig.getInstance().node("tnt-jump", "reduce-y").getDouble());
+                                        vector.setY(vector.getY() / MainConfig.getInstance().node("tnt-jump", "reduce-y").getDouble());
                                         vector.multiply(MainConfig.getInstance().node("tnt-jump", "launch-multiplier").getInt());
                                         player.setVelocity(vector);
                                         explosionAffectedPlayers.add(player);
@@ -717,8 +722,7 @@ public class PlayerListener implements Listener {
                                 }
                             }
                         }
-                    }
-                    else if (edbee.getDamager() instanceof Player) {
+                    } else if (edbee.getDamager() instanceof Player) {
                         Player damager = (Player) edbee.getDamager();
                         if (PlayerManagerImpl.getInstance().isPlayerInGame(damager.getUniqueId())) {
                             BedWarsPlayer gDamager = PlayerManagerImpl.getInstance().getPlayer(damager.getUniqueId()).orElseThrow();
@@ -730,7 +734,7 @@ public class PlayerListener implements Listener {
                         event.setCancelled(true);
                     } else if (edbee.getDamager() instanceof Projectile) {
                         Projectile projectile = (Projectile) edbee.getDamager();
-                        if (projectile instanceof Fireball  && game.getStatus() == GameStatus.RUNNING) {
+                        if (projectile instanceof Fireball && game.getStatus() == GameStatus.RUNNING) {
                             final double damage = MainConfig.getInstance().node("specials", "throwable-fireball", "damage").getDouble();
                             event.setDamage(damage);
                         } else if (projectile.getShooter() instanceof Player) {
@@ -795,7 +799,7 @@ public class PlayerListener implements Listener {
 
         Player player = event.getPlayer();
         if (PlayerManagerImpl.getInstance().isPlayerInGame(player.getUniqueId()) && !PlayerManagerImpl.getInstance().getPlayer(player.getUniqueId()).orElseThrow().isSpectator
-               && (!player.hasPermission("bw.bypass.flight") && MainConfig.getInstance().node("disable-flight").getBoolean())) {
+                && (!player.hasPermission("bw.bypass.flight") && MainConfig.getInstance().node("disable-flight").getBoolean())) {
             event.setCancelled(true);
             Debug.info(player.getName() + " tried to fly, canceled");
         }

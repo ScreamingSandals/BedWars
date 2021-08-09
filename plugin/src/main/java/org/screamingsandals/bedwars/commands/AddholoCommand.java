@@ -8,14 +8,11 @@ import org.screamingsandals.bedwars.holograms.LeaderboardHolograms;
 import org.screamingsandals.bedwars.holograms.StatisticsHolograms;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.lib.entity.EntityHuman;
-import org.screamingsandals.lib.entity.EntityMapper;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
 import org.screamingsandals.lib.utils.annotations.Service;
 
-@Service(dependsOn = {
-        EntityMapper.class
-})
+@Service
 public class AddholoCommand extends BaseCommand {
     public AddholoCommand() {
         super("addholo", BedWarsPermission.ADMIN_PERMISSION, false);

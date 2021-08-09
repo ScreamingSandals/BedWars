@@ -12,9 +12,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.TimeZone;
 
-@Service(dependsOn = {
-        MainConfig.class
-})
+@Service
 @RequiredArgsConstructor
 public class DatabaseManager {
     private final MainConfig mainConfig;

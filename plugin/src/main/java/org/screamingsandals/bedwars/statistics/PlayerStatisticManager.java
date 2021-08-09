@@ -1,7 +1,6 @@
 package org.screamingsandals.bedwars.statistics;
 
 import lombok.RequiredArgsConstructor;
-import org.bukkit.Bukkit;
 import org.screamingsandals.bedwars.api.statistics.LeaderboardEntry;
 import org.screamingsandals.bedwars.api.statistics.PlayerStatisticsManager;
 import org.screamingsandals.bedwars.config.MainConfig;
@@ -27,11 +26,7 @@ import java.sql.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Service(dependsOn = {
-        MainConfig.class,
-        DatabaseManager.class,
-        PlayerMapper.class
-})
+@Service
 @RequiredArgsConstructor
 public class PlayerStatisticManager implements PlayerStatisticsManager<OfflinePlayerWrapper> {
     @ConfigFile("database/bw_stats_players.yml")

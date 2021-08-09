@@ -1,5 +1,7 @@
 package org.screamingsandals.bedwars.player;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -14,6 +16,7 @@ import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.utils.BungeeUtils;
 import org.screamingsandals.bedwars.lib.nms.entity.PlayerUtils;
+import org.screamingsandals.lib.material.Item;
 import org.screamingsandals.lib.player.PlayerWrapper;
 
 import java.util.ArrayList;
@@ -26,7 +29,9 @@ public class BedWarsPlayer extends PlayerWrapper implements BWPlayer {
     private StoredInventory oldInventory = new StoredInventory();
     private List<ItemStack> permaItemsPurchased = new ArrayList<>();
     private List<Player> hiddenPlayers = new ArrayList<>();
-    private ItemStack[] armorContents = null;
+    @Getter
+    @Setter
+    private Item[] armorContents = null;
 
     public boolean isSpectator = false;
     public boolean isTeleportingFromGame_justForInventoryPlugins = false;
@@ -225,13 +230,5 @@ public class BedWarsPlayer extends PlayerWrapper implements BWPlayer {
             }
         }
 
-    }
-
-    public void setGameArmorContents(ItemStack[] armorContents) {
-        this.armorContents = armorContents;
-    }
-
-    public ItemStack[] getGameArmorContents() {
-        return armorContents;
     }
 }

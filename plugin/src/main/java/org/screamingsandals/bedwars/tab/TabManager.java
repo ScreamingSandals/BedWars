@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import net.kyori.adventure.text.Component;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
-import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.plugin.ServiceManager;
 import org.screamingsandals.lib.utils.AdventureHelper;
 import org.screamingsandals.lib.utils.annotations.Service;
@@ -16,10 +15,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
-@Service(dependsOn = {
-        MainConfig.class,
-        PlayerMapper.class
-})
+@Service
 @RequiredArgsConstructor
 public class TabManager {
     private final MainConfig mainConfig;
