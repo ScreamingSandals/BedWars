@@ -5,6 +5,7 @@ import cloud.commandframework.CommandManager;
 import cloud.commandframework.arguments.standard.EnumArgument;
 import cloud.commandframework.arguments.standard.IntegerArgument;
 import cloud.commandframework.arguments.standard.StringArgument;
+import org.bukkit.Location;
 import org.bukkit.block.data.type.Bed;
 import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.BedWarsPlugin;
@@ -19,6 +20,7 @@ import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
 import org.screamingsandals.lib.utils.AdventureHelper;
 import org.screamingsandals.lib.utils.annotations.Service;
+import org.screamingsandals.lib.world.BlockMapper;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -242,7 +244,7 @@ public class TeamCommand extends BaseAdminSubCommand {
                                 if (block.getState().getData() instanceof org.bukkit.material.Bed) {
                                     org.bukkit.material.Bed bed = (org.bukkit.material.Bed) block.getState().getData();
                                     if (!bed.isHeadOfBed()) {
-                                        team.bed = LegacyBedUtils.getBedNeighbor(block).getLocation();
+                                        team.bed = LegacyBedUtils.getBedNeighbor(BlockMapper.wrapBlock(block)).getLocation().as(Location.class);
                                     } else {
                                         team.bed = loc;
                                     }
@@ -255,7 +257,7 @@ public class TeamCommand extends BaseAdminSubCommand {
                                 if (block.getBlockData() instanceof Bed) {
                                     Bed bed = (Bed) block.getBlockData();
                                     if (bed.getPart() != Bed.Part.HEAD) {
-                                        team.bed = FlatteningBedUtils.getBedNeighbor(block).getLocation();
+                                        team.bed = FlatteningBedUtils.getBedNeighbor(BlockMapper.wrapBlock(block)).getLocation().as(Location.class);
                                     } else {
                                         team.bed = loc;
                                     }

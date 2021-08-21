@@ -15,6 +15,7 @@ import org.bukkit.block.Block;
 import org.bukkit.boss.BarColor;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.screamingsandals.lib.utils.Wrapper;
 
 import java.io.File;
 import java.util.List;
@@ -23,7 +24,7 @@ import java.util.List;
 /**
  * @author Bedwars Team
  */
-public interface Game<P extends BWPlayer> {
+public interface Game<P extends BWPlayer, B extends Wrapper> {
     /**
      * @return Arena name
      */
@@ -183,7 +184,7 @@ public interface Game<P extends BWPlayer> {
      * @param location
      * @return
      */
-	boolean isBlockAddedDuringGame(Location location);
+	boolean isBlockAddedDuringGame(Object location);
 
     /**
      * @return
@@ -307,7 +308,7 @@ public interface Game<P extends BWPlayer> {
     /**
      * @return
      */
-	Region getRegion();
+	Region<B> getRegion();
 
     /**
      * @return

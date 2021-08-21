@@ -200,7 +200,7 @@ public class WorldListener {
                     var block = event.getFacedBlock();
                     if (block.getType().isAir()
                             || game.isBlockAddedDuringGame(block.getLocation())) {
-                        game.getRegion().addBuiltDuringGame(block.getLocation().as(Location.class));
+                        game.getRegion().addBuiltDuringGame(block.getLocation());
                     } else {
                         event.setCancelled(true);
                     }
@@ -226,10 +226,10 @@ public class WorldListener {
                         if (event.getBlock().getType() != event.getTo().getType()) {
                             if (!game.isBlockAddedDuringGame(event.getBlock().getLocation())) {
                                 if (!event.getBlock().getType().isAir()) {
-                                    game.getRegion().putOriginalBlock(event.getBlock().getLocation().as(Location.class),
-                                            event.getBlock().getBlockState().orElseThrow().as(BlockState.class));
+                                    game.getRegion().putOriginalBlock(event.getBlock().getLocation(),
+                                            event.getBlock().getBlockState().orElseThrow());
                                 }
-                                game.getRegion().addBuiltDuringGame(event.getBlock().getLocation().as(Location.class));
+                                game.getRegion().addBuiltDuringGame(event.getBlock().getLocation());
                             }
                         }
                         return; // allow block fall

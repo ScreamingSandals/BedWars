@@ -1,46 +1,45 @@
 package org.screamingsandals.bedwars.utils;
 
 import lombok.experimental.UtilityClass;
-import org.bukkit.Location;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
+import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
-import org.bukkit.material.Directional;
 import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.lib.signs.ClickableSign;
+import org.screamingsandals.lib.utils.BlockFace;
+import org.screamingsandals.lib.world.BlockHolder;
+import org.screamingsandals.lib.world.LocationHolder;
 
 import java.util.Optional;
 
 @UtilityClass
 public class SignUtils {
-    public Optional<Block> getBlockBehindSign(ClickableSign sign) {
+    public Optional<BlockHolder> getBlockBehindSign(ClickableSign sign) {
         return Optional.ofNullable(getGlassBehind(sign));
     }
 
-    private Block getGlassBehind(ClickableSign sign) {
-        var bukkitLoc = sign.getLocation().asOptional(Location.class);
-        if (bukkitLoc.isPresent()) {
-            Block block = bukkitLoc.get().getBlock();
+    private BlockHolder getGlassBehind(ClickableSign sign) {
+            var location = sign.getLocation().as(LocationHolder.class);
+            var block = location.getBlock();
 
-            if (!(block.getState() instanceof Sign)) {
+            var state = block.getBlockState();
+            if (state.isEmpty() || (state.get().as(BlockState.class) instanceof Sign)) {
                 return null;
             }
+            var bState = state.get().as(BlockState.class);
 
             if (!BedWarsPlugin.isLegacy()) {
-                if (block.getState().getBlockData() instanceof Directional) {
-                    Directional directional = (Directional) block.getState().getBlockData();
-                    BlockFace blockFace = directional.getFacing().getOppositeFace();
-                    return block.getRelative(blockFace);
+                if (bState.getBlockData() instanceof org.bukkit.block.data.Directional) {
+                    var directional = (org.bukkit.block.data.Directional) bState.getBlockData();
+                    var blockFace = directional.getFacing().getOppositeFace();
+                    return location.add(BlockFace.valueOf(blockFace.name()).getDirection()).getBlock();
                 }
             } else {
-                if (block.getState().getData() instanceof org.bukkit.material.Directional) {
-                    org.bukkit.material.Directional directional = (org.bukkit.material.Directional) block.getState().getData();
-                    BlockFace blockFace = directional.getFacing().getOppositeFace();
-                    return block.getRelative(blockFace);
+                if (bState.getData() instanceof org.bukkit.material.Directional) {
+                    var directional = (org.bukkit.material.Directional) bState.getData();
+                    var blockFace = directional.getFacing().getOppositeFace();
+                    return location.add(BlockFace.valueOf(blockFace.name()).getDirection()).getBlock();
                 }
             }
-            return block.getRelative(BlockFace.DOWN);
-        }
-        return null;
+            return location.add(BlockFace.DOWN.getDirection()).getBlock();
     }
 }

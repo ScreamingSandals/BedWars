@@ -1,31 +1,38 @@
 package org.screamingsandals.bedwars.region;
 
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Bed;
+import org.screamingsandals.lib.utils.BlockFace;
+import org.screamingsandals.lib.world.BlockDataHolder;
+import org.screamingsandals.lib.world.BlockHolder;
 
 public class FlatteningBedUtils {
-    public static Block getBedNeighbor(Block head) {
-        if (!(head.getBlockData() instanceof Bed)) {
+    public static BlockHolder getBedNeighbor(BlockHolder head) {
+        if (!isBedBlock(head)) {
             return null;
         }
 
-        if (isBedBlock(head.getRelative(BlockFace.EAST))) {
-            return head.getRelative(BlockFace.EAST);
-        } else if (isBedBlock(head.getRelative(BlockFace.WEST))) {
-            return head.getRelative(BlockFace.WEST);
-        } else if (isBedBlock(head.getRelative(BlockFace.SOUTH))) {
-            return head.getRelative(BlockFace.SOUTH);
+        if (isBedBlock(head.getLocation().add(org.screamingsandals.lib.utils.BlockFace.EAST.getDirection()).getBlock())) {
+            return head.getLocation().add(org.screamingsandals.lib.utils.BlockFace.EAST.getDirection()).getBlock();
+        } else if (isBedBlock(head.getLocation().add(org.screamingsandals.lib.utils.BlockFace.WEST.getDirection()).getBlock())) {
+            return head.getLocation().add(org.screamingsandals.lib.utils.BlockFace.WEST.getDirection()).getBlock();
+        } else if (isBedBlock(head.getLocation().add(org.screamingsandals.lib.utils.BlockFace.SOUTH.getDirection()).getBlock())) {
+            return head.getLocation().add(org.screamingsandals.lib.utils.BlockFace.SOUTH.getDirection()).getBlock();
         } else {
-            return head.getRelative(BlockFace.NORTH);
+            return head.getLocation().add(BlockFace.NORTH.getDirection()).getBlock();
         }
     }
 
-    public static boolean isBedBlock(Block block) {
+    public static boolean isBedBlock(BlockHolder block) {
         if (block == null) {
             return false;
         }
+        var data = block.getBlockData();
 
-        return block.getBlockData() instanceof Bed;
+        return data.isPresent() && data.get().as(BlockData.class) instanceof Bed;
+    }
+
+    public static boolean isBedBlock(BlockDataHolder data) {
+        return data != null && data.as(BlockData.class) instanceof Bed;
     }
 }

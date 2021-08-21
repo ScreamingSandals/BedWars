@@ -9,14 +9,11 @@ import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.utils.MiscUtils;
-import org.bukkit.Location;
-import org.bukkit.block.Block;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.material.Item;
 import org.screamingsandals.lib.material.MaterialHolder;
 import org.screamingsandals.lib.material.MaterialMapping;
 import org.screamingsandals.lib.material.builder.ItemFactory;
-import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
 import org.screamingsandals.lib.tasker.task.TaskerTask;
@@ -54,11 +51,11 @@ public class RescuePlatformImpl extends SpecialItem implements RescuePlatform<Ga
 
                     if (livingTime == breakingTime) {
                         for (var block : platformBlocks) {
-                            block.as(Block.class).getChunk().load(false);
+                            block.getLocation().getChunk().load(false);
                             block.setType(MaterialMapping.getAir());
 
                             removeBlockFromList(block);
-                            game.getRegion().removeBlockBuiltDuringGame(block.getLocation().as(Location.class));
+                            game.getRegion().removeBlockBuiltDuringGame(block.getLocation());
 
                         }
                         game.unregisterSpecialItem(this);
@@ -72,12 +69,12 @@ public class RescuePlatformImpl extends SpecialItem implements RescuePlatform<Ga
 
     private void addBlockToList(BlockHolder block) {
         platformBlocks.add(block);
-        game.getRegion().addBuiltDuringGame(block.getLocation().as(Location.class));
+        game.getRegion().addBuiltDuringGame(block.getLocation());
     }
 
     private void removeBlockFromList(BlockHolder block) {
         platformBlocks.remove(block);
-        game.getRegion().removeBlockBuiltDuringGame(block.getLocation().as(Location.class));
+        game.getRegion().removeBlockBuiltDuringGame(block.getLocation());
     }
 
     public void createPlatform(boolean bre, int time, int dist, MaterialHolder bMat) {
@@ -108,7 +105,7 @@ public class RescuePlatformImpl extends SpecialItem implements RescuePlatform<Ga
             game.registerSpecialItem(this);
             runTask();
 
-            MiscUtils.sendActionBarMessage(PlayerMapper.wrapPlayer(player), Message.of(LangKeys.SPECIALS_RESCUE_PLATFORM_CREATED).placeholder("time", breakingTime));
+            MiscUtils.sendActionBarMessage(player, Message.of(LangKeys.SPECIALS_RESCUE_PLATFORM_CREATED).placeholder("time", breakingTime));
 
             if (item.getAmount() > 1) {
                 item.setAmount(item.getAmount() - 1);
@@ -127,7 +124,7 @@ public class RescuePlatformImpl extends SpecialItem implements RescuePlatform<Ga
         } else {
             game.registerSpecialItem(this);
 
-            MiscUtils.sendActionBarMessage(PlayerMapper.wrapPlayer(player), Message.of(LangKeys.SPECIALS_RESCUE_PLATFORM_CREATED_UNBREAKABLE));
+            MiscUtils.sendActionBarMessage(player, Message.of(LangKeys.SPECIALS_RESCUE_PLATFORM_CREATED_UNBREAKABLE));
             if (item.getAmount() > 1) {
                 item.setAmount(item.getAmount() - 1);
             } else {

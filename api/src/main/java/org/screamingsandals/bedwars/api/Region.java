@@ -1,69 +1,60 @@
 package org.screamingsandals.bedwars.api;
 
-import org.bukkit.Chunk;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
+import org.screamingsandals.lib.utils.Wrapper;
 
 /**
- * @author Bedwars Team
+ * @author ScreamingSandals
  */
-public interface Region {
+public interface Region<B extends Wrapper> {
     /**
      * @param loc
      * @return
      */
-    boolean isBlockAddedDuringGame(Location loc);
+    boolean isBlockAddedDuringGame(Object loc);
 
     /**
      * @param loc
-     * @param block
+     * @param blockState
      */
-    void putOriginalBlock(Location loc, BlockState block);
-
-    /**
-     * @param loc
-     */
-    void addBuiltDuringGame(Location loc);
+    void putOriginalBlock(Object loc, Object blockState);
 
     /**
      * @param loc
      */
-    void removeBlockBuiltDuringGame(Location loc);
+    void addBuiltDuringGame(Object loc);
+
+    /**
+     * @param loc
+     */
+    void removeBlockBuiltDuringGame(Object loc);
 
     /**
      * @param material
      * @return
      */
-    boolean isLiquid(Material material);
+    boolean isLiquid(Object material);
 
     /**
-     * @param block
+     * @param blockState
      * @return
      */
-    boolean isBedBlock(BlockState block);
+    boolean isBedBlock(Object blockState);
 
     /**
-     * @param block
+     * @param blockState
      * @return
      */
-    boolean isBedHead(BlockState block);
+    boolean isBedHead(Object blockState);
 
     /**
-     * @param head
+     * @param blockHead
      * @return
      */
-    Block getBedNeighbor(Block head);
+    B getBedNeighbor(Object blockHead);
 
     /**
      * @param chunk
      * @return
      */
-    boolean isChunkUsed(Chunk chunk);
-
-    /**
-     * Don't use from API
-     */
-    void regen();
+    boolean isChunkUsed(Object chunk);
 }

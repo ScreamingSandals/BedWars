@@ -14,7 +14,6 @@ import org.bukkit.block.data.type.RespawnAnchor;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.entity.*;
-import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
@@ -29,7 +28,6 @@ import org.bukkit.scoreboard.Scoreboard;
 import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.api.ArenaTime;
-import org.screamingsandals.bedwars.api.Region;
 import org.screamingsandals.bedwars.api.RunningTeam;
 import org.screamingsandals.bedwars.api.boss.BossBar;
 import org.screamingsandals.bedwars.api.boss.StatusBar;
@@ -57,6 +55,7 @@ import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.listener.Player116ListenerUtils;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
+import org.screamingsandals.bedwars.region.BWRegion;
 import org.screamingsandals.bedwars.region.FlatteningRegion;
 import org.screamingsandals.bedwars.region.LegacyRegion;
 import org.screamingsandals.bedwars.scoreboard.ScreamingScoreboard;
@@ -72,6 +71,7 @@ import org.screamingsandals.lib.healthindicator.HealthIndicator;
 import org.screamingsandals.lib.hologram.HologramManager;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.material.MaterialHolder;
+import org.screamingsandals.lib.material.MaterialMapping;
 import org.screamingsandals.lib.material.builder.ItemFactory;
 import org.screamingsandals.lib.npc.NPC;
 import org.screamingsandals.lib.player.PlayerMapper;
@@ -80,6 +80,7 @@ import org.screamingsandals.lib.player.SenderWrapper;
 import org.screamingsandals.lib.tasker.TaskerTime;
 import org.screamingsandals.lib.utils.AdventureHelper;
 import org.screamingsandals.lib.visuals.Visual;
+import org.screamingsandals.lib.world.BlockHolder;
 import org.screamingsandals.lib.world.BlockMapper;
 import org.screamingsandals.lib.world.LocationHolder;
 import org.screamingsandals.lib.world.LocationMapper;
@@ -93,7 +94,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class GameImpl implements Game<BedWarsPlayer> {
+public class GameImpl implements Game<BedWarsPlayer, BlockHolder> {
     public boolean gameStartItem;
     private String name;
     private Location pos1;
@@ -128,7 +129,7 @@ public class GameImpl implements Game<BedWarsPlayer> {
     private int calculatedMaxPlayers;
     private BukkitTask task;
     private final List<CurrentTeam> teamsInGame = new ArrayList<>();
-    private final Region region = BedWarsPlugin.isLegacy() ? new LegacyRegion() : new FlatteningRegion();
+    private final BWRegion region = BedWarsPlugin.isLegacy() ? new LegacyRegion() : new FlatteningRegion();
     private TeamSelectorInventory teamSelectorInventory;
     private final Scoreboard gameScoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
     private StatusBar<PlayerWrapper> statusbar;
@@ -537,10 +538,11 @@ public class GameImpl implements Game<BedWarsPlayer> {
     }
 
     public boolean isBlockAddedDuringGame(LocationHolder loc) {
-        return status == GameStatus.RUNNING && region.isBlockAddedDuringGame(loc.as(Location.class));
+        return status == GameStatus.RUNNING && region.isBlockAddedDuringGame(loc);
     }
 
-    public boolean isBlockAddedDuringGame(Location loc) {
+    @Deprecated
+    public boolean isBlockAddedDuringGame(Object loc) {
         return status == GameStatus.RUNNING && region.isBlockAddedDuringGame(loc);
     }
 
@@ -629,10 +631,10 @@ public class GameImpl implements Game<BedWarsPlayer> {
             return true;
         }
 
-        Location loc = block.getLocation();
+        var loc = block.getLocation();
         if (region.isBedBlock(block.getState())) {
             if (!region.isBedHead(block.getState())) {
-                loc = region.getBedNeighbor(block).getLocation();
+                loc = region.getBedNeighbor(block).getLocation().as(Location.class);
             }
         }
         if (isTargetBlock(loc)) {
@@ -643,16 +645,16 @@ public class GameImpl implements Game<BedWarsPlayer> {
                 bedDestroyed(loc, player.as(Player.class), true, false, false);
                 region.putOriginalBlock(block.getLocation(), block.getState());
                 if (block.getLocation().equals(loc)) {
-                    Block neighbor = region.getBedNeighbor(block);
-                    region.putOriginalBlock(neighbor.getLocation(), neighbor.getState());
+                    var neighbor = region.getBedNeighbor(block);
+                    region.putOriginalBlock(neighbor.getLocation(), neighbor.getBlockState());
                 } else {
-                    region.putOriginalBlock(loc, region.getBedNeighbor(block).getState());
+                    region.putOriginalBlock(loc, region.getBedNeighbor(block).getBlockState());
                 }
                 try {
                     event.setDropItems(false);
                 } catch (Throwable tr) {
                     if (region.isBedHead(block.getState())) {
-                        region.getBedNeighbor(block).setType(Material.AIR);
+                        region.getBedNeighbor(block).setType(MaterialMapping.getAir());
                     } else {
                         block.setType(Material.AIR);
                     }
@@ -686,7 +688,7 @@ public class GameImpl implements Game<BedWarsPlayer> {
         Block block = loc.getBlock();
         if (region.isBedBlock(block.getState())) {
             if (!region.isBedHead(block.getState())) {
-                loc = region.getBedNeighbor(block).getLocation();
+                loc = region.getBedNeighbor(block).getLocation().as(Location.class);
             }
         }
         if (isTargetBlock(loc)) {
@@ -694,13 +696,13 @@ public class GameImpl implements Game<BedWarsPlayer> {
                 bedDestroyed(loc, null, true, false, false);
                 region.putOriginalBlock(block.getLocation(), block.getState());
                 if (block.getLocation().equals(loc)) {
-                    Block neighbor = region.getBedNeighbor(block);
-                    region.putOriginalBlock(neighbor.getLocation(), neighbor.getState());
+                    var neighbor = region.getBedNeighbor(block);
+                    region.putOriginalBlock(neighbor.getLocation(), neighbor.getBlockState());
                 } else {
-                    region.putOriginalBlock(loc, region.getBedNeighbor(block).getState());
+                    region.putOriginalBlock(loc, region.getBedNeighbor(block).getBlockState());
                 }
                 if (region.isBedHead(block.getState())) {
-                    region.getBedNeighbor(block).setType(Material.AIR);
+                    region.getBedNeighbor(block).setType(MaterialMapping.getAir());
                 } else {
                     block.setType(Material.AIR);
                 }
@@ -721,7 +723,7 @@ public class GameImpl implements Game<BedWarsPlayer> {
         return false;
     }
 
-    public Region getRegion() {
+    public BWRegion getRegion() {
         return region;
     }
 
@@ -1865,9 +1867,9 @@ public class GameImpl implements Game<BedWarsPlayer> {
                                 Block block = team.bed.getBlock();
                                 if (region.isBedBlock(block.getState())) {
                                     region.putOriginalBlock(block.getLocation(), block.getState());
-                                    Block neighbor = region.getBedNeighbor(block);
-                                    region.putOriginalBlock(neighbor.getLocation(), neighbor.getState());
-                                    neighbor.setType(Material.AIR, false);
+                                    var neighbor = region.getBedNeighbor(block);
+                                    region.putOriginalBlock(neighbor.getLocation(), neighbor.getBlockState());
+                                    neighbor.as(Block.class).setType(Material.AIR, false);
                                     block.setType(Material.AIR);
                                 } else {
                                     region.putOriginalBlock(loc, block.getState());
@@ -2538,17 +2540,10 @@ public class GameImpl implements Game<BedWarsPlayer> {
                             }
 
                             if (config.node("sign", "block-behind", "enabled").getBoolean(false)) {
-                                final Optional<Block> optionalBlock = SignUtils.getBlockBehindSign(signBlock);
+                                final var optionalBlock = SignUtils.getBlockBehindSign(signBlock);
                                 if (optionalBlock.isPresent()) {
-                                    final Block glassBlock = optionalBlock.get();
-                                    glassBlock.setType(finalBlockBehindMaterial.as(Material.class));
-                                    if (BedWarsPlugin.isLegacy()) {
-                                        try {
-                                            // The method is no longer in API, but in legacy versions exists
-                                            Block.class.getMethod("setData", byte.class).invoke(glassBlock, (byte) finalBlockBehindMaterial.getDurability());
-                                        } catch (Exception e) {
-                                        }
-                                    }
+                                    final var glassBlock = optionalBlock.get();
+                                    glassBlock.setType(finalBlockBehindMaterial);
                                 }
                             }
                         }

@@ -1,27 +1,26 @@
 package org.screamingsandals.bedwars.region;
 
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
+import org.screamingsandals.lib.utils.BlockFace;
+import org.screamingsandals.lib.world.BlockHolder;
 
 public class LegacyBedUtils {
-    public static Block getBedNeighbor(Block head) {
-        if (isBedBlock(head.getRelative(BlockFace.EAST))) {
-            return head.getRelative(BlockFace.EAST);
-        } else if (isBedBlock(head.getRelative(BlockFace.WEST))) {
-            return head.getRelative(BlockFace.WEST);
-        } else if (isBedBlock(head.getRelative(BlockFace.SOUTH))) {
-            return head.getRelative(BlockFace.SOUTH);
+    public static BlockHolder getBedNeighbor(BlockHolder head) {
+        if (isBedBlock(head.getLocation().add(BlockFace.EAST.getDirection()).getBlock())) {
+            return head.getLocation().add(BlockFace.EAST.getDirection()).getBlock();
+        } else if (isBedBlock(head.getLocation().add(BlockFace.WEST.getDirection()).getBlock())) {
+            return head.getLocation().add(BlockFace.WEST.getDirection()).getBlock();
+        } else if (isBedBlock(head.getLocation().add(BlockFace.SOUTH.getDirection()).getBlock())) {
+            return head.getLocation().add(BlockFace.SOUTH.getDirection()).getBlock();
         } else {
-            return head.getRelative(BlockFace.NORTH);
+            return head.getLocation().add(BlockFace.NORTH.getDirection()).getBlock();
         }
     }
 
-    public static boolean isBedBlock(Block isBed) {
+    public static boolean isBedBlock(BlockHolder isBed) {
         if (isBed == null) {
             return false;
         }
 
-        return (isBed.getType() == Material.valueOf("BED") || isBed.getType() == Material.valueOf("BED_BLOCK"));
+        return isBed.getType().is("bed", "bed_block");
     }
 }

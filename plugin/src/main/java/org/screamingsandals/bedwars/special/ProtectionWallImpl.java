@@ -9,8 +9,6 @@ import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.utils.MiscUtils;
-import org.bukkit.Location;
-import org.bukkit.block.Block;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.material.Item;
 import org.screamingsandals.lib.material.MaterialHolder;
@@ -56,10 +54,10 @@ public class ProtectionWallImpl extends SpecialItem implements ProtectionWall<Ga
 
                     if (livingTime == breakingTime) {
                         for (var block : wallBlocks) {
-                            block.as(Block.class).getChunk().load(false);
+                            block.getLocation().getChunk().load(false);
                             block.setType(MaterialMapping.getAir());
 
-                            game.getRegion().removeBlockBuiltDuringGame(block.getLocation().as(Location.class));
+                            game.getRegion().removeBlockBuiltDuringGame(block.getLocation());
                         }
                         game.unregisterSpecialItem(this);
                         this.task.cancel();
@@ -72,7 +70,7 @@ public class ProtectionWallImpl extends SpecialItem implements ProtectionWall<Ga
 
     private void addBlockToList(BlockHolder block) {
         wallBlocks.add(block);
-        game.getRegion().addBuiltDuringGame(block.getLocation().as(Location.class));
+        game.getRegion().addBuiltDuringGame(block.getLocation());
     }
 
     public void createWall(boolean bre, int time, int wid, int hei, int dis, MaterialHolder mat) {

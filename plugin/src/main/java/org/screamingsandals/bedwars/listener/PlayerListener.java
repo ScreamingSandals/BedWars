@@ -898,7 +898,7 @@ public class PlayerListener {
                 }
 
                 if (event.getBlockClicked() != null) {
-                    if (game.getRegion().isBedBlock(event.getBlockClicked().getBlockState().orElseThrow().as(BlockState.class)) || event.getBlockClicked().getType().is("respawn_anchor")) {
+                    if (game.getRegion().isBedBlock(event.getBlockClicked().getBlockState().orElseThrow()) || event.getBlockClicked().getType().is("respawn_anchor")) {
                         // prevent Essentials to set home in arena
                         event.setCancelled(true);
 
@@ -1230,8 +1230,8 @@ public class PlayerListener {
 
             var block = loc.getBlock();
             if (game.getStatus() == GameStatus.RUNNING) {
-                if (block.getType().isAir() || game.getRegion().isBlockAddedDuringGame(block.getLocation().as(Location.class))) {
-                    game.getRegion().addBuiltDuringGame(block.getLocation().as(Location.class));
+                if (block.getType().isAir() || game.getRegion().isBlockAddedDuringGame(block.getLocation())) {
+                    game.getRegion().addBuiltDuringGame(block.getLocation());
                     Debug.info(player.getName() + " placed liquid");
                 } else {
                     event.setCancelled(true);
