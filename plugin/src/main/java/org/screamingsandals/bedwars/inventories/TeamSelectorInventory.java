@@ -2,7 +2,6 @@ package org.screamingsandals.bedwars.inventories;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.api.RunningTeam;
 import org.screamingsandals.bedwars.config.MainConfig;
@@ -126,7 +125,7 @@ public class TeamSelectorInventory {
         if (!playersInTeam.isEmpty()) {
             loreList.add(Message.of(LangKeys.IN_GAME_TEAM_SELECTION_SELECT_ITEM_LORE).asComponent());
             playersInTeam.forEach(gamePlayer ->
-                    loreList.add(AdventureHelper.toComponent(team.color.chatColor + gamePlayer.as(Player.class).getDisplayName()))
+                    loreList.add(Component.text().color(NamedTextColor.NAMES.value(team.color.chatColor.name())).append(gamePlayer.getDisplayName()).build())
             );
         }
 

@@ -5,7 +5,6 @@ import lombok.SneakyThrows;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.api.PurchaseType;
@@ -54,7 +53,7 @@ import java.util.stream.Collectors;
         SimpleInventoriesCore.class
 })
 @RequiredArgsConstructor
-public class ShopInventory implements Listener {
+public class ShopInventory {
     private final Map<String, InventorySet> shopMap = new HashMap<>();
     @DataFolder
     private final Path dataFolder;
@@ -67,8 +66,6 @@ public class ShopInventory implements Listener {
 
     @OnPostEnable
     public void onEnable() {
-        BedWarsPlugin.getInstance().registerBedwarsListener(this);
-
         var shopFileName = "shop.yml";
         if (mainConfig.node("turnOnExperimentalGroovyShop").getBoolean()) {
             shopFileName = "shop.groovy";

@@ -1,4 +1,5 @@
 package org.screamingsandals.bedwars.holograms;
+
 import java.util.*;
 
 import lombok.RequiredArgsConstructor;
@@ -31,16 +32,12 @@ import org.screamingsandals.lib.utils.annotations.methods.ShouldRunControllable;
 import org.screamingsandals.lib.utils.annotations.parameters.ConfigFile;
 import org.screamingsandals.lib.utils.visual.TextEntry;
 import org.screamingsandals.lib.world.LocationHolder;
-import org.screamingsandals.lib.world.LocationMapper;
 import org.screamingsandals.lib.event.OnEvent;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
 @Service(dependsOn = {
-        PlayerMapper.class,
-        LocationMapper.class,
         HologramManager.class,
-        Tasker.class,
         MainConfig.class,
         PlayerStatisticManager.class
 })

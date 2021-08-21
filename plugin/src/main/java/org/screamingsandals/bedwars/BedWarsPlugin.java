@@ -306,13 +306,6 @@ public class BedWarsPlugin extends PluginContainer implements BedwarsAPI {
         Debug.init(getPluginDescription().getName());
         Debug.setDebug(MainConfig.getInstance().node("debug").getBoolean());
 
-        if (versionNumber >= 109) {
-            registerBedwarsListener(new Player19Listener());
-        }
-
-        final var playerBeforeOrAfter112Listener = versionNumber >= 122 ? new Player112Listener() : new PlayerBefore112Listener();
-        registerBedwarsListener(playerBeforeOrAfter112Listener);
-
         PremiumBedwars.init();
 
         Bukkit.getServer().getServicesManager().register(BedwarsAPI.class, this, this.getPluginDescription().as(JavaPlugin.class), ServicePriority.Normal);

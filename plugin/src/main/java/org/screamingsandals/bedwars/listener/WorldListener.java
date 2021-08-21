@@ -1,13 +1,8 @@
 package org.screamingsandals.bedwars.listener;
 
-import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.BlockState;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.world.ChunkUnloadEvent;
-import org.bukkit.plugin.Plugin;
 import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.api.RunningTeam;
 import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
@@ -19,12 +14,12 @@ import org.screamingsandals.bedwars.utils.ArenaUtils;
 import org.screamingsandals.lib.event.Cancellable;
 import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.event.block.*;
+import org.screamingsandals.lib.event.chunk.SChunkUnloadEvent;
 import org.screamingsandals.lib.event.entity.SCreatureSpawnEvent;
 import org.screamingsandals.lib.event.entity.SEntityChangeBlockEvent;
 import org.screamingsandals.lib.event.entity.SEntityExplodeEvent;
 import org.screamingsandals.lib.event.world.SPlantGrowEvent;
 import org.screamingsandals.lib.utils.annotations.Service;
-import org.screamingsandals.lib.utils.annotations.methods.OnPostEnable;
 import org.screamingsandals.lib.world.BlockHolder;
 import org.screamingsandals.lib.world.LocationHolder;
 import org.screamingsandals.lib.world.LocationMapper;
@@ -34,12 +29,7 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 
 @Service
-public class WorldListener implements Listener {
-
-    @OnPostEnable
-    public void onPostEnable(Plugin plugin) {
-        plugin.getServer().getPluginManager().registerEvents(this, plugin);
-    }
+public class WorldListener {
 
     @OnEvent
     public void onBurn(SBlockBurnEvent event) {
@@ -264,18 +254,15 @@ public class WorldListener implements Listener {
         }
     }
 
-    // TODO: move away from bukkit event
-    @EventHandler
-    public void onChunkUnload(ChunkUnloadEvent unload) {
-        if (unload instanceof org.bukkit.event.Cancellable) {
-            Chunk chunk = unload.getChunk();
+    @OnEvent
+    public void onChunkUnload(SChunkUnloadEvent unload) {
+        var chunk = unload.getChunk();
 
-            for (var game : GameManagerImpl.getInstance().getGames()) {
-                if (game.getStatus() != GameStatus.DISABLED && game.getStatus() != GameStatus.WAITING
-                        && ArenaUtils.isChunkInArea(chunk, game.getPos1(), game.getPos2())) {
-                    ((org.bukkit.event.Cancellable) unload).setCancelled(true);
-                    return;
-                }
+        for (var game : GameManagerImpl.getInstance().getGames()) {
+            if (game.getStatus() != GameStatus.DISABLED && game.getStatus() != GameStatus.WAITING
+                    && ArenaUtils.isChunkInArea(chunk, game.getPos1(), game.getPos2())) {
+                ((org.bukkit.event.Cancellable) unload).setCancelled(true);
+                return;
             }
         }
     }
