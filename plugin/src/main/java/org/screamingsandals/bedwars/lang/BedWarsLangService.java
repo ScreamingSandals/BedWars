@@ -74,8 +74,7 @@ public class BedWarsLangService extends LangService {
                     try {
                         return Map.entry(LocaleUtils.toLocale(entry.getKey().replace("-", "_")), entry.getValue());
                     } catch (IllegalArgumentException ex) {
-                        logger.error("Invalid language definition: ", ex);
-                        ex.printStackTrace();
+                        logger.error("Invalid language definition: {}", ex.getMessage());
                         return null;
                     }
                 })

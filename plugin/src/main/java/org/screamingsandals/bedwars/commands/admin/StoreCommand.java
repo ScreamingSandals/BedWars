@@ -5,6 +5,8 @@ import cloud.commandframework.CommandManager;
 import cloud.commandframework.arguments.standard.BooleanArgument;
 import cloud.commandframework.arguments.standard.StringArgument;
 import org.bukkit.ChatColor;
+import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.game.GameStoreImpl;
@@ -15,6 +17,7 @@ import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
 import org.screamingsandals.lib.utils.annotations.Service;
+import org.screamingsandals.lib.world.BlockHolder;
 
 import java.util.Arrays;
 import java.util.List;
@@ -49,7 +52,7 @@ public class StoreCommand extends BaseAdminSubCommand {
                                 sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_SET_BOUNDS_FIRST).defaultPrefix());
                                 return;
                             }
-                            if (game.getWorld() != loc.getWorld()) {
+                            if (!game.getWorld().equals(loc.getWorld().as(World.class))) {
                                 sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_MUST_BE_IN_SAME_WORLD).defaultPrefix());
                                 return;
                             }
@@ -84,9 +87,9 @@ public class StoreCommand extends BaseAdminSubCommand {
                 commandSenderWrapperBuilder
                         .literal("remove")
                         .handler(commandContext -> editMode(commandContext, (sender, game) -> {
-                            var loc = sender.as(Player.class).getLocation();
+                            var loc = sender.as(PlayerWrapper.class).getLocation();
 
-                            if (game.getWorld() != loc.getWorld()) {
+                            if (game.getWorld().equals(loc.getWorld().as(World.class))) {
                                 sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_MUST_BE_IN_SAME_WORLD).defaultPrefix());
                                 return;
                             }
@@ -117,7 +120,7 @@ public class StoreCommand extends BaseAdminSubCommand {
                 commandSenderWrapperBuilder
                         .literal("child")
                         .handler(commandContext -> editMode(commandContext, (sender, game) -> {
-                            var loc = sender.as(Player.class).getLocation();
+                            var loc = sender.as(PlayerWrapper.class).getLocation();
 
                             var store = game.getGameStoreList()
                                     .stream()
@@ -176,7 +179,7 @@ public class StoreCommand extends BaseAdminSubCommand {
                         )
                         .handler(commandContext -> editMode(commandContext, (sender, game) -> {
                             String type = commandContext.get("type");
-                            var loc = sender.as(Player.class).getLocation();
+                            var loc = sender.as(PlayerWrapper.class).getLocation();
 
                             var store = game.getGameStoreList()
                                     .stream()

@@ -12,12 +12,12 @@ public class FlatteningBedUtils {
             return null;
         }
 
-        if (isBedBlock(head.getLocation().add(org.screamingsandals.lib.utils.BlockFace.EAST.getDirection()).getBlock())) {
-            return head.getLocation().add(org.screamingsandals.lib.utils.BlockFace.EAST.getDirection()).getBlock();
-        } else if (isBedBlock(head.getLocation().add(org.screamingsandals.lib.utils.BlockFace.WEST.getDirection()).getBlock())) {
-            return head.getLocation().add(org.screamingsandals.lib.utils.BlockFace.WEST.getDirection()).getBlock();
-        } else if (isBedBlock(head.getLocation().add(org.screamingsandals.lib.utils.BlockFace.SOUTH.getDirection()).getBlock())) {
-            return head.getLocation().add(org.screamingsandals.lib.utils.BlockFace.SOUTH.getDirection()).getBlock();
+        if (isBedBlock(head.getLocation().add(BlockFace.EAST.getDirection()).getBlock())) {
+            return head.getLocation().add(BlockFace.EAST.getDirection()).getBlock();
+        } else if (isBedBlock(head.getLocation().add(BlockFace.WEST.getDirection()).getBlock())) {
+            return head.getLocation().add(BlockFace.WEST.getDirection()).getBlock();
+        } else if (isBedBlock(head.getLocation().add(BlockFace.SOUTH.getDirection()).getBlock())) {
+            return head.getLocation().add(BlockFace.SOUTH.getDirection()).getBlock();
         } else {
             return head.getLocation().add(BlockFace.NORTH.getDirection()).getBlock();
         }

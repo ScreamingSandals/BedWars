@@ -130,7 +130,7 @@ public class TNTSheepListener {
             var game = gamePlayer.getGame();
 
             var rightClicked = event.getClickedEntity();
-            var vehicle = rightClicked.getVehicle();
+            var vehicle = rightClicked.isInsideVehicle() ? rightClicked.getVehicle() : null;
             var sheeps = game.getActivedSpecialItems(TNTSheepImpl.class);
             for (var item : sheeps) {
                 if (item instanceof TNTSheepImpl) {
