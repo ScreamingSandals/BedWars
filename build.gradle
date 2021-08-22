@@ -1,3 +1,17 @@
+buildscript {
+    repositories {
+        maven { url 'https://repo.screamingsandals.org/public/' }
+    }
+    dependencies {
+        classpath 'org.screamingsandals.nms:NMSMapper:' + NMS_MAPPER_VERSION
+    }
+}
+
+plugins {
+    id 'org.screamingsandals.plugin-builder' version "${SCREAMING_PLUGIN_BUILDER_VERSION}" apply false
+    id 'com.github.gmazzo.buildconfig' version "${BUILDCONFIG_VERSION}" apply false
+}
+
 defaultTasks 'clean', ':BedWars-NMS:generateNmsComponents', 'screamCompile', ':BedWars-API:allowJavadocUpload'
 
 allprojects {
@@ -5,22 +19,9 @@ allprojects {
     version = BEDWARS_VERSION
 }
 
-buildscript {
-    repositories {
-        //mavenLocal()
-        maven { url 'https://repo.screamingsandals.org/public/' }
-        maven { url 'https://plugins.gradle.org/m2' }
-    }
-    dependencies {
-		classpath 'org.screamingsandals.gradle.builder:screaming-plugin-builder:' + SCREAMING_PLUGIN_BUILDER_VERSION
-        classpath "com.github.gmazzo:gradle-buildconfig-plugin:" + BUILDCONFIG_VERSION
-        classpath 'org.screamingsandals.nms:NMSMapper:' + NMS_MAPPER_VERSION
-    }
-}
-
 subprojects {
     apply plugin: 'java'
-    apply plugin: 'org.screamingsandals.gradle.builder'
+    apply plugin: 'org.screamingsandals.plugin-builder'
 
     enableShadowPlugin()
 
