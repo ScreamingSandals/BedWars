@@ -5,6 +5,7 @@ import org.screamingsandals.bedwars.api.APIUtils;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.events.ApplyPropertyToBoughtItemEventImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
+import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.bedwars.special.WarpPowderImpl;
 import org.screamingsandals.bedwars.utils.DelayFactory;
@@ -109,11 +110,13 @@ public class WarpPowderListener {
             return;
         }
 
-        if (event.getCurrentLocation().equals(event.getNewLocation())) {
+        if (event.getCurrentLocation().getX() == event.getNewLocation().getX()
+                && event.getCurrentLocation().getY() == event.getNewLocation().getY()
+                && event.getCurrentLocation().getZ() == event.getNewLocation().getZ()) {
             return;
         }
 
-        var gPlayer = PlayerManagerImpl.getInstance().getPlayer(player).orElseThrow();
+        var gPlayer = player.as(BedWarsPlayer.class);
         var game = gPlayer.getGame();
         if (gPlayer.isSpectator) {
             return;

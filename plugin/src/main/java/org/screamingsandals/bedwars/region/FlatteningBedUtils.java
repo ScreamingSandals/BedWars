@@ -27,7 +27,7 @@ public class FlatteningBedUtils {
         if (block == null) {
             return false;
         }
-        var data = block.getBlockData();
+        var data = block.getCurrentBlockData();
 
         return data.isPresent() && data.get().as(BlockData.class) instanceof Bed;
     }

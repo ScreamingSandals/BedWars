@@ -97,7 +97,7 @@ public class TrapListener {
 
                 if (trapBlock.isPlaced()) {
                     if (game.getPlayerTeam(gPlayer) != trapBlock.getTeam()) {
-                        if (event.getNewLocation().equals(trapBlock.getLocation())) {
+                        if (event.getNewLocation().getBlock().equals(trapBlock.getLocation().getBlock())) {
                             trapBlock.process(gPlayer, game.getPlayerTeam(gPlayer), false);
                         }
                     }

@@ -62,7 +62,7 @@ public class RescuePlatformListener {
 
                         var rescuePlatform = new RescuePlatformImpl(game, gPlayer, game.getPlayerTeam(gPlayer), stack);
 
-                        if (player.getLocation().add(BlockFace.DOWN.getDirection()).getBlock().getType().isAir()) {
+                        if (!player.getLocation().add(BlockFace.DOWN.getDirection()).getBlock().getType().isAir()) {
                             MiscUtils.sendActionBarMessage(player, Message.of(LangKeys.SPECIALS_RESCUE_PLATFORM_NOT_IN_AIR).placeholder("time", delay));
                             return;
                         }

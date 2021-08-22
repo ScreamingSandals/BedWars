@@ -85,7 +85,7 @@ public class PermaItemListener {
             return;
         }
         
-        var droppedItem = event.getItemDrop();
+        var droppedItem = event.getItemDrop().getItem();
         var unhashedProperty = APIUtils.unhashFromInvisibleStringStartsWith(droppedItem.as(ItemStack.class), PERMA_ITEM_PREFIX);
         if (unhashedProperty != null) {
             event.setCancelled(true);

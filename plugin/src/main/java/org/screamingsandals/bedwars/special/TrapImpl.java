@@ -57,8 +57,7 @@ public class TrapImpl extends SpecialItem implements Trap<GameImpl, BedWarsPlaye
             }
 
             if (data.containsKey("effect")) {
-                var effect = PotionEffectHolder.of(data.get("effect"));
-                player.asEntity().addPotionEffect(effect);
+                PotionEffectHolder.ofOptional(data.get("effect")).ifPresent(effect -> player.asEntity().addPotionEffect(effect));
             }
 
             if (data.containsKey("damage")) {

@@ -646,9 +646,9 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder> {
                 region.putOriginalBlock(block.getLocation(), block.getState());
                 if (block.getLocation().equals(loc)) {
                     var neighbor = region.getBedNeighbor(block);
-                    region.putOriginalBlock(neighbor.getLocation(), neighbor.getBlockState());
+                    region.putOriginalBlock(neighbor.getLocation(), neighbor.getBlockState().orElseThrow());
                 } else {
-                    region.putOriginalBlock(loc, region.getBedNeighbor(block).getBlockState());
+                    region.putOriginalBlock(loc, region.getBedNeighbor(block).getBlockState().orElseThrow());
                 }
                 try {
                     event.setDropItems(false);
@@ -1787,6 +1787,7 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder> {
                             });
                         } else if (villager instanceof NPC) {
                             otherVisuals.add((NPC) villager);
+                            players.forEach(((NPC) villager)::addViewer);
                         }
                     }
 
@@ -2855,7 +2856,7 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder> {
     public List<SpecialItem> getActivedSpecialItemsOfPlayer(Player player) {
         List<SpecialItem> items = new ArrayList<>();
         for (SpecialItem item : activeSpecialItems) {
-            if (item.getPlayer() == player) {
+            if (item.getPlayer().as(Player.class) == player) {
                 items.add(item);
             }
         }
@@ -2866,7 +2867,7 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder> {
     public List<SpecialItem> getActivedSpecialItemsOfPlayer(Player player, Class<? extends SpecialItem> type) {
         List<SpecialItem> items = new ArrayList<>();
         for (SpecialItem item : activeSpecialItems) {
-            if (item.getPlayer() == player && type.isInstance(item)) {
+            if (item.getPlayer().as(Player.class) == player && type.isInstance(item)) {
                 items.add(item);
             }
         }
@@ -2876,7 +2877,7 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder> {
     @Override
     public SpecialItem getFirstActivedSpecialItemOfPlayer(Player player) {
         for (SpecialItem item : activeSpecialItems) {
-            if (item.getPlayer() == player) {
+            if (item.getPlayer().as(Player.class) == player) {
                 return item;
             }
         }
@@ -2886,7 +2887,7 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder> {
     @Override
     public SpecialItem getFirstActivedSpecialItemOfPlayer(Player player, Class<? extends SpecialItem> type) {
         for (SpecialItem item : activeSpecialItems) {
-            if (item.getPlayer() == player && type.isInstance(item)) {
+            if (item.getPlayer().as(Player.class) == player && type.isInstance(item)) {
                 return item;
             }
         }
@@ -3067,7 +3068,7 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder> {
 
     public boolean isEntityShop(EntityBasic entity) {
         for (var store : gameStore) {
-            if (store.getEntity().equals(entity)) {
+            if (entity.equals(store.getEntity())) {
                 return true;
             }
         }

@@ -19,7 +19,6 @@ dependencies {
     compileOnly('me.gnat008:perworldinventory:' + PERWORLDINVENTORY_VERSION) {
         exclude group: '*', module: '*'
     }
-    compileOnly 'io.netty:netty-all:' + NETTY_VERSION
     compileOnly 'com.alessiodp.parties:parties-api:' + PARTIES_VERSION
 
     /* SHADED */
@@ -27,7 +26,9 @@ dependencies {
     implementation project(':BedWars-NMS')
     implementation 'org.screamingsandals.language.bedwars:BedWarsLanguage:' + (BEDWARS_VERSION =~ /^\d+.\d+/).findAll()?.first() + '-SNAPSHOT'
     implementation 'com.zaxxer:HikariCP:3.3.0'
-    implementation 'cloud.commandframework:cloud-minecraft-extras:' + CLOUD_EXTRAS_VERSION
+    implementation 'cloud.commandframework:cloud-minecraft-extras:' + CLOUD_EXTRAS_VERSION, {
+        exclude group: 'net.kyori'
+    }
     implementation bStats(BSTATS_VERSION)
     implementation 'me.lucko:commodore:' + COMMODORE_VERSION, {
         exclude group: 'com.mojang', module: 'brigadier'

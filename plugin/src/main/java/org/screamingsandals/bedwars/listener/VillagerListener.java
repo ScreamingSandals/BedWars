@@ -48,7 +48,7 @@ public class VillagerListener {
             var game = gPlayer.getGame();
             if (!gPlayer.isSpectator && gPlayer.getGame().getStatus() == GameStatus.RUNNING) {
                 for (var store : game.getGameStoreList()) {
-                    if (store.getNpc().equals(event.getNpc())) {
+                    if (event.getNpc().equals(store.getNpc())) {
                         open(store, gPlayer, null, game);
                         return;
                     }

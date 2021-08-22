@@ -34,6 +34,7 @@ public abstract class Selector {
 		try {
 			this.selector = Reflect.setField(this.handler, this.field, ClassStorage.obtainNewPathfinderSelector(handler));
 		} catch (Throwable t) {
+			t.printStackTrace();
 		}
 	}
 }
