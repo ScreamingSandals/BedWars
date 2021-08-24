@@ -763,7 +763,7 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder> {
                                 .placeholder("broker", AdventureHelper.toComponent(coloredDestroyer));
 
                         message.clone()
-                                .join(getPlayerTeam(player) == team ? LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_SUBTITLE_VICTIM : LangKeys.IN_GAME_GAME_START_SUBTITLE)
+                                .join(getPlayerTeam(player) == team ? LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_SUBTITLE_VICTIM : LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_SUBTITLE)
                                 .times(TitleUtils.defaultTimes())
                                 .title(player);
 

@@ -31,7 +31,7 @@ public class VillagerListener {
             if (event.getClickedEntity().getEntityType().isAlive() && !gPlayer.isSpectator
                     && gPlayer.getGame().getStatus() == GameStatus.RUNNING) {
                 for (var store : game.getGameStoreList()) {
-                    if (store.getEntity().equals(event.getClickedEntity())) {
+                    if (event.getClickedEntity().equals(store.getEntity())) {
                         event.setCancelled(true);
                         open(store, gPlayer, event.getClickedEntity(), game);
                         return;

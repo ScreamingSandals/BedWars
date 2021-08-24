@@ -91,7 +91,7 @@ public class ProtectionWallImpl extends SpecialItem implements ProtectionWall<Ga
         }
 
         var wallLocation = player.getLocation();
-        wallLocation.add(wallLocation.getFacingDirection().setY(0).normalize().multiply(distance));
+        wallLocation = wallLocation.add(wallLocation.getFacingDirection().setY(0).normalize().multiply(distance));
 
         var face = MiscUtils.getCardinalDirection(player.getLocation());
         var widthStart = (int) Math.floor(((double) width) / 2.0);
@@ -104,23 +104,23 @@ public class ProtectionWallImpl extends SpecialItem implements ProtectionWall<Ga
                     case SOUTH:
                     case NORTH:
                     case SELF:
-                        wallBlock.add(0, h, w);
+                        wallBlock = wallBlock.add(0, h, w);
                         break;
                     case WEST:
                     case EAST:
-                        wallBlock.add(w, h, 0);
+                        wallBlock = wallBlock.add(w, h, 0);
                         break;
                     case SOUTH_EAST:
-                        wallBlock.add(w, h, w);
+                        wallBlock = wallBlock.add(w, h, w);
                         break;
                     case SOUTH_WEST:
-                        wallBlock.add(w, h, w * (-1));
+                        wallBlock = wallBlock.add(w, h, w * (-1));
                         break;
                     case NORTH_EAST:
-                        wallBlock.add(w * (-1), h, w);
+                        wallBlock = wallBlock.add(w * (-1), h, w);
                         break;
                     case NORTH_WEST:
-                        wallBlock.add(w * (-1), h, w * (-1));
+                        wallBlock = wallBlock.add(w * (-1), h, w * (-1));
                         break;
                     default:
                         wallBlock = null;
