@@ -50,7 +50,7 @@ public class RescuePlatformImpl extends SpecialItem implements RescuePlatform<Ga
                     }
 
                     if (livingTime == breakingTime) {
-                        for (var block : platformBlocks) {
+                        for (var block : List.copyOf(platformBlocks)) {
                             block.getLocation().getChunk().load(false);
                             block.setType(MaterialMapping.getAir());
 
