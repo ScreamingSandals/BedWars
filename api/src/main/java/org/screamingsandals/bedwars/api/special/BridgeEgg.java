@@ -5,7 +5,7 @@ import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.api.player.BWPlayer;
 import org.screamingsandals.lib.utils.Wrapper;
 
-public interface BridgeEgg<G extends Game, P extends BWPlayer, T extends Team, E extends Wrapper, M extends Wrapper, D extends Double> extends SpecialItem<G, P, T> {
+public interface BridgeEgg<G extends Game, P extends BWPlayer, T extends Team, E extends Wrapper, M extends Wrapper> extends SpecialItem<G, P, T> {
     /**
      * <p>Gets the bridge egg projectile.</p>
      *
@@ -25,7 +25,7 @@ public interface BridgeEgg<G extends Game, P extends BWPlayer, T extends Team, E
      *
      * @return the bridge max distance
      */
-    D getDistance();
+    double getDistance();
 
     /**
      * <p>Runs the placing task.</p>
