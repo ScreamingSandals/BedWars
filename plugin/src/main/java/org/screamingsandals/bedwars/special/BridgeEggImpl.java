@@ -19,7 +19,7 @@ import org.screamingsandals.lib.utils.MathUtils;
 import org.screamingsandals.lib.world.BlockHolder;
 
 @Getter
-public class BridgeEggImpl extends SpecialItem implements BridgeEgg<GameImpl, BedWarsPlayer, CurrentTeam, EntityProjectile, MaterialHolder, Double> {
+public class BridgeEggImpl extends SpecialItem implements BridgeEgg<GameImpl, BedWarsPlayer, CurrentTeam, EntityProjectile, MaterialHolder> {
     private final double distance;
     private final double distanceSquared;
     private final EntityProjectile projectile;
