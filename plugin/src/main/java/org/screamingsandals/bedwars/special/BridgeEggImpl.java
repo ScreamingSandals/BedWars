@@ -7,6 +7,7 @@ import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.api.special.BridgeEgg;
 import org.screamingsandals.bedwars.game.CurrentTeam;
 import org.screamingsandals.bedwars.game.GameImpl;
+import org.screamingsandals.bedwars.game.TeamColor;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.utils.ArenaUtils;
 import org.screamingsandals.lib.entity.EntityProjectile;
@@ -29,7 +30,7 @@ public class BridgeEggImpl extends SpecialItem implements BridgeEgg<GameImpl, Be
     public BridgeEggImpl(GameImpl game, BedWarsPlayer player, CurrentTeam team, EntityProjectile projectile, MaterialHolder mat, Double distance) {
         super(game, player, team);
         this.projectile = projectile;
-        this.material = MaterialMapping.colorize(mat, team.getColor().name());
+        this.material = MaterialMapping.colorize(mat, TeamColor.fromApiColor(team.getColor()).material1_13);
         this.distance = distance;
         this.distanceSquared = MathUtils.square(distance);
     }
