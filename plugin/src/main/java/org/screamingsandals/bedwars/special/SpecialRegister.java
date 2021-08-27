@@ -18,7 +18,8 @@ import org.screamingsandals.lib.utils.annotations.Service;
         TNTSheepListener.class,
         TrackerListener.class,
         TrapListener.class,
-        WarpPowderListener.class
+        WarpPowderListener.class,
+        BridgeEggListener.class
 })
 @UtilityClass
 public class SpecialRegister {
