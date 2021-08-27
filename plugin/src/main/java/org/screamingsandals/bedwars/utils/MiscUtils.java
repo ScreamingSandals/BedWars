@@ -273,4 +273,12 @@ public class MiscUtils {
             }
         }
     }
+
+    public static Location findEmptyLocation(Location respawnLocation) {
+        if (respawnLocation.getY() > (respawnLocation.getWorld().getMaxHeight() - 1) || (!respawnLocation.getBlock().getType().isSolid() && !respawnLocation.clone().add(0,1,0).getBlock().isSolid())) {
+            return respawnLocation;
+        } else {
+            return findEmptyLocation(respawnLocation.clone().add(0, 2, 0));
+        }
+    }
 }

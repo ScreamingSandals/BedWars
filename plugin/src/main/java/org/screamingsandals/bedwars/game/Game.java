@@ -1561,7 +1561,10 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
         if (gamePlayer.getGame() == this && currentTeam != null) {
             gamePlayer.isSpectator = false;
-            gamePlayer.teleport(currentTeam.getTeamSpawn(), () -> {
+            if (player.getSpectatorTarget() != null) {
+                player.setSpectatorTarget(null);
+            }
+            gamePlayer.teleport(MiscUtils.findEmptyLocation(currentTeam.getTeamSpawn()), () -> {
                 player.setAllowFlight(false);
                 player.setFlying(false);
                 player.setGameMode(GameMode.SURVIVAL);
