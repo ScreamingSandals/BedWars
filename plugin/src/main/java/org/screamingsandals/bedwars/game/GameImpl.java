@@ -225,7 +225,8 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
 
 
             if (MainConfig.getInstance().node("prevent-spawning-mobs").getBoolean(true)) {
-                for (EntityLiving e : game.world.getEntitiesByClass(EntityLiving.class)) {
+                // TODO: fix this, it should be looping over monsters in world, but there isn't a method for that atm
+                /*for (EntityLiving e : game.world.getEntitiesByClass(EntityLiving.class)) {
                     if (ArenaUtils.isInArea(e.getLocation(), game.pos1, game.pos2)) {
                         final Optional<ChunkHolder> chunk = e.getLocation().getWorld().getChunkAt(e.getLocation());
                         if (chunk.isPresent() && !chunk.get().isLoaded()) {
@@ -233,7 +234,7 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
                         }
                         e.remove();
                     }
-                }
+                }*/
             }
 
             game.specSpawn = MiscUtils.readLocationFromString(game.world, Objects.requireNonNull(configMap.node("specSpawn").getString()));
