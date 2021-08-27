@@ -166,10 +166,10 @@ public class GolemListener {
                                     if (golem.getTeam() == game.getPlayerTeam(gPlayer)) {
                                     	event.setCancelled(true);
                                         // Try to find enemy
-                                        var playerTarget = MiscUtils.findTarget(game, player.as(Player.class), golem.getFollowRange());
+                                        var playerTarget = MiscUtils.findTarget(game, player, golem.getFollowRange());
                                         if (playerTarget != null) {
                                         	// Oh. We found enemy!
-                                            ironGolem.as(IronGolem.class).setTarget(playerTarget);
+                                            ironGolem.as(IronGolem.class).setTarget(playerTarget.as(Player.class));
                                             return;
                                         }
                                     }

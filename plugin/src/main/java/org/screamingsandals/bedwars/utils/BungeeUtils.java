@@ -3,41 +3,45 @@ package org.screamingsandals.bedwars.utils;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import lombok.experimental.UtilityClass;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.lib.debug.Debug;
+import org.screamingsandals.lib.player.PlayerWrapper;
+import org.screamingsandals.lib.tasker.Tasker;
+import org.screamingsandals.lib.tasker.TaskerTime;
 
 @UtilityClass
 public class BungeeUtils {
+    public void movePlayerToBungeeServer(PlayerWrapper playerWrapper, boolean serverRestart) {
+        movePlayerToBungeeServer(playerWrapper.as(Player.class), serverRestart);
+    }
+
     public void movePlayerToBungeeServer(Player player, boolean serverRestart) {
         if (serverRestart) {
             internalMove(player, true);
             return;
         }
 
-        new BukkitRunnable() {
-            public void run() {
-               internalMove(player, false);
-            }
-        }.runTask(BedWarsPlugin.getInstance().getPluginDescription().as(JavaPlugin.class));
+        Tasker.build(() -> internalMove(player, false)).start();
+    }
+
+    public void sendPlayerBungeeMessage(PlayerWrapper playerWrapper, String s) {
+        sendPlayerBungeeMessage(playerWrapper.as(Player.class), s);
     }
 
     public void sendPlayerBungeeMessage(Player player, String string) {
-        new BukkitRunnable() {
-            public void run() {
-                ByteArrayDataOutput out = ByteStreams.newDataOutput();
+        Tasker.build(() -> {
+            ByteArrayDataOutput out = ByteStreams.newDataOutput();
 
-                out.writeUTF("Message");
-                out.writeUTF(player.getName());
-                out.writeUTF(string);
+            out.writeUTF("Message");
+            out.writeUTF(player.getName());
+            out.writeUTF(string);
 
-                Bukkit.getServer().sendPluginMessage(BedWarsPlugin.getInstance().getPluginDescription().as(JavaPlugin.class), "BungeeCord", out.toByteArray());
-            }
-        }.runTaskLater(BedWarsPlugin.getInstance().getPluginDescription().as(JavaPlugin.class), 30L);
+            Bukkit.getServer().sendPluginMessage(BedWarsPlugin.getInstance().getPluginDescription().as(JavaPlugin.class), "BungeeCord", out.toByteArray());
+        }).delay(30, TaskerTime.TICKS).start();
     }
 
     private void internalMove(Player player, boolean restart) {

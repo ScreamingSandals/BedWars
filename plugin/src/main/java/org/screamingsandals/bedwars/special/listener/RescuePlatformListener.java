@@ -1,5 +1,6 @@
 package org.screamingsandals.bedwars.special.listener;
 
+import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.bedwars.api.APIUtils;
 import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.api.game.GameStatus;
@@ -9,14 +10,13 @@ import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.bedwars.special.RescuePlatformImpl;
 import org.screamingsandals.bedwars.utils.DelayFactory;
 import org.screamingsandals.bedwars.utils.MiscUtils;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.lib.entity.EntityHuman;
 import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.event.entity.SEntityDamageEvent;
 import org.screamingsandals.lib.event.player.SPlayerBlockBreakEvent;
 import org.screamingsandals.lib.event.player.SPlayerInteractEvent;
 import org.screamingsandals.lib.lang.Message;
+import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.utils.BlockFace;
 import org.screamingsandals.lib.utils.annotations.Service;
 
@@ -102,7 +102,7 @@ public class RescuePlatformListener {
             return;
         }
 
-        var rescuePlatform = (RescuePlatformImpl) game.getFirstActivedSpecialItemOfPlayer(player.as(Player.class), RescuePlatformImpl.class);
+        var rescuePlatform = (RescuePlatformImpl) game.getFirstActivedSpecialItemOfPlayer(player, RescuePlatformImpl.class);
         if (rescuePlatform != null && event.getDamageCause().is("FALL")) {
             var block = player.getLocation().add(BlockFace.DOWN.getDirection()).getBlock();
             if (block != null) {
@@ -127,7 +127,7 @@ public class RescuePlatformListener {
         }
 
         var block = event.getBlock();
-        for (var checkedPlatform : getCreatedPlatforms(game, player.as(Player.class))) {
+        for (var checkedPlatform : getCreatedPlatforms(game, player)) {
             if (checkedPlatform != null) {
                 for (var platformBlock : checkedPlatform.getPlatformBlocks()) {
                     if (platformBlock.equals(block) && !checkedPlatform.isBreakable()) {
@@ -138,7 +138,7 @@ public class RescuePlatformListener {
         }
     }
 
-    private ArrayList<RescuePlatformImpl> getCreatedPlatforms(Game game, Player player) {
+    private ArrayList<RescuePlatformImpl> getCreatedPlatforms(Game game, PlayerWrapper player) {
         var createdPlatforms = new ArrayList<RescuePlatformImpl>();
         for (var specialItem : game.getActivedSpecialItemsOfPlayer(player)) {
             if (specialItem instanceof RescuePlatformImpl) {

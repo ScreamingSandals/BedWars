@@ -1,13 +1,13 @@
 package org.screamingsandals.bedwars.game;
 
 import org.screamingsandals.bedwars.api.game.Game;
-import org.bukkit.Location;
+import org.screamingsandals.lib.world.LocationHolder;
 
-public class Team implements Cloneable, org.screamingsandals.bedwars.api.Team {
+public class Team implements Cloneable, org.screamingsandals.bedwars.api.Team<LocationHolder> {
     public TeamColor color;
     public String name;
-    public Location bed;
-    public Location spawn;
+    public LocationHolder bed;
+    public LocationHolder spawn;
     public int maxPlayers;
     public Game game;
 
@@ -33,12 +33,12 @@ public class Team implements Cloneable, org.screamingsandals.bedwars.api.Team {
     }
 
     @Override
-    public Location getTeamSpawn() {
+    public LocationHolder getTeamSpawn() {
         return spawn;
     }
 
     @Override
-    public Location getTargetBlock() {
+    public LocationHolder getTargetBlock() {
         return bed;
     }
 

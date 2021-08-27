@@ -17,6 +17,7 @@ import org.bukkit.plugin.Plugin;
  *
  * THIS CLASS WILL BE REPLACED WITH SCREAMING LIB EQUIVALENT
  */
+// TODO: ScreamingLib equivalent
 @Deprecated
 public class APIUtils {
 	public static final String BEDWARS_NAMESPACED_KEY = "screaming-bedwars-hidden-api";

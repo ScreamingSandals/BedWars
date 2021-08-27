@@ -2,7 +2,6 @@ package org.screamingsandals.bedwars.commands;
 
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
-import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.game.GameManagerImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
@@ -47,9 +46,9 @@ public class AlljoinCommand extends BaseCommand {
                                 }
 
                                 if (PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
-                                    PlayerManagerImpl.getInstance().getPlayerOrCreate(player).getGame().leaveFromGame(player.as(Player.class)); // TODO
+                                    PlayerManagerImpl.getInstance().getPlayerOrCreate(player).getGame().leaveFromGame(player);
                                 }
-                                game.get().joinToGame(player.as(Player.class)); // TODO
+                                game.get().joinToGame(player);
                             });
                         })
         );

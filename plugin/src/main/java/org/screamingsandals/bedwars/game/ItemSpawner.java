@@ -1,31 +1,29 @@
 package org.screamingsandals.bedwars.game;
 
 import lombok.Getter;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.api.Team;
+import org.screamingsandals.bedwars.config.MainConfig;
+import org.screamingsandals.bedwars.lang.LangKeys;
+import org.screamingsandals.lib.entity.EntityBasic;
+import org.screamingsandals.lib.entity.EntityItem;
+import org.screamingsandals.lib.hologram.Hologram;
+import org.screamingsandals.lib.hologram.HologramManager;
+import org.screamingsandals.lib.lang.Message;
+import org.screamingsandals.lib.material.builder.ItemFactory;
+import org.screamingsandals.lib.player.PlayerWrapper;
+import org.screamingsandals.lib.tasker.TaskerTime;
+import org.screamingsandals.lib.utils.AdventureHelper;
+import org.screamingsandals.lib.utils.Pair;
+import org.screamingsandals.lib.utils.visual.TextEntry;
+import org.screamingsandals.lib.world.LocationHolder;
+import org.screamingsandals.lib.world.LocationMapper;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.bukkit.Location;
-import org.bukkit.entity.Item;
-import org.screamingsandals.bedwars.config.MainConfig;
-import org.screamingsandals.bedwars.lang.LangKeys;
-import org.screamingsandals.lib.hologram.Hologram;
-import org.screamingsandals.lib.hologram.HologramManager;
-import org.screamingsandals.lib.lang.Message;
-import org.screamingsandals.lib.material.builder.ItemFactory;
-import org.screamingsandals.lib.player.PlayerMapper;
-import org.screamingsandals.lib.tasker.TaskerTime;
-import org.screamingsandals.lib.utils.AdventureHelper;
-import org.screamingsandals.lib.utils.Pair;
-import org.screamingsandals.lib.utils.visual.TextEntry;
-import org.screamingsandals.lib.world.LocationMapper;
-
-public class ItemSpawner implements org.screamingsandals.bedwars.api.game.ItemSpawner {
-    public Location loc;
+public class ItemSpawner implements org.screamingsandals.bedwars.api.game.ItemSpawner<LocationHolder> {
+    public LocationHolder loc;
     public ItemSpawnerType type;
     public String customName;
     public double startLevel;
@@ -34,14 +32,14 @@ public class ItemSpawner implements org.screamingsandals.bedwars.api.game.ItemSp
     public boolean hologramEnabled;
     public boolean floatingEnabled;
     public Team team;
-    public List<Item> spawnedItems;
+    public List<EntityItem> spawnedItems;
     public boolean spawnerIsFullHologram = false;
     public boolean rerenderHologram = false;
     public double currentLevelOnHologram = -1;
     public org.screamingsandals.lib.hologram.Hologram.RotationMode rotationMode;
     @Getter private org.screamingsandals.lib.hologram.Hologram hologram;
 
-    public ItemSpawner(Location loc, ItemSpawnerType type, String customName,
+    public ItemSpawner(LocationHolder loc, ItemSpawnerType type, String customName,
                        boolean hologramEnabled, double startLevel, Team team,
                        int maxSpawnedResources, boolean floatingEnabled, org.screamingsandals.lib.hologram.Hologram.RotationMode rotationMode) {
         this.loc = loc;
@@ -62,7 +60,7 @@ public class ItemSpawner implements org.screamingsandals.bedwars.api.game.ItemSp
     }
 
     @Override
-    public Location getLocation() {
+    public LocationHolder getLocation() {
         return loc;
     }
 
@@ -134,7 +132,7 @@ public class ItemSpawner implements org.screamingsandals.bedwars.api.game.ItemSp
         }
 
         /* Update spawned items */
-        spawnedItems.removeIf(Entity::isDead);
+        spawnedItems.removeIf(EntityBasic::isDead);
 
         int spawned = spawnedItems.size();
 
@@ -165,13 +163,13 @@ public class ItemSpawner implements org.screamingsandals.bedwars.api.game.ItemSp
         return maxSpawnedResources - spawned;
     }
 
-    public void add(Item item) {
+    public void add(EntityItem item) {
         if (maxSpawnedResources > 0 && !spawnedItems.contains(item)) {
             spawnedItems.add(item);
         }
     }
 
-    public void remove(Item item) {
+    public void remove(EntityItem item) {
         if (maxSpawnedResources > 0 && spawnedItems.contains(item)) {
             spawnedItems.remove(item);
             if (spawnerIsFullHologram && maxSpawnedResources > spawnedItems.size()) {
@@ -181,14 +179,14 @@ public class ItemSpawner implements org.screamingsandals.bedwars.api.game.ItemSp
         }
     }
 
-    public void spawnHologram(List<Player> viewers, boolean countdownHologram) {
+    public void spawnHologram(List<PlayerWrapper> viewers, boolean countdownHologram) {
         try {
-            Location loc;
+            LocationHolder loc;
             if (floatingEnabled &&
                     MainConfig.getInstance().node("floating-generator", "enabled").getBoolean(true)) {
-                loc = this.loc.clone().add(0, MainConfig.getInstance().node("floating-generator", "holo-height").getDouble(0.5), 0);
+                loc = this.loc.add(0, MainConfig.getInstance().node("floating-generator", "holo-height").getDouble(0.5), 0);
             } else {
-                loc = this.loc.clone().add(0,
+                loc = this.loc.add(0,
                         MainConfig.getInstance().node("spawner-holo-height").getDouble(0.25), 0);
             }
             hologram = HologramManager
@@ -223,9 +221,7 @@ public class ItemSpawner implements org.screamingsandals.bedwars.api.game.ItemSp
 
             hologram.show();
 
-            viewers.stream()
-                    .map(PlayerMapper::wrapPlayer)
-                    .forEach(hologram::addViewer);
+            viewers.forEach(hologram::addViewer);
 
         } catch (Throwable t) {
             t.printStackTrace();

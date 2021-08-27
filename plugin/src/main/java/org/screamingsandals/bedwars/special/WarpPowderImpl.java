@@ -10,7 +10,6 @@ import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.utils.SpawnEffects;
-import org.screamingsandals.bedwars.lib.nms.entity.PlayerUtils;
 import org.screamingsandals.lib.entity.EntityItem;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.material.Item;
@@ -84,7 +83,7 @@ public class WarpPowderImpl extends SpecialItem implements WarpPowder<GameImpl, 
         teleportingTask = Tasker.build(() -> {
                     if (teleportingTime == 0) {
                         cancelTeleport(true, false);
-                        PlayerUtils.teleportPlayer(player.as(Player.class), team.getTeamSpawn());
+                        player.teleport(team.getTeamSpawn());
                     } else {
                         SpawnEffects.spawnEffect(game, player, "game-effects.warppowdertick");
                         teleportingTime--;

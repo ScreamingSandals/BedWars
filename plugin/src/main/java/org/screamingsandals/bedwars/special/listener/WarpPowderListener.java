@@ -97,7 +97,7 @@ public class WarpPowderListener {
             return;
         }
 
-        var warpPowder = (WarpPowderImpl) game.getFirstActivedSpecialItemOfPlayer(player.as(Player.class), WarpPowderImpl.class);
+        var warpPowder = (WarpPowderImpl) game.getFirstActivedSpecialItemOfPlayer(player, WarpPowderImpl.class);
         if (warpPowder != null) {
             warpPowder.cancelTeleport(false, true);
         }
@@ -122,7 +122,7 @@ public class WarpPowderListener {
             return;
         }
 
-        var warpPowder = (WarpPowderImpl) game.getFirstActivedSpecialItemOfPlayer(player.as(Player.class), WarpPowderImpl.class);
+        var warpPowder = (WarpPowderImpl) game.getFirstActivedSpecialItemOfPlayer(player, WarpPowderImpl.class);
         if (warpPowder != null) {
             warpPowder.cancelTeleport(true, true);
 

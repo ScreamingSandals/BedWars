@@ -114,7 +114,7 @@ public class BedWarsPlugin extends PluginContainer implements BedwarsAPI {
     private boolean isVault;
     private int versionNumber = 0;
     private Economy econ = null;
-    private HashMap<String, ItemSpawnerType> spawnerTypes = new HashMap<>();
+    private final HashMap<String, ItemSpawnerType> spawnerTypes = new HashMap<>();
     private ColorChanger colorChanger;
     public static List<String> autoColoredMaterials = new ArrayList<>();
 
@@ -193,7 +193,7 @@ public class BedWarsPlugin extends PluginContainer implements BedwarsAPI {
     public static boolean isFarmBlock(Material mat) {
         if (MainConfig.getInstance().node("ignored-blocks", "enabled").getBoolean()) {
             try {
-                return MainConfig.getInstance().node("ignored-blocks", "blocks").getList(String.class).contains(mat.name());
+                return Objects.requireNonNull(MainConfig.getInstance().node("ignored-blocks", "blocks").getList(String.class)).contains(mat.name());
             } catch (SerializationException | NullPointerException e) {
                 e.printStackTrace();
             }
@@ -204,7 +204,7 @@ public class BedWarsPlugin extends PluginContainer implements BedwarsAPI {
     public static boolean isFarmBlock(MaterialHolder mat) {
         if (MainConfig.getInstance().node("ignored-blocks", "enabled").getBoolean()) {
             try {
-                return mat.is(MainConfig.getInstance().node("ignored-blocks", "blocks").getList(String.class).toArray());
+                return mat.is(Objects.requireNonNull(MainConfig.getInstance().node("ignored-blocks", "blocks").getList(String.class)).toArray());
             } catch (SerializationException | NullPointerException e) {
                 e.printStackTrace();
             }
@@ -212,12 +212,12 @@ public class BedWarsPlugin extends PluginContainer implements BedwarsAPI {
         return false;
     }
 
-    public static boolean isBreakableBlock(Material mat) {
+    public static boolean isBreakableBlock(MaterialHolder mat) {
         if (MainConfig.getInstance().node("breakable", "enabled").getBoolean()) {
             try {
                 var list = MainConfig.getInstance().node("breakable", "blocks").getList(String.class);
                 boolean asblacklist = MainConfig.getInstance().node("breakable", "blacklist-mode").getBoolean();
-                return list.contains(mat.name()) != asblacklist;
+                return Objects.requireNonNull(list).contains(mat.getPlatformName()) != asblacklist;
             } catch (SerializationException | NullPointerException e) {
                 e.printStackTrace();
             }
@@ -228,7 +228,7 @@ public class BedWarsPlugin extends PluginContainer implements BedwarsAPI {
     public static boolean isCommandLeaveShortcut(String command) {
         if (MainConfig.getInstance().node("leaveshortcuts", "enabled").getBoolean()) {
             try {
-                var commands = MainConfig.getInstance().node("leaveshortcuts", "list").getList(String.class);
+                var commands = Objects.requireNonNull(MainConfig.getInstance().node("leaveshortcuts", "list").getList(String.class));
                 for (var comm : commands) {
                     if (!comm.startsWith("/")) {
                         comm = "/" + comm;
@@ -249,7 +249,7 @@ public class BedWarsPlugin extends PluginContainer implements BedwarsAPI {
             return true;
         }
         try {
-            var commands = MainConfig.getInstance().node("commands", "list").getList(String.class);
+            var commands = Objects.requireNonNull(MainConfig.getInstance().node("commands", "list").getList(String.class));
             for (var comm : commands) {
                 if (!comm.startsWith("/")) {
                     comm = "/" + comm;

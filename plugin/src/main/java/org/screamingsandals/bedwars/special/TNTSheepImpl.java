@@ -49,7 +49,7 @@ public class TNTSheepImpl extends SpecialItem implements TNTSheep<GameImpl, BedW
     public void spawn() {
         var sheep = EntityMapper.<EntityLiving>spawn("sheep", initialLocation).orElseThrow();
         var color = TeamColor.fromApiColor(team.getColor());
-        var target = MiscUtils.findTarget(game, player.as(Player.class), maxTargetDistance);
+        var target = MiscUtils.findTarget(game, player, maxTargetDistance);
 
         sheep.as(Sheep.class).setColor(DyeColor.getByWoolData((byte) color.woolData));
 
@@ -64,7 +64,7 @@ public class TNTSheepImpl extends SpecialItem implements TNTSheep<GameImpl, BedW
 
         entity = sheep;
         EntityUtils.makeMobAttackTarget(sheep, speed, followRange, 0)
-            .getTargetSelector().attackTarget(target);
+            .getTargetSelector().attackTarget(target.as(Player.class));
 
         tnt = EntityMapper.spawn("tnt", initialLocation).orElseThrow();
         tnt.as(TNTPrimed.class).setFuseTicks(explosionTime);

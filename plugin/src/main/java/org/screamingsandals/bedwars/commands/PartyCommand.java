@@ -3,10 +3,8 @@ package org.screamingsandals.bedwars.commands;
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
 import com.alessiodp.parties.api.Parties;
-import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.lang.LangKeys;
-import org.screamingsandals.bedwars.lib.nms.entity.PlayerUtils;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.lib.lang.Message;
@@ -44,11 +42,10 @@ public class PartyCommand extends BaseCommand {
                 }
 
                 var playerManager = PlayerManagerImpl.getInstance();
-                var player = sender.as(Player.class);
 
                 if (action.get().equalsIgnoreCase("warp")) {
                     final var partyApi = Parties.getApi();
-                    final var partyPlayer = partyApi.getPartyPlayer(player.getUniqueId());
+                    final var partyPlayer = partyApi.getPartyPlayer(sender.getUuid());
                     final var game = playerManager.getGameOfPlayer(sender);
 
                     if (partyPlayer.getPartyId() == null) {
@@ -63,12 +60,12 @@ public class PartyCommand extends BaseCommand {
 
                         if (leaderUUID != null) {
 
-                            if (!leaderUUID.equals(player.getUniqueId())) {
+                            if (!leaderUUID.equals(sender.getUuid())) {
                                 sender.sendMessage(Message.of(LangKeys.PARTY_COMMAND_NOT_PARTY_LEADER).defaultPrefix());
                                 return;
                             }
 
-                            final var players = MiscUtils.getOnlinePlayers(party.getMembers());
+                            final var players = MiscUtils.getOnlinePlayersW(party.getMembers());
 
                             if (players.size() == 1) {
                                 sender.sendMessage(Message.of(LangKeys.PARTY_COMMAND_IS_EMPTY).defaultPrefix());
@@ -77,7 +74,7 @@ public class PartyCommand extends BaseCommand {
 
                             players.forEach(partyMember -> {
                                 if (partyMember != null) {
-                                    if (partyMember.getUniqueId().equals(player.getUniqueId())) {
+                                    if (partyMember.getUuid().equals(sender.getUuid())) {
                                         return;
                                     }
 
@@ -87,7 +84,7 @@ public class PartyCommand extends BaseCommand {
                                     if (game.isEmpty()) {
                                         PlayerMapper.wrapPlayer(partyMember).sendMessage(Message.of(LangKeys.PARTY_WARPED).defaultPrefix());
                                         gameOfPlayer.ifPresent(value -> value.leaveFromGame(partyMember));
-                                        PlayerUtils.teleportPlayer(partyMember, player.getLocation());
+                                        partyMember.teleport(sender.getLocation());
                                         return;
                                     }
 

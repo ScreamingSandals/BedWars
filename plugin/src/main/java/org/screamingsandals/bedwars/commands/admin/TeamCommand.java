@@ -5,9 +5,8 @@ import cloud.commandframework.CommandManager;
 import cloud.commandframework.arguments.standard.EnumArgument;
 import cloud.commandframework.arguments.standard.IntegerArgument;
 import cloud.commandframework.arguments.standard.StringArgument;
-import org.bukkit.Location;
+import org.bukkit.block.Block;
 import org.bukkit.block.data.type.Bed;
-import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.commands.AdminCommand;
 import org.screamingsandals.bedwars.game.Team;
@@ -16,13 +15,15 @@ import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.region.FlatteningBedUtils;
 import org.screamingsandals.bedwars.region.LegacyBedUtils;
 import org.screamingsandals.bedwars.utils.ArenaUtils;
+import org.screamingsandals.lib.entity.EntityHuman;
 import org.screamingsandals.lib.lang.Message;
+import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
 import org.screamingsandals.lib.utils.AdventureHelper;
 import org.screamingsandals.lib.utils.annotations.Service;
-import org.screamingsandals.lib.world.BlockMapper;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -175,7 +176,7 @@ public class TeamCommand extends BaseAdminSubCommand {
                         .handler(commandContext -> editMode(commandContext, (sender, game) -> {
                             String name = commandContext.get("teamName");
 
-                            var loc = sender.as(Player.class).getLocation();
+                            var loc = sender.as(PlayerWrapper.class).getLocation();
 
                             var team = game.getTeamFromName(name);
                             if (team == null) {
@@ -217,7 +218,7 @@ public class TeamCommand extends BaseAdminSubCommand {
                         .handler(commandContext -> editMode(commandContext, (sender, game) -> {
                             String name = commandContext.get("teamName");
 
-                            var block = sender.as(Player.class).getTargetBlock(null, 5);
+                            var block = sender.as(EntityHuman.class).getTargetBlock(null, 5);
                             var loc = block.getLocation();
 
                             var team = game.getTeamFromName(name);
@@ -241,10 +242,10 @@ public class TeamCommand extends BaseAdminSubCommand {
 
                             if (BedWarsPlugin.isLegacy()) {
                                 // Legacy
-                                if (block.getState().getData() instanceof org.bukkit.material.Bed) {
-                                    org.bukkit.material.Bed bed = (org.bukkit.material.Bed) block.getState().getData();
+                                if (block.as(Block.class).getState().getData() instanceof org.bukkit.material.Bed) {
+                                    org.bukkit.material.Bed bed = (org.bukkit.material.Bed) block.as(Block.class).getState().getData();
                                     if (!bed.isHeadOfBed()) {
-                                        team.bed = LegacyBedUtils.getBedNeighbor(BlockMapper.wrapBlock(block)).getLocation().as(Location.class);
+                                        team.bed = LegacyBedUtils.getBedNeighbor(block).getLocation();
                                     } else {
                                         team.bed = loc;
                                     }
@@ -254,10 +255,10 @@ public class TeamCommand extends BaseAdminSubCommand {
 
                             } else {
                                 // 1.13+
-                                if (block.getBlockData() instanceof Bed) {
-                                    Bed bed = (Bed) block.getBlockData();
+                                if (block.as(Block.class).getBlockData() instanceof Bed) {
+                                    Bed bed = (Bed) block.as(Block.class).getBlockData();
                                     if (bed.getPart() != Bed.Part.HEAD) {
-                                        team.bed = FlatteningBedUtils.getBedNeighbor(BlockMapper.wrapBlock(block)).getLocation().as(Location.class);
+                                        team.bed = Objects.requireNonNull(FlatteningBedUtils.getBedNeighbor(block)).getLocation();
                                     } else {
                                         team.bed = loc;
                                     }
@@ -273,7 +274,7 @@ public class TeamCommand extends BaseAdminSubCommand {
                                             .placeholder("x", team.bed.getBlockX())
                                             .placeholder("y", team.bed.getBlockY())
                                             .placeholder("z", team.bed.getBlockZ())
-                                            .placeholder("material", team.bed.getBlock().getType().name())
+                                            .placeholder("material", team.bed.getBlock().getType().getPlatformName())
                             );
                         }))
         );

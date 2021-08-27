@@ -12,19 +12,19 @@ import org.screamingsandals.lib.material.Item;
 
 public class Player116ListenerUtils {
     public static boolean processAnchorDeath(GameImpl game, CurrentTeam team) {
-        RespawnAnchor anchor = (RespawnAnchor) team.teamInfo.bed.getBlock().getBlockData();
+        RespawnAnchor anchor = (RespawnAnchor) team.teamInfo.bed.getBlock().as(Block.class).getBlockData();
         int charges = anchor.getCharges();
         boolean isBed = true;
         if (charges <= 0) {
             isBed = false;
         } else {
             anchor.setCharges(charges - 1);
-            team.teamInfo.bed.getBlock().setBlockData(anchor);
+            team.teamInfo.bed.getBlock().as(Block.class).setBlockData(anchor);
             if (anchor.getCharges() == 0) {
-                Sounds.playSound(team.teamInfo.bed, MainConfig.getInstance().node("target-block", "respawn-anchor", "sound", "deplete").getString(), Sounds.BLOCK_RESPAWN_ANCHOR_DEPLETE, 1, 1);
+                Sounds.playSound(team.teamInfo.bed.as(Location.class), MainConfig.getInstance().node("target-block", "respawn-anchor", "sound", "deplete").getString(), Sounds.BLOCK_RESPAWN_ANCHOR_DEPLETE, 1, 1);
                 game.updateScoreboard();
             } else {
-                Sounds.playSound(team.teamInfo.bed, MainConfig.getInstance().node("target-block", "respawn-anchor", "sound", "used").getString(), Sounds.BLOCK_GLASS_BREAK, 1, 1);
+                Sounds.playSound(team.teamInfo.bed.as(Location.class), MainConfig.getInstance().node("target-block", "respawn-anchor", "sound", "used").getString(), Sounds.BLOCK_GLASS_BREAK, 1, 1);
             }
         }
         return isBed;

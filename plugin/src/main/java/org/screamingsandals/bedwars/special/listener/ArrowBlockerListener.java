@@ -8,7 +8,6 @@ import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.bedwars.special.ArrowBlockerImpl;
 import org.screamingsandals.bedwars.utils.DelayFactory;
 import org.screamingsandals.bedwars.utils.MiscUtils;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.lib.entity.EntityHuman;
 import org.screamingsandals.lib.event.OnEvent;
@@ -95,7 +94,7 @@ public class ArrowBlockerListener {
             return;
         }
 
-        var arrowBlocker = (ArrowBlockerImpl) game.getFirstActivedSpecialItemOfPlayer(player.as(Player.class), ArrowBlockerImpl.class);
+        var arrowBlocker = (ArrowBlockerImpl) game.getFirstActivedSpecialItemOfPlayer(player, ArrowBlockerImpl.class);
         if (arrowBlocker != null && event.getDamageCause().is("PROJECTILE")) {
             event.setCancelled(true);
         }

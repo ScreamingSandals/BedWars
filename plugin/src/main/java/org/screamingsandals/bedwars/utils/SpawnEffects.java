@@ -82,10 +82,10 @@ public class SpawnEffects {
                     }
 
                     var finalData = dataO;
-                    game.getConnectedPlayers().forEach(p -> p.spawnParticle(particle, player.getLocation(), count, offsetX, offsetY, offsetZ, extra, finalData));
+                    game.getConnectedPlayers().forEach(p -> p.as(Player.class).spawnParticle(particle, player.getLocation(), count, offsetX, offsetY, offsetZ, extra, finalData));
                 } else {
                     for (var player1 : game.getConnectedPlayers()) {
-                        player1.spawnParticle(Particle.valueOf(value.toUpperCase()), player.getLocation().getX(), player.getLocation().getY(), player.getLocation().getZ(),
+                        player1.as(Player.class).spawnParticle(Particle.valueOf(value.toUpperCase()), player.getLocation().getX(), player.getLocation().getY(), player.getLocation().getZ(),
                                 count, offsetX, offsetY, offsetZ, extra);
                     }
                 }

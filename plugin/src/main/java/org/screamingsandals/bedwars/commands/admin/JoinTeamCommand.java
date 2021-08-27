@@ -5,7 +5,6 @@ import cloud.commandframework.CommandManager;
 import cloud.commandframework.arguments.standard.StringArgument;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.commands.AdminCommand;
 import org.screamingsandals.bedwars.game.Team;
@@ -13,6 +12,8 @@ import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.utils.TeamJoinMetaDataValue;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
+import org.screamingsandals.lib.tasker.Tasker;
+import org.screamingsandals.lib.tasker.TaskerTime;
 import org.screamingsandals.lib.utils.annotations.Service;
 
 import java.util.List;
@@ -53,15 +54,13 @@ public class JoinTeamCommand extends BaseAdminSubCommand {
                                     }
                                     player.setMetadata(BEDWARS_TEAM_JOIN_METADATA, new TeamJoinMetaDataValue(t));
 
-                                    new BukkitRunnable() {
-                                        public void run() {
-                                            if (!player.hasMetadata(BEDWARS_TEAM_JOIN_METADATA)) {
-                                                return;
-                                            }
-
-                                            player.removeMetadata(BEDWARS_TEAM_JOIN_METADATA, BedWarsPlugin.getInstance().getPluginDescription().as(JavaPlugin.class));
+                                    Tasker.build(() -> {
+                                        if (!player.hasMetadata(BEDWARS_TEAM_JOIN_METADATA)) {
+                                            return;
                                         }
-                                    }.runTaskLater(BedWarsPlugin.getInstance().getPluginDescription().as(JavaPlugin.class), 200L);
+
+                                        player.removeMetadata(BEDWARS_TEAM_JOIN_METADATA, BedWarsPlugin.getInstance().getPluginDescription().as(JavaPlugin.class));
+                                    }).delay(200, TaskerTime.TICKS).start();
                                     sender.sendMessage(Message.of(LangKeys.ADMIN_TEAM_JOIN_ENTITY_CLICK_RIGHT_ON_ENTITY).defaultPrefix().placeholder("team", t.name));
                                     return;
                                 }

@@ -39,7 +39,7 @@ public class PermaItemListener {
                 }
 
                 APIUtils.hashIntoInvisibleString(stack, PERMA_ITEM_PREFIX);
-                gamePlayer.addPermaItem(stack);
+                gamePlayer.addPermaItem(event.getStack());
                 event.setStack(stack);
             }
         }

@@ -5,7 +5,7 @@ import org.screamingsandals.bedwars.api.game.Game;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface PlayerManager<P extends BWPlayer, G extends Game<P, ?>> {
+public interface PlayerManager<P extends BWPlayer, G extends Game<P, ?, ?, ?, ?, ?>> {
     Optional<P> getPlayer(UUID uuid);
 
     boolean isPlayerInGame(UUID uuid);

@@ -2,14 +2,14 @@ package org.screamingsandals.bedwars.api.game;
 
 import org.screamingsandals.bedwars.api.Team;
 import org.screamingsandals.bedwars.api.upgrades.Upgrade;
-import org.bukkit.Location;
+import org.screamingsandals.lib.utils.Wrapper;
 
 import java.util.Optional;
 
 /**
  * @author Bedwars Team
  */
-public interface ItemSpawner extends Upgrade {
+public interface ItemSpawner<E extends Wrapper> extends Upgrade {
     /**
      * @return
      */
@@ -18,7 +18,7 @@ public interface ItemSpawner extends Upgrade {
     /**
      * @return
      */
-    Location getLocation();
+    E getLocation();
 
     /**
      * @return

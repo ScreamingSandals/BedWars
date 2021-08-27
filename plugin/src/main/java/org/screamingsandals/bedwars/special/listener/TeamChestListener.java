@@ -45,7 +45,7 @@ public class TeamChestListener {
         String unhidden = APIUtils.unhashFromInvisibleStringStartsWith(event.getItemInHand().as(ItemStack.class), TEAM_CHEST_PREFIX);
 
         if (unhidden != null || MainConfig.getInstance().node("specials", "teamchest", "turn-all-enderchests-to-teamchests").getBoolean()) {
-            team.addTeamChest(block.as(Block.class));
+            team.addTeamChestBlock(block);
             Message
                     .of(LangKeys.SPECIALS_TEAM_CHEST_PLACED)
                     .prefixOrDefault(event.getGame().getCustomPrefixComponent())
