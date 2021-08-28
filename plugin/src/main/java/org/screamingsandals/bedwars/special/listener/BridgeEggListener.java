@@ -47,7 +47,7 @@ public class BridgeEggListener {
         if (event.getAction() == SPlayerInteractEvent.Action.RIGHT_CLICK_AIR || event.getAction() == SPlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
             if (game.getStatus() == GameStatus.RUNNING && !gamePlayer.isSpectator && event.getItem() != null) {
                 var stack = event.getItem();
-                String unhidden = APIUtils.unhashFromInvisibleStringStartsWith(stack.as(ItemStack.class), BRIDGE_EGG_PREFIX);
+                String unhidden = APIUtils.unhashFromInvisibleStringStartsWith(stack.as(ItemStack.class), BRIDGE_EGG_PREFIX); // TODO: get rid of this transformation
                 if (unhidden != null) {
                     if (!game.isDelayActive(gamePlayer, BridgeEggImpl.class)) {
                         event.setCancelled(true);
@@ -56,8 +56,7 @@ public class BridgeEggListener {
                         var material = MiscUtils.getMaterialFromString(unhidden.split(":")[3], "GLASS");
                         var delay = Integer.parseInt(unhidden.split(":")[4]);
 
-                        //noinspection OptionalGetWithoutIsPresent
-                        var egg = EntityMapper.<EntityProjectile>spawn("egg", player.getLocation().add(0, 1, 0)).get();
+                        var egg = EntityMapper.<EntityProjectile>spawn("egg", player.getLocation().add(0, 1, 0)).orElseThrow();
                         egg.setVelocity(player.getLocation().getFacingDirection().multiply(2));
 
                         var bridgeEgg = new BridgeEggImpl(game, gamePlayer, game.getPlayerTeam(gamePlayer), egg, material, distance);
