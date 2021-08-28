@@ -60,10 +60,7 @@ import org.screamingsandals.bedwars.scoreboard.ScreamingScoreboard;
 import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.bedwars.tab.TabManager;
 import org.screamingsandals.bedwars.utils.*;
-import org.screamingsandals.lib.entity.EntityBasic;
-import org.screamingsandals.lib.entity.EntityItem;
-import org.screamingsandals.lib.entity.EntityLiving;
-import org.screamingsandals.lib.entity.EntityMapper;
+import org.screamingsandals.lib.entity.*;
 import org.screamingsandals.lib.entity.type.EntityTypeHolder;
 import org.screamingsandals.lib.event.EventManager;
 import org.screamingsandals.lib.event.player.SPlayerBlockBreakEvent;
@@ -225,16 +222,17 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
 
 
             if (MainConfig.getInstance().node("prevent-spawning-mobs").getBoolean(true)) {
-                // TODO: fix this, it should be looping over monsters in world, but there isn't a method for that atm
-                /*for (EntityLiving e : game.world.getEntitiesByClass(EntityLiving.class)) {
-                    if (ArenaUtils.isInArea(e.getLocation(), game.pos1, game.pos2)) {
-                        final Optional<ChunkHolder> chunk = e.getLocation().getWorld().getChunkAt(e.getLocation());
-                        if (chunk.isPresent() && !chunk.get().isLoaded()) {
-                            chunk.get().load();
+                for (EntityLiving e : game.world.getEntitiesByClass(EntityLiving.class)) {
+                    if (!e.getEntityType().is("minecraft:player") && !e.getEntityType().is("minecraft:armor_stand")) {
+                        if (ArenaUtils.isInArea(e.getLocation(), game.pos1, game.pos2)) {
+                            final Optional<ChunkHolder> chunk = e.getLocation().getWorld().getChunkAt(e.getLocation());
+                            if (chunk.isPresent() && !chunk.get().isLoaded()) {
+                                chunk.get().load();
+                            }
+                            e.remove();
                         }
-                        e.remove();
                     }
-                }*/
+                }
             }
 
             game.specSpawn = MiscUtils.readLocationFromString(game.world, Objects.requireNonNull(configMap.node("specSpawn").getString()));
@@ -242,7 +240,7 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
             var lobbySpawnWorld = LocationMapper.getWorld(Objects.requireNonNull(spawnWorld)).orElse(null);
             if (lobbySpawnWorld == null) {
                 if (Bukkit.getPluginManager().isPluginEnabled("Multiverse-Core")) {
-                    PlayerMapper.getConsoleSender().sendMessage(ChatColor.RED + "[B" + ChatColor.WHITE + "W] " + ChatColor.RED + "World " + spawnWorld
+                    PlayerMapper.getConsoleSender().sendMessage(NamedTextColor.RED + "[B" + ChatColor.WHITE + "W] " + ChatColor.RED + "World " + spawnWorld
                             + " was not found, but we found Multiverse-Core, so we will try to load this world.");
 
                     Core multiverse = (Core) Bukkit.getPluginManager().getPlugin("Multiverse-Core");
