@@ -248,7 +248,7 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
                     Core multiverse = (Core) Bukkit.getPluginManager().getPlugin("Multiverse-Core");
                     if (multiverse != null && multiverse.getMVWorldManager().loadWorld(spawnWorld)) {
                         PlayerMapper.getConsoleSender().sendMessage(ChatColor.RED + "[B" + ChatColor.WHITE + "W] " + ChatColor.GREEN + "World " + spawnWorld
-                                + " was succesfully loaded with Multiverse-Core, continue in arena loading.");
+                                + " was successfully loaded with Multiverse-Core, continue in arena loading.");
 
                         lobbySpawnWorld = LocationMapper.getWorld(Objects.requireNonNull(spawnWorld)).orElseThrow();
                     } else {

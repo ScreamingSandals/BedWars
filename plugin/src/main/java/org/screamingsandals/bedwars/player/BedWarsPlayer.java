@@ -159,20 +159,21 @@ public class BedWarsPlayer extends PlayerWrapper implements BWPlayer {
     // TODO: SLib equivalent
     public void resetLife() {
         var player = as(Player.class);
+        var entity = asEntity();
 
         player.setAllowFlight(false);
         player.setFlying(false);
-        player.setExp(0.0F);
-        player.setLevel(0);
+        this.setExp(0.0F);
+        this.setLevel(0);
         player.setSneaking(false);
         player.setSprinting(false);
         player.setFoodLevel(20);
         player.setSaturation(10);
         player.setExhaustion(0);
         player.setMaxHealth(20D);
-        player.setHealth(player.getMaxHealth());
-        player.setFireTicks(0);
-        player.setFallDistance(0);
+        entity.setHealth(20D);
+        entity.setFireTicks(0);
+        entity.setFallDistance(0);
         this.setGameMode(GameModeHolder.of("survival"));
 
         if (player.isInsideVehicle()) {

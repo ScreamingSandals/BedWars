@@ -24,7 +24,7 @@ public class ResourceSpawnEventImpl extends CancellableAbstractEvent implements 
 
     @Override
     public LocationHolder getLocation() {
-        return LocationMapper.wrapLocation(itemSpawner.getLocation()); // TODO
+        return itemSpawner.getLocation();
     }
 
     @Override
