@@ -10,7 +10,6 @@ import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.utils.BungeeUtils;
 import org.screamingsandals.bedwars.lib.nms.entity.PlayerUtils;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -95,10 +94,13 @@ public class GamePlayer {
     public void restoreInv() {
         isTeleportingFromGame_justForInventoryPlugins = true;
         if (!mainLobbyUsed) {
-            teleport(oldInventory.leftLocation);
+            teleport(oldInventory.leftLocation, this::restoreRest);
         }
         mainLobbyUsed = false;
+        restoreRest();
+    }
 
+    private void restoreRest() {
         player.getInventory().setContents(oldInventory.inventory);
         player.getInventory().setArmorContents(oldInventory.armor);
 
@@ -117,10 +119,7 @@ public class GamePlayer {
 
         player.setGameMode(oldInventory.mode);
 
-        if (oldInventory.mode == GameMode.CREATIVE)
-            player.setAllowFlight(true);
-        else
-            player.setAllowFlight(false);
+        player.setAllowFlight(oldInventory.mode == GameMode.CREATIVE);
 
         player.updateInventory();
         player.resetPlayerTime();
