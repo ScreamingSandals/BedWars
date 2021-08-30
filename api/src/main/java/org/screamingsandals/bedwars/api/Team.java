@@ -1,12 +1,12 @@
 package org.screamingsandals.bedwars.api;
 
 import org.screamingsandals.bedwars.api.game.Game;
-import org.bukkit.Location;
+import org.screamingsandals.lib.utils.Wrapper;
 
 /**
  * @author Bedwars Team
  */
-public interface Team {
+public interface Team<L extends Wrapper> {
     /**
      * @return
      */
@@ -25,12 +25,12 @@ public interface Team {
     /**
      * @return
      */
-    Location getTeamSpawn();
+    L getTeamSpawn();
 
     /**
      * @return
      */
-    Location getTargetBlock();
+    L getTargetBlock();
 
     /**
      * @return

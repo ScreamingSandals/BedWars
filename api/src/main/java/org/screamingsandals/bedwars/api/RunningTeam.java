@@ -1,16 +1,14 @@
 package org.screamingsandals.bedwars.api;
 
-import org.bukkit.Location;
-import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.screamingsandals.lib.utils.Wrapper;
 
 import java.util.List;
 
 /**
  * @author Bedwars Team
  */
-public interface RunningTeam extends Team {
+public interface RunningTeam<E extends Wrapper, L extends Wrapper, B extends Wrapper> extends Team<L> {
     /**
      * @return
      */
@@ -19,13 +17,13 @@ public interface RunningTeam extends Team {
     /**
      * @return
      */
-    List<Player> getConnectedPlayers();
+    List<E> getConnectedPlayers();
 
     /**
      * @param player
      * @return
      */
-    boolean isPlayerInTeam(Player player);
+    boolean isPlayerInTeam(E player);
 
     /**
      * @return
@@ -50,34 +48,34 @@ public interface RunningTeam extends Team {
     /**
      * @param location
      */
-    void addTeamChest(Location location);
+    void addTeamChest(L location);
 
     /**
      * @param block
      */
-    void addTeamChest(Block block);
+    void addTeamChestBlock(B block);
 
     /**
      * @param location
      */
-    void removeTeamChest(Location location);
+    void removeTeamChest(L location);
 
     /**
      * @param block
      */
-    void removeTeamChest(Block block);
+    void removeTeamChestBlock(B block);
 
     /**
      * @param location
      * @return
      */
-    boolean isTeamChestRegistered(Location location);
+    boolean isTeamChestRegistered(L location);
 
     /**
      * @param block
      * @return
      */
-    boolean isTeamChestRegistered(Block block);
+    boolean isTeamChestBlockRegistered(B block);
 
     /**
      * @return

@@ -3,7 +3,7 @@ package org.screamingsandals.bedwars.api.game;
 import java.util.List;
 import java.util.Optional;
 
-public interface GameManager<T extends Game<?, ?>> {
+public interface GameManager<T extends Game<?, ?, ?, ?, ?, ?>> {
     /**
      * @param name Name of game
      * @return Optional with game or empty if game does not exist
@@ -27,12 +27,12 @@ public interface GameManager<T extends Game<?, ?>> {
     boolean hasGame(String name);
 
     /**
-     * @return Free game that has highest players in it or empty optional
+     * @return Free game that has the highest players in it or empty optional
      */
     Optional<T> getGameWithHighestPlayers();
 
     /**
-     * @return Free game that has lowest players in it or empty optional
+     * @return Free game that has the lowest players in it or empty optional
      */
     Optional<T> getGameWithLowestPlayers();
 

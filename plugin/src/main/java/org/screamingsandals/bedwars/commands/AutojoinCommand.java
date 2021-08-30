@@ -29,7 +29,7 @@ public class AutojoinCommand extends BaseCommand {
                             }
 
                             GameManagerImpl.getInstance().getFirstWaitingGame().ifPresentOrElse(
-                                    game -> game.joinToGame(player.as(Player.class)),// TODO: Use Wrapper (bedwars changes needed)
+                                    game -> game.joinToGame(player),
                                     () -> player.sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_THERE_IS_NO_EMPTY_GAME).defaultPrefix())
                             );
                         })

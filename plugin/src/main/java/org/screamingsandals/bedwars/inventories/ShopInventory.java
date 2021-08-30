@@ -3,6 +3,7 @@ package org.screamingsandals.bedwars.inventories;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -23,6 +24,7 @@ import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.bedwars.special.listener.PermaItemListener;
 import org.screamingsandals.bedwars.utils.Sounds;
 import org.screamingsandals.bedwars.lib.debug.Debug;
+import org.screamingsandals.lib.entity.EntityMapper;
 import org.screamingsandals.lib.event.EventManager;
 import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.lang.Message;
@@ -179,7 +181,7 @@ public class ShopInventory {
             event.setCancelled(true);
         }
 
-        if (playerManager.getPlayer(player).get().isSpectator) {
+        if (playerManager.getPlayer(player).orElseThrow().isSpectator) {
             event.setCancelled(true);
         }
     }
@@ -201,7 +203,7 @@ public class ShopInventory {
         if (event.getPropertyName().equalsIgnoreCase("applycolorbyteam")
                 || event.getPropertyName().equalsIgnoreCase("transform::applycolorbyteam")) {
             var player = event.getPlayer();
-            CurrentTeam team = (CurrentTeam) event.getGame().getTeamOfPlayer(player.as(Player.class));
+            CurrentTeam team = (CurrentTeam) event.getGame().getTeamOfPlayer(player);
 
             if (mainConfig.node("automatic-coloring-in-shop").getBoolean()) {
                 event.setStack(BedWarsPlugin.getInstance().getColorChanger().applyColor(team.teamInfo.color.toApiColor(), event.getStack()));
@@ -255,7 +257,7 @@ public class ShopInventory {
                 .buy(this::onShopTransaction)
                 .define("team", (key, player, playerItemInfo, arguments) -> {
                     var gPlayer = playerManager.getPlayer(player);
-                    var team = gPlayer.get().getGame().getPlayerTeam(gPlayer.get());
+                    var team = gPlayer.orElseThrow().getGame().getPlayerTeam(gPlayer.orElseThrow());
                     if (arguments.length > 0) {
                         String fa = arguments[0];
                         switch (fa) {
@@ -275,7 +277,7 @@ public class ShopInventory {
                 })
                 .define("spawner", (key, player, playerItemInfo, arguments) -> {
                     var gPlayer = playerManager.getPlayer(player);
-                    GameImpl game = gPlayer.get().getGame();
+                    GameImpl game = gPlayer.orElseThrow().getGame();
                     if (arguments.length > 2) {
                         String upgradeBy = arguments[0];
                         String upgrade = arguments[1];
@@ -374,7 +376,7 @@ public class ShopInventory {
     }
 
     private void handleBuy(OnTradeEvent event) {
-        var player = event.getPlayer().as(Player.class);
+        var player = event.getPlayer();
         var game = playerManager.getGameOfPlayer(event.getPlayer()).orElseThrow();
         var clickType = event.getClickType();
         var itemInfo = event.getItem();
@@ -411,7 +413,7 @@ public class ShopInventory {
             double maxStackSize;
             int finalStackSize;
 
-            for (ItemStack itemStack : player.getInventory().getStorageContents()) {
+            for (ItemStack itemStack : player.as(Player.class).getInventory().getStorageContents()) {
                 if (itemStack != null && itemStack.isSimilar(type.getStack())) {
                     inInventory = inInventory + itemStack.getAmount();
                 }
@@ -467,7 +469,7 @@ public class ShopInventory {
             event.sellStack(materialItem);
             var notFit = event.buyStack(newItem);
             if (!notFit.isEmpty()) {
-                notFit.forEach(stack -> player.getLocation().getWorld().dropItem(player.getLocation(), stack.as(ItemStack.class)));
+                notFit.forEach(stack -> EntityMapper.dropItem(stack, player.getLocation()));
             }
 
             if (!mainConfig.node("removePurchaseMessages").getBoolean()) {
@@ -477,7 +479,7 @@ public class ShopInventory {
                         .placeholder("material", AdventureHelper.toComponent(priceAmount + " " + type.getItemName()))
                         .send(event.getPlayer());
             }
-            Sounds.playSound(player, player.getLocation(),
+            Sounds.playSound(player.as(Player.class), player.getLocation().as(Location.class),
                     mainConfig.node("sounds", "item_buy", "sound").getString(), Sounds.ENTITY_ITEM_PICKUP,
                     (float) MainConfig.getInstance().node("sounds", "item_buy", "volume").getDouble(),
                     (float) MainConfig.getInstance().node("sounds", "item_buy", "pitch").getDouble());
@@ -499,7 +501,7 @@ public class ShopInventory {
     }
 
     private void handleUpgrade(OnTradeEvent event) {
-        var player = event.getPlayer().as(Player.class);
+        var player = event.getPlayer();
         var game = playerManager.getGameOfPlayer(event.getPlayer()).orElseThrow();
         var itemInfo = event.getItem();
 
@@ -571,7 +573,7 @@ public class ShopInventory {
                     }
 
                     if (isUpgrade) {
-                        var bedwarsUpgradeBoughtEvent = new UpgradeBoughtEventImpl(game, playerManager.getPlayer(player.getUniqueId()).orElseThrow(), upgrades, addLevels, upgradeStorage);
+                        var bedwarsUpgradeBoughtEvent = new UpgradeBoughtEventImpl(game, playerManager.getPlayer(player.getUuid()).orElseThrow(), upgrades, addLevels, upgradeStorage);
                         EventManager.fire(bedwarsUpgradeBoughtEvent);
 
                         if (bedwarsUpgradeBoughtEvent.isCancelled()) {
@@ -591,7 +593,8 @@ public class ShopInventory {
                 }
 
                 if (sendToAll) {
-                    for (Player player1 : game.getTeamOfPlayer(player).getConnectedPlayers()) {
+                    for (Object playerobj : game.getTeamOfPlayer(player).getConnectedPlayers()) {
+                        final PlayerWrapper player1 = (PlayerWrapper) playerobj;
                         if (!mainConfig.node("removePurchaseMessages").getBoolean()) {
                             Message.of(LangKeys.IN_GAME_SHOP_BUY_SUCCESS)
                                     .prefixOrDefault(game.getCustomPrefixComponent())
@@ -599,7 +602,7 @@ public class ShopInventory {
                                     .placeholder("material", AdventureHelper.toComponent(priceAmount + " " + type.getItemName()))
                                     .send(event.getPlayer());
                         }
-                        Sounds.playSound(player1, player1.getLocation(),
+                        Sounds.playSound(player1.as(Player.class), player1.getLocation().as(Location.class),
                                 mainConfig.node("sounds", "upgrade_buy", "sound").getString(),
                                 Sounds.ENTITY_EXPERIENCE_ORB_PICKUP,
                                 (float) MainConfig.getInstance().node("sounds", "upgrade_buy", "volume").getDouble(),
@@ -613,7 +616,7 @@ public class ShopInventory {
                                 .placeholder("material", AdventureHelper.toComponent(priceAmount + " " + type.getItemName()))
                                 .send(event.getPlayer());
                     }
-                    Sounds.playSound(player, player.getLocation(),
+                    Sounds.playSound(player.as(Player.class), player.getLocation().as(Location.class),
                             mainConfig.node("sounds", "upgrade_buy", "sound").getString(),
                             Sounds.ENTITY_EXPERIENCE_ORB_PICKUP,
                             (float) MainConfig.getInstance().node("sounds", "upgrade_buy", "volume").getDouble(),

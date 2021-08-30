@@ -1,20 +1,19 @@
 package org.screamingsandals.bedwars.api.game;
 
 import net.kyori.adventure.text.Component;
+import org.bukkit.WeatherType;
+import org.bukkit.boss.BarColor;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
-import org.screamingsandals.bedwars.api.*;
+import org.screamingsandals.bedwars.api.ArenaTime;
+import org.screamingsandals.bedwars.api.Region;
+import org.screamingsandals.bedwars.api.RunningTeam;
+import org.screamingsandals.bedwars.api.Team;
 import org.screamingsandals.bedwars.api.boss.StatusBar;
 import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
 import org.screamingsandals.bedwars.api.player.BWPlayer;
 import org.screamingsandals.bedwars.api.special.SpecialItem;
 import org.screamingsandals.bedwars.api.utils.DelayFactory;
-import org.bukkit.Location;
-import org.bukkit.WeatherType;
-import org.bukkit.World;
-import org.bukkit.block.Block;
-import org.bukkit.boss.BarColor;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
 import org.screamingsandals.lib.utils.Wrapper;
 
 import java.io.File;
@@ -24,7 +23,7 @@ import java.util.List;
 /**
  * @author Bedwars Team
  */
-public interface Game<P extends BWPlayer, B extends Wrapper> {
+public interface Game<P extends BWPlayer, B extends Wrapper, L extends Wrapper, W extends Wrapper, C extends Wrapper, E extends Wrapper> {
     /**
      * @return Arena name
      */
@@ -57,43 +56,43 @@ public interface Game<P extends BWPlayer, B extends Wrapper> {
     /**
      * @param player
      */
-	void joinToGame(Player player);
+	void joinToGame(L player);
 
     /**
      * @param player
      */
-	void leaveFromGame(Player player);
+	void leaveFromGame(L player);
 
     /**
      * @param player
      * @param team
      */
-	void selectPlayerTeam(Player player, Team team);
+	void selectPlayerTeam(L player, Team team);
 
     /**
      * @param player
      */
-	void selectPlayerRandomTeam(Player player);
+	void selectPlayerRandomTeam(L player);
 
     /**
      * @return defined world of the game
      */
-	World getGameWorld();
+	W getGameWorld();
 
     /**
      * @return
      */
-	Location getPos1();
+	C getPos1();
 
     /**
      * @return
      */
-	Location getPos2();
+	C getPos2();
 
     /**
      * @return
      */
-	Location getSpectatorSpawn();
+	C getSpectatorSpawn();
 
     /**
      * @return configured time of the game
@@ -118,7 +117,7 @@ public interface Game<P extends BWPlayer, B extends Wrapper> {
     /**
      * @return list of players in game
      */
-	List<Player> getConnectedPlayers();
+	List<L> getConnectedPlayers();
 
     /**
      * @return list of game stores
@@ -159,26 +158,26 @@ public interface Game<P extends BWPlayer, B extends Wrapper> {
      * @param player
      * @return
      */
-	RunningTeam getTeamOfPlayer(Player player);
+	RunningTeam getTeamOfPlayer(L player);
 
     /**
      * @param player
      * @return
      */
-	boolean isPlayerInAnyTeam(Player player);
+	boolean isPlayerInAnyTeam(L player);
 
     /**
      * @param player
      * @param team
      * @return
      */
-	boolean isPlayerInTeam(Player player, RunningTeam team);
+	boolean isPlayerInTeam(L player, RunningTeam team);
 
     /**
      * @param location
      * @return
      */
-	boolean isLocationInArena(Location location);
+	boolean isLocationInArena(C location);
 
     /**
      * @param location
@@ -227,27 +226,27 @@ public interface Game<P extends BWPlayer, B extends Wrapper> {
      * @param player
      * @return
      */
-	List<SpecialItem> getActivedSpecialItemsOfPlayer(Player player);
+	List<SpecialItem> getActivedSpecialItemsOfPlayer(L player);
 
     /**
      * @param player
      * @param type
      * @return
      */
-	List<SpecialItem> getActivedSpecialItemsOfPlayer(Player player, Class<? extends SpecialItem> type);
+	List<SpecialItem> getActivedSpecialItemsOfPlayer(L player, Class<? extends SpecialItem> type);
 
     /**
      * @param player
      * @return
      */
-	SpecialItem getFirstActivedSpecialItemOfPlayer(Player player);
+	SpecialItem getFirstActivedSpecialItemOfPlayer(L player);
 
     /**
      * @param player
      * @param type
      * @return
      */
-	SpecialItem getFirstActivedSpecialItemOfPlayer(Player player, Class<? extends SpecialItem> type);
+	SpecialItem getFirstActivedSpecialItemOfPlayer(L player, Class<? extends SpecialItem> type);
 
     /**
      * @return
@@ -320,12 +319,12 @@ public interface Game<P extends BWPlayer, B extends Wrapper> {
     /**
      * @return
      */
-	World getLobbyWorld();
+	W getLobbyWorld();
 
     /**
      * @return
      */
-	Location getLobbySpawn();
+	C getLobbySpawn();
 
     /**
      * @return
@@ -347,19 +346,19 @@ public interface Game<P extends BWPlayer, B extends Wrapper> {
      * @param location
      * @return
      */
-	RunningTeam getTeamOfChest(Location location);
+	RunningTeam getTeamOfChest(C location);
 
     /**
      * @param block
      * @return
      */
-	RunningTeam getTeamOfChest(Block block);
+	RunningTeam getTeamOfChestBlock(B block);
 
     /**
      * @param entity
      * @return
      */
-	boolean isEntityShop(Entity entity);
+	boolean isEntityShop(E entity);
 
     /**
      * @return
@@ -440,11 +439,11 @@ public interface Game<P extends BWPlayer, B extends Wrapper> {
      * @since 0.3.0
      * @return
      */
-    @Nullable Location getLobbyPos1();
+    @Nullable C getLobbyPos1();
 
     /**
      * @since 0.3.0
      * @return
      */
-    @Nullable Location getLobbyPos2();
+    @Nullable C getLobbyPos2();
 }

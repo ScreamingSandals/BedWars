@@ -8,8 +8,6 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.util.Vector;
 import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.api.RunningTeam;
@@ -19,13 +17,17 @@ import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.events.ApplyPropertyToItemEventImpl;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
+import org.screamingsandals.lib.container.PlayerContainer;
+import org.screamingsandals.lib.material.Item;
 import org.screamingsandals.lib.material.MaterialHolder;
 import org.screamingsandals.lib.material.MaterialMapping;
 import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.sender.SenderMessage;
 import org.screamingsandals.lib.utils.AdventureHelper;
+import org.screamingsandals.lib.utils.MathUtils;
 import org.screamingsandals.lib.world.LocationHolder;
+import org.screamingsandals.lib.world.WorldHolder;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -144,21 +146,21 @@ public class MiscUtils {
         return MaterialMapping.resolve(fallback).orElseThrow();
     }
 
-    public Player findTarget(Game game, Player player, double maxDist) {
-        Player playerTarget = null;
+    public PlayerWrapper findTarget(Game game, PlayerWrapper player, double maxDist) {
+        PlayerWrapper playerTarget = null;
         RunningTeam team = game.getTeamOfPlayer(player);
 
-        ArrayList<Player> foundTargets = new ArrayList<>(game.getConnectedPlayers());
+        ArrayList<PlayerWrapper> foundTargets = new ArrayList<>(game.getConnectedPlayers());
         foundTargets.removeAll(team.getConnectedPlayers());
 
 
-        for (Player p : foundTargets) {
-            var gamePlayer = PlayerManagerImpl.getInstance().getPlayer(p.getUniqueId());
+        for (PlayerWrapper p : foundTargets) {
+            var gamePlayer = PlayerManagerImpl.getInstance().getPlayer(p.getUuid());
             if (gamePlayer.isEmpty()) {
                 continue;
             }
 
-            if (player.getWorld() != p.getWorld()) {
+            if (player.getLocation().getWorld() != p.getLocation().getWorld()) {
                 continue;
             }
 
@@ -166,8 +168,8 @@ public class MiscUtils {
                 continue;
             }
 
-            double realDistance = player.getLocation().distance(p.getLocation());
-            if (realDistance < maxDist) {
+            double realDistance = player.getLocation().getDistanceSquared(p.getLocation());
+            if (realDistance < MathUtils.square(maxDist)) {
                 playerTarget = p;
                 maxDist = realDistance;
             }
@@ -177,7 +179,7 @@ public class MiscUtils {
 
     /* End of Special Items */
 
-    public Location readLocationFromString(World world, String location) {
+    public LocationHolder readLocationFromString(WorldHolder world, String location) {
         int lpos = 0;
         double x = 0;
         double y = 0;
@@ -206,9 +208,15 @@ public class MiscUtils {
                     break;
             }
         }
-        return new Location(world, x, y, z, yaw, pitch);
+        return new LocationHolder(x, y, z, yaw, pitch, world);
     }
 
+    public String setLocationToString(LocationHolder location) {
+        return location.getX() + ";" + location.getY() + ";" + location.getZ() + ";" + location.getYaw() + ";"
+                + location.getPitch();
+    }
+
+    @Deprecated
     public String setLocationToString(Location location) {
         return location.getX() + ";" + location.getY() + ";" + location.getZ() + ";" + location.getYaw() + ";"
                 + location.getPitch();
@@ -270,10 +278,10 @@ public class MiscUtils {
         return direction;
     }
 
-    public void giveItemsToPlayer(List<ItemStack> itemStackList, Player player, TeamColor teamColor) {
-        for (ItemStack itemStack : itemStackList) {
-            final String materialName = itemStack.getType().toString();
-            final PlayerInventory playerInventory = player.getInventory();
+    public void giveItemsToPlayer(List<Item> itemStackList, PlayerWrapper player, TeamColor teamColor) {
+        for (Item itemStack : itemStackList) {
+            final String materialName = itemStack.getMaterial().getPlatformName();
+            final PlayerContainer playerInventory = player.getPlayerInventory();
 
             if (materialName.contains("HELMET")) {
                 playerInventory.setHelmet(BedWarsPlugin.getInstance().getColorChanger().applyColor(teamColor, itemStack));
@@ -289,6 +297,7 @@ public class MiscUtils {
         }
     }
 
+    @Deprecated
     public List<Player> getOnlinePlayers(Collection<UUID> uuids) {
         if (uuids == null) {
             return Collections.emptyList();
@@ -318,17 +327,17 @@ public class MiscUtils {
                 .collect(Collectors.toList());
     }
 
-    public List<Location> getLocationsBetween(Location loc1, Location loc2){
+    public List<LocationHolder> getLocationsBetween(LocationHolder loc1, LocationHolder loc2){
         int lowX = Math.min(loc1.getBlockX(), loc2.getBlockX());
         int lowY = Math.min(loc1.getBlockY(), loc2.getBlockY());
         int lowZ = Math.min(loc1.getBlockZ(), loc2.getBlockZ());
 
-        final var locationList = new ArrayList<Location>();
+        final var locationList = new ArrayList<LocationHolder>();
 
         for(int x = 0; x<Math.abs(loc1.getBlockX()-loc2.getBlockX()); x++){
             for(int y = 0; y<Math.abs(loc1.getBlockY()-loc2.getBlockY()); y++){
                 for(int z = 0; z<Math.abs(loc1.getBlockZ()-loc2.getBlockZ()); z++){
-                    locationList.add(new Location(loc1.getWorld(),lowX+x, lowY+y, lowZ+z));
+                    locationList.add(new LocationHolder(lowX+x, lowY+y, lowZ+z, 0, 0, loc1.getWorld()));
                 }
             }
         }

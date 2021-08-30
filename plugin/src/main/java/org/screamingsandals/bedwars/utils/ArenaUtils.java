@@ -41,6 +41,7 @@ public class ArenaUtils {
                 && max.getY() >= l.getY() && max.getZ() >= l.getZ());
     }
 
+    @Deprecated
     public boolean isChunkInArea(Chunk l, Location p1, Location p2) {
         if (!p1.getWorld().equals(l.getWorld())) {
             return false;
@@ -53,15 +54,15 @@ public class ArenaUtils {
         return (min.getX() <= l.getX() && min.getZ() <= l.getZ() && max.getX() >= l.getX() && max.getZ() >= l.getZ());
     }
 
-    public boolean isChunkInArea(ChunkHolder l, Location p1, Location p2) {
-        if (!p1.getWorld().equals(l.getWorld().as(World.class))) {
+    public boolean isChunkInArea(ChunkHolder l, LocationHolder p1, LocationHolder p2) {
+        if (!p1.getWorld().equals(l.getWorld())) {
             return false;
         }
 
-        var min = new Location(p1.getWorld(), Math.min(p1.getX(), p2.getX()), Math.min(p1.getY(), p2.getY()),
-                Math.min(p1.getZ(), p2.getZ())).getChunk();
-        var max = new Location(p1.getWorld(), Math.max(p1.getX(), p2.getX()), Math.max(p1.getY(), p2.getY()),
-                Math.max(p1.getZ(), p2.getZ())).getChunk();
+        var min = new LocationHolder(Math.min(p1.getX(), p2.getX()), Math.min(p1.getY(), p2.getY()),
+                Math.min(p1.getZ(), p2.getZ()), 0, 0, p1.getWorld()).getChunk();
+        var max = new LocationHolder(Math.max(p1.getX(), p2.getX()), Math.max(p1.getY(), p2.getY()),
+                Math.max(p1.getZ(), p2.getZ()), 0, 0, p1.getWorld()).getChunk();
         return (min.getX() <= l.getX() && min.getZ() <= l.getZ() && max.getX() >= l.getX() && max.getZ() >= l.getZ());
     }
 }

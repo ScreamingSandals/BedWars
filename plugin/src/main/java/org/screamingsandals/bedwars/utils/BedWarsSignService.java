@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainComponentSerializer;
-import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.commands.BedWarsPermission;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.game.GameManagerImpl;
@@ -116,11 +115,11 @@ public class BedWarsSignService extends AbstractSignManager {
     protected void onClick(PlayerWrapper player, ClickableSign sign) {
         if (sign.getKey().equalsIgnoreCase("leave")) {
             if (playerManager.isPlayerInGame(player)) {
-                playerManager.getPlayer(player).get().changeGame(null);
+                playerManager.getPlayer(player).orElseThrow().changeGame(null);
             }
         } else {
             gameManager.getGame(sign.getKey()).ifPresentOrElse(
-                    game -> game.joinToGame(player.as(Player.class)),
+                    game -> game.joinToGame(player),
                     () -> Message.of(LangKeys.SIGN_ADMIN_UNKNOWN_GAME).defaultPrefix().send(player)
             );
         }

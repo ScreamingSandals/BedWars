@@ -2,9 +2,6 @@ package org.screamingsandals.bedwars.game;
 
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
@@ -15,18 +12,21 @@ import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.lib.hologram.Hologram;
 import org.screamingsandals.lib.lang.Message;
+import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.utils.AdventureHelper;
 import org.screamingsandals.lib.utils.reflect.Reflect;
+import org.screamingsandals.lib.world.BlockHolder;
+import org.screamingsandals.lib.world.LocationHolder;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class CurrentTeam implements RunningTeam {
+public class CurrentTeam implements RunningTeam<PlayerWrapper, LocationHolder, BlockHolder> {
     public final Team teamInfo;
     public final List<BedWarsPlayer> players = new ArrayList<>();
     private org.bukkit.scoreboard.Team scoreboardTeam;
     private Inventory chestInventory;
-    private List<Block> chests = new ArrayList<>();
+    private List<BlockHolder> chests = new ArrayList<>();
     private Game game;
     private Hologram holo;
     private Hologram protectHolo;
@@ -96,12 +96,12 @@ public class CurrentTeam implements RunningTeam {
     }
 
     @Override
-    public Location getTeamSpawn() {
+    public LocationHolder getTeamSpawn() {
         return teamInfo.spawn;
     }
 
     @Override
-    public Location getTargetBlock() {
+    public LocationHolder getTargetBlock() {
         return teamInfo.bed;
     }
 
@@ -116,18 +116,14 @@ public class CurrentTeam implements RunningTeam {
     }
 
     @Override
-    public List<Player> getConnectedPlayers() {
-        List<Player> playerList = new ArrayList<>();
-        for (BedWarsPlayer gamePlayer : players) {
-            playerList.add(gamePlayer.as(Player.class));
-        }
-        return playerList;
+    public List<PlayerWrapper> getConnectedPlayers() {
+        return new ArrayList<>(players);
     }
 
     @Override
-    public boolean isPlayerInTeam(Player player) {
+    public boolean isPlayerInTeam(PlayerWrapper player) {
         for (BedWarsPlayer gamePlayer : players) {
-            if (gamePlayer.getUuid().equals(player.getUniqueId())) {
+            if (gamePlayer.getUuid().equals(player.getUuid())) {
                 return true;
             }
         }
@@ -140,36 +136,34 @@ public class CurrentTeam implements RunningTeam {
     }
 
     @Override
-    public void addTeamChest(Location location) {
-        addTeamChest(location.getBlock());
+    public void addTeamChest(LocationHolder location) {
+        addTeamChestBlock(location.getBlock());
     }
 
     @Override
-    public void addTeamChest(Block block) {
+    public void addTeamChestBlock(BlockHolder block) {
         if (!chests.contains(block)) {
             chests.add(block);
         }
     }
 
     @Override
-    public void removeTeamChest(Location location) {
-        removeTeamChest(location.getBlock());
+    public void removeTeamChest(LocationHolder location) {
+        removeTeamChestBlock(location.getBlock());
     }
 
     @Override
-    public void removeTeamChest(Block block) {
-        if (chests.contains(block)) {
-            chests.remove(block);
-        }
+    public void removeTeamChestBlock(BlockHolder block) {
+        chests.remove(block);
     }
 
     @Override
-    public boolean isTeamChestRegistered(Location location) {
-        return isTeamChestRegistered(location.getBlock());
+    public boolean isTeamChestRegistered(LocationHolder location) {
+        return isTeamChestBlockRegistered(location.getBlock());
     }
 
     @Override
-    public boolean isTeamChestRegistered(Block block) {
+    public boolean isTeamChestBlockRegistered(BlockHolder block) {
         return chests.contains(block);
     }
 

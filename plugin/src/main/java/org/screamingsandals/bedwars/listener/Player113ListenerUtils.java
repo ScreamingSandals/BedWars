@@ -17,7 +17,7 @@ public class Player113ListenerUtils {
             }
             cake.setBites(cake.getBites() + 1);
             if (cake.getBites() >= cake.getMaximumBites()) {
-                game.bedDestroyed(bukkitBlock.getLocation(), event.getPlayer().as(Player.class), false, false, true);
+                game.bedDestroyed(event.getBlockClicked().getLocation(), event.getPlayer(), false, false, true);
                 bukkitBlock.setType(Material.AIR);
             } else {
                 bukkitBlock.setBlockData(cake);

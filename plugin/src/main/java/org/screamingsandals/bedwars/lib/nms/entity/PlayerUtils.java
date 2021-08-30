@@ -5,7 +5,6 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.nms.accessors.ServerGamePacketListenerImplAccessor;
 import org.screamingsandals.bedwars.nms.accessors.ServerboundClientCommandPacketAccessor;
@@ -13,28 +12,26 @@ import org.screamingsandals.bedwars.nms.accessors.ServerboundClientCommandPacket
 import org.screamingsandals.lib.bukkit.utils.nms.ClassStorage;
 import org.screamingsandals.lib.packet.SClientboundSetExperiencePacket;
 import org.screamingsandals.lib.player.PlayerWrapper;
+import org.screamingsandals.lib.tasker.Tasker;
+import org.screamingsandals.lib.tasker.TaskerTime;
 import org.screamingsandals.lib.utils.reflect.Reflect;
 
 public class PlayerUtils {
 	public static void respawn(Plugin instance, Player player, long delay) {
-		new BukkitRunnable() {
-
-			@Override
-			public void run() {
+		Tasker.build(() -> {
+			try {
+				player.spigot().respawn();
+			} catch (Throwable t) {
 				try {
-					player.spigot().respawn();
-				} catch (Throwable t) {
-					try {
-						var selectedObj = ServerboundClientCommandPacket_i_ActionAccessor.getFieldPERFORM_RESPAWN();
-						var packet = Reflect.construct(ServerboundClientCommandPacketAccessor.getConstructor0(), selectedObj);
-						var connection = ClassStorage.getPlayerConnection(player);
-						Reflect.fastInvoke(connection, ServerGamePacketListenerImplAccessor.getMethodHandleClientCommand1(), packet);
-					} catch (Throwable ignored) {
-						t.printStackTrace();
-					}
+					var selectedObj = ServerboundClientCommandPacket_i_ActionAccessor.getFieldPERFORM_RESPAWN();
+					var packet = Reflect.construct(ServerboundClientCommandPacketAccessor.getConstructor0(), selectedObj);
+					var connection = ClassStorage.getPlayerConnection(player);
+					Reflect.fastInvoke(connection, ServerGamePacketListenerImplAccessor.getMethodHandleClientCommand1(), packet);
+				} catch (Throwable ignored) {
+					t.printStackTrace();
 				}
 			}
-		}.runTaskLater(instance, delay);
+		}).delay(delay, TaskerTime.TICKS).start();
 	}
 
 	public static void fakeExp(PlayerWrapper player, float percentage, int levels) {
@@ -45,6 +42,7 @@ public class PlayerUtils {
 		experience.sendPacket(player);
 	}
 
+	@Deprecated // use PlayerWrapper#teleport()
 	public static boolean teleportPlayer(Player player, Location location) {
 		try {
 			return player.teleportAsync(location).isDone();
@@ -54,6 +52,7 @@ public class PlayerUtils {
 		}
 	}
 
+	@Deprecated // use PlayerWrapper#teleport()
 	public static boolean teleportPlayer(Player player, Location location, Runnable runnable) {
 		try {
 			return player.teleportAsync(location).thenRun(runnable).isDone();

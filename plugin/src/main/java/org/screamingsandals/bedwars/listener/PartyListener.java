@@ -2,7 +2,6 @@ package org.screamingsandals.bedwars.listener;
 
 import com.alessiodp.parties.api.Parties;
 import lombok.experimental.UtilityClass;
-import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.events.PlayerJoinedEventImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
@@ -61,9 +60,9 @@ public class PartyListener {
                                         if (gameOfPlayer.get().getName().equalsIgnoreCase(game.getName())) {
                                             return;
                                         }
-                                        gameOfPlayer.get().leaveFromGame(partyMember.as(Player.class)); // TODO
+                                        gameOfPlayer.get().leaveFromGame(partyMember);
                                     }
-                                    game.joinToGame(partyMember.as(Player.class)); // TODO
+                                    game.joinToGame(partyMember);
                                 }
                             });
 

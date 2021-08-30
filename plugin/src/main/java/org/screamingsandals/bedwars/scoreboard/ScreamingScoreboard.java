@@ -2,6 +2,7 @@ package org.screamingsandals.bedwars.scoreboard;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.api.RunningTeam;
 import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
@@ -18,6 +19,7 @@ import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
 import org.screamingsandals.lib.tasker.task.TaskerTask;
 import org.screamingsandals.lib.utils.AdventureHelper;
+import org.screamingsandals.lib.world.LocationHolder;
 import org.spongepowered.configurate.ConfigurationNode;
 
 import java.util.*;
@@ -69,8 +71,8 @@ public class ScreamingScoreboard {
                         List.of(formatScoreboardTeam(team,
                                 !team.isTargetBlockExists(),
                                 team.isTargetBlockExists()
-                                        && "RESPAWN_ANCHOR".equals(team.getTargetBlock().getBlock().getType().name())
-                                        && Player116ListenerUtils.isAnchorEmpty(team.getTargetBlock().getBlock()))
+                                        && ((LocationHolder) team.getTargetBlock()).getBlock().getType().is("respawn_anchor")
+                                        && Player116ListenerUtils.isAnchorEmpty(((LocationHolder) team.getTargetBlock()).getBlock().as(Block.class)))
                         )
                 )
             )
@@ -116,9 +118,8 @@ public class ScreamingScoreboard {
                         }
                     });
 
-            team.getConnectedPlayers()
+            ((List<PlayerWrapper>) team.getConnectedPlayers())
                     .stream()
-                    .map(PlayerMapper::wrapPlayer)
                     .filter(player -> !sidebarTeam.players().contains(player))
                     .forEach(sidebarTeam::player);
         });

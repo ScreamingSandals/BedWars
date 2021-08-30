@@ -5,6 +5,7 @@ import cloud.commandframework.CommandManager;
 import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.lib.lang.Message;
+import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
 import org.screamingsandals.lib.utils.annotations.Service;
 
@@ -19,7 +20,7 @@ public class Pos1Command extends BaseAdminSubCommand {
         manager.command(
                 commandSenderWrapperBuilder
                         .handler(commandContext -> editMode(commandContext, (sender, game) -> {
-                            var loc = sender.as(Player.class).getLocation();
+                            var loc = sender.as(PlayerWrapper.class).getLocation();
 
                             if (game.getWorld() == null) {
                                 game.setWorld(loc.getWorld());

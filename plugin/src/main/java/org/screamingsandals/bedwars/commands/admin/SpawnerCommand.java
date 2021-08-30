@@ -3,7 +3,6 @@ package org.screamingsandals.bedwars.commands.admin;
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
 import cloud.commandframework.arguments.standard.*;
-import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.commands.AdminCommand;
 import org.screamingsandals.bedwars.game.ItemSpawner;
@@ -12,6 +11,7 @@ import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.utils.ArenaUtils;
 import org.screamingsandals.lib.hologram.Hologram;
 import org.screamingsandals.lib.lang.Message;
+import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
 import org.screamingsandals.lib.utils.annotations.Service;
 
@@ -63,7 +63,7 @@ public class SpawnerCommand extends BaseAdminSubCommand {
                             boolean floatingHologram = commandContext.getOrDefault("floatingHologram", false);
                             Hologram.RotationMode rotationMode = commandContext.getOrDefault("rotationMode", Hologram.RotationMode.Y);
 
-                            var loc = sender.as(Player.class).getLocation();
+                            var loc = sender.as(PlayerWrapper.class).getLocation();
 
                             if (game.getPos1() == null || game.getPos2() == null) {
                                 sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_SET_BOUNDS_FIRST).defaultPrefix());
@@ -101,7 +101,7 @@ public class SpawnerCommand extends BaseAdminSubCommand {
                 commandSenderWrapperBuilder
                         .literal("remove")
                         .handler(commandContext -> editMode(commandContext, (sender, game) -> {
-                            var loc = sender.as(Player.class).getLocation();
+                            var loc = sender.as(PlayerWrapper.class).getLocation();
 
                             if (game.getPos1() == null || game.getPos2() == null) {
                                 sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_SET_BOUNDS_FIRST).defaultPrefix());

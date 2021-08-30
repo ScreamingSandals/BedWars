@@ -38,7 +38,7 @@ public class RejoinCommand extends BaseCommand {
                         } else {
                             GameManagerImpl.getInstance().getGame(name)
                                     .ifPresentOrElse(
-                                            game -> game.joinToGame(player.as(Player.class)), // TODO
+                                            game -> game.joinToGame(player),
                                             () -> player.sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_GAME_IS_GONE).defaultPrefix())
                                     );
                         }

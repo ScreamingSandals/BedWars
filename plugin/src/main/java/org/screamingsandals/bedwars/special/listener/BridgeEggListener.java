@@ -56,7 +56,7 @@ public class BridgeEggListener {
                         var material = MiscUtils.getMaterialFromString(unhidden.split(":")[3], "GLASS");
                         var delay = Integer.parseInt(unhidden.split(":")[4]);
 
-                        var egg = EntityMapper.<EntityProjectile>spawn("egg", player.getLocation().add(0, 1, 0)).orElseThrow();
+                        var egg = EntityMapper.<EntityProjectile>spawn("minecraft:egg", player.getLocation().add(0, 1, 0)).orElseThrow();
                         egg.setVelocity(player.getLocation().getFacingDirection().multiply(2));
 
                         var bridgeEgg = new BridgeEggImpl(game, gamePlayer, game.getPlayerTeam(gamePlayer), egg, material, distance);

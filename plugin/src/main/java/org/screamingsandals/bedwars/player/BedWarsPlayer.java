@@ -18,6 +18,7 @@ import org.screamingsandals.bedwars.utils.BungeeUtils;
 import org.screamingsandals.bedwars.lib.nms.entity.PlayerUtils;
 import org.screamingsandals.lib.material.Item;
 import org.screamingsandals.lib.player.PlayerWrapper;
+import org.screamingsandals.lib.player.gamemode.GameModeHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +28,7 @@ public class BedWarsPlayer extends PlayerWrapper implements BWPlayer {
     private GameImpl game = null;
     private String latestGame = null;
     private StoredInventory oldInventory = new StoredInventory();
-    private List<ItemStack> permaItemsPurchased = new ArrayList<>();
+    private List<Item> permaItemsPurchased = new ArrayList<>();
     private List<Player> hiddenPlayers = new ArrayList<>();
     @Getter
     @Setter
@@ -91,7 +92,7 @@ public class BedWarsPlayer extends PlayerWrapper implements BWPlayer {
         return hasPermission(BedWarsPermission.FORCE_JOIN_PERMISSION.asPermission());
     }
 
-    public List<ItemStack> getPermaItemsPurchased() {
+    public List<Item> getPermaItemsPurchased() {
         return permaItemsPurchased;
     }
 
@@ -99,7 +100,7 @@ public class BedWarsPlayer extends PlayerWrapper implements BWPlayer {
         this.permaItemsPurchased.clear();
     }
 
-    public void addPermaItem(ItemStack stack) {
+    public void addPermaItem(Item stack) {
         this.permaItemsPurchased.add(stack);
     }
 
@@ -158,23 +159,25 @@ public class BedWarsPlayer extends PlayerWrapper implements BWPlayer {
         player.resetPlayerWeather();
     }
 
+    // TODO: SLib equivalent
     public void resetLife() {
         var player = as(Player.class);
+        var entity = asEntity();
 
         player.setAllowFlight(false);
         player.setFlying(false);
-        player.setExp(0.0F);
-        player.setLevel(0);
+        this.setExp(0.0F);
+        this.setLevel(0);
         player.setSneaking(false);
         player.setSprinting(false);
         player.setFoodLevel(20);
         player.setSaturation(10);
         player.setExhaustion(0);
         player.setMaxHealth(20D);
-        player.setHealth(player.getMaxHealth());
-        player.setFireTicks(0);
-        player.setFallDistance(0);
-        player.setGameMode(GameMode.SURVIVAL);
+        entity.setHealth(20D);
+        entity.setFireTicks(0);
+        entity.setFallDistance(0);
+        this.setGameMode(GameModeHolder.of("survival"));
 
         if (player.isInsideVehicle()) {
             player.leaveVehicle();
@@ -185,6 +188,7 @@ public class BedWarsPlayer extends PlayerWrapper implements BWPlayer {
         }
     }
 
+    // TODO: SLib equivalent
     public void invClean() {
         var player = as(Player.class);
         Debug.info("Cleaning inventory of: " + player.getName());
@@ -202,14 +206,17 @@ public class BedWarsPlayer extends PlayerWrapper implements BWPlayer {
         new ArrayList<>(this.hiddenPlayers).forEach(this::showPlayer);
     }
 
+    @Deprecated
     public boolean teleport(Location location) {
     	return PlayerUtils.teleportPlayer(as(Player.class), location);
     }
 
+    @Deprecated
     public boolean teleport(Location location, Runnable runnable) {
         return PlayerUtils.teleportPlayer(as(Player.class), location, runnable);
     }
 
+    // TODO: SLib equivalent
     public void hidePlayer(Player player) {
         var thisPlayer = as(Player.class);
         if (!hiddenPlayers.contains(player) && !player.equals(thisPlayer)) {
@@ -222,6 +229,7 @@ public class BedWarsPlayer extends PlayerWrapper implements BWPlayer {
         }
     }
 
+    // TODO: SLib equivalent
     public void showPlayer(Player player) {
         var thisPlayer = as(Player.class);
         if (hiddenPlayers.contains(player) && !player.equals(thisPlayer)) {
