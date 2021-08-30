@@ -293,6 +293,14 @@ inventory {
             property 'ThrowableFireball'
         }
 
+        item('EGG;1;Bridge Egg for 20 of gold') {
+            stack.lore([
+                    "This egg creates a trail of bridge after it's thrown"
+            ])
+
+            property 'BridgeEgg'
+        }
+
     }
 
     category ('DIAMOND_PICKAXE;1;Pickaxes;Destroy others blocks? Use these pickaxes.') {

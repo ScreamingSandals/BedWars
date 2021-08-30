@@ -70,18 +70,15 @@ public class GolemImpl extends SpecialItem implements Golem<GameImpl, BedWarsPla
         MiscUtils.sendActionBarMessage(player, Message.of(LangKeys.SPECIALS_GOLEM_CREATED));
 
         //TODO - make this better by checking full inventory
-        if (item.getAmount() > 1) {
-            item.setAmount(item.getAmount() - 1);
-        } else {
-            try {
-                if (player.getPlayerInventory().getItemInOffHand().equals(item)) {
-                    player.getPlayerInventory().setItemInOffHand(ItemFactory.getAir());
-                } else {
-                    player.getPlayerInventory().removeItem(item);
-                }
-            } catch (Throwable e) {
+        item.setAmount(1);
+        try {
+            if (player.getPlayerInventory().getItemInOffHand().equals(item)) {
+                player.getPlayerInventory().setItemInOffHand(ItemFactory.getAir());
+            } else {
                 player.getPlayerInventory().removeItem(item);
             }
+        } catch (Throwable e) {
+            player.getPlayerInventory().removeItem(item);
         }
 
         player.as(Player.class).updateInventory();

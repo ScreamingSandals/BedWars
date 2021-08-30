@@ -1,5 +1,6 @@
 package org.screamingsandals.bedwars.special.listener;
 
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.bedwars.api.APIUtils;
 import org.screamingsandals.bedwars.api.game.GameStatus;
@@ -16,6 +17,7 @@ import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.event.entity.SProjectileHitEvent;
 import org.screamingsandals.lib.event.player.SPlayerInteractEvent;
 import org.screamingsandals.lib.lang.Message;
+import org.screamingsandals.lib.material.builder.ItemFactory;
 import org.screamingsandals.lib.utils.annotations.Service;
 
 import java.util.HashMap;
@@ -68,6 +70,18 @@ public class BridgeEggListener {
 
                         this.bridges.put(egg, bridgeEgg);
                         bridgeEgg.runTask();
+
+                        stack.setAmount(1); // we are removing exactly one egg
+                        try {
+                            if (player.getPlayerInventory().getItemInOffHand().equals(stack)) {
+                                player.getPlayerInventory().setItemInOffHand(ItemFactory.getAir());
+                            } else {
+                                player.getPlayerInventory().removeItem(stack);
+                            }
+                        } catch (Throwable e) {
+                            player.getPlayerInventory().removeItem(stack);
+                        }
+                        player.as(Player.class).updateInventory();
                     } else {
                         event.setCancelled(true);
 

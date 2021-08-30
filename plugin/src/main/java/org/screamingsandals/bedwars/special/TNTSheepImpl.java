@@ -76,18 +76,15 @@ public class TNTSheepImpl extends SpecialItem implements TNTSheep<GameImpl, BedW
         entitiesManager.addEntityToGame(sheep, game);
         entitiesManager.addEntityToGame(tnt, game);
 
-        if (item.getAmount() > 1) {
-            item.setAmount(item.getAmount() - 1);
-        } else {
-            try {
-                if (player.getPlayerInventory().getItemInOffHand().equals(item)) {
-                    player.getPlayerInventory().setItemInOffHand(ItemFactory.getAir());
-                } else {
-                    player.getPlayerInventory().removeItem(item);
-                }
-            } catch (Throwable e) {
+        item.setAmount(1);
+        try {
+            if (player.getPlayerInventory().getItemInOffHand().equals(item)) {
+                player.getPlayerInventory().setItemInOffHand(ItemFactory.getAir());
+            } else {
                 player.getPlayerInventory().removeItem(item);
             }
+        } catch (Throwable e) {
+            player.getPlayerInventory().removeItem(item);
         }
         player.as(Player.class).updateInventory();
 

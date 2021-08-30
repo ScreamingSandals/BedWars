@@ -642,18 +642,18 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
         }
 
         var loc = block.getLocation();
-        if (region.isBedBlock(block.getBlockState())) {
-            if (!region.isBedHead(block.getBlockState())) {
+        if (region.isBedBlock(block.getBlockState().orElseThrow())) {
+            if (!region.isBedHead(block.getBlockState().orElseThrow())) {
                 loc = region.getBedNeighbor(block).getLocation();
             }
         }
         if (isTargetBlock(loc)) {
-            if (region.isBedBlock(block.getBlockState())) {
+            if (region.isBedBlock(block.getBlockState().orElseThrow())) {
                 if (getPlayerTeam(player).teamInfo.bed.equals(loc)) {
                     return false;
                 }
                 bedDestroyed(loc, player, true, false, false);
-                region.putOriginalBlock(block.getLocation(), block.getBlockState());
+                region.putOriginalBlock(block.getLocation(), block.getBlockState().orElseThrow());
                 if (block.getLocation().equals(loc)) {
                     var neighbor = region.getBedNeighbor(block);
                     region.putOriginalBlock(neighbor.getLocation(), neighbor.getBlockState().orElseThrow());
@@ -663,7 +663,7 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
                 try {
                     event.setDropItems(false);
                 } catch (Throwable tr) {
-                    if (region.isBedHead(block.getBlockState())) {
+                    if (region.isBedHead(block.getBlockState().orElseThrow())) {
                         region.getBedNeighbor(block).setType(MaterialMapping.getAir());
                     } else {
                         block.setType(MaterialMapping.getAir());
@@ -677,7 +677,7 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
                     return false;
                 }
                 bedDestroyed(loc, player, false, block.getType().is("respawn_anchor"), block.getType().is("cake"));
-                region.putOriginalBlock(loc, block.getBlockState());
+                region.putOriginalBlock(loc, block.getBlockState().orElseThrow());
                 try {
                     event.setDropItems(false);
                 } catch (Throwable tr) {
@@ -687,7 +687,7 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
             }
         }
         if (BedWarsPlugin.isBreakableBlock(block.getType())) {
-            region.putOriginalBlock(block.getLocation(), block.getBlockState());
+            region.putOriginalBlock(block.getLocation(), block.getBlockState().orElseThrow());
             return true;
         }
         return false;
@@ -696,29 +696,29 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
     public void targetBlockExplode(RunningTeam team) {
         LocationHolder loc = (LocationHolder) team.getTargetBlock();
         BlockHolder block = loc.getBlock();
-        if (region.isBedBlock(block.getBlockState())) {
-            if (!region.isBedHead(block.getBlockState())) {
+        if (region.isBedBlock(block.getBlockState().orElseThrow())) {
+            if (!region.isBedHead(block.getBlockState().orElseThrow())) {
                 loc = region.getBedNeighbor(block).getLocation();
             }
         }
         if (isTargetBlock(loc)) {
-            if (region.isBedBlock(block.getBlockState())) {
+            if (region.isBedBlock(block.getBlockState().orElseThrow())) {
                 bedDestroyed(loc, null, true, false, false);
-                region.putOriginalBlock(block.getLocation(), block.getBlockState());
+                region.putOriginalBlock(block.getLocation(), block.getBlockState().orElseThrow());
                 if (block.getLocation().equals(loc)) {
                     var neighbor = region.getBedNeighbor(block);
-                    region.putOriginalBlock(neighbor.getLocation(), neighbor.getBlockState());
+                    region.putOriginalBlock(neighbor.getLocation(), neighbor.getBlockState().orElseThrow());
                 } else {
-                    region.putOriginalBlock(loc, region.getBedNeighbor(block).getBlockState());
+                    region.putOriginalBlock(loc, region.getBedNeighbor(block).getBlockState().orElseThrow());
                 }
-                if (region.isBedHead(block.getBlockState())) {
+                if (region.isBedHead(block.getBlockState().orElseThrow())) {
                     region.getBedNeighbor(block).setType(MaterialMapping.getAir());
                 } else {
                     block.setType(MaterialMapping.getAir());
                 }
             } else {
                 bedDestroyed(loc, null, false, block.getType().is("respawn_anchor"), block.getType().is("cake"));
-                region.putOriginalBlock(loc, block.getBlockState());
+                region.putOriginalBlock(loc, block.getBlockState().orElseThrow());
                 block.setType(MaterialMapping.getAir());
             }
         }
@@ -1198,7 +1198,7 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
             for (Team team : teams) {
                 calculatedMaxPlayers += team.maxPlayers;
             }
-            Tasker.build(GameImpl.this::updateSigns).start();
+            Tasker.build(GameImpl.this::updateSigns).afterOneTick().start();
 
             if (MainConfig.getInstance().node("bossbar", "use-xp-bar").getBoolean(false)) {
                 statusbar = new XPBar();
@@ -1873,13 +1873,13 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
                             if (ct == null) {
                                 LocationHolder loc = team.bed;
                                 BlockHolder block = team.bed.getBlock();
-                                if (region.isBedBlock(block.getBlockState())) {
-                                    region.putOriginalBlock(block.getLocation(), block.getBlockState());
+                                if (region.isBedBlock(block.getBlockState().orElseThrow())) {
+                                    region.putOriginalBlock(block.getLocation(), block.getBlockState().orElseThrow());
                                     var neighbor = region.getBedNeighbor(block);
-                                    region.putOriginalBlock(neighbor.getLocation(), neighbor.getBlockState());
+                                    region.putOriginalBlock(neighbor.getLocation(), neighbor.getBlockState().orElseThrow());
                                     neighbor.as(Block.class).setType(Material.AIR, false);  // TODO: remove this
                                 } else {
-                                    region.putOriginalBlock(loc, block.getBlockState());
+                                    region.putOriginalBlock(loc, block.getBlockState().orElseThrow());
                                 }
                                 block.setType(MaterialMapping.getAir());
                             }
@@ -1915,7 +1915,7 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
                         for (CurrentTeam team : teamsInGame) {
                             BlockHolder bed = team.teamInfo.bed.getBlock();
                             LocationHolder loc = team.teamInfo.bed.add(0.5, 1.5, 0.5);
-                            boolean isBlockTypeBed = region.isBedBlock(bed.getBlockState());
+                            boolean isBlockTypeBed = region.isBedBlock(bed.getBlockState().orElseThrow());
                             boolean isAnchor = bed.getType().is("respawn_anchor");
                             boolean isCake = bed.getType().is("cake");
                             var enemies = getConnectedPlayers() // getConnectedPlayers is copy

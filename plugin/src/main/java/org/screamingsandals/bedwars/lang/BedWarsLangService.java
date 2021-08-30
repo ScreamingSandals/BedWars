@@ -72,7 +72,7 @@ public class BedWarsLangService extends LangService {
                 .stream()
                 .map(entry -> {
                     try {
-                        return Map.entry(LocaleUtils.toLocale(entry.getKey().replace("-", "_")), entry.getValue());
+                        return Map.entry(Locale.forLanguageTag(entry.getKey()), entry.getValue());
                     } catch (IllegalArgumentException ex) {
                         logger.error("Invalid language definition: {}", ex.getMessage());
                         return null;
@@ -148,7 +148,7 @@ public class BedWarsLangService extends LangService {
                                 var matcher = LANGUAGE_PATTERN.matcher(name);
                                 if (matcher.find()) {
                                     try {
-                                        var locale1 = LocaleUtils.toLocale(matcher.group().replace("-", "_"));
+                                        var locale1 = Locale.forLanguageTag(matcher.group());
 
                                         if (finalLocale.equals(locale1)) {
                                             ((LayeredTranslationContainer) fallbackContainer)

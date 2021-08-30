@@ -51,18 +51,15 @@ public class ThrowableFireballListener {
 
                 event.setCancelled(true);
 
-                if (stack.getAmount() > 1) {
-                    stack.setAmount(stack.getAmount() - 1);
-                } else {
-                    try {
-                        if (player.getPlayerInventory().getItemInOffHand().equals(stack)) {
-                            player.getPlayerInventory().setItemInOffHand(ItemFactory.getAir());
-                        } else {
-                            player.getPlayerInventory().removeItem(stack);
-                        }
-                    } catch (Throwable e) {
+                stack.setAmount(1);
+                try {
+                    if (player.getPlayerInventory().getItemInOffHand().equals(stack)) {
+                        player.getPlayerInventory().setItemInOffHand(ItemFactory.getAir());
+                    } else {
                         player.getPlayerInventory().removeItem(stack);
                     }
+                } catch (Throwable e) {
+                    player.getPlayerInventory().removeItem(stack);
                 }
 
                 player.as(Player.class).updateInventory();

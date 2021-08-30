@@ -65,18 +65,15 @@ public class WarpPowderImpl extends SpecialItem implements WarpPowder<GameImpl, 
                 .placeholder("time", teleportingTime)
                 .send(player);
 
-        if (item.getAmount() > 1) {
-            item.setAmount(item.getAmount() - 1);
-        } else {
-            try {
-                if (player.getPlayerInventory().getItemInOffHand().equals(item)) {
-                    player.getPlayerInventory().setItemInOffHand(ItemFactory.getAir());
-                } else {
-                    player.getPlayerInventory().removeItem(item);
-                }
-            } catch (Throwable e) {
+        item.setAmount(1);
+        try {
+            if (player.getPlayerInventory().getItemInOffHand().equals(item)) {
+                player.getPlayerInventory().setItemInOffHand(ItemFactory.getAir());
+            } else {
                 player.getPlayerInventory().removeItem(item);
             }
+        } catch (Throwable e) {
+            player.getPlayerInventory().removeItem(item);
         }
         player.as(Player.class).updateInventory();
 

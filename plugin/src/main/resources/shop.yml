@@ -327,6 +327,13 @@ data:
          - "Is it a bird? Is it a plane?"
          - "By the time you know"
          - "you are dead!"
+   - price: 20 of gold
+     properties: "BridgeEgg"
+     stack:
+       type: EGG
+       display-name: "Bridge Egg"
+       lore:
+         - "This egg creates a trail of bridge after it's thrown"
 
 - stack: "DIAMOND_PICKAXE;1;Pickaxes;Destroy others blocks? Use these pickaxes."
   column: right

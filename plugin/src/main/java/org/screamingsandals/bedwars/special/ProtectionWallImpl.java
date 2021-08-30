@@ -148,36 +148,30 @@ public class ProtectionWallImpl extends SpecialItem implements ProtectionWall<Ga
 
             MiscUtils.sendActionBarMessage(player, Message.of(LangKeys.SPECIALS_PROTECTION_WALL_CREATED).placeholder("time", breakingTime));
 
-            if (item.getAmount() > 1) {
-                item.setAmount(item.getAmount() - 1);
-            } else {
-                try {
-                    if (player.getPlayerInventory().getItemInOffHand().equals(item)) {
-                        player.getPlayerInventory().setItemInOffHand(ItemFactory.getAir());
-                    } else {
-                        player.getPlayerInventory().removeItem(item);
-                    }
-                } catch (Throwable e) {
+            item.setAmount(1);
+            try {
+                if (player.getPlayerInventory().getItemInOffHand().equals(item)) {
+                    player.getPlayerInventory().setItemInOffHand(ItemFactory.getAir());
+                } else {
                     player.getPlayerInventory().removeItem(item);
                 }
+            } catch (Throwable e) {
+                player.getPlayerInventory().removeItem(item);
             }
             player.as(Player.class).updateInventory();
         } else {
             game.registerSpecialItem(this);
 
             MiscUtils.sendActionBarMessage(player, Message.of(LangKeys.SPECIALS_PROTECTION_WALL_CREATED_UNBREAKABLE));
-            if (item.getAmount() > 1) {
-                item.setAmount(item.getAmount() - 1);
-            } else {
-                try {
-                    if (player.getPlayerInventory().getItemInOffHand().equals(item)) {
-                        player.getPlayerInventory().setItemInOffHand(ItemFactory.getAir());
-                    } else {
-                        player.getPlayerInventory().removeItem(item);
-                    }
-                } catch (Throwable e) {
+            item.setAmount(1);
+            try {
+                if (player.getPlayerInventory().getItemInOffHand().equals(item)) {
+                    player.getPlayerInventory().setItemInOffHand(ItemFactory.getAir());
+                } else {
                     player.getPlayerInventory().removeItem(item);
                 }
+            } catch (Throwable e) {
+                player.getPlayerInventory().removeItem(item);
             }
             player.as(Player.class).updateInventory();
         }

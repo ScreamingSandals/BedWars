@@ -347,7 +347,7 @@ public class MiscUtils {
 
     @Deprecated
     public static Location findEmptyLocation(Location respawnLocation) {
-        if (respawnLocation.getY() > (respawnLocation.getWorld().getMaxHeight() - 1) || (!respawnLocation.getBlock().getType().isSolid() && !respawnLocation.clone().add(0,1,0).getBlock().isSolid())) {
+        if (respawnLocation.getY() > (respawnLocation.getWorld().getMaxHeight() - 1) || (!respawnLocation.getBlock().getType().isSolid() && !respawnLocation.clone().add(0,1,0).getBlock().getType().isSolid())) {
             return respawnLocation;
         } else {
             return findEmptyLocation(respawnLocation.clone().add(0, 2, 0));
@@ -355,7 +355,7 @@ public class MiscUtils {
     }
 
     public static LocationHolder findEmptyLocation(LocationHolder respawnLocation) {
-        if (respawnLocation.getY() > (respawnLocation.getWorld().getMaxY() - 1) || (!respawnLocation.getBlock().getType().as(Material.class).isSolid() && !respawnLocation.clone().add(0,1,0).getBlock().as(Material.class).isSolid())) {
+        if (respawnLocation.getY() > (respawnLocation.getWorld().getMaxY() - 1) || (!respawnLocation.getBlock().getType().as(Material.class).isSolid() && !respawnLocation.clone().add(0,1,0).getBlock().getType().as(Material.class).isSolid())) {
             return respawnLocation;
         } else {
             return findEmptyLocation(respawnLocation.clone().add(0, 2, 0));

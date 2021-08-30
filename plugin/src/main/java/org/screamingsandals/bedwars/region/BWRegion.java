@@ -35,46 +35,55 @@ public interface BWRegion extends Region<BlockHolder> {
 
 
     @Override
+    @Deprecated
     default boolean isBlockAddedDuringGame(Object loc) {
         return isBlockAddedDuringGame(LocationMapper.wrapLocation(loc));
     }
 
     @Override
+    @Deprecated
     default void putOriginalBlock(Object loc, Object blockState) {
         putOriginalBlock(LocationMapper.wrapLocation(loc), BlockStateMapper.wrapBlockState(blockState).orElseThrow());
     }
 
     @Override
+    @Deprecated
     default void addBuiltDuringGame(Object loc) {
         addBuiltDuringGame(LocationMapper.wrapLocation(loc));
     }
 
     @Override
+    @Deprecated
     default void removeBlockBuiltDuringGame(Object loc) {
         removeBlockBuiltDuringGame(LocationMapper.wrapLocation(loc));
     }
 
     @Override
+    @Deprecated
     default boolean isLiquid(Object material) {
         return isLiquid(MaterialHolder.of(material));
     }
 
     @Override
+    @Deprecated
     default boolean isBedBlock(Object blockState) {
         return isBedBlock(BlockStateMapper.wrapBlockState(blockState).orElseThrow());
     }
 
     @Override
+    @Deprecated
     default boolean isBedHead(Object blockState) {
         return isBedHead(BlockStateMapper.wrapBlockState(blockState).orElseThrow());
     }
 
     @Override
+    @Deprecated
     default BlockHolder getBedNeighbor(Object blockHead) {
         return getBedNeighbor(BlockMapper.wrapBlock(blockHead));
     }
 
     @Override
+    @Deprecated
     default boolean isChunkUsed(Object chunk) {
         return isChunkUsed(ChunkMapper.wrapChunk(chunk).orElseThrow());
     }

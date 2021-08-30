@@ -18,7 +18,7 @@ public class LobbyInvisibilityListener {
                 MiscUtils.getLocationsBetween(game.getLobbyPos1(), game.getLobbyPos2()).forEach(loc -> {
                     if (loc.getBlock().getType().isAir()) {
                         final var block = loc.getBlock();
-                        final var blockState = block.getBlockState();
+                        final var blockState = block.getBlockState().orElseThrow();
                         game.getRegion().putOriginalBlock(loc, blockState);
                         block.setType(MaterialMapping.getAir());
                     }
