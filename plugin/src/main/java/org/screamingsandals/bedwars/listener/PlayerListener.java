@@ -32,6 +32,8 @@ import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.bedwars.utils.*;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.lib.nms.entity.PlayerUtils;
+import org.screamingsandals.lib.attribute.AttributeHolder;
+import org.screamingsandals.lib.attribute.AttributeTypeHolder;
 import org.screamingsandals.lib.bukkit.utils.nms.Version;
 import org.screamingsandals.lib.entity.EntityHuman;
 import org.screamingsandals.lib.entity.EntityLiving;
@@ -339,9 +341,9 @@ public class PlayerListener {
             if (gPlayer.isSpectator) {
                 Debug.info(event.getPlayer().getName() + " is going to be spectator");
                 if (team == null) {
-                    event.setLocation(LocationMapper.wrapLocation(gPlayer.getGame().makeSpectator(gPlayer, true)));
+                    event.setLocation(MiscUtils.findEmptyLocation(LocationMapper.wrapLocation(gPlayer.getGame().makeSpectator(gPlayer, true))));
                 } else {
-                    event.setLocation(LocationMapper.wrapLocation(gPlayer.getGame().makeSpectator(gPlayer, false)));
+                    event.setLocation(MiscUtils.findEmptyLocation(LocationMapper.wrapLocation(gPlayer.getGame().makeSpectator(gPlayer, false))));
                 }
             } else {
                 Debug.info(event.getPlayer().getName() + " is going to play the game");
@@ -1202,7 +1204,20 @@ public class PlayerListener {
             if (game.getConfigurationContainer().getOrDefault(ConfigurationContainer.DAMAGE_WHEN_PLAYER_IS_NOT_IN_ARENA, Boolean.class, false) && game.getStatus() == GameStatus.RUNNING
                     && !gPlayer.isSpectator) {
                 if (!ArenaUtils.isInArea(event.getNewLocation(), game.getPos1(), game.getPos2())) {
-                    player.asEntity().damage(5);
+                    var entity = player.asEntity();
+                    var armor = entity.getAttribute(AttributeTypeHolder.of("minecraft:generic.armor"));
+                    var armorToughness = entity.getAttribute(AttributeTypeHolder.of("minecraft:generic.armor_toughness"));
+                    if (armor.isEmpty()) {
+                        entity.damage(5);
+                    } else {
+                        // this is not 100% accurate formula - armorToughness check contains weaponDamage which is hardcoded to 5 (4*5=20) but we don't know the weapon damage yet
+                        var multiplier = (1.0 - Math.min(20.0, Math.max(armor.get().getValue() / 5.0, armor.get().getValue() - 20.0 / (armorToughness.map(AttributeHolder::getValue).orElse(0.0) + 8))) / 25.0);
+                        if (multiplier < 1) {
+                            multiplier = 2 - multiplier;
+                        }
+                        double weaponDamage = multiplier * 5.0;
+                        entity.damage(weaponDamage);
+                    }
                     Debug.info(player.getName() + " is doing prohibited move, damaging");
                 }
             } else if (MainConfig.getInstance().node("preventSpectatorFlyingAway").getBoolean() && gPlayer.isSpectator && (game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING)) {

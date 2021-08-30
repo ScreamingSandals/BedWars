@@ -119,13 +119,16 @@ public class BedWarsPlayer extends PlayerWrapper implements BWPlayer {
     }
 
     public void restoreInv() {
-        var player = as(Player.class);
-
         isTeleportingFromGame_justForInventoryPlugins = true;
         if (!mainLobbyUsed) {
-            teleport(oldInventory.leftLocation);
+            teleport(oldInventory.leftLocation, this::restoreRest);
         }
         mainLobbyUsed = false;
+        restoreRest();
+    }
+
+    private void restoreRest() {
+        var player = as(Player.class);
 
         player.getInventory().setContents(oldInventory.inventory);
         player.getInventory().setArmorContents(oldInventory.armor);
