@@ -1,7 +1,10 @@
 package org.screamingsandals.bedwars.listener;
 
+import lombok.var;
 import net.milkbowl.vault.chat.Chat;
 import org.bukkit.*;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
@@ -39,10 +42,7 @@ import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.lib.nms.entity.PlayerUtils;
 import org.screamingsandals.simpleinventories.utils.StackParser;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import static org.screamingsandals.bedwars.lib.lang.I18n.*;
 import static org.screamingsandals.bedwars.commands.BaseCommand.ADMIN_PERMISSION;
@@ -294,7 +294,7 @@ public class PlayerListener implements Listener {
                     event.setRespawnLocation(gPlayer.getGame().makeSpectator(gPlayer, false));
                 }
             } else {
-                event.setRespawnLocation(gPlayer.getGame().getPlayerTeam(gPlayer).teamInfo.spawn);
+                event.setRespawnLocation(MiscUtils.findEmptyLocation(gPlayer.getGame().getPlayerTeam(gPlayer).teamInfo.spawn));
 
                 if (Main.getConfigurator().config.getBoolean("respawn.protection-enabled", true)) {
                     RespawnProtection respawnProtection = game.addProtectedPlayer(gPlayer.player);
@@ -1096,7 +1096,19 @@ public class PlayerListener implements Listener {
             if (game.getOriginalOrInheritedDamageWhenPlayerIsNotInArena() && game.getStatus() == GameStatus.RUNNING
                     && !gPlayer.isSpectator) {
                 if (!GameCreator.isInArea(event.getTo(), game.getPos1(), game.getPos2())) {
-                    player.damage(5);
+                    var armor = player.getAttribute(Attribute.GENERIC_ARMOR);
+                    var armorToughness = player.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS);
+                    if (armor == null) {
+                        player.damage(5);
+                    } else {
+                        // this is not 100% accurate formula - armorToughness check contains weaponDamage which is hardcoded to 5 (4*5=20) but we don't know the weapon damage yet
+                        var multiplier = (1.0 - Math.min(20.0, Math.max(armor.getValue() / 5.0, armor.getValue() - 20.0 / ((armorToughness != null ? armorToughness.getValue() : 0) + 8))) / 25.0);
+                        if (multiplier < 1) {
+                            multiplier = 2 - multiplier;
+                        }
+                        double weaponDamage = multiplier * 5.0;
+                        player.damage(weaponDamage);
+                    }
                 }
             } else if (Main.getConfigurator().config.getBoolean("preventSpectatorFlyingAway", false) && gPlayer.isSpectator && (game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING)) {
                 if (!GameCreator.isInArea(event.getTo(), game.getPos1(), game.getPos2())) {
