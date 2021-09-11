@@ -122,6 +122,7 @@ public class Configurator {
         checkOrSetConfig(modify, "automatic-coloring-in-shop", true);
         checkOrSetConfig(modify, "sell-max-64-per-click-in-shop", true);
         checkOrSetConfig(modify, "enable-cheat-command-for-admins", false);
+        checkOrSetConfig(modify, "shopkeepers-are-silent", true);
 
         // config migration: "destroy-placed-blocks-by-explosion-except" from string to string list
         if (config.isSet("destroy-placed-blocks-by-explosion-except") && !config.isList("destroy-placed-blocks-by-explosion-except")) {

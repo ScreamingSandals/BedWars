@@ -8,6 +8,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Villager;
 import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.utils.CitizensUtils;
 
 public class GameStore implements org.screamingsandals.bedwars.api.game.GameStore {
@@ -60,6 +61,10 @@ public class GameStore implements org.screamingsandals.bedwars.api.game.GameStor
             }
 
             entity.setRemoveWhenFarAway(false);
+            try {
+                entity.setSilent(Main.getConfigurator().config.getBoolean("shopkeepers-are-silent"));
+            } catch (Throwable ignored) {
+            }
 
             if (enableCustomName) {
                 entity.setCustomName(shopName);
