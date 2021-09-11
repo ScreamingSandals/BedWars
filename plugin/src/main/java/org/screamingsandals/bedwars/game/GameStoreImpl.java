@@ -6,6 +6,7 @@ import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.entity.*;
 import org.screamingsandals.bedwars.api.game.GameStore;
+import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.utils.NPCUtils;
 import org.screamingsandals.lib.entity.EntityLiving;
 import org.screamingsandals.lib.entity.EntityMapper;
@@ -63,6 +64,12 @@ public class GameStoreImpl implements GameStore<EntityLiving, EntityTypeHolder, 
             if (enabledCustomName) {
                 entity.setCustomName(shopCustomName);
                 entity.setCustomNameVisible(true);
+            }
+
+            if (MainConfig.getInstance().node("shopkeepers-are-silent").getBoolean()) {
+                try {
+                    entity.setSilent(true);
+                } catch (Throwable ignored) {}
             }
 
             if (entity.getEntityType().is("villager")) {
