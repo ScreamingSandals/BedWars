@@ -4,7 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import org.screamingsandals.bedwars.api.events.ApplyPropertyToDisplayedItemEvent;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
-import org.screamingsandals.lib.material.Item;
+import org.screamingsandals.lib.item.Item;
 
 import java.util.Map;
 

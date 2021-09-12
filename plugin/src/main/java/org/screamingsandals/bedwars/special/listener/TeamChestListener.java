@@ -38,7 +38,7 @@ public class TeamChestListener {
         var block = event.getBlock();
         var team = event.getTeam();
 
-        if (!block.getType().is("ender_chest")) {
+        if (!block.getType().isSameType("ender_chest")) {
             return;
         }
 

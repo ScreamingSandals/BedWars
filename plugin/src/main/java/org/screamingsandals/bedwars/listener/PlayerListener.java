@@ -34,6 +34,7 @@ import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.lib.nms.entity.PlayerUtils;
 import org.screamingsandals.lib.attribute.AttributeHolder;
 import org.screamingsandals.lib.attribute.AttributeTypeHolder;
+import org.screamingsandals.lib.block.BlockTypeHolder;
 import org.screamingsandals.lib.bukkit.utils.nms.Version;
 import org.screamingsandals.lib.entity.EntityHuman;
 import org.screamingsandals.lib.entity.EntityLiving;
@@ -43,8 +44,7 @@ import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.event.entity.*;
 import org.screamingsandals.lib.event.player.*;
 import org.screamingsandals.lib.lang.Message;
-import org.screamingsandals.lib.material.MaterialMapping;
-import org.screamingsandals.lib.material.builder.ItemFactory;
+import org.screamingsandals.lib.item.builder.ItemFactory;
 import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.tasker.Tasker;
@@ -84,7 +84,7 @@ public class PlayerListener {
                     Debug.info(victim.getName() + "'s armor contents: " +
                             Arrays.stream(armorContents)
                                     .filter(Objects::nonNull)
-                                    .map(stack -> stack.getMaterial().getPlatformName())
+                                    .map(stack -> stack.getMaterial().platformName())
                                     .collect(Collectors.toList()));
                 }
             }
@@ -136,7 +136,7 @@ public class PlayerListener {
                 var team = game.getPlayerTeam(gVictim);
                 SpawnEffects.spawnEffect(game, gVictim, "game-effects.kill");
                 boolean isBed = team.isBed;
-                if (isBed && game.getConfigurationContainer().getOrDefault(ConfigurationContainer.ANCHOR_DECREASING, Boolean.class, false) && team.teamInfo.bed.getBlock().getType().is("respawn_anchor")) {
+                if (isBed && game.getConfigurationContainer().getOrDefault(ConfigurationContainer.ANCHOR_DECREASING, Boolean.class, false) && team.teamInfo.bed.getBlock().getType().isSameType("respawn_anchor")) {
                     isBed = Player116ListenerUtils.processAnchorDeath(game, team);
                 }
                 if (!isBed) {
@@ -462,7 +462,7 @@ public class PlayerListener {
 
             //Fix for obsidian dropping
             if (game.getStatus() == GameStatus.RUNNING && gamePlayer.isInGame()) {
-                if (block.getType().is("ender_chest")) {
+                if (block.getType().isSameType("ender_chest")) {
                     event.setDropItems(false);
                 }
             }
@@ -825,7 +825,7 @@ public class PlayerListener {
                     }
                 } else if (game.getStatus() == GameStatus.RUNNING) {
                     if (event.getBlockClicked() != null) {
-                        if (event.getBlockClicked().getType().is("ender_chest")) {
+                        if (event.getBlockClicked().getType().isSameType("ender_chest")) {
                             var chest = event.getBlockClicked();
                             CurrentTeam team = game.getTeamOfChestBlock(chest);
                             event.setCancelled(true);
@@ -855,7 +855,7 @@ public class PlayerListener {
                             var holder = event.getBlockClicked().getBlockState().orElseThrow().as(InventoryHolder.class);
                             game.addChestForFutureClear(event.getBlockClicked().getLocation().as(Location.class), holder.getInventory());
                             Debug.info(player.getName() + " used chest in BedWars game");
-                        } else if (event.getBlockClicked().getType().getPlatformName().toLowerCase().contains("cake")) {
+                        } else if (event.getBlockClicked().getType().platformName().toLowerCase().contains("cake")) {
                             if (game.getConfigurationContainer().getOrDefault(ConfigurationContainer.CAKE_TARGET_BLOCK_EATING, Boolean.class, false)) {
                                 if (game.getPlayerTeam(gPlayer).getTargetBlock().equals(event.getBlockClicked().getLocation())) {
                                     event.setCancelled(true);
@@ -877,7 +877,7 @@ public class PlayerListener {
                                                     cake.setSlicesEaten(cake.getSlicesEaten() + 1);
                                                     if (cake.getSlicesEaten() >= 6) {
                                                         game.bedDestroyed(event.getBlockClicked().getLocation(), gPlayer, false, false, true);
-                                                        event.getBlockClicked().setType(MaterialMapping.getAir());
+                                                        event.getBlockClicked().setType(BlockTypeHolder.air());
                                                     } else {
                                                         state.setData(cake);
                                                         state.update();
@@ -898,7 +898,7 @@ public class PlayerListener {
                 }
 
                 if (event.getBlockClicked() != null) {
-                    if (game.getRegion().isBedBlock(event.getBlockClicked().getBlockState().orElseThrow()) || event.getBlockClicked().getType().is("respawn_anchor")) {
+                    if (game.getRegion().isBedBlock(event.getBlockClicked().getBlockState().orElseThrow()) || event.getBlockClicked().getType().isSameType("respawn_anchor")) {
                         // prevent Essentials to set home in arena
                         event.setCancelled(true);
 
@@ -907,19 +907,19 @@ public class PlayerListener {
                             if (stack != null && stack.getAmount() > 0) {
                                 boolean anchorFilled = false;
                                 if (game.getConfigurationContainer().getOrDefault(ConfigurationContainer.ANCHOR_DECREASING, Boolean.class, false)
-                                        && event.getBlockClicked().getType().is("respawn_anchor")
+                                        && event.getBlockClicked().getType().isSameType("respawn_anchor")
                                         && game.getPlayerTeam(gPlayer).teamInfo.bed.equals(event.getBlockClicked().getLocation())
                                         && event.getItem() != null && event.getItem().getMaterial().is("glowstone")) {
                                     Debug.info(player.getName() + " filled respawn anchor");
                                     anchorFilled = Player116ListenerUtils.anchorCharge(event, game, stack);
                                 }
 
-                                if (!anchorFilled && stack.getMaterial().isBlock()) {
+                                if (!anchorFilled && stack.getMaterial().block().isPresent()) {
                                     var face = event.getBlockFace();
                                     var block = event.getBlockClicked().getLocation().clone().add(face.getDirection()).getBlock();
                                     if (block.getType().isAir()) {
                                         var originalState = block.getBlockState().orElseThrow();
-                                        block.setType(stack.getMaterial());
+                                        block.setType(stack.getMaterial().block().orElseThrow());
                                         var bevent = new BlockPlaceEvent(block.as(Block.class), originalState.as(BlockState.class),
                                                 event.getBlockClicked().as(Block.class), stack.as(ItemStack.class), player.as(Player.class), true); // bruh why are we doing this
                                         Bukkit.getPluginManager().callEvent(bevent);
@@ -939,7 +939,7 @@ public class PlayerListener {
                 }
             } else if (event.getAction() == SPlayerInteractEvent.Action.LEFT_CLICK_BLOCK &&
                     game.getStatus() == GameStatus.RUNNING && !gPlayer.isSpectator
-                    && event.getBlockClicked() != null && event.getBlockClicked().getType().is("dragon_egg")
+                    && event.getBlockClicked() != null && event.getBlockClicked().getType().isSameType("dragon_egg")
                     && MainConfig.getInstance().node("disableDragonEggTeleport").getBoolean(true)) {
                 event.setCancelled(true);
                 Debug.info(player.getName() + " interacts with dragon egg");
@@ -951,7 +951,7 @@ public class PlayerListener {
                 if (blockBreakEvent.isDropItems()) {
                     event.getBlockClicked().breakNaturally();
                 } else {
-                    event.getBlockClicked().setType(MaterialMapping.getAir());
+                    event.getBlockClicked().setType(BlockTypeHolder.air());
                 }
             }
         }

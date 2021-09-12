@@ -8,7 +8,7 @@ import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.ItemSpawnerType;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.lib.event.CancellableAbstractEvent;
-import org.screamingsandals.lib.material.Item;
+import org.screamingsandals.lib.item.Item;
 import org.screamingsandals.simpleinventories.events.OnTradeEvent;
 
 @EqualsAndHashCode(callSuper = true)

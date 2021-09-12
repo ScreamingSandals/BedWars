@@ -6,12 +6,11 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.material.*;
-import org.screamingsandals.lib.material.MaterialHolder;
-import org.screamingsandals.lib.material.MaterialMapping;
-import org.screamingsandals.lib.world.BlockHolder;
+import org.screamingsandals.lib.block.BlockHolder;
+import org.screamingsandals.lib.block.BlockTypeHolder;
 import org.screamingsandals.lib.world.LocationHolder;
 import org.screamingsandals.lib.world.chunk.ChunkHolder;
-import org.screamingsandals.lib.world.state.BlockStateHolder;
+import org.screamingsandals.lib.block.state.BlockStateHolder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,7 +33,7 @@ public class LegacyRegion implements BWRegion {
 
     @Override
     public void putOriginalBlock(LocationHolder loc, BlockStateHolder block) {
-    	if (!block.getType().is("BED_BLOCK")) {
+    	if (!block.getType().isSameType("BED_BLOCK")) {
     		brokenBlocks.add(loc.getBlock());
     	}
 
@@ -78,7 +77,7 @@ public class LegacyRegion implements BWRegion {
             if (!chunk.isLoaded()) {
                 chunk.load();
             }
-            block.getBlock().setType(MaterialMapping.getAir());
+            block.getBlock().setType(BlockTypeHolder.air());
         }
         builtBlocks.clear();
 
@@ -177,8 +176,8 @@ public class LegacyRegion implements BWRegion {
     }
 
     @Override
-    public boolean isLiquid(MaterialHolder material) {
-        return material.is("water", "lava", "stationary_water", "stationary_lava");
+    public boolean isLiquid(BlockTypeHolder material) {
+        return material.isSameType("water", "lava", "stationary_water", "stationary_lava");
     }
 
     @Override

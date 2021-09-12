@@ -8,10 +8,9 @@ import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.ItemSpawner;
 import org.screamingsandals.bedwars.game.ItemSpawnerType;
 import org.screamingsandals.lib.event.CancellableAbstractEvent;
-import org.screamingsandals.lib.material.Item;
-import org.screamingsandals.lib.material.builder.ItemFactory;
+import org.screamingsandals.lib.item.Item;
+import org.screamingsandals.lib.item.builder.ItemFactory;
 import org.screamingsandals.lib.world.LocationHolder;
-import org.screamingsandals.lib.world.LocationMapper;
 
 @EqualsAndHashCode(callSuper = true)
 @Data

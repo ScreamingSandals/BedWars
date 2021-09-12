@@ -9,22 +9,21 @@ import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.utils.MiscUtils;
+import org.screamingsandals.lib.block.BlockTypeHolder;
 import org.screamingsandals.lib.lang.Message;
-import org.screamingsandals.lib.material.Item;
-import org.screamingsandals.lib.material.MaterialHolder;
-import org.screamingsandals.lib.material.MaterialMapping;
-import org.screamingsandals.lib.material.builder.ItemFactory;
+import org.screamingsandals.lib.item.Item;
+import org.screamingsandals.lib.item.builder.ItemFactory;
 import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
 import org.screamingsandals.lib.tasker.task.TaskerTask;
-import org.screamingsandals.lib.world.BlockHolder;
+import org.screamingsandals.lib.block.BlockHolder;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 @EqualsAndHashCode(callSuper = true)
-public class ProtectionWallImpl extends SpecialItem implements ProtectionWall<GameImpl, BedWarsPlayer, CurrentTeam, MaterialHolder, BlockHolder> {
+public class ProtectionWallImpl extends SpecialItem implements ProtectionWall<GameImpl, BedWarsPlayer, CurrentTeam, BlockTypeHolder, BlockHolder> {
     private int breakingTime;
     private int livingTime;
     private int width;
@@ -33,7 +32,7 @@ public class ProtectionWallImpl extends SpecialItem implements ProtectionWall<Ga
     private boolean breakable;
 
     private final Item item;
-    private MaterialHolder material;
+    private BlockTypeHolder material;
     private List<BlockHolder> wallBlocks;
     private TaskerTask task;
 
@@ -55,7 +54,7 @@ public class ProtectionWallImpl extends SpecialItem implements ProtectionWall<Ga
                     if (livingTime == breakingTime) {
                         for (var block : wallBlocks) {
                             block.getLocation().getChunk().load(false);
-                            block.setType(MaterialMapping.getAir());
+                            block.setType(BlockTypeHolder.air());
 
                             game.getRegion().removeBlockBuiltDuringGame(block.getLocation());
                         }
@@ -73,7 +72,7 @@ public class ProtectionWallImpl extends SpecialItem implements ProtectionWall<Ga
         game.getRegion().addBuiltDuringGame(block.getLocation());
     }
 
-    public void createWall(boolean bre, int time, int wid, int hei, int dis, MaterialHolder mat) {
+    public void createWall(boolean bre, int time, int wid, int hei, int dis, BlockTypeHolder mat) {
         breakable = bre;
         breakingTime = time;
         width = wid;
@@ -136,7 +135,7 @@ public class ProtectionWallImpl extends SpecialItem implements ProtectionWall<Ga
                     continue;
                 }
 
-                var coloredMaterial = MaterialMapping.colorize(material, team.teamInfo.color.material1_13);
+                var coloredMaterial = material.colorize(team.teamInfo.color.material1_13);
                 placedBlock.setType(coloredMaterial);
                 addBlockToList(placedBlock);
             }

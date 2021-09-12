@@ -1,10 +1,6 @@
 package org.screamingsandals.bedwars.listener;
 
-import org.bukkit.Location;
-import org.bukkit.World;
-import org.bukkit.block.BlockState;
 import org.screamingsandals.bedwars.BedWarsPlugin;
-import org.screamingsandals.bedwars.api.RunningTeam;
 import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.config.MainConfig;
@@ -20,7 +16,7 @@ import org.screamingsandals.lib.event.entity.SEntityChangeBlockEvent;
 import org.screamingsandals.lib.event.entity.SEntityExplodeEvent;
 import org.screamingsandals.lib.event.world.SPlantGrowEvent;
 import org.screamingsandals.lib.utils.annotations.Service;
-import org.screamingsandals.lib.world.BlockHolder;
+import org.screamingsandals.lib.block.BlockHolder;
 import org.screamingsandals.lib.world.LocationHolder;
 import org.screamingsandals.lib.world.LocationMapper;
 import org.spongepowered.configurate.ConfigurationNode;
@@ -64,7 +60,7 @@ public class WorldListener {
             return;
         }
 
-        if (event.getNewBlockState().getType().is("SNOW")) {
+        if (event.getNewBlockState().getType().isSameType("SNOW")) {
             return;
         }
 
@@ -128,8 +124,8 @@ public class WorldListener {
                     blockList.removeIf(block -> {
                         if (!game.isBlockAddedDuringGame(block.getLocation())) {
                             if (game.getConfigurationContainer().getOrDefault(ConfigurationContainer.TARGET_BLOCK_EXPLOSIONS, Boolean.class, false)) {
-                                for (RunningTeam team : game.getRunningTeams()) {
-                                    if (team.getTargetBlock().equals(block.getLocation().as(Location.class))) {
+                                for (var team : game.getRunningTeams()) {
+                                    if (team.getTargetBlock().equals(block.getLocation())) {
                                         game.targetBlockExplode(team);
                                         break;
                                     }
@@ -137,7 +133,7 @@ public class WorldListener {
                             }
                             return true;
                         }
-                        return explosionExceptionTypeName.contains(block.getType().getPlatformName()) || !destroyPlacedBlocksByExplosion;
+                        return explosionExceptionTypeName.contains(block.getType().platformName()) || !destroyPlacedBlocksByExplosion;
                     });
                 } else {
                     cancellable.setCancelled(true);
@@ -177,7 +173,7 @@ public class WorldListener {
                         return;
                         //}
                     } else /*if (game.getStatus() == GameStatus.WAITING) {*/
-                        if (game.getLobbyWorld() == event.getEntity().getLocation().getWorld().as(World.class)) {
+                        if (game.getLobbyWorld().equals(event.getEntity().getLocation().getWorld())) {
                             if (event.getEntity().getLocation().getDistanceSquared(LocationMapper.resolve(game.getLobbySpawn()).orElseThrow()) <= Math
                                     .pow(MainConfig.getInstance().node("prevent-lobby-spawn-mobs-in-radius").getInt(), 2)) {
                                 event.setCancelled(true);
@@ -223,7 +219,7 @@ public class WorldListener {
                 if (game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) {
                     if (event.getEntity().getEntityType().is("FALLING_BLOCK")
                             && game.getConfigurationContainer().getOrDefault(ConfigurationContainer.BLOCK_FALLING, Boolean.class, false)) {
-                        if (event.getBlock().getType() != event.getTo().getType()) {
+                        if (!event.getBlock().getType().equals(event.getTo())) {
                             if (!game.isBlockAddedDuringGame(event.getBlock().getLocation())) {
                                 if (!event.getBlock().getType().isAir()) {
                                     game.getRegion().putOriginalBlock(event.getBlock().getLocation(),

@@ -5,7 +5,6 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
@@ -17,10 +16,10 @@ import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.events.ApplyPropertyToItemEventImpl;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
+import org.screamingsandals.lib.block.BlockTypeHolder;
 import org.screamingsandals.lib.container.PlayerContainer;
-import org.screamingsandals.lib.material.Item;
-import org.screamingsandals.lib.material.MaterialHolder;
-import org.screamingsandals.lib.material.MaterialMapping;
+import org.screamingsandals.lib.item.Item;
+import org.screamingsandals.lib.item.ItemTypeHolder;
 import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.sender.SenderMessage;
@@ -133,9 +132,9 @@ public class MiscUtils {
         }
     }
 
-    public MaterialHolder getMaterialFromString(String name, String fallback) {
+    public ItemTypeHolder getMaterialFromString(String name, String fallback) {
         if (name != null) {
-            var result = MaterialMapping.resolve(name);
+            var result = ItemTypeHolder.ofOptional(name);
             if (result.isEmpty()) {
                 Debug.warn("Wrong material configured: " + name, true);
             } else {
@@ -143,7 +142,20 @@ public class MiscUtils {
             }
         }
 
-        return MaterialMapping.resolve(fallback).orElseThrow();
+        return ItemTypeHolder.of(fallback);
+    }
+
+    public BlockTypeHolder getBlockTypeFromString(String name, String fallback) {
+        if (name != null) {
+            var result = BlockTypeHolder.ofOptional(name);
+            if (result.isEmpty()) {
+                Debug.warn("Wrong material configured: " + name, true);
+            } else {
+                return result.get();
+            }
+        }
+
+        return BlockTypeHolder.of(fallback);
     }
 
     public PlayerWrapper findTarget(Game game, PlayerWrapper player, double maxDist) {
@@ -280,7 +292,7 @@ public class MiscUtils {
 
     public void giveItemsToPlayer(List<Item> itemStackList, PlayerWrapper player, TeamColor teamColor) {
         for (Item itemStack : itemStackList) {
-            final String materialName = itemStack.getMaterial().getPlatformName();
+            final String materialName = itemStack.getMaterial().platformName();
             final PlayerContainer playerInventory = player.getPlayerInventory();
 
             if (materialName.contains("HELMET")) {

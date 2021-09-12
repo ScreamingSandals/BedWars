@@ -10,8 +10,8 @@ import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.lib.lang.Message;
-import org.screamingsandals.lib.material.Item;
-import org.screamingsandals.lib.material.builder.ItemFactory;
+import org.screamingsandals.lib.item.Item;
+import org.screamingsandals.lib.item.builder.ItemFactory;
 import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
 import org.screamingsandals.lib.tasker.task.TaskerTask;
@@ -22,7 +22,7 @@ public class ArrowBlockerImpl extends SpecialItem implements ArrowBlocker<GameIm
     private final int protectionTime;
     private int usedTime;
     private boolean isActivated;
-    private Item item;
+    private final Item item;
     private TaskerTask task;
 
     public ArrowBlockerImpl(GameImpl game, BedWarsPlayer player, CurrentTeam team, Item item, int protectionTime) {

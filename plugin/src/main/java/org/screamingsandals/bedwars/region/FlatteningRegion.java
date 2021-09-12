@@ -2,13 +2,11 @@ package org.screamingsandals.bedwars.region;
 
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Bed;
-import org.screamingsandals.lib.material.MaterialHolder;
-import org.screamingsandals.lib.material.MaterialMapping;
-import org.screamingsandals.lib.world.BlockDataHolder;
-import org.screamingsandals.lib.world.BlockHolder;
+import org.screamingsandals.lib.block.BlockHolder;
+import org.screamingsandals.lib.block.BlockTypeHolder;
 import org.screamingsandals.lib.world.LocationHolder;
 import org.screamingsandals.lib.world.chunk.ChunkHolder;
-import org.screamingsandals.lib.world.state.BlockStateHolder;
+import org.screamingsandals.lib.block.state.BlockStateHolder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,7 +15,7 @@ import java.util.Map;
 
 public class FlatteningRegion implements BWRegion {
     private final List<LocationHolder> builtBlocks = new ArrayList<>();
-    private final Map<LocationHolder, BlockDataHolder> brokenOriginalBlocks = new HashMap<>();
+    private final Map<LocationHolder, BlockTypeHolder> brokenOriginalBlocks = new HashMap<>();
 
     @Override
     public boolean isBlockAddedDuringGame(LocationHolder loc) {
@@ -26,7 +24,7 @@ public class FlatteningRegion implements BWRegion {
 
     @Override
     public void putOriginalBlock(LocationHolder loc, BlockStateHolder block) {
-        brokenOriginalBlocks.put(loc, block.getBlockData());
+        brokenOriginalBlocks.put(loc, block.getType());
     }
 
     @Override
@@ -40,13 +38,13 @@ public class FlatteningRegion implements BWRegion {
     }
 
     @Override
-    public boolean isLiquid(MaterialHolder material) {
-        return material.is("water", "lava");
+    public boolean isLiquid(BlockTypeHolder material) {
+        return material.isSameType("water", "lava");
     }
 
     @Override
     public boolean isBedBlock(BlockStateHolder block) {
-        return FlatteningBedUtils.isBedBlock(block.getBlockData());
+        return FlatteningBedUtils.isBedBlock(block.getType());
     }
 
     @Override
@@ -56,7 +54,7 @@ public class FlatteningRegion implements BWRegion {
             if (!chunk.isLoaded()) {
                 chunk.load();
             }
-            block.getBlock().setType(MaterialMapping.getAir());
+            block.getBlock().setType(BlockTypeHolder.air());
         }
         builtBlocks.clear();
         for (var block : brokenOriginalBlocks.entrySet()) {
@@ -64,14 +62,14 @@ public class FlatteningRegion implements BWRegion {
             if (!chunk.isLoaded()) {
                 chunk.load();
             }
-            block.getKey().getBlock().setBlockData(block.getValue());
+            block.getKey().getBlock().setType(block.getValue());
         }
         brokenOriginalBlocks.clear();
     }
 
     @Override
     public boolean isBedHead(BlockStateHolder block) {
-        return isBedBlock(block) && ((Bed) block.getBlockData().as(BlockData.class)).getPart() == Bed.Part.HEAD;
+        return isBedBlock(block) && ((Bed) block.getType().as(BlockData.class)).getPart() == Bed.Part.HEAD;
     }
 
     @Override

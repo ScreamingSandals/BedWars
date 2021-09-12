@@ -6,7 +6,7 @@ import org.bukkit.block.Sign;
 import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.lib.signs.ClickableSign;
 import org.screamingsandals.lib.utils.BlockFace;
-import org.screamingsandals.lib.world.BlockHolder;
+import org.screamingsandals.lib.block.BlockHolder;
 import org.screamingsandals.lib.world.LocationHolder;
 
 import java.util.Optional;

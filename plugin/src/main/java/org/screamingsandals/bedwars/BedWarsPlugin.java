@@ -38,11 +38,11 @@ import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.bedwars.tab.TabManager;
 import org.screamingsandals.bedwars.utils.*;
 import org.screamingsandals.bedwars.lib.debug.Debug;
+import org.screamingsandals.lib.block.BlockTypeHolder;
 import org.screamingsandals.lib.healthindicator.HealthIndicatorManager;
+import org.screamingsandals.lib.item.Item;
+import org.screamingsandals.lib.item.ItemTypeHolder;
 import org.screamingsandals.lib.lang.Message;
-import org.screamingsandals.lib.material.Item;
-import org.screamingsandals.lib.material.MaterialHolder;
-import org.screamingsandals.lib.material.MaterialMapping;
 import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.plugin.PluginContainer;
@@ -201,10 +201,10 @@ public class BedWarsPlugin extends PluginContainer implements BedwarsAPI {
         return false;
     }
 
-    public static boolean isFarmBlock(MaterialHolder mat) {
+    public static boolean isFarmBlock(BlockTypeHolder mat) {
         if (MainConfig.getInstance().node("ignored-blocks", "enabled").getBoolean()) {
             try {
-                return mat.is(Objects.requireNonNull(MainConfig.getInstance().node("ignored-blocks", "blocks").getList(String.class)).toArray());
+                return mat.isSameType(Objects.requireNonNull(MainConfig.getInstance().node("ignored-blocks", "blocks").getList(String.class)).toArray());
             } catch (SerializationException | NullPointerException e) {
                 e.printStackTrace();
             }
@@ -212,12 +212,12 @@ public class BedWarsPlugin extends PluginContainer implements BedwarsAPI {
         return false;
     }
 
-    public static boolean isBreakableBlock(MaterialHolder mat) {
+    public static boolean isBreakableBlock(BlockTypeHolder mat) {
         if (MainConfig.getInstance().node("breakable", "enabled").getBoolean()) {
             try {
                 var list = MainConfig.getInstance().node("breakable", "blocks").getList(String.class);
                 boolean asblacklist = MainConfig.getInstance().node("breakable", "blacklist-mode").getBoolean();
-                return Objects.requireNonNull(list).contains(mat.getPlatformName()) != asblacklist;
+                return Objects.requireNonNull(list).contains(mat.platformName()) != asblacklist;
             } catch (SerializationException | NullPointerException e) {
                 e.printStackTrace();
             }
@@ -325,8 +325,8 @@ public class BedWarsPlugin extends PluginContainer implements BedwarsAPI {
                 materialName += ":" + damage;
             }
 
-            var result = MaterialMapping.resolve(materialName).orElse(MaterialMapping.getAir());
-            if (result.as(Material.class) == Material.AIR) {
+            var result = ItemTypeHolder.ofOptional(materialName).orElse(ItemTypeHolder.air());
+            if (result.isAir()) {
                 return;
             }
 
@@ -337,7 +337,7 @@ public class BedWarsPlugin extends PluginContainer implements BedwarsAPI {
                 color = ChatColor.WHITE;
             }
             spawnerTypes.put(spawnerN.toLowerCase(), new ItemSpawnerType(spawnerN.toLowerCase(), name, translate,
-                    spread, result.as(Material.class), color, interval, result.getDurability()));
+                    spread, result.as(Material.class), color, interval, result.durability()));
         });
 
         if (MainConfig.getInstance().node("bungee", "enabled").getBoolean()) {

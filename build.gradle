@@ -12,7 +12,7 @@ plugins {
     id 'com.github.gmazzo.buildconfig' version "${BUILDCONFIG_VERSION}" apply false
 }
 
-defaultTasks 'clean', ':BedWars-NMS:generateNmsComponents', 'screamCompile', ':BedWars-API:allowJavadocUpload'
+defaultTasks 'clean', 'screamCompile', ':BedWars-API:allowJavadocUpload'
 
 allprojects {
     group = 'org.screamingsandals.bedwars'

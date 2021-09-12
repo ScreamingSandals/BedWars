@@ -7,6 +7,7 @@ import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.bedwars.BedWarsPlugin;
+import org.screamingsandals.lib.block.BlockTypeHolder;
 
 public enum TeamColor {
     BLACK(ChatColor.BLACK, 0xF, "BLACK", Color.BLACK),
@@ -35,6 +36,10 @@ public enum TeamColor {
         this.woolData = woolData;
         this.material1_13 = material1_13;
         this.leatherColor = leatherColor;
+    }
+
+    public BlockTypeHolder getWoolBlockType() {
+        return BlockTypeHolder.of("WOOL").colorize(material1_13);
     }
 
     public ItemStack getWool() {

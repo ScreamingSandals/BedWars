@@ -274,7 +274,7 @@ public class TeamCommand extends BaseAdminSubCommand {
                                             .placeholder("x", team.bed.getBlockX())
                                             .placeholder("y", team.bed.getBlockY())
                                             .placeholder("z", team.bed.getBlockZ())
-                                            .placeholder("material", team.bed.getBlock().getType().getPlatformName())
+                                            .placeholder("material", team.bed.getBlock().getType().platformName())
                             );
                         }))
         );

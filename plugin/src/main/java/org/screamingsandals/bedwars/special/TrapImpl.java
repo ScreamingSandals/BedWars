@@ -11,9 +11,9 @@ import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.bedwars.utils.Sounds;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.screamingsandals.lib.block.BlockTypeHolder;
 import org.screamingsandals.lib.lang.Message;
-import org.screamingsandals.lib.material.MaterialMapping;
-import org.screamingsandals.lib.material.meta.PotionEffectHolder;
+import org.screamingsandals.lib.item.meta.PotionEffectHolder;
 import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.utils.AdventureHelper;
 import org.screamingsandals.lib.world.LocationHolder;
@@ -46,7 +46,7 @@ public class TrapImpl extends SpecialItem implements Trap<GameImpl, BedWarsPlaye
     public void process(BedWarsPlayer player, CurrentTeam runningTeam, boolean forceDestroy) {
         if (runningTeam == this.team || forceDestroy) {
             game.unregisterSpecialItem(this);
-            location.getBlock().setType(MaterialMapping.getAir());
+            location.getBlock().setType(BlockTypeHolder.air());
             return;
         }
 

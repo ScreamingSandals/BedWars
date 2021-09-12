@@ -6,9 +6,8 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.screamingsandals.bedwars.lib.debug.Debug;
-import org.screamingsandals.lib.material.Item;
-import org.screamingsandals.lib.material.MaterialMapping;
-import org.screamingsandals.lib.material.builder.ItemFactory;
+import org.screamingsandals.lib.item.Item;
+import org.screamingsandals.lib.item.builder.ItemFactory;
 
 public class ColorChanger implements org.screamingsandals.bedwars.api.utils.ColorChanger<Item> {
     @Deprecated
@@ -92,7 +91,7 @@ public class ColorChanger implements org.screamingsandals.bedwars.api.utils.Colo
         if (newItem.getMaterial().is("LEATHER_BOOTS", "LEATHER_CHESTPLATE", "LEATHER_HELMET", "LEATHER_LEGGINGS")) {
             newItem.setColor(color.getLeatherColor());
         } else {
-            newItem.setMaterial(MaterialMapping.colorize(newItem.getMaterial(), color.material1_13));
+            newItem.setMaterial(newItem.getMaterial().colorize(color.material1_13));
         }
         return newItem;
     }

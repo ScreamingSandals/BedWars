@@ -60,16 +60,16 @@ import org.screamingsandals.bedwars.scoreboard.ScreamingScoreboard;
 import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.bedwars.tab.TabManager;
 import org.screamingsandals.bedwars.utils.*;
+import org.screamingsandals.lib.block.BlockTypeHolder;
 import org.screamingsandals.lib.entity.*;
 import org.screamingsandals.lib.entity.type.EntityTypeHolder;
 import org.screamingsandals.lib.event.EventManager;
 import org.screamingsandals.lib.event.player.SPlayerBlockBreakEvent;
 import org.screamingsandals.lib.healthindicator.HealthIndicator;
 import org.screamingsandals.lib.hologram.HologramManager;
-import org.screamingsandals.lib.lang.Message;
-import org.screamingsandals.lib.material.MaterialHolder;
-import org.screamingsandals.lib.material.MaterialMapping;
-import org.screamingsandals.lib.material.builder.ItemFactory;
+import org.screamingsandals.lib.item.ItemTypeHolder;
+import org.screamingsandals.lib.lang.Message;;
+import org.screamingsandals.lib.item.builder.ItemFactory;
 import org.screamingsandals.lib.npc.NPC;
 import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.player.PlayerWrapper;
@@ -80,12 +80,12 @@ import org.screamingsandals.lib.tasker.TaskerTime;
 import org.screamingsandals.lib.tasker.task.TaskerTask;
 import org.screamingsandals.lib.utils.AdventureHelper;
 import org.screamingsandals.lib.visuals.Visual;
-import org.screamingsandals.lib.world.BlockHolder;
+import org.screamingsandals.lib.block.BlockHolder;
 import org.screamingsandals.lib.world.LocationHolder;
 import org.screamingsandals.lib.world.LocationMapper;
 import org.screamingsandals.lib.world.WorldHolder;
 import org.screamingsandals.lib.world.chunk.ChunkHolder;
-import org.screamingsandals.lib.world.state.BlockStateHolder;
+import org.screamingsandals.lib.block.state.BlockStateHolder;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
@@ -556,7 +556,7 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
         return status == GameStatus.RUNNING && region.isBlockAddedDuringGame(loc);
     }
 
-    public boolean blockPlace(BedWarsPlayer player, BlockHolder block, BlockStateHolder replaced, org.screamingsandals.lib.material.Item itemInHand) {
+    public boolean blockPlace(BedWarsPlayer player, BlockHolder block, BlockStateHolder replaced, org.screamingsandals.lib.item.Item itemInHand) {
         if (status != GameStatus.RUNNING) {
             return false; // ?
         }
@@ -615,7 +615,7 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
         if (region.isBlockAddedDuringGame(block.getLocation())) {
             region.removeBlockBuiltDuringGame(block.getLocation());
 
-            if (block.getType().is("ender_chest")) {
+            if (block.getType().isSameType("ender_chest")) {
                 CurrentTeam team = getTeamOfChestBlock(block);
                 if (team != null) {
                     team.removeTeamChestBlock(block);
@@ -635,7 +635,7 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
                 try {
                     event.setDropItems(false);
                 } catch (Throwable tr) {
-                    block.setType(MaterialMapping.getAir());
+                    block.setType(BlockTypeHolder.air());
                 }
             }
             return true;
@@ -664,24 +664,24 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
                     event.setDropItems(false);
                 } catch (Throwable tr) {
                     if (region.isBedHead(block.getBlockState().orElseThrow())) {
-                        region.getBedNeighbor(block).setType(MaterialMapping.getAir());
+                        region.getBedNeighbor(block).setType(BlockTypeHolder.air());
                     } else {
-                        block.setType(MaterialMapping.getAir());
+                        block.setType(BlockTypeHolder.air());
                     }
                 }
                 return true;
-            } else if (configurationContainer.getOrDefault(ConfigurationContainer.CAKE_TARGET_BLOCK_EATING, Boolean.class, false) && block.getType().is("cake")) {
+            } else if (configurationContainer.getOrDefault(ConfigurationContainer.CAKE_TARGET_BLOCK_EATING, Boolean.class, false) && block.getType().isSameType("cake")) {
                 return false; // when CAKES are in eating mode, don't allow to just break it
             } else {
                 if (getPlayerTeam(player).teamInfo.bed.equals(loc)) {
                     return false;
                 }
-                bedDestroyed(loc, player, false, block.getType().is("respawn_anchor"), block.getType().is("cake"));
+                bedDestroyed(loc, player, false, block.getType().isSameType("respawn_anchor"), block.getType().isSameType("cake"));
                 region.putOriginalBlock(loc, block.getBlockState().orElseThrow());
                 try {
                     event.setDropItems(false);
                 } catch (Throwable tr) {
-                    block.setType(MaterialMapping.getAir());
+                    block.setType(BlockTypeHolder.air());
                 }
                 return true;
             }
@@ -712,14 +712,14 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
                     region.putOriginalBlock(loc, region.getBedNeighbor(block).getBlockState().orElseThrow());
                 }
                 if (region.isBedHead(block.getBlockState().orElseThrow())) {
-                    region.getBedNeighbor(block).setType(MaterialMapping.getAir());
+                    region.getBedNeighbor(block).setType(BlockTypeHolder.air());
                 } else {
-                    block.setType(MaterialMapping.getAir());
+                    block.setType(BlockTypeHolder.air());
                 }
             } else {
-                bedDestroyed(loc, null, false, block.getType().is("respawn_anchor"), block.getType().is("cake"));
+                bedDestroyed(loc, null, false, block.getType().isSameType("respawn_anchor"), block.getType().isSameType("cake"));
                 region.putOriginalBlock(loc, block.getBlockState().orElseThrow());
-                block.setType(MaterialMapping.getAir());
+                block.setType(BlockTypeHolder.air());
             }
         }
     }
@@ -1881,14 +1881,14 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
                                 } else {
                                     region.putOriginalBlock(loc, block.getBlockState().orElseThrow());
                                 }
-                                block.setType(MaterialMapping.getAir());
+                                block.setType(BlockTypeHolder.air());
                             }
                         }
                     }
 
                     for (CurrentTeam team : teamsInGame) {
                         BlockHolder block = team.getTargetBlock().getBlock();
-                        if (block != null && block.getType().is("respawn_anchor")) { // don't break the game for older servers
+                        if (block != null && block.getType().isSameType("respawn_anchor")) { // don't break the game for older servers
                             Tasker.build(() -> {
                                 RespawnAnchor anchor = (RespawnAnchor) block.as(Block.class).getBlockData();
                                 anchor.setCharges(0);
@@ -1916,8 +1916,8 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
                             BlockHolder bed = team.teamInfo.bed.getBlock();
                             LocationHolder loc = team.teamInfo.bed.add(0.5, 1.5, 0.5);
                             boolean isBlockTypeBed = region.isBedBlock(bed.getBlockState().orElseThrow());
-                            boolean isAnchor = bed.getType().is("respawn_anchor");
-                            boolean isCake = bed.getType().is("cake");
+                            boolean isAnchor = bed.getType().isSameType("respawn_anchor");
+                            boolean isCake = bed.getType().isSameType("cake");
                             var enemies = getConnectedPlayers() // getConnectedPlayers is copy
                                     .stream()
                                     .filter(player -> !team.getConnectedPlayers().contains(player))
@@ -1952,17 +1952,8 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
                     for (CurrentTeam team : teamsInGame) {
                         LocationHolder targetLocation = team.getTargetBlock();
                         if (targetLocation.getBlock().getType().isAir()) {
-                            ItemStack stack = team.teamInfo.color.getWool();
                             BlockHolder placedBlock = targetLocation.getBlock();
-                            placedBlock.setType(MaterialMapping.resolve(stack.getType()).orElseThrow());
-                            if (!BedWarsPlugin.isLegacy()) {
-                                try {
-                                    // The method is no longer in API, but in legacy versions exists
-                                    Block.class.getMethod("setData", byte.class).invoke(placedBlock, (byte) stack.getDurability());
-                                } catch (Exception e) {
-                                    // ignored
-                                }
-                            }
+                            placedBlock.setType(team.teamInfo.color.getWoolBlockType());
                         }
                     }
 
@@ -2142,7 +2133,7 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
                                 continue;
                             }
 
-                            org.screamingsandals.lib.material.Item resource = resourceSpawnEvent.getResource();
+                            org.screamingsandals.lib.item.Item resource = resourceSpawnEvent.getResource();
 
                             resource.setAmount(spawner.nextMaxSpawn(resource.getAmount()));
 
@@ -2399,7 +2390,7 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
             this.gameScoreboard.resetScores(this.formatScoreboardTeam(team, false, true));
             this.gameScoreboard.resetScores(this.formatScoreboardTeam(team, true, false));
 
-            Score score = obj.getScore(this.formatScoreboardTeam(team, !team.isBed, team.isBed && team.teamInfo.bed.getBlock().getType().is("respawn_anchor") && Player116ListenerUtils.isAnchorEmpty(team.teamInfo.bed.getBlock().as(Block.class))));  // TODO: remove transformation
+            Score score = obj.getScore(this.formatScoreboardTeam(team, !team.isBed, team.isBed && team.teamInfo.bed.getBlock().getType().isSameType("respawn_anchor") && Player116ListenerUtils.isAnchorEmpty(team.teamInfo.bed.getBlock().as(Block.class))));  // TODO: remove transformation
             score.setScore(team.players.size());
         }
 
@@ -2474,29 +2465,29 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
 
         String[] statusLine;
         String[] playersLine;
-        MaterialHolder blockBehindMaterial;
+        BlockTypeHolder blockBehindMaterial;
         switch (status) {
             case REBUILDING:
                 statusLine = LangKeys.SIGN_STATUS_REBUILDING_STATUS;
                 playersLine = LangKeys.SIGN_STATUS_REBUILDING_PLAYERS;
-                blockBehindMaterial = MiscUtils.getMaterialFromString(config.node("sign", "block-behind", "rebuilding").getString(), "BROWN_STAINED_GLASS");
+                blockBehindMaterial = MiscUtils.getBlockTypeFromString(config.node("sign", "block-behind", "rebuilding").getString(), "BROWN_STAINED_GLASS");
                 break;
             case RUNNING:
             case GAME_END_CELEBRATING:
                 statusLine = LangKeys.SIGN_STATUS_RUNNING_STATUS;
                 playersLine = LangKeys.SIGN_STATUS_RUNNING_PLAYERS;
-                blockBehindMaterial = MiscUtils.getMaterialFromString(config.node("sign", "block-behind", "in-game").getString(), "GREEN_STAINED_GLASS");
+                blockBehindMaterial = MiscUtils.getBlockTypeFromString(config.node("sign", "block-behind", "in-game").getString(), "GREEN_STAINED_GLASS");
                 break;
             case WAITING:
                 statusLine = LangKeys.SIGN_STATUS_WAITING_STATUS;
                 playersLine = LangKeys.SIGN_STATUS_WAITING_PLAYERS;
-                blockBehindMaterial = MiscUtils.getMaterialFromString(config.node("sign", "block-behind", "waiting").getString(), "ORANGE_STAINED_GLASS");
+                blockBehindMaterial = MiscUtils.getBlockTypeFromString(config.node("sign", "block-behind", "waiting").getString(), "ORANGE_STAINED_GLASS");
                 break;
             case DISABLED:
             default:
                 statusLine = LangKeys.SIGN_STATUS_DISABLED_STATUS;
                 playersLine = LangKeys.SIGN_STATUS_DISABLED_PLAYERS;
-                blockBehindMaterial = MiscUtils.getMaterialFromString(config.node("sign", "block-behind", "game-disabled").getString(), "RED_STAINED_GLASS");
+                blockBehindMaterial = MiscUtils.getBlockTypeFromString(config.node("sign", "block-behind", "game-disabled").getString(), "RED_STAINED_GLASS");
                 break;
         }
 

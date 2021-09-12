@@ -68,7 +68,7 @@ public class LuckyBlockAddonListener {
         for (var special : event.getGame().getActivedSpecialItems(LuckyBlockImpl.class)) {
             var luckyBlock = (LuckyBlockImpl) special;
             if (luckyBlock.isPlaced()) {
-                if (event.getBlock().getLocation().as(Location.class).equals(luckyBlock.getBlockLocation())) {
+                if (event.getBlock().getLocation().equals(luckyBlock.getBlockLocation())) {
                     event.setDrops(false);
                     luckyBlock.process(event.getPlayer());
                     return;

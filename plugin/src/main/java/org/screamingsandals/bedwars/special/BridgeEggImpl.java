@@ -10,27 +10,26 @@ import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.TeamColor;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.utils.ArenaUtils;
+import org.screamingsandals.lib.block.BlockTypeHolder;
 import org.screamingsandals.lib.entity.EntityProjectile;
-import org.screamingsandals.lib.material.MaterialHolder;
-import org.screamingsandals.lib.material.MaterialMapping;
 import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
 import org.screamingsandals.lib.tasker.task.TaskerTask;
 import org.screamingsandals.lib.utils.MathUtils;
-import org.screamingsandals.lib.world.BlockHolder;
+import org.screamingsandals.lib.block.BlockHolder;
 
 @Getter
-public class BridgeEggImpl extends SpecialItem implements BridgeEgg<GameImpl, BedWarsPlayer, CurrentTeam, EntityProjectile, MaterialHolder> {
+public class BridgeEggImpl extends SpecialItem implements BridgeEgg<GameImpl, BedWarsPlayer, CurrentTeam, EntityProjectile, BlockTypeHolder> {
     private final double distance;
     private final double distanceSquared;
     private final EntityProjectile projectile;
-    private final MaterialHolder material;
+    private final BlockTypeHolder material;
     private TaskerTask task;
 
-    public BridgeEggImpl(GameImpl game, BedWarsPlayer player, CurrentTeam team, EntityProjectile projectile, MaterialHolder mat, Double distance) {
+    public BridgeEggImpl(GameImpl game, BedWarsPlayer player, CurrentTeam team, EntityProjectile projectile, BlockTypeHolder mat, Double distance) {
         super(game, player, team);
         this.projectile = projectile;
-        this.material = MaterialMapping.colorize(mat, TeamColor.fromApiColor(team.getColor()).material1_13);
+        this.material = mat.colorize(TeamColor.fromApiColor(team.getColor()).material1_13);
         this.distance = distance;
         this.distanceSquared = MathUtils.square(distance);
     }

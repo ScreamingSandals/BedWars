@@ -105,7 +105,7 @@ public class TNTSheepListener {
         } else if (event.getEntity().as(Entity.class) instanceof Creature) {
             var mob = event.getEntity();
             for (var game : GameManagerImpl.getInstance().getGames()) {
-                if (game.getStatus() == GameStatus.RUNNING && mob.getLocation().getWorld().as(World.class).equals(game.getGameWorld())) {
+                if (game.getStatus() == GameStatus.RUNNING && mob.getLocation().getWorld().equals(game.getGameWorld())) {
                     var sheeps = game.getActivedSpecialItems(TNTSheepImpl.class);
                     for (var item : sheeps) {
                         if (item instanceof TNTSheepImpl) {

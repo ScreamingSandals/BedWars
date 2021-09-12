@@ -8,7 +8,7 @@ import org.screamingsandals.bedwars.game.CurrentTeam;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.utils.Sounds;
 import org.screamingsandals.lib.event.player.SPlayerInteractEvent;
-import org.screamingsandals.lib.material.Item;
+import org.screamingsandals.lib.item.Item;
 
 public class Player116ListenerUtils {
     public static boolean processAnchorDeath(GameImpl game, CurrentTeam team) {

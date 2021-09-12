@@ -86,3 +86,5 @@ nmsGen {
 
 
 }
+
+tasks.getByName('compileJava').dependsOn('generateNmsComponents')

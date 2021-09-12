@@ -9,26 +9,25 @@ import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.utils.MiscUtils;
+import org.screamingsandals.lib.block.BlockTypeHolder;
 import org.screamingsandals.lib.lang.Message;
-import org.screamingsandals.lib.material.Item;
-import org.screamingsandals.lib.material.MaterialHolder;
-import org.screamingsandals.lib.material.MaterialMapping;
-import org.screamingsandals.lib.material.builder.ItemFactory;
+import org.screamingsandals.lib.item.Item;
+import org.screamingsandals.lib.item.builder.ItemFactory;
 import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
 import org.screamingsandals.lib.tasker.task.TaskerTask;
 import org.screamingsandals.lib.utils.BlockFace;
-import org.screamingsandals.lib.world.BlockHolder;
+import org.screamingsandals.lib.block.BlockHolder;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 @EqualsAndHashCode(callSuper = true)
-public class RescuePlatformImpl extends SpecialItem implements RescuePlatform<GameImpl, BedWarsPlayer, CurrentTeam, Item, MaterialHolder, BlockHolder> {
+public class RescuePlatformImpl extends SpecialItem implements RescuePlatform<GameImpl, BedWarsPlayer, CurrentTeam, Item, BlockTypeHolder, BlockHolder> {
     private final Item item;
     private List<BlockHolder> platformBlocks;
-    private MaterialHolder material;
+    private BlockTypeHolder material;
     private boolean breakable;
     private int breakingTime;
     private int livingTime;
@@ -52,7 +51,7 @@ public class RescuePlatformImpl extends SpecialItem implements RescuePlatform<Ga
                     if (livingTime == breakingTime) {
                         for (var block : List.copyOf(platformBlocks)) {
                             block.getLocation().getChunk().load(false);
-                            block.setType(MaterialMapping.getAir());
+                            block.setType(BlockTypeHolder.air());
 
                             removeBlockFromList(block);
                             game.getRegion().removeBlockBuiltDuringGame(block.getLocation());
@@ -77,7 +76,7 @@ public class RescuePlatformImpl extends SpecialItem implements RescuePlatform<Ga
         game.getRegion().removeBlockBuiltDuringGame(block.getLocation());
     }
 
-    public void createPlatform(boolean bre, int time, int dist, MaterialHolder bMat) {
+    public void createPlatform(boolean bre, int time, int dist, BlockTypeHolder bMat) {
         breakable = bre;
         breakingTime = time;
         material = bMat;
@@ -96,7 +95,7 @@ public class RescuePlatformImpl extends SpecialItem implements RescuePlatform<Ga
                 continue;
             }
 
-            var coloredMatrerial = MaterialMapping.colorize(material, team.teamInfo.color.material1_13);
+            var coloredMatrerial = material.colorize(team.teamInfo.color.material1_13);
             placedBlock.setType(coloredMatrerial);
             addBlockToList(placedBlock);
         }

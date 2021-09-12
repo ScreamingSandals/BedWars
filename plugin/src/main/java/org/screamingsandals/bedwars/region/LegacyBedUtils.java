@@ -1,7 +1,7 @@
 package org.screamingsandals.bedwars.region;
 
 import org.screamingsandals.lib.utils.BlockFace;
-import org.screamingsandals.lib.world.BlockHolder;
+import org.screamingsandals.lib.block.BlockHolder;
 
 public class LegacyBedUtils {
     public static BlockHolder getBedNeighbor(BlockHolder head) {
@@ -21,6 +21,6 @@ public class LegacyBedUtils {
             return false;
         }
 
-        return isBed.getType().is("bed", "bed_block");
+        return isBed.getType().isSameType("bed", "bed_block");
     }
 }

@@ -19,10 +19,10 @@ import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.utils.AdventureHelper;
 import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.utils.annotations.parameters.ConfigFile;
-import org.screamingsandals.lib.world.BlockMapper;
+import org.screamingsandals.lib.block.BlockMapper;
 import org.screamingsandals.lib.world.LocationHolder;
-import org.screamingsandals.lib.world.state.BlockStateHolder;
-import org.screamingsandals.lib.world.state.SignHolder;
+import org.screamingsandals.lib.block.state.BlockStateHolder;
+import org.screamingsandals.lib.block.state.SignHolder;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 

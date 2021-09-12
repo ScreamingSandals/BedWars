@@ -7,9 +7,9 @@ import org.screamingsandals.bedwars.game.CurrentTeam;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.lib.event.CancellableAbstractEvent;
-import org.screamingsandals.lib.material.Item;
-import org.screamingsandals.lib.world.BlockHolder;
-import org.screamingsandals.lib.world.state.BlockStateHolder;
+import org.screamingsandals.lib.item.Item;
+import org.screamingsandals.lib.block.BlockHolder;
+import org.screamingsandals.lib.block.state.BlockStateHolder;
 
 @EqualsAndHashCode(callSuper = true)
 @Data

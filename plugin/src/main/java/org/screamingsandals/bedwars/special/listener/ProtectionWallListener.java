@@ -57,7 +57,7 @@ public class ProtectionWallListener {
                         var width = Integer.parseInt(unhidden.split(":")[5]);
                         var height = Integer.parseInt(unhidden.split(":")[6]);
                         var distance = Integer.parseInt(unhidden.split(":")[7]);
-                        var result = MiscUtils.getMaterialFromString(unhidden.split(":")[8], "CUT_SANDSTONE");
+                        var result = MiscUtils.getBlockTypeFromString(unhidden.split(":")[8], "CUT_SANDSTONE");
 
 
                         var protectionWall = new ProtectionWallImpl(game, gPlayer,

@@ -71,7 +71,7 @@ public class ScreamingScoreboard {
                         List.of(formatScoreboardTeam(team,
                                 !team.isTargetBlockExists(),
                                 team.isTargetBlockExists()
-                                        && ((LocationHolder) team.getTargetBlock()).getBlock().getType().is("respawn_anchor")
+                                        && ((LocationHolder) team.getTargetBlock()).getBlock().getType().isSameType("respawn_anchor")
                                         && Player116ListenerUtils.isAnchorEmpty(((LocationHolder) team.getTargetBlock()).getBlock().as(Block.class)))
                         )
                 )

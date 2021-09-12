@@ -58,7 +58,7 @@ public class RescuePlatformListener {
                         var delay = Integer.parseInt(unhidden.split(":")[3]);
                         var breakTime = Integer.parseInt(unhidden.split(":")[4]);
                         var distance = Integer.parseInt(unhidden.split(":")[5]);
-                        var result = MiscUtils.getMaterialFromString(unhidden.split(":")[6], "GLASS");
+                        var result = MiscUtils.getBlockTypeFromString(unhidden.split(":")[6], "GLASS");
 
                         var rescuePlatform = new RescuePlatformImpl(game, gPlayer, game.getPlayerTeam(gPlayer), stack);
 
@@ -106,7 +106,7 @@ public class RescuePlatformListener {
         if (rescuePlatform != null && event.getDamageCause().is("FALL")) {
             var block = player.getLocation().add(BlockFace.DOWN.getDirection()).getBlock();
             if (block != null) {
-                if (block.getType().is(rescuePlatform.getMaterial())) {
+                if (block.getType().isSameType(rescuePlatform.getMaterial())) {
                     event.setCancelled(true);
                 }
             }

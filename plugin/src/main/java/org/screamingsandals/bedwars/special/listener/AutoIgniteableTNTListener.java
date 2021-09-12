@@ -10,10 +10,10 @@ import org.screamingsandals.bedwars.events.PlayerBuildBlockEventImpl;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.bedwars.special.AutoIgniteableTNTImpl;
+import org.screamingsandals.lib.block.BlockTypeHolder;
 import org.screamingsandals.lib.entity.EntityHuman;
 import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.event.entity.SEntityDamageByEntityEvent;
-import org.screamingsandals.lib.material.MaterialMapping;
 import org.screamingsandals.lib.utils.annotations.Service;
 
 @Service
@@ -37,7 +37,7 @@ public class AutoIgniteableTNTListener {
         var player = event.getPlayer();
         var unhidden = APIUtils.unhashFromInvisibleStringStartsWith(stack.as(ItemStack.class), AUTO_IGNITEABLE_TNT_PREFIX); // TODO: get rid of this transformation
         if (unhidden != null) {
-            block.setType(MaterialMapping.getAir());
+            block.setType(BlockTypeHolder.air());
             var location = block.getLocation().add(0.5, 0.5, 0.5);
             int explosionTime = Integer.parseInt(unhidden.split(":")[2]);
             boolean damagePlacer = Boolean.parseBoolean(unhidden.split(":")[3]);

@@ -17,7 +17,7 @@ import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.event.entity.SProjectileHitEvent;
 import org.screamingsandals.lib.event.player.SPlayerInteractEvent;
 import org.screamingsandals.lib.lang.Message;
-import org.screamingsandals.lib.material.builder.ItemFactory;
+import org.screamingsandals.lib.item.builder.ItemFactory;
 import org.screamingsandals.lib.utils.annotations.Service;
 
 import java.util.HashMap;
@@ -55,7 +55,7 @@ public class BridgeEggListener {
                         event.setCancelled(true);
 
                         var distance = Double.parseDouble(unhidden.split(":")[2]);
-                        var material = MiscUtils.getMaterialFromString(unhidden.split(":")[3], "GLASS");
+                        var material = MiscUtils.getBlockTypeFromString(unhidden.split(":")[3], "GLASS");
                         var delay = Integer.parseInt(unhidden.split(":")[4]);
 
                         var egg = EntityMapper.<EntityProjectile>spawn("minecraft:egg", player.getLocation().add(0, 1, 0)).orElseThrow();

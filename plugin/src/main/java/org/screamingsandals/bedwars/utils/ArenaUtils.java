@@ -3,7 +3,6 @@ package org.screamingsandals.bedwars.utils;
 import lombok.experimental.UtilityClass;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.screamingsandals.lib.world.LocationHolder;
 import org.screamingsandals.lib.world.chunk.ChunkHolder;
 

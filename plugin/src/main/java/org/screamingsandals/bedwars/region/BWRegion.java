@@ -1,15 +1,15 @@
 package org.screamingsandals.bedwars.region;
 
 import org.screamingsandals.bedwars.api.Region;
-import org.screamingsandals.lib.material.MaterialHolder;
-import org.screamingsandals.lib.world.BlockHolder;
-import org.screamingsandals.lib.world.BlockMapper;
+import org.screamingsandals.lib.block.BlockTypeHolder;
+import org.screamingsandals.lib.block.BlockHolder;
+import org.screamingsandals.lib.block.BlockMapper;
 import org.screamingsandals.lib.world.LocationHolder;
 import org.screamingsandals.lib.world.LocationMapper;
 import org.screamingsandals.lib.world.chunk.ChunkHolder;
 import org.screamingsandals.lib.world.chunk.ChunkMapper;
-import org.screamingsandals.lib.world.state.BlockStateHolder;
-import org.screamingsandals.lib.world.state.BlockStateMapper;
+import org.screamingsandals.lib.block.state.BlockStateHolder;
+import org.screamingsandals.lib.block.state.BlockStateMapper;
 
 public interface BWRegion extends Region<BlockHolder> {
 
@@ -21,7 +21,7 @@ public interface BWRegion extends Region<BlockHolder> {
 
     void removeBlockBuiltDuringGame(LocationHolder loc);
 
-    boolean isLiquid(MaterialHolder material);
+    boolean isLiquid(BlockTypeHolder material);
 
     boolean isBedBlock(BlockStateHolder block);
 
@@ -61,7 +61,7 @@ public interface BWRegion extends Region<BlockHolder> {
     @Override
     @Deprecated
     default boolean isLiquid(Object material) {
-        return isLiquid(MaterialHolder.of(material));
+        return isLiquid(BlockTypeHolder.of(material));
     }
 
     @Override

@@ -2,9 +2,9 @@ package org.screamingsandals.bedwars.region;
 
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Bed;
+import org.screamingsandals.lib.block.BlockTypeHolder;
 import org.screamingsandals.lib.utils.BlockFace;
-import org.screamingsandals.lib.world.BlockDataHolder;
-import org.screamingsandals.lib.world.BlockHolder;
+import org.screamingsandals.lib.block.BlockHolder;
 
 public class FlatteningBedUtils {
     public static BlockHolder getBedNeighbor(BlockHolder head) {
@@ -27,12 +27,12 @@ public class FlatteningBedUtils {
         if (block == null) {
             return false;
         }
-        var data = block.getCurrentBlockData();
+        var data = block.getCurrentType();
 
-        return data.isPresent() && data.get().as(BlockData.class) instanceof Bed;
+        return data.as(BlockData.class) instanceof Bed;
     }
 
-    public static boolean isBedBlock(BlockDataHolder data) {
+    public static boolean isBedBlock(BlockTypeHolder data) {
         return data != null && data.as(BlockData.class) instanceof Bed;
     }
 }

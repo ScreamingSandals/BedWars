@@ -10,12 +10,12 @@ import org.screamingsandals.bedwars.api.TeamColor;
 import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
+import org.screamingsandals.lib.block.BlockHolder;
 import org.screamingsandals.lib.hologram.Hologram;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.utils.AdventureHelper;
 import org.screamingsandals.lib.utils.reflect.Reflect;
-import org.screamingsandals.lib.world.BlockHolder;
 import org.screamingsandals.lib.world.LocationHolder;
 
 import java.util.ArrayList;

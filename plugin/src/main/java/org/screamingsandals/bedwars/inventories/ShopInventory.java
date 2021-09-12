@@ -28,8 +28,8 @@ import org.screamingsandals.lib.entity.EntityMapper;
 import org.screamingsandals.lib.event.EventManager;
 import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.lang.Message;
-import org.screamingsandals.lib.material.Item;
-import org.screamingsandals.lib.material.builder.ItemFactory;
+import org.screamingsandals.lib.item.Item;
+import org.screamingsandals.lib.item.builder.ItemFactory;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.plugin.ServiceManager;
 import org.screamingsandals.lib.utils.AdventureHelper;
@@ -365,7 +365,7 @@ public class ShopInventory {
         } catch (Throwable ignored) {
         }
 
-        var normalItemName = item.getMaterial().getPlatformName().replace("_", " ").toLowerCase();
+        var normalItemName = item.getMaterial().platformName().replace("_", " ").toLowerCase();
         var sArray = normalItemName.split(" ");
         var stringBuilder = new StringBuilder();
 

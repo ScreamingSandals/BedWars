@@ -5,10 +5,7 @@ import cloud.commandframework.CommandManager;
 import cloud.commandframework.arguments.standard.BooleanArgument;
 import cloud.commandframework.arguments.standard.StringArgument;
 import org.bukkit.ChatColor;
-import org.bukkit.World;
-import org.bukkit.block.Block;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.game.GameStoreImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.utils.ArenaUtils;
@@ -17,7 +14,6 @@ import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
 import org.screamingsandals.lib.utils.annotations.Service;
-import org.screamingsandals.lib.world.BlockHolder;
 
 import java.util.Arrays;
 import java.util.List;
@@ -52,7 +48,7 @@ public class StoreCommand extends BaseAdminSubCommand {
                                 sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_SET_BOUNDS_FIRST).defaultPrefix());
                                 return;
                             }
-                            if (!game.getWorld().equals(loc.getWorld().as(World.class))) {
+                            if (!game.getWorld().equals(loc.getWorld())) {
                                 sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_MUST_BE_IN_SAME_WORLD).defaultPrefix());
                                 return;
                             }
@@ -89,7 +85,7 @@ public class StoreCommand extends BaseAdminSubCommand {
                         .handler(commandContext -> editMode(commandContext, (sender, game) -> {
                             var loc = sender.as(PlayerWrapper.class).getLocation();
 
-                            if (game.getWorld().equals(loc.getWorld().as(World.class))) {
+                            if (game.getWorld().equals(loc.getWorld())) {
                                 sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_MUST_BE_IN_SAME_WORLD).defaultPrefix());
                                 return;
                             }
