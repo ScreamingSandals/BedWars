@@ -36,12 +36,13 @@ public class ItemSpawner implements org.screamingsandals.bedwars.api.game.ItemSp
     public boolean spawnerIsFullHologram = false;
     public boolean rerenderHologram = false;
     public double currentLevelOnHologram = -1;
-    public org.screamingsandals.lib.hologram.Hologram.RotationMode rotationMode;
-    @Getter private org.screamingsandals.lib.hologram.Hologram hologram;
+    public Hologram.RotationMode rotationMode;
+    @Getter
+    private Hologram hologram;
 
     public ItemSpawner(LocationHolder loc, ItemSpawnerType type, String customName,
                        boolean hologramEnabled, double startLevel, Team team,
-                       int maxSpawnedResources, boolean floatingEnabled, org.screamingsandals.lib.hologram.Hologram.RotationMode rotationMode) {
+                       int maxSpawnedResources, boolean floatingEnabled, Hologram.RotationMode rotationMode) {
         this.loc = loc;
         this.type = type;
         this.customName = customName;

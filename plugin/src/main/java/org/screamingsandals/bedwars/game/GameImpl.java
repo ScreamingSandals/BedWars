@@ -13,7 +13,6 @@ import org.bukkit.block.data.type.RespawnAnchor;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
@@ -67,7 +66,7 @@ import org.screamingsandals.lib.event.EventManager;
 import org.screamingsandals.lib.event.player.SPlayerBlockBreakEvent;
 import org.screamingsandals.lib.healthindicator.HealthIndicator;
 import org.screamingsandals.lib.hologram.HologramManager;
-import org.screamingsandals.lib.item.ItemTypeHolder;
+import org.screamingsandals.lib.item.Item;
 import org.screamingsandals.lib.lang.Message;;
 import org.screamingsandals.lib.item.builder.ItemFactory;
 import org.screamingsandals.lib.npc.NPC;
@@ -556,7 +555,7 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
         return status == GameStatus.RUNNING && region.isBlockAddedDuringGame(loc);
     }
 
-    public boolean blockPlace(BedWarsPlayer player, BlockHolder block, BlockStateHolder replaced, org.screamingsandals.lib.item.Item itemInHand) {
+    public boolean blockPlace(BedWarsPlayer player, BlockHolder block, BlockStateHolder replaced, Item itemInHand) {
         if (status != GameStatus.RUNNING) {
             return false; // ?
         }
@@ -2267,7 +2266,7 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
         // Remove items
         for (EntityBasic e : this.world.getEntities()) {
             if (ArenaUtils.isInArea(e.getLocation(), pos1, pos2)) {
-                if (e instanceof Item) {
+                if (e instanceof EntityItem) {
                     removeEntity(e);
                 }
             }
