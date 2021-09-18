@@ -1,22 +1,15 @@
 package org.screamingsandals.bedwars.api.game;
 
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
+import org.screamingsandals.lib.utils.Wrapper;
 
 /**
  * @author Bedwars Team
  */
-public interface ItemSpawnerType {
+public interface ItemSpawnerType<T extends Wrapper, I extends Wrapper, C extends Wrapper> {
     /**
      * @return
      */
     String getConfigKey();
-
-    /**
-     * @return
-     */
-    ChatColor getColor();
 
     /**
      * @return
@@ -36,22 +29,22 @@ public interface ItemSpawnerType {
     /**
      * @return
      */
-    Material getMaterial();
+    T getItemType();
 
     /**
      * @return
      */
-    String getTranslatableKey();
+    C getTranslatableKey();
 
     /**
      * @return
      */
-    String getItemName();
+    C getItemName();
 
     /**
      * @return
      */
-    String getItemBoldName();
+    C getItemBoldName();
 
     /**
      * @return
@@ -61,11 +54,11 @@ public interface ItemSpawnerType {
     /**
      * @return
      */
-    ItemStack getStack();
+    I getItem();
 
     /**
      * @param amount
      * @return
      */
-    ItemStack getStack(int amount);
+    I getItem(int amount);
 }

@@ -2,12 +2,15 @@ package org.screamingsandals.bedwars.utils;
 
 import lombok.experimental.UtilityClass;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.api.RunningTeam;
 import org.screamingsandals.bedwars.api.TeamColor;
@@ -371,6 +374,26 @@ public class MiscUtils {
             return respawnLocation;
         } else {
             return findEmptyLocation(respawnLocation.clone().add(0, 2, 0));
+        }
+    }
+
+    public static TextColor getColor(@Nullable String color) {
+        if (color == null) {
+            return NamedTextColor.WHITE;
+        }
+
+        if (color.startsWith("#")) {
+            var val = TextColor.fromCSSHexString(color);
+            if (val == null) {
+                return NamedTextColor.WHITE;
+            }
+            return val;
+        } else {
+            var val = NamedTextColor.NAMES.value(color.toLowerCase());
+            if (val == null) {
+                return NamedTextColor.WHITE;
+            }
+            return val;
         }
     }
 }

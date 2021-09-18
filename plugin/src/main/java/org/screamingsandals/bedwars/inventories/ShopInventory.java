@@ -6,7 +6,6 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.api.PurchaseType;
 import org.screamingsandals.bedwars.commands.DumpCommand;
@@ -19,6 +18,7 @@ import org.screamingsandals.bedwars.api.upgrades.UpgradeRegistry;
 import org.screamingsandals.bedwars.api.upgrades.UpgradeStorage;
 import org.screamingsandals.bedwars.game.CurrentTeam;
 import org.screamingsandals.bedwars.game.GameImpl;
+import org.screamingsandals.bedwars.game.ItemSpawnerTypeImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.bedwars.special.listener.PermaItemListener;
@@ -29,7 +29,6 @@ import org.screamingsandals.lib.event.EventManager;
 import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.item.Item;
-import org.screamingsandals.lib.item.builder.ItemFactory;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.plugin.ServiceManager;
 import org.screamingsandals.lib.utils.AdventureHelper;
@@ -139,7 +138,7 @@ public class ShopInventory {
                         .orElseGet(() -> mainConfig.node("lore", "text").childrenList().stream().map(ConfigurationNode::getString))
                         .filter(Objects::nonNull)
                         .map(s -> s.replaceAll("%price%", Integer.toString(price))
-                                .replaceAll("%resource%", type.getItemName())
+                                .replaceAll("%resource%", AdventureHelper.toLegacy(type.getItemName().asComponent()))
                                 .replaceAll("%amount%", Integer.toString(item.getAmount())))
                         .map(AdventureHelper::toComponent)
                         .collect(Collectors.toList());
@@ -383,7 +382,7 @@ public class ShopInventory {
 
         // TODO: multi-price feature
         var price = event.getPrices().get(0);
-        org.screamingsandals.bedwars.game.ItemSpawnerType type = BedWarsPlugin.getSpawnerType(price.getCurrency().toLowerCase());
+        ItemSpawnerTypeImpl type = BedWarsPlugin.getSpawnerType(price.getCurrency().toLowerCase());
 
         var newItem = event.getStack();
 
@@ -394,17 +393,16 @@ public class ShopInventory {
         var currencyChanger = itemInfo.getFirstPropertyByName("currencyChanger");
         if (currencyChanger.isPresent()) {
             var changeItemToName = currencyChanger.get().getPropertyData().getString();
-            ItemSpawnerType changeItemType;
             if (changeItemToName == null) {
                 return;
             }
 
-            changeItemType = BedWarsPlugin.getSpawnerType(changeItemToName.toLowerCase());
+            var changeItemType = BedWarsPlugin.getSpawnerType(changeItemToName.toLowerCase());
             if (changeItemType == null) {
                 return;
             }
 
-            newItem = ItemFactory.build(changeItemType.getStack()).orElse(newItem);
+            newItem = changeItemType.getItem();
         }
 
         var originalMaxStackSize = newItem.getMaterial().as(Material.class).getMaxStackSize();
@@ -413,8 +411,8 @@ public class ShopInventory {
             double maxStackSize;
             int finalStackSize;
 
-            for (ItemStack itemStack : player.as(Player.class).getInventory().getStorageContents()) {
-                if (itemStack != null && itemStack.isSimilar(type.getStack())) {
+            for (var itemStack : player.as(Player.class).getInventory().getStorageContents()) {
+                if (itemStack.isSimilar(type.getStack())) {
                     inInventory = inInventory + itemStack.getAmount();
                 }
             }
@@ -432,7 +430,7 @@ public class ShopInventory {
             }
         }
 
-        var materialItem = ItemFactory.build(type.getStack(priceAmount)).orElseThrow();
+        var materialItem = type.getItem(priceAmount);
         if (event.hasPlayerInInventory(materialItem)) {
             final var prePurchaseEvent = new StorePrePurchaseEventImpl(game, playerManager.getPlayer(event.getPlayer().getUuid()).orElseThrow(), materialItem, newItem, type, PurchaseType.NORMAL_ITEM, event);
             EventManager.fire(prePurchaseEvent);
@@ -476,7 +474,7 @@ public class ShopInventory {
                 Message.of(LangKeys.IN_GAME_SHOP_BUY_SUCCESS)
                         .prefixOrDefault(game.getCustomPrefixComponent())
                         .placeholder("item", Component.text(amount + "x ").append(getNameOrCustomNameOfItem(newItem)))
-                        .placeholder("material", AdventureHelper.toComponent(priceAmount + " " + type.getItemName()))
+                        .placeholder("material", Component.text(priceAmount + " ").append(type.getItemName()))
                         .send(event.getPlayer());
             }
             Sounds.playSound(player.as(Player.class), player.getLocation().as(Location.class),
@@ -494,7 +492,7 @@ public class ShopInventory {
                 Message.of(LangKeys.IN_GAME_SHOP_BUY_FAILED)
                         .prefixOrDefault(game.getCustomPrefixComponent())
                         .placeholder("item", Component.text(amount + "x ").append(getNameOrCustomNameOfItem(newItem)))
-                        .placeholder("material", AdventureHelper.toComponent(priceAmount + " " + type.getItemName()))
+                        .placeholder("material", Component.text(priceAmount + " ").append(type.getItemName()))
                         .send(event.getPlayer());
             }
         }
@@ -507,7 +505,7 @@ public class ShopInventory {
 
         // TODO: multi-price feature
         var price = event.getPrices().get(0);
-        org.screamingsandals.bedwars.game.ItemSpawnerType type = BedWarsPlugin.getSpawnerType(price.getCurrency().toLowerCase());
+        ItemSpawnerTypeImpl type = BedWarsPlugin.getSpawnerType(price.getCurrency().toLowerCase());
 
         var priceAmount = price.getAmount();
 
@@ -517,7 +515,7 @@ public class ShopInventory {
 
         boolean sendToAll = false;
         boolean isUpgrade = true;
-        var materialItem = ItemFactory.build(type.getStack(priceAmount)).orElseThrow();
+        var materialItem = type.getItem(priceAmount);
 
         if (event.hasPlayerInInventory(materialItem)) {
             final var upgradePurchasedEvent  = new StorePrePurchaseEventImpl(game, playerManager.getPlayer(event.getPlayer().getUuid()).orElseThrow(), materialItem, null, type, PurchaseType.UPGRADES, event);
@@ -599,7 +597,7 @@ public class ShopInventory {
                             Message.of(LangKeys.IN_GAME_SHOP_BUY_SUCCESS)
                                     .prefixOrDefault(game.getCustomPrefixComponent())
                                     .placeholder("item", AdventureHelper.toComponent(itemName))
-                                    .placeholder("material", AdventureHelper.toComponent(priceAmount + " " + type.getItemName()))
+                                    .placeholder("material", Component.text(priceAmount + " ").append(type.getItemName()))
                                     .send(event.getPlayer());
                         }
                         Sounds.playSound(player1.as(Player.class), player1.getLocation().as(Location.class),
@@ -613,7 +611,7 @@ public class ShopInventory {
                         Message.of(LangKeys.IN_GAME_SHOP_BUY_SUCCESS)
                                 .prefixOrDefault(game.getCustomPrefixComponent())
                                 .placeholder("item", AdventureHelper.toComponent(itemName))
-                                .placeholder("material", AdventureHelper.toComponent(priceAmount + " " + type.getItemName()))
+                                .placeholder("material", Component.text(priceAmount + " ").append(type.getItemName()))
                                 .send(event.getPlayer());
                     }
                     Sounds.playSound(player.as(Player.class), player.getLocation().as(Location.class),
@@ -633,7 +631,7 @@ public class ShopInventory {
                 Message.of(LangKeys.IN_GAME_SHOP_BUY_FAILED)
                         .prefixOrDefault(game.getCustomPrefixComponent())
                         .placeholder("item", AdventureHelper.toComponent(itemName))
-                        .placeholder("material", AdventureHelper.toComponent(priceAmount + " " + type.getItemName()))
+                        .placeholder("material", Component.text(priceAmount + " ").append(type.getItemName()))
                         .send(event.getPlayer());
             }
         }

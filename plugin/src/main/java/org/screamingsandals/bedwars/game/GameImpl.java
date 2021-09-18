@@ -92,7 +92,6 @@ import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper, WorldHolder, LocationHolder, EntityBasic> {
@@ -105,7 +104,7 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
     private LocationHolder lobbyPos2;
     private LocationHolder specSpawn;
     private final List<Team> teams = new ArrayList<>();
-    private final List<ItemSpawner> spawners = new ArrayList<>();
+    private final List<ItemSpawnerImpl> spawners = new ArrayList<>();
     private final Map<BedWarsPlayer, RespawnProtection> respawnProtectionMap = new HashMap<>();
     private int pauseCountdown;
     private int gameTime;
@@ -290,7 +289,7 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
                 if (spawnerType == null || BedWarsPlugin.getSpawnerType(spawnerType.toLowerCase()) == null) {
                     throw new UnsupportedOperationException("Wrongly configured spawner type!");
                 }
-                game.spawners.add(new ItemSpawner(
+                game.spawners.add(new ItemSpawnerImpl(
                         MiscUtils.readLocationFromString(game.world, Objects.requireNonNull(spawner.node("location").getString())),
                         BedWarsPlugin.getSpawnerType(spawnerType.toLowerCase()),
                         spawner.node("customName").getString(),
@@ -538,7 +537,7 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
         return teams;
     }
 
-    public List<ItemSpawner> getSpawners() {
+    public List<ItemSpawnerImpl> getSpawners() {
         return spawners;
     }
 
@@ -1146,15 +1145,15 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
         }
         for (var spawner : spawners) {
             var spawnerNode = configMap.node("spawners").appendListNode();
-            spawnerNode.node("location").set(MiscUtils.setLocationToString(spawner.loc));
-            spawnerNode.node("type").set(spawner.type.getConfigKey());
-            spawnerNode.node("customName").set(spawner.customName);
-            spawnerNode.node("startLevel").set(spawner.startLevel);
-            spawnerNode.node("hologramEnabled").set(spawner.hologramEnabled);
-            spawnerNode.node("team").set(spawner.getTeam().map(org.screamingsandals.bedwars.api.Team::getName).orElse(null));
-            spawnerNode.node("maxSpawnedResources").set(spawner.maxSpawnedResources);
-            spawnerNode.node("floatingEnabled").set(spawner.maxSpawnedResources);
-            spawnerNode.node("rotationMode").set(spawner.rotationMode);
+            spawnerNode.node("location").set(MiscUtils.setLocationToString(spawner.getLocation()));
+            spawnerNode.node("type").set(spawner.getItemSpawnerType().getConfigKey());
+            spawnerNode.node("customName").set(spawner.getCustomName());
+            spawnerNode.node("startLevel").set(spawner.getStartLevel());
+            spawnerNode.node("hologramEnabled").set(spawner.isHologramEnabled());
+            spawnerNode.node("team").set(Optional.ofNullable(spawner.getTeam()).map(org.screamingsandals.bedwars.api.Team::getName).orElse(null));
+            spawnerNode.node("maxSpawnedResources").set(spawner.getMaxSpawnedResources());
+            spawnerNode.node("floatingEnabled").set(spawner.isFloatingBlockEnabled());
+            spawnerNode.node("rotationMode").set(spawner.getRotationMode());
         }
         for (var store : gameStore) {
             var storeNode = configMap.node("stores").appendListNode();
@@ -1797,21 +1796,12 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
                         }
                     }
 
-                    for (ItemSpawner spawner : spawners) {
+                    for (ItemSpawnerImpl spawner : spawners) {
+                        spawner.start(this);
+
                         UpgradeStorage storage = UpgradeRegistry.getUpgrade("spawner");
                         if (storage != null) {
                             storage.addUpgrade(this, spawner);
-                        }
-                    }
-
-                    if (configurationContainer.getOrDefault(ConfigurationContainer.SPAWNER_HOLOGRAMS, Boolean.class, false)) {
-                        for (ItemSpawner spawner : spawners) {
-                            CurrentTeam spawnerTeam = getCurrentTeamFromTeam(spawner.getTeam().orElse(null));
-                            if (configurationContainer.getOrDefault(ConfigurationContainer.STOP_TEAM_SPAWNERS_ON_DIE, Boolean.class, false) && spawner.getTeam().isPresent() && spawnerTeam == null) {
-                                continue; // team of this spawner is not available. Fix #147
-                            }
-
-                            spawner.spawnHologram(getConnectedPlayers(), configurationContainer.getOrDefault(ConfigurationContainer.SPAWNER_COUNTDOWN_HOLOGRAM, Boolean.class, false));
                         }
                     }
 
@@ -2007,7 +1997,7 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
                                                 .placeholder("time", time)
                                                 .times(TitleUtils.defaultTimes())
                                                 .title(player);
-                                        BedWarsPlugin.depositPlayer(player.as(Player.class), BedWarsPlugin.getVaultWinReward()); // TODO: remove transformation
+                                        BedWarsPlugin.depositPlayer(player, BedWarsPlugin.getVaultWinReward());
 
                                         SpawnEffects.spawnEffect(this, player, "game-effects.end");
 
@@ -2073,80 +2063,6 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
                     } else {
                         tick.setNextStatus(GameStatus.REBUILDING);
                         tick.setNextCountdown(0);
-                    }
-                } else if (countdown != gameTime /* Prevent spawning resources on game start */) {
-                    for (ItemSpawner spawner : spawners) {
-
-                        // TODO: Split spawners to async tasks with synchronized drops
-
-                        CurrentTeam spawnerTeam = getCurrentTeamFromTeam(spawner.getTeam().orElse(null));
-                        if (configurationContainer.getOrDefault(ConfigurationContainer.STOP_TEAM_SPAWNERS_ON_DIE, Boolean.class, false) && spawner.getTeam().isPresent() && spawnerTeam == null) {
-                            continue; // team of this spawner is not available. Fix #147
-                        }
-
-                        ItemSpawnerType type = spawner.type;
-                        int cycle = type.getInterval();
-                        /*
-                         * Calculate resource spawn from elapsedTime, not from remainingTime/countdown
-                         */
-                        int elapsedTime = gameTime - countdown;
-
-                        if (spawner.getHologram() != null) {
-                            if (configurationContainer.getOrDefault(ConfigurationContainer.SPAWNER_HOLOGRAMS, Boolean.class, false)
-                                    && configurationContainer.getOrDefault(ConfigurationContainer.SPAWNER_COUNTDOWN_HOLOGRAM, Boolean.class, false)
-                                    && !spawner.spawnerIsFullHologram) {
-                                if (cycle > 1) {
-                                    int modulo = cycle - elapsedTime % cycle;
-                                    spawner.getHologram().replaceLine(1, Message.of(LangKeys.IN_GAME_SPAWNER_COUNTDOWN).placeholder("seconds", modulo).asTextEntry(null));
-                                } else if (spawner.rerenderHologram) {
-                                    spawner.getHologram().replaceLine(1, Message.of(LangKeys.IN_GAME_SPAWNER_EVERY_SECOND).asTextEntry(null));
-                                    spawner.rerenderHologram = false;
-                                }
-                            }
-                        }
-
-                        if (spawnerTeam != null) {
-                            if (configurationContainer.getOrDefault(ConfigurationContainer.STOP_TEAM_SPAWNERS_ON_DIE, Boolean.class, false) && (spawnerTeam.isDead())) {
-                                continue;
-                            }
-                        }
-
-                        if ((elapsedTime % cycle) == 0) {
-                            int calculatedStack = 1;
-                            double currentLevel = spawner.getCurrentLevel();
-                            calculatedStack = (int) currentLevel;
-
-                            /* Allow half level */
-                            if ((currentLevel % 1) != 0) {
-                                int a = elapsedTime / cycle;
-                                if ((a % 2) == 0) {
-                                    calculatedStack++;
-                                }
-                            }
-
-                            var resourceSpawnEvent = new ResourceSpawnEventImpl(this, spawner, spawner.type,
-                                    ItemFactory.build(type.getStack(calculatedStack)).orElseThrow());
-                            EventManager.fire(resourceSpawnEvent);
-
-                            if (resourceSpawnEvent.isCancelled()) {
-                                continue;
-                            }
-
-                            org.screamingsandals.lib.item.Item resource = resourceSpawnEvent.getResource();
-
-                            resource.setAmount(spawner.nextMaxSpawn(resource.getAmount()));
-
-                            if (resource.getAmount() > 0) {
-                                LocationHolder loc = spawner.getLocation().add(0, 0.05, 0);
-                                EntityItem item = EntityMapper.dropItem(resource, loc).orElseThrow();
-                                double spread = type.getSpread();
-                                if (spread != 1.0) {
-                                    item.setVelocity(item.getVelocity().multiply(spread));
-                                }
-                                item.setPickupDelay(0, TimeUnit.SECONDS);
-                                spawner.add(item);
-                            }
-                        }
                     }
                 }
             }
@@ -2250,9 +2166,7 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
 
         EventManager.fire(new PreRebuildingEventImpl(this));
 
-        for (ItemSpawner spawner : spawners) {
-            spawner.currentLevel = spawner.startLevel;
-            spawner.spawnedItems.clear();
+        for (ItemSpawnerImpl spawner : spawners) {
             spawner.destroy();
         }
         for (GameStoreImpl store : gameStore) {

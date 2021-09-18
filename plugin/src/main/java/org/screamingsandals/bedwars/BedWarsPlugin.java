@@ -14,10 +14,7 @@ import org.screamingsandals.bedwars.game.*;
 import org.screamingsandals.bedwars.lang.BedWarsLangService;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import net.milkbowl.vault.economy.Economy;
-import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.ServicePriority;
@@ -114,7 +111,7 @@ public class BedWarsPlugin extends PluginContainer implements BedwarsAPI {
     private boolean isVault;
     private int versionNumber = 0;
     private Economy econ = null;
-    private final HashMap<String, ItemSpawnerType> spawnerTypes = new HashMap<>();
+    private final HashMap<String, ItemSpawnerTypeImpl> spawnerTypes = new HashMap<>();
     private ColorChanger colorChanger;
     public static List<String> autoColoredMaterials = new ArrayList<>();
 
@@ -146,24 +143,6 @@ public class BedWarsPlugin extends PluginContainer implements BedwarsAPI {
         return instance.isLegacy;
     }
 
-    @Deprecated
-    public static void depositPlayer(Player player, double coins) {
-        try {
-            if (isVault() && MainConfig.getInstance().node("vault", "enabled").getBoolean()) {
-                EconomyResponse response = instance.econ.depositPlayer(player, coins);
-                if (response.transactionSuccess()) {
-                    Message
-                            .of(LangKeys.IN_GAME_VAULT_DEPOSITE)
-                            .defaultPrefix()
-                            .placeholder("coins", coins)
-                            .placeholder("currency",  (coins == 1 ? instance.econ.currencyNameSingular() : instance.econ.currencyNamePlural()))
-                            .send(PlayerMapper.wrapPlayer(player));
-                }
-            }
-        } catch (Throwable ignored) {
-        }
-    }
-
     public static void depositPlayer(PlayerWrapper player, double coins) {
         try {
             if (isVault() && MainConfig.getInstance().node("vault", "enabled").getBoolean()) {
@@ -187,18 +166,6 @@ public class BedWarsPlugin extends PluginContainer implements BedwarsAPI {
 
     public static int getVaultWinReward() {
         return MainConfig.getInstance().node("vault", "reward", "win").getInt();
-    }
-
-    @Deprecated
-    public static boolean isFarmBlock(Material mat) {
-        if (MainConfig.getInstance().node("ignored-blocks", "enabled").getBoolean()) {
-            try {
-                return Objects.requireNonNull(MainConfig.getInstance().node("ignored-blocks", "blocks").getList(String.class)).contains(mat.name());
-            } catch (SerializationException | NullPointerException e) {
-                e.printStackTrace();
-            }
-        }
-        return false;
     }
 
     public static boolean isFarmBlock(BlockTypeHolder mat) {
@@ -264,7 +231,7 @@ public class BedWarsPlugin extends PluginContainer implements BedwarsAPI {
         return MainConfig.getInstance().node("commands", "blacklist-mode").getBoolean();
     }
 
-    public static ItemSpawnerType getSpawnerType(String key) {
+    public static ItemSpawnerTypeImpl getSpawnerType(String key) {
         return instance.spawnerTypes.get(key);
     }
 
@@ -330,14 +297,8 @@ public class BedWarsPlugin extends PluginContainer implements BedwarsAPI {
                 return;
             }
 
-            ChatColor color;
-            try {
-                color = ChatColor.valueOf(colorName.toUpperCase());
-            } catch (IllegalArgumentException | NullPointerException ignored) {
-                color = ChatColor.WHITE;
-            }
-            spawnerTypes.put(spawnerN.toLowerCase(), new ItemSpawnerType(spawnerN.toLowerCase(), name, translate,
-                    spread, result.as(Material.class), color, interval, result.durability()));
+            spawnerTypes.put(spawnerN.toLowerCase(), new ItemSpawnerTypeImpl(spawnerN.toLowerCase(), name, translate,
+                    spread, result, MiscUtils.getColor(colorName), interval, result.durability()));
         });
 
         if (MainConfig.getInstance().node("bungee", "enabled").getBoolean()) {

@@ -5,7 +5,7 @@ import cloud.commandframework.CommandManager;
 import cloud.commandframework.arguments.standard.*;
 import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.commands.AdminCommand;
-import org.screamingsandals.bedwars.game.ItemSpawner;
+import org.screamingsandals.bedwars.game.ItemSpawnerImpl;
 import org.screamingsandals.bedwars.game.Team;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.utils.ArenaUtils;
@@ -81,12 +81,12 @@ public class SpawnerCommand extends BaseAdminSubCommand {
                             loc.setPitch(0);
                             var spawnerType = BedWarsPlugin.getSpawnerType(type);
                             if (spawnerType != null) {
-                                game.getSpawners().add(new ItemSpawner(loc, spawnerType, customName, hologramEnabled, startLevel, team, maxSpawnedResources, floatingHologram, rotationMode));
+                                game.getSpawners().add(new ItemSpawnerImpl(loc, spawnerType, customName, hologramEnabled, startLevel, team, maxSpawnedResources, floatingHologram, rotationMode));
                                 sender.sendMessage(
                                         Message
                                         .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_SPAWNER_ADDED)
                                                 .defaultPrefix()
-                                                .placeholder("resource", spawnerType.getItemName())
+                                                .placeholder("resource", spawnerType.getItemName().asComponent())
                                                 .placeholder("x", loc.getBlockX())
                                                 .placeholder("y", loc.getBlockY())
                                                 .placeholder("z", loc.getBlockZ())

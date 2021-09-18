@@ -207,8 +207,8 @@ public class InfoCommand extends BaseAdminSubCommand {
                                     .send(sender);
 
                             game.getSpawners().forEach(spawner -> {
-                                var loc_spawner = spawner.loc;
-                                var team = spawner.getTeam().orElse(null);
+                                var loc_spawner = spawner.getLocation();
+                                var team = spawner.getTeam();
 
                                 Component spawnerTeam;
 
@@ -220,7 +220,7 @@ public class InfoCommand extends BaseAdminSubCommand {
 
                                 Message
                                         .of(LangKeys.ADMIN_INFO_SPAWNER)
-                                        .placeholder("resource", spawner.type.getItemName())
+                                        .placeholder("resource", spawner.getItemSpawnerType().getItemName().asComponent())
                                         .placeholder("x", loc_spawner.getBlockX())
                                         .placeholder("y", loc_spawner.getBlockY())
                                         .placeholder("z", loc_spawner.getBlockZ())
@@ -228,7 +228,7 @@ public class InfoCommand extends BaseAdminSubCommand {
                                         .placeholder("pitch", loc_spawner.getPitch())
                                         .placeholder("world", loc_spawner.getWorld().getName())
                                         .placeholder("team", spawnerTeam)
-                                        .placeholder("holo", spawner.getHologramEnabled())
+                                        .placeholder("holo", spawner.isHologramEnabled())
                                         .send(sender);
                             });
                         })

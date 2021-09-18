@@ -1,19 +1,18 @@
 package org.screamingsandals.bedwars.api.game;
 
+import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.api.Team;
 import org.screamingsandals.bedwars.api.upgrades.Upgrade;
 import org.screamingsandals.lib.utils.Wrapper;
 
-import java.util.Optional;
-
 /**
  * @author Bedwars Team
  */
-public interface ItemSpawner<E extends Wrapper> extends Upgrade {
+public interface ItemSpawner<E extends Wrapper, I extends ItemSpawnerType<?,?,?>, T extends Team<?>> extends Upgrade {
     /**
      * @return
      */
-    ItemSpawnerType getItemSpawnerType();
+    I getItemSpawnerType();
 
     /**
      * @return
@@ -23,11 +22,7 @@ public interface ItemSpawner<E extends Wrapper> extends Upgrade {
     /**
      * @return
      */
-    boolean hasCustomName();
-
-    /**
-     * @return
-     */
+    @Nullable
     String getCustomName();
 
     /**
@@ -43,25 +38,25 @@ public interface ItemSpawner<E extends Wrapper> extends Upgrade {
     /**
      * @return
      */
-    boolean getHologramEnabled();
+    boolean isHologramEnabled();
 
     /**
      * @return
      */
-    boolean getFloatingEnabled();
+    boolean isFloatingBlockEnabled();
 
     /**
      * Sets team of this upgrade
      *
      * @param team current team
      */
-    void setTeam(Team team);
+    void setTeam(T team);
 
     /**
      *
      * @return registered team for this upgrade in optional or empty optional
      */
-    Optional<Team> getTeam();
+    T getTeam();
 
     /**
      * @param level

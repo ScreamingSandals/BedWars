@@ -97,7 +97,7 @@ public class CheatCommand extends BaseCommand {
                     Message.of(LangKeys.IN_GAME_CHEAT_RECEIVED_GIVE)
                             .placeholder("player", player.getName())
                             .placeholder("amount", amount)
-                            .placeholder("resource", spawnerType.getItemName())
+                            .placeholder("resource", spawnerType.getItemName().asComponent())
                             .defaultPrefix()
                             .send(player);
                 })

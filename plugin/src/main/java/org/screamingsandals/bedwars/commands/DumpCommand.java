@@ -135,9 +135,9 @@ public class DumpCommand extends BaseCommand {
                                                                                             "maxSpawnedResources", itemSpawner.getMaxSpawnedResources(),
                                                                                             "startLevel", itemSpawner.getStartLevel(),
                                                                                             "name", itemSpawner.getCustomName(),
-                                                                                            "team", itemSpawner.getTeam().map(Team::getName).orElse("no team"),
-                                                                                            "hologramEnabled", itemSpawner.getHologramEnabled(),
-                                                                                            "floatingEnabled", itemSpawner.getFloatingEnabled()
+                                                                                            "team", Optional.ofNullable(itemSpawner.getTeam()).map(Team::getName).orElse("no team"),
+                                                                                            "hologramEnabled", itemSpawner.isHologramEnabled(),
+                                                                                            "floatingEnabled", itemSpawner.isFloatingBlockEnabled()
                                                                                     )).collect(Collectors.toList()),
                                                                                     "teams", game.getTeams().stream().map(team -> nullValuesAllowingMap(
                                                                                             "name", team.getName(),
