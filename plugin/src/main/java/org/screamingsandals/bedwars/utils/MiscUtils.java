@@ -17,6 +17,7 @@ import org.screamingsandals.bedwars.api.TeamColor;
 import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.events.ApplyPropertyToItemEventImpl;
+import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.lib.block.BlockTypeHolder;
@@ -161,9 +162,9 @@ public class MiscUtils {
         return BlockTypeHolder.of(fallback);
     }
 
-    public PlayerWrapper findTarget(Game game, PlayerWrapper player, double maxDist) {
+    public PlayerWrapper findTarget(GameImpl game, PlayerWrapper player, double maxDist) {
         PlayerWrapper playerTarget = null;
-        RunningTeam team = game.getTeamOfPlayer(player);
+        var team = game.getTeamOfPlayer(player);
 
         ArrayList<PlayerWrapper> foundTargets = new ArrayList<>(game.getConnectedPlayers());
         foundTargets.removeAll(team.getConnectedPlayers());
@@ -175,7 +176,7 @@ public class MiscUtils {
                 continue;
             }
 
-            if (player.getLocation().getWorld() != p.getLocation().getWorld()) {
+            if (!player.getLocation().getWorld().equals(p.getLocation().getWorld())) {
                 continue;
             }
 

@@ -334,7 +334,7 @@ public class PlayerListener {
             Debug.info(event.getPlayer().getName() + " is in game");
             // clear inventory to fix issue 148
             if (!game.getConfigurationContainer().getOrDefault(ConfigurationContainer.KEEP_INVENTORY, Boolean.class, false)) {
-                event.getPlayer().getPlayerInventory().as(Inventory.class).clear();
+                event.getPlayer().getPlayerInventory().clear();
             }
             if (gPlayer.isSpectator) {
                 Debug.info(event.getPlayer().getName() + " is going to be spectator");
@@ -387,8 +387,8 @@ public class PlayerListener {
         if (PlayerManagerImpl.getInstance().isPlayerInGame(event.getPlayer())) {
             var gPlayer = event.getPlayer().as(BedWarsPlayer.class);
             var game = gPlayer.getGame();
-            if (game.getWorld() != event.getPlayer().getLocation().getWorld()
-                    && game.getLobbySpawn().getWorld() != event.getPlayer().getLocation().getWorld()) {
+            if (!game.getWorld().equals(event.getPlayer().getLocation().getWorld())
+                    && !game.getLobbySpawn().getWorld().equals(event.getPlayer().getLocation().getWorld())) {
                 gPlayer.changeGame(null);
                 Debug.info(event.getPlayer().getName() + " changed world while in BedWars arena. Kicking...");
             }
@@ -867,23 +867,32 @@ public class PlayerListener {
                                         if (team.getTargetBlock().equals(event.getBlockClicked().getLocation())) {
                                             event.setCancelled(true);
                                             if (BedWarsPlugin.isLegacy()) {
-                                                var state = event.getBlockClicked().getBlockState().orElseThrow().as(BlockState.class);
-                                                if (state.getData() instanceof org.bukkit.material.Cake) {
-                                                    org.bukkit.material.Cake cake = (org.bukkit.material.Cake) state.getData();
-                                                    if (cake.getSlicesEaten() == 0) {
-                                                        game.getRegion().putOriginalBlock(event.getBlockClicked().getLocation().as(Location.class), state);
-                                                    }
-                                                    cake.setSlicesEaten(cake.getSlicesEaten() + 1);
-                                                    if (cake.getSlicesEaten() >= 6) {
-                                                        game.bedDestroyed(event.getBlockClicked().getLocation(), gPlayer, false, false, true);
-                                                        event.getBlockClicked().setType(BlockTypeHolder.air());
-                                                    } else {
-                                                        state.setData(cake);
-                                                        state.update();
-                                                    }
+                                                var type = event.getBlockClicked().getType();
+                                                var data = type.legacyData();
+                                                if (data == 0) {
+                                                    game.getRegion().putOriginalBlock(event.getBlockClicked().getLocation(), event.getBlockClicked().getBlockState().orElseThrow());
+                                                }
+                                                data++;
+                                                if (data >= 6) {
+                                                    game.bedDestroyed(event.getBlockClicked().getLocation(), gPlayer, false, false, true);
+                                                    event.getBlockClicked().setType(BlockTypeHolder.air());
+                                                } else {
+                                                    event.getBlockClicked().setType(type.withLegacyData(data));
                                                 }
                                             } else {
-                                                Player113ListenerUtils.yummyCake(event, game);
+                                                var cake = event.getBlockClicked().getType();
+                                                if (cake.get("bites").map("0"::equals).orElse(true)) {
+                                                    game.getRegion().putOriginalBlock(event.getBlockClicked().getLocation(), event.getBlockClicked().getBlockState().orElseThrow());
+                                                }
+                                                var bites = cake.get("bites").map(Integer::parseInt).orElse(0) + 1;
+                                                cake = cake.with("bites", String.valueOf(bites));
+
+                                                if (bites >= 6) {
+                                                    game.bedDestroyed(event.getBlockClicked().getLocation(), event.getPlayer(), false, false, true);
+                                                    event.getBlockClicked().setType(BlockTypeHolder.air());
+                                                } else {
+                                                    event.getBlockClicked().setType(cake);
+                                                }
                                             }
                                             break;
                                         }
@@ -910,7 +919,16 @@ public class PlayerListener {
                                         && game.getPlayerTeam(gPlayer).getTargetBlock().equals(event.getBlockClicked().getLocation())
                                         && event.getItem() != null && event.getItem().getMaterial().is("glowstone")) {
                                     Debug.info(player.getName() + " filled respawn anchor");
-                                    anchorFilled = Player116ListenerUtils.anchorCharge(event, game, stack);
+                                    var anchor = event.getBlockClicked().getType();
+                                    int charges = anchor.get("charges").map(Integer::parseInt).orElse(0);
+                                    charges++;
+                                    if (charges <= 4) {
+                                        anchorFilled = true;
+                                        event.getBlockClicked().setType(anchor.with("charges", String.valueOf(charges)));
+                                        stack.setAmount(stack.getAmount() - 1);
+                                        Sounds.playSound(event.getBlockClicked().getLocation(), MainConfig.getInstance().node("target-block", "respawn-anchor", "sound", "charge").getString(), Sounds.BLOCK_RESPAWN_ANCHOR_CHARGE, 1, 1);
+                                        game.updateScoreboard();
+                                    }
                                 }
 
                                 if (!anchorFilled && stack.getMaterial().block().isPresent()) {
@@ -928,7 +946,7 @@ public class PlayerListener {
                                         } else {
                                             stack.setAmount(stack.getAmount() - 1);
                                             // TODO get right block place sound
-                                            Sounds.BLOCK_STONE_PLACE.playSound(player.as(Player.class), block.getLocation().as(Location.class), 1, 1);
+                                            Sounds.BLOCK_STONE_PLACE.playSound(player, block.getLocation(), 1, 1);
                                         }
                                     }
                                 }

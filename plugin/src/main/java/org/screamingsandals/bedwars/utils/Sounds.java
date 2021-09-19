@@ -1015,6 +1015,10 @@ public enum Sounds {
         this.versionDependentNames = versionDependentNames;
     }
 
+    public void playSound(PlayerWrapper player, LocationHolder location, float volume, float pitch) {
+        playSound(player.as(Player.class), location.as(Location.class), volume, pitch);
+    }
+
     public void playSound(Player player, Location location, float volume, float pitch) {
         if (cached != null) {
             player.playSound(location, cached, volume, pitch);

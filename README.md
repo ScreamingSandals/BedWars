@@ -18,7 +18,7 @@ We are working on rewriting our plugin to our new library ScreamingLib. This all
 
 We are currently in the process of removing bukkit api references. You can see the progress on this badge.  
 Lower number means we are closer to our goal.  
-![](https://img.shields.io/badge/dynamic/json?color=red&label=org.bukkit%20occurrences&query=total_count&url=https%3A%2F%2Fapi.github.com%2Fsearch%2Fcode%3Fq%3Dorg.bukkit%2Brepo%3AScreamingSandals%2FBedWars)
+[![](https://img.shields.io/badge/dynamic/json?color=red&label=org.bukkit%20occurrences&query=total_count&url=https%3A%2F%2Fapi.github.com%2Fsearch%2Fcode%3Fq%3Dorg.bukkit%2Brepo%3AScreamingSandals%2FBedWars%2Blanguage%3AJava)](https://github.com/search?q=org.bukkit+repo%3AScreamingSandals%2FBedWars+language%3AJava&type=Code&ref=advsearch&l=Java&l=)
 
 ## Support
 If you need any help, you can contact us on [Discord](https://discord.gg/4xB54Ts). Please make sure to look into older messages. There are many question already answered. It is really anoying to repeat the same thing over and over.

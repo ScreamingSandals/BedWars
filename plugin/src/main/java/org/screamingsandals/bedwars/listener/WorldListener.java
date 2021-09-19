@@ -18,7 +18,6 @@ import org.screamingsandals.lib.event.world.SPlantGrowEvent;
 import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.block.BlockHolder;
 import org.screamingsandals.lib.world.LocationHolder;
-import org.screamingsandals.lib.world.LocationMapper;
 import org.spongepowered.configurate.ConfigurationNode;
 
 import java.util.Collection;
@@ -174,7 +173,7 @@ public class WorldListener {
                         //}
                     } else /*if (game.getStatus() == GameStatus.WAITING) {*/
                         if (game.getLobbyWorld().equals(event.getEntity().getLocation().getWorld())) {
-                            if (event.getEntity().getLocation().getDistanceSquared(LocationMapper.resolve(game.getLobbySpawn()).orElseThrow()) <= Math
+                            if (event.getEntity().getLocation().getDistanceSquared(game.getLobbySpawn()) <= Math
                                     .pow(MainConfig.getInstance().node("prevent-lobby-spawn-mobs-in-radius").getInt(), 2)) {
                                 event.setCancelled(true);
                                 return;

@@ -5,8 +5,6 @@ import org.screamingsandals.bedwars.game.CurrentTeam;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.utils.Sounds;
 import org.screamingsandals.lib.block.BlockHolder;
-import org.screamingsandals.lib.event.player.SPlayerInteractEvent;
-import org.screamingsandals.lib.item.Item;
 
 public class Player116ListenerUtils {
     public static boolean processAnchorDeath(GameImpl game, CurrentTeam team) {
@@ -24,21 +22,6 @@ public class Player116ListenerUtils {
             return true;
         }
         return false;
-    }
-
-    public static boolean anchorCharge(SPlayerInteractEvent event, GameImpl game, Item stack) {
-        boolean anchorFilled = false;
-        var anchor = event.getBlockClicked().getType();
-        int charges = anchor.get("charges").map(Integer::parseInt).orElse(0);
-        charges++;
-        if (charges <= 4) {
-            anchorFilled = true;
-            event.getBlockClicked().setType(anchor.with("charges", String.valueOf(charges)));
-            stack.setAmount(stack.getAmount() - 1);
-            Sounds.playSound(event.getBlockClicked().getLocation(), MainConfig.getInstance().node("target-block", "respawn-anchor", "sound", "charge").getString(), Sounds.BLOCK_RESPAWN_ANCHOR_CHARGE, 1, 1);
-            game.updateScoreboard();
-        }
-        return anchorFilled;
     }
 
     public static boolean isAnchorEmpty(BlockHolder anchor) {
