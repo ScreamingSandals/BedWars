@@ -257,7 +257,7 @@ public class WorldListener {
         for (var game : GameManagerImpl.getInstance().getGames()) {
             if (game.getStatus() != GameStatus.DISABLED && game.getStatus() != GameStatus.WAITING
                     && ArenaUtils.isChunkInArea(chunk, game.getPos1(), game.getPos2())) {
-                ((org.bukkit.event.Cancellable) unload).setCancelled(true);
+                unload.setCancelled(true);
                 return;
             }
         }
