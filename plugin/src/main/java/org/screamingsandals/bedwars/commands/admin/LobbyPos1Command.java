@@ -22,7 +22,7 @@ public class LobbyPos1Command extends BaseAdminSubCommand {
                             var loc = sender.as(PlayerWrapper.class).getLocation();
                             var lobbyWorld = game.getLobbyWorld();
 
-                            if (lobbyWorld != null && (game.getLobbyWorld() != loc.getWorld())) {
+                            if (lobbyWorld != null && (!game.getLobbyWorld().equals(loc.getWorld()))) {
                                 sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_MUST_BE_IN_SAME_WORLD).defaultPrefix());
                                 return;
                             }

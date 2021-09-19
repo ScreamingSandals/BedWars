@@ -42,6 +42,7 @@ public interface ConfigurationContainer {
     String TARGET_BLOCK_EXPLOSIONS = "target-block-explosions";
     String INVISIBLE_LOBBY_ON_GAME_START = "invisible-lobby-on-game-start";
     String HEALTH_INDICATOR = "health-indicator";
+    String HYPIXEL_HOLOGRAMS = "hypixel-holograms";
 
     /**
      * Gets configuration from the key

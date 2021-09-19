@@ -32,6 +32,7 @@ import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
 import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.api.game.GameParticipant;
 import org.screamingsandals.bedwars.api.game.GameStatus;
+import org.screamingsandals.bedwars.api.game.ItemSpawner;
 import org.screamingsandals.bedwars.api.special.SpecialItem;
 import org.screamingsandals.bedwars.api.upgrades.UpgradeRegistry;
 import org.screamingsandals.bedwars.api.upgrades.UpgradeStorage;
@@ -65,6 +66,7 @@ import org.screamingsandals.lib.entity.type.EntityTypeHolder;
 import org.screamingsandals.lib.event.EventManager;
 import org.screamingsandals.lib.event.player.SPlayerBlockBreakEvent;
 import org.screamingsandals.lib.healthindicator.HealthIndicator;
+import org.screamingsandals.lib.hologram.Hologram;
 import org.screamingsandals.lib.hologram.HologramManager;
 import org.screamingsandals.lib.item.Item;
 import org.screamingsandals.lib.lang.Message;;
@@ -298,7 +300,8 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
                         game.getTeamFromName(spawner.node("team").getString()),
                         spawner.node("maxSpawnedResources").getInt(-1),
                         spawner.node("floatingEnabled").getBoolean(),
-                        org.screamingsandals.lib.hologram.Hologram.RotationMode.valueOf(spawner.node("rotationMode").getString("Y"))
+                        Hologram.RotationMode.valueOf(spawner.node("rotationMode").getString("Y")),
+                        ItemSpawner.HologramType.valueOf(spawner.node("hologramType").getString("DEFAULT"))
                 ));
             }
             );
@@ -1148,12 +1151,13 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
             spawnerNode.node("location").set(MiscUtils.setLocationToString(spawner.getLocation()));
             spawnerNode.node("type").set(spawner.getItemSpawnerType().getConfigKey());
             spawnerNode.node("customName").set(spawner.getCustomName());
-            spawnerNode.node("startLevel").set(spawner.getStartLevel());
+            spawnerNode.node("startLevel").set(spawner.getBaseAmountPerSpawn());
             spawnerNode.node("hologramEnabled").set(spawner.isHologramEnabled());
             spawnerNode.node("team").set(Optional.ofNullable(spawner.getTeam()).map(org.screamingsandals.bedwars.api.Team::getName).orElse(null));
             spawnerNode.node("maxSpawnedResources").set(spawner.getMaxSpawnedResources());
             spawnerNode.node("floatingEnabled").set(spawner.isFloatingBlockEnabled());
             spawnerNode.node("rotationMode").set(spawner.getRotationMode());
+            spawnerNode.node("hologramType").set(spawner.getHologramType());
         }
         for (var store : gameStore) {
             var storeNode = configMap.node("stores").appendListNode();

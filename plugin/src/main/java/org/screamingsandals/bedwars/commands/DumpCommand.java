@@ -133,11 +133,13 @@ public class DumpCommand extends BaseCommand {
                                                                                             "type", itemSpawner.getItemSpawnerType().getConfigKey(),
                                                                                             "location", itemSpawner.getLocation(),
                                                                                             "maxSpawnedResources", itemSpawner.getMaxSpawnedResources(),
-                                                                                            "startLevel", itemSpawner.getStartLevel(),
+                                                                                            "startLevel", itemSpawner.getBaseAmountPerSpawn(),
                                                                                             "name", itemSpawner.getCustomName(),
                                                                                             "team", Optional.ofNullable(itemSpawner.getTeam()).map(Team::getName).orElse("no team"),
                                                                                             "hologramEnabled", itemSpawner.isHologramEnabled(),
-                                                                                            "floatingEnabled", itemSpawner.isFloatingBlockEnabled()
+                                                                                            "floatingEnabled", itemSpawner.isFloatingBlockEnabled(),
+                                                                                            "rotationMode", itemSpawner.getRotationMode(),
+                                                                                            "hologramType", itemSpawner.getHologramType()
                                                                                     )).collect(Collectors.toList()),
                                                                                     "teams", game.getTeams().stream().map(team -> nullValuesAllowingMap(
                                                                                             "name", team.getName(),

@@ -405,14 +405,15 @@ public class ShopInventory {
             newItem = changeItemType.getItem();
         }
 
-        var originalMaxStackSize = newItem.getMaterial().as(Material.class).getMaxStackSize();
+        var originalMaxStackSize = newItem.getMaterial().getMaxStackSize();
         if (clickType.isShiftClick() && originalMaxStackSize > 1) {
             double priceOfOne = (double) priceAmount / amount;
             double maxStackSize;
             int finalStackSize;
 
             for (var itemStack : player.as(Player.class).getInventory().getStorageContents()) {
-                if (itemStack.isSimilar(type.getStack())) {
+                //noinspection ConstantConditions
+                if (itemStack != null && itemStack.isSimilar(type.getStack())) {
                     inInventory = inInventory + itemStack.getAmount();
                 }
             }

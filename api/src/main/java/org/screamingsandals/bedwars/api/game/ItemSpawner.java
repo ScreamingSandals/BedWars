@@ -14,6 +14,8 @@ public interface ItemSpawner<E extends Wrapper, I extends ItemSpawnerType<?,?,?>
      */
     I getItemSpawnerType();
 
+    void setItemSpawnerType(I spawnerType);
+
     /**
      * @return
      */
@@ -25,25 +27,33 @@ public interface ItemSpawner<E extends Wrapper, I extends ItemSpawnerType<?,?,?>
     @Nullable
     String getCustomName();
 
-    /**
-     * @return
-     */
-    double getStartLevel();
+    void setCustomName(@Nullable String customName);
 
     /**
      * @return
      */
-    double getCurrentLevel();
+    double getBaseAmountPerSpawn();
+
+    void setBaseAmountPerSpawn(double baseAmountPerSpawn);
+
+    /**
+     * @return
+     */
+    double getAmountPerSpawn();
 
     /**
      * @return
      */
     boolean isHologramEnabled();
 
+    void setHologramEnabled(boolean enabled);
+
     /**
      * @return
      */
     boolean isFloatingBlockEnabled();
+
+    void setFloatingBlockEnabled(boolean enabled);
 
     /**
      * Sets team of this upgrade
@@ -61,10 +71,22 @@ public interface ItemSpawner<E extends Wrapper, I extends ItemSpawnerType<?,?,?>
     /**
      * @param level
      */
-    void setCurrentLevel(double level);
+    void setAmountPerSpawn(double level);
+
+    HologramType getHologramType();
+
+    void setHologramType(HologramType type);
+
+    int getTier();
+
+    void setTier(int tier);
+
+    long getIntervalTicks();
+
+    void setIntervalTicks(long ticks);
 
     default void addToCurrentLevel(double level) {
-        setCurrentLevel(getCurrentLevel() + level);
+        setAmountPerSpawn(getAmountPerSpawn() + level);
     }
 
     default String getName() {
@@ -76,11 +98,11 @@ public interface ItemSpawner<E extends Wrapper, I extends ItemSpawnerType<?,?,?>
     }
 
     default double getLevel() {
-        return getCurrentLevel();
+        return getAmountPerSpawn();
     }
 
     default void setLevel(double level) {
-        setCurrentLevel(level);
+        setAmountPerSpawn(level);
     }
 
     default void increaseLevel(double level) {
@@ -88,6 +110,15 @@ public interface ItemSpawner<E extends Wrapper, I extends ItemSpawnerType<?,?,?>
     }
 
     default double getInitialLevel() {
-        return getStartLevel();
+        return getBaseAmountPerSpawn();
+    }
+
+    enum HologramType {
+        /**
+         * Defaults to the setting of the game
+         */
+        DEFAULT,
+        SCREAMING,
+        HYPIXEL;
     }
 }

@@ -85,7 +85,7 @@ public class StoreCommand extends BaseAdminSubCommand {
                         .handler(commandContext -> editMode(commandContext, (sender, game) -> {
                             var loc = sender.as(PlayerWrapper.class).getLocation();
 
-                            if (game.getWorld().equals(loc.getWorld())) {
+                            if (!game.getWorld().equals(loc.getWorld())) {
                                 sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_MUST_BE_IN_SAME_WORLD).defaultPrefix());
                                 return;
                             }

@@ -52,11 +52,7 @@ public class ItemSpawnerTypeImpl implements ItemSpawnerType<ItemTypeHolder, Item
 
     @Deprecated
     public ItemStack getStack(int amount) {
-        var stack = new ItemStack(itemType.as(Material.class), amount, (short) damage);
-        var stackMeta = stack.getItemMeta();
-        stackMeta.setDisplayName(AdventureHelper.toLegacy(getItemName().asComponent()));
-        stack.setItemMeta(stackMeta);
-        return stack;
+        return getItem(amount).as(ItemStack.class);
     }
 
     public Item getItem() {
@@ -64,6 +60,6 @@ public class ItemSpawnerTypeImpl implements ItemSpawnerType<ItemTypeHolder, Item
     }
 
     public Item getItem(int amount) {
-        return ItemFactory.build(itemType, builder -> builder.name(getItemName().asComponent())).orElseThrow();
+        return ItemFactory.build(itemType, builder -> builder.name(getItemName().asComponent()).amount(amount)).orElseThrow();
     }
 }

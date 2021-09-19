@@ -14,6 +14,8 @@ import org.screamingsandals.lib.utils.annotations.ServiceDependencies;
 import org.screamingsandals.lib.utils.annotations.methods.OnPostEnable;
 import org.screamingsandals.lib.utils.annotations.parameters.ProvidedBy;
 
+import java.util.function.BiConsumer;
+
 @ServiceDependencies(dependsOn = {
         AdminCommand.class
 })
@@ -29,18 +31,14 @@ public abstract class BaseAdminSubCommand {
 
     public abstract void construct(CommandManager<CommandSenderWrapper> manager, Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder);
 
-    protected void editMode(CommandContext<CommandSenderWrapper> commandContext, EditModeHandler handler) {
+    protected void editMode(CommandContext<CommandSenderWrapper> commandContext, BiConsumer<CommandSenderWrapper, GameImpl> handler) {
         String gameName = commandContext.get("game");
         var sender = commandContext.getSender();
 
         if (AdminCommand.gc.containsKey(gameName)) {
-            handler.handle(sender, AdminCommand.gc.get(gameName));
+            handler.accept(sender, AdminCommand.gc.get(gameName));
         } else {
             sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_ERROR_ARENA_NOT_IN_EDIT).defaultPrefix());
         }
-    }
-
-    protected interface EditModeHandler {
-        void handle(CommandSenderWrapper sender, GameImpl game);
     }
 }
