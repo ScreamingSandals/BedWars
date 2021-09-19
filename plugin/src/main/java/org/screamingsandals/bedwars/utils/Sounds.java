@@ -3,6 +3,8 @@ package org.screamingsandals.bedwars.utils;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import org.screamingsandals.lib.player.PlayerWrapper;
+import org.screamingsandals.lib.world.LocationHolder;
 
 /* Sound 1.8 - 1.13.2 list by @XxTreme_Creeper_ */
 
@@ -1060,6 +1062,23 @@ public enum Sounds {
         }
     }
 
+    public static void playSound(PlayerWrapper player, LocationHolder location, String name, Sounds fallbackSound, float volume, float pitch) {
+        try {
+            Sounds sound = Sounds.valueOf(name.toUpperCase());
+            sound.playSound(player.as(Player.class), location.as(Location.class), volume, pitch);
+        } catch (IllegalArgumentException | NullPointerException ex) {
+            try {
+                // If something is exists in bukkit, but not in this mapping
+                Sound s = Sound.valueOf(name);
+                player.as(Player.class).playSound(location.as(Location.class), s, volume, pitch);
+            } catch (IllegalArgumentException t) {
+                if (fallbackSound != null) {
+                    fallbackSound.playSound(player.as(Player.class), location.as(Location.class), volume, pitch);
+                }
+            }
+        }
+    }
+
     public static void playSound(Location location, String name, Sounds fallbackSound, float volume, float pitch) {
         try {
             Sounds sound = Sounds.valueOf(name.toUpperCase());
@@ -1072,6 +1091,23 @@ public enum Sounds {
             } catch (IllegalArgumentException t) {
                 if (fallbackSound != null) {
                     fallbackSound.playSound(location, volume, pitch);
+                }
+            }
+        }
+    }
+
+    public static void playSound(LocationHolder location, String name, Sounds fallbackSound, float volume, float pitch) {
+        try {
+            Sounds sound = Sounds.valueOf(name.toUpperCase());
+            sound.playSound(location.as(Location.class), volume, pitch);
+        } catch (IllegalArgumentException | NullPointerException ex) {
+            try {
+                // If something is exists in bukkit, but not in this mapping
+                Sound s = Sound.valueOf(name);
+                location.as(Location.class).getWorld().playSound(location.as(Location.class), s, volume, pitch);
+            } catch (IllegalArgumentException t) {
+                if (fallbackSound != null) {
+                    fallbackSound.playSound(location.as(Location.class), volume, pitch);
                 }
             }
         }

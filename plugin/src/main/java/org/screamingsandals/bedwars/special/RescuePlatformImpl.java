@@ -95,7 +95,7 @@ public class RescuePlatformImpl extends SpecialItem implements RescuePlatform<Ga
                 continue;
             }
 
-            var coloredMatrerial = material.colorize(team.teamInfo.color.material1_13);
+            var coloredMatrerial = material.colorize(team.getColor().material1_13);
             placedBlock.setType(coloredMatrerial);
             addBlockToList(placedBlock);
         }

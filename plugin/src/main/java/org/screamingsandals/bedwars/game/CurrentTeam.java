@@ -6,8 +6,6 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.screamingsandals.bedwars.api.RunningTeam;
-import org.screamingsandals.bedwars.api.TeamColor;
-import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.lib.block.BlockHolder;
@@ -21,19 +19,19 @@ import org.screamingsandals.lib.world.LocationHolder;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CurrentTeam implements RunningTeam<PlayerWrapper, LocationHolder, BlockHolder> {
-    public final Team teamInfo;
+public class CurrentTeam implements RunningTeam<PlayerWrapper, LocationHolder, BlockHolder, TeamColorImpl, GameImpl> {
+    public final TeamImpl teamInfo;
     public final List<BedWarsPlayer> players = new ArrayList<>();
     private org.bukkit.scoreboard.Team scoreboardTeam;
     private Inventory chestInventory;
     private List<BlockHolder> chests = new ArrayList<>();
-    private Game game;
+    private GameImpl game;
     private Hologram holo;
     private Hologram protectHolo;
 
     public boolean isBed = true;
 
-    public CurrentTeam(Team team, Game game) {
+    public CurrentTeam(TeamImpl team, GameImpl game) {
         this.teamInfo = team;
         this.game = game;
         final var message = Message.of(LangKeys.SPECIALS_TEAM_CHEST_NAME).prefixOrDefault(game.getCustomPrefixComponent()).asComponent();
@@ -87,27 +85,27 @@ public class CurrentTeam implements RunningTeam<PlayerWrapper, LocationHolder, B
 
     @Override
     public String getName() {
-        return teamInfo.name;
+        return teamInfo.getName();
     }
 
     @Override
-    public TeamColor getColor() {
-        return teamInfo.color.toApiColor();
+    public TeamColorImpl getColor() {
+        return teamInfo.getColor();
     }
 
     @Override
     public LocationHolder getTeamSpawn() {
-        return teamInfo.spawn;
+        return teamInfo.getTeamSpawn();
     }
 
     @Override
     public LocationHolder getTargetBlock() {
-        return teamInfo.bed;
+        return teamInfo.getTargetBlock();
     }
 
     @Override
     public int getMaxPlayers() {
-        return teamInfo.maxPlayers;
+        return teamInfo.getMaxPlayers();
     }
 
     @Override
@@ -173,7 +171,7 @@ public class CurrentTeam implements RunningTeam<PlayerWrapper, LocationHolder, B
     }
 
     @Override
-    public Game getGame() {
+    public GameImpl getGame() {
         return game;
     }
 

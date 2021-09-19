@@ -9,8 +9,8 @@ import org.bukkit.block.Block;
 import org.bukkit.block.data.type.Bed;
 import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.commands.AdminCommand;
-import org.screamingsandals.bedwars.game.Team;
-import org.screamingsandals.bedwars.game.TeamColor;
+import org.screamingsandals.bedwars.game.TeamImpl;
+import org.screamingsandals.bedwars.game.TeamColorImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.region.FlatteningBedUtils;
 import org.screamingsandals.bedwars.region.LegacyBedUtils;
@@ -38,14 +38,14 @@ public class TeamCommand extends BaseAdminSubCommand {
                 commandSenderWrapperBuilder
                         .literal("add")
                         .argument(StringArgument.of("teamName"))
-                        .argument(EnumArgument.of(TeamColor.class, "color"))
+                        .argument(EnumArgument.of(TeamColorImpl.class, "color"))
                         .argument(IntegerArgument
                                 .<CommandSenderWrapper>newBuilder("maximumPlayers")
                                 .withMin(1)
                         )
                         .handler(commandContext -> editMode(commandContext, (sender, game) -> {
                             String name = commandContext.get("teamName");
-                            TeamColor color = commandContext.get("color");
+                            TeamColorImpl color = commandContext.get("color");
                             int maxPlayers = commandContext.get("maximumPlayers");
 
                             if (game.getTeamFromName(name) != null) {
@@ -58,20 +58,20 @@ public class TeamCommand extends BaseAdminSubCommand {
                                 return;
                             }
 
-                            Team team = new Team();
-                            team.name = name;
-                            team.color = color;
-                            team.maxPlayers = maxPlayers;
-                            team.game = game;
+                            var team = new TeamImpl();
+                            team.setName(name);
+                            team.setColor(color);
+                            team.setMaxPlayers(maxPlayers);
+                            team.setGame(game);
                             game.getTeams().add(team);
 
                             sender.sendMessage(
                                     Message
                                             .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_TEAM_CREATED)
                                             .defaultPrefix()
-                                            .placeholder("team", team.name)
-                                            .placeholder("teamcolor", AdventureHelper.toComponent(team.color.chatColor + team.color.name()))
-                                            .placeholder("maxplayers", team.maxPlayers)
+                                            .placeholder("team", team.getName())
+                                            .placeholder("teamcolor", AdventureHelper.toComponent(team.getColor().chatColor + team.getColor().name()))
+                                            .placeholder("maxplayers", team.getMaxPlayers())
                             );
                         }))
         );
@@ -83,7 +83,7 @@ public class TeamCommand extends BaseAdminSubCommand {
                         return AdminCommand.gc.get(c.<String>get("game"))
                                 .getTeams()
                                 .stream()
-                                .map(Team::getName)
+                                .map(TeamImpl::getName)
                                 .collect(Collectors.toList());
                     }
                     return List.of();
@@ -101,7 +101,7 @@ public class TeamCommand extends BaseAdminSubCommand {
                             if (forRemove != null) {
                                 game.getTeams().remove(forRemove);
 
-                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_TEAM_REMOVED).defaultPrefix().placeholder("team", forRemove.name));
+                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_TEAM_REMOVED).defaultPrefix().placeholder("team", forRemove.getName()));
                                 return;
                             }
                             sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_TEAM_DOES_NOT_EXIST).defaultPrefix());
@@ -112,10 +112,10 @@ public class TeamCommand extends BaseAdminSubCommand {
                 commandSenderWrapperBuilder
                         .literal("color")
                         .argument(teamNameArgument)
-                        .argument(EnumArgument.of(TeamColor.class, "color"))
+                        .argument(EnumArgument.of(TeamColorImpl.class, "color"))
                         .handler(commandContext -> editMode(commandContext, (sender, game) -> {
                             String name = commandContext.get("teamName");
-                            TeamColor color = commandContext.get("color");
+                            TeamColorImpl color = commandContext.get("color");
 
                             var team = game.getTeamFromName(name);
                             if (team == null) {
@@ -123,14 +123,14 @@ public class TeamCommand extends BaseAdminSubCommand {
                                 return;
                             }
 
-                            team.color = color;
+                            team.setColor(color);
 
                             sender.sendMessage(
                                     Message
                                             .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_TEAM_COLOR_SET)
                                             .defaultPrefix()
-                                            .placeholder("team", team.name)
-                                            .placeholder("teamcolor", AdventureHelper.toComponent(team.color.chatColor + team.color.name()))
+                                            .placeholder("team", team.getName())
+                                            .placeholder("teamcolor", AdventureHelper.toComponent(team.getColor().chatColor + team.getColor().name()))
                             );
                         }))
         );
@@ -158,14 +158,14 @@ public class TeamCommand extends BaseAdminSubCommand {
                                 return;
                             }
 
-                            team.maxPlayers = maxPlayers;
+                            team.setMaxPlayers(maxPlayers);
 
                             sender.sendMessage(
                                     Message
                                             .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_TEAM_MAXPLAYERS_SET)
                                             .defaultPrefix()
-                                            .placeholder("team", team.name)
-                                            .placeholder("maxplayers", team.maxPlayers));
+                                            .placeholder("team", team.getName())
+                                            .placeholder("maxplayers", team.getMaxPlayers()));
                         }))
         );
 
@@ -196,17 +196,17 @@ public class TeamCommand extends BaseAdminSubCommand {
                                 sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_MUST_BE_IN_BOUNDS).defaultPrefix());
                                 return;
                             }
-                            team.spawn = loc;
+                            team.setTeamSpawn(loc);
                             sender.sendMessage(
                                     Message
                                             .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_TEAM_SPAWN_SET)
                                             .defaultPrefix()
-                                            .placeholder("team", team.name)
-                                            .placeholder("x", team.spawn.getX(), 2)
-                                            .placeholder("y", team.spawn.getY(), 2)
-                                            .placeholder("z", team.spawn.getZ(), 2)
-                                            .placeholder("yaw", team.spawn.getYaw(), 5)
-                                            .placeholder("pitch", team.spawn.getPitch(), 5)
+                                            .placeholder("team", team.getName())
+                                            .placeholder("x", team.getTeamSpawn().getX(), 2)
+                                            .placeholder("y", team.getTeamSpawn().getY(), 2)
+                                            .placeholder("z", team.getTeamSpawn().getZ(), 2)
+                                            .placeholder("yaw", team.getTeamSpawn().getYaw(), 5)
+                                            .placeholder("pitch", team.getTeamSpawn().getPitch(), 5)
                             );
                         }))
         );
@@ -245,12 +245,12 @@ public class TeamCommand extends BaseAdminSubCommand {
                                 if (block.as(Block.class).getState().getData() instanceof org.bukkit.material.Bed) {
                                     org.bukkit.material.Bed bed = (org.bukkit.material.Bed) block.as(Block.class).getState().getData();
                                     if (!bed.isHeadOfBed()) {
-                                        team.bed = LegacyBedUtils.getBedNeighbor(block).getLocation();
+                                        team.setTargetBlock(LegacyBedUtils.getBedNeighbor(block).getLocation());
                                     } else {
-                                        team.bed = loc;
+                                        team.setTargetBlock(loc);
                                     }
                                 } else {
-                                    team.bed = loc;
+                                    team.setTargetBlock(loc);
                                 }
 
                             } else {
@@ -258,23 +258,23 @@ public class TeamCommand extends BaseAdminSubCommand {
                                 if (block.as(Block.class).getBlockData() instanceof Bed) {
                                     Bed bed = (Bed) block.as(Block.class).getBlockData();
                                     if (bed.getPart() != Bed.Part.HEAD) {
-                                        team.bed = Objects.requireNonNull(FlatteningBedUtils.getBedNeighbor(block)).getLocation();
+                                        team.setTargetBlock(Objects.requireNonNull(FlatteningBedUtils.getBedNeighbor(block)).getLocation());
                                     } else {
-                                        team.bed = loc;
+                                        team.setTargetBlock(loc);
                                     }
                                 } else {
-                                    team.bed = loc;
+                                    team.setTargetBlock(loc);
                                 }
                             }
                             sender.sendMessage(
                                     Message
                                             .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_TARGET_BLOCK_SET)
                                             .defaultPrefix()
-                                            .placeholder("team", team.name)
-                                            .placeholder("x", team.bed.getBlockX())
-                                            .placeholder("y", team.bed.getBlockY())
-                                            .placeholder("z", team.bed.getBlockZ())
-                                            .placeholder("material", team.bed.getBlock().getType().platformName())
+                                            .placeholder("team", team.getName())
+                                            .placeholder("x", team.getTargetBlock().getBlockX())
+                                            .placeholder("y", team.getTargetBlock().getBlockY())
+                                            .placeholder("z", team.getTargetBlock().getBlockZ())
+                                            .placeholder("material", team.getTargetBlock().getBlock().getType().platformName())
                             );
                         }))
         );

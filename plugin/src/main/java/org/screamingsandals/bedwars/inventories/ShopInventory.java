@@ -3,9 +3,6 @@ package org.screamingsandals.bedwars.inventories;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.api.PurchaseType;
 import org.screamingsandals.bedwars.commands.DumpCommand;
@@ -205,7 +202,7 @@ public class ShopInventory {
             CurrentTeam team = (CurrentTeam) event.getGame().getTeamOfPlayer(player);
 
             if (mainConfig.node("automatic-coloring-in-shop").getBoolean()) {
-                event.setStack(BedWarsPlugin.getInstance().getColorChanger().applyColor(team.teamInfo.color.toApiColor(), event.getStack()));
+                event.setStack(BedWarsPlugin.getInstance().getColorChanger().applyColor(team.getColor(), event.getStack()));
             }
         }
     }
@@ -261,11 +258,11 @@ public class ShopInventory {
                         String fa = arguments[0];
                         switch (fa) {
                             case "color":
-                                return team.teamInfo.color.name();
+                                return team.getColor().name();
                             case "chatcolor":
-                                return team.teamInfo.color.chatColor.toString();
+                                return team.getColor().chatColor.toString();
                             case "maxplayers":
-                                return Integer.toString(team.teamInfo.maxPlayers);
+                                return Integer.toString(team.getMaxPlayers());
                             case "players":
                                 return Integer.toString(team.players.size());
                             case "hasBed":
@@ -411,9 +408,9 @@ public class ShopInventory {
             double maxStackSize;
             int finalStackSize;
 
-            for (var itemStack : player.as(Player.class).getInventory().getStorageContents()) {
-                //noinspection ConstantConditions
-                if (itemStack != null && itemStack.isSimilar(type.getStack())) {
+            var it = type.getItem();
+            for (var itemStack : player.getPlayerInventory().getStorageContents()) {
+                if (itemStack != null && itemStack.isSimilar(it)) {
                     inInventory = inInventory + itemStack.getAmount();
                 }
             }
@@ -478,7 +475,7 @@ public class ShopInventory {
                         .placeholder("material", Component.text(priceAmount + " ").append(type.getItemName()))
                         .send(event.getPlayer());
             }
-            Sounds.playSound(player.as(Player.class), player.getLocation().as(Location.class),
+            Sounds.playSound(player, player.getLocation(),
                     mainConfig.node("sounds", "item_buy", "sound").getString(), Sounds.ENTITY_ITEM_PICKUP,
                     (float) MainConfig.getInstance().node("sounds", "item_buy", "volume").getDouble(),
                     (float) MainConfig.getInstance().node("sounds", "item_buy", "pitch").getDouble());
@@ -601,7 +598,7 @@ public class ShopInventory {
                                     .placeholder("material", Component.text(priceAmount + " ").append(type.getItemName()))
                                     .send(event.getPlayer());
                         }
-                        Sounds.playSound(player1.as(Player.class), player1.getLocation().as(Location.class),
+                        Sounds.playSound(player1, player1.getLocation(),
                                 mainConfig.node("sounds", "upgrade_buy", "sound").getString(),
                                 Sounds.ENTITY_EXPERIENCE_ORB_PICKUP,
                                 (float) MainConfig.getInstance().node("sounds", "upgrade_buy", "volume").getDouble(),
@@ -615,7 +612,7 @@ public class ShopInventory {
                                 .placeholder("material", Component.text(priceAmount + " ").append(type.getItemName()))
                                 .send(event.getPlayer());
                     }
-                    Sounds.playSound(player.as(Player.class), player.getLocation().as(Location.class),
+                    Sounds.playSound(player, player.getLocation(),
                             mainConfig.node("sounds", "upgrade_buy", "sound").getString(),
                             Sounds.ENTITY_EXPERIENCE_ORB_PICKUP,
                             (float) MainConfig.getInstance().node("sounds", "upgrade_buy", "volume").getDouble(),

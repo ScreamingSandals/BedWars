@@ -135,7 +135,7 @@ public class ProtectionWallImpl extends SpecialItem implements ProtectionWall<Ga
                     continue;
                 }
 
-                var coloredMaterial = material.colorize(team.teamInfo.color.material1_13);
+                var coloredMaterial = material.colorize(team.getColor().material1_13);
                 placedBlock.setType(coloredMaterial);
                 addBlockToList(placedBlock);
             }

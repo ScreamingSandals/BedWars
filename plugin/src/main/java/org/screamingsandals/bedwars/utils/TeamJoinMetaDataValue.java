@@ -2,15 +2,15 @@ package org.screamingsandals.bedwars.utils;
 
 import org.bukkit.plugin.java.JavaPlugin;
 import org.screamingsandals.bedwars.BedWarsPlugin;
-import org.screamingsandals.bedwars.game.Team;
+import org.screamingsandals.bedwars.game.TeamImpl;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
 
 public class TeamJoinMetaDataValue implements MetadataValue {
-    private Team team;
+    private TeamImpl team;
     private boolean teamJoin = true;
 
-    public TeamJoinMetaDataValue(Team team) {
+    public TeamJoinMetaDataValue(TeamImpl team) {
         this.team = team;
     }
 
@@ -59,7 +59,7 @@ public class TeamJoinMetaDataValue implements MetadataValue {
         return BedWarsPlugin.getInstance().getPluginDescription().as(JavaPlugin.class);
     }
 
-    public Team getTeam() {
+    public TeamImpl getTeam() {
         return this.team;
     }
 

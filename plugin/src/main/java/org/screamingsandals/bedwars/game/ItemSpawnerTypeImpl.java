@@ -5,8 +5,6 @@ import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.bedwars.api.game.ItemSpawnerType;
 import org.screamingsandals.lib.item.ItemTypeHolder;
 import org.screamingsandals.lib.lang.Message;
@@ -43,16 +41,6 @@ public class ItemSpawnerTypeImpl implements ItemSpawnerType<ItemTypeHolder, Item
 
     public ComponentWrapper getItemBoldName() {
         return new ComponentWrapper(getTranslatableKey().asComponent().color(color).decorate(TextDecoration.BOLD));
-    }
-
-    @Deprecated
-    public ItemStack getStack() {
-        return getStack(1);
-    }
-
-    @Deprecated
-    public ItemStack getStack(int amount) {
-        return getItem(amount).as(ItemStack.class);
     }
 
     public Item getItem() {

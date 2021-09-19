@@ -139,7 +139,7 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                     return PlayerManagerImpl.getInstance().getGameOfPlayer(player.getUuid()).map(g -> Component.text(g.countTeamChests())).orElseGet(() -> Component.text("0"));
                 case "team":
                     if (PlayerManagerImpl.getInstance().isPlayerInGame(player.getUuid())) {
-                        var gPlayer = PlayerManagerImpl.getInstance().getPlayer(player.getUuid()).get();
+                        var gPlayer = PlayerManagerImpl.getInstance().getPlayer(player.getUuid()).orElseThrow();
                         var game = gPlayer.getGame();
                         if (gPlayer.isSpectator) {
                             return Component.text("spectator");
@@ -156,14 +156,14 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                     }
                 case "team_colored":
                     if (PlayerManagerImpl.getInstance().isPlayerInGame(player.getUuid())) {
-                        var gPlayer = PlayerManagerImpl.getInstance().getPlayer(player.getUuid()).get();
+                        var gPlayer = PlayerManagerImpl.getInstance().getPlayer(player.getUuid()).orElseThrow();
                         var game = gPlayer.getGame();
                         if (gPlayer.isSpectator) {
                             return Component.text("spectator", NamedTextColor.GRAY);
                         } else {
                             var team = game.getPlayerTeam(gPlayer);
                             if (team != null) {
-                                return Component.text(team.getName(), NamedTextColor.NAMES.value(team.teamInfo.color.chatColor.name().toLowerCase()));
+                                return Component.text(team.getName(), NamedTextColor.NAMES.value(team.getColor().chatColor.name().toLowerCase()));
                             } else {
                                 return Component.text("none", NamedTextColor.RED);
                             }
@@ -173,14 +173,14 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                     }
                 case "team_color":
                     if (PlayerManagerImpl.getInstance().isPlayerInGame(player.getUuid())) {
-                        var gPlayer = PlayerManagerImpl.getInstance().getPlayer(player.getUuid()).get();
+                        var gPlayer = PlayerManagerImpl.getInstance().getPlayer(player.getUuid()).orElseThrow();
                         var game = gPlayer.getGame();
                         if (gPlayer.isSpectator) {
                             return Component.text("", NamedTextColor.GRAY);
                         } else {
                             var team = game.getPlayerTeam(gPlayer);
                             if (team != null) {
-                                return Component.text("", NamedTextColor.NAMES.value(team.teamInfo.color.chatColor.name().toLowerCase()));
+                                return Component.text("", NamedTextColor.NAMES.value(team.getColor().chatColor.name().toLowerCase()));
                             } else {
                                 return Component.text("", NamedTextColor.GRAY);
                             }
@@ -190,7 +190,7 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                     }
                 case "team_players":
                     if (PlayerManagerImpl.getInstance().isPlayerInGame(player.getUuid())) {
-                        var gPlayer = PlayerManagerImpl.getInstance().getPlayer(player.getUuid()).get();
+                        var gPlayer = PlayerManagerImpl.getInstance().getPlayer(player.getUuid()).orElseThrow();
                         var game = gPlayer.getGame();
                         if (gPlayer.isSpectator) {
                             return Component.text("0");
@@ -207,7 +207,7 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                     }
                 case "team_maxplayers":
                     if (PlayerManagerImpl.getInstance().isPlayerInGame(player.getUuid())) {
-                        var gPlayer = PlayerManagerImpl.getInstance().getPlayer(player.getUuid()).get();
+                        var gPlayer = PlayerManagerImpl.getInstance().getPlayer(player.getUuid()).orElseThrow();
                         var game = gPlayer.getGame();
                         if (gPlayer.isSpectator) {
                             return Component.text("0");
@@ -224,7 +224,7 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                     }
                 case "team_bed":
                     if (PlayerManagerImpl.getInstance().isPlayerInGame(player.getUuid())) {
-                        var gPlayer = PlayerManagerImpl.getInstance().getPlayer(player.getUuid()).get();
+                        var gPlayer = PlayerManagerImpl.getInstance().getPlayer(player.getUuid()).orElseThrow();
                         var game = gPlayer.getGame();
                         if (gPlayer.isSpectator) {
                             return Component.text("no");
@@ -241,7 +241,7 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                     }
                 case "team_teamchests":
                     if (PlayerManagerImpl.getInstance().isPlayerInGame(player.getUuid())) {
-                        var gPlayer = PlayerManagerImpl.getInstance().getPlayer(player.getUuid()).get();
+                        var gPlayer = PlayerManagerImpl.getInstance().getPlayer(player.getUuid()).orElseThrow();
                         var game = gPlayer.getGame();
                         if (gPlayer.isSpectator) {
                             return Component.text("0");

@@ -4,12 +4,10 @@ import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.util.RGBLike;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-import org.screamingsandals.bedwars.BedWarsPlugin;
+import org.screamingsandals.bedwars.api.TeamColor;
 import org.screamingsandals.lib.block.BlockTypeHolder;
 
-public enum TeamColor {
+public enum TeamColorImpl implements TeamColor {
     BLACK(ChatColor.BLACK, 0xF, "BLACK", Color.BLACK),
     BLUE(ChatColor.DARK_BLUE, 0xB, "BLUE", Color.fromRGB(0, 0, 170)),
     GREEN(ChatColor.DARK_GREEN, 0xD, "GREEN", Color.fromRGB(0, 170, 0)),
@@ -31,7 +29,7 @@ public enum TeamColor {
     public final int woolData;
     public final Color leatherColor;
 
-    TeamColor(ChatColor chatColor, int woolData, String material1_13, Color leatherColor) {
+    TeamColorImpl(ChatColor chatColor, int woolData, String material1_13, Color leatherColor) {
         this.chatColor = chatColor;
         this.woolData = woolData;
         this.material1_13 = material1_13;
@@ -40,34 +38,6 @@ public enum TeamColor {
 
     public BlockTypeHolder getWoolBlockType() {
         return BlockTypeHolder.of("WOOL").colorize(material1_13);
-    }
-
-    public ItemStack getWool() {
-        if (BedWarsPlugin.isLegacy()) {
-            return new ItemStack(Material.valueOf("WOOL"), 1, (short) woolData);
-        } else {
-            return new ItemStack(Material.valueOf(material1_13 + "_WOOL"));
-        }
-
-    }
-
-    public ItemStack getWool(ItemStack stack) {
-        if (BedWarsPlugin.isLegacy()) {
-            stack.setType(Material.valueOf("WOOL"));
-            stack.setDurability((short) woolData);
-        } else {
-            stack.setType(Material.valueOf(material1_13 + "_WOOL"));
-        }
-        return stack;
-
-    }
-
-    public org.screamingsandals.bedwars.api.TeamColor toApiColor() {
-        return org.screamingsandals.bedwars.api.TeamColor.valueOf(this.name());
-    }
-
-    public static TeamColor fromApiColor(org.screamingsandals.bedwars.api.TeamColor color) {
-        return TeamColor.valueOf(color.name());
     }
 
     public RGBLike getLeatherColor() {

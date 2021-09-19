@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.commands.AdminCommand;
-import org.screamingsandals.bedwars.game.Team;
+import org.screamingsandals.bedwars.game.TeamImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.utils.TeamJoinMetaDataValue;
 import org.screamingsandals.lib.lang.Message;
@@ -36,7 +36,7 @@ public class JoinTeamCommand extends BaseAdminSubCommand {
                                         if (AdminCommand.gc.containsKey(c.<String>get("game"))) {
                                             return AdminCommand.gc.get(c.<String>get("game")).getTeams()
                                                     .stream()
-                                                    .map(Team::getName)
+                                                    .map(TeamImpl::getName)
                                                     .collect(Collectors.toList());
                                         }
                                         return List.of();
@@ -48,7 +48,7 @@ public class JoinTeamCommand extends BaseAdminSubCommand {
                             var player = sender.as(Player.class);
 
                             for (var t : game.getTeams()) {
-                                if (t.name.equals(team)) {
+                                if (t.getName().equals(team)) {
                                     if (player.hasMetadata(BEDWARS_TEAM_JOIN_METADATA)) {
                                         player.removeMetadata(BEDWARS_TEAM_JOIN_METADATA, BedWarsPlugin.getInstance().getPluginDescription().as(JavaPlugin.class));
                                     }
@@ -61,7 +61,7 @@ public class JoinTeamCommand extends BaseAdminSubCommand {
 
                                         player.removeMetadata(BEDWARS_TEAM_JOIN_METADATA, BedWarsPlugin.getInstance().getPluginDescription().as(JavaPlugin.class));
                                     }).delay(200, TaskerTime.TICKS).start();
-                                    sender.sendMessage(Message.of(LangKeys.ADMIN_TEAM_JOIN_ENTITY_CLICK_RIGHT_ON_ENTITY).defaultPrefix().placeholder("team", t.name));
+                                    sender.sendMessage(Message.of(LangKeys.ADMIN_TEAM_JOIN_ENTITY_CLICK_RIGHT_ON_ENTITY).defaultPrefix().placeholder("team", t.getName()));
                                     return;
                                 }
                             }

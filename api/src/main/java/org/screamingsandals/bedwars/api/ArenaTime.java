@@ -15,7 +15,7 @@ public enum ArenaTime {
 
     public final int time;
 
-    private ArenaTime(int time) {
+    ArenaTime(int time) {
         this.time = time;
     }
 

@@ -6,7 +6,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import org.screamingsandals.bedwars.commands.AdminCommand;
 import org.screamingsandals.bedwars.game.GameManagerImpl;
-import org.screamingsandals.bedwars.game.TeamColor;
+import org.screamingsandals.bedwars.game.TeamColorImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
@@ -155,11 +155,11 @@ public class InfoCommand extends BaseAdminSubCommand {
                             game.getTeams().forEach(team -> {
                                 Message
                                         .of(LangKeys.ADMIN_INFO_TEAM)
-                                        .placeholder("team", AdventureHelper.toComponent(team.color.chatColor.toString() + team.name))
-                                        .placeholder("maxplayers", team.maxPlayers)
+                                        .placeholder("team", AdventureHelper.toComponent(team.getColor().chatColor.toString() + team.getName()))
+                                        .placeholder("maxplayers", team.getMaxPlayers())
                                         .send(sender);
 
-                                var loc_spawn = team.spawn;
+                                var loc_spawn = team.getTeamSpawn();
                                 Message
                                         .of(LangKeys.ADMIN_INFO_TEAM_SPAWN)
                                         .placeholder("x", loc_spawn.getX(), 2)
@@ -170,7 +170,7 @@ public class InfoCommand extends BaseAdminSubCommand {
                                         .placeholder("world", loc_spawn.getWorld().getName())
                                         .send(sender);
 
-                                var loc_target = team.bed;
+                                var loc_target = team.getTargetBlock();
                                 Message
                                         .of(LangKeys.ADMIN_INFO_TEAM_TARGET)
                                         .placeholder("x", loc_target.getX(), 2)
@@ -213,7 +213,7 @@ public class InfoCommand extends BaseAdminSubCommand {
                                 Component spawnerTeam;
 
                                 if (team != null) {
-                                    spawnerTeam = AdventureHelper.toComponent(TeamColor.fromApiColor(team.getColor()).chatColor + team.getName());
+                                    spawnerTeam = AdventureHelper.toComponent(((TeamColorImpl) team.getColor()).chatColor + team.getName());
                                 } else {
                                     spawnerTeam = Message.of(LangKeys.ADMIN_INFO_SPAWNER_NO_TEAM).asComponent(sender);
                                 }

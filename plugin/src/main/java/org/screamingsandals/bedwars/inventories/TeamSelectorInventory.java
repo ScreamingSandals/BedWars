@@ -1,17 +1,15 @@
 package org.screamingsandals.bedwars.inventories;
 
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.screamingsandals.bedwars.BedWarsPlugin;
-import org.screamingsandals.bedwars.api.RunningTeam;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.events.OpenTeamSelectionEventImpl;
 import org.screamingsandals.bedwars.events.PlayerJoinedTeamEventImpl;
 import org.screamingsandals.bedwars.events.PlayerLeaveEventImpl;
 import org.screamingsandals.bedwars.game.CurrentTeam;
 import org.screamingsandals.bedwars.game.GameImpl;
-import org.screamingsandals.bedwars.game.Team;
+import org.screamingsandals.bedwars.game.TeamImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
@@ -34,7 +32,7 @@ import java.util.Map;
 public class TeamSelectorInventory {
     private final GameImpl game;
     private final InventorySet inventorySet;
-    private final Map<Team, GenericItemInfo> items = new HashMap<>();
+    private final Map<TeamImpl, GenericItemInfo> items = new HashMap<>();
     private final List<EventHandler<?>> handlers = new ArrayList<>();
 
     public TeamSelectorInventory(GameImpl game) {
@@ -61,13 +59,13 @@ public class TeamSelectorInventory {
                         var playersInTeam = game.getPlayersInTeam(team);
                         var playersInTeamCount = playersInTeam.size();
 
-                        categoryBuilder.item(BedWarsPlugin.getInstance().getColorChanger().applyColor(team.color.toApiColor(), item), itemInfoBuilder -> {
+                        categoryBuilder.item(BedWarsPlugin.getInstance().getColorChanger().applyColor(team.getColor(), item), itemInfoBuilder -> {
                             try {
                                 itemInfoBuilder.stack(itemBuilder ->
                                         itemBuilder.name(Message.of(LangKeys.IN_GAME_TEAM_SELECTION_SELECT_ITEM)
-                                                .placeholder("teamName", AdventureHelper.toComponent(team.color.chatColor + team.getName()))
+                                                .placeholder("teamName", AdventureHelper.toComponent(team.getColor().chatColor + team.getName()))
                                                 .placeholder("inTeam", playersInTeamCount)
-                                                .placeholder("maxInTeam", team.maxPlayers)
+                                                .placeholder("maxInTeam", team.getMaxPlayers())
                                                 .asComponent()
                                         ).lore(formatLore(team, game))
                                 ).property("selector", BasicConfigurationNode.root().set(team));
@@ -82,7 +80,7 @@ public class TeamSelectorInventory {
                 .click(event -> {
                     event.getItem().getFirstPropertyByName("selector").ifPresent(property -> {
                         try {
-                            var team = property.getPropertyData().get(Team.class);
+                            var team = property.getPropertyData().get(TeamImpl.class);
                             game.selectTeam(PlayerManagerImpl.getInstance().getPlayerOrCreate(event.getPlayer()), team.getName());
                         } catch (SerializationException | NullPointerException e) {
                             e.printStackTrace();
@@ -112,21 +110,21 @@ public class TeamSelectorInventory {
         player.openInventory(inventorySet);
     }
 
-    private List<Component> formatLore(Team team, GameImpl game) {
+    private List<Component> formatLore(TeamImpl team, GameImpl game) {
         var loreList = new ArrayList<Component>();
         var playersInTeam = game.getPlayersInTeam(team);
         var playersInTeamCount = playersInTeam.size();
 
-        if (playersInTeamCount >= team.maxPlayers) {
-            loreList.add(Message.of(LangKeys.IN_GAME_TEAM_SELECTION_SELECT_ITEM_LORE_FULL).asComponent().color(NamedTextColor.NAMES.value(team.color.chatColor.name().toLowerCase())));
+        if (playersInTeamCount >= team.getMaxPlayers()) {
+            loreList.add(Message.of(LangKeys.IN_GAME_TEAM_SELECTION_SELECT_ITEM_LORE_FULL).asComponent().color(NamedTextColor.NAMES.value(team.getColor().chatColor.name().toLowerCase())));
         } else {
-            loreList.add(Message.of(LangKeys.IN_GAME_TEAM_SELECTION_SELECT_ITEM_LORE_JOIN).asComponent().color(NamedTextColor.NAMES.value(team.color.chatColor.name().toLowerCase())));
+            loreList.add(Message.of(LangKeys.IN_GAME_TEAM_SELECTION_SELECT_ITEM_LORE_JOIN).asComponent().color(NamedTextColor.NAMES.value(team.getColor().chatColor.name().toLowerCase())));
         }
 
         if (!playersInTeam.isEmpty()) {
             loreList.add(Message.of(LangKeys.IN_GAME_TEAM_SELECTION_SELECT_ITEM_LORE).asComponent());
             playersInTeam.forEach(gamePlayer ->
-                    loreList.add(Component.text().color(NamedTextColor.NAMES.value(team.color.chatColor.name())).append(gamePlayer.getDisplayName()).build())
+                    loreList.add(Component.text().color(NamedTextColor.NAMES.value(team.getColor().chatColor.name())).append(gamePlayer.getDisplayName()).build())
             );
         }
 
@@ -158,8 +156,7 @@ public class TeamSelectorInventory {
 
     }
 
-    private void repaintTeam(RunningTeam runningTeam) {
-        var currentTeam = (CurrentTeam) runningTeam;
+    private void repaintTeam(CurrentTeam currentTeam) {
         var team = currentTeam.teamInfo;
         var playersInTeamCount = currentTeam.players.size();
         var itemInfo = items.get(team);
@@ -167,9 +164,9 @@ public class TeamSelectorInventory {
 
         item.setDisplayName(
                 Message.of(LangKeys.IN_GAME_TEAM_SELECTION_SELECT_ITEM)
-                        .placeholder("teamName", AdventureHelper.toComponent(team.color.chatColor + team.getName()))
+                        .placeholder("teamName", AdventureHelper.toComponent(team.getColor().chatColor + team.getName()))
                         .placeholder("inTeam", playersInTeamCount)
-                        .placeholder("maxInTeam", team.maxPlayers)
+                        .placeholder("maxInTeam", team.getMaxPlayers())
                         .asComponent()
         );
 

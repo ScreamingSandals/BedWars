@@ -6,7 +6,7 @@ import org.screamingsandals.bedwars.api.special.TNTSheep;
 import org.screamingsandals.bedwars.entities.EntitiesManagerImpl;
 import org.screamingsandals.bedwars.game.CurrentTeam;
 import org.screamingsandals.bedwars.game.GameImpl;
-import org.screamingsandals.bedwars.game.TeamColor;
+import org.screamingsandals.bedwars.game.TeamColorImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.utils.MiscUtils;
@@ -48,7 +48,7 @@ public class TNTSheepImpl extends SpecialItem implements TNTSheep<GameImpl, BedW
 
     public void spawn() {
         var sheep = EntityMapper.<EntityLiving>spawn("sheep", initialLocation).orElseThrow();
-        var color = TeamColor.fromApiColor(team.getColor());
+        var color = ((TeamColorImpl) team.getColor());
         var target = MiscUtils.findTarget(game, player, maxTargetDistance);
 
         sheep.as(Sheep.class).setColor(DyeColor.getByWoolData((byte) color.woolData));

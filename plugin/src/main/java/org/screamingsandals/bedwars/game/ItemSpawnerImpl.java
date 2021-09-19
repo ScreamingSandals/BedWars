@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-public class ItemSpawnerImpl implements ItemSpawner<LocationHolder, ItemSpawnerTypeImpl, Team> {
+public class ItemSpawnerImpl implements ItemSpawner<LocationHolder, ItemSpawnerTypeImpl, TeamImpl> {
     @Getter
     private final LocationHolder location;
     @Getter
@@ -44,7 +44,7 @@ public class ItemSpawnerImpl implements ItemSpawner<LocationHolder, ItemSpawnerT
     private double baseAmountPerSpawn;
     @Getter
     @Setter
-    private Team team;
+    private TeamImpl team;
     @Getter
     @Setter
     private int maxSpawnedResources;
@@ -82,7 +82,7 @@ public class ItemSpawnerImpl implements ItemSpawner<LocationHolder, ItemSpawnerT
     private long remainingTimeToSpawn;
 
     public ItemSpawnerImpl(LocationHolder location, ItemSpawnerTypeImpl itemSpawnerType, String customName,
-                           boolean hologramEnabled, double baseAmountPerSpawn, Team team,
+                           boolean hologramEnabled, double baseAmountPerSpawn, TeamImpl team,
                            int maxSpawnedResources, boolean floatingBlockEnabled, Hologram.RotationMode rotationMode, HologramType hologramType) {
         this.location = location;
         this.itemSpawnerType = itemSpawnerType;

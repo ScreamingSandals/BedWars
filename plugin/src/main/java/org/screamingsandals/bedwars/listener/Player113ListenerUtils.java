@@ -1,27 +1,23 @@
 package org.screamingsandals.bedwars.listener;
 
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.block.data.type.Cake;
-import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.game.GameImpl;
+import org.screamingsandals.lib.block.BlockTypeHolder;
 import org.screamingsandals.lib.event.player.SPlayerInteractEvent;
 
 public class Player113ListenerUtils {
     public static void yummyCake(SPlayerInteractEvent event, GameImpl game) {
-        var bukkitBlock = event.getBlockClicked().as(Block.class);
-        if (bukkitBlock.getBlockData() instanceof Cake) {
-            Cake cake = (Cake) bukkitBlock.getBlockData();
-            if (cake.getBites() == 0) {
-                game.getRegion().putOriginalBlock(bukkitBlock.getLocation(),bukkitBlock.getState());
-            }
-            cake.setBites(cake.getBites() + 1);
-            if (cake.getBites() >= cake.getMaximumBites()) {
-                game.bedDestroyed(event.getBlockClicked().getLocation(), event.getPlayer(), false, false, true);
-                bukkitBlock.setType(Material.AIR);
-            } else {
-                bukkitBlock.setBlockData(cake);
-            }
+        var cake = event.getBlockClicked().getType();
+        if (cake.get("bites").map("0"::equals).orElse(true)) {
+            game.getRegion().putOriginalBlock(event.getBlockClicked().getLocation(), event.getBlockClicked().getBlockState().orElseThrow());
+        }
+        var bites = cake.get("bites").map(Integer::parseInt).orElse(0) + 1;
+        cake = cake.with("bites", String.valueOf(bites));
+
+        if (bites >= 6) {
+            game.bedDestroyed(event.getBlockClicked().getLocation(), event.getPlayer(), false, false, true);
+            event.getBlockClicked().setType(BlockTypeHolder.air());
+        } else {
+            event.getBlockClicked().setType(cake);
         }
     }
 }

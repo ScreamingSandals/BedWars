@@ -6,11 +6,11 @@ import org.screamingsandals.lib.utils.Wrapper;
 /**
  * @author Bedwars Team
  */
-public interface Team<L extends Wrapper> {
+public interface Team<L extends Wrapper, C extends TeamColor, G extends Game<?,?,?,?,?,?>> {
     /**
      * @return
      */
-    Game getGame();
+    G getGame();
 
     /**
      * @return
@@ -20,7 +20,7 @@ public interface Team<L extends Wrapper> {
     /**
      * @return
      */
-    TeamColor getColor();
+    C getColor();
 
     /**
      * @return

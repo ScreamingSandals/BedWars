@@ -52,7 +52,6 @@ import org.screamingsandals.lib.tasker.TaskerTime;
 import org.screamingsandals.lib.tasker.task.TaskerTask;
 import org.screamingsandals.lib.utils.AdventureHelper;
 import org.screamingsandals.lib.utils.annotations.Service;
-import org.screamingsandals.lib.world.LocationMapper;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -73,7 +72,7 @@ public class PlayerListener {
             final var gVictim = victim.as(BedWarsPlayer.class);
             final var game = gVictim.getGame();
             final var victimTeam = game.getPlayerTeam(gVictim);
-            final var victimColor = victimTeam.teamInfo.color.chatColor;
+            final var victimColor = victimTeam.getColor().chatColor;
             final var drops = List.copyOf(event.getDrops());
             int respawnTime = MainConfig.getInstance().node("respawn-cooldown", "time").getInt(5);
 
@@ -107,7 +106,7 @@ public class PlayerListener {
                             Debug.info(victim.getName() + " died because entity " + killer.getName() + " killed him");
                             final var gKiller = killer.as(BedWarsPlayer.class);
                             final var killerTeam = game.getPlayerTeam(gKiller);
-                            final var killerColor = killerTeam.teamInfo.color.chatColor;
+                            final var killerColor = killerTeam.getColor().chatColor;
 
                             deathMessageMsg = Message.of(LangKeys.IN_GAME_PLAYER_KILLED)
                                     .prefixOrDefault(game.getCustomPrefixComponent())
@@ -136,7 +135,7 @@ public class PlayerListener {
                 var team = game.getPlayerTeam(gVictim);
                 SpawnEffects.spawnEffect(game, gVictim, "game-effects.kill");
                 boolean isBed = team.isBed;
-                if (isBed && game.getConfigurationContainer().getOrDefault(ConfigurationContainer.ANCHOR_DECREASING, Boolean.class, false) && team.teamInfo.bed.getBlock().getType().isSameType("respawn_anchor")) {
+                if (isBed && game.getConfigurationContainer().getOrDefault(ConfigurationContainer.ANCHOR_DECREASING, Boolean.class, false) && team.getTargetBlock().getBlock().getType().isSameType("respawn_anchor")) {
                     isBed = Player116ListenerUtils.processAnchorDeath(game, team);
                 }
                 if (!isBed) {
@@ -329,7 +328,7 @@ public class PlayerListener {
 
             if (game.getStatus() == GameStatus.WAITING) {
                 Debug.info(event.getPlayer().getName() + " is in lobby");
-                event.setLocation(LocationMapper.wrapLocation(gPlayer.getGame().getLobbySpawn()));
+                event.setLocation(gPlayer.getGame().getLobbySpawn());
                 return;
             }
             Debug.info(event.getPlayer().getName() + " is in game");
@@ -340,13 +339,13 @@ public class PlayerListener {
             if (gPlayer.isSpectator) {
                 Debug.info(event.getPlayer().getName() + " is going to be spectator");
                 if (team == null) {
-                    event.setLocation(MiscUtils.findEmptyLocation(LocationMapper.wrapLocation(gPlayer.getGame().makeSpectator(gPlayer, true))));
+                    event.setLocation(MiscUtils.findEmptyLocation(gPlayer.getGame().makeSpectator(gPlayer, true)));
                 } else {
-                    event.setLocation(MiscUtils.findEmptyLocation(LocationMapper.wrapLocation(gPlayer.getGame().makeSpectator(gPlayer, false))));
+                    event.setLocation(MiscUtils.findEmptyLocation(gPlayer.getGame().makeSpectator(gPlayer, false)));
                 }
             } else {
                 Debug.info(event.getPlayer().getName() + " is going to play the game");
-                event.setLocation(LocationMapper.wrapLocation(gPlayer.getGame().getPlayerTeam(gPlayer).teamInfo.spawn));
+                event.setLocation(gPlayer.getGame().getPlayerTeam(gPlayer).getTeamSpawn());
 
                 var respawnEvent = new PlayerRespawnedEventImpl(game, gPlayer);
                 EventManager.fire(respawnEvent);
@@ -908,7 +907,7 @@ public class PlayerListener {
                                 boolean anchorFilled = false;
                                 if (game.getConfigurationContainer().getOrDefault(ConfigurationContainer.ANCHOR_DECREASING, Boolean.class, false)
                                         && event.getBlockClicked().getType().isSameType("respawn_anchor")
-                                        && game.getPlayerTeam(gPlayer).teamInfo.bed.equals(event.getBlockClicked().getLocation())
+                                        && game.getPlayerTeam(gPlayer).getTargetBlock().equals(event.getBlockClicked().getLocation())
                                         && event.getItem() != null && event.getItem().getMaterial().is("glowstone")) {
                                     Debug.info(player.getName() + " filled respawn anchor");
                                     anchorFilled = Player116ListenerUtils.anchorCharge(event, game, stack);
@@ -1041,7 +1040,7 @@ public class PlayerListener {
             String displayName = ChatColor.stripColor(living.as(Entity.class).getCustomName());
 
             for (var team : game.getTeams()) {
-                if (team.name.equals(displayName)) {
+                if (team.getName().equals(displayName)) {
                     event.setCancelled(true);
                     Debug.info(player.getName() + " selected his team with armor stand");
                     game.selectTeam(gPlayer, displayName);
@@ -1068,7 +1067,7 @@ public class PlayerListener {
             var living = (EntityLiving) entity;
             living.setRemoveWhenFarAway(false);
             living.setCanPickupItems(false);
-            living.setCustomName(value.getTeam().color.chatColor + value.getTeam().name);
+            living.setCustomName(value.getTeam().getColor().chatColor + value.getTeam().getName());
             living.setCustomNameVisible(MainConfig.getInstance().node("jointeam-entity-show-name").getBoolean(true));
 
             if (living.getEntityType().is("armor_stand")) {
@@ -1100,9 +1099,9 @@ public class PlayerListener {
 
             String format = MainConfig.getInstance().node("chat", "format").getString("<%teamcolor%%name%§r> ");
             if (team != null) {
-                format = format.replace("%teamcolor%", team.teamInfo.color.chatColor.toString());
-                format = format.replace("%team%", team.teamInfo.name);
-                format = format.replace("%coloredteam%", team.teamInfo.color.chatColor + team.teamInfo.name);
+                format = format.replace("%teamcolor%", team.getColor().chatColor.toString());
+                format = format.replace("%team%", team.getName());
+                format = format.replace("%coloredteam%", team.getColor().chatColor + team.getName());
             } else if (spectator) {
                 format = format.replace("%teamcolor%", ChatColor.GRAY.toString());
                 format = format.replace("%team%", "SPECTATOR");

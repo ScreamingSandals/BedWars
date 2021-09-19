@@ -8,7 +8,7 @@ import org.screamingsandals.lib.utils.Wrapper;
 /**
  * @author Bedwars Team
  */
-public interface ItemSpawner<E extends Wrapper, I extends ItemSpawnerType<?,?,?>, T extends Team<?>> extends Upgrade {
+public interface ItemSpawner<E extends Wrapper, I extends ItemSpawnerType<?,?,?>, T extends Team<?,?,?>> extends Upgrade {
     /**
      * @return
      */

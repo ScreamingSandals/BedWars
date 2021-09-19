@@ -1,6 +1,7 @@
 package org.screamingsandals.bedwars.api;
 
 import org.bukkit.inventory.Inventory;
+import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.lib.utils.Wrapper;
 
 import java.util.List;
@@ -8,7 +9,7 @@ import java.util.List;
 /**
  * @author Bedwars Team
  */
-public interface RunningTeam<E extends Wrapper, L extends Wrapper, B extends Wrapper> extends Team<L> {
+public interface RunningTeam<E extends Wrapper, L extends Wrapper, B extends Wrapper, T extends TeamColor, G extends Game<?,?,?,?,?,?>> extends Team<L, T, G> {
     /**
      * @return
      */

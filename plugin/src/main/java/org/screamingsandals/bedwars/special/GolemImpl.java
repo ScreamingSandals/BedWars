@@ -7,7 +7,7 @@ import org.screamingsandals.bedwars.api.special.Golem;
 import org.screamingsandals.bedwars.entities.EntitiesManagerImpl;
 import org.screamingsandals.bedwars.game.CurrentTeam;
 import org.screamingsandals.bedwars.game.GameImpl;
-import org.screamingsandals.bedwars.game.TeamColor;
+import org.screamingsandals.bedwars.game.TeamColorImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.utils.MiscUtils;
@@ -46,7 +46,7 @@ public class GolemImpl extends SpecialItem implements Golem<GameImpl, BedWarsPla
     }
 
     public void spawn() {
-        final var color = TeamColor.fromApiColor(team.getColor());
+        final var color = ((TeamColorImpl) team.getColor());
         final var golem = EntityMapper.<EntityLiving>spawn("iron_golem", location).orElseThrow();
         golem.setHealth(health);
         golem.setCustomName(name

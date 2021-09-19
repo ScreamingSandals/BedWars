@@ -11,7 +11,7 @@ import org.screamingsandals.bedwars.api.game.ItemSpawner;
 import org.screamingsandals.bedwars.commands.AdminCommand;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.ItemSpawnerImpl;
-import org.screamingsandals.bedwars.game.Team;
+import org.screamingsandals.bedwars.game.TeamImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.utils.ArenaUtils;
 import org.screamingsandals.lib.hologram.Hologram;
@@ -52,7 +52,7 @@ public class SpawnerCommand extends BaseAdminSubCommand {
                                         return AdminCommand.gc.get(c.<String>get("game"))
                                                 .getTeams()
                                                 .stream()
-                                                .map(Team::getName)
+                                                .map(TeamImpl::getName)
                                                 .collect(Collectors.toList());
                                     }
                                     return List.of();
@@ -253,7 +253,7 @@ public class SpawnerCommand extends BaseAdminSubCommand {
                                         return AdminCommand.gc.get(c.<String>get("game"))
                                                 .getTeams()
                                                 .stream()
-                                                .map(Team::getName)
+                                                .map(TeamImpl::getName)
                                                 .collect(Collectors.toList());
                                     }
                                     return List.of();

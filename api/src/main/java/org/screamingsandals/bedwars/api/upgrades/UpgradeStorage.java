@@ -166,7 +166,7 @@ public final class UpgradeStorage {
         return upgrades;
     }
 
-    public List<Upgrade> findItemSpawnerUpgrades(Game<?,?,?,?,?,?> game, Team<?> team) {
+    public List<Upgrade> findItemSpawnerUpgrades(Game<?,?,?,?,?,?> game, Team<?,?,?> team) {
         List<Upgrade> upgrades = new ArrayList<>();
 
         if (upgradeRegistry.containsKey(game)) {
@@ -187,7 +187,7 @@ public final class UpgradeStorage {
         return upgrades;
     }
 
-    public List<Upgrade> findItemSpawnerUpgrades(Game<?,?,?,?,?,?> game, Team<?> team, ItemSpawnerType<?,?,?> itemSpawnerType) {
+    public List<Upgrade> findItemSpawnerUpgrades(Game<?,?,?,?,?,?> game, Team<?,?,?> team, ItemSpawnerType<?,?,?> itemSpawnerType) {
         List<Upgrade> upgrades = new ArrayList<>();
 
         if (upgradeRegistry.containsKey(game)) {

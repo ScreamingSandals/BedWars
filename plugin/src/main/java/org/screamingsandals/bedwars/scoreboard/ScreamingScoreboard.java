@@ -2,14 +2,12 @@ package org.screamingsandals.bedwars.scoreboard;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.api.RunningTeam;
 import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.game.GameImpl;
-import org.screamingsandals.bedwars.game.TeamColor;
+import org.screamingsandals.bedwars.game.TeamColorImpl;
 import org.screamingsandals.bedwars.listener.Player116ListenerUtils;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.player.PlayerMapper;
@@ -72,7 +70,7 @@ public class ScreamingScoreboard {
                                 !team.isTargetBlockExists(),
                                 team.isTargetBlockExists()
                                         && ((LocationHolder) team.getTargetBlock()).getBlock().getType().isSameType("respawn_anchor")
-                                        && Player116ListenerUtils.isAnchorEmpty(((LocationHolder) team.getTargetBlock()).getBlock().as(Block.class)))
+                                        && Player116ListenerUtils.isAnchorEmpty(((LocationHolder) team.getTargetBlock()).getBlock()))
                         )
                 )
             )
@@ -106,14 +104,14 @@ public class ScreamingScoreboard {
         game.getRunningTeams().forEach(team -> {
             if (sidebar.getTeam(team.getName()).isEmpty()) {
                 sidebar.team(team.getName())
-                        .color(NamedTextColor.NAMES.value(TeamColor.fromApiColor(team.getColor()).chatColor.name().toLowerCase()))
+                        .color(NamedTextColor.NAMES.value(((TeamColorImpl) team.getColor()).chatColor.name().toLowerCase()))
                         .friendlyFire(game.getConfigurationContainer().getOrDefault(ConfigurationContainer.FRIENDLY_FIRE, Boolean.class, false));
             }
             var sidebarTeam = sidebar.getTeam(team.getName()).orElseThrow();
 
             List.copyOf(sidebarTeam.players())
                     .forEach(teamPlayer -> {
-                        if (!team.getConnectedPlayers().contains(teamPlayer.as(Player.class))) {
+                        if (!team.getConnectedPlayers().contains(teamPlayer)) {
                             sidebarTeam.removePlayer(teamPlayer);
                         }
                     });
@@ -133,7 +131,7 @@ public class ScreamingScoreboard {
         return MainConfig.getInstance().node("experimental", "new-scoreboard-system", "teamTitle").getString("")
                 .replace("%team_size%", String.valueOf(
                         team.getConnectedPlayers().size()))
-                .replace("%color%", TeamColor.fromApiColor(team.getColor())
+                .replace("%color%",((TeamColorImpl) team.getColor())
                         .chatColor.toString()).replace("%team%", team.getName())
                 .replace("%bed%", destroy ? GameImpl.bedLostString() : (empty ? GameImpl.anchorEmptyString() : GameImpl.bedExistString()));
     }
