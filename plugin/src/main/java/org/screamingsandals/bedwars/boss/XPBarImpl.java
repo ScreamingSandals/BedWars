@@ -2,6 +2,7 @@ package org.screamingsandals.bedwars.boss;
 
 import lombok.Getter;
 import org.bukkit.entity.Player;
+import org.screamingsandals.bedwars.api.boss.XPBar;
 import org.screamingsandals.bedwars.lib.nms.entity.PlayerUtils;
 import org.screamingsandals.lib.player.PlayerWrapper;
 
@@ -9,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-public class XPBar implements org.screamingsandals.bedwars.api.boss.XPBar<PlayerWrapper> {
+public class XPBarImpl implements XPBar<PlayerWrapper> {
 
     private boolean visible = false;
     private float progress = 0F;

@@ -1,8 +1,8 @@
 package org.screamingsandals.bedwars.api.boss;
 
-import org.bukkit.boss.BarColor;
-import org.bukkit.boss.BarStyle;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.lib.utils.Wrapper;
 
 /**
@@ -13,31 +13,31 @@ public interface BossBar<P extends Wrapper> extends StatusBar<P> {
     /**
      * @return current message
      */
-	String getMessage();
+	Wrapper getMessage();
 
     /**
      * @param message
      */
-	void setMessage(String message);
+	void setMessage(@Nullable Object message);
 
     /**
      * @return color
      */
-    BarColor getColor();
+    Wrapper getColor();
 
     /**
      * @param color
      */
-    void setColor(BarColor color);
+    void setColor(@NotNull Object color);
 
     /**
      * @return style
      */
-    BarStyle getStyle();
+    Wrapper getStyle();
 
     /**
      * @param style
      */
-    void setStyle(BarStyle style);
+    void setStyle(@NotNull Object style);
 
 }

@@ -1,7 +1,6 @@
 package org.screamingsandals.bedwars.api.game;
 
 import org.bukkit.WeatherType;
-import org.bukkit.boss.BarColor;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.ApiStatus;
 import org.screamingsandals.bedwars.api.ArenaTime;
@@ -382,12 +381,12 @@ public interface Game<P extends BWPlayer, T extends Team<?, ?, ?, ?, ?>, B exten
     /**
      * @return
      */
-	BarColor getLobbyBossBarColor();
+	Wrapper getLobbyBossBarColor();
 
     /**
      * @return
      */
-	BarColor getGameBossBarColor();
+	Wrapper getGameBossBarColor();
 
     /**
      * @return

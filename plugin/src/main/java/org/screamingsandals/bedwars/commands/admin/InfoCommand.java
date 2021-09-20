@@ -370,13 +370,13 @@ public class InfoCommand extends BaseAdminSubCommand {
                             Message
                                     .of(LangKeys.ADMIN_INFO_CONSTANT)
                                     .placeholder("constant", "lobbybossbarcolor")
-                                    .placeholder("value", game.getLobbyBossBarColor() != null ? game.getLobbyBossBarColor().name() : "default")
+                                    .placeholder("value", game.getLobbyBossBarColor() != null ? game.getLobbyBossBarColor().asBossBarColor().name() : "default")
                                     .send(sender);
 
                             Message
                                     .of(LangKeys.ADMIN_INFO_CONSTANT)
                                     .placeholder("constant", "gamebossbarcolor")
-                                    .placeholder("value", game.getGameBossBarColor() != null ? game.getGameBossBarColor().name() : "default")
+                                    .placeholder("value", game.getGameBossBarColor() != null ? game.getGameBossBarColor().asBossBarColor().name() : "default")
                                     .send(sender);
                         })
         );

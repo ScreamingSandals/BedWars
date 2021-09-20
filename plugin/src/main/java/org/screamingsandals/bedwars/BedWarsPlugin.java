@@ -253,7 +253,7 @@ public class BedWarsPlugin extends PluginContainer implements BedwarsAPI {
         instance = this;
         version = this.getPluginDescription().getVersion();
         var snapshot = version.toLowerCase().contains("pre") || version.toLowerCase().contains("snapshot");
-        colorChanger = new org.screamingsandals.bedwars.utils.ColorChanger();
+        colorChanger = new ColorChangerImpl();
 
         if (!PluginManager.isEnabled(PluginManager.createKey("Vault").orElseThrow())) {
             isVault = false;

@@ -3,7 +3,7 @@ package org.screamingsandals.bedwars.commands.admin;
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
 import cloud.commandframework.arguments.standard.StringArgument;
-import org.bukkit.boss.BarColor;
+import net.kyori.adventure.bossbar.BossBar;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
@@ -26,14 +26,14 @@ public class LobbyBossBarColorCommand extends BaseAdminSubCommand {
                         .argument(StringArgument
                                 .<CommandSenderWrapper>newBuilder("barColor")
                                 .withSuggestionsProvider((c, s) ->
-                                        Stream.concat(Arrays.stream(BarColor.values()).map(BarColor::name), Stream.of("default")).collect(Collectors.toList())
+                                        Stream.concat(Arrays.stream(BossBar.Color.values()).map(BossBar.Color::name), Stream.of("default")).collect(Collectors.toList())
                                 )
                         )
                         .handler(commandContext -> editMode(commandContext, (sender, game) -> {
                             String barColor = commandContext.get("barColor");
                             if (!barColor.equalsIgnoreCase("default")) {
                                 try {
-                                    var c = BarColor.valueOf(barColor.toUpperCase());
+                                    var c = BossBar.Color.valueOf(barColor.toUpperCase());
                                     game.setLobbyBossBarColor(c);
 
                                     sender.sendMessage(Message

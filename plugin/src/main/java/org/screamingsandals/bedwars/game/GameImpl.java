@@ -3,15 +3,13 @@ package org.screamingsandals.bedwars.game;
 import com.onarandombox.MultiverseCore.api.Core;
 import lombok.Getter;
 import lombok.SneakyThrows;
+import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
-import org.bukkit.boss.BarColor;
-import org.bukkit.boss.BarStyle;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
@@ -24,7 +22,6 @@ import org.bukkit.scoreboard.Scoreboard;
 import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.api.ArenaTime;
-import org.screamingsandals.bedwars.api.boss.BossBar;
 import org.screamingsandals.bedwars.api.boss.StatusBar;
 import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
 import org.screamingsandals.bedwars.api.game.Game;
@@ -34,7 +31,8 @@ import org.screamingsandals.bedwars.api.special.SpecialItem;
 import org.screamingsandals.bedwars.api.upgrades.UpgradeRegistry;
 import org.screamingsandals.bedwars.api.upgrades.UpgradeStorage;
 import org.screamingsandals.bedwars.api.utils.DelayFactory;
-import org.screamingsandals.bedwars.boss.XPBar;
+import org.screamingsandals.bedwars.boss.BossBarImpl;
+import org.screamingsandals.bedwars.boss.XPBarImpl;
 import org.screamingsandals.bedwars.commands.AdminCommand;
 import org.screamingsandals.bedwars.commands.BedWarsPermission;
 import org.screamingsandals.bedwars.commands.StatsCommand;
@@ -76,6 +74,7 @@ import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
 import org.screamingsandals.lib.tasker.task.TaskerTask;
 import org.screamingsandals.lib.utils.AdventureHelper;
+import org.screamingsandals.lib.utils.adventure.wrapper.BossBarColorWrapper;
 import org.screamingsandals.lib.utils.adventure.wrapper.ComponentWrapper;
 import org.screamingsandals.lib.visuals.Visual;
 import org.screamingsandals.lib.block.BlockHolder;
@@ -114,8 +113,8 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
     private List<GameStoreImpl> gameStore = new ArrayList<>();
     private ArenaTime arenaTime = ArenaTime.WORLD;
     private WeatherType arenaWeather = null;
-    private BarColor lobbyBossBarColor = null;
-    private BarColor gameBossBarColor = null;
+    private BossBar.Color lobbyBossBarColor = null;
+    private BossBar.Color gameBossBarColor = null;
     private String customPrefix = null;
     private boolean preServerRestart = false;
     @Getter
@@ -374,9 +373,9 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
         }
     }
 
-    public static BarColor loadBossBarColor(String color) {
+    public static BossBar.Color loadBossBarColor(String color) {
         try {
-            return BarColor.valueOf(color);
+            return BossBar.Color.valueOf(color);
         } catch (Exception e) {
             return null;
         }
@@ -517,17 +516,7 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
 
     @Override
     public TeamImpl getTeamFromName(String name) {
-        if (name == null) {
-            return null;
-        }
-
-        TeamImpl team = null;
-        for (TeamImpl t : getTeams()) {
-            if (t.getName().equalsIgnoreCase(name)) {
-                team = t;
-            }
-        }
-        return team;
+        return teams.stream().filter(team1 -> team1.getName().equalsIgnoreCase(name)).findFirst().orElse(null);
     }
 
     public List<TeamImpl> getTeams() {
@@ -1186,9 +1175,9 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
             Tasker.build(GameImpl.this::updateSigns).afterOneTick().start();
 
             if (MainConfig.getInstance().node("bossbar", "use-xp-bar").getBoolean(false)) {
-                statusbar = new XPBar();
+                statusbar = new XPBarImpl();
             } else {
-                statusbar = new org.screamingsandals.bedwars.boss.BossBar();
+                statusbar = new BossBarImpl();
             }
             preparing = false;
         }
@@ -1578,8 +1567,8 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
     public void setBossbarProgress(int count, int max) {
         double progress = (double) count / (double) max;
         statusbar.setProgress((float) progress);
-        if (statusbar instanceof XPBar) {
-            XPBar xpbar = (XPBar) statusbar;
+        if (statusbar instanceof XPBarImpl) {
+            XPBarImpl xpbar = (XPBarImpl) statusbar;
             xpbar.setSeconds(count);
         }
     }
@@ -1602,13 +1591,13 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
             for (BedWarsPlayer p : players) {
                 statusbar.addPlayer(p);
             }
-            if (statusbar instanceof BossBar) {
-                var bossbar = (BossBar) statusbar;
+            if (statusbar instanceof BossBarImpl) {
+                var bossbar = (BossBarImpl) statusbar;
                 bossbar.setMessage(title);
                 bossbar.setColor(lobbyBossBarColor != null ? lobbyBossBarColor
-                        : BarColor.valueOf(MainConfig.getInstance().node("bossbar", "lobby", "color").getString()));
+                        : MainConfig.getInstance().node("bossbar", "lobby", "color").getString(""));
                 bossbar
-                        .setStyle(BarStyle.valueOf(MainConfig.getInstance().node("bossbar", "lobby", "style").getString()));
+                        .setStyle(MainConfig.getInstance().node("bossbar", "lobby", "style").getString(""));
             }
             if (teamSelectorInventory == null) {
                 teamSelectorInventory = new TeamSelectorInventory(this);
@@ -1723,13 +1712,13 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
 
                     statusbar.setProgress(0);
                     statusbar.setVisible(configurationContainer.getOrDefault(ConfigurationContainer.GAME_BOSSBAR, Boolean.class, false));
-                    if (statusbar instanceof BossBar) {
-                        var bossbar = (BossBar) statusbar;
+                    if (statusbar instanceof BossBarImpl) {
+                        var bossbar = (BossBarImpl) statusbar;
                         bossbar.setMessage(AdventureHelper.toLegacy(Message.of(LangKeys.IN_GAME_BOSSBAR_RUNNING).asComponent()));
                         bossbar.setColor(gameBossBarColor != null ? gameBossBarColor
-                                : BarColor.valueOf(MainConfig.getInstance().node("bossbar", "game", "color").getString()));
+                                : MainConfig.getInstance().node("bossbar", "game", "color").getString(""));
                         bossbar.setStyle(
-                                BarStyle.valueOf(MainConfig.getInstance().node("bossbar", "game", "style").getString()));
+                                MainConfig.getInstance().node("bossbar", "game", "style").getString(""));
                     }
                     if (teamSelectorInventory != null)
                         teamSelectorInventory.destroy();
@@ -1745,9 +1734,8 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
                         if (villager instanceof EntityLiving) {
                             EntitiesManagerImpl.getInstance().addEntityToGame(villager, this);
                             ((EntityLiving) villager).setAI(false);
-                            // TODO: SLib equivalent
-                            ((EntityLiving) villager).getLocation().getWorld().as(World.class).getNearbyEntities(((EntityLiving) villager).getLocation().as(Location.class), 1, 1, 1).forEach(entity -> {
-                                if (entity.getType() == ((EntityLiving) villager).getEntityType().as(EntityType.class) && entity.getLocation().getBlock().equals(((EntityLiving) villager).getLocation().getBlock().as(Block.class)) && !villager.equals(entity)) {
+                            ((EntityLiving) villager).getLocation().getNearbyEntities(1).forEach(entity -> {
+                                if (entity.getEntityType().equals(((EntityLiving) villager).getEntityType()) && entity.getLocation().getBlock().equals(((EntityLiving) villager).getLocation().getBlock()) && !villager.equals(entity)) {
                                     entity.remove();
                                 }
                             });
@@ -1960,9 +1948,9 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
 
         // Phase 8: Check if game end celebrating started and remove title on bossbar
         if (status == GameStatus.GAME_END_CELEBRATING && previousStatus != status) {
-            if (statusbar instanceof BossBar) {
-                BossBar bossbar = (BossBar) statusbar;
-                bossbar.setMessage(" ");
+            if (statusbar instanceof BossBarImpl) {
+                var bossbar = (BossBarImpl) statusbar;
+                bossbar.setMessage(Component.empty());
             }
         }
 
@@ -2033,9 +2021,7 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
         });
         otherVisuals.clear();
         Debug.info(name + ": rebuilding starts");
-        teamsInGame.forEach(currentTeam -> {
-            currentTeam.destroy();
-        });
+        teamsInGame.forEach(TeamImpl::destroy);
         teamsInGame.clear();
         activeSpecialItems.clear();
         activeDelays.clear();
@@ -2565,7 +2551,6 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
                 .collect(Collectors.toList());
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public List<SpecialItem<?,?,?>> getActiveSpecialItemsOfTeam(TeamImpl team) {
         return activeSpecialItems.stream()
@@ -2599,7 +2584,6 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
                 .orElse(null);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public List<SpecialItem<?,?,?>> getActiveSpecialItemsOfPlayer(BedWarsPlayer player) {
         return activeSpecialItems.stream()
@@ -2710,44 +2694,26 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
     }
 
     @Override
-    public BarColor getLobbyBossBarColor() {
-        return this.lobbyBossBarColor;
+    public BossBarColorWrapper getLobbyBossBarColor() {
+        return new BossBarColorWrapper(this.lobbyBossBarColor);
     }
 
-    public void setLobbyBossBarColor(BarColor color) {
+    public void setLobbyBossBarColor(BossBar.Color color) {
         this.lobbyBossBarColor = color;
     }
 
     @Override
-    public BarColor getGameBossBarColor() {
-        return this.gameBossBarColor;
+    public BossBarColorWrapper getGameBossBarColor() {
+        return new BossBarColorWrapper(this.gameBossBarColor);
     }
 
-    public void setGameBossBarColor(BarColor color) {
+    public void setGameBossBarColor(BossBar.Color color) {
         this.gameBossBarColor = color;
     }
 
     @Override
     public List<ItemSpawnerImpl> getItemSpawners() {
         return List.copyOf(spawners);
-    }
-
-    @Deprecated
-    public void dispatchRewardCommands(String type, Player player, int score) {
-        if (!MainConfig.getInstance().node("rewards", "enabled").getBoolean()) {
-            return;
-        }
-
-        MainConfig.getInstance().node("rewards", type).childrenList()
-                .stream()
-                .map(ConfigurationNode::getString)
-                .filter(Objects::nonNull)
-                .map(s -> s
-                        .replaceAll("\\{player}", player.getName())
-                        .replaceAll("\\{score}", Integer.toString(score))
-                )
-                .map(s -> s.startsWith("/") ? s.substring(1) : s)
-                .forEach(s -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), s));
     }
 
     public void dispatchRewardCommands(String type, PlayerWrapper player, int score) {
@@ -2773,7 +2739,7 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
     }
 
     @Override
-    public StatusBar getStatusBar() {
+    public StatusBar<?> getStatusBar() {
         return statusbar;
     }
 
