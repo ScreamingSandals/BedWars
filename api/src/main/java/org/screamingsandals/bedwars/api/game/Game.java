@@ -1,13 +1,11 @@
 package org.screamingsandals.bedwars.api.game;
 
-import net.kyori.adventure.text.Component;
 import org.bukkit.WeatherType;
 import org.bukkit.boss.BarColor;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.ApiStatus;
 import org.screamingsandals.bedwars.api.ArenaTime;
 import org.screamingsandals.bedwars.api.Region;
-import org.screamingsandals.bedwars.api.RunningTeam;
 import org.screamingsandals.bedwars.api.Team;
 import org.screamingsandals.bedwars.api.boss.StatusBar;
 import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
@@ -21,9 +19,19 @@ import java.util.List;
 
 
 /**
- * @author Bedwars Team
+ * @author ScreamingSandals
+ * @param <P> BedWars Player
+ * @param <T> BedWars Team
+ * @param <B> Block
+ * @param <W> World
+ * @param <L> Location
+ * @param <E> Entity
+ * @param <C> Component Wrapper
+ * @param <S> Game Store
+ * @param <G> Item Spawner
  */
-public interface Game<P extends BWPlayer, B extends Wrapper, L extends Wrapper, W extends Wrapper, C extends Wrapper, E extends Wrapper> {
+@ApiStatus.NonExtendable
+public interface Game<P extends BWPlayer, T extends Team<?, ?, ?, ?, ?>, B extends Wrapper, W extends Wrapper, L extends Wrapper, E extends Wrapper, C extends Wrapper, S extends GameStore<?, ?, ?>, G extends ItemSpawner<?, ?, ?>> {
     /**
      * @return Arena name
      */
@@ -56,23 +64,23 @@ public interface Game<P extends BWPlayer, B extends Wrapper, L extends Wrapper, 
     /**
      * @param player
      */
-	void joinToGame(L player);
+	void joinToGame(P player);
 
     /**
      * @param player
      */
-	void leaveFromGame(L player);
+	void leaveFromGame(P player);
 
     /**
      * @param player
      * @param team
      */
-	void selectPlayerTeam(L player, Team team);
+	void selectPlayerTeam(P player, T team);
 
     /**
      * @param player
      */
-	void selectPlayerRandomTeam(L player);
+	void selectPlayerRandomTeam(P player);
 
     /**
      * @return defined world of the game
@@ -82,17 +90,17 @@ public interface Game<P extends BWPlayer, B extends Wrapper, L extends Wrapper, 
     /**
      * @return
      */
-	C getPos1();
+	L getPos1();
 
     /**
      * @return
      */
-	C getPos2();
+	L getPos2();
 
     /**
      * @return
      */
-	C getSpectatorSpawn();
+	L getSpectatorSpawn();
 
     /**
      * @return configured time of the game
@@ -117,12 +125,12 @@ public interface Game<P extends BWPlayer, B extends Wrapper, L extends Wrapper, 
     /**
      * @return list of players in game
      */
-	List<L> getConnectedPlayers();
+	List<P> getConnectedPlayers();
 
     /**
      * @return list of game stores
      */
-	List<GameStore> getGameStores();
+	List<S> getGameStores();
 
     /**
      * @return
@@ -132,12 +140,12 @@ public interface Game<P extends BWPlayer, B extends Wrapper, L extends Wrapper, 
     /**
      * @return Team instance from the name
      */
-    Team getTeamFromName(String name);
+    T getTeamFromName(String name);
 
     /**
      * @return
      */
-	List<Team> getAvailableTeams();
+	List<T> getAvailableTeams();
 
     /**
      * @return
@@ -147,37 +155,39 @@ public interface Game<P extends BWPlayer, B extends Wrapper, L extends Wrapper, 
     /**
      * @return
      */
-	List<RunningTeam> getRunningTeams();
+	List<T> getActiveTeams();
 
     /**
      * @return
      */
-	int countRunningTeams();
-
-    /**
-     * @param player
-     * @return
-     */
-	RunningTeam getTeamOfPlayer(L player);
+	int countActiveTeams();
 
     /**
      * @param player
      * @return
      */
-	boolean isPlayerInAnyTeam(L player);
+	T getTeamOfPlayer(P player);
+
+    /**
+     * @param player
+     * @return
+     */
+	boolean isPlayerInAnyTeam(P player);
+
+    boolean isTeamActive(T team);
 
     /**
      * @param player
      * @param team
      * @return
      */
-	boolean isPlayerInTeam(L player, RunningTeam team);
+	boolean isPlayerInTeam(P player, T team);
 
     /**
      * @param location
      * @return
      */
-	boolean isLocationInArena(C location);
+	boolean isLocationInArena(L location);
 
     /**
      * @param location
@@ -188,65 +198,65 @@ public interface Game<P extends BWPlayer, B extends Wrapper, L extends Wrapper, 
     /**
      * @return
      */
-	List<SpecialItem> getActivedSpecialItems();
+	List<SpecialItem<?,?,?>> getActiveSpecialItems();
 
     /**
      * @param type
      * @return
      */
-	List<SpecialItem> getActivedSpecialItems(Class<? extends SpecialItem> type);
+	<I extends SpecialItem<?,?,?>> List<I> getActiveSpecialItems(Class<I> type);
 
     /**
      * @param team
      * @return
      */
-	List<SpecialItem> getActivedSpecialItemsOfTeam(Team team);
-
-    /**
-     * @param team
-     * @param type
-     * @return
-     */
-	List<SpecialItem> getActivedSpecialItemsOfTeam(Team team, Class<? extends SpecialItem> type);
-
-    /**
-     * @param team
-     * @return
-     */
-	SpecialItem getFirstActivedSpecialItemOfTeam(Team team);
+	List<SpecialItem<?,?,?>> getActiveSpecialItemsOfTeam(T team);
 
     /**
      * @param team
      * @param type
      * @return
      */
-	SpecialItem getFirstActivedSpecialItemOfTeam(Team team, Class<? extends SpecialItem> type);
+    <I extends SpecialItem<?,?,?>> List<I> getActiveSpecialItemsOfTeam(T team, Class<I> type);
+
+    /**
+     * @param team
+     * @return
+     */
+	SpecialItem<?,?,?> getFirstActiveSpecialItemOfTeam(T team);
+
+    /**
+     * @param team
+     * @param type
+     * @return
+     */
+    <I extends SpecialItem<?,?,?>> I getFirstActiveSpecialItemOfTeam(T team, Class<I> type);
 
     /**
      * @param player
      * @return
      */
-	List<SpecialItem> getActivedSpecialItemsOfPlayer(L player);
+	List<SpecialItem<?,?,?>> getActiveSpecialItemsOfPlayer(P player);
 
     /**
      * @param player
      * @param type
      * @return
      */
-	List<SpecialItem> getActivedSpecialItemsOfPlayer(L player, Class<? extends SpecialItem> type);
+    <I extends SpecialItem<?,?,?>> List<I> getActiveSpecialItemsOfPlayer(P player, Class<I> type);
 
     /**
      * @param player
      * @return
      */
-	SpecialItem getFirstActivedSpecialItemOfPlayer(L player);
+	SpecialItem<?,?,?> getFirstActiveSpecialItemOfPlayer(P player);
 
     /**
      * @param player
      * @param type
      * @return
      */
-	SpecialItem getFirstActivedSpecialItemOfPlayer(L player, Class<? extends SpecialItem> type);
+    <I extends SpecialItem<?,?,?>> I getFirstActiveSpecialItemOfPlayer(P player, Class<I> type);
 
     /**
      * @return
@@ -257,14 +267,14 @@ public interface Game<P extends BWPlayer, B extends Wrapper, L extends Wrapper, 
      * @param player
      * @return
      */
-    List<DelayFactory> getActiveDelaysOfPlayer(GameParticipant player);
+    List<DelayFactory> getActiveDelaysOfPlayer(P player);
 
     /**
      * @param player
      * @param specialItem
      * @return
      */
-    DelayFactory getActiveDelay(GameParticipant player, Class<? extends SpecialItem> specialItem);
+    DelayFactory getActiveDelay(P player, Class<? extends SpecialItem<?,?,?>> specialItem);
 
     /**
      * @param delayFactory
@@ -281,28 +291,28 @@ public interface Game<P extends BWPlayer, B extends Wrapper, L extends Wrapper, 
      * @param specialItem
      * @return
      */
-    boolean isDelayActive(GameParticipant player, Class<? extends SpecialItem> specialItem);
+    boolean isDelayActive(P player, Class<? extends SpecialItem<?,?,?>> specialItem);
 
     /**
      * @param item
      */
-	void registerSpecialItem(SpecialItem item);
+	void registerSpecialItem(SpecialItem<?,?,?> item);
 
     /**
      * @param item
      */
-	void unregisterSpecialItem(SpecialItem item);
+	void unregisterSpecialItem(SpecialItem<?,?,?> item);
 
     /**
      * @param item
      * @return
      */
-	boolean isRegisteredSpecialItem(SpecialItem item);
+	boolean isRegisteredSpecialItem(SpecialItem<?,?,?> item);
 
     /**
      * @return
      */
-	List<ItemSpawner> getItemSpawners();
+	List<G> getItemSpawners();
 
     /**
      * @return
@@ -324,7 +334,7 @@ public interface Game<P extends BWPlayer, B extends Wrapper, L extends Wrapper, 
     /**
      * @return
      */
-	C getLobbySpawn();
+	L getLobbySpawn();
 
     /**
      * @return
@@ -340,19 +350,13 @@ public interface Game<P extends BWPlayer, B extends Wrapper, L extends Wrapper, 
      * @param team
      * @return
      */
-	int countTeamChests(RunningTeam team);
+	int countTeamChests(T team);
 
     /**
      * @param location
      * @return
      */
-	RunningTeam getTeamOfChest(C location);
-
-    /**
-     * @param block
-     * @return
-     */
-	RunningTeam getTeamOfChestBlock(B block);
+	T getTeamOfChest(L location);
 
     /**
      * @param entity
@@ -433,17 +437,17 @@ public interface Game<P extends BWPlayer, B extends Wrapper, L extends Wrapper, 
      * @since 0.3.0
      * @return
      */
-    Component getCustomPrefixComponent();
+    C getCustomPrefixComponent();
 
     /**
      * @since 0.3.0
      * @return
      */
-    @Nullable C getLobbyPos1();
+    @Nullable L getLobbyPos1();
 
     /**
      * @since 0.3.0
      * @return
      */
-    @Nullable C getLobbyPos2();
+    @Nullable L getLobbyPos2();
 }

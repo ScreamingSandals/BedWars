@@ -2,12 +2,11 @@ package org.screamingsandals.bedwars.scoreboard;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.screamingsandals.bedwars.api.RunningTeam;
 import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.game.GameImpl;
-import org.screamingsandals.bedwars.game.TeamColorImpl;
+import org.screamingsandals.bedwars.game.TeamImpl;
 import org.screamingsandals.bedwars.listener.Player116ListenerUtils;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.player.PlayerMapper;
@@ -17,7 +16,6 @@ import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
 import org.screamingsandals.lib.tasker.task.TaskerTask;
 import org.screamingsandals.lib.utils.AdventureHelper;
-import org.screamingsandals.lib.world.LocationHolder;
 import org.spongepowered.configurate.ConfigurationNode;
 
 import java.util.*;
@@ -64,13 +62,13 @@ public class ScreamingScoreboard {
         );
 
         final var msgs = new ArrayList<Message>();
-        game.getRunningTeams().forEach(team ->
+        game.getActiveTeams().forEach(team ->
                 msgs.add(Message.ofPlainText(() ->
                         List.of(formatScoreboardTeam(team,
-                                !team.isTargetBlockExists(),
-                                team.isTargetBlockExists()
-                                        && ((LocationHolder) team.getTargetBlock()).getBlock().getType().isSameType("respawn_anchor")
-                                        && Player116ListenerUtils.isAnchorEmpty(((LocationHolder) team.getTargetBlock()).getBlock()))
+                                !team.isTargetBlockIntact(),
+                                team.isTargetBlockIntact()
+                                        && team.getTargetBlock().getBlock().getType().isSameType("respawn_anchor")
+                                        && Player116ListenerUtils.isAnchorEmpty(team.getTargetBlock().getBlock()))
                         )
                 )
             )
@@ -101,38 +99,37 @@ public class ScreamingScoreboard {
             status = GameStatus.RUNNING;
         }
 
-        game.getRunningTeams().forEach(team -> {
+        game.getActiveTeams().forEach(team -> {
             if (sidebar.getTeam(team.getName()).isEmpty()) {
                 sidebar.team(team.getName())
-                        .color(NamedTextColor.NAMES.value(((TeamColorImpl) team.getColor()).chatColor.name().toLowerCase()))
+                        .color(NamedTextColor.NAMES.value(team.getColor().chatColor.name().toLowerCase()))
                         .friendlyFire(game.getConfigurationContainer().getOrDefault(ConfigurationContainer.FRIENDLY_FIRE, Boolean.class, false));
             }
             var sidebarTeam = sidebar.getTeam(team.getName()).orElseThrow();
 
             List.copyOf(sidebarTeam.players())
                     .forEach(teamPlayer -> {
-                        if (!team.getConnectedPlayers().contains(teamPlayer)) {
+                        if (team.getPlayers().stream().noneMatch(bedWarsPlayer -> bedWarsPlayer.equals(teamPlayer))) {
                             sidebarTeam.removePlayer(teamPlayer);
                         }
                     });
 
-            ((List<PlayerWrapper>) team.getConnectedPlayers())
+            team.getPlayers()
                     .stream()
                     .filter(player -> !sidebarTeam.players().contains(player))
                     .forEach(sidebarTeam::player);
         });
     }
 
-    private String formatScoreboardTeam(RunningTeam team, boolean destroy, boolean empty) {
+    private String formatScoreboardTeam(TeamImpl team, boolean destroy, boolean empty) {
         if (team == null) {
             return "";
         }
 
         return MainConfig.getInstance().node("experimental", "new-scoreboard-system", "teamTitle").getString("")
-                .replace("%team_size%", String.valueOf(
-                        team.getConnectedPlayers().size()))
-                .replace("%color%",((TeamColorImpl) team.getColor())
-                        .chatColor.toString()).replace("%team%", team.getName())
+                .replace("%team_size%", String.valueOf(team.countConnectedPlayers()))
+                .replace("%color%", team.getColor().chatColor.toString())
+                .replace("%team%", team.getName())
                 .replace("%bed%", destroy ? GameImpl.bedLostString() : (empty ? GameImpl.anchorEmptyString() : GameImpl.bedExistString()));
     }
 

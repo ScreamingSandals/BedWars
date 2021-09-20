@@ -7,6 +7,7 @@ import org.screamingsandals.bedwars.api.game.ItemSpawner;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.events.ResourceSpawnEventImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
+import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.lib.entity.EntityBasic;
 import org.screamingsandals.lib.entity.EntityItem;
 import org.screamingsandals.lib.entity.EntityMapper;
@@ -15,7 +16,6 @@ import org.screamingsandals.lib.hologram.Hologram;
 import org.screamingsandals.lib.hologram.HologramManager;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.item.builder.ItemFactory;
-import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
 import org.screamingsandals.lib.tasker.task.TaskerTask;
@@ -194,7 +194,7 @@ public class ItemSpawnerImpl implements ItemSpawner<LocationHolder, ItemSpawnerT
         changeInterval(Pair.of(ticks, TaskerTime.TICKS));
     }
 
-    private void prepareHolograms(List<PlayerWrapper> viewers, boolean countdownHologram) {
+    private void prepareHolograms(List<BedWarsPlayer> viewers, boolean countdownHologram) {
         try {
             LocationHolder loc;
             if (floatingBlockEnabled &&
@@ -280,11 +280,8 @@ public class ItemSpawnerImpl implements ItemSpawner<LocationHolder, ItemSpawnerT
         this.tier = 1;
         this.hypixelHolo = hologramType == HologramType.HYPIXEL || (hologramType == HologramType.DEFAULT && game.getConfigurationContainer().getOrDefault(ConfigurationContainer.HYPIXEL_HOLOGRAMS, Boolean.class, false));
 
-        if (team != null) {
-            var spawnerTeam = game.getCurrentTeamFromTeam(team);
-            if (game.getConfigurationContainer().getOrDefault(ConfigurationContainer.STOP_TEAM_SPAWNERS_ON_DIE, Boolean.class, false) && spawnerTeam == null) {
-                disabled = true;
-            }
+        if (team != null && game.isTeamActive(team) && game.getConfigurationContainer().getOrDefault(ConfigurationContainer.STOP_TEAM_SPAWNERS_ON_DIE, Boolean.class, false)) {
+            disabled = true;
         }
 
         if (!disabled) {
@@ -322,11 +319,8 @@ public class ItemSpawnerImpl implements ItemSpawner<LocationHolder, ItemSpawnerT
                         return;
                     }
 
-                    if (team != null) {
-                        var spawnerTeam = game.getCurrentTeamFromTeam(team);
-                        if (game.getConfigurationContainer().getOrDefault(ConfigurationContainer.STOP_TEAM_SPAWNERS_ON_DIE, Boolean.class, false) && spawnerTeam == null) {
-                            return;
-                        }
+                    if (team != null && game.isTeamActive(team) && game.getConfigurationContainer().getOrDefault(ConfigurationContainer.STOP_TEAM_SPAWNERS_ON_DIE, Boolean.class, false)) {
+                        return;
                     }
 
                     var calculatedStack = (int) amountPerSpawn;

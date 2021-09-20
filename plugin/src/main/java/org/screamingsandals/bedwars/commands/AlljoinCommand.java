@@ -4,6 +4,7 @@ import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
 import org.screamingsandals.bedwars.game.GameManagerImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
+import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.player.PlayerMapper;
@@ -46,9 +47,10 @@ public class AlljoinCommand extends BaseCommand {
                                 }
 
                                 if (PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
-                                    PlayerManagerImpl.getInstance().getPlayerOrCreate(player).getGame().leaveFromGame(player);
+                                    var p = player.as(BedWarsPlayer.class);
+                                    p.getGame().leaveFromGame(p);
                                 }
-                                game.get().joinToGame(player);
+                                game.get().joinToGame(PlayerManagerImpl.getInstance().getPlayerOrCreate(player));
                             });
                         })
         );

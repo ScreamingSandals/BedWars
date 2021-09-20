@@ -2,7 +2,6 @@ package org.screamingsandals.bedwars.commands;
 
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
-import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.game.GameManagerImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
@@ -29,7 +28,7 @@ public class AutojoinCommand extends BaseCommand {
                             }
 
                             GameManagerImpl.getInstance().getFirstWaitingGame().ifPresentOrElse(
-                                    game -> game.joinToGame(player),
+                                    game -> game.joinToGame(PlayerManagerImpl.getInstance().getPlayerOrCreate(player)),
                                     () -> player.sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_THERE_IS_NO_EMPTY_GAME).defaultPrefix())
                             );
                         })

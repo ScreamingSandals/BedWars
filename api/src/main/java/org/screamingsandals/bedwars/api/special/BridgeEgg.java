@@ -1,10 +1,12 @@
 package org.screamingsandals.bedwars.api.special;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.screamingsandals.bedwars.api.Team;
 import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.api.player.BWPlayer;
 import org.screamingsandals.lib.utils.Wrapper;
 
+@ApiStatus.NonExtendable
 public interface BridgeEgg<G extends Game, P extends BWPlayer, T extends Team, E extends Wrapper, M extends Wrapper> extends SpecialItem<G, P, T> {
     /**
      * <p>Gets the bridge egg projectile.</p>

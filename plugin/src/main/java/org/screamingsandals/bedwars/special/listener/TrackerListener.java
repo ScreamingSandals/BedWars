@@ -57,7 +57,7 @@ public class TrackerListener {
                                         MiscUtils.sendActionBarMessage(player, Message.of(LangKeys.SPECIALS_TRACKER_TARGET_FOUND).placeholder("target", target.getDisplayName()).placeholder("distance", distance));
                                     } else {
                                         MiscUtils.sendActionBarMessage(player, Message.of(LangKeys.SPECIALS_TRACKER_NO_TARGET_FOUND));
-                                        player.as(Player.class).setCompassTarget(game.getTeamOfPlayer(player).getTeamSpawn().as(Location.class)); // TODO: remove this
+                                        player.as(Player.class).setCompassTarget(game.getTeamOfPlayer(gamePlayer).getTeamSpawn().as(Location.class)); // TODO: remove this
                                     }
                                 })
                                 .afterOneTick()

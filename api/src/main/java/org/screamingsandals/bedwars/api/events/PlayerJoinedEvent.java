@@ -1,14 +1,16 @@
 package org.screamingsandals.bedwars.api.events;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.api.BedwarsAPI;
-import org.screamingsandals.bedwars.api.RunningTeam;
+import org.screamingsandals.bedwars.api.Team;
 import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.api.player.BWPlayer;
 
 import java.util.function.Consumer;
 
-public interface PlayerJoinedEvent<G extends Game, P extends BWPlayer, T extends RunningTeam> {
+@ApiStatus.NonExtendable
+public interface PlayerJoinedEvent<G extends Game, P extends BWPlayer, T extends Team> {
     G getGame();
 
     P getPlayer();
@@ -17,7 +19,7 @@ public interface PlayerJoinedEvent<G extends Game, P extends BWPlayer, T extends
     T getTeam();
 
     @SuppressWarnings("unchecked")
-    static void handle(Object plugin, Consumer<PlayerJoinedEvent<Game, BWPlayer, RunningTeam>> consumer) {
+    static void handle(Object plugin, Consumer<PlayerJoinedEvent<Game, BWPlayer, Team>> consumer) {
         BedwarsAPI.getInstance().getEventUtils().handle(plugin, PlayerJoinedEvent.class, (Consumer) consumer);
     }
 }

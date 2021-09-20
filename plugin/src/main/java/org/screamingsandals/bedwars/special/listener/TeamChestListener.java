@@ -1,7 +1,6 @@
 package org.screamingsandals.bedwars.special.listener;
 
 import org.screamingsandals.bedwars.api.APIUtils;
-import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.events.ApplyPropertyToBoughtItemEventImpl;
@@ -45,11 +44,11 @@ public class TeamChestListener {
         String unhidden = APIUtils.unhashFromInvisibleStringStartsWith(event.getItemInHand().as(ItemStack.class), TEAM_CHEST_PREFIX);
 
         if (unhidden != null || MainConfig.getInstance().node("specials", "teamchest", "turn-all-enderchests-to-teamchests").getBoolean()) {
-            team.addTeamChestBlock(block);
+            team.addTeamChest(block.getLocation());
             Message
                     .of(LangKeys.SPECIALS_TEAM_CHEST_PLACED)
                     .prefixOrDefault(event.getGame().getCustomPrefixComponent())
-                    .send(team.getConnectedPlayers().stream().map(PlayerMapper::wrapPlayer).collect(Collectors.toList()));
+                    .send(team.getPlayers().stream().map(PlayerMapper::wrapPlayer).collect(Collectors.toList()));
         }
     }
 

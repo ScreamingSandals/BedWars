@@ -5,9 +5,9 @@ import lombok.Getter;
 import org.bukkit.entity.*;
 import org.screamingsandals.bedwars.api.special.Golem;
 import org.screamingsandals.bedwars.entities.EntitiesManagerImpl;
-import org.screamingsandals.bedwars.game.CurrentTeam;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.TeamColorImpl;
+import org.screamingsandals.bedwars.game.TeamImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.utils.MiscUtils;
@@ -22,7 +22,7 @@ import org.screamingsandals.lib.world.LocationHolder;
 
 @Getter
 @EqualsAndHashCode(callSuper = true)
-public class GolemImpl extends SpecialItem implements Golem<GameImpl, BedWarsPlayer, CurrentTeam, EntityLiving> {
+public class GolemImpl extends SpecialItem implements Golem<GameImpl, BedWarsPlayer, TeamImpl, EntityLiving> {
     private EntityLiving entity;
     private final LocationHolder location;
     private final Item item;
@@ -32,7 +32,7 @@ public class GolemImpl extends SpecialItem implements Golem<GameImpl, BedWarsPla
     private final String name;
     private final boolean showName;
 
-    public GolemImpl(GameImpl game, BedWarsPlayer player, CurrentTeam team,
+    public GolemImpl(GameImpl game, BedWarsPlayer player, TeamImpl team,
                      Item item, LocationHolder location, double speed, double followRange, double health,
                      String name, boolean showName) {
         super(game, player, team);

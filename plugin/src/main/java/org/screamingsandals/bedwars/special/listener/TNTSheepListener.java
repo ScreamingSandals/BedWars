@@ -87,7 +87,7 @@ public class TNTSheepListener {
                 var game = gamePlayer.getGame();
                 if (event.getDamager().as(Entity.class) instanceof TNTPrimed && !game.getConfigurationContainer().getOrDefault(ConfigurationContainer.FRIENDLY_FIRE, Boolean.class, false)) {
                     var tnt = event.getDamager();
-                    var sheeps = game.getActivedSpecialItems(TNTSheepImpl.class);
+                    var sheeps = game.getActiveSpecialItems(TNTSheepImpl.class);
                     for (var item : sheeps) {
                         if (item instanceof TNTSheepImpl) {
                             var sheep = (TNTSheepImpl) item;
@@ -105,7 +105,7 @@ public class TNTSheepListener {
             var mob = event.getEntity();
             for (var game : GameManagerImpl.getInstance().getGames()) {
                 if (game.getStatus() == GameStatus.RUNNING && mob.getLocation().getWorld().equals(game.getGameWorld())) {
-                    var sheeps = game.getActivedSpecialItems(TNTSheepImpl.class);
+                    var sheeps = game.getActiveSpecialItems(TNTSheepImpl.class);
                     for (var item : sheeps) {
                         if (item instanceof TNTSheepImpl) {
                             var sheep = (TNTSheepImpl) item;
@@ -130,7 +130,7 @@ public class TNTSheepListener {
 
             var rightClicked = event.getClickedEntity();
             var vehicle = rightClicked.isInsideVehicle() ? rightClicked.getVehicle() : null;
-            var sheeps = game.getActivedSpecialItems(TNTSheepImpl.class);
+            var sheeps = game.getActiveSpecialItems(TNTSheepImpl.class);
             for (var item : sheeps) {
                 if (item instanceof TNTSheepImpl) {
                     var sheep = (TNTSheepImpl) item;

@@ -1,9 +1,12 @@
 package org.screamingsandals.bedwars.api.game;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import java.util.List;
 import java.util.Optional;
 
-public interface GameManager<T extends Game<?, ?, ?, ?, ?, ?>> {
+@ApiStatus.NonExtendable
+public interface GameManager<T extends Game<?, ?, ?, ?, ?, ?, ?, ?, ?>> {
     /**
      * @param name Name of game
      * @return Optional with game or empty if game does not exist

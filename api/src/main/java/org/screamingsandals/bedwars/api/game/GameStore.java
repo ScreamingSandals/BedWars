@@ -1,10 +1,12 @@
 package org.screamingsandals.bedwars.api.game;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.screamingsandals.lib.utils.Wrapper;
 
 /**
  * @author Bedwars Team
  */
+@ApiStatus.NonExtendable
 public interface GameStore<E extends Wrapper, T extends Wrapper, L extends Wrapper> {
     /**
      * @return shop entity

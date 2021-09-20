@@ -1,5 +1,6 @@
 package org.screamingsandals.bedwars.api;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.screamingsandals.bedwars.api.entities.EntitiesManager;
 import org.screamingsandals.bedwars.api.game.GameManager;
 import org.screamingsandals.bedwars.api.game.ItemSpawnerType;
@@ -15,6 +16,7 @@ import java.util.List;
 /**
  * @author Bedwars Team
  */
+@ApiStatus.NonExtendable
 public interface BedwarsAPI extends Wrapper {
     /**
      * @return Game manager of the bedwars plugin

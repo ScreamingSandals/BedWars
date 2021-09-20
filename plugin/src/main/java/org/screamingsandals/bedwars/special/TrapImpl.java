@@ -3,8 +3,8 @@ package org.screamingsandals.bedwars.special;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.screamingsandals.bedwars.api.special.Trap;
-import org.screamingsandals.bedwars.game.CurrentTeam;
 import org.screamingsandals.bedwars.game.GameImpl;
+import org.screamingsandals.bedwars.game.TeamImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.utils.MiscUtils;
@@ -23,11 +23,11 @@ import java.util.Map;
 
 @Getter
 @EqualsAndHashCode(callSuper = true)
-public class TrapImpl extends SpecialItem implements Trap<GameImpl, BedWarsPlayer, CurrentTeam, LocationHolder> {
+public class TrapImpl extends SpecialItem implements Trap<GameImpl, BedWarsPlayer, TeamImpl, LocationHolder> {
     private final List<Map<String, Object>> trapData;
     private LocationHolder location;
 
-    public TrapImpl(GameImpl game, BedWarsPlayer player, CurrentTeam team, List<Map<String, Object>> trapData) {
+    public TrapImpl(GameImpl game, BedWarsPlayer player, TeamImpl team, List<Map<String, Object>> trapData) {
         super(game, player, team);
         this.trapData = trapData;
 
@@ -43,7 +43,7 @@ public class TrapImpl extends SpecialItem implements Trap<GameImpl, BedWarsPlaye
         this.location = loc;
     }
 
-    public void process(BedWarsPlayer player, CurrentTeam runningTeam, boolean forceDestroy) {
+    public void process(BedWarsPlayer player, TeamImpl runningTeam, boolean forceDestroy) {
         if (runningTeam == this.team || forceDestroy) {
             game.unregisterSpecialItem(this);
             location.getBlock().setType(BlockTypeHolder.air());
@@ -66,7 +66,7 @@ public class TrapImpl extends SpecialItem implements Trap<GameImpl, BedWarsPlaye
             }
         }
 
-        for (var p : this.team.getConnectedPlayers()) {
+        for (var p : this.team.getPlayers()) {
             MiscUtils.sendActionBarMessage(PlayerMapper.wrapPlayer(p), Message.of(LangKeys.SPECIALS_TRAP_CAUGHT_TEAM).placeholder("player", AdventureHelper.toComponent(player.as(Player.class).getDisplayName())));
         }
         MiscUtils.sendActionBarMessage(player, Message.of(LangKeys.SPECIALS_TRAP_CAUGHT).placeholder("team", getTeam().getName()));

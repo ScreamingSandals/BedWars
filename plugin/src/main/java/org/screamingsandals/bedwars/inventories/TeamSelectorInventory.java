@@ -7,7 +7,6 @@ import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.events.OpenTeamSelectionEventImpl;
 import org.screamingsandals.bedwars.events.PlayerJoinedTeamEventImpl;
 import org.screamingsandals.bedwars.events.PlayerLeaveEventImpl;
-import org.screamingsandals.bedwars.game.CurrentTeam;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.TeamImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
@@ -156,9 +155,8 @@ public class TeamSelectorInventory {
 
     }
 
-    private void repaintTeam(CurrentTeam currentTeam) {
-        var team = currentTeam.teamInfo;
-        var playersInTeamCount = currentTeam.players.size();
+    private void repaintTeam(TeamImpl team) {
+        var playersInTeamCount = team.countConnectedPlayers();
         var itemInfo = items.get(team);
         var item = itemInfo.getItem();
 

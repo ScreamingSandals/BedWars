@@ -9,7 +9,7 @@ import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.bedwars.special.BridgeEggImpl;
-import org.screamingsandals.bedwars.utils.DelayFactory;
+import org.screamingsandals.bedwars.utils.DelayFactoryImpl;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.lib.entity.EntityMapper;
 import org.screamingsandals.lib.entity.EntityProjectile;
@@ -64,7 +64,7 @@ public class BridgeEggListener {
                         var bridgeEgg = new BridgeEggImpl(game, gamePlayer, game.getPlayerTeam(gamePlayer), egg, material, distance);
 
                         if (delay > 0) {
-                            var delayFactory = new DelayFactory(delay, bridgeEgg, gamePlayer, game);
+                            var delayFactory = new DelayFactoryImpl(delay, bridgeEgg, gamePlayer, game);
                             game.registerDelay(delayFactory);
                         }
 

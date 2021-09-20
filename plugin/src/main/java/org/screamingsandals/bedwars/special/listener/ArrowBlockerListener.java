@@ -6,7 +6,7 @@ import org.screamingsandals.bedwars.events.ApplyPropertyToBoughtItemEventImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.bedwars.special.ArrowBlockerImpl;
-import org.screamingsandals.bedwars.utils.DelayFactory;
+import org.screamingsandals.bedwars.utils.DelayFactoryImpl;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.lib.entity.EntityHuman;
@@ -58,7 +58,7 @@ public class ArrowBlockerListener {
                         }
 
                         if (delay > 0) {
-                            var delayFactory = new DelayFactory(delay, arrowBlocker, gPlayer, game);
+                            var delayFactory = new DelayFactoryImpl(delay, arrowBlocker, gPlayer, game);
                             game.registerDelay(delayFactory);
                         }
 
@@ -94,7 +94,7 @@ public class ArrowBlockerListener {
             return;
         }
 
-        var arrowBlocker = (ArrowBlockerImpl) game.getFirstActivedSpecialItemOfPlayer(player, ArrowBlockerImpl.class);
+        var arrowBlocker = game.getFirstActiveSpecialItemOfPlayer(gPlayer, ArrowBlockerImpl.class);
         if (arrowBlocker != null && event.getDamageCause().is("PROJECTILE")) {
             event.setCancelled(true);
         }

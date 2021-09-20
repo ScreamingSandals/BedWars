@@ -1,6 +1,5 @@
 package org.screamingsandals.bedwars.special.listener;
 
-import org.bukkit.Location;
 import org.screamingsandals.bedwars.api.APIUtils;
 import org.screamingsandals.bedwars.api.special.SpecialItem;
 import org.screamingsandals.bedwars.events.ApplyPropertyToBoughtItemEventImpl;
@@ -49,7 +48,7 @@ public class LuckyBlockAddonListener {
             var splitted = invisible.split(":");
             var classID = Integer.parseInt(splitted[2]);
 
-            for (SpecialItem special : event.getGame().getActivedSpecialItems(LuckyBlockImpl.class)) {
+            for (SpecialItem special : event.getGame().getActiveSpecialItems(LuckyBlockImpl.class)) {
                 var luckyBlock = (LuckyBlockImpl) special;
                 if (System.identityHashCode(luckyBlock) == classID) {
                     luckyBlock.place(event.getBlock().getLocation());
@@ -65,7 +64,7 @@ public class LuckyBlockAddonListener {
         if (event.isCancelled()) {
             return;
         }
-        for (var special : event.getGame().getActivedSpecialItems(LuckyBlockImpl.class)) {
+        for (var special : event.getGame().getActiveSpecialItems(LuckyBlockImpl.class)) {
             var luckyBlock = (LuckyBlockImpl) special;
             if (luckyBlock.isPlaced()) {
                 if (event.getBlock().getLocation().equals(luckyBlock.getBlockLocation())) {

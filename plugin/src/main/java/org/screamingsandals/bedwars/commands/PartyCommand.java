@@ -5,6 +5,7 @@ import cloud.commandframework.CommandManager;
 import com.alessiodp.parties.api.Parties;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.lang.LangKeys;
+import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.lib.lang.Message;
@@ -78,26 +79,25 @@ public class PartyCommand extends BaseCommand {
                                         return;
                                     }
 
-                                    final var wrapper = PlayerMapper.wrapPlayer(partyMember);
-                                    final var gameOfPlayer = playerManager.getGameOfPlayer(wrapper);
+                                    final var gameOfPlayer = playerManager.getGameOfPlayer(partyMember);
 
                                     if (game.isEmpty()) {
-                                        PlayerMapper.wrapPlayer(partyMember).sendMessage(Message.of(LangKeys.PARTY_WARPED).defaultPrefix());
-                                        gameOfPlayer.ifPresent(value -> value.leaveFromGame(partyMember));
+                                        partyMember.sendMessage(Message.of(LangKeys.PARTY_WARPED).defaultPrefix());
+                                        gameOfPlayer.ifPresent(value -> value.leaveFromGame(partyMember.as(BedWarsPlayer.class)));
                                         partyMember.teleport(sender.getLocation());
                                         return;
                                     }
 
-                                    PlayerMapper.wrapPlayer(partyMember).sendMessage(Message.of(LangKeys.PARTY_INFORM_GAME_JOIN).defaultPrefix());
+                                    partyMember.sendMessage(Message.of(LangKeys.PARTY_INFORM_GAME_JOIN).defaultPrefix());
                                     if (gameOfPlayer.isPresent()) {
                                         if (gameOfPlayer.get().getName().equalsIgnoreCase(game.get().getName())) {
                                             return;
                                         }
 
-                                        gameOfPlayer.get().leaveFromGame(partyMember);
+                                        gameOfPlayer.get().leaveFromGame(partyMember.as(BedWarsPlayer.class));
                                     }
 
-                                    game.get().joinToGame(partyMember);
+                                    game.get().joinToGame(PlayerManagerImpl.getInstance().getPlayerOrCreate(partyMember));
                                 }
                             });
                             if (MainConfig.getInstance().node("party", "notify-when-warped").getBoolean(true)) {

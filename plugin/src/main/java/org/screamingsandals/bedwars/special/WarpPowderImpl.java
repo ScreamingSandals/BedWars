@@ -5,8 +5,8 @@ import lombok.Getter;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.screamingsandals.bedwars.api.special.WarpPowder;
-import org.screamingsandals.bedwars.game.CurrentTeam;
 import org.screamingsandals.bedwars.game.GameImpl;
+import org.screamingsandals.bedwars.game.TeamImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.utils.SpawnEffects;
@@ -20,12 +20,12 @@ import org.screamingsandals.lib.tasker.task.TaskerTask;
 
 @Getter
 @EqualsAndHashCode(callSuper = true)
-public class WarpPowderImpl extends SpecialItem implements WarpPowder<GameImpl, BedWarsPlayer, CurrentTeam, Item> {
+public class WarpPowderImpl extends SpecialItem implements WarpPowder<GameImpl, BedWarsPlayer, TeamImpl, Item> {
     private final Item item;
     private TaskerTask teleportingTask;
     private int teleportingTime;
 
-    public WarpPowderImpl(GameImpl game, BedWarsPlayer player, CurrentTeam team, Item item, int teleportingTime) {
+    public WarpPowderImpl(GameImpl game, BedWarsPlayer player, TeamImpl team, Item item, int teleportingTime) {
         super(game, player, team);
         this.item = item;
         this.teleportingTime = teleportingTime;

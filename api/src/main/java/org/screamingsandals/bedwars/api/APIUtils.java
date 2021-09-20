@@ -11,6 +11,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.ApiStatus;
 
 /**
  * @author Bedwars Team
@@ -19,6 +20,7 @@ import org.bukkit.plugin.Plugin;
  */
 // TODO: ScreamingLib equivalent
 @Deprecated
+@ApiStatus.ScheduledForRemoval
 public class APIUtils {
 	public static final String BEDWARS_NAMESPACED_KEY = "screaming-bedwars-hidden-api";
 

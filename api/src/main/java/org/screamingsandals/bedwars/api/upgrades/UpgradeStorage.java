@@ -18,7 +18,7 @@ public final class UpgradeStorage {
     private final String upgradeName;
     private final Class<? extends Upgrade> upgradeClass;
 
-    private final Map<Game<?,?,?,?,?,?>, List<Upgrade>> upgradeRegistry = new HashMap<>();
+    private final Map<Game<?,?,?,?,?,?,?,?,?>, List<Upgrade>> upgradeRegistry = new HashMap<>();
 
     /**
      * @param upgradeName  Upgrade Name
@@ -49,7 +49,7 @@ public final class UpgradeStorage {
      * @param game    Game
      * @param upgrade Upgrade
      */
-    public void addUpgrade(Game<?,?,?,?,?,?> game, Upgrade upgrade) {
+    public void addUpgrade(Game<?,?,?,?,?,?,?,?,?> game, Upgrade upgrade) {
         if (!upgradeClass.isInstance(upgrade)) {
             return;
         }
@@ -70,7 +70,7 @@ public final class UpgradeStorage {
      * @param game    Game
      * @param upgrade Upgrade
      */
-    public void removeUpgrade(Game<?,?,?,?,?,?> game, Upgrade upgrade) {
+    public void removeUpgrade(Game<?,?,?,?,?,?,?,?,?> game, Upgrade upgrade) {
         if (!upgradeClass.isInstance(upgrade)) {
             return;
         }
@@ -89,7 +89,7 @@ public final class UpgradeStorage {
      * @param upgrade Upgrade
      * @return true if upgrade is registered
      */
-    public boolean isUpgradeRegistered(Game<?,?,?,?,?,?> game, Upgrade upgrade) {
+    public boolean isUpgradeRegistered(Game<?,?,?,?,?,?,?,?,?> game, Upgrade upgrade) {
         if (!upgradeClass.isInstance(upgrade)) {
             return false;
         }
@@ -102,7 +102,7 @@ public final class UpgradeStorage {
      *
      * @param game Game
      */
-    public void resetUpgradesForGame(Game<?,?,?,?,?,?> game) {
+    public void resetUpgradesForGame(Game<?,?,?,?,?,?,?,?,?> game) {
         if (upgradeRegistry.containsKey(game)) {
             for (Upgrade upgrade : upgradeRegistry.get(game)) {
                 upgrade.onUpgradeUnregistered(game);
@@ -119,7 +119,7 @@ public final class UpgradeStorage {
      * @param game Game
      * @return ĺist of registered upgrades of game
      */
-    public List<Upgrade> getAllUpgradesOfGame(Game<?,?,?,?,?,?> game) {
+    public List<Upgrade> getAllUpgradesOfGame(Game<?,?,?,?,?,?,?,?,?> game) {
         List<Upgrade> upgrade = new ArrayList<>();
         if (upgradeRegistry.containsKey(game)) {
             upgrade.addAll(upgradeRegistry.get(game));
@@ -135,7 +135,7 @@ public final class UpgradeStorage {
      * @return list of upgrades with same name
      */
     @Deprecated
-    public List<Upgrade> findUpgradeByName(Game<?,?,?,?,?,?> game, String instanceName) {
+    public List<Upgrade> findUpgradeByName(Game<?,?,?,?,?,?,?,?,?> game, String instanceName) {
         List<Upgrade> upgrades = new ArrayList<>();
 
         if (upgradeRegistry.containsKey(game)) {
@@ -149,7 +149,7 @@ public final class UpgradeStorage {
         return upgrades;
     }
 
-    public List<Upgrade> findItemSpawnerUpgrades(Game<?,?,?,?,?,?> game, String spawnerInstanceName) {
+    public List<Upgrade> findItemSpawnerUpgrades(Game<?,?,?,?,?,?,?,?,?> game, String spawnerInstanceName) {
         List<Upgrade> upgrades = new ArrayList<>();
 
         if (upgradeRegistry.containsKey(game)) {
@@ -166,7 +166,7 @@ public final class UpgradeStorage {
         return upgrades;
     }
 
-    public List<Upgrade> findItemSpawnerUpgrades(Game<?,?,?,?,?,?> game, Team<?,?,?> team) {
+    public List<Upgrade> findItemSpawnerUpgrades(Game<?,?,?,?,?,?,?,?,?> game, Team<?,?,?,?,?> team) {
         List<Upgrade> upgrades = new ArrayList<>();
 
         if (upgradeRegistry.containsKey(game)) {
@@ -187,7 +187,7 @@ public final class UpgradeStorage {
         return upgrades;
     }
 
-    public List<Upgrade> findItemSpawnerUpgrades(Game<?,?,?,?,?,?> game, Team<?,?,?> team, ItemSpawnerType<?,?,?> itemSpawnerType) {
+    public List<Upgrade> findItemSpawnerUpgrades(Game<?,?,?,?,?,?,?,?,?> game, Team<?,?,?,?,?> team, ItemSpawnerType<?,?,?> itemSpawnerType) {
         List<Upgrade> upgrades = new ArrayList<>();
 
         if (upgradeRegistry.containsKey(game)) {

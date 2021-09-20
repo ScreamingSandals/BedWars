@@ -24,12 +24,10 @@ import org.bukkit.scoreboard.Scoreboard;
 import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.api.ArenaTime;
-import org.screamingsandals.bedwars.api.RunningTeam;
 import org.screamingsandals.bedwars.api.boss.BossBar;
 import org.screamingsandals.bedwars.api.boss.StatusBar;
 import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
 import org.screamingsandals.bedwars.api.game.Game;
-import org.screamingsandals.bedwars.api.game.GameParticipant;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.api.game.ItemSpawner;
 import org.screamingsandals.bedwars.api.special.SpecialItem;
@@ -66,7 +64,6 @@ import org.screamingsandals.lib.event.EventManager;
 import org.screamingsandals.lib.event.player.SPlayerBlockBreakEvent;
 import org.screamingsandals.lib.healthindicator.HealthIndicator;
 import org.screamingsandals.lib.hologram.Hologram;
-import org.screamingsandals.lib.hologram.HologramManager;
 import org.screamingsandals.lib.item.Item;
 import org.screamingsandals.lib.lang.Message;;
 import org.screamingsandals.lib.item.builder.ItemFactory;
@@ -79,6 +76,7 @@ import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
 import org.screamingsandals.lib.tasker.task.TaskerTask;
 import org.screamingsandals.lib.utils.AdventureHelper;
+import org.screamingsandals.lib.utils.adventure.wrapper.ComponentWrapper;
 import org.screamingsandals.lib.visuals.Visual;
 import org.screamingsandals.lib.block.BlockHolder;
 import org.screamingsandals.lib.world.LocationHolder;
@@ -94,10 +92,9 @@ import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper, WorldHolder, LocationHolder, EntityBasic> {
+public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, WorldHolder, LocationHolder, EntityBasic, ComponentWrapper, GameStoreImpl, ItemSpawnerImpl> {
     public boolean gameStartItem;
     private String name;
     private LocationHolder pos1;
@@ -131,13 +128,13 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
     private int countdown = -1, previousCountdown = -1;
     private int calculatedMaxPlayers;
     private TaskerTask task;
-    private final List<CurrentTeam> teamsInGame = new ArrayList<>();
+    private final List<TeamImpl> teamsInGame = new ArrayList<>();
     private final BWRegion region = BedWarsPlugin.isLegacy() ? new LegacyRegion() : new FlatteningRegion();
     private TeamSelectorInventory teamSelectorInventory;
     private final Scoreboard gameScoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
     private StatusBar<PlayerWrapper> statusbar;
     private final Map<Location, ItemStack[]> usedChests = new HashMap<>();
-    private final List<SpecialItem> activeSpecialItems = new ArrayList<>();
+    private final List<SpecialItem<?,?,?>> activeSpecialItems = new ArrayList<>();
     private final List<DelayFactory> activeDelays = new ArrayList<>();
     private final Map<BedWarsPlayer, Inventory> fakeEnderChests = new HashMap<>();
     private int postGameWaiting = 3;
@@ -494,12 +491,8 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
     }
 
     @Override
-    public List<org.screamingsandals.bedwars.api.game.GameStore> getGameStores() {
-        return new ArrayList<>(gameStore);
-    }
-
-    public void setGameStores(List<GameStoreImpl> gameStore) {
-        this.gameStore = gameStore;
+    public List<GameStoreImpl> getGameStores() {
+        return List.copyOf(gameStore);
     }
 
     public List<GameStoreImpl> getGameStoreList() {
@@ -618,11 +611,11 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
             region.removeBlockBuiltDuringGame(block.getLocation());
 
             if (block.getType().isSameType("ender_chest")) {
-                CurrentTeam team = getTeamOfChestBlock(block);
+                var team = getTeamOfChest(block.getLocation());
                 if (team != null) {
-                    team.removeTeamChestBlock(block);
+                    team.removeTeamChest(block.getLocation());
                     var message = Message.of(LangKeys.SPECIALS_TEAM_CHEST_BROKEN).prefixOrDefault(getCustomPrefixComponent());
-                    for (BedWarsPlayer gp : team.players) {
+                    for (BedWarsPlayer gp : team.getPlayers()) {
                         gp.sendMessage(message);
                     }
 
@@ -695,9 +688,9 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
         return false;
     }
 
-    public void targetBlockExplode(RunningTeam team) {
-        LocationHolder loc = (LocationHolder) team.getTargetBlock();
-        BlockHolder block = loc.getBlock();
+    public void targetBlockExplode(TeamImpl team) {
+        var loc = team.getTargetBlock();
+        var block = loc.getBlock();
         if (region.isBedBlock(block.getBlockState().orElseThrow())) {
             if (!region.isBedHead(block.getBlockState().orElseThrow())) {
                 loc = region.getBedNeighbor(block).getLocation();
@@ -727,8 +720,8 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
     }
 
     private boolean isTargetBlock(LocationHolder loc) {
-        for (CurrentTeam team : teamsInGame) {
-            if (team.isBed && team.getTargetBlock().equals(loc)) {
+        for (var team : teamsInGame) {
+            if (team.isTargetBlockIntact() && team.getTargetBlock().equals(loc)) {
                 return true;
             }
         }
@@ -739,30 +732,19 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
         return region;
     }
 
-    public CurrentTeam getPlayerTeam(BedWarsPlayer player) {
-        for (CurrentTeam team : teamsInGame) {
-            if (team.players.contains(player)) {
-                return team;
-            }
-        }
-        return null;
-    }
-
-    public CurrentTeam getCurrentTeamFromTeam(org.screamingsandals.bedwars.api.Team team) {
-        for (CurrentTeam currentTeam : teamsInGame) {
-            if (currentTeam.teamInfo == team) {
-                return currentTeam;
-            }
-        }
-        return null;
+    public TeamImpl getPlayerTeam(BedWarsPlayer player) {
+        return teamsInGame.stream()
+                .filter(team -> team.getPlayers().contains(player))
+                .findFirst()
+                .orElse(null);
     }
 
     public void bedDestroyed(LocationHolder loc, PlayerWrapper destroyer, boolean isItBedBlock, boolean isItAnchor, boolean isItCake) {
         if (status == GameStatus.RUNNING) {
-            for (CurrentTeam team : teamsInGame) {
+            for (var team : teamsInGame) {
                 if (team.getTargetBlock().equals(loc)) {
-                    Debug.info(name + ": target block of  " + team.teamInfo.getName() + " has been destroyed");
-                    team.isBed = false;
+                    Debug.info(name + ": target block of  " + team.getName() + " has been destroyed");
+                    team.setTargetBlockIntact(false);
                     updateScoreboard();
                     String coloredDestroyer = "explosion";
                     if (destroyer != null) {
@@ -780,7 +762,7 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
                                 .title(player);
 
 
-                        var bbdmsEvent = new BedDestroyedMessageSendEventImpl(this, player, PlayerManagerImpl.getInstance().getPlayer(destroyer.getUuid()).orElseThrow(), team, message);
+                        var bbdmsEvent = new BedDestroyedMessageSendEventImpl(this, player, destroyer != null ? destroyer.as(BedWarsPlayer.class) : null, team, message);
                         EventManager.fire(bbdmsEvent);
                         if (!bbdmsEvent.isCancelled()) {
                             bbdmsEvent.getMessage().send(player);
@@ -789,27 +771,27 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
                         SpawnEffects.spawnEffect(this, player, "game-effects.beddestroy");
                         if (getPlayerTeam(player) == team) {
                             // TODO: adventure equivalent
-                            Sounds.playSound(player.as(Player.class), player.as(Player.class).getLocation(),
+                            Sounds.playSound(player, player.getLocation(),
                                     MainConfig.getInstance().node("sounds", "my_bed_destroyed", "sound").getString(),
                                     Sounds.ENTITY_ENDER_DRAGON_GROWL, (float) MainConfig.getInstance().node("sounds", "my_bed_destroyed", "volume").getDouble(),
                                     (float) MainConfig.getInstance().node("sounds", "my_bed_destroyed", "pitch").getDouble());
                         } else {
                             // TODO: adventure equivalent
-                            Sounds.playSound(player.as(Player.class), player.as(Player.class).getLocation(),
+                            Sounds.playSound(player, player.getLocation(),
                                     MainConfig.getInstance().node("sounds", "bed_destroyed", "sound").getString(),
                                     Sounds.ENTITY_ENDER_DRAGON_GROWL, (float) MainConfig.getInstance().node("sounds", "bed_destroyed", "volume").getDouble(),
                                     (float) MainConfig.getInstance().node("sounds", "bed_destroyed", "pitch").getDouble());
                         }
                     }
 
-                    if (team.hasBedHolo()) {
-                        team.getBedHolo().replaceLine(0, Message.of(isItBedBlock ? LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_DESTROYED_BED : (isItAnchor ? LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_DESTROYED_ANCHOR : (isItCake ? LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_DESTROYED_CAKE : LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_DESTROYED_ANY))));
-                        team.getConnectedPlayers().stream().map(PlayerMapper::wrapPlayer).forEach(team.getBedHolo()::addViewer);
+                    if (team.getHologram() != null) {
+                        team.getHologram().replaceLine(0, Message.of(isItBedBlock ? LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_DESTROYED_BED : (isItAnchor ? LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_DESTROYED_ANCHOR : (isItCake ? LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_DESTROYED_CAKE : LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_DESTROYED_ANY))));
+                        team.getPlayers().forEach(team.getHologram()::addViewer);
                     }
 
-                    if (team.hasProtectHolo()) {
-                        team.getProtectHolo().destroy();
-                        team.setProtectHolo(null);
+                    if (team.getProtectHologram() != null) {
+                        team.getProtectHologram().destroy();
+                        team.setProtectHologram(null);
                     }
 
                     var targetBlockDestroyed = new TargetBlockDestroyedEventImpl(this, destroyer != null ? PlayerManagerImpl.getInstance().getPlayer(destroyer.getUuid()).orElseThrow() : null, team);
@@ -938,8 +920,8 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
                 }
             });
             teamsInGame.forEach(currentTeam -> {
-                if (currentTeam.hasBedHolo()) {
-                    currentTeam.getBedHolo().addViewer(gamePlayer);
+                if (currentTeam.getHologram() != null) {
+                    currentTeam.getHologram().addViewer(gamePlayer);
                 }
             });
 
@@ -1013,11 +995,11 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
             }
         });
         teamsInGame.forEach(team -> {
-            if (team.hasBedHolo() && !team.getConnectedPlayers().contains(gamePlayer)) {
-                team.getBedHolo().removeViewer(gamePlayer);
+            if (team.getHologram() != null && !team.getPlayers().contains(gamePlayer)) {
+                team.getHologram().removeViewer(gamePlayer);
             }
-            if (team.hasProtectHolo() && team.getConnectedPlayers().contains(gamePlayer)) {
-                team.getProtectHolo().removeViewer(gamePlayer);
+            if (team.getProtectHologram() != null && team.getPlayers().contains(gamePlayer)) {
+                team.getProtectHologram().removeViewer(gamePlayer);
             }
         });
         otherVisuals.forEach(visual -> visual.removeViewer(gamePlayer));
@@ -1038,12 +1020,12 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
         }
 
         if (status == GameStatus.RUNNING || status == GameStatus.WAITING) {
-            CurrentTeam team = getPlayerTeam(gamePlayer);
+            var team = getPlayerTeam(gamePlayer);
             if (team != null) {
-                team.players.remove(gamePlayer);
+                team.getPlayers().remove(gamePlayer);
                 if (status == GameStatus.WAITING) {
                     team.getScoreboardTeam().removeEntry(gamePlayer.getName());
-                    if (team.players.isEmpty()) {
+                    if (team.getPlayers().isEmpty()) {
                         teamsInGame.remove(team);
                         team.getScoreboardTeam().unregister();
                     }
@@ -1083,7 +1065,7 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
             }
             gameScoreboard.clearSlot(DisplaySlot.SIDEBAR);
 
-            for (CurrentTeam team : teamsInGame) {
+            for (var team : teamsInGame) {
                 team.getScoreboardTeam().unregister();
             }
             teamsInGame.clear();
@@ -1227,7 +1209,8 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
         }
     }
 
-    public void joinToGame(PlayerWrapper player) {
+    @Override
+    public void joinToGame(BedWarsPlayer player) {
         if (status == GameStatus.DISABLED) {
             return;
         }
@@ -1244,14 +1227,14 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
                                 .of(LangKeys.IN_GAME_ERRORS_GAME_IS_REBUILDING)
                                 .prefixOrDefault(getCustomPrefixComponent())
                                 .placeholder("arena", this.name)
-                                .asComponent(PlayerMapper.wrapPlayer(player))
+                                .asComponent(player)
                         ));
             } else {
                 Message
                         .of(LangKeys.IN_GAME_ERRORS_GAME_IS_REBUILDING)
                         .placeholder("arena", this.name)
                         .prefixOrDefault(getCustomPrefixComponent())
-                        .send(PlayerMapper.wrapPlayer(player));
+                        .send(player);
             }
             return;
         }
@@ -1265,27 +1248,27 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
                                 .of(LangKeys.IN_GAME_ERRORS_GAME_ALREADY_RUNNING)
                                 .placeholder("arena", this.name)
                                 .prefixOrDefault(getCustomPrefixComponent())
-                                .asComponent(PlayerMapper.wrapPlayer(player))
+                                .asComponent(player)
                 ));
             } else {
                 Message
                         .of(LangKeys.IN_GAME_ERRORS_GAME_ALREADY_RUNNING)
                         .placeholder("arena", this.name)
                         .prefixOrDefault(getCustomPrefixComponent())
-                        .send(PlayerMapper.wrapPlayer(player));
+                        .send(player);
             }
             return;
         }
 
         if (players.size() >= calculatedMaxPlayers && status == GameStatus.WAITING) {
-            if (PlayerManagerImpl.getInstance().getPlayerOrCreate(PlayerMapper.wrapPlayer(player)).canJoinFullGame()) {
+            if (player.canJoinFullGame()) {
                 List<BedWarsPlayer> withoutVIP = getPlayersWithoutVIP();
 
                 if (withoutVIP.size() == 0) {
                     Message
                             .of(LangKeys.IN_GAME_ERRORS_VIP_GAME_IS_FULL)
                             .prefixOrDefault(getCustomPrefixComponent())
-                            .send(PlayerMapper.wrapPlayer(player));
+                            .send(player);
                     return;
                 }
 
@@ -1320,66 +1303,53 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
                                     .of(LangKeys.IN_GAME_ERRORS_GAME_IS_FULL)
                                     .placeholder("arena", GameImpl.this.name)
                                     .prefixOrDefault(getCustomPrefixComponent())
-                                    .asComponent(PlayerMapper.wrapPlayer(player))
+                                    .asComponent(player)
                     ))).delay(5, TaskerTime.TICKS).start();
                 } else {
                     Message
                             .of(LangKeys.IN_GAME_ERRORS_GAME_IS_FULL)
                             .placeholder("arena", this.name)
                             .prefixOrDefault(getCustomPrefixComponent())
-                            .send(PlayerMapper.wrapPlayer(player));
+                            .send(player);
                 }
                 return;
             }
         }
 
-        BedWarsPlayer gPlayer = PlayerManagerImpl.getInstance().getPlayerOrCreate(PlayerMapper.wrapPlayer(player));
-        gPlayer.changeGame(this);
+        player.changeGame(this);
     }
 
-    public void leaveFromGame(PlayerWrapper player) {
+    @Override
+    public void leaveFromGame(BedWarsPlayer player) {
         if (status == GameStatus.DISABLED) {
             return;
         }
-        if (PlayerManagerImpl.getInstance().isPlayerInGame(player.getUuid())) {
-            BedWarsPlayer gPlayer = PlayerManagerImpl.getInstance().getPlayerOrCreate(player);
-
-            if (gPlayer.getGame() == this) {
-                gPlayer.changeGame(null);
-                if (status == GameStatus.RUNNING || status == GameStatus.GAME_END_CELEBRATING) {
-                    updateScoreboard();
-                }
+        if (player.isInGame() && player.getGame() == this) {
+            player.changeGame(null);
+            if (status == GameStatus.RUNNING || status == GameStatus.GAME_END_CELEBRATING) {
+                updateScoreboard();
             }
         }
-    }
-
-    public CurrentTeam getCurrentTeamByTeam(TeamImpl team) {
-        for (CurrentTeam current : teamsInGame) {
-            if (current.teamInfo == team) {
-                return current;
-            }
-        }
-        return null;
     }
 
     public TeamImpl getFirstTeamThatIsntInGame() {
         for (TeamImpl team : teams) {
-            if (getCurrentTeamByTeam(team) == null) {
+            if (!teamsInGame.contains(team)) {
                 return team;
             }
         }
         return null;
     }
 
-    public CurrentTeam getTeamWithLowestPlayers() {
-        CurrentTeam lowest = null;
+    public TeamImpl getTeamWithLowestPlayers() {
+        TeamImpl lowest = null;
 
-        for (CurrentTeam team : teamsInGame) {
+        for (var team : teamsInGame) {
             if (lowest == null) {
                 lowest = team;
             }
 
-            if (lowest.players.size() > team.players.size()) {
+            if (lowest.getPlayers().size() > team.getPlayers().size()) {
                 lowest = team;
             }
         }
@@ -1388,30 +1358,16 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
     }
 
     public List<BedWarsPlayer> getPlayersInTeam(TeamImpl team) {
-        CurrentTeam currentTeam = null;
-        for (CurrentTeam cTeam : teamsInGame) {
-            if (cTeam.teamInfo == team) {
-                currentTeam = cTeam;
-            }
-        }
-
-        if (currentTeam != null) {
-            return currentTeam.players;
-        } else {
-            return new ArrayList<>();
-        }
+        return team.getPlayers();
     }
 
     private void internalTeamJoin(BedWarsPlayer player, TeamImpl teamForJoin) {
-        CurrentTeam current = null;
-        for (CurrentTeam t : teamsInGame) {
-            if (t.teamInfo == teamForJoin) {
-                current = t;
-                break;
-            }
+        TeamImpl current = null;
+        if (teamsInGame.contains(teamForJoin)) {
+            current = teamForJoin;
         }
 
-        CurrentTeam cur = getPlayerTeam(player);
+        var cur = getPlayerTeam(player);
         var event = new PlayerJoinTeamEventImpl(this, player, current, cur);
         EventManager.fire(event);
 
@@ -1420,7 +1376,7 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
         }
 
         if (current == null) {
-            current = new CurrentTeam(teamForJoin, this);
+            current = teamForJoin;
             org.bukkit.scoreboard.Team scoreboardTeam = gameScoreboard.getTeam(teamForJoin.getName());
             if (scoreboardTeam == null) {
                 scoreboardTeam = gameScoreboard.registerNewTeam(teamForJoin.getName());
@@ -1439,12 +1395,12 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
                     .of(LangKeys.IN_GAME_TEAM_SELECTION_ALREADY_SELECTED)
                     .prefixOrDefault(getCustomPrefixComponent())
                     .placeholder("team", AdventureHelper.toComponent(teamForJoin.getColor().chatColor + teamForJoin.getName()))
-                    .placeholder("players", current.players.size())
+                    .placeholder("players", current.countConnectedPlayers())
                     .placeholder("maxplayers", current.getMaxPlayers())
                     .send(player);
             return;
         }
-        if (current.players.size() >= current.getMaxPlayers()) {
+        if (current.countConnectedPlayers() >= current.getMaxPlayers()) {
             if (cur != null) {
                 Message
                         .of(LangKeys.IN_GAME_TEAM_SELECTION_FULL_NO_CHANGE)
@@ -1463,17 +1419,17 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
         }
 
         if (cur != null) {
-            cur.players.remove(player);
+            cur.getPlayers().remove(player);
             cur.getScoreboardTeam().removeEntry(player.getName());
 
-            if (cur.players.isEmpty()) {
+            if (cur.getPlayers().isEmpty()) {
                 teamsInGame.remove(cur);
                 cur.getScoreboardTeam().unregister();
             }
             Debug.info(name + ": player " + player.getName() + " left the team " + cur.getName());
         }
 
-        current.players.add(player);
+        current.getPlayers().add(player);
         current.getScoreboardTeam().addEntry(player.getName());
 
         Debug.info(name + ": player " + player.getName() + " joined the team " + current.getName());
@@ -1482,7 +1438,7 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
                 .of(LangKeys.IN_GAME_TEAM_SELECTION_SELECTED)
                 .prefixOrDefault(getCustomPrefixComponent())
                 .placeholder("team", AdventureHelper.toComponent(teamForJoin.getColor().chatColor + teamForJoin.getName()))
-                .placeholder("players", current.players.size())
+                .placeholder("players", current.getPlayers().size())
                 .placeholder("maxplayers", current.getMaxPlayers())
                 .send(player);
 
@@ -1513,11 +1469,11 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
         if (teamsInGame.size() < 2) {
             teamForJoin = getFirstTeamThatIsntInGame();
         } else {
-            CurrentTeam current = getTeamWithLowestPlayers();
-            if (current.players.size() >= current.getMaxPlayers()) {
+            var current = getTeamWithLowestPlayers();
+            if (current.getPlayers().size() >= current.getMaxPlayers()) {
                 teamForJoin = getFirstTeamThatIsntInGame();
             } else {
-                teamForJoin = current.teamInfo;
+                teamForJoin = current;
             }
         }
 
@@ -1538,7 +1494,6 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
             }
             player.setAllowFlight(true);  // TODO: SLib equivalent
             player.setFlying(true);
-            var spectator = GameModeHolder.of("spectator");
             gamePlayer.setGameMode(GameModeHolder.of("spectator"));
 
             if (leaveItem) {
@@ -1566,7 +1521,7 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
     public void makePlayerFromSpectator(BedWarsPlayer gamePlayer) {
         Debug.info(gamePlayer.getName() + " changing spectator to regular player");
         Player player = gamePlayer.as(Player.class); // TODO: remove transformation
-        CurrentTeam currentTeam = getPlayerTeam(gamePlayer);
+        var currentTeam = getPlayerTeam(gamePlayer);
 
         if (gamePlayer.getGame() == this && currentTeam != null) {
             gamePlayer.isSpectator = false;
@@ -1818,7 +1773,7 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
                                     .times(TitleUtils.defaultTimes());
                     for (BedWarsPlayer player : this.players) {
                         Debug.info(name + ": moving " + player.getName() + " into game");
-                        CurrentTeam team = getPlayerTeam(player);
+                        var team = getPlayerTeam(player);
                         player.getPlayerInventory().clear();
                         // Player still had armor on legacy versions
                         player.getPlayerInventory().setHelmet(null);
@@ -1858,14 +1813,8 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
 
                     if (configurationContainer.getOrDefault(ConfigurationContainer.REMOVE_UNUSED_TARGET_BLOCKS, Boolean.class, false)) {
                         for (TeamImpl team : teams) {
-                            CurrentTeam ct = null;
-                            for (CurrentTeam curt : teamsInGame) {
-                                if (curt.teamInfo == team) {
-                                    ct = curt;
-                                    break;
-                                }
-                            }
-                            if (ct == null) {
+                            TeamImpl ct = null;
+                            if (!teamsInGame.contains(team)) {
                                 LocationHolder loc = team.getTargetBlock();
                                 BlockHolder block = loc.getBlock();
                                 if (region.isBedBlock(block.getBlockState().orElseThrow())) {
@@ -1881,74 +1830,8 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
                         }
                     }
 
-                    for (CurrentTeam team : teamsInGame) {
-                        BlockHolder block = team.getTargetBlock().getBlock();
-                        if (block != null && block.getType().isSameType("respawn_anchor")) { // don't break the game for older servers
-                            Tasker.build(() -> {
-                                var anchor = block.getType();
-                                block.setType(anchor.with("charges", "0"));
-                                if (configurationContainer.getOrDefault(ConfigurationContainer.ANCHOR_AUTO_FILL, Boolean.class, false)) {
-                                    var atomic = new AtomicInteger();
-                                    Tasker.build(taskBase -> () -> {
-                                        var charges = atomic.incrementAndGet();
-                                        block.setType(anchor.with("charges", String.valueOf(charges)));
-                                        Sounds.playSound(team.getTargetBlock(), MainConfig.getInstance().node("target-block", "respawn-anchor", "sound", "charge").getString(), Sounds.BLOCK_RESPAWN_ANCHOR_CHARGE, 1, 1);
-                                        if (charges >= 4) {
-                                            updateScoreboard();
-                                            taskBase.cancel();
-                                        }
-                                    }).delay(50, TaskerTime.TICKS).repeat(10, TaskerTime.TICKS).start();
-                                }
-                            })
-                            .afterOneTick()
-                            .start();
-                        }
-                    }
-
-                    if (configurationContainer.getOrDefault(ConfigurationContainer.HOLOGRAMS_ABOVE_BEDS, Boolean.class, false)) {
-                        for (CurrentTeam team : teamsInGame) {
-                            BlockHolder bed = team.getTargetBlock().getBlock();
-                            LocationHolder loc = team.getTargetBlock().add(0.5, 1.5, 0.5);
-                            boolean isBlockTypeBed = region.isBedBlock(bed.getBlockState().orElseThrow());
-                            boolean isAnchor = bed.getType().isSameType("respawn_anchor");
-                            boolean isCake = bed.getType().isSameType("cake");
-                            var enemies = getConnectedPlayers() // getConnectedPlayers is copy
-                                    .stream()
-                                    .filter(player -> !team.getConnectedPlayers().contains(player))
-                                    .map(PlayerMapper::wrapPlayer)
-                                    .collect(Collectors.toList());
-                            var holo = HologramManager
-                                    .hologram(LocationMapper.wrapLocation(loc))
-                                    .firstLine(
-                                            Message
-                                                    .of(isBlockTypeBed ? LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_DESTROY_BED : (isAnchor ? LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_DESTROY_ANCHOR : (isCake ? LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_DESTROY_CAKE : LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_DESTROY_ANY)))
-                                            .earlyPlaceholder("teamcolor", AdventureHelper.toComponent(team.getColor().chatColor.toString()))
-                                            .asTextEntry(null)
-                                    );
-                            enemies.forEach(holo::addViewer);
-                            holo.show();
-                            team.setBedHolo(holo);
-                            var protectHolo = HologramManager
-                                    .hologram(LocationMapper.wrapLocation(loc))
-                                    .firstLine(
-                                            Message
-                                                    .of(isBlockTypeBed ? LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_PROTECT_BED : (isAnchor ? LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_PROTECT_ANCHOR : (isCake ? LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_PROTECT_CAKE : LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_PROTECT_ANY)))
-                                                    .earlyPlaceholder("teamcolor", AdventureHelper.toComponent(team.getColor().chatColor.toString()))
-                                                    .asTextEntry(null)
-                                    );
-                            team.getConnectedPlayers().stream().map(PlayerMapper::wrapPlayer).forEach(protectHolo::addViewer);
-                            protectHolo.show();
-                            team.setProtectHolo(protectHolo);
-                        }
-                    }
-
-                    // Check target blocks existence
-                    for (CurrentTeam team : teamsInGame) {
-                        LocationHolder targetLocation = team.getTargetBlock();
-                        if (targetLocation.getBlock().getType().isAir()) {
-                            BlockHolder placedBlock = targetLocation.getBlock();
-                            placedBlock.setType(team.getColor().getWoolBlockType());
-                        }
+                    for (var team : teamsInGame) {
+                        team.start();
                     }
 
                     if (BedWarsPlugin.getVersionNumber() >= 115 && !MainConfig.getInstance().node("allow-fake-death").getBoolean()) {
@@ -1977,20 +1860,20 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
             // Phase 6.2.1: On game tick (if not interrupted by a change of status)
             if (status == GameStatus.RUNNING && tick.getNextStatus() == GameStatus.RUNNING) {
                 int runningTeams = 0;
-                for (CurrentTeam t : teamsInGame) {
+                for (var t : teamsInGame) {
                     runningTeams += t.isAlive() ? 1 : 0;
                 }
                 if (runningTeams <= 1) {
                     if (runningTeams == 1) {
-                        CurrentTeam winner = null;
-                        for (CurrentTeam t : teamsInGame) {
+                        TeamImpl winner = null;
+                        for (var t : teamsInGame) {
                             if (t.isAlive()) {
                                 winner = t;
                                 String time = getFormattedTimeLeft(gameTime - countdown);
                                 var message = Message
                                         .of(LangKeys.IN_GAME_END_TEAM_WIN)
                                         .prefixOrDefault(getCustomPrefixComponent())
-                                        .placeholder("team", AdventureHelper.toComponent(((TeamColorImpl) t.getColor()).chatColor + t.getName()))
+                                        .placeholder("team", AdventureHelper.toComponent(t.getColor().chatColor + t.getName()))
                                         .placeholder("time", time);
                                 boolean madeRecord = processRecord(t, gameTime - countdown);
                                 for (BedWarsPlayer player : players) {
@@ -1998,7 +1881,7 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
                                     if (getPlayerTeam(player) == t) {
                                         Message.of(LangKeys.IN_GAME_END_YOU_WON)
                                                 .join(LangKeys.IN_GAME_END_TEAM_WIN)
-                                                .placeholder("team", AdventureHelper.toComponent(((TeamColorImpl) t.getColor()).chatColor + t.getName()))
+                                                .placeholder("team", AdventureHelper.toComponent(t.getColor().chatColor + t.getName()))
                                                 .placeholder("time", time)
                                                 .times(TitleUtils.defaultTimes())
                                                 .title(player);
@@ -2028,23 +1911,21 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
                                         }
 
                                         if (MainConfig.getInstance().node("rewards", "enabled").getBoolean()) {
-                                            // TODO: remove transformation
-                                            final Player pl = player.as(Player.class);
                                             Tasker.build(() -> {
                                                 if (PlayerStatisticManager.isEnabled()) {
                                                     var statistic = PlayerStatisticManager.getInstance()
                                                             .getStatistic(player);
-                                                    GameImpl.this.dispatchRewardCommands("player-win", pl,
+                                                    GameImpl.this.dispatchRewardCommands("player-win", player,
                                                             statistic.getScore());
                                                 } else {
-                                                    GameImpl.this.dispatchRewardCommands("player-win", pl, 0);
+                                                    GameImpl.this.dispatchRewardCommands("player-win", player, 0);
                                                 }
                                             }).delay((2 + postGameWaiting) * 20L, TaskerTime.TICKS).start();
                                         }
                                     } else {
                                         Message.of(LangKeys.IN_GAME_END_YOU_LOST)
                                                 .join(LangKeys.IN_GAME_END_TEAM_WIN)
-                                                .placeholder("team", AdventureHelper.toComponent(((TeamColorImpl) t.getColor()).chatColor + t.getName()))
+                                                .placeholder("team", AdventureHelper.toComponent(t.getColor().chatColor + t.getName()))
                                                 .placeholder("time", time)
                                                 .times(TitleUtils.defaultTimes())
                                                 .title(player);
@@ -2099,15 +1980,13 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
                 player.changeGame(null);
 
                 if (MainConfig.getInstance().node("rewards", "enabled").getBoolean()) {
-                    // TODO: remove transformation
-                    final Player pl = player.as(Player.class);
                     Tasker.build(() -> {
                         if (PlayerStatisticManager.isEnabled()) {
                             var statistic = PlayerStatisticManager.getInstance()
                                     .getStatistic(player);
-                            GameImpl.this.dispatchRewardCommands("player-end-game", pl, statistic.getScore());
+                            GameImpl.this.dispatchRewardCommands("player-end-game", player, statistic.getScore());
                         } else {
-                            GameImpl.this.dispatchRewardCommands("player-end-game", pl, 0);
+                            GameImpl.this.dispatchRewardCommands("player-end-game", player, 0);
                         }
                     }).delay(40, TaskerTime.TICKS).start();
                 }
@@ -2155,15 +2034,7 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
         otherVisuals.clear();
         Debug.info(name + ": rebuilding starts");
         teamsInGame.forEach(currentTeam -> {
-            if (currentTeam.hasBedHolo()) {
-                currentTeam.getBedHolo().destroy();
-                currentTeam.setBedHolo(null);
-            }
-
-            if (currentTeam.hasProtectHolo()) {
-                currentTeam.getProtectHolo().destroy();
-                currentTeam.setProtectHolo(null);
-            }
+            currentTeam.destroy();
         });
         teamsInGame.clear();
         activeSpecialItems.clear();
@@ -2235,14 +2106,14 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
 
     }
 
-    public boolean processRecord(CurrentTeam t, int wonTime) {
+    public boolean processRecord(TeamImpl t, int wonTime) {
         var record = RecordSave.getInstance().getRecord(this.getName());
         if (record.map(RecordSave.Record::getTime).orElse(Integer.MAX_VALUE) > wonTime) {
             RecordSave.getInstance().saveRecord(RecordSave.Record.builder()
                     .game(this.getName())
                     .time(wonTime)
                     .team(t.getColor().chatColor + t.getName())
-                    .winners(t.players.stream().map(SenderWrapper::getName).collect(Collectors.toList()))
+                    .winners(t.getPlayers().stream().map(SenderWrapper::getName).collect(Collectors.toList()))
                     .build()
             );
             return true;
@@ -2303,13 +2174,13 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
         obj.setDisplaySlot(DisplaySlot.SIDEBAR);
         obj.setDisplayName(this.formatScoreboardTitle());
 
-        for (CurrentTeam team : teamsInGame) {
+        for (var team : teamsInGame) {
             this.gameScoreboard.resetScores(this.formatScoreboardTeam(team, false, false));
             this.gameScoreboard.resetScores(this.formatScoreboardTeam(team, false, true));
             this.gameScoreboard.resetScores(this.formatScoreboardTeam(team, true, false));
 
-            Score score = obj.getScore(this.formatScoreboardTeam(team, !team.isBed, team.isBed && team.getTargetBlock().getBlock().getType().isSameType("respawn_anchor") && Player116ListenerUtils.isAnchorEmpty(team.getTargetBlock().getBlock())));  // TODO: remove transformation
-            score.setScore(team.players.size());
+            Score score = obj.getScore(this.formatScoreboardTeam(team, !team.isTargetBlockIntact(), team.isTargetBlockIntact() && team.getTargetBlock().getBlock().getType().isSameType("respawn_anchor") && Player116ListenerUtils.isAnchorEmpty(team.getTargetBlock().getBlock())));  // TODO: remove transformation
+            score.setScore(team.countConnectedPlayers());
         }
 
         for (BedWarsPlayer player : players) {
@@ -2317,7 +2188,7 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
         }
     }
 
-    private String formatScoreboardTeam(CurrentTeam team, boolean destroy, boolean empty) {
+    private String formatScoreboardTeam(TeamImpl team, boolean destroy, boolean empty) {
         if (team == null) {
             return "";
         }
@@ -2542,7 +2413,7 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
     }
 
     @Override
-    public void selectPlayerTeam(PlayerWrapper player, org.screamingsandals.bedwars.api.Team team) {
+    public void selectPlayerTeam(BedWarsPlayer player, TeamImpl team) {
         if (!PlayerManagerImpl.getInstance().isPlayerInGame(player.getUuid())) {
             return;
         }
@@ -2570,26 +2441,26 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
     }
 
     @Override
-    public List<PlayerWrapper> getConnectedPlayers() {
-        return new ArrayList<>(players);
+    public List<BedWarsPlayer> getConnectedPlayers() {
+        return List.copyOf(players);
     }
 
     @Override
-    public List<org.screamingsandals.bedwars.api.Team> getAvailableTeams() {
-        return new ArrayList<>(teams);
+    public List<TeamImpl> getAvailableTeams() {
+        return List.copyOf(teams);
     }
 
     @Override
-    public List<RunningTeam> getRunningTeams() {
-        return new ArrayList<>(teamsInGame);
+    public List<TeamImpl> getActiveTeams() {
+        return List.copyOf(teamsInGame);
     }
 
     @Override
-    public RunningTeam getTeamOfPlayer(PlayerWrapper player) {
-        if (!PlayerManagerImpl.getInstance().isPlayerInGame(player.getUuid())) {
+    public TeamImpl getTeamOfPlayer(BedWarsPlayer player) {
+        if (!player.isInGame()) {
             return null;
         }
-        return getPlayerTeam(PlayerManagerImpl.getInstance().getPlayer(player).orElseThrow());
+        return getPlayerTeam(player);
     }
 
     @Override
@@ -2609,19 +2480,9 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
     }
 
     @Override
-    public CurrentTeam getTeamOfChest(LocationHolder location) {
-        for (CurrentTeam team : teamsInGame) {
+    public TeamImpl getTeamOfChest(LocationHolder location) {
+        for (var team : teamsInGame) {
             if (team.isTeamChestRegistered(location)) {
-                return team;
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public CurrentTeam getTeamOfChestBlock(BlockHolder block) {
-        for (CurrentTeam team : teamsInGame) {
-            if (team.isTeamChestBlockRegistered(block)) {
                 return team;
             }
         }
@@ -2657,177 +2518,156 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
     }
 
     @Override
-    public int countRunningTeams() {
+    public int countActiveTeams() {
         return teamsInGame.size();
     }
 
     @Override
-    public boolean isPlayerInAnyTeam(PlayerWrapper player) {
+    public boolean isPlayerInAnyTeam(BedWarsPlayer player) {
         return getTeamOfPlayer(player) != null;
     }
 
     @Override
-    public boolean isPlayerInTeam(PlayerWrapper player, RunningTeam team) {
+    public boolean isTeamActive(TeamImpl team) {
+        return teamsInGame.contains(team);
+    }
+
+    @Override
+    public boolean isPlayerInTeam(BedWarsPlayer player, TeamImpl team) {
         return getTeamOfPlayer(player) == team;
     }
 
     @Override
     public int countTeamChests() {
         int total = 0;
-        for (CurrentTeam team : teamsInGame) {
+        for (TeamImpl team : teamsInGame) {
             total += team.countTeamChests();
         }
         return total;
     }
 
     @Override
-    public int countTeamChests(RunningTeam team) {
+    public int countTeamChests(TeamImpl team) {
         return team.countTeamChests();
     }
 
     @Override
-    public List<SpecialItem> getActivedSpecialItems() {
-        return new ArrayList<>(activeSpecialItems);
+    public List<SpecialItem<?,?,?>> getActiveSpecialItems() {
+        return List.copyOf(activeSpecialItems);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <I extends SpecialItem<?,?,?>> List<I> getActiveSpecialItems(Class<I> type) {
+        return activeSpecialItems.stream()
+                .filter(type::isInstance)
+                .map(specialItem -> (I) specialItem)
+                .collect(Collectors.toList());
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<SpecialItem<?,?,?>> getActiveSpecialItemsOfTeam(TeamImpl team) {
+        return activeSpecialItems.stream()
+                .filter(item -> item.getTeam().equals(team))
+                .collect(Collectors.toList());
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <I extends SpecialItem<?,?,?>> List<I> getActiveSpecialItemsOfTeam(TeamImpl team, Class<I> type) {
+        return activeSpecialItems.stream()
+                .filter(item -> type.isInstance(item) && item.getTeam().equals(team))
+                .map(item -> (I) item)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public List<SpecialItem> getActivedSpecialItems(Class<? extends SpecialItem> type) {
-        List<SpecialItem> items = new ArrayList<>();
-        for (SpecialItem item : activeSpecialItems) {
-            if (type.isInstance(item)) {
-                items.add(item);
-            }
-        }
-        return items;
+    public SpecialItem<?,?,?> getFirstActiveSpecialItemOfTeam(TeamImpl team) {
+        return activeSpecialItems.stream()
+                .filter(item -> item.getTeam().equals(team))
+                .findFirst()
+                .orElse(null);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <I extends SpecialItem<?,?,?>> I getFirstActiveSpecialItemOfTeam(TeamImpl team, Class<I> type) {
+        return (I) activeSpecialItems.stream()
+                .filter(item -> item.getTeam().equals(team) && type.isInstance(item))
+                .findFirst()
+                .orElse(null);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<SpecialItem<?,?,?>> getActiveSpecialItemsOfPlayer(BedWarsPlayer player) {
+        return activeSpecialItems.stream()
+                .filter(item -> item.getPlayer().equals(player))
+                .collect(Collectors.toList());
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <I extends SpecialItem<?,?,?>> List<I> getActiveSpecialItemsOfPlayer(BedWarsPlayer player, Class<I> type) {
+        return activeSpecialItems.stream()
+                .filter(item -> item.getPlayer().equals(player) && type.isInstance(item))
+                .map(item -> (I) item)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public List<SpecialItem> getActivedSpecialItemsOfTeam(org.screamingsandals.bedwars.api.Team team) {
-        List<SpecialItem> items = new ArrayList<>();
-        for (SpecialItem item : activeSpecialItems) {
-            if (item.getTeam() == team) {
-                items.add(item);
-            }
-        }
-        return items;
+    public SpecialItem<?,?,?> getFirstActiveSpecialItemOfPlayer(BedWarsPlayer player) {
+        return activeSpecialItems.stream()
+                .filter(item -> item.getPlayer().equals(player))
+                .findFirst()
+                .orElse(null);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <I extends SpecialItem<?,?,?>> I getFirstActiveSpecialItemOfPlayer(BedWarsPlayer player, Class<I> type) {
+        return (I) activeSpecialItems.stream()
+                .filter(item -> item.getPlayer().equals(player) && type.isInstance(item))
+                .findFirst()
+                .orElse(null);
     }
 
     @Override
-    public List<SpecialItem> getActivedSpecialItemsOfTeam(org.screamingsandals.bedwars.api.Team team,
-                                                          Class<? extends SpecialItem> type) {
-        List<SpecialItem> items = new ArrayList<>();
-        for (SpecialItem item : activeSpecialItems) {
-            if (type.isInstance(item) && item.getTeam() == team) {
-                items.add(item);
-            }
-        }
-        return items;
-    }
-
-    @Override
-    public SpecialItem getFirstActivedSpecialItemOfTeam(org.screamingsandals.bedwars.api.Team team) {
-        for (SpecialItem item : activeSpecialItems) {
-            if (item.getTeam() == team) {
-                return item;
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public SpecialItem getFirstActivedSpecialItemOfTeam(org.screamingsandals.bedwars.api.Team team,
-                                                        Class<? extends SpecialItem> type) {
-        for (SpecialItem item : activeSpecialItems) {
-            if (item.getTeam() == team && type.isInstance(item)) {
-                return item;
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public List<SpecialItem> getActivedSpecialItemsOfPlayer(PlayerWrapper player) {
-        List<SpecialItem> items = new ArrayList<>();
-        for (SpecialItem item : activeSpecialItems) {
-            if (item.getPlayer().equals(player)) {
-                items.add(item);
-            }
-        }
-        return items;
-    }
-
-    @Override
-    public List<SpecialItem> getActivedSpecialItemsOfPlayer(PlayerWrapper player, Class<? extends SpecialItem> type) {
-        List<SpecialItem> items = new ArrayList<>();
-        for (SpecialItem item : activeSpecialItems) {
-            if (item.getPlayer().equals(player) && type.isInstance(item)) {
-                items.add(item);
-            }
-        }
-        return items;
-    }
-
-    @Override
-    public SpecialItem getFirstActivedSpecialItemOfPlayer(PlayerWrapper player) {
-        for (SpecialItem item : activeSpecialItems) {
-            if (item.getPlayer().equals(player)) {
-                return item;
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public SpecialItem getFirstActivedSpecialItemOfPlayer(PlayerWrapper player, Class<? extends SpecialItem> type) {
-        for (SpecialItem item : activeSpecialItems) {
-            if (item.getPlayer().equals(player) && type.isInstance(item)) {
-                return item;
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public void registerSpecialItem(SpecialItem item) {
+    public void registerSpecialItem(SpecialItem<?,?,?> item) {
         if (!activeSpecialItems.contains(item)) {
             activeSpecialItems.add(item);
         }
     }
 
     @Override
-    public void unregisterSpecialItem(SpecialItem item) {
+    public void unregisterSpecialItem(SpecialItem<?,?,?> item) {
         activeSpecialItems.remove(item);
     }
 
     @Override
-    public boolean isRegisteredSpecialItem(SpecialItem item) {
+    public boolean isRegisteredSpecialItem(SpecialItem<?,?,?> item) {
         return activeSpecialItems.contains(item);
     }
 
     @Override
     public List<DelayFactory> getActiveDelays() {
-        return new ArrayList<>(activeDelays);
+        return List.copyOf(activeDelays);
     }
 
     @Override
-    public List<DelayFactory> getActiveDelaysOfPlayer(GameParticipant player) {
-        var delays = new ArrayList<DelayFactory>();
-        for (var delay : activeDelays) {
-            if (delay.getParticipant().equals(player)) {
-                delays.add(delay);
-            }
-        }
-        return delays;
+    public List<DelayFactory> getActiveDelaysOfPlayer(BedWarsPlayer player) {
+        return activeDelays.stream()
+                .filter(delayFactory -> delayFactory.getPlayer().equals(player))
+                .collect(Collectors.toList());
     }
 
     @Override
-    public DelayFactory getActiveDelay(GameParticipant player, Class<? extends SpecialItem> specialItem) {
-        for (var delayFactory : getActiveDelaysOfPlayer(player)) {
-            if (specialItem.isInstance(delayFactory.getSpecialItem())) {
-                return delayFactory;
-            }
-        }
-        return null;
+    public DelayFactory getActiveDelay(BedWarsPlayer player, Class<? extends SpecialItem<?,?,?>> specialItem) {
+        return activeDelays.stream()
+                .filter(delayFactory -> delayFactory.getPlayer().equals(player) && specialItem.isInstance(delayFactory.getSpecialItem()))
+                .findFirst()
+                .orElse(null);
     }
 
     @Override
@@ -2843,13 +2683,12 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
     }
 
     @Override
-    public boolean isDelayActive(GameParticipant player, Class<? extends SpecialItem> specialItem) {
-        for (var delayFactory : getActiveDelaysOfPlayer(player)) {
-            if (specialItem.isInstance(delayFactory.getSpecialItem())) {
-                return delayFactory.isDelayActive();
-            }
-        }
-        return false;
+    public boolean isDelayActive(BedWarsPlayer player, Class<? extends SpecialItem<?,?,?>> specialItem) {
+        return activeDelays.stream()
+                .filter(delayFactory -> delayFactory.getPlayer().equals(player) && specialItem.isInstance(delayFactory.getSpecialItem()))
+                .findFirst()
+                .map(DelayFactory::isDelayActive)
+                .orElse(false);
     }
 
     @Override
@@ -2889,8 +2728,8 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
     }
 
     @Override
-    public List<org.screamingsandals.bedwars.api.game.ItemSpawner> getItemSpawners() {
-        return new ArrayList<>(spawners);
+    public List<ItemSpawnerImpl> getItemSpawners() {
+        return List.copyOf(spawners);
     }
 
     @Deprecated
@@ -2929,8 +2768,8 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
     }
 
     @Override
-    public void selectPlayerRandomTeam(PlayerWrapper player) {
-        joinRandomTeam(PlayerManagerImpl.getInstance().getPlayerOrCreate(player));
+    public void selectPlayerRandomTeam(BedWarsPlayer player) {
+        joinRandomTeam(player);
     }
 
     @Override
@@ -2939,7 +2778,7 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
     }
 
     public void kickAllPlayers() {
-        for (PlayerWrapper player : getConnectedPlayers()) {
+        for (var player : getConnectedPlayers()) {
             leaveFromGame(player);
         }
     }
@@ -3016,8 +2855,8 @@ public class GameImpl implements Game<BedWarsPlayer, BlockHolder, PlayerWrapper,
     }
 
     @Override
-    public Component getCustomPrefixComponent() {
-        return AdventureHelper.toComponentNullable(customPrefix);
+    public ComponentWrapper getCustomPrefixComponent() {
+        return new ComponentWrapper(AdventureHelper.toComponentNullable(customPrefix));
     }
 
     @Override

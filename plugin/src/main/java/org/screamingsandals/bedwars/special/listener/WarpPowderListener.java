@@ -8,7 +8,7 @@ import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.bedwars.special.WarpPowderImpl;
-import org.screamingsandals.bedwars.utils.DelayFactory;
+import org.screamingsandals.bedwars.utils.DelayFactoryImpl;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -62,7 +62,7 @@ public class WarpPowderListener {
                             }
 
                             if (delay > 0) {
-                                var delayFactory = new DelayFactory(delay, warpPowder, gPlayer, game);
+                                var delayFactory = new DelayFactoryImpl(delay, warpPowder, gPlayer, game);
                                 game.registerDelay(delayFactory);
                             }
 
@@ -97,7 +97,7 @@ public class WarpPowderListener {
             return;
         }
 
-        var warpPowder = (WarpPowderImpl) game.getFirstActivedSpecialItemOfPlayer(player, WarpPowderImpl.class);
+        var warpPowder = game.getFirstActiveSpecialItemOfPlayer(gPlayer, WarpPowderImpl.class);
         if (warpPowder != null) {
             warpPowder.cancelTeleport(false, true);
         }
@@ -122,7 +122,7 @@ public class WarpPowderListener {
             return;
         }
 
-        var warpPowder = (WarpPowderImpl) game.getFirstActivedSpecialItemOfPlayer(player, WarpPowderImpl.class);
+        var warpPowder = game.getFirstActiveSpecialItemOfPlayer(gPlayer, WarpPowderImpl.class);
         if (warpPowder != null) {
             warpPowder.cancelTeleport(true, true);
 

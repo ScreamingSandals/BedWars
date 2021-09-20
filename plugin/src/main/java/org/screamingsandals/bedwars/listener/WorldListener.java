@@ -123,7 +123,7 @@ public class WorldListener {
                     blockList.removeIf(block -> {
                         if (!game.isBlockAddedDuringGame(block.getLocation())) {
                             if (game.getConfigurationContainer().getOrDefault(ConfigurationContainer.TARGET_BLOCK_EXPLOSIONS, Boolean.class, false)) {
-                                for (var team : game.getRunningTeams()) {
+                                for (var team : game.getActiveTeams()) {
                                     if (team.getTargetBlock().equals(block.getLocation())) {
                                         game.targetBlockExplode(team);
                                         break;

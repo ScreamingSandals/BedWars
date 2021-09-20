@@ -1,5 +1,6 @@
 package org.screamingsandals.bedwars.api.events;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.api.BedwarsAPI;
 import org.screamingsandals.bedwars.api.game.Game;
@@ -9,6 +10,7 @@ import org.screamingsandals.lib.utils.Wrapper;
 
 import java.util.function.Consumer;
 
+@ApiStatus.NonExtendable
 public interface OpenShopEvent<G extends Game, E extends Wrapper, P extends BWPlayer, S extends GameStore> extends BWCancellable {
 
     G getGame();

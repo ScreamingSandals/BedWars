@@ -1,5 +1,7 @@
 package org.screamingsandals.bedwars.api.config;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -7,6 +9,7 @@ import java.util.Optional;
  * @author ScreamingSandals
  * @since 0.3.0
  */
+@ApiStatus.NonExtendable
 public interface ConfigurationContainer {
 
     String COMPASS = "compass-enabled";

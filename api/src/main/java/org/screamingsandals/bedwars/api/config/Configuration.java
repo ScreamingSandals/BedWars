@@ -1,5 +1,7 @@
 package org.screamingsandals.bedwars.api.config;
 
+import org.jetbrains.annotations.ApiStatus;
+
 /**
  * Saves and retrieves configuration object
  *
@@ -7,6 +9,7 @@ package org.screamingsandals.bedwars.api.config;
  * @author ScreamingSandals
  * @since 0.3.0
  */
+@ApiStatus.NonExtendable
 public interface Configuration<T> {
     /**
      * Gets current value, can be inherited from another configuration

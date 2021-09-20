@@ -5,6 +5,7 @@ import lombok.experimental.UtilityClass;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.events.PlayerJoinedEventImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
+import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.lib.event.OnEvent;
@@ -60,9 +61,9 @@ public class PartyListener {
                                         if (gameOfPlayer.get().getName().equalsIgnoreCase(game.getName())) {
                                             return;
                                         }
-                                        gameOfPlayer.get().leaveFromGame(partyMember);
+                                        gameOfPlayer.get().leaveFromGame(partyMember.as(BedWarsPlayer.class));
                                     }
-                                    game.joinToGame(partyMember);
+                                    game.joinToGame(PlayerManagerImpl.getInstance().getPlayerOrCreate(partyMember));
                                 }
                             });
 

@@ -40,12 +40,12 @@ public class JoinCommand extends BaseCommand {
                             if (game.isPresent()) {
                                 var arenaN = game.get();
                                 GameManagerImpl.getInstance().getGame(arenaN).ifPresentOrElse(
-                                        game1 -> game1.joinToGame(player),
+                                        game1 -> game1.joinToGame(PlayerManagerImpl.getInstance().getPlayerOrCreate(player)),
                                         () -> sender.sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_GAME_NOT_FOUND).defaultPrefix())
                                 );
                             } else {
                                 GameManagerImpl.getInstance().getGameWithHighestPlayers().ifPresentOrElse(
-                                        game1 -> game1.joinToGame(player),
+                                        game1 -> game1.joinToGame(PlayerManagerImpl.getInstance().getPlayerOrCreate(player)),
                                         () -> sender.sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_GAME_NOT_FOUND).defaultPrefix())
                                 );
                             }

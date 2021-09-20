@@ -12,13 +12,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.BedWarsPlugin;
-import org.screamingsandals.bedwars.api.RunningTeam;
 import org.screamingsandals.bedwars.api.TeamColor;
-import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.events.ApplyPropertyToItemEventImpl;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.lib.debug.Debug;
+import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.lib.block.BlockTypeHolder;
 import org.screamingsandals.lib.container.PlayerContainer;
@@ -164,10 +163,10 @@ public class MiscUtils {
 
     public PlayerWrapper findTarget(GameImpl game, PlayerWrapper player, double maxDist) {
         PlayerWrapper playerTarget = null;
-        var team = game.getTeamOfPlayer(player);
+        var team = game.getPlayerTeam(player.as(BedWarsPlayer.class));
 
-        ArrayList<PlayerWrapper> foundTargets = new ArrayList<>(game.getConnectedPlayers());
-        foundTargets.removeAll(team.getConnectedPlayers());
+        var foundTargets = new ArrayList<>(game.getConnectedPlayers());
+        foundTargets.removeAll(team.getPlayers());
 
 
         for (PlayerWrapper p : foundTargets) {

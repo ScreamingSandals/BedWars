@@ -2,26 +2,20 @@ data:
 #-   stack:
 #      type: GOLDEN_APPLE
 #      amount: 1
-#      meta:
-#        ==: ItemMeta
-#        meta-type: UNSPECIFIC
-#        display-name: "Example category"
-#        lore:
-#        - "This is my category!"
-#        - "Please buy things inside!"
+#      display-name: "Example category"
+#      lore:
+#      - "This is my category!"
+#      - "Please buy things inside!"
 #    items:
 #    - price: 50
 #      price-type: "bronze"
 #      stack:
 #        type: DIAMOND_SWORD
 #        amount: 1
-#        meta:
-#          ==: ItemMeta
-#          meta-type: UNSPECIFIC
-#          enchants:
-#            DAMAGE_ALL: 2
-#          repair-cost: 1
-#          Damage: 99
+#        enchants:
+#          DAMAGE_ALL: 2
+#        repair-cost: 1
+#        Damage: 99
 # Value 'applycolorbyteam' is used for automatic-coloring-in-shop.
 # See WarpPowder for more info.
 
@@ -140,10 +134,7 @@ data:
    - GOLDEN_APPLE for 16 of iron
 
 - stack:
-   type: POTION
-   meta:
-    ==: ItemMeta
-    meta-type: POTION
+    type: POTION
     display-name: "Drinks"
     lore:
      - "Not enough? Use these potions and you'll feel better!"
@@ -152,31 +143,19 @@ data:
   column: 6
   items:
    - stack:
-      type: POTION
-      meta:
-       ==: ItemMeta
-       meta-type: POTION
+       type: POTION
        potion-type: healing
      price: 3 of iron
    - stack:
-      type: POTION
-      meta:
-       ==: ItemMeta
-       meta-type: POTION
+       type: POTION
        potion-type: strong_healing
      price: 5 of iron
    - stack:
-      type: POTION
-      meta:
-       ==: ItemMeta
-       meta-type: POTION
+       type: POTION
        potion-type: swiftness
      price: 1 of gold
    - stack:
-      type: POTION
-      meta:
-       ==: ItemMeta
-       meta-type: POTION
+       type: POTION
        potion-type: strength
      price: 5 of gold
 

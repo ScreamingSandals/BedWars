@@ -4,9 +4,9 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.screamingsandals.bedwars.api.special.TNTSheep;
 import org.screamingsandals.bedwars.entities.EntitiesManagerImpl;
-import org.screamingsandals.bedwars.game.CurrentTeam;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.TeamColorImpl;
+import org.screamingsandals.bedwars.game.TeamImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.utils.MiscUtils;
@@ -25,7 +25,7 @@ import org.screamingsandals.lib.world.LocationHolder;
 
 @Getter
 @EqualsAndHashCode(callSuper = true)
-public class TNTSheepImpl extends SpecialItem implements TNTSheep<GameImpl, BedWarsPlayer, CurrentTeam, EntityBasic, LocationHolder, EntityLiving> {
+public class TNTSheepImpl extends SpecialItem implements TNTSheep<GameImpl, BedWarsPlayer, TeamImpl, EntityBasic, LocationHolder, EntityLiving> {
     private final LocationHolder initialLocation;
     private final Item item;
     private final double speed;
@@ -35,7 +35,7 @@ public class TNTSheepImpl extends SpecialItem implements TNTSheep<GameImpl, BedW
     private EntityLiving entity;
     private EntityBasic tnt;
 
-    public TNTSheepImpl(GameImpl game, BedWarsPlayer player, CurrentTeam team, LocationHolder loc, Item item,
+    public TNTSheepImpl(GameImpl game, BedWarsPlayer player, TeamImpl team, LocationHolder loc, Item item,
                         double speed, double followRange, double maxTargetDistance, int explosionTime) {
         super(game, player, team);
         this.initialLocation = loc;

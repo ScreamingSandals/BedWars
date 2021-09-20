@@ -119,7 +119,7 @@ public class BedWarsSignService extends AbstractSignManager {
             }
         } else {
             gameManager.getGame(sign.getKey()).ifPresentOrElse(
-                    game -> game.joinToGame(player),
+                    game -> game.joinToGame(PlayerManagerImpl.getInstance().getPlayerOrCreate(player)),
                     () -> Message.of(LangKeys.SIGN_ADMIN_UNKNOWN_GAME).defaultPrefix().send(player)
             );
         }

@@ -7,7 +7,6 @@ import org.bukkit.block.BlockState;
 import org.bukkit.entity.*;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.MetadataValue;
@@ -134,14 +133,27 @@ public class PlayerListener {
 
                 var team = game.getPlayerTeam(gVictim);
                 SpawnEffects.spawnEffect(game, gVictim, "game-effects.kill");
-                boolean isBed = team.isBed;
+                boolean isBed = team.isTargetBlockIntact();
                 if (isBed && game.getConfigurationContainer().getOrDefault(ConfigurationContainer.ANCHOR_DECREASING, Boolean.class, false) && team.getTargetBlock().getBlock().getType().isSameType("respawn_anchor")) {
-                    isBed = Player116ListenerUtils.processAnchorDeath(game, team);
+                    var anchor = team.getTargetBlock().getBlock().getType();
+                    int charges = anchor.get("charges").map(Integer::parseInt).orElse(0);
+                    if (charges > 0) {
+                        var c = charges - 1;
+                        team.getTargetBlock().getBlock().setType(anchor.with("charges", String.valueOf(c)));
+                        if (c == 0) {
+                            Sounds.playSound(team.getTargetBlock(), MainConfig.getInstance().node("target-block", "respawn-anchor", "sound", "deplete").getString(), Sounds.BLOCK_RESPAWN_ANCHOR_DEPLETE, 1, 1);
+                            game.updateScoreboard();
+                        } else {
+                            Sounds.playSound(team.getTargetBlock(), MainConfig.getInstance().node("target-block", "respawn-anchor", "sound", "used").getString(), Sounds.BLOCK_GLASS_BREAK, 1, 1);
+                        }
+                    } else {
+                        isBed = false;
+                    }
                 }
                 if (!isBed) {
                     Debug.info(victim.getName() + " died without bed, he's going to spectate the game");
                     gVictim.isSpectator = true;
-                    team.players.remove(gVictim);
+                    team.getPlayers().remove(gVictim);
                     team.getScoreboardTeam().removeEntry(victim.getName());
                     if (PlayerStatisticManager.isEnabled()) {
                         var statistic = PlayerStatisticManager.getInstance().getStatistic(victim);
@@ -297,7 +309,7 @@ public class PlayerListener {
                             }
                             Debug.info(event.getPlayer().getName() + " is connecting to " + game.get().getName());
 
-                            game.get().joinToGame(player);
+                            game.get().joinToGame(PlayerManagerImpl.getInstance().getPlayerOrCreate(player));
                         } catch (NullPointerException ignored) {
                             if (!player.hasPermission(BedWarsPermission.ADMIN_PERMISSION.asPermission())) {
                                 Debug.info(event.getPlayer().getName() + " is not connecting to any game! Kicking...");
@@ -542,7 +554,7 @@ public class PlayerListener {
                                     }
                                 }
                             } else if (item.getMaterial().is(MainConfig.getInstance().node("items", "leavegame").getString("SLIME_BALL"))) {
-                                game.leaveFromGame(p);
+                                game.leaveFromGame(gPlayer);
                             }
                         }
                     }
@@ -694,7 +706,7 @@ public class PlayerListener {
                                         explosionAffectedPlayers.add(player);
                                     }
                                     if (!MainConfig.getInstance().node("tnt-jump", "team-damage").getBoolean(true)) {
-                                        if (game.getPlayerTeam(gPlayer).equals(game.getTeamOfPlayer(PlayerMapper.wrapPlayer(playerSource)))) {
+                                        if (game.getPlayerTeam(gPlayer).equals(game.getPlayerTeam(PlayerManagerImpl.getInstance().getPlayer(playerSource.getUniqueId()).orElseThrow()))) {
                                             event.setCancelled(true);
                                         }
                                     }
@@ -820,13 +832,13 @@ public class PlayerListener {
                             }
                         }
                     } else if (event.getMaterial().is(MainConfig.getInstance().node("items", "leavegame").getString("SLIME_BALL"))) {
-                        game.leaveFromGame(player);
+                        game.leaveFromGame(gPlayer);
                     }
                 } else if (game.getStatus() == GameStatus.RUNNING) {
                     if (event.getBlockClicked() != null) {
                         if (event.getBlockClicked().getType().isSameType("ender_chest")) {
                             var chest = event.getBlockClicked();
-                            CurrentTeam team = game.getTeamOfChestBlock(chest);
+                            var team = game.getTeamOfChest(chest.getLocation());
                             event.setCancelled(true);
 
                             if (team == null) {
@@ -835,7 +847,7 @@ public class PlayerListener {
                                 return;
                             }
 
-                            if (!team.players.contains(gPlayer)) {
+                            if (!team.getPlayers().contains(gPlayer)) {
                                 player.sendMessage(Message.of(LangKeys.SPECIALS_TEAM_CHEST_NOT_YOURS).prefixOrDefault(game.getCustomPrefixComponent()));
                                 Debug.info(player.getName() + " tried to open foreign team chest");
                                 return;
@@ -848,7 +860,7 @@ public class PlayerListener {
                                 return;
                             }
 
-                            player.as(Player.class).openInventory(team.getTeamChestInventory());
+                            player.openInventory(team.getTeamChestInventory());
                             Debug.info(player.getName() + " opened team chest");
                         } else if (event.getBlockClicked().getBlockState().orElseThrow().as(BlockState.class) instanceof InventoryHolder) {
                             var holder = event.getBlockClicked().getBlockState().orElseThrow().as(InventoryHolder.class);
@@ -863,7 +875,7 @@ public class PlayerListener {
                                         event.setCancelled(true);
                                     }
                                     Debug.info(player.getName() + " is eating cake");
-                                    for (var team : game.getRunningTeams()) {
+                                    for (var team : game.getActiveTeams()) {
                                         if (team.getTargetBlock().equals(event.getBlockClicked().getLocation())) {
                                             event.setCancelled(true);
                                             if (BedWarsPlugin.isLegacy()) {

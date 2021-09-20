@@ -13,10 +13,10 @@ import org.screamingsandals.bedwars.api.game.ItemSpawnerType;
 import org.screamingsandals.bedwars.api.upgrades.Upgrade;
 import org.screamingsandals.bedwars.api.upgrades.UpgradeRegistry;
 import org.screamingsandals.bedwars.api.upgrades.UpgradeStorage;
-import org.screamingsandals.bedwars.game.CurrentTeam;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.ItemSpawnerTypeImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
+import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.bedwars.special.listener.PermaItemListener;
 import org.screamingsandals.bedwars.utils.Sounds;
@@ -199,7 +199,7 @@ public class ShopInventory {
         if (event.getPropertyName().equalsIgnoreCase("applycolorbyteam")
                 || event.getPropertyName().equalsIgnoreCase("transform::applycolorbyteam")) {
             var player = event.getPlayer();
-            CurrentTeam team = (CurrentTeam) event.getGame().getTeamOfPlayer(player);
+            var team = event.getGame().getTeamOfPlayer(player);
 
             if (mainConfig.node("automatic-coloring-in-shop").getBoolean()) {
                 event.setStack(BedWarsPlugin.getInstance().getColorChanger().applyColor(team.getColor(), event.getStack()));
@@ -264,9 +264,9 @@ public class ShopInventory {
                             case "maxplayers":
                                 return Integer.toString(team.getMaxPlayers());
                             case "players":
-                                return Integer.toString(team.players.size());
+                                return Integer.toString(team.countConnectedPlayers());
                             case "hasBed":
-                                return Boolean.toString(team.isBed);
+                                return Boolean.toString(team.isTargetBlockIntact());
                         }
                     }
                     return team.getName();
@@ -497,8 +497,8 @@ public class ShopInventory {
     }
 
     private void handleUpgrade(OnTradeEvent event) {
-        var player = event.getPlayer();
-        var game = playerManager.getGameOfPlayer(event.getPlayer()).orElseThrow();
+        var player = event.getPlayer().as(BedWarsPlayer.class);
+        var game = player.getGame();
         var itemInfo = event.getItem();
 
         // TODO: multi-price feature
@@ -589,8 +589,7 @@ public class ShopInventory {
                 }
 
                 if (sendToAll) {
-                    for (Object playerobj : game.getTeamOfPlayer(player).getConnectedPlayers()) {
-                        final PlayerWrapper player1 = (PlayerWrapper) playerobj;
+                    for (var player1 : game.getPlayerTeam(player).getPlayers()) {
                         if (!mainConfig.node("removePurchaseMessages").getBoolean()) {
                             Message.of(LangKeys.IN_GAME_SHOP_BUY_SUCCESS)
                                     .prefixOrDefault(game.getCustomPrefixComponent())

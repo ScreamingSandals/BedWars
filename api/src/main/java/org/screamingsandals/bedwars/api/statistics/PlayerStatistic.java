@@ -1,10 +1,13 @@
 package org.screamingsandals.bedwars.api.statistics;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import java.util.UUID;
 
 /**
  * @author Bedwars Team
  */
+@ApiStatus.NonExtendable
 public interface PlayerStatistic {
     /**
      * @return player's deaths

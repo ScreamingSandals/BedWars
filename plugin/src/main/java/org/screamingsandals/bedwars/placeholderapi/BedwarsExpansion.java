@@ -56,7 +56,7 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                     case "available_teams":
                         return Component.text(game.countAvailableTeams());
                     case "connected_teams":
-                        return Component.text(game.countRunningTeams());
+                        return Component.text(game.countActiveTeams());
                     case "teamchests":
                         return Component.text(game.countTeamChests());
                 }
@@ -134,7 +134,7 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                 case "available_teams":
                     return PlayerManagerImpl.getInstance().getGameOfPlayer(player.getUuid()).map(g -> Component.text(g.countAvailableTeams())).orElseGet(() -> Component.text("0"));
                 case "connected_teams":
-                    return PlayerManagerImpl.getInstance().getGameOfPlayer(player.getUuid()).map(g -> Component.text(g.countRunningTeams())).orElseGet(() -> Component.text("0"));
+                    return PlayerManagerImpl.getInstance().getGameOfPlayer(player.getUuid()).map(g -> Component.text(g.countActiveTeams())).orElseGet(() -> Component.text("0"));
                 case "teamchests":
                     return PlayerManagerImpl.getInstance().getGameOfPlayer(player.getUuid()).map(g -> Component.text(g.countTeamChests())).orElseGet(() -> Component.text("0"));
                 case "team":
@@ -231,7 +231,7 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                         } else {
                             var team = game.getPlayerTeam(gPlayer);
                             if (team != null) {
-                                return Component.text(team.isBed ? "yes" : "no");
+                                return Component.text(team.isTargetBlockIntact() ? "yes" : "no");
                             } else {
                                 return Component.text("no");
                             }

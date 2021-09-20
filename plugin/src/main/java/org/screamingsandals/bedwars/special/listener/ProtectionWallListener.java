@@ -8,7 +8,7 @@ import org.screamingsandals.bedwars.events.PlayerBreakBlockEventImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.bedwars.special.ProtectionWallImpl;
-import org.screamingsandals.bedwars.utils.DelayFactory;
+import org.screamingsandals.bedwars.utils.DelayFactoryImpl;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.lib.event.OnEvent;
@@ -69,7 +69,7 @@ public class ProtectionWallListener {
                         }
 
                         if (delay > 0) {
-                            var delayFactory = new DelayFactory(delay, protectionWall, gPlayer, game);
+                            var delayFactory = new DelayFactoryImpl(delay, protectionWall, gPlayer, game);
                             game.registerDelay(delayFactory);
                         }
 
@@ -103,7 +103,7 @@ public class ProtectionWallListener {
 
     private ArrayList<ProtectionWallImpl> getCreatedWalls(Game game) {
         ArrayList<ProtectionWallImpl> createdWalls = new ArrayList<>();
-        for (var specialItem : game.getActivedSpecialItems(ProtectionWallImpl.class)) {
+        for (var specialItem : game.getActiveSpecialItems(ProtectionWallImpl.class)) {
             if (specialItem instanceof ProtectionWallImpl) {
                 ProtectionWallImpl wall = (ProtectionWallImpl) specialItem;
                 createdWalls.add(wall);

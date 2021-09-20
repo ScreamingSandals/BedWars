@@ -1,11 +1,13 @@
 package org.screamingsandals.bedwars.api.utils;
 
-import org.screamingsandals.bedwars.api.game.GameParticipant;
+import org.jetbrains.annotations.ApiStatus;
+import org.screamingsandals.bedwars.api.player.BWPlayer;
 import org.screamingsandals.bedwars.api.special.SpecialItem;
 
 /**
  * @author ScreamingSandals
  */
+@ApiStatus.NonExtendable
 public interface DelayFactory {
 
     /**
@@ -26,5 +28,5 @@ public interface DelayFactory {
     /**
      * @return the game participant using this delay factory
      */
-    GameParticipant getParticipant();
+    BWPlayer getPlayer();
 }

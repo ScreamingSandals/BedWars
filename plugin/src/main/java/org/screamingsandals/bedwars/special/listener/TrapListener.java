@@ -49,7 +49,7 @@ public class TrapListener {
         if (unhidden != null) {
             int classID = Integer.parseInt(unhidden.split(":")[2]);
 
-            for (var special : event.getGame().getActivedSpecialItems(TrapImpl.class)) {
+            for (var special : event.getGame().getActiveSpecialItems(TrapImpl.class)) {
                 TrapImpl trap = (TrapImpl) special;
                 if (System.identityHashCode(trap) == classID) {
                     trap.place(event.getBlock().getLocation());
@@ -63,7 +63,7 @@ public class TrapListener {
 
     @OnEvent
     public void onTrapBreak(PlayerBreakBlockEventImpl event) {
-        for (var special : event.getGame().getActivedSpecialItems(TrapImpl.class)) {
+        for (var special : event.getGame().getActiveSpecialItems(TrapImpl.class)) {
             TrapImpl trapBlock = (TrapImpl) special;
             var runningTeam = event.getTeam();
 
@@ -92,7 +92,7 @@ public class TrapListener {
         var gPlayer = PlayerManagerImpl.getInstance().getPlayer(player).orElseThrow();
         var game = gPlayer.getGame();
         if (game.getStatus() == GameStatus.RUNNING && !gPlayer.isSpectator) {
-            for (var special : game.getActivedSpecialItems(TrapImpl.class)) {
+            for (var special : game.getActiveSpecialItems(TrapImpl.class)) {
                 var trapBlock = (TrapImpl) special;
 
                 if (trapBlock.isPlaced()) {

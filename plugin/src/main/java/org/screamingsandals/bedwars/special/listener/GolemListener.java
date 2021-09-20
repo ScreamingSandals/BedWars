@@ -1,6 +1,5 @@
 package org.screamingsandals.bedwars.special.listener;
 
-import org.bukkit.World;
 import org.screamingsandals.bedwars.api.APIUtils;
 import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
 import org.screamingsandals.bedwars.api.game.GameStatus;
@@ -10,7 +9,7 @@ import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.bedwars.special.GolemImpl;
-import org.screamingsandals.bedwars.utils.DelayFactory;
+import org.screamingsandals.bedwars.utils.DelayFactoryImpl;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.bukkit.entity.IronGolem;
 import org.bukkit.entity.Player;
@@ -79,7 +78,7 @@ public class GolemListener {
                                 stack, location, speed, follow, health, name, showName);
 
                         if (delay > 0) {
-                            var delayFactory = new DelayFactory(delay, golem, gamePlayer, game);
+                            var delayFactory = new DelayFactoryImpl(delay, golem, gamePlayer, game);
                             game.registerDelay(delayFactory);
                         }
 
@@ -105,7 +104,7 @@ public class GolemListener {
         var ironGolem = event.getEntity();
         for (var game : GameManagerImpl.getInstance().getGames()) {
             if (game.getStatus() == GameStatus.RUNNING && ironGolem.getLocation().getWorld().equals(game.getGameWorld())) {
-                var golems = game.getActivedSpecialItems(GolemImpl.class);
+                var golems = game.getActiveSpecialItems(GolemImpl.class);
                 for (var item : golems) {
                     if (item instanceof GolemImpl) {
                         var golem = (GolemImpl) item;
@@ -148,7 +147,7 @@ public class GolemListener {
         var ironGolem = event.getEntity();
         for (var game : GameManagerImpl.getInstance().getGames()) {
             if ((game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) && ironGolem.getLocation().getWorld().equals(game.getGameWorld())) {
-                var golems = game.getActivedSpecialItems(GolemImpl.class);
+                var golems = game.getActiveSpecialItems(GolemImpl.class);
                 for (var item : golems) {
                     if (item instanceof GolemImpl) {
                         GolemImpl golem = (GolemImpl) item;
@@ -189,7 +188,7 @@ public class GolemListener {
         if (PlayerManagerImpl.getInstance().isPlayerInGame(event.getPlayer())) {
             var game = PlayerManagerImpl.getInstance().getGameOfPlayer(event.getPlayer()).orElseThrow();
 
-            var golems = game.getActivedSpecialItems(GolemImpl.class);
+            var golems = game.getActiveSpecialItems(GolemImpl.class);
             for (var item : golems) {
                 var golem = (GolemImpl) item;
                 var iron = golem.getEntity().as(IronGolem.class);
@@ -209,7 +208,7 @@ public class GolemListener {
         var ironGolem = event.getEntity();
         for (var game : GameManagerImpl.getInstance().getGames()) {
             if ((game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) && ironGolem.getLocation().getWorld().equals(game.getGameWorld())) {
-                var golems = game.getActivedSpecialItems(GolemImpl.class);
+                var golems = game.getActiveSpecialItems(GolemImpl.class);
                 for (var item : golems) {
                     if (item instanceof GolemImpl) {
                         GolemImpl golem = (GolemImpl) item;
