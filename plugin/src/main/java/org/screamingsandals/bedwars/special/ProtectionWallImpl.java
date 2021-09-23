@@ -2,7 +2,6 @@ package org.screamingsandals.bedwars.special;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.api.special.ProtectionWall;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.TeamImpl;
@@ -157,7 +156,7 @@ public class ProtectionWallImpl extends SpecialItem implements ProtectionWall<Ga
             } catch (Throwable e) {
                 player.getPlayerInventory().removeItem(item);
             }
-            player.as(Player.class).updateInventory();
+            player.forceUpdateInventory();
         } else {
             game.registerSpecialItem(this);
 
@@ -172,7 +171,7 @@ public class ProtectionWallImpl extends SpecialItem implements ProtectionWall<Ga
             } catch (Throwable e) {
                 player.getPlayerInventory().removeItem(item);
             }
-            player.as(Player.class).updateInventory();
+            player.forceUpdateInventory();
         }
     }
 }

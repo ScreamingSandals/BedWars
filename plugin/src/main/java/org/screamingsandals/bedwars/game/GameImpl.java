@@ -56,6 +56,7 @@ import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.bedwars.tab.TabManager;
 import org.screamingsandals.bedwars.utils.*;
 import org.screamingsandals.lib.block.BlockTypeHolder;
+import org.screamingsandals.lib.bukkit.utils.nms.Version;
 import org.screamingsandals.lib.entity.*;
 import org.screamingsandals.lib.entity.type.EntityTypeHolder;
 import org.screamingsandals.lib.event.EventManager;
@@ -211,7 +212,7 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
                 }
             }
 
-            if (BedWarsPlugin.getVersionNumber() >= 115) {
+            if (Version.isVersion(1, 15)) {
                 game.world.setGameRuleValue(GameRuleHolder.of("doImmediateRespawn"), true); // TODO: remove this
             }
 
@@ -796,7 +797,7 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
                             statistic.addDestroyedBeds(1);
                             statistic.addScore(MainConfig.getInstance().node("statistics", "scores", "bed-destroy").getInt(25));
                         }
-                        BedWarsPlugin.depositPlayer(destroyer, MainConfig.getInstance().node("vault", "reward", "bed-destroy").getInt());
+                        VaultUtils.getInstance().depositPlayer(destroyer, MainConfig.getInstance().node("vault", "reward", "bed-destroy").getInt());
 
                         dispatchRewardCommands("player-destroy-bed", destroyer,
                                 MainConfig.getInstance().node("statistics", "scores", "bed-destroy").getInt(25));
@@ -1826,7 +1827,7 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
                         team.start();
                     }
 
-                    if (BedWarsPlugin.getVersionNumber() >= 115 && !MainConfig.getInstance().node("allow-fake-death").getBoolean()) {
+                    if (Version.isVersion(1, 15) && !MainConfig.getInstance().node("allow-fake-death").getBoolean()) {
                         world.setGameRuleValue(GameRuleHolder.of("doImmediateRespawn"), true);
                     }
                     preparing = false;
@@ -1877,7 +1878,7 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
                                                 .placeholder("time", time)
                                                 .times(TitleUtils.defaultTimes())
                                                 .title(player);
-                                        BedWarsPlugin.depositPlayer(player, BedWarsPlugin.getVaultWinReward());
+                                        VaultUtils.getInstance().depositPlayer(player, BedWarsPlugin.getVaultWinReward());
 
                                         SpawnEffects.spawnEffect(this, player, "game-effects.end");
 

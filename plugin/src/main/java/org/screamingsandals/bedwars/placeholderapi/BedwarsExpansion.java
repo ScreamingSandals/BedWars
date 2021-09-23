@@ -2,7 +2,6 @@ package org.screamingsandals.bedwars.placeholderapi;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.api.game.GameStatus;
@@ -79,7 +78,7 @@ public class BedwarsExpansion extends PlaceholderExpansion {
             playerName = playerName.substring(0, index);
 
             var stats = PlayerStatisticManager.getInstance().getStatistic(
-                    PlayerMapper.wrapOfflinePlayer(Bukkit.getOfflinePlayer(playerName))
+                    PlayerMapper.getOfflinePlayer(playerName).orElse(null)
             );
 
             if (stats == null) {

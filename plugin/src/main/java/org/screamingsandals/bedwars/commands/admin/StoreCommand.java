@@ -4,7 +4,6 @@ import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
 import cloud.commandframework.arguments.standard.BooleanArgument;
 import cloud.commandframework.arguments.standard.StringArgument;
-import org.bukkit.ChatColor;
 import org.screamingsandals.bedwars.game.GameStoreImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.utils.ArenaUtils;
@@ -12,6 +11,7 @@ import org.screamingsandals.lib.entity.type.EntityTypeHolder;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
+import org.screamingsandals.lib.utils.AdventureHelper;
 import org.screamingsandals.lib.utils.annotations.Service;
 
 import java.util.List;
@@ -37,7 +37,7 @@ public class StoreCommand extends BaseAdminSubCommand {
                         .argument(BooleanArgument.optional("useParent"))
                         .handler(commandContext -> editMode(commandContext, (sender, game) -> {
                             var name = commandContext.<String>getOptional("name")
-                                    .map(s -> ChatColor.translateAlternateColorCodes('&', s));
+                                    .map(s -> AdventureHelper.translateAlternateColorCodes('&', s));
                             var file = commandContext.<String>getOptional("file");
                             boolean useParent = commandContext.getOrDefault("useParent", true);
                             var loc = sender.as(PlayerWrapper.class).getLocation();

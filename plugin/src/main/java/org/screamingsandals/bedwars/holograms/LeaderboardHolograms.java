@@ -1,7 +1,6 @@
 package org.screamingsandals.bedwars.holograms;
 
 import lombok.RequiredArgsConstructor;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.screamingsandals.bedwars.api.statistics.LeaderboardEntry;
@@ -173,9 +172,9 @@ public class LeaderboardHolograms {
         if (entries != null && !entries.isEmpty()) {
             var lines = new ArrayList<String>();
 
-            lines.add(ChatColor.translateAlternateColorCodes('&', mainConfig.node("holograms", "leaderboard", "headline").getString("")));
+            lines.add(AdventureHelper.translateAlternateColorCodes('&', mainConfig.node("holograms", "leaderboard", "headline").getString("")));
 
-            var line = ChatColor.translateAlternateColorCodes('&', mainConfig.node("holograms", "leaderboard", "format").getString(""));
+            var line = AdventureHelper.translateAlternateColorCodes('&', mainConfig.node("holograms", "leaderboard", "format").getString(""));
 
             var l = new AtomicInteger(1);
             entries.forEach(leaderboardEntry ->

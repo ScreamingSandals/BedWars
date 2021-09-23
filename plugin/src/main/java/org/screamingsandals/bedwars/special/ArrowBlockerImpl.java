@@ -2,7 +2,6 @@ package org.screamingsandals.bedwars.special;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.api.special.ArrowBlocker;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.TeamImpl;
@@ -62,7 +61,7 @@ public class ArrowBlockerImpl extends SpecialItem implements ArrowBlocker<GameIm
             } catch (Throwable e) {
                 player.getPlayerInventory().removeItem(item);
             }
-            player.as(Player.class).updateInventory();
+            player.forceUpdateInventory();
 
             MiscUtils.sendActionBarMessage(player, Message.of(LangKeys.SPECIALS_ARROW_BLOCKER_STARTED).placeholder("time", protectionTime));
         }

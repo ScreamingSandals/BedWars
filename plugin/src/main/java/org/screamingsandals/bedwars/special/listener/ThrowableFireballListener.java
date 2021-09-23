@@ -61,7 +61,7 @@ public class ThrowableFireballListener {
                     player.getPlayerInventory().removeItem(stack);
                 }
 
-                player.as(Player.class).updateInventory();
+                player.forceUpdateInventory();
             }
         }
     }

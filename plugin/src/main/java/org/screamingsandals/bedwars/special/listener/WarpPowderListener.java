@@ -1,6 +1,5 @@
 package org.screamingsandals.bedwars.special.listener;
 
-import org.bukkit.inventory.Inventory;
 import org.screamingsandals.bedwars.utils.ItemUtils;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.events.ApplyPropertyToBoughtItemEventImpl;
@@ -10,7 +9,6 @@ import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.bedwars.special.WarpPowderImpl;
 import org.screamingsandals.bedwars.utils.DelayFactoryImpl;
 import org.screamingsandals.bedwars.utils.MiscUtils;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.lib.entity.EntityHuman;
 import org.screamingsandals.lib.entity.EntityItem;
@@ -126,12 +124,12 @@ public class WarpPowderListener {
         if (warpPowder != null) {
             warpPowder.cancelTeleport(true, true);
 
-            if (player.getPlayerInventory().as(Inventory.class).firstEmpty() == -1 && !player.getPlayerInventory().contains(warpPowder.getItem())) {
+            if (player.getPlayerInventory().firstEmptySlot() == -1 && !player.getPlayerInventory().contains(warpPowder.getItem())) {
                 EntityItem.dropItem(warpPowder.getItem(), player.getLocation());
             } else {
                 player.getPlayerInventory().addItem(warpPowder.getItem());
             }
-            player.as(Player.class).updateInventory();
+            player.forceUpdateInventory();
         }
     }
 

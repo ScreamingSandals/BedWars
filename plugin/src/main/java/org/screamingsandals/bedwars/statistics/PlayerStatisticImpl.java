@@ -1,17 +1,15 @@
 package org.screamingsandals.bedwars.statistics;
 
-import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.screamingsandals.bedwars.api.statistics.PlayerStatistic;
 import org.screamingsandals.lib.player.PlayerMapper;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
-public class PlayerStatisticImpl implements ConfigurationSerializable, PlayerStatistic {
+public class PlayerStatisticImpl implements PlayerStatistic {
     private UUID uuid;
     private String name = "";
     private int deaths;
@@ -120,19 +118,6 @@ public class PlayerStatisticImpl implements ConfigurationSerializable, PlayerSta
         kd = Math.round(kd * 100.0) / 100.0;
 
         return kd;
-    }
-
-    @Override
-    public Map<String, Object> serialize() {
-        var playerStatistic = new HashMap<String, Object>();
-        playerStatistic.put("deaths", this.deaths);
-        playerStatistic.put("destroyedBeds", this.destroyedBeds);
-        playerStatistic.put("kills", this.kills);
-        playerStatistic.put("loses", this.loses);
-        playerStatistic.put("score", this.score);
-        playerStatistic.put("wins", this.wins);
-        playerStatistic.put("name", this.name);
-        return playerStatistic;
     }
 
     public void serializeTo(ConfigurationNode playerStatistic) {

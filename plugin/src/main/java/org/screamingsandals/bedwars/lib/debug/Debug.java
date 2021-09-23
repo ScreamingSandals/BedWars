@@ -1,6 +1,6 @@
 package org.screamingsandals.bedwars.lib.debug;
 
-import org.bukkit.ChatColor;
+import org.screamingsandals.lib.utils.AdventureHelper;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -54,11 +54,7 @@ public class Debug {
             return "";
         }
 
-        if (isBukkit()) {
-            return ChatColor.translateAlternateColorCodes('&', string);
-        } else {
-            return net.md_5.bungee.api.ChatColor.translateAlternateColorCodes('&', string);
-        }
+        return AdventureHelper.translateAlternateColorCodes('&', string);
     }
 
     private static void log(Level level, String message) {
@@ -67,15 +63,6 @@ public class Debug {
             logger.log(level, message);
         } else {
             Logger.getLogger(fallbackName).log(level, message);
-        }
-    }
-
-    private static boolean isBukkit() {
-        try {
-            Class.forName("org.bukkit.ChatColor");
-            return true;
-        } catch (ClassNotFoundException ignored) {
-            return false;
         }
     }
 }

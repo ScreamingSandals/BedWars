@@ -86,7 +86,7 @@ public class TNTSheepImpl extends SpecialItem implements TNTSheep<GameImpl, BedW
         } catch (Throwable e) {
             player.getPlayerInventory().removeItem(item);
         }
-        player.as(Player.class).updateInventory();
+        player.forceUpdateInventory();
 
         Tasker.build(() -> {
                 tnt.remove();

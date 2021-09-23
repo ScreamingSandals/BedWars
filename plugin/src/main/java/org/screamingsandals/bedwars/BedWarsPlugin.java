@@ -2,7 +2,6 @@ package org.screamingsandals.bedwars;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.event.Listener;
 import org.screamingsandals.bedwars.api.entities.EntitiesManager;
 import org.screamingsandals.bedwars.api.game.GameManager;
 import org.screamingsandals.bedwars.api.game.ItemSpawnerType;
@@ -13,11 +12,7 @@ import org.screamingsandals.bedwars.config.RecordSave;
 import org.screamingsandals.bedwars.entities.EntitiesManagerImpl;
 import org.screamingsandals.bedwars.game.*;
 import org.screamingsandals.bedwars.lang.BedWarsLangService;
-import org.screamingsandals.bedwars.lang.LangKeys;
-import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.screamingsandals.bedwars.api.BedwarsAPI;
 import org.screamingsandals.bedwars.database.DatabaseManager;
@@ -34,11 +29,10 @@ import org.screamingsandals.bedwars.tab.TabManager;
 import org.screamingsandals.bedwars.utils.*;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.lib.block.BlockTypeHolder;
+import org.screamingsandals.lib.bukkit.utils.nms.Version;
 import org.screamingsandals.lib.healthindicator.HealthIndicatorManager;
 import org.screamingsandals.lib.item.ItemTypeHolder;
-import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.player.PlayerMapper;
-import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.plugin.PluginContainer;
 import org.screamingsandals.lib.plugin.PluginManager;
 import org.screamingsandals.lib.plugin.ServiceManager;
@@ -99,7 +93,8 @@ import java.util.*;
         PlayerListener.class,
         NPCUtils.class,
         EntitiesManagerImpl.class,
-        ColorChangerImpl.class
+        ColorChangerImpl.class,
+        VaultUtils.class
 })
 public class BedWarsPlugin extends PluginContainer implements BedwarsAPI {
     private static BedWarsPlugin instance;
@@ -107,9 +102,6 @@ public class BedWarsPlugin extends PluginContainer implements BedwarsAPI {
     private String version;
     private boolean isDisabling = false;
     private boolean isLegacy;
-    private boolean isVault;
-    private int versionNumber = 0;
-    private Economy econ = null;
     private final HashMap<String, ItemSpawnerTypeImpl> spawnerTypes = new HashMap<>();
 
     public static BedWarsPlugin getInstance() {
@@ -120,29 +112,8 @@ public class BedWarsPlugin extends PluginContainer implements BedwarsAPI {
         return instance.version;
     }
 
-    public static boolean isVault() {
-        return instance.isVault;
-    }
-
     public static boolean isLegacy() {
         return instance.isLegacy;
-    }
-
-    public static void depositPlayer(PlayerWrapper player, double coins) {
-        try {
-            if (isVault() && MainConfig.getInstance().node("vault", "enabled").getBoolean()) {
-                var response = instance.econ.depositPlayer(player.as(Player.class), coins);
-                if (response.transactionSuccess()) {
-                    Message
-                            .of(LangKeys.IN_GAME_VAULT_DEPOSITE)
-                            .defaultPrefix()
-                            .placeholder("coins", coins)
-                            .placeholder("currency",  (coins == 1 ? instance.econ.currencyNameSingular() : instance.econ.currencyNamePlural()))
-                            .send(player);
-                }
-            }
-        } catch (Throwable ignored) {
-        }
     }
 
     public static int getVaultKillReward() {
@@ -221,11 +192,7 @@ public class BedWarsPlugin extends PluginContainer implements BedwarsAPI {
     }
 
     public static List<String> getAllSpawnerTypes() {
-        return new ArrayList<>(instance.spawnerTypes.keySet());
-    }
-
-    public static int getVersionNumber() {
-        return instance.versionNumber;
+        return List.copyOf(instance.spawnerTypes.keySet());
     }
 
     @Override
@@ -239,20 +206,7 @@ public class BedWarsPlugin extends PluginContainer implements BedwarsAPI {
     public void enable() {
         var snapshot = version.toLowerCase().contains("pre") || version.toLowerCase().contains("snapshot");
 
-        if (!PluginManager.isEnabled(PluginManager.createKey("Vault").orElseThrow())) {
-            isVault = false;
-        } else {
-            isVault = setupEconomy();
-        }
-
-        var bukkitVersion = Bukkit.getBukkitVersion().split("-")[0].split("\\.");
-        versionNumber = 0;
-
-        for (int i = 0; i < 2; i++) {
-            versionNumber += Integer.parseInt(bukkitVersion[i]) * (i == 0 ? 100 : 1);
-        }
-
-        isLegacy = versionNumber < 113;
+        isLegacy = !Version.isVersion(1, 13);
 
         Debug.init(getPluginDescription().getName());
         Debug.setDebug(MainConfig.getInstance().node("debug").getBoolean());
@@ -347,52 +301,19 @@ public class BedWarsPlugin extends PluginContainer implements BedwarsAPI {
                 )
         );
 
-        if (isVault) {
-            PlayerMapper.getConsoleSender().sendMessage(
-                    Component
-                            .text("[B")
-                            .color(NamedTextColor.RED)
-                            .append(
-                                    Component
-                                            .text("W] ")
-                                            .color(NamedTextColor.WHITE)
-                            )
-                            .append(
-                                    Component
-                                            .text("Found Vault")
-                                            .color(NamedTextColor.GOLD)
-                            ));
-        }
-
-        if (versionNumber < 109) {
-            PlayerMapper.getConsoleSender().sendMessage(
-                    Component
-                            .text("[B")
-                            .color(NamedTextColor.RED)
-                            .append(
-                                    Component
-                                            .text("W] ")
-                                            .color(NamedTextColor.WHITE)
-                            )
-                            .append(
-                                    Component
-                                            .text("IMPORTANT WARNING: You are using a version which is older than 1.9! This version is not officially supported and some features may not work at all! Update your server version to remove this message.")
-                                            .color(NamedTextColor.RED)
-                            ));
-        }
-
         try {
             // Fixing bugs created by third party plugin
 
             // PerWorldInventory
-            if (Bukkit.getPluginManager().isPluginEnabled("PerWorldInventory")) {
-                final var pwi = Bukkit.getPluginManager().getPlugin("PerWorldInventory");
+            var key = PluginManager.createKey("PerWorldInventory").orElseThrow();
+            if (PluginManager.isEnabled(key)) {
+                final var pwi = PluginManager.getPlatformClass(key).orElseThrow();
                 if (pwi.getClass().getName().equals("me.ebonjaeger.perworldinventory.PerWorldInventory")) {
                     // Kotlin version
-                    registerBedWarsListener(new PerWorldInventoryKotlinListener());
+                    Bukkit.getServer().getPluginManager().registerEvents(new PerWorldInventoryKotlinListener(), this.getPluginDescription().as(JavaPlugin.class));
                 } else {
                     // Legacy version
-                    registerBedWarsListener(new PerWorldInventoryLegacyListener());
+                    Bukkit.getServer().getPluginManager().registerEvents(new PerWorldInventoryLegacyListener(), this.getPluginDescription().as(JavaPlugin.class));
                 }
             }
 
@@ -407,21 +328,6 @@ public class BedWarsPlugin extends PluginContainer implements BedwarsAPI {
     @Override
     public void disable() {
         isDisabling = true;
-        Bukkit.getServer().getServicesManager().unregisterAll(this.getPluginDescription().as(JavaPlugin.class));
-    }
-
-    private boolean setupEconomy() {
-        var plugin = PluginManager.getPlugin(PluginManager.createKey("Vault").orElseThrow());
-        if (plugin.isEmpty()) {
-            return false;
-        }
-        RegisteredServiceProvider<Economy> rsp = Bukkit.getServer().getServicesManager().getRegistration(Economy.class);
-        if (rsp == null) {
-            return false;
-        }
-
-        econ = rsp.getProvider();
-        return true;
     }
 
     @Override
@@ -481,9 +387,5 @@ public class BedWarsPlugin extends PluginContainer implements BedwarsAPI {
 
     public static boolean isDisabling() {
         return instance.isDisabling;
-    }
-
-    public void registerBedWarsListener(Listener listener) {
-        Bukkit.getServer().getPluginManager().registerEvents(listener, this.getPluginDescription().as(JavaPlugin.class));
     }
 }

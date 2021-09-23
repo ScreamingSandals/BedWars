@@ -2,8 +2,6 @@ package org.screamingsandals.bedwars.special;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.screamingsandals.bedwars.api.special.WarpPowder;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.TeamImpl;
@@ -41,12 +39,12 @@ public class WarpPowderImpl extends SpecialItem implements WarpPowder<GameImpl, 
         if (unregisterSpecial) {
             game.unregisterSpecialItem(this);
         } else {
-            if (player.getPlayerInventory().as(Inventory.class).firstEmpty() == -1 && !player.getPlayerInventory().contains(item)) {
+            if (player.getPlayerInventory().firstEmptySlot() == -1 && !player.getPlayerInventory().contains(item)) {
                 EntityItem.dropItem(item, player.getLocation());
             } else {
                 player.getPlayerInventory().addItem(item);
             }
-            player.as(Player.class).updateInventory();
+            player.forceUpdateInventory();
         }
 
         if (showMessage) {
@@ -75,7 +73,7 @@ public class WarpPowderImpl extends SpecialItem implements WarpPowder<GameImpl, 
         } catch (Throwable e) {
             player.getPlayerInventory().removeItem(item);
         }
-        player.as(Player.class).updateInventory();
+        player.forceUpdateInventory();
 
         teleportingTask = Tasker.build(() -> {
                     if (teleportingTime == 0) {

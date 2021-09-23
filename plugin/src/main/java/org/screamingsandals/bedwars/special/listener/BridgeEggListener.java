@@ -1,6 +1,5 @@
 package org.screamingsandals.bedwars.special.listener;
 
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.bedwars.utils.ItemUtils;
 import org.screamingsandals.bedwars.api.game.GameStatus;
@@ -81,7 +80,7 @@ public class BridgeEggListener {
                         } catch (Throwable e) {
                             player.getPlayerInventory().removeItem(stack);
                         }
-                        player.as(Player.class).updateInventory();
+                        player.forceUpdateInventory();
                     } else {
                         event.setCancelled(true);
 

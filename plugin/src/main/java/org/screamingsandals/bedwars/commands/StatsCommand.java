@@ -2,7 +2,6 @@ package org.screamingsandals.bedwars.commands;
 
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
-import org.bukkit.Bukkit;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.statistics.PlayerStatisticImpl;
 import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
@@ -51,12 +50,12 @@ public class StatsCommand extends BaseCommand {
                                 } else {
                                     var name = playerName.get();
                                     // TODO: add this feature to PlayerMapper
-                                    var off = Bukkit.getServer().getPlayerExact(name);
+                                    var off = PlayerMapper.getPlayerExact(name);
 
-                                    if (off == null) {
+                                    if (off.isEmpty()) {
                                         sender.sendMessage(Message.of(LangKeys.STATISTICS_PLAYER_DOES_NOT_EXIST).defaultPrefix());
                                     } else {
-                                        var statistic = PlayerStatisticManager.getInstance().getStatistic(PlayerMapper.wrapOfflinePlayer(off));
+                                        var statistic = PlayerStatisticManager.getInstance().getStatistic(off.get());
                                         if (statistic == null) {
                                             sender.sendMessage(Message.of(LangKeys.STATISTICS_NOT_FOUND).defaultPrefix());
                                         } else {

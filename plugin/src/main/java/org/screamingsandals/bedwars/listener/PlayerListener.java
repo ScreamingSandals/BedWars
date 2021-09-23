@@ -191,9 +191,9 @@ public class PlayerListener {
                                     (float) MainConfig.getInstance().node("sounds", "player_kill", "volume").getDouble(),
                                     (float) MainConfig.getInstance().node("sounds", "player_kill", "pitch").getDouble());
                             if (!isBed) {
-                                BedWarsPlugin.depositPlayer(killer, MainConfig.getInstance().node("vault", "reward", "final-kill").getInt());
+                                VaultUtils.getInstance().depositPlayer(killer, MainConfig.getInstance().node("vault", "reward", "final-kill").getInt());
                             } else {
-                                BedWarsPlugin.depositPlayer(killer, BedWarsPlugin.getVaultKillReward());
+                                VaultUtils.getInstance().depositPlayer(killer, BedWarsPlugin.getVaultKillReward());
                             }
                         }
 
@@ -1145,7 +1145,7 @@ public class PlayerListener {
             format = format.replace("%displayName%", AdventureHelper.toLegacy(displayName));
             format = format.replace("%playerListName%", playerListName);
 
-            if (BedWarsPlugin.isVault()) {
+            if (VaultUtils.getInstance().isVault()) {
                 Chat chat = Bukkit.getServer().getServicesManager().load(Chat.class);
                 if (chat != null) {
                     format = format.replace("%prefix%", chat.getPlayerPrefix(player.as(Player.class)));
@@ -1156,7 +1156,7 @@ public class PlayerListener {
             format = format.replace("%prefix%", "");
             format = format.replace("%suffix%", "");
 
-            format = ChatColor.translateAlternateColorCodes('&', format);
+            format = AdventureHelper.translateAlternateColorCodes('&', format);
 
             boolean teamChat = MainConfig.getInstance().node("chat", "default-team-chat-while-running").getBoolean(true)
                     && game.getStatus() == GameStatus.RUNNING && (team != null || spectator);

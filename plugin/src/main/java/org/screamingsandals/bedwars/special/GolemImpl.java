@@ -2,7 +2,6 @@ package org.screamingsandals.bedwars.special;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import org.bukkit.entity.*;
 import org.screamingsandals.bedwars.api.special.Golem;
 import org.screamingsandals.bedwars.entities.EntitiesManagerImpl;
 import org.screamingsandals.bedwars.game.GameImpl;
@@ -81,6 +80,6 @@ public class GolemImpl extends SpecialItem implements Golem<GameImpl, BedWarsPla
             player.getPlayerInventory().removeItem(item);
         }
 
-        player.as(Player.class).updateInventory();
+        player.forceUpdateInventory();
     }
 }
