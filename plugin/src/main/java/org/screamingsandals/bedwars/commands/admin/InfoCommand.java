@@ -364,7 +364,7 @@ public class InfoCommand extends BaseAdminSubCommand {
                             Message
                                     .of(LangKeys.ADMIN_INFO_CONSTANT)
                                     .placeholder("constant", "arenaWeather")
-                                    .placeholder("value", game.getArenaWeather().name())
+                                    .placeholder("value", game.getArenaWeather().getPlatformName())
                                     .send(sender);
 
                             Message

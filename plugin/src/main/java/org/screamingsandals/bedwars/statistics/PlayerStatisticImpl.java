@@ -1,6 +1,7 @@
 package org.screamingsandals.bedwars.statistics;
 
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import org.screamingsandals.bedwars.api.statistics.PlayerStatistic;
 import org.screamingsandals.lib.player.PlayerMapper;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
@@ -10,7 +11,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
-public class PlayerStatistic implements ConfigurationSerializable, org.screamingsandals.bedwars.api.statistics.PlayerStatistic {
+public class PlayerStatisticImpl implements ConfigurationSerializable, PlayerStatistic {
     private UUID uuid;
     private String name = "";
     private int deaths;
@@ -20,7 +21,7 @@ public class PlayerStatistic implements ConfigurationSerializable, org.screaming
     private int score;
     private int wins;
 
-    public PlayerStatistic(UUID uuid) {
+    public PlayerStatisticImpl(UUID uuid) {
         this.uuid = uuid;
 
         PlayerMapper
@@ -28,7 +29,7 @@ public class PlayerStatistic implements ConfigurationSerializable, org.screaming
                 .ifPresent(playerWrapper -> this.name = playerWrapper.getName());
     }
 
-    public PlayerStatistic(Map<String, Object> deserialize) {
+    public PlayerStatisticImpl(Map<String, Object> deserialize) {
         if (deserialize.containsKey("deaths")) {
             this.deaths = (int) deserialize.get("deaths");
         }
@@ -55,7 +56,7 @@ public class PlayerStatistic implements ConfigurationSerializable, org.screaming
         }
     }
 
-    public PlayerStatistic(ConfigurationNode configurationNode) {
+    public PlayerStatisticImpl(ConfigurationNode configurationNode) {
         this.deaths = configurationNode.node("deaths").getInt();
         this.destroyedBeds = configurationNode.node("destroyedBeds").getInt();
         this.kills = configurationNode.node("kills").getInt();

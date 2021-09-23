@@ -1,6 +1,6 @@
 package org.screamingsandals.bedwars.special.listener;
 
-import org.screamingsandals.bedwars.api.APIUtils;
+import org.screamingsandals.bedwars.utils.ItemUtils;
 import org.screamingsandals.bedwars.api.special.SpecialItem;
 import org.screamingsandals.bedwars.events.ApplyPropertyToBoughtItemEventImpl;
 import org.screamingsandals.bedwars.events.PlayerBreakBlockEventImpl;
@@ -31,7 +31,7 @@ public class LuckyBlockAddonListener {
 
             var luckyBlockString = LUCKY_BLOCK_PREFIX + id;
 
-            APIUtils.hashIntoInvisibleString(stack, luckyBlockString);
+            ItemUtils.hashIntoInvisibleString(stack, luckyBlockString);
             event.setStack(stack);
         }
     }
@@ -43,7 +43,7 @@ public class LuckyBlockAddonListener {
         }
 
         var luckyItem = event.getItemInHand();
-        var invisible = APIUtils.unhashFromInvisibleStringStartsWith(luckyItem.as(ItemStack.class), LUCKY_BLOCK_PREFIX);
+        var invisible = ItemUtils.unhashFromInvisibleStringStartsWith(luckyItem.as(ItemStack.class), LUCKY_BLOCK_PREFIX);
         if (invisible != null) {
             var splitted = invisible.split(":");
             var classID = Integer.parseInt(splitted[2]);

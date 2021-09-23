@@ -1,6 +1,6 @@
 package org.screamingsandals.bedwars.special.listener;
 
-import org.screamingsandals.bedwars.api.APIUtils;
+import org.screamingsandals.bedwars.utils.ItemUtils;
 import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.events.ApplyPropertyToBoughtItemEventImpl;
@@ -29,7 +29,7 @@ public class TNTSheepListener {
     public void onTNTSheepRegistered(ApplyPropertyToBoughtItemEventImpl event) {
         if (event.getPropertyName().equalsIgnoreCase("tntsheep")) {
             var stack = event.getStack().as(ItemStack.class); // TODO: get rid of this transformation
-            APIUtils.hashIntoInvisibleString(stack, applyProperty(event));
+            ItemUtils.hashIntoInvisibleString(stack, applyProperty(event));
             event.setStack(stack);
         }
 
@@ -48,7 +48,7 @@ public class TNTSheepListener {
         if (event.getAction() == SPlayerInteractEvent.Action.RIGHT_CLICK_AIR || event.getAction() == SPlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
             if (game.getStatus() == GameStatus.RUNNING && !gamePlayer.isSpectator && event.getItem() != null) {
                 var stack = event.getItem();
-                String unhidden = APIUtils.unhashFromInvisibleStringStartsWith(stack.as(ItemStack.class), TNT_SHEEP_PREFIX);
+                String unhidden = ItemUtils.unhashFromInvisibleStringStartsWith(stack.as(ItemStack.class), TNT_SHEEP_PREFIX);
 
                 if (unhidden != null) {
                     event.setCancelled(true);

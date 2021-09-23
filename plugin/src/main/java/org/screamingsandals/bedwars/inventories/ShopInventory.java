@@ -46,7 +46,6 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
 
-// TODO: remake methods in this class so there won't be too many bukkit api calls
 @Service(dependsOn = {
         SimpleInventoriesCore.class
 })

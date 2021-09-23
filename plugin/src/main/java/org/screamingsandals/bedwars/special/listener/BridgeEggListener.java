@@ -2,7 +2,7 @@ package org.screamingsandals.bedwars.special.listener;
 
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.screamingsandals.bedwars.api.APIUtils;
+import org.screamingsandals.bedwars.utils.ItemUtils;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.events.ApplyPropertyToBoughtItemEventImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
@@ -32,7 +32,7 @@ public class BridgeEggListener {
     public void onEggRegistration(ApplyPropertyToBoughtItemEventImpl event) {
         if (event.getPropertyName().equalsIgnoreCase("bridgeegg")) {
             var stack = event.getStack().as(ItemStack.class); // TODO: get rid of this transformation
-            APIUtils.hashIntoInvisibleString(stack, this.applyProperty(event));
+            ItemUtils.hashIntoInvisibleString(stack, this.applyProperty(event));
             event.setStack(stack);
         }
     }
@@ -49,7 +49,7 @@ public class BridgeEggListener {
         if (event.getAction() == SPlayerInteractEvent.Action.RIGHT_CLICK_AIR || event.getAction() == SPlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
             if (game.getStatus() == GameStatus.RUNNING && !gamePlayer.isSpectator && event.getItem() != null) {
                 var stack = event.getItem();
-                String unhidden = APIUtils.unhashFromInvisibleStringStartsWith(stack.as(ItemStack.class), BRIDGE_EGG_PREFIX); // TODO: get rid of this transformation
+                String unhidden = ItemUtils.unhashFromInvisibleStringStartsWith(stack.as(ItemStack.class), BRIDGE_EGG_PREFIX); // TODO: get rid of this transformation
                 if (unhidden != null) {
                     if (!game.isDelayActive(gamePlayer, BridgeEggImpl.class)) {
                         event.setCancelled(true);

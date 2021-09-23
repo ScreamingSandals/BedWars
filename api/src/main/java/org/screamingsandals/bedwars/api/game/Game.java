@@ -1,6 +1,5 @@
 package org.screamingsandals.bedwars.api.game;
 
-import org.bukkit.WeatherType;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.ApiStatus;
 import org.screamingsandals.bedwars.api.ArenaTime;
@@ -376,7 +375,7 @@ public interface Game<P extends BWPlayer, T extends Team<?, ?, ?, ?, ?>, B exten
     /**
      * @return
      */
-	WeatherType getArenaWeather();
+	Wrapper getArenaWeather();
 
     /**
      * @return

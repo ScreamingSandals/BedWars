@@ -3,7 +3,7 @@ package org.screamingsandals.bedwars.special.listener;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.screamingsandals.bedwars.api.APIUtils;
+import org.screamingsandals.bedwars.utils.ItemUtils;
 import org.screamingsandals.bedwars.entities.EntitiesManagerImpl;
 import org.screamingsandals.bedwars.events.ApplyPropertyToBoughtItemEventImpl;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
@@ -23,7 +23,7 @@ public class ThrowableFireballListener {
         if (event.getPropertyName().equalsIgnoreCase("throwablefireball")) {
             var stack = event.getStack().as(ItemStack.class); // TODO: get rid of this transformation
 
-            APIUtils.hashIntoInvisibleString(stack, applyProperty(event));
+            ItemUtils.hashIntoInvisibleString(stack, applyProperty(event));
             event.setStack(stack);
         }
     }
@@ -38,7 +38,7 @@ public class ThrowableFireballListener {
 
         if (event.getItem() != null) {
             var stack = event.getItem();
-            var unhash = APIUtils.unhashFromInvisibleStringStartsWith(stack.as(ItemStack.class), THROWABLE_FIREBALL_PREFIX);
+            var unhash = ItemUtils.unhashFromInvisibleStringStartsWith(stack.as(ItemStack.class), THROWABLE_FIREBALL_PREFIX);
             if (unhash != null && (event.getAction() == SPlayerInteractEvent.Action.RIGHT_CLICK_BLOCK || event.getAction() == SPlayerInteractEvent.Action.RIGHT_CLICK_AIR)) {
                 var properties = unhash.split(":");
                 var explosion = (float) Double.parseDouble(properties[2]);

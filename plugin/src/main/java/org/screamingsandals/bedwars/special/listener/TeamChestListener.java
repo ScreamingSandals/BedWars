@@ -1,6 +1,6 @@
 package org.screamingsandals.bedwars.special.listener;
 
-import org.screamingsandals.bedwars.api.APIUtils;
+import org.screamingsandals.bedwars.utils.ItemUtils;
 import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.events.ApplyPropertyToBoughtItemEventImpl;
@@ -23,7 +23,7 @@ public class TeamChestListener {
         if (event.getPropertyName().equalsIgnoreCase("teamchest")) {
             var stack = event.getStack().as(ItemStack.class); // TODO: get rid of this transformation
 
-            APIUtils.hashIntoInvisibleString(stack, TEAM_CHEST_PREFIX);
+            ItemUtils.hashIntoInvisibleString(stack, TEAM_CHEST_PREFIX);
             event.setStack(stack);
         }
     }
@@ -41,7 +41,7 @@ public class TeamChestListener {
             return;
         }
 
-        String unhidden = APIUtils.unhashFromInvisibleStringStartsWith(event.getItemInHand().as(ItemStack.class), TEAM_CHEST_PREFIX);
+        String unhidden = ItemUtils.unhashFromInvisibleStringStartsWith(event.getItemInHand().as(ItemStack.class), TEAM_CHEST_PREFIX);
 
         if (unhidden != null || MainConfig.getInstance().node("specials", "teamchest", "turn-all-enderchests-to-teamchests").getBoolean()) {
             team.addTeamChest(block.getLocation());

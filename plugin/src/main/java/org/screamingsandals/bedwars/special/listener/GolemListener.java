@@ -1,6 +1,6 @@
 package org.screamingsandals.bedwars.special.listener;
 
-import org.screamingsandals.bedwars.api.APIUtils;
+import org.screamingsandals.bedwars.utils.ItemUtils;
 import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.events.ApplyPropertyToBoughtItemEventImpl;
@@ -35,7 +35,7 @@ public class GolemListener {
     public void onGolemRegister(ApplyPropertyToBoughtItemEventImpl event) {
         if (event.getPropertyName().equalsIgnoreCase("golem")) {
             var stack = event.getStack().as(ItemStack.class); // TODO: get rid of this transformation
-            APIUtils.hashIntoInvisibleString(stack, applyProperty(event));
+            ItemUtils.hashIntoInvisibleString(stack, applyProperty(event));
             event.setStack(stack);
         }
     }
@@ -53,7 +53,7 @@ public class GolemListener {
         if (event.getAction() == SPlayerInteractEvent.Action.RIGHT_CLICK_AIR || event.getAction() == SPlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
             if (game.getStatus() == GameStatus.RUNNING && !gamePlayer.isSpectator && event.getItem() != null) {
                 var stack = event.getItem();
-                var unhidden = APIUtils.unhashFromInvisibleStringStartsWith(stack.as(ItemStack.class), GOLEM_PREFIX);
+                var unhidden = ItemUtils.unhashFromInvisibleStringStartsWith(stack.as(ItemStack.class), GOLEM_PREFIX);
 
                 if (unhidden != null) {
                     if (!game.isDelayActive(gamePlayer, GolemImpl.class)) {

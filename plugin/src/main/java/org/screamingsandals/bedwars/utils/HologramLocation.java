@@ -3,11 +3,9 @@ package org.screamingsandals.bedwars.utils;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.screamingsandals.lib.bukkit.world.BukkitWorldHolder;
 import org.screamingsandals.lib.utils.Wrapper;
 import org.screamingsandals.lib.world.LocationHolder;
+import org.screamingsandals.lib.world.LocationMapper;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
 @Data
@@ -30,12 +28,9 @@ public class HologramLocation implements Wrapper {
     @SuppressWarnings("unchecked")
     @Override
     public <T> T as(Class<T> type) {
-        if (type == Location.class) {
-            return (T) new Location(Bukkit.getWorld(world), x, y, z);
-        }
         if (type == LocationHolder.class) {
             var holder = new LocationHolder(x, y, z);
-            holder.setWorld(new BukkitWorldHolder(Bukkit.getWorld(world)));
+            holder.setWorld(LocationMapper.getWorld(world).orElseThrow());
             return (T) holder;
         }
         throw new UnsupportedOperationException("Unsupported type!");

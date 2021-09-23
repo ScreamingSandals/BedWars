@@ -3,13 +3,12 @@ package org.screamingsandals.bedwars.commands.admin;
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
 import cloud.commandframework.arguments.standard.StringArgument;
-import org.bukkit.WeatherType;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
 import org.screamingsandals.lib.utils.annotations.Service;
+import org.screamingsandals.lib.world.weather.WeatherHolder;
 
-import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -26,7 +25,7 @@ public class ArenaWeatherCommand extends BaseAdminSubCommand {
                         .argument(StringArgument
                                 .<CommandSenderWrapper>newBuilder("arenaWeather")
                                 .withSuggestionsProvider((c, s) ->
-                                        Stream.concat(Arrays.stream(WeatherType.values()).map(WeatherType::name), Stream.of("default")).collect(Collectors.toList())
+                                        Stream.concat(WeatherHolder.all().stream().map(WeatherHolder::getPlatformName), Stream.of("default")).collect(Collectors.toList())
                                 )
                             )
                         .handler(commandContext -> editMode(commandContext, (sender, game) -> {
@@ -34,10 +33,10 @@ public class ArenaWeatherCommand extends BaseAdminSubCommand {
 
                             if (!arenaWeather.equalsIgnoreCase("default")) {
                                 try {
-                                    var weatherType = WeatherType.valueOf(arenaWeather.toUpperCase());
+                                    var weatherType = WeatherHolder.of(arenaWeather);
                                     game.setArenaWeather(weatherType);
 
-                                    sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_WEATHER_SET).defaultPrefix().placeholder("weather", weatherType.name()));
+                                    sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_WEATHER_SET).defaultPrefix().placeholder("weather", weatherType.getPlatformName()));
                                 } catch (Exception e) {
                                     sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_INVALID_ARENA_WEATHER).defaultPrefix());
                                 }

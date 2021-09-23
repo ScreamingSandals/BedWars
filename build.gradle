@@ -39,10 +39,6 @@ subprojects {
         maven { url 'https://repo.alessiodp.com/releases/'  }
         maven { url 'https://jitpack.io' }
     }
-    
-    dependencies {
-    	compileOnly paperLegacy(PAPER_VERSION)
-    }
 
     shadowJar {
         relocate 'com.zaxxer', 'org.screamingsandals.bedwars.lib.HikariCP'

@@ -37,7 +37,7 @@ public class PlayerStatisticManager implements PlayerStatisticsManager<OfflinePl
 
     private ConfigurationNode fileDatabase;
     private StatisticType statisticType;
-    private final Map<UUID, PlayerStatistic> playerStatistic = new HashMap<>();
+    private final Map<UUID, PlayerStatisticImpl> playerStatistic = new HashMap<>();
     private final Map<UUID, Integer> allScores = new HashMap<>();
 
     @ShouldRunControllable
@@ -52,7 +52,7 @@ public class PlayerStatisticManager implements PlayerStatisticsManager<OfflinePl
         return ServiceManager.get(PlayerStatisticManager.class);
     }
 
-    public PlayerStatistic getStatistic(OfflinePlayerWrapper player) {
+    public PlayerStatisticImpl getStatistic(OfflinePlayerWrapper player) {
         if (player == null) {
             return null;
         }
@@ -146,7 +146,7 @@ public class PlayerStatisticManager implements PlayerStatisticsManager<OfflinePl
                 .collect(Collectors.toList());
     }
 
-    private PlayerStatistic loadDatabaseStatistic(UUID uuid) {
+    private PlayerStatisticImpl loadDatabaseStatistic(UUID uuid) {
         if (this.playerStatistic.containsKey(uuid)) {
             return this.playerStatistic.get(uuid);
         }
@@ -173,12 +173,12 @@ public class PlayerStatisticManager implements PlayerStatisticsManager<OfflinePl
             e.printStackTrace();
         }
 
-        PlayerStatistic playerStatistic;
+        PlayerStatisticImpl playerStatistic;
 
         if (deserialize.isEmpty()) {
-            playerStatistic = new PlayerStatistic(uuid);
+            playerStatistic = new PlayerStatisticImpl(uuid);
         } else {
-            playerStatistic = new PlayerStatistic(deserialize);
+            playerStatistic = new PlayerStatisticImpl(deserialize);
         }
 
         PlayerMapper
@@ -191,7 +191,7 @@ public class PlayerStatisticManager implements PlayerStatisticsManager<OfflinePl
         return playerStatistic;
     }
 
-    public PlayerStatistic loadStatistic(UUID uuid) {
+    public PlayerStatisticImpl loadStatistic(UUID uuid) {
         if (statisticType == StatisticType.DATABASE) {
             return this.loadDatabaseStatistic(uuid);
         } else {
@@ -199,15 +199,15 @@ public class PlayerStatisticManager implements PlayerStatisticsManager<OfflinePl
         }
     }
 
-    private PlayerStatistic loadYamlStatistic(UUID uuid) {
+    private PlayerStatisticImpl loadYamlStatistic(UUID uuid) {
         if (this.fileDatabase == null || this.fileDatabase.node("data", uuid.toString()).empty()) {
-            var playerStatistic = new PlayerStatistic(uuid);
+            var playerStatistic = new PlayerStatisticImpl(uuid);
             this.playerStatistic.put(uuid, playerStatistic);
             return playerStatistic;
         }
 
         var node = this.fileDatabase.node("data", uuid.toString());
-        var playerStatistic = new PlayerStatistic(node);
+        var playerStatistic = new PlayerStatisticImpl(node);
         playerStatistic.setId(uuid);
         PlayerMapper
                 .getPlayer(uuid)
@@ -229,7 +229,7 @@ public class PlayerStatisticManager implements PlayerStatisticsManager<OfflinePl
         }
     }
 
-    private void storeDatabaseStatistic(PlayerStatistic playerStatistic) {
+    private void storeDatabaseStatistic(PlayerStatisticImpl playerStatistic) {
         try (var connection = databaseManager.getConnection()) {
             connection.setAutoCommit(false);
 
@@ -253,7 +253,7 @@ public class PlayerStatisticManager implements PlayerStatisticsManager<OfflinePl
 
     }
 
-    public void storeStatistic(PlayerStatistic statistic) {
+    public void storeStatistic(PlayerStatisticImpl statistic) {
         var savePlayerStatisticEvent = new SavePlayerStatisticEventImpl(statistic);
         EventManager.fire(savePlayerStatisticEvent);
 
@@ -268,7 +268,7 @@ public class PlayerStatisticManager implements PlayerStatisticsManager<OfflinePl
         }
     }
 
-    private synchronized void storeYamlStatistic(PlayerStatistic statistic) {
+    private synchronized void storeYamlStatistic(PlayerStatisticImpl statistic) {
         var node = this.fileDatabase.node("data", statistic.getId().toString());
         statistic.serializeTo(node);
         try {
@@ -284,7 +284,7 @@ public class PlayerStatisticManager implements PlayerStatisticsManager<OfflinePl
         }
     }
 
-    public void updateScore(PlayerStatistic playerStatistic) {
+    public void updateScore(PlayerStatisticImpl playerStatistic) {
         allScores.put(playerStatistic.getId(), playerStatistic.getScore());
         if (LeaderboardHolograms.isEnabled()) {
             LeaderboardHolograms.getInstance().updateEntries();

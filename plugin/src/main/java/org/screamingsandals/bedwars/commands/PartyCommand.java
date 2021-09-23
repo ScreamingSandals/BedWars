@@ -9,7 +9,6 @@ import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.lib.lang.Message;
-import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
 import org.screamingsandals.lib.utils.annotations.Service;
@@ -66,7 +65,7 @@ public class PartyCommand extends BaseCommand {
                                 return;
                             }
 
-                            final var players = MiscUtils.getOnlinePlayersW(party.getMembers());
+                            final var players = MiscUtils.getOnlinePlayers(party.getMembers());
 
                             if (players.size() == 1) {
                                 sender.sendMessage(Message.of(LangKeys.PARTY_COMMAND_IS_EMPTY).defaultPrefix());

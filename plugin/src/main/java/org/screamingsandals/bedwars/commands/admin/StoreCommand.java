@@ -5,7 +5,6 @@ import cloud.commandframework.CommandManager;
 import cloud.commandframework.arguments.standard.BooleanArgument;
 import cloud.commandframework.arguments.standard.StringArgument;
 import org.bukkit.ChatColor;
-import org.bukkit.entity.EntityType;
 import org.screamingsandals.bedwars.game.GameStoreImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.utils.ArenaUtils;
@@ -15,7 +14,6 @@ import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
 import org.screamingsandals.lib.utils.annotations.Service;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -171,7 +169,7 @@ public class StoreCommand extends BaseAdminSubCommand {
                         .literal("type")
                         .argument(StringArgument
                                 .<CommandSenderWrapper>newBuilder("type")
-                                .withSuggestionsProvider((c, s) -> Arrays.stream(EntityType.values()).map(EntityType::name).collect(Collectors.toList()))
+                                .withSuggestionsProvider((c, s) -> EntityTypeHolder.all().stream().map(EntityTypeHolder::getPlatformName).collect(Collectors.toList()))
                         )
                         .handler(commandContext -> editMode(commandContext, (sender, game) -> {
                             String type = commandContext.get("type");

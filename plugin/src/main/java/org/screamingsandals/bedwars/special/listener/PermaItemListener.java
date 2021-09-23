@@ -2,7 +2,7 @@ package org.screamingsandals.bedwars.special.listener;
 
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.screamingsandals.bedwars.api.APIUtils;
+import org.screamingsandals.bedwars.utils.ItemUtils;
 import org.screamingsandals.bedwars.events.ApplyPropertyToBoughtItemEventImpl;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
@@ -38,7 +38,7 @@ public class PermaItemListener {
                     return;
                 }
 
-                APIUtils.hashIntoInvisibleString(stack, PERMA_ITEM_PREFIX);
+                ItemUtils.hashIntoInvisibleString(stack, PERMA_ITEM_PREFIX);
                 gamePlayer.addPermaItem(event.getStack());
                 event.setStack(stack);
             }
@@ -66,11 +66,11 @@ public class PermaItemListener {
         String slotItemUnhashedProp = null;
 
         if (cursorItem != null) {
-            cursorItemUnhashedProp = APIUtils.unhashFromInvisibleStringStartsWith(cursorItem.as(ItemStack.class), PERMA_ITEM_PREFIX);
+            cursorItemUnhashedProp = ItemUtils.unhashFromInvisibleStringStartsWith(cursorItem.as(ItemStack.class), PERMA_ITEM_PREFIX);
         }
 
         if (slotItem != null) {
-            slotItemUnhashedProp = APIUtils.unhashFromInvisibleStringStartsWith(slotItem.as(ItemStack.class), PERMA_ITEM_PREFIX);
+            slotItemUnhashedProp = ItemUtils.unhashFromInvisibleStringStartsWith(slotItem.as(ItemStack.class), PERMA_ITEM_PREFIX);
         }
 
         if ((cursorItemUnhashedProp != null || slotItemUnhashedProp != null) && blockedInventoryActions.contains(action)) {
@@ -86,7 +86,7 @@ public class PermaItemListener {
         }
         
         var droppedItem = event.getItemDrop().getItem();
-        var unhashedProperty = APIUtils.unhashFromInvisibleStringStartsWith(droppedItem.as(ItemStack.class), PERMA_ITEM_PREFIX);
+        var unhashedProperty = ItemUtils.unhashFromInvisibleStringStartsWith(droppedItem.as(ItemStack.class), PERMA_ITEM_PREFIX);
         if (unhashedProperty != null) {
             event.setCancelled(true);
         }

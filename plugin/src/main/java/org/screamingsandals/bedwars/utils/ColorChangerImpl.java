@@ -5,7 +5,9 @@ import org.screamingsandals.bedwars.api.utils.ColorChanger;
 import org.screamingsandals.bedwars.game.TeamColorImpl;
 import org.screamingsandals.lib.item.Item;
 import org.screamingsandals.lib.item.builder.ItemFactory;
+import org.screamingsandals.lib.utils.annotations.Service;
 
+@Service
 public class ColorChangerImpl implements ColorChanger<Item> {
     @Override
     public Item applyColor(TeamColor apiColor, Object item) {

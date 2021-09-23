@@ -7,7 +7,6 @@ import org.screamingsandals.bedwars.api.game.ItemSpawnerType;
 import org.screamingsandals.bedwars.api.player.PlayerManager;
 import org.screamingsandals.bedwars.api.statistics.PlayerStatisticsManager;
 import org.screamingsandals.bedwars.api.utils.ColorChanger;
-import org.bukkit.Bukkit;
 import org.screamingsandals.bedwars.api.utils.EventUtils;
 import org.screamingsandals.lib.utils.Wrapper;
 
@@ -80,6 +79,18 @@ public interface BedwarsAPI extends Wrapper {
      * @return Bedwars instance
      */
     static BedwarsAPI getInstance() {
-        return Bukkit.getServicesManager().getRegistration(BedwarsAPI.class).getProvider();
+        return Internal.bedwarsAPI;
+    }
+
+    @ApiStatus.Internal
+    class Internal {
+        protected static BedwarsAPI bedwarsAPI;
+
+        public static void setBedWarsAPI(BedwarsAPI bedwarsAPI) {
+            if (Internal.bedwarsAPI != null) {
+                throw new UnsupportedOperationException("Already initialized!");
+            }
+            Internal.bedwarsAPI = bedwarsAPI;
+        }
     }
 }

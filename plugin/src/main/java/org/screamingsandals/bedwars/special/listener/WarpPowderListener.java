@@ -1,7 +1,7 @@
 package org.screamingsandals.bedwars.special.listener;
 
 import org.bukkit.inventory.Inventory;
-import org.screamingsandals.bedwars.api.APIUtils;
+import org.screamingsandals.bedwars.utils.ItemUtils;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.events.ApplyPropertyToBoughtItemEventImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
@@ -30,7 +30,7 @@ public class WarpPowderListener {
     public void onPowderItemRegister(ApplyPropertyToBoughtItemEventImpl event) {
         if (event.getPropertyName().equalsIgnoreCase("warppowder")) {
             var stack = event.getStack().as(ItemStack.class); // TODO: get rid of this transformation
-            APIUtils.hashIntoInvisibleString(stack, applyProperty(event));
+            ItemUtils.hashIntoInvisibleString(stack, applyProperty(event));
             event.setStack(stack);
         }
     }
@@ -48,7 +48,7 @@ public class WarpPowderListener {
             if (game.getStatus() == GameStatus.RUNNING && !gPlayer.isSpectator) {
                 if (event.getItem() != null) {
                     var stack = event.getItem();
-                    var unhidden = APIUtils.unhashFromInvisibleStringStartsWith(stack.as(ItemStack.class), WARP_POWDER_PREFIX);
+                    var unhidden = ItemUtils.unhashFromInvisibleStringStartsWith(stack.as(ItemStack.class), WARP_POWDER_PREFIX);
 
                     if (unhidden != null) {
                         event.setCancelled(true);

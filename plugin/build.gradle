@@ -11,6 +11,7 @@ ScreamingLibBuilder()
 
 dependencies {
     /* PROVIDED */
+    compileOnly paperLegacy(PAPER_VERSION)
     compileOnly vault(VAULT_VERSION)
     compileOnly 'com.onarandombox.multiversecore:Multiverse-Core:' + MULTIVERSE_VERSION
     compileOnly('me.ebonjaeger:perworldinventory-kt:' + PERWORLDINVENTORY_KT_VERSION)  {

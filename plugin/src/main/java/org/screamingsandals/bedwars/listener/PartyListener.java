@@ -46,7 +46,7 @@ public class PartyListener {
                 if (leaderUUID != null) {
                     //Player who joined is party leader
                     if (leaderUUID.equals(player.getUuid())) {
-                        final var players = MiscUtils.getOnlinePlayersW(party.getMembers());
+                        final var players = MiscUtils.getOnlinePlayers(party.getMembers());
 
                         if (players.size() > 1) {
                             players.forEach(partyMember -> {

@@ -4,7 +4,7 @@ import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
 import org.bukkit.Bukkit;
 import org.screamingsandals.bedwars.lang.LangKeys;
-import org.screamingsandals.bedwars.statistics.PlayerStatistic;
+import org.screamingsandals.bedwars.statistics.PlayerStatisticImpl;
 import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.player.OfflinePlayerWrapper;
@@ -79,7 +79,7 @@ public class StatsCommand extends BaseCommand {
         );
     }
 
-    public static void sendStats(CommandSenderWrapper sender, PlayerStatistic statistic) {
+    public static void sendStats(CommandSenderWrapper sender, PlayerStatisticImpl statistic) {
         Message
                 .of(LangKeys.STATISTICS_HEADER)
                 .join(LangKeys.STATISTICS_KILLS)

@@ -84,6 +84,7 @@ import org.screamingsandals.lib.world.WorldHolder;
 import org.screamingsandals.lib.world.chunk.ChunkHolder;
 import org.screamingsandals.lib.block.state.BlockStateHolder;
 import org.screamingsandals.lib.world.gamerule.GameRuleHolder;
+import org.screamingsandals.lib.world.weather.WeatherHolder;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
@@ -112,7 +113,7 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
     private WorldHolder world;
     private List<GameStoreImpl> gameStore = new ArrayList<>();
     private ArenaTime arenaTime = ArenaTime.WORLD;
-    private WeatherType arenaWeather = null;
+    private WeatherHolder arenaWeather = null;
     private BossBar.Color lobbyBossBarColor = null;
     private BossBar.Color gameBossBarColor = null;
     private String customPrefix = null;
@@ -365,9 +366,12 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
     }
 
 
-    public static WeatherType loadWeather(String weather) {
+    public static WeatherHolder loadWeather(String weather) {
         try {
-            return WeatherType.valueOf(weather);
+            if ("default".equalsIgnoreCase(weather)) {
+                return null;
+            }
+            return WeatherHolder.ofOptional(weather).orElse(null);
         } catch (Exception e) {
             return null;
         }
@@ -833,7 +837,7 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
         }
 
         if (arenaWeather != null) {
-            gamePlayer.as(Player.class).setPlayerWeather(arenaWeather); // TODO: remove transformation
+            gamePlayer.setPlayerWeather(arenaWeather); // TODO: remove transformation
         }
 
         if (TabManager.isEnabled()) {
@@ -1147,7 +1151,7 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
         configMap.node("constant").from(configurationContainer.getSaved());
 
         configMap.node("arenaTime").set(arenaTime.name());
-        configMap.node("arenaWeather").set(arenaWeather == null ? "default" : arenaWeather.name());
+        configMap.node("arenaWeather").set(arenaWeather == null ? "default" : arenaWeather.getPlatformName());
 
         try {
             configMap.node("lobbyBossBarColor").set(lobbyBossBarColor == null ? "default" : lobbyBossBarColor.name());
@@ -2685,11 +2689,11 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
     }
 
     @Override
-    public WeatherType getArenaWeather() {
+    public WeatherHolder getArenaWeather() {
         return arenaWeather;
     }
 
-    public void setArenaWeather(WeatherType arenaWeather) {
+    public void setArenaWeather(WeatherHolder arenaWeather) {
         this.arenaWeather = arenaWeather;
     }
 

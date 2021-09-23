@@ -5,15 +5,14 @@ import org.bukkit.ChatColor;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+@Deprecated
 public class Debug {
     private static Logger logger;
-    private static Logger aLogger;
     private static boolean isDebug = false;
     private static String fallbackName = "Fallback";
 
     public static void init(String pluginName) {
         logger = Logger.getLogger(pluginName);
-        aLogger = Logger.getAnonymousLogger();
     }
 
     public static void info(String debug) {
@@ -25,18 +24,6 @@ public class Debug {
     public static void info(String debug, boolean forceDebug) {
         if (isDebug || forceDebug) {
             log(Level.INFO, translateColor(debug));
-        }
-    }
-
-    public static void infoA(String prefix, String debug) {
-        if (isDebug) {
-            aLog(Level.INFO, translateColor(prefix) + " " + translateColor(debug));
-        }
-    }
-
-    public static void infoA(String prefix, String debug, boolean forceDebug) {
-        if (isDebug || forceDebug) {
-            aLog(Level.INFO, translateColor(prefix) + " " + translateColor(debug));
         }
     }
 
@@ -52,18 +39,6 @@ public class Debug {
         }
     }
 
-    public static void warnA(String prefix, String debug) {
-        if (isDebug) {
-            aLog(Level.WARNING, translateColor(prefix) + "> " + translateColor(debug));
-        }
-    }
-
-    public static void warnA(String prefix, String debug, boolean forceDebug) {
-        if (isDebug || forceDebug) {
-            aLog(Level.WARNING, translateColor(prefix) + "> " + translateColor(debug));
-        }
-    }
-
     public static void debug(String debug, Level level, boolean forceDebug) {
         if (isDebug || forceDebug) {
             log(level, translateColor(debug));
@@ -72,10 +47,6 @@ public class Debug {
 
     public static void setDebug(boolean debug) {
         isDebug = debug;
-    }
-
-    public static void setFallbackName(String name) {
-        fallbackName = name;
     }
 
     private static String translateColor(String string) {
@@ -96,14 +67,6 @@ public class Debug {
             logger.log(level, message);
         } else {
             Logger.getLogger(fallbackName).log(level, message);
-        }
-    }
-
-    private static void aLog(Level level, String message) {
-        if (aLogger != null) {
-            aLogger.log(level, message);
-        } else {
-            Logger.getAnonymousLogger(fallbackName).log(level, message);
         }
     }
 

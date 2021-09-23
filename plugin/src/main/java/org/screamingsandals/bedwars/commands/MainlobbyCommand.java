@@ -2,11 +2,11 @@ package org.screamingsandals.bedwars.commands;
 
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
-import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.lib.lang.Message;
+import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
 import org.screamingsandals.lib.utils.annotations.Service;
 import org.spongepowered.configurate.serialize.SerializationException;
@@ -45,7 +45,7 @@ public class MainlobbyCommand extends BaseCommand {
                             e.printStackTrace();
                         }
                     } else if (action.contains("set")) {
-                        var location = sender.as(Player.class).getLocation();
+                        var location = sender.as(PlayerWrapper.class).getLocation();
 
                         try {
                             MainConfig.getInstance().node("mainlobby", "location").set(MiscUtils.setLocationToString(location));

@@ -2,8 +2,6 @@ package org.screamingsandals.bedwars.game;
 
 import lombok.Data;
 import lombok.Getter;
-import org.bukkit.Chunk;
-import org.bukkit.Location;
 import org.bukkit.entity.*;
 import org.screamingsandals.bedwars.api.game.GameStore;
 import org.screamingsandals.bedwars.config.MainConfig;
@@ -97,7 +95,7 @@ public class GameStoreImpl implements GameStore<EntityLiving, EntityTypeHolder, 
     public EntityLiving kill() {
         final var livingEntity = entity;
         if (entity != null) {
-            final Chunk chunk = entity.getLocation().as(Location.class).getChunk();
+            final var chunk = entity.getLocation().getChunk();
 
             if (!chunk.isLoaded()) {
                 chunk.load();

@@ -4,6 +4,7 @@ import org.screamingsandals.bedwars.api.events.*;
 import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.api.upgrades.Upgrade;
 import org.screamingsandals.bedwars.api.upgrades.UpgradeStorage;
+import org.screamingsandals.bedwars.api.utils.EventUtils;
 import org.screamingsandals.bedwars.events.*;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.lib.event.AbstractEvent;
@@ -19,7 +20,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 @Service
-public class EventUtils implements org.screamingsandals.bedwars.api.utils.EventUtils {
+public class EventUtilsImpl implements EventUtils {
 
     private static final Map<Class<?>, Class<? extends AbstractEvent>> classMap = Map.ofEntries(
             Map.entry(ApplyPropertyToBoughtItemEvent.class, ApplyPropertyToBoughtItemEventImpl.class),
@@ -66,8 +67,8 @@ public class EventUtils implements org.screamingsandals.bedwars.api.utils.EventU
             Map.entry(PlayerDeathMessageSendEvent.class, PlayerDeathMessageSendEventImpl.class)
     );
 
-    public static EventUtils getInstance() {
-        return ServiceManager.get(EventUtils.class);
+    public static EventUtilsImpl getInstance() {
+        return ServiceManager.get(EventUtilsImpl.class);
     }
 
     @SuppressWarnings("unchecked")

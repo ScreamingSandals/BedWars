@@ -5,6 +5,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.event.Listener;
 import org.screamingsandals.bedwars.api.entities.EntitiesManager;
 import org.screamingsandals.bedwars.api.game.GameManager;
+import org.screamingsandals.bedwars.api.game.ItemSpawnerType;
 import org.screamingsandals.bedwars.api.player.PlayerManager;
 import org.screamingsandals.bedwars.commands.CommandService;
 import org.screamingsandals.bedwars.config.MainConfig;
@@ -17,11 +18,8 @@ import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
-import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.screamingsandals.bedwars.api.BedwarsAPI;
-import org.screamingsandals.bedwars.api.statistics.PlayerStatisticsManager;
-import org.screamingsandals.bedwars.api.utils.ColorChanger;
 import org.screamingsandals.bedwars.database.DatabaseManager;
 import org.screamingsandals.bedwars.holograms.LeaderboardHolograms;
 import org.screamingsandals.bedwars.holograms.StatisticsHolograms;
@@ -37,13 +35,13 @@ import org.screamingsandals.bedwars.utils.*;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.lib.block.BlockTypeHolder;
 import org.screamingsandals.lib.healthindicator.HealthIndicatorManager;
-import org.screamingsandals.lib.item.Item;
 import org.screamingsandals.lib.item.ItemTypeHolder;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.plugin.PluginContainer;
 import org.screamingsandals.lib.plugin.PluginManager;
+import org.screamingsandals.lib.plugin.ServiceManager;
 import org.screamingsandals.lib.sidebar.SidebarManager;
 import org.screamingsandals.lib.utils.PlatformType;
 import org.screamingsandals.lib.utils.annotations.Init;
@@ -90,7 +88,7 @@ import java.util.*;
         BukkitBStatsMetrics.class,
         PlayerManagerImpl.class,
         PartyListener.class,
-        EventUtils.class,
+        EventUtilsImpl.class,
         LobbyInvisibilityListener.class,
         BedwarsExpansion.class,
         SidebarManager.class,
@@ -100,7 +98,8 @@ import java.util.*;
         VillagerListener.class,
         PlayerListener.class,
         NPCUtils.class,
-        EntitiesManagerImpl.class
+        EntitiesManagerImpl.class,
+        ColorChangerImpl.class
 })
 public class BedWarsPlugin extends PluginContainer implements BedwarsAPI {
     private static BedWarsPlugin instance;
@@ -112,20 +111,6 @@ public class BedWarsPlugin extends PluginContainer implements BedwarsAPI {
     private int versionNumber = 0;
     private Economy econ = null;
     private final HashMap<String, ItemSpawnerTypeImpl> spawnerTypes = new HashMap<>();
-    private ColorChanger colorChanger;
-    public static List<String> autoColoredMaterials = new ArrayList<>();
-
-    static {
-        // ColorChanger list of materials
-        autoColoredMaterials.add("WOOL");
-        autoColoredMaterials.add("CARPET");
-        autoColoredMaterials.add("CONCRETE");
-        autoColoredMaterials.add("CONCRETE_POWDER");
-        autoColoredMaterials.add("STAINED_CLAY"); // LEGACY ONLY
-        autoColoredMaterials.add("TERRACOTTA"); // FLATTENING ONLY
-        autoColoredMaterials.add("STAINED_GLASS");
-        autoColoredMaterials.add("STAINED_GLASS_PANE");
-    }
 
     public static BedWarsPlugin getInstance() {
         return instance;
@@ -246,14 +231,13 @@ public class BedWarsPlugin extends PluginContainer implements BedwarsAPI {
     @Override
     public void load() {
         instance = this;
+        version = this.getPluginDescription().getVersion();
+        BedwarsAPI.Internal.setBedWarsAPI(this);
     }
 
     @Override
     public void enable() {
-        instance = this;
-        version = this.getPluginDescription().getVersion();
         var snapshot = version.toLowerCase().contains("pre") || version.toLowerCase().contains("snapshot");
-        colorChanger = new ColorChangerImpl();
 
         if (!PluginManager.isEnabled(PluginManager.createKey("Vault").orElseThrow())) {
             isVault = false;
@@ -274,8 +258,6 @@ public class BedWarsPlugin extends PluginContainer implements BedwarsAPI {
         Debug.setDebug(MainConfig.getInstance().node("debug").getBoolean());
 
         PremiumBedwars.init();
-
-        Bukkit.getServer().getServicesManager().register(BedwarsAPI.class, this, this.getPluginDescription().as(JavaPlugin.class), ServicePriority.Normal);
 
         MainConfig.getInstance().node("resources").childrenMap().forEach((spawnerK, node) -> {
             var name = node.node("name").getString();
@@ -407,10 +389,10 @@ public class BedWarsPlugin extends PluginContainer implements BedwarsAPI {
                 final var pwi = Bukkit.getPluginManager().getPlugin("PerWorldInventory");
                 if (pwi.getClass().getName().equals("me.ebonjaeger.perworldinventory.PerWorldInventory")) {
                     // Kotlin version
-                    registerBedwarsListener(new PerWorldInventoryKotlinListener());
+                    registerBedWarsListener(new PerWorldInventoryKotlinListener());
                 } else {
                     // Legacy version
-                    registerBedwarsListener(new PerWorldInventoryLegacyListener());
+                    registerBedWarsListener(new PerWorldInventoryLegacyListener());
                 }
             }
 
@@ -458,17 +440,17 @@ public class BedWarsPlugin extends PluginContainer implements BedwarsAPI {
     }
 
     @Override
-    public org.screamingsandals.bedwars.api.utils.EventUtils getEventUtils() {
-        return EventUtils.getInstance();
+    public EventUtilsImpl getEventUtils() {
+        return EventUtilsImpl.getInstance();
     }
 
     @Override
-    public List<org.screamingsandals.bedwars.api.game.ItemSpawnerType> getItemSpawnerTypes() {
+    public List<ItemSpawnerType> getItemSpawnerTypes() {
         return new ArrayList<>(spawnerTypes.values());
     }
 
     @Override
-    public org.screamingsandals.bedwars.api.game.ItemSpawnerType getItemSpawnerTypeByName(String name) {
+    public ItemSpawnerTypeImpl getItemSpawnerTypeByName(String name) {
         return spawnerTypes.get(name);
     }
 
@@ -483,8 +465,8 @@ public class BedWarsPlugin extends PluginContainer implements BedwarsAPI {
     }
 
     @Override
-    public ColorChanger<Item> getColorChanger() {
-        return colorChanger;
+    public ColorChangerImpl getColorChanger() {
+        return ServiceManager.get(ColorChangerImpl.class);
     }
 
     @Override
@@ -493,7 +475,7 @@ public class BedWarsPlugin extends PluginContainer implements BedwarsAPI {
     }
 
     @Override
-    public PlayerStatisticsManager<?> getStatisticsManager() {
+    public PlayerStatisticManager getStatisticsManager() {
         return PlayerStatisticManager.isEnabled() ? PlayerStatisticManager.getInstance() : null;
     }
 
@@ -501,7 +483,7 @@ public class BedWarsPlugin extends PluginContainer implements BedwarsAPI {
         return instance.isDisabling;
     }
 
-    public void registerBedwarsListener(Listener listener) {
+    public void registerBedWarsListener(Listener listener) {
         Bukkit.getServer().getPluginManager().registerEvents(listener, this.getPluginDescription().as(JavaPlugin.class));
     }
 }

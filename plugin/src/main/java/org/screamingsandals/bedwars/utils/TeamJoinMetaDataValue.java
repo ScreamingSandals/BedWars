@@ -6,6 +6,7 @@ import org.screamingsandals.bedwars.game.TeamImpl;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
 
+@Deprecated
 public class TeamJoinMetaDataValue implements MetadataValue {
     private TeamImpl team;
     private boolean teamJoin = true;

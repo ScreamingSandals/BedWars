@@ -26,7 +26,7 @@ import org.screamingsandals.bedwars.game.*;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
-import org.screamingsandals.bedwars.statistics.PlayerStatistic;
+import org.screamingsandals.bedwars.statistics.PlayerStatisticImpl;
 import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.bedwars.utils.*;
 import org.screamingsandals.bedwars.lib.debug.Debug;
@@ -205,7 +205,7 @@ public class PlayerListener {
 
                 if (PlayerStatisticManager.isEnabled()) {
                     var diePlayer = PlayerStatisticManager.getInstance().getStatistic(victim);
-                    PlayerStatistic killerPlayer;
+                    PlayerStatisticImpl killerPlayer;
 
                     if (!onlyOnBedDestroy || !isBed) {
                         diePlayer.addDeaths(1);

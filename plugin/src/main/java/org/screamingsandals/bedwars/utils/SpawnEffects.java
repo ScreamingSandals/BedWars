@@ -1,25 +1,25 @@
 package org.screamingsandals.bedwars.utils;
 
 import lombok.experimental.UtilityClass;
+import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.*;
-import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
-import org.bukkit.material.MaterialData;
-import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.events.PostSpawnEffectEventImpl;
 import org.screamingsandals.bedwars.events.PreSpawnEffectEventImpl;
 import org.screamingsandals.bedwars.game.GameImpl;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Firework;
-import org.bukkit.inventory.meta.FireworkMeta;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
+import org.screamingsandals.lib.block.BlockTypeHolder;
+import org.screamingsandals.lib.entity.EntityFirework;
+import org.screamingsandals.lib.entity.type.EntityTypeHolder;
 import org.screamingsandals.lib.event.EventManager;
-import org.screamingsandals.lib.utils.ConfigurateUtils;
+import org.screamingsandals.lib.firework.FireworkEffectHolder;
+import org.screamingsandals.lib.item.Item;
+import org.screamingsandals.lib.item.builder.ItemFactory;
+import org.screamingsandals.lib.particle.*;
+import org.screamingsandals.lib.utils.math.Vector3D;
 import org.spongepowered.configurate.ConfigurationNode;
 
-import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @UtilityClass
@@ -40,14 +40,14 @@ public class SpawnEffects {
                     if (effect.hasChild("list")) {
                         effect.node("list").childrenList().forEach(node -> {
                             try {
-                                useEffect(node.node("type").getString(""), node, player.as(Player.class), game);
+                                useEffect(node.node("type").getString(""), node, player, game);
                             } catch (Throwable throwable) {
                                 throwable.printStackTrace();
                             }
                         });
                     }
                 } else {
-                    useEffect(type, effect, player.as(Player.class), game);
+                    useEffect(type, effect, player, game);
                 }
 
             } catch (Throwable ignored) {
@@ -57,7 +57,7 @@ public class SpawnEffects {
         EventManager.fire(new PostSpawnEffectEventImpl(game, player, particleName));
     }
 
-    private void useEffect(String type, ConfigurationNode effect, Player player, GameImpl game) throws Throwable {
+    private void useEffect(String type, ConfigurationNode effect, BedWarsPlayer player, GameImpl game) throws Throwable {
         if (type.equalsIgnoreCase("Particle")) {
             if (effect.hasChild("value")) {
                 var value = effect.node("value").getString("");
@@ -66,54 +66,70 @@ public class SpawnEffects {
                 var offsetY = effect.node("offsetY").getDouble();
                 var offsetZ = effect.node("offsetZ").getDouble();
                 var extra = effect.node("extra").getDouble(1);
+                var longDistance = effect.node("longDistance").getBoolean();
+
+                var particleType = ParticleTypeHolder.ofOptional(value);
 
                 var data = effect.node("data");
-                if (!data.empty()) {
-                    Particle particle = Particle.valueOf(value);
-                    Object dataO = ConfigurateUtils.raw(data);
+                if (particleType.isPresent()) {
+                    ParticleData particleData = null;
 
-                    if (particle.getDataType().equals(MaterialData.class)) {
-                        dataO = Material.getMaterial(dataO.toString().toUpperCase()).getNewData((byte) 0);
-                    } else if (particle.getDataType().equals(Particle.DustOptions.class)) {
-                        var map = (Map<String, Object>) dataO;
-                        dataO = new Particle.DustOptions((Color) map.get("color"), ((Number) map.get("size")).floatValue());
-                    } else if (!BedWarsPlugin.isLegacy()) {
-                        dataO = SpawnEffectsFlattening.convert(particle, dataO);
+                    if (!data.empty()) {
+                        var clazz = particleType.get().expectedDataClass();
+                        if (clazz == BlockTypeHolder.class) {
+                            particleData = BlockTypeHolder.ofOptional(data.getString("")).orElse(null);
+                        } else if (clazz == DustOptions.class) {
+                            particleData = new DustOptions(
+                                    TextColor.color(
+                                            data.node("color", "red").getInt(),
+                                            data.node("color", "green").getInt(),
+                                            data.node("color", "blue").getInt()
+                                    ),
+                                    data.node("site").getFloat()
+                            );
+                        } else if (clazz == DustTransition.class) {
+                            particleData = new DustTransition(
+                                    TextColor.color(
+                                            data.node("fromColor", "red").getInt(),
+                                            data.node("fromColor", "green").getInt(),
+                                            data.node("fromColor", "blue").getInt()
+                                    ),
+                                    TextColor.color(
+                                            data.node("toColor", "red").getInt(),
+                                            data.node("toColor", "green").getInt(),
+                                            data.node("toColor", "blue").getInt()
+                                    ),
+                                    data.node("site").getFloat()
+                            );
+                        } else if (clazz == Item.class) {
+                            particleData = ItemFactory.build(data.getString("")).orElse(null);
+                        }
                     }
 
-                    var finalData = dataO;
-                    game.getConnectedPlayers().forEach(p -> p.as(Player.class).spawnParticle(particle, player.getLocation(), count, offsetX, offsetY, offsetZ, extra, finalData));
-                } else {
-                    for (var player1 : game.getConnectedPlayers()) {
-                        player1.as(Player.class).spawnParticle(Particle.valueOf(value.toUpperCase()), player.getLocation().getX(), player.getLocation().getY(), player.getLocation().getZ(),
-                                count, offsetX, offsetY, offsetZ, extra);
-                    }
+                    var particle = new ParticleHolder(
+                            particleType.get(),
+                            count,
+                            new Vector3D(offsetX, offsetY, offsetZ),
+                            extra,
+                            longDistance,
+                            particleData
+                    );
+
+                    game.getConnectedPlayers().forEach(p -> p.sendParticle(particle, player.getLocation()));
                 }
             }
         } else if (type.equalsIgnoreCase("Effect")) {
             if (effect.hasChild("value")) {
                 var value = effect.node("value").getString("");
                 var particle = Effect.valueOf(value.toUpperCase());
-                player.getWorld().playEffect(player.getLocation(), particle, 1);
+                player.as(Player.class).getWorld().playEffect(player.getLocation().as(Location.class), particle, 1);
             }
         } else if (type.equalsIgnoreCase("Firework")) {
-            Firework firework = (Firework) player.getWorld().spawnEntity(player.getLocation(), EntityType.FIREWORK);
-            FireworkMeta meta = firework.getFireworkMeta();
-            var power = effect.node("power").getInt(1);
-            meta.setPower(power);
-            var fireworkEffects = effect.node("effects").childrenList().stream()
-                    .map(ConfigurateUtils::toMap)
-
-                    // TODO: make better solution for mixing configurate and bukkit configuration serializable
-                    .peek(stringMap -> ((Map<String,Object>) stringMap).put("colors", ((List) stringMap.get("colors")).stream().map(o -> ConfigurationSerialization.deserializeObject((Map<String,?>) o)).collect(Collectors.toList())))
-                    .peek(stringMap -> ((Map<String,Object>) stringMap).put("fade-colors", ((List) stringMap.get("fade-colors")).stream().map(o -> ConfigurationSerialization.deserializeObject((Map<String,?>) o)).collect(Collectors.toList())))
-
-                    .map(ConfigurationSerialization::deserializeObject)
-                    .filter(obj -> obj instanceof FireworkEffect)
-                    .map(obj -> (FireworkEffect) obj)
-                    .collect(Collectors.toList());
-            meta.addEffects(fireworkEffects);
-            firework.setFireworkMeta(meta);
+            var firework = EntityTypeHolder.of("minecraft:firework_rocket").<EntityFirework>spawn(player.getLocation()).orElseThrow();
+            firework.setEffect(effect.node("effects").childrenList()
+                    .stream()
+                    .map(FireworkEffectHolder::of)
+                    .collect(Collectors.toList()), effect.node("power").getInt(1));
         }
     }
 }

@@ -4,7 +4,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.inventory.ItemStack;
-import org.screamingsandals.bedwars.api.APIUtils;
+import org.screamingsandals.bedwars.utils.ItemUtils;
 import org.screamingsandals.bedwars.events.ApplyPropertyToBoughtItemEventImpl;
 import org.screamingsandals.bedwars.events.PlayerBuildBlockEventImpl;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
@@ -24,7 +24,7 @@ public class AutoIgniteableTNTListener {
     public void onAutoIgniteableTNTRegistered(ApplyPropertyToBoughtItemEventImpl event) {
         if (event.getPropertyName().equalsIgnoreCase("autoigniteabletnt")) {
             var stack = event.getStack().as(ItemStack.class); // TODO: get rid of this transformation
-            APIUtils.hashIntoInvisibleString(stack, applyProperty(event));
+            ItemUtils.hashIntoInvisibleString(stack, applyProperty(event));
             event.setStack(stack);
         }
     }
@@ -35,7 +35,7 @@ public class AutoIgniteableTNTListener {
         var block = event.getBlock();
         var stack = event.getItemInHand();
         var player = event.getPlayer();
-        var unhidden = APIUtils.unhashFromInvisibleStringStartsWith(stack.as(ItemStack.class), AUTO_IGNITEABLE_TNT_PREFIX); // TODO: get rid of this transformation
+        var unhidden = ItemUtils.unhashFromInvisibleStringStartsWith(stack.as(ItemStack.class), AUTO_IGNITEABLE_TNT_PREFIX); // TODO: get rid of this transformation
         if (unhidden != null) {
             block.setType(BlockTypeHolder.air());
             var location = block.getLocation().add(0.5, 0.5, 0.5);

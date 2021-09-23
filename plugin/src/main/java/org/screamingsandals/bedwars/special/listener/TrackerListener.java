@@ -2,7 +2,7 @@ package org.screamingsandals.bedwars.special.listener;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.screamingsandals.bedwars.api.APIUtils;
+import org.screamingsandals.bedwars.utils.ItemUtils;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.events.ApplyPropertyToBoughtItemEventImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
@@ -24,7 +24,7 @@ public class TrackerListener {
         if (event.getPropertyName().equalsIgnoreCase("tracker")) {
             var stack = event.getStack().as(ItemStack.class); // TODO: get rid of this transformation
 
-            APIUtils.hashIntoInvisibleString(stack, TRACKER_PREFIX);
+            ItemUtils.hashIntoInvisibleString(stack, TRACKER_PREFIX);
             event.setStack(stack);
         }
 
@@ -43,7 +43,7 @@ public class TrackerListener {
             if (game.getStatus() == GameStatus.RUNNING && !gamePlayer.isSpectator) {
                 if (event.getItem() != null) {
                     var stack = event.getItem();
-                    var unhidden = APIUtils.unhashFromInvisibleStringStartsWith(stack.as(ItemStack.class), TRACKER_PREFIX);
+                    var unhidden = ItemUtils.unhashFromInvisibleStringStartsWith(stack.as(ItemStack.class), TRACKER_PREFIX);
                     if (unhidden != null) {
                         event.setCancelled(true);
 

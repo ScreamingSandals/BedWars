@@ -1,6 +1,6 @@
 package org.screamingsandals.bedwars.special.listener;
 
-import org.screamingsandals.bedwars.api.APIUtils;
+import org.screamingsandals.bedwars.utils.ItemUtils;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.events.ApplyPropertyToBoughtItemEventImpl;
 import org.screamingsandals.bedwars.events.PlayerBreakBlockEventImpl;
@@ -32,7 +32,7 @@ public class TrapListener {
             int id = System.identityHashCode(trap);
             String trapString = TRAP_PREFIX + id;
 
-            APIUtils.hashIntoInvisibleString(stack, trapString);
+            ItemUtils.hashIntoInvisibleString(stack, trapString);
             event.setStack(stack);
         }
 
@@ -45,7 +45,7 @@ public class TrapListener {
         }
 
         var trapItem = event.getItemInHand();
-        String unhidden = APIUtils.unhashFromInvisibleStringStartsWith(trapItem.as(ItemStack.class), TRAP_PREFIX);
+        String unhidden = ItemUtils.unhashFromInvisibleStringStartsWith(trapItem.as(ItemStack.class), TRAP_PREFIX);
         if (unhidden != null) {
             int classID = Integer.parseInt(unhidden.split(":")[2]);
 
