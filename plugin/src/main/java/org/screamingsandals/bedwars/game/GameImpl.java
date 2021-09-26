@@ -15,10 +15,6 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scoreboard.DisplaySlot;
-import org.bukkit.scoreboard.Objective;
-import org.bukkit.scoreboard.Score;
-import org.bukkit.scoreboard.Scoreboard;
 import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.api.ArenaTime;
@@ -45,7 +41,6 @@ import org.screamingsandals.bedwars.holograms.StatisticsHolograms;
 import org.screamingsandals.bedwars.inventories.TeamSelectorInventory;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.lib.debug.Debug;
-import org.screamingsandals.bedwars.listener.Player116ListenerUtils;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.bedwars.region.BWRegion;
@@ -55,8 +50,8 @@ import org.screamingsandals.bedwars.scoreboard.ScreamingScoreboard;
 import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.bedwars.tab.TabManager;
 import org.screamingsandals.bedwars.utils.*;
+import org.screamingsandals.lib.Server;
 import org.screamingsandals.lib.block.BlockTypeHolder;
-import org.screamingsandals.lib.bukkit.utils.nms.Version;
 import org.screamingsandals.lib.entity.*;
 import org.screamingsandals.lib.entity.type.EntityTypeHolder;
 import org.screamingsandals.lib.event.EventManager;
@@ -132,7 +127,6 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
     private final List<TeamImpl> teamsInGame = new ArrayList<>();
     private final BWRegion region = BedWarsPlugin.isLegacy() ? new LegacyRegion() : new FlatteningRegion();
     private TeamSelectorInventory teamSelectorInventory;
-    private final Scoreboard gameScoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
     private StatusBar<PlayerWrapper> statusbar;
     private final Map<Location, ItemStack[]> usedChests = new HashMap<>();
     private final List<SpecialItem<?,?,?>> activeSpecialItems = new ArrayList<>();
@@ -212,7 +206,7 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
                 }
             }
 
-            if (Version.isVersion(1, 15)) {
+            if (Server.isVersion(1, 15)) {
                 game.world.setGameRuleValue(GameRuleHolder.of("doImmediateRespawn"), true); // TODO: remove this
             }
 
@@ -739,7 +733,6 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
                 if (team.getTargetBlock().equals(loc)) {
                     Debug.info(name + ": target block of  " + team.getName() + " has been destroyed");
                     team.setTargetBlockIntact(false);
-                    updateScoreboard();
                     String coloredDestroyer = "explosion";
                     if (destroyer != null) {
                         coloredDestroyer = getPlayerTeam(PlayerManagerImpl.getInstance().getPlayer(destroyer.getUuid()).orElseThrow()).getColor().chatColor.toString() + destroyer.getDisplayName();
@@ -1018,13 +1011,9 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
             if (team != null) {
                 team.getPlayers().remove(gamePlayer);
                 if (status == GameStatus.WAITING) {
-                    team.getScoreboardTeam().removeEntry(gamePlayer.getName());
                     if (team.getPlayers().isEmpty()) {
                         teamsInGame.remove(team);
-                        team.getScoreboardTeam().unregister();
                     }
-                } else {
-                    updateScoreboard();
                 }
             }
         }
@@ -1050,18 +1039,6 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
                 cancelTask();
             }
             countdown = -1;
-
-            if (gameScoreboard.getObjective("display") != null) {
-                gameScoreboard.getObjective("display").unregister();
-            }
-            if (gameScoreboard.getObjective("lobby") != null) {
-                gameScoreboard.getObjective("lobby").unregister();
-            }
-            gameScoreboard.clearSlot(DisplaySlot.SIDEBAR);
-
-            for (var team : teamsInGame) {
-                team.getScoreboardTeam().unregister();
-            }
             teamsInGame.clear();
 
             for (GameStoreImpl store : gameStore) {
@@ -1320,9 +1297,6 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
         }
         if (player.isInGame() && player.getGame() == this) {
             player.changeGame(null);
-            if (status == GameStatus.RUNNING || status == GameStatus.GAME_END_CELEBRATING) {
-                updateScoreboard();
-            }
         }
     }
 
@@ -1356,45 +1330,25 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
     }
 
     private void internalTeamJoin(BedWarsPlayer player, TeamImpl teamForJoin) {
-        TeamImpl current = null;
-        if (teamsInGame.contains(teamForJoin)) {
-            current = teamForJoin;
-        }
-
         var cur = getPlayerTeam(player);
-        var event = new PlayerJoinTeamEventImpl(this, player, current, cur);
+        var event = new PlayerJoinTeamEventImpl(this, player, teamForJoin, cur);
         EventManager.fire(event);
 
         if (event.isCancelled()) {
             return;
         }
 
-        if (current == null) {
-            current = teamForJoin;
-            org.bukkit.scoreboard.Team scoreboardTeam = gameScoreboard.getTeam(teamForJoin.getName());
-            if (scoreboardTeam == null) {
-                scoreboardTeam = gameScoreboard.registerNewTeam(teamForJoin.getName());
-            }
-            if (!BedWarsPlugin.isLegacy()) {
-                scoreboardTeam.setColor(teamForJoin.getColor().chatColor);
-            } else {
-                scoreboardTeam.setPrefix(teamForJoin.getColor().chatColor.toString());
-            }
-            scoreboardTeam.setAllowFriendlyFire(configurationContainer.getOrDefault(ConfigurationContainer.FRIENDLY_FIRE, Boolean.class, false));
-            current.setScoreboardTeam(scoreboardTeam);
-        }
-
-        if (cur == current) {
+        if (cur == teamForJoin) {
             Message
                     .of(LangKeys.IN_GAME_TEAM_SELECTION_ALREADY_SELECTED)
                     .prefixOrDefault(getCustomPrefixComponent())
                     .placeholder("team", AdventureHelper.toComponent(teamForJoin.getColor().chatColor + teamForJoin.getName()))
-                    .placeholder("players", current.countConnectedPlayers())
-                    .placeholder("maxplayers", current.getMaxPlayers())
+                    .placeholder("players", teamForJoin.countConnectedPlayers())
+                    .placeholder("maxplayers", teamForJoin.getMaxPlayers())
                     .send(player);
             return;
         }
-        if (current.countConnectedPlayers() >= current.getMaxPlayers()) {
+        if (teamForJoin.countConnectedPlayers() >= teamForJoin.getMaxPlayers()) {
             if (cur != null) {
                 Message
                         .of(LangKeys.IN_GAME_TEAM_SELECTION_FULL_NO_CHANGE)
@@ -1414,26 +1368,23 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
 
         if (cur != null) {
             cur.getPlayers().remove(player);
-            cur.getScoreboardTeam().removeEntry(player.getName());
 
             if (cur.getPlayers().isEmpty()) {
                 teamsInGame.remove(cur);
-                cur.getScoreboardTeam().unregister();
             }
             Debug.info(name + ": player " + player.getName() + " left the team " + cur.getName());
         }
 
-        current.getPlayers().add(player);
-        current.getScoreboardTeam().addEntry(player.getName());
+        teamForJoin.getPlayers().add(player);
 
-        Debug.info(name + ": player " + player.getName() + " joined the team " + current.getName());
+        Debug.info(name + ": player " + player.getName() + " joined the team " + teamForJoin.getName());
 
         Message
                 .of(LangKeys.IN_GAME_TEAM_SELECTION_SELECTED)
                 .prefixOrDefault(getCustomPrefixComponent())
                 .placeholder("team", AdventureHelper.toComponent(teamForJoin.getColor().chatColor + teamForJoin.getName()))
-                .placeholder("players", current.getPlayers().size())
-                .placeholder("maxplayers", current.getMaxPlayers())
+                .placeholder("players", teamForJoin.getPlayers().size())
+                .placeholder("maxplayers", teamForJoin.getMaxPlayers())
                 .send(player);
 
         if (configurationContainer.getOrDefault(ConfigurationContainer.ADD_WOOL_TO_INVENTORY_ON_JOIN, Boolean.class, false)) {
@@ -1451,11 +1402,11 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
             player.getPlayerInventory().setChestplate(chestplate);
         }
 
-        if (!teamsInGame.contains(current)) {
-            teamsInGame.add(current);
+        if (!teamsInGame.contains(teamForJoin)) {
+            teamsInGame.add(teamForJoin);
         }
 
-        EventManager.fire(new PlayerJoinedTeamEventImpl(this, player, current, cur));
+        EventManager.fire(new PlayerJoinedTeamEventImpl(this, player, teamForJoin, cur));
     }
 
     public void joinRandomTeam(BedWarsPlayer player) {
@@ -1608,7 +1559,7 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
                 teamSelectorInventory = new TeamSelectorInventory(this);
             }
 
-            if (experimentalBoard == null && MainConfig.getInstance().node("experimental", "new-scoreboard-system", "enabled").getBoolean(false)) {
+            if (experimentalBoard == null) {
                 experimentalBoard = new ScreamingScoreboard(this);
             }
             updateSigns();
@@ -1660,7 +1611,6 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
                 nextCountdown = countdown = pauseCountdown;
             }
             setBossbarProgress(countdown, pauseCountdown);
-            updateLobbyScoreboard();
         } else if (status == GameStatus.RUNNING) {
             if (countdown == 0) {
                 nextCountdown = postGameWaiting;
@@ -1669,7 +1619,6 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
                 nextCountdown--;
             }
             setBossbarProgress(countdown, gameTime);
-            updateScoreboardTimer();
         } else if (status == GameStatus.GAME_END_CELEBRATING) {
             if (countdown == 0) {
                 nextCountdown = 0;
@@ -1729,10 +1678,6 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
                         teamSelectorInventory.destroy();
                     teamSelectorInventory = null;
 
-                    if (gameScoreboard.getObjective("lobby") != null) {
-                        gameScoreboard.getObjective("lobby").unregister();
-                    }
-                    gameScoreboard.clearSlot(DisplaySlot.SIDEBAR);
                     Tasker.build(this::updateSigns).delay(3, TaskerTime.TICKS).start();
                     for (GameStoreImpl store : gameStore) {
                         var villager = store.spawn();
@@ -1827,7 +1772,7 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
                         team.start();
                     }
 
-                    if (Version.isVersion(1, 15) && !MainConfig.getInstance().node("allow-fake-death").getBoolean()) {
+                    if (Server.isVersion(1, 15) && !MainConfig.getInstance().node("allow-fake-death").getBoolean()) {
                         world.setGameRuleValue(GameRuleHolder.of("doImmediateRespawn"), true);
                     }
                     preparing = false;
@@ -1835,7 +1780,6 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
                     var startedEvent = new GameStartedEventImpl(this);
                     EventManager.fire(startedEvent);
                     EventManager.fire(statusE);
-                    updateScoreboard();
                     Debug.info(name + ": game prepared");
 
                     if (configurationContainer.getOrDefault(ConfigurationContainer.HEALTH_INDICATOR, Boolean.class, false)) {
@@ -2148,74 +2092,6 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
         }
     }
 
-    public void updateScoreboard() {
-        if (!configurationContainer.getOrDefault(ConfigurationContainer.GAME_SCOREBOARD, Boolean.class, false)) {
-            return;
-        }
-
-        if (MainConfig.getInstance().node("experimental", "new-scoreboard-system", "enabled").getBoolean(false)) {
-            return;
-        }
-
-        Objective obj = this.gameScoreboard.getObjective("display");
-        if (obj == null) {
-            obj = this.gameScoreboard.registerNewObjective("display", "dummy");
-        }
-
-        obj.setDisplaySlot(DisplaySlot.SIDEBAR);
-        obj.setDisplayName(this.formatScoreboardTitle());
-
-        for (var team : teamsInGame) {
-            this.gameScoreboard.resetScores(this.formatScoreboardTeam(team, false, false));
-            this.gameScoreboard.resetScores(this.formatScoreboardTeam(team, false, true));
-            this.gameScoreboard.resetScores(this.formatScoreboardTeam(team, true, false));
-
-            Score score = obj.getScore(this.formatScoreboardTeam(team, !team.isTargetBlockIntact(), team.isTargetBlockIntact() && team.getTargetBlock().getBlock().getType().isSameType("respawn_anchor") && Player116ListenerUtils.isAnchorEmpty(team.getTargetBlock().getBlock())));  // TODO: remove transformation
-            score.setScore(team.countConnectedPlayers());
-        }
-
-        for (BedWarsPlayer player : players) {
-            player.as(Player.class).setScoreboard(gameScoreboard); // TODO: SLib equivalent
-        }
-    }
-
-    private String formatScoreboardTeam(TeamImpl team, boolean destroy, boolean empty) {
-        if (team == null) {
-            return "";
-        }
-
-        return MainConfig.getInstance().node("scoreboard", "teamTitle").getString("%bed%%color%%team%")
-                .replace("%color%", team.getColor().chatColor.toString()).replace("%team%", team.getName())
-                .replace("%bed%", destroy ? bedLostString() : (empty ? anchorEmptyString() : bedExistString()));
-    }
-
-    private void updateScoreboardTimer() {
-        if (this.status != GameStatus.RUNNING || !configurationContainer.getOrDefault(ConfigurationContainer.GAME_SCOREBOARD, Boolean.class, false)) {
-            return;
-        }
-
-        if (MainConfig.getInstance().node("experimental", "new-scoreboard-system", "enabled").getBoolean(false)) {
-            return;
-        }
-
-        Objective obj = this.gameScoreboard.getObjective("display");
-        if (obj == null) {
-            obj = this.gameScoreboard.registerNewObjective("display", "dummy");
-        }
-
-        obj.setDisplayName(this.formatScoreboardTitle());
-
-        for (BedWarsPlayer player : players) {
-            player.as(Player.class).setScoreboard(gameScoreboard); // TODO: SLib equivalent
-        }
-    }
-
-    public String formatScoreboardTitle() {
-        return Objects.requireNonNull(MainConfig.getInstance().node("scoreboard", "title").getString())
-                .replace("%game%", this.name)
-                .replace("%time%", this.getFormattedTimeLeft());
-    }
-
     public String getFormattedTimeLeft() {
         return getFormattedTimeLeft(this.countdown);
     }
@@ -2309,98 +2185,6 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
                         }
                     });
         }
-    }
-
-    private void updateLobbyScoreboard() {
-        if (status != GameStatus.WAITING || !configurationContainer.getOrDefault(ConfigurationContainer.LOBBY_SCOREBOARD, Boolean.class, false)) {
-            return;
-        }
-
-        if (MainConfig.getInstance().node("experimental", "new-scoreboard-system", "enabled").getBoolean(false)) {
-            return;
-        }
-
-        Objective obj = gameScoreboard.getObjective("lobby");
-        if (obj == null) {
-            obj = gameScoreboard.registerNewObjective("lobby", "dummy");
-            obj.setDisplaySlot(DisplaySlot.SIDEBAR);
-            obj.setDisplayName(this.formatLobbyScoreboardString(
-                    MainConfig.getInstance().node("lobby-scoreboard", "title").getString("§eBEDWARS")));
-        }
-
-        var rows = MainConfig.getInstance().node("lobby-scoreboard", "content").childrenList()
-                .stream()
-                .map(ConfigurationNode::getString)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
-        if (rows.isEmpty()) {
-            return;
-        }
-
-        rows = resizeAndMakeUnique(rows);
-
-        //reset only scores that are changed instead of resetting all entries every tick
-        //helps resolve scoreboard flickering
-        int i = 15;
-        for (String row : rows) {
-            try {
-                final String element = formatLobbyScoreboardString(row);
-                final Score score = obj.getScore(element);
-
-                if (score.getScore() != i) {
-                    score.setScore(i);
-                    for (String entry : gameScoreboard.getEntries()) {
-                        if (obj.getScore(entry).getScore() == i && !entry.equalsIgnoreCase(element)) {
-                            gameScoreboard.resetScores(entry);
-                        }
-                    }
-                }
-            } catch (IllegalArgumentException | IllegalStateException e) {
-                e.printStackTrace();
-            }
-            i--;
-        }
-
-
-        players.forEach(player -> player.as(Player.class).setScoreboard(gameScoreboard)); // TODO: SLib equivalent
-    }
-
-    public List<String> resizeAndMakeUnique(List<String> lines) {
-        final List<String> content = new ArrayList<>();
-
-        lines.forEach(line -> {
-            String copy = line;
-            if (copy == null) {
-                copy = " ";
-            }
-
-            //avoid exceptions returned by getScore()
-            if (copy.length() > 40) {
-                copy = copy.substring(40);
-            }
-
-
-            final StringBuilder builder = new StringBuilder(copy);
-            while (content.contains(builder.toString())) {
-                builder.append(" ");
-            }
-            content.add(builder.toString());
-        });
-
-        if (content.size() > 15) {
-            return content.subList(0, 15);
-        }
-        return content;
-    }
-
-    public String formatLobbyScoreboardString(String str) {
-        String finalStr = str;
-
-        finalStr = finalStr.replace("%arena%", name);
-        finalStr = finalStr.replace("%players%", String.valueOf(players.size()));
-        finalStr = finalStr.replace("%maxplayers%", String.valueOf(calculatedMaxPlayers));
-
-        return finalStr;
     }
 
     @Override

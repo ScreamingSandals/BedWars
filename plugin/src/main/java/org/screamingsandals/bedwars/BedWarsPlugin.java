@@ -28,8 +28,8 @@ import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.bedwars.tab.TabManager;
 import org.screamingsandals.bedwars.utils.*;
 import org.screamingsandals.bedwars.lib.debug.Debug;
+import org.screamingsandals.lib.Server;
 import org.screamingsandals.lib.block.BlockTypeHolder;
-import org.screamingsandals.lib.bukkit.utils.nms.Version;
 import org.screamingsandals.lib.healthindicator.HealthIndicatorManager;
 import org.screamingsandals.lib.item.ItemTypeHolder;
 import org.screamingsandals.lib.player.PlayerMapper;
@@ -206,7 +206,7 @@ public class BedWarsPlugin extends PluginContainer implements BedwarsAPI {
     public void enable() {
         var snapshot = version.toLowerCase().contains("pre") || version.toLowerCase().contains("snapshot");
 
-        isLegacy = !Version.isVersion(1, 13);
+        isLegacy = !Server.isVersion(1, 13);
 
         Debug.init(getPluginDescription().getName());
         Debug.setDebug(MainConfig.getInstance().node("debug").getBoolean());

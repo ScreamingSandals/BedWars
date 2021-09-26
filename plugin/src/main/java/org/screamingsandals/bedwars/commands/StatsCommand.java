@@ -5,6 +5,7 @@ import cloud.commandframework.CommandManager;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.statistics.PlayerStatisticImpl;
 import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
+import org.screamingsandals.lib.Server;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.player.OfflinePlayerWrapper;
 import org.screamingsandals.lib.player.PlayerMapper;
@@ -30,7 +31,7 @@ public class StatsCommand extends BaseCommand {
                                 .withSuggestionsProvider((c, s) -> {
                                     if (PlayerStatisticManager.isEnabled()
                                             && (c.getSender().hasPermission(BedWarsPermission.OTHER_STATS_PERMISSION.asPermission()) && !c.getSender().hasPermission(BedWarsPermission.ADMIN_PERMISSION.asPermission()))) {
-                                        return PlayerMapper.getPlayers().stream().map(PlayerWrapper::getName).collect(Collectors.toList());
+                                        return Server.getConnectedPlayers().stream().map(PlayerWrapper::getName).collect(Collectors.toList());
                                     }
                                     return List.of();
                                 })
@@ -49,7 +50,6 @@ public class StatsCommand extends BaseCommand {
                                     sender.sendMessage(Message.of(LangKeys.NO_PERMISSIONS).defaultPrefix());
                                 } else {
                                     var name = playerName.get();
-                                    // TODO: add this feature to PlayerMapper
                                     var off = PlayerMapper.getPlayerExact(name);
 
                                     if (off.isEmpty()) {

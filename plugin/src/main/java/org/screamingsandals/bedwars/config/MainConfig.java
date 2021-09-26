@@ -1,8 +1,6 @@
 package org.screamingsandals.bedwars.config;
 
 import lombok.RequiredArgsConstructor;
-import org.bukkit.Color;
-import org.bukkit.FireworkEffect;
 import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.lib.item.Item;
 import org.screamingsandals.lib.item.builder.ItemFactory;
@@ -162,6 +160,16 @@ public class MainConfig {
                     .key("anchorEmpty").defValue("§e\u2718")
                     .key("bedExists").defValue("§a\u2714")
                     .key("teamTitle").defValue("%bed%%color%%team%")
+                        .section("new-scoreboard")
+                            .key("enabled").migrateOldAbsoluteKey("experimental", "new-scoreboard-system", "enabled").defValue(false)
+                            .key("content").migrateOldAbsoluteKey("experimental", "new-scoreboard-system", "content").defValue(() -> List.of(
+                                    " ",
+                                    "%team_status%",
+                                    "",
+                                    "§6www.screamingsandals.org"
+                            ))
+                            .key("teamTitle").migrateOldAbsoluteKey("experimental", "new-scoreboard-system", "teamTitle").defValue("%bed%%color%%team% §7(%team_size%)")
+                        .back()
                     .back()
                 .section("title")
                     .key("enabled").defValue(true)
@@ -343,13 +351,17 @@ public class MainConfig {
                                 "type", "Firework",
                                 "power", 1,
                                 "effects", List.of(
-                                        Bukkit2Map.serialize(FireworkEffect.builder()
-                                                .with(FireworkEffect.Type.BALL)
-                                                .trail(false)
-                                                .flicker(false)
-                                                .withColor(Color.WHITE)
-                                                .withFade(Color.WHITE)
-                                                .build())
+                                        Map.of(
+                                                "type", "small",
+                                                "flicker", false,
+                                                "trail", false,
+                                                "colors", List.of(
+                                                        "white"
+                                                ),
+                                                "fade-colors", List.of(
+                                                        "white"
+                                                )
+                                        )
                                 )))
                     .key("start").defValue(Map::of)
                     .key("kill").defValue(Map::of)
@@ -552,18 +564,6 @@ public class MainConfig {
                     .key("autojoin").defValue(true)
                     .key("leaderboard").defValue(true)
                     .key("party").defValue(true)
-                    .back()
-                .section("experimental")
-                    .section("new-scoreboard-system")
-                        .key("enabled").defValue(false)
-                        .key("content").defValue(() -> List.of(
-                                    " ",
-                                    "%team_status%",
-                                    "",
-                                    "§6www.screamingsandals.org"
-                            ))
-                        .key("teamTitle").defValue("%bed%%color%%team% §7(%team_size%)")
-                        .back()
                     .back()
                 .section("party")
                     .key("enabled").defValue(false)

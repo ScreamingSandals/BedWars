@@ -9,7 +9,6 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
@@ -31,10 +30,10 @@ import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.bedwars.utils.*;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.lib.nms.entity.PlayerUtils;
+import org.screamingsandals.lib.Server;
 import org.screamingsandals.lib.attribute.AttributeHolder;
 import org.screamingsandals.lib.attribute.AttributeTypeHolder;
 import org.screamingsandals.lib.block.BlockTypeHolder;
-import org.screamingsandals.lib.bukkit.utils.nms.Version;
 import org.screamingsandals.lib.entity.EntityHuman;
 import org.screamingsandals.lib.entity.EntityLiving;
 import org.screamingsandals.lib.event.EventManager;
@@ -44,7 +43,6 @@ import org.screamingsandals.lib.event.entity.*;
 import org.screamingsandals.lib.event.player.*;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.item.builder.ItemFactory;
-import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
@@ -126,7 +124,7 @@ public class PlayerListener {
                         EventManager.fire(bpdmsEvent);
                         if (!bpdmsEvent.isCancelled()) {
                             event.setDeathMessage(null);
-                            bpdmsEvent.getMessage().send(game.getConnectedPlayers().stream().map(PlayerMapper::wrapPlayer).collect(Collectors.toList()));
+                            bpdmsEvent.getMessage().send(game.getConnectedPlayers());
                         }
                     }
                 }
@@ -142,7 +140,6 @@ public class PlayerListener {
                         team.getTargetBlock().getBlock().setType(anchor.with("charges", String.valueOf(c)));
                         if (c == 0) {
                             Sounds.playSound(team.getTargetBlock(), MainConfig.getInstance().node("target-block", "respawn-anchor", "sound", "deplete").getString(), Sounds.BLOCK_RESPAWN_ANCHOR_DEPLETE, 1, 1);
-                            game.updateScoreboard();
                         } else {
                             Sounds.playSound(team.getTargetBlock(), MainConfig.getInstance().node("target-block", "respawn-anchor", "sound", "used").getString(), Sounds.BLOCK_GLASS_BREAK, 1, 1);
                         }
@@ -154,13 +151,11 @@ public class PlayerListener {
                     Debug.info(victim.getName() + " died without bed, he's going to spectate the game");
                     gVictim.isSpectator = true;
                     team.getPlayers().remove(gVictim);
-                    team.getScoreboardTeam().removeEntry(victim.getName());
                     if (PlayerStatisticManager.isEnabled()) {
                         var statistic = PlayerStatisticManager.getInstance().getStatistic(victim);
                         statistic.addLoses(1);
                         statistic.addScore(MainConfig.getInstance().node("statistics", "scores", "lose").getInt(0));
                     }
-                    game.updateScoreboard();
                 }
 
                 boolean onlyOnBedDestroy = MainConfig.getInstance().node("statistics", "bed-destroyed-kills").getBoolean();
@@ -227,7 +222,7 @@ public class PlayerListener {
                     }
                 }
             }
-            if (!Version.isVersion(1, 15) && !MainConfig.getInstance().node("allow-fake-death").getBoolean()) {
+            if (!Server.isVersion(1, 15) && !MainConfig.getInstance().node("allow-fake-death").getBoolean()) {
                 Debug.info(victim.getName() + " is going to be respawned via spigot api");
                 PlayerUtils.respawn(BedWarsPlugin.getInstance().as(JavaPlugin.class), victim.as(Player.class), 3L);
             }
@@ -326,7 +321,7 @@ public class PlayerListener {
         }
 
         if (MainConfig.getInstance().node("tab", "enabled").getBoolean() && MainConfig.getInstance().node("tab", "hide-foreign-players").getBoolean()) {
-            PlayerMapper.getPlayers().stream().filter(PlayerManagerImpl.getInstance()::isPlayerInGame).forEach(p -> PlayerManagerImpl.getInstance().getPlayer(p).orElseThrow().hidePlayer(player.as(Player.class)));
+            Server.getConnectedPlayers().stream().filter(PlayerManagerImpl.getInstance()::isPlayerInGame).forEach(p -> PlayerManagerImpl.getInstance().getPlayer(p).orElseThrow().hidePlayer(player.as(Player.class)));
         }
     }
 
@@ -939,7 +934,6 @@ public class PlayerListener {
                                         event.getBlockClicked().setType(anchor.with("charges", String.valueOf(charges)));
                                         stack.setAmount(stack.getAmount() - 1);
                                         Sounds.playSound(event.getBlockClicked().getLocation(), MainConfig.getInstance().node("target-block", "respawn-anchor", "sound", "charge").getString(), Sounds.BLOCK_RESPAWN_ANCHOR_CHARGE, 1, 1);
-                                        game.updateScoreboard();
                                     }
                                 }
 
@@ -1078,16 +1072,12 @@ public class PlayerListener {
                 }
             }
         } else if (player.hasPermission(BedWarsPermission.ADMIN_PERMISSION.asPermission())) {
-            List<MetadataValue> values = player.as(Player.class).getMetadata(JoinTeamCommand.BEDWARS_TEAM_JOIN_METADATA);
-            if (values.size() == 0) {
+            var value = JoinTeamCommand.TEAMS_IN_HAND.get(player.getUuid());
+            if (value == null) {
                 return;
             }
 
             event.setCancelled(true);
-            var value = (TeamJoinMetaDataValue) values.get(0);
-            if (!((boolean) value.value())) {
-                return;
-            }
 
             if (!(entity instanceof EntityLiving)) {
                 player.sendMessage(Message.of(LangKeys.ADMIN_TEAM_JOIN_ENTITY_ENTITY_NOT_COMPATIBLE).defaultPrefix());
@@ -1097,14 +1087,14 @@ public class PlayerListener {
             var living = (EntityLiving) entity;
             living.setRemoveWhenFarAway(false);
             living.setCanPickupItems(false);
-            living.setCustomName(value.getTeam().getColor().chatColor + value.getTeam().getName());
+            living.setCustomName(value.getColor().chatColor + value.getName());
             living.setCustomNameVisible(MainConfig.getInstance().node("jointeam-entity-show-name").getBoolean(true));
 
             if (living.getEntityType().is("armor_stand")) {
-                ArmorStandUtils.equipArmorStand(living.as(ArmorStand.class), value.getTeam());
+                ArmorStandUtils.equip(living, value);
             }
 
-            player.as(Player.class).removeMetadata(JoinTeamCommand.BEDWARS_TEAM_JOIN_METADATA, BedWarsPlugin.getInstance().getPluginDescription().as(JavaPlugin.class));
+            JoinTeamCommand.TEAMS_IN_HAND.remove(player.getUuid());
             player.sendMessage(Message.of(LangKeys.ADMIN_TEAM_JOIN_ENTITY_ENTITY_ADDED).defaultPrefix());
         }
     }

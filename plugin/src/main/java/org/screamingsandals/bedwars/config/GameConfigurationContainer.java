@@ -51,6 +51,7 @@ public class GameConfigurationContainer implements ConfigurationContainer {
         register(ConfigurationContainer.INVISIBLE_LOBBY_ON_GAME_START, Boolean.class, "invisible-lobby-on-game-start");
         register(ConfigurationContainer.HEALTH_INDICATOR, Boolean.class, "enable-below-name-health-indicator");
         register(ConfigurationContainer.HYPIXEL_HOLOGRAMS, Boolean.class, "use-hypixel-like-holograms-for-spawners");
+        register(ConfigurationContainer.NEW_GAME_SCOREBOARD, Boolean.class, "scoreboard", "new-scoreboard", "enabled");
     }
 
     @Override

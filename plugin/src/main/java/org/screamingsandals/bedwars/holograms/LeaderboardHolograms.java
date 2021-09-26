@@ -9,6 +9,7 @@ import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.bedwars.utils.HologramLocation;
+import org.screamingsandals.lib.Server;
 import org.screamingsandals.lib.event.EventPriority;
 import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.hologram.Hologram;
@@ -16,7 +17,6 @@ import org.screamingsandals.lib.hologram.HologramManager;
 import org.screamingsandals.lib.hologram.event.HologramTouchEvent;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.player.OfflinePlayerWrapper;
-import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.event.player.SPlayerJoinEvent;
 import org.screamingsandals.lib.plugin.PluginDescription;
@@ -165,7 +165,7 @@ public class LeaderboardHolograms {
                     updateHologram(holograms.get(locationHolder));
                 })
         );
-        PlayerMapper.getPlayers().forEach(this::addViewer);
+        Server.getConnectedPlayers().forEach(this::addViewer);
     }
 
     private void updateHologram(final Hologram holo) {
@@ -200,7 +200,7 @@ public class LeaderboardHolograms {
             return;
         }
 
-        if (!player.as(Player.class).hasMetadata("bw-remove-holo") || !PlayerMapper.wrapPlayer(player).hasPermission(BedWarsPermission.ADMIN_PERMISSION.asPermission())) {
+        if (!player.as(Player.class).hasMetadata("bw-remove-holo") || !player.hasPermission(BedWarsPermission.ADMIN_PERMISSION.asPermission())) {
             return;
         }
 

@@ -9,6 +9,7 @@ import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
+import org.screamingsandals.lib.Server;
 import org.screamingsandals.lib.entity.EntityHuman;
 import org.screamingsandals.lib.entity.EntityMapper;
 import org.screamingsandals.lib.lang.Message;
@@ -49,7 +50,7 @@ public class CheatCommand extends BaseCommand {
                 .argument(manager
                         .argumentBuilder(String.class, "player")
                         .withSuggestionsProvider((c, s) ->
-                                PlayerMapper.getPlayers().stream().map(PlayerWrapper::getName).collect(Collectors.toList())
+                                Server.getConnectedPlayers().stream().map(PlayerWrapper::getName).collect(Collectors.toList())
                         )
                         .asOptional()
                 )
@@ -109,7 +110,7 @@ public class CheatCommand extends BaseCommand {
                         .argument(manager
                                 .argumentBuilder(String.class, "player")
                                 .withSuggestionsProvider((c, s) ->
-                                        PlayerMapper.getPlayers().stream().map(PlayerWrapper::getName).collect(Collectors.toList())
+                                        Server.getConnectedPlayers().stream().map(PlayerWrapper::getName).collect(Collectors.toList())
                                 )
                                 .asOptional())
                         .handler(commandContext -> {

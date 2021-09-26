@@ -41,24 +41,24 @@ public class VaultUtils {
                 } else {
                     econ = rsp.getProvider();
                     isVault = true;
+
+                    PlayerMapper.getConsoleSender().sendMessage(
+                            Component
+                                    .text("[B")
+                                    .color(NamedTextColor.RED)
+                                    .append(
+                                            Component
+                                                    .text("W] ")
+                                                    .color(NamedTextColor.WHITE)
+                                    )
+                                    .append(
+                                            Component
+                                                    .text("Found Vault")
+                                                    .color(NamedTextColor.GOLD)
+                                    ));
                 }
             }
         }
-
-        PlayerMapper.getConsoleSender().sendMessage(
-                Component
-                        .text("[B")
-                        .color(NamedTextColor.RED)
-                        .append(
-                                Component
-                                        .text("W] ")
-                                        .color(NamedTextColor.WHITE)
-                        )
-                        .append(
-                                Component
-                                        .text("Found Vault")
-                                        .color(NamedTextColor.GOLD)
-                        ));
     }
 
     public void depositPlayer(PlayerWrapper player, double coins) {

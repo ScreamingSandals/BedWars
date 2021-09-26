@@ -6,8 +6,8 @@ import org.screamingsandals.bedwars.game.GameManagerImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
+import org.screamingsandals.lib.Server;
 import org.screamingsandals.lib.lang.Message;
-import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
 import org.screamingsandals.lib.utils.annotations.Service;
 
@@ -41,7 +41,7 @@ public class AlljoinCommand extends BaseCommand {
                                 return;
                             }
 
-                            PlayerMapper.getPlayers().forEach(player -> {
+                            Server.getConnectedPlayers().forEach(player -> {
                                 if (player.hasPermission(BedWarsPermission.DISABLE_ALL_JOIN_PERMISSION.asPermission())) {
                                     return;
                                 }

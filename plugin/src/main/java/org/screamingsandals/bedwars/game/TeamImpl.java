@@ -41,8 +41,6 @@ public class TeamImpl implements Team<LocationHolder, TeamColorImpl, GameImpl, C
     private boolean started;
     private boolean targetBlockIntact;
     private final List<BedWarsPlayer> players = new ArrayList<>();
-    @Deprecated
-    private org.bukkit.scoreboard.Team scoreboardTeam;
     private Hologram hologram;
     private Hologram protectHologram;
 
@@ -70,7 +68,6 @@ public class TeamImpl implements Team<LocationHolder, TeamColorImpl, GameImpl, C
                                 block.setType(anchor.with("charges", String.valueOf(charges)));
                                 Sounds.playSound(targetBlock, MainConfig.getInstance().node("target-block", "respawn-anchor", "sound", "charge").getString(), Sounds.BLOCK_RESPAWN_ANCHOR_CHARGE, 1, 1);
                                 if (charges >= 4) {
-                                    game.updateScoreboard();
                                     taskBase.cancel();
                                 }
                             }).delay(50, TaskerTime.TICKS).repeat(10, TaskerTime.TICKS).start();

@@ -46,6 +46,7 @@ public interface ConfigurationContainer {
     String INVISIBLE_LOBBY_ON_GAME_START = "invisible-lobby-on-game-start";
     String HEALTH_INDICATOR = "health-indicator";
     String HYPIXEL_HOLOGRAMS = "hypixel-holograms";
+    String NEW_GAME_SCOREBOARD = "new-game-scoreboard";
 
     /**
      * Gets configuration from the key

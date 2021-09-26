@@ -10,12 +10,12 @@ import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.bedwars.utils.HologramLocation;
+import org.screamingsandals.lib.Server;
 import org.screamingsandals.lib.event.EventPriority;
 import org.screamingsandals.lib.hologram.Hologram;
 import org.screamingsandals.lib.hologram.HologramManager;
 import org.screamingsandals.lib.hologram.event.HologramTouchEvent;
 import org.screamingsandals.lib.lang.Message;
-import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.event.player.SPlayerJoinEvent;
 import org.screamingsandals.lib.event.player.SPlayerLeaveEvent;
@@ -147,7 +147,7 @@ public class StatisticsHolograms {
     }
 
     public void updateHolograms() {
-        PlayerMapper.getPlayers().forEach(player ->
+        Server.getConnectedPlayers().forEach(player ->
                 Tasker.build(() ->
                         this.hologramLocations.forEach(holoLocation ->
                                 holoLocation.asOptional(LocationHolder.class).ifPresent(location ->

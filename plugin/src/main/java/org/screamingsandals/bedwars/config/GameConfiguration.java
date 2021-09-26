@@ -10,7 +10,6 @@ public class GameConfiguration<T> implements Configuration<T> {
     private final String key;
     private final T implicitValue;
 
-    @SuppressWarnings("unchecked")
     @Override
     public T get() {
         return !isSet() ? implicitValue : configurationContainer.getSaved(key, type);
