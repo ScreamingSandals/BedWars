@@ -1,5 +1,6 @@
 package org.screamingsandals.bedwars.listener;
 
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import net.milkbowl.vault.chat.Chat;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -990,7 +991,7 @@ public class PlayerListener {
         if (PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
             var gPlayer = player.as(BedWarsPlayer.class);
             var game = gPlayer.getGame();
-            if (game.getStatus() == GameStatus.WAITING || gPlayer.isSpectator) {
+            if ((game.getStatus() == GameStatus.WAITING && !(event instanceof SPlayerInteractAtEntityEvent)) || gPlayer.isSpectator) {
                 event.setCancelled(true);
                 Debug.info(player.getName() + " interacts with entity in lobby or as spectator");
             }
@@ -1060,8 +1061,7 @@ public class PlayerListener {
             if (game.getStatus() != GameStatus.WAITING) {
                 return;
             }
-            var living = (EntityLiving) entity;
-            String displayName = ChatColor.stripColor(living.as(Entity.class).getCustomName());
+            var displayName = PlainTextComponentSerializer.plainText().serializeOrNull(entity.getCustomName());
 
             for (var team : game.getTeams()) {
                 if (team.getName().equals(displayName)) {

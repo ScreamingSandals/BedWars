@@ -30,7 +30,7 @@ import org.screamingsandals.lib.utils.annotations.methods.Provider;
         PartyCommand.class,
         RejoinCommand.class,
         ReloadCommand.class,
-        RemoveholoCommand.class,
+        RemoveHoloCommand.class,
         StatsCommand.class
 })
 @UtilityClass

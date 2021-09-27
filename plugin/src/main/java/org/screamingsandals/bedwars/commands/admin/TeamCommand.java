@@ -15,8 +15,11 @@ import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.region.FlatteningBedUtils;
 import org.screamingsandals.bedwars.region.LegacyBedUtils;
 import org.screamingsandals.bedwars.utils.ArenaUtils;
+import org.screamingsandals.lib.block.BlockHolder;
 import org.screamingsandals.lib.entity.EntityHuman;
 import org.screamingsandals.lib.lang.Message;
+import org.screamingsandals.lib.particle.ParticleHolder;
+import org.screamingsandals.lib.particle.ParticleTypeHolder;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
 import org.screamingsandals.lib.utils.AdventureHelper;
@@ -215,10 +218,17 @@ public class TeamCommand extends BaseAdminSubCommand {
                 commandSenderWrapperBuilder
                         .literal("bed", "block")
                         .argument(teamNameArgument)
+                        .argument(EnumArgument.optional(TargetBlockSetModes.class, "mode", TargetBlockSetModes.LOOKING_AT))
                         .handler(commandContext -> editMode(commandContext, (sender, game) -> {
                             String name = commandContext.get("teamName");
+                            TargetBlockSetModes mode = commandContext.get("mode");
 
-                            var block = sender.as(EntityHuman.class).getTargetBlock(null, 5);
+                            BlockHolder block;
+                            if (mode == TargetBlockSetModes.LOOKING_AT) {
+                                block = sender.as(EntityHuman.class).getTargetBlock(null, 5);
+                            } else {
+                                block = sender.as(EntityHuman.class).getLocation().remove(0, 0.5, 0).getBlock();
+                            }
                             var loc = block.getLocation();
 
                             var team = game.getTeamFromName(name);
@@ -266,6 +276,18 @@ public class TeamCommand extends BaseAdminSubCommand {
                                     team.setTargetBlock(loc);
                                 }
                             }
+                            var particle = new ParticleHolder(
+                                    ParticleTypeHolder.of("minecraft:happy_villager")
+                            );
+                            team.getTargetBlock().add(0, 0, 0).sendParticle(particle);
+                            team.getTargetBlock().add(0, 0, 1).sendParticle(particle);
+                            team.getTargetBlock().add(1, 0, 0).sendParticle(particle);
+                            team.getTargetBlock().add(1, 0, 1).sendParticle(particle);
+                            team.getTargetBlock().add(0, 1, 0).sendParticle(particle);
+                            team.getTargetBlock().add(0, 1, 1).sendParticle(particle);
+                            team.getTargetBlock().add(1, 1, 0).sendParticle(particle);
+                            team.getTargetBlock().add(1, 1, 1).sendParticle(particle);
+
                             sender.sendMessage(
                                     Message
                                             .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_TARGET_BLOCK_SET)
@@ -278,5 +300,10 @@ public class TeamCommand extends BaseAdminSubCommand {
                             );
                         }))
         );
+    }
+
+    public enum TargetBlockSetModes {
+        LOOKING_AT,
+        STANDING_ON
     }
 }

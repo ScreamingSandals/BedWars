@@ -3,9 +3,8 @@ package org.screamingsandals.bedwars.holograms;
 import java.util.*;
 
 import lombok.RequiredArgsConstructor;
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.screamingsandals.bedwars.commands.BedWarsPermission;
+import org.screamingsandals.bedwars.commands.RemoveHoloCommand;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
@@ -20,7 +19,6 @@ import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.event.player.SPlayerJoinEvent;
 import org.screamingsandals.lib.event.player.SPlayerLeaveEvent;
 import org.screamingsandals.lib.event.player.SPlayerWorldChangeEvent;
-import org.screamingsandals.lib.plugin.PluginDescription;
 import org.screamingsandals.lib.plugin.ServiceManager;
 import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
@@ -43,7 +41,6 @@ import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 })
 @RequiredArgsConstructor
 public class StatisticsHolograms {
-    private final PluginDescription pluginDescription;
     @ConfigFile(value = "database/holodb.yml", old = "holodb.yml")
     private final YamlConfigurationLoader loader;
     private final MainConfig mainConfig;
@@ -69,7 +66,6 @@ public class StatisticsHolograms {
     }
 
     @OnPostEnable
-    @SuppressWarnings("unchecked")
     public void loadHolograms() {
         if (this.holograms != null && this.hologramLocations != null) {
             // first unload all holograms
@@ -237,13 +233,13 @@ public class StatisticsHolograms {
             return;
         }
 
-        if (!player.as(Player.class).hasMetadata("bw-remove-holo") || !player.hasPermission(BedWarsPermission.ADMIN_PERMISSION.asPermission())) {
+        if (!RemoveHoloCommand.PLAYERS_WITH_HOLOGRAM_REMOVER_IN_HAND.contains(player.getUuid()) || !player.hasPermission(BedWarsPermission.ADMIN_PERMISSION.asPermission())) {
             return;
         }
 
         var location = holo.getLocation();
 
-        player.as(Player.class).removeMetadata("bw-remove-holo", pluginDescription.as(JavaPlugin.class));
+        RemoveHoloCommand.PLAYERS_WITH_HOLOGRAM_REMOVER_IN_HAND.remove(player.getUuid());
         Tasker
                 .build(() -> {
                     // remove all player holograms on this location
