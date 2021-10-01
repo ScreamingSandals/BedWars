@@ -82,7 +82,7 @@ public class CheatCommand extends BaseCommand {
                         bwPlayer = playerManager.getPlayer(player).orElseThrow();
                     }
 
-                    if (bwPlayer.isSpectator) {
+                    if (bwPlayer.isSpectator()) {
                         player.sendMessage(Message.of(LangKeys.IN_GAME_CHEAT_INVALID_PLAYER));
                         return;
                     }
@@ -139,7 +139,7 @@ public class CheatCommand extends BaseCommand {
                                 bwPlayer = playerManager.getPlayer(player).orElseThrow();
                             }
 
-                            if (bwPlayer.isSpectator) {
+                            if (bwPlayer.isSpectator()) {
                                 player.sendMessage(Message.of(LangKeys.IN_GAME_CHEAT_INVALID_PLAYER));
                                 return;
                             }

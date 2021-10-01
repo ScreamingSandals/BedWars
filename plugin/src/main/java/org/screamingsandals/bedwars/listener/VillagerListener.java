@@ -28,7 +28,7 @@ public class VillagerListener {
         if (playerManager.isPlayerInGame(event.getPlayer())) {
             var gPlayer = playerManager.getPlayer(event.getPlayer()).orElseThrow();
             var game = gPlayer.getGame();
-            if (event.getClickedEntity().getEntityType().isAlive() && !gPlayer.isSpectator
+            if (event.getClickedEntity().getEntityType().isAlive() && !gPlayer.isSpectator()
                     && gPlayer.getGame().getStatus() == GameStatus.RUNNING) {
                 for (var store : game.getGameStoreList()) {
                     if (event.getClickedEntity().equals(store.getEntity())) {
@@ -46,7 +46,7 @@ public class VillagerListener {
         if (playerManager.isPlayerInGame(event.getPlayer())) {
             var gPlayer = playerManager.getPlayer(event.getPlayer()).orElseThrow();
             var game = gPlayer.getGame();
-            if (!gPlayer.isSpectator && gPlayer.getGame().getStatus() == GameStatus.RUNNING) {
+            if (!gPlayer.isSpectator() && gPlayer.getGame().getStatus() == GameStatus.RUNNING) {
                 for (var store : game.getGameStoreList()) {
                     if (event.getNpc().equals(store.getNpc())) {
                         open(store, gPlayer, null, game);

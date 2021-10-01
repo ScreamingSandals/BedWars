@@ -40,7 +40,7 @@ public class ArrowBlockerListener {
         var game = gPlayer.getGame();
 
         if (event.getAction() == SPlayerInteractEvent.Action.RIGHT_CLICK_AIR || event.getAction() == SPlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
-            if (game.getStatus() == GameStatus.RUNNING && !gPlayer.isSpectator && event.getItem() != null) {
+            if (game.getStatus() == GameStatus.RUNNING && !gPlayer.isSpectator() && event.getItem() != null) {
                 var stack = event.getItem();
                 var unhidden = ItemUtils.unhashFromInvisibleStringStartsWith(stack.as(ItemStack.class), ARROW_BLOCKER_PREFIX);
 
@@ -90,7 +90,7 @@ public class ArrowBlockerListener {
         var gPlayer = PlayerManagerImpl.getInstance().getPlayer(player).orElseThrow();
         var game = gPlayer.getGame();
 
-        if (gPlayer.isSpectator) {
+        if (gPlayer.isSpectator()) {
             return;
         }
 

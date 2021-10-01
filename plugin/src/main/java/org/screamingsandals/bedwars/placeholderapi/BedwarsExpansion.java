@@ -140,7 +140,7 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                     if (PlayerManagerImpl.getInstance().isPlayerInGame(player.getUuid())) {
                         var gPlayer = PlayerManagerImpl.getInstance().getPlayer(player.getUuid()).orElseThrow();
                         var game = gPlayer.getGame();
-                        if (gPlayer.isSpectator) {
+                        if (gPlayer.isSpectator()) {
                             return Component.text("spectator");
                         } else {
                             var team = game.getPlayerTeam(gPlayer);
@@ -157,7 +157,7 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                     if (PlayerManagerImpl.getInstance().isPlayerInGame(player.getUuid())) {
                         var gPlayer = PlayerManagerImpl.getInstance().getPlayer(player.getUuid()).orElseThrow();
                         var game = gPlayer.getGame();
-                        if (gPlayer.isSpectator) {
+                        if (gPlayer.isSpectator()) {
                             return Component.text("spectator", NamedTextColor.GRAY);
                         } else {
                             var team = game.getPlayerTeam(gPlayer);
@@ -174,7 +174,7 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                     if (PlayerManagerImpl.getInstance().isPlayerInGame(player.getUuid())) {
                         var gPlayer = PlayerManagerImpl.getInstance().getPlayer(player.getUuid()).orElseThrow();
                         var game = gPlayer.getGame();
-                        if (gPlayer.isSpectator) {
+                        if (gPlayer.isSpectator()) {
                             return Component.text("", NamedTextColor.GRAY);
                         } else {
                             var team = game.getPlayerTeam(gPlayer);
@@ -191,7 +191,7 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                     if (PlayerManagerImpl.getInstance().isPlayerInGame(player.getUuid())) {
                         var gPlayer = PlayerManagerImpl.getInstance().getPlayer(player.getUuid()).orElseThrow();
                         var game = gPlayer.getGame();
-                        if (gPlayer.isSpectator) {
+                        if (gPlayer.isSpectator()) {
                             return Component.text("0");
                         } else {
                             var team = game.getPlayerTeam(gPlayer);
@@ -208,7 +208,7 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                     if (PlayerManagerImpl.getInstance().isPlayerInGame(player.getUuid())) {
                         var gPlayer = PlayerManagerImpl.getInstance().getPlayer(player.getUuid()).orElseThrow();
                         var game = gPlayer.getGame();
-                        if (gPlayer.isSpectator) {
+                        if (gPlayer.isSpectator()) {
                             return Component.text("0");
                         } else {
                             var team = game.getPlayerTeam(gPlayer);
@@ -225,7 +225,7 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                     if (PlayerManagerImpl.getInstance().isPlayerInGame(player.getUuid())) {
                         var gPlayer = PlayerManagerImpl.getInstance().getPlayer(player.getUuid()).orElseThrow();
                         var game = gPlayer.getGame();
-                        if (gPlayer.isSpectator) {
+                        if (gPlayer.isSpectator()) {
                             return Component.text("no");
                         } else {
                             var team = game.getPlayerTeam(gPlayer);
@@ -242,7 +242,7 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                     if (PlayerManagerImpl.getInstance().isPlayerInGame(player.getUuid())) {
                         var gPlayer = PlayerManagerImpl.getInstance().getPlayer(player.getUuid()).orElseThrow();
                         var game = gPlayer.getGame();
-                        if (gPlayer.isSpectator) {
+                        if (gPlayer.isSpectator()) {
                             return Component.text("0");
                         } else {
                             var team = game.getPlayerTeam(gPlayer);

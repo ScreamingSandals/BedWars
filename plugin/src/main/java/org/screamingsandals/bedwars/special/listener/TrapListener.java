@@ -91,7 +91,7 @@ public class TrapListener {
 
         var gPlayer = PlayerManagerImpl.getInstance().getPlayer(player).orElseThrow();
         var game = gPlayer.getGame();
-        if (game.getStatus() == GameStatus.RUNNING && !gPlayer.isSpectator) {
+        if (game.getStatus() == GameStatus.RUNNING && !gPlayer.isSpectator()) {
             for (var special : game.getActiveSpecialItems(TrapImpl.class)) {
                 var trapBlock = (TrapImpl) special;
 

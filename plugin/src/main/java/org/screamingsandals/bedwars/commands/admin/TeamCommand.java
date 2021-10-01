@@ -5,8 +5,6 @@ import cloud.commandframework.CommandManager;
 import cloud.commandframework.arguments.standard.EnumArgument;
 import cloud.commandframework.arguments.standard.IntegerArgument;
 import cloud.commandframework.arguments.standard.StringArgument;
-import org.bukkit.block.Block;
-import org.bukkit.block.data.type.Bed;
 import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.commands.AdminCommand;
 import org.screamingsandals.bedwars.game.TeamImpl;
@@ -252,12 +250,11 @@ public class TeamCommand extends BaseAdminSubCommand {
 
                             if (BedWarsPlugin.isLegacy()) {
                                 // Legacy
-                                if (block.as(Block.class).getState().getData() instanceof org.bukkit.material.Bed) {
-                                    org.bukkit.material.Bed bed = (org.bukkit.material.Bed) block.as(Block.class).getState().getData();
-                                    if (!bed.isHeadOfBed()) {
-                                        team.setTargetBlock(LegacyBedUtils.getBedNeighbor(block).getLocation());
-                                    } else {
+                                if (block.getType().isSameType("bed")) {
+                                    if ((block.getType().legacyData() & 0x8) == 0x8) {
                                         team.setTargetBlock(loc);
+                                    } else {
+                                        team.setTargetBlock(LegacyBedUtils.getBedNeighbor(block).getLocation());
                                     }
                                 } else {
                                     team.setTargetBlock(loc);
@@ -265,12 +262,11 @@ public class TeamCommand extends BaseAdminSubCommand {
 
                             } else {
                                 // 1.13+
-                                if (block.as(Block.class).getBlockData() instanceof Bed) {
-                                    Bed bed = (Bed) block.as(Block.class).getBlockData();
-                                    if (bed.getPart() != Bed.Part.HEAD) {
-                                        team.setTargetBlock(Objects.requireNonNull(FlatteningBedUtils.getBedNeighbor(block)).getLocation());
-                                    } else {
+                                if (block.getType().platformName().toLowerCase().endsWith("_bed")) {
+                                    if ("head".equals(block.getType().flatteningData().get("part"))) {
                                         team.setTargetBlock(loc);
+                                    } else {
+                                        team.setTargetBlock(Objects.requireNonNull(FlatteningBedUtils.getBedNeighbor(block)).getLocation());
                                     }
                                 } else {
                                     team.setTargetBlock(loc);

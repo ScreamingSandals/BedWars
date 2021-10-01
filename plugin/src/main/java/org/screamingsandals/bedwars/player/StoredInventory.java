@@ -1,21 +1,26 @@
 package org.screamingsandals.bedwars.player;
 
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffect;
+import lombok.Getter;
+import lombok.Setter;
+import net.kyori.adventure.text.Component;
+import org.screamingsandals.lib.item.Item;
+import org.screamingsandals.lib.item.meta.PotionEffectHolder;
+import org.screamingsandals.lib.player.gamemode.GameModeHolder;
+import org.screamingsandals.lib.world.LocationHolder;
 
 import java.util.Collection;
 
+@Getter
+@Setter
 public class StoredInventory {
-    public ItemStack[] armor = null;
-    public String displayName = null;
-    public Collection<PotionEffect> effects = null;
-    public int foodLevel = 0;
-    public ItemStack[] inventory = null;
-    public Location leftLocation = null;
-    public int level = 0;
-    public String listName = null;
-    public GameMode mode = null;
-    public float xp = 0.0F;
+    private Item[] armor;
+    private Component displayName;
+    private Collection<PotionEffectHolder> effects;
+    private int foodLevel = 0;
+    private Item[] inventory;
+    private LocationHolder leftLocation;
+    private int level = 0;
+    private Component listName;
+    private GameModeHolder mode;
+    private float xp;
 }

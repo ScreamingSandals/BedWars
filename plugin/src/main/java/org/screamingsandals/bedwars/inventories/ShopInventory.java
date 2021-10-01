@@ -176,7 +176,7 @@ public class ShopInventory {
             event.setCancelled(true);
         }
 
-        if (playerManager.getPlayer(player).orElseThrow().isSpectator) {
+        if (playerManager.getPlayer(player).orElseThrow().isSpectator()) {
             event.setCancelled(true);
         }
     }

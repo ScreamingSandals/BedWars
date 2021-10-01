@@ -1,11 +1,7 @@
 package org.screamingsandals.bedwars.lib.nms.entity;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.nms.accessors.ServerGamePacketListenerImplAccessor;
 import org.screamingsandals.bedwars.nms.accessors.ServerboundClientCommandPacketAccessor;
 import org.screamingsandals.bedwars.nms.accessors.ServerboundClientCommandPacket_i_ActionAccessor;
@@ -17,7 +13,7 @@ import org.screamingsandals.lib.tasker.TaskerTime;
 import org.screamingsandals.lib.utils.reflect.Reflect;
 
 public class PlayerUtils {
-	public static void respawn(Plugin instance, Player player, long delay) {
+	public static void respawn(Player player, long delay) {
 		Tasker.build(() -> {
 			try {
 				player.spigot().respawn();
@@ -48,17 +44,6 @@ public class PlayerUtils {
 			return player.teleportAsync(location).isDone();
 		} catch (Throwable t) {
 			player.teleport(location);
-			return true;
-		}
-	}
-
-	@Deprecated // use PlayerWrapper#teleport()
-	public static boolean teleportPlayer(Player player, Location location, Runnable runnable) {
-		try {
-			return player.teleportAsync(location).thenRun(runnable).isDone();
-		} catch (Throwable t) {
-			player.teleport(location);
-			Bukkit.getScheduler().runTaskLater(BedWarsPlugin.getInstance().getPluginDescription().as(JavaPlugin.class), runnable, 2); // player.teleport is synchronized, we don't have to wait
 			return true;
 		}
 	}

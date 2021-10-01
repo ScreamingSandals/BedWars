@@ -10,9 +10,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.World;
 import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.VersionInfo;
 import org.screamingsandals.bedwars.api.Team;
@@ -24,9 +21,13 @@ import org.screamingsandals.bedwars.inventories.ShopInventory;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.premium.PremiumBedwars;
+import org.screamingsandals.lib.Server;
+import org.screamingsandals.lib.plugin.PluginManager;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
 import org.screamingsandals.lib.utils.ConfigurateUtils;
 import org.screamingsandals.lib.utils.annotations.Service;
+import org.screamingsandals.lib.world.LocationHolder;
+import org.screamingsandals.lib.world.WorldHolder;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.yaml.NodeStyle;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
@@ -63,7 +64,7 @@ public class DumpCommand extends BaseCommand {
                                     var client = HttpClient.newHttpClient();
 
                                     var gson = new GsonBuilder()
-                                            .registerTypeAdapter(Location.class, (JsonSerializer<Location>) (location, type, context) ->
+                                            .registerTypeAdapter(LocationHolder.class, (JsonSerializer<LocationHolder>) (location, type, context) ->
                                                     context.serialize(Map.of(
                                                             "x", location.getX(),
                                                             "y", location.getY(),
@@ -72,7 +73,7 @@ public class DumpCommand extends BaseCommand {
                                                             "pitch", location.getPitch(),
                                                             "yaw", location.getYaw()
                                                     )))
-                                            .registerTypeAdapter(World.class, (JsonSerializer<World>) (world, type, context) -> context.serialize(world.getName()))
+                                            .registerTypeAdapter(WorldHolder.class, (JsonSerializer<WorldHolder>) (world, type, context) -> context.serialize(world.getName()))
                                             .registerTypeAdapter(File.class, (JsonSerializer<File>) (file, type, context) -> context.serialize(file.getAbsolutePath()))
                                             .setPrettyPrinting().create();
                                     var files = new ArrayList<>();
@@ -88,26 +89,27 @@ public class DumpCommand extends BaseCommand {
                                                                     "edition", PremiumBedwars.isPremium() ? "premium" : "free"
                                                             ),
                                                             "server", Map.of(
-                                                                    "version", Bukkit.getVersion(),
+                                                                    "version", Server.getServerSoftwareVersion(),
                                                                     "javaVersion", System.getProperty("java.version"),
                                                                     "os", System.getProperty("os.name")
                                                             ),
-                                                            "worlds", Bukkit.getWorlds().stream().map(world -> Map.of(
+                                                            "worlds", Server.getWorlds().stream().map(world -> Map.of(
                                                                     "name", world.getName(),
                                                                     "difficulty", world.getDifficulty(),
                                                                     "spawning", Map.of(
-                                                                            "animals", world.getAllowAnimals(),
-                                                                            "monsters", world.getAllowMonsters()
+                                                                            "animals", world.isSpawningOfAnimalsAllowed(),
+                                                                            "monsters", world.isSpawningOfMonstersAllowed()
                                                                     ),
-                                                                    "maxHeight", world.getMaxHeight(),
-                                                                    "keepSpawnInMemory", world.getKeepSpawnInMemory()
+                                                                    "maxHeight", world.getMaxY(),
+                                                                    "minHeight", world.getMinY(),
+                                                                    "keepSpawnInMemory", world.isSpawnKeptInMemory()
                                                             )).collect(Collectors.toList()),
-                                                            "plugins", Arrays.stream(Bukkit.getPluginManager().getPlugins()).map(plugin -> Map.of(
+                                                            "plugins", PluginManager.getAllPlugins().stream().map(plugin -> Map.of(
                                                                     "enabled", plugin.isEnabled(),
                                                                     "name", plugin.getName(),
-                                                                    "version", plugin.getDescription().getVersion(),
-                                                                    "main", plugin.getDescription().getMain(),
-                                                                    "authors", plugin.getDescription().getAuthors()
+                                                                    "version", plugin.getVersion(),
+                                                                    "main", plugin.getInstance().map(Object::getClass).map(Class::getName).orElse("undefined"),
+                                                                    "authors", plugin.getAuthors()
                                                             )).collect(Collectors.toList()),
                                                             "games", GameManagerImpl.getInstance().getGames().stream().map(game ->
                                                                     nullValuesAllowingMap(

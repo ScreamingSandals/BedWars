@@ -10,7 +10,6 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
 import org.screamingsandals.bedwars.api.game.GameStatus;
@@ -150,7 +149,7 @@ public class PlayerListener {
                 }
                 if (!isBed) {
                     Debug.info(victim.getName() + " died without bed, he's going to spectate the game");
-                    gVictim.isSpectator = true;
+                    gVictim.setSpectator(true);
                     team.getPlayers().remove(gVictim);
                     if (PlayerStatisticManager.isEnabled()) {
                         var statistic = PlayerStatisticManager.getInstance().getStatistic(victim);
@@ -225,11 +224,11 @@ public class PlayerListener {
             }
             if (!Server.isVersion(1, 15) && !MainConfig.getInstance().node("allow-fake-death").getBoolean()) {
                 Debug.info(victim.getName() + " is going to be respawned via spigot api");
-                PlayerUtils.respawn(BedWarsPlugin.getInstance().as(JavaPlugin.class), victim.as(Player.class), 3L);
+                PlayerUtils.respawn(victim.as(Player.class), 3L);
             }
             if (MainConfig.getInstance().node("respawn-cooldown", "enabled").getBoolean()
                     && victimTeam.isAlive()
-                    && !gVictim.isSpectator) {
+                    && !gVictim.isSpectator()) {
                 game.makeSpectator(gVictim, false);
                 Debug.info(victim.getName() + " is in respawn cooldown");
 
@@ -344,7 +343,7 @@ public class PlayerListener {
             if (!game.getConfigurationContainer().getOrDefault(ConfigurationContainer.KEEP_INVENTORY, Boolean.class, false)) {
                 event.getPlayer().getPlayerInventory().clear();
             }
-            if (gPlayer.isSpectator) {
+            if (gPlayer.isSpectator()) {
                 Debug.info(event.getPlayer().getName() + " is going to be spectator");
                 if (team == null) {
                     event.setLocation(MiscUtils.findEmptyLocation(gPlayer.getGame().makeSpectator(gPlayer, true)));
@@ -385,7 +384,7 @@ public class PlayerListener {
                     }
                 }
 
-                MiscUtils.giveItemsToPlayer(gPlayer.getPermaItemsPurchased(), gPlayer, team.getColor());
+                MiscUtils.giveItemsToPlayer(gPlayer.getPermanentItemsPurchased(), gPlayer, team.getColor());
             }
         }
     }
@@ -524,7 +523,7 @@ public class PlayerListener {
             if (PlayerManagerImpl.getInstance().isPlayerInGame(p)) {
                 var gPlayer = p.as(BedWarsPlayer.class);
                 var game = gPlayer.getGame();
-                if (game.getStatus() == GameStatus.WAITING || gPlayer.isSpectator) {
+                if (game.getStatus() == GameStatus.WAITING || gPlayer.isSpectator()) {
                     event.setCancelled(true);
                     Debug.info(p.getName() + " used item in lobby or as spectator");
                     if (event.getClickType().isLeftClick() || event.getClickType().isRightClick()) {
@@ -538,7 +537,7 @@ public class PlayerListener {
                                         return;
                                     }
                                     inv.openForPlayer(gPlayer);
-                                } else if (gPlayer.isSpectator) {
+                                } else if (gPlayer.isSpectator()) {
                                     // TODO
                                 }
                             } else if (item.getMaterial().is(MainConfig.getInstance().node("items", "startgame").getString("DIAMOND"))) {
@@ -569,7 +568,7 @@ public class PlayerListener {
         if (PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
             var gPlayer = player.as(BedWarsPlayer.class);
             var game = gPlayer.getGame();
-            if (game.getStatus() == GameStatus.WAITING || gPlayer.isSpectator) {
+            if (game.getStatus() == GameStatus.WAITING || gPlayer.isSpectator()) {
                 event.setCancelled(true);
                 Debug.info(player.getName() + " tried to eat while eating is not allowed");
             }
@@ -632,7 +631,7 @@ public class PlayerListener {
                         var player = ((EntityHuman) damager).asPlayer();
                         if (PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
                             var gPlayer = player.as(BedWarsPlayer.class);
-                            if (gPlayer.getGame().getStatus() == GameStatus.WAITING || gPlayer.isSpectator) {
+                            if (gPlayer.getGame().getStatus() == GameStatus.WAITING || gPlayer.isSpectator()) {
                                 Debug.info(player.getName() + " damaged armor stand in lobby, cancelling");
                                 event.setCancelled(true);
                             }
@@ -648,7 +647,7 @@ public class PlayerListener {
             Debug.info(player.getName() + " was damaged in game");
             var gPlayer = player.as(BedWarsPlayer.class);
             var game = gPlayer.getGame();
-            if (gPlayer.isSpectator) {
+            if (gPlayer.isSpectator()) {
                 if (event.getDamageCause().is("void")) {
                     gPlayer.asEntity().setFallDistance(0);
                     gPlayer.teleport(game.getSpecSpawn());
@@ -661,7 +660,7 @@ public class PlayerListener {
                 }
                 event.setCancelled(true);
             } else if (game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) {
-                if (gPlayer.isSpectator) {
+                if (gPlayer.isSpectator()) {
                     event.setCancelled(true);
                 }
                 if (game.isProtectionActive(gPlayer) && !event.getDamageCause().is("void")) {
@@ -713,7 +712,7 @@ public class PlayerListener {
                         var damager = ((EntityHuman) edbee.getDamager()).asPlayer();
                         if (PlayerManagerImpl.getInstance().isPlayerInGame(damager)) {
                             var gDamager = damager.as(BedWarsPlayer.class);
-                            if (gDamager.isSpectator || (gDamager.getGame().getPlayerTeam(gDamager) == game.getPlayerTeam(gPlayer) && !game.getConfigurationContainer().getOrDefault(ConfigurationContainer.FRIENDLY_FIRE, Boolean.class, false))) {
+                            if (gDamager.isSpectator() || (gDamager.getGame().getPlayerTeam(gDamager) == game.getPlayerTeam(gPlayer) && !game.getConfigurationContainer().getOrDefault(ConfigurationContainer.FRIENDLY_FIRE, Boolean.class, false))) {
                                 event.setCancelled(true);
                             }
                         }
@@ -728,7 +727,7 @@ public class PlayerListener {
                             var damager = (Player) projectile.getShooter();
                             if (PlayerManagerImpl.getInstance().isPlayerInGame(damager.getUniqueId())) {
                                 BedWarsPlayer gDamager = PlayerManagerImpl.getInstance().getPlayer(damager.getUniqueId()).orElseThrow();
-                                if (gDamager.isSpectator || gDamager.getGame().getPlayerTeam(gDamager) == game.getPlayerTeam(gPlayer) && !game.getConfigurationContainer().getOrDefault(ConfigurationContainer.FRIENDLY_FIRE, Boolean.class, false)) {
+                                if (gDamager.isSpectator() || gDamager.getGame().getPlayerTeam(gDamager) == game.getPlayerTeam(gPlayer) && !game.getConfigurationContainer().getOrDefault(ConfigurationContainer.FRIENDLY_FIRE, Boolean.class, false)) {
                                     event.setCancelled(true);
                                 }
                             }
@@ -756,7 +755,7 @@ public class PlayerListener {
         if (projectile.getShooter() instanceof Player) {
             Player damager = (Player) projectile.getShooter();
             if (PlayerManagerImpl.getInstance().isPlayerInGame(damager.getUniqueId())) {
-                if (PlayerManagerImpl.getInstance().getPlayer(damager.getUniqueId()).orElseThrow().isSpectator) {
+                if (PlayerManagerImpl.getInstance().getPlayer(damager.getUniqueId()).orElseThrow().isSpectator()) {
                     event.setCancelled(true);
                     Debug.info(damager.getName() + " tried to launch projectile as spectator");
                 }
@@ -772,7 +771,7 @@ public class PlayerListener {
         var player = event.getPlayer();
         if (PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
             var gPlayer = player.as(BedWarsPlayer.class);
-            if (gPlayer.getGame().getStatus() != GameStatus.RUNNING || gPlayer.isSpectator) {
+            if (gPlayer.getGame().getStatus() != GameStatus.RUNNING || gPlayer.isSpectator()) {
                 event.setCancelled(true);
                 Debug.info(player.getName() + " tried to drop an item as spectator or in lobby");
             }
@@ -786,7 +785,7 @@ public class PlayerListener {
         }
 
         var player = event.getPlayer();
-        if (PlayerManagerImpl.getInstance().isPlayerInGame(player) && !player.as(BedWarsPlayer.class).isSpectator
+        if (PlayerManagerImpl.getInstance().isPlayerInGame(player) && !player.as(BedWarsPlayer.class).isSpectator()
                 && !player.hasPermission(BedWarsPermission.BYPASS_FLIGHT_PERMISSION.asPermission()) && MainConfig.getInstance().node("disable-flight").getBoolean()) {
             event.setCancelled(true);
             Debug.info(player.getName() + " tried to fly, canceled");
@@ -805,7 +804,7 @@ public class PlayerListener {
             var gPlayer = player.as(BedWarsPlayer.class);
             var game = gPlayer.getGame();
             if (event.getAction() == SPlayerInteractEvent.Action.RIGHT_CLICK_AIR || event.getAction() == SPlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
-                if (game.getStatus() == GameStatus.WAITING || gPlayer.isSpectator) {
+                if (game.getStatus() == GameStatus.WAITING || gPlayer.isSpectator()) {
                     Debug.info(player.getName() + " used item in lobby or as spectator");
                     event.setCancelled(true);
                     if (event.getMaterial().is(MainConfig.getInstance().node("items", "jointeam").getString("COMPASS"))) {
@@ -815,7 +814,7 @@ public class PlayerListener {
                                 return;
                             }
                             inv.openForPlayer(gPlayer);
-                        } else if (gPlayer.isSpectator) {
+                        } else if (gPlayer.isSpectator()) {
                             // TODO
                         }
                     } else if (event.getMaterial().is(MainConfig.getInstance().node("items", "startgame").getString("DIAMOND"))) {
@@ -838,7 +837,7 @@ public class PlayerListener {
                             event.setCancelled(true);
 
                             if (team == null) {
-                                player.as(Player.class).openInventory(game.getFakeEnderChest(gPlayer));
+                                player.openInventory(game.getFakeEnderChest(gPlayer));
                                 Debug.info(player.getName() + " opened personal ender chest");
                                 return;
                             }
@@ -918,7 +917,7 @@ public class PlayerListener {
                         // prevent Essentials to set home in arena
                         event.setCancelled(true);
 
-                        if (event.getAction() == SPlayerInteractEvent.Action.RIGHT_CLICK_BLOCK && game.getStatus() == GameStatus.RUNNING && !gPlayer.isSpectator) {
+                        if (event.getAction() == SPlayerInteractEvent.Action.RIGHT_CLICK_BLOCK && game.getStatus() == GameStatus.RUNNING && !gPlayer.isSpectator()) {
                             var stack = event.getItem();
                             if (stack != null && stack.getAmount() > 0) {
                                 boolean anchorFilled = false;
@@ -962,7 +961,7 @@ public class PlayerListener {
                     }
                 }
             } else if (event.getAction() == SPlayerInteractEvent.Action.LEFT_CLICK_BLOCK &&
-                    game.getStatus() == GameStatus.RUNNING && !gPlayer.isSpectator
+                    game.getStatus() == GameStatus.RUNNING && !gPlayer.isSpectator()
                     && event.getBlockClicked() != null && event.getBlockClicked().getType().isSameType("dragon_egg")
                     && MainConfig.getInstance().node("disableDragonEggTeleport").getBoolean(true)) {
                 event.setCancelled(true);
@@ -991,7 +990,7 @@ public class PlayerListener {
         if (PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
             var gPlayer = player.as(BedWarsPlayer.class);
             var game = gPlayer.getGame();
-            if ((game.getStatus() == GameStatus.WAITING && !(event instanceof SPlayerInteractAtEntityEvent)) || gPlayer.isSpectator) {
+            if ((game.getStatus() == GameStatus.WAITING && !(event instanceof SPlayerInteractAtEntityEvent)) || gPlayer.isSpectator()) {
                 event.setCancelled(true);
                 Debug.info(player.getName() + " interacts with entity in lobby or as spectator");
             }
@@ -1027,7 +1026,7 @@ public class PlayerListener {
         if (PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
             var gProfile = player.as(BedWarsPlayer.class);
             if (gProfile.getGame().getStatus() == GameStatus.RUNNING) {
-                if (gProfile.isSpectator) {
+                if (gProfile.isSpectator()) {
                     event.setCancelled(!event.getTopInventory().getType().is("player"));
                     Debug.info(player.getName() + " tried to open prohibited inventory");
                     return;
@@ -1111,7 +1110,7 @@ public class PlayerListener {
             var game = gPlayer.getGame();
             var team = game.getPlayerTeam(gPlayer);
             var message = event.getMessage();
-            var spectator = gPlayer.isSpectator;
+            var spectator = gPlayer.isSpectator();
 
             var playerName = player.getName();
             var displayName = player.getDisplayName();
@@ -1219,7 +1218,7 @@ public class PlayerListener {
             var gPlayer = player.as(BedWarsPlayer.class);
             var game = gPlayer.getGame();
             if (game.getConfigurationContainer().getOrDefault(ConfigurationContainer.DAMAGE_WHEN_PLAYER_IS_NOT_IN_ARENA, Boolean.class, false) && game.getStatus() == GameStatus.RUNNING
-                    && !gPlayer.isSpectator) {
+                    && !gPlayer.isSpectator()) {
                 if (!ArenaUtils.isInArea(event.getNewLocation(), game.getPos1(), game.getPos2())) {
                     var entity = player.asEntity();
                     var armor = entity.getAttribute(AttributeTypeHolder.of("minecraft:generic.armor"));
@@ -1237,7 +1236,7 @@ public class PlayerListener {
                     }
                     Debug.info(player.getName() + " is doing prohibited move, damaging");
                 }
-            } else if (MainConfig.getInstance().node("preventSpectatorFlyingAway").getBoolean() && gPlayer.isSpectator && (game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING)) {
+            } else if (MainConfig.getInstance().node("preventSpectatorFlyingAway").getBoolean() && gPlayer.isSpectator() && (game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING)) {
                 if (!ArenaUtils.isInArea(event.getNewLocation(), game.getPos1(), game.getPos2())) {
                     event.setCancelled(true);
                     Debug.info(player.getName() + " is doing prohibited move, cancelling");
@@ -1310,7 +1309,7 @@ public class PlayerListener {
         if (PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
             var gPlayer = player.as(BedWarsPlayer.class);
             var game = gPlayer.getGame();
-            if (game.getStatus() == GameStatus.WAITING || gPlayer.isSpectator) {
+            if (game.getStatus() == GameStatus.WAITING || gPlayer.isSpectator()) {
                 event.setCancelled(true);
                 Debug.info(player.getName() + " tried to pick up the item in lobby or as spectator");
             } else {

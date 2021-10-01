@@ -1,9 +1,8 @@
 package org.screamingsandals.bedwars.utils;
 
 import lombok.experimental.UtilityClass;
-import org.bukkit.block.BlockState;
-import org.bukkit.block.Sign;
 import org.screamingsandals.bedwars.BedWarsPlugin;
+import org.screamingsandals.lib.bukkit.block.state.SignBlockStateHolder;
 import org.screamingsandals.lib.signs.ClickableSign;
 import org.screamingsandals.lib.utils.BlockFace;
 import org.screamingsandals.lib.block.BlockHolder;
@@ -22,24 +21,35 @@ public class SignUtils {
             var block = location.getBlock();
 
             var state = block.getBlockState();
-            if (state.isEmpty() || (state.get().as(BlockState.class) instanceof Sign)) {
+            if (state.isEmpty() || (state.get() instanceof SignBlockStateHolder)) {
                 return null;
             }
-            var bState = state.get().as(BlockState.class);
+            var sState = state.get();
 
             if (!BedWarsPlugin.isLegacy()) {
-                if (bState.getBlockData() instanceof org.bukkit.block.data.Directional) {
-                    var directional = (org.bukkit.block.data.Directional) bState.getBlockData();
-                    var blockFace = directional.getFacing().getOppositeFace();
-                    return location.add(BlockFace.valueOf(blockFace.name()).getDirection()).getBlock();
+                var data = sState.getType().get("facing");
+                if (data.isPresent()) {
+                    return location.add(BlockFace.valueOf(data.get()).getOppositeFace().getDirection()).getBlock();
+                } else {
+                    return location.add(BlockFace.DOWN.getDirection()).getBlock();
                 }
             } else {
-                if (bState.getData() instanceof org.bukkit.material.Directional) {
-                    var directional = (org.bukkit.material.Directional) bState.getData();
-                    var blockFace = directional.getFacing().getOppositeFace();
-                    return location.add(BlockFace.valueOf(blockFace.name()).getDirection()).getBlock();
+                if (sState.getType().isSameType("standing_sign")) {
+                    return location.add(BlockFace.DOWN.getDirection()).getBlock();
+                } else {
+                    var data = sState.getType().legacyData();
+                    switch (data) {
+                        case 3:
+                            return location.add(BlockFace.NORTH.getDirection()).getBlock();
+                        case 4:
+                            return location.add(BlockFace.EAST.getDirection()).getBlock();
+                        case 5:
+                            return location.add(BlockFace.WEST.getDirection()).getBlock();
+                        case 2:
+                        default:
+                            return location.add(BlockFace.SOUTH.getDirection()).getBlock();
+                    }
                 }
             }
-            return location.add(BlockFace.DOWN.getDirection()).getBlock();
     }
 }

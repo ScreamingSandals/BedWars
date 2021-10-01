@@ -8,10 +8,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.*;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
-import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
@@ -52,6 +49,9 @@ import org.screamingsandals.bedwars.tab.TabManager;
 import org.screamingsandals.bedwars.utils.*;
 import org.screamingsandals.lib.Server;
 import org.screamingsandals.lib.block.BlockTypeHolder;
+import org.screamingsandals.lib.bukkit.block.state.SignBlockStateHolder;
+import org.screamingsandals.lib.container.Container;
+import org.screamingsandals.lib.container.type.InventoryTypeHolder;
 import org.screamingsandals.lib.entity.*;
 import org.screamingsandals.lib.entity.type.EntityTypeHolder;
 import org.screamingsandals.lib.event.EventManager;
@@ -131,7 +131,7 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
     private final Map<Location, ItemStack[]> usedChests = new HashMap<>();
     private final List<SpecialItem<?,?,?>> activeSpecialItems = new ArrayList<>();
     private final List<DelayFactory> activeDelays = new ArrayList<>();
-    private final Map<BedWarsPlayer, Inventory> fakeEnderChests = new HashMap<>();
+    private final Map<BedWarsPlayer, Container> fakeEnderChests = new HashMap<>();
     private int postGameWaiting = 3;
     private ScreamingScoreboard experimentalBoard = null;
     private HealthIndicator healthIndicator = null;
@@ -473,11 +473,11 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
     }
 
     public int countSpectators() {
-        return (int) this.players.stream().filter(t -> t.isSpectator && getPlayerTeam(t) == null).count();
+        return (int) this.players.stream().filter(t -> t.isSpectator() && getPlayerTeam(t) == null).count();
     }
 
     public int countSpectating() {
-        return (int) this.players.stream().filter(t -> t.isSpectator).count();
+        return (int) this.players.stream().filter(t -> t.isSpectator()).count();
     }
 
     public int countRespawnable() {
@@ -485,7 +485,7 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
     }
 
     public int countAlive() {
-        return (int) this.players.stream().filter(t -> !t.isSpectator).count();
+        return (int) this.players.stream().filter(t -> !t.isSpectator()).count();
     }
 
     @Override
@@ -543,7 +543,7 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
         if (status != GameStatus.RUNNING) {
             return false; // ?
         }
-        if (player.isSpectator) {
+        if (player.isSpectator()) {
             return false;
         }
         if (BedWarsPlugin.isFarmBlock(block.getType())) {
@@ -578,7 +578,7 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
         if (status != GameStatus.RUNNING) {
             return false; // ?
         }
-        if (player.isSpectator) {
+        if (player.isSpectator()) {
             return false;
         }
         if (BedWarsPlugin.isFarmBlock(block.getType())) {
@@ -896,7 +896,7 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
 
         if (status == GameStatus.RUNNING || status == GameStatus.GAME_END_CELEBRATING) {
             if (MainConfig.getInstance().node("tab", "enabled").getBoolean() && MainConfig.getInstance().node("tab", "hide-spectators").getBoolean()) {
-                players.stream().filter(p -> p.isSpectator && !isPlayerInAnyTeam(p)).forEach(p -> gamePlayer.hidePlayer(p.as(Player.class)));  // TODO: remove transformation
+                players.stream().filter(p -> p.isSpectator() && !isPlayerInAnyTeam(p)).forEach(p -> gamePlayer.hidePlayer(p.as(Player.class)));  // TODO: remove transformation
             }
 
             makeSpectator(gamePlayer, true);
@@ -944,7 +944,7 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
             healthIndicator.removeViewer(gamePlayer);
         }
 
-        if (!gamePlayer.isSpectator) {
+        if (!gamePlayer.isSpectator()) {
             if (!preServerRestart) {
                 Message.of(LangKeys.IN_GAME_LEAVE)
                         .prefixOrDefault(getCustomPrefixComponent())
@@ -1432,7 +1432,7 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
     public LocationHolder makeSpectator(BedWarsPlayer gamePlayer, boolean leaveItem) {
         Debug.info(gamePlayer.getName() + " spawning as spectator");
         Player player = gamePlayer.as(Player.class); // TODO: remove transformation
-        gamePlayer.isSpectator = true;
+        gamePlayer.setSpectator(true);
         gamePlayer.teleport(specSpawn, () -> {
             if (!configurationContainer.getOrDefault(ConfigurationContainer.KEEP_INVENTORY, Boolean.class, false) || leaveItem) {
                 gamePlayer.invClean(); // temp fix for inventory issues?
@@ -1469,7 +1469,7 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
         var currentTeam = getPlayerTeam(gamePlayer);
 
         if (gamePlayer.getGame() == this && currentTeam != null) {
-            gamePlayer.isSpectator = false;
+            gamePlayer.setSpectator(false);
             if (player.getSpectatorTarget() != null) {
                 player.setSpectatorTarget(null);
             }
@@ -1501,7 +1501,7 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
                         Debug.warn("You have wrongly configured player-respawn-items.items!", true);
                     }
                 }
-                MiscUtils.giveItemsToPlayer(gamePlayer.getPermaItemsPurchased(), gamePlayer, currentTeam.getColor());
+                MiscUtils.giveItemsToPlayer(gamePlayer.getPermanentItemsPurchased(), gamePlayer, currentTeam.getColor());
 
                 if (configurationContainer.getOrDefault(ConfigurationContainer.KEEP_ARMOR, Boolean.class, false)) {
                     final var armorContents = gamePlayer.getArmorContents();
@@ -1788,7 +1788,7 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
                                 .show()
                                 .startUpdateTask(4, TaskerTime.TICKS);
                         players.forEach(healthIndicator::addViewer);
-                        players.stream().filter(bedWarsPlayer -> !bedWarsPlayer.isSpectator).forEach(healthIndicator::addTrackedPlayer);
+                        players.stream().filter(bedWarsPlayer -> !bedWarsPlayer.isSpectator()).forEach(healthIndicator::addTrackedPlayer);
                     }
                 }
             }
@@ -2014,7 +2014,7 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
         usedChests.clear();
 
         // Clear fake ender chests
-        for (Inventory inv : fakeEnderChests.values()) {
+        for (var inv : fakeEnderChests.values()) {
             inv.clear();
         }
         fakeEnderChests.clear();
@@ -2163,16 +2163,15 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
         final var finalBlockBehindMaterial = blockBehindMaterial;
         for (var signBlock : gameSigns) {
             signBlock.getLocation().asOptional(LocationHolder.class)
-                    .flatMap(locationHolder -> locationHolder.asOptional(Location.class))
                     .ifPresent(location -> {
                         if (location.getChunk().isLoaded()) {
-                            BlockState blockState = location.getBlock().getState();
-                            if (blockState instanceof Sign) {
-                                Sign sign = (Sign) blockState;
+                            var blockState = location.getBlock().getBlockState();
+                            if (blockState.isPresent() && blockState.get() instanceof SignBlockStateHolder) {
+                                var sign = (SignBlockStateHolder) blockState.get();
                                 for (int i = 0; i < texts.size() && i < 4; i++) {
-                                    sign.setLine(i, texts.get(i));
+                                    sign.line(i, AdventureHelper.toComponent(texts.get(i)));
                                 }
-                                sign.update();
+                                sign.updateBlock();
                             }
 
                             if (config.node("sign", "block-behind", "enabled").getBoolean(false)) {
@@ -2588,9 +2587,9 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
         return gamePlayerList;
     }
 
-    public Inventory getFakeEnderChest(BedWarsPlayer player) {
+    public Container getFakeEnderChest(BedWarsPlayer player) {
         if (!fakeEnderChests.containsKey(player)) {
-            fakeEnderChests.put(player, Bukkit.createInventory(player.as(Player.class), InventoryType.ENDER_CHEST)); // TODO: remove transformation
+            fakeEnderChests.put(player, InventoryTypeHolder.of("ender_chest").createContainer().orElseThrow());
         }
         return fakeEnderChests.get(player);
     }

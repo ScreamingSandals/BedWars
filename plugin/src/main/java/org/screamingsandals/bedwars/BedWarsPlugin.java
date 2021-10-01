@@ -34,7 +34,6 @@ import org.screamingsandals.lib.healthindicator.HealthIndicatorManager;
 import org.screamingsandals.lib.item.ItemTypeHolder;
 import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.plugin.PluginContainer;
-import org.screamingsandals.lib.plugin.PluginManager;
 import org.screamingsandals.lib.plugin.ServiceManager;
 import org.screamingsandals.lib.sidebar.SidebarManager;
 import org.screamingsandals.lib.utils.PlatformType;
@@ -94,7 +93,8 @@ import java.util.*;
         NPCUtils.class,
         EntitiesManagerImpl.class,
         ColorChangerImpl.class,
-        VaultUtils.class
+        VaultUtils.class,
+        PerWorldInventoryCompatibilityFix.class
 })
 public class BedWarsPlugin extends PluginContainer implements BedwarsAPI {
     private static BedWarsPlugin instance;
@@ -300,26 +300,6 @@ public class BedWarsPlugin extends PluginContainer implements BedwarsAPI {
                                 .color(snapshot ? NamedTextColor.RED : NamedTextColor.GREEN)
                 )
         );
-
-        try {
-            // Fixing bugs created by third party plugin
-
-            // PerWorldInventory
-            var key = PluginManager.createKey("PerWorldInventory").orElseThrow();
-            if (PluginManager.isEnabled(key)) {
-                final var pwi = PluginManager.getPlatformClass(key).orElseThrow();
-                if (pwi.getClass().getName().equals("me.ebonjaeger.perworldinventory.PerWorldInventory")) {
-                    // Kotlin version
-                    Bukkit.getServer().getPluginManager().registerEvents(new PerWorldInventoryKotlinListener(), this.getPluginDescription().as(JavaPlugin.class));
-                } else {
-                    // Legacy version
-                    Bukkit.getServer().getPluginManager().registerEvents(new PerWorldInventoryLegacyListener(), this.getPluginDescription().as(JavaPlugin.class));
-                }
-            }
-
-        } catch (Throwable ignored) {
-            // maybe something here can cause exception
-        }
 
         PlayerMapper.getConsoleSender().sendMessage(Component.text("Everything has finished loading! If you like our work, consider subscribing to our Patreon! <3").color(NamedTextColor.WHITE));
         PlayerMapper.getConsoleSender().sendMessage(Component.text("https://www.patreon.com/screamingsandals").color(NamedTextColor.WHITE));

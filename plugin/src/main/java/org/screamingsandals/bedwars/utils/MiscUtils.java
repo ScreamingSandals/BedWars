@@ -3,7 +3,6 @@ package org.screamingsandals.bedwars.utils;
 import lombok.experimental.UtilityClass;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
-import org.bukkit.Material;
 import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.api.TeamColor;
@@ -146,7 +145,7 @@ public class MiscUtils {
                 continue;
             }
 
-            if (gamePlayer.get().isSpectator) {
+            if (gamePlayer.get().isSpectator()) {
                 continue;
             }
 
@@ -293,7 +292,7 @@ public class MiscUtils {
     }
 
     public static LocationHolder findEmptyLocation(LocationHolder respawnLocation) {
-        if (respawnLocation.getY() > (respawnLocation.getWorld().getMaxY() - 1) || (!respawnLocation.getBlock().getType().as(Material.class).isSolid() && !respawnLocation.clone().add(0,1,0).getBlock().getType().as(Material.class).isSolid())) {
+        if (respawnLocation.getY() > (respawnLocation.getWorld().getMaxY() - 1) || (!respawnLocation.getBlock().getType().isSolid() && !respawnLocation.clone().add(0,1,0).getBlock().getType().isSolid())) {
             return respawnLocation;
         } else {
             return findEmptyLocation(respawnLocation.clone().add(0, 2, 0));

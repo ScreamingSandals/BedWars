@@ -26,7 +26,7 @@ import java.util.Objects;
 @UtilityClass
 public class FakeDeath {
     public void die(BedWarsPlayer gamePlayer) {
-        Player player = gamePlayer.as(Player.class);
+        var player = gamePlayer.as(Player.class);
         if (player.isDead()) {
             return;
         }
@@ -35,8 +35,8 @@ public class FakeDeath {
         Collections.addAll(loot, player.getInventory().getContents());
         loot.removeIf(Objects::isNull); // remove nulls;
 
-        World deathWorld = player.getWorld();
-        Location deathLoc = player.getLocation();
+        var deathWorld = player.getWorld();
+        var deathLoc = player.getLocation();
 
         String message = null;
         try {
@@ -45,10 +45,10 @@ public class FakeDeath {
             message = (String) Reflect.fastInvoke(component, ComponentAccessor.getMethodFunc_150254_d1());
         } catch (Throwable ignored) {}
 
-        PlayerDeathEvent event = new PlayerDeathEvent(player, loot, player.getTotalExperience(), 0, message);
+        var event = new PlayerDeathEvent(player, loot, player.getTotalExperience(), 0, message);
         Bukkit.getServer().getPluginManager().callEvent(event);
 
-        for (org.bukkit.inventory.ItemStack stack : event.getDrops()) {
+        for (var stack : event.getDrops()) {
             if (stack == null || stack.getType() == Material.AIR) continue;
 
             deathWorld.dropItem(deathLoc, stack);
@@ -56,7 +56,7 @@ public class FakeDeath {
 
         player.closeInventory();
 
-        String deathMessage = event.getDeathMessage();
+        var deathMessage = event.getDeathMessage();
         if (deathMessage != null && !deathMessage.trim().equals("") && Boolean.parseBoolean(deathWorld.getGameRuleValue("showDeathMessages"))) {
             Bukkit.broadcastMessage(deathMessage);
         }
