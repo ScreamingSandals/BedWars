@@ -3,6 +3,7 @@ package org.screamingsandals.bedwars.utils;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -19,6 +20,7 @@ import org.screamingsandals.lib.utils.annotations.methods.OnPostEnable;
 @Service
 public class VaultUtils {
     private Economy econ;
+    private Chat chat;
     @Getter
     private boolean isVault;
 
@@ -76,5 +78,19 @@ public class VaultUtils {
             }
         } catch (Throwable ignored) {
         }
+    }
+
+    public String getPrefix(PlayerWrapper player) {
+        if (chat == null) {
+            chat = Bukkit.getServer().getServicesManager().load(Chat.class);
+        }
+        return chat.getPlayerPrefix(player.as(Player.class));
+    }
+
+    public String getSuffix(PlayerWrapper player) {
+        if (chat == null) {
+            chat = Bukkit.getServer().getServicesManager().load(Chat.class);
+        }
+        return chat.getPlayerSuffix(player.as(Player.class));
     }
 }

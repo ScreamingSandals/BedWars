@@ -2,10 +2,10 @@ package org.screamingsandals.bedwars.special;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
 import org.screamingsandals.bedwars.api.special.Golem;
 import org.screamingsandals.bedwars.entities.EntitiesManagerImpl;
 import org.screamingsandals.bedwars.game.GameImpl;
-import org.screamingsandals.bedwars.game.TeamColorImpl;
 import org.screamingsandals.bedwars.game.TeamImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
@@ -17,6 +17,7 @@ import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.item.Item;
 import org.screamingsandals.lib.item.builder.ItemFactory;
 import org.screamingsandals.lib.nms.accessors.ServerPlayerAccessor;
+import org.screamingsandals.lib.utils.AdventureHelper;
 import org.screamingsandals.lib.world.LocationHolder;
 
 @Getter
@@ -45,11 +46,10 @@ public class GolemImpl extends SpecialItem implements Golem<GameImpl, BedWarsPla
     }
 
     public void spawn() {
-        final var color = ((TeamColorImpl) team.getColor());
         final var golem = EntityMapper.<EntityLiving>spawn("iron_golem", location).orElseThrow();
         golem.setHealth(health);
         golem.setCustomName(name
-                .replace("%teamcolor%", color.chatColor.toString())
+                .replace("%teamcolor%", AdventureHelper.toLegacyColorCode(team.getColor().getTextColor()))
                 .replace("%team%", team.getName()));
         golem.setCustomNameVisible(showName);
         try {

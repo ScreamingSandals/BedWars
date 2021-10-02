@@ -8,7 +8,6 @@ import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.bedwars.special.ArrowBlockerImpl;
 import org.screamingsandals.bedwars.utils.DelayFactoryImpl;
 import org.screamingsandals.bedwars.utils.MiscUtils;
-import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.lib.entity.EntityHuman;
 import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.event.entity.SEntityDamageEvent;
@@ -23,9 +22,7 @@ public class ArrowBlockerListener {
     @OnEvent
     public void onArrowBlockerRegistered(ApplyPropertyToBoughtItemEventImpl event) {
         if (event.getPropertyName().equalsIgnoreCase("arrowblocker")) {
-            var stack = event.getStack().as(ItemStack.class); // TODO: get rid of this transformation
-            ItemUtils.hashIntoInvisibleString(stack, applyProperty(event));
-            event.setStack(stack);
+            ItemUtils.saveData(event.getStack(), applyProperty(event));
         }
     }
 
@@ -42,7 +39,7 @@ public class ArrowBlockerListener {
         if (event.getAction() == SPlayerInteractEvent.Action.RIGHT_CLICK_AIR || event.getAction() == SPlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
             if (game.getStatus() == GameStatus.RUNNING && !gPlayer.isSpectator() && event.getItem() != null) {
                 var stack = event.getItem();
-                var unhidden = ItemUtils.unhashFromInvisibleStringStartsWith(stack.as(ItemStack.class), ARROW_BLOCKER_PREFIX);
+                var unhidden = ItemUtils.getIfStartsWith(stack, ARROW_BLOCKER_PREFIX);
 
                 if (unhidden != null) {
                     if (!game.isDelayActive(gPlayer, ArrowBlockerImpl.class)) {

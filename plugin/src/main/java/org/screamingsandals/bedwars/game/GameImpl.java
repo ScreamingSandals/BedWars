@@ -9,9 +9,6 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryHolder;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.api.ArenaTime;
@@ -128,7 +125,7 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
     private final BWRegion region = BedWarsPlugin.isLegacy() ? new LegacyRegion() : new FlatteningRegion();
     private TeamSelectorInventory teamSelectorInventory;
     private StatusBar<PlayerWrapper> statusbar;
-    private final Map<Location, ItemStack[]> usedChests = new HashMap<>();
+    private final Map<LocationHolder, Item[]> usedChests = new HashMap<>();
     private final List<SpecialItem<?,?,?>> activeSpecialItems = new ArrayList<>();
     private final List<DelayFactory> activeDelays = new ArrayList<>();
     private final Map<BedWarsPlayer, Container> fakeEnderChests = new HashMap<>();
@@ -341,7 +338,14 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
             }
 
             game.start();
-            Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[B" + ChatColor.WHITE + "W] " + ChatColor.GREEN + "Arena " + ChatColor.WHITE + game.name + " (" + file.getName() + ")" + ChatColor.GREEN + " loaded!");
+            PlayerMapper.getConsoleSender().sendMessage(
+                    Component
+                            .text("[B", NamedTextColor.RED)
+                            .append(Component.text("W] ", NamedTextColor.WHITE))
+                            .append(Component.text("Arena", NamedTextColor.GREEN))
+                            .append(Component.text(game.name + " (" + file.getName() + ")", NamedTextColor.WHITE))
+                            .append(Component.text(" loaded!", NamedTextColor.GREEN))
+            );
             return game;
         } catch (Throwable throwable) {
             Debug.warn("Something went wrong while loading arena file " + file.getName() + ". Please report this to our Discord or GitHub!", true);
@@ -352,7 +356,7 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
 
     public void removeEntity(EntityBasic e) {
         if (ArenaUtils.isInArea(e.getLocation(), pos1, pos2)) {
-            final ChunkHolder chunk = e.getLocation().getChunk();
+            final var chunk = e.getLocation().getChunk();
             if (!chunk.isLoaded()) {
                 chunk.load();
             }
@@ -381,7 +385,7 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
     }
 
     public static GameImpl createGame(String name) {
-        GameImpl game = new GameImpl();
+        var game = new GameImpl();
         game.name = name;
         game.pauseCountdown = 60;
         game.gameTime = 3600;
@@ -733,15 +737,15 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
                 if (team.getTargetBlock().equals(loc)) {
                     Debug.info(name + ": target block of  " + team.getName() + " has been destroyed");
                     team.setTargetBlockIntact(false);
-                    String coloredDestroyer = "explosion";
+                    Component coloredDestroyer = Component.text("explosion");
                     if (destroyer != null) {
-                        coloredDestroyer = getPlayerTeam(PlayerManagerImpl.getInstance().getPlayer(destroyer.getUuid()).orElseThrow()).getColor().chatColor.toString() + destroyer.getDisplayName();
+                        coloredDestroyer = destroyer.getDisplayName().color(getPlayerTeam(PlayerManagerImpl.getInstance().getPlayer(destroyer.getUuid()).orElseThrow()).getColor().getTextColor());
                     }
                     for (BedWarsPlayer player : players) {
                         var message = Message
                                 .of(isItBedBlock ? LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_BED : (isItAnchor ? LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_ANCHOR : (isItCake ? LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_CAKE : LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_ANY)))
-                                .placeholder("team", AdventureHelper.toComponent(team.getColor().chatColor + team.getName()))
-                                .placeholder("broker", AdventureHelper.toComponent(coloredDestroyer));
+                                .placeholder("team", Component.text(team.getName()).color(team.getColor().getTextColor()))
+                                .placeholder("broker", coloredDestroyer);
 
                         message.clone()
                                 .join(getPlayerTeam(player) == team ? LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_SUBTITLE_VICTIM : LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_SUBTITLE)
@@ -781,12 +785,12 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
                         team.setProtectHologram(null);
                     }
 
-                    var targetBlockDestroyed = new TargetBlockDestroyedEventImpl(this, destroyer != null ? PlayerManagerImpl.getInstance().getPlayer(destroyer.getUuid()).orElseThrow() : null, team);
+                    var targetBlockDestroyed = new TargetBlockDestroyedEventImpl(this, destroyer != null ? PlayerManagerImpl.getInstance().getPlayer(destroyer).orElseThrow() : null, team);
                     EventManager.fire(targetBlockDestroyed);
 
                     if (destroyer != null) {
                         if (PlayerStatisticManager.isEnabled()) {
-                            var statistic = PlayerStatisticManager.getInstance().getStatistic(PlayerMapper.wrapPlayer(destroyer));
+                            var statistic = PlayerStatisticManager.getInstance().getStatistic(destroyer);
                             statistic.addDestroyedBeds(1);
                             statistic.addScore(MainConfig.getInstance().node("statistics", "scores", "bed-destroy").getInt(25));
                         }
@@ -827,11 +831,11 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
         }
 
         if (arenaTime.time >= 0) {
-            gamePlayer.as(Player.class).setPlayerTime(arenaTime.time, false); // TODO: remove transformation
+            gamePlayer.setPlayerTime(arenaTime.time, false);
         }
 
         if (arenaWeather != null) {
-            gamePlayer.setPlayerWeather(arenaWeather); // TODO: remove transformation
+            gamePlayer.setPlayerWeather(arenaWeather);
         }
 
         if (TabManager.isEnabled()) {
@@ -839,8 +843,8 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
         }
 
         if (MainConfig.getInstance().node("tab", "enabled").getBoolean() && MainConfig.getInstance().node("tab", "hide-foreign-players").getBoolean()) {
-            Bukkit.getOnlinePlayers().stream().filter(p -> PlayerManagerImpl.getInstance().getGameOfPlayer(p.getUniqueId()).orElse(null) != this).forEach(gamePlayer::hidePlayer);
-            players.forEach(p -> p.showPlayer(gamePlayer.as(Player.class)));  // TODO: remove transformation
+            Server.getConnectedPlayers().stream().filter(p -> PlayerManagerImpl.getInstance().getGameOfPlayer(p).orElse(null) != this).forEach(gamePlayer::hidePlayer);
+            players.forEach(p -> p.showPlayer(gamePlayer));
         }
 
         if (status == GameStatus.WAITING) {
@@ -896,7 +900,7 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
 
         if (status == GameStatus.RUNNING || status == GameStatus.GAME_END_CELEBRATING) {
             if (MainConfig.getInstance().node("tab", "enabled").getBoolean() && MainConfig.getInstance().node("tab", "hide-spectators").getBoolean()) {
-                players.stream().filter(p -> p.isSpectator() && !isPlayerInAnyTeam(p)).forEach(p -> gamePlayer.hidePlayer(p.as(Player.class)));  // TODO: remove transformation
+                players.stream().filter(p -> p.isSpectator() && !isPlayerInAnyTeam(p)).forEach(gamePlayer::hidePlayer);
             }
 
             makeSpectator(gamePlayer, true);
@@ -972,7 +976,7 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
         }
 
         if (MainConfig.getInstance().node("tab", "enabled").getBoolean() && MainConfig.getInstance().node("tab", "hide-foreign-players").getBoolean()) {
-            players.forEach(p -> p.hidePlayer(gamePlayer.as(Player.class))); // TODO: remove transformation
+            players.forEach(p -> p.hidePlayer(gamePlayer));
         }
 
         statusbar.removePlayer(gamePlayer);
@@ -1342,7 +1346,7 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
             Message
                     .of(LangKeys.IN_GAME_TEAM_SELECTION_ALREADY_SELECTED)
                     .prefixOrDefault(getCustomPrefixComponent())
-                    .placeholder("team", AdventureHelper.toComponent(teamForJoin.getColor().chatColor + teamForJoin.getName()))
+                    .placeholder("team", Component.text(teamForJoin.getName(), teamForJoin.getColor().getTextColor()))
                     .placeholder("players", teamForJoin.countConnectedPlayers())
                     .placeholder("maxplayers", teamForJoin.getMaxPlayers())
                     .send(player);
@@ -1353,14 +1357,14 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
                 Message
                         .of(LangKeys.IN_GAME_TEAM_SELECTION_FULL_NO_CHANGE)
                         .prefixOrDefault(getCustomPrefixComponent())
-                        .placeholder("team", AdventureHelper.toComponent(teamForJoin.getColor().chatColor + teamForJoin.getName()))
-                        .placeholder("oldteam", AdventureHelper.toComponent(cur.getColor().chatColor + cur.getName()))
+                        .placeholder("team", Component.text(teamForJoin.getName(), teamForJoin.getColor().getTextColor()))
+                        .placeholder("oldteam", Component.text(cur.getName(), cur.getColor().getTextColor()))
                         .send(player);
             } else {
                 Message
                         .of(LangKeys.IN_GAME_TEAM_SELECTION_FULL)
                         .prefixOrDefault(getCustomPrefixComponent())
-                        .placeholder("team", AdventureHelper.toComponent(teamForJoin.getColor().chatColor + teamForJoin.getName()))
+                        .placeholder("team", Component.text(teamForJoin.getName(), teamForJoin.getColor().getTextColor()))
                         .send(player);
             }
             return;
@@ -1382,7 +1386,7 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
         Message
                 .of(LangKeys.IN_GAME_TEAM_SELECTION_SELECTED)
                 .prefixOrDefault(getCustomPrefixComponent())
-                .placeholder("team", AdventureHelper.toComponent(teamForJoin.getColor().chatColor + teamForJoin.getName()))
+                .placeholder("team", Component.text(teamForJoin.getName(), teamForJoin.getColor().getTextColor()))
                 .placeholder("players", teamForJoin.getPlayers().size())
                 .placeholder("maxplayers", teamForJoin.getMaxPlayers())
                 .send(player);
@@ -1391,7 +1395,7 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
             int colorPosition = MainConfig.getInstance().node("hotbar", "color").getInt(1);
             if (colorPosition >= 0 && colorPosition <= 8) {
                 var item = ItemFactory.build(teamForJoin.getColor().material1_13 + "_WOOL").orElse(ItemFactory.getAir());
-                item.setDisplayName(AdventureHelper.toComponent(teamForJoin.getColor().chatColor + teamForJoin.getName()));
+                item.setDisplayName(Component.text(teamForJoin.getName(), teamForJoin.getColor().getTextColor()));
                 player.getPlayerInventory().setItem(colorPosition, item);
             }
         }
@@ -1431,19 +1435,18 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
 
     public LocationHolder makeSpectator(BedWarsPlayer gamePlayer, boolean leaveItem) {
         Debug.info(gamePlayer.getName() + " spawning as spectator");
-        Player player = gamePlayer.as(Player.class); // TODO: remove transformation
         gamePlayer.setSpectator(true);
         gamePlayer.teleport(specSpawn, () -> {
             if (!configurationContainer.getOrDefault(ConfigurationContainer.KEEP_INVENTORY, Boolean.class, false) || leaveItem) {
                 gamePlayer.invClean(); // temp fix for inventory issues?
             }
-            player.setAllowFlight(true);  // TODO: SLib equivalent
-            player.setFlying(true);
+            gamePlayer.setAllowFlight(true);
+            gamePlayer.setFlying(true);
             gamePlayer.setGameMode(GameModeHolder.of("spectator"));
 
             if (leaveItem) {
                 if (MainConfig.getInstance().node("tab", "enabled").getBoolean() && MainConfig.getInstance().node("tab", "hide-spectators").getBoolean()) {
-                    players.forEach(p -> p.hidePlayer(player));
+                    players.forEach(p -> p.hidePlayer(gamePlayer));
                 }
 
                 int leavePosition = MainConfig.getInstance().node("hotbar", "leave").getInt(8);
@@ -1474,12 +1477,12 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
                 player.setSpectatorTarget(null);
             }
             gamePlayer.teleport(MiscUtils.findEmptyLocation(currentTeam.getTeamSpawn()), () -> {
-                player.setAllowFlight(false); // TODO: SLib equivalent
-                player.setFlying(false);
+                gamePlayer.setAllowFlight(false);
+                gamePlayer.setFlying(false);
                 gamePlayer.setGameMode(GameModeHolder.of("survival"));
 
                 if (MainConfig.getInstance().node("tab", "enabled").getBoolean() && MainConfig.getInstance().node("tab", "hide-spectators").getBoolean()) {
-                    players.forEach(p -> p.showPlayer(player));
+                    players.forEach(p -> p.showPlayer(gamePlayer));
                 }
 
                 if (MainConfig.getInstance().node("respawn", "protection-enabled").getBoolean(true)) {
@@ -1751,7 +1754,6 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
 
                     if (configurationContainer.getOrDefault(ConfigurationContainer.REMOVE_UNUSED_TARGET_BLOCKS, Boolean.class, false)) {
                         for (TeamImpl team : teams) {
-                            TeamImpl ct = null;
                             if (!teamsInGame.contains(team)) {
                                 LocationHolder loc = team.getTargetBlock();
                                 BlockHolder block = loc.getBlock();
@@ -1810,7 +1812,7 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
                                 var message = Message
                                         .of(LangKeys.IN_GAME_END_TEAM_WIN)
                                         .prefixOrDefault(getCustomPrefixComponent())
-                                        .placeholder("team", AdventureHelper.toComponent(t.getColor().chatColor + t.getName()))
+                                        .placeholder("team", Component.text(t.getName(), t.getColor().getTextColor()))
                                         .placeholder("time", time);
                                 boolean madeRecord = processRecord(t, gameTime - countdown);
                                 for (BedWarsPlayer player : players) {
@@ -1818,7 +1820,7 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
                                     if (getPlayerTeam(player) == t) {
                                         Message.of(LangKeys.IN_GAME_END_YOU_WON)
                                                 .join(LangKeys.IN_GAME_END_TEAM_WIN)
-                                                .placeholder("team", AdventureHelper.toComponent(t.getColor().chatColor + t.getName()))
+                                                .placeholder("team", Component.text(t.getName(), t.getColor().getTextColor()))
                                                 .placeholder("time", time)
                                                 .times(TitleUtils.defaultTimes())
                                                 .title(player);
@@ -1862,7 +1864,7 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
                                     } else {
                                         Message.of(LangKeys.IN_GAME_END_YOU_LOST)
                                                 .join(LangKeys.IN_GAME_END_TEAM_WIN)
-                                                .placeholder("team", AdventureHelper.toComponent(t.getColor().chatColor + t.getName()))
+                                                .placeholder("team", Component.text(t.getName(), t.getColor().getTextColor()))
                                                 .placeholder("time", time)
                                                 .times(TitleUtils.defaultTimes())
                                                 .title(player);
@@ -1998,17 +2000,18 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
         }
 
         // Chest clearing
-        for (Map.Entry<Location, ItemStack[]> entry : usedChests.entrySet()) {
-            Location location = entry.getKey();
-            Chunk chunk = location.getChunk();
+        for (var entry : usedChests.entrySet()) {
+            var location = entry.getKey();
+            var chunk = location.getChunk();
             if (!chunk.isLoaded()) {
                 chunk.load();
             }
-            Block block = location.getBlock();
-            ItemStack[] contents = entry.getValue();
-            if (block.getState() instanceof InventoryHolder) {
-                InventoryHolder chest = (InventoryHolder) block.getState();
-                chest.getInventory().setContents(contents);
+            var block = location.getBlock();
+            var contents = entry.getValue();
+
+            var state = block.getBlockState();
+            if (state.isPresent() && state.get().holdsInventory()) {
+                state.get().getInventory().orElseThrow().setContents(contents);
             }
         }
         usedChests.clear();
@@ -2047,7 +2050,7 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
             RecordSave.getInstance().saveRecord(RecordSave.Record.builder()
                     .game(this.getName())
                     .time(wonTime)
-                    .team(t.getColor().chatColor + t.getName())
+                    .team(t.getName())
                     .winners(t.getPlayers().stream().map(SenderWrapper::getName).collect(Collectors.toList()))
                     .build()
             );
@@ -2263,12 +2266,12 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
         return null;
     }
 
-    public void addChestForFutureClear(Location loc, Inventory inventory) {
+    public void addChestForFutureClear(LocationHolder loc, Container inventory) {
         if (!usedChests.containsKey(loc)) {
-            ItemStack[] contents = inventory.getContents();
-            ItemStack[] clone = new ItemStack[contents.length];
+            var contents = inventory.getContents();
+            var clone = new Item[contents.length];
             for (int i = 0; i < contents.length; i++) {
-                ItemStack stack = contents[i];
+                var stack = contents[i];
                 if (stack != null)
                     clone[i] = stack.clone();
             }

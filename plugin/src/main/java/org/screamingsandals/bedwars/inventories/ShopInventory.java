@@ -259,7 +259,7 @@ public class ShopInventory {
                             case "color":
                                 return team.getColor().name();
                             case "chatcolor":
-                                return team.getColor().chatColor.toString();
+                                return AdventureHelper.toLegacyColorCode(team.getColor().getTextColor());
                             case "maxplayers":
                                 return Integer.toString(team.getMaxPlayers());
                             case "players":

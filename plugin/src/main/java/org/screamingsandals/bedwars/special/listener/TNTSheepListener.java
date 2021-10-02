@@ -11,7 +11,6 @@ import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.TNTPrimed;
-import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.lib.entity.EntityHuman;
 import org.screamingsandals.lib.event.EventPriority;
 import org.screamingsandals.lib.event.OnEvent;
@@ -28,9 +27,7 @@ public class TNTSheepListener {
     @OnEvent
     public void onTNTSheepRegistered(ApplyPropertyToBoughtItemEventImpl event) {
         if (event.getPropertyName().equalsIgnoreCase("tntsheep")) {
-            var stack = event.getStack().as(ItemStack.class); // TODO: get rid of this transformation
-            ItemUtils.hashIntoInvisibleString(stack, applyProperty(event));
-            event.setStack(stack);
+            ItemUtils.saveData(event.getStack(), applyProperty(event));
         }
 
     }
@@ -48,7 +45,7 @@ public class TNTSheepListener {
         if (event.getAction() == SPlayerInteractEvent.Action.RIGHT_CLICK_AIR || event.getAction() == SPlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
             if (game.getStatus() == GameStatus.RUNNING && !gamePlayer.isSpectator() && event.getItem() != null) {
                 var stack = event.getItem();
-                String unhidden = ItemUtils.unhashFromInvisibleStringStartsWith(stack.as(ItemStack.class), TNT_SHEEP_PREFIX);
+                String unhidden = ItemUtils.getIfStartsWith(stack, TNT_SHEEP_PREFIX);
 
                 if (unhidden != null) {
                     event.setCancelled(true);
@@ -88,15 +85,12 @@ public class TNTSheepListener {
                 if (event.getDamager().as(Entity.class) instanceof TNTPrimed && !game.getConfigurationContainer().getOrDefault(ConfigurationContainer.FRIENDLY_FIRE, Boolean.class, false)) {
                     var tnt = event.getDamager();
                     var sheeps = game.getActiveSpecialItems(TNTSheepImpl.class);
-                    for (var item : sheeps) {
-                        if (item instanceof TNTSheepImpl) {
-                            var sheep = (TNTSheepImpl) item;
-                            if (tnt.equals(sheep.getTnt())) {
-                                if (sheep.getTeam() == game.getPlayerTeam(gamePlayer)) {
-                                    event.setCancelled(true);
-                                }
-                                return;
+                    for (var sheep : sheeps) {
+                        if (tnt.equals(sheep.getTnt())) {
+                            if (sheep.getTeam() == game.getPlayerTeam(gamePlayer)) {
+                                event.setCancelled(true);
                             }
+                            return;
                         }
                     }
                 }
@@ -106,13 +100,10 @@ public class TNTSheepListener {
             for (var game : GameManagerImpl.getInstance().getGames()) {
                 if (game.getStatus() == GameStatus.RUNNING && mob.getLocation().getWorld().equals(game.getGameWorld())) {
                     var sheeps = game.getActiveSpecialItems(TNTSheepImpl.class);
-                    for (var item : sheeps) {
-                        if (item instanceof TNTSheepImpl) {
-                            var sheep = (TNTSheepImpl) item;
-                            if (mob.equals(sheep.getEntity())) {
-                                event.setDamage(0.0);
-                                return;
-                            }
+                    for (var sheep : sheeps) {
+                        if (mob.equals(sheep.getEntity())) {
+                            event.setDamage(0.0);
+                            return;
                         }
                     }
                 }
@@ -131,13 +122,10 @@ public class TNTSheepListener {
             var rightClicked = event.getClickedEntity();
             var vehicle = rightClicked.isInsideVehicle() ? rightClicked.getVehicle() : null;
             var sheeps = game.getActiveSpecialItems(TNTSheepImpl.class);
-            for (var item : sheeps) {
-                if (item instanceof TNTSheepImpl) {
-                    var sheep = (TNTSheepImpl) item;
-                    if (sheep.getEntity().equals(rightClicked) || sheep.getEntity().equals(vehicle)) {
-                        event.setCancelled(true);
-                        return;
-                    }
+            for (var sheep : sheeps) {
+                if (sheep.getEntity().equals(rightClicked) || sheep.getEntity().equals(vehicle)) {
+                    event.setCancelled(true);
+                    return;
                 }
             }
         }

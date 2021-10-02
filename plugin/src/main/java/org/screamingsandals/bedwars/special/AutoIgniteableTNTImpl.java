@@ -30,6 +30,7 @@ public class AutoIgniteableTNTImpl extends SpecialItem implements AutoIgniteable
         this.explosionTime = explosionTime;
         this.allowedDamagingPlacer = damagePlacer;
     }
+    
     @Override
     public void spawn(Object location) {
         spawn(LocationMapper.wrapLocation(location));

@@ -6,7 +6,6 @@ import org.screamingsandals.bedwars.events.ApplyPropertyToBoughtItemEventImpl;
 import org.screamingsandals.bedwars.events.PlayerBreakBlockEventImpl;
 import org.screamingsandals.bedwars.events.PlayerBuildBlockEventImpl;
 import org.screamingsandals.bedwars.special.LuckyBlockImpl;
-import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.utils.annotations.Service;
 
@@ -21,8 +20,6 @@ public class LuckyBlockAddonListener {
     @OnEvent
     public void onLuckyBlockRegistered(ApplyPropertyToBoughtItemEventImpl event) {
         if (event.getPropertyName().equalsIgnoreCase("luckyblock")) {
-            var stack = event.getStack().as(ItemStack.class); // TODO: get rid of this transformation
-
             var lucky = new LuckyBlockImpl(event.getGame(), event.getPlayer(),
                     event.getGame().getPlayerTeam(event.getPlayer()),
                     (List<Map<String, Object>>) event.getProperty("data"));
@@ -31,8 +28,7 @@ public class LuckyBlockAddonListener {
 
             var luckyBlockString = LUCKY_BLOCK_PREFIX + id;
 
-            ItemUtils.hashIntoInvisibleString(stack, luckyBlockString);
-            event.setStack(stack);
+            ItemUtils.saveData(event.getStack(), luckyBlockString);
         }
     }
 
@@ -43,7 +39,7 @@ public class LuckyBlockAddonListener {
         }
 
         var luckyItem = event.getItemInHand();
-        var invisible = ItemUtils.unhashFromInvisibleStringStartsWith(luckyItem.as(ItemStack.class), LUCKY_BLOCK_PREFIX);
+        var invisible = ItemUtils.getIfStartsWith(luckyItem, LUCKY_BLOCK_PREFIX);
         if (invisible != null) {
             var splitted = invisible.split(":");
             var classID = Integer.parseInt(splitted[2]);

@@ -4,7 +4,6 @@ import org.screamingsandals.bedwars.utils.ItemUtils;
 import org.screamingsandals.bedwars.events.ApplyPropertyToBoughtItemEventImpl;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.bedwars.utils.MiscUtils;
-import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.lib.entity.EntityHuman;
 import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.event.entity.SEntityDamageEvent;
@@ -18,11 +17,9 @@ public class MagnetShoesListener {
     @OnEvent
     public void onMagnetShoesRegistered(ApplyPropertyToBoughtItemEventImpl event) {
         if (event.getPropertyName().equalsIgnoreCase("magnetshoes")) {
-            var stack = event.getStack().as(ItemStack.class); // TODO: get rid of this transformation
             int probability = MiscUtils.getIntFromProperty("probability", "magnet-shoes.probability", event);
 
-            ItemUtils.hashIntoInvisibleString(stack, MAGNET_SHOES_PREFIX + probability);
-            event.setStack(stack);
+            ItemUtils.saveData(event.getStack(), MAGNET_SHOES_PREFIX + probability);
         }
     }
 
@@ -36,7 +33,7 @@ public class MagnetShoesListener {
         if (PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
             var boots = player.getPlayerInventory().getBoots();
             if (boots != null) {
-                String magnetShoes = ItemUtils.unhashFromInvisibleStringStartsWith(boots.as(ItemStack.class), MAGNET_SHOES_PREFIX);
+                String magnetShoes = ItemUtils.getIfStartsWith(boots, MAGNET_SHOES_PREFIX);
                 if (magnetShoes != null) {
                     int probability = Integer.parseInt(magnetShoes.split(":")[2]);
                     int randInt = MiscUtils.randInt(0, 100);

@@ -1,6 +1,7 @@
 package org.screamingsandals.bedwars.lang;
 
 import com.google.gson.Gson;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.apache.commons.lang.LocaleUtils;
@@ -38,6 +39,8 @@ public class BedWarsLangService extends LangService {
     private final LoggerWrapper logger;
     @DataFolder("languages")
     private final Path languagesFolder;
+    @Getter
+    private LanguageDefinition internalLanguageDefinition;
 
     {
         Lang.initDefault(this);
@@ -59,7 +62,7 @@ public class BedWarsLangService extends LangService {
 
         Lang.setDefaultPrefix(AdventureHelper.toComponent(prefix));
 
-        var internalLanguageDefinition = new Gson().fromJson(new InputStreamReader(BedWarsLangService.class.getResourceAsStream("/language_definition.json")), LanguageDefinition.class);
+        internalLanguageDefinition = new Gson().fromJson(new InputStreamReader(BedWarsLangService.class.getResourceAsStream("/language_definition.json")), LanguageDefinition.class);
 
         if (internalLanguageDefinition == null) {
             logger.error("Can't load default Language Definition for Screaming BedWars!");

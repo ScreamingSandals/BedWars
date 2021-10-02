@@ -12,8 +12,6 @@ import org.screamingsandals.bedwars.config.RecordSave;
 import org.screamingsandals.bedwars.entities.EntitiesManagerImpl;
 import org.screamingsandals.bedwars.game.*;
 import org.screamingsandals.bedwars.lang.BedWarsLangService;
-import org.bukkit.Bukkit;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.screamingsandals.bedwars.api.BedwarsAPI;
 import org.screamingsandals.bedwars.database.DatabaseManager;
 import org.screamingsandals.bedwars.holograms.LeaderboardHolograms;
@@ -28,6 +26,7 @@ import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.bedwars.tab.TabManager;
 import org.screamingsandals.bedwars.utils.*;
 import org.screamingsandals.bedwars.lib.debug.Debug;
+import org.screamingsandals.lib.CustomPayload;
 import org.screamingsandals.lib.Server;
 import org.screamingsandals.lib.block.BlockTypeHolder;
 import org.screamingsandals.lib.healthindicator.HealthIndicatorManager;
@@ -238,7 +237,7 @@ public class BedWarsPlugin extends PluginContainer implements BedwarsAPI {
         });
 
         if (MainConfig.getInstance().node("bungee", "enabled").getBoolean()) {
-            Bukkit.getMessenger().registerOutgoingPluginChannel(this.getPluginDescription().as(JavaPlugin.class), "BungeeCord");
+            CustomPayload.registerOutgoingChannel("BungeeCord");
         }
 
         PlayerMapper.getConsoleSender().sendMessage(Component

@@ -140,7 +140,7 @@ public class ScreamingScoreboard {
         game.getActiveTeams().forEach(team -> {
             if (teamedSidebar.getTeam(team.getName()).isEmpty()) {
                 teamedSidebar.team(team.getName())
-                        .color(NamedTextColor.NAMES.value(team.getColor().chatColor.name().toLowerCase()))
+                        .color(NamedTextColor.nearestTo(team.getColor().getTextColor()))
                         .friendlyFire(game.getConfigurationContainer().getOrDefault(ConfigurationContainer.FRIENDLY_FIRE, Boolean.class, false));
             }
             var sidebarTeam = teamedSidebar.getTeam(team.getName()).orElseThrow();
@@ -166,7 +166,7 @@ public class ScreamingScoreboard {
 
         return MainConfig.getInstance().node("experimental", "new-scoreboard-system", "teamTitle").getString("")
                 .replace("%team_size%", String.valueOf(team.countConnectedPlayers()))
-                .replace("%color%", team.getColor().chatColor.toString())
+                .replace("%color%", AdventureHelper.toLegacyColorCode(team.getColor().getTextColor()))
                 .replace("%team%", team.getName())
                 .replace("%bed%", destroy ? GameImpl.bedLostString() : (empty ? GameImpl.anchorEmptyString() : GameImpl.bedExistString()));
     }
@@ -174,7 +174,7 @@ public class ScreamingScoreboard {
     private Component formatScoreboardTeamOld(TeamImpl team, boolean destroy, boolean empty) {
         return AdventureHelper.toComponent(
                 MainConfig.getInstance().node("scoreboard", "teamTitle").getString("%bed%%color%%team%")
-                        .replace("%color%", team.getColor().chatColor.toString())
+                        .replace("%color%", AdventureHelper.toLegacyColorCode(team.getColor().getTextColor()))
                         .replace("%team%", team.getName())
                         .replace("%bed%", destroy ? GameImpl.bedLostString() : (empty ? GameImpl.anchorEmptyString() : GameImpl.bedExistString()))
         );

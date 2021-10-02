@@ -1,6 +1,5 @@
 package org.screamingsandals.bedwars.special.listener;
 
-import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.bedwars.utils.ItemUtils;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.events.ApplyPropertyToBoughtItemEventImpl;
@@ -30,9 +29,7 @@ public class BridgeEggListener {
     @OnEvent
     public void onEggRegistration(ApplyPropertyToBoughtItemEventImpl event) {
         if (event.getPropertyName().equalsIgnoreCase("bridgeegg")) {
-            var stack = event.getStack().as(ItemStack.class); // TODO: get rid of this transformation
-            ItemUtils.hashIntoInvisibleString(stack, this.applyProperty(event));
-            event.setStack(stack);
+            ItemUtils.saveData(event.getStack(), this.applyProperty(event));
         }
     }
 
@@ -48,7 +45,7 @@ public class BridgeEggListener {
         if (event.getAction() == SPlayerInteractEvent.Action.RIGHT_CLICK_AIR || event.getAction() == SPlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
             if (game.getStatus() == GameStatus.RUNNING && !gamePlayer.isSpectator() && event.getItem() != null) {
                 var stack = event.getItem();
-                String unhidden = ItemUtils.unhashFromInvisibleStringStartsWith(stack.as(ItemStack.class), BRIDGE_EGG_PREFIX); // TODO: get rid of this transformation
+                String unhidden = ItemUtils.getIfStartsWith(stack, BRIDGE_EGG_PREFIX);
                 if (unhidden != null) {
                     if (!game.isDelayActive(gamePlayer, BridgeEggImpl.class)) {
                         event.setCancelled(true);

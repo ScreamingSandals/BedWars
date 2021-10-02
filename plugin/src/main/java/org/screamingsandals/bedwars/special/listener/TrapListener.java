@@ -8,7 +8,6 @@ import org.screamingsandals.bedwars.events.PlayerBuildBlockEventImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.bedwars.special.TrapImpl;
-import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.event.player.SPlayerMoveEvent;
 import org.screamingsandals.lib.lang.Message;
@@ -24,7 +23,6 @@ public class TrapListener {
     @OnEvent
     public void onTrapRegistered(ApplyPropertyToBoughtItemEventImpl event) {
         if (event.getPropertyName().equalsIgnoreCase("trap")) {
-            var stack = event.getStack().as(ItemStack.class); // TODO: get rid of this transformation
             TrapImpl trap = new TrapImpl(event.getGame(), event.getPlayer(),
                     event.getGame().getPlayerTeam(event.getPlayer()),
                     (List<Map<String, Object>>) event.getProperty("data"));
@@ -32,8 +30,7 @@ public class TrapListener {
             int id = System.identityHashCode(trap);
             String trapString = TRAP_PREFIX + id;
 
-            ItemUtils.hashIntoInvisibleString(stack, trapString);
-            event.setStack(stack);
+            ItemUtils.saveData(event.getStack(), trapString);
         }
 
     }
@@ -45,14 +42,13 @@ public class TrapListener {
         }
 
         var trapItem = event.getItemInHand();
-        String unhidden = ItemUtils.unhashFromInvisibleStringStartsWith(trapItem.as(ItemStack.class), TRAP_PREFIX);
+        String unhidden = ItemUtils.getIfStartsWith(trapItem, TRAP_PREFIX);
         if (unhidden != null) {
             int classID = Integer.parseInt(unhidden.split(":")[2]);
 
             for (var special : event.getGame().getActiveSpecialItems(TrapImpl.class)) {
-                TrapImpl trap = (TrapImpl) special;
-                if (System.identityHashCode(trap) == classID) {
-                    trap.place(event.getBlock().getLocation());
+                if (System.identityHashCode(special) == classID) {
+                    special.place(event.getBlock().getLocation());
                     event.getPlayer().sendMessage(Message.of(LangKeys.SPECIALS_TRAP_BUILT).prefixOrDefault((event.getGame()).getCustomPrefixComponent()));
                     return;
                 }
@@ -64,13 +60,12 @@ public class TrapListener {
     @OnEvent
     public void onTrapBreak(PlayerBreakBlockEventImpl event) {
         for (var special : event.getGame().getActiveSpecialItems(TrapImpl.class)) {
-            TrapImpl trapBlock = (TrapImpl) special;
             var runningTeam = event.getTeam();
 
-            if (trapBlock.isPlaced()
-                    && event.getBlock().getLocation().equals(trapBlock.getLocation())) {
+            if (special.isPlaced()
+                    && event.getBlock().getLocation().equals(special.getLocation())) {
                 event.setDrops(false);
-                trapBlock.process(event.getPlayer(), runningTeam, true);
+                special.process(event.getPlayer(), runningTeam, true);
             }
         }
     }
@@ -93,12 +88,11 @@ public class TrapListener {
         var game = gPlayer.getGame();
         if (game.getStatus() == GameStatus.RUNNING && !gPlayer.isSpectator()) {
             for (var special : game.getActiveSpecialItems(TrapImpl.class)) {
-                var trapBlock = (TrapImpl) special;
 
-                if (trapBlock.isPlaced()) {
-                    if (game.getPlayerTeam(gPlayer) != trapBlock.getTeam()) {
-                        if (event.getNewLocation().getBlock().equals(trapBlock.getLocation().getBlock())) {
-                            trapBlock.process(gPlayer, game.getPlayerTeam(gPlayer), false);
+                if (special.isPlaced()) {
+                    if (game.getPlayerTeam(gPlayer) != special.getTeam()) {
+                        if (event.getNewLocation().getBlock().equals(special.getLocation().getBlock())) {
+                            special.process(gPlayer, game.getPlayerTeam(gPlayer), false);
                         }
                     }
                 }

@@ -10,7 +10,6 @@ import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.bedwars.special.ProtectionWallImpl;
 import org.screamingsandals.bedwars.utils.DelayFactoryImpl;
 import org.screamingsandals.bedwars.utils.MiscUtils;
-import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.event.player.SPlayerInteractEvent;
 import org.screamingsandals.lib.lang.Message;
@@ -25,9 +24,7 @@ public class ProtectionWallListener {
     @OnEvent
     public void onProtectionWallRegistered(ApplyPropertyToBoughtItemEventImpl event) {
         if (event.getPropertyName().equalsIgnoreCase("protectionwall")) {
-            var stack = event.getStack().as(ItemStack.class); // TODO: get rid of this transformation
-            ItemUtils.hashIntoInvisibleString(stack, applyProperty(event));
-            event.setStack(stack);
+            ItemUtils.saveData(event.getStack(), applyProperty(event));
         }
 
     }
@@ -45,7 +42,7 @@ public class ProtectionWallListener {
         if (event.getAction() == SPlayerInteractEvent.Action.RIGHT_CLICK_AIR || event.getAction() == SPlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
             if (game.getStatus() == GameStatus.RUNNING && !gPlayer.isSpectator() && event.getItem() != null) {
                 var stack = event.getItem();
-                var unhidden = ItemUtils.unhashFromInvisibleStringStartsWith(stack.as(ItemStack.class), PROTECTION_WALL_PREFIX);
+                var unhidden = ItemUtils.getIfStartsWith(stack, PROTECTION_WALL_PREFIX);
 
                 if (unhidden != null) {
                     if (!game.isDelayActive(gPlayer, ProtectionWallImpl.class)) {

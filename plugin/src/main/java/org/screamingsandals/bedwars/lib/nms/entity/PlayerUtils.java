@@ -1,6 +1,5 @@
 package org.screamingsandals.bedwars.lib.nms.entity;
 
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.nms.accessors.ServerGamePacketListenerImplAccessor;
 import org.screamingsandals.bedwars.nms.accessors.ServerboundClientCommandPacketAccessor;
@@ -13,7 +12,8 @@ import org.screamingsandals.lib.tasker.TaskerTime;
 import org.screamingsandals.lib.utils.reflect.Reflect;
 
 public class PlayerUtils {
-	public static void respawn(Player player, long delay) {
+	public static void respawn(PlayerWrapper playerWrapper, long delay) {
+		var player = playerWrapper.as(Player.class);
 		Tasker.build(() -> {
 			try {
 				player.spigot().respawn();
@@ -36,15 +36,5 @@ public class PlayerUtils {
 		experience.totalExperience(player.as(Player.class).getTotalExperience()); // TODO
 		experience.level(levels);
 		experience.sendPacket(player);
-	}
-
-	@Deprecated // use PlayerWrapper#teleport()
-	public static boolean teleportPlayer(Player player, Location location) {
-		try {
-			return player.teleportAsync(location).isDone();
-		} catch (Throwable t) {
-			player.teleport(location);
-			return true;
-		}
 	}
 }

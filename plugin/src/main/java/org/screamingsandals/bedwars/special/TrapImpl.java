@@ -9,13 +9,9 @@ import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.bedwars.utils.Sounds;
-import org.bukkit.Location;
-import org.bukkit.entity.Player;
 import org.screamingsandals.lib.block.BlockTypeHolder;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.item.meta.PotionEffectHolder;
-import org.screamingsandals.lib.player.PlayerMapper;
-import org.screamingsandals.lib.utils.AdventureHelper;
 import org.screamingsandals.lib.world.LocationHolder;
 
 import java.util.List;
@@ -53,7 +49,7 @@ public class TrapImpl extends SpecialItem implements Trap<GameImpl, BedWarsPlaye
         for (var data : trapData) {
             if (data.containsKey("sound")) {
                 var sound = (String) data.get("sound");
-                Sounds.playSound(player.as(Player.class), location.as(Location.class), sound, null, 1, 1);
+                Sounds.playSound(player, location, sound, null, 1, 1);
             }
 
             if (data.containsKey("effect")) {
@@ -67,7 +63,7 @@ public class TrapImpl extends SpecialItem implements Trap<GameImpl, BedWarsPlaye
         }
 
         for (var p : this.team.getPlayers()) {
-            MiscUtils.sendActionBarMessage(PlayerMapper.wrapPlayer(p), Message.of(LangKeys.SPECIALS_TRAP_CAUGHT_TEAM).placeholder("player", AdventureHelper.toComponent(player.as(Player.class).getDisplayName())));
+            MiscUtils.sendActionBarMessage(p, Message.of(LangKeys.SPECIALS_TRAP_CAUGHT_TEAM).placeholder("player", player.getDisplayName()));
         }
         MiscUtils.sendActionBarMessage(player, Message.of(LangKeys.SPECIALS_TRAP_CAUGHT).placeholder("team", getTeam().getName()));
     }

@@ -1,7 +1,5 @@
 package org.screamingsandals.bedwars.region;
 
-import org.bukkit.block.data.BlockData;
-import org.bukkit.block.data.type.Bed;
 import org.screamingsandals.lib.block.BlockHolder;
 import org.screamingsandals.lib.block.BlockTypeHolder;
 import org.screamingsandals.lib.world.LocationHolder;
@@ -69,7 +67,7 @@ public class FlatteningRegion implements BWRegion {
 
     @Override
     public boolean isBedHead(BlockStateHolder block) {
-        return isBedBlock(block) && ((Bed) block.getType().as(BlockData.class)).getPart() == Bed.Part.HEAD;
+        return isBedBlock(block) && block.getType().get("part").map("head"::equals).orElse(true);
     }
 
     @Override

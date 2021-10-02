@@ -2,7 +2,6 @@ package org.screamingsandals.bedwars.player;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.screamingsandals.bedwars.BedWarsPlugin;
@@ -11,7 +10,6 @@ import org.screamingsandals.bedwars.commands.BedWarsPermission;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.utils.BungeeUtils;
-import org.screamingsandals.bedwars.lib.nms.entity.PlayerUtils;
 import org.screamingsandals.lib.attribute.AttributeTypeHolder;
 import org.screamingsandals.lib.item.Item;
 import org.screamingsandals.lib.player.PlayerWrapper;
@@ -29,7 +27,7 @@ public class BedWarsPlayer extends PlayerWrapper implements BWPlayer {
     private final StoredInventory oldInventory = new StoredInventory();
     @Getter
     private final List<Item> permanentItemsPurchased = new ArrayList<>();
-    private final List<Player> hiddenPlayers = new ArrayList<>();
+    private final List<PlayerWrapper> hiddenPlayers = new ArrayList<>();
     @Getter
     @Setter
     private Item[] armorContents;
@@ -51,7 +49,7 @@ public class BedWarsPlayer extends PlayerWrapper implements BWPlayer {
             this.setSpectator(false);
             this.clean();
             if (GameImpl.isBungeeEnabled()) {
-                BungeeUtils.movePlayerToBungeeServer(as(Player.class), BedWarsPlugin.isDisabling());
+                BungeeUtils.movePlayerToBungeeServer(this, BedWarsPlugin.isDisabling());
             } else {
                 this.restoreInv();
             }
@@ -172,7 +170,7 @@ public class BedWarsPlayer extends PlayerWrapper implements BWPlayer {
         Debug.info("Cleaning inventory of: " + getName());
         var inv = getPlayerInventory();
         inv.setArmorContents(new Item[4]);
-        inv.setContents(new Item[]{});
+        inv.setContents(new Item[inv.getSize()]);
         forceUpdateInventory();
     }
 
@@ -184,16 +182,12 @@ public class BedWarsPlayer extends PlayerWrapper implements BWPlayer {
         new ArrayList<>(this.hiddenPlayers).forEach(this::showPlayer);
     }
 
-    @Deprecated
-    public boolean teleport(Location location) {
-    	return PlayerUtils.teleportPlayer(as(Player.class), location);
-    }
-
     // TODO: SLib equivalent
-    public void hidePlayer(Player player) {
+    public void hidePlayer(PlayerWrapper playerWrapper) {
         var thisPlayer = as(Player.class);
-        if (!hiddenPlayers.contains(player) && !player.equals(thisPlayer)) {
-            hiddenPlayers.add(player);
+        var player = playerWrapper.as(Player.class);
+        if (!hiddenPlayers.contains(playerWrapper) && !player.equals(thisPlayer)) {
+            hiddenPlayers.add(playerWrapper);
             try {
                 thisPlayer.hidePlayer(BedWarsPlugin.getInstance().getPluginDescription().as(JavaPlugin.class), player);
             } catch (Throwable t) {
@@ -203,10 +197,11 @@ public class BedWarsPlayer extends PlayerWrapper implements BWPlayer {
     }
 
     // TODO: SLib equivalent
-    public void showPlayer(Player player) {
+    public void showPlayer(PlayerWrapper playerWrapper) {
         var thisPlayer = as(Player.class);
-        if (hiddenPlayers.contains(player) && !player.equals(thisPlayer)) {
-            hiddenPlayers.remove(player);
+        var player = playerWrapper.as(Player.class);
+        if (hiddenPlayers.contains(playerWrapper) && !player.equals(thisPlayer)) {
+            hiddenPlayers.remove(playerWrapper);
             try {
                 thisPlayer.showPlayer(BedWarsPlugin.getInstance().getPluginDescription().as(JavaPlugin.class), player);
             } catch (Throwable t) {

@@ -5,6 +5,7 @@ import cloud.commandframework.CommandManager;
 import cloud.commandframework.arguments.standard.EnumArgument;
 import cloud.commandframework.arguments.standard.IntegerArgument;
 import cloud.commandframework.arguments.standard.StringArgument;
+import net.kyori.adventure.text.Component;
 import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.commands.AdminCommand;
 import org.screamingsandals.bedwars.game.TeamImpl;
@@ -20,7 +21,6 @@ import org.screamingsandals.lib.particle.ParticleHolder;
 import org.screamingsandals.lib.particle.ParticleTypeHolder;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
-import org.screamingsandals.lib.utils.AdventureHelper;
 import org.screamingsandals.lib.utils.annotations.Service;
 
 import java.util.List;
@@ -71,7 +71,7 @@ public class TeamCommand extends BaseAdminSubCommand {
                                             .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_TEAM_CREATED)
                                             .defaultPrefix()
                                             .placeholder("team", team.getName())
-                                            .placeholder("teamcolor", AdventureHelper.toComponent(team.getColor().chatColor + team.getColor().name()))
+                                            .placeholder("teamcolor", Component.text(team.getColor().name()).color(team.getColor().getTextColor()))
                                             .placeholder("maxplayers", team.getMaxPlayers())
                             );
                         }))
@@ -131,7 +131,7 @@ public class TeamCommand extends BaseAdminSubCommand {
                                             .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_TEAM_COLOR_SET)
                                             .defaultPrefix()
                                             .placeholder("team", team.getName())
-                                            .placeholder("teamcolor", AdventureHelper.toComponent(team.getColor().chatColor + team.getColor().name()))
+                                            .placeholder("teamcolor", Component.text(team.getColor().name()).color(team.getColor().getTextColor()))
                             );
                         }))
         );
@@ -263,7 +263,7 @@ public class TeamCommand extends BaseAdminSubCommand {
                             } else {
                                 // 1.13+
                                 if (block.getType().platformName().toLowerCase().endsWith("_bed")) {
-                                    if ("head".equals(block.getType().flatteningData().get("part"))) {
+                                    if (block.getType().get("part").map("head"::equals).orElse(true /* it should always be present unless it's not a bed */)) {
                                         team.setTargetBlock(loc);
                                     } else {
                                         team.setTargetBlock(Objects.requireNonNull(FlatteningBedUtils.getBedNeighbor(block)).getLocation());

@@ -1,11 +1,10 @@
 package org.screamingsandals.bedwars.special.listener;
 
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
 import org.screamingsandals.bedwars.utils.ItemUtils;
 import org.screamingsandals.bedwars.events.ApplyPropertyToBoughtItemEventImpl;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
+import org.screamingsandals.lib.container.PlayerContainer;
 import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.event.player.SPlayerDropItemEvent;
 import org.screamingsandals.lib.event.player.SPlayerInventoryClickEvent;
@@ -31,14 +30,14 @@ public class PermaItemListener {
         var gamePlayer = event.getPlayer();
         if (event.hasProperty(PERMA_ITEM_PROPERTY_KEY)) {
             if (!event.getBooleanProperty(PERMA_ITEM_PROPERTY_KEY)) {
-                var stack = event.getStack().as(ItemStack.class); // TODO: get rid of this transformation
+                var stack = event.getStack();
 
-                if (stack.getMaxStackSize() > 1) {
+                if (stack.getMaterial().getMaxStackSize() > 1) {
                     Debug.warn(String.format("Item [%s] can be stacked and players will lose this item upon dying. Remove the 'lose-upon-death' flag for this item", stack), true);
                     return;
                 }
 
-                ItemUtils.hashIntoInvisibleString(stack, PERMA_ITEM_PREFIX);
+                ItemUtils.saveData(stack, PERMA_ITEM_PREFIX);
                 gamePlayer.addPermanentItem(event.getStack());
                 event.setStack(stack);
             }
@@ -53,7 +52,7 @@ public class PermaItemListener {
         }
 
         if (event.getInventory() != null) {
-            if (!(event.getInventory() instanceof PlayerInventory)) {
+            if (!(event.getInventory() instanceof PlayerContainer)) {
                 return;
             }
         }
@@ -66,11 +65,11 @@ public class PermaItemListener {
         String slotItemUnhashedProp = null;
 
         if (cursorItem != null) {
-            cursorItemUnhashedProp = ItemUtils.unhashFromInvisibleStringStartsWith(cursorItem.as(ItemStack.class), PERMA_ITEM_PREFIX);
+            cursorItemUnhashedProp = ItemUtils.getIfStartsWith(cursorItem, PERMA_ITEM_PREFIX);
         }
 
         if (slotItem != null) {
-            slotItemUnhashedProp = ItemUtils.unhashFromInvisibleStringStartsWith(slotItem.as(ItemStack.class), PERMA_ITEM_PREFIX);
+            slotItemUnhashedProp = ItemUtils.getIfStartsWith(slotItem, PERMA_ITEM_PREFIX);
         }
 
         if ((cursorItemUnhashedProp != null || slotItemUnhashedProp != null) && blockedInventoryActions.contains(action)) {
@@ -86,7 +85,7 @@ public class PermaItemListener {
         }
         
         var droppedItem = event.getItemDrop().getItem();
-        var unhashedProperty = ItemUtils.unhashFromInvisibleStringStartsWith(droppedItem.as(ItemStack.class), PERMA_ITEM_PREFIX);
+        var unhashedProperty = ItemUtils.getIfStartsWith(droppedItem, PERMA_ITEM_PREFIX);
         if (unhashedProperty != null) {
             event.setCancelled(true);
         }

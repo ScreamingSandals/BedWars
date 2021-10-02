@@ -1,6 +1,5 @@
 package org.screamingsandals.bedwars.special.listener;
 
-import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.bedwars.utils.ItemUtils;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.events.ApplyPropertyToBoughtItemEventImpl;
@@ -29,9 +28,7 @@ public class RescuePlatformListener {
     @OnEvent
     public void onRescuePlatformRegistered(ApplyPropertyToBoughtItemEventImpl event) {
         if (event.getPropertyName().equalsIgnoreCase("rescueplatform")) {
-            var stack = event.getStack().as(ItemStack.class); // TODO: get rid of this transformation
-            ItemUtils.hashIntoInvisibleString(stack, applyProperty(event));
-            event.setStack(stack);
+            ItemUtils.saveData(event.getStack(), applyProperty(event));
         }
     }
 
@@ -48,7 +45,7 @@ public class RescuePlatformListener {
         if (event.getAction() == SPlayerInteractEvent.Action.RIGHT_CLICK_AIR || event.getAction() == SPlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
             if (game.getStatus() == GameStatus.RUNNING && !gPlayer.isSpectator() && event.getItem() != null) {
                 var stack = event.getItem();
-                var unhidden = ItemUtils.unhashFromInvisibleStringStartsWith(stack.as(ItemStack.class), RESCUE_PLATFORM_PREFIX);
+                var unhidden = ItemUtils.getIfStartsWith(stack, RESCUE_PLATFORM_PREFIX);
 
                 if (unhidden != null) {
                     if (!game.isDelayActive(gPlayer, RescuePlatformImpl.class)) {

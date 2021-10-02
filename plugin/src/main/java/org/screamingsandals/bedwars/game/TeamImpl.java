@@ -2,6 +2,7 @@ package org.screamingsandals.bedwars.game;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.kyori.adventure.text.Component;
 import org.screamingsandals.bedwars.api.Team;
 import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
 import org.screamingsandals.bedwars.config.MainConfig;
@@ -17,7 +18,6 @@ import org.screamingsandals.lib.item.builder.ItemFactory;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
-import org.screamingsandals.lib.utils.AdventureHelper;
 import org.screamingsandals.lib.world.LocationHolder;
 import org.screamingsandals.lib.world.LocationMapper;
 
@@ -93,7 +93,7 @@ public class TeamImpl implements Team<LocationHolder, TeamColorImpl, GameImpl, C
                     .firstLine(
                             Message
                                     .of(isBlockTypeBed ? LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_DESTROY_BED : (isAnchor ? LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_DESTROY_ANCHOR : (isCake ? LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_DESTROY_CAKE : LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_DESTROY_ANY)))
-                                    .earlyPlaceholder("teamcolor", AdventureHelper.toComponent(color.chatColor.toString()))
+                                    .earlyPlaceholder("teamcolor", Component.text("", color.getTextColor()))
                                     .asTextEntry(null)
                     );
             enemies.forEach(holo::addViewer);
@@ -104,7 +104,7 @@ public class TeamImpl implements Team<LocationHolder, TeamColorImpl, GameImpl, C
                     .firstLine(
                             Message
                                     .of(isBlockTypeBed ? LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_PROTECT_BED : (isAnchor ? LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_PROTECT_ANCHOR : (isCake ? LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_PROTECT_CAKE : LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_PROTECT_ANY)))
-                                    .earlyPlaceholder("teamcolor", AdventureHelper.toComponent(color.chatColor.toString()))
+                                    .earlyPlaceholder("teamcolor", Component.text("", color.getTextColor()))
                                     .asTextEntry(null)
                     );
             players.forEach(protectHolo::addViewer);

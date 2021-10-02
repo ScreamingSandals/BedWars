@@ -17,10 +17,10 @@ import org.screamingsandals.lib.Server;
 import org.screamingsandals.lib.bukkit.utils.nms.ClassStorage;
 import org.screamingsandals.lib.nms.accessors.ComponentAccessor;
 import org.screamingsandals.lib.utils.reflect.Reflect;
+import org.screamingsandals.lib.world.LocationMapper;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
 
 @UtilityClass
@@ -31,7 +31,7 @@ public class FakeDeath {
             return;
         }
 
-        List<ItemStack> loot = new ArrayList<>();
+        var loot = new ArrayList<ItemStack>();
         Collections.addAll(loot, player.getInventory().getContents());
         loot.removeIf(Objects::isNull); // remove nulls;
 
@@ -40,8 +40,8 @@ public class FakeDeath {
 
         String message = null;
         try {
-            Object combatTracker = Reflect.fastInvoke(ClassStorage.getHandle(player), LivingEntityAccessor.getMethodGetCombatTracker1());
-            Object component = Reflect.fastInvoke(combatTracker, CombatTrackerAccessor.getMethodGetDeathMessage1());
+            var combatTracker = Reflect.fastInvoke(ClassStorage.getHandle(player), LivingEntityAccessor.getMethodGetCombatTracker1());
+            var component = Reflect.fastInvoke(combatTracker, CombatTrackerAccessor.getMethodGetDeathMessage1());
             message = (String) Reflect.fastInvoke(component, ComponentAccessor.getMethodFunc_150254_d1());
         } catch (Throwable ignored) {}
 
@@ -119,10 +119,10 @@ public class FakeDeath {
         } catch (Throwable ignored) {}
 
         // respawn location will be changed by PlayerListener
-        PlayerRespawnEvent respawnEvent = new PlayerRespawnEvent(player, player.getLocation(), false);
+        var respawnEvent = new PlayerRespawnEvent(player, player.getLocation(), false);
         Bukkit.getServer().getPluginManager().callEvent(respawnEvent);
 
-        gamePlayer.teleport(respawnEvent.getRespawnLocation());
+        gamePlayer.teleport(LocationMapper.wrapLocation(respawnEvent.getRespawnLocation()));
     }
 
     public int getOrbValue(int i) {

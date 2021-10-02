@@ -1,7 +1,6 @@
 package org.screamingsandals.bedwars.inventories;
 
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.events.OpenTeamSelectionEventImpl;
@@ -15,7 +14,6 @@ import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.lib.event.EventHandler;
 import org.screamingsandals.lib.event.EventManager;
 import org.screamingsandals.lib.lang.Message;
-import org.screamingsandals.lib.utils.AdventureHelper;
 import org.screamingsandals.simpleinventories.SimpleInventoriesCore;
 import org.screamingsandals.simpleinventories.inventory.GenericItemInfo;
 import org.screamingsandals.simpleinventories.inventory.InventorySet;
@@ -62,7 +60,7 @@ public class TeamSelectorInventory {
                             try {
                                 itemInfoBuilder.stack(itemBuilder ->
                                         itemBuilder.name(Message.of(LangKeys.IN_GAME_TEAM_SELECTION_SELECT_ITEM)
-                                                .placeholder("teamName", AdventureHelper.toComponent(team.getColor().chatColor + team.getName()))
+                                                .placeholder("teamName", Component.text(team.getName()).color(team.getColor().getTextColor()))
                                                 .placeholder("inTeam", playersInTeamCount)
                                                 .placeholder("maxInTeam", team.getMaxPlayers())
                                                 .asComponent()
@@ -115,15 +113,15 @@ public class TeamSelectorInventory {
         var playersInTeamCount = playersInTeam.size();
 
         if (playersInTeamCount >= team.getMaxPlayers()) {
-            loreList.add(Message.of(LangKeys.IN_GAME_TEAM_SELECTION_SELECT_ITEM_LORE_FULL).asComponent().color(NamedTextColor.NAMES.value(team.getColor().chatColor.name().toLowerCase())));
+            loreList.add(Message.of(LangKeys.IN_GAME_TEAM_SELECTION_SELECT_ITEM_LORE_FULL).asComponent().color(team.getColor().getTextColor()));
         } else {
-            loreList.add(Message.of(LangKeys.IN_GAME_TEAM_SELECTION_SELECT_ITEM_LORE_JOIN).asComponent().color(NamedTextColor.NAMES.value(team.getColor().chatColor.name().toLowerCase())));
+            loreList.add(Message.of(LangKeys.IN_GAME_TEAM_SELECTION_SELECT_ITEM_LORE_JOIN).asComponent().color(team.getColor().getTextColor()));
         }
 
         if (!playersInTeam.isEmpty()) {
             loreList.add(Message.of(LangKeys.IN_GAME_TEAM_SELECTION_SELECT_ITEM_LORE).asComponent());
             playersInTeam.forEach(gamePlayer ->
-                    loreList.add(Component.text().color(NamedTextColor.NAMES.value(team.getColor().chatColor.name())).append(gamePlayer.getDisplayName()).build())
+                    loreList.add(gamePlayer.getDisplayName().color(team.getColor().getTextColor()))
             );
         }
 
@@ -162,7 +160,7 @@ public class TeamSelectorInventory {
 
         item.setDisplayName(
                 Message.of(LangKeys.IN_GAME_TEAM_SELECTION_SELECT_ITEM)
-                        .placeholder("teamName", AdventureHelper.toComponent(team.getColor().chatColor + team.getName()))
+                        .placeholder("teamName", Component.text(team.getName()).color(team.getColor().getTextColor()))
                         .placeholder("inTeam", playersInTeamCount)
                         .placeholder("maxInTeam", team.getMaxPlayers())
                         .asComponent()

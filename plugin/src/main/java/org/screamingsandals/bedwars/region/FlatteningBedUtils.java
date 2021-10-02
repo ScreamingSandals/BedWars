@@ -1,7 +1,5 @@
 package org.screamingsandals.bedwars.region;
 
-import org.bukkit.block.data.BlockData;
-import org.bukkit.block.data.type.Bed;
 import org.screamingsandals.lib.block.BlockTypeHolder;
 import org.screamingsandals.lib.utils.BlockFace;
 import org.screamingsandals.lib.block.BlockHolder;
@@ -29,10 +27,10 @@ public class FlatteningBedUtils {
         }
         var data = block.getCurrentType();
 
-        return data.as(BlockData.class) instanceof Bed;
+        return data.platformName().toLowerCase().endsWith("_bed") && data.get("part").isPresent();
     }
 
     public static boolean isBedBlock(BlockTypeHolder data) {
-        return data != null && data.as(BlockData.class) instanceof Bed;
+        return data != null && data.platformName().toLowerCase().endsWith("_bed") && data.get("part").isPresent();
     }
 }

@@ -7,7 +7,6 @@ import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.events.ApplyPropertyToBoughtItemEventImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
-import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.event.player.SPlayerInteractEvent;
@@ -22,10 +21,7 @@ public class TrackerListener {
     @OnEvent
     public void onTrackerRegistered(ApplyPropertyToBoughtItemEventImpl event) {
         if (event.getPropertyName().equalsIgnoreCase("tracker")) {
-            var stack = event.getStack().as(ItemStack.class); // TODO: get rid of this transformation
-
-            ItemUtils.hashIntoInvisibleString(stack, TRACKER_PREFIX);
-            event.setStack(stack);
+            ItemUtils.saveData(event.getStack(), TRACKER_PREFIX);
         }
 
     }
@@ -43,7 +39,7 @@ public class TrackerListener {
             if (game.getStatus() == GameStatus.RUNNING && !gamePlayer.isSpectator()) {
                 if (event.getItem() != null) {
                     var stack = event.getItem();
-                    var unhidden = ItemUtils.unhashFromInvisibleStringStartsWith(stack.as(ItemStack.class), TRACKER_PREFIX);
+                    var unhidden = ItemUtils.getIfStartsWith(stack, TRACKER_PREFIX);
                     if (unhidden != null) {
                         event.setCancelled(true);
 
@@ -51,13 +47,13 @@ public class TrackerListener {
                                 .build(() -> {
                                     var target = MiscUtils.findTarget(game, player, Double.MAX_VALUE);
                                     if (target != null) {
-                                        player.as(Player.class).setCompassTarget(target.getLocation().as(Location.class));
+                                        player.as(Player.class).setCompassTarget(target.getLocation().as(Location.class)); // TODO: remove this transformation
 
-                                        int distance = (int) player.getLocation().as(Location.class).distance(target.getLocation().as(Location.class)); // TODO: remove this
+                                        int distance = (int) Math.sqrt(player.getLocation().getDistanceSquared(target.getLocation()));
                                         MiscUtils.sendActionBarMessage(player, Message.of(LangKeys.SPECIALS_TRACKER_TARGET_FOUND).placeholder("target", target.getDisplayName()).placeholder("distance", distance));
                                     } else {
                                         MiscUtils.sendActionBarMessage(player, Message.of(LangKeys.SPECIALS_TRACKER_NO_TARGET_FOUND));
-                                        player.as(Player.class).setCompassTarget(game.getTeamOfPlayer(gamePlayer).getTeamSpawn().as(Location.class)); // TODO: remove this
+                                        player.as(Player.class).setCompassTarget(game.getTeamOfPlayer(gamePlayer).getTeamSpawn().as(Location.class)); // TODO: remove this transformation
                                     }
                                 })
                                 .afterOneTick()

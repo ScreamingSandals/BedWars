@@ -1,14 +1,14 @@
 package org.screamingsandals.bedwars.listener;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
-import net.milkbowl.vault.chat.Chat;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.*;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
@@ -36,6 +36,7 @@ import org.screamingsandals.lib.attribute.AttributeTypeHolder;
 import org.screamingsandals.lib.block.BlockTypeHolder;
 import org.screamingsandals.lib.entity.EntityHuman;
 import org.screamingsandals.lib.entity.EntityLiving;
+import org.screamingsandals.lib.entity.EntityProjectile;
 import org.screamingsandals.lib.event.EventManager;
 import org.screamingsandals.lib.event.EventPriority;
 import org.screamingsandals.lib.event.OnEvent;
@@ -69,7 +70,7 @@ public class PlayerListener {
             final var gVictim = victim.as(BedWarsPlayer.class);
             final var game = gVictim.getGame();
             final var victimTeam = game.getPlayerTeam(gVictim);
-            final var victimColor = victimTeam.getColor().chatColor;
+            final var victimColor = victimTeam.getColor().getTextColor();
             final var drops = List.copyOf(event.getDrops());
             int respawnTime = MainConfig.getInstance().node("respawn-cooldown", "time").getInt(5);
 
@@ -103,19 +104,19 @@ public class PlayerListener {
                             Debug.info(victim.getName() + " died because entity " + killer.getName() + " killed him");
                             final var gKiller = killer.as(BedWarsPlayer.class);
                             final var killerTeam = game.getPlayerTeam(gKiller);
-                            final var killerColor = killerTeam.getColor().chatColor;
+                            final var killerColor = killerTeam.getColor().getTextColor();
 
                             deathMessageMsg = Message.of(LangKeys.IN_GAME_PLAYER_KILLED)
                                     .prefixOrDefault(game.getCustomPrefixComponent())
-                                    .placeholder("victim", AdventureHelper.toComponent(victimColor + victim.as(Player.class).getDisplayName()))
-                                    .placeholder("killer", AdventureHelper.toComponent(killerColor + killer.as(Player.class).getDisplayName()))
-                                    .placeholder("victimTeam", AdventureHelper.toComponent(victimColor + victimTeam.getName()))
-                                    .placeholder("killerTeam", AdventureHelper.toComponent(killerColor + killerTeam.getName()));
+                                    .placeholder("victim", victim.getDisplayName().color(victimColor))
+                                    .placeholder("killer", killer.getDisplayName().color(killerColor))
+                                    .placeholder("victimTeam", Component.text(victimTeam.getName()).color(victimColor))
+                                    .placeholder("killerTeam", Component.text(killerTeam.getName()).color(killerColor));
                         } else {
                             deathMessageMsg = Message.of(LangKeys.IN_GAME_PLAYER_SELF_KILLED)
                                     .prefixOrDefault(game.getCustomPrefixComponent())
-                                    .placeholder("victim", AdventureHelper.toComponent(victimColor + victim.as(Player.class).getDisplayName()))
-                                    .placeholder("victimTeam", AdventureHelper.toComponent(victimColor + victimTeam.getName()));
+                                    .placeholder("victim", victim.getDisplayName().color(victimColor))
+                                    .placeholder("victimTeam", Component.text(victimTeam.getName()).color(victimColor));
                         }
 
                     }
@@ -174,13 +175,13 @@ public class PlayerListener {
                         }
                         if (team.isDead()) {
                             SpawnEffects.spawnEffect(game, gVictim, "game-effects.teamkill");
-                            Sounds.playSound(killer.as(Player.class), killer.getLocation().as(Location.class),
+                            Sounds.playSound(killer, killer.getLocation(),
                                     MainConfig.getInstance().node("sounds", "team_kill", "sound").getString(),
                                     Sounds.ENTITY_PLAYER_LEVELUP,
                                     (float) MainConfig.getInstance().node("sounds", "team_kill", "volume").getDouble(),
                                     (float) MainConfig.getInstance().node("sounds", "team_kill", "pitch").getDouble());
                         } else {
-                            Sounds.playSound(killer.as(Player.class), killer.getLocation().as(Location.class),
+                            Sounds.playSound(killer, killer.getLocation(),
                                     MainConfig.getInstance().node("sounds", "player_kill", "sound").getString(),
                                     Sounds.ENTITY_PLAYER_BIG_FALL,
                                     (float) MainConfig.getInstance().node("sounds", "player_kill", "volume").getDouble(),
@@ -224,7 +225,7 @@ public class PlayerListener {
             }
             if (!Server.isVersion(1, 15) && !MainConfig.getInstance().node("allow-fake-death").getBoolean()) {
                 Debug.info(victim.getName() + " is going to be respawned via spigot api");
-                PlayerUtils.respawn(victim.as(Player.class), 3L);
+                PlayerUtils.respawn(victim, 3L);
             }
             if (MainConfig.getInstance().node("respawn-cooldown", "enabled").getBoolean()
                     && victimTeam.isAlive()
@@ -233,7 +234,6 @@ public class PlayerListener {
                 Debug.info(victim.getName() + " is in respawn cooldown");
 
                 final var livingTime = new AtomicInteger(respawnTime);
-                final var bukkitPlayer = gVictim.as(Player.class);
                 final var task = new AtomicReference<TaskerTask>();
                 task.set(
                         Tasker.build(() -> {
@@ -243,7 +243,7 @@ public class PlayerListener {
                                                 .placeholder("time", livingTime.get())
                                                 .times(TitleUtils.defaultTimes())
                                                 .title(gVictim);
-                                        Sounds.playSound(bukkitPlayer, bukkitPlayer.getLocation(),
+                                        Sounds.playSound(gVictim, gVictim.getLocation(),
                                                 MainConfig.getInstance().node("sounds", "respawn_cooldown_wait", "sound").getString(),
                                                 Sounds.BLOCK_STONE_BUTTON_CLICK_ON,
                                                 (float) MainConfig.getInstance().node("sounds", "respawn_cooldown_wait", "volume").getDouble(),
@@ -253,7 +253,7 @@ public class PlayerListener {
                                     livingTime.decrementAndGet();
                                     if (livingTime.get() == 0) {
                                         game.makePlayerFromSpectator(gVictim);
-                                        Sounds.playSound(bukkitPlayer, bukkitPlayer.getLocation(),
+                                        Sounds.playSound(gVictim, gVictim.getLocation(),
                                                 MainConfig.getInstance().node("sounds", "respawn_cooldown_done", "sound").getString(),
                                                 Sounds.UI_BUTTON_CLICK,
                                                 (float) MainConfig.getInstance().node("sounds", "respawn_cooldown_done", "volume").getDouble(),
@@ -298,7 +298,7 @@ public class PlayerListener {
                             if (game.isEmpty()) { // still nothing?
                                 if (!player.hasPermission(BedWarsPermission.ADMIN_PERMISSION.asPermission())) {
                                     Debug.info(event.getPlayer().getName() + " is not connecting to any game! Kicking...");
-                                    BungeeUtils.movePlayerToBungeeServer(player.as(Player.class), false);
+                                    BungeeUtils.movePlayerToBungeeServer(player, false);
                                 }
                                 return;
                             }
@@ -321,7 +321,7 @@ public class PlayerListener {
         }
 
         if (MainConfig.getInstance().node("tab", "enabled").getBoolean() && MainConfig.getInstance().node("tab", "hide-foreign-players").getBoolean()) {
-            Server.getConnectedPlayers().stream().filter(PlayerManagerImpl.getInstance()::isPlayerInGame).forEach(p -> PlayerManagerImpl.getInstance().getPlayer(p).orElseThrow().hidePlayer(player.as(Player.class)));
+            Server.getConnectedPlayers().stream().filter(PlayerManagerImpl.getInstance()::isPlayerInGame).forEach(p -> PlayerManagerImpl.getInstance().getPlayer(p).orElseThrow().hidePlayer(player));
         }
     }
 
@@ -718,15 +718,15 @@ public class PlayerListener {
                         }
                     } else if (edbee.getDamager().getEntityType().is("firework") && game.getStatus() == GameStatus.GAME_END_CELEBRATING) {
                         event.setCancelled(true);
-                    } else if (edbee.getDamager().as(Entity.class) instanceof Projectile) {
-                        var projectile = edbee.getDamager().as(Projectile.class);
-                        if (projectile instanceof Fireball && game.getStatus() == GameStatus.RUNNING) {
+                    } else if (edbee.getDamager() instanceof EntityProjectile) {
+                        var projectile = (EntityProjectile) edbee.getDamager();
+                        if (projectile.getEntityType().is("minecraft:fireball", "minecraft:small_fireball", "minecraft:dragon_fireball") && game.getStatus() == GameStatus.RUNNING) {
                             final double damage = MainConfig.getInstance().node("specials", "throwable-fireball", "damage").getDouble();
                             event.setDamage(damage);
-                        } else if (projectile.getShooter() instanceof Player) {
-                            var damager = (Player) projectile.getShooter();
-                            if (PlayerManagerImpl.getInstance().isPlayerInGame(damager.getUniqueId())) {
-                                BedWarsPlayer gDamager = PlayerManagerImpl.getInstance().getPlayer(damager.getUniqueId()).orElseThrow();
+                        } else if (projectile.getShooter() instanceof EntityHuman) {
+                            var damager = projectile.getShooter().as(PlayerWrapper.class);
+                            if (PlayerManagerImpl.getInstance().isPlayerInGame(damager)) {
+                                var gDamager = damager.as(BedWarsPlayer.class);
                                 if (gDamager.isSpectator() || gDamager.getGame().getPlayerTeam(gDamager) == game.getPlayerTeam(gPlayer) && !game.getConfigurationContainer().getOrDefault(ConfigurationContainer.FRIENDLY_FIRE, Boolean.class, false)) {
                                     event.setCancelled(true);
                                 }
@@ -751,11 +751,11 @@ public class PlayerListener {
             return;
         }
 
-        var projectile = event.getEntity().as(Projectile.class);
-        if (projectile.getShooter() instanceof Player) {
-            Player damager = (Player) projectile.getShooter();
-            if (PlayerManagerImpl.getInstance().isPlayerInGame(damager.getUniqueId())) {
-                if (PlayerManagerImpl.getInstance().getPlayer(damager.getUniqueId()).orElseThrow().isSpectator()) {
+        var projectile = event.getEntity();
+        if (projectile.getShooter() instanceof EntityHuman) {
+            var damager = projectile.getShooter().as(PlayerWrapper.class);
+            if (PlayerManagerImpl.getInstance().isPlayerInGame(damager)) {
+                if (damager.as(BedWarsPlayer.class).isSpectator()) {
                     event.setCancelled(true);
                     Debug.info(damager.getName() + " tried to launch projectile as spectator");
                 }
@@ -818,8 +818,7 @@ public class PlayerListener {
                             // TODO
                         }
                     } else if (event.getMaterial().is(MainConfig.getInstance().node("items", "startgame").getString("DIAMOND"))) {
-                        if (game.getStatus() == GameStatus.WAITING && (player.hasPermission("bw.vip.startitem")
-                                || player.hasPermission("misat11.bw.vip.startitem"))) {
+                        if (game.getStatus() == GameStatus.WAITING && (player.hasPermission(BedWarsPermission.START_ITEM_PERMISSION.asPermission()))) {
                             if (game.checkMinPlayers()) {
                                 game.gameStartItem = true;
                             } else {
@@ -857,9 +856,9 @@ public class PlayerListener {
 
                             player.openInventory(team.getTeamChestInventory());
                             Debug.info(player.getName() + " opened team chest");
-                        } else if (event.getBlockClicked().getBlockState().orElseThrow().as(BlockState.class) instanceof InventoryHolder) {
-                            var holder = event.getBlockClicked().getBlockState().orElseThrow().as(InventoryHolder.class);
-                            game.addChestForFutureClear(event.getBlockClicked().getLocation().as(Location.class), holder.getInventory());
+                        } else if (event.getBlockClicked().getBlockState().orElseThrow().holdsInventory()) {
+                            var inventory = event.getBlockClicked().getBlockState().orElseThrow().getInventory().orElseThrow();
+                            game.addChestForFutureClear(event.getBlockClicked().getLocation(), inventory);
                             Debug.info(player.getName() + " used chest in BedWars game");
                         } else if (event.getBlockClicked().getType().platformName().toLowerCase().contains("cake")) {
                             if (game.getConfigurationContainer().getOrDefault(ConfigurationContainer.CAKE_TARGET_BLOCK_EATING, Boolean.class, false)) {
@@ -1086,7 +1085,7 @@ public class PlayerListener {
             var living = (EntityLiving) entity;
             living.setRemoveWhenFarAway(false);
             living.setCanPickupItems(false);
-            living.setCustomName(value.getColor().chatColor + value.getName());
+            living.setCustomName(Component.text(value.getName()).color(value.getColor().getTextColor()));
             living.setCustomNameVisible(MainConfig.getInstance().node("jointeam-entity-show-name").getBoolean(true));
 
             if (living.getEntityType().is("armor_stand")) {
@@ -1114,32 +1113,29 @@ public class PlayerListener {
 
             var playerName = player.getName();
             var displayName = player.getDisplayName();
-            var playerListName = player.as(Player.class).getPlayerListName();
+            var playerListName = player.getPlayerListName();
 
             String format = MainConfig.getInstance().node("chat", "format").getString("<%teamcolor%%name%§r> ");
             if (team != null) {
-                format = format.replace("%teamcolor%", team.getColor().chatColor.toString());
+                format = format.replace("%teamcolor%", AdventureHelper.toLegacyColorCode(team.getColor().getTextColor()));
                 format = format.replace("%team%", team.getName());
-                format = format.replace("%coloredteam%", team.getColor().chatColor + team.getName());
+                format = format.replace("%coloredteam%", AdventureHelper.toLegacy(Component.text(team.getName()).color(team.getColor().getTextColor())));
             } else if (spectator) {
-                format = format.replace("%teamcolor%", ChatColor.GRAY.toString());
+                format = format.replace("%teamcolor%", AdventureHelper.toLegacyColorCode(NamedTextColor.GRAY));
                 format = format.replace("%team%", "SPECTATOR");
-                format = format.replace("%coloredteam%", ChatColor.GRAY.toString() + "SPECTATOR");
+                format = format.replace("%coloredteam%", ChatColor.GRAY + "SPECTATOR");
             } else {
-                format = format.replace("%teamcolor%", ChatColor.GRAY.toString());
+                format = format.replace("%teamcolor%", AdventureHelper.toLegacyColorCode(NamedTextColor.GRAY));
                 format = format.replace("%team%", "");
-                format = format.replace("%coloredteam%", ChatColor.GRAY.toString());
+                format = format.replace("%coloredteam%", AdventureHelper.toLegacyColorCode(NamedTextColor.GRAY));
             }
             format = format.replace("%name%", playerName);
             format = format.replace("%displayName%", AdventureHelper.toLegacy(displayName));
-            format = format.replace("%playerListName%", playerListName);
+            format = format.replace("%playerListName%", AdventureHelper.toLegacyNullable(playerListName));
 
             if (VaultUtils.getInstance().isVault()) {
-                Chat chat = Bukkit.getServer().getServicesManager().load(Chat.class);
-                if (chat != null) {
-                    format = format.replace("%prefix%", chat.getPlayerPrefix(player.as(Player.class)));
-                    format = format.replace("%suffix%", chat.getPlayerSuffix(player.as(Player.class)));
-                }
+                format = format.replace("%prefix%", VaultUtils.getInstance().getPrefix(player));
+                format = format.replace("%suffix%", VaultUtils.getInstance().getSuffix(player));
             }
 
             format = format.replace("%prefix%", "");
@@ -1314,9 +1310,7 @@ public class PlayerListener {
                 Debug.info(player.getName() + " tried to pick up the item in lobby or as spectator");
             } else {
                 for (var spawner : game.getSpawners()) {
-                    if (spawner.getMaxSpawnedResources() > 0) {
-                        spawner.remove(event.getItem());
-                    }
+                    spawner.remove(event.getItem());
                 }
             }
         }

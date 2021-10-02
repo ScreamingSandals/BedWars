@@ -9,7 +9,6 @@ import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.bedwars.special.WarpPowderImpl;
 import org.screamingsandals.bedwars.utils.DelayFactoryImpl;
 import org.screamingsandals.bedwars.utils.MiscUtils;
-import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.lib.entity.EntityHuman;
 import org.screamingsandals.lib.entity.EntityItem;
 import org.screamingsandals.lib.event.OnEvent;
@@ -27,9 +26,7 @@ public class WarpPowderListener {
     @OnEvent
     public void onPowderItemRegister(ApplyPropertyToBoughtItemEventImpl event) {
         if (event.getPropertyName().equalsIgnoreCase("warppowder")) {
-            var stack = event.getStack().as(ItemStack.class); // TODO: get rid of this transformation
-            ItemUtils.hashIntoInvisibleString(stack, applyProperty(event));
-            event.setStack(stack);
+            ItemUtils.saveData(event.getStack(), applyProperty(event));
         }
     }
 
@@ -46,7 +43,7 @@ public class WarpPowderListener {
             if (game.getStatus() == GameStatus.RUNNING && !gPlayer.isSpectator()) {
                 if (event.getItem() != null) {
                     var stack = event.getItem();
-                    var unhidden = ItemUtils.unhashFromInvisibleStringStartsWith(stack.as(ItemStack.class), WARP_POWDER_PREFIX);
+                    var unhidden = ItemUtils.getIfStartsWith(stack, WARP_POWDER_PREFIX);
 
                     if (unhidden != null) {
                         event.setCancelled(true);
