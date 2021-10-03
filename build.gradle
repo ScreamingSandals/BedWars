@@ -1,17 +1,22 @@
 plugins {
-    id 'org.screamingsandals.plugin-builder' version '1.0.51' apply false
+    id 'org.screamingsandals.plugin-builder' version '1.0.52' apply false
     id 'org.screamingsandals.nms-mapper' version '1.0.6' apply false
     id 'com.github.gmazzo.buildconfig' version '3.0.0' apply false
 }
 
-defaultTasks 'clean', 'screamCompile'
-
 allprojects {
     group = 'org.screamingsandals.bedwars'
-    version = '0.2.20-SNAPSHOT'
+    version = '0.2.20'
+}
+
+if (version.toString().endsWith('-SNAPSHOT')) {
+    defaultTasks 'clean', 'screamCompile'
+} else {
+    defaultTasks 'clean', 'screamCompile', ':BedWars-API:allowJavadocUpload'
 }
 
 subprojects {
+    System.setProperty("JavadocUploadCustomDirectoryPath", "sbw-0-2-x")
     apply plugin: 'java'
     apply plugin: 'org.screamingsandals.plugin-builder'
 
