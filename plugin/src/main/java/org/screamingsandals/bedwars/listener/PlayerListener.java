@@ -1218,7 +1218,7 @@ public class PlayerListener {
                 if (!ArenaUtils.isInArea(event.getNewLocation(), game.getPos1(), game.getPos2())) {
                     var entity = player.asEntity();
                     var armor = entity.getAttribute(AttributeTypeHolder.of("minecraft:generic.armor"));
-                    var armorToughness = entity.getAttribute(AttributeTypeHolder.of("minecraft:generic.armor_toughness"));
+                    var armorToughness = AttributeTypeHolder.ofOptional("minecraft:generic.armor_toughness").flatMap(entity::getAttribute);
                     if (armor.isEmpty()) {
                         entity.damage(5);
                     } else {
