@@ -1,6 +1,7 @@
 package org.screamingsandals.bedwars.commands;
 
 import com.google.gson.*;
+import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.VersionInfo;
 import lombok.Data;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -255,15 +256,19 @@ public class DumpCommand extends BaseCommand {
 
                 if (code >= 200 && code <= 299) {
                     Message message = gson.fromJson(new InputStreamReader(connection.getInputStream()), Message.class);
-                    if (Main.isSpigot()) {
-                        TextComponent msg1 = new TextComponent("https://paste.gg/" + message.getResult().getId());
-                        msg1.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://paste.gg/" + message.getResult().getId()));
-                        msg1.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder().append("Open this link").create()));
+                    if (Main.isSpigot() && sender instanceof Player) {
+                        try {
+                            TextComponent msg1 = new TextComponent("https://paste.gg/" + message.getResult().getId());
+                            msg1.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://paste.gg/" + message.getResult().getId()));
+                            msg1.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("").append("Open this link").create()));
 
-                        sender.spigot().sendMessage(new ComponentBuilder("")
-                                .append(TextComponent.fromLegacyText(i18n("dump_success") + ChatColor.GRAY))
-                                .append(msg1)
-                                .create());
+                            ((Player) sender).spigot().sendMessage(new ComponentBuilder("")
+                                    .append(TextComponent.fromLegacyText(i18n("dump_success") + ChatColor.GRAY))
+                                    .append(msg1)
+                                    .create());
+                        } catch (Throwable ignored) {
+                            sender.sendMessage(i18n("dump_success") + ChatColor.GRAY + "https://paste.gg/" + message.getResult().getId());
+                        }
                     } else {
                         sender.sendMessage(i18n("dump_success") + ChatColor.GRAY + "https://paste.gg/" + message.getResult().getId());
                     }
