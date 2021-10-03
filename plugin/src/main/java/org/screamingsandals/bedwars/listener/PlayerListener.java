@@ -1097,7 +1097,10 @@ public class PlayerListener implements Listener {
                     && !gPlayer.isSpectator) {
                 if (!GameCreator.isInArea(event.getTo(), game.getPos1(), game.getPos2())) {
                     var armor = player.getAttribute(Attribute.GENERIC_ARMOR);
-                    var armorToughness = player.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS);
+                    AttributeInstance armorToughness = null;
+                    if (Arrays.stream(Attribute.values()).anyMatch(attribute -> "GENERIC_ARMOR_TOUGHNESS".equals(attribute.name()))) {
+                        armorToughness = player.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS);
+                    }
                     if (armor == null) {
                         player.damage(5);
                     } else {

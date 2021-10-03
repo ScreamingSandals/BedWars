@@ -82,7 +82,7 @@ public class PlayerStatisticManager implements PlayerStatisticsManager {
             try (Connection connection = Main.getDatabaseManager().getConnection()) {
                 connection.setAutoCommit(false);
                 PreparedStatement preparedStatement = connection
-                        .prepareStatement(Main.getDatabaseManager().getScoresSql());
+                        .prepareStatement(Main.getDatabaseManager().getScoresSql(), ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
                 ResultSet resultSet = preparedStatement.executeQuery();
                 if (resultSet.first()) {
                     do {
