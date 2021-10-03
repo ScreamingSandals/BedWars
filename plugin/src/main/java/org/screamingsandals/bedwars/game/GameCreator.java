@@ -1,15 +1,12 @@
 package org.screamingsandals.bedwars.game;
 
+import org.bukkit.*;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.ArenaTime;
 import org.screamingsandals.bedwars.api.InGameConfigBooleanConstants;
 import org.screamingsandals.bedwars.region.FlatteningBedUtils;
 import org.screamingsandals.bedwars.region.LegacyBedUtils;
 import org.screamingsandals.bedwars.utils.TeamJoinMetaDataValue;
-import org.bukkit.ChatColor;
-import org.bukkit.Chunk;
-import org.bukkit.Location;
-import org.bukkit.WeatherType;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.type.Bed;
 import org.bukkit.block.data.type.Bed.Part;
@@ -18,10 +15,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.screamingsandals.bedwars.lib.lang.I.i18nonly;
 import static org.screamingsandals.bedwars.lib.lang.I18n.i18n;
@@ -105,7 +99,7 @@ public class GameCreator {
                 } else if (args[0].equalsIgnoreCase("spawn")) {
                     response = setTeamSpawn(args[1], player.getLocation());
                 } else if (args[0].equalsIgnoreCase("bed")) {
-                    response = setTeamBed(args[1], player.getTargetBlock(null, 5));
+                    response = setTeamBed(player, args[1], player.getTargetBlock(null, 5), args.length >= 3 && args[2].equalsIgnoreCase("standing_on"));
                 }
             }
         } else if (action.equalsIgnoreCase("spawner")) {
@@ -538,10 +532,15 @@ public class GameCreator {
         return i18n("admin_command_team_is_not_exists");
     }
 
-    private String setTeamBed(String name, Block block) {
+    private String setTeamBed(Player player, String name, Block block, boolean standingOn) {
         for (Team t : game.getTeams()) {
             if (t.name.equals(name)) {
-                Location loc = block.getLocation();
+                Location loc;
+                if (standingOn) {
+                    loc = player.getLocation().getBlock().getLocation().subtract(0, 0.5, 0); // getBlock().getLocation() - normalize to block location
+                } else {
+                    loc = block.getLocation();
+                }
                 if (game.getPos1() == null || game.getPos2() == null) {
                     return i18n("admin_command_set_pos1_pos2_first");
                 }
@@ -576,6 +575,18 @@ public class GameCreator {
                     } else {
                         t.bed = loc;
                     }
+                }
+                try {
+                    player.spawnParticle(Particle.VILLAGER_HAPPY, t.bed.clone().add(0, 0, 0), 1);
+                    player.spawnParticle(Particle.VILLAGER_HAPPY, t.bed.clone().add(0, 0, 1), 1);
+                    player.spawnParticle(Particle.VILLAGER_HAPPY, t.bed.clone().add(1, 0, 0), 1);
+                    player.spawnParticle(Particle.VILLAGER_HAPPY, t.bed.clone().add(1, 0, 1), 1);
+                    player.spawnParticle(Particle.VILLAGER_HAPPY, t.bed.clone().add(0, 1, 0), 1);
+                    player.spawnParticle(Particle.VILLAGER_HAPPY, t.bed.clone().add(0, 1, 1), 1);
+                    player.spawnParticle(Particle.VILLAGER_HAPPY, t.bed.clone().add(1, 1, 0), 1);
+                    player.spawnParticle(Particle.VILLAGER_HAPPY,  t.bed.clone().add(1, 1, 1), 1);
+                } catch (Throwable ignored) {
+                    // why are you running sbw on 1.8.x?
                 }
                 return i18n("admin_command_bed_setted").replace("%team%", t.name)
                         .replace("%x%", Integer.toString(t.bed.getBlockX()))

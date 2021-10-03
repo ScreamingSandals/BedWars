@@ -274,7 +274,7 @@ help_bw_admin_team_add: "/bw admin <arena> team add <team> <color> <max players>
 help_bw_admin_team_color: "/bw admin <arena> team color <team> <color> - &eThay đổi màu của đội"
 help_bw_admin_team_maxplayers: "/bw admin <arena> team maxplayers <team> <max players> - &eThay đổi số người chơi tối đa mỗi đội"
 help_bw_admin_team_spawn: "/bw admin <arena> team spawn <team> - &eĐặt vị trí bắt đầu của đội thành vị trí của bạn"
-help_bw_admin_team_bed: "/bw admin <arena> team bed <team> - &eĐặt khối mục tiêu của nhóm vào vị trí của bạn (nó có thể là một khối khác, không chỉ là cái giường)"
+help_bw_admin_team_bed: "/bw admin <arena> team bed <team> [looking_at|standing_on] - &eĐặt khối mục tiêu của nhóm vào vị trí của bạn (nó có thể là một khối khác, không chỉ là cái giường)"
 help_bw_admin_jointeam: "/bw admin <arena> jointeam <team> - &eĐặt khả năng kết nối với một nhóm bằng cách sử dụng một thực thể"
 help_bw_admin_spawner_add: "/bw admin <arena> spawner add <bronze|gold|iron> [hologram] [cấp độ đầu tiên] [name] [team] [tài nguyên tạo ra tối đa] - &eThêm spawner vị trí của bạn"
 help_bw_admin_spawner_reset: "/bw admin <arena> spawner reset - &eXóa toàn bộ spawners"

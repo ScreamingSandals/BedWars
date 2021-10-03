@@ -274,7 +274,7 @@ help_bw_admin_team_add: "/bw admin <арена> team add <команда> <цв�
 help_bw_admin_team_color: "/bw admin <арена> team color <team> <color> - &eИзменить цвет команды"
 help_bw_admin_team_maxplayers: "/bw admin <арена> team maxplayers <команда> <число> - &eИзменить максимальное кол-во игроков в команде"
 help_bw_admin_team_spawn: "/bw admin <арена> team spawn <team> - &eЗадать точку возрождения команды"
-help_bw_admin_team_bed: "/bw admin <арена> team bed <team> - &eЗадать главный блок команды (любой блок, не только кровать)"
+help_bw_admin_team_bed: "/bw admin <арена> team bed <team> [looking_at|standing_on] - &eЗадать главный блок команды (любой блок, не только кровать)"
 help_bw_admin_jointeam: "/bw admin <арена> jointeam <team> - &eЗадать существо для подключения к команде"
 help_bw_admin_spawner_add: "/bw admin <арена> spawner add <bronze|gold|iron> [hologram] [первый уровень] [имя] - &eДобавить генератор на ваших координатах"
 help_bw_admin_spawner_reset: "/bw admin <арена> spawner reset - &eУбрать все генераторы"

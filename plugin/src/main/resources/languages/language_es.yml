@@ -274,7 +274,7 @@ help_bw_admin_team_add: "/bw admin <arena> team add <team> <color> <max players>
 help_bw_admin_team_color: "/bw admin <arena> team color <team> <color> - §eCambiar color del Equipo"
 help_bw_admin_team_maxplayers: "/bw admin <arena> team maxplayers <team> <max players> - §eCambiar la capacidad máxima de jugadores en el Equipo"
 help_bw_admin_team_spawn: "/bw admin <arena> team spawn <team> - §eEstablece el Spawn del Equipo en tu posición"
-help_bw_admin_team_bed: "/bw admin <arena> team bed <team> - §eEstablece la cama del equipo (puede ser otro bloque, no solo la cama)"
+help_bw_admin_team_bed: "/bw admin <arena> team bed <team> [looking_at|standing_on] - §eEstablece la cama del equipo (puede ser otro bloque, no solo la cama)"
 help_bw_admin_jointeam: "/bw admin <arena> jointeam <team> - §eEstablece la capacidad de conectarse a un equipo usando una entidad"
 help_bw_admin_spawner_add: "/bw admin <arena> spawner add <bronze|gold|iron> [hologram] [first level] [name] - §eAgregar un Generador de Objetos en tu posición"
 help_bw_admin_spawner_reset: "/bw admin <arena> spawner reset - §eRemover todos los Spawners"

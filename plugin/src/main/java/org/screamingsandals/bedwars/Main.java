@@ -1,6 +1,6 @@
 package org.screamingsandals.bedwars;
 
-import org.jetbrains.annotations.NotNull;
+import org.bstats.charts.SimplePie;
 import org.screamingsandals.bedwars.lib.lang.I18n;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
@@ -31,14 +31,12 @@ import org.screamingsandals.bedwars.game.TeamColor;
 import org.screamingsandals.bedwars.holograms.LeaderboardHolograms;
 import org.screamingsandals.bedwars.holograms.StatisticsHolograms;
 import org.screamingsandals.bedwars.inventories.ShopInventory;
-import org.screamingsandals.bedwars.lib.nms.utils.Version;
 import org.screamingsandals.bedwars.listener.*;
 import org.screamingsandals.bedwars.placeholderapi.BedwarsExpansion;
 import org.screamingsandals.bedwars.special.SpecialRegister;
 import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.bedwars.tab.TabManager;
 import org.screamingsandals.bedwars.utils.BedWarsSignOwner;
-import org.screamingsandals.bedwars.utils.CitizensUtils;
 import org.screamingsandals.bedwars.utils.UpdateChecker;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.lib.nms.holograms.HologramManager;
@@ -565,8 +563,8 @@ public class Main extends JavaPlugin implements BedwarsAPI {
 
         final int pluginId = 7147;
         metrics = new Metrics(this, pluginId);
-        metrics.addCustomChart(new Metrics.SimplePie("edition", () -> "Free"));
-        metrics.addCustomChart(new Metrics.SimplePie("build_number", () -> VersionInfo.BUILD_NUMBER));
+        metrics.addCustomChart(new SimplePie("edition", () -> "Free"));
+        metrics.addCustomChart(new SimplePie("build_number", () -> VersionInfo.BUILD_NUMBER));
 
         Bukkit.getConsoleSender().sendMessage("§fEverything is loaded! If you like our work, consider visiting our Patreon! <3");
         Bukkit.getConsoleSender().sendMessage("§fhttps://www.patreon.com/screamingsandals");

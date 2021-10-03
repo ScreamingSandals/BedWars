@@ -274,7 +274,7 @@ help_bw_admin_team_add: "/bw admin <arena> team add <team> <color> <max players>
 help_bw_admin_team_color: "/bw admin <arena> team color <team> <color> - &e更变队伍颜色"
 help_bw_admin_team_maxplayers: "/bw admin <arena> team maxplayers <team> <max players> - &e改变队伍最大人数"
 help_bw_admin_team_spawn: "/bw admin <arena> team spawn <team> - &e将队伍出生点设置在当前位置"
-help_bw_admin_team_bed: "/bw admin <arena> team bed <team> - &e将队伍标记方块设置在你的标记点 (不一定是床可,以是其他方块)"
+help_bw_admin_team_bed: "/bw admin <arena> team bed <team> [looking_at|standing_on] - &e将队伍标记方块设置在你的标记点 (不一定是床可,以是其他方块)"
 help_bw_admin_jointeam: "/bw admin <arena> jointeam <team> - &e设置使用实体连接到团队"
 help_bw_admin_spawner_add: "/bw admin <arena> spawner add <bronze|gold|iron> [hologram] [first level] [name] - &e在当前位置加入资源生成点"
 help_bw_admin_spawner_reset: "/bw admin <arena> spawner reset - &e移除所有资源点"

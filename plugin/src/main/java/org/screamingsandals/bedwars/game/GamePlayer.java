@@ -75,7 +75,7 @@ public class GamePlayer {
     }
 
     public boolean canJoinFullGame() {
-        return player.hasPermission("bw.vip.forcejoin");
+        return player.hasPermission("bw.vip.forcejoin") || player.hasPermission("misat11.bw.vip.forcejoin");
     }
 
     public void storeInv() {
@@ -95,16 +95,16 @@ public class GamePlayer {
         isTeleportingFromGame_justForInventoryPlugins = true;
         if (!mainLobbyUsed) {
             teleport(oldInventory.leftLocation, this::restoreRest);
+        } else {
+            mainLobbyUsed = false;
+            restoreRest();
         }
-        mainLobbyUsed = false;
-        restoreRest();
     }
 
     private void restoreRest() {
         player.getInventory().setContents(oldInventory.inventory);
         player.getInventory().setArmorContents(oldInventory.armor);
 
-        player.addPotionEffects(oldInventory.effects);
         player.setLevel(oldInventory.level);
         player.setExp(oldInventory.xp);
         player.setFoodLevel(oldInventory.foodLevel);
@@ -119,7 +119,7 @@ public class GamePlayer {
 
         player.setGameMode(oldInventory.mode);
 
-        player.setAllowFlight(oldInventory.mode == GameMode.CREATIVE);
+        player.setAllowFlight(oldInventory.mode == GameMode.CREATIVE || oldInventory.mode == GameMode.SPECTATOR);
 
         player.updateInventory();
         player.resetPlayerTime();

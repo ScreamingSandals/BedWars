@@ -601,6 +601,8 @@ public class AdminCommand extends BaseCommand {
                     }
                 } else if (args.get(2).equalsIgnoreCase("maxplayers")) {
                     completion.addAll(Arrays.asList("1", "2", "4", "8"));
+                } else if (args.get(2).equalsIgnoreCase("bed")) {
+                    completion.addAll(Arrays.asList("looking_at", "standing_on"));
                 }
             }
             if (args.size() == 6 && args.get(2).equalsIgnoreCase("add")) {

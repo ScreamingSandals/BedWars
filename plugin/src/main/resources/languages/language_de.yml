@@ -274,7 +274,7 @@ help_bw_admin_team_add: "/bw admin <Spiel> team add <Team> <Farbe> <Max Spieler>
 help_bw_admin_team_color: "/bw admin <Spiel> team color <Team> <Farbe> - &eÄndert die Farbe eines Teams"
 help_bw_admin_team_maxplayers: "/bw admin <Spiel> team maxplayers <Team> <Max Spieler> - &eÄndert die maximale Spielerandzahl"
 help_bw_admin_team_spawn: "/bw admin <Spiel> team spawn <Team> - &eSetzt den Team Spawn an deine Position"
-help_bw_admin_team_bed: "/bw admin <Spiel> team bed <Team> - &eSetzt den Zielblock an die Stelle auf die du schaust, es muss nicht unbedingt ein Bett sein."
+help_bw_admin_team_bed: "/bw admin <Spiel> team bed <Team> [looking_at|standing_on] - &eSetzt den Zielblock an die Stelle auf die du schaust, es muss nicht unbedingt ein Bett sein."
 help_bw_admin_jointeam: "/bw admin <Spiel> jointeam <Team> - &eSetzt einen Teambeitrittspunkt"
 help_bw_admin_spawner_add: "/bw admin <Spiel> spawner add <bronze|gold|iron> [hologram] [first level] [name] - &eSetze einen Spawner an deiner Position"
 help_bw_admin_spawner_reset: "/bw admin <Spiel> spawner reset - &eEntferne alle Spawner"

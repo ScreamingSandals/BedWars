@@ -274,7 +274,7 @@ help_bw_admin_team_add: "/bw admin <arena> team add <tim> <boja> <max igraci> - 
 help_bw_admin_team_color: "/bw admin <arena> team color <tim> <boja> - &ePromjena boje tima"
 help_bw_admin_team_maxplayers: "/bw admin <arena> team maxplayers <tim> <max igraci> - &ePromjena limita igraca u timu"
 help_bw_admin_team_spawn: "/bw admin <arena> team spawn <tim> - &ePostavljanje spawna za tim na vasu lokaciju"
-help_bw_admin_team_bed: "/bw admin <arena> team bed <tim> - &ePostavljanje mete za navedeni tim na mjesto na koje gledate (moze biti i neki drugi blok, ne samo krevet)"
+help_bw_admin_team_bed: "/bw admin <arena> team bed <tim> [looking_at|standing_on] - &ePostavljanje mete za navedeni tim na mjesto na koje gledate (moze biti i neki drugi blok, ne samo krevet)"
 help_bw_admin_jointeam: "/bw admin <arena> jointeam <tim> - &ePostavljanje mogucnosti za ulazak u tim kroz entitet"
 help_bw_admin_spawner_add: "/bw admin <arena> spawner add <bronza|zlato|zeljezo> [hologram] [prvi nivo] [naziv] [tim] [limit spawnanih resursa] - &eDodavanje item spawnera na vasu poziciju"
 help_bw_admin_spawner_reset: "/bw admin <arena> spawner reset - &eUkloni sve spawnere"

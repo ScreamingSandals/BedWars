@@ -274,7 +274,7 @@ help_bw_admin_team_add: "/bw admin <aréna> team add <tým> <barva> <max hráč�
 help_bw_admin_team_color: "/bw admin <aréna> team color <tým> <barva> - &eZmění týmu barvu"
 help_bw_admin_team_maxplayers: "/bw admin <aréna> team maxplayers <tým> <max hráčů> - &eZmění týmu maximální počet hráčů"
 help_bw_admin_team_spawn: "/bw admin <aréna> team spawn <tým> - &eNastaví týmu spawn na tvojí pozici"
-help_bw_admin_team_bed: "/bw admin <aréna> team bed <tým> - &eNastaví týmu lokaci target bloku, na který koukáš (nemusí to být jen postel)"
+help_bw_admin_team_bed: "/bw admin <aréna> team bed <tým> [looking_at|standing_on] - &eNastaví týmu lokaci target bloku, na který koukáš (nemusí to být jen postel)"
 help_bw_admin_jointeam: "/bw admin <aréna> jointeam <tým> - &eNastaví možnost připojení se do týmu pomocí entity"
 help_bw_admin_spawner_add: "/bw admin <aréna> spawner add <bronze|gold|iron> [hologram] [prvotní level] [jméno] - &ePřidá item spawner na tvojí pozici"
 help_bw_admin_spawner_reset: "/bw admin <aréna> spawner reset - &eSmaže se hry všechny spawnery"

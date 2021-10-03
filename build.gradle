@@ -1,25 +1,19 @@
-defaultTasks 'clean', ':BedWars-NMS:generateNmsComponents', 'screamCompile'
+plugins {
+    id 'org.screamingsandals.plugin-builder' version '1.0.51' apply false
+    id 'org.screamingsandals.nms-mapper' version '1.0.6' apply false
+    id 'com.github.gmazzo.buildconfig' version '3.0.0' apply false
+}
+
+defaultTasks 'clean', 'screamCompile'
 
 allprojects {
     group = 'org.screamingsandals.bedwars'
     version = '0.2.20-SNAPSHOT'
 }
 
-buildscript {
-    repositories {
-        maven { url 'https://repo.screamingsandals.org/public/' }
-        maven { url 'https://plugins.gradle.org/m2' }
-    }
-    dependencies {
-        classpath 'org.screamingsandals.gradle.builder:screaming-plugin-builder:1.0.47'
-        classpath 'org.screamingsandals.nms:NMSMapper:1.0.2'
-        classpath "com.github.gmazzo:gradle-buildconfig-plugin:3.0.0"
-    }
-}
-
 subprojects {
     apply plugin: 'java'
-    apply plugin: 'org.screamingsandals.gradle.builder'
+    apply plugin: 'org.screamingsandals.plugin-builder'
 
     repositories {
         maven { url 'https://repo.extendedclip.com/content/repositories/placeholderapi/'  }

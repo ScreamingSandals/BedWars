@@ -274,7 +274,7 @@ help_bw_admin_team_add: "/bw admin <arena> team add <team> <color> <max players>
 help_bw_admin_team_color: "/bw admin <arena> team color <team> <color> - &eMude a cor da equipe"
 help_bw_admin_team_maxplayers: "/bw admin <arena> team maxplayers <team> <max players> - &eAlterar jogadores máximos"
 help_bw_admin_team_spawn: "/bw admin <arena> team spawn <team> - &eDefine o spawn de equipe para sua posição"
-help_bw_admin_team_bed: "/bw admin <arena> team bed <team> - &eDefine o bloco alvo da equipe para sua posição alvo (pode ser outro bloco, não apenas cama)"
+help_bw_admin_team_bed: "/bw admin <arena> team bed <team> [looking_at|standing_on] - &eDefine o bloco alvo da equipe para sua posição alvo (pode ser outro bloco, não apenas cama)"
 help_bw_admin_jointeam: "/bw admin <arena> jointeam <team> - &eDefine a capacidade de se conectar a uma equipe usando uma entidade"
 help_bw_admin_spawner_add: "/bw admin <arena> spawner add <bronze|gold|iron> [hologram] [primeiro nível] [name] [team] [max spawned resources] - &eAdicionar item spawner à sua posição"
 help_bw_admin_spawner_reset: "/bw admin <arena> spawner reset - &eRemove todos os spawners"

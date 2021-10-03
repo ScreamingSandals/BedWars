@@ -131,6 +131,23 @@ public class WorldListener implements Listener {
     }
 
     @EventHandler
+    public void onIgnite(BlockIgniteEvent event) {
+        if (event.isCancelled()) {
+            return;
+        }
+
+        for (String gameName : Main.getGameNames()) {
+            Game game = Main.getGame(gameName);
+            if (game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) {
+                if (GameCreator.isInArea(event.getBlock().getLocation(), game.getPos1(), game.getPos2())) {
+                    game.getRegion().addBuiltDuringGame(event.getBlock().getLocation());
+                    return;
+                }
+            }
+        }
+    }
+
+    @EventHandler
     public void onStructureGrow(StructureGrowEvent event) {
         if (event.isCancelled()) {
             return;
