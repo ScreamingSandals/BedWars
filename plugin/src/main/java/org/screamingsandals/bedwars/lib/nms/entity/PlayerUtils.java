@@ -59,7 +59,11 @@ public class PlayerUtils {
 			return player.teleportAsync(location).thenRun(runnable).isDone();
 		} catch (Throwable t) {
 			player.teleport(location);
-			Bukkit.getScheduler().runTaskLater(Main.getInstance(), runnable, 2); // player.teleport is synchronized, we don't have to wait
+			if (!Main.getInstance().isEnabled()) {
+				runnable.run();
+			} else {
+				Bukkit.getScheduler().runTaskLater(Main.getInstance(), runnable, 2); // player.teleport is synchronized, we don't have to wait
+			}
 			return true;
 		}
 	}
