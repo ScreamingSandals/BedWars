@@ -1812,6 +1812,10 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                         Title.send(player.player, gameStartTitle, gameStartSubtitle);
                         if (team == null) {
                             makeSpectator(player, true);
+
+                            Sounds.playSound(player.player, player.player.getLocation(),
+                                    Main.getConfigurator().config.getString("sounds.game_start.sound"),
+                                    Sounds.ENTITY_PLAYER_LEVELUP, (float) Main.getConfigurator().config.getDouble("sounds.game_start.volume"), (float) Main.getConfigurator().config.getDouble("sounds.game_start.pitch"));
                         } else {
                             player.teleport(team.teamInfo.spawn, () -> {
                                 player.player.setGameMode(GameMode.SURVIVAL);
@@ -1825,11 +1829,12 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                                     }
                                 }
                                 SpawnEffects.spawnEffect(this, player.player, "game-effects.start");
+
+                                Sounds.playSound(player.player, player.player.getLocation(),
+                                        Main.getConfigurator().config.getString("sounds.game_start.sound"),
+                                        Sounds.ENTITY_PLAYER_LEVELUP, (float) Main.getConfigurator().config.getDouble("sounds.game_start.volume"), (float) Main.getConfigurator().config.getDouble("sounds.game_start.pitch"));
                             });
                         }
-                        Sounds.playSound(player.player, player.player.getLocation(),
-                                Main.getConfigurator().config.getString("sounds.game_start.sound"),
-                                Sounds.ENTITY_PLAYER_LEVELUP, (float) Main.getConfigurator().config.getDouble("sounds.game_start.volume"), (float) Main.getConfigurator().config.getDouble("sounds.game_start.pitch"));
                     }
 
                     if (getOriginalOrInheritedRemoveUnusedTargetBlocks()) {
