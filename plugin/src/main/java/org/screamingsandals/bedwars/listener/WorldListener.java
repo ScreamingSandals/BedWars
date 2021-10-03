@@ -142,6 +142,22 @@ public class WorldListener {
     }
 
     @OnEvent
+    public void onIgnite(SBlockIgniteEvent event) {
+        if (event.isCancelled()) {
+            return;
+        }
+
+        for (var game : GameManagerImpl.getInstance().getGames()) {
+            if (game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) {
+                if (ArenaUtils.isInArea(event.getBlock().getLocation(), game.getPos1(), game.getPos2())) {
+                    game.getRegion().addBuiltDuringGame(event.getBlock().getLocation());
+                    return;
+                }
+            }
+        }
+    }
+
+    @OnEvent
     public void onStructureGrow(SPlantGrowEvent event) {
         if (event.isCancelled()) {
             return;
