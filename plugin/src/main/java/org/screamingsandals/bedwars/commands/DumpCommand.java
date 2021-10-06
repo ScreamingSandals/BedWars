@@ -115,6 +115,7 @@ public class DumpCommand extends BaseCommand {
                                                                     nullValuesAllowingMap(
                                                                             "file", game.getFile(),
                                                                             "name", game.getName(),
+                                                                            "displayName", game.getDisplayName(),
                                                                             "minPlayers", game.getMinPlayers(),
                                                                             "maxPlayers", game.getMaxPlayers(),
                                                                             "lobby", nullValuesAllowingMap(

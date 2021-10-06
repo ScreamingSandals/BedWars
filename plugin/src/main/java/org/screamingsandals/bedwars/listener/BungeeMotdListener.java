@@ -63,6 +63,6 @@ public class BungeeMotdListener implements Listener {
             return; // WTF??
         }
 
-        slpe.setMotd(string.replace("%name%", game.getName()).replace("%current%", Integer.toString(game.countPlayers())).replace("%max%", Integer.toString(game.getMaxPlayers())));
+        slpe.setMotd(string.replace("%name%", game.getName()).replace("%displayName%", game.getDisplayName() != null ? game.getDisplayName() : game.getName()).replace("%current%", Integer.toString(game.countPlayers())).replace("%max%", Integer.toString(game.getMaxPlayers())));
     }
 }

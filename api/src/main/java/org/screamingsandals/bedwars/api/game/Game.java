@@ -14,6 +14,7 @@ import org.screamingsandals.lib.utils.Wrapper;
 
 import java.io.File;
 import java.util.List;
+import java.util.UUID;
 
 
 /**
@@ -31,9 +32,22 @@ import java.util.List;
 @ApiStatus.NonExtendable
 public interface Game<P extends BWPlayer, T extends Team<?, ?, ?, ?, ?>, B extends Wrapper, W extends Wrapper, L extends Wrapper, E extends Wrapper, C extends Wrapper, S extends GameStore<?, ?, ?>, G extends ItemSpawner<?, ?, ?>> {
     /**
+     *
+     * @return arena's unique id
+     */
+    UUID getUuid();
+
+    /**
      * @return Arena name
      */
 	String getName();
+
+    /**
+     *
+     * @return display name of the arena or null if there's no display name
+     */
+    @Nullable
+    String getDisplayName();
 
     /**
      * @return GameStatus of the arena
@@ -436,6 +450,8 @@ public interface Game<P extends BWPlayer, T extends Team<?, ?, ?, ?, ?>, B exten
      * @return
      */
     C getCustomPrefixComponent();
+
+    C getDisplayNameComponent();
 
     /**
      * @since 0.3.0

@@ -42,6 +42,8 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                 switch (operation) {
                     case "name":
                         return Component.text(game.getName());
+                    case "displayName":
+                        return game.getDisplayNameComponent().asComponent();
                     case "players":
                         return Component.text(game.countConnectedPlayers());
                     case "maxplayers":

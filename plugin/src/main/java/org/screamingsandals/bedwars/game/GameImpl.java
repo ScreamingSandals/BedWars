@@ -1,8 +1,7 @@
 package org.screamingsandals.bedwars.game;
 
 import com.onarandombox.MultiverseCore.api.Core;
-import lombok.Getter;
-import lombok.SneakyThrows;
+import lombok.*;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -80,6 +79,8 @@ import org.screamingsandals.lib.world.gamerule.GameRuleHolder;
 import org.screamingsandals.lib.world.weather.WeatherHolder;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
+import org.spongepowered.configurate.gson.GsonConfigurationLoader;
+import org.spongepowered.configurate.loader.ConfigurationLoader;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
 import java.io.File;
@@ -87,8 +88,11 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, WorldHolder, LocationHolder, EntityBasic, ComponentWrapper, GameStoreImpl, ItemSpawnerImpl> {
     public boolean gameStartItem;
+    @Getter
+    private final UUID uuid;
     private String name;
     private LocationHolder pos1;
     private LocationHolder pos2;
@@ -113,6 +117,10 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
     private boolean preServerRestart = false;
     @Getter
     private File file;
+    @Getter
+    @Setter
+    @Nullable
+    private String displayName;
 
     // STATUS
     private GameStatus previousStatus = GameStatus.DISABLED;
@@ -140,10 +148,6 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
 
     private boolean preparing = false;
 
-    private GameImpl() {
-
-    }
-
     public static GameImpl loadGame(File file) {
         return loadGame(file, true);
     }
@@ -154,9 +158,16 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
                 return null;
             }
 
-            final var loader = YamlConfigurationLoader.builder()
-                    .file(file)
-                    .build();
+            final ConfigurationLoader<? extends ConfigurationNode> loader;
+            if (file.getName().toLowerCase().endsWith(".yml") || file.getName().toLowerCase().endsWith(".yaml")) {
+                loader = YamlConfigurationLoader.builder()
+                        .file(file)
+                        .build();
+            } else {
+                loader = GsonConfigurationLoader.builder()
+                        .file(file)
+                        .build();
+            }
 
             final ConfigurationNode configMap;
             try {
@@ -166,7 +177,29 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
                 return null;
             }
 
-            final var game = new GameImpl();
+            var uid = configMap.node("uuid");
+            UUID uuid;
+            if (uid.empty()) {
+                var indexOf = file.getName().indexOf(".");
+                var uuidStr = indexOf == -1 ? file.getName() : file.getName().substring(0, indexOf);
+                try {
+                    uuid = UUID.fromString(uuidStr);
+                } catch (Throwable t) {
+                    do {
+                        uuid = UUID.randomUUID();
+                    } while (GameManagerImpl.getInstance().getGame(uuid).isPresent());
+                }
+            } else {
+                uuid = uid.get(UUID.class);
+            }
+
+            if (GameManagerImpl.getInstance().getGame(uuid).isPresent()) {
+                PlayerMapper.getConsoleSender().sendMessage(
+                        ChatColor.RED + "[B" + ChatColor.WHITE + "W] " + ChatColor.RED + "Arena " + uuid + " has the same unique id as another arena that's already loaded. Skipping!");
+                return null;
+            }
+
+            final var game = new GameImpl(uuid);
             game.file = file;
             game.name = configMap.node("name").getString();
             game.pauseCountdown = configMap.node("pauseCountdown").getInt();
@@ -328,14 +361,11 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
 
             game.postGameWaiting = configMap.node("postGameWaiting").getInt(3);
             game.customPrefix = configMap.node("customPrefix").getString();
+            game.displayName = configMap.node("displayName").getString();
 
-            try {
-                game.lobbyBossBarColor = loadBossBarColor(
-                        configMap.node("lobbyBossBarColor").getString("default").toUpperCase());
-                game.gameBossBarColor = loadBossBarColor(configMap.node("gameBossBarColor").getString("default").toUpperCase());
-            } catch (Throwable t) {
-                // We're using 1.8
-            }
+            game.lobbyBossBarColor = loadBossBarColor(
+                    configMap.node("lobbyBossBarColor").getString("default").toUpperCase());
+            game.gameBossBarColor = loadBossBarColor(configMap.node("gameBossBarColor").getString("default").toUpperCase());
 
             game.start();
             PlayerMapper.getConsoleSender().sendMessage(
@@ -346,6 +376,14 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
                             .append(Component.text(game.name + " (" + file.getName() + ")", NamedTextColor.WHITE))
                             .append(Component.text(" loaded!", NamedTextColor.GREEN))
             );
+            if (uid.empty()) {
+                try {
+                    // because we didn't have uuid in the arena config file, we need to save the arena again
+                    game.saveToConfig();
+                } catch (Throwable ignored) {
+                }
+            }
+
             return game;
         } catch (Throwable throwable) {
             Debug.warn("Something went wrong while loading arena file " + file.getName() + ". Please report this to our Discord or GitHub!", true);
@@ -385,7 +423,11 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
     }
 
     public static GameImpl createGame(String name) {
-        var game = new GameImpl();
+        UUID uuid;
+        do {
+            uuid = UUID.randomUUID();
+        } while (GameManagerImpl.getInstance().getGame(uuid).isPresent());
+        var game = new GameImpl(uuid);
         game.name = name;
         game.pauseCountdown = 60;
         game.gameTime = 3600;
@@ -1062,7 +1104,7 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
             dir.mkdirs();
         if (file == null) {
             do {
-                file = new File(dir, UUID.randomUUID() + ".yml");
+                file = new File(dir, UUID.randomUUID() + ".json");
             } while (file.exists());
         }
         if (!file.exists()) {
@@ -1073,11 +1115,20 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
                 e.printStackTrace();
             }
         }
-        var loader = YamlConfigurationLoader.builder()
-                .file(file)
-                .build();
+
+        final ConfigurationLoader<? extends ConfigurationNode> loader;
+        if (file.getName().toLowerCase().endsWith(".yml") || file.getName().toLowerCase().endsWith(".yaml")) {
+            loader = YamlConfigurationLoader.builder()
+                    .file(file)
+                    .build();
+        } else {
+            loader = GsonConfigurationLoader.builder()
+                    .file(file)
+                    .build();
+        }
 
         var configMap = loader.createNode();
+        configMap.node("uuid").set(uuid);
         configMap.node("name").set(name);
         configMap.node("pauseCountdown").set(pauseCountdown);
         configMap.node("gameTime").set(gameTime);
@@ -1094,6 +1145,7 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
         configMap.node("minPlayers").set(minPlayers);
         configMap.node("postGameWaiting").set(postGameWaiting);
         configMap.node("customPrefix").set(customPrefix);
+        configMap.node("displayName").set(displayName);
         if (!teams.isEmpty()) {
             for (var t : teams) {
                 var teamNode = configMap.node("teams", t.getName());
@@ -1135,12 +1187,8 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
         configMap.node("arenaTime").set(arenaTime.name());
         configMap.node("arenaWeather").set(arenaWeather == null ? "default" : arenaWeather.getPlatformName());
 
-        try {
-            configMap.node("lobbyBossBarColor").set(lobbyBossBarColor == null ? "default" : lobbyBossBarColor.name());
-            configMap.node("gameBossBarColor").set(gameBossBarColor == null ? "default" : gameBossBarColor.name());
-        } catch (Throwable t) {
-            // We're using 1.8
-        }
+        configMap.node("lobbyBossBarColor").set(lobbyBossBarColor == null ? "default" : lobbyBossBarColor.name());
+        configMap.node("gameBossBarColor").set(gameBossBarColor == null ? "default" : gameBossBarColor.name());
 
         try {
             loader.save(configMap);
@@ -2158,7 +2206,7 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
         final var texts = MainConfig.getInstance().node("sign", "lines").childrenList().stream()
                 .map(ConfigurationNode::getString)
                 .map(s -> Objects.requireNonNullElse(s, "")
-                        .replaceAll("%arena%", this.getName())
+                        .replaceAll("%arena%", this.displayName != null && !this.displayName.isBlank() ? this.displayName : this.getName())
                         .replaceAll("%status%", AdventureHelper.toLegacy(statusMessage.asComponent()))
                         .replaceAll("%players%", AdventureHelper.toLegacy(playerMessage.asComponent())))
                 .collect(Collectors.toList());
@@ -2614,6 +2662,11 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
     @Override
     public ComponentWrapper getCustomPrefixComponent() {
         return new ComponentWrapper(AdventureHelper.toComponentNullable(customPrefix));
+    }
+
+    @Override
+    public ComponentWrapper getDisplayNameComponent() {
+        return new ComponentWrapper(AdventureHelper.toComponent(this.displayName != null && !this.displayName.isBlank() ? this.displayName : this.name));
     }
 
     @Override

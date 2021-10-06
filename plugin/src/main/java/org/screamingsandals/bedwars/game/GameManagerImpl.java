@@ -31,7 +31,17 @@ public class GameManagerImpl implements GameManager<GameImpl> {
 
     @Override
     public Optional<GameImpl> getGame(String name) {
-        return games.stream().filter(game -> game.getName().equals(name)).findFirst();
+        try {
+            var uuid = UUID.fromString(name);
+            return getGame(uuid);
+        } catch (Throwable ignored) {
+            return games.stream().filter(game -> game.getName().equals(name)).findFirst();
+        }
+    }
+
+    @Override
+    public Optional<GameImpl> getGame(UUID uuid) {
+        return games.stream().filter(game -> game.getUuid().equals(uuid)).findFirst();
     }
 
     @Override
@@ -47,6 +57,11 @@ public class GameManagerImpl implements GameManager<GameImpl> {
     @Override
     public boolean hasGame(String name) {
         return getGame(name).isPresent();
+    }
+
+    @Override
+    public boolean hasGame(UUID uuid) {
+        return getGame(uuid).isPresent();
     }
 
     @Override
@@ -100,7 +115,7 @@ public class GameManagerImpl implements GameManager<GameImpl> {
                     logger.debug("No arenas have been found!");
                 } else {
                     results.forEach(file -> {
-                        if (file.exists() && file.isFile()) {
+                        if (file.exists() && file.isFile() && !file.getName().toLowerCase().endsWith(".disabled")) {
                             var game = GameImpl.loadGame(file);
                             if (game != null) {
                                 games.add(game);

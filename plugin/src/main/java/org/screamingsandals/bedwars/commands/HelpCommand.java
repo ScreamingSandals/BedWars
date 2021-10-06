@@ -78,6 +78,7 @@ public class HelpCommand extends BaseCommand {
                                     .join(LangKeys.HELP_BW_ADMIN_PAUSECOUNTDOWN)
                                     .join(LangKeys.HELP_BW_ADMIN_POST_GAME_WAITING)
                                     .join(LangKeys.HELP_BW_ADMIN_CUSTOMPREFIX)
+                                    .join(LangKeys.HELP_BW_ADMIN_DISPLAY_NAME)
                                     .join(LangKeys.HELP_BW_ADMIN_MINPLAYERS)
                                     .join(LangKeys.HELP_BW_ADMIN_TIME)
                                     .join(LangKeys.HELP_BW_ADMIN_TEAM_ADD)

@@ -37,7 +37,7 @@ public class TeamSelectorInventory {
 
         inventorySet = SimpleInventoriesCore.builder()
                 .categoryOptions(localOptions -> {
-                    localOptions.prefix(Message.of(LangKeys.IN_GAME_TEAM_SELECTION_INVENTORY_NAME).placeholder("arena", game.getName()).asComponent())
+                    localOptions.prefix(Message.of(LangKeys.IN_GAME_TEAM_SELECTION_INVENTORY_NAME).placeholder("arena", game.getDisplayNameComponent()).asComponent())
                             .showPageNumber(false)
                             .renderHeaderStart(54)
                             .renderOffset(0);

@@ -164,6 +164,7 @@ public class LangKeys {
     public final String[] HELP_BW_ADMIN_ARENA_WEATHER = {"help", "bw_admin_arena_weather"};
     public final String[] HELP_BW_ADMIN_POST_GAME_WAITING = {"help", "bw_admin_post_game_waiting"};
     public final String[] HELP_BW_ADMIN_CUSTOMPREFIX = {"help", "bw_admin_customprefix"};
+    public final String[] HELP_BW_ADMIN_DISPLAY_NAME = {"help", "bw_admin_display_name"};
     public final String[] HELP_BW_ADMIN_REMOVE = {"help", "bw_admin_remove"};
     public final String[] HELP_BW_ADMIN_EDIT = {"help", "bw_admin_edit"};
     public final String[] HELP_BW_ADMIN_SAVE = {"help", "bw_admin_save"};
@@ -258,6 +259,8 @@ public class LangKeys {
     public final String[] ADMIN_ARENA_EDIT_SUCCESS_POST_GAME_WAITING = {"admin", "arena", "edit", "success", "post_game_waiting"};
     public final String[] ADMIN_ARENA_EDIT_SUCCESS_CUSTOM_PREFIX_ENABLED = {"admin", "arena", "edit", "success", "custom_prefix_enabled"};
     public final String[] ADMIN_ARENA_EDIT_SUCCESS_CUSTOM_PREFIX_DISABLED = {"admin", "arena", "edit", "success", "custom_prefix_disabled"};
+    public final String[] ADMIN_ARENA_EDIT_SUCCESS_DISPLAY_NAME_ENABLED = {"admin", "arena", "edit", "success", "display_name_enabled"};
+    public final String[] ADMIN_ARENA_EDIT_SUCCESS_DISPLAY_NAME_DISABLED = {"admin", "arena", "edit", "success", "display_name_disabled"};
     public final String[] ADMIN_ARENA_EDIT_SUCCESS_SPAWNER_HOLOGRAM_ENABLED = {"admin", "arena", "edit", "success", "spawner_hologram_enabled"};
     public final String[] ADMIN_ARENA_EDIT_SUCCESS_SPAWNER_HOLOGRAM_DISABLED = {"admin", "arena", "edit", "success", "spawner_hologram_disabled"};
     public final String[] ADMIN_ARENA_EDIT_SUCCESS_SPAWNER_FLOATING_ENABLED = {"admin", "arena", "edit", "success", "spawner_floating_enabled"};

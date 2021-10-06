@@ -42,7 +42,7 @@ public class ScreamingScoreboard {
                     .map(ConfigurationNode::getString)
                     .filter(Objects::nonNull)
                     .map(message -> Message.ofPlainText(message)
-                            .placeholder("arena", game.getName())
+                            .placeholder("arena", game.getDisplayNameComponent())
                             .placeholder("players", () -> Component.text(game.countConnectedPlayers()))
                             .placeholder("maxplayers", game.getMaxPlayers())
                             .placeholder("time", () -> Component.text(game.getFormattedTimeLeft()))
@@ -63,7 +63,7 @@ public class ScreamingScoreboard {
         sidebar.setLines(List.of());
         sidebar.title(
                 Message.ofPlainText(MainConfig.getInstance().node("scoreboard", "title").getString(""))
-                        .placeholder("game", game.getName())
+                        .placeholder("game", game.getDisplayNameComponent())
                         .placeholder("time", () -> Component.text(game.getFormattedTimeLeft()))
         );
 
@@ -106,7 +106,7 @@ public class ScreamingScoreboard {
         this.teamedSidebar = this.scoreboard = scoreboard;
         scoreboard.title(
                 Message.ofPlainText(MainConfig.getInstance().node("scoreboard", "title").getString(""))
-                        .placeholder("game", game.getName())
+                        .placeholder("game", game.getDisplayNameComponent())
                         .placeholder("time", () -> Component.text(game.getFormattedTimeLeft()))
         );
 
