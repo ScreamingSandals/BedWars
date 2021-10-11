@@ -228,7 +228,7 @@ public class StatisticsHolograms {
     @OnEvent
     public void handle(HologramTouchEvent event) {
         var player = event.getPlayer();
-        var holo = event.getHologram();
+        var holo = event.getVisual();
         if (!holograms.containsKey(player.getUuid()) || !holograms.get(player.getUuid()).contains(holo) || holo.getLocation() == null) {
             return;
         }

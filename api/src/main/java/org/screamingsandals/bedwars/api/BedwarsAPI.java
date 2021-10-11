@@ -8,6 +8,7 @@ import org.screamingsandals.bedwars.api.player.PlayerManager;
 import org.screamingsandals.bedwars.api.statistics.PlayerStatisticsManager;
 import org.screamingsandals.bedwars.api.utils.ColorChanger;
 import org.screamingsandals.bedwars.api.utils.EventUtils;
+import org.screamingsandals.bedwars.api.variants.VariantManager;
 import org.screamingsandals.lib.utils.Wrapper;
 
 import java.util.List;
@@ -21,6 +22,10 @@ public interface BedwarsAPI extends Wrapper {
      * @return Game manager of the bedwars plugin
      */
     GameManager<?> getGameManager();
+    /**
+     * @return Variant manager of the bedwars plugin
+     */
+    VariantManager getVariantManager();
 
     /**
      * @return Player manager of the bedwars plugin

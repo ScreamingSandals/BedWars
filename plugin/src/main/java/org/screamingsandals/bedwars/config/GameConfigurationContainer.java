@@ -1,6 +1,8 @@
 package org.screamingsandals.bedwars.config;
 
 import lombok.Getter;
+import lombok.Setter;
+import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.api.config.Configuration;
 import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
 import org.spongepowered.configurate.BasicConfigurationNode;
@@ -11,6 +13,10 @@ import java.util.*;
 
 public class GameConfigurationContainer implements ConfigurationContainer {
 
+    @Nullable
+    @Getter
+    @Setter
+    private ConfigurationContainer parentContainer;
     private final Map<String, Class<?>> registered = new HashMap<>();
     @Getter
     private final BasicConfigurationNode saved = BasicConfigurationNode.root();
@@ -58,7 +64,7 @@ public class GameConfigurationContainer implements ConfigurationContainer {
     public <T> Optional<Configuration<T>> get(String key, Class<T> type) {
         if (registered.containsKey(key) && type.isAssignableFrom(registered.get(key))) {
             try {
-                return Optional.of(new GameConfiguration<>(type,this, key,
+                return Optional.of(new GameConfiguration<>(type, this, key,
                         globalConfigKeys.containsKey(key) ? MainConfig.getInstance().node((Object[]) globalConfigKeys.get(key)).get(type) : null)
                 );
             } catch (SerializationException e) {

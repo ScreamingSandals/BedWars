@@ -6,6 +6,7 @@ import org.screamingsandals.bedwars.api.entities.EntitiesManager;
 import org.screamingsandals.bedwars.api.game.GameManager;
 import org.screamingsandals.bedwars.api.game.ItemSpawnerType;
 import org.screamingsandals.bedwars.api.player.PlayerManager;
+import org.screamingsandals.bedwars.api.variants.VariantManager;
 import org.screamingsandals.bedwars.commands.CommandService;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.config.RecordSave;
@@ -26,6 +27,7 @@ import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.bedwars.tab.TabManager;
 import org.screamingsandals.bedwars.utils.*;
 import org.screamingsandals.bedwars.lib.debug.Debug;
+import org.screamingsandals.bedwars.variants.VariantManagerImpl;
 import org.screamingsandals.lib.CustomPayload;
 import org.screamingsandals.lib.Server;
 import org.screamingsandals.lib.block.BlockTypeHolder;
@@ -64,6 +66,7 @@ import java.util.*;
 })
 @Init(services = {
         CommandService.class,
+        VariantManagerImpl.class,
         GameManagerImpl.class,
         UpdateChecker.class,
         PlayerStatisticManager.class,
@@ -312,6 +315,11 @@ public class BedWarsPlugin extends PluginContainer implements BedwarsAPI {
     @Override
     public GameManager<?> getGameManager() {
         return GameManagerImpl.getInstance();
+    }
+
+    @Override
+    public VariantManager getVariantManager() {
+        return VariantManagerImpl.getInstance();
     }
 
     @Override

@@ -10,6 +10,7 @@ import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
 import org.screamingsandals.bedwars.api.player.BWPlayer;
 import org.screamingsandals.bedwars.api.special.SpecialItem;
 import org.screamingsandals.bedwars.api.utils.DelayFactory;
+import org.screamingsandals.bedwars.api.variants.Variant;
 import org.screamingsandals.lib.utils.Wrapper;
 
 import java.io.File;
@@ -413,6 +414,9 @@ public interface Game<P extends BWPlayer, T extends Team<?, ?, ?, ?, ?>, B exten
     }
 
     String getCustomPrefix();
+
+    @Nullable
+    Variant getGameVariant();
 
     /**
      * Returns configuration container for this game

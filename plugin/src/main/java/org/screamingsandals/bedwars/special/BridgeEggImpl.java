@@ -61,9 +61,9 @@ public class BridgeEggImpl extends SpecialItem implements BridgeEgg<GameImpl, Be
                 return;
             }
 
-            this.setBlock(projectileLocation.remove(0.0D, 3.0D, 0.0D).getBlock());
-            this.setBlock(projectileLocation.remove(1.0D, 3.0D, 0.0D).getBlock());
-            this.setBlock(projectileLocation.remove(0.0D, 3.0D, 1.0D).getBlock());
+            this.setBlock(projectileLocation.subtract(0.0D, 3.0D, 0.0D).getBlock());
+            this.setBlock(projectileLocation.subtract(1.0D, 3.0D, 0.0D).getBlock());
+            this.setBlock(projectileLocation.subtract(0.0D, 3.0D, 1.0D).getBlock());
         })
         .repeat(1, TaskerTime.TICKS)
         .start();

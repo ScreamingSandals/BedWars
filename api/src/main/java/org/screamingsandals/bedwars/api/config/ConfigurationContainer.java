@@ -1,6 +1,7 @@
 package org.screamingsandals.bedwars.api.config;
 
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
@@ -82,4 +83,7 @@ public interface ConfigurationContainer {
      * @return object from configuration if registered; otherwise defaultValue
      */
     <T> T getOrDefault(String key, Class<T> type, T defaultValue);
+
+    @Nullable
+    ConfigurationContainer getParentContainer();
 }

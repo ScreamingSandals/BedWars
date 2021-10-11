@@ -225,7 +225,7 @@ public class TeamCommand extends BaseAdminSubCommand {
                             if (mode == TargetBlockSetModes.LOOKING_AT) {
                                 block = sender.as(EntityHuman.class).getTargetBlock(null, 5);
                             } else {
-                                block = sender.as(EntityHuman.class).getLocation().remove(0, 0.5, 0).getBlock();
+                                block = sender.as(EntityHuman.class).getLocation().subtract(0, 0.5, 0).getBlock();
                             }
                             var loc = block.getLocation();
 

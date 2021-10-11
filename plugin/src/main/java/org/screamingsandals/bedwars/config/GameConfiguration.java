@@ -12,7 +12,13 @@ public class GameConfiguration<T> implements Configuration<T> {
 
     @Override
     public T get() {
-        return !isSet() ? implicitValue : configurationContainer.getSaved(key, type);
+        if (!isSet()) {
+            if (configurationContainer.getParentContainer() != null) {
+                return configurationContainer.getParentContainer().getOrDefault(key, type, implicitValue);
+            }
+            return implicitValue;
+        }
+        return configurationContainer.getSaved(key, type);
     }
 
     @Override

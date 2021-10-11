@@ -191,7 +191,7 @@ public class LeaderboardHolograms {
     @OnEvent
     public void handle(HologramTouchEvent event) {
         var player = event.getPlayer();
-        var hologram = event.getHologram();
+        var hologram = event.getVisual();
 
         if (hologram.getLocation() == null || !holograms.containsKey(hologram.getLocation())) {
             return;

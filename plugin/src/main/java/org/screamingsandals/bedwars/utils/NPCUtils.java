@@ -4,7 +4,7 @@ import lombok.experimental.UtilityClass;
 import org.screamingsandals.bedwars.game.GameStoreImpl;
 import org.screamingsandals.lib.npc.NPC;
 import org.screamingsandals.lib.npc.NPCManager;
-import org.screamingsandals.lib.npc.NPCSkin;
+import org.screamingsandals.lib.npc.skin.NPCSkin;
 import org.screamingsandals.lib.utils.AdventureHelper;
 import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.world.LocationMapper;
@@ -22,7 +22,7 @@ public class NPCUtils {
         var npc = NPCManager
                 .npc(LocationMapper.resolve(store.getStoreLocation()).orElseThrow())
                 .setTouchable(true)
-                .setShouldLookAtViewer(true)
+                .setShouldLookAtPlayer(true)
                 .setDisplayName(List.of(AdventureHelper.toComponentNullable(store.getShopCustomName())));
 
         var skin = retrieveSkin(store.getSkinName());

@@ -43,6 +43,8 @@ import org.screamingsandals.bedwars.scoreboard.ScreamingScoreboard;
 import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.bedwars.tab.TabManager;
 import org.screamingsandals.bedwars.utils.*;
+import org.screamingsandals.bedwars.variants.VariantImpl;
+import org.screamingsandals.bedwars.variants.VariantManagerImpl;
 import org.screamingsandals.lib.Server;
 import org.screamingsandals.lib.block.BlockTypeHolder;
 import org.screamingsandals.lib.bukkit.block.state.SignBlockStateHolder;
@@ -121,6 +123,9 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
     @Setter
     @Nullable
     private String displayName;
+    @Getter
+    @Nullable
+    private VariantImpl gameVariant;
 
     // STATUS
     private GameStatus previousStatus = GameStatus.DISABLED;
@@ -367,13 +372,21 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
                     configMap.node("lobbyBossBarColor").getString("default").toUpperCase());
             game.gameBossBarColor = loadBossBarColor(configMap.node("gameBossBarColor").getString("default").toUpperCase());
 
+            var variant = configMap.node("variant");
+            if (!variant.empty()) {
+                game.gameVariant = VariantManagerImpl.getInstance().getVariant(variant.getString("")).orElse(null);
+                if (game.gameVariant != null) {
+                    game.configurationContainer.setParentContainer(game.gameVariant.getConfigurationContainer());
+                }
+            }
+
             game.start();
             PlayerMapper.getConsoleSender().sendMessage(
                     Component
                             .text("[B", NamedTextColor.RED)
                             .append(Component.text("W] ", NamedTextColor.WHITE))
-                            .append(Component.text("Arena", NamedTextColor.GREEN))
-                            .append(Component.text(game.name + " (" + file.getName() + ")", NamedTextColor.WHITE))
+                            .append(Component.text("Arena ", NamedTextColor.GREEN))
+                            .append(Component.text(game.uuid + "/" + game.name + " (" + file.getName() + ")", NamedTextColor.WHITE))
                             .append(Component.text(" loaded!", NamedTextColor.GREEN))
             );
             if (uid.empty()) {
@@ -1189,6 +1202,10 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
 
         configMap.node("lobbyBossBarColor").set(lobbyBossBarColor == null ? "default" : lobbyBossBarColor.name());
         configMap.node("gameBossBarColor").set(gameBossBarColor == null ? "default" : gameBossBarColor.name());
+
+        if (gameVariant != null) {
+            configMap.node("variant").set(gameVariant.getName());
+        }
 
         try {
             loader.save(configMap);
