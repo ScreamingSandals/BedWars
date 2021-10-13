@@ -64,7 +64,8 @@ public class EventUtilsImpl implements EventUtils {
             Map.entry(UpgradeRegisteredEvent.class, UpgradeRegisteredEventImpl.class),
             Map.entry(UpgradeUnregisteredEvent.class, UpgradeUnregisteredEventImpl.class),
             Map.entry(BedDestroyedMessageSendEvent.class, BedDestroyedMessageSendEventImpl.class),
-            Map.entry(PlayerDeathMessageSendEvent.class, PlayerDeathMessageSendEventImpl.class)
+            Map.entry(PlayerDeathMessageSendEvent.class, PlayerDeathMessageSendEventImpl.class),
+            Map.entry(PlayerOpenGamesInventoryEvent.class, PlayerOpenGamesInventoryEventImpl.class)
     );
 
     public static EventUtilsImpl getInstance() {

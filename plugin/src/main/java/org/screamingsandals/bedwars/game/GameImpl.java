@@ -124,6 +124,7 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
     @Nullable
     private String displayName;
     @Getter
+    @Setter
     @Nullable
     private VariantImpl gameVariant;
 

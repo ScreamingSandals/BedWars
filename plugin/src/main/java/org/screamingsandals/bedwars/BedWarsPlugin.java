@@ -12,6 +12,7 @@ import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.config.RecordSave;
 import org.screamingsandals.bedwars.entities.EntitiesManagerImpl;
 import org.screamingsandals.bedwars.game.*;
+import org.screamingsandals.bedwars.inventories.GamesInventory;
 import org.screamingsandals.bedwars.lang.BedWarsLangService;
 import org.screamingsandals.bedwars.api.BedwarsAPI;
 import org.screamingsandals.bedwars.database.DatabaseManager;
@@ -96,7 +97,8 @@ import java.util.*;
         EntitiesManagerImpl.class,
         ColorChangerImpl.class,
         VaultUtils.class,
-        PerWorldInventoryCompatibilityFix.class
+        PerWorldInventoryCompatibilityFix.class,
+        GamesInventory.class
 })
 public class BedWarsPlugin extends PluginContainer implements BedwarsAPI {
     private static BedWarsPlugin instance;

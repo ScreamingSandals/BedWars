@@ -194,6 +194,7 @@ public class LangKeys {
     public final String[] ADMIN_ARENA_ERROR_ARENA_MUST_BE_IN_EDIT_MODE = {"admin", "arena", "error", "arena_must_be_in_edit_mode"};
     public final String[] ADMIN_ARENA_SUCCESS_REMOVED = {"admin", "arena", "success", "removed"};
     public final String[] ADMIN_ARENA_SUCCESS_ADDED = {"admin", "arena", "success", "added"};
+    public final String[] ADMIN_ARENA_SUCCESS_ADDED_WITH_VARIANT = {"admin", "arena", "success", "added_with_variant"};
     public final String[] ADMIN_ARENA_SUCCESS_EDIT_MODE = {"admin", "arena", "success", "edit_mode"};
     public final String[] ADMIN_ARENA_EDIT_ERRORS_MUST_BE_IN_SAME_WORLD = {"admin", "arena", "edit", "errors", "must_be_in_same_world"};
     public final String[] ADMIN_ARENA_EDIT_ERRORS_INVALID_COUNTDOWN = {"admin", "arena", "edit", "errors", "invalid_countdown"};
@@ -229,6 +230,7 @@ public class LangKeys {
     public final String[] ADMIN_ARENA_EDIT_ERRORS_NO_SPAWNER = {"admin", "arena", "edit", "errors", "no_spawner"};
     public final String[] ADMIN_ARENA_EDIT_ERRORS_MULTIPLE_SPAWNERS_FIRST_LINE = {"admin", "arena", "edit", "errors", "multiple_spawners", "first_line"};
     public final String[] ADMIN_ARENA_EDIT_ERRORS_MULTIPLE_SPAWNERS_LINE = {"admin", "arena", "edit", "errors", "multiple_spawners", "line"};
+    public final String[] ADMIN_ARENA_EDIT_ERRORS_INVALID_VARIANT = {"admin", "arena", "edit", "errors", "invalid_variant"};
     public final String[] ADMIN_ARENA_EDIT_SUCCESS_SAVED_AND_STARTED = {"admin", "arena", "edit", "success", "saved_and_started"};
     public final String[] ADMIN_ARENA_EDIT_SUCCESS_TARGET_BLOCK_SET = {"admin", "arena", "edit", "success", "target_block_set"};
     public final String[] ADMIN_ARENA_EDIT_SUCCESS_TEAM_SPAWN_SET = {"admin", "arena", "edit", "success", "team_spawn_set"};
