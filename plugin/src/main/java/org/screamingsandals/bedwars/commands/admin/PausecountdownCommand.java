@@ -11,7 +11,7 @@ import org.screamingsandals.lib.utils.annotations.Service;
 @Service
 public class PausecountdownCommand extends BaseAdminSubCommand {
     public PausecountdownCommand() {
-        super("pausecountdown");
+        super();
     }
 
     @Override

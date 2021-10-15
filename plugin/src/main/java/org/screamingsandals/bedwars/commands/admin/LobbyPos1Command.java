@@ -11,7 +11,7 @@ import org.screamingsandals.lib.utils.annotations.Service;
 @Service
 public class LobbyPos1Command extends BaseAdminSubCommand {
     public LobbyPos1Command() {
-        super("lobbypos1");
+        super();
     }
 
     @Override

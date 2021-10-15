@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 @Service
 public class SpawnerCommand extends BaseAdminSubCommand {
     public SpawnerCommand() {
-        super("spawner");
+        super();
     }
 
     @Override

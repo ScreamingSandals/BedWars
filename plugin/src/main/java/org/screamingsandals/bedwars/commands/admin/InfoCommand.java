@@ -15,7 +15,7 @@ import org.screamingsandals.lib.utils.annotations.Service;
 @Service
 public class InfoCommand extends BaseAdminSubCommand {
     public InfoCommand() {
-        super("info");
+        super();
     }
 
     @Override

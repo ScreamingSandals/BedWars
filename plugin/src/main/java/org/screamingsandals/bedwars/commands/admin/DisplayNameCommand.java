@@ -13,7 +13,7 @@ import org.screamingsandals.lib.utils.annotations.Service;
 @Service
 public class DisplayNameCommand extends BaseAdminSubCommand {
     public DisplayNameCommand() {
-        super("displayName");
+        super();
     }
 
     @Override

@@ -12,7 +12,7 @@ import org.screamingsandals.lib.utils.annotations.Service;
 @Service
 public class RemoveCommand extends BaseAdminSubCommand {
     public RemoveCommand() {
-        super("remove");
+        super();
     }
 
     @Override

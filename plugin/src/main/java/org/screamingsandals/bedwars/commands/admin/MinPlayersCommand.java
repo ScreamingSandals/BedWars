@@ -11,7 +11,7 @@ import org.screamingsandals.lib.utils.annotations.Service;
 @Service
 public class MinPlayersCommand extends BaseAdminSubCommand {
     public MinPlayersCommand() {
-        super("minplayers");
+        super();
     }
 
     @Override

@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 @Service
 public class StoreCommand extends BaseAdminSubCommand {
     public StoreCommand() {
-        super("store");
+        super();
     }
 
     @Override

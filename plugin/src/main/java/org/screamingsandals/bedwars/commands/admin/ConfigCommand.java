@@ -14,7 +14,7 @@ import java.util.List;
 @Service
 public class ConfigCommand extends BaseAdminSubCommand {
     public ConfigCommand() {
-        super("config");
+        super();
     }
 
     @Override

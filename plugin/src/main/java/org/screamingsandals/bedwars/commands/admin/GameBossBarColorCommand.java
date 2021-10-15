@@ -16,7 +16,7 @@ import java.util.stream.Stream;
 @Service
 public class GameBossBarColorCommand extends BaseAdminSubCommand {
     public GameBossBarColorCommand() {
-        super("gamebossbarcolor");
+        super();
     }
 
     @Override

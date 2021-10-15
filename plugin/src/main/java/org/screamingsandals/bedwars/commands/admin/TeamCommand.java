@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 @Service
 public class TeamCommand extends BaseAdminSubCommand {
     public TeamCommand() {
-        super("team");
+        super();
     }
 
     @Override

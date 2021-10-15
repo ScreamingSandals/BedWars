@@ -24,6 +24,10 @@ public abstract class BaseAdminSubCommand {
 
     private final String name;
 
+    public BaseAdminSubCommand() {
+        this.name = getClass().getSimpleName().toLowerCase().replaceAll("command", "");
+    }
+
     @OnPostEnable
     public void onPostEnable(@ProvidedBy(CommandService.class) CommandManager<CommandSenderWrapper> manager, @ProvidedBy(AdminCommand.class) Command.Builder<CommandSenderWrapper> builder) {
         construct(manager, builder.literal(name));

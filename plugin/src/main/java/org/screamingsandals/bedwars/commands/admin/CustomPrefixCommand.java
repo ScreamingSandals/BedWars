@@ -11,7 +11,7 @@ import org.screamingsandals.lib.utils.annotations.Service;
 @Service
 public class CustomPrefixCommand extends BaseAdminSubCommand {
     public CustomPrefixCommand() {
-        super("customprefix");
+        super();
     }
 
     @Override

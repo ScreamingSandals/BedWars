@@ -11,7 +11,7 @@ import org.screamingsandals.lib.utils.annotations.Service;
 @Service
 public class TimeCommand extends BaseAdminSubCommand {
     public TimeCommand() {
-        super("time");
+        super();
     }
 
     @Override

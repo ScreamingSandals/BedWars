@@ -23,6 +23,12 @@ public abstract class BaseCommand {
     protected final BedWarsPermission possiblePermission;
     protected final boolean allowConsole;
 
+    public BaseCommand(BedWarsPermission possiblePermission, boolean allowConsole) {
+        this.name = getClass().getSimpleName().toLowerCase().replaceAll("command", "");
+        this.possiblePermission = possiblePermission;
+        this.allowConsole = allowConsole;
+    }
+
     protected abstract void construct(Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder, CommandManager<CommandSenderWrapper> manager);
 
     @OnPostEnable

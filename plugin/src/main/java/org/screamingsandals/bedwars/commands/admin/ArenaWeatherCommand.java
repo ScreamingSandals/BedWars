@@ -15,7 +15,7 @@ import java.util.stream.Stream;
 @Service
 public class ArenaWeatherCommand extends BaseAdminSubCommand {
     public ArenaWeatherCommand() {
-        super("arenaweather");
+        super();
     }
 
     @Override

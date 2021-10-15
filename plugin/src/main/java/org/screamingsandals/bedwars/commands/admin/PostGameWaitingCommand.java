@@ -11,7 +11,7 @@ import org.screamingsandals.lib.utils.annotations.Service;
 @Service
 public class PostGameWaitingCommand extends BaseAdminSubCommand {
     public PostGameWaitingCommand() {
-        super("postgamewaiting");
+        super();
     }
 
     @Override

@@ -24,7 +24,7 @@ public class JoinTeamCommand extends BaseAdminSubCommand {
     public static final Map<UUID, TeamImpl> TEAMS_IN_HAND = new HashMap<>();
 
     public JoinTeamCommand() {
-        super("jointeam");
+        super();
     }
 
     @Override

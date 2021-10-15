@@ -12,7 +12,7 @@ import org.screamingsandals.lib.utils.annotations.Service;
 @Service
 public class EditCommand extends BaseAdminSubCommand {
     public EditCommand() {
-        super("edit");
+        super();
     }
 
     @Override

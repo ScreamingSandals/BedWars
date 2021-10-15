@@ -16,7 +16,7 @@ import java.util.stream.Stream;
 @Service
 public class LobbyBossBarColorCommand extends BaseAdminSubCommand {
     public LobbyBossBarColorCommand() {
-        super("lobbybossbarcolor");
+        super();
     }
 
     @Override

@@ -12,7 +12,7 @@ import org.screamingsandals.lib.utils.annotations.Service;
 @Service
 public class ArenaTimeCommand extends BaseAdminSubCommand {
     public ArenaTimeCommand() {
-        super("arenatime");
+        super();
     }
 
     @Override
