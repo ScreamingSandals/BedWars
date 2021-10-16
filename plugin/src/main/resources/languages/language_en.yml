@@ -322,7 +322,7 @@ cheat_disabled: "&cCheats are disabled on this server!"
 cheat_game_not_running: "&cYou can't cheat in lobby!"
 help_bw_cheat_give: "/bw cheat give <resource> [amount] [player] - &cGives player specified amount of resource"
 help_bw_cheat_kill: "/bw cheat kill [player] - &cKills specified player"
-"party_inform_game_join": "<green>Joining game of party leader",
+"party_inform_game_join": "<green>Joining game of party leader"
 "party_warped": "<green>Party leader has warped you here"
 "party_command_invalid_arguments": "<red>Invalid number of arguments!, type /bw party help to know more"
 "party_command_help": "/bw party warp - <yellow>Warps all players to your game or towards you"
