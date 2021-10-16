@@ -548,6 +548,14 @@ public class Main extends JavaPlugin implements BedwarsAPI {
             // maybe something here can cause exception
         }
 
+        try {
+            if (configurator.config.getBoolean("party.enabled") && Bukkit.getPluginManager().isPluginEnabled("Parties")) {
+                new PartyCommand();
+                getServer().getPluginManager().registerEvents(new PartyListener(), this);
+            }
+        } catch (Throwable ignored) {
+        }
+
         if (Main.getConfigurator().config.getBoolean("tab.enable")) {
             tabManager = new TabManager();
         } else {

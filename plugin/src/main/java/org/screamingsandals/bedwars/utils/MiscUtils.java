@@ -2,6 +2,7 @@ package org.screamingsandals.bedwars.utils;
 
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -21,9 +22,8 @@ import org.screamingsandals.bedwars.game.Team;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.simpleinventories.utils.MaterialSearchEngine;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.screamingsandals.bedwars.lib.lang.I18n.i18nonly;
 
@@ -280,5 +280,9 @@ public class MiscUtils {
         } else {
             return findEmptyLocation(respawnLocation.clone().add(0, 2, 0));
         }
+    }
+
+    public static List<Player> getOnlinePlayers(Set<UUID> members) {
+        return members.stream().map(Bukkit::getPlayer).filter(Objects::nonNull).collect(Collectors.toList());
     }
 }

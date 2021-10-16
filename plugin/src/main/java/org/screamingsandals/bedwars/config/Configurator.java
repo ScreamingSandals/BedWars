@@ -532,6 +532,11 @@ public class Configurator {
         checkOrSetConfig(modify, "default-permissions.rejoin", true);
         checkOrSetConfig(modify, "default-permissions.autojoin", true);
         checkOrSetConfig(modify, "default-permissions.leaderboard", true);
+        checkOrSetConfig(modify, "default-permissions.party", true);
+
+        checkOrSetConfig(modify, "party.enabled", false);
+        checkOrSetConfig(modify, "party.autojoin-members", false);
+        checkOrSetConfig(modify, "party.notify-when-warped", true);
 
         checkOrSetConfig(modify, "version", 2);
 

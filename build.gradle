@@ -6,7 +6,7 @@ plugins {
 
 allprojects {
     group = 'org.screamingsandals.bedwars'
-    version = '0.2.20'
+    version = '0.2.21-SNAPSHOT'
 }
 
 if (version.toString().endsWith('-SNAPSHOT')) {
@@ -27,6 +27,7 @@ subprojects {
         maven { url 'https://repo.citizensnpcs.co'  }
         maven { url 'https://repo.codemc.org/repository/maven-public/'  }
         maven { url 'https://jitpack.io'  }
+        maven { url 'https://repo.alessiodp.com/releases/'  }
     }
 
     dependencies {
