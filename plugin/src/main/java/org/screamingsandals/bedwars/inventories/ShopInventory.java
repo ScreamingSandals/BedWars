@@ -93,8 +93,9 @@ public class ShopInventory {
             } else {
                 player.openInventory(shopMap.get("default"));
             }
-        } catch (Throwable ignored) {
+        } catch (Throwable throwable) {
             player.sendMessage("[BW] Your shop.yml/shop.groovy is invalid! Check it out or contact us on Discord.");
+            throwable.printStackTrace();
         }
     }
 

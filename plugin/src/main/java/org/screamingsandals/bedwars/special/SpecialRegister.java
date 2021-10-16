@@ -19,7 +19,8 @@ import org.screamingsandals.lib.utils.annotations.Service;
         TrackerListener.class,
         TrapListener.class,
         WarpPowderListener.class,
-        BridgeEggListener.class
+        BridgeEggListener.class,
+        PopUpTowerListener.class
 })
 @UtilityClass
 public class SpecialRegister {

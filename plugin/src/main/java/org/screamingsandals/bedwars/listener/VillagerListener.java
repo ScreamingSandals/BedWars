@@ -10,11 +10,13 @@ import org.screamingsandals.bedwars.inventories.ShopInventory;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
+import org.screamingsandals.lib.Server;
 import org.screamingsandals.lib.entity.EntityBasic;
 import org.screamingsandals.lib.event.EventManager;
 import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.event.player.SPlayerInteractEntityEvent;
 import org.screamingsandals.lib.npc.event.NPCInteractEvent;
+import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.utils.annotations.Service;
 
 @Service
@@ -49,7 +51,7 @@ public class VillagerListener {
             if (!gPlayer.isSpectator() && gPlayer.getGame().getStatus() == GameStatus.RUNNING) {
                 for (var store : game.getGameStoreList()) {
                     if (event.getVisual().equals(store.getNpc())) {
-                        open(store, gPlayer, null, game);
+                        Server.runSynchronously(() -> open(store, gPlayer, null, game));
                         return;
                     }
                 }
