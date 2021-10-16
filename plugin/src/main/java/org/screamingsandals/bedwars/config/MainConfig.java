@@ -564,6 +564,7 @@ public class MainConfig {
                     .key("autojoin").defValue(true)
                     .key("leaderboard").defValue(true)
                     .key("party").defValue(true)
+                    .key("gamesinv").defValue(true)
                     .back()
                 .section("party")
                     .key("enabled").defValue(false)

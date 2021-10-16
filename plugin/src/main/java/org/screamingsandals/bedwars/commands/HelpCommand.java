@@ -52,6 +52,10 @@ public class HelpCommand extends BaseCommand {
                             }
                         }
 
+                        if (sender.hasPermission(BedWarsPermission.GAMES_INVENTORY_PERMISSION.asPermission())) {
+                            Message.of(LangKeys.HELP_BW_GAMESINV).send(sender);
+                        }
+
                         if (sender.hasPermission(BedWarsPermission.ALL_JOIN_PERMISSION.asPermission())) {
                             Message.of(LangKeys.HELP_BW_ALLJOIN).send(sender);
                         }

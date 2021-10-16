@@ -12,8 +12,11 @@ import org.screamingsandals.lib.utils.annotations.Service;
 
 @Service
 public class RejoinCommand extends BaseCommand {
-    public RejoinCommand() {
+    private final PlayerManagerImpl playerManager;
+
+    public RejoinCommand(PlayerManagerImpl playerManager) {
         super("rejoin", BedWarsPermission.REJOIN_PERMISSION, false);
+        this.playerManager = playerManager;
     }
 
     @Override
@@ -21,27 +24,30 @@ public class RejoinCommand extends BaseCommand {
         manager.command(
                 commandSenderWrapperBuilder
                     .handler(commandContext -> {
-                        var playerManager = PlayerManagerImpl.getInstance();
                         var player = commandContext.getSender().as(PlayerWrapper.class);
                         if (playerManager.isPlayerInGame(player)) {
                             commandContext.getSender().sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_ALREADY_IN_GAME).defaultPrefix());
                             return;
                         }
 
-                        String name = null;
-                        if (playerManager.isPlayerRegistered(player)) {
-                            name = playerManager.getPlayer(player).orElseThrow().getLatestGameName();
-                        }
-                        if (name == null) {
-                            commandContext.getSender().sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_YOU_ARE_NOT_IN_GAME).defaultPrefix());
-                        } else {
-                            GameManagerImpl.getInstance().getGame(name)
-                                    .ifPresentOrElse(
-                                            game -> game.joinToGame(PlayerManagerImpl.getInstance().getPlayerOrCreate(player)),
-                                            () -> player.sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_GAME_IS_GONE).defaultPrefix())
-                                    );
-                        }
+                        rejoin(player);
                     })
         );
+    }
+
+    public void rejoin(PlayerWrapper player) {
+        String name = null;
+        if (playerManager.isPlayerRegistered(player)) {
+            name = playerManager.getPlayer(player).orElseThrow().getLatestGameName();
+        }
+        if (name == null) {
+            player.sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_YOU_ARE_NOT_IN_GAME).defaultPrefix());
+        } else {
+            GameManagerImpl.getInstance().getGame(name)
+                    .ifPresentOrElse(
+                            game -> game.joinToGame(PlayerManagerImpl.getInstance().getPlayerOrCreate(player)),
+                            () -> player.sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_GAME_IS_GONE).defaultPrefix())
+                    );
+        }
     }
 }

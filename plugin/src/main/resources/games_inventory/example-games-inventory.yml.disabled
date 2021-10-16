@@ -1,0 +1,57 @@
+# This is in an example inventory file for games inventory GUI!, don't forget to remove the .disabled extension if you want to use this file
+
+data:
+  - stack: "RED_BED;1;§aBed Wars §7(Solo);§7Play Bed Wars {§7Solo}; ;§eClick to play!"
+    row: 1
+    column: 3
+    properties:
+      - name: randomly_join
+        games:
+          - test
+
+  - stack: "BARRIER;1;§cExit"
+    row: 3
+    column: 4
+    properties:
+      - name: exit
+
+  - stack: "ENDER_PEARL;1;§cClick here to rejoin!;§7Click here to rejoin the lastly joined game."
+    properties:
+      - name: rejoin
+    row: 3
+    column: 8
+
+  - stack: "OAK_SIGN;1;§aMap Selector §7(Solo);§7Pick which map you want to play;§7from a list of available servers.; ;§eClick to browse!"
+    row: 1
+    column: 5
+    options:
+      rows: 6
+      render_actual_rows: 6
+    items:
+      - stack: "FIREWORK;1;§7Random Map;§8Solo; ;§aClick to Play"
+        row: 4
+        column: 3
+        properties:
+          - name: randomly_join
+            games:
+              - test
+
+      - stack: "DIAMOND;1;§aRandom Favorite;§8Solo; ;§aClick to Play"
+        row: 4
+        column: 5
+        properties:
+          - name: randomly_join
+            games:
+              - test
+
+      - stack: "ARROW;1;§aGo Back;§7To Play Bed Wars"
+        row: 5
+        column: 4
+        locate: main
+
+      - stack: "PAPER;1;§aJust casual test map;§8Solo; ;§aClick to play"
+        row: 1
+        column: 2
+        properties:
+          - name: join
+            gameName: test

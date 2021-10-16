@@ -185,6 +185,9 @@ public class LangKeys {
     public final String[] HELP_BW_ADMIN_INTERACTIVE = {"help", "bw_admin_interactive"};
     public final String[] HELP_BW_CHEAT_GIVE = {"help", "bw_cheat_give"};
     public final String[] HELP_BW_CHEAT_KILL = {"help", "bw_cheat_kill"};
+    public final String[] HELP_BW_GAMESINV = {"help", "bw_gamesinv"};
+    public final String[] GAMES_INVENTORY_COULD_NOT_FIND_GAME = {"games_inventory", "could_not_find_game"};
+    public final String[] GAMES_INVENTORY_UNKNOWN_INVENTORY = {"games_inventory", "unknown_inventory"};
     public final String[] UPDATE_NEW_RELEASE = {"update", "new_release"};
     public final String[] UPDATE_PATCH_RELEASE = {"update", "patch_release"};
     public final String[] ADMIN_USAGE = {"admin", "usage"};

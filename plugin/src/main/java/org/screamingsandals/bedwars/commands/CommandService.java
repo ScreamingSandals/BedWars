@@ -31,7 +31,8 @@ import org.screamingsandals.lib.utils.annotations.methods.Provider;
         RejoinCommand.class,
         ReloadCommand.class,
         RemoveHoloCommand.class,
-        StatsCommand.class
+        StatsCommand.class,
+        GamesInventoryCommand.class
 })
 @UtilityClass
 public class CommandService {

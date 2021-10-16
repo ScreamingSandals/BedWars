@@ -15,6 +15,7 @@ public enum BedWarsPermission {
     OTHER_STATS_PERMISSION(List.of("misat11.bw.otherstats", "bw.otherstats"), List.of()),
     JOIN_PERMISSION(List.of("misat11.bw.cmd.join", "bw.cmd.join"), List.of("default-permissions", "join")),
     LEAVE_PERMISSION(List.of("misat11.bw.cmd.leave", "bw.cmd.leave"), List.of("default-permissions", "leave")),
+    GAMES_INVENTORY_PERMISSION(List.of("misat11.bw.cmd.gamesinv", "bw.cmd.gamesinv"), List.of("default-permissions", "gamesinv")),
     AUTOJOIN_PERMISSION(List.of("misat11.bw.cmd.autojoin", "bw.cmd.autojoin"), List.of("default-permissions", "autojoin")),
     LIST_PERMISSION(List.of("misat11.bw.cmd.list", "bw.cmd.list"), List.of("default-permissions", "list")),
     REJOIN_PERMISSION(List.of("misat11.bw.cmd.rejoin", "bw.cmd.rejoin"), List.of("default-permissions", "rejoin")),
