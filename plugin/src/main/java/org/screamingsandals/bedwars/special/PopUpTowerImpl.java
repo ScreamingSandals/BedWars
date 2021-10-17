@@ -33,8 +33,7 @@ public class PopUpTowerImpl extends SpecialItem implements PopUpTower<GameImpl, 
 
     public PopUpTowerImpl(GameImpl game, BedWarsPlayer player, TeamImpl team, BlockTypeHolder mat, LocationHolder centerPoint, BlockFace placementFace) {
         super(game, player, team);
-        this.material = mat.colorize(team.getColor().material1_13);
-        System.out.println(this.material);
+        this.material = team != null ? mat.colorize(team.getColor().material1_13) : mat;
         this.centerPoint = centerPoint;
         this.placementFace = placementFace;
     }
@@ -60,9 +59,10 @@ public class PopUpTowerImpl extends SpecialItem implements PopUpTower<GameImpl, 
                 .map(TeamImpl::getTargetBlock)
                 .collect(Collectors.toList());
 
-        final var bottomRel = this.centerPoint.add(placementFace.getOppositeFace().getDirection().multiply(2)).add(BlockFace.UP.getDirection());
+
+        final var bottomRel = this.centerPoint.add(placementFace.getOppositeFace(), 2).add(BlockFace.UP);
         entranceLocation.add(bottomRel);
-        entranceLocation.add(bottomRel.add(BlockFace.UP.getDirection()));
+        entranceLocation.add(bottomRel.add(BlockFace.UP));
 
         placeAnimated(BlockFace.NORTH, BlockFace.WEST);
         placeAnimated(BlockFace.SOUTH, BlockFace.WEST);
@@ -71,66 +71,66 @@ public class PopUpTowerImpl extends SpecialItem implements PopUpTower<GameImpl, 
 
         Tasker.build(() -> {
             // second platform
-            final var secondPlatform = centerPoint.add(BlockFace.UP.getDirection().multiply(5));
+            final var secondPlatform = centerPoint.add(BlockFace.UP, 5);
             placeBlock(secondPlatform, material);
-            pillarSides.forEach(blockFace -> placeBlock(secondPlatform.add(blockFace.getDirection()), material));
+            pillarSides.forEach(blockFace -> placeBlock(secondPlatform.add(blockFace), material));
 
-            placeBlock(secondPlatform.add(BlockFace.NORTH_WEST.getDirection()), material);
-            placeBlock(secondPlatform.add(BlockFace.NORTH_EAST.getDirection()), material);
-            placeBlock(secondPlatform.add(BlockFace.SOUTH_WEST.getDirection()), material);
-            placeBlock(secondPlatform.add(BlockFace.SOUTH_EAST.getDirection()), material);
+            placeBlock(secondPlatform.add(BlockFace.NORTH_WEST), material);
+            placeBlock(secondPlatform.add(BlockFace.NORTH_EAST), material);
+            placeBlock(secondPlatform.add(BlockFace.SOUTH_WEST), material);
+            placeBlock(secondPlatform.add(BlockFace.SOUTH_EAST), material);
 
-            final var northWestCornerBlock = secondPlatform.add(BlockFace.NORTH_WEST.getDirection().multiply(2)).add(BlockFace.UP.getDirection());
-            placeBlock(northWestCornerBlock.add(BlockFace.DOWN.getDirection()), material);
-            placeBlock(northWestCornerBlock.add(BlockFace.WEST.getDirection()), material);
-            placeBlock(northWestCornerBlock.add(BlockFace.NORTH.getDirection()), material);
-            placeBlock(northWestCornerBlock.add(BlockFace.WEST.getDirection()).add(BlockFace.UP.getDirection()), material);
-            placeBlock(northWestCornerBlock.add(BlockFace.NORTH.getDirection()).add(BlockFace.UP.getDirection()), material);
+            final var northWestCornerBlock = secondPlatform.add(BlockFace.NORTH_WEST, 2).add(BlockFace.UP);
+            placeBlock(northWestCornerBlock.add(BlockFace.DOWN), material);
+            placeBlock(northWestCornerBlock.add(BlockFace.WEST), material);
+            placeBlock(northWestCornerBlock.add(BlockFace.NORTH), material);
+            placeBlock(northWestCornerBlock.add(BlockFace.NORTH).add(BlockFace.UP), material);
+            placeBlock(northWestCornerBlock.add(BlockFace.WEST).add(BlockFace.UP), material);
 
-            final var northEastCornerBlock = secondPlatform.add(BlockFace.NORTH_EAST.getDirection().multiply(2)).add(BlockFace.UP.getDirection());
-            placeBlock(northEastCornerBlock.add(BlockFace.DOWN.getDirection()), material);
-            placeBlock(northEastCornerBlock.add(BlockFace.EAST.getDirection()), material);
-            placeBlock(northEastCornerBlock.add(BlockFace.NORTH.getDirection()), material);
-            placeBlock(northEastCornerBlock.add(BlockFace.NORTH.getDirection()).add(BlockFace.UP.getDirection()), material);
-            placeBlock(northEastCornerBlock.add(BlockFace.EAST.getDirection()).add(BlockFace.UP.getDirection()), material);
+            final var northEastCornerBlock = secondPlatform.add(BlockFace.NORTH_EAST, 2).add(BlockFace.UP);
+            placeBlock(northEastCornerBlock.add(BlockFace.DOWN), material);
+            placeBlock(northEastCornerBlock.add(BlockFace.EAST), material);
+            placeBlock(northEastCornerBlock.add(BlockFace.NORTH), material);
+            placeBlock(northEastCornerBlock.add(BlockFace.NORTH).add(BlockFace.UP), material);
+            placeBlock(northEastCornerBlock.add(BlockFace.EAST).add(BlockFace.UP), material);
 
-            final var southWestCornerBlock = secondPlatform.add(BlockFace.SOUTH_WEST.getDirection().multiply(2)).add(BlockFace.UP.getDirection());
-            placeBlock(southWestCornerBlock.add(BlockFace.DOWN.getDirection()), material);
-            placeBlock(southWestCornerBlock.add(BlockFace.WEST.getDirection()), material);
-            placeBlock(southWestCornerBlock.add(BlockFace.SOUTH.getDirection()), material);
-            placeBlock(southWestCornerBlock.add(BlockFace.SOUTH.getDirection()).add(BlockFace.UP.getDirection()), material);
-            placeBlock(southWestCornerBlock.add(BlockFace.WEST.getDirection()).add(BlockFace.UP.getDirection()), material);
+            final var southWestCornerBlock = secondPlatform.add(BlockFace.SOUTH_WEST, 2).add(BlockFace.UP);
+            placeBlock(southWestCornerBlock.add(BlockFace.DOWN), material);
+            placeBlock(southWestCornerBlock.add(BlockFace.WEST), material);
+            placeBlock(southWestCornerBlock.add(BlockFace.SOUTH), material);
+            placeBlock(southWestCornerBlock.add(BlockFace.SOUTH).add(BlockFace.UP), material);
+            placeBlock(southWestCornerBlock.add(BlockFace.WEST).add(BlockFace.UP), material);
 
-            final var southEastCornerBlock = secondPlatform.add(BlockFace.SOUTH_EAST.getDirection().multiply(2)).add(BlockFace.UP.getDirection());
-            placeBlock(southEastCornerBlock.add(BlockFace.DOWN.getDirection()), material);
-            placeBlock(southEastCornerBlock.add(BlockFace.EAST.getDirection()), material);
-            placeBlock(southEastCornerBlock.add(BlockFace.SOUTH.getDirection()), material);
-            placeBlock(southEastCornerBlock.add(BlockFace.EAST.getDirection()).add(BlockFace.UP.getDirection()), material);
-            placeBlock(southEastCornerBlock.add(BlockFace.SOUTH.getDirection()).add(BlockFace.UP.getDirection()), material);
+            final var southEastCornerBlock = secondPlatform.add(BlockFace.SOUTH_EAST, 2).add(BlockFace.UP);
+            placeBlock(southEastCornerBlock.add(BlockFace.DOWN), material);
+            placeBlock(southEastCornerBlock.add(BlockFace.EAST), material);
+            placeBlock(southEastCornerBlock.add(BlockFace.SOUTH), material);
+            placeBlock(southEastCornerBlock.add(BlockFace.SOUTH).add(BlockFace.UP), material);
+            placeBlock(southEastCornerBlock.add(BlockFace.EAST).add(BlockFace.UP), material);
 
             // connection blocks
-            placeRowAnimated(3, northWestCornerBlock.add(BlockFace.NORTH.getDirection()), BlockFace.EAST, 1);
-            placeRowAnimated(3, southWestCornerBlock.add(BlockFace.SOUTH.getDirection()), BlockFace.EAST, 1);
-            placeRowAnimated(4, southWestCornerBlock.add(BlockFace.SOUTH_WEST.getDirection()), BlockFace.NORTH, 1);
-            placeRowAnimated(4, southEastCornerBlock.add(BlockFace.EAST.getDirection()), BlockFace.NORTH, 1);
+            placeRowAnimated(3, northWestCornerBlock.add(BlockFace.NORTH), BlockFace.EAST, 1);
+            placeRowAnimated(3, southWestCornerBlock.add(BlockFace.SOUTH), BlockFace.EAST, 1);
+            placeRowAnimated(4, southWestCornerBlock.add(BlockFace.SOUTH_WEST), BlockFace.NORTH, 1);
+            placeRowAnimated(4, southEastCornerBlock.add(BlockFace.EAST), BlockFace.NORTH, 1);
 
-            placeBlock(secondPlatform.add(placementFace.getDirection().multiply(3)).add(BlockFace.UP.getDirection().multiply(2)), material);
-            placeBlock(secondPlatform.add(placementFace.getOppositeFace().getDirection().multiply(3)).add(BlockFace.UP.getDirection().multiply(2)), material);
+            placeBlock(secondPlatform.add(placementFace, 3).add(BlockFace.UP, 2), material);
+            placeBlock(secondPlatform.add(placementFace.getOppositeFace(), 3).add(BlockFace.UP, 2), material);
 
-            final var firstLadderBlock = centerPoint.add(placementFace.getDirection());
+            final var firstLadderBlock = centerPoint.add(placementFace);
             placeLadderRow(5, firstLadderBlock, BlockFace.UP, placementFace.getOppositeFace());
         }).delay(40L, TaskerTime.TICKS).start();
     }
 
     public void placeAnimated(BlockFace direction, BlockFace start) {
-        final var p1 = centerPoint.add(direction.getDirection().multiply(2)).add(start.getDirection().multiply(2));
+        final var p1 = centerPoint.add(direction, 2).add(start, 2);
         placeRowAndColumn(3, 5, p1, start.getOppositeFace());
     }
 
     public void placeRowAnimated(int length, LocationHolder loc, BlockFace face, int delay) {
         var lastLoc = loc;
         for (int i = 0; i < length; i++) {
-            lastLoc = lastLoc.add(face.getDirection());
+            lastLoc = lastLoc.add(face);
             var finalLastLoc = lastLoc;
             Tasker.build(() -> placeBlock(finalLastLoc, material)).delay((delay += 1), TaskerTime.TICKS).start();
         }
@@ -150,17 +150,13 @@ public class PopUpTowerImpl extends SpecialItem implements PopUpTower<GameImpl, 
 
     private boolean isTargetBlockNear(List<LocationHolder> targetBlocks, LocationHolder loc) {
         return targetBlocks.contains(loc) || Arrays.stream(BlockFace.values())
-                .anyMatch(blockFace -> targetBlocks.contains(loc.add(blockFace.getDirection())));
+                .anyMatch(blockFace -> targetBlocks.contains(loc.add(blockFace)));
     }
 
     public void placeLadderRow(int length, LocationHolder loc, BlockFace face, BlockFace ladderFace) {
-        if (game.getStatus() != GameStatus.RUNNING) {
-            return;
-        }
-
         var lastLoc = loc;
         for (int i = 0; i < length; i++) {
-            lastLoc = lastLoc.add(face.getDirection());
+            lastLoc = lastLoc.add(face);
             final var ladder = lastLoc.getBlock();
             if (!isLocationSafe(lastLoc)) {
                 continue;

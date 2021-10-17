@@ -53,7 +53,7 @@ public class PopUpTowerListener {
 
                         var playerFace = MiscUtils.yawToFace(player.getLocation().getYaw(), false);
 
-                        var popupTower = new PopUpTowerImpl(game, gamePlayer, game.getPlayerTeam(gamePlayer), material, player.getLocation().add(playerFace.getDirection()).add(BlockFace.DOWN.getDirection()), playerFace);
+                        var popupTower = new PopUpTowerImpl(game, gamePlayer, game.getPlayerTeam(gamePlayer), material, player.getLocation().getBlock().getLocation().add(playerFace).add(BlockFace.DOWN), playerFace);
 
                         if (delay > 0) {
                             var delayFactory = new DelayFactoryImpl(delay, popupTower, gamePlayer, game);

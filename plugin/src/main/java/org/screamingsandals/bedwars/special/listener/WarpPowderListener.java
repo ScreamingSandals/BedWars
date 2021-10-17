@@ -52,7 +52,7 @@ public class WarpPowderListener {
                             int delay = Integer.parseInt(unhidden.split(":")[3]);
                             var warpPowder = new WarpPowderImpl(game, gPlayer, game.getPlayerTeam(gPlayer), stack, teleportTime);
 
-                            if (event.getPlayer().getLocation().add(BlockFace.DOWN.getDirection()).getBlock().getType().isAir()) {
+                            if (event.getPlayer().getLocation().add(BlockFace.DOWN).getBlock().getType().isAir()) {
                                 return;
                             }
 

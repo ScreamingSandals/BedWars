@@ -10,14 +10,14 @@ public class FlatteningBedUtils {
             return null;
         }
 
-        if (isBedBlock(head.getLocation().add(BlockFace.EAST.getDirection()).getBlock())) {
-            return head.getLocation().add(BlockFace.EAST.getDirection()).getBlock();
-        } else if (isBedBlock(head.getLocation().add(BlockFace.WEST.getDirection()).getBlock())) {
-            return head.getLocation().add(BlockFace.WEST.getDirection()).getBlock();
-        } else if (isBedBlock(head.getLocation().add(BlockFace.SOUTH.getDirection()).getBlock())) {
-            return head.getLocation().add(BlockFace.SOUTH.getDirection()).getBlock();
+        if (isBedBlock(head.getLocation().add(BlockFace.EAST).getBlock())) {
+            return head.getLocation().add(BlockFace.EAST).getBlock();
+        } else if (isBedBlock(head.getLocation().add(BlockFace.WEST).getBlock())) {
+            return head.getLocation().add(BlockFace.WEST).getBlock();
+        } else if (isBedBlock(head.getLocation().add(BlockFace.SOUTH).getBlock())) {
+            return head.getLocation().add(BlockFace.SOUTH).getBlock();
         } else {
-            return head.getLocation().add(BlockFace.NORTH.getDirection()).getBlock();
+            return head.getLocation().add(BlockFace.NORTH).getBlock();
         }
     }
 

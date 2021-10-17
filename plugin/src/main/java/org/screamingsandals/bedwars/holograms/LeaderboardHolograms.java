@@ -153,7 +153,7 @@ public class LeaderboardHolograms {
                     if (!holograms.containsKey(locationHolder)) {
                         var hologram = HologramManager
                                 .hologram(locationHolder)
-                                .firstLine(Message.of(LangKeys.LEADERBOARD_NO_SCORES).asTextEntry(null))
+                                .firstLine(Message.of(LangKeys.LEADERBOARD_NO_SCORES))
                                 .setTouchable(true);
                         HologramManager.addHologram(hologram);
                         hologram.show();

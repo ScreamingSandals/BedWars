@@ -29,25 +29,25 @@ public class SignUtils {
             if (!BedWarsPlugin.isLegacy()) {
                 var data = sState.getType().get("facing");
                 if (data.isPresent()) {
-                    return location.add(BlockFace.valueOf(data.get()).getOppositeFace().getDirection()).getBlock();
+                    return location.add(BlockFace.valueOf(data.get()).getOppositeFace()).getBlock();
                 } else {
-                    return location.add(BlockFace.DOWN.getDirection()).getBlock();
+                    return location.add(BlockFace.DOWN).getBlock();
                 }
             } else {
                 if (sState.getType().isSameType("standing_sign")) {
-                    return location.add(BlockFace.DOWN.getDirection()).getBlock();
+                    return location.add(BlockFace.DOWN).getBlock();
                 } else {
                     var data = sState.getType().legacyData();
                     switch (data) {
                         case 3:
-                            return location.add(BlockFace.NORTH.getDirection()).getBlock();
+                            return location.add(BlockFace.NORTH).getBlock();
                         case 4:
-                            return location.add(BlockFace.EAST.getDirection()).getBlock();
+                            return location.add(BlockFace.EAST).getBlock();
                         case 5:
-                            return location.add(BlockFace.WEST.getDirection()).getBlock();
+                            return location.add(BlockFace.WEST).getBlock();
                         case 2:
                         default:
-                            return location.add(BlockFace.SOUTH.getDirection()).getBlock();
+                            return location.add(BlockFace.SOUTH).getBlock();
                     }
                 }
             }

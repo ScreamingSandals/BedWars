@@ -2,10 +2,10 @@ apply plugin: "com.github.gmazzo.buildconfig"
 
 ScreamingLibBuilder()
         .platforms('bukkit')
-        .modules('core', 'command', 'tasker', 'hologram', 'placeholders', 'sidebar', 'healthindicator', 'npc')
+        .modules('core', 'command', 'tasker', 'hologram', 'placeholders', 'sidebar', 'healthindicator', 'npc', 'signs')
         .version(SCREAMING_LIB_VERSION)
         .simpleInventories(SIMPLE_INVENTORIES_VERSION)
-        .universalModules('signs', 'lang')
+        .universalModules('lang')
         .enableAnnotationProcessor()
         .build()
 

@@ -1789,7 +1789,13 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
                         player.getPlayerInventory().setBoots(null);
                         player.showTitle(title);
                         if (team == null) {
-                            makeSpectator(player, true);
+                            var loc = makeSpectator(player, true);
+                            // TODO: adventure equivalent
+                            Sounds.playSound(player, loc,
+                                    MainConfig.getInstance().node("sounds", "game_start", "sound").getString(),
+                                    Sounds.ENTITY_PLAYER_LEVELUP,
+                                    (float) MainConfig.getInstance().node("sounds", "game_start", "volume").getDouble(),
+                                    (float) MainConfig.getInstance().node("sounds", "game_start", "pitch").getDouble());
                         } else {
                             player.teleport(team.getTeamSpawn(), () -> {
                                 player.setGameMode(GameModeHolder.of("survival"));
@@ -1808,14 +1814,14 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
                                     }
                                 }
                                 SpawnEffects.spawnEffect(this, player, "game-effects.start");
+                                // TODO: adventure equivalent
+                                Sounds.playSound(player, player.getLocation(),
+                                        MainConfig.getInstance().node("sounds", "game_start", "sound").getString(),
+                                        Sounds.ENTITY_PLAYER_LEVELUP,
+                                        (float) MainConfig.getInstance().node("sounds", "game_start", "volume").getDouble(),
+                                        (float) MainConfig.getInstance().node("sounds", "game_start", "pitch").getDouble());
                             });
                         }
-                        // TODO: adventure equivalent
-                        Sounds.playSound(player.as(Player.class), player.as(Player.class).getLocation(),
-                                MainConfig.getInstance().node("sounds", "game_start", "sound").getString(),
-                                Sounds.ENTITY_PLAYER_LEVELUP,
-                                (float) MainConfig.getInstance().node("sounds", "game_start", "volume").getDouble(),
-                                (float) MainConfig.getInstance().node("sounds", "game_start", "pitch").getDouble());
                     }
 
                     if (configurationContainer.getOrDefault(ConfigurationContainer.REMOVE_UNUSED_TARGET_BLOCKS, Boolean.class, false)) {

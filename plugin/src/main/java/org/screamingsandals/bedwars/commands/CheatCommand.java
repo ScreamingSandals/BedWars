@@ -3,21 +3,28 @@ package org.screamingsandals.bedwars.commands;
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
 import cloud.commandframework.arguments.standard.IntegerArgument;
+import cloud.commandframework.arguments.standard.StringArgument;
 import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.config.MainConfig;
+import org.screamingsandals.bedwars.game.GameManagerImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
+import org.screamingsandals.bedwars.special.PopUpTowerImpl;
+import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.lib.Server;
+import org.screamingsandals.lib.block.BlockTypeHolder;
 import org.screamingsandals.lib.entity.EntityHuman;
 import org.screamingsandals.lib.entity.EntityMapper;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
+import org.screamingsandals.lib.utils.BlockFace;
 import org.screamingsandals.lib.utils.annotations.Service;
 
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,6 +43,60 @@ public class CheatCommand extends BaseCommand {
         if (!mainConfig.node("enable-cheat-command-for-admins").getBoolean()) {
             return;
         }
+
+        manager.command(commandSenderWrapperBuilder
+                .literal("buildPopUpTower")
+                .argument(manager
+                        .argumentBuilder(String.class, "game")
+                        .withSuggestionsProvider((c, s) -> GameManagerImpl.getInstance().getGameNames())
+                        .asOptional())
+                .handler(commandContext -> {
+                    var player = commandContext.getSender().as(PlayerWrapper.class);
+                    Optional<String> game = commandContext.getOptional("game");
+
+                    var playerFace = MiscUtils.yawToFace(player.getLocation().getYaw(), false);
+
+                    if (game.isPresent()) {
+                        var arenaN = game.get();
+                        GameManagerImpl.getInstance().getGame(arenaN).ifPresentOrElse(
+                                game1 -> {
+                                    var popupT = new PopUpTowerImpl(game1, playerManager.getPlayerOrCreate(player), null, BlockTypeHolder.of("minecraft:white_wool"), player.getLocation().getBlock().getLocation().add(playerFace).add(BlockFace.DOWN), playerFace);
+                                    popupT.runTask();
+                                },
+                                () -> player.sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_GAME_NOT_FOUND).defaultPrefix())
+                        );
+                    } else if (playerManager.isPlayerInGame(player)) {
+                        var bwPlayer = player.as(BedWarsPlayer.class);
+                        var popupT = new PopUpTowerImpl(bwPlayer.getGame(), bwPlayer, bwPlayer.getGame().getPlayerTeam(bwPlayer), BlockTypeHolder.of("minecraft:white_wool"), player.getLocation().getBlock().getLocation().add(playerFace).add(BlockFace.DOWN), playerFace);
+                        popupT.runTask();
+                    }
+                })
+        );
+
+        manager.command(commandSenderWrapperBuilder
+                .literal("rebuildRegion")
+                .argument(manager
+                        .argumentBuilder(String.class, "game")
+                        .withSuggestionsProvider((c, s) -> GameManagerImpl.getInstance().getGameNames())
+                        .asOptional())
+                .handler(commandContext -> {
+                    var player = commandContext.getSender().as(PlayerWrapper.class);
+                    Optional<String> game = commandContext.getOptional("game");
+
+                    if (game.isPresent()) {
+                        var arenaN = game.get();
+                        GameManagerImpl.getInstance().getGame(arenaN).ifPresentOrElse(
+                                game1 -> {
+                                    game1.getRegion().regen();
+                                },
+                                () -> player.sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_GAME_NOT_FOUND).defaultPrefix())
+                        );
+                    } else if (playerManager.isPlayerInGame(player)) {
+                        var bwPlayer = player.as(BedWarsPlayer.class);
+                        bwPlayer.getGame().getRegion().regen();
+                    }
+                })
+        );
 
         manager.command(
                 commandSenderWrapperBuilder

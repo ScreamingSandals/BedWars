@@ -1,14 +1,6 @@
-buildscript {
-    repositories {
-        maven { url 'https://repo.screamingsandals.org/public/' }
-    }
-    dependencies {
-        classpath 'org.screamingsandals.nms:NMSMapper:' + NMS_MAPPER_VERSION
-    }
-}
-
 plugins {
     id 'org.screamingsandals.plugin-builder' version "${SCREAMING_PLUGIN_BUILDER_VERSION}" apply false
+    id 'org.screamingsandals.nms-mapper' version "${NMS_MAPPER_VERSION}" apply false
     id 'com.github.gmazzo.buildconfig' version "${BUILDCONFIG_VERSION}" apply false
 }
 

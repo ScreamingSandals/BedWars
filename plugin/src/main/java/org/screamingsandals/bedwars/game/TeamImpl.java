@@ -94,7 +94,6 @@ public class TeamImpl implements Team<LocationHolder, TeamColorImpl, GameImpl, C
                             Message
                                     .of(isBlockTypeBed ? LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_DESTROY_BED : (isAnchor ? LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_DESTROY_ANCHOR : (isCake ? LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_DESTROY_CAKE : LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_DESTROY_ANY)))
                                     .earlyPlaceholder("teamcolor", Component.text("", color.getTextColor()))
-                                    .asTextEntry(null)
                     );
             enemies.forEach(holo::addViewer);
             holo.show();
@@ -105,7 +104,6 @@ public class TeamImpl implements Team<LocationHolder, TeamColorImpl, GameImpl, C
                             Message
                                     .of(isBlockTypeBed ? LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_PROTECT_BED : (isAnchor ? LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_PROTECT_ANCHOR : (isCake ? LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_PROTECT_CAKE : LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_PROTECT_ANY)))
                                     .earlyPlaceholder("teamcolor", Component.text("", color.getTextColor()))
-                                    .asTextEntry(null)
                     );
             players.forEach(protectHolo::addViewer);
             protectHolo.show();
