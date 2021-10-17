@@ -2,6 +2,8 @@ package org.screamingsandals.bedwars.player;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.api.player.BWPlayer;
 import org.screamingsandals.bedwars.commands.BedWarsPermission;
@@ -180,17 +182,31 @@ public class BedWarsPlayer extends PlayerWrapper implements BWPlayer {
         new ArrayList<>(this.hiddenPlayers).forEach(this::showPlayer);
     }
 
+    // TODO: SLib equivalent
     public void hidePlayer(PlayerWrapper playerWrapper) {
-        if (!hiddenPlayers.contains(playerWrapper) && !playerWrapper.equals(this)) {
+        var thisPlayer = as(Player.class);
+        var player = playerWrapper.as(Player.class);
+        if (!hiddenPlayers.contains(playerWrapper) && !player.equals(thisPlayer)) {
             hiddenPlayers.add(playerWrapper);
-            hidePlayer(playerWrapper);
+            try {
+                thisPlayer.hidePlayer(BedWarsPlugin.getInstance().getPluginDescription().as(JavaPlugin.class), player);
+            } catch (Throwable t) {
+                thisPlayer.hidePlayer(player);
+            }
         }
     }
 
+    // TODO: SLib equivalent
     public void showPlayer(PlayerWrapper playerWrapper) {
-        if (hiddenPlayers.contains(playerWrapper) && !playerWrapper.equals(this)) {
+        var thisPlayer = as(Player.class);
+        var player = playerWrapper.as(Player.class);
+        if (hiddenPlayers.contains(playerWrapper) && !player.equals(thisPlayer)) {
             hiddenPlayers.remove(playerWrapper);
-            showPlayer(playerWrapper);
+            try {
+                thisPlayer.showPlayer(BedWarsPlugin.getInstance().getPluginDescription().as(JavaPlugin.class), player);
+            } catch (Throwable t) {
+                thisPlayer.showPlayer(player);
+            }
         }
     }
 }
