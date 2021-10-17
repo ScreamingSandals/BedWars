@@ -3,6 +3,7 @@ package org.screamingsandals.bedwars.special;
 import lombok.Getter;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.sound.Sound;
+import org.apache.commons.lang.Validate;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.api.special.BridgeEgg;
 import org.screamingsandals.bedwars.game.GameImpl;
@@ -14,6 +15,7 @@ import org.screamingsandals.lib.block.BlockTypeHolder;
 import org.screamingsandals.lib.entity.EntityProjectile;
 import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
+import org.screamingsandals.lib.tasker.task.TaskerTask;
 import org.screamingsandals.lib.utils.MathUtils;
 import org.screamingsandals.lib.world.LocationHolder;
 
@@ -23,6 +25,7 @@ public class BridgeEggImpl extends SpecialItem implements BridgeEgg<GameImpl, Be
     private final double distanceSquared;
     private final EntityProjectile projectile;
     private final BlockTypeHolder material;
+    private TaskerTask task;
 
     public BridgeEggImpl(GameImpl game, BedWarsPlayer player, TeamImpl team, EntityProjectile projectile, BlockTypeHolder mat, double distance) {
         super(game, player, team);
@@ -47,7 +50,8 @@ public class BridgeEggImpl extends SpecialItem implements BridgeEgg<GameImpl, Be
 
     @Override
     public void runTask() {
-        Tasker.build(taskBase -> () -> {
+        Validate.isTrue(task == null, "You cannot run a bridge egg task again!");
+        task = Tasker.build(taskBase -> () -> {
             final LocationHolder projectileLocation = projectile.getLocation();
 
             if (!player.isInGame() || projectile.isDead() || team.isDead() || game.getStatus() != GameStatus.RUNNING) {
