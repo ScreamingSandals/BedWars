@@ -1,6 +1,7 @@
 package org.screamingsandals.bedwars.config;
 
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.lib.item.Item;
 import org.screamingsandals.lib.item.builder.ItemFactory;
@@ -25,7 +26,7 @@ public class MainConfig {
 
     private ConfigurationNode configurationNode;
 
-    public static MainConfig getInstance() {
+    public static @NotNull MainConfig getInstance() {
         return ServiceManager.get(MainConfig.class);
     }
 

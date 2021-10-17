@@ -2,7 +2,8 @@ package org.screamingsandals.bedwars.utils;
 
 import lombok.experimental.UtilityClass;
 import net.kyori.adventure.text.format.TextColor;
-import org.bukkit.*;
+import org.bukkit.Effect;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.events.PostSpawnEffectEventImpl;

@@ -3,9 +3,13 @@ package org.screamingsandals.bedwars.game;
 import com.onarandombox.MultiverseCore.api.Core;
 import lombok.*;
 import net.kyori.adventure.bossbar.BossBar;
+import net.kyori.adventure.key.Key;
+import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.*;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
@@ -46,24 +50,29 @@ import org.screamingsandals.bedwars.utils.*;
 import org.screamingsandals.bedwars.variants.VariantImpl;
 import org.screamingsandals.bedwars.variants.VariantManagerImpl;
 import org.screamingsandals.lib.Server;
+import org.screamingsandals.lib.block.BlockHolder;
 import org.screamingsandals.lib.block.BlockTypeHolder;
+import org.screamingsandals.lib.block.state.BlockStateHolder;
 import org.screamingsandals.lib.bukkit.block.state.SignBlockStateHolder;
 import org.screamingsandals.lib.container.Container;
 import org.screamingsandals.lib.container.type.InventoryTypeHolder;
-import org.screamingsandals.lib.entity.*;
+import org.screamingsandals.lib.entity.EntityBasic;
+import org.screamingsandals.lib.entity.EntityItem;
+import org.screamingsandals.lib.entity.EntityLiving;
 import org.screamingsandals.lib.entity.type.EntityTypeHolder;
 import org.screamingsandals.lib.event.EventManager;
 import org.screamingsandals.lib.event.player.SPlayerBlockBreakEvent;
 import org.screamingsandals.lib.healthindicator.HealthIndicator;
 import org.screamingsandals.lib.hologram.Hologram;
 import org.screamingsandals.lib.item.Item;
-import org.screamingsandals.lib.lang.Message;;
 import org.screamingsandals.lib.item.builder.ItemFactory;
+import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.npc.NPC;
 import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.player.SenderWrapper;
 import org.screamingsandals.lib.player.gamemode.GameModeHolder;
+import org.screamingsandals.lib.plugin.PluginManager;
 import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
 import org.screamingsandals.lib.tasker.task.TaskerTask;
@@ -71,12 +80,10 @@ import org.screamingsandals.lib.utils.AdventureHelper;
 import org.screamingsandals.lib.utils.adventure.wrapper.BossBarColorWrapper;
 import org.screamingsandals.lib.utils.adventure.wrapper.ComponentWrapper;
 import org.screamingsandals.lib.visuals.Visual;
-import org.screamingsandals.lib.block.BlockHolder;
 import org.screamingsandals.lib.world.LocationHolder;
 import org.screamingsandals.lib.world.LocationMapper;
 import org.screamingsandals.lib.world.WorldHolder;
 import org.screamingsandals.lib.world.chunk.ChunkHolder;
-import org.screamingsandals.lib.block.state.BlockStateHolder;
 import org.screamingsandals.lib.world.gamerule.GameRuleHolder;
 import org.screamingsandals.lib.world.weather.WeatherHolder;
 import org.spongepowered.configurate.ConfigurateException;
@@ -90,6 +97,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("PatternValidation")
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, WorldHolder, LocationHolder, EntityBasic, ComponentWrapper, GameStoreImpl, ItemSpawnerImpl> {
     public boolean gameStartItem;
@@ -200,8 +208,7 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
             }
 
             if (GameManagerImpl.getInstance().getGame(uuid).isPresent()) {
-                PlayerMapper.getConsoleSender().sendMessage(
-                        ChatColor.RED + "[B" + ChatColor.WHITE + "W] " + ChatColor.RED + "Arena " + uuid + " has the same unique id as another arena that's already loaded. Skipping!");
+                PlayerMapper.getConsoleSender().sendMessage(MiniMessage.miniMessage().parse("<red>[B<white>W] <red>Arena " + uuid + " has the same unique id as another arena that's already loaded. Skipping!"));
                 return null;
             }
 
@@ -214,36 +221,32 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
             var worldName = Objects.requireNonNull(configMap.node("world").getString());
             game.world = LocationMapper.getWorld(worldName).orElse(null);
 
+            var multiverseKey = PluginManager.createKey("Multiverse-Core").orElseThrow();
+            var multiverse = PluginManager.getPlatformClass(multiverseKey);
             if (game.world == null) {
-                if (Bukkit.getPluginManager().isPluginEnabled("Multiverse-Core")) {
-                    PlayerMapper.getConsoleSender().sendMessage(ChatColor.RED + "[B" + ChatColor.WHITE + "W] " + ChatColor.RED + "World " + worldName
-                            + " was not found, but we found Multiverse-Core, so we will try to load this world.");
+                if (PluginManager.isEnabled(multiverseKey)) {
+                    PlayerMapper.getConsoleSender().sendMessage(MiniMessage.miniMessage().parse("<red>[B<white>W] <red>World " + worldName + " was not found, but we found Multiverse-Core, so we will try to load this world."));
 
-                    Core multiverse = (Core) Bukkit.getPluginManager().getPlugin("Multiverse-Core");
-                    if (multiverse != null && multiverse.getMVWorldManager().loadWorld(worldName)) {
-                        PlayerMapper.getConsoleSender().sendMessage(ChatColor.RED + "[B" + ChatColor.WHITE + "W] " + ChatColor.GREEN + "World " + worldName
-                                + " was succesfully loaded with Multiverse-Core, continue in arena loading.");
+                    if (multiverse.isPresent() && ((Core) multiverse.orElseThrow()).getMVWorldManager().loadWorld(worldName)) {
+                        PlayerMapper.getConsoleSender().sendMessage(MiniMessage.miniMessage().parse("<red>[B<white>W] <green>World " + worldName + " was succesfully loaded with Multiverse-Core, continue in arena loading."));
 
                         game.world = LocationMapper.getWorld(worldName).orElseThrow();
                     } else {
-                        PlayerMapper.getConsoleSender().sendMessage(ChatColor.RED + "[B" + ChatColor.WHITE + "W] " + ChatColor.RED + "Arena " + game.name
-                                + " can't be loaded, because world " + worldName + " is missing!");
+                        PlayerMapper.getConsoleSender().sendMessage(MiniMessage.miniMessage().parse("<red>[B<white>W] <red>Arena " + game.name + " can't be loaded, because world " + worldName + " is missing!"));
                         return null;
                     }
                 } else if (firstAttempt) {
-                    PlayerMapper.getConsoleSender().sendMessage(
-                            ChatColor.RED + "[B" + ChatColor.WHITE + "W] " + ChatColor.YELLOW + "Arena " + game.name + " can't be loaded, because world " + worldName + " is missing! We will try it again after all plugins will be loaded!");
+                    PlayerMapper.getConsoleSender().sendMessage(MiniMessage.miniMessage().parse("<red>[B<white>W] <yellow>Arena " + game.name + " can't be loaded, because world " + worldName + " is missing! We will try it again after all plugins will be loaded!"));
                     Tasker.build(() -> loadGame(file, false)).delay(10L, TaskerTime.TICKS).start();
                     return null;
                 } else {
-                    PlayerMapper.getConsoleSender().sendMessage(
-                            ChatColor.RED + "[B" + ChatColor.WHITE + "W] " + ChatColor.RED + "Arena " + game.name + " can't be loaded, because world " + worldName + " is missing!");
+                    PlayerMapper.getConsoleSender().sendMessage(MiniMessage.miniMessage().parse("<red>[B<white>W] <red>Arena " + game.name + " can't be loaded, because world " + worldName + " is missing!"));
                     return null;
                 }
             }
 
             if (Server.isVersion(1, 15)) {
-                game.world.setGameRuleValue(GameRuleHolder.of("doImmediateRespawn"), true); // TODO: remove this
+                game.world.setGameRuleValue(GameRuleHolder.of("doImmediateRespawn"), true);
             }
 
             game.pos1 = MiscUtils.readLocationFromString(game.world, Objects.requireNonNull(configMap.node("pos1").getString()));
@@ -268,29 +271,23 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
             var spawnWorld = configMap.node("lobbySpawnWorld").getString();
             var lobbySpawnWorld = LocationMapper.getWorld(Objects.requireNonNull(spawnWorld)).orElse(null);
             if (lobbySpawnWorld == null) {
-                if (Bukkit.getPluginManager().isPluginEnabled("Multiverse-Core")) {
-                    PlayerMapper.getConsoleSender().sendMessage(NamedTextColor.RED + "[B" + ChatColor.WHITE + "W] " + ChatColor.RED + "World " + spawnWorld
-                            + " was not found, but we found Multiverse-Core, so we will try to load this world.");
+                if (PluginManager.isEnabled(multiverseKey)) {
+                    PlayerMapper.getConsoleSender().sendMessage(MiniMessage.miniMessage().parse("<red>[B<white>W] <red>World " + spawnWorld + " was not found, but we found Multiverse-Core, so we will try to load this world."));
 
-                    Core multiverse = (Core) Bukkit.getPluginManager().getPlugin("Multiverse-Core");
-                    if (multiverse != null && multiverse.getMVWorldManager().loadWorld(spawnWorld)) {
-                        PlayerMapper.getConsoleSender().sendMessage(ChatColor.RED + "[B" + ChatColor.WHITE + "W] " + ChatColor.GREEN + "World " + spawnWorld
-                                + " was successfully loaded with Multiverse-Core, continue in arena loading.");
+                    if (multiverse.isPresent() && ((Core) multiverse.orElseThrow()).getMVWorldManager().loadWorld(spawnWorld)) {
+                        PlayerMapper.getConsoleSender().sendMessage(MiniMessage.miniMessage().parse("<red>[B<white>W] <green>World " + spawnWorld + " was succesfully loaded with Multiverse-Core, continue in arena loading."));
 
                         lobbySpawnWorld = LocationMapper.getWorld(Objects.requireNonNull(spawnWorld)).orElseThrow();
                     } else {
-                        PlayerMapper.getConsoleSender().sendMessage(ChatColor.RED + "[B" + ChatColor.WHITE + "W] " + ChatColor.RED + "Arena " + game.name
-                                + " can't be loaded, because world " + spawnWorld + " is missing!");
+                        PlayerMapper.getConsoleSender().sendMessage(MiniMessage.miniMessage().parse("<red>[B<white>W] <red>Arena " + game.name + " can't be loaded, because world " + spawnWorld + " is missing!"));
                         return null;
                     }
                 } else if (firstAttempt) {
-                    Bukkit.getConsoleSender().sendMessage(
-                            ChatColor.RED + "[B" + ChatColor.WHITE + "W] " + ChatColor.YELLOW + "Arena " + game.name + " can't be loaded, because world " + worldName + " is missing! We will try it again after all plugins will be loaded!");
+                    PlayerMapper.getConsoleSender().sendMessage(MiniMessage.miniMessage().parse("<red>[B<white>W] <yellow>Arena " + game.name + " can't be loaded, because world " + spawnWorld + " is missing! We will try it again after all plugins will be loaded!"));
                     Tasker.build(() -> loadGame(file, false)).delay(10L, TaskerTime.TICKS).start();
                     return null;
                 } else {
-                    Bukkit.getConsoleSender().sendMessage(
-                            ChatColor.RED + "[B" + ChatColor.WHITE + "W] " + ChatColor.RED + "Arena " + game.name + " can't be loaded, because world " + spawnWorld + " is missing!");
+                    PlayerMapper.getConsoleSender().sendMessage(MiniMessage.miniMessage().parse("<red>[B<white>W] <red>Arena " + game.name + " can't be loaded, because world " + spawnWorld + " is missing!"));
                     return null;
                 }
             }
@@ -537,7 +534,7 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
     }
 
     public int countSpectating() {
-        return (int) this.players.stream().filter(t -> t.isSpectator()).count();
+        return (int) this.players.stream().filter(BedWarsPlayer::isSpectator).count();
     }
 
     public int countRespawnable() {
@@ -817,17 +814,23 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
 
                         SpawnEffects.spawnEffect(this, player, "game-effects.beddestroy");
                         if (getPlayerTeam(player) == team) {
-                            // TODO: adventure equivalent
-                            Sounds.playSound(player, player.getLocation(),
-                                    MainConfig.getInstance().node("sounds", "my_bed_destroyed", "sound").getString(),
-                                    Sounds.ENTITY_ENDER_DRAGON_GROWL, (float) MainConfig.getInstance().node("sounds", "my_bed_destroyed", "volume").getDouble(),
-                                    (float) MainConfig.getInstance().node("sounds", "my_bed_destroyed", "pitch").getDouble());
+                            player.playSound(
+                                    Sound.sound(
+                                            Key.key(MainConfig.getInstance().node("sounds", "my_bed_destroyed", "sound").getString("entity_ender_dragon_growl")),
+                                            Sound.Source.AMBIENT,
+                                            (float) MainConfig.getInstance().node("sounds", "my_bed_destroyed", "volume").getDouble(1),
+                                            (float) MainConfig.getInstance().node("sounds", "my_bed_destroyed", "pitch").getDouble(1)
+                                    )
+                            );
                         } else {
-                            // TODO: adventure equivalent
-                            Sounds.playSound(player, player.getLocation(),
-                                    MainConfig.getInstance().node("sounds", "bed_destroyed", "sound").getString(),
-                                    Sounds.ENTITY_ENDER_DRAGON_GROWL, (float) MainConfig.getInstance().node("sounds", "bed_destroyed", "volume").getDouble(),
-                                    (float) MainConfig.getInstance().node("sounds", "bed_destroyed", "pitch").getDouble());
+                            player.playSound(
+                                    Sound.sound(
+                                            Key.key(MainConfig.getInstance().node("sounds", "bed_destroyed", "sound").getString("entity_ender_dragon_growl")),
+                                            Sound.Source.AMBIENT,
+                                            (float) MainConfig.getInstance().node("sounds", "bed_destroyed", "volume").getDouble(1),
+                                            (float) MainConfig.getInstance().node("sounds", "bed_destroyed", "pitch").getDouble(1)
+                                    )
+                            );
                         }
                     }
 
@@ -1062,7 +1065,7 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
                 gamePlayer.teleport(mainLobbyLocation);
                 gamePlayer.mainLobbyUsed = true;
             } catch (Throwable t) {
-                Bukkit.getLogger().severe("You didn't setup properly the mainlobby! Do it via commands not directly in config.yml");
+                BedWarsPlugin.getInstance().getLogger().error("You didn't setup the mainlobby properly! Do it via commands, not directly in config.yml!");
             }
         }
 
@@ -1239,9 +1242,10 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
         if (status == GameStatus.DISABLED) {
             return; // Game is already stopped
         }
-        List<BedWarsPlayer> clonedPlayers = (List<BedWarsPlayer>) ((ArrayList<BedWarsPlayer>) players).clone();
-        for (BedWarsPlayer p : clonedPlayers)
+        var clonedPlayers = new ArrayList<>(players);
+        for (BedWarsPlayer p : clonedPlayers) {
             p.changeGame(null);
+        }
         if (status != GameStatus.REBUILDING) {
             status = GameStatus.DISABLED;
             updateSigns();
@@ -1667,12 +1671,15 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
                     if (countdown <= 10 && countdown >= 1 && countdown != previousCountdown) {
 
                         for (BedWarsPlayer player : players) {
-                            TitleUtils.send(player, ChatColor.YELLOW + Integer.toString(countdown), "");
-                            // TODO: adventure equivalent
-                            Sounds.playSound(player.as(Player.class), player.as(Player.class).getLocation(),
-                                    MainConfig.getInstance().node("sounds", "countdown", "sound").getString(), Sounds.UI_BUTTON_CLICK,
-                                    (float) MainConfig.getInstance().node("sounds", "countdown", "volume").getDouble(),
-                                    (float) MainConfig.getInstance().node("sounds", "countdown", "pitch").getDouble());
+                            TitleUtils.send(player, NamedTextColor.YELLOW + Integer.toString(countdown), "");
+                            player.playSound(
+                                    Sound.sound(
+                                            Key.key(MainConfig.getInstance().node("sounds", "countdown", "sound").getString("ui_button_click")),
+                                            Sound.Source.AMBIENT,
+                                            (float) MainConfig.getInstance().node("sounds", "countdown", "volume").getDouble(1),
+                                            (float) MainConfig.getInstance().node("sounds", "countdown", "pitch").getDouble(1)
+                                    )
+                            );
                         }
                     }
                 }
@@ -1789,13 +1796,14 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
                         player.getPlayerInventory().setBoots(null);
                         player.showTitle(title);
                         if (team == null) {
-                            var loc = makeSpectator(player, true);
-                            // TODO: adventure equivalent
-                            Sounds.playSound(player, loc,
-                                    MainConfig.getInstance().node("sounds", "game_start", "sound").getString(),
-                                    Sounds.ENTITY_PLAYER_LEVELUP,
-                                    (float) MainConfig.getInstance().node("sounds", "game_start", "volume").getDouble(),
-                                    (float) MainConfig.getInstance().node("sounds", "game_start", "pitch").getDouble());
+                            player.playSound(
+                                    Sound.sound(
+                                            Key.key(MainConfig.getInstance().node("sounds", "game_start", "sound").getString("entity_player_levelup")),
+                                            Sound.Source.AMBIENT,
+                                            (float) MainConfig.getInstance().node("sounds", "game_start", "volume").getDouble(1),
+                                            (float) MainConfig.getInstance().node("sounds", "game_start", "pitch").getDouble(1)
+                                    )
+                            );
                         } else {
                             player.teleport(team.getTeamSpawn(), () -> {
                                 player.setGameMode(GameModeHolder.of("survival"));
@@ -1814,12 +1822,14 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
                                     }
                                 }
                                 SpawnEffects.spawnEffect(this, player, "game-effects.start");
-                                // TODO: adventure equivalent
-                                Sounds.playSound(player, player.getLocation(),
-                                        MainConfig.getInstance().node("sounds", "game_start", "sound").getString(),
-                                        Sounds.ENTITY_PLAYER_LEVELUP,
-                                        (float) MainConfig.getInstance().node("sounds", "game_start", "volume").getDouble(),
-                                        (float) MainConfig.getInstance().node("sounds", "game_start", "pitch").getDouble());
+                                player.playSound(
+                                        Sound.sound(
+                                                Key.key(MainConfig.getInstance().node("sounds", "game_start", "sound").getString("entity_player_levelup")),
+                                                Sound.Source.AMBIENT,
+                                                (float) MainConfig.getInstance().node("sounds", "game_start", "volume").getDouble(1),
+                                                (float) MainConfig.getInstance().node("sounds", "game_start", "pitch").getDouble(1)
+                                        )
+                                );
                             });
                         }
                     }
@@ -2156,7 +2166,7 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
 
     public void selectTeam(BedWarsPlayer playerGameProfile, String displayName) {
         if (status == GameStatus.WAITING) {
-            displayName = ChatColor.stripColor(displayName);
+            displayName = MiscUtils.stripColor(displayName);
             playerGameProfile.closeInventory();
             for (TeamImpl team : teams) {
                 if (displayName.equals(team.getName())) {

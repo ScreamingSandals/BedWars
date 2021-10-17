@@ -1,5 +1,7 @@
 package org.screamingsandals.bedwars.listener;
 
+import net.kyori.adventure.key.Key;
+import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
@@ -57,6 +59,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 @Service
+@SuppressWarnings("PatternValidation")
 public class PlayerListener {
 
     private final List<PlayerWrapper> explosionAffectedPlayers = new ArrayList<>();
@@ -253,12 +256,14 @@ public class PlayerListener {
                                     livingTime.decrementAndGet();
                                     if (livingTime.get() == 0) {
                                         game.makePlayerFromSpectator(gVictim);
-                                        Sounds.playSound(gVictim, gVictim.getLocation(),
-                                                MainConfig.getInstance().node("sounds", "respawn_cooldown_done", "sound").getString(),
-                                                Sounds.UI_BUTTON_CLICK,
-                                                (float) MainConfig.getInstance().node("sounds", "respawn_cooldown_done", "volume").getDouble(),
-                                                (float) MainConfig.getInstance().node("sounds", "respawn_cooldown_done", "pitch").getDouble());
-
+                                        gVictim.playSound(
+                                                Sound.sound(
+                                                        Key.key(MainConfig.getInstance().node("sounds", "respawn_cooldown_done", "sound").getString("ui_button_click")),
+                                                        Sound.Source.AMBIENT,
+                                                        (float) MainConfig.getInstance().node("sounds", "respawn_cooldown_done", "volume").getDouble(1),
+                                                        (float) MainConfig.getInstance().node("sounds", "respawn_cooldown_done", "pitch").getDouble(1)
+                                                )
+                                        );
                                         task.get().cancel();
                                     }
                                 })

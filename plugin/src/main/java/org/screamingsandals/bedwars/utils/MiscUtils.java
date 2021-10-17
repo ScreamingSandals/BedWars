@@ -24,15 +24,21 @@ import org.screamingsandals.lib.world.LocationHolder;
 import org.screamingsandals.lib.world.WorldHolder;
 
 import java.util.*;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @UtilityClass
 public class MiscUtils {
+    private static final Pattern STRIP_COLOR_PATTERN = Pattern.compile("(?i)\u00A7[0-9A-FK-ORX]");
     /**
      * From BedWarsRel
      */
     public int randInt(int min, int max) {
         return new Random().nextInt((max - min) + 1) + min;
+    }
+
+    public String stripColor(String input) {
+        return STRIP_COLOR_PATTERN.matcher(input).replaceAll("");
     }
 
     public BlockFace getCardinalDirection(LocationHolder location) {
