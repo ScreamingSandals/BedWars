@@ -256,14 +256,16 @@ public class PlayerListener {
                                     livingTime.decrementAndGet();
                                     if (livingTime.get() == 0) {
                                         game.makePlayerFromSpectator(gVictim);
-                                        gVictim.playSound(
-                                                Sound.sound(
-                                                        Key.key(MainConfig.getInstance().node("sounds", "respawn_cooldown_done", "sound").getString("ui_button_click")),
-                                                        Sound.Source.AMBIENT,
-                                                        (float) MainConfig.getInstance().node("sounds", "respawn_cooldown_done", "volume").getDouble(1),
-                                                        (float) MainConfig.getInstance().node("sounds", "respawn_cooldown_done", "pitch").getDouble(1)
-                                                )
-                                        );
+                                        try {
+                                            gVictim.playSound(
+                                                    Sound.sound(
+                                                            Key.key(MainConfig.getInstance().node("sounds", "respawn_cooldown_done", "sound").getString("ui_button_click").toLowerCase()),
+                                                            Sound.Source.AMBIENT,
+                                                            (float) MainConfig.getInstance().node("sounds", "respawn_cooldown_done", "volume").getDouble(1),
+                                                            (float) MainConfig.getInstance().node("sounds", "respawn_cooldown_done", "pitch").getDouble(1)
+                                                    )
+                                            );
+                                        } catch (Throwable ignored) {}
                                         task.get().cancel();
                                     }
                                 })

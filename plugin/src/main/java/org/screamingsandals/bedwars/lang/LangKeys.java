@@ -116,6 +116,8 @@ public class LangKeys {
     public final String[] IN_GAME_CHEAT_RECEIVED_GIVE = {"in_game", "cheat", "received_give"};
     public final String[] IN_GAME_CHEAT_RECEIVED_KILL = {"in_game", "cheat", "please_provide_valid_cheat_type"};
     public final String[] IN_GAME_CHEAT_GAME_NOT_RUNNING = {"in_game", "cheat", "game_not_running"};
+    public final String[] IN_GAME_CHEAT_SPECIAL_ITEM_USED = {"in_game", "cheat", "special_item_used"};
+    public final String[] IN_GAME_CHEAT_REGION_REGENERATED = {"in_game", "cheat", "region_regenerated"};
     public final String[] IN_GAME_JOIN = {"in_game", "join"};
     public final String[] IN_GAME_LEAVE = {"in_game", "leave"};
     public final String[] IN_GAME_PLAYER_SELF_KILLED = {"in_game", "player_self_killed"};
@@ -186,6 +188,8 @@ public class LangKeys {
     public final String[] HELP_BW_CHEAT_GIVE = {"help", "bw_cheat_give"};
     public final String[] HELP_BW_CHEAT_KILL = {"help", "bw_cheat_kill"};
     public final String[] HELP_BW_GAMESINV = {"help", "bw_gamesinv"};
+    public final String[] HELP_BW_CHEAT_BUILD_POP_UP_TOWER = {"help", "bw_cheat_build_pop_up_tower"};
+    public final String[] HELP_BW_CHEAT_REBUILD_REGION = {"help", "bw_cheat_rebuild_region"};
     public final String[] GAMES_INVENTORY_COULD_NOT_FIND_GAME = {"games_inventory", "could_not_find_game"};
     public final String[] GAMES_INVENTORY_UNKNOWN_INVENTORY = {"games_inventory", "unknown_inventory"};
     public final String[] UPDATE_NEW_RELEASE = {"update", "new_release"};

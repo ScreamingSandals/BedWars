@@ -20,6 +20,7 @@ import org.screamingsandals.bedwars.holograms.LeaderboardHolograms;
 import org.screamingsandals.bedwars.holograms.StatisticsHolograms;
 import org.screamingsandals.bedwars.inventories.ShopInventory;
 import org.screamingsandals.bedwars.listener.*;
+import org.screamingsandals.bedwars.lobby.LobbyNPCManager;
 import org.screamingsandals.bedwars.placeholderapi.BedwarsExpansion;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.bedwars.premium.PremiumBedwars;
@@ -34,6 +35,7 @@ import org.screamingsandals.lib.Server;
 import org.screamingsandals.lib.block.BlockTypeHolder;
 import org.screamingsandals.lib.healthindicator.HealthIndicatorManager;
 import org.screamingsandals.lib.item.ItemTypeHolder;
+import org.screamingsandals.lib.npc.NPCManager;
 import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.plugin.PluginContainer;
 import org.screamingsandals.lib.plugin.ServiceManager;
@@ -66,6 +68,7 @@ import java.util.*;
         "Parties"
 })
 @Init(services = {
+        NPCManager.class,
         CommandService.class,
         VariantManagerImpl.class,
         GameManagerImpl.class,
@@ -93,12 +96,12 @@ import java.util.*;
         WorldListener.class,
         VillagerListener.class,
         PlayerListener.class,
-        NPCUtils.class,
         EntitiesManagerImpl.class,
         ColorChangerImpl.class,
         VaultUtils.class,
         PerWorldInventoryCompatibilityFix.class,
-        GamesInventory.class
+        GamesInventory.class,
+        LobbyNPCManager.class
 })
 public class BedWarsPlugin extends PluginContainer implements BedwarsAPI {
     private static BedWarsPlugin instance;

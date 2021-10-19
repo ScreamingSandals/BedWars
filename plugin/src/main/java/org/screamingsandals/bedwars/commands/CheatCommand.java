@@ -3,7 +3,6 @@ package org.screamingsandals.bedwars.commands;
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
 import cloud.commandframework.arguments.standard.IntegerArgument;
-import cloud.commandframework.arguments.standard.StringArgument;
 import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.config.MainConfig;
@@ -62,6 +61,7 @@ public class CheatCommand extends BaseCommand {
                                 game1 -> {
                                     var popupT = new PopUpTowerImpl(game1, playerManager.getPlayerOrCreate(player), null, BlockTypeHolder.of("minecraft:white_wool"), player.getLocation().getBlock().getLocation().add(playerFace).add(BlockFace.DOWN), playerFace);
                                     popupT.runTask();
+                                    player.sendMessage(Message.of(LangKeys.IN_GAME_CHEAT_SPECIAL_ITEM_USED).placeholder("item", "Pop-Up Tower").defaultPrefix());
                                 },
                                 () -> player.sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_GAME_NOT_FOUND).defaultPrefix())
                         );
@@ -69,6 +69,9 @@ public class CheatCommand extends BaseCommand {
                         var bwPlayer = player.as(BedWarsPlayer.class);
                         var popupT = new PopUpTowerImpl(bwPlayer.getGame(), bwPlayer, bwPlayer.getGame().getPlayerTeam(bwPlayer), BlockTypeHolder.of("minecraft:white_wool"), player.getLocation().getBlock().getLocation().add(playerFace).add(BlockFace.DOWN), playerFace);
                         popupT.runTask();
+                        player.sendMessage(Message.of(LangKeys.IN_GAME_CHEAT_SPECIAL_ITEM_USED).placeholder("item", "Pop-Up Tower").defaultPrefix());
+                    } else {
+                        player.sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_YOU_ARE_NOT_IN_GAME).defaultPrefix());
                     }
                 })
         );
@@ -94,6 +97,9 @@ public class CheatCommand extends BaseCommand {
                     } else if (playerManager.isPlayerInGame(player)) {
                         var bwPlayer = player.as(BedWarsPlayer.class);
                         bwPlayer.getGame().getRegion().regen();
+                        player.sendMessage(Message.of(LangKeys.IN_GAME_CHEAT_REGION_REGENERATED).placeholder("arena", bwPlayer.getGame().getName()).defaultPrefix());
+                    } else {
+                        player.sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_YOU_ARE_NOT_IN_GAME).defaultPrefix());
                     }
                 })
         );

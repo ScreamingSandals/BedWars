@@ -135,6 +135,7 @@ public class TeamImpl implements Team<LocationHolder, TeamColorImpl, GameImpl, C
         }
 
         chests.clear();
+        players.clear();
         started = false;
     }
 

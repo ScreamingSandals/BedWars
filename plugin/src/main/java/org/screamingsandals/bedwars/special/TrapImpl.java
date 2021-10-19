@@ -51,15 +51,17 @@ public class TrapImpl extends SpecialItem implements Trap<GameImpl, BedWarsPlaye
         for (var data : trapData) {
             if (data.containsKey("sound")) {
                 var sound = (String) data.get("sound");
-                player.playSound(
-                        Sound.sound(
-                                Key.key(sound),
-                                Sound.Source.AMBIENT,
-                                1f,
-                                1f
-                        ),
-                        location.getX(), location.getY(), location.getZ()
-                );
+                try {
+                    player.playSound(
+                            Sound.sound(
+                                    Key.key(sound.toLowerCase()),
+                                    Sound.Source.AMBIENT,
+                                    1f,
+                                    1f
+                            ),
+                            location.getX(), location.getY(), location.getZ()
+                    );
+                } catch (Throwable ignored) {}
             }
 
             if (data.containsKey("effect")) {

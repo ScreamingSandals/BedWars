@@ -5,12 +5,16 @@ import lombok.Getter;
 import org.bukkit.entity.*;
 import org.screamingsandals.bedwars.api.game.GameStore;
 import org.screamingsandals.bedwars.config.MainConfig;
-import org.screamingsandals.bedwars.utils.NPCUtils;
 import org.screamingsandals.lib.entity.EntityLiving;
 import org.screamingsandals.lib.entity.EntityMapper;
 import org.screamingsandals.lib.entity.type.EntityTypeHolder;
 import org.screamingsandals.lib.npc.NPC;
+import org.screamingsandals.lib.npc.NPCManager;
+import org.screamingsandals.lib.npc.skin.NPCSkin;
+import org.screamingsandals.lib.utils.AdventureHelper;
 import org.screamingsandals.lib.world.LocationHolder;
+
+import java.util.List;
 
 @Data
 public class GameStoreImpl implements GameStore<EntityLiving, EntityTypeHolder, LocationHolder> {
@@ -48,12 +52,19 @@ public class GameStoreImpl implements GameStore<EntityLiving, EntityTypeHolder, 
         if (entity == null) {
             var typ = entityType;
             if (typ.is("player")) {
-                npc = NPCUtils.spawnNPC(this);
-                if (npc != null) {
-                    // NPC spawned
-                    return npc;
-                }
+                try {
+                    npc = NPCManager
+                            .npc(storeLocation)
+                            .setTouchable(true)
+                            .setShouldLookAtPlayer(true)
+                            .setDisplayName(List.of(AdventureHelper.toComponentNullable(shopCustomName)));
+
+                    NPCSkin.retrieveSkin(skinName).ifPresent(npc::setSkin);
+
+                    return npc.show();
+                } catch (Throwable ignored) {}
                 typ = EntityTypeHolder.of("VILLAGER");
+                npc = null;
             }
 
             entity = EntityMapper.<EntityLiving>spawn(typ, storeLocation).orElseThrow();

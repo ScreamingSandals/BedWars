@@ -39,12 +39,14 @@ public class BridgeEggImpl extends SpecialItem implements BridgeEgg<GameImpl, Be
         if (block.getType().isAir() && ArenaUtils.isInArea(block.getLocation(), game.getPos1(), game.getPos2())) {
             block.setType(material);
             game.getRegion().addBuiltDuringGame(block.getLocation());
-            player.playSound(
-                    Sound.sound(Key.key("entity_chicken_egg"), Sound.Source.AMBIENT, 1f, 1f),
-                    block.getLocation().getX(),
-                    block.getLocation().getY(),
-                    block.getLocation().getZ()
-            );
+            try {
+                player.playSound(
+                        Sound.sound(Key.key("entity_chicken_egg"), Sound.Source.AMBIENT, 1f, 1f),
+                        block.getLocation().getX(),
+                        block.getLocation().getY(),
+                        block.getLocation().getZ()
+                );
+            } catch (Throwable ignored) {}
         }
     }
 

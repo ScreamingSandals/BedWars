@@ -43,12 +43,14 @@ public class PopUpTowerImpl extends SpecialItem implements PopUpTower<GameImpl, 
         if (isLocationSafe(location) && ArenaUtils.isInArea(block.getLocation(), game.getPos1(), game.getPos2())) {
             block.setType(type);
             this.game.getRegion().addBuiltDuringGame(block.getLocation());
-            this.player.playSound(
-                    Sound.sound(Key.key("minecraft:block.stone.place"), Sound.Source.AMBIENT, 1f, 1f),
-                    block.getLocation().getX(),
-                    block.getLocation().getY(),
-                    block.getLocation().getZ()
-            );
+            try {
+                this.player.playSound(
+                        Sound.sound(Key.key("minecraft:block.stone.place"), Sound.Source.AMBIENT, 1f, 1f),
+                        block.getLocation().getX(),
+                        block.getLocation().getY(),
+                        block.getLocation().getZ()
+                );
+            } catch (Throwable ignored) {}
         }
     }
 
@@ -165,12 +167,14 @@ public class PopUpTowerImpl extends SpecialItem implements PopUpTower<GameImpl, 
             ladder.setType(ladderType);
             game.getRegion().removeBlockBuiltDuringGame(lastLoc);
             game.getRegion().addBuiltDuringGame(lastLoc);
-            this.player.playSound(
-                    Sound.sound(Key.key("minecraft:block.ladder.place"), Sound.Source.AMBIENT, 1f, 1f),
-                    loc.getX(),
-                    loc.getY(),
-                    loc.getZ()
-            );
+            try {
+                this.player.playSound(
+                        Sound.sound(Key.key("minecraft:block.ladder.place"), Sound.Source.AMBIENT, 1f, 1f),
+                        loc.getX(),
+                        loc.getY(),
+                        loc.getZ()
+                );
+            } catch (Throwable ignored) {}
         }
     }
 

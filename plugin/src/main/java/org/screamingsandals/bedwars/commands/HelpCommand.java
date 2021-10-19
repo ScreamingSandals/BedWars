@@ -64,6 +64,8 @@ public class HelpCommand extends BaseCommand {
                             if (MainConfig.getInstance().node("enable-cheat-command-for-admins").getBoolean()) {
                                 Message.of(LangKeys.HELP_BW_CHEAT_GIVE)
                                         .join(LangKeys.HELP_BW_CHEAT_KILL)
+                                        .join(LangKeys.HELP_BW_CHEAT_BUILD_POP_UP_TOWER)
+                                        .join(LangKeys.HELP_BW_CHEAT_REBUILD_REGION)
                                         .send(sender);
                             }
 
