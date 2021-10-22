@@ -2,6 +2,7 @@ package org.screamingsandals.bedwars.inventories;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
 import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.api.PurchaseType;
@@ -19,8 +20,8 @@ import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.bedwars.special.listener.PermaItemListener;
-import org.screamingsandals.bedwars.utils.Sounds;
 import org.screamingsandals.bedwars.lib.debug.Debug;
+import org.screamingsandals.lib.SpecialSoundKey;
 import org.screamingsandals.lib.entity.EntityMapper;
 import org.screamingsandals.lib.event.EventManager;
 import org.screamingsandals.lib.event.OnEvent;
@@ -475,10 +476,12 @@ public class ShopInventory {
                         .placeholder("material", Component.text(priceAmount + " ").append(type.getItemName()))
                         .send(event.getPlayer());
             }
-            Sounds.playSound(player, player.getLocation(),
-                    mainConfig.node("sounds", "item_buy", "sound").getString(), Sounds.ENTITY_ITEM_PICKUP,
+            player.playSound(Sound.sound(
+                    SpecialSoundKey.key(mainConfig.node("sounds", "item_buy", "sound").getString("entity.item.pickup")),
+                    Sound.Source.PLAYER,
                     (float) MainConfig.getInstance().node("sounds", "item_buy", "volume").getDouble(),
-                    (float) MainConfig.getInstance().node("sounds", "item_buy", "pitch").getDouble());
+                    (float) MainConfig.getInstance().node("sounds", "item_buy", "pitch").getDouble()
+            ));
 
             EventManager.fire(new StorePostPurchaseEventImpl(game, playerManager.getPlayer(event.getPlayer().getUuid()).orElseThrow(), PurchaseType.NORMAL_ITEM, event));
         } else {
@@ -597,11 +600,12 @@ public class ShopInventory {
                                     .placeholder("material", Component.text(priceAmount + " ").append(type.getItemName()))
                                     .send(event.getPlayer());
                         }
-                        Sounds.playSound(player1, player1.getLocation(),
-                                mainConfig.node("sounds", "upgrade_buy", "sound").getString(),
-                                Sounds.ENTITY_EXPERIENCE_ORB_PICKUP,
+                        player.playSound(Sound.sound(
+                                SpecialSoundKey.key(mainConfig.node("sounds", "upgrade_buy", "sound").getString("entity.experience_orb.pickup")),
+                                Sound.Source.PLAYER,
                                 (float) MainConfig.getInstance().node("sounds", "upgrade_buy", "volume").getDouble(),
-                                (float) MainConfig.getInstance().node("sounds", "upgrade_buy", "pitch").getDouble());
+                                (float) MainConfig.getInstance().node("sounds", "upgrade_buy", "pitch").getDouble()
+                        ));
                     }
                 } else {
                     if (!mainConfig.node("removePurchaseMessages").getBoolean()) {
@@ -611,11 +615,12 @@ public class ShopInventory {
                                 .placeholder("material", Component.text(priceAmount + " ").append(type.getItemName()))
                                 .send(event.getPlayer());
                     }
-                    Sounds.playSound(player, player.getLocation(),
-                            mainConfig.node("sounds", "upgrade_buy", "sound").getString(),
-                            Sounds.ENTITY_EXPERIENCE_ORB_PICKUP,
+                    player.playSound(Sound.sound(
+                            SpecialSoundKey.key(mainConfig.node("sounds", "upgrade_buy", "sound").getString("entity.experience_orb.pickup")),
+                            Sound.Source.PLAYER,
                             (float) MainConfig.getInstance().node("sounds", "upgrade_buy", "volume").getDouble(),
-                            (float) MainConfig.getInstance().node("sounds", "upgrade_buy", "pitch").getDouble());
+                            (float) MainConfig.getInstance().node("sounds", "upgrade_buy", "pitch").getDouble()
+                    ));
                 }
             }
             EventManager.fire(new StorePostPurchaseEventImpl(game, playerManager.getPlayer(event.getPlayer().getUuid()).orElseThrow(), PurchaseType.UPGRADES, event));

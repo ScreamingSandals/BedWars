@@ -1,6 +1,5 @@
 package org.screamingsandals.bedwars.listener;
 
-import net.kyori.adventure.key.Key;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -33,6 +32,7 @@ import org.screamingsandals.bedwars.utils.*;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.lib.nms.entity.PlayerUtils;
 import org.screamingsandals.lib.Server;
+import org.screamingsandals.lib.SpecialSoundKey;
 import org.screamingsandals.lib.attribute.AttributeHolder;
 import org.screamingsandals.lib.attribute.AttributeTypeHolder;
 import org.screamingsandals.lib.block.BlockTypeHolder;
@@ -143,9 +143,19 @@ public class PlayerListener {
                         var c = charges - 1;
                         team.getTargetBlock().getBlock().setType(anchor.with("charges", String.valueOf(c)));
                         if (c == 0) {
-                            Sounds.playSound(team.getTargetBlock(), MainConfig.getInstance().node("target-block", "respawn-anchor", "sound", "deplete").getString(), Sounds.BLOCK_RESPAWN_ANCHOR_DEPLETE, 1, 1);
+                            team.getTargetBlock().getWorld().playSound(Sound.sound(
+                                    SpecialSoundKey.key(MainConfig.getInstance().node("target-block", "respawn-anchor", "sound", "deplete").getString("block.respawn_anchor.deplete")),
+                                    Sound.Source.BLOCK,
+                                    1,
+                                    1
+                            ), team.getTargetBlock().getX(), team.getTargetBlock().getY(), team.getTargetBlock().getZ());
                         } else {
-                            Sounds.playSound(team.getTargetBlock(), MainConfig.getInstance().node("target-block", "respawn-anchor", "sound", "used").getString(), Sounds.BLOCK_GLASS_BREAK, 1, 1);
+                            team.getTargetBlock().getWorld().playSound(Sound.sound(
+                                    SpecialSoundKey.key(MainConfig.getInstance().node("target-block", "respawn-anchor", "sound", "deplete").getString("block.glass.break")),
+                                    Sound.Source.BLOCK,
+                                    1,
+                                    1
+                            ), team.getTargetBlock().getX(), team.getTargetBlock().getY(), team.getTargetBlock().getZ());
                         }
                     } else {
                         isBed = false;
@@ -178,17 +188,20 @@ public class PlayerListener {
                         }
                         if (team.isDead()) {
                             SpawnEffects.spawnEffect(game, gVictim, "game-effects.teamkill");
-                            Sounds.playSound(killer, killer.getLocation(),
-                                    MainConfig.getInstance().node("sounds", "team_kill", "sound").getString(),
-                                    Sounds.ENTITY_PLAYER_LEVELUP,
+
+                            killer.playSound(Sound.sound(
+                                    SpecialSoundKey.key(MainConfig.getInstance().node("sounds", "team_kill", "sound").getString("entity.player.levelup")),
+                                    Sound.Source.AMBIENT,
                                     (float) MainConfig.getInstance().node("sounds", "team_kill", "volume").getDouble(),
-                                    (float) MainConfig.getInstance().node("sounds", "team_kill", "pitch").getDouble());
+                                    (float) MainConfig.getInstance().node("sounds", "team_kill", "pitch").getDouble()
+                            ));
                         } else {
-                            Sounds.playSound(killer, killer.getLocation(),
-                                    MainConfig.getInstance().node("sounds", "player_kill", "sound").getString(),
-                                    Sounds.ENTITY_PLAYER_BIG_FALL,
+                            killer.playSound(Sound.sound(
+                                    SpecialSoundKey.key(MainConfig.getInstance().node("sounds", "player_kill", "sound").getString("entity.generic.big_fall")),
+                                    Sound.Source.AMBIENT,
                                     (float) MainConfig.getInstance().node("sounds", "player_kill", "volume").getDouble(),
-                                    (float) MainConfig.getInstance().node("sounds", "player_kill", "pitch").getDouble());
+                                    (float) MainConfig.getInstance().node("sounds", "player_kill", "pitch").getDouble()
+                            ));
                             if (!isBed) {
                                 VaultUtils.getInstance().depositPlayer(killer, MainConfig.getInstance().node("vault", "reward", "final-kill").getInt());
                             } else {
@@ -246,26 +259,25 @@ public class PlayerListener {
                                                 .placeholder("time", livingTime.get())
                                                 .times(TitleUtils.defaultTimes())
                                                 .title(gVictim);
-                                        Sounds.playSound(gVictim, gVictim.getLocation(),
-                                                MainConfig.getInstance().node("sounds", "respawn_cooldown_wait", "sound").getString(),
-                                                Sounds.BLOCK_STONE_BUTTON_CLICK_ON,
+                                        gVictim.playSound(Sound.sound(
+                                                SpecialSoundKey.key(MainConfig.getInstance().node("sounds", "respawn_cooldown_wait", "sound").getString("block.stone_button.click_on")),
+                                                Sound.Source.AMBIENT,
                                                 (float) MainConfig.getInstance().node("sounds", "respawn_cooldown_wait", "volume").getDouble(),
-                                                (float) MainConfig.getInstance().node("sounds", "respawn_cooldown_wait", "pitch").getDouble());
+                                                (float) MainConfig.getInstance().node("sounds", "respawn_cooldown_wait", "pitch").getDouble()
+                                        ));
                                     }
 
                                     livingTime.decrementAndGet();
                                     if (livingTime.get() == 0) {
                                         game.makePlayerFromSpectator(gVictim);
-                                        try {
-                                            gVictim.playSound(
-                                                    Sound.sound(
-                                                            Key.key(MainConfig.getInstance().node("sounds", "respawn_cooldown_done", "sound").getString("ui_button_click").toLowerCase()),
-                                                            Sound.Source.AMBIENT,
-                                                            (float) MainConfig.getInstance().node("sounds", "respawn_cooldown_done", "volume").getDouble(1),
-                                                            (float) MainConfig.getInstance().node("sounds", "respawn_cooldown_done", "pitch").getDouble(1)
-                                                    )
-                                            );
-                                        } catch (Throwable ignored) {}
+                                        gVictim.playSound(
+                                                Sound.sound(
+                                                        SpecialSoundKey.key(MainConfig.getInstance().node("sounds", "respawn_cooldown_done", "sound").getString("ui.button.click")),
+                                                        Sound.Source.AMBIENT,
+                                                        (float) MainConfig.getInstance().node("sounds", "respawn_cooldown_done", "volume").getDouble(1),
+                                                        (float) MainConfig.getInstance().node("sounds", "respawn_cooldown_done", "pitch").getDouble(1)
+                                                )
+                                        );
                                         task.get().cancel();
                                     }
                                 })
@@ -939,7 +951,13 @@ public class PlayerListener {
                                         anchorFilled = true;
                                         event.getBlockClicked().setType(anchor.with("charges", String.valueOf(charges)));
                                         stack.setAmount(stack.getAmount() - 1);
-                                        Sounds.playSound(event.getBlockClicked().getLocation(), MainConfig.getInstance().node("target-block", "respawn-anchor", "sound", "charge").getString(), Sounds.BLOCK_RESPAWN_ANCHOR_CHARGE, 1, 1);
+
+                                        event.getBlockClicked().getLocation().getWorld().playSound(Sound.sound(
+                                                SpecialSoundKey.key(MainConfig.getInstance().node("target-block", "respawn-anchor", "sound", "charge").getString("block.respawn_anchor.charge")),
+                                                Sound.Source.BLOCK,
+                                                1,
+                                                1
+                                        ), event.getBlockClicked().getLocation().getX(), event.getBlockClicked().getLocation().getY(), event.getBlockClicked().getLocation().getZ());
                                     }
                                 }
 
@@ -958,7 +976,10 @@ public class PlayerListener {
                                         } else {
                                             stack.setAmount(stack.getAmount() - 1);
                                             // TODO get right block place sound
-                                            Sounds.BLOCK_STONE_PLACE.playSound(player, block.getLocation(), 1, 1);
+                                            block.getLocation().getWorld().playSound(Sound.sound(
+                                                    SpecialSoundKey.key("minecraft:block.stone.place"),
+                                                    Sound.Source.BLOCK, 1, 1
+                                            ), block.getLocation().getX(), block.getLocation().getY(), block.getLocation().getZ());
                                         }
                                     }
                                 }

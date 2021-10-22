@@ -1,7 +1,6 @@
 package org.screamingsandals.bedwars.special;
 
 import lombok.Getter;
-import net.kyori.adventure.key.Key;
 import net.kyori.adventure.sound.Sound;
 import org.apache.commons.lang.Validate;
 import org.screamingsandals.bedwars.api.game.GameStatus;
@@ -10,6 +9,7 @@ import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.TeamImpl;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.utils.ArenaUtils;
+import org.screamingsandals.lib.SpecialSoundKey;
 import org.screamingsandals.lib.block.BlockHolder;
 import org.screamingsandals.lib.block.BlockTypeHolder;
 import org.screamingsandals.lib.entity.EntityProjectile;
@@ -39,14 +39,12 @@ public class BridgeEggImpl extends SpecialItem implements BridgeEgg<GameImpl, Be
         if (block.getType().isAir() && ArenaUtils.isInArea(block.getLocation(), game.getPos1(), game.getPos2())) {
             block.setType(material);
             game.getRegion().addBuiltDuringGame(block.getLocation());
-            try {
-                player.playSound(
-                        Sound.sound(Key.key("entity_chicken_egg"), Sound.Source.AMBIENT, 1f, 1f),
-                        block.getLocation().getX(),
-                        block.getLocation().getY(),
-                        block.getLocation().getZ()
-                );
-            } catch (Throwable ignored) {}
+            player.playSound(
+                    Sound.sound(SpecialSoundKey.key("minecraft:entity.chicken.egg"), Sound.Source.AMBIENT, 1f, 1f),
+                    block.getLocation().getX(),
+                    block.getLocation().getY(),
+                    block.getLocation().getZ()
+            );
         }
     }
 

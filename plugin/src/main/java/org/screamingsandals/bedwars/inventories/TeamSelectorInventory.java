@@ -60,9 +60,9 @@ public class TeamSelectorInventory {
                             try {
                                 itemInfoBuilder.stack(itemBuilder ->
                                         itemBuilder.name(Message.of(LangKeys.IN_GAME_TEAM_SELECTION_SELECT_ITEM)
-                                                .placeholder("teamName", Component.text(team.getName()).color(team.getColor().getTextColor()))
-                                                .placeholder("inTeam", playersInTeamCount)
-                                                .placeholder("maxInTeam", team.getMaxPlayers())
+                                                .placeholder("team", Component.text(team.getName()).color(team.getColor().getTextColor()))
+                                                .placeholder("inteam", playersInTeamCount)
+                                                .placeholder("maxinteam", team.getMaxPlayers())
                                                 .asComponent()
                                         ).lore(formatLore(team, game))
                                 ).property("selector", BasicConfigurationNode.root().set(team));
@@ -160,9 +160,9 @@ public class TeamSelectorInventory {
 
         item.setDisplayName(
                 Message.of(LangKeys.IN_GAME_TEAM_SELECTION_SELECT_ITEM)
-                        .placeholder("teamName", Component.text(team.getName()).color(team.getColor().getTextColor()))
-                        .placeholder("inTeam", playersInTeamCount)
-                        .placeholder("maxInTeam", team.getMaxPlayers())
+                        .placeholder("team", Component.text(team.getName()).color(team.getColor().getTextColor()))
+                        .placeholder("inteam", playersInTeamCount)
+                        .placeholder("maxinteam", team.getMaxPlayers())
                         .asComponent()
         );
 

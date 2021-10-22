@@ -1,7 +1,6 @@
 package org.screamingsandals.bedwars.special;
 
 import lombok.Getter;
-import net.kyori.adventure.key.Key;
 import net.kyori.adventure.sound.Sound;
 import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.api.game.GameStatus;
@@ -10,6 +9,7 @@ import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.TeamImpl;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.utils.ArenaUtils;
+import org.screamingsandals.lib.SpecialSoundKey;
 import org.screamingsandals.lib.block.BlockTypeHolder;
 import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
@@ -45,7 +45,7 @@ public class PopUpTowerImpl extends SpecialItem implements PopUpTower<GameImpl, 
             this.game.getRegion().addBuiltDuringGame(block.getLocation());
             try {
                 this.player.playSound(
-                        Sound.sound(Key.key("minecraft:block.stone.place"), Sound.Source.AMBIENT, 1f, 1f),
+                        Sound.sound(SpecialSoundKey.key("minecraft:block.stone.place"), Sound.Source.BLOCK, 1f, 1f),
                         block.getLocation().getX(),
                         block.getLocation().getY(),
                         block.getLocation().getZ()
@@ -169,7 +169,7 @@ public class PopUpTowerImpl extends SpecialItem implements PopUpTower<GameImpl, 
             game.getRegion().addBuiltDuringGame(lastLoc);
             try {
                 this.player.playSound(
-                        Sound.sound(Key.key("minecraft:block.ladder.place"), Sound.Source.AMBIENT, 1f, 1f),
+                        Sound.sound(SpecialSoundKey.key("minecraft:block.ladder.place"), Sound.Source.BLOCK, 1f, 1f),
                         loc.getX(),
                         loc.getY(),
                         loc.getZ()

@@ -2,13 +2,14 @@ package org.screamingsandals.bedwars.game;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
 import org.screamingsandals.bedwars.api.Team;
 import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
-import org.screamingsandals.bedwars.utils.Sounds;
+import org.screamingsandals.lib.SpecialSoundKey;
 import org.screamingsandals.lib.block.BlockMapper;
 import org.screamingsandals.lib.container.Container;
 import org.screamingsandals.lib.container.type.InventoryTypeHolder;
@@ -66,7 +67,12 @@ public class TeamImpl implements Team<LocationHolder, TeamColorImpl, GameImpl, C
                             Tasker.build(taskBase -> () -> {
                                 var charges = atomic.incrementAndGet();
                                 block.setType(anchor.with("charges", String.valueOf(charges)));
-                                Sounds.playSound(targetBlock, MainConfig.getInstance().node("target-block", "respawn-anchor", "sound", "charge").getString(), Sounds.BLOCK_RESPAWN_ANCHOR_CHARGE, 1, 1);
+                                targetBlock.getWorld().playSound(Sound.sound(
+                                        SpecialSoundKey.key(MainConfig.getInstance().node("target-block", "respawn-anchor", "sound", "charge").getString("block.respawn_anchor.charge")),
+                                        Sound.Source.BLOCK,
+                                        1,
+                                        1
+                                ), targetBlock.getX(), targetBlock.getY(), targetBlock.getZ());
                                 if (charges >= 4) {
                                     taskBase.cancel();
                                 }

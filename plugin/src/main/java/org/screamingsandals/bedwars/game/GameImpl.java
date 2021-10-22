@@ -3,7 +3,6 @@ package org.screamingsandals.bedwars.game;
 import com.onarandombox.MultiverseCore.api.Core;
 import lombok.*;
 import net.kyori.adventure.bossbar.BossBar;
-import net.kyori.adventure.key.Key;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -51,6 +50,7 @@ import org.screamingsandals.bedwars.utils.*;
 import org.screamingsandals.bedwars.variants.VariantImpl;
 import org.screamingsandals.bedwars.variants.VariantManagerImpl;
 import org.screamingsandals.lib.Server;
+import org.screamingsandals.lib.SpecialSoundKey;
 import org.screamingsandals.lib.block.BlockHolder;
 import org.screamingsandals.lib.block.BlockTypeHolder;
 import org.screamingsandals.lib.block.state.BlockStateHolder;
@@ -815,27 +815,23 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
 
                         SpawnEffects.spawnEffect(this, player, "game-effects.beddestroy");
                         if (getPlayerTeam(player) == team) {
-                            try {
-                                player.playSound(
-                                        Sound.sound(
-                                                Key.key(MainConfig.getInstance().node("sounds", "my_bed_destroyed", "sound").getString("entity_ender_dragon_growl").toLowerCase()),
-                                                Sound.Source.AMBIENT,
-                                                (float) MainConfig.getInstance().node("sounds", "my_bed_destroyed", "volume").getDouble(1),
-                                                (float) MainConfig.getInstance().node("sounds", "my_bed_destroyed", "pitch").getDouble(1)
-                                        )
-                                );
-                            } catch (Throwable ignored) {}
+                            player.playSound(
+                                    Sound.sound(
+                                            SpecialSoundKey.key(MainConfig.getInstance().node("sounds", "my_bed_destroyed", "sound").getString("entity.ender_dragon.growl")),
+                                            Sound.Source.AMBIENT,
+                                            (float) MainConfig.getInstance().node("sounds", "my_bed_destroyed", "volume").getDouble(1),
+                                            (float) MainConfig.getInstance().node("sounds", "my_bed_destroyed", "pitch").getDouble(1)
+                                    )
+                            );
                         } else {
-                            try {
-                                player.playSound(
-                                        Sound.sound(
-                                                Key.key(MainConfig.getInstance().node("sounds", "bed_destroyed", "sound").getString("entity_ender_dragon_growl").toLowerCase()),
-                                                Sound.Source.AMBIENT,
-                                                (float) MainConfig.getInstance().node("sounds", "bed_destroyed", "volume").getDouble(1),
-                                                (float) MainConfig.getInstance().node("sounds", "bed_destroyed", "pitch").getDouble(1)
-                                        )
-                                );
-                            } catch (Throwable ignored) {}
+                            player.playSound(
+                                    Sound.sound(
+                                            SpecialSoundKey.key(MainConfig.getInstance().node("sounds", "bed_destroyed", "sound").getString("entity.ender_dragon.growl")),
+                                            Sound.Source.AMBIENT,
+                                            (float) MainConfig.getInstance().node("sounds", "bed_destroyed", "volume").getDouble(1),
+                                            (float) MainConfig.getInstance().node("sounds", "bed_destroyed", "pitch").getDouble(1)
+                                    )
+                            );
                         }
                     }
 
@@ -1677,16 +1673,14 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
 
                         for (BedWarsPlayer player : players) {
                             player.showTitle(Title.title(Component.text(Integer.toString(countdown), NamedTextColor.YELLOW), Component.empty(), TitleUtils.defaultTimes()));
-                            try {
-                                player.playSound(
-                                        Sound.sound(
-                                                Key.key(MainConfig.getInstance().node("sounds", "countdown", "sound").getString("ui_button_click").toLowerCase()),
-                                                Sound.Source.AMBIENT,
-                                                (float) MainConfig.getInstance().node("sounds", "countdown", "volume").getDouble(1),
-                                                (float) MainConfig.getInstance().node("sounds", "countdown", "pitch").getDouble(1)
-                                        )
-                                );
-                            } catch (Throwable ignored) {}
+                            player.playSound(
+                                    Sound.sound(
+                                            SpecialSoundKey.key(MainConfig.getInstance().node("sounds", "countdown", "sound").getString("ui.button.click")),
+                                            Sound.Source.AMBIENT,
+                                            (float) MainConfig.getInstance().node("sounds", "countdown", "volume").getDouble(1),
+                                            (float) MainConfig.getInstance().node("sounds", "countdown", "pitch").getDouble(1)
+                                    )
+                            );
                         }
                     }
                 }
@@ -1804,10 +1798,9 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
                         player.showTitle(title);
                         if (team == null) {
                             var loc = makeSpectator(player, true);
-                            try {
                                 player.playSound(
                                         Sound.sound(
-                                                Key.key(MainConfig.getInstance().node("sounds", "game_start", "sound").getString("entity_player_levelup").toLowerCase()),
+                                                SpecialSoundKey.key(MainConfig.getInstance().node("sounds", "game_start", "sound").getString("entity.player.levelup")),
                                                 Sound.Source.AMBIENT,
                                                 (float) MainConfig.getInstance().node("sounds", "game_start", "volume").getDouble(1),
                                                 (float) MainConfig.getInstance().node("sounds", "game_start", "pitch").getDouble(1)
@@ -1816,7 +1809,6 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
                                         loc.getY(),
                                         loc.getZ()
                                 );
-                            } catch (Throwable ignored) {}
                         } else {
                             player.teleport(team.getTeamSpawn(), () -> {
                                 player.setGameMode(GameModeHolder.of("survival"));
@@ -1835,16 +1827,14 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
                                     }
                                 }
                                 SpawnEffects.spawnEffect(this, player, "game-effects.start");
-                                try {
-                                    player.playSound(
-                                            Sound.sound(
-                                                    Key.key(MainConfig.getInstance().node("sounds", "game_start", "sound").getString("entity_player_levelup").toLowerCase()),
-                                                    Sound.Source.AMBIENT,
-                                                    (float) MainConfig.getInstance().node("sounds", "game_start", "volume").getDouble(1),
-                                                    (float) MainConfig.getInstance().node("sounds", "game_start", "pitch").getDouble(1)
-                                            )
-                                    );
-                                } catch (Throwable ignored) {}
+                                player.playSound(
+                                        Sound.sound(
+                                                SpecialSoundKey.key(MainConfig.getInstance().node("sounds", "game_start", "sound").getString("entity.player.levelup")),
+                                                Sound.Source.AMBIENT,
+                                                (float) MainConfig.getInstance().node("sounds", "game_start", "volume").getDouble(1),
+                                                (float) MainConfig.getInstance().node("sounds", "game_start", "pitch").getDouble(1)
+                                        )
+                                );
                             });
                         }
                     }
