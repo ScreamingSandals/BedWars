@@ -1,4 +1,4 @@
-site_name: Screaming BedWars
+site_name: ScreamingBedWars
 site_url: http://localhost:8000
 
 theme:
@@ -52,7 +52,7 @@ markdown_extensions:
 
 edit_uri: ""
 repo_url: https://github.com/ScreamingSandals/BedWars
-repo_name: BedWars
+repo_name: ScreamingSandals/BedWars
 
 plugins:
   - git-revision-date:

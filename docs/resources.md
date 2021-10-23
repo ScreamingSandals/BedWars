@@ -1,6 +1,6 @@
-# How to add Custom resources
+# How to add custom resources
 
-Open the config (`plugins/BedWars/config.yml`) and go down until you find a section called `resources`. Using `Ctrl+F` helps you to search for it.
+Open the config (`plugins/BedWars/config.yml`) and go down, until you find a section called `resources`. Using `Ctrl+F` helps you to search for it.
 
 It’s easy to add a new resource into your game/server. Here is an example on how to add `emeralds`, `diamonds`, `iron` and `gold`.
 
