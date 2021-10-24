@@ -8,7 +8,7 @@ import org.screamingsandals.bedwars.commands.RemoveHoloCommand;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
-import org.screamingsandals.bedwars.utils.HologramLocation;
+import org.screamingsandals.bedwars.utils.SerializableLocation;
 import org.screamingsandals.lib.Server;
 import org.screamingsandals.lib.event.EventPriority;
 import org.screamingsandals.lib.hologram.Hologram;
@@ -45,11 +45,11 @@ public class StatisticsHolograms {
     private final YamlConfigurationLoader loader;
     private final MainConfig mainConfig;
 
-    private ArrayList<HologramLocation> hologramLocations = null;
+    private ArrayList<SerializableLocation> hologramLocations = null;
     private Map<UUID, List<Hologram>> holograms = null;
 
     public void addHologramLocation(LocationHolder eyeLocation) {
-        this.hologramLocations.add(new HologramLocation(eyeLocation.add(0, -3, 0)));
+        this.hologramLocations.add(new SerializableLocation(eyeLocation.add(0, -3, 0)));
         this.updateHologramDatabase();
     }
 
@@ -77,7 +77,7 @@ public class StatisticsHolograms {
 
         try {
             var config = loader.load();
-            var locations = config.node("locations").getList(HologramLocation.class);
+            var locations = config.node("locations").getList(SerializableLocation.class);
             this.hologramLocations.addAll(locations);
         } catch (ConfigurateException e) {
             e.printStackTrace();
@@ -214,7 +214,7 @@ public class StatisticsHolograms {
         }
     }
 
-    private HologramLocation getHologramLocationByLocation(LocationHolder holoLocation) {
+    private SerializableLocation getHologramLocationByLocation(LocationHolder holoLocation) {
         return hologramLocations.stream()
                 .filter(loc -> loc.getWorld().equals(holoLocation.getWorld().getName())
                         && loc.getX() == holoLocation.getX()

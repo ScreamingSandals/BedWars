@@ -12,17 +12,25 @@ import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @ConfigSerializable
-public class HologramLocation implements Wrapper {
+public class SerializableLocation implements Wrapper {
     private String world;
     private double x;
     private double y;
     private double z;
+    private double yaw = 0;
+    private double pitch = 0;
 
-    public HologramLocation(LocationHolder location) {
+    public SerializableLocation(LocationHolder location) {
         this.world = location.getWorld().getName();
         this.x = location.getX();
         this.y = location.getY();
         this.z = location.getZ();
+        this.yaw = location.getYaw();
+        this.pitch = location.getPitch();
+    }
+
+    public boolean isWorldLoaded() {
+        return LocationMapper.getWorld(world).isPresent();
     }
 
     @SuppressWarnings("unchecked")
@@ -30,6 +38,8 @@ public class HologramLocation implements Wrapper {
     public <T> T as(Class<T> type) {
         if (type == LocationHolder.class) {
             var holder = new LocationHolder(x, y, z);
+            holder.setYaw((float) this.yaw);
+            holder.setPitch((float) this.pitch);
             holder.setWorld(LocationMapper.getWorld(world).orElseThrow());
             return (T) holder;
         }

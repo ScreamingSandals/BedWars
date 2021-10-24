@@ -43,6 +43,10 @@ public class GamesInventory {
 
     private final Map<String, InventorySet> inventoryMap = new HashMap<>();
 
+    public static GamesInventory getInstance() {
+        return ServiceManager.get(GamesInventory.class);
+    }
+
     @OnPostEnable
     public void loadInventory() {
 
