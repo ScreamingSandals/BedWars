@@ -290,6 +290,16 @@ public class LangKeys {
     public final String[] ADMIN_TEAM_JOIN_ENTITY_CLICK_RIGHT_ON_ENTITY = {"admin", "team_join_entity", "click_right_on_entity"};
     public final String[] ADMIN_TEAM_JOIN_ENTITY_ENTITY_NOT_COMPATIBLE = {"admin", "team_join_entity", "entity_not_compatible"};
     public final String[] ADMIN_TEAM_JOIN_ENTITY_ENTITY_ADDED = {"admin", "team_join_entity", "entity_added"};
+    public final String[] ADMIN_NPC_ADDED = {"admin", "npc", "added"};
+    public final String[] ADMIN_NPC_NOW_CLICK = {"admin", "npc", "now_click"};
+    public final String[] ADMIN_NPC_NO_LONGER_EDITING = {"admin", "npc", "no_longer_editing"};
+    public final String[] ADMIN_NPC_EDITING = {"admin", "npc", "editing"};
+    public final String[] ADMIN_NPC_NOT_EDITING = {"admin", "npc", "not_editing"};
+    public final String[] ADMIN_NPC_SHOULD_LOOK = {"admin", "npc", "should_look"};
+    public final String[] ADMIN_NPC_SHOULD_NOT_LOOK = {"admin", "npc", "should_not_look"};
+    public final String[] ADMIN_NPC_ACTION_SET = {"admin", "npc", "action_set"};
+    public final String[] ADMIN_NPC_REQUIRES_VALUE = {"admin", "npc", "requires_value"};
+    public final String[] ADMIN_NPC_REMOVED = {"admin", "npc", "removed"};
     public final String[] ADMIN_INFO_HEADER = {"admin", "info", "header"};
     public final String[] ADMIN_INFO_NAME = {"admin", "info", "name"};
     public final String[] ADMIN_INFO_STATUS = {"admin", "info", "status"};

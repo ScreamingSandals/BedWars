@@ -33,7 +33,7 @@ import org.screamingsandals.lib.utils.annotations.methods.Provider;
         RemoveHoloCommand.class,
         StatsCommand.class,
         GamesInventoryCommand.class,
-        LobbyNPCCommand.class
+        NPCCommand.class
 })
 @UtilityClass
 public class CommandService {
