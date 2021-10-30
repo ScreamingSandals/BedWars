@@ -60,7 +60,7 @@ public class ProtectionWallListener {
                         var protectionWall = new ProtectionWallImpl(game, gPlayer,
                                 game.getPlayerTeam(gPlayer), stack);
 
-                        if (!event.getPlayer().asEntity().getEyeLocation().getBlock().getType().isAir()) {
+                        if (!event.getPlayer().getEyeLocation().getBlock().getType().isAir()) {
                             MiscUtils.sendActionBarMessage(player, Message.of(LangKeys.SPECIALS_PROTECTION_WALL_NOT_USABLE_HERE));
                             return;
                         }

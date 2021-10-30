@@ -9,9 +9,9 @@ import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.bedwars.special.AutoIgniteableTNTImpl;
 import org.screamingsandals.lib.block.BlockTypeHolder;
-import org.screamingsandals.lib.entity.EntityHuman;
 import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.event.entity.SEntityDamageByEntityEvent;
+import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.utils.annotations.Service;
 
 @Service
@@ -44,11 +44,11 @@ public class AutoIgniteableTNTListener {
 
     @OnEvent
     public void onDamage(SEntityDamageByEntityEvent event) {
-        if (!(event.getEntity() instanceof EntityHuman)) {
+        if (!(event.getEntity() instanceof PlayerWrapper)) {
             return;
         }
 
-        var player = ((EntityHuman) event.getEntity()).asPlayer();
+        var player = (PlayerWrapper) event.getEntity();
 
         if (!PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
             return;

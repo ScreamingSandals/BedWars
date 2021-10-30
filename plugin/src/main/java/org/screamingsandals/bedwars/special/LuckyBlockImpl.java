@@ -56,7 +56,7 @@ public class LuckyBlockImpl extends SpecialItem implements LuckyBlock<GameImpl, 
                 break;
             case "potion":
                 var potionEffect = PotionEffectHolder.of(map.get("effect"));
-                broker.asEntity().addPotionEffect(potionEffect);
+                broker.addPotionEffect(potionEffect);
                 break;
             case "tnt":
                 Tasker.build(() -> {

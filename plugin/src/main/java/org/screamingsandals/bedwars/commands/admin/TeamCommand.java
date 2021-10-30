@@ -15,7 +15,6 @@ import org.screamingsandals.bedwars.region.FlatteningBedUtils;
 import org.screamingsandals.bedwars.region.LegacyBedUtils;
 import org.screamingsandals.bedwars.utils.ArenaUtils;
 import org.screamingsandals.lib.block.BlockHolder;
-import org.screamingsandals.lib.entity.EntityHuman;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.particle.ParticleHolder;
 import org.screamingsandals.lib.particle.ParticleTypeHolder;
@@ -223,9 +222,9 @@ public class TeamCommand extends BaseAdminSubCommand {
 
                             BlockHolder block;
                             if (mode == TargetBlockSetModes.LOOKING_AT) {
-                                block = sender.as(EntityHuman.class).getTargetBlock(null, 5);
+                                block = sender.as(PlayerWrapper.class).getTargetBlock(null, 5);
                             } else {
-                                block = sender.as(EntityHuman.class).getLocation().subtract(0, 0.5, 0).getBlock();
+                                block = sender.as(PlayerWrapper.class).getLocation().subtract(0, 0.5, 0).getBlock();
                             }
                             var loc = block.getLocation();
 

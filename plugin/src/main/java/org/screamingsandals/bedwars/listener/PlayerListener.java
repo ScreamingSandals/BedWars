@@ -36,7 +36,6 @@ import org.screamingsandals.lib.SpecialSoundKey;
 import org.screamingsandals.lib.attribute.AttributeHolder;
 import org.screamingsandals.lib.attribute.AttributeTypeHolder;
 import org.screamingsandals.lib.block.BlockTypeHolder;
-import org.screamingsandals.lib.entity.EntityHuman;
 import org.screamingsandals.lib.entity.EntityLiving;
 import org.screamingsandals.lib.entity.EntityProjectile;
 import org.screamingsandals.lib.event.EventManager;
@@ -583,7 +582,7 @@ public class PlayerListener {
             return;
         }
 
-        var player = ((EntityHuman) event.getEntity()).asPlayer();
+        var player = (PlayerWrapper) event.getEntity();
         if (PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
             var gPlayer = player.as(BedWarsPlayer.class);
             var game = gPlayer.getGame();
@@ -647,7 +646,7 @@ public class PlayerListener {
                 if (event.getEntity().getEntityType().is("armor_stand")) {
                     var damager = ((SEntityDamageByEntityEvent) event).getDamager();
                     if (damager.getEntityType().is("player")) {
-                        var player = ((EntityHuman) damager).asPlayer();
+                        var player = (PlayerWrapper) event.getEntity();
                         if (PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
                             var gPlayer = player.as(BedWarsPlayer.class);
                             if (gPlayer.getGame().getStatus() == GameStatus.WAITING || gPlayer.isSpectator()) {
@@ -661,20 +660,20 @@ public class PlayerListener {
             return;
         }
 
-        var player = ((EntityHuman) event.getEntity()).asPlayer();
+        var player = (PlayerWrapper) event.getEntity();
         if (PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
             Debug.info(player.getName() + " was damaged in game");
             var gPlayer = player.as(BedWarsPlayer.class);
             var game = gPlayer.getGame();
             if (gPlayer.isSpectator()) {
                 if (event.getDamageCause().is("void")) {
-                    gPlayer.asEntity().setFallDistance(0);
+                    gPlayer.setFallDistance(0);
                     gPlayer.teleport(game.getSpecSpawn());
                 }
                 event.setCancelled(true);
             } else if (game.getStatus() == GameStatus.WAITING) {
                 if (event.getDamageCause().is("void")) {
-                    gPlayer.asEntity().setFallDistance(0);
+                    gPlayer.setFallDistance(0);
                     gPlayer.teleport(game.getLobbySpawn());
                 }
                 event.setCancelled(true);
@@ -687,8 +686,8 @@ public class PlayerListener {
                     return;
                 }
 
-                if (event.getDamageCause().is("void") && gPlayer.asEntity().getHealth() > 0.5) {
-                    gPlayer.asEntity().setHealth(0.5);
+                if (event.getDamageCause().is("void") && gPlayer.getHealth() > 0.5) {
+                    gPlayer.setHealth(0.5);
                 } else if (event.getDamageCause().is("fall")) {
                     if (explosionAffectedPlayers.contains(player)) {
                         event.setDamage(MainConfig.getInstance().node("tnt-jump", "fall-damage").getDouble(0.75));
@@ -716,7 +715,7 @@ public class PlayerListener {
 
                                         vector.setY(vector.getY() / MainConfig.getInstance().node("tnt-jump", "reduce-y").getDouble());
                                         vector.multiply(MainConfig.getInstance().node("tnt-jump", "launch-multiplier").getInt());
-                                        player.asEntity().setVelocity(vector);
+                                        player.setVelocity(vector);
                                         explosionAffectedPlayers.add(player);
                                     }
                                     if (!MainConfig.getInstance().node("tnt-jump", "team-damage").getBoolean(true)) {
@@ -728,7 +727,7 @@ public class PlayerListener {
                             }
                         }
                     } else if (edbee.getDamager().getEntityType().is("player")) {
-                        var damager = ((EntityHuman) edbee.getDamager()).asPlayer();
+                        var damager = (PlayerWrapper) event.getEntity();
                         if (PlayerManagerImpl.getInstance().isPlayerInGame(damager)) {
                             var gDamager = damager.as(BedWarsPlayer.class);
                             if (gDamager.isSpectator() || (gDamager.getGame().getPlayerTeam(gDamager) == game.getPlayerTeam(gPlayer) && !game.getConfigurationContainer().getOrDefault(ConfigurationContainer.FRIENDLY_FIRE, Boolean.class, false))) {
@@ -742,7 +741,7 @@ public class PlayerListener {
                         if (projectile.getEntityType().is("minecraft:fireball", "minecraft:small_fireball", "minecraft:dragon_fireball") && game.getStatus() == GameStatus.RUNNING) {
                             final double damage = MainConfig.getInstance().node("specials", "throwable-fireball", "damage").getDouble();
                             event.setDamage(damage);
-                        } else if (projectile.getShooter() instanceof EntityHuman) {
+                        } else if (projectile.getShooter() instanceof PlayerWrapper) {
                             var damager = projectile.getShooter().as(PlayerWrapper.class);
                             if (PlayerManagerImpl.getInstance().isPlayerInGame(damager)) {
                                 var gDamager = damager.as(BedWarsPlayer.class);
@@ -755,7 +754,7 @@ public class PlayerListener {
                 }
 
                 // TODO: check this, there was final damage before
-                if (MainConfig.getInstance().node("allow-fake-death").getBoolean() && !event.isCancelled() && (player.asEntity().getHealth() - event.getDamage() <= 0)) {
+                if (MainConfig.getInstance().node("allow-fake-death").getBoolean() && !event.isCancelled() && (player.getHealth() - event.getDamage() <= 0)) {
                     event.setCancelled(true);
                     Debug.info(player.getName() + " is going to be respawned via FakeDeath");
                     FakeDeath.die(gPlayer);
@@ -771,7 +770,7 @@ public class PlayerListener {
         }
 
         var projectile = event.getEntity();
-        if (projectile.getShooter() instanceof EntityHuman) {
+        if (projectile.getShooter() instanceof PlayerWrapper) {
             var damager = projectile.getShooter().as(PlayerWrapper.class);
             if (PlayerManagerImpl.getInstance().isPlayerInGame(damager)) {
                 if (damager.as(BedWarsPlayer.class).isSpectator()) {
@@ -1244,11 +1243,10 @@ public class PlayerListener {
             if (game.getConfigurationContainer().getOrDefault(ConfigurationContainer.DAMAGE_WHEN_PLAYER_IS_NOT_IN_ARENA, Boolean.class, false) && game.getStatus() == GameStatus.RUNNING
                     && !gPlayer.isSpectator()) {
                 if (!ArenaUtils.isInArea(event.getNewLocation(), game.getPos1(), game.getPos2())) {
-                    var entity = player.asEntity();
-                    var armor = entity.getAttribute(AttributeTypeHolder.of("minecraft:generic.armor"));
-                    var armorToughness = AttributeTypeHolder.ofOptional("minecraft:generic.armor_toughness").flatMap(entity::getAttribute);
+                    var armor = player.getAttribute(AttributeTypeHolder.of("minecraft:generic.armor"));
+                    var armorToughness = AttributeTypeHolder.ofOptional("minecraft:generic.armor_toughness").flatMap(player::getAttribute);
                     if (armor.isEmpty()) {
-                        entity.damage(5);
+                        player.damage(5);
                     } else {
                         // this is not 100% accurate formula - armorToughness check contains weaponDamage which is hardcoded to 5 (4*5=20) but we don't know the weapon damage yet
                         var multiplier = (1.0 - Math.min(20.0, Math.max(armor.get().getValue() / 5.0, armor.get().getValue() - 20.0 / (armorToughness.map(AttributeHolder::getValue).orElse(0.0) + 8))) / 25.0);
@@ -1256,7 +1254,7 @@ public class PlayerListener {
                             multiplier = 2 - multiplier;
                         }
                         double weaponDamage = multiplier * 5.0;
-                        entity.damage(weaponDamage);
+                        player.damage(weaponDamage);
                     }
                     Debug.info(player.getName() + " is doing prohibited move, damaging");
                 }

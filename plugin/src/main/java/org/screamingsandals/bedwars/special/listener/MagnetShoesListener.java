@@ -4,9 +4,9 @@ import org.screamingsandals.bedwars.utils.ItemUtils;
 import org.screamingsandals.bedwars.events.ApplyPropertyToBoughtItemEventImpl;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.bedwars.utils.MiscUtils;
-import org.screamingsandals.lib.entity.EntityHuman;
 import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.event.entity.SEntityDamageEvent;
+import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.utils.annotations.Service;
 
 @Service
@@ -25,11 +25,11 @@ public class MagnetShoesListener {
 
     @OnEvent
     public void onDamage(SEntityDamageEvent event) {
-        if (event.isCancelled() || !(event.getEntity() instanceof EntityHuman)) {
+        if (event.isCancelled() || !(event.getEntity() instanceof PlayerWrapper)) {
             return;
         }
 
-        var player = ((EntityHuman) event.getEntity()).asPlayer();
+        var player = (PlayerWrapper) event.getEntity();
         if (PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
             var boots = player.getPlayerInventory().getBoots();
             if (boots != null) {
@@ -39,7 +39,7 @@ public class MagnetShoesListener {
                     int randInt = MiscUtils.randInt(0, 100);
                     if (randInt <= probability) {
                         event.setCancelled(true);
-                        player.asEntity().damage(event.getDamage());
+                        player.damage(event.getDamage());
                     }
                 }
             }

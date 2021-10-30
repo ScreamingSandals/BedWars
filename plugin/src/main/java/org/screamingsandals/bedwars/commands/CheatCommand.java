@@ -14,7 +14,6 @@ import org.screamingsandals.bedwars.special.PopUpTowerImpl;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.lib.Server;
 import org.screamingsandals.lib.block.BlockTypeHolder;
-import org.screamingsandals.lib.entity.EntityHuman;
 import org.screamingsandals.lib.entity.EntityMapper;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.player.PlayerMapper;
@@ -210,7 +209,7 @@ public class CheatCommand extends BaseCommand {
                                 player.sendMessage(Message.of(LangKeys.IN_GAME_CHEAT_INVALID_PLAYER));
                                 return;
                             }
-                            bwPlayer.as(EntityHuman.class).setHealth(0);
+                            bwPlayer.setHealth(0);
                             Message.of(LangKeys.IN_GAME_CHEAT_RECEIVED_KILL)
                                     .placeholder("player", player.getName())
                                     .defaultPrefix()

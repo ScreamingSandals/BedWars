@@ -8,11 +8,11 @@ import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.bedwars.special.ArrowBlockerImpl;
 import org.screamingsandals.bedwars.utils.DelayFactoryImpl;
 import org.screamingsandals.bedwars.utils.MiscUtils;
-import org.screamingsandals.lib.entity.EntityHuman;
 import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.event.entity.SEntityDamageEvent;
 import org.screamingsandals.lib.event.player.SPlayerInteractEvent;
 import org.screamingsandals.lib.lang.Message;
+import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.utils.annotations.Service;
 
 @Service
@@ -74,11 +74,11 @@ public class ArrowBlockerListener {
     @OnEvent(priority = org.screamingsandals.lib.event.EventPriority.HIGH)
     public void onDamage(SEntityDamageEvent event) {
         var entity = event.getEntity();
-        if (!(entity instanceof EntityHuman)) {
+        if (!(entity instanceof PlayerWrapper)) {
             return;
         }
 
-        var player = ((EntityHuman) entity).asPlayer();
+        var player = (PlayerWrapper) event.getEntity();
 
         if (!PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
             return;

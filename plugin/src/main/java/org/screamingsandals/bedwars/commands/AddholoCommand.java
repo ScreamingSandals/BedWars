@@ -7,8 +7,8 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.screamingsandals.bedwars.holograms.LeaderboardHolograms;
 import org.screamingsandals.bedwars.holograms.StatisticsHolograms;
 import org.screamingsandals.bedwars.lang.LangKeys;
-import org.screamingsandals.lib.entity.EntityHuman;
 import org.screamingsandals.lib.lang.Message;
+import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
 import org.screamingsandals.lib.utils.annotations.Service;
 
@@ -36,7 +36,7 @@ public class AddholoCommand extends BaseCommand {
                         .literal("leaderboard")
                         .handler(commandContext -> {
                             var sender = commandContext.getSender();
-                            var eyeLocation = sender.as(EntityHuman.class).getEyeLocation();
+                            var eyeLocation = sender.as(PlayerWrapper.class).getEyeLocation();
                             if (!LeaderboardHolograms.isEnabled()) {
                                 sender.sendMessage(Message.of(LangKeys.ADMIN_HOLO_NOT_ENABLED).defaultPrefix());
                             } else {
@@ -49,7 +49,7 @@ public class AddholoCommand extends BaseCommand {
 
     private void executeStatsHologram(@NonNull CommandContext<CommandSenderWrapper> commandContext) {
         var sender = commandContext.getSender();
-        var eyeLocation = sender.as(EntityHuman.class).getEyeLocation();
+        var eyeLocation = sender.as(PlayerWrapper.class).getEyeLocation();
         if (!StatisticsHolograms.isEnabled()) {
             sender.sendMessage(Message.of(LangKeys.ADMIN_HOLO_NOT_ENABLED).defaultPrefix());
         } else {

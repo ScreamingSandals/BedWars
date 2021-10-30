@@ -39,7 +39,7 @@ public class ThrowableFireballListener {
                 var properties = unhash.split(":");
                 var explosion = (float) Double.parseDouble(properties[2]);
 
-                var fireball = player.asEntity().launchProjectile(EntityTypeHolder.of("minecraft:fireball")).orElseThrow();
+                var fireball = player.launchProjectile(EntityTypeHolder.of("minecraft:fireball")).orElseThrow();
                 fireball.as(Fireball.class).setIsIncendiary(false);
                 fireball.as(Fireball.class).setYield(explosion);
                 EntitiesManagerImpl.getInstance().addEntityToGame(fireball, PlayerManagerImpl.getInstance().getGameOfPlayer(player).orElseThrow());

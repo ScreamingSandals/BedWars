@@ -9,13 +9,13 @@ import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.bedwars.special.WarpPowderImpl;
 import org.screamingsandals.bedwars.utils.DelayFactoryImpl;
 import org.screamingsandals.bedwars.utils.MiscUtils;
-import org.screamingsandals.lib.entity.EntityHuman;
 import org.screamingsandals.lib.entity.EntityItem;
 import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.event.entity.SEntityDamageEvent;
 import org.screamingsandals.lib.event.player.SPlayerInteractEvent;
 import org.screamingsandals.lib.event.player.SPlayerMoveEvent;
 import org.screamingsandals.lib.lang.Message;
+import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.utils.BlockFace;
 import org.screamingsandals.lib.utils.annotations.Service;
 
@@ -75,11 +75,11 @@ public class WarpPowderListener {
 
     @OnEvent
     public void onDamage(SEntityDamageEvent event) {
-        if (event.isCancelled() || !(event.getEntity() instanceof EntityHuman)) {
+        if (event.isCancelled() || !(event.getEntity() instanceof PlayerWrapper)) {
             return;
         }
 
-        var player = ((EntityHuman) event.getEntity()).asPlayer();
+        var player = (PlayerWrapper) event.getEntity();
 
         if (!PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
             return;

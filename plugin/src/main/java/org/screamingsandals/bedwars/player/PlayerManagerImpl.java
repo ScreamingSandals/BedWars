@@ -24,7 +24,7 @@ public class PlayerManagerImpl implements PlayerManager<BedWarsPlayer, GameImpl>
     {
         PlayerMapper
                 .UNSAFE_getPlayerConverter()
-                .registerP2W(BedWarsPlayer.class, bwPlayer -> new PlayerWrapper(bwPlayer.getName(), bwPlayer.getUuid()))
+                .registerP2W(BedWarsPlayer.class, bwPlayer -> (PlayerWrapper) bwPlayer.raw())
                 .registerW2P(BedWarsPlayer.class, playerWrapper -> getPlayer(playerWrapper).orElseThrow());
     }
 
@@ -35,7 +35,7 @@ public class PlayerManagerImpl implements PlayerManager<BedWarsPlayer, GameImpl>
     public BedWarsPlayer getPlayerOrCreate(PlayerWrapper playerWrapper) {
         return getPlayer(playerWrapper)
                 .orElseGet(() -> {
-                    var p = new BedWarsPlayer(playerWrapper.getName(), playerWrapper.getUuid());
+                    var p = new BedWarsPlayer(playerWrapper);
                     players.add(p);
                     return p;
                 });

@@ -11,12 +11,12 @@ import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.TNTPrimed;
-import org.screamingsandals.lib.entity.EntityHuman;
 import org.screamingsandals.lib.event.EventPriority;
 import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.event.entity.SEntityDamageByEntityEvent;
 import org.screamingsandals.lib.event.player.SPlayerInteractEntityEvent;
 import org.screamingsandals.lib.event.player.SPlayerInteractEvent;
+import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.world.LocationHolder;
 
@@ -77,8 +77,8 @@ public class TNTSheepListener {
             return;
         }
 
-        if (event.getEntity() instanceof EntityHuman) {
-            var player = ((EntityHuman) event.getEntity()).asPlayer();
+        if (event.getEntity() instanceof PlayerWrapper) {
+            var player = (PlayerWrapper) event.getEntity();
             if (PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
                 var gamePlayer = PlayerManagerImpl.getInstance().getPlayer(player).orElseThrow();
                 var game = gamePlayer.getGame();

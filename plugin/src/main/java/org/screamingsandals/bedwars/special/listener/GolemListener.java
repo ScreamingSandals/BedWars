@@ -13,7 +13,6 @@ import org.screamingsandals.bedwars.utils.DelayFactoryImpl;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.bukkit.entity.IronGolem;
 import org.bukkit.entity.Player;
-import org.screamingsandals.lib.entity.EntityHuman;
 import org.screamingsandals.lib.entity.EntityProjectile;
 import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.event.entity.SEntityDamageByEntityEvent;
@@ -106,8 +105,8 @@ public class GolemListener {
                     if (item instanceof GolemImpl) {
                         var golem = (GolemImpl) item;
                         if (golem.getEntity().equals(ironGolem)) {
-                            if (event.getDamager() instanceof EntityHuman) {
-                                var player = ((EntityHuman) event.getDamager()).asPlayer();
+                            if (event.getDamager() instanceof PlayerWrapper) {
+                                var player = (PlayerWrapper) event.getEntity();
                                 if (PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
                                     if (golem.getTeam() != game.getPlayerTeam(player.as(BedWarsPlayer.class))) {
                                         return;
@@ -115,8 +114,8 @@ public class GolemListener {
                                 }
                             } else if (event.getDamager() instanceof EntityProjectile) {
                                 var shooter = event.getDamager().as(EntityProjectile.class).getShooter();
-                                if (shooter instanceof EntityHuman) {
-                                    var player = shooter.as(PlayerWrapper.class);
+                                if (shooter instanceof PlayerWrapper) {
+                                    var player = (PlayerWrapper) shooter;
                                     if (PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
                                         if (golem.getTeam() != game.getPlayerTeam(player.as(BedWarsPlayer.class))) {
                                             return;
@@ -147,8 +146,8 @@ public class GolemListener {
                 var golems = game.getActiveSpecialItems(GolemImpl.class);
                 for (var item : golems) {
                     if (item.getEntity().equals(ironGolem)) {
-                        if (event.getTarget() instanceof EntityHuman) {
-                            final var player = ((EntityHuman) event.getTarget()).asPlayer();
+                        if (event.getTarget() instanceof PlayerWrapper) {
+                            final var player = (PlayerWrapper) event.getTarget();
 
                             if (PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
                                 var gPlayer = player.as(BedWarsPlayer.class);

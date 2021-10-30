@@ -12,14 +12,14 @@ import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.utils.BungeeUtils;
 import org.screamingsandals.lib.attribute.AttributeTypeHolder;
 import org.screamingsandals.lib.item.Item;
+import org.screamingsandals.lib.player.ExtendablePlayerWrapper;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.player.gamemode.GameModeHolder;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
-public class BedWarsPlayer extends PlayerWrapper implements BWPlayer {
+public class BedWarsPlayer extends ExtendablePlayerWrapper implements BWPlayer {
     @Getter
     private GameImpl game;
     @Getter
@@ -38,8 +38,8 @@ public class BedWarsPlayer extends PlayerWrapper implements BWPlayer {
     public boolean isTeleportingFromGame_justForInventoryPlugins = false;
     public boolean mainLobbyUsed = false;
 
-    public BedWarsPlayer(String name, UUID uuid) {
-        super(name, uuid);
+    public BedWarsPlayer(PlayerWrapper player) {
+        super(player);
     }
 
     public void changeGame(GameImpl game) {
@@ -92,13 +92,13 @@ public class BedWarsPlayer extends PlayerWrapper implements BWPlayer {
         oldInventory.setInventory(getPlayerInventory().getContents());
         oldInventory.setArmor(getPlayerInventory().getArmorContents());
         oldInventory.setXp(getExp());
-        oldInventory.setEffects(asEntity().getActivePotionEffects());
+        oldInventory.setEffects(getActivePotionEffects());
         oldInventory.setMode(getGameMode());
         oldInventory.setLeftLocation(getLocation());
         oldInventory.setLevel(getLevel());
         oldInventory.setListName(getPlayerListName());
         oldInventory.setDisplayName(getDisplayName());
-        oldInventory.setFoodLevel(asEntity().getFoodLevel());
+        oldInventory.setFoodLevel(getFoodLevel());
     }
 
     public void restoreInv() {
@@ -112,20 +112,18 @@ public class BedWarsPlayer extends PlayerWrapper implements BWPlayer {
     }
 
     private void restoreRest() {
-        var entity = asEntity();
-
         getPlayerInventory().setContents(oldInventory.getInventory());
         getPlayerInventory().setArmorContents(oldInventory.getArmor());
 
         setLevel(oldInventory.getLevel());
         setExp(oldInventory.getXp());
-        entity.setFoodLevel(oldInventory.getFoodLevel());
+        setFoodLevel(oldInventory.getFoodLevel());
 
-        for (var e : entity.getActivePotionEffects()) {
-            entity.removePotionEffect(e);
+        for (var e : getActivePotionEffects()) {
+            removePotionEffect(e);
         }
 
-        entity.addPotionEffects(oldInventory.getEffects());
+        addPotionEffects(oldInventory.getEffects());
 
         setPlayerListName(oldInventory.getListName());
         setDisplayName(oldInventory.getDisplayName());
@@ -140,29 +138,27 @@ public class BedWarsPlayer extends PlayerWrapper implements BWPlayer {
     }
 
     public void resetLife() {
-        var entity = asEntity();
-
         setAllowFlight(false);
         setFlying(false);
         setExp(0.0F);
         setLevel(0);
         setSneaking(false);
         setSprinting(false);
-        entity.setFoodLevel(20);
-        entity.setSaturation(10);
-        entity.setExhaustion(0);
-        entity.getAttribute(AttributeTypeHolder.of("minecraft:generic.max_health")).ifPresent(attributeHolder -> attributeHolder.setBaseValue(20));
-        entity.setHealth(20D);
-        entity.setFireTicks(0);
-        entity.setFallDistance(0);
+        setFoodLevel(20);
+        setSaturation(10);
+        setExhaustion(0);
+        getAttribute(AttributeTypeHolder.of("minecraft:generic.max_health")).ifPresent(attributeHolder -> attributeHolder.setBaseValue(20));
+        setHealth(20D);
+        setFireTicks(0);
+        setFallDistance(0);
         setGameMode(GameModeHolder.of("survival"));
 
-        if (entity.isInsideVehicle()) {
-            entity.leaveVehicle();
+        if (isInsideVehicle()) {
+            leaveVehicle();
         }
 
-        for (var e : entity.getActivePotionEffects()) {
-            entity.removePotionEffect(e);
+        for (var e : getActivePotionEffects()) {
+            removePotionEffect(e);
         }
     }
 
