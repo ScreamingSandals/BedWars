@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.screamingsandals.bedwars.commands.NPCCommand;
 import org.screamingsandals.bedwars.lang.LangKeys;
-import org.screamingsandals.lib.Server;
 import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.event.player.SPlayerJoinEvent;
 import org.screamingsandals.lib.event.player.SPlayerLeaveEvent;
@@ -89,6 +88,8 @@ public class NPCManager {
         } catch (ConfigurateException e) {
             e.printStackTrace();
         }
+
+        npcs.clear();
     }
 
     @OnEvent

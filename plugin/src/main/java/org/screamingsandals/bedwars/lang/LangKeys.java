@@ -300,6 +300,14 @@ public class LangKeys {
     public final String[] ADMIN_NPC_ACTION_SET = {"admin", "npc", "action_set"};
     public final String[] ADMIN_NPC_REQUIRES_VALUE = {"admin", "npc", "requires_value"};
     public final String[] ADMIN_NPC_REMOVED = {"admin", "npc", "removed"};
+    public final String[] ADMIN_NPC_SKIN_CHANGED = {"admin", "npc", "skin_changed"};
+    public final String[] ADMIN_NPC_SKIN_CHANGE_FAILED = {"admin", "npc", "skin_change_failed"};
+    public final String[] ADMIN_HOLOGRAM_LINE_ADDED = {"admin", "hologram", "line_added"};
+    public final String[] ADMIN_HOLOGRAM_LINE_SET = {"admin", "hologram", "line_set"};
+    public final String[] ADMIN_HOLOGRAM_LINE_REMOVED = {"admin", "hologram", "line_removed"};
+    public final String[] ADMIN_HOLOGRAM_THERES_NO_LINE_NUMBER = {"admin", "hologram", "theres_no_line_number"};
+    public final String[] ADMIN_HOLOGRAM_INVALID_NUMBER = {"admin", "hologram", "invalid_number"};
+    public final String[] ADMIN_HOLOGRAM_RESET = {"admin", "hologram", "reset"};
     public final String[] ADMIN_INFO_HEADER = {"admin", "info", "header"};
     public final String[] ADMIN_INFO_NAME = {"admin", "info", "name"};
     public final String[] ADMIN_INFO_STATUS = {"admin", "info", "status"};

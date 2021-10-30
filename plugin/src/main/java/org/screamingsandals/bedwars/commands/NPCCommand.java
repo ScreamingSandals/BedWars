@@ -4,6 +4,7 @@ import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
 import cloud.commandframework.arguments.standard.BooleanArgument;
 import cloud.commandframework.arguments.standard.EnumArgument;
+import cloud.commandframework.arguments.standard.IntegerArgument;
 import cloud.commandframework.arguments.standard.StringArgument;
 import org.screamingsandals.bedwars.game.GameManagerImpl;
 import org.screamingsandals.bedwars.inventories.GamesInventory;
@@ -12,8 +13,10 @@ import org.screamingsandals.bedwars.lobby.BedWarsNPC;
 import org.screamingsandals.bedwars.lobby.NPCManager;
 import org.screamingsandals.bedwars.utils.SerializableLocation;
 import org.screamingsandals.lib.lang.Message;
+import org.screamingsandals.lib.npc.skin.NPCSkin;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
+import org.screamingsandals.lib.utils.AdventureHelper;
 import org.screamingsandals.lib.utils.annotations.Service;
 
 import java.util.*;
@@ -165,6 +168,143 @@ public class NPCCommand extends BaseCommand {
                             player.sendMessage(Message.of(LangKeys.ADMIN_NPC_ACTION_SET).defaultPrefix()
                                     .placeholder("action", action.name())
                                     .placeholder("value", value));
+                        })
+        );
+
+        manager.command(
+                commandSenderWrapperBuilder
+                        .literal("skin")
+                        .argument(StringArgument.of("skin"))
+                        .handler(commandContext -> {
+                            var player = commandContext.getSender().as(PlayerWrapper.class);
+                            String skin = commandContext.get("skin");
+                            if (!NPCS_IN_HAND.containsKey(player.getUuid())) {
+                                player.sendMessage(Message.of(LangKeys.ADMIN_NPC_NOT_EDITING).defaultPrefix());
+                                return;
+                            }
+
+                            var npc = NPCS_IN_HAND.get(player.getUuid());
+                            NPCSkin.retrieveSkin(skin).thenAccept(npcSkin -> {
+                                if (npcSkin == null) {
+                                    player.sendMessage(Message.of(LangKeys.ADMIN_NPC_SKIN_CHANGE_FAILED).defaultPrefix());
+                                } else {
+                                    npc.setSkin(npcSkin);
+                                    npc.getNpc().setSkin(npcSkin);
+                                    lobbyNPCManager.setModified(true);
+                                    player.sendMessage(Message.of(LangKeys.ADMIN_NPC_SKIN_CHANGED).defaultPrefix());
+                                }
+                            });
+                        })
+        );
+
+        manager.command(
+                commandSenderWrapperBuilder
+                        .literal("hologram")
+                        .literal("addline")
+                        .argument(StringArgument.of("line", StringArgument.StringMode.GREEDY))
+                        .handler(commandContext -> {
+                            var player = commandContext.getSender().as(PlayerWrapper.class);
+                            String line = commandContext.get("line");
+                            if (!NPCS_IN_HAND.containsKey(player.getUuid())) {
+                                player.sendMessage(Message.of(LangKeys.ADMIN_NPC_NOT_EDITING).defaultPrefix());
+                                return;
+                            }
+
+                            var npc = NPCS_IN_HAND.get(player.getUuid());
+                            var component = AdventureHelper.toComponent(AdventureHelper.translateAlternateColorCodes('&', line));
+                            npc.getHologramAbove().add(component);
+                            npc.getNpc().setDisplayName(npc.getHologramAbove());
+                            lobbyNPCManager.setModified(true);
+                            player.sendMessage(Message.of(LangKeys.ADMIN_HOLOGRAM_LINE_ADDED).defaultPrefix()
+                                    .placeholder("line", component)
+                            );
+                        })
+        );
+
+        manager.command(
+                commandSenderWrapperBuilder
+                        .literal("hologram")
+                        .literal("setline")
+                        .argument(IntegerArgument.of("lineNumber"))
+                        .argument(StringArgument.of("line", StringArgument.StringMode.GREEDY))
+                        .handler(commandContext -> {
+                            var player = commandContext.getSender().as(PlayerWrapper.class);
+                            int number = commandContext.get("lineNumber");
+                            String line = commandContext.get("line");
+                            if (!NPCS_IN_HAND.containsKey(player.getUuid())) {
+                                player.sendMessage(Message.of(LangKeys.ADMIN_NPC_NOT_EDITING).defaultPrefix());
+                                return;
+                            }
+                            if (number <= 0) {
+                                player.sendMessage(Message.of(LangKeys.ADMIN_HOLOGRAM_INVALID_NUMBER).defaultPrefix());
+                                return;
+                            }
+
+                            var npc = NPCS_IN_HAND.get(player.getUuid());
+                            if (npc.getHologramAbove().size() < number) {
+                                player.sendMessage(Message.of(LangKeys.ADMIN_HOLOGRAM_THERES_NO_LINE_NUMBER).defaultPrefix()
+                                        .placeholder("linenumber", number));
+                                return;
+                            }
+                            var component = AdventureHelper.toComponent(AdventureHelper.translateAlternateColorCodes('&', line));
+                            npc.getHologramAbove().set(number - 1, component);
+                            npc.getNpc().setDisplayName(npc.getHologramAbove());
+                            lobbyNPCManager.setModified(true);
+                            player.sendMessage(Message.of(LangKeys.ADMIN_HOLOGRAM_LINE_SET).defaultPrefix()
+                                    .placeholder("linenumber", number)
+                                    .placeholder("line", component)
+                            );
+                        })
+        );
+
+        manager.command(
+                commandSenderWrapperBuilder
+                        .literal("hologram")
+                        .literal("remove")
+                        .argument(IntegerArgument.of("lineNumber"))
+                        .handler(commandContext -> {
+                            var player = commandContext.getSender().as(PlayerWrapper.class);
+                            int number = commandContext.get("lineNumber");
+                            if (!NPCS_IN_HAND.containsKey(player.getUuid())) {
+                                player.sendMessage(Message.of(LangKeys.ADMIN_NPC_NOT_EDITING).defaultPrefix());
+                                return;
+                            }
+                            if (number <= 0) {
+                                player.sendMessage(Message.of(LangKeys.ADMIN_HOLOGRAM_INVALID_NUMBER).defaultPrefix());
+                                return;
+                            }
+
+                            var npc = NPCS_IN_HAND.get(player.getUuid());
+                            if (npc.getHologramAbove().size() < number) {
+                                player.sendMessage(Message.of(LangKeys.ADMIN_HOLOGRAM_THERES_NO_LINE_NUMBER).defaultPrefix()
+                                        .placeholder("linenumber", number));
+                                return;
+                            }
+                            npc.getHologramAbove().remove(number - 1);
+                            npc.getNpc().setDisplayName(npc.getHologramAbove());
+                            lobbyNPCManager.setModified(true);
+                            player.sendMessage(Message.of(LangKeys.ADMIN_HOLOGRAM_LINE_REMOVED).defaultPrefix()
+                                    .placeholder("linenumber", number)
+                            );
+                        })
+        );
+
+        manager.command(
+                commandSenderWrapperBuilder
+                        .literal("hologram")
+                        .literal("clear")
+                        .handler(commandContext -> {
+                            var player = commandContext.getSender().as(PlayerWrapper.class);
+                            if (!NPCS_IN_HAND.containsKey(player.getUuid())) {
+                                player.sendMessage(Message.of(LangKeys.ADMIN_NPC_NOT_EDITING).defaultPrefix());
+                                return;
+                            }
+
+                            var npc = NPCS_IN_HAND.get(player.getUuid());
+                            npc.getHologramAbove().clear();
+                            npc.getNpc().setDisplayName(List.of());
+                            lobbyNPCManager.setModified(true);
+                            player.sendMessage(Message.of(LangKeys.ADMIN_HOLOGRAM_RESET).defaultPrefix());
                         })
         );
     }
