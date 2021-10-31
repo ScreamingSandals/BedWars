@@ -30,5 +30,5 @@ Let's get into it.
 
 ### Modes
 
-* `spawner-name`: You need to have your spawner name defined in arena.yml file or while creating arena (/bw admin arenaName spawner add \<spawnerType\> \<holoEnabled\> \<startLevel (default: 1)\> \<team\> \<customName\>). 
+* `spawner-name`: You need to have your spawner name defined in arena.yml file or while creating arena (`/bw admin arenaName spawner add <spawnerType> <holoEnabled> <startLevel (default: 1)> <team> <customName>`). 
 * `spawner-type` & `team-upgrade`: You need to have team defined with the spawner.
