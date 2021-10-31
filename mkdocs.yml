@@ -63,3 +63,6 @@ nav:
   - Home: index.md
   - Arena creation: arena.md
   - Configuration: config.md
+  - Upgrades: upgrades.md
+  - Placeholder API: placeholderapi.md
+  - API: api.md

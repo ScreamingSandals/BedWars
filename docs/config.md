@@ -466,3 +466,111 @@ resources:
     translate: resource_gold
     spread: 1.0
 ```
+
+## Game effects
+
+In config.yml you can find section called `game-effects`. Here you can set some visual effects that will enhance your game experiences.
+
+### Events
+* `end` - This effect is called when game ends.
+* `start` - This effect is called when game starts.
+* `kill` - This effect is called when someone kills someone.
+* `teamkill` - This effect is called when someone kills someone and bed or other target block is destroyed.
+* `lobbyjoin` - This effect is called when someone enters the lobby.
+* `lobbyleave` - This effect is called when someone leaves the lobby.
+* `respawn` - This effect is called when someone is respawned.
+* `beddestroy` - This effect is called when someone destroys bed or other target block.
+* `warppowdertick` - This effect is caled when someone is teleported by Warp Powder.
+
+### Effect types
+* `Particle` - [Particle effect (click here for list)](https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Particle.html)
+* `Effect` - [Effect (click here for list)](https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Effect.html)
+* `Firework` - Launches a firework
+* `List` - Multiple effects on one event
+
+#### Particle
+```yaml
+game-effects:
+  start:
+    type: Particle
+    value: LAVA # uppercase key from the list
+    # options below are optional
+    count: 2 # how many particles will be spawned (default - 1)
+    offsetX: 1 # offset from the event location (default - 0 for each coordinate)
+    offsetY: 1
+    offsetZ: 1
+    extra: 1 # extra data, depends on each particle (default - 1)
+```
+
+#### Effect
+```yaml
+game-effects:
+  start:
+    type: Effect
+    value: DOOR_CLOSE # uppercase key from the list
+```
+
+#### Firework
+Firework effect types are listed [here](https://hub.spigotmc.org/javadocs/spigot/org/bukkit/FireworkEffect.Type.html)
+```yaml
+game-effects:
+  end:
+    type: Firework
+    power: 1 # power of the firework
+    effects: # list of firework effects
+    - ==: Firework
+      flicker: false
+      trail: false
+      colors: # list of colors
+      - ==: Color
+        RED: 255
+        BLUE: 255
+        GREEN: 255
+      fade-colors:
+      - ==: Color
+        RED: 255
+        BLUE: 255
+        GREEN: 255
+      type: BALL # effect type
+```
+
+#### List
+```yaml
+game-effects:
+  end:
+    type: List
+    list: # list of effects
+    - type: Particle
+      value: LAVA
+      count: 2
+      extra: 1
+    - type: Effect
+      value: DOOR_CLOSE # uppercase key from the list
+    - type: Firework
+      power: 1 # power of the firework
+      effects: # list of firework effects
+      - ==: Firework
+        flicker: false
+        trail: false
+        colors: # list of colors
+        - ==: Color
+          RED: 255
+          BLUE: 255
+          GREEN: 255
+        fade-colors:
+        - ==: Color
+          RED: 255
+          BLUE: 255
+          GREEN: 255
+        type: BALL # effect type
+```
+
+## Custom language
+
+It is easy. 
+* Download the base language file from [here](https://github.com/ScreamingSandals/BedWars/tree/ver/0.2.x/plugin/src/main/resources/languages)
+* Create folder named "**languages**" in your _BedWars_ folder. (_BedWars_ folder is in default _plugins_ folder)
+* Paste your language here. For example, language_cs.yml
+* Open your **config.yml** and configure variable "**locale**" to "**cs**"
+
+And that's it, you have your own language!
