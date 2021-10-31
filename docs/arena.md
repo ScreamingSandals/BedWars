@@ -17,7 +17,7 @@ To set the **second** position, go into the **second** corner of your map and ex
     
     `pos1` is one corner of the arena and `pos2` is the corner of the arena, that is opposing to `pos1`!
 
-<img alt="Arena bounds" src="./assets/arena_bounds.png" width="400"/>
+<img alt="Arena bounds" src="../assets/arena_bounds.png" width="400"/>
 
 ## Adding teams
 
