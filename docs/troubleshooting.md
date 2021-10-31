@@ -24,13 +24,13 @@ Use the `applycolorbyteam` property, for example:
 ```
 
 ## Upgrades
-Check the BedWars wiki [here](https://github.com/ScreamingSandals/BedWars/wiki/Upgrades).
+Check [this page](upgrades.md)
 
 ## Language file
-Check the BedWars wiki [here](https://github.com/ScreamingSandals/BedWars/wiki/Languages) (make sure to get the right language file).
+Check [this page](config.md#custom-language)
 
 ## PlaceholderAPI placeholders
-Check the BedWars wiki [here](https://github.com/ScreamingSandals/BedWars/wiki/PlaceholderAPI-placeholders).
+Check [this page](placeholderapi.md)
 
 ## Changing the message prefix
 Prefix is changeable globally in the language file or per arena with this command: `/bw admin <arena> customprefix &6My Awesome Prefix `.

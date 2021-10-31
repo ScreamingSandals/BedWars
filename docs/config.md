@@ -567,7 +567,6 @@ game-effects:
 
 ## Custom language
 
-It is easy. 
 * Download the base language file from [here](https://github.com/ScreamingSandals/BedWars/tree/ver/0.2.x/plugin/src/main/resources/languages)
 * Create folder named "**languages**" in your _BedWars_ folder. (_BedWars_ folder is in default _plugins_ folder)
 * Paste your language here. For example, language_cs.yml

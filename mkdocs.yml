@@ -65,4 +65,5 @@ nav:
   - Configuration: config.md
   - Upgrades: upgrades.md
   - Placeholder API: placeholderapi.md
+  - Troubleshooting and FAQ: troubleshooting.md
   - API: api.md
