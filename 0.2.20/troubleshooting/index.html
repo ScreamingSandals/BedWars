@@ -9,18 +9,18 @@
       
       
       
-        <link rel="canonical" href="http://localhost:8000/0.2.20/resources/">
+        <link rel="canonical" href="http://localhost:8000/0.2.20/troubleshooting/">
       
       <link rel="icon" href="../assets/icon.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-7.3.4">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-7.3.6">
     
     
       
-        <title>Custom resources - ScreamingBedWars</title>
+        <title>Troubleshooting and FAQ - ScreamingBedWars</title>
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.db9e7362.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.a57b2b03.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.3f5d1f46.min.css">
@@ -67,7 +67,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#how-to-add-custom-resources" class="md-skip">
+        <a href="#troubleshooting-and-faq" class="md-skip">
           Skip to content
         </a>
       
@@ -106,7 +106,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Custom resources
+              Troubleshooting and FAQ
             
           </span>
         </div>
@@ -256,63 +256,10 @@
   
   
   
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" data-md-state="indeterminate" type="checkbox" id="__nav_2" checked>
-      
-      
-      
-        
-          
-        
-          
-        
-      
-      
-        <label class="md-nav__link" for="__nav_2">
-          Setup
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <nav class="md-nav" aria-label="Setup" data-md-level="1">
-        <label class="md-nav__title" for="__nav_2">
-          <span class="md-nav__icon md-icon"></span>
-          Setup
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-              
-  
-  
-  
     <li class="md-nav__item">
-      <a href="../setup/installation/" class="md-nav__link">
-        Installation
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../setup/arena/" class="md-nav__link">
+      <a href="../arena/" class="md-nav__link">
         Arena creation
       </a>
-    </li>
-  
-
-            
-          
-        </ul>
-      </nav>
     </li>
   
 
@@ -326,33 +273,8 @@
   
     <li class="md-nav__item">
       <a href="../config/" class="md-nav__link">
-        Config
+        Configuration
       </a>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-    
-  
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
-        Custom resources
-      </a>
-      
     </li>
   
 
@@ -370,72 +292,64 @@
               
                 
                 
-                <h1 id="how-to-add-custom-resources">How to add custom resources<a class="headerlink" href="#how-to-add-custom-resources" title="Permanent link">&para;</a></h1>
-<p>Open the config (<code>plugins/BedWars/config.yml</code>) and go down, until you find a section called <code>resources</code>. Using <code>Ctrl+F</code> helps you to search for it.</p>
-<p>It’s easy to add a new resource into your game/server. Here is an example on how to add <code>emeralds</code>, <code>diamonds</code>, <code>iron</code> and <code>gold</code>.</p>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span>
-<span class="normal">17</span>
-<span class="normal">18</span>
-<span class="normal">19</span>
-<span class="normal">20</span>
-<span class="normal">21</span>
-<span class="normal">22</span>
-<span class="normal">23</span>
-<span class="normal">24</span>
-<span class="normal">25</span>
-<span class="normal">26</span>
-<span class="normal">27</span>
-<span class="normal">28</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="nt">resources</span><span class="p">:</span>
-  <span class="nt">emerald</span><span class="p">:</span>
-    <span class="nt">material</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">EMERALD</span>
-    <span class="nt">color</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">GREEN</span>
-    <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Emerald</span>
-    <span class="nt">interval</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">60</span>
-    <span class="nt">translate</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">resource_emerald</span>
-    <span class="nt">spread</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1.0</span>
-  <span class="nt">diamond</span><span class="p">:</span>
-    <span class="nt">material</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">DIAMOND</span>
-    <span class="nt">color</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">BLUE</span>
-    <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Diamond</span>
-    <span class="nt">interval</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">30</span>
-    <span class="nt">translate</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">resource_diamond</span>
-    <span class="nt">spread</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1.0</span>
-  <span class="nt">iron</span><span class="p">:</span>
-    <span class="nt">material</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">IRON_INGOT</span>
-    <span class="nt">color</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">WHITE</span>
-    <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Iron</span>
-    <span class="nt">interval</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2.5</span>
-    <span class="nt">translate</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">resource_iron</span>
-    <span class="nt">spread</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1.0</span>
-  <span class="nt">gold</span><span class="p">:</span>
-    <span class="nt">material</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">GOLD_INGOT</span>
-    <span class="nt">color</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">GOLD</span>
-    <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Gold</span>
-    <span class="nt">interval</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">8</span>
-    <span class="nt">translate</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">res</span>
+                <h1 id="troubleshooting-and-faq">Troubleshooting and FAQ<a class="headerlink" href="#troubleshooting-and-faq" title="Permanent link">&para;</a></h1>
+<h2 id="non-op-players-cant-use-signs">Non-OP players can't use signs<a class="headerlink" href="#non-op-players-cant-use-signs" title="Permanent link">&para;</a></h2>
+<p>Move the sign out of vanilla spawn protection (for example, if you have the spawn protection in server.properties set to 16, move 34 blocks away from spawn location) or change spawn protection to zero. Non-OP players can't do some things in spawn protection.</p>
+<h2 id="bed-cant-be-destroyed">Bed can't be destroyed<a class="headerlink" href="#bed-cant-be-destroyed" title="Permanent link">&para;</a></h2>
+<p>BedWars allows you to use any block as the target block, so you won't see any error when you set it to, for example, floor. So check it, and make you sure you're looking at the bed head when setting the team target block.</p>
+<h2 id="adding-a-sign">Adding a sign<a class="headerlink" href="#adding-a-sign" title="Permanent link">&para;</a></h2>
+<p>Place a sign and write <code>[BedWars]</code> or <code>[BWGame]</code> (case-sensitive) as the first line, and the name of your arena as the second line. Make sure that your sign is not in range of vanilla's spawn protection.</p>
+<h2 id="automatically-coloring-a-shop-item">Automatically coloring a shop item<a class="headerlink" href="#automatically-coloring-a-shop-item" title="Permanent link">&para;</a></h2>
+<p>Use the <code>applycolorbyteam</code> property, for example:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span>
+<span class="normal">9</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="p p-Indicator">-</span> <span class="nt">price</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+  <span class="nt">price-type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">bronze</span>
+  <span class="nt">properties</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="s">&quot;applycolorbyteam&quot;</span>
+  <span class="nt">stack</span><span class="p">:</span>
+    <span class="nt">==</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">org.bukkit.inventory.ItemStack</span>
+    <span class="nt">v</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1519</span>
+    <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">WHITE_WOOL</span>
+    <span class="nt">amount</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2</span>
 </code></pre></div>
-</td></tr></table>
-<p><code>material:</code> This is the material which is going to be used to represent the resource. e.g <code>APPLE</code>.</p>
-<p><code>color:</code> This is the color of the text of the material. e.g <code>RED</code>. Valid colors are available <a href="https://hub.spigotmc.org/javadocs/spigot/org/bukkit/ChatColor.html">here</a>.</p>
-<p><code>name:</code> This is the name of the material in-game. e.g <code>Nobba Coin</code>.</p>
-<p><code>interval:</code> This is the amount of seconds that it takes to spawn in the resource. e.g <code>5</code>. every 5 seconds it will spawn that resource.</p>
-<p><code>translate:</code> This is the translate key that is located in the language file.</p>
-<p><code>spread:</code> This is the spread of the material. e.g <code>1</code> spread is going to make it only spawn in a 1x1 area. If the spread is <code>3</code>, then its going to spawn in a 3x3 area</p>
+</td></tr></table></p>
+<h2 id="upgrades">Upgrades<a class="headerlink" href="#upgrades" title="Permanent link">&para;</a></h2>
+<p>Check the BedWars wiki <a href="https://github.com/ScreamingSandals/BedWars/wiki/Upgrades">here</a>.</p>
+<h2 id="language-file">Language file<a class="headerlink" href="#language-file" title="Permanent link">&para;</a></h2>
+<p>Check the BedWars wiki <a href="https://github.com/ScreamingSandals/BedWars/wiki/Languages">here</a> (make sure to get the right language file).</p>
+<h2 id="placeholderapi-placeholders">PlaceholderAPI placeholders<a class="headerlink" href="#placeholderapi-placeholders" title="Permanent link">&para;</a></h2>
+<p>Check the BedWars wiki <a href="https://github.com/ScreamingSandals/BedWars/wiki/PlaceholderAPI-placeholders">here</a>.</p>
+<h2 id="changing-the-message-prefix">Changing the message prefix<a class="headerlink" href="#changing-the-message-prefix" title="Permanent link">&para;</a></h2>
+<p>Prefix is changeable globally in the language file or per arena with this command: <code>/bw admin &lt;arena&gt; customprefix &amp;6My Awesome Prefix</code>.</p>
+<h2 id="editing-resources">Editing resources<a class="headerlink" href="#editing-resources" title="Permanent link">&para;</a></h2>
+<p>See the <a href="../config/">Configuration</a> article.</p>
+<h2 id="broken-shop">Broken shop<a class="headerlink" href="#broken-shop" title="Permanent link">&para;</a></h2>
+<p>Make sure your shop is YAML valid with <a href="https://yamlchecker.com/">yamlchecker</a>, has proper <a href="https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html">materials</a> and <a href="https://github.com/ScreamingSandals/SimpleInventories/wiki">format</a>.</p>
+<h2 id="compass-teleports-the-player">Compass teleports the player<a class="headerlink" href="#compass-teleports-the-player" title="Permanent link">&para;</a></h2>
+<p>Well, you probably have WorldEdit or FastAsyncWorldEdit. The compass is used to teleport through walls. However it works only for people with permission or with OP. You can disable this tool or bound it to another item in WorldEdit configuration. You can also change the team selection item to another one in BedWars configuration.</p>
+<h2 id="permissions">Permissions<a class="headerlink" href="#permissions" title="Permanent link">&para;</a></h2>
+<ul>
+<li>bw.admin</li>
+<li>bw.vip.startitem</li>
+<li>bw.vip.forcejoin</li>
+<li>bw.otherstats</li>
+<li>bw.admin.alljoin</li>
+<li>bw.disable.joinall</li>
+<li>bw.cmd.join</li>
+<li>bw.cmd.leave</li>
+<li>bw.cmd.stats</li>
+<li>bw.cmd.rejoin</li>
+<li>bw.cmd.autojoin</li>
+<li>bw.cmd.list</li>
+<li>bw.cmd.leaderboard</li>
+</ul>
                 
                   
                     
@@ -444,7 +358,7 @@
 <div class="md-source-date">
   <small>
     
-      Last update: 2021-10-23
+      Last update: 2021-10-31
     
   </small>
 </div>
@@ -469,26 +383,6 @@
       
         
 <footer class="md-footer">
-  
-    <nav class="md-footer__inner md-grid" aria-label="Footer">
-      
-        
-        <a href="../config/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Config" rel="prev">
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
-          </div>
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Previous
-              </span>
-              Config
-            </div>
-          </div>
-        </a>
-      
-      
-    </nav>
   
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
@@ -537,10 +431,10 @@
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.expand", "navigation.indexes", "toc.integrate", "navigation.top"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../assets/javascripts/workers/search.8397ff9e.min.js", "version": {"provider": "mike", "default": "latest"}}</script>
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.expand", "navigation.indexes", "toc.integrate", "navigation.top"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../assets/javascripts/workers/search.fcfe8b6d.min.js", "version": {"provider": "mike", "default": "latest"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.1e84347e.min.js"></script>
+      <script src="../assets/javascripts/bundle.b1047164.min.js"></script>
       
     
   </body>

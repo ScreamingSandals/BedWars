@@ -9,10 +9,10 @@
       
       
       
-        <link rel="canonical" href="http://localhost:8000/0.2.20/setup/arena/">
+        <link rel="canonical" href="http://localhost:8000/0.2.20/arena/">
       
-      <link rel="icon" href="../../assets/icon.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-7.3.4">
+      <link rel="icon" href="../assets/icon.png">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-7.3.6">
     
     
       
@@ -20,10 +20,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.db9e7362.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.a57b2b03.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.3f5d1f46.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.3f5d1f46.min.css">
         
       
     
@@ -57,7 +57,7 @@
     <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="teal" data-md-color-accent="">
   
     
-    <script>function __prefix(e){return new URL("../..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
+    <script>function __prefix(e){return new URL("..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
     
       <script>var palette=__get("__palette");if(null!==palette&&"object"==typeof palette.color)for(var key in palette.color)document.body.setAttribute("data-md-color-"+key,palette.color[key])</script>
     
@@ -67,7 +67,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#how-to-make-an-arena" class="md-skip">
+        <a href="#making-an-arena" class="md-skip">
           Skip to content
         </a>
       
@@ -88,9 +88,9 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../.." title="ScreamingBedWars" class="md-header__button md-logo" aria-label="ScreamingBedWars" data-md-component="logo">
+    <a href=".." title="ScreamingBedWars" class="md-header__button md-logo" aria-label="ScreamingBedWars" data-md-component="logo">
       
-  <img src="../../assets/icon.png" alt="logo">
+  <img src="../assets/icon.png" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -211,9 +211,9 @@
 
 <nav class="md-nav md-nav--primary md-nav--integrated" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../.." title="ScreamingBedWars" class="md-nav__button md-logo" aria-label="ScreamingBedWars" data-md-component="logo">
+    <a href=".." title="ScreamingBedWars" class="md-nav__button md-logo" aria-label="ScreamingBedWars" data-md-component="logo">
       
-  <img src="../../assets/icon.png" alt="logo">
+  <img src="../assets/icon.png" alt="logo">
 
     </a>
     ScreamingBedWars
@@ -242,7 +242,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../.." class="md-nav__link">
+      <a href=".." class="md-nav__link">
         Home
       </a>
     </li>
@@ -253,54 +253,6 @@
       
       
 
-  
-  
-    
-  
-  
-    
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" checked>
-      
-      
-      
-        
-          
-        
-          
-        
-      
-      
-        <label class="md-nav__link" for="__nav_2">
-          Setup
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <nav class="md-nav" aria-label="Setup" data-md-level="1">
-        <label class="md-nav__title" for="__nav_2">
-          <span class="md-nav__icon md-icon"></span>
-          Setup
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../installation/" class="md-nav__link">
-        Installation
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
   
   
     
@@ -324,6 +276,8 @@
       </a>
       
         
+
+
 <nav class="md-nav md-nav--secondary" aria-label="Table of contents">
   
   
@@ -338,64 +292,57 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#step-1-get-maps" class="md-nav__link">
-    Step 1 - Get maps
+  <a href="#creating-the-arena" class="md-nav__link">
+    Creating the arena
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#step-2-add-the-arena" class="md-nav__link">
-    step 2 - Add the arena
+  <a href="#setting-the-arena-positions" class="md-nav__link">
+    Setting the arena positions
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#step-3-set-the-position" class="md-nav__link">
-    Step 3 - Set the position
+  <a href="#adding-teams" class="md-nav__link">
+    Adding teams
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#step-4-add-teams" class="md-nav__link">
-    Step 4 - Add teams
+  <a href="#setting-team-spawns" class="md-nav__link">
+    Setting team spawns
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#step-5-set-the-team-spawn" class="md-nav__link">
-    Step 5 - Set the team spawn
+  <a href="#setting-the-team-bed" class="md-nav__link">
+    Setting the team bed
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#step-6-set-the-team-beds" class="md-nav__link">
-    Step 6 - Set the team beds
+  <a href="#adding-resource-generators" class="md-nav__link">
+    Adding resource generators
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#step-7-add-the-generators" class="md-nav__link">
-    Step 7 - Add the generators
+  <a href="#adding-merchants" class="md-nav__link">
+    Adding merchants
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#step-8-add-the-shops" class="md-nav__link">
-    Step 8 - Add the shops
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#step-9-final-steps" class="md-nav__link">
-    Step 9 - Final steps
+  <a href="#final-steps" class="md-nav__link">
+    Final steps
   </a>
   
 </li>
@@ -407,13 +354,6 @@
     </li>
   
 
-            
-          
-        </ul>
-      </nav>
-    </li>
-  
-
     
       
       
@@ -423,23 +363,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../config/" class="md-nav__link">
-        Config
-      </a>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../resources/" class="md-nav__link">
-        Custom resources
+      <a href="../config/" class="md-nav__link">
+        Configuration
       </a>
     </li>
   
@@ -458,61 +383,53 @@
               
                 
                 
-                <h1 id="how-to-make-an-arena">How to make an arena<a class="headerlink" href="#how-to-make-an-arena" title="Permanent link">&para;</a></h1>
-<h2 id="step-1-get-maps">Step 1 - Get maps<a class="headerlink" href="#step-1-get-maps" title="Permanent link">&para;</a></h2>
-<p>Firstly, get a map which you can use to play BedWars on. Don't have any maps? <a href="https://www.planetminecraft.com/projects/tag/bedwars/">Click me</a> for some maps.</p>
-<h2 id="step-2-add-the-arena">step 2 - Add the arena<a class="headerlink" href="#step-2-add-the-arena" title="Permanent link">&para;</a></h2>
-<p>Create the arena by doing <code>/bw admin &lt;arena name&gt; add</code></p>
-<h2 id="step-3-set-the-position">Step 3 - Set the position<a class="headerlink" href="#step-3-set-the-position" title="Permanent link">&para;</a></h2>
-<p>Set the positions of the arena. This is similar to using WorldEdit.
-To set pos1, do <code>/bw admin &lt;arena name&gt; pos1</code>. To set pos2, do <code>/bw admin &lt;arena name&gt; pos2</code>.
-pos1 is the bottom corner of the arena and pos2 is the top corner of the arena.</p>
-<p><img alt="Arena bounds" src="../../assets/images/arena.png" width="200"/></p>
-<h2 id="step-4-add-teams">Step 4 - Add teams<a class="headerlink" href="#step-4-add-teams" title="Permanent link">&para;</a></h2>
+                <h1 id="making-an-arena">Making an arena<a class="headerlink" href="#making-an-arena" title="Permanent link">&para;</a></h1>
+<div class="admonition warning">
+<p class="admonition-title">World</p>
+<p>This tutorial presumes that you already have a world with your desired BedWars map, loaded with a plugin like Multiverse or SlimeWorldManager and that you already are in the world with your BedWars map.</p>
+</div>
+<h2 id="creating-the-arena">Creating the arena<a class="headerlink" href="#creating-the-arena" title="Permanent link">&para;</a></h2>
+<p>Create the arena by executing this command: <code>/bw admin &lt;arena name&gt; add</code>.</p>
+<h2 id="setting-the-arena-positions">Setting the arena positions<a class="headerlink" href="#setting-the-arena-positions" title="Permanent link">&para;</a></h2>
+<p>To set the <strong>first</strong> position, go into the <strong>first</strong> corner of your map and execute this command: <code>/bw admin &lt;arena name&gt; pos1</code>.
+To set the <strong>second</strong> position, go into the <strong>second</strong> corner of your map and execute this command: <code>/bw admin &lt;arena name&gt; pos2</code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Positions</p>
+<p><code>pos1</code> is one corner of the arena and <code>pos2</code> is the corner of the arena, that is opposing to <code>pos1</code>!</p>
+</div>
+<p><img alt="Arena bounds" src="../../assets/arena_bounds.png" width="400"/></p>
+<h2 id="adding-teams">Adding teams<a class="headerlink" href="#adding-teams" title="Permanent link">&para;</a></h2>
 <p>Now it's time to add the teams. To add a team, do <code>/bw admin &lt;arena&gt; team add &lt;team name&gt; &lt;team colour&gt; &lt;team size&gt;</code>.</p>
-<p>Available arguments - colors:
-<code>RED</code>,
-<code>BLUE</code>,
-<code>GREEN</code>,
-<code>YELLOW</code>,
-<code>MAGENTA</code>,
-<code>PINK</code>,
-<code>LIME</code>,
-<code>BLACK</code>,
-<code>WHITE</code>,
-<code>ORANGE</code>,
-<code>LIGHT_GRAY</code>,
-<code>GRAY</code>,
-<code>LIGHT_BLUE</code>,
-<code>CYAN</code>,
-<code>BROWN</code></p>
+<p>For the colors, you can use the entire palette of Bukkit's <a href="https://hub.spigotmc.org/javadocs/spigot/org/bukkit/ChatColor.html">ChatColor</a> enum: <code>RED</code>, <code>BLUE</code>, <code>GREEN</code>, <code>YELLOW</code>, <code>MAGENTA</code>, <code>PINK</code>, <code>LIME</code>, <code>BLACK</code>, <code>WHITE</code>, <code>ORANGE</code>, <code>LIGHT_GRAY</code>, <code>GRAY</code>, <code>LIGHT_BLUE</code>, <code>CYAN</code> and <code>BROWN</code>.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>You must create at least 2 teams.</p>
 </div>
-<h2 id="step-5-set-the-team-spawn">Step 5 - Set the team spawn<a class="headerlink" href="#step-5-set-the-team-spawn" title="Permanent link">&para;</a></h2>
-<p>Stand where you would like to have the team spawn. Also look at the direction as the yaw will also be taken into account. Do <code>/bw admin &lt;arena&gt; team spawn &lt;team&gt;</code>.</p>
-<h2 id="step-6-set-the-team-beds">Step 6 - Set the team beds<a class="headerlink" href="#step-6-set-the-team-beds" title="Permanent link">&para;</a></h2>
-<p>Stand on top of the bed and look down on the HEAD of the bed (see image below). Do <code>/bw admin &lt;arena name&gt; team bed &lt;team name&gt;</code></p>
-<p><img alt="Bed hed" src="../../assets/images/bed.png" width="200"/></p>
-<h2 id="step-7-add-the-generators">Step 7 - Add the generators<a class="headerlink" href="#step-7-add-the-generators" title="Permanent link">&para;</a></h2>
-<p>Go to the place you would like to add a generator at. Stand there and execute this command: <code>/bw admin &lt;arena name&gt; spawner add &lt;resource&gt; &lt;true/false&gt;</code>.</p>
-<p>Valid default resources: <code>bronze</code>, <code>iron</code> and <code>gold</code>.</p>
+<h2 id="setting-team-spawns">Setting team spawns<a class="headerlink" href="#setting-team-spawns" title="Permanent link">&para;</a></h2>
+<p>Stand where you would like to have the team spawn, and look in the direction that you want your players to be oriented when they spawn, as the yaw will also be taken into account. Set the team's spawn with this command: <code>/bw admin &lt;arena&gt; team spawn &lt;team&gt;</code> and repeat until all teams have a spawn.</p>
+<h2 id="setting-the-team-bed">Setting the team bed<a class="headerlink" href="#setting-the-team-bed" title="Permanent link">&para;</a></h2>
+<p>Stand on top of the bed, look down on the <strong>head</strong> of the bed and execute this command to set the bed location: <code>/bw admin &lt;arena name&gt; team bed &lt;team name&gt;</code>. Repeat until all teams have a bed.</p>
+<div class="admonition tip">
+<p class="admonition-title">Target blocks</p>
+<p>The team's target block isn't limited to a bed, in fact BedWars has support for any block (the Dragon Egg, cakes and the Respawn Anchor have special support to allow BedWars to operate as EggWars, AnchorWars or CakeWars out of the box).</p>
+</div>
+<h2 id="adding-resource-generators">Adding resource generators<a class="headerlink" href="#adding-resource-generators" title="Permanent link">&para;</a></h2>
+<p>Stand at the block where you want the generator to be and execute this command: <code>/bw admin &lt;arena name&gt; spawner add &lt;resource&gt; &lt;true/false&gt;</code>.</p>
+<p>Valid default resources: <code>bronze</code>, <code>iron</code> and <code>gold</code> (diamond and emerald is not included out of the box, you will have to add it yourself in the <a href="../config/">configuration</a>).</p>
 <p>The <strong>true/false</strong> part of the command means if there should <strong>be</strong> a hologram (true) or if there should be <strong>no</strong> hologram (false).</p>
-<p>These resources can be changed by going to the <code>config.yml</code>. click <a href="../../config/">here</a> for more.</p>
-<h2 id="step-8-add-the-shops">Step 8 - Add the shops<a class="headerlink" href="#step-8-add-the-shops" title="Permanent link">&para;</a></h2>
-<p>Now it's time to add the shops. Stand where you would like your shop entity to be and look forward. Do the following command: <code>/bw admin &lt;arena&gt; store add [name of villager entity] [file with shop] [use main shop]</code></p>
-<p>Example: <code>/bw admin &lt;arena&gt; store add &amp;aStore shop.yml false</code> or just <code>/bw admin &lt;arena&gt; store add &amp;aStore</code></p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>If you would like to have a different type of store, do the following:<br />
-<code>/bw admin &lt;arena&gt; store type &lt;living entity&gt;</code><br />
+<h2 id="adding-merchants">Adding merchants<a class="headerlink" href="#adding-merchants" title="Permanent link">&para;</a></h2>
+<p>Now it's time to add the shops. Stand where you would like your shop entity to be, look forward and execute this command: <code>/bw admin &lt;arena&gt; store add &lt;name of villager entity&gt; [file with shop] [use main shop]</code> (last two command parts can be omitted).</p>
+<p>Example: <code>/bw admin &lt;arena&gt; store add &amp;aStore shop.yml false</code>, <code>/bw admin &lt;arena&gt; store add &amp;aStore</code></p>
+<div class="admonition info">
+<p class="admonition-title">Store entity types</p>
+<p>If you would like to have a different entity as the store, do the following:<br />
+<code>/bw admin &lt;arena&gt; store type &lt;living entity&gt;</code>.
 This sets entity type of store (Villager, Horse, Cow, etc.).<br />
 If you would like to have a player with a skin as the shop keeper, use this command: <code>/bw admin &lt;arena&gt; store type Player:skinname</code>.</p>
 </div>
-<h2 id="step-9-final-steps">Step 9 - Final steps<a class="headerlink" href="#step-9-final-steps" title="Permanent link">&para;</a></h2>
-<p>Add the lobby location for the arena by doing <code>/bw admin &lt;arena&gt; lobby</code>.</p>
-<p>Add the spectator location for the arena by doing <code>/bw admin &lt;arena&gt; spec</code>.</p>
+<h2 id="final-steps">Final steps<a class="headerlink" href="#final-steps" title="Permanent link">&para;</a></h2>
+<p>Add the lobby location for the arena by executing this command: <code>/bw admin &lt;arena&gt; lobby</code>.</p>
+<p>Add the spectator location for the arena by executing this command: <code>/bw admin &lt;arena&gt; spec</code>.</p>
 <p>Last but not least, remember to save the arena with <code>/bw admin &lt;arena&gt; save</code>.</p>
                 
                   
@@ -522,7 +439,7 @@ If you would like to have a player with a skin as the shop keeper, use this comm
 <div class="md-source-date">
   <small>
     
-      Last update: 2021-10-23
+      Last update: 2021-10-31
     
   </small>
 </div>
@@ -551,7 +468,7 @@ If you would like to have a player with a skin as the shop keeper, use this comm
     <nav class="md-footer__inner md-grid" aria-label="Footer">
       
         
-        <a href="../installation/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Installation" rel="prev">
+        <a href=".." class="md-footer__link md-footer__link--prev" aria-label="Previous: Home" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
           </div>
@@ -560,20 +477,20 @@ If you would like to have a player with a skin as the shop keeper, use this comm
               <span class="md-footer__direction">
                 Previous
               </span>
-              Installation
+              Home
             </div>
           </div>
         </a>
       
       
         
-        <a href="../../config/" class="md-footer__link md-footer__link--next" aria-label="Next: Config" rel="next">
+        <a href="../config/" class="md-footer__link md-footer__link--next" aria-label="Next: Configuration" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Config
+              Configuration
             </div>
           </div>
           <div class="md-footer__button md-icon">
@@ -630,10 +547,10 @@ If you would like to have a player with a skin as the shop keeper, use this comm
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.expand", "navigation.indexes", "toc.integrate", "navigation.top"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.8397ff9e.min.js", "version": {"provider": "mike", "default": "latest"}}</script>
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.expand", "navigation.indexes", "toc.integrate", "navigation.top"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../assets/javascripts/workers/search.fcfe8b6d.min.js", "version": {"provider": "mike", "default": "latest"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.1e84347e.min.js"></script>
+      <script src="../assets/javascripts/bundle.b1047164.min.js"></script>
       
     
   </body>
