@@ -29,22 +29,22 @@ This plugin adds new placeholders to PlaceholderAPI! All placeholders are player
 * %bedwars_stats_kd%
 
 ### Game information placeholders
-* %bedwars_game_<game>_name%
-* %bedwars_game_<game>_players%
-* %bedwars_game_<game>_maxplayers%
-* %bedwars_game_<game>_minplayers%
-* %bedwars_game_<game>_world%
-* %bedwars_game_<game>_state%
-* %bedwars_game_<game>_available_teams%
-* %bedwars_game_<game>_connected_teams%
-* %bedwars_game_<game>_teamchests%
+* %bedwars_game_\<game\>_name%
+* %bedwars_game_\<game\>_players%
+* %bedwars_game_\<game\>_maxplayers%
+* %bedwars_game_\<game\>_minplayers%
+* %bedwars_game_\<game\>_world%
+* %bedwars_game_\<game\>_state%
+* %bedwars_game_\<game\>_available_teams%
+* %bedwars_game_\<game\>_connected_teams%
+* %bedwars_game_\<game\>_teamchests%
 
 ### Any player stats placeholders
-* %bedwars_otherstats_<player>_deaths%
-* %bedwars_otherstats_<player>_destroyed_beds%
-* %bedwars_otherstats_<player>_kills%
-* %bedwars_otherstats_<player>_loses%
-* %bedwars_otherstats_<player>_score%
-* %bedwars_otherstats_<player>_wins%
-* %bedwars_otherstats_<player>_games%
-* %bedwars_otherstats_<player>_kd%
+* %bedwars_otherstats_\<player\>_deaths%
+* %bedwars_otherstats_\<player\>_destroyed_beds%
+* %bedwars_otherstats_\<player\>_kills%
+* %bedwars_otherstats_\<player\>_loses%
+* %bedwars_otherstats_\<player\>_score%
+* %bedwars_otherstats_\<player\>_wins%
+* %bedwars_otherstats_\<player\>_games%
+* %bedwars_otherstats_\<player\>_kd%
