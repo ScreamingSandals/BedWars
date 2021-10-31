@@ -1,0 +1,1664 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="canonical" href="http://localhost:8000/0.3.0-SNAPSHOT/config/">
+      
+      <link rel="icon" href="../assets/icon.png">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-7.3.6">
+    
+    
+      
+        <title>Configuration - ScreamingBedWars</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.a57b2b03.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.3f5d1f46.min.css">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
+      
+    
+    
+    
+    
+      
+
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="teal" data-md-color-accent="">
+  
+    
+    <script>function __prefix(e){return new URL("..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
+    
+      <script>var palette=__get("__palette");if(null!==palette&&"object"==typeof palette.color)for(var key in palette.color)document.body.setAttribute("data-md-color-"+key,palette.color[key])</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#configuration" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+        <aside class="md-banner md-announce">
+          <div class="md-banner__inner md-announce__inner md-grid md-typeset">
+            
+<p>These docs are still a <strong>work in progress</strong>, so complete information may not be available!</p>
+
+          </div>
+        </aside>
+      
+    </div>
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="ScreamingBedWars" class="md-header__button md-logo" aria-label="ScreamingBedWars" data-md-component="logo">
+      
+  <img src="../assets/icon.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            ScreamingBedWars
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Configuration
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      <form class="md-header__option" data-md-component="palette">
+        
+          
+          
+          <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="teal" data-md-color-accent=""  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+          
+            <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_2" hidden>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3z"/></svg>
+            </label>
+          
+        
+          
+          
+          <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent=""  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_2">
+          
+            <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6zm0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4zM7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+            </label>
+          
+        
+      </form>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        
+<a href="https://github.com/ScreamingSandals/BedWars" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    ScreamingSandals/BedWars
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="ScreamingBedWars" class="md-nav__button md-logo" aria-label="ScreamingBedWars" data-md-component="logo">
+      
+  <img src="../assets/icon.png" alt="logo">
+
+    </a>
+    ScreamingBedWars
+  </label>
+  
+    <div class="md-nav__source">
+      
+<a href="https://github.com/ScreamingSandals/BedWars" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    ScreamingSandals/BedWars
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../arena/" class="md-nav__link">
+        Arena creation
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Configuration
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Configuration
+      </a>
+      
+        
+
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#custom-resources" class="md-nav__link">
+    Custom resources
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#game-effects" class="md-nav__link">
+    Game effects
+  </a>
+  
+    <nav class="md-nav" aria-label="Game effects">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#events" class="md-nav__link">
+    Events
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#effect-types" class="md-nav__link">
+    Effect types
+  </a>
+  
+    <nav class="md-nav" aria-label="Effect types">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#particle" class="md-nav__link">
+    Particle
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#effect" class="md-nav__link">
+    Effect
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#firework" class="md-nav__link">
+    Firework
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#list" class="md-nav__link">
+    List
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#custom-language" class="md-nav__link">
+    Custom language
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../upgrades/" class="md-nav__link">
+        Upgrades
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../placeholderapi/" class="md-nav__link">
+        Placeholder API
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../troubleshooting/" class="md-nav__link">
+        Troubleshooting and FAQ
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/" class="md-nav__link">
+        API
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                <h1 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">&para;</a></h1>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This page is not up to date with latest 0.3.0 changes!!!</p>
+</div>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">  1</span>
+<span class="normal">  2</span>
+<span class="normal">  3</span>
+<span class="normal">  4</span>
+<span class="normal">  5</span>
+<span class="normal">  6</span>
+<span class="normal">  7</span>
+<span class="normal">  8</span>
+<span class="normal">  9</span>
+<span class="normal"> 10</span>
+<span class="normal"> 11</span>
+<span class="normal"> 12</span>
+<span class="normal"> 13</span>
+<span class="normal"> 14</span>
+<span class="normal"> 15</span>
+<span class="normal"> 16</span>
+<span class="normal"> 17</span>
+<span class="normal"> 18</span>
+<span class="normal"> 19</span>
+<span class="normal"> 20</span>
+<span class="normal"> 21</span>
+<span class="normal"> 22</span>
+<span class="normal"> 23</span>
+<span class="normal"> 24</span>
+<span class="normal"> 25</span>
+<span class="normal"> 26</span>
+<span class="normal"> 27</span>
+<span class="normal"> 28</span>
+<span class="normal"> 29</span>
+<span class="normal"> 30</span>
+<span class="normal"> 31</span>
+<span class="normal"> 32</span>
+<span class="normal"> 33</span>
+<span class="normal"> 34</span>
+<span class="normal"> 35</span>
+<span class="normal"> 36</span>
+<span class="normal"> 37</span>
+<span class="normal"> 38</span>
+<span class="normal"> 39</span>
+<span class="normal"> 40</span>
+<span class="normal"> 41</span>
+<span class="normal"> 42</span>
+<span class="normal"> 43</span>
+<span class="normal"> 44</span>
+<span class="normal"> 45</span>
+<span class="normal"> 46</span>
+<span class="normal"> 47</span>
+<span class="normal"> 48</span>
+<span class="normal"> 49</span>
+<span class="normal"> 50</span>
+<span class="normal"> 51</span>
+<span class="normal"> 52</span>
+<span class="normal"> 53</span>
+<span class="normal"> 54</span>
+<span class="normal"> 55</span>
+<span class="normal"> 56</span>
+<span class="normal"> 57</span>
+<span class="normal"> 58</span>
+<span class="normal"> 59</span>
+<span class="normal"> 60</span>
+<span class="normal"> 61</span>
+<span class="normal"> 62</span>
+<span class="normal"> 63</span>
+<span class="normal"> 64</span>
+<span class="normal"> 65</span>
+<span class="normal"> 66</span>
+<span class="normal"> 67</span>
+<span class="normal"> 68</span>
+<span class="normal"> 69</span>
+<span class="normal"> 70</span>
+<span class="normal"> 71</span>
+<span class="normal"> 72</span>
+<span class="normal"> 73</span>
+<span class="normal"> 74</span>
+<span class="normal"> 75</span>
+<span class="normal"> 76</span>
+<span class="normal"> 77</span>
+<span class="normal"> 78</span>
+<span class="normal"> 79</span>
+<span class="normal"> 80</span>
+<span class="normal"> 81</span>
+<span class="normal"> 82</span>
+<span class="normal"> 83</span>
+<span class="normal"> 84</span>
+<span class="normal"> 85</span>
+<span class="normal"> 86</span>
+<span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span>
+<span class="normal">147</span>
+<span class="normal">148</span>
+<span class="normal">149</span>
+<span class="normal">150</span>
+<span class="normal">151</span>
+<span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span>
+<span class="normal">155</span>
+<span class="normal">156</span>
+<span class="normal">157</span>
+<span class="normal">158</span>
+<span class="normal">159</span>
+<span class="normal">160</span>
+<span class="normal">161</span>
+<span class="normal">162</span>
+<span class="normal">163</span>
+<span class="normal">164</span>
+<span class="normal">165</span>
+<span class="normal">166</span>
+<span class="normal">167</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span>
+<span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span>
+<span class="normal">186</span>
+<span class="normal">187</span>
+<span class="normal">188</span>
+<span class="normal">189</span>
+<span class="normal">190</span>
+<span class="normal">191</span>
+<span class="normal">192</span>
+<span class="normal">193</span>
+<span class="normal">194</span>
+<span class="normal">195</span>
+<span class="normal">196</span>
+<span class="normal">197</span>
+<span class="normal">198</span>
+<span class="normal">199</span>
+<span class="normal">200</span>
+<span class="normal">201</span>
+<span class="normal">202</span>
+<span class="normal">203</span>
+<span class="normal">204</span>
+<span class="normal">205</span>
+<span class="normal">206</span>
+<span class="normal">207</span>
+<span class="normal">208</span>
+<span class="normal">209</span>
+<span class="normal">210</span>
+<span class="normal">211</span>
+<span class="normal">212</span>
+<span class="normal">213</span>
+<span class="normal">214</span>
+<span class="normal">215</span>
+<span class="normal">216</span>
+<span class="normal">217</span>
+<span class="normal">218</span>
+<span class="normal">219</span>
+<span class="normal">220</span>
+<span class="normal">221</span>
+<span class="normal">222</span>
+<span class="normal">223</span>
+<span class="normal">224</span>
+<span class="normal">225</span>
+<span class="normal">226</span>
+<span class="normal">227</span>
+<span class="normal">228</span>
+<span class="normal">229</span>
+<span class="normal">230</span>
+<span class="normal">231</span>
+<span class="normal">232</span>
+<span class="normal">233</span>
+<span class="normal">234</span>
+<span class="normal">235</span>
+<span class="normal">236</span>
+<span class="normal">237</span>
+<span class="normal">238</span>
+<span class="normal">239</span>
+<span class="normal">240</span>
+<span class="normal">241</span>
+<span class="normal">242</span>
+<span class="normal">243</span>
+<span class="normal">244</span>
+<span class="normal">245</span>
+<span class="normal">246</span>
+<span class="normal">247</span>
+<span class="normal">248</span>
+<span class="normal">249</span>
+<span class="normal">250</span>
+<span class="normal">251</span>
+<span class="normal">252</span>
+<span class="normal">253</span>
+<span class="normal">254</span>
+<span class="normal">255</span>
+<span class="normal">256</span>
+<span class="normal">257</span>
+<span class="normal">258</span>
+<span class="normal">259</span>
+<span class="normal">260</span>
+<span class="normal">261</span>
+<span class="normal">262</span>
+<span class="normal">263</span>
+<span class="normal">264</span>
+<span class="normal">265</span>
+<span class="normal">266</span>
+<span class="normal">267</span>
+<span class="normal">268</span>
+<span class="normal">269</span>
+<span class="normal">270</span>
+<span class="normal">271</span>
+<span class="normal">272</span>
+<span class="normal">273</span>
+<span class="normal">274</span>
+<span class="normal">275</span>
+<span class="normal">276</span>
+<span class="normal">277</span>
+<span class="normal">278</span>
+<span class="normal">279</span>
+<span class="normal">280</span>
+<span class="normal">281</span>
+<span class="normal">282</span>
+<span class="normal">283</span>
+<span class="normal">284</span>
+<span class="normal">285</span>
+<span class="normal">286</span>
+<span class="normal">287</span>
+<span class="normal">288</span>
+<span class="normal">289</span>
+<span class="normal">290</span>
+<span class="normal">291</span>
+<span class="normal">292</span>
+<span class="normal">293</span>
+<span class="normal">294</span>
+<span class="normal">295</span>
+<span class="normal">296</span>
+<span class="normal">297</span>
+<span class="normal">298</span>
+<span class="normal">299</span>
+<span class="normal">300</span>
+<span class="normal">301</span>
+<span class="normal">302</span>
+<span class="normal">303</span>
+<span class="normal">304</span>
+<span class="normal">305</span>
+<span class="normal">306</span>
+<span class="normal">307</span>
+<span class="normal">308</span>
+<span class="normal">309</span>
+<span class="normal">310</span>
+<span class="normal">311</span>
+<span class="normal">312</span>
+<span class="normal">313</span>
+<span class="normal">314</span>
+<span class="normal">315</span>
+<span class="normal">316</span>
+<span class="normal">317</span>
+<span class="normal">318</span>
+<span class="normal">319</span>
+<span class="normal">320</span>
+<span class="normal">321</span>
+<span class="normal">322</span>
+<span class="normal">323</span>
+<span class="normal">324</span>
+<span class="normal">325</span>
+<span class="normal">326</span>
+<span class="normal">327</span>
+<span class="normal">328</span>
+<span class="normal">329</span>
+<span class="normal">330</span>
+<span class="normal">331</span>
+<span class="normal">332</span>
+<span class="normal">333</span>
+<span class="normal">334</span>
+<span class="normal">335</span>
+<span class="normal">336</span>
+<span class="normal">337</span>
+<span class="normal">338</span>
+<span class="normal">339</span>
+<span class="normal">340</span>
+<span class="normal">341</span>
+<span class="normal">342</span>
+<span class="normal">343</span>
+<span class="normal">344</span>
+<span class="normal">345</span>
+<span class="normal">346</span>
+<span class="normal">347</span>
+<span class="normal">348</span>
+<span class="normal">349</span>
+<span class="normal">350</span>
+<span class="normal">351</span>
+<span class="normal">352</span>
+<span class="normal">353</span>
+<span class="normal">354</span>
+<span class="normal">355</span>
+<span class="normal">356</span>
+<span class="normal">357</span>
+<span class="normal">358</span>
+<span class="normal">359</span>
+<span class="normal">360</span>
+<span class="normal">361</span>
+<span class="normal">362</span>
+<span class="normal">363</span>
+<span class="normal">364</span>
+<span class="normal">365</span>
+<span class="normal">366</span>
+<span class="normal">367</span>
+<span class="normal">368</span>
+<span class="normal">369</span>
+<span class="normal">370</span>
+<span class="normal">371</span>
+<span class="normal">372</span>
+<span class="normal">373</span>
+<span class="normal">374</span>
+<span class="normal">375</span>
+<span class="normal">376</span>
+<span class="normal">377</span>
+<span class="normal">378</span>
+<span class="normal">379</span>
+<span class="normal">380</span>
+<span class="normal">381</span>
+<span class="normal">382</span>
+<span class="normal">383</span>
+<span class="normal">384</span>
+<span class="normal">385</span>
+<span class="normal">386</span>
+<span class="normal">387</span>
+<span class="normal">388</span>
+<span class="normal">389</span>
+<span class="normal">390</span>
+<span class="normal">391</span>
+<span class="normal">392</span>
+<span class="normal">393</span>
+<span class="normal">394</span>
+<span class="normal">395</span>
+<span class="normal">396</span>
+<span class="normal">397</span>
+<span class="normal">398</span>
+<span class="normal">399</span>
+<span class="normal">400</span>
+<span class="normal">401</span>
+<span class="normal">402</span>
+<span class="normal">403</span>
+<span class="normal">404</span>
+<span class="normal">405</span>
+<span class="normal">406</span>
+<span class="normal">407</span>
+<span class="normal">408</span>
+<span class="normal">409</span>
+<span class="normal">410</span>
+<span class="normal">411</span>
+<span class="normal">412</span>
+<span class="normal">413</span>
+<span class="normal">414</span>
+<span class="normal">415</span>
+<span class="normal">416</span>
+<span class="normal">417</span>
+<span class="normal">418</span>
+<span class="normal">419</span>
+<span class="normal">420</span>
+<span class="normal">421</span>
+<span class="normal">422</span>
+<span class="normal">423</span>
+<span class="normal">424</span>
+<span class="normal">425</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="c1"># the language of the plugin&#39;s messages</span>
+<span class="nt">locale</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">en</span>
+<span class="c1"># enables debug messages, may help with resolving certain problems</span>
+<span class="nt">debug</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="c1"># is crafting in the arenas allowed?</span>
+<span class="nt">allow-crafting</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="c1"># should items be kept when the player dies in the arena?</span>
+<span class="nt">keep-inventory-on-death</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="c1"># should player&#39;s armor be colored after choosing their team in the lobby?</span>
+<span class="nt">in-lobby-colored-leather-by-team</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="c1"># should the entity for joining teams have a visible name?</span>
+<span class="nt">jointeam-entity-show-name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="c1"># are teammates allowed to damage themselves?</span>
+<span class="nt">friendlyfire</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="c1"># do items drop from players when killed in the arena?</span>
+<span class="nt">player-drops</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="c1"># should the players be joined to a random team after the lobby waiting time passes?</span>
+<span class="c1"># if false, the game won&#39;t start until everyone chooses a team</span>
+<span class="nt">join-randomly-after-lobby-timeout</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="c1"># should BedWars prevent players from killing the merchants?</span>
+<span class="nt">prevent-killing-villagers</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="c1"># should the compass for choosing teams be available in the lobby?</span>
+<span class="nt">compass-enabled</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="c1"># should BedWars join the player to a random team when he joins the lobby?</span>
+<span class="nt">join-randomly-on-lobby-join</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="nt">add-wool-to-inventory-on-join</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">prevent-spawning-mobs</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">spawner-holograms</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="nt">spawner-disable-merge</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">prevent-lobby-spawn-mobs-in-radius</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">16</span>
+<span class="nt">spawner-holo-height</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.25</span>
+<span class="nt">spawner-holograms-countdown</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">damage-when-player-is-not-in-arena</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">remove-unused-target-blocks</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">allow-block-falling</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">game-start-items</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">player-respawn-items</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="nt">gived-game-start-items</span><span class="p">:</span>
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">wooden_sword</span>
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">leather_helmet</span>
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">leather_boots</span>
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">leather_leggings</span>
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">leather_chestplate</span>
+<span class="nt">disable-hunger</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">automatic-coloring-in-shop</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">sell-max-64-per-click-in-shop</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">destroy-placed-blocks-by-explosion-except</span><span class="p">:</span>
+<span class="p p-Indicator">-</span> <span class="s">&#39;&#39;</span>
+<span class="nt">destroy-placed-blocks-by-explosion</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">holo-above-bed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">allow-spectator-join</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="nt">disable-server-message</span><span class="p">:</span>
+  <span class="nt">player-join</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+  <span class="nt">player-leave</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="nt">respawn-cooldown</span><span class="p">:</span>
+  <span class="nt">enabled</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+  <span class="nt">time</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">5</span>
+<span class="nt">stop-team-spawners-on-die</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="nt">allowed-commands</span><span class="p">:</span> <span class="p p-Indicator">[]</span>
+<span class="nt">change-allowed-commands-to-blacklist</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="nt">bungee</span><span class="p">:</span>
+  <span class="nt">enabled</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+  <span class="nt">serverRestart</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+  <span class="nt">serverStop</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+  <span class="nt">server</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">hub</span>
+  <span class="nt">auto-game-connect</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+  <span class="nt">kick-when-proxy-too-slow</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+  <span class="nt">motd</span><span class="p">:</span>
+    <span class="nt">enabled</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+    <span class="nt">waiting</span><span class="p">:</span> <span class="s">&#39;%name%:</span><span class="nv"> </span><span class="s">Waiting</span><span class="nv"> </span><span class="s">for</span><span class="nv"> </span><span class="s">players</span><span class="nv"> </span><span class="s">[%current%/%max%]&#39;</span>
+    <span class="nt">waiting_full</span><span class="p">:</span> <span class="s">&#39;%name%:</span><span class="nv"> </span><span class="s">Game</span><span class="nv"> </span><span class="s">is</span><span class="nv"> </span><span class="s">full</span><span class="nv"> </span><span class="s">[%current%/%max%]&#39;</span>
+    <span class="nt">running</span><span class="p">:</span> <span class="s">&#39;%name%:</span><span class="nv"> </span><span class="s">Game</span><span class="nv"> </span><span class="s">is</span><span class="nv"> </span><span class="s">running</span><span class="nv"> </span><span class="s">[%current%/%max%]&#39;</span>
+    <span class="nt">rebuilding</span><span class="p">:</span> <span class="s">&#39;%name%:</span><span class="nv"> </span><span class="s">Rebuilding...&#39;</span>
+    <span class="nt">disabled</span><span class="p">:</span> <span class="s">&#39;%name%:</span><span class="nv"> </span><span class="s">Game</span><span class="nv"> </span><span class="s">is</span><span class="nv"> </span><span class="s">disabled&#39;</span>
+<span class="nt">farmBlocks</span><span class="p">:</span>
+  <span class="nt">enable</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+  <span class="nt">blocks</span><span class="p">:</span> <span class="p p-Indicator">[]</span>
+<span class="nt">scoreboard</span><span class="p">:</span>
+  <span class="nt">enable</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+  <span class="nt">title</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">§a%game%§r - %time%</span>
+  <span class="nt">bedLost</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">§c✘</span>
+  <span class="nt">bedExists</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">§a✔</span>
+  <span class="nt">teamTitle</span><span class="p">:</span> <span class="s">&#39;%bed%%color%%team%&#39;</span>
+  <span class="nt">anchorEmpty</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">§e✘</span>
+<span class="nt">title</span><span class="p">:</span>
+  <span class="nt">enabled</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+  <span class="nt">fadeIn</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
+  <span class="nt">stay</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
+  <span class="nt">fadeOut</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
+<span class="nt">items</span><span class="p">:</span>
+  <span class="nt">jointeam</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">COMPASS</span>
+  <span class="nt">leavegame</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">RED_BED</span>
+  <span class="nt">startgame</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">DIAMOND</span>
+  <span class="nt">shopback</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">BARRIER</span>
+  <span class="nt">shopcosmetic</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">GRAY_STAINED_GLASS_PANE</span>
+  <span class="nt">pageback</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ARROW</span>
+  <span class="nt">pageforward</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ARROW</span>
+  <span class="nt">team-select</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">WHITE_WOOL</span>
+<span class="nt">vault</span><span class="p">:</span>
+  <span class="nt">enable</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+  <span class="nt">reward</span><span class="p">:</span>
+    <span class="nt">kill</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">5</span>
+    <span class="nt">win</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">20</span>
+    <span class="nt">final-kill</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">5</span>
+    <span class="nt">bed-destroy</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
+<span class="nt">resources</span><span class="p">:</span>
+  <span class="nt">emerald</span><span class="p">:</span>
+    <span class="nt">material</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">EMERALD</span>
+    <span class="nt">color</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">GREEN</span>
+    <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Emerald</span>
+    <span class="nt">interval</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">60</span>
+    <span class="nt">translate</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">resource_emerald</span>
+    <span class="nt">spread</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.1</span>
+  <span class="nt">diamond</span><span class="p">:</span>
+    <span class="nt">material</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">DIAMOND</span>
+    <span class="nt">color</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">BLUE</span>
+    <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Diamond</span>
+    <span class="nt">interval</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">30</span>
+    <span class="nt">translate</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">resource_diamond</span>
+    <span class="nt">spread</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.1</span>
+  <span class="nt">iron</span><span class="p">:</span>
+    <span class="nt">material</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">IRON_INGOT</span>
+    <span class="nt">color</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">WHITE</span>
+    <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Iron</span>
+    <span class="nt">interval</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2.5</span>
+    <span class="nt">translate</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">resource_iron</span>
+    <span class="nt">spread</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1.0</span>
+  <span class="nt">gold</span><span class="p">:</span>
+    <span class="nt">material</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">GOLD_INGOT</span>
+    <span class="nt">color</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">GOLD</span>
+    <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Gold</span>
+    <span class="nt">interval</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">8</span>
+    <span class="nt">translate</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">resource_gold</span>
+    <span class="nt">spread</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1.0</span>
+<span class="nt">respawn</span><span class="p">:</span>
+  <span class="nt">protection-enabled</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+  <span class="nt">protection-time</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">5</span>
+<span class="nt">specials</span><span class="p">:</span>
+  <span class="nt">action-bar-messages</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+  <span class="nt">rescue-platform</span><span class="p">:</span>
+    <span class="nt">is-breakable</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+    <span class="nt">delay</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
+    <span class="nt">break-time</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>
+    <span class="nt">distance</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+    <span class="nt">material</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">GLASS</span>
+  <span class="nt">protection-wall</span><span class="p">:</span>
+    <span class="nt">is-breakable</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+    <span class="nt">delay</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">20</span>
+    <span class="nt">break-time</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
+    <span class="nt">width</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">5</span>
+    <span class="nt">height</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">3</span>
+    <span class="nt">distance</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2</span>
+    <span class="nt">material</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">CUT_SANDSTONE</span>
+  <span class="nt">tnt-sheep</span><span class="p">:</span>
+    <span class="nt">speed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2.0</span>
+    <span class="nt">follow-range</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10.0</span>
+    <span class="nt">max-target-distance</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">32</span>
+    <span class="nt">explosion-time</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">8</span>
+  <span class="nt">arrow-blocker</span><span class="p">:</span>
+    <span class="nt">protection-time</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>
+    <span class="nt">delay</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">5</span>
+  <span class="nt">warp-powder</span><span class="p">:</span>
+    <span class="nt">teleport-time</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">6</span>
+    <span class="nt">delay</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
+  <span class="nt">magnet-shoes</span><span class="p">:</span>
+    <span class="nt">probability</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">75</span>
+  <span class="nt">golem</span><span class="p">:</span>
+    <span class="nt">speed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.25</span>
+    <span class="nt">follow-range</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>
+    <span class="nt">health</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">20</span>
+    <span class="nt">name-format</span><span class="p">:</span> <span class="s">&#39;%teamcolor%%team%</span><span class="nv"> </span><span class="s">Golem&#39;</span>
+    <span class="nt">show-name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+    <span class="nt">delay</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
+    <span class="nt">collidable</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+  <span class="nt">teamchest</span><span class="p">:</span>
+    <span class="nt">turn-all-enderchests-to-teamchests</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+  <span class="nt">throwable-fireball</span><span class="p">:</span>
+    <span class="nt">explosion</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">3.0</span>
+    <span class="nt">damage</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2.0</span>
+  <span class="nt">auto-igniteable-tnt</span><span class="p">:</span>
+    <span class="nt">explosion-time</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">3</span>
+    <span class="nt">damage-placer</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">tnt</span><span class="p">:</span> <span class="p p-Indicator">{}</span>
+<span class="nt">sounds</span><span class="p">:</span>
+  <span class="nt">on_trap_triggered</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ENTITY_ENDERMAN_TELEPORT</span>
+  <span class="nt">bed_destroyed</span><span class="p">:</span>
+    <span class="nt">sound</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ENTITY_ENDER_DRAGON_GROWL</span>
+    <span class="nt">volume</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+    <span class="nt">pitch</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+  <span class="nt">my_bed_destroyed</span><span class="p">:</span>
+    <span class="nt">sound</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ENTITY_ENDER_DRAGON_GROWL</span>
+    <span class="nt">volume</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+    <span class="nt">pitch</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+  <span class="nt">countdown</span><span class="p">:</span>
+    <span class="nt">sound</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">UI_BUTTON_CLICK</span>
+    <span class="nt">volume</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+    <span class="nt">pitch</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+  <span class="nt">game_start</span><span class="p">:</span>
+    <span class="nt">sound</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ENTITY_PLAYER_LEVELUP</span>
+    <span class="nt">volume</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+    <span class="nt">pitch</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+  <span class="nt">team_kill</span><span class="p">:</span>
+    <span class="nt">sound</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ENTITY_PLAYER_LEVELUP</span>
+    <span class="nt">volume</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+    <span class="nt">pitch</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+  <span class="nt">player_kill</span><span class="p">:</span>
+    <span class="nt">sound</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ENTITY_PLAYER_BIG_FALL</span>
+    <span class="nt">volume</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+    <span class="nt">pitch</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+  <span class="nt">item_buy</span><span class="p">:</span>
+    <span class="nt">sound</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ENTITY_ITEM_PICKUP</span>
+    <span class="nt">volume</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+    <span class="nt">pitch</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+  <span class="nt">upgrade_buy</span><span class="p">:</span>
+    <span class="nt">sound</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ENTITY_EXPERIENCE_ORB_PICKUP</span>
+    <span class="nt">volume</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+    <span class="nt">pitch</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+  <span class="nt">respawn_cooldown_wait</span><span class="p">:</span>
+    <span class="nt">sound</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">UI_BUTTON_CLICK</span>
+    <span class="nt">volume</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+    <span class="nt">pitch</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+  <span class="nt">respawn_cooldown_done</span><span class="p">:</span>
+    <span class="nt">sound</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ENTITY_PLAYER_LEVELUP</span>
+    <span class="nt">volume</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+    <span class="nt">pitch</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+<span class="nt">game-effects</span><span class="p">:</span>
+  <span class="nt">end</span><span class="p">:</span>
+    <span class="nt">effects</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="nt">==</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Firework</span>
+      <span class="nt">flicker</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+      <span class="nt">trail</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+      <span class="nt">colors</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="nl">&amp;id001</span>
+        <span class="nt">==</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Color</span>
+        <span class="nt">RED</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">255</span>
+        <span class="nt">BLUE</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">255</span>
+        <span class="nt">GREEN</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">255</span>
+      <span class="nt">fade-colors</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="nv">*id001</span>
+      <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">BALL</span>
+    <span class="nt">power</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+    <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Firework</span>
+  <span class="nt">start</span><span class="p">:</span> <span class="p p-Indicator">{}</span>
+  <span class="nt">kill</span><span class="p">:</span> <span class="p p-Indicator">{}</span>
+  <span class="nt">teamkill</span><span class="p">:</span> <span class="p p-Indicator">{}</span>
+  <span class="nt">lobbyjoin</span><span class="p">:</span> <span class="p p-Indicator">{}</span>
+  <span class="nt">lobbyleave</span><span class="p">:</span> <span class="p p-Indicator">{}</span>
+  <span class="nt">respawn</span><span class="p">:</span> <span class="p p-Indicator">{}</span>
+  <span class="nt">beddestroy</span><span class="p">:</span> <span class="p p-Indicator">{}</span>
+  <span class="nt">warppowdertick</span><span class="p">:</span> <span class="p p-Indicator">{}</span>
+<span class="nt">lobby-scoreboard</span><span class="p">:</span>
+  <span class="nt">enabled</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+  <span class="nt">title</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">§eBEDWARS</span>
+  <span class="nt">content</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="s">&#39;</span><span class="nv"> </span><span class="s">&#39;</span>
+  <span class="p p-Indicator">-</span> <span class="s">&#39;§fMap:</span><span class="nv"> </span><span class="s">§2%arena%&#39;</span>
+  <span class="p p-Indicator">-</span> <span class="s">&#39;§fPlayers:</span><span class="nv"> </span><span class="s">§2%players%§f/§2%maxplayers%&#39;</span>
+  <span class="p p-Indicator">-</span> <span class="s">&#39;</span><span class="nv"> </span><span class="s">&#39;</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">§fWaiting ...</span>
+  <span class="p p-Indicator">-</span> <span class="s">&#39;</span><span class="nv"> </span><span class="s">&#39;</span>
+<span class="nt">statistics</span><span class="p">:</span>
+  <span class="nt">enabled</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+  <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">yaml</span>
+  <span class="nt">show-on-game-end</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+  <span class="nt">bed-destroyed-kills</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+  <span class="nt">scores</span><span class="p">:</span>
+    <span class="nt">kill</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>
+    <span class="nt">die</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
+    <span class="nt">win</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">50</span>
+    <span class="nt">bed-destroy</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">25</span>
+    <span class="nt">lose</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
+    <span class="nt">record</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">100</span>
+    <span class="nt">final-kill</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
+<span class="nt">database</span><span class="p">:</span>
+  <span class="nt">host</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">localhost</span>
+  <span class="nt">port</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">3306</span>
+  <span class="nt">db</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">database</span>
+  <span class="nt">user</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">root</span>
+  <span class="nt">password</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">secret</span>
+  <span class="nt">table-prefix</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">bw_</span>
+  <span class="nt">useSSL</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="nt">bossbar</span><span class="p">:</span>
+  <span class="nt">use-xp-bar</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+  <span class="nt">lobby</span><span class="p">:</span>
+    <span class="nt">enable</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+    <span class="nt">color</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">YELLOW</span>
+    <span class="nt">style</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">SEGMENTED_20</span>
+  <span class="nt">game</span><span class="p">:</span>
+    <span class="nt">enable</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+    <span class="nt">color</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">GREEN</span>
+    <span class="nt">style</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">SEGMENTED_20</span>
+<span class="nt">holograms</span><span class="p">:</span>
+  <span class="nt">enabled</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+  <span class="nt">headline</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Your §eBEDWARS§f stats</span>
+  <span class="nt">leaderboard</span><span class="p">:</span>
+    <span class="nt">headline</span><span class="p">:</span> <span class="s">&#39;&amp;6Bedwars</span><span class="nv"> </span><span class="s">Leaderboard&#39;</span>
+    <span class="nt">format</span><span class="p">:</span> <span class="s">&#39;&amp;l%order%.</span><span class="nv"> </span><span class="s">&amp;7%name%</span><span class="nv"> </span><span class="s">-</span><span class="nv"> </span><span class="s">&amp;a%score%&#39;</span>
+    <span class="nt">size</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>
+<span class="nt">chat</span><span class="p">:</span>
+  <span class="nt">override</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+  <span class="nt">format</span><span class="p">:</span> <span class="s">&#39;&lt;%teamcolor%%name%§r&gt;</span><span class="nv"> </span><span class="s">&#39;</span>
+  <span class="nt">separate-chat</span><span class="p">:</span>
+    <span class="nt">lobby</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+    <span class="nt">game</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+  <span class="nt">send-death-messages-just-in-game</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+  <span class="nt">send-custom-death-messages</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+  <span class="nt">default-team-chat-while-running</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+  <span class="nt">all-chat-prefix</span><span class="p">:</span> <span class="s">&#39;@a&#39;</span>
+  <span class="nt">team-chat-prefix</span><span class="p">:</span> <span class="s">&#39;@t&#39;</span>
+  <span class="nt">all-chat</span><span class="p">:</span> <span class="s">&#39;[ALL]</span><span class="nv"> </span><span class="s">&#39;</span>
+  <span class="nt">team-chat</span><span class="p">:</span> <span class="s">&#39;[TEAM]</span><span class="nv"> </span><span class="s">&#39;</span>
+  <span class="nt">death-chat</span><span class="p">:</span> <span class="s">&#39;[DEATH]</span><span class="nv"> </span><span class="s">&#39;</span>
+  <span class="nt">disable-all-chat-for-spectators</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="nt">rewards</span><span class="p">:</span>
+  <span class="nt">enabled</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+  <span class="nt">player-win</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">/example {player} 200</span>
+  <span class="nt">player-end-game</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">/example {player} {score}</span>
+  <span class="nt">player-destroy-bed</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">/example {player} {score}</span>
+  <span class="nt">player-kill</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">/example {player} 10</span>
+  <span class="nt">player-final-kill</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">/example {player} 10</span>
+<span class="nt">lore</span><span class="p">:</span>
+  <span class="nt">generate-automatically</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+  <span class="nt">text</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="s">&#39;§7Cost:</span><span class="nv"> </span><span class="s">§f%price%</span><span class="nv"> </span><span class="s">%resource%&#39;</span>
+  <span class="p p-Indicator">-</span> <span class="s">&#39;&#39;</span>
+<span class="nt">sign</span><span class="p">:</span>
+  <span class="nt">lines</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">§c§l[BedWars]</span>
+  <span class="p p-Indicator">-</span> <span class="s">&#39;%arena%&#39;</span>
+  <span class="p p-Indicator">-</span> <span class="s">&#39;%status%&#39;</span>
+  <span class="p p-Indicator">-</span> <span class="s">&#39;%players%&#39;</span>
+  <span class="nt">block-behind</span><span class="p">:</span>
+    <span class="nt">enabled</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+    <span class="nt">waiting</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ORANGE_STAINED_GLASS</span>
+    <span class="nt">rebuilding</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">BROWN_STAINED_GLASS</span>
+    <span class="nt">in-game</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">GREEN_STAINED_GLASS</span>
+    <span class="nt">game-disabled</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">RED_STAINED_GLASS</span>
+<span class="nt">hotbar</span><span class="p">:</span>
+  <span class="nt">selector</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
+  <span class="nt">color</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+  <span class="nt">start</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2</span>
+  <span class="nt">leave</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">8</span>
+<span class="nt">breakable</span><span class="p">:</span>
+  <span class="nt">enabled</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+  <span class="nt">asblacklist</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+  <span class="nt">blocks</span><span class="p">:</span> <span class="p p-Indicator">[]</span>
+<span class="nt">leaveshortcuts</span><span class="p">:</span>
+  <span class="nt">enabled</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+  <span class="nt">list</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">leave</span>
+<span class="nt">mainlobby</span><span class="p">:</span>
+  <span class="nt">enabled</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+  <span class="nt">location</span><span class="p">:</span> <span class="s">&#39;&#39;</span>
+  <span class="nt">world</span><span class="p">:</span> <span class="s">&#39;&#39;</span>
+<span class="nt">version</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2</span>
+<span class="nt">turnOnExperimentalGroovyShop</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="nt">preventSpectatorFlyingAway</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="nt">removePurchaseMessages</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="nt">disableCakeEating</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">disableDragonEggTeleport</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">disable-flight</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">shop</span><span class="p">:</span>
+  <span class="nt">rows</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">4</span>
+  <span class="nt">render-actual-rows</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">6</span>
+  <span class="nt">render-offset</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">9</span>
+  <span class="nt">render-header-start</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
+  <span class="nt">render-footer-start</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">45</span>
+  <span class="nt">items-on-row</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">9</span>
+  <span class="nt">show-page-numbers</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+  <span class="nt">inventory-type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">CHEST</span>
+  <span class="nt">citizens-enabled</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">gived-player-respawn-items</span><span class="p">:</span> <span class="p p-Indicator">[]</span>
+<span class="nt">allow-fake-death</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="nt">preventArenaFromGriefing</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="nt">update-checker</span><span class="p">:</span>
+  <span class="nt">zero</span><span class="p">:</span>
+    <span class="nt">console</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+    <span class="nt">admins</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+  <span class="nt">one</span><span class="p">:</span>
+    <span class="nt">console</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+    <span class="nt">admins</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">target-block</span><span class="p">:</span>
+  <span class="nt">allow-destroying-with-explosions</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+  <span class="nt">respawn-anchor</span><span class="p">:</span>
+    <span class="nt">fill-on-start</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+    <span class="nt">enable-decrease</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+    <span class="nt">sound</span><span class="p">:</span>
+      <span class="nt">charge</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">BLOCK_RESPAWN_ANCHOR_CHARGE</span>
+      <span class="nt">used</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">BLOCK_GLASS_BREAK</span>
+      <span class="nt">deplete</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">BLOCK_RESPAWN_ANCHOR_DEPLETE</span>
+  <span class="nt">cake</span><span class="p">:</span>
+    <span class="nt">destroy-by-eating</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">event-hacks</span><span class="p">:</span>
+  <span class="nt">damage</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+  <span class="nt">destroy</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+  <span class="nt">place</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="nt">tab</span><span class="p">:</span>
+  <span class="nt">enable</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+  <span class="nt">header</span><span class="p">:</span>
+    <span class="nt">enabled</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+    <span class="nt">contents</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="s">&#39;&amp;aMy</span><span class="nv"> </span><span class="s">awesome</span><span class="nv"> </span><span class="s">BedWars</span><span class="nv"> </span><span class="s">server&#39;</span>
+    <span class="p p-Indicator">-</span> <span class="s">&#39;&amp;bMap:</span><span class="nv"> </span><span class="s">%map%&#39;</span>
+    <span class="p p-Indicator">-</span> <span class="s">&#39;&amp;cPlayers:</span><span class="nv"> </span><span class="s">%respawnable%/%max%&#39;</span>
+  <span class="nt">footer</span><span class="p">:</span>
+    <span class="nt">enabled</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+    <span class="nt">contents</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="s">&#39;&amp;eexample.com&#39;</span>
+    <span class="p p-Indicator">-</span> <span class="s">&#39;&amp;fWow!!&#39;</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">§a%spectators% are watching this match</span>
+  <span class="nt">hide-spectators</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+  <span class="nt">hide-foreign-players</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="nt">default-permissions</span><span class="p">:</span>
+  <span class="nt">join</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+  <span class="nt">leave</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+  <span class="nt">stats</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+  <span class="nt">list</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+  <span class="nt">rejoin</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+  <span class="nt">autojoin</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+  <span class="nt">leaderboard</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+</code></pre></div>
+</td></tr></table>
+<h2 id="custom-resources">Custom resources<a class="headerlink" href="#custom-resources" title="Permanent link">&para;</a></h2>
+<p>Open the config (<code>plugins/BedWars/config.yml</code>) and scroll down, until you find a section called <code>resources</code>. Using <code>Ctrl+F</code> helps you to search for it.</p>
+<p>Here is an example on how to add <code>emerald</code>, <code>diamond</code>, <code>iron</code> and <code>gold</code>.</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="nt">resources</span><span class="p">:</span>
+  <span class="nt">emerald</span><span class="p">:</span> <span class="c1"># resource name</span>
+    <span class="nt">material</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">EMERALD</span> <span class="c1"># resource material (https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html)</span>
+    <span class="nt">color</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">GREEN</span> <span class="c1"># resource color (https://hub.spigotmc.org/javadocs/spigot/org/bukkit/ChatColor.html)</span>
+    <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Emerald</span> <span class="c1"># resource in-game name</span>
+    <span class="nt">interval</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">60</span> <span class="c1"># resource spawn time in seconds</span>
+    <span class="nt">translate</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">resource_emerald</span> <span class="c1"># resource translation key</span>
+    <span class="nt">spread</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1.0</span> <span class="c1"># resource spread radius</span>
+  <span class="nt">diamond</span><span class="p">:</span>
+    <span class="nt">material</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">DIAMOND</span>
+    <span class="nt">color</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">BLUE</span>
+    <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Diamond</span>
+    <span class="nt">interval</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">30</span>
+    <span class="nt">translate</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">resource_diamond</span>
+    <span class="nt">spread</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1.0</span>
+  <span class="nt">iron</span><span class="p">:</span>
+    <span class="nt">material</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">IRON_INGOT</span>
+    <span class="nt">color</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">WHITE</span>
+    <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Iron</span>
+    <span class="nt">interval</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2.5</span>
+    <span class="nt">translate</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">resource_iron</span>
+    <span class="nt">spread</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1.0</span>
+  <span class="nt">gold</span><span class="p">:</span>
+    <span class="nt">material</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">GOLD_INGOT</span>
+    <span class="nt">color</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">GOLD</span>
+    <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Gold</span>
+    <span class="nt">interval</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">8</span>
+    <span class="nt">translate</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">resource_gold</span>
+    <span class="nt">spread</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1.0</span>
+</code></pre></div>
+</td></tr></table>
+<h2 id="game-effects">Game effects<a class="headerlink" href="#game-effects" title="Permanent link">&para;</a></h2>
+<p>In config.yml you can find section called <code>game-effects</code>. Here you can set some visual effects that will enhance your game experiences.</p>
+<h3 id="events">Events<a class="headerlink" href="#events" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>end</code> - This effect is called when game ends.</li>
+<li><code>start</code> - This effect is called when game starts.</li>
+<li><code>kill</code> - This effect is called when someone kills someone.</li>
+<li><code>teamkill</code> - This effect is called when someone kills someone and bed or other target block is destroyed.</li>
+<li><code>lobbyjoin</code> - This effect is called when someone enters the lobby.</li>
+<li><code>lobbyleave</code> - This effect is called when someone leaves the lobby.</li>
+<li><code>respawn</code> - This effect is called when someone is respawned.</li>
+<li><code>beddestroy</code> - This effect is called when someone destroys bed or other target block.</li>
+<li><code>warppowdertick</code> - This effect is caled when someone is teleported by Warp Powder.</li>
+</ul>
+<h3 id="effect-types">Effect types<a class="headerlink" href="#effect-types" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>Particle</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Particle.html">Particle effect (click here for list)</a></li>
+<li><code>Effect</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Effect.html">Effect (click here for list)</a></li>
+<li><code>Firework</code> - Launches a firework</li>
+<li><code>List</code> - Multiple effects on one event</li>
+</ul>
+<h4 id="particle">Particle<a class="headerlink" href="#particle" title="Permanent link">&para;</a></h4>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="nt">game-effects</span><span class="p">:</span>
+  <span class="nt">start</span><span class="p">:</span>
+    <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Particle</span>
+    <span class="nt">value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">LAVA</span> <span class="c1"># uppercase key from the list</span>
+    <span class="c1"># options below are optional</span>
+    <span class="nt">count</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2</span> <span class="c1"># how many particles will be spawned (default - 1)</span>
+    <span class="nt">offsetX</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span> <span class="c1"># offset from the event location (default - 0 for each coordinate)</span>
+    <span class="nt">offsetY</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+    <span class="nt">offsetZ</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+    <span class="nt">extra</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span> <span class="c1"># extra data, depends on each particle (default - 1)</span>
+</code></pre></div>
+</td></tr></table>
+<h4 id="effect">Effect<a class="headerlink" href="#effect" title="Permanent link">&para;</a></h4>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="nt">game-effects</span><span class="p">:</span>
+  <span class="nt">start</span><span class="p">:</span>
+    <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Effect</span>
+    <span class="nt">value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">DOOR_CLOSE</span> <span class="c1"># uppercase key from the list</span>
+</code></pre></div>
+</td></tr></table>
+<h4 id="firework">Firework<a class="headerlink" href="#firework" title="Permanent link">&para;</a></h4>
+<p>Firework effect types are listed <a href="https://hub.spigotmc.org/javadocs/spigot/org/bukkit/FireworkEffect.Type.html">here</a>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="nt">game-effects</span><span class="p">:</span>
+  <span class="nt">end</span><span class="p">:</span>
+    <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Firework</span>
+    <span class="nt">power</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span> <span class="c1"># power of the firework</span>
+    <span class="nt">effects</span><span class="p">:</span> <span class="c1"># list of firework effects</span>
+    <span class="p p-Indicator">-</span> <span class="nt">==</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Firework</span>
+      <span class="nt">flicker</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+      <span class="nt">trail</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+      <span class="nt">colors</span><span class="p">:</span> <span class="c1"># list of colors</span>
+      <span class="p p-Indicator">-</span> <span class="nt">==</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Color</span>
+        <span class="nt">RED</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">255</span>
+        <span class="nt">BLUE</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">255</span>
+        <span class="nt">GREEN</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">255</span>
+      <span class="nt">fade-colors</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="nt">==</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Color</span>
+        <span class="nt">RED</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">255</span>
+        <span class="nt">BLUE</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">255</span>
+        <span class="nt">GREEN</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">255</span>
+      <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">BALL</span> <span class="c1"># effect type</span>
+</code></pre></div>
+</td></tr></table></p>
+<h4 id="list">List<a class="headerlink" href="#list" title="Permanent link">&para;</a></h4>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="nt">game-effects</span><span class="p">:</span>
+  <span class="nt">end</span><span class="p">:</span>
+    <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">List</span>
+    <span class="nt">list</span><span class="p">:</span> <span class="c1"># list of effects</span>
+    <span class="p p-Indicator">-</span> <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Particle</span>
+      <span class="nt">value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">LAVA</span>
+      <span class="nt">count</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2</span>
+      <span class="nt">extra</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+    <span class="p p-Indicator">-</span> <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Effect</span>
+      <span class="nt">value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">DOOR_CLOSE</span> <span class="c1"># uppercase key from the list</span>
+    <span class="p p-Indicator">-</span> <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Firework</span>
+      <span class="nt">power</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span> <span class="c1"># power of the firework</span>
+      <span class="nt">effects</span><span class="p">:</span> <span class="c1"># list of firework effects</span>
+      <span class="p p-Indicator">-</span> <span class="nt">==</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Firework</span>
+        <span class="nt">flicker</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+        <span class="nt">trail</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+        <span class="nt">colors</span><span class="p">:</span> <span class="c1"># list of colors</span>
+        <span class="p p-Indicator">-</span> <span class="nt">==</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Color</span>
+          <span class="nt">RED</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">255</span>
+          <span class="nt">BLUE</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">255</span>
+          <span class="nt">GREEN</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">255</span>
+        <span class="nt">fade-colors</span><span class="p">:</span>
+        <span class="p p-Indicator">-</span> <span class="nt">==</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Color</span>
+          <span class="nt">RED</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">255</span>
+          <span class="nt">BLUE</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">255</span>
+          <span class="nt">GREEN</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">255</span>
+        <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">BALL</span> <span class="c1"># effect type</span>
+</code></pre></div>
+</td></tr></table>
+<h2 id="custom-language">Custom language<a class="headerlink" href="#custom-language" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Download the base language file from <a href="https://github.com/ScreamingSandals/BedWarsLanguage/tree/0.3.x/languages">here</a></li>
+<li>Create folder named "<strong>languages</strong>" in your <em>BedWars</em> folder. (<em>BedWars</em> folder is in default <em>plugins</em> folder)</li>
+<li>Paste your language here. For example, language_cs-CZ.json</li>
+<li>Open your <strong>config.yml</strong> and configure variable "<strong>locale</strong>" to "<strong>cs-CZ</strong>"</li>
+</ul>
+<p>And that's it, you have your own language!</p>
+                
+                  
+                    
+
+<hr>
+<div class="md-source-date">
+  <small>
+    
+      Last update: 2021-10-31
+    
+  </small>
+</div>
+                  
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+        
+          <a href="#" class="md-top md-icon" data-md-component="top" data-md-state="hidden">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"/></svg>
+            Back to top
+          </a>
+        
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        
+        <a href="../arena/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Arena creation" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              Arena creation
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="../upgrades/" class="md-footer__link md-footer__link--next" aria-label="Next: Upgrades" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              Upgrades
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+          <div class="md-footer-copyright__highlight">
+            Copyright &copy; 2021 ScreamingSandals
+          </div>
+        
+        
+          Made with
+          <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+            Material for MkDocs
+          </a>
+        
+        
+      </div>
+      
+  <div class="md-footer-social">
+    
+      
+      
+        
+        
+      
+      <a href="https://github.com/ScreamingSandals" target="_blank" rel="noopener" title="github.com" class="md-footer-social__link">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+      </a>
+    
+      
+      
+        
+        
+      
+      <a href="https://screamingsandals.org/discord" target="_blank" rel="noopener" title="screamingsandals.org" class="md-footer-social__link">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><path d="M524.531 69.836a1.5 1.5 0 0 0-.764-.7A485.065 485.065 0 0 0 404.081 32.03a1.816 1.816 0 0 0-1.923.91 337.461 337.461 0 0 0-14.9 30.6 447.848 447.848 0 0 0-134.426 0 309.541 309.541 0 0 0-15.135-30.6 1.89 1.89 0 0 0-1.924-.91 483.689 483.689 0 0 0-119.688 37.107 1.712 1.712 0 0 0-.788.676C39.068 183.651 18.186 294.69 28.43 404.354a2.016 2.016 0 0 0 .765 1.375 487.666 487.666 0 0 0 146.825 74.189 1.9 1.9 0 0 0 2.063-.676A348.2 348.2 0 0 0 208.12 430.4a1.86 1.86 0 0 0-1.019-2.588 321.173 321.173 0 0 1-45.868-21.853 1.885 1.885 0 0 1-.185-3.126 251.047 251.047 0 0 0 9.109-7.137 1.819 1.819 0 0 1 1.9-.256c96.229 43.917 200.41 43.917 295.5 0a1.812 1.812 0 0 1 1.924.233 234.533 234.533 0 0 0 9.132 7.16 1.884 1.884 0 0 1-.162 3.126 301.407 301.407 0 0 1-45.89 21.83 1.875 1.875 0 0 0-1 2.611 391.055 391.055 0 0 0 30.014 48.815 1.864 1.864 0 0 0 2.063.7A486.048 486.048 0 0 0 610.7 405.729a1.882 1.882 0 0 0 .765-1.352c12.264-126.783-20.532-236.912-86.934-334.541zM222.491 337.58c-28.972 0-52.844-26.587-52.844-59.239s23.409-59.241 52.844-59.241c29.665 0 53.306 26.82 52.843 59.239 0 32.654-23.41 59.241-52.843 59.241zm195.38 0c-28.971 0-52.843-26.587-52.843-59.239s23.409-59.241 52.843-59.241c29.667 0 53.307 26.82 52.844 59.239 0 32.654-23.177 59.241-52.844 59.241z"/></svg>
+      </a>
+    
+  </div>
+
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.expand", "navigation.indexes", "toc.integrate", "navigation.top"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../assets/javascripts/workers/search.fcfe8b6d.min.js", "version": {"provider": "mike", "default": "latest"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.b1047164.min.js"></script>
+      
+    
+  </body>
+</html>
