@@ -61,8 +61,6 @@ plugins:
 
 nav:
   - Home: index.md
-  - Setup:
-      - Installation: setup/installation.md
-      - Arena creation: setup/arena.md
-  - Config: config.md
+  - Arena creation: arena.md
+  - Configuration: config.md
   - Custom resources: resources.md
