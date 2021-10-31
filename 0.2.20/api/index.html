@@ -9,19 +9,21 @@
       
       
       
-      <link rel="icon" href="/0.2.20/assets/icon.png">
+        <link rel="canonical" href="http://localhost:8000/0.2.20/api/">
+      
+      <link rel="icon" href="../assets/icon.png">
       <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-7.3.6">
     
     
       
-        <title>ScreamingBedWars</title>
+        <title>API - ScreamingBedWars</title>
       
     
     
-      <link rel="stylesheet" href="/0.2.20/assets/stylesheets/main.a57b2b03.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.a57b2b03.min.css">
       
         
-        <link rel="stylesheet" href="/0.2.20/assets/stylesheets/palette.3f5d1f46.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.3f5d1f46.min.css">
         
       
     
@@ -55,7 +57,7 @@
     <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="teal" data-md-color-accent="">
   
     
-    <script>function __prefix(e){return new URL("/0.2.20",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
+    <script>function __prefix(e){return new URL("..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
     
       <script>var palette=__get("__palette");if(null!==palette&&"object"==typeof palette.color)for(var key in palette.color)document.body.setAttribute("data-md-color-"+key,palette.color[key])</script>
     
@@ -63,6 +65,11 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
+      
+        
+        <a href="#using-bedwars-api" class="md-skip">
+          Skip to content
+        </a>
       
     </div>
     <div data-md-component="announce">
@@ -81,9 +88,9 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="/0.2.20/." title="ScreamingBedWars" class="md-header__button md-logo" aria-label="ScreamingBedWars" data-md-component="logo">
+    <a href=".." title="ScreamingBedWars" class="md-header__button md-logo" aria-label="ScreamingBedWars" data-md-component="logo">
       
-  <img src="/0.2.20/assets/icon.png" alt="logo">
+  <img src="../assets/icon.png" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -99,7 +106,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              
+              API
             
           </span>
         </div>
@@ -204,9 +211,9 @@
 
 <nav class="md-nav md-nav--primary md-nav--integrated" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="/0.2.20/." title="ScreamingBedWars" class="md-nav__button md-logo" aria-label="ScreamingBedWars" data-md-component="logo">
+    <a href=".." title="ScreamingBedWars" class="md-nav__button md-logo" aria-label="ScreamingBedWars" data-md-component="logo">
       
-  <img src="/0.2.20/assets/icon.png" alt="logo">
+  <img src="../assets/icon.png" alt="logo">
 
     </a>
     ScreamingBedWars
@@ -235,7 +242,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/0.2.20/." class="md-nav__link">
+      <a href=".." class="md-nav__link">
         Home
       </a>
     </li>
@@ -250,7 +257,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/0.2.20/arena/" class="md-nav__link">
+      <a href="../arena/" class="md-nav__link">
         Arena creation
       </a>
     </li>
@@ -265,7 +272,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/0.2.20/config/" class="md-nav__link">
+      <a href="../config/" class="md-nav__link">
         Configuration
       </a>
     </li>
@@ -280,7 +287,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/0.2.20/upgrades/" class="md-nav__link">
+      <a href="../upgrades/" class="md-nav__link">
         Upgrades
       </a>
     </li>
@@ -295,7 +302,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/0.2.20/placeholderapi/" class="md-nav__link">
+      <a href="../placeholderapi/" class="md-nav__link">
         Placeholder API
       </a>
     </li>
@@ -308,11 +315,67 @@
 
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="/0.2.20/api/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          API
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         API
       </a>
+      
+        
+
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#maven" class="md-nav__link">
+    Maven
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gradle" class="md-nav__link">
+    Gradle
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#hooking-into-the-api" class="md-nav__link">
+    Hooking into the API
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -328,7 +391,88 @@
           <div class="md-content" data-md-component="content">
             <article class="md-content__inner md-typeset">
               
-  <h1>404 - Not found</h1>
+                
+                
+                <h1 id="using-bedwars-api">Using BedWars API<a class="headerlink" href="#using-bedwars-api" title="Permanent link">&para;</a></h1>
+<h2 id="maven">Maven<a class="headerlink" href="#maven" title="Permanent link">&para;</a></h2>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="nt">&lt;repositories&gt;</span>
+  <span class="nt">&lt;repository&gt;</span>
+    <span class="nt">&lt;id&gt;</span>screaming-repo<span class="nt">&lt;/id&gt;</span>
+    <span class="nt">&lt;url&gt;</span>https://repo.screamingsandals.org/public/<span class="nt">&lt;/url&gt;</span>
+  <span class="nt">&lt;/repository&gt;</span>
+<span class="nt">&lt;/repositories&gt;</span>
+
+<span class="nt">&lt;dependencies&gt;</span>
+  <span class="nt">&lt;dependency&gt;</span>
+    <span class="nt">&lt;groupId&gt;</span>org.screamingsandals.bedwars<span class="nt">&lt;/groupId&gt;</span>
+    <span class="nt">&lt;artifactId&gt;</span>BedWars-API<span class="nt">&lt;/artifactId&gt;</span>
+    <span class="nt">&lt;version&gt;</span>0.2.20<span class="nt">&lt;/version&gt;</span>
+    <span class="nt">&lt;scope&gt;</span>provided<span class="nt">&lt;/scope&gt;</span>
+  <span class="nt">&lt;/dependency&gt;</span>
+<span class="nt">&lt;/dependencies&gt;</span>
+</code></pre></div>
+</td></tr></table>
+<h2 id="gradle">Gradle<a class="headerlink" href="#gradle" title="Permanent link">&para;</a></h2>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">repositories</span> <span class="o">{</span>
+    <span class="n">maven</span> <span class="o">{</span> <span class="n">url</span> <span class="s1">&#39;https://repo.screamingsandals.org/public/&#39;</span> <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="n">dependencies</span> <span class="o">{</span>
+    <span class="n">compileOnly</span> <span class="s1">&#39;org.screamingsandals.bedwars:BedWars-API:0.2.20&#39;</span>
+<span class="o">}</span>
+</code></pre></div>
+</td></tr></table>
+<h2 id="hooking-into-the-api">Hooking into the API<a class="headerlink" href="#hooking-into-the-api" title="Permanent link">&para;</a></h2>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">org.screamingsandals.bedwars.api.BedwarsAPI</span><span class="p">;</span>
+
+<span class="p">...</span>
+<span class="n">BedwarsAPI</span> <span class="n">api</span> <span class="o">=</span> <span class="n">BedwarsAPI</span><span class="p">.</span><span class="na">getInstance</span><span class="p">();</span>
+<span class="p">...</span>
+</code></pre></div>
+</td></tr></table>
+<p>Javadoc: https://jd.screamingsandals.org/sbw-0-2-x/BedWars-API/  </p>
+                
+                  
+                    
+
+<hr>
+<div class="md-source-date">
+  <small>
+    
+      Last update: 2021-10-31
+    
+  </small>
+</div>
+                  
+                
+              
+              
+                
+
 
               
             </article>
@@ -344,6 +488,26 @@
       
         
 <footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        
+        <a href="../placeholderapi/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Placeholder API" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              Placeholder API
+            </div>
+          </div>
+        </a>
+      
+      
+    </nav>
   
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
@@ -392,10 +556,10 @@
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "/0.2.20", "features": ["navigation.instant", "navigation.tracking", "navigation.expand", "navigation.indexes", "toc.integrate", "navigation.top"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "/0.2.20/assets/javascripts/workers/search.fcfe8b6d.min.js", "version": {"provider": "mike", "default": "latest"}}</script>
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.expand", "navigation.indexes", "toc.integrate", "navigation.top"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../assets/javascripts/workers/search.fcfe8b6d.min.js", "version": {"provider": "mike", "default": "latest"}}</script>
     
     
-      <script src="/0.2.20/assets/javascripts/bundle.b1047164.min.js"></script>
+      <script src="../assets/javascripts/bundle.b1047164.min.js"></script>
       
     
   </body>

@@ -6,6 +6,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>http://localhost:8000/0.2.20/api/</loc>
+         <lastmod>2021-10-31</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>http://localhost:8000/0.2.20/arena/</loc>
          <lastmod>2021-10-31</lastmod>
          <changefreq>daily</changefreq>
@@ -16,7 +21,17 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>http://localhost:8000/0.2.20/placeholderapi/</loc>
+         <lastmod>2021-10-31</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>http://localhost:8000/0.2.20/troubleshooting/</loc>
+         <lastmod>2021-10-31</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>http://localhost:8000/0.2.20/upgrades/</loc>
          <lastmod>2021-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>

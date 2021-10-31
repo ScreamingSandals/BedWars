@@ -313,10 +313,123 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#game-effects" class="md-nav__link">
+    Game effects
+  </a>
+  
+    <nav class="md-nav" aria-label="Game effects">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#events" class="md-nav__link">
+    Events
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#effect-types" class="md-nav__link">
+    Effect types
+  </a>
+  
+    <nav class="md-nav" aria-label="Effect types">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#particle" class="md-nav__link">
+    Particle
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#effect" class="md-nav__link">
+    Effect
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#firework" class="md-nav__link">
+    Firework
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#list" class="md-nav__link">
+    List
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#custom-language" class="md-nav__link">
+    Custom language
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
       
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../upgrades/" class="md-nav__link">
+        Upgrades
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../placeholderapi/" class="md-nav__link">
+        Placeholder API
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/" class="md-nav__link">
+        API
+      </a>
     </li>
   
 
@@ -1248,6 +1361,163 @@
     <span class="nt">spread</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1.0</span>
 </code></pre></div>
 </td></tr></table>
+<h2 id="game-effects">Game effects<a class="headerlink" href="#game-effects" title="Permanent link">&para;</a></h2>
+<p>In config.yml you can find section called <code>game-effects</code>. Here you can set some visual effects that will enhance your game experiences.</p>
+<h3 id="events">Events<a class="headerlink" href="#events" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>end</code> - This effect is called when game ends.</li>
+<li><code>start</code> - This effect is called when game starts.</li>
+<li><code>kill</code> - This effect is called when someone kills someone.</li>
+<li><code>teamkill</code> - This effect is called when someone kills someone and bed or other target block is destroyed.</li>
+<li><code>lobbyjoin</code> - This effect is called when someone enters the lobby.</li>
+<li><code>lobbyleave</code> - This effect is called when someone leaves the lobby.</li>
+<li><code>respawn</code> - This effect is called when someone is respawned.</li>
+<li><code>beddestroy</code> - This effect is called when someone destroys bed or other target block.</li>
+<li><code>warppowdertick</code> - This effect is caled when someone is teleported by Warp Powder.</li>
+</ul>
+<h3 id="effect-types">Effect types<a class="headerlink" href="#effect-types" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>Particle</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Particle.html">Particle effect (click here for list)</a></li>
+<li><code>Effect</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Effect.html">Effect (click here for list)</a></li>
+<li><code>Firework</code> - Launches a firework</li>
+<li><code>List</code> - Multiple effects on one event</li>
+</ul>
+<h4 id="particle">Particle<a class="headerlink" href="#particle" title="Permanent link">&para;</a></h4>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="nt">game-effects</span><span class="p">:</span>
+  <span class="nt">start</span><span class="p">:</span>
+    <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Particle</span>
+    <span class="nt">value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">LAVA</span> <span class="c1"># uppercase key from the list</span>
+    <span class="c1"># options below are optional</span>
+    <span class="nt">count</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2</span> <span class="c1"># how many particles will be spawned (default - 1)</span>
+    <span class="nt">offsetX</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span> <span class="c1"># offset from the event location (default - 0 for each coordinate)</span>
+    <span class="nt">offsetY</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+    <span class="nt">offsetZ</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+    <span class="nt">extra</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span> <span class="c1"># extra data, depends on each particle (default - 1)</span>
+</code></pre></div>
+</td></tr></table>
+<h4 id="effect">Effect<a class="headerlink" href="#effect" title="Permanent link">&para;</a></h4>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="nt">game-effects</span><span class="p">:</span>
+  <span class="nt">start</span><span class="p">:</span>
+    <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Effect</span>
+    <span class="nt">value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">DOOR_CLOSE</span> <span class="c1"># uppercase key from the list</span>
+</code></pre></div>
+</td></tr></table>
+<h4 id="firework">Firework<a class="headerlink" href="#firework" title="Permanent link">&para;</a></h4>
+<p>Firework effect types are listed <a href="https://hub.spigotmc.org/javadocs/spigot/org/bukkit/FireworkEffect.Type.html">here</a>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="nt">game-effects</span><span class="p">:</span>
+  <span class="nt">end</span><span class="p">:</span>
+    <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Firework</span>
+    <span class="nt">power</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span> <span class="c1"># power of the firework</span>
+    <span class="nt">effects</span><span class="p">:</span> <span class="c1"># list of firework effects</span>
+    <span class="p p-Indicator">-</span> <span class="nt">==</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Firework</span>
+      <span class="nt">flicker</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+      <span class="nt">trail</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+      <span class="nt">colors</span><span class="p">:</span> <span class="c1"># list of colors</span>
+      <span class="p p-Indicator">-</span> <span class="nt">==</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Color</span>
+        <span class="nt">RED</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">255</span>
+        <span class="nt">BLUE</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">255</span>
+        <span class="nt">GREEN</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">255</span>
+      <span class="nt">fade-colors</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="nt">==</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Color</span>
+        <span class="nt">RED</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">255</span>
+        <span class="nt">BLUE</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">255</span>
+        <span class="nt">GREEN</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">255</span>
+      <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">BALL</span> <span class="c1"># effect type</span>
+</code></pre></div>
+</td></tr></table></p>
+<h4 id="list">List<a class="headerlink" href="#list" title="Permanent link">&para;</a></h4>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="nt">game-effects</span><span class="p">:</span>
+  <span class="nt">end</span><span class="p">:</span>
+    <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">List</span>
+    <span class="nt">list</span><span class="p">:</span> <span class="c1"># list of effects</span>
+    <span class="p p-Indicator">-</span> <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Particle</span>
+      <span class="nt">value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">LAVA</span>
+      <span class="nt">count</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2</span>
+      <span class="nt">extra</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+    <span class="p p-Indicator">-</span> <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Effect</span>
+      <span class="nt">value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">DOOR_CLOSE</span> <span class="c1"># uppercase key from the list</span>
+    <span class="p p-Indicator">-</span> <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Firework</span>
+      <span class="nt">power</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span> <span class="c1"># power of the firework</span>
+      <span class="nt">effects</span><span class="p">:</span> <span class="c1"># list of firework effects</span>
+      <span class="p p-Indicator">-</span> <span class="nt">==</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Firework</span>
+        <span class="nt">flicker</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+        <span class="nt">trail</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+        <span class="nt">colors</span><span class="p">:</span> <span class="c1"># list of colors</span>
+        <span class="p p-Indicator">-</span> <span class="nt">==</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Color</span>
+          <span class="nt">RED</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">255</span>
+          <span class="nt">BLUE</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">255</span>
+          <span class="nt">GREEN</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">255</span>
+        <span class="nt">fade-colors</span><span class="p">:</span>
+        <span class="p p-Indicator">-</span> <span class="nt">==</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Color</span>
+          <span class="nt">RED</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">255</span>
+          <span class="nt">BLUE</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">255</span>
+          <span class="nt">GREEN</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">255</span>
+        <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">BALL</span> <span class="c1"># effect type</span>
+</code></pre></div>
+</td></tr></table>
+<h2 id="custom-language">Custom language<a class="headerlink" href="#custom-language" title="Permanent link">&para;</a></h2>
+<p>It is easy. 
+* Download the base language file from <a href="https://github.com/ScreamingSandals/BedWars/tree/ver/0.2.x/plugin/src/main/resources/languages">here</a>
+* Create folder named "<strong>languages</strong>" in your <em>BedWars</em> folder. (<em>BedWars</em> folder is in default <em>plugins</em> folder)
+* Paste your language here. For example, language_cs.yml
+* Open your <strong>config.yml</strong> and configure variable "<strong>locale</strong>" to "<strong>cs</strong>"</p>
+<p>And that's it, you have your own language!</p>
                 
                   
                     
@@ -1299,6 +1569,21 @@
           </div>
         </a>
       
+      
+        
+        <a href="../upgrades/" class="md-footer__link md-footer__link--next" aria-label="Next: Upgrades" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              Upgrades
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
       
     </nav>
   
