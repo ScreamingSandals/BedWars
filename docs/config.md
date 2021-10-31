@@ -1,5 +1,9 @@
 # Configuration
 
+!!! warning
+
+    This page is not up to date with latest 0.3.0 changes!!!
+
 ```yaml
 # the language of the plugin's messages
 locale: en
@@ -567,9 +571,9 @@ game-effects:
 
 ## Custom language
 
-* Download the base language file from [here](https://github.com/ScreamingSandals/BedWars/tree/ver/0.2.x/plugin/src/main/resources/languages)
+* Download the base language file from [here](https://github.com/ScreamingSandals/BedWarsLanguage/tree/0.3.x/languages)
 * Create folder named "**languages**" in your _BedWars_ folder. (_BedWars_ folder is in default _plugins_ folder)
-* Paste your language here. For example, language_cs.yml
-* Open your **config.yml** and configure variable "**locale**" to "**cs**"
+* Paste your language here. For example, language_cs-CZ.json
+* Open your **config.yml** and configure variable "**locale**" to "**cs-CZ**"
 
 And that's it, you have your own language!
