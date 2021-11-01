@@ -25,7 +25,7 @@ Use the `applycolorbyteam` property, for example:
 See the [Upgrades](upgrades.md) article.
 
 ## Language file
-See the [Configuratiom](config.md#custom-language) article.
+See the [Configuration](config.md#custom-language) article.
 
 ## PlaceholderAPI placeholders
 See the [Placeholder API](placeholderapi.md) article.
