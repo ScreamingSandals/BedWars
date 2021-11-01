@@ -17,20 +17,18 @@ Use the `applycolorbyteam` property, for example:
   properties:
     - name: "applycolorbyteam"
   stack:
-    ==: org.bukkit.inventory.ItemStack
-    v: 1519
     type: WHITE_WOOL
     amount: 2
 ```
 
 ## Upgrades
-Check [this page](upgrades.md)
+See the [Upgrades](upgrades.md) article.
 
 ## Language file
-Check [this page](config.md#custom-language)
+See the [Configuration](config.md#custom-language) article.
 
 ## PlaceholderAPI placeholders
-Check [this page](placeholderapi.md)
+See the [Placeholder API](placeholderapi.md) article.
 
 ## Changing the message prefix
 Prefix is changeable globally in the language file or per arena with this command: `/bw admin <arena> customprefix &6My Awesome Prefix `.
