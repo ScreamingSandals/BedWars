@@ -122,7 +122,7 @@ public class MiscUtils {
 
     public static MaterialSearchEngine.Result getMaterialFromString(String name, String fallback) {
         if (name != null) {
-            MaterialSearchEngine.Result result = MaterialSearchEngine.find(fallback);
+            MaterialSearchEngine.Result result = MaterialSearchEngine.find(name);
             if (result.getMaterial() == Material.AIR) {
                 Debug.warn("Wrong material configured: " + name, true);
             } else {
