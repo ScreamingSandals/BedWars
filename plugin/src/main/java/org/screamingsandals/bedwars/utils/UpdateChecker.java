@@ -29,8 +29,7 @@ import java.net.http.HttpResponse;
 public class UpdateChecker {
     @OnPostEnable
     public void run(MainConfig mainConfig) {
-        if (mainConfig.node("update-checker", "console").getBoolean()
-                || mainConfig.node("update-checker", "admins").getBoolean()) {
+        if (mainConfig.node("update-checker", "console").getBoolean(true) || mainConfig.node("update-checker", "admins").getBoolean(true)) {
             HttpClient.newHttpClient().sendAsync(HttpRequest.newBuilder()
                     .uri(URI.create("https://screamingsandals.org/bedwars-zero-update-checker.php?version=" + BedWarsPlugin.getVersion()))
                     .build(), HttpResponse.BodyHandlers.ofInputStream())

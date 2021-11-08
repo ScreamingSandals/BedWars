@@ -1,14 +1,12 @@
 package org.screamingsandals.bedwars.special.listener;
 
-import org.screamingsandals.bedwars.utils.ItemUtils;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.events.ApplyPropertyToBoughtItemEventImpl;
-import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
-import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.bedwars.special.RescuePlatformImpl;
 import org.screamingsandals.bedwars.utils.DelayFactoryImpl;
+import org.screamingsandals.bedwars.utils.ItemUtils;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.event.entity.SEntityDamageEvent;
@@ -18,8 +16,6 @@ import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.utils.BlockFace;
 import org.screamingsandals.lib.utils.annotations.Service;
-
-import java.util.ArrayList;
 
 @Service
 public class RescuePlatformListener {
@@ -43,7 +39,7 @@ public class RescuePlatformListener {
         var game = gPlayer.getGame();
 
         if (event.getAction() == SPlayerInteractEvent.Action.RIGHT_CLICK_AIR || event.getAction() == SPlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
-            if (game.getStatus() == GameStatus.RUNNING && !gPlayer.isSpectator() && event.getItem() != null) {
+            if (game != null && game.getStatus() == GameStatus.RUNNING && !gPlayer.isSpectator() && event.getItem() != null) {
                 var stack = event.getItem();
                 var unhidden = ItemUtils.getIfStartsWith(stack, RESCUE_PLATFORM_PREFIX);
 
@@ -51,11 +47,12 @@ public class RescuePlatformListener {
                     if (!game.isDelayActive(gPlayer, RescuePlatformImpl.class)) {
                         event.setCancelled(true);
 
-                        var isBreakable = Boolean.parseBoolean(unhidden.split(":")[2]);
-                        var delay = Integer.parseInt(unhidden.split(":")[3]);
-                        var breakTime = Integer.parseInt(unhidden.split(":")[4]);
-                        var distance = Integer.parseInt(unhidden.split(":")[5]);
-                        var result = MiscUtils.getBlockTypeFromString(unhidden.split(":")[6], "GLASS");
+                        var propertiesSplit = unhidden.split(":");
+                        var isBreakable = Boolean.parseBoolean(propertiesSplit[2]);
+                        var delay = Integer.parseInt(propertiesSplit[3]);
+                        var breakTime = Integer.parseInt(propertiesSplit[4]);
+                        var distance = Integer.parseInt(propertiesSplit[5]);
+                        var result = MiscUtils.getBlockTypeFromString(propertiesSplit[6], "GLASS");
 
                         var rescuePlatform = new RescuePlatformImpl(game, gPlayer, game.getPlayerTeam(gPlayer), stack);
 
@@ -95,7 +92,7 @@ public class RescuePlatformListener {
 
         var gPlayer = PlayerManagerImpl.getInstance().getPlayer(player).orElseThrow();
         var game = gPlayer.getGame();
-        if (gPlayer.isSpectator()) {
+        if (gPlayer.isSpectator() || game == null) {
             return;
         }
 
@@ -119,12 +116,12 @@ public class RescuePlatformListener {
 
         var gPlayer = PlayerManagerImpl.getInstance().getPlayer(player).orElseThrow();
         var game = gPlayer.getGame();
-        if (gPlayer.isSpectator()) {
+        if (gPlayer.isSpectator() || game == null) {
             return;
         }
 
         var block = event.getBlock();
-        for (var checkedPlatform : getCreatedPlatforms(game, gPlayer)) {
+        for (var checkedPlatform : game.getActiveSpecialItemsOfPlayer(gPlayer, RescuePlatformImpl.class)) {
             if (checkedPlatform != null) {
                 for (var platformBlock : checkedPlatform.getPlatformBlocks()) {
                     if (platformBlock.equals(block) && !checkedPlatform.isBreakable()) {
@@ -133,17 +130,6 @@ public class RescuePlatformListener {
                 }
             }
         }
-    }
-
-    private ArrayList<RescuePlatformImpl> getCreatedPlatforms(GameImpl game, BedWarsPlayer player) {
-        var createdPlatforms = new ArrayList<RescuePlatformImpl>();
-        for (var specialItem : game.getActiveSpecialItemsOfPlayer(player)) {
-            if (specialItem instanceof RescuePlatformImpl) {
-                RescuePlatformImpl platform = (RescuePlatformImpl) specialItem;
-                createdPlatforms.add(platform);
-            }
-        }
-        return createdPlatforms;
     }
 
     private String applyProperty(ApplyPropertyToBoughtItemEventImpl event) {

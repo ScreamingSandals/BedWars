@@ -40,7 +40,6 @@ public class TrapImpl extends SpecialItem implements Trap<GameImpl, BedWarsPlaye
         this.location = loc;
     }
 
-    @SuppressWarnings("PatternValidation")
     public void process(BedWarsPlayer player, TeamImpl runningTeam, boolean forceDestroy) {
         if (runningTeam == this.team || forceDestroy) {
             game.unregisterSpecialItem(this);

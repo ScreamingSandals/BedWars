@@ -21,7 +21,6 @@ import org.screamingsandals.lib.world.LocationMapper;
 @Getter
 @EqualsAndHashCode(callSuper = true)
 public class AutoIgniteableTNTImpl extends SpecialItem implements AutoIgniteableTNT<GameImpl, BedWarsPlayer, TeamImpl> {
-
     private final int explosionTime;
     private final boolean allowedDamagingPlacer;
 
@@ -48,5 +47,4 @@ public class AutoIgniteableTNTImpl extends SpecialItem implements AutoIgniteable
                 .delay(explosionTime + 10, TaskerTime.TICKS)
                 .start();
     }
-
 }

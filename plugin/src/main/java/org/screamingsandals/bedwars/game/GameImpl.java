@@ -6,7 +6,6 @@ import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -84,6 +83,7 @@ import org.screamingsandals.lib.visuals.Visual;
 import org.screamingsandals.lib.world.LocationHolder;
 import org.screamingsandals.lib.world.LocationMapper;
 import org.screamingsandals.lib.world.WorldHolder;
+import org.screamingsandals.lib.world.WorldMapper;
 import org.screamingsandals.lib.world.chunk.ChunkHolder;
 import org.screamingsandals.lib.world.gamerule.GameRuleHolder;
 import org.screamingsandals.lib.world.weather.WeatherHolder;
@@ -98,7 +98,6 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@SuppressWarnings("PatternValidation")
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, WorldHolder, LocationHolder, EntityBasic, ComponentWrapper, GameStoreImpl, ItemSpawnerImpl> {
     public boolean gameStartItem;
@@ -119,7 +118,7 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
     private int minPlayers;
     private final List<BedWarsPlayer> players = new ArrayList<>();
     private WorldHolder world;
-    private List<GameStoreImpl> gameStore = new ArrayList<>();
+    private final List<GameStoreImpl> gameStore = new ArrayList<>();
     private ArenaTime arenaTime = ArenaTime.WORLD;
     private WeatherHolder arenaWeather = null;
     private BossBar.Color lobbyBossBarColor = null;
@@ -209,7 +208,12 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
             }
 
             if (GameManagerImpl.getInstance().getGame(uuid).isPresent()) {
-                PlayerMapper.getConsoleSender().sendMessage(MiniMessage.miniMessage().parse("<red>[B<white>W] <red>Arena " + uuid + " has the same unique id as another arena that's already loaded. Skipping!"));
+                PlayerMapper.getConsoleSender().sendMessage(
+                        MiscUtils.BW_PREFIX.append(
+                                Component.text("Arena " + uuid + " has the same unique id as another arena that's already loaded. Skipping!")
+                                        .color(NamedTextColor.RED)
+                        )
+                );
                 return null;
             }
 
@@ -220,28 +224,53 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
             game.gameTime = configMap.node("gameTime").getInt();
 
             var worldName = Objects.requireNonNull(configMap.node("world").getString());
-            game.world = LocationMapper.getWorld(worldName).orElse(null);
+            game.world = WorldMapper.getWorld(worldName).orElse(null);
 
             var multiverseKey = PluginManager.createKey("Multiverse-Core").orElseThrow();
             var multiverse = PluginManager.getPlatformClass(multiverseKey);
             if (game.world == null) {
                 if (PluginManager.isEnabled(multiverseKey)) {
-                    PlayerMapper.getConsoleSender().sendMessage(MiniMessage.miniMessage().parse("<red>[B<white>W] <red>World " + worldName + " was not found, but we found Multiverse-Core, so we will try to load this world."));
+                    PlayerMapper.getConsoleSender().sendMessage(
+                            MiscUtils.BW_PREFIX.append(
+                                    Component.text("World " + worldName + " was not found, but we found Multiverse-Core, so we will try to load this world.")
+                                            .color(NamedTextColor.RED)
+                            )
+                    );
 
                     if (multiverse.isPresent() && ((Core) multiverse.orElseThrow()).getMVWorldManager().loadWorld(worldName)) {
-                        PlayerMapper.getConsoleSender().sendMessage(MiniMessage.miniMessage().parse("<red>[B<white>W] <green>World " + worldName + " was succesfully loaded with Multiverse-Core, continue in arena loading."));
+                        PlayerMapper.getConsoleSender().sendMessage(
+                                MiscUtils.BW_PREFIX.append(
+                                        Component.text("World " + worldName + " was successfully loaded with Multiverse-Core, continue in arena loading.")
+                                                .color(NamedTextColor.GREEN)
+                                )
+                        );
 
-                        game.world = LocationMapper.getWorld(worldName).orElseThrow();
+                        game.world = WorldMapper.getWorld(worldName).orElseThrow();
                     } else {
-                        PlayerMapper.getConsoleSender().sendMessage(MiniMessage.miniMessage().parse("<red>[B<white>W] <red>Arena " + game.name + " can't be loaded, because world " + worldName + " is missing!"));
+                        PlayerMapper.getConsoleSender().sendMessage(
+                                MiscUtils.BW_PREFIX.append(
+                                        Component.text("Arena " + game.name + " can't be loaded, because world " + worldName + " is missing!")
+                                                .color(NamedTextColor.RED)
+                                )
+                        );
                         return null;
                     }
                 } else if (firstAttempt) {
-                    PlayerMapper.getConsoleSender().sendMessage(MiniMessage.miniMessage().parse("<red>[B<white>W] <yellow>Arena " + game.name + " can't be loaded, because world " + worldName + " is missing! We will try it again after all plugins will be loaded!"));
+                    PlayerMapper.getConsoleSender().sendMessage(
+                            MiscUtils.BW_PREFIX.append(
+                                    Component.text("Arena " + game.name + " can't be loaded, because world " + worldName + " is missing! We will try it again after all plugins have loaded!")
+                                            .color(NamedTextColor.YELLOW)
+                            )
+                    );
                     Tasker.build(() -> loadGame(file, false)).delay(10L, TaskerTime.TICKS).start();
                     return null;
                 } else {
-                    PlayerMapper.getConsoleSender().sendMessage(MiniMessage.miniMessage().parse("<red>[B<white>W] <red>Arena " + game.name + " can't be loaded, because world " + worldName + " is missing!"));
+                    PlayerMapper.getConsoleSender().sendMessage(
+                            MiscUtils.BW_PREFIX.append(
+                                    Component.text("Arena " + game.name + " can't be loaded, because world " + worldName + " is missing!")
+                                            .color(NamedTextColor.RED)
+                            )
+                    );
                     return null;
                 }
             }
@@ -270,25 +299,50 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
 
             game.specSpawn = MiscUtils.readLocationFromString(game.world, Objects.requireNonNull(configMap.node("specSpawn").getString()));
             var spawnWorld = configMap.node("lobbySpawnWorld").getString();
-            var lobbySpawnWorld = LocationMapper.getWorld(Objects.requireNonNull(spawnWorld)).orElse(null);
+            var lobbySpawnWorld = WorldMapper.getWorld(Objects.requireNonNull(spawnWorld)).orElse(null);
             if (lobbySpawnWorld == null) {
                 if (PluginManager.isEnabled(multiverseKey)) {
-                    PlayerMapper.getConsoleSender().sendMessage(MiniMessage.miniMessage().parse("<red>[B<white>W] <red>World " + spawnWorld + " was not found, but we found Multiverse-Core, so we will try to load this world."));
+                    PlayerMapper.getConsoleSender().sendMessage(
+                            MiscUtils.BW_PREFIX.append(
+                                    Component.text("World " + spawnWorld + " was not found, but we found Multiverse-Core, so we will try to load this world.")
+                                            .color(NamedTextColor.RED)
+                            )
+                    );
 
                     if (multiverse.isPresent() && ((Core) multiverse.orElseThrow()).getMVWorldManager().loadWorld(spawnWorld)) {
-                        PlayerMapper.getConsoleSender().sendMessage(MiniMessage.miniMessage().parse("<red>[B<white>W] <green>World " + spawnWorld + " was succesfully loaded with Multiverse-Core, continue in arena loading."));
+                        PlayerMapper.getConsoleSender().sendMessage(
+                                MiscUtils.BW_PREFIX.append(
+                                        Component.text("World " + spawnWorld + " was successfully loaded with Multiverse-Core, continue in arena loading.")
+                                                .color(NamedTextColor.GREEN)
+                                )
+                        );
 
-                        lobbySpawnWorld = LocationMapper.getWorld(Objects.requireNonNull(spawnWorld)).orElseThrow();
+                        lobbySpawnWorld = WorldMapper.getWorld(Objects.requireNonNull(spawnWorld)).orElseThrow();
                     } else {
-                        PlayerMapper.getConsoleSender().sendMessage(MiniMessage.miniMessage().parse("<red>[B<white>W] <red>Arena " + game.name + " can't be loaded, because world " + spawnWorld + " is missing!"));
+                        PlayerMapper.getConsoleSender().sendMessage(
+                                MiscUtils.BW_PREFIX.append(
+                                        Component.text("Arena " + game.name + " can't be loaded, because world " + spawnWorld + " is missing!")
+                                                .color(NamedTextColor.RED)
+                                )
+                        );
                         return null;
                     }
                 } else if (firstAttempt) {
-                    PlayerMapper.getConsoleSender().sendMessage(MiniMessage.miniMessage().parse("<red>[B<white>W] <yellow>Arena " + game.name + " can't be loaded, because world " + spawnWorld + " is missing! We will try it again after all plugins will be loaded!"));
+                    PlayerMapper.getConsoleSender().sendMessage(
+                            MiscUtils.BW_PREFIX.append(
+                                    Component.text("Arena " + game.name + " can't be loaded, because world " + spawnWorld + " is missing! We will try it again after all plugins have loaded!")
+                                            .color(NamedTextColor.YELLOW)
+                            )
+                    );
                     Tasker.build(() -> loadGame(file, false)).delay(10L, TaskerTime.TICKS).start();
                     return null;
                 } else {
-                    PlayerMapper.getConsoleSender().sendMessage(MiniMessage.miniMessage().parse("<red>[B<white>W] <red>Arena " + game.name + " can't be loaded, because world " + spawnWorld + " is missing!"));
+                    PlayerMapper.getConsoleSender().sendMessage(
+                            MiscUtils.BW_PREFIX.append(
+                                    Component.text("Arena " + game.name + " can't be loaded, because world " + spawnWorld + " is missing!")
+                                            .color(NamedTextColor.RED)
+                            )
+                    );
                     return null;
                 }
             }
@@ -1060,7 +1114,7 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
                 && !MainConfig.getInstance().node("bungee", "enabled").getBoolean()) {
             try {
                 LocationHolder mainLobbyLocation = MiscUtils.readLocationFromString(
-                        LocationMapper.getWorld(MainConfig.getInstance().node("mainlobby", "world").getString()).orElseThrow(),
+                        WorldMapper.getWorld(MainConfig.getInstance().node("mainlobby", "world").getString()).orElseThrow(),
                         Objects.requireNonNull(MainConfig.getInstance().node("mainlobby", "location").getString())
                 );
                 gamePlayer.teleport(mainLobbyLocation);

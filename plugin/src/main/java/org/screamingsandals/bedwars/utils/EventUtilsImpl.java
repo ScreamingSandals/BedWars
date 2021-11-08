@@ -21,7 +21,6 @@ import java.util.function.Consumer;
 
 @Service
 public class EventUtilsImpl implements EventUtils {
-
     private static final Map<Class<?>, Class<? extends AbstractEvent>> classMap = Map.ofEntries(
             Map.entry(ApplyPropertyToBoughtItemEvent.class, ApplyPropertyToBoughtItemEventImpl.class),
             Map.entry(ApplyPropertyToDisplayedItemEvent.class, ApplyPropertyToDisplayedItemEventImpl.class),

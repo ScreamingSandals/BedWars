@@ -28,20 +28,19 @@ public class DelayFactoryImpl implements DelayFactory {
     }
 
     private void runDelay() {
-        this.task = Tasker.
-                build(() -> {
-                    if (remainDelay > 0) {
-                        delayActive = true;
-                        remainDelay--;
-                        if (remainDelay == 0) {
-                            delayActive = false;
+        task = Tasker.build(() -> {
+            if (remainDelay > 0) {
+                delayActive = true;
+                remainDelay--;
+                if (remainDelay == 0) {
+                    delayActive = false;
 
-                            this.task.cancel();
-                            game.unregisterDelay(this);
-                        }
-                    }
-                })
-                .repeat(20, TaskerTime.TICKS)
-                .start();
+                    task.cancel();
+                    game.unregisterDelay(this);
+                }
+            }
+        })
+        .repeat(20, TaskerTime.TICKS)
+        .start();
     }
 }

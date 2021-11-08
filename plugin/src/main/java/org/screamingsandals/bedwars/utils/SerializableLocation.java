@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.screamingsandals.lib.utils.Wrapper;
 import org.screamingsandals.lib.world.LocationHolder;
-import org.screamingsandals.lib.world.LocationMapper;
+import org.screamingsandals.lib.world.WorldMapper;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
 @Data
@@ -30,7 +30,7 @@ public class SerializableLocation implements Wrapper {
     }
 
     public boolean isWorldLoaded() {
-        return LocationMapper.getWorld(world).isPresent();
+        return WorldMapper.getWorld(world).isPresent();
     }
 
     @SuppressWarnings("unchecked")
@@ -40,7 +40,7 @@ public class SerializableLocation implements Wrapper {
             var holder = new LocationHolder(x, y, z);
             holder.setYaw((float) this.yaw);
             holder.setPitch((float) this.pitch);
-            holder.setWorld(LocationMapper.getWorld(world).orElseThrow());
+            holder.setWorld(WorldMapper.getWorld(world).orElseThrow());
             return (T) holder;
         }
         throw new UnsupportedOperationException("Unsupported type!");

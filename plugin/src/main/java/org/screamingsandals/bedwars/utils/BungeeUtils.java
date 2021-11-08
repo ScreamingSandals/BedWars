@@ -18,40 +18,40 @@ public class BungeeUtils {
             return;
         }
 
-        Tasker.build(() -> internalMove(player, false)).start();
+        Tasker.build(() -> internalMove(player, false)).afterOneTick().start();
     }
 
     public void sendPlayerBungeeMessage(PlayerWrapper player, String string) {
         Tasker.build(() -> {
-                    var out = ByteStreams.newDataOutput();
+            var out = ByteStreams.newDataOutput();
 
-                    out.writeUTF("Message");
-                    out.writeUTF(player.getName());
-                    out.writeUTF(string);
+            out.writeUTF("Message");
+            out.writeUTF(player.getName());
+            out.writeUTF(string);
 
-                    CustomPayload.send(player, "BungeeCord", out.toByteArray());
-                })
-                .delay(30, TaskerTime.TICKS)
-                .start();
+            CustomPayload.send(player, "BungeeCord", out.toByteArray());
+        })
+        .delay(30, TaskerTime.TICKS)
+        .start();
     }
 
     private void internalMove(PlayerWrapper player, boolean restart) {
-        var server = MainConfig.getInstance().node("bungee", "server").getString();
+        var server = MainConfig.getInstance().node("bungee", "server").getString("hub");
         var out = ByteStreams.newDataOutput();
 
         out.writeUTF("Connect");
         out.writeUTF(server);
 
         CustomPayload.send(player, "BungeeCord", out.toByteArray());
-        Debug.info("player " + player.getName() + " has been moved to hub server ");
-        if (!restart && MainConfig.getInstance().node("bungee", "kick-when-proxy-too-slow").getBoolean()) {
+        Debug.info("Player " + player.getName() + " has been moved to hub server.");
+        if (!restart && MainConfig.getInstance().node("bungee", "kick-when-proxy-too-slow").getBoolean(true)) {
             Tasker.build(() -> {
-                        if (player.isOnline()) {
-                            player.kick(Component.text("Bedwars can't properly transfer player through bungee network. Contact server admin."));
-                        }
-                    })
-                    .delay(20, TaskerTime.TICKS)
-                    .start();
+                if (player.isOnline()) {
+                    player.kick(Component.text("BedWars can't properly transfer player through bungee network. Contact server admin."));
+                }
+            })
+            .delay(20, TaskerTime.TICKS)
+            .start();
         }
     }
 }

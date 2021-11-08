@@ -76,15 +76,15 @@ public class WarpPowderImpl extends SpecialItem implements WarpPowder<GameImpl, 
         player.forceUpdateInventory();
 
         teleportingTask = Tasker.build(() -> {
-                    if (teleportingTime == 0) {
-                        cancelTeleport(true, false);
-                        player.teleport(team.getTeamSpawn());
-                    } else {
-                        SpawnEffects.spawnEffect(game, player, "game-effects.warppowdertick");
-                        teleportingTime--;
-                    }
-                })
-                .repeat(20, TaskerTime.TICKS)
-                .start();
+            if (teleportingTime == 0) {
+                cancelTeleport(true, false);
+                player.teleport(team.getTeamSpawn());
+            } else {
+                SpawnEffects.spawnEffect(game, player, "game-effects.warppowdertick");
+                teleportingTime--;
+            }
+        })
+        .repeat(20, TaskerTime.TICKS)
+        .start();
     }
 }

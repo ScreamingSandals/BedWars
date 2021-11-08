@@ -40,7 +40,7 @@ public class WarpPowderListener {
         var gPlayer = PlayerManagerImpl.getInstance().getPlayer(player).orElseThrow();
         var game = gPlayer.getGame();
         if (event.getAction() == SPlayerInteractEvent.Action.RIGHT_CLICK_AIR || event.getAction() == SPlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
-            if (game.getStatus() == GameStatus.RUNNING && !gPlayer.isSpectator()) {
+            if (game != null && game.getStatus() == GameStatus.RUNNING && !gPlayer.isSpectator()) {
                 if (event.getItem() != null) {
                     var stack = event.getItem();
                     var unhidden = ItemUtils.getIfStartsWith(stack, WARP_POWDER_PREFIX);
@@ -48,8 +48,9 @@ public class WarpPowderListener {
                     if (unhidden != null) {
                         event.setCancelled(true);
                         if (!game.isDelayActive(gPlayer, WarpPowderImpl.class)) {
-                            int teleportTime = Integer.parseInt(unhidden.split(":")[2]);
-                            int delay = Integer.parseInt(unhidden.split(":")[3]);
+                            var propertiesSplit = unhidden.split(":");
+                            int teleportTime = Integer.parseInt(propertiesSplit[2]);
+                            int delay = Integer.parseInt(propertiesSplit[3]);
                             var warpPowder = new WarpPowderImpl(game, gPlayer, game.getPlayerTeam(gPlayer), stack, teleportTime);
 
                             if (event.getPlayer().getLocation().add(BlockFace.DOWN).getBlock().getType().isAir()) {
@@ -88,7 +89,7 @@ public class WarpPowderListener {
         var gPlayer = PlayerManagerImpl.getInstance().getPlayer(player).orElseThrow();
         var game = gPlayer.getGame();
 
-        if (gPlayer.isSpectator()) {
+        if (gPlayer.isSpectator() || game == null) {
             return;
         }
 
@@ -113,7 +114,7 @@ public class WarpPowderListener {
 
         var gPlayer = player.as(BedWarsPlayer.class);
         var game = gPlayer.getGame();
-        if (gPlayer.isSpectator()) {
+        if (gPlayer.isSpectator() || game == null) {
             return;
         }
 

@@ -13,7 +13,7 @@ import org.screamingsandals.lib.utils.annotations.methods.OnPostEnable;
 @Service
 @RequiredArgsConstructor
 public class PerWorldInventoryCompatibilityFix {
-    public final Plugin plugin;
+    private final Plugin plugin;
 
     @OnPostEnable
     public void applyFix() {

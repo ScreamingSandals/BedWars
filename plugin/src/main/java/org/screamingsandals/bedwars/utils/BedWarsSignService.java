@@ -72,14 +72,12 @@ public class BedWarsSignService extends AbstractSignManager {
     protected void updateSign(ClickableSign sign) {
         var name = sign.getKey();
         gameManager.getGame(name).ifPresentOrElse(game ->
-                        Tasker
-                                .build(game::updateSigns)
+                        Tasker.build(game::updateSigns)
                                 .afterOneTick()
                                 .start(),
                 () -> {
                     if ("leave".equalsIgnoreCase(name)) {
-                        Tasker
-                                .build(() -> updateLeave(sign))
+                        Tasker.build(() -> updateLeave(sign))
                                 .afterOneTick()
                                 .start();
                     }

@@ -1,6 +1,7 @@
 package org.screamingsandals.bedwars.utils;
 
 import lombok.experimental.UtilityClass;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import org.jetbrains.annotations.Nullable;
@@ -29,7 +30,14 @@ import java.util.stream.Collectors;
 
 @UtilityClass
 public class MiscUtils {
-    private static final Pattern STRIP_COLOR_PATTERN = Pattern.compile("(?i)\u00A7[0-9A-FK-ORX]");
+    private final Pattern STRIP_COLOR_PATTERN = Pattern.compile("(?i)\u00A7[0-9A-FK-ORX]");
+    public final Component BW_PREFIX = Component.text("[B")
+            .color(NamedTextColor.RED)
+            .append(
+                    Component.text("W] ")
+                            .color(NamedTextColor.WHITE)
+            );
+
     /**
      * From BedWarsRel
      */

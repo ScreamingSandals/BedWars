@@ -33,17 +33,17 @@ public class ArrowBlockerImpl extends SpecialItem implements ArrowBlocker<GameIm
     @Override
     public void runTask() {
         this.task = Tasker.build(() -> {
-                    usedTime++;
-                    if (usedTime == protectionTime) {
-                        isActivated = false;
-                        MiscUtils.sendActionBarMessage(player, Message.of(LangKeys.SPECIALS_ARROW_BLOCKER_ENDED));
+            usedTime++;
+            if (usedTime == protectionTime) {
+                isActivated = false;
+                MiscUtils.sendActionBarMessage(player, Message.of(LangKeys.SPECIALS_ARROW_BLOCKER_ENDED));
 
-                        game.unregisterSpecialItem(ArrowBlockerImpl.this);
-                        this.task.cancel();
-                    }
-                })
-                .repeat(20, TaskerTime.TICKS)
-                .start();
+                game.unregisterSpecialItem(ArrowBlockerImpl.this);
+                this.task.cancel();
+            }
+        })
+        .repeat(20, TaskerTime.TICKS)
+        .start();
     }
 
     public void activate() {

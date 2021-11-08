@@ -79,14 +79,11 @@ public class PermaItemListener {
 
     @OnEvent
     public void onItemDrop(SPlayerDropItemEvent event) {
-        var player = event.getPlayer();
-        if (!PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
+        if (!PlayerManagerImpl.getInstance().isPlayerInGame(event.getPlayer())) {
             return;
         }
-        
-        var droppedItem = event.getItemDrop().getItem();
-        var unhashedProperty = ItemUtils.getIfStartsWith(droppedItem, PERMA_ITEM_PREFIX);
-        if (unhashedProperty != null) {
+
+        if (ItemUtils.getIfStartsWith(event.getItemDrop().getItem(), PERMA_ITEM_PREFIX) != null) {
             event.setCancelled(true);
         }
     }

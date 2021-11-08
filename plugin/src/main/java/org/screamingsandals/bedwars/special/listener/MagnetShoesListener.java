@@ -12,7 +12,7 @@ import org.screamingsandals.lib.utils.annotations.Service;
 @Service
 public class MagnetShoesListener {
     // Class for special item is not needed in this case (so this special item is not registered in game)
-    public static final String MAGNET_SHOES_PREFIX = "Module:MagnetShoes:";
+    private static final String MAGNET_SHOES_PREFIX = "Module:MagnetShoes:";
 
     @OnEvent
     public void onMagnetShoesRegistered(ApplyPropertyToBoughtItemEventImpl event) {

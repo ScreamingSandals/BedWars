@@ -1,8 +1,8 @@
 package org.screamingsandals.bedwars.special;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import net.kyori.adventure.sound.Sound;
-import org.apache.commons.lang.Validate;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.api.special.BridgeEgg;
 import org.screamingsandals.bedwars.game.GameImpl;
@@ -20,6 +20,7 @@ import org.screamingsandals.lib.utils.MathUtils;
 import org.screamingsandals.lib.world.LocationHolder;
 
 @Getter
+@EqualsAndHashCode(callSuper = true)
 public class BridgeEggImpl extends SpecialItem implements BridgeEgg<GameImpl, BedWarsPlayer, TeamImpl, EntityProjectile, BlockTypeHolder> {
     private final double distance;
     private final double distanceSquared;
@@ -30,7 +31,7 @@ public class BridgeEggImpl extends SpecialItem implements BridgeEgg<GameImpl, Be
     public BridgeEggImpl(GameImpl game, BedWarsPlayer player, TeamImpl team, EntityProjectile projectile, BlockTypeHolder mat, double distance) {
         super(game, player, team);
         this.projectile = projectile;
-        material = mat.colorize(team.getColor().material1_13);
+        material = team != null ? mat.colorize(team.getColor().material1_13) : mat;
         this.distance = distance;
         distanceSquared = MathUtils.square(distance);
     }
@@ -50,7 +51,6 @@ public class BridgeEggImpl extends SpecialItem implements BridgeEgg<GameImpl, Be
 
     @Override
     public void runTask() {
-        Validate.isTrue(task == null, "You cannot run a bridge egg task again!");
         task = Tasker.build(taskBase -> () -> {
             final LocationHolder projectileLocation = projectile.getLocation();
 

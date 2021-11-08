@@ -22,16 +22,13 @@ import java.util.Random;
 @Getter
 @EqualsAndHashCode(callSuper = true)
 public class LuckyBlockImpl extends SpecialItem implements LuckyBlock<GameImpl, BedWarsPlayer, TeamImpl, LocationHolder> {
-
     private final List<Map<String, Object>> luckyBlockData;
     private LocationHolder blockLocation;
     private boolean placed;
 
     public LuckyBlockImpl(GameImpl game, BedWarsPlayer player, TeamImpl team, List<Map<String, Object>> luckyBlockData) {
         super(game, player, team);
-
         this.luckyBlockData = luckyBlockData;
-
         game.registerSpecialItem(this);
     }
 
@@ -60,11 +57,11 @@ public class LuckyBlockImpl extends SpecialItem implements LuckyBlock<GameImpl, 
                 break;
             case "tnt":
                 Tasker.build(() -> {
-                            var tnt = EntityMapper.spawn("tnt", blockLocation).orElseThrow();
-                            tnt.as(TNTPrimed.class).setFuseTicks(0);
-                        })
-                        .delay(10, TaskerTime.TICKS)
-                        .start();
+                    var tnt = EntityMapper.spawn("tnt", blockLocation).orElseThrow();
+                    tnt.as(TNTPrimed.class).setFuseTicks(0);
+                })
+                .delay(10, TaskerTime.TICKS)
+                .start();
                 break;
             case "teleport":
                 broker.teleport(broker.getLocation().add(0, (int) map.get("height"), 0));
@@ -74,7 +71,5 @@ public class LuckyBlockImpl extends SpecialItem implements LuckyBlock<GameImpl, 
         if (map.containsKey("message")) {
             broker.sendMessage((String) map.get("message"));
         }
-
     }
-
 }

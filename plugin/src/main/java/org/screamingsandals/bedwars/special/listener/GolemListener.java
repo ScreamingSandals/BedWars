@@ -1,6 +1,7 @@
 package org.screamingsandals.bedwars.special.listener;
 
-import org.screamingsandals.bedwars.utils.ItemUtils;
+import org.bukkit.entity.IronGolem;
+import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.events.ApplyPropertyToBoughtItemEventImpl;
@@ -10,9 +11,8 @@ import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.bedwars.special.GolemImpl;
 import org.screamingsandals.bedwars.utils.DelayFactoryImpl;
+import org.screamingsandals.bedwars.utils.ItemUtils;
 import org.screamingsandals.bedwars.utils.MiscUtils;
-import org.bukkit.entity.IronGolem;
-import org.bukkit.entity.Player;
 import org.screamingsandals.lib.entity.EntityProjectile;
 import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.event.entity.SEntityDamageByEntityEvent;
@@ -23,7 +23,6 @@ import org.screamingsandals.lib.event.player.SPlayerInteractEvent;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.utils.annotations.Service;
-import org.screamingsandals.lib.world.LocationHolder;
 
 @Service
 public class GolemListener {
@@ -47,7 +46,7 @@ public class GolemListener {
         var game = gamePlayer.getGame();
 
         if (event.getAction() == SPlayerInteractEvent.Action.RIGHT_CLICK_AIR || event.getAction() == SPlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
-            if (game.getStatus() == GameStatus.RUNNING && !gamePlayer.isSpectator() && event.getItem() != null) {
+            if (game != null && game.getStatus() == GameStatus.RUNNING && !gamePlayer.isSpectator() && event.getItem() != null) {
                 var stack = event.getItem();
                 var unhidden = ItemUtils.getIfStartsWith(stack, GOLEM_PREFIX);
 
@@ -55,21 +54,17 @@ public class GolemListener {
                     if (!game.isDelayActive(gamePlayer, GolemImpl.class)) {
                         event.setCancelled(true);
 
-                        var speed = Double.parseDouble(unhidden.split(":")[2]);
-                        var follow = Double.parseDouble(unhidden.split(":")[3]);
-                        var health = Double.parseDouble(unhidden.split(":")[4]);
-                        var showName = Boolean.parseBoolean(unhidden.split(":")[5]);
-                        var delay = Integer.parseInt(unhidden.split(":")[6]);
-                        //boolean collidable = Boolean.parseBoolean((unhidden.split(":")[7])); //keeping this to keep configs compatible
-                        var name = unhidden.split(":")[8];
+                        final var propertiesSplit = unhidden.split(":");
+                        var speed = Double.parseDouble(propertiesSplit[2]);
+                        var follow = Double.parseDouble(propertiesSplit[3]);
+                        var health = Double.parseDouble(propertiesSplit[4]);
+                        var showName = Boolean.parseBoolean(propertiesSplit[5]);
+                        var delay = Integer.parseInt(propertiesSplit[6]);
+                        //boolean collidable = Boolean.parseBoolean(propertiesSplit[7]); //keeping this to keep configs compatible
+                        var name = propertiesSplit[8];
 
-                        LocationHolder location;
+                        var location = (event.getBlockClicked() == null) ? player.getLocation() : event.getBlockClicked().getLocation().add(event.getBlockFace().getDirection()).add(0.5, 0.5, 0.5);
 
-                        if (event.getBlockClicked() == null) {
-                            location = player.getLocation();
-                        } else {
-                            location = event.getBlockClicked().getLocation().add(event.getBlockFace().getDirection()).add(0.5, 0.5, 0.5);
-                        }
                         var golem = new GolemImpl(game, gamePlayer, game.getPlayerTeam(gamePlayer),
                                 stack, location, speed, follow, health, name, showName);
 
@@ -86,7 +81,6 @@ public class GolemListener {
                         MiscUtils.sendActionBarMessage(player, Message.of(LangKeys.SPECIALS_ITEM_DELAY).placeholder("time", delay));
                     }
                 }
-
             }
         }
     }
@@ -100,33 +94,28 @@ public class GolemListener {
         var ironGolem = event.getEntity();
         for (var game : GameManagerImpl.getInstance().getGames()) {
             if (game.getStatus() == GameStatus.RUNNING && ironGolem.getLocation().getWorld().equals(game.getGameWorld())) {
-                var golems = game.getActiveSpecialItems(GolemImpl.class);
-                for (var item : golems) {
-                    if (item instanceof GolemImpl) {
-                        var golem = (GolemImpl) item;
-                        if (golem.getEntity().equals(ironGolem)) {
-                            if (event.getDamager() instanceof PlayerWrapper) {
-                                var player = (PlayerWrapper) event.getEntity();
+                for (var golem : game.getActiveSpecialItems(GolemImpl.class)) {
+                    if (golem.getEntity().equals(ironGolem)) {
+                        if (event.getDamager() instanceof PlayerWrapper) {
+                            var player = (PlayerWrapper) event.getEntity();
+                            if (PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
+                                if (golem.getTeam() != game.getPlayerTeam(player.as(BedWarsPlayer.class))) {
+                                    return;
+                                }
+                            }
+                        } else if (event.getDamager() instanceof EntityProjectile) {
+                            var shooter = event.getDamager().as(EntityProjectile.class).getShooter();
+                            if (shooter instanceof PlayerWrapper) {
+                                var player = (PlayerWrapper) shooter;
                                 if (PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
                                     if (golem.getTeam() != game.getPlayerTeam(player.as(BedWarsPlayer.class))) {
                                         return;
                                     }
                                 }
-                            } else if (event.getDamager() instanceof EntityProjectile) {
-                                var shooter = event.getDamager().as(EntityProjectile.class).getShooter();
-                                if (shooter instanceof PlayerWrapper) {
-                                    var player = (PlayerWrapper) shooter;
-                                    if (PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
-                                        if (golem.getTeam() != game.getPlayerTeam(player.as(BedWarsPlayer.class))) {
-                                            return;
-                                        }
-                                    }
-                                }
                             }
-
-                            event.setCancelled(game.getConfigurationContainer().getOrDefault(ConfigurationContainer.FRIENDLY_FIRE, Boolean.class, false));
-                            return;
                         }
+
+                        event.setCancelled(game.getConfigurationContainer().getOrDefault(ConfigurationContainer.FRIENDLY_FIRE, Boolean.class, false));
                         return;
                     }
                 }
@@ -143,8 +132,7 @@ public class GolemListener {
         var ironGolem = event.getEntity();
         for (var game : GameManagerImpl.getInstance().getGames()) {
             if ((game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) && ironGolem.getLocation().getWorld().equals(game.getGameWorld())) {
-                var golems = game.getActiveSpecialItems(GolemImpl.class);
-                for (var item : golems) {
+                for (var item : game.getActiveSpecialItems(GolemImpl.class)) {
                     if (item.getEntity().equals(ironGolem)) {
                         if (event.getTarget() instanceof PlayerWrapper) {
                             final var player = (PlayerWrapper) event.getTarget();
@@ -181,10 +169,8 @@ public class GolemListener {
         if (PlayerManagerImpl.getInstance().isPlayerInGame(event.getPlayer())) {
             var game = PlayerManagerImpl.getInstance().getGameOfPlayer(event.getPlayer()).orElseThrow();
 
-            var golems = game.getActiveSpecialItems(GolemImpl.class);
-            for (var item : golems) {
-                var golem = (GolemImpl) item;
-                var iron = golem.getEntity().as(IronGolem.class);
+            for (var item : game.getActiveSpecialItems(GolemImpl.class)) {
+                var iron = item.getEntity().as(IronGolem.class);
                 if (iron.getTarget() != null && iron.getTarget().equals(event.getPlayer().as(Player.class))) {
                     iron.setTarget(null);
                 }
@@ -201,8 +187,7 @@ public class GolemListener {
         var ironGolem = event.getEntity();
         for (var game : GameManagerImpl.getInstance().getGames()) {
             if ((game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) && ironGolem.getLocation().getWorld().equals(game.getGameWorld())) {
-                var golems = game.getActiveSpecialItems(GolemImpl.class);
-                for (var item : golems) {
+                for (var item : game.getActiveSpecialItems(GolemImpl.class)) {
                     if (item.getEntity().equals(ironGolem)) {
                         event.getDrops().clear();
                     }
@@ -223,7 +208,8 @@ public class GolemListener {
                 "show-name", "specials.golem.show-name", event) + ":"
                 + MiscUtils.getIntFromProperty(
                 "delay", "specials.golem.delay", event) + ":"
-                + MiscUtils.getBooleanFromProperty("collidable", "specials.golem.collidable", event) + ":"
+                + MiscUtils.getBooleanFromProperty("collidable",
+                "specials.golem.collidable", event) + ":"
                 + MiscUtils.getStringFromProperty(
                 "name-format", "specials.golem.name-format", event);
     }

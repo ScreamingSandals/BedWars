@@ -17,6 +17,8 @@ import org.screamingsandals.lib.plugin.ServiceManager;
 import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.utils.annotations.methods.OnPostEnable;
 
+import java.util.Objects;
+
 @Service
 public class VaultUtils {
     private Economy econ;
@@ -45,19 +47,12 @@ public class VaultUtils {
                     isVault = true;
 
                     PlayerMapper.getConsoleSender().sendMessage(
-                            Component
-                                    .text("[B")
-                                    .color(NamedTextColor.RED)
-                                    .append(
-                                            Component
-                                                    .text("W] ")
-                                                    .color(NamedTextColor.WHITE)
-                                    )
-                                    .append(
-                                            Component
-                                                    .text("Found Vault")
-                                                    .color(NamedTextColor.GOLD)
-                                    ));
+                            MiscUtils.BW_PREFIX.append(
+                                    Component
+                                            .text("Found Vault")
+                                            .color(NamedTextColor.GOLD)
+                            )
+                    );
                 }
             }
         }
@@ -84,13 +79,13 @@ public class VaultUtils {
         if (chat == null) {
             chat = Bukkit.getServer().getServicesManager().load(Chat.class);
         }
-        return chat.getPlayerPrefix(player.as(Player.class));
+        return Objects.requireNonNull(chat).getPlayerPrefix(player.as(Player.class));
     }
 
     public String getSuffix(PlayerWrapper player) {
         if (chat == null) {
             chat = Bukkit.getServer().getServicesManager().load(Chat.class);
         }
-        return chat.getPlayerSuffix(player.as(Player.class));
+        return Objects.requireNonNull(chat).getPlayerSuffix(player.as(Player.class));
     }
 }

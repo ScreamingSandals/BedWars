@@ -1,12 +1,11 @@
 package org.screamingsandals.bedwars.special.listener;
 
 import org.bukkit.entity.Fireball;
-import org.screamingsandals.bedwars.utils.ItemUtils;
 import org.screamingsandals.bedwars.entities.EntitiesManagerImpl;
 import org.screamingsandals.bedwars.events.ApplyPropertyToBoughtItemEventImpl;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
+import org.screamingsandals.bedwars.utils.ItemUtils;
 import org.screamingsandals.bedwars.utils.MiscUtils;
-import org.screamingsandals.lib.entity.type.EntityTypeHolder;
 import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.event.player.SPlayerInteractEvent;
 import org.screamingsandals.lib.item.builder.ItemFactory;
@@ -14,8 +13,7 @@ import org.screamingsandals.lib.utils.annotations.Service;
 
 @Service
 public class ThrowableFireballListener {
-
-    public static final String THROWABLE_FIREBALL_PREFIX = "Module:ThrowableFireball:";
+    private static final String THROWABLE_FIREBALL_PREFIX = "Module:ThrowableFireball:";
 
     @OnEvent
     public void onThrowableFireballRegistered(ApplyPropertyToBoughtItemEventImpl event) {
@@ -36,10 +34,10 @@ public class ThrowableFireballListener {
             var stack = event.getItem();
             var unhash = ItemUtils.getIfStartsWith(stack, THROWABLE_FIREBALL_PREFIX);
             if (unhash != null && (event.getAction() == SPlayerInteractEvent.Action.RIGHT_CLICK_BLOCK || event.getAction() == SPlayerInteractEvent.Action.RIGHT_CLICK_AIR)) {
-                var properties = unhash.split(":");
-                var explosion = (float) Double.parseDouble(properties[2]);
+                var propertiesSplit = unhash.split(":");
+                var explosion = (float) Double.parseDouble(propertiesSplit[2]);
 
-                var fireball = player.launchProjectile(EntityTypeHolder.of("minecraft:fireball")).orElseThrow();
+                var fireball = player.launchProjectile("minecraft:fireball").orElseThrow();
                 fireball.as(Fireball.class).setIsIncendiary(false);
                 fireball.as(Fireball.class).setYield(explosion);
                 EntitiesManagerImpl.getInstance().addEntityToGame(fireball, PlayerManagerImpl.getInstance().getGameOfPlayer(player).orElseThrow());

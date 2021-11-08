@@ -10,16 +10,15 @@ import java.time.Duration;
 
 @UtilityClass
 public class TitleUtils {
-
     public void send(PlayerWrapper player, String title, String subtitle) {
-        int fadeIn = MainConfig.getInstance().node("title", "fadeIn").getInt();
-        int stay = MainConfig.getInstance().node("title", "stay").getInt();
-        int fadeOut = MainConfig.getInstance().node("title", "fadeOut").getInt();
+        int fadeIn = MainConfig.getInstance().node("title", "fadeIn").getInt(0);
+        int stay = MainConfig.getInstance().node("title", "stay").getInt(20);
+        int fadeOut = MainConfig.getInstance().node("title", "fadeOut").getInt(0);
         send(player, title, subtitle, fadeIn, stay, fadeOut);
     }
 
     public void send(PlayerWrapper player, String title, String subtitle, int fadeIn, int stay, int fadeOut) {
-        if (!MainConfig.getInstance().node("title", "enabled").getBoolean()) {
+        if (!MainConfig.getInstance().node("title", "enabled").getBoolean(true)) {
             return;
         }
         var titleComponent = Title.title(
@@ -36,9 +35,9 @@ public class TitleUtils {
     }
 
     public Title.Times defaultTimes() {
-        int fadeIn = MainConfig.getInstance().node("title", "fadeIn").getInt();
-        int stay = MainConfig.getInstance().node("title", "stay").getInt();
-        int fadeOut = MainConfig.getInstance().node("title", "fadeOut").getInt();
+        int fadeIn = MainConfig.getInstance().node("title", "fadeIn").getInt(0);
+        int stay = MainConfig.getInstance().node("title", "stay").getInt(20);
+        int fadeOut = MainConfig.getInstance().node("title", "fadeOut").getInt(0);
 
         return Title.Times.of(
                 Duration.ofMillis(fadeIn * 50L),

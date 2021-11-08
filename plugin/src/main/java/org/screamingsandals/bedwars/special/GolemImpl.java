@@ -2,20 +2,19 @@ package org.screamingsandals.bedwars.special;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import net.kyori.adventure.text.Component;
 import org.screamingsandals.bedwars.api.special.Golem;
 import org.screamingsandals.bedwars.entities.EntitiesManagerImpl;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.TeamImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
+import org.screamingsandals.bedwars.lib.nms.entity.EntityUtils;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.utils.MiscUtils;
-import org.screamingsandals.bedwars.lib.nms.entity.EntityUtils;
 import org.screamingsandals.lib.entity.EntityLiving;
 import org.screamingsandals.lib.entity.EntityMapper;
-import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.item.Item;
 import org.screamingsandals.lib.item.builder.ItemFactory;
+import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.nms.accessors.ServerPlayerAccessor;
 import org.screamingsandals.lib.utils.AdventureHelper;
 import org.screamingsandals.lib.world.LocationHolder;
@@ -60,6 +59,7 @@ public class GolemImpl extends SpecialItem implements Golem<GameImpl, BedWarsPla
         
         entity = golem;
 
+        //noinspection ConstantConditions - suppressing nullability check, if this throws a NPE, something went wrong badly
         EntityUtils.makeMobAttackTarget(golem, speed, followRange, -1)
                 .getTargetSelector()
                 .attackNearestTarget(0, ServerPlayerAccessor.getType());
@@ -76,7 +76,7 @@ public class GolemImpl extends SpecialItem implements Golem<GameImpl, BedWarsPla
             } else {
                 player.getPlayerInventory().removeItem(item);
             }
-        } catch (Throwable e) {
+        } catch (Throwable ignored) {
             player.getPlayerInventory().removeItem(item);
         }
 

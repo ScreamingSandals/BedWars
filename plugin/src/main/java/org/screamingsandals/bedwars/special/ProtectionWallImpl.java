@@ -43,27 +43,27 @@ public class ProtectionWallImpl extends SpecialItem implements ProtectionWall<Ga
     @Override
     public void runTask() {
         this.task = Tasker.build(() -> {
-                    livingTime++;
-                    int time = breakingTime - livingTime;
+            livingTime++;
+            int time = breakingTime - livingTime;
 
-                    if (time < 6 && time > 0) {
-                        MiscUtils.sendActionBarMessage(player, Message.of(LangKeys.SPECIALS_PROTECTION_WALL_DESTROY).placeholder("time", time));
-                    }
+            if (time < 6 && time > 0) {
+                MiscUtils.sendActionBarMessage(player, Message.of(LangKeys.SPECIALS_PROTECTION_WALL_DESTROY).placeholder("time", time));
+            }
 
-                    if (livingTime == breakingTime) {
-                        for (var block : wallBlocks) {
-                            block.getLocation().getChunk().load(false);
-                            block.setType(BlockTypeHolder.air());
+            if (livingTime == breakingTime) {
+                for (var block : wallBlocks) {
+                    block.getLocation().getChunk().load(false);
+                    block.setType(BlockTypeHolder.air());
 
-                            game.getRegion().removeBlockBuiltDuringGame(block.getLocation());
-                        }
-                        game.unregisterSpecialItem(this);
-                        this.task.cancel();
-                    }
-                })
-                .delay(20, TaskerTime.TICKS)
-                .repeat(20, TaskerTime.TICKS)
-                .start();
+                    game.getRegion().removeBlockBuiltDuringGame(block.getLocation());
+                }
+                game.unregisterSpecialItem(this);
+                this.task.cancel();
+            }
+        })
+        .delay(20, TaskerTime.TICKS)
+        .repeat(20, TaskerTime.TICKS)
+        .start();
     }
 
     private void addBlockToList(BlockHolder block) {

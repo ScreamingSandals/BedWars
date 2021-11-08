@@ -43,18 +43,19 @@ public class BridgeEggListener {
         BedWarsPlayer gamePlayer = PlayerManagerImpl.getInstance().getPlayer(player).orElseThrow();
         final var game = gamePlayer.getGame();
         if (event.getAction() == SPlayerInteractEvent.Action.RIGHT_CLICK_AIR || event.getAction() == SPlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
-            if (game.getStatus() == GameStatus.RUNNING && !gamePlayer.isSpectator() && event.getItem() != null) {
+            if (game != null && game.getStatus() == GameStatus.RUNNING && !gamePlayer.isSpectator() && event.getItem() != null) {
                 var stack = event.getItem();
                 String unhidden = ItemUtils.getIfStartsWith(stack, BRIDGE_EGG_PREFIX);
                 if (unhidden != null) {
                     if (!game.isDelayActive(gamePlayer, BridgeEggImpl.class)) {
                         event.setCancelled(true);
 
-                        var distance = Double.parseDouble(unhidden.split(":")[2]);
-                        var material = MiscUtils.getBlockTypeFromString(unhidden.split(":")[3], "GLASS");
-                        var delay = Integer.parseInt(unhidden.split(":")[4]);
+                        final var propertiesSplit = unhidden.split(":");
+                        var distance = Double.parseDouble(propertiesSplit[2]);
+                        var material = MiscUtils.getBlockTypeFromString(propertiesSplit[3], "GLASS");
+                        var delay = Integer.parseInt(propertiesSplit[4]);
 
-                        var egg = EntityMapper.<EntityProjectile>spawn("minecraft:egg", player.getLocation().add(0, 1, 0)).orElseThrow();
+                        var egg = EntityMapper.<EntityProjectile>spawn("egg", player.getLocation().add(0, 1, 0)).orElseThrow();
                         egg.setVelocity(player.getLocation().getFacingDirection().multiply(2));
 
                         var bridgeEgg = new BridgeEggImpl(game, gamePlayer, game.getPlayerTeam(gamePlayer), egg, material, distance);

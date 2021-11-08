@@ -71,7 +71,7 @@ public class FakeDeath {
         }
          */
 
-        // ignoring PacketPlayOutCombatEvent, client mustn't know that he died
+        // ignoring PacketPlayOutCombatEvent, client probably didn't know that he died
 
         try {
             Reflect.fastInvoke(ClassStorage.getHandle(player), PlayerAccessor.getMethodRemoveEntitiesOnShoulder1());
@@ -89,7 +89,6 @@ public class FakeDeath {
         int i = event.getDroppedExp();
         while (i > 0) {
             int j = getOrbValue(i);
-
             i -= j;
             ((ExperienceOrb) deathWorld.spawnEntity(deathLoc, EntityType.EXPERIENCE_ORB)).setExperience(j);
         }

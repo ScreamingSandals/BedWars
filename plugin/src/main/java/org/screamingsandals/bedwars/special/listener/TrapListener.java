@@ -21,18 +21,15 @@ public class TrapListener {
     private static final String TRAP_PREFIX = "Module:Trap:";
 
     @OnEvent
+    @SuppressWarnings("unchecked")
     public void onTrapRegistered(ApplyPropertyToBoughtItemEventImpl event) {
         if (event.getPropertyName().equalsIgnoreCase("trap")) {
             TrapImpl trap = new TrapImpl(event.getGame(), event.getPlayer(),
                     event.getGame().getPlayerTeam(event.getPlayer()),
                     (List<Map<String, Object>>) event.getProperty("data"));
 
-            int id = System.identityHashCode(trap);
-            String trapString = TRAP_PREFIX + id;
-
-            ItemUtils.saveData(event.getStack(), trapString);
+            ItemUtils.saveData(event.getStack(), TRAP_PREFIX + System.identityHashCode(trap));
         }
-
     }
 
     @OnEvent
@@ -42,7 +39,7 @@ public class TrapListener {
         }
 
         var trapItem = event.getItemInHand();
-        String unhidden = ItemUtils.getIfStartsWith(trapItem, TRAP_PREFIX);
+        var unhidden = ItemUtils.getIfStartsWith(trapItem, TRAP_PREFIX);
         if (unhidden != null) {
             int classID = Integer.parseInt(unhidden.split(":")[2]);
 
@@ -54,7 +51,6 @@ public class TrapListener {
                 }
             }
         }
-
     }
 
     @OnEvent
@@ -62,8 +58,7 @@ public class TrapListener {
         for (var special : event.getGame().getActiveSpecialItems(TrapImpl.class)) {
             var runningTeam = event.getTeam();
 
-            if (special.isPlaced()
-                    && event.getBlock().getLocation().equals(special.getLocation())) {
+            if (special.isPlaced() && event.getBlock().getLocation().equals(special.getLocation())) {
                 event.setDrops(false);
                 special.process(event.getPlayer(), runningTeam, true);
             }
@@ -86,9 +81,8 @@ public class TrapListener {
 
         var gPlayer = PlayerManagerImpl.getInstance().getPlayer(player).orElseThrow();
         var game = gPlayer.getGame();
-        if (game.getStatus() == GameStatus.RUNNING && !gPlayer.isSpectator()) {
+        if (game != null && game.getStatus() == GameStatus.RUNNING && !gPlayer.isSpectator()) {
             for (var special : game.getActiveSpecialItems(TrapImpl.class)) {
-
                 if (special.isPlaced()) {
                     if (game.getPlayerTeam(gPlayer) != special.getTeam()) {
                         if (event.getNewLocation().getBlock().equals(special.getLocation().getBlock())) {

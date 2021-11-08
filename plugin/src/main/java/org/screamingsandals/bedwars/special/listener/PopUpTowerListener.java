@@ -1,18 +1,14 @@
 package org.screamingsandals.bedwars.special.listener;
 
 import org.screamingsandals.bedwars.api.game.GameStatus;
-import org.screamingsandals.bedwars.api.special.PopUpTower;
 import org.screamingsandals.bedwars.events.ApplyPropertyToBoughtItemEventImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
-import org.screamingsandals.bedwars.special.BridgeEggImpl;
 import org.screamingsandals.bedwars.special.PopUpTowerImpl;
 import org.screamingsandals.bedwars.utils.DelayFactoryImpl;
 import org.screamingsandals.bedwars.utils.ItemUtils;
 import org.screamingsandals.bedwars.utils.MiscUtils;
-import org.screamingsandals.lib.entity.EntityMapper;
-import org.screamingsandals.lib.entity.EntityProjectile;
 import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.event.player.SPlayerInteractEvent;
 import org.screamingsandals.lib.item.builder.ItemFactory;
@@ -41,15 +37,16 @@ public class PopUpTowerListener {
         var gamePlayer = player.as(BedWarsPlayer.class);
         final var game = gamePlayer.getGame();
         if (event.getAction() == SPlayerInteractEvent.Action.RIGHT_CLICK_AIR || event.getAction() == SPlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
-            if (game.getStatus() == GameStatus.RUNNING && !gamePlayer.isSpectator() && event.getItem() != null) {
+            if (game != null && game.getStatus() == GameStatus.RUNNING && !gamePlayer.isSpectator() && event.getItem() != null) {
                 var stack = event.getItem();
                 String unhidden = ItemUtils.getIfStartsWith(stack, POPUP_TOWER_PREFIX);
                 if (unhidden != null) {
                     if (!game.isDelayActive(gamePlayer, PopUpTowerImpl.class)) {
                         event.setCancelled(true);
 
-                        var material = MiscUtils.getBlockTypeFromString(unhidden.split(":")[2], "WOOL");
-                        var delay = Integer.parseInt(unhidden.split(":")[3]);
+                        var propertiesSplit = unhidden.split(":");
+                        var material = MiscUtils.getBlockTypeFromString(propertiesSplit[2], "WOOL");
+                        var delay = Integer.parseInt(propertiesSplit[3]);
 
                         var playerFace = MiscUtils.yawToFace(player.getLocation().getYaw(), false);
 
@@ -62,7 +59,7 @@ public class PopUpTowerListener {
 
                         popupTower.runTask();
 
-                        stack.setAmount(1); // we are removing exactly one egg
+                        stack.setAmount(1); // we are removing exactly one popup tower
                         try {
                             if (player.getPlayerInventory().getItemInOffHand().equals(stack)) {
                                 player.getPlayerInventory().setItemInOffHand(ItemFactory.getAir());

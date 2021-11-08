@@ -12,6 +12,7 @@ import org.screamingsandals.lib.utils.annotations.methods.ShouldRunControllable;
 import org.spongepowered.configurate.ConfigurationNode;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
@@ -30,7 +31,7 @@ public class TabManager {
 
     public static TabManager getInstance() {
         if (!isEnabled()) {
-            throw new UnsupportedOperationException("TabManager are not enabled!");
+            throw new UnsupportedOperationException("TabManager is not enabled!");
         }
         return ServiceManager.get(TabManager.class);
     }
@@ -75,15 +76,16 @@ public class TabManager {
             } else {
                 first.set(false);
             }
+            var game = Objects.requireNonNull(gamePlayer.getGame());
             component.append(
                     AdventureHelper.toComponent(
-                            a.replace("%players%", String.valueOf(gamePlayer.getGame().countPlayers()))
-                                    .replace("%alive%", String.valueOf(gamePlayer.getGame().countAlive()))
-                                    .replace("%spectating%", String.valueOf(gamePlayer.getGame().countSpectating()))
-                                    .replace("%spectators%", String.valueOf(gamePlayer.getGame().countSpectators()))
-                                    .replace("%respawnable%", String.valueOf(gamePlayer.getGame().countRespawnable()))
-                                    .replace("%max%", String.valueOf(gamePlayer.getGame().getMaxPlayers()))
-                                    .replace("%map%", gamePlayer.getGame().getName()))
+                            a.replace("%players%", String.valueOf(game.countPlayers()))
+                                    .replace("%alive%", String.valueOf(game.countAlive()))
+                                    .replace("%spectating%", String.valueOf(game.countSpectating()))
+                                    .replace("%spectators%", String.valueOf(game.countSpectators()))
+                                    .replace("%respawnable%", String.valueOf(game.countRespawnable()))
+                                    .replace("%max%", String.valueOf(game.getMaxPlayers()))
+                                    .replace("%map%", game.getName()))
             );
         });
         return component.asComponent();

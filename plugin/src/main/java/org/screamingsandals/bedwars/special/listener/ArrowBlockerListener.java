@@ -37,7 +37,7 @@ public class ArrowBlockerListener {
         var game = gPlayer.getGame();
 
         if (event.getAction() == SPlayerInteractEvent.Action.RIGHT_CLICK_AIR || event.getAction() == SPlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
-            if (game.getStatus() == GameStatus.RUNNING && !gPlayer.isSpectator() && event.getItem() != null) {
+            if (game != null && game.getStatus() == GameStatus.RUNNING && !gPlayer.isSpectator() && event.getItem() != null) {
                 var stack = event.getItem();
                 var unhidden = ItemUtils.getIfStartsWith(stack, ARROW_BLOCKER_PREFIX);
 
@@ -45,8 +45,9 @@ public class ArrowBlockerListener {
                     if (!game.isDelayActive(gPlayer, ArrowBlockerImpl.class)) {
                         event.setCancelled(true);
 
-                        int protectionTime = Integer.parseInt(unhidden.split(":")[2]);
-                        int delay = Integer.parseInt(unhidden.split(":")[3]);
+                        final var propertiesSplit = unhidden.split(":");
+                        int protectionTime = Integer.parseInt(propertiesSplit[2]);
+                        int delay = Integer.parseInt(propertiesSplit[3]);
                         var arrowBlocker = new ArrowBlockerImpl(game, gPlayer, game.getPlayerTeam(gPlayer), stack, protectionTime);
 
                         if (arrowBlocker.isActivated()) {
@@ -87,7 +88,7 @@ public class ArrowBlockerListener {
         var gPlayer = PlayerManagerImpl.getInstance().getPlayer(player).orElseThrow();
         var game = gPlayer.getGame();
 
-        if (gPlayer.isSpectator()) {
+        if (gPlayer.isSpectator() || game == null) {
             return;
         }
 

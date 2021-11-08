@@ -54,8 +54,7 @@ public class TNTSheepImpl extends SpecialItem implements TNTSheep<GameImpl, BedW
         sheep.as(Sheep.class).setColor(DyeColor.getByWoolData((byte) color.woolData));
 
         if (target == null) {
-            Message
-                    .of(LangKeys.SPECIALS_TNTSHEEP_NO_TARGET_FOUND)
+            Message.of(LangKeys.SPECIALS_TNTSHEEP_NO_TARGET_FOUND)
                     .prefixOrDefault(game.getCustomPrefixComponent())
                     .send(player);
             sheep.remove();
@@ -63,8 +62,11 @@ public class TNTSheepImpl extends SpecialItem implements TNTSheep<GameImpl, BedW
         }
 
         entity = sheep;
+
+        //noinspection ConstantConditions - suppressing nullability check, if this throws a NPE, something went wrong badly
         EntityUtils.makeMobAttackTarget(sheep, speed, followRange, 0)
-            .getTargetSelector().attackTarget(target.as(Player.class));
+                .getTargetSelector()
+                .attackTarget(target.as(Player.class));
 
         tnt = EntityMapper.spawn("tnt", initialLocation).orElseThrow();
         tnt.as(TNTPrimed.class).setFuseTicks(explosionTime);
@@ -89,11 +91,11 @@ public class TNTSheepImpl extends SpecialItem implements TNTSheep<GameImpl, BedW
         player.forceUpdateInventory();
 
         Tasker.build(() -> {
-                tnt.remove();
-                sheep.remove();
-                game.unregisterSpecialItem(TNTSheepImpl.this);
-            })
-            .delay(explosionTime + 13, TaskerTime.TICKS)
-            .start();
+            tnt.remove();
+            sheep.remove();
+            game.unregisterSpecialItem(TNTSheepImpl.this);
+        })
+        .delay(explosionTime + 13, TaskerTime.TICKS)
+        .start();
     }
 }

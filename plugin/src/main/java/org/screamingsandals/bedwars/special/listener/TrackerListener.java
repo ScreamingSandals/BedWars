@@ -23,7 +23,6 @@ public class TrackerListener {
         if (event.getPropertyName().equalsIgnoreCase("tracker")) {
             ItemUtils.saveData(event.getStack(), TRACKER_PREFIX);
         }
-
     }
 
     @OnEvent
@@ -36,28 +35,27 @@ public class TrackerListener {
         var gamePlayer = PlayerManagerImpl.getInstance().getPlayer(player).orElseThrow();
         var game = gamePlayer.getGame();
         if (event.getAction() == SPlayerInteractEvent.Action.RIGHT_CLICK_AIR || event.getAction() == SPlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
-            if (game.getStatus() == GameStatus.RUNNING && !gamePlayer.isSpectator()) {
+            if (game != null && game.getStatus() == GameStatus.RUNNING && !gamePlayer.isSpectator()) {
                 if (event.getItem() != null) {
                     var stack = event.getItem();
                     var unhidden = ItemUtils.getIfStartsWith(stack, TRACKER_PREFIX);
                     if (unhidden != null) {
                         event.setCancelled(true);
 
-                        Tasker
-                                .build(() -> {
-                                    var target = MiscUtils.findTarget(game, player, Double.MAX_VALUE);
-                                    if (target != null) {
-                                        player.as(Player.class).setCompassTarget(target.getLocation().as(Location.class)); // TODO: remove this transformation
+                        Tasker.build(() -> {
+                            var target = MiscUtils.findTarget(game, player, Double.MAX_VALUE);
+                            if (target != null) {
+                                player.as(Player.class).setCompassTarget(target.getLocation().as(Location.class)); // TODO: remove this transformation
 
-                                        int distance = (int) Math.sqrt(player.getLocation().getDistanceSquared(target.getLocation()));
-                                        MiscUtils.sendActionBarMessage(player, Message.of(LangKeys.SPECIALS_TRACKER_TARGET_FOUND).placeholder("target", target.getDisplayName()).placeholder("distance", distance));
-                                    } else {
-                                        MiscUtils.sendActionBarMessage(player, Message.of(LangKeys.SPECIALS_TRACKER_NO_TARGET_FOUND));
-                                        player.as(Player.class).setCompassTarget(game.getTeamOfPlayer(gamePlayer).getTeamSpawn().as(Location.class)); // TODO: remove this transformation
-                                    }
-                                })
-                                .afterOneTick()
-                                .start();
+                                int distance = (int) Math.sqrt(player.getLocation().getDistanceSquared(target.getLocation()));
+                                MiscUtils.sendActionBarMessage(player, Message.of(LangKeys.SPECIALS_TRACKER_TARGET_FOUND).placeholder("target", target.getDisplayName()).placeholder("distance", distance));
+                            } else {
+                                MiscUtils.sendActionBarMessage(player, Message.of(LangKeys.SPECIALS_TRACKER_NO_TARGET_FOUND));
+                                player.as(Player.class).setCompassTarget(game.getTeamOfPlayer(gamePlayer).getTeamSpawn().as(Location.class)); // TODO: remove this transformation
+                            }
+                        })
+                        .afterOneTick()
+                        .start();
                     }
                 }
             }

@@ -1,7 +1,5 @@
 package org.screamingsandals.bedwars.special.listener;
 
-import org.screamingsandals.bedwars.utils.ItemUtils;
-import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.events.ApplyPropertyToBoughtItemEventImpl;
 import org.screamingsandals.bedwars.events.PlayerBreakBlockEventImpl;
@@ -9,13 +7,12 @@ import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.bedwars.special.ProtectionWallImpl;
 import org.screamingsandals.bedwars.utils.DelayFactoryImpl;
+import org.screamingsandals.bedwars.utils.ItemUtils;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.event.player.SPlayerInteractEvent;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.utils.annotations.Service;
-
-import java.util.ArrayList;
 
 @Service
 public class ProtectionWallListener {
@@ -26,7 +23,6 @@ public class ProtectionWallListener {
         if (event.getPropertyName().equalsIgnoreCase("protectionwall")) {
             ItemUtils.saveData(event.getStack(), applyProperty(event));
         }
-
     }
 
     @OnEvent
@@ -40,7 +36,7 @@ public class ProtectionWallListener {
         var game = gPlayer.getGame();
 
         if (event.getAction() == SPlayerInteractEvent.Action.RIGHT_CLICK_AIR || event.getAction() == SPlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
-            if (game.getStatus() == GameStatus.RUNNING && !gPlayer.isSpectator() && event.getItem() != null) {
+            if (game != null && game.getStatus() == GameStatus.RUNNING && !gPlayer.isSpectator() && event.getItem() != null) {
                 var stack = event.getItem();
                 var unhidden = ItemUtils.getIfStartsWith(stack, PROTECTION_WALL_PREFIX);
 
@@ -48,17 +44,17 @@ public class ProtectionWallListener {
                     if (!game.isDelayActive(gPlayer, ProtectionWallImpl.class)) {
                         event.setCancelled(true);
 
-                        var isBreakable = Boolean.parseBoolean(unhidden.split(":")[2]);
-                        var delay = Integer.parseInt(unhidden.split(":")[3]);
-                        var breakTime = Integer.parseInt(unhidden.split(":")[4]);
-                        var width = Integer.parseInt(unhidden.split(":")[5]);
-                        var height = Integer.parseInt(unhidden.split(":")[6]);
-                        var distance = Integer.parseInt(unhidden.split(":")[7]);
-                        var result = MiscUtils.getBlockTypeFromString(unhidden.split(":")[8], "CUT_SANDSTONE");
+                        var propertiesSplit = unhidden.split(":");
+                        var isBreakable = Boolean.parseBoolean(propertiesSplit[2]);
+                        var delay = Integer.parseInt(propertiesSplit[3]);
+                        var breakTime = Integer.parseInt(propertiesSplit[4]);
+                        var width = Integer.parseInt(propertiesSplit[5]);
+                        var height = Integer.parseInt(propertiesSplit[6]);
+                        var distance = Integer.parseInt(propertiesSplit[7]);
+                        var result = MiscUtils.getBlockTypeFromString(propertiesSplit[8], "CUT_SANDSTONE");
 
 
-                        var protectionWall = new ProtectionWallImpl(game, gPlayer,
-                                game.getPlayerTeam(gPlayer), stack);
+                        var protectionWall = new ProtectionWallImpl(game, gPlayer, game.getPlayerTeam(gPlayer), stack);
 
                         if (!event.getPlayer().getEyeLocation().getBlock().getType().isAir()) {
                             MiscUtils.sendActionBarMessage(player, Message.of(LangKeys.SPECIALS_PROTECTION_WALL_NOT_USABLE_HERE));
@@ -84,29 +80,15 @@ public class ProtectionWallListener {
 
     @OnEvent
     public void onBlockBreak(PlayerBreakBlockEventImpl event) {
-        final var game = event.getGame();
-        final var block = event.getBlock();
-
-        for (ProtectionWallImpl checkedWall : getCreatedWalls(game)) {
+        for (var checkedWall : event.getGame().getActiveSpecialItems(ProtectionWallImpl.class)) {
             if (checkedWall != null) {
                 for (var wallBlock : checkedWall.getWallBlocks()) {
-                    if (wallBlock.equals(block) && !checkedWall.isBreakable()) {
+                    if (wallBlock.equals(event.getBlock()) && !checkedWall.isBreakable()) {
                         event.setCancelled(true);
                     }
                 }
             }
         }
-    }
-
-    private ArrayList<ProtectionWallImpl> getCreatedWalls(Game game) {
-        ArrayList<ProtectionWallImpl> createdWalls = new ArrayList<>();
-        for (var specialItem : game.getActiveSpecialItems(ProtectionWallImpl.class)) {
-            if (specialItem instanceof ProtectionWallImpl) {
-                ProtectionWallImpl wall = (ProtectionWallImpl) specialItem;
-                createdWalls.add(wall);
-            }
-        }
-        return createdWalls;
     }
 
     private String applyProperty(ApplyPropertyToBoughtItemEventImpl event) {
@@ -126,5 +108,4 @@ public class ProtectionWallListener {
                 + MiscUtils.getMaterialFromProperty(
                 "material", "specials.protection-wall.material", event);
     }
-
 }

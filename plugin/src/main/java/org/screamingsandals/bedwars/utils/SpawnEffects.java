@@ -58,7 +58,7 @@ public class SpawnEffects {
         EventManager.fire(new PostSpawnEffectEventImpl(game, player, particleName));
     }
 
-    private void useEffect(String type, ConfigurationNode effect, BedWarsPlayer player, GameImpl game) throws Throwable {
+    private void useEffect(String type, ConfigurationNode effect, BedWarsPlayer player, GameImpl game) {
         if (type.equalsIgnoreCase("Particle")) {
             if (effect.hasChild("value")) {
                 var value = effect.node("value").getString("");

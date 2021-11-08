@@ -3,15 +3,17 @@ package org.screamingsandals.bedwars.utils;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.experimental.UtilityClass;
 import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.lib.item.Item;
 import org.screamingsandals.lib.utils.GsonUtils;
 
+@UtilityClass
 public class ItemUtils {
-	public static final String BEDWARS_NAMESPACED_KEY = "screaming-bedwars-hidden-api";
+	public final String BEDWARS_NAMESPACED_KEY = "screaming-bedwars-hidden-api";
 
 	@SuppressWarnings("unchecked")
-	public static void saveData(Item item, String data) {
+	public void saveData(Item item, String data) {
 		var old = item.getData().get(BEDWARS_NAMESPACED_KEY, String.class);
 		var propertyLines = new ArrayList<String>();
 		if (old != null && !old.isEmpty()) {
@@ -24,7 +26,7 @@ public class ItemUtils {
 
 	@SuppressWarnings("unchecked")
 	@Nullable
-	public static String getIfStartsWith(Item item, String startsWith) {
+	public String getIfStartsWith(Item item, String startsWith) {
 		var data = item.getData().get(BEDWARS_NAMESPACED_KEY, String.class);
 		if (data != null && !data.isEmpty()) {
 			var list = (List<String>) GsonUtils.gson().fromJson(data, List.class);

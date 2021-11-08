@@ -14,8 +14,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class TeamChestListener {
-
-    public static final String TEAM_CHEST_PREFIX = "Module:TeamChest:";
+    private static final String TEAM_CHEST_PREFIX = "Module:TeamChest:";
 
     @OnEvent
     public void onTeamChestRegistered(ApplyPropertyToBoughtItemEventImpl event) {
@@ -37,15 +36,13 @@ public class TeamChestListener {
             return;
         }
 
-        String unhidden = ItemUtils.getIfStartsWith(event.getItemInHand(), TEAM_CHEST_PREFIX);
+        var unhidden = ItemUtils.getIfStartsWith(event.getItemInHand(), TEAM_CHEST_PREFIX);
 
-        if (unhidden != null || MainConfig.getInstance().node("specials", "teamchest", "turn-all-enderchests-to-teamchests").getBoolean()) {
+        if (unhidden != null || MainConfig.getInstance().node("specials", "teamchest", "turn-all-enderchests-to-teamchests").getBoolean(true)) {
             team.addTeamChest(block.getLocation());
-            Message
-                    .of(LangKeys.SPECIALS_TEAM_CHEST_PLACED)
+            Message.of(LangKeys.SPECIALS_TEAM_CHEST_PLACED)
                     .prefixOrDefault(event.getGame().getCustomPrefixComponent())
                     .send(team.getPlayers().stream().map(PlayerMapper::wrapPlayer).collect(Collectors.toList()));
         }
     }
-
 }
