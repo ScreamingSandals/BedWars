@@ -3,6 +3,7 @@ package org.screamingsandals.bedwars.commands;
 import org.screamingsandals.bedwars.Main;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.screamingsandals.bedwars.api.game.Game;
 
 import java.util.List;
 
@@ -30,7 +31,12 @@ public class JoinCommand extends BaseCommand {
                 player.sendMessage(i18n("no_arena_found"));
             }
         } else {
-            Main.getInstance().getGameWithHighestPlayers().joinToGame(player);
+            final Game game = Main.getInstance().getGameWithHighestPlayers();
+            if (game != null) {
+                game.joinToGame(player);
+                return true;
+            }
+            player.sendMessage(i18n("there_is_no_empty_game"));
             return true;
         }
         return true;

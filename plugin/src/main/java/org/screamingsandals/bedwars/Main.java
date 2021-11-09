@@ -629,8 +629,7 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         return games.get(name);
     }
 
-    @Override
-    public org.screamingsandals.bedwars.api.game.Game getGameWithHighestPlayers() {
+    private TreeMap<Integer, org.screamingsandals.bedwars.api.game.Game> filterGames0() {
         TreeMap<Integer, org.screamingsandals.bedwars.api.game.Game> gameList = new TreeMap<>();
         for (org.screamingsandals.bedwars.api.game.Game game : getGames()) {
             if (game.getStatus() != GameStatus.WAITING) {
@@ -641,26 +640,19 @@ public class Main extends JavaPlugin implements BedwarsAPI {
             }
             gameList.put(game.countConnectedPlayers(), game);
         }
+        return gameList;
+    }
 
-        Map.Entry<Integer, org.screamingsandals.bedwars.api.game.Game> lastEntry = gameList.lastEntry();
-        return lastEntry.getValue();
+    @Override
+    public org.screamingsandals.bedwars.api.game.Game getGameWithHighestPlayers() {
+        final Map.Entry<Integer, org.screamingsandals.bedwars.api.game.Game> entry = filterGames0().lastEntry();
+        return (entry != null) ? entry.getValue() : null;
     }
 
     @Override
     public org.screamingsandals.bedwars.api.game.Game getGameWithLowestPlayers() {
-        TreeMap<Integer, org.screamingsandals.bedwars.api.game.Game> gameList = new TreeMap<>();
-        for (org.screamingsandals.bedwars.api.game.Game game : getGames()) {
-            if (game.getStatus() != GameStatus.WAITING) {
-                continue;
-            }
-            if (game.getConnectedPlayers().size() >= game.getMaxPlayers()) {
-                continue;
-            }
-            gameList.put(game.countConnectedPlayers(), game);
-        }
-
-        Map.Entry<Integer, org.screamingsandals.bedwars.api.game.Game> lastEntry = gameList.firstEntry();
-        return lastEntry.getValue();
+        Map.Entry<Integer, org.screamingsandals.bedwars.api.game.Game> entry = filterGames0().firstEntry();
+        return (entry != null) ? entry.getValue() : null;
     }
 
     @Override
