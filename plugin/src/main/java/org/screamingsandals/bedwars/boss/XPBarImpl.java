@@ -10,11 +10,10 @@ import java.util.List;
 
 @Getter
 public class XPBarImpl implements XPBar<PlayerWrapper> {
-
+    private final List<PlayerWrapper> viewers = new ArrayList<>();
     private boolean visible = false;
     private float progress = 0F;
     private int seconds = 0;
-    private final List<PlayerWrapper> viewers = new ArrayList<>();
 
     @Override
     public void addPlayer(PlayerWrapper player) {

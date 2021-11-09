@@ -17,15 +17,13 @@ import java.util.List;
 
 @Getter
 public class BossBarImpl implements org.screamingsandals.bedwars.api.boss.BossBar<PlayerWrapper> {
-
-    private final BossBar boss = BossBar.
-            bossBar(
-                    Component.empty(),
-                    1,
-                    BossBar.Color.PURPLE,
-                    BossBar.Overlay.PROGRESS
-            );
     private final List<PlayerWrapper> viewers = new LinkedList<>();
+    private final BossBar boss = BossBar.bossBar(
+            Component.empty(),
+            1,
+            BossBar.Color.PURPLE,
+            BossBar.Overlay.PROGRESS
+    );
     private boolean visible;
 
     @Override

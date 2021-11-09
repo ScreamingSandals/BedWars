@@ -47,7 +47,7 @@ public class PlayerStatisticManager implements PlayerStatisticsManager<OfflinePl
 
     public static PlayerStatisticManager getInstance() {
         if (!isEnabled()) {
-            throw new UnsupportedOperationException("PlayerStatisticManager are not enabled!");
+            throw new UnsupportedOperationException("PlayerStatisticManager is not enabled!");
         }
         return ServiceManager.get(PlayerStatisticManager.class);
     }
@@ -90,15 +90,14 @@ public class PlayerStatisticManager implements PlayerStatisticsManager<OfflinePl
     }
 
     public void initializeDatabase() {
-        logger.info("Loading statistics from database ...");
+        logger.info("Loading statistics from database...");
 
         try {
             databaseManager.initialize();
 
-            try (Connection connection = databaseManager.getConnection()) {
+            try (var connection = databaseManager.getConnection()) {
                 connection.setAutoCommit(false);
-                PreparedStatement preparedStatement = connection
-                        .prepareStatement(databaseManager.getCreateTableSql());
+                final var preparedStatement = connection.prepareStatement(databaseManager.getCreateTableSql());
                 preparedStatement.executeUpdate();
                 connection.commit();
                 preparedStatement.close();
@@ -115,9 +114,9 @@ public class PlayerStatisticManager implements PlayerStatisticsManager<OfflinePl
         allScores.clear();
 
         if (statisticType == StatisticType.DATABASE) {
-            try (Connection connection = databaseManager.getConnection()) {
+            try (var connection = databaseManager.getConnection()) {
                 connection.setAutoCommit(false);
-                PreparedStatement preparedStatement = connection
+                final var preparedStatement = connection
                         .prepareStatement(databaseManager.getScoresSql(), ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
                 ResultSet resultSet = preparedStatement.executeQuery();
                 if (resultSet.first()) {
@@ -131,9 +130,7 @@ public class PlayerStatisticManager implements PlayerStatisticsManager<OfflinePl
                 ex.printStackTrace();
             }
         } else {
-            fileDatabase.node("data").childrenMap().forEach((key, node) -> {
-                allScores.put(UUID.fromString(key.toString()), node.node("score").getInt());
-            });
+            fileDatabase.node("data").childrenMap().forEach((key, node) -> allScores.put(UUID.fromString(key.toString()), node.node("score").getInt()));
         }
     }
 
@@ -181,22 +178,17 @@ public class PlayerStatisticManager implements PlayerStatisticsManager<OfflinePl
             playerStatistic = new PlayerStatisticImpl(deserialize);
         }
 
-        PlayerMapper
-                .getPlayer(uuid)
+        PlayerMapper.getPlayer(uuid)
                 .map(PlayerWrapper::getName)
                 .ifPresent(playerStatistic::setName);
 
-        this.playerStatistic.put(playerStatistic.getId(), playerStatistic);
+        this.playerStatistic.put(playerStatistic.getUuid(), playerStatistic);
         this.allScores.put(uuid, playerStatistic.getScore());
         return playerStatistic;
     }
 
     public PlayerStatisticImpl loadStatistic(UUID uuid) {
-        if (statisticType == StatisticType.DATABASE) {
-            return this.loadDatabaseStatistic(uuid);
-        } else {
-            return this.loadYamlStatistic(uuid);
-        }
+        return (statisticType == StatisticType.DATABASE) ? loadDatabaseStatistic(uuid) : loadYamlStatistic(uuid);
     }
 
     private PlayerStatisticImpl loadYamlStatistic(UUID uuid) {
@@ -208,9 +200,8 @@ public class PlayerStatisticManager implements PlayerStatisticsManager<OfflinePl
 
         var node = this.fileDatabase.node("data", uuid.toString());
         var playerStatistic = new PlayerStatisticImpl(node);
-        playerStatistic.setId(uuid);
-        PlayerMapper
-                .getPlayer(uuid)
+        playerStatistic.setUuid(uuid);
+        PlayerMapper.getPlayer(uuid)
                 .map(PlayerWrapper::getName)
                 .ifPresent(playerStatistic::setName);
         this.playerStatistic.put(uuid, playerStatistic);
@@ -236,7 +227,7 @@ public class PlayerStatisticManager implements PlayerStatisticsManager<OfflinePl
             var preparedStatement = connection
                     .prepareStatement(databaseManager.getWriteObjectSql());
 
-            preparedStatement.setString(1, playerStatistic.getId().toString());
+            preparedStatement.setString(1, playerStatistic.getUuid().toString());
             preparedStatement.setString(2, playerStatistic.getName());
             preparedStatement.setInt(3, playerStatistic.getDeaths());
             preparedStatement.setInt(4, playerStatistic.getDestroyedBeds());
@@ -269,12 +260,12 @@ public class PlayerStatisticManager implements PlayerStatisticsManager<OfflinePl
     }
 
     private synchronized void storeYamlStatistic(PlayerStatisticImpl statistic) {
-        var node = this.fileDatabase.node("data", statistic.getId().toString());
+        var node = this.fileDatabase.node("data", statistic.getUuid().toString());
         statistic.serializeTo(node);
         try {
             this.loader.save(this.fileDatabase);
         } catch (Exception ex) {
-            logger.warn("Couldn't store statistic data for player with uuid: {}", statistic.getId().toString());
+            logger.warn("Couldn't store statistic data for player with uuid: {}", statistic.getUuid().toString(), ex);
         }
     }
 
@@ -285,7 +276,7 @@ public class PlayerStatisticManager implements PlayerStatisticsManager<OfflinePl
     }
 
     public void updateScore(PlayerStatisticImpl playerStatistic) {
-        allScores.put(playerStatistic.getId(), playerStatistic.getScore());
+        allScores.put(playerStatistic.getUuid(), playerStatistic.getScore());
         if (LeaderboardHolograms.isEnabled()) {
             LeaderboardHolograms.getInstance().updateEntries();
         }

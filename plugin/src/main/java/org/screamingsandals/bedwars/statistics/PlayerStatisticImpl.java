@@ -1,5 +1,9 @@
 package org.screamingsandals.bedwars.statistics;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.screamingsandals.bedwars.api.statistics.PlayerStatistic;
 import org.screamingsandals.lib.player.PlayerMapper;
 import org.spongepowered.configurate.ConfigurationNode;
@@ -9,8 +13,13 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
+@Getter
+@EqualsAndHashCode
+@ToString
 public class PlayerStatisticImpl implements PlayerStatistic {
+    @Setter
     private UUID uuid;
+    @Setter
     private String name = "";
     private int deaths;
     private int destroyedBeds;
@@ -22,8 +31,7 @@ public class PlayerStatisticImpl implements PlayerStatistic {
     public PlayerStatisticImpl(UUID uuid) {
         this.uuid = uuid;
 
-        PlayerMapper
-                .getPlayer(uuid)
+        PlayerMapper.getPlayer(uuid)
                 .ifPresent(playerWrapper -> this.name = playerWrapper.getName());
     }
 
@@ -100,14 +108,6 @@ public class PlayerStatisticImpl implements PlayerStatistic {
         this.wins += wins;
     }
 
-    public UUID getId() {
-        return this.uuid;
-    }
-
-    public void setId(UUID uuid) {
-        this.uuid = uuid;
-    }
-
     public double getKD() {
         double kd = 0.0;
         if (deaths == 0) {
@@ -133,41 +133,4 @@ public class PlayerStatisticImpl implements PlayerStatistic {
             e.printStackTrace();
         }
     }
-
-    public int getDeaths() {
-        return deaths;
-    }
-
-    public int getDestroyedBeds() {
-        return destroyedBeds;
-    }
-
-    public int getKills() {
-        return kills;
-    }
-
-    public int getLoses() {
-        return loses;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public int getScore() {
-        return score;
-    }
-
-    public UUID getUuid() {
-        return uuid;
-    }
-
-    public int getWins() {
-        return wins;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
 }

@@ -48,8 +48,7 @@ public class VaultUtils {
 
                     PlayerMapper.getConsoleSender().sendMessage(
                             MiscUtils.BW_PREFIX.append(
-                                    Component
-                                            .text("Found Vault")
+                                    Component.text("Found Vault")
                                             .color(NamedTextColor.GOLD)
                             )
                     );

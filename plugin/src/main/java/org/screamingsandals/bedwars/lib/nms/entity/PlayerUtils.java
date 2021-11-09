@@ -1,5 +1,6 @@
 package org.screamingsandals.bedwars.lib.nms.entity;
 
+import lombok.experimental.UtilityClass;
 import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.nms.accessors.ServerGamePacketListenerImplAccessor;
 import org.screamingsandals.bedwars.nms.accessors.ServerboundClientCommandPacketAccessor;
@@ -11,8 +12,9 @@ import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
 import org.screamingsandals.lib.utils.reflect.Reflect;
 
+@UtilityClass
 public class PlayerUtils {
-	public static void respawn(PlayerWrapper playerWrapper, long delay) {
+	public void respawn(PlayerWrapper playerWrapper, long delay) {
 		var player = playerWrapper.as(Player.class);
 		Tasker.build(() -> {
 			try {
@@ -30,11 +32,11 @@ public class PlayerUtils {
 		}).delay(delay, TaskerTime.TICKS).start();
 	}
 
-	public static void fakeExp(PlayerWrapper player, float percentage, int levels) {
-		var experience = new SClientboundSetExperiencePacket();
-		experience.percentage(percentage);
-		experience.totalExperience(player.as(Player.class).getTotalExperience()); // TODO
-		experience.level(levels);
-		experience.sendPacket(player);
+	public void fakeExp(PlayerWrapper player, float percentage, int levels) {
+		new SClientboundSetExperiencePacket()
+				.percentage(percentage)
+				.totalExperience(player.as(Player.class).getTotalExperience()) // TODO
+				.level(levels)
+				.sendPacket(player);
 	}
 }
