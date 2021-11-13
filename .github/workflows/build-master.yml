@@ -33,7 +33,7 @@ jobs:
           JAVADOC_SECRET: ${{ secrets.JAVADOC_SECRET }}
           JAVADOC_USER: ${{ secrets.JAVADOC_USER }}
           OPTIMIZE_FOR_CI_CD: "1"
-        - name: Upload the final artifact
-          uses: actions/upload-artifact@v2
-          with:
-            path: plugin/build/libs/BedWars*[!s].jar
+      - name: Upload the final artifact
+        uses: actions/upload-artifact@v2
+        with:
+          path: plugin/build/libs/BedWars*[!s].jar
