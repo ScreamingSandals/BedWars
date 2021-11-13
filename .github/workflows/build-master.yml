@@ -15,7 +15,6 @@ jobs:
         env:
           NUM: ${{ github.run_number }}
         run: echo ::set-output name=build_n::$(($NUM+865))
-      - run: echo "Build number for this commit is $BUILD_NUMBER"
       - name: Set up JDK 17
         uses: actions/setup-java@v1
         with:
