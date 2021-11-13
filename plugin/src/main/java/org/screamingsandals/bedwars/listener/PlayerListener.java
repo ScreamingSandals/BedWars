@@ -17,6 +17,7 @@ import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.commands.BedWarsPermission;
 import org.screamingsandals.bedwars.commands.admin.JoinTeamCommand;
 import org.screamingsandals.bedwars.config.MainConfig;
+import org.screamingsandals.bedwars.econ.VaultEconomy;
 import org.screamingsandals.bedwars.entities.EntitiesManagerImpl;
 import org.screamingsandals.bedwars.events.PlayerDeathMessageSendEventImpl;
 import org.screamingsandals.bedwars.events.PlayerKilledEventImpl;
@@ -58,9 +59,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 @Service
-@SuppressWarnings("PatternValidation")
 public class PlayerListener {
-
     private final List<PlayerWrapper> explosionAffectedPlayers = new ArrayList<>();
 
     @OnEvent(priority = org.screamingsandals.lib.event.EventPriority.HIGHEST)
@@ -201,10 +200,12 @@ public class PlayerListener {
                                     (float) MainConfig.getInstance().node("sounds", "player_kill", "volume").getDouble(),
                                     (float) MainConfig.getInstance().node("sounds", "player_kill", "pitch").getDouble()
                             ));
-                            if (!isBed) {
-                                VaultUtils.getInstance().depositPlayer(killer, MainConfig.getInstance().node("vault", "reward", "final-kill").getInt());
-                            } else {
-                                VaultUtils.getInstance().depositPlayer(killer, BedWarsPlugin.getVaultKillReward());
+                            if (BedWarsPlugin.getEconomy() != null) {
+                                if (!isBed) {
+                                    BedWarsPlugin.getEconomy().deposit(killer, MainConfig.getInstance().node("economy", "reward", "final-kill").getInt());
+                                } else {
+                                    BedWarsPlugin.getEconomy().deposit(killer, BedWarsPlugin.getKillReward());
+                                }
                             }
                         }
 
@@ -1160,9 +1161,9 @@ public class PlayerListener {
             format = format.replace("%displayName%", AdventureHelper.toLegacy(displayName));
             format = format.replace("%playerListName%", AdventureHelper.toLegacyNullable(playerListName));
 
-            if (VaultUtils.getInstance().isVault()) {
-                format = format.replace("%prefix%", VaultUtils.getInstance().getPrefix(player));
-                format = format.replace("%suffix%", VaultUtils.getInstance().getSuffix(player));
+            if (BedWarsPlugin.getEconomy() != null && BedWarsPlugin.getEconomy() instanceof VaultEconomy) {
+                format = format.replace("%prefix%", ((VaultEconomy) BedWarsPlugin.getEconomy()).getPrefix(player));
+                format = format.replace("%suffix%", ((VaultEconomy) BedWarsPlugin.getEconomy()).getSuffix(player));
             }
 
             format = format.replace("%prefix%", "");

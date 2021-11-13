@@ -13,7 +13,6 @@ import org.screamingsandals.lib.utils.annotations.methods.ShouldRunControllable;
 
 @Service
 public class BungeeMotdListener implements Listener {
-
     @ShouldRunControllable
     public boolean isEnabled() {
         return MainConfig.getInstance().node("bungee", "enabled").getBoolean() && MainConfig.getInstance().node("bungee", "motd", "enabled").getBoolean();

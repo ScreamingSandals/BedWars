@@ -904,7 +904,9 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
                             statistic.addDestroyedBeds(1);
                             statistic.addScore(MainConfig.getInstance().node("statistics", "scores", "bed-destroy").getInt(25));
                         }
-                        VaultUtils.getInstance().depositPlayer(destroyer, MainConfig.getInstance().node("vault", "reward", "bed-destroy").getInt());
+                        if (BedWarsPlugin.getEconomy() != null) {
+                            BedWarsPlugin.getEconomy().deposit(destroyer, MainConfig.getInstance().node("economy", "reward", "bed-destroy").getInt());
+                        }
 
                         dispatchRewardCommands("player-destroy-bed", destroyer,
                                 MainConfig.getInstance().node("statistics", "scores", "bed-destroy").getInt(25));
@@ -1960,7 +1962,9 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
                                                 .placeholder("time", time)
                                                 .times(TitleUtils.defaultTimes())
                                                 .title(player);
-                                        VaultUtils.getInstance().depositPlayer(player, BedWarsPlugin.getVaultWinReward());
+                                        if (BedWarsPlugin.getEconomy() != null) {
+                                            BedWarsPlugin.getEconomy().deposit(player, BedWarsPlugin.getWinReward());
+                                        }
 
                                         SpawnEffects.spawnEffect(this, player, "game-effects.end");
 

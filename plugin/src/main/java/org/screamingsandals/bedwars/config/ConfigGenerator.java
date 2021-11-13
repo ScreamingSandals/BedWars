@@ -41,11 +41,11 @@ public class ConfigGenerator {
             private Consumer<ConfigurationNode> remapConsumer;
             private boolean clearMigration = true;
 
-            public ConfigValue migrateOld(Object...keys) throws SerializationException {
+            public ConfigValue migrateOld(Object... keys) throws SerializationException {
                 return migrate(section, keys);
             }
 
-            public ConfigValue migrateOldAbsoluteKey(Object...keys) throws SerializationException {
+            public ConfigValue migrateOldAbsoluteKey(Object... keys) throws SerializationException {
                 return migrate(mainNode, keys);
             }
 
@@ -120,15 +120,28 @@ public class ConfigGenerator {
             }
         }
 
-        public ConfigSection section(Object...keys) {
+        public ConfigSection section(Object... keys) {
             return new ConfigSection(this, section.node(keys));
         }
 
-        public ConfigValue key(Object...keys) {
+        public ConfigSection migrateOld(Object... keys) throws SerializationException {
+            if (previous != null) {
+                final var oldNode = previous.section.node(keys);
+                if (!oldNode.virtual()) {
+                    final var newNode = previous.section.node(section.key()).raw(oldNode.raw());
+                    oldNode.set(null);
+                    modified = true;
+                    return new ConfigSection(previous, newNode);
+                }
+            }
+            return ConfigSection.this;
+        }
+
+        public ConfigValue key(Object... keys) {
             return new ConfigValue(section.node(keys));
         }
 
-        public ConfigSection drop(Object...keys) throws SerializationException {
+        public ConfigSection drop(Object... keys) throws SerializationException {
             var drop = section.node(keys);
             if (!drop.virtual()) {
                 section.node(keys).set(null);
