@@ -33,8 +33,9 @@ public class AutoIgniteableTNTListener {
         if (unhidden != null) {
             block.setType(BlockTypeHolder.air());
             var location = block.getLocation().add(0.5, 0.5, 0.5);
-            int explosionTime = Integer.parseInt(unhidden.split(":")[2]);
-            boolean damagePlacer = Boolean.parseBoolean(unhidden.split(":")[3]);
+            final var propertiesSplit = unhidden.split(":");
+            int explosionTime = Integer.parseInt(propertiesSplit[2]);
+            boolean damagePlacer = Boolean.parseBoolean(propertiesSplit[3]);
             AutoIgniteableTNTImpl special = new AutoIgniteableTNTImpl(game, player, game.getPlayerTeam(player), explosionTime, damagePlacer);
             special.spawn(location);
         }
