@@ -3,7 +3,7 @@ name: Build and publish BedWars ver/0.2.x
 on:
   push:
     branches: [ ver/0.2.x ]
-
+concurrency: bedwars_0_2_x
 jobs:
   build:
     runs-on: ubuntu-latest
