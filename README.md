@@ -1,5 +1,5 @@
 # BedWars
-[![Build Status](https://ci.screamingsandals.org/job/BedWars-0.2.x/badge/icon)](https://ci.screamingsandals.org/job/BedWars-0.2.x/)
+[![Build and publish BedWars ver/0.2.x](https://github.com/ScreamingSandals/BedWars/actions/workflows/build-0-2-x.yml/badge.svg)](https://github.com/ScreamingSandals/BedWars/actions/workflows/build-0-2-x.yml)
 [![Discord](https://img.shields.io/discord/582271436845219842?logo=discord)](https://discord.gg/4xB54Ts)
 
 This branch includes bugfixes for Minecraft: Java Edition 1.17
