@@ -7,10 +7,6 @@ import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.title.Title;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.api.ArenaTime;
@@ -53,7 +49,7 @@ import org.screamingsandals.lib.SpecialSoundKey;
 import org.screamingsandals.lib.block.BlockHolder;
 import org.screamingsandals.lib.block.BlockTypeHolder;
 import org.screamingsandals.lib.block.state.BlockStateHolder;
-import org.screamingsandals.lib.bukkit.block.state.SignBlockStateHolder;
+import org.screamingsandals.lib.block.state.SignHolder;
 import org.screamingsandals.lib.container.Container;
 import org.screamingsandals.lib.container.type.InventoryTypeHolder;
 import org.screamingsandals.lib.entity.EntityBasic;
@@ -1072,8 +1068,8 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
                         .send(players);
             }
         } else {
-            if (gamePlayer.as(Player.class).getSpectatorTarget() != null) {
-                gamePlayer.as(Player.class).setSpectatorTarget(null); // TODO: remove transformation
+            if (gamePlayer.getSpectatorTarget().isPresent()) {
+                gamePlayer.setSpectatorTarget(null);
             }
         }
 
@@ -1108,7 +1104,7 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
             }
         });
         otherVisuals.forEach(visual -> visual.removeViewer(gamePlayer));
-        gamePlayer.as(Player.class).setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard()); // TODO: ScreamingLib equivalent
+        gamePlayer.restoreDefaultScoreboard();
 
         if (MainConfig.getInstance().node("mainlobby", "enabled").getBoolean()
                 && !MainConfig.getInstance().node("bungee", "enabled").getBoolean()) {
@@ -1593,13 +1589,12 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
 
     public void makePlayerFromSpectator(BedWarsPlayer gamePlayer) {
         Debug.info(gamePlayer.getName() + " changing spectator to regular player");
-        Player player = gamePlayer.as(Player.class); // TODO: remove transformation
         var currentTeam = getPlayerTeam(gamePlayer);
 
         if (gamePlayer.getGame() == this && currentTeam != null) {
             gamePlayer.setSpectator(false);
-            if (player.getSpectatorTarget() != null) {
-                player.setSpectatorTarget(null);
+            if (gamePlayer.getSpectatorTarget().isPresent()) {
+                gamePlayer.setSpectatorTarget(null);
             }
             gamePlayer.teleport(MiscUtils.findEmptyLocation(currentTeam.getTeamSpawn()), () -> {
                 gamePlayer.setAllowFlight(false);
@@ -1902,7 +1897,7 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
                                     region.putOriginalBlock(block.getLocation(), block.getBlockState().orElseThrow());
                                     var neighbor = region.getBedNeighbor(block);
                                     region.putOriginalBlock(neighbor.getLocation(), neighbor.getBlockState().orElseThrow());
-                                    neighbor.as(Block.class).setType(Material.AIR, false);  // TODO: remove this
+                                    neighbor.setTypeWithoutPhysics(BlockTypeHolder.air());
                                 } else {
                                     region.putOriginalBlock(loc, block.getBlockState().orElseThrow());
                                 }
@@ -2087,10 +2082,9 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
                     if (MainConfig.getInstance().node("bungee", "serverRestart").getBoolean()) {
                         EventManager.fire(new ServerRestartEventImpl());
 
-                        Bukkit.getServer()
-                                .dispatchCommand(Bukkit.getServer().getConsoleSender(), "restart"); // TODO: replace this
+                        PlayerMapper.getConsoleSender().tryToDispatchCommand("restart");
                     } else if (MainConfig.getInstance().node("bungee", "serverStop").getBoolean()) {
-                        Bukkit.shutdown(); // TODO: replace this
+                        Server.shutdown();
                     }
                 }).delay(30, TaskerTime.TICKS).start();
             }
@@ -2310,8 +2304,8 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
                     .ifPresent(location -> {
                         if (location.getChunk().isLoaded()) {
                             var blockState = location.getBlock().getBlockState();
-                            if (blockState.isPresent() && blockState.get() instanceof SignBlockStateHolder) {
-                                var sign = (SignBlockStateHolder) blockState.get();
+                            if (blockState.isPresent() && blockState.get() instanceof SignHolder) {
+                                var sign = (SignHolder) blockState.get();
                                 for (int i = 0; i < texts.size() && i < 4; i++) {
                                     sign.line(i, AdventureHelper.toComponent(texts.get(i)));
                                 }
@@ -2662,7 +2656,7 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
                         .replaceAll("\\{score}", Integer.toString(score))
                 )
                 .map(s -> s.startsWith("/") ? s.substring(1) : s)
-                .forEach(s -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), s));
+                .forEach(player::tryToDispatchCommand);
     }
 
     @Override

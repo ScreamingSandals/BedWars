@@ -4,8 +4,6 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.game.GameManagerImpl;
 import org.screamingsandals.bedwars.inventories.GamesInventory;
@@ -14,6 +12,7 @@ import org.screamingsandals.bedwars.utils.SerializableLocation;
 import org.screamingsandals.lib.Server;
 import org.screamingsandals.lib.npc.NPC;
 import org.screamingsandals.lib.npc.skin.NPCSkin;
+import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.utils.InteractType;
 import org.screamingsandals.lib.utils.TriConsumer;
@@ -72,10 +71,10 @@ public class BedWarsNPC {
         DUMMY((bedWarsNPC, playerWrapper, type) -> {
         }),
         PLAYER_COMMAND((bedWarsNPC, playerWrapper, type) -> {
-            Server.runSynchronously(() -> Bukkit.dispatchCommand(playerWrapper.as(Player.class), bedWarsNPC.value)); // TODO: replace this
+            Server.runSynchronously(() -> playerWrapper.tryToDispatchCommand(bedWarsNPC.value));
         }),
         CONSOLE_COMMAND((bedWarsNPC, playerWrapper, type) -> {
-            Server.runSynchronously(() -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), bedWarsNPC.value)); // TODO: replace this
+            Server.runSynchronously(() -> PlayerMapper.getConsoleSender().tryToDispatchCommand(bedWarsNPC.value));
         }),
         OPEN_GAMES_INVENTORY((bedWarsNPC, player, type) -> {
             Server.runSynchronously(() -> GamesInventory.getInstance().openForPlayer(player, bedWarsNPC.value));

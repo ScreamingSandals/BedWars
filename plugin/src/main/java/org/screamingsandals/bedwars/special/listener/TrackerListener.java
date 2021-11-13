@@ -1,7 +1,5 @@
 package org.screamingsandals.bedwars.special.listener;
 
-import org.bukkit.Location;
-import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.utils.ItemUtils;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.events.ApplyPropertyToBoughtItemEventImpl;
@@ -45,13 +43,13 @@ public class TrackerListener {
                         Tasker.build(() -> {
                             var target = MiscUtils.findTarget(game, player, Double.MAX_VALUE);
                             if (target != null) {
-                                player.as(Player.class).setCompassTarget(target.getLocation().as(Location.class)); // TODO: remove this transformation
+                                player.setCompassTarget(target.getLocation());
 
                                 int distance = (int) Math.sqrt(player.getLocation().getDistanceSquared(target.getLocation()));
                                 MiscUtils.sendActionBarMessage(player, Message.of(LangKeys.SPECIALS_TRACKER_TARGET_FOUND).placeholder("target", target.getDisplayName()).placeholder("distance", distance));
                             } else {
                                 MiscUtils.sendActionBarMessage(player, Message.of(LangKeys.SPECIALS_TRACKER_NO_TARGET_FOUND));
-                                player.as(Player.class).setCompassTarget(game.getTeamOfPlayer(gamePlayer).getTeamSpawn().as(Location.class)); // TODO: remove this transformation
+                                player.setCompassTarget(game.getTeamOfPlayer(gamePlayer).getTeamSpawn());
                             }
                         })
                         .afterOneTick()

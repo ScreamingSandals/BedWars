@@ -2,7 +2,6 @@ package org.screamingsandals.bedwars.special;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import org.bukkit.entity.TNTPrimed;
 import org.screamingsandals.bedwars.api.special.LuckyBlock;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.TeamImpl;
@@ -58,7 +57,7 @@ public class LuckyBlockImpl extends SpecialItem implements LuckyBlock<GameImpl, 
             case "tnt":
                 Tasker.build(() -> {
                     var tnt = EntityMapper.spawn("tnt", blockLocation).orElseThrow();
-                    tnt.as(TNTPrimed.class).setFuseTicks(0);
+                    tnt.setMetadata("fuse_ticks", 0);
                 })
                 .delay(10, TaskerTime.TICKS)
                 .start();

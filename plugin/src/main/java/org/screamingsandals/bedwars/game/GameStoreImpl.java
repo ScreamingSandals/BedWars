@@ -2,7 +2,6 @@ package org.screamingsandals.bedwars.game;
 
 import lombok.Data;
 import lombok.Getter;
-import org.bukkit.entity.*;
 import org.screamingsandals.bedwars.api.game.GameStore;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.lib.entity.EntityLiving;
@@ -82,22 +81,11 @@ public class GameStoreImpl implements GameStore<EntityLiving, EntityTypeHolder, 
             }
 
             if (entity.getEntityType().is("villager")) {
-                entity.as(Villager.class).setProfession(Villager.Profession.FARMER);
+                entity.setMetadata("villager_profession", "farmer");
             }
 
-            if (entity.as(Entity.class) instanceof Ageable) {
-                if (isBaby) {
-                    entity.as(Ageable.class).setBaby();
-                } else {
-                    entity.as(Ageable.class).setAdult();
-                }
-            } else {
-                // Some 1.16 mobs are not ageable but could be baby
-                try {
-                    var bentity = entity.as(Entity.class);
-                    bentity.getClass().getMethod("setBaby", boolean.class).invoke(bentity, isBaby);
-                } catch (Throwable ignored) {
-                }
+            if (entity.hasMetadata("is_baby")) {
+                entity.setMetadata("is_baby", isBaby);
             }
         }
         return entity;

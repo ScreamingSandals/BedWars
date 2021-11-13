@@ -2,11 +2,6 @@ package org.screamingsandals.bedwars.special;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.TNTPrimed;
-import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.api.special.AutoIgniteableTNT;
 import org.screamingsandals.bedwars.entities.EntitiesManagerImpl;
 import org.screamingsandals.bedwars.game.GameImpl;
@@ -18,9 +13,16 @@ import org.screamingsandals.lib.tasker.TaskerTime;
 import org.screamingsandals.lib.world.LocationHolder;
 import org.screamingsandals.lib.world.LocationMapper;
 
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+
 @Getter
 @EqualsAndHashCode(callSuper = true)
 public class AutoIgniteableTNTImpl extends SpecialItem implements AutoIgniteableTNT<GameImpl, BedWarsPlayer, TeamImpl> {
+
+    public static final Map<Integer, UUID> PROTECTED_PLAYERS = new ConcurrentHashMap<>();
+
     private final int explosionTime;
     private final boolean allowedDamagingPlacer;
 
@@ -29,7 +31,7 @@ public class AutoIgniteableTNTImpl extends SpecialItem implements AutoIgniteable
         this.explosionTime = explosionTime;
         this.allowedDamagingPlacer = damagePlacer;
     }
-    
+
     @Override
     public void spawn(Object location) {
         spawn(LocationMapper.wrapLocation(location));
@@ -38,13 +40,16 @@ public class AutoIgniteableTNTImpl extends SpecialItem implements AutoIgniteable
     public void spawn(LocationHolder location) {
         var tnt = EntityTypeHolder.of("tnt").spawn(location).orElseThrow();
         EntitiesManagerImpl.getInstance().addEntityToGame(tnt, game);
-        tnt.as(TNTPrimed.class).setFuseTicks(explosionTime * 20);
+        tnt.setMetadata("fuse_ticks", explosionTime * 20);
         if (!allowedDamagingPlacer) {
-            tnt.as(Entity.class).setMetadata(player.getUuid().toString(), new FixedMetadataValue(BedWarsPlugin.getInstance().as(JavaPlugin.class), null));
+            PROTECTED_PLAYERS.put(tnt.getEntityId(), player.getUuid());
         }
-        tnt.as(Entity.class).setMetadata("autoignited", new FixedMetadataValue(BedWarsPlugin.getInstance().as(JavaPlugin.class), null));
-        Tasker.build(() -> EntitiesManagerImpl.getInstance().removeEntityFromGame(tnt))
+        Tasker.build(() -> {
+                    EntitiesManagerImpl.getInstance().removeEntityFromGame(tnt);
+                    AutoIgniteableTNTImpl.PROTECTED_PLAYERS.remove(tnt.getEntityId());
+                })
                 .delay(explosionTime + 10, TaskerTime.TICKS)
                 .start();
     }
+
 }

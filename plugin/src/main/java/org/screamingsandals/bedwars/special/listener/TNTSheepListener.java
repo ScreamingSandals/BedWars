@@ -1,16 +1,14 @@
 package org.screamingsandals.bedwars.special.listener;
 
-import org.bukkit.entity.Creature;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.TNTPrimed;
+import org.screamingsandals.bedwars.utils.ItemUtils;
 import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.events.ApplyPropertyToBoughtItemEventImpl;
 import org.screamingsandals.bedwars.game.GameManagerImpl;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.bedwars.special.TNTSheepImpl;
-import org.screamingsandals.bedwars.utils.ItemUtils;
 import org.screamingsandals.bedwars.utils.MiscUtils;
+import org.screamingsandals.lib.entity.EntityLiving;
 import org.screamingsandals.lib.event.EventPriority;
 import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.event.entity.SEntityDamageByEntityEvent;
@@ -18,8 +16,7 @@ import org.screamingsandals.lib.event.player.SPlayerInteractEntityEvent;
 import org.screamingsandals.lib.event.player.SPlayerInteractEvent;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.utils.annotations.Service;
-
-import java.util.Objects;
+import org.screamingsandals.lib.world.LocationHolder;
 
 @Service
 public class TNTSheepListener {
@@ -30,6 +27,7 @@ public class TNTSheepListener {
         if (event.getPropertyName().equalsIgnoreCase("tntsheep")) {
             ItemUtils.saveData(event.getStack(), applyProperty(event));
         }
+
     }
 
     @OnEvent
@@ -43,26 +41,30 @@ public class TNTSheepListener {
         var game = gamePlayer.getGame();
 
         if (event.getAction() == SPlayerInteractEvent.Action.RIGHT_CLICK_AIR || event.getAction() == SPlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
-            if (game != null && game.getStatus() == GameStatus.RUNNING && !gamePlayer.isSpectator() && event.getItem() != null) {
+            if (game.getStatus() == GameStatus.RUNNING && !gamePlayer.isSpectator() && event.getItem() != null) {
                 var stack = event.getItem();
                 String unhidden = ItemUtils.getIfStartsWith(stack, TNT_SHEEP_PREFIX);
 
                 if (unhidden != null) {
                     event.setCancelled(true);
 
-                    var propertiesSplit = unhidden.split(":");
-                    var speed = Double.parseDouble(propertiesSplit[2]);
-                    var follow = Double.parseDouble(propertiesSplit[3]);
-                    var maxTargetDistance = Double.parseDouble(propertiesSplit[4]);
-                    var explosionTime = Integer.parseInt(propertiesSplit[5]);
+                    var speed = Double.parseDouble(unhidden.split(":")[2]);
+                    var follow = Double.parseDouble(unhidden.split(":")[3]);
+                    var maxTargetDistance = Double.parseDouble(unhidden.split(":")[4]);
+                    var explosionTime = Integer.parseInt(unhidden.split(":")[5]);
+                    LocationHolder startLocation;
 
-                    var startLocation = (event.getBlockClicked() == null) ? player.getLocation() : event.getBlockClicked().getLocation().add(event.getBlockFace().getDirection());
-
+                    if (event.getBlockClicked() == null) {
+                        startLocation = player.getLocation();
+                    } else {
+                        startLocation = event.getBlockClicked().getLocation().add(event.getBlockFace().getDirection());
+                    }
                     var sheep = new TNTSheepImpl(game, gamePlayer, game.getPlayerTeam(gamePlayer),
                             startLocation, stack, speed, follow, maxTargetDistance, explosionTime);
 
                     sheep.spawn();
                 }
+
             }
         }
     }
@@ -78,7 +80,7 @@ public class TNTSheepListener {
             if (PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
                 var gamePlayer = PlayerManagerImpl.getInstance().getPlayer(player).orElseThrow();
                 var game = gamePlayer.getGame();
-                if (game != null && event.getDamager().as(Entity.class) instanceof TNTPrimed && !game.getConfigurationContainer().getOrDefault(ConfigurationContainer.FRIENDLY_FIRE, Boolean.class, false)) {
+                if (event.getDamager().getEntityType().is("minecraft:tnt") && !game.getConfigurationContainer().getOrDefault(ConfigurationContainer.FRIENDLY_FIRE, Boolean.class, false)) {
                     var tnt = event.getDamager();
                     var sheeps = game.getActiveSpecialItems(TNTSheepImpl.class);
                     for (var sheep : sheeps) {
@@ -91,11 +93,12 @@ public class TNTSheepListener {
                     }
                 }
             }
-        } else if (event.getEntity().as(Entity.class) instanceof Creature) {
+        } else if (event.getEntity() instanceof EntityLiving) {
             var mob = event.getEntity();
             for (var game : GameManagerImpl.getInstance().getGames()) {
                 if (game.getStatus() == GameStatus.RUNNING && mob.getLocation().getWorld().equals(game.getGameWorld())) {
-                    for (var sheep : game.getActiveSpecialItems(TNTSheepImpl.class)) {
+                    var sheeps = game.getActiveSpecialItems(TNTSheepImpl.class);
+                    for (var sheep : sheeps) {
                         if (mob.equals(sheep.getEntity())) {
                             event.setDamage(0.0);
                             return;
@@ -104,6 +107,7 @@ public class TNTSheepListener {
                 }
             }
         }
+
     }
 
     @OnEvent
@@ -111,11 +115,12 @@ public class TNTSheepListener {
         var player = event.getPlayer();
         if (PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
             var gamePlayer = PlayerManagerImpl.getInstance().getPlayer(player).orElseThrow();
-            var game = Objects.requireNonNull(gamePlayer.getGame());
+            var game = gamePlayer.getGame();
 
             var rightClicked = event.getClickedEntity();
             var vehicle = rightClicked.isInsideVehicle() ? rightClicked.getVehicle() : null;
-            for (var sheep : game.getActiveSpecialItems(TNTSheepImpl.class)) {
+            var sheeps = game.getActiveSpecialItems(TNTSheepImpl.class);
+            for (var sheep : sheeps) {
                 if (sheep.getEntity().equals(rightClicked) || sheep.getEntity().equals(vehicle)) {
                     event.setCancelled(true);
                     return;

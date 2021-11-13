@@ -2,17 +2,15 @@ package org.screamingsandals.bedwars.special;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.api.special.TNTSheep;
 import org.screamingsandals.bedwars.entities.EntitiesManagerImpl;
 import org.screamingsandals.bedwars.game.GameImpl;
-import org.screamingsandals.bedwars.game.TeamColorImpl;
 import org.screamingsandals.bedwars.game.TeamImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.bedwars.lib.nms.entity.EntityUtils;
-import org.bukkit.DyeColor;
-import org.bukkit.entity.*;
 import org.screamingsandals.lib.entity.EntityBasic;
 import org.screamingsandals.lib.entity.EntityLiving;
 import org.screamingsandals.lib.entity.EntityMapper;
@@ -48,13 +46,14 @@ public class TNTSheepImpl extends SpecialItem implements TNTSheep<GameImpl, BedW
 
     public void spawn() {
         var sheep = EntityMapper.<EntityLiving>spawn("sheep", initialLocation).orElseThrow();
-        var color = ((TeamColorImpl) team.getColor());
+        var color = team.getColor();
         var target = MiscUtils.findTarget(game, player, maxTargetDistance);
 
-        sheep.as(Sheep.class).setColor(DyeColor.getByWoolData((byte) color.woolData));
+        sheep.setMetadata("color", color.woolData);
 
         if (target == null) {
-            Message.of(LangKeys.SPECIALS_TNTSHEEP_NO_TARGET_FOUND)
+            Message
+                    .of(LangKeys.SPECIALS_TNTSHEEP_NO_TARGET_FOUND)
                     .prefixOrDefault(game.getCustomPrefixComponent())
                     .send(player);
             sheep.remove();
@@ -62,15 +61,12 @@ public class TNTSheepImpl extends SpecialItem implements TNTSheep<GameImpl, BedW
         }
 
         entity = sheep;
-
-        //noinspection ConstantConditions - suppressing nullability check, if this throws a NPE, something went wrong badly
         EntityUtils.makeMobAttackTarget(sheep, speed, followRange, 0)
-                .getTargetSelector()
-                .attackTarget(target.as(Player.class));
+                .getTargetSelector().attackTarget(target.as(Player.class));
 
         tnt = EntityMapper.spawn("tnt", initialLocation).orElseThrow();
-        tnt.as(TNTPrimed.class).setFuseTicks(explosionTime);
-        tnt.as(TNTPrimed.class).setIsIncendiary(false);
+        tnt.setMetadata("fuse_ticks", explosionTime);
+        tnt.setMetadata("is_incendiary", false);
         sheep.addPassenger(tnt);
 
         game.registerSpecialItem(this);
@@ -91,11 +87,11 @@ public class TNTSheepImpl extends SpecialItem implements TNTSheep<GameImpl, BedW
         player.forceUpdateInventory();
 
         Tasker.build(() -> {
-            tnt.remove();
-            sheep.remove();
-            game.unregisterSpecialItem(TNTSheepImpl.this);
-        })
-        .delay(explosionTime + 13, TaskerTime.TICKS)
-        .start();
+                    tnt.remove();
+                    sheep.remove();
+                    game.unregisterSpecialItem(TNTSheepImpl.this);
+                })
+                .delay(explosionTime + 13, TaskerTime.TICKS)
+                .start();
     }
 }

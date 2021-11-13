@@ -1,7 +1,5 @@
 package org.screamingsandals.bedwars.special.listener;
 
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.TNTPrimed;
 import org.screamingsandals.bedwars.utils.ItemUtils;
 import org.screamingsandals.bedwars.events.ApplyPropertyToBoughtItemEventImpl;
 import org.screamingsandals.bedwars.events.PlayerBuildBlockEventImpl;
@@ -35,9 +33,8 @@ public class AutoIgniteableTNTListener {
         if (unhidden != null) {
             block.setType(BlockTypeHolder.air());
             var location = block.getLocation().add(0.5, 0.5, 0.5);
-            final var propertiesSplit = unhidden.split(":");
-            int explosionTime = Integer.parseInt(propertiesSplit[2]);
-            boolean damagePlacer = Boolean.parseBoolean(propertiesSplit[3]);
+            int explosionTime = Integer.parseInt(unhidden.split(":")[2]);
+            boolean damagePlacer = Boolean.parseBoolean(unhidden.split(":")[3]);
             AutoIgniteableTNTImpl special = new AutoIgniteableTNTImpl(game, player, game.getPlayerTeam(player), explosionTime, damagePlacer);
             special.spawn(location);
         }
@@ -55,10 +52,9 @@ public class AutoIgniteableTNTListener {
             return;
         }
 
-        var bukkitDamager = event.getDamager().as(Entity.class);
-        if (bukkitDamager instanceof TNTPrimed) {
-            var tnt = (TNTPrimed) bukkitDamager;
-            if (tnt.hasMetadata(player.getUuid().toString()) && tnt.hasMetadata("autoignited")) {
+        var damager = event.getDamager();
+        if (damager.getEntityType().is("minecraft:tnt")) {
+            if (player.getUuid().equals(AutoIgniteableTNTImpl.PROTECTED_PLAYERS.get(damager.getEntityId()))) {
                 event.setCancelled(true);
             }
         }
@@ -67,6 +63,7 @@ public class AutoIgniteableTNTListener {
     private String applyProperty(ApplyPropertyToBoughtItemEventImpl event) {
         return AUTO_IGNITEABLE_TNT_PREFIX
                 + MiscUtils.getIntFromProperty("explosion-time", "specials.auto-igniteable-tnt.explosion-time", event)
-                + ":" + MiscUtils.getBooleanFromProperty("damage-placer", "specials.auto-igniteable-tnt.damage-placer", event);
+                + ":" + MiscUtils.getBooleanFromProperty("damage-placer", "specials.auto-igniteable-tnt.damage-placer",
+                event);
     }
 }
