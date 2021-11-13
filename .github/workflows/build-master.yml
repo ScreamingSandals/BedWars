@@ -1,0 +1,41 @@
+name: Build and publish BedWars master
+
+on:
+  push:
+    branches: [ master ]
+concurrency: bedwars_master
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set the Build number
+        id: calculated_build_number
+        env:
+          NUM: ${{ github.run_number }}
+        run: echo ::set-output name=build_n::$(($NUM+865))
+      - name: Set up JDK 17
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'adopt'
+          java-version: 17
+          cache: 'gradle'
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+      - name: Build with Gradle
+        run: ./gradlew
+        env:
+          NEXUS_URL_RELEASE: ${{ secrets.NEXUS_URL_RELEASE }}
+          NEXUS_URL_SNAPSHOT: ${{ secrets.NEXUS_URL_SNAPSHOT }}
+          NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+          NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+          JAVADOC_HOST: ${{ secrets.JAVADOC_HOST }}
+          JAVADOC_SECRET: ${{ secrets.JAVADOC_SECRET }}
+          JAVADOC_USER: ${{ secrets.JAVADOC_USER }}
+          OPTIMIZE_FOR_CI_CD: "1"
+          BUILD_NUMBER: ${{ steps.calculated_build_number.outputs.build_n }}
+      - name: Upload the final artifact
+        uses: actions/upload-artifact@v2
+        with:
+          path: plugin/build/libs/BedWars*[!s].jar
