@@ -1,3 +1,5 @@
+import java.text.SimpleDateFormat
+
 plugins {
     id 'org.screamingsandals.plugin-builder' version "${SCREAMING_PLUGIN_BUILDER_VERSION}" apply false
     id 'org.screamingsandals.nms-mapper' version "${NMS_MAPPER_VERSION}" apply false
@@ -61,4 +63,21 @@ subprojects {
     }
 
     sourceCompatibility = '11.0'
+
+    if (System.getenv("OPTIMIZE_FOR_CI_CD") != null) {
+        project.tasks.withType(PublishToMavenRepository).all { task ->
+            task.doLast {
+                var m = AbstractPublishToMaven.class.getDeclaredMethod("getMavenPublishers")
+                m.setAccessible(true)
+                var publishers = m.invoke(task)
+                var f = publishers.getClass().getDeclaredField("timeProvider")
+                f.setAccessible(true)
+                var timeProvider = f.get(publishers)
+                var utcDateFormatter = new SimpleDateFormat("yyyyMMdd.HHmmss")
+                utcDateFormatter.setTimeZone(TimeZone.getTimeZone("UTC"))
+                var currentTime = new Date(timeProvider.getCurrentTime())
+                println "The artifact is probably saved with this time: " + utcDateFormatter.format(currentTime)
+            }
+        }
+    }
 }
