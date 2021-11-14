@@ -468,4 +468,10 @@ public interface Game<P extends BWPlayer, T extends Team<?, ?, ?, ?, ?>, B exten
      * @return
      */
     @Nullable L getLobbyPos2();
+
+    /**
+     * @since 0.3.0
+     * @return
+     */
+    double getFee();
 }

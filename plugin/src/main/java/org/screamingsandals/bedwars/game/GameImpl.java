@@ -110,6 +110,9 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
     private final List<TeamImpl> teams = new ArrayList<>();
     private final List<ItemSpawnerImpl> spawners = new ArrayList<>();
     private final Map<BedWarsPlayer, RespawnProtection> respawnProtectionMap = new HashMap<>();
+    @Getter
+    @Setter
+    private double fee;
     private int pauseCountdown;
     private int gameTime;
     private int minPlayers;
@@ -217,6 +220,7 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
             final var game = new GameImpl(uuid);
             game.file = file;
             game.name = configMap.node("name").getString();
+            game.fee = configMap.node("fee").getDouble(0D);
             game.pauseCountdown = configMap.node("pauseCountdown").getInt();
             game.gameTime = configMap.node("gameTime").getInt();
 
@@ -1264,6 +1268,8 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
         if (gameVariant != null) {
             configMap.node("variant").set(gameVariant.getName());
         }
+
+        configMap.node("fee").set(fee);
 
         try {
             loader.save(configMap);

@@ -46,20 +46,36 @@ public interface GameManager<T extends Game<?, ?, ?, ?, ?, ?, ?, ?, ?>> {
     /**
      * @return Free game that has the highest players in it or empty optional
      */
-    Optional<T> getGameWithHighestPlayers();
+    Optional<T> getGameWithHighestPlayers(boolean fee);
 
     /**
      * @return Free game that has the lowest players in it or empty optional
      */
-    Optional<T> getGameWithLowestPlayers();
+    Optional<T> getGameWithLowestPlayers(boolean fee);
 
     /**
      * @return Game in waiting state or empty optional
      */
-    Optional<T> getFirstWaitingGame();
+    Optional<T> getFirstWaitingGame(boolean fee);
 
     /**
      * @return Game in running state or empty optional
      */
-    Optional<T> getFirstRunningGame();
+    Optional<T> getFirstRunningGame(boolean fee);
+
+    default Optional<T> getGameWithHighestPlayers() {
+        return getGameWithHighestPlayers(true);
+    }
+
+    default Optional<T> getGameWithLowestPlayers() {
+        return getGameWithLowestPlayers(true);
+    }
+
+    default Optional<T> getFirstWaitingGame() {
+        return getFirstWaitingGame(true);
+    }
+
+    default Optional<T> getFirstRunningGame() {
+        return getFirstRunningGame(true);
+    }
 }

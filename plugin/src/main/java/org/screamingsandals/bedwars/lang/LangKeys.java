@@ -124,7 +124,8 @@ public class LangKeys {
     public final String[] IN_GAME_PLAYER_KILLED = {"in_game", "player_killed"};
     public final String[] IN_GAME_GAME_START_TITLE = {"in_game", "game_start_title"};
     public final String[] IN_GAME_GAME_START_SUBTITLE = {"in_game", "game_start_subtitle"};
-    public final String[] IN_GAME_VAULT_DEPOSITE = {"in_game", "vault_deposite"};
+    public final String[] IN_GAME_ECONOMY_DEPOSITED = {"in_game", "economy_deposited"};
+    public final String[] IN_GAME_ECONOMY_MISSING_COINS = {"in_game", "economy_missing_coins"};
     public final String[] HELP_TITLE = {"help", "title"};
     public final String[] HELP_TITLE_CONSOLE = {"help", "title_console"};
     public final String[] HELP_BW_JOIN = {"help", "bw_join"};
@@ -162,6 +163,7 @@ public class LangKeys {
     public final String[] HELP_BW_ADMIN_STORE_REMOVE = {"help", "bw_admin_store_remove"};
     public final String[] HELP_BW_ADMIN_STORE_TYPE = {"help", "bw_admin_store_type"};
     public final String[] HELP_BW_ADMIN_CONFIG = {"help", "bw_admin_config"};
+    public final String[] HELP_BW_ADMIN_FEE = {"help", "bw_admin_fee"};
     public final String[] HELP_BW_ADMIN_ARENA_TIME = {"help", "bw_admin_arena_time"};
     public final String[] HELP_BW_ADMIN_ARENA_WEATHER = {"help", "bw_admin_arena_weather"};
     public final String[] HELP_BW_ADMIN_POST_GAME_WAITING = {"help", "bw_admin_post_game_waiting"};
@@ -282,6 +284,7 @@ public class LangKeys {
     public final String[] ADMIN_ARENA_EDIT_SUCCESS_SPAWNER_HOLOGRAM_TYPE_SET = {"admin", "arena", "edit", "success", "spawner_hologram_type_set"};
     public final String[] ADMIN_ARENA_EDIT_SUCCESS_SPAWNER_CUSTOM_NAME_SET = {"admin", "arena", "edit", "success", "spawner_custom_name_set"};
     public final String[] ADMIN_ARENA_EDIT_SUCCESS_SPAWNER_TYPE_CHANGED = {"admin", "arena", "edit", "success", "spawner_type_changed"};
+    public final String[] ADMIN_ARENA_EDIT_SUCCESS_FEE_SET = {"admin", "arena", "edit", "success", "fee_set"};
     public final String[] ADMIN_MAINLOBBY_INFO = {"admin", "mainlobby", "info"};
     public final String[] ADMIN_HOLO_NOT_ENABLED = {"admin", "holo", "not_enabled"};
     public final String[] ADMIN_HOLO_ADDED = {"admin", "holo", "added"};

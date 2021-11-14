@@ -111,6 +111,7 @@ public class HelpCommand extends BaseCommand {
                                     .join(LangKeys.HELP_BW_ADMIN_STORE_ADULT)
                                     .join(LangKeys.HELP_BW_ADMIN_STORE_REMOVE)
                                     .join(LangKeys.HELP_BW_ADMIN_CONFIG)
+                                    .join(LangKeys.HELP_BW_ADMIN_FEE)
                                     .join(LangKeys.HELP_BW_ADMIN_ARENA_TIME)
                                     .join(LangKeys.HELP_BW_ADMIN_ARENA_WEATHER)
                                     .join(LangKeys.HELP_BW_ADMIN_REMOVE)

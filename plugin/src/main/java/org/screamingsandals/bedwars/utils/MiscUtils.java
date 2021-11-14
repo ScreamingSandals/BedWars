@@ -31,8 +31,12 @@ import java.util.stream.Collectors;
 @UtilityClass
 public class MiscUtils {
     private final Pattern STRIP_COLOR_PATTERN = Pattern.compile("(?i)\u00A7[0-9A-FK-ORX]");
-    public final Component BW_PREFIX = Component.text("[B")
-            .color(NamedTextColor.RED)
+    public final Component BW_PREFIX = Component.text("[")
+            .color(NamedTextColor.WHITE)
+            .append(
+                    Component.text("B")
+                            .color(NamedTextColor.RED)
+            )
             .append(
                     Component.text("W] ")
                             .color(NamedTextColor.WHITE)

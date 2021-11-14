@@ -26,8 +26,10 @@ public class EditCommand extends BaseAdminSubCommand {
                             GameManagerImpl.getInstance().getGame(gameName).ifPresentOrElse(game -> {
                                 game.stop();
                                 AdminCommand.gc.put(gameName, game);
-                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_SUCCESS_EDIT_MODE).defaultPrefix());
-                            }, () -> sender.sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_GAME_NOT_FOUND).defaultPrefix()));
+                                Message.of(LangKeys.ADMIN_ARENA_SUCCESS_EDIT_MODE)
+                                        .defaultPrefix()
+                                        .send(sender);
+                            }, () -> Message.of(LangKeys.IN_GAME_ERRORS_GAME_NOT_FOUND).defaultPrefix().send(sender));
                         })
         );
     }

@@ -33,7 +33,12 @@ public class VaultEconomy extends Economy {
     }
 
     @Override
-    protected String currencyName0() {
+    public boolean withdraw(PlayerWrapper player, double coins) {
+        return vaultEcon.withdrawPlayer(player.as(Player.class), coins).transactionSuccess();
+    }
+
+    @Override
+    public String currencyName() {
         return vaultEcon.currencyNameSingular();
     }
 
