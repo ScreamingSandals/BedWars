@@ -33,6 +33,8 @@ jobs:
           JAVADOC_USER: ${{ secrets.JAVADOC_USER }}
           OPTIMIZE_FOR_CI_CD: "1"
           BUILD_NUMBER: ${{ steps.calculated_build_number.outputs.build_n }}
+          NEXUS_BASE_URL: ${{ secrets.NEXUS_BASE_URL }}
+          GITHUB_ACTIONS_URL: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
       - name: Upload the final artifact
         uses: actions/upload-artifact@v2
         with:

@@ -49,3 +49,16 @@ prepareTestTask()
         .pluginJar(shadowJar.archiveFile.get().asFile.toPath())
         .addToServerProperties('level-type', 'flat')
         .build()
+
+discord {
+    title = "BedWars ver/0.2.x #${System.getenv('BUILD_NUMBER') ?: "custom"}"
+    content = 'New build of BedWars is now available!'
+    url = System.getenv('WEBHOOK_URL')
+    allowedClassifiersAndExtensions = ['.jar']
+
+    if (System.getenv('GITHUB_ACTIONS_URL')) {
+        buildInformationUrl = System.getenv('GITHUB_ACTIONS_URL')
+    }
+
+    registerTask(project)
+}
