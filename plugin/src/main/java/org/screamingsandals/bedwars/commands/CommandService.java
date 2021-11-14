@@ -4,6 +4,7 @@ import cloud.commandframework.CommandManager;
 import cloud.commandframework.execution.CommandExecutionCoordinator;
 import cloud.commandframework.minecraft.extras.MinecraftExceptionHandler;
 import lombok.experimental.UtilityClass;
+import org.screamingsandals.bedwars.commands.migrate.MigrateBedWars1058Command;
 import org.screamingsandals.bedwars.commands.migrate.MigrateBedWarsRelCommand;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.lib.command.CloudConstructor;
@@ -35,7 +36,8 @@ import org.screamingsandals.lib.utils.annotations.methods.Provider;
         StatsCommand.class,
         GamesInventoryCommand.class,
         NPCCommand.class,
-        MigrateBedWarsRelCommand.class
+        MigrateBedWarsRelCommand.class,
+        MigrateBedWars1058Command.class
 })
 @UtilityClass
 public class CommandService {
