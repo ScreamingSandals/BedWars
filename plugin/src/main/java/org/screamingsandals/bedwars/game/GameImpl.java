@@ -1421,6 +1421,19 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
             }
         }
 
+        final var economy = EconomyProvider.getEconomy();
+        if (MainConfig.getInstance().node("economy", "enabled").getBoolean(true) && economy != null) {
+            if (fee > 0) {
+                if (!economy.withdraw(player, fee)) {
+                    Message.of(LangKeys.IN_GAME_ECONOMY_MISSING_COINS)
+                            .placeholder("coins", fee)
+                            .placeholder("currency", economy.currencyName())
+                            .send(player);
+                    return;
+                }
+            }
+        }
+
         player.changeGame(this);
     }
 
@@ -1430,6 +1443,12 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
             return;
         }
         if (player.isInGame() && player.getGame() == this) {
+            final var economy = EconomyProvider.getEconomy();
+            if (MainConfig.getInstance().node("economy", "enabled").getBoolean(true) && economy != null) {
+                if (fee > 0 && MainConfig.getInstance().node("economy", "return-fee").getBoolean(true)) {
+                    economy.deposit(player, fee);
+                }
+            }
             player.changeGame(null);
         }
     }

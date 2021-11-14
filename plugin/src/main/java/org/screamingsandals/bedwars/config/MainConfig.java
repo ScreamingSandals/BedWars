@@ -200,6 +200,7 @@ public class MainConfig {
                     .back()
                 .section("economy").migrateOld("vault")
                     .key("enabled").migrateOld("enable").defValue(true)
+                    .key("return-fee").defValue(true)
                     .section("reward")
                         .key("kill").defValue(5)
                         .key("win").defValue(20)

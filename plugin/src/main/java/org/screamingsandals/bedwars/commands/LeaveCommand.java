@@ -19,14 +19,14 @@ public class LeaveCommand extends BaseCommand {
     protected void construct(Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder, CommandManager<CommandSenderWrapper> manager) {
         manager.command(
                 commandSenderWrapperBuilder
-                .handler(commandContext -> {
-                    var player = commandContext.getSender().as(PlayerWrapper.class);
-                    if (PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
-                        PlayerManagerImpl.getInstance().getPlayerOrCreate(player).changeGame(null);
-                    } else {
-                        commandContext.getSender().sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_YOU_ARE_NOT_IN_GAME).defaultPrefix());
-                    }
-                })
+                        .handler(commandContext -> {
+                            var player = commandContext.getSender().as(PlayerWrapper.class);
+                            if (PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
+                                PlayerManagerImpl.getInstance().getPlayerOrCreate(player).changeGame(null);
+                            } else {
+                                commandContext.getSender().sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_YOU_ARE_NOT_IN_GAME).defaultPrefix());
+                            }
+                        })
         );
     }
 }
