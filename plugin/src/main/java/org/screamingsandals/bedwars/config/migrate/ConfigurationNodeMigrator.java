@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.screamingsandals.lib.utils.TriConsumer;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
+import org.spongepowered.configurate.gson.GsonConfigurationLoader;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
 import java.io.File;
@@ -16,6 +17,10 @@ public final class ConfigurationNodeMigrator {
 
     public static ConfigurationNodeMigrator yaml(File file, ConfigurationNode newNode) throws ConfigurateException {
         return new ConfigurationNodeMigrator(YamlConfigurationLoader.builder().file(file).build().load(), newNode);
+    }
+
+    public static ConfigurationNodeMigrator gson(File file, ConfigurationNode newNode) throws ConfigurateException {
+        return new ConfigurationNodeMigrator(GsonConfigurationLoader.builder().file(file).build().load(), newNode);
     }
 
     public Remappable remap(Object... keys) {

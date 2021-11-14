@@ -2,7 +2,7 @@ package org.screamingsandals.bedwars.config.migrate.andrei;
 
 import lombok.extern.slf4j.Slf4j;
 import org.screamingsandals.bedwars.config.MainConfig;
-import org.screamingsandals.bedwars.config.migrate.ConfigurationMigrator;
+import org.screamingsandals.bedwars.config.migrate.Migrator;
 import org.screamingsandals.bedwars.config.migrate.ConfigurationNodeMigrator;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.lib.utils.annotations.Service;
@@ -14,7 +14,7 @@ import java.nio.file.Paths;
 
 @Slf4j
 @Service
-public class BedWars1058ConfigurationMigrator implements ConfigurationMigrator {
+public class BedWars1058ConfigurationMigrator implements Migrator {
     @Override
     public boolean migrate() {
         final File bw1058ConfigFile = Paths.get(MiscUtils.getPluginsFolder("BedWars1058").toString(), "config.yml").toFile();

@@ -1,5 +1,5 @@
 package org.screamingsandals.bedwars.config.migrate;
 
-public interface ConfigurationMigrator {
+public interface Migrator {
     boolean migrate();
 }

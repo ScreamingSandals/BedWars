@@ -2,7 +2,7 @@ package org.screamingsandals.bedwars.commands.migrate;
 
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
-import org.screamingsandals.bedwars.config.migrate.ConfigurationMigrator;
+import org.screamingsandals.bedwars.config.migrate.Migrator;
 import org.screamingsandals.bedwars.config.migrate.bwrel.BedWarsRelConfigurationMigrator;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.lib.lang.Message;
@@ -14,7 +14,7 @@ import org.screamingsandals.lib.utils.annotations.methods.OnEnable;
         BedWarsRelConfigurationMigrator.class
 })
 public class MigrateBedWarsRelCommand extends MigrateCommand {
-    private ConfigurationMigrator configurationMigrator;
+    private Migrator configurationMigrator;
 
     @OnEnable
     public void enable(BedWarsRelConfigurationMigrator configurationMigrator) {

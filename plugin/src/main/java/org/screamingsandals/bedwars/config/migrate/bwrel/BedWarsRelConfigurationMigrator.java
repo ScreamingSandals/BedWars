@@ -2,7 +2,7 @@ package org.screamingsandals.bedwars.config.migrate.bwrel;
 
 import lombok.extern.slf4j.Slf4j;
 import org.screamingsandals.bedwars.config.MainConfig;
-import org.screamingsandals.bedwars.config.migrate.ConfigurationMigrator;
+import org.screamingsandals.bedwars.config.migrate.Migrator;
 import org.screamingsandals.bedwars.config.migrate.ConfigurationNodeMigrator;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.lib.utils.annotations.Service;
@@ -19,10 +19,10 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-public class BedWarsRelConfigurationMigrator implements ConfigurationMigrator {
+public class BedWarsRelConfigurationMigrator implements Migrator {
     @Override
     public boolean migrate() {
-        final File bwRelConfigFile = Paths.get(MiscUtils.getPluginsFolder("BedwarsRel").toString(), "config.yml").toFile();
+        final var bwRelConfigFile = Paths.get(MiscUtils.getPluginsFolder("BedwarsRel").toString(), "config.yml").toFile();
         if (!bwRelConfigFile.isFile()) {
             log.error("BedWarsRel configuration not found, cannot continue with migration.");
             return false;
