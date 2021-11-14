@@ -27,6 +27,7 @@ import org.screamingsandals.bedwars.commands.StatsCommand;
 import org.screamingsandals.bedwars.config.GameConfigurationContainer;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.config.RecordSave;
+import org.screamingsandals.bedwars.econ.EconomyProvider;
 import org.screamingsandals.bedwars.entities.EntitiesManagerImpl;
 import org.screamingsandals.bedwars.events.*;
 import org.screamingsandals.bedwars.holograms.StatisticsHolograms;
@@ -904,8 +905,8 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
                             statistic.addDestroyedBeds(1);
                             statistic.addScore(MainConfig.getInstance().node("statistics", "scores", "bed-destroy").getInt(25));
                         }
-                        if (BedWarsPlugin.getEconomy() != null) {
-                            BedWarsPlugin.getEconomy().deposit(destroyer, MainConfig.getInstance().node("economy", "reward", "bed-destroy").getInt());
+                        if (EconomyProvider.getEconomy() != null) {
+                            EconomyProvider.getEconomy().deposit(destroyer, MainConfig.getInstance().node("economy", "reward", "bed-destroy").getInt());
                         }
 
                         dispatchRewardCommands("player-destroy-bed", destroyer,
@@ -1962,8 +1963,8 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
                                                 .placeholder("time", time)
                                                 .times(TitleUtils.defaultTimes())
                                                 .title(player);
-                                        if (BedWarsPlugin.getEconomy() != null) {
-                                            BedWarsPlugin.getEconomy().deposit(player, BedWarsPlugin.getWinReward());
+                                        if (EconomyProvider.getEconomy() != null) {
+                                            EconomyProvider.getEconomy().deposit(player, BedWarsPlugin.getWinReward());
                                         }
 
                                         SpawnEffects.spawnEffect(this, player, "game-effects.end");

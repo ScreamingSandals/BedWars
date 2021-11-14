@@ -17,6 +17,8 @@ import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.commands.BedWarsPermission;
 import org.screamingsandals.bedwars.commands.admin.JoinTeamCommand;
 import org.screamingsandals.bedwars.config.MainConfig;
+import org.screamingsandals.bedwars.econ.Economy;
+import org.screamingsandals.bedwars.econ.EconomyProvider;
 import org.screamingsandals.bedwars.econ.VaultEconomy;
 import org.screamingsandals.bedwars.entities.EntitiesManagerImpl;
 import org.screamingsandals.bedwars.events.PlayerDeathMessageSendEventImpl;
@@ -52,6 +54,8 @@ import org.screamingsandals.lib.tasker.TaskerTime;
 import org.screamingsandals.lib.tasker.task.TaskerTask;
 import org.screamingsandals.lib.utils.AdventureHelper;
 import org.screamingsandals.lib.utils.annotations.Service;
+import org.screamingsandals.lib.utils.annotations.methods.OnPostEnable;
+import org.screamingsandals.lib.utils.annotations.parameters.ProvidedBy;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -61,13 +65,19 @@ import java.util.stream.Collectors;
 @Service
 public class PlayerListener {
     private final List<PlayerWrapper> explosionAffectedPlayers = new ArrayList<>();
+    private Economy economy = null;
+
+    @OnPostEnable
+    public void enable(@ProvidedBy(EconomyProvider.class) Economy economy) {
+        this.economy = economy;
+    }
 
     @OnEvent(priority = org.screamingsandals.lib.event.EventPriority.HIGHEST)
     public void onPlayerDeath(SPlayerDeathEvent event) {
         final var victim = event.getPlayer();
 
         if (PlayerManagerImpl.getInstance().isPlayerInGame(victim)) {
-            Debug.info(victim.getName() + " died in BedWars Game, Processing his dead...");
+            Debug.info(victim.getName() + " died in a BedWars game, processing his death...");
             final var gVictim = victim.as(BedWarsPlayer.class);
             final var game = gVictim.getGame();
             final var victimTeam = game.getPlayerTeam(gVictim);
@@ -200,15 +210,14 @@ public class PlayerListener {
                                     (float) MainConfig.getInstance().node("sounds", "player_kill", "volume").getDouble(),
                                     (float) MainConfig.getInstance().node("sounds", "player_kill", "pitch").getDouble()
                             ));
-                            if (BedWarsPlugin.getEconomy() != null) {
+                            if (economy != null) {
                                 if (!isBed) {
-                                    BedWarsPlugin.getEconomy().deposit(killer, MainConfig.getInstance().node("economy", "reward", "final-kill").getInt());
+                                    economy.deposit(killer, MainConfig.getInstance().node("economy", "reward", "final-kill").getInt());
                                 } else {
-                                    BedWarsPlugin.getEconomy().deposit(killer, BedWarsPlugin.getKillReward());
+                                    economy.deposit(killer, BedWarsPlugin.getKillReward());
                                 }
                             }
                         }
-
                     }
                 }
 
@@ -1161,9 +1170,9 @@ public class PlayerListener {
             format = format.replace("%displayName%", AdventureHelper.toLegacy(displayName));
             format = format.replace("%playerListName%", AdventureHelper.toLegacyNullable(playerListName));
 
-            if (BedWarsPlugin.getEconomy() != null && BedWarsPlugin.getEconomy() instanceof VaultEconomy) {
-                format = format.replace("%prefix%", ((VaultEconomy) BedWarsPlugin.getEconomy()).getPrefix(player));
-                format = format.replace("%suffix%", ((VaultEconomy) BedWarsPlugin.getEconomy()).getSuffix(player));
+            if (economy != null && economy instanceof VaultEconomy) {
+                format = format.replace("%prefix%", ((VaultEconomy) economy).getPrefix(player));
+                format = format.replace("%suffix%", ((VaultEconomy) economy).getSuffix(player));
             }
 
             format = format.replace("%prefix%", "");

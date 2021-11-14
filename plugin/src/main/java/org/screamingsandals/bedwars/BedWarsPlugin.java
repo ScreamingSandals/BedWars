@@ -2,7 +2,7 @@ package org.screamingsandals.bedwars;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.jetbrains.annotations.Nullable;
+import org.screamingsandals.bedwars.api.BedwarsAPI;
 import org.screamingsandals.bedwars.api.entities.EntitiesManager;
 import org.screamingsandals.bedwars.api.game.GameManager;
 import org.screamingsandals.bedwars.api.game.ItemSpawnerType;
@@ -11,17 +11,17 @@ import org.screamingsandals.bedwars.api.variants.VariantManager;
 import org.screamingsandals.bedwars.commands.CommandService;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.config.RecordSave;
-import org.screamingsandals.bedwars.econ.Economy;
-import org.screamingsandals.bedwars.econ.VaultEconomy;
-import org.screamingsandals.bedwars.entities.EntitiesManagerImpl;
-import org.screamingsandals.bedwars.game.*;
-import org.screamingsandals.bedwars.inventories.GamesInventory;
-import org.screamingsandals.bedwars.lang.BedWarsLangService;
-import org.screamingsandals.bedwars.api.BedwarsAPI;
 import org.screamingsandals.bedwars.database.DatabaseManager;
+import org.screamingsandals.bedwars.econ.EconomyProvider;
+import org.screamingsandals.bedwars.entities.EntitiesManagerImpl;
+import org.screamingsandals.bedwars.game.GameManagerImpl;
+import org.screamingsandals.bedwars.game.ItemSpawnerTypeImpl;
 import org.screamingsandals.bedwars.holograms.LeaderboardHolograms;
 import org.screamingsandals.bedwars.holograms.StatisticsHolograms;
+import org.screamingsandals.bedwars.inventories.GamesInventory;
 import org.screamingsandals.bedwars.inventories.ShopInventory;
+import org.screamingsandals.bedwars.lang.BedWarsLangService;
+import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.listener.*;
 import org.screamingsandals.bedwars.lobby.NPCManager;
 import org.screamingsandals.bedwars.placeholderapi.BedwarsExpansion;
@@ -31,7 +31,6 @@ import org.screamingsandals.bedwars.special.SpecialRegister;
 import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.bedwars.tab.TabManager;
 import org.screamingsandals.bedwars.utils.*;
-import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.variants.VariantManagerImpl;
 import org.screamingsandals.lib.CustomPayload;
 import org.screamingsandals.lib.Server;
@@ -40,7 +39,6 @@ import org.screamingsandals.lib.healthindicator.HealthIndicatorManager;
 import org.screamingsandals.lib.item.ItemTypeHolder;
 import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.plugin.PluginContainer;
-import org.screamingsandals.lib.plugin.PluginManager;
 import org.screamingsandals.lib.plugin.ServiceManager;
 import org.screamingsandals.lib.sidebar.SidebarManager;
 import org.screamingsandals.lib.utils.PlatformType;
@@ -49,7 +47,10 @@ import org.screamingsandals.lib.utils.annotations.Plugin;
 import org.screamingsandals.lib.utils.annotations.PluginDependencies;
 import org.spongepowered.configurate.serialize.SerializationException;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Objects;
 
 @Plugin(
         id = "BedWars",
@@ -71,6 +72,7 @@ import java.util.*;
         "Parties"
 })
 @Init(services = {
+        EconomyProvider.class,
         org.screamingsandals.lib.npc.NPCManager.class,
         CommandService.class,
         VariantManagerImpl.class,
@@ -111,14 +113,9 @@ public class BedWarsPlugin extends PluginContainer implements BedwarsAPI {
     private static BedWarsPlugin instance;
 
     private String version;
-    private Economy econ = null;
     private boolean isDisabling = false;
     private boolean isLegacy;
     private final HashMap<String, ItemSpawnerTypeImpl> spawnerTypes = new HashMap<>();
-
-    public static @Nullable Economy getEconomy() {
-        return instance.econ;
-    }
 
     public static BedWarsPlugin getInstance() {
         return instance;
@@ -316,15 +313,6 @@ public class BedWarsPlugin extends PluginContainer implements BedwarsAPI {
                                 .color(snapshot ? NamedTextColor.RED : NamedTextColor.GREEN)
                 )
         );
-
-        if (PluginManager.isEnabled(PluginManager.createKey("Vault").orElseThrow()) && PluginManager.getPlatformType() == PlatformType.BUKKIT) {
-            PlayerMapper.getConsoleSender().sendMessage(
-                    MiscUtils.BW_PREFIX.append(
-                            Component.text("Using Vault for economy.")
-                    )
-            );
-            econ = new VaultEconomy();
-        }
 
         PlayerMapper.getConsoleSender().sendMessage(Component.text("Everything has finished loading! If you like our work, consider subscribing to our Patreon! <3").color(NamedTextColor.WHITE));
         PlayerMapper.getConsoleSender().sendMessage(Component.text("https://www.patreon.com/screamingsandals").color(NamedTextColor.WHITE));
