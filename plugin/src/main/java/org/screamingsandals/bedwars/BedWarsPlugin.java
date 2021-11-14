@@ -2,6 +2,7 @@ package org.screamingsandals.bedwars;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import org.screamingsandals.bedwars.api.BedwarsAPI;
 import org.screamingsandals.bedwars.api.entities.EntitiesManager;
 import org.screamingsandals.bedwars.api.game.GameManager;
 import org.screamingsandals.bedwars.api.game.ItemSpawnerType;
@@ -10,15 +11,17 @@ import org.screamingsandals.bedwars.api.variants.VariantManager;
 import org.screamingsandals.bedwars.commands.CommandService;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.config.RecordSave;
-import org.screamingsandals.bedwars.entities.EntitiesManagerImpl;
-import org.screamingsandals.bedwars.game.*;
-import org.screamingsandals.bedwars.inventories.GamesInventory;
-import org.screamingsandals.bedwars.lang.BedWarsLangService;
-import org.screamingsandals.bedwars.api.BedwarsAPI;
 import org.screamingsandals.bedwars.database.DatabaseManager;
+import org.screamingsandals.bedwars.econ.EconomyProvider;
+import org.screamingsandals.bedwars.entities.EntitiesManagerImpl;
+import org.screamingsandals.bedwars.game.GameManagerImpl;
+import org.screamingsandals.bedwars.game.ItemSpawnerTypeImpl;
 import org.screamingsandals.bedwars.holograms.LeaderboardHolograms;
 import org.screamingsandals.bedwars.holograms.StatisticsHolograms;
+import org.screamingsandals.bedwars.inventories.GamesInventory;
 import org.screamingsandals.bedwars.inventories.ShopInventory;
+import org.screamingsandals.bedwars.lang.BedWarsLangService;
+import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.listener.*;
 import org.screamingsandals.bedwars.lobby.NPCManager;
 import org.screamingsandals.bedwars.placeholderapi.BedwarsExpansion;
@@ -28,7 +31,6 @@ import org.screamingsandals.bedwars.special.SpecialRegister;
 import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.bedwars.tab.TabManager;
 import org.screamingsandals.bedwars.utils.*;
-import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.variants.VariantManagerImpl;
 import org.screamingsandals.lib.CustomPayload;
 import org.screamingsandals.lib.Server;
@@ -45,7 +47,10 @@ import org.screamingsandals.lib.utils.annotations.Plugin;
 import org.screamingsandals.lib.utils.annotations.PluginDependencies;
 import org.spongepowered.configurate.serialize.SerializationException;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Objects;
 
 @Plugin(
         id = "BedWars",
@@ -67,6 +72,7 @@ import java.util.*;
         "Parties"
 })
 @Init(services = {
+        EconomyProvider.class,
         org.screamingsandals.lib.npc.NPCManager.class,
         CommandService.class,
         VariantManagerImpl.class,
@@ -97,10 +103,11 @@ import java.util.*;
         PlayerListener.class,
         EntitiesManagerImpl.class,
         ColorChangerImpl.class,
-        VaultUtils.class,
-        PerWorldInventoryCompatibilityFix.class,
         GamesInventory.class,
         NPCManager.class
+})
+@Init(platforms = {PlatformType.BUKKIT}, services = {
+        PerWorldInventoryCompatibilityFix.class
 })
 public class BedWarsPlugin extends PluginContainer implements BedwarsAPI {
     private static BedWarsPlugin instance;
@@ -122,12 +129,12 @@ public class BedWarsPlugin extends PluginContainer implements BedwarsAPI {
         return instance.isLegacy;
     }
 
-    public static int getVaultKillReward() {
-        return MainConfig.getInstance().node("vault", "reward", "kill").getInt();
+    public static int getKillReward() {
+        return MainConfig.getInstance().node("economy", "reward", "kill").getInt();
     }
 
-    public static int getVaultWinReward() {
-        return MainConfig.getInstance().node("vault", "reward", "win").getInt();
+    public static int getWinReward() {
+        return MainConfig.getInstance().node("economy", "reward", "win").getInt();
     }
 
     public static boolean isFarmBlock(BlockTypeHolder mat) {

@@ -1,6 +1,5 @@
 package org.screamingsandals.bedwars.utils;
 
-import lombok.RequiredArgsConstructor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
@@ -11,12 +10,9 @@ import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.utils.annotations.methods.OnPostEnable;
 
 @Service
-@RequiredArgsConstructor
 public class PerWorldInventoryCompatibilityFix {
-    private final Plugin plugin;
-
     @OnPostEnable
-    public void applyFix() {
+    public void applyFix(Plugin plugin) {
         try {
             var key = PluginManager.createKey("PerWorldInventory").orElseThrow();
             if (PluginManager.isEnabled(key)) {
