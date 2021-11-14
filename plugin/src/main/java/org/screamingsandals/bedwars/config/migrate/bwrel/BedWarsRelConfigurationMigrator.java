@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 public class BedWarsRelConfigurationMigrator implements ConfigurationMigrator {
     @Override
     public boolean migrate() {
-        final File bwRelConfigFile = Paths.get(MiscUtils.getPluginsFolder("BedWarsRel").toString(), "config.yml").toFile();
+        final File bwRelConfigFile = Paths.get(MiscUtils.getPluginsFolder("BedwarsRel").toString(), "config.yml").toFile();
         if (!bwRelConfigFile.isFile()) {
             log.error("BedWarsRel configuration not found, cannot continue with migration.");
             return false;
