@@ -61,15 +61,4 @@ subprojects {
     }
 
     sourceCompatibility = '11.0'
-
-    if (System.getenv("OPTIMIZE_FOR_CI_CD") != null) {
-        project.tasks.withType(PublishToMavenRepository).all { task ->
-            task.doLast {
-                def baseUrl = "${task.repository.url}/${task.publication.groupId.replace('.', '/')}/${task.publication.artifactId}/${task.publication.version}/${task.publication.artifactId}-${task.publication.version}"
-                task.publication.artifacts.each { artifact ->
-                    println "${baseUrl}${artifact.classifier ? '-' + artifact.classifier : ''}.${artifact.extension}"
-                }
-            }
-        }
-    }
 }
