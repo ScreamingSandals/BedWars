@@ -129,6 +129,7 @@ public class HelpCommand extends BaseCommand {
                                 .join(LangKeys.HELP_BW_LIST)
                                 .join(LangKeys.HELP_BW_STATS_OTHER)
                                 .join(LangKeys.HELP_BW_ALLJOIN)
+                                .join(LangKeys.HELP_BW_MIGRATE)
                                 .join(LangKeys.HELP_BW_RELOAD)
                                 .send(sender);
                     }
