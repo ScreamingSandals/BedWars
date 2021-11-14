@@ -56,3 +56,16 @@ prepareTestTask()
 repositories {
     mavenCentral()
 }
+
+discord {
+    title = "BedWars Master #${System.getenv('BUILD_NUMBER') ?: "custom"}"
+    content = 'New build of BedWars is now available!'
+    url = System.getenv('WEBHOOK_URL')
+    allowedClassifiersAndExtensions = ['.jar']
+
+    if (System.getenv('GITHUB_ACTIONS_URL')) {
+        buildInformationUrl = System.getenv('GITHUB_ACTIONS_URL')
+    }
+
+    registerTask(project)
+}
