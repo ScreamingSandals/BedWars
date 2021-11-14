@@ -4,15 +4,15 @@ plugins {
     id 'com.github.gmazzo.buildconfig' version "${BUILDCONFIG_VERSION}" apply false
 }
 
+allprojects {
+    group = 'org.screamingsandals.bedwars'
+    version = BEDWARS_VERSION
+}
+
 if (version.toString().endsWith('-SNAPSHOT')) {
     defaultTasks 'clean', 'screamCompile'
 } else {
     defaultTasks 'clean', 'screamCompile', ':BedWars-API:allowJavadocUpload'
-}
-
-allprojects {
-    group = 'org.screamingsandals.bedwars'
-    version = BEDWARS_VERSION
 }
 
 subprojects {
