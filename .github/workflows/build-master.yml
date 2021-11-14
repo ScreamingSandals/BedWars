@@ -35,6 +35,8 @@ jobs:
           JAVADOC_USER: ${{ secrets.JAVADOC_USER }}
           OPTIMIZE_FOR_CI_CD: "1"
           BUILD_NUMBER: ${{ steps.calculated_build_number.outputs.build_n }}
+          WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
+          GITHUB_ACTIONS_URL: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
       - name: Upload the final artifact
         uses: actions/upload-artifact@v2
         with:
