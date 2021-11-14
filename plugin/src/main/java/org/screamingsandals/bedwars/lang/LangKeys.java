@@ -185,6 +185,7 @@ public class LangKeys {
     public final String[] HELP_BW_ADMIN_SPAWNER_FLOATING = {"help", "bw_admin_spawner_floating"};
     public final String[] HELP_BW_ADMIN_STORE_CHILD = {"help", "bw_admin_store_child"};
     public final String[] HELP_BW_ADMIN_STORE_ADULT = {"help", "bw_admin_store_adult"};
+    public final String[] HELP_BW_MIGRATE = {"help", "bw_migrate"};
     public final String[] HELP_BW_DUMP = {"help", "bw_dump"};
     public final String[] HELP_BW_ADMIN_INTERACTIVE = {"help", "bw_admin_interactive"};
     public final String[] HELP_BW_CHEAT_GIVE = {"help", "bw_cheat_give"};
@@ -399,4 +400,6 @@ public class LangKeys {
     public final String[] LANGUAGE_INVALID = {"language", "invalid"};
     public final String[] LANGUAGE_ALREADY_SET = {"language", "already_set"};
     public final String[] LANGUAGE_SUCCESS = {"language", "success"};
+    public final String[] MIGRATE_SUCCESS = {"migrate", "success"};
+    public final String[] MIGRATE_FAILURE = {"migrate", "failure"};
 }
