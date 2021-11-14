@@ -4,6 +4,7 @@ import lombok.experimental.UtilityClass;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.api.TeamColor;
@@ -24,6 +25,8 @@ import org.screamingsandals.lib.utils.MathUtils;
 import org.screamingsandals.lib.world.LocationHolder;
 import org.screamingsandals.lib.world.WorldHolder;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -51,6 +54,18 @@ public class MiscUtils {
 
     public String stripColor(String input) {
         return STRIP_COLOR_PATTERN.matcher(input).replaceAll("");
+    }
+
+    public @Nullable String getFirstColorCode(String input) {
+        final var matcher = STRIP_COLOR_PATTERN.matcher(input);
+        if (matcher.find()) {
+            return matcher.group();
+        }
+        return null;
+    }
+
+    public NamedTextColor fromLegacyColorCode(String colorCode) {
+        return NamedTextColor.ofExact(Integer.parseInt(colorCode.replace(String.valueOf(LegacyComponentSerializer.SECTION_CHAR), ""), 16));
     }
 
     public BlockFace getCardinalDirection(LocationHolder location) {
@@ -335,6 +350,10 @@ public class MiscUtils {
             }
             return val;
         }
+    }
+
+    public Path getPluginsFolder(String name) {
+        return Paths.get(BedWarsPlugin.getInstance().getDataFolder().getParent().toAbsolutePath().toString(), name);
     }
 
     /**

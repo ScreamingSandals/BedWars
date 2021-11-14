@@ -1,6 +1,7 @@
 package org.screamingsandals.bedwars.config;
 
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.lib.item.Item;
@@ -32,6 +33,11 @@ public class MainConfig {
 
     public ConfigurationNode node(Object... keys) {
         return configurationNode.node(keys);
+    }
+
+    @ApiStatus.Internal
+    public ConfigurationNode getConfigurationNode() {
+        return configurationNode;
     }
 
     @OnEnable

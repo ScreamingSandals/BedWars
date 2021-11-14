@@ -4,6 +4,7 @@ import cloud.commandframework.CommandManager;
 import cloud.commandframework.execution.CommandExecutionCoordinator;
 import cloud.commandframework.minecraft.extras.MinecraftExceptionHandler;
 import lombok.experimental.UtilityClass;
+import org.screamingsandals.bedwars.commands.migrate.MigrateBedWarsRelCommand;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.lib.command.CloudConstructor;
 import org.screamingsandals.lib.lang.Message;
@@ -33,7 +34,8 @@ import org.screamingsandals.lib.utils.annotations.methods.Provider;
         RemoveHoloCommand.class,
         StatsCommand.class,
         GamesInventoryCommand.class,
-        NPCCommand.class
+        NPCCommand.class,
+        MigrateBedWarsRelCommand.class
 })
 @UtilityClass
 public class CommandService {
