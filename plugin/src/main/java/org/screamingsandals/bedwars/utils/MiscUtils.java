@@ -34,6 +34,8 @@ import java.util.stream.Collectors;
 @UtilityClass
 public class MiscUtils {
     private final Pattern STRIP_COLOR_PATTERN = Pattern.compile("(?i)\u00A7[0-9A-FK-ORX]");
+    public final LocationHolder MAX_LOCATION = new LocationHolder(Double.MAX_VALUE, 256D, Double.MAX_VALUE);
+    public final LocationHolder MIN_LOCATION = new LocationHolder(Double.MIN_VALUE, 0D, Double.MIN_VALUE);
     public final Component BW_PREFIX = Component.text("[")
             .color(NamedTextColor.WHITE)
             .append(
