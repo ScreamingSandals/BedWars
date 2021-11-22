@@ -8,13 +8,17 @@ import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.world.LocationHolder;
 import org.screamingsandals.lib.world.WorldMapper;
+import org.screamingsandals.lib.world.chunk.ChunkHolder;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
 import java.io.File;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -27,8 +31,28 @@ public class BedWarsRelArenaMigrator implements FileMigrator {
         }
         final var arenaUUID = UUID.randomUUID();
         final var loader = YamlConfigurationLoader.builder().file(Paths.get(BedWarsPlugin.getInstance().getDataFolder().toAbsolutePath().toString(), "arenas", arenaUUID + ".yml").toFile()).build();
-        ConfigurationNodeMigrator.yaml(Paths.get(file.toPath().toAbsolutePath().toString(), "game.yml").toFile(), loader.createNode())
-                .setExplicitly(arenaUUID.toString(), "uuid")
+        final var migrator = ConfigurationNodeMigrator.yaml(Paths.get(file.toPath().toAbsolutePath().toString(), "game.yml").toFile(), loader.createNode());
+        final var worldHolder = WorldMapper.getWorld(migrator.getOldNode().node("world").getString());
+        if (worldHolder.isPresent()) {
+            final var world = worldHolder.orElseThrow();
+            final var pos1 = parseLocation(migrator.getOldNode().node("loc1"));
+            final var pos2 = parseLocation(migrator.getOldNode().node("loc2"));
+            final var chunks = new ArrayList<ChunkHolder>();
+            for (int x = Math.min(pos1.getChunk().getX(), pos2.getChunk().getX()); x <= Math.max(pos1.getChunk().getX(), pos2.getChunk().getX()); x += 16) {
+                for (int z = Math.min(pos1.getChunk().getZ(), pos2.getChunk().getZ()); z <= Math.max(pos1.getChunk().getZ(), pos2.getChunk().getZ()); z += 16) {
+                    chunks.add(world.getChunkAt(x, z).orElseThrow());
+                }
+            }
+            chunks.stream().filter(chunk -> !chunk.isLoaded()).forEach(ChunkHolder::load);
+            final var shopkeepers = chunks.stream()
+                    .flatMap(chunk -> Arrays.stream(chunk.getEntities()))
+                    .filter(entity -> entity.getEntityType().is("minecraft:villager"))
+                    .collect(Collectors.toUnmodifiableList());
+            // TODO: add to arena file
+        } else {
+            log.warn("Could not find world of arena '{}', shopkeepers will be missing!", file.getName());
+        }
+        migrator.setExplicitly(arenaUUID.toString(), "uuid")
                 .remapWithoutChanges("name")
                 .remapWithoutChanges("world")
                 .remap("loc1").withMapper((oldNode, newNode, keys) -> {
@@ -87,7 +111,6 @@ public class BedWarsRelArenaMigrator implements FileMigrator {
                         }
                     }
                 })
-                // TODO: remap shopkeepers (fucking hell)
                 .save(loader);
     }
 

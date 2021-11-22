@@ -1,6 +1,7 @@
 package org.screamingsandals.bedwars.config.migrate;
 
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.screamingsandals.lib.utils.TriConsumer;
 import org.spongepowered.configurate.ConfigurateException;
@@ -11,6 +12,7 @@ import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
 import java.io.File;
 
+@Getter
 @RequiredArgsConstructor
 public final class ConfigurationNodeMigrator {
     private final ConfigurationNode oldNode;
@@ -35,10 +37,6 @@ public final class ConfigurationNodeMigrator {
     public ConfigurationNodeMigrator setExplicitly(Object value, Object... keys) throws ConfigurateException {
         newNode.node(keys).set(value);
         return this;
-    }
-
-    public ConfigurationNode node() {
-        return newNode;
     }
 
     public void save(AbstractConfigurationLoader<?> loader) throws ConfigurateException {
