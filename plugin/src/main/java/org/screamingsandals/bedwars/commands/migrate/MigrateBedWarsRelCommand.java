@@ -2,6 +2,7 @@ package org.screamingsandals.bedwars.commands.migrate;
 
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
+import lombok.RequiredArgsConstructor;
 import org.screamingsandals.bedwars.config.migrate.FileMigrator;
 import org.screamingsandals.bedwars.config.migrate.bwrel.BedWarsRelConfigurationMigrator;
 import org.screamingsandals.bedwars.lang.LangKeys;
@@ -9,20 +10,15 @@ import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
 import org.screamingsandals.lib.utils.annotations.Service;
-import org.screamingsandals.lib.utils.annotations.methods.OnEnable;
 
 import java.nio.file.Paths;
 
 @Service(dependsOn = {
         BedWarsRelConfigurationMigrator.class
 })
+@RequiredArgsConstructor
 public class MigrateBedWarsRelCommand extends MigrateCommand {
-    private FileMigrator configurationMigrator;
-
-    @OnEnable
-    public void enable(BedWarsRelConfigurationMigrator configurationMigrator) {
-        this.configurationMigrator = configurationMigrator;
-    }
+    private final FileMigrator configurationMigrator;
 
     @Override
     protected void construct(Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder, CommandManager<CommandSenderWrapper> manager) {

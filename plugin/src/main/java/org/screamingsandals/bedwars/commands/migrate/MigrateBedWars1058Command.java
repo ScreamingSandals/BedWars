@@ -2,6 +2,7 @@ package org.screamingsandals.bedwars.commands.migrate;
 
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
+import lombok.RequiredArgsConstructor;
 import org.screamingsandals.bedwars.config.migrate.FileMigrator;
 import org.screamingsandals.bedwars.config.migrate.andrei.BedWars1058ArenaMigrator;
 import org.screamingsandals.bedwars.config.migrate.andrei.BedWars1058ConfigurationMigrator;
@@ -10,7 +11,6 @@ import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
 import org.screamingsandals.lib.utils.annotations.Service;
-import org.screamingsandals.lib.utils.annotations.methods.OnEnable;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,15 +23,10 @@ import java.util.concurrent.CompletableFuture;
         BedWars1058ConfigurationMigrator.class,
         BedWars1058ArenaMigrator.class
 })
+@RequiredArgsConstructor
 public class MigrateBedWars1058Command extends MigrateCommand {
-    private FileMigrator configurationMigrator;
-    private FileMigrator arenaMigrator;
-
-    @OnEnable
-    public void enable(BedWars1058ConfigurationMigrator configurationMigrator, BedWars1058ArenaMigrator arenaMigrator) {
-        this.configurationMigrator = configurationMigrator;
-        this.arenaMigrator = arenaMigrator;
-    }
+    private final FileMigrator configurationMigrator;
+    private final FileMigrator arenaMigrator;
 
     @Override
     protected void construct(Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder, CommandManager<CommandSenderWrapper> manager) {
@@ -44,7 +39,7 @@ public class MigrateBedWars1058Command extends MigrateCommand {
                                 arenaMigrators = Files.walk(Paths.get(MiscUtils.getPluginsFolder("BedWars1058").toString(), "Arenas"))
                                         .map(Path::toFile)
                                         .filter(File::isFile)
-                                        .map(e -> arenaMigrator.migrateAsynchronously(e))
+                                        .map(arenaMigrator::migrateAsynchronously)
                                         .toArray(CompletableFuture[]::new);
                             } catch (IOException e) {
                                 e.printStackTrace();

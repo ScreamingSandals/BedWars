@@ -1208,14 +1208,14 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
         configMap.node("pauseCountdown").set(pauseCountdown);
         configMap.node("gameTime").set(gameTime);
         configMap.node("world").set(world.getName());
-        configMap.node("pos1").set(MiscUtils.setLocationToString(pos1));
-        configMap.node("pos2").set(MiscUtils.setLocationToString(pos2));
-        configMap.node("specSpawn").set(MiscUtils.setLocationToString(specSpawn));
-        configMap.node("lobbySpawn").set(MiscUtils.setLocationToString(lobbySpawn));
+        configMap.node("pos1").set(MiscUtils.writeLocationToString(pos1));
+        configMap.node("pos2").set(MiscUtils.writeLocationToString(pos2));
+        configMap.node("specSpawn").set(MiscUtils.writeLocationToString(specSpawn));
+        configMap.node("lobbySpawn").set(MiscUtils.writeLocationToString(lobbySpawn));
         if (lobbyPos1 != null)
-            configMap.node("lobbyPos1", MiscUtils.setLocationToString(lobbyPos1));
+            configMap.node("lobbyPos1", MiscUtils.writeLocationToString(lobbyPos1));
         if (lobbyPos2 != null)
-            configMap.node("lobbyPos2", MiscUtils.setLocationToString(lobbyPos2));
+            configMap.node("lobbyPos2", MiscUtils.writeLocationToString(lobbyPos2));
         configMap.node("lobbySpawnWorld").set(lobbySpawn.getWorld().getName());
         configMap.node("minPlayers").set(minPlayers);
         configMap.node("postGameWaiting").set(postGameWaiting);
@@ -1227,13 +1227,13 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
                 teamNode.node("isNewColor").set(true);
                 teamNode.node("color").set(t.getColor().name());
                 teamNode.node("maxPlayers").set(t.getMaxPlayers());
-                teamNode.node("bed").set(MiscUtils.setLocationToString(t.getTargetBlock()));
-                teamNode.node("spawn").set(MiscUtils.setLocationToString(t.getTeamSpawn()));
+                teamNode.node("bed").set(MiscUtils.writeLocationToString(t.getTargetBlock()));
+                teamNode.node("spawn").set(MiscUtils.writeLocationToString(t.getTeamSpawn()));
             }
         }
         for (var spawner : spawners) {
             var spawnerNode = configMap.node("spawners").appendListNode();
-            spawnerNode.node("location").set(MiscUtils.setLocationToString(spawner.getLocation()));
+            spawnerNode.node("location").set(MiscUtils.writeLocationToString(spawner.getLocation()));
             spawnerNode.node("type").set(spawner.getItemSpawnerType().getConfigKey());
             spawnerNode.node("customName").set(spawner.getCustomName());
             spawnerNode.node("startLevel").set(spawner.getBaseAmountPerSpawn());
@@ -1246,7 +1246,7 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
         }
         for (var store : gameStore) {
             var storeNode = configMap.node("stores").appendListNode();
-            storeNode.node("loc").set(MiscUtils.setLocationToString(store.getStoreLocation()));
+            storeNode.node("loc").set(MiscUtils.writeLocationToString(store.getStoreLocation()));
             storeNode.node("shop").set(store.getShopFile());
             storeNode.node("parent").set(store.isUseParent() ? "true" : "false");
             storeNode.node("type").set(store.getEntityType().getPlatformName());

@@ -25,14 +25,16 @@ public class BedWars1058ArenaMigrator implements FileMigrator {
             return;
         }
         final var arenaUUID = UUID.randomUUID();
-        final var loader = YamlConfigurationLoader.builder().file(Paths.get(BedWarsPlugin.getInstance().getDataFolder().toAbsolutePath().toString(), "arenas", arenaUUID + ".yml").toFile()).build();
         final var name = file.getName().substring(0, file.getName().lastIndexOf("."));
-        final var migrator = ConfigurationNodeMigrator.yaml(file, loader.createNode())
+        final var loader = YamlConfigurationLoader.builder().file(Paths.get(BedWarsPlugin.getInstance().getDataFolder().toAbsolutePath().toString(), "arenas", arenaUUID + ".yml").toFile()).build();
+        ConfigurationNodeMigrator.yaml(file, loader.createNode())
                 .setExplicitly(arenaUUID.toString(), "uuid")
                 .setExplicitly(name, "name")
+                .setExplicitly(30, "pauseCountdown")
+                // TODO: remap game time
                 .setExplicitly(name, "world")
-                .setExplicitly(MiscUtils.setLocationToString(MiscUtils.MAX_LOCATION), "pos1")
-                .setExplicitly(MiscUtils.setLocationToString(MiscUtils.MIN_LOCATION), "pos2")
+                .setExplicitly(MiscUtils.writeLocationToString(MiscUtils.MAX_LOCATION), "pos1")
+                .setExplicitly(MiscUtils.writeLocationToString(MiscUtils.MIN_LOCATION), "pos2")
                 .remap("waiting", "Loc").toNewPath("specSpawn")
                 .remap("waiting", "Loc").toNewPath("lobbySpawn")
                 .setExplicitly(name, "lobbySpawnWorld")
@@ -97,7 +99,7 @@ public class BedWars1058ArenaMigrator implements FileMigrator {
                 .setExplicitly("WORLD", "arenaTime")
                 .setExplicitly("default", "arenaWeather")
                 .setExplicitly("default", "lobbyBossBarColor")
-                .setExplicitly("default", "gameBossBarColor");
-        loader.save(migrator.end());
+                .setExplicitly("default", "gameBossBarColor")
+                .save(loader);
     }
 }

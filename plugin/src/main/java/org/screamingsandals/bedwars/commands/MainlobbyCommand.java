@@ -48,7 +48,7 @@ public class MainlobbyCommand extends BaseCommand {
                         var location = sender.as(PlayerWrapper.class).getLocation();
 
                         try {
-                            MainConfig.getInstance().node("mainlobby", "location").set(MiscUtils.setLocationToString(location));
+                            MainConfig.getInstance().node("mainlobby", "location").set(MiscUtils.writeLocationToString(location));
                             MainConfig.getInstance().node("mainlobby", "world").set(location.getWorld().getName());
                             MainConfig.getInstance().saveConfig();
 

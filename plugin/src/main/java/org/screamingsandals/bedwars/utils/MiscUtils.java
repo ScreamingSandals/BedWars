@@ -227,7 +227,7 @@ public class MiscUtils {
         return new LocationHolder(x, y, z, yaw, pitch, world);
     }
 
-    public String setLocationToString(LocationHolder location) {
+    public String writeLocationToString(LocationHolder location) {
         return location.getX() + ";" + location.getY() + ";" + location.getZ() + ";" + location.getYaw() + ";"
                 + location.getPitch();
     }

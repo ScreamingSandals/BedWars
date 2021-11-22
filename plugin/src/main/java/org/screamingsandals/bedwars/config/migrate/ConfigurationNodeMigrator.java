@@ -6,6 +6,7 @@ import org.screamingsandals.lib.utils.TriConsumer;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.gson.GsonConfigurationLoader;
+import org.spongepowered.configurate.loader.AbstractConfigurationLoader;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
 import java.io.File;
@@ -36,8 +37,12 @@ public final class ConfigurationNodeMigrator {
         return this;
     }
 
-    public ConfigurationNode end() {
+    public ConfigurationNode node() {
         return newNode;
+    }
+
+    public void save(AbstractConfigurationLoader<?> loader) throws ConfigurateException {
+        loader.save(newNode);
     }
 
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
