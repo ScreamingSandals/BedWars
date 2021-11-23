@@ -5,6 +5,7 @@ import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.config.migrate.ConfigurationNodeMigrator;
 import org.screamingsandals.bedwars.config.migrate.FileMigrator;
 import org.screamingsandals.bedwars.utils.MiscUtils;
+import org.screamingsandals.lib.Server;
 import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.world.LocationHolder;
 import org.screamingsandals.lib.world.WorldMapper;
@@ -18,7 +19,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -28,6 +28,9 @@ public class BedWarsRelArenaMigrator implements FileMigrator {
         if (!file.isDirectory()) {
             log.error("Expected a directory at '{}', {}, cannot continue with migration.", file.getName(), (file.exists()) ? "found a file" : "found nothing");
             return;
+        }
+        if (!Server.isServerThread()) {
+            throw new UnsupportedOperationException("This migrator needs to be run synchronously!");
         }
         final var arenaUUID = UUID.randomUUID();
         final var loader = YamlConfigurationLoader.builder().file(Paths.get(BedWarsPlugin.getInstance().getDataFolder().toAbsolutePath().toString(), "arenas", arenaUUID + ".yml").toFile()).build();
@@ -43,12 +46,27 @@ public class BedWarsRelArenaMigrator implements FileMigrator {
                     chunks.add(world.getChunkAt(x, z).orElseThrow());
                 }
             }
-            chunks.stream().filter(chunk -> !chunk.isLoaded()).forEach(ChunkHolder::load);
-            final var shopkeepers = chunks.stream()
+            chunks.stream()
+                    .peek(chunk -> {
+                        if (!chunk.isLoaded()) {
+                            chunk.load();
+                        }
+                    })
                     .flatMap(chunk -> Arrays.stream(chunk.getEntities()))
                     .filter(entity -> entity.getEntityType().is("minecraft:villager"))
-                    .collect(Collectors.toUnmodifiableList());
-            // TODO: add to arena file
+                    .filter(entity -> entity.getLocation().getBlockY() >= Math.min(pos1.getBlockY(), pos2.getBlockY()) && entity.getLocation().getBlockY() <= Math.max(pos1.getBlockY(), pos2.getBlockY()))
+                    .forEach(shopkeeper -> {
+                        try {
+                            final var shopNode = migrator.getNewNode().node("stores").appendListNode();
+                            shopNode.node("loc").set(MiscUtils.writeLocationToString(shopkeeper.getLocation()));
+                            shopNode.node("parent").set("true");
+                            shopNode.node("type").set("VILLAGER");
+                            shopNode.node("isBaby").set("false");
+                            shopkeeper.remove(); // killing the shopkeeper to allow for bedwars to spawn a new one
+                        } catch (SerializationException e) {
+                            log.error("An unexpected error occurred while migrating.", e);
+                        }
+                    });
         } else {
             log.warn("Could not find world of arena '{}', shopkeepers will be missing!", file.getName());
         }

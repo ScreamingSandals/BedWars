@@ -16,7 +16,7 @@ import java.io.File;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @Service(dependsOn = {
         BedWarsRelConfigurationMigrator.class,
@@ -33,20 +33,27 @@ public class MigrateBedWarsRelCommand extends MigrateCommand {
                 commandSenderWrapperBuilder
                         .literal("BedWarsRel", "bwrel", "BWRel", "bedwarsrel")
                         .handler(commandContext -> {
-                            final CompletableFuture<?>[] arenaMigrators = Arrays.stream(
-                                            Objects.requireNonNull(
-                                                    Paths.get(MiscUtils.getPluginsFolder("BedwarsRel").toString(), "arenas").toFile().listFiles(File::isDirectory),
-                                                    "'plugins/BedwarsRel/arenas' must be a directory!"
-                                            )
+                            final var failure = new AtomicBoolean(false);
+                            Arrays.stream(
+                                    Objects.requireNonNull(
+                                            Paths.get(MiscUtils.getPluginsFolder("BedwarsRel").toString(), "arenas").toFile().listFiles(File::isDirectory),
+                                            "'plugins/BedwarsRel/arenas' must be a directory!"
                                     )
-                                    .filter(File::isDirectory)
-                                    .map(arenaMigrator::migrateAsynchronously)
-                                    .toArray(CompletableFuture[]::new);
-                            CompletableFuture.allOf(
-                                    configurationMigrator.migrateAsynchronously(
-                                            Paths.get(MiscUtils.getPluginsFolder("BedwarsRel").toString(), "config.yml").toFile()
-                                    ),
-                                    CompletableFuture.allOf(arenaMigrators)
+                            ).forEach(arena -> {
+                                try {
+                                    arenaMigrator.migrate(arena);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                    failure.set(true);
+                                }
+                            });
+                            if (failure.get()) {
+                                Message.of(LangKeys.MIGRATE_FAILURE)
+                                        .send(commandContext.getSender());
+                                return;
+                            }
+                            configurationMigrator.migrateAsynchronously(
+                                    Paths.get(MiscUtils.getPluginsFolder("BedwarsRel").toString(), "config.yml").toFile()
                             )
                             .whenComplete((result, ex) -> {
                                 if (ex != null) {
