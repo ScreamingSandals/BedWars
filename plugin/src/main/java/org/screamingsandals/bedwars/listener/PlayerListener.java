@@ -1293,7 +1293,7 @@ public class PlayerListener {
 
             var block = loc.getBlock();
             if (game.getStatus() == GameStatus.RUNNING) {
-                if (block.getType().isAir() || game.getRegion().isBlockAddedDuringGame(block.getLocation())) {
+                if (block.getType().isAir() || game.getRegion().isLocationModifiedDuringGame(block.getLocation())) {
                     game.getRegion().addBuiltDuringGame(block.getLocation());
                     Debug.info(player.getName() + " placed liquid");
                 } else {

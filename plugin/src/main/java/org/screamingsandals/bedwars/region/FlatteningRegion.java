@@ -16,7 +16,7 @@ public class FlatteningRegion implements BWRegion {
     private final Map<LocationHolder, BlockTypeHolder> brokenOriginalBlocks = new HashMap<>();
 
     @Override
-    public boolean isBlockAddedDuringGame(LocationHolder loc) {
+    public boolean isLocationModifiedDuringGame(LocationHolder loc) {
         return builtBlocks.contains(loc);
     }
 

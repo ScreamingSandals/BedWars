@@ -13,7 +13,7 @@ import org.screamingsandals.lib.block.state.BlockStateMapper;
 
 public interface BWRegion extends Region<BlockHolder> {
 
-    boolean isBlockAddedDuringGame(LocationHolder loc);
+    boolean isLocationModifiedDuringGame(LocationHolder loc);
 
     void putOriginalBlock(LocationHolder loc, BlockStateHolder block);
 
@@ -36,13 +36,13 @@ public interface BWRegion extends Region<BlockHolder> {
 
     @Override
     @Deprecated
-    default boolean isBlockAddedDuringGame(Object loc) {
-        return isBlockAddedDuringGame(LocationMapper.wrapLocation(loc));
+    default boolean isLocationModifiedDuringGame(Object loc) {
+        return isLocationModifiedDuringGame(LocationMapper.wrapLocation(loc));
     }
 
     @Override
     @Deprecated
-    default void putOriginalBlock(Object loc, Object blockState) {
+    default void markForRollback(Object loc, Object blockState) {
         putOriginalBlock(LocationMapper.wrapLocation(loc), BlockStateMapper.wrapBlockState(blockState).orElseThrow());
     }
 

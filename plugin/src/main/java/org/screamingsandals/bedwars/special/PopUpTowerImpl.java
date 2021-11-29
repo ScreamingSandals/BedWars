@@ -181,7 +181,7 @@ public class PopUpTowerImpl extends SpecialItem implements PopUpTower<GameImpl, 
 
     public boolean isLocationSafe(LocationHolder location) {
         final var locBlock = location.getBlock();
-        return (locBlock.getType().isAir() || BedWarsPlugin.isBreakableBlock(location.getBlock().getType()) || game.getRegion().isBlockAddedDuringGame(location)) && !isTargetBlockNear(targetBlocks, location) && !isEntranceLocation(location);
+        return (locBlock.getType().isAir() || BedWarsPlugin.isBreakableBlock(location.getBlock().getType()) || game.getRegion().isLocationModifiedDuringGame(location)) && !isTargetBlockNear(targetBlocks, location) && !isEntranceLocation(location);
     }
 
     public boolean isEntranceLocation(LocationHolder toCheck) {

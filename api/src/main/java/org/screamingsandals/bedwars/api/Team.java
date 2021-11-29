@@ -8,94 +8,139 @@ import org.screamingsandals.lib.utils.Wrapper;
 import java.util.List;
 
 /**
- * @author Bedwars Team
- * @param <L> Location
- * @param <C> Color
- * @param <G> Game
- * @param <I> Inventory
+ * <p>Abstract team API.</p>
+ *
+ * @author ScreamingSandals
+ * @param <L> the location impl (LocationHolder)
+ * @param <C> the color impl (TeamColorImpl)
+ * @param <G> the game impl (GameImpl)
+ * @param <I> the inventory impl (Container)
+ * @param <P> the player impl (BedWarsPlayer)
  */
 @ApiStatus.NonExtendable
-public interface Team<L extends Wrapper, C extends TeamColor, G extends Game<?,?,?,?,?,?,?,?,?>, I extends Wrapper, P extends BWPlayer> {
+public interface Team<L extends Wrapper, C extends TeamColor, G extends Game<?, ?, ?, ?, ?, ?, ?, ?, ?>, I extends Wrapper, P extends BWPlayer> {
     /**
-     * @return
+     * <p>Gets the team's current game.</p>
+     *
+     * @return the game
      */
     G getGame();
 
     /**
-     * @return
+     * <p>Gets the team's name.</p>
+     *
+     * @return the name
      */
     String getName();
 
     /**
-     * @return
+     * <p>Gets the team's color.</p>
+     *
+     * @return the color
      */
     C getColor();
 
     /**
-     * @return
+     * <p>Gets the team's spawn location.</p>
+     *
+     * @return the spawn location
      */
     L getTeamSpawn();
 
     /**
-     * @return
+     * <p>Gets the team's target block (e.g. bed) location.</p>
+     *
+     * @return the target block location
      */
     L getTargetBlock();
 
     /**
-     * @return
+     * <p>Gets the maximal amount of players which can be present in this team.</p>
+     *
+     * @return the max amount of players
      */
     int getMaxPlayers();
 
+    /**
+     * <p>Gets the inventory of the team's shared chest.</p>
+     *
+     * @return the team chest inventory
+     */
     I getTeamChestInventory();
 
     /**
-     * @param location
+     * <p>Adds a new team chest at the specified location.</p>
+     * <p>If a team chest is already present at the specified location, this method will fail silently (do nothing).</p>
+     *
+     * @param location the team chest location or block
      */
     void addTeamChest(Object location);
 
     /**
-     * @param location
+     * <p>Removes a team chest at the specified location.</p>
+     * <p>If a team chest is not present at the specified location, this method will fail silently (do nothing).</p>
+     *
+     * @param location the team chest location or block
      */
     void removeTeamChest(Object location);
 
     /**
-     * @param location
-     * @return
+     * <p>Determines if a team chest is present at the specified location.</p>
+     *
+     * @param location the team chest location
+     * @return is a team chest present at the specified location?
      */
     boolean isTeamChestRegistered(Object location);
 
     /**
-     * @return
+     * <p>Gets the amount of chests bound to this team.</p>
+     *
+     * @return the amount of team chests
      */
     int countTeamChests();
 
     /**
-     * @return
+     * <p>Determines if the team's target block (e.g. bed) is intact (not broken).</p>
+     *
+     * @return is the target block intact?
      */
     boolean isTargetBlockIntact();
+
     /**
-     * @return
+     * <p>Gets the amount of players currently connected in this team.</p>
+     *
+     * @return the amount of players
      */
     int countConnectedPlayers();
 
     /**
-     * @return
+     * <p>Gets a {@link List} of players currently connected to this team.</p>
+     *
+     * @return the {@link List} of players
      */
     List<P> getPlayers();
 
     /**
-     * @param player
-     * @return
+     * <p>Determines if the supplied player is a member of this team.</p>
+     *
+     * @param player the player
+     * @return is the supplied player a member of this team?
      */
     boolean isPlayerInTeam(P player);
 
     /**
-     * @return
+     * <p>Determines if this team is dead (eliminated from the game).</p>
+     *
+     * @return is the team dead?
      */
     boolean isDead();
 
     /**
-     * @return
+     * <p>Determines if this team is alive.</p>
+     *
+     * @return is the team alive?
      */
-    boolean isAlive();
+    default boolean isAlive() {
+        return !isDead();
+    }
 }

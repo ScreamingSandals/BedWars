@@ -644,12 +644,12 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
     }
 
     public boolean isBlockAddedDuringGame(LocationHolder loc) {
-        return status == GameStatus.RUNNING && region.isBlockAddedDuringGame(loc);
+        return status == GameStatus.RUNNING && region.isLocationModifiedDuringGame(loc);
     }
 
     @Deprecated
     public boolean isBlockAddedDuringGame(Object loc) {
-        return status == GameStatus.RUNNING && region.isBlockAddedDuringGame(loc);
+        return status == GameStatus.RUNNING && region.isLocationModifiedDuringGame(loc);
     }
 
     public boolean blockPlace(BedWarsPlayer player, BlockHolder block, BlockStateHolder replaced, Item itemInHand) {
@@ -674,7 +674,7 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
         }
 
         if (!replaced.getType().isAir()) {
-            if (region.isBlockAddedDuringGame(replaced.getLocation())) {
+            if (region.isLocationModifiedDuringGame(replaced.getLocation())) {
                 return true;
             } else if (BedWarsPlugin.isBreakableBlock(replaced.getType()) || region.isLiquid(replaced.getType())) {
                 region.putOriginalBlock(block.getLocation(), replaced);
@@ -708,7 +708,7 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
             return false;
         }
 
-        if (region.isBlockAddedDuringGame(block.getLocation())) {
+        if (region.isLocationModifiedDuringGame(block.getLocation())) {
             region.removeBlockBuiltDuringGame(block.getLocation());
 
             if (block.getType().isSameType("ender_chest")) {

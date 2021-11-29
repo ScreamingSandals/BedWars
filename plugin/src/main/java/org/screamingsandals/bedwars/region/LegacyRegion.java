@@ -27,7 +27,7 @@ public class LegacyRegion implements BWRegion {
     private final HashMap<BlockHolder, DyeColor> brokenBlockColors = new HashMap<>();
 
     @Override
-    public boolean isBlockAddedDuringGame(LocationHolder loc) {
+    public boolean isLocationModifiedDuringGame(LocationHolder loc) {
         return builtBlocks.contains(loc);
     }
 

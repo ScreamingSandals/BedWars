@@ -208,9 +208,4 @@ public class TeamImpl implements Team<LocationHolder, TeamColorImpl, GameImpl, C
     public boolean isDead() {
         return players.isEmpty();
     }
-
-    @Override
-    public boolean isAlive() {
-        return !players.isEmpty();
-    }
 }
