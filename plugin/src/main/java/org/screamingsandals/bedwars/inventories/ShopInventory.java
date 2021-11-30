@@ -380,6 +380,7 @@ public class ShopInventory implements Listener {
 		}
 
 		final BedwarsItemBoughtEvent itemBoughtEvent = new BedwarsItemBoughtEvent(game, player, newItem, price);
+		Bukkit.getPluginManager().callEvent(itemBoughtEvent);
 		if (itemBoughtEvent.isCancelled()) {
 			return;
 		}
