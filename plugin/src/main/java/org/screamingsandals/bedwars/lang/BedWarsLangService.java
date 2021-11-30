@@ -54,7 +54,7 @@ public class BedWarsLangService extends LangService {
         try {
             locale = LocaleUtils.toLocale(mainConfig.node("locale").getString("en_US").replace("-", "_"));
         } catch (IllegalArgumentException ex) {
-            logger.error("invalid locale specified in config, fallback to en_US!", ex);
+            logger.error("Invalid locale specified in config, falling back to en_US!", ex);
             locale = Locale.US;
         }
         final var finalLocale = locale;
@@ -62,10 +62,13 @@ public class BedWarsLangService extends LangService {
 
         Lang.setDefaultPrefix(AdventureHelper.toComponent(prefix));
 
-        internalLanguageDefinition = new Gson().fromJson(new InputStreamReader(BedWarsLangService.class.getResourceAsStream("/language_definition.json")), LanguageDefinition.class);
+        final var langDefinitionResource = BedWarsLangService.class.getResourceAsStream("/language_definition.json");
+        if (langDefinitionResource != null) {
+            internalLanguageDefinition = new Gson().fromJson(new InputStreamReader(langDefinitionResource), LanguageDefinition.class);
+        }
 
         if (internalLanguageDefinition == null) {
-            logger.error("Can't load default Language Definition for Screaming BedWars!");
+            logger.error("Can't load default language definition!");
             return;
         }
 
@@ -90,16 +93,21 @@ public class BedWarsLangService extends LangService {
                 .findFirst()
                 .map(entry -> {
                     try {
+                        final var translationResource = BedWarsLangService.class.getResourceAsStream("/" + entry.getValue());
+                        if (translationResource == null) {
+                            logger.error("Can't acquire base language file en_US!");
+                            return null;
+                        }
                         return LayeredTranslationContainer.of(
                                 GsonConfigurationLoader
                                         .builder()
-                                        .source(() -> new BufferedReader(new InputStreamReader(BedWarsLangService.class.getResourceAsStream("/" + entry.getValue()))))
+                                        .source(() -> new BufferedReader(new InputStreamReader(translationResource)))
                                         .build()
                                         .load()
                         );
                     } catch (ConfigurateException e) {
                         logger.error("Can't load base language file en_US!", e);
-                        e.printStackTrace();
+                        // e.printStackTrace();
                         return null;
                     }
                 })
@@ -121,11 +129,16 @@ public class BedWarsLangService extends LangService {
                     )
                     .map(entry -> {
                         try {
+                            final var translationResource = BedWarsLangService.class.getResourceAsStream("/" + entry.getValue());
+                            if (translationResource == null) {
+                                logger.error("Can't acquire language file!");
+                                return null;
+                            }
                             return LayeredTranslationContainer.of(
                                     us,
                                     GsonConfigurationLoader
                                             .builder()
-                                            .source(() -> new BufferedReader(new InputStreamReader(BedWarsLangService.class.getResourceAsStream("/" + entry.getValue()))))
+                                            .source(() -> new BufferedReader(new InputStreamReader(translationResource)))
                                             .build()
                                             .load(),
                                     BasicConfigurationNode.root(),
@@ -133,7 +146,7 @@ public class BedWarsLangService extends LangService {
                             );
                         } catch (ConfigurateException e) {
                             logger.error("Can't load language file!", e);
-                            e.printStackTrace();
+                            // e.printStackTrace();
                             return null;
                         }
                     })

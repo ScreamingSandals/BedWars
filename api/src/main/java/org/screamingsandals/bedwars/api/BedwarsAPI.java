@@ -14,26 +14,37 @@ import org.screamingsandals.lib.utils.Wrapper;
 import java.util.List;
 
 /**
- * @author Bedwars Team
+ * <p>The BedWars API main entry point.</p>
+ *
+ * @author ScreamingSandals
  */
 @ApiStatus.NonExtendable
 public interface BedwarsAPI extends Wrapper {
     /**
-     * @return Game manager of the bedwars plugin
+     * <p>Retrieves the game manager instance.</p>
+     *
+     * @return the game manager instance
      */
     GameManager<?> getGameManager();
+
     /**
-     * @return Variant manager of the bedwars plugin
+     * <p>Retrieves the variant manager instance.</p>
+     *
+     * @return the variant manager instance
      */
     VariantManager getVariantManager();
 
     /**
-     * @return Player manager of the bedwars plugin
+     * <p>Retrieves the player manager instance.</p>
+     *
+     * @return the player manager instance
      */
     PlayerManager<?, ?> getPlayerManager();
 
     /**
-     * @return Entities manager of the bedwars plugin
+     * <p>Retrieves the entities manager instance.</p>
+     *
+     * @return the entities manager instance
      */
     EntitiesManager<?, ?> getEntitiesManager();
 
@@ -43,9 +54,11 @@ public interface BedwarsAPI extends Wrapper {
     EventUtils getEventUtils();
 
     /**
-     * @return List of existing spawner types
+     * <p>Retrieves a {@link List} of available item spawner types.</p>
+     *
+     * @return a {@link List} of item spawner types
      */
-    List<ItemSpawnerType> getItemSpawnerTypes();
+    List<ItemSpawnerType<?, ?, ?>> getItemSpawnerTypes();
 
     /**
      * @param name Name of item spawner type
@@ -57,7 +70,8 @@ public interface BedwarsAPI extends Wrapper {
      * @param name Name of item spawner type
      * @return ItemSpawnerType by name or null if type isn't exists
      */
-    ItemSpawnerType getItemSpawnerTypeByName(String name);
+    ItemSpawnerType<?, ?, ?> getItemSpawnerTypeByName(String name);
+
     /**
      * @return String of Bedwars Version
      */

@@ -49,7 +49,6 @@ public class GamesInventory {
 
     @OnPostEnable
     public void loadInventory() {
-
         if (Files.exists(gamesInventoryFolder)) {
             try (var stream = Files.walk(gamesInventoryFolder.toAbsolutePath())) {
                 final var results = stream.filter(Files::isRegularFile)
@@ -125,7 +124,7 @@ public class GamesInventory {
         inventoryMap.clear();
     }
 
-    private void onClick(PostClickEvent event) {;
+    private void onClick(PostClickEvent event) {
         final var item = event.getItem();
         final var stack = item.getStack();
         final var player = event.getPlayer();
@@ -158,6 +157,7 @@ public class GamesInventory {
                                                 list = event.getSubInventory().getContents().stream()
                                                         .filter(GenericItemInfo::hasChildInventory)
                                                         .map(GenericItemInfo::getChildInventory)
+                                                        .filter(Objects::nonNull)
                                                         .flatMap(childInventory -> childInventory.getContents().stream())
                                                         .map(genericItemInfo -> genericItemInfo.getFirstPropertyByName("join"))
                                                         .filter(Optional::isPresent)

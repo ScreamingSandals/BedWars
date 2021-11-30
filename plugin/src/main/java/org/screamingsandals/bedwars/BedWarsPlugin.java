@@ -349,7 +349,7 @@ public class BedWarsPlugin extends PluginContainer implements BedwarsAPI {
     }
 
     @Override
-    public List<ItemSpawnerType> getItemSpawnerTypes() {
+    public List<ItemSpawnerType<?, ?, ?>> getItemSpawnerTypes() {
         return new ArrayList<>(spawnerTypes.values());
     }
 

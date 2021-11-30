@@ -23,7 +23,6 @@ public class RespawnProtection implements Runnable {
     	if (!running) return;
         if (length > 0) {
             MiscUtils.sendActionBarMessage(player, Message.of(LangKeys.IN_GAME_RESPAWN_PROTECTION_REMAINING).placeholder("time", this.length));
-
         }
         if (length <= 0) {
             MiscUtils.sendActionBarMessage(player, Message.of(LangKeys.IN_GAME_RESPAWN_PROTECTION_END));

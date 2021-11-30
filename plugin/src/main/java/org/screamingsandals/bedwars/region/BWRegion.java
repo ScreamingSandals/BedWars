@@ -54,7 +54,7 @@ public interface BWRegion extends Region<BlockHolder> {
 
     @Override
     @Deprecated
-    default void removeBlockBuiltDuringGame(Object loc) {
+    default void removeBuiltDuringGame(Object loc) {
         removeBlockBuiltDuringGame(LocationMapper.wrapLocation(loc));
     }
 
