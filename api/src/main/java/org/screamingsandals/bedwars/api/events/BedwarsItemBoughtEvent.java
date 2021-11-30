@@ -24,4 +24,8 @@ public class BedwarsItemBoughtEvent extends Event implements Cancellable {
     public @NotNull HandlerList getHandlers() {
         return BedwarsItemBoughtEvent.handlers;
     }
+
+    public static HandlerList getHandlerList() {
+        return BedwarsItemBoughtEvent.handlers;
+    }
 }
