@@ -36,18 +36,15 @@ import org.screamingsandals.simpleinventories.utils.MapReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.screamingsandals.bedwars.lib.lang.I.i18nc;
 import static org.screamingsandals.bedwars.lib.lang.I18n.i18n;
 import static org.screamingsandals.bedwars.lib.lang.I18n.i18nonly;
 
 public class ShopInventory implements Listener {
-	private Map<String, SimpleInventories> shopMap = new HashMap<>();
-	private Options options = new Options(Main.getInstance());
+	private final Map<String, SimpleInventories> shopMap = new HashMap<>();
+	private final Options options = new Options(Main.getInstance());
 
 	public ShopInventory() {
 		Bukkit.getServer().getPluginManager().registerEvents(this, Main.getInstance());
@@ -221,7 +218,7 @@ public class ShopInventory implements Listener {
 				ItemMeta stackMeta = stack.getItemMeta();
 				List<String> lore = new ArrayList<>();
 				if (stackMeta.hasLore()) {
-					lore = stackMeta.getLore();
+					lore = Objects.requireNonNullElseGet(stackMeta.getLore(), ArrayList::new);
 				}
 				for (String s : loreText) {
 					s = s.replaceAll("%price%", Integer.toString(price));
@@ -292,6 +289,7 @@ public class ShopInventory implements Listener {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private void loadDefault(SimpleInventories format) {
 		format.purgeData();
 		YamlConfiguration configuration = new YamlConfiguration();
@@ -373,6 +371,18 @@ public class ShopInventory implements Listener {
 		int amount = newItem.getAmount();
 		int price = event.getPrice();
 		int inInventory = 0;
+
+		if (type == null) {
+			Debug.warn("Player " + player.getName() + " attempted to buy an item that costs an unavailable resource! Make sure your shop uses only resources which are available on the map.", true);
+			player.sendMessage(i18nc("buy_failed", game.getCustomPrefix()).replace("%item%", amount + "x " + getNameOrCustomNameOfItem(newItem))
+					.replace("%material%", price + " " + event.getType()));
+			return;
+		}
+
+		final BedwarsItemBoughtEvent itemBoughtEvent = new BedwarsItemBoughtEvent(game, player, newItem, price);
+		if (itemBoughtEvent.isCancelled()) {
+			return;
+		}
 
 		if (mapReader.containsKey("currency-changer")) {
 			String changeItemToName = mapReader.getString("currency-changer");
