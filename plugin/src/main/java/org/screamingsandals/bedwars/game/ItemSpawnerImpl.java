@@ -280,7 +280,7 @@ public class ItemSpawnerImpl implements ItemSpawner<LocationHolder, ItemSpawnerT
         this.tier = 1;
         this.hypixelHolo = hologramType == HologramType.HYPIXEL || (hologramType == HologramType.DEFAULT && game.getConfigurationContainer().getOrDefault(ConfigurationContainer.HYPIXEL_HOLOGRAMS, Boolean.class, false));
 
-        if (team != null && game.isTeamActive(team) && game.getConfigurationContainer().getOrDefault(ConfigurationContainer.STOP_TEAM_SPAWNERS_ON_DIE, Boolean.class, false)) {
+        if (team != null && !game.isTeamActive(team) && game.getConfigurationContainer().getOrDefault(ConfigurationContainer.STOP_TEAM_SPAWNERS_ON_DIE, Boolean.class, false)) {
             disabled = true;
         }
 
@@ -319,7 +319,7 @@ public class ItemSpawnerImpl implements ItemSpawner<LocationHolder, ItemSpawnerT
                         return;
                     }
 
-                    if (team != null && game.isTeamActive(team) && game.getConfigurationContainer().getOrDefault(ConfigurationContainer.STOP_TEAM_SPAWNERS_ON_DIE, Boolean.class, false)) {
+                    if (team != null && !game.isTeamActive(team) && game.getConfigurationContainer().getOrDefault(ConfigurationContainer.STOP_TEAM_SPAWNERS_ON_DIE, Boolean.class, false)) {
                         return;
                     }
 
