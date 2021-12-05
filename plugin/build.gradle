@@ -66,9 +66,9 @@ discord {
     if (System.getenv('GITHUB_ACTIONS_URL')) {
         buildInformationUrl = System.getenv('GITHUB_ACTIONS_URL')
     }
-    if (System.getenv('GITHUB_COMMIT_MESSAGE')) {
-        content = "New build of BedWars is now available!\n\n`${System.getenv('GITHUB_COMMIT_MESSAGE')}`"
-    }
+    /*if (System.getenv('GITHUB_COMMIT_MESSAGE')) {
+        content = "New build of BedWars is now available!\n\n```\n${System.getenv('GITHUB_COMMIT_MESSAGE')}\n```"
+    }*/
 
     registerTask(project)
 }
