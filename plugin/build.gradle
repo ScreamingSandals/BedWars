@@ -46,7 +46,7 @@ buildConfig {
 }
 
 prepareTestTask()
-    .versions('1.17.1', '1.16.5', '1.15.2', '1.14.4', '1.13.2', '1.12.2', '1.11.2', '1.10.2', '1.9.4')
+    .versions('1.18', '1.17.1', '1.16.5', '1.15.2', '1.14.4', '1.13.2', '1.12.2', '1.11.2', '1.10.2', '1.9.4')
     .setSubdirectory('paper-master')
     .jvmArgs('-Dio.papermc.paper.suppress.sout.nags=true', '-DPaper.IgnoreJavaVersion=true') // suppress System.out.println nag
     .onlineMode(false)
@@ -65,6 +65,9 @@ discord {
 
     if (System.getenv('GITHUB_ACTIONS_URL')) {
         buildInformationUrl = System.getenv('GITHUB_ACTIONS_URL')
+    }
+    if (System.getenv('GITHUB_COMMIT_MESSAGE')) {
+        content = "New build of BedWars is now available!\n\n`${System.getenv('GITHUB_COMMIT_MESSAGE')}`"
     }
 
     registerTask(project)
