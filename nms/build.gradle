@@ -1,7 +1,7 @@
 import java.util.function.Consumer
 import java.util.function.Supplier
 
-apply plugin: 'org.screamingsandals.nms'
+apply plugin: 'org.screamingsandals.nms-mapper'
 
 sourceSets.main.java.srcDirs += 'src/generated/java'
 
@@ -109,7 +109,7 @@ nmsGen {
         .reqField('searge:field_149567_a')
     reqClass('spigot:PacketPlayOutEntityDestroy')
         .reqConstructor(int) // 1.17 retardation
-        .reqConstructor("int[]")
+        .reqConstructor(int[])
     reqClass('spigot:PacketPlayOutEntityMetadata')
         .reqConstructor(int, DataWatcher, boolean)
     reqClass('spigot:PacketPlayOutEntityTeleport')
