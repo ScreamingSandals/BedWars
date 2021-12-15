@@ -46,7 +46,7 @@ public interface ConfigurationContainer {
     String TARGET_BLOCK_EXPLOSIONS = "target-block-explosions";
     String INVISIBLE_LOBBY_ON_GAME_START = "invisible-lobby-on-game-start";
     String HEALTH_INDICATOR = "health-indicator";
-    String HYPIXEL_HOLOGRAMS = "hypixel-holograms";
+    String CERTAIN_POPULAR_SERVER_HOLOGRAMS = "certain-popular-server-holograms";
     String NEW_GAME_SCOREBOARD = "new-game-scoreboard";
 
     /**

@@ -74,7 +74,7 @@ public class ItemSpawnerImpl implements ItemSpawner<LocationHolder, ItemSpawnerT
     private TaskerTask hologramTask;
     private boolean started;
     private boolean disabled;
-    private boolean hypixelHolo;
+    private boolean certainPopularServerHolo;
     private volatile boolean firstTick = true;
     @Getter
     private Pair<Long, TaskerTime> currentInterval;
@@ -122,8 +122,8 @@ public class ItemSpawnerImpl implements ItemSpawner<LocationHolder, ItemSpawnerT
         if (spawned >= maxSpawnedResources) {
             if (hologram != null && !spawnerIsFullHologram) {
                 spawnerIsFullHologram = true;
-                if (hypixelHolo) {
-                    hologram.replaceLine(2, Message.of(LangKeys.IN_GAME_SPAWNER_FULL_HYPIXEL));
+                if (certainPopularServerHolo) {
+                    hologram.replaceLine(2, Message.of(LangKeys.IN_GAME_SPAWNER_FULL_CERTAIN_POPULAR_SERVER));
                 } else {
                     hologram.replaceLine(1, Message.of(LangKeys.IN_GAME_SPAWNER_FULL));
                 }
@@ -137,8 +137,8 @@ public class ItemSpawnerImpl implements ItemSpawner<LocationHolder, ItemSpawnerT
                 spawnerIsFullHologram = false;
             } else if (hologram != null && (calculated + spawned) == maxSpawnedResources) {
                 spawnerIsFullHologram = true;
-                if (hypixelHolo) {
-                    hologram.replaceLine(2, Message.of(LangKeys.IN_GAME_SPAWNER_FULL_HYPIXEL));
+                if (certainPopularServerHolo) {
+                    hologram.replaceLine(2, Message.of(LangKeys.IN_GAME_SPAWNER_FULL_CERTAIN_POPULAR_SERVER));
                 } else {
                     hologram.replaceLine(1, Message.of(LangKeys.IN_GAME_SPAWNER_FULL));
                 }
@@ -148,8 +148,8 @@ public class ItemSpawnerImpl implements ItemSpawner<LocationHolder, ItemSpawnerT
 
         if (hologram != null && !spawnerIsFullHologram) {
             spawnerIsFullHologram = true;
-            if (hypixelHolo) {
-                hologram.replaceLine(2, Message.of(LangKeys.IN_GAME_SPAWNER_FULL_HYPIXEL));
+            if (certainPopularServerHolo) {
+                hologram.replaceLine(2, Message.of(LangKeys.IN_GAME_SPAWNER_FULL_CERTAIN_POPULAR_SERVER));
             } else {
                 hologram.replaceLine(1, Message.of(LangKeys.IN_GAME_SPAWNER_FULL));
             }
@@ -176,7 +176,7 @@ public class ItemSpawnerImpl implements ItemSpawner<LocationHolder, ItemSpawnerT
 
     public void setTier(int tier) {
         this.tier = tier;
-        if (hypixelHolo) {
+        if (certainPopularServerHolo) {
             hologram.replaceLine(0, Message.of(LangKeys.IN_GAME_SPAWNER_TIER).placeholder("tier", this.tier));
         }
     }
@@ -206,7 +206,7 @@ public class ItemSpawnerImpl implements ItemSpawner<LocationHolder, ItemSpawnerT
             }
             hologram = HologramManager
                     .hologram(loc);
-            if (hypixelHolo) {
+            if (certainPopularServerHolo) {
                 hologram.firstLine(Message.of(LangKeys.IN_GAME_SPAWNER_TIER).placeholder("tier", this.tier));
                 hologram.bottomLine(TextEntry.of(itemSpawnerType.getItemBoldName()));
             } else {
@@ -216,7 +216,7 @@ public class ItemSpawnerImpl implements ItemSpawner<LocationHolder, ItemSpawnerT
             if (countdownHologram) {
                 hologram.bottomLine((
                                 itemSpawnerType.getInterval() < 2 ? Message.of(LangKeys.IN_GAME_SPAWNER_EVERY_SECOND)
-                                        : Message.of(hypixelHolo ? LangKeys.IN_GAME_SPAWNER_COUNTDOWN_HYPIXEL : LangKeys.IN_GAME_SPAWNER_COUNTDOWN).placeholder("seconds",
+                                        : Message.of(certainPopularServerHolo ? LangKeys.IN_GAME_SPAWNER_COUNTDOWN_CERTAIN_POPULAR_SERVER : LangKeys.IN_GAME_SPAWNER_COUNTDOWN).placeholder("seconds",
                                         itemSpawnerType.getInterval())
                         )
                 );
@@ -278,7 +278,7 @@ public class ItemSpawnerImpl implements ItemSpawner<LocationHolder, ItemSpawnerT
         this.game = game;
         this.amountPerSpawn = this.baseAmountPerSpawn;
         this.tier = 1;
-        this.hypixelHolo = hologramType == HologramType.HYPIXEL || (hologramType == HologramType.DEFAULT && game.getConfigurationContainer().getOrDefault(ConfigurationContainer.HYPIXEL_HOLOGRAMS, Boolean.class, false));
+        this.certainPopularServerHolo = hologramType == HologramType.CERTAIN_POPULAR_SERVER || (hologramType == HologramType.DEFAULT && game.getConfigurationContainer().getOrDefault(ConfigurationContainer.CERTAIN_POPULAR_SERVER_HOLOGRAMS, Boolean.class, false));
 
         if (team != null && !game.isTeamActive(team) && game.getConfigurationContainer().getOrDefault(ConfigurationContainer.STOP_TEAM_SPAWNERS_ON_DIE, Boolean.class, false)) {
             disabled = true;
@@ -375,9 +375,9 @@ public class ItemSpawnerImpl implements ItemSpawner<LocationHolder, ItemSpawnerT
                         elapsedTime++;
 
                         if (!spawnerIsFullHologram) {
-                            if (hypixelHolo) {
+                            if (certainPopularServerHolo) {
                                 if (currentInterval.first() > 1) {
-                                    hologram.replaceLine(2, Message.of(LangKeys.IN_GAME_SPAWNER_COUNTDOWN_HYPIXEL).placeholder("seconds",  currentInterval.second().getBukkitTime(remainingTimeToSpawn) / 20));
+                                    hologram.replaceLine(2, Message.of(LangKeys.IN_GAME_SPAWNER_COUNTDOWN_CERTAIN_POPULAR_SERVER).placeholder("seconds",  currentInterval.second().getBukkitTime(remainingTimeToSpawn) / 20));
                                 } else if (rerenderHologram) {
                                     hologram.replaceLine(2, Message.of(LangKeys.IN_GAME_SPAWNER_EVERY_SECOND));
                                     rerenderHologram = false;

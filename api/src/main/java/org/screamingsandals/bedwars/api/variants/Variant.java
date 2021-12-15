@@ -3,7 +3,7 @@ package org.screamingsandals.bedwars.api.variants;
 import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
 
 /**
- * Represents a Game Variant (Classic BedWars, Hypixel BedWars, etc.)
+ * Represents a game variant (Classic BedWars, "Certain popular server" BedWars, etc.)
  *
  * @author ScreamingSandals
  * @since 0.3.0

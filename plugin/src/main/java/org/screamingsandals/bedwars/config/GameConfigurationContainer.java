@@ -56,7 +56,7 @@ public class GameConfigurationContainer implements ConfigurationContainer {
         register(ConfigurationContainer.TARGET_BLOCK_EXPLOSIONS, Boolean.class, "target-block", "allow-destroying-with-explosions");
         register(ConfigurationContainer.INVISIBLE_LOBBY_ON_GAME_START, Boolean.class, "invisible-lobby-on-game-start");
         register(ConfigurationContainer.HEALTH_INDICATOR, Boolean.class, "enable-below-name-health-indicator");
-        register(ConfigurationContainer.HYPIXEL_HOLOGRAMS, Boolean.class, "use-hypixel-like-holograms-for-spawners");
+        register(ConfigurationContainer.CERTAIN_POPULAR_SERVER_HOLOGRAMS, Boolean.class, "use-certain-popular-server-like-holograms-for-spawners");
         register(ConfigurationContainer.NEW_GAME_SCOREBOARD, Boolean.class, "scoreboard", "new-scoreboard", "enabled");
     }
 

@@ -121,6 +121,6 @@ public interface ItemSpawner<E extends Wrapper, I extends ItemSpawnerType<?,?,?>
          */
         DEFAULT,
         SCREAMING,
-        HYPIXEL;
+        CERTAIN_POPULAR_SERVER
     }
 }

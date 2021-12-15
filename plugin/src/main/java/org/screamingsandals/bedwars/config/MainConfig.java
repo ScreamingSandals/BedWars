@@ -68,7 +68,7 @@ public class MainConfig {
                 .key("add-wool-to-inventory-on-join").defValue(true)
                 .key("prevent-spawning-mobs").defValue(true)
                 .key("spawner-holograms").defValue(true)
-                .key("use-hypixel-like-holograms-for-spawners").defValue(false)
+                .key("use-certain-popular-server-like-holograms-for-spawners").defValue(false)
                 .key("spawner-disable-merge").defValue(true)
                 .key("prevent-lobby-spawn-mobs-in-radius").defValue(16)
                 .key("spawner-holo-height").defValue(0.25)

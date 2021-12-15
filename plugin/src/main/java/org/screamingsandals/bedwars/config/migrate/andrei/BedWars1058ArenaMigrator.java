@@ -69,7 +69,7 @@ public class BedWars1058ArenaMigrator implements FileMigrator {
                             shopNode.node("parent").set("true");
                             shopNode.node("type").set("VILLAGER");
                             shopNode.node("isBaby").set("false");
-                            // TODO: remap upgrade store for hypixel variant
+                            // TODO: remap upgrade store for certain popular server variant
                         } catch (SerializationException e) {
                             log.error("An unexpected error occurred while migrating.", e);
                         }
@@ -95,7 +95,7 @@ public class BedWars1058ArenaMigrator implements FileMigrator {
                         }
                     }
                 })
-                .setExplicitly(Map.of("hypixel-holograms", true), "constant")
+                .setExplicitly(Map.of("certain-popular-server-holograms", true), "constant")
                 .setExplicitly("WORLD", "arenaTime")
                 .setExplicitly("default", "arenaWeather")
                 .setExplicitly("default", "lobbyBossBarColor")
