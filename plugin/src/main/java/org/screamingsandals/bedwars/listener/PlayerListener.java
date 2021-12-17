@@ -666,173 +666,180 @@ public class PlayerListener implements Listener {
     @SuppressWarnings("deprecation")
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
-        if (event.isCancelled() && event.getAction() != Action.RIGHT_CLICK_AIR) {
+        Player player = event.getPlayer();
+        if (event.isCancelled() || !Main.isPlayerInGame(player)) {
+            return;
+        }
+        GamePlayer gPlayer = Main.getPlayerGameProfile(player);
+        Game game = gPlayer.getGame();
+
+        if (event.getAction() == Action.RIGHT_CLICK_BLOCK && Objects.requireNonNull(event.getClickedBlock()).getType() == Material.CHEST && game.getStatus() == GameStatus.WAITING) {
+            event.setCancelled(true);
             return;
         }
 
-        Player player = event.getPlayer();
-        if (Main.isPlayerInGame(player)) {
-            GamePlayer gPlayer = Main.getPlayerGameProfile(player);
-            Game game = gPlayer.getGame();
-            if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-                if (game.getStatus() == GameStatus.WAITING || gPlayer.isSpectator) {
-                    event.setCancelled(true);
-                    if (event.getMaterial() == Material
-                            .valueOf(Main.getConfigurator().config.getString("items.jointeam", "COMPASS"))) {
-                        if (game.getStatus() == GameStatus.WAITING) {
-                            TeamSelectorInventory inv = game.getTeamSelectorInventory();
-                            if (inv == null) {
-                                return;
-                            }
-                            inv.openForPlayer(player);
-                        } else if (gPlayer.isSpectator) {
-                            // TODO
+        if (event.getAction() != Action.RIGHT_CLICK_AIR) {
+            return;
+        }
+
+        if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            if (game.getStatus() == GameStatus.WAITING || gPlayer.isSpectator) {
+                event.setCancelled(true);
+                if (event.getMaterial() == Material
+                        .valueOf(Main.getConfigurator().config.getString("items.jointeam", "COMPASS"))) {
+                    if (game.getStatus() == GameStatus.WAITING) {
+                        TeamSelectorInventory inv = game.getTeamSelectorInventory();
+                        if (inv == null) {
+                            return;
                         }
-                    } else if (event.getMaterial() == Material
-                            .valueOf(Main.getConfigurator().config.getString("items.startgame", "DIAMOND"))) {
-                        if (game.getStatus() == GameStatus.WAITING && (player.hasPermission("bw.vip.startitem")
-                                || player.hasPermission("misat11.bw.vip.startitem"))) {
-                            if (game.checkMinPlayers()) {
-                                game.gameStartItem = true;
-                            } else {
-                                player.sendMessage(i18nc("vip_not_enough_players", game.getCustomPrefix()));
-                            }
-                        }
-                    } else if (event.getMaterial() == Material
-                            .valueOf(Main.getConfigurator().config.getString("items.leavegame", "SLIME_BALL"))) {
-                        game.leaveFromGame(player);
+                        inv.openForPlayer(player);
+                    } else if (gPlayer.isSpectator) {
+                        // TODO
                     }
-                } else if (game.getStatus() == GameStatus.RUNNING) {
-                    if (event.getClickedBlock() != null) {
-                        if (event.getClickedBlock().getType() == Material.ENDER_CHEST) {
-                            Block chest = event.getClickedBlock();
-                            CurrentTeam team = game.getTeamOfChest(chest);
-                            event.setCancelled(true);
-
-                            if (team == null) {
-                                player.openInventory(game.getFakeEnderChest(gPlayer));
-                                return;
-                            }
-
-                            if (!team.players.contains(gPlayer)) {
-                                player.sendMessage(i18nc("team_chest_is_not_your", game.getCustomPrefix()));
-                                return;
-                            }
-
-                            BedwarsTeamChestOpenEvent teamChestOpenEvent = new BedwarsTeamChestOpenEvent(game, player,
-                                    team);
-                            Main.getInstance().getServer().getPluginManager().callEvent(teamChestOpenEvent);
-
-                            if (teamChestOpenEvent.isCancelled()) {
-                                return;
-                            }
-
-                            player.openInventory(team.getTeamChestInventory());
-                        } else if (event.getClickedBlock().getState() instanceof InventoryHolder) {
-                            InventoryHolder holder = (InventoryHolder) event.getClickedBlock().getState();
-                            game.addChestForFutureClear(event.getClickedBlock().getLocation(), holder.getInventory());
-                        } else if (event.getClickedBlock().getType().name().contains("CAKE")) {
-                            if (game.getOriginalOrInheritedCakeTargetBlockEating()) {
-                                if (game.getTeamOfPlayer(event.getPlayer()).getTargetBlock().equals(event.getClickedBlock().getLocation())) {
-                                    event.setCancelled(true);
-                                } else {
-                                    if (Main.getConfigurator().config.getBoolean("disableCakeEating", true)) {
-                                        event.setCancelled(true);
-                                    }
-                                    for (RunningTeam team : game.getRunningTeams()) {
-                                        if (team.getTargetBlock().equals(event.getClickedBlock().getLocation())) {
-                                            event.setCancelled(true);
-                                            if (Main.isLegacy()) {
-                                                if (event.getClickedBlock().getState().getData() instanceof org.bukkit.material.Cake) {
-                                                    org.bukkit.material.Cake cake = (org.bukkit.material.Cake) event.getClickedBlock().getState().getData();
-                                                    if (cake.getSlicesEaten() == 0) {
-                                                        game.getRegion().putOriginalBlock(event.getClickedBlock().getLocation(), event.getClickedBlock().getState());
-                                                    }
-                                                    cake.setSlicesEaten(cake.getSlicesEaten() + 1);
-                                                    if (cake.getSlicesEaten() >= 6) {
-                                                        game.bedDestroyed(event.getClickedBlock().getLocation(), event.getPlayer(), false, false, true);
-                                                        event.getClickedBlock().setType(Material.AIR);
-                                                    } else {
-                                                        BlockState state = event.getClickedBlock().getState();
-                                                        state.setData(cake);
-                                                        state.update();
-                                                    }
-                                                }
-                                            } else {
-                                                Player113ListenerUtils.yummyCake(event, game);
-                                            }
-                                            break;
-                                        }
-                                    }
-                                }
-                            } else if (Main.getConfigurator().config.getBoolean("disableCakeEating", true)) {
-                                event.setCancelled(true);
-                            }
+                } else if (event.getMaterial() == Material
+                        .valueOf(Main.getConfigurator().config.getString("items.startgame", "DIAMOND"))) {
+                    if (game.getStatus() == GameStatus.WAITING && (player.hasPermission("bw.vip.startitem")
+                            || player.hasPermission("misat11.bw.vip.startitem"))) {
+                        if (game.checkMinPlayers()) {
+                            game.gameStartItem = true;
+                        } else {
+                            player.sendMessage(i18nc("vip_not_enough_players", game.getCustomPrefix()));
                         }
                     }
+                } else if (event.getMaterial() == Material
+                        .valueOf(Main.getConfigurator().config.getString("items.leavegame", "SLIME_BALL"))) {
+                    game.leaveFromGame(player);
                 }
-
+            } else if (game.getStatus() == GameStatus.RUNNING) {
                 if (event.getClickedBlock() != null) {
-                    if (game.getRegion().isBedBlock(event.getClickedBlock().getState()) || event.getClickedBlock().getType().name().equals("RESPAWN_ANCHOR")) {
-                        // prevent Essentials to set home in arena
+                    if (event.getClickedBlock().getType() == Material.ENDER_CHEST) {
+                        Block chest = event.getClickedBlock();
+                        CurrentTeam team = game.getTeamOfChest(chest);
                         event.setCancelled(true);
 
-                        if (event.getAction() == Action.RIGHT_CLICK_BLOCK && game.getStatus() == GameStatus.RUNNING && !gPlayer.isSpectator) {
-                            ItemStack stack = event.getItem();
-                            if (stack != null && stack.getAmount() > 0) {
-                                boolean anchorFilled = false;
-                                if (game.getOriginalOrInheritedAnchorDecreasing()
-                                        && event.getClickedBlock().getType().name().equals("RESPAWN_ANCHOR")
-                                        && game.getPlayerTeam(gPlayer).teamInfo.bed.equals(event.getClickedBlock().getLocation())
-                                        && event.getItem() != null && event.getItem().getType() == Material.GLOWSTONE) {
-                                    anchorFilled = Player116ListenerUtils.anchorCharge(event, game, stack);
+                        if (team == null) {
+                            player.openInventory(game.getFakeEnderChest(gPlayer));
+                            return;
+                        }
+
+                        if (!team.players.contains(gPlayer)) {
+                            player.sendMessage(i18nc("team_chest_is_not_your", game.getCustomPrefix()));
+                            return;
+                        }
+
+                        BedwarsTeamChestOpenEvent teamChestOpenEvent = new BedwarsTeamChestOpenEvent(game, player,
+                                team);
+                        Main.getInstance().getServer().getPluginManager().callEvent(teamChestOpenEvent);
+
+                        if (teamChestOpenEvent.isCancelled()) {
+                            return;
+                        }
+
+                        player.openInventory(team.getTeamChestInventory());
+                    } else if (event.getClickedBlock().getState() instanceof InventoryHolder) {
+                        InventoryHolder holder = (InventoryHolder) event.getClickedBlock().getState();
+                        game.addChestForFutureClear(event.getClickedBlock().getLocation(), holder.getInventory());
+                    } else if (event.getClickedBlock().getType().name().contains("CAKE")) {
+                        if (game.getOriginalOrInheritedCakeTargetBlockEating()) {
+                            if (game.getTeamOfPlayer(event.getPlayer()).getTargetBlock().equals(event.getClickedBlock().getLocation())) {
+                                event.setCancelled(true);
+                            } else {
+                                if (Main.getConfigurator().config.getBoolean("disableCakeEating", true)) {
+                                    event.setCancelled(true);
                                 }
-
-                                if (!anchorFilled && stack.getType().isBlock()) {
-                                    BlockFace face = event.getBlockFace();
-                                    Block block = event.getClickedBlock().getLocation().clone().add(MiscUtils.getDirection(face))
-                                            .getBlock();
-                                    if (block.getType() == Material.AIR) {
-                                        BlockState originalState = block.getState();
-                                        block.setType(stack.getType());
-                                        try {
-                                            // The method is no longer in API, but in legacy versions exists
-                                            Block.class.getMethod("setData", byte.class).invoke(block,
-                                                    (byte) stack.getDurability());
-                                        } catch (Exception e) {
-                                        }
-                                        BlockPlaceEvent bevent = new BlockPlaceEvent(block, originalState,
-                                                event.getClickedBlock(), stack, player, true);
-                                        Bukkit.getPluginManager().callEvent(bevent);
-
-                                        if (bevent.isCancelled()) {
-                                            originalState.update(true, false);
+                                for (RunningTeam team : game.getRunningTeams()) {
+                                    if (team.getTargetBlock().equals(event.getClickedBlock().getLocation())) {
+                                        event.setCancelled(true);
+                                        if (Main.isLegacy()) {
+                                            if (event.getClickedBlock().getState().getData() instanceof org.bukkit.material.Cake) {
+                                                org.bukkit.material.Cake cake = (org.bukkit.material.Cake) event.getClickedBlock().getState().getData();
+                                                if (cake.getSlicesEaten() == 0) {
+                                                    game.getRegion().putOriginalBlock(event.getClickedBlock().getLocation(), event.getClickedBlock().getState());
+                                                }
+                                                cake.setSlicesEaten(cake.getSlicesEaten() + 1);
+                                                if (cake.getSlicesEaten() >= 6) {
+                                                    game.bedDestroyed(event.getClickedBlock().getLocation(), event.getPlayer(), false, false, true);
+                                                    event.getClickedBlock().setType(Material.AIR);
+                                                } else {
+                                                    BlockState state = event.getClickedBlock().getState();
+                                                    state.setData(cake);
+                                                    state.update();
+                                                }
+                                            }
                                         } else {
-                                            stack.setAmount(stack.getAmount() - 1);
-                                            // TODO get right block place sound
-                                            Sounds.BLOCK_STONE_PLACE.playSound(player, block.getLocation(), 1, 1);
+                                            Player113ListenerUtils.yummyCake(event, game);
                                         }
+                                        break;
+                                    }
+                                }
+                            }
+                        } else if (Main.getConfigurator().config.getBoolean("disableCakeEating", true)) {
+                            event.setCancelled(true);
+                        }
+                    }
+                }
+            }
+
+            if (event.getClickedBlock() != null) {
+                if (game.getRegion().isBedBlock(event.getClickedBlock().getState()) || event.getClickedBlock().getType().name().equals("RESPAWN_ANCHOR")) {
+                    // prevent Essentials to set home in arena
+                    event.setCancelled(true);
+
+                    if (event.getAction() == Action.RIGHT_CLICK_BLOCK && game.getStatus() == GameStatus.RUNNING && !gPlayer.isSpectator) {
+                        ItemStack stack = event.getItem();
+                        if (stack != null && stack.getAmount() > 0) {
+                            boolean anchorFilled = false;
+                            if (game.getOriginalOrInheritedAnchorDecreasing()
+                                    && event.getClickedBlock().getType().name().equals("RESPAWN_ANCHOR")
+                                    && game.getPlayerTeam(gPlayer).teamInfo.bed.equals(event.getClickedBlock().getLocation())
+                                    && event.getItem() != null && event.getItem().getType() == Material.GLOWSTONE) {
+                                anchorFilled = Player116ListenerUtils.anchorCharge(event, game, stack);
+                            }
+
+                            if (!anchorFilled && stack.getType().isBlock()) {
+                                BlockFace face = event.getBlockFace();
+                                Block block = event.getClickedBlock().getLocation().clone().add(MiscUtils.getDirection(face))
+                                        .getBlock();
+                                if (block.getType() == Material.AIR) {
+                                    BlockState originalState = block.getState();
+                                    block.setType(stack.getType());
+                                    try {
+                                        // The method is no longer in API, but in legacy versions exists
+                                        Block.class.getMethod("setData", byte.class).invoke(block,
+                                                (byte) stack.getDurability());
+                                    } catch (Exception e) {
+                                    }
+                                    BlockPlaceEvent bevent = new BlockPlaceEvent(block, originalState,
+                                            event.getClickedBlock(), stack, player, true);
+                                    Bukkit.getPluginManager().callEvent(bevent);
+
+                                    if (bevent.isCancelled()) {
+                                        originalState.update(true, false);
+                                    } else {
+                                        stack.setAmount(stack.getAmount() - 1);
+                                        // TODO get right block place sound
+                                        Sounds.BLOCK_STONE_PLACE.playSound(player, block.getLocation(), 1, 1);
                                     }
                                 }
                             }
                         }
                     }
                 }
-            } else if (event.getAction() == Action.LEFT_CLICK_BLOCK &&
-                    game.getStatus() == GameStatus.RUNNING && !gPlayer.isSpectator
-                    && event.getClickedBlock() != null && event.getClickedBlock().getType() == Material.DRAGON_EGG
-                    && Main.getConfigurator().config.getBoolean("disableDragonEggTeleport", true)) {
-                event.setCancelled(true);
-                BlockBreakEvent blockBreakEvent = new BlockBreakEvent(event.getClickedBlock(), player);
-                Bukkit.getPluginManager().callEvent(blockBreakEvent);
-                if (blockBreakEvent.isCancelled()) {
-                    return;
-                }
-                if (blockBreakEvent.isDropItems()) {
-                    event.getClickedBlock().breakNaturally();
-                } else {
-                    event.getClickedBlock().setType(Material.AIR);
-                }
+            }
+        } else if (event.getAction() == Action.LEFT_CLICK_BLOCK &&
+                game.getStatus() == GameStatus.RUNNING && !gPlayer.isSpectator
+                && event.getClickedBlock() != null && event.getClickedBlock().getType() == Material.DRAGON_EGG
+                && Main.getConfigurator().config.getBoolean("disableDragonEggTeleport", true)) {
+            event.setCancelled(true);
+            BlockBreakEvent blockBreakEvent = new BlockBreakEvent(event.getClickedBlock(), player);
+            Bukkit.getPluginManager().callEvent(blockBreakEvent);
+            if (blockBreakEvent.isCancelled()) {
+                return;
+            }
+            if (blockBreakEvent.isDropItems()) {
+                event.getClickedBlock().breakNaturally();
+            } else {
+                event.getClickedBlock().setType(Material.AIR);
             }
         }
     }
