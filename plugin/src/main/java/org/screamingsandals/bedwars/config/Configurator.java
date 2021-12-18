@@ -498,7 +498,6 @@ public class Configurator {
         checkOrSetConfig(modify, "removePurchaseMessages", false);
         checkOrSetConfig(modify, "removePurchaseFailedMessages", config.get("removePurchaseMessages"));
         checkOrSetConfig(modify, "removeUpgradeMessages", config.get("removePurchaseMessages"));
-
         checkOrSetConfig(modify, "disableCakeEating", true);
         checkOrSetConfig(modify, "disableDragonEggTeleport", true);
         checkOrSetConfig(modify, "preventArenaFromGriefing", false);
