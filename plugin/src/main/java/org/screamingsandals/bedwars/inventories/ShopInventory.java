@@ -69,7 +69,7 @@ public class ShopInventory implements Listener {
 
 		ItemStack cosmeticItem = Main.getConfigurator().readDefinedItem("shopcosmetic", "AIR");
 		options.setCosmeticItem(cosmeticItem);
-        
+
 		options.setRows(Main.getConfigurator().config.getInt("shop.rows", 4));
 		options.setRender_actual_rows(Main.getConfigurator().config.getInt("shop.render-actual-rows", 6));
 		options.setRender_offset(Main.getConfigurator().config.getInt("shop.render-offset", 9));
@@ -78,28 +78,28 @@ public class ShopInventory implements Listener {
 		options.setItems_on_row(Main.getConfigurator().config.getInt("shop.items-on-row", 9));
 		options.setShowPageNumber(Main.getConfigurator().config.getBoolean("shop.show-page-numbers", true));
 		options.setInventoryType(InventoryType.valueOf(Main.getConfigurator().config.getString("shop.inventory-type", "CHEST")));
-		
+
 		options.setPrefix(i18nonly("item_shop_name", "[BW] Shop"));
 		options.setGenericShop(true);
 		options.setGenericShopPriceTypeRequired(true);
 		options.setAnimationsEnabled(true);
-		
+
 		options.registerPlaceholder("team", (key, player, arguments) -> {
 			GamePlayer gPlayer = Main.getPlayerGameProfile(player);
 			CurrentTeam team = gPlayer.getGame().getPlayerTeam(gPlayer);
 			if (arguments.length > 0) {
 				String fa = arguments[0];
 				switch (fa) {
-				case "color":
-					return team.teamInfo.color.name();
-				case "chatcolor":
-					return team.teamInfo.color.chatColor.toString();
-				case "maxplayers":
-					return Integer.toString(team.teamInfo.maxPlayers);
-				case "players":
-					return Integer.toString(team.players.size());
-				case "hasBed":
-					return Boolean.toString(team.isBed);
+					case "color":
+						return team.teamInfo.color.name();
+					case "chatcolor":
+						return team.teamInfo.color.chatColor.toString();
+					case "maxplayers":
+						return Integer.toString(team.teamInfo.maxPlayers);
+					case "players":
+						return Integer.toString(team.players.size());
+					case "hasBed":
+						return Boolean.toString(team.isBed);
 				}
 			}
 			return team.getName();
@@ -116,12 +116,12 @@ public class ShopInventory implements Listener {
 				}
 				List<Upgrade> upgrades = null;
 				switch (upgradeBy) {
-				case "name":
-					upgrades = upgradeStorage.findItemSpawnerUpgrades(game, upgrade);
-					break;
-				case "team":
-					upgrades = upgradeStorage.findItemSpawnerUpgrades(game, game.getPlayerTeam(gPlayer));
-					break;
+					case "name":
+						upgrades = upgradeStorage.findItemSpawnerUpgrades(game, upgrade);
+						break;
+					case "team":
+						upgrades = upgradeStorage.findItemSpawnerUpgrades(game, game.getPlayerTeam(gPlayer));
+						break;
 				}
 
 				if (upgrades != null && !upgrades.isEmpty()) {
@@ -131,20 +131,20 @@ public class ShopInventory implements Listener {
 					}
 					double heighest = Double.MIN_VALUE;
 					switch (what) {
-					case "level":
-						for (Upgrade upgrad : upgrades) {
-							if (upgrad.getLevel() > heighest) {
-								heighest = upgrad.getLevel();
+						case "level":
+							for (Upgrade upgrad : upgrades) {
+								if (upgrad.getLevel() > heighest) {
+									heighest = upgrad.getLevel();
+								}
 							}
-						}
-						return String.valueOf(heighest);
-					case "initial":
-						for (Upgrade upgrad : upgrades) {
-							if (upgrad.getInitialLevel() > heighest) {
-								heighest = upgrad.getInitialLevel();
+							return String.valueOf(heighest);
+						case "initial":
+							for (Upgrade upgrad : upgrades) {
+								if (upgrad.getInitialLevel() > heighest) {
+									heighest = upgrad.getInitialLevel();
+								}
 							}
-						}
-						return String.valueOf(heighest);
+							return String.valueOf(heighest);
 					}
 				}
 			}
@@ -211,7 +211,7 @@ public class ShopInventory implements Listener {
 			enabled = reader.getBoolean("generate-lore", enabled);
 
 			List<String> loreText = reader.getStringList("generated-lore-text",
-				Main.getConfigurator().config.getStringList("lore.text"));
+					Main.getConfigurator().config.getStringList("lore.text"));
 
 			if (enabled) {
 				ItemStack stack = event.getStack();
@@ -235,7 +235,7 @@ public class ShopInventory implements Listener {
 					if (property.hasName()) {
 						ItemStack newItem = event.getStack();
 						BedwarsApplyPropertyToDisplayedItem applyEvent = new BedwarsApplyPropertyToDisplayedItem(game,
-							player, newItem, property.getReader(player).convertToMap());
+								player, newItem, property.getReader(player).convertToMap());
 						Main.getInstance().getServer().getPluginManager().callEvent(applyEvent);
 
 						event.setStack(newItem);
@@ -279,7 +279,7 @@ public class ShopInventory implements Listener {
 	@EventHandler
 	public void onApplyPropertyToBoughtItem(BedwarsApplyPropertyToItem event) {
 		if (event.getPropertyName().equalsIgnoreCase("applycolorbyteam")
-			|| event.getPropertyName().equalsIgnoreCase("transform::applycolorbyteam")) {
+				|| event.getPropertyName().equalsIgnoreCase("transform::applycolorbyteam")) {
 			Player player = event.getPlayer();
 			CurrentTeam team = (CurrentTeam) event.getGame().getTeamOfPlayer(player);
 
@@ -430,7 +430,7 @@ public class ShopInventory implements Listener {
 				for (ItemProperty property : event.getProperties()) {
 					if (property.hasName()) {
 						BedwarsApplyPropertyToBoughtItem applyEvent = new BedwarsApplyPropertyToBoughtItem(game, player,
-							newItem, property.getReader(player).convertToMap());
+								newItem, property.getReader(player).convertToMap());
 						Main.getInstance().getServer().getPluginManager().callEvent(applyEvent);
 
 						newItem = applyEvent.getStack();
@@ -449,9 +449,9 @@ public class ShopInventory implements Listener {
 						.replace("%material%", price + " " + type.getItemName()));
 			}
 			Sounds.playSound(player, player.getLocation(),
-				Main.getConfigurator().config.getString("sounds.item_buy.sound"), Sounds.ENTITY_ITEM_PICKUP, (float) Main.getConfigurator().config.getDouble("sounds.item_buy.volume"), (float) Main.getConfigurator().config.getDouble("sounds.item_buy.pitch"));
+					Main.getConfigurator().config.getString("sounds.item_buy.sound"), Sounds.ENTITY_ITEM_PICKUP, (float) Main.getConfigurator().config.getDouble("sounds.item_buy.volume"), (float) Main.getConfigurator().config.getDouble("sounds.item_buy.pitch"));
 		} else {
-			if (!Main.getConfigurator().config.getBoolean("removePurchaseMessages", false)) {
+			if (!Main.getConfigurator().config.getBoolean("removePurchaseFailedMessages", false)) {
 				player.sendMessage(i18nc("buy_failed", game.getCustomPrefix()).replace("%item%", amount + "x " + getNameOrCustomNameOfItem(newItem))
 						.replace("%material%", price + " " + type.getItemName()));
 			}
@@ -472,10 +472,10 @@ public class ShopInventory implements Listener {
 		int price = event.getPrice();
 		boolean sendToAll = false;
 		boolean isUpgrade = true;
+		double maxLevel = 0.0;
 		ItemStack materialItem = itemSpawnerType.getStack(price);
 
 		if (event.hasPlayerInInventory(materialItem)) {
-			event.sellStack(materialItem);
 			for (MapReader mapEntity : entities) {
 				String configuredType = mapEntity.getString("type");
 				if (configuredType == null) {
@@ -489,7 +489,9 @@ public class ShopInventory implements Listener {
 					// variables
 					Team team = game.getTeamOfPlayer(event.getPlayer());
 					double addLevels = mapEntity.getDouble("add-levels",
-						mapEntity.getDouble("levels", 0) /* Old configuration */);
+							mapEntity.getDouble("levels", 0) /* Old configuration */);
+					maxLevel = mapEntity.getDouble("max-level", 0.0);
+
 					/* You shouldn't use it in entities */
 					if (mapEntity.containsKey("shop-name")) {
 						itemName = mapEntity.getString("shop-name");
@@ -522,8 +524,19 @@ public class ShopInventory implements Listener {
 					}
 
 					if (isUpgrade) {
+						for (Upgrade upgrade : upgrades) {
+							if (upgrade.getLevel() + addLevels >= maxLevel && maxLevel > 0.0) {
+								player.sendMessage(i18nc("spawner_reached_maximum_level", game.getCustomPrefix())
+										.replace("%item%", itemName)
+										.replace("%material%", price + " " + itemSpawnerType.getItemName())
+										.replace("%maxLevel%", Double.toString(maxLevel)));
+								return;
+							}
+						}
+
+						event.sellStack(materialItem);
 						BedwarsUpgradeBoughtEvent bedwarsUpgradeBoughtEvent = new BedwarsUpgradeBoughtEvent(game,
-							upgradeStorage, upgrades, player, addLevels);
+								upgradeStorage, upgrades, player, addLevels);
 						Bukkit.getPluginManager().callEvent(bedwarsUpgradeBoughtEvent);
 
 						if (bedwarsUpgradeBoughtEvent.isCancelled()) {
@@ -536,7 +549,7 @@ public class ShopInventory implements Listener {
 
 						for (Upgrade upgrade : upgrades) {
 							BedwarsUpgradeImprovedEvent improvedEvent = new BedwarsUpgradeImprovedEvent(game,
-								upgradeStorage, upgrade, upgrade.getLevel(), upgrade.getLevel() + addLevels);
+									upgradeStorage, upgrade, upgrade.getLevel(), upgrade.getLevel() + addLevels);
 							Bukkit.getPluginManager().callEvent(improvedEvent);
 						}
 					}
@@ -544,27 +557,31 @@ public class ShopInventory implements Listener {
 
 				if (sendToAll) {
 					for (Player player1 : game.getTeamOfPlayer(event.getPlayer()).getConnectedPlayers()) {
-						if (!Main.getConfigurator().config.getBoolean("removePurchaseMessages", false)) {
-							player1.sendMessage(i18nc("buy_succes", game.getCustomPrefix()).replace("%item%", itemName).replace("%material%",
-									price + " " + itemSpawnerType.getItemName()));
+						if (!Main.getConfigurator().config.getBoolean("removeUpgradeMessages", false)) {
+							player1.sendMessage(i18nc("upgrade_success", game.getCustomPrefix())
+									.replace("%name%", player.getDisplayName())
+									.replace("%spawner%", itemSpawnerType.getItemName())
+									.replace("%level%", Double.toString(maxLevel)));
 						}
 						Sounds.playSound(player1, player1.getLocation(),
-							Main.getConfigurator().config.getString("sounds.upgrade_buy.sound"),
-							Sounds.ENTITY_EXPERIENCE_ORB_PICKUP, (float) Main.getConfigurator().config.getDouble("sounds.upgrade_buy.volume"), (float) Main.getConfigurator().config.getDouble("sounds.upgrade_buy.pitch"));
+								Main.getConfigurator().config.getString("sounds.upgrade_buy.sound"),
+								Sounds.ENTITY_EXPERIENCE_ORB_PICKUP, (float) Main.getConfigurator().config.getDouble("sounds.upgrade_buy.volume"), (float) Main.getConfigurator().config.getDouble("sounds.upgrade_buy.pitch"));
 					}
 				} else {
-					if (!Main.getConfigurator().config.getBoolean("removePurchaseMessages", false)) {
-						player.sendMessage(i18nc("buy_succes", game.getCustomPrefix()).replace("%item%", itemName).replace("%material%",
-								price + " " + itemSpawnerType.getItemName()));
+					if (!Main.getConfigurator().config.getBoolean("removeUpgradeMessages", false)) {
+						player.sendMessage(i18nc("upgrade_success", game.getCustomPrefix())
+								.replace("%name%", player.getName())
+								.replace("%spawner%", itemSpawnerType.getItemName())
+								.replace("%level%", Double.toString(maxLevel)));
 					}
 					Sounds.playSound(player, player.getLocation(),
-						Main.getConfigurator().config.getString("sounds.upgrade_buy.sound"),
-						Sounds.ENTITY_EXPERIENCE_ORB_PICKUP,  (float) Main.getConfigurator().config.getDouble("sounds.upgrade_buy.volume"), (float) Main.getConfigurator().config.getDouble("sounds.upgrade_buy.pitch"));
+							Main.getConfigurator().config.getString("sounds.upgrade_buy.sound"),
+							Sounds.ENTITY_EXPERIENCE_ORB_PICKUP,  (float) Main.getConfigurator().config.getDouble("sounds.upgrade_buy.volume"), (float) Main.getConfigurator().config.getDouble("sounds.upgrade_buy.pitch"));
 				}
 			}
 		} else {
-			if (!Main.getConfigurator().config.getBoolean("removePurchaseMessages", false)) {
-				player.sendMessage(i18nc("buy_failed", game.getCustomPrefix()).replace("%item%", "UPGRADE").replace("%material%",
+			if (!Main.getConfigurator().config.getBoolean("removePurchaseFailedMessages", false)) {
+				player.sendMessage(i18nc("buy_failed", game.getCustomPrefix()).replace("%item%", i18n("upgrade_translate")).replace("%material%",
 						price + " " + itemSpawnerType.getItemName()));
 			}
 		}
