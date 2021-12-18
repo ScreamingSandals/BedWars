@@ -667,18 +667,14 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
-        if (event.isCancelled() || !Main.isPlayerInGame(player)) {
+        if ((event.isCancelled() && event.getAction() != Action.RIGHT_CLICK_AIR) || !Main.isPlayerInGame(player)) {
             return;
         }
         GamePlayer gPlayer = Main.getPlayerGameProfile(player);
         Game game = gPlayer.getGame();
 
-        if (event.getAction() == Action.RIGHT_CLICK_BLOCK && Objects.requireNonNull(event.getClickedBlock()).getType() == Material.CHEST && game.getStatus() == GameStatus.WAITING) {
+        if (event.getAction() == Action.RIGHT_CLICK_BLOCK && event.getClickedBlock() != null && event.getClickedBlock().getType() == Material.CHEST && game.getStatus() == GameStatus.WAITING) {
             event.setCancelled(true);
-            return;
-        }
-
-        if (event.getAction() != Action.RIGHT_CLICK_AIR) {
             return;
         }
 
