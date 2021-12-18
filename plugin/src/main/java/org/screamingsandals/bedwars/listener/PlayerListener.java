@@ -121,13 +121,13 @@ public class PlayerListener {
                                     .prefixOrDefault(game.getCustomPrefixComponent())
                                     .placeholder("victim", victim.getDisplayName().color(victimColor))
                                     .placeholder("killer", killer.getDisplayName().color(killerColor))
-                                    .placeholder("victimTeam", Component.text(victimTeam.getName()).color(victimColor))
-                                    .placeholder("killerTeam", Component.text(killerTeam.getName()).color(killerColor));
+                                    .placeholder("victimteam", Component.text(victimTeam.getName()).color(victimColor))
+                                    .placeholder("killerteam", Component.text(killerTeam.getName()).color(killerColor));
                         } else {
                             deathMessageMsg = Message.of(LangKeys.IN_GAME_PLAYER_SELF_KILLED)
                                     .prefixOrDefault(game.getCustomPrefixComponent())
                                     .placeholder("victim", victim.getDisplayName().color(victimColor))
-                                    .placeholder("victimTeam", Component.text(victimTeam.getName()).color(victimColor));
+                                    .placeholder("victimteam", Component.text(victimTeam.getName()).color(victimColor));
                         }
 
                     }
@@ -737,7 +737,7 @@ public class PlayerListener {
                             }
                         }
                     } else if (edbee.getDamager().getEntityType().is("player")) {
-                        var damager = (PlayerWrapper) event.getEntity();
+                        var damager = (PlayerWrapper) ((SEntityDamageByEntityEvent) event).getDamager();
                         if (PlayerManagerImpl.getInstance().isPlayerInGame(damager)) {
                             var gDamager = damager.as(BedWarsPlayer.class);
                             if (gDamager.isSpectator() || (gDamager.getGame().getPlayerTeam(gDamager) == game.getPlayerTeam(gPlayer) && !game.getConfigurationContainer().getOrDefault(ConfigurationContainer.FRIENDLY_FIRE, Boolean.class, false))) {
@@ -824,20 +824,16 @@ public class PlayerListener {
     @OnEvent
     public void onPlayerInteract(SPlayerInteractEvent event) {
         var player = event.getPlayer();
-        if (event.isCancelled() || !PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
+        if ((event.isCancelled() && event.getAction() != SPlayerInteractEvent.Action.RIGHT_CLICK_AIR) || !PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
             return;
         }
         var gPlayer = player.as(BedWarsPlayer.class);
         var game = Objects.requireNonNull(gPlayer.getGame());
 
         if (event.getAction() == SPlayerInteractEvent.Action.RIGHT_CLICK_BLOCK
-                && Objects.requireNonNull(event.getBlockClicked()).getType().is("minecraft:chest")
+                && event.getBlockClicked() != null && event.getBlockClicked().getType().is("minecraft:chest")
                 && game.getStatus() == GameStatus.WAITING) {
             event.setCancelled(true);
-            return;
-        }
-
-        if (event.getAction() != SPlayerInteractEvent.Action.RIGHT_CLICK_AIR) {
             return;
         }
 

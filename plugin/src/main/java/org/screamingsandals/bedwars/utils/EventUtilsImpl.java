@@ -9,6 +9,7 @@ import org.screamingsandals.bedwars.events.*;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.lib.event.AbstractEvent;
 import org.screamingsandals.lib.event.EventManager;
+import org.screamingsandals.lib.event.SEvent;
 import org.screamingsandals.lib.plugin.PluginContainer;
 import org.screamingsandals.lib.plugin.PluginDescription;
 import org.screamingsandals.lib.plugin.PluginManager;
@@ -21,7 +22,7 @@ import java.util.function.Consumer;
 
 @Service
 public class EventUtilsImpl implements EventUtils {
-    private static final Map<Class<?>, Class<? extends AbstractEvent>> classMap = Map.ofEntries(
+    private static final Map<Class<?>, Class<? extends SEvent>> classMap = Map.ofEntries(
             Map.entry(ApplyPropertyToBoughtItemEvent.class, ApplyPropertyToBoughtItemEventImpl.class),
             Map.entry(ApplyPropertyToDisplayedItemEvent.class, ApplyPropertyToDisplayedItemEventImpl.class),
             Map.entry(ApplyPropertyToItemEvent.class, ApplyPropertyToItemEventImpl.class),

@@ -1,13 +1,12 @@
 package org.screamingsandals.bedwars.events;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import org.screamingsandals.bedwars.api.events.SavePlayerStatisticEvent;
 import org.screamingsandals.bedwars.statistics.PlayerStatisticImpl;
-import org.screamingsandals.lib.event.CancellableAbstractEvent;
+import org.screamingsandals.lib.event.SCancellableEvent;
 
-@EqualsAndHashCode(callSuper = true)
 @Data
-public class SavePlayerStatisticEventImpl extends CancellableAbstractEvent implements SavePlayerStatisticEvent<PlayerStatisticImpl> {
+public class SavePlayerStatisticEventImpl implements SavePlayerStatisticEvent, SCancellableEvent {
     private final PlayerStatisticImpl playerStatistic;
+    private boolean cancelled;
 }

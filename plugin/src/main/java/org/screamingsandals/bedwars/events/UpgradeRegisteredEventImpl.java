@@ -1,16 +1,14 @@
 package org.screamingsandals.bedwars.events;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import org.screamingsandals.bedwars.api.events.UpgradeRegisteredEvent;
 import org.screamingsandals.bedwars.api.upgrades.Upgrade;
 import org.screamingsandals.bedwars.api.upgrades.UpgradeStorage;
 import org.screamingsandals.bedwars.game.GameImpl;
-import org.screamingsandals.lib.event.AbstractEvent;
+import org.screamingsandals.lib.event.SEvent;
 
-@EqualsAndHashCode(callSuper = true)
 @Data
-public class UpgradeRegisteredEventImpl extends AbstractEvent implements UpgradeRegisteredEvent<GameImpl> {
+public class UpgradeRegisteredEventImpl implements UpgradeRegisteredEvent<GameImpl>, SEvent {
     private final GameImpl game;
     private final Upgrade upgrade;
     private final UpgradeStorage storage;

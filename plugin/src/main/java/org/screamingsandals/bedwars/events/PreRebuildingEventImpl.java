@@ -1,13 +1,11 @@
 package org.screamingsandals.bedwars.events;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import org.screamingsandals.bedwars.api.events.PreRebuildingEvent;
 import org.screamingsandals.bedwars.game.GameImpl;
-import org.screamingsandals.lib.event.AbstractEvent;
+import org.screamingsandals.lib.event.SEvent;
 
-@EqualsAndHashCode(callSuper = true)
 @Data
-public class PreRebuildingEventImpl extends AbstractEvent implements PreRebuildingEvent<GameImpl> {
+public class PreRebuildingEventImpl implements PreRebuildingEvent<GameImpl>, SEvent {
     private final GameImpl game;
 }

@@ -1,15 +1,13 @@
 package org.screamingsandals.bedwars.events;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import org.screamingsandals.bedwars.api.events.PlayerRespawnedEvent;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
-import org.screamingsandals.lib.event.AbstractEvent;
+import org.screamingsandals.lib.event.SEvent;
 
-@EqualsAndHashCode(callSuper = true)
 @Data
-public class PlayerRespawnedEventImpl extends AbstractEvent implements PlayerRespawnedEvent<GameImpl, BedWarsPlayer> {
+public class PlayerRespawnedEventImpl implements PlayerRespawnedEvent<GameImpl, BedWarsPlayer>, SEvent {
     private final GameImpl game;
     private final BedWarsPlayer player;
 }
