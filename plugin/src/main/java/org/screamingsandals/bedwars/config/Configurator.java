@@ -496,6 +496,8 @@ public class Configurator {
         checkOrSetConfig(modify, "turnOnExperimentalGroovyShop", false);
         checkOrSetConfig(modify, "preventSpectatorFlyingAway", false);
         checkOrSetConfig(modify, "removePurchaseMessages", false);
+        checkOrSetConfig(modify, "removePurchaseFailedMessages", config.getBoolean("removePurchaseMessages"));
+        checkOrSetConfig(modify, "removeUpgradeMessages", config.getBoolean("removePurchaseMessages"));
         checkOrSetConfig(modify, "disableCakeEating", true);
         checkOrSetConfig(modify, "disableDragonEggTeleport", true);
         checkOrSetConfig(modify, "preventArenaFromGriefing", false);
