@@ -83,7 +83,9 @@ public class Golem extends SpecialItem implements org.screamingsandals.bedwars.a
 
         game.registerSpecialItem(this);
         Main.registerGameEntity(golem, (org.screamingsandals.bedwars.game.Game) game);
-        MiscUtils.sendActionBarMessage(player, i18nonly("specials_golem_created"));
+        if (!Main.getConfigurator().config.getBoolean("specials.dont-show-success-messages")) {
+            MiscUtils.sendActionBarMessage(player, i18nonly("specials_golem_created"));
+        }
 
         //TODO - make this better by checking full inventory
         if (item.getAmount() > 1) {

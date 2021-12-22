@@ -246,8 +246,10 @@ public class Configurator {
 
         checkOrSetConfig(modify, "respawn.protection-enabled", true);
         checkOrSetConfig(modify, "respawn.protection-time", 10);
+        checkOrSetConfig(modify, "respawn.show-messages", true);
 
         checkOrSetConfig(modify, "specials.action-bar-messages", true);
+        checkOrSetConfig(modify, "specials.dont-show-success-messages", false);
         checkOrSetConfig(modify, "specials.rescue-platform.is-breakable", false);
         checkOrSetConfig(modify, "specials.rescue-platform.delay", 0);
         checkOrSetConfig(modify, "specials.rescue-platform.break-time", 10);

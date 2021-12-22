@@ -473,6 +473,7 @@ public class ShopInventory implements Listener {
         boolean sendToAll = false;
         boolean isUpgrade = true;
         double maxLevel = 0.0;
+        double newLevel = 0.0;
         ItemStack materialItem = itemSpawnerType.getStack(price);
 
         if (event.hasPlayerInInventory(materialItem)) {
@@ -525,7 +526,7 @@ public class ShopInventory implements Listener {
 
                     if (isUpgrade) {
                         for (Upgrade upgrade : upgrades) {
-                            if (upgrade.getLevel() + addLevels >= maxLevel && maxLevel > 0.0) {
+                            if (upgrade.getLevel() + addLevels > maxLevel && maxLevel > 0.0) {
                                 player.sendMessage(i18nc("spawner_reached_maximum_level", game.getCustomPrefix())
                                         .replace("%item%", itemName)
                                         .replace("%material%", price + " " + itemSpawnerType.getItemName())
@@ -548,8 +549,9 @@ public class ShopInventory implements Listener {
                         }
 
                         for (Upgrade upgrade : upgrades) {
+                            newLevel = upgrade.getLevel() + addLevels;
                             BedwarsUpgradeImprovedEvent improvedEvent = new BedwarsUpgradeImprovedEvent(game,
-                                    upgradeStorage, upgrade, upgrade.getLevel(), upgrade.getLevel() + addLevels);
+                                    upgradeStorage, upgrade, upgrade.getLevel(), newLevel);
                             Bukkit.getPluginManager().callEvent(improvedEvent);
                         }
                     }
@@ -561,7 +563,7 @@ public class ShopInventory implements Listener {
                             player1.sendMessage(i18nc("upgrade_success", game.getCustomPrefix())
                                     .replace("%name%", player.getDisplayName())
                                     .replace("%spawner%", itemSpawnerType.getItemName())
-                                    .replace("%level%", Double.toString(maxLevel)));
+                                    .replace("%level%", Double.toString(newLevel)));
                         }
                         Sounds.playSound(player1, player1.getLocation(),
                                 Main.getConfigurator().config.getString("sounds.upgrade_buy.sound"),
@@ -572,7 +574,7 @@ public class ShopInventory implements Listener {
                         player.sendMessage(i18nc("upgrade_success", game.getCustomPrefix())
                                 .replace("%name%", player.getName())
                                 .replace("%spawner%", itemSpawnerType.getItemName())
-                                .replace("%level%", Double.toString(maxLevel)));
+                                .replace("%level%", Double.toString(newLevel)));
                     }
                     Sounds.playSound(player, player.getLocation(),
                             Main.getConfigurator().config.getString("sounds.upgrade_buy.sound"),
@@ -581,7 +583,7 @@ public class ShopInventory implements Listener {
             }
         } else {
             if (!Main.getConfigurator().config.getBoolean("removePurchaseFailedMessages", false)) {
-                player.sendMessage(i18nc("buy_failed", game.getCustomPrefix()).replace("%item%", i18n("upgrade_translate")).replace("%material%",
+                player.sendMessage(i18nc("buy_failed", game.getCustomPrefix()).replace("%item%", i18nonly("upgrade_translate")).replace("%material%",
                         price + " " + itemSpawnerType.getItemName()));
             }
         }
