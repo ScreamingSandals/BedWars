@@ -4,7 +4,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
-import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.util.Vector;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.Team;
 import org.screamingsandals.bedwars.api.game.Game;
@@ -48,16 +48,15 @@ public class ThrowableFireball extends SpecialItem implements org.screamingsanda
     public void run() {
         Fireball fireball = player.launchProjectile(Fireball.class);
         Main.getInstance().registerEntityToGame(fireball, game);
-        fireball.setShooter(null);
+        if (perfectVelocity) {
+            // TODO change fireball's direction to perfect instead of random recoil (im stupit)
+        }
         fireball.setIsIncendiary(incendiary);
         fireball.setYield(damage);
-        if (perfectVelocity) {
-            fireball.setDirection(player.getEyeLocation().getDirection());
+        fireball.setBounce(false);
+        if (damagesThrower) {
+            fireball.setShooter(null);
         }
-        if (!damagesThrower) {
-            fireball.setMetadata(player.getUniqueId().toString(), new FixedMetadataValue(Main.getInstance(), null));
-        }
-        fireball.setMetadata("fireball", new FixedMetadataValue(Main.getInstance(), null));
     }
 
 }

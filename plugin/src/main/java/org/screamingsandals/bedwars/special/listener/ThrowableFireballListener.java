@@ -62,25 +62,20 @@ public class ThrowableFireballListener implements Listener {
                         perfectVelocity,
                         damageThrower);
                 special.run();
-            }
-        }
-    }
-
-    @EventHandler
-    public void onDamage(ProjectileHitEvent event) {
-        if (!(event.getEntity() instanceof Player)) {
-            return;
-        }
-
-        Player player = (Player) event.getEntity();
-        if (!Main.isPlayerInGame(player)) {
-            return;
-        }
-
-        if (event.getHitEntity() instanceof Fireball) {
-            if (event.getHitEntity().hasMetadata(player.getUniqueId().toString())
-                    && event.getHitEntity().hasMetadata("fireball")) {
-                event.setCancelled(true);
+                if (event.getItem().getAmount() > 1) {
+                    event.getItem().setAmount(event.getItem().getAmount() - 1);
+                } else {
+                    try {
+                        if (player.getInventory().getItemInOffHand().equals(event.getItem())) {
+                            player.getInventory().setItemInOffHand(new ItemStack(Material.AIR));
+                        } else {
+                            player.getInventory().remove(event.getItem());
+                        }
+                    } catch (Throwable e) {
+                        player.getInventory().remove(event.getItem());
+                    }
+                }
+                player.updateInventory();
             }
         }
     }
