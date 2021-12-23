@@ -60,7 +60,7 @@ public class ThrowableFireballListener implements Listener {
                         incendiary,
                         perfectVelocity,
                         damageThrower);
-                special.run(player.getLocation());
+                special.run();
             }
         }
     }
