@@ -49,11 +49,16 @@ public class AutoIgniteableTNTListener implements Listener {
 
     @EventHandler
     public void onDamage(EntityDamageByEntityEvent event) {
-        if (!(event.getEntity() instanceof Player))
+        if (!(event.getEntity() instanceof Player)) {
             return;
+        }
+
         Player player = (Player) event.getEntity();
-        if (!Main.isPlayerInGame(player))
+
+        if (!Main.isPlayerInGame(player)) {
             return;
+        }
+
         if (event.getDamager() instanceof TNTPrimed) {
             TNTPrimed tnt = (TNTPrimed) event.getDamager();
             if (tnt.hasMetadata(player.getUniqueId().toString()) && tnt.hasMetadata("autoignited")) {

@@ -1,7 +1,5 @@
 package org.screamingsandals.bedwars.api.special;
 
-import org.bukkit.Location;
-
 public interface ThrowableFireball extends SpecialItem {
 
     float getDamage();
@@ -10,8 +8,8 @@ public interface ThrowableFireball extends SpecialItem {
 
     boolean hasPerfectVelocity();
 
-    boolean damageThrower();
+    boolean damagesThrower();
 
-    void run(Location location);
+    void run();
 
 }

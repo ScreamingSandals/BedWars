@@ -14,13 +14,14 @@ public class ThrowableFireball extends SpecialItem implements org.screamingsanda
     private float damage;
     private boolean incendiary;
     private boolean perfectVelocity;
-    private boolean damageThrower;
+    private boolean damagesThrower;
 
-    public ThrowableFireball(Game game, Player player, Team team, float damage, boolean incendiary, boolean perfectVelocity, boolean damageThrower) {
+    public ThrowableFireball(Game game, Player player, Team team, float damage, boolean incendiary, boolean perfectVelocity, boolean damagesThrower) {
         super(game, player, team);
         this.damage = damage;
         this.incendiary = incendiary;
         this.perfectVelocity = perfectVelocity;
+        this.damagesThrower = damagesThrower;
     }
 
     @Override
@@ -39,19 +40,19 @@ public class ThrowableFireball extends SpecialItem implements org.screamingsanda
     }
 
     @Override
-    public boolean damageThrower() {
-        return damageThrower;
+    public boolean damagesThrower() {
+        return damagesThrower;
     }
 
     @Override
-    public void run(Location location) {
+    public void run() {
         Fireball fireball = player.launchProjectile(Fireball.class);
         Main.getInstance().registerEntityToGame(fireball, game);
         fireball.setIsIncendiary(incendiary);
         if (perfectVelocity) {
-            fireball.setDirection(location.getDirection());
+            fireball.setRotation(player.getLocation().getYaw(), player.getLocation().getPitch());
         }
-        if (!damageThrower) {
+        if (!damagesThrower) {
             fireball.setMetadata(player.getUniqueId().toString(), new FixedMetadataValue(Main.getInstance(), null));
         }
         fireball.setMetadata("fireball", new FixedMetadataValue(Main.getInstance(), null));

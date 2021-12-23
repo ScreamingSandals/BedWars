@@ -67,11 +67,15 @@ public class ThrowableFireballListener implements Listener {
 
     @EventHandler
     public void onDamage(EntityDamageByEntityEvent event) {
-        if (!(event.getEntity() instanceof Player))
+        if (!(event.getEntity() instanceof Player)) {
             return;
+        }
+
         Player player = (Player) event.getEntity();
-        if (!Main.isPlayerInGame(player))
+        if (!Main.isPlayerInGame(player)) {
             return;
+        }
+
         if (event.getDamager() instanceof Fireball) {
             if (event.getDamager().hasMetadata(player.getUniqueId().toString())
                     && event.getDamager().hasMetadata("fireball")) {
