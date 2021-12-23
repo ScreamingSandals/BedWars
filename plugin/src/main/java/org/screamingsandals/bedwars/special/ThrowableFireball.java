@@ -48,9 +48,11 @@ public class ThrowableFireball extends SpecialItem implements org.screamingsanda
     public void run() {
         Fireball fireball = player.launchProjectile(Fireball.class);
         Main.getInstance().registerEntityToGame(fireball, game);
+        fireball.setShooter(null);
         fireball.setIsIncendiary(incendiary);
+        fireball.setYield(damage);
         if (perfectVelocity) {
-            fireball.setRotation(player.getLocation().getYaw(), player.getLocation().getPitch());
+            fireball.setDirection(player.getEyeLocation().getDirection());
         }
         if (!damagesThrower) {
             fireball.setMetadata(player.getUniqueId().toString(), new FixedMetadataValue(Main.getInstance(), null));

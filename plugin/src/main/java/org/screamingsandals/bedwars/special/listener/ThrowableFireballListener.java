@@ -9,6 +9,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
@@ -66,7 +67,7 @@ public class ThrowableFireballListener implements Listener {
     }
 
     @EventHandler
-    public void onDamage(EntityDamageByEntityEvent event) {
+    public void onDamage(ProjectileHitEvent event) {
         if (!(event.getEntity() instanceof Player)) {
             return;
         }
@@ -76,9 +77,9 @@ public class ThrowableFireballListener implements Listener {
             return;
         }
 
-        if (event.getDamager() instanceof Fireball) {
-            if (event.getDamager().hasMetadata(player.getUniqueId().toString())
-                    && event.getDamager().hasMetadata("fireball")) {
+        if (event.getHitEntity() instanceof Fireball) {
+            if (event.getHitEntity().hasMetadata(player.getUniqueId().toString())
+                    && event.getHitEntity().hasMetadata("fireball")) {
                 event.setCancelled(true);
             }
         }
