@@ -282,7 +282,7 @@ public class Configurator {
         if (config.isSet("specials.throwable-fireball.explosion")) {
             checkOrSetConfig(modify, "specials.throwable-fireball.explosion", null);
         }
-        checkOrSetConfig(modify, "specials.throwable-fireball.damage", config.get("specials.throwable-fireball.explosion", 3.0));
+        checkOrSetConfig(modify, "specials.throwable-fireball.damage", config.getDouble("specials.throwable-fireball.explosion", 3.0));
         checkOrSetConfig(modify, "specials.throwable-fireball.incendiary", true);
         checkOrSetConfig(modify, "specials.throwable-fireball.perfect-velocity", true);
         checkOrSetConfig(modify, "specials.throwable-fireball.damage-thrower", true);
