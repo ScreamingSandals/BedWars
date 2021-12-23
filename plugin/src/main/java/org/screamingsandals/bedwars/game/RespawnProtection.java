@@ -24,7 +24,7 @@ public class RespawnProtection extends BukkitRunnable {
     	if (!running) return;
         if (length > 0) {
             if (Main.getConfigurator().config.getBoolean("respawn.show-messages")) {
-                MiscUtils.sendActionBarMessage(player, i18nonly("respawn_protection_remaining").replace("%time%", String.valueOf(this.length)));
+                MiscUtils.sendActionBarMessage(player, i18nonly("respawn_protection_remaining").replace("%time%", Integer.toString(length)));
             }
         }
         if (length <= 0) {

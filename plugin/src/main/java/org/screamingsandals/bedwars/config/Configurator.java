@@ -279,10 +279,16 @@ public class Configurator {
         checkOrSetConfig(modify, "specials.golem.delay", 0);
         checkOrSetConfig(modify, "specials.golem.collidable", false);
         checkOrSetConfig(modify, "specials.teamchest.turn-all-enderchests-to-teamchests", true);
-        checkOrSetConfig(modify, "specials.throwable-fireball.explosion", 3.0);
-        checkOrSetConfig(modify, "specials.throwable-fireball.damage", 2.0);
+        if (config.isSet("specials.throwable-fireball.explosion")) {
+            checkOrSetConfig(modify, "specials.throwable-fireball.explosion", null);
+        }
+        checkOrSetConfig(modify, "specials.throwable-fireball.damage", config.get("specials.throwable-fireball.explosion", 3.0));
+        checkOrSetConfig(modify, "specials.throwable-fireball.incendiary", true);
+        checkOrSetConfig(modify, "specials.throwable-fireball.perfect-velocity", true);
+        checkOrSetConfig(modify, "specials.throwable-fireball.damage-thrower", true);
         checkOrSetConfig(modify, "specials.auto-igniteable-tnt.explosion-time", config.getInt("tnt.explosion-time", 8));
         checkOrSetConfig(modify, "specials.auto-igniteable-tnt.damage-placer", !config.getBoolean("tnt.dont-damage-placer"));
+        checkOrSetConfig(modify, "specials.auto-igniteable-tnt.damage", 4.0);
 
         if (config.isSet("tnt.auto-ignite")) {
             /* Config migration: tnt.auto-ignite has been replaced with special item */

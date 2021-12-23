@@ -7,18 +7,17 @@ import org.bukkit.inventory.ItemStack;
  */
 public interface WarpPowder extends SpecialItem {
     /**
-     * @param removeSpecial
-     * @param showMessage
+     * @param showCancelledMessage
      */
-    public void cancelTeleport(boolean removeSpecial, boolean showMessage);
+    void cancelTeleport(boolean showCancelledMessage);
 
     /**
      * @return
      */
-    public ItemStack getStack();
+    ItemStack getStack();
 
     /**
      *
      */
-    public void runTask();
+    void runTask();
 }

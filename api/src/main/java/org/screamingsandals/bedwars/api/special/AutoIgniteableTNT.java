@@ -16,6 +16,8 @@ public interface AutoIgniteableTNT extends SpecialItem {
      * @return true - tnt will damage placer
      */
     boolean isAllowedDamagingPlacer();
+
+    float getDamage();
     
     /**
      * spawn an entity tnt
