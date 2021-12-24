@@ -135,9 +135,6 @@ public class WarpPowderListener implements Listener {
         String unhidden = APIUtils.unhashFromInvisibleStringStartsWith(event.getItemDrop().getItemStack(), WARP_POWDER_PREFIX);
 
         if (unhidden != null) {
-            if (event.getPlayer().getInventory().containsAtLeast(event.getItemDrop().getItemStack(), 1)) {
-                return;
-            }
             WarpPowder warpPowder = (WarpPowder) Main.getPlayerGameProfile(event.getPlayer()).getGame()
                     .getFirstActivedSpecialItemOfPlayer(event.getPlayer(), WarpPowder.class);
             if (warpPowder != null) {
