@@ -68,9 +68,11 @@ public class RescuePlatform extends SpecialItem implements org.screamingsandals.
                 livingTime++;
                 int time = breakingTime - livingTime;
 
-                if (time < 6 && time > 0) {
-                    MiscUtils.sendActionBarMessage(
-                            player, i18nonly("specials_rescue_platform_destroy").replace("%time%", Integer.toString(time)));
+                if (!Main.getConfigurator().config.getBoolean("specials.dont-show-success-messages")) {
+                    if (time < 6 && time > 0) {
+                        MiscUtils.sendActionBarMessage(
+                                player, i18nonly("specials_rescue_platform_destroy").replace("%time%", Integer.toString(time)));
+                    }
                 }
 
                 if (livingTime == breakingTime) {
@@ -141,7 +143,9 @@ public class RescuePlatform extends SpecialItem implements org.screamingsandals.
             game.registerSpecialItem(this);
             runTask();
 
-            MiscUtils.sendActionBarMessage(player, i18nonly("specials_rescue_platform_created").replace("%time%", Integer.toString(breakingTime)));
+            if (!Main.getConfigurator().config.getBoolean("specials.dont-show-success-messages")) {
+                MiscUtils.sendActionBarMessage(player, i18nonly("specials_rescue_platform_created").replace("%time%", Integer.toString(breakingTime)));
+            }
 
             if (item.getAmount() > 1) {
                 item.setAmount(item.getAmount() - 1);
@@ -160,7 +164,10 @@ public class RescuePlatform extends SpecialItem implements org.screamingsandals.
         } else {
             game.registerSpecialItem(this);
 
-            MiscUtils.sendActionBarMessage(player, i18nonly("specials_rescue_platform_created_unbreakable"));
+            if (!Main.getConfigurator().config.getBoolean("specials.dont-show-success-messages")) {
+                MiscUtils.sendActionBarMessage(player, i18nonly("specials_rescue_platform_created_unbreakable"));
+            }
+
             if (item.getAmount() > 1) {
                 item.setAmount(item.getAmount() - 1);
             } else {

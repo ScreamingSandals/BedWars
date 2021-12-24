@@ -40,19 +40,25 @@ public class AutoIgniteableTNTListener implements Listener {
             Location location = block.getLocation().add(0.5, 0.5, 0.5);
             int explosionTime = Integer.parseInt(unhidden.split(":")[2]);
             boolean damagePlacer = Boolean.parseBoolean(unhidden.split(":")[3]);
+            float damage = Float.parseFloat(unhidden.split(":")[4]);
             AutoIgniteableTNT special = new AutoIgniteableTNT(game, player, game.getTeamOfPlayer(player), explosionTime,
-                    damagePlacer);
+                    damagePlacer, damage);
             special.spawn(location);
         }
     }
 
     @EventHandler
     public void onDamage(EntityDamageByEntityEvent event) {
-        if (!(event.getEntity() instanceof Player))
+        if (!(event.getEntity() instanceof Player)) {
             return;
+        }
+
         Player player = (Player) event.getEntity();
-        if (!Main.isPlayerInGame(player))
+
+        if (!Main.isPlayerInGame(player)) {
             return;
+        }
+
         if (event.getDamager() instanceof TNTPrimed) {
             TNTPrimed tnt = (TNTPrimed) event.getDamager();
             if (tnt.hasMetadata(player.getUniqueId().toString()) && tnt.hasMetadata("autoignited")) {
@@ -63,8 +69,9 @@ public class AutoIgniteableTNTListener implements Listener {
 
     private String applyProperty(BedwarsApplyPropertyToBoughtItem event) {
         return AUTO_IGNITEABLE_TNT_PREFIX
-                + MiscUtils.getIntFromProperty("explosion-time", "specials.auto-igniteable-tnt.explosion-time", event)
-                + ":" + MiscUtils.getBooleanFromProperty("damage-placer", "specials.auto-igniteable-tnt.damage-placer",
-                        event);
+                + MiscUtils.getIntFromProperty("explosion-time", "specials.auto-igniteable-tnt.explosion-time", event) + ":"
+                + MiscUtils.getBooleanFromProperty("damage-placer", "specials.auto-igniteable-tnt.damage-placer", event) + ":"
+                + MiscUtils.getDoubleFromProperty("damage", "specials.auto-igniteable-tnt.damage", event);
     }
+
 }

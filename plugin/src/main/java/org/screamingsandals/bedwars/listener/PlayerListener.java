@@ -812,9 +812,13 @@ public class PlayerListener implements Listener {
                                     if (bevent.isCancelled()) {
                                         originalState.update(true, false);
                                     } else {
-                                        stack.setAmount(stack.getAmount() - 1);
-                                        // TODO get right block place sound
-                                        Sounds.BLOCK_STONE_PLACE.playSound(player, block.getLocation(), 1, 1);
+                                        if (player.getGameMode() != GameMode.CREATIVE) {
+                                            stack.setAmount(stack.getAmount() - 1);
+                                        }
+                                        if (!player.isSneaking()) {
+                                            // TODO get right block place sound
+                                            Sounds.BLOCK_STONE_PLACE.playSound(player, block.getLocation(), 1, 1);
+                                        }
                                     }
                                 }
                             }

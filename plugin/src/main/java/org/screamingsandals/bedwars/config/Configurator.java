@@ -246,8 +246,10 @@ public class Configurator {
 
         checkOrSetConfig(modify, "respawn.protection-enabled", true);
         checkOrSetConfig(modify, "respawn.protection-time", 10);
+        checkOrSetConfig(modify, "respawn.show-messages", true);
 
         checkOrSetConfig(modify, "specials.action-bar-messages", true);
+        checkOrSetConfig(modify, "specials.dont-show-success-messages", false);
         checkOrSetConfig(modify, "specials.rescue-platform.is-breakable", false);
         checkOrSetConfig(modify, "specials.rescue-platform.delay", 0);
         checkOrSetConfig(modify, "specials.rescue-platform.break-time", 10);
@@ -277,10 +279,15 @@ public class Configurator {
         checkOrSetConfig(modify, "specials.golem.delay", 0);
         checkOrSetConfig(modify, "specials.golem.collidable", false);
         checkOrSetConfig(modify, "specials.teamchest.turn-all-enderchests-to-teamchests", true);
-        checkOrSetConfig(modify, "specials.throwable-fireball.explosion", 3.0);
-        checkOrSetConfig(modify, "specials.throwable-fireball.damage", 2.0);
+        if (config.isSet("specials.throwable-fireball.explosion")) {
+            checkOrSetConfig(modify, "specials.throwable-fireball.explosion", null);
+        }
+        checkOrSetConfig(modify, "specials.throwable-fireball.damage", config.getDouble("specials.throwable-fireball.explosion", 3.0));
+        checkOrSetConfig(modify, "specials.throwable-fireball.incendiary", true);
+        checkOrSetConfig(modify, "specials.throwable-fireball.damage-thrower", true);
         checkOrSetConfig(modify, "specials.auto-igniteable-tnt.explosion-time", config.getInt("tnt.explosion-time", 8));
         checkOrSetConfig(modify, "specials.auto-igniteable-tnt.damage-placer", !config.getBoolean("tnt.dont-damage-placer"));
+        checkOrSetConfig(modify, "specials.auto-igniteable-tnt.damage", 4.0);
 
         if (config.isSet("tnt.auto-ignite")) {
             /* Config migration: tnt.auto-ignite has been replaced with special item */

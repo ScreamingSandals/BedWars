@@ -1,5 +1,6 @@
 package org.screamingsandals.bedwars.special.listener;
 
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.APIUtils;
 import org.screamingsandals.bedwars.api.game.Game;
@@ -99,7 +100,7 @@ public class WarpPowderListener implements Listener {
 
         WarpPowder warpPowder = (WarpPowder) game.getFirstActivedSpecialItemOfPlayer(player, WarpPowder.class);
         if (warpPowder != null) {
-            warpPowder.cancelTeleport(false, true);
+            warpPowder.cancelTeleport(true);
         }
     }
 
@@ -122,14 +123,23 @@ public class WarpPowderListener implements Listener {
 
         WarpPowder warpPowder = (WarpPowder) game.getFirstActivedSpecialItemOfPlayer(player, WarpPowder.class);
         if (warpPowder != null) {
-            warpPowder.cancelTeleport(true, true);
+            warpPowder.cancelTeleport(true);
+        }
+    }
 
-            if (player.getInventory().firstEmpty() == -1 && !player.getInventory().contains(warpPowder.getStack())) {
-                player.getWorld().dropItemNaturally(player.getLocation(), warpPowder.getStack());
-            } else {
-                player.getInventory().addItem(warpPowder.getStack());
+    @EventHandler
+    public void onWarpPowderDrop(PlayerDropItemEvent event) {
+        if (!Main.isPlayerInGame(event.getPlayer())) {
+            return;
+        }
+        String unhidden = APIUtils.unhashFromInvisibleStringStartsWith(event.getItemDrop().getItemStack(), WARP_POWDER_PREFIX);
+
+        if (unhidden != null) {
+            WarpPowder warpPowder = (WarpPowder) Main.getPlayerGameProfile(event.getPlayer()).getGame()
+                    .getFirstActivedSpecialItemOfPlayer(event.getPlayer(), WarpPowder.class);
+            if (warpPowder != null) {
+                warpPowder.cancelTeleport(true);
             }
-            player.updateInventory();
         }
     }
 

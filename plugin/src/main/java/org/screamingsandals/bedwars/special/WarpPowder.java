@@ -12,7 +12,6 @@ import org.screamingsandals.bedwars.utils.SpawnEffects;
 import org.screamingsandals.bedwars.lib.nms.entity.PlayerUtils;
 
 import static org.screamingsandals.bedwars.lib.lang.I.i18nc;
-import static org.screamingsandals.bedwars.lib.lang.I18n.i18n;
 
 public class WarpPowder extends SpecialItem implements org.screamingsandals.bedwars.api.special.WarpPowder {
     private BukkitTask teleportingTask = null;
@@ -32,25 +31,16 @@ public class WarpPowder extends SpecialItem implements org.screamingsandals.bedw
     }
 
     @Override
-    public void cancelTeleport(boolean removeSpecial, boolean showMessage) {
+    public void cancelTeleport(boolean showCancelledMessage) {
         try {
             teleportingTask.cancel();
         } catch (Exception ignored) {
 
         }
 
-        if (removeSpecial) {
-            game.unregisterSpecialItem(this);
-        } else {
-            if (player.getInventory().firstEmpty() == -1 && !player.getInventory().contains(item)) {
-                player.getWorld().dropItemNaturally(player.getLocation(), item);
-            } else {
-                player.getInventory().addItem(item);
-            }
-            player.updateInventory();
-        }
+        game.unregisterSpecialItem(this);
 
-        if (showMessage) {
+        if (showCancelledMessage) {
             player.sendMessage(i18nc("specials_warp_powder_canceled", game.getCustomPrefix()));
         }
     }
@@ -61,27 +51,26 @@ public class WarpPowder extends SpecialItem implements org.screamingsandals.bedw
 
         player.sendMessage(i18nc("specials_warp_powder_started", game.getCustomPrefix()).replace("%time%", Double.toString(teleportingTime)));
 
-        if (item.getAmount() > 1) {
-            item.setAmount(item.getAmount() - 1);
-        } else {
-            try {
-                if (player.getInventory().getItemInOffHand().equals(item)) {
-                    player.getInventory().setItemInOffHand(new ItemStack(Material.AIR));
-                } else {
-                    player.getInventory().remove(item);
-                }
-            } catch (Throwable e) {
-                player.getInventory().remove(item);
-            }
-        }
-        player.updateInventory();
-
         teleportingTask = new BukkitRunnable() {
 
             @Override
             public void run() {
                 if (teleportingTime == 0) {
-                    cancelTeleport(true, false);
+                    cancelTeleport(false);
+                    if (item.getAmount() > 1) {
+                        item.setAmount(item.getAmount() - 1);
+                    } else {
+                        try {
+                            if (player.getInventory().getItemInOffHand().equals(item)) {
+                                player.getInventory().setItemInOffHand(new ItemStack(Material.AIR));
+                            } else {
+                                player.getInventory().remove(item);
+                            }
+                        } catch (Throwable e) {
+                            player.getInventory().remove(item);
+                        }
+                    }
+                    player.updateInventory();
                     PlayerUtils.teleportPlayer(player, team.getTeamSpawn());
                 } else {
                     SpawnEffects.spawnEffect(game, player, "game-effects.warppowdertick");

@@ -10,16 +10,17 @@ import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.Team;
 import org.screamingsandals.bedwars.api.game.Game;
 
-public class AutoIgniteableTNT extends SpecialItem
-        implements org.screamingsandals.bedwars.api.special.AutoIgniteableTNT {
+public class AutoIgniteableTNT extends SpecialItem implements org.screamingsandals.bedwars.api.special.AutoIgniteableTNT {
 
     private int explosionTime;
+    private float damage;
     private boolean damagePlacer;
 
-    public AutoIgniteableTNT(Game game, Player player, Team team, int explosionTime, boolean damagePlacer) {
+    public AutoIgniteableTNT(Game game, Player player, Team team, int explosionTime, boolean damagePlacer, float damage) {
         super(game, player, team);
         this.explosionTime = explosionTime;
         this.damagePlacer = damagePlacer;
+        this.damage = damage;
     }
 
     @Override
@@ -33,13 +34,22 @@ public class AutoIgniteableTNT extends SpecialItem
     }
 
     @Override
+    public float getDamage() {
+        return damage;
+    }
+
+    @Override
     public void spawn(Location location) {
         TNTPrimed tnt = (TNTPrimed) location.getWorld().spawnEntity(location, EntityType.PRIMED_TNT);
         Main.getInstance().registerEntityToGame(tnt, game);
+        tnt.setYield(damage);
         tnt.setFuseTicks(explosionTime * 20);
-        if (!damagePlacer)
+
+        if (!damagePlacer) {
             tnt.setMetadata(player.getUniqueId().toString(), new FixedMetadataValue(Main.getInstance(), null));
+        }
         tnt.setMetadata("autoignited", new FixedMetadataValue(Main.getInstance(), null));
+
         new BukkitRunnable() {
             public void run() {
                 Main.getInstance().unregisterEntityFromGame(tnt);
