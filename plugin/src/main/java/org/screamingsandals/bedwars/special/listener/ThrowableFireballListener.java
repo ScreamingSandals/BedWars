@@ -44,8 +44,7 @@ public class ThrowableFireballListener implements Listener {
                 String[] properties = unhash.split(":");
                 float damage = (float) Double.parseDouble(properties[2]);
                 boolean incendiary = Boolean.parseBoolean(properties[3]);
-                boolean perfectVelocity = Boolean.parseBoolean(properties[4]);
-                boolean damageThrower = Boolean.parseBoolean(properties[5]);
+                boolean damageThrower = Boolean.parseBoolean(properties[4]);
 
                 ThrowableFireball special = new ThrowableFireball(
                         BedwarsAPI.getInstance().getGameOfPlayer(player),
@@ -53,9 +52,9 @@ public class ThrowableFireballListener implements Listener {
                         BedwarsAPI.getInstance().getFirstRunningGame().getTeamOfPlayer(player),
                         damage,
                         incendiary,
-                        perfectVelocity,
                         damageThrower);
                 special.run();
+
                 if (event.getItem().getAmount() > 1) {
                     event.getItem().setAmount(event.getItem().getAmount() - 1);
                 } else {
@@ -78,7 +77,6 @@ public class ThrowableFireballListener implements Listener {
         return THROWABLE_FIREBALL_PREFIX
                 + MiscUtils.getDoubleFromProperty("damage", "specials.throwable-fireball.damage", event) + ":"
                 + MiscUtils.getBooleanFromProperty("incendiary", "specials.throwable-fireball.incendiary", event) + ":"
-                + MiscUtils.getBooleanFromProperty("perfect-velocity", "specials.throwable-fireball.perfect-velocity", event) + ":"
                 + MiscUtils.getBooleanFromProperty("damage-thrower", "specials.throwable-fireball.damage-thrower", event);
     }
 

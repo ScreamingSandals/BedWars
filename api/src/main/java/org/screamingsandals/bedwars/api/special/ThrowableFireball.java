@@ -6,8 +6,6 @@ public interface ThrowableFireball extends SpecialItem {
 
     boolean isIncendiary();
 
-    boolean hasPerfectVelocity();
-
     boolean damagesThrower();
 
     void run();

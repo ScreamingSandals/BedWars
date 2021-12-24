@@ -284,7 +284,6 @@ public class Configurator {
         }
         checkOrSetConfig(modify, "specials.throwable-fireball.damage", config.getDouble("specials.throwable-fireball.explosion", 3.0));
         checkOrSetConfig(modify, "specials.throwable-fireball.incendiary", true);
-        checkOrSetConfig(modify, "specials.throwable-fireball.perfect-velocity", true);
         checkOrSetConfig(modify, "specials.throwable-fireball.damage-thrower", true);
         checkOrSetConfig(modify, "specials.auto-igniteable-tnt.explosion-time", config.getInt("tnt.explosion-time", 8));
         checkOrSetConfig(modify, "specials.auto-igniteable-tnt.damage-placer", !config.getBoolean("tnt.dont-damage-placer"));
