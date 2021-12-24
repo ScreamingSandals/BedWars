@@ -411,17 +411,17 @@ public class PlayerListener implements Listener {
 
         final Player player = event.getPlayer();
         if (Main.isPlayerInGame(player)) {
-            //Allow players with permissions to use all commands
-            if (BaseCommand.hasPermission(player, ADMIN_PERMISSION, false)) {
-                return;
-            }
-
             final String message = event.getMessage();
             final GamePlayer gamePlayer = Main.getPlayerGameProfile(event.getPlayer());
             if (Main.isCommandLeaveShortcut(message)) {
                 event.setCancelled(true);
                 gamePlayer.changeGame(null);
             } else if (!Main.isCommandAllowedInGame(message.split(" ")[0])) {
+                //Allow players with permissions to use all commands
+                if (BaseCommand.hasPermission(player, ADMIN_PERMISSION, false)) {
+                    return;
+                }
+
                 event.setCancelled(true);
                 event.getPlayer().sendMessage(i18nc("command_is_not_allowed", gamePlayer.getGame().getCustomPrefix()));
             }
