@@ -14,9 +14,9 @@ public class ColorChangerImpl implements ColorChanger<Item> {
         var color = (TeamColorImpl) apiColor;
         var newItem = item instanceof Item ? ((Item) item).clone() : ItemFactory.build(item).orElse(ItemFactory.getAir());
         if (newItem.getMaterial().is("LEATHER_BOOTS", "LEATHER_CHESTPLATE", "LEATHER_HELMET", "LEATHER_LEGGINGS")) {
-            newItem.setColor(color.getLeatherColor());
+            newItem = newItem.builder().color(color.getLeatherColor()).build().orElseThrow();
         } else {
-            newItem.setMaterial(newItem.getMaterial().colorize(color.material1_13));
+            newItem = newItem.withType(newItem.getMaterial().colorize(color.material1_13));
         }
         return newItem;
     }

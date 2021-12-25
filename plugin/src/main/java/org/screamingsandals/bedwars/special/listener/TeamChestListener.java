@@ -19,7 +19,7 @@ public class TeamChestListener {
     @OnEvent
     public void onTeamChestRegistered(ApplyPropertyToBoughtItemEventImpl event) {
         if (event.getPropertyName().equalsIgnoreCase("teamchest")) {
-            ItemUtils.saveData(event.getStack(), TEAM_CHEST_PREFIX);
+            event.setStack(ItemUtils.saveData(event.getStack(), TEAM_CHEST_PREFIX));
         }
     }
 

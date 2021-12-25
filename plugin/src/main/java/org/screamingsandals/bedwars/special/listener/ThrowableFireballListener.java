@@ -17,7 +17,7 @@ public class ThrowableFireballListener {
     @OnEvent
     public void onThrowableFireballRegistered(ApplyPropertyToBoughtItemEventImpl event) {
         if (event.getPropertyName().equalsIgnoreCase("throwablefireball")) {
-            ItemUtils.saveData(event.getStack(), applyProperty(event));
+            event.setStack(ItemUtils.saveData(event.getStack(), applyProperty(event)));
         }
     }
 
@@ -43,15 +43,15 @@ public class ThrowableFireballListener {
 
                 event.setCancelled(true);
 
-                stack.setAmount(1);
+                var stack2 = stack.withAmount(1);
                 try {
-                    if (player.getPlayerInventory().getItemInOffHand().equals(stack)) {
+                    if (player.getPlayerInventory().getItemInOffHand().equals(stack2)) {
                         player.getPlayerInventory().setItemInOffHand(ItemFactory.getAir());
                     } else {
-                        player.getPlayerInventory().removeItem(stack);
+                        player.getPlayerInventory().removeItem(stack2);
                     }
                 } catch (Throwable e) {
-                    player.getPlayerInventory().removeItem(stack);
+                    player.getPlayerInventory().removeItem(stack2);
                 }
 
                 player.forceUpdateInventory();

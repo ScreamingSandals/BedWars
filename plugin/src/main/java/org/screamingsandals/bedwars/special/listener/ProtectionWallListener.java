@@ -21,7 +21,7 @@ public class ProtectionWallListener {
     @OnEvent
     public void onProtectionWallRegistered(ApplyPropertyToBoughtItemEventImpl event) {
         if (event.getPropertyName().equalsIgnoreCase("protectionwall")) {
-            ItemUtils.saveData(event.getStack(), applyProperty(event));
+            event.setStack(ItemUtils.saveData(event.getStack(), applyProperty(event)));
         }
     }
 

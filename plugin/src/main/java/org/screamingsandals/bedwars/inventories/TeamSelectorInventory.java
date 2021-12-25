@@ -156,18 +156,16 @@ public class TeamSelectorInventory {
     private void repaintTeam(TeamImpl team) {
         var playersInTeamCount = team.countConnectedPlayers();
         var itemInfo = items.get(team);
-        var item = itemInfo.getItem();
-
-        item.setDisplayName(
-                Message.of(LangKeys.IN_GAME_TEAM_SELECTION_SELECT_ITEM)
-                        .placeholder("team", Component.text(team.getName()).color(team.getColor().getTextColor()))
-                        .placeholder("inteam", playersInTeamCount)
-                        .placeholder("maxinteam", team.getMaxPlayers())
-                        .asComponent()
+        itemInfo.setItem(itemInfo.getItem()
+                .withDisplayName(
+                        Message.of(LangKeys.IN_GAME_TEAM_SELECTION_SELECT_ITEM)
+                                .placeholder("team", Component.text(team.getName()).color(team.getColor().getTextColor()))
+                                .placeholder("inteam", playersInTeamCount)
+                                .placeholder("maxinteam", team.getMaxPlayers())
+                                .asComponent()
+                )
+                .withItemLore(formatLore(team, game))
         );
-
-        item.getLore().clear();
-        item.getLore().addAll(formatLore(team, game));
 
         itemInfo.repaint();
     }

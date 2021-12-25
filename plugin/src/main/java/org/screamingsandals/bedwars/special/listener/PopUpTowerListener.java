@@ -23,7 +23,7 @@ public class PopUpTowerListener {
     @OnEvent
     public void onPopUpTowerRegistration(ApplyPropertyToBoughtItemEventImpl event) {
         if (event.getPropertyName().equalsIgnoreCase("popuptower")) {
-            ItemUtils.saveData(event.getStack(), this.applyProperty(event));
+            event.setStack(ItemUtils.saveData(event.getStack(), this.applyProperty(event)));
         }
     }
 
@@ -59,15 +59,15 @@ public class PopUpTowerListener {
 
                         popupTower.runTask();
 
-                        stack.setAmount(1); // we are removing exactly one popup tower
+                        var stack2 = stack.withAmount(1); // we are removing exactly one popup tower
                         try {
-                            if (player.getPlayerInventory().getItemInOffHand().equals(stack)) {
+                            if (player.getPlayerInventory().getItemInOffHand().equals(stack2)) {
                                 player.getPlayerInventory().setItemInOffHand(ItemFactory.getAir());
                             } else {
-                                player.getPlayerInventory().removeItem(stack);
+                                player.getPlayerInventory().removeItem(stack2);
                             }
                         } catch (Throwable e) {
-                            player.getPlayerInventory().removeItem(stack);
+                            player.getPlayerInventory().removeItem(stack2);
                         }
                         player.forceUpdateInventory();
                     } else {

@@ -985,24 +985,27 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
                 if (configurationContainer.getOrDefault(ConfigurationContainer.COMPASS, Boolean.class, false)) {
                     int compassPosition = MainConfig.getInstance().node("hotbar", "selector").getInt(0);
                     if (compassPosition >= 0 && compassPosition <= 8) {
-                        var compass = MainConfig.getInstance().readDefinedItem("jointeam", "COMPASS");
-                        compass.setDisplayName(Message.of(LangKeys.IN_GAME_LOBBY_ITEMS_COMPASS_SELECTOR_TEAM).asComponent(gamePlayer));
+                        var compass = MainConfig.getInstance()
+                                .readDefinedItem("jointeam", "COMPASS")
+                                .withDisplayName(Message.of(LangKeys.IN_GAME_LOBBY_ITEMS_COMPASS_SELECTOR_TEAM).asComponent(gamePlayer));
                         gamePlayer.getPlayerInventory().setItem(compassPosition, compass);
                     }
                 }
 
                 int leavePosition = MainConfig.getInstance().node("hotbar", "leave").getInt(8);
                 if (leavePosition >= 0 && leavePosition <= 8) {
-                    var leave = MainConfig.getInstance().readDefinedItem("leavegame", "SLIME_BALL");
-                    leave.setDisplayName(Message.of(LangKeys.IN_GAME_LOBBY_ITEMS_LEAVE_FROM_GAME_ITEM).asComponent(gamePlayer));
+                    var leave = MainConfig.getInstance()
+                                    .readDefinedItem("leavegame", "SLIME_BALL")
+                                    .withDisplayName(Message.of(LangKeys.IN_GAME_LOBBY_ITEMS_LEAVE_FROM_GAME_ITEM).asComponent(gamePlayer));
                     gamePlayer.getPlayerInventory().setItem(leavePosition, leave);
                 }
 
                 if (gamePlayer.hasPermission(BedWarsPermission.START_ITEM_PERMISSION.asPermission())) {
                     int vipPosition = MainConfig.getInstance().node("hotbar", "start").getInt(1);
                     if (vipPosition >= 0 && vipPosition <= 8) {
-                        var startGame = MainConfig.getInstance().readDefinedItem("startgame", "DIAMOND");
-                        startGame.setDisplayName(Message.of(LangKeys.IN_GAME_LOBBY_ITEMS_START_GAME_ITEM).asComponent(gamePlayer));
+                        var startGame = MainConfig.getInstance()
+                                        .readDefinedItem("startgame", "DIAMOND")
+                                        .withDisplayName(Message.of(LangKeys.IN_GAME_LOBBY_ITEMS_START_GAME_ITEM).asComponent(gamePlayer));
                         gamePlayer.getPlayerInventory().setItem(vipPosition, startGame);
                     }
                 }
@@ -1543,15 +1546,17 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
         if (configurationContainer.getOrDefault(ConfigurationContainer.ADD_WOOL_TO_INVENTORY_ON_JOIN, Boolean.class, false)) {
             int colorPosition = MainConfig.getInstance().node("hotbar", "color").getInt(1);
             if (colorPosition >= 0 && colorPosition <= 8) {
-                var item = ItemFactory.build(teamForJoin.getColor().material1_13 + "_WOOL").orElse(ItemFactory.getAir());
-                item.setDisplayName(Component.text(teamForJoin.getName(), teamForJoin.getColor().getTextColor()));
+                var item = ItemFactory.build(teamForJoin.getColor().material1_13 + "_WOOL",
+                        builder -> builder.displayName(Component.text(teamForJoin.getName(), teamForJoin.getColor().getTextColor()))
+                        ).orElse(ItemFactory.getAir());
                 player.getPlayerInventory().setItem(colorPosition, item);
             }
         }
 
         if (configurationContainer.getOrDefault(ConfigurationContainer.COLORED_LEATHER_BY_TEAM_IN_LOBBY, Boolean.class, false)) {
-            var chestplate = ItemFactory.build("LEATHER_CHESTPLATE").orElse(ItemFactory.getAir());
-            chestplate.setColor(teamForJoin.getColor().getLeatherColor());
+            var chestplate = ItemFactory.build("LEATHER_CHESTPLATE", builder ->
+                    builder.color(teamForJoin.getColor().getLeatherColor())
+            ).orElse(ItemFactory.getAir());
             player.getPlayerInventory().setChestplate(chestplate);
         }
 
@@ -1600,8 +1605,9 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
 
                 int leavePosition = MainConfig.getInstance().node("hotbar", "leave").getInt(8);
                 if (leavePosition >= 0 && leavePosition <= 8) {
-                    var leave = MainConfig.getInstance().readDefinedItem("leavegame", "SLIME_BALL");
-                    leave.setDisplayName(Message.of(LangKeys.IN_GAME_LOBBY_ITEMS_LEAVE_FROM_GAME_ITEM).asComponent(gamePlayer));
+                    var leave = MainConfig.getInstance()
+                            .readDefinedItem("leavegame", "SLIME_BALL")
+                            .withDisplayName(Message.of(LangKeys.IN_GAME_LOBBY_ITEMS_LEAVE_FROM_GAME_ITEM).asComponent(gamePlayer));
                     gamePlayer.getPlayerInventory().setItem(leavePosition, leave);
                 }
             }

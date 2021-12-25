@@ -51,15 +51,15 @@ public class ArrowBlockerImpl extends SpecialItem implements ArrowBlocker<GameIm
             game.registerSpecialItem(this);
             runTask();
 
-            item.setAmount(1);
+            var stack = item.withAmount(1);
             try {
-                if (player.getPlayerInventory().getItemInOffHand().equals(item)) {
+                if (player.getPlayerInventory().getItemInOffHand().equals(stack)) {
                     player.getPlayerInventory().setItemInOffHand(ItemFactory.getAir());
                 } else {
-                    player.getPlayerInventory().removeItem(item);
+                    player.getPlayerInventory().removeItem(stack);
                 }
             } catch (Throwable e) {
-                player.getPlayerInventory().removeItem(item);
+                player.getPlayerInventory().removeItem(stack);
             }
             player.forceUpdateInventory();
 

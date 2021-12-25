@@ -19,7 +19,7 @@ public class MagnetShoesListener {
         if (event.getPropertyName().equalsIgnoreCase("magnetshoes")) {
             int probability = MiscUtils.getIntFromProperty("probability", "magnet-shoes.probability", event);
 
-            ItemUtils.saveData(event.getStack(), MAGNET_SHOES_PREFIX + probability);
+            event.setStack(ItemUtils.saveData(event.getStack(), MAGNET_SHOES_PREFIX + probability));
         }
     }
 

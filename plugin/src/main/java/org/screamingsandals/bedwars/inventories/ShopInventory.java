@@ -131,23 +131,31 @@ public class ShopInventory {
                     .orElseGet(() -> mainConfig.node("lore", "generate-automatically").getBoolean(true));
 
             if (enabled) {
+                var finalItem = item;
                 var loreText = itemInfo.getFirstPropertyByName("generatedLoreText")
                         .map(property -> property.getPropertyData().childrenList().stream().map(ConfigurationNode::getString))
                         .orElseGet(() -> mainConfig.node("lore", "text").childrenList().stream().map(ConfigurationNode::getString))
                         .filter(Objects::nonNull)
                         .map(s -> s.replaceAll("%price%", Integer.toString(price))
                                 .replaceAll("%resource%", AdventureHelper.toLegacy(type.getItemName().asComponent()))
-                                .replaceAll("%amount%", Integer.toString(item.getAmount())))
+                                .replaceAll("%amount%", Integer.toString(finalItem.getAmount())))
                         .map(AdventureHelper::toComponent)
                         .collect(Collectors.toList());
 
-                item.getLore().addAll(loreText);
+                var nL = new ArrayList<Component>();
+                nL.addAll(item.getLore());
+                nL.addAll(loreText);
+
+                item = item.withItemLore(nL);
+
+                event.setStack(item);
             }
         }
         final var preScanEvent = new PrePropertyScanEventImpl(event);
         EventManager.fire(preScanEvent);
         if (preScanEvent.isCancelled()) return;
 
+        var finalItem1 = item;
         itemInfo.getProperties().forEach(property -> {
             if (property.hasName()) {
                 var converted = ConfigurateUtils.raw(property.getPropertyData());
@@ -156,7 +164,7 @@ public class ShopInventory {
                 }
 
                 //noinspection unchecked
-                var applyEvent = new ApplyPropertyToDisplayedItemEventImpl(game.orElse(null), playerManager.getPlayer(event.getPlayer().getUuid()).orElseThrow(), property.getPropertyName(), (Map<String, Object>) converted, item);
+                var applyEvent = new ApplyPropertyToDisplayedItemEventImpl(game.orElse(null), playerManager.getPlayer(event.getPlayer().getUuid()).orElseThrow(), property.getPropertyName(), (Map<String, Object>) converted, finalItem1);
                 EventManager.fire(applyEvent);
 
                 if (applyEvent.getStack() != null) {
@@ -356,9 +364,6 @@ public class ShopInventory {
             if (item.getDisplayName() != null) {
                 return item.getDisplayName();
             }
-            if (item.getLocalizedName() != null) {
-                return item.getLocalizedName();
-            }
         } catch (Throwable ignored) {
         }
 
@@ -424,7 +429,7 @@ public class ShopInventory {
             finalStackSize = (int) maxStackSize;
             if (finalStackSize > amount) {
                 priceAmount = (int) (priceOfOne * finalStackSize);
-                newItem.setAmount(finalStackSize);
+                newItem = newItem.withAmount(finalStackSize);
                 amount = finalStackSize;
             }
         }

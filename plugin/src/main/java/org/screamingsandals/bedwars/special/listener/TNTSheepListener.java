@@ -27,7 +27,7 @@ public class TNTSheepListener {
     @OnEvent
     public void onTNTSheepRegistered(ApplyPropertyToBoughtItemEventImpl event) {
         if (event.getPropertyName().equalsIgnoreCase("tntsheep")) {
-            ItemUtils.saveData(event.getStack(), applyProperty(event));
+            event.setStack(ItemUtils.saveData(event.getStack(), applyProperty(event)));
         }
 
     }

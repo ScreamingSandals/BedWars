@@ -30,7 +30,7 @@ public class GolemListener {
     @OnEvent
     public void onGolemRegister(ApplyPropertyToBoughtItemEventImpl event) {
         if (event.getPropertyName().equalsIgnoreCase("golem")) {
-            ItemUtils.saveData(event.getStack(), applyProperty(event));
+            event.setStack(ItemUtils.saveData(event.getStack(), applyProperty(event)));
         }
     }
 

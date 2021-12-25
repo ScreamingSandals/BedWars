@@ -28,7 +28,7 @@ public class TrapListener {
                     event.getGame().getPlayerTeam(event.getPlayer()),
                     (List<Map<String, Object>>) event.getProperty("data"));
 
-            ItemUtils.saveData(event.getStack(), TRAP_PREFIX + System.identityHashCode(trap));
+            event.setStack(ItemUtils.saveData(event.getStack(), TRAP_PREFIX + System.identityHashCode(trap)));
         }
     }
 

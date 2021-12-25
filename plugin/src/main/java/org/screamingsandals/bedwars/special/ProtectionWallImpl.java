@@ -146,30 +146,30 @@ public class ProtectionWallImpl extends SpecialItem implements ProtectionWall<Ga
 
             MiscUtils.sendActionBarMessage(player, Message.of(LangKeys.SPECIALS_PROTECTION_WALL_CREATED).placeholder("time", breakingTime));
 
-            item.setAmount(1);
+            var stack = item.withAmount(1);
             try {
-                if (player.getPlayerInventory().getItemInOffHand().equals(item)) {
+                if (player.getPlayerInventory().getItemInOffHand().equals(stack)) {
                     player.getPlayerInventory().setItemInOffHand(ItemFactory.getAir());
                 } else {
-                    player.getPlayerInventory().removeItem(item);
+                    player.getPlayerInventory().removeItem(stack);
                 }
             } catch (Throwable e) {
-                player.getPlayerInventory().removeItem(item);
+                player.getPlayerInventory().removeItem(stack);
             }
             player.forceUpdateInventory();
         } else {
             game.registerSpecialItem(this);
 
             MiscUtils.sendActionBarMessage(player, Message.of(LangKeys.SPECIALS_PROTECTION_WALL_CREATED_UNBREAKABLE));
-            item.setAmount(1);
+            var stack = item.withAmount(1);
             try {
-                if (player.getPlayerInventory().getItemInOffHand().equals(item)) {
+                if (player.getPlayerInventory().getItemInOffHand().equals(stack)) {
                     player.getPlayerInventory().setItemInOffHand(ItemFactory.getAir());
                 } else {
-                    player.getPlayerInventory().removeItem(item);
+                    player.getPlayerInventory().removeItem(stack);
                 }
             } catch (Throwable e) {
-                player.getPlayerInventory().removeItem(item);
+                player.getPlayerInventory().removeItem(stack);
             }
             player.forceUpdateInventory();
         }

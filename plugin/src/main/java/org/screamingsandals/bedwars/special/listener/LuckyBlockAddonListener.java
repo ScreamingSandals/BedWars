@@ -23,7 +23,7 @@ public class LuckyBlockAddonListener {
                     event.getGame().getPlayerTeam(event.getPlayer()),
                     (List<Map<String, Object>>) event.getProperty("data"));
 
-            ItemUtils.saveData(event.getStack(), LUCKY_BLOCK_PREFIX + System.identityHashCode(lucky));
+            event.setStack(ItemUtils.saveData(event.getStack(), LUCKY_BLOCK_PREFIX + System.identityHashCode(lucky)));
         }
     }
 

@@ -24,7 +24,7 @@ public class RescuePlatformListener {
     @OnEvent
     public void onRescuePlatformRegistered(ApplyPropertyToBoughtItemEventImpl event) {
         if (event.getPropertyName().equalsIgnoreCase("rescueplatform")) {
-            ItemUtils.saveData(event.getStack(), applyProperty(event));
+            event.setStack(ItemUtils.saveData(event.getStack(), applyProperty(event)));
         }
     }
 

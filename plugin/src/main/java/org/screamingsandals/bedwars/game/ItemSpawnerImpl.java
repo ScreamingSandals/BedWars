@@ -341,7 +341,7 @@ public class ItemSpawnerImpl implements ItemSpawner<LocationHolder, ItemSpawnerT
 
                     var resource = resourceSpawnEvent.getResource();
 
-                    resource.setAmount(nextMaxSpawn(resource.getAmount()));
+                    resource = resource.withAmount(nextMaxSpawn(resource.getAmount()));
 
                     if (resource.getAmount() > 0) {
                         var loc = this.location.add(0, 0.05, 0);

@@ -965,7 +965,7 @@ public class PlayerListener {
                                 if (charges <= 4) {
                                     anchorFilled = true;
                                     event.getBlockClicked().setType(anchor.with("charges", String.valueOf(charges)));
-                                    stack.setAmount(stack.getAmount() - 1);
+                                    stack.changeAmount(stack.getAmount() - 1);
 
                                     event.getBlockClicked().getLocation().getWorld().playSound(Sound.sound(
                                             SpecialSoundKey.key(MainConfig.getInstance().node("target-block", "respawn-anchor", "sound", "charge").getString("block.respawn_anchor.charge")),
@@ -989,7 +989,7 @@ public class PlayerListener {
                                     if (bevent.isCancelled()) {
                                         originalState.updateBlock(true, false);
                                     } else {
-                                        stack.setAmount(stack.getAmount() - 1);
+                                        stack.changeAmount(stack.getAmount() - 1);
                                         // TODO get right block place sound
                                         block.getLocation().getWorld().playSound(Sound.sound(
                                                 SpecialSoundKey.key("minecraft:block.stone.place"),

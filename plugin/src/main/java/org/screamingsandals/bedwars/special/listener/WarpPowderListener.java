@@ -26,7 +26,7 @@ public class WarpPowderListener {
     @OnEvent
     public void onPowderItemRegister(ApplyPropertyToBoughtItemEventImpl event) {
         if (event.getPropertyName().equalsIgnoreCase("warppowder")) {
-            ItemUtils.saveData(event.getStack(), applyProperty(event));
+            event.setStack(ItemUtils.saveData(event.getStack(), applyProperty(event)));
         }
     }
 

@@ -29,7 +29,7 @@ public class BridgeEggListener {
     @OnEvent
     public void onEggRegistration(ApplyPropertyToBoughtItemEventImpl event) {
         if (event.getPropertyName().equalsIgnoreCase("bridgeegg")) {
-            ItemUtils.saveData(event.getStack(), this.applyProperty(event));
+            event.setStack(ItemUtils.saveData(event.getStack(), this.applyProperty(event)));
         }
     }
 
@@ -68,15 +68,15 @@ public class BridgeEggListener {
                         this.bridges.put(egg, bridgeEgg);
                         bridgeEgg.runTask();
 
-                        stack.setAmount(1); // we are removing exactly one egg
+                        var stack2 = stack.withAmount(1); // we are removing exactly one egg
                         try {
-                            if (player.getPlayerInventory().getItemInOffHand().equals(stack)) {
+                            if (player.getPlayerInventory().getItemInOffHand().equals(stack2)) {
                                 player.getPlayerInventory().setItemInOffHand(ItemFactory.getAir());
                             } else {
-                                player.getPlayerInventory().removeItem(stack);
+                                player.getPlayerInventory().removeItem(stack2);
                             }
                         } catch (Throwable e) {
-                            player.getPlayerInventory().removeItem(stack);
+                            player.getPlayerInventory().removeItem(stack2);
                         }
                         player.forceUpdateInventory();
                     } else {

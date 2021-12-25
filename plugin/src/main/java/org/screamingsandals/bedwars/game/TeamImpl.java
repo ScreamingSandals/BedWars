@@ -12,10 +12,10 @@ import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.lib.SpecialSoundKey;
 import org.screamingsandals.lib.block.BlockMapper;
 import org.screamingsandals.lib.container.Container;
+import org.screamingsandals.lib.container.ContainerFactory;
 import org.screamingsandals.lib.container.type.InventoryTypeHolder;
 import org.screamingsandals.lib.hologram.Hologram;
 import org.screamingsandals.lib.hologram.HologramManager;
-import org.screamingsandals.lib.item.builder.ItemFactory;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
@@ -118,7 +118,7 @@ public class TeamImpl implements Team<LocationHolder, TeamColorImpl, GameImpl, C
 
         // team chest inventory
         final var message = Message.of(LangKeys.SPECIALS_TEAM_CHEST_NAME).prefixOrDefault(game.getCustomPrefixComponent()).asComponent();
-        this.teamChestInventory = ItemFactory.createContainer(InventoryTypeHolder.of("ender_chest"), message).orElseThrow();
+        this.teamChestInventory = ContainerFactory.createContainer(InventoryTypeHolder.of("ender_chest"), message).orElseThrow();
 
         this.targetBlockIntact = true;
         this.started = true;

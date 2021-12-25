@@ -22,7 +22,7 @@ public class ArrowBlockerListener {
     @OnEvent
     public void onArrowBlockerRegistered(ApplyPropertyToBoughtItemEventImpl event) {
         if (event.getPropertyName().equalsIgnoreCase("arrowblocker")) {
-            ItemUtils.saveData(event.getStack(), applyProperty(event));
+            event.setStack(ItemUtils.saveData(event.getStack(), applyProperty(event)));
         }
     }
 

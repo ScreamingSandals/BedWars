@@ -37,7 +37,7 @@ public class PermaItemListener {
                     return;
                 }
 
-                ItemUtils.saveData(stack, PERMA_ITEM_PREFIX);
+                event.setStack(ItemUtils.saveData(stack, PERMA_ITEM_PREFIX));
                 gamePlayer.addPermanentItem(event.getStack());
                 event.setStack(stack);
             }

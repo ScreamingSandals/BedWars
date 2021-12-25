@@ -19,7 +19,7 @@ public class TrackerListener {
     @OnEvent
     public void onTrackerRegistered(ApplyPropertyToBoughtItemEventImpl event) {
         if (event.getPropertyName().equalsIgnoreCase("tracker")) {
-            ItemUtils.saveData(event.getStack(), TRACKER_PREFIX);
+            event.setStack(ItemUtils.saveData(event.getStack(), TRACKER_PREFIX));
         }
     }
 
