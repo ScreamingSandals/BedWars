@@ -2,7 +2,7 @@ apply plugin: "com.github.gmazzo.buildconfig"
 
 ScreamingLibBuilder()
         .platforms('bukkit')
-        .modules('core', 'command', 'tasker', 'hologram', 'placeholders', 'sidebar', 'healthindicator', 'npc', 'signs')
+        .modules('core', 'command', 'hologram', 'placeholders', 'sidebar', 'healthindicator', 'npc', 'signs')
         .version(SCREAMING_LIB_VERSION)
         .simpleInventories(SIMPLE_INVENTORIES_VERSION)
         .universalModules('lang')
