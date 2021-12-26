@@ -227,15 +227,15 @@ public class ItemSpawnerImpl implements ItemSpawner<LocationHolder, ItemSpawnerT
                 var materialName = itemSpawnerType.getItemType().platformName();
                 var indexOfUnderscore = itemSpawnerType.getItemType().platformName().indexOf("_");
                 hologram
-                        .item(
+                        .setItem(
                                 ItemFactory
                                         .build(materialName.substring(0, (indexOfUnderscore != -1 ? indexOfUnderscore : materialName.length())) + "_BLOCK")
                                         .or(() -> ItemFactory.build(itemSpawnerType.getItemType()))
                                         .orElseThrow()
                         )
-                        .itemPosition(Hologram.ItemPosition.BELOW)
-                        .rotationMode(rotationMode)
-                        .rotationTime(Pair.of(2, TaskerTime.TICKS));
+                        .setItemPosition(Hologram.ItemPosition.BELOW)
+                        .setRotationMode(rotationMode)
+                        .setRotationTime(Pair.of(2, TaskerTime.TICKS));
             }
 
             hologram.show();
