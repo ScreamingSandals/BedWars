@@ -169,7 +169,7 @@ public class StoreCommand extends BaseAdminSubCommand {
                         .literal("type")
                         .argument(StringArgument
                                 .<CommandSenderWrapper>newBuilder("type")
-                                .withSuggestionsProvider((c, s) -> EntityTypeHolder.all().stream().map(EntityTypeHolder::getPlatformName).collect(Collectors.toList()))
+                                .withSuggestionsProvider((c, s) -> EntityTypeHolder.all().stream().map(EntityTypeHolder::platformName).collect(Collectors.toList()))
                         )
                         .handler(commandContext -> editMode(commandContext, (sender, game) -> {
                             String type = commandContext.get("type");

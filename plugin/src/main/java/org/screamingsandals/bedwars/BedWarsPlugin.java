@@ -27,7 +27,6 @@ import org.screamingsandals.bedwars.lobby.NPCManager;
 import org.screamingsandals.bedwars.placeholderapi.BedwarsExpansion;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.bedwars.premium.PremiumBedwars;
-import org.screamingsandals.bedwars.special.SpecialRegister;
 import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.bedwars.tab.TabManager;
 import org.screamingsandals.bedwars.utils.*;
@@ -71,41 +70,45 @@ import java.util.Objects;
         "My_Worlds",
         "Parties"
 })
-@Init(services = {
-        EconomyProvider.class,
-        org.screamingsandals.lib.npc.NPCManager.class,
-        CommandService.class,
-        VariantManagerImpl.class,
-        GameManagerImpl.class,
-        UpdateChecker.class,
-        PlayerStatisticManager.class,
-        StatisticsHolograms.class,
-        LeaderboardHolograms.class,
-        MainConfig.class,
-        BedWarsLangService.class,
-        TabManager.class,
-        ShopInventory.class,
-        SpecialRegister.class,
-        RecordSave.class,
-        DatabaseManager.class,
-        BedWarsSignService.class,
-        BukkitBStatsMetrics.class,
-        PlayerManagerImpl.class,
-        PartyListener.class,
-        EventUtilsImpl.class,
-        LobbyInvisibilityListener.class,
-        BedwarsExpansion.class,
-        SidebarManager.class,
-        HealthIndicatorManager.class,
-        BungeeMotdListener.class,
-        WorldListener.class,
-        VillagerListener.class,
-        PlayerListener.class,
-        EntitiesManagerImpl.class,
-        ColorChangerImpl.class,
-        GamesInventory.class,
-        NPCManager.class
-})
+@Init(
+        services = {
+                EconomyProvider.class,
+                org.screamingsandals.lib.npc.NPCManager.class,
+                CommandService.class,
+                VariantManagerImpl.class,
+                GameManagerImpl.class,
+                UpdateChecker.class,
+                PlayerStatisticManager.class,
+                StatisticsHolograms.class,
+                LeaderboardHolograms.class,
+                MainConfig.class,
+                BedWarsLangService.class,
+                TabManager.class,
+                ShopInventory.class,
+                RecordSave.class,
+                DatabaseManager.class,
+                BedWarsSignService.class,
+                BukkitBStatsMetrics.class,
+                PlayerManagerImpl.class,
+                PartyListener.class,
+                EventUtilsImpl.class,
+                LobbyInvisibilityListener.class,
+                BedwarsExpansion.class,
+                SidebarManager.class,
+                HealthIndicatorManager.class,
+                BungeeMotdListener.class,
+                WorldListener.class,
+                VillagerListener.class,
+                PlayerListener.class,
+                EntitiesManagerImpl.class,
+                ColorChangerImpl.class,
+                GamesInventory.class,
+                NPCManager.class
+        },
+        packages = {
+                "org.screamingsandals.bedwars.special"
+        }
+)
 @Init(platforms = {PlatformType.BUKKIT}, services = {
         PerWorldInventoryCompatibilityFix.class
 })
@@ -247,7 +250,7 @@ public class BedWarsPlugin extends PluginContainer implements BedwarsAPI {
             }
 
             spawnerTypes.put(spawnerN.toLowerCase(), new ItemSpawnerTypeImpl(spawnerN.toLowerCase(), name, translate,
-                    spread, result, MiscUtils.getColor(colorName), interval, result.durability()));
+                    spread, result, MiscUtils.getColor(colorName), interval, result.forcedDurability()));
         });
 
         if (MainConfig.getInstance().node("bungee", "enabled").getBoolean()) {
@@ -334,7 +337,7 @@ public class BedWarsPlugin extends PluginContainer implements BedwarsAPI {
     }
 
     @Override
-    public PlayerManager<?,?> getPlayerManager() {
+    public PlayerManager<?, ?> getPlayerManager() {
         return PlayerManagerImpl.getInstance();
     }
 

@@ -32,7 +32,7 @@ public class PermaItemListener {
             if (!event.getBooleanProperty(PERMA_ITEM_PROPERTY_KEY)) {
                 var stack = event.getStack();
 
-                if (stack.getMaterial().getMaxStackSize() > 1) {
+                if (stack.getMaterial().maxStackSize() > 1) {
                     Debug.warn(String.format("Item [%s] can be stacked and players will lose this item upon dying. Remove the 'lose-upon-death' flag for this item", stack), true);
                     return;
                 }

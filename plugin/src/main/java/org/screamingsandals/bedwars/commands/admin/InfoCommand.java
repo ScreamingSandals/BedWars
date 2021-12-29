@@ -266,7 +266,7 @@ public class InfoCommand extends BaseAdminSubCommand {
                                         .placeholder("yaw", loc_store.getYaw(), 5)
                                         .placeholder("pitch", loc_store.getPitch(), 5)
                                         .placeholder("world", loc_store.getWorld().getName())
-                                        .placeholder("type", store.getEntityType().getPlatformName())
+                                        .placeholder("type", store.getEntityType().platformName())
                                         .send(sender);
 
                                 Message
@@ -363,7 +363,7 @@ public class InfoCommand extends BaseAdminSubCommand {
                             Message
                                     .of(LangKeys.ADMIN_INFO_CONSTANT)
                                     .placeholder("constant", "arenaWeather")
-                                    .placeholder("value", game.getArenaWeather().getPlatformName())
+                                    .placeholder("value", game.getArenaWeather().platformName())
                                     .send(sender);
 
                             Message

@@ -1252,7 +1252,7 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
             storeNode.node("loc").set(MiscUtils.writeLocationToString(store.getStoreLocation()));
             storeNode.node("shop").set(store.getShopFile());
             storeNode.node("parent").set(store.isUseParent() ? "true" : "false");
-            storeNode.node("type").set(store.getEntityType().getPlatformName());
+            storeNode.node("type").set(store.getEntityType().platformName());
             if (store.isEnabledCustomName()) {
                 storeNode.node("name").set(store.getShopCustomName());
             }
@@ -1263,7 +1263,7 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
         configMap.node("constant").from(configurationContainer.getSaved());
 
         configMap.node("arenaTime").set(arenaTime.name());
-        configMap.node("arenaWeather").set(arenaWeather == null ? "default" : arenaWeather.getPlatformName());
+        configMap.node("arenaWeather").set(arenaWeather == null ? "default" : arenaWeather.platformName());
 
         configMap.node("lobbyBossBarColor").set(lobbyBossBarColor == null ? "default" : lobbyBossBarColor.name());
         configMap.node("gameBossBarColor").set(gameBossBarColor == null ? "default" : gameBossBarColor.name());

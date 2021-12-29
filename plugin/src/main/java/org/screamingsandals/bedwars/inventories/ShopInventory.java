@@ -408,7 +408,7 @@ public class ShopInventory {
             newItem = changeItemType.getItem();
         }
 
-        var originalMaxStackSize = newItem.getMaterial().getMaxStackSize();
+        var originalMaxStackSize = newItem.getMaterial().maxStackSize();
         if (clickType.isShiftClick() && originalMaxStackSize > 1) {
             double priceOfOne = (double) priceAmount / amount;
             double maxStackSize;

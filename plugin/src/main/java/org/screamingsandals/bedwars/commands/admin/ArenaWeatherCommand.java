@@ -25,7 +25,7 @@ public class ArenaWeatherCommand extends BaseAdminSubCommand {
                         .argument(StringArgument
                                 .<CommandSenderWrapper>newBuilder("arenaWeather")
                                 .withSuggestionsProvider((c, s) ->
-                                        Stream.concat(WeatherHolder.all().stream().map(WeatherHolder::getPlatformName), Stream.of("default")).collect(Collectors.toList())
+                                        Stream.concat(WeatherHolder.all().stream().map(WeatherHolder::platformName), Stream.of("default")).collect(Collectors.toList())
                                 )
                             )
                         .handler(commandContext -> editMode(commandContext, (sender, game) -> {
@@ -36,7 +36,7 @@ public class ArenaWeatherCommand extends BaseAdminSubCommand {
                                     var weatherType = WeatherHolder.of(arenaWeather);
                                     game.setArenaWeather(weatherType);
 
-                                    sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_WEATHER_SET).defaultPrefix().placeholder("weather", weatherType.getPlatformName()));
+                                    sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_WEATHER_SET).defaultPrefix().placeholder("weather", weatherType.platformName()));
                                 } catch (Exception e) {
                                     sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_INVALID_ARENA_WEATHER).defaultPrefix());
                                 }

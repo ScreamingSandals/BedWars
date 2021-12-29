@@ -1,10 +1,4 @@
-package org.screamingsandals.bedwars.special;
-
-import lombok.experimental.UtilityClass;
-import org.screamingsandals.bedwars.special.listener.*;
-import org.screamingsandals.lib.utils.annotations.Service;
-
-@Service(initAnother = {
+@Init(services = {
         ArrowBlockerListener.class,
         AutoIgniteableTNTListener.class,
         GolemListener.class,
@@ -22,7 +16,7 @@ import org.screamingsandals.lib.utils.annotations.Service;
         BridgeEggListener.class,
         PopUpTowerListener.class
 })
-@UtilityClass
-public class SpecialRegister {
+package org.screamingsandals.bedwars.special;
 
-}
+import org.screamingsandals.bedwars.special.listener.*;
+import org.screamingsandals.lib.utils.annotations.Init;
