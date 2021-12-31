@@ -1,20 +1,22 @@
----
 lang_name: "Português (Brasileiro)"
 prefix: "[BW]"
 item_shop_name: "Loja"
 join: "%name% &aentrou no jogo!&r &7[&a%players%&7/&a%maxplayers%&7]"
 leave: "%name% &csaiu do jogo!"
-game_already_running: "&cO jogo &7%arena% &cjá começou! Você não pode entrar em um jogo iniciado!"
+game_already_running: "&cO jogo &7%arena% &cjá começou! Você não pode entrar em um\
+  \ jogo iniciado!"
 game_is_full: "&cO jogo &7%arena% &cestá cheio! Por favor espere o jogo terminar!"
 unknown_command: "&cComando desconhecido! Digite &4/bw help &cpara ajuda!"
-unknown_usage: "&cNúmero de argumentos não corresponde a quantidade correta ou argumentos desconhecidos! Digite &4/bw ajuda &cpara ajuda!"
+unknown_usage: "&cNúmero de argumentos não corresponde a quantidade correta ou argumentos\
+  \ desconhecidos! Digite &4/bw ajuda &cpara ajuda!"
 no_arena_found: "&cJogo não encontrado!"
 usage_bw_join: "&cUso: /bw join <arena>"
 usage_bw_admin: "&cUso: /bw admin <arena> <add|edit|remove|save|...>..."
 you_arent_in_game: "&cVocê não está em jogo!"
 allready_exists: "&cArena já existe!"
 allready_working_on_it: "&cA Arena já existe mas não está concluída!"
-arena_not_in_edit: "&cArena não existe ou está executando! Desative-a com o &7/bw admin <arena> edit&c e, em seguida, ative-o com o &7/bw admin <arena> save"
+arena_not_in_edit: "&cArena não existe ou está executando! Desative-a com o &7/bw\
+  \ admin <arena> edit&c e, em seguida, ative-o com o &7/bw admin <arena> save"
 no_permissions: "&cVocê não possui permissão para fazer isso!"
 arena_must_be_in_edit_mode: "&cA arena precisa estar no modo edição!"
 arena_removed: "&c&lArena removida!"
@@ -43,7 +45,8 @@ there_is_no_empty_game: "&cNão há jogo em espera. Todos os jogos já estão se
 respawn_cooldown_title: "&aRenascendo em: &c%time%"
 respawn_cooldown_title_cancel: "&cO time está morto :("
 vip_not_enough_players: "&cNão há jogadores suficientes na arena!"
-vip_game_is_full: "&cO jogo &7%arena% &cestá cheio de jogadores VIP! Por favor espere o jogo terminar!"
+vip_game_is_full: "&cO jogo &7%arena% &cestá cheio de jogadores VIP! Por favor espere\
+  \ o jogo terminar!"
 buy_succes: "&aComprou com sucesso &7%item%&a para &7%material%&a!"
 buy_failed: "&cFalta de material para comprar &7%item%&c! Necessário &7%material%&c!"
 compass_selector_team: "&aSelecionar equipe"
@@ -62,7 +65,8 @@ you_won: "&aSua equipe ganhou!"
 you_lost: "&cSua equipe perdeu!"
 team_win: "&aTeam &r%team%&a ganhou o jogo em &7%time%"
 game_end: "&cJogo terminado! Obrigado por jogar!"
-command_is_not_allowed: "&cEste comando está bloqueado enquanto o jogo está sendo executado!"
+command_is_not_allowed: "&cEste comando está bloqueado enquanto o jogo está sendo\
+  \ executado!"
 price: "Preço:"
 amount: "Quantidade:"
 resource_bronze: "Bronze"
@@ -72,20 +76,30 @@ resource_netherite: "Netherite"
 countdown_spawning: "&e%seconds% &bsegundos"
 every_second_spawning: "&btodo segundo"
 spawner_is_full: "§c§lSpawner está esgotado"
-spawner_not_enough_level: "§cSpawner não pode trabalhar! Você precisa atualizar em %levels% níveis."
-admin_command_mainlobby_info: "&cPERIGO&f: Você precisa executar /bw reload para fazer o lobby principal funcionar!"
+spawner_not_enough_level: "§cSpawner não pode trabalhar! Você precisa atualizar em\
+  \ %levels% níveis."
+admin_command_mainlobby_info: "&cPERIGO&f: Você precisa executar /bw reload para fazer\
+  \ o lobby principal funcionar!"
 admin_command_success: "&aComando executado com sucesso!"
-admin_command_must_be_in_same_world: "&cTodos os comandos devem ser chamados de um mundo!"
+admin_command_must_be_in_same_world: "&cTodos os comandos devem ser chamados de um\
+  \ mundo!"
 admin_command_invalid_countdown: "&cDeduction deve estar dentro de 10 < x < 600 segundos!"
-admin_command_invalid_countdown2: "&cDeduction deve estar dentro de 10 < x < 3600 segundos!"
-admin_command_spawn_must_be_in_area: "&cLocal deve ser colocado dentro da arena (coordenadas pos1 e pos2)!"
-admin_command_set_pos1_pos2_first: "&cAntes de salvar o jogo, por favor defina as coordenadas pos1 e pos2 (determinando o tamanho e a posição da arena)!"
-admin_command_pos1_pos2_difference_must_be_higher: "&cA diferença de altura entre pos1 e pos2 é muito pequena! O mínimo é 5 blocos!"
-admin_command_game_saved_and_started: "&aO jogo foi salvo com sucesso e está rodando! Agora você pode entrar e jogar na arena!"
+admin_command_invalid_countdown2: "&cDeduction deve estar dentro de 10 < x < 3600\
+  \ segundos!"
+admin_command_spawn_must_be_in_area: "&cLocal deve ser colocado dentro da arena (coordenadas\
+  \ pos1 e pos2)!"
+admin_command_set_pos1_pos2_first: "&cAntes de salvar o jogo, por favor defina as\
+  \ coordenadas pos1 e pos2 (determinando o tamanho e a posição da arena)!"
+admin_command_pos1_pos2_difference_must_be_higher: "&cA diferença de altura entre\
+  \ pos1 e pos2 é muito pequena! O mínimo é 5 blocos!"
+admin_command_game_saved_and_started: "&aO jogo foi salvo com sucesso e está rodando!\
+  \ Agora você pode entrar e jogar na arena!"
 admin_command_store_already_exists: "&cA Loja já existe!"
 admin_command_store_not_exists: "&cA Loja não existe!"
-admin_command_invalid_spawner_type: "&cSpawner deve ser bronze, ferro, ouro ou por uma configuração personalizada!"
-admin_command_invalid_spawner_level: "&fNúmero de nível errado, nível padrão 1 foi usado."
+admin_command_invalid_spawner_type: "&cSpawner deve ser bronze, ferro, ouro ou por\
+  \ uma configuração personalizada!"
+admin_command_invalid_spawner_level: "&fNúmero de nível errado, nível padrão 1 foi\
+  \ usado."
 admin_command_invalid_color: "&cEsta cor é inválida!"
 admin_command_block_is_not_bed: "&O bloco alvo não é uma cama!"
 admin_command_max_players_fail: "&cMax número de jogadores deve ser >= 1!"
@@ -93,37 +107,60 @@ admin_command_need_min_2_teems: "&cO jogo precisa de 2 ou mais equipes!"
 admin_command_spawners_needed: "&cO jogo deve ter >= 1 item gerando!"
 admin_command_team_is_not_exists: "&cEsta equipe não existe!"
 admin_command_team_is_already_exists: "&cO time já existe!"
-admin_command_bed_setted: "&aCama do time &7%team%&a foi definido com sucesso para a posição XYZ: &7%x%/%y%/%z%"
-admin_command_team_spawn_setted: "&aSpawn de time &7%team%&a foi definido com sucesso para a posição XYZ: &7%x%/%y%/%z% &aYAW: &7%yaw% &aPITCH: &7%pitch%"
-admin_command_team_maxplayers_setted: "&aContagem máxima de jogadores da equipe &7%team%&a foi definida com sucesso como &7%maxplayers%"
-admin_command_team_color_setted: "&aCor de &7%team%&a foi definida com sucesso como %teamcolor%"
+admin_command_bed_setted: "&aCama do time &7%team%&a foi definido com sucesso para\
+  \ a posição XYZ: &7%x%/%y%/%z%"
+admin_command_team_spawn_setted: "&aSpawn de time &7%team%&a foi definido com sucesso\
+  \ para a posição XYZ: &7%x%/%y%/%z% &aYAW: &7%yaw% &aPITCH: &7%pitch%"
+admin_command_team_maxplayers_setted: "&aContagem máxima de jogadores da equipe &7%team%&a\
+  \ foi definida com sucesso como &7%maxplayers%"
+admin_command_team_color_setted: "&aCor de &7%team%&a foi definida com sucesso como\
+  \ %teamcolor%"
 admin_command_team_removed: "&aEquipe &7%team%&a foi removida com sucesso!"
-admin_command_team_created: "&aEquipe &7%team%&a foi criada com sucesso com a cor %teamcolor%&a e máxima contagem de jogadores: &7%maxplayers%"
+admin_command_team_created: "&aEquipe &7%team%&a foi criada com sucesso com a cor\
+  \ %teamcolor%&a e máxima contagem de jogadores: &7%maxplayers%"
 admin_command_spawners_reseted: "&aTodos itemspawners do jogo &7%arena%&a foram removidos!"
-admin_command_spawner_added: "&aSpawner &7%resource%&a foi acionado na posição XYZ: &7%x%/%y%/%z%\n"
-admin_command_store_added: "&aO aldeão foi adicionado à sua posição: &7%x%/%y%/%z% &aYAW: &7%yaw% &aPITCH: &7%pitch%"
-admin_command_store_removed: "&aAldeão da posição XYZ: &7%x%/%y%/%z%&a foi removido com sucesso!"
-admin_command_lobby_spawn_setted: "&aSpawn de time foi definido com sucesso para a posição XYZ: &7%x%/%y%/%z% &aYAW: &7%yaw% &aPITCH: &7%pitch%"
-admin_command_spec_spawn_setted: "&aSpawn de espectador foi definido com sucesso para a posição XYZ: &7%x%/%y%/%z% &aYAW: &7%yaw% &aPITCH: &7%pitch%"
-admin_command_pos1_setted: "&aPosição 1 da arena &7%arena%&a foi definida como XYZ: &7%x%/%y%/%z%"
-admin_command_pos2_setted: "&aPosição 2 da arena &7%arena%&a foi definida como XYZ: &7%x%/%y%/%z%"
+admin_command_spawner_added: "&aSpawner &7%resource%&a foi acionado na posição XYZ:\
+  \ &7%x%/%y%/%z%\n"
+admin_command_store_added: "&aO aldeão foi adicionado à sua posição: &7%x%/%y%/%z%\
+  \ &aYAW: &7%yaw% &aPITCH: &7%pitch%"
+admin_command_store_removed: "&aAldeão da posição XYZ: &7%x%/%y%/%z%&a foi removido\
+  \ com sucesso!"
+admin_command_lobby_spawn_setted: "&aSpawn de time foi definido com sucesso para a\
+  \ posição XYZ: &7%x%/%y%/%z% &aYAW: &7%yaw% &aPITCH: &7%pitch%"
+admin_command_spec_spawn_setted: "&aSpawn de espectador foi definido com sucesso para\
+  \ a posição XYZ: &7%x%/%y%/%z% &aYAW: &7%yaw% &aPITCH: &7%pitch%"
+admin_command_pos1_setted: "&aPosição 1 da arena &7%arena%&a foi definida como XYZ:\
+  \ &7%x%/%y%/%z%"
+admin_command_pos2_setted: "&aPosição 2 da arena &7%arena%&a foi definida como XYZ:\
+  \ &7%x%/%y%/%z%"
 admin_command_pausecontdown_setted: "&aContagem de Lobby foi definida para &7%countdown%"
 admin_command_gametime_setted: "&aO tempo de jogo foi definido para &7%time%"
-admin_command_set_pos1_pos2_before_save: "&cAntes de salvar o jogo, por favor defina as coordenadas pos1 e pos2 (determinando o tamanho e a posição da arena)!"
-admin_command_set_lobby_before_save: "&cAntes de salvar o jogo, por favor defina o spawn!"
-admin_command_set_spec_before_save: "&cAntes de salvar o jogo, por favor defina o spawn do espectador!"
-admin_command_set_stores_before_save: "&cAntes de salvar o jogo, por favor adicione pelo menos 1 loja!"
-admin_command_set_spawners_before_save: "&cAntes de salvar o jogo, por favor defina 1 itemspawner!"
-admin_command_set_bed_for_team_before_save: "&cAntes de salvar o jogo, por favor, defina a cama do time &7%team%&c!"
-admin_command_set_spawn_for_team_before_save: "&cAntes de salvar o jogo, por favor, defina o spawn do time &7%team%&c!"
-admin_command_click_right_on_entity_to_set_join: "&aAgora use o botão direito do mouse na entidade desejada para a qual você deseja configurar a junção à equipe: &7%team%"
-admin_command_jointeam_entitynotcompatible: "&cA entidade que está tentando usar não é compatível! Apenas entidades vivas ou Suporte de Armaduras podem ser usadas!"
+admin_command_set_pos1_pos2_before_save: "&cAntes de salvar o jogo, por favor defina\
+  \ as coordenadas pos1 e pos2 (determinando o tamanho e a posição da arena)!"
+admin_command_set_lobby_before_save: "&cAntes de salvar o jogo, por favor defina o\
+  \ spawn!"
+admin_command_set_spec_before_save: "&cAntes de salvar o jogo, por favor defina o\
+  \ spawn do espectador!"
+admin_command_set_stores_before_save: "&cAntes de salvar o jogo, por favor adicione\
+  \ pelo menos 1 loja!"
+admin_command_set_spawners_before_save: "&cAntes de salvar o jogo, por favor defina\
+  \ 1 itemspawner!"
+admin_command_set_bed_for_team_before_save: "&cAntes de salvar o jogo, por favor,\
+  \ defina a cama do time &7%team%&c!"
+admin_command_set_spawn_for_team_before_save: "&cAntes de salvar o jogo, por favor,\
+  \ defina o spawn do time &7%team%&c!"
+admin_command_click_right_on_entity_to_set_join: "&aAgora use o botão direito do mouse\
+  \ na entidade desejada para a qual você deseja configurar a junção à equipe: &7%team%"
+admin_command_jointeam_entitynotcompatible: "&cA entidade que está tentando usar não\
+  \ é compatível! Apenas entidades vivas ou Suporte de Armaduras podem ser usadas!"
 admin_command_jointeam_entity_added: "&aEntidade para juntar-se à equipe adicionada!"
 admin_command_invalid_min_players: "&cMínimo de Jogadores precisa ser de 2 ou superior!"
 admin_command_min_players_set: "&aDefinido com sucesso o mínimo de jogadores &7%min%&a!"
-admin_command_invalid_config_value: "&cValor errado! Ele pode ser &7true&c, &7false&c ou &7inherit&c!"
+admin_command_invalid_config_value: "&cValor errado! Ele pode ser &7true&c, &7false&c\
+  \ ou &7inherit&c!"
 admin_command_invalid_config_variable_name: "&cNome errado da constante!"
-admin_command_config_variable_set_to: "&aCor de &7%config%&a foi definida com sucesso como&7%value%&a!"
+admin_command_config_variable_set_to: "&aCor de &7%config%&a foi definida com sucesso\
+  \ como&7%value%&a!"
 admin_command_invalid_arena_time: "&cTipo errado de hora do mundo da arena!"
 admin_command_arena_time_set: "&aA hora do mundo da Arena foi definida para &7%time%&a!"
 admin_command_invalid_arena_weather: "&cTipo errado de clima da arena no mundo!"
@@ -131,18 +168,23 @@ admin_command_arena_weather_set: "&aO clima do mundo da Arena foi definido para 
 admin_command_invalid_bar_color: "&cCor errada para o Boss Bar!"
 admin_command_bar_color_set: "&aCor definida para &7%color%&a para bossbar &7%type%&a!"
 admin_command_wrong_living_entity_type: "&cTipo de entidade viva errado!"
-admin_command_store_living_entity_type_set: "&aLoja do tipo de entidade viva foi definida para &7%type%&a!"
+admin_command_store_living_entity_type_set: "&aLoja do tipo de entidade viva foi definida\
+  \ para &7%type%&a!"
 admin_command_upgrades: "&aUpgrades foram definidos para &7%bool%&a!"
-safe_reload: "&aEstou esperando por parada segura de todos os jogos ou por 60 segundos antes de recarregar!"
-safe_reload_failed_to_stop_game: "&cAlguns jogos não terminaram dentro do limite de tempo, então sua arena pode ter sido danificada!"
+safe_reload: "&aEstou esperando por parada segura de todos os jogos ou por 60 segundos\
+  \ antes de recarregar!"
+safe_reload_failed_to_stop_game: "&cAlguns jogos não terminaram dentro do limite de\
+  \ tempo, então sua arena pode ter sido danificada!"
 holo_not_enabled: "&cHolographic está desativado. Você tem Holographic Displays instalados?"
 holo_added: "&aHolográfico adicionado à sua posição!"
 click_to_holo_for_remove: "&eAgora clique no holográfico que deseja remover!"
 holo_removed: "&aHolográfico removido com sucesso!"
 sign_successfully_created: "&aPlaca criada com sucesso!"
-sign_can_not_been_created: "&cA placa não pode ser criada! Por favor confira o nome da arena!"
+sign_can_not_been_created: "&cA placa não pode ser criada! Por favor confira o nome\
+  \ da arena!"
 sign_can_not_been_destroyed: "&cVocê não tem permissão para criar esta placa!"
-sign_game_not_exists: "&cO jogo que foi escrito na placa não existe! Por favor, contate um administrador!"
+sign_game_not_exists: "&cO jogo que foi escrito na placa não existe! Por favor, contate\
+  \ um administrador!"
 sign_status_disabled: "&cJogo"
 sign_status_disabled_players: "&cdesativado"
 sign_status_rebuilding: "&6Reconstruir"
@@ -184,9 +226,11 @@ arena_info_villager_pos: "- XYZ: &7%x%&r/&7%y%&r/&7%z%"
 arena_info_villager_entity_type: "  Tipo: &a%type%"
 arena_info_villager_shop: "  Tem sua própria loja: &7%bool%"
 arena_info_villager_shop_name: "  Nome da loja: &6%file%&r (herdar da principal: &7%bool%&r)"
-arena_info_villager_shop_dealer_name: "  Nome personalizado do vendedor acima da cabeça: &6%name%&r"
+arena_info_villager_shop_dealer_name: "  Nome personalizado do vendedor acima da cabeça:\
+  \ &6%name%&r"
 arena_info_villager_shop_dealer_has_no_name: "&cNenhum nome definido"
-arena_info_lobby_countdown: "&7Contagem regressiva antes do jogo começar: &f%time% s"
+arena_info_lobby_countdown: "&7Contagem regressiva antes do jogo começar: &f%time%\
+  \ s"
 arena_info_game_time: "&7Duração do jogo: &f%time% s"
 arena_info_config: "&7Configuração das Constantes:"
 arena_info_config_constant: "- &7%constant%&r: &7%value%"
@@ -196,7 +240,8 @@ arena_info_config_inherit: "&eHerdada da configuração do plugin"
 please_select_info_type: "&aPor favor selecione a seção de informações de &7%arena%&a:"
 please_select_info_type_base: "&aBase da informação&f - &7/bw admin %arena% info base"
 please_select_info_type_stores: "&aLista de lojas&f - &7/bw admin %arena% info stores"
-please_select_info_type_spawners: "&aLista de geradores&f - &7/bw admin %arena% info spawners"
+please_select_info_type_spawners: "&aLista de geradores&f - &7/bw admin %arena% info\
+  \ spawners"
 please_select_info_type_teams: "&aLista de equipes&f - &7/bw admin %arena% info teams"
 please_select_info_type_config: "&aConfiguração&f - &7/bw admin %arena% info config"
 please_select_info_type_click: "&bClique para executar este comando!"
@@ -216,23 +261,30 @@ specials_trap_caught: "&cVocê foi pego na armadilha do time &f%team%&c!"
 specials_trap_caught_team: "&f%player%&c foi pego na armadilha do seu time!"
 specials_warp_powder_multiuse: "&cOutro Pó de Guerra já está ativado!"
 specials_warp_powder_canceled: "&cWarpPowder foi cancelado!"
-specials_warp_powder_started: "&aO Pó de Guerra começou! Por favor, não se mova por &7%time%&a segundos!"
+specials_warp_powder_started: "&aO Pó de Guerra começou! Por favor, não se mova por\
+  \ &7%time%&a segundos!"
 specials_tracker_no_target_found: "&cNenhum alvo encontrado!"
 specials_tracker_target_found: "&f%target% &afoi encontrado há &f%distance% &ablocos!"
 specials_rescue_platform_not_in_air: "&cPara usar isto, você precisa estar no ar."
 specials_rescue_platform_destroy: "&cA Plataforma será destruída em &f%time% &csegundos."
 specials_rescue_platform_created_unbreakable: "&aA Plataforma Inquebrável foi criada!"
-specials_rescue_platform_created: "&aPlatform foi criada e será destruída em &f%time% &asegundos."
-specials_protection_wall_not_usable_here: "&cNão há espaço suficiente para criar Muralha de Proteção."
-specials_protection_wall_destroy: "&cA parede de proteção será destruída em &f%time% &csegundos."
+specials_rescue_platform_created: "&aPlatform foi criada e será destruída em &f%time%\
+  \ &asegundos."
+specials_protection_wall_not_usable_here: "&cNão há espaço suficiente para criar Muralha\
+  \ de Proteção."
+specials_protection_wall_destroy: "&cA parede de proteção será destruída em &f%time%\
+  \ &csegundos."
 specials_protection_wall_created_unbreakable: "&aIquebrável muro de proteção foi criado!"
-specials_protection_wall_created: "&aO muro de proteção foi criado e será destruído em &f%time% &asegundos."
+specials_protection_wall_created: "&aO muro de proteção foi criado e será destruído\
+  \ em &f%time% &asegundos."
 specials_tntsheep_no_target_found: "&cNenhum alvo encontrado!"
-specials_arrow_blocker_started: "&aO bloqueador de Flechas está ativado por %time% segundos!"
+specials_arrow_blocker_started: "&aO bloqueador de Flechas está ativado por %time%\
+  \ segundos!"
 specials_arrow_blocker_already_activated: "&cBloqueador de flechas já está ativado!"
 specials_arrow_blocker_ended: "&cO bloqueador de setas não está mais ativado!"
 specials_golem_created: "&aGolem foi criado."
-special_item_delay: "Você precisa esperar %time% segundos antes de usar este item novamente!"
+special_item_delay: "Você precisa esperar %time% segundos antes de usar este item\
+  \ novamente!"
 page_back: "Voltar uma página"
 page_forward: "Avançar uma página"
 protect_your_bed: "%teamcolor%&lProteger sua cama!"
@@ -258,51 +310,89 @@ help_bw_leaderboard: "/bw leaderboard - &aShow top players of this server"
 help_bw_stats: "/bw stats - &aMostrar suas estatísticas"
 help_bw_stats_other: "/bw stats [player] - &aMostrar estatísticas de outros jogadores"
 help_bw_reload: "/bw reload - &cRecarrega o plugin"
-help_bw_addholo: "/bw addholo [leaderboard|stats]- &eAdds hologram to the player's location"
-help_bw_removeholo: "/bw removeholo - &eDepois de executar este comando, o jogador pode clicar com o botão direito na estatística holográfica para removê-lo."
-help_bw_mainlobby: "/bw mainlobby [enable├set] - &eAtiva o lobby principal ou define a localização principal do lobby"
-help_bw_admin_info: "/bw admin <arena> info [section] - &eMostra todas as informações sobre a arena"
+help_bw_addholo: "/bw addholo [leaderboard|stats]- &eAdds hologram to the player's\
+  \ location"
+help_bw_removeholo: "/bw removeholo - &eDepois de executar este comando, o jogador\
+  \ pode clicar com o botão direito na estatística holográfica para removê-lo."
+help_bw_mainlobby: "/bw mainlobby [enable├set] - &eAtiva o lobby principal ou define\
+  \ a localização principal do lobby"
+help_bw_admin_info: "/bw admin <arena> info [section] - &eMostra todas as informações\
+  \ sobre a arena"
 help_bw_admin_add: "/bw admin <arena> adicionar - &eCriar uma nova arena"
-help_bw_admin_lobby: "/bw admin <arena> lobby - &eDefine a posição do lobby para sua posição"
-help_bw_admin_spec: "/bw admin <arena> spec - &eDefine o spawn do espectador para sua posição"
-help_bw_admin_pos1: "/bw admin <arena> pos1 - &eDefine o ponto extremo da arena para a sua posição"
-help_bw_admin_pos2: "/bw admin <arena> pos2 - &eDefine o segundo ponto extremo da arena para sua posição"
-help_bw_admin_pausecountdown: "/bw admin <arena> pausecountdown <seconds> - &eDefine a duração da pausa antes do jogo começar"
-help_bw_admin_minplayers: "/bw admin <arena> minplayers <minimum> - &eDefine o mínimo de jogadores necessários para iniciar o jogo"
+help_bw_admin_lobby: "/bw admin <arena> lobby - &eDefine a posição do lobby para sua\
+  \ posição"
+help_bw_admin_spec: "/bw admin <arena> spec - &eDefine o spawn do espectador para\
+  \ sua posição"
+help_bw_admin_pos1: "/bw admin <arena> pos1 - &eDefine o ponto extremo da arena para\
+  \ a sua posição"
+help_bw_admin_pos2: "/bw admin <arena> pos2 - &eDefine o segundo ponto extremo da\
+  \ arena para sua posição"
+help_bw_admin_pausecountdown: "/bw admin <arena> pausecountdown <seconds> - &eDefine\
+  \ a duração da pausa antes do jogo começar"
+help_bw_admin_minplayers: "/bw admin <arena> minplayers <minimum> - &eDefine o mínimo\
+  \ de jogadores necessários para iniciar o jogo"
 help_bw_admin_time: "/bw admin <arena> time <seconds> - &eDefine a duração do jogo"
-help_bw_admin_team_add: "/bw admin <arena> team add <team> <color> <max players> - &eAdiciona uma equipe ao jogo"
-help_bw_admin_team_color: "/bw admin <arena> team color <team> <color> - &eMude a cor da equipe"
-help_bw_admin_team_maxplayers: "/bw admin <arena> team maxplayers <team> <max players> - &eAlterar jogadores máximos"
-help_bw_admin_team_spawn: "/bw admin <arena> team spawn <team> - &eDefine o spawn de equipe para sua posição"
-help_bw_admin_team_bed: "/bw admin <arena> team bed <team> [looking_at|standing_on] - &eDefine o bloco alvo da equipe para sua posição alvo (pode ser outro bloco, não apenas cama)"
-help_bw_admin_jointeam: "/bw admin <arena> jointeam <team> - &eDefine a capacidade de se conectar a uma equipe usando uma entidade"
-help_bw_admin_spawner_add: "/bw admin <arena> spawner add <bronze|gold|iron> [hologram] [primeiro nível] [name] [team] [max spawned resources] - &eAdicionar item spawner à sua posição"
-help_bw_admin_spawner_reset: "/bw admin <arena> spawner reset - &eRemove todos os spawners"
-help_bw_admin_store_add: "/bw admin <arena> store add [nome acima da cabeça] [arquivo com a loja] [use a loja principal] - &eAdicionar aldeão de troca à sua posição"
-help_bw_admin_store_remove: "/bw admin <arena> store remove - &eRemover aldeão de troca da sua posição"
-help_bw_admin_store_type: "/bw admin <arena> store type <living entity> - &eDefine o tipo da entidade (aldeão, cavalo, vaca, porco, etc.)"
-help_bw_admin_config: "/bw admin <arena> config <constant> <value> - &eDefine valor da variável constante para o jogo"
-help_bw_admin_arena_time: "/bw admin <arena> arenatime <type> - &eDefine o tempo em arena (DAY, NIGHT, etc.)"
-help_bw_admin_arena_weather: "/bw admin <arena> arenaweather <type> - &eDefine o clima na arena (padrão, CLEAN, DOWNFALL)"
-help_bw_admin_post_game_waiting: "/bw admin <arena> postgamewaiting <seconds> - &eDefine o tempo de espera antes do jogador ser teleportado para fora da arena"
-help_bw_admin_customprefix: "/bw admin <arena> customprefix <name|off> - &eEnables custom prefix for arena"
+help_bw_admin_team_add: "/bw admin <arena> team add <team> <color> <max players> -\
+  \ &eAdiciona uma equipe ao jogo"
+help_bw_admin_team_color: "/bw admin <arena> team color <team> <color> - &eMude a\
+  \ cor da equipe"
+help_bw_admin_team_maxplayers: "/bw admin <arena> team maxplayers <team> <max players>\
+  \ - &eAlterar jogadores máximos"
+help_bw_admin_team_spawn: "/bw admin <arena> team spawn <team> - &eDefine o spawn\
+  \ de equipe para sua posição"
+help_bw_admin_team_bed: "/bw admin <arena> team bed <team> [looking_at|standing_on]\
+  \ - &eDefine o bloco alvo da equipe para sua posição alvo (pode ser outro bloco,\
+  \ não apenas cama)"
+help_bw_admin_jointeam: "/bw admin <arena> jointeam <team> - &eDefine a capacidade\
+  \ de se conectar a uma equipe usando uma entidade"
+help_bw_admin_spawner_add: "/bw admin <arena> spawner add <bronze|gold|iron> [hologram]\
+  \ [primeiro nível] [name] [team] [max spawned resources] - &eAdicionar item spawner\
+  \ à sua posição"
+help_bw_admin_spawner_reset: "/bw admin <arena> spawner reset - &eRemove todos os\
+  \ spawners"
+help_bw_admin_store_add: "/bw admin <arena> store add [nome acima da cabeça] [arquivo\
+  \ com a loja] [use a loja principal] - &eAdicionar aldeão de troca à sua posição"
+help_bw_admin_store_remove: "/bw admin <arena> store remove - &eRemover aldeão de\
+  \ troca da sua posição"
+help_bw_admin_store_type: "/bw admin <arena> store type <living entity> - &eDefine\
+  \ o tipo da entidade (aldeão, cavalo, vaca, porco, etc.)"
+help_bw_admin_config: "/bw admin <arena> config <constant> <value> - &eDefine valor\
+  \ da variável constante para o jogo"
+help_bw_admin_arena_time: "/bw admin <arena> arenatime <type> - &eDefine o tempo em\
+  \ arena (DAY, NIGHT, etc.)"
+help_bw_admin_arena_weather: "/bw admin <arena> arenaweather <type> - &eDefine o clima\
+  \ na arena (padrão, CLEAN, DOWNFALL)"
+help_bw_admin_post_game_waiting: "/bw admin <arena> postgamewaiting <seconds> - &eDefine\
+  \ o tempo de espera antes do jogador ser teleportado para fora da arena"
+help_bw_admin_customprefix: "/bw admin <arena> customprefix <name|off> - &eEnables\
+  \ custom prefix for arena"
 help_bw_admin_remove: "/bw admin <arena> remove - &cRemover a arena"
-help_bw_admin_edit: "/bw admin <arena> editar - &eDesativa o jogo e troca a arena para o modo de edição"
+help_bw_admin_edit: "/bw admin <arena> editar - &eDesativa o jogo e troca a arena\
+  \ para o modo de edição"
 help_bw_admin_save: "/bw admin <arena> salvar - &aSalvar o jogo e ativá-lo!"
 update_checker_zero: "§aNova versão %version% do BedWars está disponível!"
 update_checker_zero_second: "Baixá-lo de %url%"
-update_checker_one: "§bSBedWars e SBedWars+ foram oficialmente desativados! Mais informações: %url%"
-update_checker_one_second_good: "§bSeu servidor está preparado para esta versão! Baixe agora!"
-update_checker_one_second_bad: "§bSadly, your server is outdated! You will need Minecraft version at least 1.13 and Java at least 11!"
-help_bw_alljoin: "/bw alljoin [arena] - &aJunta-se a todos os jogadores no servidor para o jogo bedwars"
+update_checker_one: "§bSBedWars e SBedWars+ foram oficialmente desativados! Mais informações:\
+  \ %url%"
+update_checker_one_second_good: "§bSeu servidor está preparado para esta versão! Baixe\
+  \ agora!"
+update_checker_one_second_bad: "§bSadly, your server is outdated! You will need Minecraft\
+  \ version at least 1.13 and Java at least 11!"
+help_bw_alljoin: "/bw alljoin [arena] - &aJunta-se a todos os jogadores no servidor\
+  \ para o jogo bedwars"
 admin_command_removed_spawners: "&7%count% &aspawners foram excluídos de &7%x%&a/&7%y%&a/&7%z%"
-help_bw_admin_spawner_remove: "/bw admin <arena> spawner remove - &eRemove todos os spawners"
+help_bw_admin_spawner_remove: "/bw admin <arena> spawner remove - &eRemove todos os\
+  \ spawners"
 arena_info_spawner_no_team: "&cNenhuma equipe"
-help_bw_admin_store_child: "/bw admin <arena> store child - &eMarcar esta loja como filho"
-help_bw_admin_store_adult: "/bw admin <arena> store child - &eMarcar este loja como adulto"
-admin_command_store_child_state: "&aVariable isCriança foi alterado para esta loja: &7%value%"
+help_bw_admin_store_child: "/bw admin <arena> store child - &eMarcar esta loja como\
+  \ filho"
+help_bw_admin_store_adult: "/bw admin <arena> store child - &eMarcar este loja como\
+  \ adulto"
+admin_command_store_child_state: "&aVariable isCriança foi alterado para esta loja:\
+  \ &7%value%"
 admin_command_invalid_time: "&cTempo &7%number%§c esta inválido!"
-admin_command_post_game_waiting: "&aTempo de espera do jogo foi definido com sucesso para &7%number%§a!"
+admin_command_post_game_waiting: "&aTempo de espera do jogo foi definido com sucesso\
+  \ para &7%number%§a!"
 arena_info_postgamewaiting: "&7Tempo de espera do jogo: &f%time% s"
 leaderboard_no_scores: "&7There are no scores yet!"
 leaderboard_holo_added: "&aLeaderboard hologram was added to your position!"
@@ -310,7 +400,9 @@ leaderboard_header: "&6BedWars Leaderboard - Top %number% players"
 leaderboard_line: "&l%order%. &7%player% - &a%score%"
 admin_command_customprefix_enabled: "&aCustom prefix was successfully set to &7%prefix%&a."
 admin_command_customprefix_disabled: "&aCustom prefix was successfully disabled."
-admin_command_npc_must_have_skinname: "&cIf you use entity type PLAYER, you must specify skin name in format &7PLAYER:[skin's owner]"
-help_bw_dump: "/bw dump - &eDumps the server and gives you link to the dump. This link can be useful for support"
+admin_command_npc_must_have_skinname: "&cIf you use entity type PLAYER, you must specify\
+  \ skin name in format &7PLAYER:[skin's owner]"
+help_bw_dump: "/bw dump - &eDumps the server and gives you link to the dump. This\
+  \ link can be useful for support"
 dump_success: "&aSuccessfully dumped server. Link: "
 dump_failed: "&cDump failed!"
