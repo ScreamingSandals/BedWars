@@ -1,20 +1,22 @@
----
 lang_name: "Magyar nyelv"
 prefix: "&7[&4&lBed&f&lWars&7]"
 item_shop_name: "Bolt"
 join: "%name% &acsatlakozott a játékhoz!&r &7[&a%players%&7/&a%maxplayers%&7]"
 leave: "%name% &celhagyta a játékot!"
-game_already_running: "&7%arena% &c már el van indítva! Nem tudsz csatlakozni, ha éppen megy a játék."
+game_already_running: "&7%arena% &c már el van indítva! Nem tudsz csatlakozni, ha\
+  \ éppen megy a játék."
 game_is_full: "&7%arena% &cmegtelt! Kérlek várd meg még véget ér!"
 unknown_command: "&c Ismeretlen parancs! &4/bw help &ca lista megnyitásához."
-unknown_usage: "Az érvek száma nem egyezik meg a helyes összeggel vagy az ismeretlen érvekkel! írd &4/bw help &csegítségért!"
+unknown_usage: "Az érvek száma nem egyezik meg a helyes összeggel vagy az ismeretlen\
+  \ érvekkel! írd &4/bw help &csegítségért!"
 no_arena_found: "&cJáték nem található!"
 usage_bw_join: "&cHasználd: /bw join <aréna>"
 usage_bw_admin: "&cHasználd: /bw admin <aréna> <add|edit|remove|save|...>"
 you_arent_in_game: "&cNem vagy játékba!"
 allready_exists: "&cAz aréna már elkezdődött!"
 allready_working_on_it: "&cAz arénának még nincs vége!"
-arena_not_in_edit: "&cAz aréna nem létezik vagy nem fut! Deaktiváld &7/bw admin <aréna> edit&c majd aktiváld &7/bw admin <aréna> save"
+arena_not_in_edit: "&cAz aréna nem létezik vagy nem fut! Deaktiváld &7/bw admin <aréna>\
+  \ edit&c majd aktiváld &7/bw admin <aréna> save"
 no_permissions: "&cNincs jogod ehhez!"
 arena_must_be_in_edit_mode: "&cAz arénának készítő módban kell lennie!"
 arena_removed: "&c&lAz aréna törlődött!"
@@ -73,19 +75,28 @@ countdown_spawning: "&e%seconds%&bmásodperc"
 every_second_spawning: "&bminden másodpercben"
 spawner_is_full: "&c&lA Spawner elhasználva."
 spawner_not_enough_level: "&cA Spawner nem működik! Fejleszd fel %levels% szinttel."
-admin_command_mainlobby_info: "&cVIGYÁZAT&f: Használd a /bw reload parancsot hogy a Főlobby újra működjön!"
+admin_command_mainlobby_info: "&cVIGYÁZAT&f: Használd a /bw reload parancsot hogy\
+  \ a Főlobby újra működjön!"
 admin_command_success: "&aA parancs sikeresen bevágva!"
 admin_command_must_be_in_same_world: "&cMinden parancsot egy világból kell használnod!"
-admin_command_invalid_countdown: "&cA kivonásnak 10 < x < 600 másodperc alatt meg kell történnie!"
-admin_command_invalid_countdown2: "&cA kivonásnak 10 < x < 3600 másodperc alatt meg kell történnie!"
-admin_command_spawn_must_be_in_area: "&cA területet az aréna belsejébe kell elhelyezni (pos1 és pos2 koordináták)!"
-admin_command_set_pos1_pos2_first: "&cA spawn elhelyezése előtt, kérlek helyezd el a pos1 és pos2 koordinátákat (Az aréna helyzete és mérete meghatározó)!"
-admin_command_pos1_pos2_difference_must_be_higher: "&cA magasság különbsége a pos1 és a pos2 között túl kicsi! 5 blokk a minimum!"
-admin_command_game_saved_and_started: "&aA játék sikeresen el lett mentve és fut! Mostmár csatlakozhatsz és játszhatsz az arénában!"
+admin_command_invalid_countdown: "&cA kivonásnak 10 < x < 600 másodperc alatt meg\
+  \ kell történnie!"
+admin_command_invalid_countdown2: "&cA kivonásnak 10 < x < 3600 másodperc alatt meg\
+  \ kell történnie!"
+admin_command_spawn_must_be_in_area: "&cA területet az aréna belsejébe kell elhelyezni\
+  \ (pos1 és pos2 koordináták)!"
+admin_command_set_pos1_pos2_first: "&cA spawn elhelyezése előtt, kérlek helyezd el\
+  \ a pos1 és pos2 koordinátákat (Az aréna helyzete és mérete meghatározó)!"
+admin_command_pos1_pos2_difference_must_be_higher: "&cA magasság különbsége a pos1\
+  \ és a pos2 között túl kicsi! 5 blokk a minimum!"
+admin_command_game_saved_and_started: "&aA játék sikeresen el lett mentve és fut!\
+  \ Mostmár csatlakozhatsz és játszhatsz az arénában!"
 admin_command_store_already_exists: "&cA bolt már létezik!"
 admin_command_store_not_exists: "&cA bolt nem létezik!"
-admin_command_invalid_spawner_type: "&cA spawnernek bronznak, vasnak, aranynak, vagy egyedi beállításúnak kell lennie!"
-admin_command_invalid_spawner_level: "&fRossz szint szám, alapértelmezett szint 1 használva."
+admin_command_invalid_spawner_type: "&cA spawnernek bronznak, vasnak, aranynak, vagy\
+  \ egyedi beállításúnak kell lennie!"
+admin_command_invalid_spawner_level: "&fRossz szint szám, alapértelmezett szint 1\
+  \ használva."
 admin_command_invalid_color: "&cEz a szín érvénytelen!"
 admin_command_block_is_not_bed: "&cA célzott blokk nem egy ágy!"
 admin_command_max_players_fail: "&cMaximális játékosszámnak 1-nek kell lennie!"
@@ -93,37 +104,58 @@ admin_command_need_min_2_teems: "&cA játékhoz még 2 csapat szükséges!"
 admin_command_spawners_needed: "&cA játéknak kell 1 tárgy spawner!"
 admin_command_team_is_not_exists: "&cEz a csapat nem létezik!"
 admin_command_team_is_already_exists: "&cEz a csapat már létezik!"
-admin_command_bed_setted: "&aA &7%team%&a csapat ágyának a pozicíóra sikeresen XYZ: &7%x%/%y%/%z% -re lett állítva"
-admin_command_team_spawn_setted: "&aA &7%team%&a csapat kezdőhelye sikeresen a XYZ: &7%x%/%y%/%z% &aYAW: &7%yaw% &aPITCH: &7%pitch% -re lett állítva"
-admin_command_team_maxplayers_setted: "&aA maximális játékosok száma a csapatban &7%team%&a sikeresen át lett állítva &7%maxplayers%-ra"
-admin_command_team_color_setted: "&aA &7%team%&a csapat színe sikeresen %teamcolor%-ra lett állítva"
+admin_command_bed_setted: "&aA &7%team%&a csapat ágyának a pozicíóra sikeresen XYZ:\
+  \ &7%x%/%y%/%z% -re lett állítva"
+admin_command_team_spawn_setted: "&aA &7%team%&a csapat kezdőhelye sikeresen a XYZ:\
+  \ &7%x%/%y%/%z% &aYAW: &7%yaw% &aPITCH: &7%pitch% -re lett állítva"
+admin_command_team_maxplayers_setted: "&aA maximális játékosok száma a csapatban &7%team%&a\
+  \ sikeresen át lett állítva &7%maxplayers%-ra"
+admin_command_team_color_setted: "&aA &7%team%&a csapat színe sikeresen %teamcolor%-ra\
+  \ lett állítva"
 admin_command_team_removed: "&aA &7%team%&a csapat sikeresen törölve!"
-admin_command_team_created: "&aA &7%team%&a sikeresen létrehozva %teamcolor%&a színnel és &7%maxplayers%&a maximális játékosszámmal"
+admin_command_team_created: "&aA &7%team%&a sikeresen létrehozva %teamcolor%&a színnel\
+  \ és &7%maxplayers%&a maximális játékosszámmal"
 admin_command_spawners_reseted: "&aMinden tárgyspawner törölve a &7%arena%&a-ból!"
-admin_command_spawner_added: "&aA &7%resource%&a spawner sikeresen elhelyezve XYZ: &7%x%/%y%/%z% &apozícióra"
-admin_command_store_added: "&aFalusi lespawnolva: &7%x%/%y%/%z% &aYAW: &7%yaw% &aPITCH: &7%pitch%"
-admin_command_store_removed: "&aA falusi a XYZ: &7%x%/%y%/%z%&a kordinátáról sikeresen eltünt!"
-admin_command_lobby_spawn_setted: "&aA lobbby sikeresen beállítva a XYZ: &7%x%/%y%/%z% &aYAW: &7%yaw% &aPITCH: &7%pitch% kordinátára"
-admin_command_spec_spawn_setted: "&aA nézői lobby sikeresen beállítva a XYZ: &7%x%/%y%/%z% &aYAW: &7%yaw% &aPITCH: &7%pitch% kordinátára"
+admin_command_spawner_added: "&aA &7%resource%&a spawner sikeresen elhelyezve XYZ:\
+  \ &7%x%/%y%/%z% &apozícióra"
+admin_command_store_added: "&aFalusi lespawnolva: &7%x%/%y%/%z% &aYAW: &7%yaw% &aPITCH:\
+  \ &7%pitch%"
+admin_command_store_removed: "&aA falusi a XYZ: &7%x%/%y%/%z%&a kordinátáról sikeresen\
+  \ eltünt!"
+admin_command_lobby_spawn_setted: "&aA lobbby sikeresen beállítva a XYZ: &7%x%/%y%/%z%\
+  \ &aYAW: &7%yaw% &aPITCH: &7%pitch% kordinátára"
+admin_command_spec_spawn_setted: "&aA nézői lobby sikeresen beállítva a XYZ: &7%x%/%y%/%z%\
+  \ &aYAW: &7%yaw% &aPITCH: &7%pitch% kordinátára"
 admin_command_pos1_setted: "&aPozicíó 1 &7%arena%&a -ra beállítva XYZ: &7%x%/%y%/%z%"
 admin_command_pos2_setted: "&aPozicíó 1 &7%arena%&a -ra beállítva XYZ: &7%x%/%y%/%z%"
 admin_command_pausecontdown_setted: "&aLobby visszaszámláló &7%countdown%-re &aállítva"
 admin_command_gametime_setted: "&aJáték idő &7%time%-re &a állítva"
-admin_command_set_pos1_pos2_before_save: "&cA spawn elhelyezése előtt, kérlek helyezd el a pos1 és pos2 koordinátákat (Az aréna helyzete és mérete meghatározó)!"
-admin_command_set_lobby_before_save: "&cMielőtt elmentenéd a játékot kérlek állíts be egy kezdőhelyet!"
-admin_command_set_spec_before_save: "&cMielőtt elmentenéd a játékot kérlek állíts be egy nézői kezdőhelyet!"
-admin_command_set_stores_before_save: "&cMielőtt elmentenéd a játékot kérlek állíts be egy boltost!"
-admin_command_set_spawners_before_save: "&cMielőtt elmentenéd a játékot kérlek állíts be egy kezdőhelyet!"
-admin_command_set_bed_for_team_before_save: "&cMielőtt elmentenéd az arénát kérlek állíts be egy ágyat a  &7%tea%&c -nek!"
-admin_command_set_spawn_for_team_before_save: "&cMielőtt elmentenéd kérlek állíts be egy kezdőhelyet a &7%team%&c csapatnak!"
-admin_command_click_right_on_entity_to_set_join: "&aNow use right click on the desired entity for which you want to set up join to team: &7%team%"
-admin_command_jointeam_entitynotcompatible: "&cThe Entity you are trying to use is not compatible! Only Living entities or Armor Stands can be used!"
+admin_command_set_pos1_pos2_before_save: "&cA spawn elhelyezése előtt, kérlek helyezd\
+  \ el a pos1 és pos2 koordinátákat (Az aréna helyzete és mérete meghatározó)!"
+admin_command_set_lobby_before_save: "&cMielőtt elmentenéd a játékot kérlek állíts\
+  \ be egy kezdőhelyet!"
+admin_command_set_spec_before_save: "&cMielőtt elmentenéd a játékot kérlek állíts\
+  \ be egy nézői kezdőhelyet!"
+admin_command_set_stores_before_save: "&cMielőtt elmentenéd a játékot kérlek állíts\
+  \ be egy boltost!"
+admin_command_set_spawners_before_save: "&cMielőtt elmentenéd a játékot kérlek állíts\
+  \ be egy kezdőhelyet!"
+admin_command_set_bed_for_team_before_save: "&cMielőtt elmentenéd az arénát kérlek\
+  \ állíts be egy ágyat a  &7%tea%&c -nek!"
+admin_command_set_spawn_for_team_before_save: "&cMielőtt elmentenéd kérlek állíts\
+  \ be egy kezdőhelyet a &7%team%&c csapatnak!"
+admin_command_click_right_on_entity_to_set_join: "&aNow use right click on the desired\
+  \ entity for which you want to set up join to team: &7%team%"
+admin_command_jointeam_entitynotcompatible: "&cThe Entity you are trying to use is\
+  \ not compatible! Only Living entities or Armor Stands can be used!"
 admin_command_jointeam_entity_added: "&aEntity to join team added!"
 admin_command_invalid_min_players: "&cMég kell 2 ember vagy több!"
 admin_command_min_players_set: "&aSikeresen beállítottad a minimum játékosokat &7%min%&a-ra!"
-admin_command_invalid_config_value: "&cHibás érték! Csak &7true&c, &7false&c vagy &7inherit&c lehet!"
+admin_command_invalid_config_value: "&cHibás érték! Csak &7true&c, &7false&c vagy\
+  \ &7inherit&c lehet!"
 admin_command_invalid_config_variable_name: "&cWrong name of constant!"
-admin_command_config_variable_set_to: "&aA &7%config%&a csapat színe sikeresen %value%-ra lett állítva!"
+admin_command_config_variable_set_to: "&aA &7%config%&a csapat színe sikeresen %value%-ra\
+  \ lett állítva!"
 admin_command_invalid_arena_time: "&cRossz féle aréna világ idő!"
 admin_command_arena_time_set: "&aAz aréna ideje be lett állítva &7%time%&a -ra!"
 admin_command_invalid_arena_weather: "&cRossz féle aréna világ idő!"
@@ -133,16 +165,20 @@ admin_command_bar_color_set: "&aSzín belett állítva&7%color%&a a bossbar &7%t
 admin_command_wrong_living_entity_type: "&cHibás élőlény érték!"
 admin_command_store_living_entity_type_set: "&aA bolt stílusa belett állítva &7%type%&a-ra!"
 admin_command_upgrades: "&aUpgrades has been set to &7%bool%&a!"
-safe_reload: "&aVárok a biztonságos leállásra az összes játékhoz vagy 60 másodperc újratöltés előtt!"
-safe_reload_failed_to_stop_game: "&cNéhány aréna nem végződött az idő alatt ezért lehet hogy megsérültek/hinányosak!"
+safe_reload: "&aVárok a biztonságos leállásra az összes játékhoz vagy 60 másodperc\
+  \ újratöltés előtt!"
+safe_reload_failed_to_stop_game: "&cNéhány aréna nem végződött az idő alatt ezért\
+  \ lehet hogy megsérültek/hinányosak!"
 holo_not_enabled: "&cHolographic le van tíltva. Levan töltve a Holographic Displays?"
 holo_added: "&aHolographic sikeresen hozzáadva!"
 click_to_holo_for_remove: "&eMost katt arra a hologrammra amit el akarsz tüntetni!"
 holo_removed: "&aHologramm sikeresen eltávolítva!"
 sign_successfully_created: "&aTábla sikeresen létrejött!"
-sign_can_not_been_created: "&cA tábla nem tud elkészülni! Kérlek ellenőrizd az aréna nevét!"
+sign_can_not_been_created: "&cA tábla nem tud elkészülni! Kérlek ellenőrizd az aréna\
+  \ nevét!"
 sign_can_not_been_destroyed: "Nincs jogosultsága végrehajtani ezt a műveletet."
-sign_game_not_exists: "&cAmi a táblán van játék nem elérhető! Kérlek keress fel egy admint!"
+sign_game_not_exists: "&cAmi a táblán van játék nem elérhető! Kérlek keress fel egy\
+  \ admint!"
 sign_status_disabled: "&cJáték"
 sign_status_disabled_players: "&ckikapcsolva\n"
 sign_status_rebuilding: "&6Újraépítés"
@@ -196,7 +232,8 @@ arena_info_config_inherit: "&eÁtvéve a plugin konfigurációból"
 please_select_info_type: "&aKérlek válaszd ki az információ szekciót a &7%arena%&a:"
 please_select_info_type_base: "&aBázis információ&f - &7/bw admin %arena% info base"
 please_select_info_type_stores: "&aBoltok listája&f - &7/bw admin %arena% info stores"
-please_select_info_type_spawners: "&aSpawnerek listája&f - &7/bw admin %arena% info spawners"
+please_select_info_type_spawners: "&aSpawnerek listája&f - &7/bw admin %arena% info\
+  \ spawners"
 please_select_info_type_teams: "&aCsapatok Listája&f - &7/bw admin %arena% info teams"
 please_select_info_type_config: "&aKonfiguráció&f - &7/bw admin %arena% info config"
 please_select_info_type_click: "&bClick for execute this command!"
@@ -254,11 +291,13 @@ help_bw_leave: "/bw leave - &aJáték elhagyása"
 help_bw_rejoin: "/bw rejoin - &aÚjra csatlakozás, az előző játékhoz"
 help_bw_autojoin: "/bw autojoin - &aCsatlakozás az első várakozó játékba"
 help_bw_list: "/bw list - &aListázza az aktív játékokat "
-help_bw_leaderboard: "/bw leaderboard - &aMegmutatja a legjobb játékosokat ezen a szerveren"
+help_bw_leaderboard: "/bw leaderboard - &aMegmutatja a legjobb játékosokat ezen a\
+  \ szerveren"
 help_bw_stats: "/bw stats - &aMegmutatja a statisztikád "
 help_bw_stats_other: "/bw stats <játékos> - &aMegmutatja az adott játékos statisztikáját"
 help_bw_reload: "/bw reload - &cPlugin újratöltése"
-help_bw_addholo: "/bw addholo [leaderboard|stats]- &eAd egy hologrammot a játékos koordinátájára"
+help_bw_addholo: "/bw addholo [leaderboard|stats]- &eAd egy hologrammot a játékos\
+  \ koordinátájára"
 help_bw_removeholo: "/bw removeholo - &eA parancs után JOBB-KLIKK a hologram eltüntetéséhez."
 help_bw_mainlobby: "/bw mainlobby [enable|set] - &eLobby aktiválása/lerakása."
 help_bw_admin_info: "/bw admin <arena> info [section] - &e&eInformációk az arénákról."
@@ -267,42 +306,68 @@ help_bw_admin_lobby: "/bw admin <arena> lobby - &eAréna lobbyjának létrehozá
 help_bw_admin_spec: "/bw admin <arena> spec - &eSzemlélők spawnolási helyének megadása."
 help_bw_admin_pos1: "/bw admin <arena> pos1 - &eAréna 1. pozíciójának beállítása."
 help_bw_admin_pos2: "/bw admin <arena> pos1 - &eAréna 2. pozíciójának beállítása."
-help_bw_admin_pausecountdown: "/bw admin <arena> pausecountdown <seconds> - &eSzünet időtartamának beállítása."
-help_bw_admin_minplayers: "/bw admin <arena> minplayers <minimum> - &eKezdő játékosszám beállítása."
+help_bw_admin_pausecountdown: "/bw admin <arena> pausecountdown <seconds> - &eSzünet\
+  \ időtartamának beállítása."
+help_bw_admin_minplayers: "/bw admin <arena> minplayers <minimum> - &eKezdő játékosszám\
+  \ beállítása."
 help_bw_admin_time: "/bw admin <arena> time <seconds> - &eJáték idejének létrehozása"
-help_bw_admin_team_add: "/bw admin <arena> team add <team> <color> <max players> - &eCsapat hozzáadása a játékhoz."
-help_bw_admin_team_color: "/bw admin <arena> team color <team> <color> - &eCsapat színének megváltoztatása."
-help_bw_admin_team_maxplayers: "/bw admin <arena> team maxplayers <team> <max players> - &eMaximum játékosok beállítása egy csapatban."
-help_bw_admin_team_spawn: "/bw admin <arena> team spawn <team> - &eCsapatok kezdőpontjának beállítása."
-help_bw_admin_team_bed: "/bw admin <arena> team bed <team> [looking_at|standing_on] - &eCsapatok ágyainak beállítása."
-help_bw_admin_jointeam: "/bw admin <aréna> jointeam <csapat> - &eBeállítja, hogy egy entitás segítségével csatlakozhasson egy csapathoz"
-help_bw_admin_spawner_add: "/bw admin <arena> spawner add <bronze|gold|iron> [hologram] [first level] [name] [team] [max spawned resources] - &eÉrcek spawnolásának beállítása."
+help_bw_admin_team_add: "/bw admin <arena> team add <team> <color> <max players> -\
+  \ &eCsapat hozzáadása a játékhoz."
+help_bw_admin_team_color: "/bw admin <arena> team color <team> <color> - &eCsapat\
+  \ színének megváltoztatása."
+help_bw_admin_team_maxplayers: "/bw admin <arena> team maxplayers <team> <max players>\
+  \ - &eMaximum játékosok beállítása egy csapatban."
+help_bw_admin_team_spawn: "/bw admin <arena> team spawn <team> - &eCsapatok kezdőpontjának\
+  \ beállítása."
+help_bw_admin_team_bed: "/bw admin <arena> team bed <team> [looking_at|standing_on]\
+  \ - &eCsapatok ágyainak beállítása."
+help_bw_admin_jointeam: "/bw admin <aréna> jointeam <csapat> - &eBeállítja, hogy egy\
+  \ entitás segítségével csatlakozhasson egy csapathoz"
+help_bw_admin_spawner_add: "/bw admin <arena> spawner add <bronze|gold|iron> [hologram]\
+  \ [first level] [name] [team] [max spawned resources] - &eÉrcek spawnolásának beállítása."
 help_bw_admin_spawner_reset: "/bw admin <arena> spawner reset - &eMinden spawner eltüntetése."
-help_bw_admin_store_add: "/bw admin <arena> store add [name above dealer head] [file with shop] [use main shop] - &eBolt létrehozása."
+help_bw_admin_store_add: "/bw admin <arena> store add [name above dealer head] [file\
+  \ with shop] [use main shop] - &eBolt létrehozása."
 help_bw_admin_store_remove: "/bw admin <arena> store remove - &eBolt eltüntetése."
-help_bw_admin_store_type: "/bw admin <arena> store type <living entity> - &eBolt típusának beállítása (Villager, Horse, Cow, Pig stb.)"
-help_bw_admin_config: "/bw admin <arena> config <constant> <value> - &eÁllandó változó beállítása."
-help_bw_admin_arena_time: "/bw admin <arena> arenatime <type> - &eIdő beállítása egy arénában. (DAY, NIGHT, stb.)"
-help_bw_admin_arena_weather: "/bw admin <arena> arenaweather <type> - &eIdőjárás beállítása egy arénában. (default, CLEAN, DOWNFALL)"
-help_bw_admin_post_game_waiting: "/bw admin <arena> postgamewaiting <seconds> - &eBeállít egy időt, ami után a játékost kidobja az arénából"
-help_bw_admin_customprefix: "/bw admin <arena> customprefix <name|off> - &eEngedélyez egy saját előtagot az arénának"
+help_bw_admin_store_type: "/bw admin <arena> store type <living entity> - &eBolt típusának\
+  \ beállítása (Villager, Horse, Cow, Pig stb.)"
+help_bw_admin_config: "/bw admin <arena> config <constant> <value> - &eÁllandó változó\
+  \ beállítása."
+help_bw_admin_arena_time: "/bw admin <arena> arenatime <type> - &eIdő beállítása egy\
+  \ arénában. (DAY, NIGHT, stb.)"
+help_bw_admin_arena_weather: "/bw admin <arena> arenaweather <type> - &eIdőjárás beállítása\
+  \ egy arénában. (default, CLEAN, DOWNFALL)"
+help_bw_admin_post_game_waiting: "/bw admin <arena> postgamewaiting <seconds> - &eBeállít\
+  \ egy időt, ami után a játékost kidobja az arénából"
+help_bw_admin_customprefix: "/bw admin <arena> customprefix <name|off> - &eEngedélyez\
+  \ egy saját előtagot az arénának"
 help_bw_admin_remove: "/bw admin <arena> remove - &cAréna eltávolítása."
 help_bw_admin_edit: "/bw admin <arena> edit - &eAréna szerkesztése."
 help_bw_admin_save: "/bw admin <arena> save - &aAréna mentése."
 update_checker_zero: "§aÚj BedWars plugin verzió (%version%) elérhető!"
 update_checker_zero_second: "Letöltés: %url%"
-update_checker_one: "§bSBedWars és a(z) SBedWars+ hivatalosan megjelent! Több információ: %url%"
-update_checker_one_second_good: "§bSzervered felkészült erre a kiadásra! Töltse le most!"
-update_checker_one_second_bad: "§bSajnos a szerver régi! Minimum 1.13-as verziójú Minecraft-ot és 11-es verziójú Java-t kell használnod"
-help_bw_alljoin: "/bw alljoin [arena] - &aMindenki becsatlakozik a megadott bedwars arénába"
-admin_command_removed_spawners: "&7%count% &atermelők törölve lettek &7%x%&a/&7%y%&a/&7%z% -es kordinátáról"
-help_bw_admin_spawner_remove: "/bw admin <arena> spawner remove - &eRemoves all spawners at location"
+update_checker_one: "§bSBedWars és a(z) SBedWars+ hivatalosan megjelent! Több információ:\
+  \ %url%"
+update_checker_one_second_good: "§bSzervered felkészült erre a kiadásra! Töltse le\
+  \ most!"
+update_checker_one_second_bad: "§bSajnos a szerver régi! Minimum 1.13-as verziójú\
+  \ Minecraft-ot és 11-es verziójú Java-t kell használnod"
+help_bw_alljoin: "/bw alljoin [arena] - &aMindenki becsatlakozik a megadott bedwars\
+  \ arénába"
+admin_command_removed_spawners: "&7%count% &atermelők törölve lettek &7%x%&a/&7%y%&a/&7%z%\
+  \ -es kordinátáról"
+help_bw_admin_spawner_remove: "/bw admin <arena> spawner remove - &eRemoves all spawners\
+  \ at location"
 arena_info_spawner_no_team: "&cNincs csapat"
-help_bw_admin_store_child: "/bw admin <arena> store child - &eMark this shopkeeper as child"
-help_bw_admin_store_adult: "/bw admin <arena> store adult - &eMark this shopkeeper as adult"
-admin_command_store_child_state: "&aVariable isBaby for this shopkeeper has been changed to &7%value%"
+help_bw_admin_store_child: "/bw admin <arena> store child - &eMark this shopkeeper\
+  \ as child"
+help_bw_admin_store_adult: "/bw admin <arena> store adult - &eMark this shopkeeper\
+  \ as adult"
+admin_command_store_child_state: "&aVariable isBaby for this shopkeeper has been changed\
+  \ to &7%value%"
 admin_command_invalid_time: "&cIdő &7%number%§c érvénytelen!"
-admin_command_post_game_waiting: "&aWaiting time after game has been successfully set to &7%number%§a!"
+admin_command_post_game_waiting: "&aWaiting time after game has been successfully\
+  \ set to &7%number%§a!"
 arena_info_postgamewaiting: "&7Post game waiting time: &f%time% s"
 leaderboard_no_scores: "&7There are no scores yet!"
 leaderboard_holo_added: "&aLeaderboard hologram was added to your position!"
@@ -310,7 +375,9 @@ leaderboard_header: "&6BedWars Leaderboard - Top %number% players"
 leaderboard_line: "&l%order%. &7%player% - &a%score%"
 admin_command_customprefix_enabled: "&aCustom prefix was successfully set to &7%prefix%&a."
 admin_command_customprefix_disabled: "&aCustom prefix was successfully disabled."
-admin_command_npc_must_have_skinname: "&cIf you use entity type PLAYER, you must specify skin name in format &7PLAYER:[skin's owner]"
-help_bw_dump: "/bw dump - &eDumps the server and gives you link to the dump. This link can be useful for support"
+admin_command_npc_must_have_skinname: "&cIf you use entity type PLAYER, you must specify\
+  \ skin name in format &7PLAYER:[skin's owner]"
+help_bw_dump: "/bw dump - &eDumps the server and gives you link to the dump. This\
+  \ link can be useful for support"
 dump_success: "&aSuccessfully dumped server. Link: "
 dump_failed: "&cDump failed!"
