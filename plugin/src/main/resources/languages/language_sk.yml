@@ -1,20 +1,22 @@
----
 lang_name: "Slovenčina"
 prefix: "[BW]"
 item_shop_name: "Obchod"
 join: "%name% &asa pripojil do hry!&r &7[&a%players%&7/&a%maxplayers%&7]"
 leave: "%name% &copustil hru!"
-game_already_running: "&cHra &7%arena% &cpráve prebieha! Nemôžeš sa napojiť do prebiehajúcej hry!"
+game_already_running: "&cHra &7%arena% &cpráve prebieha! Nemôžeš sa napojiť do prebiehajúcej\
+  \ hry!"
 game_is_full: "&cHra &7%arena% &cje plná! Počkaj prosím, kým hra skončí!"
 unknown_command: "&cNeznámy príkaz! Napíš &4/bw help &cpre pomôcku!"
-unknown_usage: "&cNesprávny počet parametrov alebo neznáme parametre! Napíš &4/bw help &cpre pomôcku!"
+unknown_usage: "&cNesprávny počet parametrov alebo neznáme parametre! Napíš &4/bw\
+  \ help &cpre pomôcku!"
 no_arena_found: "&cHra sa nenašla!"
 usage_bw_join: "&cPoužitie: /bw join <arena>"
 usage_bw_admin: "&cPoužitie: /bw admin <arena> <add|edit|remove|save|...> ..."
 you_arent_in_game: "&cNenachádzaš sa v hre!"
 allready_exists: "&cAréna už existuje!"
 allready_working_on_it: "&cAréna už existuje ale nie je dokončená!"
-arena_not_in_edit: "&cAréna neexistuje alebo je práve aktívna! Deaktivuj ju príkazom &7/bw admin <arena> edit&c a potom ju aktivuj príkazom &7/bw admin <arena> save"
+arena_not_in_edit: "&cAréna neexistuje alebo je práve aktívna! Deaktivuj ju príkazom\
+  \ &7/bw admin <arena> edit&c a potom ju aktivuj príkazom &7/bw admin <arena> save"
 no_permissions: "&cNemáš oprávnenie na použitie tohto príkazu!"
 arena_must_be_in_edit_mode: "&cAréna musí byť v režime úprav!"
 arena_removed: "&c&lAréna bola odstránená!"
@@ -72,20 +74,29 @@ resource_netherite: "Netherit"
 countdown_spawning: "&e%seconds% &bsekúnd"
 every_second_spawning: "&bkaždú sekundu"
 spawner_is_full: "§c§lSpawner je vyprázdnený"
-spawner_not_enough_level: "§cSpawner nemôže fungovať! Musíš ho upgradovať o %levels% levelov."
-admin_command_mainlobby_info: "&cUPOZORNENIE&f: Musíš použíť príkaz /bw reload aby Mainlobby fungovalo!"
+spawner_not_enough_level: "§cSpawner nemôže fungovať! Musíš ho upgradovať o %levels%\
+  \ levelov."
+admin_command_mainlobby_info: "&cUPOZORNENIE&f: Musíš použíť príkaz /bw reload aby\
+  \ Mainlobby fungovalo!"
 admin_command_success: "&aPríkaz bol úspešne vykonaný!"
-admin_command_must_be_in_same_world: "&cVšetky príkazy musia byť vykonané z jedného sveta!"
+admin_command_must_be_in_same_world: "&cVšetky príkazy musia byť vykonané z jedného\
+  \ sveta!"
 admin_command_invalid_countdown: "&cOdpočet musí byť v rozsahu 10 < x < 600 sekúnd!"
 admin_command_invalid_countdown2: "&cOdpočet musí byť v rozsahu 10 < x < 3600 sekúnd!"
-admin_command_spawn_must_be_in_area: "&cUmiestnenie musí byť vo vnútri oblasti (súradnice pos1 a pos2)!"
-admin_command_set_pos1_pos2_first: "&cPred nastavením spawnu nastav prosím súradnice pos1 a pos2 (určujú veľkosť a polohu arény)!"
-admin_command_pos1_pos2_difference_must_be_higher: "&cVýškový rozdiel medzi pos1 a pos2 je príliš malý! Minimum je 5 blokov!"
-admin_command_game_saved_and_started: "&aHra je úspešné uložená a funguje! Teraz sa môžeš pripojiť a hrať v aréne!"
+admin_command_spawn_must_be_in_area: "&cUmiestnenie musí byť vo vnútri oblasti (súradnice\
+  \ pos1 a pos2)!"
+admin_command_set_pos1_pos2_first: "&cPred nastavením spawnu nastav prosím súradnice\
+  \ pos1 a pos2 (určujú veľkosť a polohu arény)!"
+admin_command_pos1_pos2_difference_must_be_higher: "&cVýškový rozdiel medzi pos1 a\
+  \ pos2 je príliš malý! Minimum je 5 blokov!"
+admin_command_game_saved_and_started: "&aHra je úspešné uložená a funguje! Teraz sa\
+  \ môžeš pripojiť a hrať v aréne!"
 admin_command_store_already_exists: "&cObchod už existuje!"
 admin_command_store_not_exists: "&cObchod neexistuje!"
-admin_command_invalid_spawner_type: "&cSpawner musí byť bronze, iron, gold alebo podľa vlastných nastavení!"
-admin_command_invalid_spawner_level: "&fNesprávne číslo levelu, použil sa predvolený level 1."
+admin_command_invalid_spawner_type: "&cSpawner musí byť bronze, iron, gold alebo podľa\
+  \ vlastných nastavení!"
+admin_command_invalid_spawner_level: "&fNesprávne číslo levelu, použil sa predvolený\
+  \ level 1."
 admin_command_invalid_color: "&cNeplatná farba!"
 admin_command_block_is_not_bed: "&cCieľový blok nie je posteľ!"
 admin_command_max_players_fail: "&cMaximálny počet hráčov musí byť minimálne 1!"
@@ -93,37 +104,55 @@ admin_command_need_min_2_teems: "&cHra potrebuje 2 alebo viac tímov!"
 admin_command_spawners_needed: "&cHra musí mať aspoň jeden item spawner!"
 admin_command_team_is_not_exists: "&cTento tím neexistuje!"
 admin_command_team_is_already_exists: "&cTento tím už existuje!"
-admin_command_bed_setted: "&aPosteľ tímu &7%team%&a je úspešne nastavená na pozíciu XYZ: &7%x%/%y%/%z%"
-admin_command_team_spawn_setted: "&aSpawn tímu &7%team%&a je úspešne nastavený na pozíciu XYZ: &7%x%/%y%/%z% &aYAW: &7%yaw% &aPITCH: &7%pitch%"
-admin_command_team_maxplayers_setted: "&aMaximálny počet hráčov v tíme &7%team%&a je úspešne nastavený na &7%maxplayers%"
-admin_command_team_color_setted: "&aFarba tímu &7%team%&a je úspešne nastavená na %teamcolor%"
+admin_command_bed_setted: "&aPosteľ tímu &7%team%&a je úspešne nastavená na pozíciu\
+  \ XYZ: &7%x%/%y%/%z%"
+admin_command_team_spawn_setted: "&aSpawn tímu &7%team%&a je úspešne nastavený na\
+  \ pozíciu XYZ: &7%x%/%y%/%z% &aYAW: &7%yaw% &aPITCH: &7%pitch%"
+admin_command_team_maxplayers_setted: "&aMaximálny počet hráčov v tíme &7%team%&a\
+  \ je úspešne nastavený na &7%maxplayers%"
+admin_command_team_color_setted: "&aFarba tímu &7%team%&a je úspešne nastavená na\
+  \ %teamcolor%"
 admin_command_team_removed: "&aTím &7%team%&a je úspešne odstránený!"
-admin_command_team_created: "&aTím &7%team%&a je úspešne vytvorený s farbou %teamcolor%&a a maximálnym počtom hráčov: &7%maxplayers%"
+admin_command_team_created: "&aTím &7%team%&a je úspešne vytvorený s farbou %teamcolor%&a\
+  \ a maximálnym počtom hráčov: &7%maxplayers%"
 admin_command_spawners_reseted: "&aVšetky item spawnery v hre &7%arena%&a sú odstránené!"
-admin_command_spawner_added: "&aSpawner &7%resource%&a je úspešne pridaný na pozíciu XYZ: &7%x%/%y%/%z%"
-admin_command_store_added: "&aVillager je pridaný na tvoju pozíciu: &7%x%/%y%/%z% &aYAW: &7%yaw% &aPITCH: &7%pitch%"
-admin_command_store_removed: "&aVillager z pozície XYZ: &7%x%/%y%/%z%&a je úspešne odstránený!"
-admin_command_lobby_spawn_setted: "&aLobby spawn je úspešne nastavený na pozíciu XYZ: &7%x%/%y%/%z% &aYAW: &7%yaw% &aPITCH: &7%pitch%"
-admin_command_spec_spawn_setted: "&aSpawn pozorovateľa je úspešne nastavený na pozíciu XYZ: &7%x%/%y%/%z% &aYAW: &7%yaw% &aPITCH: &7%pitch%"
+admin_command_spawner_added: "&aSpawner &7%resource%&a je úspešne pridaný na pozíciu\
+  \ XYZ: &7%x%/%y%/%z%"
+admin_command_store_added: "&aVillager je pridaný na tvoju pozíciu: &7%x%/%y%/%z%\
+  \ &aYAW: &7%yaw% &aPITCH: &7%pitch%"
+admin_command_store_removed: "&aVillager z pozície XYZ: &7%x%/%y%/%z%&a je úspešne\
+  \ odstránený!"
+admin_command_lobby_spawn_setted: "&aLobby spawn je úspešne nastavený na pozíciu XYZ:\
+  \ &7%x%/%y%/%z% &aYAW: &7%yaw% &aPITCH: &7%pitch%"
+admin_command_spec_spawn_setted: "&aSpawn pozorovateľa je úspešne nastavený na pozíciu\
+  \ XYZ: &7%x%/%y%/%z% &aYAW: &7%yaw% &aPITCH: &7%pitch%"
 admin_command_pos1_setted: "&Pozícia 1 v aréne &7%arena%&a je nastavená na XYZ: &7%x%/%y%/%z%"
 admin_command_pos2_setted: "&aPozícia 2 v aréne &7%arena%&a je nastavená na XYZ: &7%x%/%y%/%z%"
 admin_command_pausecontdown_setted: "&aOdpočet času v lobby je nastavený na &7%countdown%"
 admin_command_gametime_setted: "&aČas hry je nastavený na &7%time%"
-admin_command_set_pos1_pos2_before_save: "&cPred uložením hry prosím nastav súradnice pos1 a pos2 (určujú veľkosť a polohu arény)!"
+admin_command_set_pos1_pos2_before_save: "&cPred uložením hry prosím nastav súradnice\
+  \ pos1 a pos2 (určujú veľkosť a polohu arény)!"
 admin_command_set_lobby_before_save: "&cPred uložením hry prosím nastav spawn lobby!"
 admin_command_set_spec_before_save: "&cPred uložením hry prosím nastav spawn spec!"
 admin_command_set_stores_before_save: "&cPred uložením hry prosím pridaj aspoň 1 obchod!"
-admin_command_set_spawners_before_save: "&cPred uložením hry prosím pridaj aspoň 1 spawner!"
-admin_command_set_bed_for_team_before_save: "&cPred uložením hry prosím nastav posteľ tímu &7%team%&c!"
-admin_command_set_spawn_for_team_before_save: "&cPred uložením hry nastav prosím spawn tímu &7%team%&c!"
-admin_command_click_right_on_entity_to_set_join: "&aTeraz klikni pravým tlačidlom na požadovanú entitu, pre ktorú chceš nastaviť pripojenie do tímu: &7%team%"
-admin_command_jointeam_entitynotcompatible: "&cEntita, ktorú sa snažíš použiť, nie je kompatibilná! Môžeš použiť iba živé entity alebo Armor Stand!"
+admin_command_set_spawners_before_save: "&cPred uložením hry prosím pridaj aspoň 1\
+  \ spawner!"
+admin_command_set_bed_for_team_before_save: "&cPred uložením hry prosím nastav posteľ\
+  \ tímu &7%team%&c!"
+admin_command_set_spawn_for_team_before_save: "&cPred uložením hry nastav prosím spawn\
+  \ tímu &7%team%&c!"
+admin_command_click_right_on_entity_to_set_join: "&aTeraz klikni pravým tlačidlom\
+  \ na požadovanú entitu, pre ktorú chceš nastaviť pripojenie do tímu: &7%team%"
+admin_command_jointeam_entitynotcompatible: "&cEntita, ktorú sa snažíš použiť, nie\
+  \ je kompatibilná! Môžeš použiť iba živé entity alebo Armor Stand!"
 admin_command_jointeam_entity_added: "&aEntita na pripojenie do tímu je pridaná!"
 admin_command_invalid_min_players: "&cMinimálny počet hráčov musí byť 2 alebo viac!"
 admin_command_min_players_set: "&aÚspešne si nastavil minimálny počet hráčov na &7%min%&a!"
-admin_command_invalid_config_value: "&cNesprávna hodnota! Hodnota môže byť &7true&c, &7false&c or &7inherit&c!"
+admin_command_invalid_config_value: "&cNesprávna hodnota! Hodnota môže byť &7true&c,\
+  \ &7false&c or &7inherit&c!"
 admin_command_invalid_config_variable_name: "&cNesprávny názov konštanty!"
-admin_command_config_variable_set_to: "&aKonštanta &7%config%&a je úspešné nastavená na hodnotu &7%value%&a!"
+admin_command_config_variable_set_to: "&aKonštanta &7%config%&a je úspešné nastavená\
+  \ na hodnotu &7%value%&a!"
 admin_command_invalid_arena_time: "&cNesprávny typ času sveta pre arénu!"
 admin_command_arena_time_set: "&aČas sveta pre arénu je nastavený na &7%time%&a!"
 admin_command_invalid_arena_weather: "&cNesprávny typ počasia sveta pre arénu!"
@@ -131,18 +160,23 @@ admin_command_arena_weather_set: "&aPočasie sveta pre arénu je nastavené na &
 admin_command_invalid_bar_color: "&cNesprávna farba pre Boss Bar!"
 admin_command_bar_color_set: "&aFarba je nastavená na &7%color%&a pre bossbar &7%type%&a!"
 admin_command_wrong_living_entity_type: "&cNesprávny typ žijúcej entity!"
-admin_command_store_living_entity_type_set: "&aTyp žijúcej entity obchodu je nastavený na &7%type%&a!"
+admin_command_store_living_entity_type_set: "&aTyp žijúcej entity obchodu je nastavený\
+  \ na &7%type%&a!"
 admin_command_upgrades: "&aUpgrady sú nastavené na &7%bool%&a!"
-safe_reload: "&aČakám na bezpečné zastavenie všetkých hier alebo na 60 sekúnd pred reloadom!"
-safe_reload_failed_to_stop_game: "&cNiektoré hry neskončili v časovom limite, takže ich arény môžu byť poškodené!"
+safe_reload: "&aČakám na bezpečné zastavenie všetkých hier alebo na 60 sekúnd pred\
+  \ reloadom!"
+safe_reload_failed_to_stop_game: "&cNiektoré hry neskončili v časovom limite, takže\
+  \ ich arény môžu byť poškodené!"
 holo_not_enabled: "&cHologramy nie sú povolené. Máte nainštalované Holographic Displays?"
 holo_added: "&aHologram pridaný na tvoju pozíciu!"
 click_to_holo_for_remove: "&eKlikni na hologarm, ktorý chceš odstrániť!"
 holo_removed: "&aHologram je úspešne odstránený!"
 sign_successfully_created: "&aTabuľa je úspešné vytvorená!"
-sign_can_not_been_created: "&cNemohla byť vytvorená tabuľa! Prosím skontroluj názov arény!"
+sign_can_not_been_created: "&cNemohla byť vytvorená tabuľa! Prosím skontroluj názov\
+  \ arény!"
 sign_can_not_been_destroyed: "&cNemáš oprávnenie ničiť túto tabuľu!"
-sign_game_not_exists: "&cHra, ktorá je napísaná na tabuli neexistuje! Prosím kontaktuj admina!"
+sign_game_not_exists: "&cHra, ktorá je napísaná na tabuli neexistuje! Prosím kontaktuj\
+  \ admina!"
 sign_status_disabled: "&cHra"
 sign_status_disabled_players: "&cvypnutá"
 sign_status_rebuilding: "&6v prestavbe"
@@ -183,7 +217,8 @@ arena_info_villagers: "&7Obchody:"
 arena_info_villager_pos: "- XYZ: &7%x%&r/&7%y%&r/&7%z%"
 arena_info_villager_entity_type: "  Typ: &a%type%"
 arena_info_villager_shop: "  Má vlastný obchod: &7%bool%"
-arena_info_villager_shop_name: "  Názov obchodu: &6%file%&r (prevezme z hlavného: &7%bool%&r)"
+arena_info_villager_shop_name: "  Názov obchodu: &6%file%&r (prevezme z hlavného:\
+  \ &7%bool%&r)"
 arena_info_villager_shop_dealer_name: "  Meno obchodníka nad hlavou: &6%name%&r"
 arena_info_villager_shop_dealer_has_no_name: "&cŽiadne meno nie je nastavené"
 arena_info_lobby_countdown: "&7Odpočet času pred začatím hry: &f%time% s"
@@ -194,9 +229,11 @@ arena_info_config_true: "&aPovolené"
 arena_info_config_false: "&cZakázané"
 arena_info_config_inherit: "&ePrevezme z nastavení pluginu"
 please_select_info_type: "&aProsím vyber sekciu informácii arény &7%arena%&a:"
-please_select_info_type_base: "&aZákladné informácie&f - &7/bw admin %arena% info base"
+please_select_info_type_base: "&aZákladné informácie&f - &7/bw admin %arena% info\
+  \ base"
 please_select_info_type_stores: "&aZoznam obchodov&f - &7/bw admin %arena% info stores"
-please_select_info_type_spawners: "&aZoznam spawnerov&f - &7/bw admin %arena% info spawners"
+please_select_info_type_spawners: "&aZoznam spawnerov&f - &7/bw admin %arena% info\
+  \ spawners"
 please_select_info_type_teams: "&aZoznam tímov&f - &7/bw admin %arena% info teams"
 please_select_info_type_config: "&aNastavenia&f - &7/bw admin %arena% info config"
 please_select_info_type_click: "&bKlikni pre použitie príkazu!"
@@ -218,15 +255,19 @@ specials_warp_powder_multiuse: "&cUž je aktivovaný iný WarpPowder!"
 specials_warp_powder_canceled: "&cWarpPowder je zrušený!"
 specials_warp_powder_started: "&aWarpPowder začal! Prosím nehýb sa &7%time%&a sekúnd!"
 specials_tracker_no_target_found: "&cNenašiel sa žiaden cieľ!"
-specials_tracker_target_found: "&aCieľ &f%target% &asa našiel vo vzdialenosti &f%distance% &ablokov!"
+specials_tracker_target_found: "&aCieľ &f%target% &asa našiel vo vzdialenosti &f%distance%\
+  \ &ablokov!"
 specials_rescue_platform_not_in_air: "&cMusíš byť vo vzduchu aby si mohol toto použiť."
 specials_rescue_platform_destroy: "&cPlatforma bude zničená o &f%time% &csekúnd."
 specials_rescue_platform_created_unbreakable: "&aJe vytvorená nezničiteľná platforma!"
-specials_rescue_platform_created: "&aPlatforma je vytvorená a bude zničená o &f%time% &asekúnd."
-specials_protection_wall_not_usable_here: "&cNa vytvorenie ochrannej steny nie je miesto."
+specials_rescue_platform_created: "&aPlatforma je vytvorená a bude zničená o &f%time%\
+  \ &asekúnd."
+specials_protection_wall_not_usable_here: "&cNa vytvorenie ochrannej steny nie je\
+  \ miesto."
 specials_protection_wall_destroy: "&cOchranná stena bude zničená o &f%time% &csekúnd."
 specials_protection_wall_created_unbreakable: "&aNezničiteľná ochranná stena je vytvorená!"
-specials_protection_wall_created: "&aOchranná stena je vytvorená a bude zničená o &f%time% &asekúnd."
+specials_protection_wall_created: "&aOchranná stena je vytvorená a bude zničená o\
+  \ &f%time% &asekúnd."
 specials_tntsheep_no_target_found: "&cCieľ sa nenašiel!"
 specials_arrow_blocker_started: "&aArrow blocker je aktivovaný na %time% sekúnd!"
 specials_arrow_blocker_already_activated: "&cArrow blocker už je aktivovaný!"
@@ -259,50 +300,84 @@ help_bw_stats: "/bw stats - &aUkáže tvoje štatistiky"
 help_bw_stats_other: "/bw stats [player] - &aUkáže štatistiky druhého hráča"
 help_bw_reload: "/bw reload - &cReload pluginu"
 help_bw_addholo: "/bw addholo [leaderboard|stats]- &ePridá hologram na pozíciu hráča"
-help_bw_removeholo: "/bw removeholo - &ePo použití tohto príkazu môže hráč kliknúť pravým tlačidlom na hologram aby ho odstránil."
-help_bw_mainlobby: "/bw mainlobby [enable|set] - &ePovolí hlavnú lobby alebo nastaví pozíciu lobby"
-help_bw_admin_info: "/bw admin <arena> info [section] - &eUkáže všetky informácie o aréne"
+help_bw_removeholo: "/bw removeholo - &ePo použití tohto príkazu môže hráč kliknúť\
+  \ pravým tlačidlom na hologram aby ho odstránil."
+help_bw_mainlobby: "/bw mainlobby [enable|set] - &ePovolí hlavnú lobby alebo nastaví\
+  \ pozíciu lobby"
+help_bw_admin_info: "/bw admin <arena> info [section] - &eUkáže všetky informácie\
+  \ o aréne"
 help_bw_admin_add: "/bw admin <arena> add - &eVytvoriť novú arénu"
 help_bw_admin_lobby: "/bw admin <arena> lobby - &eNastaví pozíciu lobby na tvoju pozíciu"
-help_bw_admin_spec: "/bw admin <arena> spec - &eNastaví spawn pozorovateľa na tvoju pozíciu"
-help_bw_admin_pos1: "/bw admin <arena> pos1 - &eNastaví krajný bod arény na tvoju pozíciu"
-help_bw_admin_pos2: "/bw admin <arena> pos2 - &eNastaví druhý krajný bod arény na tvoju pozíciu"
-help_bw_admin_pausecountdown: "/bw admin <arena> pausecountdown <seconds> - &eNastaví dĺžku pauzy pred začiatkom hry"
-help_bw_admin_minplayers: "/bw admin <arena> minplayers <minimum> - &eNastaví minimálny počet hráčov potrebných na začatie hry"
+help_bw_admin_spec: "/bw admin <arena> spec - &eNastaví spawn pozorovateľa na tvoju\
+  \ pozíciu"
+help_bw_admin_pos1: "/bw admin <arena> pos1 - &eNastaví krajný bod arény na tvoju\
+  \ pozíciu"
+help_bw_admin_pos2: "/bw admin <arena> pos2 - &eNastaví druhý krajný bod arény na\
+  \ tvoju pozíciu"
+help_bw_admin_pausecountdown: "/bw admin <arena> pausecountdown <seconds> - &eNastaví\
+  \ dĺžku pauzy pred začiatkom hry"
+help_bw_admin_minplayers: "/bw admin <arena> minplayers <minimum> - &eNastaví minimálny\
+  \ počet hráčov potrebných na začatie hry"
 help_bw_admin_time: "/bw admin <arena> time <seconds> - &eNastaví dĺžku hry"
-help_bw_admin_team_add: "/bw admin <arena> team add <team> <color> <max players> - &ePridá tím do hry"
-help_bw_admin_team_color: "/bw admin <arena> team color <team> <color> - &eZmení farbu tímu"
-help_bw_admin_team_maxplayers: "/bw admin <arena> team maxplayers <team> <max players> - &eZmení maximálny počet hráčov tímu"
-help_bw_admin_team_spawn: "/bw admin <arena> team spawn <team> - &eNastaví spawn tímu na tvoju pozíciu"
-help_bw_admin_team_bed: "/bw admin <arena> team bed <team> [looking_at|standing_on] - &eNastaví target block tímu na tvoju pozíciu (môže to byť aj iný blok ako posteľ)"
-help_bw_admin_jointeam: "/bw admin <arena> jointeam <team> - &eNastaví schopnosť pripojiť sa k tímu pomocou entity"
-help_bw_admin_spawner_add: "/bw admin <arena> spawner add <bronze|gold|iron> [hologram] [first level] [name] [team] [max spawned resources] - &ePridá item spawner na tvoju pozíciu"
-help_bw_admin_spawner_reset: "/bw admin <arena> spawner reset - &eOdstráni všetky spawnery"
-help_bw_admin_store_add: "/bw admin <arena> store add [name above dealer head] [file with shop] [use main shop] - &ePridá villagera na tvoju pozíciu"
-help_bw_admin_store_remove: "/bw admin <arena> store remove - &eOdstráni obchodovacieho dedinčana z tvojej pozície"
-help_bw_admin_store_type: "/bw admin <arena> store type <living entity> - &eNastaví typ entity obchodu (dedinčan, kôn, krava, prasa atď.)"
-help_bw_admin_config: "/bw admin <arena> config <constant> <value> - &eNastaví hodnotu konštantnej premennej pre hru"
-help_bw_admin_arena_time: "/bw admin <arena> arenatime <type> - &eNastaví čas v aréne (DAY, NIGHT, atď.)"
-help_bw_admin_arena_weather: "/bw admin <arena> arenaweather <type> - &eNastaví počasie v aréne (predvolené, CLEAN, DOWNFALL)"
-help_bw_admin_post_game_waiting: "/bw admin <arena> postgamewaiting <seconds> - &eNastaví čas čakanie pred tým, ako je hráč teleportovaný z arény"
-help_bw_admin_customprefix: "/bw admin <arena> customprefix <name|off> - &ePovolí vlastné prefixy pre arénu"
+help_bw_admin_team_add: "/bw admin <arena> team add <team> <color> <max players> -\
+  \ &ePridá tím do hry"
+help_bw_admin_team_color: "/bw admin <arena> team color <team> <color> - &eZmení farbu\
+  \ tímu"
+help_bw_admin_team_maxplayers: "/bw admin <arena> team maxplayers <team> <max players>\
+  \ - &eZmení maximálny počet hráčov tímu"
+help_bw_admin_team_spawn: "/bw admin <arena> team spawn <team> - &eNastaví spawn tímu\
+  \ na tvoju pozíciu"
+help_bw_admin_team_bed: "/bw admin <arena> team bed <team> [looking_at|standing_on]\
+  \ - &eNastaví target block tímu na tvoju pozíciu (môže to byť aj iný blok ako posteľ)"
+help_bw_admin_jointeam: "/bw admin <arena> jointeam <team> - &eNastaví schopnosť pripojiť\
+  \ sa k tímu pomocou entity"
+help_bw_admin_spawner_add: "/bw admin <arena> spawner add <bronze|gold|iron> [hologram]\
+  \ [first level] [name] [team] [max spawned resources] - &ePridá item spawner na\
+  \ tvoju pozíciu"
+help_bw_admin_spawner_reset: "/bw admin <arena> spawner reset - &eOdstráni všetky\
+  \ spawnery"
+help_bw_admin_store_add: "/bw admin <arena> store add [name above dealer head] [file\
+  \ with shop] [use main shop] - &ePridá villagera na tvoju pozíciu"
+help_bw_admin_store_remove: "/bw admin <arena> store remove - &eOdstráni obchodovacieho\
+  \ dedinčana z tvojej pozície"
+help_bw_admin_store_type: "/bw admin <arena> store type <living entity> - &eNastaví\
+  \ typ entity obchodu (dedinčan, kôn, krava, prasa atď.)"
+help_bw_admin_config: "/bw admin <arena> config <constant> <value> - &eNastaví hodnotu\
+  \ konštantnej premennej pre hru"
+help_bw_admin_arena_time: "/bw admin <arena> arenatime <type> - &eNastaví čas v aréne\
+  \ (DAY, NIGHT, atď.)"
+help_bw_admin_arena_weather: "/bw admin <arena> arenaweather <type> - &eNastaví počasie\
+  \ v aréne (predvolené, CLEAN, DOWNFALL)"
+help_bw_admin_post_game_waiting: "/bw admin <arena> postgamewaiting <seconds> - &eNastaví\
+  \ čas čakanie pred tým, ako je hráč teleportovaný z arény"
+help_bw_admin_customprefix: "/bw admin <arena> customprefix <name|off> - &ePovolí\
+  \ vlastné prefixy pre arénu"
 help_bw_admin_remove: "/bw admin <arena> remove - &cOdstráni arénu"
-help_bw_admin_edit: "/bw admin <arena> edit - &eVypne hru a prepne arénu do režimu úprav"
+help_bw_admin_edit: "/bw admin <arena> edit - &eVypne hru a prepne arénu do režimu\
+  \ úprav"
 help_bw_admin_save: "/bw admin <arena> save - &aUloží a aktivuje hru!"
 update_checker_zero: "§aJe dostupná nová verzia BedWars %version%!"
 update_checker_zero_second: "Stiahni ju z %url%"
-update_checker_one: "§bSBedWars a SBedWars+ sú oficiálne vydané! Viac informácii na: %url%"
-update_checker_one_second_good: "§bTvoj server je pripravený na túto verziu! Môžeš si ju ihneď stiahnúť!"
-update_checker_one_second_bad: "§bJe to smutné, tvoj server je zastaraný! Potrebuješ verziu Minecraftu aspoň 1.13 a verziu Javy aspoň 11!"
+update_checker_one: "§bSBedWars a SBedWars+ sú oficiálne vydané! Viac informácii na:\
+  \ %url%"
+update_checker_one_second_good: "§bTvoj server je pripravený na túto verziu! Môžeš\
+  \ si ju ihneď stiahnúť!"
+update_checker_one_second_bad: "§bJe to smutné, tvoj server je zastaraný! Potrebuješ\
+  \ verziu Minecraftu aspoň 1.13 a verziu Javy aspoň 11!"
 help_bw_alljoin: "/bw alljoin [arena] - &aPripojí všetkých hráčov serveru do hry"
 admin_command_removed_spawners: "&7%count% &aspawnery boli odstránené z &7%x%&a/&7%y%&a/&7%z%"
-help_bw_admin_spawner_remove: "/bw admin <arena> spawner remove - &eOdstráni všetky spawnery v danej oblasti"
+help_bw_admin_spawner_remove: "/bw admin <arena> spawner remove - &eOdstráni všetky\
+  \ spawnery v danej oblasti"
 arena_info_spawner_no_team: "&cŽiaden tím"
-help_bw_admin_store_child: "/bw admin <arena> store child - &eOznačí entitu obchodníka ako dieťa"
-help_bw_admin_store_adult: "/bw admin <arena> store adult - &eOznačí entitu obchodníka ako dospelého"
-admin_command_store_child_state: "&aPremenná isBaby pre tohto obchodníka bola zmenená na &7%value%"
+help_bw_admin_store_child: "/bw admin <arena> store child - &eOznačí entitu obchodníka\
+  \ ako dieťa"
+help_bw_admin_store_adult: "/bw admin <arena> store adult - &eOznačí entitu obchodníka\
+  \ ako dospelého"
+admin_command_store_child_state: "&aPremenná isBaby pre tohto obchodníka bola zmenená\
+  \ na &7%value%"
 admin_command_invalid_time: "&cČas &7%number%§c je nesprávny!"
-admin_command_post_game_waiting: "&aDoba čakania po skončení hry bola úspešné nastavená na &7%number%§a!"
+admin_command_post_game_waiting: "&aDoba čakania po skončení hry bola úspešné nastavená\
+  \ na &7%number%§a!"
 arena_info_postgamewaiting: "&7Doba čakania po skončení hry: &f%time% s"
 leaderboard_no_scores: "&7Zatiaľ žiadne skóre!"
 leaderboard_holo_added: "&aHologram tabule s výsledkami bol pridaný na tvoju pozíciu!"
@@ -310,7 +385,9 @@ leaderboard_header: "&6BedWars Výsledková tabuľa - Top %number% hráči"
 leaderboard_line: "&l%order%. &7%player% - &a%score%"
 admin_command_customprefix_enabled: "&aVlastný prefix bol úspešne nastavený na &7%prefix%&a."
 admin_command_customprefix_disabled: "&aVlastný prefix bol úspešne deaktivovaný."
-admin_command_npc_must_have_skinname: "&cAk použiješ typ entity PLAYER, musíš špecifikovať meno skinu vo formáte &7PLAYER:[skin's owner]"
-help_bw_dump: "/bw dump - &eVytvorí dump serveru a poskytne link na tento dump. Tento link môže byť užitočný na podporu"
+admin_command_npc_must_have_skinname: "&cAk použiješ typ entity PLAYER, musíš špecifikovať\
+  \ meno skinu vo formáte &7PLAYER:[skin's owner]"
+help_bw_dump: "/bw dump - &eVytvorí dump serveru a poskytne link na tento dump. Tento\
+  \ link môže byť užitočný na podporu"
 dump_success: "&aDump serveru úspešne vytvorený. Link: "
 dump_failed: "&cDump zlyhal!"
