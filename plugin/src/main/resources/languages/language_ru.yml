@@ -386,3 +386,26 @@ help_bw_dump: "/bw dump - &eСоздаёт снимок информации о 
   \ может быть полезна для получения помощи"
 dump_success: "&cУспешно создан снимок сервера. Ссылка: "
 dump_failed: "&cНе удалось создать снимок!"
+upgrade_success: '&aГенератор %spawner% был успешно прокачан до уровня%level% игроком
+  %name%!'
+spawner_reached_maximum_level: '&aГенератор достиг максимального уровня!'
+cheat_please_provide_valid_cheat_type: '&cДанный чит недоступен!'
+cheat_received_give: '&aИгрок &7%player%&a получил &7%amount% %resource%'
+cheat_game_not_running: '&cВы не можете использовать читы в лобби!'
+upgrade_translate: прокачка
+cheat_invalid_player: '&cИгрок не в игре или является наблюдателем!'
+cheat_received_kill: '&aИгрок &7%player%&a был убит с помощью чита!'
+cheat_disabled: '&cЧиты на этом сервере отключены!'
+help_bw_cheat_kill: /bw cheat kill [игрок] - &cУбивает указанного игрока
+"party_inform_game_join": '&aПодключение к игре лидера группы'
+"party_warped": '&aЛидер группы перенёс вас'
+"party_command_help": /bw party warp - &eПереносит всех игроков в вашу игру или к
+  вам
+"party_command_not_in_party": '&cВам необходимо быть в группе!'
+"party_command_not_party_leader": '&cВы не лидер группы!'
+"party_command_is_empty": '&cВаша группа пуста, не можем никого перенести!'
+help_bw_cheat_give: /bw cheat give <ресурс> [кол-во] [игрок] - &cВыдаёт игроку указанное
+  количество ресурса
+"party_command_invalid_arguments": '&cНеверное количество аргументов! Введите /bw
+  party help для получения помощи'
+"party_command_warped": '&aЧлены группы были перенесены'
