@@ -1,20 +1,22 @@
----
 lang_name: "Bosanski"
 prefix: "[BW]"
 item_shop_name: "Trgovina"
 join: "%name% &aje ušao u igru!&r &7[&a%players%&7/&a%maxplayers%&7]"
 leave: "%name% &cje napustio igru!"
-game_already_running: "&cIgra &7%arena% &cje već počela! Ne možete se pridruživati započetim igrama!"
+game_already_running: "&cIgra &7%arena% &cje već počela! Ne možete se pridruživati\
+  \ započetim igrama!"
 game_is_full: "&cIgra &7%arena% &cje puna! Pričekajte kraj igre!"
 unknown_command: "&cNepostojeća komanda! Upišite &4/bw help &cza pomoć!"
-unknown_usage: "&cBroj argumenata nije valjan ili su navedeni nepostojeći argumenti! Upišite &4/bw help &cza pomoć!"
+unknown_usage: "&cBroj argumenata nije valjan ili su navedeni nepostojeći argumenti!\
+  \ Upišite &4/bw help &cza pomoć!"
 no_arena_found: "&cArena nije pronađena!"
 usage_bw_join: "&cKoristite: &f/bw join <arena>"
 usage_bw_admin: "&cKoristite: &f/bw admin <arena> <add|edit|remove|save|...> ..."
 you_arent_in_game: "&cNiste u igri!"
 allready_exists: "&cArena već postoji!"
 allready_working_on_it: "&cArena već postoji ali nije spremljena!"
-arena_not_in_edit: "&cArena ne postoji ili je započela! Deaktivirajte je sa &7/bw admin <arena> edit&c i onda je aktivirajte sa &7/bw admin <arena> save"
+arena_not_in_edit: "&cArena ne postoji ili je započela! Deaktivirajte je sa &7/bw\
+  \ admin <arena> edit&c i onda je aktivirajte sa &7/bw admin <arena> save"
 no_permissions: "&cNemate dozvolu da to radite!"
 arena_must_be_in_edit_mode: "&cArena mora biti u načinu uređivanja!"
 arena_removed: "&c&lArena uklonjena!"
@@ -45,7 +47,8 @@ respawn_cooldown_title_cancel: "&cTim je eliminisan:("
 vip_not_enough_players: "&cNedovoljno igrača je u areni!"
 vip_game_is_full: "&cIgra &7%arena% &cje puna VIP igrača. Pričekajte kraj igre!"
 buy_succes: "&aUspješno ste kupili &7%item%&a za &7%material%&a!"
-buy_failed: "&cNemate dovoljno materijala kako biste kupili &7%item%&c! Potrebno vam je &7%material%&c!"
+buy_failed: "&cNemate dovoljno materijala kako biste kupili &7%item%&c! Potrebno vam\
+  \ je &7%material%&c!"
 compass_selector_team: "&aOdaberi tim"
 leave_from_game_item: "&cNapusti igru"
 start_game_item: "&ePočni igru"
@@ -72,20 +75,28 @@ resource_netherite: "Netherite"
 countdown_spawning: "&e%seconds% &bsekundi"
 every_second_spawning: "&bsvake sekunde"
 spawner_is_full: "§c§lSpawner je obrisan"
-spawner_not_enough_level: "§cSpawner ne može raditi! Morate ga nadograditi za još %levels% nivoa."
-admin_command_mainlobby_info: "&cUPOZORENJE&f: Morate upisati /bw reload kako bi glavni lobby proradio!"
+spawner_not_enough_level: "§cSpawner ne može raditi! Morate ga nadograditi za još\
+  \ %levels% nivoa."
+admin_command_mainlobby_info: "&cUPOZORENJE&f: Morate upisati /bw reload kako bi glavni\
+  \ lobby proradio!"
 admin_command_success: "&aKomanda uspješno izvršena!"
 admin_command_must_be_in_same_world: "&cSve komande se moraju izvršiti iz istog svijeta!"
 admin_command_invalid_countdown: "&cUmanjenje mora biti u rangu 10 < x < 600 sekundi!"
 admin_command_invalid_countdown2: "&cUmanjenje mora biti u rangu 10 < x < 3600 sekundi!"
-admin_command_spawn_must_be_in_area: "&cLokacija mora biti postavljena unutar arene (pos1 i pos2 koordinate)!"
-admin_command_set_pos1_pos2_first: "&cPrije postavljanja spawna, molimo postavite pos1 i pos2 koordinate (odredjuju velicinu i poziciju arene)!"
-admin_command_pos1_pos2_difference_must_be_higher: "&cRazlika u visini izmedju pos1 i pos2 je premala! Minimum je 5 blokova!"
-admin_command_game_saved_and_started: "&aIgra je uspjesno spremljena i aktivirana! Sada se mozete spojiti i igrati u areni!"
+admin_command_spawn_must_be_in_area: "&cLokacija mora biti postavljena unutar arene\
+  \ (pos1 i pos2 koordinate)!"
+admin_command_set_pos1_pos2_first: "&cPrije postavljanja spawna, molimo postavite\
+  \ pos1 i pos2 koordinate (odredjuju velicinu i poziciju arene)!"
+admin_command_pos1_pos2_difference_must_be_higher: "&cRazlika u visini izmedju pos1\
+  \ i pos2 je premala! Minimum je 5 blokova!"
+admin_command_game_saved_and_started: "&aIgra je uspjesno spremljena i aktivirana!\
+  \ Sada se mozete spojiti i igrati u areni!"
 admin_command_store_already_exists: "&cProdavnica vec postoji!"
 admin_command_store_not_exists: "&cProdavnica ne postoji!"
-admin_command_invalid_spawner_type: "&cTip spawnera mora biti bronza, zeljezo, zlato, ili vlastiti materijal iz konfiguracije!"
-admin_command_invalid_spawner_level: "&fPogresan broj za nivo je upotrebljen, osnovni nivo 1 je koristen."
+admin_command_invalid_spawner_type: "&cTip spawnera mora biti bronza, zeljezo, zlato,\
+  \ ili vlastiti materijal iz konfiguracije!"
+admin_command_invalid_spawner_level: "&fPogresan broj za nivo je upotrebljen, osnovni\
+  \ nivo 1 je koristen."
 admin_command_invalid_color: "&cNavedena boja ne postoji!"
 admin_command_block_is_not_bed: "&cMeta nije krevet!"
 admin_command_max_players_fail: "&cMaksimalni broj igraca mora biti >= 1!"
@@ -93,37 +104,58 @@ admin_command_need_min_2_teems: "&cIgra mora imati 2 ili vise timova!"
 admin_command_spawners_needed: "&cIgra mora imati >= 1 spawnera itema!"
 admin_command_team_is_not_exists: "&cTaj tim ne postoji!"
 admin_command_team_is_already_exists: "&cTaj tim vec postoji!"
-admin_command_bed_setted: "&aKrevet od &7%team% &atima je uspjesno postavljen na poziciju XYZ: &7%x%/%y%/%z%"
-admin_command_team_spawn_setted: "&aSpawn od &7%team%&a tima je uspjesno postavljen na poziciju XYZ: &7%x%/%y%/%z% &aYAW: &7%yaw% &aPITCH: &7%pitch%"
-admin_command_team_maxplayers_setted: "&aMaksimalni broj igraca u timu &7%team%&a je postavljen na &7%maxplayers%"
-admin_command_team_color_setted: "&aBoja od &7%team% &atima je uspjesno postavljena na %teamcolor%"
+admin_command_bed_setted: "&aKrevet od &7%team% &atima je uspjesno postavljen na poziciju\
+  \ XYZ: &7%x%/%y%/%z%"
+admin_command_team_spawn_setted: "&aSpawn od &7%team%&a tima je uspjesno postavljen\
+  \ na poziciju XYZ: &7%x%/%y%/%z% &aYAW: &7%yaw% &aPITCH: &7%pitch%"
+admin_command_team_maxplayers_setted: "&aMaksimalni broj igraca u timu &7%team%&a\
+  \ je postavljen na &7%maxplayers%"
+admin_command_team_color_setted: "&aBoja od &7%team% &atima je uspjesno postavljena\
+  \ na %teamcolor%"
 admin_command_team_removed: "&aTim &7%team%&a je uspjesno uklonjen!"
-admin_command_team_created: "&aTim &7%team%&a je uspjesno napravljen sa bojom %teamcolor%&a i maksimalnim brojem igraca: &7%maxplayers%"
+admin_command_team_created: "&aTim &7%team%&a je uspjesno napravljen sa bojom %teamcolor%&a\
+  \ i maksimalnim brojem igraca: &7%maxplayers%"
 admin_command_spawners_reseted: "&aSvi spawneri itema za igru &7%arena%&a su uklonjeni!"
-admin_command_spawner_added: "&aSpawner &7%resource%&a je uspjesno dodan na poziciju XYZ: &7%x%/%y%/%z%"
-admin_command_store_added: "&aTrgovac je dodan na vasu poziciju: &7%x%/%y%/%z% &aYAW: &7%yaw% &aPITCH: &7%pitch%"
-admin_command_store_removed: "&aTrgovac sa pozicije XYZ: &7%x%/%y%/%z%&a je uspjesno uklonjen!"
-admin_command_lobby_spawn_setted: "&aLokacija lobby spawna je uspjesno postavljena na XYZ: &7%x%/%y%/%z% &aYAW: &7%yaw% &aPITCH: &7%pitch%"
-admin_command_spec_spawn_setted: "&aLokacija spawna gledatelja je uspjesno postavljena na XYZ: &7%x%/%y%/%z% &aYAW: &7%yaw% &aPITCH: &7%pitch%"
+admin_command_spawner_added: "&aSpawner &7%resource%&a je uspjesno dodan na poziciju\
+  \ XYZ: &7%x%/%y%/%z%"
+admin_command_store_added: "&aTrgovac je dodan na vasu poziciju: &7%x%/%y%/%z% &aYAW:\
+  \ &7%yaw% &aPITCH: &7%pitch%"
+admin_command_store_removed: "&aTrgovac sa pozicije XYZ: &7%x%/%y%/%z%&a je uspjesno\
+  \ uklonjen!"
+admin_command_lobby_spawn_setted: "&aLokacija lobby spawna je uspjesno postavljena\
+  \ na XYZ: &7%x%/%y%/%z% &aYAW: &7%yaw% &aPITCH: &7%pitch%"
+admin_command_spec_spawn_setted: "&aLokacija spawna gledatelja je uspjesno postavljena\
+  \ na XYZ: &7%x%/%y%/%z% &aYAW: &7%yaw% &aPITCH: &7%pitch%"
 admin_command_pos1_setted: "&aPozicija1 arene &7%arena%&a je postavljena na XYZ: &7%x%/%y%/%z%"
 admin_command_pos2_setted: "&aPozicija2 arene &7%arena%&a je postavljena na XYZ: &7%x%/%y%/%z%"
 admin_command_pausecontdown_setted: "&aLobby odbrojavanje je postavljeno na &7%countdown%"
 admin_command_gametime_setted: "&aTrajanje igre je postavljeno na &7%time%"
-admin_command_set_pos1_pos2_before_save: "&cPrije spasavanja igre molimo da postavite pos1 i pos2 koordinate (odredjuju velicinu i poziciju arene)!"
-admin_command_set_lobby_before_save: "&cPrije spasavanja igre molimo vas da postavite lobby spawn!"
-admin_command_set_spec_before_save: "&cPrije spremanja igre molimo postavite spawn gledatelja!"
-admin_command_set_stores_before_save: "&cPrije spremanja igre molimo dodajte barem jednu prodavnicu!"
-admin_command_set_spawners_before_save: "&cPrije spremanja igre molimo dodajte barem jedan spawner!"
-admin_command_set_bed_for_team_before_save: "&cPrije spremanja igre molimo dodajte krevet za &7%team% &ctim!"
-admin_command_set_spawn_for_team_before_save: "&cPrije spremanja igre molimo dodajte spawn za &7%team% &ctim!"
-admin_command_click_right_on_entity_to_set_join: "&aSada desnim klikom postavite zeljeni entitet za koji zelite postaviti pridruzivanje na tim: &7%team%"
-admin_command_jointeam_entitynotcompatible: "&cEntitet koji pokusavate postaviti nije podrzan! Samo zivi entiteti i Armor Stand mogu biti koristeni!"
+admin_command_set_pos1_pos2_before_save: "&cPrije spasavanja igre molimo da postavite\
+  \ pos1 i pos2 koordinate (odredjuju velicinu i poziciju arene)!"
+admin_command_set_lobby_before_save: "&cPrije spasavanja igre molimo vas da postavite\
+  \ lobby spawn!"
+admin_command_set_spec_before_save: "&cPrije spremanja igre molimo postavite spawn\
+  \ gledatelja!"
+admin_command_set_stores_before_save: "&cPrije spremanja igre molimo dodajte barem\
+  \ jednu prodavnicu!"
+admin_command_set_spawners_before_save: "&cPrije spremanja igre molimo dodajte barem\
+  \ jedan spawner!"
+admin_command_set_bed_for_team_before_save: "&cPrije spremanja igre molimo dodajte\
+  \ krevet za &7%team% &ctim!"
+admin_command_set_spawn_for_team_before_save: "&cPrije spremanja igre molimo dodajte\
+  \ spawn za &7%team% &ctim!"
+admin_command_click_right_on_entity_to_set_join: "&aSada desnim klikom postavite zeljeni\
+  \ entitet za koji zelite postaviti pridruzivanje na tim: &7%team%"
+admin_command_jointeam_entitynotcompatible: "&cEntitet koji pokusavate postaviti nije\
+  \ podrzan! Samo zivi entiteti i Armor Stand mogu biti koristeni!"
 admin_command_jointeam_entity_added: "&aSpajanje na tim kroz entitet dodano!"
 admin_command_invalid_min_players: "&cMinimalni broj igraca mora biti 2 ili vise!"
 admin_command_min_players_set: "&aUspjesno postavljen minimalni broj igraca na &7%min%&a!"
-admin_command_invalid_config_value: "&cPogresna vrijednost! Dostupni parametri su &7true&c, &7false&c ili &7inherit&c!"
+admin_command_invalid_config_value: "&cPogresna vrijednost! Dostupni parametri su\
+  \ &7true&c, &7false&c ili &7inherit&c!"
 admin_command_invalid_config_variable_name: "&cPogresan naziv konstante!"
-admin_command_config_variable_set_to: "&aKonstanta &7%config%&a je uspjesno postavljena na &7%value%&a!"
+admin_command_config_variable_set_to: "&aKonstanta &7%config%&a je uspjesno postavljena\
+  \ na &7%value%&a!"
 admin_command_invalid_arena_time: "&cPogresan tip vremena za arenu!"
 admin_command_arena_time_set: "&aVrijeme u areni je postavljeno na &7%time%&a!"
 admin_command_invalid_arena_weather: "&cPogresan tip vremena za arenu!"
@@ -131,10 +163,12 @@ admin_command_arena_weather_set: "&aVrijeme u areni je postavljeno na &7%weather
 admin_command_invalid_bar_color: "&cPogresna boja Boss Bara!"
 admin_command_bar_color_set: "&aBoja postavljena na &7%color%&a za bossbar &7%type%&a!"
 admin_command_wrong_living_entity_type: "&cPogresan tip zivog entiteta!"
-admin_command_store_living_entity_type_set: "&aZivi entitet za prodavnicu je postavljen na &7%type%&a!"
+admin_command_store_living_entity_type_set: "&aZivi entitet za prodavnicu je postavljen\
+  \ na &7%type%&a!"
 admin_command_upgrades: "&aNadogradnje su postavljene na &7%bool%&a!"
 safe_reload: "&aCekanje na reload od 60 sekundi kako bi se sve igre sigurno zaustavile!"
-safe_reload_failed_to_stop_game: "&cNeke arene nisu zavrsile unutar predvidjenog vremena, tako da su njihove arene mozda ostecene!"
+safe_reload_failed_to_stop_game: "&cNeke arene nisu zavrsile unutar predvidjenog vremena,\
+  \ tako da su njihove arene mozda ostecene!"
 holo_not_enabled: "&cHologrami su iskljuceni. Imate li Holographic Displays instaliran?"
 holo_added: "&aHologram je dodan na vasu poziciju!"
 click_to_holo_for_remove: "&eSada kliknite na &ahologram &ekoji zelite ukloniti!"
@@ -183,7 +217,8 @@ arena_info_villagers: "&7Prodavnice:"
 arena_info_villager_pos: "- XYZ: &7%x%&r/&7%y%&r/&7%z%"
 arena_info_villager_entity_type: "  Tip: &a%type%"
 arena_info_villager_shop: "  Ima vlastitu trgovinu: &7%bool%"
-arena_info_villager_shop_name: "  Naziv prodavnice: &6%file%&r (naslijedi od glavne: &7%bool%&r)"
+arena_info_villager_shop_name: "  Naziv prodavnice: &6%file%&r (naslijedi od glavne:\
+  \ &7%bool%&r)"
 arena_info_villager_shop_dealer_name: "  Vlastiti naziv iznad glave: &6%name%&r"
 arena_info_villager_shop_dealer_has_no_name: "&cNaziv nije postavljen"
 arena_info_lobby_countdown: "&7Odbrojavanje do pocetka igre: &f%time% s"
@@ -216,17 +251,21 @@ specials_trap_caught: "&cUpali ste u zamku od &f%team% &ctima!"
 specials_trap_caught_team: "&f%player%&c je upao u zamku vaseg tima!"
 specials_warp_powder_multiuse: "&cDrugi WarpPowder je vec aktiviran!"
 specials_warp_powder_canceled: "&cWarpPowder je otkazan!"
-specials_warp_powder_started: "&aTeleportacija... Ne micite se sljedecih &7%time%&a sekundi!"
+specials_warp_powder_started: "&aTeleportacija... Ne micite se sljedecih &7%time%&a\
+  \ sekundi!"
 specials_tracker_no_target_found: "&cMeta nije pronadjena!"
 specials_tracker_target_found: "&f%target% &aje pronadjen na udaljenosti od &f%distance%&a!"
 specials_rescue_platform_not_in_air: "&cMorate biti u zraku kako biste to iskoristili."
 specials_rescue_platform_destroy: "&cPlatforma ce biti unistena za &f%time% &csekundi."
 specials_rescue_platform_created_unbreakable: "&aNeunistiva platforma napravljena!"
-specials_rescue_platform_created: "&aPlatforma je napravljena i bit ce unistena za &f%time% &asekundi."
-specials_protection_wall_not_usable_here: "&cNema dovoljno prostora kako bi se napravio Protection Wall."
+specials_rescue_platform_created: "&aPlatforma je napravljena i bit ce unistena za\
+  \ &f%time% &asekundi."
+specials_protection_wall_not_usable_here: "&cNema dovoljno prostora kako bi se napravio\
+  \ Protection Wall."
 specials_protection_wall_destroy: "&cProtection Wall ce biti unisten za &f%time% &csekundi."
 specials_protection_wall_created_unbreakable: "&aNeunistivi Protection Wall napravljen!"
-specials_protection_wall_created: "&aProtection Wall je napravljen i bit ce unisten za &f%time% &asekundi."
+specials_protection_wall_created: "&aProtection Wall je napravljen i bit ce unisten\
+  \ za &f%time% &asekundi."
 specials_tntsheep_no_target_found: "&cMeta nije pronadjena!"
 specials_arrow_blocker_started: "&aBlokada strijela je ukljucena i traje %time% sekundi!"
 specials_arrow_blocker_already_activated: "&cBlokada strijela je vec ukljucena!"
@@ -258,51 +297,87 @@ help_bw_leaderboard: "/bw leaderboard - &aShow top players of this server"
 help_bw_stats: "/bw stats - &aPrikaz vasih statistika"
 help_bw_stats_other: "/bw stats [igrac] - &aPrikaz statistika od igraca"
 help_bw_reload: "/bw reload - &cPonovno ucitavanje podataka plugina"
-help_bw_addholo: "/bw addholo [leaderboard|stats]- &eAdds hologram to the player's location"
-help_bw_removeholo: "/bw removeholo - &eNakon izvrsenja komande, desni klik na hologram sa statistikama kako biste ga uklonili."
-help_bw_mainlobby: "/bw mainlobby [enable|set] - &eUkljucivanje glavnog lobbya ili postavljanje njegove lokacije"
-help_bw_admin_info: "/bw admin <arena> info [sekcija] - &ePrikaz svih informacija o areni"
+help_bw_addholo: "/bw addholo [leaderboard|stats]- &eAdds hologram to the player's\
+  \ location"
+help_bw_removeholo: "/bw removeholo - &eNakon izvrsenja komande, desni klik na hologram\
+  \ sa statistikama kako biste ga uklonili."
+help_bw_mainlobby: "/bw mainlobby [enable|set] - &eUkljucivanje glavnog lobbya ili\
+  \ postavljanje njegove lokacije"
+help_bw_admin_info: "/bw admin <arena> info [sekcija] - &ePrikaz svih informacija\
+  \ o areni"
 help_bw_admin_add: "/bw admin <arena> add - &eKreiranje nove arene"
 help_bw_admin_lobby: "/bw admin <arena> lobby - &ePostavljanje lobbya na vasu lokaciju"
-help_bw_admin_spec: "/bw admin <arena> spec - &ePostavljanje spawna za gledatelje na vasu lokaciju"
-help_bw_admin_pos1: "/bw admin <arena> pos1 - &ePostavljanje prvog ugla arene na vasu poziciju"
-help_bw_admin_pos2: "/bw admin <arena> pos2 - &ePostavljanje drugog ugla arene na vasu poziciju"
-help_bw_admin_pausecountdown: "/bw admin <arena> pausecountdown <sekunde> - &ePostavljanje duzine pauze prije pocetka pocne"
-help_bw_admin_minplayers: "/bw admin <arena> minplayers <minimum> - &ePostavljanje minimuma igraca za pocetak igre"
+help_bw_admin_spec: "/bw admin <arena> spec - &ePostavljanje spawna za gledatelje\
+  \ na vasu lokaciju"
+help_bw_admin_pos1: "/bw admin <arena> pos1 - &ePostavljanje prvog ugla arene na vasu\
+  \ poziciju"
+help_bw_admin_pos2: "/bw admin <arena> pos2 - &ePostavljanje drugog ugla arene na\
+  \ vasu poziciju"
+help_bw_admin_pausecountdown: "/bw admin <arena> pausecountdown <sekunde> - &ePostavljanje\
+  \ duzine pauze prije pocetka pocne"
+help_bw_admin_minplayers: "/bw admin <arena> minplayers <minimum> - &ePostavljanje\
+  \ minimuma igraca za pocetak igre"
 help_bw_admin_time: "/bw admin <arena> time <sekunde> - &ePostavljanje trajanja igre"
-help_bw_admin_team_add: "/bw admin <arena> team add <tim> <boja> <max igraci> - &eDodavanje novog tima za igru"
-help_bw_admin_team_color: "/bw admin <arena> team color <tim> <boja> - &ePromjena boje tima"
-help_bw_admin_team_maxplayers: "/bw admin <arena> team maxplayers <tim> <max igraci> - &ePromjena limita igraca u timu"
-help_bw_admin_team_spawn: "/bw admin <arena> team spawn <tim> - &ePostavljanje spawna za tim na vasu lokaciju"
-help_bw_admin_team_bed: "/bw admin <arena> team bed <tim> [looking_at|standing_on] - &ePostavljanje mete za navedeni tim na mjesto na koje gledate (moze biti i neki drugi blok, ne samo krevet)"
-help_bw_admin_jointeam: "/bw admin <arena> jointeam <tim> - &ePostavljanje mogucnosti za ulazak u tim kroz entitet"
-help_bw_admin_spawner_add: "/bw admin <arena> spawner add <bronza|zlato|zeljezo> [hologram] [prvi nivo] [naziv] [tim] [limit spawnanih resursa] - &eDodavanje item spawnera na vasu poziciju"
+help_bw_admin_team_add: "/bw admin <arena> team add <tim> <boja> <max igraci> - &eDodavanje\
+  \ novog tima za igru"
+help_bw_admin_team_color: "/bw admin <arena> team color <tim> <boja> - &ePromjena\
+  \ boje tima"
+help_bw_admin_team_maxplayers: "/bw admin <arena> team maxplayers <tim> <max igraci>\
+  \ - &ePromjena limita igraca u timu"
+help_bw_admin_team_spawn: "/bw admin <arena> team spawn <tim> - &ePostavljanje spawna\
+  \ za tim na vasu lokaciju"
+help_bw_admin_team_bed: "/bw admin <arena> team bed <tim> [looking_at|standing_on]\
+  \ - &ePostavljanje mete za navedeni tim na mjesto na koje gledate (moze biti i neki\
+  \ drugi blok, ne samo krevet)"
+help_bw_admin_jointeam: "/bw admin <arena> jointeam <tim> - &ePostavljanje mogucnosti\
+  \ za ulazak u tim kroz entitet"
+help_bw_admin_spawner_add: "/bw admin <arena> spawner add <bronza|zlato|zeljezo> [hologram]\
+  \ [prvi nivo] [naziv] [tim] [limit spawnanih resursa] - &eDodavanje item spawnera\
+  \ na vasu poziciju"
 help_bw_admin_spawner_reset: "/bw admin <arena> spawner reset - &eUkloni sve spawnere"
-help_bw_admin_store_add: "/bw admin <arena> store add [naziv iznad glave] [datoteka sa prodavnicom] [koristi glavnu prodavnicu] - &eDodavanje trgovca na vasu poziciju"
-help_bw_admin_store_remove: "/bw admin <arena> store remove - &eUklanjanje trgovca na vasoj poziciji"
-help_bw_admin_store_type: "/bw admin <arena> store type <zivo bice> - &ePostavljanje tipa entiteta za prodavnicu (Villager, Horse, Cow, Pig itd.)"
-help_bw_admin_config: "/bw admin <arena> config <konstanta> <vrijednost> - &ePostavljanje vrijednosti konstante za igru"
-help_bw_admin_arena_time: "/bw admin <arena> arenatime <tip> - &ePostavljanje vremena u areni (DAY, NIGHT, itd.)"
-help_bw_admin_arena_weather: "/bw admin <arena> arenaweather <tip> - &ePostavljanje vremena u areni (default, CLEAN, DOWNFALL)"
-help_bw_admin_post_game_waiting: "/bw admin <arena> postgamewaiting <seconds> - &eSets the waiting time before player is teleported out of the arena"
-help_bw_admin_customprefix: "/bw admin <arena> customprefix <name|off> - &eEnables custom prefix for arena"
+help_bw_admin_store_add: "/bw admin <arena> store add [naziv iznad glave] [datoteka\
+  \ sa prodavnicom] [koristi glavnu prodavnicu] - &eDodavanje trgovca na vasu poziciju"
+help_bw_admin_store_remove: "/bw admin <arena> store remove - &eUklanjanje trgovca\
+  \ na vasoj poziciji"
+help_bw_admin_store_type: "/bw admin <arena> store type <zivo bice> - &ePostavljanje\
+  \ tipa entiteta za prodavnicu (Villager, Horse, Cow, Pig itd.)"
+help_bw_admin_config: "/bw admin <arena> config <konstanta> <vrijednost> - &ePostavljanje\
+  \ vrijednosti konstante za igru"
+help_bw_admin_arena_time: "/bw admin <arena> arenatime <tip> - &ePostavljanje vremena\
+  \ u areni (DAY, NIGHT, itd.)"
+help_bw_admin_arena_weather: "/bw admin <arena> arenaweather <tip> - &ePostavljanje\
+  \ vremena u areni (default, CLEAN, DOWNFALL)"
+help_bw_admin_post_game_waiting: "/bw admin <arena> postgamewaiting <seconds> - &eSets\
+  \ the waiting time before player is teleported out of the arena"
+help_bw_admin_customprefix: "/bw admin <arena> customprefix <name|off> - &eEnables\
+  \ custom prefix for arena"
 help_bw_admin_remove: "/bw admin <arena> remove - &cUklanjanje arene"
-help_bw_admin_edit: "/bw admin <arena> edit - &eIskljucivanje igre i prelazak u mod uredjivanja"
+help_bw_admin_edit: "/bw admin <arena> edit - &eIskljucivanje igre i prelazak u mod\
+  \ uredjivanja"
 help_bw_admin_save: "/bw admin <arena> save - &aSpremanje konfiguracije igre i aktivacija!"
 update_checker_zero: "§aNew RELEASE version %version% of BedWars is available!"
 update_checker_zero_second: "Download it from %url%"
-update_checker_one: "§bSBedWars and SBedWars+ are officially out! More information: %url%"
-update_checker_one_second_good: "§bYour server is prepared for this release! Download it right now!"
-update_checker_one_second_bad: "§bSadly, your server is outdated! You will need Minecraft version at least 1.13 and Java at least 11!"
-help_bw_alljoin: "/bw alljoin [arena] - &aJoins all players on the server to bedwars game"
+update_checker_one: "§bSBedWars and SBedWars+ are officially out! More information:\
+  \ %url%"
+update_checker_one_second_good: "§bYour server is prepared for this release! Download\
+  \ it right now!"
+update_checker_one_second_bad: "§bSadly, your server is outdated! You will need Minecraft\
+  \ version at least 1.13 and Java at least 11!"
+help_bw_alljoin: "/bw alljoin [arena] - &aJoins all players on the server to bedwars\
+  \ game"
 admin_command_removed_spawners: "&7%count% &aspawners were deleted from &7%x%&a/&7%y%&a/&7%z%"
-help_bw_admin_spawner_remove: "/bw admin <arena> spawner remove - &eRemoves all spawners at location"
+help_bw_admin_spawner_remove: "/bw admin <arena> spawner remove - &eRemoves all spawners\
+  \ at location"
 arena_info_spawner_no_team: "&cNo team"
-help_bw_admin_store_child: "/bw admin <arena> store child - &eMark this shopkeeper as child"
-help_bw_admin_store_adult: "/bw admin <arena> store adult - &eMark this shopkeeper as adult"
-admin_command_store_child_state: "&aVariable isBaby for this shopkeeper has been changed to &7%value%"
+help_bw_admin_store_child: "/bw admin <arena> store child - &eMark this shopkeeper\
+  \ as child"
+help_bw_admin_store_adult: "/bw admin <arena> store adult - &eMark this shopkeeper\
+  \ as adult"
+admin_command_store_child_state: "&aVariable isBaby for this shopkeeper has been changed\
+  \ to &7%value%"
 admin_command_invalid_time: "&cTime &7%number%§c is invalid!"
-admin_command_post_game_waiting: "&aWaiting time after game has been successfully set to &7%number%§a!"
+admin_command_post_game_waiting: "&aWaiting time after game has been successfully\
+  \ set to &7%number%§a!"
 arena_info_postgamewaiting: "&7Post game waiting time: &f%time% s"
 leaderboard_no_scores: "&7There are no scores yet!"
 leaderboard_holo_added: "&aLeaderboard hologram was added to your position!"
@@ -310,7 +385,9 @@ leaderboard_header: "&6BedWars Leaderboard - Top %number% players"
 leaderboard_line: "&l%order%. &7%player% - &a%score%"
 admin_command_customprefix_enabled: "&aCustom prefix was successfully set to &7%prefix%&a."
 admin_command_customprefix_disabled: "&aCustom prefix was successfully disabled."
-admin_command_npc_must_have_skinname: "&cIf you use entity type PLAYER, you must specify skin name in format &7PLAYER:[skin's owner]"
-help_bw_dump: "/bw dump - &eDumps the server and gives you link to the dump. This link can be useful for support"
+admin_command_npc_must_have_skinname: "&cIf you use entity type PLAYER, you must specify\
+  \ skin name in format &7PLAYER:[skin's owner]"
+help_bw_dump: "/bw dump - &eDumps the server and gives you link to the dump. This\
+  \ link can be useful for support"
 dump_success: "&aSuccessfully dumped server. Link: "
 dump_failed: "&cDump failed!"
