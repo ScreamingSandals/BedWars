@@ -51,28 +51,28 @@ public class WarpPowderListener {
 
     @OnEvent
     public void onPlayerUseItem(SPlayerInteractEvent event) {
-        var player = event.getPlayer();
+        var player = event.player();
         if (!PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
             return;
         }
 
         var gPlayer = PlayerManagerImpl.getInstance().getPlayer(player).orElseThrow();
         var game = gPlayer.getGame();
-        if (event.getAction() == SPlayerInteractEvent.Action.RIGHT_CLICK_AIR || event.getAction() == SPlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
+        if (event.action() == SPlayerInteractEvent.Action.RIGHT_CLICK_AIR || event.action() == SPlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
             if (game != null && game.getStatus() == GameStatus.RUNNING && !gPlayer.isSpectator()) {
-                if (event.getItem() != null) {
-                    var stack = event.getItem();
+                if (event.item() != null) {
+                    var stack = event.item();
                     var unhidden = ItemUtils.getIfStartsWith(stack, WARP_POWDER_PREFIX);
 
                     if (unhidden != null) {
-                        event.setCancelled(true);
+                        event.cancelled(true);
                         if (!game.isDelayActive(gPlayer, WarpPowderImpl.class)) {
                             var propertiesSplit = unhidden.split(":");
                             int teleportTime = Integer.parseInt(propertiesSplit[2]);
                             int delay = Integer.parseInt(propertiesSplit[3]);
                             var warpPowder = new WarpPowderImpl(game, gPlayer, game.getPlayerTeam(gPlayer), stack, teleportTime);
 
-                            if (event.getPlayer().getLocation().add(BlockFace.DOWN).getBlock().getType().isAir()) {
+                            if (event.player().getLocation().add(BlockFace.DOWN).getBlock().getType().isAir()) {
                                 return;
                             }
 
@@ -95,11 +95,11 @@ public class WarpPowderListener {
 
     @OnEvent
     public void onDamage(SEntityDamageEvent event) {
-        if (event.isCancelled() || !(event.getEntity() instanceof PlayerWrapper)) {
+        if (event.cancelled() || !(event.entity() instanceof PlayerWrapper)) {
             return;
         }
 
-        var player = (PlayerWrapper) event.getEntity();
+        var player = (PlayerWrapper) event.entity();
 
         if (!PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
             return;
@@ -120,14 +120,14 @@ public class WarpPowderListener {
 
     @OnEvent
     public void onMove(SPlayerMoveEvent event) {
-        var player = event.getPlayer();
-        if (event.isCancelled() || !PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
+        var player = event.player();
+        if (event.cancelled() || !PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
             return;
         }
 
-        if (event.getCurrentLocation().getX() == event.getNewLocation().getX()
-                && event.getCurrentLocation().getY() == event.getNewLocation().getY()
-                && event.getCurrentLocation().getZ() == event.getNewLocation().getZ()) {
+        if (event.currentLocation().getX() == event.newLocation().getX()
+                && event.currentLocation().getY() == event.newLocation().getY()
+                && event.currentLocation().getZ() == event.newLocation().getZ()) {
             return;
         }
 

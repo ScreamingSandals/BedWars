@@ -86,13 +86,13 @@ public class TrapListener {
 
     @OnEvent
     public void onMove(SPlayerMoveEvent event) {
-        var player = event.getPlayer();
-        if (event.isCancelled() || !PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
+        var player = event.player();
+        if (event.cancelled() || !PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
             return;
         }
 
-        var difX = Math.abs(event.getCurrentLocation().getX() - event.getNewLocation().getX());
-        var difZ = Math.abs(event.getCurrentLocation().getZ() - event.getNewLocation().getZ());
+        var difX = Math.abs(event.currentLocation().getX() - event.newLocation().getX());
+        var difZ = Math.abs(event.currentLocation().getZ() - event.newLocation().getZ());
 
         if (difX == 0.0 && difZ == 0.0) {
             return;
@@ -104,7 +104,7 @@ public class TrapListener {
             for (var special : game.getActiveSpecialItems(TrapImpl.class)) {
                 if (special.isPlaced()) {
                     if (game.getPlayerTeam(gPlayer) != special.getTeam()) {
-                        if (event.getNewLocation().getBlock().equals(special.getLocation().getBlock())) {
+                        if (event.newLocation().getBlock().equals(special.getLocation().getBlock())) {
                             special.process(gPlayer, game.getPlayerTeam(gPlayer), false);
                         }
                     }

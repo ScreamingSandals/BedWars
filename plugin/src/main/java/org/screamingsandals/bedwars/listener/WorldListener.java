@@ -47,42 +47,42 @@ public class WorldListener {
 
     @OnEvent
     public void onBurn(SBlockBurnEvent event) {
-        if (event.isCancelled()) {
+        if (event.cancelled()) {
             return;
         }
 
-        onBlockChange(event.getBlock(), event);
+        onBlockChange(event.block(), event);
     }
 
     @OnEvent
     public void onFade(SBlockFadeEvent event) {
-        if (event.isCancelled()) {
+        if (event.cancelled()) {
             return;
         }
 
-        onBlockChange(event.getBlock(), event);
+        onBlockChange(event.block(), event);
     }
 
     @OnEvent
     public void onLeavesDecay(SLeavesDecayEvent event) {
-        if (event.isCancelled()) {
+        if (event.cancelled()) {
             return;
         }
 
-        onBlockChange(event.getBlock(), event);
+        onBlockChange(event.block(), event);
     }
 
     @OnEvent
     public void onGrow(SBlockGrowEvent event) {
-        if (event.isCancelled()) {
+        if (event.cancelled()) {
             return;
         }
 
-        if (event.getNewBlockState().getType().isSameType("SNOW")) {
+        if (event.newBlockState().getType().isSameType("SNOW")) {
             return;
         }
 
-        onBlockChange(event.getBlock(), event);
+        onBlockChange(event.block(), event);
     }
 
     public void onBlockChange(BlockHolder block, Cancellable cancellable) {
@@ -90,7 +90,7 @@ public class WorldListener {
             if (game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) {
                 if (ArenaUtils.isInArea(block.getLocation(), game.getPos1(), game.getPos2())) {
                     if (!BedWarsPlugin.isFarmBlock(block.getType()) && !game.isBlockAddedDuringGame(block.getLocation())) {
-                        cancellable.setCancelled(true);
+                        cancellable.cancelled(true);
                     }
                     return;
                 }
@@ -100,11 +100,11 @@ public class WorldListener {
 
     @OnEvent
     public void onFertilize(SBlockFertilizeEvent event) {
-        if (event.isCancelled()) {
+        if (event.cancelled()) {
             return;
         }
 
-        event.getChangedBlockStates().removeIf(blockState -> {
+        event.changedBlockStates().removeIf(blockState -> {
             for (var game : GameManagerImpl.getInstance().getGames()) {
                 if (game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) {
                     if (ArenaUtils.isInArea(blockState.getLocation(), game.getPos1(), game.getPos2())) {
@@ -118,18 +118,18 @@ public class WorldListener {
 
     @OnEvent
     public void onExplode(SEntityExplodeEvent event) {
-        if (event.isCancelled()) {
+        if (event.cancelled()) {
             return;
         }
-        onExplode(event.getLocation(), event.getBlocks(), event);
+        onExplode(event.location(), event.blocks(), event);
     }
 
     @OnEvent
     public void onExplode(SBlockExplodeEvent event) {
-        if (event.isCancelled()) {
+        if (event.cancelled()) {
             return;
         }
-        onExplode(event.getBlock().getLocation(), event.getDestroyed(), event);
+        onExplode(event.block().getLocation(), event.destroyedBlocks(), event);
     }
 
     public void onExplode(LocationHolder location, Collection<BlockHolder> blockList, org.screamingsandals.lib.event.Cancellable cancellable) {
@@ -154,7 +154,7 @@ public class WorldListener {
                         return explosionExceptionTypeName.contains(block.getType().platformName()) || !destroyPlacedBlocksByExplosion;
                     });
                 } else {
-                    cancellable.setCancelled(true);
+                    cancellable.cancelled(true);
                 }
             }
         });
@@ -162,14 +162,14 @@ public class WorldListener {
 
     @OnEvent
     public void onIgnite(SBlockIgniteEvent event) {
-        if (event.isCancelled()) {
+        if (event.cancelled()) {
             return;
         }
 
         for (var game : GameManagerImpl.getInstance().getGames()) {
             if (game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) {
-                if (ArenaUtils.isInArea(event.getBlock().getLocation(), game.getPos1(), game.getPos2())) {
-                    game.getRegion().addBuiltDuringGame(event.getBlock().getLocation());
+                if (ArenaUtils.isInArea(event.block().getLocation(), game.getPos1(), game.getPos2())) {
+                    game.getRegion().addBuiltDuringGame(event.block().getLocation());
                     return;
                 }
             }
@@ -178,14 +178,14 @@ public class WorldListener {
 
     @OnEvent
     public void onStructureGrow(SPlantGrowEvent event) {
-        if (event.isCancelled()) {
+        if (event.cancelled()) {
             return;
         }
 
         for (var game : GameManagerImpl.getInstance().getGames()) {
             if (game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) {
                 if (ArenaUtils.isInArea(event.getLocation(), game.getPos1(), game.getPos2())) {
-                    event.setCancelled(true);
+                    event.cancelled(true);
                     return;
                 }
             }
@@ -194,7 +194,7 @@ public class WorldListener {
 
     @OnEvent
     public void onCreatureSpawn(SCreatureSpawnEvent event) {
-        if (event.isCancelled() || event.getSpawnReason() == SCreatureSpawnEvent.SpawnReason.CUSTOM) {
+        if (event.cancelled() || event.spawnReason() == SCreatureSpawnEvent.SpawnReason.CUSTOM) {
             return;
         }
 
@@ -202,15 +202,15 @@ public class WorldListener {
             if (game.getStatus() != GameStatus.DISABLED)
                 // prevent creature spawn everytime, not just in game
                 if (/*(game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) &&*/ game.getConfigurationContainer().getOrDefault(ConfigurationContainer.PREVENT_SPAWNING_MOBS, Boolean.class, false)) {
-                    if (ArenaUtils.isInArea(event.getEntity().getLocation(), game.getPos1(), game.getPos2())) {
-                        event.setCancelled(true);
+                    if (ArenaUtils.isInArea(event.entity().getLocation(), game.getPos1(), game.getPos2())) {
+                        event.cancelled(true);
                         return;
                         //}
                     } else /*if (game.getStatus() == GameStatus.WAITING) {*/
-                        if (game.getLobbyWorld().equals(event.getEntity().getLocation().getWorld())) {
-                            if (event.getEntity().getLocation().getDistanceSquared(game.getLobbySpawn()) <= Math
+                        if (game.getLobbyWorld().equals(event.entity().getLocation().getWorld())) {
+                            if (event.entity().getLocation().getDistanceSquared(game.getLobbySpawn()) <= Math
                                     .pow(MainConfig.getInstance().node("prevent-lobby-spawn-mobs-in-radius").getInt(), 2)) {
-                                event.setCancelled(true);
+                                event.cancelled(true);
                                 return;
                             }
                         }
@@ -220,22 +220,22 @@ public class WorldListener {
 
     @OnEvent
     public void onLiquidFlow(SBlockFromToEvent event) {
-        if (event.isCancelled()) {
+        if (event.cancelled()) {
             return;
         }
 
         for (var game : GameManagerImpl.getInstance().getGames()) {
-            if (ArenaUtils.isInArea(event.getSourceBlock().getLocation(), game.getPos1(), game.getPos2())) {
+            if (ArenaUtils.isInArea(event.sourceBlock().getLocation(), game.getPos1(), game.getPos2())) {
                 if (game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) {
-                    var block = event.getFacedBlock();
+                    var block = event.facedBlock();
                     if (block.getType().isAir()
                             || game.isBlockAddedDuringGame(block.getLocation())) {
                         game.getRegion().addBuiltDuringGame(block.getLocation());
                     } else {
-                        event.setCancelled(true);
+                        event.cancelled(true);
                     }
                 } else if (game.getStatus() != GameStatus.DISABLED) {
-                    event.setCancelled(true);
+                    event.cancelled(true);
                 }
             }
         }
@@ -244,22 +244,22 @@ public class WorldListener {
 
     @OnEvent
     public void onEntityChangeBlock(SEntityChangeBlockEvent event) {
-        if (event.isCancelled()) {
+        if (event.cancelled()) {
             return;
         }
 
         for (var game : GameManagerImpl.getInstance().getGames()) {
-            if (ArenaUtils.isInArea(event.getBlock().getLocation(), game.getPos1(), game.getPos2())) {
+            if (ArenaUtils.isInArea(event.block().getLocation(), game.getPos1(), game.getPos2())) {
                 if (game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) {
-                    if (event.getEntity().getEntityType().is("FALLING_BLOCK")
+                    if (event.entity().getEntityType().is("FALLING_BLOCK")
                             && game.getConfigurationContainer().getOrDefault(ConfigurationContainer.BLOCK_FALLING, Boolean.class, false)) {
-                        if (!event.getBlock().getType().equals(event.getTo())) {
-                            if (!game.isBlockAddedDuringGame(event.getBlock().getLocation())) {
-                                if (!event.getBlock().getType().isAir()) {
-                                    game.getRegion().putOriginalBlock(event.getBlock().getLocation(),
-                                            event.getBlock().getBlockState().orElseThrow());
+                        if (!event.block().getType().equals(event.to())) {
+                            if (!game.isBlockAddedDuringGame(event.block().getLocation())) {
+                                if (!event.block().getType().isAir()) {
+                                    game.getRegion().putOriginalBlock(event.block().getLocation(),
+                                            event.block().getBlockState().orElseThrow());
                                 }
-                                game.getRegion().addBuiltDuringGame(event.getBlock().getLocation());
+                                game.getRegion().addBuiltDuringGame(event.block().getLocation());
                             }
                         }
                         return; // allow block fall
@@ -267,31 +267,31 @@ public class WorldListener {
                 }
 
                 if (game.getStatus() != GameStatus.DISABLED) {
-                    event.setCancelled(true);
+                    event.cancelled(true);
                 }
             }
         }
     }
 
     @OnEvent(priority = org.screamingsandals.lib.event.EventPriority.HIGHEST)
-    public void onBedWarsSpawnIsCancelled(SCreatureSpawnEvent event) {
-        if (!event.isCancelled()) {
+    public void onBedWarsSpawncancelled(SCreatureSpawnEvent event) {
+        if (!event.cancelled()) {
             return;
         }
         // Fix for uSkyBlock plugin
-        if (event.getSpawnReason() == SCreatureSpawnEvent.SpawnReason.CUSTOM && EntitiesManagerImpl.getInstance().isEntityInGame(event.getEntity())) {
-            event.setCancelled(false);
+        if (event.spawnReason() == SCreatureSpawnEvent.SpawnReason.CUSTOM && EntitiesManagerImpl.getInstance().isEntityInGame(event.entity())) {
+            event.cancelled(false);
         }
     }
 
     @OnEvent
     public void onChunkUnload(SChunkUnloadEvent unload) {
-        var chunk = unload.getChunk();
+        var chunk = unload.chunk();
 
         for (var game : GameManagerImpl.getInstance().getGames()) {
             if (game.getStatus() != GameStatus.DISABLED && game.getStatus() != GameStatus.WAITING
                     && ArenaUtils.isChunkInArea(chunk, game.getPos1(), game.getPos2())) {
-                unload.setCancelled(true);
+                unload.cancelled(true);
                 return;
             }
         }

@@ -37,4 +37,14 @@ public class UpgradeBoughtEventImpl implements UpgradeBoughtEvent<GameImpl, BedW
     private final double addLevels;
     private final UpgradeStorage storage;
     private boolean cancelled;
+
+    @Override
+    public boolean cancelled() {
+        return cancelled;
+    }
+
+    @Override
+    public void cancelled(boolean cancel) {
+        cancelled = cancel;
+    }
 }

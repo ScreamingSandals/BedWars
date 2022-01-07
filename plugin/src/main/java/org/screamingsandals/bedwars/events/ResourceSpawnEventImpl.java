@@ -52,4 +52,14 @@ public class ResourceSpawnEventImpl implements ResourceSpawnEvent<GameImpl, Item
             this.resource = ItemFactory.build(resource).orElseThrow();
         }
     }
+
+    @Override
+    public boolean cancelled() {
+        return cancelled;
+    }
+
+    @Override
+    public void cancelled(boolean cancel) {
+        cancelled = cancel;
+    }
 }

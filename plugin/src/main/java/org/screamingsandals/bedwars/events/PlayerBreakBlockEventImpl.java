@@ -43,4 +43,14 @@ public class PlayerBreakBlockEventImpl implements PlayerBreakBlockEvent<GameImpl
         this.block = block;
         this.drops = drops;
     }
+
+    @Override
+    public boolean cancelled() {
+        return cancelled;
+    }
+
+    @Override
+    public void cancelled(boolean cancel) {
+        cancelled = cancel;
+    }
 }

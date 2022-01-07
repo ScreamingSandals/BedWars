@@ -28,4 +28,14 @@ import org.screamingsandals.lib.event.SCancellableEvent;
 public class GameStartEventImpl implements GameStartEvent<GameImpl>, SCancellableEvent {
     private final GameImpl game;
     private boolean cancelled;
+
+    @Override
+    public boolean cancelled() {
+        return cancelled;
+    }
+
+    @Override
+    public void cancelled(boolean cancel) {
+        cancelled = cancel;
+    }
 }

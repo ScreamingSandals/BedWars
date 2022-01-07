@@ -44,20 +44,20 @@ public class TrackerListener {
 
     @OnEvent
     public void onTrackerUse(SPlayerInteractEvent event) {
-        var player = event.getPlayer();
+        var player = event.player();
         if (!PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
             return;
         }
 
         var gamePlayer = PlayerManagerImpl.getInstance().getPlayer(player).orElseThrow();
         var game = gamePlayer.getGame();
-        if (event.getAction() == SPlayerInteractEvent.Action.RIGHT_CLICK_AIR || event.getAction() == SPlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
+        if (event.action() == SPlayerInteractEvent.Action.RIGHT_CLICK_AIR || event.action() == SPlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
             if (game != null && game.getStatus() == GameStatus.RUNNING && !gamePlayer.isSpectator()) {
-                if (event.getItem() != null) {
-                    var stack = event.getItem();
+                if (event.item() != null) {
+                    var stack = event.item();
                     var unhidden = ItemUtils.getIfStartsWith(stack, TRACKER_PREFIX);
                     if (unhidden != null) {
-                        event.setCancelled(true);
+                        event.cancelled(true);
 
                         Tasker.build(() -> {
                             var target = MiscUtils.findTarget(game, player, Double.MAX_VALUE);

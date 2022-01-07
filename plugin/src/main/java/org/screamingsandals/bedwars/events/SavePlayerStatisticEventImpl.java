@@ -28,4 +28,14 @@ import org.screamingsandals.lib.event.SCancellableEvent;
 public class SavePlayerStatisticEventImpl implements SavePlayerStatisticEvent, SCancellableEvent {
     private final PlayerStatisticImpl playerStatistic;
     private boolean cancelled;
+
+    @Override
+    public boolean cancelled() {
+        return cancelled;
+    }
+
+    @Override
+    public void cancelled(boolean cancel) {
+        cancelled = cancel;
+    }
 }

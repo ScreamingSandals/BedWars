@@ -46,7 +46,7 @@ public class ProtectionWallListener {
 
     @OnEvent
     public void onPlayerUseItem(SPlayerInteractEvent event) {
-        var player = event.getPlayer();
+        var player = event.player();
         if (!PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
             return;
         }
@@ -54,14 +54,14 @@ public class ProtectionWallListener {
         var gPlayer = PlayerManagerImpl.getInstance().getPlayer(player).orElseThrow();
         var game = gPlayer.getGame();
 
-        if (event.getAction() == SPlayerInteractEvent.Action.RIGHT_CLICK_AIR || event.getAction() == SPlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
-            if (game != null && game.getStatus() == GameStatus.RUNNING && !gPlayer.isSpectator() && event.getItem() != null) {
-                var stack = event.getItem();
+        if (event.action() == SPlayerInteractEvent.Action.RIGHT_CLICK_AIR || event.action() == SPlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
+            if (game != null && game.getStatus() == GameStatus.RUNNING && !gPlayer.isSpectator() && event.item() != null) {
+                var stack = event.item();
                 var unhidden = ItemUtils.getIfStartsWith(stack, PROTECTION_WALL_PREFIX);
 
                 if (unhidden != null) {
                     if (!game.isDelayActive(gPlayer, ProtectionWallImpl.class)) {
-                        event.setCancelled(true);
+                        event.cancelled(true);
 
                         var propertiesSplit = unhidden.split(":");
                         var isBreakable = Boolean.parseBoolean(propertiesSplit[2]);
@@ -75,7 +75,7 @@ public class ProtectionWallListener {
 
                         var protectionWall = new ProtectionWallImpl(game, gPlayer, game.getPlayerTeam(gPlayer), stack);
 
-                        if (!event.getPlayer().getEyeLocation().getBlock().getType().isAir()) {
+                        if (!event.player().getEyeLocation().getBlock().getType().isAir()) {
                             MiscUtils.sendActionBarMessage(player, Message.of(LangKeys.SPECIALS_PROTECTION_WALL_NOT_USABLE_HERE));
                             return;
                         }
@@ -87,7 +87,7 @@ public class ProtectionWallListener {
 
                         protectionWall.createWall(isBreakable, breakTime, width, height, distance, result);
                     } else {
-                        event.setCancelled(true);
+                        event.cancelled(true);
 
                         var delay = game.getActiveDelay(gPlayer, ProtectionWallImpl.class).getRemainDelay();
                         MiscUtils.sendActionBarMessage(player, Message.of(LangKeys.SPECIALS_ITEM_DELAY).placeholder("time", delay));

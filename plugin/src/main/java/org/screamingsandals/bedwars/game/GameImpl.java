@@ -740,7 +740,7 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
                     }
 
                     if (breakEvent.isDrops()) {
-                        event.setDropItems(false);
+                        event.dropItems(false);
                         player.getPlayerInventory().addItem(ItemFactory.build("ENDER_CHEST").orElse(ItemFactory.getAir()));
                     }
                 }
@@ -748,7 +748,7 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
 
             if (!breakEvent.isDrops()) {
                 try {
-                    event.setDropItems(false);
+                    event.dropItems(false);
                 } catch (Throwable tr) {
                     block.setType(BlockTypeHolder.air());
                 }
@@ -776,7 +776,7 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
                     region.putOriginalBlock(loc, region.getBedNeighbor(block).getBlockState().orElseThrow());
                 }
                 try {
-                    event.setDropItems(false);
+                    event.dropItems(false);
                 } catch (Throwable tr) {
                     if (region.isBedHead(block.getBlockState().orElseThrow())) {
                         region.getBedNeighbor(block).setType(BlockTypeHolder.air());
@@ -794,7 +794,7 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
                 bedDestroyed(loc, player, false, block.getType().isSameType("respawn_anchor"), block.getType().isSameType("cake"));
                 region.putOriginalBlock(loc, block.getBlockState().orElseThrow());
                 try {
-                    event.setDropItems(false);
+                    event.dropItems(false);
                 } catch (Throwable tr) {
                     block.setType(BlockTypeHolder.air());
                 }

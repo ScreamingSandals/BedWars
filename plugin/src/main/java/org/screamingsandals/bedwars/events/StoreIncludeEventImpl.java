@@ -33,4 +33,14 @@ public class StoreIncludeEventImpl implements StoreIncludeEvent, SCancellableEve
     private final boolean useParent;
     private final CategoryBuilder categoryBuilder;
     private boolean cancelled;
+
+    @Override
+    public boolean cancelled() {
+        return cancelled;
+    }
+
+    @Override
+    public void cancelled(boolean cancel) {
+        cancelled = cancel;
+    }
 }

@@ -30,4 +30,14 @@ public class OpenTeamSelectionEventImpl implements OpenTeamSelectionEvent<GameIm
     private final GameImpl game;
     private final BedWarsPlayer player;
     private boolean cancelled;
+
+    @Override
+    public boolean cancelled() {
+        return cancelled;
+    }
+
+    @Override
+    public void cancelled(boolean cancel) {
+        cancelled = cancel;
+    }
 }

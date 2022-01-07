@@ -32,4 +32,14 @@ public class TeamChestOpenEventImpl implements TeamChestOpenEvent<GameImpl, BedW
     private final BedWarsPlayer player;
     private final TeamImpl team;
     private boolean cancelled;
+
+    @Override
+    public boolean cancelled() {
+        return cancelled;
+    }
+
+    @Override
+    public void cancelled(boolean cancel) {
+        cancelled = cancel;
+    }
 }

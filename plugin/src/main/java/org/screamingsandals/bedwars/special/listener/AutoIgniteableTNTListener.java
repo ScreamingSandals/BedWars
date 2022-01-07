@@ -62,20 +62,20 @@ public class AutoIgniteableTNTListener {
 
     @OnEvent
     public void onDamage(SEntityDamageByEntityEvent event) {
-        if (!(event.getEntity() instanceof PlayerWrapper)) {
+        if (!(event.entity() instanceof PlayerWrapper)) {
             return;
         }
 
-        var player = (PlayerWrapper) event.getEntity();
+        var player = (PlayerWrapper) event.entity();
 
         if (!PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
             return;
         }
 
-        var damager = event.getDamager();
+        var damager = event.damager();
         if (damager.getEntityType().is("minecraft:tnt")) {
             if (player.getUuid().equals(AutoIgniteableTNTImpl.PROTECTED_PLAYERS.get(damager.getEntityId()))) {
-                event.setCancelled(true);
+                event.cancelled(true);
             }
         }
     }

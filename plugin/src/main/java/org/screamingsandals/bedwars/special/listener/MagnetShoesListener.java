@@ -44,11 +44,11 @@ public class MagnetShoesListener {
 
     @OnEvent
     public void onDamage(SEntityDamageEvent event) {
-        if (event.isCancelled() || !(event.getEntity() instanceof PlayerWrapper)) {
+        if (event.cancelled() || !(event.entity() instanceof PlayerWrapper)) {
             return;
         }
 
-        var player = (PlayerWrapper) event.getEntity();
+        var player = (PlayerWrapper) event.entity();
         if (PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
             var boots = player.getPlayerInventory().getBoots();
             if (boots != null) {
@@ -57,8 +57,8 @@ public class MagnetShoesListener {
                     int probability = Integer.parseInt(magnetShoes.split(":")[2]);
                     int randInt = MiscUtils.randInt(0, 100);
                     if (randInt <= probability) {
-                        event.setCancelled(true);
-                        player.damage(event.getDamage());
+                        event.cancelled(true);
+                        player.damage(event.damage());
                     }
                 }
             }

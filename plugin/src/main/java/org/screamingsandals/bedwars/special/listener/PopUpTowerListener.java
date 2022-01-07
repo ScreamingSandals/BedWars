@@ -48,20 +48,23 @@ public class PopUpTowerListener {
 
     @OnEvent
     public void onPopUpTowerUse(SPlayerInteractEvent event) {
-        final var player = event.getPlayer();
+        final var player = event.player();
         if (!PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
             return;
         }
 
         var gamePlayer = player.as(BedWarsPlayer.class);
         final var game = gamePlayer.getGame();
-        if (event.getAction() == SPlayerInteractEvent.Action.RIGHT_CLICK_AIR || event.getAction() == SPlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
-            if (game != null && game.getStatus() == GameStatus.RUNNING && !gamePlayer.isSpectator() && event.getItem() != null) {
-                var stack = event.getItem();
+        final var action = event.action();
+        if (action == SPlayerInteractEvent.Action.RIGHT_CLICK_AIR
+                || action == SPlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
+
+            if (game != null && game.getStatus() == GameStatus.RUNNING && !gamePlayer.isSpectator() && event.item() != null) {
+                var stack = event.item();
                 String unhidden = ItemUtils.getIfStartsWith(stack, POPUP_TOWER_PREFIX);
                 if (unhidden != null) {
                     if (!game.isDelayActive(gamePlayer, PopUpTowerImpl.class)) {
-                        event.setCancelled(true);
+                        event.cancelled(true);
 
                         var propertiesSplit = unhidden.split(":");
                         var material = MiscUtils.getBlockTypeFromString(propertiesSplit[2], "WOOL");
@@ -90,7 +93,7 @@ public class PopUpTowerListener {
                         }
                         player.forceUpdateInventory();
                     } else {
-                        event.setCancelled(true);
+                        event.cancelled(true);
 
                         var delay = game.getActiveDelay(gamePlayer, PopUpTowerImpl.class).getRemainDelay();
                         MiscUtils.sendActionBarMessage(player, Message.of(LangKeys.SPECIALS_ITEM_DELAY).placeholder("time", delay));

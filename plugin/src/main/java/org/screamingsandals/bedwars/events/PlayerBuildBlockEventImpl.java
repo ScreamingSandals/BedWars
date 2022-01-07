@@ -38,4 +38,14 @@ public class PlayerBuildBlockEventImpl implements PlayerBuildBlockEvent<GameImpl
     private final BlockStateHolder replaced;
     private final Item itemInHand;
     private boolean cancelled;
+
+    @Override
+    public boolean cancelled() {
+        return cancelled;
+    }
+
+    @Override
+    public void cancelled(boolean cancel) {
+        cancelled = cancel;
+    }
 }

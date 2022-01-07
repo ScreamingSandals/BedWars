@@ -152,7 +152,7 @@ public class LeaderboardHolograms {
 
     @OnEvent(priority = EventPriority.HIGHEST)
     public void onJoin(SPlayerJoinEvent event) {
-        addViewer(event.getPlayer());
+        addViewer(event.player());
     }
 
     public void addViewer(PlayerWrapper player) {
@@ -209,8 +209,8 @@ public class LeaderboardHolograms {
 
     @OnEvent
     public void handle(HologramTouchEvent event) {
-        var player = event.getPlayer();
-        var hologram = event.getVisual();
+        var player = event.player();
+        var hologram = event.visual();
 
         if (hologram.getLocation() == null || !holograms.containsKey(hologram.getLocation())) {
             return;

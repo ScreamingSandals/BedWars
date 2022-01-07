@@ -54,20 +54,20 @@ public class BridgeEggListener {
 
     @OnEvent
     public void onEggUse(SPlayerInteractEvent event) {
-        final var player = event.getPlayer();
+        final var player = event.player();
         if (!PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
             return;
         }
 
         BedWarsPlayer gamePlayer = PlayerManagerImpl.getInstance().getPlayer(player).orElseThrow();
         final var game = gamePlayer.getGame();
-        if (event.getAction() == SPlayerInteractEvent.Action.RIGHT_CLICK_AIR || event.getAction() == SPlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
-            if (game != null && game.getStatus() == GameStatus.RUNNING && !gamePlayer.isSpectator() && event.getItem() != null) {
-                var stack = event.getItem();
+        if (event.action() == SPlayerInteractEvent.Action.RIGHT_CLICK_AIR || event.action() == SPlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
+            if (game != null && game.getStatus() == GameStatus.RUNNING && !gamePlayer.isSpectator() && event.item() != null) {
+                var stack = event.item();
                 String unhidden = ItemUtils.getIfStartsWith(stack, BRIDGE_EGG_PREFIX);
                 if (unhidden != null) {
                     if (!game.isDelayActive(gamePlayer, BridgeEggImpl.class)) {
-                        event.setCancelled(true);
+                        event.cancelled(true);
 
                         final var propertiesSplit = unhidden.split(":");
                         var distance = Double.parseDouble(propertiesSplit[2]);
@@ -99,7 +99,7 @@ public class BridgeEggListener {
                         }
                         player.forceUpdateInventory();
                     } else {
-                        event.setCancelled(true);
+                        event.cancelled(true);
 
                         var delay = game.getActiveDelay(gamePlayer, BridgeEggImpl.class).getRemainDelay();
                         MiscUtils.sendActionBarMessage(player, Message.of(LangKeys.SPECIALS_ITEM_DELAY).placeholder("time", delay));
@@ -111,7 +111,7 @@ public class BridgeEggListener {
 
     @OnEvent
     public void onProjectileHit(SProjectileHitEvent event) {
-        final var egg = event.getEntity();
+        final var egg = event.entity();
         if (!(egg instanceof EntityProjectile)) {
             return;
         }

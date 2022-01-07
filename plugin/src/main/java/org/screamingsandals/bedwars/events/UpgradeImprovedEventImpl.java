@@ -36,6 +36,16 @@ public class UpgradeImprovedEventImpl implements UpgradeImprovedEvent<GameImpl>,
     private boolean cancelled;
 
     @Override
+    public boolean cancelled() {
+        return cancelled;
+    }
+
+    @Override
+    public void cancelled(boolean cancel) {
+        cancelled = cancel;
+    }
+
+    @Override
     public double getNewLevel() {
         return upgrade.getLevel();
     }

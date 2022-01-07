@@ -105,7 +105,7 @@ public class PlayerStatisticManager implements PlayerStatisticsManager<OfflinePl
 
     @OnEvent
     public void onLeave(SPlayerLeaveEvent event) {
-        unloadStatistic(event.getPlayer());
+        unloadStatistic(event.player());
     }
 
     public void initializeDatabase() {

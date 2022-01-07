@@ -23,8 +23,8 @@ import lombok.RequiredArgsConstructor;
 import org.screamingsandals.bedwars.api.events.OpenShopEvent;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.events.OpenShopEventImpl;
-import org.screamingsandals.bedwars.game.GameStoreImpl;
 import org.screamingsandals.bedwars.game.GameImpl;
+import org.screamingsandals.bedwars.game.GameStoreImpl;
 import org.screamingsandals.bedwars.inventories.ShopInventory;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
@@ -35,7 +35,6 @@ import org.screamingsandals.lib.event.EventManager;
 import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.event.player.SPlayerInteractEntityEvent;
 import org.screamingsandals.lib.npc.event.NPCInteractEvent;
-import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.utils.annotations.Service;
 
 @Service
@@ -46,15 +45,19 @@ public class VillagerListener {
 
     @OnEvent
     public void onVillagerInteract(SPlayerInteractEntityEvent event) {
-        if (playerManager.isPlayerInGame(event.getPlayer())) {
-            var gPlayer = playerManager.getPlayer(event.getPlayer()).orElseThrow();
+        final var player = event.player();
+
+        if (playerManager.isPlayerInGame(player)) {
+            final var clickedEntity = event.clickedEntity();
+            var gPlayer = playerManager.getPlayer(player).orElseThrow();
             var game = gPlayer.getGame();
-            if (event.getClickedEntity().getEntityType().isAlive() && !gPlayer.isSpectator()
+
+            if (clickedEntity.getEntityType().isAlive() && !gPlayer.isSpectator()
                     && gPlayer.getGame().getStatus() == GameStatus.RUNNING) {
                 for (var store : game.getGameStoreList()) {
-                    if (event.getClickedEntity().equals(store.getEntity())) {
-                        event.setCancelled(true);
-                        open(store, gPlayer, event.getClickedEntity(), game);
+                    if (clickedEntity.equals(store.getEntity())) {
+                        event.cancelled(true);
+                        open(store, gPlayer, clickedEntity, game);
                         return;
                     }
                 }
@@ -64,12 +67,12 @@ public class VillagerListener {
 
     @OnEvent
     public void onNPCInteract(NPCInteractEvent event) {
-        if (playerManager.isPlayerInGame(event.getPlayer())) {
-            var gPlayer = playerManager.getPlayer(event.getPlayer()).orElseThrow();
+        if (playerManager.isPlayerInGame(event.player())) {
+            var gPlayer = playerManager.getPlayer(event.player()).orElseThrow();
             var game = gPlayer.getGame();
             if (!gPlayer.isSpectator() && gPlayer.getGame().getStatus() == GameStatus.RUNNING) {
                 for (var store : game.getGameStoreList()) {
-                    if (event.getVisual().equals(store.getNpc())) {
+                    if (event.visual().equals(store.getNpc())) {
                         Server.runSynchronously(() -> open(store, gPlayer, null, game));
                         return;
                     }

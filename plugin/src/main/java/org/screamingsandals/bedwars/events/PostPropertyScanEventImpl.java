@@ -28,4 +28,14 @@ import org.screamingsandals.simpleinventories.events.ItemRenderEvent;
 public class PostPropertyScanEventImpl implements PostPropertyScanEvent, SCancellableEvent {
     private final ItemRenderEvent event; // for sba
     private boolean cancelled;
+
+    @Override
+    public boolean cancelled() {
+        return cancelled;
+    }
+
+    @Override
+    public void cancelled(boolean cancel) {
+        cancelled = cancel;
+    }
 }

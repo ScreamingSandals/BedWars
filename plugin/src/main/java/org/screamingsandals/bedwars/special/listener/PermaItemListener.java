@@ -65,20 +65,20 @@ public class PermaItemListener {
 
     @OnEvent
     public void onItemRemoval(SPlayerInventoryClickEvent event) {
-        var player = event.getPlayer();
+        var player = event.player();
         if (!PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
             return;
         }
 
-        if (event.getInventory() != null) {
-            if (!(event.getInventory() instanceof PlayerContainer)) {
+        if (event.inventory() != null) {
+            if (!(event.inventory() instanceof PlayerContainer)) {
                 return;
             }
         }
 
-        var cursorItem = event.getCursorItem();
-        var slotItem = event.getCurrentItem();
-        var action = event.getAction();
+        var cursorItem = event.cursorItem();
+        var slotItem = event.currentItem();
+        var action = event.action();
 
         String cursorItemUnhashedProp = null;
         String slotItemUnhashedProp = null;
@@ -92,18 +92,18 @@ public class PermaItemListener {
         }
 
         if ((cursorItemUnhashedProp != null || slotItemUnhashedProp != null) && blockedInventoryActions.contains(action)) {
-            event.setCancelled(true);
+            event.cancelled(true);
         }
     }
 
     @OnEvent
     public void onItemDrop(SPlayerDropItemEvent event) {
-        if (!PlayerManagerImpl.getInstance().isPlayerInGame(event.getPlayer())) {
+        if (!PlayerManagerImpl.getInstance().isPlayerInGame(event.player())) {
             return;
         }
 
-        if (ItemUtils.getIfStartsWith(event.getItemDrop().getItem(), PERMA_ITEM_PREFIX) != null) {
-            event.setCancelled(true);
+        if (ItemUtils.getIfStartsWith(event.itemDrop().getItem(), PERMA_ITEM_PREFIX) != null) {
+            event.cancelled(true);
         }
     }
 

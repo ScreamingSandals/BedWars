@@ -31,4 +31,14 @@ public class PreSpawnEffectEventImpl implements PreSpawnEffectEvent<GameImpl, Be
     private final BedWarsPlayer player;
     private final String effectsGroupName;
     private boolean cancelled;
+
+    @Override
+    public boolean cancelled() {
+        return cancelled;
+    }
+
+    @Override
+    public void cancelled(boolean cancel) {
+        cancelled = cancel;
+    }
 }

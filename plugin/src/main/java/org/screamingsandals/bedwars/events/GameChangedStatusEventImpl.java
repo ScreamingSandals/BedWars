@@ -20,13 +20,11 @@
 package org.screamingsandals.bedwars.events;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import org.screamingsandals.bedwars.api.events.GameChangedStatusEvent;
 import org.screamingsandals.bedwars.game.GameImpl;
-import org.screamingsandals.lib.event.AbstractEvent;
+import org.screamingsandals.lib.event.SEvent;
 
-@EqualsAndHashCode(callSuper = true)
 @Data
-public class GameChangedStatusEventImpl extends AbstractEvent implements GameChangedStatusEvent<GameImpl> {
+public class GameChangedStatusEventImpl implements GameChangedStatusEvent<GameImpl>, SEvent {
     private final GameImpl game;
 }

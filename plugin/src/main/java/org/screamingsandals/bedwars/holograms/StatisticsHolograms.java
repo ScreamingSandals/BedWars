@@ -19,8 +19,6 @@
 
 package org.screamingsandals.bedwars.holograms;
 
-import java.util.*;
-
 import lombok.RequiredArgsConstructor;
 import org.screamingsandals.bedwars.commands.BedWarsPermission;
 import org.screamingsandals.bedwars.commands.RemoveHoloCommand;
@@ -30,14 +28,15 @@ import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.bedwars.utils.SerializableLocation;
 import org.screamingsandals.lib.Server;
 import org.screamingsandals.lib.event.EventPriority;
+import org.screamingsandals.lib.event.OnEvent;
+import org.screamingsandals.lib.event.player.SPlayerJoinEvent;
+import org.screamingsandals.lib.event.player.SPlayerLeaveEvent;
+import org.screamingsandals.lib.event.player.SPlayerWorldChangeEvent;
 import org.screamingsandals.lib.hologram.Hologram;
 import org.screamingsandals.lib.hologram.HologramManager;
 import org.screamingsandals.lib.hologram.event.HologramTouchEvent;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.player.PlayerWrapper;
-import org.screamingsandals.lib.event.player.SPlayerJoinEvent;
-import org.screamingsandals.lib.event.player.SPlayerLeaveEvent;
-import org.screamingsandals.lib.event.player.SPlayerWorldChangeEvent;
 import org.screamingsandals.lib.plugin.ServiceManager;
 import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
@@ -49,9 +48,10 @@ import org.screamingsandals.lib.utils.annotations.methods.ShouldRunControllable;
 import org.screamingsandals.lib.utils.annotations.parameters.ConfigFile;
 import org.screamingsandals.lib.utils.visual.TextEntry;
 import org.screamingsandals.lib.world.LocationHolder;
-import org.screamingsandals.lib.event.OnEvent;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
+
+import java.util.*;
 
 @Service(dependsOn = {
         HologramManager.class,
@@ -119,24 +119,25 @@ public class StatisticsHolograms {
 
     @OnEvent(priority = EventPriority.HIGHEST)
     public void onJoin(SPlayerJoinEvent event) {
-        updateHolograms(event.getPlayer(), 10L);
+        updateHolograms(event.player(), 10L);
     }
 
     @OnEvent
     public void onWorldChange(SPlayerWorldChangeEvent event) {
-        updateHolograms(event.getPlayer(), 10L);
+        updateHolograms(event.player(), 10L);
     }
 
     @OnEvent
     public void onLeave(SPlayerLeaveEvent event) {
-        if (holograms.containsKey(event.getPlayer().getUuid())) {
+        final var playerId = event.player().getUuid();
+        if (holograms.containsKey(playerId)) {
             Tasker
                     .build(() -> {
-                        holograms.get(event.getPlayer().getUuid()).forEach(holo -> {
+                        holograms.get(playerId).forEach(holo -> {
                             holo.hide();
                             HologramManager.removeHologram(holo);
                         });
-                        holograms.remove(event.getPlayer().getUuid());
+                        holograms.remove(playerId);
                     })
                     .async()
                     .start();
@@ -246,8 +247,8 @@ public class StatisticsHolograms {
 
     @OnEvent
     public void handle(HologramTouchEvent event) {
-        var player = event.getPlayer();
-        var holo = event.getVisual();
+        var player = event.player();
+        var holo = event.visual();
         if (!holograms.containsKey(player.getUuid()) || !holograms.get(player.getUuid()).contains(holo) || holo.getLocation() == null) {
             return;
         }

@@ -29,4 +29,14 @@ public class PlayerOpenGamesInventoryEventImpl implements PlayerOpenGamesInvento
     private final PlayerWrapper player;
     private final String type;
     private boolean cancelled;
+
+    @Override
+    public boolean cancelled() {
+        return cancelled;
+    }
+
+    @Override
+    public void cancelled(boolean cancel) {
+        cancelled = cancel;
+    }
 }

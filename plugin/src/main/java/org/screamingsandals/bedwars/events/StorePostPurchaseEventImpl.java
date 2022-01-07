@@ -34,4 +34,14 @@ public class StorePostPurchaseEventImpl implements StorePostPurchaseEvent<GameIm
     private final PurchaseType type;
     private final OnTradeEvent tradeEvent; // for sba
     private boolean cancelled;
+
+    @Override
+    public boolean cancelled() {
+        return cancelled;
+    }
+
+    @Override
+    public void cancelled(boolean cancel) {
+        cancelled = cancel;
+    }
 }

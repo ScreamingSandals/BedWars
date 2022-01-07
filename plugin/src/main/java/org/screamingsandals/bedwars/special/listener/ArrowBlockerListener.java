@@ -47,7 +47,7 @@ public class ArrowBlockerListener {
 
     @OnEvent
     public void onPlayerUseItem(SPlayerInteractEvent event) {
-        var player = event.getPlayer();
+        var player = event.player();
         if (!PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
             return;
         }
@@ -55,14 +55,14 @@ public class ArrowBlockerListener {
         var gPlayer = PlayerManagerImpl.getInstance().getPlayer(player).orElseThrow();
         var game = gPlayer.getGame();
 
-        if (event.getAction() == SPlayerInteractEvent.Action.RIGHT_CLICK_AIR || event.getAction() == SPlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
-            if (game != null && game.getStatus() == GameStatus.RUNNING && !gPlayer.isSpectator() && event.getItem() != null) {
-                var stack = event.getItem();
+        if (event.action() == SPlayerInteractEvent.Action.RIGHT_CLICK_AIR || event.action() == SPlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
+            if (game != null && game.getStatus() == GameStatus.RUNNING && !gPlayer.isSpectator() && event.item() != null) {
+                var stack = event.item();
                 var unhidden = ItemUtils.getIfStartsWith(stack, ARROW_BLOCKER_PREFIX);
 
                 if (unhidden != null) {
                     if (!game.isDelayActive(gPlayer, ArrowBlockerImpl.class)) {
-                        event.setCancelled(true);
+                        event.cancelled(true);
 
                         final var propertiesSplit = unhidden.split(":");
                         int protectionTime = Integer.parseInt(propertiesSplit[2]);
@@ -81,7 +81,7 @@ public class ArrowBlockerListener {
 
                         arrowBlocker.activate();
                     } else {
-                        event.setCancelled(true);
+                        event.cancelled(true);
 
                         int delay = game.getActiveDelay(gPlayer, ArrowBlockerImpl.class).getRemainDelay();
                         MiscUtils.sendActionBarMessage(player, Message.of(LangKeys.SPECIALS_ITEM_DELAY).placeholder("time", delay));
@@ -93,12 +93,12 @@ public class ArrowBlockerListener {
 
     @OnEvent(priority = org.screamingsandals.lib.event.EventPriority.HIGH)
     public void onDamage(SEntityDamageEvent event) {
-        var entity = event.getEntity();
+        var entity = event.entity();
         if (!(entity instanceof PlayerWrapper)) {
             return;
         }
 
-        var player = (PlayerWrapper) event.getEntity();
+        var player = (PlayerWrapper) event.entity();
 
         if (!PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
             return;
@@ -112,8 +112,8 @@ public class ArrowBlockerListener {
         }
 
         var arrowBlocker = game.getFirstActiveSpecialItemOfPlayer(gPlayer, ArrowBlockerImpl.class);
-        if (arrowBlocker != null && event.getDamageCause().is("PROJECTILE")) {
-            event.setCancelled(true);
+        if (arrowBlocker != null && event.damageCause().is("PROJECTILE")) {
+            event.cancelled(true);
         }
     }
 

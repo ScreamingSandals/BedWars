@@ -35,4 +35,14 @@ public class PlayerJoinTeamEventImpl implements PlayerJoinTeamEvent<GameImpl, Be
     @Nullable
     private final TeamImpl previousTeam;
     private boolean cancelled;
+
+    @Override
+    public boolean cancelled() {
+        return cancelled;
+    }
+
+    @Override
+    public void cancelled(boolean cancel) {
+        cancelled = cancel;
+    }
 }

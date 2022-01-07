@@ -34,4 +34,14 @@ public class PurchaseFailedEventImpl implements PurchaseFailedEvent<GameImpl, Be
     private final PurchaseType type;
     private final OnTradeEvent event; // for sba
     private boolean cancelled;
+
+    @Override
+    public boolean cancelled() {
+        return cancelled;
+    }
+
+    @Override
+    public void cancelled(boolean cancel) {
+        cancelled = cancel;
+    }
 }

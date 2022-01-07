@@ -42,16 +42,16 @@ public class ThrowableFireballListener {
 
     @OnEvent
     public void onFireballThrow(SPlayerInteractEvent event) {
-        var player = event.getPlayer();
+        var player = event.player();
 
         if (!PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
             return;
         }
 
-        if (event.getItem() != null) {
-            var stack = event.getItem();
-            var unhash = ItemUtils.getIfStartsWith(stack, THROWABLE_FIREBALL_PREFIX);
-            if (unhash != null && (event.getAction() == SPlayerInteractEvent.Action.RIGHT_CLICK_BLOCK || event.getAction() == SPlayerInteractEvent.Action.RIGHT_CLICK_AIR)) {
+        final var item = event.item();
+        if (item != null) {
+            var unhash = ItemUtils.getIfStartsWith(item, THROWABLE_FIREBALL_PREFIX);
+            if (unhash != null && (event.action() == SPlayerInteractEvent.Action.RIGHT_CLICK_BLOCK || event.action() == SPlayerInteractEvent.Action.RIGHT_CLICK_AIR)) {
                 var propertiesSplit = unhash.split(":");
                 var explosion = (float) Double.parseDouble(propertiesSplit[2]);
 
@@ -60,9 +60,9 @@ public class ThrowableFireballListener {
                 fireball.setMetadata("yield", explosion);
                 EntitiesManagerImpl.getInstance().addEntityToGame(fireball, PlayerManagerImpl.getInstance().getGameOfPlayer(player).orElseThrow());
 
-                event.setCancelled(true);
+                event.cancelled(true);
 
-                var stack2 = stack.withAmount(1);
+                var stack2 = item.withAmount(1);
                 try {
                     if (player.getPlayerInventory().getItemInOffHand().equals(stack2)) {
                         player.getPlayerInventory().setItemInOffHand(ItemFactory.getAir());

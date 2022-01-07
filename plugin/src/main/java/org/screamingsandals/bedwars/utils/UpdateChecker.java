@@ -71,7 +71,7 @@ public class UpdateChecker {
                                     }
                                     if (mainConfig.node("update-checker", "admins").getBoolean()) {
                                         EventManager.getDefaultEventManager().register(SPlayerJoinEvent.class, event -> {
-                                            var player = event.getPlayer();
+                                            var player = event.player();
                                             if (player.hasPermission(BedWarsPermission.ADMIN_PERMISSION.asPermission())) {
                                                 if (mainConfig.node("update-checker", "admins").getBoolean() && result.node("zero_update").getBoolean()) {
                                                     Message

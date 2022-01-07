@@ -45,4 +45,14 @@ public class PlayerDeathMessageSendEventImpl implements PlayerDeathMessageSendEv
     public void setStringMessage(String message) {
         this.message = Message.ofPlainText(message);
     }
+
+    @Override
+    public boolean cancelled() {
+        return cancelled;
+    }
+
+    @Override
+    public void cancelled(boolean cancel) {
+        cancelled = cancel;
+    }
 }
