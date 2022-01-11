@@ -2,33 +2,33 @@ lang_name: "Français"
 prefix: "[BW]"
 item_shop_name: "Magasins"
 join: "%name% &aa rejoint la partie!&r &7[&a%players%&7/&a%maxplayers%&7]"
-leave: "%name% &cquitté &rla partie!"
-game_already_running: "&cLa partie &7%arena% &c A déjà commencer ! Vous ne pouvez\
-  \ pas rejoindre la partie court !"
-game_is_full: "&cLa partie &7%arena% &c est complète ! Merci d'attendre la fin !"
+leave: "%name% &ca quitté &rla partie !"
+game_already_running: "&cLa partie &7%arena% &ca déjà commencer ! Vous ne pouvez pas\
+  \ rejoindre la partie court !"
+game_is_full: "&cLa partie &7%arena% &cest complète ! Merci d'attendre la fin !"
 unknown_command: "&cCommande inconnue ! Tapez &4/bw help &cpour obtenir de l'aide\
   \ !"
 unknown_usage: "&cLe nombre d'arguments ne correspond pas au montant correct ou aux\
   \ arguments inconnus ! Tapez &4/bw help &cpour obtenir de l'aide !"
 no_arena_found: "&cPartie non trouvée !"
-usage_bw_join: "&cUtilisation: /bw join <arena>"
-usage_bw_admin: "&cUtilisation: /bw admin <arena> <add|edit|remove|save|...>..."
+usage_bw_join: "&cUtilisation : /bw join <arena>"
+usage_bw_admin: "&cUtilisation : /bw admin <arena> <add|edit|remove|save|...>..."
 you_arent_in_game: "&cVous n'êtes pas dans une partie !"
 allready_exists: "&cL'arène existe déjà !"
 allready_working_on_it: "&cL'arène existe déjà mais n'est pas terminée !"
 arena_not_in_edit: "&cL'arène n'existe pas ou est en cours d'exécution ! Désactivez-la\
   \ avec &7/bw admin <arena> edit&c puis activez-la avec &7/bw admin <arena> sauvegarde"
-no_permissions: "&cVous n'avez pas la permission de le faire !"
+no_permissions: "&cVous n'êtes pas autorisé à faire ça !"
 arena_must_be_in_edit_mode: "&cL'arène doit être en mode édition !"
-arena_removed: "&c&lArène retirée!"
+arena_removed: "&c&lArène retirée !"
 arena_added: "&aArène ajoutée !"
-arena_switched_to_edit: "&aL'arène est passée en mode édition!"
+arena_switched_to_edit: "&aL'arène est passée en mode édition !"
 bed_is_destroyed: "Le lit des %team%&r est détruit !"
 target_is_destroyed: "Le lit des %team%&r est détruit !"
-anchor_is_destroyed: "L'ancre de réapparition des %team%&r est détruite!"
+anchor_is_destroyed: "L'ancre de réapparition des %team%&r est détruite !"
 cake_is_destroyed: "Le gâteau de %team%&r a été mangé !"
-bed_is_destroyed_subtitle: "Vous pouvez maintenant tuer les membres de l'équipe!"
-bed_is_destroyed_subtitle_for_victim: "Maintenant vous ne serez jamais réapparu!"
+bed_is_destroyed_subtitle: "Vous pouvez maintenant tuer les membres des équipes !"
+bed_is_destroyed_subtitle_for_victim: "Vous ne pouvez plus réapparaître !"
 game_is_rebuilding: "&cLa partie &7%arena%&c est en cours de reconstruction ! Veuillez\
   \ patienter..."
 vault_deposite: "&aAjout de &7%coins% %currency%&a à votre compte Vault !"
@@ -46,19 +46,19 @@ respawn_protection_remaining: "&aLa protection de réapparition sera supprimée 
 respawn_protection_end: "&cLa protection de réapparition a disparu !"
 there_is_no_empty_game: "&cIl n'y a pas de partie en attente. Toutes les parties sont\
   \ déjà en cours !"
-respawn_cooldown_title: "&aRéapparaître dans: &c%time%"
+respawn_cooldown_title: "&aRéapparition dans: &c%time%"
 respawn_cooldown_title_cancel: "&cL'équipe est morte :("
 vip_not_enough_players: "&cPas assez de joueurs dans l'arène !"
 vip_game_is_full: "&cLa partie &7%arena% &cest pleine de joueurs VIP. Veuillez attendre\
-  \ la fin du jeu!"
-buy_succes: "&aAchetez &7%item%&a avec succès pour &7%material%&a!"
+  \ la fin du jeu !"
+buy_succes: "&7%item%&a acheté avec succès pour &7%material%&a !"
 buy_failed: "&cManque de matériaux pour acheter &7%item%&c! Nécessaire &7%material%&c!"
 compass_selector_team: "&aChoisir une équipe"
 leave_from_game_item: "&cquitté &rla partie"
 start_game_item: "&2Commencer la partie"
 team_selection_name: "Sélectionner une équipe - %arena%"
-team_selected: "&aÉquipe sélectionnée: %team%&r &7[&a%players%&7/&a%maxplayers%&7]"
-team_already_selected: "&aVous êtes déjà dans l'équipe: %team%&r &7[&a%players%&7/&a%maxplayers%&7]"
+team_selected: "&aÉquipe sélectionnée : %team%&r &7[&a%players%&7/&a%maxplayers%&7]"
+team_already_selected: "&aVous êtes déjà dans l'équipe : %team%&r &7[&a%players%&7/&a%maxplayers%&7]"
 team_is_full: "&cL'équipe %team% est pleine !"
 team_is_full_you_are_staying: "&cL'équipe %team%&c est pleine, vous restez dans %oldteam%&c\
   \ !"
@@ -105,8 +105,8 @@ admin_command_store_already_exists: "&cLa boutique existe déjà !"
 admin_command_store_not_exists: "&cLa boutique n'existe pas !"
 admin_command_invalid_spawner_type: "&cLe spawner doit être bronze, fer, or ou par\
   \ configuration personnalisée !"
-admin_command_invalid_spawner_level: "&fMauvais numéro de niveau, niveau 1 par défaut\
-  \ a été utilisé."
+admin_command_invalid_spawner_level: "&fMauvais numéro de niveau, le niveau 1 a été\
+  \ utilisé par défaut."
 admin_command_invalid_color: "&cCette couleur est invalide !"
 admin_command_block_is_not_bed: "&cLe bloc ciblé n'est pas un lit !"
 admin_command_max_players_fail: "&cLe nombre maximum de joueurs doit être >= 1!"
@@ -196,7 +196,7 @@ holo_added: "&aHolographic ajouté à votre position !"
 click_to_holo_for_remove: "&eMaintenant, cliquez sur l'holographique que vous voulez\
   \ supprimer !"
 holo_removed: "&aHolographique supprimé avec succès !"
-sign_successfully_created: "Le panneau a bien été créé!"
+sign_successfully_created: "Le panneau a bien été créé !"
 sign_can_not_been_created: "&cLe panneau n'a pas pu être créé ! Veuillez vérifier\
   \ le nom de l'arène !"
 sign_can_not_been_destroyed: "&cVous n'avez pas la permission de détruire ce panneau\
@@ -206,12 +206,12 @@ sign_game_not_exists: "&cLe jeu qui est écrit sur le panneau n'existe pas ! Veu
 sign_status_disabled: "&cPartie"
 sign_status_disabled_players: "&cDésactivé"
 sign_status_rebuilding: "&6Reconstruction"
-sign_status_rebuilding_players: "&6Arena"
+sign_status_rebuilding_players: "&6Arène"
 sign_status_running: "&aExécution"
 sign_status_running_players: "&c%players%&8/&c%maxplayers%"
 sign_status_waiting: "&6En attente"
 sign_status_waiting_players: "&e%players%&8/&a%maxplayers%"
-list_header: "&aAvailible arenas:"
+list_header: "&aArènes disponibles :"
 team_chest: "&a&coffre de lTeam"
 team_chest_is_not_your: "&eCe coffre d'équipe n'est pas le vôtre!"
 team_chest_placed: "&aUn nouveau coffre d'équipe a été placé !"
@@ -227,10 +227,10 @@ arena_info_status_disabled: "&cDésactivé"
 arena_info_status_waiting: "&eEn attente de JOUEURS"
 arena_info_status_running: "&aJEUX en fonctionnement"
 arena_info_status_rebuilding: "&eRECONSTRUCTION"
-arena_info_status_disabled_in_edit: "&cDISABLED&r (&eIN EDIT MODE&r)"
+arena_info_status_disabled_in_edit: "&cDÉSACTIVÉ&r (&eEN MODE ÉDITION&r)"
 arena_info_world: "&7Monde: &r%world%"
-arena_info_pos1: "&7Position 1: &fXYZ: &7%x%&r/&7%y%&r/&7%z%"
-arena_info_pos2: "&7Position 2: &fXYZ: &7%x%&r/&7%y%&r/&7%z%"
+arena_info_pos1: "&7Position 1 : &fXYZ : &7%x%&r/&7%y%&r/&7%z%"
+arena_info_pos2: "&7Position 2 : &fXYZ : &7%x%&r/&7%y%&r/&7%z%"
 arena_info_spec: "&7Position de spectateur : &fXYZ : &7%x%&r/&7%y%&r/&7%z%"
 arena_info_lobby: "&7Position du lobby : &fMonde: &7%world% &fXYZ : &7%x%&r/&7%y%&r/&7%z%"
 arena_info_teams: "&7Équipes :"
@@ -238,10 +238,10 @@ arena_info_team: "- %team%&r (Nombre maximum de joueurs : &7%maxplayers%&r)"
 arena_info_team_spawn: "  &7Apparition de l'équipe : &fXYZ: &7%x%&r/&7%y%&r/&7%z%"
 arena_info_team_target: "  &7Lit : &fXYZ: &7%x%&r/&7%y%&r/&7%z%"
 arena_info_spawners: "&7Spawners :"
-arena_info_spawner: "- %resource% &7- %team% &7- &eHolo: &f%holo% &7- XYZ: &7%x%&r/&7%y%&r/&7%z%"
+arena_info_spawner: "- %resource% &7- %team% &7- &eHolo : &f%holo% &7- XYZ : &7%x%&r/&7%y%&r/&7%z%"
 arena_info_min_players: "&7Nombre minimum de joueurs : &r%minplayers%"
 arena_info_villagers: "&7Magasins :"
-arena_info_villager_pos: "- XYZ: &7%x%&r/&7%y%&r/&7%z%"
+arena_info_villager_pos: "- XYZ : &7%x%&r/&7%y%&r/&7%z%"
 arena_info_villager_entity_type: "  Type: &a%type%"
 arena_info_villager_shop: "  A sa propre boutique : &7%bool%"
 arena_info_villager_shop_name: "  Nom de la boutique : &6%file%&r (hérité de main\
@@ -254,13 +254,14 @@ arena_info_lobby_countdown: "&7Compte à rebours avant le début de la partie: &
 arena_info_game_time: "&7temps de jeu: &f%time% s"
 arena_info_config: "&7Configuration des constantes :"
 arena_info_config_constant: "- &7%constant%&r : &7%value%"
-arena_info_config_true: "&aTrue"
-arena_info_config_false: "&cFalse"
+arena_info_config_true: "&aVrai"
+arena_info_config_false: "&cFaux"
 arena_info_config_inherit: "&eHérité de la configuration du plugin"
 please_select_info_type: "&aVeuillez sélectionner la section information de &7%arena%&a:"
 please_select_info_type_base: "&aInformations de base&f - &7/bw base d'information\
   \ admin %arena%"
-please_select_info_type_stores: "&aList of stores&f - &7/bw admin %arena% info stores"
+please_select_info_type_stores: "&aListe des magasins&f - &7/bw admin %arena% info\
+  \ stores"
 please_select_info_type_spawners: "&aListe des spawners&f - &7/bw admin %arena% spawners\
   \ d'information"
 please_select_info_type_teams: "&aListe des équipes &f - &7/bw admin %arena% équipes\
@@ -272,7 +273,7 @@ statistics_is_disabled: "&cLes statistiques des joueurs sont désactivées sur c
 statistics_player_is_not_exists: "&cLecteur introuvable !"
 statistics_not_found: "&cLes statistiques pour ce joueur sont introuvables !"
 statistics_header: "&aStatistiques de &7%player%&a:"
-statistics_kills: "&7Kills: &a%kills%"
+statistics_kills: "&7Kills : &a%kills%"
 statistics_deaths: "&7Morts: &e%deaths%"
 statistics_kd: "&7K/D: &a%kd%"
 statistics_wins: "&7Victoires: &a%wins%"
@@ -434,8 +435,33 @@ admin_command_customprefix_enabled: "&aLe préfixe personnalisé a été défini
 admin_command_customprefix_disabled: "&aLe préfixe personnalisé a été retiré avec\
   \ succès."
 admin_command_npc_must_have_skinname: "&cSi vous utilisez le type d'entité PLAYER,\
-  \ vous devez spécifier le nom du skin au format &7PLAYER:[skin's owner]\n"
+  \ vous devez spécifier le nom du skin au format &7PLAYER:[skin's owner]"
 help_bw_dump: "/bw dump - &eDumps the server and gives you link to the dump. This\
   \ link can be useful for support"
 dump_success: "&aSuccessfully dumped server. Link: "
 dump_failed: "&cDump failed!"
+upgrade_success: '&a%name% a amélioré %spawner% au niveau %level% !'
+upgrade_translate: améliorer
+cheat_received_give: '&aLe joueur &7%player%&a obtenu &7%amount% %resource%'
+cheat_disabled: "&cLa triche n'est pas activée sur ce serveur !"
+cheat_game_not_running: '&cVous ne pouvez pas tricher dans le lobby !'
+cheat_please_provide_valid_cheat_type: '&cLa triche fournie est invalide ou manquante
+  !'
+"party_command_not_party_leader": "&cVotre n'êtes pas le chef de ce groupe !"
+help_bw_cheat_kill: /bw cheat kill [player] - &cTue le joueur spécifié
+"party_command_is_empty": '&cVotre groupe est vide, téléportation impossible !'
+"party_inform_game_join": '&cRejoindre la partie du chef de groupe'
+"party_warped": '&cLe chef de groupe vous a téléporté ici'
+"party_command_invalid_arguments": "&cNombre d'arguments invalide !, tapez /bw party\
+  \ help pour en savoir plus"
+"party_command_help": /bw party warp - &eTéléporte tous les joueurs du groupe dans
+  votre partie ou vers vous
+spawner_reached_maximum_level: §cLe spawner a atteint son niveau maximum !
+cheat_invalid_player: "&cLe joueur spécifié n'est ni dans la partie ni spectateur\
+  \ !"
+cheat_received_kill: '&aLe joueur &7%player%&a a été tué par triche !'
+"party_command_warped": '&aLes membres du groupe ont été téléportés'
+"party_command_not_in_party": '&cVous devez être dans un groupe pour faire cette commande
+  !'
+help_bw_cheat_give: /bw cheat give <resource> [amount] [player] - &cDonne au joueur
+  la quantité spécifiée de ressource
