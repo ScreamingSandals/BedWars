@@ -1,5 +1,5 @@
 plugins {
-    id 'org.screamingsandals.plugin-builder' version '1.0.65' apply false
+    id 'org.screamingsandals.plugin-builder' version '1.0.69' apply false
     id 'org.screamingsandals.nms-mapper' version '1.1.0' apply false
     id 'com.github.gmazzo.buildconfig' version '3.0.0' apply false
 }
