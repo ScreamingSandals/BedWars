@@ -1399,22 +1399,6 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         return null;
     }
 
-    public CurrentTeam getTeamWithLowestPlayers() {
-        CurrentTeam lowest = null;
-
-        for (CurrentTeam team : teamsInGame) {
-            if (lowest == null) {
-                lowest = team;
-            }
-
-            if (lowest.players.size() > team.players.size()) {
-                lowest = team;
-            }
-        }
-
-        return lowest;
-    }
-
     public List<GamePlayer> getPlayersInTeam(Team team) {
         CurrentTeam currentTeam = null;
         for (CurrentTeam cTeam : teamsInGame) {
@@ -1524,11 +1508,25 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         if (teamsInGame.size() < 2) {
             teamForJoin = getFirstTeamThatIsntInGame();
         } else {
-            CurrentTeam current = getTeamWithLowestPlayers();
-            if (current.players.size() >= current.getMaxPlayers()) {
-                teamForJoin = getFirstTeamThatIsntInGame();
+            CurrentTeam lowest = null;
+
+            for (CurrentTeam team : teamsInGame) {
+                if (team.players.size() >= team.getMaxPlayers()) {
+                    continue; // skip full teams
+                }
+
+                if (lowest == null) {
+                    lowest = team;
+                }
+
+                if (lowest.players.size() > team.players.size()) {
+                    lowest = team;
+                }
+            }
+            if (lowest != null) {
+                teamForJoin = lowest.teamInfo;
             } else {
-                teamForJoin = current.teamInfo;
+                teamForJoin = getFirstTeamThatIsntInGame();
             }
         }
 
