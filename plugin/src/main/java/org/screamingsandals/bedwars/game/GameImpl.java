@@ -2156,7 +2156,7 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
             experimentalBoard = null;
         }
         otherVisuals.forEach(visual -> {
-            if (visual.isShown()) {
+            if (visual.shown()) {
                 visual.destroy();
             }
         });

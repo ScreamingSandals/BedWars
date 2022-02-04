@@ -117,7 +117,7 @@ public class ScreamingScoreboard {
     private void switchToRunningOld() {
         // Switch the sidebar
         var scoreboard = ScoreSidebar.of();
-        var viewers = sidebar.getViewers();
+        var viewers = sidebar.viewers();
         // teams will be restored by update task
         sidebar.destroy();
         viewers.forEach(scoreboard::addViewer);

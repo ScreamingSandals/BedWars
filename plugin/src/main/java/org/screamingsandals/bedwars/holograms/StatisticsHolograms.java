@@ -178,7 +178,7 @@ public class StatisticsHolograms {
     private Optional<Hologram> getHologramByLocation(List<Hologram> holograms, LocationHolder holoLocation) {
         return holograms.stream()
                 .filter(hologram -> {
-                    var loc = hologram.getLocation();
+                    var loc = hologram.location();
                     return loc != null && loc.getWorld().getUuid().equals(holoLocation.getWorld().getUuid())
                             && loc.getX() == holoLocation.getX()
                             && loc.getY() == holoLocation.getY()
@@ -197,7 +197,7 @@ public class StatisticsHolograms {
         if (holo.isEmpty() && player.getLocation().getWorld().getUuid().equals(holoLocation.getWorld().getUuid())) {
             holograms.add(this.createPlayerStatisticHologram(player, holoLocation));
         } else if (holo.isPresent()) {
-            if (player.getLocation().getWorld().getUuid().equals(holo.get().getLocation().getWorld().getUuid())) {
+            if (player.getLocation().getWorld().getUuid().equals(holo.get().location().getWorld().getUuid())) {
                 this.updatePlayerStatisticHologram(player, holo.get());
             } else {
                 holograms.remove(holo.get());
@@ -211,7 +211,7 @@ public class StatisticsHolograms {
         final var holo = HologramManager
                 .hologram(holoLocation)
                 .firstLine(TextEntry.of(AdventureHelper.toComponent(mainConfig.node("holograms", "headline").getString("Your §eBEDWARS§f stats"))))
-                .setTouchable(true)
+                .touchable(true)
                 .addViewer(player);
         HologramManager.addHologram(holo);
         holo.show();
@@ -249,7 +249,7 @@ public class StatisticsHolograms {
     public void handle(HologramTouchEvent event) {
         var player = event.player();
         var holo = event.visual();
-        if (!holograms.containsKey(player.getUuid()) || !holograms.get(player.getUuid()).contains(holo) || holo.getLocation() == null) {
+        if (!holograms.containsKey(player.getUuid()) || !holograms.get(player.getUuid()).contains(holo) || holo.location() == null) {
             return;
         }
 
@@ -257,7 +257,7 @@ public class StatisticsHolograms {
             return;
         }
 
-        var location = holo.getLocation();
+        var location = holo.location();
 
         RemoveHoloCommand.PLAYERS_WITH_HOLOGRAM_REMOVER_IN_HAND.remove(player.getUuid());
         Tasker
@@ -313,7 +313,7 @@ public class StatisticsHolograms {
                 .placeholder("score", statistic.getScore())
                 .getFor(player);
 
-        var size = holo.getLines().size();
+        var size = holo.lines().size();
         var increment = size == 1 || size > lines.size() ? 1 : 0;
 
         for (int i = 0; i < lines.size(); i++) {

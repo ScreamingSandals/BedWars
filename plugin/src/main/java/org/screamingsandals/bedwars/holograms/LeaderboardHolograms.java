@@ -157,7 +157,7 @@ public class LeaderboardHolograms {
 
     public void addViewer(PlayerWrapper player) {
         holograms.values().forEach(hologram -> {
-            if (!hologram.getViewers().contains(player)) {
+            if (!hologram.viewers().contains(player)) {
                 Tasker.build(() -> hologram.addViewer(player))
                         .async()
                         .delay(30, TaskerTime.TICKS)
@@ -173,7 +173,7 @@ public class LeaderboardHolograms {
                         var hologram = HologramManager
                                 .hologram(locationHolder)
                                 .firstLine(Message.of(LangKeys.LEADERBOARD_NO_SCORES))
-                                .setTouchable(true);
+                                .touchable(true);
                         HologramManager.addHologram(hologram);
                         hologram.show();
                         holograms.put(locationHolder, hologram);
@@ -212,7 +212,7 @@ public class LeaderboardHolograms {
         var player = event.player();
         var hologram = event.visual();
 
-        if (hologram.getLocation() == null || !holograms.containsKey(hologram.getLocation())) {
+        if (hologram.location() == null || !holograms.containsKey(hologram.location())) {
             return;
         }
 
@@ -220,7 +220,7 @@ public class LeaderboardHolograms {
             return;
         }
 
-        var location = hologram.getLocation();
+        var location = hologram.location();
 
         RemoveHoloCommand.PLAYERS_WITH_HOLOGRAM_REMOVER_IN_HAND.remove(player.getUuid());
         Tasker

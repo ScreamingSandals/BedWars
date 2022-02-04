@@ -58,12 +58,12 @@ public class BedWarsNPC {
     public void spawn() {
         if (npc == null && location != null && location.isWorldLoaded()) {
             npc = NPC.of(location.as(LocationHolder.class))
-                    .setDisplayName(hologramAbove)
-                    .setTouchable(true)
-                    .setShouldLookAtPlayer(shouldLookAtPlayer);
+                    .displayName(hologramAbove)
+                    .touchable(true)
+                    .lookAtPlayer(shouldLookAtPlayer);
 
             if (skin != null && skin.getValue() != null) {
-                npc.setSkin(skin);
+                npc.skin(skin);
             }
 
             npc.show();

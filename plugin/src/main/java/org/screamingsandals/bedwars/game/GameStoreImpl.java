@@ -73,11 +73,15 @@ public class GameStoreImpl implements GameStore<EntityLiving, EntityTypeHolder, 
                 try {
                     npc = NPCManager
                             .npc(storeLocation)
-                            .setTouchable(true)
-                            .setShouldLookAtPlayer(true)
-                            .setDisplayName(List.of(AdventureHelper.toComponentNullable(shopCustomName)));
+                            .touchable(true)
+                            .lookAtPlayer(true)
+                            .displayName(List.of(AdventureHelper.toComponentNullable(shopCustomName)));
 
-                    NPCSkin.retrieveSkin(skinName).thenAccept(npc::setSkin);
+                    NPCSkin.retrieveSkin(skinName).thenAccept(skin -> {
+                        if (skin != null) {
+                            npc.skin(skin);
+                        }
+                    });
 
                     return npc.show();
                 } catch (Throwable ignored) {}

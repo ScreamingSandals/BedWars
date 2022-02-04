@@ -117,7 +117,7 @@ public class NPCCommand extends BaseCommand {
 
                             var npc = NPCS_IN_HAND.get(player.getUuid());
                             npc.setShouldLookAtPlayer(shouldLookAtPlayer);
-                            npc.getNpc().setShouldLookAtPlayer(shouldLookAtPlayer);
+                            npc.getNpc().lookAtPlayer(shouldLookAtPlayer);
                             lobbyNPCManager.setModified(true);
 
                             if (shouldLookAtPlayer) {
@@ -208,7 +208,7 @@ public class NPCCommand extends BaseCommand {
                                     player.sendMessage(Message.of(LangKeys.ADMIN_NPC_SKIN_CHANGE_FAILED).defaultPrefix());
                                 } else {
                                     npc.setSkin(npcSkin);
-                                    npc.getNpc().setSkin(npcSkin);
+                                    npc.getNpc().skin(npcSkin);
                                     lobbyNPCManager.setModified(true);
                                     player.sendMessage(Message.of(LangKeys.ADMIN_NPC_SKIN_CHANGED).defaultPrefix());
                                 }
@@ -232,7 +232,7 @@ public class NPCCommand extends BaseCommand {
                             var npc = NPCS_IN_HAND.get(player.getUuid());
                             var component = AdventureHelper.toComponent(AdventureHelper.translateAlternateColorCodes('&', line));
                             npc.getHologramAbove().add(component);
-                            npc.getNpc().setDisplayName(npc.getHologramAbove());
+                            npc.getNpc().displayName(npc.getHologramAbove());
                             lobbyNPCManager.setModified(true);
                             player.sendMessage(Message.of(LangKeys.ADMIN_HOLOGRAM_LINE_ADDED).defaultPrefix()
                                     .placeholder("line", component)
@@ -267,7 +267,7 @@ public class NPCCommand extends BaseCommand {
                             }
                             var component = AdventureHelper.toComponent(AdventureHelper.translateAlternateColorCodes('&', line));
                             npc.getHologramAbove().set(number - 1, component);
-                            npc.getNpc().setDisplayName(npc.getHologramAbove());
+                            npc.getNpc().displayName(npc.getHologramAbove());
                             lobbyNPCManager.setModified(true);
                             player.sendMessage(Message.of(LangKeys.ADMIN_HOLOGRAM_LINE_SET).defaultPrefix()
                                     .placeholder("linenumber", number)
@@ -300,7 +300,7 @@ public class NPCCommand extends BaseCommand {
                                 return;
                             }
                             npc.getHologramAbove().remove(number - 1);
-                            npc.getNpc().setDisplayName(npc.getHologramAbove());
+                            npc.getNpc().displayName(npc.getHologramAbove());
                             lobbyNPCManager.setModified(true);
                             player.sendMessage(Message.of(LangKeys.ADMIN_HOLOGRAM_LINE_REMOVED).defaultPrefix()
                                     .placeholder("linenumber", number)
@@ -321,7 +321,7 @@ public class NPCCommand extends BaseCommand {
 
                             var npc = NPCS_IN_HAND.get(player.getUuid());
                             npc.getHologramAbove().clear();
-                            npc.getNpc().setDisplayName(List.of());
+                            npc.getNpc().displayName(List.of());
                             lobbyNPCManager.setModified(true);
                             player.sendMessage(Message.of(LangKeys.ADMIN_HOLOGRAM_RESET).defaultPrefix());
                         })
