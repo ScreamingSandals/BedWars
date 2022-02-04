@@ -19,11 +19,11 @@
 
 package org.screamingsandals.bedwars.econ;
 
-import com.google.common.base.Preconditions;
 import net.milkbowl.vault.chat.Chat;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.screamingsandals.lib.player.PlayerWrapper;
+import org.screamingsandals.lib.utils.Preconditions;
 
 public class VaultEconomy extends Economy {
     private final net.milkbowl.vault.economy.Economy vaultEcon;

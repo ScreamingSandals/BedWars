@@ -107,7 +107,6 @@ import java.util.Objects;
                 RecordSave.class,
                 DatabaseManager.class,
                 BedWarsSignService.class,
-                BukkitBStatsMetrics.class,
                 PlayerManagerImpl.class,
                 PartyListener.class,
                 EventUtilsImpl.class,
@@ -129,7 +128,8 @@ import java.util.Objects;
         }
 )
 @Init(platforms = {PlatformType.BUKKIT}, services = {
-        PerWorldInventoryCompatibilityFix.class
+        PerWorldInventoryCompatibilityFix.class,
+        BukkitBStatsMetrics.class
 })
 public class BedWarsPlugin extends PluginContainer implements BedwarsAPI {
     private static BedWarsPlugin instance;
