@@ -1070,7 +1070,7 @@ public enum Sounds {
                 // If something is exists in bukkit, but not in this mapping
                 Sound s = Sound.valueOf(name);
                 player.playSound(location, s, volume, pitch);
-            } catch (IllegalArgumentException t) {
+            } catch (IllegalArgumentException | NullPointerException t) {
                 if (fallbackSound != null) {
                     fallbackSound.playSound(player, location, volume, pitch);
                 }
@@ -1087,7 +1087,7 @@ public enum Sounds {
                 // If something is exists in bukkit, but not in this mapping
                 Sound s = Sound.valueOf(name);
                 location.getWorld().playSound(location, s, volume, pitch);
-            } catch (IllegalArgumentException t) {
+            } catch (IllegalArgumentException | NullPointerException t) {
                 if (fallbackSound != null) {
                     fallbackSound.playSound(location, volume, pitch);
                 }
