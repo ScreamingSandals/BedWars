@@ -37,5 +37,6 @@ public enum TeamColor {
     PINK,
     YELLOW,
     WHITE,
+    PURPLE,
     BROWN;
 }
