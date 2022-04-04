@@ -28,7 +28,7 @@ import org.screamingsandals.bedwars.Main;
 public enum TeamColor {
     WHITE(ChatColor.WHITE, 0x0, "WHITE", Color.WHITE),
     ORANGE(ChatColor.GOLD, 0x1, "ORANGE", Color.fromRGB(255, 170, 0)),
-    MAGENTA(ChatColor.DARK_BLUE, 0x2, "MAGENTA", Color.fromRGB(170, 0, 170)),
+    MAGENTA(ChatColor.LIGHT_PURPLE, 0x2, "MAGENTA", Color.fromRGB(170, 0, 170)),
     LIGHT_BLUE(ChatColor.AQUA, 0x3, "LIGHT_BLUE", Color.fromRGB(85, 85, 255)),
     YELLOW(ChatColor.YELLOW, 0x4, "YELLOW", Color.fromRGB(255, 255, 85)),
     LIME(ChatColor.GREEN, 0x5, "LIME", Color.fromRGB(85, 255, 85)),
