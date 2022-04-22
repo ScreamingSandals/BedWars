@@ -93,10 +93,16 @@ public class StatisticsHolograms implements TouchHandler {
 	}
 
 	public void updateHolograms(Player player, long delay) {
-        Main.getInstance().getServer().getScheduler().runTaskLater(Main.getInstance(), () -> {
-        	StatisticsHolograms.this.updateHolograms(player);
-        }, delay);
+        Main.getInstance().getServer().getScheduler().runTaskLater(Main.getInstance(), () -> StatisticsHolograms.this.updateHolograms(player), delay);
 	}
+
+    public void addViewer(Player player) {
+        holograms.values().forEach(holograms0 -> holograms0.forEach(hologram -> {
+            if (!hologram.getViewers().contains(player)) {
+                Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> hologram.addViewer(player), 10L);
+            }
+        }));
+    }
 
 	public void updateHolograms() {
         for (final Player player : Bukkit.getServer().getOnlinePlayers()) {

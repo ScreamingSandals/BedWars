@@ -988,12 +988,12 @@ public class PlayerListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onJoin(PlayerJoinEvent je) {
-
         final Player player = je.getPlayer();
 
         if (Main.isHologramsEnabled()) {
             Main.getHologramInteraction().updateHolograms(player, 10L);
             Main.getLeaderboardHolograms().addViewer(player);
+            Main.getHologramInteraction().addViewer(player);
         }
     }
 
