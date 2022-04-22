@@ -993,7 +993,6 @@ public class PlayerListener implements Listener {
         if (Main.isHologramsEnabled()) {
             Main.getHologramInteraction().updateHolograms(player, 10L);
             Main.getLeaderboardHolograms().addViewer(player);
-            Main.getHologramInteraction().addViewer(player);
         }
     }
 

@@ -96,14 +96,6 @@ public class StatisticsHolograms implements TouchHandler {
         Main.getInstance().getServer().getScheduler().runTaskLater(Main.getInstance(), () -> StatisticsHolograms.this.updateHolograms(player), delay);
 	}
 
-    public void addViewer(Player player) {
-        holograms.values().forEach(holograms0 -> holograms0.forEach(hologram -> {
-            if (!hologram.getViewers().contains(player)) {
-                Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> hologram.addViewer(player), 10L);
-            }
-        }));
-    }
-
 	public void updateHolograms() {
         for (final Player player : Bukkit.getServer().getOnlinePlayers()) {
             Main.getInstance().getServer().getScheduler().runTask(Main.getInstance(), () -> {
@@ -246,6 +238,10 @@ public class StatisticsHolograms implements TouchHandler {
 
         for (int i = 0; i < lines.size(); i++) {
         	holo.setLine(i + increment, lines.get(i));
+        }
+
+        if (!holo.getViewers().contains(player)) {
+            holo.addViewer(player);
         }
     }
 
