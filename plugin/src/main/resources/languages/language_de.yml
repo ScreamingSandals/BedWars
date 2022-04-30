@@ -1,26 +1,6 @@
-#
-# Copyright (C) 2022 ScreamingSandals
-#
-# This file is part of Screaming BedWars.
-#
-# Screaming BedWars is free software: you can redistribute it and/or modify it
-# under the terms of the GNU Lesser General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# Screaming BedWars is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-# GNU Lesser General Public License for more details.
-#
-# You should have received a copy of the GNU Lesser General Public License
-# along with Screaming BedWars. If not, see <https://www.gnu.org/licenses/>.
-#
-
----
 lang_name: "German"
 prefix: "[BW]"
-item_shop_name: "Geschäft"
+item_shop_name: "Shop"
 join: "%name% &atritt dem Spiel bei!&r &7[&a%players%&7/&a%maxplayers%&7]"
 leave: "%name% &chat das Spiel verlassen!"
 game_already_running: "&cSpiel &7%arena% &cläuft bereits!"
@@ -353,9 +333,9 @@ help_bw_admin_team_maxplayers: "/bw admin <Spiel> team maxplayers <Team> <Max Sp
   \ - &eÄndert die maximale Spielerandzahl"
 help_bw_admin_team_spawn: "/bw admin <Spiel> team spawn <Team> - &eSetzt den Team\
   \ Spawn an deine Position"
-help_bw_admin_team_bed: "/bw admin <Spiel> team bed <Team> [looking_at|standing_on]\
-  \ - &eSetzt den Zielblock an die Stelle auf die du schaust, es muss nicht unbedingt\
-  \ ein Bett sein."
+help_bw_admin_team_bed: "/bw admin <Arena> team bed <Team> [looking_at|standing_on]\
+  \ - &eSetzt den Zielblock an die Stelle, die du anschaust (es muss nicht unbedingt\
+  \ ein Bett sein)"
 help_bw_admin_jointeam: "/bw admin <Spiel> jointeam <Team> - &eSetzt einen Teambeitrittspunkt"
 help_bw_admin_spawner_add: "/bw admin <Spiel> spawner add <bronze|gold|iron> [hologram]\
   \ [first level] [name] - &eSetze einen Spawner an deiner Position"
@@ -420,3 +400,27 @@ help_bw_dump: "/bw dump - &eDumpt den Server und gibt einen Link zum Dump aus. D
   \ Link kann für den Support nützlich sein"
 dump_success: "&aErfolgreich den Server gedumpt. Link: "
 dump_failed: "&cDump fehlgeschlagen!"
+upgrade_translate: Upgrade
+cheat_received_give: '&aSpieler &7%player%&a erhielt &7%amount%&a von &7%resource%'
+cheat_received_kill: '&aSpieler &7%player%&a durch Cheat getötet!'
+cheat_disabled: '&cCheats sind auf diesem Server deaktiviert!'
+cheat_game_not_running: '&cDu kannst in der Lobby nicht cheaten!'
+help_bw_cheat_kill: /bw cheat kill [Spieler] - &cTötet den angegebenen Spieler
+"party_inform_game_join": '&aBeitritt das Spiel des Gruppenleiters'
+"party_warped": '&aDer Gruppenleiter hat dich hier hin gewarpt'
+"party_command_help": /bw party warp - &eWarpt alle Spieler in dein Spiel oder zu
+  dir
+"party_command_not_in_party": '&cDu musst in einer Gruppe sein, um diesen Befehl ausführen
+  zu können!'
+"party_command_not_party_leader": '&cDu bist nicht der Leiter dieser Gruppe!'
+"party_command_warped": '&aGruppenmitglieder wurden gewarpt'
+upgrade_success: '&a%name% hat %spawner% erfolgreich auf Stufe %level% verbessert!'
+spawner_reached_maximum_level: §cDer Spawner hat sein maximales Level erreicht!
+cheat_please_provide_valid_cheat_type: '&cDer angegebene Cheat-Typ ist nicht gültig
+  oder fehlt!'
+cheat_invalid_player: '&cDer angegebene Spieler ist nicht im Spiel oder ist Zuschauer!'
+help_bw_cheat_give: /bw cheat give <Ressource> [Menge] [Spieler] - &cGibt dem Spieler
+  eine bestimmte Menge an Ressourcen
+"party_command_invalid_arguments": '&cUngültige Anzahl von Argumenten!, gib /bw party
+  help ein, um mehr zu erfahren'
+"party_command_is_empty": '&cDeine Gruppe ist leer, du kannst niemanden warpen!'
