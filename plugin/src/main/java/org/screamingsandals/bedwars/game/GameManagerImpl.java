@@ -23,7 +23,11 @@ import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.screamingsandals.bedwars.api.game.GameManager;
 import org.screamingsandals.bedwars.api.game.GameStatus;
+import org.screamingsandals.bedwars.lang.LangKeys;
+import org.screamingsandals.bedwars.player.PlayerManagerImpl;
+import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.bedwars.variants.VariantManagerImpl;
+import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.plugin.ServiceManager;
 import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.utils.annotations.methods.OnPostEnable;
@@ -87,17 +91,32 @@ public class GameManagerImpl implements GameManager<GameImpl> {
     }
 
     @Override
-    public Optional<GameImpl> getGameWithHighestPlayers(boolean fee) {
-        return games.stream()
-                .filter(game -> game.getStatus() == GameStatus.WAITING)
-                .filter(game -> game.countConnectedPlayers() < game.getMaxPlayers())
-                .filter(game -> {
-                    if (fee) {
-                        return game.getFee() > 0;
+    public Optional<GameImpl> getGameWithHighestPlayers(boolean fee) {  // If tie choose random one
+        List<GameImpl> highestCountGames = new ArrayList<>();
+        GameManagerImpl.getInstance().getGames().stream()
+                .filter(waitingGame -> waitingGame.getStatus() == GameStatus.WAITING)
+                .filter(waitingGame -> waitingGame.getFee() > 0 || !fee)
+                .forEach(waitingGame -> {
+                    if (highestCountGames.isEmpty()) {
+                        highestCountGames.add(waitingGame);
                     }
-                    return true;
-                })
-                .max(Comparator.comparingInt(GameImpl::countConnectedPlayers));
+                    var playerCount = waitingGame.countPlayers();
+                    var highestCount = highestCountGames.get(0).countPlayers();
+                    if (highestCount == playerCount) {
+                        highestCountGames.add(waitingGame);
+                    }
+                    if (playerCount > highestCount) {
+                        highestCountGames.clear();
+                        highestCountGames.add(waitingGame);
+                    }
+                });
+        if (highestCountGames.isEmpty()) {
+            return Optional.empty();
+        }
+        if (highestCountGames.size() == 1) {
+            return Optional.ofNullable(highestCountGames.get(0));
+        }
+        return Optional.ofNullable(highestCountGames.get(MiscUtils.randInt(0, highestCountGames.size() - 1)));
     }
 
     @Override

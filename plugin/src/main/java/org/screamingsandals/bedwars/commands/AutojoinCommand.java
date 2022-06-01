@@ -46,7 +46,7 @@ public class AutojoinCommand extends BaseCommand {
                                 return;
                             }
 
-                            GameManagerImpl.getInstance().getFirstWaitingGame(false).ifPresentOrElse(
+                            GameManagerImpl.getInstance().getGameWithHighestPlayers(false).ifPresentOrElse(
                                     game -> game.joinToGame(PlayerManagerImpl.getInstance().getPlayerOrCreate(player)),
                                     () -> player.sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_THERE_IS_NO_EMPTY_GAME).defaultPrefix())
                             );

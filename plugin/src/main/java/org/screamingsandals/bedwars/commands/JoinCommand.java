@@ -73,34 +73,10 @@ public class JoinCommand extends BaseCommand {
                                         () -> sender.sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_GAME_NOT_FOUND).defaultPrefix())
                                 );
                             } else {
-                                // Go through all games and find the ones with the most players (Every game in list will have same player count)
-                                List<GameImpl> highestCountGames = new ArrayList<>();
-                                for (GameImpl waitingGame : GameManagerImpl.getInstance().getGames()) {
-                                    if (waitingGame.getStatus() != GameStatus.WAITING) { continue; }
-                                    if (highestCountGames.isEmpty()) { highestCountGames.add(waitingGame); }
-
-                                    int playerCount = waitingGame.countPlayers();
-                                    int highestCount = highestCountGames.get(0).countPlayers();
-
-                                    if (highestCount == playerCount) { highestCountGames.add(waitingGame); }
-                                    if (playerCount > highestCount) {
-                                        highestCountGames.clear();
-                                        highestCountGames.add(waitingGame);
-                                    }
-                                }
-                                // If there are no games, send error message
-                                if (highestCountGames.isEmpty()) {
-                                    sender.sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_GAME_NOT_FOUND).defaultPrefix());
-                                    return;
-                                }
-                                // If there is only one game, join it
-                                if (highestCountGames.size() == 1) {
-                                    highestCountGames.get(0).joinToGame(PlayerManagerImpl.getInstance().getPlayerOrCreate(player));
-                                    return;
-                                }
-                                // If there are multiple games, send them to a random one
-                                int randomIndex = MiscUtils.randInt(0, highestCountGames.size()-1);
-                                highestCountGames.get(randomIndex).joinToGame(PlayerManagerImpl.getInstance().getPlayerOrCreate(player));
+                                GameManagerImpl.getInstance().getGameWithHighestPlayers(false).ifPresentOrElse(
+                                        game1 -> game1.joinToGame(PlayerManagerImpl.getInstance().getPlayerOrCreate(player)),
+                                        () -> player.sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_GAME_NOT_FOUND).defaultPrefix())
+                                );
                             }
                         })
         );
