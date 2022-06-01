@@ -99,9 +99,11 @@ public class StatisticsHolograms implements TouchHandler {
 
     public void cleanupPlayerLeave(OfflinePlayer player) {
         final List<Hologram> holos = holograms.get(player.getUniqueId());
-        holos.forEach(holo -> holo.destroy());
-        holos.clear();
-        holograms.remove(player.getUniqueId());
+        if (holos != null) {
+            holos.forEach(holo -> holo.destroy());
+            holos.clear();
+            holograms.remove(player.getUniqueId());
+        }
     }
 
 	public void updateHolograms() {
