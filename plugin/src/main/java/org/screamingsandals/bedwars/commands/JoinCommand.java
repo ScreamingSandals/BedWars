@@ -21,21 +21,28 @@ package org.screamingsandals.bedwars.commands;
 
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
+import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.econ.EconomyProvider;
+import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.GameManagerImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
+import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
 import org.screamingsandals.lib.utils.annotations.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 @Service(dependsOn = {
         EconomyProvider.class
 })
 public class JoinCommand extends BaseCommand {
+
     public JoinCommand() {
         super("join", BedWarsPermission.JOIN_PERMISSION, false);
     }
@@ -66,10 +73,34 @@ public class JoinCommand extends BaseCommand {
                                         () -> sender.sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_GAME_NOT_FOUND).defaultPrefix())
                                 );
                             } else {
-                                GameManagerImpl.getInstance().getGameWithHighestPlayers(false).ifPresentOrElse(
-                                        game1 -> game1.joinToGame(PlayerManagerImpl.getInstance().getPlayerOrCreate(player)),
-                                        () -> sender.sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_GAME_NOT_FOUND).defaultPrefix())
-                                );
+                                // Go through all games and find the ones with the most players (Every game in list will have same player count)
+                                List<GameImpl> highestCountGames = new ArrayList<>();
+                                for (GameImpl waitingGame : GameManagerImpl.getInstance().getGames()) {
+                                    if (waitingGame.getStatus() != GameStatus.WAITING) { continue; }
+                                    if (highestCountGames.isEmpty()) { highestCountGames.add(waitingGame); }
+
+                                    int playerCount = waitingGame.countPlayers();
+                                    int highestCount = highestCountGames.get(0).countPlayers();
+
+                                    if (highestCount == playerCount) { highestCountGames.add(waitingGame); }
+                                    if (playerCount > highestCount) {
+                                        highestCountGames.clear();
+                                        highestCountGames.add(waitingGame);
+                                    }
+                                }
+                                // If there are no games, send error message
+                                if (highestCountGames.isEmpty()) {
+                                    sender.sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_GAME_NOT_FOUND).defaultPrefix());
+                                    return;
+                                }
+                                // If there is only one game, join it
+                                if (highestCountGames.size() == 1) {
+                                    highestCountGames.get(0).joinToGame(PlayerManagerImpl.getInstance().getPlayerOrCreate(player));
+                                    return;
+                                }
+                                // If there are multiple games, send them to a random one
+                                int randomIndex = MiscUtils.randInt(0, highestCountGames.size()-1);
+                                highestCountGames.get(randomIndex).joinToGame(PlayerManagerImpl.getInstance().getPlayerOrCreate(player));
                             }
                         })
         );
