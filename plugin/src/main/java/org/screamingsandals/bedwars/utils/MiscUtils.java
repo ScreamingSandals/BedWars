@@ -52,7 +52,7 @@ import java.util.stream.Collectors;
 
 @UtilityClass
 public class MiscUtils {
-    private final Random random = new Random();
+    private final Random RANDOM = new Random();
     private final Pattern STRIP_COLOR_PATTERN = Pattern.compile("(?i)\u00A7[0-9A-FK-ORX]");
     public final LocationHolder MAX_LOCATION = new LocationHolder(Double.MAX_VALUE, 256D, Double.MAX_VALUE);
     public final LocationHolder MIN_LOCATION = new LocationHolder(Double.MIN_VALUE, 0D, Double.MIN_VALUE);
@@ -71,7 +71,7 @@ public class MiscUtils {
      * From BedWarsRel (Tweaked to use same instance each time)
      */
     public int randInt(int min, int max) {
-        return random.nextInt((max - min) + 1) + min;
+        return RANDOM.nextInt((max - min) + 1) + min;
     }
 
     public String stripColor(String input) {

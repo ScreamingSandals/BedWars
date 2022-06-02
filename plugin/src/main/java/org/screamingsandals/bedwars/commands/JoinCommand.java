@@ -69,7 +69,7 @@ public class JoinCommand extends BaseCommand {
                             } else {
                                 GameManagerImpl.getInstance().getGameWithHighestPlayers(false).ifPresentOrElse(
                                         game1 -> game1.joinToGame(PlayerManagerImpl.getInstance().getPlayerOrCreate(player)),
-                                        () -> player.sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_GAME_NOT_FOUND).defaultPrefix())
+                                        () -> sender.sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_GAME_NOT_FOUND).defaultPrefix())
                                 );
                             }
                         })
