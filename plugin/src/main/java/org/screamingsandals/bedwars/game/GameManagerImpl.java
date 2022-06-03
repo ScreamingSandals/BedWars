@@ -89,31 +89,24 @@ public class GameManagerImpl implements GameManager<GameImpl> {
 
     @Override
     public Optional<GameImpl> getGameWithHighestPlayers(boolean fee) {  // If tie choose random one
-        List<GameImpl> highestCountGames = new ArrayList<>();
-        GameManagerImpl.getInstance().getGames().stream()
+        var biggest = GameManagerImpl.getInstance().getGames().stream()
                 .filter(waitingGame -> waitingGame.getStatus() == GameStatus.WAITING)
                 .filter(waitingGame -> waitingGame.getFee() > 0 || !fee)
-                .forEach(waitingGame -> {
-                    if (highestCountGames.isEmpty()) {
-                        highestCountGames.add(waitingGame);
-                    }
-                    var playerCount = waitingGame.countPlayers();
-                    var highestCount = highestCountGames.get(0).countPlayers();
-                    if (highestCount == playerCount) {
-                        highestCountGames.add(waitingGame);
-                    }
-                    if (playerCount > highestCount) {
-                        highestCountGames.clear();
-                        highestCountGames.add(waitingGame);
-                    }
-                });
-        if (highestCountGames.isEmpty()) {
+                .filter(game -> game.countConnectedPlayers() < game.getMaxPlayers())
+                .max(Comparator.comparingInt(GameImpl::countConnectedPlayers));
+
+        if (biggest.isEmpty()) {
             return Optional.empty();
         }
-        if (highestCountGames.size() == 1) {
-            return Optional.ofNullable(highestCountGames.get(0));
-        }
-        return Optional.ofNullable(highestCountGames.get(MiscUtils.randInt(0, highestCountGames.size() - 1)));
+
+        var biggestGames = GameManagerImpl.getInstance().getGames().stream()
+                .filter(game -> game.countPlayers() == biggest.get().countPlayers())
+                .filter(waitingGame -> waitingGame.getStatus() == GameStatus.WAITING)
+                .filter(waitingGame -> waitingGame.getFee() > 0 || !fee)
+                .filter(game -> game.countConnectedPlayers() < game.getMaxPlayers())
+                .collect(Collectors.toList());
+
+        return Optional.of(biggestGames.get(MiscUtils.randInt(0, biggestGames.size()-1)));
     }
 
     @Override
