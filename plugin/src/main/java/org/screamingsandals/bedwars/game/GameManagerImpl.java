@@ -23,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.screamingsandals.bedwars.api.game.GameManager;
 import org.screamingsandals.bedwars.api.game.GameStatus;
+import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.bedwars.variants.VariantManagerImpl;
 import org.screamingsandals.lib.plugin.ServiceManager;
 import org.screamingsandals.lib.utils.annotations.Service;
@@ -87,17 +88,25 @@ public class GameManagerImpl implements GameManager<GameImpl> {
     }
 
     @Override
-    public Optional<GameImpl> getGameWithHighestPlayers(boolean fee) {
-        return games.stream()
-                .filter(game -> game.getStatus() == GameStatus.WAITING)
+    public Optional<GameImpl> getGameWithHighestPlayers(boolean fee) {  // If tie choose random one
+        var biggest = GameManagerImpl.getInstance().getGames().stream()
+                .filter(waitingGame -> waitingGame.getStatus() == GameStatus.WAITING)
+                .filter(waitingGame -> waitingGame.getFee() > 0 || !fee)
                 .filter(game -> game.countConnectedPlayers() < game.getMaxPlayers())
-                .filter(game -> {
-                    if (fee) {
-                        return game.getFee() > 0;
-                    }
-                    return true;
-                })
                 .max(Comparator.comparingInt(GameImpl::countConnectedPlayers));
+
+        if (biggest.isEmpty()) {
+            return Optional.empty();
+        }
+
+        var biggestGames = GameManagerImpl.getInstance().getGames().stream()
+                .filter(game -> game.countPlayers() == biggest.get().countPlayers())
+                .filter(waitingGame -> waitingGame.getStatus() == GameStatus.WAITING)
+                .filter(waitingGame -> waitingGame.getFee() > 0 || !fee)
+                .filter(game -> game.countConnectedPlayers() < game.getMaxPlayers())
+                .collect(Collectors.toList());
+
+        return Optional.of(biggestGames.get(MiscUtils.randInt(0, biggestGames.size()-1)));
     }
 
     @Override

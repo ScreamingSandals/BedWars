@@ -36,6 +36,7 @@ import java.util.Optional;
         EconomyProvider.class
 })
 public class JoinCommand extends BaseCommand {
+
     public JoinCommand() {
         super("join", BedWarsPermission.JOIN_PERMISSION, false);
     }
