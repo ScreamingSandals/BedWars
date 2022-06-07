@@ -28,10 +28,7 @@ import java.util.List;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.screamingsandals.bedwars.lib.nms.accessors.PacketPlayOutEntityDestroyAccessor;
-import org.screamingsandals.bedwars.lib.nms.accessors.PacketPlayOutEntityMetadataAccessor;
-import org.screamingsandals.bedwars.lib.nms.accessors.PacketPlayOutEntityTeleportAccessor;
-import org.screamingsandals.bedwars.lib.nms.accessors.PacketPlayOutSpawnEntityLivingAccessor;
+import org.screamingsandals.bedwars.lib.nms.accessors.*;
 import org.screamingsandals.bedwars.lib.nms.entity.ArmorStandNMS;
 import org.screamingsandals.bedwars.lib.nms.entity.EntityNMS;
 import org.screamingsandals.bedwars.lib.nms.utils.ClassStorage;
@@ -221,8 +218,14 @@ public class Hologram {
 					stand.setBasePlate(false);
 					stand.setGravity(false);
 					stand.setMarker(!touchable);
-					Object spawnLivingPacket = PacketPlayOutSpawnEntityLivingAccessor.getConstructor0()
-						.newInstance(stand.getHandler());
+					Object spawnLivingPacket;
+					if (PacketPlayOutSpawnEntityLivingAccessor.getType() != null) {
+						spawnLivingPacket = PacketPlayOutSpawnEntityLivingAccessor.getConstructor0()
+								.newInstance(stand.getHandler());
+					} else {
+						spawnLivingPacket = PacketPlayOutSpawnEntityAccessor.getConstructor0()
+								.newInstance(stand.getHandler());
+					}
 					packets.add(spawnLivingPacket);
 					if (Version.isVersion(1, 15)) {
 						Object metadataPacket = PacketPlayOutEntityMetadataAccessor.getConstructor0()
@@ -310,7 +313,11 @@ public class Hologram {
 		IllegalArgumentException, InvocationTargetException, SecurityException {
 		List<Object> packets = new ArrayList<>();
 		for (ArmorStandNMS entity : entities) {
-			packets.add(PacketPlayOutSpawnEntityLivingAccessor.getConstructor0().newInstance(entity.getHandler()));
+			if (PacketPlayOutSpawnEntityLivingAccessor.getType() != null) {
+				packets.add(PacketPlayOutSpawnEntityLivingAccessor.getConstructor0().newInstance(entity.getHandler()));
+			} else {
+				packets.add(PacketPlayOutSpawnEntityAccessor.getConstructor0().newInstance(entity.getHandler()));
+			}
 			if (Version.isVersion(1, 15)) {
 				Object metadataPacket = PacketPlayOutEntityMetadataAccessor.getConstructor0()
 					.newInstance(
