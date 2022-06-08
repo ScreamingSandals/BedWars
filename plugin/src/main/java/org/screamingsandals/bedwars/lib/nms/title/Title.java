@@ -28,13 +28,6 @@ import org.screamingsandals.bedwars.lib.nms.utils.ClassStorage;
 public class Title {
 	public static void sendTitle(Player player, String title, String subtitle, int fadeIn, int stay, int fadeOut) {
 		try {
-			// I was thinking about fixing this in CraftBukkit, but then I remembered of BuildTools, so here's a workaround
-			if (title.isEmpty()) {
-				title = " ";
-			}
-			if (subtitle.isEmpty()) {
-				subtitle = " ";
-			}
 			player.sendTitle(title, subtitle, fadeIn, stay, fadeOut);
 		} catch (Throwable t) {
 			try {
