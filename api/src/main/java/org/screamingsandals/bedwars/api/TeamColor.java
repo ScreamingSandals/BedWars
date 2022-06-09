@@ -19,24 +19,48 @@
 
 package org.screamingsandals.bedwars.api;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import org.bukkit.inventory.ItemStack;
+
 /**
  * @author Bedwars Team
  */
-public enum TeamColor {
-    BLACK,
-    BLUE,
-    GREEN,
-    RED,
-    MAGENTA,
-    ORANGE,
-    LIGHT_GRAY,
-    GRAY,
-    LIGHT_BLUE,
-    LIME,
-    CYAN,
-    PINK,
-    YELLOW,
-    WHITE,
-    PURPLE,
-    BROWN;
+public abstract class TeamColor {
+
+    public static HashMap<String, TeamColor> values = new HashMap<>();
+    public final String key;
+
+    public TeamColor(String key) {
+        this.key = key;
+    }
+
+    public String name() {
+        return key;
+    }
+
+    public void register() {
+        values.put(key,this);
+    }
+    public void unregister() {
+        values.remove(key);
+    }
+    public static void unregisterAll() {
+        values.clear();
+    }
+
+    public abstract ItemStack getWool(ItemStack stack);
+    public abstract ItemStack getWool();
+
+    public static TeamColor valueOf(String s) {
+        if (values.containsKey(s))
+            return values.get(s);
+        return null;
+    }
+    public static List<TeamColor> apiValues()
+    {
+        return new ArrayList<>(values.values());
+    }
 }

@@ -33,3 +33,4 @@ gradle-app.setting
 .gradletasknamecache
 
 *.hprof
+bin
