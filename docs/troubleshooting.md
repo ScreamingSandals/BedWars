@@ -43,16 +43,107 @@ Make sure your shop is YAML valid with [yamlchecker](https://yamlchecker.com/), 
 Well, you probably have WorldEdit or FastAsyncWorldEdit. The compass is used to teleport through walls. However it works only for people with permission or with OP. You can disable this tool or bound it to another item in WorldEdit configuration. You can also change the team selection item to another one in BedWars configuration.
 
 ## Permissions
-* bw.admin
-* bw.vip.startitem
-* bw.vip.forcejoin
-* bw.otherstats
-* bw.admin.alljoin
-* bw.disable.joinall
-* bw.cmd.join
-* bw.cmd.leave
-* bw.cmd.stats
-* bw.cmd.rejoin
-* bw.cmd.autojoin
-* bw.cmd.list
-* bw.cmd.leaderboard
+* `bw.admin` - Allows you to create/edit an arena, reload the plugin and use the cheat command if enabled.
+* `bw.vip.startitem` - Allows you to start the game using the item. All players will be automatically distributed to teams.
+* `bw.vip.forcejoin` - Allows you to join even if the game is full (player without this permission will be kicked).
+* `bw.otherstats` - Allows you to see stats of other players.
+* `bw.admin.alljoin` - Allows you to use /bw alljoin command.
+* `bw.disable.joinall` - Protects you from effects of /bw alljoin command.
+* `bw.cmd.join` - Allows you to use /bw join command.
+* `bw.cmd.leave` - Allows you to use /bw leave command.
+* `bw.cmd.stats` - Allows you to use /bw stats command.
+* `bw.cmd.rejoin` - Allows you to use /bw rejoin command.
+* `bw.cmd.autojoin` - Allows you to use /bw autojoin command.
+* `bw.cmd.list` - Allows you to use /bw list command.
+* `bw.cmd.leaderboard` - Allows you to use /bw leaderboard command.
+
+Every permission can be prefixed with `misat11.`. Note that this egoism would eventually be removed in a future major release.
+
+All permissions starting with `bw.cmd.` are allowed by default even if the permission is not explicitly given. This can be changed in `config.yml`.
+
+## How do i add start/respawn items?
+You can by doing the following
+
+### Start game
+```yaml
+game-start-items: true
+gived-game-start-items:
+- LEATHER_HELMET
+- LEATHER_BOOTS
+- LEATHER_LEGGINGS
+- LEATHER_CHESTPLATE
+- WOODEN_SWORD
+```
+
+### Respawn
+```yaml
+player-respawn-items: true
+gived-player-respawn-items: 
+- LEATHER_HELMET
+- LEATHER_BOOTS
+- LEATHER_LEGGINGS
+- LEATHER_CHESTPLATE
+- WOODEN_SWORD
+```
+
+## My villagers don't spawn!
+Here is some info on how to troubleshoot this error:
+* Make sure that Mob Spawning is **enabled**
+* You are **NOT** protecting the arena with worldguard
+* Make sure that NPC's are **enabled**
+
+## Are there any visual/particle effects?
+Yes, there are. Check out [this page](config.md#game-effects)
+
+## Can I change damage or explosion power on the Fireball?
+Yes, you can. Go in your config.yml and there are settings for the Fireball.
+It is located under specials, it is not that hard to find 😛
+
+Same goes for basically any other special item. 🙂
+
+## How do i setup the plugin with bungeecord?
+1. Install bedwars **on every game server**.
+2. Open the config.yml file on every game server and modify `bungee.enabled: true` , `bungee.server: yourBungeeLobbyServerName` and `bungee.auto-game-connect: true`
+3. Setup an arena on every game server.
+4. On your lobby server you should setup some plugin for joining the arena. There are some recommended:
+   * Get **BungeeSigns** on your lobby server to teleport players to your game servers with signs.
+   * Get **SimpleInventories** on your lobby server to teleport players to your game server using menus. (You can also use any inventory plugin which supports sending players to other servers)
+5. Configure every game server to your liking. 
+
+## I can't PVP!
+Make sure:
+* It is enabled in MultiVerse (or similar multi-world plugin) and if it is not do `/mvm set pvp true <world name>`.
+* WorldGuard does not disallow fighting in the world where the arena is located (if yes do `/rg flag <region name> pvp allow`);
+* You have `spawn-protection` disabled (set it to 0 in server.properties).
+
+Keep in mind that BedWars **does not moderate PvP**. If PvP does not work for you, it is caused by a misconfiguration or another plugin. If tips above did not help you, please contact us on our Discord server.
+
+## Players are regenerating too quickly/swords deal very little damage!
+That is not a BedWars issue, increase your server's game difficulty (from easy to normal for example).
+
+## How to change arena name?
+First, we will provide no support if you mess this up somehow, **arena files are not supposed to be edited by people**.
+1. Go to your BedWars folder and then to arenas folder. The path should be `plugins/BedWars/arenas`
+2. Open the file you want to change the name
+3. First filled is name, enter your new one. The name cannot look like this `test arena` and always needs to be one string, that means `test-arena`. The name also must be unique, that means you cannot have two arenas with the same name.
+4. Save the file
+5. Restart or reload the server 
+
+## I am getting disconnected with some strange error!!
+That is not our fault. You are probably using version older than `1.9.4`. Nametags, scoreboars and others might be causing that.  
+We ``don't support 1.8.x`` in any way.  
+If you are still having this error on a newer version, feel free to contact us on our Discord server.
+
+## I see message saying something about class version
+`SomeClass has been compiled by a more recent version of the Java Runtime (class file version 55.0), this version of the Java Runtime only recognizes class file versions up to 52.0 (unable to load class SomeClass)`
+This means you are using Java 8 (52.0), but the plugin requires at least Java 11 (55.0), if you want to know how to update, visit [this page](https://docs.papermc.io/java-install-update) (It tells you about updating to Java 17 which can run software for Java 11; similar methods can be used for Java 11)
+
+Currently BedWars LATEST_VERSION_HERE does not require Java 11, however the most famous addon SBA requires at least Java 11. New version of BedWars (0.3.0+) will require at least Java 11.
+
+## I cannot use no as language code
+Well, Yaml specification says that literal `no` means `false`. To use `no` as `no`, you need to cast it to string `locale: "no"`
+
+## Players are getting disconnected from the bedwars game when they die or players respawn in the arena after disconnecting and reconnecting!
+A plugin is overriding player spawns on your server, those might include (but not limited to) EssentialsSpawn, WorldGuard, etc.
+Remove those plugins or disable them in bedwars worlds. 
+
