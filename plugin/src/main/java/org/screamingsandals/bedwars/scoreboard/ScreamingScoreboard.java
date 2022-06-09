@@ -160,7 +160,7 @@ public class ScreamingScoreboard {
         game.getActiveTeams().forEach(team -> {
             if (teamedSidebar.getTeam(team.getName()).isEmpty()) {
                 teamedSidebar.team(team.getName())
-                        .color(SClientboundSetPlayerTeamPacket.TeamColor.valueOf(Color.nearestNamedTo(team.getColor().getTextColor()).toString())) // TODO: a better way
+                        .color(SClientboundSetPlayerTeamPacket.TeamColor.valueOf(Color.nearestNamedTo(team.getColor().getTextColor()).toString().toUpperCase())) // TODO: a better way
                         .friendlyFire(game.getConfigurationContainer().getOrDefault(ConfigurationContainer.FRIENDLY_FIRE, Boolean.class, false));
             }
             var sidebarTeam = teamedSidebar.getTeam(team.getName()).orElseThrow();

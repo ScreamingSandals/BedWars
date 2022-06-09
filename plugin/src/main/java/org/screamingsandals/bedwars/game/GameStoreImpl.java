@@ -126,7 +126,9 @@ public class GameStoreImpl implements GameStore<EntityLiving, EntityTypeHolder, 
             entity = null;
         }
         if (npc != null) {
-            npc.destroy();
+            try {
+                npc.destroy();
+            } catch (Throwable ignored) {} // silently ignore if destroying of entity failed
             npc = null;
         }
         return livingEntity;
