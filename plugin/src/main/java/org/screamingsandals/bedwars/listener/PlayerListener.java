@@ -255,6 +255,10 @@ public class PlayerListener implements Listener {
         if (Main.getConfigurator().config.getBoolean("disable-server-message.player-join")) {
             event.setQuitMessage(null);
         }
+
+        if (Main.isHologramsEnabled()) {
+            Main.getHologramInteraction().cleanupPlayerLeave(event.getPlayer());
+        }
     }
 
     @EventHandler
@@ -988,7 +992,6 @@ public class PlayerListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onJoin(PlayerJoinEvent je) {
-
         final Player player = je.getPlayer();
 
         if (Main.isHologramsEnabled()) {

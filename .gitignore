@@ -31,3 +31,5 @@ CraftBukkit/
 gradle-app.setting
 !gradle-wrapper.jar
 .gradletasknamecache
+
+*.hprof

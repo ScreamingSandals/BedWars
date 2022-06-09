@@ -116,6 +116,8 @@ nmsGen {
         .reqConstructor(Entity)
     reqClass('spigot:PacketPlayOutExperience')
         .reqConstructor(float, int, int)
+    reqClass('spigot:PacketPlayOutSpawnEntity')
+        .reqConstructor(EntityLiving)
     reqClass('spigot:PacketPlayOutSpawnEntityLiving')
         .reqConstructor(EntityLiving)
     reqClass('spigot:PacketPlayOutTitle') // does not exist in 1.17

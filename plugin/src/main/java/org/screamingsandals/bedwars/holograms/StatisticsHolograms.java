@@ -27,6 +27,7 @@ import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.Main;
@@ -93,10 +94,17 @@ public class StatisticsHolograms implements TouchHandler {
 	}
 
 	public void updateHolograms(Player player, long delay) {
-        Main.getInstance().getServer().getScheduler().runTaskLater(Main.getInstance(), () -> {
-        	StatisticsHolograms.this.updateHolograms(player);
-        }, delay);
+        Main.getInstance().getServer().getScheduler().runTaskLater(Main.getInstance(), () -> StatisticsHolograms.this.updateHolograms(player), delay);
 	}
+
+    public void cleanupPlayerLeave(OfflinePlayer player) {
+        final List<Hologram> holos = holograms.get(player.getUniqueId());
+        if (holos != null) {
+            holos.forEach(holo -> holo.destroy());
+            holos.clear();
+            holograms.remove(player.getUniqueId());
+        }
+    }
 
 	public void updateHolograms() {
         for (final Player player : Bukkit.getServer().getOnlinePlayers()) {
@@ -240,6 +248,10 @@ public class StatisticsHolograms implements TouchHandler {
 
         for (int i = 0; i < lines.size(); i++) {
         	holo.setLine(i + increment, lines.get(i));
+        }
+
+        if (!holo.getViewers().contains(player)) {
+            holo.addViewer(player);
         }
     }
 
