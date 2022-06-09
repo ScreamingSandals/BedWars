@@ -2,7 +2,7 @@
 
 Flexible BedWars plugin, formerly coded as a replacement for BedwarsRel.
 
-Supported versions: \[1.9.4 - 1.17.1\], recommended versions: \[1.16.5/1.17.1\].
+Supported versions: \[1.9.4 - 1.18.2\], recommended versions: \[1.16.5/1.18.2\].
 
 ## Support
 

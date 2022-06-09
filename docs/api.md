@@ -1,5 +1,9 @@
 # Using BedWars API
 
+!!! warning
+
+    Note that API is going to be changed in future versions (0.3.0+)
+
 ## Maven
 ```xml
 <repositories>
