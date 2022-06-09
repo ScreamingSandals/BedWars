@@ -33,6 +33,16 @@ import org.screamingsandals.bedwars.Main;
 public class TeamColor extends org.screamingsandals.bedwars.api.TeamColor {
 
     static {
+        initDefaults();
+    }
+
+    public final ChatColor chatColor;
+    public final String material1_13;
+    public final int woolData;
+    public final Color leatherColor;
+
+    public static void initDefaults()
+    {
         new TeamColor("WHITE", ChatColor.WHITE, 0x0, "WHITE", Color.WHITE).register();
         new TeamColor("ORANGE", ChatColor.GOLD, 0x1, "ORANGE", Color.fromRGB(255, 170, 0)).register();
         new TeamColor("MAGENTA", ChatColor.LIGHT_PURPLE, 0x2, "MAGENTA", Color.fromRGB(170, 0, 170)).register();
@@ -49,13 +59,8 @@ public class TeamColor extends org.screamingsandals.bedwars.api.TeamColor {
         new TeamColor("GREEN", ChatColor.DARK_GREEN, 0xD, "GREEN", Color.fromRGB(0, 170, 0)).register();
         new TeamColor("RED", ChatColor.RED, 0xE, "RED", Color.fromRGB(255, 85, 85)).register();
         new TeamColor("BLACK", ChatColor.BLACK, 0xF, "BLACK", Color.BLACK).register();
+    
     }
-
-    public final ChatColor chatColor;
-    public final String material1_13;
-    public final int woolData;
-    public final Color leatherColor;
-
     public TeamColor(String key, ChatColor chatColor, int woolData, String material1_13, Color leatherColor) {
         super(key);
         this.chatColor = chatColor;
