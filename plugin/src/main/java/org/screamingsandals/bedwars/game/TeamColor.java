@@ -56,13 +56,12 @@ public class TeamColor extends org.screamingsandals.bedwars.api.TeamColor {
     public final int woolData;
     public final Color leatherColor;
 
-    TeamColor(String key, ChatColor chatColor, int woolData, String material1_13, Color leatherColor) {
+    public TeamColor(String key, ChatColor chatColor, int woolData, String material1_13, Color leatherColor) {
         super(key);
         this.chatColor = chatColor;
         this.woolData = woolData;
         this.material1_13 = material1_13;
         this.leatherColor = leatherColor;
-
     }
 
     @Override

@@ -20,6 +20,7 @@
 package org.screamingsandals.bedwars.config;
 
 import org.screamingsandals.bedwars.Main;
+import org.screamingsandals.bedwars.game.TeamColor;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Material;
@@ -28,6 +29,8 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.simpleinventories.utils.StackParser;
+
+import net.md_5.bungee.api.ChatColor;
 
 import java.io.File;
 import java.io.IOException;
@@ -86,8 +89,8 @@ public class Configurator {
             if (listOfFiles != null && listOfFiles.length > 0) {
                 for (File file : listOfFiles) {
                     if (file.isFile() && file.getName().startsWith("messages_") && file.getName().endsWith(".yml")) {
-                    	File dest = new File(langFolder, "language_" + file.getName().substring(9));
-                    	file.renameTo(dest);
+                        File dest = new File(langFolder, "language_" + file.getName().substring(9));
+                        file.renameTo(dest);
                     }
                 }
             }
@@ -143,9 +146,12 @@ public class Configurator {
         checkOrSetConfig(modify, "enable-cheat-command-for-admins", false);
         checkOrSetConfig(modify, "shopkeepers-are-silent", true);
 
-        // config migration: "destroy-placed-blocks-by-explosion-except" from string to string list
-        if (config.isSet("destroy-placed-blocks-by-explosion-except") && !config.isList("destroy-placed-blocks-by-explosion-except")) {
-            config.set("destroy-placed-blocks-by-explosion-except", Arrays.asList(config.getString("destroy-placed-blocks-by-explosion-except")));
+        // config migration: "destroy-placed-blocks-by-explosion-except" from string to
+        // string list
+        if (config.isSet("destroy-placed-blocks-by-explosion-except")
+                && !config.isList("destroy-placed-blocks-by-explosion-except")) {
+            config.set("destroy-placed-blocks-by-explosion-except",
+                    Arrays.asList(config.getString("destroy-placed-blocks-by-explosion-except")));
         }
         checkOrSetConfig(modify, "destroy-placed-blocks-by-explosion-except", new ArrayList<>());
 
@@ -190,7 +196,7 @@ public class Configurator {
         checkOrSetConfig(modify, "title.fadeIn", 0);
         checkOrSetConfig(modify, "title.stay", 20);
         checkOrSetConfig(modify, "title.fadeOut", 0);
-        
+
         checkOrSetConfig(modify, "shop.rows", 4);
         checkOrSetConfig(modify, "shop.render-actual-rows", 6);
         checkOrSetConfig(modify, "shop.render-offset", 9);
@@ -200,7 +206,7 @@ public class Configurator {
         checkOrSetConfig(modify, "shop.show-page-numbers", true);
         checkOrSetConfig(modify, "shop.inventory-type", "CHEST");
         checkOrSetConfig(modify, "shop.citizens-enabled", false);
-        
+
         checkOrSetConfig(modify, "items.jointeam", "COMPASS");
         checkOrSetConfig(modify, "items.leavegame", "SLIME_BALL");
         checkOrSetConfig(modify, "items.startgame", "DIAMOND");
@@ -301,11 +307,13 @@ public class Configurator {
         if (config.isSet("specials.throwable-fireball.explosion")) {
             checkOrSetConfig(modify, "specials.throwable-fireball.explosion", null);
         }
-        checkOrSetConfig(modify, "specials.throwable-fireball.damage", config.getDouble("specials.throwable-fireball.explosion", 3.0));
+        checkOrSetConfig(modify, "specials.throwable-fireball.damage",
+                config.getDouble("specials.throwable-fireball.explosion", 3.0));
         checkOrSetConfig(modify, "specials.throwable-fireball.incendiary", true);
         checkOrSetConfig(modify, "specials.throwable-fireball.damage-thrower", true);
         checkOrSetConfig(modify, "specials.auto-igniteable-tnt.explosion-time", config.getInt("tnt.explosion-time", 8));
-        checkOrSetConfig(modify, "specials.auto-igniteable-tnt.damage-placer", !config.getBoolean("tnt.dont-damage-placer"));
+        checkOrSetConfig(modify, "specials.auto-igniteable-tnt.damage-placer",
+                !config.getBoolean("tnt.dont-damage-placer"));
         checkOrSetConfig(modify, "specials.auto-igniteable-tnt.damage", 4.0);
 
         if (config.isSet("tnt.auto-ignite")) {
@@ -314,43 +322,57 @@ public class Configurator {
         }
 
         if (config.isSet("tnt.explosion-time")) {
-            /* Config migration: tnt.explosion-time has been replaced with specials.auto-igniteable-tnt.explosion-time */
+            /*
+             * Config migration: tnt.explosion-time has been replaced with
+             * specials.auto-igniteable-tnt.explosion-time
+             */
             config.set("tnt.explosion-time", null);
         }
 
         if (config.isSet("tnt.dont-damage-placer")) {
-            /* Config migration: tnt.dont-damage-placer has been replaced with specials.auto-igniteable-tnt.damage-placer with inverted value */
+            /*
+             * Config migration: tnt.dont-damage-placer has been replaced with
+             * specials.auto-igniteable-tnt.damage-placer with inverted value
+             */
             config.set("tnt.dont-damage-placer", null);
         }
-        
-        checkOrSetConfig(modify, "sounds.bed_destroyed.sound", config.getString("sounds.on_bed_destroyed", "ENTITY_ENDER_DRAGON_GROWL"));
+
+        checkOrSetConfig(modify, "sounds.bed_destroyed.sound",
+                config.getString("sounds.on_bed_destroyed", "ENTITY_ENDER_DRAGON_GROWL"));
         checkOrSetConfig(modify, "sounds.bed_destroyed.volume", 1);
         checkOrSetConfig(modify, "sounds.bed_destroyed.pitch", 1);
-        checkOrSetConfig(modify, "sounds.my_bed_destroyed.sound", config.getString("sounds.on_bed_destroyed", "ENTITY_ENDER_DRAGON_GROWL"));
+        checkOrSetConfig(modify, "sounds.my_bed_destroyed.sound",
+                config.getString("sounds.on_bed_destroyed", "ENTITY_ENDER_DRAGON_GROWL"));
         checkOrSetConfig(modify, "sounds.my_bed_destroyed.volume", 1);
         checkOrSetConfig(modify, "sounds.my_bed_destroyed.pitch", 1);
         checkOrSetConfig(modify, "sounds.countdown.sound", config.getString("sounds.on_countdown", "UI_BUTTON_CLICK"));
         checkOrSetConfig(modify, "sounds.countdown.volume", 1);
         checkOrSetConfig(modify, "sounds.countdown.pitch", 1);
-        checkOrSetConfig(modify, "sounds.game_start.sound", config.getString("sounds.on_game_start", "ENTITY_PLAYER_LEVELUP"));
+        checkOrSetConfig(modify, "sounds.game_start.sound",
+                config.getString("sounds.on_game_start", "ENTITY_PLAYER_LEVELUP"));
         checkOrSetConfig(modify, "sounds.game_start.volume", 1);
         checkOrSetConfig(modify, "sounds.game_start.pitch", 1);
-        checkOrSetConfig(modify, "sounds.team_kill.sound", config.getString("sounds.on_team_kill", "ENTITY_PLAYER_LEVELUP"));
+        checkOrSetConfig(modify, "sounds.team_kill.sound",
+                config.getString("sounds.on_team_kill", "ENTITY_PLAYER_LEVELUP"));
         checkOrSetConfig(modify, "sounds.team_kill.volume", 1);
         checkOrSetConfig(modify, "sounds.team_kill.pitch", 1);
-        checkOrSetConfig(modify, "sounds.player_kill.sound", config.getString("sounds.on_player_kill", "ENTITY_PLAYER_BIG_FALL"));
+        checkOrSetConfig(modify, "sounds.player_kill.sound",
+                config.getString("sounds.on_player_kill", "ENTITY_PLAYER_BIG_FALL"));
         checkOrSetConfig(modify, "sounds.player_kill.volume", 1);
         checkOrSetConfig(modify, "sounds.player_kill.pitch", 1);
         checkOrSetConfig(modify, "sounds.item_buy.sound", config.getString("sounds.on_item_buy", "ENTITY_ITEM_PICKUP"));
         checkOrSetConfig(modify, "sounds.item_buy.volume", 1);
         checkOrSetConfig(modify, "sounds.item_buy.pitch", 1);
-        checkOrSetConfig(modify, "sounds.upgrade_buy.sound", config.getString("sounds.on_upgrade_buy", "ENTITY_EXPERIENCE_ORB_PICKUP"));
+        checkOrSetConfig(modify, "sounds.upgrade_buy.sound",
+                config.getString("sounds.on_upgrade_buy", "ENTITY_EXPERIENCE_ORB_PICKUP"));
         checkOrSetConfig(modify, "sounds.upgrade_buy.volume", 1);
         checkOrSetConfig(modify, "sounds.upgrade_buy.pitch", 1);
-        checkOrSetConfig(modify, "sounds.respawn_cooldown_wait.sound", config.getString("sounds.on_respawn_cooldown_wait", "UI_BUTTON_CLICK"));
+        checkOrSetConfig(modify, "sounds.respawn_cooldown_wait.sound",
+                config.getString("sounds.on_respawn_cooldown_wait", "UI_BUTTON_CLICK"));
         checkOrSetConfig(modify, "sounds.respawn_cooldown_wait.volume", 1);
         checkOrSetConfig(modify, "sounds.respawn_cooldown_wait.pitch", 1);
-        checkOrSetConfig(modify, "sounds.respawn_cooldown_done.sound", config.getString("sounds.on_respawn_cooldown_done", "ENTITY_PLAYER_LEVELUP"));
+        checkOrSetConfig(modify, "sounds.respawn_cooldown_done.sound",
+                config.getString("sounds.on_respawn_cooldown_done", "ENTITY_PLAYER_LEVELUP"));
         checkOrSetConfig(modify, "sounds.respawn_cooldown_done.volume", 1);
         checkOrSetConfig(modify, "sounds.respawn_cooldown_done.pitch", 1);
 
@@ -447,9 +469,9 @@ public class Configurator {
         checkOrSetConfig(modify, "chat.separate-chat.lobby", config.get("chat.separate-game-chat", false));
         checkOrSetConfig(modify, "chat.separate-chat.game", config.get("chat.separate-game-chat", false));
         if (config.isSet("chat.separate-game-chat")) {
-        	config.set("chat.separate-game-chat", null);
+            config.set("chat.separate-game-chat", null);
         }
-        
+
         checkOrSetConfig(modify, "chat.send-death-messages-just-in-game", true);
         checkOrSetConfig(modify, "chat.send-custom-death-messages", true);
         checkOrSetConfig(modify, "chat.default-team-chat-while-running", true);
@@ -491,7 +513,8 @@ public class Configurator {
         checkOrSetConfig(modify, "lore.text",
                 Arrays.asList("§7Price:", "§7%price% %resource%", "§7Amount:", "§7%amount%"));
 
-        checkOrSetConfig(modify, "sign.lines", config.getList("sign", Arrays.asList("§c§l[BedWars]", "%arena%", "%status%", "%players%")));
+        checkOrSetConfig(modify, "sign.lines",
+                config.getList("sign", Arrays.asList("§c§l[BedWars]", "%arena%", "%status%", "%players%")));
 
         checkOrSetConfig(modify, "sign.block-behind.enabled", false);
         checkOrSetConfig(modify, "sign.block-behind.waiting", "ORANGE_STAINED_GLASS");
@@ -510,9 +533,9 @@ public class Configurator {
 
         checkOrSetConfig(modify, "leaveshortcuts.enabled", false);
         checkOrSetConfig(modify, "leaveshortcuts.list", new ArrayList<String>() {
-        	{
-        		add("leave");
-        	}
+            {
+                add("leave");
+            }
         });
 
         checkOrSetConfig(modify, "mainlobby.enabled", false);
@@ -547,9 +570,11 @@ public class Configurator {
 
         checkOrSetConfig(modify, "tab.enable", false);
         checkOrSetConfig(modify, "tab.header.enabled", true);
-        checkOrSetConfig(modify, "tab.header.contents", Arrays.asList("&aMy awesome BedWars server", "&bMap: %map%", "&cPlayers: %respawnable%/%max%"));
+        checkOrSetConfig(modify, "tab.header.contents",
+                Arrays.asList("&aMy awesome BedWars server", "&bMap: %map%", "&cPlayers: %respawnable%/%max%"));
         checkOrSetConfig(modify, "tab.footer.enabled", true);
-        checkOrSetConfig(modify, "tab.footer.contents", Arrays.asList("&eexample.com", "&fWow!!", "§a%spectators% are watching this match"));
+        checkOrSetConfig(modify, "tab.footer.contents",
+                Arrays.asList("&eexample.com", "&fWow!!", "§a%spectators% are watching this match"));
         checkOrSetConfig(modify, "tab.hide-spectators", true);
         checkOrSetConfig(modify, "tab.hide-foreign-players", false);
 
@@ -566,6 +591,9 @@ public class Configurator {
         checkOrSetConfig(modify, "party.autojoin-members", false);
         checkOrSetConfig(modify, "party.notify-when-warped", true);
 
+        checkOrSetConfig(modify, "teamcolor", "default");
+        handleTeamColor("teamcolor");
+
         checkOrSetConfig(modify, "version", 2);
 
         if (modify.get()) {
@@ -575,6 +603,34 @@ public class Configurator {
                 e.printStackTrace();
             }
         }
+    }
+
+    private void handleTeamColor(String string) {
+        if (config.isString(string))
+            return; // Using default colors
+        TeamColor.unregisterAll();
+        for (String name : config.getConfigurationSection(string).getKeys(false)) {
+            String chatColor = Main.getConfigurator().config.getString(string + "." + name + ".chatColor");
+            String leather = Main.getConfigurator().config.getString(string + "." + name + ".leather");
+            String wool = Main.getConfigurator().config.getString(string + "." + name + ".wool");
+            int woolData = 0;
+            if (Main.isLegacy()) {
+                woolData= Integer.parseInt(wool, 16);
+            }
+            Color leatherAsColor = Color.fromBGR(Integer.parseInt(prepareHexColorString(leather),16));
+            TeamColor teamColor = new TeamColor(name, org.bukkit.ChatColor.valueOf(chatColor), woolData, wool, leatherAsColor);
+            teamColor.register();
+            //Main.getInstance().getLogger().info(name+":"+chatColor+":"+leather+":"+wool);
+        }
+    }
+
+    private String prepareHexColorString(String leather) {
+        String workString = leather.replace("#", "");
+        if(workString.length()==6)
+        {
+            workString = workString.substring(4, 6) + workString.substring(2, 4)+workString.substring(0, 2);
+        }
+        return workString;
     }
 
     public void saveConfig() {
