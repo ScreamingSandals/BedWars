@@ -30,14 +30,10 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.simpleinventories.utils.StackParser;
 
-import net.md_5.bungee.api.ChatColor;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import javax.lang.model.util.ElementScanner14;
 
 public class Configurator {
     public File configFile, shopFile, signsFile, recordFile, langFolder;
@@ -609,20 +605,20 @@ public class Configurator {
 
     private void handleTeamColor(String string) {
         
-        TeamColor.unregisterAll();
+        org.screamingsandals.bedwars.api.TeamColor.unregisterAll();
         if (config.isConfigurationSection(string))
         {
             for (String name : config.getConfigurationSection(string).getKeys(false)) {
-                String chatColor = Main.getConfigurator().config.getString(string + "." + name + ".chatColor");
-                String leather = Main.getConfigurator().config.getString(string + "." + name + ".leather");
-                String wool = Main.getConfigurator().config.getString(string + "." + name + ".wool");
+                String chatColor = config.getString(string + "." + name + ".chatColor");
+                String leather = config.getString(string + "." + name + ".leather");
+                String wool = config.getString(string + "." + name + ".wool");
                 int woolData = 0;
                 if (Main.isLegacy()) {
                     woolData= Integer.parseInt(wool, 16);
                 }
                 Color leatherAsColor = Color.fromBGR(Integer.parseInt(prepareHexColorString(leather),16));
                 TeamColor teamColor = new TeamColor(name, org.bukkit.ChatColor.valueOf(chatColor), woolData, wool, leatherAsColor);
-                teamColor.register();
+                org.screamingsandals.bedwars.api.TeamColor.register(teamColor);
                 //Main.getInstance().getLogger().info(name+":"+chatColor+":"+leather+":"+wool);
             }
         }

@@ -22,45 +22,98 @@ package org.screamingsandals.bedwars.api;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.bukkit.inventory.ItemStack;
 
 /**
  * @author Bedwars Team
  */
-public abstract class TeamColor {
+public final class TeamColor {
 
-    public static HashMap<String, TeamColor> values = new HashMap<>();
-    public final String key;
+    static Map<String, TeamColor> VALUES = new HashMap<>();
 
-    public TeamColor(String key) {
-        this.key = key;
+    public static final TeamColor BLACK = new TeamColor("BLACK");
+    public static final TeamColor BLUE = new TeamColor("BLUE");
+    public static final TeamColor GREEN = new TeamColor("GREEN");
+    public static final TeamColor RED = new TeamColor("RED");
+    public static final TeamColor MAGENTA = new TeamColor("MAGENTA");
+    public static final TeamColor ORANGE = new TeamColor("ORANGE");
+    public static final TeamColor LIGHT_GRAY = new TeamColor("LIGHT_GRAY");
+    public static final TeamColor GRAY = new TeamColor("GRAY");
+    public static final TeamColor LIGHT_BLUE = new TeamColor("LIGHT_BLUE");
+    public static final TeamColor LIME = new TeamColor("LIME");
+    public static final TeamColor CYAN = new TeamColor("CYAN");
+    public static final TeamColor PINK = new TeamColor("PINK");
+    public static final TeamColor YELLOW = new TeamColor("YELLOW");
+    public static final TeamColor WHITE = new TeamColor("WHITE");
+    public static final TeamColor PURPLE = new TeamColor("PURPLE");
+    public static final TeamColor BROWN = new TeamColor("BROWN");
+    static {
+        initDefaults();
     }
-
-    public String name() {
+    public static void initDefaults()
+    {
+        unregisterAll();
+        register(WHITE);
+        register(ORANGE);
+        register(MAGENTA);
+        register(LIGHT_BLUE);
+        register(YELLOW);
+        register(LIME);
+        register(PINK);
+        register(GRAY);
+        register(LIGHT_GRAY);
+        register(CYAN);
+        register(PURPLE);
+        register(BLUE);
+        register(BROWN);
+        register(GREEN);
+        register(RED);
+        register(BLACK);
+    }
+    private String key;
+    public TeamColor(String key)
+    {
+        this.key=key;
+    }
+    
+    public String name()
+    {
         return key;
     }
 
-    public void register() {
-        values.put(key,this);
+    public int ordinal()
+    {
+        return VALUES.keySet().stream().toList().indexOf(name());
     }
-    public void unregister() {
-        values.remove(key);
-    }
-    public static void unregisterAll() {
-        values.clear();
-    }
-
-    public abstract ItemStack getWool(ItemStack stack);
-    public abstract ItemStack getWool();
 
     public static TeamColor valueOf(String s) {
-        if (values.containsKey(s))
-            return values.get(s);
-        return null;
+        return VALUES.get(s.toUpperCase());
     }
-    public static List<TeamColor> apiValues()
+
+    public static void register(TeamColor color) {
+        VALUES.put(color.name().toUpperCase(), color);
+    }
+
+    public static void unregister(TeamColor color) {
+        VALUES.remove(color.name().toUpperCase());
+    }
+
+    public static void unregisterAll() {
+        VALUES.clear();
+    }
+
+    public static List<TeamColor> values() {
+        return new ArrayList<>(VALUES.values());
+    }
+    public Class<TeamColor> getDeclaringClass()
     {
-        return new ArrayList<>(values.values());
+        return TeamColor.class;
     }
+    @Override
+    public String toString() {
+        return name();
+    }
+
 }
