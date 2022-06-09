@@ -19,10 +19,6 @@
 
 package org.screamingsandals.bedwars.listener;
 
-import net.kyori.adventure.sound.Sound;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
@@ -73,10 +69,13 @@ import org.screamingsandals.lib.event.player.*;
 import org.screamingsandals.lib.item.builder.ItemFactory;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.player.PlayerWrapper;
+import org.screamingsandals.lib.spectator.Color;
+import org.screamingsandals.lib.spectator.Component;
+import org.screamingsandals.lib.spectator.sound.SoundSource;
+import org.screamingsandals.lib.spectator.sound.SoundStart;
 import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
 import org.screamingsandals.lib.tasker.task.TaskerTask;
-import org.screamingsandals.lib.utils.AdventureHelper;
 import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.utils.annotations.methods.OnPostEnable;
 import org.screamingsandals.lib.utils.annotations.parameters.ProvidedBy;
@@ -142,15 +141,15 @@ public class PlayerListener {
 
                             deathMessageMsg = Message.of(LangKeys.IN_GAME_PLAYER_KILLED)
                                     .prefixOrDefault(game.getCustomPrefixComponent())
-                                    .placeholder("victim", victim.getDisplayName().color(victimColor))
-                                    .placeholder("killer", killer.getDisplayName().color(killerColor))
-                                    .placeholder("victimteam", Component.text(victimTeam.getName()).color(victimColor))
-                                    .placeholder("killerteam", Component.text(killerTeam.getName()).color(killerColor));
+                                    .placeholder("victim", victim.getDisplayName().withColor(victimColor))
+                                    .placeholder("killer", killer.getDisplayName().withColor(killerColor))
+                                    .placeholder("victimteam", Component.text(victimTeam.getName(), victimColor))
+                                    .placeholder("killerteam", Component.text(killerTeam.getName(), killerColor));
                         } else {
                             deathMessageMsg = Message.of(LangKeys.IN_GAME_PLAYER_SELF_KILLED)
                                     .prefixOrDefault(game.getCustomPrefixComponent())
-                                    .placeholder("victim", victim.getDisplayName().color(victimColor))
-                                    .placeholder("victimteam", Component.text(victimTeam.getName()).color(victimColor));
+                                    .placeholder("victim", victim.getDisplayName().withColor(victimColor))
+                                    .placeholder("victimteam", Component.text(victimTeam.getName(), victimColor));
                         }
 
                     }
@@ -174,16 +173,16 @@ public class PlayerListener {
                         var c = charges - 1;
                         team.getTargetBlock().getBlock().setType(anchor.with("charges", String.valueOf(c)));
                         if (c == 0) {
-                            team.getTargetBlock().getWorld().playSound(Sound.sound(
+                            team.getTargetBlock().getWorld().playSound(SoundStart.sound(
                                     SpecialSoundKey.key(MainConfig.getInstance().node("target-block", "respawn-anchor", "sound", "deplete").getString("block.respawn_anchor.deplete")),
-                                    Sound.Source.BLOCK,
+                                    SoundSource.BLOCK,
                                     1,
                                     1
                             ), team.getTargetBlock().getX(), team.getTargetBlock().getY(), team.getTargetBlock().getZ());
                         } else {
-                            team.getTargetBlock().getWorld().playSound(Sound.sound(
+                            team.getTargetBlock().getWorld().playSound(SoundStart.sound(
                                     SpecialSoundKey.key(MainConfig.getInstance().node("target-block", "respawn-anchor", "sound", "deplete").getString("block.glass.break")),
-                                    Sound.Source.BLOCK,
+                                    SoundSource.BLOCK,
                                     1,
                                     1
                             ), team.getTargetBlock().getX(), team.getTargetBlock().getY(), team.getTargetBlock().getZ());
@@ -220,16 +219,16 @@ public class PlayerListener {
                         if (team.isDead()) {
                             SpawnEffects.spawnEffect(game, gVictim, "game-effects.teamkill");
 
-                            killer.playSound(Sound.sound(
+                            killer.playSound(SoundStart.sound(
                                     SpecialSoundKey.key(MainConfig.getInstance().node("sounds", "team_kill", "sound").getString("entity.player.levelup")),
-                                    Sound.Source.AMBIENT,
+                                    SoundSource.AMBIENT,
                                     (float) MainConfig.getInstance().node("sounds", "team_kill", "volume").getDouble(),
                                     (float) MainConfig.getInstance().node("sounds", "team_kill", "pitch").getDouble()
                             ));
                         } else {
-                            killer.playSound(Sound.sound(
+                            killer.playSound(SoundStart.sound(
                                     SpecialSoundKey.key(MainConfig.getInstance().node("sounds", "player_kill", "sound").getString("entity.generic.big_fall")),
-                                    Sound.Source.AMBIENT,
+                                    SoundSource.AMBIENT,
                                     (float) MainConfig.getInstance().node("sounds", "player_kill", "volume").getDouble(),
                                     (float) MainConfig.getInstance().node("sounds", "player_kill", "pitch").getDouble()
                             ));
@@ -291,9 +290,9 @@ public class PlayerListener {
                                                 .placeholder("time", livingTime.get())
                                                 .times(TitleUtils.defaultTimes())
                                                 .title(gVictim);
-                                        gVictim.playSound(Sound.sound(
+                                        gVictim.playSound(SoundStart.sound(
                                                 SpecialSoundKey.key(MainConfig.getInstance().node("sounds", "respawn_cooldown_wait", "sound").getString("block.stone_button.click_on")),
-                                                Sound.Source.AMBIENT,
+                                                SoundSource.AMBIENT,
                                                 (float) MainConfig.getInstance().node("sounds", "respawn_cooldown_wait", "volume").getDouble(),
                                                 (float) MainConfig.getInstance().node("sounds", "respawn_cooldown_wait", "pitch").getDouble()
                                         ));
@@ -303,9 +302,9 @@ public class PlayerListener {
                                     if (livingTime.get() == 0) {
                                         game.makePlayerFromSpectator(gVictim);
                                         gVictim.playSound(
-                                                Sound.sound(
+                                                SoundStart.sound(
                                                         SpecialSoundKey.key(MainConfig.getInstance().node("sounds", "respawn_cooldown_done", "sound").getString("ui.button.click")),
-                                                        Sound.Source.AMBIENT,
+                                                        SoundSource.AMBIENT,
                                                         (float) MainConfig.getInstance().node("sounds", "respawn_cooldown_done", "volume").getDouble(1),
                                                         (float) MainConfig.getInstance().node("sounds", "respawn_cooldown_done", "pitch").getDouble(1)
                                                 )
@@ -991,9 +990,9 @@ public class PlayerListener {
                                     clickedBlock.setType(anchor.with("charges", String.valueOf(charges)));
                                     stack.changeAmount(stack.getAmount() - 1);
 
-                                    clickedBlock.getLocation().getWorld().playSound(Sound.sound(
+                                    clickedBlock.getLocation().getWorld().playSound(SoundStart.sound(
                                             SpecialSoundKey.key(MainConfig.getInstance().node("target-block", "respawn-anchor", "sound", "charge").getString("block.respawn_anchor.charge")),
-                                            Sound.Source.BLOCK,
+                                            SoundSource.BLOCK,
                                             1,
                                             1
                                     ), clickedBlock.getLocation().getX(), clickedBlock.getLocation().getY(), clickedBlock.getLocation().getZ());
@@ -1015,9 +1014,9 @@ public class PlayerListener {
                                     } else {
                                         stack.changeAmount(stack.getAmount() - 1);
                                         // TODO get right block place sound
-                                        block.getLocation().getWorld().playSound(Sound.sound(
+                                        block.getLocation().getWorld().playSound(SoundStart.sound(
                                                 SpecialSoundKey.key("minecraft:block.stone.place"),
-                                                Sound.Source.BLOCK, 1, 1
+                                                SoundSource.BLOCK, 1, 1
                                         ), block.getLocation().getX(), block.getLocation().getY(), block.getLocation().getZ());
                                     }
                                 }
@@ -1125,7 +1124,7 @@ public class PlayerListener {
             if (game.getStatus() != GameStatus.WAITING) {
                 return;
             }
-            var displayName = PlainTextComponentSerializer.plainText().serializeOrNull(entity.getCustomName());
+            var displayName = entity.getCustomName() != null ? entity.getCustomName().toPlainText() : null;
 
             for (var team : game.getTeams()) {
                 if (team.getName().equals(displayName)) {
@@ -1151,7 +1150,7 @@ public class PlayerListener {
             var living = (EntityLiving) entity;
             living.setRemoveWhenFarAway(false);
             living.setCanPickupItems(false);
-            living.setCustomName(Component.text(value.getName()).color(value.getColor().getTextColor()));
+            living.setCustomName(Component.text(value.getName(), value.getColor().getTextColor()));
             living.setCustomNameVisible(MainConfig.getInstance().node("jointeam-entity-show-name").getBoolean(true));
 
             if (living.getEntityType().is("armor_stand")) {
@@ -1183,21 +1182,21 @@ public class PlayerListener {
 
             String format = MainConfig.getInstance().node("chat", "format").getString("<%teamcolor%%name%§r> ");
             if (team != null) {
-                format = format.replace("%teamcolor%", AdventureHelper.toLegacyColorCode(team.getColor().getTextColor()));
+                format = format.replace("%teamcolor%", MiscUtils.toLegacyColorCode(team.getColor().getTextColor()));
                 format = format.replace("%team%", team.getName());
-                format = format.replace("%coloredteam%", AdventureHelper.toLegacy(Component.text(team.getName()).color(team.getColor().getTextColor())));
+                format = format.replace("%coloredteam%", Component.text(team.getName()).withColor(team.getColor().getTextColor()).toLegacy());
             } else if (spectator) {
-                format = format.replace("%teamcolor%", AdventureHelper.toLegacyColorCode(NamedTextColor.GRAY));
+                format = format.replace("%teamcolor%", MiscUtils.toLegacyColorCode(Color.GRAY));
                 format = format.replace("%team%", "SPECTATOR");
                 format = format.replace("%coloredteam%", ChatColor.GRAY + "SPECTATOR");
             } else {
-                format = format.replace("%teamcolor%", AdventureHelper.toLegacyColorCode(NamedTextColor.GRAY));
+                format = format.replace("%teamcolor%", MiscUtils.toLegacyColorCode(Color.GRAY));
                 format = format.replace("%team%", "");
-                format = format.replace("%coloredteam%", AdventureHelper.toLegacyColorCode(NamedTextColor.GRAY));
+                format = format.replace("%coloredteam%", MiscUtils.toLegacyColorCode(Color.GRAY));
             }
             format = format.replace("%name%", playerName);
-            format = format.replace("%displayName%", AdventureHelper.toLegacy(displayName));
-            format = format.replace("%playerListName%", AdventureHelper.toLegacyNullable(playerListName));
+            format = format.replace("%displayName%", displayName.toLegacy());
+            format = format.replace("%playerListName%", playerListName == null ? "" : playerListName.toLegacy());
 
             if (economy != null && economy instanceof VaultEconomy) {
                 format = format.replace("%prefix%", ((VaultEconomy) economy).getPrefix(player));
@@ -1207,7 +1206,7 @@ public class PlayerListener {
             format = format.replace("%prefix%", "");
             format = format.replace("%suffix%", "");
 
-            format = AdventureHelper.translateAlternateColorCodes('&', format);
+            format = MiscUtils.translateAlternateColorCodes('&', format);
 
             boolean teamChat = MainConfig.getInstance().node("chat", "default-team-chat-while-running").getBoolean(true)
                     && game.getStatus() == GameStatus.RUNNING && (team != null || spectator);

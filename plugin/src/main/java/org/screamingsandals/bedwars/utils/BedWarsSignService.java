@@ -22,8 +22,6 @@ package org.screamingsandals.bedwars.utils;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.plain.PlainComponentSerializer;
 import org.screamingsandals.bedwars.commands.BedWarsPermission;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.game.GameManagerImpl;
@@ -34,8 +32,8 @@ import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.plugin.ServiceManager;
 import org.screamingsandals.lib.signs.AbstractSignManager;
 import org.screamingsandals.lib.signs.ClickableSign;
+import org.screamingsandals.lib.spectator.Component;
 import org.screamingsandals.lib.tasker.Tasker;
-import org.screamingsandals.lib.utils.AdventureHelper;
 import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.utils.annotations.parameters.ConfigFile;
 import org.screamingsandals.lib.block.BlockMapper;
@@ -80,7 +78,7 @@ public class BedWarsSignService extends AbstractSignManager {
 
     @Override
     protected Optional<String> normalizeKey(Component key) {
-        var key2 = PlainComponentSerializer.plain().serialize(key);
+        var key2 = key.toPlainText();
         if (gameManager.hasGame(key2)) {
             return Optional.of(key2);
         }
@@ -109,11 +107,11 @@ public class BedWarsSignService extends AbstractSignManager {
                 .stream()
                 .map(ConfigurationNode::getString)
                 .map(s -> Objects.requireNonNullElse(s, "")
-                        .replaceAll("%arena%", AdventureHelper.toLegacy(Message.of(LangKeys.IN_GAME_LOBBY_ITEMS_LEAVE_FROM_GAME_ITEM).getForAnyoneJoined()))
+                        .replaceAll("%arena%", Message.of(LangKeys.IN_GAME_LOBBY_ITEMS_LEAVE_FROM_GAME_ITEM).getForAnyoneJoined().toLegacy())
                         .replaceAll("%status%", "")
                         .replaceAll("%players%", "")
                 )
-                .map(AdventureHelper::toComponent)
+                .map(Component::fromLegacy)
                 .collect(Collectors.toList());
 
         clickableSign.getLocation().asOptional(LocationHolder.class)
@@ -144,7 +142,7 @@ public class BedWarsSignService extends AbstractSignManager {
 
     @Override
     protected boolean isFirstLineValid(Component firstLine) {
-        var line = PlainComponentSerializer.plain().serialize(firstLine);
+        var line = firstLine.toPlainText();
         return "[bedwars]".equalsIgnoreCase(line) || "[bwgame]".equalsIgnoreCase(line);
     }
 

@@ -20,10 +20,7 @@
 package org.screamingsandals.bedwars.utils;
 
 import lombok.experimental.UtilityClass;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextColor;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.api.TeamColor;
@@ -39,6 +36,8 @@ import org.screamingsandals.lib.item.Item;
 import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.sender.SenderMessage;
+import org.screamingsandals.lib.spectator.Color;
+import org.screamingsandals.lib.spectator.Component;
 import org.screamingsandals.lib.utils.BlockFace;
 import org.screamingsandals.lib.utils.MathUtils;
 import org.screamingsandals.lib.world.LocationHolder;
@@ -56,16 +55,53 @@ public class MiscUtils {
     private final Pattern STRIP_COLOR_PATTERN = Pattern.compile("(?i)\u00A7[0-9A-FK-ORX]");
     public final LocationHolder MAX_LOCATION = new LocationHolder(Double.MAX_VALUE, 256D, Double.MAX_VALUE);
     public final LocationHolder MIN_LOCATION = new LocationHolder(Double.MIN_VALUE, 0D, Double.MIN_VALUE);
-    public final Component BW_PREFIX = Component.text("[")
-            .color(NamedTextColor.WHITE)
+    public final Component BW_PREFIX = Component.text()
+            .content("[")
+            .color(Color.WHITE)
             .append(
-                    Component.text("B")
-                            .color(NamedTextColor.RED)
+                    Component.text("B", Color.RED),
+                    Component.text("W] ", Color.WHITE)
             )
-            .append(
-                    Component.text("W] ")
-                            .color(NamedTextColor.WHITE)
-            );
+            .build();
+
+
+    public static final Map<Integer, Color> ID_TO_COLOR_MAP = Map.ofEntries(
+            Map.entry(0, Color.BLACK),
+            Map.entry(1, Color.DARK_BLUE),
+            Map.entry(2, Color.DARK_GREEN),
+            Map.entry(3, Color.DARK_AQUA),
+            Map.entry(4, Color.DARK_RED),
+            Map.entry(5, Color.DARK_PURPLE),
+            Map.entry(6, Color.GOLD),
+            Map.entry(7, Color.GRAY),
+            Map.entry(8, Color.DARK_GRAY),
+            Map.entry(9, Color.BLUE),
+            Map.entry(10, Color.GREEN),
+            Map.entry(11, Color.AQUA),
+            Map.entry(12, Color.RED),
+            Map.entry(13, Color.LIGHT_PURPLE),
+            Map.entry(14, Color.YELLOW),
+            Map.entry(15, Color.WHITE)
+    );
+
+    public static final Map<Color, Integer> COLOR_TO_ID_MAP = Map.ofEntries(
+            Map.entry(Color.BLACK, 0),
+            Map.entry(Color.DARK_BLUE, 1),
+            Map.entry(Color.DARK_GREEN, 2),
+            Map.entry(Color.DARK_AQUA, 3),
+            Map.entry(Color.DARK_RED, 4),
+            Map.entry(Color.DARK_PURPLE, 5),
+            Map.entry(Color.GOLD, 6),
+            Map.entry(Color.GRAY, 7),
+            Map.entry(Color.DARK_GRAY, 8),
+            Map.entry(Color.BLUE, 9),
+            Map.entry(Color.GREEN, 10),
+            Map.entry(Color.AQUA, 11),
+            Map.entry(Color.RED, 12),
+            Map.entry(Color.LIGHT_PURPLE, 13),
+            Map.entry(Color.YELLOW, 14),
+            Map.entry(Color.WHITE, 15)
+    );
 
     /**
      * From BedWarsRel (Tweaked to use same instance each time)
@@ -86,8 +122,8 @@ public class MiscUtils {
         return null;
     }
 
-    public NamedTextColor fromLegacyColorCode(String colorCode) {
-        return NamedTextColor.ofExact(Integer.parseInt(colorCode.replace(String.valueOf(LegacyComponentSerializer.SECTION_CHAR), ""), 16));
+    public Color fromLegacyColorCode(String colorCode) {
+        return ID_TO_COLOR_MAP.getOrDefault(Integer.parseInt(colorCode.replace("§", ""), 16), Color.WHITE);
     }
 
     public BlockFace getCardinalDirection(LocationHolder location) {
@@ -354,24 +390,12 @@ public class MiscUtils {
         }
     }
 
-    public static TextColor getColor(@Nullable String color) {
-        if (color == null) {
-            return NamedTextColor.WHITE;
+    public static Color getColor(@Nullable String color) {
+        var val = Color.hexOrName(color);
+        if (val == null) {
+            return Color.WHITE;
         }
-
-        if (color.startsWith("#")) {
-            var val = TextColor.fromCSSHexString(color);
-            if (val == null) {
-                return NamedTextColor.WHITE;
-            }
-            return val;
-        } else {
-            var val = NamedTextColor.NAMES.value(color.toLowerCase());
-            if (val == null) {
-                return NamedTextColor.WHITE;
-            }
-            return val;
-        }
+        return val;
     }
 
     public Path getPluginsFolder(String name) {
@@ -389,5 +413,22 @@ public class MiscUtils {
             return radial[Math.round(yaw / 45f) & 0x7].getOppositeFace();
 
         return axis[Math.round(yaw / 90f) & 0x3].getOppositeFace();
+    }
+
+
+    @NotNull
+    public String translateAlternateColorCodes(char altColorChar, @NotNull String textToTranslate) {
+        char[] b = textToTranslate.toCharArray();
+        for (int i = 0; i < b.length - 1; i++) {
+            if (b[i] == altColorChar && "0123456789AaBbCcDdEeFfKkLlMmNnOoRrXx".indexOf(b[i + 1]) > -1) {
+                b[i] = '§';
+                b[i + 1] = Character.toLowerCase(b[i + 1]);
+            }
+        }
+        return new String(b);
+    }
+
+    public String toLegacyColorCode(Color color) {
+        return "§" + Integer.toString(COLOR_TO_ID_MAP.get(Color.nearestNamedTo(color)), 16);
     }
 }

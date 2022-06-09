@@ -29,7 +29,7 @@ import org.screamingsandals.lib.entity.type.EntityTypeHolder;
 import org.screamingsandals.lib.npc.NPC;
 import org.screamingsandals.lib.npc.NPCManager;
 import org.screamingsandals.lib.npc.skin.NPCSkin;
-import org.screamingsandals.lib.utils.AdventureHelper;
+import org.screamingsandals.lib.spectator.Component;
 import org.screamingsandals.lib.world.LocationHolder;
 
 import java.util.List;
@@ -75,7 +75,7 @@ public class GameStoreImpl implements GameStore<EntityLiving, EntityTypeHolder, 
                             .npc(storeLocation)
                             .touchable(true)
                             .lookAtPlayer(true)
-                            .displayName(List.of(AdventureHelper.toComponentNullable(shopCustomName)));
+                            .displayName(List.of(Component.fromLegacy(shopCustomName)));
 
                     NPCSkin.retrieveSkin(skinName).thenAccept(skin -> {
                         if (skin != null) {

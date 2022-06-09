@@ -21,12 +21,12 @@ package org.screamingsandals.bedwars.commands;
 
 import cloud.commandframework.CommandManager;
 import cloud.commandframework.execution.CommandExecutionCoordinator;
-import cloud.commandframework.minecraft.extras.MinecraftExceptionHandler;
 import lombok.experimental.UtilityClass;
 import org.screamingsandals.bedwars.commands.migrate.MigrateBedWars1058Command;
 import org.screamingsandals.bedwars.commands.migrate.MigrateBedWarsRelCommand;
 import org.screamingsandals.bedwars.lang.LangKeys;
-import org.screamingsandals.lib.command.CloudConstructor;
+import org.screamingsandals.lib.cloud.CloudConstructor;
+import org.screamingsandals.lib.cloud.extras.MinecraftExceptionHandler;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
 import org.screamingsandals.lib.utils.annotations.Service;

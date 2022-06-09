@@ -21,12 +21,13 @@ package org.screamingsandals.bedwars.variants;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.screamingsandals.bedwars.api.variants.Variant;
 import org.screamingsandals.bedwars.config.GameConfigurationContainer;
 import org.screamingsandals.bedwars.lib.debug.Debug;
+import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.lib.player.PlayerMapper;
+import org.screamingsandals.lib.spectator.Color;
+import org.screamingsandals.lib.spectator.Component;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.gson.GsonConfigurationLoader;
@@ -71,12 +72,11 @@ public class VariantImpl implements Variant {
             variant.configurationContainer.applyNode(configMap.node("config"));
 
             PlayerMapper.getConsoleSender().sendMessage(
-                    Component
-                            .text("[B", NamedTextColor.RED)
-                            .append(Component.text("W] ", NamedTextColor.WHITE))
-                            .append(Component.text("Variant ", NamedTextColor.GREEN))
-                            .append(Component.text(variant.name + " (" + file.getName() + ")", NamedTextColor.WHITE))
-                            .append(Component.text(" loaded!", NamedTextColor.GREEN))
+                    MiscUtils.BW_PREFIX.withAppendix(
+                            Component.text("Variant ", Color.GREEN),
+                            Component.text(variant.name + " (" + file.getName() + ")", Color.WHITE),
+                            Component.text(" loaded!", Color.GREEN)
+                    )
             );
 
             return variant;

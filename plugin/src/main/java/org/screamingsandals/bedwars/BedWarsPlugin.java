@@ -19,8 +19,6 @@
 
 package org.screamingsandals.bedwars;
 
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.screamingsandals.bedwars.api.BedwarsAPI;
 import org.screamingsandals.bedwars.api.entities.EntitiesManager;
 import org.screamingsandals.bedwars.api.game.GameManager;
@@ -59,6 +57,8 @@ import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.plugin.PluginContainer;
 import org.screamingsandals.lib.plugin.ServiceManager;
 import org.screamingsandals.lib.sidebar.SidebarManager;
+import org.screamingsandals.lib.spectator.Color;
+import org.screamingsandals.lib.spectator.Component;
 import org.screamingsandals.lib.utils.PlatformType;
 import org.screamingsandals.lib.utils.annotations.Init;
 import org.screamingsandals.lib.utils.annotations.Plugin;
@@ -277,67 +277,40 @@ public class BedWarsPlugin extends PluginContainer implements BedwarsAPI {
         }
 
         PlayerMapper.getConsoleSender().sendMessage(Component
-                .text("============")
-                .color(NamedTextColor.AQUA)
+                .text()
+                .content("============")
+                .color(Color.AQUA)
                 .append(
-                        Component
-                                .text("===")
-                                .color(NamedTextColor.RED)
-                )
-                .append(
-                        Component
-                                .text("======  by ScreamingSandals <Misat11, Iamceph, Pronze>")
-                                .color(NamedTextColor.WHITE)
+                        Component.text("===", Color.RED),
+                        Component.text("======  by ScreamingSandals <Misat11, Iamceph, Pronze, Zlataovce>", Color.WHITE)
                 )
         );
 
         PlayerMapper.getConsoleSender().sendMessage(Component
-                .text("+ Screaming ")
-                .color(NamedTextColor.AQUA)
+                .text()
+                .content("+ Screaming ")
+                .color(Color.AQUA)
                 .append(
-                        Component
-                                .text("Bed")
-                                .color(NamedTextColor.RED)
-                )
-                .append(
-                        Component
-                                .text("Wars +  ")
-                                .color(NamedTextColor.WHITE)
-                )
-                .append(
-                        Component
-                                .text("Version: " + version + " ")
-                                .color(NamedTextColor.GOLD)
-                )
-                .append(
-                        Component
-                                .text(PremiumBedwars.isPremium() ? "PREMIUM" : "FREE")
-                                .color(PremiumBedwars.isPremium() ? NamedTextColor.AQUA : NamedTextColor.GREEN)
+                        Component.text("Bed", Color.RED),
+                        Component.text("Wars +  ", Color.WHITE),
+                        Component.text("Version: " + version + " ",Color.GOLD),
+                        Component.text(PremiumBedwars.isPremium() ? "PREMIUM" : "FREE",PremiumBedwars.isPremium() ? Color.AQUA : Color.GREEN)
                 )
         );
 
         PlayerMapper.getConsoleSender().sendMessage(Component
-                .text("============")
-                .color(NamedTextColor.AQUA)
+                .text()
+                .content("============")
+                .color(Color.AQUA)
                 .append(
-                        Component
-                                .text("===")
-                                .color(NamedTextColor.RED)
-                )
-                .append(
-                        Component
-                                .text("======  ")
-                                .color(NamedTextColor.WHITE)
-                )
-                .append(
-                        Component
-                                .text(snapshot ? "SNAPSHOT VERSION (" + VersionInfo.BUILD_NUMBER + ") - Use at your own risk" : "STABLE VERSION")
-                                .color(snapshot ? NamedTextColor.RED : NamedTextColor.GREEN)
+                        Component.text("===", Color.RED),
+                        Component.text("======  ",Color.WHITE),
+                        Component.text(snapshot ? "SNAPSHOT VERSION (" + VersionInfo.BUILD_NUMBER + ") - Use at your own risk" : "STABLE VERSION", snapshot ? Color.RED : Color.GREEN)
                 )
         );
 
-        PlayerMapper.getConsoleSender().sendMessage(Component.text("Everything has finished loading! If you like our work, consider subscribing to our Patreon! <3").color(NamedTextColor.WHITE));
-        PlayerMapper.getConsoleSender().sendMessage(Component.text("https://www.patreon.com/screamingsandals").color(NamedTextColor.WHITE));
+        PlayerMapper.getConsoleSender().sendMessage(Component.text("Everything has finished loading! If you like our work, consider subscribing to our Patreon! <3", Color.WHITE));
+        PlayerMapper.getConsoleSender().sendMessage(Component.text("https://www.patreon.com/screamingsandals", Color.WHITE));
     }
 
     @Override

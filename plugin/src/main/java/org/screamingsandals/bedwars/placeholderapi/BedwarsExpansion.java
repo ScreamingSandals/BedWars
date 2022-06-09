@@ -19,8 +19,6 @@
 
 package org.screamingsandals.bedwars.placeholderapi;
 
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.api.game.GameStatus;
@@ -31,6 +29,8 @@ import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.lib.placeholders.PlaceholderExpansion;
 import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.sender.MultiPlatformOfflinePlayer;
+import org.screamingsandals.lib.spectator.Color;
+import org.screamingsandals.lib.spectator.Component;
 import org.screamingsandals.lib.utils.annotations.Service;
 
 @Service(dependsOn = {
@@ -179,30 +179,30 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                         var gPlayer = PlayerManagerImpl.getInstance().getPlayer(player.getUuid()).orElseThrow();
                         var game = gPlayer.getGame();
                         if (gPlayer.isSpectator()) {
-                            return Component.text("spectator", NamedTextColor.GRAY);
+                            return Component.text("spectator", Color.GRAY);
                         } else {
                             var team = game.getPlayerTeam(gPlayer);
                             if (team != null) {
                                 return Component.text(team.getName(), team.getColor().getTextColor());
                             } else {
-                                return Component.text("none", NamedTextColor.RED);
+                                return Component.text("none", Color.RED);
                             }
                         }
                     } else {
-                        return Component.text("none", NamedTextColor.RED);
+                        return Component.text("none", Color.RED);
                     }
                 case "team_color":
                     if (PlayerManagerImpl.getInstance().isPlayerInGame(player.getUuid())) {
                         var gPlayer = PlayerManagerImpl.getInstance().getPlayer(player.getUuid()).orElseThrow();
                         var game = gPlayer.getGame();
                         if (gPlayer.isSpectator()) {
-                            return Component.text("", NamedTextColor.GRAY);
+                            return Component.text("", Color.GRAY);
                         } else {
                             var team = game.getPlayerTeam(gPlayer);
                             if (team != null) {
                                 return Component.text("", team.getColor().getTextColor());
                             } else {
-                                return Component.text("", NamedTextColor.GRAY);
+                                return Component.text("", Color.GRAY);
                             }
                         }
                     } else {

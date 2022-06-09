@@ -20,16 +20,14 @@
 package org.screamingsandals.bedwars.boss;
 
 import lombok.Getter;
-import net.kyori.adventure.bossbar.BossBar;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.ComponentLike;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.lib.player.PlayerWrapper;
-import org.screamingsandals.lib.utils.AdventureHelper;
-import org.screamingsandals.lib.utils.adventure.wrapper.BossBarColorWrapper;
-import org.screamingsandals.lib.utils.adventure.wrapper.BossBarOverlayWrapper;
-import org.screamingsandals.lib.utils.adventure.wrapper.ComponentWrapper;
+import org.screamingsandals.lib.spectator.Component;
+import org.screamingsandals.lib.spectator.ComponentLike;
+import org.screamingsandals.lib.spectator.bossbar.BossBar;
+import org.screamingsandals.lib.spectator.bossbar.BossBarColor;
+import org.screamingsandals.lib.spectator.bossbar.BossBarDivision;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -37,24 +35,24 @@ import java.util.List;
 @Getter
 public class BossBarImpl implements org.screamingsandals.bedwars.api.boss.BossBar<PlayerWrapper> {
     private final List<PlayerWrapper> viewers = new LinkedList<>();
-    private final BossBar boss = BossBar.bossBar(
-            Component.empty(),
-            1,
-            BossBar.Color.PURPLE,
-            BossBar.Overlay.PROGRESS
-    );
+    private final BossBar boss = BossBar.builder()
+            .title(Component.empty())
+            .progress(1)
+            .color(BossBarColor.PURPLE)
+            .division(BossBarDivision.NO_DIVISION)
+            .build();
     private boolean visible;
 
     @Override
-    public ComponentWrapper getMessage() {
-        return ComponentWrapper.of(boss.name());
+    public Component getMessage() {
+        return boss.title();
     }
 
     public void setMessage(@Nullable Object s) {
         if (s instanceof ComponentLike) {
-            boss.name(((ComponentLike) s).asComponent());
+            boss.title(((ComponentLike) s).asComponent());
         } else {
-            boss.name(AdventureHelper.toComponentNullable(String.valueOf(s)));
+            boss.title(Component.fromLegacy(String.valueOf(s)));
         }
     }
 
@@ -106,40 +104,36 @@ public class BossBarImpl implements org.screamingsandals.bedwars.api.boss.BossBa
     }
 
     @Override
-    public BossBarColorWrapper getColor() {
-        return new BossBarColorWrapper(boss.color());
+    public BossBarColor getColor() {
+        return boss.color();
     }
 
     @Override
     public void setColor(@NotNull Object color) {
-        if (color instanceof BossBar.Color) {
-            boss.color((BossBar.Color) color);
-        } else if (color instanceof BossBarColorWrapper) {
-            boss.color(((BossBarColorWrapper) color).asBossBarColor());
+        if (color instanceof BossBarColor) {
+            boss.color((BossBarColor) color);
         } else {
-            boss.color(BossBar.Color.valueOf(color.toString().toUpperCase()));
+            boss.color(BossBarColor.valueOf(color.toString().toUpperCase()));
         }
     }
 
     @Override
-    public BossBarOverlayWrapper getStyle() {
-        return new BossBarOverlayWrapper(boss.overlay());
+    public BossBarDivision getStyle() {
+        return boss.division();
     }
 
     @Override
-    public void setStyle(@NotNull Object overlay) {
-        if (overlay instanceof BossBar.Overlay) {
-            boss.overlay((BossBar.Overlay) overlay);
-        } else if (overlay instanceof BossBarOverlayWrapper) {
-            boss.overlay(((BossBarOverlayWrapper) overlay).asBossBarOverlay());
+    public void setStyle(@NotNull Object division) {
+        if (division instanceof BossBarDivision) {
+            boss.division((BossBarDivision) division);
         } else {
-            var ov = overlay.toString().toUpperCase();
-            if (ov.equals("SOLID")) {
-                ov = "PROGRESS";
+            var ov = division.toString().toUpperCase();
+            if (ov.equals("SOLID") || ov.equals("PROGRESS")) {
+                ov = "NO_DIVISION";
             } else if (ov.startsWith("SEGMENTED_")) {
                 ov = "NOTCHED_" + ov.substring(10);
             }
-            boss.overlay(BossBar.Overlay.valueOf(ov));
+            boss.division(BossBarDivision.valueOf(ov));
         }
     }
 }

@@ -30,12 +30,13 @@ import org.screamingsandals.bedwars.inventories.GamesInventory;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.lobby.BedWarsNPC;
 import org.screamingsandals.bedwars.lobby.NPCManager;
+import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.bedwars.utils.SerializableLocation;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.npc.skin.NPCSkin;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
-import org.screamingsandals.lib.utils.AdventureHelper;
+import org.screamingsandals.lib.spectator.Component;
 import org.screamingsandals.lib.utils.annotations.Service;
 
 import java.util.*;
@@ -230,7 +231,7 @@ public class NPCCommand extends BaseCommand {
                             }
 
                             var npc = NPCS_IN_HAND.get(player.getUuid());
-                            var component = AdventureHelper.toComponent(AdventureHelper.translateAlternateColorCodes('&', line));
+                            var component = Component.fromLegacy(MiscUtils.translateAlternateColorCodes('&', line));
                             npc.getHologramAbove().add(component);
                             npc.getNpc().displayName(npc.getHologramAbove());
                             lobbyNPCManager.setModified(true);
@@ -265,7 +266,7 @@ public class NPCCommand extends BaseCommand {
                                         .placeholder("linenumber", number));
                                 return;
                             }
-                            var component = AdventureHelper.toComponent(AdventureHelper.translateAlternateColorCodes('&', line));
+                            var component = Component.fromLegacy(MiscUtils.translateAlternateColorCodes('&', line));
                             npc.getHologramAbove().set(number - 1, component);
                             npc.getNpc().displayName(npc.getHologramAbove());
                             lobbyNPCManager.setModified(true);

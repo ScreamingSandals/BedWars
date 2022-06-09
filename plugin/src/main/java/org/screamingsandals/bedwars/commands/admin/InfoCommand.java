@@ -21,14 +21,13 @@ package org.screamingsandals.bedwars.commands.admin;
 
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.event.ClickEvent;
 import org.screamingsandals.bedwars.commands.AdminCommand;
 import org.screamingsandals.bedwars.game.GameManagerImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
-import org.screamingsandals.lib.utils.AdventureHelper;
+import org.screamingsandals.lib.spectator.Component;
+import org.screamingsandals.lib.spectator.event.ClickEvent;
 import org.screamingsandals.lib.utils.annotations.Service;
 
 @Service
@@ -173,7 +172,7 @@ public class InfoCommand extends BaseAdminSubCommand {
                             game.getTeams().forEach(team -> {
                                 Message
                                         .of(LangKeys.ADMIN_INFO_TEAM)
-                                        .placeholder("team", Component.text(team.getName()).color(team.getColor().getTextColor()))
+                                        .placeholder("team", Component.text(team.getName(), team.getColor().getTextColor()))
                                         .placeholder("maxplayers", team.getMaxPlayers())
                                         .send(sender);
 
@@ -231,14 +230,14 @@ public class InfoCommand extends BaseAdminSubCommand {
                                 Component spawnerTeam;
 
                                 if (team != null) {
-                                    spawnerTeam = Component.text(team.getName()).color(team.getColor().getTextColor());
+                                    spawnerTeam = Component.text(team.getName(), team.getColor().getTextColor());
                                 } else {
                                     spawnerTeam = Message.of(LangKeys.ADMIN_INFO_SPAWNER_NO_TEAM).asComponent(sender);
                                 }
 
                                 Message
                                         .of(LangKeys.ADMIN_INFO_SPAWNER)
-                                        .placeholder("resource", spawner.getItemSpawnerType().getItemName().asComponent())
+                                        .placeholder("resource", spawner.getItemSpawnerType().getItemName())
                                         .placeholder("x", loc_spawner.getBlockX())
                                         .placeholder("y", loc_spawner.getBlockY())
                                         .placeholder("z", loc_spawner.getBlockZ())
@@ -314,7 +313,7 @@ public class InfoCommand extends BaseAdminSubCommand {
                                         .of(LangKeys.ADMIN_INFO_VILLAGER_SHOP_DEALER_NAME)
                                         .placeholder("name",
                                                 store.isEnabledCustomName()
-                                                        ? AdventureHelper.toComponent(store.getShopCustomName())
+                                                        ? Component.fromLegacy(store.getShopCustomName())
                                                         : Message.of(LangKeys.ADMIN_INFO_VILLAGER_SHOP_DEALER_HAS_NO_NAME).asComponent(sender)
 
                                         )
@@ -388,13 +387,13 @@ public class InfoCommand extends BaseAdminSubCommand {
                             Message
                                     .of(LangKeys.ADMIN_INFO_CONSTANT)
                                     .placeholder("constant", "lobbybossbarcolor")
-                                    .placeholder("value", game.getLobbyBossBarColor() != null ? game.getLobbyBossBarColor().asBossBarColor().name() : "default")
+                                    .placeholder("value", game.getLobbyBossBarColor() != null ? game.getLobbyBossBarColor().name() : "default")
                                     .send(sender);
 
                             Message
                                     .of(LangKeys.ADMIN_INFO_CONSTANT)
                                     .placeholder("constant", "gamebossbarcolor")
-                                    .placeholder("value", game.getGameBossBarColor() != null ? game.getGameBossBarColor().asBossBarColor().name() : "default")
+                                    .placeholder("value", game.getGameBossBarColor() != null ? game.getGameBossBarColor().name() : "default")
                                     .send(sender);
                         })
         );
@@ -420,7 +419,8 @@ public class InfoCommand extends BaseAdminSubCommand {
                             Message
                                     .of(LangKeys.ADMIN_INFO_SELECT_BASE)
                                     .placeholder("command", Component
-                                            .text("/bw admin " + gameName + " info base")
+                                            .text()
+                                            .content("/bw admin " + gameName + " info base")
                                             .clickEvent(ClickEvent.runCommand("/bw admin " + gameName + " info base"))
                                             .hoverEvent(Message
                                                     .of(LangKeys.ADMIN_INFO_SELECT_CLICK)
@@ -433,7 +433,8 @@ public class InfoCommand extends BaseAdminSubCommand {
                             Message
                                     .of(LangKeys.ADMIN_INFO_SELECT_STORES)
                                     .placeholder("command", Component
-                                            .text("/bw admin " + gameName + " info stores")
+                                            .text()
+                                            .content("/bw admin " + gameName + " info stores")
                                             .clickEvent(ClickEvent.runCommand("/bw admin " + gameName + " info stores"))
                                             .hoverEvent(Message
                                                     .of(LangKeys.ADMIN_INFO_SELECT_CLICK)
@@ -446,7 +447,8 @@ public class InfoCommand extends BaseAdminSubCommand {
                             Message
                                     .of(LangKeys.ADMIN_INFO_SELECT_SPAWNERS)
                                     .placeholder("command", Component
-                                            .text("/bw admin " + gameName + " info spawners")
+                                            .text()
+                                            .content("/bw admin " + gameName + " info spawners")
                                             .clickEvent(ClickEvent.runCommand("/bw admin " + gameName + " info spawners"))
                                             .hoverEvent(Message
                                                     .of(LangKeys.ADMIN_INFO_SELECT_CLICK)
@@ -459,7 +461,8 @@ public class InfoCommand extends BaseAdminSubCommand {
                             Message
                                     .of(LangKeys.ADMIN_INFO_SELECT_TEAMS)
                                     .placeholder("command", Component
-                                            .text("/bw admin " + gameName + " info teams")
+                                            .text()
+                                            .content("/bw admin " + gameName + " info teams")
                                             .clickEvent(ClickEvent.runCommand("/bw admin " + gameName + " info teams"))
                                             .hoverEvent(Message
                                                     .of(LangKeys.ADMIN_INFO_SELECT_CLICK)
@@ -472,7 +475,8 @@ public class InfoCommand extends BaseAdminSubCommand {
                             Message
                                     .of(LangKeys.ADMIN_INFO_SELECT_CONFIG)
                                     .placeholder("command", Component
-                                            .text("/bw admin " + gameName + " info config")
+                                            .text()
+                                            .content("/bw admin " + gameName + " info config")
                                             .clickEvent(ClickEvent.runCommand("/bw admin " + gameName + " info config"))
                                             .hoverEvent(Message
                                                     .of(LangKeys.ADMIN_INFO_SELECT_CLICK)

@@ -22,10 +22,10 @@ package org.screamingsandals.bedwars.commands.admin;
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
 import cloud.commandframework.arguments.standard.StringArgument;
-import net.kyori.adventure.bossbar.BossBar;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
+import org.screamingsandals.lib.spectator.bossbar.BossBarColor;
 import org.screamingsandals.lib.utils.annotations.Service;
 
 import java.util.Arrays;
@@ -45,14 +45,14 @@ public class LobbyBossBarColorCommand extends BaseAdminSubCommand {
                         .argument(StringArgument
                                 .<CommandSenderWrapper>newBuilder("barColor")
                                 .withSuggestionsProvider((c, s) ->
-                                        Stream.concat(Arrays.stream(BossBar.Color.values()).map(BossBar.Color::name), Stream.of("default")).collect(Collectors.toList())
+                                        Stream.concat(Arrays.stream(BossBarColor.values()).map(BossBarColor::name), Stream.of("default")).collect(Collectors.toList())
                                 )
                         )
                         .handler(commandContext -> editMode(commandContext, (sender, game) -> {
                             String barColor = commandContext.get("barColor");
                             if (!barColor.equalsIgnoreCase("default")) {
                                 try {
-                                    var c = BossBar.Color.valueOf(barColor.toUpperCase());
+                                    var c = BossBarColor.valueOf(barColor.toUpperCase());
                                     game.setLobbyBossBarColor(c);
 
                                     sender.sendMessage(Message

@@ -20,7 +20,6 @@
 package org.screamingsandals.bedwars.utils;
 
 import lombok.experimental.UtilityClass;
-import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -37,6 +36,7 @@ import org.screamingsandals.lib.firework.FireworkEffectHolder;
 import org.screamingsandals.lib.item.Item;
 import org.screamingsandals.lib.item.builder.ItemFactory;
 import org.screamingsandals.lib.particle.*;
+import org.screamingsandals.lib.spectator.Color;
 import org.screamingsandals.lib.utils.math.Vector3D;
 import org.spongepowered.configurate.ConfigurationNode;
 
@@ -100,7 +100,7 @@ public class SpawnEffects {
                             particleData = BlockTypeHolder.ofOptional(data.getString("")).orElse(null);
                         } else if (clazz == DustOptions.class) {
                             particleData = new DustOptions(
-                                    TextColor.color(
+                                    Color.rgb(
                                             data.node("color", "red").getInt(),
                                             data.node("color", "green").getInt(),
                                             data.node("color", "blue").getInt()
@@ -109,12 +109,12 @@ public class SpawnEffects {
                             );
                         } else if (clazz == DustTransition.class) {
                             particleData = new DustTransition(
-                                    TextColor.color(
+                                    Color.rgb(
                                             data.node("fromColor", "red").getInt(),
                                             data.node("fromColor", "green").getInt(),
                                             data.node("fromColor", "blue").getInt()
                                     ),
-                                    TextColor.color(
+                                    Color.rgb(
                                             data.node("toColor", "red").getInt(),
                                             data.node("toColor", "green").getInt(),
                                             data.node("toColor", "blue").getInt()
