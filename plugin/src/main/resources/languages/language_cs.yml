@@ -1,23 +1,3 @@
-#
-# Copyright (C) 2022 ScreamingSandals
-#
-# This file is part of Screaming BedWars.
-#
-# Screaming BedWars is free software: you can redistribute it and/or modify it
-# under the terms of the GNU Lesser General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# Screaming BedWars is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-# GNU Lesser General Public License for more details.
-#
-# You should have received a copy of the GNU Lesser General Public License
-# along with Screaming BedWars. If not, see <https://www.gnu.org/licenses/>.
-#
-
----
 lang_name: "Čeština"
 prefix: "[BW]"
 item_shop_name: "Obchod"
@@ -415,3 +395,27 @@ help_bw_dump: "/bw dump - &eVygeneruje dump serveru a vrátí odkaz na tento dum
   \ odkaz může být užitečný pro podporu"
 dump_success: "&aDump serveru byl úspěšně vygenerován. Odkaz: "
 dump_failed: "&cDump selhal!"
+upgrade_success: '&a%name% byl úspěšně vylepšen %spawner% na úroveň %level%!'
+spawner_reached_maximum_level: §cSpawner byl vylepšen na maximální úroveň!
+cheat_invalid_player: '&cZvolený hráč není ve hře nebo je pozorovatel!'
+cheat_received_kill: '&aHráč &7%player%&a byl zabit cheatem!'
+cheat_disabled: '&cCheaty jsou zablokovány na tomto serveru!'
+cheat_game_not_running: '&cNemůžeš cheatovat v lobby!'
+help_bw_cheat_give: /bw cheat give <surovina> [množství] [hráč] - &cDá hráči konkrétní
+  množství suroviny
+"party_warped": '&aVedoucí party tě přivolal k sobě'
+"party_command_help": /bw party warp - &eTeleportuje všechny hráče do tvé hry nebo
+  za tebou
+"party_command_not_in_party": '&cMusíš byt v nějaké partě, abys mohl použít tento
+  příkaz!'
+"party_command_is_empty": '&cTvoje parta je prázdná, nelze nikoho přivolat!'
+"party_command_warped": '&aČlenové tvé party byli přivoláni'
+upgrade_translate: vylepšení
+cheat_please_provide_valid_cheat_type: '&cZadaný typ cheatu není zapsán správně nebo
+  neexistuje!'
+cheat_received_give: '&aHráč &7%player%&a získal &7%amount%&a &7%resource%'
+help_bw_cheat_kill: /bw cheat kill [hráč] - &cZabije konkrétního hráče
+"party_inform_game_join": '&aPřipojuji se do hry vedoucího party'
+"party_command_invalid_arguments": '&cŠpatný počet parametrů!, zadej /bw party help,
+  abys věděl více'
+"party_command_not_party_leader": '&cNejsi vedoucí této party!'
