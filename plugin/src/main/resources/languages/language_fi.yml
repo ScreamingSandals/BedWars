@@ -1,39 +1,19 @@
-#
-# Copyright (C) 2022 ScreamingSandals
-#
-# This file is part of Screaming BedWars.
-#
-# Screaming BedWars is free software: you can redistribute it and/or modify it
-# under the terms of the GNU Lesser General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# Screaming BedWars is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-# GNU Lesser General Public License for more details.
-#
-# You should have received a copy of the GNU Lesser General Public License
-# along with Screaming BedWars. If not, see <https://www.gnu.org/licenses/>.
-#
-
----
 lang_name: "Suomen kieli"
 prefix: "[BW]"
-item_shop_name: "Shop"
-join: "%name% &ajoined the game!&r &7[&a%players%&7/&a%maxplayers%&7]"
-leave: "%name% &cleft the game!"
-game_already_running: "&cGame &7%arena% &cis already running! You can't join a running\
-  \ game!"
-game_is_full: "&cGame &7%arena% &cis full! Please wait for game end!"
-unknown_command: "&cCommand unknown! Type &4/bw help &cfor help!"
-unknown_usage: "&cNumber of arguments does not match the correct amount or unknown\
-  \ arguments! Type &4/bw help &cfor help!"
-no_arena_found: "&cGame not found!"
-usage_bw_join: "&cUsage: /bw join <arena>"
-usage_bw_admin: "&cUsage: /bw admin <arena> <add|edit|remove|save|...> ..."
-you_arent_in_game: "&cYou're not in a game!"
-allready_exists: "&cArena already exists!"
+item_shop_name: "Kauppa"
+join: "%name% &aliittyi peliin!&r &7[&a%players%&7/&a%maxplayers%&7]"
+leave: "%name% &cpoistui pelistä!"
+game_already_running: "&cPeli &7%arena% &con jo käyinnissä! Sinä et voi liittyä käynnissä\
+  \ olevaan peliin!"
+game_is_full: "&cPeli &7%arena% &con täynnä! Odota että peli päättyy!"
+unknown_command: "&cKomentoa ei ole olemassa! Kirjoita &4/bw help &clistasta komentaja!"
+unknown_usage: "&cArgumenttien määrä ei ole sama kuin oikea määrä tai ei tunnettuja\
+  \ argumentteha! Kirjoita &4/bw help &clistasta komentoja!"
+no_arena_found: "&cPeliä ei löytynyt!"
+usage_bw_join: "&cKäyttö: /bw join <arena>"
+usage_bw_admin: "&cKäyttö: /bw admin <arena> <add|edit|remove|save|...> ..."
+you_arent_in_game: "&cEt ole pelissä!"
+allready_exists: "&cAreena on jo olemassa!"
 allready_working_on_it: "&cArena already exists but isn't finished!"
 arena_not_in_edit: "&cArena doesn't exist or is running! Deactivate it with &7/bw\
   \ admin <arena> edit&c and then activate it with &7/bw admin <arena> save"
