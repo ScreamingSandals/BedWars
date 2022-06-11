@@ -19,6 +19,8 @@
 
 package org.screamingsandals.bedwars.special.listener;
 
+import org.screamingsandals.bedwars.api.player.BWPlayer;
+import org.screamingsandals.bedwars.api.special.WarpPowder;
 import org.screamingsandals.bedwars.utils.ItemUtils;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.events.ApplyPropertyToBoughtItemEventImpl;
@@ -31,6 +33,7 @@ import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.lib.entity.EntityItem;
 import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.event.entity.SEntityDamageEvent;
+import org.screamingsandals.lib.event.player.SPlayerDropItemEvent;
 import org.screamingsandals.lib.event.player.SPlayerInteractEvent;
 import org.screamingsandals.lib.event.player.SPlayerMoveEvent;
 import org.screamingsandals.lib.lang.Message;
@@ -114,7 +117,7 @@ public class WarpPowderListener {
 
         var warpPowder = game.getFirstActiveSpecialItemOfPlayer(gPlayer, WarpPowderImpl.class);
         if (warpPowder != null) {
-            warpPowder.cancelTeleport(false, true);
+            warpPowder.cancelTeleport(true);
         }
     }
 
@@ -139,14 +142,23 @@ public class WarpPowderListener {
 
         var warpPowder = game.getFirstActiveSpecialItemOfPlayer(gPlayer, WarpPowderImpl.class);
         if (warpPowder != null) {
-            warpPowder.cancelTeleport(true, true);
+            warpPowder.cancelTeleport(true);
+        }
+    }
 
-            if (player.getPlayerInventory().firstEmptySlot() == -1 && !player.getPlayerInventory().contains(warpPowder.getItem())) {
-                EntityItem.dropItem(warpPowder.getItem(), player.getLocation());
-            } else {
-                player.getPlayerInventory().addItem(warpPowder.getItem());
+    @OnEvent
+    public void onWarpPowderDrop(SPlayerDropItemEvent event) {
+        if (!PlayerManagerImpl.getInstance().isPlayerInGame(event.player())) {
+            return;
+        }
+
+        var unhidden = ItemUtils.getIfStartsWith(event.itemDrop().getItem(), WARP_POWDER_PREFIX);
+        if (unhidden != null) {
+            var bwPlayer = event.player().as(BedWarsPlayer.class);
+            var warpPowder = bwPlayer.getGame().getFirstActiveSpecialItemOfPlayer(bwPlayer, WarpPowderImpl.class);
+            if (warpPowder != null) {
+                warpPowder.cancelTeleport(true);
             }
-            player.forceUpdateInventory();
         }
     }
 

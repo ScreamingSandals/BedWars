@@ -19,9 +19,12 @@
 
 package org.screamingsandals.bedwars.special.listener;
 
+import org.screamingsandals.bedwars.api.special.ThrowableFireball;
 import org.screamingsandals.bedwars.entities.EntitiesManagerImpl;
 import org.screamingsandals.bedwars.events.ApplyPropertyToBoughtItemEventImpl;
+import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
+import org.screamingsandals.bedwars.special.ThrowableFireballImpl;
 import org.screamingsandals.bedwars.utils.ItemUtils;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.lib.event.OnEvent;
@@ -53,14 +56,23 @@ public class ThrowableFireballListener {
             var unhash = ItemUtils.getIfStartsWith(item, THROWABLE_FIREBALL_PREFIX);
             if (unhash != null && (event.action() == SPlayerInteractEvent.Action.RIGHT_CLICK_BLOCK || event.action() == SPlayerInteractEvent.Action.RIGHT_CLICK_AIR)) {
                 var propertiesSplit = unhash.split(":");
-                var explosion = (float) Double.parseDouble(propertiesSplit[2]);
-
-                var fireball = player.launchProjectile("minecraft:fireball").orElseThrow();
-                fireball.setMetadata("is_incendiary", false);
-                fireball.setMetadata("yield", explosion);
-                EntitiesManagerImpl.getInstance().addEntityToGame(fireball, PlayerManagerImpl.getInstance().getGameOfPlayer(player).orElseThrow());
+                var damage = (float) Double.parseDouble(propertiesSplit[2]);
+                var incendiary = Boolean.parseBoolean(propertiesSplit[3]);
+                var damagesThrower = Boolean.parseBoolean(propertiesSplit[4]);
 
                 event.cancelled(true);
+
+                var bwPlayer = player.as(BedWarsPlayer.class);
+
+                var special = new ThrowableFireballImpl(
+                        bwPlayer.getGame(),
+                        bwPlayer,
+                        bwPlayer.getGame().getPlayerTeam(bwPlayer),
+                        damage,
+                        incendiary,
+                        damagesThrower
+                );
+                special.run();
 
                 var stack2 = item.withAmount(1);
                 try {
@@ -80,8 +92,9 @@ public class ThrowableFireballListener {
 
     private String applyProperty(ApplyPropertyToBoughtItemEventImpl event) {
         return THROWABLE_FIREBALL_PREFIX
-                + MiscUtils.getDoubleFromProperty(
-                "explosion", "specials.throwable-fireball.explosion", event);
+                + MiscUtils.getDoubleFromProperty("damage", "specials.throwable-fireball.damage", event)
+                + MiscUtils.getBooleanFromProperty("incendiary", "specials.throwable-fireball.incendiary", event)
+                + MiscUtils.getBooleanFromProperty("damage-thrower", "specials.throwable-fireball.damage-thrower", event);
     }
 
 

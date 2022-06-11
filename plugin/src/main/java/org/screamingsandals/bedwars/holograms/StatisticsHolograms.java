@@ -319,6 +319,10 @@ public class StatisticsHolograms {
         for (int i = 0; i < lines.size(); i++) {
             holo.replaceLine(i + increment, lines.get(i));
         }
+
+        if (!holo.viewers().contains(player)) {
+            holo.addViewer(player);
+        }
     }
 
 }

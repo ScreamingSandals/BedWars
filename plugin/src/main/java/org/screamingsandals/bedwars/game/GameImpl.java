@@ -1474,22 +1474,6 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
         return null;
     }
 
-    public TeamImpl getTeamWithLowestPlayers() {
-        TeamImpl lowest = null;
-
-        for (var team : teamsInGame) {
-            if (lowest == null) {
-                lowest = team;
-            }
-
-            if (lowest.getPlayers().size() > team.getPlayers().size()) {
-                lowest = team;
-            }
-        }
-
-        return lowest;
-    }
-
     public List<BedWarsPlayer> getPlayersInTeam(TeamImpl team) {
         return team.getPlayers();
     }
@@ -1577,15 +1561,30 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
     }
 
     public void joinRandomTeam(BedWarsPlayer player) {
+        // TODO: add api event to allow manipulation with this process
         TeamImpl teamForJoin;
         if (teamsInGame.size() < 2) {
             teamForJoin = getFirstTeamThatIsntInGame();
         } else {
-            var current = getTeamWithLowestPlayers();
-            if (current.getPlayers().size() >= current.getMaxPlayers()) {
-                teamForJoin = getFirstTeamThatIsntInGame();
+            TeamImpl lowest = null;
+
+            for (var team : teamsInGame) {
+                if (team.getPlayers().size() >= team.getMaxPlayers()) {
+                    continue; // skip full teams
+                }
+
+                if (lowest == null) {
+                    lowest = team;
+                }
+
+                if (lowest.getPlayers().size() > team.getPlayers().size()) {
+                    lowest = team;
+                }
+            }
+            if (lowest != null) {
+                teamForJoin = lowest;
             } else {
-                teamForJoin = current;
+                teamForJoin = getFirstTeamThatIsntInGame();
             }
         }
 

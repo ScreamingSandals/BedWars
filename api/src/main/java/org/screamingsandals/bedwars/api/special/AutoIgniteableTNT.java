@@ -44,5 +44,7 @@ public interface AutoIgniteableTNT<G extends Game, P extends BWPlayer, T extends
      * spawn an entity tnt
      */
     void spawn(Object location);
+
+    float getDamage();
     
 }

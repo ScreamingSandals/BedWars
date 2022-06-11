@@ -22,6 +22,7 @@ package org.screamingsandals.bedwars.special;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.screamingsandals.bedwars.api.special.Golem;
+import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.entities.EntitiesManagerImpl;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.TeamImpl;
@@ -84,7 +85,9 @@ public class GolemImpl extends SpecialItem implements Golem<GameImpl, BedWarsPla
 
         game.registerSpecialItem(this);
         EntitiesManagerImpl.getInstance().addEntityToGame(golem, game);
-        MiscUtils.sendActionBarMessage(player, Message.of(LangKeys.SPECIALS_GOLEM_CREATED));
+        if (!MainConfig.getInstance().node("specials", "dont-show-success-messages").getBoolean()) {
+            MiscUtils.sendActionBarMessage(player, Message.of(LangKeys.SPECIALS_GOLEM_CREATED));
+        }
 
         //TODO - make this better by checking full inventory
         var stack = item.withAmount(1);

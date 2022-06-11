@@ -49,24 +49,15 @@ public class WarpPowderImpl extends SpecialItem implements WarpPowder<GameImpl, 
     }
 
     @Override
-    public void cancelTeleport(boolean unregisterSpecial, boolean showMessage) {
+    public void cancelTeleport(boolean showCancelMessage) {
         try {
             teleportingTask.cancel();
         } catch (Exception ignored) {
         }
 
-        if (unregisterSpecial) {
-            game.unregisterSpecialItem(this);
-        } else {
-            if (player.getPlayerInventory().firstEmptySlot() == -1 && !player.getPlayerInventory().contains(item)) {
-                EntityItem.dropItem(item, player.getLocation());
-            } else {
-                player.getPlayerInventory().addItem(item);
-            }
-            player.forceUpdateInventory();
-        }
+        game.unregisterSpecialItem(this);
 
-        if (showMessage) {
+        if (showCancelMessage) {
             Message.of(LangKeys.SPECIALS_WARP_POWDER_CANCELED)
                     .prefixOrDefault(game.getCustomPrefixComponent())
                     .send(player);
@@ -82,21 +73,20 @@ public class WarpPowderImpl extends SpecialItem implements WarpPowder<GameImpl, 
                 .placeholder("time", teleportingTime)
                 .send(player);
 
-        var stack = item.withAmount(1);
-        try {
-            if (player.getPlayerInventory().getItemInOffHand().equals(stack)) {
-                player.getPlayerInventory().setItemInOffHand(ItemFactory.getAir());
-            } else {
-                player.getPlayerInventory().removeItem(stack);
-            }
-        } catch (Throwable e) {
-            player.getPlayerInventory().removeItem(stack);
-        }
-        player.forceUpdateInventory();
-
         teleportingTask = Tasker.build(() -> {
             if (teleportingTime == 0) {
-                cancelTeleport(true, false);
+                cancelTeleport(false);
+                var stack = item.withAmount(1);
+                try {
+                    if (player.getPlayerInventory().getItemInOffHand().equals(stack)) {
+                        player.getPlayerInventory().setItemInOffHand(ItemFactory.getAir());
+                    } else {
+                        player.getPlayerInventory().removeItem(stack);
+                    }
+                } catch (Throwable e) {
+                    player.getPlayerInventory().removeItem(stack);
+                }
+                player.forceUpdateInventory();
                 player.teleport(team.getTeamSpawn());
             } else {
                 SpawnEffects.spawnEffect(game, player, "game-effects.warppowdertick");

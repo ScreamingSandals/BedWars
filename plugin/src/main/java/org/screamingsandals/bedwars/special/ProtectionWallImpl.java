@@ -22,6 +22,7 @@ package org.screamingsandals.bedwars.special;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.screamingsandals.bedwars.api.special.ProtectionWall;
+import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.TeamImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
@@ -65,8 +66,10 @@ public class ProtectionWallImpl extends SpecialItem implements ProtectionWall<Ga
             livingTime++;
             int time = breakingTime - livingTime;
 
-            if (time < 6 && time > 0) {
-                MiscUtils.sendActionBarMessage(player, Message.of(LangKeys.SPECIALS_PROTECTION_WALL_DESTROY).placeholder("time", time));
+            if (!MainConfig.getInstance().node("specials", "dont-show-success-messages").getBoolean()) {
+                if (time < 6 && time > 0) {
+                    MiscUtils.sendActionBarMessage(player, Message.of(LangKeys.SPECIALS_PROTECTION_WALL_DESTROY).placeholder("time", time));
+                }
             }
 
             if (livingTime == breakingTime) {
@@ -163,7 +166,9 @@ public class ProtectionWallImpl extends SpecialItem implements ProtectionWall<Ga
             game.registerSpecialItem(this);
             runTask();
 
-            MiscUtils.sendActionBarMessage(player, Message.of(LangKeys.SPECIALS_PROTECTION_WALL_CREATED).placeholder("time", breakingTime));
+            if (!MainConfig.getInstance().node("specials", "dont-show-success-messages").getBoolean()) {
+                MiscUtils.sendActionBarMessage(player, Message.of(LangKeys.SPECIALS_PROTECTION_WALL_CREATED).placeholder("time", breakingTime));
+            }
 
             var stack = item.withAmount(1);
             try {
@@ -179,7 +184,10 @@ public class ProtectionWallImpl extends SpecialItem implements ProtectionWall<Ga
         } else {
             game.registerSpecialItem(this);
 
-            MiscUtils.sendActionBarMessage(player, Message.of(LangKeys.SPECIALS_PROTECTION_WALL_CREATED_UNBREAKABLE));
+            if (!MainConfig.getInstance().node("specials", "dont-show-success-messages").getBoolean()) {
+                MiscUtils.sendActionBarMessage(player, Message.of(LangKeys.SPECIALS_PROTECTION_WALL_CREATED_UNBREAKABLE));
+            }
+
             var stack = item.withAmount(1);
             try {
                 if (player.getPlayerInventory().getItemInOffHand().equals(stack)) {

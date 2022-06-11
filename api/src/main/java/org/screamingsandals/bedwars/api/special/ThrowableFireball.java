@@ -23,25 +23,19 @@ import org.jetbrains.annotations.ApiStatus;
 import org.screamingsandals.bedwars.api.Team;
 import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.api.player.BWPlayer;
-import org.screamingsandals.lib.utils.Wrapper;
 
 /**
  * @author Bedwars Team
  */
 @ApiStatus.NonExtendable
-public interface WarpPowder<G extends Game, P extends BWPlayer, T extends Team, I extends Wrapper> extends SpecialItem<G, P, T> {
-    /**
-     * @param showCancelMessage
-     */
-    void cancelTeleport(boolean showCancelMessage);
+public interface ThrowableFireball<G extends Game, P extends BWPlayer, T extends Team> extends SpecialItem<G, P, T> {
 
-    /**
-     * @return
-     */
-    I getItem();
+    float getDamage();
 
-    /**
-     *
-     */
-    void runTask();
+    boolean isIncendiary();
+
+    boolean damagesThrower();
+
+    void run();
+    
 }

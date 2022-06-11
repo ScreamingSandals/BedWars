@@ -55,7 +55,8 @@ public class AutoIgniteableTNTListener {
             final var propertiesSplit = unhidden.split(":");
             int explosionTime = Integer.parseInt(propertiesSplit[2]);
             boolean damagePlacer = Boolean.parseBoolean(propertiesSplit[3]);
-            AutoIgniteableTNTImpl special = new AutoIgniteableTNTImpl(game, player, game.getPlayerTeam(player), explosionTime, damagePlacer);
+            float damage = (float) Double.parseDouble(propertiesSplit[4]);
+            AutoIgniteableTNTImpl special = new AutoIgniteableTNTImpl(game, player, game.getPlayerTeam(player), explosionTime, damagePlacer, damage);
             special.spawn(location);
         }
     }
@@ -83,7 +84,7 @@ public class AutoIgniteableTNTListener {
     private String applyProperty(ApplyPropertyToBoughtItemEventImpl event) {
         return AUTO_IGNITEABLE_TNT_PREFIX
                 + MiscUtils.getIntFromProperty("explosion-time", "specials.auto-igniteable-tnt.explosion-time", event)
-                + ":" + MiscUtils.getBooleanFromProperty("damage-placer", "specials.auto-igniteable-tnt.damage-placer",
-                event);
+                + ":" + MiscUtils.getBooleanFromProperty("damage-placer", "specials.auto-igniteable-tnt.damage-placer", event)
+                + ":" + MiscUtils.getDoubleFromProperty("damage", "specials.auto-igniteable-tnt.damage", event);
     }
 }

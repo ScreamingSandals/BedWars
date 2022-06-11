@@ -43,12 +43,14 @@ public class AutoIgniteableTNTImpl extends SpecialItem implements AutoIgniteable
     public static final Map<Integer, UUID> PROTECTED_PLAYERS = new ConcurrentHashMap<>();
 
     private final int explosionTime;
+    private final float damage;
     private final boolean allowedDamagingPlacer;
 
-    public AutoIgniteableTNTImpl(GameImpl game, BedWarsPlayer player, TeamImpl team, int explosionTime, boolean damagePlacer) {
+    public AutoIgniteableTNTImpl(GameImpl game, BedWarsPlayer player, TeamImpl team, int explosionTime, boolean damagePlacer, float damage) {
         super(game, player, team);
         this.explosionTime = explosionTime;
         this.allowedDamagingPlacer = damagePlacer;
+        this.damage = damage;
     }
 
     @Override
@@ -59,6 +61,7 @@ public class AutoIgniteableTNTImpl extends SpecialItem implements AutoIgniteable
     public void spawn(LocationHolder location) {
         var tnt = EntityTypeHolder.of("tnt").spawn(location).orElseThrow();
         EntitiesManagerImpl.getInstance().addEntityToGame(tnt, game);
+        tnt.setMetadata("yield", damage);
         tnt.setMetadata("fuse_ticks", explosionTime * 20);
         if (!allowedDamagingPlacer) {
             PROTECTED_PLAYERS.put(tnt.getEntityId(), player.getUuid());

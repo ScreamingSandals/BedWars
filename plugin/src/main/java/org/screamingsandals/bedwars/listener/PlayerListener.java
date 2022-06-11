@@ -541,18 +541,18 @@ public class PlayerListener {
 
         final var player = event.player();
         if (PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
-            //Allow players with permissions to use all commands
-            if (player.hasPermission(BedWarsPermission.ADMIN_PERMISSION.asPermission())) {
-                Debug.info(event.player().getName() + " attempted to execute a command, allowed");
-                return;
-            }
-
             final var message = event.command();
             final var gamePlayer = event.player().as(BedWarsPlayer.class);
             if (BedWarsPlugin.isCommandLeaveShortcut(message)) {
                 event.cancelled(true);
                 gamePlayer.changeGame(null);
             } else if (!BedWarsPlugin.isCommandAllowedInGame(message.split(" ")[0])) {
+                //Allow players with permissions to use all commands
+                if (player.hasPermission(BedWarsPermission.ADMIN_PERMISSION.asPermission())) {
+                    Debug.info(event.player().getName() + " attempted to execute a command, allowed");
+                    return;
+                }
+
                 Debug.info(event.player().getName() + " attempted to execute a command, canceled");
                 event.cancelled(true);
                 player.sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_COMMAND_IS_NOT_ALLOWED).prefixOrDefault(gamePlayer.getGame().getCustomPrefixComponent()));
@@ -1012,12 +1012,16 @@ public class PlayerListener {
                                     if (bevent.isCancelled()) {
                                         originalState.updateBlock(true, false);
                                     } else {
-                                        stack.changeAmount(stack.getAmount() - 1);
-                                        // TODO get right block place sound
-                                        block.getLocation().getWorld().playSound(SoundStart.sound(
-                                                SpecialSoundKey.key("minecraft:block.stone.place"),
-                                                SoundSource.BLOCK, 1, 1
-                                        ), block.getLocation().getX(), block.getLocation().getY(), block.getLocation().getZ());
+                                        if (!player.getGameMode().is("creative")) {
+                                            stack.changeAmount(stack.getAmount() - 1);
+                                        }
+                                        if (!player.isSneaking()) {
+                                            // TODO get right block place sound
+                                            block.getLocation().getWorld().playSound(SoundStart.sound(
+                                                    SpecialSoundKey.key("minecraft:block.stone.place"),
+                                                    SoundSource.BLOCK, 1, 1
+                                            ), block.getLocation().getX(), block.getLocation().getY(), block.getLocation().getZ());
+                                        }
                                     }
                                 }
                             }

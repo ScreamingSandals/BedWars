@@ -93,6 +93,7 @@ public class LangKeys {
     public final String[] IN_GAME_SPAWNER_FULL = {"in_game", "spawner", "full"};
     public final String[] IN_GAME_SPAWNER_FULL_CERTAIN_POPULAR_SERVER = {"in_game", "spawner", "full_hypixel"};
     public final String[] IN_GAME_SPAWNER_NOT_ENOUGH_LEVEL = {"in_game", "spawner", "not_enough_level"};
+    public final String[] IN_GAME_SPAWNER_REACHED_MAXIMUM_LEVEL = {"in_game", "spawner", "reached_maximum_level"};
     public final String[] IN_GAME_SPAWNER_TIER = {"in_game", "spawner", "tier"};
     public final String[] IN_GAME_SPAWNER_COUNTDOWN_CERTAIN_POPULAR_SERVER = {"in_game", "spawner", "countdown_hypixel"};
     public final String[] IN_GAME_SPAWNER_COUNTDOWN_CUSTOM_CERTAIN_POPULAR_SERVER = {"in_game", "spawner", "countdown_custom_hypixel"};
@@ -110,6 +111,8 @@ public class LangKeys {
     public final String[] IN_GAME_SHOP_AMOUNT = {"in_game", "shop", "amount"};
     public final String[] IN_GAME_SHOP_BUY_SUCCESS = {"in_game", "shop", "buy_success"};
     public final String[] IN_GAME_SHOP_BUY_FAILED = {"in_game", "shop", "buy_failed"};
+    public final String[] IN_GAME_SHOP_UPGRADE_SUCCESS = {"in_game", "shop", "upgrade_success"};
+    public final String[] IN_GAME_SHOP_UPGRADE_TRANSLATE = {"in_game", "shop", "upgrade_translate"};
     public final String[] IN_GAME_TEAM_SELECTION_INVENTORY_NAME = {"in_game", "team_selection", "inventory_name"};
     public final String[] IN_GAME_TEAM_SELECTION_SELECTED = {"in_game", "team_selection", "selected"};
     public final String[] IN_GAME_TEAM_SELECTION_ALREADY_SELECTED = {"in_game", "team_selection", "already_selected"};

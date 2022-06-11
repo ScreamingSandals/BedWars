@@ -22,6 +22,7 @@ package org.screamingsandals.bedwars.special;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.screamingsandals.bedwars.api.special.RescuePlatform;
+import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.TeamImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
@@ -62,8 +63,10 @@ public class RescuePlatformImpl extends SpecialItem implements RescuePlatform<Ga
             livingTime++;
             int time = breakingTime - livingTime;
 
-            if (time < 6 && time > 0) {
-                MiscUtils.sendActionBarMessage(player, Message.of(LangKeys.SPECIALS_RESCUE_PLATFORM_DESTROY).placeholder("time", time));
+            if (!MainConfig.getInstance().node("specials", "dont-show-success-messages").getBoolean()) {
+                if (time < 6 && time > 0) {
+                    MiscUtils.sendActionBarMessage(player, Message.of(LangKeys.SPECIALS_RESCUE_PLATFORM_DESTROY).placeholder("time", time));
+                }
             }
 
             if (livingTime == breakingTime) {
@@ -122,7 +125,9 @@ public class RescuePlatformImpl extends SpecialItem implements RescuePlatform<Ga
             game.registerSpecialItem(this);
             runTask();
 
-            MiscUtils.sendActionBarMessage(player, Message.of(LangKeys.SPECIALS_RESCUE_PLATFORM_CREATED).placeholder("time", breakingTime));
+            if (!MainConfig.getInstance().node("specials", "dont-show-success-messages").getBoolean()) {
+                MiscUtils.sendActionBarMessage(player, Message.of(LangKeys.SPECIALS_RESCUE_PLATFORM_CREATED).placeholder("time", breakingTime));
+            }
 
             var stack = item.withAmount(1);
             try {
@@ -138,7 +143,9 @@ public class RescuePlatformImpl extends SpecialItem implements RescuePlatform<Ga
         } else {
             game.registerSpecialItem(this);
 
-            MiscUtils.sendActionBarMessage(player, Message.of(LangKeys.SPECIALS_RESCUE_PLATFORM_CREATED_UNBREAKABLE));
+            if (!MainConfig.getInstance().node("specials", "dont-show-success-messages").getBoolean()) {
+                MiscUtils.sendActionBarMessage(player, Message.of(LangKeys.SPECIALS_RESCUE_PLATFORM_CREATED_UNBREAKABLE));
+            }
             var stack = item.withAmount(1);
             try {
                 if (player.getPlayerInventory().getItemInOffHand().equals(stack)) {

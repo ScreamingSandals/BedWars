@@ -514,7 +514,7 @@ public class ShopInventory {
             EventManager.fire(purchaseFailedEvent);
             if (purchaseFailedEvent.isCancelled()) return;
 
-            if (!mainConfig.node("removePurchaseMessages").getBoolean()) {
+            if (!mainConfig.node("removePurchaseFailedMessages").getBoolean()) {
                 Message.of(LangKeys.IN_GAME_SHOP_BUY_FAILED)
                         .prefixOrDefault(game.getCustomPrefixComponent())
                         .placeholder("item", Component.text(amount + "x ").withAppendix(getNameOrCustomNameOfItem(newItem)))
@@ -536,11 +536,13 @@ public class ShopInventory {
         var priceAmount = price.getAmount();
 
         var upgrade = itemInfo.getFirstPropertyByName("upgrade").orElseThrow();
-        var itemName = upgrade.getPropertyData().node("shop-name").getString("UPGRADE");
+        var itemName = upgrade.getPropertyData().node("shop-name").getString(Message.of(LangKeys.IN_GAME_SHOP_UPGRADE_TRANSLATE).asComponent(event.getPlayer()).toLegacy());
         var entities = upgrade.getPropertyData().node("entities").childrenList();
 
         boolean sendToAll = false;
         boolean isUpgrade = true;
+        double maxLevel = 0.0;
+        double newLevel = 0.0;
         var materialItem = type.getItem(priceAmount);
 
         if (event.hasPlayerInInventory(materialItem)) {
@@ -548,7 +550,6 @@ public class ShopInventory {
             EventManager.fire(upgradePurchasedEvent);
             if (upgradePurchasedEvent.isCancelled()) return;
 
-            event.sellStack(materialItem);
             for (var entity : entities) {
                 var configuredType = entity.node("type").getString();
                 if (configuredType == null) {
@@ -565,6 +566,7 @@ public class ShopInventory {
                     /* You shouldn't use it in entities */
                     itemName = entity.node("shop-name").getString(itemName);
                     sendToAll = entity.node("notify-team").getBoolean();
+                    maxLevel = entity.node("max-level").getDouble();
 
                     List<Upgrade> upgrades = new ArrayList<>();
 
@@ -597,6 +599,19 @@ public class ShopInventory {
                     }
 
                     if (isUpgrade) {
+                        for (var up : upgrades) {
+                            if (up.getLevel() + addLevels > maxLevel && maxLevel > 0) {
+                                Message.of(LangKeys.IN_GAME_SPAWNER_REACHED_MAXIMUM_LEVEL)
+                                        .prefixOrDefault(game.getCustomPrefixComponent())
+                                        .placeholder("item", itemName)
+                                        .placeholder("material", price + " " + type.getItemName())
+                                        .placeholder("max_level", maxLevel)
+                                        .send(player);
+                                return;
+                            }
+                        }
+
+                        event.sellStack(materialItem);
                         var bedwarsUpgradeBoughtEvent = new UpgradeBoughtEventImpl(game, playerManager.getPlayer(player.getUuid()).orElseThrow(), upgrades, addLevels, upgradeStorage);
                         EventManager.fire(bedwarsUpgradeBoughtEvent);
 
@@ -609,7 +624,8 @@ public class ShopInventory {
                         }
 
                         for (var anUpgrade : upgrades) {
-                            var improvedEvent = new UpgradeImprovedEventImpl(game, anUpgrade, upgradeStorage, anUpgrade.getLevel(), anUpgrade.getLevel() + addLevels);
+                            newLevel = anUpgrade.getLevel() + addLevels;
+                            var improvedEvent = new UpgradeImprovedEventImpl(game, anUpgrade, upgradeStorage, anUpgrade.getLevel(), newLevel);
                             improvedEvent.setNewLevel(anUpgrade.getLevel() + addLevels);
                             EventManager.fire(improvedEvent);
                         }
@@ -618,12 +634,13 @@ public class ShopInventory {
 
                 if (sendToAll) {
                     for (var player1 : game.getPlayerTeam(player).getPlayers()) {
-                        if (!mainConfig.node("removePurchaseMessages").getBoolean()) {
-                            Message.of(LangKeys.IN_GAME_SHOP_BUY_SUCCESS)
+                        if (!mainConfig.node("removeUpgradeMessages").getBoolean()) {
+                            Message.of(LangKeys.IN_GAME_SHOP_UPGRADE_SUCCESS)
                                     .prefixOrDefault(game.getCustomPrefixComponent())
-                                    .placeholder("item", Component.fromLegacy(itemName))
-                                    .placeholder("material", Component.text(priceAmount + " ").withAppendix(type.getItemName()))
-                                    .send(event.getPlayer());
+                                    .placeholder("name", player.getDisplayName())
+                                    .placeholder("spawner", itemName)
+                                    .placeholder("level", newLevel)
+                                    .send(player1);
                         }
                         player.playSound(SoundStart.sound(
                                 SpecialSoundKey.key(mainConfig.node("sounds", "upgrade_buy", "sound").getString("entity.experience_orb.pickup")),
@@ -633,11 +650,12 @@ public class ShopInventory {
                         ));
                     }
                 } else {
-                    if (!mainConfig.node("removePurchaseMessages").getBoolean()) {
-                        Message.of(LangKeys.IN_GAME_SHOP_BUY_SUCCESS)
+                    if (!mainConfig.node("removeUpgradeMessages").getBoolean()) {
+                        Message.of(LangKeys.IN_GAME_SHOP_UPGRADE_SUCCESS)
                                 .prefixOrDefault(game.getCustomPrefixComponent())
-                                .placeholder("item", Component.fromLegacy(itemName))
-                                .placeholder("material", Component.text(priceAmount + " ").withAppendix(type.getItemName()))
+                                .placeholder("name", player.getDisplayName())
+                                .placeholder("spawner", itemName)
+                                .placeholder("level", newLevel)
                                 .send(event.getPlayer());
                     }
                     player.playSound(SoundStart.sound(
@@ -654,10 +672,10 @@ public class ShopInventory {
             EventManager.fire(purchaseFailedEvent);
             if (purchaseFailedEvent.isCancelled()) return;
 
-            if (!mainConfig.node("removePurchaseMessages").getBoolean()) {
+            if (!mainConfig.node("removePurchaseFailedMessages").getBoolean()) {
                 Message.of(LangKeys.IN_GAME_SHOP_BUY_FAILED)
                         .prefixOrDefault(game.getCustomPrefixComponent())
-                        .placeholder("item", Component.fromLegacy(itemName))
+                        .placeholder("item", itemName)
                         .placeholder("material", Component.text(priceAmount + " ").withAppendix(type.getItemName()))
                         .send(event.getPlayer());
             }

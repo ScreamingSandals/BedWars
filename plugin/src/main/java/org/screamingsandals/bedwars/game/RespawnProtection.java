@@ -20,6 +20,7 @@
 package org.screamingsandals.bedwars.game;
 
 import lombok.Data;
+import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.utils.MiscUtils;
@@ -41,10 +42,14 @@ public class RespawnProtection implements Runnable {
     public void run() {
     	if (!running) return;
         if (length > 0) {
-            MiscUtils.sendActionBarMessage(player, Message.of(LangKeys.IN_GAME_RESPAWN_PROTECTION_REMAINING).placeholder("time", this.length));
+            if (MainConfig.getInstance().node("respawn", "show-messages").getBoolean()) {
+                MiscUtils.sendActionBarMessage(player, Message.of(LangKeys.IN_GAME_RESPAWN_PROTECTION_REMAINING).placeholder("time", this.length));
+            }
         }
         if (length <= 0) {
-            MiscUtils.sendActionBarMessage(player, Message.of(LangKeys.IN_GAME_RESPAWN_PROTECTION_END));
+            if (MainConfig.getInstance().node("respawn", "show-messages").getBoolean()) {
+                MiscUtils.sendActionBarMessage(player, Message.of(LangKeys.IN_GAME_RESPAWN_PROTECTION_END));
+            }
             game.removeProtectedPlayer(player);
             running = false;
         }
