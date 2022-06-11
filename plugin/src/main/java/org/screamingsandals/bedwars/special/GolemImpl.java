@@ -35,7 +35,6 @@ import org.screamingsandals.lib.item.Item;
 import org.screamingsandals.lib.item.builder.ItemFactory;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.nms.accessors.ServerPlayerAccessor;
-import org.screamingsandals.lib.utils.AdventureHelper;
 import org.screamingsandals.lib.world.LocationHolder;
 
 @Getter
@@ -67,7 +66,7 @@ public class GolemImpl extends SpecialItem implements Golem<GameImpl, BedWarsPla
         final var golem = EntityMapper.<EntityLiving>spawn("iron_golem", location).orElseThrow();
         golem.setHealth(health);
         golem.setCustomName(name
-                .replace("%teamcolor%", AdventureHelper.toLegacyColorCode(team.getColor().getTextColor()))
+                .replace("%teamcolor%", MiscUtils.toLegacyColorCode(team.getColor().getTextColor()))
                 .replace("%team%", team.getName()));
         golem.setCustomNameVisible(showName);
         try {

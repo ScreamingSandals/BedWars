@@ -21,10 +21,10 @@ package org.screamingsandals.bedwars.player;
 
 import lombok.Getter;
 import lombok.Setter;
-import net.kyori.adventure.text.Component;
 import org.screamingsandals.lib.item.Item;
 import org.screamingsandals.lib.item.meta.PotionEffectHolder;
 import org.screamingsandals.lib.player.gamemode.GameModeHolder;
+import org.screamingsandals.lib.spectator.Component;
 import org.screamingsandals.lib.world.LocationHolder;
 
 import java.util.Collection;

@@ -48,7 +48,6 @@ subprojects {
         relocate 'com.google.gson', 'org.screamingsandals.bedwars.lib.ext.gson'
         relocate 'com.typesafe.config', 'org.screamingsandals.bedwars.lib.ext.typesafe'
         relocate 'io.leangen.geantyref', 'org.screamingsandals.bedwars.lib.ext.geantyref'
-        relocate 'net.kyori', 'org.screamingsandals.bedwars.lib.ext.kyori'
         relocate 'org.checkerframework', 'org.screamingsandals.bedwars.lib.ext.checkerframework'
         relocate 'cloud.commandframework', 'org.screamingsandals.bedwars.lib.ext.cloud'
         relocate 'me.lucko.commodore', 'org.screamingsandals.bedwars.lib.ext.commodore'

@@ -25,10 +25,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSerializer;
 import lombok.Data;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.event.ClickEvent;
-import net.kyori.adventure.text.event.HoverEvent;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.VersionInfo;
 import org.screamingsandals.bedwars.api.Team;
@@ -43,6 +39,10 @@ import org.screamingsandals.bedwars.premium.PremiumBedwars;
 import org.screamingsandals.lib.Server;
 import org.screamingsandals.lib.plugin.PluginManager;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
+import org.screamingsandals.lib.spectator.Color;
+import org.screamingsandals.lib.spectator.Component;
+import org.screamingsandals.lib.spectator.event.ClickEvent;
+import org.screamingsandals.lib.spectator.event.HoverEvent;
 import org.screamingsandals.lib.utils.ConfigurateUtils;
 import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.world.LocationHolder;
@@ -275,8 +275,9 @@ public class DumpCommand extends BaseCommand {
                                                     org.screamingsandals.lib.lang.Message.of(LangKeys.DUMP_SUCCESS)
                                                             .defaultPrefix()
                                                             .placeholder("dump", Component
-                                                                    .text("https://paste.gg/" + message.getResult().getId())
-                                                                    .color(NamedTextColor.GRAY)
+                                                                    .text()
+                                                                    .content("https://paste.gg/" + message.getResult().getId())
+                                                                    .color(Color.GRAY)
                                                                     .clickEvent(ClickEvent.openUrl("https://paste.gg/" + message.getResult().getId()))
                                                                     .hoverEvent(HoverEvent.showText(Component.text("Open this link"))))
                                                             .send(sender);

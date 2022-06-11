@@ -27,7 +27,7 @@ import org.apache.commons.lang.LocaleUtils;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.lib.lang.Lang;
 import org.screamingsandals.lib.lang.LangService;
-import org.screamingsandals.lib.utils.AdventureHelper;
+import org.screamingsandals.lib.spectator.Component;
 import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.utils.annotations.methods.OnEnable;
 import org.screamingsandals.lib.utils.annotations.parameters.DataFolder;
@@ -79,7 +79,7 @@ public class BedWarsLangService extends LangService {
         final var finalLocale = locale;
         var prefix = mainConfig.node("prefix").getString("[BW]");
 
-        Lang.setDefaultPrefix(AdventureHelper.toComponent(prefix));
+        Lang.setDefaultPrefix(Component.fromLegacy(prefix));
 
         final var langDefinitionResource = BedWarsLangService.class.getResourceAsStream("/language_definition.json");
         if (langDefinitionResource != null) {

@@ -19,12 +19,12 @@
 
 package org.screamingsandals.bedwars.econ;
 
-import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.plugin.PluginManager;
+import org.screamingsandals.lib.spectator.Component;
 import org.screamingsandals.lib.utils.PlatformType;
 import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.utils.annotations.methods.Provider;
@@ -38,7 +38,7 @@ public final class EconomyProvider {
     public static @Nullable Economy provideEconomy() {
         if (PluginManager.isEnabled(PluginManager.createKey("Vault").orElseThrow()) && PluginManager.getPlatformType() == PlatformType.BUKKIT) {
             PlayerMapper.getConsoleSender().sendMessage(
-                    MiscUtils.BW_PREFIX.append(
+                    MiscUtils.BW_PREFIX.withAppendix(
                             Component.text("Using Vault for economy.")
                     )
             );

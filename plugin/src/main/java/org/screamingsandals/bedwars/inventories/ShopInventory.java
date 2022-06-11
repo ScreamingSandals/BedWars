@@ -21,8 +21,6 @@ package org.screamingsandals.bedwars.inventories;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import net.kyori.adventure.sound.Sound;
-import net.kyori.adventure.text.Component;
 import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.api.PurchaseType;
 import org.screamingsandals.bedwars.commands.DumpCommand;
@@ -40,6 +38,7 @@ import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.bedwars.special.listener.PermaItemListener;
 import org.screamingsandals.bedwars.lib.debug.Debug;
+import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.lib.SpecialSoundKey;
 import org.screamingsandals.lib.entity.EntityMapper;
 import org.screamingsandals.lib.event.EventManager;
@@ -48,7 +47,9 @@ import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.item.Item;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.plugin.ServiceManager;
-import org.screamingsandals.lib.utils.AdventureHelper;
+import org.screamingsandals.lib.spectator.Component;
+import org.screamingsandals.lib.spectator.sound.SoundSource;
+import org.screamingsandals.lib.spectator.sound.SoundStart;
 import org.screamingsandals.lib.utils.ConfigurateUtils;
 import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.utils.annotations.methods.OnPostEnable;
@@ -156,9 +157,9 @@ public class ShopInventory {
                         .orElseGet(() -> mainConfig.node("lore", "text").childrenList().stream().map(ConfigurationNode::getString))
                         .filter(Objects::nonNull)
                         .map(s -> s.replaceAll("%price%", Integer.toString(price))
-                                .replaceAll("%resource%", AdventureHelper.toLegacy(type.getItemName().asComponent()))
+                                .replaceAll("%resource%", type.getItemName().asComponent().toLegacy())
                                 .replaceAll("%amount%", Integer.toString(finalItem.getAmount())))
-                        .map(AdventureHelper::toComponent)
+                        .map(Component::fromLegacy)
                         .collect(Collectors.toList());
 
                 var nL = new ArrayList<Component>();
@@ -288,7 +289,7 @@ public class ShopInventory {
                             case "color":
                                 return team.getColor().name();
                             case "chatcolor":
-                                return AdventureHelper.toLegacyColorCode(team.getColor().getTextColor());
+                                return MiscUtils.toLegacyColorCode(team.getColor().getTextColor());
                             case "maxplayers":
                                 return Integer.toString(team.getMaxPlayers());
                             case "players":
@@ -393,7 +394,7 @@ public class ShopInventory {
         for (var s : sArray) {
             stringBuilder.append(Character.toUpperCase(s.charAt(0))).append(s.substring(1)).append(" ");
         }
-        return AdventureHelper.toComponent(stringBuilder.toString().trim());
+        return Component.fromLegacy(stringBuilder.toString().trim());
     }
 
     private void handleBuy(OnTradeEvent event) {
@@ -496,13 +497,13 @@ public class ShopInventory {
             if (!mainConfig.node("removePurchaseMessages").getBoolean()) {
                 Message.of(LangKeys.IN_GAME_SHOP_BUY_SUCCESS)
                         .prefixOrDefault(game.getCustomPrefixComponent())
-                        .placeholder("item", Component.text(amount + "x ").append(getNameOrCustomNameOfItem(newItem)))
-                        .placeholder("material", Component.text(priceAmount + " ").append(type.getItemName()))
+                        .placeholder("item", Component.text(amount + "x ").withAppendix(getNameOrCustomNameOfItem(newItem)))
+                        .placeholder("material", Component.text(priceAmount + " ").withAppendix(type.getItemName()))
                         .send(event.getPlayer());
             }
-            player.playSound(Sound.sound(
+            player.playSound(SoundStart.sound(
                     SpecialSoundKey.key(mainConfig.node("sounds", "item_buy", "sound").getString("entity.item.pickup")),
-                    Sound.Source.PLAYER,
+                    SoundSource.PLAYER,
                     (float) MainConfig.getInstance().node("sounds", "item_buy", "volume").getDouble(),
                     (float) MainConfig.getInstance().node("sounds", "item_buy", "pitch").getDouble()
             ));
@@ -516,8 +517,8 @@ public class ShopInventory {
             if (!mainConfig.node("removePurchaseMessages").getBoolean()) {
                 Message.of(LangKeys.IN_GAME_SHOP_BUY_FAILED)
                         .prefixOrDefault(game.getCustomPrefixComponent())
-                        .placeholder("item", Component.text(amount + "x ").append(getNameOrCustomNameOfItem(newItem)))
-                        .placeholder("material", Component.text(priceAmount + " ").append(type.getItemName()))
+                        .placeholder("item", Component.text(amount + "x ").withAppendix(getNameOrCustomNameOfItem(newItem)))
+                        .placeholder("material", Component.text(priceAmount + " ").withAppendix(type.getItemName()))
                         .send(event.getPlayer());
             }
         }
@@ -620,13 +621,13 @@ public class ShopInventory {
                         if (!mainConfig.node("removePurchaseMessages").getBoolean()) {
                             Message.of(LangKeys.IN_GAME_SHOP_BUY_SUCCESS)
                                     .prefixOrDefault(game.getCustomPrefixComponent())
-                                    .placeholder("item", AdventureHelper.toComponent(itemName))
-                                    .placeholder("material", Component.text(priceAmount + " ").append(type.getItemName()))
+                                    .placeholder("item", Component.fromLegacy(itemName))
+                                    .placeholder("material", Component.text(priceAmount + " ").withAppendix(type.getItemName()))
                                     .send(event.getPlayer());
                         }
-                        player.playSound(Sound.sound(
+                        player.playSound(SoundStart.sound(
                                 SpecialSoundKey.key(mainConfig.node("sounds", "upgrade_buy", "sound").getString("entity.experience_orb.pickup")),
-                                Sound.Source.PLAYER,
+                                SoundSource.PLAYER,
                                 (float) MainConfig.getInstance().node("sounds", "upgrade_buy", "volume").getDouble(),
                                 (float) MainConfig.getInstance().node("sounds", "upgrade_buy", "pitch").getDouble()
                         ));
@@ -635,13 +636,13 @@ public class ShopInventory {
                     if (!mainConfig.node("removePurchaseMessages").getBoolean()) {
                         Message.of(LangKeys.IN_GAME_SHOP_BUY_SUCCESS)
                                 .prefixOrDefault(game.getCustomPrefixComponent())
-                                .placeholder("item", AdventureHelper.toComponent(itemName))
-                                .placeholder("material", Component.text(priceAmount + " ").append(type.getItemName()))
+                                .placeholder("item", Component.fromLegacy(itemName))
+                                .placeholder("material", Component.text(priceAmount + " ").withAppendix(type.getItemName()))
                                 .send(event.getPlayer());
                     }
-                    player.playSound(Sound.sound(
+                    player.playSound(SoundStart.sound(
                             SpecialSoundKey.key(mainConfig.node("sounds", "upgrade_buy", "sound").getString("entity.experience_orb.pickup")),
-                            Sound.Source.PLAYER,
+                            SoundSource.PLAYER,
                             (float) MainConfig.getInstance().node("sounds", "upgrade_buy", "volume").getDouble(),
                             (float) MainConfig.getInstance().node("sounds", "upgrade_buy", "pitch").getDouble()
                     ));
@@ -656,8 +657,8 @@ public class ShopInventory {
             if (!mainConfig.node("removePurchaseMessages").getBoolean()) {
                 Message.of(LangKeys.IN_GAME_SHOP_BUY_FAILED)
                         .prefixOrDefault(game.getCustomPrefixComponent())
-                        .placeholder("item", AdventureHelper.toComponent(itemName))
-                        .placeholder("material", Component.text(priceAmount + " ").append(type.getItemName()))
+                        .placeholder("item", Component.fromLegacy(itemName))
+                        .placeholder("material", Component.text(priceAmount + " ").withAppendix(type.getItemName()))
                         .send(event.getPlayer());
             }
         }

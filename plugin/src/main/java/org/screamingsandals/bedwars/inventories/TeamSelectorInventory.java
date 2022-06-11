@@ -19,7 +19,6 @@
 
 package org.screamingsandals.bedwars.inventories;
 
-import net.kyori.adventure.text.Component;
 import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.events.OpenTeamSelectionEventImpl;
@@ -33,6 +32,7 @@ import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.lib.event.EventHandler;
 import org.screamingsandals.lib.event.EventManager;
 import org.screamingsandals.lib.lang.Message;
+import org.screamingsandals.lib.spectator.Component;
 import org.screamingsandals.simpleinventories.SimpleInventoriesCore;
 import org.screamingsandals.simpleinventories.inventory.GenericItemInfo;
 import org.screamingsandals.simpleinventories.inventory.InventorySet;
@@ -79,7 +79,7 @@ public class TeamSelectorInventory {
                             try {
                                 itemInfoBuilder.stack(itemBuilder ->
                                         itemBuilder.name(Message.of(LangKeys.IN_GAME_TEAM_SELECTION_SELECT_ITEM)
-                                                .placeholder("team", Component.text(team.getName()).color(team.getColor().getTextColor()))
+                                                .placeholder("team", Component.text(team.getName(), team.getColor().getTextColor()))
                                                 .placeholder("inteam", playersInTeamCount)
                                                 .placeholder("maxinteam", team.getMaxPlayers())
                                                 .asComponent()
@@ -132,15 +132,15 @@ public class TeamSelectorInventory {
         var playersInTeamCount = playersInTeam.size();
 
         if (playersInTeamCount >= team.getMaxPlayers()) {
-            loreList.add(Message.of(LangKeys.IN_GAME_TEAM_SELECTION_SELECT_ITEM_LORE_FULL).asComponent().color(team.getColor().getTextColor()));
+            loreList.add(Message.of(LangKeys.IN_GAME_TEAM_SELECTION_SELECT_ITEM_LORE_FULL).asComponent().withColor(team.getColor().getTextColor()));
         } else {
-            loreList.add(Message.of(LangKeys.IN_GAME_TEAM_SELECTION_SELECT_ITEM_LORE_JOIN).asComponent().color(team.getColor().getTextColor()));
+            loreList.add(Message.of(LangKeys.IN_GAME_TEAM_SELECTION_SELECT_ITEM_LORE_JOIN).asComponent().withColor(team.getColor().getTextColor()));
         }
 
         if (!playersInTeam.isEmpty()) {
             loreList.add(Message.of(LangKeys.IN_GAME_TEAM_SELECTION_SELECT_ITEM_LORE).asComponent());
             playersInTeam.forEach(gamePlayer ->
-                    loreList.add(gamePlayer.getDisplayName().color(team.getColor().getTextColor()))
+                    loreList.add(gamePlayer.getDisplayName().withColor(team.getColor().getTextColor()))
             );
         }
 
@@ -178,7 +178,7 @@ public class TeamSelectorInventory {
         itemInfo.setItem(itemInfo.getItem()
                 .withDisplayName(
                         Message.of(LangKeys.IN_GAME_TEAM_SELECTION_SELECT_ITEM)
-                                .placeholder("team", Component.text(team.getName()).color(team.getColor().getTextColor()))
+                                .placeholder("team", Component.text(team.getName()).withColor(team.getColor().getTextColor()))
                                 .placeholder("inteam", playersInTeamCount)
                                 .placeholder("maxinteam", team.getMaxPlayers())
                                 .asComponent()

@@ -21,7 +21,6 @@ package org.screamingsandals.bedwars.special;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import net.kyori.adventure.sound.Sound;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.api.special.BridgeEgg;
 import org.screamingsandals.bedwars.game.GameImpl;
@@ -32,6 +31,8 @@ import org.screamingsandals.lib.SpecialSoundKey;
 import org.screamingsandals.lib.block.BlockHolder;
 import org.screamingsandals.lib.block.BlockTypeHolder;
 import org.screamingsandals.lib.entity.EntityProjectile;
+import org.screamingsandals.lib.spectator.sound.SoundSource;
+import org.screamingsandals.lib.spectator.sound.SoundStart;
 import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
 import org.screamingsandals.lib.tasker.task.TaskerTask;
@@ -60,7 +61,7 @@ public class BridgeEggImpl extends SpecialItem implements BridgeEgg<GameImpl, Be
             block.setType(material);
             game.getRegion().addBuiltDuringGame(block.getLocation());
             player.playSound(
-                    Sound.sound(SpecialSoundKey.key("minecraft:entity.chicken.egg"), Sound.Source.AMBIENT, 1f, 1f),
+                    SoundStart.sound(SpecialSoundKey.key("minecraft:entity.chicken.egg"), SoundSource.AMBIENT, 1f, 1f),
                     block.getLocation().getX(),
                     block.getLocation().getY(),
                     block.getLocation().getZ()

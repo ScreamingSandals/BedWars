@@ -19,23 +19,24 @@
 
 package org.screamingsandals.bedwars.scoreboard;
 
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.TeamImpl;
 import org.screamingsandals.bedwars.listener.Player116ListenerUtils;
+import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.lib.lang.Message;
+import org.screamingsandals.lib.packet.SClientboundSetPlayerTeamPacket;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.sidebar.ScoreSidebar;
 import org.screamingsandals.lib.sidebar.Sidebar;
 import org.screamingsandals.lib.sidebar.TeamedSidebar;
+import org.screamingsandals.lib.spectator.Color;
+import org.screamingsandals.lib.spectator.Component;
 import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
 import org.screamingsandals.lib.tasker.task.TaskerTask;
-import org.screamingsandals.lib.utils.AdventureHelper;
 import org.spongepowered.configurate.ConfigurationNode;
 
 import java.util.*;
@@ -54,7 +55,7 @@ public class ScreamingScoreboard {
         this.game = game;
         if (game.getConfigurationContainer().getOrDefault(ConfigurationContainer.LOBBY_SCOREBOARD, Boolean.class, false)) {
             this.sidebar
-                    .title(AdventureHelper.toComponent(MainConfig.getInstance().node("lobby-scoreboard", "title").getString("§eBEDWARS")));
+                    .title(Component.fromLegacy(MainConfig.getInstance().node("lobby-scoreboard", "title").getString("§eBEDWARS")));
             MainConfig.getInstance().node("lobby-scoreboard", "content")
                     .childrenList()
                     .stream()
@@ -159,7 +160,7 @@ public class ScreamingScoreboard {
         game.getActiveTeams().forEach(team -> {
             if (teamedSidebar.getTeam(team.getName()).isEmpty()) {
                 teamedSidebar.team(team.getName())
-                        .color(NamedTextColor.nearestTo(team.getColor().getTextColor()))
+                        .color(SClientboundSetPlayerTeamPacket.TeamColor.valueOf(Color.nearestNamedTo(team.getColor().getTextColor()).toString().toUpperCase())) // TODO: a better way
                         .friendlyFire(game.getConfigurationContainer().getOrDefault(ConfigurationContainer.FRIENDLY_FIRE, Boolean.class, false));
             }
             var sidebarTeam = teamedSidebar.getTeam(team.getName()).orElseThrow();
@@ -185,15 +186,15 @@ public class ScreamingScoreboard {
 
         return MainConfig.getInstance().node("experimental", "new-scoreboard-system", "teamTitle").getString("")
                 .replace("%team_size%", String.valueOf(team.countConnectedPlayers()))
-                .replace("%color%", AdventureHelper.toLegacyColorCode(team.getColor().getTextColor()))
+                .replace("%color%", MiscUtils.toLegacyColorCode(team.getColor().getTextColor()))
                 .replace("%team%", team.getName())
                 .replace("%bed%", destroy ? GameImpl.bedLostString() : (empty ? GameImpl.anchorEmptyString() : GameImpl.bedExistString()));
     }
 
     private Component formatScoreboardTeamOld(TeamImpl team, boolean destroy, boolean empty) {
-        return AdventureHelper.toComponent(
+        return Component.fromLegacy(
                 MainConfig.getInstance().node("scoreboard", "teamTitle").getString("%bed%%color%%team%")
-                        .replace("%color%", AdventureHelper.toLegacyColorCode(team.getColor().getTextColor()))
+                        .replace("%color%", MiscUtils.toLegacyColorCode(team.getColor().getTextColor()))
                         .replace("%team%", team.getName())
                         .replace("%bed%", destroy ? GameImpl.bedLostString() : (empty ? GameImpl.anchorEmptyString() : GameImpl.bedExistString()))
         );

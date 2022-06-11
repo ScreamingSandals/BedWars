@@ -21,11 +21,6 @@ package org.screamingsandals.bedwars.game;
 
 import com.onarandombox.MultiverseCore.api.Core;
 import lombok.*;
-import net.kyori.adventure.bossbar.BossBar;
-import net.kyori.adventure.sound.Sound;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.title.Title;
 import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.api.ArenaTime;
@@ -89,12 +84,15 @@ import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.player.SenderWrapper;
 import org.screamingsandals.lib.player.gamemode.GameModeHolder;
 import org.screamingsandals.lib.plugin.PluginManager;
+import org.screamingsandals.lib.spectator.Color;
+import org.screamingsandals.lib.spectator.Component;
+import org.screamingsandals.lib.spectator.bossbar.BossBarColor;
+import org.screamingsandals.lib.spectator.sound.SoundSource;
+import org.screamingsandals.lib.spectator.sound.SoundStart;
+import org.screamingsandals.lib.spectator.title.Title;
 import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
 import org.screamingsandals.lib.tasker.task.TaskerTask;
-import org.screamingsandals.lib.utils.AdventureHelper;
-import org.screamingsandals.lib.utils.adventure.wrapper.BossBarColorWrapper;
-import org.screamingsandals.lib.utils.adventure.wrapper.ComponentWrapper;
 import org.screamingsandals.lib.visuals.Visual;
 import org.screamingsandals.lib.world.LocationHolder;
 import org.screamingsandals.lib.world.LocationMapper;
@@ -115,7 +113,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, WorldHolder, LocationHolder, EntityBasic, ComponentWrapper, GameStoreImpl, ItemSpawnerImpl> {
+public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, WorldHolder, LocationHolder, EntityBasic, Component, GameStoreImpl, ItemSpawnerImpl> {
     public boolean gameStartItem;
     @Getter
     private final UUID uuid;
@@ -140,8 +138,8 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
     private final List<GameStoreImpl> gameStore = new ArrayList<>();
     private ArenaTime arenaTime = ArenaTime.WORLD;
     private WeatherHolder arenaWeather = null;
-    private BossBar.Color lobbyBossBarColor = null;
-    private BossBar.Color gameBossBarColor = null;
+    private BossBarColor lobbyBossBarColor = null;
+    private BossBarColor gameBossBarColor = null;
     private String customPrefix = null;
     private boolean preServerRestart = false;
     @Getter
@@ -228,9 +226,8 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
 
             if (GameManagerImpl.getInstance().getGame(uuid).isPresent()) {
                 PlayerMapper.getConsoleSender().sendMessage(
-                        MiscUtils.BW_PREFIX.append(
-                                Component.text("Arena " + uuid + " has the same unique id as another arena that's already loaded. Skipping!")
-                                        .color(NamedTextColor.RED)
+                        MiscUtils.BW_PREFIX.withAppendix(
+                                Component.text("Arena " + uuid + " has the same unique id as another arena that's already loaded. Skipping!", Color.RED)
                         )
                 );
                 return null;
@@ -251,44 +248,39 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
             if (game.world == null) {
                 if (PluginManager.isEnabled(multiverseKey)) {
                     PlayerMapper.getConsoleSender().sendMessage(
-                            MiscUtils.BW_PREFIX.append(
-                                    Component.text("World " + worldName + " was not found, but we found Multiverse-Core, so we will try to load this world.")
-                                            .color(NamedTextColor.RED)
+                            MiscUtils.BW_PREFIX.withAppendix(
+                                    Component.text("World " + worldName + " was not found, but we found Multiverse-Core, so we will try to load this world.", Color.RED)
                             )
                     );
 
                     if (multiverse.isPresent() && ((Core) multiverse.orElseThrow()).getMVWorldManager().loadWorld(worldName)) {
                         PlayerMapper.getConsoleSender().sendMessage(
-                                MiscUtils.BW_PREFIX.append(
-                                        Component.text("World " + worldName + " was successfully loaded with Multiverse-Core, continue in arena loading.")
-                                                .color(NamedTextColor.GREEN)
+                                MiscUtils.BW_PREFIX.withAppendix(
+                                        Component.text("World " + worldName + " was successfully loaded with Multiverse-Core, continue in arena loading.", Color.GREEN)
                                 )
                         );
 
                         game.world = WorldMapper.getWorld(worldName).orElseThrow();
                     } else {
                         PlayerMapper.getConsoleSender().sendMessage(
-                                MiscUtils.BW_PREFIX.append(
-                                        Component.text("Arena " + game.name + " can't be loaded, because world " + worldName + " is missing!")
-                                                .color(NamedTextColor.RED)
+                                MiscUtils.BW_PREFIX.withAppendix(
+                                        Component.text("Arena " + game.name + " can't be loaded, because world " + worldName + " is missing!", Color.RED)
                                 )
                         );
                         return null;
                     }
                 } else if (firstAttempt) {
                     PlayerMapper.getConsoleSender().sendMessage(
-                            MiscUtils.BW_PREFIX.append(
-                                    Component.text("Arena " + game.name + " can't be loaded, because world " + worldName + " is missing! We will try it again after all plugins have loaded!")
-                                            .color(NamedTextColor.YELLOW)
+                            MiscUtils.BW_PREFIX.withAppendix(
+                                    Component.text("Arena " + game.name + " can't be loaded, because world " + worldName + " is missing! We will try it again after all plugins have loaded!", Color.YELLOW)
                             )
                     );
                     Tasker.build(() -> loadGame(file, false)).delay(10L, TaskerTime.TICKS).start();
                     return null;
                 } else {
                     PlayerMapper.getConsoleSender().sendMessage(
-                            MiscUtils.BW_PREFIX.append(
-                                    Component.text("Arena " + game.name + " can't be loaded, because world " + worldName + " is missing!")
-                                            .color(NamedTextColor.RED)
+                            MiscUtils.BW_PREFIX.withAppendix(
+                                    Component.text("Arena " + game.name + " can't be loaded, because world " + worldName + " is missing!", Color.RED)
                             )
                     );
                     return null;
@@ -323,44 +315,39 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
             if (lobbySpawnWorld == null) {
                 if (PluginManager.isEnabled(multiverseKey)) {
                     PlayerMapper.getConsoleSender().sendMessage(
-                            MiscUtils.BW_PREFIX.append(
-                                    Component.text("World " + spawnWorld + " was not found, but we found Multiverse-Core, so we will try to load this world.")
-                                            .color(NamedTextColor.RED)
+                            MiscUtils.BW_PREFIX.withAppendix(
+                                    Component.text("World " + spawnWorld + " was not found, but we found Multiverse-Core, so we will try to load this world.", Color.RED)
                             )
                     );
 
                     if (multiverse.isPresent() && ((Core) multiverse.orElseThrow()).getMVWorldManager().loadWorld(spawnWorld)) {
                         PlayerMapper.getConsoleSender().sendMessage(
-                                MiscUtils.BW_PREFIX.append(
-                                        Component.text("World " + spawnWorld + " was successfully loaded with Multiverse-Core, continue in arena loading.")
-                                                .color(NamedTextColor.GREEN)
+                                MiscUtils.BW_PREFIX.withAppendix(
+                                        Component.text("World " + spawnWorld + " was successfully loaded with Multiverse-Core, continue in arena loading.", Color.GREEN)
                                 )
                         );
 
                         lobbySpawnWorld = WorldMapper.getWorld(Objects.requireNonNull(spawnWorld)).orElseThrow();
                     } else {
                         PlayerMapper.getConsoleSender().sendMessage(
-                                MiscUtils.BW_PREFIX.append(
-                                        Component.text("Arena " + game.name + " can't be loaded, because world " + spawnWorld + " is missing!")
-                                                .color(NamedTextColor.RED)
+                                MiscUtils.BW_PREFIX.withAppendix(
+                                        Component.text("Arena " + game.name + " can't be loaded, because world " + spawnWorld + " is missing!", Color.RED)
                                 )
                         );
                         return null;
                     }
                 } else if (firstAttempt) {
                     PlayerMapper.getConsoleSender().sendMessage(
-                            MiscUtils.BW_PREFIX.append(
-                                    Component.text("Arena " + game.name + " can't be loaded, because world " + spawnWorld + " is missing! We will try it again after all plugins have loaded!")
-                                            .color(NamedTextColor.YELLOW)
+                            MiscUtils.BW_PREFIX.withAppendix(
+                                    Component.text("Arena " + game.name + " can't be loaded, because world " + spawnWorld + " is missing! We will try it again after all plugins have loaded!", Color.YELLOW)
                             )
                     );
                     Tasker.build(() -> loadGame(file, false)).delay(10L, TaskerTime.TICKS).start();
                     return null;
                 } else {
                     PlayerMapper.getConsoleSender().sendMessage(
-                            MiscUtils.BW_PREFIX.append(
-                                    Component.text("Arena " + game.name + " can't be loaded, because world " + spawnWorld + " is missing!")
-                                            .color(NamedTextColor.RED)
+                            MiscUtils.BW_PREFIX.withAppendix(
+                                    Component.text("Arena " + game.name + " can't be loaded, because world " + spawnWorld + " is missing!", Color.RED)
                             )
                     );
                     return null;
@@ -455,12 +442,11 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
 
             game.start();
             PlayerMapper.getConsoleSender().sendMessage(
-                    Component
-                            .text("[B", NamedTextColor.RED)
-                            .append(Component.text("W] ", NamedTextColor.WHITE))
-                            .append(Component.text("Arena ", NamedTextColor.GREEN))
-                            .append(Component.text(game.uuid + "/" + game.name + " (" + file.getName() + ")", NamedTextColor.WHITE))
-                            .append(Component.text(" loaded!", NamedTextColor.GREEN))
+                    MiscUtils.BW_PREFIX.withAppendix(
+                            Component.text("Arena ", Color.GREEN),
+                            Component.text(game.uuid + "/" + game.name + " (" + file.getName() + ")", Color.WHITE),
+                            Component.text(" loaded!", Color.GREEN)
+                    )
             );
             if (uid.empty()) {
                 try {
@@ -500,9 +486,9 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
         }
     }
 
-    public static BossBar.Color loadBossBarColor(String color) {
+    public static BossBarColor loadBossBarColor(String color) {
         try {
-            return BossBar.Color.valueOf(color);
+            return BossBarColor.valueOf(color);
         } catch (Exception e) {
             return null;
         }
@@ -867,12 +853,12 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
                     team.setTargetBlockIntact(false);
                     Component coloredDestroyer = Component.text("explosion");
                     if (destroyer != null) {
-                        coloredDestroyer = destroyer.getDisplayName().color(getPlayerTeam(PlayerManagerImpl.getInstance().getPlayer(destroyer.getUuid()).orElseThrow()).getColor().getTextColor());
+                        coloredDestroyer = destroyer.getDisplayName().withColor(getPlayerTeam(PlayerManagerImpl.getInstance().getPlayer(destroyer.getUuid()).orElseThrow()).getColor().getTextColor());
                     }
                     for (BedWarsPlayer player : players) {
                         var message = Message
                                 .of(isItBedBlock ? LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_BED : (isItAnchor ? LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_ANCHOR : (isItCake ? LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_CAKE : LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_ANY)))
-                                .placeholder("team", Component.text(team.getName()).color(team.getColor().getTextColor()))
+                                .placeholder("team", Component.text(team.getName(), team.getColor().getTextColor()))
                                 .placeholder("broker", coloredDestroyer);
 
                         message.clone()
@@ -890,18 +876,18 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
                         SpawnEffects.spawnEffect(this, player, "game-effects.beddestroy");
                         if (getPlayerTeam(player) == team) {
                             player.playSound(
-                                    Sound.sound(
+                                    SoundStart.sound(
                                             SpecialSoundKey.key(MainConfig.getInstance().node("sounds", "my_bed_destroyed", "sound").getString("entity.ender_dragon.growl")),
-                                            Sound.Source.AMBIENT,
+                                            SoundSource.AMBIENT,
                                             (float) MainConfig.getInstance().node("sounds", "my_bed_destroyed", "volume").getDouble(1),
                                             (float) MainConfig.getInstance().node("sounds", "my_bed_destroyed", "pitch").getDouble(1)
                                     )
                             );
                         } else {
                             player.playSound(
-                                    Sound.sound(
+                                    SoundStart.sound(
                                             SpecialSoundKey.key(MainConfig.getInstance().node("sounds", "bed_destroyed", "sound").getString("entity.ender_dragon.growl")),
-                                            Sound.Source.AMBIENT,
+                                            SoundSource.AMBIENT,
                                             (float) MainConfig.getInstance().node("sounds", "bed_destroyed", "volume").getDouble(1),
                                             (float) MainConfig.getInstance().node("sounds", "bed_destroyed", "pitch").getDouble(1)
                                     )
@@ -1350,12 +1336,13 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
         if (status == GameStatus.REBUILDING) {
             if (isBungeeEnabled()) {
                 BungeeUtils.movePlayerToBungeeServer(player, false);
-                BungeeUtils.sendPlayerBungeeMessage(player, AdventureHelper.toLegacy(Message
+                BungeeUtils.sendPlayerBungeeMessage(player, Message
                                 .of(LangKeys.IN_GAME_ERRORS_GAME_IS_REBUILDING)
                                 .prefixOrDefault(getCustomPrefixComponent())
                                 .placeholder("arena", this.name)
                                 .asComponent(player)
-                        ));
+                                .toLegacy()
+                        );
             } else {
                 Message
                         .of(LangKeys.IN_GAME_ERRORS_GAME_IS_REBUILDING)
@@ -1370,13 +1357,14 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
                 && !configurationContainer.getOrDefault(ConfigurationContainer.SPECTATOR_JOIN, Boolean.class, false)) {
             if (isBungeeEnabled()) {
                 BungeeUtils.movePlayerToBungeeServer(player, false);
-                BungeeUtils.sendPlayerBungeeMessage(player, AdventureHelper.toLegacy(
+                BungeeUtils.sendPlayerBungeeMessage(player,
                         Message
                                 .of(LangKeys.IN_GAME_ERRORS_GAME_ALREADY_RUNNING)
                                 .placeholder("arena", this.name)
                                 .prefixOrDefault(getCustomPrefixComponent())
                                 .asComponent(player)
-                ));
+                                .toLegacy()
+                );
             } else {
                 Message
                         .of(LangKeys.IN_GAME_ERRORS_GAME_ALREADY_RUNNING)
@@ -1407,13 +1395,14 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
                 }
 
                 if (isBungeeEnabled()) {
-                    BungeeUtils.sendPlayerBungeeMessage(kickPlayer, AdventureHelper.toLegacy(
+                    BungeeUtils.sendPlayerBungeeMessage(kickPlayer,
                             Message
                                     .of(LangKeys.IN_GAME_ERRORS_GAME_KICKED_BY_VIP)
                                     .placeholder("arena", this.name)
                                     .prefixOrDefault(getCustomPrefixComponent())
                                     .asComponent(kickPlayer)
-                    ));
+                                    .toLegacy()
+                    );
                 } else {
                     Message
                             .of(LangKeys.IN_GAME_ERRORS_GAME_KICKED_BY_VIP)
@@ -1425,13 +1414,14 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
             } else {
                 if (isBungeeEnabled()) {
                     BungeeUtils.movePlayerToBungeeServer(player, false);
-                    Tasker.build(() -> BungeeUtils.sendPlayerBungeeMessage(player, AdventureHelper.toLegacy(
+                    Tasker.build(() -> BungeeUtils.sendPlayerBungeeMessage(player,
                             Message
                                     .of(LangKeys.IN_GAME_ERRORS_GAME_IS_FULL)
                                     .placeholder("arena", GameImpl.this.name)
                                     .prefixOrDefault(getCustomPrefixComponent())
                                     .asComponent(player)
-                    ))).delay(5, TaskerTime.TICKS).start();
+                                    .toLegacy()
+                    )).delay(5, TaskerTime.TICKS).start();
                 } else {
                     Message
                             .of(LangKeys.IN_GAME_ERRORS_GAME_IS_FULL)
@@ -1717,7 +1707,7 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
             Debug.info(name + ": preparing lobby");
             previousCountdown = countdown = pauseCountdown;
             previousStatus = GameStatus.WAITING;
-            var title = AdventureHelper.toLegacy(Message.of(LangKeys.IN_GAME_BOSSBAR_WAITING).asComponent());
+            var title = Message.of(LangKeys.IN_GAME_BOSSBAR_WAITING).asComponent();
             statusbar.setProgress(0);
             statusbar.setVisible(configurationContainer.getOrDefault(ConfigurationContainer.LOBBY_BOSSBAR, Boolean.class, false));
             for (BedWarsPlayer p : players) {
@@ -1774,11 +1764,11 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
                     if (countdown <= 10 && countdown >= 1 && countdown != previousCountdown) {
 
                         for (BedWarsPlayer player : players) {
-                            player.showTitle(Title.title(Component.text(Integer.toString(countdown), NamedTextColor.YELLOW), Component.empty(), TitleUtils.defaultTimes()));
+                            player.showTitle(Title.title(Component.text(Integer.toString(countdown), Color.YELLOW), Component.empty(), TitleUtils.defaultTimes()));
                             player.playSound(
-                                    Sound.sound(
+                                    SoundStart.sound(
                                             SpecialSoundKey.key(MainConfig.getInstance().node("sounds", "countdown", "sound").getString("ui.button.click")),
-                                            Sound.Source.AMBIENT,
+                                            SoundSource.AMBIENT,
                                             (float) MainConfig.getInstance().node("sounds", "countdown", "volume").getDouble(1),
                                             (float) MainConfig.getInstance().node("sounds", "countdown", "pitch").getDouble(1)
                                     )
@@ -1847,7 +1837,7 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
                     statusbar.setVisible(configurationContainer.getOrDefault(ConfigurationContainer.GAME_BOSSBAR, Boolean.class, false));
                     if (statusbar instanceof BossBarImpl) {
                         var bossbar = (BossBarImpl) statusbar;
-                        bossbar.setMessage(AdventureHelper.toLegacy(Message.of(LangKeys.IN_GAME_BOSSBAR_RUNNING).asComponent()));
+                        bossbar.setMessage(Message.of(LangKeys.IN_GAME_BOSSBAR_RUNNING).asComponent());
                         bossbar.setColor(gameBossBarColor != null ? gameBossBarColor
                                 : MainConfig.getInstance().node("bossbar", "game", "color").getString(""));
                         bossbar.setStyle(
@@ -1901,9 +1891,9 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
                         if (team == null) {
                             var loc = makeSpectator(player, true);
                                 player.playSound(
-                                        Sound.sound(
+                                        SoundStart.sound(
                                                 SpecialSoundKey.key(MainConfig.getInstance().node("sounds", "game_start", "sound").getString("entity.player.levelup")),
-                                                Sound.Source.AMBIENT,
+                                                SoundSource.AMBIENT,
                                                 (float) MainConfig.getInstance().node("sounds", "game_start", "volume").getDouble(1),
                                                 (float) MainConfig.getInstance().node("sounds", "game_start", "pitch").getDouble(1)
                                         ),
@@ -1930,9 +1920,9 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
                                 }
                                 SpawnEffects.spawnEffect(this, player, "game-effects.start");
                                 player.playSound(
-                                        Sound.sound(
+                                        SoundStart.sound(
                                                 SpecialSoundKey.key(MainConfig.getInstance().node("sounds", "game_start", "sound").getString("entity.player.levelup")),
-                                                Sound.Source.AMBIENT,
+                                                SoundSource.AMBIENT,
                                                 (float) MainConfig.getInstance().node("sounds", "game_start", "volume").getDouble(1),
                                                 (float) MainConfig.getInstance().node("sounds", "game_start", "pitch").getDouble(1)
                                         )
@@ -1975,7 +1965,7 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
 
                     if (configurationContainer.getOrDefault(ConfigurationContainer.HEALTH_INDICATOR, Boolean.class, false)) {
                         healthIndicator = HealthIndicator.of()
-                                .symbol(Component.text("\u2665", NamedTextColor.RED))
+                                .symbol(Component.text("\u2665", Color.RED))
                                 .show()
                                 .startUpdateTask(4, TaskerTime.TICKS);
                         players.forEach(healthIndicator::addViewer);
@@ -2349,8 +2339,8 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
                 .map(ConfigurationNode::getString)
                 .map(s -> Objects.requireNonNullElse(s, "")
                         .replaceAll("%arena%", this.displayName != null && !this.displayName.isBlank() ? this.displayName : this.getName())
-                        .replaceAll("%status%", AdventureHelper.toLegacy(statusMessage.asComponent()))
-                        .replaceAll("%players%", AdventureHelper.toLegacy(playerMessage.asComponent())))
+                        .replaceAll("%status%", statusMessage.asComponent().toLegacy())
+                        .replaceAll("%players%", playerMessage.asComponent().toLegacy()))
                 .collect(Collectors.toList());
 
         final var finalBlockBehindMaterial = blockBehindMaterial;
@@ -2362,7 +2352,7 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
                             if (blockState.isPresent() && blockState.get() instanceof SignHolder) {
                                 var sign = (SignHolder) blockState.get();
                                 for (int i = 0; i < texts.size() && i < 4; i++) {
-                                    sign.line(i, AdventureHelper.toComponent(texts.get(i)));
+                                    sign.line(i, Component.fromLegacy(texts.get(i)));
                                 }
                                 sign.updateBlock();
                             }
@@ -2675,20 +2665,20 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
     }
 
     @Override
-    public BossBarColorWrapper getLobbyBossBarColor() {
-        return new BossBarColorWrapper(this.lobbyBossBarColor);
+    public BossBarColor getLobbyBossBarColor() {
+        return this.lobbyBossBarColor;
     }
 
-    public void setLobbyBossBarColor(BossBar.Color color) {
+    public void setLobbyBossBarColor(BossBarColor color) {
         this.lobbyBossBarColor = color;
     }
 
     @Override
-    public BossBarColorWrapper getGameBossBarColor() {
-        return new BossBarColorWrapper(this.gameBossBarColor);
+    public BossBarColor getGameBossBarColor() {
+        return this.gameBossBarColor;
     }
 
-    public void setGameBossBarColor(BossBar.Color color) {
+    public void setGameBossBarColor(BossBarColor color) {
         this.gameBossBarColor = color;
     }
 
@@ -2802,13 +2792,13 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
     }
 
     @Override
-    public ComponentWrapper getCustomPrefixComponent() {
-        return new ComponentWrapper(AdventureHelper.toComponentNullable(customPrefix));
+    public Component getCustomPrefixComponent() {
+        return Component.fromLegacy(customPrefix);
     }
 
     @Override
-    public ComponentWrapper getDisplayNameComponent() {
-        return new ComponentWrapper(AdventureHelper.toComponent(this.displayName != null && !this.displayName.isBlank() ? this.displayName : this.name));
+    public Component getDisplayNameComponent() {
+        return Component.fromLegacy(this.displayName != null && !this.displayName.isBlank() ? this.displayName : this.name);
     }
 
     @Override

@@ -21,7 +21,6 @@ package org.screamingsandals.bedwars.special;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import net.kyori.adventure.sound.Sound;
 import org.screamingsandals.bedwars.api.special.Trap;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.TeamImpl;
@@ -32,6 +31,8 @@ import org.screamingsandals.lib.SpecialSoundKey;
 import org.screamingsandals.lib.block.BlockTypeHolder;
 import org.screamingsandals.lib.item.meta.PotionEffectHolder;
 import org.screamingsandals.lib.lang.Message;
+import org.screamingsandals.lib.spectator.sound.SoundSource;
+import org.screamingsandals.lib.spectator.sound.SoundStart;
 import org.screamingsandals.lib.world.LocationHolder;
 
 import java.util.List;
@@ -71,9 +72,9 @@ public class TrapImpl extends SpecialItem implements Trap<GameImpl, BedWarsPlaye
                 var sound = (String) data.get("sound");
                 try {
                     player.playSound(
-                            Sound.sound(
+                            SoundStart.sound(
                                     SpecialSoundKey.key(sound),
-                                    Sound.Source.AMBIENT,
+                                    SoundSource.AMBIENT,
                                     1f,
                                     1f
                             ),

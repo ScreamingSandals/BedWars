@@ -58,6 +58,7 @@ public class ConfigGenerator {
             private final ConfigurationNode selected;
             private ConfigurationNode migration;
             private Consumer<ConfigurationNode> remapConsumer;
+            private Predicate<ConfigurationNode> remapPredicate;
             private boolean clearMigration = true;
 
             public ConfigValue migrateOld(Object... keys) throws SerializationException {
@@ -78,6 +79,11 @@ public class ConfigGenerator {
 
             public ConfigValue remap(Consumer<ConfigurationNode> remapConsumer) {
                 this.remapConsumer = remapConsumer;
+                return this;
+            }
+
+            public ConfigValue remapWhen(Predicate<ConfigurationNode> predicate) {
+                this.remapPredicate = predicate;
                 return this;
             }
 
@@ -135,6 +141,9 @@ public class ConfigGenerator {
                     }
                     migration = null;
                     remapConsumer = null;
+                } else if (remapPredicate != null && remapConsumer != null && remapPredicate.test(selected)) {
+                    remapConsumer.accept(selected);
+                    modified = true;
                 }
             }
         }

@@ -20,11 +20,10 @@
 package org.screamingsandals.bedwars.tab;
 
 import lombok.RequiredArgsConstructor;
-import net.kyori.adventure.text.Component;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.lib.plugin.ServiceManager;
-import org.screamingsandals.lib.utils.AdventureHelper;
+import org.screamingsandals.lib.spectator.Component;
 import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.utils.annotations.methods.OnEnable;
 import org.screamingsandals.lib.utils.annotations.methods.ShouldRunControllable;
@@ -82,7 +81,7 @@ public class TabManager {
 
     public void clear(BedWarsPlayer player) {
         if (player.isOnline() && (header != null || footer != null)) {
-            player.sendPlayerListHeaderAndFooter(Component.empty(), Component.empty());
+            player.sendPlayerListHeaderFooter(Component.empty(), Component.empty());
         }
     }
 
@@ -97,7 +96,7 @@ public class TabManager {
             }
             var game = Objects.requireNonNull(gamePlayer.getGame());
             component.append(
-                    AdventureHelper.toComponent(
+                    Component.fromLegacy(
                             a.replace("%players%", String.valueOf(game.countPlayers()))
                                     .replace("%alive%", String.valueOf(game.countAlive()))
                                     .replace("%spectating%", String.valueOf(game.countSpectating()))

@@ -26,6 +26,7 @@ import org.screamingsandals.bedwars.commands.RemoveHoloCommand;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
+import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.bedwars.utils.SerializableLocation;
 import org.screamingsandals.lib.Server;
 import org.screamingsandals.lib.event.EventPriority;
@@ -38,9 +39,9 @@ import org.screamingsandals.lib.player.OfflinePlayerWrapper;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.event.player.SPlayerJoinEvent;
 import org.screamingsandals.lib.plugin.ServiceManager;
+import org.screamingsandals.lib.spectator.Component;
 import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
-import org.screamingsandals.lib.utils.AdventureHelper;
 import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.utils.annotations.methods.OnPostEnable;
 import org.screamingsandals.lib.utils.annotations.methods.OnPreDisable;
@@ -188,9 +189,9 @@ public class LeaderboardHolograms {
         if (entries != null && !entries.isEmpty()) {
             var lines = new ArrayList<String>();
 
-            lines.add(AdventureHelper.translateAlternateColorCodes('&', mainConfig.node("holograms", "leaderboard", "headline").getString("")));
+            lines.add(MiscUtils.translateAlternateColorCodes('&', mainConfig.node("holograms", "leaderboard", "headline").getString("")));
 
-            var line = AdventureHelper.translateAlternateColorCodes('&', mainConfig.node("holograms", "leaderboard", "format").getString(""));
+            var line = MiscUtils.translateAlternateColorCodes('&', mainConfig.node("holograms", "leaderboard", "format").getString(""));
 
             var l = new AtomicInteger(1);
             entries.forEach(leaderboardEntry ->
@@ -202,7 +203,7 @@ public class LeaderboardHolograms {
             );
 
             for (int i = 0; i < lines.size(); i++) {
-                holo.replaceLine(i, TextEntry.of(AdventureHelper.toComponent(lines.get(i))));
+                holo.replaceLine(i, TextEntry.of(Component.fromLegacy(lines.get(i))));
             }
         }
     }

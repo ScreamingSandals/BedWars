@@ -23,8 +23,6 @@ import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
 import cloud.commandframework.arguments.standard.*;
 import cloud.commandframework.context.CommandContext;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.event.ClickEvent;
 import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.api.game.ItemSpawner;
 import org.screamingsandals.bedwars.commands.AdminCommand;
@@ -37,6 +35,8 @@ import org.screamingsandals.lib.hologram.Hologram;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
+import org.screamingsandals.lib.spectator.Component;
+import org.screamingsandals.lib.spectator.event.ClickEvent;
 import org.screamingsandals.lib.utils.TriConsumer;
 import org.screamingsandals.lib.utils.annotations.Service;
 
@@ -115,7 +115,7 @@ public class SpawnerCommand extends BaseAdminSubCommand {
                                         Message
                                                 .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_SPAWNER_ADDED)
                                                 .defaultPrefix()
-                                                .placeholder("resource", spawnerType.getItemName().asComponent())
+                                                .placeholder("resource", spawnerType.getItemName())
                                                 .placeholder("x", loc.getBlockX())
                                                 .placeholder("y", loc.getBlockY())
                                                 .placeholder("z", loc.getBlockZ())
@@ -411,7 +411,7 @@ public class SpawnerCommand extends BaseAdminSubCommand {
                         var command = String.join(" ", rawInput) + " " + number.getAndIncrement();
                         Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_MULTIPLE_SPAWNERS_LINE)
                                 .placeholder("type", itemSpawner.getItemSpawnerType().getItemName())
-                                .placeholder("command", Component.text(command).clickEvent(ClickEvent.runCommand(command)))
+                                .placeholder("command", Component.text().content(command).clickEvent(ClickEvent.runCommand(command)))
                                 .send(sender);
                     });
                 }
@@ -422,7 +422,7 @@ public class SpawnerCommand extends BaseAdminSubCommand {
                     var command = commandContext.getRawInputJoined() + " " + number.getAndIncrement();
                     Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_MULTIPLE_SPAWNERS_LINE)
                             .placeholder("type", itemSpawner.getItemSpawnerType().getItemName())
-                            .placeholder("command", Component.text(command).clickEvent(ClickEvent.runCommand(command)))
+                            .placeholder("command", Component.text().content(command).clickEvent(ClickEvent.runCommand(command)))
                             .send(sender);
                 });
             }

@@ -21,11 +21,11 @@ package org.screamingsandals.bedwars.utils;
 
 import com.google.common.io.ByteStreams;
 import lombok.experimental.UtilityClass;
-import net.kyori.adventure.text.Component;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.lib.CustomPayload;
 import org.screamingsandals.lib.player.PlayerWrapper;
+import org.screamingsandals.lib.spectator.Component;
 import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
 

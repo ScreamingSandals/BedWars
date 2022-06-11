@@ -38,9 +38,9 @@ import org.screamingsandals.lib.hologram.event.HologramTouchEvent;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.plugin.ServiceManager;
+import org.screamingsandals.lib.spectator.Component;
 import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
-import org.screamingsandals.lib.utils.AdventureHelper;
 import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.utils.annotations.methods.OnPostEnable;
 import org.screamingsandals.lib.utils.annotations.methods.OnPreDisable;
@@ -210,7 +210,7 @@ public class StatisticsHolograms {
     private Hologram createPlayerStatisticHologram(PlayerWrapper player, LocationHolder holoLocation) {
         final var holo = HologramManager
                 .hologram(holoLocation)
-                .firstLine(TextEntry.of(AdventureHelper.toComponent(mainConfig.node("holograms", "headline").getString("Your §eBEDWARS§f stats"))))
+                .firstLine(TextEntry.of(Component.fromLegacy(mainConfig.node("holograms", "headline").getString("Your §eBEDWARS§f stats"))))
                 .touchable(true)
                 .addViewer(player);
         HologramManager.addHologram(holo);

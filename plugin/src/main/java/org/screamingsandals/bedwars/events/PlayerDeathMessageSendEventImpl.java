@@ -26,7 +26,6 @@ import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.lib.event.SCancellableEvent;
 import org.screamingsandals.lib.lang.Message;
-import org.screamingsandals.lib.utils.AdventureHelper;
 
 @Data
 public class PlayerDeathMessageSendEventImpl implements PlayerDeathMessageSendEvent<GameImpl, BedWarsPlayer>, SCancellableEvent {
@@ -38,7 +37,7 @@ public class PlayerDeathMessageSendEventImpl implements PlayerDeathMessageSendEv
 
     @Override
     public String getStringMessage() {
-        return AdventureHelper.toLegacy(message.getForJoined(victim));
+        return message.getForJoined(victim).toLegacy();
     }
 
     @Override

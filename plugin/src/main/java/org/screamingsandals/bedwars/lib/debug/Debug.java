@@ -19,7 +19,7 @@
 
 package org.screamingsandals.bedwars.lib.debug;
 
-import org.screamingsandals.lib.utils.AdventureHelper;
+import org.screamingsandals.bedwars.utils.MiscUtils;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -73,7 +73,7 @@ public class Debug {
             return "";
         }
 
-        return AdventureHelper.translateAlternateColorCodes('&', string);
+        return MiscUtils.translateAlternateColorCodes('&', string);
     }
 
     private static void log(Level level, String message) {

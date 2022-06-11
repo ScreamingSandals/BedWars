@@ -21,45 +21,42 @@ package org.screamingsandals.bedwars.game;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.TextColor;
-import net.kyori.adventure.text.format.TextDecoration;
 import org.screamingsandals.bedwars.api.game.ItemSpawnerType;
 import org.screamingsandals.lib.item.ItemTypeHolder;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.lang.Translation;
 import org.screamingsandals.lib.item.Item;
 import org.screamingsandals.lib.item.builder.ItemFactory;
-import org.screamingsandals.lib.utils.AdventureHelper;
-import org.screamingsandals.lib.utils.adventure.wrapper.ComponentWrapper;
+import org.screamingsandals.lib.spectator.Color;
+import org.screamingsandals.lib.spectator.Component;
 
 import java.util.Arrays;
 
 @AllArgsConstructor
 @Getter
-public class ItemSpawnerTypeImpl implements ItemSpawnerType<ItemTypeHolder, Item, ComponentWrapper> {
+public class ItemSpawnerTypeImpl implements ItemSpawnerType<ItemTypeHolder, Item, Component> {
     private final String configKey;
     private final String name;
     private final String translatableKey;
     private final double spread;
     private final ItemTypeHolder itemType;
-    private final TextColor color;
+    private final Color color;
     private final int interval;
     private final int damage;
 
-    public ComponentWrapper getTranslatableKey() {
+    public Component getTranslatableKey() {
         if (translatableKey != null && !translatableKey.equals("")) {
-            return new ComponentWrapper(Message.of(Translation.of(Arrays.asList(translatableKey.split("_")), AdventureHelper.toComponent(name))).asComponent());
+            return Message.of(Translation.of(Arrays.asList(translatableKey.split("_")), Component.fromLegacy(name))).asComponent();
         }
-        return new ComponentWrapper(Component.text(name));
+        return Component.text(name);
     }
 
-    public ComponentWrapper getItemName() {
-        return new ComponentWrapper(getTranslatableKey().asComponent().color(color));
+    public Component getItemName() {
+        return getTranslatableKey().asComponent().withColor(color);
     }
 
-    public ComponentWrapper getItemBoldName() {
-        return new ComponentWrapper(getTranslatableKey().asComponent().color(color).decorate(TextDecoration.BOLD));
+    public Component getItemBoldName() {
+        return getTranslatableKey().asComponent().withColor(color).withBold(true);
     }
 
     public Item getItem() {

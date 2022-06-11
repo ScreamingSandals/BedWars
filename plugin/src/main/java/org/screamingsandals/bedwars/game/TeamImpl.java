@@ -21,8 +21,6 @@ package org.screamingsandals.bedwars.game;
 
 import lombok.Getter;
 import lombok.Setter;
-import net.kyori.adventure.sound.Sound;
-import net.kyori.adventure.text.Component;
 import org.screamingsandals.bedwars.api.Team;
 import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
 import org.screamingsandals.bedwars.config.MainConfig;
@@ -36,6 +34,9 @@ import org.screamingsandals.lib.container.type.InventoryTypeHolder;
 import org.screamingsandals.lib.hologram.Hologram;
 import org.screamingsandals.lib.hologram.HologramManager;
 import org.screamingsandals.lib.lang.Message;
+import org.screamingsandals.lib.spectator.Component;
+import org.screamingsandals.lib.spectator.sound.SoundSource;
+import org.screamingsandals.lib.spectator.sound.SoundStart;
 import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
 import org.screamingsandals.lib.world.LocationHolder;
@@ -86,9 +87,9 @@ public class TeamImpl implements Team<LocationHolder, TeamColorImpl, GameImpl, C
                             Tasker.build(taskBase -> () -> {
                                 var charges = atomic.incrementAndGet();
                                 block.setType(anchor.with("charges", String.valueOf(charges)));
-                                targetBlock.getWorld().playSound(Sound.sound(
+                                targetBlock.getWorld().playSound(SoundStart.sound(
                                         SpecialSoundKey.key(MainConfig.getInstance().node("target-block", "respawn-anchor", "sound", "charge").getString("block.respawn_anchor.charge")),
-                                        Sound.Source.BLOCK,
+                                        SoundSource.BLOCK,
                                         1,
                                         1
                                 ), targetBlock.getX(), targetBlock.getY(), targetBlock.getZ());
@@ -109,7 +110,7 @@ public class TeamImpl implements Team<LocationHolder, TeamColorImpl, GameImpl, C
             var isBlockTypeBed = game.getRegion().isBedBlock(bed.getBlockState().orElseThrow());
             var isAnchor = bed.getType().isSameType("respawn_anchor");
             var isCake = bed.getType().isSameType("cake");
-            var enemies = players
+            var enemies = game.getConnectedPlayers()
                     .stream()
                     .filter(player -> !players.contains(player))
                     .collect(Collectors.toList());
@@ -118,7 +119,7 @@ public class TeamImpl implements Team<LocationHolder, TeamColorImpl, GameImpl, C
                     .firstLine(
                             Message
                                     .of(isBlockTypeBed ? LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_DESTROY_BED : (isAnchor ? LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_DESTROY_ANCHOR : (isCake ? LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_DESTROY_CAKE : LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_DESTROY_ANY)))
-                                    .earlyPlaceholder("teamcolor", Component.text("", color.getTextColor()))
+                                    .earlyPlaceholder("teamcolor", "<color:" + color.getTextColor().toString() + ">") // will be changed later
                     );
             enemies.forEach(holo::addViewer);
             holo.show();
@@ -128,7 +129,7 @@ public class TeamImpl implements Team<LocationHolder, TeamColorImpl, GameImpl, C
                     .firstLine(
                             Message
                                     .of(isBlockTypeBed ? LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_PROTECT_BED : (isAnchor ? LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_PROTECT_ANCHOR : (isCake ? LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_PROTECT_CAKE : LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_PROTECT_ANY)))
-                                    .earlyPlaceholder("teamcolor", Component.text("", color.getTextColor()))
+                                    .earlyPlaceholder("teamcolor", "<color:" + color.getTextColor().toString() + ">") // will be changed later
                     );
             players.forEach(protectHolo::addViewer);
             protectHolo.show();
