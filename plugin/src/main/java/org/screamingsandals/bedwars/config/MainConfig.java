@@ -121,8 +121,8 @@ public class MainConfig {
                 .key("disable-hunger").defValue(false)
                 .key("automatic-coloring-in-shop").defValue(true)
                 .key("sell-max-64-per-click-in-shop").defValue(true)
-                // .key("destroy-placed-blocks-by-explosion-except").defValue("")
                 .key("destroy-placed-blocks-by-explosion-except")
+                .remapWhen(node -> !node.empty() && !node.isList())
                 .remap(node -> {
                     if (!node.empty() && !node.isList()) {
                         var str = node.getString();

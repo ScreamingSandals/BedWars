@@ -429,7 +429,6 @@ public class MiscUtils {
     }
 
     public String toLegacyColorCode(Color color) {
-        var c = Color.nearestNamedTo(color);
-        return "§" + Integer.toString(COLOR_TO_ID_MAP.entrySet().stream().filter(e -> e.getKey().equals(c)).map(Map.Entry::getValue).findFirst().orElse(15), 16);
+        return "§" + Integer.toString(COLOR_TO_ID_MAP.getOrDefault(Color.nearestNamedTo(color), 15), 16);
     }
 }

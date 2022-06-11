@@ -110,7 +110,7 @@ public class TeamImpl implements Team<LocationHolder, TeamColorImpl, GameImpl, C
             var isBlockTypeBed = game.getRegion().isBedBlock(bed.getBlockState().orElseThrow());
             var isAnchor = bed.getType().isSameType("respawn_anchor");
             var isCake = bed.getType().isSameType("cake");
-            var enemies = players
+            var enemies = game.getConnectedPlayers()
                     .stream()
                     .filter(player -> !players.contains(player))
                     .collect(Collectors.toList());
@@ -119,7 +119,7 @@ public class TeamImpl implements Team<LocationHolder, TeamColorImpl, GameImpl, C
                     .firstLine(
                             Message
                                     .of(isBlockTypeBed ? LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_DESTROY_BED : (isAnchor ? LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_DESTROY_ANCHOR : (isCake ? LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_DESTROY_CAKE : LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_DESTROY_ANY)))
-                                    .earlyPlaceholder("teamcolor", "<legacy:'" + Component.text("", color.getTextColor()).toLegacy() + "'>") // will be changed later
+                                    .earlyPlaceholder("teamcolor", "<color:" + color.getTextColor().toString() + ">") // will be changed later
                     );
             enemies.forEach(holo::addViewer);
             holo.show();
@@ -129,7 +129,7 @@ public class TeamImpl implements Team<LocationHolder, TeamColorImpl, GameImpl, C
                     .firstLine(
                             Message
                                     .of(isBlockTypeBed ? LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_PROTECT_BED : (isAnchor ? LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_PROTECT_ANCHOR : (isCake ? LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_PROTECT_CAKE : LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_PROTECT_ANY)))
-                                    .earlyPlaceholder("teamcolor", "<legacy:'" + Component.text("", color.getTextColor()).toLegacy() + "'>") // will be changed later
+                                    .earlyPlaceholder("teamcolor", "<color:" + color.getTextColor().toString() + ">") // will be changed later
                     );
             players.forEach(protectHolo::addViewer);
             protectHolo.show();

@@ -287,6 +287,8 @@ public class ItemSpawnerImpl implements ItemSpawner<LocationHolder, ItemSpawnerT
         amountPerSpawn = baseAmountPerSpawn;
         spawnedItems.clear();
         firstTick = true;
+        started = false;
+        disabled = false;
     }
 
     public void start(GameImpl game) {
