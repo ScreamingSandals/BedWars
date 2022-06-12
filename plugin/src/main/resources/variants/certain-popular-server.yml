@@ -1,0 +1,87 @@
+# NOTE: This file is currently WIP, if you want newer revision, please delete this file and reload bw plugin, new file will be created
+name: certain-popular-server
+
+config:
+  certain-popular-server-holograms: true
+  join-randomly-after-lobby-timeout: true
+  default-shop-file: certain-popular-server/shop.yml
+
+
+# TODO: custom game start items (WOODEN_SWORD, LEATHER_HELMET, LEATHER_CHESTPLATE, LEATHER_LEGGINGS, LEATHER_BOOTS)
+# TODO: custom destroy-placed-blocks-by-explosion-except > GLASS
+# TODO: breakable blocks (GRASS, LONG_GRASS, SNOW)
+# TODO: replace titles
+# TODO: just add every missing configuration
+
+default-spawner-types-included: false
+custom-spawner-types:
+  emerald:
+    spread: 0.1
+    material: EMERALD
+    translate: resource_emerald
+    interval: 60
+    color: GREEN
+    name: Emerald
+  diamond:
+    spread: 0.1
+    material: DIAMOND
+    translate: resource_diamond
+    interval: 30
+    color: BLUE
+    name: Diamond
+  iron:
+    spread: 0.1
+    material: IRON_INGOT
+    translate: resource_iron
+    interval: 2 # interval is currently still int btw, default value in SBA: 2.5
+    color: WHITE
+    name: Iron
+  gold:
+    spread: 0.1
+    material: GOLD_INGOT
+    translate: resource_gold
+    interval: 8
+    color: GOLD
+    name: Gold
+
+# TODO: add %date%, %state%, %mode% and %version% placeholders to the code
+lobby-scoreboard:
+  enabled: true
+  title: "§e§lBED WARS" # TODO: animated
+  content:
+    - "§7%date%"
+    - ""
+    - "§fMap: §a%arena%"
+    - "§fPlayers: §a%players%/%maxplayers%"
+    - ""
+    - "%state%"
+    - ""
+    - "§fMode: §a%mode%"
+    - "§fVersion: SBW §7%version%"
+    - ""
+    - "§ewww.screamingsandals.org"
+
+# TODO: add %date%, %tier%, %state%, %kills%, %beds% and %version% placeholders to the code
+game-scoreboard:
+  enabled: true
+  title: §a%game%§r - %time%
+  bedLost: §c✘
+  anchorEmpty: §e✘
+  bedExists: §a✔
+  teamTitle: '%bed%%color%%team%'
+  new-scoreboard:
+    enabled: true
+    content:
+      - "§7%date%"
+      - ""
+      - "%tier%"
+      - ""
+      - "%team_status%"
+      - ""
+      - "§fKills: §a%kills%"
+      - "§fBed Broken: §a%beds%"
+      - ""
+      - "§ewww.screamingsandals.org"
+    teamTitle: '%bed%%color%%team% §7(%team_size%)'
+
+# TODO: prefabs (already done shops with skin, shop file etc.)

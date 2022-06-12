@@ -1,0 +1,461 @@
+data:
+  - locate: '$blocks'
+    stack: WHITE_WOOL;1;§aBlocks;§eClick to view!
+    skip: 1
+
+  - write: false
+    stack: 'STONE'
+    id: blocks
+    items:
+      - locate: 'main'
+        stack: WHITE_WOOL;1;§aBlocks;§eClick to view!
+        skip: 1
+      - locate: '$swords'
+        stack: GOLDEN_SWORD;1;§aMelee;§eClick to view!
+      - locate: '$armor'
+        stack: CHAINMAIL_BOOTS;1;§aArmor;§eClick to view!
+      - locate: '$tools'
+        stack: STONE_PICKAXE;1;§aTools;§eClick to view!
+      - locate: '$bows'
+        stack: BOW;1;§aRanged;§eClick to view!
+      - locate: '$potions'
+        stack: BREWING_STAND;1;§aPotions;§eClick to view!
+      - locate: '$utility'
+        stack: TNT;1;§aUtility;§eClick to view!
+      - stack: GREEN_STAINED_GLASS_PANE;1
+        row: 2
+        column: 1
+      - stack: WOOL;16;Wool;§7Great for bridging across;§7islands.
+        price: 4 of iron
+        properties: applycolorbyteam
+        row: 3
+        column: 1
+      - CLAY;16 for 12 of iron
+      - GLASS;4 for 12 of iron
+      - END_STONE;12 for 24 of iron
+      - LADDER;16 for 4 of iron
+      - OAK_PLANKS;16 for 4 of gold
+      - OBSIDIAN;4 for 4 of emerald
+
+  - write: false
+    stack: 'STONE'
+    id: swords
+    items:
+      - locate: '$blocks'
+        stack: WHITE_WOOL;1;§aBlocks;§eClick to view!
+        skip: 1
+      - locate: 'main'
+        stack: GOLDEN_SWORD;1;§aMelee;§eClick to view!
+      - locate: '$armor'
+        stack: CHAINMAIL_BOOTS;1;§aArmor;§eClick to view!
+      - locate: '$tools'
+        stack: STONE_PICKAXE;1;§aTools;§eClick to view!
+      - locate: '$bows'
+        stack: BOW;1;§aRanged;§eClick to view!
+      - locate: '$potions'
+        stack: BREWING_STAND;1;§aPotions;§eClick to view!
+      - locate: '$utility'
+        stack: TNT;1;§aUtility;§eClick to view!
+      - stack: GREEN_STAINED_GLASS_PANE;1
+        row: 2
+        column: 2
+      - stack: STONE_SWORD;1
+        price: 10 of iron
+        row: 3
+        column: 1
+      - IRON_SWORD;1 for 7 of gold
+      - DIAMOND_SWORD;1 for 4 of emerald
+      - price: 5 of gold
+        stack:
+          type: STICK
+          enchants:
+            KNOCKBACK: 1
+
+  - write: false
+    stack: 'STONE'
+    id: armor
+    items:
+      - locate: '$blocks'
+        stack: WHITE_WOOL;1;§aBlocks;§eClick to view!
+        skip: 1
+      - locate: '$swords'
+        stack: GOLDEN_SWORD;1;§aMelee;§eClick to view!
+      - locate: 'main'
+        stack: CHAINMAIL_BOOTS;1;§aArmor;§eClick to view!
+      - locate: '$tools'
+        stack: STONE_PICKAXE;1;§aTools;§eClick to view!
+      - locate: '$bows'
+        stack: BOW;1;§aRanged;§eClick to view!
+      - locate: '$potions'
+        stack: BREWING_STAND;1;§aPotions;§eClick to view!
+      - locate: '$utility'
+        stack: TNT;1;§aUtility;§eClick to view!
+      - stack: GREEN_STAINED_GLASS_PANE;1
+        row: 2
+        column: 3
+      - stack: CHAINMAIL_BOOTS;1
+        price: 40 of iron
+        row: 3
+        column: 1
+      - IRON_BOOTS;1 for 12 of gold
+      - DIAMOND_BOOTS;1 for 4 of emerald
+
+  - write: false
+    stack: 'STONE'
+    id: tools
+    items:
+      - locate: '$blocks'
+        stack: WHITE_WOOL;1;§aBlocks;§eClick to view!
+        skip: 1
+      - locate: '$swords'
+        stack: GOLDEN_SWORD;1;§aMelee;§eClick to view!
+      - locate: '$armor'
+        stack: CHAINMAIL_BOOTS;1;§aArmor;§eClick to view!
+      - locate: 'main'
+        stack: STONE_PICKAXE;1;§aTools;§eClick to view!
+      - locate: '$bows'
+        stack: BOW;1;§aRanged;§eClick to view!
+      - locate: '$potions'
+        stack: BREWING_STAND;1;§aPotions;§eClick to view!
+      - locate: '$utility'
+        stack: TNT;1;§aUtility;§eClick to view!
+      - stack: GREEN_STAINED_GLASS_PANE;1
+        row: 2
+        column: 4
+      - stack: SHEARS;1
+        price: 20 of iron
+        row: 3
+        column: 1
+      - WOODEN_PICKAXE;1 for 10 of iron
+      - WOODEN_AXE;1 for 10 of iron
+      - IRON_PICKAXE;1 for 20 of iron
+      - IRON_AXE;1 for 20 of iron
+      - DIAMOND_PICKAXE;1 for 12 of gold
+      - DIAMOND_AXE;1 for 12 of gold
+
+  - write: false
+    stack: 'STONE'
+    id: bows
+    items:
+      - locate: '$blocks'
+        stack: WHITE_WOOL;1;§aBlocks;§eClick to view!
+        skip: 1
+      - locate: '$swords'
+        stack: GOLDEN_SWORD;1;§aMelee;§eClick to view!
+      - locate: '$armor'
+        stack: CHAINMAIL_BOOTS;1;§aArmor;§eClick to view!
+      - locate: '$tools'
+        stack: STONE_PICKAXE;1;§aTools;§eClick to view!
+      - locate: 'main'
+        stack: BOW;1;§aRanged;§eClick to view!
+      - locate: '$potions'
+        stack: BREWING_STAND;1;§aPotions;§eClick to view!
+      - locate: '$utility'
+        stack: TNT;1;§aUtility;§eClick to view!
+      - stack: GREEN_STAINED_GLASS_PANE;1
+        row: 2
+        column: 5
+      - stack: BOW;1
+        price: 12 of gold
+        row: 3
+        column: 1
+      - price: 24 of gold
+        stack:
+          type: BOW
+          enchants:
+            ARROW_DAMAGE: 1
+      - price: 6 of emerald
+        stack:
+          type: BOW
+          enchants:
+            ARROW_KNOCKBACK: 1
+            ARROW_DAMAGE: 1
+      - price: 2 of gold
+        stack:
+          type: ARROW
+          amount: 8
+
+  - write: false
+    stack: 'STONE'
+    id: potions
+    items:
+      - locate: '$blocks'
+        stack: WHITE_WOOL;1;§aBlocks;§eClick to view!
+        skip: 1
+      - locate: '$swords'
+        stack: GOLDEN_SWORD;1;§aMelee;§eClick to view!
+      - locate: '$armor'
+        stack: CHAINMAIL_BOOTS;1;§aArmor;§eClick to view!
+      - locate: '$tools'
+        stack: STONE_PICKAXE;1;§aTools;§eClick to view!
+      - locate: '$bows'
+        stack: BOW;1;§aRanged;§eClick to view!
+      - locate: 'main'
+        stack: BREWING_STAND;1;§aPotions;§eClick to view!
+      - locate: '$utility'
+        stack: TNT;1;§aUtility;§eClick to view!
+      - stack: GREEN_STAINED_GLASS_PANE;1
+        row: 2
+        column: 6
+      - row: 3
+        column: 1
+        stack:
+          type: POTION
+          display-name: "§rPotion of Healing I"
+          potion-type: healing
+        price: 1 of emerald
+
+      - row: 3
+        column: 2
+        price: 2 of emerald
+        stack:
+          type: POTION
+          display-name: "§rPotion of Invisibility"
+          effects:
+            - effect: invisibility
+              duration: 600
+              amplifier: 1
+
+  - write: false
+    stack: 'STONE'
+    id: utility
+    items:
+      - locate: '$blocks'
+        stack: WHITE_WOOL;1;§aBlocks;§eClick to view!
+        skip: 1
+      - locate: '$swords'
+        stack: GOLDEN_SWORD;1;§aMelee;§eClick to view!
+      - locate: '$armor'
+        stack: CHAINMAIL_BOOTS;1;§aArmor;§eClick to view!
+      - locate: '$tools'
+        stack: STONE_PICKAXE;1;§aTools;§eClick to view!
+      - locate: '$bows'
+        stack: BOW;1;§aRanged;§eClick to view!
+      - locate: '$potions'
+        stack: BREWING_STAND;1;§aPotions;§eClick to view!
+      - locate: 'main'
+        stack: TNT;1;§aUtility;§eClick to view!
+      - stack: GREEN_STAINED_GLASS_PANE;1
+        row: 2
+        column: 7
+      - price: 3 of gold
+        row: 3
+        column: 1
+        stack:
+          type: GOLDEN_APPLE
+      - price: 4 of gold
+        properties: "autoigniteabletnt"
+        stack:
+          type: TNT
+      - ENDER_PEARL;1 for 4 of emerald
+      - WATER_BUCKET;1 for 3 of emerald
+      - price: 3 of iron
+        properties:
+          - name: "Trap"
+            data:
+              - sound: ENTITY_SHEEP_AMBIENT
+              # TODO: no bukkit, bukkit is haram
+              - effect:
+                  ==: org.bukkit.potion.PotionEffect
+                  effect: 15
+                  amplifier: 2
+                  duration: 100
+                  ambient: true
+                  has-particles: true
+                  has-icon: true
+              - effect:
+                  ==: org.bukkit.potion.PotionEffect
+                  effect: 18
+                  amplifier: 2
+                  duration: 100
+                  ambient: true
+                  has-particles: true
+                  has-icon: true
+              - effect:
+                  ==: org.bukkit.potion.PotionEffect
+                  effect: 2
+                  amplifier: 2
+                  duration: 100
+                  ambient: true
+                  has-particles: true
+                  has-icon: true
+        stack:
+          type: STRING
+          display-name: "Trap"
+          lore:
+            - "§7Get informed if an enemy steps on your trap"
+            - "§7and your enemy won't be able to move properly."
+            - ""
+      - price: 120 of iron
+        properties:
+          - name: "Golem"
+            speed: 0.25
+            follow: 16.0
+        stack:
+          type: GHAST_SPAWN_EGG
+          display-name: "Golem"
+          lore:
+            - "§7An iron golem that will protect"
+            - "§7your team from the enemies."
+            - ""
+      - price: 40 of iron
+        properties: "ThrowableFireball"
+        stack:
+          type: FIRE_CHARGE
+          display-name: "Fireball"
+          lore:
+            - "§7Is it a bird? Is it a plane?"
+            - "§7By the time you know"
+            - "§7you are dead!"
+            - ""
+      - price: 1 of emerald
+        row: 4
+        column: 1
+        properties: "BridgeEgg"
+        stack:
+          type: EGG
+          display-name: "§cBridgeEgg"
+          lore:
+            - "§7This egg creates a trail of bridge after it's thrown"
+            - ""
+      - price: 24 of iron
+        row: 4
+        column: 2
+        properties: "PopupTower"
+        stack:
+          type: CHEST
+          display-name: "§aCompact Pop-up Tower"
+          lore:
+            - "§7Place a pop-up defence!"
+            - ""
+
+  - locate: '$swords'
+    stack: GOLDEN_SWORD;1;§aMelee;§eClick to view!
+
+  - locate: '$armor'
+    stack: CHAINMAIL_BOOTS;1;§aArmor;§eClick to view!
+
+  - locate: '$tools'
+    stack: STONE_PICKAXE;1;§aTools;§eClick to view!
+
+  - locate: '$bows'
+    stack: BOW;1;§aRanged;§eClick to view!
+
+  - locate: '$potions'
+    stack: BREWING_STAND;1;§aPotions;§eClick to view!
+
+  - locate: '$utility'
+    stack: TNT;1;§aUtility;§eClick to view!
+
+  - stack: WOOL;16
+    properties: applycolorbyteam
+    price: 4 of iron
+    row: 3
+    column: 1
+
+  - stack: STONE_SWORD;1
+    price: 10 of iron
+    row: 3
+    column: 2
+
+  - stack: CHAINMAIL_BOOTS;1
+    price: 40 of iron
+    row: 3
+    column: 3
+
+  - stack: DIAMOND_SWORD;1
+    price: 4 of emerald
+    row: 3
+    column: 4
+
+  - stack: BOW;1
+    price: 12 of gold
+    row: 3
+    column: 5
+
+  - row: 3
+    column: 6
+    price: 1 of emerald
+    stack:
+      type: POTION
+      display-name: "§rPotion of Healing I"
+      potion-type: healing
+
+  - stack: TNT;1
+    price: 4 of gold
+    properties: "autoigniteabletnt"
+    row: 3
+    column: 7
+
+  - stack: OAK_PLANKS;16
+    price: 4 of gold
+    row: 4
+    column: 1
+
+  - stack: IRON_SWORD;1
+    price: 7 of gold
+    row: 4
+    column: 2
+
+  - stack: IRON_BOOTS;1
+    price: 12 of gold
+    row: 4
+    column: 3
+
+  - stack: SHEARS;1
+    price: 20 of iron
+    row: 4
+    column: 4
+
+  - stack: ARROW;8
+    price: 2 of gold
+    row: 4
+    column: 5
+
+  - row: 4
+    column: 6
+    price: 2 of emerald
+    stack:
+      type: POTION
+      display-name: "§rPotion of Invisibility"
+      effects:
+        - effect: invisibility
+          duration: 600
+          amplifier: 1
+
+  - stack: WATER_BUCKET;1
+    row: 4
+    column: 7
+    price: 3 of emerald
+
+  - stack: "RED_STAINED_GLASS_PANE;1"
+    row: 5
+    column: 1
+
+  - stack: "RED_STAINED_GLASS_PANE;1"
+    row: 5
+    column: 2
+
+  - stack: "RED_STAINED_GLASS_PANE;1"
+    row: 5
+    column: 3
+
+  - stack: "RED_STAINED_GLASS_PANE;1"
+    row: 5
+    column: 4
+
+  - stack: RED_STAINED_GLASS_PANE;1
+    row: 5
+    column: 5
+
+  - stack: RED_STAINED_GLASS_PANE;1
+    row: 5
+    column: 6
+
+  - stack: RED_STAINED_GLASS_PANE;1
+    row: 5
+    column: 7
+
+  - stack: GREEN_STAINED_GLASS_PANE;1
+    row: 2
+    column: 0

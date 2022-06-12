@@ -1,0 +1,93 @@
+# TODO: change properties to be more specific (maybe certain_popular_server prefix??)
+data:
+  - stack: "IRON_CHESTPLATE;1;Protection;Click here to get more resistance to damage!"
+    column: 2
+    price: 4 of diamond
+    properties: protection
+
+  - stack: "IRON_SWORD;1;Sharpness;Kill players quicker!."
+    column: 1
+    price: 4 of diamond
+    properties: sharpness
+
+  - stack: "GOLDEN_PICKAXE;1;Efficiency;Break Blocks quicker!."
+    price: 4 of diamond
+    column: 3
+    properties: efficiency
+
+  - price: 4
+    price-type: iron
+    stack:
+      type: FURNACE
+      amount: 1
+      display-name: "Forge Upgrade, Unconfigured"
+      # TODO: configure
+
+  - stack: "BEACON;1;§bHeal Pool;§7Triggers a pool around the base that heals you!"
+    column: 5
+    row: 1
+    properties: healpool
+    price: 8 of diamond
+
+  - stack: "DRAGON_EGG;1;Ender Dragon;Get A Bonus Dragon when Dragons get summoned!"
+    column: 6
+    row: 1
+
+  - stack: "LEATHER;1;TRAPS;TRAP YOUR ENEMY"
+    column: 7
+    items:
+      - price: 2 of diamond
+        skip: 1
+        properties: blindtrap
+        stack:
+          type: STRING
+          display-name: "§bBlindess trap"
+          lore:
+            - "§7Get informed when an enemy enters a 7 block radius of your base"
+            - "§7Blind the foe and gain an upper advantage!"
+
+      - price: 2 of diamond
+        skip: 1
+        properties: minertrap
+        stack:
+          type: STRING
+          display-name: "§bMining Fatigue trap"
+          lore:
+            - "§7Get informed when an enemy enters a 7 block radius of your base"
+            - "§7Slow Down their mining and gain an advantage!"
+
+  - stack: "GRAY_STAINED_GLASS_PANE;1;*****"
+    row: 2
+    column: 0
+
+  - stack: "GRAY_STAINED_GLASS_PANE;1;*****"
+    row: 2
+    column: 1
+
+  - stack: "GRAY_STAINED_GLASS_PANE;1;*****"
+    row: 2
+    column: 2
+
+  - stack: "GRAY_STAINED_GLASS_PANE;1;*****"
+    row: 2
+    column: 3
+
+  - stack: "GRAY_STAINED_GLASS_PANE;1;*****"
+    row: 2
+    column: 4
+
+  - stack: "GRAY_STAINED_GLASS_PANE;1;*****"
+    row: 2
+    column: 5
+
+  - stack: "GRAY_STAINED_GLASS_PANE;1;*****"
+    row: 2
+    column: 6
+
+  - stack: "GRAY_STAINED_GLASS_PANE;1;*****"
+    row: 2
+    column: 7
+
+  - stack: "GRAY_STAINED_GLASS_PANE;1;*****"
+    row: 2
+    column: 8

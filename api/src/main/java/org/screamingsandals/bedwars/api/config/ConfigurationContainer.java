@@ -66,7 +66,6 @@ public interface ConfigurationContainer {
     String INVISIBLE_LOBBY_ON_GAME_START = "invisible-lobby-on-game-start";
     String HEALTH_INDICATOR = "health-indicator";
     String CERTAIN_POPULAR_SERVER_HOLOGRAMS = "certain-popular-server-holograms";
-    String NEW_GAME_SCOREBOARD = "new-game-scoreboard";
 
     String DEFAULT_SHOP_FILE = "default-shop-file";
 

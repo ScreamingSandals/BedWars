@@ -20,6 +20,7 @@
 package org.screamingsandals.bedwars.variants;
 
 import lombok.RequiredArgsConstructor;
+import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.api.variants.VariantManager;
 import org.screamingsandals.lib.plugin.ServiceManager;
 import org.screamingsandals.lib.utils.annotations.Service;
@@ -70,32 +71,37 @@ public class VariantManagerImpl implements VariantManager {
 
     @OnPostEnable
     public void onPostEnable() {
-        if (Files.exists(variantsFolder)) {
-            try (var stream = Files.walk(variantsFolder.toAbsolutePath())) {
-                final var results = stream.filter(Files::isRegularFile)
-                        .map(Path::toFile)
-                        .collect(Collectors.toList());
-                if (results.isEmpty()) {
-                    logger.debug("No variants have been found!");
-                } else {
-                    results.forEach(file -> {
-                        if (file.exists() && file.isFile() && !file.getName().toLowerCase().endsWith(".disabled")) {
-                            var variant = VariantImpl.loadVariant(file);
-                            if (variant != null) {
-                                variants.add(variant);
-                            }
-                        }
-                    });
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else {
+        if (!Files.exists(variantsFolder)) {
             try {
                 Files.createDirectory(variantsFolder);
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+
+        // Copy files related to certain-popular-server variant if they don't exist
+        BedWarsPlugin.getInstance().saveResource("variants/certain-popular-server.yml", false);
+        BedWarsPlugin.getInstance().saveResource("shop/certain-popular-server/shop.yml", false);
+        BedWarsPlugin.getInstance().saveResource("shop/certain-popular-server/upgrade-shop.yml", false);
+
+        try (var stream = Files.walk(variantsFolder.toAbsolutePath())) {
+            final var results = stream.filter(Files::isRegularFile)
+                    .map(Path::toFile)
+                    .collect(Collectors.toList());
+            if (results.isEmpty()) {
+                logger.debug("No variants have been found!");
+            } else {
+                results.forEach(file -> {
+                    if (file.exists() && file.isFile() && !file.getName().toLowerCase().endsWith(".disabled")) {
+                        var variant = VariantImpl.loadVariant(file);
+                        if (variant != null) {
+                            variants.add(variant);
+                        }
+                    }
+                });
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
