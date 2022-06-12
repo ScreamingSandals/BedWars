@@ -19,6 +19,7 @@
 
 package org.screamingsandals.bedwars;
 
+import lombok.Getter;
 import org.screamingsandals.bedwars.api.BedwarsAPI;
 import org.screamingsandals.bedwars.commands.CommandService;
 import org.screamingsandals.bedwars.config.MainConfig;
@@ -26,6 +27,7 @@ import org.screamingsandals.bedwars.config.RecordSave;
 import org.screamingsandals.bedwars.database.DatabaseManager;
 import org.screamingsandals.bedwars.econ.EconomyProvider;
 import org.screamingsandals.bedwars.entities.EntitiesManagerImpl;
+import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.GameManagerImpl;
 import org.screamingsandals.bedwars.game.ItemSpawnerTypeImpl;
 import org.screamingsandals.bedwars.holograms.LeaderboardHolograms;
@@ -47,7 +49,6 @@ import org.screamingsandals.lib.CustomPayload;
 import org.screamingsandals.lib.Server;
 import org.screamingsandals.lib.block.BlockTypeHolder;
 import org.screamingsandals.lib.healthindicator.HealthIndicatorManager;
-import org.screamingsandals.lib.item.ItemTypeHolder;
 import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.plugin.PluginContainer;
 import org.screamingsandals.lib.plugin.ServiceManager;
@@ -132,6 +133,7 @@ public class BedWarsPlugin extends PluginContainer implements BedwarsAPI {
     private String version;
     private boolean isDisabling = false;
     private boolean isLegacy;
+    @Getter
     private final HashMap<String, ItemSpawnerTypeImpl> spawnerTypes = new HashMap<>();
 
     public static BedWarsPlugin getInstance() {
@@ -217,11 +219,17 @@ public class BedWarsPlugin extends PluginContainer implements BedwarsAPI {
         return MainConfig.getInstance().node("commands", "blacklist-mode").getBoolean();
     }
 
-    public static ItemSpawnerTypeImpl getSpawnerType(String key) {
+    public static ItemSpawnerTypeImpl getSpawnerType(String key, GameImpl game) {
+        if (game.getGameVariant() != null) {
+            return game.getGameVariant().getItemSpawnerType(key);
+        }
         return instance.spawnerTypes.get(key);
     }
 
-    public static List<String> getAllSpawnerTypes() {
+    public static List<String> getAllSpawnerTypes(GameImpl game) {
+        if (game.getGameVariant() != null) {
+            return game.getGameVariant().getItemSpawnerTypeNames();
+        }
         return List.copyOf(instance.spawnerTypes.keySet());
     }
 
@@ -244,27 +252,10 @@ public class BedWarsPlugin extends PluginContainer implements BedwarsAPI {
         PremiumBedwars.init();
 
         MainConfig.getInstance().node("resources").childrenMap().forEach((spawnerK, node) -> {
-            var name = node.node("name").getString();
-            var translate = node.node("translate").getString();
-            var interval = node.node("interval").getInt(1);
-            var spread = node.node("spread").getDouble();
-            var damage = node.node("damage").getInt();
-            var materialName = node.node("material").getString();
-            var colorName = node.node("color").getString();
-
-            var spawnerN = spawnerK.toString();
-
-            if (damage != 0) {
-                materialName += ":" + damage;
+            var type = ItemSpawnerTypeImpl.deserialize(spawnerK.toString(), node);
+            if (type != null) {
+                spawnerTypes.put(type.getConfigKey(), type);
             }
-
-            var result = ItemTypeHolder.ofOptional(materialName).orElse(ItemTypeHolder.air());
-            if (result.isAir()) {
-                return;
-            }
-
-            spawnerTypes.put(spawnerN.toLowerCase(), new ItemSpawnerTypeImpl(spawnerN.toLowerCase(), name, translate,
-                    spread, result, MiscUtils.getColor(colorName), interval, result.forcedDurability()));
         });
 
         if (MainConfig.getInstance().node("bungee", "enabled").getBoolean()) {

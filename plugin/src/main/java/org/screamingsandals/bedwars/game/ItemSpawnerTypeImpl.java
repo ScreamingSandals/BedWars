@@ -22,6 +22,7 @@ package org.screamingsandals.bedwars.game;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.screamingsandals.bedwars.api.game.ItemSpawnerType;
+import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.lib.item.ItemTypeHolder;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.lang.Translation;
@@ -29,6 +30,7 @@ import org.screamingsandals.lib.item.Item;
 import org.screamingsandals.lib.item.builder.ItemFactory;
 import org.screamingsandals.lib.spectator.Color;
 import org.screamingsandals.lib.spectator.Component;
+import org.spongepowered.configurate.ConfigurationNode;
 
 import java.util.Arrays;
 
@@ -65,5 +67,37 @@ public class ItemSpawnerTypeImpl implements ItemSpawnerType {
 
     public Item getItem(int amount) {
         return ItemFactory.build(itemType, builder -> builder.name(getItemName().asComponent()).amount(amount)).orElseThrow();
+    }
+
+    public static ItemSpawnerTypeImpl deserialize(String spawnerKey, ConfigurationNode node) {
+        spawnerKey = spawnerKey.toLowerCase();
+
+        var name = node.node("name").getString();
+        var translate = node.node("translate").getString();
+        var interval = node.node("interval").getInt(1);
+        var spread = node.node("spread").getDouble();
+        var damage = node.node("damage").getInt();
+        var materialName = node.node("material").getString();
+        var colorName = node.node("color").getString();
+
+        if (damage != 0) {
+            materialName += ":" + damage;
+        }
+
+        var result = ItemTypeHolder.ofOptional(materialName).orElse(ItemTypeHolder.air());
+        if (result.isAir()) {
+            return null; // no air
+        }
+
+        return new ItemSpawnerTypeImpl(
+                spawnerKey,
+                name,
+                translate,
+                spread,
+                result,
+                MiscUtils.getColor(colorName),
+                interval,
+                result.forcedDurability()
+        );
     }
 }

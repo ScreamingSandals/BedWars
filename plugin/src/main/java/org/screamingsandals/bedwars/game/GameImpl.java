@@ -379,12 +379,16 @@ public class GameImpl implements Game {
             });
             configMap.node("spawners").childrenList().forEach(spawner -> {
                 var spawnerType = spawner.node("type").getString();
-                if (spawnerType == null || BedWarsPlugin.getSpawnerType(spawnerType.toLowerCase()) == null) {
+                if (spawnerType == null) {
+                    throw new UnsupportedOperationException("Wrongly configured spawner type!");
+                }
+                var type = BedWarsPlugin.getSpawnerType(spawnerType.toLowerCase(), game);
+                if (type == null) {
                     throw new UnsupportedOperationException("Wrongly configured spawner type!");
                 }
                 game.spawners.add(new ItemSpawnerImpl(
                         MiscUtils.readLocationFromString(game.world, Objects.requireNonNull(spawner.node("location").getString())),
-                        BedWarsPlugin.getSpawnerType(spawnerType.toLowerCase()),
+                        type,
                         spawner.node("customName").getString(),
                         spawner.node("hologramEnabled").getBoolean(true),
                         spawner.node("startLevel").getDouble(1),

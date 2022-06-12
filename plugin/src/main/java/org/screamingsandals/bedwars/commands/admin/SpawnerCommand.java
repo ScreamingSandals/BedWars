@@ -58,7 +58,7 @@ public class SpawnerCommand extends BaseAdminSubCommand {
                         .literal("add")
                         .argument(StringArgument
                                 .<CommandSenderWrapper>newBuilder("type")
-                                .withSuggestionsProvider((c, s) -> BedWarsPlugin.getAllSpawnerTypes())
+                                .withSuggestionsProvider(editModeSuggestion((commandContext, sender, game) -> BedWarsPlugin.getAllSpawnerTypes(game)))
                         )
                         .argument(BooleanArgument.optional("hologramEnabled", true))
                         .argument(DoubleArgument.optional("startLevel", 1))
@@ -108,7 +108,7 @@ public class SpawnerCommand extends BaseAdminSubCommand {
                             }
                             loc.setYaw(0);
                             loc.setPitch(0);
-                            var spawnerType = BedWarsPlugin.getSpawnerType(type);
+                            var spawnerType = BedWarsPlugin.getSpawnerType(type, game);
                             if (spawnerType != null) {
                                 game.getSpawners().add(new ItemSpawnerImpl(loc, spawnerType, customName, hologramEnabled, startLevel, team, maxSpawnedResources, floatingHologram, rotationMode, hologramType));
                                 sender.sendMessage(
@@ -204,13 +204,13 @@ public class SpawnerCommand extends BaseAdminSubCommand {
                         .literal("changeType")
                         .argument(StringArgument
                                 .<CommandSenderWrapper>newBuilder("type")
-                                .withSuggestionsProvider((c, s) -> BedWarsPlugin.getAllSpawnerTypes())
+                                .withSuggestionsProvider(editModeSuggestion((commandContext, sender, game) -> BedWarsPlugin.getAllSpawnerTypes(game)))
                         )
                         .argument(IntegerArgument.optional("number"))
                         .handler(commandContext -> changeSettingCommand(commandContext, (sender, game, itemSpawner) -> {
                             String type = commandContext.get("type");
 
-                            var spawnerType = BedWarsPlugin.getSpawnerType(type);
+                            var spawnerType = BedWarsPlugin.getSpawnerType(type, game);
                             if (spawnerType != null) {
                                 var old = itemSpawner.getItemSpawnerType();
                                 itemSpawner.setItemSpawnerType(spawnerType);

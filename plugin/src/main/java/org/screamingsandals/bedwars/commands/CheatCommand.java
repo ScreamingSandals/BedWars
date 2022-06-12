@@ -41,6 +41,7 @@ import org.screamingsandals.lib.sender.CommandSenderWrapper;
 import org.screamingsandals.lib.utils.BlockFace;
 import org.screamingsandals.lib.utils.annotations.Service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -127,9 +128,16 @@ public class CheatCommand extends BaseCommand {
                 .literal("give")
                 .argument(manager
                         .argumentBuilder(String.class, "resource")
-                        .withSuggestionsProvider((c, s) ->
-                                BedWarsPlugin.getAllSpawnerTypes()
-                        )
+                        .withSuggestionsProvider((c, s) -> {
+                            var player = c.getSender().as(PlayerWrapper.class);
+
+                            var game = playerManager.getGameOfPlayer(player);
+                            if (game.isEmpty()) {
+                                return List.of();
+                            }
+
+                            return BedWarsPlugin.getAllSpawnerTypes(game.get());
+                        })
                 )
                 .argument(IntegerArgument.optional("amount", 1))
                 .argument(manager
@@ -171,7 +179,7 @@ public class CheatCommand extends BaseCommand {
                         player.sendMessage(Message.of(LangKeys.IN_GAME_CHEAT_INVALID_PLAYER));
                         return;
                     }
-                    var spawnerType = BedWarsPlugin.getSpawnerType(resource);
+                    var spawnerType = BedWarsPlugin.getSpawnerType(resource, game.get());
                     if (spawnerType == null) {
                         player.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_INVALID_SPAWNER_TYPE).defaultPrefix());
                         return;

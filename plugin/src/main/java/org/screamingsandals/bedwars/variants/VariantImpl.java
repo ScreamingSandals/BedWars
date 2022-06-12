@@ -21,8 +21,12 @@ package org.screamingsandals.bedwars.variants;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.api.variants.Variant;
 import org.screamingsandals.bedwars.config.GameConfigurationContainer;
+import org.screamingsandals.bedwars.game.ItemSpawnerTypeImpl;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.lib.player.PlayerMapper;
@@ -35,12 +39,20 @@ import org.spongepowered.configurate.loader.ConfigurationLoader;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Getter
 public class VariantImpl implements Variant {
+    @NotNull
     private final String name;
+    @NotNull
     private final GameConfigurationContainer configurationContainer = new GameConfigurationContainer();
+    @NotNull
+    private final List<ItemSpawnerTypeImpl> customSpawnerTypes = new ArrayList<>();
+    private boolean defaultItemSpawnerTypesIncluded = true;
 
     public static VariantImpl loadVariant(File file) {
         try {
@@ -79,12 +91,77 @@ public class VariantImpl implements Variant {
                     )
             );
 
+            var spawnersNode = configMap.node("custom-spawner-types");
+            if (!spawnersNode.empty() && spawnersNode.isMap()) {
+                spawnersNode.childrenMap().forEach((spawnerK, node) -> {
+                    var type = ItemSpawnerTypeImpl.deserialize(spawnerK.toString(), node);
+                    if (type != null) {
+                        variant.customSpawnerTypes.add(type);
+                    }
+                });
+
+                if (!variant.customSpawnerTypes.isEmpty()) {
+                    variant.defaultItemSpawnerTypesIncluded = configMap.node("default-spawner-types-included").getBoolean(true);
+                }
+            } else {
+                variant.defaultItemSpawnerTypesIncluded = true;
+            }
+
             return variant;
         } catch (Throwable throwable) {
             Debug.warn("Something went wrong while loading variant file " + file.getName() + ". Please report this to our Discord or GitHub!", true);
             throwable.printStackTrace();
             return null;
         }
+    }
+
+    @Override
+    @NotNull
+    public List<@NotNull ItemSpawnerTypeImpl> getItemSpawnerTypes() {
+        if (!defaultItemSpawnerTypesIncluded) {
+            return List.copyOf(customSpawnerTypes);
+        }
+
+        var nList = new ArrayList<>(customSpawnerTypes);
+        for (var type : BedWarsPlugin.getInstance().getSpawnerTypes().values()) {
+            if (nList.stream().noneMatch(t -> t.getConfigKey().equals(type.getConfigKey()))) {
+                nList.add(type);
+            }
+        }
+        return nList;
+    }
+
+    @Override
+    @NotNull
+    public List<String> getItemSpawnerTypeNames() {
+        var names = customSpawnerTypes.stream().map(ItemSpawnerTypeImpl::getConfigKey).collect(Collectors.toList());
+        if (defaultItemSpawnerTypesIncluded) {
+            for (var name : BedWarsPlugin.getInstance().getSpawnerTypes().keySet()) {
+                if (!names.contains(name)) {
+                    names.add(name);
+                }
+            }
+        }
+        return names;
+    }
+
+    @NotNull
+    public List<@NotNull ItemSpawnerTypeImpl> getCustomItemSpawnerTypes() {
+        return List.copyOf(customSpawnerTypes);
+    }
+
+    @Override
+    @Nullable
+    public ItemSpawnerTypeImpl getItemSpawnerType(@NotNull String name) {
+        var finalName = name.toLowerCase();
+        var match = customSpawnerTypes.stream().filter(t -> t.getConfigKey().equals(finalName)).findFirst().orElse(null);
+        if (match != null) {
+            return match;
+        }
+        if (!defaultItemSpawnerTypesIncluded) {
+            return null;
+        }
+        return BedWarsPlugin.getInstance().getSpawnerTypes().get(finalName);
     }
 
 }
