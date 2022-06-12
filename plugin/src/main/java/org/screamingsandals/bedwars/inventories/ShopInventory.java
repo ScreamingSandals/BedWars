@@ -23,6 +23,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.api.PurchaseType;
+import org.screamingsandals.bedwars.api.config.Configuration;
+import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
 import org.screamingsandals.bedwars.commands.DumpCommand;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.events.*;
@@ -45,7 +47,6 @@ import org.screamingsandals.lib.event.EventManager;
 import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.item.Item;
-import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.plugin.ServiceManager;
 import org.screamingsandals.lib.spectator.Component;
 import org.screamingsandals.lib.spectator.sound.SoundSource;
@@ -119,13 +120,20 @@ public class ShopInventory {
         loadNewShop("default", null, true);
     }
 
-    public void show(PlayerWrapper player, GameStoreImpl store) {
+    public void show(BedWarsPlayer player, GameStoreImpl store) {
         try {
             var parent = true;
             String fileName = null;
             if (store != null) {
                 parent = store.isUseParent();
                 fileName = store.getShopFile();
+            }
+            if (fileName == null && player.isInGame()) { // who invokes this method for player who is not in game goes directly to hell
+                var defaultShopFile = player.getGame().getConfigurationContainer().getOrDefault(ConfigurationContainer.DEFAULT_SHOP_FILE, String.class, null);
+                if (defaultShopFile != null) {
+                    fileName = defaultShopFile;
+                    parent = false;
+                }
             }
             if (fileName != null) {
                 var file = normalizeShopFile(fileName);

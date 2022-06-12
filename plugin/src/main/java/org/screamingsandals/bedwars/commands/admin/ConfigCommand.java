@@ -22,18 +22,27 @@ package org.screamingsandals.bedwars.commands.admin;
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
 import cloud.commandframework.arguments.standard.StringArgument;
+import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
 import org.screamingsandals.bedwars.commands.AdminCommand;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
 import org.screamingsandals.lib.utils.annotations.Service;
+import org.screamingsandals.lib.utils.annotations.parameters.DataFolder;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class ConfigCommand extends BaseAdminSubCommand {
-    public ConfigCommand() {
+    private final Path shopFolder;
+    public ConfigCommand(@DataFolder("shop") Path shopFolder) {
         super("config");
+        this.shopFolder = shopFolder;
     }
 
     @Override
@@ -49,7 +58,38 @@ public class ConfigCommand extends BaseAdminSubCommand {
                                 })
                         )
                         .argument(StringArgument.<CommandSenderWrapper>newBuilder("value")
-                            .withSuggestionsProvider((c, s) -> List.of("true", "false", "inherit"))
+                            .greedy()
+                            .withSuggestionsProvider(editModeSuggestion((commandContext, sender, game) -> {
+                                String keyString = commandContext.get("key");
+
+                                var key = game.getConfigurationContainer().getRegisteredKeys()
+                                        .stream()
+                                        .filter(t -> t.equalsIgnoreCase(keyString))
+                                        .findFirst()
+                                        .orElse(null);
+
+                                var type = game.getConfigurationContainer().getType(key);
+                                if (type != null) {
+                                    if (type == Boolean.class) {
+                                        return List.of("true", "false", "inherit");
+                                    } else if (type == String.class) {
+                                        if (key != null && key.equalsIgnoreCase(ConfigurationContainer.DEFAULT_SHOP_FILE)) {
+                                            // some hardcoded suggestion :O
+                                            try (var walk = Files.walk(shopFolder)) {
+                                                return Stream.concat(
+                                                        walk
+                                                        .filter(Files::isRegularFile)
+                                                        .map(p -> shopFolder.relativize(p).toString()),
+                                                                Stream.of("null")
+                                                        )
+                                                        .collect(Collectors.toList());
+                                            } catch (IOException ignored) {
+                                            }
+                                        }
+                                    }
+                                }
+                                return List.of("null");
+                            }))
                         )
                         .handler(commandContext -> editMode(commandContext, (sender, game) -> {
                             String keyString = commandContext.get("key");
@@ -111,7 +151,11 @@ public class ConfigCommand extends BaseAdminSubCommand {
                                     }
                                 } else {
                                     // here we need to somehow determinate which type is it
-                                    game.getConfigurationContainer().update(key.get(), value);
+                                    if (value.equalsIgnoreCase("null")) {
+                                        game.getConfigurationContainer().update(key.get(), null);
+                                    } else {
+                                        game.getConfigurationContainer().update(key.get(), value);
+                                    }
                                 }
                                 Message
                                         .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_CONSTANT_SET)

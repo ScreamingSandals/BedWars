@@ -20,6 +20,7 @@
 package org.screamingsandals.bedwars.api.game;
 
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.lib.utils.Wrapper;
 
 /**
@@ -45,6 +46,7 @@ public interface GameStore {
     /**
      * @return shop file
      */
+    @Nullable
     String getShopFile();
 
     /**

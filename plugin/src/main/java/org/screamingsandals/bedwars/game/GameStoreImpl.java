@@ -21,6 +21,7 @@ package org.screamingsandals.bedwars.game;
 
 import lombok.Data;
 import lombok.Getter;
+import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.api.game.GameStore;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.lib.entity.EntityLiving;
@@ -37,6 +38,7 @@ import java.util.List;
 @Data
 public class GameStoreImpl implements GameStore {
     private final LocationHolder storeLocation;
+    @Nullable
     private final String shopFile;
     private final String shopCustomName;
     private final boolean enabledCustomName;
@@ -48,11 +50,11 @@ public class GameStoreImpl implements GameStore {
     private boolean isBaby;
     private String skinName;
 
-    public GameStoreImpl(LocationHolder storeLocation, String shopFile, boolean useParent, String shopCustomName, boolean enabledCustomName, boolean isBaby) {
+    public GameStoreImpl(LocationHolder storeLocation, @Nullable String shopFile, boolean useParent, String shopCustomName, boolean enabledCustomName, boolean isBaby) {
         this(storeLocation, shopFile, useParent, EntityTypeHolder.of("villager"), shopCustomName, enabledCustomName, isBaby, null);
     }
 
-    public GameStoreImpl(LocationHolder storeLocation, String shopFile, boolean useParent, EntityTypeHolder entityType, String shopCustomName, boolean enabledCustomName, boolean isBaby, String skinName) {
+    public GameStoreImpl(LocationHolder storeLocation, @Nullable String shopFile, boolean useParent, EntityTypeHolder entityType, String shopCustomName, boolean enabledCustomName, boolean isBaby, String skinName) {
         if (entityType == null || !entityType.isAlive()) {
             entityType = EntityTypeHolder.of("villager");
         }

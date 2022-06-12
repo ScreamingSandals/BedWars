@@ -361,6 +361,7 @@ public class InfoCommand extends BaseAdminSubCommand {
                                             if (!opt.isSet()) {
                                                 return Component.text()
                                                         .append(Message.of(LangKeys.ADMIN_INFO_CONSTANT_INHERIT).asComponent(sender))
+                                                        .append(": ")
                                                         .append(finalValC)
                                                         .build();
                                             } else {
@@ -378,10 +379,12 @@ public class InfoCommand extends BaseAdminSubCommand {
                                     .placeholder("value", game.getArenaTime().name())
                                     .send(sender);
 
+                            var weather = game.getArenaWeather();
+
                             Message
                                     .of(LangKeys.ADMIN_INFO_CONSTANT)
                                     .placeholder("constant", "arenaWeather")
-                                    .placeholder("value", game.getArenaWeather().platformName())
+                                    .placeholder("value", weather != null ? weather.platformName() : "default")
                                     .send(sender);
 
                             Message

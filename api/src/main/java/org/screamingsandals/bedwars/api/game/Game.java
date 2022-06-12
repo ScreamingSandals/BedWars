@@ -394,6 +394,7 @@ public interface Game {
     /**
      * @return
      */
+    @Nullable
 	Wrapper getArenaWeather();
 
     /**

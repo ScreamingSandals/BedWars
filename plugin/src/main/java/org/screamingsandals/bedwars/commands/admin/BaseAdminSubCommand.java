@@ -29,11 +29,14 @@ import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
+import org.screamingsandals.lib.utils.TriFunction;
 import org.screamingsandals.lib.utils.annotations.ServiceDependencies;
 import org.screamingsandals.lib.utils.annotations.methods.OnPostEnable;
 import org.screamingsandals.lib.utils.annotations.parameters.ProvidedBy;
 
+import java.util.List;
 import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 
 @ServiceDependencies(dependsOn = {
         AdminCommand.class
@@ -59,5 +62,17 @@ public abstract class BaseAdminSubCommand {
         } else {
             sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_ERROR_ARENA_NOT_IN_EDIT).defaultPrefix());
         }
+    }
+
+    protected BiFunction<CommandContext<CommandSenderWrapper>, String, List<String>> editModeSuggestion(TriFunction<CommandContext<CommandSenderWrapper>, CommandSenderWrapper, GameImpl, List<String>> handler) {
+        return (commandContext, s) -> {
+            String gameName = commandContext.get("game");
+            var sender = commandContext.getSender();
+
+            if (AdminCommand.gc.containsKey(gameName)) {
+                return handler.apply(commandContext, sender, AdminCommand.gc.get(gameName));
+            }
+            return List.of();
+        };
     }
 }

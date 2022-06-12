@@ -2729,6 +2729,7 @@ public class GameImpl implements Game {
     }
 
     @Override
+    @Nullable
     public WeatherHolder getArenaWeather() {
         return arenaWeather;
     }
