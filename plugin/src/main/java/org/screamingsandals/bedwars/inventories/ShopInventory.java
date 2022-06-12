@@ -63,6 +63,8 @@ import org.screamingsandals.simpleinventories.inventory.InventorySet;
 import org.spongepowered.configurate.ConfigurationNode;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -73,8 +75,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ShopInventory {
     private final Map<String, InventorySet> shopMap = new HashMap<>();
-    @DataFolder
-    private final Path dataFolder;
+    @DataFolder("shop")
+    private final Path shopFolder;
     private final MainConfig mainConfig;
     private final PlayerManagerImpl playerManager;
 
@@ -83,14 +85,35 @@ public class ShopInventory {
     }
 
     @OnPostEnable
-    public void onEnable() {
-        var shopFileName = "shop.yml";
-        if (mainConfig.node("turnOnExperimentalGroovyShop").getBoolean()) {
-            shopFileName = "shop.groovy";
-        }
-        var shopFile = dataFolder.resolve(shopFileName).toFile();
-        if (!shopFile.exists()) {
-            BedWarsPlugin.getInstance().saveResource(shopFileName, false);
+    public void onEnable(@DataFolder Path pluginFolder) {
+        try {
+            // Only main shops are currently migrated to the new location!!!
+            if (!Files.exists(shopFolder)) {
+                Files.createDirectory(shopFolder);
+            }
+            if (mainConfig.node("turnOnExperimentalGroovyShop").getBoolean()) {
+                var expectedShopGroovy = shopFolder.resolve("shop.groovy");
+                if (!Files.exists(expectedShopGroovy)) {
+                    var legacyShopGroovy = pluginFolder.resolve("shop.groovy");
+                    if (Files.exists(legacyShopGroovy)) {
+                        Files.move(legacyShopGroovy, shopFolder.resolve("shop.groovy"));
+                    } else {
+                        BedWarsPlugin.getInstance().saveResource("shop/shop.groovy", false);
+                    }
+                }
+            } else {
+                var expectedShopYml = shopFolder.resolve("shop.yml");
+                if (!Files.exists(expectedShopYml)) {
+                    var legacyShopYml = pluginFolder.resolve("shop.yml");
+                    if (Files.exists(legacyShopYml)) {
+                        Files.move(legacyShopYml, shopFolder.resolve("shop.yml"));
+                    } else {
+                        BedWarsPlugin.getInstance().saveResource("shop/shop.yml", false);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
 
         loadNewShop("default", null, true);
@@ -122,14 +145,14 @@ public class ShopInventory {
 
     public File normalizeShopFile(String name) {
         if (name.split("\\.").length > 1) {
-            return dataFolder.resolve(name).toFile();
+            return shopFolder.resolve(name).toFile();
         }
 
-        var fileg = dataFolder.resolve(name + ".groovy").toFile();
+        var fileg = shopFolder.resolve(name + ".groovy").toFile();
         if (fileg.exists()) {
             return fileg;
         }
-        return dataFolder.resolve(name + ".yml").toFile();
+        return shopFolder.resolve(name + ".yml").toFile();
     }
 
     public void onGeneratingItem(ItemRenderEvent event) {
@@ -239,7 +262,7 @@ public class ShopInventory {
     @SneakyThrows
     private void loadDefault(InventorySet inventorySet) {
         inventorySet.getMainSubInventory().dropContents();
-        inventorySet.getMainSubInventory().getWaitingQueue().add(Include.of(Path.of(ShopInventory.class.getResource("/shop.yml").toURI())));
+        inventorySet.getMainSubInventory().getWaitingQueue().add(Include.of(Path.of(ShopInventory.class.getResource("/shop/shop.yml").toURI())));
         inventorySet.getMainSubInventory().process();
     }
 
@@ -357,7 +380,7 @@ public class ShopInventory {
                         if (mainConfig.node("turnOnExperimentalGroovyShop").getBoolean(false)) {
                             shopFileName = "shop.groovy";
                         }
-                        categoryBuilder.include(shopFileName);
+                        categoryBuilder.include(Include.of(shopFolder.resolve(shopFileName)));
                     }
 
                     if (file != null) {

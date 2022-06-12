@@ -225,7 +225,7 @@ public class DumpCommand extends BaseCommand {
                                             "content", Map.of(
                                                     "format", "text",
                                                     "highlight_language", MainConfig.getInstance().node("turnOnExperimentalGroovyShop").getBoolean() ? "groovy" : "yaml",
-                                                    "value", String.join("\n", Files.readAllLines(BedWarsPlugin.getInstance().getPluginDescription().getDataFolder().resolve(MainConfig.getInstance().node("turnOnExperimentalGroovyShop").getBoolean() ? "shop.groovy" : "shop.yml"), StandardCharsets.UTF_8))
+                                                    "value", String.join("\n", Files.readAllLines(BedWarsPlugin.getInstance().getPluginDescription().getDataFolder().resolve(MainConfig.getInstance().node("turnOnExperimentalGroovyShop").getBoolean() ? "shop/shop.groovy" : "shop/shop.yml"), StandardCharsets.UTF_8))
                                             )
                                     );
                                     files.add(mainShop);
