@@ -52,6 +52,11 @@ public class VariantImpl implements Variant {
     private final GameConfigurationContainer configurationContainer = new GameConfigurationContainer();
     @NotNull
     private final List<ItemSpawnerTypeImpl> customSpawnerTypes = new ArrayList<>();
+    // TODO: read it and save to some class, expose it to API
+    @Nullable
+    private ConfigurationNode lobbyScoreboard;
+    @Nullable
+    private ConfigurationNode gameScoreboard;
     private boolean defaultItemSpawnerTypesIncluded = true;
 
     public static VariantImpl loadVariant(File file) {
@@ -105,6 +110,14 @@ public class VariantImpl implements Variant {
                 }
             } else {
                 variant.defaultItemSpawnerTypesIncluded = true;
+            }
+            var lobbyScoreboardNode = configMap.node("lobby-scoreboard");
+            if (!lobbyScoreboardNode.empty() && lobbyScoreboardNode.isMap()) {
+                variant.lobbyScoreboard = lobbyScoreboardNode;
+            }
+            var gameScoreboardNode = configMap.node("game-scoreboard");
+            if (!gameScoreboardNode.empty() && gameScoreboardNode.isMap()) {
+                variant.gameScoreboard = gameScoreboardNode;
             }
 
             return variant;

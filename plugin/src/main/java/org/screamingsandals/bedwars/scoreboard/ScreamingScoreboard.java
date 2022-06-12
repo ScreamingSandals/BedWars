@@ -50,13 +50,18 @@ public class ScreamingScoreboard {
     private ScoreSidebar scoreboard;
     private TeamedSidebar<?> teamedSidebar = sidebar;
     private final TaskerTask task;
+    private final ConfigurationNode lobbyScoreboardNode;
+    private final ConfigurationNode gameScoreboardNode;
 
     public ScreamingScoreboard(GameImpl game) {
         this.game = game;
+        var variant = game.getGameVariant();
+        lobbyScoreboardNode = variant != null && variant.getLobbyScoreboard() != null ? variant.getLobbyScoreboard() : MainConfig.getInstance().node("lobby-scoreboard");
+        gameScoreboardNode = variant != null && variant.getGameScoreboard() != null ? variant.getGameScoreboard() : MainConfig.getInstance().node("scoreboard");
         if (game.getConfigurationContainer().getOrDefault(ConfigurationContainer.LOBBY_SCOREBOARD, Boolean.class, false)) {
             this.sidebar
-                    .title(Component.fromLegacy(MainConfig.getInstance().node("lobby-scoreboard", "title").getString("§eBEDWARS")));
-            MainConfig.getInstance().node("lobby-scoreboard", "content")
+                    .title(Component.fromLegacy(lobbyScoreboardNode.node("title").getString("§eBEDWARS")));
+            lobbyScoreboardNode.node("content")
                     .childrenList()
                     .stream()
                     .map(ConfigurationNode::getString)
@@ -82,7 +87,7 @@ public class ScreamingScoreboard {
     private void switchToRunning() {
         sidebar.setLines(List.of());
         sidebar.title(
-                Message.ofPlainText(MainConfig.getInstance().node("scoreboard", "title").getString(""))
+                Message.ofPlainText(gameScoreboardNode.node("title").getString(""))
                         .placeholder("game", game.getDisplayNameComponent())
                         .placeholder("time", () -> Component.text(game.getFormattedTimeLeft()))
         );
@@ -100,7 +105,7 @@ public class ScreamingScoreboard {
                 )
         );
 
-        List<String> content = MainConfig.getInstance().node("experimental", "new-scoreboard-system", "content")
+        List<String> content = gameScoreboardNode.node("new-scoreboard", "content")
                 .childrenList().stream().map(ConfigurationNode::getString).collect(Collectors.toList());
 
         content.forEach(line -> {
@@ -125,7 +130,7 @@ public class ScreamingScoreboard {
         sidebar = null;
         this.teamedSidebar = this.scoreboard = scoreboard;
         scoreboard.title(
-                Message.ofPlainText(MainConfig.getInstance().node("scoreboard", "title").getString(""))
+                Message.ofPlainText(gameScoreboardNode.node("title").getString(""))
                         .placeholder("game", game.getDisplayNameComponent())
                         .placeholder("time", () -> Component.text(game.getFormattedTimeLeft()))
         );
@@ -146,7 +151,7 @@ public class ScreamingScoreboard {
 
         if (game.getStatus() == GameStatus.RUNNING && status != GameStatus.RUNNING) {
             if (game.getConfigurationContainer().getOrDefault(ConfigurationContainer.GAME_SCOREBOARD, Boolean.class, false)) {
-                if (MainConfig.getInstance().node("experimental", "new-scoreboard-system", "enabled").getBoolean(false)) {
+                if (gameScoreboardNode.node("new-scoreboard", "enabled").getBoolean(false)) {
                     switchToRunning();
                 } else {
                     switchToRunningOld();
@@ -184,7 +189,7 @@ public class ScreamingScoreboard {
             return "";
         }
 
-        return MainConfig.getInstance().node("experimental", "new-scoreboard-system", "teamTitle").getString("")
+        return gameScoreboardNode.node("new-scoreboard", "teamTitle").getString("")
                 .replace("%team_size%", String.valueOf(team.countConnectedPlayers()))
                 .replace("%color%", MiscUtils.toLegacyColorCode(team.getColor().getTextColor()))
                 .replace("%team%", team.getName())
@@ -193,7 +198,7 @@ public class ScreamingScoreboard {
 
     private Component formatScoreboardTeamOld(TeamImpl team, boolean destroy, boolean empty) {
         return Component.fromLegacy(
-                MainConfig.getInstance().node("scoreboard", "teamTitle").getString("%bed%%color%%team%")
+                gameScoreboardNode.node("teamTitle").getString("%bed%%color%%team%")
                         .replace("%color%", MiscUtils.toLegacyColorCode(team.getColor().getTextColor()))
                         .replace("%team%", team.getName())
                         .replace("%bed%", destroy ? GameImpl.bedLostString() : (empty ? GameImpl.anchorEmptyString() : GameImpl.bedExistString()))
