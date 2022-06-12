@@ -26,11 +26,10 @@ import org.screamingsandals.bedwars.api.game.Game;
 import java.util.function.Consumer;
 
 @ApiStatus.NonExtendable
-public interface GameStartEvent<G extends Game> extends BWCancellable {
-    G getGame();
+public interface GameStartEvent extends BWCancellable {
+    Game getGame();
 
-    @SuppressWarnings("unchecked")
-    static void handle(Object plugin, Consumer<GameStartEvent<Game>> consumer) {
-        BedwarsAPI.getInstance().getEventUtils().handle(plugin, GameStartEvent.class, (Consumer) consumer);
+    static void handle(Object plugin, Consumer<GameStartEvent> consumer) {
+        BedwarsAPI.getInstance().getEventUtils().handle(plugin, GameStartEvent.class, consumer);
     }
 }

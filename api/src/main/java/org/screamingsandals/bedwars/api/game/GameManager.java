@@ -26,24 +26,24 @@ import java.util.Optional;
 import java.util.UUID;
 
 @ApiStatus.NonExtendable
-public interface GameManager<T extends Game<?, ?, ?, ?, ?, ?, ?, ?, ?>> {
+public interface GameManager {
     /**
      * @param name Name of game or string representation of an uuid
      * @return Optional with game or empty if game does not exist
      * @see #getGame(UUID)
      */
-    Optional<T> getGame(String name);
+    Optional<? extends Game> getGame(String name);
 
     /**
      * @param uuid Unique id of the game
      * @return Optional with the game or empty if the game does not exist
      */
-    Optional<T> getGame(UUID uuid);
+    Optional<? extends Game> getGame(UUID uuid);
 
     /**
      * @return List of available games
      */
-    List<T> getGames();
+    List<? extends Game> getGames();
 
     /**
      * @return List of names of all game
@@ -65,36 +65,28 @@ public interface GameManager<T extends Game<?, ?, ?, ?, ?, ?, ?, ?, ?>> {
     /**
      * @return Free game that has the highest players in it or empty optional
      */
-    Optional<T> getGameWithHighestPlayers(boolean fee);
+    Optional<? extends Game> getGameWithHighestPlayers(boolean fee);
 
     /**
      * @return Free game that has the lowest players in it or empty optional
      */
-    Optional<T> getGameWithLowestPlayers(boolean fee);
+    Optional<? extends Game> getGameWithLowestPlayers(boolean fee);
 
     /**
      * @return Game in waiting state or empty optional
      */
-    Optional<T> getFirstWaitingGame(boolean fee);
+    Optional<? extends Game> getFirstWaitingGame(boolean fee);
 
     /**
      * @return Game in running state or empty optional
      */
-    Optional<T> getFirstRunningGame(boolean fee);
+    Optional<? extends Game> getFirstRunningGame(boolean fee);
 
-    default Optional<T> getGameWithHighestPlayers() {
-        return getGameWithHighestPlayers(true);
-    }
+    Optional<? extends Game> getGameWithHighestPlayers();
 
-    default Optional<T> getGameWithLowestPlayers() {
-        return getGameWithLowestPlayers(true);
-    }
+    Optional<? extends Game> getGameWithLowestPlayers();
 
-    default Optional<T> getFirstWaitingGame() {
-        return getFirstWaitingGame(true);
-    }
+    Optional<? extends Game> getFirstWaitingGame();
 
-    default Optional<T> getFirstRunningGame() {
-        return getFirstRunningGame(true);
-    }
+    Optional<? extends Game> getFirstRunningGame();
 }

@@ -26,12 +26,12 @@ import java.util.Optional;
 import java.util.UUID;
 
 @ApiStatus.NonExtendable
-public interface PlayerManager<P extends BWPlayer, G extends Game<P, ?, ?, ?, ?, ?, ?, ?, ?>> {
-    Optional<P> getPlayer(UUID uuid);
+public interface PlayerManager {
+    Optional<? extends BWPlayer> getPlayer(UUID uuid);
 
     boolean isPlayerInGame(UUID uuid);
 
     boolean isPlayerRegistered(UUID uuid);
 
-    Optional<G> getGameOfPlayer(UUID uuid);
+    Optional<? extends Game> getGameOfPlayer(UUID uuid);
 }

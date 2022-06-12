@@ -21,8 +21,11 @@ package org.screamingsandals.bedwars.game;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Tolerate;
+import org.screamingsandals.bedwars.api.Team;
 import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
 import org.screamingsandals.bedwars.api.game.ItemSpawner;
+import org.screamingsandals.bedwars.api.game.ItemSpawnerType;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.events.ResourceSpawnEventImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
@@ -46,7 +49,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-public class ItemSpawnerImpl implements ItemSpawner<LocationHolder, ItemSpawnerTypeImpl, TeamImpl> {
+public class ItemSpawnerImpl implements ItemSpawner {
     @Getter
     private final LocationHolder location;
     @Getter
@@ -191,6 +194,24 @@ public class ItemSpawnerImpl implements ItemSpawner<LocationHolder, ItemSpawnerT
                 rerenderHologram = true;
             }
         }
+    }
+
+    @Override
+    @Tolerate
+    public void setItemSpawnerType(ItemSpawnerType spawnerType) {
+        if (!(spawnerType instanceof ItemSpawnerTypeImpl)) {
+            throw new IllegalArgumentException("Provided instance of item spawner type is not created by BedWars plugin!");
+        }
+        this.itemSpawnerType = (ItemSpawnerTypeImpl) spawnerType;
+    }
+
+    @Override
+    @Tolerate
+    public void setTeam(Team team) {
+        if (!(team instanceof TeamImpl)) {
+            throw new IllegalArgumentException("Provided instance of team is not created by BedWars plugin!");
+        }
+        this.team = (TeamImpl) team;
     }
 
     public void setTier(int tier) {

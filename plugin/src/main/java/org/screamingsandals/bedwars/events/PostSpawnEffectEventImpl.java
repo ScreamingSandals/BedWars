@@ -26,7 +26,7 @@ import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.lib.event.SEvent;
 
 @Data
-public class PostSpawnEffectEventImpl implements PostSpawnEffectEvent<GameImpl, BedWarsPlayer>, SEvent {
+public class PostSpawnEffectEventImpl implements PostSpawnEffectEvent, SEvent {
     private final GameImpl game;
     private final BedWarsPlayer player;
     private final String effectsGroupName;

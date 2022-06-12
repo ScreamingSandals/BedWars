@@ -28,17 +28,16 @@ import org.screamingsandals.bedwars.api.player.BWPlayer;
 import java.util.function.Consumer;
 
 @ApiStatus.NonExtendable
-public interface PurchaseFailedEvent<G extends Game, P extends BWPlayer> extends BWCancellable {
-    G getGame();
+public interface PurchaseFailedEvent extends BWCancellable {
+    Game getGame();
 
-    P getPlayer();
+    BWPlayer getPlayer();
 
     PurchaseType getType();
 
     // OnTradeEvent getTradeEvent() - just in class form, not interface
 
-    @SuppressWarnings("unchecked")
-    static void handle(Object plugin, Consumer<PurchaseFailedEvent<Game, BWPlayer>> consumer) {
-        BedwarsAPI.getInstance().getEventUtils().handle(plugin, PurchaseFailedEvent.class, (Consumer) consumer);
+    static void handle(Object plugin, Consumer<PurchaseFailedEvent> consumer) {
+        BedwarsAPI.getInstance().getEventUtils().handle(plugin, PurchaseFailedEvent.class, consumer);
     }
 }

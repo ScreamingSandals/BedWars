@@ -26,7 +26,7 @@ import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.lib.event.SEvent;
 
 @Data
-public class PlayerRespawnedEventImpl implements PlayerRespawnedEvent<GameImpl, BedWarsPlayer>, SEvent {
+public class PlayerRespawnedEventImpl implements PlayerRespawnedEvent, SEvent {
     private final GameImpl game;
     private final BedWarsPlayer player;
 }

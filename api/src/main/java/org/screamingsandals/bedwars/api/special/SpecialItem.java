@@ -26,19 +26,19 @@ import org.screamingsandals.bedwars.api.player.BWPlayer;
 /**
  * @author ScreamingSandals
  */
-public interface SpecialItem<G extends Game, P extends BWPlayer, T extends Team> {
+public interface SpecialItem {
     /**
      * @return game where this special item is used
      */
-    G getGame();
+    Game getGame();
 
     /**
      * @return the player who activated this special item
      */
-    P getPlayer();
+    BWPlayer getPlayer();
 
     /**
      * @return the team of player who activated this item
      */
-    T getTeam();
+    Team getTeam();
 }

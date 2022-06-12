@@ -27,9 +27,9 @@ import org.screamingsandals.bedwars.api.game.GameStatus;
 import java.util.function.Consumer;
 
 @ApiStatus.NonExtendable
-public interface GameTickEvent<G extends Game> {
+public interface GameTickEvent {
 
-    G getGame();
+    Game getGame();
 
     int getCountdown();
 
@@ -58,8 +58,7 @@ public interface GameTickEvent<G extends Game> {
         return isNextCountdownChanged() || isNextStatusChanged();
     }
 
-    @SuppressWarnings("unchecked")
-    static void handle(Object plugin, Consumer<GameTickEvent<Game>> consumer) {
-        BedwarsAPI.getInstance().getEventUtils().handle(plugin, GameTickEvent.class, (Consumer) consumer);
+    static void handle(Object plugin, Consumer<GameTickEvent> consumer) {
+        BedwarsAPI.getInstance().getEventUtils().handle(plugin, GameTickEvent.class, consumer);
     }
 }

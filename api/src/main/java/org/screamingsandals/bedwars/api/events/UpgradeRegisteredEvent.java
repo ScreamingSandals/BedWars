@@ -28,15 +28,14 @@ import org.screamingsandals.bedwars.api.upgrades.UpgradeStorage;
 import java.util.function.Consumer;
 
 @ApiStatus.NonExtendable
-public interface UpgradeRegisteredEvent<G extends Game> {
-    G getGame();
+public interface UpgradeRegisteredEvent {
+    Game getGame();
 
     Upgrade getUpgrade();
 
     UpgradeStorage getStorage();
 
-    @SuppressWarnings("unchecked")
-    static void handle(Object plugin, Consumer<UpgradeRegisteredEvent<Game>> consumer) {
-        BedwarsAPI.getInstance().getEventUtils().handle(plugin, UpgradeRegisteredEvent.class, (Consumer) consumer);
+    static void handle(Object plugin, Consumer<UpgradeRegisteredEvent> consumer) {
+        BedwarsAPI.getInstance().getEventUtils().handle(plugin, UpgradeRegisteredEvent.class, consumer);
     }
 }

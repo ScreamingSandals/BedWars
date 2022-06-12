@@ -26,7 +26,7 @@ import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.lib.event.SCancellableEvent;
 
 @Data
-public class PreSpawnEffectEventImpl implements PreSpawnEffectEvent<GameImpl, BedWarsPlayer>, SCancellableEvent {
+public class PreSpawnEffectEventImpl implements PreSpawnEffectEvent, SCancellableEvent {
     private final GameImpl game;
     private final BedWarsPlayer player;
     private final String effectsGroupName;

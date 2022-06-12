@@ -28,10 +28,9 @@ import org.screamingsandals.lib.utils.Wrapper;
 import java.util.function.Consumer;
 
 @ApiStatus.NonExtendable
-public interface ApplyPropertyToBoughtItemEvent<G extends Game, P extends BWPlayer, I extends Wrapper> extends ApplyPropertyToItemEvent<G, P, I> {
+public interface ApplyPropertyToBoughtItemEvent extends ApplyPropertyToItemEvent {
 
-    @SuppressWarnings("unchecked")
-    static void handle(Object plugin, Consumer<ApplyPropertyToBoughtItemEvent<Game, BWPlayer, Wrapper>> consumer) {
-        BedwarsAPI.getInstance().getEventUtils().handle(plugin, ApplyPropertyToBoughtItemEvent.class, (Consumer) consumer);
+    static void handle(Object plugin, Consumer<ApplyPropertyToBoughtItemEvent> consumer) {
+        BedwarsAPI.getInstance().getEventUtils().handle(plugin, ApplyPropertyToBoughtItemEvent.class, consumer);
     }
 }

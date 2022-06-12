@@ -21,6 +21,7 @@ package org.screamingsandals.bedwars.game;
 
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
+import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.api.game.GameManager;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.utils.MiscUtils;
@@ -42,7 +43,7 @@ import java.util.stream.Collectors;
         VariantManagerImpl.class // it's important to have variant manager loaded before games manager
 })
 @RequiredArgsConstructor
-public class GameManagerImpl implements GameManager<GameImpl> {
+public class GameManagerImpl implements GameManager {
     @DataFolder("arenas")
     private final Path arenasFolder;
     private final LoggerWrapper logger;
@@ -188,5 +189,25 @@ public class GameManagerImpl implements GameManager<GameImpl> {
     public void onPreDisable() {
         games.forEach(GameImpl::stop);
         games.clear();
+    }
+
+    @Override
+    public Optional<GameImpl> getGameWithHighestPlayers() {
+        return getGameWithHighestPlayers(true);
+    }
+
+    @Override
+    public Optional<GameImpl> getGameWithLowestPlayers() {
+        return getGameWithLowestPlayers(true);
+    }
+
+    @Override
+    public Optional<GameImpl> getFirstWaitingGame() {
+        return getFirstWaitingGame(true);
+    }
+
+    @Override
+    public Optional<GameImpl> getFirstRunningGame() {
+        return getFirstRunningGame(true);
     }
 }

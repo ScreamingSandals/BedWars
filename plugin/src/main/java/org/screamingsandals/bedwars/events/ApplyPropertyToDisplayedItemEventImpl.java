@@ -27,7 +27,7 @@ import org.screamingsandals.lib.item.Item;
 
 import java.util.Map;
 
-public class ApplyPropertyToDisplayedItemEventImpl extends ApplyPropertyToItemEventImpl implements ApplyPropertyToDisplayedItemEvent<GameImpl, BedWarsPlayer, Item> {
+public class ApplyPropertyToDisplayedItemEventImpl extends ApplyPropertyToItemEventImpl implements ApplyPropertyToDisplayedItemEvent {
     public ApplyPropertyToDisplayedItemEventImpl(GameImpl game, BedWarsPlayer player, String name, Map<String, Object> properties, @NotNull Item stack) {
         super(game, player, name, properties, stack);
     }

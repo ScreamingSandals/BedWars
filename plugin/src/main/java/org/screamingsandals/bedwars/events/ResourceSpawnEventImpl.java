@@ -31,7 +31,7 @@ import org.screamingsandals.lib.item.builder.ItemFactory;
 import org.screamingsandals.lib.world.LocationHolder;
 
 @Data
-public class ResourceSpawnEventImpl implements ResourceSpawnEvent<GameImpl, ItemSpawnerImpl, ItemSpawnerTypeImpl, Item, LocationHolder>, SCancellableEvent {
+public class ResourceSpawnEventImpl implements ResourceSpawnEvent, SCancellableEvent {
     private final GameImpl game;
     private final ItemSpawnerImpl itemSpawner;
     private final ItemSpawnerTypeImpl type;

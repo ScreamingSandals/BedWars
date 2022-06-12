@@ -28,7 +28,7 @@ import org.screamingsandals.lib.event.SEvent;
 
 @Data
 @AllArgsConstructor
-public class GameTickEventImpl implements GameTickEvent<GameImpl>, SEvent {
+public class GameTickEventImpl implements GameTickEvent, SEvent {
     private final GameImpl game;
     private final int previousCountdown;
     private final GameStatus previousStatus;

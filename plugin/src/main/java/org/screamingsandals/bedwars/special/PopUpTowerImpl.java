@@ -43,7 +43,7 @@ import java.util.stream.Collectors;
 
 @Getter
 @EqualsAndHashCode(callSuper = true)
-public class PopUpTowerImpl extends SpecialItem implements PopUpTower<GameImpl, BedWarsPlayer, TeamImpl> {
+public class PopUpTowerImpl extends SpecialItemImpl implements PopUpTower {
     private final static List<BlockFace> pillarSides = List.of(BlockFace.NORTH, BlockFace.EAST, BlockFace.WEST, BlockFace.SOUTH);
 
     private final BlockTypeHolder material;

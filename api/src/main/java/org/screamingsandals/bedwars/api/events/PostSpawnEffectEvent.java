@@ -27,16 +27,15 @@ import org.screamingsandals.bedwars.api.player.BWPlayer;
 import java.util.function.Consumer;
 
 @ApiStatus.NonExtendable
-public interface PostSpawnEffectEvent<G extends Game, P extends BWPlayer> {
+public interface PostSpawnEffectEvent {
 
-    G getGame();
+    Game getGame();
 
-    P getPlayer();
+    BWPlayer getPlayer();
 
     String getEffectsGroupName();
 
-    @SuppressWarnings("unchecked")
-    static void handle(Object plugin, Consumer<PostSpawnEffectEvent<Game, BWPlayer>> consumer) {
-        BedwarsAPI.getInstance().getEventUtils().handle(plugin, PostSpawnEffectEvent.class, (Consumer) consumer);
+    static void handle(Object plugin, Consumer<PostSpawnEffectEvent> consumer) {
+        BedwarsAPI.getInstance().getEventUtils().handle(plugin, PostSpawnEffectEvent.class, consumer);
     }
 }

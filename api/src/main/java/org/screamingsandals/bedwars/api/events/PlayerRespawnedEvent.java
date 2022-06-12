@@ -27,13 +27,12 @@ import org.screamingsandals.bedwars.api.player.BWPlayer;
 import java.util.function.Consumer;
 
 @ApiStatus.NonExtendable
-public interface PlayerRespawnedEvent<G extends Game, P extends BWPlayer> {
-    G getGame();
+public interface PlayerRespawnedEvent {
+    Game getGame();
 
-    P getPlayer();
+    BWPlayer getPlayer();
 
-    @SuppressWarnings("unchecked")
-    static void handle(Object plugin, Consumer<PlayerRespawnedEvent<Game, BWPlayer>> consumer) {
-        BedwarsAPI.getInstance().getEventUtils().handle(plugin, PlayerRespawnedEvent.class, (Consumer) consumer);
+    static void handle(Object plugin, Consumer<PlayerRespawnedEvent> consumer) {
+        BedwarsAPI.getInstance().getEventUtils().handle(plugin, PlayerRespawnedEvent.class, consumer);
     }
 }

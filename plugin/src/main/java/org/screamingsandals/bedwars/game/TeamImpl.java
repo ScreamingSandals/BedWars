@@ -23,6 +23,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.screamingsandals.bedwars.api.Team;
 import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
+import org.screamingsandals.bedwars.api.player.BWPlayer;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
@@ -34,7 +35,6 @@ import org.screamingsandals.lib.container.type.InventoryTypeHolder;
 import org.screamingsandals.lib.hologram.Hologram;
 import org.screamingsandals.lib.hologram.HologramManager;
 import org.screamingsandals.lib.lang.Message;
-import org.screamingsandals.lib.spectator.Component;
 import org.screamingsandals.lib.spectator.sound.SoundSource;
 import org.screamingsandals.lib.spectator.sound.SoundStart;
 import org.screamingsandals.lib.tasker.Tasker;
@@ -49,7 +49,7 @@ import java.util.stream.Collectors;
 
 @Getter
 @Setter
-public class TeamImpl implements Team<LocationHolder, TeamColorImpl, GameImpl, Container, BedWarsPlayer> {
+public class TeamImpl implements Team {
     private TeamColorImpl color;
     private String name;
     private LocationHolder targetBlock;
@@ -220,7 +220,10 @@ public class TeamImpl implements Team<LocationHolder, TeamColorImpl, GameImpl, C
     }
 
     @Override
-    public boolean isPlayerInTeam(BedWarsPlayer player) {
+    public boolean isPlayerInTeam(BWPlayer player) {
+        if (!(player instanceof BedWarsPlayer)) {
+            throw new IllegalArgumentException("Provided instance of player is not created by Bedwars plugin!");
+        }
         return players.contains(player);
     }
 

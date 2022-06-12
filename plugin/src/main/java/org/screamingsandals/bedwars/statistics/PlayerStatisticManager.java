@@ -20,7 +20,6 @@
 package org.screamingsandals.bedwars.statistics;
 
 import lombok.RequiredArgsConstructor;
-import org.screamingsandals.bedwars.api.statistics.LeaderboardEntry;
 import org.screamingsandals.bedwars.api.statistics.PlayerStatisticsManager;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.database.DatabaseManager;
@@ -47,7 +46,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class PlayerStatisticManager implements PlayerStatisticsManager<OfflinePlayerWrapper> {
+public class PlayerStatisticManager implements PlayerStatisticsManager {
     @ConfigFile("database/bw_stats_players.yml")
     private final YamlConfigurationLoader loader;
     private final MainConfig mainConfig;
@@ -153,12 +152,12 @@ public class PlayerStatisticManager implements PlayerStatisticsManager<OfflinePl
         }
     }
 
-    public List<LeaderboardEntry<OfflinePlayerWrapper>> getLeaderboard(int count) {
+    public List<LeaderboardEntryImpl> getLeaderboard(int count) {
         return allScores.entrySet()
                 .stream()
                 .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
                 .limit(count)
-                .map(entry -> new org.screamingsandals.bedwars.statistics.LeaderboardEntry(PlayerMapper.getOfflinePlayer(entry.getKey()), entry.getValue()))
+                .map(entry -> new LeaderboardEntryImpl(PlayerMapper.getOfflinePlayer(entry.getKey()), entry.getValue()))
                 .collect(Collectors.toList());
     }
 

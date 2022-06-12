@@ -24,11 +24,13 @@ import lombok.*;
 import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.api.ArenaTime;
+import org.screamingsandals.bedwars.api.Team;
 import org.screamingsandals.bedwars.api.boss.StatusBar;
 import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
 import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.api.game.ItemSpawner;
+import org.screamingsandals.bedwars.api.player.BWPlayer;
 import org.screamingsandals.bedwars.api.special.SpecialItem;
 import org.screamingsandals.bedwars.api.upgrades.UpgradeRegistry;
 import org.screamingsandals.bedwars.api.upgrades.UpgradeStorage;
@@ -70,6 +72,7 @@ import org.screamingsandals.lib.container.type.InventoryTypeHolder;
 import org.screamingsandals.lib.entity.EntityBasic;
 import org.screamingsandals.lib.entity.EntityItem;
 import org.screamingsandals.lib.entity.EntityLiving;
+import org.screamingsandals.lib.entity.EntityMapper;
 import org.screamingsandals.lib.entity.type.EntityTypeHolder;
 import org.screamingsandals.lib.event.EventManager;
 import org.screamingsandals.lib.event.player.SPlayerBlockBreakEvent;
@@ -113,7 +116,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, WorldHolder, LocationHolder, EntityBasic, Component, GameStoreImpl, ItemSpawnerImpl> {
+public class GameImpl implements Game {
     public boolean gameStartItem;
     @Getter
     private final UUID uuid;
@@ -163,9 +166,9 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
     private final List<TeamImpl> teamsInGame = new ArrayList<>();
     private final BWRegion region = BedWarsPlugin.isLegacy() ? new LegacyRegion() : new FlatteningRegion();
     private TeamSelectorInventory teamSelectorInventory;
-    private StatusBar<PlayerWrapper> statusbar;
+    private StatusBar statusbar;
     private final Map<LocationHolder, Item[]> usedChests = new HashMap<>();
-    private final List<SpecialItem<?,?,?>> activeSpecialItems = new ArrayList<>();
+    private final List<SpecialItem> activeSpecialItems = new ArrayList<>();
     private final List<DelayFactory> activeDelays = new ArrayList<>();
     private final Map<BedWarsPlayer, Container> fakeEnderChests = new HashMap<>();
     private int postGameWaiting = 3;
@@ -1323,7 +1326,12 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
     }
 
     @Override
-    public void joinToGame(BedWarsPlayer player) {
+    public void joinToGame(BWPlayer p) {
+        if (!(p instanceof BedWarsPlayer)) {
+            throw new IllegalArgumentException("Provided instance of player is not created by BedWars plugin!");
+        }
+        var player = (BedWarsPlayer) p;
+
         if (status == GameStatus.DISABLED) {
             return;
         }
@@ -1450,7 +1458,12 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
     }
 
     @Override
-    public void leaveFromGame(BedWarsPlayer player) {
+    public void leaveFromGame(BWPlayer p) {
+        if (!(p instanceof BedWarsPlayer)) {
+            throw new IllegalArgumentException("Provided instance of player is not created by BedWars plugin!");
+        }
+        var player = (BedWarsPlayer) p;
+
         if (status == GameStatus.DISABLED) {
             return;
         }
@@ -2369,16 +2382,19 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
     }
 
     @Override
-    public void selectPlayerTeam(BedWarsPlayer player, TeamImpl team) {
-        if (!PlayerManagerImpl.getInstance().isPlayerInGame(player.getUuid())) {
-            return;
+    public void selectPlayerTeam(BWPlayer player, Team team) {
+        if (!(player instanceof BedWarsPlayer)) {
+            throw new IllegalArgumentException("Provided instance of player is not created by BedWars plugin!");
         }
-        BedWarsPlayer profile = PlayerManagerImpl.getInstance().getPlayer(player.getUuid()).orElseThrow();
-        if (profile.getGame() != this) {
+        if (!(team instanceof TeamImpl)) {
+            throw new IllegalArgumentException("Provided instance of team is not created by BedWars plugin!");
+        }
+        var bwPlayer = (BedWarsPlayer) player;
+        if (!bwPlayer.isInGame() || bwPlayer.getGame() != this) {
             return;
         }
 
-        selectTeam(profile, team.getName());
+        selectTeam(bwPlayer, team.getName());
     }
 
     @Override
@@ -2412,14 +2428,25 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
     }
 
     @Override
-    public TeamImpl getTeamOfPlayer(BedWarsPlayer player) {
-        if (!player.isInGame()) {
+    public TeamImpl getTeamOfPlayer(BWPlayer player) {
+        if (!(player instanceof BedWarsPlayer)) {
+            throw new IllegalArgumentException("Provided instance of player is not created by BedWars plugin!");
+        }
+        var bwPlayer = (BedWarsPlayer) player;
+        if (!bwPlayer.isInGame()) {
             return null;
         }
-        return getPlayerTeam(player);
+        return getPlayerTeam(bwPlayer);
     }
 
     @Override
+    public boolean isLocationInArena(Object location) {
+        if (location == null) {
+            return false;
+        }
+        return ArenaUtils.isInArea(LocationMapper.wrapLocation(location), pos1, pos2);
+    }
+
     public boolean isLocationInArena(LocationHolder location) {
         return ArenaUtils.isInArea(location, pos1, pos2);
     }
@@ -2436,6 +2463,13 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
     }
 
     @Override
+    public TeamImpl getTeamOfChest(Object location) {
+        if (location == null) {
+            return null;
+        }
+        return getTeamOfChest(LocationMapper.wrapLocation(location));
+    }
+
     public TeamImpl getTeamOfChest(LocationHolder location) {
         for (var team : teamsInGame) {
             if (team.isTeamChestRegistered(location)) {
@@ -2479,18 +2513,30 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
     }
 
     @Override
-    public boolean isPlayerInAnyTeam(BedWarsPlayer player) {
-        return getTeamOfPlayer(player) != null;
+    public boolean isPlayerInAnyTeam(BWPlayer player) {
+        if (!(player instanceof BedWarsPlayer)) {
+            throw new IllegalArgumentException("Provided instance of player is not created by BedWars plugin!");
+        }
+        return getTeamOfPlayer((BedWarsPlayer) player) != null;
     }
 
     @Override
-    public boolean isTeamActive(TeamImpl team) {
+    public boolean isTeamActive(Team team) {
+        if (!(team instanceof TeamImpl)) {
+            throw new IllegalArgumentException("Provided instance of team is not created by BedWars plugin!");
+        }
         return teamsInGame.contains(team);
     }
 
     @Override
-    public boolean isPlayerInTeam(BedWarsPlayer player, TeamImpl team) {
-        return getTeamOfPlayer(player) == team;
+    public boolean isPlayerInTeam(BWPlayer player, Team team) {
+        if (!(player instanceof BedWarsPlayer)) {
+            throw new IllegalArgumentException("Provided instance of player is not created by BedWars plugin!");
+        }
+        if (!(team instanceof TeamImpl)) {
+            throw new IllegalArgumentException("Provided instance of team is not created by BedWars plugin!");
+        }
+        return getTeamOfPlayer((BedWarsPlayer) player) == team;
     }
 
     @Override
@@ -2503,18 +2549,13 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
     }
 
     @Override
-    public int countTeamChests(TeamImpl team) {
-        return team.countTeamChests();
-    }
-
-    @Override
-    public List<SpecialItem<?,?,?>> getActiveSpecialItems() {
+    public List<SpecialItem> getActiveSpecialItems() {
         return List.copyOf(activeSpecialItems);
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public <I extends SpecialItem<?,?,?>> List<I> getActiveSpecialItems(Class<I> type) {
+    public <I extends SpecialItem> List<I> getActiveSpecialItems(Class<I> type) {
         return activeSpecialItems.stream()
                 .filter(type::isInstance)
                 .map(specialItem -> (I) specialItem)
@@ -2522,7 +2563,10 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
     }
 
     @Override
-    public List<SpecialItem<?,?,?>> getActiveSpecialItemsOfTeam(TeamImpl team) {
+    public List<SpecialItem> getActiveSpecialItemsOfTeam(Team team) {
+        if (!(team instanceof TeamImpl)) {
+            throw new IllegalArgumentException("Provided instance of team is not created by BedWars plugin!");
+        }
         return activeSpecialItems.stream()
                 .filter(item -> item.getTeam().equals(team))
                 .collect(Collectors.toList());
@@ -2530,7 +2574,10 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
 
     @SuppressWarnings("unchecked")
     @Override
-    public <I extends SpecialItem<?,?,?>> List<I> getActiveSpecialItemsOfTeam(TeamImpl team, Class<I> type) {
+    public <I extends SpecialItem> List<I> getActiveSpecialItemsOfTeam(Team team, Class<I> type) {
+        if (!(team instanceof TeamImpl)) {
+            throw new IllegalArgumentException("Provided instance of team is not created by BedWars plugin!");
+        }
         return activeSpecialItems.stream()
                 .filter(item -> type.isInstance(item) && item.getTeam().equals(team))
                 .map(item -> (I) item)
@@ -2538,7 +2585,10 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
     }
 
     @Override
-    public SpecialItem<?,?,?> getFirstActiveSpecialItemOfTeam(TeamImpl team) {
+    public SpecialItem getFirstActiveSpecialItemOfTeam(Team team) {
+        if (!(team instanceof TeamImpl)) {
+            throw new IllegalArgumentException("Provided instance of team is not created by BedWars plugin!");
+        }
         return activeSpecialItems.stream()
                 .filter(item -> item.getTeam().equals(team))
                 .findFirst()
@@ -2547,7 +2597,10 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
 
     @SuppressWarnings("unchecked")
     @Override
-    public <I extends SpecialItem<?,?,?>> I getFirstActiveSpecialItemOfTeam(TeamImpl team, Class<I> type) {
+    public <I extends SpecialItem> I getFirstActiveSpecialItemOfTeam(Team team, Class<I> type) {
+        if (!(team instanceof TeamImpl)) {
+            throw new IllegalArgumentException("Provided instance of team is not created by BedWars plugin!");
+        }
         return (I) activeSpecialItems.stream()
                 .filter(item -> item.getTeam().equals(team) && type.isInstance(item))
                 .findFirst()
@@ -2555,7 +2608,10 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
     }
 
     @Override
-    public List<SpecialItem<?,?,?>> getActiveSpecialItemsOfPlayer(BedWarsPlayer player) {
+    public List<SpecialItem> getActiveSpecialItemsOfPlayer(BWPlayer player) {
+        if (!(player instanceof BedWarsPlayer)) {
+            throw new IllegalArgumentException("Provided instance of player is not created by BedWars plugin!");
+        }
         return activeSpecialItems.stream()
                 .filter(item -> item.getPlayer().equals(player))
                 .collect(Collectors.toList());
@@ -2563,7 +2619,10 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
 
     @SuppressWarnings("unchecked")
     @Override
-    public <I extends SpecialItem<?,?,?>> List<I> getActiveSpecialItemsOfPlayer(BedWarsPlayer player, Class<I> type) {
+    public <I extends SpecialItem> List<I> getActiveSpecialItemsOfPlayer(BWPlayer player, Class<I> type) {
+        if (!(player instanceof BedWarsPlayer)) {
+            throw new IllegalArgumentException("Provided instance of player is not created by BedWars plugin!");
+        }
         return activeSpecialItems.stream()
                 .filter(item -> item.getPlayer().equals(player) && type.isInstance(item))
                 .map(item -> (I) item)
@@ -2571,7 +2630,10 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
     }
 
     @Override
-    public SpecialItem<?,?,?> getFirstActiveSpecialItemOfPlayer(BedWarsPlayer player) {
+    public SpecialItem getFirstActiveSpecialItemOfPlayer(BWPlayer player) {
+        if (!(player instanceof BedWarsPlayer)) {
+            throw new IllegalArgumentException("Provided instance of player is not created by BedWars plugin!");
+        }
         return activeSpecialItems.stream()
                 .filter(item -> item.getPlayer().equals(player))
                 .findFirst()
@@ -2580,7 +2642,10 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
 
     @SuppressWarnings("unchecked")
     @Override
-    public <I extends SpecialItem<?,?,?>> I getFirstActiveSpecialItemOfPlayer(BedWarsPlayer player, Class<I> type) {
+    public <I extends SpecialItem> I getFirstActiveSpecialItemOfPlayer(BWPlayer player, Class<I> type) {
+        if (!(player instanceof BedWarsPlayer)) {
+            throw new IllegalArgumentException("Provided instance of player is not created by BedWars plugin!");
+        }
         return (I) activeSpecialItems.stream()
                 .filter(item -> item.getPlayer().equals(player) && type.isInstance(item))
                 .findFirst()
@@ -2588,19 +2653,19 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
     }
 
     @Override
-    public void registerSpecialItem(SpecialItem<?,?,?> item) {
+    public void registerSpecialItem(SpecialItem item) {
         if (!activeSpecialItems.contains(item)) {
             activeSpecialItems.add(item);
         }
     }
 
     @Override
-    public void unregisterSpecialItem(SpecialItem<?,?,?> item) {
+    public void unregisterSpecialItem(SpecialItem item) {
         activeSpecialItems.remove(item);
     }
 
     @Override
-    public boolean isRegisteredSpecialItem(SpecialItem<?,?,?> item) {
+    public boolean isRegisteredSpecialItem(SpecialItem item) {
         return activeSpecialItems.contains(item);
     }
 
@@ -2610,14 +2675,20 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
     }
 
     @Override
-    public List<DelayFactory> getActiveDelaysOfPlayer(BedWarsPlayer player) {
+    public List<DelayFactory> getActiveDelaysOfPlayer(BWPlayer player) {
+        if (!(player instanceof BedWarsPlayer)) {
+            throw new IllegalArgumentException("Provided instance of player is not created by BedWars plugin!");
+        }
         return activeDelays.stream()
                 .filter(delayFactory -> delayFactory.getPlayer().equals(player))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public DelayFactory getActiveDelay(BedWarsPlayer player, Class<? extends SpecialItem<?,?,?>> specialItem) {
+    public DelayFactory getActiveDelay(BWPlayer player, Class<? extends SpecialItem> specialItem) {
+        if (!(player instanceof BedWarsPlayer)) {
+            throw new IllegalArgumentException("Provided instance of player is not created by BedWars plugin!");
+        }
         return activeDelays.stream()
                 .filter(delayFactory -> delayFactory.getPlayer().equals(player) && specialItem.isInstance(delayFactory.getSpecialItem()))
                 .findFirst()
@@ -2637,7 +2708,10 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
     }
 
     @Override
-    public boolean isDelayActive(BedWarsPlayer player, Class<? extends SpecialItem<?,?,?>> specialItem) {
+    public boolean isDelayActive(BWPlayer player, Class<? extends SpecialItem> specialItem) {
+        if (!(player instanceof BedWarsPlayer)) {
+            throw new IllegalArgumentException("Provided instance of player is not created by BedWars plugin!");
+        }
         return activeDelays.stream()
                 .filter(delayFactory -> delayFactory.getPlayer().equals(player) && specialItem.isInstance(delayFactory.getSpecialItem()))
                 .findFirst()
@@ -2704,12 +2778,15 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
     }
 
     @Override
-    public void selectPlayerRandomTeam(BedWarsPlayer player) {
-        joinRandomTeam(player);
+    public void selectPlayerRandomTeam(BWPlayer player) {
+        if (!(player instanceof BedWarsPlayer)) {
+            throw new IllegalArgumentException("Provided instance of player is not created by BedWars plugin!");
+        }
+        joinRandomTeam((BedWarsPlayer) player);
     }
 
     @Override
-    public StatusBar<?> getStatusBar() {
+    public StatusBar getStatusBar() {
         return statusbar;
     }
 
@@ -2725,9 +2802,9 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
     }
 
     @Override
-    public boolean isEntityShop(EntityBasic entity) {
+    public boolean isEntityShop(Object entity) {
         for (var store : gameStore) {
-            if (entity.equals(store.getEntity())) {
+            if (EntityMapper.wrapEntity(entity).map(e -> e.equals(store.getEntity())).orElse(false)) {
                 return true;
             }
         }
@@ -2758,7 +2835,10 @@ public class GameImpl implements Game<BedWarsPlayer, TeamImpl, BlockHolder, Worl
     }
 
     @Override
-    public boolean isProtectionActive(BedWarsPlayer player) {
+    public boolean isProtectionActive(BWPlayer player) {
+        if (!(player instanceof BedWarsPlayer)) {
+            throw new IllegalArgumentException("Provided instance of player is not created by BedWars plugin!");
+        }
         return (respawnProtectionMap.containsKey(player));
     }
 

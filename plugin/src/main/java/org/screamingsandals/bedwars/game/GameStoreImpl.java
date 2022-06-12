@@ -35,7 +35,7 @@ import org.screamingsandals.lib.world.LocationHolder;
 import java.util.List;
 
 @Data
-public class GameStoreImpl implements GameStore<EntityLiving, EntityTypeHolder, LocationHolder> {
+public class GameStoreImpl implements GameStore {
     private final LocationHolder storeLocation;
     private final String shopFile;
     private final String shopCustomName;

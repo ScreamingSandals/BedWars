@@ -27,7 +27,7 @@ import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.lib.event.SCancellableEvent;
 
 @Data
-public class TeamChestOpenEventImpl implements TeamChestOpenEvent<GameImpl, BedWarsPlayer, TeamImpl>, SCancellableEvent {
+public class TeamChestOpenEventImpl implements TeamChestOpenEvent, SCancellableEvent {
     private final GameImpl game;
     private final BedWarsPlayer player;
     private final TeamImpl team;

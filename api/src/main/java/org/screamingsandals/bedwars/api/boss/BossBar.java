@@ -25,10 +25,10 @@ import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.lib.utils.Wrapper;
 
 /**
- * @author Bedwars Team
+ * @author ScreamingSandals
  */
 @ApiStatus.NonExtendable
-public interface BossBar<P extends Wrapper> extends StatusBar<P> {
+public interface BossBar extends StatusBar {
     /**
      * @return current message
      */

@@ -27,16 +27,15 @@ import org.screamingsandals.bedwars.api.player.BWPlayer;
 import java.util.function.Consumer;
 
 @ApiStatus.NonExtendable
-public interface PreSpawnEffectEvent<G extends Game, P extends BWPlayer> extends BWCancellable {
+public interface PreSpawnEffectEvent extends BWCancellable {
 
-    G getGame();
+    Game getGame();
 
-    P getPlayer();
+    BWPlayer getPlayer();
 
     String getEffectsGroupName();
 
-    @SuppressWarnings("unchecked")
-    static void handle(Object plugin, Consumer<PreSpawnEffectEvent<Game, BWPlayer>> consumer) {
-        BedwarsAPI.getInstance().getEventUtils().handle(plugin, PreSpawnEffectEvent.class, (Consumer) consumer);
+    static void handle(Object plugin, Consumer<PreSpawnEffectEvent> consumer) {
+        BedwarsAPI.getInstance().getEventUtils().handle(plugin, PreSpawnEffectEvent.class, consumer);
     }
 }

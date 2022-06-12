@@ -23,24 +23,24 @@ import org.jetbrains.annotations.ApiStatus;
 import org.screamingsandals.lib.utils.Wrapper;
 
 /**
- * @author Bedwars Team
+ * @author ScreamingSandals
  */
 @ApiStatus.NonExtendable
-public interface GameStore<E extends Wrapper, T extends Wrapper, L extends Wrapper> {
+public interface GameStore {
     /**
      * @return shop entity
      */
-    E getEntity();
+    Wrapper getEntity();
 
     /**
      * @return entity type used for the shop
      */
-    T getEntityType();
+    Wrapper getEntityType();
 
     /**
      * @return location of this store
      */
-    L getStoreLocation();
+    Wrapper getStoreLocation();
 
     /**
      * @return shop file

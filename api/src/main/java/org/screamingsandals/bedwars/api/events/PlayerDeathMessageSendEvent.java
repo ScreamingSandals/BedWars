@@ -27,17 +27,16 @@ import org.screamingsandals.bedwars.api.player.BWPlayer;
 import java.util.function.Consumer;
 
 @ApiStatus.NonExtendable
-public interface PlayerDeathMessageSendEvent<G extends Game, P extends BWPlayer> extends BWCancellable {
-    G getGame();
+public interface PlayerDeathMessageSendEvent extends BWCancellable {
+    Game getGame();
 
-    P getVictim();
+    BWPlayer getVictim();
 
     String getStringMessage();
 
     void setStringMessage(String message);
 
-    @SuppressWarnings("unchecked")
-    static void handle(Object plugin, Consumer<PlayerDeathMessageSendEvent<Game, BWPlayer>> consumer) {
-        BedwarsAPI.getInstance().getEventUtils().handle(plugin, PlayerDeathMessageSendEvent.class, (Consumer) consumer);
+    static void handle(Object plugin, Consumer<PlayerDeathMessageSendEvent> consumer) {
+        BedwarsAPI.getInstance().getEventUtils().handle(plugin, PlayerDeathMessageSendEvent.class, consumer);
     }
 }

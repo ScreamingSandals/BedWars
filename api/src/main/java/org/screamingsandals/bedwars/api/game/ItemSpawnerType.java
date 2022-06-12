@@ -23,10 +23,10 @@ import org.jetbrains.annotations.ApiStatus;
 import org.screamingsandals.lib.utils.Wrapper;
 
 /**
- * @author Bedwars Team
+ * @author ScreamingSandals
  */
 @ApiStatus.NonExtendable
-public interface ItemSpawnerType<T extends Wrapper, I extends Wrapper, C extends Wrapper> {
+public interface ItemSpawnerType {
     /**
      * @return
      */
@@ -50,22 +50,22 @@ public interface ItemSpawnerType<T extends Wrapper, I extends Wrapper, C extends
     /**
      * @return
      */
-    T getItemType();
+    Wrapper getItemType();
 
     /**
      * @return
      */
-    C getTranslatableKey();
+    Wrapper getTranslatableKey();
 
     /**
      * @return
      */
-    C getItemName();
+    Wrapper getItemName();
 
     /**
      * @return
      */
-    C getItemBoldName();
+    Wrapper getItemBoldName();
 
     /**
      * @return
@@ -75,11 +75,11 @@ public interface ItemSpawnerType<T extends Wrapper, I extends Wrapper, C extends
     /**
      * @return
      */
-    I getItem();
+    Wrapper getItem();
 
     /**
      * @param amount
      * @return
      */
-    I getItem(int amount);
+    Wrapper getItem(int amount);
 }

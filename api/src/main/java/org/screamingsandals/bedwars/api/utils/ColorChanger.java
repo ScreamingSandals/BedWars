@@ -30,7 +30,7 @@ import org.screamingsandals.lib.utils.Wrapper;
  * @param <I> Item
  */
 @ApiStatus.NonExtendable
-public interface ColorChanger<I extends Wrapper> {
+public interface ColorChanger {
 
     /**
      * Apply color of team to ItemStack
@@ -39,5 +39,5 @@ public interface ColorChanger<I extends Wrapper> {
      * @param stack ItemStack that should be colored
      * @return colored ItemStack or normal ItemStack if ItemStack can't be colored
      */
-    I applyColor(TeamColor color, Object stack);
+    Wrapper applyColor(TeamColor color, Object stack);
 }

@@ -29,20 +29,19 @@ import org.screamingsandals.bedwars.api.player.BWPlayer;
 import java.util.function.Consumer;
 
 @ApiStatus.NonExtendable
-public interface TargetBlockDestroyedEvent<G extends Game, P extends BWPlayer, T extends Team> {
-    G getGame();
+public interface TargetBlockDestroyedEvent {
+    Game getGame();
 
     @Nullable
-    P getBroker();
+    BWPlayer getBroker();
 
-    T getTeam();
+    Team getTeam();
 
     default boolean wasDestroyedByExplosion() {
         return getBroker() == null;
     }
 
-    @SuppressWarnings("unchecked")
-    static void handle(Object plugin, Consumer<TargetBlockDestroyedEvent<Game, BWPlayer, Team>> consumer) {
-        BedwarsAPI.getInstance().getEventUtils().handle(plugin, TargetBlockDestroyedEvent.class, (Consumer) consumer);
+    static void handle(Object plugin, Consumer<TargetBlockDestroyedEvent> consumer) {
+        BedwarsAPI.getInstance().getEventUtils().handle(plugin, TargetBlockDestroyedEvent.class, consumer);
     }
 }

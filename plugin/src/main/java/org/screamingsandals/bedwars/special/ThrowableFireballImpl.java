@@ -9,7 +9,7 @@ import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 
 @Getter
-public class ThrowableFireballImpl extends SpecialItem implements ThrowableFireball<GameImpl, BedWarsPlayer, TeamImpl> {
+public class ThrowableFireballImpl extends SpecialItemImpl implements ThrowableFireball {
     private final float damage;
     private final boolean incendiary;
     private final boolean damagesThrower;

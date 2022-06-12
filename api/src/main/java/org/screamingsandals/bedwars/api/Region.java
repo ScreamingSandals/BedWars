@@ -26,10 +26,9 @@ import org.screamingsandals.lib.utils.Wrapper;
  * <p>Abstract region API.</p>
  *
  * @author ScreamingSandals
- * @param <B> block impl (BlockHolder)
  */
 @ApiStatus.NonExtendable
-public interface Region<B extends Wrapper> {
+public interface Region {
     /**
      * <p>Determines if the supplied location was modified during a BedWars game.</p>
      *
@@ -130,7 +129,7 @@ public interface Region<B extends Wrapper> {
      * @param blockHead the bed head block
      * @return the bed neighbor block
      */
-    B getBedNeighbor(Object blockHead);
+    Wrapper getBedNeighbor(Object blockHead);
 
     /**
      * <p>Determines if anything was modified in the supplied chunk.</p>

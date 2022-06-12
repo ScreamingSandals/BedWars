@@ -41,7 +41,7 @@ import org.screamingsandals.lib.world.LocationHolder;
 
 @Getter
 @EqualsAndHashCode(callSuper = true)
-public class BridgeEggImpl extends SpecialItem implements BridgeEgg<GameImpl, BedWarsPlayer, TeamImpl, EntityProjectile, BlockTypeHolder> {
+public class BridgeEggImpl extends SpecialItemImpl implements BridgeEgg {
     private final double distance;
     private final double distanceSquared;
     private final EntityProjectile projectile;

@@ -21,34 +21,48 @@ package org.screamingsandals.bedwars.boss;
 
 import lombok.Getter;
 import org.screamingsandals.bedwars.api.boss.XPBar;
+import org.screamingsandals.bedwars.api.player.BWPlayer;
 import org.screamingsandals.bedwars.lib.nms.entity.PlayerUtils;
+import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.lib.player.PlayerWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-public class XPBarImpl implements XPBar<PlayerWrapper> {
-    private final List<PlayerWrapper> viewers = new ArrayList<>();
+public class XPBarImpl implements XPBar {
+    private final List<BedWarsPlayer> viewers = new ArrayList<>();
     private boolean visible = false;
     private float progress = 0F;
     private int seconds = 0;
 
     @Override
-    public void addPlayer(PlayerWrapper player) {
-        if (!viewers.contains(player)) {
-            viewers.add(player);
+    public void addPlayer(BWPlayer player) {
+        if (!(player instanceof BedWarsPlayer)) {
+            throw new IllegalArgumentException("Provided instance of player is not created by BedWars plugin!");
+        }
+
+        var bwPlayer = (BedWarsPlayer) player;
+
+        if (!viewers.contains(bwPlayer)) {
+            viewers.add(bwPlayer);
             if (visible) {
-                PlayerUtils.fakeExp(player, progress, seconds);
+                PlayerUtils.fakeExp(bwPlayer, progress, seconds);
             }
         }
     }
 
     @Override
-    public void removePlayer(PlayerWrapper player) {
-        if (viewers.contains(player)) {
-            viewers.remove(player);
-            PlayerUtils.fakeExp(player, player.getExp(), player.getLevel());
+    public void removePlayer(BWPlayer player) {
+        if (!(player instanceof BedWarsPlayer)) {
+            throw new IllegalArgumentException("Provided instance of player is not created by BedWars plugin!");
+        }
+
+        var bwPlayer = (BedWarsPlayer) player;
+
+        if (viewers.contains(bwPlayer)) {
+            viewers.remove(bwPlayer);
+            PlayerUtils.fakeExp(bwPlayer, bwPlayer.getExp(), bwPlayer.getLevel());
         }
     }
 

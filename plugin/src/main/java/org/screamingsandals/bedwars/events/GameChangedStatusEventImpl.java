@@ -25,6 +25,6 @@ import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.lib.event.SEvent;
 
 @Data
-public class GameChangedStatusEventImpl implements GameChangedStatusEvent<GameImpl>, SEvent {
+public class GameChangedStatusEventImpl implements GameChangedStatusEvent, SEvent {
     private final GameImpl game;
 }

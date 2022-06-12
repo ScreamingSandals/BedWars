@@ -26,9 +26,9 @@ import java.util.List;
 import java.util.UUID;
 
 @ApiStatus.NonExtendable
-public interface PlayerStatisticsManager<OP extends Wrapper> {
+public interface PlayerStatisticsManager {
 
-    List<LeaderboardEntry<OP>> getLeaderboard(int count);
+    List<? extends LeaderboardEntry> getLeaderboard(int count);
 
     PlayerStatistic loadStatistic(UUID uuid);
 }

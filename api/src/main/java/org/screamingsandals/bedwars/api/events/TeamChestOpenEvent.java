@@ -28,15 +28,14 @@ import org.screamingsandals.bedwars.api.player.BWPlayer;
 import java.util.function.Consumer;
 
 @ApiStatus.NonExtendable
-public interface TeamChestOpenEvent<G extends Game, P extends BWPlayer, T extends Team> extends BWCancellable {
-    G getGame();
+public interface TeamChestOpenEvent extends BWCancellable {
+    Game getGame();
 
-    P getPlayer();
+    BWPlayer getPlayer();
 
-    T getTeam();
+    Team getTeam();
 
-    @SuppressWarnings("unchecked")
-    static void handle(Object plugin, Consumer<TeamChestOpenEvent<Game, BWPlayer, Team>> consumer) {
-        BedwarsAPI.getInstance().getEventUtils().handle(plugin, TeamChestOpenEvent.class, (Consumer) consumer);
+    static void handle(Object plugin, Consumer<TeamChestOpenEvent> consumer) {
+        BedwarsAPI.getInstance().getEventUtils().handle(plugin, TeamChestOpenEvent.class, consumer);
     }
 }

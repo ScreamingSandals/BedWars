@@ -26,11 +26,10 @@ import org.screamingsandals.bedwars.api.game.Game;
 import java.util.function.Consumer;
 
 @ApiStatus.NonExtendable
-public interface PostRebuildingEvent<G extends Game> {
-    G getGame();
+public interface PostRebuildingEvent {
+    Game getGame();
 
-    @SuppressWarnings("unchecked")
-    static void handle(Object plugin, Consumer<PostRebuildingEvent<Game>> consumer) {
-        BedwarsAPI.getInstance().getEventUtils().handle(plugin, PostRebuildingEvent.class, (Consumer) consumer);
+    static void handle(Object plugin, Consumer<PostRebuildingEvent> consumer) {
+        BedwarsAPI.getInstance().getEventUtils().handle(plugin, PostRebuildingEvent.class, consumer);
     }
 }

@@ -37,7 +37,7 @@ public interface DelayFactory {
     /**
      * @return special item for which this delay is used
      */
-    SpecialItem<?,?,?> getSpecialItem();
+    SpecialItem getSpecialItem();
 
     /**
      * @return remaining delay

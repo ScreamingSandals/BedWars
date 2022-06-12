@@ -28,7 +28,7 @@ import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.lib.event.SCancellableEvent;
 
 @Data
-public class PlayerJoinTeamEventImpl implements PlayerJoinTeamEvent<GameImpl, BedWarsPlayer, TeamImpl>, SCancellableEvent {
+public class PlayerJoinTeamEventImpl implements PlayerJoinTeamEvent, SCancellableEvent {
     private final GameImpl game;
     private final BedWarsPlayer player;
     private final TeamImpl team;

@@ -30,7 +30,7 @@ import org.screamingsandals.lib.event.SCancellableEvent;
 import org.screamingsandals.lib.lang.Message;
 
 @Data
-public class BedDestroyedMessageSendEventImpl implements BedDestroyedMessageSendEvent<GameImpl, BedWarsPlayer, TeamImpl>, SCancellableEvent {
+public class BedDestroyedMessageSendEventImpl implements BedDestroyedMessageSendEvent, SCancellableEvent {
     private final GameImpl game;
     private final BedWarsPlayer victim;
     @Nullable

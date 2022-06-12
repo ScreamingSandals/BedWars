@@ -28,7 +28,7 @@ import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.lib.event.SEvent;
 
 @Data
-public class PlayerJoinedEventImpl implements PlayerJoinedEvent<GameImpl, BedWarsPlayer, TeamImpl>, SEvent {
+public class PlayerJoinedEventImpl implements PlayerJoinedEvent, SEvent {
     private final GameImpl game;
     private final BedWarsPlayer player;
     @Nullable

@@ -33,8 +33,8 @@ public interface EventUtils {
     <T> void handle(Object pluginObject, Class<T> event, Consumer<T> consumer);
 
     @ApiStatus.Internal
-    UpgradeRegisteredEvent<Game<?, ?, ?, ?, ?, ?, ?, ?, ?>> fireUpgradeRegisteredEvent(Game<?, ?, ?, ?, ?, ?, ?, ?, ?> game, UpgradeStorage storage, Upgrade upgrade);
+    UpgradeRegisteredEvent fireUpgradeRegisteredEvent(Game game, UpgradeStorage storage, Upgrade upgrade);
 
     @ApiStatus.Internal
-    UpgradeUnregisteredEvent<Game<?, ?, ?, ?, ?, ?, ?, ?, ?>> fireUpgradeUnregisteredEvent(Game<?, ?, ?, ?, ?, ?, ?, ?, ?> game, UpgradeStorage storage, Upgrade upgrade);
+    UpgradeUnregisteredEvent fireUpgradeUnregisteredEvent(Game game, UpgradeStorage storage, Upgrade upgrade);
 }

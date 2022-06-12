@@ -26,21 +26,21 @@ import org.screamingsandals.bedwars.api.upgrades.Upgrade;
 import org.screamingsandals.lib.utils.Wrapper;
 
 /**
- * @author Bedwars Team
+ * @author ScreamingSandals
  */
 @ApiStatus.NonExtendable
-public interface ItemSpawner<E extends Wrapper, I extends ItemSpawnerType<?,?,?>, T extends Team<?,?,?,?,?>> extends Upgrade {
+public interface ItemSpawner extends Upgrade {
     /**
      * @return
      */
-    I getItemSpawnerType();
+    ItemSpawnerType getItemSpawnerType();
 
-    void setItemSpawnerType(I spawnerType);
+    void setItemSpawnerType(ItemSpawnerType spawnerType);
 
     /**
      * @return
      */
-    E getLocation();
+    Wrapper getLocation();
 
     /**
      * @return
@@ -81,13 +81,13 @@ public interface ItemSpawner<E extends Wrapper, I extends ItemSpawnerType<?,?,?>
      *
      * @param team current team
      */
-    void setTeam(T team);
+    void setTeam(Team team);
 
     /**
      *
      * @return registered team for this upgrade in optional or empty optional
      */
-    T getTeam();
+    Team getTeam();
 
     /**
      * @param level

@@ -20,20 +20,17 @@
 package org.screamingsandals.bedwars.api.special;
 
 import org.jetbrains.annotations.ApiStatus;
-import org.screamingsandals.bedwars.api.Team;
-import org.screamingsandals.bedwars.api.game.Game;
-import org.screamingsandals.bedwars.api.player.BWPlayer;
 import org.screamingsandals.lib.utils.Wrapper;
 
 /**
- * @author Bedwars Team
+ * @author ScreamingSandals
  */
 @ApiStatus.NonExtendable
-public interface Trap<G extends Game, P extends BWPlayer, T extends Team, L extends Wrapper> extends SpecialItem<G, P, T> {
+public interface Trap extends SpecialItem {
     /**
      * @return
      */
-	L getLocation();
+	Wrapper getLocation();
 
     /**
      * @return

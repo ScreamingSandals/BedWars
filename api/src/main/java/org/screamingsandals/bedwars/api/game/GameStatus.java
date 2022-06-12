@@ -21,7 +21,7 @@ package org.screamingsandals.bedwars.api.game;
 
 
 /**
- * @author Bedwars Team
+ * @author ScreamingSandals
  */
 public enum GameStatus {
     WAITING,

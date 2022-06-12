@@ -30,7 +30,7 @@ import org.screamingsandals.lib.entity.EntityBasic;
 import org.screamingsandals.lib.event.SEvent;
 
 @Data
-public class OpenShopEventImpl implements OpenShopEvent<GameImpl, EntityBasic, BedWarsPlayer, GameStoreImpl>, SEvent {
+public class OpenShopEventImpl implements OpenShopEvent, SEvent {
     private final GameImpl game;
     @Nullable
     private final EntityBasic entity;

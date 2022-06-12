@@ -30,7 +30,7 @@ import org.screamingsandals.lib.item.Item;
 import org.screamingsandals.simpleinventories.events.OnTradeEvent;
 
 @Data
-public class StorePrePurchaseEventImpl implements StorePrePurchaseEvent<GameImpl, BedWarsPlayer, Item, ItemSpawnerTypeImpl>, SCancellableEvent {
+public class StorePrePurchaseEventImpl implements StorePrePurchaseEvent, SCancellableEvent {
     private final GameImpl game;
     private final BedWarsPlayer player;
     private final Item materialItem;

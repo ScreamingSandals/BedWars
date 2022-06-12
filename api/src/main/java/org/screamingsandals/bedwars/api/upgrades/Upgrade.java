@@ -22,7 +22,7 @@ package org.screamingsandals.bedwars.api.upgrades;
 import org.screamingsandals.bedwars.api.game.Game;
 
 /**
- * @author Bedwars Team
+ * @author ScreamingSandals
  *
  */
 public interface Upgrade {

@@ -37,7 +37,7 @@ import java.util.UUID;
         GameManagerImpl.class
 })
 @RequiredArgsConstructor
-public class PlayerManagerImpl implements PlayerManager<BedWarsPlayer, GameImpl> {
+public class PlayerManagerImpl implements PlayerManager {
     private final List<BedWarsPlayer> players = new ArrayList<>();
 
     {

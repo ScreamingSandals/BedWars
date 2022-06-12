@@ -29,16 +29,16 @@ import org.screamingsandals.lib.utils.Wrapper;
 import java.util.function.Consumer;
 
 @ApiStatus.NonExtendable
-public interface ResourceSpawnEvent<G extends Game, S extends ItemSpawner, T extends ItemSpawnerType, I extends Wrapper, L extends Wrapper> extends BWCancellable {
-    G getGame();
+public interface ResourceSpawnEvent extends BWCancellable {
+    Game getGame();
 
-    S getItemSpawner();
+    ItemSpawner getItemSpawner();
 
-    L getLocation();
+    Wrapper getLocation();
 
-    I getResource();
+    Wrapper getResource();
 
-    T getType();
+    ItemSpawnerType getType();
 
     /**
      *
@@ -46,8 +46,7 @@ public interface ResourceSpawnEvent<G extends Game, S extends ItemSpawner, T ext
      */
     void setResource(Object resource);
 
-    @SuppressWarnings("unchecked")
-    static void handle(Object plugin, Consumer<ResourceSpawnEvent<Game, ItemSpawner, ItemSpawnerType, Wrapper, Wrapper>> consumer) {
-        BedwarsAPI.getInstance().getEventUtils().handle(plugin, ResourceSpawnEvent.class, (Consumer) consumer);
+    static void handle(Object plugin, Consumer<ResourceSpawnEvent> consumer) {
+        BedwarsAPI.getInstance().getEventUtils().handle(plugin, ResourceSpawnEvent.class, consumer);
     }
 }

@@ -30,7 +30,7 @@ import org.screamingsandals.lib.block.BlockHolder;
 import org.screamingsandals.lib.block.state.BlockStateHolder;
 
 @Data
-public class PlayerBuildBlockEventImpl implements PlayerBuildBlockEvent<GameImpl, BedWarsPlayer, TeamImpl, BlockHolder, BlockStateHolder, Item>, SCancellableEvent {
+public class PlayerBuildBlockEventImpl implements PlayerBuildBlockEvent, SCancellableEvent {
     private final GameImpl game;
     private final BedWarsPlayer player;
     private final TeamImpl team;

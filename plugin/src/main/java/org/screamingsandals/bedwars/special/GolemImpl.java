@@ -40,7 +40,7 @@ import org.screamingsandals.lib.world.LocationHolder;
 
 @Getter
 @EqualsAndHashCode(callSuper = true)
-public class GolemImpl extends SpecialItem implements Golem<GameImpl, BedWarsPlayer, TeamImpl, EntityLiving> {
+public class GolemImpl extends SpecialItemImpl implements Golem {
     private EntityLiving entity;
     private final LocationHolder location;
     private final Item item;

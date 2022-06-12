@@ -36,7 +36,7 @@ import org.screamingsandals.lib.tasker.task.TaskerTask;
 
 @Getter
 @EqualsAndHashCode(callSuper = true)
-public class ArrowBlockerImpl extends SpecialItem implements ArrowBlocker<GameImpl, BedWarsPlayer, TeamImpl> {
+public class ArrowBlockerImpl extends SpecialItemImpl implements ArrowBlocker {
     private final int protectionTime;
     private int usedTime;
     private boolean isActivated;

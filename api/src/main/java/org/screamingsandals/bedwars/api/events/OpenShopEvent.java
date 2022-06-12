@@ -30,16 +30,16 @@ import org.screamingsandals.lib.utils.Wrapper;
 import java.util.function.Consumer;
 
 @ApiStatus.NonExtendable
-public interface OpenShopEvent<G extends Game, E extends Wrapper, P extends BWPlayer, S extends GameStore> extends BWCancellable {
+public interface OpenShopEvent extends BWCancellable {
 
-    G getGame();
+    Game getGame();
 
     @Nullable
-    E getEntity();
+    Wrapper getEntity();
 
-    P getPlayer();
+    BWPlayer getPlayer();
 
-    S getGameStore();
+    GameStore getGameStore();
 
     Result getResult();
 
@@ -64,8 +64,7 @@ public interface OpenShopEvent<G extends Game, E extends Wrapper, P extends BWPl
         DISALLOW_UNKNOWN;
     }
 
-    @SuppressWarnings("unchecked")
-    static void handle(Object plugin, Consumer<OpenShopEvent<Game, Wrapper, BWPlayer, GameStore>> consumer) {
-        BedwarsAPI.getInstance().getEventUtils().handle(plugin, OpenShopEvent.class, (Consumer) consumer);
+    static void handle(Object plugin, Consumer<OpenShopEvent> consumer) {
+        BedwarsAPI.getInstance().getEventUtils().handle(plugin, OpenShopEvent.class, consumer);
     }
 }

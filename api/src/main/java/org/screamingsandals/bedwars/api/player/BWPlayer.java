@@ -35,6 +35,10 @@ public interface BWPlayer extends Wrapper {
     @Nullable
     String getLatestGameName();
 
+    boolean isInGame();
+
+    boolean canJoinFullGame();
+
     @Nullable
     Game getGame();
 }

@@ -24,8 +24,8 @@ import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.lib.utils.Wrapper;
 
 @ApiStatus.NonExtendable
-public interface GameEntity<G extends Game<?, ?, ?, ?, ?, ?, ?, ?, ?>, E extends Wrapper> {
-    G getGame();
+public interface GameEntity {
+    Game getGame();
 
-    E getEntity();
+    Wrapper getEntity();
 }

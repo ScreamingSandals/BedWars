@@ -28,7 +28,7 @@ import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.lib.event.SEvent;
 
 @Data
-public class TargetBlockDestroyedEventImpl implements TargetBlockDestroyedEvent<GameImpl, BedWarsPlayer, TeamImpl>, SEvent {
+public class TargetBlockDestroyedEventImpl implements TargetBlockDestroyedEvent, SEvent {
     private final GameImpl game;
     @Nullable
     private final BedWarsPlayer broker;

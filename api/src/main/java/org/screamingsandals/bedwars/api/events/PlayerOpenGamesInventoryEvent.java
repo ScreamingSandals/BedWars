@@ -26,13 +26,12 @@ import org.screamingsandals.lib.utils.Wrapper;
 import java.util.function.Consumer;
 
 @ApiStatus.NonExtendable
-public interface PlayerOpenGamesInventoryEvent<P extends Wrapper> extends BWCancellable {
-    P getPlayer();
+public interface PlayerOpenGamesInventoryEvent extends BWCancellable {
+    Wrapper getPlayer();
 
     String getType();
 
-    @SuppressWarnings("unchecked")
-    static void handle(Object plugin, Consumer<PlayerOpenGamesInventoryEvent<Wrapper>> consumer) {
-        BedwarsAPI.getInstance().getEventUtils().handle(plugin, PlayerOpenGamesInventoryEvent.class, (Consumer) consumer);
+    static void handle(Object plugin, Consumer<PlayerOpenGamesInventoryEvent> consumer) {
+        BedwarsAPI.getInstance().getEventUtils().handle(plugin, PlayerOpenGamesInventoryEvent.class, consumer);
     }
 }

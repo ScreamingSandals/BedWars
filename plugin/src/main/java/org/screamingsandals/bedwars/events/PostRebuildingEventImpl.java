@@ -25,6 +25,6 @@ import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.lib.event.SEvent;
 
 @Data
-public class PostRebuildingEventImpl implements PostRebuildingEvent<GameImpl>, SEvent {
+public class PostRebuildingEventImpl implements PostRebuildingEvent, SEvent {
     private final GameImpl game;
 }

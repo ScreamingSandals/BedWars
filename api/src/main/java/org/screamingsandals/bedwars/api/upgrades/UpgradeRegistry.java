@@ -26,7 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @author Bedwars Team
+ * @author ScreamingSandals
  */
 public final class UpgradeRegistry {
     private static final Map<String, UpgradeStorage> registeredUpgrades = new HashMap<>();

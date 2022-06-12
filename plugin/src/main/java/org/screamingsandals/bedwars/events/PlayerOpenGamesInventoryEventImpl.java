@@ -25,7 +25,7 @@ import org.screamingsandals.lib.event.SCancellableEvent;
 import org.screamingsandals.lib.player.PlayerWrapper;
 
 @Data
-public class PlayerOpenGamesInventoryEventImpl implements PlayerOpenGamesInventoryEvent<PlayerWrapper>, SCancellableEvent {
+public class PlayerOpenGamesInventoryEventImpl implements PlayerOpenGamesInventoryEvent, SCancellableEvent {
     private final PlayerWrapper player;
     private final String type;
     private boolean cancelled;

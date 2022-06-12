@@ -30,20 +30,19 @@ import java.util.List;
 import java.util.function.Consumer;
 
 @ApiStatus.NonExtendable
-public interface UpgradeBoughtEvent<G extends Game, P extends BWPlayer> extends BWCancellable {
+public interface UpgradeBoughtEvent extends BWCancellable {
 
-    G getGame();
+    Game getGame();
 
     List<Upgrade> getUpgrades();
 
-    P getCustomer();
+    BWPlayer getCustomer();
 
     double getAddLevels();
 
     UpgradeStorage getStorage();
 
-    @SuppressWarnings("unchecked")
-    static void handle(Object plugin, Consumer<UpgradeBoughtEvent<Game, BWPlayer>> consumer) {
-        BedwarsAPI.getInstance().getEventUtils().handle(plugin, UpgradeBoughtEvent.class, (Consumer) consumer);
+    static void handle(Object plugin, Consumer<UpgradeBoughtEvent> consumer) {
+        BedwarsAPI.getInstance().getEventUtils().handle(plugin, UpgradeBoughtEvent.class, consumer);
     }
 }

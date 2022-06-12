@@ -28,14 +28,13 @@ import org.screamingsandals.bedwars.api.game.Game;
 import java.util.function.Consumer;
 
 @ApiStatus.NonExtendable
-public interface GameEndingEvent<G extends Game, T extends Team> {
-    G getGame();
+public interface GameEndingEvent {
+    Game getGame();
 
     @Nullable
-    T getWinningTeam();
+    Team getWinningTeam();
 
-    @SuppressWarnings("unchecked")
-    static void handle(Object plugin, Consumer<GameEndingEvent<Game, Team>> consumer) {
-        BedwarsAPI.getInstance().getEventUtils().handle(plugin, GameEndingEvent.class, (Consumer) consumer);
+    static void handle(Object plugin, Consumer<GameEndingEvent> consumer) {
+        BedwarsAPI.getInstance().getEventUtils().handle(plugin, GameEndingEvent.class, consumer);
     }
 }

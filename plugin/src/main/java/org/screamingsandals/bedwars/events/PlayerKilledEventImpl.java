@@ -29,7 +29,7 @@ import org.screamingsandals.lib.item.Item;
 import java.util.List;
 
 @Data
-public class PlayerKilledEventImpl implements PlayerKilledEvent<GameImpl, BedWarsPlayer, Item>, SEvent {
+public class PlayerKilledEventImpl implements PlayerKilledEvent, SEvent {
     private final GameImpl game;
     private final BedWarsPlayer killer;
     private final BedWarsPlayer player;

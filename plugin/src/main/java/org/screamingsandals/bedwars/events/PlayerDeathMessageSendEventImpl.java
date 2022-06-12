@@ -28,7 +28,7 @@ import org.screamingsandals.lib.event.SCancellableEvent;
 import org.screamingsandals.lib.lang.Message;
 
 @Data
-public class PlayerDeathMessageSendEventImpl implements PlayerDeathMessageSendEvent<GameImpl, BedWarsPlayer>, SCancellableEvent {
+public class PlayerDeathMessageSendEventImpl implements PlayerDeathMessageSendEvent, SCancellableEvent {
     private final GameImpl game;
     private final BedWarsPlayer victim;
     @NonNull

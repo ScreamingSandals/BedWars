@@ -27,7 +27,7 @@ import org.screamingsandals.lib.item.builder.ItemFactory;
 import org.screamingsandals.lib.utils.annotations.Service;
 
 @Service
-public class ColorChangerImpl implements ColorChanger<Item> {
+public class ColorChangerImpl implements ColorChanger {
     @Override
     public Item applyColor(TeamColor apiColor, Object item) {
         var color = (TeamColorImpl) apiColor;

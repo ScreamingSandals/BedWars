@@ -24,7 +24,7 @@ import org.jetbrains.annotations.ApiStatus;
 import java.util.UUID;
 
 /**
- * @author Bedwars Team
+ * @author ScreamingSandals
  */
 @ApiStatus.NonExtendable
 public interface PlayerStatistic {

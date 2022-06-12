@@ -20,6 +20,8 @@
 package org.screamingsandals.bedwars.entities;
 
 import org.screamingsandals.bedwars.api.entities.EntitiesManager;
+import org.screamingsandals.bedwars.api.entities.GameEntity;
+import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.lib.entity.EntityBasic;
 import org.screamingsandals.lib.entity.EntityMapper;
@@ -32,7 +34,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class EntitiesManagerImpl implements EntitiesManager<GameEntityImpl, GameImpl> {
+public class EntitiesManagerImpl implements EntitiesManager {
     private final List<GameEntityImpl> entities = new ArrayList<>();
 
     public static EntitiesManagerImpl getInstance() {
@@ -40,7 +42,7 @@ public class EntitiesManagerImpl implements EntitiesManager<GameEntityImpl, Game
     }
 
     @Override
-    public List<GameEntityImpl> getEntities(GameImpl game) {
+    public List<GameEntityImpl> getEntities(Game game) {
         return entities.stream().filter(gameEntity -> gameEntity.getGame() == game).collect(Collectors.toList());
     }
 
@@ -58,7 +60,7 @@ public class EntitiesManagerImpl implements EntitiesManager<GameEntityImpl, Game
     }
 
     @Override
-    public GameEntityImpl addEntityToGame(Object entity, GameImpl game) {
+    public GameEntityImpl addEntityToGame(Object entity, Game game) {
         if (entity instanceof EntityBasic) {
             return addEntityToGame((EntityBasic) entity, game);
         } else {
@@ -66,8 +68,12 @@ public class EntitiesManagerImpl implements EntitiesManager<GameEntityImpl, Game
         }
     }
 
-    public GameEntityImpl addEntityToGame(EntityBasic entityBasic, GameImpl game) {
-        var gameEntity = new GameEntityImpl(game, entityBasic);
+    public GameEntityImpl addEntityToGame(EntityBasic entityBasic, Game game) {
+        if (!(game instanceof GameImpl)) {
+            throw new IllegalArgumentException("Provided instance of game is not created by BedWars plugin!");
+        }
+
+        var gameEntity = new GameEntityImpl((GameImpl) game, entityBasic);
         entities.add(gameEntity);
         return gameEntity;
     }
@@ -89,7 +95,11 @@ public class EntitiesManagerImpl implements EntitiesManager<GameEntityImpl, Game
     }
 
     @Override
-    public void removeEntityFromGame(GameEntityImpl entityObject) {
+    public void removeEntityFromGame(GameEntity entityObject) {
+        if (!(entityObject instanceof GameEntityImpl)) {
+            throw new IllegalArgumentException("Provided instance of game entity is not created by BedWars plugin!");
+        }
+
         entities.remove(entityObject);
     }
 }

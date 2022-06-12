@@ -28,9 +28,9 @@ import org.screamingsandals.bedwars.api.upgrades.UpgradeStorage;
 import java.util.function.Consumer;
 
 @ApiStatus.NonExtendable
-public interface UpgradeImprovedEvent<G extends Game> extends BWCancellable {
+public interface UpgradeImprovedEvent extends BWCancellable {
 
-    G getGame();
+    Game getGame();
 
     Upgrade getUpgrade();
 
@@ -44,8 +44,7 @@ public interface UpgradeImprovedEvent<G extends Game> extends BWCancellable {
 
     void setNewLevel(double newLevel);
 
-    @SuppressWarnings("unchecked")
-    static void handle(Object plugin, Consumer<UpgradeImprovedEvent<Game>> consumer) {
-        BedwarsAPI.getInstance().getEventUtils().handle(plugin, UpgradeImprovedEvent.class, (Consumer) consumer);
+    static void handle(Object plugin, Consumer<UpgradeImprovedEvent> consumer) {
+        BedwarsAPI.getInstance().getEventUtils().handle(plugin, UpgradeImprovedEvent.class, consumer);
     }
 }

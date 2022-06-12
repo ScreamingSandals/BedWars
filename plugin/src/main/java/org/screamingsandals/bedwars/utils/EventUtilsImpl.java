@@ -122,16 +122,16 @@ public class EventUtilsImpl implements EventUtils {
     }
 
     @Override
-    public UpgradeRegisteredEvent<Game> fireUpgradeRegisteredEvent(Game game, UpgradeStorage storage, Upgrade upgrade) {
+    public UpgradeRegisteredEvent fireUpgradeRegisteredEvent(Game game, UpgradeStorage storage, Upgrade upgrade) {
         var event = new UpgradeRegisteredEventImpl((GameImpl) game, upgrade, storage);
         EventManager.fire(event);
-        return (UpgradeRegisteredEvent) event;
+        return event;
     }
 
     @Override
-    public UpgradeUnregisteredEvent<Game> fireUpgradeUnregisteredEvent(Game game, UpgradeStorage storage, Upgrade upgrade) {
+    public UpgradeUnregisteredEvent fireUpgradeUnregisteredEvent(Game game, UpgradeStorage storage, Upgrade upgrade) {
         var event = new UpgradeUnregisteredEventImpl((GameImpl) game, upgrade, storage);
         EventManager.fire(event);
-        return (UpgradeUnregisteredEvent) event;
+        return event;
     }
 }

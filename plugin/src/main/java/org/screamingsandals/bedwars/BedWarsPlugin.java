@@ -20,11 +20,6 @@
 package org.screamingsandals.bedwars;
 
 import org.screamingsandals.bedwars.api.BedwarsAPI;
-import org.screamingsandals.bedwars.api.entities.EntitiesManager;
-import org.screamingsandals.bedwars.api.game.GameManager;
-import org.screamingsandals.bedwars.api.game.ItemSpawnerType;
-import org.screamingsandals.bedwars.api.player.PlayerManager;
-import org.screamingsandals.bedwars.api.variants.VariantManager;
 import org.screamingsandals.bedwars.commands.CommandService;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.config.RecordSave;
@@ -319,22 +314,22 @@ public class BedWarsPlugin extends PluginContainer implements BedwarsAPI {
     }
 
     @Override
-    public GameManager<?> getGameManager() {
+    public GameManagerImpl getGameManager() {
         return GameManagerImpl.getInstance();
     }
 
     @Override
-    public VariantManager getVariantManager() {
+    public VariantManagerImpl getVariantManager() {
         return VariantManagerImpl.getInstance();
     }
 
     @Override
-    public PlayerManager<?, ?> getPlayerManager() {
+    public PlayerManagerImpl getPlayerManager() {
         return PlayerManagerImpl.getInstance();
     }
 
     @Override
-    public EntitiesManager<?, ?> getEntitiesManager() {
+    public EntitiesManagerImpl getEntitiesManager() {
         return EntitiesManagerImpl.getInstance();
     }
 
@@ -344,7 +339,7 @@ public class BedWarsPlugin extends PluginContainer implements BedwarsAPI {
     }
 
     @Override
-    public List<ItemSpawnerType<?, ?, ?>> getItemSpawnerTypes() {
+    public List<ItemSpawnerTypeImpl> getItemSpawnerTypes() {
         return new ArrayList<>(spawnerTypes.values());
     }
 

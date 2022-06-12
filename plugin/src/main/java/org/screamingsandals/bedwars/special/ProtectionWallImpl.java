@@ -42,7 +42,7 @@ import java.util.List;
 
 @Getter
 @EqualsAndHashCode(callSuper = true)
-public class ProtectionWallImpl extends SpecialItem implements ProtectionWall<GameImpl, BedWarsPlayer, TeamImpl, BlockTypeHolder, BlockHolder> {
+public class ProtectionWallImpl extends SpecialItemImpl implements ProtectionWall {
     private int breakingTime;
     private int livingTime;
     private int width;

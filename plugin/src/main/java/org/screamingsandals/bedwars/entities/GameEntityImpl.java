@@ -25,7 +25,7 @@ import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.lib.entity.EntityBasic;
 
 @Data
-public class GameEntityImpl implements GameEntity<GameImpl, EntityBasic> {
+public class GameEntityImpl implements GameEntity {
     private final GameImpl game;
     private final EntityBasic entity;
 }

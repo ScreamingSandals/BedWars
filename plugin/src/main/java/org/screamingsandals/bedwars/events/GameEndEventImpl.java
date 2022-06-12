@@ -25,6 +25,6 @@ import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.lib.event.SEvent;
 
 @Data
-public class GameEndEventImpl implements GameEndEvent<GameImpl>, SEvent {
+public class GameEndEventImpl implements GameEndEvent, SEvent {
     private final GameImpl game;
 }

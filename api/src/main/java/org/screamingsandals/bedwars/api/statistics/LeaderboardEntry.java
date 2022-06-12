@@ -23,8 +23,8 @@ import org.jetbrains.annotations.ApiStatus;
 import org.screamingsandals.lib.utils.Wrapper;
 
 @ApiStatus.NonExtendable
-public interface LeaderboardEntry<OP extends Wrapper> {
-    OP getPlayer();
+public interface LeaderboardEntry {
+    Wrapper getPlayer();
 
     int getTotalScore();
 

@@ -25,6 +25,6 @@ import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.lib.event.SEvent;
 
 @Data
-public class GameStartedEventImpl implements GameStartedEvent<GameImpl>, SEvent {
+public class GameStartedEventImpl implements GameStartedEvent, SEvent {
     private final GameImpl game;
 }

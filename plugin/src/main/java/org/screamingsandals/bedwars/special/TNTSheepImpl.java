@@ -42,7 +42,7 @@ import org.screamingsandals.lib.world.LocationHolder;
 
 @Getter
 @EqualsAndHashCode(callSuper = true)
-public class TNTSheepImpl extends SpecialItem implements TNTSheep<GameImpl, BedWarsPlayer, TeamImpl, EntityBasic, LocationHolder, EntityLiving> {
+public class TNTSheepImpl extends SpecialItemImpl implements TNTSheep {
     private final LocationHolder initialLocation;
     private final Item item;
     private final double speed;

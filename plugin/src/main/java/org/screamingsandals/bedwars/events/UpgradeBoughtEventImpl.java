@@ -30,7 +30,7 @@ import org.screamingsandals.lib.event.SCancellableEvent;
 import java.util.List;
 
 @Data
-public class UpgradeBoughtEventImpl implements UpgradeBoughtEvent<GameImpl, BedWarsPlayer>, SCancellableEvent {
+public class UpgradeBoughtEventImpl implements UpgradeBoughtEvent, SCancellableEvent {
     private final GameImpl game;
     private final BedWarsPlayer customer;
     private final List<Upgrade> upgrades;

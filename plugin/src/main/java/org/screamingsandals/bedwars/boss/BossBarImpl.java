@@ -22,7 +22,8 @@ package org.screamingsandals.bedwars.boss;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.screamingsandals.lib.player.PlayerWrapper;
+import org.screamingsandals.bedwars.api.player.BWPlayer;
+import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.lib.spectator.Component;
 import org.screamingsandals.lib.spectator.ComponentLike;
 import org.screamingsandals.lib.spectator.bossbar.BossBar;
@@ -33,8 +34,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 @Getter
-public class BossBarImpl implements org.screamingsandals.bedwars.api.boss.BossBar<PlayerWrapper> {
-    private final List<PlayerWrapper> viewers = new LinkedList<>();
+public class BossBarImpl implements org.screamingsandals.bedwars.api.boss.BossBar {
+    private final List<BedWarsPlayer> viewers = new LinkedList<>();
     private final BossBar boss = BossBar.builder()
             .title(Component.empty())
             .progress(1)
@@ -57,21 +58,33 @@ public class BossBarImpl implements org.screamingsandals.bedwars.api.boss.BossBa
     }
 
     @Override
-    public void addPlayer(PlayerWrapper player) {
-        if (!viewers.contains(player)) {
-            viewers.add(player);
+    public void addPlayer(BWPlayer player) {
+        if (!(player instanceof BedWarsPlayer)) {
+            throw new IllegalArgumentException("Provided instance of player is not created by BedWars plugin!");
+        }
+
+        var bwPlayer = (BedWarsPlayer) player;
+
+        if (!viewers.contains(bwPlayer)) {
+            viewers.add(bwPlayer);
             if (visible) {
-                player.showBossBar(boss);
+                bwPlayer.showBossBar(boss);
             }
         }
     }
 
     @Override
-    public void removePlayer(PlayerWrapper player) {
-        if (viewers.contains(player)) {
-            viewers.remove(player);
+    public void removePlayer(BWPlayer player) {
+        if (!(player instanceof BedWarsPlayer)) {
+            throw new IllegalArgumentException("Provided instance of player is not created by BedWars plugin!");
+        }
+
+        var bwPlayer = (BedWarsPlayer) player;
+
+        if (viewers.contains(bwPlayer)) {
+            viewers.remove(bwPlayer);
             if (visible) {
-                player.hideBossBar(boss);
+                bwPlayer.hideBossBar(boss);
             }
         }
     }

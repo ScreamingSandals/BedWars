@@ -27,7 +27,7 @@ import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.lib.event.SEvent;
 
 @Data
-public class PlayerLastLeaveEventImpl implements PlayerLastLeaveEvent<GameImpl, BedWarsPlayer, TeamImpl>, SEvent {
+public class PlayerLastLeaveEventImpl implements PlayerLastLeaveEvent, SEvent {
     private final GameImpl game;
     private final BedWarsPlayer player;
     private final TeamImpl team;

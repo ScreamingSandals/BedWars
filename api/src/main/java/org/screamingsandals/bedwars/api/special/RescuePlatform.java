@@ -20,18 +20,15 @@
 package org.screamingsandals.bedwars.api.special;
 
 import org.jetbrains.annotations.ApiStatus;
-import org.screamingsandals.bedwars.api.Team;
-import org.screamingsandals.bedwars.api.game.Game;
-import org.screamingsandals.bedwars.api.player.BWPlayer;
 import org.screamingsandals.lib.utils.Wrapper;
 
 import java.util.List;
 
 /**
- * @author Bedwars Team
+ * @author ScreamingSandals
  */
 @ApiStatus.NonExtendable
-public interface RescuePlatform<G extends Game, P extends BWPlayer, T extends Team, I extends Wrapper, M extends Wrapper, B extends Wrapper> extends SpecialItem<G, P, T> {
+public interface RescuePlatform extends SpecialItem {
     /**
      * @return
      */
@@ -45,12 +42,12 @@ public interface RescuePlatform<G extends Game, P extends BWPlayer, T extends Te
     /**
      * @return
      */
-    M getMaterial();
+    Wrapper getMaterial();
 
     /**
      * @return
      */
-    I getItem();
+    Wrapper getItem();
 
     /**
      *
@@ -60,5 +57,5 @@ public interface RescuePlatform<G extends Game, P extends BWPlayer, T extends Te
     /**
      * @return
      */
-    List<B> getPlatformBlocks();
+    List<? extends Wrapper> getPlatformBlocks();
 }

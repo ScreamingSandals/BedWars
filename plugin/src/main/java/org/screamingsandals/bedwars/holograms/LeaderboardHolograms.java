@@ -20,11 +20,11 @@
 package org.screamingsandals.bedwars.holograms;
 
 import lombok.RequiredArgsConstructor;
-import org.screamingsandals.bedwars.api.statistics.LeaderboardEntry;
 import org.screamingsandals.bedwars.commands.BedWarsPermission;
 import org.screamingsandals.bedwars.commands.RemoveHoloCommand;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.lang.LangKeys;
+import org.screamingsandals.bedwars.statistics.LeaderboardEntryImpl;
 import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.bedwars.utils.SerializableLocation;
@@ -35,7 +35,6 @@ import org.screamingsandals.lib.hologram.Hologram;
 import org.screamingsandals.lib.hologram.HologramManager;
 import org.screamingsandals.lib.hologram.event.HologramTouchEvent;
 import org.screamingsandals.lib.lang.Message;
-import org.screamingsandals.lib.player.OfflinePlayerWrapper;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.event.player.SPlayerJoinEvent;
 import org.screamingsandals.lib.plugin.ServiceManager;
@@ -68,7 +67,7 @@ public class LeaderboardHolograms {
 
     private ArrayList<SerializableLocation> hologramLocations;
     private Map<LocationHolder, Hologram> holograms;
-    private List<LeaderboardEntry<OfflinePlayerWrapper>> entries;
+    private List<LeaderboardEntryImpl> entries;
 
     @ShouldRunControllable
     public static boolean isEnabled() {

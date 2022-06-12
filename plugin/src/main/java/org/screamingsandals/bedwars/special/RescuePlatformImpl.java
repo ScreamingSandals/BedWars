@@ -43,7 +43,7 @@ import java.util.List;
 
 @Getter
 @EqualsAndHashCode(callSuper = true)
-public class RescuePlatformImpl extends SpecialItem implements RescuePlatform<GameImpl, BedWarsPlayer, TeamImpl, Item, BlockTypeHolder, BlockHolder> {
+public class RescuePlatformImpl extends SpecialItemImpl implements RescuePlatform {
     private final Item item;
     private List<BlockHolder> platformBlocks;
     private BlockTypeHolder material;

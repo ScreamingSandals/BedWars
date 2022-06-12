@@ -30,7 +30,7 @@ import org.screamingsandals.lib.world.chunk.ChunkMapper;
 import org.screamingsandals.lib.block.state.BlockStateHolder;
 import org.screamingsandals.lib.block.state.BlockStateMapper;
 
-public interface BWRegion extends Region<BlockHolder> {
+public interface BWRegion extends Region {
 
     boolean isLocationModifiedDuringGame(LocationHolder loc);
 

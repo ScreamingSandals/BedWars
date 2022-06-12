@@ -28,15 +28,14 @@ import org.screamingsandals.bedwars.api.player.BWPlayer;
 import java.util.function.Consumer;
 
 @ApiStatus.NonExtendable
-public interface PlayerLastLeaveEvent<G extends Game, P extends BWPlayer, T extends Team> {
-    G getGame();
+public interface PlayerLastLeaveEvent {
+    Game getGame();
 
-    P getPlayer();
+    BWPlayer getPlayer();
 
-    T getTeam();
+    Team getTeam();
 
-    @SuppressWarnings("unchecked")
-    static void handle(Object plugin, Consumer<PlayerLastLeaveEvent<Game, BWPlayer, Team>> consumer) {
-        BedwarsAPI.getInstance().getEventUtils().handle(plugin, PlayerLastLeaveEvent.class, (Consumer) consumer);
+    static void handle(Object plugin, Consumer<PlayerLastLeaveEvent> consumer) {
+        BedwarsAPI.getInstance().getEventUtils().handle(plugin, PlayerLastLeaveEvent.class, consumer);
     }
 }

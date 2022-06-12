@@ -39,7 +39,7 @@ import java.util.Random;
 
 @Getter
 @EqualsAndHashCode(callSuper = true)
-public class LuckyBlockImpl extends SpecialItem implements LuckyBlock<GameImpl, BedWarsPlayer, TeamImpl, LocationHolder> {
+public class LuckyBlockImpl extends SpecialItemImpl implements LuckyBlock {
     private final List<Map<String, Object>> luckyBlockData;
     private LocationHolder blockLocation;
     private boolean placed;

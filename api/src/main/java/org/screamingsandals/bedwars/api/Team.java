@@ -30,20 +30,15 @@ import java.util.List;
  * <p>Abstract team API.</p>
  *
  * @author ScreamingSandals
- * @param <L> the location impl (LocationHolder)
- * @param <C> the color impl (TeamColorImpl)
- * @param <G> the game impl (GameImpl)
- * @param <I> the inventory impl (Container)
- * @param <P> the player impl (BedWarsPlayer)
  */
 @ApiStatus.NonExtendable
-public interface Team<L extends Wrapper, C extends TeamColor, G extends Game<?, ?, ?, ?, ?, ?, ?, ?, ?>, I extends Wrapper, P extends BWPlayer> {
+public interface Team {
     /**
      * <p>Gets the team's current game.</p>
      *
      * @return the game
      */
-    G getGame();
+    Game getGame();
 
     /**
      * <p>Gets the team's name.</p>
@@ -57,21 +52,21 @@ public interface Team<L extends Wrapper, C extends TeamColor, G extends Game<?, 
      *
      * @return the color
      */
-    C getColor();
+    TeamColor getColor();
 
     /**
      * <p>Gets the team's spawn location.</p>
      *
      * @return the spawn location
      */
-    L getTeamSpawn();
+    Wrapper getTeamSpawn();
 
     /**
      * <p>Gets the team's target block (e.g. bed) location.</p>
      *
      * @return the target block location
      */
-    L getTargetBlock();
+    Wrapper getTargetBlock();
 
     /**
      * <p>Gets the maximal amount of players which can be present in this team.</p>
@@ -85,7 +80,7 @@ public interface Team<L extends Wrapper, C extends TeamColor, G extends Game<?, 
      *
      * @return the team chest inventory
      */
-    I getTeamChestInventory();
+    Wrapper getTeamChestInventory();
 
     /**
      * <p>Adds a new team chest at the specified location.</p>
@@ -137,7 +132,7 @@ public interface Team<L extends Wrapper, C extends TeamColor, G extends Game<?, 
      *
      * @return the {@link List} of players
      */
-    List<P> getPlayers();
+    List<? extends BWPlayer> getPlayers();
 
     /**
      * <p>Determines if the supplied player is a member of this team.</p>
@@ -145,7 +140,7 @@ public interface Team<L extends Wrapper, C extends TeamColor, G extends Game<?, 
      * @param player the player
      * @return is the supplied player a member of this team?
      */
-    boolean isPlayerInTeam(P player);
+    boolean isPlayerInTeam(BWPlayer player);
 
     /**
      * <p>Determines if this team is dead (eliminated from the game).</p>

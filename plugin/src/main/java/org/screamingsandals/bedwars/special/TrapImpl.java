@@ -40,7 +40,7 @@ import java.util.Map;
 
 @Getter
 @EqualsAndHashCode(callSuper = true)
-public class TrapImpl extends SpecialItem implements Trap<GameImpl, BedWarsPlayer, TeamImpl, LocationHolder> {
+public class TrapImpl extends SpecialItemImpl implements Trap {
     private final List<Map<String, Object>> trapData;
     private LocationHolder location;
 

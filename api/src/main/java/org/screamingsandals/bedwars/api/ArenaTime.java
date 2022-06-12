@@ -20,7 +20,7 @@
 package org.screamingsandals.bedwars.api;
 
 /**
- * @author Bedwars Team
+ * @author ScreamingSandals
  */
 public enum ArenaTime {
     WORLD(-1),

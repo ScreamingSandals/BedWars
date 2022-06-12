@@ -20,31 +20,28 @@
 package org.screamingsandals.bedwars.api.special;
 
 import org.jetbrains.annotations.ApiStatus;
-import org.screamingsandals.bedwars.api.Team;
-import org.screamingsandals.bedwars.api.game.Game;
-import org.screamingsandals.bedwars.api.player.BWPlayer;
 import org.screamingsandals.lib.utils.Wrapper;
 
 /**
- * @author Bedwars Team
+ * @author ScreamingSandals
  *
  */
 @ApiStatus.NonExtendable
-public interface TNTSheep<G extends Game, P extends BWPlayer, T extends Team, E extends Wrapper, L extends Wrapper, LE extends Wrapper> extends SpecialItem<G, P, T> {
+public interface TNTSheep extends SpecialItem {
 	/**
 	 * @return
 	 */
-	LE getEntity();
+	Wrapper getEntity();
 
 	/**
 	 * @return
 	 */
-	L getInitialLocation();
+	Wrapper getInitialLocation();
 	
 	/**
 	 * @return
 	 */
-	E getTnt();
+	Wrapper getTnt();
 	
 	/**
 	 * @return

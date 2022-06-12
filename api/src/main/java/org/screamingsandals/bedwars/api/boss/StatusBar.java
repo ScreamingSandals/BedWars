@@ -19,27 +19,27 @@
 
 package org.screamingsandals.bedwars.api.boss;
 
+import org.jetbrains.annotations.ApiStatus;
+import org.screamingsandals.bedwars.api.player.BWPlayer;
+
 import java.util.List;
 
-import org.jetbrains.annotations.ApiStatus;
-import org.screamingsandals.lib.utils.Wrapper;
-
 /**
- * @author Bedwars Team
+ * @author ScreamingSandals
  *
  */
 @ApiStatus.NonExtendable
-public interface StatusBar<P extends Wrapper> {
+public interface StatusBar {
 	
 	/**
 	 * @param player
 	 */
-	void addPlayer(P player);
+	void addPlayer(BWPlayer player);
 	
 	/**
 	 * @param player
 	 */
-	void removePlayer(P player);
+	void removePlayer(BWPlayer player);
 	
 	/**
 	 * @param progress
@@ -49,7 +49,7 @@ public interface StatusBar<P extends Wrapper> {
 	/**
 	 * @return list of all viewers
 	 */
-	List<P> getViewers();
+	List<? extends BWPlayer> getViewers();
 	
 	/**
 	 * @return progress of status bar

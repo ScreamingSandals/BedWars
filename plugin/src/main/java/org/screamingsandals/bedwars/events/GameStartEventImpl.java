@@ -25,7 +25,7 @@ import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.lib.event.SCancellableEvent;
 
 @Data
-public class GameStartEventImpl implements GameStartEvent<GameImpl>, SCancellableEvent {
+public class GameStartEventImpl implements GameStartEvent, SCancellableEvent {
     private final GameImpl game;
     private boolean cancelled;
 

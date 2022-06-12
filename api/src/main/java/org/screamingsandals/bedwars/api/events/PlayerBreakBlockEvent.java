@@ -29,21 +29,20 @@ import org.screamingsandals.lib.utils.Wrapper;
 import java.util.function.Consumer;
 
 @ApiStatus.NonExtendable
-public interface PlayerBreakBlockEvent<G extends Game, P extends BWPlayer, T extends Team, B extends Wrapper> extends BWCancellable {
-    G getGame();
+public interface PlayerBreakBlockEvent extends BWCancellable {
+    Game getGame();
 
-    P getPlayer();
+    BWPlayer getPlayer();
 
-    T getTeam();
+    Team getTeam();
 
-    B getBlock();
+    Wrapper getBlock();
 
     boolean isDrops();
 
     void setDrops(boolean drops);
 
-    @SuppressWarnings("unchecked")
-    static void handle(Object plugin, Consumer<PlayerBreakBlockEvent<Game, BWPlayer, Team, Wrapper>> consumer) {
-        BedwarsAPI.getInstance().getEventUtils().handle(plugin, PlayerBreakBlockEvent.class, (Consumer) consumer);
+    static void handle(Object plugin, Consumer<PlayerBreakBlockEvent> consumer) {
+        BedwarsAPI.getInstance().getEventUtils().handle(plugin, PlayerBreakBlockEvent.class, consumer);
     }
 }

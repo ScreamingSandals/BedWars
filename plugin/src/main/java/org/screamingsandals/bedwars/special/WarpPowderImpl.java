@@ -27,7 +27,6 @@ import org.screamingsandals.bedwars.game.TeamImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.utils.SpawnEffects;
-import org.screamingsandals.lib.entity.EntityItem;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.item.Item;
 import org.screamingsandals.lib.item.builder.ItemFactory;
@@ -37,7 +36,7 @@ import org.screamingsandals.lib.tasker.task.TaskerTask;
 
 @Getter
 @EqualsAndHashCode(callSuper = true)
-public class WarpPowderImpl extends SpecialItem implements WarpPowder<GameImpl, BedWarsPlayer, TeamImpl, Item> {
+public class WarpPowderImpl extends SpecialItemImpl implements WarpPowder {
     private final Item item;
     private TaskerTask teleportingTask;
     private int teleportingTime;

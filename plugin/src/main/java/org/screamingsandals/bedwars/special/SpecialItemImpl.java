@@ -17,19 +17,17 @@
  * along with Screaming BedWars. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.screamingsandals.bedwars.statistics;
+package org.screamingsandals.bedwars.special;
 
 import lombok.Data;
-import org.screamingsandals.bedwars.api.statistics.PlayerStatistic;
-import org.screamingsandals.lib.player.OfflinePlayerWrapper;
+import org.screamingsandals.bedwars.api.special.SpecialItem;
+import org.screamingsandals.bedwars.game.GameImpl;
+import org.screamingsandals.bedwars.game.TeamImpl;
+import org.screamingsandals.bedwars.player.BedWarsPlayer;
 
 @Data
-public class LeaderboardEntry implements org.screamingsandals.bedwars.api.statistics.LeaderboardEntry<OfflinePlayerWrapper> {
-    private final OfflinePlayerWrapper player;
-    private final int totalScore;
-
-    @Override
-    public PlayerStatistic fetchStatistics() {
-        return PlayerStatisticManager.getInstance().getStatistic(player);
-    }
+public abstract class SpecialItemImpl implements SpecialItem {
+    protected final GameImpl game;
+    protected final BedWarsPlayer player;
+    protected final TeamImpl team;
 }

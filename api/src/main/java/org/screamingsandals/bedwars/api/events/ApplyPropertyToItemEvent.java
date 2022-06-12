@@ -30,12 +30,12 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 @ApiStatus.NonExtendable
-public interface ApplyPropertyToItemEvent<G extends Game, P extends BWPlayer, I extends Wrapper> {
-    G getGame();
+public interface ApplyPropertyToItemEvent {
+    Game getGame();
 
-    P getPlayer();
+    BWPlayer getPlayer();
 
-    I getStack();
+    Wrapper getStack();
 
     String getPropertyName();
 
@@ -48,9 +48,8 @@ public interface ApplyPropertyToItemEvent<G extends Game, P extends BWPlayer, I 
      */
     void setStack(Object stack);
 
-    @SuppressWarnings("unchecked")
-    static void handle(Object plugin, Consumer<ApplyPropertyToItemEvent<Game, BWPlayer, Wrapper>> consumer) {
-        BedwarsAPI.getInstance().getEventUtils().handle(plugin, ApplyPropertyToItemEvent.class, (Consumer) consumer);
+    static void handle(Object plugin, Consumer<ApplyPropertyToItemEvent> consumer) {
+        BedwarsAPI.getInstance().getEventUtils().handle(plugin, ApplyPropertyToItemEvent.class, consumer);
     }
 
     default Object getProperty(String key) {

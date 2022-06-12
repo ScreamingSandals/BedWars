@@ -28,7 +28,7 @@ import org.screamingsandals.lib.event.SCancellableEvent;
 import org.screamingsandals.simpleinventories.events.OnTradeEvent;
 
 @Data
-public class PurchaseFailedEventImpl implements PurchaseFailedEvent<GameImpl, BedWarsPlayer>, SCancellableEvent {
+public class PurchaseFailedEventImpl implements PurchaseFailedEvent, SCancellableEvent {
     private final GameImpl game;
     private final BedWarsPlayer player;
     private final PurchaseType type;

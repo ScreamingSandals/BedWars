@@ -29,17 +29,16 @@ import java.util.List;
 import java.util.function.Consumer;
 
 @ApiStatus.NonExtendable
-public interface PlayerKilledEvent<G extends Game, P extends BWPlayer, I extends Wrapper> {
-    G getGame();
+public interface PlayerKilledEvent {
+    Game getGame();
 
-    P getKiller();
+    BWPlayer getKiller();
 
-    P getPlayer();
+    BWPlayer getPlayer();
 
-    List<I> getDrops();
+    List<? extends Wrapper> getDrops();
 
-    @SuppressWarnings("unchecked")
-    static void handle(Object plugin, Consumer<PlayerKilledEvent<Game, BWPlayer, Wrapper>> consumer) {
-        BedwarsAPI.getInstance().getEventUtils().handle(plugin, PlayerKilledEvent.class, (Consumer) consumer);
+    static void handle(Object plugin, Consumer<PlayerKilledEvent> consumer) {
+        BedwarsAPI.getInstance().getEventUtils().handle(plugin, PlayerKilledEvent.class, consumer);
     }
 }

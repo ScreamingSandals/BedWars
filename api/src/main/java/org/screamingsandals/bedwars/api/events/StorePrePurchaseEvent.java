@@ -30,23 +30,22 @@ import org.screamingsandals.lib.utils.Wrapper;
 import java.util.function.Consumer;
 
 @ApiStatus.NonExtendable
-public interface StorePrePurchaseEvent<G extends Game, P extends BWPlayer, I extends Wrapper, T extends ItemSpawnerType> extends BWCancellable {
-    G getGame();
+public interface StorePrePurchaseEvent extends BWCancellable {
+    Game getGame();
 
-    P getPlayer();
+    BWPlayer getPlayer();
 
-    I getMaterialItem();
+    Wrapper getMaterialItem();
 
-    I getNewItem();
+    Wrapper getNewItem();
 
-    T getSpawnerType();
+    ItemSpawnerType getSpawnerType();
 
     PurchaseType getType();
 
     // OnTradeEvent getTradeEvent() - just in class form, not interface
 
-    @SuppressWarnings("unchecked")
-    static void handle(Object plugin, Consumer<StorePrePurchaseEvent<Game, BWPlayer, Wrapper, ItemSpawnerType>> consumer) {
-        BedwarsAPI.getInstance().getEventUtils().handle(plugin, StorePrePurchaseEvent.class, (Consumer) consumer);
+    static void handle(Object plugin, Consumer<StorePrePurchaseEvent> consumer) {
+        BedwarsAPI.getInstance().getEventUtils().handle(plugin, StorePrePurchaseEvent.class, consumer);
     }
 }

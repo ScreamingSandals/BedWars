@@ -32,7 +32,7 @@ import java.util.Map;
 
 @Data
 @AllArgsConstructor
-public class ApplyPropertyToItemEventImpl implements ApplyPropertyToItemEvent<GameImpl, BedWarsPlayer, Item>, SEvent {
+public class ApplyPropertyToItemEventImpl implements ApplyPropertyToItemEvent, SEvent {
     private final GameImpl game;
     private final BedWarsPlayer player;
     private final String propertyName;

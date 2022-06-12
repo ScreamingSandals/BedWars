@@ -28,7 +28,7 @@ import org.screamingsandals.lib.block.BlockHolder;
 import org.screamingsandals.lib.event.SCancellableEvent;
 
 @Data
-public class PlayerBreakBlockEventImpl implements PlayerBreakBlockEvent<GameImpl, BedWarsPlayer, TeamImpl, BlockHolder>, SCancellableEvent {
+public class PlayerBreakBlockEventImpl implements PlayerBreakBlockEvent, SCancellableEvent {
     private final GameImpl game;
     private final BedWarsPlayer player;
     private final TeamImpl team;
