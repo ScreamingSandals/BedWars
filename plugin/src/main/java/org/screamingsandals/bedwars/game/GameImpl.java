@@ -2291,6 +2291,10 @@ public class GameImpl implements Game {
         }
     }
 
+    public int getTimeLeft() {
+        return this.countdown;
+    }
+
     public String getFormattedTimeLeft() {
         return getFormattedTimeLeft(this.countdown);
     }

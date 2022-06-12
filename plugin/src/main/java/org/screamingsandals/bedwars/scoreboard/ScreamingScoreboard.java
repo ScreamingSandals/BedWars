@@ -19,11 +19,13 @@
 
 package org.screamingsandals.bedwars.scoreboard;
 
+import org.screamingsandals.bedwars.VersionInfo;
 import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.TeamImpl;
+import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.listener.Player116ListenerUtils;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.lib.lang.Message;
@@ -39,6 +41,10 @@ import org.screamingsandals.lib.tasker.TaskerTime;
 import org.screamingsandals.lib.tasker.task.TaskerTask;
 import org.spongepowered.configurate.ConfigurationNode;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAccessor;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -71,6 +77,21 @@ public class ScreamingScoreboard {
                             .placeholder("players", () -> Component.text(game.countConnectedPlayers()))
                             .placeholder("maxplayers", game.getMaxPlayers())
                             .placeholder("time", () -> Component.text(game.getFormattedTimeLeft()))
+                            .placeholder("version", VersionInfo.VERSION)
+                            .placeholder("date", getFormattedDate(lobbyScoreboardNode.node("date-format")))
+                            .placeholder("mode", checkMode())
+                            .placeholder("state", sender -> {
+                                if (game.countConnectedPlayers() >= game.getMinPlayers() && (game.countActiveTeams() > 1
+                                        || game.getConfigurationContainer().getOrDefault(ConfigurationContainer.JOIN_RANDOM_TEAM_AFTER_LOBBY, Boolean.class, false))) {
+                                    var seconds = game.getTimeLeft();
+                                    return Message.of(LangKeys.IN_GAME_SCOREBOARD_STATE_COUNTDOWN)
+                                            .placeholder("countdown", seconds)
+                                            .asComponent(sender);
+                                } else {
+                                    return Message.of(LangKeys.IN_GAME_SCOREBOARD_STATE_WAITING)
+                                            .asComponent(sender);
+                                }
+                            })
                     )
                     .forEach(sidebar::bottomLine);
             sidebar.show();
@@ -115,7 +136,13 @@ public class ScreamingScoreboard {
             }
             sidebar.bottomLine(
                     Message.ofPlainText(line)
+                            .placeholder("arena", game.getDisplayNameComponent())
+                            .placeholder("players", () -> Component.text(game.countConnectedPlayers()))
+                            .placeholder("maxplayers", game.getMaxPlayers())
                             .placeholder("time", () -> Component.text(game.getFormattedTimeLeft()))
+                            .placeholder("version", VersionInfo.VERSION)
+                            .placeholder("date", getFormattedDate(lobbyScoreboardNode.node("date-format")))
+                            .placeholder("mode", checkMode())
             );
         });
     }
@@ -193,7 +220,7 @@ public class ScreamingScoreboard {
                 .replace("%team_size%", String.valueOf(team.countConnectedPlayers()))
                 .replace("%color%", MiscUtils.toLegacyColorCode(team.getColor().getTextColor()))
                 .replace("%team%", team.getName())
-                .replace("%bed%", destroy ? GameImpl.bedLostString() : (empty ? GameImpl.anchorEmptyString() : GameImpl.bedExistString()));
+                .replace("%bed%", destroy ? GameImpl.bedLostString() : (empty ? GameImpl.anchorEmptyString() : GameImpl.bedExistString())); // TODO: rewrite to Message and implement YOU
     }
 
     private Component formatScoreboardTeamOld(TeamImpl team, boolean destroy, boolean empty) {
@@ -223,5 +250,31 @@ public class ScreamingScoreboard {
 
     public void removePlayer(PlayerWrapper player) {
         teamedSidebar.removeViewer(player);
+    }
+
+    public String getFormattedDate(ConfigurationNode format) {
+        try {
+            return new SimpleDateFormat(format.getString("MM/dd/yy")).format(new Date());
+        } catch (Throwable ignored) {
+            return DateTimeFormatter.ISO_DATE.format(LocalDate.now());
+        }
+    }
+
+    public Message checkMode() {
+        if (game.getAvailableTeams().stream().allMatch(t -> t.getMaxPlayers() == 1)) {
+            return Message.of(LangKeys.IN_GAME_SCOREBOARD_MODE_SOLO);
+        } else if (game.getAvailableTeams().stream().allMatch(t -> t.getMaxPlayers() == 2)) {
+            return Message.of(LangKeys.IN_GAME_SCOREBOARD_MODE_DOUBLES);
+        } else if (game.getAvailableTeams().stream().allMatch(t -> t.getMaxPlayers() == 3)) {
+            return Message.of(LangKeys.IN_GAME_SCOREBOARD_MODE_TRIPLES);
+        } else if (game.getAvailableTeams().stream().allMatch(t -> t.getMaxPlayers() == 4)) {
+            return Message.of(LangKeys.IN_GAME_SCOREBOARD_MODE_SQUADS);
+        } else {
+            var teamSize = game.getAvailableTeams().stream()
+                    .map(TeamImpl::getMaxPlayers)
+                    .map(String::valueOf)
+                    .collect(Collectors.toList());
+            return Message.ofPlainText(String.join("v", teamSize));
+        }
     }
 }

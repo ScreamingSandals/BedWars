@@ -44,10 +44,10 @@ custom-spawner-types:
     color: GOLD
     name: Gold
 
-# TODO: add %date%, %state%, %mode% and %version% placeholders to the code
 lobby-scoreboard:
   enabled: true
   title: "§e§lBED WARS" # TODO: animated
+  date-format: "MM/dd/yy"
   content:
     - "§7%date%"
     - ""
@@ -61,14 +61,15 @@ lobby-scoreboard:
     - ""
     - "§ewww.screamingsandals.org"
 
-# TODO: add %date%, %tier%, %state%, %kills%, %beds% and %version% placeholders to the code
+# TODO: add %tier%, %kills%, %beds% placeholders to the code
 game-scoreboard:
   enabled: true
-  title: §a%game%§r - %time%
+  title: §eBEDWARS
   bedLost: §c✘
   anchorEmpty: §e✘
   bedExists: §a✔
   teamTitle: '%bed%%color%%team%'
+  date-format: "MM/dd/yy"
   new-scoreboard:
     enabled: true
     content:

@@ -42,6 +42,7 @@ public class GameConfigurationContainer implements ConfigurationContainer {
     private final Map<String, String[]> globalConfigKeys = new HashMap<>();
 
     {
+        // TODO: custom locations for variant files (scoreboards)
         register(ConfigurationContainer.COMPASS, Boolean.class, ConfigurationContainer.COMPASS);
         register(ConfigurationContainer.JOIN_RANDOM_TEAM_AFTER_LOBBY, Boolean.class, ConfigurationContainer.JOIN_RANDOM_TEAM_AFTER_LOBBY);
         register(ConfigurationContainer.JOIN_RANDOM_TEAM_ON_JOIN, Boolean.class, ConfigurationContainer.JOIN_RANDOM_TEAM_ON_JOIN);

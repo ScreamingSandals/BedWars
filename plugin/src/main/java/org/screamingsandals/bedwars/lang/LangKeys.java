@@ -140,6 +140,15 @@ public class LangKeys {
     public final String[] IN_GAME_CHEAT_GAME_NOT_RUNNING = {"in_game", "cheat", "game_not_running"};
     public final String[] IN_GAME_CHEAT_SPECIAL_ITEM_USED = {"in_game", "cheat", "special_item_used"};
     public final String[] IN_GAME_CHEAT_REGION_REGENERATED = {"in_game", "cheat", "region_regenerated"};
+    public final String[] IN_GAME_SCOREBOARD_YOU = {"in_game", "scoreboard", "you"};
+    public final String[] IN_GAME_SCOREBOARD_STATE_WAITING = {"in_game", "scoreboard", "state", "waiting"};
+    public final String[] IN_GAME_SCOREBOARD_STATE_COUNTDOWN = {"in_game", "scoreboard", "state", "countdown"};
+    public final String[] IN_GAME_SCOREBOARD_MODE_SOLO = {"in_game", "scoreboard", "mode", "solo"};
+    public final String[] IN_GAME_SCOREBOARD_MODE_DOUBLES = {"in_game", "scoreboard", "mode", "doubles"};
+    public final String[] IN_GAME_SCOREBOARD_MODE_TRIPLES = {"in_game", "scoreboard", "mode", "triples"};
+    public final String[] IN_GAME_SCOREBOARD_MODE_SQUADS = {"in_game", "scoreboard", "mode", "squads"};
+    public final String[] IN_GAME_MESSAGES_GAME_START = {"in_game", "messages", "game_start"};
+    public final String[] IN_GAME_MESSAGES_GAME_OVER_STATISTICS = {"in_game", "messages", "game_over_statistics"};
     public final String[] IN_GAME_JOIN = {"in_game", "join"};
     public final String[] IN_GAME_LEAVE = {"in_game", "leave"};
     public final String[] IN_GAME_PLAYER_SELF_KILLED = {"in_game", "player_self_killed"};
