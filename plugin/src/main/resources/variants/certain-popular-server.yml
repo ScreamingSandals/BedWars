@@ -1,10 +1,67 @@
+#
+# Copyright (C) 2022 ScreamingSandals
+#
+# This file is part of Screaming BedWars.
+#
+# Screaming BedWars is free software: you can redistribute it and/or modify it
+# under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Screaming BedWars is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with Screaming BedWars. If not, see <https://www.gnu.org/licenses/>.
+#
+
 # NOTE: This file is currently WIP, if you want newer revision, please delete this file and reload bw plugin, new file will be created
 name: certain-popular-server
 
 config:
-  certain-popular-server-holograms: true
-  join-randomly-after-lobby-timeout: true
+  use-certain-popular-server-like-holograms-for-spawners: true
+  join-random-team-after-lobby: true
   default-shop-file: certain-popular-server/shop.yml
+  sidebar:
+    date-format: "MM/dd/yy"
+    game:
+      enabled: true
+      legacy-sidebar: false
+      title: "<yellow><bold>BED WARS" # TODO: animated
+      team-prefixes:
+        target-block-lost: <color:red>✘</color>
+        anchor-empty: <color:yellow>✘</color>
+        target-block-exists: <color:green>✔</color>
+      team-line: <target-block-prefix><team-color><team> <gray>(<team-size>)
+      # TODO: add <tier>, <kills>, <target-blocks-destroyed> placeholders to the code
+      content:
+        - "<gray><date>"
+        - ""
+        - "<tier>"
+        - ""
+        - "<team-status>"
+        - ""
+        - "<white>Kills: <green><kills>"
+        - "<white>Bed Broken: <green><target-blocks-destroyed>"
+        - ""
+        - "<yellow>www.screamingsandals.org"
+    lobby:
+      enabled: true
+      title: "<yellow><bold>BED WARS" # TODO: animated
+      content:
+        - "<gray><date>"
+        - ""
+        - "<white>Map: <green><game>"
+        - "<white>Players: <green><players>/<max-players>"
+        - ""
+        - "<state>"
+        - ""
+        - "<white>Mode: <green><mode>"
+        - "<white>Version: SBW <gray><version>"
+        - ""
+        - "<yellow>www.screamingsandals.org"
 
 
 # TODO: custom game start items (WOODEN_SWORD, LEATHER_HELMET, LEATHER_CHESTPLATE, LEATHER_LEGGINGS, LEATHER_BOOTS)
@@ -43,46 +100,5 @@ custom-spawner-types:
     interval: 8
     color: GOLD
     name: Gold
-
-lobby-scoreboard:
-  enabled: true
-  title: "§e§lBED WARS" # TODO: animated
-  date-format: "MM/dd/yy"
-  content:
-    - "§7%date%"
-    - ""
-    - "§fMap: §a%arena%"
-    - "§fPlayers: §a%players%/%maxplayers%"
-    - ""
-    - "%state%"
-    - ""
-    - "§fMode: §a%mode%"
-    - "§fVersion: SBW §7%version%"
-    - ""
-    - "§ewww.screamingsandals.org"
-
-# TODO: add %tier%, %kills%, %beds% placeholders to the code
-game-scoreboard:
-  enabled: true
-  title: §eBEDWARS
-  bedLost: §c✘
-  anchorEmpty: §e✘
-  bedExists: §a✔
-  teamTitle: '%bed%%color%%team%'
-  date-format: "MM/dd/yy"
-  new-scoreboard:
-    enabled: true
-    content:
-      - "§7%date%"
-      - ""
-      - "%tier%"
-      - ""
-      - "%team_status%"
-      - ""
-      - "§fKills: §a%kills%"
-      - "§fBed Broken: §a%beds%"
-      - ""
-      - "§ewww.screamingsandals.org"
-    teamTitle: '%bed%%color%%team% §7(%team_size%)'
 
 # TODO: prefabs (already done shops with skin, shop file etc.)

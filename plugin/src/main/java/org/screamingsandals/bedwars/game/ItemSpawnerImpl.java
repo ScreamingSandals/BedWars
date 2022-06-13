@@ -320,15 +320,15 @@ public class ItemSpawnerImpl implements ItemSpawner {
         this.game = game;
         this.amountPerSpawn = this.baseAmountPerSpawn;
         this.tier = 1;
-        this.certainPopularServerHolo = hologramType == HologramType.CERTAIN_POPULAR_SERVER || (hologramType == HologramType.DEFAULT && game.getConfigurationContainer().getOrDefault(ConfigurationContainer.CERTAIN_POPULAR_SERVER_HOLOGRAMS, Boolean.class, false));
+        this.certainPopularServerHolo = hologramType == HologramType.CERTAIN_POPULAR_SERVER || (hologramType == HologramType.DEFAULT && game.getConfigurationContainer().getOrDefault(ConfigurationContainer.USE_CERTAIN_POPULAR_SERVER_LIKE_HOLOGRAMS_FOR_SPAWNERS, false));
 
-        if (team != null && !game.isTeamActive(team) && game.getConfigurationContainer().getOrDefault(ConfigurationContainer.STOP_TEAM_SPAWNERS_ON_DIE, Boolean.class, false)) {
+        if (team != null && !game.isTeamActive(team) && game.getConfigurationContainer().getOrDefault(ConfigurationContainer.STOP_TEAM_SPAWNERS_ON_DIE, false)) {
             disabled = true;
         }
 
         if (!disabled) {
-            if (hologramEnabled && game.getConfigurationContainer().getOrDefault(ConfigurationContainer.SPAWNER_HOLOGRAMS, Boolean.class, false)) {
-                prepareHolograms(game.getConnectedPlayers(), game.getConfigurationContainer().getOrDefault(ConfigurationContainer.SPAWNER_COUNTDOWN_HOLOGRAM, Boolean.class, false));
+            if (hologramEnabled && game.getConfigurationContainer().getOrDefault(ConfigurationContainer.SPAWNER_HOLOGRAMS, false)) {
+                prepareHolograms(game.getConnectedPlayers(), game.getConfigurationContainer().getOrDefault(ConfigurationContainer.SPAWNER_COUNTDOWN_HOLOGRAM, false));
             }
         }
 
@@ -361,7 +361,7 @@ public class ItemSpawnerImpl implements ItemSpawner {
                         return;
                     }
 
-                    if (team != null && !game.isTeamActive(team) && game.getConfigurationContainer().getOrDefault(ConfigurationContainer.STOP_TEAM_SPAWNERS_ON_DIE, Boolean.class, false)) {
+                    if (team != null && !game.isTeamActive(team) && game.getConfigurationContainer().getOrDefault(ConfigurationContainer.STOP_TEAM_SPAWNERS_ON_DIE, false)) {
                         return;
                     }
 
@@ -400,8 +400,8 @@ public class ItemSpawnerImpl implements ItemSpawner {
                 .start();
 
 
-        if (hologramEnabled && game.getConfigurationContainer().getOrDefault(ConfigurationContainer.SPAWNER_HOLOGRAMS, Boolean.class, false)
-                && game.getConfigurationContainer().getOrDefault(ConfigurationContainer.SPAWNER_COUNTDOWN_HOLOGRAM, Boolean.class, false) ) {
+        if (hologramEnabled && game.getConfigurationContainer().getOrDefault(ConfigurationContainer.SPAWNER_HOLOGRAMS, false)
+                && game.getConfigurationContainer().getOrDefault(ConfigurationContainer.SPAWNER_COUNTDOWN_HOLOGRAM, false) ) {
             hologramTask = Tasker.build(() -> {
                         if (disabled || firstTick) {
                             return;

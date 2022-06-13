@@ -136,7 +136,7 @@ public class GolemListener {
                             }
                         }
 
-                        event.cancelled(game.getConfigurationContainer().getOrDefault(ConfigurationContainer.FRIENDLY_FIRE, Boolean.class, false));
+                        event.cancelled(game.getConfigurationContainer().getOrDefault(ConfigurationContainer.FRIENDLYFIRE, false));
                         return;
                     }
                 }

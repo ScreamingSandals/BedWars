@@ -345,7 +345,10 @@ public class InfoCommand extends BaseAdminSubCommand {
                                     .send(sender);
 
                             game.getConfigurationContainer().getRegisteredKeys().forEach(s -> {
-                                var opt = game.getConfigurationContainer().get(s, Object.class).get();
+                                var opt = game.getConfigurationContainer().get(s).orElse(null);
+                                if (opt == null) {
+                                    return;
+                                }
                                 var val = String.valueOf(opt.get());
                                 Component valC = Component.text(val);
                                 if (val.equalsIgnoreCase("true")) {
@@ -356,7 +359,7 @@ public class InfoCommand extends BaseAdminSubCommand {
                                 final var finalValC = valC;
                                 Message
                                         .of(LangKeys.ADMIN_INFO_CONSTANT)
-                                        .placeholder("constant", s)
+                                        .placeholder("constant", String.join(".", s.getKey()))
                                         .placeholder("value", senderWrapper -> {
                                             if (!opt.isSet()) {
                                                 return Component.text()

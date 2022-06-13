@@ -82,7 +82,7 @@ public class TeamImpl implements Team {
             Tasker.build(() -> {
                         var anchor = block.getType();
                         block.setType(anchor.with("charges", "0"));
-                        if (game.getConfigurationContainer().getOrDefault(ConfigurationContainer.ANCHOR_AUTO_FILL, Boolean.class, false)) {
+                        if (game.getConfigurationContainer().getOrDefault(ConfigurationContainer.TARGET_BLOCK_RESPAWN_ANCHOR_FILL_ON_START, false)) {
                             var atomic = new AtomicInteger();
                             Tasker.build(taskBase -> () -> {
                                 var charges = atomic.incrementAndGet();
@@ -104,7 +104,7 @@ public class TeamImpl implements Team {
         }
 
 
-        if (game.getConfigurationContainer().getOrDefault(ConfigurationContainer.HOLOGRAMS_ABOVE_BEDS, Boolean.class, false)) {
+        if (game.getConfigurationContainer().getOrDefault(ConfigurationContainer.HOLOGRAMS_ABOVE_BEDS, false)) {
             var bed = targetBlock.getBlock();
             var loc = targetBlock.add(0.5, 1.5, 0.5);
             var isBlockTypeBed = game.getRegion().isBedBlock(bed.getBlockState().orElseThrow());

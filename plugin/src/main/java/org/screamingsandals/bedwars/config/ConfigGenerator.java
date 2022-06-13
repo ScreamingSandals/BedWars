@@ -21,6 +21,7 @@ package org.screamingsandals.bedwars.config;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.loader.AbstractConfigurationLoader;
@@ -34,6 +35,7 @@ import java.util.function.Supplier;
 // TODO: ScreamingLib candidate
 @RequiredArgsConstructor
 public class ConfigGenerator {
+    @Nullable
     private final AbstractConfigurationLoader<?> loader;
     private final ConfigurationNode mainNode;
     private boolean modified = false;
@@ -43,7 +45,7 @@ public class ConfigGenerator {
     }
 
     public void saveIfModified() throws ConfigurateException {
-        if (modified) {
+        if (modified && loader != null) {
             loader.save(mainNode);
         }
     }
@@ -92,6 +94,13 @@ public class ConfigGenerator {
                 return this;
             }
 
+            public ConfigSection dontCreateDef() throws SerializationException {
+                if (migration != null) {
+                    migrate();
+                }
+                return ConfigSection.this;
+            }
+
             public ConfigSection defValue(Object defaultValue) throws SerializationException {
                 return defValue(() -> defaultValue);
             }
@@ -116,7 +125,26 @@ public class ConfigGenerator {
                 return ConfigSection.this;
             }
 
+            public ConfigSection moveIf(Predicate<ConfigurationNode> condition, Iterable<?> newKeys) throws SerializationException {
+                if (!selected.virtual() && condition.test(selected)) {
+                    section.node(newKeys).from(selected);
+                    selected.set(null);
+                    modified = true;
+                }
+                return ConfigSection.this;
+            }
+
             public ConfigSection moveIfAbsolute(Predicate<ConfigurationNode> condition, Object... newKeys) throws SerializationException {
+                if (!selected.virtual() && condition.test(selected)) {
+                    var copy = selected.copy();
+                    selected.set(null);
+                    mainNode.node(newKeys).from(copy);
+                    modified = true;
+                }
+                return ConfigSection.this;
+            }
+
+            public ConfigSection moveIfAbsolute(Predicate<ConfigurationNode> condition, Iterable<?> newKeys) throws SerializationException {
                 if (!selected.virtual() && condition.test(selected)) {
                     var copy = selected.copy();
                     selected.set(null);
@@ -152,6 +180,10 @@ public class ConfigGenerator {
             return new ConfigSection(this, section.node(keys));
         }
 
+        public ConfigSection section(Iterable<?> keys) {
+            return new ConfigSection(this, section.node(keys));
+        }
+
         public ConfigSection migrateOld(Object... keys) throws SerializationException {
             if (previous != null) {
                 final var oldNode = previous.section.node(keys);
@@ -166,6 +198,10 @@ public class ConfigGenerator {
         }
 
         public ConfigValue key(Object... keys) {
+            return new ConfigValue(section.node(keys));
+        }
+
+        public ConfigValue key(Iterable<?> keys) {
             return new ConfigValue(section.node(keys));
         }
 

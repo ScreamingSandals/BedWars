@@ -24,11 +24,13 @@ import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.api.config.Configuration;
 import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
+import org.screamingsandals.bedwars.api.config.ConfigurationKey;
 import org.spongepowered.configurate.BasicConfigurationNode;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class GameConfigurationContainer implements ConfigurationContainer {
 
@@ -36,55 +38,64 @@ public class GameConfigurationContainer implements ConfigurationContainer {
     @Getter
     @Setter
     private ConfigurationContainer parentContainer;
-    private final Map<String, Class<?>> registered = new HashMap<>();
+    private final Map<List<String>, Class<?>> registered = new HashMap<>();
     @Getter
     private final BasicConfigurationNode saved = BasicConfigurationNode.root();
-    private final Map<String, String[]> globalConfigKeys = new HashMap<>();
+    private final Map<List<String>, String[]> globalConfigKeys = new HashMap<>();
 
     {
-        // TODO: custom locations for variant files (scoreboards)
-        register(ConfigurationContainer.COMPASS, Boolean.class, ConfigurationContainer.COMPASS);
-        register(ConfigurationContainer.JOIN_RANDOM_TEAM_AFTER_LOBBY, Boolean.class, ConfigurationContainer.JOIN_RANDOM_TEAM_AFTER_LOBBY);
-        register(ConfigurationContainer.JOIN_RANDOM_TEAM_ON_JOIN, Boolean.class, ConfigurationContainer.JOIN_RANDOM_TEAM_ON_JOIN);
-        register(ConfigurationContainer.ADD_WOOL_TO_INVENTORY_ON_JOIN, Boolean.class, ConfigurationContainer.ADD_WOOL_TO_INVENTORY_ON_JOIN);
-        register(ConfigurationContainer.PROTECT_SHOP, Boolean.class, ConfigurationContainer.PROTECT_SHOP);
-        register(ConfigurationContainer.PLAYER_DROPS, Boolean.class, ConfigurationContainer.PLAYER_DROPS);
-        register(ConfigurationContainer.FRIENDLY_FIRE, Boolean.class, ConfigurationContainer.FRIENDLY_FIRE);
-        register(ConfigurationContainer.COLORED_LEATHER_BY_TEAM_IN_LOBBY, Boolean.class, ConfigurationContainer.COLORED_LEATHER_BY_TEAM_IN_LOBBY);
-        register(ConfigurationContainer.KEEP_INVENTORY, Boolean.class, ConfigurationContainer.KEEP_INVENTORY);
-        register(ConfigurationContainer.KEEP_ARMOR, Boolean.class, ConfigurationContainer.KEEP_ARMOR);
-        register(ConfigurationContainer.CRAFTING, Boolean.class, ConfigurationContainer.CRAFTING);
-        register(ConfigurationContainer.LOBBY_BOSSBAR, Boolean.class, "bossbar", "lobby", "enabled");
-        register(ConfigurationContainer.GAME_BOSSBAR, Boolean.class, "bossbar", "game", "enabled");
-        register(ConfigurationContainer.GAME_SCOREBOARD, Boolean.class, "scoreboard", "enabled");
-        register(ConfigurationContainer.LOBBY_SCOREBOARD, Boolean.class, "lobby-scoreboard", "enabled");
-        register(ConfigurationContainer.PREVENT_SPAWNING_MOBS, Boolean.class, ConfigurationContainer.PREVENT_SPAWNING_MOBS);
-        register(ConfigurationContainer.SPAWNER_HOLOGRAMS, Boolean.class, ConfigurationContainer.SPAWNER_HOLOGRAMS);
-        register(ConfigurationContainer.SPAWNER_DISABLE_MERGE, Boolean.class, ConfigurationContainer.SPAWNER_DISABLE_MERGE);
-        register(ConfigurationContainer.ENABLE_GAME_START_ITEMS, Boolean.class, "game-start-items", "enabled");
-        register(ConfigurationContainer.ENABLE_PLAYER_RESPAWN_ITEMS, Boolean.class, "player-respawn-items", "enabled");
-        register(ConfigurationContainer.SPAWNER_COUNTDOWN_HOLOGRAM, Boolean.class, ConfigurationContainer.SPAWNER_COUNTDOWN_HOLOGRAM);
-        register(ConfigurationContainer.DAMAGE_WHEN_PLAYER_IS_NOT_IN_ARENA, Boolean.class, ConfigurationContainer.DAMAGE_WHEN_PLAYER_IS_NOT_IN_ARENA);
-        register(ConfigurationContainer.REMOVE_UNUSED_TARGET_BLOCKS, Boolean.class, ConfigurationContainer.REMOVE_UNUSED_TARGET_BLOCKS);
-        register(ConfigurationContainer.BLOCK_FALLING, Boolean.class, ConfigurationContainer.BLOCK_FALLING);
-        register(ConfigurationContainer.HOLOGRAMS_ABOVE_BEDS, Boolean.class, ConfigurationContainer.HOLOGRAMS_ABOVE_BEDS);
-        register(ConfigurationContainer.SPECTATOR_JOIN, Boolean.class, ConfigurationContainer.SPECTATOR_JOIN);
-        register(ConfigurationContainer.STOP_TEAM_SPAWNERS_ON_DIE, Boolean.class, ConfigurationContainer.STOP_TEAM_SPAWNERS_ON_DIE);
-        register(ConfigurationContainer.ANCHOR_AUTO_FILL, Boolean.class, "target-block", "respawn-anchor", "fill-on-start");
-        register(ConfigurationContainer.ANCHOR_DECREASING, Boolean.class, "target-block", "respawn-anchor", "enable-decrease");
-        register(ConfigurationContainer.CAKE_TARGET_BLOCK_EATING, Boolean.class, "target-block", "cake", "destroy-by-eating");
-        register(ConfigurationContainer.TARGET_BLOCK_EXPLOSIONS, Boolean.class, "target-block", "allow-destroying-with-explosions");
-        register(ConfigurationContainer.INVISIBLE_LOBBY_ON_GAME_START, Boolean.class, "invisible-lobby-on-game-start");
-        register(ConfigurationContainer.HEALTH_INDICATOR, Boolean.class, "enable-below-name-health-indicator");
-        register(ConfigurationContainer.CERTAIN_POPULAR_SERVER_HOLOGRAMS, Boolean.class, "use-certain-popular-server-like-holograms-for-spawners");
-        register(ConfigurationContainer.DEFAULT_SHOP_FILE, String.class);
+        register(ConfigurationContainer.TEAM_JOIN_ITEM_ENABLED, "team-join-item-enabled");
+        register(ConfigurationContainer.JOIN_RANDOM_TEAM_AFTER_LOBBY, "join-random-team-after-lobby");
+        register(ConfigurationContainer.JOIN_RANDOM_TEAM_ON_JOIN, "join-random-team-on-join");
+        register(ConfigurationContainer.ADD_WOOL_TO_INVENTORY_ON_JOIN, "add-wool-to-inventory-on-join");
+        register(ConfigurationContainer.PREVENT_KILLING_VILLAGERS, "prevent-killing-villagers");
+        register(ConfigurationContainer.PLAYER_DROPS, "player-drops");
+        register(ConfigurationContainer.FRIENDLYFIRE, "friendlyfire");
+        register(ConfigurationContainer.COLORED_LEATHER_BY_TEAM_IN_LOBBY, "in-lobby-colored-leather-by-team");
+        register(ConfigurationContainer.KEEP_INVENTORY_ON_DEATH, "keep-inventory-on-death");
+        register(ConfigurationContainer.KEEP_ARMOR_ON_DEATH, "keep-armor-on-death");
+        register(ConfigurationContainer.ALLOW_CRAFTING, "allow-crafting");
+        register(ConfigurationContainer.BOSSBAR_LOBBY_ENABLED,  "bossbar", "lobby", "enabled");
+        register(ConfigurationContainer.BOSSBAR_GAME_ENABLED,  "bossbar", "game", "enabled");
+        register(ConfigurationContainer.SIDEBAR_DATE_FORMAT, "sidebar", "date-format");
+        register(ConfigurationContainer.SIDEBAR_GAME_ENABLED, "sidebar", "game", "enabled");
+        register(ConfigurationContainer.SIDEBAR_GAME_LEGACY_SIDEBAR, "sidebar", "game", "legacy-sidebar");
+        register(ConfigurationContainer.SIDEBAR_GAME_TITLE, "sidebar", "game", "title");
+        register(ConfigurationContainer.SIDEBAR_GAME_TEAM_PREFIXES_TARGET_BLOCK_LOST, "sidebar", "game", "team-prefixes", "target-block-lost");
+        register(ConfigurationContainer.SIDEBAR_GAME_TEAM_PREFIXES_ANCHOR_EMPTY, "sidebar", "game", "team-prefixes", "anchor-empty");
+        register(ConfigurationContainer.SIDEBAR_GAME_TEAM_PREFIXES_TARGET_BLOCK_EXISTS, "sidebar", "game", "team-prefixes", "target-block-exists");
+        register(ConfigurationContainer.SIDEBAR_GAME_TEAM_LINE, "sidebar", "game", "team-line");
+        register(ConfigurationContainer.SIDEBAR_LOBBY_ENABLED,  "sidebar", "lobby", "enabled");
+        register(ConfigurationContainer.SIDEBAR_LOBBY_TITLE, "sidebar", "lobby", "title");
+        register(ConfigurationContainer.PREVENT_SPAWNING_MOBS, "prevent-spawning-mobs");
+        register(ConfigurationContainer.SPAWNER_HOLOGRAMS, "spawner-holograms");
+        register(ConfigurationContainer.SPAWNER_DISABLE_MERGE, "spawner-disable-merge");
+        register(ConfigurationContainer.GAME_START_ITEMS_ENABLED, "game-start-items", "enabled");
+        register(ConfigurationContainer.PLAYER_RESPAWN_ITEMS_ENABLED, "player-respawn-items", "enabled");
+        register(ConfigurationContainer.SPAWNER_COUNTDOWN_HOLOGRAM,  "spawner-holograms-countdown");
+        register(ConfigurationContainer.DAMAGE_WHEN_PLAYER_IS_NOT_IN_ARENA, "damage-when-player-is-not-in-arena");
+        register(ConfigurationContainer.REMOVE_UNUSED_TARGET_BLOCKS, "remove-unused-target-blocks");
+        register(ConfigurationContainer.ALLOW_BLOCK_FALLING, "allow-block-falling");
+        register(ConfigurationContainer.HOLOGRAMS_ABOVE_BEDS, "holograms-above-bed");
+        register(ConfigurationContainer.ALLOW_SPECTATOR_JOIN, "allow-spectator-join");
+        register(ConfigurationContainer.STOP_TEAM_SPAWNERS_ON_DIE, "stop-team-spawners-on-die");
+        register(ConfigurationContainer.TARGET_BLOCK_RESPAWN_ANCHOR_FILL_ON_START, "target-block", "respawn-anchor", "fill-on-start");
+        register(ConfigurationContainer.TARGET_BLOCK_RESPAWN_ANCHOR_ENABLE_DECREASE, "target-block", "respawn-anchor", "enable-decrease");
+        register(ConfigurationContainer.TARGET_BLOCK_CAKE_DESTROY_BY_EATING, "target-block", "cake", "destroy-by-eating");
+        register(ConfigurationContainer.TARGET_BLOCK_ALLOW_DESTROYING_WITH_EXPLOSIONS, "target-block", "allow-destroying-with-explosions");
+        register(ConfigurationContainer.INVISIBLE_LOBBY_ON_GAME_START, "invisible-lobby-on-game-start");
+        register(ConfigurationContainer.ENABLE_BELOW_NAME_HEALTH_INDICATOR, "enable-below-name-health-indicator");
+        register(ConfigurationContainer.USE_CERTAIN_POPULAR_SERVER_LIKE_HOLOGRAMS_FOR_SPAWNERS, "use-certain-popular-server-like-holograms-for-spawners");
+        register(ConfigurationContainer.DEFAULT_SHOP_FILE);
     }
 
     @Override
-    public <T> Optional<Configuration<T>> get(String key, Class<T> type) {
+    public <T> Optional<Configuration<T>> get(ConfigurationKey<T> keyObject) {
+        var key = keyObject.getKey();
+        Class<T> type = keyObject.getType();
         if (registered.containsKey(key) && type.isAssignableFrom(registered.get(key))) {
             try {
-                return Optional.of(new GameConfiguration<>(type, this, key,
+                return Optional.of(new GameConfiguration<>(keyObject, this,
                         globalConfigKeys.containsKey(key) ? MainConfig.getInstance().node((Object[]) globalConfigKeys.get(key)).get(type) : null)
                 );
             } catch (SerializationException e) {
@@ -96,9 +107,13 @@ public class GameConfigurationContainer implements ConfigurationContainer {
     }
 
     @Override
-    public <T> boolean register(String key, Class<T> typeToBeSaved) {
-        if (key.contains(".") || key.contains(":")) {
-            return false;
+    public <T> boolean register(ConfigurationKey<T> keyObject) {
+        var key = keyObject.getKey();
+        var typeToBeSaved = keyObject.getType();
+        for (var k : key) {
+            if (k.contains(".") || k.contains(":")) {
+                return false;
+            }
         }
         if (!registered.containsKey(key)) {
             registered.put(key, typeToBeSaved);
@@ -108,17 +123,35 @@ public class GameConfigurationContainer implements ConfigurationContainer {
     }
 
     @Override
-    public List<String> getRegisteredKeys() {
-        return new ArrayList<>(registered.keySet());
+    public List<ConfigurationKey<?>> getRegisteredKeys() {
+        return registered.entrySet()
+                .stream()
+                .map(e -> ConfigurationKey.of(e.getValue(), e.getKey()))
+                .collect(Collectors.toList());
     }
 
-    public <T> void register(String key, Class<T> typeToBeSaved, String... globalKey) {
-        if (register(key, typeToBeSaved)) {
-            globalConfigKeys.put(key, globalKey);
+    public List<String> getJoinedRegisteredKeysForConfigCommand(Class<?> type) {
+        return registered.entrySet()
+                .stream()
+                .filter(e -> e.getValue() == type)
+                .map(e -> String.join(".", e.getKey()))
+                .collect(Collectors.toList());
+    }
+
+    public List<String> getJoinedRegisteredKeysForConfigCommand() {
+        return registered.keySet()
+                .stream()
+                .map(str -> String.join(".", str))
+                .collect(Collectors.toList());
+    }
+
+    public <T> void register(ConfigurationKey<T> key, String... globalKey) {
+        if (register(key)) {
+            globalConfigKeys.put(key.getKey(), globalKey);
         }
     }
 
-    public void update(String key, Object object) {
+    public void update(List<String> key, Object object) {
         try {
             remove(key);
             saved.node(key).set(object);
@@ -127,18 +160,18 @@ public class GameConfigurationContainer implements ConfigurationContainer {
         }
     }
 
-    public boolean has(String key) {return !saved.node(key).empty();}
+    public boolean has(List<String> key) {return !saved.node(key).empty();}
 
-    public <T> T getSaved(String key, Class<T> type) {
+    public <T> T getSaved(ConfigurationKey<T> key) {
         try {
-            return saved.node(key).get(type);
+            return saved.node(key.getKey()).get(key.getType());
         } catch (SerializationException e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    public void remove(String key) {
+    public void remove(List<String> key) {
         try {
             saved.node(key).set(null);
         } catch (SerializationException e) {
@@ -147,8 +180,8 @@ public class GameConfigurationContainer implements ConfigurationContainer {
     }
 
     @Override
-    public <T> T getOrDefault(String key, Class<T> type, T defaultObject) {
-        var opt = get(key, type);
+    public <T> T getOrDefault(ConfigurationKey<T> key, T defaultObject) {
+        var opt = get(key);
         if (opt.isEmpty()) {
             return defaultObject;
         } else {
@@ -156,24 +189,79 @@ public class GameConfigurationContainer implements ConfigurationContainer {
         }
     }
 
-    public Class<?> getType(String key) {
+    public Class<?> getType(List<String> key) {
         return registered.get(key);
     }
 
     public void applyNode(ConfigurationNode configurationNode) {
         saved.from(configurationNode);
 
+        // Migration of older keys (if some key is changed, please add new migrateOldAbsoluteKey; you can also add it multiple times to one key)
+        try {
+            // @formatter:off
+
+            new ConfigGenerator(null, configurationNode).start()
+                    .key(ConfigurationContainer.TEAM_JOIN_ITEM_ENABLED.getKey())
+                        .migrateOldAbsoluteKey("compass-enabled")
+                        .dontCreateDef()
+                    .key(ConfigurationContainer.JOIN_RANDOM_TEAM_AFTER_LOBBY.getKey())
+                        .migrateOldAbsoluteKey("join-randomly-after-lobby-timeout")
+                        .dontCreateDef()
+                    .key(ConfigurationContainer.JOIN_RANDOM_TEAM_ON_JOIN.getKey())
+                        .migrateOldAbsoluteKey("join-randomly-on-lobby-join")
+                        .dontCreateDef()
+                    .key(ConfigurationContainer.BOSSBAR_LOBBY_ENABLED.getKey())
+                        .migrateOldAbsoluteKey("lobbybossbar")
+                        .dontCreateDef()
+                    .key(ConfigurationContainer.BOSSBAR_GAME_ENABLED.getKey())
+                        .migrateOldAbsoluteKey("bossbar")
+                        .dontCreateDef()
+                    .key(ConfigurationContainer.SIDEBAR_GAME_ENABLED.getKey())
+                        .migrateOldAbsoluteKey("scoreboard")
+                        .dontCreateDef()
+                    .key(ConfigurationContainer.SIDEBAR_LOBBY_ENABLED.getKey())
+                        .migrateOldAbsoluteKey("lobbyscoreboard")
+                        .dontCreateDef()
+                    // these two keys are now children of their former names
+                    .key("game-start-items").moveIfAbsolute(n -> !n.virtual() && !n.isMap(), ConfigurationContainer.GAME_START_ITEMS_ENABLED.getKey())
+                    .key("player-respawn-items").moveIfAbsolute(n -> !n.virtual() && !n.isMap(), ConfigurationContainer.PLAYER_RESPAWN_ITEMS_ENABLED.getKey())
+                    .key(ConfigurationContainer.HOLOGRAMS_ABOVE_BEDS.getKey())
+                        .migrateOldAbsoluteKey("holo-above-bed")
+                        .dontCreateDef()
+                    .key(ConfigurationContainer.TARGET_BLOCK_RESPAWN_ANCHOR_FILL_ON_START.getKey())
+                        .migrateOldAbsoluteKey("anchor-auto-fill")
+                        .dontCreateDef()
+                    .key(ConfigurationContainer.TARGET_BLOCK_RESPAWN_ANCHOR_ENABLE_DECREASE.getKey())
+                        .migrateOldAbsoluteKey("anchor-decreasing")
+                        .dontCreateDef()
+                    .key(ConfigurationContainer.TARGET_BLOCK_CAKE_DESTROY_BY_EATING.getKey())
+                        .migrateOldAbsoluteKey("cake-target-block-eating")
+                        .dontCreateDef()
+                    .key(ConfigurationContainer.TARGET_BLOCK_ALLOW_DESTROYING_WITH_EXPLOSIONS.getKey())
+                        .migrateOldAbsoluteKey("target-block-explosions")
+                        .dontCreateDef()
+
+            ;
+
+
+            // @formatter:on
+        } catch (SerializationException ex) {
+            ex.printStackTrace();
+        }
+
         registered.forEach((key, aClass) -> {
-            var node = saved.node(key);
-            if (!node.empty()) {
-                var raw = node.raw();
-                if (raw instanceof CharSequence) {
-                    if ("true".equalsIgnoreCase(raw.toString())) {
-                        update(key, true);
-                    } else if ("false".equalsIgnoreCase(raw.toString())) {
-                        update(key, false);
-                    } else {
-                        remove(key);
+            if (aClass == Boolean.class) { // only do migrations for boolean types
+                var node = saved.node(key);
+                if (!node.empty()) {
+                    var raw = node.raw();
+                    if (raw instanceof CharSequence) {
+                        if ("true".equalsIgnoreCase(raw.toString())) {
+                            update(key, true);
+                        } else if ("false".equalsIgnoreCase(raw.toString())) {
+                            update(key, false);
+                        } else {
+                            remove(key);
+                        }
                     }
                 }
             }

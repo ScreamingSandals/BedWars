@@ -26,6 +26,8 @@ import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.lib.item.Item;
 import org.screamingsandals.lib.item.builder.ItemFactory;
 import org.screamingsandals.lib.plugin.ServiceManager;
+import org.screamingsandals.lib.spectator.Component;
+import org.screamingsandals.lib.spectator.mini.MiniMessageParser;
 import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.utils.annotations.methods.OnEnable;
 import org.screamingsandals.lib.utils.annotations.parameters.ConfigFile;
@@ -37,6 +39,7 @@ import org.spongepowered.configurate.serialize.SerializationException;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -80,10 +83,10 @@ public class MainConfig {
                 .key("jointeam-entity-show-name").defValue(true)
                 .key("friendlyfire").defValue(false)
                 .key("player-drops").defValue(true)
-                .key("join-randomly-after-lobby-timeout").defValue(false)
+                .key("join-random-team-after-lobby").migrateOld("join-randomly-after-lobby-timeout").defValue(false)
                 .key("prevent-killing-villagers").defValue(true)
-                .key("compass-enabled").defValue(true)
-                .key("join-randomly-on-lobby-join").defValue(false)
+                .key("team-join-item-enabled").migrateOld("compass-enabled").defValue(true)
+                .key("join-random-team-on-join").migrateOld("join-randomly-on-lobby-join").defValue(false)
                 .key("add-wool-to-inventory-on-join").defValue(true)
                 .key("prevent-spawning-mobs").defValue(true)
                 .key("spawner-holograms").defValue(true)
@@ -136,7 +139,7 @@ public class MainConfig {
                 })
                 .defValue(List::of)
                 .key("destroy-placed-blocks-by-explosion").defValue(true)
-                .key("holo-above-bed").defValue(true)
+                .key("holograms-above-bed").migrateOld("holo-above-bed").defValue(true)
                 .key("allow-spectator-join").defValue(false)
                 .section("disable-server-message")
                     .key("player-join")
@@ -179,22 +182,127 @@ public class MainConfig {
                     .key("enabled").migrateOldAbsoluteKey("farmBlocks", "enable").defValue(false)
                     .key("blocks").migrateOldAbsoluteKey("farmBlocks", "blocks").defValue(List::of)
                     .back()
-                .section("scoreboard")
-                    .key("enabled").migrateOld("enable").defValue(true)
-                    .key("title").defValue("§a%game%§r - %time%")
-                    .key("bedLost").defValue("§c\u2718")
-                    .key("anchorEmpty").defValue("§e\u2718")
-                    .key("bedExists").defValue("§a\u2714")
-                    .key("teamTitle").defValue("%bed%%color%%team%")
-                        .section("new-scoreboard")
-                            .key("enabled").migrateOldAbsoluteKey("experimental", "new-scoreboard-system", "enabled").defValue(false)
-                            .key("content").migrateOldAbsoluteKey("experimental", "new-scoreboard-system", "content").defValue(() -> List.of(
-                                    " ",
-                                    "%team_status%",
-                                    "",
-                                    "§6www.screamingsandals.org"
-                            ))
-                            .key("teamTitle").migrateOldAbsoluteKey("experimental", "new-scoreboard-system", "teamTitle").defValue("%bed%%color%%team% §7(%team_size%)")
+                .section("sidebar")
+                    .key("date-format").defValue("MM/dd/yy")
+                    .section("game")
+                        .key("enabled").migrateOldAbsoluteKey("scoreboard","enable").migrateOldAbsoluteKey("scoreboard","enabled").defValue(true)
+                        .key("legacy-sidebar")
+                            .migrateOldAbsoluteKey("experimental", "new-scoreboard-system", "enabled")
+                            .migrateOldAbsoluteKey("scoreboard", "new-scoreboard", "enabled")
+                            .remap(node -> {
+                                try {
+                                    node.set(!node.getBoolean(true));
+                                } catch (SerializationException ex) {
+                                    ex.printStackTrace();
+                                }
+                            }).defValue(false)
+                        .key("title").migrateOldAbsoluteKey("scoreboard", "title").remap(node -> {
+                            try {
+                                var str = node.getString();
+                                if (str != null) {
+                                    node.set(toMiniMessage(str)
+                                            // migrate placeholders to MiniMessage
+                                            .replace("%game%", "<game>")
+                                            .replace("%time%", "<time>")
+                                    );
+                                }
+                            } catch (SerializationException ex) {
+                                ex.printStackTrace();
+                            }
+                        }).defValue("<green><game><reset> - <time>")
+                        .section("team-prefixes")
+                            .key("target-block-lost").migrateOldAbsoluteKey("scoreboard", "bedLost").remap(this::toMiniMessage).defValue("<red>\u2718")
+                            .key("anchor-empty").migrateOldAbsoluteKey("scoreboard", "anchorEmpty").remap(this::toMiniMessage).defValue("<yellow>\u2718")
+                            .key("target-block-exists").migrateOldAbsoluteKey("scoreboard", "bedExists").remap(this::toMiniMessage).defValue("<green>\u2714")
+                            .back()
+                        .key("team-line").migrateOldAbsoluteKey("scoreboard", "teamTitle").remap(node -> {
+                            try {
+                                var str = node.getString();
+                                if (str != null) {
+                                    node.set(toMiniMessage(str)
+                                            // migrate old placeholders to MiniMessage
+                                            .replace("%bed%", "<target-block-prefix>")
+                                            .replace("%color%", "<team-color>")
+                                            .replace("%team%", "<team>")
+                                            .replace("%team_size%", "<team-size>")
+                                    );
+                                }
+                            } catch (SerializationException ex) {
+                                ex.printStackTrace();
+                            }
+                        }).defValue("<target-block-prefix><team-color><team> <gray>(<team-size>)")
+                        .key("content")
+                            .migrateOldAbsoluteKey("experimental", "new-scoreboard-system", "content")
+                            .migrateOldAbsoluteKey("scoreboard", "new-scoreboard", "content")
+                            .remap(node -> {
+                                try {
+                                    var list = node.getList(String.class);
+                                    if (list != null) {
+                                        node.set(null);
+                                        for (var str : list) {
+                                            node.appendListNode().set(toMiniMessage(str)
+                                                    // migrate old placeholders to MiniMessage
+                                                    .replace("%arena%", "<game>") // should be the same as placeholder in the title
+                                                    .replace("%players%", "<players>")
+                                                    .replace("%maxplayers%", "<max-players>")
+                                                    .replace("%time%", "<time>")
+                                                    .replace("%version%", "<version>")
+                                                    .replace("%date%", "<date>")
+                                                    .replace("%mode%", "<mode>")
+                                                    .replace("%team_status%", "<team-status>")
+                                            );
+                                        }
+                                    }
+                                } catch (SerializationException ex) {
+                                    ex.printStackTrace();
+                                }
+                            })
+                            .defValue(() -> List.of(
+                                " ",
+                                "<team-status>",
+                                "",
+                                "<gold>www.screamingsandals.org"
+                        ))
+                        .back()
+                    .section("lobby")
+                        .key("enabled").migrateOldAbsoluteKey("lobby-scoreboard", "enabled").defValue(true)
+                        .key("title")
+                            .migrateOldAbsoluteKey("lobby-scoreboard", "title")
+                            .remap(this::toMiniMessage)
+                            .defValue("<yellow>BEDWARS")
+                        .key("content")
+                            .migrateOldAbsoluteKey("lobby-scoreboard", "content")
+                            .remap(node -> {
+                                try {
+                                    var list = node.getList(String.class);
+                                    if (list != null) {
+                                        node.set(null);
+                                        for (var str : list) {
+                                            node.appendListNode().set(toMiniMessage(str)
+                                                    // migrate old placeholders to MiniMessage
+                                                    .replace("%arena%", "<game>") // should be the same as placeholder in the title
+                                                    .replace("%players%", "<players>")
+                                                    .replace("%maxplayers%", "<max-players>")
+                                                    .replace("%time%", "<time>")
+                                                    .replace("%version%", "<version>")
+                                                    .replace("%date%", "<date>")
+                                                    .replace("%mode%", "<mode>")
+                                                    .replace("%state%", "<state>")
+                                            );
+                                        }
+                                    }
+                                } catch (SerializationException ex) {
+                                    ex.printStackTrace();
+                                }
+                            })
+                            .defValue(() -> List.of(
+                                " ",
+                                "<white>Map: <dark_green><game>",
+                                "<white>Players: <dark_green><players><white>/<dark_green><max-players>",
+                                " ",
+                                "<white>Waiting ...",
+                                " "
+                        ))
                         .back()
                     .back()
                 .section("title")
@@ -406,18 +514,6 @@ public class MainConfig {
                     .key("beddestroy").defValue(Map::of)
                     .key("warppowdertick").defValue(Map::of)
                     .back()
-                .section("lobby-scoreboard")
-                    .key("enabled").defValue(true)
-                    .key("title").defValue("§eBEDWARS")
-                    .key("content").defValue(() -> List.of(
-                                " ",
-                                "§fMap: §2%arena%",
-                                "§fPlayers: §2%players%§f/§2%maxplayers%",
-                                " ",
-                                "§fWaiting ...",
-                                " "
-                        ))
-                    .back()
                 .section("statistics")
                     .key("enabled").defValue(true)
                     .key("type").defValue("yaml")
@@ -627,6 +723,34 @@ public class MainConfig {
         } catch (ConfigurateException e) {
             e.printStackTrace();
         }
+    }
+
+    public void toMiniMessage(ConfigurationNode node) {
+        try {
+            if (node.isList()) {
+                node.set(toMiniMessage(node.getList(String.class)));
+            } else {
+                node.set(toMiniMessage(node.getString()));
+            }
+        } catch (SerializationException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public String toMiniMessage(String legacy) {
+        if (legacy == null) {
+            return null;
+        }
+        return MiniMessageParser.INSTANCE.serialize(Component.fromLegacy(legacy));
+    }
+
+    public List<String> toMiniMessage(List<String> legacy) {
+        if (legacy == null) {
+            return null;
+        }
+        return legacy.stream()
+                .map(l -> MiniMessageParser.INSTANCE.serialize(Component.fromLegacy(l)))
+                .collect(Collectors.toList());
     }
 
     public Item readDefinedItem(String item, String def) {

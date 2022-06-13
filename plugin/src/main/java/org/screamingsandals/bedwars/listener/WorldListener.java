@@ -141,7 +141,7 @@ public class WorldListener {
                 if (game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) {
                     blockList.removeIf(block -> {
                         if (!game.isBlockAddedDuringGame(block.getLocation())) {
-                            if (game.getConfigurationContainer().getOrDefault(ConfigurationContainer.TARGET_BLOCK_EXPLOSIONS, Boolean.class, false)) {
+                            if (game.getConfigurationContainer().getOrDefault(ConfigurationContainer.TARGET_BLOCK_ALLOW_DESTROYING_WITH_EXPLOSIONS, false)) {
                                 for (var team : game.getActiveTeams()) {
                                     if (team.getTargetBlock().equals(block.getLocation())) {
                                         game.targetBlockExplode(team);
@@ -201,7 +201,7 @@ public class WorldListener {
         for (var game : GameManagerImpl.getInstance().getGames()) {
             if (game.getStatus() != GameStatus.DISABLED)
                 // prevent creature spawn everytime, not just in game
-                if (/*(game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) &&*/ game.getConfigurationContainer().getOrDefault(ConfigurationContainer.PREVENT_SPAWNING_MOBS, Boolean.class, false)) {
+                if (/*(game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) &&*/ game.getConfigurationContainer().getOrDefault(ConfigurationContainer.PREVENT_SPAWNING_MOBS, false)) {
                     if (ArenaUtils.isInArea(event.entity().getLocation(), game.getPos1(), game.getPos2())) {
                         event.cancelled(true);
                         return;
@@ -252,7 +252,7 @@ public class WorldListener {
             if (ArenaUtils.isInArea(event.block().getLocation(), game.getPos1(), game.getPos2())) {
                 if (game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) {
                     if (event.entity().getEntityType().is("FALLING_BLOCK")
-                            && game.getConfigurationContainer().getOrDefault(ConfigurationContainer.BLOCK_FALLING, Boolean.class, false)) {
+                            && game.getConfigurationContainer().getOrDefault(ConfigurationContainer.ALLOW_BLOCK_FALLING, false)) {
                         if (!event.block().getType().equals(event.to())) {
                             if (!game.isBlockAddedDuringGame(event.block().getLocation())) {
                                 if (!event.block().getType().isAir()) {

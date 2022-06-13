@@ -514,19 +514,6 @@ public class GameImpl implements Game {
 
         return game;
     }
-
-    public static String bedExistString() {
-        return MainConfig.getInstance().node("scoreboard", "bedExists").getString();
-    }
-
-    public static String bedLostString() {
-        return MainConfig.getInstance().node("scoreboard", "bedLost").getString();
-    }
-
-    public static String anchorEmptyString() {
-        return MainConfig.getInstance().node("scoreboard", "anchorEmpty").getString();
-    }
-
     public static boolean isBungeeEnabled() {
         return MainConfig.getInstance().node("bungee", "enabled").getBoolean();
     }
@@ -778,7 +765,7 @@ public class GameImpl implements Game {
                     }
                 }
                 return true;
-            } else if (configurationContainer.getOrDefault(ConfigurationContainer.CAKE_TARGET_BLOCK_EATING, Boolean.class, false) && block.getType().isSameType("cake")) {
+            } else if (configurationContainer.getOrDefault(ConfigurationContainer.TARGET_BLOCK_CAKE_DESTROY_BY_EATING, false) && block.getType().isSameType("cake")) {
                 return false; // when CAKES are in eating mode, don't allow to just break it
             } else {
                 if (getPlayerTeam(player).getTargetBlock().equals(loc)) {
@@ -990,11 +977,11 @@ public class GameImpl implements Game {
                 gamePlayer.invClean(); // temp fix for inventory issues?
                 SpawnEffects.spawnEffect(GameImpl.this, gamePlayer, "game-effects.lobbyjoin");
 
-                if (configurationContainer.getOrDefault(ConfigurationContainer.JOIN_RANDOM_TEAM_ON_JOIN, Boolean.class, false)) {
+                if (configurationContainer.getOrDefault(ConfigurationContainer.JOIN_RANDOM_TEAM_ON_JOIN, false)) {
                     joinRandomTeam(gamePlayer);
                 }
 
-                if (configurationContainer.getOrDefault(ConfigurationContainer.COMPASS, Boolean.class, false)) {
+                if (configurationContainer.getOrDefault(ConfigurationContainer.TEAM_JOIN_ITEM_ENABLED, false)) {
                     int compassPosition = MainConfig.getInstance().node("hotbar", "selector").getInt(0);
                     if (compassPosition >= 0 && compassPosition <= 8) {
                         var compass = MainConfig.getInstance()
@@ -1366,7 +1353,7 @@ public class GameImpl implements Game {
         }
 
         if ((status == GameStatus.RUNNING || status == GameStatus.GAME_END_CELEBRATING)
-                && !configurationContainer.getOrDefault(ConfigurationContainer.SPECTATOR_JOIN, Boolean.class, false)) {
+                && !configurationContainer.getOrDefault(ConfigurationContainer.ALLOW_SPECTATOR_JOIN, false)) {
             if (isBungeeEnabled()) {
                 BungeeUtils.movePlayerToBungeeServer(player, false);
                 BungeeUtils.sendPlayerBungeeMessage(player,
@@ -1553,7 +1540,7 @@ public class GameImpl implements Game {
                 .placeholder("maxplayers", teamForJoin.getMaxPlayers())
                 .send(player);
 
-        if (configurationContainer.getOrDefault(ConfigurationContainer.ADD_WOOL_TO_INVENTORY_ON_JOIN, Boolean.class, false)) {
+        if (configurationContainer.getOrDefault(ConfigurationContainer.ADD_WOOL_TO_INVENTORY_ON_JOIN, false)) {
             int colorPosition = MainConfig.getInstance().node("hotbar", "color").getInt(1);
             if (colorPosition >= 0 && colorPosition <= 8) {
                 var item = ItemFactory.build(teamForJoin.getColor().material1_13 + "_WOOL",
@@ -1563,7 +1550,7 @@ public class GameImpl implements Game {
             }
         }
 
-        if (configurationContainer.getOrDefault(ConfigurationContainer.COLORED_LEATHER_BY_TEAM_IN_LOBBY, Boolean.class, false)) {
+        if (configurationContainer.getOrDefault(ConfigurationContainer.COLORED_LEATHER_BY_TEAM_IN_LOBBY, false)) {
             var chestplate = ItemFactory.build("LEATHER_CHESTPLATE", builder ->
                     builder.color(teamForJoin.getColor().getLeatherColor())
             ).orElse(ItemFactory.getAir());
@@ -1616,7 +1603,7 @@ public class GameImpl implements Game {
         Debug.info(gamePlayer.getName() + " spawning as spectator");
         gamePlayer.setSpectator(true);
         gamePlayer.teleport(specSpawn, () -> {
-            if (!configurationContainer.getOrDefault(ConfigurationContainer.KEEP_INVENTORY, Boolean.class, false) || leaveItem) {
+            if (!configurationContainer.getOrDefault(ConfigurationContainer.KEEP_INVENTORY_ON_DEATH, false) || leaveItem) {
                 gamePlayer.invClean(); // temp fix for inventory issues?
             }
             gamePlayer.setAllowFlight(true);
@@ -1669,7 +1656,7 @@ public class GameImpl implements Game {
                     respawnProtection.runProtection();
                 }
 
-                if (configurationContainer.getOrDefault(ConfigurationContainer.ENABLE_PLAYER_RESPAWN_ITEMS, Boolean.class, false)) {
+                if (configurationContainer.getOrDefault(ConfigurationContainer.PLAYER_RESPAWN_ITEMS_ENABLED, false)) {
                     var playerRespawnItems = MainConfig.getInstance().node("player-respawn-items", "items")
                             .childrenList()
                             .stream()
@@ -1685,7 +1672,7 @@ public class GameImpl implements Game {
                 }
                 MiscUtils.giveItemsToPlayer(gamePlayer.getPermanentItemsPurchased(), gamePlayer, currentTeam.getColor());
 
-                if (configurationContainer.getOrDefault(ConfigurationContainer.KEEP_ARMOR, Boolean.class, false)) {
+                if (configurationContainer.getOrDefault(ConfigurationContainer.KEEP_ARMOR_ON_DEATH, false)) {
                     final var armorContents = gamePlayer.getArmorContents();
                     if (armorContents != null) {
                         gamePlayer.getPlayerInventory().setArmorContents(armorContents);
@@ -1725,7 +1712,7 @@ public class GameImpl implements Game {
             previousStatus = GameStatus.WAITING;
             var title = Message.of(LangKeys.IN_GAME_BOSSBAR_WAITING).asComponent();
             statusbar.setProgress(0);
-            statusbar.setVisible(configurationContainer.getOrDefault(ConfigurationContainer.LOBBY_BOSSBAR, Boolean.class, false));
+            statusbar.setVisible(configurationContainer.getOrDefault(ConfigurationContainer.BOSSBAR_LOBBY_ENABLED, false));
             for (BedWarsPlayer p : players) {
                 statusbar.addPlayer(p);
             }
@@ -1770,7 +1757,7 @@ public class GameImpl implements Game {
             }
 
             if (players.size() >= getMinPlayers()
-                    && (configurationContainer.getOrDefault(ConfigurationContainer.JOIN_RANDOM_TEAM_AFTER_LOBBY, Boolean.class, false) || teamsInGame.size() > 1)) {
+                    && (configurationContainer.getOrDefault(ConfigurationContainer.JOIN_RANDOM_TEAM_AFTER_LOBBY, false) || teamsInGame.size() > 1)) {
                 if (countdown == 0) {
                     nextCountdown = gameTime;
                     nextStatus = GameStatus.RUNNING;
@@ -1841,7 +1828,7 @@ public class GameImpl implements Game {
                     preparing = false;
                 } else {
 
-                    if (configurationContainer.getOrDefault(ConfigurationContainer.JOIN_RANDOM_TEAM_AFTER_LOBBY, Boolean.class, false)) {
+                    if (configurationContainer.getOrDefault(ConfigurationContainer.JOIN_RANDOM_TEAM_AFTER_LOBBY, false)) {
                         for (BedWarsPlayer player : players) {
                             if (getPlayerTeam(player) == null) {
                                 joinRandomTeam(player);
@@ -1850,7 +1837,7 @@ public class GameImpl implements Game {
                     }
 
                     statusbar.setProgress(0);
-                    statusbar.setVisible(configurationContainer.getOrDefault(ConfigurationContainer.GAME_BOSSBAR, Boolean.class, false));
+                    statusbar.setVisible(configurationContainer.getOrDefault(ConfigurationContainer.BOSSBAR_GAME_ENABLED, false));
                     if (statusbar instanceof BossBarImpl) {
                         var bossbar = (BossBarImpl) statusbar;
                         bossbar.setMessage(Message.of(LangKeys.IN_GAME_BOSSBAR_RUNNING).asComponent());
@@ -1920,7 +1907,7 @@ public class GameImpl implements Game {
                         } else {
                             player.teleport(team.getTeamSpawn(), () -> {
                                 player.setGameMode(GameModeHolder.of("survival"));
-                                if (configurationContainer.getOrDefault(ConfigurationContainer.ENABLE_GAME_START_ITEMS, Boolean.class, false)) {
+                                if (configurationContainer.getOrDefault(ConfigurationContainer.GAME_START_ITEMS_ENABLED, false)) {
                                     var givedGameStartItems = MainConfig.getInstance().node("game-start-items", "items")
                                             .childrenList()
                                             .stream()
@@ -1947,7 +1934,7 @@ public class GameImpl implements Game {
                         }
                     }
 
-                    if (configurationContainer.getOrDefault(ConfigurationContainer.REMOVE_UNUSED_TARGET_BLOCKS, Boolean.class, false)) {
+                    if (configurationContainer.getOrDefault(ConfigurationContainer.REMOVE_UNUSED_TARGET_BLOCKS, false)) {
                         for (TeamImpl team : teams) {
                             if (!teamsInGame.contains(team)) {
                                 LocationHolder loc = team.getTargetBlock();
@@ -1979,7 +1966,7 @@ public class GameImpl implements Game {
                     EventManager.fire(statusE);
                     Debug.info(name + ": game prepared");
 
-                    if (configurationContainer.getOrDefault(ConfigurationContainer.HEALTH_INDICATOR, Boolean.class, false)) {
+                    if (configurationContainer.getOrDefault(ConfigurationContainer.ENABLE_BELOW_NAME_HEALTH_INDICATOR, false)) {
                         healthIndicator = HealthIndicator.of()
                                 .symbol(Component.text("\u2665", Color.RED))
                                 .show()

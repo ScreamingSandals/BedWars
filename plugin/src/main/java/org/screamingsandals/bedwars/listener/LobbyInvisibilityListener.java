@@ -32,7 +32,7 @@ public class LobbyInvisibilityListener {
     @OnEvent
     public void onGameStarted(GameStartedEventImpl event) {
         final var game = event.getGame();
-        if (game.getConfigurationContainer().getOrDefault(ConfigurationContainer.INVISIBLE_LOBBY_ON_GAME_START, Boolean.class, true)) {
+        if (game.getConfigurationContainer().getOrDefault(ConfigurationContainer.INVISIBLE_LOBBY_ON_GAME_START, true)) {
             if (game.getLobbyPos1() != null && game.getLobbyPos2() != null) {
                 MiscUtils.getLocationsBetween(game.getLobbyPos1(), game.getLobbyPos2()).forEach(loc -> {
                     if (!loc.getBlock().getType().isAir()) {

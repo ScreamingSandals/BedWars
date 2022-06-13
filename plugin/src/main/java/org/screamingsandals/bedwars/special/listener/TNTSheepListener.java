@@ -99,7 +99,7 @@ public class TNTSheepListener {
             if (PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
                 var gamePlayer = PlayerManagerImpl.getInstance().getPlayer(player).orElseThrow();
                 var game = gamePlayer.getGame();
-                if (game != null && event.damager().getEntityType().is("minecraft:tnt") && !game.getConfigurationContainer().getOrDefault(ConfigurationContainer.FRIENDLY_FIRE, Boolean.class, false)) {
+                if (game != null && event.damager().getEntityType().is("minecraft:tnt") && !game.getConfigurationContainer().getOrDefault(ConfigurationContainer.FRIENDLYFIRE, false)) {
                     var tnt = event.damager();
                     for (var sheep : game.getActiveSpecialItems(TNTSheepImpl.class)) {
                         if (tnt.equals(sheep.getTnt())) {

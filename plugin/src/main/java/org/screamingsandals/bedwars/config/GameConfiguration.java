@@ -21,37 +21,37 @@ package org.screamingsandals.bedwars.config;
 
 import lombok.AllArgsConstructor;
 import org.screamingsandals.bedwars.api.config.Configuration;
+import org.screamingsandals.bedwars.api.config.ConfigurationKey;
 
 @AllArgsConstructor
 public class GameConfiguration<T> implements Configuration<T> {
-    private final Class<T> type;
+    private final ConfigurationKey<T> key;
     private final GameConfigurationContainer configurationContainer;
-    private final String key;
     private final T implicitValue;
 
     @Override
     public T get() {
         if (!isSet()) {
             if (configurationContainer.getParentContainer() != null) {
-                return configurationContainer.getParentContainer().getOrDefault(key, type, implicitValue);
+                return configurationContainer.getParentContainer().getOrDefault(key, implicitValue);
             }
             return implicitValue;
         }
-        return configurationContainer.getSaved(key, type);
+        return configurationContainer.getSaved(key);
     }
 
     @Override
     public boolean isSet() {
-        return configurationContainer.has(key);
+        return configurationContainer.has(key.getKey());
     }
 
     @Override
     public void set(T value) {
-        configurationContainer.update(key, value);
+        configurationContainer.update(key.getKey(), value);
     }
 
     @Override
     public void clear() {
-        configurationContainer.remove(key);
+        configurationContainer.remove(key.getKey());
     }
 }

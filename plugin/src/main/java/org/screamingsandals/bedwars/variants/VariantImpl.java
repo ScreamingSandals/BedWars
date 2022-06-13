@@ -112,12 +112,12 @@ public class VariantImpl implements Variant {
                 variant.defaultItemSpawnerTypesIncluded = true;
             }
 
-            var lobbyScoreboardNode = configMap.node("lobby-scoreboard");
+            var lobbyScoreboardNode = configMap.node("config", "sidebar", "lobby", "content");
             if (!lobbyScoreboardNode.empty() && lobbyScoreboardNode.isMap()) {
                 variant.lobbyScoreboard = lobbyScoreboardNode;
             }
 
-            var gameScoreboardNode = configMap.node("game-scoreboard");
+            var gameScoreboardNode = configMap.node("config", "sidebar", "game", "content");
             if (!gameScoreboardNode.empty() && gameScoreboardNode.isMap()) {
                 variant.gameScoreboard = gameScoreboardNode;
             }

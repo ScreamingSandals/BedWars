@@ -27,7 +27,8 @@ import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.TeamImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.listener.Player116ListenerUtils;
-import org.screamingsandals.bedwars.utils.MiscUtils;
+import org.screamingsandals.bedwars.player.BedWarsPlayer;
+import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.packet.SClientboundSetPlayerTeamPacket;
 import org.screamingsandals.lib.player.PlayerWrapper;
@@ -44,7 +45,6 @@ import org.spongepowered.configurate.ConfigurationNode;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalAccessor;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -56,33 +56,32 @@ public class ScreamingScoreboard {
     private ScoreSidebar scoreboard;
     private TeamedSidebar<?> teamedSidebar = sidebar;
     private final TaskerTask task;
-    private final ConfigurationNode lobbyScoreboardNode;
     private final ConfigurationNode gameScoreboardNode;
 
     public ScreamingScoreboard(GameImpl game) {
         this.game = game;
         var variant = game.getGameVariant();
-        lobbyScoreboardNode = variant != null && variant.getLobbyScoreboard() != null ? variant.getLobbyScoreboard() : MainConfig.getInstance().node("lobby-scoreboard");
-        gameScoreboardNode = variant != null && variant.getGameScoreboard() != null ? variant.getGameScoreboard() : MainConfig.getInstance().node("scoreboard");
-        if (game.getConfigurationContainer().getOrDefault(ConfigurationContainer.LOBBY_SCOREBOARD, Boolean.class, false)) {
+        var lobbyScoreboardNode = variant != null && variant.getLobbyScoreboard() != null ? variant.getLobbyScoreboard() : MainConfig.getInstance().node("sidebar", "lobby", "content");
+        gameScoreboardNode = variant != null && variant.getGameScoreboard() != null ? variant.getGameScoreboard() : MainConfig.getInstance().node("sidebar", "game", "content");
+        if (game.getConfigurationContainer().getOrDefault(ConfigurationContainer.SIDEBAR_LOBBY_ENABLED, false)) {
             this.sidebar
-                    .title(Component.fromLegacy(lobbyScoreboardNode.node("title").getString("§eBEDWARS")));
+                    .title(Component.fromMiniMessage(game.getConfigurationContainer().getOrDefault(ConfigurationContainer.SIDEBAR_LOBBY_TITLE, "<yellow>BEDWARS")));
             lobbyScoreboardNode.node("content")
                     .childrenList()
                     .stream()
                     .map(ConfigurationNode::getString)
                     .filter(Objects::nonNull)
-                    .map(message -> Message.ofPlainText(message)
-                            .placeholder("arena", game.getDisplayNameComponent())
+                    .map(message -> Message.ofRichText(message)
+                            .placeholder("game", game.getDisplayNameComponent())
                             .placeholder("players", () -> Component.text(game.countConnectedPlayers()))
-                            .placeholder("maxplayers", game.getMaxPlayers())
+                            .placeholder("max-players", game.getMaxPlayers())
                             .placeholder("time", () -> Component.text(game.getFormattedTimeLeft()))
                             .placeholder("version", VersionInfo.VERSION)
-                            .placeholder("date", getFormattedDate(lobbyScoreboardNode.node("date-format")))
+                            .placeholder("date", getFormattedDate(game.getConfigurationContainer().getOrDefault(ConfigurationContainer.SIDEBAR_DATE_FORMAT, "date-format")))
                             .placeholder("mode", checkMode())
                             .placeholder("state", sender -> {
                                 if (game.countConnectedPlayers() >= game.getMinPlayers() && (game.countActiveTeams() > 1
-                                        || game.getConfigurationContainer().getOrDefault(ConfigurationContainer.JOIN_RANDOM_TEAM_AFTER_LOBBY, Boolean.class, false))) {
+                                        || game.getConfigurationContainer().getOrDefault(ConfigurationContainer.JOIN_RANDOM_TEAM_AFTER_LOBBY, false))) {
                                     var seconds = game.getTimeLeft();
                                     return Message.of(LangKeys.IN_GAME_SCOREBOARD_STATE_COUNTDOWN)
                                             .placeholder("countdown", seconds)
@@ -108,40 +107,40 @@ public class ScreamingScoreboard {
     private void switchToRunning() {
         sidebar.setLines(List.of());
         sidebar.title(
-                Message.ofPlainText(gameScoreboardNode.node("title").getString(""))
+                Message.ofRichText(game.getConfigurationContainer().getOrDefault(ConfigurationContainer.SIDEBAR_GAME_TITLE, "<yellow>BEDWARS"))
                         .placeholder("game", game.getDisplayNameComponent())
                         .placeholder("time", () -> Component.text(game.getFormattedTimeLeft()))
         );
 
         final var msgs = new ArrayList<Message>();
         game.getActiveTeams().forEach(team ->
-                msgs.add(Message.ofPlainText(() ->
-                                List.of(formatScoreboardTeam(team,
-                                        !team.isTargetBlockIntact(),
-                                        team.isTargetBlockIntact()
-                                                && team.getTargetBlock().getBlock().getType().isSameType("respawn_anchor")
-                                                && Player116ListenerUtils.isAnchorEmpty(team.getTargetBlock().getBlock()))
+                msgs.add(formatScoreboardTeam(
+                                team,
+                                !team.isTargetBlockIntact(),
+                                team.isTargetBlockIntact()
+                                        && team.getTargetBlock().getBlock().getType().isSameType("respawn_anchor")
+                                        && Player116ListenerUtils.isAnchorEmpty(team.getTargetBlock().getBlock()
                                 )
                         )
                 )
         );
 
-        List<String> content = gameScoreboardNode.node("new-scoreboard", "content")
+        List<String> content = gameScoreboardNode
                 .childrenList().stream().map(ConfigurationNode::getString).collect(Collectors.toList());
 
         content.forEach(line -> {
-            if (line.trim().equalsIgnoreCase("%team_status%")) {
+            if (line.trim().equalsIgnoreCase("<team-status>")) {
                 msgs.forEach(sidebar::bottomLine);
                 return;
             }
             sidebar.bottomLine(
-                    Message.ofPlainText(line)
-                            .placeholder("arena", game.getDisplayNameComponent())
+                    Message.ofRichText(line)
+                            .placeholder("game", game.getDisplayNameComponent())
                             .placeholder("players", () -> Component.text(game.countConnectedPlayers()))
-                            .placeholder("maxplayers", game.getMaxPlayers())
+                            .placeholder("max-players", game.getMaxPlayers())
                             .placeholder("time", () -> Component.text(game.getFormattedTimeLeft()))
                             .placeholder("version", VersionInfo.VERSION)
-                            .placeholder("date", getFormattedDate(lobbyScoreboardNode.node("date-format")))
+                            .placeholder("date", getFormattedDate(game.getConfigurationContainer().getOrDefault(ConfigurationContainer.SIDEBAR_DATE_FORMAT, "date-format")))
                             .placeholder("mode", checkMode())
             );
         });
@@ -157,7 +156,7 @@ public class ScreamingScoreboard {
         sidebar = null;
         this.teamedSidebar = this.scoreboard = scoreboard;
         scoreboard.title(
-                Message.ofPlainText(gameScoreboardNode.node("title").getString(""))
+                Message.ofRichText(game.getConfigurationContainer().getOrDefault(ConfigurationContainer.SIDEBAR_GAME_TITLE, "<yellow>BEDWARS"))
                         .placeholder("game", game.getDisplayNameComponent())
                         .placeholder("time", () -> Component.text(game.getFormattedTimeLeft()))
         );
@@ -177,8 +176,8 @@ public class ScreamingScoreboard {
         }
 
         if (game.getStatus() == GameStatus.RUNNING && status != GameStatus.RUNNING) {
-            if (game.getConfigurationContainer().getOrDefault(ConfigurationContainer.GAME_SCOREBOARD, Boolean.class, false)) {
-                if (gameScoreboardNode.node("new-scoreboard", "enabled").getBoolean(false)) {
+            if (game.getConfigurationContainer().getOrDefault(ConfigurationContainer.SIDEBAR_GAME_ENABLED, false)) {
+                if (!game.getConfigurationContainer().getOrDefault(ConfigurationContainer.SIDEBAR_GAME_LEGACY_SIDEBAR, false)) {
                     switchToRunning();
                 } else {
                     switchToRunningOld();
@@ -193,7 +192,7 @@ public class ScreamingScoreboard {
             if (teamedSidebar.getTeam(team.getName()).isEmpty()) {
                 teamedSidebar.team(team.getName())
                         .color(SClientboundSetPlayerTeamPacket.TeamColor.valueOf(Color.nearestNamedTo(team.getColor().getTextColor()).toString().toUpperCase())) // TODO: a better way
-                        .friendlyFire(game.getConfigurationContainer().getOrDefault(ConfigurationContainer.FRIENDLY_FIRE, Boolean.class, false));
+                        .friendlyFire(game.getConfigurationContainer().getOrDefault(ConfigurationContainer.FRIENDLYFIRE, false));
             }
             var sidebarTeam = teamedSidebar.getTeam(team.getName()).orElseThrow();
 
@@ -211,30 +210,33 @@ public class ScreamingScoreboard {
         });
     }
 
-    private String formatScoreboardTeam(TeamImpl team, boolean destroy, boolean empty) {
+    private Message formatScoreboardTeam(TeamImpl team, boolean destroy, boolean empty) {
         if (team == null) {
-            return "";
+            return null;
         }
 
-        return gameScoreboardNode.node("new-scoreboard", "teamTitle").getString("")
-                .replace("%team_size%", String.valueOf(team.countConnectedPlayers()))
-                .replace("%color%", MiscUtils.toLegacyColorCode(team.getColor().getTextColor()))
-                .replace("%team%", team.getName())
-                .replace("%bed%", destroy ? GameImpl.bedLostString() : (empty ? GameImpl.anchorEmptyString() : GameImpl.bedExistString())); // TODO: rewrite to Message and implement YOU
-    }
-
-    private Component formatScoreboardTeamOld(TeamImpl team, boolean destroy, boolean empty) {
-        return Component.fromLegacy(
-                gameScoreboardNode.node("teamTitle").getString("%bed%%color%%team%")
-                        .replace("%color%", MiscUtils.toLegacyColorCode(team.getColor().getTextColor()))
-                        .replace("%team%", team.getName())
-                        .replace("%bed%", destroy ? GameImpl.bedLostString() : (empty ? GameImpl.anchorEmptyString() : GameImpl.bedExistString()))
-        );
+        return Message.ofRichText(game.getConfigurationContainer().getOrDefault(ConfigurationContainer.SIDEBAR_GAME_TEAM_LINE, "<yellow>BEDWARS"))
+                .earlyPlaceholder("team-color", "<color:" + team.getColor().getTextColor().toString() + ">") // TODO: replace this sin
+                .placeholder("team-size", team.countConnectedPlayers())
+                .placeholder("team", team.getName())
+                .placeholder("target-block-prefix", game.getConfigurationContainer().getOrDefault(destroy ? ConfigurationContainer.SIDEBAR_GAME_TEAM_PREFIXES_TARGET_BLOCK_LOST : (empty ? ConfigurationContainer.SIDEBAR_GAME_TEAM_PREFIXES_ANCHOR_EMPTY : ConfigurationContainer.SIDEBAR_GAME_TEAM_PREFIXES_TARGET_BLOCK_EXISTS), ""))
+                .placeholder("you", sender -> {
+                    if (sender instanceof PlayerWrapper) { // legacy scoreboard means sender is null
+                        var player = sender.as(PlayerWrapper.class);
+                        if (PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
+                            var bwPlayer = player.as(BedWarsPlayer.class);
+                            if (team.isPlayerInTeam(bwPlayer)) {
+                                return Component.space().withAppendix(Message.of(LangKeys.IN_GAME_SCOREBOARD_YOU).asComponent(sender));
+                            }
+                        }
+                    }
+                    return Component.empty();
+                });
     }
 
     private void updateScoreboard() {
         game.getActiveTeams().forEach(team -> {
-            scoreboard.entity(team.getName(), formatScoreboardTeamOld(team, !team.isTargetBlockIntact(), team.isTargetBlockIntact() && team.getTargetBlock().getBlock().getType().isSameType("respawn_anchor") && Player116ListenerUtils.isAnchorEmpty(team.getTargetBlock().getBlock())));
+            scoreboard.entity(team.getName(), formatScoreboardTeam(team, !team.isTargetBlockIntact(), team.isTargetBlockIntact() && team.getTargetBlock().getBlock().getType().isSameType("respawn_anchor") && Player116ListenerUtils.isAnchorEmpty(team.getTargetBlock().getBlock())).asComponent());
             scoreboard.score(team.getName(), team.countConnectedPlayers());
         });
     }
@@ -252,9 +254,9 @@ public class ScreamingScoreboard {
         teamedSidebar.removeViewer(player);
     }
 
-    public String getFormattedDate(ConfigurationNode format) {
+    public String getFormattedDate(String format) {
         try {
-            return new SimpleDateFormat(format.getString("MM/dd/yy")).format(new Date());
+            return new SimpleDateFormat(format).format(new Date());
         } catch (Throwable ignored) {
             return DateTimeFormatter.ISO_DATE.format(LocalDate.now());
         }

@@ -32,78 +32,98 @@ import java.util.Optional;
 @ApiStatus.NonExtendable
 public interface ConfigurationContainer {
 
-    String COMPASS = "compass-enabled";
-    String JOIN_RANDOM_TEAM_AFTER_LOBBY = "join-randomly-after-lobby-timeout";
-    String JOIN_RANDOM_TEAM_ON_JOIN = "join-randomly-on-lobby-join";
-    String ADD_WOOL_TO_INVENTORY_ON_JOIN = "add-wool-to-inventory-on-join";
-    String PROTECT_SHOP = "prevent-killing-villagers";
-    String PLAYER_DROPS = "player-drops";
-    String FRIENDLY_FIRE = "friendlyfire";
-    String COLORED_LEATHER_BY_TEAM_IN_LOBBY = "in-lobby-colored-leather-by-team";
-    String KEEP_INVENTORY = "keep-inventory-on-death";
-    String KEEP_ARMOR = "keep-armor-on-death";
-    String CRAFTING = "allow-crafting";
-    String LOBBY_BOSSBAR = "lobbybossbar";
-    String GAME_BOSSBAR = "bossbar";
-    String GAME_SCOREBOARD = "scoreboard";
-    String LOBBY_SCOREBOARD = "lobbyscoreboard";
-    String PREVENT_SPAWNING_MOBS = "prevent-spawning-mobs";
-    String SPAWNER_HOLOGRAMS = "spawner-holograms";
-    String SPAWNER_DISABLE_MERGE = "spawner-disable-merge";
-    String ENABLE_GAME_START_ITEMS = "game-start-items";
-    String ENABLE_PLAYER_RESPAWN_ITEMS = "player-respawn-items";
-    String SPAWNER_COUNTDOWN_HOLOGRAM = "spawner-holograms-countdown";
-    String DAMAGE_WHEN_PLAYER_IS_NOT_IN_ARENA = "damage-when-player-is-not-in-arena";
-    String REMOVE_UNUSED_TARGET_BLOCKS = "remove-unused-target-blocks";
-    String BLOCK_FALLING = "allow-block-falling";
-    String HOLOGRAMS_ABOVE_BEDS = "holo-above-bed";
-    String SPECTATOR_JOIN = "allow-spectator-join";
-    String STOP_TEAM_SPAWNERS_ON_DIE = "stop-team-spawners-on-die";
-    String ANCHOR_AUTO_FILL = "anchor-auto-fill";
-    String ANCHOR_DECREASING = "anchor-decreasing";
-    String CAKE_TARGET_BLOCK_EATING = "cake-target-block-eating";
-    String TARGET_BLOCK_EXPLOSIONS = "target-block-explosions";
-    String INVISIBLE_LOBBY_ON_GAME_START = "invisible-lobby-on-game-start";
-    String HEALTH_INDICATOR = "health-indicator";
-    String CERTAIN_POPULAR_SERVER_HOLOGRAMS = "certain-popular-server-holograms";
+    ConfigurationKey<Boolean> TEAM_JOIN_ITEM_ENABLED = ConfigurationKey.of(Boolean.class, "team-join-item-enabled");
+    ConfigurationKey<Boolean> JOIN_RANDOM_TEAM_AFTER_LOBBY = ConfigurationKey.of(Boolean.class, "join-random-team-after-lobby");
+    ConfigurationKey<Boolean> JOIN_RANDOM_TEAM_ON_JOIN = ConfigurationKey.of(Boolean.class, "join-random-team-on-join");
+    ConfigurationKey<Boolean> ADD_WOOL_TO_INVENTORY_ON_JOIN = ConfigurationKey.of(Boolean.class, "add-wool-to-inventory-on-join");
+    ConfigurationKey<Boolean> PREVENT_KILLING_VILLAGERS = ConfigurationKey.of(Boolean.class, "prevent-killing-villagers");
+    ConfigurationKey<Boolean> PLAYER_DROPS = ConfigurationKey.of(Boolean.class, "player-drops");
+    ConfigurationKey<Boolean> FRIENDLYFIRE = ConfigurationKey.of(Boolean.class, "friendlyfire");
+    ConfigurationKey<Boolean> COLORED_LEATHER_BY_TEAM_IN_LOBBY = ConfigurationKey.of(Boolean.class, "in-lobby-colored-leather-by-team");
+    ConfigurationKey<Boolean> KEEP_INVENTORY_ON_DEATH = ConfigurationKey.of(Boolean.class, "keep-inventory-on-death");
+    ConfigurationKey<Boolean> KEEP_ARMOR_ON_DEATH = ConfigurationKey.of(Boolean.class, "keep-armor-on-death");
+    ConfigurationKey<Boolean> ALLOW_CRAFTING = ConfigurationKey.of(Boolean.class, "allow-crafting");
+    ConfigurationKey<Boolean> PREVENT_SPAWNING_MOBS = ConfigurationKey.of(Boolean.class, "prevent-spawning-mobs");
+    ConfigurationKey<Boolean> SPAWNER_HOLOGRAMS = ConfigurationKey.of(Boolean.class, "spawner-holograms");
+    ConfigurationKey<Boolean> SPAWNER_DISABLE_MERGE = ConfigurationKey.of(Boolean.class, "spawner-disable-merge");
+    ConfigurationKey<Boolean> SPAWNER_COUNTDOWN_HOLOGRAM = ConfigurationKey.of(Boolean.class, "spawner-holograms-countdown");
+    ConfigurationKey<Boolean> DAMAGE_WHEN_PLAYER_IS_NOT_IN_ARENA = ConfigurationKey.of(Boolean.class, "damage-when-player-is-not-in-arena");
+    ConfigurationKey<Boolean> REMOVE_UNUSED_TARGET_BLOCKS = ConfigurationKey.of(Boolean.class, "remove-unused-target-blocks");
+    ConfigurationKey<Boolean> ALLOW_BLOCK_FALLING = ConfigurationKey.of(Boolean.class, "allow-block-falling");
+    ConfigurationKey<Boolean> HOLOGRAMS_ABOVE_BEDS = ConfigurationKey.of(Boolean.class, "holograms-above-bed");
+    ConfigurationKey<Boolean> ALLOW_SPECTATOR_JOIN = ConfigurationKey.of(Boolean.class, "allow-spectator-join");
+    ConfigurationKey<Boolean> STOP_TEAM_SPAWNERS_ON_DIE = ConfigurationKey.of(Boolean.class, "stop-team-spawners-on-die");
+    ConfigurationKey<Boolean> INVISIBLE_LOBBY_ON_GAME_START = ConfigurationKey.of(Boolean.class, "invisible-lobby-on-game-start");
+    ConfigurationKey<Boolean> ENABLE_BELOW_NAME_HEALTH_INDICATOR = ConfigurationKey.of(Boolean.class, "enable-below-name-health-indicator");
+    ConfigurationKey<Boolean> USE_CERTAIN_POPULAR_SERVER_LIKE_HOLOGRAMS_FOR_SPAWNERS = ConfigurationKey.of(Boolean.class, "use-certain-popular-server-like-holograms-for-spawners");
+    
+    ConfigurationKey<Boolean> BOSSBAR_LOBBY_ENABLED = ConfigurationKey.of(Boolean.class, "bossbar", "lobby", "enabled");
+    ConfigurationKey<Boolean> BOSSBAR_GAME_ENABLED = ConfigurationKey.of(Boolean.class, "bossbar", "game", "enabled");
 
-    String DEFAULT_SHOP_FILE = "default-shop-file";
+    ConfigurationKey<String> SIDEBAR_DATE_FORMAT = ConfigurationKey.of(String.class, "sidebar", "date-format");
+    ConfigurationKey<Boolean> SIDEBAR_GAME_ENABLED = ConfigurationKey.of(Boolean.class, "sidebar", "game", "enabled");
+    ConfigurationKey<Boolean> SIDEBAR_GAME_LEGACY_SIDEBAR = ConfigurationKey.of(Boolean.class, "sidebar", "game", "legacy-sidebar");
+    ConfigurationKey<String> SIDEBAR_GAME_TITLE = ConfigurationKey.of(String.class, "sidebar", "game", "title");
+    ConfigurationKey<String> SIDEBAR_GAME_TEAM_PREFIXES_TARGET_BLOCK_LOST = ConfigurationKey.of(String.class, "sidebar", "game", "team-prefixes", "target-block-lost");
+    ConfigurationKey<String> SIDEBAR_GAME_TEAM_PREFIXES_ANCHOR_EMPTY = ConfigurationKey.of(String.class, "sidebar", "game", "team-prefixes", "anchor-empty");
+    ConfigurationKey<String> SIDEBAR_GAME_TEAM_PREFIXES_TARGET_BLOCK_EXISTS = ConfigurationKey.of(String.class, "sidebar", "game", "team-prefixes", "target-block-exists");
+    ConfigurationKey<String> SIDEBAR_GAME_TEAM_LINE = ConfigurationKey.of(String.class, "sidebar", "game", "team-line");
+    // TODO: List of Strings SIDEBAR_GAME_CONTENT "sidebar", "game", "content"
+    ConfigurationKey<Boolean> SIDEBAR_LOBBY_ENABLED = ConfigurationKey.of(Boolean.class, "sidebar", "lobby", "enabled");
+    ConfigurationKey<String> SIDEBAR_LOBBY_TITLE = ConfigurationKey.of(String.class, "sidebar", "lobby", "title");
+    // TODO: List of Strings SIDEBAR_LOBBY_CONTENT "sidebar", "lobby", "content"
+
+    ConfigurationKey<Boolean> GAME_START_ITEMS_ENABLED = ConfigurationKey.of(Boolean.class, "game-start-items", "enabled");
+    ConfigurationKey<Boolean> PLAYER_RESPAWN_ITEMS_ENABLED = ConfigurationKey.of(Boolean.class, "player-respawn-items", "enabled");
+
+    ConfigurationKey<Boolean> TARGET_BLOCK_RESPAWN_ANCHOR_FILL_ON_START = ConfigurationKey.of(Boolean.class, "target-block", "respawn-anchor", "fill-on-start");
+    ConfigurationKey<Boolean> TARGET_BLOCK_RESPAWN_ANCHOR_ENABLE_DECREASE = ConfigurationKey.of(Boolean.class, "target-block", "respawn-anchor", "enable-decrease");
+    ConfigurationKey<Boolean> TARGET_BLOCK_CAKE_DESTROY_BY_EATING = ConfigurationKey.of(Boolean.class, "target-block", "cake", "destroy-by-eating");
+    ConfigurationKey<Boolean> TARGET_BLOCK_ALLOW_DESTROYING_WITH_EXPLOSIONS = ConfigurationKey.of(Boolean.class, "target-block", "allow-destroying-with-explosions");
+
+    ConfigurationKey<String> DEFAULT_SHOP_FILE = ConfigurationKey.of(String.class, "default-shop-file");
 
     /**
      * Gets configuration from the key
      *
      * @param key Key of the configuration
-     * @param type Type of the configuration
      * @return configuration or empty optional
+     * @since 0.3.0
      */
-    <T> Optional<Configuration<T>> get(String key, Class<T> type);
+    <T> Optional<Configuration<T>> get(ConfigurationKey<T> key);
 
     /**
      * Registers new configuration type. This allows addons to save information directly to game.
      *
      * @param key Key of new configuration, it's invalid to use dots or colons
-     * @param typeToBeSaved type which will be used for saving
      * @return true on success
+     * @since 0.3.0
      */
-    <T> boolean register(String key, Class<T> typeToBeSaved);
+    <T> boolean register(ConfigurationKey<T> key);
 
     /**
      * Gets all keys known by this configuration container
      *
      * @return list of all registered keys
+     * @since 0.3.0
      */
-    List<String> getRegisteredKeys();
+    List<ConfigurationKey<?>> getRegisteredKeys();
 
     /**
-     * Gets the value from configuration or returns back the default value
+     * Gets the value from configuration or returns the default value
      *
      * @param key Key of the configuration
-     * @param type Type of the configuration
      * @param defaultValue Default value if the configuration won't be found
      * @return object from configuration if registered; otherwise defaultValue
+     * @since 0.3.0
      */
-    <T> T getOrDefault(String key, Class<T> type, T defaultValue);
+    <T> T getOrDefault(ConfigurationKey<T> key, T defaultValue);
 
+    /**
+     *
+     * @return the parent configuration container or null
+     * @since 0.3.0
+     */
     @Nullable
     ConfigurationContainer getParentContainer();
 }

@@ -129,7 +129,7 @@ public class ShopInventory {
                 fileName = store.getShopFile();
             }
             if (fileName == null && player.isInGame()) { // who invokes this method for player who is not in game goes directly to hell
-                var defaultShopFile = player.getGame().getConfigurationContainer().getOrDefault(ConfigurationContainer.DEFAULT_SHOP_FILE, String.class, null);
+                var defaultShopFile = player.getGame().getConfigurationContainer().getOrDefault(ConfigurationContainer.DEFAULT_SHOP_FILE, null);
                 if (defaultShopFile != null) {
                     fileName = defaultShopFile;
                     parent = false;
