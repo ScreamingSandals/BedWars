@@ -618,7 +618,7 @@ public class Configurator {
                 }
                 Color leatherAsColor = Color.fromBGR(Integer.parseInt(prepareHexColorString(leather),16));
                 TeamColor teamColor = new TeamColor(name, org.bukkit.ChatColor.valueOf(chatColor), woolData, wool, leatherAsColor);
-                org.screamingsandals.bedwars.api.TeamColor.register(teamColor);
+                TeamColor.register(teamColor);
                 //Main.getInstance().getLogger().info(name+":"+chatColor+":"+leather+":"+wool);
             }
         }
