@@ -58,7 +58,7 @@ public class AddCommand extends BaseAdminSubCommand {
                                 sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_ERROR_ALREADY_WORKING_ON_IT).defaultPrefix());
                             } else {
                                 VariantImpl variantObj = null;
-                                if (variant.isPresent() && "null".equalsIgnoreCase(variant.get())) {
+                                if (variant.isPresent() && !"null".equalsIgnoreCase(variant.get())) {
                                     var variantOpt = VariantManagerImpl.getInstance().getVariant(variant.get());
                                     if (variantOpt.isPresent()) {
                                         variantObj = variantOpt.get();

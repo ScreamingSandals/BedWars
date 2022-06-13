@@ -364,6 +364,14 @@ public class GameImpl implements Game {
                 game.lobbyPos2 = MiscUtils.readLocationFromString(lobbySpawnWorld, lobbyPos2);
             }
 
+            var variant = configMap.node("variant");
+            if (!variant.empty()) {
+                game.gameVariant = VariantManagerImpl.getInstance().getVariant(variant.getString("")).orElse(null);
+                if (game.gameVariant != null) {
+                    game.configurationContainer.setParentContainer(game.gameVariant.getConfigurationContainer());
+                }
+            }
+
             game.lobbySpawn = MiscUtils.readLocationFromString(lobbySpawnWorld, Objects.requireNonNull(configMap.node("lobbySpawn").getString()));
             game.minPlayers = configMap.node("minPlayers").getInt(2);
             configMap.node("teams").childrenMap().forEach((teamN, team) -> {
@@ -438,14 +446,6 @@ public class GameImpl implements Game {
             game.lobbyBossBarColor = loadBossBarColor(
                     configMap.node("lobbyBossBarColor").getString("default").toUpperCase());
             game.gameBossBarColor = loadBossBarColor(configMap.node("gameBossBarColor").getString("default").toUpperCase());
-
-            var variant = configMap.node("variant");
-            if (!variant.empty()) {
-                game.gameVariant = VariantManagerImpl.getInstance().getVariant(variant.getString("")).orElse(null);
-                if (game.gameVariant != null) {
-                    game.configurationContainer.setParentContainer(game.gameVariant.getConfigurationContainer());
-                }
-            }
 
             game.start();
             PlayerMapper.getConsoleSender().sendMessage(

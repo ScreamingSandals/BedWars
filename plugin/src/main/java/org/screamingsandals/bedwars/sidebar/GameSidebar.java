@@ -220,7 +220,7 @@ public class GameSidebar {
                         if (PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
                             var bwPlayer = player.as(BedWarsPlayer.class);
                             if (team.isPlayerInTeam(bwPlayer)) {
-                                return Component.space().withAppendix(Message.of(LangKeys.IN_GAME_SCOREBOARD_YOU).asComponent(sender));
+                                return Component.text().append("").append(Message.of(LangKeys.IN_GAME_SCOREBOARD_YOU).asComponent(sender)).build();
                             }
                         }
                     }

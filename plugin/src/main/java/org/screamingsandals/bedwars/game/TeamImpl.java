@@ -86,6 +86,10 @@ public class TeamImpl implements Team {
                             var atomic = new AtomicInteger();
                             Tasker.build(taskBase -> () -> {
                                 var charges = atomic.incrementAndGet();
+                                if (charges > 4) {
+                                    taskBase.cancel();
+                                    return;
+                                }
                                 block.setType(anchor.with("charges", String.valueOf(charges)));
                                 targetBlock.getWorld().playSound(SoundStart.sound(
                                         SpecialSoundKey.key(MainConfig.getInstance().node("target-block", "respawn-anchor", "sound", "charge").getString("block.respawn_anchor.charge")),
@@ -93,9 +97,6 @@ public class TeamImpl implements Team {
                                         1,
                                         1
                                 ), targetBlock.getX(), targetBlock.getY(), targetBlock.getZ());
-                                if (charges >= 4) {
-                                    taskBase.cancel();
-                                }
                             }).delay(50, TaskerTime.TICKS).repeat(10, TaskerTime.TICKS).start();
                         }
                     })

@@ -80,9 +80,15 @@ public class VariantManagerImpl implements VariantManager {
         }
 
         // Copy files related to certain-popular-server variant if they don't exist
-        BedWarsPlugin.getInstance().saveResource("variants/certain-popular-server.yml", false);
-        BedWarsPlugin.getInstance().saveResource("shop/certain-popular-server/shop.yml", false);
-        BedWarsPlugin.getInstance().saveResource("shop/certain-popular-server/upgrade-shop.yml", false);
+        if (!Files.exists(variantsFolder.resolve("certain-popular-server.yml"))) {
+            BedWarsPlugin.getInstance().saveResource("variants/certain-popular-server.yml", false);
+        }
+        if (!Files.exists(variantsFolder.resolve("../shop/certain-popular-server/shop.yml"))) {
+            BedWarsPlugin.getInstance().saveResource("shop/certain-popular-server/shop.yml", false);
+        }
+        if (!Files.exists(variantsFolder.resolve("../shop/certain-popular-server/upgrade-shop.yml"))) {
+            BedWarsPlugin.getInstance().saveResource("shop/certain-popular-server/upgrade-shop.yml", false);
+        }
 
         try (var stream = Files.walk(variantsFolder.toAbsolutePath())) {
             final var results = stream.filter(Files::isRegularFile)
