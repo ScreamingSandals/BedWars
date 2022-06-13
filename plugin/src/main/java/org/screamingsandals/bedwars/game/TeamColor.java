@@ -153,7 +153,7 @@ public final class TeamColor {
     }
 
     public static void unregisterAll() {
-        org.screamingsandals.bedwars.game.TeamColor.unregisterAll();
+        org.screamingsandals.bedwars.api.TeamColor.unregisterAll();
         VALUES.clear();
     }
 
