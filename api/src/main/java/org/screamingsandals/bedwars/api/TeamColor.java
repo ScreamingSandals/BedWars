@@ -33,25 +33,23 @@ public final class TeamColor {
 
     static Map<String, TeamColor> VALUES = new HashMap<>();
 
-    public static final TeamColor BLACK = new TeamColor("BLACK");
-    public static final TeamColor BLUE = new TeamColor("BLUE");
-    public static final TeamColor GREEN = new TeamColor("GREEN");
-    public static final TeamColor RED = new TeamColor("RED");
-    public static final TeamColor MAGENTA = new TeamColor("MAGENTA");
-    public static final TeamColor ORANGE = new TeamColor("ORANGE");
-    public static final TeamColor LIGHT_GRAY = new TeamColor("LIGHT_GRAY");
-    public static final TeamColor GRAY = new TeamColor("GRAY");
-    public static final TeamColor LIGHT_BLUE = new TeamColor("LIGHT_BLUE");
-    public static final TeamColor LIME = new TeamColor("LIME");
-    public static final TeamColor CYAN = new TeamColor("CYAN");
-    public static final TeamColor PINK = new TeamColor("PINK");
-    public static final TeamColor YELLOW = new TeamColor("YELLOW");
-    public static final TeamColor WHITE = new TeamColor("WHITE");
-    public static final TeamColor PURPLE = new TeamColor("PURPLE");
-    public static final TeamColor BROWN = new TeamColor("BROWN");
-    static {
-        initDefaults();
-    }
+    public static final TeamColor BLACK = new TeamColor("BLACK").register();
+    public static final TeamColor BLUE = new TeamColor("BLUE").register();
+    public static final TeamColor GREEN = new TeamColor("GREEN").register();
+    public static final TeamColor RED = new TeamColor("RED").register();
+    public static final TeamColor MAGENTA = new TeamColor("MAGENTA").register();
+    public static final TeamColor ORANGE = new TeamColor("ORANGE").register();
+    public static final TeamColor LIGHT_GRAY = new TeamColor("LIGHT_GRAY").register();
+    public static final TeamColor GRAY = new TeamColor("GRAY").register();
+    public static final TeamColor LIGHT_BLUE = new TeamColor("LIGHT_BLUE").register();
+    public static final TeamColor LIME = new TeamColor("LIME").register();
+    public static final TeamColor CYAN = new TeamColor("CYAN").register();
+    public static final TeamColor PINK = new TeamColor("PINK").register();
+    public static final TeamColor YELLOW = new TeamColor("YELLOW").register();
+    public static final TeamColor WHITE = new TeamColor("WHITE").register();
+    public static final TeamColor PURPLE = new TeamColor("PURPLE").register();
+    public static final TeamColor BROWN = new TeamColor("BROWN").register();
+    
     public static void initDefaults()
     {
         unregisterAll();
@@ -71,6 +69,12 @@ public final class TeamColor {
         register(GREEN);
         register(RED);
         register(BLACK);
+    }
+
+    private TeamColor register()
+    {
+        register(this);
+        return this;
     }
     private String key;
     public TeamColor(String key)
