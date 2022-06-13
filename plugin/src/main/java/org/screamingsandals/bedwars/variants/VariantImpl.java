@@ -52,11 +52,6 @@ public class VariantImpl implements Variant {
     private final GameConfigurationContainer configurationContainer = new GameConfigurationContainer();
     @NotNull
     private final List<ItemSpawnerTypeImpl> customSpawnerTypes = new ArrayList<>();
-    // TODO: read it and save to some class, expose it to API
-    @Nullable
-    private ConfigurationNode lobbyScoreboard;
-    @Nullable
-    private ConfigurationNode gameScoreboard;
     private boolean defaultItemSpawnerTypesIncluded = true;
 
     public static VariantImpl loadVariant(File file) {
@@ -88,14 +83,6 @@ public class VariantImpl implements Variant {
 
             variant.configurationContainer.applyNode(configMap.node("config"));
 
-            PlayerMapper.getConsoleSender().sendMessage(
-                    MiscUtils.BW_PREFIX.withAppendix(
-                            Component.text("Variant ", Color.GREEN),
-                            Component.text(variant.name + " (" + file.getName() + ")", Color.WHITE),
-                            Component.text(" loaded!", Color.GREEN)
-                    )
-            );
-
             var spawnersNode = configMap.node("custom-spawner-types");
             if (!spawnersNode.empty() && spawnersNode.isMap()) {
                 spawnersNode.childrenMap().forEach((spawnerK, node) -> {
@@ -112,15 +99,13 @@ public class VariantImpl implements Variant {
                 variant.defaultItemSpawnerTypesIncluded = true;
             }
 
-            var lobbyScoreboardNode = configMap.node("config", "sidebar", "lobby", "content");
-            if (!lobbyScoreboardNode.empty() && lobbyScoreboardNode.isMap()) {
-                variant.lobbyScoreboard = lobbyScoreboardNode;
-            }
-
-            var gameScoreboardNode = configMap.node("config", "sidebar", "game", "content");
-            if (!gameScoreboardNode.empty() && gameScoreboardNode.isMap()) {
-                variant.gameScoreboard = gameScoreboardNode;
-            }
+            PlayerMapper.getConsoleSender().sendMessage(
+                    MiscUtils.BW_PREFIX.withAppendix(
+                            Component.text("Variant ", Color.GREEN),
+                            Component.text(variant.name + " (" + file.getName() + ")", Color.WHITE),
+                            Component.text(" loaded!", Color.GREEN)
+                    )
+            );
 
             return variant;
         } catch (Throwable throwable) {

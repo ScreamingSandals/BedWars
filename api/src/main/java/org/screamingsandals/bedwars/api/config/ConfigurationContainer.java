@@ -68,10 +68,10 @@ public interface ConfigurationContainer {
     ConfigurationKey<String> SIDEBAR_GAME_TEAM_PREFIXES_ANCHOR_EMPTY = ConfigurationKey.of(String.class, "sidebar", "game", "team-prefixes", "anchor-empty");
     ConfigurationKey<String> SIDEBAR_GAME_TEAM_PREFIXES_TARGET_BLOCK_EXISTS = ConfigurationKey.of(String.class, "sidebar", "game", "team-prefixes", "target-block-exists");
     ConfigurationKey<String> SIDEBAR_GAME_TEAM_LINE = ConfigurationKey.of(String.class, "sidebar", "game", "team-line");
-    // TODO: List of Strings SIDEBAR_GAME_CONTENT "sidebar", "game", "content"
+    ConfigurationListKey<String> SIDEBAR_GAME_CONTENT = ConfigurationListKey.of(String.class, "sidebar", "game", "content");
     ConfigurationKey<Boolean> SIDEBAR_LOBBY_ENABLED = ConfigurationKey.of(Boolean.class, "sidebar", "lobby", "enabled");
     ConfigurationKey<String> SIDEBAR_LOBBY_TITLE = ConfigurationKey.of(String.class, "sidebar", "lobby", "title");
-    // TODO: List of Strings SIDEBAR_LOBBY_CONTENT "sidebar", "lobby", "content"
+    ConfigurationListKey<String> SIDEBAR_LOBBY_CONTENT = ConfigurationListKey.of(String.class, "sidebar", "lobby", "content");
 
     ConfigurationKey<Boolean> GAME_START_ITEMS_ENABLED = ConfigurationKey.of(Boolean.class, "game-start-items", "enabled");
     ConfigurationKey<Boolean> PLAYER_RESPAWN_ITEMS_ENABLED = ConfigurationKey.of(Boolean.class, "player-respawn-items", "enabled");
@@ -93,6 +93,15 @@ public interface ConfigurationContainer {
     <T> Optional<Configuration<T>> get(ConfigurationKey<T> key);
 
     /**
+     * Gets configuration from the key
+     *
+     * @param key Key of the configuration
+     * @return configuration or empty optional
+     * @since 0.3.0
+     */
+    <T> Optional<Configuration<List<T>>> get(ConfigurationListKey<T> key);
+
+    /**
      * Registers new configuration type. This allows addons to save information directly to game.
      *
      * @param key Key of new configuration, it's invalid to use dots or colons
@@ -100,6 +109,15 @@ public interface ConfigurationContainer {
      * @since 0.3.0
      */
     <T> boolean register(ConfigurationKey<T> key);
+
+    /**
+     * Registers new configuration type. This allows addons to save information directly to the game or the variant.
+     *
+     * @param key Key of new configuration, it's invalid to use dots or colons
+     * @return true on success
+     * @since 0.3.0
+     */
+    <T> boolean register(ConfigurationListKey<T> key);
 
     /**
      * Gets all keys known by this configuration container
@@ -110,6 +128,14 @@ public interface ConfigurationContainer {
     List<ConfigurationKey<?>> getRegisteredKeys();
 
     /**
+     * Gets all list keys known by this configuration container
+     *
+     * @return list of all registered list keys
+     * @since 0.3.0
+     */
+    List<ConfigurationListKey<?>> getRegisteredListKeys();
+
+    /**
      * Gets the value from configuration or returns the default value
      *
      * @param key Key of the configuration
@@ -118,6 +144,16 @@ public interface ConfigurationContainer {
      * @since 0.3.0
      */
     <T> T getOrDefault(ConfigurationKey<T> key, T defaultValue);
+
+    /**
+     * Gets the value from configuration or returns the default value
+     *
+     * @param key Key of the configuration
+     * @param defaultValue Default value if the configuration won't be found
+     * @return object from configuration if registered; otherwise defaultValue
+     * @since 0.3.0
+     */
+    <T> List<T> getOrDefault(ConfigurationListKey<T> key, List<T> defaultValue);
 
     /**
      *

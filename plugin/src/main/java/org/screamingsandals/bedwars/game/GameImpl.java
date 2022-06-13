@@ -55,7 +55,7 @@ import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.bedwars.region.BWRegion;
 import org.screamingsandals.bedwars.region.FlatteningRegion;
 import org.screamingsandals.bedwars.region.LegacyRegion;
-import org.screamingsandals.bedwars.scoreboard.ScreamingScoreboard;
+import org.screamingsandals.bedwars.sidebar.GameSidebar;
 import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.bedwars.tab.TabManager;
 import org.screamingsandals.bedwars.utils.*;
@@ -172,7 +172,7 @@ public class GameImpl implements Game {
     private final List<DelayFactory> activeDelays = new ArrayList<>();
     private final Map<BedWarsPlayer, Container> fakeEnderChests = new HashMap<>();
     private int postGameWaiting = 3;
-    private ScreamingScoreboard experimentalBoard = null;
+    private GameSidebar experimentalBoard = null;
     private HealthIndicator healthIndicator = null;
     @Getter
     private final List<Visual<?>> otherVisuals = new ArrayList<>();
@@ -1729,7 +1729,7 @@ public class GameImpl implements Game {
             }
 
             if (experimentalBoard == null) {
-                experimentalBoard = new ScreamingScoreboard(this);
+                experimentalBoard = new GameSidebar(this);
             }
             updateSigns();
             Debug.info(name + ": lobby prepared");

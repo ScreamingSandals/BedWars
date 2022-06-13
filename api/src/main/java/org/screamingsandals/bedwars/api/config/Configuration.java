@@ -20,6 +20,7 @@
 package org.screamingsandals.bedwars.api.config;
 
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Saves and retrieves configuration object
@@ -36,6 +37,14 @@ public interface Configuration<T> {
      * @return Current value
      */
     T get();
+
+    /**
+     * Gets current value in this configuration or null if not set
+     *
+     * @return Current value
+     */
+    @Nullable
+    T getExactValue();
 
     /**
      * Check if current configuration object contains custom value

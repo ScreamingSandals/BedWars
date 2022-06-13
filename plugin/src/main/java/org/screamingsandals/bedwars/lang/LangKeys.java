@@ -194,6 +194,10 @@ public class LangKeys {
     public final String[] HELP_BW_ADMIN_STORE_REMOVE = {"help", "bw_admin_store_remove"};
     public final String[] HELP_BW_ADMIN_STORE_TYPE = {"help", "bw_admin_store_type"};
     public final String[] HELP_BW_ADMIN_CONFIG_SET = {"help", "bw_admin_config_set"};
+    public final String[] HELP_BW_ADMIN_CONFIG_LIST_ADD = {"help", "bw_admin_config_list_add"};
+    public final String[] HELP_BW_ADMIN_CONFIG_LIST_SET = {"help", "bw_admin_config_list_set"};
+    public final String[] HELP_BW_ADMIN_CONFIG_LIST_REMOVE = {"help", "bw_admin_config_list_remove"};
+    public final String[] HELP_BW_ADMIN_CONFIG_LIST_CLEAR = {"help", "bw_admin_config_list_clear"};
     public final String[] HELP_BW_ADMIN_CONFIG_RESET = {"help", "bw_admin_config_reset"};
     public final String[] HELP_BW_ADMIN_FEE = {"help", "bw_admin_fee"};
     public final String[] HELP_BW_ADMIN_ARENA_TIME = {"help", "bw_admin_arena_time"};
@@ -263,6 +267,7 @@ public class LangKeys {
     public final String[] ADMIN_ARENA_EDIT_ERRORS_INVALID_MIN_PLAYERS = {"admin", "arena", "edit", "errors", "invalid_min_players"};
     public final String[] ADMIN_ARENA_EDIT_ERRORS_INVALID_CONSTANT_VALUE = {"admin", "arena", "edit", "errors", "invalid_constant_value"};
     public final String[] ADMIN_ARENA_EDIT_ERRORS_INVALID_CONSTANT_NAME = {"admin", "arena", "edit", "errors", "invalid_constant_name"};
+    public final String[] ADMIN_ARENA_EDIT_ERRORS_INVALID_CONSTANT_POSITION = {"admin", "arena", "edit", "errors", "invalid_constant_position"};
     public final String[] ADMIN_ARENA_EDIT_ERRORS_INVALID_ARENA_TIME = {"admin", "arena", "edit", "errors", "invalid_arena_time"};
     public final String[] ADMIN_ARENA_EDIT_ERRORS_INVALID_ARENA_WEATHER = {"admin", "arena", "edit", "errors", "invalid_arena_weather"};
     public final String[] ADMIN_ARENA_EDIT_ERRORS_INVALID_BAR_COLOR = {"admin", "arena", "edit", "errors", "invalid_bar_color"};
@@ -295,6 +300,9 @@ public class LangKeys {
     public final String[] ADMIN_ARENA_EDIT_SUCCESS_MIN_PLAYERS_SET = {"admin", "arena", "edit", "success", "min_players_set"};
     public final String[] ADMIN_ARENA_EDIT_SUCCESS_CONSTANT_SET = {"admin", "arena", "edit", "success", "constant_set"};
     public final String[] ADMIN_ARENA_EDIT_SUCCESS_CONSTANT_RESET = {"admin", "arena", "edit", "success", "constant_reset"};
+    public final String[] ADMIN_ARENA_EDIT_SUCCESS_CONSTANT_LIST_ADDED = {"admin", "arena", "edit", "success", "constant_list_added"};
+    public final String[] ADMIN_ARENA_EDIT_SUCCESS_CONSTANT_LIST_REMOVED = {"admin", "arena", "edit", "success", "constant_list_removed"};
+    public final String[] ADMIN_ARENA_EDIT_SUCCESS_CONSTANT_LIST_CLEARED = {"admin", "arena", "edit", "success", "constant_list_cleared"};
     public final String[] ADMIN_ARENA_EDIT_SUCCESS_ARENA_TIME_SET = {"admin", "arena", "edit", "success", "arena_time_set"};
     public final String[] ADMIN_ARENA_EDIT_SUCCESS_WEATHER_SET = {"admin", "arena", "edit", "success", "weather_set"};
     public final String[] ADMIN_ARENA_EDIT_SUCCESS_BAR_COLOR_SET = {"admin", "arena", "edit", "success", "bar_color_set"};

@@ -34,8 +34,7 @@ config:
         target-block-lost: <color:red>✘</color>
         anchor-empty: <color:yellow>✘</color>
         target-block-exists: <color:green>✔</color>
-      team-line: <target-block-prefix><team-color><team> <gray>(<team-size>)
-      # TODO: add <tier>, <kills>, <target-blocks-destroyed> placeholders to the code
+      team-line: <target-block-prefix><team-color><team> <gray>(<team-size>) <you>
       content:
         - "<gray><date>"
         - ""

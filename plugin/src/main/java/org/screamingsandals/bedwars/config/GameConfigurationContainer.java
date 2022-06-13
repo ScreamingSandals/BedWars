@@ -25,12 +25,14 @@ import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.api.config.Configuration;
 import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
 import org.screamingsandals.bedwars.api.config.ConfigurationKey;
+import org.screamingsandals.bedwars.api.config.ConfigurationListKey;
 import org.spongepowered.configurate.BasicConfigurationNode;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class GameConfigurationContainer implements ConfigurationContainer {
 
@@ -39,6 +41,7 @@ public class GameConfigurationContainer implements ConfigurationContainer {
     @Setter
     private ConfigurationContainer parentContainer;
     private final Map<List<String>, Class<?>> registered = new HashMap<>();
+    private final Map<List<String>, Class<?>> registeredList = new HashMap<>();
     @Getter
     private final BasicConfigurationNode saved = BasicConfigurationNode.root();
     private final Map<List<String>, String[]> globalConfigKeys = new HashMap<>();
@@ -65,8 +68,10 @@ public class GameConfigurationContainer implements ConfigurationContainer {
         register(ConfigurationContainer.SIDEBAR_GAME_TEAM_PREFIXES_ANCHOR_EMPTY, "sidebar", "game", "team-prefixes", "anchor-empty");
         register(ConfigurationContainer.SIDEBAR_GAME_TEAM_PREFIXES_TARGET_BLOCK_EXISTS, "sidebar", "game", "team-prefixes", "target-block-exists");
         register(ConfigurationContainer.SIDEBAR_GAME_TEAM_LINE, "sidebar", "game", "team-line");
+        register(ConfigurationContainer.SIDEBAR_GAME_CONTENT, "sidebar", "game", "content");
         register(ConfigurationContainer.SIDEBAR_LOBBY_ENABLED,  "sidebar", "lobby", "enabled");
         register(ConfigurationContainer.SIDEBAR_LOBBY_TITLE, "sidebar", "lobby", "title");
+        register(ConfigurationContainer.SIDEBAR_LOBBY_CONTENT, "sidebar", "lobby", "content");
         register(ConfigurationContainer.PREVENT_SPAWNING_MOBS, "prevent-spawning-mobs");
         register(ConfigurationContainer.SPAWNER_HOLOGRAMS, "spawner-holograms");
         register(ConfigurationContainer.SPAWNER_DISABLE_MERGE, "spawner-disable-merge");
@@ -101,6 +106,26 @@ public class GameConfigurationContainer implements ConfigurationContainer {
             } catch (SerializationException e) {
                 e.printStackTrace();
             }
+        } else if (registeredList.containsKey(key) && type.isAssignableFrom(List.class)) {
+            //noinspection unchecked,rawtypes
+            return (Optional<Configuration<T>>) (Optional) get(ConfigurationListKey.of(Object.class, key));
+        }
+
+        return Optional.empty();
+    }
+
+    @Override
+    public <T> Optional<Configuration<List<T>>> get(ConfigurationListKey<T> keyObject) {
+        var key = keyObject.getKey();
+        Class<T> type = keyObject.getType();
+        if (registeredList.containsKey(key) && type.isAssignableFrom(registeredList.get(key))) {
+            try {
+                return Optional.of(new GameListConfiguration<>(keyObject, this,
+                        globalConfigKeys.containsKey(key) ? MainConfig.getInstance().node((Object[]) globalConfigKeys.get(key)).getList(type) : null)
+                );
+            } catch (SerializationException e) {
+                e.printStackTrace();
+            }
         }
 
         return Optional.empty();
@@ -115,8 +140,30 @@ public class GameConfigurationContainer implements ConfigurationContainer {
                 return false;
             }
         }
+        if (registeredList.containsKey(key)) {
+            return false;
+        }
         if (!registered.containsKey(key)) {
             registered.put(key, typeToBeSaved);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public <T> boolean register(ConfigurationListKey<T> keyObject) {
+        var key = keyObject.getKey();
+        var typeToBeSaved = keyObject.getType();
+        for (var k : key) {
+            if (k.contains(".") || k.contains(":")) {
+                return false;
+            }
+        }
+        if (registered.containsKey(key)) {
+            return false;
+        }
+        if (!registeredList.containsKey(key)) {
+            registeredList.put(key, typeToBeSaved);
             return true;
         }
         return false;
@@ -130,6 +177,22 @@ public class GameConfigurationContainer implements ConfigurationContainer {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public List<ConfigurationListKey<?>> getRegisteredListKeys() {
+        return registeredList.entrySet()
+                .stream()
+                .map(e -> ConfigurationListKey.of(e.getValue(), e.getKey()))
+                .collect(Collectors.toList());
+    }
+
+    public List<String> getJoinedRegisteredKeysForConfigCommandList(Class<?> type) {
+        return registeredList.entrySet()
+                .stream()
+                .filter(e -> e.getValue() == type)
+                .map(e -> String.join(".", e.getKey()))
+                .collect(Collectors.toList());
+    }
+
     public List<String> getJoinedRegisteredKeysForConfigCommand(Class<?> type) {
         return registered.entrySet()
                 .stream()
@@ -139,13 +202,23 @@ public class GameConfigurationContainer implements ConfigurationContainer {
     }
 
     public List<String> getJoinedRegisteredKeysForConfigCommand() {
-        return registered.keySet()
-                .stream()
-                .map(str -> String.join(".", str))
-                .collect(Collectors.toList());
+        return Stream.concat(
+                    registered.keySet()
+                        .stream()
+                        .map(str -> String.join(".", str)),
+                    registeredList.keySet()
+                        .stream()
+                        .map(str -> String.join(".", str))
+                ).collect(Collectors.toList());
     }
 
     public <T> void register(ConfigurationKey<T> key, String... globalKey) {
+        if (register(key)) {
+            globalConfigKeys.put(key.getKey(), globalKey);
+        }
+    }
+
+    public <T> void register(ConfigurationListKey<T> key, String... globalKey) {
         if (register(key)) {
             globalConfigKeys.put(key.getKey(), globalKey);
         }
@@ -160,11 +233,26 @@ public class GameConfigurationContainer implements ConfigurationContainer {
         }
     }
 
-    public boolean has(List<String> key) {return !saved.node(key).empty();}
+    public boolean has(List<String> key) {
+        return !saved.node(key).virtual() && !saved.node(key).isNull();
+    }
 
     public <T> T getSaved(ConfigurationKey<T> key) {
         try {
             return saved.node(key.getKey()).get(key.getType());
+        } catch (SerializationException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public ConfigurationNode getSavedNode(List<String> key) {
+        return saved.node(key);
+    }
+
+    public <T> List<T> getSaved(ConfigurationListKey<T> key) {
+        try {
+            return saved.node(key.getKey()).getList(key.getType());
         } catch (SerializationException e) {
             e.printStackTrace();
         }
@@ -189,8 +277,14 @@ public class GameConfigurationContainer implements ConfigurationContainer {
         }
     }
 
-    public Class<?> getType(List<String> key) {
-        return registered.get(key);
+    @Override
+    public <T> List<T> getOrDefault(ConfigurationListKey<T> key, List<T> defaultValue) {
+        var opt = get(key);
+        if (opt.isEmpty()) {
+            return defaultValue;
+        } else {
+            return opt.get().get();
+        }
     }
 
     public void applyNode(ConfigurationNode configurationNode) {

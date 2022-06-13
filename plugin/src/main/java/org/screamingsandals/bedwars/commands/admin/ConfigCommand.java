@@ -23,6 +23,8 @@ import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
 import cloud.commandframework.arguments.standard.*;
 import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
+import org.screamingsandals.bedwars.api.config.ConfigurationKey;
+import org.screamingsandals.bedwars.api.config.ConfigurationListKey;
 import org.screamingsandals.bedwars.commands.AdminCommand;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.lib.lang.Message;
@@ -33,6 +35,7 @@ import org.screamingsandals.lib.utils.annotations.parameters.DataFolder;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -68,14 +71,21 @@ public class ConfigCommand extends BaseAdminSubCommand {
 
                             var keyOpt = game.getConfigurationContainer().getRegisteredKeys()
                                     .stream()
-                                    .filter(t -> t.getKey().equals(keys))
-                                    .findFirst();
+                                    .map(ConfigurationKey::getKey)
+                                    .filter(key -> key.equals(keys))
+                                    .findFirst()
+                                    .or(() -> game.getConfigurationContainer().getRegisteredListKeys()
+                                            .stream()
+                                            .map(ConfigurationListKey::getKey)
+                                            .filter(key -> key.equals(keys))
+                                            .findFirst()
+                                    );
 
                             if (keyOpt.isEmpty()) {
                                 sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_INVALID_CONSTANT_NAME).defaultPrefix());
                             } else {
                                 var key = keyOpt.get();
-                                game.getConfigurationContainer().update(key.getKey(), null);
+                                game.getConfigurationContainer().update(key, null);
                                 Message
                                         .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_CONSTANT_RESET)
                                         .placeholder("config", keyString)
@@ -464,6 +474,212 @@ public class ConfigCommand extends BaseAdminSubCommand {
                         }))
         );
 
-        // TODO: string lists
+        // string list - add
+        manager.command(
+                commandSenderWrapperBuilder
+                        .literal("list", "l")
+                        .literal("string", "strings", "str", "s")
+                        .argument(StringArgument.<CommandSenderWrapper>newBuilder("key")
+                                .withSuggestionsProvider((c, s) -> {
+                                    if (AdminCommand.gc.containsKey(c.<String>get("game"))) {
+                                        return AdminCommand.gc.get(c.<String>get("game")).getConfigurationContainer().getJoinedRegisteredKeysForConfigCommandList(String.class);
+                                    }
+                                    return List.of();
+                                })
+                        )
+                        .literal("add", "a")
+                        .argument(StringArgument.greedy("value"))
+                        .handler(commandContext -> editMode(commandContext, (sender, game) -> {
+                            String keyString = commandContext.get("key");
+                            var keys = List.of(keyString.toLowerCase().split("\\."));
+                            String value = commandContext.get("value");
+
+                            @SuppressWarnings("unchecked")
+                            var keyOpt = game.getConfigurationContainer().getRegisteredListKeys()
+                                    .stream()
+                                    .filter(t -> t.getKey().equals(keys) && t.getType() == String.class)
+                                    .map(k -> (ConfigurationListKey<String>) k)
+                                    .findFirst();
+
+                            if (keyOpt.isEmpty()) {
+                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_INVALID_CONSTANT_NAME).defaultPrefix());
+                            } else {
+                                var key = keyOpt.get();
+                                var saved = new ArrayList<>(game.getConfigurationContainer().getSaved(key));
+                                saved.add(value);
+                                game.getConfigurationContainer().update(key.getKey(), saved);
+
+                                Message
+                                        .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_CONSTANT_LIST_ADDED)
+                                        .placeholder("config", keyString)
+                                        .placeholder("value", value)
+                                        .placeholder("position", saved.size())
+                                        .defaultPrefix()
+                                        .send(sender);
+                            }
+                        }))
+        );
+
+        // string list - set
+        manager.command(
+                commandSenderWrapperBuilder
+                        .literal("list", "l")
+                        .literal("string", "strings", "str", "s")
+                        .argument(StringArgument.<CommandSenderWrapper>newBuilder("key")
+                                .withSuggestionsProvider((c, s) -> {
+                                    if (AdminCommand.gc.containsKey(c.<String>get("game"))) {
+                                        return AdminCommand.gc.get(c.<String>get("game")).getConfigurationContainer().getJoinedRegisteredKeysForConfigCommandList(String.class);
+                                    }
+                                    return List.of();
+                                })
+                        )
+                        .literal("set", "s")
+                        .argument(IntegerArgument.of("position"))
+                        .argument(StringArgument.greedy("value"))
+                        .handler(commandContext -> editMode(commandContext, (sender, game) -> {
+                            String keyString = commandContext.get("key");
+                            var keys = List.of(keyString.toLowerCase().split("\\."));
+                            int position = commandContext.get("position");
+                            String value = commandContext.get("value");
+
+                            var keyOpt = game.getConfigurationContainer().getRegisteredListKeys()
+                                    .stream()
+                                    .filter(t -> t.getKey().equals(keys) && t.getType() == String.class)
+                                    .map(k -> (ConfigurationListKey<String>) k)
+                                    .findFirst();
+
+                            if (keyOpt.isEmpty()) {
+                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_INVALID_CONSTANT_NAME).defaultPrefix());
+                            } else {
+                                var key = keyOpt.get();
+                                var saved = new ArrayList<>(game.getConfigurationContainer().getSaved(key));
+                                if (saved.isEmpty()) {
+                                    saved.add(value);
+                                    game.getConfigurationContainer().update(key.getKey(), saved);
+
+                                    Message
+                                            .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_CONSTANT_LIST_ADDED)
+                                            .placeholder("config", keyString)
+                                            .placeholder("value", value)
+                                            .placeholder("position", saved.size())
+                                            .defaultPrefix()
+                                            .send(sender);
+                                } else {
+                                    position -= 1;
+                                    if (position < 0 || position >= saved.size()) {
+                                        Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_INVALID_CONSTANT_POSITION)
+                                                .defaultPrefix()
+                                                .send(sender);
+                                    } else {
+                                        saved.set(position, value);
+                                        game.getConfigurationContainer().update(key.getKey(), saved);
+
+                                        Message
+                                                .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_CONSTANT_LIST_ADDED)
+                                                .placeholder("config", keyString)
+                                                .placeholder("value", value)
+                                                .placeholder("position", position + 1)
+                                                .defaultPrefix()
+                                                .send(sender);
+                                    }
+                                }
+                            }
+                        }))
+        );
+
+        // string list - remove
+        manager.command(
+                commandSenderWrapperBuilder
+                        .literal("list", "l")
+                        .literal("string", "strings", "str", "s")
+                        .argument(StringArgument.<CommandSenderWrapper>newBuilder("key")
+                                .withSuggestionsProvider((c, s) -> {
+                                    if (AdminCommand.gc.containsKey(c.<String>get("game"))) {
+                                        return AdminCommand.gc.get(c.<String>get("game")).getConfigurationContainer().getJoinedRegisteredKeysForConfigCommandList(String.class);
+                                    }
+                                    return List.of();
+                                })
+                        )
+                        .literal("remove", "delete", "r", "d")
+                        .argument(IntegerArgument.of("position"))
+                        .handler(commandContext -> editMode(commandContext, (sender, game) -> {
+                            String keyString = commandContext.get("key");
+                            var keys = List.of(keyString.toLowerCase().split("\\."));
+                            int position = commandContext.get("position");
+
+                            @SuppressWarnings("unchecked")
+                            var keyOpt = game.getConfigurationContainer().getRegisteredListKeys()
+                                    .stream()
+                                    .filter(t -> t.getKey().equals(keys) && t.getType() == String.class)
+                                    .map(k -> (ConfigurationListKey<String>) k)
+                                    .findFirst();
+
+                            if (keyOpt.isEmpty()) {
+                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_INVALID_CONSTANT_NAME).defaultPrefix());
+                            } else {
+                                var key = keyOpt.get();
+                                var saved = new ArrayList<>(game.getConfigurationContainer().getSaved(key));
+                                position -= 1;
+                                if (position < 0 || position >= saved.size()) {
+                                    Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_INVALID_CONSTANT_POSITION)
+                                            .defaultPrefix()
+                                            .send(sender);
+                                } else {
+                                    saved.remove(position);
+                                    game.getConfigurationContainer().update(key.getKey(), saved);
+
+                                    Message
+                                            .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_CONSTANT_LIST_REMOVED)
+                                            .placeholder("config", keyString)
+                                            .placeholder("position", position + 1)
+                                            .defaultPrefix()
+                                            .send(sender);
+                                }
+                            }
+                        }))
+        );
+
+        // string list - clear
+        manager.command(
+                commandSenderWrapperBuilder
+                        .literal("list", "l")
+                        .literal("string", "strings", "str", "s")
+                        .argument(StringArgument.<CommandSenderWrapper>newBuilder("key")
+                                .withSuggestionsProvider((c, s) -> {
+                                    if (AdminCommand.gc.containsKey(c.<String>get("game"))) {
+                                        return AdminCommand.gc.get(c.<String>get("game")).getConfigurationContainer().getJoinedRegisteredKeysForConfigCommandList(String.class);
+                                    }
+                                    return List.of();
+                                })
+                        )
+                        .literal("clear", "c")
+                        .handler(commandContext -> editMode(commandContext, (sender, game) -> {
+                            String keyString = commandContext.get("key");
+                            var keys = List.of(keyString.toLowerCase().split("\\."));
+
+                            var keyOpt = game.getConfigurationContainer().getRegisteredListKeys()
+                                    .stream()
+                                    .filter(t -> t.getKey().equals(keys) && t.getType() == String.class)
+                                    .findFirst();
+
+                            if (keyOpt.isEmpty()) {
+                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_INVALID_CONSTANT_NAME).defaultPrefix());
+                            } else {
+                                var key = keyOpt.get();
+                                game.getConfigurationContainer().remove(key.getKey());
+                                game.getConfigurationContainer().update(key.getKey(), List.of());
+
+                                Message
+                                        .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_CONSTANT_LIST_CLEARED)
+                                        .placeholder("config", keyString)
+                                        .defaultPrefix()
+                                        .send(sender);
+                            }
+                        }))
+        );
+
+
+
+        // TODO: non-string lists
     }
 }
