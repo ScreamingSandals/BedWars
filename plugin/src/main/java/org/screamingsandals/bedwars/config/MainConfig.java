@@ -306,6 +306,22 @@ public class MainConfig {
                                 " "
                         ))
                         .back()
+                    .section("main-lobby")
+                        .key("enabled").defValue(false)
+                        .key("title").defValue("<yellow><bold>BED WARS")
+                        .key("content").defValue(() -> List.of(
+                                "<white>Your level: <level>",
+                                "<white>Progress: <aqua><current-progress><gray>/<green><goal>",
+                                "<progress-bar>",
+                                " ",
+                                "<white>Total Kills: <green><kills>",
+                                "<white>Total Wins: <green><wins>",
+                                "",
+                                "<white>K/D ratio: <green><kd-ratio>",
+                                "",
+                                "<yellow>www.screamingsandals.org"
+                        ))
+                        .back()
                     .back()
                 .section("title")
                     .key("enabled").defValue(true)

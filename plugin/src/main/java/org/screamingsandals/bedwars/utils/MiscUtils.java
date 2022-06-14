@@ -45,6 +45,9 @@ import org.screamingsandals.lib.world.WorldHolder;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -430,5 +433,13 @@ public class MiscUtils {
 
     public String toLegacyColorCode(Color color) {
         return "§" + Integer.toString(COLOR_TO_ID_MAP.getOrDefault(Color.nearestNamedTo(color), 15), 16);
+    }
+
+    public String getFormattedDate(String format) {
+        try {
+            return new SimpleDateFormat(format).format(new Date());
+        } catch (Throwable ignored) {
+            return DateTimeFormatter.ISO_DATE.format(LocalDate.now());
+        }
     }
 }

@@ -37,6 +37,7 @@ import org.screamingsandals.bedwars.inventories.ShopInventory;
 import org.screamingsandals.bedwars.lang.BedWarsLangService;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.listener.*;
+import org.screamingsandals.bedwars.lobby.LobbySidebarManager;
 import org.screamingsandals.bedwars.lobby.NPCManager;
 import org.screamingsandals.bedwars.placeholderapi.BedwarsExpansion;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
@@ -117,7 +118,8 @@ import java.util.Objects;
                 EntitiesManagerImpl.class,
                 ColorChangerImpl.class,
                 GamesInventory.class,
-                NPCManager.class
+                NPCManager.class,
+                LobbySidebarManager.class
         },
         packages = {
                 "org.screamingsandals.bedwars.special"

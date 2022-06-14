@@ -28,6 +28,7 @@ import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.listener.Player116ListenerUtils;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
+import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.packet.SClientboundSetPlayerTeamPacket;
 import org.screamingsandals.lib.player.PlayerWrapper;
@@ -69,7 +70,7 @@ public class GameSidebar {
                             .placeholder("max-players", game.getMaxPlayers())
                             .placeholder("time", () -> Component.text(game.getFormattedTimeLeft()))
                             .placeholder("version", VersionInfo.VERSION)
-                            .placeholder("date", getFormattedDate(game.getConfigurationContainer().getOrDefault(ConfigurationContainer.SIDEBAR_DATE_FORMAT, "date-format")))
+                            .placeholder("date", MiscUtils.getFormattedDate(game.getConfigurationContainer().getOrDefault(ConfigurationContainer.SIDEBAR_DATE_FORMAT, "date-format")))
                             .placeholder("mode", checkMode())
                             .placeholder("state", sender -> {
                                 if (game.countConnectedPlayers() >= game.getMinPlayers() && (game.countActiveTeams() > 1
@@ -121,7 +122,7 @@ public class GameSidebar {
                                     .placeholder("max-players", game.getMaxPlayers())
                                     .placeholder("time", () -> Component.text(game.getFormattedTimeLeft()))
                                     .placeholder("version", VersionInfo.VERSION)
-                                    .placeholder("date", getFormattedDate(game.getConfigurationContainer().getOrDefault(ConfigurationContainer.SIDEBAR_DATE_FORMAT, "date-format")))
+                                    .placeholder("date", MiscUtils.getFormattedDate(game.getConfigurationContainer().getOrDefault(ConfigurationContainer.SIDEBAR_DATE_FORMAT, "date-format")))
                                     .placeholder("mode", checkMode())
                                     .placeholder("tier", () -> Component.text("Not implemented yet.", Color.RED)) // TODO
                                     .placeholder("kills", () -> Component.text("Not implemented yet.", Color.RED)) // TODO
@@ -263,14 +264,6 @@ public class GameSidebar {
 
     public void removePlayer(PlayerWrapper player) {
         teamedSidebar.removeViewer(player);
-    }
-
-    public String getFormattedDate(String format) {
-        try {
-            return new SimpleDateFormat(format).format(new Date());
-        } catch (Throwable ignored) {
-            return DateTimeFormatter.ISO_DATE.format(LocalDate.now());
-        }
     }
 
     public Message checkMode() {
