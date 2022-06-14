@@ -56,6 +56,7 @@ public interface ConfigurationContainer {
     ConfigurationKey<Boolean> INVISIBLE_LOBBY_ON_GAME_START = ConfigurationKey.of(Boolean.class, "invisible-lobby-on-game-start");
     ConfigurationKey<Boolean> ENABLE_BELOW_NAME_HEALTH_INDICATOR = ConfigurationKey.of(Boolean.class, "enable-below-name-health-indicator");
     ConfigurationKey<Boolean> USE_CERTAIN_POPULAR_SERVER_LIKE_HOLOGRAMS_FOR_SPAWNERS = ConfigurationKey.of(Boolean.class, "use-certain-popular-server-like-holograms-for-spawners");
+    ConfigurationKey<Boolean> USE_TEAM_LETTER_PREFIXES_BEFORE_PLAYER_NAMES = ConfigurationKey.of(Boolean.class, "use-team-letter-prefixes-before-player-names");
     
     ConfigurationKey<Boolean> BOSSBAR_LOBBY_ENABLED = ConfigurationKey.of(Boolean.class, "bossbar", "lobby", "enabled");
     ConfigurationKey<Boolean> BOSSBAR_GAME_ENABLED = ConfigurationKey.of(Boolean.class, "bossbar", "game", "enabled");
@@ -67,6 +68,7 @@ public interface ConfigurationContainer {
     ConfigurationKey<String> SIDEBAR_GAME_TEAM_PREFIXES_TARGET_BLOCK_LOST = ConfigurationKey.of(String.class, "sidebar", "game", "team-prefixes", "target-block-lost");
     ConfigurationKey<String> SIDEBAR_GAME_TEAM_PREFIXES_ANCHOR_EMPTY = ConfigurationKey.of(String.class, "sidebar", "game", "team-prefixes", "anchor-empty");
     ConfigurationKey<String> SIDEBAR_GAME_TEAM_PREFIXES_TARGET_BLOCK_EXISTS = ConfigurationKey.of(String.class, "sidebar", "game", "team-prefixes", "target-block-exists");
+    ConfigurationKey<String> SIDEBAR_GAME_TEAM_PREFIXES_TEAM_COUNT = ConfigurationKey.of(String.class, "sidebar", "game", "team-prefixes", "team-count");
     ConfigurationKey<String> SIDEBAR_GAME_TEAM_LINE = ConfigurationKey.of(String.class, "sidebar", "game", "team-line");
     ConfigurationListKey<String> SIDEBAR_GAME_CONTENT = ConfigurationListKey.of(String.class, "sidebar", "game", "content");
     ConfigurationKey<Boolean> SIDEBAR_LOBBY_ENABLED = ConfigurationKey.of(Boolean.class, "sidebar", "lobby", "enabled");

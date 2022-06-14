@@ -67,6 +67,7 @@ public class GameConfigurationContainer implements ConfigurationContainer {
         register(ConfigurationContainer.SIDEBAR_GAME_TEAM_PREFIXES_TARGET_BLOCK_LOST, "sidebar", "game", "team-prefixes", "target-block-lost");
         register(ConfigurationContainer.SIDEBAR_GAME_TEAM_PREFIXES_ANCHOR_EMPTY, "sidebar", "game", "team-prefixes", "anchor-empty");
         register(ConfigurationContainer.SIDEBAR_GAME_TEAM_PREFIXES_TARGET_BLOCK_EXISTS, "sidebar", "game", "team-prefixes", "target-block-exists");
+        register(ConfigurationContainer.SIDEBAR_GAME_TEAM_PREFIXES_TEAM_COUNT, "sidebar", "game", "team-prefixes", "team-count");
         register(ConfigurationContainer.SIDEBAR_GAME_TEAM_LINE, "sidebar", "game", "team-line");
         register(ConfigurationContainer.SIDEBAR_GAME_CONTENT, "sidebar", "game", "content");
         register(ConfigurationContainer.SIDEBAR_LOBBY_ENABLED,  "sidebar", "lobby", "enabled");
@@ -91,6 +92,7 @@ public class GameConfigurationContainer implements ConfigurationContainer {
         register(ConfigurationContainer.INVISIBLE_LOBBY_ON_GAME_START, "invisible-lobby-on-game-start");
         register(ConfigurationContainer.ENABLE_BELOW_NAME_HEALTH_INDICATOR, "enable-below-name-health-indicator");
         register(ConfigurationContainer.USE_CERTAIN_POPULAR_SERVER_LIKE_HOLOGRAMS_FOR_SPAWNERS, "use-certain-popular-server-like-holograms-for-spawners");
+        register(ConfigurationContainer.USE_TEAM_LETTER_PREFIXES_BEFORE_PLAYER_NAMES, "use-team-letter-prefixes-before-player-names");
         register(ConfigurationContainer.DEFAULT_SHOP_FILE);
     }
 

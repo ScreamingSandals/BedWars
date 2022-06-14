@@ -103,6 +103,7 @@ public class MainConfig {
                 .key("enable-below-name-health-indicator").defValue(true)
                 .key("enable-cheat-command-for-admins").defValue(false)
                 .key("shopkeepers-are-silent").defValue(true)
+                .key("use-team-letter-prefixes-before-player-names").defValue(false)
                 .section("tnt-jump")
                     .key("enabled").defValue(true)
                     .key("source-damage").defValue(0.5)
@@ -214,6 +215,7 @@ public class MainConfig {
                             .key("target-block-lost").migrateOldAbsoluteKey("scoreboard", "bedLost").remap(this::toMiniMessage).defValue("<red>\u2718")
                             .key("anchor-empty").migrateOldAbsoluteKey("scoreboard", "anchorEmpty").remap(this::toMiniMessage).defValue("<yellow>\u2718")
                             .key("target-block-exists").migrateOldAbsoluteKey("scoreboard", "bedExists").remap(this::toMiniMessage).defValue("<green>\u2714")
+                            .key("team-count").defValue("<green><count>")
                             .back()
                         .key("team-line").migrateOldAbsoluteKey("scoreboard", "teamTitle").remap(node -> {
                             try {

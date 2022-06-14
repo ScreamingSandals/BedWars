@@ -24,6 +24,9 @@ config:
   use-certain-popular-server-like-holograms-for-spawners: true
   join-random-team-after-lobby: true
   default-shop-file: certain-popular-server/shop.yml
+  team-join-item-enabled: false
+  add-wool-to-inventory-on-join: false
+  use-team-letter-prefixes-before-player-names: true
   sidebar:
     date-format: "MM/dd/yy"
     game:
@@ -31,10 +34,11 @@ config:
       legacy-sidebar: false
       title: "<yellow><bold>BED WARS" # TODO: animated
       team-prefixes:
-        target-block-lost: <color:red>✘</color>
-        anchor-empty: <color:yellow>✘</color>
-        target-block-exists: <color:green>✔</color>
-      team-line: <target-block-prefix><team-color><team> <gray>(<team-size>) <you>
+        target-block-lost: <red>✘
+        anchor-empty: <yellow>✘
+        target-block-exists: <green>✔
+        team-count: <green><count>
+      team-line: "<team-color-letter> <team>: <team-status><you>"
       content:
         - "<gray><date>"
         - ""

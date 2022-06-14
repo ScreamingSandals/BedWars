@@ -174,9 +174,12 @@ public class GameSidebar {
 
         game.getActiveTeams().forEach(team -> {
             if (teamedSidebar.getTeam(team.getName()).isEmpty()) {
-                teamedSidebar.team(team.getName())
+                var t = teamedSidebar.team(team.getName())
                         .color(SClientboundSetPlayerTeamPacket.TeamColor.valueOf(Color.nearestNamedTo(team.getColor().getTextColor()).toString().toUpperCase())) // TODO: a better way
                         .friendlyFire(game.getConfigurationContainer().getOrDefault(ConfigurationContainer.FRIENDLYFIRE, false));
+                if (game.getConfigurationContainer().getOrDefault(ConfigurationContainer.USE_TEAM_LETTER_PREFIXES_BEFORE_PLAYER_NAMES, false)) {
+                    t.teamPrefix(Component.text().content(team.getName().charAt(0) + " ").color(team.getColor().getTextColor()).bold().build());
+                }
             }
             var sidebarTeam = teamedSidebar.getTeam(team.getName()).orElseThrow();
 
@@ -201,9 +204,11 @@ public class GameSidebar {
 
         return Message.ofRichText(game.getConfigurationContainer().getOrDefault(ConfigurationContainer.SIDEBAR_GAME_TEAM_LINE, "<target-block-prefix><team-color><team>"))
                 .earlyPlaceholder("team-color", "<color:" + team.getColor().getTextColor().toString() + ">") // TODO: replace this sin
+                .placeholder("team-color-letter", Component.text(team.getName().charAt(0), team.getColor().getTextColor())) // TODO: custom letters
                 .placeholder("team-size", () -> Component.text(team.countConnectedPlayers()))
                 .placeholder("team", team.getName())
                 .placeholder("target-block-prefix", sender -> {
+                    // old good sbw
                     if (team.isTargetBlockIntact()) {
                         if (team.getTargetBlock().getBlock().getType().isSameType("respawn_anchor") && Player116ListenerUtils.isAnchorEmpty(team.getTargetBlock().getBlock())) {
                             return Message.ofRichText(game.getConfigurationContainer().getOrDefault(ConfigurationContainer.SIDEBAR_GAME_TEAM_PREFIXES_ANCHOR_EMPTY, "")).asComponent(sender);
@@ -214,13 +219,25 @@ public class GameSidebar {
                         return Message.ofRichText(game.getConfigurationContainer().getOrDefault(ConfigurationContainer.SIDEBAR_GAME_TEAM_PREFIXES_TARGET_BLOCK_LOST, "")).asComponent(sender);
                     }
                 })
+                .placeholder("team-status", sender -> {
+                    // certain popular server
+                    if (team.isTargetBlockIntact() && (!team.getTargetBlock().getBlock().getType().isSameType("respawn_anchor") || !Player116ListenerUtils.isAnchorEmpty(team.getTargetBlock().getBlock()))) {
+                        return Message.ofRichText(game.getConfigurationContainer().getOrDefault(ConfigurationContainer.SIDEBAR_GAME_TEAM_PREFIXES_TARGET_BLOCK_EXISTS, "")).asComponent(sender);
+                    } else if (team.countConnectedPlayers() > 0) {
+                        return Message.ofRichText(game.getConfigurationContainer().getOrDefault(ConfigurationContainer.SIDEBAR_GAME_TEAM_PREFIXES_TEAM_COUNT, ""))
+                                .placeholder("count", team.countConnectedPlayers())
+                                .asComponent(sender);
+                    } else {
+                        return Message.ofRichText(game.getConfigurationContainer().getOrDefault(ConfigurationContainer.SIDEBAR_GAME_TEAM_PREFIXES_TARGET_BLOCK_LOST, "")).asComponent(sender);
+                    }
+                })
                 .placeholder("you", sender -> {
                     if (sender instanceof PlayerWrapper) { // legacy sidebar means sender is null
                         var player = sender.as(PlayerWrapper.class);
                         if (PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
                             var bwPlayer = player.as(BedWarsPlayer.class);
                             if (team.isPlayerInTeam(bwPlayer)) {
-                                return Component.text().append("").append(Message.of(LangKeys.IN_GAME_SCOREBOARD_YOU).asComponent(sender)).build();
+                                return Component.space().withAppendix(Message.of(LangKeys.IN_GAME_SCOREBOARD_YOU).asComponent(sender));
                             }
                         }
                     }
