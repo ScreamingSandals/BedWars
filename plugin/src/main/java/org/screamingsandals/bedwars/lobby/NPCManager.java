@@ -87,7 +87,7 @@ public class NPCManager {
 
     @OnPreDisable
     public void onPreDisable() {
-        if (npcs.isEmpty() || !modified) {
+        if (!modified) {
             return;
         }
 

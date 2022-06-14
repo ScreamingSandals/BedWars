@@ -28,11 +28,11 @@ import org.screamingsandals.bedwars.inventories.GamesInventory;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.bedwars.utils.SerializableLocation;
 import org.screamingsandals.lib.Server;
+import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.npc.NPC;
 import org.screamingsandals.lib.npc.skin.NPCSkin;
 import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.player.PlayerWrapper;
-import org.screamingsandals.lib.spectator.Component;
 import org.screamingsandals.lib.utils.InteractType;
 import org.screamingsandals.lib.utils.TriConsumer;
 import org.screamingsandals.lib.world.LocationHolder;
@@ -50,7 +50,7 @@ public class BedWarsNPC {
     private Action action = Action.DUMMY;
     private String value;
     private boolean shouldLookAtPlayer = true;
-    private final List<Component> hologramAbove = new ArrayList<>();
+    private final List<String> hologramAbove = new ArrayList<>();
 
     @Getter
     private transient NPC npc;
@@ -58,9 +58,11 @@ public class BedWarsNPC {
     public void spawn() {
         if (npc == null && location != null && location.isWorldLoaded()) {
             npc = NPC.of(location.as(LocationHolder.class))
-                    .displayName(hologramAbove)
                     .touchable(true)
                     .lookAtPlayer(shouldLookAtPlayer);
+
+            var holo = npc.hologram();
+            hologramAbove.forEach(s -> holo.bottomLine(Message.ofRichText(s)));
 
             if (skin != null && skin.getValue() != null) {
                 npc.skin(skin);

@@ -30,7 +30,6 @@ import org.screamingsandals.bedwars.inventories.GamesInventory;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.lobby.BedWarsNPC;
 import org.screamingsandals.bedwars.lobby.NPCManager;
-import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.bedwars.utils.SerializableLocation;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.npc.skin.NPCSkin;
@@ -56,6 +55,9 @@ public class NPCCommand extends BaseCommand {
 
     @Override
     protected void construct(Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder, CommandManager<CommandSenderWrapper> manager) {
+        NPCS_IN_HAND.clear(); // reset npcs in hand after reload
+        SELECTING_NPC.clear();
+
         manager.command(
                 commandSenderWrapperBuilder
                         .literal("add")
@@ -231,12 +233,11 @@ public class NPCCommand extends BaseCommand {
                             }
 
                             var npc = NPCS_IN_HAND.get(player.getUuid());
-                            var component = Component.fromLegacy(MiscUtils.translateAlternateColorCodes('&', line));
-                            npc.getHologramAbove().add(component);
-                            npc.getNpc().displayName(npc.getHologramAbove());
+                            npc.getHologramAbove().add(line);
+                            npc.getNpc().hologram().bottomLine(Message.ofRichText(line));
                             lobbyNPCManager.setModified(true);
                             player.sendMessage(Message.of(LangKeys.ADMIN_HOLOGRAM_LINE_ADDED).defaultPrefix()
-                                    .placeholder("line", component)
+                                    .placeholder("line", line)
                             );
                         })
         );
@@ -266,13 +267,12 @@ public class NPCCommand extends BaseCommand {
                                         .placeholder("linenumber", number));
                                 return;
                             }
-                            var component = Component.fromLegacy(MiscUtils.translateAlternateColorCodes('&', line));
-                            npc.getHologramAbove().set(number - 1, component);
-                            npc.getNpc().displayName(npc.getHologramAbove());
+                            npc.getHologramAbove().set(number - 1, line);
+                            npc.getNpc().hologram().replaceLine(number - 1, Message.ofRichText(line));
                             lobbyNPCManager.setModified(true);
                             player.sendMessage(Message.of(LangKeys.ADMIN_HOLOGRAM_LINE_SET).defaultPrefix()
                                     .placeholder("linenumber", number)
-                                    .placeholder("line", component)
+                                    .placeholder("line", line)
                             );
                         })
         );
@@ -301,7 +301,7 @@ public class NPCCommand extends BaseCommand {
                                 return;
                             }
                             npc.getHologramAbove().remove(number - 1);
-                            npc.getNpc().displayName(npc.getHologramAbove());
+                            npc.getNpc().hologram().removeLine(number); // why does this not work the same way as replaceLine??
                             lobbyNPCManager.setModified(true);
                             player.sendMessage(Message.of(LangKeys.ADMIN_HOLOGRAM_LINE_REMOVED).defaultPrefix()
                                     .placeholder("linenumber", number)
