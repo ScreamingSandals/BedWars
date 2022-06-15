@@ -42,6 +42,7 @@ import org.screamingsandals.lib.utils.annotations.methods.Provider;
         CheatCommand.class,
         DumpCommand.class,
         HelpCommand.class,
+        HelpOldCommand.class,
         JoinCommand.class,
         LanguageCommand.class,
         LeaderboardCommand.class,

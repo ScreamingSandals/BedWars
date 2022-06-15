@@ -21,14 +21,13 @@ package org.screamingsandals.bedwars.commands;
 
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
-import org.screamingsandals.bedwars.BedWarsPlugin;
-import org.screamingsandals.bedwars.config.MainConfig;
+import cloud.commandframework.arguments.standard.StringArgument;
+import org.screamingsandals.bedwars.VersionInfo;
 import org.screamingsandals.bedwars.lang.LangKeys;
+import org.screamingsandals.lib.cloud.extras.MinecraftHelp;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
 import org.screamingsandals.lib.utils.annotations.Service;
-import org.screamingsandals.lib.utils.annotations.methods.OnPostEnable;
-import org.screamingsandals.lib.utils.annotations.parameters.ProvidedBy;
 
 @Service
 public class HelpCommand extends BaseCommand {
@@ -38,138 +37,40 @@ public class HelpCommand extends BaseCommand {
 
     @Override
     protected void construct(Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder, CommandManager<CommandSenderWrapper> manager) {
-        manager.command(commandSenderWrapperBuilder
-                .handler(commandContext -> {
-                    // TODO: use more generic way
-                    var sender = commandContext.getSender();
-                    if (sender.getType() == CommandSenderWrapper.Type.PLAYER) {
-                        Message.of(LangKeys.HELP_TITLE).placeholder("version", BedWarsPlugin.getVersion()).send(sender);
-                        if (sender.hasPermission(BedWarsPermission.JOIN_PERMISSION.asPermission())) {
-                            Message.of(LangKeys.HELP_BW_JOIN).send(sender);
-                        }
-                        if (sender.hasPermission(BedWarsPermission.LEAVE_PERMISSION.asPermission())) {
-                            Message.of(LangKeys.HELP_BW_LEAVE).send(sender);
-                        }
-                        if (sender.hasPermission(BedWarsPermission.REJOIN_PERMISSION.asPermission())) {
-                            Message.of(LangKeys.HELP_BW_REJOIN).send(sender);
-                        }
-                        if (sender.hasPermission(BedWarsPermission.AUTOJOIN_PERMISSION.asPermission())) {
-                            Message.of(LangKeys.HELP_BW_AUTOJOIN).send(sender);
-                        }
-                        if (sender.hasPermission(BedWarsPermission.LIST_PERMISSION.asPermission())) {
-                            Message.of(LangKeys.HELP_BW_LIST).send(sender);
-                        }
-                        if (sender.hasPermission(BedWarsPermission.LEADERBOARD_PERMISSION.asPermission())) {
-                            Message.of(LangKeys.HELP_BW_LEADERBOARD).send(sender);
-                        }
-
-                        if (sender.hasPermission(BedWarsPermission.STATS_PERMISSION.asPermission())) {
-                            if (sender.hasPermission(BedWarsPermission.ADMIN_PERMISSION.asPermission()) || sender.hasPermission(BedWarsPermission.OTHER_STATS_PERMISSION.asPermission())) {
-                                Message.of(LangKeys.HELP_BW_STATS_OTHER).send(sender);
-                            } else {
-                                Message.of(LangKeys.HELP_BW_STATS).send(sender);
-                            }
-                        }
-
-                        if (sender.hasPermission(BedWarsPermission.GAMES_INVENTORY_PERMISSION.asPermission())) {
-                            Message.of(LangKeys.HELP_BW_GAMESINV).send(sender);
-                        }
-
-                        if (sender.hasPermission(BedWarsPermission.ALL_JOIN_PERMISSION.asPermission())) {
-                            Message.of(LangKeys.HELP_BW_ALLJOIN).send(sender);
-                        }
-
-                        if (sender.hasPermission(BedWarsPermission.ADMIN_PERMISSION.asPermission())) {
-                            if (MainConfig.getInstance().node("enable-cheat-command-for-admins").getBoolean()) {
-                                Message.of(LangKeys.HELP_BW_CHEAT_GIVE)
-                                        .join(LangKeys.HELP_BW_CHEAT_KILL)
-                                        .join(LangKeys.HELP_BW_CHEAT_BUILD_POP_UP_TOWER)
-                                        .join(LangKeys.HELP_BW_CHEAT_REBUILD_REGION)
-                                        .send(sender);
-                            }
-
-                            Message
-                                    .of(LangKeys.HELP_BW_ADDHOLO)
-                                    .join(LangKeys.HELP_BW_REMOVEHOLO)
-                                    .join(LangKeys.HELP_BW_MAINLOBBY)
-                                    .join(LangKeys.HELP_BW_ADMIN_INFO)
-                                    .join(LangKeys.HELP_BW_ADMIN_ADD)
-                                    .join(LangKeys.HELP_BW_ADMIN_LOBBY)
-                                    .join(LangKeys.HELP_BW_ADMIN_SPEC)
-                                    .join(LangKeys.HELP_BW_ADMIN_POS1)
-                                    .join(LangKeys.HELP_BW_ADMIN_POS2)
-                                    .join(LangKeys.HELP_BW_ADMIN_LOBBY_POS1)
-                                    .join(LangKeys.HELP_BW_ADMIN_LOBBY_POS2)
-                                    .join(LangKeys.HELP_BW_ADMIN_PAUSECOUNTDOWN)
-                                    .join(LangKeys.HELP_BW_ADMIN_POST_GAME_WAITING)
-                                    .join(LangKeys.HELP_BW_ADMIN_CUSTOMPREFIX)
-                                    .join(LangKeys.HELP_BW_ADMIN_DISPLAY_NAME)
-                                    .join(LangKeys.HELP_BW_ADMIN_MINPLAYERS)
-                                    .join(LangKeys.HELP_BW_ADMIN_TIME)
-                                    .join(LangKeys.HELP_BW_ADMIN_TEAM_ADD)
-                                    .join(LangKeys.HELP_BW_ADMIN_TEAM_COLOR)
-                                    .join(LangKeys.HELP_BW_ADMIN_TEAM_MAXPLAYERS)
-                                    .join(LangKeys.HELP_BW_ADMIN_TEAM_SPAWN)
-                                    .join(LangKeys.HELP_BW_ADMIN_TEAM_BED)
-                                    .join(LangKeys.HELP_BW_ADMIN_JOINTEAM)
-                                    .join(LangKeys.HELP_BW_ADMIN_SPAWNER_ADD)
-                                    .join(LangKeys.HELP_BW_ADMIN_SPAWNER_BASE_AMOUNT)
-                                    .join(LangKeys.HELP_BW_ADMIN_SPAWNER_MAX_SPAWNED_RESOURCES)
-                                    .join(LangKeys.HELP_BW_ADMIN_SPAWNER_LINKED_TEAM)
-                                    .join(LangKeys.HELP_BW_ADMIN_SPAWNER_HOLOGRAM)
-                                    .join(LangKeys.HELP_BW_ADMIN_SPAWNER_HOLOGRAM_TYPE)
-                                    .join(LangKeys.HELP_BW_ADMIN_SPAWNER_FLOATING)
-                                    .join(LangKeys.HELP_BW_ADMIN_SPAWNER_ROTATION_MODE)
-                                    .join(LangKeys.HELP_BW_ADMIN_SPAWNER_CUSTOM_NAME)
-                                    .join(LangKeys.HELP_BW_ADMIN_SPAWNER_CHANGE_TYPE)
-                                    .join(LangKeys.HELP_BW_ADMIN_SPAWNER_REMOVE)
-                                    .join(LangKeys.HELP_BW_ADMIN_SPAWNER_RESET)
-                                    .join(LangKeys.HELP_BW_ADMIN_STORE_ADD)
-                                    .join(LangKeys.HELP_BW_ADMIN_STORE_TYPE)
-                                    .join(LangKeys.HELP_BW_ADMIN_STORE_CHILD)
-                                    .join(LangKeys.HELP_BW_ADMIN_STORE_ADULT)
-                                    .join(LangKeys.HELP_BW_ADMIN_STORE_REMOVE)
-                                    .join(LangKeys.HELP_BW_ADMIN_CONFIG_SET)
-                                    .join(LangKeys.HELP_BW_ADMIN_CONFIG_RESET)
-                                    .join(LangKeys.HELP_BW_ADMIN_CONFIG_LIST_ADD)
-                                    .join(LangKeys.HELP_BW_ADMIN_CONFIG_LIST_SET)
-                                    .join(LangKeys.HELP_BW_ADMIN_CONFIG_LIST_REMOVE)
-                                    .join(LangKeys.HELP_BW_ADMIN_CONFIG_LIST_CLEAR)
-                                    .join(LangKeys.HELP_BW_ADMIN_FEE)
-                                    .join(LangKeys.HELP_BW_ADMIN_ARENA_TIME)
-                                    .join(LangKeys.HELP_BW_ADMIN_ARENA_WEATHER)
-                                    .join(LangKeys.HELP_BW_ADMIN_REMOVE)
-                                    .join(LangKeys.HELP_BW_ADMIN_EDIT)
-                                    .join(LangKeys.HELP_BW_ADMIN_SAVE)
-                                    .join(LangKeys.HELP_BW_RELOAD)
-                                    .join(LangKeys.HELP_BW_DUMP)
-                                    .join(LangKeys.HELP_BW_MIGRATE)
-                                    .send(sender);
-                        }
-                    } else {
-                        Message
-                                .of(LangKeys.HELP_TITLE_CONSOLE)
-                                .placeholder("version", BedWarsPlugin.getVersion())
-                                .join(LangKeys.HELP_BW_LIST)
-                                .join(LangKeys.HELP_BW_STATS_OTHER)
-                                .join(LangKeys.HELP_BW_ALLJOIN)
-                                .join(LangKeys.HELP_BW_MIGRATE)
-                                .join(LangKeys.HELP_BW_RELOAD)
-                                .send(sender);
+        var minecraftHelp = MinecraftHelp.createNative("/bw help", manager)
+                .commandFilter((command, sender) -> {
+                    if ((command.getSenderType().isPresent() && !command.getSenderType().get().isInstance(sender)) || command.isHidden()) {
+                        return false; // Cloud for some reason doesn't check sender type and hidden
                     }
+                    return true; // Permissions will be resolved by Cloud itself
                 })
+                .setHeaderFooterLength(55)
+                .messageProvider(MinecraftHelp::commandSenderWrapperMessageProvider)
+                .setMessage(MinecraftHelp.MESSAGE_HELP_TITLE, Message.of(LangKeys.HELP_TITLE).placeholder("version", VersionInfo.VERSION))
+                .setMessage(MinecraftHelp.MESSAGE_COMMAND, Message.of(LangKeys.HELP_MESSAGES_COMMAND))
+                .setMessage(MinecraftHelp.MESSAGE_DESCRIPTION, Message.of(LangKeys.HELP_MESSAGES_DESCRIPTION))
+                .setMessage(MinecraftHelp.MESSAGE_NO_DESCRIPTION, Message.of(LangKeys.HELP_MESSAGES_NO_DESCRIPTION))
+                .setMessage(MinecraftHelp.MESSAGE_ARGUMENTS, Message.of(LangKeys.HELP_MESSAGES_ARGUMENTS))
+                .setMessage(MinecraftHelp.MESSAGE_OPTIONAL, Message.of(LangKeys.HELP_MESSAGES_OPTIONAL))
+                .setMessage(MinecraftHelp.MESSAGE_SHOWING_RESULTS_FOR_QUERY, Message.of(LangKeys.HELP_MESSAGES_SHOWING_RESULTS_FOR_QUERY))
+                .setMessage(MinecraftHelp.MESSAGE_NO_RESULTS_FOR_QUERY, Message.of(LangKeys.HELP_MESSAGES_NO_RESULTS_FOR_QUERY))
+                .setMessage(MinecraftHelp.MESSAGE_AVAILABLE_COMMANDS, Message.of(LangKeys.HELP_MESSAGES_AVAILABLE_COMMANDS))
+                .setMessage(MinecraftHelp.MESSAGE_CLICK_TO_SHOW_HELP, Message.of(LangKeys.HELP_MESSAGES_CLICK_TO_SHOW_HELP))
+                .setMessage(MinecraftHelp.MESSAGE_PAGE_OUT_OF_RANGE, Message.of(LangKeys.HELP_MESSAGES_PAGE_OUT_OF_RANGE))
+                .setMessage(MinecraftHelp.MESSAGE_CLICK_FOR_NEXT_PAGE, Message.of(LangKeys.HELP_MESSAGES_CLICK_FOR_NEXT_PAGE))
+                .setMessage(MinecraftHelp.MESSAGE_CLICK_FOR_PREVIOUS_PAGE, Message.of(LangKeys.HELP_MESSAGES_CLICK_FOR_PREVIOUS_PAGE));
+
+        manager.command(
+                commandSenderWrapperBuilder
+                        .argument(StringArgument.optional("query", StringArgument.StringMode.GREEDY))
+                        .hidden()
+                        .handler(context -> minecraftHelp.queryCommands(context.getOrDefault("query", ""), context.getSender()))
         );
-    }
 
-    /*
-     * Special case, only for help command
-     */
-    @Override
-    @OnPostEnable
-    public void construct(@ProvidedBy(CommandService.class) CommandManager<CommandSenderWrapper> manager) {
-        var builder = manager.commandBuilder("bw");
-        construct(builder, manager);
-
-        super.construct(manager);
+        // special case: help command
+        manager.command(manager.commandBuilder("bw")
+                .hidden()
+                .handler(context -> minecraftHelp.queryCommands("", context.getSender()))
+        );
     }
 }
