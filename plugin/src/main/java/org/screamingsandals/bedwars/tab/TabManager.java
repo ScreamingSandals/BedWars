@@ -22,6 +22,7 @@ package org.screamingsandals.bedwars.tab;
 import lombok.RequiredArgsConstructor;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
+import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.lib.plugin.ServiceManager;
 import org.screamingsandals.lib.spectator.Component;
 import org.screamingsandals.lib.utils.annotations.Service;
@@ -66,16 +67,7 @@ public class TabManager {
 
     public void modifyForPlayer(BedWarsPlayer player) {
         if (player.isOnline() && (header != null || footer != null)) {
-            if (header != null) {
-                player.sendPlayerListHeader(translate(player, header));
-            } else {
-                player.sendPlayerListHeader(Component.empty());
-            }
-            if (header != null) {
-                player.sendPlayerListFooter(translate(player, footer));
-            } else {
-                player.sendPlayerListFooter(Component.empty());
-            }
+            player.sendPlayerListHeaderFooter(header != null ? translate(player, header) : Component.empty(), footer != null ? translate(player, footer) : Component.empty());
         }
     }
 
@@ -96,14 +88,14 @@ public class TabManager {
             }
             var game = Objects.requireNonNull(gamePlayer.getGame());
             component.append(
-                    Component.fromLegacy(
+                    Component.fromLegacy(MiscUtils.translateAlternateColorCodes('&',
                             a.replace("%players%", String.valueOf(game.countPlayers()))
                                     .replace("%alive%", String.valueOf(game.countAlive()))
                                     .replace("%spectating%", String.valueOf(game.countSpectating()))
                                     .replace("%spectators%", String.valueOf(game.countSpectators()))
                                     .replace("%respawnable%", String.valueOf(game.countRespawnable()))
                                     .replace("%max%", String.valueOf(game.getMaxPlayers()))
-                                    .replace("%map%", game.getName()))
+                                    .replace("%map%", game.getName())))
             );
         });
         return component.asComponent();

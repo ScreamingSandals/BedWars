@@ -306,23 +306,6 @@ public class MainConfig {
                                 " "
                         ))
                         .back()
-                    .section("main-lobby")
-                        .key("enabled").defValue(false)
-                        .key("title").defValue("<yellow><bold>BED WARS")
-                        .key("content").defValue(() -> List.of(
-                                "<white>Your level: <level>",
-                                "",
-                                "<white>Progress: <aqua><current-progress><gray>/<green><goal>",
-                                "<progress-bar>",
-                                " ",
-                                "<white>Total Kills: <green><kills>",
-                                "<white>Total Wins: <green><wins>",
-                                "",
-                                "<white>K/D ratio: <green><kd-ratio>",
-                                "",
-                                "<yellow>screamingsandals.org"
-                        ))
-                        .back()
                     .back()
                 .section("title")
                     .key("enabled").defValue(true)
@@ -654,10 +637,42 @@ public class MainConfig {
                     .key("enabled").defValue(false)
                     .key("list").defValue(() -> List.of("leave"))
                     .back()
-                .section("mainlobby")
-                    .key("enabled").defValue(false)
-                    .key("location").defValue("")
-                    .key("world").defValue("")
+                .section("main-lobby")
+                    .key("enabled").migrateOldAbsoluteKey("mainlobby", "enabled").defValue(false)
+                    .key("location").migrateOldAbsoluteKey("mainlobby", "location").defValue("")
+                    .key("world").migrateOldAbsoluteKey("mainlobby", "world").defValue("")
+                    .key("date-format").migrateOldAbsoluteKey("sidebar", "date-format").preventOldKeyRemove().defValue("YY/mm/dd")
+                    .section("sidebar")
+                        .key("enabled").migrateOldAbsoluteKey("sidebar", "main-lobby", "enabled").defValue(false)
+                        .key("title").migrateOldAbsoluteKey("sidebar", "main-lobby", "title").defValue("<yellow><bold>BED WARS")
+                        .key("content").migrateOldAbsoluteKey("sidebar", "main-lobby", "content").defValue(() -> List.of(
+                                "<white>Your level: <level>",
+                                "",
+                                "<white>Progress: <aqua><current-progress><gray>/<green><goal>",
+                                "<progress-bar>",
+                                " ",
+                                "<white>Total Kills: <green><kills>",
+                                "<white>Total Wins: <green><wins>",
+                                "",
+                                "<white>K/D ratio: <green><kd-ratio>",
+                                "",
+                                "<yellow>screamingsandals.org"
+                        ))
+                        .back()
+                    .section("custom-chat")
+                        .key("enabled").defValue(false)
+                        .key("format").defValue("<level-prefix> <name>: <message>")
+                        .back()
+                    .section("tab")
+                        .key("enabled").defValue(false)
+                        .key("header").defValue(() -> List.of(
+                                "<yellow>Welcome <bold><name>",
+                                "<red>Online players: <players>"
+                        ))
+                        .key("footer").defValue(() -> List.of(
+                                "<yellow>www.screamingsandals.org"
+                        ))
+                        .back()
                     .back();
 
             generator.start()

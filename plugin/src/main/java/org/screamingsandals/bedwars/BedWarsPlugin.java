@@ -37,8 +37,6 @@ import org.screamingsandals.bedwars.inventories.ShopInventory;
 import org.screamingsandals.bedwars.lang.BedWarsLangService;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.listener.*;
-import org.screamingsandals.bedwars.lobby.LobbySidebarManager;
-import org.screamingsandals.bedwars.lobby.NPCManager;
 import org.screamingsandals.bedwars.placeholderapi.BedwarsExpansion;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.bedwars.premium.PremiumBedwars;
@@ -89,7 +87,6 @@ import java.util.Objects;
 @Init(
         services = {
                 EconomyProvider.class,
-                org.screamingsandals.lib.npc.NPCManager.class,
                 CommandService.class,
                 VariantManagerImpl.class,
                 GameManagerImpl.class,
@@ -117,12 +114,11 @@ import java.util.Objects;
                 PlayerListener.class,
                 EntitiesManagerImpl.class,
                 ColorChangerImpl.class,
-                GamesInventory.class,
-                NPCManager.class,
-                LobbySidebarManager.class
+                GamesInventory.class
         },
         packages = {
-                "org.screamingsandals.bedwars.special"
+                "org.screamingsandals.bedwars.special",
+                "org.screamingsandals.bedwars.lobby"
         }
 )
 @Init(platforms = {PlatformType.BUKKIT}, services = {
