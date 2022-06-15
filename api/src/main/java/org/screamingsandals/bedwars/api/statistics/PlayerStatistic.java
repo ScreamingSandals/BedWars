@@ -59,6 +59,27 @@ public interface PlayerStatistic {
     int getScore();
 
     /**
+     * Calculates player's level based on settings and his total score
+     *
+     * @return calculated player's level
+     */
+    int getLevel();
+
+    /**
+     * Calculates how many scores a player has earned since last level
+     *
+     * @return calculated player's new score
+     */
+    int getScoreSincePreviousLevel();
+
+    /**
+     * Returns the requirement for the next level
+     *
+     * @return next level requirement
+     */
+    int getNeededScoreToNextLevel();
+
+    /**
      * @return uuid of this player
      */
     UUID getUuid();

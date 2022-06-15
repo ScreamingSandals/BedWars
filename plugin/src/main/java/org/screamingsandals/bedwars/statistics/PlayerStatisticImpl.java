@@ -19,10 +19,7 @@
 
 package org.screamingsandals.bedwars.statistics;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.screamingsandals.bedwars.api.statistics.PlayerStatistic;
 import org.screamingsandals.lib.player.PlayerMapper;
 import org.spongepowered.configurate.ConfigurationNode;
@@ -46,6 +43,16 @@ public class PlayerStatisticImpl implements PlayerStatistic {
     private int loses;
     private int score;
     private int wins;
+
+    // just some caching for better pErFoRmAnCe
+    @Getter(AccessLevel.NONE)
+    private int levelCache = -1;
+    @Getter(AccessLevel.NONE)
+    private int neededScoreToNextLevelCache = -1;
+    @Getter(AccessLevel.NONE)
+    private int scoreSincePreviousLevelCache = -1;
+    @Getter(AccessLevel.NONE)
+    private int levelCacheScore = -1;
 
     public PlayerStatisticImpl(UUID uuid) {
         this.uuid = uuid;
@@ -94,6 +101,78 @@ public class PlayerStatisticImpl implements PlayerStatistic {
 
     public int getGames() {
         return this.getWins() + this.getLoses();
+    }
+
+    public int getLevel() {
+        cacheLevel();
+
+        return levelCache;
+    }
+
+    public int getNeededScoreToNextLevel() {
+        cacheLevel();
+
+        return neededScoreToNextLevelCache;
+    }
+
+    public int getScoreSincePreviousLevel() {
+        cacheLevel();
+
+        return scoreSincePreviousLevelCache;
+    }
+
+    private void cacheLevel() {
+        if (levelCache == -1 || neededScoreToNextLevelCache == -1 || scoreSincePreviousLevelCache == -1 || levelCacheScore == -1 || levelCacheScore != score) {
+            var playerStatisticManager = PlayerStatisticManager.getInstance();
+            var specificLevels = playerStatisticManager.getNeededXpToSpecificLevels();
+            var formulas = playerStatisticManager.getNeededXpToLevelsBasedOnFormula();
+            var any = playerStatisticManager.getNeededXpToNextLevel();
+
+            var level = 0;
+            var score = this.score;
+            var lCacheScore = score;
+            var neededScore = 0;
+            while (true) {
+                if (specificLevels.containsKey(level + 1)) {
+                    var needed = specificLevels.get(level + 1);
+                    if (score >= needed) {
+                        score -= needed;
+                        level++;
+                    } else {
+                        neededScore = needed;
+                        break; // not enough xp
+                    }
+                } else {
+                    var fLevel = level;
+                    var formula = formulas.entrySet().stream().filter(e -> e.getKey().test(fLevel + 1)).findFirst();
+                    if (formula.isPresent()) {
+                        var needed = formula.get().getValue();
+                        if (score >= needed) {
+                            score -= needed;
+                            level++;
+                        } else {
+                            neededScore = needed;
+                            break; // not enough xp
+                        }
+                    } else if (any != -1) {
+                        if (score >= any) {
+                            score -= any;
+                            level++;
+                        } else {
+                            neededScore = any;
+                            break; // not enough xp
+                        }
+                    } else {
+                        break; // can't level up anymore
+                    }
+                }
+            }
+
+            this.levelCache = level;
+            this.scoreSincePreviousLevelCache = score;
+            this.neededScoreToNextLevelCache = neededScore;
+            this.levelCacheScore = lCacheScore;
+        }
     }
 
     @Override

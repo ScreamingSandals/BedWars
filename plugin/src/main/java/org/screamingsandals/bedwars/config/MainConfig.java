@@ -263,7 +263,7 @@ public class MainConfig {
                                 " ",
                                 "<team-status>",
                                 "",
-                                "<gold>www.screamingsandals.org"
+                                "<gold>screamingsandals.org"
                         ))
                         .back()
                     .section("lobby")
@@ -311,6 +311,7 @@ public class MainConfig {
                         .key("title").defValue("<yellow><bold>BED WARS")
                         .key("content").defValue(() -> List.of(
                                 "<white>Your level: <level>",
+                                "",
                                 "<white>Progress: <aqua><current-progress><gray>/<green><goal>",
                                 "<progress-bar>",
                                 " ",
@@ -319,7 +320,7 @@ public class MainConfig {
                                 "",
                                 "<white>K/D ratio: <green><kd-ratio>",
                                 "",
-                                "<yellow>www.screamingsandals.org"
+                                "<yellow>screamingsandals.org"
                         ))
                         .back()
                     .back()
@@ -546,6 +547,14 @@ public class MainConfig {
                         .key("lose").defValue(0)
                         .key("record").defValue(100)
                         .back()
+                    .key("xp-to-level")
+                        .defValue(Map.of(
+                                "any", 5000,
+                                "100n + 1", 500,
+                                "100n + 2", 1000,
+                                "100n + 3", 2000,
+                                "100n + 4", 3500
+                        ))
                     .back()
                 .section("database")
                     .key("host").defValue("localhost")

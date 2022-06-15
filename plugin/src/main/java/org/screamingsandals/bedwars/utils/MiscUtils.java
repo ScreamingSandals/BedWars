@@ -442,4 +442,12 @@ public class MiscUtils {
             return DateTimeFormatter.ISO_DATE.format(LocalDate.now());
         }
     }
+
+    public String roundForMainLobbySidebar(double toRound) {
+        if (toRound >= 1000) {
+            var num = Math.round(toRound / 100) / 10.0;
+            return (num == (int) num ? (int) num : num) + "k";
+        }
+        return String.valueOf(toRound);
+    }
 }

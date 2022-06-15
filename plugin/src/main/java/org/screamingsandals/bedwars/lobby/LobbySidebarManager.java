@@ -16,6 +16,7 @@ import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.sidebar.Sidebar;
 import org.screamingsandals.lib.sidebar.SidebarManager;
+import org.screamingsandals.lib.spectator.Color;
 import org.screamingsandals.lib.spectator.Component;
 import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
@@ -54,15 +55,44 @@ public class LobbySidebarManager {
 
         content.forEach(s -> {
             var msg = Message.ofRichText(s)
-                    .placeholder("level", "Not implemented yet.") // TODO
-                    .placeholder("current-progress", "Not implemented yet.") // TODO
-                    .placeholder("goal", "Not implemented yet.") // TODO
-                    .placeholder("progress-bar", "Not implemented yet.") // TODO
                     .placeholder("version", VersionInfo.VERSION)
                     .placeholder("date", MiscUtils.getFormattedDate(mainConfig.node("sidebar", "date-format").getString("MM/dd/yy")));
 
             if (PlayerStatisticManager.isEnabled()) {
-                msg.placeholder("kills", sender -> {
+                msg.placeholder("goal", sender -> {
+                    if (sender instanceof PlayerWrapper) {
+                        return Component.text(MiscUtils.roundForMainLobbySidebar(playerStatisticManager.getStatistic((PlayerWrapper) sender).getNeededScoreToNextLevel()));
+                    }
+                    return Component.text(0); // how
+                }).placeholder("current-progress", sender -> {
+                    if (sender instanceof PlayerWrapper) {
+                        return Component.text(MiscUtils.roundForMainLobbySidebar(playerStatisticManager.getStatistic((PlayerWrapper) sender).getScoreSincePreviousLevel()));
+                    }
+                    return Component.text(0); // how
+                }).placeholder("level", sender -> {
+                    if (sender instanceof PlayerWrapper) {
+                        return Component.text(playerStatisticManager.getStatistic((PlayerWrapper) sender).getLevel() + "\u272B", Color.GRAY); // TODO: use prestiges when they are implemented
+                    }
+                    return Component.text(0); // how
+                }).placeholder("progress-bar", sender -> {
+                    if (sender instanceof PlayerWrapper) {
+                        var statistic = playerStatisticManager.getStatistic((PlayerWrapper) sender);
+                        var progress = statistic.getScoreSincePreviousLevel();
+                        var needed = statistic.getNeededScoreToNextLevel();
+                        if (needed <= 0) { // invalid
+                            return Component.text().content("[").append(Component.text("\u25A0".repeat(10) + "]", Color.GRAY)).color(Color.DARK_GRAY).append("]").build();
+                        }
+                        int numberOfBoxesFilled = (int) (((double) progress / needed) * 10);
+                        return Component.text()
+                                .content("[")
+                                .color(Color.DARK_GRAY)
+                                .append(Component.text("\u25A0".repeat(numberOfBoxesFilled), Color.AQUA))
+                                .append(Component.text("\u25A0".repeat(10 - numberOfBoxesFilled), Color.GRAY))
+                                .append("]")
+                                .build();
+                    }
+                    return Component.text(0); // how
+                }).placeholder("kills", sender -> {
                     if (sender instanceof PlayerWrapper) {
                         return Component.text(playerStatisticManager.getStatistic((PlayerWrapper) sender).getKills());
                     }
@@ -120,6 +150,8 @@ public class LobbySidebarManager {
             }
         });
 
+        sidebar.show();
+
         Tasker.build(() -> sidebar.update()).async().repeat(20, TaskerTime.TICKS).start();
     }
 
@@ -176,6 +208,6 @@ public class LobbySidebarManager {
             if (player.isOnline() && player.getLocation().getWorld().getName().equals(world)) {
                 sidebar.addViewer(player);
             }
-        }).delay(20, TaskerTime.TICKS);
+        }).delay(20, TaskerTime.TICKS).start();
     }
 }

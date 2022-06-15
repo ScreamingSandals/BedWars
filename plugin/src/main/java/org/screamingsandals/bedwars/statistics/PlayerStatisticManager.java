@@ -19,6 +19,7 @@
 
 package org.screamingsandals.bedwars.statistics;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.screamingsandals.bedwars.api.statistics.PlayerStatisticsManager;
 import org.screamingsandals.bedwars.config.MainConfig;
@@ -42,6 +43,7 @@ import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
 import java.sql.*;
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Service
@@ -57,6 +59,14 @@ public class PlayerStatisticManager implements PlayerStatisticsManager {
     private StatisticType statisticType;
     private final Map<UUID, PlayerStatisticImpl> playerStatistic = new HashMap<>();
     private final Map<UUID, Integer> allScores = new HashMap<>();
+
+    // level system
+    @Getter
+    private int neededXpToNextLevel = -1;
+    @Getter
+    private final Map<Integer, Integer> neededXpToSpecificLevels = new HashMap<>();
+    @Getter
+    private final Map<Predicate<Integer>, Integer> neededXpToLevelsBasedOnFormula = new HashMap<>();
 
     @ShouldRunControllable
     public static boolean isEnabled() {
@@ -100,6 +110,32 @@ public class PlayerStatisticManager implements PlayerStatisticsManager {
         }
 
         this.initializeLeaderboard();
+
+        neededXpToNextLevel = -1;
+        neededXpToLevelsBasedOnFormula.clear();
+        neededXpToSpecificLevels.clear();
+
+        var xpToLevel = MainConfig.getInstance().node("statistics", "xp-to-level").childrenMap();
+        for (var xpToL : xpToLevel.entrySet()) {
+            var key = xpToL.getKey().toString().toLowerCase().replace(" ", "");
+            var value = xpToL.getValue().getInt();
+            if (value <= 0) {
+                continue; // invalid
+            }
+            try {
+                if ("any".equalsIgnoreCase(key)) {
+                    neededXpToNextLevel = value;
+                } else if (key.contains("n")) { // formula
+                    var split = key.split("n");
+                    var multiplier = Integer.parseInt(split[0]);
+                    var addition = split.length > 1 ? Integer.parseInt(split[1].replace("+", "")) : 0;
+                    neededXpToLevelsBasedOnFormula.put(integer -> ((integer - addition) % multiplier) == 0, value);
+                } else {
+                    neededXpToSpecificLevels.put(Integer.parseInt(key), value);
+                }
+            } catch (Throwable ignored) {
+            }
+        }
     }
 
     @OnEvent
