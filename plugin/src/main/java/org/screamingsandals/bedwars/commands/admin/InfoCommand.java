@@ -376,30 +376,12 @@ public class InfoCommand extends BaseAdminSubCommand {
 
                             // NON-BOOLEAN CONSTANTS
 
-                            Message
-                                    .of(LangKeys.ADMIN_INFO_CONSTANT)
-                                    .placeholder("constant", "arenaTime")
-                                    .placeholder("value", game.getArenaTime().name())
-                                    .send(sender);
-
                             var weather = game.getArenaWeather();
 
                             Message
                                     .of(LangKeys.ADMIN_INFO_CONSTANT)
                                     .placeholder("constant", "arenaWeather")
                                     .placeholder("value", weather != null ? weather.platformName() : "default")
-                                    .send(sender);
-
-                            Message
-                                    .of(LangKeys.ADMIN_INFO_CONSTANT)
-                                    .placeholder("constant", "lobbybossbarcolor")
-                                    .placeholder("value", game.getLobbyBossBarColor() != null ? game.getLobbyBossBarColor().name() : "default")
-                                    .send(sender);
-
-                            Message
-                                    .of(LangKeys.ADMIN_INFO_CONSTANT)
-                                    .placeholder("constant", "gamebossbarcolor")
-                                    .placeholder("value", game.getGameBossBarColor() != null ? game.getGameBossBarColor().name() : "default")
                                     .send(sender);
                         })
         );

@@ -23,11 +23,10 @@ import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.screamingsandals.bedwars.BedWarsPlugin;
+import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.lib.item.Item;
 import org.screamingsandals.lib.item.builder.ItemFactory;
 import org.screamingsandals.lib.plugin.ServiceManager;
-import org.screamingsandals.lib.spectator.Component;
-import org.screamingsandals.lib.spectator.mini.MiniMessageParser;
 import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.utils.annotations.methods.OnEnable;
 import org.screamingsandals.lib.utils.annotations.parameters.ConfigFile;
@@ -39,7 +38,6 @@ import org.spongepowered.configurate.serialize.SerializationException;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -201,7 +199,7 @@ public class MainConfig {
                             try {
                                 var str = node.getString();
                                 if (str != null) {
-                                    node.set(toMiniMessage(str)
+                                    node.set(MiscUtils.toMiniMessage(str)
                                             // migrate placeholders to MiniMessage
                                             .replace("%game%", "<game>")
                                             .replace("%time%", "<time>")
@@ -221,7 +219,7 @@ public class MainConfig {
                             try {
                                 var str = node.getString();
                                 if (str != null) {
-                                    node.set(toMiniMessage(str)
+                                    node.set(MiscUtils.toMiniMessage(str)
                                             // migrate old placeholders to MiniMessage
                                             .replace("%bed%", "<target-block-prefix>")
                                             .replace("%color%", "<team-color>")
@@ -242,7 +240,7 @@ public class MainConfig {
                                     if (list != null) {
                                         node.set(null);
                                         for (var str : list) {
-                                            node.appendListNode().set(toMiniMessage(str)
+                                            node.appendListNode().set(MiscUtils.toMiniMessage(str)
                                                     // migrate old placeholders to MiniMessage
                                                     .replace("%arena%", "<game>") // should be the same as placeholder in the title
                                                     .replace("%players%", "<players>")
@@ -280,7 +278,7 @@ public class MainConfig {
                                     if (list != null) {
                                         node.set(null);
                                         for (var str : list) {
-                                            node.appendListNode().set(toMiniMessage(str)
+                                            node.appendListNode().set(MiscUtils.toMiniMessage(str)
                                                     // migrate old placeholders to MiniMessage
                                                     .replace("%arena%", "<game>") // should be the same as placeholder in the title
                                                     .replace("%players%", "<players>")
@@ -553,12 +551,23 @@ public class MainConfig {
                     .section("lobby")
                         .key("enabled").migrateOld("enable").defValue(true)
                         .key("color").defValue("YELLOW")
-                        .key("style").defValue("SEGMENTED_20")
+                        .key("division").migrateOldAbsoluteKey("style").remap(node -> {
+                                var str = node.getString("");
+                                try {
+                                    if (str.startsWith("SEGMENTED_")) {
+                                        node.set("NOTCHED_" + str.substring(10));
+                                    } else if (str.equals("SOLID") || str.equals("PROGRESS")) {
+                                        node.set("NO_DIVISION");
+                                    }
+                                } catch (SerializationException e) {
+                                    e.printStackTrace();
+                                }
+                            }).defValue("NOTCHED_20")
                         .back()
                     .section("game")
                         .key("enabled").migrateOld("enable").defValue(true)
                         .key("color").defValue("GREEN")
-                        .key("style").defValue("SEGMENTED_20")
+                        .key("style").defValue("NOTCHED_20")
                         .back()
                     .back();
 
@@ -770,29 +779,13 @@ public class MainConfig {
     public void toMiniMessage(ConfigurationNode node) {
         try {
             if (node.isList()) {
-                node.set(toMiniMessage(node.getList(String.class)));
+                node.set(MiscUtils.toMiniMessage(node.getList(String.class)));
             } else {
-                node.set(toMiniMessage(node.getString()));
+                node.set(MiscUtils.toMiniMessage(node.getString()));
             }
         } catch (SerializationException ex) {
             ex.printStackTrace();
         }
-    }
-
-    public String toMiniMessage(String legacy) {
-        if (legacy == null) {
-            return null;
-        }
-        return MiniMessageParser.INSTANCE.serialize(Component.fromLegacy(legacy));
-    }
-
-    public List<String> toMiniMessage(List<String> legacy) {
-        if (legacy == null) {
-            return null;
-        }
-        return legacy.stream()
-                .map(l -> MiniMessageParser.INSTANCE.serialize(Component.fromLegacy(l)))
-                .collect(Collectors.toList());
     }
 
     public Item readDefinedItem(String item, String def) {

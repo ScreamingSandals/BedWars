@@ -35,15 +35,11 @@ import java.util.stream.Stream;
 
 @Service(initAnother = {
         AddCommand.class,
-        ArenaTimeCommand.class,
         ArenaWeatherCommand.class,
         ConfigCommand.class,
-        CustomPrefixCommand.class,
         EditCommand.class,
-        GameBossBarColorCommand.class,
         InfoCommand.class,
         JoinTeamCommand.class,
-        LobbyBossBarColorCommand.class,
         LobbyCommand.class,
         MinPlayersCommand.class,
         PausecountdownCommand.class,

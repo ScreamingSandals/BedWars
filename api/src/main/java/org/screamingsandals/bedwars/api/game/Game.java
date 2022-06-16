@@ -389,23 +389,8 @@ public interface Game {
     /**
      * @return
      */
-	ArenaTime getArenaTime();
-
-    /**
-     * @return
-     */
     @Nullable
 	Wrapper getArenaWeather();
-
-    /**
-     * @return
-     */
-	Wrapper getLobbyBossBarColor();
-
-    /**
-     * @return
-     */
-	Wrapper getGameBossBarColor();
 
     /**
      * @return
@@ -413,12 +398,6 @@ public interface Game {
     boolean isProtectionActive(BWPlayer player);
 
     int getPostGameWaiting();
-
-    default boolean hasCustomPrefix() {
-        return getCustomPrefix() != null;
-    }
-
-    String getCustomPrefix();
 
     @Nullable
     Variant getGameVariant();

@@ -38,6 +38,7 @@ import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.spectator.AudienceComponentLike;
 import org.screamingsandals.lib.spectator.Color;
 import org.screamingsandals.lib.spectator.Component;
+import org.screamingsandals.lib.spectator.mini.MiniMessageParser;
 import org.screamingsandals.lib.utils.BlockFace;
 import org.screamingsandals.lib.utils.MathUtils;
 import org.screamingsandals.lib.world.LocationHolder;
@@ -449,5 +450,21 @@ public class MiscUtils {
             return (num == (int) num ? (int) num : num) + "k";
         }
         return String.valueOf(toRound);
+    }
+
+    public String toMiniMessage(String legacy) {
+        if (legacy == null) {
+            return null;
+        }
+        return MiniMessageParser.INSTANCE.serialize(Component.fromLegacy(legacy));
+    }
+
+    public List<String> toMiniMessage(List<String> legacy) {
+        if (legacy == null) {
+            return null;
+        }
+        return legacy.stream()
+                .map(l -> MiniMessageParser.INSTANCE.serialize(Component.fromLegacy(l)))
+                .collect(Collectors.toList());
     }
 }

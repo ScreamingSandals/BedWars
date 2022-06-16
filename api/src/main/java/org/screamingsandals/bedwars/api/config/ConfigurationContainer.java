@@ -21,6 +21,7 @@ package org.screamingsandals.bedwars.api.config;
 
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
+import org.screamingsandals.bedwars.api.ArenaTime;
 
 import java.util.List;
 import java.util.Optional;
@@ -57,9 +58,18 @@ public interface ConfigurationContainer {
     ConfigurationKey<Boolean> ENABLE_BELOW_NAME_HEALTH_INDICATOR = ConfigurationKey.of(Boolean.class, "enable-below-name-health-indicator");
     ConfigurationKey<Boolean> USE_CERTAIN_POPULAR_SERVER_LIKE_HOLOGRAMS_FOR_SPAWNERS = ConfigurationKey.of(Boolean.class, "use-certain-popular-server-like-holograms-for-spawners");
     ConfigurationKey<Boolean> USE_TEAM_LETTER_PREFIXES_BEFORE_PLAYER_NAMES = ConfigurationKey.of(Boolean.class, "use-team-letter-prefixes-before-player-names");
-    
+
+    ConfigurationKey<String> PREFIX = ConfigurationKey.of(String.class, "prefix");
+    ConfigurationKey<String> DEFAULT_SHOP_FILE = ConfigurationKey.of(String.class, "default-shop-file");
+
+    ConfigurationKey<ArenaTime> ARENA_TIME = ConfigurationKey.of(ArenaTime.class, "arena-time");
+
     ConfigurationKey<Boolean> BOSSBAR_LOBBY_ENABLED = ConfigurationKey.of(Boolean.class, "bossbar", "lobby", "enabled");
+    ConfigurationKey<String> BOSSBAR_LOBBY_COLOR = ConfigurationKey.of(String.class, "bossbar", "lobby", "color"); // String in API, registered as enum
+    ConfigurationKey<String> BOSSBAR_LOBBY_DIVISION = ConfigurationKey.of(String.class, "bossbar", "lobby", "division"); // String in API, registered as enum
     ConfigurationKey<Boolean> BOSSBAR_GAME_ENABLED = ConfigurationKey.of(Boolean.class, "bossbar", "game", "enabled");
+    ConfigurationKey<String> BOSSBAR_GAME_COLOR = ConfigurationKey.of(String.class, "bossbar", "game", "color"); // String in API, registered as enum
+    ConfigurationKey<String> BOSSBAR_GAME_DIVISION = ConfigurationKey.of(String.class, "bossbar", "game", "division"); // String in API, registered as enum
 
     ConfigurationKey<String> SIDEBAR_DATE_FORMAT = ConfigurationKey.of(String.class, "sidebar", "date-format");
     ConfigurationKey<Boolean> SIDEBAR_GAME_ENABLED = ConfigurationKey.of(Boolean.class, "sidebar", "game", "enabled");
@@ -82,8 +92,6 @@ public interface ConfigurationContainer {
     ConfigurationKey<Boolean> TARGET_BLOCK_RESPAWN_ANCHOR_ENABLE_DECREASE = ConfigurationKey.of(Boolean.class, "target-block", "respawn-anchor", "enable-decrease");
     ConfigurationKey<Boolean> TARGET_BLOCK_CAKE_DESTROY_BY_EATING = ConfigurationKey.of(Boolean.class, "target-block", "cake", "destroy-by-eating");
     ConfigurationKey<Boolean> TARGET_BLOCK_ALLOW_DESTROYING_WITH_EXPLOSIONS = ConfigurationKey.of(Boolean.class, "target-block", "allow-destroying-with-explosions");
-
-    ConfigurationKey<String> DEFAULT_SHOP_FILE = ConfigurationKey.of(String.class, "default-shop-file");
 
     /**
      * Gets configuration from the key

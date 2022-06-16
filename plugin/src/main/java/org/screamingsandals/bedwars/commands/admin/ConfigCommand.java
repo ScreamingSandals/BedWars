@@ -36,6 +36,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -464,6 +465,80 @@ public class ConfigCommand extends BaseAdminSubCommand {
                             } else {
                                 var key = keyOpt.get();
                                 game.getConfigurationContainer().update(key.getKey(), value);
+                                Message
+                                        .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_CONSTANT_SET)
+                                        .placeholder("config", keyString)
+                                        .placeholder("value", value)
+                                        .defaultPrefix()
+                                        .send(sender);
+                            }
+                        }))
+        );
+
+        // enums
+        manager.command(
+                commandSenderWrapperBuilder
+                        .literal("set", "s")
+                        .literal("enum", "enums", "e")
+                        .argument(StringArgument.<CommandSenderWrapper>newBuilder("key")
+                                .withSuggestionsProvider((c, s) -> {
+                                    if (AdminCommand.gc.containsKey(c.<String>get("game"))) {
+                                        return AdminCommand.gc.get(c.<String>get("game")).getConfigurationContainer().getJoinedRegisteredKeysForConfigCommandEnums();
+                                    }
+                                    return List.of();
+                                })
+                        )
+                        .argument(StringArgument.<CommandSenderWrapper>newBuilder("value")
+                                .withSuggestionsProvider(editModeSuggestion((commandContext, sender, game) -> {
+                                    var keys = List.of(commandContext.<String>get("key").toLowerCase().split("\\."));
+
+                                    var key = game.getConfigurationContainer().getRegisteredKeys()
+                                            .stream()
+                                            .filter(t -> t.getKey().equals(keys) && t.getType().isEnum())
+                                            .findFirst()
+                                            .orElse(null);
+
+                                    if (key != null) {
+                                        var constants = key.getType().getEnumConstants();
+                                        if (constants != null) {
+                                            return Arrays.stream(constants).map(Object::toString).collect(Collectors.toList());
+                                        }
+                                    }
+                                    return List.of();
+                                }))
+                        )
+                        .handler(commandContext -> editMode(commandContext, (sender, game) -> {
+                            String keyString = commandContext.get("key");
+                            var keys = List.of(keyString.toLowerCase().split("\\."));
+                            String value = commandContext.get("value");
+
+                            var keyOpt = game.getConfigurationContainer().getRegisteredKeys()
+                                    .stream()
+                                    .filter(t -> t.getKey().equals(keys) && t.getType().isEnum())
+                                    .findFirst();
+
+                            if (keyOpt.isEmpty()) {
+                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_INVALID_CONSTANT_NAME).defaultPrefix());
+                            } else {
+                                var key = keyOpt.get();
+                                Object enumValue;
+                                try {
+                                    //noinspection unchecked
+                                    enumValue = Enum.valueOf((Class) key.getType(), value);
+                                } catch (Throwable ignored) {
+                                    try {
+                                        //noinspection unchecked
+                                        enumValue = Enum.valueOf((Class) key.getType(), value.toUpperCase());
+                                    } catch (Throwable ignored2) {
+                                        Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_INVALID_CONSTANT_ENUM_VALUE)
+                                                .placeholder("value", value)
+                                                .placeholder("values", Arrays.toString(key.getType().getEnumConstants()))
+                                                .defaultPrefix()
+                                                .send(sender);
+                                        return;
+                                    }
+                                }
+                                game.getConfigurationContainer().update(key.getKey(), enumValue);
                                 Message
                                         .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_CONSTANT_SET)
                                         .placeholder("config", keyString)

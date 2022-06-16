@@ -26,6 +26,8 @@ import org.screamingsandals.bedwars.api.config.Configuration;
 import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
 import org.screamingsandals.bedwars.api.config.ConfigurationKey;
 import org.screamingsandals.bedwars.api.config.ConfigurationListKey;
+import org.screamingsandals.lib.spectator.bossbar.BossBarColor;
+import org.screamingsandals.lib.spectator.bossbar.BossBarDivision;
 import org.spongepowered.configurate.BasicConfigurationNode;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
@@ -35,6 +37,12 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class GameConfigurationContainer implements ConfigurationContainer {
+
+    // TODO: Properly expose in the API
+    public static final ConfigurationKey<BossBarColor> BOSSBAR_LOBBY_COLOR = ConfigurationKey.of(BossBarColor.class, "bossbar", "lobby", "color");
+    public static final ConfigurationKey<BossBarDivision> BOSSBAR_LOBBY_DIVISION = ConfigurationKey.of(BossBarDivision.class, "bossbar", "lobby", "division");
+    public static final ConfigurationKey<BossBarColor> BOSSBAR_GAME_COLOR = ConfigurationKey.of(BossBarColor.class, "bossbar", "game", "color");
+    public static final ConfigurationKey<BossBarDivision> BOSSBAR_GAME_DIVISION = ConfigurationKey.of(BossBarDivision.class, "bossbar", "game", "division");
 
     @Nullable
     @Getter
@@ -59,7 +67,11 @@ public class GameConfigurationContainer implements ConfigurationContainer {
         register(ConfigurationContainer.KEEP_ARMOR_ON_DEATH, "keep-armor-on-death");
         register(ConfigurationContainer.ALLOW_CRAFTING, "allow-crafting");
         register(ConfigurationContainer.BOSSBAR_LOBBY_ENABLED,  "bossbar", "lobby", "enabled");
+        register(BOSSBAR_LOBBY_COLOR, "bossbar", "lobby", "color");
+        register(BOSSBAR_LOBBY_DIVISION, "bossbar", "lobby", "division");
         register(ConfigurationContainer.BOSSBAR_GAME_ENABLED,  "bossbar", "game", "enabled");
+        register(BOSSBAR_GAME_COLOR, "bossbar", "game", "color");
+        register(BOSSBAR_GAME_DIVISION, "bossbar", "game", "division");
         register(ConfigurationContainer.SIDEBAR_DATE_FORMAT, "sidebar", "date-format");
         register(ConfigurationContainer.SIDEBAR_GAME_ENABLED, "sidebar", "game", "enabled");
         register(ConfigurationContainer.SIDEBAR_GAME_LEGACY_SIDEBAR, "sidebar", "game", "legacy-sidebar");
@@ -94,13 +106,17 @@ public class GameConfigurationContainer implements ConfigurationContainer {
         register(ConfigurationContainer.USE_CERTAIN_POPULAR_SERVER_LIKE_HOLOGRAMS_FOR_SPAWNERS, "use-certain-popular-server-like-holograms-for-spawners");
         register(ConfigurationContainer.USE_TEAM_LETTER_PREFIXES_BEFORE_PLAYER_NAMES, "use-team-letter-prefixes-before-player-names");
         register(ConfigurationContainer.DEFAULT_SHOP_FILE);
+        register(ConfigurationContainer.PREFIX, "prefix");
+        register(ConfigurationContainer.ARENA_TIME);
     }
 
     @Override
     public <T> Optional<Configuration<T>> get(ConfigurationKey<T> keyObject) {
         var key = keyObject.getKey();
         Class<T> type = keyObject.getType();
-        if (registered.containsKey(key) && type.isAssignableFrom(registered.get(key))) {
+        if (registered.containsKey(key) && (type.isAssignableFrom(registered.get(key))
+                        || (type == String.class && registered.get(key).isEnum())
+        )) {
             try {
                 return Optional.of(new GameConfiguration<>(keyObject, this,
                         globalConfigKeys.containsKey(key) ? MainConfig.getInstance().node((Object[]) globalConfigKeys.get(key)).get(type) : null)
@@ -203,6 +219,14 @@ public class GameConfigurationContainer implements ConfigurationContainer {
                 .collect(Collectors.toList());
     }
 
+    public List<String> getJoinedRegisteredKeysForConfigCommandEnums() {
+        return registered.entrySet()
+                .stream()
+                .filter(e -> e.getValue().isEnum())
+                .map(e -> String.join(".", e.getKey()))
+                .collect(Collectors.toList());
+    }
+
     public List<String> getJoinedRegisteredKeysForConfigCommand() {
         return Stream.concat(
                     registered.keySet()
@@ -229,6 +253,9 @@ public class GameConfigurationContainer implements ConfigurationContainer {
     public void update(List<String> key, Object object) {
         try {
             remove(key);
+            if (object != null && object.getClass().isEnum()) {
+                object = object.toString(); // save enums as strings (thanks Configurate, rly)
+            }
             saved.node(key).set(object);
         } catch (SerializationException e) {
             e.printStackTrace();

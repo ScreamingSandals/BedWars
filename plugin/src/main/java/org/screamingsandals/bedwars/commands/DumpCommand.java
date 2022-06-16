@@ -36,6 +36,7 @@ import org.screamingsandals.bedwars.inventories.ShopInventory;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.premium.PremiumBedwars;
+import org.screamingsandals.bedwars.variants.VariantManagerImpl;
 import org.screamingsandals.lib.Server;
 import org.screamingsandals.lib.plugin.PluginManager;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
@@ -130,27 +131,40 @@ public class DumpCommand extends BaseCommand {
                                                                     "main", plugin.getInstance().map(Object::getClass).map(Class::getName).orElse("undefined"),
                                                                     "authors", plugin.getAuthors()
                                                             )).collect(Collectors.toList()),
+                                                            "variants", VariantManagerImpl.getInstance().getVariants().stream().map(variant ->
+                                                                nullValuesAllowingMap(
+                                                                        "name", variant.getName(),
+                                                                    "configurationContainer", ConfigurateUtils.toMap(variant.getConfigurationContainer().getSaved()),
+                                                                    "defaultItemSpawnerTypesIncluded", variant.isDefaultItemSpawnerTypesIncluded(),
+                                                                    "customSpawners", variant.getCustomSpawnerTypes().stream().map(itemSpawnerType -> nullValuesAllowingMap(
+                                                                            "configKey", itemSpawnerType.getConfigKey(),
+                                                                                "name", itemSpawnerType.getName(),
+                                                                                "translatableKey", itemSpawnerType.getTranslatableKey(),
+                                                                                "spread", itemSpawnerType.getSpread(),
+                                                                                "itemType", itemSpawnerType.getItemType().platformName(),
+                                                                                "color", itemSpawnerType.getColor().toString(),
+                                                                                "interval", itemSpawnerType.getInterval()
+                                                                    )).collect(Collectors.toList())
+                                                                )
+                                                            ).collect(Collectors.toList()),
                                                             "games", GameManagerImpl.getInstance().getGames().stream().map(game ->
                                                                     nullValuesAllowingMap(
                                                                             "file", game.getFile(),
+                                                                            "uuid", game.getUuid(),
                                                                             "name", game.getName(),
                                                                             "displayName", game.getDisplayName(),
                                                                             "minPlayers", game.getMinPlayers(),
                                                                             "maxPlayers", game.getMaxPlayers(),
                                                                             "lobby", nullValuesAllowingMap(
                                                                                     "spawn", game.getLobbySpawn(),
-                                                                                    "countdown", game.getLobbyCountdown(),
-                                                                                    "bossbar", game.getLobbyBossBarColor()
+                                                                                    "countdown", game.getLobbyCountdown()
                                                                             ),
                                                                             "arena", nullValuesAllowingMap(
                                                                                     "spectator", game.getSpectatorSpawn(),
                                                                                     "countdown", game.getGameTime(),
                                                                                     "pos1", game.getPos1(),
                                                                                     "pos2", game.getPos2(),
-                                                                                    "bossbar", game.getGameBossBarColor(),
-                                                                                    "arenaTime", game.getArenaTime(),
                                                                                     "weather", game.getArenaWeather(),
-                                                                                    "customPrefix", game.getCustomPrefix(),
                                                                                     "spawners", game.getSpawners().stream().map(itemSpawner -> nullValuesAllowingMap(
                                                                                             "type", itemSpawner.getItemSpawnerType().getConfigKey(),
                                                                                             "location", itemSpawner.getLocation(),

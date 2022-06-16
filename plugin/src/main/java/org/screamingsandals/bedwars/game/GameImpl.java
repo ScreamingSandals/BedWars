@@ -90,6 +90,7 @@ import org.screamingsandals.lib.plugin.PluginManager;
 import org.screamingsandals.lib.spectator.Color;
 import org.screamingsandals.lib.spectator.Component;
 import org.screamingsandals.lib.spectator.bossbar.BossBarColor;
+import org.screamingsandals.lib.spectator.bossbar.BossBarDivision;
 import org.screamingsandals.lib.spectator.sound.SoundSource;
 import org.screamingsandals.lib.spectator.sound.SoundStart;
 import org.screamingsandals.lib.spectator.title.Title;
@@ -139,11 +140,7 @@ public class GameImpl implements Game {
     private final List<BedWarsPlayer> players = new ArrayList<>();
     private WorldHolder world;
     private final List<GameStoreImpl> gameStore = new ArrayList<>();
-    private ArenaTime arenaTime = ArenaTime.WORLD;
     private WeatherHolder arenaWeather = null;
-    private BossBarColor lobbyBossBarColor = null;
-    private BossBarColor gameBossBarColor = null;
-    private String customPrefix = null;
     private boolean preServerRestart = false;
     @Getter
     private File file;
@@ -434,18 +431,52 @@ public class GameImpl implements Game {
                 }
             });
 
+            var oldCustomPrefix = configMap.node("customPrefix");
+            var newCustomPrefix = configMap.node("constant", "prefix");
+            if (!oldCustomPrefix.empty() && newCustomPrefix.empty()) {
+                var str = oldCustomPrefix.getString();
+                if (str != null) {
+                    newCustomPrefix.set(MiscUtils.toMiniMessage(str));
+                    oldCustomPrefix.set(null);
+                }
+            }
+
+            // migration of arenaTime to configuration container
+            {
+                var oldArenaTime = configMap.node("arenaTime");
+                var newArenaTime = configMap.node("constant", "arena-time");
+                if (!oldArenaTime.empty() && newArenaTime.empty()) {
+                    newArenaTime.from(oldArenaTime);
+                    oldArenaTime.set(null);
+                }
+            }
+
+            // migration of lobbyBossBarColor to configuration container
+            {
+                var oldLobbyBossBarColor = configMap.node("lobbyBossBarColor");
+                var newLobbyBossBarColor = configMap.node("constant", "bossbar", "lobby", "color");
+                if (!oldLobbyBossBarColor.empty() && newLobbyBossBarColor.empty()) {
+                    newLobbyBossBarColor.set(loadBossBarColor(oldLobbyBossBarColor.getString("default").toUpperCase()));
+                    oldLobbyBossBarColor.set(null);
+                }
+            }
+
+            // migration of gameBossBarColor to configuration container
+            {
+                var oldGameBossBarColor = configMap.node("gameBossBarColor");
+                var newGameBossBarColor = configMap.node("constant", "bossbar", "game", "color");
+                if (!newGameBossBarColor.empty() && oldGameBossBarColor.empty()) {
+                    newGameBossBarColor.set(loadBossBarColor(oldGameBossBarColor.getString("default").toUpperCase()));
+                    oldGameBossBarColor.set(null);
+                }
+            }
+
             game.configurationContainer.applyNode(configMap.node("constant"));
 
-            game.arenaTime = ArenaTime.valueOf(configMap.node("arenaTime").getString(ArenaTime.WORLD.name()).toUpperCase());
             game.arenaWeather = loadWeather(configMap.node("arenaWeather").getString("default").toUpperCase());
 
             game.postGameWaiting = configMap.node("postGameWaiting").getInt(3);
-            game.customPrefix = configMap.node("customPrefix").getString();
             game.displayName = configMap.node("displayName").getString();
-
-            game.lobbyBossBarColor = loadBossBarColor(
-                    configMap.node("lobbyBossBarColor").getString("default").toUpperCase());
-            game.gameBossBarColor = loadBossBarColor(configMap.node("gameBossBarColor").getString("default").toUpperCase());
 
             game.start();
             PlayerMapper.getConsoleSender().sendMessage(
@@ -946,6 +977,7 @@ public class GameImpl implements Game {
             PlayerStatisticManager.getInstance().getStatistic(gamePlayer);
         }
 
+        var arenaTime = configurationContainer.getOrDefault(ConfigurationContainer.ARENA_TIME, ArenaTime.WORLD);
         if (arenaTime.time >= 0) {
             gamePlayer.setPlayerTime(arenaTime.time, false);
         }
@@ -1221,7 +1253,6 @@ public class GameImpl implements Game {
         configMap.node("lobbySpawnWorld").set(lobbySpawn.getWorld().getName());
         configMap.node("minPlayers").set(minPlayers);
         configMap.node("postGameWaiting").set(postGameWaiting);
-        configMap.node("customPrefix").set(customPrefix);
         configMap.node("displayName").set(displayName);
         if (!teams.isEmpty()) {
             for (var t : teams) {
@@ -1261,11 +1292,7 @@ public class GameImpl implements Game {
 
         configMap.node("constant").from(configurationContainer.getSaved());
 
-        configMap.node("arenaTime").set(arenaTime.name());
         configMap.node("arenaWeather").set(arenaWeather == null ? "default" : arenaWeather.platformName());
-
-        configMap.node("lobbyBossBarColor").set(lobbyBossBarColor == null ? "default" : lobbyBossBarColor.name());
-        configMap.node("gameBossBarColor").set(gameBossBarColor == null ? "default" : gameBossBarColor.name());
 
         if (gameVariant != null) {
             configMap.node("variant").set(gameVariant.getName());
@@ -1719,10 +1746,8 @@ public class GameImpl implements Game {
             if (statusbar instanceof BossBarImpl) {
                 var bossbar = (BossBarImpl) statusbar;
                 bossbar.setMessage(title);
-                bossbar.setColor(lobbyBossBarColor != null ? lobbyBossBarColor
-                        : MainConfig.getInstance().node("bossbar", "lobby", "color").getString(""));
-                bossbar
-                        .setStyle(MainConfig.getInstance().node("bossbar", "lobby", "style").getString(""));
+                bossbar.setColor(configurationContainer.getOrDefault(GameConfigurationContainer.BOSSBAR_LOBBY_COLOR, BossBarColor.PURPLE));
+                bossbar.setStyle(configurationContainer.getOrDefault(GameConfigurationContainer.BOSSBAR_LOBBY_DIVISION, BossBarDivision.NO_DIVISION));
             }
             if (teamSelectorInventory == null) {
                 teamSelectorInventory = new TeamSelectorInventory(this);
@@ -1841,10 +1866,8 @@ public class GameImpl implements Game {
                     if (statusbar instanceof BossBarImpl) {
                         var bossbar = (BossBarImpl) statusbar;
                         bossbar.setMessage(Message.of(LangKeys.IN_GAME_BOSSBAR_RUNNING).asComponent());
-                        bossbar.setColor(gameBossBarColor != null ? gameBossBarColor
-                                : MainConfig.getInstance().node("bossbar", "game", "color").getString(""));
-                        bossbar.setStyle(
-                                MainConfig.getInstance().node("bossbar", "game", "style").getString(""));
+                        bossbar.setColor(configurationContainer.getOrDefault(GameConfigurationContainer.BOSSBAR_GAME_COLOR, BossBarColor.PURPLE));
+                        bossbar.setStyle(configurationContainer.getOrDefault(GameConfigurationContainer.BOSSBAR_GAME_DIVISION, BossBarDivision.NO_DIVISION));
                     }
                     if (teamSelectorInventory != null)
                         teamSelectorInventory.destroy();
@@ -2715,15 +2738,6 @@ public class GameImpl implements Game {
     }
 
     @Override
-    public ArenaTime getArenaTime() {
-        return arenaTime;
-    }
-
-    public void setArenaTime(ArenaTime arenaTime) {
-        this.arenaTime = arenaTime;
-    }
-
-    @Override
     @Nullable
     public WeatherHolder getArenaWeather() {
         return arenaWeather;
@@ -2731,24 +2745,6 @@ public class GameImpl implements Game {
 
     public void setArenaWeather(WeatherHolder arenaWeather) {
         this.arenaWeather = arenaWeather;
-    }
-
-    @Override
-    public BossBarColor getLobbyBossBarColor() {
-        return this.lobbyBossBarColor;
-    }
-
-    public void setLobbyBossBarColor(BossBarColor color) {
-        this.lobbyBossBarColor = color;
-    }
-
-    @Override
-    public BossBarColor getGameBossBarColor() {
-        return this.gameBossBarColor;
-    }
-
-    public void setGameBossBarColor(BossBarColor color) {
-        this.gameBossBarColor = color;
     }
 
     @Override
@@ -2862,13 +2858,8 @@ public class GameImpl implements Game {
     }
 
     @Override
-    public String getCustomPrefix() {
-        return customPrefix;
-    }
-
-    @Override
     public Component getCustomPrefixComponent() {
-        return Component.fromLegacy(customPrefix);
+        return Component.fromMiniMessage(configurationContainer.getOrDefault(ConfigurationContainer.PREFIX, "[BW]"));
     }
 
     @Override
@@ -2897,10 +2888,6 @@ public class GameImpl implements Game {
     @Override
     public boolean isInEditMode() {
         return AdminCommand.gc.containsKey(name);
-    }
-
-    public void setCustomPrefix(String customPrefix) {
-        this.customPrefix = customPrefix;
     }
 
     public void showOtherVisual(Visual<?> visual) {

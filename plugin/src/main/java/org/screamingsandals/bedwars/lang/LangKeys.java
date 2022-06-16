@@ -280,6 +280,7 @@ public class LangKeys {
     public final String[] ADMIN_ARENA_EDIT_ERRORS_INVALID_CONSTANT_VALUE = {"admin", "arena", "edit", "errors", "invalid_constant_value"};
     public final String[] ADMIN_ARENA_EDIT_ERRORS_INVALID_CONSTANT_NAME = {"admin", "arena", "edit", "errors", "invalid_constant_name"};
     public final String[] ADMIN_ARENA_EDIT_ERRORS_INVALID_CONSTANT_POSITION = {"admin", "arena", "edit", "errors", "invalid_constant_position"};
+    public final String[] ADMIN_ARENA_EDIT_ERRORS_INVALID_CONSTANT_ENUM_VALUE = {"admin", "arena", "edit", "errors", "invalid_constant_enum_value"};
     public final String[] ADMIN_ARENA_EDIT_ERRORS_INVALID_ARENA_TIME = {"admin", "arena", "edit", "errors", "invalid_arena_time"};
     public final String[] ADMIN_ARENA_EDIT_ERRORS_INVALID_ARENA_WEATHER = {"admin", "arena", "edit", "errors", "invalid_arena_weather"};
     public final String[] ADMIN_ARENA_EDIT_ERRORS_INVALID_BAR_COLOR = {"admin", "arena", "edit", "errors", "invalid_bar_color"};
