@@ -35,7 +35,7 @@ import org.screamingsandals.lib.container.PlayerContainer;
 import org.screamingsandals.lib.item.Item;
 import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.player.PlayerWrapper;
-import org.screamingsandals.lib.sender.SenderMessage;
+import org.screamingsandals.lib.spectator.AudienceComponentLike;
 import org.screamingsandals.lib.spectator.Color;
 import org.screamingsandals.lib.spectator.Component;
 import org.screamingsandals.lib.utils.BlockFace;
@@ -159,7 +159,7 @@ public class MiscUtils {
     /* End of BedWarsRel */
 
     /* Special items  - CEPH*/
-    public void sendActionBarMessage(PlayerWrapper player, SenderMessage senderMessage) {
+    public void sendActionBarMessage(PlayerWrapper player, AudienceComponentLike senderMessage) {
         if (MainConfig.getInstance().node("specials", "action-bar-messages").getBoolean()) {
             player.sendActionBar(senderMessage);
         } else {

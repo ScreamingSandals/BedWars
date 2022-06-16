@@ -24,6 +24,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.apache.commons.lang.LocaleUtils;
+import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.lib.lang.Lang;
 import org.screamingsandals.lib.lang.LangService;
@@ -53,6 +54,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class BedWarsLangService extends LangService {
     public static final Pattern LANGUAGE_PATTERN = Pattern.compile("[a-z]{2}-[A-Z]{2}");
+    public static final String MESSAGE_PLACEHOLDER_NAME = "bw-lang";
 
     private final MainConfig mainConfig;
     private final LoggerWrapper logger;
@@ -213,5 +215,11 @@ public class BedWarsLangService extends LangService {
         } else {
             Files.createDirectory(languagesFolder);
         }
+    }
+
+    @Override
+    @Nullable
+    public String getMessagePlaceholderName() {
+        return MESSAGE_PLACEHOLDER_NAME;
     }
 }

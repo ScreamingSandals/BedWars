@@ -20,7 +20,7 @@ public class LobbyUtils {
     public Message setupPlaceholders(@NotNull Message message) {
         message
                 .placeholder("date", MiscUtils.getFormattedDate(MainConfig.getInstance().node("main-lobby", "date-format").getString("MM/dd/yy")))
-                .placeholder("players", () -> Component.text(Server.getConnectedPlayers().size()))
+                .placeholder("players", () -> Server.getConnectedPlayers().size())
                 .placeholder("name", sender -> sender instanceof PlayerWrapper ? ((PlayerWrapper) sender).getDisplayName() : Component.text(sender.getName()))
                 .placeholder("version", VersionInfo.VERSION);
 
