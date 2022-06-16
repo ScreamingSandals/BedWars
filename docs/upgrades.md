@@ -11,6 +11,7 @@ This is how it should look in you shop.yml file:
     - type: spawner
       spawner-type: bronze
       add-levels: 0.2
+      max-level: 2
       shop-name: "Bronze upgrade of the team %team%"
       notify-team: true
   stack:
@@ -24,6 +25,7 @@ Let's get into it.
 * You **must** define the variables `upgrade`, `entities` and `type: spawner`. If any of these will be missing, upgrades won't work.
 * We got these spawner modes: `spawner-name`, `spawner-type` and `team-upgrade`
 * `add-levels` parameter defines how much levels we are going to add. (Default start level for the spawner is 1)
+* `max-level` defines the maximum level you can upgrade to. (default is no limit)
 * `shop-name` is displayed after you buy the upgrade. That's all.
 * `notify-team` if this is true, information will be send to all the players of the team.
 
