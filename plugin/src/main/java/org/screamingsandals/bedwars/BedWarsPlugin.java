@@ -50,6 +50,7 @@ import org.screamingsandals.lib.block.BlockTypeHolder;
 import org.screamingsandals.lib.healthindicator.HealthIndicatorManager;
 import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.plugin.PluginContainer;
+import org.screamingsandals.lib.plugin.PluginManager;
 import org.screamingsandals.lib.plugin.ServiceManager;
 import org.screamingsandals.lib.sidebar.SidebarManager;
 import org.screamingsandals.lib.spectator.Color;
@@ -60,14 +61,16 @@ import org.screamingsandals.lib.utils.annotations.Plugin;
 import org.screamingsandals.lib.utils.annotations.PluginDependencies;
 import org.spongepowered.configurate.serialize.SerializationException;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
 @Plugin(
-        id = "BedWars",
-        authors = {"ScreamingSandals <Misat11, iamceph, Pronze>"},
+        id = "ScreamingBedWars",
+        authors = {"ScreamingSandals <Misat11, iamceph, Pronze, ZlataOvce>"},
         version = VersionInfo.VERSION,
         loadTime = Plugin.LoadTime.POSTWORLD
 )
@@ -233,6 +236,41 @@ public class BedWarsPlugin extends PluginContainer implements BedwarsAPI {
 
     @Override
     public void load() {
+        if (PluginManager.getPlatformType() == PlatformType.BUKKIT) {
+            var folder = getDataFolder();
+            if (!Files.exists(folder)) {
+                var sbw0_2_x = folder.getParent().resolve("BedWars");
+                /*
+                 * I hope it won't copy a folder of a plugin with the same name (actually I haven't found any)
+                 * or that there won't be the original Bedwars plugin on case-insensitive system (I'm looking at you Windows)
+                 */
+                if (Files.exists(sbw0_2_x) && Files.exists(sbw0_2_x.resolve("config.yml"))) {
+                    // Hello Screaming BedWars 0.2.x
+                    try (var walk = Files.walk(sbw0_2_x)) {
+                        Files.createDirectory(folder);
+
+                        walk.forEach(source -> {
+                            var f = sbw0_2_x.relativize(source);
+                            if (f.toString().isEmpty()) {
+                                return; // WTF??
+                            }
+                            var destination = folder.resolve(f);
+                            try {
+                                Files.copy(source, destination);
+                            } catch (IOException e) {
+                                throw new RuntimeException(e); // just crash the migration process
+                            }
+                        });
+                        Files.move(sbw0_2_x, sbw0_2_x.getParent().resolve("BedWars.old"));
+                        getLogger().info("Thank you for updating the plugin! We are now in new folder: plugins/ScreamingBedWars :)");
+                    } catch (Throwable e) {
+                        getLogger().info("We couldn't copy your old SBW 0.2.x setup. Sorry :(");
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+
         instance = this;
         version = this.getPluginDescription().getVersion();
         BedwarsAPI.Internal.setBedWarsAPI(this);
