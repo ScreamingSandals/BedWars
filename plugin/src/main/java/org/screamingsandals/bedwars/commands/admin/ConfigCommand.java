@@ -26,9 +26,12 @@ import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
 import org.screamingsandals.bedwars.api.config.ConfigurationKey;
 import org.screamingsandals.bedwars.api.config.ConfigurationListKey;
 import org.screamingsandals.bedwars.commands.AdminCommand;
+import org.screamingsandals.bedwars.commands.CommandService;
 import org.screamingsandals.bedwars.lang.LangKeys;
+import org.screamingsandals.lib.cloud.extras.ComponentHelper;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
+import org.screamingsandals.lib.spectator.Component;
 import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.utils.annotations.parameters.DataFolder;
 
@@ -52,7 +55,105 @@ public class ConfigCommand extends BaseAdminSubCommand {
 
     @Override
     public void construct(CommandManager<CommandSenderWrapper> manager, Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder) {
-        // TODO: get (show, g)
+        // get
+        manager.command(
+                commandSenderWrapperBuilder
+                        .literal("get", "show", "g")
+                        .argument(StringArgument.<CommandSenderWrapper>newBuilder("key")
+                                .withSuggestionsProvider(viewModeSuggestion((c, s, g) -> g.getConfigurationContainer().getJoinedRegisteredKeysForConfigCommand()))
+                        )
+                        .handler(commandContext -> viewMode(commandContext, (sender, game) -> { // Allow this without edit mode
+                            var keyString = commandContext.<String>get("key").toLowerCase();
+                            var keys = List.of(keyString.split("\\."));
+
+                            var keyOpt = game.getConfigurationContainer().getRegisteredKeys()
+                                    .stream()
+                                    .map(ConfigurationKey::getKey)
+                                    .filter(key -> key.equals(keys))
+                                    .findFirst()
+                                    .or(() -> game.getConfigurationContainer().getRegisteredListKeys()
+                                            .stream()
+                                            .map(ConfigurationListKey::getKey)
+                                            .filter(key -> key.equals(keys))
+                                            .findFirst()
+                                    );
+
+                            if (keyOpt.isEmpty()) {
+                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_INVALID_CONSTANT_NAME).defaultPrefix());
+                            } else {
+                                sender.sendMessage(ComponentHelper.header(Component.space().linear(Message.of(LangKeys.ADMIN_INFO_CONFIG)
+                                        .placeholderRaw("configured-component", game.getName())
+                                        .asComponent(sender), Component.space()),
+                                        CommandService.HEADER_FOOTER_LENGTH,
+                                        CommandService.DEFAULT_HELP_COLORS.primary()
+                                ));
+
+                                sender.sendMessage(Component.text()
+                                                .append(ComponentHelper.lastBranch(CommandService.DEFAULT_HELP_COLORS.accent()))
+                                                .append(Component.space())
+                                                .append(Message.of(LangKeys.ADMIN_INFO_KEY).asComponent(sender).withColor(CommandService.DEFAULT_HELP_COLORS.primary()))
+                                                .append(Component.text(": ", CommandService.DEFAULT_HELP_COLORS.primary()))
+                                                .append(Component.text(keyString, CommandService.DEFAULT_HELP_COLORS.highlight()))
+                                );
+
+                                // TODO: Data type
+
+                                var value = game.getConfigurationContainer().getSavedNode(keys).raw();
+                                if (value instanceof List) {
+                                    sender.sendMessage(Component.text()
+                                            .append("   ")
+                                            .append(ComponentHelper.lastBranch(CommandService.DEFAULT_HELP_COLORS.accent()))
+                                            .append(Component.space())
+                                            .append(Message.of(LangKeys.ADMIN_INFO_VALUE).asComponent(sender).withColor(CommandService.DEFAULT_HELP_COLORS.primary()))
+                                            .append(Component.text(": ", CommandService.DEFAULT_HELP_COLORS.primary()))
+                                    );
+                                    //noinspection unchecked
+                                    var list = (List<Object>) value;
+                                    for (var i = 0; i < list.size(); i++) {
+                                        var val = list.get(i);
+                                        sender.sendMessage(Component.text()
+                                                .append("      ")
+                                                .append(i + 1 < list.size() ? ComponentHelper.branch(CommandService.DEFAULT_HELP_COLORS.accent()) : ComponentHelper.lastBranch(CommandService.DEFAULT_HELP_COLORS.accent()))
+                                                .append(Component.space())
+                                                .append(Component.text(String.valueOf(val), CommandService.DEFAULT_HELP_COLORS.highlight()))
+                                        );
+                                    }
+                                } else if (value instanceof Boolean) {
+                                    sender.sendMessage(Component.text()
+                                            .append("   ")
+                                            .append(ComponentHelper.lastBranch(CommandService.DEFAULT_HELP_COLORS.accent()))
+                                            .append(Component.space())
+                                            .append(Message.of(LangKeys.ADMIN_INFO_VALUE).asComponent(sender).withColor(CommandService.DEFAULT_HELP_COLORS.primary()))
+                                            .append(Component.text(": ", CommandService.DEFAULT_HELP_COLORS.primary()))
+                                            .append(Message.of((Boolean) value ? LangKeys.ADMIN_INFO_CONSTANT_TRUE : LangKeys.ADMIN_INFO_CONSTANT_FALSE).asComponent(sender))
+                                    );
+                                } else if (value != null) {
+                                    sender.sendMessage(Component.text()
+                                            .append("   ")
+                                            .append(ComponentHelper.lastBranch(CommandService.DEFAULT_HELP_COLORS.accent()))
+                                            .append(Component.space())
+                                            .append(Message.of(LangKeys.ADMIN_INFO_VALUE).asComponent(sender).withColor(CommandService.DEFAULT_HELP_COLORS.primary()))
+                                            .append(Component.text(": ", CommandService.DEFAULT_HELP_COLORS.primary()))
+                                            .append(Component.text(String.valueOf(value), CommandService.DEFAULT_HELP_COLORS.highlight()))
+                                    );
+                                } else {
+                                    sender.sendMessage(Component.text()
+                                            .append("   ")
+                                            .append(ComponentHelper.lastBranch(CommandService.DEFAULT_HELP_COLORS.accent()))
+                                            .append(Component.space())
+                                            .append(Message.of(LangKeys.ADMIN_INFO_VALUE).asComponent(sender).withColor(CommandService.DEFAULT_HELP_COLORS.primary()))
+                                            .append(Component.text(": ", CommandService.DEFAULT_HELP_COLORS.primary()))
+                                            .append(Message.of(LangKeys.ADMIN_INFO_DEFAULT_VALUE).asComponent(sender).withColor(CommandService.DEFAULT_HELP_COLORS.highlight()))
+                                    );
+                                }
+
+                                sender.sendMessage(ComponentHelper.line(
+                                        CommandService.HEADER_FOOTER_LENGTH,
+                                        CommandService.DEFAULT_HELP_COLORS.primary()
+                                ));
+                            }
+                        }))
+        );
 
         // reset
         manager.command(

@@ -44,7 +44,8 @@ public class HelpCommand extends BaseCommand {
                     }
                     return true; // Permissions will be resolved by Cloud itself
                 })
-                .setHeaderFooterLength(55)
+                .setHeaderFooterLength(CommandService.HEADER_FOOTER_LENGTH)
+                .setHelpColors(CommandService.DEFAULT_HELP_COLORS)
                 .messageProvider(MinecraftHelp::audienceMessageProvider)
                 .setMessage(MinecraftHelp.MESSAGE_HELP_TITLE, Message.of(LangKeys.HELP_TITLE).placeholder("version", VersionInfo.VERSION))
                 .setMessage(MinecraftHelp.MESSAGE_COMMAND, Message.of(LangKeys.HELP_MESSAGES_COMMAND))

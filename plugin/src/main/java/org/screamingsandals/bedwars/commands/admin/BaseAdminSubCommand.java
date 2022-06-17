@@ -26,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 import org.screamingsandals.bedwars.commands.AdminCommand;
 import org.screamingsandals.bedwars.commands.CommandService;
 import org.screamingsandals.bedwars.game.GameImpl;
+import org.screamingsandals.bedwars.game.GameManagerImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
@@ -64,6 +65,19 @@ public abstract class BaseAdminSubCommand {
         }
     }
 
+    protected void viewMode(CommandContext<CommandSenderWrapper> commandContext, BiConsumer<CommandSenderWrapper, GameImpl> handler) {
+        String gameName = commandContext.get("game");
+        var sender = commandContext.getSender();
+
+        if (AdminCommand.gc.containsKey(gameName)) {
+            handler.accept(sender, AdminCommand.gc.get(gameName));
+        } else if (GameManagerImpl.getInstance().hasGame(gameName)) {
+            handler.accept(sender, GameManagerImpl.getInstance().getGame(gameName).orElseThrow());
+        } else {
+            sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_ERROR_ARENA_NOT_IN_EDIT).defaultPrefix());
+        }
+    }
+
     protected BiFunction<CommandContext<CommandSenderWrapper>, String, List<String>> editModeSuggestion(TriFunction<CommandContext<CommandSenderWrapper>, CommandSenderWrapper, GameImpl, List<String>> handler) {
         return (commandContext, s) -> {
             String gameName = commandContext.get("game");
@@ -71,6 +85,20 @@ public abstract class BaseAdminSubCommand {
 
             if (AdminCommand.gc.containsKey(gameName)) {
                 return handler.apply(commandContext, sender, AdminCommand.gc.get(gameName));
+            }
+            return List.of();
+        };
+    }
+
+    protected BiFunction<CommandContext<CommandSenderWrapper>, String, List<String>> viewModeSuggestion(TriFunction<CommandContext<CommandSenderWrapper>, CommandSenderWrapper, GameImpl, List<String>> handler) {
+        return (commandContext, s) -> {
+            String gameName = commandContext.get("game");
+            var sender = commandContext.getSender();
+
+            if (AdminCommand.gc.containsKey(gameName)) {
+                return handler.apply(commandContext, sender, AdminCommand.gc.get(gameName));
+            } else if (GameManagerImpl.getInstance().hasGame(gameName)) {
+                return handler.apply(commandContext, sender, GameManagerImpl.getInstance().getGame(gameName).orElseThrow());
             }
             return List.of();
         };

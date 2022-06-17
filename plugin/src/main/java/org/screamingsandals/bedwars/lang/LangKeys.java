@@ -413,6 +413,11 @@ public class LangKeys {
     public final String[] ADMIN_INFO_POST_GAME_WAITING = {"admin", "info", "post_game_waiting"};
     public final String[] ADMIN_INFO_SPAWNER_NO_TEAM = {"admin", "info", "spawner_no_team"};
     public final String[] ADMIN_INFO_FILE = {"admin", "info", "file"};
+    public final String[] ADMIN_INFO_CONFIG = {"admin", "info", "config"};
+    public final String[] ADMIN_INFO_KEY = {"admin", "info", "key"};
+    public final String[] ADMIN_INFO_VALUE = {"admin", "info", "value"};
+    public final String[] ADMIN_INFO_DATA_TYPE = {"admin", "info", "data_type"};
+    public final String[] ADMIN_INFO_DEFAULT_VALUE = {"admin", "info", "default_value"};
     public final String[] ADMIN_INFO_SELECT_HEADER = {"admin", "info_select", "header"};
     public final String[] ADMIN_INFO_SELECT_BASE = {"admin", "info_select", "base"};
     public final String[] ADMIN_INFO_SELECT_STORES = {"admin", "info_select", "stores"};

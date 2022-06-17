@@ -27,6 +27,7 @@ import org.screamingsandals.bedwars.commands.migrate.MigrateBedWarsRelCommand;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.lib.cloud.CloudConstructor;
 import org.screamingsandals.lib.cloud.extras.MinecraftExceptionHandler;
+import org.screamingsandals.lib.cloud.extras.MinecraftHelp;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
 import org.screamingsandals.lib.utils.annotations.Service;
@@ -60,6 +61,8 @@ import org.screamingsandals.lib.utils.annotations.methods.Provider;
 })
 @UtilityClass
 public class CommandService {
+    public static final MinecraftHelp.HelpColors DEFAULT_HELP_COLORS = MinecraftHelp.DEFAULT_HELP_COLORS;
+    public static final int HEADER_FOOTER_LENGTH = 55;
 
     @Provider(level = Provider.Level.POST_ENABLE)
     public static CommandManager<CommandSenderWrapper> provideCommandManager() {
