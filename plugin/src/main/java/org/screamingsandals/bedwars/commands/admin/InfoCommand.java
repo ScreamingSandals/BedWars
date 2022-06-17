@@ -302,9 +302,8 @@ public class InfoCommand extends BaseAdminSubCommand {
                                             .of(LangKeys.ADMIN_INFO_VILLAGER_SHOP_NAME)
                                             .placeholder("file", store.getShopFile())
                                             .placeholder("bool", Message
-                                                    .of(store.isUseParent()
-                                                            ? LangKeys.ADMIN_INFO_CONSTANT_TRUE
-                                                            : LangKeys.ADMIN_INFO_CONSTANT_FALSE
+                                                    .of(
+                                                            LangKeys.ADMIN_INFO_CONSTANT_FALSE
                                                     )
                                             )
                                             .send(sender);
@@ -312,8 +311,8 @@ public class InfoCommand extends BaseAdminSubCommand {
                                 Message
                                         .of(LangKeys.ADMIN_INFO_VILLAGER_SHOP_DEALER_NAME)
                                         .placeholder("name",
-                                                store.isEnabledCustomName()
-                                                        ? Component.fromLegacy(store.getShopCustomName())
+                                                store.getShopCustomName() != null
+                                                        ? Component.fromMiniMessage(store.getShopCustomName())
                                                         : Message.of(LangKeys.ADMIN_INFO_VILLAGER_SHOP_DEALER_HAS_NO_NAME).asComponent(sender)
 
                                         )

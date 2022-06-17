@@ -30,7 +30,6 @@ import java.nio.file.Path;
 public class StoreIncludeEventImpl implements StoreIncludeEvent, SCancellableEvent {
     private final String name;
     private final Path path;
-    private final boolean useParent;
     private final CategoryBuilder categoryBuilder;
     private boolean cancelled;
 

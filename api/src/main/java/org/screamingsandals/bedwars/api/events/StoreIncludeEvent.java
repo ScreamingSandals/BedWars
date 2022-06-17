@@ -31,8 +31,6 @@ public interface StoreIncludeEvent extends BWCancellable {
 
     Path getPath();
 
-    boolean isUseParent();
-
     // CategoryBuilder getCategoryBuilder() - just in class form, not interface
 
     static void handle(Object plugin, Consumer<StoreIncludeEvent> consumer) {

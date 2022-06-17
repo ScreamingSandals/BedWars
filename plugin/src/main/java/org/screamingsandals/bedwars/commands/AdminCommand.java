@@ -42,7 +42,7 @@ import java.util.stream.Stream;
         JoinTeamCommand.class,
         LobbyCommand.class,
         MinPlayersCommand.class,
-        PausecountdownCommand.class,
+        LobbyCountdownCommand.class,
         Pos1Command.class,
         Pos2Command.class,
         LobbyPos1Command.class,

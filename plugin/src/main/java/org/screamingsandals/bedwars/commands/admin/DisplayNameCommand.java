@@ -22,9 +22,7 @@ package org.screamingsandals.bedwars.commands.admin;
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
 import cloud.commandframework.arguments.standard.StringArgument;
-import org.jetbrains.annotations.NotNull;
 import org.screamingsandals.bedwars.lang.LangKeys;
-import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
 import org.screamingsandals.lib.utils.annotations.Service;
@@ -32,23 +30,29 @@ import org.screamingsandals.lib.utils.annotations.Service;
 @Service
 public class DisplayNameCommand extends BaseAdminSubCommand {
     public DisplayNameCommand() {
-        super("displayName");
+        super("display-name");
     }
 
     @Override
     public void construct(CommandManager<CommandSenderWrapper> manager, Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder) {
         manager.command(
                 commandSenderWrapperBuilder
-                        .argument(StringArgument.of("displayName", StringArgument.StringMode.GREEDY))
+                        .literal("set")
+                        .argument(StringArgument.of("display-name", StringArgument.StringMode.GREEDY))
                         .handler(commandContext -> editMode(commandContext, (sender, game) -> {
-                            String displayName = commandContext.get("displayName");
-                            if (displayName.trim().equalsIgnoreCase("off") || displayName.trim().isEmpty()) {
-                                game.setDisplayName(null);
-                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_DISPLAY_NAME_DISABLED).defaultPrefix());
-                            } else {
-                                game.setDisplayName(MiscUtils.translateAlternateColorCodes('&', displayName));
-                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_DISPLAY_NAME_ENABLED).placeholder("display_name", displayName).defaultPrefix());
-                            }
+                            String displayName = commandContext.get("display-name");
+
+                            game.setDisplayName(displayName);
+                            sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_DISPLAY_NAME_ENABLED).placeholder("display_name", displayName).defaultPrefix());
+                        }))
+        );
+
+        manager.command(
+                commandSenderWrapperBuilder
+                        .literal("reset")
+                        .handler(commandContext -> editMode(commandContext, (sender, game) -> {
+                            game.setDisplayName(null);
+                            sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_DISPLAY_NAME_DISABLED).defaultPrefix());
                         }))
         );
     }

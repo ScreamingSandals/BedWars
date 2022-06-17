@@ -21,12 +21,18 @@ package org.screamingsandals.bedwars.commands.admin;
 
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
+import cloud.commandframework.context.CommandContext;
+import org.jetbrains.annotations.NotNull;
 import org.screamingsandals.bedwars.commands.AdminCommand;
 import org.screamingsandals.bedwars.game.GameManagerImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
+import org.screamingsandals.lib.spectator.Component;
+import org.screamingsandals.lib.spectator.event.ClickEvent;
 import org.screamingsandals.lib.utils.annotations.Service;
+
+import java.util.ArrayList;
 
 @Service
 public class SaveCommand extends BaseAdminSubCommand {
@@ -38,36 +44,73 @@ public class SaveCommand extends BaseAdminSubCommand {
     public void construct(CommandManager<CommandSenderWrapper> manager, Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder) {
         manager.command(
                 commandSenderWrapperBuilder
-                        .handler(commandContext -> editMode(commandContext, (sender, game) -> {
-                            for (var team : game.getTeams()) {
-                                if (team.getTargetBlock() == null) {
-                                    sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_SET_TARGET_BLOCK_FOR_TEAM_BEFORE_SAVE).defaultPrefix().placeholder("team", team.getName()));
-                                    return;
-                                } else if (team.getTeamSpawn() == null) {
-                                    sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_SET_SPAWN_FOR_TEAM_BEFORE_SAVE).defaultPrefix().placeholder("team", team.getName()));
-                                    return;
-                                }
-                            }
-                            if (game.getTeams().size() < 2) {
-                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_NEED_2_TEAMS).defaultPrefix());
-                            } else if (game.getPos1() == null || game.getPos2() == null) {
-                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_SET_BOUNDS_BEFORE_SAVE).defaultPrefix());
-                            } else if (game.getLobbySpawn() == null) {
-                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_SET_LOBBY_BEFORE_SAVE).defaultPrefix());
-                            } else if (game.getSpecSpawn() == null) {
-                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_SET_SPEC_BEFORE_SAVE).defaultPrefix());
-                            } else if (game.getGameStoreList().isEmpty()) {
-                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_SET_STORES_BEFORE_SAVE).defaultPrefix());
-                            } else if (game.getSpawners().isEmpty()) {
-                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_SET_SPAWNERS_BEFORE_SAVE).defaultPrefix());
-                            } else {
-                                game.saveToConfig();
-                                GameManagerImpl.getInstance().addGame(game);
-                                game.start();
-                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_SAVED_AND_STARTED).defaultPrefix());
-                                AdminCommand.gc.remove(commandContext.<String>get("game"));
-                            }
-                        }))
+                        .handler(this::save)
         );
+
+        manager.command(
+                commandSenderWrapperBuilder
+                        .literal("force")
+                        .handler(this::save)
+        );
+    }
+
+    private void save(@NotNull CommandContext<CommandSenderWrapper> commandContext) {
+        editMode(commandContext, (sender, game) -> {
+            // SEVERE (currently)
+            for (var team : game.getTeams()) {
+                if (team.getTargetBlock() == null) {
+                    sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_SET_TARGET_BLOCK_FOR_TEAM_BEFORE_SAVE).defaultPrefix().placeholder("team", team.getName()));
+                    return;
+                } else if (team.getTeamSpawn() == null) {
+                    sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_SET_SPAWN_FOR_TEAM_BEFORE_SAVE).defaultPrefix().placeholder("team", team.getName()));
+                    return;
+                }
+            }
+            if (game.getTeams().size() < 2) {
+                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_NEED_2_TEAMS).defaultPrefix());
+                return;
+            } else if (game.getPos1() == null || game.getPos2() == null) {
+                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_SET_BOUNDS_BEFORE_SAVE).defaultPrefix());
+                return;
+            } else if (game.getLobbySpawn() == null) {
+                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_SET_LOBBY_BEFORE_SAVE).defaultPrefix());
+                return;
+            } else if (game.getSpecSpawn() == null) {
+                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_SET_SPEC_BEFORE_SAVE).defaultPrefix());
+                return;
+            }
+
+            // WARNINGS
+            var warnings = new ArrayList<Message>();
+            if (!commandContext.getRawInputJoined().trim().endsWith("force")) { // is there a better way?
+                if (game.getGameStoreList().isEmpty()) {
+                    warnings.add(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_MISSING_STORES).defaultPrefix());
+                } else if ((game.getGameStoreList().size() % game.getTeams().size()) != 0) {
+                    warnings.add(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_WEIRD_STORE_COUNT).placeholder("count", game.getGameStoreList().size()).defaultPrefix());
+                }
+                if (game.getSpawners().isEmpty()) {
+                    warnings.add(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_MISSING_SPAWNERS).defaultPrefix());
+                }
+            }
+
+            if (warnings.isEmpty()) {
+                game.saveToConfig();
+                GameManagerImpl.getInstance().addGame(game);
+                game.start();
+                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_SAVED_AND_STARTED).placeholderRaw("game", game.getName()).defaultPrefix());
+                AdminCommand.gc.remove(commandContext.<String>get("game"));
+            } else {
+                warnings.forEach(sender::sendMessage);
+                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_SKIP_WARNINGS)
+                        .placeholderRaw("game", game.getName())
+                        .placeholder("command", Component.text()
+                                .content("/" + commandContext.getRawInputJoined() + " force")
+                                .hoverEvent(Message.of(LangKeys.ADMIN_INFO_SELECT_CLICK)
+                                        .placeholderRaw("command", "/" + commandContext.getRawInputJoined() + " force")
+                                        .asComponent(sender))
+                                .clickEvent(ClickEvent.runCommand("/" + commandContext.getRawInputJoined() + " force")).build())
+                        .defaultPrefix());
+            }
+        });
     }
 }

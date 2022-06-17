@@ -21,9 +21,11 @@ package org.screamingsandals.bedwars.game;
 
 import lombok.Data;
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.api.game.GameStore;
 import org.screamingsandals.bedwars.config.MainConfig;
+import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.lib.entity.EntityLiving;
 import org.screamingsandals.lib.entity.EntityMapper;
 import org.screamingsandals.lib.entity.type.EntityTypeHolder;
@@ -32,40 +34,36 @@ import org.screamingsandals.lib.npc.NPCManager;
 import org.screamingsandals.lib.npc.skin.NPCSkin;
 import org.screamingsandals.lib.spectator.Component;
 import org.screamingsandals.lib.world.LocationHolder;
+import org.screamingsandals.lib.world.LocationMapper;
+import org.spongepowered.configurate.ConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Data
-public class GameStoreImpl implements GameStore {
+public class GameStoreImpl implements GameStore, SerializableGameComponent {
+    private static final EntityTypeHolder VILLAGER = EntityTypeHolder.of("villager");
+
+    @NotNull
     private final LocationHolder storeLocation;
     @Nullable
-    private final String shopFile;
-    private final String shopCustomName;
-    private final boolean enabledCustomName;
-    private final boolean useParent;
+    private String shopFile = null;
+    @Nullable
+    private String shopCustomName = null;
+    @Nullable
     private EntityLiving entity;
     @Getter
     private NPC npc;
-    private EntityTypeHolder entityType;
-    private boolean isBaby;
-    private String skinName;
+    @NotNull
+    private EntityTypeHolder entityType = VILLAGER;
+    private boolean isBaby = false;
+    @Nullable
+    private String skinName = null;
 
-    public GameStoreImpl(LocationHolder storeLocation, @Nullable String shopFile, boolean useParent, String shopCustomName, boolean enabledCustomName, boolean isBaby) {
-        this(storeLocation, shopFile, useParent, EntityTypeHolder.of("villager"), shopCustomName, enabledCustomName, isBaby, null);
-    }
-
-    public GameStoreImpl(LocationHolder storeLocation, @Nullable String shopFile, boolean useParent, EntityTypeHolder entityType, String shopCustomName, boolean enabledCustomName, boolean isBaby, String skinName) {
-        if (entityType == null || !entityType.isAlive()) {
-            entityType = EntityTypeHolder.of("villager");
-        }
+    public GameStoreImpl(@NotNull LocationHolder storeLocation) {
         this.storeLocation = storeLocation;
-        this.shopFile = shopFile;
-        this.useParent = useParent;
-        this.entityType = entityType;
-        this.shopCustomName = shopCustomName;
-        this.enabledCustomName = enabledCustomName;
-        this.isBaby = isBaby;
-        this.skinName = skinName;
     }
 
     public Object spawn() {
@@ -76,8 +74,11 @@ public class GameStoreImpl implements GameStore {
                     npc = NPCManager
                             .npc(storeLocation)
                             .touchable(true)
-                            .lookAtPlayer(true)
-                            .displayName(List.of(Component.fromLegacy(shopCustomName)));
+                            .lookAtPlayer(true);
+
+                    if (shopCustomName != null) {
+                        npc.displayName(List.of(Component.fromLegacy(shopCustomName)));
+                    }
 
                     NPCSkin.retrieveSkin(skinName).thenAccept(skin -> {
                         if (skin != null) {
@@ -94,7 +95,7 @@ public class GameStoreImpl implements GameStore {
             entity = EntityMapper.<EntityLiving>spawn(typ, storeLocation).orElseThrow();
             entity.setRemoveWhenFarAway(false);
 
-            if (enabledCustomName) {
+            if (shopCustomName != null) {
                 entity.setCustomName(shopCustomName);
                 entity.setCustomNameVisible(true);
             }
@@ -145,5 +146,41 @@ public class GameStoreImpl implements GameStore {
     public void setEntityTypeNPC(String skinName) {
         this.entityType = EntityTypeHolder.of("player");
         this.skinName = skinName;
+    }
+
+    @Override
+    public void saveTo(@NotNull ConfigurationNode node) throws SerializationException {
+        node.node("loc").set(MiscUtils.writeLocationToString(storeLocation));
+        node.node("shop").set(shopFile);
+        node.node("type").set(entityType.platformName());
+        if (shopCustomName != null) {
+            node.node("custom-name").set(shopCustomName);
+        }
+        node.node("isBaby").set(isBaby ? "true" : "false");
+        node.node("skin").set(skinName);
+    }
+
+    public static class Loader implements SerializableGameComponentLoader<GameStoreImpl> {
+        public static final Loader INSTANCE = new Loader();
+
+        @Override
+        @NotNull
+        public Optional<GameStoreImpl> load(@NotNull GameImpl game, @NotNull ConfigurationNode node) {
+            if (node.isMap()) {
+                var oldStr = node.node("name").getString();
+                if (oldStr != null) {
+                    oldStr = MiscUtils.toMiniMessage(oldStr);
+                }
+                var store = new GameStoreImpl(LocationMapper.wrapLocation(MiscUtils.readLocationFromString(game.getWorld(), Objects.requireNonNull(node.node("loc").getString()))));
+                store.setShopFile(node.node("shop").getString());
+                store.setEntityType(EntityTypeHolder.of(node.node("type").getString("VILLAGER").toUpperCase()));
+                store.setShopCustomName(oldStr != null ? oldStr : node.node("custom-name").getString());
+                store.setBaby(node.node("isBaby").getBoolean());
+                store.setSkinName(node.node("skin").getString());
+                return Optional.of(store);
+            } else {
+                return Optional.of(new GameStoreImpl(LocationMapper.wrapLocation(MiscUtils.readLocationFromString(game.getWorld(), Objects.requireNonNull(node.getString())))));
+            }
+        }
     }
 }

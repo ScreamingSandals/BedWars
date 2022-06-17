@@ -26,6 +26,7 @@ import org.bukkit.plugin.Plugin;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.GameManagerImpl;
+import org.screamingsandals.lib.spectator.Component;
 import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.utils.annotations.methods.OnPostEnable;
 import org.screamingsandals.lib.utils.annotations.methods.ShouldRunControllable;
@@ -81,6 +82,6 @@ public class BungeeMotdListener implements Listener {
             return; // WTF??
         }
 
-        slpe.setMotd(string.replace("%name%", game.getName()).replace("%displayName%", game.getDisplayName() != null ? game.getDisplayName() : game.getName()).replace("%current%", Integer.toString(game.countPlayers())).replace("%max%", Integer.toString(game.getMaxPlayers())));
+        slpe.setMotd(string.replace("%name%", game.getName()).replace("%displayName%", game.getDisplayName() != null ? Component.fromMiniMessage(game.getDisplayName()).toLegacy() : game.getName()).replace("%current%", Integer.toString(game.countPlayers())).replace("%max%", Integer.toString(game.getMaxPlayers())));
     }
 }

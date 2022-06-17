@@ -22,6 +22,8 @@ package org.screamingsandals.bedwars.game;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Tolerate;
+import org.jetbrains.annotations.NotNull;
+import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.api.Team;
 import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
 import org.screamingsandals.bedwars.api.game.ItemSpawner;
@@ -30,6 +32,7 @@ import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.events.ResourceSpawnEventImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
+import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.lib.entity.EntityBasic;
 import org.screamingsandals.lib.entity.EntityItem;
 import org.screamingsandals.lib.entity.EntityMapper;
@@ -44,12 +47,17 @@ import org.screamingsandals.lib.tasker.task.TaskerTask;
 import org.screamingsandals.lib.utils.Pair;
 import org.screamingsandals.lib.utils.visual.TextEntry;
 import org.screamingsandals.lib.world.LocationHolder;
+import org.spongepowered.configurate.ConfigurateException;
+import org.spongepowered.configurate.ConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-public class ItemSpawnerImpl implements ItemSpawner {
+public class ItemSpawnerImpl implements ItemSpawner, SerializableGameComponent {
     @Getter
     private final LocationHolder location;
     @Getter
@@ -57,28 +65,28 @@ public class ItemSpawnerImpl implements ItemSpawner {
     private ItemSpawnerTypeImpl itemSpawnerType;
     @Getter
     @Setter
-    private String customName;
+    private String customName = null;
     @Getter
     @Setter
-    private boolean hologramEnabled;
+    private boolean hologramEnabled = true;
     @Getter
     @Setter
-    private double baseAmountPerSpawn;
+    private double baseAmountPerSpawn = 1;
     @Getter
     @Setter
-    private TeamImpl team;
+    private TeamImpl team = null;
     @Getter
     @Setter
-    private int maxSpawnedResources;
+    private int maxSpawnedResources = -1;
     @Getter
     @Setter
-    private boolean floatingBlockEnabled;
+    private boolean floatingBlockEnabled = false;
     @Getter
     @Setter
-    private Hologram.RotationMode rotationMode;
+    private Hologram.RotationMode rotationMode = Hologram.RotationMode.Y;
     @Getter
     @Setter
-    private HologramType hologramType;
+    private HologramType hologramType = HologramType.DEFAULT;
 
     @Getter
     @Setter
@@ -103,19 +111,9 @@ public class ItemSpawnerImpl implements ItemSpawner {
     private long elapsedTime;
     private long remainingTimeToSpawn;
 
-    public ItemSpawnerImpl(LocationHolder location, ItemSpawnerTypeImpl itemSpawnerType, String customName,
-                           boolean hologramEnabled, double baseAmountPerSpawn, TeamImpl team,
-                           int maxSpawnedResources, boolean floatingBlockEnabled, Hologram.RotationMode rotationMode, HologramType hologramType) {
+    public ItemSpawnerImpl(LocationHolder location, ItemSpawnerTypeImpl itemSpawnerType) {
         this.location = location;
         this.itemSpawnerType = itemSpawnerType;
-        this.customName = customName;
-        this.baseAmountPerSpawn = baseAmountPerSpawn;
-        this.hologramEnabled = hologramEnabled;
-        this.team = team;
-        this.maxSpawnedResources = maxSpawnedResources;
-        this.floatingBlockEnabled = floatingBlockEnabled;
-        this.rotationMode = rotationMode;
-        this.hologramType = hologramType;
     }
 
     public int nextMaxSpawn(int calculated) {
@@ -438,6 +436,51 @@ public class ItemSpawnerImpl implements ItemSpawner {
                     .delay(5, TaskerTime.TICKS)
                     .repeat(20, TaskerTime.TICKS)
                     .start();
+        }
+    }
+
+    @Override
+    public void saveTo(@NotNull ConfigurationNode node) throws SerializationException {
+        node.node("location").set(MiscUtils.writeLocationToString(location));
+        node.node("type").set(itemSpawnerType.getConfigKey());
+        node.node("customName").set(customName);
+        node.node("startLevel").set(baseAmountPerSpawn);
+        node.node("hologramEnabled").set(hologramEnabled);
+        if (team != null) {
+            node.node("team").set(team.getName());
+        };
+        node.node("maxSpawnedResources").set(maxSpawnedResources);
+        node.node("floatingEnabled").set(floatingBlockEnabled);
+        node.node("rotationMode").set(rotationMode);
+        node.node("hologramType").set(hologramType);
+    }
+
+    public static class Loader implements SerializableGameComponentLoader<ItemSpawnerImpl> {
+        public static final Loader INSTANCE = new Loader();
+
+        @Override
+        @NotNull
+        public Optional<ItemSpawnerImpl> load(@NotNull GameImpl game, @NotNull ConfigurationNode node) throws ConfigurateException {
+            var spawnerType = node.node("type").getString();
+            if (spawnerType == null) {
+                throw new UnsupportedOperationException("Wrongly configured spawner type!");
+            }
+            var type = BedWarsPlugin.getSpawnerType(spawnerType.toLowerCase(), game);
+            if (type == null) {
+                throw new UnsupportedOperationException("Wrongly configured spawner type!");
+            }
+
+            var spawner = new ItemSpawnerImpl(MiscUtils.readLocationFromString(game.getWorld(), Objects.requireNonNull(node.node("location").getString())), type);
+            spawner.setCustomName(node.node("customName").getString());
+            spawner.setHologramEnabled(node.node("hologramEnabled").getBoolean(true));
+            spawner.setBaseAmountPerSpawn(node.node("startLevel").getDouble(1));
+            spawner.setTeam(game.getTeamFromName(node.node("team").getString()));
+            spawner.setMaxSpawnedResources(node.node("maxSpawnedResources").getInt(-1));
+            spawner.setFloatingBlockEnabled(node.node("floatingEnabled").getBoolean());
+            spawner.setRotationMode(Hologram.RotationMode.valueOf(node.node("rotationMode").getString("Y")));
+            spawner.setHologramType(ItemSpawner.HologramType.valueOf(node.node("hologramType").getString("DEFAULT")));
+
+            return Optional.of(spawner);
         }
     }
 }

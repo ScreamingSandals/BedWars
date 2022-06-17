@@ -28,9 +28,9 @@ import org.screamingsandals.lib.sender.CommandSenderWrapper;
 import org.screamingsandals.lib.utils.annotations.Service;
 
 @Service
-public class PausecountdownCommand extends BaseAdminSubCommand {
-    public PausecountdownCommand() {
-        super("pausecountdown");
+public class LobbyCountdownCommand extends BaseAdminSubCommand {
+    public LobbyCountdownCommand() {
+        super("lobby-countdown");
     }
 
     @Override

@@ -60,37 +60,8 @@ public class SpawnerCommand extends BaseAdminSubCommand {
                                 .<CommandSenderWrapper>newBuilder("type")
                                 .withSuggestionsProvider(editModeSuggestion((commandContext, sender, game) -> BedWarsPlugin.getAllSpawnerTypes(game)))
                         )
-                        .argument(BooleanArgument.optional("hologramEnabled", true))
-                        .argument(DoubleArgument.optional("startLevel", 1))
-                        .argument(StringArgument.optional("customName"))
-                        .argument(StringArgument
-                                .<CommandSenderWrapper>newBuilder("team")
-                                .asOptional()
-                                .withSuggestionsProvider((c, s) -> {
-                                    if (AdminCommand.gc.containsKey(c.<String>get("game"))) {
-                                        return AdminCommand.gc.get(c.<String>get("game"))
-                                                .getTeams()
-                                                .stream()
-                                                .map(TeamImpl::getName)
-                                                .collect(Collectors.toList());
-                                    }
-                                    return List.of();
-                                })
-                        )
-                        .argument(IntegerArgument.optional("maxSpawnedResources"))
-                        .argument(BooleanArgument.optional("floatingHologram"))
-                        .argument(EnumArgument.optional(Hologram.RotationMode.class, "rotationMode"))
-                        .argument(EnumArgument.optional(ItemSpawner.HologramType.class, "hologramType"))
                         .handler(commandContext -> editMode(commandContext, (sender, game) -> {
                             String type = commandContext.get("type");
-                            String customName = commandContext.getOrDefault("customName", null);
-                            boolean hologramEnabled = commandContext.get("hologramEnabled");
-                            double startLevel = commandContext.get("startLevel");
-                            var team = commandContext.<String>getOptional("team").map(game::getTeamFromName).orElse(null); // saved as nullable
-                            int maxSpawnedResources = commandContext.getOrDefault("maxSpawnedResources", -1);
-                            boolean floatingHologram = commandContext.getOrDefault("floatingHologram", false);
-                            Hologram.RotationMode rotationMode = commandContext.getOrDefault("rotationMode", Hologram.RotationMode.Y);
-                            ItemSpawner.HologramType hologramType = commandContext.getOrDefault("hologramType", ItemSpawner.HologramType.DEFAULT);
 
                             var loc = sender.as(PlayerWrapper.class).getLocation();
 
@@ -110,7 +81,7 @@ public class SpawnerCommand extends BaseAdminSubCommand {
                             loc.setPitch(0);
                             var spawnerType = BedWarsPlugin.getSpawnerType(type, game);
                             if (spawnerType != null) {
-                                game.getSpawners().add(new ItemSpawnerImpl(loc, spawnerType, customName, hologramEnabled, startLevel, team, maxSpawnedResources, floatingHologram, rotationMode, hologramType));
+                                game.getSpawners().add(new ItemSpawnerImpl(loc, spawnerType));
                                 sender.sendMessage(
                                         Message
                                                 .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_SPAWNER_ADDED)
@@ -163,7 +134,7 @@ public class SpawnerCommand extends BaseAdminSubCommand {
 
         manager.command(
                 commandSenderWrapperBuilder
-                        .literal("maxSpawnedResources")
+                        .literal("max-spawned-resources")
                         .argument(IntegerArgument.of("amount"))
                         .argument(IntegerArgument.optional("number"))
                         .handler(commandContext -> changeSettingCommand(commandContext, (sender, game, itemSpawner) -> {
@@ -184,11 +155,11 @@ public class SpawnerCommand extends BaseAdminSubCommand {
 
         manager.command(
                 commandSenderWrapperBuilder
-                        .literal("rotationMode")
-                        .argument(EnumArgument.of(Hologram.RotationMode.class, "rotationMode"))
+                        .literal("rotation-mode")
+                        .argument(EnumArgument.of(Hologram.RotationMode.class, "rotation-mode"))
                         .argument(IntegerArgument.optional("number"))
                         .handler(commandContext -> changeSettingCommand(commandContext, (sender, game, itemSpawner) -> {
-                            Hologram.RotationMode rotationMode = commandContext.get("rotationMode");
+                            Hologram.RotationMode rotationMode = commandContext.get("rotation-mode");
 
                             itemSpawner.setRotationMode(rotationMode);
                             sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_SPAWNER_ROTATION_MODE_SET)
@@ -201,7 +172,7 @@ public class SpawnerCommand extends BaseAdminSubCommand {
 
         manager.command(
                 commandSenderWrapperBuilder
-                        .literal("changeType")
+                        .literal("change-type")
                         .argument(StringArgument
                                 .<CommandSenderWrapper>newBuilder("type")
                                 .withSuggestionsProvider(editModeSuggestion((commandContext, sender, game) -> BedWarsPlugin.getAllSpawnerTypes(game)))
@@ -227,7 +198,7 @@ public class SpawnerCommand extends BaseAdminSubCommand {
 
         manager.command(
                 commandSenderWrapperBuilder
-                        .literal("customName")
+                        .literal("custom-name")
                         .argument(StringArgument.of("name"))
                         .argument(IntegerArgument.optional("number"))
                         .handler(commandContext -> changeSettingCommand(commandContext, (sender, game, itemSpawner) -> {
@@ -247,7 +218,7 @@ public class SpawnerCommand extends BaseAdminSubCommand {
 
         manager.command(
                 commandSenderWrapperBuilder
-                        .literal("hologramType")
+                        .literal("hologram-type")
                         .argument(EnumArgument.of(ItemSpawner.HologramType.class, "type"))
                         .argument(IntegerArgument.optional("number"))
                         .handler(commandContext -> changeSettingCommand(commandContext, (sender, game, itemSpawner) -> {
@@ -264,7 +235,7 @@ public class SpawnerCommand extends BaseAdminSubCommand {
 
         manager.command(
                 commandSenderWrapperBuilder
-                        .literal("linkedTeam")
+                        .literal("linked-team")
                         .argument(StringArgument
                                 .<CommandSenderWrapper>newBuilder("team")
                                 .withSuggestionsProvider((c, s) -> {
@@ -300,7 +271,7 @@ public class SpawnerCommand extends BaseAdminSubCommand {
 
         manager.command(
                 commandSenderWrapperBuilder
-                        .literal("baseAmount")
+                        .literal("base-amount-per-spawn")
                         .argument(DoubleArgument.of("amount"))
                         .argument(IntegerArgument.optional("number"))
                         .handler(commandContext -> changeSettingCommand(commandContext, (sender, game, itemSpawner) -> {
@@ -317,7 +288,7 @@ public class SpawnerCommand extends BaseAdminSubCommand {
 
         manager.command(
                 commandSenderWrapperBuilder
-                        .literal("floating")
+                        .literal("floating-block-enabled")
                         .argument(BooleanArgument.of("enabled"))
                         .argument(IntegerArgument.optional("number"))
                         .handler(commandContext -> changeSettingCommand(commandContext, (sender, game, itemSpawner) -> {
@@ -337,7 +308,7 @@ public class SpawnerCommand extends BaseAdminSubCommand {
 
         manager.command(
                 commandSenderWrapperBuilder
-                        .literal("hologram")
+                        .literal("hologram-enabled")
                         .argument(BooleanArgument.of("enabled"))
                         .argument(IntegerArgument.optional("number"))
                         .handler(commandContext -> changeSettingCommand(commandContext, (sender, game, itemSpawner) -> {

@@ -21,25 +21,30 @@ package org.screamingsandals.bedwars.commands.admin;
 
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
-import cloud.commandframework.arguments.standard.BooleanArgument;
 import cloud.commandframework.arguments.standard.StringArgument;
 import org.screamingsandals.bedwars.game.GameStoreImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.utils.ArenaUtils;
-import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.lib.entity.type.EntityTypeHolder;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
 import org.screamingsandals.lib.utils.annotations.Service;
+import org.screamingsandals.lib.utils.annotations.parameters.DataFolder;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class StoreCommand extends BaseAdminSubCommand {
-    public StoreCommand() {
+    private final Path shopFolder;
+
+    public StoreCommand(@DataFolder("shop") Path shopFolder) {
         super("store");
+        this.shopFolder = shopFolder;
     }
 
     @Override
@@ -47,18 +52,7 @@ public class StoreCommand extends BaseAdminSubCommand {
         manager.command(
                 commandSenderWrapperBuilder
                         .literal("add")
-                        .argument(StringArgument
-                                .<CommandSenderWrapper>newBuilder("name")
-                                .asOptional()
-                                .withSuggestionsProvider((c,s) -> List.of("Villager_shop", "Dealer", "Seller", "&a&lVillager_shop", "&4Barter"))
-                        )
-                        .argument(StringArgument.optional("file"))
-                        .argument(BooleanArgument.optional("useParent"))
                         .handler(commandContext -> editMode(commandContext, (sender, game) -> {
-                            var name = commandContext.<String>getOptional("name")
-                                    .map(s -> MiscUtils.translateAlternateColorCodes('&', s));
-                            var file = commandContext.<String>getOptional("file");
-                            boolean useParent = commandContext.getOrDefault("useParent", true);
                             var loc = sender.as(PlayerWrapper.class).getLocation();
 
                             if (game.getPos1() == null || game.getPos2() == null) {
@@ -82,7 +76,7 @@ public class StoreCommand extends BaseAdminSubCommand {
                                 sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_STORE_ALREADY_EXIST).defaultPrefix());
                                 return;
                             }
-                            game.getGameStoreList().add(new GameStoreImpl(loc, file.orElse(null), useParent, name.orElse(null), name.isPresent(), false));
+                            game.getGameStoreList().add(new GameStoreImpl(loc));
                             sender.sendMessage(
                                     Message
                                     .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_STORE_ADDED)
@@ -226,6 +220,140 @@ public class StoreCommand extends BaseAdminSubCommand {
                                 store.get().setEntityType(t);
 
                                 sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_STORE_ENTITY_TYPE_SET).defaultPrefix().placeholder("type", t.toString()));
+                                return;
+                            }
+
+                            sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_STORE_DOES_NOT_EXIST).defaultPrefix());
+                        }))
+        );
+
+        manager.command(
+                commandSenderWrapperBuilder
+                        .literal("file")
+                        .literal("set")
+                        .argument(StringArgument.<CommandSenderWrapper>newBuilder("file")
+                                .greedy()
+                                .withSuggestionsProvider((c, s) -> {
+                                    try (var walk = Files.walk(shopFolder)) {
+                                        return walk
+                                                .filter(Files::isRegularFile)
+                                                .map(p -> shopFolder.relativize(p).toString())
+                                                .collect(Collectors.toList());
+                                    } catch (IOException ignored) {
+                                    }
+                                    return List.of();
+                                })
+                        )
+                        .handler(commandContext -> editMode(commandContext, (sender, game) -> {
+                            String file = commandContext.get("file");
+                            var loc = sender.as(PlayerWrapper.class).getLocation();
+
+                            var store = game.getGameStoreList()
+                                    .stream()
+                                    .filter(gameStore -> gameStore.getStoreLocation().getBlock().equals(loc.getBlock()))
+                                    .findFirst();
+
+                            if (store.isPresent()) {
+                                store.get().setShopFile(file);
+                                sender.sendMessage(
+                                        Message
+                                                .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_STORE_FILE_SET)
+                                                .defaultPrefix()
+                                                .placeholder("x", loc.getX(), 2)
+                                                .placeholder("y", loc.getY(), 2)
+                                                .placeholder("z", loc.getZ(), 2)
+                                                .placeholder("file", file)
+                                );
+                                return;
+                            }
+
+                            sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_STORE_DOES_NOT_EXIST).defaultPrefix());
+                        }))
+        );
+
+        manager.command(
+                commandSenderWrapperBuilder
+                        .literal("file")
+                        .literal("reset")
+                        .handler(commandContext -> editMode(commandContext, (sender, game) -> {
+                            var loc = sender.as(PlayerWrapper.class).getLocation();
+
+                            var store = game.getGameStoreList()
+                                    .stream()
+                                    .filter(gameStore -> gameStore.getStoreLocation().getBlock().equals(loc.getBlock()))
+                                    .findFirst();
+
+                            if (store.isPresent()) {
+                                store.get().setShopFile(null);
+                                sender.sendMessage(
+                                        Message
+                                                .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_STORE_FILE_RESET)
+                                                .defaultPrefix()
+                                                .placeholder("x", loc.getX(), 2)
+                                                .placeholder("y", loc.getY(), 2)
+                                                .placeholder("z", loc.getZ(), 2)
+                                );
+                                return;
+                            }
+
+                            sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_STORE_DOES_NOT_EXIST).defaultPrefix());
+                        }))
+        );
+
+        manager.command(
+                commandSenderWrapperBuilder
+                        .literal("custom-name")
+                        .literal("set")
+                        .argument(StringArgument.greedy("name"))
+                        .handler(commandContext -> editMode(commandContext, (sender, game) -> {
+                            String name = commandContext.get("name");
+                            var loc = sender.as(PlayerWrapper.class).getLocation();
+
+                            var store = game.getGameStoreList()
+                                    .stream()
+                                    .filter(gameStore -> gameStore.getStoreLocation().getBlock().equals(loc.getBlock()))
+                                    .findFirst();
+
+                            if (store.isPresent()) {
+                                store.get().setShopCustomName(name);
+                                sender.sendMessage(
+                                        Message
+                                                .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_STORE_NAME_SET)
+                                                .defaultPrefix()
+                                                .placeholder("x", loc.getX(), 2)
+                                                .placeholder("y", loc.getY(), 2)
+                                                .placeholder("z", loc.getZ(), 2)
+                                                .placeholder("name", name)
+                                );
+                                return;
+                            }
+
+                            sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_STORE_DOES_NOT_EXIST).defaultPrefix());
+                        }))
+        );
+
+        manager.command(
+                commandSenderWrapperBuilder
+                        .literal("custom-name")
+                        .literal("reset")
+                        .handler(commandContext -> editMode(commandContext, (sender, game) -> {
+                            var loc = sender.as(PlayerWrapper.class).getLocation();
+
+                            var store = game.getGameStoreList()
+                                    .stream()
+                                    .filter(gameStore -> gameStore.getStoreLocation().getBlock().equals(loc.getBlock()))
+                                    .findFirst();
+
+                            if (store.isPresent()) {
+                                store.get().setShopCustomName(null);
+                                sender.sendMessage(
+                                        Message
+                                                .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_STORE_NAME_RESET)
+                                                .defaultPrefix()
+                                                .placeholder("x", loc.getX(), 2)
+                                                .placeholder("y", loc.getY(), 2)
+                                                .placeholder("z", loc.getZ(), 2)
+                                );
                                 return;
                             }
 

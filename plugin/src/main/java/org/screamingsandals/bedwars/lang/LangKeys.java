@@ -269,6 +269,7 @@ public class LangKeys {
     public final String[] ADMIN_ARENA_EDIT_ERRORS_SPAWNERS_NEEDED = {"admin", "arena", "edit", "errors", "spawners_needed"};
     public final String[] ADMIN_ARENA_EDIT_ERRORS_TEAM_DOES_NOT_EXIST = {"admin", "arena", "edit", "errors", "team_does_not_exist"};
     public final String[] ADMIN_ARENA_EDIT_ERRORS_TEAM_ALREADY_EXISTS = {"admin", "arena", "edit", "errors", "team_already_exists"};
+    public final String[] ADMIN_ARENA_EDIT_ERRORS_CANNOT_RENAME_TEAM = {"admin", "arena", "edit", "errors", "cannot_rename_team"};
     public final String[] ADMIN_ARENA_EDIT_ERRORS_SET_BOUNDS_BEFORE_SAVE = {"admin", "arena", "edit", "errors", "set_bounds_before_save"};
     public final String[] ADMIN_ARENA_EDIT_ERRORS_SET_LOBBY_BEFORE_SAVE = {"admin", "arena", "edit", "errors", "set_lobby_before_save"};
     public final String[] ADMIN_ARENA_EDIT_ERRORS_SET_SPEC_BEFORE_SAVE = {"admin", "arena", "edit", "errors", "set_spec_before_save"};
@@ -276,6 +277,10 @@ public class LangKeys {
     public final String[] ADMIN_ARENA_EDIT_ERRORS_SET_SPAWNERS_BEFORE_SAVE = {"admin", "arena", "edit", "errors", "set_spawners_before_save"};
     public final String[] ADMIN_ARENA_EDIT_ERRORS_SET_TARGET_BLOCK_FOR_TEAM_BEFORE_SAVE = {"admin", "arena", "edit", "errors", "set_target_block_for_team_before_save"};
     public final String[] ADMIN_ARENA_EDIT_ERRORS_SET_SPAWN_FOR_TEAM_BEFORE_SAVE = {"admin", "arena", "edit", "errors", "set_spawn_for_team_before_save"};
+    public final String[] ADMIN_ARENA_EDIT_ERRORS_MISSING_SPAWNERS = {"admin", "arena", "edit", "errors", "missing_spawners"};
+    public final String[] ADMIN_ARENA_EDIT_ERRORS_MISSING_STORES = {"admin", "arena", "edit", "errors", "missing_stores"};
+    public final String[] ADMIN_ARENA_EDIT_ERRORS_WEIRD_STORE_COUNT = {"admin", "arena", "edit", "errors", "weird_store_count"};
+    public final String[] ADMIN_ARENA_EDIT_ERRORS_SKIP_WARNINGS = {"admin", "arena", "edit", "errors", "skip_warnings"};
     public final String[] ADMIN_ARENA_EDIT_ERRORS_INVALID_MIN_PLAYERS = {"admin", "arena", "edit", "errors", "invalid_min_players"};
     public final String[] ADMIN_ARENA_EDIT_ERRORS_INVALID_CONSTANT_VALUE = {"admin", "arena", "edit", "errors", "invalid_constant_value"};
     public final String[] ADMIN_ARENA_EDIT_ERRORS_INVALID_CONSTANT_NAME = {"admin", "arena", "edit", "errors", "invalid_constant_name"};
@@ -298,10 +303,15 @@ public class LangKeys {
     public final String[] ADMIN_ARENA_EDIT_SUCCESS_TEAM_COLOR_SET = {"admin", "arena", "edit", "success", "team_color_set"};
     public final String[] ADMIN_ARENA_EDIT_SUCCESS_TEAM_REMOVED = {"admin", "arena", "edit", "success", "team_removed"};
     public final String[] ADMIN_ARENA_EDIT_SUCCESS_TEAM_CREATED = {"admin", "arena", "edit", "success", "team_created"};
+    public final String[] ADMIN_ARENA_EDIT_SUCCESS_TEAM_RENAMED = {"admin", "arena", "edit", "success", "team_renamed"};
     public final String[] ADMIN_ARENA_EDIT_SUCCESS_SPAWNERS_REMOVED = {"admin", "arena", "edit", "success", "spawners_removed"};
     public final String[] ADMIN_ARENA_EDIT_SUCCESS_SPAWNER_ADDED = {"admin", "arena", "edit", "success", "spawner_added"};
     public final String[] ADMIN_ARENA_EDIT_SUCCESS_STORE_ADDED = {"admin", "arena", "edit", "success", "store_added"};
     public final String[] ADMIN_ARENA_EDIT_SUCCESS_STORE_REMOVED = {"admin", "arena", "edit", "success", "store_removed"};
+    public final String[] ADMIN_ARENA_EDIT_SUCCESS_STORE_NAME_SET = {"admin", "arena", "edit", "success", "store_name_set"};
+    public final String[] ADMIN_ARENA_EDIT_SUCCESS_STORE_NAME_RESET = {"admin", "arena", "edit", "success", "store_name_reset"};
+    public final String[] ADMIN_ARENA_EDIT_SUCCESS_STORE_FILE_SET = {"admin", "arena", "edit", "success", "store_file_set"};
+    public final String[] ADMIN_ARENA_EDIT_SUCCESS_STORE_FILE_RESET = {"admin", "arena", "edit", "success", "store_file_reset"};
     public final String[] ADMIN_ARENA_EDIT_SUCCESS_LOBBY_SPAWN_SET = {"admin", "arena", "edit", "success", "lobby_spawn_set"};
     public final String[] ADMIN_ARENA_EDIT_SUCCESS_SPEC_SPAWN_SET = {"admin", "arena", "edit", "success", "spec_spawn_set"};
     public final String[] ADMIN_ARENA_EDIT_SUCCESS_POS1_SET = {"admin", "arena", "edit", "success", "pos1_set"};

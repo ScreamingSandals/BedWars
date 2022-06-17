@@ -189,7 +189,6 @@ public class DumpCommand extends BaseCommand {
                                                                                             "location", gameStore.getStoreLocation(),
                                                                                             "shopFile", gameStore.getShopFile(),
                                                                                             "customName", gameStore.getShopCustomName(),
-                                                                                            "useParent", gameStore.isUseParent(),
                                                                                             "baby", gameStore.isBaby(),
                                                                                             "skinName", gameStore.getSkinName()
                                                                                     )).collect(Collectors.toList()),

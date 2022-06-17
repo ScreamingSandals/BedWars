@@ -117,29 +117,26 @@ public class ShopInventory {
             throw new RuntimeException(e);
         }
 
-        loadNewShop("default", null, true);
+        loadNewShop("default", null);
     }
 
     public void show(BedWarsPlayer player, GameStoreImpl store) {
         try {
-            var parent = true;
             String fileName = null;
             if (store != null) {
-                parent = store.isUseParent();
                 fileName = store.getShopFile();
             }
             if (fileName == null && player.isInGame()) { // who invokes this method for player who is not in game goes directly to hell
                 var defaultShopFile = player.getGame().getConfigurationContainer().getOrDefault(ConfigurationContainer.DEFAULT_SHOP_FILE, null);
                 if (defaultShopFile != null) {
                     fileName = defaultShopFile;
-                    parent = false;
                 }
             }
             if (fileName != null) {
                 var file = normalizeShopFile(fileName);
-                var name = (parent ? "+" : "-") + file.getAbsolutePath();
+                var name = file.getAbsolutePath();
                 if (!shopMap.containsKey(name)) {
-                    loadNewShop(name, file, parent);
+                    loadNewShop(name, file);
                 }
                 player.openInventory(shopMap.get(name));
             } else {
@@ -274,7 +271,7 @@ public class ShopInventory {
         inventorySet.getMainSubInventory().process();
     }
 
-    private void loadNewShop(String name, File file, boolean useParent) {
+    private void loadNewShop(String name, File file) {
         var inventorySet = SimpleInventoriesCore.builder()
                 .genericShop(true)
                 .genericShopPriceTypeRequired(true)
@@ -378,21 +375,20 @@ public class ShopInventory {
                     return "";
                 })
                 .call(categoryBuilder -> {
-                    final var includeEvent = new StoreIncludeEventImpl(name, file == null ? null : file.toPath().toAbsolutePath(), useParent, categoryBuilder);
+                    final var includeEvent = new StoreIncludeEventImpl(name, file == null ? null : file.toPath().toAbsolutePath(), categoryBuilder);
                     EventManager.fire(includeEvent);
                     if (includeEvent.isCancelled()) {
                         return;
                     }
-                    if (useParent) {
+
+                    if (file != null) {
+                        categoryBuilder.include(Include.of(file));
+                    } else {
                         var shopFileName = "shop.yml";
                         if (mainConfig.node("turnOnExperimentalGroovyShop").getBoolean(false)) {
                             shopFileName = "shop.groovy";
                         }
                         categoryBuilder.include(Include.of(shopFolder.resolve(shopFileName)));
-                    }
-
-                    if (file != null) {
-                        categoryBuilder.include(Include.of(file));
                     }
 
                 })

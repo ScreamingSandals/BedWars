@@ -29,7 +29,6 @@ import org.screamingsandals.bedwars.api.boss.StatusBar;
 import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
 import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.api.game.GameStatus;
-import org.screamingsandals.bedwars.api.game.ItemSpawner;
 import org.screamingsandals.bedwars.api.player.BWPlayer;
 import org.screamingsandals.bedwars.api.special.SpecialItem;
 import org.screamingsandals.bedwars.api.upgrades.UpgradeRegistry;
@@ -73,11 +72,9 @@ import org.screamingsandals.lib.entity.EntityBasic;
 import org.screamingsandals.lib.entity.EntityItem;
 import org.screamingsandals.lib.entity.EntityLiving;
 import org.screamingsandals.lib.entity.EntityMapper;
-import org.screamingsandals.lib.entity.type.EntityTypeHolder;
 import org.screamingsandals.lib.event.EventManager;
 import org.screamingsandals.lib.event.player.SPlayerBlockBreakEvent;
 import org.screamingsandals.lib.healthindicator.HealthIndicator;
-import org.screamingsandals.lib.hologram.Hologram;
 import org.screamingsandals.lib.item.Item;
 import org.screamingsandals.lib.item.builder.ItemFactory;
 import org.screamingsandals.lib.lang.Message;
@@ -382,54 +379,12 @@ public class GameImpl implements Game {
 
                 game.teams.add(t);
             });
-            configMap.node("spawners").childrenList().forEach(spawner -> {
-                var spawnerType = spawner.node("type").getString();
-                if (spawnerType == null) {
-                    throw new UnsupportedOperationException("Wrongly configured spawner type!");
-                }
-                var type = BedWarsPlugin.getSpawnerType(spawnerType.toLowerCase(), game);
-                if (type == null) {
-                    throw new UnsupportedOperationException("Wrongly configured spawner type!");
-                }
-                game.spawners.add(new ItemSpawnerImpl(
-                        MiscUtils.readLocationFromString(game.world, Objects.requireNonNull(spawner.node("location").getString())),
-                        type,
-                        spawner.node("customName").getString(),
-                        spawner.node("hologramEnabled").getBoolean(true),
-                        spawner.node("startLevel").getDouble(1),
-                        game.getTeamFromName(spawner.node("team").getString()),
-                        spawner.node("maxSpawnedResources").getInt(-1),
-                        spawner.node("floatingEnabled").getBoolean(),
-                        Hologram.RotationMode.valueOf(spawner.node("rotationMode").getString("Y")),
-                        ItemSpawner.HologramType.valueOf(spawner.node("hologramType").getString("DEFAULT"))
-                ));
+            for (var spawner : configMap.node("spawners").childrenList()) {
+                game.spawners.add(ItemSpawnerImpl.Loader.INSTANCE.load(game, spawner).orElseThrow());
             }
-            );
-            configMap.node("stores").childrenList().forEach(store -> {
-                if (store.isMap()) {
-                    game.gameStore.add(new GameStoreImpl(
-                            LocationMapper.wrapLocation(MiscUtils.readLocationFromString(game.world, Objects.requireNonNull(store.node("loc").getString()))),
-                            store.node("shop").getString(),
-                            store.node("parent").getBoolean(true),
-                            EntityTypeHolder.of(store.node("type").getString("VILLAGER").toUpperCase()),
-                            store.node("name").getString(""),
-                            !store.node("name").empty(),
-                            store.node("isBaby").getBoolean(),
-                            store.node("skin").getString()
-                    ));
-                } else {
-                    game.gameStore.add(new GameStoreImpl(
-                            LocationMapper.wrapLocation(MiscUtils.readLocationFromString(game.world, Objects.requireNonNull(store.getString()))),
-                            null,
-                            true,
-                            EntityTypeHolder.of("villager"),
-                            "",
-                            false,
-                            false,
-                            null
-                    ));
-                }
-            });
+            for (var store : configMap.node("stores").childrenList()) {
+                game.gameStore.add(GameStoreImpl.Loader.INSTANCE.load(game, store).orElseThrow());
+            }
 
             var oldCustomPrefix = configMap.node("customPrefix");
             var newCustomPrefix = configMap.node("constant", "prefix");
@@ -476,7 +431,18 @@ public class GameImpl implements Game {
             game.arenaWeather = loadWeather(configMap.node("arenaWeather").getString("default").toUpperCase());
 
             game.postGameWaiting = configMap.node("postGameWaiting").getInt(3);
-            game.displayName = configMap.node("displayName").getString();
+
+            // migration of displayName (legacy) to game-display-name (MiniMessage)
+            {
+                var oldDisplayName = configMap.node("displayName");
+                var newDisplayName = configMap.node("game-display-name");
+                if (!oldDisplayName.empty() && newDisplayName.empty()) {
+                    newDisplayName.set(MiscUtils.toMiniMessage(oldDisplayName.getString("")));
+                    oldDisplayName.set(null);
+                }
+            }
+
+            game.displayName = configMap.node("game-display-name").getString();
 
             game.start();
             PlayerMapper.getConsoleSender().sendMessage(
@@ -1208,9 +1174,10 @@ public class GameImpl implements Game {
     @SneakyThrows
     public void saveToConfig() {
         var dir = BedWarsPlugin.getInstance().getPluginDescription().getDataFolder().resolve("arenas").toFile();
-        if (!dir.exists())
+        if (!dir.exists()) {
             //noinspection ResultOfMethodCallIgnored
             dir.mkdirs();
+        }
         if (file == null) {
             do {
                 file = new File(dir, UUID.randomUUID() + ".json");
@@ -1246,14 +1213,16 @@ public class GameImpl implements Game {
         configMap.node("pos2").set(MiscUtils.writeLocationToString(pos2));
         configMap.node("specSpawn").set(MiscUtils.writeLocationToString(specSpawn));
         configMap.node("lobbySpawn").set(MiscUtils.writeLocationToString(lobbySpawn));
-        if (lobbyPos1 != null)
+        if (lobbyPos1 != null) {
             configMap.node("lobbyPos1", MiscUtils.writeLocationToString(lobbyPos1));
-        if (lobbyPos2 != null)
+        }
+        if (lobbyPos2 != null) {
             configMap.node("lobbyPos2", MiscUtils.writeLocationToString(lobbyPos2));
+        }
         configMap.node("lobbySpawnWorld").set(lobbySpawn.getWorld().getName());
         configMap.node("minPlayers").set(minPlayers);
         configMap.node("postGameWaiting").set(postGameWaiting);
-        configMap.node("displayName").set(displayName);
+        configMap.node("game-display-name").set(displayName);
         if (!teams.isEmpty()) {
             for (var t : teams) {
                 var teamNode = configMap.node("teams", t.getName());
@@ -1265,29 +1234,10 @@ public class GameImpl implements Game {
             }
         }
         for (var spawner : spawners) {
-            var spawnerNode = configMap.node("spawners").appendListNode();
-            spawnerNode.node("location").set(MiscUtils.writeLocationToString(spawner.getLocation()));
-            spawnerNode.node("type").set(spawner.getItemSpawnerType().getConfigKey());
-            spawnerNode.node("customName").set(spawner.getCustomName());
-            spawnerNode.node("startLevel").set(spawner.getBaseAmountPerSpawn());
-            spawnerNode.node("hologramEnabled").set(spawner.isHologramEnabled());
-            spawnerNode.node("team").set(Optional.ofNullable(spawner.getTeam()).map(org.screamingsandals.bedwars.api.Team::getName).orElse(null));
-            spawnerNode.node("maxSpawnedResources").set(spawner.getMaxSpawnedResources());
-            spawnerNode.node("floatingEnabled").set(spawner.isFloatingBlockEnabled());
-            spawnerNode.node("rotationMode").set(spawner.getRotationMode());
-            spawnerNode.node("hologramType").set(spawner.getHologramType());
+            spawner.saveTo(configMap.node("spawners").appendListNode());
         }
         for (var store : gameStore) {
-            var storeNode = configMap.node("stores").appendListNode();
-            storeNode.node("loc").set(MiscUtils.writeLocationToString(store.getStoreLocation()));
-            storeNode.node("shop").set(store.getShopFile());
-            storeNode.node("parent").set(store.isUseParent() ? "true" : "false");
-            storeNode.node("type").set(store.getEntityType().platformName());
-            if (store.isEnabledCustomName()) {
-                storeNode.node("name").set(store.getShopCustomName());
-            }
-            storeNode.node("isBaby").set(store.isBaby() ? "true" : "false");
-            storeNode.node("skin").set(store.getSkinName());
+            store.saveTo(configMap.node("stores").appendListNode());
         }
 
         configMap.node("constant").from(configurationContainer.getSaved());
@@ -2368,7 +2318,7 @@ public class GameImpl implements Game {
         final var texts = MainConfig.getInstance().node("sign", "lines").childrenList().stream()
                 .map(ConfigurationNode::getString)
                 .map(s -> Objects.requireNonNullElse(s, "")
-                        .replaceAll("%arena%", this.displayName != null && !this.displayName.isBlank() ? this.displayName : this.getName())
+                        .replaceAll("%arena%", this.displayName != null && !this.displayName.isBlank() ? Component.fromMiniMessage(this.displayName).toLegacy() : this.getName())
                         .replaceAll("%status%", statusMessage.asComponent().toLegacy())
                         .replaceAll("%players%", playerMessage.asComponent().toLegacy()))
                 .collect(Collectors.toList());
@@ -2864,7 +2814,11 @@ public class GameImpl implements Game {
 
     @Override
     public Component getDisplayNameComponent() {
-        return Component.fromLegacy(this.displayName != null && !this.displayName.isBlank() ? this.displayName : this.name);
+        if (this.displayName != null && !this.displayName.isBlank()) {
+            return Component.fromMiniMessage(this.displayName);
+        } else {
+            return Component.text(this.name);
+        }
     }
 
     @Override

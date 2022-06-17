@@ -56,16 +56,16 @@ public class TeamCommand extends BaseAdminSubCommand {
         manager.command(
                 commandSenderWrapperBuilder
                         .literal("add")
-                        .argument(StringArgument.of("teamName"))
+                        .argument(StringArgument.of("team-name"))
                         .argument(EnumArgument.of(TeamColorImpl.class, "color"))
                         .argument(IntegerArgument
-                                .<CommandSenderWrapper>newBuilder("maximumPlayers")
+                                .<CommandSenderWrapper>newBuilder("maximum-players")
                                 .withMin(1)
                         )
                         .handler(commandContext -> editMode(commandContext, (sender, game) -> {
-                            String name = commandContext.get("teamName");
+                            String name = commandContext.get("team-name");
                             TeamColorImpl color = commandContext.get("color");
-                            int maxPlayers = commandContext.get("maximumPlayers");
+                            int maxPlayers = commandContext.get("maximum-players");
 
                             if (game.getTeamFromName(name) != null) {
                                 sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_TEAM_ALREADY_EXISTS).defaultPrefix());
@@ -88,7 +88,7 @@ public class TeamCommand extends BaseAdminSubCommand {
                                     Message
                                             .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_TEAM_CREATED)
                                             .defaultPrefix()
-                                            .placeholder("team", team.getName())
+                                            .placeholderRaw("team", team.getName())
                                             .placeholder("teamcolor", Component.text(team.getColor().name(), team.getColor().getTextColor()))
                                             .placeholder("maxplayers", team.getMaxPlayers())
                             );
@@ -96,7 +96,7 @@ public class TeamCommand extends BaseAdminSubCommand {
         );
 
         var teamNameArgument = StringArgument
-                .<CommandSenderWrapper>newBuilder("teamName")
+                .<CommandSenderWrapper>newBuilder("team-name")
                 .withSuggestionsProvider((c, s) -> {
                     if (AdminCommand.gc.containsKey(c.<String>get("game"))) {
                         return AdminCommand.gc.get(c.<String>get("game"))
@@ -114,13 +114,13 @@ public class TeamCommand extends BaseAdminSubCommand {
                         .literal("remove")
                         .argument(teamNameArgument)
                         .handler(commandContext -> editMode(commandContext, (sender, game) -> {
-                            String name = commandContext.get("teamName");
+                            String name = commandContext.get("team-name");
 
                             var forRemove = game.getTeamFromName(name);
                             if (forRemove != null) {
                                 game.getTeams().remove(forRemove);
 
-                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_TEAM_REMOVED).defaultPrefix().placeholder("team", forRemove.getName()));
+                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_TEAM_REMOVED).defaultPrefix().placeholderRaw("team", forRemove.getName()));
                                 return;
                             }
                             sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_TEAM_DOES_NOT_EXIST).defaultPrefix());
@@ -133,7 +133,7 @@ public class TeamCommand extends BaseAdminSubCommand {
                         .argument(teamNameArgument)
                         .argument(EnumArgument.of(TeamColorImpl.class, "color"))
                         .handler(commandContext -> editMode(commandContext, (sender, game) -> {
-                            String name = commandContext.get("teamName");
+                            String name = commandContext.get("team-name");
                             TeamColorImpl color = commandContext.get("color");
 
                             var team = game.getTeamFromName(name);
@@ -148,7 +148,7 @@ public class TeamCommand extends BaseAdminSubCommand {
                                     Message
                                             .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_TEAM_COLOR_SET)
                                             .defaultPrefix()
-                                            .placeholder("team", team.getName())
+                                            .placeholderRaw("team", team.getName())
                                             .placeholder("teamcolor", Component.text(team.getColor().name(), team.getColor().getTextColor()))
                             );
                         }))
@@ -156,15 +156,15 @@ public class TeamCommand extends BaseAdminSubCommand {
 
         manager.command(
                 commandSenderWrapperBuilder
-                        .literal("maxplayers")
+                        .literal("max-players")
                         .argument(teamNameArgument)
                         .argument(IntegerArgument
-                                .<CommandSenderWrapper>newBuilder("maximumPlayers")
+                                .<CommandSenderWrapper>newBuilder("maximum-players")
                                 .withMin(1)
                         )
                         .handler(commandContext -> editMode(commandContext, (sender, game) -> {
-                            String name = commandContext.get("teamName");
-                            int maxPlayers = commandContext.get("maximumPlayers");
+                            String name = commandContext.get("team-name");
+                            int maxPlayers = commandContext.get("maximum-players");
 
                             var team = game.getTeamFromName(name);
                             if (team == null) {
@@ -183,7 +183,7 @@ public class TeamCommand extends BaseAdminSubCommand {
                                     Message
                                             .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_TEAM_MAXPLAYERS_SET)
                                             .defaultPrefix()
-                                            .placeholder("team", team.getName())
+                                            .placeholderRaw("team", team.getName())
                                             .placeholder("maxplayers", team.getMaxPlayers()));
                         }))
         );
@@ -193,7 +193,7 @@ public class TeamCommand extends BaseAdminSubCommand {
                         .literal("spawn")
                         .argument(teamNameArgument)
                         .handler(commandContext -> editMode(commandContext, (sender, game) -> {
-                            String name = commandContext.get("teamName");
+                            String name = commandContext.get("team-name");
 
                             var loc = sender.as(PlayerWrapper.class).getLocation();
 
@@ -220,7 +220,7 @@ public class TeamCommand extends BaseAdminSubCommand {
                                     Message
                                             .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_TEAM_SPAWN_SET)
                                             .defaultPrefix()
-                                            .placeholder("team", team.getName())
+                                            .placeholderRaw("team", team.getName())
                                             .placeholder("x", team.getTeamSpawn().getX(), 2)
                                             .placeholder("y", team.getTeamSpawn().getY(), 2)
                                             .placeholder("z", team.getTeamSpawn().getZ(), 2)
@@ -232,11 +232,12 @@ public class TeamCommand extends BaseAdminSubCommand {
 
         manager.command(
                 commandSenderWrapperBuilder
-                        .literal("bed", "block")
+                        .literal("target")
+                        .literal("block")
                         .argument(teamNameArgument)
                         .argument(EnumArgument.optional(TargetBlockSetModes.class, "mode", TargetBlockSetModes.LOOKING_AT))
                         .handler(commandContext -> editMode(commandContext, (sender, game) -> {
-                            String name = commandContext.get("teamName");
+                            String name = commandContext.get("team-name");
                             TargetBlockSetModes mode = commandContext.get("mode");
 
                             BlockHolder block;
@@ -306,11 +307,46 @@ public class TeamCommand extends BaseAdminSubCommand {
                                     Message
                                             .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_TARGET_BLOCK_SET)
                                             .defaultPrefix()
-                                            .placeholder("team", team.getName())
+                                            .placeholderRaw("team", team.getName())
                                             .placeholder("x", team.getTargetBlock().getBlockX())
                                             .placeholder("y", team.getTargetBlock().getBlockY())
                                             .placeholder("z", team.getTargetBlock().getBlockZ())
-                                            .placeholder("material", team.getTargetBlock().getBlock().getType().platformName())
+                                            .placeholderRaw("material", team.getTargetBlock().getBlock().getType().platformName())
+                            );
+                        }))
+        );
+
+        manager.command(
+                commandSenderWrapperBuilder
+                        .literal("rename")
+                        .argument(teamNameArgument)
+                        .argument(StringArgument.of("new-name"))
+                        .handler(commandContext -> editMode(commandContext, (sender, game) -> {
+                            String name = commandContext.get("team-name");
+                            String newName = commandContext.get("new-name");
+
+                            var team = game.getTeamFromName(name);
+                            if (team == null) {
+                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_TEAM_DOES_NOT_EXIST).defaultPrefix());
+                                return;
+                            }
+
+                            if (game.getTeamFromName(newName) != null) {
+                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_CANNOT_RENAME_TEAM)
+                                        .placeholderRaw("team", name)
+                                        .placeholderRaw("new-team", newName)
+                                        .defaultPrefix());
+                                return;
+                            }
+
+                            team.setName(newName);
+
+                            sender.sendMessage(
+                                    Message
+                                            .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_TEAM_RENAMED)
+                                            .defaultPrefix()
+                                            .placeholderRaw("team", name)
+                                            .placeholderRaw("new-team", newName)
                             );
                         }))
         );
