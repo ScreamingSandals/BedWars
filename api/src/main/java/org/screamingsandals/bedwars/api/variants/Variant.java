@@ -21,7 +21,7 @@ package org.screamingsandals.bedwars.api.variants;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
+import org.screamingsandals.bedwars.api.config.GameConfigurationContainer;
 import org.screamingsandals.bedwars.api.game.ItemSpawnerType;
 
 import java.util.List;
@@ -49,7 +49,7 @@ public interface Variant {
      * @since 0.3.0
      */
     @NotNull
-    ConfigurationContainer getConfigurationContainer();
+    GameConfigurationContainer getConfigurationContainer();
 
     /**
      * Returns all spawner types accessible in this game variant.

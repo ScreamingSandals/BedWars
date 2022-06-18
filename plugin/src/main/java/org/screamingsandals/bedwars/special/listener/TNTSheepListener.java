@@ -19,7 +19,7 @@
 
 package org.screamingsandals.bedwars.special.listener;
 
-import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
+import org.screamingsandals.bedwars.api.config.GameConfigurationContainer;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.events.ApplyPropertyToBoughtItemEventImpl;
 import org.screamingsandals.bedwars.game.GameManagerImpl;
@@ -99,7 +99,7 @@ public class TNTSheepListener {
             if (PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
                 var gamePlayer = PlayerManagerImpl.getInstance().getPlayer(player).orElseThrow();
                 var game = gamePlayer.getGame();
-                if (game != null && event.damager().getEntityType().is("minecraft:tnt") && !game.getConfigurationContainer().getOrDefault(ConfigurationContainer.FRIENDLYFIRE, false)) {
+                if (game != null && event.damager().getEntityType().is("minecraft:tnt") && !game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.FRIENDLYFIRE, false)) {
                     var tnt = event.damager();
                     for (var sheep : game.getActiveSpecialItems(TNTSheepImpl.class)) {
                         if (tnt.equals(sheep.getTnt())) {

@@ -23,8 +23,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.api.PurchaseType;
-import org.screamingsandals.bedwars.api.config.Configuration;
-import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
+import org.screamingsandals.bedwars.api.config.GameConfigurationContainer;
 import org.screamingsandals.bedwars.commands.DumpCommand;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.events.*;
@@ -127,7 +126,7 @@ public class ShopInventory {
                 fileName = store.getShopFile();
             }
             if (fileName == null && player.isInGame()) { // who invokes this method for player who is not in game goes directly to hell
-                var defaultShopFile = player.getGame().getConfigurationContainer().getOrDefault(ConfigurationContainer.DEFAULT_SHOP_FILE, null);
+                var defaultShopFile = player.getGame().getConfigurationContainer().getOrDefault(GameConfigurationContainer.DEFAULT_SHOP_FILE, null);
                 if (defaultShopFile != null) {
                     fileName = defaultShopFile;
                 }

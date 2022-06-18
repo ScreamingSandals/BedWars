@@ -22,18 +22,16 @@ package org.screamingsandals.bedwars.config;
 import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.api.config.Configuration;
-import org.screamingsandals.bedwars.api.config.ConfigurationListKey;
-
-import java.util.List;
+import org.screamingsandals.bedwars.api.config.ConfigurationKey;
 
 @AllArgsConstructor
-public class GameListConfiguration<T> implements Configuration<List<T>> {
-    private final ConfigurationListKey<T> key;
-    private final GameConfigurationContainer configurationContainer;
-    private final List<T> implicitValue;
+public class ConfigurationImpl<T> implements Configuration<T> {
+    private final ConfigurationKey<T> key;
+    private final ConfigurationContainerImpl configurationContainer;
+    private final T implicitValue;
 
     @Override
-    public List<T> get() {
+    public T get() {
         if (!isSet()) {
             if (configurationContainer.getParentContainer() != null) {
                 return configurationContainer.getParentContainer().getOrDefault(key, implicitValue);
@@ -45,7 +43,7 @@ public class GameListConfiguration<T> implements Configuration<List<T>> {
 
     @Override
     @Nullable
-    public List<T> getExactValue() {
+    public T getExactValue() {
         return configurationContainer.getSaved(key);
     }
 
@@ -55,7 +53,7 @@ public class GameListConfiguration<T> implements Configuration<List<T>> {
     }
 
     @Override
-    public void set(List<T> value) {
+    public void set(T value) {
         configurationContainer.update(key.getKey(), value);
     }
 

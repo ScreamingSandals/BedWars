@@ -21,11 +21,10 @@ package org.screamingsandals.bedwars.api.game;
 
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.ApiStatus;
-import org.screamingsandals.bedwars.api.ArenaTime;
 import org.screamingsandals.bedwars.api.Region;
 import org.screamingsandals.bedwars.api.Team;
 import org.screamingsandals.bedwars.api.boss.StatusBar;
-import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
+import org.screamingsandals.bedwars.api.config.GameConfigurationContainer;
 import org.screamingsandals.bedwars.api.player.BWPlayer;
 import org.screamingsandals.bedwars.api.special.SpecialItem;
 import org.screamingsandals.bedwars.api.utils.DelayFactory;
@@ -408,7 +407,7 @@ public interface Game {
      * @return game's configuration container
      * @since 0.3.0
      */
-    ConfigurationContainer getConfigurationContainer();
+    GameConfigurationContainer getConfigurationContainer();
 
     /**
      * Checks if game is in edit mode

@@ -31,7 +31,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.bedwars.BedWarsPlugin;
-import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
+import org.screamingsandals.bedwars.api.config.GameConfigurationContainer;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.commands.BedWarsPermission;
 import org.screamingsandals.bedwars.commands.admin.JoinTeamCommand;
@@ -108,7 +108,7 @@ public class PlayerListener {
             final var drops = List.copyOf(event.drops());
             int respawnTime = MainConfig.getInstance().node("respawn-cooldown", "time").getInt(5);
 
-            if (game.getConfigurationContainer().getOrDefault(ConfigurationContainer.KEEP_ARMOR_ON_DEATH, false)) {
+            if (game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.KEEP_ARMOR_ON_DEATH, false)) {
                 final var armorContents = victim.getPlayerInventory().getArmorContents();
                 gVictim.setArmorContents(armorContents);
                 Debug.info(victim.getName() + "'s armor contents: " +
@@ -119,12 +119,12 @@ public class PlayerListener {
 
             }
 
-            event.keepInventory(game.getConfigurationContainer().getOrDefault(ConfigurationContainer.KEEP_INVENTORY_ON_DEATH, false));
+            event.keepInventory(game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.KEEP_INVENTORY_ON_DEATH, false));
             event.droppedExp(0);
 
             if (game.getStatus() == GameStatus.RUNNING) {
                 Debug.info(victim.getName() + " died while game was running");
-                if (!game.getConfigurationContainer().getOrDefault(ConfigurationContainer.PLAYER_DROPS, false)) {
+                if (!game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.PLAYER_DROPS, false)) {
                     event.drops().clear();
                 }
 
@@ -166,7 +166,7 @@ public class PlayerListener {
                 var team = game.getPlayerTeam(gVictim);
                 SpawnEffects.spawnEffect(game, gVictim, "game-effects.kill");
                 boolean isBed = team.isTargetBlockIntact();
-                if (isBed && game.getConfigurationContainer().getOrDefault(ConfigurationContainer.TARGET_BLOCK_RESPAWN_ANCHOR_ENABLE_DECREASE, false) && team.getTargetBlock().getBlock().getType().isSameType("respawn_anchor")) {
+                if (isBed && game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.TARGET_BLOCK_RESPAWN_ANCHOR_ENABLE_DECREASE, false) && team.getTargetBlock().getBlock().getType().isSameType("respawn_anchor")) {
                     var anchor = team.getTargetBlock().getBlock().getType();
                     int charges = anchor.get("charges").map(Integer::parseInt).orElse(0);
                     if (charges > 0) {
@@ -390,7 +390,7 @@ public class PlayerListener {
             }
             Debug.info(event.player().getName() + " is in game");
             // clear inventory to fix issue 148
-            if (!game.getConfigurationContainer().getOrDefault(ConfigurationContainer.KEEP_INVENTORY_ON_DEATH, false)) {
+            if (!game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.KEEP_INVENTORY_ON_DEATH, false)) {
                 event.player().getPlayerInventory().clear();
             }
             if (gPlayer.isSpectator()) {
@@ -412,7 +412,7 @@ public class PlayerListener {
                 }
 
                 SpawnEffects.spawnEffect(gPlayer.getGame(), gPlayer, "game-effects.respawn");
-                if (gPlayer.getGame().getConfigurationContainer().getOrDefault(ConfigurationContainer.PLAYER_RESPAWN_ITEMS_ENABLED, false)) {
+                if (gPlayer.getGame().getConfigurationContainer().getOrDefault(GameConfigurationContainer.PLAYER_RESPAWN_ITEMS_ENABLED, false)) {
                     var playerRespawnItems = MainConfig.getInstance().node("player-respawn-items", "items")
                             .childrenList()
                             .stream()
@@ -427,7 +427,7 @@ public class PlayerListener {
                     }
                 }
 
-                if (game.getConfigurationContainer().getOrDefault(ConfigurationContainer.KEEP_ARMOR_ON_DEATH, false)) {
+                if (game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.KEEP_ARMOR_ON_DEATH, false)) {
                     final var armorContents = gPlayer.getArmorContents();
                     if (armorContents != null) {
                         gPlayer.getPlayerInventory().setArmorContents(armorContents);
@@ -642,7 +642,7 @@ public class PlayerListener {
             if (gPlayer.getGame().getStatus() != GameStatus.RUNNING) {
                 event.cancelled(true);
                 Debug.info(player.getName() + " tried to craft while crafting is not allowed");
-            } else if (!gPlayer.getGame().getConfigurationContainer().getOrDefault(ConfigurationContainer.ALLOW_CRAFTING, false)) {
+            } else if (!gPlayer.getGame().getConfigurationContainer().getOrDefault(GameConfigurationContainer.ALLOW_CRAFTING, false)) {
                 event.cancelled(true);
                 Debug.info(player.getName() + " tried to craft while crafting is not allowed");
             }
@@ -667,7 +667,7 @@ public class PlayerListener {
             if (!event.damageCause().is("void")) {
                 var game = EntitiesManagerImpl.getInstance().getGameOfEntity(entity);
                 if (game.isPresent()) {
-                    if (game.get().isEntityShop(entity) && game.get().getConfigurationContainer().getOrDefault(ConfigurationContainer.PREVENT_KILLING_VILLAGERS, false)) {
+                    if (game.get().isEntityShop(entity) && game.get().getConfigurationContainer().getOrDefault(GameConfigurationContainer.PREVENT_KILLING_VILLAGERS, false)) {
                         Debug.info("Game entity was damaged, cancelling");
                         event.cancelled(true);
                     }
@@ -762,7 +762,7 @@ public class PlayerListener {
                         var damager = (PlayerWrapper) ((SEntityDamageByEntityEvent) event).damager();
                         if (PlayerManagerImpl.getInstance().isPlayerInGame(damager)) {
                             var gDamager = damager.as(BedWarsPlayer.class);
-                            if (gDamager.isSpectator() || (gDamager.getGame().getPlayerTeam(gDamager) == game.getPlayerTeam(gPlayer) && !game.getConfigurationContainer().getOrDefault(ConfigurationContainer.FRIENDLYFIRE, false))) {
+                            if (gDamager.isSpectator() || (gDamager.getGame().getPlayerTeam(gDamager) == game.getPlayerTeam(gPlayer) && !game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.FRIENDLYFIRE, false))) {
                                 event.cancelled(true);
                             }
                         }
@@ -777,7 +777,7 @@ public class PlayerListener {
                             var damager = projectile.getShooter().as(PlayerWrapper.class);
                             if (PlayerManagerImpl.getInstance().isPlayerInGame(damager)) {
                                 var gDamager = damager.as(BedWarsPlayer.class);
-                                if (gDamager.isSpectator() || gDamager.getGame().getPlayerTeam(gDamager) == game.getPlayerTeam(gPlayer) && !game.getConfigurationContainer().getOrDefault(ConfigurationContainer.FRIENDLYFIRE, false)) {
+                                if (gDamager.isSpectator() || gDamager.getGame().getPlayerTeam(gDamager) == game.getPlayerTeam(gPlayer) && !game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.FRIENDLYFIRE, false)) {
                                     event.cancelled(true);
                                 }
                             }
@@ -918,7 +918,7 @@ public class PlayerListener {
                         Debug.info(player.getName() + " used chest in BedWars game");
 
                     } else if (clickedBlock.getType().platformName().toLowerCase().contains("cake")) {
-                        if (game.getConfigurationContainer().getOrDefault(ConfigurationContainer.TARGET_BLOCK_CAKE_DESTROY_BY_EATING, false)) {
+                        if (game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.TARGET_BLOCK_CAKE_DESTROY_BY_EATING, false)) {
                             if (game.getPlayerTeam(gPlayer).getTargetBlock().equals(clickedBlock.getLocation())) {
                                 event.cancelled(true);
                             } else {
@@ -977,7 +977,7 @@ public class PlayerListener {
                         var stack = event.item();
                         if (stack != null && stack.getAmount() > 0) {
                             boolean anchorFilled = false;
-                            if (game.getConfigurationContainer().getOrDefault(ConfigurationContainer.TARGET_BLOCK_RESPAWN_ANCHOR_ENABLE_DECREASE, false)
+                            if (game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.TARGET_BLOCK_RESPAWN_ANCHOR_ENABLE_DECREASE, false)
                                     && clickedBlock.getType().isSameType("respawn_anchor")
                                     && game.getPlayerTeam(gPlayer).getTargetBlock().equals(clickedBlock.getLocation())
                                     && event.item() != null && event.item().getMaterial().is("glowstone")) {
@@ -1100,7 +1100,7 @@ public class PlayerListener {
                     return;
                 }
                 if (event.topInventory().getType().is("enchanting", "crafting", "anvil", "brewing", "furnace", "workbench")) {
-                    if (!gProfile.getGame().getConfigurationContainer().getOrDefault(ConfigurationContainer.ALLOW_CRAFTING, false)) {
+                    if (!gProfile.getGame().getConfigurationContainer().getOrDefault(GameConfigurationContainer.ALLOW_CRAFTING, false)) {
                         event.cancelled(true);
                         Debug.info(player.getName() + " tried to open prohibited inventory");
                     }
@@ -1282,7 +1282,7 @@ public class PlayerListener {
         if (PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
             var gPlayer = player.as(BedWarsPlayer.class);
             var game = gPlayer.getGame();
-            if (game.getConfigurationContainer().getOrDefault(ConfigurationContainer.DAMAGE_WHEN_PLAYER_IS_NOT_IN_ARENA, false) && game.getStatus() == GameStatus.RUNNING
+            if (game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.DAMAGE_WHEN_PLAYER_IS_NOT_IN_ARENA, false) && game.getStatus() == GameStatus.RUNNING
                     && !gPlayer.isSpectator()) {
                 if (!ArenaUtils.isInArea(event.newLocation(), game.getPos1(), game.getPos2())) {
                     var armor = player.getAttribute(AttributeTypeHolder.of("minecraft:generic.armor"));
@@ -1404,7 +1404,7 @@ public class PlayerListener {
 
         for (var game : GameManagerImpl.getInstance().getGames()) {
             if (game.getStatus() == GameStatus.RUNNING
-                    && game.getConfigurationContainer().getOrDefault(ConfigurationContainer.SPAWNER_DISABLE_MERGE, false)) {
+                    && game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.SPAWNER_DISABLE_MERGE, false)) {
 
                 if (ArenaUtils.isInArea(event.entity().getLocation(), game.getPos1(), game.getPos2())
                         || ArenaUtils.isInArea(event.target().getLocation(), game.getPos1(), game.getPos2())) {

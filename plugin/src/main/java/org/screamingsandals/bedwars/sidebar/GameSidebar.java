@@ -20,7 +20,7 @@
 package org.screamingsandals.bedwars.sidebar;
 
 import org.screamingsandals.bedwars.VersionInfo;
-import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
+import org.screamingsandals.bedwars.api.config.GameConfigurationContainer;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.TeamImpl;
@@ -58,10 +58,10 @@ public class GameSidebar {
 
     public GameSidebar(GameImpl game) {
         this.game = game;
-        if (game.getConfigurationContainer().getOrDefault(ConfigurationContainer.SIDEBAR_LOBBY_ENABLED, false)) {
+        if (game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.SIDEBAR_LOBBY_ENABLED, false)) {
             this.sidebar
-                    .title(Component.fromMiniMessage(game.getConfigurationContainer().getOrDefault(ConfigurationContainer.SIDEBAR_LOBBY_TITLE, "<yellow>BEDWARS")));
-            game.getConfigurationContainer().getOrDefault(ConfigurationContainer.SIDEBAR_LOBBY_CONTENT, List.of())
+                    .title(Component.fromMiniMessage(game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.SIDEBAR_LOBBY_TITLE, "<yellow>BEDWARS")));
+            game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.SIDEBAR_LOBBY_CONTENT, List.of())
                     .stream()
                     .filter(Objects::nonNull)
                     .map(message -> Message.ofRichText(message)
@@ -70,11 +70,11 @@ public class GameSidebar {
                             .placeholder("max-players", game.getMaxPlayers())
                             .placeholder("time", () -> Component.text(game.getFormattedTimeLeft()))
                             .placeholder("version", VersionInfo.VERSION)
-                            .placeholder("date", MiscUtils.getFormattedDate(game.getConfigurationContainer().getOrDefault(ConfigurationContainer.SIDEBAR_DATE_FORMAT, "date-format")))
+                            .placeholder("date", MiscUtils.getFormattedDate(game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.SIDEBAR_DATE_FORMAT, "date-format")))
                             .placeholder("mode", checkMode())
                             .placeholder("state", sender -> {
                                 if (game.countConnectedPlayers() >= game.getMinPlayers() && (game.countActiveTeams() > 1
-                                        || game.getConfigurationContainer().getOrDefault(ConfigurationContainer.JOIN_RANDOM_TEAM_AFTER_LOBBY, false))) {
+                                        || game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.JOIN_RANDOM_TEAM_AFTER_LOBBY, false))) {
                                     var seconds = game.getTimeLeft();
                                     return Message.of(LangKeys.IN_GAME_SCOREBOARD_STATE_COUNTDOWN)
                                             .placeholder("countdown", seconds)
@@ -100,13 +100,13 @@ public class GameSidebar {
     private void switchToRunning() {
         sidebar.setLines(List.of());
         sidebar.title(
-                Message.ofRichText(game.getConfigurationContainer().getOrDefault(ConfigurationContainer.SIDEBAR_GAME_TITLE, "<yellow>BEDWARS"))
+                Message.ofRichText(game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.SIDEBAR_GAME_TITLE, "<yellow>BEDWARS"))
                         .placeholder("game", game.getDisplayNameComponent())
                         .placeholder("time", () -> Component.text(game.getFormattedTimeLeft()))
         );
 
         game.getConfigurationContainer()
-                .getOrDefault(ConfigurationContainer.SIDEBAR_GAME_CONTENT, List.of())
+                .getOrDefault(GameConfigurationContainer.SIDEBAR_GAME_CONTENT, List.of())
                 .forEach(line -> {
                     if (line == null) {
                         return; // why
@@ -122,7 +122,7 @@ public class GameSidebar {
                                     .placeholder("max-players", game.getMaxPlayers())
                                     .placeholder("time", () -> Component.text(game.getFormattedTimeLeft()))
                                     .placeholder("version", VersionInfo.VERSION)
-                                    .placeholder("date", MiscUtils.getFormattedDate(game.getConfigurationContainer().getOrDefault(ConfigurationContainer.SIDEBAR_DATE_FORMAT, "date-format")))
+                                    .placeholder("date", MiscUtils.getFormattedDate(game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.SIDEBAR_DATE_FORMAT, "date-format")))
                                     .placeholder("mode", checkMode())
                                     .placeholder("tier", () -> Component.text("Not implemented yet.", Color.RED)) // TODO
                                     .placeholder("kills", () -> Component.text("Not implemented yet.", Color.RED)) // TODO
@@ -141,7 +141,7 @@ public class GameSidebar {
         sidebar = null;
         this.teamedSidebar = this.scoreboard = scoreboard;
         scoreboard.title(
-                Message.ofRichText(game.getConfigurationContainer().getOrDefault(ConfigurationContainer.SIDEBAR_GAME_TITLE, "<yellow>BEDWARS"))
+                Message.ofRichText(game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.SIDEBAR_GAME_TITLE, "<yellow>BEDWARS"))
                         .placeholder("game", game.getDisplayNameComponent())
                         .placeholder("time", () -> Component.text(game.getFormattedTimeLeft()))
         );
@@ -161,8 +161,8 @@ public class GameSidebar {
         }
 
         if (game.getStatus() == GameStatus.RUNNING && status != GameStatus.RUNNING) {
-            if (game.getConfigurationContainer().getOrDefault(ConfigurationContainer.SIDEBAR_GAME_ENABLED, false)) {
-                if (!game.getConfigurationContainer().getOrDefault(ConfigurationContainer.SIDEBAR_GAME_LEGACY_SIDEBAR, false)) {
+            if (game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.SIDEBAR_GAME_ENABLED, false)) {
+                if (!game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.SIDEBAR_GAME_LEGACY_SIDEBAR, false)) {
                     switchToRunning();
                 } else {
                     switchToRunningOld();
@@ -177,8 +177,8 @@ public class GameSidebar {
             if (teamedSidebar.getTeam(team.getName()).isEmpty()) {
                 var t = teamedSidebar.team(team.getName())
                         .color(SClientboundSetPlayerTeamPacket.TeamColor.valueOf(Color.nearestNamedTo(team.getColor().getTextColor()).toString().toUpperCase())) // TODO: a better way
-                        .friendlyFire(game.getConfigurationContainer().getOrDefault(ConfigurationContainer.FRIENDLYFIRE, false));
-                if (game.getConfigurationContainer().getOrDefault(ConfigurationContainer.USE_TEAM_LETTER_PREFIXES_BEFORE_PLAYER_NAMES, false)) {
+                        .friendlyFire(game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.FRIENDLYFIRE, false));
+                if (game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.USE_TEAM_LETTER_PREFIXES_BEFORE_PLAYER_NAMES, false)) {
                     t.teamPrefix(Component.text().content(team.getName().charAt(0) + " ").color(team.getColor().getTextColor()).bold().build());
                 }
             }
@@ -203,7 +203,7 @@ public class GameSidebar {
             return null;
         }
 
-        return Message.ofRichText(game.getConfigurationContainer().getOrDefault(ConfigurationContainer.SIDEBAR_GAME_TEAM_LINE, "<target-block-prefix><team-color><team>"))
+        return Message.ofRichText(game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.SIDEBAR_GAME_TEAM_LINE, "<target-block-prefix><team-color><team>"))
                 .earlyPlaceholder("team-color", "<color:" + team.getColor().getTextColor().toString() + ">") // TODO: replace this sin
                 .placeholder("team-color-letter", Component.text(team.getName().charAt(0), team.getColor().getTextColor())) // TODO: custom letters
                 .placeholder("team-size", () -> Component.text(team.countConnectedPlayers()))
@@ -212,24 +212,24 @@ public class GameSidebar {
                     // old good sbw
                     if (team.isTargetBlockIntact()) {
                         if (team.getTargetBlock().getBlock().getType().isSameType("respawn_anchor") && Player116ListenerUtils.isAnchorEmpty(team.getTargetBlock().getBlock())) {
-                            return Message.ofRichText(game.getConfigurationContainer().getOrDefault(ConfigurationContainer.SIDEBAR_GAME_TEAM_PREFIXES_ANCHOR_EMPTY, "")).asComponent(sender);
+                            return Message.ofRichText(game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.SIDEBAR_GAME_TEAM_PREFIXES_ANCHOR_EMPTY, "")).asComponent(sender);
                         } else {
-                            return Message.ofRichText(game.getConfigurationContainer().getOrDefault(ConfigurationContainer.SIDEBAR_GAME_TEAM_PREFIXES_TARGET_BLOCK_EXISTS, "")).asComponent(sender);
+                            return Message.ofRichText(game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.SIDEBAR_GAME_TEAM_PREFIXES_TARGET_BLOCK_EXISTS, "")).asComponent(sender);
                         }
                     } else {
-                        return Message.ofRichText(game.getConfigurationContainer().getOrDefault(ConfigurationContainer.SIDEBAR_GAME_TEAM_PREFIXES_TARGET_BLOCK_LOST, "")).asComponent(sender);
+                        return Message.ofRichText(game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.SIDEBAR_GAME_TEAM_PREFIXES_TARGET_BLOCK_LOST, "")).asComponent(sender);
                     }
                 })
                 .placeholder("team-status", sender -> {
                     // certain popular server
                     if (team.isTargetBlockIntact() && (!team.getTargetBlock().getBlock().getType().isSameType("respawn_anchor") || !Player116ListenerUtils.isAnchorEmpty(team.getTargetBlock().getBlock()))) {
-                        return Message.ofRichText(game.getConfigurationContainer().getOrDefault(ConfigurationContainer.SIDEBAR_GAME_TEAM_PREFIXES_TARGET_BLOCK_EXISTS, "")).asComponent(sender);
+                        return Message.ofRichText(game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.SIDEBAR_GAME_TEAM_PREFIXES_TARGET_BLOCK_EXISTS, "")).asComponent(sender);
                     } else if (team.countConnectedPlayers() > 0) {
-                        return Message.ofRichText(game.getConfigurationContainer().getOrDefault(ConfigurationContainer.SIDEBAR_GAME_TEAM_PREFIXES_TEAM_COUNT, ""))
+                        return Message.ofRichText(game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.SIDEBAR_GAME_TEAM_PREFIXES_TEAM_COUNT, ""))
                                 .placeholder("count", team.countConnectedPlayers())
                                 .asComponent(sender);
                     } else {
-                        return Message.ofRichText(game.getConfigurationContainer().getOrDefault(ConfigurationContainer.SIDEBAR_GAME_TEAM_PREFIXES_TARGET_BLOCK_LOST, "")).asComponent(sender);
+                        return Message.ofRichText(game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.SIDEBAR_GAME_TEAM_PREFIXES_TARGET_BLOCK_LOST, "")).asComponent(sender);
                     }
                 })
                 .placeholder("you", sender -> {

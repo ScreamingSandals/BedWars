@@ -25,7 +25,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.api.variants.Variant;
-import org.screamingsandals.bedwars.config.GameConfigurationContainer;
+import org.screamingsandals.bedwars.config.GameConfigurationContainerImpl;
 import org.screamingsandals.bedwars.game.ItemSpawnerTypeImpl;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.utils.MiscUtils;
@@ -49,7 +49,7 @@ public class VariantImpl implements Variant {
     @NotNull
     private final String name;
     @NotNull
-    private final GameConfigurationContainer configurationContainer = new GameConfigurationContainer();
+    private final GameConfigurationContainerImpl configurationContainer = new GameConfigurationContainerImpl();
     @NotNull
     private final List<ItemSpawnerTypeImpl> customSpawnerTypes = new ArrayList<>();
     private boolean defaultItemSpawnerTypesIncluded = true;

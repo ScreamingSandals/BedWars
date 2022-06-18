@@ -23,6 +23,7 @@ import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
 import cloud.commandframework.context.CommandContext;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.commands.AdminCommand;
 import org.screamingsandals.bedwars.commands.CommandService;
 import org.screamingsandals.bedwars.game.GameImpl;
@@ -55,24 +56,22 @@ public abstract class BaseAdminSubCommand {
     public abstract void construct(CommandManager<CommandSenderWrapper> manager, Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder);
 
     protected void editMode(CommandContext<CommandSenderWrapper> commandContext, BiConsumer<CommandSenderWrapper, GameImpl> handler) {
-        String gameName = commandContext.get("game");
         var sender = commandContext.getSender();
+        var game = editMode(commandContext);
 
-        if (AdminCommand.gc.containsKey(gameName)) {
-            handler.accept(sender, AdminCommand.gc.get(gameName));
+        if (game != null) {
+            handler.accept(sender, game);
         } else {
             sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_ERROR_ARENA_NOT_IN_EDIT).defaultPrefix());
         }
     }
 
     protected void viewMode(CommandContext<CommandSenderWrapper> commandContext, BiConsumer<CommandSenderWrapper, GameImpl> handler) {
-        String gameName = commandContext.get("game");
         var sender = commandContext.getSender();
+        var game = viewMode(commandContext);
 
-        if (AdminCommand.gc.containsKey(gameName)) {
-            handler.accept(sender, AdminCommand.gc.get(gameName));
-        } else if (GameManagerImpl.getInstance().hasGame(gameName)) {
-            handler.accept(sender, GameManagerImpl.getInstance().getGame(gameName).orElseThrow());
+        if (game != null) {
+            handler.accept(sender, game);
         } else {
             sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_ERROR_ARENA_NOT_IN_EDIT).defaultPrefix());
         }
@@ -80,11 +79,11 @@ public abstract class BaseAdminSubCommand {
 
     protected BiFunction<CommandContext<CommandSenderWrapper>, String, List<String>> editModeSuggestion(TriFunction<CommandContext<CommandSenderWrapper>, CommandSenderWrapper, GameImpl, List<String>> handler) {
         return (commandContext, s) -> {
-            String gameName = commandContext.get("game");
+            var game = editMode(commandContext);
             var sender = commandContext.getSender();
 
-            if (AdminCommand.gc.containsKey(gameName)) {
-                return handler.apply(commandContext, sender, AdminCommand.gc.get(gameName));
+            if (game != null) {
+                return handler.apply(commandContext, sender, game);
             }
             return List.of();
         };
@@ -92,15 +91,35 @@ public abstract class BaseAdminSubCommand {
 
     protected BiFunction<CommandContext<CommandSenderWrapper>, String, List<String>> viewModeSuggestion(TriFunction<CommandContext<CommandSenderWrapper>, CommandSenderWrapper, GameImpl, List<String>> handler) {
         return (commandContext, s) -> {
-            String gameName = commandContext.get("game");
+            var game = viewMode(commandContext);
             var sender = commandContext.getSender();
 
-            if (AdminCommand.gc.containsKey(gameName)) {
-                return handler.apply(commandContext, sender, AdminCommand.gc.get(gameName));
-            } else if (GameManagerImpl.getInstance().hasGame(gameName)) {
-                return handler.apply(commandContext, sender, GameManagerImpl.getInstance().getGame(gameName).orElseThrow());
+            if (game != null) {
+                return handler.apply(commandContext, sender, game);
             }
             return List.of();
         };
+    }
+
+    @Nullable
+    protected GameImpl editMode(CommandContext<CommandSenderWrapper> commandContext) {
+        String gameName = commandContext.get("game");
+
+        if (AdminCommand.gc.containsKey(gameName)) {
+            return AdminCommand.gc.get(gameName);
+        }
+        return null;
+    }
+
+    @Nullable
+    protected GameImpl viewMode(CommandContext<CommandSenderWrapper> commandContext) {
+        String gameName = commandContext.get("game");
+
+        if (AdminCommand.gc.containsKey(gameName)) {
+            return AdminCommand.gc.get(gameName);
+        } else if (GameManagerImpl.getInstance().hasGame(gameName)) {
+            return GameManagerImpl.getInstance().getGame(gameName).orElseThrow();
+        }
+        return null;
     }
 }

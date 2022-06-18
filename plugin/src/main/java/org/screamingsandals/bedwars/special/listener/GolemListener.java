@@ -19,7 +19,7 @@
 
 package org.screamingsandals.bedwars.special.listener;
 
-import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
+import org.screamingsandals.bedwars.api.config.GameConfigurationContainer;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.events.ApplyPropertyToBoughtItemEventImpl;
 import org.screamingsandals.bedwars.game.GameManagerImpl;
@@ -136,7 +136,7 @@ public class GolemListener {
                             }
                         }
 
-                        event.cancelled(game.getConfigurationContainer().getOrDefault(ConfigurationContainer.FRIENDLYFIRE, false));
+                        event.cancelled(game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.FRIENDLYFIRE, false));
                         return;
                     }
                 }

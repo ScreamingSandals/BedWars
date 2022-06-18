@@ -26,23 +26,18 @@ import org.screamingsandals.bedwars.api.config.Configuration;
 import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
 import org.screamingsandals.bedwars.api.config.ConfigurationKey;
 import org.screamingsandals.bedwars.api.config.ConfigurationListKey;
-import org.screamingsandals.lib.spectator.bossbar.BossBarColor;
-import org.screamingsandals.lib.spectator.bossbar.BossBarDivision;
 import org.spongepowered.configurate.BasicConfigurationNode;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class GameConfigurationContainer implements ConfigurationContainer {
-
-    // TODO: Properly expose in the API
-    public static final ConfigurationKey<BossBarColor> BOSSBAR_LOBBY_COLOR = ConfigurationKey.of(BossBarColor.class, "bossbar", "lobby", "color");
-    public static final ConfigurationKey<BossBarDivision> BOSSBAR_LOBBY_DIVISION = ConfigurationKey.of(BossBarDivision.class, "bossbar", "lobby", "division");
-    public static final ConfigurationKey<BossBarColor> BOSSBAR_GAME_COLOR = ConfigurationKey.of(BossBarColor.class, "bossbar", "game", "color");
-    public static final ConfigurationKey<BossBarDivision> BOSSBAR_GAME_DIVISION = ConfigurationKey.of(BossBarDivision.class, "bossbar", "game", "division");
+public class ConfigurationContainerImpl implements ConfigurationContainer {
 
     @Nullable
     @Getter
@@ -56,62 +51,6 @@ public class GameConfigurationContainer implements ConfigurationContainer {
     @Getter
     private final Map<List<String>, String[]> descriptionKeys = new HashMap<>();
 
-    {
-        register(ConfigurationContainer.TEAM_JOIN_ITEM_ENABLED, "team-join-item-enabled");
-        register(ConfigurationContainer.JOIN_RANDOM_TEAM_AFTER_LOBBY, "join-random-team-after-lobby");
-        register(ConfigurationContainer.JOIN_RANDOM_TEAM_ON_JOIN, "join-random-team-on-join");
-        register(ConfigurationContainer.ADD_WOOL_TO_INVENTORY_ON_JOIN, "add-wool-to-inventory-on-join");
-        register(ConfigurationContainer.PREVENT_KILLING_VILLAGERS, "prevent-killing-villagers");
-        register(ConfigurationContainer.PLAYER_DROPS, "player-drops");
-        register(ConfigurationContainer.FRIENDLYFIRE, "friendlyfire");
-        register(ConfigurationContainer.COLORED_LEATHER_BY_TEAM_IN_LOBBY, "in-lobby-colored-leather-by-team");
-        register(ConfigurationContainer.KEEP_INVENTORY_ON_DEATH, "keep-inventory-on-death");
-        register(ConfigurationContainer.KEEP_ARMOR_ON_DEATH, "keep-armor-on-death");
-        register(ConfigurationContainer.ALLOW_CRAFTING, "allow-crafting");
-        register(ConfigurationContainer.BOSSBAR_LOBBY_ENABLED,  "bossbar", "lobby", "enabled");
-        register(BOSSBAR_LOBBY_COLOR, "bossbar", "lobby", "color");
-        register(BOSSBAR_LOBBY_DIVISION, "bossbar", "lobby", "division");
-        register(ConfigurationContainer.BOSSBAR_GAME_ENABLED,  "bossbar", "game", "enabled");
-        register(BOSSBAR_GAME_COLOR, "bossbar", "game", "color");
-        register(BOSSBAR_GAME_DIVISION, "bossbar", "game", "division");
-        register(ConfigurationContainer.SIDEBAR_DATE_FORMAT, "sidebar", "date-format");
-        register(ConfigurationContainer.SIDEBAR_GAME_ENABLED, "sidebar", "game", "enabled");
-        register(ConfigurationContainer.SIDEBAR_GAME_LEGACY_SIDEBAR, "sidebar", "game", "legacy-sidebar");
-        register(ConfigurationContainer.SIDEBAR_GAME_TITLE, "sidebar", "game", "title");
-        register(ConfigurationContainer.SIDEBAR_GAME_TEAM_PREFIXES_TARGET_BLOCK_LOST, "sidebar", "game", "team-prefixes", "target-block-lost");
-        register(ConfigurationContainer.SIDEBAR_GAME_TEAM_PREFIXES_ANCHOR_EMPTY, "sidebar", "game", "team-prefixes", "anchor-empty");
-        register(ConfigurationContainer.SIDEBAR_GAME_TEAM_PREFIXES_TARGET_BLOCK_EXISTS, "sidebar", "game", "team-prefixes", "target-block-exists");
-        register(ConfigurationContainer.SIDEBAR_GAME_TEAM_PREFIXES_TEAM_COUNT, "sidebar", "game", "team-prefixes", "team-count");
-        register(ConfigurationContainer.SIDEBAR_GAME_TEAM_LINE, "sidebar", "game", "team-line");
-        register(ConfigurationContainer.SIDEBAR_GAME_CONTENT, "sidebar", "game", "content");
-        register(ConfigurationContainer.SIDEBAR_LOBBY_ENABLED,  "sidebar", "lobby", "enabled");
-        register(ConfigurationContainer.SIDEBAR_LOBBY_TITLE, "sidebar", "lobby", "title");
-        register(ConfigurationContainer.SIDEBAR_LOBBY_CONTENT, "sidebar", "lobby", "content");
-        register(ConfigurationContainer.PREVENT_SPAWNING_MOBS, "prevent-spawning-mobs");
-        register(ConfigurationContainer.SPAWNER_HOLOGRAMS, "spawner-holograms");
-        register(ConfigurationContainer.SPAWNER_DISABLE_MERGE, "spawner-disable-merge");
-        register(ConfigurationContainer.GAME_START_ITEMS_ENABLED, "game-start-items", "enabled");
-        register(ConfigurationContainer.PLAYER_RESPAWN_ITEMS_ENABLED, "player-respawn-items", "enabled");
-        register(ConfigurationContainer.SPAWNER_COUNTDOWN_HOLOGRAM,  "spawner-holograms-countdown");
-        register(ConfigurationContainer.DAMAGE_WHEN_PLAYER_IS_NOT_IN_ARENA, "damage-when-player-is-not-in-arena");
-        register(ConfigurationContainer.REMOVE_UNUSED_TARGET_BLOCKS, "remove-unused-target-blocks");
-        register(ConfigurationContainer.ALLOW_BLOCK_FALLING, "allow-block-falling");
-        register(ConfigurationContainer.HOLOGRAMS_ABOVE_BEDS, "holograms-above-bed");
-        register(ConfigurationContainer.ALLOW_SPECTATOR_JOIN, "allow-spectator-join");
-        register(ConfigurationContainer.STOP_TEAM_SPAWNERS_ON_DIE, "stop-team-spawners-on-die");
-        register(ConfigurationContainer.TARGET_BLOCK_RESPAWN_ANCHOR_FILL_ON_START, "target-block", "respawn-anchor", "fill-on-start");
-        register(ConfigurationContainer.TARGET_BLOCK_RESPAWN_ANCHOR_ENABLE_DECREASE, "target-block", "respawn-anchor", "enable-decrease");
-        register(ConfigurationContainer.TARGET_BLOCK_CAKE_DESTROY_BY_EATING, "target-block", "cake", "destroy-by-eating");
-        register(ConfigurationContainer.TARGET_BLOCK_ALLOW_DESTROYING_WITH_EXPLOSIONS, "target-block", "allow-destroying-with-explosions");
-        register(ConfigurationContainer.INVISIBLE_LOBBY_ON_GAME_START, "invisible-lobby-on-game-start");
-        register(ConfigurationContainer.ENABLE_BELOW_NAME_HEALTH_INDICATOR, "enable-below-name-health-indicator");
-        register(ConfigurationContainer.USE_CERTAIN_POPULAR_SERVER_LIKE_HOLOGRAMS_FOR_SPAWNERS, "use-certain-popular-server-like-holograms-for-spawners");
-        register(ConfigurationContainer.USE_TEAM_LETTER_PREFIXES_BEFORE_PLAYER_NAMES, "use-team-letter-prefixes-before-player-names");
-        register(ConfigurationContainer.DEFAULT_SHOP_FILE);
-        register(ConfigurationContainer.PREFIX, "prefix");
-        register(ConfigurationContainer.ARENA_TIME);
-    }
-
     @Override
     public <T> Optional<Configuration<T>> get(ConfigurationKey<T> keyObject) {
         var key = keyObject.getKey();
@@ -120,7 +59,7 @@ public class GameConfigurationContainer implements ConfigurationContainer {
                         || (type == String.class && registered.get(key).isEnum())
         )) {
             try {
-                return Optional.of(new GameConfiguration<>(keyObject, this,
+                return Optional.of(new ConfigurationImpl<>(keyObject, this,
                         globalConfigKeys.containsKey(key) ? MainConfig.getInstance().node((Object[]) globalConfigKeys.get(key)).get(type) : null)
                 );
             } catch (SerializationException e) {
@@ -140,7 +79,7 @@ public class GameConfigurationContainer implements ConfigurationContainer {
         Class<T> type = keyObject.getType();
         if (registeredList.containsKey(key) && type.isAssignableFrom(registeredList.get(key))) {
             try {
-                return Optional.of(new GameListConfiguration<>(keyObject, this,
+                return Optional.of(new ListConfigurationImpl<>(keyObject, this,
                         globalConfigKeys.containsKey(key) ? MainConfig.getInstance().node((Object[]) globalConfigKeys.get(key)).getList(type) : null)
                 );
             } catch (SerializationException e) {
@@ -331,58 +270,7 @@ public class GameConfigurationContainer implements ConfigurationContainer {
     public void applyNode(ConfigurationNode configurationNode) {
         saved.from(configurationNode);
 
-        // Migration of older keys (if some key is changed, please add new migrateOldAbsoluteKey; you can also add it multiple times to one key)
-        try {
-            // @formatter:off
-
-            new ConfigGenerator(null, configurationNode).start()
-                    .key(ConfigurationContainer.TEAM_JOIN_ITEM_ENABLED.getKey())
-                        .migrateOldAbsoluteKey("compass-enabled")
-                        .dontCreateDef()
-                    .key(ConfigurationContainer.JOIN_RANDOM_TEAM_AFTER_LOBBY.getKey())
-                        .migrateOldAbsoluteKey("join-randomly-after-lobby-timeout")
-                        .dontCreateDef()
-                    .key(ConfigurationContainer.JOIN_RANDOM_TEAM_ON_JOIN.getKey())
-                        .migrateOldAbsoluteKey("join-randomly-on-lobby-join")
-                        .dontCreateDef()
-                    .key(ConfigurationContainer.BOSSBAR_LOBBY_ENABLED.getKey())
-                        .migrateOldAbsoluteKey("lobbybossbar")
-                        .dontCreateDef()
-                    .key(ConfigurationContainer.BOSSBAR_GAME_ENABLED.getKey())
-                        .migrateOldAbsoluteKey("bossbar")
-                        .dontCreateDef()
-                    .key(ConfigurationContainer.SIDEBAR_GAME_ENABLED.getKey())
-                        .migrateOldAbsoluteKey("scoreboard")
-                        .dontCreateDef()
-                    .key(ConfigurationContainer.SIDEBAR_LOBBY_ENABLED.getKey())
-                        .migrateOldAbsoluteKey("lobbyscoreboard")
-                        .dontCreateDef()
-                    // these two keys are now children of their former names
-                    .key("game-start-items").moveIfAbsolute(n -> !n.virtual() && !n.isMap(), ConfigurationContainer.GAME_START_ITEMS_ENABLED.getKey())
-                    .key("player-respawn-items").moveIfAbsolute(n -> !n.virtual() && !n.isMap(), ConfigurationContainer.PLAYER_RESPAWN_ITEMS_ENABLED.getKey())
-                    .key(ConfigurationContainer.HOLOGRAMS_ABOVE_BEDS.getKey())
-                        .migrateOldAbsoluteKey("holo-above-bed")
-                        .dontCreateDef()
-                    .key(ConfigurationContainer.TARGET_BLOCK_RESPAWN_ANCHOR_FILL_ON_START.getKey())
-                        .migrateOldAbsoluteKey("anchor-auto-fill")
-                        .dontCreateDef()
-                    .key(ConfigurationContainer.TARGET_BLOCK_RESPAWN_ANCHOR_ENABLE_DECREASE.getKey())
-                        .migrateOldAbsoluteKey("anchor-decreasing")
-                        .dontCreateDef()
-                    .key(ConfigurationContainer.TARGET_BLOCK_CAKE_DESTROY_BY_EATING.getKey())
-                        .migrateOldAbsoluteKey("cake-target-block-eating")
-                        .dontCreateDef()
-                    .key(ConfigurationContainer.TARGET_BLOCK_ALLOW_DESTROYING_WITH_EXPLOSIONS.getKey())
-                        .migrateOldAbsoluteKey("target-block-explosions")
-                        .dontCreateDef()
-
-            ;
-
-
-            // @formatter:on
-        } catch (SerializationException ex) {
-            ex.printStackTrace();
-        }
+        migrateOld(configurationNode);
 
         registered.forEach((key, aClass) -> {
             if (aClass == Boolean.class) { // only do migrations for boolean types
@@ -401,5 +289,9 @@ public class GameConfigurationContainer implements ConfigurationContainer {
                 }
             }
         });
+    }
+
+    protected void migrateOld(ConfigurationNode configurationNode) {
+
     }
 }
