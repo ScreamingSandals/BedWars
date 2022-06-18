@@ -89,65 +89,23 @@ public class GameManagerImpl implements GameManager {
     }
 
     @Override
-    public Optional<GameImpl> getGameWithHighestPlayers(boolean fee) {  // If tie choose random one
-        var biggest = GameManagerImpl.getInstance().getGames().stream()
-                .filter(waitingGame -> waitingGame.getStatus() == GameStatus.WAITING)
-                .filter(waitingGame -> waitingGame.getFee() > 0 || !fee)
-                .filter(game -> game.countConnectedPlayers() < game.getMaxPlayers())
-                .max(Comparator.comparingInt(GameImpl::countConnectedPlayers));
-
-        if (biggest.isEmpty()) {
-            return Optional.empty();
-        }
-
-        var biggestGames = GameManagerImpl.getInstance().getGames().stream()
-                .filter(game -> game.countPlayers() == biggest.get().countPlayers())
-                .filter(waitingGame -> waitingGame.getStatus() == GameStatus.WAITING)
-                .filter(waitingGame -> waitingGame.getFee() > 0 || !fee)
-                .filter(game -> game.countConnectedPlayers() < game.getMaxPlayers())
-                .collect(Collectors.toList());
-
-        return Optional.of(biggestGames.get(MiscUtils.randInt(0, biggestGames.size()-1)));
+    public Optional<GameImpl> getGameWithHighestPlayers(boolean fee) {
+        return MiscUtils.getGameWithHighestPlayers(games, fee);
     }
 
     @Override
     public Optional<GameImpl> getGameWithLowestPlayers(boolean fee) {
-        return games.stream()
-                .filter(game -> game.getStatus() == GameStatus.WAITING)
-                .filter(game -> game.countConnectedPlayers() < game.getMaxPlayers())
-                .filter(game -> {
-                    if (fee) {
-                        return game.getFee() > 0;
-                    }
-                    return true;
-                })
-                .min(Comparator.comparingInt(GameImpl::countConnectedPlayers));
+        return MiscUtils.getGameWithLowestPlayers(games, fee);
     }
 
     @Override
     public Optional<GameImpl> getFirstWaitingGame(boolean fee) {
-        return games.stream()
-                .filter(game -> game.getStatus() == GameStatus.WAITING)
-                .filter(game -> {
-                    if (fee) {
-                        return game.getFee() > 0;
-                    }
-                    return true;
-                })
-                .max(Comparator.comparingInt(GameImpl::countConnectedPlayers));
+        return MiscUtils.getFirstWaitingGame(games, fee);
     }
 
     @Override
     public Optional<GameImpl> getFirstRunningGame(boolean fee) {
-        return games.stream()
-                .filter(game -> game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING)
-                .filter(game -> {
-                    if (fee) {
-                        return game.getFee() > 0;
-                    }
-                    return true;
-                })
-                .max(Comparator.comparingInt(GameImpl::countConnectedPlayers));
+        return MiscUtils.getFirstRunningGame(games, fee);
     }
 
     public void addGame(@NotNull GameImpl game) {

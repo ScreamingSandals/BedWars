@@ -22,6 +22,7 @@ package org.screamingsandals.bedwars.commands;
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
 import org.screamingsandals.bedwars.api.game.GameStatus;
+import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.GameManagerImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.lib.lang.Message;
@@ -44,14 +45,18 @@ public class ListCommand extends BaseCommand {
                             var sender = commandContext.getSender();
                             sender.sendMessage(Message.of(LangKeys.LIST_HEADER).defaultPrefix());
                             GameManagerImpl.getInstance().getGames().forEach(game ->
-                                    sender.sendMessage(Component
-                                            .text()
-                                            .content(game.getName())
-                                            .color(game.getStatus() == GameStatus.DISABLED ? Color.RED : Color.GREEN)
-                                            .append(Component.text(" " + game.countPlayers(), Color.WHITE))
-                                    )
+                                    sendGameState(game, sender)
                             );
                         })
+        );
+    }
+
+    public static void sendGameState(GameImpl game, CommandSenderWrapper sender) {
+        sender.sendMessage(Component
+                .text()
+                .content(game.getName())
+                .color(game.getStatus() == GameStatus.DISABLED ? Color.RED : Color.GREEN)
+                .append(Component.text(" " + game.countPlayers(), Color.WHITE))
         );
     }
 }

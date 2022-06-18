@@ -21,34 +21,36 @@ package org.screamingsandals.bedwars.commands;
 
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
-import org.screamingsandals.bedwars.game.GameManagerImpl;
+import cloud.commandframework.arguments.standard.StringArgument;
+import org.screamingsandals.bedwars.game.GroupManagerImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
+import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
 import org.screamingsandals.lib.utils.annotations.Service;
 
-import java.util.Optional;
-
 @Service
-public class JoinCommand extends BaseCommand {
+public class JoinGroupCommand extends BaseCommand {
+    private final GroupManagerImpl groupManager;
 
-    public JoinCommand() {
-        super("join", BedWarsPermission.JOIN_PERMISSION, false);
+    public JoinGroupCommand(GroupManagerImpl groupManager) {
+        super("join-group", BedWarsPermission.JOIN_GROUP_PERMISSION, false);
+        this.groupManager = groupManager;
     }
 
     @Override
     protected void construct(Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder, CommandManager<CommandSenderWrapper> manager) {
         manager.command(
                 commandSenderWrapperBuilder
-                        .argument(manager
-                                .argumentBuilder(String.class, "game")
-                                .withSuggestionsProvider((c, s) -> GameManagerImpl.getInstance().getGameNames())
-                                .asOptional()
+                        .argument(StringArgument.<CommandSenderWrapper>newBuilder("group")
+                                .withSuggestionsProvider((c, s) ->
+                                        groupManager.getExistingGroups()
+                                )
                         )
                         .handler(commandContext -> {
-                            Optional<String> game = commandContext.getOptional("game");
+                            String group = commandContext.get("group");
 
                             var sender = commandContext.getSender().as(PlayerWrapper.class);
                             var player = sender.as(PlayerWrapper.class);
@@ -57,17 +59,15 @@ public class JoinCommand extends BaseCommand {
                                 return;
                             }
 
-                            if (game.isPresent()) {
-                                var arenaN = game.get();
-                                GameManagerImpl.getInstance().getGame(arenaN).ifPresentOrElse(
+                            var games = groupManager.getGamesInGroup(group);
+
+                            if (!games.isEmpty()) {
+                                MiscUtils.getGameWithHighestPlayers(games, false).ifPresentOrElse(
                                         game1 -> game1.joinToGame(PlayerManagerImpl.getInstance().getPlayerOrCreate(player)),
                                         () -> sender.sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_GAME_NOT_FOUND).defaultPrefix())
                                 );
                             } else {
-                                GameManagerImpl.getInstance().getGameWithHighestPlayers(false).ifPresentOrElse(
-                                        game1 -> game1.joinToGame(PlayerManagerImpl.getInstance().getPlayerOrCreate(player)),
-                                        () -> sender.sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_GAME_NOT_FOUND).defaultPrefix())
-                                );
+                                sender.sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_GAME_NOT_FOUND).defaultPrefix());
                             }
                         })
         );

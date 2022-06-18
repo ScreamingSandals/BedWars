@@ -355,6 +355,11 @@ public class LangKeys {
     public final String[] ADMIN_HOLO_ADDED = {"admin", "holo", "added"};
     public final String[] ADMIN_HOLO_CLICK_TO_REMOVE = {"admin", "holo", "click_to_remove"};
     public final String[] ADMIN_HOLO_REMOVED = {"admin", "holo", "removed"};
+    public final String[] ADMIN_GROUP_ADDED = {"admin", "group", "added"};
+    public final String[] ADMIN_GROUP_REMOVED = {"admin", "group", "removed"};
+    public final String[] ADMIN_GROUP_INVALID_GROUP_NAME = {"admin", "group", "invalid_group_name"};
+    public final String[] ADMIN_GROUP_EMPTY = {"admin", "group", "empty"};
+    public final String[] ADMIN_GROUP_LIST = {"admin", "group", "list"};
     public final String[] ADMIN_TEAM_JOIN_ENTITY_CLICK_RIGHT_ON_ENTITY = {"admin", "team_join_entity", "click_right_on_entity"};
     public final String[] ADMIN_TEAM_JOIN_ENTITY_ENTITY_NOT_COMPATIBLE = {"admin", "team_join_entity", "entity_not_compatible"};
     public final String[] ADMIN_TEAM_JOIN_ENTITY_ENTITY_ADDED = {"admin", "team_join_entity", "entity_added"};

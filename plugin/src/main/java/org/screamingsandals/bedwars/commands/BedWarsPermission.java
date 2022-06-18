@@ -31,6 +31,7 @@ public enum BedWarsPermission {
     ADMIN_PERMISSION("bw.admin", List.of()),
     OTHER_STATS_PERMISSION("bw.otherstats", List.of()),
     JOIN_PERMISSION("bw.cmd.join", List.of("default-permissions", "join")),
+    JOIN_GROUP_PERMISSION("bw.cmd.join-group", List.of("default-permissions", "join-group")),
     LEAVE_PERMISSION("bw.cmd.leave", List.of("default-permissions", "leave")),
     GAMES_INVENTORY_PERMISSION("bw.cmd.gamesinv", List.of("default-permissions", "gamesinv")),
     AUTOJOIN_PERMISSION("bw.cmd.autojoin", List.of("default-permissions", "autojoin")),

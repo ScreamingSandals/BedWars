@@ -740,6 +740,7 @@ public class MainConfig {
                     .back()
                 .section("default-permissions")
                     .key("join").defValue(true)
+                    .key("join-group").defValue(true)
                     .key("leave").defValue(true)
                     .key("stats").defValue(true)
                     .key("list").defValue(true)

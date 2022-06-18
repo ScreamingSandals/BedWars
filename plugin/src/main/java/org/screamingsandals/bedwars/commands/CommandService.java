@@ -57,7 +57,9 @@ import org.screamingsandals.lib.utils.annotations.methods.Provider;
         GamesInventoryCommand.class,
         NPCCommand.class,
         MigrateBedWarsRelCommand.class,
-        MigrateBedWars1058Command.class
+        MigrateBedWars1058Command.class,
+        GroupCommand.class,
+        JoinGroupCommand.class
 })
 @UtilityClass
 public class CommandService {

@@ -22,7 +22,7 @@ package org.screamingsandals.bedwars.commands;
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
 import cloud.commandframework.context.CommandContext;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
 import org.screamingsandals.bedwars.holograms.LeaderboardHolograms;
 import org.screamingsandals.bedwars.holograms.StatisticsHolograms;
 import org.screamingsandals.bedwars.lang.LangKeys;
@@ -66,7 +66,7 @@ public class AddholoCommand extends BaseCommand {
         );
     }
 
-    private void executeStatsHologram(@NonNull CommandContext<CommandSenderWrapper> commandContext) {
+    private void executeStatsHologram(@NotNull CommandContext<CommandSenderWrapper> commandContext) {
         var sender = commandContext.getSender();
         var eyeLocation = sender.as(PlayerWrapper.class).getEyeLocation();
         if (!StatisticsHolograms.isEnabled()) {

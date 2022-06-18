@@ -24,6 +24,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.api.TeamColor;
+import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.events.ApplyPropertyToItemEventImpl;
 import org.screamingsandals.bedwars.game.GameImpl;
@@ -466,5 +467,63 @@ public class MiscUtils {
         return legacy.stream()
                 .map(l -> MiniMessageParser.INSTANCE.serialize(Component.fromLegacy(l)))
                 .collect(Collectors.toList());
+    }
+
+    public Optional<GameImpl> getGameWithHighestPlayers(List<GameImpl> games, boolean fee) {  // If tie choose random one
+        var biggest = games.stream()
+                .filter(waitingGame -> waitingGame.getStatus() == GameStatus.WAITING)
+                .filter(waitingGame -> waitingGame.getFee() > 0 || !fee)
+                .filter(game -> game.countConnectedPlayers() < game.getMaxPlayers())
+                .max(Comparator.comparingInt(GameImpl::countConnectedPlayers));
+
+        if (biggest.isEmpty()) {
+            return Optional.empty();
+        }
+
+        var biggestGames = games.stream()
+                .filter(game -> game.countPlayers() == biggest.get().countPlayers())
+                .filter(waitingGame -> waitingGame.getStatus() == GameStatus.WAITING)
+                .filter(waitingGame -> waitingGame.getFee() > 0 || !fee)
+                .filter(game -> game.countConnectedPlayers() < game.getMaxPlayers())
+                .collect(Collectors.toList());
+
+        return Optional.of(biggestGames.get(MiscUtils.randInt(0, biggestGames.size()-1)));
+    }
+
+    public Optional<GameImpl> getGameWithLowestPlayers(List<GameImpl> games, boolean fee) {
+        return games.stream()
+                .filter(game -> game.getStatus() == GameStatus.WAITING)
+                .filter(game -> game.countConnectedPlayers() < game.getMaxPlayers())
+                .filter(game -> {
+                    if (fee) {
+                        return game.getFee() > 0;
+                    }
+                    return true;
+                })
+                .min(Comparator.comparingInt(GameImpl::countConnectedPlayers));
+    }
+
+    public Optional<GameImpl> getFirstWaitingGame(List<GameImpl> games, boolean fee) {
+        return games.stream()
+                .filter(game -> game.getStatus() == GameStatus.WAITING)
+                .filter(game -> {
+                    if (fee) {
+                        return game.getFee() > 0;
+                    }
+                    return true;
+                })
+                .max(Comparator.comparingInt(GameImpl::countConnectedPlayers));
+    }
+
+    public Optional<GameImpl> getFirstRunningGame(List<GameImpl> games, boolean fee) {
+        return games.stream()
+                .filter(game -> game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING)
+                .filter(game -> {
+                    if (fee) {
+                        return game.getFee() > 0;
+                    }
+                    return true;
+                })
+                .max(Comparator.comparingInt(GameImpl::countConnectedPlayers));
     }
 }

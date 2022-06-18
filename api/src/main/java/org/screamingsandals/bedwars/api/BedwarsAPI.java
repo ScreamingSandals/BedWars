@@ -22,6 +22,7 @@ package org.screamingsandals.bedwars.api;
 import org.jetbrains.annotations.ApiStatus;
 import org.screamingsandals.bedwars.api.entities.EntitiesManager;
 import org.screamingsandals.bedwars.api.game.GameManager;
+import org.screamingsandals.bedwars.api.game.GroupManager;
 import org.screamingsandals.bedwars.api.game.ItemSpawnerType;
 import org.screamingsandals.bedwars.api.player.PlayerManager;
 import org.screamingsandals.bedwars.api.statistics.PlayerStatisticsManager;
@@ -45,6 +46,13 @@ public interface BedwarsAPI extends Wrapper {
      * @return the game manager instance
      */
     GameManager getGameManager();
+
+    /**
+     * <p>Retrieves the group manager instance.</p>
+     *
+     * @return the group manager instance
+     */
+    GroupManager getGroupManager();
 
     /**
      * <p>Retrieves the variant manager instance.</p>

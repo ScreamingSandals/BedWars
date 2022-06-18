@@ -29,6 +29,7 @@ import org.screamingsandals.bedwars.econ.EconomyProvider;
 import org.screamingsandals.bedwars.entities.EntitiesManagerImpl;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.GameManagerImpl;
+import org.screamingsandals.bedwars.game.GroupManagerImpl;
 import org.screamingsandals.bedwars.game.ItemSpawnerTypeImpl;
 import org.screamingsandals.bedwars.holograms.LeaderboardHolograms;
 import org.screamingsandals.bedwars.holograms.StatisticsHolograms;
@@ -117,7 +118,8 @@ import java.util.Objects;
                 PlayerListener.class,
                 EntitiesManagerImpl.class,
                 ColorChangerImpl.class,
-                GamesInventory.class
+                GamesInventory.class,
+                GroupManagerImpl.class
         },
         packages = {
                 "org.screamingsandals.bedwars.special",
@@ -343,6 +345,11 @@ public class BedWarsPlugin extends PluginContainer implements BedwarsAPI {
     @Override
     public GameManagerImpl getGameManager() {
         return GameManagerImpl.getInstance();
+    }
+
+    @Override
+    public GroupManagerImpl getGroupManager() {
+        return GroupManagerImpl.getInstance();
     }
 
     @Override
