@@ -96,7 +96,33 @@ public class ConfigCommand extends BaseAdminSubCommand {
                                                 .append(Component.text(keyString, CommandService.DEFAULT_HELP_COLORS.highlight()))
                                 );
 
-                                // TODO: Data type
+                                sender.sendMessage(Component.text()
+                                        .append("   ")
+                                        .append(ComponentHelper.branch(CommandService.DEFAULT_HELP_COLORS.accent()))
+                                        .append(Component.space())
+                                        .append(Message.of(LangKeys.ADMIN_INFO_DATA_TYPE).asComponent(sender).withColor(CommandService.DEFAULT_HELP_COLORS.primary()))
+                                        .append(Component.text(": ", CommandService.DEFAULT_HELP_COLORS.primary()))
+                                        .append(Component.text()
+                                                .content(game.getConfigurationContainer().getStringDataTypeForCommand(keyOpt.get()))
+                                                .color(CommandService.DEFAULT_HELP_COLORS.text())
+                                                .build()
+                                        )
+                                );
+
+                                var description = game.getConfigurationContainer().getDescriptionKeys().get(keyOpt.get());
+
+                                sender.sendMessage(Component.text()
+                                        .append("   ")
+                                        .append(ComponentHelper.branch(CommandService.DEFAULT_HELP_COLORS.accent()))
+                                        .append(Component.space())
+                                        .append(Message.of(LangKeys.HELP_MESSAGES_DESCRIPTION).asComponent(sender).withColor(CommandService.DEFAULT_HELP_COLORS.primary()))
+                                        .append(Component.text(": ", CommandService.DEFAULT_HELP_COLORS.primary()))
+                                        .append(
+                                                Message.of(description != null ? description : LangKeys.HELP_MESSAGES_NO_DESCRIPTION)
+                                                        .asComponent(sender)
+                                                        .withColor(CommandService.DEFAULT_HELP_COLORS.text())
+                                        )
+                                );
 
                                 var value = game.getConfigurationContainer().getSavedNode(keys).raw();
                                 if (value instanceof List) {

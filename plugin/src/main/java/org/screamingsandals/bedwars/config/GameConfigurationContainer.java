@@ -53,6 +53,8 @@ public class GameConfigurationContainer implements ConfigurationContainer {
     @Getter
     private final BasicConfigurationNode saved = BasicConfigurationNode.root();
     private final Map<List<String>, String[]> globalConfigKeys = new HashMap<>();
+    @Getter
+    private final Map<List<String>, String[]> descriptionKeys = new HashMap<>();
 
     {
         register(ConfigurationContainer.TEAM_JOIN_ITEM_ENABLED, "team-join-item-enabled");
@@ -193,6 +195,16 @@ public class GameConfigurationContainer implements ConfigurationContainer {
                 .stream()
                 .map(e -> ConfigurationKey.of(e.getValue(), e.getKey()))
                 .collect(Collectors.toList());
+    }
+
+    public String getStringDataTypeForCommand(List<String> key) {
+        if (registered.containsKey(key)) {
+            return registered.get(key).getSimpleName();
+        }
+        if (registeredList.containsKey(key)) {
+            return "List<" + registeredList.get(key).getSimpleName() + ">";
+        }
+        return "Object";
     }
 
     @Override
