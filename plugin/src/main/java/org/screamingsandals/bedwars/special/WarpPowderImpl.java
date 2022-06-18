@@ -86,7 +86,7 @@ public class WarpPowderImpl extends SpecialItemImpl implements WarpPowder {
                     player.getPlayerInventory().removeItem(stack);
                 }
                 player.forceUpdateInventory();
-                player.teleport(team.getTeamSpawn());
+                player.teleport(team.getRandomSpawn());
             } else {
                 SpawnEffects.spawnEffect(game, player, "game-effects.warppowdertick");
                 teleportingTime--;

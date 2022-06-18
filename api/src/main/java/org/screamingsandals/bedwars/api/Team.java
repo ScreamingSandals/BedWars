@@ -55,11 +55,18 @@ public interface Team {
     TeamColor getColor();
 
     /**
-     * <p>Gets the team's spawn location.</p>
+     * <p>Gets the team's spawn locations.</p>
+     *
+     * @return the spawn locations
+     */
+    List<? extends Wrapper> getTeamSpawns();
+
+    /**
+     * <p>Gets one of the team's spawn locations.</p>
      *
      * @return the spawn location
      */
-    Wrapper getTeamSpawn();
+    Wrapper getRandomSpawn();
 
     /**
      * <p>Gets the team's target block (e.g. bed) location.</p>

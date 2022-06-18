@@ -39,8 +39,11 @@ import org.screamingsandals.lib.particle.ParticleTypeHolder;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
 import org.screamingsandals.lib.spectator.Component;
+import org.screamingsandals.lib.spectator.event.ClickEvent;
+import org.screamingsandals.lib.spectator.event.HoverEvent;
 import org.screamingsandals.lib.utils.annotations.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -215,18 +218,208 @@ public class TeamCommand extends BaseAdminSubCommand {
                                 sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_MUST_BE_IN_BOUNDS).defaultPrefix());
                                 return;
                             }
-                            team.setTeamSpawn(loc);
+                            if (team.getTeamSpawns().size() > 1) {
+                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_TEAM_SPAWN_SET_BLOCKED)
+                                        .placeholderRaw("team", team.getName())
+                                        .defaultPrefix()
+                                );
+                                return;
+                            }
+                            team.getTeamSpawns().clear();
+                            team.getTeamSpawns().add(loc);
                             sender.sendMessage(
                                     Message
                                             .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_TEAM_SPAWN_SET)
                                             .defaultPrefix()
                                             .placeholderRaw("team", team.getName())
-                                            .placeholder("x", team.getTeamSpawn().getX(), 2)
-                                            .placeholder("y", team.getTeamSpawn().getY(), 2)
-                                            .placeholder("z", team.getTeamSpawn().getZ(), 2)
-                                            .placeholder("yaw", team.getTeamSpawn().getYaw(), 5)
-                                            .placeholder("pitch", team.getTeamSpawn().getPitch(), 5)
+                                            .placeholder("x", loc.getX(), 2)
+                                            .placeholder("y", loc.getY(), 2)
+                                            .placeholder("z", loc.getZ(), 2)
+                                            .placeholder("yaw", loc.getYaw(), 5)
+                                            .placeholder("pitch", loc.getPitch(), 5)
                             );
+                            var command = "/bw admin " + game.getName() + " team spawns " + team.getName() + " add";
+                            sender.sendMessage(
+                                    Message
+                                            .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_TEAM_MULTIPLE_SPAWNS_AD)
+                                            .defaultPrefix()
+                                            .placeholder("command", Component.text()
+                                                    .content(command)
+                                                    .hoverEvent(HoverEvent.showText(Message.of(LangKeys.ADMIN_INFO_SELECT_CLICK)
+                                                            .placeholderRaw("command", command)
+                                                            .asComponent(sender)))
+                                                    .clickEvent(ClickEvent.runCommand(command))
+                                            )
+                            );
+                        }))
+        );
+
+        manager.command(
+                commandSenderWrapperBuilder
+                        .literal("spawns")
+                        .argument(teamNameArgument)
+                        .literal("add")
+                        .handler(commandContext -> editMode(commandContext, (sender, game) -> {
+                            String name = commandContext.get("team-name");
+
+                            var loc = sender.as(PlayerWrapper.class).getLocation();
+
+                            var team = game.getTeamFromName(name);
+                            if (team == null) {
+                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_TEAM_DOES_NOT_EXIST).defaultPrefix());
+                                return;
+                            }
+
+                            if (game.getPos1() == null || game.getPos2() == null) {
+                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_SET_BOUNDS_FIRST).defaultPrefix());
+                                return;
+                            }
+                            if (!game.getWorld().equals(loc.getWorld())) {
+                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_MUST_BE_IN_SAME_WORLD).defaultPrefix());
+                                return;
+                            }
+                            if (!ArenaUtils.isInArea(loc, game.getPos1(), game.getPos2())) {
+                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_MUST_BE_IN_BOUNDS).defaultPrefix());
+                                return;
+                            }
+                            // .getBlock().getLocation() = exact block location, not relative entity location
+                            if (team.getTeamSpawns().stream()
+                                    .anyMatch(l -> l.getBlock().getLocation().equals(loc.getBlock().getLocation()))) {
+                                sender.sendMessage(
+                                        Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_TEAM_SPAWN_ON_THE_SAME_BLOCK).defaultPrefix()
+                                );
+                            }
+                            team.getTeamSpawns().add(loc);
+                            sender.sendMessage(
+                                    Message
+                                            .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_TEAM_SPAWN_ADDED)
+                                            .defaultPrefix()
+                                            .placeholderRaw("team", team.getName())
+                                            .placeholder("x", loc.getX(), 2)
+                                            .placeholder("y", loc.getY(), 2)
+                                            .placeholder("z", loc.getZ(), 2)
+                                            .placeholder("yaw", loc.getYaw(), 5)
+                                            .placeholder("pitch", loc.getPitch(), 5)
+                            );
+                        }))
+        );
+
+        manager.command(
+                commandSenderWrapperBuilder
+                        .literal("spawns")
+                        .argument(teamNameArgument)
+                        .literal("remove")
+                        .handler(commandContext -> editMode(commandContext, (sender, game) -> {
+                            String name = commandContext.get("team-name");
+
+                            var loc = sender.as(PlayerWrapper.class).getLocation();
+
+                            var team = game.getTeamFromName(name);
+                            if (team == null) {
+                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_TEAM_DOES_NOT_EXIST).defaultPrefix());
+                                return;
+                            }
+
+                            if (game.getPos1() == null || game.getPos2() == null) {
+                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_SET_BOUNDS_FIRST).defaultPrefix());
+                                return;
+                            }
+                            if (!game.getWorld().equals(loc.getWorld())) {
+                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_MUST_BE_IN_SAME_WORLD).defaultPrefix());
+                                return;
+                            }
+                            if (!ArenaUtils.isInArea(loc, game.getPos1(), game.getPos2())) {
+                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_MUST_BE_IN_BOUNDS).defaultPrefix());
+                                return;
+                            }
+                            var loc2Opt = team.getTeamSpawns().stream()
+                                    .filter(l -> l.getBlock().getLocation().equals(loc.getBlock().getLocation()))
+                                    .findFirst();
+                            if (loc2Opt.isEmpty()) {
+                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_TEAM_NO_SPAWN_THERE).defaultPrefix());
+                                return;
+                            }
+                            var loc2 = loc2Opt.get();
+                            team.getTeamSpawns().remove(loc2);
+                            sender.sendMessage(
+                                    Message
+                                            .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_TEAM_SPAWN_ADDED)
+                                            .defaultPrefix()
+                                            .placeholderRaw("team", team.getName())
+                                            .placeholder("x", loc2.getX(), 2)
+                                            .placeholder("y", loc2.getY(), 2)
+                                            .placeholder("z", loc2.getZ(), 2)
+                                            .placeholder("yaw", loc2.getYaw(), 5)
+                                            .placeholder("pitch", loc2.getPitch(), 5)
+                            );
+                        }))
+        );
+
+        manager.command(
+                commandSenderWrapperBuilder
+                        .literal("spawns")
+                        .argument(teamNameArgument)
+                        .literal("reset")
+                        .handler(commandContext -> editMode(commandContext, (sender, game) -> {
+                            String name = commandContext.get("team-name");
+
+                            var loc = sender.as(PlayerWrapper.class).getLocation();
+
+                            var team = game.getTeamFromName(name);
+                            if (team == null) {
+                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_TEAM_DOES_NOT_EXIST).defaultPrefix());
+                                return;
+                            }
+
+                            team.getTeamSpawns().clear();
+                            sender.sendMessage(
+                                    Message
+                                            .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_TEAM_SPAWN_RESET)
+                                            .defaultPrefix()
+                                            .placeholderRaw("team", team.getName())
+                            );
+                        }))
+        );
+
+        manager.command(
+                commandSenderWrapperBuilder
+                        .literal("spawns")
+                        .argument(teamNameArgument)
+                        .literal("list")
+                        .handler(commandContext -> editMode(commandContext, (sender, game) -> {
+                            String name = commandContext.get("team-name");
+
+                            var loc = sender.as(PlayerWrapper.class).getLocation();
+
+                            var team = game.getTeamFromName(name);
+                            if (team == null) {
+                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_TEAM_DOES_NOT_EXIST).defaultPrefix());
+                                return;
+                            }
+
+                            var teamSpawns = team.getTeamSpawns();
+
+                            if (teamSpawns.isEmpty()) {
+                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_TEAM_SPAWN_LIST_NO)
+                                        .defaultPrefix()
+                                        .placeholderRaw("team", team.getName())
+                                );
+                            } else {
+                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_TEAM_SPAWN_LIST)
+                                        .defaultPrefix()
+                                        .placeholderRaw("team", team.getName())
+                                        .placeholder("count", teamSpawns.size())
+                                );
+                                for (var teamSpawn : teamSpawns) {
+                                    sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_TEAM_SPAWN_LIST_ENTRY)
+                                            .placeholder("x", teamSpawn.getX(), 2)
+                                            .placeholder("y", teamSpawn.getY(), 2)
+                                            .placeholder("z", teamSpawn.getZ(), 2)
+                                            .placeholder("yaw", teamSpawn.getYaw(), 5)
+                                            .placeholder("pitch", teamSpawn.getPitch(), 5)
+                                    );
+                                }
+                            }
                         }))
         );
 

@@ -61,7 +61,7 @@ public class SaveCommand extends BaseAdminSubCommand {
                 if (team.getTargetBlock() == null) {
                     sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_SET_TARGET_BLOCK_FOR_TEAM_BEFORE_SAVE).defaultPrefix().placeholder("team", team.getName()));
                     return;
-                } else if (team.getTeamSpawn() == null) {
+                } else if (team.getTeamSpawns().isEmpty()) {
                     sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_SET_SPAWN_FOR_TEAM_BEFORE_SAVE).defaultPrefix().placeholder("team", team.getName()));
                     return;
                 }

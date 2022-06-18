@@ -402,7 +402,7 @@ public class PlayerListener {
                 }
             } else {
                 Debug.info(event.player().getName() + " is going to play the game");
-                event.location(gPlayer.getGame().getPlayerTeam(gPlayer).getTeamSpawn());
+                event.location(gPlayer.getGame().getPlayerTeam(gPlayer).getRandomSpawn());
 
                 var respawnEvent = new PlayerRespawnedEventImpl(game, gPlayer);
                 EventManager.fire(respawnEvent);

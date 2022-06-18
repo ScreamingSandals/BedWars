@@ -108,6 +108,7 @@ import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.gson.GsonConfigurationLoader;
 import org.spongepowered.configurate.loader.ConfigurationLoader;
+import org.spongepowered.configurate.serialize.SerializationException;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
 import java.io.File;
@@ -378,7 +379,20 @@ public class GameImpl implements Game {
                 t.setName(teamN.toString());
                 t.setTargetBlock(MiscUtils.readLocationFromString(game.world, Objects.requireNonNull(team.node("bed").getString())));
                 t.setMaxPlayers(team.node("maxPlayers").getInt());
-                t.setTeamSpawn(MiscUtils.readLocationFromString(game.world, Objects.requireNonNull(team.node("spawn").getString())));
+                var spawns = team.node("spawns");
+                if (!spawns.virtual() && spawns.isList()) {
+                    try {
+                        Objects.requireNonNull(spawns.getList(String.class)).stream()
+                                .map(s -> MiscUtils.readLocationFromString(game.world, Objects.requireNonNull(s)))
+                                .forEach(t.getTeamSpawns()::add);
+                    } catch (SerializationException e) {
+                        e.printStackTrace();
+                        // maybe we still have the old single spawn? probably not, but let's try it anyway
+                        t.getTeamSpawns().add(MiscUtils.readLocationFromString(game.world, Objects.requireNonNull(team.node("spawn").getString())));
+                    }
+                } else {
+                    t.getTeamSpawns().add(MiscUtils.readLocationFromString(game.world, Objects.requireNonNull(team.node("spawn").getString())));
+                }
                 t.setGame(game);
 
                 game.teams.add(t);
@@ -1235,7 +1249,10 @@ public class GameImpl implements Game {
                 teamNode.node("color").set(t.getColor().name());
                 teamNode.node("maxPlayers").set(t.getMaxPlayers());
                 teamNode.node("bed").set(MiscUtils.writeLocationToString(t.getTargetBlock()));
-                teamNode.node("spawn").set(MiscUtils.writeLocationToString(t.getTeamSpawn()));
+                var spawns = teamNode.node("spawns");
+                for (var spawn : t.getTeamSpawns()) {
+                   spawns.appendListNode().set(MiscUtils.writeLocationToString(spawn));
+                }
             }
         }
         for (var spawner : spawners) {
@@ -1624,7 +1641,7 @@ public class GameImpl implements Game {
             if (gamePlayer.getSpectatorTarget().isPresent()) {
                 gamePlayer.setSpectatorTarget(null);
             }
-            gamePlayer.teleport(MiscUtils.findEmptyLocation(currentTeam.getTeamSpawn()), () -> {
+            gamePlayer.teleport(MiscUtils.findEmptyLocation(currentTeam.getRandomSpawn()), () -> {
                 gamePlayer.setAllowFlight(false);
                 gamePlayer.setFlying(false);
                 gamePlayer.setGameMode(GameModeHolder.of("survival"));
@@ -1883,7 +1900,7 @@ public class GameImpl implements Game {
                                         loc.getZ()
                                 );
                         } else {
-                            player.teleport(team.getTeamSpawn(), () -> {
+                            player.teleport(team.getRandomSpawn(), () -> {
                                 player.setGameMode(GameModeHolder.of("survival"));
                                 if (configurationContainer.getOrDefault(GameConfigurationContainer.GAME_START_ITEMS_ENABLED, false)) {
                                     var givedGameStartItems = MainConfig.getInstance().node("game-start-items", "items")
@@ -1953,6 +1970,19 @@ public class GameImpl implements Game {
                         players.stream().filter(bedWarsPlayer -> !bedWarsPlayer.isSpectator()).forEach(healthIndicator::addTrackedPlayer);
                     }
                 }
+
+                // show records
+                RecordSave.getInstance().getRecord(this.getName()).ifPresentOrElse(record ->
+                        Message.of(LangKeys.IN_GAME_RECORD_CURRENT)
+                                .prefixOrDefault(getCustomPrefixComponent())
+                                .placeholder("time", getFormattedTimeLeft(record.getTime()))
+                                .placeholderRaw("team-members", String.join(", ", record.getWinners()))
+                                .send(players), () ->
+                        Message.of(LangKeys.IN_GAME_RECORD_NO)
+                                        .prefixOrDefault(getCustomPrefixComponent())
+                                        .send(players)
+                );
+
             }
             // Phase 6.2: If status is same as before
         } else {

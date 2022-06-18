@@ -44,6 +44,7 @@ import org.screamingsandals.lib.world.LocationMapper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -53,7 +54,7 @@ public class TeamImpl implements Team {
     private TeamColorImpl color;
     private String name;
     private LocationHolder targetBlock;
-    private LocationHolder teamSpawn;
+    private final List<LocationHolder> teamSpawns = new ArrayList<>();
     private int maxPlayers;
     private GameImpl game;
 
@@ -64,6 +65,7 @@ public class TeamImpl implements Team {
     private final List<BedWarsPlayer> players = new ArrayList<>();
     private Hologram hologram;
     private Hologram protectHologram;
+    private final Random randomSpawn = new Random();
 
     public void start() {
         if (started) {
@@ -231,5 +233,10 @@ public class TeamImpl implements Team {
     @Override
     public boolean isDead() {
         return players.isEmpty();
+    }
+
+    @Override
+    public LocationHolder getRandomSpawn() {
+        return teamSpawns.get(randomSpawn.nextInt(teamSpawns.size()));
     }
 }

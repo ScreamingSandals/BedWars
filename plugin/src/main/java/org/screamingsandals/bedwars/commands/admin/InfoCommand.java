@@ -176,16 +176,18 @@ public class InfoCommand extends BaseAdminSubCommand {
                                         .placeholder("maxplayers", team.getMaxPlayers())
                                         .send(sender);
 
-                                var loc_spawn = team.getTeamSpawn();
-                                Message
-                                        .of(LangKeys.ADMIN_INFO_TEAM_SPAWN)
-                                        .placeholder("x", loc_spawn.getX(), 2)
-                                        .placeholder("y", loc_spawn.getY(), 2)
-                                        .placeholder("z", loc_spawn.getZ(), 2)
-                                        .placeholder("yaw", loc_spawn.getYaw(), 5)
-                                        .placeholder("pitch", loc_spawn.getPitch(), 5)
-                                        .placeholder("world", loc_spawn.getWorld().getName())
-                                        .send(sender);
+                                var loc_spawns = team.getTeamSpawns();
+                                for (var loc_spawn : loc_spawns) {
+                                    Message
+                                            .of(LangKeys.ADMIN_INFO_TEAM_SPAWN)
+                                            .placeholder("x", loc_spawn.getX(), 2)
+                                            .placeholder("y", loc_spawn.getY(), 2)
+                                            .placeholder("z", loc_spawn.getZ(), 2)
+                                            .placeholder("yaw", loc_spawn.getYaw(), 5)
+                                            .placeholder("pitch", loc_spawn.getPitch(), 5)
+                                            .placeholder("world", loc_spawn.getWorld().getName())
+                                            .send(sender);
+                                }
 
                                 var loc_target = team.getTargetBlock();
                                 Message

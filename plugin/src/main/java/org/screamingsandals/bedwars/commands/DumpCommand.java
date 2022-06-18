@@ -180,7 +180,7 @@ public class DumpCommand extends BaseCommand {
                                                                                     "teams", game.getTeams().stream().map(team -> nullValuesAllowingMap(
                                                                                             "name", team.getName(),
                                                                                             "color", team.getColor(),
-                                                                                            "spawn", team.getTeamSpawn(),
+                                                                                            "spawns", team.getTeamSpawns(),
                                                                                             "targetBlock", team.getTargetBlock(),
                                                                                             "maxPlayers", team.getMaxPlayers()
                                                                                     )).collect(Collectors.toList()),
