@@ -114,7 +114,7 @@ public class BedWarsNPC {
             );
         }),
         JOIN_VARIANT((bedWarsNPC, player, type) -> {
-            MiscUtils.getGameWithHighestPlayers(GameManagerImpl.getInstance().getGames().stream().filter(game -> game.getGameVariant() != null && game.getGameVariant().getName().equals(bedWarsNPC.value)).collect(Collectors.toList()), false).ifPresent(game ->
+            MiscUtils.getGameWithHighestPlayers(GameManagerImpl.getInstance().getGames().stream().filter(game -> game.getGameVariant().getName().equals(bedWarsNPC.value)).collect(Collectors.toList()), false).ifPresent(game ->
                     Server.runSynchronously(() -> game.joinToGame(PlayerManagerImpl.getInstance().getPlayerOrCreate(player)))
             );
         }),

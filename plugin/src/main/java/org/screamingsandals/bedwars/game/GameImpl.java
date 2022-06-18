@@ -21,7 +21,9 @@ package org.screamingsandals.bedwars.game;
 
 import com.onarandombox.MultiverseCore.api.Core;
 import lombok.*;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.api.ArenaTime;
 import org.screamingsandals.bedwars.api.Team;
@@ -146,8 +148,7 @@ public class GameImpl implements Game {
     @Nullable
     private String displayName;
     @Getter
-    @Setter
-    @Nullable
+    @UnknownNullability("Shouldn't be null unless the GameImpl object has been constructed using other methods than loadGame or createGame")
     private VariantImpl gameVariant;
 
     // STATUS
@@ -360,10 +361,13 @@ public class GameImpl implements Game {
 
             var variant = configMap.node("variant");
             if (!variant.empty()) {
-                game.gameVariant = VariantManagerImpl.getInstance().getVariant(variant.getString("")).orElse(null);
-                if (game.gameVariant != null) {
-                    game.configurationContainer.setParentContainer(game.gameVariant.getConfigurationContainer());
+                var gameVariant = VariantManagerImpl.getInstance().getVariant(variant.getString("")).orElse(null);
+                if (gameVariant != null) {
+                    game.setGameVariant(gameVariant);
                 }
+            }
+            if (game.gameVariant == null) {
+                game.setGameVariant(VariantManagerImpl.getInstance().getDefaultVariant());
             }
 
             game.lobbySpawn = MiscUtils.readLocationFromString(lobbySpawnWorld, Objects.requireNonNull(configMap.node("lobbySpawn").getString()));
@@ -508,6 +512,7 @@ public class GameImpl implements Game {
         game.pauseCountdown = 60;
         game.gameTime = 3600;
         game.minPlayers = 2;
+        game.setGameVariant(VariantManagerImpl.getInstance().getDefaultVariant());
 
         return game;
     }
@@ -2852,5 +2857,10 @@ public class GameImpl implements Game {
     public void removeOtherVisual(Visual<?> visual) {
         visual.destroy();
         otherVisuals.remove(visual);
+    }
+
+    public void setGameVariant(@NotNull VariantImpl gameVariant) {
+        this.gameVariant = gameVariant;
+        this.configurationContainer.setParentContainer(this.gameVariant.getConfigurationContainer());
     }
 }

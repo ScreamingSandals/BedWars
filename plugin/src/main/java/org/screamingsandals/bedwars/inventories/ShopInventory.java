@@ -168,7 +168,7 @@ public class ShopInventory {
             // TODO: multi-price feature
             var priceObject = prices.get(0);
             var price = priceObject.getAmount();
-            var type = BedWarsPlugin.getSpawnerType(priceObject.getCurrency().toLowerCase(), game.orElseThrow());
+            var type = game.orElseThrow().getGameVariant().getItemSpawnerType(priceObject.getCurrency());
             if (type == null) {
                 return;
             }
@@ -431,7 +431,7 @@ public class ShopInventory {
 
         // TODO: multi-price feature
         var price = event.getPrices().get(0);
-        ItemSpawnerTypeImpl type = BedWarsPlugin.getSpawnerType(price.getCurrency().toLowerCase(), game);
+        ItemSpawnerTypeImpl type = game.getGameVariant().getItemSpawnerType(price.getCurrency());
 
         var newItem = event.getStack();
 
@@ -446,7 +446,7 @@ public class ShopInventory {
                 return;
             }
 
-            var changeItemType = BedWarsPlugin.getSpawnerType(changeItemToName.toLowerCase(), game);
+            var changeItemType = game.getGameVariant().getItemSpawnerType(changeItemToName);
             if (changeItemType == null) {
                 return;
             }
@@ -557,7 +557,7 @@ public class ShopInventory {
 
         // TODO: multi-price feature
         var price = event.getPrices().get(0);
-        ItemSpawnerTypeImpl type = BedWarsPlugin.getSpawnerType(price.getCurrency().toLowerCase(), game);
+        ItemSpawnerTypeImpl type = game.getGameVariant().getItemSpawnerType(price.getCurrency());
 
         var priceAmount = price.getAmount();
 
@@ -606,7 +606,7 @@ public class ShopInventory {
                         upgrades = upgradeStorage.findItemSpawnerUpgrades(game, customName);
                     } else if (!spawnerTypeNode.empty()) {
                         String mapSpawnerType = spawnerTypeNode.getString();
-                        ItemSpawnerType spawnerType = BedWarsPlugin.getSpawnerType(mapSpawnerType, game);
+                        ItemSpawnerType spawnerType = game.getGameVariant().getItemSpawnerType(mapSpawnerType);
 
                         upgrades = upgradeStorage.findItemSpawnerUpgrades(game, team, spawnerType);
                     } else if (!teamUpgradeNode.empty()) {

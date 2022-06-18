@@ -22,7 +22,6 @@ package org.screamingsandals.bedwars.commands;
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
 import cloud.commandframework.arguments.standard.IntegerArgument;
-import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.game.GameManagerImpl;
@@ -136,7 +135,7 @@ public class CheatCommand extends BaseCommand {
                                 return List.of();
                             }
 
-                            return BedWarsPlugin.getAllSpawnerTypes(game.get());
+                            return game.get().getGameVariant().getItemSpawnerTypeNames();
                         })
                 )
                 .argument(IntegerArgument.optional("amount", 1))
@@ -179,7 +178,7 @@ public class CheatCommand extends BaseCommand {
                         player.sendMessage(Message.of(LangKeys.IN_GAME_CHEAT_INVALID_PLAYER));
                         return;
                     }
-                    var spawnerType = BedWarsPlugin.getSpawnerType(resource, game.get());
+                    var spawnerType = game.get().getGameVariant().getItemSpawnerType(resource);
                     if (spawnerType == null) {
                         player.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_INVALID_SPAWNER_TYPE).defaultPrefix());
                         return;

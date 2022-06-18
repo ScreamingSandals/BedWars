@@ -23,7 +23,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Tolerate;
 import org.jetbrains.annotations.NotNull;
-import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.api.Team;
 import org.screamingsandals.bedwars.api.config.GameConfigurationContainer;
 import org.screamingsandals.bedwars.api.game.ItemSpawner;
@@ -465,7 +464,7 @@ public class ItemSpawnerImpl implements ItemSpawner, SerializableGameComponent {
             if (spawnerType == null) {
                 throw new UnsupportedOperationException("Wrongly configured spawner type!");
             }
-            var type = BedWarsPlugin.getSpawnerType(spawnerType.toLowerCase(), game);
+            var type = game.getGameVariant().getItemSpawnerType(spawnerType);
             if (type == null) {
                 throw new UnsupportedOperationException("Wrongly configured spawner type!");
             }

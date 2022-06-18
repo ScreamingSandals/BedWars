@@ -222,18 +222,8 @@ public class BedWarsPlugin extends PluginContainer implements BedwarsAPI {
         return MainConfig.getInstance().node("commands", "blacklist-mode").getBoolean();
     }
 
-    public static ItemSpawnerTypeImpl getSpawnerType(String key, GameImpl game) {
-        if (game.getGameVariant() != null) {
-            return game.getGameVariant().getItemSpawnerType(key);
-        }
-        return instance.spawnerTypes.get(key);
-    }
-
     public static List<String> getAllSpawnerTypes(GameImpl game) {
-        if (game.getGameVariant() != null) {
-            return game.getGameVariant().getItemSpawnerTypeNames();
-        }
-        return List.copyOf(instance.spawnerTypes.keySet());
+        return game.getGameVariant().getItemSpawnerTypeNames();
     }
 
     @Override

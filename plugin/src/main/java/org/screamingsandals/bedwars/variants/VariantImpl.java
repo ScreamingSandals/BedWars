@@ -79,7 +79,16 @@ public class VariantImpl implements Variant {
                 return null;
             }
 
-            var variant = new VariantImpl(configMap.node("name").getString(file.getName().split("\\.")[0]));
+            VariantImpl variant;
+            if (file.getName().equalsIgnoreCase("default.yml")) {
+                variant = new VariantImpl("default");
+            } else {
+                var name = configMap.node("name").getString();
+                if (name == null || name.isEmpty() || name.equalsIgnoreCase("default")) {
+                    name = file.getName().split("\\.")[0];
+                }
+                variant = new VariantImpl(name);
+            }
 
             variant.configurationContainer.applyNode(configMap.node("config"));
 

@@ -36,4 +36,6 @@ public interface VariantManager {
     List<? extends Variant> getVariants();
 
     boolean hasVariant(String name);
+
+    Variant getDefaultVariant();
 }

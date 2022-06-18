@@ -65,6 +65,11 @@ public class VariantManagerImpl implements VariantManager {
     }
 
     @Override
+    public VariantImpl getDefaultVariant() {
+        return getVariant("default").orElseThrow();
+    }
+
+    @Override
     public List<String> getVariantNames() {
         return variants.stream().map(VariantImpl::getName).collect(Collectors.toList());
     }
@@ -77,6 +82,11 @@ public class VariantManagerImpl implements VariantManager {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+
+        // Copy files related to default variant if they don't exist
+        if (!Files.exists(variantsFolder.resolve("default.yml"))) {
+            BedWarsPlugin.getInstance().saveResource("variants/default.yml", false);
         }
 
         // Copy files related to certain-popular-server variant if they don't exist

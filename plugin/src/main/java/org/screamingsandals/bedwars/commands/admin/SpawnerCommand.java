@@ -23,7 +23,6 @@ import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
 import cloud.commandframework.arguments.standard.*;
 import cloud.commandframework.context.CommandContext;
-import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.api.game.ItemSpawner;
 import org.screamingsandals.bedwars.commands.AdminCommand;
 import org.screamingsandals.bedwars.game.GameImpl;
@@ -58,7 +57,7 @@ public class SpawnerCommand extends BaseAdminSubCommand {
                         .literal("add")
                         .argument(StringArgument
                                 .<CommandSenderWrapper>newBuilder("type")
-                                .withSuggestionsProvider(editModeSuggestion((commandContext, sender, game) -> BedWarsPlugin.getAllSpawnerTypes(game)))
+                                .withSuggestionsProvider(editModeSuggestion((commandContext, sender, game) -> game.getGameVariant().getItemSpawnerTypeNames()))
                         )
                         .handler(commandContext -> editMode(commandContext, (sender, game) -> {
                             String type = commandContext.get("type");
@@ -79,7 +78,7 @@ public class SpawnerCommand extends BaseAdminSubCommand {
                             }
                             loc.setYaw(0);
                             loc.setPitch(0);
-                            var spawnerType = BedWarsPlugin.getSpawnerType(type, game);
+                            var spawnerType = game.getGameVariant().getItemSpawnerType(type);
                             if (spawnerType != null) {
                                 game.getSpawners().add(new ItemSpawnerImpl(loc, spawnerType));
                                 sender.sendMessage(
@@ -175,13 +174,13 @@ public class SpawnerCommand extends BaseAdminSubCommand {
                         .literal("change-type")
                         .argument(StringArgument
                                 .<CommandSenderWrapper>newBuilder("type")
-                                .withSuggestionsProvider(editModeSuggestion((commandContext, sender, game) -> BedWarsPlugin.getAllSpawnerTypes(game)))
+                                .withSuggestionsProvider(editModeSuggestion((commandContext, sender, game) -> game.getGameVariant().getItemSpawnerTypeNames()))
                         )
                         .argument(IntegerArgument.optional("number"))
                         .handler(commandContext -> changeSettingCommand(commandContext, (sender, game, itemSpawner) -> {
                             String type = commandContext.get("type");
 
-                            var spawnerType = BedWarsPlugin.getSpawnerType(type, game);
+                            var spawnerType = game.getGameVariant().getItemSpawnerType(type);
                             if (spawnerType != null) {
                                 var old = itemSpawner.getItemSpawnerType();
                                 itemSpawner.setItemSpawnerType(spawnerType);
