@@ -26,11 +26,13 @@ import cloud.commandframework.arguments.standard.EnumArgument;
 import cloud.commandframework.arguments.standard.IntegerArgument;
 import cloud.commandframework.arguments.standard.StringArgument;
 import org.screamingsandals.bedwars.game.GameManagerImpl;
+import org.screamingsandals.bedwars.game.GroupManagerImpl;
 import org.screamingsandals.bedwars.inventories.GamesInventory;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.lobby.BedWarsNPC;
 import org.screamingsandals.bedwars.lobby.NPCManager;
 import org.screamingsandals.bedwars.utils.SerializableLocation;
+import org.screamingsandals.bedwars.variants.VariantManagerImpl;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.npc.skin.NPCSkin;
 import org.screamingsandals.lib.player.PlayerWrapper;
@@ -163,6 +165,10 @@ public class NPCCommand extends BaseCommand {
                                             return GameManagerImpl.getInstance().getGameNames();
                                         case OPEN_GAMES_INVENTORY:
                                             return GamesInventory.getInstance().getInventoriesNames();
+                                        case JOIN_GROUP:
+                                            return GroupManagerImpl.getInstance().getExistingGroups();
+                                        case JOIN_VARIANT:
+                                            return VariantManagerImpl.getInstance().getVariantNames();
                                         default:
                                             return List.of();
                                     }

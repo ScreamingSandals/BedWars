@@ -24,8 +24,10 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.game.GameManagerImpl;
+import org.screamingsandals.bedwars.game.GroupManagerImpl;
 import org.screamingsandals.bedwars.inventories.GamesInventory;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
+import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.bedwars.utils.SerializableLocation;
 import org.screamingsandals.lib.Server;
 import org.screamingsandals.lib.lang.Message;
@@ -40,6 +42,7 @@ import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 @ConfigSerializable
@@ -82,19 +85,19 @@ public class BedWarsNPC {
     }
 
     public void handleClick(PlayerWrapper player, InteractType type) {
-        if (action != null && value != null && !value.isEmpty()) {
+        if (action != null && (!action.requireArguments() || (value != null && !value.isEmpty()))) {
             action.handler.accept(this, player, type);
         }
     }
 
     @RequiredArgsConstructor
     public enum Action {
-        DUMMY((bedWarsNPC, playerWrapper, type) -> {
+        DUMMY((bedWarsNPC, player, type) -> {
         }),
-        PLAYER_COMMAND((bedWarsNPC, playerWrapper, type) -> {
-            Server.runSynchronously(() -> playerWrapper.tryToDispatchCommand(bedWarsNPC.value));
+        PLAYER_COMMAND((bedWarsNPC, player, type) -> {
+            Server.runSynchronously(() -> player.tryToDispatchCommand(bedWarsNPC.value));
         }),
-        CONSOLE_COMMAND((bedWarsNPC, playerWrapper, type) -> {
+        CONSOLE_COMMAND((bedWarsNPC, player, type) -> {
             Server.runSynchronously(() -> PlayerMapper.getConsoleSender().tryToDispatchCommand(bedWarsNPC.value));
         }),
         OPEN_GAMES_INVENTORY((bedWarsNPC, player, type) -> {
@@ -104,12 +107,27 @@ public class BedWarsNPC {
             GameManagerImpl.getInstance().getGame(bedWarsNPC.value).ifPresent(game1 ->
                     Server.runSynchronously(() -> game1.joinToGame(PlayerManagerImpl.getInstance().getPlayerOrCreate(player)))
             );
+        }),
+        JOIN_GROUP((bedWarsNPC, player, type) -> {
+            MiscUtils.getGameWithHighestPlayers(GroupManagerImpl.getInstance().getGamesInGroup(bedWarsNPC.value), false).ifPresent(game ->
+                    Server.runSynchronously(() -> game.joinToGame(PlayerManagerImpl.getInstance().getPlayerOrCreate(player)))
+            );
+        }),
+        JOIN_VARIANT((bedWarsNPC, player, type) -> {
+            MiscUtils.getGameWithHighestPlayers(GameManagerImpl.getInstance().getGames().stream().filter(game -> game.getGameVariant() != null && game.getGameVariant().getName().equals(bedWarsNPC.value)).collect(Collectors.toList()), false).ifPresent(game ->
+                    Server.runSynchronously(() -> game.joinToGame(PlayerManagerImpl.getInstance().getPlayerOrCreate(player)))
+            );
+        }),
+        JOIN_RANDOM((bedWarsNPC, player, type) -> {
+            GameManagerImpl.getInstance().getGameWithHighestPlayers(false).ifPresent(game ->
+                    Server.runSynchronously(() -> game.joinToGame(PlayerManagerImpl.getInstance().getPlayerOrCreate(player)))
+            );
         });
 
         private final TriConsumer<BedWarsNPC, PlayerWrapper, InteractType> handler;
 
         public boolean requireArguments() {
-            return this != DUMMY;
+            return this != DUMMY && this != JOIN_RANDOM;
         }
     }
 
