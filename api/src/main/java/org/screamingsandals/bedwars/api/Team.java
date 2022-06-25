@@ -20,7 +20,9 @@
 package org.screamingsandals.bedwars.api;
 
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.UnknownNullability;
 import org.screamingsandals.bedwars.api.game.Game;
+import org.screamingsandals.bedwars.api.game.target.Target;
 import org.screamingsandals.bedwars.api.player.BWPlayer;
 import org.screamingsandals.lib.utils.Wrapper;
 
@@ -69,11 +71,14 @@ public interface Team {
     Wrapper getRandomSpawn();
 
     /**
-     * <p>Gets the team's target block (e.g. bed) location.</p>
+     * Gets the team's target (e.g. block, countdown).
+     * Other teams have to invalidate this target, for example by destroying if the target is {@link org.screamingsandals.bedwars.api.game.target.TargetBlock}
      *
-     * @return the target block location
+     * @return the target
+     * @since 0.3.0
      */
-    Wrapper getTargetBlock();
+    @UnknownNullability("Shouldn't be null if the game is in WAITING or RUNNING state")
+    Target getTarget();
 
     /**
      * <p>Gets the maximal amount of players which can be present in this team.</p>
@@ -119,13 +124,6 @@ public interface Team {
      * @return the amount of team chests
      */
     int countTeamChests();
-
-    /**
-     * <p>Determines if the team's target block (e.g. bed) is intact (not broken).</p>
-     *
-     * @return is the target block intact?
-     */
-    boolean isTargetBlockIntact();
 
     /**
      * <p>Gets the amount of players currently connected in this team.</p>

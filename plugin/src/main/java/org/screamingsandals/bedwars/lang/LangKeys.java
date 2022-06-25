@@ -303,6 +303,10 @@ public class LangKeys {
     public final String[] ADMIN_ARENA_EDIT_ERRORS_TEAM_NO_SPAWN_THERE = {"admin", "arena", "edit", "errors", "team_no_spawn_there"};
     public final String[] ADMIN_ARENA_EDIT_SUCCESS_SAVED_AND_STARTED = {"admin", "arena", "edit", "success", "saved_and_started"};
     public final String[] ADMIN_ARENA_EDIT_SUCCESS_TARGET_BLOCK_SET = {"admin", "arena", "edit", "success", "target_block_set"};
+    public final String[] ADMIN_ARENA_EDIT_SUCCESS_TARGET_NOT_PROPERLY_BALANCED = {"admin", "arena", "edit", "success", "target_not_properly_balanced"};
+    public final String[] ADMIN_ARENA_EDIT_SUCCESS_TARGET_NONE_SET = {"admin", "arena", "edit", "success", "target_none_set"};
+    public final String[] ADMIN_ARENA_EDIT_SUCCESS_TARGET_COUNTDOWN_SET = {"admin", "arena", "edit", "success", "target_countdown_set"};
+    public final String[] ADMIN_ARENA_EDIT_SUCCESS_TARGET_BLOCK_COUNTDOWN_SET = {"admin", "arena", "edit", "success", "target_block_countdown_set"};
     public final String[] ADMIN_ARENA_EDIT_SUCCESS_TEAM_SPAWN_SET = {"admin", "arena", "edit", "success", "team_spawn_set"};
     public final String[] ADMIN_ARENA_EDIT_SUCCESS_TEAM_MULTIPLE_SPAWNS_AD = {"admin", "arena", "edit", "success", "team_multiple_spawns_ad"};
     public final String[] ADMIN_ARENA_EDIT_SUCCESS_TEAM_SPAWN_ADDED = {"admin", "arena", "edit", "success", "team_spawn_added"};

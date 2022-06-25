@@ -25,6 +25,7 @@ import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.api.special.PopUpTower;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.TeamImpl;
+import org.screamingsandals.bedwars.game.target.TargetBlockImpl;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.utils.ArenaUtils;
 import org.screamingsandals.lib.SpecialSoundKey;
@@ -39,6 +40,7 @@ import org.screamingsandals.lib.world.LocationHolder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Getter
@@ -79,7 +81,8 @@ public class PopUpTowerImpl extends SpecialItemImpl implements PopUpTower {
     public void runTask() {
         targetBlocks = game.getActiveTeams()
                 .stream()
-                .map(TeamImpl::getTargetBlock)
+                .map(team1 -> team1.getTarget() instanceof TargetBlockImpl ? ((TargetBlockImpl) team1.getTarget()).getTargetBlock() : null)
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
 

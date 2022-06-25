@@ -251,7 +251,7 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                         } else {
                             var team = game.getPlayerTeam(gPlayer);
                             if (team != null) {
-                                return Component.text(team.isTargetBlockIntact() ? "yes" : "no");
+                                return Component.text(team.getTarget().isValid() ? "yes" : "no");
                             } else {
                                 return Component.text("no");
                             }

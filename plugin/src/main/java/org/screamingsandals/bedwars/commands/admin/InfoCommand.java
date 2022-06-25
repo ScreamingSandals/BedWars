@@ -23,6 +23,7 @@ import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
 import org.screamingsandals.bedwars.commands.AdminCommand;
 import org.screamingsandals.bedwars.game.GameManagerImpl;
+import org.screamingsandals.bedwars.game.target.TargetBlockImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
@@ -189,16 +190,18 @@ public class InfoCommand extends BaseAdminSubCommand {
                                             .send(sender);
                                 }
 
-                                var loc_target = team.getTargetBlock();
-                                Message
-                                        .of(LangKeys.ADMIN_INFO_TEAM_TARGET)
-                                        .placeholder("x", loc_target.getX(), 2)
-                                        .placeholder("y", loc_target.getY(), 2)
-                                        .placeholder("z", loc_target.getZ(), 2)
-                                        .placeholder("yaw", loc_target.getYaw(), 5)
-                                        .placeholder("pitch", loc_target.getPitch(), 5)
-                                        .placeholder("world", loc_target.getWorld().getName())
-                                        .send(sender);
+                                if (team.getTarget() instanceof TargetBlockImpl) {
+                                    var loc_target = ((TargetBlockImpl) team.getTarget()).getTargetBlock();
+                                    Message
+                                            .of(LangKeys.ADMIN_INFO_TEAM_TARGET)
+                                            .placeholder("x", loc_target.getX(), 2)
+                                            .placeholder("y", loc_target.getY(), 2)
+                                            .placeholder("z", loc_target.getZ(), 2)
+                                            .placeholder("yaw", loc_target.getYaw(), 5)
+                                            .placeholder("pitch", loc_target.getPitch(), 5)
+                                            .placeholder("world", loc_target.getWorld().getName())
+                                            .send(sender);
+                                }
                             });
                         })
         );

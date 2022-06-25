@@ -58,7 +58,7 @@ public class SaveCommand extends BaseAdminSubCommand {
         editMode(commandContext, (sender, game) -> {
             // SEVERE (currently)
             for (var team : game.getTeams()) {
-                if (team.getTargetBlock() == null) {
+                if (team.getTarget() == null) {
                     sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_SET_TARGET_BLOCK_FOR_TEAM_BEFORE_SAVE).defaultPrefix().placeholder("team", team.getName()));
                     return;
                 } else if (team.getTeamSpawns().isEmpty()) {

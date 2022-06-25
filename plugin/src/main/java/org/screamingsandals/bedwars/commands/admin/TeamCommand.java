@@ -24,10 +24,14 @@ import cloud.commandframework.CommandManager;
 import cloud.commandframework.arguments.standard.EnumArgument;
 import cloud.commandframework.arguments.standard.IntegerArgument;
 import cloud.commandframework.arguments.standard.StringArgument;
+import cloud.commandframework.context.CommandContext;
+import cloud.commandframework.execution.CommandExecutionHandler;
 import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.commands.AdminCommand;
 import org.screamingsandals.bedwars.game.TeamImpl;
 import org.screamingsandals.bedwars.game.TeamColorImpl;
+import org.screamingsandals.bedwars.game.target.NoTargetImpl;
+import org.screamingsandals.bedwars.game.target.TargetBlockImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.region.FlatteningBedUtils;
 import org.screamingsandals.bedwars.region.LegacyBedUtils;
@@ -423,23 +427,106 @@ public class TeamCommand extends BaseAdminSubCommand {
                         }))
         );
 
+        CommandExecutionHandler<CommandSenderWrapper> handleTargetBlock = commandContext -> editMode(commandContext, (sender, game) -> {
+            String name = commandContext.get("team-name");
+            TargetBlockSetModes mode = commandContext.get("mode");
+
+            BlockHolder block;
+            if (mode == TargetBlockSetModes.LOOKING_AT) {
+                block = sender.as(PlayerWrapper.class).getTargetBlock(null, 5);
+            } else {
+                block = sender.as(PlayerWrapper.class).getLocation().subtract(0, 0.5, 0).getBlock();
+            }
+            var loc = block.getLocation();
+
+            var team = game.getTeamFromName(name);
+            if (team == null) {
+                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_TEAM_DOES_NOT_EXIST).defaultPrefix());
+                return;
+            }
+
+            if (game.getPos1() == null || game.getPos2() == null) {
+                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_SET_BOUNDS_FIRST).defaultPrefix());
+                return;
+            }
+            if (!game.getWorld().equals(loc.getWorld())) {
+                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_MUST_BE_IN_SAME_WORLD).defaultPrefix());
+                return;
+            }
+            if (!ArenaUtils.isInArea(loc, game.getPos1(), game.getPos2())) {
+                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_MUST_BE_IN_BOUNDS).defaultPrefix());
+                return;
+            }
+
+            var chosenLoc = loc;
+            if (BedWarsPlugin.isLegacy()) {
+                // Legacy
+                if (block.getType().isSameType("bed") && (block.getType().legacyData() & 0x8) != 0x8) {
+                    chosenLoc = LegacyBedUtils.getBedNeighbor(block).getLocation();
+                }
+            } else {
+                // 1.13+
+                if (block.getType().platformName().toLowerCase().endsWith("_bed") && !block.getType().get("part").map("head"::equals).orElse(true /* it should always be present unless it's not a bed */)) {
+                    chosenLoc = Objects.requireNonNull(FlatteningBedUtils.getBedNeighbor(block)).getLocation();
+                }
+            }
+            team.setTarget(new TargetBlockImpl(chosenLoc));
+            var particle = new ParticleHolder(
+                    ParticleTypeHolder.of("minecraft:happy_villager")
+            );
+            chosenLoc.add(0, 0, 0).sendParticle(particle);
+            chosenLoc.add(0, 0, 1).sendParticle(particle);
+            chosenLoc.add(1, 0, 0).sendParticle(particle);
+            chosenLoc.add(1, 0, 1).sendParticle(particle);
+            chosenLoc.add(0, 1, 0).sendParticle(particle);
+            chosenLoc.add(0, 1, 1).sendParticle(particle);
+            chosenLoc.add(1, 1, 0).sendParticle(particle);
+            chosenLoc.add(1, 1, 1).sendParticle(particle);
+
+            sender.sendMessage(
+                    Message
+                            .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_TARGET_BLOCK_SET)
+                            .defaultPrefix()
+                            .placeholderRaw("team", team.getName())
+                            .placeholder("x", chosenLoc.getBlockX())
+                            .placeholder("y", chosenLoc.getBlockY())
+                            .placeholder("z", chosenLoc.getBlockZ())
+                            .placeholderRaw("material", chosenLoc.getBlock().getType().platformName())
+            );
+
+            if (game.getTeams().stream().anyMatch(a -> !(a.getTarget() instanceof TargetBlockImpl))) {
+                sender.sendMessage(
+                        Message
+                                .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_TARGET_NOT_PROPERLY_BALANCED)
+                                .defaultPrefix()
+                );
+            }
+        });
+
+        manager.command(
+                commandSenderWrapperBuilder
+                .literal("target")
+                .literal("block")
+                .argument(teamNameArgument)
+                .argument(EnumArgument.optional(TargetBlockSetModes.class, "mode", TargetBlockSetModes.LOOKING_AT))
+                .handler(handleTargetBlock)
+        );
+
+        manager.command(
+                commandSenderWrapperBuilder
+                        .literal("bed")
+                        .argument(teamNameArgument)
+                        .argument(EnumArgument.optional(TargetBlockSetModes.class, "mode", TargetBlockSetModes.LOOKING_AT))
+                        .handler(handleTargetBlock)
+        );
+
         manager.command(
                 commandSenderWrapperBuilder
                         .literal("target")
-                        .literal("block")
+                        .literal("none")
                         .argument(teamNameArgument)
-                        .argument(EnumArgument.optional(TargetBlockSetModes.class, "mode", TargetBlockSetModes.LOOKING_AT))
                         .handler(commandContext -> editMode(commandContext, (sender, game) -> {
                             String name = commandContext.get("team-name");
-                            TargetBlockSetModes mode = commandContext.get("mode");
-
-                            BlockHolder block;
-                            if (mode == TargetBlockSetModes.LOOKING_AT) {
-                                block = sender.as(PlayerWrapper.class).getTargetBlock(null, 5);
-                            } else {
-                                block = sender.as(PlayerWrapper.class).getLocation().subtract(0, 0.5, 0).getBlock();
-                            }
-                            var loc = block.getLocation();
 
                             var team = game.getTeamFromName(name);
                             if (team == null) {
@@ -447,65 +534,22 @@ public class TeamCommand extends BaseAdminSubCommand {
                                 return;
                             }
 
-                            if (game.getPos1() == null || game.getPos2() == null) {
-                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_SET_BOUNDS_FIRST).defaultPrefix());
-                                return;
-                            }
-                            if (!game.getWorld().equals(loc.getWorld())) {
-                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_MUST_BE_IN_SAME_WORLD).defaultPrefix());
-                                return;
-                            }
-                            if (!ArenaUtils.isInArea(loc, game.getPos1(), game.getPos2())) {
-                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_MUST_BE_IN_BOUNDS).defaultPrefix());
-                                return;
-                            }
-
-                            if (BedWarsPlugin.isLegacy()) {
-                                // Legacy
-                                if (block.getType().isSameType("bed")) {
-                                    if ((block.getType().legacyData() & 0x8) == 0x8) {
-                                        team.setTargetBlock(loc);
-                                    } else {
-                                        team.setTargetBlock(LegacyBedUtils.getBedNeighbor(block).getLocation());
-                                    }
-                                } else {
-                                    team.setTargetBlock(loc);
-                                }
-
-                            } else {
-                                // 1.13+
-                                if (block.getType().platformName().toLowerCase().endsWith("_bed")) {
-                                    if (block.getType().get("part").map("head"::equals).orElse(true /* it should always be present unless it's not a bed */)) {
-                                        team.setTargetBlock(loc);
-                                    } else {
-                                        team.setTargetBlock(Objects.requireNonNull(FlatteningBedUtils.getBedNeighbor(block)).getLocation());
-                                    }
-                                } else {
-                                    team.setTargetBlock(loc);
-                                }
-                            }
-                            var particle = new ParticleHolder(
-                                    ParticleTypeHolder.of("minecraft:happy_villager")
-                            );
-                            team.getTargetBlock().add(0, 0, 0).sendParticle(particle);
-                            team.getTargetBlock().add(0, 0, 1).sendParticle(particle);
-                            team.getTargetBlock().add(1, 0, 0).sendParticle(particle);
-                            team.getTargetBlock().add(1, 0, 1).sendParticle(particle);
-                            team.getTargetBlock().add(0, 1, 0).sendParticle(particle);
-                            team.getTargetBlock().add(0, 1, 1).sendParticle(particle);
-                            team.getTargetBlock().add(1, 1, 0).sendParticle(particle);
-                            team.getTargetBlock().add(1, 1, 1).sendParticle(particle);
+                            team.setTarget(NoTargetImpl.INSTANCE);
 
                             sender.sendMessage(
                                     Message
-                                            .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_TARGET_BLOCK_SET)
+                                            .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_TARGET_NONE_SET)
                                             .defaultPrefix()
                                             .placeholderRaw("team", team.getName())
-                                            .placeholder("x", team.getTargetBlock().getBlockX())
-                                            .placeholder("y", team.getTargetBlock().getBlockY())
-                                            .placeholder("z", team.getTargetBlock().getBlockZ())
-                                            .placeholderRaw("material", team.getTargetBlock().getBlock().getType().platformName())
                             );
+
+                            if (game.getTeams().stream().anyMatch(a -> !(a.getTarget() instanceof NoTargetImpl))) {
+                                sender.sendMessage(
+                                        Message
+                                                .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_TARGET_NOT_PROPERLY_BALANCED)
+                                                .defaultPrefix()
+                                );
+                            }
                         }))
         );
 

@@ -46,6 +46,7 @@ import org.screamingsandals.bedwars.events.PlayerRespawnedEventImpl;
 import org.screamingsandals.bedwars.events.TeamChestOpenEventImpl;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.GameManagerImpl;
+import org.screamingsandals.bedwars.game.target.TargetBlockImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.lib.nms.entity.PlayerUtils;
@@ -165,27 +166,28 @@ public class PlayerListener {
 
                 var team = game.getPlayerTeam(gVictim);
                 SpawnEffects.spawnEffect(game, gVictim, "game-effects.kill");
-                boolean isBed = team.isTargetBlockIntact();
-                if (isBed && game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.TARGET_BLOCK_RESPAWN_ANCHOR_ENABLE_DECREASE, false) && team.getTargetBlock().getBlock().getType().isSameType("respawn_anchor")) {
-                    var anchor = team.getTargetBlock().getBlock().getType();
+                boolean isBed = team.getTarget().isValid();
+                if (isBed && game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.TARGET_BLOCK_RESPAWN_ANCHOR_ENABLE_DECREASE, false) && team.getTarget() instanceof TargetBlockImpl && ((TargetBlockImpl) team.getTarget()).getTargetBlock().getBlock().getType().isSameType("respawn_anchor")) {
+                    var targetBlockLoc = ((TargetBlockImpl) team.getTarget()).getTargetBlock();
+                    var anchor = targetBlockLoc.getBlock().getType();
                     int charges = anchor.get("charges").map(Integer::parseInt).orElse(0);
                     if (charges > 0) {
                         var c = charges - 1;
-                        team.getTargetBlock().getBlock().setType(anchor.with("charges", String.valueOf(c)));
+                        targetBlockLoc.getBlock().setType(anchor.with("charges", String.valueOf(c)));
                         if (c == 0) {
-                            team.getTargetBlock().getWorld().playSound(SoundStart.sound(
+                            targetBlockLoc.getWorld().playSound(SoundStart.sound(
                                     SpecialSoundKey.key(MainConfig.getInstance().node("target-block", "respawn-anchor", "sound", "deplete").getString("block.respawn_anchor.deplete")),
                                     SoundSource.BLOCK,
                                     1,
                                     1
-                            ), team.getTargetBlock().getX(), team.getTargetBlock().getY(), team.getTargetBlock().getZ());
+                            ), targetBlockLoc.getX(), targetBlockLoc.getY(), targetBlockLoc.getZ());
                         } else {
-                            team.getTargetBlock().getWorld().playSound(SoundStart.sound(
+                            targetBlockLoc.getWorld().playSound(SoundStart.sound(
                                     SpecialSoundKey.key(MainConfig.getInstance().node("target-block", "respawn-anchor", "sound", "deplete").getString("block.glass.break")),
                                     SoundSource.BLOCK,
                                     1,
                                     1
-                            ), team.getTargetBlock().getX(), team.getTargetBlock().getY(), team.getTargetBlock().getZ());
+                            ), targetBlockLoc.getX(), targetBlockLoc.getY(), targetBlockLoc.getZ());
                         }
                     } else {
                         isBed = false;
@@ -919,7 +921,8 @@ public class PlayerListener {
 
                     } else if (clickedBlock.getType().platformName().toLowerCase().contains("cake")) {
                         if (game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.TARGET_BLOCK_CAKE_DESTROY_BY_EATING, false)) {
-                            if (game.getPlayerTeam(gPlayer).getTargetBlock().equals(clickedBlock.getLocation())) {
+                            var pt = game.getPlayerTeam(gPlayer);
+                            if (pt.getTarget() instanceof TargetBlockImpl && ((TargetBlockImpl) pt.getTarget()).getTargetBlock().equals(clickedBlock.getLocation())) {
                                 event.cancelled(true);
                             } else {
                                 if (MainConfig.getInstance().node("disableCakeEating").getBoolean(true)) {
@@ -927,7 +930,7 @@ public class PlayerListener {
                                 }
                                 Debug.info(player.getName() + " is eating cake");
                                 for (var team : game.getActiveTeams()) {
-                                    if (team.getTargetBlock().equals(clickedBlock.getLocation())) {
+                                    if (team.getTarget() instanceof TargetBlockImpl && ((TargetBlockImpl) team.getTarget()).getTargetBlock().equals(clickedBlock.getLocation())) {
                                         event.cancelled(true);
                                         if (BedWarsPlugin.isLegacy()) {
                                             var type = clickedBlock.getType();
@@ -977,9 +980,10 @@ public class PlayerListener {
                         var stack = event.item();
                         if (stack != null && stack.getAmount() > 0) {
                             boolean anchorFilled = false;
+                            var pt = game.getPlayerTeam(gPlayer);
                             if (game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.TARGET_BLOCK_RESPAWN_ANCHOR_ENABLE_DECREASE, false)
                                     && clickedBlock.getType().isSameType("respawn_anchor")
-                                    && game.getPlayerTeam(gPlayer).getTargetBlock().equals(clickedBlock.getLocation())
+                                    && pt.getTarget() instanceof TargetBlockImpl && ((TargetBlockImpl) pt.getTarget()).getTargetBlock().equals(clickedBlock.getLocation())
                                     && event.item() != null && event.item().getMaterial().is("glowstone")) {
                                 Debug.info(player.getName() + " filled respawn anchor");
                                 var anchor = clickedBlock.getType();

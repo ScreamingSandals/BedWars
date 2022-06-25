@@ -31,6 +31,8 @@ import org.screamingsandals.bedwars.api.boss.StatusBar;
 import org.screamingsandals.bedwars.api.config.GameConfigurationContainer;
 import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.api.game.GameStatus;
+import org.screamingsandals.bedwars.api.game.target.Target;
+import org.screamingsandals.bedwars.api.game.target.TargetBlock;
 import org.screamingsandals.bedwars.api.player.BWPlayer;
 import org.screamingsandals.bedwars.api.special.SpecialItem;
 import org.screamingsandals.bedwars.api.upgrades.UpgradeRegistry;
@@ -47,6 +49,8 @@ import org.screamingsandals.bedwars.config.RecordSave;
 import org.screamingsandals.bedwars.econ.EconomyProvider;
 import org.screamingsandals.bedwars.entities.EntitiesManagerImpl;
 import org.screamingsandals.bedwars.events.*;
+import org.screamingsandals.bedwars.game.target.NoTargetImpl;
+import org.screamingsandals.bedwars.game.target.TargetBlockImpl;
 import org.screamingsandals.bedwars.holograms.StatisticsHolograms;
 import org.screamingsandals.bedwars.inventories.TeamSelectorInventory;
 import org.screamingsandals.bedwars.lang.LangKeys;
@@ -373,11 +377,33 @@ public class GameImpl implements Game {
 
             game.lobbySpawn = MiscUtils.readLocationFromString(lobbySpawnWorld, Objects.requireNonNull(configMap.node("lobbySpawn").getString()));
             game.minPlayers = configMap.node("minPlayers").getInt(2);
-            configMap.node("teams").childrenMap().forEach((teamN, team) -> {
+            for (var entry : configMap.node("teams").childrenMap().entrySet()) {
+                var teamN = entry.getKey();
+                var team = entry.getValue();
                 var t = new TeamImpl();
                 t.setColor(TeamColorImpl.valueOf(MiscUtils.convertColorToNewFormat(team.node("color").getString(), team.node("isNewColor").getBoolean())));
                 t.setName(teamN.toString());
-                t.setTargetBlock(MiscUtils.readLocationFromString(game.world, Objects.requireNonNull(team.node("bed").getString())));
+                var targetNode = team.node("target");
+                if (!targetNode.empty() && targetNode.isMap()) {
+                    var type = targetNode.node("type").getString("");
+                    Target target;
+                    switch (type) {
+                        case "block":
+                            target = TargetBlockImpl.Loader.INSTANCE.load(game, targetNode).orElseThrow();
+                            break;
+                        case "none":
+                            target = NoTargetImpl.Loader.INSTANCE.load(game, targetNode).orElseThrow();
+                            break;
+                        default:
+                            target = null;
+                    }
+                    t.setTarget(target);
+                } else {
+                    var bed = team.node("bed");
+                    if (!bed.empty()) {
+                        t.setTarget(new TargetBlockImpl(MiscUtils.readLocationFromString(game.world, Objects.requireNonNull(bed.getString()))));
+                    }
+                }
                 t.setMaxPlayers(team.node("maxPlayers").getInt());
                 var spawns = team.node("spawns");
                 if (!spawns.virtual() && spawns.isList()) {
@@ -396,7 +422,7 @@ public class GameImpl implements Game {
                 t.setGame(game);
 
                 game.teams.add(t);
-            });
+            }
             for (var spawner : configMap.node("spawners").childrenList()) {
                 game.spawners.add(ItemSpawnerImpl.Loader.INSTANCE.load(game, spawner).orElseThrow());
             }
@@ -760,7 +786,8 @@ public class GameImpl implements Game {
         }
         if (isTargetBlock(loc)) {
             if (region.isBedBlock(block.getBlockState().orElseThrow())) {
-                if (getPlayerTeam(player).getTargetBlock().equals(loc)) {
+                var pt = getPlayerTeam(player);
+                if (pt.getTarget() instanceof TargetBlockImpl && ((TargetBlockImpl) pt.getTarget()).getTargetBlock().equals(loc)) {
                     return false;
                 }
                 bedDestroyed(loc, player, true, false, false);
@@ -784,7 +811,8 @@ public class GameImpl implements Game {
             } else if (configurationContainer.getOrDefault(GameConfigurationContainer.TARGET_BLOCK_CAKE_DESTROY_BY_EATING, false) && block.getType().isSameType("cake")) {
                 return false; // when CAKES are in eating mode, don't allow to just break it
             } else {
-                if (getPlayerTeam(player).getTargetBlock().equals(loc)) {
+                var pt = getPlayerTeam(player);
+                if (pt.getTarget() instanceof TargetBlockImpl && ((TargetBlockImpl) pt.getTarget()).getTargetBlock().equals(loc)) {
                     return false;
                 }
                 bedDestroyed(loc, player, false, block.getType().isSameType("respawn_anchor"), block.getType().isSameType("cake"));
@@ -805,7 +833,11 @@ public class GameImpl implements Game {
     }
 
     public void targetBlockExplode(TeamImpl team) {
-        var loc = team.getTargetBlock();
+        if (!(team.getTarget() instanceof TargetBlockImpl)) {
+            return; // what are you doing here?
+        }
+
+        var loc = ((TargetBlockImpl) team.getTarget()).getTargetBlock();
         var block = loc.getBlock();
         if (region.isBedBlock(block.getBlockState().orElseThrow())) {
             if (!region.isBedHead(block.getBlockState().orElseThrow())) {
@@ -837,7 +869,7 @@ public class GameImpl implements Game {
 
     private boolean isTargetBlock(LocationHolder loc) {
         for (var team : teamsInGame) {
-            if (team.isTargetBlockIntact() && team.getTargetBlock().equals(loc)) {
+            if (team.getTarget() instanceof TargetBlockImpl && ((TargetBlockImpl) team.getTarget()).getTargetBlock().equals(loc)) {
                 return true;
             }
         }
@@ -858,9 +890,9 @@ public class GameImpl implements Game {
     public void bedDestroyed(LocationHolder loc, PlayerWrapper destroyer, boolean isItBedBlock, boolean isItAnchor, boolean isItCake) {
         if (status == GameStatus.RUNNING) {
             for (var team : teamsInGame) {
-                if (team.getTargetBlock().equals(loc)) {
+                if (team.getTarget() instanceof TargetBlockImpl && ((TargetBlockImpl) team.getTarget()).getTargetBlock().equals(loc)) {
                     Debug.info(name + ": target block of  " + team.getName() + " has been destroyed");
-                    team.setTargetBlockIntact(false);
+                    ((TargetBlockImpl) team.getTarget()).setValid(false);
                     Component coloredDestroyer = Component.text("explosion");
                     if (destroyer != null) {
                         coloredDestroyer = destroyer.getDisplayName().withColor(getPlayerTeam(PlayerManagerImpl.getInstance().getPlayer(destroyer.getUuid()).orElseThrow()).getColor().getTextColor());
@@ -1248,7 +1280,9 @@ public class GameImpl implements Game {
                 teamNode.node("isNewColor").set(true);
                 teamNode.node("color").set(t.getColor().name());
                 teamNode.node("maxPlayers").set(t.getMaxPlayers());
-                teamNode.node("bed").set(MiscUtils.writeLocationToString(t.getTargetBlock()));
+                if (t.getTarget() instanceof SerializableGameComponent) {
+                    ((SerializableGameComponent) t.getTarget()).saveTo(teamNode.node("target"));
+                }
                 var spawns = teamNode.node("spawns");
                 for (var spawn : t.getTeamSpawns()) {
                    spawns.appendListNode().set(MiscUtils.writeLocationToString(spawn));
@@ -1931,8 +1965,8 @@ public class GameImpl implements Game {
 
                     if (configurationContainer.getOrDefault(GameConfigurationContainer.REMOVE_UNUSED_TARGET_BLOCKS, false)) {
                         for (TeamImpl team : teams) {
-                            if (!teamsInGame.contains(team)) {
-                                LocationHolder loc = team.getTargetBlock();
+                            if (!teamsInGame.contains(team) && team.getTarget() instanceof TargetBlockImpl) {
+                                LocationHolder loc = ((TargetBlockImpl) team.getTarget()).getTargetBlock();
                                 BlockHolder block = loc.getBlock();
                                 if (region.isBedBlock(block.getBlockState().orElseThrow())) {
                                     region.putOriginalBlock(block.getLocation(), block.getBlockState().orElseThrow());

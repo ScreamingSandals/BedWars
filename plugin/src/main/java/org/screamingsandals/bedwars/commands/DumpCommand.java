@@ -29,6 +29,8 @@ import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.VersionInfo;
 import org.screamingsandals.bedwars.api.Team;
 import org.screamingsandals.bedwars.api.game.GameStore;
+import org.screamingsandals.bedwars.api.game.target.TargetBlock;
+import org.screamingsandals.bedwars.api.game.target.TargetCountdown;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.GameManagerImpl;
@@ -181,7 +183,11 @@ public class DumpCommand extends BaseCommand {
                                                                                             "name", team.getName(),
                                                                                             "color", team.getColor(),
                                                                                             "spawns", team.getTeamSpawns(),
-                                                                                            "targetBlock", team.getTargetBlock(),
+                                                                                            "target", nullValuesAllowingMap(
+                                                                                                    "type", team.getTarget() != null ? team.getTarget().getClass().getName() : null,
+                                                                                                    "loc", team.getTarget() instanceof TargetBlock ? ((TargetBlock) team.getTarget()).getTargetBlock() : null,
+                                                                                                    "countdown", team.getTarget() instanceof TargetCountdown ? ((TargetCountdown) team.getTarget()).getCountdown() : null
+                                                                                            ),
                                                                                             "maxPlayers", team.getMaxPlayers()
                                                                                     )).collect(Collectors.toList()),
                                                                                     "stores", game.getGameStores().stream().map(gameStore -> nullValuesAllowingMap(

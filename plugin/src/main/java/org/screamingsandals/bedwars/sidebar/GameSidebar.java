@@ -24,6 +24,7 @@ import org.screamingsandals.bedwars.api.config.GameConfigurationContainer;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.TeamImpl;
+import org.screamingsandals.bedwars.game.target.TargetBlockImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.listener.Player116ListenerUtils;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
@@ -210,8 +211,8 @@ public class GameSidebar {
                 .placeholder("team", team.getName())
                 .placeholder("target-block-prefix", sender -> {
                     // old good sbw
-                    if (team.isTargetBlockIntact()) {
-                        if (team.getTargetBlock().getBlock().getType().isSameType("respawn_anchor") && Player116ListenerUtils.isAnchorEmpty(team.getTargetBlock().getBlock())) {
+                    if (team.getTarget().isValid()) {
+                        if (team.getTarget() instanceof TargetBlockImpl && ((TargetBlockImpl) team.getTarget()).isEmpty()) {
                             return Message.ofRichText(game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.SIDEBAR_GAME_TEAM_PREFIXES_ANCHOR_EMPTY, "")).asComponent(sender);
                         } else {
                             return Message.ofRichText(game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.SIDEBAR_GAME_TEAM_PREFIXES_TARGET_BLOCK_EXISTS, "")).asComponent(sender);
@@ -222,7 +223,7 @@ public class GameSidebar {
                 })
                 .placeholder("team-status", sender -> {
                     // certain popular server
-                    if (team.isTargetBlockIntact() && (!team.getTargetBlock().getBlock().getType().isSameType("respawn_anchor") || !Player116ListenerUtils.isAnchorEmpty(team.getTargetBlock().getBlock()))) {
+                    if (team.getTarget().isValid() && (!(team.getTarget() instanceof TargetBlockImpl) || !((TargetBlockImpl) team.getTarget()).isEmpty())) {
                         return Message.ofRichText(game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.SIDEBAR_GAME_TEAM_PREFIXES_TARGET_BLOCK_EXISTS, "")).asComponent(sender);
                     } else if (team.countConnectedPlayers() > 0) {
                         return Message.ofRichText(game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.SIDEBAR_GAME_TEAM_PREFIXES_TEAM_COUNT, ""))

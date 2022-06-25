@@ -23,8 +23,10 @@ import lombok.Getter;
 import lombok.Setter;
 import org.screamingsandals.bedwars.api.Team;
 import org.screamingsandals.bedwars.api.config.GameConfigurationContainer;
+import org.screamingsandals.bedwars.api.game.target.Target;
 import org.screamingsandals.bedwars.api.player.BWPlayer;
 import org.screamingsandals.bedwars.config.MainConfig;
+import org.screamingsandals.bedwars.game.target.TargetBlockImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.lib.SpecialSoundKey;
@@ -53,7 +55,7 @@ import java.util.stream.Collectors;
 public class TeamImpl implements Team {
     private TeamColorImpl color;
     private String name;
-    private LocationHolder targetBlock;
+    private Target target;
     private final List<LocationHolder> teamSpawns = new ArrayList<>();
     private int maxPlayers;
     private GameImpl game;
@@ -61,7 +63,6 @@ public class TeamImpl implements Team {
     private Container teamChestInventory;
     private final List<LocationHolder> chests = new ArrayList<>();
     private boolean started;
-    private boolean targetBlockIntact;
     private final List<BedWarsPlayer> players = new ArrayList<>();
     private Hologram hologram;
     private Hologram protectHologram;
@@ -72,78 +73,81 @@ public class TeamImpl implements Team {
             return;
         }
 
-        // Check target blocks existence
-        if (targetBlock.getBlock().getType().isAir()) {
-            var placedBlock = targetBlock.getBlock();
-            placedBlock.setType(color.getWoolBlockType());
-        }
+        if (target instanceof TargetBlockImpl) {
+            var targetBlock = ((TargetBlockImpl) target).getTargetBlock();
+            // Check target blocks existence
+            if (targetBlock.getBlock().getType().isAir()) {
+                var placedBlock = targetBlock.getBlock();
+                placedBlock.setType(color.getWoolBlockType());
+            }
 
-        // anchor wars
-        var block = targetBlock.getBlock();
-        if (block.getType().isSameType("respawn_anchor")) {
-            Tasker.build(() -> {
-                        var anchor = block.getType();
-                        block.setType(anchor.with("charges", "0"));
-                        if (game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.TARGET_BLOCK_RESPAWN_ANCHOR_FILL_ON_START, false)) {
-                            var atomic = new AtomicInteger();
-                            Tasker.build(taskBase -> () -> {
-                                var charges = atomic.incrementAndGet();
-                                if (charges > 4) {
-                                    taskBase.cancel();
-                                    return;
-                                }
-                                block.setType(anchor.with("charges", String.valueOf(charges)));
-                                targetBlock.getWorld().playSound(SoundStart.sound(
-                                        SpecialSoundKey.key(MainConfig.getInstance().node("target-block", "respawn-anchor", "sound", "charge").getString("block.respawn_anchor.charge")),
-                                        SoundSource.BLOCK,
-                                        1,
-                                        1
-                                ), targetBlock.getX(), targetBlock.getY(), targetBlock.getZ());
-                            }).delay(50, TaskerTime.TICKS).repeat(10, TaskerTime.TICKS).start();
-                        }
-                    })
-                    .afterOneTick()
-                    .start();
-        }
+            ((TargetBlockImpl) this.target).setValid(true);
+
+            // anchor wars
+            var block = targetBlock.getBlock();
+            if (block.getType().isSameType("respawn_anchor")) {
+                Tasker.build(() -> {
+                            var anchor = block.getType();
+                            block.setType(anchor.with("charges", "0"));
+                            if (game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.TARGET_BLOCK_RESPAWN_ANCHOR_FILL_ON_START, false)) {
+                                var atomic = new AtomicInteger();
+                                Tasker.build(taskBase -> () -> {
+                                    var charges = atomic.incrementAndGet();
+                                    if (charges > 4) {
+                                        taskBase.cancel();
+                                        return;
+                                    }
+                                    block.setType(anchor.with("charges", String.valueOf(charges)));
+                                    targetBlock.getWorld().playSound(SoundStart.sound(
+                                            SpecialSoundKey.key(MainConfig.getInstance().node("target-block", "respawn-anchor", "sound", "charge").getString("block.respawn_anchor.charge")),
+                                            SoundSource.BLOCK,
+                                            1,
+                                            1
+                                    ), targetBlock.getX(), targetBlock.getY(), targetBlock.getZ());
+                                }).delay(50, TaskerTime.TICKS).repeat(10, TaskerTime.TICKS).start();
+                            }
+                        })
+                        .afterOneTick()
+                        .start();
+            }
 
 
-        if (game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.HOLOGRAMS_ABOVE_BEDS, false)) {
-            var bed = targetBlock.getBlock();
-            var loc = targetBlock.add(0.5, 1.5, 0.5);
-            var isBlockTypeBed = game.getRegion().isBedBlock(bed.getBlockState().orElseThrow());
-            var isAnchor = bed.getType().isSameType("respawn_anchor");
-            var isCake = bed.getType().isSameType("cake");
-            var enemies = game.getConnectedPlayers()
-                    .stream()
-                    .filter(player -> !players.contains(player))
-                    .collect(Collectors.toList());
-            var holo = HologramManager
-                    .hologram(loc)
-                    .firstLine(
-                            Message
-                                    .of(isBlockTypeBed ? LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_DESTROY_BED : (isAnchor ? LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_DESTROY_ANCHOR : (isCake ? LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_DESTROY_CAKE : LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_DESTROY_ANY)))
-                                    .earlyPlaceholder("teamcolor", "<color:" + color.getTextColor().toString() + ">") // will be changed later
-                    );
-            enemies.forEach(holo::addViewer);
-            holo.show();
-            this.hologram = holo;
-            var protectHolo = HologramManager
-                    .hologram(loc)
-                    .firstLine(
-                            Message
-                                    .of(isBlockTypeBed ? LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_PROTECT_BED : (isAnchor ? LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_PROTECT_ANCHOR : (isCake ? LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_PROTECT_CAKE : LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_PROTECT_ANY)))
-                                    .earlyPlaceholder("teamcolor", "<color:" + color.getTextColor().toString() + ">") // will be changed later
-                    );
-            players.forEach(protectHolo::addViewer);
-            protectHolo.show();
-            this.protectHologram = protectHolo;
+            if (game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.HOLOGRAMS_ABOVE_BEDS, false)) {
+                var bed = targetBlock.getBlock();
+                var loc = targetBlock.add(0.5, 1.5, 0.5);
+                var isBlockTypeBed = game.getRegion().isBedBlock(bed.getBlockState().orElseThrow());
+                var isAnchor = bed.getType().isSameType("respawn_anchor");
+                var isCake = bed.getType().isSameType("cake");
+                var enemies = game.getConnectedPlayers()
+                        .stream()
+                        .filter(player -> !players.contains(player))
+                        .collect(Collectors.toList());
+                var holo = HologramManager
+                        .hologram(loc)
+                        .firstLine(
+                                Message
+                                        .of(isBlockTypeBed ? LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_DESTROY_BED : (isAnchor ? LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_DESTROY_ANCHOR : (isCake ? LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_DESTROY_CAKE : LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_DESTROY_ANY)))
+                                        .earlyPlaceholder("teamcolor", "<color:" + color.getTextColor().toString() + ">") // will be changed later
+                        );
+                enemies.forEach(holo::addViewer);
+                holo.show();
+                this.hologram = holo;
+                var protectHolo = HologramManager
+                        .hologram(loc)
+                        .firstLine(
+                                Message
+                                        .of(isBlockTypeBed ? LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_PROTECT_BED : (isAnchor ? LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_PROTECT_ANCHOR : (isCake ? LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_PROTECT_CAKE : LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_PROTECT_ANY)))
+                                        .earlyPlaceholder("teamcolor", "<color:" + color.getTextColor().toString() + ">") // will be changed later
+                        );
+                players.forEach(protectHolo::addViewer);
+                protectHolo.show();
+                this.protectHologram = protectHolo;
+            }
         }
 
         // team chest inventory
         final var message = Message.of(LangKeys.SPECIALS_TEAM_CHEST_NAME).prefixOrDefault(game.getCustomPrefixComponent()).asComponent();
         this.teamChestInventory = ContainerFactory.createContainer(InventoryTypeHolder.of("ender_chest"), message).orElseThrow();
-
-        this.targetBlockIntact = true;
         this.started = true;
     }
 

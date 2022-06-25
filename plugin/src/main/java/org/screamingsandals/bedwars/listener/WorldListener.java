@@ -25,6 +25,7 @@ import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.entities.EntitiesManagerImpl;
 import org.screamingsandals.bedwars.game.GameManagerImpl;
+import org.screamingsandals.bedwars.game.target.TargetBlockImpl;
 import org.screamingsandals.bedwars.utils.ArenaUtils;
 import org.screamingsandals.lib.event.Cancellable;
 import org.screamingsandals.lib.event.OnEvent;
@@ -143,7 +144,7 @@ public class WorldListener {
                         if (!game.isBlockAddedDuringGame(block.getLocation())) {
                             if (game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.TARGET_BLOCK_ALLOW_DESTROYING_WITH_EXPLOSIONS, false)) {
                                 for (var team : game.getActiveTeams()) {
-                                    if (team.getTargetBlock().equals(block.getLocation())) {
+                                    if (team.getTarget() instanceof TargetBlockImpl && ((TargetBlockImpl) team.getTarget()).getTargetBlock().equals(block.getLocation())) {
                                         game.targetBlockExplode(team);
                                         break;
                                     }

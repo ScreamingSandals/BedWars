@@ -322,7 +322,7 @@ public class ShopInventory {
                             case "players":
                                 return Integer.toString(team.countConnectedPlayers());
                             case "hasBed":
-                                return Boolean.toString(team.isTargetBlockIntact());
+                                return Boolean.toString(team.getTarget() != null && team.getTarget().isValid());
                         }
                     }
                     return team.getName();
