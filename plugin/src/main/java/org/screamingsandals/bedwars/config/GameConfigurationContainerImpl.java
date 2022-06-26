@@ -62,6 +62,8 @@ public class GameConfigurationContainerImpl extends ConfigurationContainerImpl i
         register(SIDEBAR_GAME_TEAM_PREFIXES_TEAM_COUNT, "sidebar", "game", "team-prefixes", "team-count");
         register(SIDEBAR_GAME_TEAM_LINE, "sidebar", "game", "team-line");
         register(SIDEBAR_GAME_CONTENT, "sidebar", "game", "content");
+        register(SIDEBAR_GAME_ADDITIONAL_CONTENT_SHOW_IF_TEAM_COUNT, "sidebar", "game", "additional-content", "show-if-team-count");
+        register(SIDEBAR_GAME_ADDITIONAL_CONTENT_CONTENT, "sidebar", "game", "additional-content", "content");
         register(SIDEBAR_LOBBY_ENABLED,  "sidebar", "lobby", "enabled");
         register(SIDEBAR_LOBBY_TITLE, "sidebar", "lobby", "title");
         register(SIDEBAR_LOBBY_CONTENT, "sidebar", "lobby", "content");
@@ -86,6 +88,7 @@ public class GameConfigurationContainerImpl extends ConfigurationContainerImpl i
         register(USE_CERTAIN_POPULAR_SERVER_LIKE_HOLOGRAMS_FOR_SPAWNERS, "use-certain-popular-server-like-holograms-for-spawners");
         register(USE_TEAM_LETTER_PREFIXES_BEFORE_PLAYER_NAMES, "use-team-letter-prefixes-before-player-names");
         register(USE_CERTAIN_POPULAR_SERVER_TITLES, "use-certain-popular-server-titles");
+        register(SHOW_GAME_INFO_ON_START, "show-game-info-on-start");
         register(DEFAULT_SHOP_FILE);
         register(PREFIX, "prefix");
         register(ARENA_TIME);

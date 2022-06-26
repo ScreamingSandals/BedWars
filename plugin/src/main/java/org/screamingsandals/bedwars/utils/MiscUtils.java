@@ -526,4 +526,12 @@ public class MiscUtils {
                 })
                 .max(Comparator.comparingInt(GameImpl::countConnectedPlayers));
     }
+
+    public String center(String text, int length) {
+        if (text == null || text.length() >= length - 2) {
+            return text;
+        }
+        var l = (length - text.length()) / 2;
+        return " ".repeat(l) + text;
+    }
 }

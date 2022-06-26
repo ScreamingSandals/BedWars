@@ -52,6 +52,7 @@ public interface GameConfigurationContainer extends ConfigurationContainer {
     ConfigurationKey<Boolean> USE_CERTAIN_POPULAR_SERVER_LIKE_HOLOGRAMS_FOR_SPAWNERS = ConfigurationKey.of(Boolean.class, "use-certain-popular-server-like-holograms-for-spawners");
     ConfigurationKey<Boolean> USE_TEAM_LETTER_PREFIXES_BEFORE_PLAYER_NAMES = ConfigurationKey.of(Boolean.class, "use-team-letter-prefixes-before-player-names");
     ConfigurationKey<Boolean> USE_CERTAIN_POPULAR_SERVER_TITLES = ConfigurationKey.of(Boolean.class, "use-certain-popular-server-titles");
+    ConfigurationKey<Boolean> SHOW_GAME_INFO_ON_START = ConfigurationKey.of(Boolean.class, "show-game-info-on-start");
 
     ConfigurationKey<String> PREFIX = ConfigurationKey.of(String.class, "prefix");
     ConfigurationKey<String> DEFAULT_SHOP_FILE = ConfigurationKey.of(String.class, "default-shop-file");
@@ -75,6 +76,8 @@ public interface GameConfigurationContainer extends ConfigurationContainer {
     ConfigurationKey<String> SIDEBAR_GAME_TEAM_PREFIXES_TEAM_COUNT = ConfigurationKey.of(String.class, "sidebar", "game", "team-prefixes", "team-count");
     ConfigurationKey<String> SIDEBAR_GAME_TEAM_LINE = ConfigurationKey.of(String.class, "sidebar", "game", "team-line");
     ConfigurationListKey<String> SIDEBAR_GAME_CONTENT = ConfigurationListKey.of(String.class, "sidebar", "game", "content");
+    ConfigurationKey<String> SIDEBAR_GAME_ADDITIONAL_CONTENT_SHOW_IF_TEAM_COUNT = ConfigurationKey.of(String.class, "sidebar", "game", "additional-content", "show-if-team-count");
+    ConfigurationListKey<String> SIDEBAR_GAME_ADDITIONAL_CONTENT_CONTENT = ConfigurationListKey.of(String.class, "sidebar", "game", "additional-content", "content");
     ConfigurationKey<Boolean> SIDEBAR_LOBBY_ENABLED = ConfigurationKey.of(Boolean.class, "sidebar", "lobby", "enabled");
     ConfigurationKey<String> SIDEBAR_LOBBY_TITLE = ConfigurationKey.of(String.class, "sidebar", "lobby", "title");
     ConfigurationListKey<String> SIDEBAR_LOBBY_CONTENT = ConfigurationListKey.of(String.class, "sidebar", "lobby", "content");

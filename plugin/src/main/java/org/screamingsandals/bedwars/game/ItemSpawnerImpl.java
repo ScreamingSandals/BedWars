@@ -316,7 +316,7 @@ public class ItemSpawnerImpl implements ItemSpawner, SerializableGameComponent {
 
         this.game = game;
         this.amountPerSpawn = this.baseAmountPerSpawn;
-        this.tier = 1;
+        this.tier = 0;
         this.certainPopularServerHolo = hologramType == HologramType.CERTAIN_POPULAR_SERVER || (hologramType == HologramType.DEFAULT && game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.USE_CERTAIN_POPULAR_SERVER_LIKE_HOLOGRAMS_FOR_SPAWNERS, false));
 
         if (team != null && !game.isTeamActive(team) && game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.STOP_TEAM_SPAWNERS_ON_DIE, false)) {

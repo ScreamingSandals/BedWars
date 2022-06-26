@@ -113,20 +113,69 @@ public class GameSidebar {
                         game.getActiveTeams().stream().map(this::formatScoreboardTeam).forEach(sidebar::bottomLine);
                         return;
                     }
-                    sidebar.bottomLine(
-                            Message.ofRichText(line)
-                                    .placeholder("game", game.getDisplayNameComponent())
-                                    .placeholder("players", () -> Component.text(game.countConnectedPlayers()))
-                                    .placeholder("max-players", game.getMaxPlayers())
-                                    .placeholder("time", () -> Component.text(game.getFormattedTimeLeft()))
-                                    .placeholder("version", VersionInfo.VERSION)
-                                    .placeholder("date", MiscUtils.getFormattedDate(game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.SIDEBAR_DATE_FORMAT, "date-format")))
-                                    .placeholder("mode", checkMode())
-                                    .placeholder("tier", () -> Component.text("Not implemented yet.", Color.RED)) // TODO
-                                    .placeholder("kills", () -> Component.text("Not implemented yet.", Color.RED)) // TODO
-                                    .placeholder("target-blocks-destroyed", () -> Component.text("Not implemented yet.", Color.RED)) // TODO
-                    );
+                    if (line.trim().equalsIgnoreCase("<additional-content>")) {
+                        var condition = game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.SIDEBAR_GAME_ADDITIONAL_CONTENT_SHOW_IF_TEAM_COUNT, "").trim();
+                        var result = false;
+                        if (condition.startsWith(">=")) {
+                            try {
+                                var number = Integer.parseInt(condition.substring(2).trim());
+                                if (game.getActiveTeams().size() >= number) {
+                                    result = true;
+                                }
+                            } catch (Throwable ignored) {}
+                        } else if (condition.startsWith(">")) {
+                            try {
+                                var number = Integer.parseInt(condition.substring(1).trim());
+                                if (game.getActiveTeams().size() > number) {
+                                    result = true;
+                                }
+                            } catch (Throwable ignored) {}
+                        } else if (condition.startsWith("<=")) {
+                            try {
+                                var number = Integer.parseInt(condition.substring(2).trim());
+                                if (game.getActiveTeams().size() <= number) {
+                                    result = true;
+                                }
+                            } catch (Throwable ignored) {}
+                        } else if (condition.startsWith("<")) {
+                            try {
+                                var number = Integer.parseInt(condition.substring(1).trim());
+                                if (game.getActiveTeams().size() < number) {
+                                    result = true;
+                                }
+                            } catch (Throwable ignored) {}
+                        } else if (!condition.isEmpty()) {
+                            try {
+                                var number = Integer.parseInt(condition);
+                                if (game.getActiveTeams().size() == number) {
+                                    result = true;
+                                }
+                            } catch (Throwable ignored) {}
+                        }
+                        if (result) {
+                            game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.SIDEBAR_GAME_ADDITIONAL_CONTENT_CONTENT, List.of())
+                                    .forEach(this::formatLineForSidebar);
+                        }
+                        return;
+                    }
+                    formatLineForSidebar(line);
                 });
+    }
+
+    private void formatLineForSidebar(String line) {
+        sidebar.bottomLine(
+                Message.ofRichText(line)
+                        .placeholder("game", game.getDisplayNameComponent())
+                        .placeholder("players", () -> Component.text(game.countConnectedPlayers()))
+                        .placeholder("max-players", game.getMaxPlayers())
+                        .placeholder("time", () -> Component.text(game.getFormattedTimeLeft()))
+                        .placeholder("version", VersionInfo.VERSION)
+                        .placeholder("date", MiscUtils.getFormattedDate(game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.SIDEBAR_DATE_FORMAT, "date-format")))
+                        .placeholder("mode", checkMode())
+                        .placeholder("tier", () -> Component.text("Not implemented yet.", Color.RED)) // TODO
+                        .placeholder("kills", () -> Component.text("Not implemented yet.", Color.RED)) // TODO
+                        .placeholder("target-blocks-destroyed", () -> Component.text("Not implemented yet.", Color.RED)) // TODO
+        );
     }
 
     private void switchToRunningOld() {

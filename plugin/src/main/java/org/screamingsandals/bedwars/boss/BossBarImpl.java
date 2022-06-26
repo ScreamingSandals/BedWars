@@ -107,7 +107,7 @@ public class BossBarImpl implements org.screamingsandals.bedwars.api.boss.BossBa
     @Override
     public void setVisible(boolean visibility) {
         if (visible != visibility) {
-            if (visible) {
+            if (visibility) {
                 viewers.forEach(playerWrapper -> playerWrapper.showBossBar(boss));
             } else {
                 viewers.forEach(playerWrapper -> playerWrapper.hideBossBar(boss));

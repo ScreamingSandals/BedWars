@@ -103,6 +103,7 @@ public class MainConfig {
                 .key("shopkeepers-are-silent").defValue(true)
                 .key("use-team-letter-prefixes-before-player-names").defValue(false)
                 .key("use-certain-popular-server-titles").defValue(false)
+                .key("show-game-info-on-start").defValue(false)
                 .section("tnt-jump")
                     .key("enabled").defValue(true)
                     .key("source-damage").defValue(0.5)
@@ -264,6 +265,10 @@ public class MainConfig {
                                 "",
                                 "<gold>screamingsandals.org"
                         ))
+                        .section("additional-content")
+                            .key("show-if-team-count").defValue("<=4")
+                            .key("content").defValue(List.of())
+                            .back()
                         .back()
                     .section("lobby")
                         .key("enabled").migrateOldAbsoluteKey("lobby-scoreboard", "enabled").defValue(true)

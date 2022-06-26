@@ -1923,6 +1923,12 @@ public class GameImpl implements Game {
                                     .join(LangKeys.IN_GAME_GAME_START_SUBTITLE)
                                     .placeholder("arena", this.name)
                                     .times(TitleUtils.defaultTimes());
+                    if (configurationContainer.getOrDefault(GameConfigurationContainer.SHOW_GAME_INFO_ON_START, false)) {
+                        Message
+                                .of(LangKeys.IN_GAME_MESSAGES_GAME_START)
+                                .placeholderRaw("resources", MiscUtils.center(gameVariant.getItemSpawnerTypes().stream().map(ItemSpawnerTypeImpl::getName).collect(Collectors.joining(", ")), 49))
+                                .send(players);
+                    }
                     for (BedWarsPlayer player : this.players) {
                         Debug.info(name + ": moving " + player.getName() + " into game");
                         var team = getPlayerTeam(player);
