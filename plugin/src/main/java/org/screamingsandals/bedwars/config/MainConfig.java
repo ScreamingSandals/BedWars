@@ -102,6 +102,7 @@ public class MainConfig {
                 .key("enable-cheat-command-for-admins").defValue(false)
                 .key("shopkeepers-are-silent").defValue(true)
                 .key("use-team-letter-prefixes-before-player-names").defValue(false)
+                .key("use-certain-popular-server-titles").defValue(false)
                 .section("tnt-jump")
                     .key("enabled").defValue(true)
                     .key("source-damage").defValue(0.5)
@@ -567,7 +568,18 @@ public class MainConfig {
                     .section("game")
                         .key("enabled").migrateOld("enable").defValue(true)
                         .key("color").defValue("GREEN")
-                        .key("style").defValue("NOTCHED_20")
+                        .key("division").migrateOldAbsoluteKey("style").remap(node -> {
+                            var str = node.getString("");
+                            try {
+                                if (str.startsWith("SEGMENTED_")) {
+                                    node.set("NOTCHED_" + str.substring(10));
+                                } else if (str.equals("SOLID") || str.equals("PROGRESS")) {
+                                    node.set("NO_DIVISION");
+                                }
+                            } catch (SerializationException e) {
+                                e.printStackTrace();
+                            }
+                        }).defValue("NOTCHED_20")
                         .back()
                     .back();
 

@@ -19,10 +19,8 @@
 
 package org.screamingsandals.bedwars.game.target;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.Data;
 import org.jetbrains.annotations.NotNull;
-import org.screamingsandals.bedwars.api.game.target.NoTarget;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.SerializableGameComponent;
 import org.screamingsandals.bedwars.game.SerializableGameComponentLoader;
@@ -32,23 +30,30 @@ import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.Optional;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class NoTargetImpl implements NoTarget, SerializableGameComponent {
-    public static final NoTargetImpl INSTANCE = new NoTargetImpl();
+@Data
+public final class TargetCountdownImpl implements ATargetCountdown, SerializableGameComponent {
+    private final int countdown;
+    private volatile int remainingTime;
+
+    @Override
+    public boolean isValid() {
+        return remainingTime > 0;
+    }
 
     @Override
     public void saveTo(@NotNull ConfigurationNode node) throws SerializationException {
-        node.node("type").set("none");
+        node.node("type").set("countdown");
+        node.node("countdown").set(countdown);
     }
 
-    public final static class Loader implements SerializableGameComponentLoader<NoTargetImpl> {
+    public final static class Loader implements SerializableGameComponentLoader<TargetCountdownImpl> {
         public static final Loader INSTANCE = new Loader();
 
         @Override
         @NotNull
-        public Optional<NoTargetImpl> load(@NotNull GameImpl game, @NotNull ConfigurationNode node) throws ConfigurateException {
-            if (node.node("type").getString("").equals("none")) {
-                return Optional.of(NoTargetImpl.INSTANCE);
+        public Optional<TargetCountdownImpl> load(@NotNull GameImpl game, @NotNull ConfigurationNode node) throws ConfigurateException {
+            if (node.node("type").getString("").equals("countdown")) {
+                return Optional.of(new TargetCountdownImpl(node.node("countdown").getInt()));
             }
             return Optional.empty();
         }

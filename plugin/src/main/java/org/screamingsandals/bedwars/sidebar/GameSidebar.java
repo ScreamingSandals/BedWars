@@ -24,9 +24,9 @@ import org.screamingsandals.bedwars.api.config.GameConfigurationContainer;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.TeamImpl;
+import org.screamingsandals.bedwars.game.target.ATargetCountdown;
 import org.screamingsandals.bedwars.game.target.TargetBlockImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
-import org.screamingsandals.bedwars.listener.Player116ListenerUtils;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.bedwars.utils.MiscUtils;
@@ -42,9 +42,6 @@ import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
 import org.screamingsandals.lib.tasker.task.TaskerTask;
 
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -214,6 +211,10 @@ public class GameSidebar {
                     if (team.getTarget().isValid()) {
                         if (team.getTarget() instanceof TargetBlockImpl && ((TargetBlockImpl) team.getTarget()).isEmpty()) {
                             return Message.ofRichText(game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.SIDEBAR_GAME_TEAM_PREFIXES_ANCHOR_EMPTY, "")).asComponent(sender);
+                        } else if (team.getTarget() instanceof ATargetCountdown && ((ATargetCountdown) team.getTarget()).getRemainingTime() < 30) {
+                            return Message.ofRichText(game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.SIDEBAR_GAME_TEAM_PREFIXES_TEAM_COUNT, ""))
+                                    .placeholder("count", Component.text(((ATargetCountdown) team.getTarget()).getRemainingTime() + " "))
+                                    .asComponent(sender);
                         } else {
                             return Message.ofRichText(game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.SIDEBAR_GAME_TEAM_PREFIXES_TARGET_BLOCK_EXISTS, "")).asComponent(sender);
                         }

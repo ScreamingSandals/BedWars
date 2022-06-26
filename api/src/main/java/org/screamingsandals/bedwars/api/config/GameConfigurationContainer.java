@@ -51,6 +51,7 @@ public interface GameConfigurationContainer extends ConfigurationContainer {
     ConfigurationKey<Boolean> ENABLE_BELOW_NAME_HEALTH_INDICATOR = ConfigurationKey.of(Boolean.class, "enable-below-name-health-indicator");
     ConfigurationKey<Boolean> USE_CERTAIN_POPULAR_SERVER_LIKE_HOLOGRAMS_FOR_SPAWNERS = ConfigurationKey.of(Boolean.class, "use-certain-popular-server-like-holograms-for-spawners");
     ConfigurationKey<Boolean> USE_TEAM_LETTER_PREFIXES_BEFORE_PLAYER_NAMES = ConfigurationKey.of(Boolean.class, "use-team-letter-prefixes-before-player-names");
+    ConfigurationKey<Boolean> USE_CERTAIN_POPULAR_SERVER_TITLES = ConfigurationKey.of(Boolean.class, "use-certain-popular-server-titles");
 
     ConfigurationKey<String> PREFIX = ConfigurationKey.of(String.class, "prefix");
     ConfigurationKey<String> DEFAULT_SHOP_FILE = ConfigurationKey.of(String.class, "default-shop-file");

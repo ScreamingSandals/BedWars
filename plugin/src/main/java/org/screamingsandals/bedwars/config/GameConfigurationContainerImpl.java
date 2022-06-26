@@ -85,6 +85,7 @@ public class GameConfigurationContainerImpl extends ConfigurationContainerImpl i
         register(ENABLE_BELOW_NAME_HEALTH_INDICATOR, "enable-below-name-health-indicator");
         register(USE_CERTAIN_POPULAR_SERVER_LIKE_HOLOGRAMS_FOR_SPAWNERS, "use-certain-popular-server-like-holograms-for-spawners");
         register(USE_TEAM_LETTER_PREFIXES_BEFORE_PLAYER_NAMES, "use-team-letter-prefixes-before-player-names");
+        register(USE_CERTAIN_POPULAR_SERVER_TITLES, "use-certain-popular-server-titles");
         register(DEFAULT_SHOP_FILE);
         register(PREFIX, "prefix");
         register(ARENA_TIME);

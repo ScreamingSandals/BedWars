@@ -27,6 +27,7 @@ config:
   team-join-item-enabled: false
   add-wool-to-inventory-on-join: false
   use-team-letter-prefixes-before-player-names: true
+  use-certain-popular-server-titles: true
   sidebar:
     date-format: "MM/dd/yy"
     game:

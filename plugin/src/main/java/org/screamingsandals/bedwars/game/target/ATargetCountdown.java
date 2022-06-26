@@ -17,13 +17,10 @@
  * along with Screaming BedWars. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.screamingsandals.bedwars.listener;
+package org.screamingsandals.bedwars.game.target;
 
-import org.screamingsandals.lib.block.BlockHolder;
+import org.screamingsandals.bedwars.api.game.target.TargetCountdown;
 
-public class Player116ListenerUtils {
-    public static boolean isAnchorEmpty(BlockHolder anchor) {
-        var charges = anchor.getType().get("charges");
-        return charges.map("0"::equals).orElse(true);
-    }
+public interface ATargetCountdown extends TargetCountdown {
+    void setRemainingTime(int remainingTime);
 }

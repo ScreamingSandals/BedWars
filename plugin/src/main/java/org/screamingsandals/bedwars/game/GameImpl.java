@@ -32,7 +32,6 @@ import org.screamingsandals.bedwars.api.config.GameConfigurationContainer;
 import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.api.game.target.Target;
-import org.screamingsandals.bedwars.api.game.target.TargetBlock;
 import org.screamingsandals.bedwars.api.player.BWPlayer;
 import org.screamingsandals.bedwars.api.special.SpecialItem;
 import org.screamingsandals.bedwars.api.upgrades.UpgradeRegistry;
@@ -49,8 +48,7 @@ import org.screamingsandals.bedwars.config.RecordSave;
 import org.screamingsandals.bedwars.econ.EconomyProvider;
 import org.screamingsandals.bedwars.entities.EntitiesManagerImpl;
 import org.screamingsandals.bedwars.events.*;
-import org.screamingsandals.bedwars.game.target.NoTargetImpl;
-import org.screamingsandals.bedwars.game.target.TargetBlockImpl;
+import org.screamingsandals.bedwars.game.target.*;
 import org.screamingsandals.bedwars.holograms.StatisticsHolograms;
 import org.screamingsandals.bedwars.inventories.TeamSelectorInventory;
 import org.screamingsandals.bedwars.lang.LangKeys;
@@ -390,6 +388,12 @@ public class GameImpl implements Game {
                     switch (type) {
                         case "block":
                             target = TargetBlockImpl.Loader.INSTANCE.load(game, targetNode).orElseThrow();
+                            break;
+                        case "countdown":
+                            target = TargetCountdownImpl.Loader.INSTANCE.load(game, targetNode).orElseThrow();
+                            break;
+                        case "block-countdown":
+                            target = TargetBlockCountdownImpl.Loader.INSTANCE.load(game, targetNode).orElseThrow();
                             break;
                         case "none":
                             target = NoTargetImpl.Loader.INSTANCE.load(game, targetNode).orElseThrow();
@@ -897,22 +901,31 @@ public class GameImpl implements Game {
                     if (destroyer != null) {
                         coloredDestroyer = destroyer.getDisplayName().withColor(getPlayerTeam(PlayerManagerImpl.getInstance().getPlayer(destroyer.getUuid()).orElseThrow()).getColor().getTextColor());
                     }
+                    var cpsTitles = configurationContainer.getOrDefault(GameConfigurationContainer.USE_CERTAIN_POPULAR_SERVER_TITLES, false);
                     for (BedWarsPlayer player : players) {
-                        var message = Message
-                                .of(isItBedBlock ? LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_BED : (isItAnchor ? LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_ANCHOR : (isItCake ? LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_CAKE : LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_ANY)))
-                                .placeholder("team", Component.text(team.getName(), team.getColor().getTextColor()))
-                                .placeholder("broker", coloredDestroyer);
+                        if (!cpsTitles || getPlayerTeam(player) == team) {
+                            String[] keys;
+                            if (cpsTitles) {
+                                keys = isItBedBlock ? LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_BED_CERTAIN_POPULAR_SERVER : (isItAnchor ? LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_ANCHOR_CERTAIN_POPULAR_SERVER : (isItCake ? LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_CAKE_CERTAIN_POPULAR_SERVER : LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_ANY_CERTAIN_POPULAR_SERVER));
+                            } else {
+                                keys = isItBedBlock ? LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_BED : (isItAnchor ? LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_ANCHOR : (isItCake ? LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_CAKE : LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_ANY));
+                            }
+                            var message = Message
+                                    .of(keys)
+                                    .placeholder("team", Component.text(team.getName(), team.getColor().getTextColor()))
+                                    .placeholder("broker", coloredDestroyer);
 
-                        message.clone()
-                                .join(getPlayerTeam(player) == team ? LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_SUBTITLE_VICTIM : LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_SUBTITLE)
-                                .times(TitleUtils.defaultTimes())
-                                .title(player);
+                            message.clone()
+                                    .join(getPlayerTeam(player) == team ? LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_SUBTITLE_VICTIM : LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_SUBTITLE)
+                                    .times(TitleUtils.defaultTimes())
+                                    .title(player);
 
 
-                        var bbdmsEvent = new BedDestroyedMessageSendEventImpl(this, player, destroyer != null ? destroyer.as(BedWarsPlayer.class) : null, team, message);
-                        EventManager.fire(bbdmsEvent);
-                        if (!bbdmsEvent.isCancelled()) {
-                            bbdmsEvent.getMessage().send(player);
+                            var bbdmsEvent = new BedDestroyedMessageSendEventImpl(this, player, destroyer != null ? destroyer.as(BedWarsPlayer.class) : null, team, message);
+                            EventManager.fire(bbdmsEvent);
+                            if (!bbdmsEvent.isCancelled()) {
+                                bbdmsEvent.getMessage().send(player);
+                            }
                         }
 
                         SpawnEffects.spawnEffect(this, player, "game-effects.beddestroy");
@@ -2023,8 +2036,89 @@ public class GameImpl implements Game {
             // Phase 6.2.1: On game tick (if not interrupted by a change of status)
             if (status == GameStatus.RUNNING && tick.getNextStatus() == GameStatus.RUNNING) {
                 int runningTeams = 0;
+                var invalidated = new ArrayList<TargetBlockDestroyedInfo>();
                 for (var t : teamsInGame) {
                     runningTeams += t.isAlive() ? 1 : 0;
+                    if (t.isAlive() && t.getTarget() instanceof ATargetCountdown && t.getTarget().isValid()) {
+                        ((ATargetCountdown) t.getTarget()).setRemainingTime(((ATargetCountdown) t.getTarget()).getRemainingTime() - 1);
+                        if (!t.getTarget().isValid()) {
+                            var info = new TargetBlockDestroyedInfo(this, t);
+                            if (t.getTarget() instanceof TargetBlockCountdownImpl && configurationContainer.getOrDefault(GameConfigurationContainer.USE_CERTAIN_POPULAR_SERVER_TITLES, false)) {
+                                invalidated.add(info);
+                            } else {
+                                Message
+                                        .of(LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_DEATH_MODE)
+                                        .join(LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_SUBTITLE_VICTIM)
+                                        .times(TitleUtils.defaultTimes())
+                                        .title(t.getPlayers());
+                            }
+
+                            if (t.getTarget() instanceof TargetBlockCountdownImpl) {
+                                if (t.getHologram() != null) {
+                                    t.getHologram().replaceLine(0, Message.of(info.isItBedBlock() ? LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_DESTROYED_BED : (info.isItAnchor() ? LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_DESTROYED_ANCHOR : (info.isItCake() ? LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_DESTROYED_CAKE : LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_DESTROYED_ANY))));
+                                    t.getPlayers().forEach(t.getHologram()::addViewer);
+                                }
+
+                                if (t.getProtectHologram() != null) {
+                                    t.getProtectHologram().destroy();
+                                    t.setProtectHologram(null);
+                                }
+
+                                ((TargetBlockCountdownImpl) t.getTarget()).setValid(false);
+                                var loc = ((TargetBlockCountdownImpl) t.getTarget()).getTargetBlock();
+                                var block = loc.getBlock();
+                                if (region.isBedBlock(block.getBlockState().orElseThrow())) {
+                                    region.putOriginalBlock(block.getLocation(), block.getBlockState().orElseThrow());
+                                    var neighbor = region.getBedNeighbor(block);
+                                    region.putOriginalBlock(neighbor.getLocation(), neighbor.getBlockState().orElseThrow());
+                                    neighbor.setTypeWithoutPhysics(BlockTypeHolder.air());
+                                } else {
+                                    region.putOriginalBlock(loc, block.getBlockState().orElseThrow());
+                                }
+                                block.setType(BlockTypeHolder.air());
+                            }
+
+                            Message
+                                    .of(LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_KILLABLE)
+                                    .placeholder("team", Component.text(t.getName(), t.getColor().getTextColor()))
+                                    .prefixOrDefault(getCustomPrefixComponent())
+                                    .send(players);
+
+                            for (var player : t.getPlayers()) {
+                                SpawnEffects.spawnEffect(this, player, "game-effects.beddestroy");
+                                player.playSound(
+                                        SoundStart.sound(
+                                                SpecialSoundKey.key(MainConfig.getInstance().node("sounds", "my_bed_destroyed", "sound").getString("entity.ender_dragon.growl")),
+                                                SoundSource.AMBIENT,
+                                                (float) MainConfig.getInstance().node("sounds", "my_bed_destroyed", "volume").getDouble(1),
+                                                (float) MainConfig.getInstance().node("sounds", "my_bed_destroyed", "pitch").getDouble(1)
+                                        )
+                                );
+                            }
+                        }
+                    }
+                }
+                if (!invalidated.isEmpty()) {
+                    if (teamsInGame.stream().anyMatch(team -> team.getTarget().isValid())) {
+                        for (var t : invalidated) {
+                            Message
+                                    .of(t.isItBedBlock() ? LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_BED_CERTAIN_POPULAR_SERVER : (t.isItAnchor() ? LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_ANCHOR_CERTAIN_POPULAR_SERVER : (t.isItCake() ? LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_CAKE_CERTAIN_POPULAR_SERVER : LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_ANY_CERTAIN_POPULAR_SERVER)))
+                                    .join(LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_SUBTITLE_VICTIM)
+                                    .times(TitleUtils.defaultTimes())
+                                    .title(t.getTeam().getPlayers());
+                        }
+                    } else {
+                        var allBeds = invalidated.stream().allMatch(TargetBlockDestroyedInfo::isItBedBlock);
+                        var allAnchors = invalidated.stream().allMatch(TargetBlockDestroyedInfo::isItAnchor);
+                        var allCakes = invalidated.stream().allMatch(TargetBlockDestroyedInfo::isItCake);
+                        for (var t : invalidated) {
+                            Message
+                                    .of(t.isItBedBlock() ? LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_BED_CERTAIN_POPULAR_SERVER : (t.isItAnchor() ? LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_ANCHOR_CERTAIN_POPULAR_SERVER : (t.isItCake() ? LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_CAKE_CERTAIN_POPULAR_SERVER : LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_ANY_CERTAIN_POPULAR_SERVER)))
+                                    .join(allBeds ? LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_ALL_BEDS : (allAnchors ? LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_ALL_ANCHORS : (allCakes ? LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_ALL_CAKES : LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_ALL_TARGET_BLOCKS)))
+                                    .times(TitleUtils.defaultTimes())
+                                    .title(t.getTeam().getPlayers());
+                        }
+                    }
                 }
                 if (runningTeams <= 1) {
                     if (runningTeams == 1) {
