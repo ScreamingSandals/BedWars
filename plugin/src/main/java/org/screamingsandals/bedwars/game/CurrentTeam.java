@@ -46,6 +46,7 @@ public class CurrentTeam implements RunningTeam {
     private Hologram protectHolo;
 
     public boolean isBed = true;
+    public boolean forced = false;
 
     public CurrentTeam(Team team, Game game) {
         this.teamInfo = team;

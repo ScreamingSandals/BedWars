@@ -206,6 +206,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     private InGameConfigBooleanConstants targetBlockExplosions = InGameConfigBooleanConstants.INHERIT;
 
     public boolean gameStartItem;
+    public boolean forceGameToStart;
     private boolean preServerRestart = false;
 
     // STATUS
@@ -1676,8 +1677,32 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                     gameStartItem = false;
                 }
             }
+            if (forceGameToStart) {
+                nextCountdown = gameTime;
+                nextStatus = GameStatus.RUNNING;
+                forceGameToStart = false;
 
-            if (players.size() >= getMinPlayers()
+                for (GamePlayer player : players) {
+                    if (getPlayerTeam(player) == null) {
+                        joinRandomTeam(player);
+                    }
+                }
+                if (teamsInGame.size() == 1) { // I don't think zero can happen as at least one player will be there
+                    for (Team team : teams) {
+                        if (getCurrentTeamByTeam(team) == null) {
+                            CurrentTeam current = new CurrentTeam(team, this);
+                            org.bukkit.scoreboard.Team scoreboardTeam = gameScoreboard.getTeam(team.name);
+                            if (scoreboardTeam == null) {
+                                scoreboardTeam = gameScoreboard.registerNewTeam(team.name);
+                            }
+                            current.setScoreboardTeam(scoreboardTeam);
+                            current.forced = true;
+                            teamsInGame.add(current);
+                            break;
+                        }
+                    }
+                }
+            } else if (players.size() >= getMinPlayers()
                     && (getOriginalOrInheritedJoinRandomTeamAfterLobby() || teamsInGame.size() > 1)) {
                 if (countdown == 0) {
                     nextCountdown = gameTime;
@@ -1962,7 +1987,11 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             if (status == GameStatus.RUNNING && tick.getNextStatus() == GameStatus.RUNNING) {
                 int runningTeams = 0;
                 for (CurrentTeam t : teamsInGame) {
-                    runningTeams += t.isAlive() ? 1 : 0;
+                    if (t.forced) {
+                        runningTeams += t.isBed ? 1 : 0;
+                    } else {
+                        runningTeams += t.isAlive() ? 1 : 0;
+                    }
                 }
                 if (runningTeams <= 1) {
                     if (runningTeams == 1) {
