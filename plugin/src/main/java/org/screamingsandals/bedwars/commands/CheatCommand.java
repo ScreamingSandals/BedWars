@@ -242,5 +242,26 @@ public class CheatCommand extends BaseCommand {
                                     .send(player);
                         })
         );
+
+        manager.command(commandSenderWrapperBuilder
+                .literal("startEmptyGame")
+                .handler(commandContext -> {
+                    var player = commandContext.getSender().as(PlayerWrapper.class);
+
+                    var game = playerManager.getGameOfPlayer(player);
+                    if (game.isEmpty()) {
+                        player.sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_NOT_IN_ANY_GAME_YET).defaultPrefix());
+                        return;
+                    }
+                    if (game.get().getStatus() != GameStatus.WAITING) {
+                        player.sendMessage(Message.of(LangKeys.IN_GAME_CHEAT_GAME_NOT_WAITING).defaultPrefix());
+                        return;
+                    }
+
+                    game.get().forceGameToStart = true;
+
+                    player.sendMessage(Message.of(LangKeys.IN_GAME_CHEAT_GAME_FORCED).defaultPrefix());
+                })
+        );
     }
 }

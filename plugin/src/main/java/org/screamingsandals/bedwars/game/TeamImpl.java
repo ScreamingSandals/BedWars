@@ -68,6 +68,7 @@ public class TeamImpl implements Team {
     private Hologram hologram;
     private Hologram protectHologram;
     private final Random randomSpawn = new Random();
+    private boolean forced = false;
 
     public void start() {
         if (started) {
@@ -175,6 +176,7 @@ public class TeamImpl implements Team {
         chests.clear();
         players.clear();
         started = false;
+        forced = false;
     }
 
     public void addTeamChest(LocationHolder location) {
@@ -241,7 +243,7 @@ public class TeamImpl implements Team {
 
     @Override
     public boolean isDead() {
-        return players.isEmpty();
+        return forced && target != null ? !target.isValid() : players.isEmpty(); // forced teams in test play without players work a little differently
     }
 
     @Override

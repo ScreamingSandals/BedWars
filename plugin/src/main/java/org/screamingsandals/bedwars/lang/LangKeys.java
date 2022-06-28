@@ -150,6 +150,8 @@ public class LangKeys {
     public final String[] IN_GAME_CHEAT_GAME_NOT_RUNNING = {"in_game", "cheat", "game_not_running"};
     public final String[] IN_GAME_CHEAT_SPECIAL_ITEM_USED = {"in_game", "cheat", "special_item_used"};
     public final String[] IN_GAME_CHEAT_REGION_REGENERATED = {"in_game", "cheat", "region_regenerated"};
+    public final String[] IN_GAME_CHEAT_GAME_NOT_WAITING = {"in_game", "cheat", "game_not_waiting"};
+    public final String[] IN_GAME_CHEAT_GAME_FORCED = {"in_game", "cheat", "game_forced"};
     public final String[] IN_GAME_SCOREBOARD_YOU = {"in_game", "scoreboard", "you"};
     public final String[] IN_GAME_SCOREBOARD_STATE_WAITING = {"in_game", "scoreboard", "state", "waiting"};
     public final String[] IN_GAME_SCOREBOARD_STATE_COUNTDOWN = {"in_game", "scoreboard", "state", "countdown"};

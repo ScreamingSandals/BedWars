@@ -121,6 +121,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class GameImpl implements Game {
     public boolean gameStartItem;
+    public boolean forceGameToStart;
     @Getter
     private final UUID uuid;
     private String name;
@@ -1799,8 +1800,26 @@ public class GameImpl implements Game {
                     gameStartItem = false;
                 }
             }
+            if (forceGameToStart) {
+                nextCountdown = gameTime;
+                nextStatus = GameStatus.RUNNING;
+                forceGameToStart = false;
 
-            if (players.size() >= getMinPlayers()
+                for (BedWarsPlayer player : players) {
+                    if (getPlayerTeam(player) == null) {
+                        joinRandomTeam(player);
+                    }
+                }
+                if (teamsInGame.size() == 1) { // I don't think zero can happen as at least one player will be there
+                    for (var team : teams) {
+                        if (!teamsInGame.contains(team)) {
+                            team.setForced(true);
+                            teamsInGame.add(team);
+                            break;
+                        }
+                    }
+                }
+            } else if (players.size() >= getMinPlayers()
                     && (configurationContainer.getOrDefault(GameConfigurationContainer.JOIN_RANDOM_TEAM_AFTER_LOBBY, false) || teamsInGame.size() > 1)) {
                 if (countdown == 0) {
                     nextCountdown = gameTime;
