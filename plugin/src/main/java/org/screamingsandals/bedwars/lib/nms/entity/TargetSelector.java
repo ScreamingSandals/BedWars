@@ -23,12 +23,17 @@ import org.bukkit.entity.LivingEntity;
 import org.screamingsandals.bedwars.nms.accessors.MobAccessor;
 import org.screamingsandals.bedwars.nms.accessors.NearestAttackableTargetGoalAccessor;
 import org.screamingsandals.lib.bukkit.utils.nms.ClassStorage;
+import org.screamingsandals.lib.entity.EntityLiving;
 import org.screamingsandals.lib.utils.reflect.Reflect;
 
 public class TargetSelector extends Selector {
 	
 	public TargetSelector(Object handler) {
 		super(handler, MobAccessor.getFieldTargetSelector());
+	}
+
+	public TargetSelector attackTarget(EntityLiving target) {
+		return attackTarget(target.as(LivingEntity.class));
 	}
 	
 	public TargetSelector attackTarget(LivingEntity target) {

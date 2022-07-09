@@ -23,8 +23,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Explosive;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -719,36 +717,33 @@ public class PlayerListener {
                 } else if (event instanceof SEntityDamageByEntityEvent) {
                     var edbee = (SEntityDamageByEntityEvent) event;
 
-                    if (edbee.damager().as(Entity.class) instanceof Explosive) {
-                        if (MainConfig.getInstance().node("tnt-jump", "enabled").getBoolean()) {
-                            if (edbee.damager().getEntityType().is("tnt")) {
-                                final var tnt = edbee.damager();
-                                final var tntSource = tnt.as(TNTPrimed.class).getSource();
-                                if (tntSource instanceof Player) {
-                                    final var playerSource = (Player) tntSource;
-                                    if (playerSource.equals(player.as(Player.class))) {
-                                        event.damage(MainConfig.getInstance().node("tnt-jump", "source-damage").getDouble(0.5));
-                                        var tntVector = tnt.getLocation().asVector();
-                                        var vector = player
-                                                .getLocation()
-                                                .clone()
-                                                .add(0, MainConfig.getInstance().node("tnt-jump", "acceleration-y").getInt(), 0)
-                                                .asVector()
-                                                .add(-tntVector.getX(), -tntVector.getY(), -tntVector.getZ()).normalize();
+                    if (MainConfig.getInstance().node("tnt-jump", "enabled").getBoolean() && edbee.damager().getEntityType().is("tnt")) {
+                        final var tnt = edbee.damager();
+                        final var tntSource = tnt.as(TNTPrimed.class).getSource();
+                        if (tntSource instanceof Player) {
+                            final var playerSource = (Player) tntSource;
+                            if (playerSource.equals(player.as(Player.class))) {
+                                event.damage(MainConfig.getInstance().node("tnt-jump", "source-damage").getDouble(0.5));
+                                var tntVector = tnt.getLocation().asVector();
+                                var vector = player
+                                        .getLocation()
+                                        .clone()
+                                        .add(0, MainConfig.getInstance().node("tnt-jump", "acceleration-y").getInt(), 0)
+                                        .asVector()
+                                        .add(-tntVector.getX(), -tntVector.getY(), -tntVector.getZ()).normalize();
 
-                                        vector.setY(vector.getY() / MainConfig.getInstance().node("tnt-jump", "reduce-y").getDouble());
-                                        vector.multiply(MainConfig.getInstance().node("tnt-jump", "launch-multiplier").getInt());
-                                        player.setVelocity(vector);
-                                        explosionAffectedPlayers.add(player);
-                                    }
-                                    if (!MainConfig.getInstance().node("tnt-jump", "team-damage").getBoolean(true)) {
-                                        if (game.getPlayerTeam(gPlayer).equals(game.getPlayerTeam(PlayerManagerImpl.getInstance().getPlayer(playerSource.getUniqueId()).orElseThrow()))) {
-                                            event.cancelled(true);
-                                        }
-                                    }
+                                vector.setY(vector.getY() / MainConfig.getInstance().node("tnt-jump", "reduce-y").getDouble());
+                                vector.multiply(MainConfig.getInstance().node("tnt-jump", "launch-multiplier").getInt());
+                                player.setVelocity(vector);
+                                explosionAffectedPlayers.add(player);
+                            }
+                            if (!MainConfig.getInstance().node("tnt-jump", "team-damage").getBoolean(true)) {
+                                if (game.getPlayerTeam(gPlayer).equals(game.getPlayerTeam(PlayerManagerImpl.getInstance().getPlayer(playerSource.getUniqueId()).orElseThrow()))) {
+                                    event.cancelled(true);
                                 }
                             }
                         }
+
                     } else if (edbee.damager().getEntityType().is("player")) {
                         var damager = (PlayerWrapper) ((SEntityDamageByEntityEvent) event).damager();
                         if (PlayerManagerImpl.getInstance().isPlayerInGame(damager)) {

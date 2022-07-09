@@ -21,7 +21,6 @@ package org.screamingsandals.bedwars.special;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.api.special.TNTSheep;
 import org.screamingsandals.bedwars.entities.EntitiesManagerImpl;
 import org.screamingsandals.bedwars.game.GameImpl;
@@ -81,7 +80,7 @@ public class TNTSheepImpl extends SpecialItemImpl implements TNTSheep {
 
         entity = sheep;
         EntityUtils.makeMobAttackTarget(sheep, speed, followRange, 0)
-                .getTargetSelector().attackTarget(target.as(Player.class));
+                .getTargetSelector().attackTarget(target);
 
         tnt = EntityMapper.spawn("tnt", initialLocation).orElseThrow();
         tnt.setMetadata("fuse_ticks", explosionTime);
