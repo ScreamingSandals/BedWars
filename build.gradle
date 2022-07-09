@@ -33,7 +33,6 @@ subprojects {
         maven { url 'https://ci.frostcast.net/plugin/repository/everything'  }
         maven { url 'https://repo.codemc.org/repository/maven-public/'  }
         maven { url 'https://repo.alessiodp.com/releases/'  }
-        maven { url 'https://jitpack.io' }
     }
 
     shadowJar {

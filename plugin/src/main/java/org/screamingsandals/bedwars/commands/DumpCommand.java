@@ -37,7 +37,6 @@ import org.screamingsandals.bedwars.game.GameManagerImpl;
 import org.screamingsandals.bedwars.inventories.ShopInventory;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.lib.debug.Debug;
-import org.screamingsandals.bedwars.premium.PremiumBedwars;
 import org.screamingsandals.bedwars.variants.VariantManagerImpl;
 import org.screamingsandals.lib.Server;
 import org.screamingsandals.lib.plugin.PluginManager;
@@ -108,7 +107,7 @@ public class DumpCommand extends BaseCommand {
                                                             "bedwars", Map.of(
                                                                     "version", VersionInfo.VERSION,
                                                                     "build", VersionInfo.BUILD_NUMBER,
-                                                                    "edition", PremiumBedwars.isPremium() ? "premium" : "free"
+                                                                    "edition", "free"
                                                             ),
                                                             "server", Map.of(
                                                                     "version", Server.getServerSoftwareVersion(),

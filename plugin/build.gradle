@@ -2,7 +2,7 @@ apply plugin: "com.github.gmazzo.buildconfig"
 
 ScreamingLibBuilder()
         .platforms('bukkit')
-        .modules('core', 'cloud', 'hologram', 'placeholders', 'sidebar', 'healthindicator', 'npc', 'signs')
+        .modules('core', 'cloud', 'hologram', 'placeholders', 'sidebar', 'healthindicator', 'npc', 'signs', 'economy')
         .version(SCREAMING_LIB_VERSION)
         .simpleInventories(SIMPLE_INVENTORIES_VERSION)
         .universalModules('lang')
@@ -12,7 +12,6 @@ ScreamingLibBuilder()
 dependencies {
     /* PROVIDED */
     compileOnly paperLegacy(PAPER_VERSION)
-    compileOnly vault(VAULT_VERSION)
     compileOnly 'com.onarandombox.multiversecore:Multiverse-Core:' + MULTIVERSE_VERSION
     compileOnly('me.ebonjaeger:perworldinventory-kt:' + PERWORLDINVENTORY_KT_VERSION)  {
         exclude group: '*', module: '*'

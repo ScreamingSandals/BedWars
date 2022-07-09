@@ -17,31 +17,26 @@
  * along with Screaming BedWars. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.screamingsandals.bedwars.econ;
+package org.screamingsandals.bedwars.utils;
 
+import lombok.experimental.UtilityClass;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.lang.LangKeys;
+import org.screamingsandals.lib.economy.EconomyManager;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.player.PlayerWrapper;
 
-public abstract class Economy {
+@UtilityClass
+public class EconomyUtils {
     public void deposit(PlayerWrapper player, double coins) {
         if (MainConfig.getInstance().node("economy", "enabled").getBoolean()) {
-            if (deposit0(player, coins)) {
+            if (EconomyManager.depositPlayer(player, coins).isSuccessful()) {
                 Message.of(LangKeys.IN_GAME_ECONOMY_DEPOSITED)
                         .defaultPrefix()
                         .placeholder("coins", coins)
-                        .placeholder("currency", currencyName())
+                        .placeholder("currency", EconomyManager.getCurrencyNameSingular())
                         .send(player);
             }
         }
     }
-
-    // implementations
-
-    protected abstract boolean deposit0(PlayerWrapper player, double coins);
-
-    public abstract boolean withdraw(PlayerWrapper player, double coins);
-
-    public abstract String currencyName();
 }

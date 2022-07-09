@@ -36,9 +36,7 @@ import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.commands.BedWarsPermission;
 import org.screamingsandals.bedwars.commands.admin.JoinTeamCommand;
 import org.screamingsandals.bedwars.config.MainConfig;
-import org.screamingsandals.bedwars.econ.Economy;
-import org.screamingsandals.bedwars.econ.EconomyProvider;
-import org.screamingsandals.bedwars.econ.VaultEconomy;
+import org.screamingsandals.bedwars.utils.EconomyUtils;
 import org.screamingsandals.bedwars.entities.EntitiesManagerImpl;
 import org.screamingsandals.bedwars.events.PlayerDeathMessageSendEventImpl;
 import org.screamingsandals.bedwars.events.PlayerKilledEventImpl;
@@ -69,6 +67,7 @@ import org.screamingsandals.lib.event.entity.*;
 import org.screamingsandals.lib.event.player.*;
 import org.screamingsandals.lib.item.builder.ItemFactory;
 import org.screamingsandals.lib.lang.Message;
+import org.screamingsandals.lib.placeholders.PlaceholderManager;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.spectator.Color;
 import org.screamingsandals.lib.spectator.Component;
@@ -78,8 +77,6 @@ import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
 import org.screamingsandals.lib.tasker.task.TaskerTask;
 import org.screamingsandals.lib.utils.annotations.Service;
-import org.screamingsandals.lib.utils.annotations.methods.OnPostEnable;
-import org.screamingsandals.lib.utils.annotations.parameters.ProvidedBy;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -89,12 +86,6 @@ import java.util.stream.Collectors;
 @Service
 public class PlayerListener {
     private final List<PlayerWrapper> explosionAffectedPlayers = new ArrayList<>();
-    private Economy economy = null;
-
-    @OnPostEnable
-    public void enable(@ProvidedBy(EconomyProvider.class) Economy economy) {
-        this.economy = economy;
-    }
 
     @OnEvent(priority = org.screamingsandals.lib.event.EventPriority.HIGHEST)
     public void onPlayerDeath(SPlayerDeathEvent event) {
@@ -234,12 +225,10 @@ public class PlayerListener {
                                     (float) MainConfig.getInstance().node("sounds", "player_kill", "volume").getDouble(),
                                     (float) MainConfig.getInstance().node("sounds", "player_kill", "pitch").getDouble()
                             ));
-                            if (economy != null) {
-                                if (!isBed) {
-                                    economy.deposit(killer, MainConfig.getInstance().node("economy", "reward", "final-kill").getInt());
-                                } else {
-                                    economy.deposit(killer, BedWarsPlugin.getKillReward());
-                                }
+                            if (!isBed) {
+                                EconomyUtils.deposit(killer, game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.ECONOMY_REWARD_FINAL_KILL, 0.0));
+                            } else {
+                                EconomyUtils.deposit(killer, game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.ECONOMY_REWARD_KILL, 0.0));
                             }
                         }
                     }
@@ -1206,13 +1195,12 @@ public class PlayerListener {
             format = format.replace("%displayName%", displayName.toLegacy());
             format = format.replace("%playerListName%", playerListName == null ? "" : playerListName.toLegacy());
 
-            if (economy != null && economy instanceof VaultEconomy) {
-                format = format.replace("%prefix%", ((VaultEconomy) economy).getPrefix(player));
-                format = format.replace("%suffix%", ((VaultEconomy) economy).getSuffix(player));
-            }
-
-            format = format.replace("%prefix%", "");
-            format = format.replace("%suffix%", "");
+            var vaultPrefix = PlaceholderManager.resolveString(player, "%vault_prefix%");
+            var vaultSuffix = PlaceholderManager.resolveString(player, "%vault_suffix%");
+            format = format.replace("%prefix%", vaultPrefix.equals("%vault_prefix%") ? "" : vaultPrefix); // deprecated, should be migrated
+            format = format.replace("%suffix%", vaultSuffix.equals("%vault_prefix%") ? "" : vaultSuffix); // deprecated, should be migrated
+            format = format.replace("%vault_prefix%", vaultPrefix.equals("%vault_prefix%") ? "" : vaultPrefix);
+            format = format.replace("%vault_suffix%", vaultSuffix.equals("%vault_prefix%") ? "" : vaultSuffix);
 
             format = MiscUtils.translateAlternateColorCodes('&', format);
 

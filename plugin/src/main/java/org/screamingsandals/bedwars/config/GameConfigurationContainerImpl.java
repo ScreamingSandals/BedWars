@@ -92,6 +92,12 @@ public class GameConfigurationContainerImpl extends ConfigurationContainerImpl i
         register(DEFAULT_SHOP_FILE);
         register(PREFIX, "prefix");
         register(ARENA_TIME);
+        register(ECONOMY_ENABLED, "economy", "enabled");
+        register(ECONOMY_RETURN_FEE, "economy", "return-fee");
+        register(ECONOMY_REWARD_KILL, "economy", "reward", "kill");
+        register(ECONOMY_REWARD_WIN, "economy", "reward", "win");
+        register(ECONOMY_REWARD_FINAL_KILL, "economy", "reward", "final-kill");
+        register(ECONOMY_REWARD_BED_DESTROY, "economy", "reward", "bed-destroy");
     }
 
     protected void migrateOld(ConfigurationNode configurationNode) {

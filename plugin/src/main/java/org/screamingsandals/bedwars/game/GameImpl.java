@@ -45,7 +45,7 @@ import org.screamingsandals.bedwars.commands.StatsCommand;
 import org.screamingsandals.bedwars.config.GameConfigurationContainerImpl;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.config.RecordSave;
-import org.screamingsandals.bedwars.econ.EconomyProvider;
+import org.screamingsandals.bedwars.utils.EconomyUtils;
 import org.screamingsandals.bedwars.entities.EntitiesManagerImpl;
 import org.screamingsandals.bedwars.events.*;
 import org.screamingsandals.bedwars.game.target.*;
@@ -72,6 +72,7 @@ import org.screamingsandals.lib.block.state.BlockStateHolder;
 import org.screamingsandals.lib.block.state.SignHolder;
 import org.screamingsandals.lib.container.Container;
 import org.screamingsandals.lib.container.type.InventoryTypeHolder;
+import org.screamingsandals.lib.economy.EconomyManager;
 import org.screamingsandals.lib.entity.EntityBasic;
 import org.screamingsandals.lib.entity.EntityItem;
 import org.screamingsandals.lib.entity.EntityLiving;
@@ -970,9 +971,7 @@ public class GameImpl implements Game {
                             statistic.addDestroyedBeds(1);
                             statistic.addScore(MainConfig.getInstance().node("statistics", "scores", "bed-destroy").getInt(25));
                         }
-                        if (EconomyProvider.getEconomy() != null) {
-                            EconomyProvider.getEconomy().deposit(destroyer, MainConfig.getInstance().node("economy", "reward", "bed-destroy").getInt());
-                        }
+                        EconomyUtils.deposit(destroyer, configurationContainer.getOrDefault(GameConfigurationContainer.ECONOMY_REWARD_BED_DESTROY, 0.0));
 
                         dispatchRewardCommands("player-destroy-bed", destroyer,
                                 MainConfig.getInstance().node("statistics", "scores", "bed-destroy").getInt(25));
@@ -1479,13 +1478,12 @@ public class GameImpl implements Game {
             }
         }
 
-        final var economy = EconomyProvider.getEconomy();
-        if (MainConfig.getInstance().node("economy", "enabled").getBoolean(true) && economy != null) {
+        if (MainConfig.getInstance().node("economy", "enabled").getBoolean(true) && EconomyManager.isAvailable()) {
             if (fee > 0) {
-                if (!economy.withdraw(player, fee)) {
+                if (!EconomyManager.withdrawPlayer(player, fee).isSuccessful()) {
                     Message.of(LangKeys.IN_GAME_ECONOMY_MISSING_COINS)
                             .placeholder("coins", fee)
-                            .placeholder("currency", economy.currencyName())
+                            .placeholder("currency", EconomyManager.getCurrencyNameSingular())
                             .send(player);
                     return;
                 }
@@ -1506,10 +1504,9 @@ public class GameImpl implements Game {
             return;
         }
         if (player.isInGame() && player.getGame() == this) {
-            final var economy = EconomyProvider.getEconomy();
-            if (MainConfig.getInstance().node("economy", "enabled").getBoolean(true) && economy != null) {
+            if (MainConfig.getInstance().node("economy", "enabled").getBoolean(true) && EconomyManager.isAvailable()) {
                 if (fee > 0 && MainConfig.getInstance().node("economy", "return-fee").getBoolean(true)) {
-                    economy.deposit(player, fee);
+                    EconomyUtils.deposit(player, fee);
                 }
             }
             player.changeGame(null);
@@ -2167,9 +2164,7 @@ public class GameImpl implements Game {
                                                 .placeholder("time", time)
                                                 .times(TitleUtils.defaultTimes())
                                                 .title(player);
-                                        if (EconomyProvider.getEconomy() != null) {
-                                            EconomyProvider.getEconomy().deposit(player, BedWarsPlugin.getWinReward());
-                                        }
+                                        EconomyUtils.deposit(player, configurationContainer.getOrDefault(GameConfigurationContainer.ECONOMY_REWARD_WIN, 0.0));
 
                                         SpawnEffects.spawnEffect(this, player, "game-effects.end");
 

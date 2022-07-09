@@ -25,7 +25,6 @@ import org.screamingsandals.bedwars.commands.CommandService;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.config.RecordSave;
 import org.screamingsandals.bedwars.database.DatabaseManager;
-import org.screamingsandals.bedwars.econ.EconomyProvider;
 import org.screamingsandals.bedwars.entities.EntitiesManagerImpl;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.GameManagerImpl;
@@ -40,7 +39,6 @@ import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.listener.*;
 import org.screamingsandals.bedwars.placeholderapi.BedwarsExpansion;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
-import org.screamingsandals.bedwars.premium.PremiumBedwars;
 import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.bedwars.tab.TabManager;
 import org.screamingsandals.bedwars.utils.*;
@@ -48,6 +46,7 @@ import org.screamingsandals.bedwars.variants.VariantManagerImpl;
 import org.screamingsandals.lib.CustomPayload;
 import org.screamingsandals.lib.Server;
 import org.screamingsandals.lib.block.BlockTypeHolder;
+import org.screamingsandals.lib.economy.EconomyManager;
 import org.screamingsandals.lib.healthindicator.HealthIndicatorManager;
 import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.plugin.PluginContainer;
@@ -90,7 +89,7 @@ import java.util.Objects;
 })
 @Init(
         services = {
-                EconomyProvider.class,
+                EconomyManager.class,
                 CommandService.class,
                 VariantManagerImpl.class,
                 GameManagerImpl.class,
@@ -143,20 +142,8 @@ public class BedWarsPlugin extends PluginContainer implements BedwarsAPI {
         return instance;
     }
 
-    public static String getVersion() {
-        return instance.version;
-    }
-
     public static boolean isLegacy() {
         return instance.isLegacy;
-    }
-
-    public static int getKillReward() {
-        return MainConfig.getInstance().node("economy", "reward", "kill").getInt();
-    }
-
-    public static int getWinReward() {
-        return MainConfig.getInstance().node("economy", "reward", "win").getInt();
     }
 
     public static boolean isFarmBlock(BlockTypeHolder mat) {
@@ -277,8 +264,6 @@ public class BedWarsPlugin extends PluginContainer implements BedwarsAPI {
         Debug.init(getPluginDescription().getName());
         Debug.setDebug(MainConfig.getInstance().node("debug").getBoolean());
 
-        PremiumBedwars.init();
-
         MainConfig.getInstance().node("resources").childrenMap().forEach((spawnerK, node) -> {
             var type = ItemSpawnerTypeImpl.deserialize(spawnerK.toString(), node);
             if (type != null) {
@@ -307,8 +292,7 @@ public class BedWarsPlugin extends PluginContainer implements BedwarsAPI {
                 .append(
                         Component.text("Bed", Color.RED),
                         Component.text("Wars +  ", Color.WHITE),
-                        Component.text("Version: " + version + " ",Color.GOLD),
-                        Component.text(PremiumBedwars.isPremium() ? "PREMIUM" : "FREE",PremiumBedwars.isPremium() ? Color.AQUA : Color.GREEN)
+                        Component.text("Version: " + version + " ", Color.GOLD)
                 )
         );
 

@@ -89,4 +89,11 @@ public interface GameConfigurationContainer extends ConfigurationContainer {
     ConfigurationKey<Boolean> TARGET_BLOCK_RESPAWN_ANCHOR_ENABLE_DECREASE = ConfigurationKey.of(Boolean.class, "target-block", "respawn-anchor", "enable-decrease");
     ConfigurationKey<Boolean> TARGET_BLOCK_CAKE_DESTROY_BY_EATING = ConfigurationKey.of(Boolean.class, "target-block", "cake", "destroy-by-eating");
     ConfigurationKey<Boolean> TARGET_BLOCK_ALLOW_DESTROYING_WITH_EXPLOSIONS = ConfigurationKey.of(Boolean.class, "target-block", "allow-destroying-with-explosions");
+
+    ConfigurationKey<Boolean> ECONOMY_ENABLED = ConfigurationKey.of(Boolean.class, "economy", "enabled");
+    ConfigurationKey<Boolean> ECONOMY_RETURN_FEE = ConfigurationKey.of(Boolean.class, "economy", "return-fee");
+    ConfigurationKey<Double> ECONOMY_REWARD_KILL = ConfigurationKey.of(Double.class, "economy", "reward", "kill");
+    ConfigurationKey<Double> ECONOMY_REWARD_WIN = ConfigurationKey.of(Double.class, "economy", "reward", "win");
+    ConfigurationKey<Double> ECONOMY_REWARD_FINAL_KILL = ConfigurationKey.of(Double.class, "economy", "reward", "final-kill");
+    ConfigurationKey<Double> ECONOMY_REWARD_BED_DESTROY = ConfigurationKey.of(Double.class, "economy", "reward", "bed-destroy");
 }
