@@ -19,7 +19,9 @@
 
 package org.screamingsandals.bedwars.lang;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
 import java.util.HashMap;
@@ -27,8 +29,10 @@ import java.util.Map;
 
 @Data
 @ConfigSerializable
+@AllArgsConstructor
+@NoArgsConstructor
 public class LanguageDefinition {
-    private final String branch;
-    private final String version;
-    private final Map<String, String> languages = new HashMap<>();
+    private String branch;
+    private String version;
+    private Map<String, String> languages = new HashMap<>();
 }

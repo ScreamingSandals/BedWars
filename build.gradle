@@ -37,6 +37,7 @@ subprojects {
             useApiConfigurationInsteadOfImplementation(true)
 
             additionalContent {
+                module('cloud')
                 module('hologram')
                 module('placeholders')
                 module('sidebar')
