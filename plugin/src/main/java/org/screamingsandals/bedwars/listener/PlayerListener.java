@@ -96,7 +96,7 @@ public class PlayerListener {
             final var victimTeam = game.getPlayerTeam(gVictim);
             final var victimColor = victimTeam.getColor().getTextColor();
             final var drops = List.copyOf(event.drops());
-            int respawnTime = MainConfig.getInstance().node("respawn-cooldown", "time").getInt(5);
+            int respawnTime = game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.RESPAWN_COOLDOWN_TIME, 5);
 
             if (game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.KEEP_ARMOR_ON_DEATH, false)) {
                 final var armorContents = victim.getPlayerInventory().getArmorContents();
@@ -189,11 +189,11 @@ public class PlayerListener {
                     if (PlayerStatisticManager.isEnabled()) {
                         var statistic = PlayerStatisticManager.getInstance().getStatistic(victim);
                         statistic.addLoses(1);
-                        statistic.addScore(MainConfig.getInstance().node("statistics", "scores", "lose").getInt(0));
+                        statistic.addScore(game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.STATISTICS_SCORES_LOSE, 0));
                     }
                 }
 
-                boolean onlyOnBedDestroy = MainConfig.getInstance().node("statistics", "bed-destroyed-kills").getBoolean();
+                boolean onlyOnBedDestroy = game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.STATISTICS_BED_DESTROYED_KILLS, false);
 
                 var killer = event.killer();
                 if (killer != null && PlayerManagerImpl.getInstance().isPlayerInGame(killer)) {
@@ -201,11 +201,11 @@ public class PlayerListener {
                     if (gKiller.getGame() == game) {
                         if (!onlyOnBedDestroy || !isBed) {
                             game.dispatchRewardCommands("player-kill", killer,
-                                    MainConfig.getInstance().node("statistics", "scores", "kill").getInt(10));
+                                    game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.STATISTICS_SCORES_KILL, 10));
                         }
                         if (!isBed) {
                             game.dispatchRewardCommands("player-final-kill", killer,
-                                    MainConfig.getInstance().node("statistics", "scores", "final-kill").getInt(10));
+                                    game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.STATISTICS_SCORES_FINAL_KILL, 10));
                         }
                         if (team.isDead()) {
                             SpawnEffects.spawnEffect(game, gVictim, "game-effects.teamkill");
@@ -241,7 +241,7 @@ public class PlayerListener {
 
                     if (!onlyOnBedDestroy || !isBed) {
                         diePlayer.addDeaths(1);
-                        diePlayer.addScore(MainConfig.getInstance().node("statistics", "scores", "die").getInt(0));
+                        diePlayer.addScore(game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.STATISTICS_SCORES_DIE, 0));
                     }
 
                     if (killer != null) {
@@ -249,21 +249,21 @@ public class PlayerListener {
                             killerPlayer = PlayerStatisticManager.getInstance().getStatistic(killer);
                             if (killerPlayer != null) {
                                 killerPlayer.addKills(1);
-                                killerPlayer.addScore(MainConfig.getInstance().node("statistics", "scores", "kill").getInt(10));
+                                killerPlayer.addScore(game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.STATISTICS_SCORES_KILL, 10));
 
                                 if (!isBed) {
-                                    killerPlayer.addScore(MainConfig.getInstance().node("statistics", "scores", "final-kill").getInt());
+                                    killerPlayer.addScore(game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.STATISTICS_SCORES_FINAL_KILL, 10));
                                 }
                             }
                         }
                     }
                 }
             }
-            if (!Server.isVersion(1, 15) && !MainConfig.getInstance().node("allow-fake-death").getBoolean()) {
+            if (!Server.isVersion(1, 15) && !game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.ALLOW_FAKE_DEATH, false)) {
                 Debug.info(victim.getName() + " is going to be respawned via spigot api");
                 PlayerUtils.respawn(victim, 3L);
             }
-            if (MainConfig.getInstance().node("respawn-cooldown", "enabled").getBoolean()
+            if (game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.RESPAWN_COOLDOWN_ENABLED, false)
                     && victimTeam.isAlive()
                     && !gVictim.isSpectator()) {
                 game.makeSpectator(gVictim, false);
@@ -396,7 +396,7 @@ public class PlayerListener {
                 var respawnEvent = new PlayerRespawnedEventImpl(game, gPlayer);
                 EventManager.fire(respawnEvent);
 
-                if (MainConfig.getInstance().node("respawn", "protection-enabled").getBoolean(true)) {
+                if (game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.RESPAWN_PROTECTION_ENABLED, true)) {
                     game.addProtectedPlayer(gPlayer).runProtection();
                 }
 
@@ -612,7 +612,7 @@ public class PlayerListener {
                 Debug.info(player.getName() + " tried to eat while eating is not allowed");
             }
 
-            if (game.getStatus() == GameStatus.RUNNING && MainConfig.getInstance().node("disable-hunger").getBoolean()) {
+            if (game.getStatus() == GameStatus.RUNNING && game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.DISABLE_HUNGER, false)) {
                 event.cancelled(true);
                 Debug.info(player.getName() + " tried to eat while eating is not allowed");
             }
@@ -711,33 +711,33 @@ public class PlayerListener {
                     gPlayer.setHealth(0.5);
                 } else if (event.damageCause().is("fall")) {
                     if (explosionAffectedPlayers.contains(player)) {
-                        event.damage(MainConfig.getInstance().node("tnt-jump", "fall-damage").getDouble(0.75));
+                        event.damage(game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.TNT_JUMP_FALL_DAMAGE, 0.75));
                         explosionAffectedPlayers.remove(player);
                     }
                 } else if (event instanceof SEntityDamageByEntityEvent) {
                     var edbee = (SEntityDamageByEntityEvent) event;
 
-                    if (MainConfig.getInstance().node("tnt-jump", "enabled").getBoolean() && edbee.damager().getEntityType().is("tnt")) {
+                    if (game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.TNT_JUMP_ENABLED, false) && edbee.damager().getEntityType().is("tnt")) {
                         final var tnt = edbee.damager();
                         final var tntSource = tnt.as(TNTPrimed.class).getSource();
                         if (tntSource instanceof Player) {
                             final var playerSource = (Player) tntSource;
                             if (playerSource.equals(player.as(Player.class))) {
-                                event.damage(MainConfig.getInstance().node("tnt-jump", "source-damage").getDouble(0.5));
+                                event.damage(game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.TNT_JUMP_SOURCE_DAMAGE, 0.5));
                                 var tntVector = tnt.getLocation().asVector();
                                 var vector = player
                                         .getLocation()
                                         .clone()
-                                        .add(0, MainConfig.getInstance().node("tnt-jump", "acceleration-y").getInt(), 0)
+                                        .add(0, game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.TNT_JUMP_ACCELERATION_Y, 0), 0)
                                         .asVector()
                                         .add(-tntVector.getX(), -tntVector.getY(), -tntVector.getZ()).normalize();
 
-                                vector.setY(vector.getY() / MainConfig.getInstance().node("tnt-jump", "reduce-y").getDouble());
-                                vector.multiply(MainConfig.getInstance().node("tnt-jump", "launch-multiplier").getInt());
+                                vector.setY(vector.getY() / game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.TNT_JUMP_REDUCE_Y, 0.0));
+                                vector.multiply(game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.TNT_JUMP_LAUNCH_MULTIPLIER, 0));
                                 player.setVelocity(vector);
                                 explosionAffectedPlayers.add(player);
                             }
-                            if (!MainConfig.getInstance().node("tnt-jump", "team-damage").getBoolean(true)) {
+                            if (!game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.TNT_JUMP_TEAM_DAMAGE, true)) {
                                 if (game.getPlayerTeam(gPlayer).equals(game.getPlayerTeam(PlayerManagerImpl.getInstance().getPlayer(playerSource.getUniqueId()).orElseThrow()))) {
                                     event.cancelled(true);
                                 }
@@ -757,7 +757,7 @@ public class PlayerListener {
                     } else if (edbee.damager() instanceof EntityProjectile) {
                         var projectile = (EntityProjectile) edbee.damager();
                         if (projectile.getEntityType().is("minecraft:fireball", "minecraft:small_fireball", "minecraft:dragon_fireball") && game.getStatus() == GameStatus.RUNNING) {
-                            final double damage = MainConfig.getInstance().node("specials", "throwable-fireball", "damage").getDouble();
+                            final double damage = MainConfig.getInstance().node("specials", "throwable-fireball", "damage").getDouble(); // TODO: special items may have custom configuration
                             event.damage(damage);
                         } else if (projectile.getShooter() instanceof PlayerWrapper) {
                             var damager = projectile.getShooter().as(PlayerWrapper.class);
@@ -772,7 +772,7 @@ public class PlayerListener {
                 }
 
                 // TODO: check this, there was final damage before
-                if (MainConfig.getInstance().node("allow-fake-death").getBoolean() && !event.cancelled() && (player.getHealth() - event.damage() <= 0)) {
+                if (game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.ALLOW_FAKE_DEATH, false) && !event.cancelled() && (player.getHealth() - event.damage() <= 0)) {
                     event.cancelled(true);
                     Debug.info(player.getName() + " is going to be respawned via FakeDeath");
                     FakeDeath.die(gPlayer);
@@ -821,10 +821,13 @@ public class PlayerListener {
         }
 
         var player = event.player();
-        if (PlayerManagerImpl.getInstance().isPlayerInGame(player) && !player.as(BedWarsPlayer.class).isSpectator()
-                && !player.hasPermission(BedWarsPermission.BYPASS_FLIGHT_PERMISSION.asPermission()) && MainConfig.getInstance().node("disable-flight").getBoolean()) {
-            event.cancelled(true);
-            Debug.info(player.getName() + " tried to fly, canceled");
+        if (PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
+            var bwPlayer = player.as(BedWarsPlayer.class);
+            if (!bwPlayer.isSpectator() && !player.hasPermission(BedWarsPermission.BYPASS_FLIGHT_PERMISSION.asPermission())
+                    && bwPlayer.getGame().getConfigurationContainer().getOrDefault(GameConfigurationContainer.DISABLE_FLIGHT, false)) {
+                event.cancelled(true);
+                Debug.info(player.getName() + " tried to fly, canceled");
+            }
         }
     }
 
@@ -909,7 +912,7 @@ public class PlayerListener {
                             if (pt.getTarget() instanceof TargetBlockImpl && ((TargetBlockImpl) pt.getTarget()).getTargetBlock().equals(clickedBlock.getLocation())) {
                                 event.cancelled(true);
                             } else {
-                                if (MainConfig.getInstance().node("disableCakeEating").getBoolean(true)) {
+                                if (game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.DISABLE_CAKE_EATING, true)) {
                                     event.cancelled(true);
                                 }
                                 Debug.info(player.getName() + " is eating cake");
@@ -948,7 +951,7 @@ public class PlayerListener {
                                     }
                                 }
                             }
-                        } else if (MainConfig.getInstance().node("disableCakeEating").getBoolean(true)) {
+                        } else if (game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.DISABLE_CAKE_EATING, true)) {
                             event.cancelled(true);
                         }
                     }
@@ -1020,7 +1023,7 @@ public class PlayerListener {
         } else if (event.action() == SPlayerInteractEvent.Action.LEFT_CLICK_BLOCK &&
                 game.getStatus() == GameStatus.RUNNING && !gPlayer.isSpectator()
                 && clickedBlock != null && clickedBlock.getType().isSameType("dragon_egg")
-                && MainConfig.getInstance().node("disableDragonEggTeleport").getBoolean(true)) {
+                && game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.DISABLE_DRAGON_EGG_TELEPORT, true)) {
             event.cancelled(true);
             Debug.info(player.getName() + " interacts with dragon egg");
             var blockBreakEvent = new BlockBreakEvent(clickedBlock.as(Block.class), player.as(Player.class));
@@ -1287,7 +1290,7 @@ public class PlayerListener {
                     }
                     Debug.info(player.getName() + " is doing prohibited move, damaging");
                 }
-            } else if (MainConfig.getInstance().node("preventSpectatorFlyingAway").getBoolean() && gPlayer.isSpectator() && (game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING)) {
+            } else if (game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.PREVENT_SPECTATOR_FROM_FLYING_AWAY, false) && gPlayer.isSpectator() && (game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING)) {
                 if (!ArenaUtils.isInArea(event.newLocation(), game.getPos1(), game.getPos2())) {
                     event.cancelled(true);
                     Debug.info(player.getName() + " is doing prohibited move, cancelling");

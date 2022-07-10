@@ -89,6 +89,12 @@ public class GameConfigurationContainerImpl extends ConfigurationContainerImpl i
         register(USE_TEAM_LETTER_PREFIXES_BEFORE_PLAYER_NAMES, "use-team-letter-prefixes-before-player-names");
         register(USE_CERTAIN_POPULAR_SERVER_TITLES, "use-certain-popular-server-titles");
         register(SHOW_GAME_INFO_ON_START, "show-game-info-on-start");
+        register(DISABLE_HUNGER, "disable-hunger");
+        register(PREVENT_SPECTATOR_FROM_FLYING_AWAY, "prevent-spectator-from-flying-away");
+        register(DISABLE_DRAGON_EGG_TELEPORT, "disable-dragon-egg-teleport");
+        register(DISABLE_CAKE_EATING, "disable-cake-eating");
+        register(DISABLE_FLIGHT, "disable-flight");
+        register(ALLOW_FAKE_DEATH, "allow-fake-death");
         register(DEFAULT_SHOP_FILE);
         register(PREFIX, "prefix");
         register(ARENA_TIME);
@@ -98,6 +104,26 @@ public class GameConfigurationContainerImpl extends ConfigurationContainerImpl i
         register(ECONOMY_REWARD_WIN, "economy", "reward", "win");
         register(ECONOMY_REWARD_FINAL_KILL, "economy", "reward", "final-kill");
         register(ECONOMY_REWARD_BED_DESTROY, "economy", "reward", "bed-destroy");
+        register(TNT_JUMP_ENABLED, "tnt-jump", "enabled");
+        register(TNT_JUMP_SOURCE_DAMAGE, "tnt-jump", "source-damage");
+        register(TNT_JUMP_TEAM_DAMAGE, "tnt-jump", "team-damage");
+        register(TNT_JUMP_LAUNCH_MULTIPLIER, "tnt-jump", "launch-multiplier");
+        register(TNT_JUMP_REDUCE_Y, "tnt-jump", "reduce-y");
+        register(TNT_JUMP_ACCELERATION_Y, "tnt-jump", "acceleration-y");
+        register(TNT_JUMP_FALL_DAMAGE, "tnt-jump", "fall-damage");
+        register(RESPAWN_PROTECTION_ENABLED, "respawn", "protection-enabled");
+        register(RESPAWN_PROTECTION_TIME, "respawn", "protection-time");
+        register(RESPAWN_SHOW_MESSAGES, "respawn", "show-messages");
+        register(RESPAWN_COOLDOWN_ENABLED, "respawn-cooldown", "enabled");
+        register(RESPAWN_COOLDOWN_TIME, "respawn-cooldown", "time");
+        register(STATISTICS_BED_DESTROYED_KILLS, "statistics", "bed-destroyed-kills");
+        register(STATISTICS_SCORES_KILL, "statistics", "scores", "kill");
+        register(STATISTICS_SCORES_FINAL_KILL, "statistics", "scores", "final-kill");
+        register(STATISTICS_SCORES_DIE, "statistics", "scores", "die");
+        register(STATISTICS_SCORES_WIN, "statistics", "scores", "win");
+        register(STATISTICS_SCORES_BED_DESTROY, "statistics", "scores", "bed-destroy");
+        register(STATISTICS_SCORES_LOSE, "statistics", "scores", "lose");
+        register(STATISTICS_SCORES_RECORD, "statistics", "scores", "record");
     }
 
     protected void migrateOld(ConfigurationNode configurationNode) {

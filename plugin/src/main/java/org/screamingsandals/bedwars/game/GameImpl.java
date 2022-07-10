@@ -969,12 +969,12 @@ public class GameImpl implements Game {
                         if (PlayerStatisticManager.isEnabled()) {
                             var statistic = PlayerStatisticManager.getInstance().getStatistic(destroyer);
                             statistic.addDestroyedBeds(1);
-                            statistic.addScore(MainConfig.getInstance().node("statistics", "scores", "bed-destroy").getInt(25));
+                            statistic.addScore(configurationContainer.getOrDefault(GameConfigurationContainer.STATISTICS_SCORES_BED_DESTROY, 25));
                         }
                         EconomyUtils.deposit(destroyer, configurationContainer.getOrDefault(GameConfigurationContainer.ECONOMY_REWARD_BED_DESTROY, 0.0));
 
                         dispatchRewardCommands("player-destroy-bed", destroyer,
-                                MainConfig.getInstance().node("statistics", "scores", "bed-destroy").getInt(25));
+                                configurationContainer.getOrDefault(GameConfigurationContainer.STATISTICS_SCORES_BED_DESTROY, 25));
                     }
                 }
             }
@@ -1695,7 +1695,7 @@ public class GameImpl implements Game {
                     players.forEach(p -> p.showPlayer(gamePlayer));
                 }
 
-                if (MainConfig.getInstance().node("respawn", "protection-enabled").getBoolean(true)) {
+                if (configurationContainer.getOrDefault(GameConfigurationContainer.RESPAWN_PROTECTION_ENABLED, true)) {
                     RespawnProtection respawnProtection = addProtectedPlayer(gamePlayer);
                     respawnProtection.runProtection();
                 }
@@ -2020,7 +2020,7 @@ public class GameImpl implements Game {
                         team.start();
                     }
 
-                    if (Server.isVersion(1, 15) && !MainConfig.getInstance().node("allow-fake-death").getBoolean()) {
+                    if (Server.isVersion(1, 15) && !configurationContainer.getOrDefault(GameConfigurationContainer.ALLOW_FAKE_DEATH, false)) {
                         world.setGameRuleValue(GameRuleHolder.of("doImmediateRespawn"), true);
                     }
                     preparing = false;
@@ -2172,10 +2172,10 @@ public class GameImpl implements Game {
                                             var statistic = PlayerStatisticManager.getInstance()
                                                     .getStatistic(player);
                                             statistic.addWins(1);
-                                            statistic.addScore(MainConfig.getInstance().node("statistics", "scores", "win").getInt(50));
+                                            statistic.addScore(configurationContainer.getOrDefault(GameConfigurationContainer.STATISTICS_SCORES_WIN, 50));
 
                                             if (madeRecord) {
-                                                statistic.addScore(MainConfig.getInstance().node("statistics", "scores", "record").getInt(100));
+                                                statistic.addScore(configurationContainer.getOrDefault(GameConfigurationContainer.STATISTICS_SCORES_RECORD, 100));
                                             }
 
                                             if (StatisticsHolograms.isEnabled()) {
@@ -2937,7 +2937,7 @@ public class GameImpl implements Game {
     }
 
     public RespawnProtection addProtectedPlayer(BedWarsPlayer player) {
-        int time = MainConfig.getInstance().node("respawn", "protection-time").getInt(10);
+        int time = configurationContainer.getOrDefault(GameConfigurationContainer.RESPAWN_PROTECTION_TIME, 10);
 
         var respawnProtection = new RespawnProtection(this, player, time);
         respawnProtectionMap.put(player, respawnProtection);
