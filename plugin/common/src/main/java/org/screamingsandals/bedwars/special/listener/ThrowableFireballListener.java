@@ -19,8 +19,6 @@
 
 package org.screamingsandals.bedwars.special.listener;
 
-import org.screamingsandals.bedwars.api.special.ThrowableFireball;
-import org.screamingsandals.bedwars.entities.EntitiesManagerImpl;
 import org.screamingsandals.bedwars.events.ApplyPropertyToBoughtItemEventImpl;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;

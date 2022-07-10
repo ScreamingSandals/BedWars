@@ -1,6 +1,7 @@
 pluginManagement {
     repositories {
         mavenCentral()
+        mavenLocal()
         gradlePluginPortal()
         maven {
             url = "https://repo.screamingsandals.org/public/"
@@ -16,3 +17,7 @@ include(':BedWars-NMS')
 project(':BedWars-NMS').projectDir = file('nms')
 include(':BedWars')
 project(':BedWars').projectDir = file('plugin')
+include(':BedWars-common')
+project(':BedWars-common').projectDir = file('plugin')
+include(':BedWars-bukkit')
+project(':BedWars-bukkit').projectDir = file('plugin')

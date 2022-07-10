@@ -24,7 +24,6 @@ import org.screamingsandals.bedwars.api.boss.XPBar;
 import org.screamingsandals.bedwars.api.player.BWPlayer;
 import org.screamingsandals.bedwars.lib.nms.entity.PlayerUtils;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
-import org.screamingsandals.lib.player.PlayerWrapper;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -19,8 +19,6 @@
 
 package org.screamingsandals.bedwars.special.listener;
 
-import org.screamingsandals.bedwars.api.player.BWPlayer;
-import org.screamingsandals.bedwars.api.special.WarpPowder;
 import org.screamingsandals.bedwars.utils.ItemUtils;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.events.ApplyPropertyToBoughtItemEventImpl;
@@ -30,7 +28,6 @@ import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.bedwars.special.WarpPowderImpl;
 import org.screamingsandals.bedwars.utils.DelayFactoryImpl;
 import org.screamingsandals.bedwars.utils.MiscUtils;
-import org.screamingsandals.lib.entity.EntityItem;
 import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.event.entity.SEntityDamageEvent;
 import org.screamingsandals.lib.event.player.SPlayerDropItemEvent;

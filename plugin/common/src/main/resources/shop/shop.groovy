@@ -1,3 +1,4 @@
+package shop
 /*
  * Copyright (C) 2022 ScreamingSandals
  *

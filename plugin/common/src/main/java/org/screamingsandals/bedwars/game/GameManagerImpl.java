@@ -21,9 +21,7 @@ package org.screamingsandals.bedwars.game;
 
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
-import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.api.game.GameManager;
-import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.bedwars.variants.VariantManagerImpl;
 import org.screamingsandals.lib.plugin.ServiceManager;
