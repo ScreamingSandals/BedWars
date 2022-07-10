@@ -90,6 +90,7 @@ import java.util.Objects;
 @Init(
         services = {
                 EconomyManager.class,
+                PlatformService.class,
                 CommandService.class,
                 VariantManagerImpl.class,
                 GameManagerImpl.class,
@@ -111,7 +112,6 @@ import java.util.Objects;
                 BedwarsExpansion.class,
                 SidebarManager.class,
                 HealthIndicatorManager.class,
-                BungeeMotdListener.class,
                 WorldListener.class,
                 VillagerListener.class,
                 PlayerListener.class,
@@ -125,10 +125,6 @@ import java.util.Objects;
                 "org.screamingsandals.bedwars.lobby"
         }
 )
-@Init(platforms = {PlatformType.BUKKIT}, services = {
-        PerWorldInventoryCompatibilityFix.class,
-        BukkitBStatsMetrics.class
-})
 public class BedWarsPlugin extends PluginContainer implements BedwarsAPI {
     private static BedWarsPlugin instance;
 

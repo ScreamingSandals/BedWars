@@ -19,11 +19,9 @@
 
 package org.screamingsandals.bedwars.lang;
 
-import com.google.gson.Gson;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import org.apache.commons.lang.LocaleUtils;
 import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.lib.lang.Lang;
@@ -73,7 +71,7 @@ public class BedWarsLangService extends LangService {
         // TODO: Multi language + Language updater
         Locale locale;
         try {
-            locale = LocaleUtils.toLocale(mainConfig.node("locale").getString("en_US").replace("-", "_"));
+            locale = Locale.forLanguageTag(mainConfig.node("locale").getString("en_US").replace("_", "-"));
         } catch (IllegalArgumentException ex) {
             logger.error("Invalid locale specified in config, falling back to en_US!", ex);
             locale = Locale.US;
@@ -85,7 +83,11 @@ public class BedWarsLangService extends LangService {
 
         final var langDefinitionResource = BedWarsLangService.class.getResourceAsStream("/language_definition.json");
         if (langDefinitionResource != null) {
-            internalLanguageDefinition = new Gson().fromJson(new InputStreamReader(langDefinitionResource), LanguageDefinition.class);
+            internalLanguageDefinition = GsonConfigurationLoader.builder()
+                    .source(() -> new BufferedReader(new InputStreamReader(langDefinitionResource)))
+                    .build()
+                    .load()
+                    .get(LanguageDefinition.class);
         }
 
         if (internalLanguageDefinition == null) {

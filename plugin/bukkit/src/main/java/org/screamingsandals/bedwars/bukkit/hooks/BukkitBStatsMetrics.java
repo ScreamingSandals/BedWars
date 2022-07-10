@@ -17,7 +17,7 @@
  * along with Screaming BedWars. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.screamingsandals.bedwars.utils;
+package org.screamingsandals.bedwars.bukkit.hooks;
 
 import lombok.experimental.UtilityClass;
 import org.bstats.bukkit.Metrics;

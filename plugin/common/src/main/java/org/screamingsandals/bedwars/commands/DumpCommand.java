@@ -21,10 +21,6 @@ package org.screamingsandals.bedwars.commands;
 
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonSerializer;
-import lombok.Data;
 import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.VersionInfo;
 import org.screamingsandals.bedwars.api.Team;
@@ -39,6 +35,7 @@ import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.variants.VariantManagerImpl;
 import org.screamingsandals.lib.Server;
+import org.screamingsandals.lib.configurate.SLibSerializers;
 import org.screamingsandals.lib.plugin.PluginManager;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
 import org.screamingsandals.lib.spectator.Color;
@@ -47,14 +44,13 @@ import org.screamingsandals.lib.spectator.event.ClickEvent;
 import org.screamingsandals.lib.spectator.event.HoverEvent;
 import org.screamingsandals.lib.utils.ConfigurateUtils;
 import org.screamingsandals.lib.utils.annotations.Service;
-import org.screamingsandals.lib.world.LocationHolder;
-import org.screamingsandals.lib.world.WorldHolder;
+import org.spongepowered.configurate.BasicConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
+import org.spongepowered.configurate.gson.GsonConfigurationLoader;
 import org.spongepowered.configurate.yaml.NodeStyle;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.net.URI;
@@ -84,26 +80,17 @@ public class DumpCommand extends BaseCommand {
                                 try {
                                     var client = HttpClient.newHttpClient();
 
-                                    var gson = new GsonBuilder()
-                                            .registerTypeAdapter(LocationHolder.class, (JsonSerializer<LocationHolder>) (location, type, context) ->
-                                                    context.serialize(Map.of(
-                                                            "x", location.getX(),
-                                                            "y", location.getY(),
-                                                            "z", location.getZ(),
-                                                            "world", location.getWorld().getName(),
-                                                            "pitch", location.getPitch(),
-                                                            "yaw", location.getYaw()
-                                                    )))
-                                            .registerTypeAdapter(WorldHolder.class, (JsonSerializer<WorldHolder>) (world, type, context) -> context.serialize(world.getName()))
-                                            .registerTypeAdapter(File.class, (JsonSerializer<File>) (file, type, context) -> context.serialize(file.getAbsolutePath()))
-                                            .setPrettyPrinting().create();
+                                    var gsonBuilder = GsonConfigurationLoader.builder()
+                                            .defaultOptions(configurationOptions ->
+                                                    configurationOptions.serializers(SLibSerializers::appendSerializers)
+                                            );
                                     var files = new ArrayList<>();
                                     files.add(Map.of(
                                             "name", "dump.json",
                                             "content", Map.of(
                                                     "format", "text",
                                                     "highlight_language", "json",
-                                                    "value", gson.toJson(Map.of(
+                                                    "value", gsonBuilder.buildAndSaveString(BasicConfigurationNode.root(gsonBuilder.defaultOptions()).set(Map.of(
                                                             "bedwars", Map.of(
                                                                     "version", VersionInfo.VERSION,
                                                                     "build", VersionInfo.BUILD_NUMBER,
@@ -133,20 +120,20 @@ public class DumpCommand extends BaseCommand {
                                                                     "authors", plugin.getAuthors()
                                                             )).collect(Collectors.toList()),
                                                             "variants", VariantManagerImpl.getInstance().getVariants().stream().map(variant ->
-                                                                nullValuesAllowingMap(
-                                                                        "name", variant.getName(),
-                                                                    "configurationContainer", ConfigurateUtils.toMap(variant.getConfigurationContainer().getSaved()),
-                                                                    "defaultItemSpawnerTypesIncluded", variant.isDefaultItemSpawnerTypesIncluded(),
-                                                                    "customSpawners", variant.getCustomSpawnerTypes().stream().map(itemSpawnerType -> nullValuesAllowingMap(
-                                                                            "configKey", itemSpawnerType.getConfigKey(),
-                                                                                "name", itemSpawnerType.getName(),
-                                                                                "translatableKey", itemSpawnerType.getTranslatableKey(),
-                                                                                "spread", itemSpawnerType.getSpread(),
-                                                                                "itemType", itemSpawnerType.getItemType().platformName(),
-                                                                                "color", itemSpawnerType.getColor().toString(),
-                                                                                "interval", itemSpawnerType.getInterval()
-                                                                    )).collect(Collectors.toList())
-                                                                )
+                                                                    nullValuesAllowingMap(
+                                                                            "name", variant.getName(),
+                                                                            "configurationContainer", ConfigurateUtils.toMap(variant.getConfigurationContainer().getSaved()),
+                                                                            "defaultItemSpawnerTypesIncluded", variant.isDefaultItemSpawnerTypesIncluded(),
+                                                                            "customSpawners", variant.getCustomSpawnerTypes().stream().map(itemSpawnerType -> nullValuesAllowingMap(
+                                                                                    "configKey", itemSpawnerType.getConfigKey(),
+                                                                                    "name", itemSpawnerType.getName(),
+                                                                                    "translatableKey", itemSpawnerType.getTranslatableKey(),
+                                                                                    "spread", itemSpawnerType.getSpread(),
+                                                                                    "itemType", itemSpawnerType.getItemType().platformName(),
+                                                                                    "color", itemSpawnerType.getColor().toString(),
+                                                                                    "interval", itemSpawnerType.getInterval()
+                                                                            )).collect(Collectors.toList())
+                                                                    )
                                                             ).collect(Collectors.toList()),
                                                             "games", GameManagerImpl.getInstance().getGames().stream().map(game ->
                                                                     nullValuesAllowingMap(
@@ -200,7 +187,7 @@ public class DumpCommand extends BaseCommand {
                                                                                     "configurationContainer", ConfigurateUtils.toMap(game.getConfigurationContainer().getSaved())
                                                                             )
                                                                     )
-                                                            ).collect(Collectors.toList())))
+                                                            ).collect(Collectors.toList()))))
                                             )
                                     ));
                                     try {
@@ -278,27 +265,31 @@ public class DumpCommand extends BaseCommand {
                                             });
 
                                     client.sendAsync(HttpRequest.newBuilder()
-                                            .uri(URI.create("https://api.paste.gg/v1/pastes"))
-                                            .header("Content-Type", "application/json")
-                                            .POST(HttpRequest.BodyPublishers.ofString(new Gson().toJson(Map.of(
-                                                    "name", "Bedwars dump",
-                                                    "description", "Dump generated by ScreamingBedwars plugin",
-                                                    "visibility", "unlisted",
-                                                    "expires", LocalDateTime.now().plusDays(30).format(DateTimeFormatter.ofPattern("YYYY-MM-dd'T'HH:mm:ss'Z'")),
-                                                    "files", files
-                                            )))).build(), HttpResponse.BodyHandlers.ofString())
+                                                    .uri(URI.create("https://api.paste.gg/v1/pastes"))
+                                                    .header("Content-Type", "application/json")
+                                                    .POST(HttpRequest.BodyPublishers.ofString(gsonBuilder.buildAndSaveString(BasicConfigurationNode.root(gsonBuilder.defaultOptions()).set(Map.of(
+                                                            "name", "Bedwars dump",
+                                                            "description", "Dump generated by ScreamingBedwars plugin",
+                                                            "visibility", "unlisted",
+                                                            "expires", LocalDateTime.now().plusDays(30).format(DateTimeFormatter.ofPattern("YYYY-MM-dd'T'HH:mm:ss'Z'")),
+                                                            "files", files
+                                                    ))))).build(), HttpResponse.BodyHandlers.ofString())
                                             .thenAccept(stringHttpResponse -> {
                                                 if (stringHttpResponse.statusCode() >= 200 && stringHttpResponse.statusCode() <= 299) {
-                                                    var message = gson.fromJson(stringHttpResponse.body(), Message.class);
-                                                    org.screamingsandals.lib.lang.Message.of(LangKeys.DUMP_SUCCESS)
-                                                            .defaultPrefix()
-                                                            .placeholder("dump", Component
-                                                                    .text()
-                                                                    .content("https://paste.gg/" + message.getResult().getId())
-                                                                    .color(Color.GRAY)
-                                                                    .clickEvent(ClickEvent.openUrl("https://paste.gg/" + message.getResult().getId()))
-                                                                    .hoverEvent(HoverEvent.showText(Component.text("Open this link"))))
-                                                            .send(sender);
+                                                    try {
+                                                        var message = gsonBuilder.buildAndLoadString(stringHttpResponse.body());
+                                                        org.screamingsandals.lib.lang.Message.of(LangKeys.DUMP_SUCCESS)
+                                                                .defaultPrefix()
+                                                                .placeholder("dump", Component
+                                                                        .text()
+                                                                        .content("https://paste.gg/" + message.node("result", "id").getString(""))
+                                                                        .color(Color.GRAY)
+                                                                        .clickEvent(ClickEvent.openUrl("https://paste.gg/" + message.node("result", "id").getString("")))
+                                                                        .hoverEvent(HoverEvent.showText(Component.text("Open this link"))))
+                                                                .send(sender);
+                                                    } catch (ConfigurateException e) {
+                                                        throw new RuntimeException(e);
+                                                    }
                                                 } else {
                                                     org.screamingsandals.lib.lang.Message.of(LangKeys.DUMP_FAILED).defaultPrefix().send(sender);
                                                 }
@@ -310,17 +301,6 @@ public class DumpCommand extends BaseCommand {
                             }).start();
                         })
         );
-    }
-
-
-    @Data
-    public static class Message {
-        private Result result;
-    }
-
-    @Data
-    public static class Result {
-        private String id;
     }
 
     public static Map<?, ?> nullValuesAllowingMap(Object... objects) {

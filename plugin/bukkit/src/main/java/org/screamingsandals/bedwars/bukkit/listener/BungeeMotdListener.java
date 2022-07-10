@@ -17,7 +17,7 @@
  * along with Screaming BedWars. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.screamingsandals.bedwars.listener;
+package org.screamingsandals.bedwars.bukkit.listener;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -31,6 +31,7 @@ import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.utils.annotations.methods.OnPostEnable;
 import org.screamingsandals.lib.utils.annotations.methods.ShouldRunControllable;
 
+// TODO: Migrate from Bukkit to Slib and return it back to common module
 @Service
 public class BungeeMotdListener implements Listener {
     @ShouldRunControllable

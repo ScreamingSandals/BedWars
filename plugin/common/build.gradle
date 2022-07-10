@@ -1,36 +1,13 @@
 apply plugin: "com.github.gmazzo.buildconfig"
 
-ScreamingLibBuilder()
-        .platforms('bukkit')
-        .modules('core', 'cloud', 'hologram', 'placeholders', 'sidebar', 'healthindicator', 'npc', 'signs', 'economy')
-        .version(SCREAMING_LIB_VERSION)
-        .simpleInventories(SIMPLE_INVENTORIES_VERSION)
-        .universalModules('lang')
-        .enableAnnotationProcessor()
-        .build()
-
 dependencies {
     /* PROVIDED */
-    compileOnly paperLegacy(PAPER_VERSION)
     compileOnly 'com.onarandombox.multiversecore:Multiverse-Core:' + MULTIVERSE_VERSION
-    compileOnly('me.ebonjaeger:perworldinventory-kt:' + PERWORLDINVENTORY_KT_VERSION)  {
-        exclude group: '*', module: '*'
-    }
-    compileOnly('me.gnat008:perworldinventory:' + PERWORLDINVENTORY_VERSION) {
-        exclude group: '*', module: '*'
-    }
     compileOnly 'com.alessiodp.parties:parties-api:' + PARTIES_VERSION
 
     /* SHADED */
-    implementation project(':BedWars-API')
-    implementation project(':BedWars-NMS')
     implementation 'org.screamingsandals.language.bedwars:BedWarsLanguage:' + (BEDWARS_VERSION =~ /^\d+.\d+/).findAll()?.first() + '-SNAPSHOT'
     implementation 'com.zaxxer:HikariCP:' + HIKARI_VERSION
-    implementation 'org.screamingsandals.lib:cloud-extras:' + SCREAMING_LIB_VERSION
-    implementation bStats(BSTATS_VERSION)
-    implementation 'me.lucko:commodore:' + COMMODORE_VERSION, {
-        exclude group: 'com.mojang', module: 'brigadier'
-    }
 }
 
 buildConfig {
@@ -40,7 +17,4 @@ buildConfig {
     buildConfigField('String', 'NAME', "\"${project.name}\"")
     buildConfigField('String', 'VERSION', "\"${project.version}\"")
     buildConfigField('String', 'BUILD_NUMBER', "\"${System.getenv('BUILD_NUMBER') ?: "custom"}\"")
-}
-repositories {
-    mavenCentral()
 }

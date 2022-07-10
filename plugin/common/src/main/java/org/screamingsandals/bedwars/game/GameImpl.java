@@ -25,6 +25,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
 import org.screamingsandals.bedwars.BedWarsPlugin;
+import org.screamingsandals.bedwars.PlatformService;
 import org.screamingsandals.bedwars.api.ArenaTime;
 import org.screamingsandals.bedwars.api.Team;
 import org.screamingsandals.bedwars.api.boss.StatusBar;
@@ -57,7 +58,6 @@ import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.bedwars.region.BWRegion;
 import org.screamingsandals.bedwars.region.FlatteningRegion;
-import org.screamingsandals.bedwars.region.LegacyRegion;
 import org.screamingsandals.bedwars.sidebar.GameSidebar;
 import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.bedwars.tab.TabManager;
@@ -164,7 +164,7 @@ public class GameImpl implements Game {
     private int calculatedMaxPlayers;
     private TaskerTask task;
     private final List<TeamImpl> teamsInGame = new ArrayList<>();
-    private final BWRegion region = BedWarsPlugin.isLegacy() ? new LegacyRegion() : new FlatteningRegion();
+    private final BWRegion region = BedWarsPlugin.isLegacy() ? PlatformService.getInstance().getLegacyRegion() : new FlatteningRegion();
     private TeamSelectorInventory teamSelectorInventory;
     private StatusBar statusbar;
     private final Map<LocationHolder, Item[]> usedChests = new HashMap<>();
@@ -2020,7 +2020,7 @@ public class GameImpl implements Game {
                         team.start();
                     }
 
-                    if (Server.isVersion(1, 15) && !configurationContainer.getOrDefault(GameConfigurationContainer.ALLOW_FAKE_DEATH, false)) {
+                    if (Server.isVersion(1, 15) && (!PlatformService.getInstance().getFakeDeath().isAvailable() || !configurationContainer.getOrDefault(GameConfigurationContainer.ALLOW_FAKE_DEATH, false))) {
                         world.setGameRuleValue(GameRuleHolder.of("doImmediateRespawn"), true);
                     }
                     preparing = false;

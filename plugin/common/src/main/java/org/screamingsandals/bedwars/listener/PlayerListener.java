@@ -19,16 +19,8 @@
 
 package org.screamingsandals.bedwars.listener;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.TNTPrimed;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.bedwars.BedWarsPlugin;
+import org.screamingsandals.bedwars.PlatformService;
 import org.screamingsandals.bedwars.api.config.GameConfigurationContainer;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.commands.BedWarsPermission;
@@ -45,7 +37,6 @@ import org.screamingsandals.bedwars.game.GameManagerImpl;
 import org.screamingsandals.bedwars.game.target.TargetBlockImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.lib.debug.Debug;
-import org.screamingsandals.bedwars.lib.nms.entity.PlayerUtils;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.bedwars.statistics.PlayerStatisticImpl;
@@ -259,9 +250,9 @@ public class PlayerListener {
                     }
                 }
             }
-            if (!Server.isVersion(1, 15) && !game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.ALLOW_FAKE_DEATH, false)) {
+            if (!Server.isVersion(1, 15) && (!PlatformService.getInstance().getFakeDeath().isAvailable() || !game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.ALLOW_FAKE_DEATH, false))) {
                 Debug.info(victim.getName() + " is going to be respawned via spigot api");
-                PlayerUtils.respawn(victim, 3L);
+                PlatformService.getInstance().respawnPlayer(victim, 3L);
             }
             if (game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.RESPAWN_COOLDOWN_ENABLED, false)
                     && victimTeam.isAlive()
@@ -719,10 +710,9 @@ public class PlayerListener {
 
                     if (game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.TNT_JUMP_ENABLED, false) && edbee.damager().getEntityType().is("tnt")) {
                         final var tnt = edbee.damager();
-                        final var tntSource = tnt.as(TNTPrimed.class).getSource();
-                        if (tntSource instanceof Player) {
-                            final var playerSource = (Player) tntSource;
-                            if (playerSource.equals(player.as(Player.class))) {
+                        final var playerSource = PlatformService.getInstance().getSourceOfTnt(tnt);
+                        if (playerSource != null) {
+                            if (playerSource.equals(player)) {
                                 event.damage(game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.TNT_JUMP_SOURCE_DAMAGE, 0.5));
                                 var tntVector = tnt.getLocation().asVector();
                                 var vector = player
@@ -773,9 +763,12 @@ public class PlayerListener {
 
                 // TODO: check this, there was final damage before
                 if (game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.ALLOW_FAKE_DEATH, false) && !event.cancelled() && (player.getHealth() - event.damage() <= 0)) {
-                    event.cancelled(true);
-                    Debug.info(player.getName() + " is going to be respawned via FakeDeath");
-                    FakeDeath.die(gPlayer);
+                    var fakeDeath = PlatformService.getInstance().getFakeDeath();
+                    if (fakeDeath.isAvailable()) {
+                        event.cancelled(true);
+                        Debug.info(player.getName() + " is going to be respawned via FakeDeath");
+                        fakeDeath.die(gPlayer);
+                    }
                 }
             }
         }
@@ -996,11 +989,11 @@ public class PlayerListener {
                                 if (block.getType().isAir()) {
                                     var originalState = block.getBlockState().orElseThrow();
                                     block.setType(stack.getMaterial().block().orElseThrow());
-                                    var bevent = new BlockPlaceEvent(block.as(Block.class), originalState.as(BlockState.class),
-                                            clickedBlock.as(Block.class), stack.as(ItemStack.class), player.as(Player.class), true); // bruh why are we doing this
-                                    Bukkit.getPluginManager().callEvent(bevent);
+                                    var bEvent = PlatformService.getInstance().fireFakeBlockPlaceEvent(
+                                            block, originalState, clickedBlock, stack, player, true
+                                    );
 
-                                    if (bevent.isCancelled()) {
+                                    if (bEvent.cancelled()) {
                                         originalState.updateBlock(true, false);
                                     } else {
                                         if (!player.getGameMode().is("creative")) {
@@ -1026,12 +1019,11 @@ public class PlayerListener {
                 && game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.DISABLE_DRAGON_EGG_TELEPORT, true)) {
             event.cancelled(true);
             Debug.info(player.getName() + " interacts with dragon egg");
-            var blockBreakEvent = new BlockBreakEvent(clickedBlock.as(Block.class), player.as(Player.class));
-            Bukkit.getPluginManager().callEvent(blockBreakEvent);
-            if (blockBreakEvent.isCancelled()) {
+            var blockBreakEvent = PlatformService.getInstance().fireFakeBlockBreakEvent(clickedBlock, player);
+            if (blockBreakEvent.cancelled()) {
                 return;
             }
-            if (blockBreakEvent.isDropItems()) {
+            if (blockBreakEvent.dropItems()) {
                 clickedBlock.breakNaturally();
             } else {
                 clickedBlock.setType(BlockTypeHolder.air());
@@ -1183,7 +1175,7 @@ public class PlayerListener {
             } else if (spectator) {
                 format = format.replace("%teamcolor%", MiscUtils.toLegacyColorCode(Color.GRAY));
                 format = format.replace("%team%", "SPECTATOR");
-                format = format.replace("%coloredteam%", ChatColor.GRAY + "SPECTATOR");
+                format = format.replace("%coloredteam%",  MiscUtils.toLegacyColorCode(Color.GRAY) + "SPECTATOR");
             } else {
                 format = format.replace("%teamcolor%", MiscUtils.toLegacyColorCode(Color.GRAY));
                 format = format.replace("%team%", "");

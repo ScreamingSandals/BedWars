@@ -20,9 +20,7 @@
 package org.screamingsandals.bedwars.utils;
 
 import lombok.experimental.UtilityClass;
-import org.bukkit.Effect;
-import org.bukkit.Location;
-import org.bukkit.entity.Player;
+import org.screamingsandals.bedwars.PlatformService;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.events.PostSpawnEffectEventImpl;
 import org.screamingsandals.bedwars.events.PreSpawnEffectEventImpl;
@@ -141,8 +139,7 @@ public class SpawnEffects {
         } else if (type.equalsIgnoreCase("Effect")) {
             if (effect.hasChild("value")) {
                 var value = effect.node("value").getString("");
-                var particle = Effect.valueOf(value.toUpperCase());
-                player.as(Player.class).getWorld().playEffect(player.getLocation().as(Location.class), particle, 1);
+                PlatformService.getInstance().spawnEffect(player, player.getLocation(), value);
             }
         } else if (type.equalsIgnoreCase("Firework")) {
             var firework = EntityTypeHolder.of("minecraft:firework_rocket").<EntityFirework>spawn(player.getLocation()).orElseThrow();

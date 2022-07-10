@@ -273,26 +273,22 @@ data:
           - name: "Trap"
             data:
               - sound: ENTITY_SHEEP_AMBIENT
-              # TODO: no bukkit, bukkit is haram
               - effect:
-                  ==: org.bukkit.potion.PotionEffect
-                  effect: 15
+                  effect: blindness
                   amplifier: 2
                   duration: 100
                   ambient: true
                   has-particles: true
                   has-icon: true
               - effect:
-                  ==: org.bukkit.potion.PotionEffect
-                  effect: 18
+                  effect: weakness
                   amplifier: 2
                   duration: 100
                   ambient: true
                   has-particles: true
                   has-icon: true
               - effect:
-                  ==: org.bukkit.potion.PotionEffect
-                  effect: 2
+                  effect: slowness
                   amplifier: 2
                   duration: 100
                   ambient: true

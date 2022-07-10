@@ -18,7 +18,42 @@ if (version.toString().endsWith('-SNAPSHOT')) {
 
 subprojects {
     apply plugin: 'java'
+
+    if (project.name != 'BedWars-API' && project.name != 'BedWars') { // upload only BW and BW-API
+        project.ext.disablePublishingToMaven = true
+    }
+
     apply plugin: 'org.screamingsandals.plugin-builder'
+
+    if (project.name != 'BedWars-NMS') {
+        apply plugin: 'org.screamingsandals.plugin-slib'
+
+        slib {
+            version(SCREAMING_LIB_VERSION)
+
+            multiModulePlatforms('BedWars-%s', 'bukkit')
+            multiModuleUniversalSubproject('BedWars') // custom name
+            multiModuleApiSubproject('BedWars-API', 'org.screamingsandals.bedwars.api.utils.Wrapper')
+            useApiConfigurationInsteadOfImplementation(true)
+
+            additionalContent {
+                module('hologram')
+                module('placeholders')
+                module('sidebar')
+                module('healthindicator')
+                module('npc')
+                module('signs')
+                module('economy')
+
+                lang()
+                singleModule('cloud-extras')
+
+                simpleInventories {
+                    version(SIMPLE_INVENTORIES_VERSION)
+                }
+            }
+        }
+    }
 
     enableShadowPlugin()
 
@@ -29,6 +64,7 @@ subprojects {
 
     repositories {
         mavenLocal()
+        mavenCentral()
         maven { url 'https://repo.extendedclip.com/content/repositories/placeholderapi/'  }
         maven { url 'https://repo.onarandombox.com/content/groups/public'  }
         maven { url 'https://ci.frostcast.net/plugin/repository/everything'  }
@@ -38,9 +74,6 @@ subprojects {
 
     shadowJar {
         relocate 'com.zaxxer', 'org.screamingsandals.bedwars.lib.HikariCP'
-        relocate 'org.screamingsandals.simpleinventories', 'org.screamingsandals.bedwars.lib.sgui'
-        relocate 'org.screamingsandals.lib.utils.Wrapper', 'org.screamingsandals.bedwars.api.utils.Wrapper'
-        relocate 'org.screamingsandals.lib', 'org.screamingsandals.bedwars.lib'
         relocate 'org.bstats', 'org.screamingsandals.bedwars.lib.ext.bstats'
         relocate 'io.papermc.lib', 'org.screamingsandals.bedwars.lib.ext.paperlib'
         relocate 'org.spongepowered.configurate', 'org.screamingsandals.bedwars.lib.ext.configurate'

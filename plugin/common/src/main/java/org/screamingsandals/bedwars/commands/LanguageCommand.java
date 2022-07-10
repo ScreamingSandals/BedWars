@@ -22,6 +22,7 @@ package org.screamingsandals.bedwars.commands;
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
 import cloud.commandframework.arguments.standard.BooleanArgument;
+import org.screamingsandals.bedwars.PlatformService;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.lang.BedWarsLangService;
 import org.screamingsandals.bedwars.lang.LangKeys;
@@ -85,7 +86,7 @@ public class LanguageCommand extends BaseCommand {
                             MainConfig.getInstance().node("locale").set(locale);
                             MainConfig.getInstance().saveConfig();
                             sender.sendMessage(Message.of(LangKeys.LANGUAGE_SUCCESS).defaultPrefix().placeholder("lang", locale));
-                            ReloadCommand.reload(sender);
+                            PlatformService.getInstance().reloadPlugin(sender);
                         } catch (Exception e) {
                             sender.sendMessage(Message.of(LangKeys.LANGUAGE_USAGE_BW_LANG).defaultPrefix());
                         }

@@ -1,24 +1,21 @@
-prepareTestTask()
-        .versions('1.19', '1.18.2', '1.17.1', '1.16.5', '1.15.2', '1.14.4', '1.13.2', '1.12.2', '1.11.2', '1.10.2', '1.9.4')
-        .setSubdirectory('paper-master')
-        .jvmArgs('-Dio.papermc.paper.suppress.sout.nags=true', '-DPaper.IgnoreJavaVersion=true') // suppress System.out.println nag
-        .onlineMode(false)
-        .pluginJar(shadowJar.archiveFile.get().asFile.toPath())
-        .build()
-
-
-discord {
-    title = "BedWars Master #${System.getenv('BUILD_NUMBER') ?: "custom"}"
-    content = 'New build of BedWars is now available!'
-    url = System.getenv('WEBHOOK_URL')
-    allowedClassifiersAndExtensions = ['.jar']
-
-    if (System.getenv('GITHUB_ACTIONS_URL')) {
-        buildInformationUrl = System.getenv('GITHUB_ACTIONS_URL')
+dependencies {
+    /* PROVIDED */
+    compileOnly paperLegacy(PAPER_VERSION)
+    compileOnly('me.ebonjaeger:perworldinventory-kt:' + PERWORLDINVENTORY_KT_VERSION)  {
+        exclude group: '*', module: '*'
     }
-    /*if (System.getenv('GITHUB_COMMIT_MESSAGE')) {
-        content = "New build of BedWars is now available!\n\n```\n${System.getenv('GITHUB_COMMIT_MESSAGE')}\n```"
-    }*/
+    compileOnly('me.gnat008:perworldinventory:' + PERWORLDINVENTORY_VERSION) {
+        exclude group: '*', module: '*'
+    }
 
-    registerTask(project)
+    /* SHADED */
+    implementation bStats(BSTATS_VERSION)
+    implementation project(':BedWars-NMS')
+    implementation 'me.lucko:commodore:' + COMMODORE_VERSION, { // brigadier support for Bukkit/Spigot
+        exclude group: 'com.mojang', module: 'brigadier'
+    }
+}
+
+slib {
+    disableCompilerTricks = true // we have paper in dependencies
 }

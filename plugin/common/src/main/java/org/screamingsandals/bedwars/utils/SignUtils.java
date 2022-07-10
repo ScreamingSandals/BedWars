@@ -21,7 +21,7 @@ package org.screamingsandals.bedwars.utils;
 
 import lombok.experimental.UtilityClass;
 import org.screamingsandals.bedwars.BedWarsPlugin;
-import org.screamingsandals.lib.bukkit.block.state.SignBlockStateHolder;
+import org.screamingsandals.lib.block.state.SignHolder;
 import org.screamingsandals.lib.signs.ClickableSign;
 import org.screamingsandals.lib.utils.BlockFace;
 import org.screamingsandals.lib.block.BlockHolder;
@@ -40,7 +40,7 @@ public class SignUtils {
         var block = location.getBlock();
 
         var state = block.getBlockState();
-        if (state.isEmpty() || (state.get() instanceof SignBlockStateHolder)) {
+        if (state.isEmpty() || (state.get() instanceof SignHolder)) {
             return null;
         }
         var sState = state.get();

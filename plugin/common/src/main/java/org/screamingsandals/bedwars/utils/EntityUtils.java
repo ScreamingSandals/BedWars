@@ -19,10 +19,16 @@
 
 package org.screamingsandals.bedwars.utils;
 
-import org.screamingsandals.bedwars.player.BedWarsPlayer;
+import org.jetbrains.annotations.Nullable;
+import org.screamingsandals.lib.entity.EntityLiving;
 
-public interface FakeDeath {
-    boolean isAvailable();
+public interface EntityUtils {
+    @Nullable
+    EntitySelector makeMobAttackTarget(EntityLiving mob, double speed, double follow, double attackDamage);
 
-    void die(BedWarsPlayer gamePlayer);
+    interface EntitySelector {
+        EntitySelector attackTarget(EntityLiving target);
+
+        EntitySelector attackNearestPlayers(int order);
+    }
 }

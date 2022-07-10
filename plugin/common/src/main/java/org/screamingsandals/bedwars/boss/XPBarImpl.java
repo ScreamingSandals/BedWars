@@ -22,7 +22,7 @@ package org.screamingsandals.bedwars.boss;
 import lombok.Getter;
 import org.screamingsandals.bedwars.api.boss.XPBar;
 import org.screamingsandals.bedwars.api.player.BWPlayer;
-import org.screamingsandals.bedwars.lib.nms.entity.PlayerUtils;
+import org.screamingsandals.bedwars.utils.PlayerUtils;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 
 import java.util.ArrayList;

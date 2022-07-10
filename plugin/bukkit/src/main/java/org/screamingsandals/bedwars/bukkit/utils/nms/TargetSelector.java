@@ -17,16 +17,18 @@
  * along with Screaming BedWars. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.screamingsandals.bedwars.lib.nms.entity;
+package org.screamingsandals.bedwars.bukkit.utils.nms;
 
 import org.bukkit.entity.LivingEntity;
 import org.screamingsandals.bedwars.nms.accessors.MobAccessor;
 import org.screamingsandals.bedwars.nms.accessors.NearestAttackableTargetGoalAccessor;
+import org.screamingsandals.bedwars.nms.accessors.ServerPlayerAccessor;
+import org.screamingsandals.bedwars.utils.EntityUtils;
 import org.screamingsandals.lib.bukkit.utils.nms.ClassStorage;
 import org.screamingsandals.lib.entity.EntityLiving;
 import org.screamingsandals.lib.utils.reflect.Reflect;
 
-public class TargetSelector extends Selector {
+public class TargetSelector extends Selector implements EntityUtils.EntitySelector {
 	
 	public TargetSelector(Object handler) {
 		super(handler, MobAccessor.getFieldTargetSelector());
@@ -35,7 +37,12 @@ public class TargetSelector extends Selector {
 	public TargetSelector attackTarget(EntityLiving target) {
 		return attackTarget(target.as(LivingEntity.class));
 	}
-	
+
+	@Override
+	public EntityUtils.EntitySelector attackNearestPlayers(int order) {
+		return attackNearestTarget(0, ServerPlayerAccessor.getType());
+	}
+
 	public TargetSelector attackTarget(LivingEntity target) {
 		Reflect.setField(handler, MobAccessor.getFieldTarget(), target == null ? null : ClassStorage.getHandle(target));
 		return this;

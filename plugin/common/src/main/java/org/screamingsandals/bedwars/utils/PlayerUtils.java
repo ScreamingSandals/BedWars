@@ -17,14 +17,20 @@
  * along with Screaming BedWars. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.screamingsandals.bedwars.lib.nms.entity;
+package org.screamingsandals.bedwars.utils;
 
-import org.screamingsandals.bedwars.nms.accessors.MobAccessor;
+import lombok.experimental.UtilityClass;
+import org.screamingsandals.lib.packet.SClientboundSetExperiencePacket;
+import org.screamingsandals.lib.player.PlayerWrapper;
 
-public class GoalSelector extends Selector {
-	
-	public GoalSelector(Object handler) {
-		super(handler, MobAccessor.getFieldGoalSelector());
+@UtilityClass
+public class PlayerUtils {
+
+	public void fakeExp(PlayerWrapper player, float percentage, int levels) {
+		new SClientboundSetExperiencePacket()
+				.percentage(percentage)
+				.totalExperience(player.getTotalExperience())
+				.level(levels)
+				.sendPacket(player);
 	}
-
 }

@@ -17,7 +17,7 @@
  * along with Screaming BedWars. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.screamingsandals.bedwars.region;
+package org.screamingsandals.bedwars.bukkit.region;
 
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
@@ -25,16 +25,20 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.material.*;
+import org.screamingsandals.bedwars.region.BWRegion;
+import org.screamingsandals.bedwars.region.LegacyBedUtils;
 import org.screamingsandals.lib.block.BlockHolder;
 import org.screamingsandals.lib.block.BlockTypeHolder;
+import org.screamingsandals.lib.block.state.BlockStateHolder;
 import org.screamingsandals.lib.world.LocationHolder;
 import org.screamingsandals.lib.world.chunk.ChunkHolder;
-import org.screamingsandals.lib.block.state.BlockStateHolder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+// TODO: Check if FlatteningRegion can't be used
+// (we don't have to migrate this to slib, because slib is not going to target any legacy platforms other than bukkitú
 public class LegacyRegion implements BWRegion {
     private final List<LocationHolder> builtBlocks = new ArrayList<>();
     private final List<BlockHolder> brokenBlocks = new ArrayList<>();

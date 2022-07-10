@@ -20,11 +20,13 @@
 package org.screamingsandals.bedwars.lang;
 
 import lombok.Data;
+import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @Data
+@ConfigSerializable
 public class LanguageDefinition {
     private final String branch;
     private final String version;

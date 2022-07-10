@@ -19,7 +19,6 @@
 
 package org.screamingsandals.bedwars.utils;
 
-import com.google.common.io.ByteStreams;
 import lombok.experimental.UtilityClass;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.lib.debug.Debug;
@@ -28,6 +27,10 @@ import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.spectator.Component;
 import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
+
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 
 @UtilityClass
 public class BungeeUtils {
@@ -42,13 +45,18 @@ public class BungeeUtils {
 
     public void sendPlayerBungeeMessage(PlayerWrapper player, String string) {
         Tasker.build(() -> {
-            var out = ByteStreams.newDataOutput();
+            var out = new ByteArrayOutputStream();
+            var dout = new DataOutputStream(out);
 
-            out.writeUTF("Message");
-            out.writeUTF(player.getName());
-            out.writeUTF(string);
+            try {
+                dout.writeUTF("Message");
+                dout.writeUTF(player.getName());
+                dout.writeUTF(string);
 
-            CustomPayload.send(player, "BungeeCord", out.toByteArray());
+                CustomPayload.send(player, "BungeeCord", out.toByteArray());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         })
         .delay(30, TaskerTime.TICKS)
         .start();
@@ -56,12 +64,17 @@ public class BungeeUtils {
 
     private void internalMove(PlayerWrapper player, boolean restart) {
         var server = MainConfig.getInstance().node("bungee", "server").getString("hub");
-        var out = ByteStreams.newDataOutput();
+        var out = new ByteArrayOutputStream();
+        var dout = new DataOutputStream(out);
 
-        out.writeUTF("Connect");
-        out.writeUTF(server);
+        try {
+            dout.writeUTF("Connect");
+            dout.writeUTF(server);
 
-        CustomPayload.send(player, "BungeeCord", out.toByteArray());
+            CustomPayload.send(player, "BungeeCord", out.toByteArray());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         Debug.info("Player " + player.getName() + " has been moved to hub server.");
         if (!restart && MainConfig.getInstance().node("bungee", "kick-when-proxy-too-slow").getBoolean(true)) {
             Tasker.build(() -> {

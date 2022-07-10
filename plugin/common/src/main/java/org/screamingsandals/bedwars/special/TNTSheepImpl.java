@@ -21,6 +21,7 @@ package org.screamingsandals.bedwars.special;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import org.screamingsandals.bedwars.PlatformService;
 import org.screamingsandals.bedwars.api.special.TNTSheep;
 import org.screamingsandals.bedwars.entities.EntitiesManagerImpl;
 import org.screamingsandals.bedwars.game.GameImpl;
@@ -28,7 +29,6 @@ import org.screamingsandals.bedwars.game.TeamImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.utils.MiscUtils;
-import org.screamingsandals.bedwars.lib.nms.entity.EntityUtils;
 import org.screamingsandals.lib.entity.EntityBasic;
 import org.screamingsandals.lib.entity.EntityLiving;
 import org.screamingsandals.lib.entity.EntityMapper;
@@ -79,8 +79,8 @@ public class TNTSheepImpl extends SpecialItemImpl implements TNTSheep {
         }
 
         entity = sheep;
-        EntityUtils.makeMobAttackTarget(sheep, speed, followRange, 0)
-                .getTargetSelector().attackTarget(target);
+        PlatformService.getInstance().getEntityUtils().makeMobAttackTarget(sheep, speed, followRange, 0)
+                .attackTarget(target);
 
         tnt = EntityMapper.spawn("tnt", initialLocation).orElseThrow();
         tnt.setMetadata("fuse_ticks", explosionTime);

@@ -17,7 +17,7 @@
  * along with Screaming BedWars. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.screamingsandals.bedwars.lib.nms.entity;
+package org.screamingsandals.bedwars.bukkit.utils.nms;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
