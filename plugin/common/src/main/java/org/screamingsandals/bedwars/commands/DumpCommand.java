@@ -30,12 +30,12 @@ import org.screamingsandals.bedwars.api.game.target.TargetCountdown;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.GameManagerImpl;
+import org.screamingsandals.bedwars.game.target.TargetBlockImpl;
 import org.screamingsandals.bedwars.inventories.ShopInventory;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.variants.VariantManagerImpl;
 import org.screamingsandals.lib.Server;
-import org.screamingsandals.lib.configurate.SLibSerializers;
 import org.screamingsandals.lib.plugin.PluginManager;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
 import org.screamingsandals.lib.spectator.Color;
@@ -44,7 +44,7 @@ import org.screamingsandals.lib.spectator.event.ClickEvent;
 import org.screamingsandals.lib.spectator.event.HoverEvent;
 import org.screamingsandals.lib.utils.ConfigurateUtils;
 import org.screamingsandals.lib.utils.annotations.Service;
-import org.spongepowered.configurate.BasicConfigurationNode;
+import org.screamingsandals.lib.world.LocationHolder;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.gson.GsonConfigurationLoader;
 import org.spongepowered.configurate.yaml.NodeStyle;
@@ -72,6 +72,7 @@ public class DumpCommand extends BaseCommand {
 
     @Override
     protected void construct(Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder, CommandManager<CommandSenderWrapper> manager) {
+        // TODO: rework this so we use configurate properly and serializers actually work (it even refuses to serialize enums, like wtf)
         manager.command(
                 commandSenderWrapperBuilder
                         .handler(commandContext -> {
@@ -80,17 +81,14 @@ public class DumpCommand extends BaseCommand {
                                 try {
                                     var client = HttpClient.newHttpClient();
 
-                                    var gsonBuilder = GsonConfigurationLoader.builder()
-                                            .defaultOptions(configurationOptions ->
-                                                    configurationOptions.serializers(SLibSerializers::appendSerializers)
-                                            );
+                                    var gsonBuilder = GsonConfigurationLoader.builder();
                                     var files = new ArrayList<>();
                                     files.add(Map.of(
                                             "name", "dump.json",
                                             "content", Map.of(
                                                     "format", "text",
                                                     "highlight_language", "json",
-                                                    "value", gsonBuilder.buildAndSaveString(BasicConfigurationNode.root(gsonBuilder.defaultOptions()).set(Map.of(
+                                                    "value", gsonBuilder.buildAndSaveString(gsonBuilder.build().createNode().set(Map.of(
                                                             "bedwars", Map.of(
                                                                     "version", VersionInfo.VERSION,
                                                                     "build", VersionInfo.BUILD_NUMBER,
@@ -103,7 +101,7 @@ public class DumpCommand extends BaseCommand {
                                                             ),
                                                             "worlds", Server.getWorlds().stream().map(world -> Map.of(
                                                                     "name", world.getName(),
-                                                                    "difficulty", world.getDifficulty(),
+                                                                    "difficulty", world.getDifficulty().platformName(),
                                                                     "spawning", Map.of(
                                                                             "animals", world.isSpawningOfAnimalsAllowed(),
                                                                             "monsters", world.isSpawningOfMonstersAllowed()
@@ -127,7 +125,7 @@ public class DumpCommand extends BaseCommand {
                                                                             "customSpawners", variant.getCustomSpawnerTypes().stream().map(itemSpawnerType -> nullValuesAllowingMap(
                                                                                     "configKey", itemSpawnerType.getConfigKey(),
                                                                                     "name", itemSpawnerType.getName(),
-                                                                                    "translatableKey", itemSpawnerType.getTranslatableKey(),
+                                                                                    "translatableKey", itemSpawnerType.getTranslatableKey().toJavaJson(),
                                                                                     "spread", itemSpawnerType.getSpread(),
                                                                                     "itemType", itemSpawnerType.getItemType().platformName(),
                                                                                     "color", itemSpawnerType.getColor().toString(),
@@ -137,48 +135,48 @@ public class DumpCommand extends BaseCommand {
                                                             ).collect(Collectors.toList()),
                                                             "games", GameManagerImpl.getInstance().getGames().stream().map(game ->
                                                                     nullValuesAllowingMap(
-                                                                            "file", game.getFile(),
-                                                                            "uuid", game.getUuid(),
+                                                                            "file", game.getFile().getAbsolutePath(),
+                                                                            "uuid", game.getUuid().toString(),
                                                                             "name", game.getName(),
                                                                             "displayName", game.getDisplayName(),
                                                                             "minPlayers", game.getMinPlayers(),
                                                                             "maxPlayers", game.getMaxPlayers(),
                                                                             "lobby", nullValuesAllowingMap(
-                                                                                    "spawn", game.getLobbySpawn(),
+                                                                                    "spawn", locationToMap(game.getLobbySpawn()),
                                                                                     "countdown", game.getLobbyCountdown()
                                                                             ),
                                                                             "arena", nullValuesAllowingMap(
-                                                                                    "spectator", game.getSpectatorSpawn(),
+                                                                                    "spectator", locationToMap(game.getSpectatorSpawn()),
                                                                                     "countdown", game.getGameTime(),
-                                                                                    "pos1", game.getPos1(),
-                                                                                    "pos2", game.getPos2(),
-                                                                                    "weather", game.getArenaWeather(),
+                                                                                    "pos1", locationToMap(game.getPos1()),
+                                                                                    "pos2", locationToMap(game.getPos2()),
+                                                                                    "weather", game.getArenaWeather() != null ? game.getArenaWeather().platformName() : null,
                                                                                     "spawners", game.getSpawners().stream().map(itemSpawner -> nullValuesAllowingMap(
                                                                                             "type", itemSpawner.getItemSpawnerType().getConfigKey(),
-                                                                                            "location", itemSpawner.getLocation(),
+                                                                                            "location", locationToMap(itemSpawner.getLocation()),
                                                                                             "maxSpawnedResources", itemSpawner.getMaxSpawnedResources(),
                                                                                             "startLevel", itemSpawner.getBaseAmountPerSpawn(),
                                                                                             "name", itemSpawner.getCustomName(),
                                                                                             "team", Optional.ofNullable(itemSpawner.getTeam()).map(Team::getName).orElse("no team"),
                                                                                             "hologramEnabled", itemSpawner.isHologramEnabled(),
                                                                                             "floatingEnabled", itemSpawner.isFloatingBlockEnabled(),
-                                                                                            "rotationMode", itemSpawner.getRotationMode(),
-                                                                                            "hologramType", itemSpawner.getHologramType()
+                                                                                            "rotationMode", itemSpawner.getRotationMode().name(),
+                                                                                            "hologramType", itemSpawner.getHologramType().name()
                                                                                     )).collect(Collectors.toList()),
                                                                                     "teams", game.getTeams().stream().map(team -> nullValuesAllowingMap(
                                                                                             "name", team.getName(),
-                                                                                            "color", team.getColor(),
-                                                                                            "spawns", team.getTeamSpawns(),
+                                                                                            "color", team.getColor().name(),
+                                                                                            "spawns", team.getTeamSpawns().stream().map(DumpCommand::locationToMap).collect(Collectors.toList()),
                                                                                             "target", nullValuesAllowingMap(
                                                                                                     "type", team.getTarget() != null ? team.getTarget().getClass().getName() : null,
-                                                                                                    "loc", team.getTarget() instanceof TargetBlock ? ((TargetBlock) team.getTarget()).getTargetBlock() : null,
+                                                                                                    "loc", team.getTarget() instanceof TargetBlock ? locationToMap(((TargetBlockImpl) team.getTarget()).getTargetBlock()) : null,
                                                                                                     "countdown", team.getTarget() instanceof TargetCountdown ? ((TargetCountdown) team.getTarget()).getCountdown() : null
                                                                                             ),
                                                                                             "maxPlayers", team.getMaxPlayers()
                                                                                     )).collect(Collectors.toList()),
                                                                                     "stores", game.getGameStores().stream().map(gameStore -> nullValuesAllowingMap(
-                                                                                            "entityType", gameStore.getEntityType(),
-                                                                                            "location", gameStore.getStoreLocation(),
+                                                                                            "entityType", gameStore.getEntityType().platformName(),
+                                                                                            "location", locationToMap(gameStore.getStoreLocation()),
                                                                                             "shopFile", gameStore.getShopFile(),
                                                                                             "customName", gameStore.getShopCustomName(),
                                                                                             "baby", gameStore.isBaby(),
@@ -267,7 +265,7 @@ public class DumpCommand extends BaseCommand {
                                     client.sendAsync(HttpRequest.newBuilder()
                                                     .uri(URI.create("https://api.paste.gg/v1/pastes"))
                                                     .header("Content-Type", "application/json")
-                                                    .POST(HttpRequest.BodyPublishers.ofString(gsonBuilder.buildAndSaveString(BasicConfigurationNode.root(gsonBuilder.defaultOptions()).set(Map.of(
+                                                    .POST(HttpRequest.BodyPublishers.ofString(gsonBuilder.buildAndSaveString(gsonBuilder.build().createNode().set(Map.of(
                                                             "name", "Bedwars dump",
                                                             "description", "Dump generated by ScreamingBedwars plugin",
                                                             "visibility", "unlisted",
@@ -315,5 +313,16 @@ public class DumpCommand extends BaseCommand {
             }
         }
         return map;
+    }
+
+    public static Map<?, ?> locationToMap(LocationHolder location) {
+        return nullValuesAllowingMap(
+          "world", location.getWorld().getName(),
+          "x", location.getX(),
+          "y", location.getY(),
+          "z", location.getZ(),
+          "yaw", location.getYaw(),
+          "pitch", location.getPitch()
+        );
     }
 }

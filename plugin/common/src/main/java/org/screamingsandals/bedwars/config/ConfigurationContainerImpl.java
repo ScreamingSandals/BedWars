@@ -253,7 +253,8 @@ public class ConfigurationContainerImpl implements ConfigurationContainer {
         if (opt.isEmpty()) {
             return defaultObject;
         } else {
-            return opt.get().get();
+            var o = opt.get().get();
+            return o != null ? o : defaultObject;
         }
     }
 
@@ -263,7 +264,8 @@ public class ConfigurationContainerImpl implements ConfigurationContainer {
         if (opt.isEmpty()) {
             return defaultValue;
         } else {
-            return opt.get().get();
+            var o = opt.get().get();
+            return o != null ? o : defaultValue;
         }
     }
 
