@@ -11,6 +11,7 @@ nmsGen {
     basePackage = "org.screamingsandals.bedwars.lib.nms.accessors"
     sourceSet = "src/generated/java"
     cleanOnRebuild = true
+    minMinecraftVersion = "1.8.8"
 
     // spigot: prefix means that spigot mapping will be used, for spigot mappings we don't specify package
     var NBTTagCompound = reqClass('spigot:NBTTagCompound')
