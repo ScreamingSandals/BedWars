@@ -1,12 +1,12 @@
 plugins {
-    id 'org.screamingsandals.plugin-builder' version '1.0.77' apply false
+    id 'org.screamingsandals.plugin-builder' version '1.0.78' apply false
     id 'org.screamingsandals.nms-mapper' version '1.2.3' apply false
     id 'com.github.gmazzo.buildconfig' version '3.0.0' apply false
 }
 
 allprojects {
     group = 'org.screamingsandals.bedwars'
-    version = '0.2.25-SNAPSHOT'
+    version = '0.2.25'
 }
 
 if (version.toString().endsWith('-SNAPSHOT')) {
