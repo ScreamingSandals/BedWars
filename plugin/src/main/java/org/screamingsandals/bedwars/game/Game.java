@@ -1268,7 +1268,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             if (Main.getConfigurator().config.getBoolean("bossbar.use-xp-bar", false)) {
                 statusbar = new XPBar();
             } else {
-                statusbar = BossBarSelector.getBossBar();
+                statusbar = BossBarSelector.getBossBar(lobbySpawn);
             }
             preparing = false;
         }

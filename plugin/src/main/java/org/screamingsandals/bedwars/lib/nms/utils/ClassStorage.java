@@ -69,7 +69,7 @@ public class ClassStorage {
 					.replace("{f:util}", "net.minecraft.util")
 					.replace("{f:world}", "net.minecraft.world")
 				);
-			} catch (ClassNotFoundException t) {
+			} catch (ClassNotFoundException ignored) {
 			}
 		}
 		return null;

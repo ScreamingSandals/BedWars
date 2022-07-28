@@ -19,14 +19,15 @@
 
 package org.screamingsandals.bedwars.boss;
 
+import org.bukkit.Location;
 import org.screamingsandals.bedwars.api.boss.BossBar;
 
 public class BossBarSelector {
-    public static BossBar getBossBar() {
+    public static BossBar getBossBar(Location location) {
         try {
             return new BossBar19();
         } catch (Throwable t) {
-            return new BossBar18();
+            return new BossBar18(location);
         }
     }
 }

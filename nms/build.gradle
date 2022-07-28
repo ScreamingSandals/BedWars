@@ -25,6 +25,7 @@ nmsGen {
         .reqMethod('searge:func_150699_a', String) // spigot don't have mapping for that and I think obfuscated:a can successfully fail
         .reqMethod('searge:func_240643_a_', String) // 1.16+
     var DataWatcher = reqClass('spigot:DataWatcher')
+        .reqMethod("spigot:watch", int.class, Object.class)
     var World = reqClass('spigot:World')
             .reqMethod('spigot:getMethodProfilerSupplier') // 1.17 and newer
             .reqMethod('spigot:getMethodProfiler') // for something between new and old versions

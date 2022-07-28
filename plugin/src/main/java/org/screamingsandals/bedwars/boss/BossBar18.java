@@ -19,79 +19,60 @@
 
 package org.screamingsandals.bedwars.boss;
 
-import me.confuser.barapi.BarAPI;
-import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.screamingsandals.bedwars.lib.nms.entity.BossBarWither;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class BossBar18 implements org.screamingsandals.bedwars.api.boss.BossBar18 {
-
-    private boolean visible = false;
-    private List<Player> players = new ArrayList<>();
-    private String message = "";
     private double progress = 0;
+
+    public BossBarWither bossbarEntity;
+
+    public BossBar18(Location location) {
+        bossbarEntity = new BossBarWither(location);
+    }
 
     @Override
     public String getMessage() {
-        return message;
+        return bossbarEntity.getCustomName();
     }
 
     @Override
     public void setMessage(String message) {
-        if (!isPluginForLegacyBossBarEnabled()) return;
-        this.message = message;
-        if (visible) {
-            for (Player p : players) {
-                show(p);
-            }
-        }
+        bossbarEntity.setCustomName(message);
     }
 
     @Override
     public void addPlayer(Player player) {
-        if (!isPluginForLegacyBossBarEnabled()) return;
-        if (!players.contains(player)) {
-            players.add(player);
-
-            if (visible) {
-                show(player);
-            }
+        if (bossbarEntity == null) {
+            bossbarEntity = new BossBarWither(player.getLocation());
         }
+
+        bossbarEntity.addViewer(player);
     }
 
     @Override
     public void removePlayer(Player player) {
-        if (!isPluginForLegacyBossBarEnabled()) return;
-        if (players.contains(player)) {
-            players.remove(player);
-
-            if (BarAPI.hasBar(player)) {
-                hide(player);
-            }
-        }
+        bossbarEntity.removeViewer(player);
     }
 
     @Override
     public void setProgress(double progress) {
-        if (!isPluginForLegacyBossBarEnabled()) return;
         this.progress = progress;
         if (Double.isNaN(progress) || progress < 0) {
             progress = 0;
         } else if (progress > 1) {
             progress = 1;
         }
-        if (visible) {
-            for (Player p : players) {
-                show(p);
-            }
-        }
+
+        bossbarEntity.setHealth(progress);
     }
 
     @Override
     public List<Player> getViewers() {
-        return players;
+        return bossbarEntity.getViewers();
     }
 
     @Override
@@ -101,38 +82,16 @@ public class BossBar18 implements org.screamingsandals.bedwars.api.boss.BossBar1
 
     @Override
     public boolean isVisible() {
-        return visible;
+        return bossbarEntity.isVisible();
     }
 
     @Override
     public void setVisible(boolean visible) {
-        if (!isPluginForLegacyBossBarEnabled()) return;
-        if (this.visible != visible) {
-            if (visible) {
-                for (Player player : players) {
-                    show(player);
-                }
-            } else {
-                for (Player player : players) {
-                    hide(player);
-                }
-            }
-            this.visible = visible;
+        bossbarEntity.setVisible(visible);
+        if (visible) {
+            bossbarEntity.getViewers().forEach(viewer -> bossbarEntity.onViewerAdded(viewer));
+        } else {
+            bossbarEntity.getViewers().forEach(viewer -> bossbarEntity.onViewerRemoved(viewer));
         }
     }
-
-    private void show(Player player) {
-        if (!isPluginForLegacyBossBarEnabled()) return;
-        BarAPI.setMessage(player, message, (float) progress * 100);
-    }
-
-    private void hide(Player player) {
-        if (!isPluginForLegacyBossBarEnabled()) return;
-        BarAPI.removeBar(player);
-    }
-
-    public static boolean isPluginForLegacyBossBarEnabled() {
-        return Bukkit.getPluginManager().isPluginEnabled("BarAPI");
-    }
-
 }
