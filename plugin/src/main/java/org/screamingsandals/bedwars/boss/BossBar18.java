@@ -88,10 +88,5 @@ public class BossBar18 implements org.screamingsandals.bedwars.api.boss.BossBar1
     @Override
     public void setVisible(boolean visible) {
         bossbarEntity.setVisible(visible);
-        if (visible) {
-            bossbarEntity.getViewers().forEach(viewer -> bossbarEntity.onViewerAdded(viewer));
-        } else {
-            bossbarEntity.getViewers().forEach(viewer -> bossbarEntity.onViewerRemoved(viewer));
-        }
     }
 }

@@ -25,8 +25,6 @@ public class FakeEntityNMS<E extends Entity> extends EntityNMS implements Listen
     @Getter
     protected final List<Player> viewers = new ArrayList<>();
     private E entity;
-
-    @Setter
     private boolean visible;
 
     @SuppressWarnings("unchecked")
@@ -49,6 +47,18 @@ public class FakeEntityNMS<E extends Entity> extends EntityNMS implements Listen
         }
     }
 
+    public void setVisible(boolean visible) {
+        if (this.visible != visible) {
+            this.visible = visible;
+
+            if (visible) {
+                viewers.forEach(this::onViewerAdded);
+            } else {
+                viewers.forEach(viewer -> ClassStorage.sendPacket(viewer, this.createDespawnPacket()));
+            }
+        }
+    }
+
     public void setHealth(double health) {
         if (entity instanceof Damageable) {
             Damageable entity = (Damageable) this.entity;
@@ -64,9 +74,6 @@ public class FakeEntityNMS<E extends Entity> extends EntityNMS implements Listen
         }
 
         if (!viewers.contains(viewer)) {
-            if (visible) {
-                ClassStorage.sendPacket(viewer, createSpawnPacket());
-            }
             viewers.add(viewer);
             onViewerAdded(viewer);
         }
@@ -75,6 +82,7 @@ public class FakeEntityNMS<E extends Entity> extends EntityNMS implements Listen
     public void removeViewer(Player viewer) {
         if (viewers.contains(viewer)) {
             onViewerRemoved(viewer);
+            viewers.remove(viewer);
         }
 
         if (viewers.isEmpty()) {
@@ -84,13 +92,14 @@ public class FakeEntityNMS<E extends Entity> extends EntityNMS implements Listen
 
     public void onViewerAdded(Player viewer) {
         if (visible) {
+            ClassStorage.sendPacket(viewer, createSpawnPacket());
             teleport(viewer, viewer.getLocation());
         }
     }
 
     public void onViewerRemoved(Player viewer) {
         if (visible) {
-            teleport(viewer, null);
+            ClassStorage.sendPacket(viewer, createDespawnPacket());
         }
     }
 
@@ -151,12 +160,6 @@ public class FakeEntityNMS<E extends Entity> extends EntityNMS implements Listen
     }
 
     public void teleport(Player viewer, Location location) {
-        if (location == null) {
-            viewers.remove(viewer);
-            ClassStorage.sendPacket(viewer, this.createDespawnPacket());
-            return;
-        }
-
         try {
             ClassStorage.getMethod(handler, EntityAccessor.getMethodSetLocation1())
                     .invoke(location.getX(), location.getY(), location.getZ(), location.getPitch(), location.getYaw());
