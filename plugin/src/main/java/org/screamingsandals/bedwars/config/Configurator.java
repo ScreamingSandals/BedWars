@@ -180,10 +180,10 @@ public class Configurator {
         checkOrSetConfig(modify, "farmBlocks.blocks", new ArrayList<>());
 
         checkOrSetConfig(modify, "scoreboard.enable", true);
-        checkOrSetConfig(modify, "scoreboard.title", "§a%game%§r - %time%");
-        checkOrSetConfig(modify, "scoreboard.bedLost", "§c\u2718");
-        checkOrSetConfig(modify, "scoreboard.anchorEmpty", "§e\u2718");
-        checkOrSetConfig(modify, "scoreboard.bedExists", "§a\u2714");
+        checkOrSetConfig(modify, "scoreboard.title", "&a%game%&r - %time%");
+        checkOrSetConfig(modify, "scoreboard.bedLost", "&c\u2718");
+        checkOrSetConfig(modify, "scoreboard.anchorEmpty", "&e\u2718");
+        checkOrSetConfig(modify, "scoreboard.bedExists", "&a\u2714");
         checkOrSetConfig(modify, "scoreboard.teamTitle", "%bed%%color%%team%");
 
         checkOrSetConfig(modify, "title.enabled", true);
@@ -404,9 +404,9 @@ public class Configurator {
         checkOrSetConfig(modify, "game-effects.warppowdertick", new HashMap<String, Object>());
 
         checkOrSetConfig(modify, "lobby-scoreboard.enabled", true);
-        checkOrSetConfig(modify, "lobby-scoreboard.title", "§eBEDWARS");
-        checkOrSetConfig(modify, "lobby-scoreboard.content", Arrays.asList(" ", "§fMap: §2%arena%",
-                "§fPlayers: §2%players%§f/§2%maxplayers%", " ", "§fWaiting ...", " "));
+        checkOrSetConfig(modify, "lobby-scoreboard.title", "&eBEDWARS");
+        checkOrSetConfig(modify, "lobby-scoreboard.content", Arrays.asList(" ", "&fMap: &2%arena%",
+                "&fPlayers: &2%players%&f/&2%maxplayers%", " ", "&fWaiting ...", " "));
 
         checkOrSetConfig(modify, "statistics.enabled", true);
         checkOrSetConfig(modify, "statistics.type", "yaml");
@@ -437,13 +437,13 @@ public class Configurator {
         checkOrSetConfig(modify, "bossbar.game.style", "SEGMENTED_20");
 
         checkOrSetConfig(modify, "holograms.enabled", true);
-        checkOrSetConfig(modify, "holograms.headline", "Your §eBEDWARS§f stats");
+        checkOrSetConfig(modify, "holograms.headline", "Your &eBEDWARS&f stats");
         checkOrSetConfig(modify, "holograms.leaderboard.headline", "&6Bedwars Leaderboard");
         checkOrSetConfig(modify, "holograms.leaderboard.format", "&l%order%. &7%name% - &a%score%");
         checkOrSetConfig(modify, "holograms.leaderboard.size", 10);
 
         checkOrSetConfig(modify, "chat.override", true);
-        checkOrSetConfig(modify, "chat.format", "<%teamcolor%%name%§r> ");
+        checkOrSetConfig(modify, "chat.format", "<%teamcolor%%name%&r> ");
         checkOrSetConfig(modify, "chat.separate-chat.lobby", config.get("chat.separate-game-chat", false));
         checkOrSetConfig(modify, "chat.separate-chat.game", config.get("chat.separate-game-chat", false));
         if (config.isSet("chat.separate-game-chat")) {
@@ -489,9 +489,9 @@ public class Configurator {
 
         checkOrSetConfig(modify, "lore.generate-automatically", true);
         checkOrSetConfig(modify, "lore.text",
-                Arrays.asList("§7Price:", "§7%price% %resource%", "§7Amount:", "§7%amount%"));
+                Arrays.asList("&7Price:", "&7%price% %resource%", "&7Amount:", "&7%amount%"));
 
-        checkOrSetConfig(modify, "sign.lines", config.getList("sign", Arrays.asList("§c§l[BedWars]", "%arena%", "%status%", "%players%")));
+        checkOrSetConfig(modify, "sign.lines", config.getList("sign", Arrays.asList("&c&l[BedWars]", "%arena%", "%status%", "%players%")));
 
         checkOrSetConfig(modify, "sign.block-behind.enabled", false);
         checkOrSetConfig(modify, "sign.block-behind.waiting", "ORANGE_STAINED_GLASS");
@@ -549,7 +549,7 @@ public class Configurator {
         checkOrSetConfig(modify, "tab.header.enabled", true);
         checkOrSetConfig(modify, "tab.header.contents", Arrays.asList("&aMy awesome BedWars server", "&bMap: %map%", "&cPlayers: %respawnable%/%max%"));
         checkOrSetConfig(modify, "tab.footer.enabled", true);
-        checkOrSetConfig(modify, "tab.footer.contents", Arrays.asList("&eexample.com", "&fWow!!", "§a%spectators% are watching this match"));
+        checkOrSetConfig(modify, "tab.footer.contents", Arrays.asList("&eexample.com", "&fWow!!", "&a%spectators% are watching this match"));
         checkOrSetConfig(modify, "tab.hide-spectators", true);
         checkOrSetConfig(modify, "tab.hide-foreign-players", false);
 

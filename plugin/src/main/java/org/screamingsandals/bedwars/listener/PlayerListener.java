@@ -1016,7 +1016,10 @@ public class PlayerListener implements Listener {
             String displayName = player.getDisplayName();
             String playerListName = player.getPlayerListName();
 
-            String format = Main.getConfigurator().config.getString("chat.format", "<%teamcolor%%name%§r> ");
+            String format =
+                    ChatColor.translateAlternateColorCodes('&',
+                            Main.getConfigurator().config.getString("chat.format", "<%teamcolor%%name%&r> ")
+                    );
             if (team != null) {
                 format = format.replace("%teamcolor%", team.teamInfo.color.chatColor.toString());
                 format = format.replace("%team%", team.teamInfo.name);

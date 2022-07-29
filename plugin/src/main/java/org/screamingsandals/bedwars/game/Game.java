@@ -24,6 +24,7 @@ import static org.screamingsandals.bedwars.lib.lang.I.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import org.bukkit.*;
@@ -2409,15 +2410,15 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     }
 
     public static String bedExistString() {
-        return Main.getConfigurator().config.getString("scoreboard.bedExists");
+        return ChatColor.translateAlternateColorCodes('&', Main.getConfigurator().config.getString("scoreboard.bedExists"));
     }
 
     public static String bedLostString() {
-        return Main.getConfigurator().config.getString("scoreboard.bedLost");
+        return ChatColor.translateAlternateColorCodes('&', Main.getConfigurator().config.getString("scoreboard.bedLost"));
     }
 
     public static String anchorEmptyString() {
-        return Main.getConfigurator().config.getString("scoreboard.anchorEmpty");
+        return ChatColor.translateAlternateColorCodes('&',Main.getConfigurator().config.getString("scoreboard.anchorEmpty"));
     }
 
     private void updateScoreboardTimer() {
@@ -2438,9 +2439,10 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     }
 
     private String formatScoreboardTitle() {
-        return Objects.requireNonNull(Main.getConfigurator().config.getString("scoreboard.title"))
-                .replace("%game%", this.name)
-                .replace("%time%", this.getFormattedTimeLeft());
+        return Objects.requireNonNull(
+                ChatColor.translateAlternateColorCodes('&', Main.getConfigurator().config.getString("scoreboard.title"))
+                        .replace("%game%", this.name)
+                        .replace("%time%", this.getFormattedTimeLeft()));
     }
 
     public String getFormattedTimeLeft() {
@@ -2500,7 +2502,12 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         playersLine = playersLine.replace("%players%", Integer.toString(players.size()));
         playersLine = playersLine.replace("%maxplayers%", Integer.toString(calculatedMaxPlayers));
 
-        final List<String> texts = new ArrayList<>(Main.getConfigurator().config.getStringList("sign.lines"));
+        final List<String> texts = new ArrayList<>(
+                Main.getConfigurator().config.getStringList("sign.lines")
+                        .stream()
+                        .map(line -> ChatColor.translateAlternateColorCodes('&', line))
+                        .collect(Collectors.toList())
+        );
 
         for (int i = 0; i < texts.size(); i++) {
             String text = texts.get(i);
@@ -2546,12 +2553,17 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             obj = gameScoreboard.registerNewObjective("lobby", "dummy");
             obj.setDisplaySlot(DisplaySlot.SIDEBAR);
             obj.setDisplayName(this.formatLobbyScoreboardString(
-                    Main.getConfigurator().config.getString("lobby-scoreboard.title", "§eBEDWARS")));
+                    ChatColor.translateAlternateColorCodes('&', Main.getConfigurator().config.getString("lobby-scoreboard.title", "&eBEDWARS") )
+            ));
         }
 
         gameScoreboard.getEntries().forEach(gameScoreboard::resetScores);
 
-        List<String> rows = Main.getConfigurator().config.getStringList("lobby-scoreboard.content");
+        List<String> rows = Main.getConfigurator().config.getStringList("lobby-scoreboard.content")
+                .stream()
+                .map(content -> ChatColor.translateAlternateColorCodes('&', content))
+                .collect(Collectors.toList());
+
         int rowMax = rows.size();
         if (rows.isEmpty()) {
             return;
