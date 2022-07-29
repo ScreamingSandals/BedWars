@@ -442,6 +442,8 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         getServer().getPluginManager().registerEvents(new PlayerListener(), this);
         if (versionNumber >= 109) {
             getServer().getPluginManager().registerEvents(new Player19Listener(), this);
+        } else {
+            getServer().getPluginManager().registerEvents(new Player18Listener(), this);
         }
         if (versionNumber >= 112) {
             getServer().getPluginManager().registerEvents(new Player112Listener(), this);
@@ -508,9 +510,12 @@ public class Main extends JavaPlugin implements BedwarsAPI {
                     .sendMessage(ChatColor.RED + "[B" + ChatColor.WHITE + "W] " + ChatColor.RED + "WARNING: You are not using Spigot. Some features may not work properly.");
         }
 
-        if (versionNumber < 109) {
+        if (versionNumber < 108) {
             Bukkit.getConsoleSender().sendMessage(
-                    ChatColor.RED + "[B" + ChatColor.WHITE + "W] " + ChatColor.RED + "IMPORTANT WARNING: You are using version older than 1.9! This version is not officially supported, and some features may not work at all! Future versions of BedWars won't even start!");
+                    ChatColor.RED + "[B" + ChatColor.WHITE + "W] " + ChatColor.RED + "IMPORTANT WARNING: You are using version older than 1.8! This version is not officially supported, and some features may not work at all! Future versions of BedWars won't even start!");
+        } else if (versionNumber == 108) {
+            Bukkit.getConsoleSender().sendMessage(
+                    ChatColor.RED + "[B" + ChatColor.WHITE + "W] " + ChatColor.YELLOW + "You are using version 1.8! While this version is supported, it is a very old version and some features may not work as expected. Consider upgrading your server.");
         }
         try {
             float javaVer = Float.parseFloat(System.getProperty("java.class.version"));

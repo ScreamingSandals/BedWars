@@ -65,13 +65,11 @@ public class EntityUtils {
 			// this is not needed anymore, some 1.8 bullshit
 			try {
 				Object handler = ClassStorage.getHandle(entity);
-				Object tag = ClassStorage.getMethod(handler, "getNBTTag").invoke(); // Can this really work? or it's always creating
-																		// new
-																		// one?
+				Object tag = ClassStorage.getMethod(handler, "getNBTTag").invoke();
 				if (tag == null) {
 					tag = NBTTagCompoundAccessor.getConstructor0().newInstance();
 				}
-				ClassStorage.getMethod(handler, EntityAccessor.getMethodFunc_184198_c1()).invoke(tag);
+				ClassStorage.getMethod(handler, "c,func_184198_c", NBTTagCompoundAccessor.getType()).invoke(tag);
 				ClassStorage.getMethod(NBTTagCompoundAccessor.getMethodFunc_74768_a1()).invokeInstance(tag, "NoAI", 1);
 				ClassStorage.getMethod(handler, EntityAccessor.getMethodFunc_70020_e1()).invoke(tag);
 			} catch (Throwable ignored) {
