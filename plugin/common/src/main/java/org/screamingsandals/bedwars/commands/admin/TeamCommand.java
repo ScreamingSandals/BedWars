@@ -25,7 +25,6 @@ import cloud.commandframework.arguments.standard.EnumArgument;
 import cloud.commandframework.arguments.standard.IntegerArgument;
 import cloud.commandframework.arguments.standard.StringArgument;
 import cloud.commandframework.execution.CommandExecutionHandler;
-import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.commands.AdminCommand;
 import org.screamingsandals.bedwars.game.TeamImpl;
 import org.screamingsandals.bedwars.game.TeamColorImpl;
@@ -34,8 +33,7 @@ import org.screamingsandals.bedwars.game.target.TargetBlockCountdownImpl;
 import org.screamingsandals.bedwars.game.target.TargetBlockImpl;
 import org.screamingsandals.bedwars.game.target.TargetCountdownImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
-import org.screamingsandals.bedwars.region.FlatteningBedUtils;
-import org.screamingsandals.bedwars.region.LegacyBedUtils;
+import org.screamingsandals.bedwars.utils.BedUtils;
 import org.screamingsandals.bedwars.utils.ArenaUtils;
 import org.screamingsandals.lib.block.BlockHolder;
 import org.screamingsandals.lib.lang.Message;
@@ -459,16 +457,8 @@ public class TeamCommand extends BaseAdminSubCommand {
             }
 
             var chosenLoc = loc;
-            if (BedWarsPlugin.isLegacy()) {
-                // Legacy
-                if (block.getType().isSameType("bed") && (block.getType().legacyData() & 0x8) != 0x8) {
-                    chosenLoc = LegacyBedUtils.getBedNeighbor(block).getLocation();
-                }
-            } else {
-                // 1.13+
-                if (block.getType().platformName().toLowerCase().endsWith("_bed") && !block.getType().get("part").map("head"::equals).orElse(true /* it should always be present unless it's not a bed */)) {
-                    chosenLoc = Objects.requireNonNull(FlatteningBedUtils.getBedNeighbor(block)).getLocation();
-                }
+            if (block.getType().is("#bed") && !block.getType().get("part").map("head"::equals).orElse(true /* it should always be present unless it's not a bed */)) {
+                chosenLoc = Objects.requireNonNull(BedUtils.getBedNeighbor(block)).getLocation();
             }
             team.setTarget(new TargetBlockImpl(chosenLoc));
             var particle = new ParticleHolder(
@@ -629,16 +619,8 @@ public class TeamCommand extends BaseAdminSubCommand {
                             }
 
                             var chosenLoc = loc;
-                            if (BedWarsPlugin.isLegacy()) {
-                                // Legacy
-                                if (block.getType().isSameType("bed") && (block.getType().legacyData() & 0x8) != 0x8) {
-                                    chosenLoc = LegacyBedUtils.getBedNeighbor(block).getLocation();
-                                }
-                            } else {
-                                // 1.13+
-                                if (block.getType().platformName().toLowerCase().endsWith("_bed") && !block.getType().get("part").map("head"::equals).orElse(true /* it should always be present unless it's not a bed */)) {
-                                    chosenLoc = Objects.requireNonNull(FlatteningBedUtils.getBedNeighbor(block)).getLocation();
-                                }
+                            if (block.getType().is("#bed") && !block.getType().get("part").map("head"::equals).orElse(true /* it should always be present unless it's not a bed */)) {
+                                chosenLoc = Objects.requireNonNull(BedUtils.getBedNeighbor(block)).getLocation();
                             }
                             team.setTarget(new TargetBlockCountdownImpl(chosenLoc, countdown));
                             var particle = new ParticleHolder(

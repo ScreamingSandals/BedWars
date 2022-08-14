@@ -352,7 +352,7 @@ public class MainConfig {
                     .back()
                 .key("resources").defValue(() -> Map.of(
                             "bronze", Map.of(
-                                    "material", BedWarsPlugin.isLegacy() ? "CLAY_BRICK" : "BRICK",
+                                    "material", "BRICK",
                                     "interval", 1,
                                     "name", "Bronze",
                                     "translate", "resource_bronze",

@@ -19,3 +19,4 @@ dependencies {
 slib {
     disableCompilerTricks = true // we have paper in dependencies
 }
+compileJava.outputs.upToDateWhen {false}

@@ -206,7 +206,7 @@ public class MiscUtils {
         try {
             return event.getStringProperty(name);
         } catch (NullPointerException e) {
-            return MainConfig.getInstance().node((Object[]) fallback.split("\\.")).getString(BedWarsPlugin.isLegacy() ? "SANDSTONE" : "CUT_SANDSTONE");
+            return MainConfig.getInstance().node((Object[]) fallback.split("\\.")).getString("CUT_SANDSTONE");
         }
     }
 

@@ -164,7 +164,7 @@ public class GameImpl implements Game {
     private int calculatedMaxPlayers;
     private TaskerTask task;
     private final List<TeamImpl> teamsInGame = new ArrayList<>();
-    private final BWRegion region = BedWarsPlugin.isLegacy() ? PlatformService.getInstance().getLegacyRegion() : new FlatteningRegion();
+    private final BWRegion region = Server.isVersion(1, 13) ? new FlatteningRegion() : PlatformService.getInstance().getLegacyRegion();
     private TeamSelectorInventory teamSelectorInventory;
     private StatusBar statusbar;
     private final Map<LocationHolder, Item[]> usedChests = new HashMap<>();

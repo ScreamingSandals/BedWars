@@ -912,33 +912,18 @@ public class PlayerListener {
                                 for (var team : game.getActiveTeams()) {
                                     if (team.getTarget() instanceof TargetBlockImpl && ((TargetBlockImpl) team.getTarget()).getTargetBlock().equals(clickedBlock.getLocation())) {
                                         event.cancelled(true);
-                                        if (BedWarsPlugin.isLegacy()) {
-                                            var type = clickedBlock.getType();
-                                            var data = type.legacyData();
-                                            if (data == 0) {
-                                                game.getRegion().putOriginalBlock(clickedBlock.getLocation(), clickedBlock.getBlockState().orElseThrow());
-                                            }
-                                            data++;
-                                            if (data >= 6) {
-                                                game.bedDestroyed(clickedBlock.getLocation(), gPlayer, false, false, true);
-                                                clickedBlock.setType(BlockTypeHolder.air());
-                                            } else {
-                                                clickedBlock.setType(type.withLegacyData(data));
-                                            }
-                                        } else {
-                                            var cake = clickedBlock.getType();
-                                            if (cake.get("bites").map("0"::equals).orElse(true)) {
-                                                game.getRegion().putOriginalBlock(clickedBlock.getLocation(), clickedBlock.getBlockState().orElseThrow());
-                                            }
-                                            var bites = cake.get("bites").map(Integer::parseInt).orElse(0) + 1;
-                                            cake = cake.with("bites", String.valueOf(bites));
+                                        var cake = clickedBlock.getType();
+                                        if (cake.get("bites").map("0"::equals).orElse(true)) {
+                                            game.getRegion().putOriginalBlock(clickedBlock.getLocation(), clickedBlock.getBlockState().orElseThrow());
+                                        }
+                                        var bites = cake.get("bites").map(Integer::parseInt).orElse(0) + 1;
+                                        cake = cake.with("bites", String.valueOf(bites));
 
-                                            if (bites >= 6) {
-                                                game.bedDestroyed(clickedBlock.getLocation(), event.player(), false, false, true);
-                                                clickedBlock.setType(BlockTypeHolder.air());
-                                            } else {
-                                                clickedBlock.setType(cake);
-                                            }
+                                        if (bites >= 6) {
+                                            game.bedDestroyed(clickedBlock.getLocation(), event.player(), false, false, true);
+                                            clickedBlock.setType(BlockTypeHolder.air());
+                                        } else {
+                                            clickedBlock.setType(cake);
                                         }
                                         break;
                                     }

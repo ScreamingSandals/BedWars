@@ -20,8 +20,6 @@
 package org.screamingsandals.bedwars.utils;
 
 import lombok.experimental.UtilityClass;
-import org.screamingsandals.bedwars.BedWarsPlugin;
-import org.screamingsandals.lib.block.state.SignHolder;
 import org.screamingsandals.lib.signs.ClickableSign;
 import org.screamingsandals.lib.utils.BlockFace;
 import org.screamingsandals.lib.block.BlockHolder;
@@ -39,36 +37,16 @@ public class SignUtils {
         var location = sign.getLocation().as(LocationHolder.class);
         var block = location.getBlock();
 
-        var state = block.getBlockState();
-        if (state.isEmpty() || (state.get() instanceof SignHolder)) {
+        var type = block.getType();
+        if (!type.is("#signs")) {
             return null;
         }
-        var sState = state.get();
 
-        if (!BedWarsPlugin.isLegacy()) {
-            var data = sState.getType().get("facing");
-            if (data.isPresent()) {
-                return location.add(BlockFace.valueOf(data.get()).getOppositeFace()).getBlock();
-            } else {
-                return location.add(BlockFace.DOWN).getBlock();
-            }
+        var data = type.get("facing");
+        if (data.isPresent()) {
+            return location.add(BlockFace.valueOf(data.get()).getOppositeFace()).getBlock();
         } else {
-            if (sState.getType().isSameType("standing_sign")) {
-                return location.add(BlockFace.DOWN).getBlock();
-            } else {
-                var data = sState.getType().legacyData();
-                switch (data) {
-                    case 3:
-                        return location.add(BlockFace.NORTH).getBlock();
-                    case 4:
-                        return location.add(BlockFace.EAST).getBlock();
-                    case 5:
-                        return location.add(BlockFace.WEST).getBlock();
-                    case 2:
-                    default:
-                        return location.add(BlockFace.SOUTH).getBlock();
-                }
-            }
+            return location.add(BlockFace.DOWN).getBlock();
         }
     }
 }

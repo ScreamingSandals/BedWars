@@ -18,3 +18,5 @@ buildConfig {
     buildConfigField('String', 'VERSION', "\"${project.version}\"")
     buildConfigField('String', 'BUILD_NUMBER', "\"${System.getenv('BUILD_NUMBER') ?: "custom"}\"")
 }
+
+compileJava.outputs.upToDateWhen {false}

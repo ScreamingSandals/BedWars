@@ -19,6 +19,7 @@
 
 package org.screamingsandals.bedwars.region;
 
+import org.screamingsandals.bedwars.utils.BedUtils;
 import org.screamingsandals.lib.block.BlockHolder;
 import org.screamingsandals.lib.block.BlockTypeHolder;
 import org.screamingsandals.lib.world.LocationHolder;
@@ -61,7 +62,7 @@ public class FlatteningRegion implements BWRegion {
 
     @Override
     public boolean isBedBlock(BlockStateHolder block) {
-        return FlatteningBedUtils.isBedBlock(block.getType());
+        return BedUtils.isBedBlock(block.getType());
     }
 
     @Override
@@ -91,7 +92,7 @@ public class FlatteningRegion implements BWRegion {
 
     @Override
     public BlockHolder getBedNeighbor(BlockHolder head) {
-        return FlatteningBedUtils.getBedNeighbor(head);
+        return BedUtils.getBedNeighbor(head);
     }
 
     @Override

@@ -26,7 +26,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.material.*;
 import org.screamingsandals.bedwars.region.BWRegion;
-import org.screamingsandals.bedwars.region.LegacyBedUtils;
+import org.screamingsandals.bedwars.utils.BedUtils;
 import org.screamingsandals.lib.block.BlockHolder;
 import org.screamingsandals.lib.block.BlockTypeHolder;
 import org.screamingsandals.lib.block.state.BlockStateHolder;
@@ -215,7 +215,7 @@ public class LegacyRegion implements BWRegion {
 
     @Override
     public BlockHolder getBedNeighbor(BlockHolder head) {
-        return LegacyBedUtils.getBedNeighbor(head);
+        return BedUtils.getBedNeighbor(head);
     }
 
     @Override

@@ -17,13 +17,13 @@
  * along with Screaming BedWars. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.screamingsandals.bedwars.region;
+package org.screamingsandals.bedwars.utils;
 
 import org.screamingsandals.lib.block.BlockTypeHolder;
 import org.screamingsandals.lib.utils.BlockFace;
 import org.screamingsandals.lib.block.BlockHolder;
 
-public class FlatteningBedUtils {
+public class BedUtils {
     public static BlockHolder getBedNeighbor(BlockHolder head) {
         if (!isBedBlock(head)) {
             return null;
@@ -46,10 +46,10 @@ public class FlatteningBedUtils {
         }
         var data = block.getCurrentType();
 
-        return data.platformName().toLowerCase().endsWith("_bed") && data.get("part").isPresent();
+        return data.is("#beds");
     }
 
     public static boolean isBedBlock(BlockTypeHolder data) {
-        return data != null && data.platformName().toLowerCase().endsWith("_bed") && data.get("part").isPresent();
+        return data != null &&  data.is("#beds");
     }
 }
