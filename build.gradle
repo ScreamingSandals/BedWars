@@ -1,13 +1,13 @@
 plugins {
-    id 'org.screamingsandals.plugin-builder' version "${SCREAMING_PLUGIN_BUILDER_VERSION}" apply false
-    id 'org.screamingsandals.plugin-slib' version "${SCREAMING_PLUGIN_BUILDER_VERSION}" apply false
-    id 'org.screamingsandals.nms-mapper' version "${NMS_MAPPER_VERSION}" apply false
-    id 'com.github.gmazzo.buildconfig' version "${BUILDCONFIG_VERSION}" apply false
+    alias libs.plugins.screaming.plugin.builder apply false
+    alias libs.plugins.screaming.plugin.slib apply false
+    alias libs.plugins.nms.mapper apply false
+    alias libs.plugins.buildconfig apply false
 }
 
 allprojects {
     group = 'org.screamingsandals.bedwars'
-    version = BEDWARS_VERSION
+    version = libs.versions.bedwars.get()
 }
 
 if (version.toString().endsWith('-SNAPSHOT')) {
@@ -29,7 +29,7 @@ subprojects {
         apply plugin: 'org.screamingsandals.plugin-slib'
 
         slib {
-            version(SCREAMING_LIB_VERSION)
+            version(libs.versions.screaming.lib.get())
 
             multiModulePlatforms('BedWars-%s', 'bukkit')
             multiModuleUniversalSubproject('BedWars') // custom name
@@ -50,7 +50,7 @@ subprojects {
                 singleModule('cloud-extras')
 
                 simpleInventories {
-                    version(SIMPLE_INVENTORIES_VERSION)
+                    version(libs.versions.simple.inventories.get())
                 }
             }
         }

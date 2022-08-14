@@ -1,0 +1,41 @@
+[versions]
+bedwars = "0.3.0-SNAPSHOT"
+
+# shaded libraries
+screaming-lib = "2.0.2-SNAPSHOT"
+simple-inventories = "2.0.2-SNAPSHOT"
+bstats = "2.2.1"
+commodore = "2.0"
+hikari = "5.0.0"
+
+# compileOnly libraries
+paper = "1.19.2-R0.1-SNAPSHOT"
+parties-api = "3.2.6"
+perworldinventory-old = "1.11.5"
+perworldinventory-kt = "2.3.1"
+multiverse = "4.0.0"
+
+# plugins
+screaming-plugin-builder = "1.0.78"
+nms-mapper = "1.2.5"
+buildconfig = "3.0.2"
+
+[libraries]
+# shaded libraries
+# screaming-lib and simple-inventories are handled by plugin
+commodore = { group = "me.lucko", name = "commodore", version.ref = "commodore" }
+hikari = { group = "com.zaxxer", name = "HikariCP", version.ref = "hikari" }
+bstats = { group = "org.bstats", name = "bstats-bukkit", version.ref = "bstats" }
+
+# compileOnly libraries
+paper = { group = "io.papermc.paper", name = "paper-api", version.ref = "paper"}
+parties-api = { group = "com.alessiodp.parties", name = "parties-api", version.ref = "parties-api" }
+perworldinventory-old = { group = "me.gnat008", name = "perworldinventory", version.ref = "perworldinventory-old" }
+perworldinventory-kt = { group = "me.ebonjaeger", name = "perworldinventory-kt", version.ref = "perworldinventory-kt" }
+multiverse = { group = "com.onarandombox.multiversecore", name = "Multiverse-Core", version.ref = "multiverse" }
+
+[plugins]
+screaming-plugin-builder = { id = "org.screamingsandals.plugin-builder", version.ref = "screaming-plugin-builder" }
+screaming-plugin-slib = { id = "org.screamingsandals.plugin-slib", version.ref = "screaming-plugin-builder" }
+nms-mapper = { id = "org.screamingsandals.nms-mapper", version.ref = "nms-mapper" }
+buildconfig = { id = "com.github.gmazzo.buildconfig", version.ref = "buildconfig" }

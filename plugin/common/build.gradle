@@ -2,12 +2,12 @@ apply plugin: "com.github.gmazzo.buildconfig"
 
 dependencies {
     /* PROVIDED */
-    compileOnly 'com.onarandombox.multiversecore:Multiverse-Core:' + MULTIVERSE_VERSION
-    compileOnly 'com.alessiodp.parties:parties-api:' + PARTIES_VERSION
+    compileOnly libs.multiverse
+    compileOnly libs.parties.api
 
     /* SHADED */
-    implementation 'org.screamingsandals.language.bedwars:BedWarsLanguage:' + (BEDWARS_VERSION =~ /^\d+.\d+/).findAll()?.first() + '-SNAPSHOT'
-    implementation 'com.zaxxer:HikariCP:' + HIKARI_VERSION
+    implementation 'org.screamingsandals.language.bedwars:BedWarsLanguage:' + (project.version =~ /^\d+.\d+/).findAll()?.first() + '-SNAPSHOT'
+    implementation libs.hikari
 }
 
 buildConfig {
