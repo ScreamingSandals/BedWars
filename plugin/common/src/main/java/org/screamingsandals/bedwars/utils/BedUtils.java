@@ -50,6 +50,6 @@ public class BedUtils {
     }
 
     public static boolean isBedBlock(BlockTypeHolder data) {
-        return data != null &&  data.is("#beds");
+        return data != null && data.is("#beds");
     }
 }

@@ -24,6 +24,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.utils.MiscUtils;
+import org.screamingsandals.lib.Server;
 import org.screamingsandals.lib.item.Item;
 import org.screamingsandals.lib.item.builder.ItemFactory;
 import org.screamingsandals.lib.plugin.ServiceManager;
@@ -352,7 +353,7 @@ public class MainConfig {
                     .back()
                 .key("resources").defValue(() -> Map.of(
                             "bronze", Map.of(
-                                    "material", "BRICK",
+                                    "material", Server.isVersion(1,13) ? "BRICK" : "CLAY_BRICK",
                                     "interval", 1,
                                     "name", "Bronze",
                                     "translate", "resource_bronze",

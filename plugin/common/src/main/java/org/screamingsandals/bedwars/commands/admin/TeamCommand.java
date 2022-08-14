@@ -457,7 +457,7 @@ public class TeamCommand extends BaseAdminSubCommand {
             }
 
             var chosenLoc = loc;
-            if (block.getType().is("#bed") && !block.getType().get("part").map("head"::equals).orElse(true /* it should always be present unless it's not a bed */)) {
+            if (block.getType().is("#beds") && !block.getType().get("part").map("head"::equals).orElse(true /* it should always be present unless it's not a bed */)) {
                 chosenLoc = Objects.requireNonNull(BedUtils.getBedNeighbor(block)).getLocation();
             }
             team.setTarget(new TargetBlockImpl(chosenLoc));
@@ -619,7 +619,7 @@ public class TeamCommand extends BaseAdminSubCommand {
                             }
 
                             var chosenLoc = loc;
-                            if (block.getType().is("#bed") && !block.getType().get("part").map("head"::equals).orElse(true /* it should always be present unless it's not a bed */)) {
+                            if (block.getType().is("#beds") && !block.getType().get("part").map("head"::equals).orElse(true /* it should always be present unless it's not a bed */)) {
                                 chosenLoc = Objects.requireNonNull(BedUtils.getBedNeighbor(block)).getLocation();
                             }
                             team.setTarget(new TargetBlockCountdownImpl(chosenLoc, countdown));
