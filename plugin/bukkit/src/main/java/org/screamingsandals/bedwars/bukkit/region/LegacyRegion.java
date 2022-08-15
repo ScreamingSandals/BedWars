@@ -38,7 +38,7 @@ import java.util.HashMap;
 import java.util.List;
 
 // TODO: Check if FlatteningRegion can't be used
-// (we don't have to migrate this to slib, because slib is not going to target any legacy platforms other than bukkitú
+// (we don't have to migrate this to slib, because slib is not going to target any legacy platforms other than bukkit)
 public class LegacyRegion implements BWRegion {
     private final List<LocationHolder> builtBlocks = new ArrayList<>();
     private final List<BlockHolder> brokenBlocks = new ArrayList<>();
@@ -74,7 +74,7 @@ public class LegacyRegion implements BWRegion {
 
         if (bState instanceof Colorable) {
             // Save bed color on 1.12.x
-            brokenBlockColors.put(loc.getBlock(), ((Colorable) block).getColor());
+            brokenBlockColors.put(loc.getBlock(), ((Colorable) bState).getColor());
         }
         
         if (isBedHead(block)) {
