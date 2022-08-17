@@ -1,6 +1,4 @@
 [versions]
-bedwars = "0.3.0-SNAPSHOT"
-
 # shaded libraries
 screaming-lib = "2.0.2-SNAPSHOT"
 simple-inventories = "2.0.2-SNAPSHOT"
@@ -17,7 +15,7 @@ perworldinventory-kt = "2.3.1"
 multiverse = "4.0.0"
 
 # plugins
-screaming-plugin-builder = "1.0.78"
+screaming-plugin-builder = "1.0.79"
 nms-mapper = "1.2.5"
 buildconfig = "3.0.2"
 

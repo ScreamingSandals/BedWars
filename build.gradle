@@ -5,11 +5,6 @@ plugins {
     alias libs.plugins.buildconfig apply false
 }
 
-allprojects {
-    group = 'org.screamingsandals.bedwars'
-    version = libs.versions.bedwars.get()
-}
-
 if (version.toString().endsWith('-SNAPSHOT')) {
     defaultTasks 'clean', 'screamCompile'
 } else {
@@ -29,7 +24,7 @@ subprojects {
         apply plugin: 'org.screamingsandals.plugin-slib'
 
         slib {
-            version(libs.versions.screaming.lib.get())
+            version(libs.versions.screaming.lib)
 
             multiModulePlatforms('BedWars-%s', 'bukkit')
             multiModuleUniversalSubproject('BedWars') // custom name
@@ -50,7 +45,7 @@ subprojects {
                 singleModule('cloud-extras')
 
                 simpleInventories {
-                    version(libs.versions.simple.inventories.get())
+                    version(libs.versions.simple.inventories)
                 }
             }
         }
