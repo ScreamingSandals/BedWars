@@ -1,17 +1,17 @@
 dependencies {
     /* PROVIDED */
-    compileOnly paperLegacy(PAPER_VERSION)
-    compileOnly('me.ebonjaeger:perworldinventory-kt:' + PERWORLDINVENTORY_KT_VERSION)  {
+    compileOnly libs.paper
+    compileOnly(libs.perworldinventory.kt)  {
         exclude group: '*', module: '*'
     }
-    compileOnly('me.gnat008:perworldinventory:' + PERWORLDINVENTORY_VERSION) {
+    compileOnly(libs.perworldinventory.old) {
         exclude group: '*', module: '*'
     }
 
     /* SHADED */
-    implementation bStats(BSTATS_VERSION)
+    implementation libs.bstats
     implementation project(':BedWars-NMS')
-    implementation 'me.lucko:commodore:' + COMMODORE_VERSION, { // brigadier support for Bukkit/Spigot
+    implementation(libs.commodore) { // brigadier support for Bukkit/Spigot
         exclude group: 'com.mojang', module: 'brigadier'
     }
 }
