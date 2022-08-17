@@ -444,7 +444,11 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                     }
 
                     if (breakEvent.isDrops()) {
-                        event.setDropItems(false);
+                        try {
+                            event.setDropItems(false);
+                        } catch (Throwable t) {
+                            block.setType(Material.AIR);
+                        }
                         player.player.getInventory().addItem(new ItemStack(Material.ENDER_CHEST));
                     }
                 }

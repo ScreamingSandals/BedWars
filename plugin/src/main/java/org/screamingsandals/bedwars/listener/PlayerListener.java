@@ -410,7 +410,11 @@ public class PlayerListener implements Listener {
             //Fix for obsidian dropping
             if (game.getStatus() == GameStatus.RUNNING && gamePlayer.isInGame()) {
                 if (block.getType() == Material.ENDER_CHEST) {
-                    event.setDropItems(false);
+                    try {
+                        event.setDropItems(false);
+                    } catch (Throwable t) {
+                        block.setType(Material.AIR);
+                    }
                 }
             }
         } else if (Main.getConfigurator().config.getBoolean("preventArenaFromGriefing")) {
