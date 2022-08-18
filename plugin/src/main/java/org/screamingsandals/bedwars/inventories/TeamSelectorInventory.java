@@ -41,6 +41,7 @@ import org.screamingsandals.simpleinventories.utils.MapReader;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.WeakHashMap;
 
 import static org.screamingsandals.bedwars.lib.lang.I18n.i18nonly;
 
@@ -49,6 +50,8 @@ public class TeamSelectorInventory implements Listener {
     private SimpleInventories simpleGuiFormat;
     private Options options;
     private List<Player> openedForPlayers = new ArrayList<>();
+
+    private WeakHashMap<SimpleInventories, Boolean> weakFormats = new WeakHashMap<>();
 
     public TeamSelectorInventory(Main plugin, Game game) {
         this.game = game;
@@ -72,6 +75,7 @@ public class TeamSelectorInventory implements Listener {
 
     public void destroy() {
         openedForPlayers.clear();
+        weakFormats.clear();
         HandlerList.unregisterAll(this);
     }
 
@@ -84,7 +88,9 @@ public class TeamSelectorInventory implements Listener {
         }
 
         createData();
-        simpleGuiFormat.openForPlayer(player);
+        SimpleInventories sgui = simpleGuiFormat;
+        weakFormats.putIfAbsent(sgui, true);
+        sgui.openForPlayer(player);
         openedForPlayers.add(player);
     }
 
@@ -154,7 +160,7 @@ public class TeamSelectorInventory implements Listener {
 
     @EventHandler
     public void onPostAction(PostActionEvent event) {
-        if (event.getFormat() != simpleGuiFormat) {
+        if (event.getFormat() != simpleGuiFormat && !weakFormats.containsKey(event.getFormat())) {
             return;
         }
 
