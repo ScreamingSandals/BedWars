@@ -24,6 +24,7 @@ import static org.screamingsandals.bedwars.lib.lang.I.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import org.bukkit.*;
@@ -206,6 +207,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     private InGameConfigBooleanConstants targetBlockExplosions = InGameConfigBooleanConstants.INHERIT;
 
     public boolean gameStartItem;
+    public boolean forceGameToStart;
     private boolean preServerRestart = false;
 
     // STATUS
@@ -444,7 +446,11 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                     }
 
                     if (breakEvent.isDrops()) {
-                        event.setDropItems(false);
+                        try {
+                            event.setDropItems(false);
+                        } catch (Throwable t) {
+                            block.setType(Material.AIR);
+                        }
                         player.player.getInventory().addItem(new ItemStack(Material.ENDER_CHEST));
                     }
                 }
@@ -1269,7 +1275,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             if (Main.getConfigurator().config.getBoolean("bossbar.use-xp-bar", false)) {
                 statusbar = new XPBar();
             } else {
-                statusbar = BossBarSelector.getBossBar();
+                statusbar = BossBarSelector.getBossBar(lobbySpawn);
             }
             preparing = false;
         }
@@ -1678,8 +1684,32 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                     gameStartItem = false;
                 }
             }
+            if (forceGameToStart) {
+                nextCountdown = gameTime;
+                nextStatus = GameStatus.RUNNING;
+                forceGameToStart = false;
 
-            if (players.size() >= getMinPlayers()
+                for (GamePlayer player : players) {
+                    if (getPlayerTeam(player) == null) {
+                        joinRandomTeam(player);
+                    }
+                }
+                if (teamsInGame.size() == 1) { // I don't think zero can happen as at least one player will be there
+                    for (Team team : teams) {
+                        if (getCurrentTeamByTeam(team) == null) {
+                            CurrentTeam current = new CurrentTeam(team, this);
+                            org.bukkit.scoreboard.Team scoreboardTeam = gameScoreboard.getTeam(team.name);
+                            if (scoreboardTeam == null) {
+                                scoreboardTeam = gameScoreboard.registerNewTeam(team.name);
+                            }
+                            current.setScoreboardTeam(scoreboardTeam);
+                            current.forced = true;
+                            teamsInGame.add(current);
+                            break;
+                        }
+                    }
+                }
+            } else if (players.size() >= getMinPlayers()
                     && (getOriginalOrInheritedJoinRandomTeamAfterLobby() || teamsInGame.size() > 1)) {
                 if (countdown == 0) {
                     nextCountdown = gameTime;
@@ -1962,7 +1992,11 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             if (status == GameStatus.RUNNING && tick.getNextStatus() == GameStatus.RUNNING) {
                 int runningTeams = 0;
                 for (CurrentTeam t : teamsInGame) {
-                    runningTeams += t.isAlive() ? 1 : 0;
+                    if (t.forced) {
+                        runningTeams += t.isBed ? 1 : 0;
+                    } else {
+                        runningTeams += t.isAlive() ? 1 : 0;
+                    }
                 }
                 if (runningTeams <= 1) {
                     if (runningTeams == 1) {
@@ -2380,15 +2414,15 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     }
 
     public static String bedExistString() {
-        return Main.getConfigurator().config.getString("scoreboard.bedExists");
+        return ChatColor.translateAlternateColorCodes('&', Main.getConfigurator().config.getString("scoreboard.bedExists"));
     }
 
     public static String bedLostString() {
-        return Main.getConfigurator().config.getString("scoreboard.bedLost");
+        return ChatColor.translateAlternateColorCodes('&', Main.getConfigurator().config.getString("scoreboard.bedLost"));
     }
 
     public static String anchorEmptyString() {
-        return Main.getConfigurator().config.getString("scoreboard.anchorEmpty");
+        return ChatColor.translateAlternateColorCodes('&',Main.getConfigurator().config.getString("scoreboard.anchorEmpty"));
     }
 
     private void updateScoreboardTimer() {
@@ -2409,9 +2443,10 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     }
 
     private String formatScoreboardTitle() {
-        return Objects.requireNonNull(Main.getConfigurator().config.getString("scoreboard.title"))
-                .replace("%game%", this.name)
-                .replace("%time%", this.getFormattedTimeLeft());
+        return Objects.requireNonNull(
+                ChatColor.translateAlternateColorCodes('&', Main.getConfigurator().config.getString("scoreboard.title"))
+                        .replace("%game%", this.name)
+                        .replace("%time%", this.getFormattedTimeLeft()));
     }
 
     public String getFormattedTimeLeft() {
@@ -2471,7 +2506,12 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         playersLine = playersLine.replace("%players%", Integer.toString(players.size()));
         playersLine = playersLine.replace("%maxplayers%", Integer.toString(calculatedMaxPlayers));
 
-        final List<String> texts = new ArrayList<>(Main.getConfigurator().config.getStringList("sign.lines"));
+        final List<String> texts = new ArrayList<>(
+                Main.getConfigurator().config.getStringList("sign.lines")
+                        .stream()
+                        .map(line -> ChatColor.translateAlternateColorCodes('&', line))
+                        .collect(Collectors.toList())
+        );
 
         for (int i = 0; i < texts.size(); i++) {
             String text = texts.get(i);
@@ -2517,12 +2557,17 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             obj = gameScoreboard.registerNewObjective("lobby", "dummy");
             obj.setDisplaySlot(DisplaySlot.SIDEBAR);
             obj.setDisplayName(this.formatLobbyScoreboardString(
-                    Main.getConfigurator().config.getString("lobby-scoreboard.title", "§eBEDWARS")));
+                    ChatColor.translateAlternateColorCodes('&', Main.getConfigurator().config.getString("lobby-scoreboard.title", "&eBEDWARS") )
+            ));
         }
 
         gameScoreboard.getEntries().forEach(gameScoreboard::resetScores);
 
-        List<String> rows = Main.getConfigurator().config.getStringList("lobby-scoreboard.content");
+        List<String> rows = Main.getConfigurator().config.getStringList("lobby-scoreboard.content")
+                .stream()
+                .map(content -> ChatColor.translateAlternateColorCodes('&', content))
+                .collect(Collectors.toList());
+
         int rowMax = rows.size();
         if (rows.isEmpty()) {
             return;

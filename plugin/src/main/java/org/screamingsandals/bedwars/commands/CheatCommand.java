@@ -56,6 +56,15 @@ public class CheatCommand extends BaseCommand {
                 return true;
             }
             Game game = Main.getPlayerGameProfile(player).getGame();
+            if (args.get(0).equalsIgnoreCase("startemptygame")) {
+                if (game.getStatus() == GameStatus.WAITING) {
+                    game.forceGameToStart = true;
+                    sender.sendMessage(i18n("game_forced"));
+                } else {
+                    sender.sendMessage(i18n("cheat_not_waiting"));
+                }
+                return true;
+            }
             if (game.getStatus() != GameStatus.RUNNING) {
                 sender.sendMessage(i18n("cheat_game_not_running"));
                 return true;
@@ -134,7 +143,7 @@ public class CheatCommand extends BaseCommand {
         }
 
         if (args.size() == 1) {
-            completion.addAll(Arrays.asList("give", "kill"));
+            completion.addAll(Arrays.asList("give", "kill", "startemptygame"));
         }
         if (Main.isPlayerInGame((Player) sender)) {
             if (args.size() > 1 && args.get(0).equals("give")) {

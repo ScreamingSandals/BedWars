@@ -26,6 +26,7 @@ import java.util.*;
 import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -151,7 +152,10 @@ public class StatisticsHolograms implements TouchHandler {
         final Hologram holo = Main.getHologramManager().spawnHologramTouchable(player, holoLocation);
         holo.addHandler(this);
 
-        String headline = Main.getConfigurator().config.getString("holograms.headline", "Your §eBEDWARS§f stats");
+        String headline =
+                ChatColor.translateAlternateColorCodes('&',
+                        Main.getConfigurator().config.getString("holograms.headline", "Your &eBEDWARS&f stats")
+                );
         if (!headline.trim().isEmpty()) {
             holo.addLine(headline);
         }

@@ -28,6 +28,7 @@ import org.screamingsandals.bedwars.lib.nms.accessors.PacketPlayOutPlayerListHea
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.screamingsandals.bedwars.lib.nms.utils.ClassStorage.*;
 
@@ -40,7 +41,10 @@ public class TabManager {
             header = Main.getConfigurator().config.getStringList("tab.header.contents");
         }
         if (Main.getConfigurator().config.getBoolean("tab.footer.enabled")) {
-            footer = Main.getConfigurator().config.getStringList("tab.footer.contents");
+            footer = Main.getConfigurator().config.getStringList("tab.footer.contents")
+                    .stream()
+                    .map(content -> ChatColor.translateAlternateColorCodes('&', content))
+                    .collect(Collectors.toList());
         }
     }
 

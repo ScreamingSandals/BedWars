@@ -21,8 +21,6 @@ package org.screamingsandals.bedwars.listener;
 
 import net.milkbowl.vault.chat.Chat;
 import org.bukkit.*;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
@@ -412,7 +410,11 @@ public class PlayerListener implements Listener {
             //Fix for obsidian dropping
             if (game.getStatus() == GameStatus.RUNNING && gamePlayer.isInGame()) {
                 if (block.getType() == Material.ENDER_CHEST) {
-                    event.setDropItems(false);
+                    try {
+                        event.setDropItems(false);
+                    } catch (Throwable t) {
+                        block.setType(Material.AIR);
+                    }
                 }
             }
         } else if (Main.getConfigurator().config.getBoolean("preventArenaFromGriefing")) {
@@ -1018,7 +1020,10 @@ public class PlayerListener implements Listener {
             String displayName = player.getDisplayName();
             String playerListName = player.getPlayerListName();
 
-            String format = Main.getConfigurator().config.getString("chat.format", "<%teamcolor%%name%§r> ");
+            String format =
+                    ChatColor.translateAlternateColorCodes('&',
+                            Main.getConfigurator().config.getString("chat.format", "<%teamcolor%%name%&r> ")
+                    );
             if (team != null) {
                 format = format.replace("%teamcolor%", team.teamInfo.color.chatColor.toString());
                 format = format.replace("%team%", team.teamInfo.name);
@@ -1106,44 +1111,6 @@ public class PlayerListener implements Listener {
                             recipients.remove();
                         }
                     }
-                }
-            }
-        }
-    }
-
-    @EventHandler
-    public void onMove(PlayerMoveEvent event) {
-        if (event.isCancelled()) {
-            return;
-        }
-
-        Player player = event.getPlayer();
-        if (Main.isPlayerInGame(player)) {
-            GamePlayer gPlayer = Main.getPlayerGameProfile(player);
-            Game game = gPlayer.getGame();
-            if (game.getOriginalOrInheritedDamageWhenPlayerIsNotInArena() && game.getStatus() == GameStatus.RUNNING
-                    && !gPlayer.isSpectator) {
-                if (!GameCreator.isInArea(event.getTo(), game.getPos1(), game.getPos2())) {
-                    AttributeInstance armor = player.getAttribute(Attribute.GENERIC_ARMOR);
-                    AttributeInstance armorToughness = null;
-                    if (Arrays.stream(Attribute.values()).anyMatch(attribute -> "GENERIC_ARMOR_TOUGHNESS".equals(attribute.name()))) {
-                        armorToughness = player.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS);
-                    }
-                    if (armor == null) {
-                        player.damage(5);
-                    } else {
-                        // this is not 100% accurate formula - armorToughness check contains weaponDamage which is hardcoded to 5 (4*5=20) but we don't know the weapon damage yet
-                        double multiplier = (1.0 - Math.min(20.0, Math.max(armor.getValue() / 5.0, armor.getValue() - 20.0 / ((armorToughness != null ? armorToughness.getValue() : 0) + 8))) / 25.0);
-                        if (multiplier < 1) {
-                            multiplier = 2 - multiplier;
-                        }
-                        double weaponDamage = multiplier * 5.0;
-                        player.damage(weaponDamage);
-                    }
-                }
-            } else if (Main.getConfigurator().config.getBoolean("preventSpectatorFlyingAway", false) && gPlayer.isSpectator && (game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING)) {
-                if (!GameCreator.isInArea(event.getTo(), game.getPos1(), game.getPos2())) {
-                    event.setCancelled(true);
                 }
             }
         }

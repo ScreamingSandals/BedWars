@@ -20,6 +20,7 @@
 package org.screamingsandals.bedwars.inventories;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -56,6 +57,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.screamingsandals.bedwars.lib.lang.I.i18nc;
 import static org.screamingsandals.bedwars.lib.lang.I18n.i18n;
@@ -230,14 +232,19 @@ public class ShopInventory implements Listener {
             enabled = reader.getBoolean("generate-lore", enabled);
 
             List<String> loreText = reader.getStringList("generated-lore-text",
-                    Main.getConfigurator().config.getStringList("lore.text"));
+                    Main.getConfigurator().config.getStringList("lore.text"))
+                    .stream()
+                    .map(lore -> ChatColor.translateAlternateColorCodes('&', lore))
+                    .collect(Collectors.toList());
 
             if (enabled) {
                 ItemStack stack = event.getStack();
                 ItemMeta stackMeta = stack.getItemMeta();
                 List<String> lore = new ArrayList<>();
                 if (stackMeta.hasLore()) {
-                    lore = Objects.requireNonNullElseGet(stackMeta.getLore(), ArrayList::new);
+                    if (stackMeta.getLore() != null) {
+                        lore = stackMeta.getLore();
+                    }
                 }
                 for (String s : loreText) {
                     s = s.replaceAll("%price%", Integer.toString(price));

@@ -24,7 +24,6 @@ import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.screamingsandals.bedwars.lib.nms.accessors.EntityAccessor;
 import org.screamingsandals.bedwars.lib.nms.accessors.IChatBaseComponentAccessor;
-import org.screamingsandals.bedwars.lib.nms.accessors.IChatBaseComponent_i_ChatSerializerAccessor;
 import org.screamingsandals.bedwars.lib.nms.utils.ClassStorage;
 import org.screamingsandals.bedwars.lib.nms.utils.InstanceMethod;
 import org.screamingsandals.bedwars.lib.nms.utils.Version;
@@ -32,6 +31,8 @@ import org.screamingsandals.bedwars.tab.TabManager;
 
 public class EntityNMS {
 	protected Object handler;
+
+	protected EntityNMS() {}
 
 	public EntityNMS(Object handler) {
 		this.handler = handler;
