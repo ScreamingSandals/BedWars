@@ -217,7 +217,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     private BukkitTask task;
     private List<CurrentTeam> teamsInGame = new ArrayList<>();
     private Region region = Main.isLegacy() ? new LegacyRegion() : new FlatteningRegion();
-    private TeamSelectorInventory teamSelectorInventory;
+    private List<TeamSelectorInventory> teamSelectorInventory = new ArrayList<>();
     private Scoreboard gameScoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
     private StatusBar statusbar;
     private Map<Location, ItemStack[]> usedChests = new HashMap<>();
@@ -364,7 +364,9 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     }
 
     public TeamSelectorInventory getTeamSelectorInventory() {
-        return teamSelectorInventory;
+        TeamSelectorInventory gui = new TeamSelectorInventory(Main.getInstance(), this);
+        teamSelectorInventory.add(gui);
+        return gui;
     }
 
     public boolean isBlockAddedDuringGame(Location loc) {
@@ -1650,9 +1652,9 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                             .setStyle(BarStyle.valueOf(Main.getConfigurator().config.getString("bossbar.lobby.style")));
                 }
             }
-            if (teamSelectorInventory == null) {
-                teamSelectorInventory = new TeamSelectorInventory(Main.getInstance(), this);
-            }
+           // if (teamSelectorInventory == null) {
+           //     teamSelectorInventory = new TeamSelectorInventory(Main.getInstance(), this);
+           // }
             updateSigns();
         }
 
@@ -1765,9 +1767,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                                     BarStyle.valueOf(Main.getConfigurator().config.getString("bossbar.game.style")));
                         }
                     }
-                    if (teamSelectorInventory != null)
-                        teamSelectorInventory.destroy();
-                    teamSelectorInventory = null;
+                    teamSelectorInventory.forEach(gui->gui.destroy());
                     if (gameScoreboard.getObjective("lobby") != null) {
                         gameScoreboard.getObjective("lobby").unregister();
                     }
