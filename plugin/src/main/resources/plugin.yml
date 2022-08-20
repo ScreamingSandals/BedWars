@@ -31,7 +31,6 @@ softdepend:
   - MultiWorld
   - UltimateCore
   - PlaceholderAPI
-  - BarAPI
   - PerWorldInventory
   - SlimeWorldManager
   - My_Worlds

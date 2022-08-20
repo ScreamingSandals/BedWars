@@ -6,7 +6,6 @@ dependencies {
     /* PROVIDED */
     compileOnly 'net.milkbowl.vault:VaultAPI:1.7'
     compileOnly 'com.onarandombox.multiversecore:Multiverse-Core:4.0.0'
-    compileOnly 'me.confuser:BarAPI:3.5'
     compileOnly 'me.clip:placeholderapi:2.9.2'
     compileOnly('me.ebonjaeger:perworldinventory-kt:2.3.1')  {
         exclude group: '*', module: '*'
@@ -22,7 +21,7 @@ dependencies {
     implementation project(':BedWars-API')
     implementation project(':BedWars-NMS')
     implementation 'com.zaxxer:HikariCP:3.3.0'
-    implementation 'org.screamingsandals.simpleinventories:SimpleInventories-Core:1.0.6.6'
+    implementation 'org.screamingsandals.simpleinventories:SimpleInventories-Core:1.0.6.7'
     implementation 'org.bstats:bstats-bukkit:2.2.1'
 }
 
@@ -42,7 +41,7 @@ buildConfig {
 }
 
 prepareTestTask()
-        .versions('1.19.1', '1.18.2', '1.17.1', '1.16.5', '1.15.2', '1.14.4', '1.13.2', '1.12.2', '1.11.2', '1.10.2', '1.9.4')
+        .versions('1.19.2', '1.18.2', '1.17.1', '1.16.5', '1.15.2', '1.14.4', '1.13.2', '1.12.2', '1.11.2', '1.10.2', '1.9.4', '1.8.8')
         .setSubdirectory("paper-0-2-x-branch")
         .jvmArgs('-Dio.papermc.paper.suppress.sout.nags=true', '-DPaper.IgnoreJavaVersion=true') // suppress System.out.println nag
         .onlineMode(false)

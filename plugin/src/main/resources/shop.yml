@@ -168,52 +168,34 @@ data:
    - BREAD;10 for 5 of gold
 
 - stack:
-   type: POTION
-   meta:
-    ==: ItemMeta
-    meta-type: POTION
+    type: POTION
     display-name: "Drinks"
     lore:
-     - "Not enough? Use these potions and you'll feel better!"
+      - "Not enough? Use these potions and you'll feel better!"
     potion-type: strength
   row: 3
   column: 6
   items:
-   - stack:
-      type: POTION
-      meta:
-       ==: ItemMeta
-       meta-type: POTION
-       potion-type: healing
-     price: 3 of iron
-   - stack:
-      type: POTION
-      meta:
-       ==: ItemMeta
-       meta-type: POTION
-       potion-type: strong_healing
-     price: 5 of iron
-   - stack:
-      type: POTION
-      meta:
-       ==: ItemMeta
-       meta-type: POTION
-       potion-type: swiftness
-     price: 7 of iron
-   - stack:
-      type: POTION
-      meta:
-       ==: ItemMeta
-       meta-type: POTION
-       potion-type: strength
-     price: 1 of gold
-   - stack:
-      type: POTION
-      meta:
-       ==: ItemMeta
-       meta-type: POTION
-       potion-type: regeneration
-     price: 3 of gold
+    - stack:
+        type: POTION
+        potion-type: healing
+      price: 3 of iron
+    - stack:
+        type: POTION
+        potion-type: strong_healing
+      price: 5 of iron
+    - stack:
+        type: POTION
+        potion-type: swiftness
+      price: 7 of iron
+    - stack:
+        type: POTION
+        potion-type: strength
+      price: 1 of gold
+    - stack:
+        type: POTION
+        potion-type: regeneration
+      price: 3 of gold
 
 - stack: "SANDSTONE;1;Blocks;Get to the others! Possible with blocks."
   linebreak: before
