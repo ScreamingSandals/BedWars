@@ -41,20 +41,19 @@ import org.screamingsandals.simpleinventories.utils.MapReader;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.WeakHashMap;
 
 import static org.screamingsandals.bedwars.lib.lang.I18n.i18nonly;
 
 public class TeamSelectorInventory implements Listener {
+    private Player player;
     private Game game;
     private SimpleInventories simpleGuiFormat;
     private Options options;
-    private List<Player> openedForPlayers = new ArrayList<>();
 
-    private WeakHashMap<SimpleInventories, Boolean> weakFormats = new WeakHashMap<>();
 
-    public TeamSelectorInventory(Main plugin, Game game) {
+    public TeamSelectorInventory(Main plugin, Game game, Player player) {
         this.game = game;
+        this.player = player;
 
         options = new Options(Main.getInstance());
         options.setPrefix(i18nonly("team_selection_name", "Select team - %arena%").replace("%arena%", game.getName()));
@@ -74,12 +73,10 @@ public class TeamSelectorInventory implements Listener {
     }
 
     public void destroy() {
-        openedForPlayers.clear();
-        weakFormats.clear();
         HandlerList.unregisterAll(this);
     }
 
-    public void openForPlayer(Player player) {
+    public void openForPlayer() {
         BedwarsOpenTeamSelectionEvent event = new BedwarsOpenTeamSelectionEvent(this.game, player);
         Main.getInstance().getServer().getPluginManager().callEvent(event);
 
@@ -88,10 +85,7 @@ public class TeamSelectorInventory implements Listener {
         }
 
         createData();
-        SimpleInventories sgui = simpleGuiFormat;
-        weakFormats.putIfAbsent(sgui, true);
-        sgui.openForPlayer(player);
-        openedForPlayers.add(player);
+        simpleGuiFormat.openForPlayer(player);
     }
 
     private void createData() {
@@ -146,25 +140,22 @@ public class TeamSelectorInventory implements Listener {
     }
 
     private void repaint() {
-        for (Player player : openedForPlayers) {
-            GuiHolder guiHolder = simpleGuiFormat.getCurrentGuiHolder(player);
-            if (guiHolder == null) {
-                return;
-            }
-
-            createData();
-            guiHolder.setFormat(simpleGuiFormat);
-            guiHolder.repaint();
+        GuiHolder guiHolder = simpleGuiFormat.getCurrentGuiHolder(player);
+        if (guiHolder == null) {
+            return;
         }
+
+        createData();
+        guiHolder.setFormat(simpleGuiFormat);
+        guiHolder.repaint();
     }
 
     @EventHandler
     public void onPostAction(PostActionEvent event) {
-        if (event.getFormat() != simpleGuiFormat && !weakFormats.containsKey(event.getFormat())) {
+        if (event.getFormat() != simpleGuiFormat || !event.getPlayer().equals(player)) {
             return;
         }
 
-        Player player = event.getPlayer();
         MapReader reader = event.getItem().getReader();
         if (reader.containsKey("team")) {
             Team team = (Team) reader.get("team");
@@ -172,7 +163,6 @@ public class TeamSelectorInventory implements Listener {
             player.closeInventory();
 
             repaint();
-            openedForPlayers.remove(player);
         }
     }
 

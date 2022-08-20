@@ -473,11 +473,11 @@ public class PlayerListener implements Listener {
                             if (item.getType() == Material
                                     .valueOf(Main.getConfigurator().config.getString("items.jointeam", "COMPASS"))) {
                                 if (game.getStatus() == GameStatus.WAITING) {
-                                    TeamSelectorInventory inv = game.getTeamSelectorInventory();
+                                    TeamSelectorInventory inv = game.getTeamSelectorInventory(p);
                                     if (inv == null) {
                                         return;
                                     }
-                                    inv.openForPlayer(p);
+                                    inv.openForPlayer();
                                 } else if (gPlayer.isSpectator) {
                                     // TODO
                                 }
@@ -709,11 +709,11 @@ public class PlayerListener implements Listener {
                 if (event.getMaterial() == Material
                         .valueOf(Main.getConfigurator().config.getString("items.jointeam", "COMPASS"))) {
                     if (game.getStatus() == GameStatus.WAITING) {
-                        TeamSelectorInventory inv = game.getTeamSelectorInventory();
+                        TeamSelectorInventory inv = game.getTeamSelectorInventory(player);
                         if (inv == null) {
                             return;
                         }
-                        inv.openForPlayer(player);
+                        inv.openForPlayer();
                     } else if (gPlayer.isSpectator) {
                         // TODO
                     }
