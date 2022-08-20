@@ -182,6 +182,7 @@ public class TeamSelectorInventory implements Listener {
 
     @EventHandler
     public void onPlayerLeave(BedwarsPlayerLeaveEvent event) {
+        openedForPlayers.remove(event.getPlayer());
         if (event.getGame() != game || !inventoryHolder.equals(event.getPlayer())) {
             return;
         }
