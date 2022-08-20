@@ -44,6 +44,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.screamingsandals.bedwars.Main;
+import org.screamingsandals.bedwars.api.APIUtils;
 import org.screamingsandals.bedwars.api.RunningTeam;
 import org.screamingsandals.bedwars.api.events.BedwarsPlayerDeathMessageSendEvent;
 import org.screamingsandals.bedwars.api.events.BedwarsPlayerKilledEvent;
@@ -52,6 +53,8 @@ import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.commands.BaseCommand;
 import org.screamingsandals.bedwars.game.*;
 import org.screamingsandals.bedwars.inventories.TeamSelectorInventory;
+import org.screamingsandals.bedwars.special.listener.ProtectionWallListener;
+import org.screamingsandals.bedwars.special.listener.RescuePlatformListener;
 import org.screamingsandals.bedwars.statistics.PlayerStatistic;
 import org.screamingsandals.bedwars.utils.*;
 import org.screamingsandals.bedwars.lib.debug.Debug;
@@ -810,34 +813,40 @@ public class PlayerListener implements Listener {
                             }
 
                             if (!anchorFilled && stack.getType().isBlock()) {
-                                BlockFace face = event.getBlockFace();
-                                Block block = event.getClickedBlock().getLocation().clone().add(MiscUtils.getDirection(face))
-                                        .getBlock();
-                                if (block.getType() == Material.AIR) {
-                                    BlockState originalState = block.getState();
-                                    block.setType(stack.getType());
-                                    try {
-                                        // The method is no longer in API, but in legacy versions exists
-                                        Block.class.getMethod("setData", byte.class).invoke(block,
-                                                (byte) stack.getDurability());
-                                    } catch (Exception e) {
-                                    }
-                                    BlockPlaceEvent bevent = new BlockPlaceEvent(block, originalState,
-                                            event.getClickedBlock(), stack, player, true);
-                                    Bukkit.getPluginManager().callEvent(bevent);
+                                if (
+                                        /* These special items don't work with the feature below */
+                                        APIUtils.unhashFromInvisibleStringStartsWith(stack, ProtectionWallListener.PROTECTION_WALL_PREFIX) == null
+                                        && APIUtils.unhashFromInvisibleStringStartsWith(stack, RescuePlatformListener.RESCUE_PLATFORM_PREFIX) == null
+                                ) {
+                                        BlockFace face = event.getBlockFace();
+                                        Block block = event.getClickedBlock().getLocation().clone().add(MiscUtils.getDirection(face))
+                                                .getBlock();
+                                        if (block.getType() == Material.AIR) {
+                                            BlockState originalState = block.getState();
+                                            block.setType(stack.getType());
+                                            try {
+                                                // The method is no longer in API, but in legacy versions exists
+                                                Block.class.getMethod("setData", byte.class).invoke(block,
+                                                        (byte) stack.getDurability());
+                                            } catch (Exception e) {
+                                            }
+                                            BlockPlaceEvent bevent = new BlockPlaceEvent(block, originalState,
+                                                    event.getClickedBlock(), stack, player, true);
+                                            Bukkit.getPluginManager().callEvent(bevent);
 
-                                    if (bevent.isCancelled()) {
-                                        originalState.update(true, false);
-                                    } else {
-                                        if (player.getGameMode() != GameMode.CREATIVE) {
-                                            stack.setAmount(stack.getAmount() - 1);
+                                            if (bevent.isCancelled()) {
+                                                originalState.update(true, false);
+                                            } else {
+                                                if (player.getGameMode() != GameMode.CREATIVE) {
+                                                    stack.setAmount(stack.getAmount() - 1);
+                                                }
+                                                if (!player.isSneaking()) {
+                                                    // TODO get right block place sound
+                                                    Sounds.BLOCK_STONE_PLACE.playSound(player, block.getLocation(), 1, 1);
+                                                }
+                                            }
                                         }
-                                        if (!player.isSneaking()) {
-                                            // TODO get right block place sound
-                                            Sounds.BLOCK_STONE_PLACE.playSound(player, block.getLocation(), 1, 1);
                                         }
-                                    }
-                                }
                             }
                         }
                     }

@@ -431,9 +431,18 @@ public class ShopInventory implements Listener {
             double maxStackSize;
             int finalStackSize;
 
-            for (ItemStack itemStack : event.getPlayer().getInventory().getStorageContents()) {
-                if (itemStack != null && itemStack.isSimilar(type.getStack())) {
-                    inInventory = inInventory + itemStack.getAmount();
+            try {
+                for (ItemStack itemStack : event.getPlayer().getInventory().getStorageContents()) {
+                    if (itemStack != null && itemStack.isSimilar(type.getStack())) {
+                        inInventory = inInventory + itemStack.getAmount();
+                    }
+                }
+            } catch (Throwable ignored) {
+                // 1.8.8: let's just hope no one will make chestplate as a currency :skull:
+                for (ItemStack itemStack : event.getPlayer().getInventory().getContents()) {
+                    if (itemStack != null && itemStack.isSimilar(type.getStack())) {
+                        inInventory = inInventory + itemStack.getAmount();
+                    }
                 }
             }
             if (Main.getConfigurator().config.getBoolean("sell-max-64-per-click-in-shop")) {

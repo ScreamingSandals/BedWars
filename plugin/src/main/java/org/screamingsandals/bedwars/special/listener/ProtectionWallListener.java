@@ -46,7 +46,7 @@ import java.util.ArrayList;
 import static org.screamingsandals.bedwars.lib.lang.I18n.i18nonly;
 
 public class ProtectionWallListener implements Listener {
-    private static final String PROTECTION_WALL_PREFIX = "Module:ProtectionWall:";
+    public static final String PROTECTION_WALL_PREFIX = "Module:ProtectionWall:";
 
     @EventHandler
     public void onProtectionWallRegistered(BedwarsApplyPropertyToBoughtItem event) {

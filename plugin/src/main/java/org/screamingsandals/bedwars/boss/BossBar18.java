@@ -19,19 +19,30 @@
 
 package org.screamingsandals.bedwars.boss;
 
+import com.viaversion.viaversion.api.Via;
+import com.viaversion.viaversion.api.legacy.bossbar.BossBar;
+import com.viaversion.viaversion.api.legacy.bossbar.BossColor;
+import com.viaversion.viaversion.api.legacy.bossbar.BossStyle;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.boss.BarColor;
 import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.lib.nms.entity.BossBarDragon;
 import org.screamingsandals.bedwars.lib.nms.entity.BossBarWither;
 import org.screamingsandals.bedwars.lib.nms.entity.FakeEntityNMS;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 public class BossBar18 implements org.screamingsandals.bedwars.api.boss.BossBar18 {
     private double progress = 0;
 
     public final FakeEntityNMS<?> bossbarEntity;
+    public final boolean viaActive;
+    public BossBar viaBossBar; // can't be final
 
     public BossBar18(Location location) {
         String backend = Main.getConfigurator().config.getString("bossbar.backend-entity");
@@ -40,6 +51,16 @@ public class BossBar18 implements org.screamingsandals.bedwars.api.boss.BossBar1
         } else {
             bossbarEntity = new BossBarWither(location);
         }
+        boolean viaActive = false;
+        if (Bukkit.getPluginManager().isPluginEnabled("ViaVersion")) {
+            try {
+                viaBossBar = Via.getAPI().legacyAPI().createLegacyBossBar("", 1, BossColor.PURPLE, BossStyle.SOLID);
+                viaActive = true;
+            } catch (Throwable ignored) {
+                // Too old ViaVersion is installed
+            }
+        }
+        this.viaActive = viaActive;
     }
 
     @Override
@@ -50,15 +71,48 @@ public class BossBar18 implements org.screamingsandals.bedwars.api.boss.BossBar1
     @Override
     public void setMessage(String message) {
         bossbarEntity.setCustomName(message);
+        if (viaActive) {
+            viaBossBar.setTitle(message);
+        }
+    }
+
+    public void setViaColor(String color) {
+        if (viaActive) {
+            try {
+                viaBossBar.setColor(BossColor.valueOf(color.toUpperCase()));
+            } catch (Throwable ignored) {
+            }
+        }
+    }
+
+    public void setViaStyle(String style) {
+        if (viaActive) {
+            try {
+                viaBossBar.setStyle(BossStyle.valueOf(style.toUpperCase()));
+            } catch (Throwable ignored) {
+            }
+        }
     }
 
     @Override
     public void addPlayer(Player player) {
+        if (viaActive) {
+            if (Via.getAPI().getPlayerVersion(player.getUniqueId()) >= 107) {
+                viaBossBar.addPlayer(player.getUniqueId());
+                return;
+            }
+        }
         bossbarEntity.addViewer(player);
     }
 
     @Override
     public void removePlayer(Player player) {
+        if (viaActive) {
+            if (viaBossBar.getPlayers().contains(player.getUniqueId())) {
+                viaBossBar.removePlayer(player.getUniqueId());
+                return;
+            }
+        }
         bossbarEntity.removeViewer(player);
     }
 
@@ -72,10 +126,26 @@ public class BossBar18 implements org.screamingsandals.bedwars.api.boss.BossBar1
         }
 
         bossbarEntity.setHealth(progress);
+        if (viaActive) {
+            viaBossBar.setHealth((float) progress);
+        }
     }
 
     @Override
     public List<Player> getViewers() {
+        if (viaActive) {
+            Set<UUID> viaViewers = viaBossBar.getPlayers();
+            if (!viaViewers.isEmpty()) {
+                List<Player> allViewers = new ArrayList<>(bossbarEntity.getViewers());
+                for (UUID viewer : viaViewers) {
+                    Player player = Bukkit.getPlayer(viewer);
+                    if (player != null && !allViewers.contains(player)) {
+                        allViewers.add(player);
+                    }
+                }
+                return allViewers;
+            }
+        }
         return bossbarEntity.getViewers();
     }
 
@@ -92,5 +162,12 @@ public class BossBar18 implements org.screamingsandals.bedwars.api.boss.BossBar1
     @Override
     public void setVisible(boolean visible) {
         bossbarEntity.setVisible(visible);
+        if (viaActive) {
+            if (visible && !viaBossBar.isVisible()) {
+                viaBossBar.show();
+            } else if (!visible && viaBossBar.isVisible()) {
+                viaBossBar.hide();
+            }
+        }
     }
 }

@@ -66,6 +66,7 @@ import org.screamingsandals.bedwars.api.special.SpecialItem;
 import org.screamingsandals.bedwars.api.upgrades.UpgradeRegistry;
 import org.screamingsandals.bedwars.api.upgrades.UpgradeStorage;
 import org.screamingsandals.bedwars.api.utils.DelayFactory;
+import org.screamingsandals.bedwars.boss.BossBar18;
 import org.screamingsandals.bedwars.boss.BossBarSelector;
 import org.screamingsandals.bedwars.boss.XPBar;
 import org.screamingsandals.bedwars.commands.StatsCommand;
@@ -104,7 +105,9 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     private ArenaTime arenaTime = ArenaTime.WORLD;
     private WeatherType arenaWeather = null;
     private BarColor lobbyBossBarColor = null;
+    private String lobbyBossBarColorName = null;
     private BarColor gameBossBarColor = null;
+    private String gameBossBarColorName = null;
     private String customPrefix = null;
 
     // Boolean settings
@@ -1087,10 +1090,11 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             game.postGameWaiting = configMap.getInt("postGameWaiting", 3);
             game.customPrefix = configMap.getString("customPrefix", null);
 
+            game.lobbyBossBarColorName = configMap.getString("lobbyBossBarColor", "default");
+            game.gameBossBarColorName = configMap.getString("gameBossBarColor", "default");
             try {
-                game.lobbyBossBarColor = loadBossBarColor(
-                        configMap.getString("lobbyBossBarColor", "default").toUpperCase());
-                game.gameBossBarColor = loadBossBarColor(configMap.getString("gameBossBarColor", "default").toUpperCase());
+                game.lobbyBossBarColor = loadBossBarColor(game.lobbyBossBarColorName.toUpperCase());
+                game.gameBossBarColor = loadBossBarColor(game.gameBossBarColorName.toUpperCase());
             } catch (Throwable t) {
                 // We're using 1.8
             }
@@ -1257,6 +1261,8 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             configMap.set("gameBossBarColor", gameBossBarColor == null ? "default" : gameBossBarColor.name());
         } catch (Throwable t) {
             // We're using 1.8
+            configMap.set("lobbyBossBarColor", lobbyBossBarColorName == null ? "default" : lobbyBossBarColorName);
+            configMap.set("gameBossBarColor", gameBossBarColorName == null ? "default" : gameBossBarColorName);
         }
 
         try {
@@ -1675,6 +1681,14 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                             : BarColor.valueOf(Main.getConfigurator().config.getString("bossbar.lobby.color")));
                     bossbar19
                             .setStyle(BarStyle.valueOf(Main.getConfigurator().config.getString("bossbar.lobby.style")));
+                } else if (bossbar instanceof BossBar18) {
+                    BossBar18 bossBar18 = (BossBar18) bossbar;
+                    if (lobbyBossBarColorName != null && !lobbyBossBarColorName.equals("default")) {
+                        bossBar18.setViaColor(lobbyBossBarColorName);
+                    } else {
+                        bossBar18.setViaColor(Main.getConfigurator().config.getString("bossbar.lobby.color"));
+                    }
+                    bossBar18.setViaStyle(Main.getConfigurator().config.getString("bossbar.lobby.style"));
                 }
             }
            // if (teamSelectorInventory == null) {
@@ -1814,6 +1828,14 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                                     : BarColor.valueOf(Main.getConfigurator().config.getString("bossbar.game.color")));
                             bossbar19.setStyle(
                                     BarStyle.valueOf(Main.getConfigurator().config.getString("bossbar.game.style")));
+                        } else if (bossbar instanceof BossBar18) {
+                            BossBar18 bossBar18 = (BossBar18) bossbar;
+                            if (gameBossBarColorName != null && !gameBossBarColorName.equals("default")) {
+                                bossBar18.setViaColor(gameBossBarColorName);
+                            } else {
+                                bossBar18.setViaColor(Main.getConfigurator().config.getString("bossbar.game.color"));
+                            }
+                            bossBar18.setViaStyle(Main.getConfigurator().config.getString("bossbar.game.style"));
                         }
                     }
 

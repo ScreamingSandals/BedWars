@@ -36,6 +36,7 @@ softdepend:
   - My_Worlds
   - Citizens
   - Parties
+  - ViaVersion
 commands:
   bw:
     description: Command of BW plugin

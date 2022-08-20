@@ -50,7 +50,7 @@ import static org.screamingsandals.bedwars.lib.lang.I18n.i18n;
 import static org.screamingsandals.bedwars.lib.lang.I18n.i18nonly;
 
 public class RescuePlatformListener implements Listener {
-    private static final String RESCUE_PLATFORM_PREFIX = "Module:RescuePlatform:";
+    public static final String RESCUE_PLATFORM_PREFIX = "Module:RescuePlatform:";
 
     @EventHandler
     public void onRescuePlatformRegistered(BedwarsApplyPropertyToBoughtItem event) {
