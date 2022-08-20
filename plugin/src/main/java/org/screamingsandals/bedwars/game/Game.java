@@ -376,6 +376,14 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         return inventory;
     }
 
+    public void openTeamSelectorInventory(Player player) {
+        final TeamSelectorInventory inventory = getTeamSelectorInventory(player);
+        if (inventory != null) {
+            inventory.openForPlayer();
+            teamSelectorInventories.values().forEach(inv -> inv.notifyNewPlayerOpened(player));
+        }
+    }
+
     public boolean isBlockAddedDuringGame(Location loc) {
         return status == GameStatus.RUNNING && region.isBlockAddedDuringGame(loc);
     }
