@@ -21,17 +21,25 @@ package org.screamingsandals.bedwars.boss;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.screamingsandals.bedwars.Main;
+import org.screamingsandals.bedwars.lib.nms.entity.BossBarDragon;
 import org.screamingsandals.bedwars.lib.nms.entity.BossBarWither;
+import org.screamingsandals.bedwars.lib.nms.entity.FakeEntityNMS;
 
 import java.util.List;
 
 public class BossBar18 implements org.screamingsandals.bedwars.api.boss.BossBar18 {
     private double progress = 0;
 
-    public BossBarWither bossbarEntity;
+    public final FakeEntityNMS<?> bossbarEntity;
 
     public BossBar18(Location location) {
-        bossbarEntity = new BossBarWither(location);
+        String backend = Main.getConfigurator().config.getString("bossbar.backend-entity");
+        if ("dragon".equalsIgnoreCase(backend) || "ender_dragon".equalsIgnoreCase(backend) || "ender".equalsIgnoreCase(backend)) {
+            bossbarEntity = new BossBarDragon(location);
+        } else {
+            bossbarEntity = new BossBarWither(location);
+        }
     }
 
     @Override
@@ -46,10 +54,6 @@ public class BossBar18 implements org.screamingsandals.bedwars.api.boss.BossBar1
 
     @Override
     public void addPlayer(Player player) {
-        if (bossbarEntity == null) {
-            bossbarEntity = new BossBarWither(player.getLocation());
-        }
-
         bossbarEntity.addViewer(player);
     }
 

@@ -154,6 +154,10 @@ nmsGen {
         .reqMethod('recheckStatus')
     reqClass('spigot:EntityHuman')
         .reqMethod('spigot:releaseShoulderEntities')
+    reqClass('spigot:EntityWither')
+        .reqConstructor(World)
+    reqClass('spigot:EntityEnderDragon')
+        .reqConstructor(World)
 }
 
 tasks.getByName('compileJava').dependsOn('generateNmsComponents')

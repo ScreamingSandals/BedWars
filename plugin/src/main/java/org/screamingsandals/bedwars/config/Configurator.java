@@ -435,6 +435,9 @@ public class Configurator {
         checkOrSetConfig(modify, "bossbar.game.enable", true);
         checkOrSetConfig(modify, "bossbar.game.color", "GREEN");
         checkOrSetConfig(modify, "bossbar.game.style", "SEGMENTED_20");
+        if (Main.getVersionNumber() <= 108) {
+            checkOrSetConfig(modify, "bossbar.backend-entity", "wither");
+        }
 
         checkOrSetConfig(modify, "holograms.enabled", true);
         checkOrSetConfig(modify, "holograms.headline", "Your &eBEDWARS&f stats");

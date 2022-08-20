@@ -28,20 +28,10 @@ public class FakeEntityNMS<E extends Entity> extends EntityNMS implements Listen
     private boolean visible;
 
     @SuppressWarnings("unchecked")
-    protected FakeEntityNMS(final Class<E> entityClass, final Location location) {
+    protected FakeEntityNMS(final Object nmsEntity) {
         try {
-            final Object nmsEntity = ClassStorage.getMethod(
-                    location.getWorld(),
-                    "createEntity",
-                    Location.class,
-                    Class.class
-            ).invoke(
-                    location,
-                    entityClass
-            );
-
             entity = (E) ClassStorage.getMethod(nmsEntity, "getBukkitEntity").invoke();
-            this.handler = ClassStorage.getHandle(entity);
+            this.handler = nmsEntity;
         } catch (Throwable t) {
             Debug.warn("Could not create FakeEntityNMS: " + t.getMessage());
         }
@@ -93,7 +83,7 @@ public class FakeEntityNMS<E extends Entity> extends EntityNMS implements Listen
     public void onViewerAdded(Player viewer) {
         if (visible) {
             ClassStorage.sendPacket(viewer, createSpawnPacket());
-            teleport(viewer, viewer.getLocation());
+            teleport(viewer, createPosition(viewer));
         }
     }
 
