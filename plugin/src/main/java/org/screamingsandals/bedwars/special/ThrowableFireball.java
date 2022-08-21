@@ -62,6 +62,9 @@ public class ThrowableFireball extends SpecialItem implements org.screamingsanda
         fireball.setYield(damage);
         fireball.setBounce(false);
         fireball.setShooter(damagesThrower ? null : player);
+        if (Main.getVersionNumber() <= 108) {
+            fireball.teleport(fireball.getLocation().add(player.getEyeLocation().getDirection()));
+        }
     }
 
 }
