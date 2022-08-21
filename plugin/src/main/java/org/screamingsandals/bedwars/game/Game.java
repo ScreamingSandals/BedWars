@@ -1512,6 +1512,10 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                         .replace("%players%", Integer.toString(current.players.size()))
                         .replaceAll("%maxplayers%", Integer.toString(current.teamInfo.maxPlayers)));
 
+        if (Main.getTabManager() != null) {
+            players.forEach(Main.getTabManager()::modifyForPlayer);
+        }
+
         if (getOriginalOrInheritedAddWoolToInventoryOnJoin()) {
             int colorPosition = Main.getConfigurator().config.getInt("hotbar.color", 1);
             if (colorPosition >= 0 && colorPosition <= 8) {
