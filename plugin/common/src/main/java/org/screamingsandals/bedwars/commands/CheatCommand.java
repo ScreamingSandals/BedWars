@@ -22,6 +22,8 @@ package org.screamingsandals.bedwars.commands;
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
 import cloud.commandframework.arguments.standard.IntegerArgument;
+import org.screamingsandals.bedwars.PlatformService;
+import org.screamingsandals.bedwars.api.config.GameConfigurationContainer;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.game.GameManagerImpl;
@@ -235,7 +237,16 @@ public class CheatCommand extends BaseCommand {
                                 player.sendMessage(Message.of(LangKeys.IN_GAME_CHEAT_INVALID_PLAYER));
                                 return;
                             }
-                            bwPlayer.setHealth(0);
+                            if (game.get().getConfigurationContainer().getOrDefault(GameConfigurationContainer.ALLOW_FAKE_DEATH, false)) {
+                                var fakeDeath = PlatformService.getInstance().getFakeDeath();
+                                if (fakeDeath.isAvailable()) {
+                                    fakeDeath.die(bwPlayer);
+                                } else {
+                                    bwPlayer.setHealth(0);
+                                }
+                            } else {
+                                bwPlayer.setHealth(0);
+                            }
                             Message.of(LangKeys.IN_GAME_CHEAT_RECEIVED_KILL)
                                     .placeholder("player", player.getName())
                                     .defaultPrefix()

@@ -35,7 +35,7 @@ import org.screamingsandals.lib.utils.annotations.Service;
 
 @Service
 public class ProtectionWallListener {
-    private static final String PROTECTION_WALL_PREFIX = "Module:ProtectionWall:";
+    public static final String PROTECTION_WALL_PREFIX = "Module:ProtectionWall:";
 
     @OnEvent
     public void onProtectionWallRegistered(ApplyPropertyToBoughtItemEventImpl event) {

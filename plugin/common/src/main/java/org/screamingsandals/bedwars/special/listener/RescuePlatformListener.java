@@ -38,7 +38,7 @@ import org.screamingsandals.lib.utils.annotations.Service;
 
 @Service
 public class RescuePlatformListener {
-    private static final String RESCUE_PLATFORM_PREFIX = "Module:RescuePlatform:";
+    public static final String RESCUE_PLATFORM_PREFIX = "Module:RescuePlatform:";
 
     @OnEvent
     public void onRescuePlatformRegistered(ApplyPropertyToBoughtItemEventImpl event) {

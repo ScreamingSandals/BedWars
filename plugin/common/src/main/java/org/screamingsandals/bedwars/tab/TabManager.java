@@ -20,6 +20,7 @@
 package org.screamingsandals.bedwars.tab;
 
 import lombok.RequiredArgsConstructor;
+import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.utils.MiscUtils;
@@ -91,8 +92,8 @@ public class TabManager {
                     Component.fromLegacy(MiscUtils.translateAlternateColorCodes('&',
                             a.replace("%players%", String.valueOf(game.countPlayers()))
                                     .replace("%alive%", String.valueOf(game.countAlive()))
-                                    .replace("%spectating%", String.valueOf(game.countSpectating()))
-                                    .replace("%spectators%", String.valueOf(game.countSpectators()))
+                                    .replace("%spectating%", String.valueOf(gamePlayer.getGame().getStatus() != GameStatus.WAITING ? gamePlayer.getGame().countSpectating() : (gamePlayer.getGame().countPlayers() - gamePlayer.getGame().countRespawnable())))
+                                    .replace("%spectators%", String.valueOf(gamePlayer.getGame().getStatus() != GameStatus.WAITING ? gamePlayer.getGame().countSpectators() : (gamePlayer.getGame().countPlayers() - gamePlayer.getGame().countRespawnable())))
                                     .replace("%respawnable%", String.valueOf(game.countRespawnable()))
                                     .replace("%max%", String.valueOf(game.getMaxPlayers()))
                                     .replace("%map%", game.getName())))

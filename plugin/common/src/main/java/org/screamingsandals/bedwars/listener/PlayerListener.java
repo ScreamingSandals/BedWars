@@ -26,6 +26,8 @@ import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.commands.BedWarsPermission;
 import org.screamingsandals.bedwars.commands.admin.JoinTeamCommand;
 import org.screamingsandals.bedwars.config.MainConfig;
+import org.screamingsandals.bedwars.special.listener.ProtectionWallListener;
+import org.screamingsandals.bedwars.special.listener.RescuePlatformListener;
 import org.screamingsandals.bedwars.utils.EconomyUtils;
 import org.screamingsandals.bedwars.entities.EntitiesManagerImpl;
 import org.screamingsandals.bedwars.events.PlayerDeathMessageSendEventImpl;
@@ -968,7 +970,14 @@ public class PlayerListener {
                                 }
                             }
 
-                            if (!anchorFilled && stack.getMaterial().block().isPresent()) {
+                            if (
+                                    !anchorFilled
+                                    && stack.getMaterial().block().isPresent()
+
+                                    /* These special items don't work with the feature below */
+                                    && ItemUtils.getIfStartsWith(stack, ProtectionWallListener.PROTECTION_WALL_PREFIX) == null
+                                    && ItemUtils.getIfStartsWith(stack, RescuePlatformListener.RESCUE_PLATFORM_PREFIX) == null
+                            ) {
                                 var face = event.blockFace();
                                 var block = clickedBlock.getLocation().clone().add(face.getDirection()).getBlock();
                                 if (block.getType().isAir()) {

@@ -1605,6 +1605,10 @@ public class GameImpl implements Game {
             teamsInGame.add(teamForJoin);
         }
 
+        if (TabManager.isEnabled()) {
+            players.forEach(TabManager.getInstance()::modifyForPlayer);
+        }
+
         EventManager.fire(new PlayerJoinedTeamEventImpl(this, player, teamForJoin, cur));
     }
 
@@ -1672,6 +1676,15 @@ public class GameImpl implements Game {
                 players.forEach(TabManager.getInstance()::modifyForPlayer);
             }
             healthIndicator.removeTrackedPlayer(gamePlayer);
+
+            Tasker
+                    .build(() -> {
+                        if (!gamePlayer.getGameMode().is("spectator")) { // Fix Multiverse overriding our gamemode
+                            gamePlayer.setGameMode(GameModeHolder.of("spectator"));
+                        }
+                    })
+                    .delay(2, TaskerTime.TICKS)
+                    .start();
         }, true);
 
         return specSpawn;
@@ -1816,8 +1829,13 @@ public class GameImpl implements Game {
                         }
                     }
                 }
-            } else if (players.size() >= getMinPlayers()
-                    && (configurationContainer.getOrDefault(GameConfigurationContainer.JOIN_RANDOM_TEAM_AFTER_LOBBY, false) || teamsInGame.size() > 1)) {
+            } else if (
+                    players.size() >= getMinPlayers()
+                    && (
+                            teamsInGame.size() > 1
+                            || (configurationContainer.getOrDefault(GameConfigurationContainer.JOIN_RANDOM_TEAM_AFTER_LOBBY, false) && countRespawnable() < players.size())
+                    )
+            ) {
                 if (countdown == 0) {
                     nextCountdown = gameTime;
                     nextStatus = GameStatus.RUNNING;
