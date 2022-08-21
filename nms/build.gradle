@@ -133,7 +133,8 @@ nmsGen {
     reqClass('spigot:PathfinderGoalMeleeAttack')
         .reqConstructor(EntityCreature, double, boolean)
     reqClass('spigot:PathfinderGoalNearestAttackableTarget')
-        .reqConstructor(EntityInsentient, Class, boolean)
+        .reqConstructor(EntityInsentient, Class, boolean) // 1.14+
+        .reqConstructor(EntityCreature, Class, boolean) // <= 1.13.2
     reqClass('spigot:PlayerConnection')
         .reqField('spigot:networkManager')
         .reqMethod('spigot:sendPacket', Packet)
@@ -165,6 +166,10 @@ nmsGen {
         .reqConstructor(EntityCreature, double)
     reqClass('spigot:PathfinderGoalRandomLookaround')
         .reqConstructor(EntityInsentient)
+    reqClass('spigot:PathfinderGoalHurtByTarget')
+        .reqConstructor(EntityCreature, boolean, Class[]) // old
+        .reqConstructor(EntityCreature, Class[]) // new
+    reqClass('spigot:EntityIronGolem')
 }
 
 tasks.getByName('compileJava').dependsOn('generateNmsComponents')

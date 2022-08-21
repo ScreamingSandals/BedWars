@@ -21,6 +21,7 @@ package org.screamingsandals.bedwars.lib.nms.entity;
 
 import org.bukkit.entity.LivingEntity;
 import org.screamingsandals.bedwars.lib.nms.accessors.EntityInsentientAccessor;
+import org.screamingsandals.bedwars.lib.nms.accessors.PathfinderGoalHurtByTargetAccessor;
 import org.screamingsandals.bedwars.lib.nms.accessors.PathfinderGoalNearestAttackableTargetAccessor;
 import org.screamingsandals.bedwars.lib.nms.utils.ClassStorage;
 
@@ -42,9 +43,31 @@ public class TargetSelector extends Selector {
 	
 	public TargetSelector attackNearestTarget(int a, Class<?> targetClass) {
 		try {
-			Object targetNear = PathfinderGoalNearestAttackableTargetAccessor.getConstructor0()
-					.newInstance(handler, targetClass, false);
+			Object targetNear;
+			if (PathfinderGoalNearestAttackableTargetAccessor.getConstructor0() != null) {
+				targetNear = PathfinderGoalNearestAttackableTargetAccessor.getConstructor0()
+						.newInstance(handler, targetClass, false);
+			} else {
+				targetNear = PathfinderGoalNearestAttackableTargetAccessor.getConstructor1()
+						.newInstance(handler, targetClass, false);
+			}
 			registerPathfinder(a, targetNear);
+		} catch (Throwable ignored) {
+		}
+		return this;
+	}
+
+	public TargetSelector hurtByTarget(int a) {
+		try {
+			Object target;
+			if (PathfinderGoalHurtByTargetAccessor.getConstructor0() != null) {
+				target = PathfinderGoalHurtByTargetAccessor.getConstructor0()
+						.newInstance(handler, true, new Class[0]);
+			} else {
+				target = PathfinderGoalHurtByTargetAccessor.getConstructor1()
+						.newInstance(handler, new Class[0]);
+			}
+			registerPathfinder(a, target);
 		} catch (Throwable ignored) {
 		}
 		return this;

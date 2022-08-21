@@ -193,6 +193,15 @@ public class GolemListener implements Listener {
                                         }
                                     }
                                 }
+                            } else if (event.getTarget() instanceof IronGolem) {
+                                for (SpecialItem item2 : golems) {
+                                    if (item2 instanceof Golem) {
+                                        Golem golem2 = (Golem) item2;
+                                        if (golem2.getEntity().equals(event.getTarget()) && golem2.getTeam() == golem.getTeam()) {
+                                            event.setCancelled(true);
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
