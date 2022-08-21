@@ -87,8 +87,14 @@ public class TabManager {
     public void clear(GamePlayer player) {
         if (player.player.isOnline() && (header != null || footer != null)) {
             try {
+                String clearString;
+                if (Main.getVersionNumber() >= 115) {
+                    clearString = "{\"text\": \"\"}";
+                } else {
+                    clearString = "{\"translate\": \"\"}";
+                }
                 Object blankComponent = getMethod(getCorrectSerializingMethod())
-                        .invokeStatic("{\"text\": \"\"}");
+                        .invokeStatic(clearString);
                 Object packet;
                 if (PacketPlayOutPlayerListHeaderFooterAccessor.getConstructor1() != null) {
                     packet = PacketPlayOutPlayerListHeaderFooterAccessor.getConstructor1().newInstance(blankComponent, blankComponent);

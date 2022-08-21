@@ -1599,6 +1599,12 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             if (Main.getTabManager() != null) {
                 players.forEach(Main.getTabManager()::modifyForPlayer);
             }
+
+            Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> { // Fix Multiverse overriding our gamemode
+                if (gamePlayer.isSpectator && player.getGameMode() != GameMode.SPECTATOR) {
+                    player.setGameMode(GameMode.SPECTATOR);
+                }
+            }, 2);
         });
 
         return specSpawn;
