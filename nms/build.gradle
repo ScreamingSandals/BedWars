@@ -159,6 +159,12 @@ nmsGen {
     reqClass('spigot:EntityEnderDragon')
         .reqConstructor(World)
         .reqField('spigot:children')
+    reqClass('spigot:PathfinderGoalFloat')
+        .reqConstructor(EntityInsentient)
+    reqClass('spigot:PathfinderGoalRandomStroll')
+        .reqConstructor(EntityCreature, double)
+    reqClass('spigot:PathfinderGoalRandomLookaround')
+        .reqConstructor(EntityInsentient)
 }
 
 tasks.getByName('compileJava').dependsOn('generateNmsComponents')

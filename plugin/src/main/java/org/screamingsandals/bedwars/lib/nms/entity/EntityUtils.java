@@ -20,10 +20,7 @@
 package org.screamingsandals.bedwars.lib.nms.entity;
 
 import org.bukkit.entity.LivingEntity;
-import org.screamingsandals.bedwars.lib.nms.accessors.EntityAccessor;
-import org.screamingsandals.bedwars.lib.nms.accessors.EntityInsentientAccessor;
-import org.screamingsandals.bedwars.lib.nms.accessors.NBTTagCompoundAccessor;
-import org.screamingsandals.bedwars.lib.nms.accessors.PathfinderGoalMeleeAttackAccessor;
+import org.screamingsandals.bedwars.lib.nms.accessors.*;
 import org.screamingsandals.bedwars.lib.nms.utils.ClassStorage;
 
 public class EntityUtils {
@@ -51,6 +48,40 @@ public class EntityUtils {
 			
 			entityLiving.getTargetSelector().clearSelector();
 			
+			return entityLiving;
+		} catch (Throwable ignored) {
+			ignored.printStackTrace();
+		}
+		return null;
+	}
+
+	/*
+	 * includes random movement
+	 * @return EntityLivingNMS
+	 */
+	public static EntityLivingNMS makeMobAttackTarget2(LivingEntity mob, double speed, double follow,
+													  double attackDamage) {
+		try {
+			Object handler = ClassStorage.getHandle(mob);
+			if (!EntityInsentientAccessor.getType().isInstance(handler)) {
+				throw new IllegalArgumentException("Entity must be instance of EntityInsentient!!");
+			}
+
+			EntityLivingNMS entityLiving = new EntityLivingNMS(handler);
+
+			GoalSelector selector = entityLiving.getGoalSelector();
+			selector.clearSelector();
+			selector.registerPathfinder(0, PathfinderGoalFloatAccessor.getConstructor0().newInstance(handler));
+			selector.registerPathfinder(1, PathfinderGoalMeleeAttackAccessor.getConstructor0().newInstance(handler, 1.0D, false));
+			selector.registerPathfinder(2, PathfinderGoalRandomStrollAccessor.getConstructor0().newInstance(handler, 1.0D));
+			selector.registerPathfinder(3, PathfinderGoalRandomLookaroundAccessor.getConstructor0().newInstance(handler));
+
+			entityLiving.setAttribute(Attribute.MOVEMENT_SPEED, speed);
+			entityLiving.setAttribute(Attribute.FOLLOW_RANGE, follow);
+			entityLiving.setAttribute(Attribute.ATTACK_DAMAGE, attackDamage);
+
+			entityLiving.getTargetSelector().clearSelector();
+
 			return entityLiving;
 		} catch (Throwable ignored) {
 			ignored.printStackTrace();

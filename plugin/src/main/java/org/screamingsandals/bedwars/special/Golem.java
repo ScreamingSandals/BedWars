@@ -96,7 +96,7 @@ public class Golem extends SpecialItem implements org.screamingsandals.bedwars.a
         
         entity = golem;
 
-        EntityUtils.makeMobAttackTarget(golem, speed, followRange, -1)
+        EntityUtils.makeMobAttackTarget2(golem, speed, followRange, -1)
                 .getTargetSelector()
                 .attackNearestTarget(0, EntityPlayerAccessor.getType());
 
