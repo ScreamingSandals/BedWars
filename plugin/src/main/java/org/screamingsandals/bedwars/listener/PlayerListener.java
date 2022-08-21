@@ -46,13 +46,14 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.APIUtils;
 import org.screamingsandals.bedwars.api.RunningTeam;
+import org.screamingsandals.bedwars.api.boss.StatusBar;
 import org.screamingsandals.bedwars.api.events.BedwarsPlayerDeathMessageSendEvent;
 import org.screamingsandals.bedwars.api.events.BedwarsPlayerKilledEvent;
 import org.screamingsandals.bedwars.api.events.BedwarsTeamChestOpenEvent;
 import org.screamingsandals.bedwars.api.game.GameStatus;
+import org.screamingsandals.bedwars.boss.BossBar18;
 import org.screamingsandals.bedwars.commands.BaseCommand;
 import org.screamingsandals.bedwars.game.*;
-import org.screamingsandals.bedwars.inventories.TeamSelectorInventory;
 import org.screamingsandals.bedwars.special.listener.ProtectionWallListener;
 import org.screamingsandals.bedwars.special.listener.RescuePlatformListener;
 import org.screamingsandals.bedwars.statistics.PlayerStatistic;
@@ -332,6 +333,19 @@ public class PlayerListener implements Listener {
                         MiscUtils.giveItemsToPlayer(givedGameStartItems, gPlayer.player, team.getColor());
                     } else {
                         Debug.warn("You have wrongly configured gived-player-respawn-items!", true);
+                    }
+                }
+            }
+
+            if (Main.getVersionNumber() <= 108 && !Main.getConfigurator().config.getBoolean("allow-fake-death")) {
+                StatusBar boss = game.getStatusBar();
+                if (boss instanceof BossBar18) {
+                    BossBar18 boss18 = (BossBar18) boss;
+                    if (!boss18.isViaPlayer(gPlayer.player)) {
+                        boss18.removePlayer(gPlayer.player);
+                        Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
+                           boss18.addPlayer(gPlayer.player);
+                        });
                     }
                 }
             }

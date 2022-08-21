@@ -28,6 +28,7 @@ import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.game.Game;
 import org.screamingsandals.bedwars.game.GamePlayer;
 import org.screamingsandals.bedwars.game.ItemSpawnerType;
+import org.screamingsandals.bedwars.utils.FakeDeath;
 
 import java.util.Arrays;
 import java.util.List;
@@ -123,7 +124,11 @@ public class CheatCommand extends BaseCommand {
                             sender.sendMessage(i18n("cheat_invalid_player"));
                             return true;
                         }
-                        player1.setHealth(0);
+                        if (Main.getConfigurator().config.getBoolean("allow-fake-death")) {
+                            FakeDeath.die(gamePlayer);
+                        } else {
+                            player1.setHealth(0);
+                        }
                         sender.sendMessage(i18n("cheat_received_kill").replace("%player%", player1.getName()));
                     }
                     break;

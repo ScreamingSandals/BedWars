@@ -25,7 +25,6 @@ import com.viaversion.viaversion.api.legacy.bossbar.BossColor;
 import com.viaversion.viaversion.api.legacy.bossbar.BossStyle;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.boss.BarColor;
 import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.lib.nms.entity.BossBarDragon;
@@ -114,6 +113,13 @@ public class BossBar18 implements org.screamingsandals.bedwars.api.boss.BossBar1
             }
         }
         bossbarEntity.removeViewer(player);
+    }
+
+    public boolean isViaPlayer(Player player) {
+        if (viaActive) {
+            return viaBossBar.getPlayers().contains(player.getUniqueId());
+        }
+        return false;
     }
 
     @Override

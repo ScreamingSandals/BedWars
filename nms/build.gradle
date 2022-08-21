@@ -158,6 +158,7 @@ nmsGen {
         .reqConstructor(World)
     reqClass('spigot:EntityEnderDragon')
         .reqConstructor(World)
+        .reqField('spigot:children')
 }
 
 tasks.getByName('compileJava').dependsOn('generateNmsComponents')
