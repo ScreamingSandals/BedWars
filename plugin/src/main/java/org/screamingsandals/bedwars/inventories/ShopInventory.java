@@ -194,7 +194,8 @@ public class ShopInventory implements Listener {
             } else {
                 shopMap.get("default").openForPlayer(player);
             }
-        } catch (Throwable ignored) {
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
             player.sendMessage(i18nonly("prefix") + " Your shop.yml/shop.groovy is invalid! Check it out or contact us on Discord.");
         }
     }
@@ -350,6 +351,7 @@ public class ShopInventory implements Listener {
         try {
             format.generateData();
         } catch (Throwable t) {
+            t.printStackTrace();
             Debug.warn("Your shop.yml/shop.groovy is wrong! Loading default one instead", true);
             loadDefault(format);
             format.generateData();
