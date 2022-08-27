@@ -33,11 +33,11 @@ public class BossBarDragon extends FakeEntityNMS<EnderDragon> {
     }
 
     @Override
-    public Location createPosition(Player viewer) {
-       final Location position = viewer.getLocation();
-        position.setPitch(0);
-        position.setYaw(0);
-        position.setY(position.getY() - 500);
-        return position;
+    public Location createPosition(Location position) {
+        final Location clone = position.clone();
+        clone.setPitch(0);
+        clone.setYaw(0);
+        clone.setY(clone.getY() - 500);
+        return clone;
     }
 }

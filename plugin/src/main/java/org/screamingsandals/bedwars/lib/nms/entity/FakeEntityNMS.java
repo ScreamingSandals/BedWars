@@ -11,7 +11,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.lib.nms.accessors.*;
@@ -105,12 +107,36 @@ public class FakeEntityNMS<E extends Entity> extends EntityNMS implements Listen
         }
     }
 
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onTeleport(PlayerTeleportEvent event) {
+        if (event.isCancelled()) {
+            return;
+        }
+
+        final Player viewer = event.getPlayer();
+        if (viewers.contains(viewer) && visible) {
+            teleport(viewer, createPosition(event.getTo()));
+        }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onWorldChange(PlayerChangedWorldEvent event) {
+        final Player viewer = event.getPlayer();
+        if (viewers.contains(viewer) && visible) {
+            teleport(viewer, createPosition(viewer));
+        }
+    }
+
     public Location createPosition(final Player viewer) {
-        final Location position = viewer.getLocation();
-        position.setPitch(position.getPitch() - 30);
-        position.setYaw(position.getYaw());
-        position.add(position.getDirection().multiply(40));
-        return position;
+        return createPosition(viewer.getLocation());
+    }
+
+    public Location createPosition(final Location position) {
+        final Location clone = position.clone();
+        clone.setPitch(clone.getPitch() - 30);
+        clone.setYaw(clone.getYaw());
+        clone.add(clone.getDirection().multiply(40));
+        return clone;
     }
 
     public Object createSpawnPacket() {
