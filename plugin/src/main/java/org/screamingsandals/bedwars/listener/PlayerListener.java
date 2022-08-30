@@ -806,6 +806,8 @@ public class PlayerListener implements Listener {
                         } else if (Main.getConfigurator().config.getBoolean("disableCakeEating", true)) {
                             event.setCancelled(true);
                         }
+                    } else if (event.getClickedBlock().getType() == Material.DRAGON_EGG && Main.getConfigurator().config.getBoolean("disableDragonEggTeleport", true)) {
+                        event.setCancelled(true); // Fix - #432
                     }
                 }
             }
@@ -876,9 +878,14 @@ public class PlayerListener implements Listener {
             if (blockBreakEvent.isCancelled()) {
                 return;
             }
-            if (blockBreakEvent.isDropItems()) {
-                event.getClickedBlock().breakNaturally();
-            } else {
+            try {
+                if (blockBreakEvent.isDropItems()) {
+                    event.getClickedBlock().breakNaturally();
+                } else {
+                    event.getClickedBlock().setType(Material.AIR);
+                }
+            } catch (Throwable ignored) {
+                // 1.8.8 :(
                 event.getClickedBlock().setType(Material.AIR);
             }
         }
