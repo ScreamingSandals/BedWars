@@ -409,3 +409,6 @@ help_bw_cheat_give: /bw cheat give <ресурс> [кол-во] [игрок] - &
 "party_command_invalid_arguments": '&cНеверное количество аргументов! Введите /bw
   party help для получения помощи'
 "party_command_warped": '&aЧлены группы были перенесены'
+cheat_not_waiting: '&cИгра не в режиме ожидания!'
+game_forced: '&aИгра начнётся с пустыми командами. Разрушьте их главные блоки для
+  победы!'
