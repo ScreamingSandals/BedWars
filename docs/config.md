@@ -455,7 +455,7 @@ resources:
     material: IRON_INGOT
     color: WHITE
     name: Iron
-    interval: 2.5
+    interval: 2
     translate: resource_iron
     spread: 1.0
   gold:
