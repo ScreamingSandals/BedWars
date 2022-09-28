@@ -245,8 +245,10 @@ public class PlayerListener implements Listener {
     public void onPlayerQuit(PlayerQuitEvent event) {
         if (Main.isPlayerGameProfileRegistered(event.getPlayer())) {
             GamePlayer gPlayer = Main.getPlayerGameProfile(event.getPlayer());
-            if (gPlayer.isInGame())
+            if (gPlayer.isInGame()) {
+                gPlayer.forceSynchronousTeleportation = true;
                 gPlayer.changeGame(null);
+            }
             Main.unloadPlayerGameProfile(event.getPlayer());
         }
 

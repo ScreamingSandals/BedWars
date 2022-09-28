@@ -42,6 +42,7 @@ public class GamePlayer {
     public boolean isSpectator = false;
     public boolean isTeleportingFromGame_justForInventoryPlugins = false;
     public boolean mainLobbyUsed = false;
+    public boolean forceSynchronousTeleportation = false; // required when player leaves
 
     public GamePlayer(Player player) {
         this.player = player;
@@ -185,11 +186,21 @@ public class GamePlayer {
     }
 
     public boolean teleport(Location location) {
-    	return PlayerUtils.teleportPlayer(player, location);
+        if (forceSynchronousTeleportation) {
+            return player.teleport(location);
+        } else {
+            return PlayerUtils.teleportPlayer(player, location);
+        }
     }
 
     public boolean teleport(Location location, Runnable runnable) {
-        return PlayerUtils.teleportPlayer(player, location, runnable);
+        if (forceSynchronousTeleportation) {
+            boolean result = player.teleport(location);
+            runnable.run();
+            return result;
+        } else {
+            return PlayerUtils.teleportPlayer(player, location, runnable);
+        }
     }
 
     public void hidePlayer(Player player) {
