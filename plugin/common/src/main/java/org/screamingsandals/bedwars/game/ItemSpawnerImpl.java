@@ -364,13 +364,14 @@ public class ItemSpawnerImpl implements ItemSpawner, SerializableGameComponent {
 
                     var calculatedStack = (int) amountPerSpawn;
 
-                    /* Allow half level */
+                    /* fractional levels: have a weighted chance to increment */
+                    /* for example, 3.1 -> 10% chance for 4 and 90% chance for 3 */
                     if ((amountPerSpawn % 1) != 0) {
-                        int a = (int) Math.round(Math.random());
-                        if ((a % 2) == 0) {
+                        if (Math.random() < (amountPerSpawn % 1)) {
                             calculatedStack++;
                         }
                     }
+
                     var resourceSpawnEvent = new ResourceSpawnEventImpl(game, this, itemSpawnerType, itemSpawnerType.getItem(calculatedStack));
                     EventManager.fire(resourceSpawnEvent);
 
