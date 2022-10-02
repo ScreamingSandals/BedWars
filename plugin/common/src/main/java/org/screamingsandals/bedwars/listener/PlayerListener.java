@@ -929,6 +929,8 @@ public class PlayerListener {
                         } else if (game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.DISABLE_CAKE_EATING, true)) {
                             event.cancelled(true);
                         }
+                    } else if (clickedBlock.getType().is("dragon_egg") && game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.DISABLE_DRAGON_EGG_TELEPORT, true)) {
+                        event.cancelled(true); // Fix - #432
                     }
                 }
             }
