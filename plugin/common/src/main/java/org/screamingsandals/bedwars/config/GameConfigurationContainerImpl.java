@@ -20,7 +20,9 @@
 package org.screamingsandals.bedwars.config;
 
 import org.screamingsandals.bedwars.api.config.ConfigurationKey;
+import org.screamingsandals.bedwars.api.config.ConfigurationListKey;
 import org.screamingsandals.bedwars.api.config.GameConfigurationContainer;
+import org.screamingsandals.lib.item.Item;
 import org.screamingsandals.lib.spectator.bossbar.BossBarColor;
 import org.screamingsandals.lib.spectator.bossbar.BossBarDivision;
 import org.spongepowered.configurate.ConfigurationNode;
@@ -33,6 +35,8 @@ public class GameConfigurationContainerImpl extends ConfigurationContainerImpl i
     public static final ConfigurationKey<BossBarDivision> BOSSBAR_LOBBY_DIVISION = ConfigurationKey.of(BossBarDivision.class, "bossbar", "lobby", "division");
     public static final ConfigurationKey<BossBarColor> BOSSBAR_GAME_COLOR = ConfigurationKey.of(BossBarColor.class, "bossbar", "game", "color");
     public static final ConfigurationKey<BossBarDivision> BOSSBAR_GAME_DIVISION = ConfigurationKey.of(BossBarDivision.class, "bossbar", "game", "division");
+    public static final ConfigurationListKey<Item> GAME_START_ITEMS_ITEMS = ConfigurationListKey.of(Item.class, "game-start-items", "items");
+    public static final ConfigurationListKey<Item> PLAYER_RESPAWN_ITEMS_ITEMS = ConfigurationListKey.of(Item.class, "player-respawn-items", "items");
 
     {
         register(TEAM_JOIN_ITEM_ENABLED, "team-join-item-enabled");
@@ -71,7 +75,9 @@ public class GameConfigurationContainerImpl extends ConfigurationContainerImpl i
         register(SPAWNER_HOLOGRAMS, "spawner-holograms");
         register(SPAWNER_DISABLE_MERGE, "spawner-disable-merge");
         register(GAME_START_ITEMS_ENABLED, "game-start-items", "enabled");
+        register(GAME_START_ITEMS_ITEMS, "game-start-items", "items");
         register(PLAYER_RESPAWN_ITEMS_ENABLED, "player-respawn-items", "enabled");
+        register(PLAYER_RESPAWN_ITEMS_ITEMS, "player-respawn-items", "items");
         register(SPAWNER_COUNTDOWN_HOLOGRAM,  "spawner-holograms-countdown");
         register(DAMAGE_WHEN_PLAYER_IS_NOT_IN_ARENA, "damage-when-player-is-not-in-arena");
         register(REMOVE_UNUSED_TARGET_BLOCKS, "remove-unused-target-blocks");

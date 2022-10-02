@@ -78,9 +78,16 @@ config:
         - "<white>Version: SBW <gray><version>"
         - ""
         - "<yellow>www.screamingsandals.org"
+  game-start-items:
+    enabled: true
+    items:
+      - WOODEN_SWORD
+      - LEATHER_HELMET
+      - LEATHER_CHESTPLATE
+      - LEATHER_LEGGINGS
+      - LEATHER_BOOTS
 
 
-# TODO: custom game start items (WOODEN_SWORD, LEATHER_HELMET, LEATHER_CHESTPLATE, LEATHER_LEGGINGS, LEATHER_BOOTS)
 # TODO: custom destroy-placed-blocks-by-explosion-except > GLASS
 # TODO: breakable blocks (GRASS, LONG_GRASS, SNOW)
 # TODO: just add every missing configuration

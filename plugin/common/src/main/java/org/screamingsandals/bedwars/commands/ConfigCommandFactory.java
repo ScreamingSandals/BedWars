@@ -21,6 +21,7 @@ package org.screamingsandals.bedwars.commands;
 
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
+import cloud.commandframework.arguments.CommandArgument;
 import cloud.commandframework.arguments.standard.*;
 import cloud.commandframework.context.CommandContext;
 import lombok.Builder;
@@ -31,9 +32,11 @@ import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.api.config.ConfigurationKey;
 import org.screamingsandals.bedwars.api.config.ConfigurationListKey;
 import org.screamingsandals.bedwars.api.config.GameConfigurationContainer;
+import org.screamingsandals.bedwars.commands.arguments.ItemArgument;
 import org.screamingsandals.bedwars.config.ConfigurationContainerImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.lib.cloud.extras.ComponentHelper;
+import org.screamingsandals.lib.item.Item;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
 import org.screamingsandals.lib.spectator.Component;
@@ -150,7 +153,7 @@ public class ConfigCommandFactory {
                                                 .append("      ")
                                                 .append(i + 1 < list.size() ? ComponentHelper.branch(CommandService.DEFAULT_HELP_COLORS.accent()) : ComponentHelper.lastBranch(CommandService.DEFAULT_HELP_COLORS.accent()))
                                                 .append(Component.space())
-                                                .append(Component.text(String.valueOf(val), CommandService.DEFAULT_HELP_COLORS.highlight()))
+                                                .append(stringValueOf(val).withColor(CommandService.DEFAULT_HELP_COLORS.highlight()))
                                         );
                                     }
                                 } else if (value instanceof Boolean) {
@@ -169,7 +172,7 @@ public class ConfigCommandFactory {
                                             .append(Component.space())
                                             .append(Message.of(LangKeys.ADMIN_INFO_VALUE).asComponent(sender).withColor(CommandService.DEFAULT_HELP_COLORS.primary()))
                                             .append(Component.text(": ", CommandService.DEFAULT_HELP_COLORS.primary()))
-                                            .append(Component.text(String.valueOf(value), CommandService.DEFAULT_HELP_COLORS.highlight()))
+                                            .append(stringValueOf(value).withColor(CommandService.DEFAULT_HELP_COLORS.highlight()))
                                     );
                                 } else {
                                     sender.sendMessage(Component.text()
@@ -228,337 +231,112 @@ public class ConfigCommandFactory {
         );
 
         // booleans
-        manager.command(
-                commandBuilder
-                        .literal("set", "s")
-                        .literal("boolean", "booleans", "bool", "b")
-                        .argument(StringArgument.<CommandSenderWrapper>newBuilder("key")
-                                .withSuggestionsProvider((c, s) -> makeSuggestion(c, false, container -> container.getJoinedRegisteredKeysForConfigCommand(Boolean.class)))
-                        )
-                        .argument(BooleanArgument.of("value"))
-                        .handler(commandContext -> handleCommand(commandContext, false, (sender, container) -> {
-                            var keyString = commandContext.<String>get("key").toLowerCase();
-                            var keys = List.of(keyString.split("\\."));
-                            boolean value = commandContext.get("value");
-
-                            var keyOpt = container.getRegisteredKeys()
-                                    .stream()
-                                    .filter(t -> t.getKey().equals(keys) && t.getType() == Boolean.class)
-                                    .findFirst();
-
-                            if (keyOpt.isEmpty()) {
-                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_INVALID_CONSTANT_NAME).defaultPrefix());
-                            } else {
-                                var key = keyOpt.get();
-                                container.update(key.getKey(), value);
-                                Message
-                                        .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_CONSTANT_SET)
-                                        .placeholder("config", keyString)
-                                        .placeholder("value", value)
-                                        .defaultPrefix()
-                                        .send(sender);
-                            }
-                        }))
+        generateCommands(
+                "boolean",
+                Boolean.class,
+                BooleanArgument::of,
+                "booleans", "bool", "b"
         );
 
         // strings
-        manager.command(
-                commandBuilder
-                        .literal("set", "s")
-                        .literal("string", "strings", "str", "s")
-                        .argument(StringArgument.<CommandSenderWrapper>newBuilder("key")
-                                .withSuggestionsProvider((c, s) -> makeSuggestion(c, false, container -> container.getJoinedRegisteredKeysForConfigCommand(String.class)))
-                        )
-                        .argument(StringArgument.<CommandSenderWrapper>newBuilder("value")
-                                .greedy()
-                                .withSuggestionsProvider((commandContext, sender) -> makeSuggestion(commandContext, false, container -> {
-                                    var keys = List.of(commandContext.<String>get("key").toLowerCase().split("\\."));
+        generateCommands(
+                "string",
+                String.class,
+                argumentName -> StringArgument.<CommandSenderWrapper>newBuilder(argumentName)
+                        .greedy()
+                        .withSuggestionsProvider((commandContext, sender) -> makeSuggestion(commandContext, false, container -> {
+                            var keys = List.of(commandContext.<String>get("key").toLowerCase().split("\\."));
 
-                                    var key = container.getRegisteredKeys()
-                                            .stream()
-                                            .filter(t -> t.getKey().equals(keys) && t.getType() == String.class)
-                                            .findFirst()
-                                            .orElse(null);
-
-                                    if (key != null) {
-                                        if (key.equals(GameConfigurationContainer.DEFAULT_SHOP_FILE)) {
-                                            // some hardcoded suggestion :O
-                                            try (var walk = Files.walk(shopFolder)) {
-                                                return Stream.concat(
-                                                                walk
-                                                                        .filter(Files::isRegularFile)
-                                                                        .map(p -> shopFolder.relativize(p).toString()),
-                                                                Stream.of("null")
-                                                        )
-                                                        .collect(Collectors.toList());
-                                            } catch (IOException ignored) {
-                                            }
-                                        }
-                                    }
-                                    return List.of();
-                                }))
-                        )
-                        .handler(commandContext -> handleCommand(commandContext, false, (sender, container) -> {
-                            String keyString = commandContext.get("key");
-                            var keys = List.of(keyString.toLowerCase().split("\\."));
-                            String value = commandContext.get("value");
-
-                            var keyOpt = container.getRegisteredKeys()
+                            var key = container.getRegisteredKeys()
                                     .stream()
                                     .filter(t -> t.getKey().equals(keys) && t.getType() == String.class)
-                                    .findFirst();
+                                    .findFirst()
+                                    .orElse(null);
 
-                            if (keyOpt.isEmpty()) {
-                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_INVALID_CONSTANT_NAME).defaultPrefix());
-                            } else {
-                                var key = keyOpt.get();
-                                container.update(key.getKey(), value);
-                                Message
-                                        .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_CONSTANT_SET)
-                                        .placeholder("config", keyString)
-                                        .placeholder("value", value)
-                                        .defaultPrefix()
-                                        .send(sender);
+                            if (key != null) {
+                                if (key.equals(GameConfigurationContainer.DEFAULT_SHOP_FILE)) {
+                                    // some hardcoded suggestion :O
+                                    try (var walk = Files.walk(shopFolder)) {
+                                        return Stream.concat(
+                                                        walk
+                                                                .filter(Files::isRegularFile)
+                                                                .map(p -> shopFolder.relativize(p).toString()),
+                                                        Stream.of("null")
+                                                )
+                                                .collect(Collectors.toList());
+                                    } catch (IOException ignored) {
+                                    }
+                                }
                             }
+                            return List.of();
                         }))
+                        .build(),
+                StringArgument::greedy,
+                "strings", "str", "s"
         );
 
         // bytes
-        manager.command(
-                commandBuilder
-                        .literal("set", "s")
-                        .literal("byte", "bytes", "by")
-                        .argument(StringArgument.<CommandSenderWrapper>newBuilder("key")
-                                .withSuggestionsProvider((c, s) -> makeSuggestion(c, false, container -> container.getJoinedRegisteredKeysForConfigCommand(Byte.class)))
-                        )
-                        .argument(ByteArgument.of("value"))
-                        .handler(commandContext -> handleCommand(commandContext, false, (sender, container) -> {
-                            String keyString = commandContext.get("key");
-                            var keys = List.of(keyString.toLowerCase().split("\\."));
-                            byte value = commandContext.get("value");
-
-                            var keyOpt = container.getRegisteredKeys()
-                                    .stream()
-                                    .filter(t -> t.getKey().equals(keys) && t.getType() == Byte.class)
-                                    .findFirst();
-
-                            if (keyOpt.isEmpty()) {
-                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_INVALID_CONSTANT_NAME).defaultPrefix());
-                            } else {
-                                var key = keyOpt.get();
-                                container.update(key.getKey(), value);
-                                Message
-                                        .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_CONSTANT_SET)
-                                        .placeholder("config", keyString)
-                                        .placeholder("value", value)
-                                        .defaultPrefix()
-                                        .send(sender);
-                            }
-                        }))
+        generateCommands(
+                "byte",
+                Byte.class,
+                ByteArgument::of,
+                "bytes", "by"
         );
 
         // shorts
-        manager.command(
-                commandBuilder
-                        .literal("set", "s")
-                        .literal("short", "shorts", "sh")
-                        .argument(StringArgument.<CommandSenderWrapper>newBuilder("key")
-                                .withSuggestionsProvider((c, s) -> makeSuggestion(c, false, container -> container.getJoinedRegisteredKeysForConfigCommand(Short.class)))
-                        )
-                        .argument(ShortArgument.of("value"))
-                        .handler(commandContext -> handleCommand(commandContext, false, (sender, container) -> {
-                            String keyString = commandContext.get("key");
-                            var keys = List.of(keyString.toLowerCase().split("\\."));
-                            short value = commandContext.get("value");
-
-                            var keyOpt = container.getRegisteredKeys()
-                                    .stream()
-                                    .filter(t -> t.getKey().equals(keys) && t.getType() == Short.class)
-                                    .findFirst();
-
-                            if (keyOpt.isEmpty()) {
-                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_INVALID_CONSTANT_NAME).defaultPrefix());
-                            } else {
-                                var key = keyOpt.get();
-                                container.update(key.getKey(), value);
-                                Message
-                                        .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_CONSTANT_SET)
-                                        .placeholder("config", keyString)
-                                        .placeholder("value", value)
-                                        .defaultPrefix()
-                                        .send(sender);
-                            }
-                        }))
+        generateCommands(
+                "short",
+                Short.class,
+                ShortArgument::of,
+                "shorts", "sh"
         );
 
         // integers
-        manager.command(
-                commandBuilder
-                        .literal("set", "s")
-                        .literal("integer", "integers", "int", "i")
-                        .argument(StringArgument.<CommandSenderWrapper>newBuilder("key")
-                                .withSuggestionsProvider((c, s) -> makeSuggestion(c, false, container -> container.getJoinedRegisteredKeysForConfigCommand(Integer.class)))
-                        )
-                        .argument(IntegerArgument.of("value"))
-                        .handler(commandContext -> handleCommand(commandContext, false, (sender, container) -> {
-                            String keyString = commandContext.get("key");
-                            var keys = List.of(keyString.toLowerCase().split("\\."));
-                            int value = commandContext.get("value");
-
-                            var keyOpt = container.getRegisteredKeys()
-                                    .stream()
-                                    .filter(t -> t.getKey().equals(keys) && t.getType() == Integer.class)
-                                    .findFirst();
-
-                            if (keyOpt.isEmpty()) {
-                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_INVALID_CONSTANT_NAME).defaultPrefix());
-                            } else {
-                                var key = keyOpt.get();
-                                container.update(key.getKey(), value);
-                                Message
-                                        .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_CONSTANT_SET)
-                                        .placeholder("config", keyString)
-                                        .placeholder("value", value)
-                                        .defaultPrefix()
-                                        .send(sender);
-                            }
-                        }))
+        generateCommands(
+                "integer",
+                Integer.class,
+                IntegerArgument::of,
+                "integers", "int", "i"
         );
 
         // longs
-        manager.command(
-                commandBuilder
-                        .literal("set", "s")
-                        .literal("long", "longs", "l")
-                        .argument(StringArgument.<CommandSenderWrapper>newBuilder("key")
-                                .withSuggestionsProvider((c, s) -> makeSuggestion(c, false, container -> container.getJoinedRegisteredKeysForConfigCommand(Long.class)))
-                        )
-                        .argument(LongArgument.of("value"))
-                        .handler(commandContext -> handleCommand(commandContext, false, (sender, container) -> {
-                            String keyString = commandContext.get("key");
-                            var keys = List.of(keyString.toLowerCase().split("\\."));
-                            long value = commandContext.get("value");
-
-                            var keyOpt = container.getRegisteredKeys()
-                                    .stream()
-                                    .filter(t -> t.getKey().equals(keys) && t.getType() == Long.class)
-                                    .findFirst();
-
-                            if (keyOpt.isEmpty()) {
-                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_INVALID_CONSTANT_NAME).defaultPrefix());
-                            } else {
-                                var key = keyOpt.get();
-                                container.update(key.getKey(), value);
-                                Message
-                                        .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_CONSTANT_SET)
-                                        .placeholder("config", keyString)
-                                        .placeholder("value", value)
-                                        .defaultPrefix()
-                                        .send(sender);
-                            }
-                        }))
+        generateCommands(
+                "long",
+                Long.class,
+                LongArgument::of,
+                "longs", "l"
         );
 
         // floats
-        manager.command(
-                commandBuilder
-                        .literal("set", "s")
-                        .literal("float", "floats", "f")
-                        .argument(StringArgument.<CommandSenderWrapper>newBuilder("key")
-                                .withSuggestionsProvider((c, s) -> makeSuggestion(c, false, container -> container.getJoinedRegisteredKeysForConfigCommand(Float.class)))
-                        )
-                        .argument(FloatArgument.of("value"))
-                        .handler(commandContext -> handleCommand(commandContext, false, (sender, container) -> {
-                            String keyString = commandContext.get("key");
-                            var keys = List.of(keyString.toLowerCase().split("\\."));
-                            float value = commandContext.get("value");
-
-                            var keyOpt = container.getRegisteredKeys()
-                                    .stream()
-                                    .filter(t -> t.getKey().equals(keys) && t.getType() == Float.class)
-                                    .findFirst();
-
-                            if (keyOpt.isEmpty()) {
-                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_INVALID_CONSTANT_NAME).defaultPrefix());
-                            } else {
-                                var key = keyOpt.get();
-                                container.update(key.getKey(), value);
-                                Message
-                                        .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_CONSTANT_SET)
-                                        .placeholder("config", keyString)
-                                        .placeholder("value", value)
-                                        .defaultPrefix()
-                                        .send(sender);
-                            }
-                        }))
+        generateCommands(
+                "float",
+                Float.class,
+                FloatArgument::of,
+                "floats", "f"
         );
 
         // doubles
-        manager.command(
-                commandBuilder
-                        .literal("set", "s")
-                        .literal("double", "doubles", "d")
-                        .argument(StringArgument.<CommandSenderWrapper>newBuilder("key")
-                                .withSuggestionsProvider((c, s) -> makeSuggestion(c, false, container -> container.getJoinedRegisteredKeysForConfigCommand(Double.class)))
-                        )
-                        .argument(DoubleArgument.of("value"))
-                        .handler(commandContext -> handleCommand(commandContext, false, (sender, container) -> {
-                            String keyString = commandContext.get("key");
-                            var keys = List.of(keyString.toLowerCase().split("\\."));
-                            double value = commandContext.get("value");
-
-                            var keyOpt = container.getRegisteredKeys()
-                                    .stream()
-                                    .filter(t -> t.getKey().equals(keys) && t.getType() == Double.class)
-                                    .findFirst();
-
-                            if (keyOpt.isEmpty()) {
-                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_INVALID_CONSTANT_NAME).defaultPrefix());
-                            } else {
-                                var key = keyOpt.get();
-                                container.update(key.getKey(), value);
-                                Message
-                                        .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_CONSTANT_SET)
-                                        .placeholder("config", keyString)
-                                        .placeholder("value", value)
-                                        .defaultPrefix()
-                                        .send(sender);
-                            }
-                        }))
+        generateCommands(
+                "double",
+                Double.class,
+                DoubleArgument::of,
+                "doubles", "d"
         );
 
         // chars
-        manager.command(
-                commandBuilder
-                        .literal("set", "s")
-                        .literal("char", "chars", "c")
-                        .argument(StringArgument.<CommandSenderWrapper>newBuilder("key")
-                                .withSuggestionsProvider((c, s) -> makeSuggestion(c, false, container -> container.getJoinedRegisteredKeysForConfigCommand(Character.class)))
-                        )
-                        .argument(CharArgument.of("value"))
-                        .handler(commandContext -> handleCommand(commandContext, false, (sender, container) -> {
-                            String keyString = commandContext.get("key");
-                            var keys = List.of(keyString.toLowerCase().split("\\."));
-                            char value = commandContext.get("value");
+        generateCommands(
+                "char",
+                Character.class,
+                CharArgument::of,
+                "chars", "c"
+        );
 
-                            var keyOpt = container.getRegisteredKeys()
-                                    .stream()
-                                    .filter(t -> t.getKey().equals(keys) && t.getType() == Character.class)
-                                    .findFirst();
-
-                            if (keyOpt.isEmpty()) {
-                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_INVALID_CONSTANT_NAME).defaultPrefix());
-                            } else {
-                                var key = keyOpt.get();
-                                container.update(key.getKey(), value);
-                                Message
-                                        .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_CONSTANT_SET)
-                                        .placeholder("config", keyString)
-                                        .placeholder("value", value)
-                                        .defaultPrefix()
-                                        .send(sender);
-                            }
-                        }))
+        // Item
+        generateCommands(
+                "item",
+                Item.class,
+                ItemArgument::of,
+                "items", "it"
         );
 
         // enums
@@ -629,27 +407,78 @@ public class ConfigCommandFactory {
                             }
                         }))
         );
+    }
 
-        // string list - add
+    private <T> void generateCommands(
+            @NotNull String typeName,
+            @NotNull Class<T> type,
+            @NotNull Function<@NotNull String, @NotNull CommandArgument<CommandSenderWrapper, T>> argumentBuilder,
+            @NotNull String @NotNull... aliases
+    ) {
+        generateCommands(typeName, type, argumentBuilder, argumentBuilder, aliases);
+    }
+
+    private <T> void generateCommands(
+            @NotNull String typeName,
+            @NotNull Class<T> type,
+            @NotNull Function<@NotNull String, @NotNull CommandArgument<CommandSenderWrapper, T>> argumentBuilder,
+            @NotNull Function<@NotNull String, @NotNull CommandArgument<CommandSenderWrapper, T>> argumentListBuilder,
+            @NotNull String @NotNull... aliases
+    ) {
+        // single value
+        manager.command(
+                commandBuilder
+                        .literal("set", "s")
+                        .literal(typeName, aliases)
+                        .argument(StringArgument.<CommandSenderWrapper>newBuilder("key")
+                                .withSuggestionsProvider((c, s) -> makeSuggestion(c, false, container -> container.getJoinedRegisteredKeysForConfigCommand(type)))
+                        )
+                        .argument(argumentBuilder.apply("value"))
+                        .handler(commandContext -> handleCommand(commandContext, false, (sender, container) -> {
+                            var keyString = commandContext.<String>get("key").toLowerCase();
+                            var keys = List.of(keyString.split("\\."));
+                            var value = commandContext.get("value");
+
+                            var keyOpt = container.getRegisteredKeys()
+                                    .stream()
+                                    .filter(t -> t.getKey().equals(keys) && t.getType() == type)
+                                    .findFirst();
+
+                            if (keyOpt.isEmpty()) {
+                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_INVALID_CONSTANT_NAME).defaultPrefix());
+                            } else {
+                                var key = keyOpt.get();
+                                container.update(key.getKey(), value);
+                                Message
+                                        .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_CONSTANT_SET)
+                                        .placeholder("config", keyString)
+                                        .placeholder("value", stringValueOf(value))
+                                        .defaultPrefix()
+                                        .send(sender);
+                            }
+                        }))
+        );
+
+
+        // list - add
         manager.command(
                 commandBuilder
                         .literal("list", "l")
-                        .literal("string", "strings", "str", "s")
+                        .literal(typeName, aliases)
                         .argument(StringArgument.<CommandSenderWrapper>newBuilder("key")
-                                .withSuggestionsProvider((c, s) -> makeSuggestion(c, false, container -> container.getJoinedRegisteredKeysForConfigCommandList(String.class)))
+                                .withSuggestionsProvider((c, s) -> makeSuggestion(c, false, container -> container.getJoinedRegisteredKeysForConfigCommandList(type)))
                         )
                         .literal("add", "a")
-                        .argument(StringArgument.greedy("value"))
+                        .argument(argumentListBuilder.apply("value"))
                         .handler(commandContext -> handleCommand(commandContext, false, (sender, container) -> {
                             String keyString = commandContext.get("key");
                             var keys = List.of(keyString.toLowerCase().split("\\."));
-                            String value = commandContext.get("value");
+                            var value = commandContext.get("value");
 
-                            @SuppressWarnings("unchecked")
                             var keyOpt = container.getRegisteredListKeys()
                                     .stream()
-                                    .filter(t -> t.getKey().equals(keys) && t.getType() == String.class)
-                                    .map(k -> (ConfigurationListKey<String>) k)
+                                    .filter(t -> t.getKey().equals(keys) && t.getType() == type)
+                                    .map(k -> (ConfigurationListKey) k)
                                     .findFirst();
 
                             if (keyOpt.isEmpty()) {
@@ -658,12 +487,12 @@ public class ConfigCommandFactory {
                                 var key = keyOpt.get();
                                 var saved = new ArrayList<>(container.getSaved(key));
                                 saved.add(value);
-                                container.update(key.getKey(), saved);
+                                container.updateList(key.getKey(), type, saved);
 
                                 Message
                                         .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_CONSTANT_LIST_ADDED)
                                         .placeholder("config", keyString)
-                                        .placeholder("value", value)
+                                        .placeholder("value", stringValueOf(value))
                                         .placeholder("position", saved.size())
                                         .defaultPrefix()
                                         .send(sender);
@@ -671,27 +500,27 @@ public class ConfigCommandFactory {
                         }))
         );
 
-        // string list - set
+        // list - set
         manager.command(
                 commandBuilder
                         .literal("list", "l")
-                        .literal("string", "strings", "str", "s")
+                        .literal(typeName, aliases)
                         .argument(StringArgument.<CommandSenderWrapper>newBuilder("key")
-                                .withSuggestionsProvider((c, s) -> makeSuggestion(c, false, container -> container.getJoinedRegisteredKeysForConfigCommandList(String.class)))
+                                .withSuggestionsProvider((c, s) -> makeSuggestion(c, false, container -> container.getJoinedRegisteredKeysForConfigCommandList(type)))
                         )
                         .literal("set", "s")
                         .argument(IntegerArgument.of("position"))
-                        .argument(StringArgument.greedy("value"))
+                        .argument(argumentListBuilder.apply("value"))
                         .handler(commandContext -> handleCommand(commandContext, false, (sender, container) -> {
                             String keyString = commandContext.get("key");
                             var keys = List.of(keyString.toLowerCase().split("\\."));
                             int position = commandContext.get("position");
-                            String value = commandContext.get("value");
+                            var value = commandContext.get("value");
 
                             var keyOpt = container.getRegisteredListKeys()
                                     .stream()
-                                    .filter(t -> t.getKey().equals(keys) && t.getType() == String.class)
-                                    .map(k -> (ConfigurationListKey<String>) k)
+                                    .filter(t -> t.getKey().equals(keys) && t.getType() == type)
+                                    .map(k -> (ConfigurationListKey) k)
                                     .findFirst();
 
                             if (keyOpt.isEmpty()) {
@@ -701,12 +530,12 @@ public class ConfigCommandFactory {
                                 var saved = new ArrayList<>(container.getSaved(key));
                                 if (saved.isEmpty()) {
                                     saved.add(value);
-                                    container.update(key.getKey(), saved);
+                                    container.updateList(key.getKey(), type, saved);
 
                                     Message
                                             .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_CONSTANT_LIST_ADDED)
                                             .placeholder("config", keyString)
-                                            .placeholder("value", value)
+                                            .placeholder("value", stringValueOf(value))
                                             .placeholder("position", saved.size())
                                             .defaultPrefix()
                                             .send(sender);
@@ -718,12 +547,12 @@ public class ConfigCommandFactory {
                                                 .send(sender);
                                     } else {
                                         saved.set(position, value);
-                                        container.update(key.getKey(), saved);
+                                        container.updateList(key.getKey(), type, saved);
 
                                         Message
                                                 .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_CONSTANT_LIST_ADDED)
                                                 .placeholder("config", keyString)
-                                                .placeholder("value", value)
+                                                .placeholder("value", stringValueOf(value))
                                                 .placeholder("position", position + 1)
                                                 .defaultPrefix()
                                                 .send(sender);
@@ -733,13 +562,13 @@ public class ConfigCommandFactory {
                         }))
         );
 
-        // string list - remove
+        // list - remove
         manager.command(
                 commandBuilder
                         .literal("list", "l")
-                        .literal("string", "strings", "str", "s")
+                        .literal(typeName, aliases)
                         .argument(StringArgument.<CommandSenderWrapper>newBuilder("key")
-                                .withSuggestionsProvider((c, s) -> makeSuggestion(c, false, container -> container.getJoinedRegisteredKeysForConfigCommandList(String.class)))
+                                .withSuggestionsProvider((c, s) -> makeSuggestion(c, false, container -> container.getJoinedRegisteredKeysForConfigCommandList(type)))
                         )
                         .literal("remove", "delete", "r", "d")
                         .argument(IntegerArgument.of("position"))
@@ -751,8 +580,8 @@ public class ConfigCommandFactory {
                             @SuppressWarnings("unchecked")
                             var keyOpt = container.getRegisteredListKeys()
                                     .stream()
-                                    .filter(t -> t.getKey().equals(keys) && t.getType() == String.class)
-                                    .map(k -> (ConfigurationListKey<String>) k)
+                                    .filter(t -> t.getKey().equals(keys) && t.getType() == type)
+                                    .map(k -> (ConfigurationListKey) k)
                                     .findFirst();
 
                             if (keyOpt.isEmpty()) {
@@ -767,7 +596,7 @@ public class ConfigCommandFactory {
                                             .send(sender);
                                 } else {
                                     saved.remove(position);
-                                    container.update(key.getKey(), saved);
+                                    container.updateList(key.getKey(), type, saved);
 
                                     Message
                                             .of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_CONSTANT_LIST_REMOVED)
@@ -780,13 +609,13 @@ public class ConfigCommandFactory {
                         }))
         );
 
-        // string list - clear
+        // list - clear
         manager.command(
                 commandBuilder
                         .literal("list", "l")
-                        .literal("string", "strings", "str", "s")
+                        .literal(typeName, aliases)
                         .argument(StringArgument.<CommandSenderWrapper>newBuilder("key")
-                                .withSuggestionsProvider((c, s) -> makeSuggestion(c, false, container -> container.getJoinedRegisteredKeysForConfigCommandList(String.class)))
+                                .withSuggestionsProvider((c, s) -> makeSuggestion(c, false, container -> container.getJoinedRegisteredKeysForConfigCommandList(type)))
                         )
                         .literal("clear", "c")
                         .handler(commandContext -> handleCommand(commandContext, false, (sender, container) -> {
@@ -795,7 +624,7 @@ public class ConfigCommandFactory {
 
                             var keyOpt = container.getRegisteredListKeys()
                                     .stream()
-                                    .filter(t -> t.getKey().equals(keys) && t.getType() == String.class)
+                                    .filter(t -> t.getKey().equals(keys) && t.getType() == type)
                                     .findFirst();
 
                             if (keyOpt.isEmpty()) {
@@ -813,8 +642,18 @@ public class ConfigCommandFactory {
                             }
                         }))
         );
+    }
 
-        // TODO: non-string lists
+    private @NotNull Component stringValueOf(@NotNull Object object) {
+        if (object instanceof Item) {
+            var item = (Item) object;
+            return Component.text()
+                    .content(item.getAmount() + "x " + item.getType().platformName())
+                    .hoverEvent(item.asItemContent())
+                    .build();
+        } else {
+            return Component.text(object.toString());
+        }
     }
     
     @NotNull

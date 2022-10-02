@@ -1714,13 +1714,7 @@ public class GameImpl implements Game {
                 }
 
                 if (configurationContainer.getOrDefault(GameConfigurationContainer.PLAYER_RESPAWN_ITEMS_ENABLED, false)) {
-                    var playerRespawnItems = MainConfig.getInstance().node("player-respawn-items", "items")
-                            .childrenList()
-                            .stream()
-                            .map(ItemFactory::build)
-                            .filter(Optional::isPresent)
-                            .map(Optional::get)
-                            .collect(Collectors.toList());
+                    var playerRespawnItems = configurationContainer.getOrDefault(GameConfigurationContainerImpl.PLAYER_RESPAWN_ITEMS_ITEMS, List.of());
                     if (!playerRespawnItems.isEmpty()) {
                         MiscUtils.giveItemsToPlayer(playerRespawnItems, gamePlayer, currentTeam.getColor());
                     } else {
@@ -1990,15 +1984,9 @@ public class GameImpl implements Game {
                             player.teleport(team.getRandomSpawn(), () -> {
                                 player.setGameMode(GameModeHolder.of("survival"));
                                 if (configurationContainer.getOrDefault(GameConfigurationContainer.GAME_START_ITEMS_ENABLED, false)) {
-                                    var givedGameStartItems = MainConfig.getInstance().node("game-start-items", "items")
-                                            .childrenList()
-                                            .stream()
-                                            .map(ItemFactory::build)
-                                            .filter(Optional::isPresent)
-                                            .map(Optional::get)
-                                            .collect(Collectors.toList());
-                                    if (!givedGameStartItems.isEmpty()) {
-                                        MiscUtils.giveItemsToPlayer(givedGameStartItems, player, team.getColor());
+                                    var givenGameStartItems = configurationContainer.getOrDefault(GameConfigurationContainerImpl.GAME_START_ITEMS_ITEMS, List.of());
+                                    if (!givenGameStartItems.isEmpty()) {
+                                        MiscUtils.giveItemsToPlayer(givenGameStartItems, player, team.getColor());
                                     } else {
                                         Debug.warn("You have wrongly configured game-start-items.items!", true);
                                     }

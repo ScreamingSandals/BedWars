@@ -25,6 +25,7 @@ import org.screamingsandals.bedwars.api.config.GameConfigurationContainer;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.commands.BedWarsPermission;
 import org.screamingsandals.bedwars.commands.admin.JoinTeamCommand;
+import org.screamingsandals.bedwars.config.GameConfigurationContainerImpl;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.special.listener.ProtectionWallListener;
 import org.screamingsandals.bedwars.special.listener.RescuePlatformListener;
@@ -395,13 +396,7 @@ public class PlayerListener {
 
                 SpawnEffects.spawnEffect(gPlayer.getGame(), gPlayer, "game-effects.respawn");
                 if (gPlayer.getGame().getConfigurationContainer().getOrDefault(GameConfigurationContainer.PLAYER_RESPAWN_ITEMS_ENABLED, false)) {
-                    var playerRespawnItems = MainConfig.getInstance().node("player-respawn-items", "items")
-                            .childrenList()
-                            .stream()
-                            .map(ItemFactory::build)
-                            .filter(Optional::isPresent)
-                            .map(Optional::get)
-                            .collect(Collectors.toList());
+                    var playerRespawnItems = gPlayer.getGame().getConfigurationContainer().getOrDefault(GameConfigurationContainerImpl.PLAYER_RESPAWN_ITEMS_ITEMS, List.of());
                     if (!playerRespawnItems.isEmpty()) {
                         MiscUtils.giveItemsToPlayer(playerRespawnItems, gPlayer, team.getColor());
                     } else {

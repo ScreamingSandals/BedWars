@@ -26,8 +26,12 @@ import org.screamingsandals.bedwars.api.config.Configuration;
 import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
 import org.screamingsandals.bedwars.api.config.ConfigurationKey;
 import org.screamingsandals.bedwars.api.config.ConfigurationListKey;
+import org.screamingsandals.lib.configurate.ItemSerializer;
+import org.screamingsandals.lib.configurate.SLibSerializers;
+import org.screamingsandals.lib.item.Item;
 import org.spongepowered.configurate.BasicConfigurationNode;
 import org.spongepowered.configurate.ConfigurationNode;
+import org.spongepowered.configurate.ConfigurationOptions;
 import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.HashMap;
@@ -46,7 +50,7 @@ public class ConfigurationContainerImpl implements ConfigurationContainer {
     private final Map<List<String>, Class<?>> registered = new HashMap<>();
     private final Map<List<String>, Class<?>> registeredList = new HashMap<>();
     @Getter
-    private final BasicConfigurationNode saved = BasicConfigurationNode.root();
+    private final BasicConfigurationNode saved = BasicConfigurationNode.root(ConfigurationOptions.defaults().serializers(SLibSerializers::makeSerializers));
     private final Map<List<String>, String[]> globalConfigKeys = new HashMap<>();
     @Getter
     private final Map<List<String>, String[]> descriptionKeys = new HashMap<>();
@@ -207,7 +211,20 @@ public class ConfigurationContainerImpl implements ConfigurationContainer {
             if (object != null && object.getClass().isEnum()) {
                 object = object.toString(); // save enums as strings (thanks Configurate, rly)
             }
-            saved.node(key).set(object);
+            if (object instanceof Item) {
+                saved.node(key).set(Item.class, object);
+            } else {
+                saved.node(key).set(object);
+            }
+        } catch (SerializationException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public <T> void updateList(List<String> key, Class<T> type, List<T> object) {
+        try {
+            remove(key);
+            saved.node(key).setList(type, object);
         } catch (SerializationException e) {
             e.printStackTrace();
         }

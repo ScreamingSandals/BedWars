@@ -313,6 +313,8 @@ public class LangKeys {
     public final String[] ADMIN_ARENA_EDIT_ERRORS_TEAM_SPAWN_SET_BLOCKED = {"admin", "arena", "edit", "errors", "team_spawn_set_blocked"};
     public final String[] ADMIN_ARENA_EDIT_ERRORS_TEAM_SPAWN_ON_THE_SAME_BLOCK = {"admin", "arena", "edit", "errors", "team_spawn_on_the_same_block"};
     public final String[] ADMIN_ARENA_EDIT_ERRORS_TEAM_NO_SPAWN_THERE = {"admin", "arena", "edit", "errors", "team_no_spawn_there"};
+    public final String[] ADMIN_ARENA_EDIT_ERRORS_NOTHING_IN_HAND = {"admin", "arena", "edit", "errors", "nothing_in_hand"};
+    public final String[] ADMIN_ARENA_EDIT_ERRORS_INVALID_ITEM = {"admin", "arena", "edit", "errors", "invalid_item"};
     public final String[] ADMIN_ARENA_EDIT_SUCCESS_SAVED_AND_STARTED = {"admin", "arena", "edit", "success", "saved_and_started"};
     public final String[] ADMIN_ARENA_EDIT_SUCCESS_TARGET_BLOCK_SET = {"admin", "arena", "edit", "success", "target_block_set"};
     public final String[] ADMIN_ARENA_EDIT_SUCCESS_TARGET_NOT_PROPERLY_BALANCED = {"admin", "arena", "edit", "success", "target_not_properly_balanced"};

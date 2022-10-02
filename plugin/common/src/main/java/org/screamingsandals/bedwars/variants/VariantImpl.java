@@ -29,6 +29,7 @@ import org.screamingsandals.bedwars.config.GameConfigurationContainerImpl;
 import org.screamingsandals.bedwars.game.ItemSpawnerTypeImpl;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.utils.MiscUtils;
+import org.screamingsandals.lib.configurate.SLibSerializers;
 import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.spectator.Color;
 import org.screamingsandals.lib.spectator.Component;
