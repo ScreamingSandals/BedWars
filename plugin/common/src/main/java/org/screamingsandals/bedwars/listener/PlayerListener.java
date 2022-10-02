@@ -307,8 +307,10 @@ public class PlayerListener {
     public void onPlayerQuit(SPlayerLeaveEvent event) {
         if (PlayerManagerImpl.getInstance().isPlayerRegistered(event.player())) {
             var gPlayer = event.player().as(BedWarsPlayer.class);
-            if (gPlayer.isInGame())
+            if (gPlayer.isInGame()) {
+                gPlayer.forceSynchronousTeleportation = true;
                 gPlayer.changeGame(null);
+            }
             PlayerManagerImpl.getInstance().dropPlayer(gPlayer);
         }
 

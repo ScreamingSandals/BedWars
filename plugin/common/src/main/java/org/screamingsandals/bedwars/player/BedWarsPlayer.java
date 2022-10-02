@@ -32,9 +32,11 @@ import org.screamingsandals.lib.item.Item;
 import org.screamingsandals.lib.player.ExtendablePlayerWrapper;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.player.gamemode.GameModeHolder;
+import org.screamingsandals.lib.world.LocationHolder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public class BedWarsPlayer extends ExtendablePlayerWrapper implements BWPlayer {
     @Getter
@@ -54,6 +56,7 @@ public class BedWarsPlayer extends ExtendablePlayerWrapper implements BWPlayer {
     private boolean spectator;
     public boolean isTeleportingFromGame_justForInventoryPlugins = false;
     public boolean mainLobbyUsed = false;
+    public boolean forceSynchronousTeleportation = false;
 
     public BedWarsPlayer(PlayerWrapper player) {
         super(player);
@@ -206,6 +209,27 @@ public class BedWarsPlayer extends ExtendablePlayerWrapper implements BWPlayer {
         if (hiddenPlayers.contains(playerWrapper) && !equals(playerWrapper)) {
             hiddenPlayers.remove(playerWrapper);
             super.showPlayer(playerWrapper);
+        }
+    }
+
+    @Override
+    public CompletableFuture<Boolean> teleport(LocationHolder location) {
+        if (forceSynchronousTeleportation) {
+            return CompletableFuture.completedFuture(teleportSync(location));
+        } else {
+            return super.teleport(location);
+        }
+    }
+
+    @Override
+    public CompletableFuture<Void> teleport(LocationHolder location, Runnable callback, boolean forceCallback) {
+        if (forceSynchronousTeleportation) {
+            if (teleportSync(location) || forceCallback) {
+                callback.run();
+            }
+            return CompletableFuture.completedFuture(null);
+        } else {
+            return super.teleport(location, callback, forceCallback);
         }
     }
 }
