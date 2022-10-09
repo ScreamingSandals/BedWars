@@ -24,7 +24,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.bedwars.Main;
+import org.screamingsandals.bedwars.api.RunningTeam;
+import org.screamingsandals.bedwars.api.Team;
 import org.screamingsandals.bedwars.api.game.GameStatus;
+import org.screamingsandals.bedwars.game.CurrentTeam;
 import org.screamingsandals.bedwars.game.Game;
 import org.screamingsandals.bedwars.game.GamePlayer;
 import org.screamingsandals.bedwars.game.ItemSpawnerType;
@@ -66,14 +69,15 @@ public class CheatCommand extends BaseCommand {
                 }
                 return true;
             }
-            if (game.getStatus() != GameStatus.RUNNING) {
-                sender.sendMessage(i18n("cheat_game_not_running"));
-                return true;
-            }
 
             switch (args.get(0).toLowerCase()) {
                 case "give":
                     {
+                        if (game.getStatus() != GameStatus.RUNNING) {
+                            sender.sendMessage(i18n("cheat_game_not_running"));
+                            return true;
+                        }
+
                         if (args.size() < 2) {
                             sender.sendMessage(i18n("unknown_usage"));
                             return true;
@@ -111,6 +115,11 @@ public class CheatCommand extends BaseCommand {
                     break;
                 case "kill":
                     {
+                        if (game.getStatus() != GameStatus.RUNNING) {
+                            sender.sendMessage(i18n("cheat_game_not_running"));
+                            return true;
+                        }
+
                         Player player1 = player;
                         if (args.size() > 1) {
                             player1 = Bukkit.getPlayer(args.get(1));
@@ -132,6 +141,104 @@ public class CheatCommand extends BaseCommand {
                         sender.sendMessage(i18n("cheat_received_kill").replace("%player%", player1.getName()));
                     }
                     break;
+                case "destroybed":
+                    {
+                        if (game.getStatus() != GameStatus.RUNNING) {
+                            sender.sendMessage(i18n("cheat_game_not_running"));
+                            return true;
+                        }
+
+                        if (args.size() < 2) {
+                            sender.sendMessage(i18n("unknown_usage"));
+                            return true;
+                        }
+                        String name = args.get(1);
+                        Team team1 = game.getTeamFromName(name);
+                        if (team1 == null) {
+                            sender.sendMessage(i18n("admin_command_team_is_not_exists"));
+                            return true;
+                        }
+                        CurrentTeam currentTeam = game.getCurrentTeamFromTeam(team1);
+                        if (currentTeam == null) {
+                            sender.sendMessage(i18n("team_not_in_game").replace("%name%", name));
+                            return true;
+                        }
+
+                        if (!currentTeam.isBed) {
+                            sender.sendMessage(i18n("team_bed_is_already_destroyed").replace("%name%", name));
+                            return true;
+                        }
+
+                        game.targetBlockExplode(currentTeam);
+
+                        sender.sendMessage(i18n("cheat_received_target_block_destroy").replace("%name%", name));
+                    }
+                    break;
+                case "destroyallbeds":
+                    {
+                        if (game.getStatus() != GameStatus.RUNNING) {
+                            sender.sendMessage(i18n("cheat_game_not_running"));
+                            return true;
+                        }
+
+                        for (RunningTeam team : game.getRunningTeams()) {
+                            if (team.isTargetBlockExists()) {
+                                game.targetBlockExplode(team);
+                            }
+                        }
+
+                        sender.sendMessage(i18n("cheat_received_target_blocks_destroy"));
+                    }
+                    break;
+                case "jointeam":
+                    {
+                        if (args.size() >= 2) {
+                            String name = args.get(1);
+                            Team team1 = game.getTeamFromName(name);
+                            if (team1 == null) {
+                                sender.sendMessage(i18n("admin_command_team_is_not_exists"));
+                                return true;
+                            }
+
+                            if (game.getStatus() == GameStatus.WAITING) {
+                                game.selectPlayerTeam(player, team1, true, true, false);
+                            } else {
+                                if (game.getCurrentTeamFromTeam(team1) == null) {
+                                    sender.sendMessage(i18n("team_not_in_game").replace("%name%", name));
+                                    return true;
+                                }
+
+                                game.selectPlayerTeam(player, team1, true, false, true);
+
+                                GamePlayer gP = Main.getPlayerGameProfile(player);
+                                CurrentTeam team = game.getPlayerTeam(gP);
+                                if (team != null) {
+                                    if (gP.isSpectator) {
+                                        game.makePlayerFromSpectator(gP);
+                                    } else {
+                                        gP.teleport(team.getTeamSpawn());
+                                    }
+                                }
+                            }
+                        } else {
+                            GamePlayer gP = Main.getPlayerGameProfile(player);
+                            if (game.getStatus() == GameStatus.WAITING) {
+                                game.joinRandomTeam(gP, true, true, false);
+                            } else {
+                                game.joinRandomTeam(gP, true, false, true);
+
+                                CurrentTeam team = game.getPlayerTeam(gP);
+                                if (team != null) {
+                                    if (gP.isSpectator) {
+                                        game.makePlayerFromSpectator(gP);
+                                    } else {
+                                        gP.teleport(team.getTeamSpawn());
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    break;
                 default:
                     sender.sendMessage(i18n("cheat_please_provide_valid_cheat_type"));
             }
@@ -148,7 +255,7 @@ public class CheatCommand extends BaseCommand {
         }
 
         if (args.size() == 1) {
-            completion.addAll(Arrays.asList("give", "kill", "startemptygame"));
+            completion.addAll(Arrays.asList("give", "kill", "startemptygame", "destroybed", "destroyallbeds", "jointeam"));
         }
         if (Main.isPlayerInGame((Player) sender)) {
             if (args.size() > 1 && args.get(0).equals("give")) {
@@ -165,6 +272,12 @@ public class CheatCommand extends BaseCommand {
                 GamePlayer gPlayer = Main.getPlayerGameProfile((Player) sender);
                 if (args.size() == 2) {
                     completion.addAll(gPlayer.getGame().getConnectedPlayers().stream().map(Player::getName).collect(Collectors.toList()));
+                }
+            }
+            if (args.size() > 1 && (args.get(0).equalsIgnoreCase("destroybed") || args.get(0).equalsIgnoreCase("jointeam"))) {
+                GamePlayer gPlayer = Main.getPlayerGameProfile((Player) sender);
+                if (args.size() == 2) {
+                    completion.addAll(gPlayer.getGame().getRunningTeams().stream().map(Team::getName).collect(Collectors.toList()));
                 }
             }
         }

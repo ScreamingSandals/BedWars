@@ -552,11 +552,8 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 } else {
                     region.putOriginalBlock(loc, region.getBedNeighbor(block).getState());
                 }
-                if (region.isBedHead(block.getState())) {
-                    region.getBedNeighbor(block).setType(Material.AIR);
-                } else {
-                    block.setType(Material.AIR);
-                }
+                region.getBedNeighbor(block).setType(Material.AIR, false);
+                block.setType(Material.AIR, false);
             } else {
                 bedDestroyed(loc, null, false, "RESPAWN_ANCHOR".equals(block.getType().name()), block.getType().name().contains("CAKE"));
                 region.putOriginalBlock(loc, block.getState());
@@ -1447,7 +1444,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         }
     }
 
-    private void internalTeamJoin(GamePlayer player, Team teamForJoin) {
+    private void internalTeamJoin(GamePlayer player, Team teamForJoin, boolean ignoreTeamSize, boolean addCosmetics) {
         CurrentTeam current = null;
         for (CurrentTeam t : teamsInGame) {
             if (t.teamInfo == teamForJoin) {
@@ -1486,7 +1483,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                             .replaceAll("%maxplayers%", Integer.toString(current.teamInfo.maxPlayers)));
             return;
         }
-        if (current.players.size() >= current.teamInfo.maxPlayers) {
+        if (!ignoreTeamSize && current.players.size() >= current.teamInfo.maxPlayers) {
             if (cur != null) {
                 player.player.sendMessage(i18nc("team_is_full_you_are_staying", customPrefix)
                         .replace("%team%", teamForJoin.color.chatColor + teamForJoin.name)
@@ -1512,23 +1509,25 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                         .replace("%players%", Integer.toString(current.players.size()))
                         .replaceAll("%maxplayers%", Integer.toString(current.teamInfo.maxPlayers)));
 
-        if (getOriginalOrInheritedAddWoolToInventoryOnJoin()) {
-            int colorPosition = Main.getConfigurator().config.getInt("hotbar.color", 1);
-            if (colorPosition >= 0 && colorPosition <= 8) {
-                ItemStack stack = teamForJoin.color.getWool();
-                ItemMeta stackMeta = stack.getItemMeta();
-                stackMeta.setDisplayName(teamForJoin.color.chatColor + teamForJoin.name);
-                stack.setItemMeta(stackMeta);
-                player.player.getInventory().setItem(colorPosition, stack);
+        if (addCosmetics) {
+            if (getOriginalOrInheritedAddWoolToInventoryOnJoin()) {
+                int colorPosition = Main.getConfigurator().config.getInt("hotbar.color", 1);
+                if (colorPosition >= 0 && colorPosition <= 8) {
+                    ItemStack stack = teamForJoin.color.getWool();
+                    ItemMeta stackMeta = stack.getItemMeta();
+                    stackMeta.setDisplayName(teamForJoin.color.chatColor + teamForJoin.name);
+                    stack.setItemMeta(stackMeta);
+                    player.player.getInventory().setItem(colorPosition, stack);
+                }
             }
-        }
 
-        if (getOriginalOrInheritedColoredLeatherByTeamInLobby()) {
-            ItemStack chestplate = new ItemStack(Material.LEATHER_CHESTPLATE);
-            LeatherArmorMeta meta = (LeatherArmorMeta) chestplate.getItemMeta();
-            meta.setColor(teamForJoin.color.leatherColor);
-            chestplate.setItemMeta(meta);
-            player.player.getInventory().setChestplate(chestplate);
+            if (getOriginalOrInheritedColoredLeatherByTeamInLobby()) {
+                ItemStack chestplate = new ItemStack(Material.LEATHER_CHESTPLATE);
+                LeatherArmorMeta meta = (LeatherArmorMeta) chestplate.getItemMeta();
+                meta.setColor(teamForJoin.color.leatherColor);
+                chestplate.setItemMeta(meta);
+                player.player.getInventory().setChestplate(chestplate);
+            }
         }
 
         if (!teamsInGame.contains(current)) {
@@ -1541,14 +1540,18 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     }
 
     public void joinRandomTeam(GamePlayer player) {
-        Team teamForJoin;
-        if (teamsInGame.size() < 2) {
+        joinRandomTeam(player, false, true, false);
+    }
+
+    public void joinRandomTeam(GamePlayer player, boolean ignoreTeamSize, boolean addCosmetics, boolean onlyCurrentTeams) {
+        Team teamForJoin = null;
+        if (!onlyCurrentTeams && teamsInGame.size() < 2) {
             teamForJoin = getFirstTeamThatIsntInGame();
         } else {
             CurrentTeam lowest = null;
 
             for (CurrentTeam team : teamsInGame) {
-                if (team.players.size() >= team.getMaxPlayers()) {
+                if (!ignoreTeamSize && team.players.size() >= team.getMaxPlayers()) {
                     continue; // skip full teams
                 }
 
@@ -1562,7 +1565,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             }
             if (lowest != null) {
                 teamForJoin = lowest.teamInfo;
-            } else {
+            } else if (!onlyCurrentTeams) {
                 teamForJoin = getFirstTeamThatIsntInGame();
             }
         }
@@ -1571,7 +1574,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             return;
         }
 
-        internalTeamJoin(player, teamForJoin);
+        internalTeamJoin(player, teamForJoin, ignoreTeamSize, addCosmetics);
     }
 
     public Location makeSpectator(GamePlayer gamePlayer, boolean leaveItem) {
@@ -2420,12 +2423,16 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     }
 
     public void selectTeam(GamePlayer playerGameProfile, String displayName) {
-        if (status == GameStatus.WAITING) {
+        selectTeam(playerGameProfile, displayName, false, true, false);
+    }
+
+    public void selectTeam(GamePlayer playerGameProfile, String displayName, boolean ignoreTeamSize, boolean addCosmetics, boolean ignoreGameState) {
+        if (status == GameStatus.WAITING || ignoreGameState) {
             displayName = ChatColor.stripColor(displayName);
             playerGameProfile.player.closeInventory();
             for (Team team : teams) {
                 if (displayName.equals(team.name)) {
-                    internalTeamJoin(playerGameProfile, team);
+                    internalTeamJoin(playerGameProfile, team, ignoreTeamSize, addCosmetics);
                     break;
                 }
             }
@@ -2656,6 +2663,10 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
     @Override
     public void selectPlayerTeam(Player player, org.screamingsandals.bedwars.api.Team team) {
+        selectPlayerTeam(player, team, false, true, false);
+    }
+
+    public void selectPlayerTeam(Player player, org.screamingsandals.bedwars.api.Team team, boolean ignoreTeamSize, boolean addCosmetics, boolean ignoreGameState) {
         if (!Main.isPlayerInGame(player)) {
             return;
         }
@@ -2664,7 +2675,15 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             return;
         }
 
-        selectTeam(profile, team.getName());
+        if (team instanceof Team) {
+            if (status == GameStatus.WAITING || ignoreGameState) {
+                player.closeInventory();
+                internalTeamJoin(profile, (Team) team, ignoreTeamSize, addCosmetics);
+            }
+            return;
+        }
+
+        selectTeam(profile, team.getName(), ignoreTeamSize, addCosmetics, ignoreGameState);
     }
 
     @Override

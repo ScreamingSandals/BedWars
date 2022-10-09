@@ -100,6 +100,10 @@ public class HelpCommand extends BaseCommand {
             if (Main.getConfigurator().config.getBoolean("enable-cheat-command-for-admins")) {
                 player.sendMessage(i18nonly("help_bw_cheat_give"));
                 player.sendMessage(i18nonly("help_bw_cheat_kill"));
+                player.sendMessage(i18nonly("help_bw_cheat_destroybed"));
+                player.sendMessage(i18nonly("help_bw_cheat_destroyallbeds"));
+                player.sendMessage(i18nonly("help_bw_cheat_jointeam"));
+                player.sendMessage(i18nonly("help_bw_cheat_startemptygame"));
             }
 
             player.sendMessage(i18nonly("help_bw_admin_info"));
