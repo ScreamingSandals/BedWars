@@ -152,6 +152,12 @@ public class LangKeys {
     public final String[] IN_GAME_CHEAT_REGION_REGENERATED = {"in_game", "cheat", "region_regenerated"};
     public final String[] IN_GAME_CHEAT_GAME_NOT_WAITING = {"in_game", "cheat", "game_not_waiting"};
     public final String[] IN_GAME_CHEAT_GAME_FORCED = {"in_game", "cheat", "game_forced"};
+    public final String[] IN_GAME_CHEAT_TEAM_DOES_NOT_EXIST = {"in_game", "cheat", "team_does_not_exist"};
+    public final String[] IN_GAME_CHEAT_TEAM_IS_NOT_IN_GAME = {"in_game", "cheat", "team_is_not_in_game"};
+    public final String[] IN_GAME_CHEAT_UNKNOWN_TARGET = {"in_game", "cheat", "unknown_target"};
+    public final String[] IN_GAME_CHEAT_TARGET_IS_NOT_VALID = {"in_game", "cheat", "target_is_not_valid"};
+    public final String[] IN_GAME_CHEAT_RECEIVED_TARGET_INVALIDATED = {"in_game", "cheat", "received_target_invalidated"};
+    public final String[] IN_GAME_CHEAT_RECEIVED_TARGETS_INVALIDATED = {"in_game", "cheat", "received_targets_invalidated"};
     public final String[] IN_GAME_SCOREBOARD_YOU = {"in_game", "scoreboard", "you"};
     public final String[] IN_GAME_SCOREBOARD_STATE_WAITING = {"in_game", "scoreboard", "state", "waiting"};
     public final String[] IN_GAME_SCOREBOARD_STATE_COUNTDOWN = {"in_game", "scoreboard", "state", "countdown"};

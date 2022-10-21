@@ -22,23 +22,33 @@ package org.screamingsandals.bedwars.commands;
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
 import cloud.commandframework.arguments.standard.IntegerArgument;
+import cloud.commandframework.arguments.standard.StringArgument;
 import org.screamingsandals.bedwars.PlatformService;
 import org.screamingsandals.bedwars.api.config.GameConfigurationContainer;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.game.GameManagerImpl;
+import org.screamingsandals.bedwars.game.TeamImpl;
+import org.screamingsandals.bedwars.game.target.TargetBlockImpl;
+import org.screamingsandals.bedwars.game.target.TargetCountdownImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.bedwars.special.PopUpTowerImpl;
 import org.screamingsandals.bedwars.utils.MiscUtils;
+import org.screamingsandals.bedwars.utils.SpawnEffects;
+import org.screamingsandals.bedwars.utils.TitleUtils;
 import org.screamingsandals.lib.Server;
+import org.screamingsandals.lib.SpecialSoundKey;
 import org.screamingsandals.lib.block.BlockTypeHolder;
 import org.screamingsandals.lib.entity.EntityMapper;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
+import org.screamingsandals.lib.spectator.Component;
+import org.screamingsandals.lib.spectator.sound.SoundSource;
+import org.screamingsandals.lib.spectator.sound.SoundStart;
 import org.screamingsandals.lib.utils.BlockFace;
 import org.screamingsandals.lib.utils.annotations.Service;
 
@@ -272,6 +282,118 @@ public class CheatCommand extends BaseCommand {
                     game.get().forceGameToStart = true;
 
                     player.sendMessage(Message.of(LangKeys.IN_GAME_CHEAT_GAME_FORCED).defaultPrefix());
+                })
+        );
+
+        manager.command(commandSenderWrapperBuilder
+                .literal("invalidateTarget", "destroybed")
+                .argument(StringArgument.<CommandSenderWrapper>newBuilder("team")
+                        .withSuggestionsProvider((c, s) -> {
+                            var player = c.getSender().as(PlayerWrapper.class);
+
+                            var game = playerManager.getGameOfPlayer(player);
+                            if (game.isEmpty()) {
+                                return List.of();
+                            }
+
+                            return game.get().getActiveTeams().stream().map(TeamImpl::getName).collect(Collectors.toList());
+                        })
+                )
+                .handler(commandContext -> {
+                    var player = commandContext.getSender().as(PlayerWrapper.class);
+
+                    var game = playerManager.getGameOfPlayer(player);
+                    if (game.isEmpty()) {
+                        player.sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_NOT_IN_ANY_GAME_YET).defaultPrefix());
+                        return;
+                    }
+
+                    String teamName = commandContext.get("team");
+                    var team = game.get().getTeamFromName(teamName);
+                    if (team == null) {
+                        player.sendMessage(
+                                Message.of(LangKeys.IN_GAME_CHEAT_TEAM_DOES_NOT_EXIST)
+                                    .placeholderRaw("team", teamName)
+                                    .defaultPrefix()
+                        );
+                        return;
+                    }
+
+                    if (!game.get().isTeamActive(team)) {
+                        player.sendMessage(
+                                Message.of(LangKeys.IN_GAME_CHEAT_TEAM_IS_NOT_IN_GAME)
+                                        .placeholderRaw("team", teamName)
+                                        .defaultPrefix()
+                        );
+                        return;
+                    }
+
+                    var target = team.getTarget();
+                    if (target.isValid()) {
+                        if (target instanceof TargetBlockImpl) {
+                            ((TargetBlockImpl) target).setValid(false);
+                            var loc = ((TargetBlockImpl) target).getTargetBlock();
+                            var block = loc.getBlock();
+                            var region = game.get().getRegion();
+                            if (region.isBedBlock(block.getBlockState().orElseThrow())) {
+                                game.get().bedDestroyed(loc, null, true, false, false);
+                                region.putOriginalBlock(block.getLocation(), block.getBlockState().orElseThrow());
+                                var neighbor = region.getBedNeighbor(block);
+                                region.putOriginalBlock(neighbor.getLocation(), neighbor.getBlockState().orElseThrow());
+                                neighbor.setTypeWithoutPhysics(BlockTypeHolder.air());
+                            } else {
+                                game.get().bedDestroyed(loc, null, false, block.getType().isSameType("respawn_anchor"), block.getType().isSameType("cake"));
+                                region.putOriginalBlock(loc, block.getBlockState().orElseThrow());
+                            }
+                            block.setType(BlockTypeHolder.air());
+                        } else if (target instanceof TargetCountdownImpl) {
+                            ((TargetCountdownImpl) target).setRemainingTime(0);
+
+                            Message
+                                    .of(LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_DEATH_MODE)
+                                    .join(LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_SUBTITLE_VICTIM)
+                                    .times(TitleUtils.defaultTimes())
+                                    .title(team.getPlayers());
+
+                            Message
+                                    .of(LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_KILLABLE)
+                                    .placeholder("team", Component.text(team.getName(), team.getColor().getTextColor()))
+                                    .prefixOrDefault(game.get().getCustomPrefixComponent())
+                                    .send(game.get().getConnectedPlayers());
+
+                            for (var p : team.getPlayers()) {
+                                SpawnEffects.spawnEffect(game.get(), p, "game-effects.beddestroy");
+                                p.playSound(
+                                        SoundStart.sound(
+                                                SpecialSoundKey.key(MainConfig.getInstance().node("sounds", "my_bed_destroyed", "sound").getString("entity.ender_dragon.growl")),
+                                                SoundSource.AMBIENT,
+                                                (float) MainConfig.getInstance().node("sounds", "my_bed_destroyed", "volume").getDouble(1),
+                                                (float) MainConfig.getInstance().node("sounds", "my_bed_destroyed", "pitch").getDouble(1)
+                                        )
+                                );
+                            }
+                        } else {
+                            player.sendMessage(
+                                    Message.of(LangKeys.IN_GAME_CHEAT_UNKNOWN_TARGET)
+                                            .placeholderRaw("team", teamName)
+                                            .defaultPrefix()
+                            );
+                            return;
+                        }
+                    } else {
+                        player.sendMessage(
+                                Message.of(LangKeys.IN_GAME_CHEAT_TARGET_IS_NOT_VALID)
+                                        .placeholderRaw("team", teamName)
+                                        .defaultPrefix()
+                        );
+                        return;
+                    }
+
+                    player.sendMessage(
+                            Message.of(LangKeys.IN_GAME_CHEAT_RECEIVED_TARGET_INVALIDATED)
+                                    .placeholderRaw("team", teamName)
+                                    .defaultPrefix()
+                    );
                 })
         );
     }

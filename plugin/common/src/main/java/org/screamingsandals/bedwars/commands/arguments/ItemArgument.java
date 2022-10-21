@@ -22,11 +22,8 @@ package org.screamingsandals.bedwars.commands.arguments;
 import cloud.commandframework.arguments.CommandArgument;
 import cloud.commandframework.arguments.parser.ArgumentParseResult;
 import cloud.commandframework.arguments.parser.ArgumentParser;
-import cloud.commandframework.captions.CaptionVariable;
-import cloud.commandframework.captions.StandardCaptionKeys;
 import cloud.commandframework.context.CommandContext;
 import cloud.commandframework.exceptions.parsing.NoInputProvidedException;
-import cloud.commandframework.exceptions.parsing.ParserException;
 import io.leangen.geantyref.TypeToken;
 
 import java.util.*;
