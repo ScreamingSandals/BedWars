@@ -21,6 +21,7 @@ package org.screamingsandals.bedwars.listener;
 
 import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.api.config.GameConfigurationContainer;
+import org.screamingsandals.bedwars.api.events.TargetInvalidationReason;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.entities.EntitiesManagerImpl;
@@ -145,7 +146,7 @@ public class WorldListener {
                             if (game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.TARGET_BLOCK_ALLOW_DESTROYING_WITH_EXPLOSIONS, false)) {
                                 for (var team : game.getActiveTeams()) {
                                     if (team.getTarget() instanceof TargetBlockImpl && ((TargetBlockImpl) team.getTarget()).getTargetBlock().equals(block.getLocation())) {
-                                        game.targetBlockExplode(team);
+                                        game.internalProcessInvalidation(team, team.getTarget(), null, TargetInvalidationReason.TARGET_BLOCK_EXPLODED);
                                         break;
                                     }
                                 }

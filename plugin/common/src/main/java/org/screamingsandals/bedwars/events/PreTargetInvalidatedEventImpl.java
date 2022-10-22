@@ -20,17 +20,35 @@
 package org.screamingsandals.bedwars.events;
 
 import lombok.Data;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.screamingsandals.bedwars.api.events.TargetBlockDestroyedEvent;
+import org.screamingsandals.bedwars.api.events.PreTargetInvalidatedEvent;
+import org.screamingsandals.bedwars.api.events.TargetInvalidationReason;
+import org.screamingsandals.bedwars.api.game.target.Target;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.TeamImpl;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
-import org.screamingsandals.lib.event.SEvent;
+import org.screamingsandals.lib.block.BlockTypeHolder;
+import org.screamingsandals.lib.event.SCancellableEvent;
 
 @Data
-public class TargetBlockDestroyedEventImpl implements TargetBlockDestroyedEvent, SEvent {
-    private final GameImpl game;
-    @Nullable
-    private final BedWarsPlayer broker;
-    private final TeamImpl team;
+public class PreTargetInvalidatedEventImpl implements PreTargetInvalidatedEvent, SCancellableEvent {
+    private final @NotNull GameImpl game;
+    private final @NotNull TeamImpl team;
+    private final @NotNull Target target;
+    private final @NotNull TargetInvalidationReason reason;
+    private final @Nullable BlockTypeHolder blockType;
+    private final @Nullable BedWarsPlayer initiator;
+
+    private boolean cancelled;
+
+    @Override
+    public boolean cancelled() {
+        return cancelled;
+    }
+
+    @Override
+    public void cancelled(boolean cancel) {
+        cancelled = cancel;
+    }
 }

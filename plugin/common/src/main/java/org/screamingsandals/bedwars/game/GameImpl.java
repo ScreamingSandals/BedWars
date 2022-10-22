@@ -30,6 +30,7 @@ import org.screamingsandals.bedwars.api.ArenaTime;
 import org.screamingsandals.bedwars.api.Team;
 import org.screamingsandals.bedwars.api.boss.StatusBar;
 import org.screamingsandals.bedwars.api.config.GameConfigurationContainer;
+import org.screamingsandals.bedwars.api.events.TargetInvalidationReason;
 import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.api.game.target.Target;
@@ -790,45 +791,23 @@ public class GameImpl implements Game {
                 loc = region.getBedNeighbor(block).getLocation();
             }
         }
-        if (isTargetBlock(loc)) {
-            if (region.isBedBlock(block.getBlockState().orElseThrow())) {
-                var pt = getPlayerTeam(player);
-                if (pt.getTarget() instanceof TargetBlockImpl && ((TargetBlockImpl) pt.getTarget()).getTargetBlock().equals(loc)) {
-                    return false;
-                }
-                bedDestroyed(loc, player, true, false, false);
-                region.putOriginalBlock(block.getLocation(), block.getBlockState().orElseThrow());
-                if (block.getLocation().equals(loc)) {
-                    var neighbor = region.getBedNeighbor(block);
-                    region.putOriginalBlock(neighbor.getLocation(), neighbor.getBlockState().orElseThrow());
-                } else {
-                    region.putOriginalBlock(loc, region.getBedNeighbor(block).getBlockState().orElseThrow());
-                }
-                try {
-                    event.dropItems(false);
-                } catch (Throwable tr) {
-                    if (region.isBedHead(block.getBlockState().orElseThrow())) {
-                        region.getBedNeighbor(block).setType(BlockTypeHolder.air());
-                    } else {
-                        block.setType(BlockTypeHolder.air());
-                    }
-                }
-                return true;
-            } else if (configurationContainer.getOrDefault(GameConfigurationContainer.TARGET_BLOCK_CAKE_DESTROY_BY_EATING, false) && block.getType().isSameType("cake")) {
+        var targetTeam = getTeamOfTargetBlock(loc);
+        if (targetTeam != null) {
+            if (configurationContainer.getOrDefault(GameConfigurationContainer.TARGET_BLOCK_CAKE_DESTROY_BY_EATING, false) && block.getType().isSameType("cake")) {
                 return false; // when CAKES are in eating mode, don't allow to just break it
             } else {
                 var pt = getPlayerTeam(player);
-                if (pt.getTarget() instanceof TargetBlockImpl && ((TargetBlockImpl) pt.getTarget()).getTargetBlock().equals(loc)) {
+                if (pt == targetTeam) {
                     return false;
                 }
-                bedDestroyed(loc, player, false, block.getType().isSameType("respawn_anchor"), block.getType().isSameType("cake"));
-                region.putOriginalBlock(loc, block.getBlockState().orElseThrow());
-                try {
-                    event.dropItems(false);
-                } catch (Throwable tr) {
-                    block.setType(BlockTypeHolder.air());
+                var result = internalProcessInvalidation(targetTeam, targetTeam.getTarget(), player, TargetInvalidationReason.TARGET_BLOCK_DESTROYED);
+                if (result) {
+                    try {
+                        event.dropItems(false);
+                    } catch (Throwable ignored) {
+                    }
                 }
-                return true;
+                return result;
             }
         }
         if (BedWarsPlugin.isBreakableBlock(block.getType())) {
@@ -838,48 +817,13 @@ public class GameImpl implements Game {
         return false;
     }
 
-    public void targetBlockExplode(TeamImpl team) {
-        if (!(team.getTarget() instanceof TargetBlockImpl)) {
-            return; // what are you doing here?
-        }
-
-        var loc = ((TargetBlockImpl) team.getTarget()).getTargetBlock();
-        var block = loc.getBlock();
-        if (region.isBedBlock(block.getBlockState().orElseThrow())) {
-            if (!region.isBedHead(block.getBlockState().orElseThrow())) {
-                loc = region.getBedNeighbor(block).getLocation();
-            }
-        }
-        if (isTargetBlock(loc)) {
-            if (region.isBedBlock(block.getBlockState().orElseThrow())) {
-                bedDestroyed(loc, null, true, false, false);
-                region.putOriginalBlock(block.getLocation(), block.getBlockState().orElseThrow());
-                if (block.getLocation().equals(loc)) {
-                    var neighbor = region.getBedNeighbor(block);
-                    region.putOriginalBlock(neighbor.getLocation(), neighbor.getBlockState().orElseThrow());
-                } else {
-                    region.putOriginalBlock(loc, region.getBedNeighbor(block).getBlockState().orElseThrow());
-                }
-                if (region.isBedHead(block.getBlockState().orElseThrow())) {
-                    region.getBedNeighbor(block).setType(BlockTypeHolder.air());
-                } else {
-                    block.setType(BlockTypeHolder.air());
-                }
-            } else {
-                bedDestroyed(loc, null, false, block.getType().isSameType("respawn_anchor"), block.getType().isSameType("cake"));
-                region.putOriginalBlock(loc, block.getBlockState().orElseThrow());
-                block.setType(BlockTypeHolder.air());
-            }
-        }
-    }
-
-    private boolean isTargetBlock(LocationHolder loc) {
+    public @Nullable TeamImpl getTeamOfTargetBlock(@NotNull LocationHolder loc) {
         for (var team : teamsInGame) {
             if (team.getTarget() instanceof TargetBlockImpl && ((TargetBlockImpl) team.getTarget()).getTargetBlock().equals(loc)) {
-                return true;
+                return team;
             }
         }
-        return false;
+        return null;
     }
 
     public BWRegion getRegion() {
@@ -893,92 +837,83 @@ public class GameImpl implements Game {
                 .orElse(null);
     }
 
-    public void bedDestroyed(LocationHolder loc, PlayerWrapper destroyer, boolean isItBedBlock, boolean isItAnchor, boolean isItCake) {
-        if (status == GameStatus.RUNNING) {
-            for (var team : teamsInGame) {
-                if (team.getTarget() instanceof TargetBlockImpl && ((TargetBlockImpl) team.getTarget()).getTargetBlock().equals(loc)) {
-                    Debug.info(name + ": target block of  " + team.getName() + " has been destroyed");
-                    ((TargetBlockImpl) team.getTarget()).setValid(false);
-                    Component coloredDestroyer = Component.text("explosion");
-                    if (destroyer != null) {
-                        coloredDestroyer = destroyer.getDisplayName().withColor(getPlayerTeam(PlayerManagerImpl.getInstance().getPlayer(destroyer.getUuid()).orElseThrow()).getColor().getTextColor());
-                    }
-                    var cpsTitles = configurationContainer.getOrDefault(GameConfigurationContainer.USE_CERTAIN_POPULAR_SERVER_TITLES, false);
-                    for (BedWarsPlayer player : players) {
-                        if (!cpsTitles || getPlayerTeam(player) == team) {
-                            String[] keys;
-                            if (cpsTitles) {
-                                keys = isItBedBlock ? LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_BED_CERTAIN_POPULAR_SERVER : (isItAnchor ? LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_ANCHOR_CERTAIN_POPULAR_SERVER : (isItCake ? LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_CAKE_CERTAIN_POPULAR_SERVER : LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_ANY_CERTAIN_POPULAR_SERVER));
-                            } else {
-                                keys = isItBedBlock ? LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_BED : (isItAnchor ? LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_ANCHOR : (isItCake ? LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_CAKE : LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_ANY));
-                            }
-                            var message = Message
-                                    .of(keys)
-                                    .placeholder("team", Component.text(team.getName(), team.getColor().getTextColor()))
-                                    .placeholder("broker", coloredDestroyer);
+    public boolean internalProcessInvalidation(@NotNull TeamImpl team, @NotNull Target target, @Nullable PlayerWrapper destroyer, @NotNull TargetInvalidationReason reason) {
+        return internalProcessInvalidation(team, target, destroyer, reason, true, false);
+    }
 
-                            message.clone()
-                                    .join(getPlayerTeam(player) == team ? LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_SUBTITLE_VICTIM : LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_SUBTITLE)
-                                    .times(TitleUtils.defaultTimes())
-                                    .title(player);
+    public boolean internalProcessInvalidation(@NotNull TeamImpl team, @NotNull Target target, @Nullable PlayerWrapper destroyer, @NotNull TargetInvalidationReason reason, boolean putOriginalBlocks, boolean ignoreInvalidity) {
+        if (!teamsInGame.contains(team) || (!ignoreInvalidity && !target.isValid())) {
+            return false;
+        }
 
+        @Nullable BlockTypeHolder type = null;
+        if (target instanceof TargetBlockImpl) {
+            var loc = ((TargetBlockImpl) target).getTargetBlock();
+            type = loc.getBlock().getType();
+        }
 
-                            var bbdmsEvent = new BedDestroyedMessageSendEventImpl(this, player, destroyer != null ? destroyer.as(BedWarsPlayer.class) : null, team, message);
-                            EventManager.fire(bbdmsEvent);
-                            if (!bbdmsEvent.isCancelled()) {
-                                bbdmsEvent.getMessage().send(player);
-                            }
-                        }
+        var preTargetInvalidatedEvent = new PreTargetInvalidatedEventImpl(
+                this,
+                team,
+                target,
+                reason,
+                type,
+                destroyer != null ? PlayerManagerImpl.getInstance().getPlayer(destroyer).orElseThrow() : null
+        );
+        EventManager.fire(preTargetInvalidatedEvent);
 
-                        SpawnEffects.spawnEffect(this, player, "game-effects.beddestroy");
-                        if (getPlayerTeam(player) == team) {
-                            player.playSound(
-                                    SoundStart.sound(
-                                            SpecialSoundKey.key(MainConfig.getInstance().node("sounds", "my_bed_destroyed", "sound").getString("entity.ender_dragon.growl")),
-                                            SoundSource.AMBIENT,
-                                            (float) MainConfig.getInstance().node("sounds", "my_bed_destroyed", "volume").getDouble(1),
-                                            (float) MainConfig.getInstance().node("sounds", "my_bed_destroyed", "pitch").getDouble(1)
-                                    )
-                            );
-                        } else {
-                            player.playSound(
-                                    SoundStart.sound(
-                                            SpecialSoundKey.key(MainConfig.getInstance().node("sounds", "bed_destroyed", "sound").getString("entity.ender_dragon.growl")),
-                                            SoundSource.AMBIENT,
-                                            (float) MainConfig.getInstance().node("sounds", "bed_destroyed", "volume").getDouble(1),
-                                            (float) MainConfig.getInstance().node("sounds", "bed_destroyed", "pitch").getDouble(1)
-                                    )
-                            );
-                        }
-                    }
+        if (preTargetInvalidatedEvent.isCancelled()) {
+            return false;
+        }
 
-                    if (team.getHologram() != null) {
-                        team.getHologram().replaceLine(0, Message.of(isItBedBlock ? LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_DESTROYED_BED : (isItAnchor ? LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_DESTROYED_ANCHOR : (isItCake ? LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_DESTROYED_CAKE : LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_DESTROYED_ANY))));
-                        team.getPlayers().forEach(team.getHologram()::addViewer);
-                    }
+        if (target instanceof TargetBlockImpl) {
+            var loc = ((TargetBlockImpl) target).getTargetBlock();
+            var block = loc.getBlock();
+            if (type.is("#beds")) {
+                if (!region.isBedHead(block.getBlockState().orElseThrow())) {
+                    loc = region.getBedNeighbor(block).getLocation();
+                }
 
-                    if (team.getProtectHologram() != null) {
-                        team.getProtectHologram().destroy();
-                        team.setProtectHologram(null);
-                    }
-
-                    var targetBlockDestroyed = new TargetBlockDestroyedEventImpl(this, destroyer != null ? PlayerManagerImpl.getInstance().getPlayer(destroyer).orElseThrow() : null, team);
-                    EventManager.fire(targetBlockDestroyed);
-
-                    if (destroyer != null) {
-                        if (PlayerStatisticManager.isEnabled()) {
-                            var statistic = PlayerStatisticManager.getInstance().getStatistic(destroyer);
-                            statistic.addDestroyedBeds(1);
-                            statistic.addScore(configurationContainer.getOrDefault(GameConfigurationContainer.STATISTICS_SCORES_BED_DESTROY, 25));
-                        }
-                        EconomyUtils.deposit(destroyer, configurationContainer.getOrDefault(GameConfigurationContainer.ECONOMY_REWARD_BED_DESTROY, 0.0));
-
-                        dispatchRewardCommands("player-destroy-bed", destroyer,
-                                configurationContainer.getOrDefault(GameConfigurationContainer.STATISTICS_SCORES_BED_DESTROY, 25));
+                if (putOriginalBlocks) {
+                    region.putOriginalBlock(loc, block.getBlockState().orElseThrow());
+                    if (block.getLocation().equals(loc)) {
+                        var neighbor = region.getBedNeighbor(block);
+                        region.putOriginalBlock(neighbor.getLocation(), neighbor.getBlockState().orElseThrow());
+                    } else {
+                        region.putOriginalBlock(loc, region.getBedNeighbor(block).getBlockState().orElseThrow());
                     }
                 }
+                region.getBedNeighbor(block).setTypeWithoutPhysics(BlockTypeHolder.air());
+                block.setType(BlockTypeHolder.air());
+            } else if (type.is("#doors", "#tall_flowers")) {
+                var neighbour = loc.add(0, type.get("half").map("lower"::equals).orElse(true) ? 1 : -1, 0);
+                var neighbourBlock = neighbour.getBlock();
+                if (neighbourBlock.getType().is("#doors", "#tall_flowers")) {
+                    if (putOriginalBlocks) {
+                        region.putOriginalBlock(neighbour, neighbourBlock.getBlockState().orElseThrow());
+                    }
+                    neighbourBlock.setTypeWithoutPhysics(BlockTypeHolder.air());
+                }
+                if (putOriginalBlocks) {
+                    region.putOriginalBlock(loc, block.getBlockState().orElseThrow());
+                }
+                loc.getBlock().setType(BlockTypeHolder.air());
+            } else {
+                if (putOriginalBlocks) {
+                    region.putOriginalBlock(loc, block.getBlockState().orElseThrow());
+                }
+                loc.getBlock().setType(BlockTypeHolder.air());
             }
+
+            ((TargetBlockImpl) target).setValid(false);
+        } else if (target instanceof ATargetCountdown) {
+            ((ATargetCountdown) target).setRemainingTime(0);
         }
+
+        var postTargetInvalidatedEvent = PostTargetInvalidatedEventImpl.fromPre(preTargetInvalidatedEvent);
+        EventManager.fire(postTargetInvalidatedEvent);
+
+        return true;
     }
 
     public void internalJoinPlayer(BedWarsPlayer gamePlayer) {
@@ -2073,56 +2008,9 @@ public class GameImpl implements Game {
                             var info = new TargetBlockDestroyedInfo(this, t);
                             if (t.getTarget() instanceof TargetBlockCountdownImpl && configurationContainer.getOrDefault(GameConfigurationContainer.USE_CERTAIN_POPULAR_SERVER_TITLES, false)) {
                                 invalidated.add(info);
-                            } else {
-                                Message
-                                        .of(LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_DEATH_MODE)
-                                        .join(LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_SUBTITLE_VICTIM)
-                                        .times(TitleUtils.defaultTimes())
-                                        .title(t.getPlayers());
                             }
 
-                            if (t.getTarget() instanceof TargetBlockCountdownImpl) {
-                                if (t.getHologram() != null) {
-                                    t.getHologram().replaceLine(0, Message.of(info.isItBedBlock() ? LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_DESTROYED_BED : (info.isItAnchor() ? LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_DESTROYED_ANCHOR : (info.isItCake() ? LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_DESTROYED_CAKE : LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_DESTROYED_ANY))));
-                                    t.getPlayers().forEach(t.getHologram()::addViewer);
-                                }
-
-                                if (t.getProtectHologram() != null) {
-                                    t.getProtectHologram().destroy();
-                                    t.setProtectHologram(null);
-                                }
-
-                                ((TargetBlockCountdownImpl) t.getTarget()).setValid(false);
-                                var loc = ((TargetBlockCountdownImpl) t.getTarget()).getTargetBlock();
-                                var block = loc.getBlock();
-                                if (region.isBedBlock(block.getBlockState().orElseThrow())) {
-                                    region.putOriginalBlock(block.getLocation(), block.getBlockState().orElseThrow());
-                                    var neighbor = region.getBedNeighbor(block);
-                                    region.putOriginalBlock(neighbor.getLocation(), neighbor.getBlockState().orElseThrow());
-                                    neighbor.setTypeWithoutPhysics(BlockTypeHolder.air());
-                                } else {
-                                    region.putOriginalBlock(loc, block.getBlockState().orElseThrow());
-                                }
-                                block.setType(BlockTypeHolder.air());
-                            }
-
-                            Message
-                                    .of(LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_KILLABLE)
-                                    .placeholder("team", Component.text(t.getName(), t.getColor().getTextColor()))
-                                    .prefixOrDefault(getCustomPrefixComponent())
-                                    .send(players);
-
-                            for (var player : t.getPlayers()) {
-                                SpawnEffects.spawnEffect(this, player, "game-effects.beddestroy");
-                                player.playSound(
-                                        SoundStart.sound(
-                                                SpecialSoundKey.key(MainConfig.getInstance().node("sounds", "my_bed_destroyed", "sound").getString("entity.ender_dragon.growl")),
-                                                SoundSource.AMBIENT,
-                                                (float) MainConfig.getInstance().node("sounds", "my_bed_destroyed", "volume").getDouble(1),
-                                                (float) MainConfig.getInstance().node("sounds", "my_bed_destroyed", "pitch").getDouble(1)
-                                        )
-                                );
-                            }
+                            internalProcessInvalidation(t, t.getTarget(), null, TargetInvalidationReason.TIMEOUT, true, true);
                         }
                     }
                 }
@@ -3018,6 +2906,14 @@ public class GameImpl implements Game {
     @Override
     public @Nullable LocationHolder getLobbyPos2() {
         return lobbyPos2;
+    }
+
+    @Override
+    public boolean invalidateTarget(Team team) {
+        if (!(team instanceof TeamImpl)) {
+            throw new IllegalArgumentException("Provided instance of team is not created by BedWars plugin!");
+        }
+        return internalProcessInvalidation((TeamImpl) team, team.getTarget(), null, TargetInvalidationReason.PLUGIN);
     }
 
     public void setLobbyPos1(LocationHolder pos1) {

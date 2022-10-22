@@ -20,22 +20,32 @@
 package org.screamingsandals.bedwars.api.events;
 
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.api.BedwarsAPI;
+import org.screamingsandals.bedwars.api.Team;
 import org.screamingsandals.bedwars.api.game.Game;
+import org.screamingsandals.bedwars.api.game.target.Target;
+import org.screamingsandals.bedwars.api.player.BWPlayer;
 import org.screamingsandals.lib.utils.Wrapper;
 
 import java.util.function.Consumer;
 
 @ApiStatus.NonExtendable
-public interface PreSpawnEffectEvent extends BWCancellable {
+public interface PreTargetInvalidatedEvent extends BWCancellable {
+    @NotNull Game getGame();
 
-    Game getGame();
+    @NotNull Team getTeam();
 
-    Wrapper getLocation();
+    @NotNull Target getTarget();
 
-    String getEffectsGroupName();
+    @NotNull TargetInvalidationReason getReason();
 
-    static void handle(Object plugin, Consumer<PreSpawnEffectEvent> consumer) {
-        BedwarsAPI.getInstance().getEventUtils().handle(plugin, PreSpawnEffectEvent.class, consumer);
+    @Nullable Wrapper getBlockType();
+
+    @Nullable BWPlayer getInitiator();
+
+    static void handle(Object plugin, Consumer<PreTargetInvalidatedEvent> consumer) {
+        BedwarsAPI.getInstance().getEventUtils().handle(plugin, PreTargetInvalidatedEvent.class, consumer);
     }
 }

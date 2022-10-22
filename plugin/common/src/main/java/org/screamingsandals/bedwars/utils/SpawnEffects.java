@@ -36,6 +36,7 @@ import org.screamingsandals.lib.item.builder.ItemFactory;
 import org.screamingsandals.lib.particle.*;
 import org.screamingsandals.lib.spectator.Color;
 import org.screamingsandals.lib.utils.math.Vector3D;
+import org.screamingsandals.lib.world.LocationHolder;
 import org.spongepowered.configurate.ConfigurationNode;
 
 import java.util.stream.Collectors;
@@ -43,7 +44,11 @@ import java.util.stream.Collectors;
 @UtilityClass
 public class SpawnEffects {
     public void spawnEffect(GameImpl game, BedWarsPlayer player, String particleName) {
-        var firstEvent = new PreSpawnEffectEventImpl(game, player, particleName);
+        spawnEffect(game, player.getLocation(), particleName);
+    }
+
+    public void spawnEffect(GameImpl game, LocationHolder location, String particleName) {
+        var firstEvent = new PreSpawnEffectEventImpl(game, location, particleName);
         EventManager.fire(firstEvent);
 
         if (firstEvent.isCancelled()) {
@@ -58,24 +63,24 @@ public class SpawnEffects {
                     if (effect.hasChild("list")) {
                         effect.node("list").childrenList().forEach(node -> {
                             try {
-                                useEffect(node.node("type").getString(""), node, player, game);
+                                useEffect(node.node("type").getString(""), node, location, game);
                             } catch (Throwable throwable) {
                                 throwable.printStackTrace();
                             }
                         });
                     }
                 } else {
-                    useEffect(type, effect, player, game);
+                    useEffect(type, effect, location, game);
                 }
 
             } catch (Throwable ignored) {
             }
         }
 
-        EventManager.fire(new PostSpawnEffectEventImpl(game, player, particleName));
+        EventManager.fire(new PostSpawnEffectEventImpl(game, location, particleName));
     }
 
-    private void useEffect(String type, ConfigurationNode effect, BedWarsPlayer player, GameImpl game) {
+    private void useEffect(String type, ConfigurationNode effect, LocationHolder location, GameImpl game) {
         if (type.equalsIgnoreCase("Particle")) {
             if (effect.hasChild("value")) {
                 var value = effect.node("value").getString("");
@@ -133,16 +138,16 @@ public class SpawnEffects {
                             particleData
                     );
 
-                    game.getConnectedPlayers().forEach(p -> p.sendParticle(particle, player.getLocation()));
+                    game.getConnectedPlayers().forEach(p -> p.sendParticle(particle, location));
                 }
             }
         } else if (type.equalsIgnoreCase("Effect")) {
             if (effect.hasChild("value")) {
                 var value = effect.node("value").getString("");
-                PlatformService.getInstance().spawnEffect(player, player.getLocation(), value);
+                PlatformService.getInstance().spawnEffect(location, value);
             }
         } else if (type.equalsIgnoreCase("Firework")) {
-            var firework = EntityTypeHolder.of("minecraft:firework_rocket").<EntityFirework>spawn(player.getLocation()).orElseThrow();
+            var firework = EntityTypeHolder.of("minecraft:firework_rocket").<EntityFirework>spawn(location).orElseThrow();
             firework.setEffect(effect.node("effects").childrenList()
                     .stream()
                     .map(FireworkEffectHolder::of)

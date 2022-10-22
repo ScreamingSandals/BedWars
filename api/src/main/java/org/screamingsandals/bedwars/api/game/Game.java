@@ -457,4 +457,10 @@ public interface Game {
      * @return
      */
     double getFee();
+
+    /**
+     * @since 0.3.0
+     * @return
+     */
+    boolean invalidateTarget(Team team);
 }

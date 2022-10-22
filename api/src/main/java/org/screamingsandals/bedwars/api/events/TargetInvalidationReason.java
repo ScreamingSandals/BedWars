@@ -19,23 +19,11 @@
 
 package org.screamingsandals.bedwars.api.events;
 
-import org.jetbrains.annotations.ApiStatus;
-import org.screamingsandals.bedwars.api.BedwarsAPI;
-import org.screamingsandals.bedwars.api.game.Game;
-import org.screamingsandals.lib.utils.Wrapper;
-
-import java.util.function.Consumer;
-
-@ApiStatus.NonExtendable
-public interface PreSpawnEffectEvent extends BWCancellable {
-
-    Game getGame();
-
-    Wrapper getLocation();
-
-    String getEffectsGroupName();
-
-    static void handle(Object plugin, Consumer<PreSpawnEffectEvent> consumer) {
-        BedwarsAPI.getInstance().getEventUtils().handle(plugin, PreSpawnEffectEvent.class, consumer);
-    }
+public enum TargetInvalidationReason {
+    TARGET_BLOCK_DESTROYED,
+    TARGET_BLOCK_EXPLODED,
+    TARGET_BLOCK_EATEN,
+    TIMEOUT,
+    COMMAND,
+    PLUGIN
 }

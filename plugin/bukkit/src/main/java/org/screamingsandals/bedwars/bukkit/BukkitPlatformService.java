@@ -182,9 +182,10 @@ public class BukkitPlatformService extends PlatformService {
 
     // TODO: slib?
     @Override
-    public void spawnEffect(@NotNull PlayerWrapper player, @NotNull LocationHolder location, @NotNull String value) {
+    public void spawnEffect(@NotNull LocationHolder location, @NotNull String value) {
         var particle = Effect.valueOf(value.toUpperCase());
-        player.as(Player.class).getWorld().playEffect(location.as(Location.class), particle, 1);
+        var bukkitLoc =  location.as(Location.class);
+        bukkitLoc.getWorld().playEffect(bukkitLoc, particle, 1);
     }
 
     // TODO: slib? (tnt source doesn't exist in Minestom for example)

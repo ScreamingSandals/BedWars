@@ -55,7 +55,7 @@ public abstract class PlatformService {
 
     public abstract void reloadPlugin(@NotNull CommandSenderWrapper sender);
 
-    public abstract void spawnEffect(@NotNull PlayerWrapper player, @NotNull LocationHolder location, @NotNull String value);
+    public abstract void spawnEffect(@NotNull LocationHolder location, @NotNull String value);
 
     @Nullable
     public abstract PlayerWrapper getSourceOfTnt(@NotNull EntityBasic tnt);

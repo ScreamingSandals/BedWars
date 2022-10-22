@@ -22,6 +22,7 @@ package org.screamingsandals.bedwars.listener;
 import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.PlatformService;
 import org.screamingsandals.bedwars.api.config.GameConfigurationContainer;
+import org.screamingsandals.bedwars.api.events.TargetInvalidationReason;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.commands.BedWarsPermission;
 import org.screamingsandals.bedwars.commands.admin.JoinTeamCommand;
@@ -57,7 +58,6 @@ import org.screamingsandals.lib.event.EventPriority;
 import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.event.entity.*;
 import org.screamingsandals.lib.event.player.*;
-import org.screamingsandals.lib.item.builder.ItemFactory;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.placeholders.PlaceholderManager;
 import org.screamingsandals.lib.player.PlayerWrapper;
@@ -919,8 +919,7 @@ public class PlayerListener {
                                         cake = cake.with("bites", String.valueOf(bites));
 
                                         if (bites >= 6) {
-                                            game.bedDestroyed(clickedBlock.getLocation(), event.player(), false, false, true);
-                                            clickedBlock.setType(BlockTypeHolder.air());
+                                            game.internalProcessInvalidation(team, team.getTarget(), event.player(), TargetInvalidationReason.TARGET_BLOCK_EATEN, false, false);
                                         } else {
                                             clickedBlock.setType(cake);
                                         }

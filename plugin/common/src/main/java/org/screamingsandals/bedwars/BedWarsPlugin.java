@@ -117,7 +117,8 @@ import java.util.Objects;
                 EntitiesManagerImpl.class,
                 ColorChangerImpl.class,
                 GamesInventory.class,
-                GroupManagerImpl.class
+                GroupManagerImpl.class,
+                TargetInvalidatedListener.class,
         },
         packages = {
                 "org.screamingsandals.bedwars.special",

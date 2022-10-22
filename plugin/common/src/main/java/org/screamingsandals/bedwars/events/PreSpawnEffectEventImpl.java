@@ -24,11 +24,12 @@ import org.screamingsandals.bedwars.api.events.PreSpawnEffectEvent;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.lib.event.SCancellableEvent;
+import org.screamingsandals.lib.world.LocationHolder;
 
 @Data
 public class PreSpawnEffectEventImpl implements PreSpawnEffectEvent, SCancellableEvent {
     private final GameImpl game;
-    private final BedWarsPlayer player;
+    private final LocationHolder location;
     private final String effectsGroupName;
     private boolean cancelled;
 
