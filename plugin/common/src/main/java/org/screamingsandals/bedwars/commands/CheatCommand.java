@@ -348,5 +348,30 @@ public class CheatCommand extends BaseCommand {
                     );
                 })
         );
+
+        manager.command(commandSenderWrapperBuilder
+                .literal("invalidateAllTargets", "destroyallbeds")
+                .handler(commandContext -> {
+                    var player = commandContext.getSender().as(PlayerWrapper.class);
+
+                    var game = playerManager.getGameOfPlayer(player);
+                    if (game.isEmpty()) {
+                        player.sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_NOT_IN_ANY_GAME_YET).defaultPrefix());
+                        return;
+                    }
+
+                    for (var team : game.get().getActiveTeams()) {
+                        var target = team.getTarget();
+                        if (target.isValid()) {
+                            game.get().internalProcessInvalidation(team, target, null,  TargetInvalidationReason.COMMAND);
+                        }
+                    }
+
+                    player.sendMessage(
+                            Message.of(LangKeys.IN_GAME_CHEAT_RECEIVED_TARGETS_INVALIDATED)
+                                    .defaultPrefix()
+                    );
+                })
+        );
     }
 }

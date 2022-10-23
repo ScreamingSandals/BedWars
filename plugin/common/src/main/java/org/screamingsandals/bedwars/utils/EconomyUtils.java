@@ -29,7 +29,7 @@ import org.screamingsandals.lib.player.PlayerWrapper;
 @UtilityClass
 public class EconomyUtils {
     public void deposit(PlayerWrapper player, double coins) {
-        if (MainConfig.getInstance().node("economy", "enabled").getBoolean()) {
+        if (MainConfig.getInstance().node("economy", "enabled").getBoolean() && coins > 0) {
             if (EconomyManager.depositPlayer(player, coins).isSuccessful()) {
                 Message.of(LangKeys.IN_GAME_ECONOMY_DEPOSITED)
                         .defaultPrefix()
