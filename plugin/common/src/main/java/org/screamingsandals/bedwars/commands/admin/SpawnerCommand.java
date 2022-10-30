@@ -36,6 +36,8 @@ import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
 import org.screamingsandals.lib.spectator.Component;
 import org.screamingsandals.lib.spectator.event.ClickEvent;
+import org.screamingsandals.lib.tasker.TaskerTime;
+import org.screamingsandals.lib.utils.Pair;
 import org.screamingsandals.lib.utils.TriConsumer;
 import org.screamingsandals.lib.utils.annotations.Service;
 
@@ -321,6 +323,68 @@ public class SpawnerCommand extends BaseAdminSubCommand {
                                 sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_SPAWNER_HOLOGRAM_DISABLED)
                                         .placeholder("type", itemSpawner.getItemSpawnerType().getItemName()).defaultPrefix());
                             }
+                        }))
+        );
+
+        manager.command(
+                commandSenderWrapperBuilder
+                        .literal("initial-interval")
+                        .argument(LongArgument.<CommandSenderWrapper>newBuilder("value").withMin(1))
+                        .argument(EnumArgument.of(TaskerTime.class, "unit"))
+                        .argument(IntegerArgument.optional("number"))
+                        .handler(commandContext -> changeSettingCommand(commandContext, (sender, game, itemSpawner) -> {
+                            long value = commandContext.get("value");
+                            TaskerTime unit = commandContext.get("unit");
+
+                            itemSpawner.setInitialInterval(Pair.of(value, unit));
+                            sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_SPAWNER_INITIAL_INTERVAL_SET)
+                                    .placeholder("type", itemSpawner.getItemSpawnerType().getItemName())
+                                    .placeholder("interval", value)
+                                    .placeholder("unit", Message.of(LangKeys.toUnitLangKey(unit, value != 1)))
+                                    .defaultPrefix()
+                            );
+                        }))
+        );
+
+        manager.command(
+                commandSenderWrapperBuilder
+                        .literal("initial-interval")
+                        .literal("reset")
+                        .argument(IntegerArgument.optional("number"))
+                        .handler(commandContext -> changeSettingCommand(commandContext, (sender, game, itemSpawner) -> {
+                            itemSpawner.setInitialInterval(null);
+                            sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_SPAWNER_INITIAL_INTERVAL_RESET)
+                                    .placeholder("type", itemSpawner.getItemSpawnerType().getItemName())
+                                    .defaultPrefix());
+                        }))
+        );
+
+        manager.command(
+                commandSenderWrapperBuilder
+                        .literal("spread")
+                        .argument(DoubleArgument.of("spread"))
+                        .argument(IntegerArgument.optional("number"))
+                        .handler(commandContext -> changeSettingCommand(commandContext, (sender, game, itemSpawner) -> {
+                            double spread = commandContext.get("spread");
+
+                            itemSpawner.setCustomSpread(spread);
+                            sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_SPAWNER_SPREAD_SET)
+                                    .placeholder("type", itemSpawner.getItemSpawnerType().getItemName())
+                                    .placeholder("spread", spread)
+                                    .defaultPrefix());
+                        }))
+        );
+
+        manager.command(
+                commandSenderWrapperBuilder
+                        .literal("spread")
+                        .literal("reset")
+                        .argument(IntegerArgument.optional("number"))
+                        .handler(commandContext -> changeSettingCommand(commandContext, (sender, game, itemSpawner) -> {
+                            itemSpawner.setCustomSpread(null);
+                            sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_SPAWNER_SPREAD_RESET)
+                                    .placeholder("type", itemSpawner.getItemSpawnerType().getItemName())
+                                    .defaultPrefix());
                         }))
         );
 

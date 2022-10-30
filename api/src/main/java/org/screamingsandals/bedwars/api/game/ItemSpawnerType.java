@@ -35,7 +35,7 @@ public interface ItemSpawnerType {
     /**
      * @return
      */
-    int getInterval();
+    long getIntervalTicks();
 
     /**
      * @return

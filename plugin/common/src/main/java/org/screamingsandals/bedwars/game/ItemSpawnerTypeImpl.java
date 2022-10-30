@@ -30,6 +30,9 @@ import org.screamingsandals.lib.item.Item;
 import org.screamingsandals.lib.item.builder.ItemFactory;
 import org.screamingsandals.lib.spectator.Color;
 import org.screamingsandals.lib.spectator.Component;
+import org.screamingsandals.lib.tasker.TaskerTime;
+import org.screamingsandals.lib.utils.Pair;
+import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
 
 import java.util.Arrays;
@@ -43,8 +46,13 @@ public class ItemSpawnerTypeImpl implements ItemSpawnerType {
     private final double spread;
     private final ItemTypeHolder itemType;
     private final Color color;
-    private final int interval;
+    private final Pair<Long, TaskerTime> interval;
     private final int damage;
+
+    @Override
+    public long getIntervalTicks() {
+        return this.interval.second().getBukkitTime(this.interval.first());
+    }
 
     public Component getTranslatableKey() {
         if (translatableKey != null && !translatableKey.equals("")) {
@@ -74,7 +82,36 @@ public class ItemSpawnerTypeImpl implements ItemSpawnerType {
 
         var name = node.node("name").getString();
         var translate = node.node("translate").getString();
-        var interval = node.node("interval").getInt(1);
+        Pair<Long, TaskerTime> interval;
+        try {
+            var integer = node.node("interval").get(Integer.class, 1);
+            interval = Pair.of((long) integer, TaskerTime.SECONDS);
+        } catch (ConfigurateException exception) {
+            stringIntervalResolution: {
+                var string = node.node("interval").getString();
+                if (string != null) {
+                    var split = string.split(" ", 2);
+                    if (split.length == 2) {
+                        try {
+                            var longValue = Long.parseLong(split[0]);
+                            var unitName = split[1].toUpperCase().trim();
+                            if (!unitName.endsWith("S")) {
+                                unitName += "S";
+                            }
+                            var unit = TaskerTime.valueOf(unitName);
+                            interval = Pair.of(longValue, unit);
+
+                            break stringIntervalResolution;
+                        } catch (IllegalArgumentException exception1) {
+                        }
+                    }
+                }
+
+                // default
+                interval = Pair.of(1L, TaskerTime.SECONDS);
+            }
+        }
+//        var interval = node.node("interval").getInt(1);
         var spread = node.node("spread").getDouble();
         var damage = node.node("damage").getInt();
         var materialName = node.node("material").getString();

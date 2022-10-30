@@ -23,6 +23,7 @@ import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
 import cloud.commandframework.arguments.standard.IntegerArgument;
 import cloud.commandframework.arguments.standard.StringArgument;
+import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.PlatformService;
 import org.screamingsandals.bedwars.api.config.GameConfigurationContainer;
 import org.screamingsandals.bedwars.api.events.TargetInvalidationReason;
@@ -30,26 +31,18 @@ import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.game.GameManagerImpl;
 import org.screamingsandals.bedwars.game.TeamImpl;
-import org.screamingsandals.bedwars.game.target.TargetBlockImpl;
-import org.screamingsandals.bedwars.game.target.TargetCountdownImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.bedwars.special.PopUpTowerImpl;
 import org.screamingsandals.bedwars.utils.MiscUtils;
-import org.screamingsandals.bedwars.utils.SpawnEffects;
-import org.screamingsandals.bedwars.utils.TitleUtils;
 import org.screamingsandals.lib.Server;
-import org.screamingsandals.lib.SpecialSoundKey;
 import org.screamingsandals.lib.block.BlockTypeHolder;
 import org.screamingsandals.lib.entity.EntityMapper;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
-import org.screamingsandals.lib.spectator.Component;
-import org.screamingsandals.lib.spectator.sound.SoundSource;
-import org.screamingsandals.lib.spectator.sound.SoundStart;
 import org.screamingsandals.lib.utils.BlockFace;
 import org.screamingsandals.lib.utils.annotations.Service;
 
@@ -308,6 +301,10 @@ public class CheatCommand extends BaseCommand {
                         player.sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_NOT_IN_ANY_GAME_YET).defaultPrefix());
                         return;
                     }
+                    if (game.get().getStatus() != GameStatus.RUNNING) {
+                        player.sendMessage(Message.of(LangKeys.IN_GAME_CHEAT_GAME_NOT_RUNNING).defaultPrefix());
+                        return;
+                    }
 
                     String teamName = commandContext.get("team");
                     var team = game.get().getTeamFromName(teamName);
@@ -359,6 +356,10 @@ public class CheatCommand extends BaseCommand {
                         player.sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_NOT_IN_ANY_GAME_YET).defaultPrefix());
                         return;
                     }
+                    if (game.get().getStatus() != GameStatus.RUNNING) {
+                        player.sendMessage(Message.of(LangKeys.IN_GAME_CHEAT_GAME_NOT_RUNNING).defaultPrefix());
+                        return;
+                    }
 
                     for (var team : game.get().getActiveTeams()) {
                         var target = team.getTarget();
@@ -371,6 +372,115 @@ public class CheatCommand extends BaseCommand {
                             Message.of(LangKeys.IN_GAME_CHEAT_RECEIVED_TARGETS_INVALIDATED)
                                     .defaultPrefix()
                     );
+                })
+        );
+
+        manager.command(commandSenderWrapperBuilder
+                .literal("joinTeam")
+                .argument(StringArgument.<CommandSenderWrapper>newBuilder("team")
+                        .withSuggestionsProvider((c, s) -> {
+                            var player = c.getSender().as(PlayerWrapper.class);
+
+                            var game = playerManager.getGameOfPlayer(player);
+                            if (game.isEmpty()) {
+                                return List.of();
+                            }
+
+                            return game.get().getActiveTeams().stream().map(TeamImpl::getName).collect(Collectors.toList());
+                        })
+                        .asOptional()
+                )
+                .argument(StringArgument.<CommandSenderWrapper>newBuilder("player")
+                        .withSuggestionsProvider((c, s) ->
+                                Server.getConnectedPlayers().stream().map(PlayerWrapper::getName).collect(Collectors.toList())
+                        )
+                        .asOptional()
+                )
+                .handler(commandContext -> {
+                    var player = commandContext.getSender().as(PlayerWrapper.class);
+
+                    var gameOpt = playerManager.getGameOfPlayer(player);
+                    if (gameOpt.isEmpty()) {
+                        player.sendMessage(Message.of(LangKeys.IN_GAME_ERRORS_NOT_IN_ANY_GAME_YET).defaultPrefix());
+                        return;
+                    }
+                    var game = gameOpt.get();
+
+                    @Nullable String teamName = commandContext.getOrDefault("team", null);
+
+                    @Nullable String chosenPlayer = commandContext.getOrDefault("player", null);
+                    @Nullable PlayerWrapper chosenPlayerWrapper = null;
+                    if (chosenPlayer != null) {
+                        var chosenPlayerWrapperOpt = PlayerMapper.getPlayer(chosenPlayer);
+                        if (chosenPlayerWrapperOpt.isEmpty() || !playerManager.isPlayerInGame(chosenPlayerWrapperOpt.get())) {
+                            player.sendMessage(Message.of(LangKeys.IN_GAME_CHEAT_INVALID_PLAYER));
+                            return;
+                        } else {
+                            chosenPlayerWrapper = chosenPlayerWrapperOpt.get();
+                        }
+                    }
+
+                    @Nullable TeamImpl team;
+                    if (teamName != null) {
+                        team = gameOpt.get().getTeamFromName(teamName);
+                        if (team == null) {
+                            player.sendMessage(
+                                    Message.of(LangKeys.IN_GAME_CHEAT_TEAM_DOES_NOT_EXIST)
+                                            .placeholderRaw("team", teamName)
+                                            .defaultPrefix()
+                            );
+                            return;
+                        }
+
+                        if (game.getStatus() != GameStatus.WAITING) {
+                            if (!game.isTeamActive(team)) {
+                                player.sendMessage(
+                                        Message.of(LangKeys.IN_GAME_CHEAT_TEAM_IS_NOT_IN_GAME)
+                                                .placeholderRaw("team", teamName)
+                                                .defaultPrefix()
+                                );
+                                return;
+                            }
+                        }
+                    } else {
+                        team = game.chooseRandomTeamForPlayerToJoin(true, true);
+                    }
+
+                    if (team == null) {
+                        player.sendMessage(
+                                Message.of(LangKeys.IN_GAME_CHEAT_TEAM_RANDOM_FAILED)
+                                        .defaultPrefix()
+                        );
+                        return;
+                    }
+
+                    var bedwarsPlayer = (chosenPlayerWrapper != null ? chosenPlayerWrapper : player).as(BedWarsPlayer.class);
+
+                    var result = game.internalTeamJoin(bedwarsPlayer, team, true);
+
+                    if (game.getStatus() != GameStatus.WAITING) {
+                        if (result) {
+                            if (bedwarsPlayer.isSpectator()) {
+                                game.makePlayerFromSpectator(bedwarsPlayer);
+                            } else {
+                                bedwarsPlayer.teleport(team.getRandomSpawn());
+                            }
+                        }
+                    }
+
+                    if (result) {
+                        player.sendMessage(
+                                Message.of(LangKeys.IN_GAME_CHEAT_RECEIVED_TEAM_JOIN)
+                                        .placeholderRaw("player", bedwarsPlayer.getName())
+                                        .placeholderRaw("team", teamName)
+                                        .defaultPrefix()
+                        );
+                    } else {
+                        player.sendMessage(
+                                Message.of(LangKeys.IN_GAME_CHEAT_CHEAT_FAILED)
+                                        .defaultPrefix()
+                        );
+                    }
                 })
         );
     }

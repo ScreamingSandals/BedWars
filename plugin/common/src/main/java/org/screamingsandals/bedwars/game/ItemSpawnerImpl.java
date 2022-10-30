@@ -23,6 +23,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Tolerate;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.api.Team;
 import org.screamingsandals.bedwars.api.config.GameConfigurationContainer;
 import org.screamingsandals.bedwars.api.game.ItemSpawner;
@@ -86,6 +87,12 @@ public class ItemSpawnerImpl implements ItemSpawner, SerializableGameComponent {
     @Getter
     @Setter
     private HologramType hologramType = HologramType.DEFAULT;
+    @Getter
+    @Setter
+    private Pair<Long, TaskerTime> initialInterval = null;
+    @Getter
+    @Setter
+    private @Nullable Double customSpread = null;
 
     @Getter
     @Setter
@@ -211,6 +218,16 @@ public class ItemSpawnerImpl implements ItemSpawner, SerializableGameComponent {
         this.team = (TeamImpl) team;
     }
 
+    @Override
+    public long getInitialIntervalTicks() {
+        return initialInterval != null ? initialInterval.second().getBukkitTime(initialInterval.first()) : itemSpawnerType.getIntervalTicks();
+    }
+
+    @Override
+    public void setInitialIntervalTicks(@Nullable Long ticks) {
+        this.initialInterval = ticks == null ? null : Pair.of(ticks, TaskerTime.TICKS);
+    }
+
     public void setTier(int tier) {
         this.tier = tier;
         if (certainPopularServerHolo) {
@@ -251,10 +268,11 @@ public class ItemSpawnerImpl implements ItemSpawner, SerializableGameComponent {
             }
 
             if (countdownHologram) {
+                var interval = this.getInitialIntervalTicks();
                 hologram.bottomLine((
-                                itemSpawnerType.getInterval() < 2 ? Message.of(LangKeys.IN_GAME_SPAWNER_EVERY_SECOND)
+                        interval < 40 ? Message.of(LangKeys.IN_GAME_SPAWNER_EVERY_SECOND)
                                         : Message.of(certainPopularServerHolo ? LangKeys.IN_GAME_SPAWNER_COUNTDOWN_CERTAIN_POPULAR_SERVER : LangKeys.IN_GAME_SPAWNER_COUNTDOWN).placeholder("seconds",
-                                        itemSpawnerType.getInterval())
+                                interval / 20)
                         )
                 );
             }
@@ -331,7 +349,7 @@ public class ItemSpawnerImpl implements ItemSpawner, SerializableGameComponent {
 
         started = true;
 
-        changeInterval(Pair.of((long) itemSpawnerType.getInterval(), TaskerTime.SECONDS));
+        changeInterval(Objects.requireNonNullElseGet(this.initialInterval, this.itemSpawnerType::getInterval));
     }
 
     public void changeInterval(Pair<Long, TaskerTime> time) {
@@ -386,7 +404,7 @@ public class ItemSpawnerImpl implements ItemSpawner, SerializableGameComponent {
                     if (resource.getAmount() > 0) {
                         var loc = this.location.add(0, 0.05, 0);
                         var item = EntityMapper.dropItem(resource, loc).orElseThrow();
-                        var spread = itemSpawnerType.getSpread();
+                        var spread = customSpread != null ? customSpread : itemSpawnerType.getSpread();
                         if (spread != 1.0) {
                             item.setVelocity(item.getVelocity().multiply(spread));
                         }
@@ -453,6 +471,13 @@ public class ItemSpawnerImpl implements ItemSpawner, SerializableGameComponent {
         node.node("floatingEnabled").set(floatingBlockEnabled);
         node.node("rotationMode").set(rotationMode);
         node.node("hologramType").set(hologramType);
+        if (initialInterval != null) {
+            node.node("initialInterval", "value").set(initialInterval.first());
+            node.node("initialInterval", "unit").set(initialInterval.second());
+        } else {
+            node.node("initialInterval").set(null);
+        }
+        node.node("customSpread").set(customSpread);
     }
 
     public static class Loader implements SerializableGameComponentLoader<ItemSpawnerImpl> {
@@ -479,6 +504,17 @@ public class ItemSpawnerImpl implements ItemSpawner, SerializableGameComponent {
             spawner.setFloatingBlockEnabled(node.node("floatingEnabled").getBoolean());
             spawner.setRotationMode(Hologram.RotationMode.valueOf(node.node("rotationMode").getString("Y")));
             spawner.setHologramType(ItemSpawner.HologramType.valueOf(node.node("hologramType").getString("DEFAULT")));
+
+            var initialIntervalValueNode = node.node("initialInterval", "value");
+            var initialIntervalUnitNode = node.node("initialInterval", "unit");
+            if (!initialIntervalValueNode.empty() && !initialIntervalUnitNode.empty()) {
+                spawner.setInitialInterval(Pair.of(initialIntervalValueNode.getLong(1), initialIntervalUnitNode.get(TaskerTime.class)));
+            }
+
+            var customSpreadNode = node.node("customSpread");
+            if (!customSpreadNode.empty()) {
+                spawner.setCustomSpread(customSpreadNode.getDouble(type.getSpread()));
+            }
 
             return Optional.of(spawner);
         }

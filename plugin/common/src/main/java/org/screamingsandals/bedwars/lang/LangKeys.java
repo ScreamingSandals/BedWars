@@ -20,6 +20,7 @@
 package org.screamingsandals.bedwars.lang;
 
 import lombok.experimental.UtilityClass;
+import org.screamingsandals.lib.tasker.TaskerTime;
 
 @UtilityClass
 public class LangKeys {
@@ -158,6 +159,9 @@ public class LangKeys {
     public final String[] IN_GAME_CHEAT_TARGET_IS_NOT_VALID = {"in_game", "cheat", "target_is_not_valid"};
     public final String[] IN_GAME_CHEAT_RECEIVED_TARGET_INVALIDATED = {"in_game", "cheat", "received_target_invalidated"};
     public final String[] IN_GAME_CHEAT_RECEIVED_TARGETS_INVALIDATED = {"in_game", "cheat", "received_targets_invalidated"};
+    public final String[] IN_GAME_CHEAT_TEAM_RANDOM_FAILED = {"in_game", "cheat", "team_random_failed"};
+    public final String[] IN_GAME_CHEAT_RECEIVED_TEAM_JOIN = {"in_game", "cheat", "received_team_join"};
+    public final String[] IN_GAME_CHEAT_CHEAT_FAILED = {"in_game", "cheat", "cheat_failed"};
     public final String[] IN_GAME_SCOREBOARD_YOU = {"in_game", "scoreboard", "you"};
     public final String[] IN_GAME_SCOREBOARD_STATE_WAITING = {"in_game", "scoreboard", "state", "waiting"};
     public final String[] IN_GAME_SCOREBOARD_STATE_COUNTDOWN = {"in_game", "scoreboard", "state", "countdown"};
@@ -385,6 +389,10 @@ public class LangKeys {
     public final String[] ADMIN_ARENA_EDIT_SUCCESS_SPAWNER_HOLOGRAM_TYPE_SET = {"admin", "arena", "edit", "success", "spawner_hologram_type_set"};
     public final String[] ADMIN_ARENA_EDIT_SUCCESS_SPAWNER_CUSTOM_NAME_SET = {"admin", "arena", "edit", "success", "spawner_custom_name_set"};
     public final String[] ADMIN_ARENA_EDIT_SUCCESS_SPAWNER_TYPE_CHANGED = {"admin", "arena", "edit", "success", "spawner_type_changed"};
+    public final String[] ADMIN_ARENA_EDIT_SUCCESS_SPAWNER_INITIAL_INTERVAL_SET = {"admin", "arena", "edit", "success", "spawner_initial_interval_set"};
+    public final String[] ADMIN_ARENA_EDIT_SUCCESS_SPAWNER_INITIAL_INTERVAL_RESET = {"admin", "arena", "edit", "success", "spawner_initial_interval_reset"};
+    public final String[] ADMIN_ARENA_EDIT_SUCCESS_SPAWNER_SPREAD_SET = {"admin", "arena", "edit", "success", "spawner_spread_set"};
+    public final String[] ADMIN_ARENA_EDIT_SUCCESS_SPAWNER_SPREAD_RESET = {"admin", "arena", "edit", "success", "spawner_spread_reset"};
     public final String[] ADMIN_ARENA_EDIT_SUCCESS_FEE_SET = {"admin", "arena", "edit", "success", "fee_set"};
     public final String[] ADMIN_MAINLOBBY_INFO = {"admin", "mainlobby", "info"};
     public final String[] ADMIN_HOLO_NOT_ENABLED = {"admin", "holo", "not_enabled"};
@@ -512,4 +520,27 @@ public class LangKeys {
     public final String[] LANGUAGE_SUCCESS = {"language", "success"};
     public final String[] MIGRATE_SUCCESS = {"migrate", "success"};
     public final String[] MIGRATE_FAILURE = {"migrate", "failure"};
+    public final String[] UNIT_TICK = {"unit", "tick"};
+    public final String[] UNIT_TICKS = {"unit", "ticks"};
+    public final String[] UNIT_SECOND = {"unit", "second"};
+    public final String[] UNIT_SECONDS = {"unit", "seconds"};
+    public final String[] UNIT_MINUTE = {"unit", "minute"};
+    public final String[] UNIT_MINUTES = {"unit", "minutes"};
+    public final String[] UNIT_HOUR = {"unit", "hour"};
+    public final String[] UNIT_HOURS = {"unit", "hours"};
+
+    public static String[] toUnitLangKey(TaskerTime time, boolean plural) {
+        switch (time) {
+            case TICKS:
+                return plural ? UNIT_TICKS : UNIT_TICK;
+            case SECONDS:
+                return plural ? UNIT_SECONDS : UNIT_SECOND;
+            case MINUTES:
+                return plural ? UNIT_MINUTES : UNIT_MINUTE;
+            case HOURS:
+                return plural ? UNIT_HOURS : UNIT_HOUR;
+            default:
+                return UNIT_TICKS; // how??
+        }
+    }
 }

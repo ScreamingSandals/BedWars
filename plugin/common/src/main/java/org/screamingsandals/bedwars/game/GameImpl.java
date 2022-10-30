@@ -1461,13 +1461,13 @@ public class GameImpl implements Game {
         return team.getPlayers();
     }
 
-    private void internalTeamJoin(BedWarsPlayer player, TeamImpl teamForJoin) {
+    public boolean internalTeamJoin(BedWarsPlayer player, TeamImpl teamForJoin, boolean ignoreTeamSize) {
         var cur = getPlayerTeam(player);
         var event = new PlayerJoinTeamEventImpl(this, player, teamForJoin, cur);
         EventManager.fire(event);
 
         if (event.isCancelled()) {
-            return;
+            return false;
         }
 
         if (cur == teamForJoin) {
@@ -1478,9 +1478,9 @@ public class GameImpl implements Game {
                     .placeholder("players", teamForJoin.countConnectedPlayers())
                     .placeholder("maxplayers", teamForJoin.getMaxPlayers())
                     .send(player);
-            return;
+            return false;
         }
-        if (teamForJoin.countConnectedPlayers() >= teamForJoin.getMaxPlayers()) {
+        if (!ignoreTeamSize && teamForJoin.countConnectedPlayers() >= teamForJoin.getMaxPlayers()) {
             if (cur != null) {
                 Message
                         .of(LangKeys.IN_GAME_TEAM_SELECTION_FULL_NO_CHANGE)
@@ -1495,7 +1495,7 @@ public class GameImpl implements Game {
                         .placeholder("team", Component.text(teamForJoin.getName(), teamForJoin.getColor().getTextColor()))
                         .send(player);
             }
-            return;
+            return false;
         }
 
         if (cur != null) {
@@ -1519,21 +1519,23 @@ public class GameImpl implements Game {
                 .placeholder("maxplayers", teamForJoin.getMaxPlayers())
                 .send(player);
 
-        if (configurationContainer.getOrDefault(GameConfigurationContainer.ADD_WOOL_TO_INVENTORY_ON_JOIN, false)) {
-            int colorPosition = MainConfig.getInstance().node("hotbar", "color").getInt(1);
-            if (colorPosition >= 0 && colorPosition <= 8) {
-                var item = ItemFactory.build(teamForJoin.getColor().material1_13 + "_WOOL",
-                        builder -> builder.displayName(Component.text(teamForJoin.getName(), teamForJoin.getColor().getTextColor()))
-                        ).orElse(ItemFactory.getAir());
-                player.getPlayerInventory().setItem(colorPosition, item);
+        if (this.status == GameStatus.WAITING) {
+            if (configurationContainer.getOrDefault(GameConfigurationContainer.ADD_WOOL_TO_INVENTORY_ON_JOIN, false)) {
+                int colorPosition = MainConfig.getInstance().node("hotbar", "color").getInt(1);
+                if (colorPosition >= 0 && colorPosition <= 8) {
+                    var item = ItemFactory.build(teamForJoin.getColor().material1_13 + "_WOOL",
+                            builder -> builder.displayName(Component.text(teamForJoin.getName(), teamForJoin.getColor().getTextColor()))
+                    ).orElse(ItemFactory.getAir());
+                    player.getPlayerInventory().setItem(colorPosition, item);
+                }
             }
-        }
 
-        if (configurationContainer.getOrDefault(GameConfigurationContainer.COLORED_LEATHER_BY_TEAM_IN_LOBBY, false)) {
-            var chestplate = ItemFactory.build("LEATHER_CHESTPLATE", builder ->
-                    builder.color(teamForJoin.getColor().getLeatherColor())
-            ).orElse(ItemFactory.getAir());
-            player.getPlayerInventory().setChestplate(chestplate);
+            if (configurationContainer.getOrDefault(GameConfigurationContainer.COLORED_LEATHER_BY_TEAM_IN_LOBBY, false)) {
+                var chestplate = ItemFactory.build("LEATHER_CHESTPLATE", builder ->
+                        builder.color(teamForJoin.getColor().getLeatherColor())
+                ).orElse(ItemFactory.getAir());
+                player.getPlayerInventory().setChestplate(chestplate);
+            }
         }
 
         if (!teamsInGame.contains(teamForJoin)) {
@@ -1545,18 +1547,30 @@ public class GameImpl implements Game {
         }
 
         EventManager.fire(new PlayerJoinedTeamEventImpl(this, player, teamForJoin, cur));
+
+        return true;
     }
 
     public void joinRandomTeam(BedWarsPlayer player) {
         // TODO: add api event to allow manipulation with this process
-        TeamImpl teamForJoin;
-        if (teamsInGame.size() < 2) {
+        var teamForJoin = this.chooseRandomTeamForPlayerToJoin(false, false);
+
+        if (teamForJoin == null) {
+            return;
+        }
+
+        internalTeamJoin(player, teamForJoin, false);
+    }
+
+    public @Nullable TeamImpl chooseRandomTeamForPlayerToJoin(boolean ignoreTeamSize, boolean onlyActiveTeams) {
+        @Nullable TeamImpl teamForJoin = null;
+        if (!onlyActiveTeams && teamsInGame.size() < 2) {
             teamForJoin = getFirstTeamThatIsntInGame();
         } else {
-            TeamImpl lowest = null;
+            @Nullable TeamImpl lowest = null;
 
             for (var team : teamsInGame) {
-                if (team.getPlayers().size() >= team.getMaxPlayers()) {
+                if (!ignoreTeamSize && team.getPlayers().size() >= team.getMaxPlayers()) {
                     continue; // skip full teams
                 }
 
@@ -1570,16 +1584,12 @@ public class GameImpl implements Game {
             }
             if (lowest != null) {
                 teamForJoin = lowest;
-            } else {
+            } else if (!onlyActiveTeams) {
                 teamForJoin = getFirstTeamThatIsntInGame();
             }
         }
 
-        if (teamForJoin == null) {
-            return;
-        }
-
-        internalTeamJoin(player, teamForJoin);
+        return teamForJoin;
     }
 
     public LocationHolder makeSpectator(BedWarsPlayer gamePlayer, boolean leaveItem) {
@@ -2321,7 +2331,7 @@ public class GameImpl implements Game {
             playerGameProfile.closeInventory();
             for (TeamImpl team : teams) {
                 if (displayName.equals(team.getName())) {
-                    internalTeamJoin(playerGameProfile, team);
+                    internalTeamJoin(playerGameProfile, team, false);
                     break;
                 }
             }

@@ -98,6 +98,14 @@ public interface ItemSpawner extends Upgrade {
 
     void setHologramType(HologramType type);
 
+    long getInitialIntervalTicks();
+
+    void setInitialIntervalTicks(@Nullable Long ticks);
+
+    @Nullable Double getCustomSpread();
+
+    void setCustomSpread(@Nullable Double customSpread);
+
     int getTier();
 
     void setTier(int tier);

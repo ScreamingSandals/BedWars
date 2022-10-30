@@ -129,7 +129,7 @@ public class DumpCommand extends BaseCommand {
                                                                                     "spread", itemSpawnerType.getSpread(),
                                                                                     "itemType", itemSpawnerType.getItemType().platformName(),
                                                                                     "color", itemSpawnerType.getColor().toString(),
-                                                                                    "interval", itemSpawnerType.getInterval()
+                                                                                    "interval", itemSpawnerType.getInterval().first() + " " + itemSpawnerType.getInterval().second()
                                                                             )).collect(Collectors.toList())
                                                                     )
                                                             ).collect(Collectors.toList()),
@@ -161,7 +161,9 @@ public class DumpCommand extends BaseCommand {
                                                                                             "hologramEnabled", itemSpawner.isHologramEnabled(),
                                                                                             "floatingEnabled", itemSpawner.isFloatingBlockEnabled(),
                                                                                             "rotationMode", itemSpawner.getRotationMode().name(),
-                                                                                            "hologramType", itemSpawner.getHologramType().name()
+                                                                                            "hologramType", itemSpawner.getHologramType().name(),
+                                                                                            "customSpread", itemSpawner.getCustomSpread(),
+                                                                                            "customInitialInterval", itemSpawner.getInitialInterval() != null ? (itemSpawner.getInitialInterval().first() + " " + itemSpawner.getInitialInterval().second()) : null
                                                                                     )).collect(Collectors.toList()),
                                                                                     "teams", game.getTeams().stream().map(team -> nullValuesAllowingMap(
                                                                                             "name", team.getName(),
