@@ -2180,10 +2180,10 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                             double currentLevel = spawner.getCurrentLevel();
                             calculatedStack = (int) currentLevel;
 
-                            /* Allow half level */
+                            /* fractional levels: have a weighted chance to increment */
+                            /* for example, 3.1 -> 10% chance for 4 and 90% chance for 3 */
                             if ((currentLevel % 1) != 0) {
-                                int a = elapsedTime / cycle;
-                                if ((a % 2) == 0) {
+                                if (Math.random() < (currentLevel % 1)) {
                                     calculatedStack++;
                                 }
                             }
