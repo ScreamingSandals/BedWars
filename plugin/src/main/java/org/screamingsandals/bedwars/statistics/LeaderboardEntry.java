@@ -20,16 +20,19 @@
 package org.screamingsandals.bedwars.statistics;
 
 import org.bukkit.OfflinePlayer;
+import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.statistics.PlayerStatistic;
 
 public class LeaderboardEntry implements org.screamingsandals.bedwars.api.statistics.LeaderboardEntry {
     private final OfflinePlayer offlinePlayer;
     private final int currentScore;
+    private final @Nullable String latestKnownName;
 
-    public LeaderboardEntry(OfflinePlayer offlinePlayer, int currentScore) {
+    public LeaderboardEntry(OfflinePlayer offlinePlayer, int currentScore, @Nullable String latestKnownName) {
         this.offlinePlayer = offlinePlayer;
         this.currentScore = currentScore;
+        this.latestKnownName = latestKnownName;
     }
 
     @Override
@@ -45,5 +48,10 @@ public class LeaderboardEntry implements org.screamingsandals.bedwars.api.statis
     @Override
     public PlayerStatistic fetchStatistics() {
         return Main.getPlayerStatisticsManager().getStatistic(offlinePlayer);
+    }
+
+    @Override
+    public @Nullable String getLatestKnownName() {
+        return this.latestKnownName;
     }
 }

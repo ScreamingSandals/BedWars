@@ -20,6 +20,7 @@
 package org.screamingsandals.bedwars.api.statistics;
 
 import org.bukkit.OfflinePlayer;
+import org.jetbrains.annotations.Nullable;
 
 public interface LeaderboardEntry {
     OfflinePlayer getPlayer();
@@ -27,4 +28,6 @@ public interface LeaderboardEntry {
     int getTotalScore();
 
     PlayerStatistic fetchStatistics();
+
+    @Nullable String getLatestKnownName();
 }

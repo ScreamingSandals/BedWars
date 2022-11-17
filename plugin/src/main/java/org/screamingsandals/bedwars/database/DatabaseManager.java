@@ -83,7 +83,7 @@ public class DatabaseManager {
     }
 
     public String getScoresSql() {
-        return "SELECT uuid, score FROM " + tablePrefix + "stats_players";
+        return "SELECT uuid, score, name FROM " + tablePrefix + "stats_players";
     }
 
     public String getTablePrefix() {

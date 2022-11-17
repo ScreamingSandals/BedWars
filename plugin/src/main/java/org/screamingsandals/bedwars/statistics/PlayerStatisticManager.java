@@ -38,7 +38,7 @@ public class PlayerStatisticManager implements PlayerStatisticsManager {
     private File databaseFile = null;
     private FileConfiguration fileDatabase;
     private Map<UUID, PlayerStatistic> playerStatistic;
-    private Map<UUID, Integer> allScores = new HashMap<>();
+    private Map<UUID, Map.Entry<String, Integer>> allScores = new HashMap<>();
 
     public PlayerStatisticManager() {
         this.playerStatistic = new HashMap<>();
@@ -105,7 +105,7 @@ public class PlayerStatisticManager implements PlayerStatisticsManager {
                 ResultSet resultSet = preparedStatement.executeQuery();
                 if (resultSet.first()) {
                     do {
-                        allScores.put(UUID.fromString(resultSet.getString("uuid")), resultSet.getInt("score"));
+                        allScores.put(UUID.fromString(resultSet.getString("uuid")), new AbstractMap.SimpleEntry<>(resultSet.getString("name"), resultSet.getInt("score")));
                     } while (resultSet.next());
                 }
                 connection.commit();
@@ -115,7 +115,7 @@ public class PlayerStatisticManager implements PlayerStatisticsManager {
             }
         } else {
             for (String key : fileDatabase.getConfigurationSection("data").getKeys(false)) {
-                allScores.put(UUID.fromString(key), fileDatabase.getInt("data." + key + ".score"));
+                allScores.put(UUID.fromString(key), new AbstractMap.SimpleEntry<>(fileDatabase.getString("data." + key + ".name"), fileDatabase.getInt("data." + key + ".score")));
             }
         }
     }
@@ -124,9 +124,9 @@ public class PlayerStatisticManager implements PlayerStatisticsManager {
         List<LeaderboardEntry> entries = new ArrayList<>();
 
         allScores.entrySet().stream()
-                .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+                .sorted((c1, c2) -> Comparator.<Integer>reverseOrder().compare(c1.getValue().getValue(), c2.getValue().getValue()))
                 .limit(count)
-                .forEach(entry -> entries.add(new org.screamingsandals.bedwars.statistics.LeaderboardEntry(Bukkit.getOfflinePlayer(entry.getKey()), entry.getValue())));
+                .forEach(entry -> entries.add(new org.screamingsandals.bedwars.statistics.LeaderboardEntry(Bukkit.getOfflinePlayer(entry.getKey()), entry.getValue().getValue(), entry.getValue().getKey())));
 
         return entries;
     }
@@ -169,7 +169,7 @@ public class PlayerStatisticManager implements PlayerStatisticsManager {
         if (player != null && !playerStatistic.getName().equals(player.getName())) {
             playerStatistic.setName(player.getName());
         }
-        allScores.put(uuid, playerStatistic.getScore());
+        allScores.put(uuid, new AbstractMap.SimpleEntry<>(playerStatistic.getName(), playerStatistic.getScore()));
 
         this.playerStatistic.put(playerStatistic.getId(), playerStatistic);
         return playerStatistic;
@@ -200,7 +200,7 @@ public class PlayerStatisticManager implements PlayerStatisticsManager {
             playerStatistic.setName(player.getName());
         }
         this.playerStatistic.put(uuid, playerStatistic);
-        allScores.put(uuid, playerStatistic.getScore());
+        allScores.put(uuid, new AbstractMap.SimpleEntry<>(playerStatistic.getName(), playerStatistic.getScore()));
         return playerStatistic;
     }
 
@@ -285,7 +285,7 @@ public class PlayerStatisticManager implements PlayerStatisticsManager {
     }
 
     public void updateScore(PlayerStatistic playerStatistic) {
-        allScores.put(playerStatistic.getId(), playerStatistic.getScore());
+        allScores.put(playerStatistic.getId(), new AbstractMap.SimpleEntry<>(playerStatistic.getName(), playerStatistic.getScore()));
         if (Main.getLeaderboardHolograms() != null) {
             Main.getLeaderboardHolograms().updateEntries();
         }

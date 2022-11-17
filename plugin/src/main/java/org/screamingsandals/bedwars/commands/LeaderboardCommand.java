@@ -48,7 +48,8 @@ public class LeaderboardCommand extends BaseCommand {
             } else {
                 AtomicInteger l = new AtomicInteger(1);
                 statistics.forEach(leaderboardEntry -> {
-                    m("leaderboard_line").replace("order", l.getAndIncrement()).replace("player", leaderboardEntry.getPlayer().getName())
+                    m("leaderboard_line").replace("order", l.getAndIncrement())
+                            .replace("player", leaderboardEntry.getPlayer().getName() != null ? leaderboardEntry.getPlayer().getName() : (leaderboardEntry.getLatestKnownName() != null ? leaderboardEntry.getLatestKnownName() : leaderboardEntry.getPlayer().getUniqueId().toString()))
                             .replace("score", leaderboardEntry.getTotalScore()).send(sender);
                 });
             }
