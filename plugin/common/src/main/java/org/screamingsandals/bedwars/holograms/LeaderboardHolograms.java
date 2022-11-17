@@ -195,7 +195,7 @@ public class LeaderboardHolograms {
             var l = new AtomicInteger(1);
             entries.forEach(leaderboardEntry ->
                     lines.add(line
-                            .replace("%name%", leaderboardEntry.getPlayer().getLastName().orElse(leaderboardEntry.getPlayer().getUuid().toString()))
+                            .replace("%name%", leaderboardEntry.getPlayer().getLastName().orElse(leaderboardEntry.getLastKnownName() != null ? leaderboardEntry.getLastKnownName() : leaderboardEntry.getPlayer().getUuid().toString()))
                             .replace("%score%", Integer.toString(leaderboardEntry.getTotalScore()))
                             .replace("%order%", Integer.toString(l.getAndIncrement()))
                     )

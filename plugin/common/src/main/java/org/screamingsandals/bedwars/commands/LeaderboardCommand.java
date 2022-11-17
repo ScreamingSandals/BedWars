@@ -63,7 +63,7 @@ public class LeaderboardCommand extends BaseCommand {
                                         .placeholder("player", leaderboardEntry
                                                 .getPlayer()
                                                 .getLastName()
-                                                .orElse(leaderboardEntry
+                                                .orElse(leaderboardEntry.getLastKnownName() != null ? leaderboardEntry.getLastKnownName() : leaderboardEntry
                                                         .getPlayer()
                                                         .getUuid()
                                                         .toString()

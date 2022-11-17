@@ -20,6 +20,7 @@
 package org.screamingsandals.bedwars.statistics;
 
 import lombok.Data;
+import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.api.statistics.LeaderboardEntry;
 import org.screamingsandals.bedwars.api.statistics.PlayerStatistic;
 import org.screamingsandals.lib.player.OfflinePlayerWrapper;
@@ -28,6 +29,7 @@ import org.screamingsandals.lib.player.OfflinePlayerWrapper;
 public class LeaderboardEntryImpl implements LeaderboardEntry {
     private final OfflinePlayerWrapper player;
     private final int totalScore;
+    private final @Nullable String lastKnownName;
 
     @Override
     public PlayerStatistic fetchStatistics() {

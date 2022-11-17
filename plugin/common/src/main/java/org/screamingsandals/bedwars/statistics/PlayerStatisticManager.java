@@ -21,6 +21,7 @@ package org.screamingsandals.bedwars.statistics;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.api.statistics.PlayerStatisticsManager;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.database.DatabaseManager;
@@ -58,7 +59,7 @@ public class PlayerStatisticManager implements PlayerStatisticsManager {
     private ConfigurationNode fileDatabase;
     private StatisticType statisticType;
     private final Map<UUID, PlayerStatisticImpl> playerStatistic = new HashMap<>();
-    private final Map<UUID, Integer> allScores = new HashMap<>();
+    private final Map<UUID, Map.Entry<@Nullable String, Integer>> allScores = new HashMap<>();
 
     // level system
     @Getter
@@ -175,7 +176,7 @@ public class PlayerStatisticManager implements PlayerStatisticsManager {
                 ResultSet resultSet = preparedStatement.executeQuery();
                 if (resultSet.first()) {
                     do {
-                        allScores.put(UUID.fromString(resultSet.getString("uuid")), resultSet.getInt("score"));
+                        allScores.put(UUID.fromString(resultSet.getString("uuid")), new AbstractMap.SimpleEntry<>(resultSet.getString("name"), resultSet.getInt("score")));
                     } while (resultSet.next());
                 }
                 connection.commit();
@@ -184,16 +185,16 @@ public class PlayerStatisticManager implements PlayerStatisticsManager {
                 ex.printStackTrace();
             }
         } else {
-            fileDatabase.node("data").childrenMap().forEach((key, node) -> allScores.put(UUID.fromString(key.toString()), node.node("score").getInt()));
+            fileDatabase.node("data").childrenMap().forEach((key, node) -> allScores.put(UUID.fromString(key.toString()), new AbstractMap.SimpleEntry<>(node.node("name").getString(), node.node("score").getInt())));
         }
     }
 
     public List<LeaderboardEntryImpl> getLeaderboard(int count) {
         return allScores.entrySet()
                 .stream()
-                .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+                .sorted((c1, c2) -> Comparator.<Integer>reverseOrder().compare(c1.getValue().getValue(), c2.getValue().getValue()))
                 .limit(count)
-                .map(entry -> new LeaderboardEntryImpl(PlayerMapper.getOfflinePlayer(entry.getKey()), entry.getValue()))
+                .map(entry -> new LeaderboardEntryImpl(PlayerMapper.getOfflinePlayer(entry.getKey()), entry.getValue().getValue(), entry.getValue().getKey()))
                 .collect(Collectors.toList());
     }
 
@@ -237,7 +238,7 @@ public class PlayerStatisticManager implements PlayerStatisticsManager {
                 .ifPresent(playerStatistic::setName);
 
         this.playerStatistic.put(playerStatistic.getUuid(), playerStatistic);
-        this.allScores.put(uuid, playerStatistic.getScore());
+        this.allScores.put(uuid, new AbstractMap.SimpleEntry<>(playerStatistic.getName(), playerStatistic.getScore()));
         return playerStatistic;
     }
 
@@ -259,7 +260,7 @@ public class PlayerStatisticManager implements PlayerStatisticsManager {
                 .map(PlayerWrapper::getName)
                 .ifPresent(playerStatistic::setName);
         this.playerStatistic.put(uuid, playerStatistic);
-        this.allScores.put(uuid, playerStatistic.getScore());
+        this.allScores.put(uuid, new AbstractMap.SimpleEntry<>(playerStatistic.getName(), playerStatistic.getScore()));
         return playerStatistic;
     }
 
@@ -330,7 +331,7 @@ public class PlayerStatisticManager implements PlayerStatisticsManager {
     }
 
     public void updateScore(PlayerStatisticImpl playerStatistic) {
-        allScores.put(playerStatistic.getUuid(), playerStatistic.getScore());
+        allScores.put(playerStatistic.getUuid(), new AbstractMap.SimpleEntry<>(playerStatistic.getName(), playerStatistic.getScore()));
         if (LeaderboardHolograms.isEnabled()) {
             LeaderboardHolograms.getInstance().updateEntries();
         }
