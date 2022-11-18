@@ -125,6 +125,8 @@ Make sure:
 
 Keep in mind that BedWars **does not moderate PvP**. If PvP does not work for you, it is caused by a misconfiguration or another plugin. If tips above did not help you, please contact us on our Discord server.
 
+If you have WorldGuard installed, you can also use a command to check which plugin blocks PvP. The command is `/wg debug testdamage -t <player_name>` and you need a second player to test this out. Click [here](https://worldguard.enginehub.org/en/latest/commands/#event-simulation) to read more about this command.
+
 ## Players regenerate too quickly/swords deal very little damage
 That is not a BedWars issue, increase your server's game difficulty (from easy to normal for example).
 
