@@ -167,9 +167,10 @@ admin_command_bar_color_set: "&aЦвет изменён на &7%color%&a для 
 admin_command_wrong_living_entity_type: "&cНеверный тип существа!"
 admin_command_store_living_entity_type_set: "&aТип торговца изменён на &7%type%&a!"
 admin_command_upgrades: "&aПрокачки изменена на &7%bool%&a!"
-safe_reload: "&aОжидание безопасной остановки всех арен или 60 секунд перед перезагрузкой!"
+safe_reload: "&aПроисходит ожидание безопасной остановки всех арен или истечения 60\
+  \ секунд перед перезагрузкой!"
 safe_reload_failed_to_stop_game: "&cНекоторые арены не успели завершиться, что может\
-  \ навредить их мирам!"
+  \ навредить им!"
 holo_not_enabled: "&cГолограммы отключены. Вы установили Holographic Displays?"
 holo_added: "&aГолограмма создана на вашей позиции!"
 click_to_holo_for_remove: "&eТеперь нажмите на голограмму, которую хотите убрать!"
