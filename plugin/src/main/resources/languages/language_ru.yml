@@ -412,3 +412,16 @@ help_bw_cheat_give: /bw cheat give <ресурс> [кол-во] [игрок] - &
 cheat_not_waiting: '&cИгра не в режиме ожидания!'
 game_forced: '&aИгра начнётся с пустыми командами. Разрушьте их главные блоки для
   победы!'
+team_bed_is_already_destroyed: '&cКровать команды &7%name%&c уже уничтожена!'
+team_not_in_game: '&cКоманда &7%name%&c не в игре!'
+cheat_received_target_block_destroy: '&aКровать команды &7%name%&a была уничтожена!'
+help_bw_cheat_startemptygame: /bw cheat startemptygame - &cЗапускает игру только с
+  одной командой
+help_bw_cheat_destroybed: /bw cheat destroybed <team> - &cУничтожает кровать выбранной
+  команды
+help_bw_cheat_destroyallbeds: /bw cheat destroyallbeds - &cУничтожает все кровати
+  в матче
+help_bw_cheat_jointeam: /bw cheat jointeam [team] - &cПрисоединяет админа в выбранную
+  команду или в текущую команду игнорируя её размер (также может использоваться когда
+  игра уже запущена, однако в команде должны быть игроки)
+cheat_received_target_blocks_destroy: '&aКровати всех команд были уничтожены!'
