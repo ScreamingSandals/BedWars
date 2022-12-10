@@ -353,7 +353,7 @@ public class Hologram {
 					}
 				} else {
 					Object metadataPacket = PacketPlayOutEntityMetadataAccessor.getConstructor0()
-							.newInstance(entity.getId(), entity.getDataWatcher(), false);
+							.newInstance(entity.getId(), entity.getDataWatcher(), true);
 					packets.add(metadataPacket);
 				}
 			}
