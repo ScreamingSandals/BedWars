@@ -38,6 +38,7 @@ jobs:
           WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
           REPOSILITE_BASE_URL: ${{ secrets.REPOSILITE_BASE_URL }}
           GITHUB_ACTIONS_URL: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          JAVA_OPTS: "-Xmx2048M" # todo: remove after the rewrite of NMS Mapper
       - name: Upload the final artifact
         uses: actions/upload-artifact@v2
         with:
