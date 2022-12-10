@@ -24,7 +24,7 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
       - name: Build with Gradle
-        run: JAVA_OPTS="-Xmx3072M" ./gradlew # todo: remove jvm argument after the rewrite of NMS Mapper
+        run: ./gradlew
         env:
           NEXUS_URL_RELEASE: ${{ secrets.NEXUS_URL_RELEASE }}
           NEXUS_URL_SNAPSHOT: ${{ secrets.NEXUS_URL_SNAPSHOT }}
