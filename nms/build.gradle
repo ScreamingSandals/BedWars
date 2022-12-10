@@ -26,6 +26,9 @@ nmsGen {
         .reqMethod('searge:func_240643_a_', String) // 1.16+
     var DataWatcher = reqClass('spigot:DataWatcher')
         .reqMethod("spigot:watch", int.class, Object.class)
+        .reqMethod('packDirty')
+        .reqMethod('clearDirty')
+        .reqMethod('getAll')
     var World = reqClass('spigot:World')
             .reqMethod('spigot:getMethodProfilerSupplier') // 1.17 and newer
             .reqMethod('spigot:getMethodProfiler') // for something between new and old versions
@@ -113,13 +116,15 @@ nmsGen {
         .reqConstructor(int) // 1.17 retardation
         .reqConstructor(int[])
     reqClass('spigot:PacketPlayOutEntityMetadata')
-        .reqConstructor(int, DataWatcher, boolean)
+        .reqConstructor(int, DataWatcher, boolean) // <= 1.19.2
+        .reqConstructor(int, List) // 1.19.3
     reqClass('spigot:PacketPlayOutEntityTeleport')
         .reqConstructor(Entity)
     reqClass('spigot:PacketPlayOutExperience')
         .reqConstructor(float, int, int)
     reqClass('spigot:PacketPlayOutSpawnEntity')
-        .reqConstructor(EntityLiving)
+        .reqConstructor(EntityLiving) // 1.19-1.19.2
+        .reqConstructor(Entity) // 1.19.3
     reqClass('spigot:PacketPlayOutSpawnEntityLiving')
         .reqConstructor(EntityLiving)
     reqClass('spigot:PacketPlayOutTitle') // does not exist in 1.17

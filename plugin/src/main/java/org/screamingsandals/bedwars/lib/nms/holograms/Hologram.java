@@ -196,10 +196,20 @@ public class Hologram {
 				if (i < this.entities.size() && this.entities.get(i) != null) {
 					ArmorStandNMS stand = this.entities.get(i);
 					stand.setCustomName(line);
-					Object metadataPacket = PacketPlayOutEntityMetadataAccessor.getConstructor0()
-							.newInstance(stand.getId(),
-							stand.getDataWatcher(), false);
-					packets.add(metadataPacket);
+					if (PacketPlayOutEntityMetadataAccessor.getConstructor1() != null) {
+						Object watcherInList = ClassStorage.getMethod(stand.getDataWatcher(), DataWatcherAccessor.getMethodPackDirty1()).invoke();
+						if (watcherInList != null) {
+							Object metadataPacket = PacketPlayOutEntityMetadataAccessor.getConstructor1()
+									.newInstance(stand.getId(), watcherInList);
+							packets.add(metadataPacket);
+							ClassStorage.getMethod(stand.getDataWatcher(), DataWatcherAccessor.getMethodClearDirty1()).invoke();
+						}
+					} else {
+						Object metadataPacket = PacketPlayOutEntityMetadataAccessor.getConstructor0()
+								.newInstance(stand.getId(),
+										stand.getDataWatcher(), false);
+						packets.add(metadataPacket);
+					}
 					if (positionChanged) {
 						Location localLoc = loc.clone().add(0, (this.lines.size() - i) * .30, 0);
 						stand.setLocation(localLoc);;
@@ -222,16 +232,29 @@ public class Hologram {
 					if (PacketPlayOutSpawnEntityLivingAccessor.getType() != null) {
 						spawnLivingPacket = PacketPlayOutSpawnEntityLivingAccessor.getConstructor0()
 								.newInstance(stand.getHandler());
-					} else {
+					} else if (PacketPlayOutSpawnEntityAccessor.getConstructor0() != null) {
 						spawnLivingPacket = PacketPlayOutSpawnEntityAccessor.getConstructor0()
+								.newInstance(stand.getHandler());
+					} else {
+						spawnLivingPacket = PacketPlayOutSpawnEntityAccessor.getConstructor1()
 								.newInstance(stand.getHandler());
 					}
 					packets.add(spawnLivingPacket);
 					if (Version.isVersion(1, 15)) {
-						Object metadataPacket = PacketPlayOutEntityMetadataAccessor.getConstructor0()
-								.newInstance(stand.getId(),
-								stand.getDataWatcher(), false);
-						packets.add(metadataPacket);
+						if (PacketPlayOutEntityMetadataAccessor.getConstructor1() != null) {
+							Object watcherInList = ClassStorage.getMethod(stand.getDataWatcher(), DataWatcherAccessor.getMethodPackDirty1()).invoke();
+							if (watcherInList != null) {
+								Object metadataPacket = PacketPlayOutEntityMetadataAccessor.getConstructor1()
+										.newInstance(stand.getId(), watcherInList);
+								packets.add(metadataPacket);
+								ClassStorage.getMethod(stand.getDataWatcher(), DataWatcherAccessor.getMethodClearDirty1()).invoke();
+							}
+						} else {
+							Object metadataPacket = PacketPlayOutEntityMetadataAccessor.getConstructor0()
+									.newInstance(stand.getId(),
+											stand.getDataWatcher(), false);
+							packets.add(metadataPacket);
+						}
 					}
 					if (this.entities.size() <= i) {
 						this.entities.add(stand);
@@ -315,14 +338,24 @@ public class Hologram {
 		for (ArmorStandNMS entity : entities) {
 			if (PacketPlayOutSpawnEntityLivingAccessor.getType() != null) {
 				packets.add(PacketPlayOutSpawnEntityLivingAccessor.getConstructor0().newInstance(entity.getHandler()));
-			} else {
+			} else if (PacketPlayOutSpawnEntityAccessor.getConstructor0() != null) {
 				packets.add(PacketPlayOutSpawnEntityAccessor.getConstructor0().newInstance(entity.getHandler()));
+			} else {
+				packets.add(PacketPlayOutSpawnEntityAccessor.getConstructor1().newInstance(entity.getHandler()));
 			}
 			if (Version.isVersion(1, 15)) {
-				Object metadataPacket = PacketPlayOutEntityMetadataAccessor.getConstructor0()
-					.newInstance(
-						entity.getId(), entity.getDataWatcher(), true);
-				packets.add(metadataPacket);
+				if (PacketPlayOutEntityMetadataAccessor.getConstructor1() != null) {
+					Object watcherInList = ClassStorage.getMethod(entity.getDataWatcher(), DataWatcherAccessor.getMethodGetAll1()).invoke();
+					if (watcherInList != null) {
+						Object metadataPacket = PacketPlayOutEntityMetadataAccessor.getConstructor1()
+								.newInstance(entity.getId(), watcherInList);
+						packets.add(metadataPacket);
+					}
+				} else {
+					Object metadataPacket = PacketPlayOutEntityMetadataAccessor.getConstructor0()
+							.newInstance(entity.getId(), entity.getDataWatcher(), false);
+					packets.add(metadataPacket);
+				}
 			}
 		}
 		return packets;
