@@ -24,7 +24,7 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
       - name: Build with Gradle
-        run: ./gradlew
+        run: JAVA_OPTS="-Xmx3072M" ./gradlew # todo: remove jvm argument after the rewrite of NMS Mapper
         env:
           NEXUS_URL_RELEASE: ${{ secrets.NEXUS_URL_RELEASE }}
           NEXUS_URL_SNAPSHOT: ${{ secrets.NEXUS_URL_SNAPSHOT }}
@@ -38,7 +38,6 @@ jobs:
           WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
           REPOSILITE_BASE_URL: ${{ secrets.REPOSILITE_BASE_URL }}
           GITHUB_ACTIONS_URL: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          JAVA_OPTS: "-Xmx2048M" # todo: remove after the rewrite of NMS Mapper
       - name: Upload the final artifact
         uses: actions/upload-artifact@v2
         with:
