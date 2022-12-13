@@ -78,8 +78,7 @@ public class SpawnerCommand extends BaseAdminSubCommand {
                                 sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_MUST_BE_IN_BOUNDS).defaultPrefix());
                                 return;
                             }
-                            loc.setYaw(0);
-                            loc.setPitch(0);
+                            loc = loc.withYaw(0).withPitch(0);
                             var spawnerType = game.getGameVariant().getItemSpawnerType(type);
                             if (spawnerType != null) {
                                 game.getSpawners().add(new ItemSpawnerImpl(loc, spawnerType));

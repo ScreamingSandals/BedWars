@@ -104,7 +104,7 @@ public class RescuePlatformImpl extends SpecialItemImpl implements RescuePlatfor
         platformBlocks = new ArrayList<>();
 
         var center = player.getLocation().clone();
-        center.setY(center.getY() - dist);
+        center = center.withY(center.getY() - dist);
 
         for (var blockFace : BlockFace.values()) {
             if (blockFace.equals(BlockFace.DOWN) || blockFace.equals(BlockFace.UP)) {

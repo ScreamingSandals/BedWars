@@ -58,8 +58,8 @@ import java.util.stream.Collectors;
 public class MiscUtils {
     private final Random RANDOM = new Random();
     private final Pattern STRIP_COLOR_PATTERN = Pattern.compile("(?i)\u00A7[0-9A-FK-ORX]");
-    public final LocationHolder MAX_LOCATION = new LocationHolder(Double.MAX_VALUE, 256D, Double.MAX_VALUE);
-    public final LocationHolder MIN_LOCATION = new LocationHolder(Double.MIN_VALUE, 0D, Double.MIN_VALUE);
+    public final LocationHolder MAX_LOCATION = new LocationHolder(Double.MAX_VALUE, 256D, Double.MAX_VALUE, 0F, 0F, null); // not rly valid location :)
+    public final LocationHolder MIN_LOCATION = new LocationHolder(Double.MIN_VALUE, 0D, Double.MIN_VALUE, 0F, 0F, null);  // not rly valid location either :)
     public final Component BW_PREFIX = Component.text()
             .content("[")
             .color(Color.WHITE)

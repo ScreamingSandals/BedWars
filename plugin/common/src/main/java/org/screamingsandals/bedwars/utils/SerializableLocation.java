@@ -56,10 +56,7 @@ public class SerializableLocation implements Wrapper {
     @Override
     public <T> T as(Class<T> type) {
         if (type == LocationHolder.class) {
-            var holder = new LocationHolder(x, y, z);
-            holder.setYaw((float) this.yaw);
-            holder.setPitch((float) this.pitch);
-            holder.setWorld(WorldMapper.getWorld(world).orElseThrow());
+            var holder = new LocationHolder(x, y, z, (float) this.yaw, (float) this.pitch, WorldMapper.getWorld(world).orElseThrow());
             return (T) holder;
         }
         throw new UnsupportedOperationException("Unsupported type!");
