@@ -22,7 +22,6 @@ package org.screamingsandals.bedwars.commands;
 import com.google.gson.*;
 import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.VersionInfo;
-import lombok.Data;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -48,8 +47,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -78,123 +75,121 @@ public class DumpCommand extends BaseCommand {
                         .registerTypeAdapter(World.class, (JsonSerializer<World>) (world, type, context) -> context.serialize(world.getName()))
                         .registerTypeAdapter(File.class, (JsonSerializer<File>) (file, type, context) -> context.serialize(file.getAbsolutePath()))
                         .setPrettyPrinting().create();
-                List<Object> files = new ArrayList<>();
-                files.add(nullValuesAllowingMap(
-                        "name", "dump.json",
-                        "content", nullValuesAllowingMap(
-                                "format", "text",
-                                "highlight_language", "json",
-                                "value", gson.toJson(nullValuesAllowingMap(
-                                        "bedwars", nullValuesAllowingMap(
-                                                "version", Main.getVersion(),
-                                                "build", VersionInfo.BUILD_NUMBER,
-                                                "edition", "free"
+                Map<String, String> files = new LinkedHashMap<>();
+                files.put("Basic information about the server (dump.json)", gson.toJson(nullValuesAllowingMap(
+                        "bedwars", nullValuesAllowingMap(
+                                "version", Main.getVersion(),
+                                "build", VersionInfo.BUILD_NUMBER,
+                                "edition", "free"
+                        ),
+                        "server", nullValuesAllowingMap(
+                                "version", Bukkit.getVersion(),
+                                "javaVersion", System.getProperty("java.version"),
+                                "os", System.getProperty("os.name")
+                        ),
+                        "worlds", Bukkit.getWorlds().stream().map(world -> nullValuesAllowingMap(
+                                "name", world.getName(),
+                                "difficulty", world.getDifficulty(),
+                                "spawning", nullValuesAllowingMap(
+                                        "animals", world.getAllowAnimals(),
+                                        "monsters", world.getAllowMonsters()
+                                ),
+                                "maxHeight", world.getMaxHeight(),
+                                "keepSpawnInMemory", world.getKeepSpawnInMemory()
+                        )).collect(Collectors.toList()),
+                        "plugins", Arrays.stream(Bukkit.getPluginManager().getPlugins()).map(plugin -> nullValuesAllowingMap(
+                                "enabled", plugin.isEnabled(),
+                                "name", plugin.getName(),
+                                "version", plugin.getDescription().getVersion(),
+                                "main", plugin.getDescription().getMain(),
+                                "authors", plugin.getDescription().getAuthors()
+                        )).collect(Collectors.toList()),
+                        "gamesInMemory", Main.getGameNames().stream().map(Main::getGame).map(game ->
+                                nullValuesAllowingMap(
+                                        "file", game.getFile().getParentFile().getName() + "/" + game.getFile().getName(),
+                                        "name", game.getName(),
+                                        "minPlayers", game.getMinPlayers(),
+                                        "maxPlayers", game.getMaxPlayers(),
+                                        "lobby", nullValuesAllowingMap(
+                                                "spawn", game.getLobbySpawn(),
+                                                "countdown", game.getLobbyCountdown(),
+                                                "bossbar", game.getLobbyBossBarColor()
                                         ),
-                                        "server", nullValuesAllowingMap(
-                                                "version", Bukkit.getVersion(),
-                                                "javaVersion", System.getProperty("java.version"),
-                                                "os", System.getProperty("os.name")
-                                        ),
-                                        "worlds", Bukkit.getWorlds().stream().map(world -> nullValuesAllowingMap(
-                                                "name", world.getName(),
-                                                "difficulty", world.getDifficulty(),
-                                                "spawning", nullValuesAllowingMap(
-                                                        "animals", world.getAllowAnimals(),
-                                                        "monsters", world.getAllowMonsters()
-                                                ),
-                                                "maxHeight", world.getMaxHeight(),
-                                                "keepSpawnInMemory", world.getKeepSpawnInMemory()
-                                        )).collect(Collectors.toList()),
-                                        "plugins", Arrays.stream(Bukkit.getPluginManager().getPlugins()).map(plugin -> nullValuesAllowingMap(
-                                                "enabled", plugin.isEnabled(),
-                                                "name", plugin.getName(),
-                                                "version", plugin.getDescription().getVersion(),
-                                                "main", plugin.getDescription().getMain(),
-                                                "authors", plugin.getDescription().getAuthors()
-                                        )).collect(Collectors.toList()),
-                                        "games", Main.getGameNames().stream().map(Main::getGame).map(game ->
-                                                nullValuesAllowingMap(
-                                                        "file", game.getFile(),
-                                                        "name", game.getName(),
-                                                        "minPlayers", game.getMinPlayers(),
-                                                        "maxPlayers", game.getMaxPlayers(),
-                                                        "lobby", nullValuesAllowingMap(
-                                                                "spawn", game.getLobbySpawn(),
-                                                                "countdown", game.getLobbyCountdown(),
-                                                                "bossbar", game.getLobbyBossBarColor()
-                                                        ),
-                                                        "arena", nullValuesAllowingMap(
-                                                                "spectator", game.getSpectatorSpawn(),
-                                                                "countdown", game.getGameTime(),
-                                                                "pos1", game.getPos1(),
-                                                                "pos2", game.getPos2(),
-                                                                "bossbar", game.getGameBossBarColor(),
-                                                                "arenaTime", game.getArenaTime(),
-                                                                "weather", game.getArenaWeather(),
-                                                                "customPrefix", game.getCustomPrefix(),
-                                                                "spawners", game.getSpawners().stream().map(itemSpawner -> nullValuesAllowingMap(
-                                                                        "type", itemSpawner.getItemSpawnerType().getConfigKey(),
-                                                                        "location", itemSpawner.getLocation(),
-                                                                        "maxSpawnedResources", itemSpawner.getMaxSpawnedResources(),
-                                                                        "startLevel", itemSpawner.getStartLevel(),
-                                                                        "name", itemSpawner.getCustomName(),
-                                                                        "team", itemSpawner.getTeam() != null ? itemSpawner.getTeam().getName() : "no team",
-                                                                        "hologramEnabled", itemSpawner.getHologramEnabled()
-                                                                )).collect(Collectors.toList()),
-                                                                "teams", game.getTeams().stream().map(team -> nullValuesAllowingMap(
-                                                                        "name", team.getName(),
-                                                                        "color", team.getColor(),
-                                                                        "spawn", team.getTeamSpawn(),
-                                                                        "targetBlock", team.getTargetBlock(),
-                                                                        "maxPlayers", team.getMaxPlayers()
-                                                                )).collect(Collectors.toList()),
-                                                                "stores", game.getGameStores().stream().map(gameStore -> nullValuesAllowingMap(
-                                                                        "entityType", gameStore.getEntityType(),
-                                                                        "location", gameStore.getStoreLocation(),
-                                                                        "shopFile", gameStore.getShopFile(),
-                                                                        "customName", gameStore.getShopCustomName(),
-                                                                        "useParent", gameStore.getUseParent(),
-                                                                        "baby", gameStore.isBaby(),
-                                                                        "skinName", gameStore.getSkinName()
-                                                                )).collect(Collectors.toList()),
-                                                                "configurationContainer", nullValuesAllowingMap(
-                                                                        "compass-enabled", game.getCompassEnabled(),
-                                                                        "join-randomly-after-lobby-timeout", game.getJoinRandomTeamAfterLobby(),
-                                                                        "join-randomly-on-lobby-join", game.getJoinRandomTeamOnJoin(),
-                                                                        "add-wool-to-inventory-on-join", game.getAddWoolToInventoryOnJoin(),
-                                                                        "prevent-killing-villagers", game.getPreventKillingVillagers(),
-                                                                        "player-drops", game.getPlayerDrops(),
-                                                                        "friendlyfire", game.getFriendlyfire(),
-                                                                        "in-lobby-colored-leather-by-team", game.getColoredLeatherByTeamInLobby(),
-                                                                        "keep-inventory-on-death", game.getKeepInventory(),
-                                                                        "allow-crafting", game.getCrafting(),
-                                                                        "lobbybossbar", game.getLobbyBossbar(),
-                                                                        "bossbar", game.getGameBossbar(),
-                                                                        "scoreboard", game.getScoreboard(),
-                                                                        "lobbyscoreboard", game.getLobbyScoreboard(),
-                                                                        "prevent-spawning-mobs", game.getPreventSpawningMobs(),
-                                                                        "spawner-holograms", game.getSpawnerHolograms(),
-                                                                        "spawner-disable-merge", game.getSpawnerDisableMerge(),
-                                                                        "game-start-items", game.getGameStartItems(),
-                                                                        "player-respawn-items", game.getPlayerRespawnItems(),
-                                                                        "spawner-holograms-countdown", game.getSpawnerHologramsCountdown(),
-                                                                        "damage-when-player-is-not-in-arena", game.getDamageWhenPlayerIsNotInArena(),
-                                                                        "remove-unused-target-blocks", game.getRemoveUnusedTargetBlocks(),
-                                                                        "allow-block-falling", game.getAllowBlockFalling(),
-                                                                        "holo-above-bed", game.getHoloAboveBed(),
-                                                                        "allow-spectator-join", game.getSpectatorJoin(),
-                                                                        "stop-team-spawners-on-die", game.getStopTeamSpawnersOnDie(),
-                                                                        "anchor-auto-fill", game.getAnchorAutoFill(),
-                                                                        "anchor-decreasing", game.getAnchorDecreasing(),
-                                                                        "cake-target-block-eating", game.getCakeTargetBlockEating(),
-                                                                        "target-block-explosions", game.getTargetBlockExplosions()
+                                        "arena", nullValuesAllowingMap(
+                                                "spectator", game.getSpectatorSpawn(),
+                                                "countdown", game.getGameTime(),
+                                                "pos1", game.getPos1(),
+                                                "pos2", game.getPos2(),
+                                                "bossbar", game.getGameBossBarColor(),
+                                                "arenaTime", game.getArenaTime(),
+                                                "weather", game.getArenaWeather(),
+                                                "customPrefix", game.getCustomPrefix(),
+                                                "spawners", game.getSpawners().stream().map(itemSpawner -> nullValuesAllowingMap(
+                                                        "type", itemSpawner.getItemSpawnerType().getConfigKey(),
+                                                        "location", itemSpawner.getLocation(),
+                                                        "maxSpawnedResources", itemSpawner.getMaxSpawnedResources(),
+                                                        "startLevel", itemSpawner.getStartLevel(),
+                                                        "name", itemSpawner.getCustomName(),
+                                                        "team", itemSpawner.getTeam() != null ? itemSpawner.getTeam().getName() : "no team",
+                                                        "hologramEnabled", itemSpawner.getHologramEnabled()
+                                                )).collect(Collectors.toList()),
+                                                "teams", game.getTeams().stream().map(team -> nullValuesAllowingMap(
+                                                        "name", team.getName(),
+                                                        "color", team.getColor(),
+                                                        "spawn", team.getTeamSpawn(),
+                                                        "targetBlock", team.getTargetBlock(),
+                                                        "maxPlayers", team.getMaxPlayers()
+                                                )).collect(Collectors.toList()),
+                                                "stores", game.getGameStores().stream().map(gameStore -> nullValuesAllowingMap(
+                                                        "entityType", gameStore.getEntityType(),
+                                                        "location", gameStore.getStoreLocation(),
+                                                        "shopFile", gameStore.getShopFile(),
+                                                        "customName", gameStore.getShopCustomName(),
+                                                        "useParent", gameStore.getUseParent(),
+                                                        "baby", gameStore.isBaby(),
+                                                        "skinName", gameStore.getSkinName()
+                                                )).collect(Collectors.toList()),
+                                                "configurationContainer", nullValuesAllowingMap(
+                                                        "compass-enabled", game.getCompassEnabled(),
+                                                        "join-randomly-after-lobby-timeout", game.getJoinRandomTeamAfterLobby(),
+                                                        "join-randomly-on-lobby-join", game.getJoinRandomTeamOnJoin(),
+                                                        "add-wool-to-inventory-on-join", game.getAddWoolToInventoryOnJoin(),
+                                                        "prevent-killing-villagers", game.getPreventKillingVillagers(),
+                                                        "player-drops", game.getPlayerDrops(),
+                                                        "friendlyfire", game.getFriendlyfire(),
+                                                        "in-lobby-colored-leather-by-team", game.getColoredLeatherByTeamInLobby(),
+                                                        "keep-inventory-on-death", game.getKeepInventory(),
+                                                        "allow-crafting", game.getCrafting(),
+                                                        "lobbybossbar", game.getLobbyBossbar(),
+                                                        "bossbar", game.getGameBossbar(),
+                                                        "scoreboard", game.getScoreboard(),
+                                                        "lobbyscoreboard", game.getLobbyScoreboard(),
+                                                        "prevent-spawning-mobs", game.getPreventSpawningMobs(),
+                                                        "spawner-holograms", game.getSpawnerHolograms(),
+                                                        "spawner-disable-merge", game.getSpawnerDisableMerge(),
+                                                        "game-start-items", game.getGameStartItems(),
+                                                        "player-respawn-items", game.getPlayerRespawnItems(),
+                                                        "spawner-holograms-countdown", game.getSpawnerHologramsCountdown(),
+                                                        "damage-when-player-is-not-in-arena", game.getDamageWhenPlayerIsNotInArena(),
+                                                        "remove-unused-target-blocks", game.getRemoveUnusedTargetBlocks(),
+                                                        "allow-block-falling", game.getAllowBlockFalling(),
+                                                        "holo-above-bed", game.getHoloAboveBed(),
+                                                        "allow-spectator-join", game.getSpectatorJoin(),
+                                                        "stop-team-spawners-on-die", game.getStopTeamSpawnersOnDie(),
+                                                        "anchor-auto-fill", game.getAnchorAutoFill(),
+                                                        "anchor-decreasing", game.getAnchorDecreasing(),
+                                                        "cake-target-block-eating", game.getCakeTargetBlockEating(),
+                                                        "target-block-explosions", game.getTargetBlockExplosions()
 
-                                                                )
-                                                        )
                                                 )
-                                        ).collect(Collectors.toList())))
-                        )
-                ));
+                                        )
+                                )
+                        ).collect(Collectors.toList())))
+                );
+                for (String gameN : Main.getGameNames()) {
+                    Game game = Main.getGame(gameN);
+                    files.put(game.getFile().getParentFile().getName() + "/" + game.getFile().getName(), String.join("\n", Files.readAllLines(game.getFile().toPath(), StandardCharsets.UTF_8)));
+                }
                 FileConfiguration config = new YamlConfiguration();
                 try {
                     config.load(new File(Main.getInstance().getDataFolder(), "config.yml"));
@@ -207,26 +202,15 @@ public class DumpCommand extends BaseCommand {
                     config.set("database.table-prefix", "bw_");
                     config.set("database.useSSL", false);
 
-                    files.add(nullValuesAllowingMap(
-                            "name", "config.yml",
-                            "content", nullValuesAllowingMap(
-                                    "format", "text",
-                                    "highlight_language", "yaml",
-                                    "value", config.saveToString()
-                            )
-                    ));
+                    files.put("config.yml", config.saveToString());
                 } catch (IOException | InvalidConfigurationException e) {
                     e.printStackTrace();
                 }
-                Map<?,?> mainShop = nullValuesAllowingMap(
-                        "name", Main.getConfigurator().config.getBoolean("turnOnExperimentalGroovyShop", false) ? "shop.groovy" : "shop.yml",
-                        "content", nullValuesAllowingMap(
-                                "format", "text",
-                                "highlight_language", Main.getConfigurator().config.getBoolean("turnOnExperimentalGroovyShop", false) ? "groovy" : "yaml",
-                                "value", String.join("\n", Files.readAllLines(new File(Main.getInstance().getDataFolder(), Main.getConfigurator().config.getBoolean("turnOnExperimentalGroovyShop", false) ? "shop.groovy" : "shop.yml").toPath(), StandardCharsets.UTF_8))
-                        )
+                String mainShopName = Main.getConfigurator().config.getBoolean("turnOnExperimentalGroovyShop", false) ? "shop.groovy" : "shop.yml";
+                files.put(
+                        mainShopName,
+                        String.join("\n", Files.readAllLines(new File(Main.getInstance().getDataFolder(), mainShopName).toPath(), StandardCharsets.UTF_8))
                 );
-                files.add(mainShop);
                 Main.getGameNames().stream()
                         .map(Main::getGame)
                         .map(Game::getGameStores)
@@ -234,7 +218,7 @@ public class DumpCommand extends BaseCommand {
                         .map(GameStore::getShopFile)
                         .filter(Objects::nonNull)
                         .distinct()
-                        .filter(s -> !mainShop.get("name").equals(s))
+                        .filter(s -> !mainShopName.equals(s))
                         .forEach(s -> {
                             try {
                                 final File file = ShopInventory.normalizeShopFile(s);
@@ -242,54 +226,67 @@ public class DumpCommand extends BaseCommand {
                                     return;
                                 }
 
-                                files.add(nullValuesAllowingMap(
-                                        "name", file.getName(),
-                                        "content", nullValuesAllowingMap(
-                                                "format", "text",
-                                                "highlight_language", file.getName().endsWith(".groovy") ? "groovy" : "yaml",
-                                                "value", String.join("\n", Files.readAllLines(file.toPath(), StandardCharsets.UTF_8))
-                                        )
-                                ));
+                                files.put(file.getName(), String.join("\n", Files.readAllLines(file.toPath(), StandardCharsets.UTF_8)));
                             } catch (IOException e) {
                                 Debug.warn("Cannot add shop file to dump, it probably does not exists..", true);
                                 e.printStackTrace();
                             }
                         });
 
-                URL url = new URL("https://api.paste.gg/v1/pastes");
+                URL url = new URL("https://api.pastes.dev/post");
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("POST");
-                connection.setRequestProperty("Content-Type", "application/json");
+                connection.setRequestProperty("Content-Type", "text/plain");
+                connection.setRequestProperty("User-Agent", "ScreamingBedWars");
+                connection.setRequestProperty("Allow-Modification", "false");
                 connection.setDoOutput(true);
-                String json = gson.toJson(nullValuesAllowingMap(
-                        "name", "Bedwars dump",
-                        "description", "Dump generated by ScreamingBedwars plugin",
-                        "visibility", "unlisted",
-                        "expires", LocalDateTime.now().plusDays(30).format(DateTimeFormatter.ofPattern("YYYY-MM-dd'T'HH:mm:ss'Z'")),
-                        "files", files
-                ));
-                connection.getOutputStream().write(json.getBytes(StandardCharsets.UTF_8));
+                StringBuilder result = new StringBuilder("BedWars dump\n\nThis dump consists of multiple text files. All these files have names and have a special delimiter which marks the start and the end of the individual files (these are not really interesting for human beings).\n\nList of uploaded text files:\n");
+                for (Map.Entry<String, String> file : files.entrySet()) {
+                    result.append("- ").append(file.getKey()).append("\n");
+                }
+
+                for (Map.Entry<String, String> file : files.entrySet()) {
+                    Random random = new Random();
+                    String generatedString;
+                    do {
+                        generatedString = random.ints(97, 123)
+                                .limit(9)
+                                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+                                .toString();
+                    } while (file.getValue().contains("-----" + generatedString)); // just in case
+
+                    String delimiter = "-----" + generatedString;
+                    result.append("\n\nFile: ")
+                            .append(file.getKey())
+                            .append("\n")
+                            .append(delimiter)
+                            .append("\n\n")
+                            .append(file.getValue())
+                            .append("\n\n")
+                            .append(delimiter);
+                }
+                connection.getOutputStream().write(result.toString().getBytes(StandardCharsets.UTF_8));
                 connection.connect();
 
                 int code = connection.getResponseCode();
 
                 if (code >= 200 && code <= 299) {
-                    Message message = gson.fromJson(new InputStreamReader(connection.getInputStream()), Message.class);
+                    String location = "https://pastes.dev/" + connection.getHeaderField("Location");
                     if (Main.isSpigot() && sender instanceof Player) {
                         try {
-                            TextComponent msg1 = new TextComponent("https://paste.gg/" + message.getResult().getId());
-                            msg1.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://paste.gg/" + message.getResult().getId()));
-                            msg1.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("").append("Open this link").create()));
+                            TextComponent msg1 = new TextComponent(location);
+                            msg1.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, location));
+                            msg1.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("").append("Click to open this link").create()));
 
                             ((Player) sender).spigot().sendMessage(new ComponentBuilder("")
                                     .append(TextComponent.fromLegacyText(i18n("dump_success") + ChatColor.GRAY))
                                     .append(msg1)
                                     .create());
                         } catch (Throwable ignored) {
-                            sender.sendMessage(i18n("dump_success") + ChatColor.GRAY + "https://paste.gg/" + message.getResult().getId());
+                            sender.sendMessage(i18n("dump_success") + ChatColor.GRAY + location);
                         }
                     } else {
-                        sender.sendMessage(i18n("dump_success") + ChatColor.GRAY + "https://paste.gg/" + message.getResult().getId());
+                        sender.sendMessage(i18n("dump_success") + ChatColor.GRAY +  location);
                     }
                 } else {
                     sender.sendMessage(i18n("dump_failed"));
@@ -309,18 +306,8 @@ public class DumpCommand extends BaseCommand {
 
     }
 
-    @Data
-    public static class Message {
-        private Result result;
-    }
-
-    @Data
-    public static class Result {
-        private String id;
-    }
-
     public static Map<?, ?> nullValuesAllowingMap(Object... objects) {
-        HashMap<Object,Object> map = new HashMap<>();
+        HashMap<Object, Object> map = new HashMap<>();
         Object key = null;
         for (Object object : objects) {
             if (key == null) {
