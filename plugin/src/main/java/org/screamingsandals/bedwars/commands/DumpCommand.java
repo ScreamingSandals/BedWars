@@ -20,6 +20,7 @@
 package org.screamingsandals.bedwars.commands;
 
 import com.google.gson.*;
+import lombok.Data;
 import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.VersionInfo;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -47,6 +48,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -60,6 +63,7 @@ public class DumpCommand extends BaseCommand {
 
     @Override
     public boolean execute(CommandSender sender, List<String> args) {
+        String service = args.size() > 0 ? args.get(0).toLowerCase(Locale.ROOT) : "paste.gg";
         new Thread(() -> {
             try {
                 Gson gson = new GsonBuilder()
@@ -75,8 +79,8 @@ public class DumpCommand extends BaseCommand {
                         .registerTypeAdapter(World.class, (JsonSerializer<World>) (world, type, context) -> context.serialize(world.getName()))
                         .registerTypeAdapter(File.class, (JsonSerializer<File>) (file, type, context) -> context.serialize(file.getAbsolutePath()))
                         .setPrettyPrinting().create();
-                Map<String, String> files = new LinkedHashMap<>();
-                files.put("Basic information about the server (dump.json)", gson.toJson(nullValuesAllowingMap(
+                List<AFile> files = new ArrayList<>();
+                files.add(new AFile("dump.json", "json", gson.toJson(nullValuesAllowingMap(
                         "bedwars", nullValuesAllowingMap(
                                 "version", Main.getVersion(),
                                 "build", VersionInfo.BUILD_NUMBER,
@@ -185,10 +189,14 @@ public class DumpCommand extends BaseCommand {
                                         )
                                 )
                         ).collect(Collectors.toList())))
-                );
+                ));
                 for (String gameN : Main.getGameNames()) {
                     Game game = Main.getGame(gameN);
-                    files.put(game.getFile().getParentFile().getName() + "/" + game.getFile().getName(), String.join("\n", Files.readAllLines(game.getFile().toPath(), StandardCharsets.UTF_8)));
+                    files.add(new AFile(
+                            game.getFile().getParentFile().getName() + "/" + game.getFile().getName(),
+                            "yaml",
+                            String.join("\n", Files.readAllLines(game.getFile().toPath(), StandardCharsets.UTF_8))
+                    ));
                 }
                 FileConfiguration config = new YamlConfiguration();
                 try {
@@ -202,15 +210,16 @@ public class DumpCommand extends BaseCommand {
                     config.set("database.table-prefix", "bw_");
                     config.set("database.useSSL", false);
 
-                    files.put("config.yml", config.saveToString());
+                    files.add(new AFile("config.yml", "yaml", config.saveToString()));
                 } catch (IOException | InvalidConfigurationException e) {
                     e.printStackTrace();
                 }
                 String mainShopName = Main.getConfigurator().config.getBoolean("turnOnExperimentalGroovyShop", false) ? "shop.groovy" : "shop.yml";
-                files.put(
+                files.add(new AFile(
                         mainShopName,
+                        mainShopName.endsWith(".groovy") ? "groovy" : "yaml",
                         String.join("\n", Files.readAllLines(new File(Main.getInstance().getDataFolder(), mainShopName).toPath(), StandardCharsets.UTF_8))
-                );
+                ));
                 Main.getGameNames().stream()
                         .map(Main::getGame)
                         .map(Game::getGameStores)
@@ -226,71 +235,127 @@ public class DumpCommand extends BaseCommand {
                                     return;
                                 }
 
-                                files.put(file.getName(), String.join("\n", Files.readAllLines(file.toPath(), StandardCharsets.UTF_8)));
+                                files.add(new AFile(
+                                        file.getName(),
+                                        file.getName().endsWith(".groovy") ? "groovy" : "yaml",
+                                        String.join("\n", Files.readAllLines(file.toPath(), StandardCharsets.UTF_8))
+                                ));
                             } catch (IOException e) {
                                 Debug.warn("Cannot add shop file to dump, it probably does not exists..", true);
                                 e.printStackTrace();
                             }
                         });
 
-                URL url = new URL("https://api.pastes.dev/post");
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.setRequestMethod("POST");
-                connection.setRequestProperty("Content-Type", "text/plain");
-                connection.setRequestProperty("User-Agent", "ScreamingBedWars");
-                connection.setRequestProperty("Allow-Modification", "false");
-                connection.setDoOutput(true);
-                StringBuilder result = new StringBuilder("BedWars dump\n\nThis dump consists of multiple text files. All these files have names and have a special delimiter which marks the start and the end of the individual files (these are not really interesting for human beings).\n\nList of uploaded text files:\n");
-                for (Map.Entry<String, String> file : files.entrySet()) {
-                    result.append("- ").append(file.getKey()).append("\n");
-                }
+                if ("pastes.dev".equals(service)) {
+                    URL url = new URL("https://api.pastes.dev/post");
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                    connection.setRequestMethod("POST");
+                    connection.setRequestProperty("Content-Type", "text/plain");
+                    connection.setRequestProperty("User-Agent", "ScreamingBedWars");
+                    connection.setRequestProperty("Allow-Modification", "false");
+                    connection.setDoOutput(true);
+                    StringBuilder result = new StringBuilder("BedWars dump\n\nThis dump consists of multiple text files. All these files have names and have a special delimiter which marks the start and the end of the individual files (these are not really interesting for human beings).\n\nList of uploaded text files:\n");
+                    for (AFile file : files) {
+                        result.append("- ").append(file.getName()).append("\n");
+                    }
 
-                for (Map.Entry<String, String> file : files.entrySet()) {
-                    Random random = new Random();
-                    String generatedString;
-                    do {
-                        generatedString = random.ints(97, 123)
-                                .limit(9)
-                                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
-                                .toString();
-                    } while (file.getValue().contains("-----" + generatedString)); // just in case
+                    for (AFile file : files) {
+                        Random random = new Random();
+                        String generatedString;
+                        do {
+                            generatedString = random.ints(97, 123)
+                                    .limit(9)
+                                    .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+                                    .toString();
+                        } while (file.getContent().contains("-----" + generatedString)); // just in case
 
-                    String delimiter = "-----" + generatedString;
-                    result.append("\n\nFile: ")
-                            .append(file.getKey())
-                            .append("\n")
-                            .append(delimiter)
-                            .append("\n\n")
-                            .append(file.getValue())
-                            .append("\n\n")
-                            .append(delimiter);
-                }
-                connection.getOutputStream().write(result.toString().getBytes(StandardCharsets.UTF_8));
-                connection.connect();
+                        String delimiter = "-----" + generatedString;
+                        result.append("\n\nFile: ")
+                                .append(file.getName())
+                                .append("\n")
+                                .append(delimiter)
+                                .append("\n\n")
+                                .append(file.getContent())
+                                .append("\n\n")
+                                .append(delimiter);
+                    }
+                    connection.getOutputStream().write(result.toString().getBytes(StandardCharsets.UTF_8));
+                    connection.connect();
 
-                int code = connection.getResponseCode();
+                    int code = connection.getResponseCode();
 
-                if (code >= 200 && code <= 299) {
-                    String location = "https://pastes.dev/" + connection.getHeaderField("Location");
-                    if (Main.isSpigot() && sender instanceof Player) {
-                        try {
-                            TextComponent msg1 = new TextComponent(location);
-                            msg1.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, location));
-                            msg1.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("").append("Click to open this link").create()));
+                    if (code >= 200 && code <= 299) {
+                        String location = "https://pastes.dev/" + connection.getHeaderField("Location");
+                        if (Main.isSpigot() && sender instanceof Player) {
+                            try {
+                                TextComponent msg1 = new TextComponent(location);
+                                msg1.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, location));
+                                msg1.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("").append("Click to open this link").create()));
 
-                            ((Player) sender).spigot().sendMessage(new ComponentBuilder("")
-                                    .append(TextComponent.fromLegacyText(i18n("dump_success") + ChatColor.GRAY))
-                                    .append(msg1)
-                                    .create());
-                        } catch (Throwable ignored) {
+                                ((Player) sender).spigot().sendMessage(new ComponentBuilder("")
+                                        .append(TextComponent.fromLegacyText(i18n("dump_success") + ChatColor.GRAY))
+                                        .append(msg1)
+                                        .create());
+                            } catch (Throwable ignored) {
+                                sender.sendMessage(i18n("dump_success") + ChatColor.GRAY + location);
+                            }
+                        } else {
                             sender.sendMessage(i18n("dump_success") + ChatColor.GRAY + location);
                         }
                     } else {
-                        sender.sendMessage(i18n("dump_success") + ChatColor.GRAY +  location);
+                        sender.sendMessage(i18n("dump_failed"));
+                        Bukkit.getLogger().severe(code + " - " + gson.fromJson(new InputStreamReader(connection.getErrorStream()), Map.class));
                     }
                 } else {
-                    sender.sendMessage(i18n("dump_failed"));
-                    Bukkit.getLogger().severe(code + " - " + gson.fromJson(new InputStreamReader(connection.getErrorStream()), Map.class));
+                    URL url = new URL("https://api.paste.gg/v1/pastes");
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                    connection.setRequestMethod("POST");
+                    connection.setRequestProperty("Content-Type", "application/json");
+                    connection.setDoOutput(true);
+                    String json = gson.toJson(nullValuesAllowingMap(
+                            "name", "Bedwars dump",
+                            "description", "Dump generated by ScreamingBedwars plugin",
+                            "visibility", "unlisted",
+                            "expires", LocalDateTime.now().plusDays(30).format(DateTimeFormatter.ofPattern("YYYY-MM-dd'T'HH:mm:ss'Z'")),
+                            "files", files
+                                    .stream()
+                                    .map(aFile -> nullValuesAllowingMap(
+                                            "name", aFile.getName(),
+                                            "content", nullValuesAllowingMap(
+                                                    "format", "text",
+                                                    "highlight_language", aFile.getLanguage(),
+                                                    "value", aFile.getContent()
+                                            )
+                                    ))
+                                    .collect(Collectors.toList())
+                    ));
+                    connection.getOutputStream().write(json.getBytes(StandardCharsets.UTF_8));
+                    connection.connect();
+
+                    int code = connection.getResponseCode();
+
+                    if (code >= 200 && code <= 299) {
+                        Message message = gson.fromJson(new InputStreamReader(connection.getInputStream()), Message.class);
+                        if (Main.isSpigot() && sender instanceof Player) {
+                            try {
+                                TextComponent msg1 = new TextComponent("https://paste.gg/" + message.getResult().getId());
+                                msg1.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://paste.gg/" + message.getResult().getId()));
+                                msg1.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("").append("Open this link").create()));
+
+                                ((Player) sender).spigot().sendMessage(new ComponentBuilder("")
+                                        .append(TextComponent.fromLegacyText(i18n("dump_success") + ChatColor.GRAY))
+                                        .append(msg1)
+                                        .create());
+                            } catch (Throwable ignored) {
+                                sender.sendMessage(i18n("dump_success") + ChatColor.GRAY + "https://paste.gg/" + message.getResult().getId());
+                            }
+                        } else {
+                            sender.sendMessage(i18n("dump_success") + ChatColor.GRAY + "https://paste.gg/" + message.getResult().getId());
+                        }
+                    } else {
+                        sender.sendMessage(i18n("dump_failed"));
+                        Bukkit.getLogger().severe(code + " - " + gson.fromJson(new InputStreamReader(connection.getErrorStream()), Map.class));
+                    }
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -303,7 +368,26 @@ public class DumpCommand extends BaseCommand {
 
     @Override
     public void completeTab(List<String> completion, CommandSender sender, List<String> args) {
+        if (args.size() == 1) {
+            completion.addAll(Arrays.asList("paste.gg", "pastes.dev"));
+        }
+    }
 
+    @Data
+    public static class AFile {
+        private final String name;
+        private final String language;
+        private final String content;
+    }
+
+    @Data
+    public static class Message {
+        private Result result;
+    }
+
+    @Data
+    public static class Result {
+        private String id;
     }
 
     public static Map<?, ?> nullValuesAllowingMap(Object... objects) {
