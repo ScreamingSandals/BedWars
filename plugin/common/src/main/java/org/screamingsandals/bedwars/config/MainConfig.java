@@ -88,7 +88,7 @@ public class MainConfig {
                 .key("join-random-team-on-join").migrateOld("join-randomly-on-lobby-join").defValue(false)
                 .key("add-wool-to-inventory-on-join").defValue(true)
                 .key("prevent-spawning-mobs").defValue(true)
-                .key("bed-breaked-only-with-tnt").defValue(false)
+                .key("bed-not-breaked-manually").defValue(false)
                 .key("spawner-holograms").defValue(true)
                 .key("use-certain-popular-server-like-holograms-for-spawners").defValue(false)
                 .key("spawner-disable-merge").defValue(true)
