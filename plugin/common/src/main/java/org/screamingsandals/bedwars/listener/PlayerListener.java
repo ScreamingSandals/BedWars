@@ -487,7 +487,7 @@ public class PlayerListener {
                 event.cancelled(true);
                 return;
             }
-            if (event.block().getType().isSameType("bed") && MainConfig.getInstance().node("bed-not-breaked-manually").getBoolean()) {
+            if (event.block().getType().platformName().toLowerCase().contains("bed") && MainConfig.getInstance().node("bed-not-breaked-manually").getBoolean()) {
                 Debug.info(event.player().getName() + " attempted to break a bed manually");
                 event.cancelled(true);
                 return;
