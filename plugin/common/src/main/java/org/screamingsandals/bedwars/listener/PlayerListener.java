@@ -487,6 +487,11 @@ public class PlayerListener {
                 event.cancelled(true);
                 return;
             }
+            if (event.block().getType().isSameType("bed") && MainConfig.getInstance().node("bed-breaked-only-with-tnt").getBoolean()) {
+                Debug.info(event.player().getName() + " attempted to break a bed manually");
+                event.cancelled(true);
+                return;
+            }
 
             if (!game.blockBreak(gamePlayer, event.block(), event)) {
                 event.cancelled(true);
