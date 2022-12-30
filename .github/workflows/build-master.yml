@@ -7,7 +7,6 @@ concurrency: bedwars_master
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v3
       - name: Set the Build number
@@ -25,6 +24,7 @@ jobs:
         run: chmod +x gradlew
       - name: Build with Gradle
         run: ./gradlew
+        if: "${{ secrets.NEXUS_URL_RELEASE != '' }}"
         env:
           NEXUS_URL_RELEASE: ${{ secrets.NEXUS_URL_RELEASE }}
           NEXUS_URL_SNAPSHOT: ${{ secrets.NEXUS_URL_SNAPSHOT }}
@@ -39,7 +39,11 @@ jobs:
           REPOSILITE_BASE_URL: ${{ secrets.REPOSILITE_BASE_URL }}
           GITHUB_ACTIONS_URL: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           GITHUB_COMMIT_MESSAGE: "${{ github.event.head_commit.message }}"
+      - name: Build with Gradle
+        run: ./gradlew
+        if: "${{ secrets.NEXUS_URL_RELEASE == '' }}"
       - name: Upload the final artifact
         uses: actions/upload-artifact@v3
         with:
+          name: BedWars
           path: plugin/universal/build/libs/BedWars*[!s].jar
