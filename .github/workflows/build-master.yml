@@ -22,7 +22,7 @@ jobs:
           cache: 'gradle'
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
-      - name: Build with Gradle
+      - name: Build with Gradle and publish
         run: ./gradlew
         if: github.repository == 'ScreamingSandals/BedWars'
         env:
@@ -39,7 +39,7 @@ jobs:
           REPOSILITE_BASE_URL: ${{ secrets.REPOSILITE_BASE_URL }}
           GITHUB_ACTIONS_URL: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           GITHUB_COMMIT_MESSAGE: "${{ github.event.head_commit.message }}"
-      - name: Build with Gradle
+      - name: Build with Gradle without publish
         run: ./gradlew
         if: github.repository != 'ScreamingSandals/BedWars'
       - name: Upload the final artifact
