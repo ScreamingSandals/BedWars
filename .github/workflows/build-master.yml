@@ -24,7 +24,7 @@ jobs:
         run: chmod +x gradlew
       - name: Build with Gradle
         run: ./gradlew
-        if: ${{ secrets.NEXUS_URL_RELEASE != '' }}
+        if: github.repository == 'ScreamingSandals/BedWars'
         env:
           NEXUS_URL_RELEASE: ${{ secrets.NEXUS_URL_RELEASE }}
           NEXUS_URL_SNAPSHOT: ${{ secrets.NEXUS_URL_SNAPSHOT }}
@@ -41,7 +41,7 @@ jobs:
           GITHUB_COMMIT_MESSAGE: "${{ github.event.head_commit.message }}"
       - name: Build with Gradle
         run: ./gradlew
-        if: ${{ secrets.NEXUS_URL_RELEASE == '' }}
+        if: github.repository != 'ScreamingSandals/BedWars'
       - name: Upload the final artifact
         uses: actions/upload-artifact@v3
         with:
