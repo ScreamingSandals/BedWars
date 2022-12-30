@@ -143,7 +143,7 @@ public class WorldListener {
             if (ArenaUtils.isInArea(location, game.getPos1(), game.getPos2())) {
                 if (game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) {
                     blockList.removeIf(block -> {
-                        if (block.getType().platformName().toLowerCase().contains("bed") && MainConfig.getInstance().node("bed-can-be-breaked-by", (cancellable instanceof SEntityExplodeEvent ? "entity" : "block")).getBoolean()) {
+                        if (block.getType().platformName().toLowerCase().contains("bed") && !MainConfig.getInstance().node("bed-can-be-breaked-by", (cancellable instanceof SEntityExplodeEvent ? "entity" : "block")).getBoolean()) {
                             Debug.info("Block " + block + " attempted to be breaked by " + (cancellable instanceof SEntityExplodeEvent ? "entity" : "block"));
                             return true;
                         }
