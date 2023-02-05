@@ -789,7 +789,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         if (!gamePlayer.isSpectator) {
             String message = i18nc("leave", customPrefix).replace("%name%", gamePlayer.player.getDisplayName())
                     .replace("%players%", Integer.toString(players.size()))
-                    .replaceAll("%maxplayers%", Integer.toString(calculatedMaxPlayers));
+                    .replace("%maxplayers%", Integer.toString(calculatedMaxPlayers));
 
             if (!preServerRestart) {
                 for (GamePlayer p : players) {
@@ -1480,7 +1480,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             player.player.sendMessage(
                     i18nc("team_already_selected", customPrefix).replace("%team%", teamForJoin.color.chatColor + teamForJoin.name)
                             .replace("%players%", Integer.toString(current.players.size()))
-                            .replaceAll("%maxplayers%", Integer.toString(current.teamInfo.maxPlayers)));
+                            .replace("%maxplayers%", Integer.toString(current.teamInfo.maxPlayers)));
             return;
         }
         if (!ignoreTeamSize && current.players.size() >= current.teamInfo.maxPlayers) {
@@ -1507,7 +1507,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         player.player
                 .sendMessage(i18nc("team_selected", customPrefix).replace("%team%", teamForJoin.color.chatColor + teamForJoin.name)
                         .replace("%players%", Integer.toString(current.players.size()))
-                        .replaceAll("%maxplayers%", Integer.toString(current.teamInfo.maxPlayers)));
+                        .replace("%maxplayers%", Integer.toString(current.teamInfo.maxPlayers)));
 
         if (addCosmetics) {
             if (getOriginalOrInheritedAddWoolToInventoryOnJoin()) {
@@ -2578,8 +2578,8 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
         for (int i = 0; i < texts.size(); i++) {
             String text = texts.get(i);
-            texts.set(i, text.replaceAll("%arena%", this.getName()).replaceAll("%status%", statusLine)
-                    .replaceAll("%players%", playersLine));
+            texts.set(i, text.replace("%arena%", this.getName()).replace("%status%", statusLine)
+                    .replace("%players%", playersLine));
         }
 
         for (SignBlock signBlock : gameSigns) {
@@ -3281,8 +3281,8 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
         List<String> list = Main.getConfigurator().config.getStringList("rewards." + type);
         for (String command : list) {
-            command = command.replaceAll("\\{player}", player.getName());
-            command = command.replaceAll("\\{score}", Integer.toString(score));
+            command = command.replace("{player}", player.getName());
+            command = command.replace("{score}", Integer.toString(score));
             command = command.startsWith("/") ? command.substring(1) : command;
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
         }

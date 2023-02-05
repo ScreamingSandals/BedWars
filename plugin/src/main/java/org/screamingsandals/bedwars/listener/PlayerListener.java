@@ -1102,7 +1102,7 @@ public class PlayerListener implements Listener {
                 format = Main.getConfigurator().config.getString("chat.all-chat", "[ALL] ") + format;
             }
 
-            event.setFormat(format + message.replaceAll("%", "%%")); // Fix using % in chat
+            event.setFormat(format + message.replace("%", "%%")); // Fix using % in chat
             Iterator<Player> recipients = event.getRecipients().iterator();
             while (recipients.hasNext()) {
                 Player recipient = recipients.next();

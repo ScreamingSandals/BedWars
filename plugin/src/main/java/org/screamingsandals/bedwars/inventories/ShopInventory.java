@@ -248,9 +248,9 @@ public class ShopInventory implements Listener {
                     }
                 }
                 for (String s : loreText) {
-                    s = s.replaceAll("%price%", Integer.toString(price));
-                    s = s.replaceAll("%resource%", type.getItemName());
-                    s = s.replaceAll("%amount%", Integer.toString(stack.getAmount()));
+                    s = s.replace("%price%", Integer.toString(price));
+                    s = s.replace("%resource%", type.getItemName());
+                    s = s.replace("%amount%", Integer.toString(stack.getAmount()));
                     lore.add(s);
                 }
                 stackMeta.setLore(lore);

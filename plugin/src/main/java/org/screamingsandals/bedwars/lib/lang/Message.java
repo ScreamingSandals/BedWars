@@ -194,7 +194,7 @@ public class Message {
 		String message = container.translate(key, def, prefix, prefixTranslate);
 		
 		for (Map.Entry<String, MessageReplacement> replace : replaces.entrySet()) {
-			message = message.replaceAll("%" + replace.getKey() + "%", replace.getValue().replace(receiver));
+			message = message.replace("%" + replace.getKey() + "%", replace.getValue().replace(receiver));
 		}
 		
 		return message;

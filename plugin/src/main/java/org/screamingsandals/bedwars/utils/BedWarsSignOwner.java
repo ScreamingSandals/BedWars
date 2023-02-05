@@ -72,8 +72,8 @@ public class BedWarsSignOwner implements SignOwner {
 
 			for (int i = 0; i < texts.size(); i++) {
 				String text = texts.get(i);
-				state.setLine(i, text.replaceAll("%arena%", i18nonly("leave_from_game_item")).replaceAll("%status%", "")
-						.replaceAll("%players%", ""));
+				state.setLine(i, text.replace("%arena%", i18nonly("leave_from_game_item")).replace("%status%", "")
+						.replace("%players%", ""));
 			}
 
 			state.update();

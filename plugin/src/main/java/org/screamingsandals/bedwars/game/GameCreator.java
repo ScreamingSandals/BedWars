@@ -402,7 +402,7 @@ public class GameCreator {
                 return i18n("admin_command_invalid_config_value");
         }
 
-        config = config.toLowerCase().replaceAll("-", "");
+        config = config.toLowerCase().replace("-", "");
         switch (config) {
             case "compassenabled":
                 game.setCompassEnabled(cons);
