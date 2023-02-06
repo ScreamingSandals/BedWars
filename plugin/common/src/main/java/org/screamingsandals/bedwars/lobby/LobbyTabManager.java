@@ -40,8 +40,8 @@ import org.screamingsandals.lib.utils.annotations.methods.ShouldRunControllable;
 import org.spongepowered.configurate.ConfigurationNode;
 
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 @Service(dependsOn = {
@@ -50,7 +50,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class LobbyTabManager {
     private final MainConfig mainConfig;
-    private final List<PlayerWrapper> viewers = new CopyOnWriteArrayList<>();
+    private final Set<PlayerWrapper> viewers
+            = ConcurrentHashMap.newKeySet();
 
     private Message header;
     private Message footer;
@@ -98,8 +99,7 @@ public class LobbyTabManager {
     }
 
     public void removeViewer(PlayerWrapper player) {
-        if (viewers.contains(player)) {
-            viewers.remove(player);
+        if (viewers.remove(player)) {
             if (player.isOnline()) {
                 player.sendPlayerListHeaderFooter(Component.empty(), Component.empty());
             }
@@ -107,15 +107,15 @@ public class LobbyTabManager {
     }
 
     private Message translate(List<String> origin) {
-        var message = new AtomicReference<Message>();
-        origin.forEach(a -> {
-            if (message.get() == null) {
-                message.set(LobbyUtils.setupPlaceholders(Message.ofRichText(a)));
+        Message message = null;
+        for (String a : origin) {
+            if (message == null) {
+                message = LobbyUtils.setupPlaceholders(Message.ofRichText(a));
             } else {
-                message.get().joinRichText(a);
+                message.joinRichText(a);
             }
-        });
-        return message.get();
+        }
+        return message;
     }
 
     @OnEvent

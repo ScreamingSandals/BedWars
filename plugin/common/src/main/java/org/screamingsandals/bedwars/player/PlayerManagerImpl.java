@@ -28,17 +28,14 @@ import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.plugin.ServiceManager;
 import org.screamingsandals.lib.utils.annotations.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service(dependsOn = {
         GameManagerImpl.class
 })
 @RequiredArgsConstructor
 public class PlayerManagerImpl implements PlayerManager {
-    private final List<BedWarsPlayer> players = new ArrayList<>();
+    private final Map<UUID, BedWarsPlayer> players = new HashMap<>();
 
     {
         PlayerMapper
@@ -55,7 +52,7 @@ public class PlayerManagerImpl implements PlayerManager {
         return getPlayer(playerWrapper)
                 .orElseGet(() -> {
                     var p = new BedWarsPlayer(playerWrapper);
-                    players.add(p);
+                    players.put(p.getUuid(), p);
                     return p;
                 });
     }
@@ -65,9 +62,7 @@ public class PlayerManagerImpl implements PlayerManager {
     }
 
     public Optional<BedWarsPlayer> getPlayer(PlayerWrapper playerWrapper) {
-        return players.stream()
-                .filter(bedWarsPlayer -> bedWarsPlayer.getUuid().equals(playerWrapper.getUuid()))
-                .findFirst();
+        return Optional.ofNullable(players.get(playerWrapper.getUuid()));
     }
 
     public boolean isPlayerInGame(PlayerWrapper playerWrapper) {
@@ -80,13 +75,14 @@ public class PlayerManagerImpl implements PlayerManager {
 
     public void dropPlayer(BedWarsPlayer player) {
         player.changeGame(null);
-        players.remove(player);
+        players.remove(player.getUuid());
     }
 
     public boolean isPlayerRegistered(PlayerWrapper playerWrapper) {
         return getPlayer(playerWrapper).isPresent();
     }
 
+    @Override
     public boolean isPlayerRegistered(UUID uuid) {
         return getPlayer(uuid).isPresent();
     }
