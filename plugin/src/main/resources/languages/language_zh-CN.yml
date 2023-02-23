@@ -105,12 +105,12 @@ admin_command_spawners_reseted: "&a 所有在 &7%arena%&a 的资源生成器清�
 admin_command_spawner_added: "&a出生点 &7%resource%&a 成功添加到 XYZ: &7%x%/%y%/%z%"
 admin_command_store_added: "&a一个村民生成于: &7%x%/%y%/%z% &aYAW: &7%yaw% &aPITCH: &7%pitch%"
 admin_command_store_removed: "&a在 XYZ: &7%x%/%y%/%z%&a 的村民已被删除!"
-admin_command_lobby_spawn_setted: "&aLobby spawn was successfully set to position\
-  \ XYZ: &7%x%/%y%/%z% &aYAW: &7%yaw% &aPITCH: &7%pitch%"
-admin_command_spec_spawn_setted: "&aSpectator spawn was successfully set to position\
-  \ XYZ: &7%x%/%y%/%z% &aYAW: &7%yaw% &aPITCH: &7%pitch%"
-admin_command_pos1_setted: "&aPosition 1 of arena &7%arena%&a was set to XYZ: &7%x%/%y%/%z%"
-admin_command_pos2_setted: "&aPosition 2 of arena &7%arena%&a was set to XYZ: &7%x%/%y%/%z%"
+admin_command_lobby_spawn_setted: "&a等待大厅已被设置为坐标XYZ： &7%x%/%y%/%z% &aYAW: &7%yaw%\
+  \ &aPITCH: &7%pitch%"
+admin_command_spec_spawn_setted: "&a观察者出生点成功设置在 XYZ: &7%x%/%y%/%z% &aYAW: &7%yaw%\
+  \ &aPITCH: &7%pitch%"
+admin_command_pos1_setted: "&7%arena%&a 的第 1 点成功设置在 XYZ: &7%x%/%y%/%z%"
+admin_command_pos2_setted: "&7%arena%&a 的第 2 点成功设置在 XYZ: &7%x%/%y%/%z%"
 admin_command_pausecontdown_setted: "&aLobby countdown was set to &7%countdown%"
 admin_command_gametime_setted: "&aGame time was set to &7%time%"
 admin_command_set_pos1_pos2_before_save: "&cBefore saving the game please set the\
