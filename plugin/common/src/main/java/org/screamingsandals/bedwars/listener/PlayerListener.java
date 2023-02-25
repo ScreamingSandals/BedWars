@@ -253,7 +253,7 @@ public class PlayerListener {
                     }
                 }
             }
-            if (!Server.isVersion(1, 15) && (!PlatformService.getInstance().getFakeDeath().isAvailable() || !game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.ALLOW_FAKE_DEATH, false))) {
+            if (!PlatformService.getInstance().getFakeDeath().isAvailable() || !game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.ALLOW_FAKE_DEATH, false)) {
                 Debug.info(victim.getName() + " is going to be respawned via spigot api");
                 PlatformService.getInstance().respawnPlayer(victim, 3L);
             }
