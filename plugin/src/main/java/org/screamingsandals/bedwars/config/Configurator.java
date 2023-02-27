@@ -469,6 +469,11 @@ public class Configurator {
                 add("/example {player} 200");
             }
         });
+        checkOrSetConfig(modify, "rewards.player-win-run-immediately", new ArrayList<String>() {
+            {
+                add("/example {player} 200");
+            }
+        });
         checkOrSetConfig(modify, "rewards.player-end-game", new ArrayList<String>() {
             {
                 add("/example {player} {score}");

@@ -2101,6 +2101,15 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                                         }
 
                                         if (Main.getConfigurator().config.getBoolean("rewards.enabled")) {
+                                            if (Main.isPlayerStatisticsEnabled()) {
+                                                PlayerStatistic statistic = Main.getPlayerStatisticsManager()
+                                                        .getStatistic(player.player);
+                                                Game.this.dispatchRewardCommands("player-win-run-immediately", player.player,
+                                                        statistic.getScore());
+                                            } else {
+                                                Game.this.dispatchRewardCommands("player-win-run-immediately", player.player, 0);
+                                            }
+
                                             final Player pl = player.player;
                                             new BukkitRunnable() {
 
