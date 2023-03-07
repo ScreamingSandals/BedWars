@@ -5,10 +5,8 @@ join: "%name% &atritt dem Spiel bei!&r &7[&a%players%&7/&a%maxplayers%&7]"
 leave: "%name% &chat das Spiel verlassen!"
 game_already_running: "&cSpiel &7%arena% &cläuft bereits!"
 game_is_full: "&cSpiel &7%arena% &cist voll!"
-unknown_command: "&cUnbekannter Befehl! Probiere &4/bw help &cum eine Liste an Befehlen\
-  \ zu bekommen!"
-unknown_usage: "&cAnzahl der Argumente stimmt nicht mit der richtigen Anzahl oder\
-  \ unbekannten Argumenten überein! Geben Sie &4/bw Hilfe &cfür Hilfe ein!"
+unknown_command: "&cUnbekannter Befehl! Nutze &4/bw help &cfür Hilfe!"
+unknown_usage: "&cUngültige Argumente! Nutze &4/bw help &cfür Hilfe!"
 no_arena_found: "&cSpiel wurde nicht gefunden!"
 usage_bw_join: "&cBenutze: /bw join <Spiel>"
 usage_bw_admin: "&cBenutze: /bw admin <Spiel> <add|edit|remove|save|...> ..."
@@ -17,7 +15,7 @@ allready_exists: "&cDieses Spiel existiert bereits!"
 allready_working_on_it: "&cDieses Spiel existiert bereits, ist jedoch noch nicht fertig!"
 arena_not_in_edit: "&cSpiel existiert nicht oder läuft bereits! Deaktiviere es mit\
   \ &7/bw admin <Spiel> edit &coder aktiviere es mit &7/bw admin <Spiel> save"
-no_permissions: "&cDu hast nicht die Berechtigung das zu tun!"
+no_permissions: "&cDu hast keine Berechtigung, das zu tun!"
 arena_must_be_in_edit_mode: "&cSpiel muss sich im edit-Modus befinden: &7/bw admin\
   \ <Spiel> edit!"
 arena_removed: "&c&lSpiel wurde entfernt!"
@@ -45,7 +43,7 @@ respawn_protection_remaining: "&aRespawn Schutz wird in &f%time% &aweg sein!"
 respawn_protection_end: "&cRespawn Schutz ist weg!"
 there_is_no_empty_game: "&cEs ist kein Spiel im 'Warten' Status. Alle Spiele laufen\
   \ bereits!"
-respawn_cooldown_title: "&aRespawn in: &c%time%"
+respawn_cooldown_title: "&aWiederbeleben in: &c%time%"
 respawn_cooldown_title_cancel: "&cTeam ist tot :("
 vip_not_enough_players: "&cEs sind nicht genügend Spieler in der Arena!"
 vip_game_is_full: "&cDas Spiel &7%arena% &cist voll mit VIP Spielern. Bitte warte,\
@@ -174,10 +172,10 @@ admin_command_wrong_living_entity_type: "&cFalscher Lebewesentyp!"
 admin_command_store_living_entity_type_set: "&aLebewesentyp des Shops wurde zu &7%type%&a\
   \ geändert!"
 admin_command_upgrades: "&aUpgrades wurden auf &7%bool%&a gesetzt!"
-safe_reload: "&aIch warte auf den sicheren Stopp aller Spiele oder auf 60 Sekunden\
-  \ vor dem Neuladen!"
-safe_reload_failed_to_stop_game: "&cEinige Spiele sind nicht innerhalb des Zeit-Limits\
-  \ geendet, also könnte deren Arena beschädigt sein!"
+safe_reload: "&a>Es wird gewartet, bis alle Spiele gestoppt sind oder 60 Sekunden\
+  \ vorbei sind, bevor das Plugin neu geladen wird."
+safe_reload_failed_to_stop_game: "&cManche Spiele konnten in der Zeit nicht gestoppt\
+  \ werden, die Arena könnte beschädigt sein!"
 holo_not_enabled: "&cHologramm nicht verfügbar. Ist Holographic Displays installiert?"
 holo_added: "&aHologramm an deine Postion gesetzt!"
 click_to_holo_for_remove: "&eKlicke nun das Holgramm an, das du entfernen willst!"
@@ -414,7 +412,7 @@ help_bw_cheat_kill: /bw cheat kill [Spieler] - &cTötet den angegebenen Spieler
   zu können!'
 "party_command_not_party_leader": '&cDu bist nicht der Leiter dieser Gruppe!'
 "party_command_warped": '&aGruppenmitglieder wurden gewarpt'
-upgrade_success: '&a%name% hat %spawner% erfolgreich auf Stufe %level% verbessert!'
+upgrade_success: '&a%name% hat erfolgreich %spawner% auf Level %level% verbessert!'
 spawner_reached_maximum_level: §cDer Spawner hat sein maximales Level erreicht!
 cheat_please_provide_valid_cheat_type: '&cDer angegebene Cheat-Typ ist nicht gültig
   oder fehlt!'
@@ -424,3 +422,19 @@ help_bw_cheat_give: /bw cheat give <Ressource> [Menge] [Spieler] - &cGibt dem Sp
 "party_command_invalid_arguments": '&cUngültige Anzahl von Argumenten!, gib /bw party
   help ein, um mehr zu erfahren'
 "party_command_is_empty": '&cDeine Gruppe ist leer, du kannst niemanden warpen!'
+team_bed_is_already_destroyed: Das Bett von Team &7%name%&c ist bereits zerstört!
+cheat_received_target_block_destroy: '&aBett von Team &7%name%&a wurde zerstört!'
+help_bw_cheat_destroybed: /bw cheat destroybed <Team> - &Zerstört das Bett eines bestimmten
+  Teams
+help_bw_cheat_destroyallbeds: /bw cheat destroyallbeds - &cZerstört alle Betten im
+  Spiel
+cheat_received_target_blocks_destroy: '&aDie Betten aller Teams wurden zerstört!'
+cheat_not_waiting: '&cGame befindet sich nicht im Wartestatus!'
+game_forced: '&aGame wird mit leeren Teams beginnen. Zerstöre ihre Zielblöcke, um
+  zu gewinnen!'
+team_not_in_game: '&cTeam &7%name%&c ist nicht im Spiel!'
+help_bw_cheat_startemptygame: /bw cheat startemptygame - &cStartet ein Spiel mit nur
+  einem Team
+help_bw_cheat_jointeam: /bw cheat jointeam [team] - &cBeitritt eines Admins zum angegebenen
+  Team oder zum aktuellen Team, unabhängig von dessen Größe (kann auch im laufenden
+  Spiel verwendet werden, allerdings muss das Team einige Spieler haben)
