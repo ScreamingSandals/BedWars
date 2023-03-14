@@ -193,15 +193,13 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                     if (Main.isPlayerInGame(player)) {
                         GamePlayer gPlayer = Main.getPlayerGameProfile(player);
                         Game game = gPlayer.getGame();
-                        if (gPlayer.isSpectator) {
+                        CurrentTeam team = game.getPlayerTeam(gPlayer);
+                        if (team != null) {
+                            return team.getName();
+                        } else if (gPlayer.isSpectator) {
                             return "spectator";
                         } else {
-                            CurrentTeam team = game.getPlayerTeam(gPlayer);
-                            if (team != null) {
-                                return team.getName();
-                            } else {
-                                return "none";
-                            }
+                            return "none";
                         }
                     } else {
                         return "none";
@@ -210,15 +208,13 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                     if (Main.isPlayerInGame(player)) {
                         GamePlayer gPlayer = Main.getPlayerGameProfile(player);
                         Game game = gPlayer.getGame();
-                        if (gPlayer.isSpectator) {
+                        CurrentTeam team = game.getPlayerTeam(gPlayer);
+                        if (team != null) {
+                            return team.teamInfo.color.chatColor + team.getName();
+                        } else if (gPlayer.isSpectator) {
                             return ChatColor.GRAY + "spectator";
                         } else {
-                            CurrentTeam team = game.getPlayerTeam(gPlayer);
-                            if (team != null) {
-                                return team.teamInfo.color.chatColor + team.getName();
-                            } else {
-                                return ChatColor.RED + "none";
-                            }
+                            return ChatColor.RED + "none";
                         }
                     } else {
                         return ChatColor.RED + "none";
@@ -227,15 +223,11 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                     if (Main.isPlayerInGame(player)) {
                         GamePlayer gPlayer = Main.getPlayerGameProfile(player);
                         Game game = gPlayer.getGame();
-                        if (gPlayer.isSpectator) {
-                            return ChatColor.GRAY.toString();
+                        CurrentTeam team = game.getPlayerTeam(gPlayer);
+                        if (team != null) {
+                            return team.teamInfo.color.chatColor.toString();
                         } else {
-                            CurrentTeam team = game.getPlayerTeam(gPlayer);
-                            if (team != null) {
-                                return team.teamInfo.color.chatColor.toString();
-                            } else {
-                                return ChatColor.GRAY.toString();
-                            }
+                            return ChatColor.GRAY.toString();
                         }
                     } else {
                         return "";
@@ -244,15 +236,11 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                     if (Main.isPlayerInGame(player)) {
                         GamePlayer gPlayer = Main.getPlayerGameProfile(player);
                         Game game = gPlayer.getGame();
-                        if (gPlayer.isSpectator) {
-                            return "0";
+                        CurrentTeam team = game.getPlayerTeam(gPlayer);
+                        if (team != null) {
+                            return Integer.toString(team.countConnectedPlayers());
                         } else {
-                            CurrentTeam team = game.getPlayerTeam(gPlayer);
-                            if (team != null) {
-                                return Integer.toString(team.countConnectedPlayers());
-                            } else {
-                                return "0";
-                            }
+                            return "0";
                         }
                     } else {
                         return "0";
@@ -261,15 +249,11 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                     if (Main.isPlayerInGame(player)) {
                         GamePlayer gPlayer = Main.getPlayerGameProfile(player);
                         Game game = gPlayer.getGame();
-                        if (gPlayer.isSpectator) {
-                            return "0";
+                        CurrentTeam team = game.getPlayerTeam(gPlayer);
+                        if (team != null) {
+                            return Integer.toString(team.getMaxPlayers());
                         } else {
-                            CurrentTeam team = game.getPlayerTeam(gPlayer);
-                            if (team != null) {
-                                return Integer.toString(team.getMaxPlayers());
-                            } else {
-                                return "0";
-                            }
+                            return "0";
                         }
                     } else {
                         return "0";
@@ -278,15 +262,11 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                     if (Main.isPlayerInGame(player)) {
                         GamePlayer gPlayer = Main.getPlayerGameProfile(player);
                         Game game = gPlayer.getGame();
-                        if (gPlayer.isSpectator) {
-                            return "no";
+                        CurrentTeam team = game.getPlayerTeam(gPlayer);
+                        if (team != null) {
+                            return team.isBed ? "yes" : "no";
                         } else {
-                            CurrentTeam team = game.getPlayerTeam(gPlayer);
-                            if (team != null) {
-                                return team.isBed ? "yes" : "no";
-                            } else {
-                                return "no";
-                            }
+                            return "no";
                         }
                     } else {
                         return "no";
@@ -295,15 +275,11 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                     if (Main.isPlayerInGame(player)) {
                         GamePlayer gPlayer = Main.getPlayerGameProfile(player);
                         Game game = gPlayer.getGame();
-                        if (gPlayer.isSpectator) {
-                            return "0";
+                        CurrentTeam team = game.getPlayerTeam(gPlayer);
+                        if (team != null) {
+                            return Integer.toString(team.countTeamChests());
                         } else {
-                            CurrentTeam team = game.getPlayerTeam(gPlayer);
-                            if (team != null) {
-                                return Integer.toString(team.countTeamChests());
-                            } else {
-                                return "0";
-                            }
+                            return "0";
                         }
                     } else {
                         return "0";
