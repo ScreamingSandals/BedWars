@@ -203,7 +203,7 @@ public class PlayerListener implements Listener {
                     }
                 }
             }
-            if (Main.getVersionNumber() < 115 && !Main.getConfigurator().config.getBoolean("allow-fake-death")) {
+            if (!Main.getConfigurator().config.getBoolean("allow-fake-death")) {
                 PlayerUtils.respawn(Main.getInstance(), victim, 3L);
             }
             if (Main.getConfigurator().config.getBoolean("respawn-cooldown.enabled")
