@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 ScreamingSandals
+ * Copyright (C) 2023 ScreamingSandals
  *
  * This file is part of Screaming BedWars.
  *
@@ -28,20 +28,23 @@ import java.util.List;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.lib.nms.accessors.*;
 import org.screamingsandals.bedwars.lib.nms.entity.ArmorStandNMS;
 import org.screamingsandals.bedwars.lib.nms.entity.EntityNMS;
+import org.screamingsandals.bedwars.lib.nms.entity.EntityTextDisplayNMS;
 import org.screamingsandals.bedwars.lib.nms.utils.ClassStorage;
 import org.screamingsandals.bedwars.lib.nms.utils.Version;
 
 public class Hologram {
 
 	public static final int VISIBILITY_DISTANCE_SQUARED = 4096;
+	public static final boolean DISPLAY_ENTITIES_AVAILABLE = Display_i_TextDisplayAccessor.getType() != null;
 
 	private List<Player> viewers = new ArrayList<>();
 	private List<String> lines = new ArrayList<>();
 	private Location loc;
-	private List<ArmorStandNMS> entities = new ArrayList<>();
+	private List<EntityNMS> entities = new ArrayList<>();
 	private boolean touchable = false;
 	private List<TouchHandler> handlers = new ArrayList<>();
 	private HologramManager manager;
@@ -175,7 +178,7 @@ public class Hologram {
 	}
 
 	public boolean isItMyId(int id) throws Throwable {
-		for (ArmorStandNMS entity : entities) {
+		for (EntityNMS entity : entities) {
 			if (entity.getId() == id) {
 				return true;
 			}
@@ -194,53 +197,10 @@ public class Hologram {
 			for (int i = startIndex; (i < this.lines.size()) && (!justThisIndex || i == startIndex); i++) {
 				String line = this.lines.get(i);
 				if (i < this.entities.size() && this.entities.get(i) != null) {
-					ArmorStandNMS stand = this.entities.get(i);
-					stand.setCustomName(line);
-					if (PacketPlayOutEntityMetadataAccessor.getConstructor1() != null) {
-						Object watcherInList = ClassStorage.getMethod(stand.getDataWatcher(), DataWatcherAccessor.getMethodPackDirty1()).invoke();
-						if (watcherInList != null) {
-							Object metadataPacket = PacketPlayOutEntityMetadataAccessor.getConstructor1()
-									.newInstance(stand.getId(), watcherInList);
-							packets.add(metadataPacket);
-							ClassStorage.getMethod(stand.getDataWatcher(), DataWatcherAccessor.getMethodClearDirty1()).invoke();
-						}
-					} else {
-						Object metadataPacket = PacketPlayOutEntityMetadataAccessor.getConstructor0()
-								.newInstance(stand.getId(),
-										stand.getDataWatcher(), false);
-						packets.add(metadataPacket);
-					}
-					if (positionChanged) {
-						Location localLoc = loc.clone().add(0, (this.lines.size() - i) * .30, 0);
-						stand.setLocation(localLoc);;
-						Object teleportPacket = PacketPlayOutEntityTeleportAccessor.getConstructor0()
-								.newInstance(stand.getHandler());
-						packets.add(teleportPacket);
-					}
-				} else {
-					Location localLoc = loc.clone().add(0, (this.lines.size() - i) * .30, 0);
-					ArmorStandNMS stand = new ArmorStandNMS(localLoc);
-					stand.setCustomName(line);
-					stand.setCustomNameVisible(true);
-					stand.setInvisible(true);
-					stand.setSmall(!touchable);
-					stand.setArms(false);
-					stand.setBasePlate(false);
-					stand.setGravity(false);
-					stand.setMarker(!touchable);
-					Object spawnLivingPacket;
-					if (PacketPlayOutSpawnEntityLivingAccessor.getType() != null) {
-						spawnLivingPacket = PacketPlayOutSpawnEntityLivingAccessor.getConstructor0()
-								.newInstance(stand.getHandler());
-					} else if (PacketPlayOutSpawnEntityAccessor.getConstructor0() != null) {
-						spawnLivingPacket = PacketPlayOutSpawnEntityAccessor.getConstructor0()
-								.newInstance(stand.getHandler());
-					} else {
-						spawnLivingPacket = PacketPlayOutSpawnEntityAccessor.getConstructor1()
-								.newInstance(stand.getHandler());
-					}
-					packets.add(spawnLivingPacket);
-					if (Version.isVersion(1, 15)) {
+					EntityNMS entity = this.entities.get(i);
+					if (entity instanceof ArmorStandNMS) {
+						ArmorStandNMS stand = (ArmorStandNMS) entity;
+						stand.setCustomName(line);
 						if (PacketPlayOutEntityMetadataAccessor.getConstructor1() != null) {
 							Object watcherInList = ClassStorage.getMethod(stand.getDataWatcher(), DataWatcherAccessor.getMethodPackDirty1()).invoke();
 							if (watcherInList != null) {
@@ -255,11 +215,89 @@ public class Hologram {
 											stand.getDataWatcher(), false);
 							packets.add(metadataPacket);
 						}
+					} else if (entity instanceof EntityTextDisplayNMS) {
+						EntityTextDisplayNMS display = (EntityTextDisplayNMS) entity;
+						display.setText(line);
+
+						Object watcherInList = ClassStorage.getMethod(display.getDataWatcher(), DataWatcherAccessor.getMethodPackDirty1()).invoke();
+						if (watcherInList != null) {
+							Object metadataPacket = PacketPlayOutEntityMetadataAccessor.getConstructor1()
+									.newInstance(display.getId(), watcherInList);
+							packets.add(metadataPacket);
+							ClassStorage.getMethod(display.getDataWatcher(), DataWatcherAccessor.getMethodClearDirty1()).invoke();
+						}
 					}
-					if (this.entities.size() <= i) {
-						this.entities.add(stand);
+					if (positionChanged) {
+						Location localLoc = loc.clone().add(0, (this.lines.size() - i) * .30, 0);
+						entity.setLocation(localLoc);;
+						Object teleportPacket = PacketPlayOutEntityTeleportAccessor.getConstructor0()
+								.newInstance(entity.getHandler());
+						packets.add(teleportPacket);
+					}
+				} else {
+					Location localLoc = loc.clone().add(0, (this.lines.size() - i) * .30, 0);
+					if (!touchable && DISPLAY_ENTITIES_AVAILABLE && Main.getConfigurator().config.getBoolean("prefer-1-19-4-display-entities")) { // TODO: support touchable
+						// 1.19.4+
+						EntityTextDisplayNMS display = new EntityTextDisplayNMS(localLoc);
+						display.setText(line);
+
+						packets.add(PacketPlayOutSpawnEntityAccessor.getConstructor1().newInstance(display.getHandler()));
+
+						Object watcherInList = ClassStorage.getMethod(display.getDataWatcher(), DataWatcherAccessor.getMethodPackDirty1()).invoke();
+						if (watcherInList != null) {
+							Object metadataPacket = PacketPlayOutEntityMetadataAccessor.getConstructor1()
+									.newInstance(display.getId(), watcherInList);
+							packets.add(metadataPacket);
+							ClassStorage.getMethod(display.getDataWatcher(), DataWatcherAccessor.getMethodClearDirty1()).invoke();
+						}
+						if (this.entities.size() <= i) {
+							this.entities.add(display);
+						} else {
+							this.entities.set(i, display);
+						}
 					} else {
-						this.entities.set(i, stand);
+						ArmorStandNMS stand = new ArmorStandNMS(localLoc);
+						stand.setCustomName(line);
+						stand.setCustomNameVisible(true);
+						stand.setInvisible(true);
+						stand.setSmall(!touchable);
+						stand.setArms(false);
+						stand.setBasePlate(false);
+						stand.setGravity(false);
+						stand.setMarker(!touchable);
+						Object spawnLivingPacket;
+						if (PacketPlayOutSpawnEntityLivingAccessor.getType() != null) {
+							spawnLivingPacket = PacketPlayOutSpawnEntityLivingAccessor.getConstructor0()
+									.newInstance(stand.getHandler());
+						} else if (PacketPlayOutSpawnEntityAccessor.getConstructor0() != null) {
+							spawnLivingPacket = PacketPlayOutSpawnEntityAccessor.getConstructor0()
+									.newInstance(stand.getHandler());
+						} else {
+							spawnLivingPacket = PacketPlayOutSpawnEntityAccessor.getConstructor1()
+									.newInstance(stand.getHandler());
+						}
+						packets.add(spawnLivingPacket);
+						if (Version.isVersion(1, 15)) {
+							if (PacketPlayOutEntityMetadataAccessor.getConstructor1() != null) {
+								Object watcherInList = ClassStorage.getMethod(stand.getDataWatcher(), DataWatcherAccessor.getMethodPackDirty1()).invoke();
+								if (watcherInList != null) {
+									Object metadataPacket = PacketPlayOutEntityMetadataAccessor.getConstructor1()
+											.newInstance(stand.getId(), watcherInList);
+									packets.add(metadataPacket);
+									ClassStorage.getMethod(stand.getDataWatcher(), DataWatcherAccessor.getMethodClearDirty1()).invoke();
+								}
+							} else {
+								Object metadataPacket = PacketPlayOutEntityMetadataAccessor.getConstructor0()
+										.newInstance(stand.getId(),
+												stand.getDataWatcher(), false);
+								packets.add(metadataPacket);
+							}
+						}
+						if (this.entities.size() <= i) {
+							this.entities.add(stand);
+						} else {
+							this.entities.set(i, stand);
+						}
 					}
 				}
 			}
@@ -335,7 +373,7 @@ public class Hologram {
 	public List<Object> getAllSpawnPackets() throws InstantiationException, IllegalAccessException,
 		IllegalArgumentException, InvocationTargetException, SecurityException {
 		List<Object> packets = new ArrayList<>();
-		for (ArmorStandNMS entity : entities) {
+		for (EntityNMS entity : entities) {
 			if (PacketPlayOutSpawnEntityLivingAccessor.getType() != null) {
 				packets.add(PacketPlayOutSpawnEntityLivingAccessor.getConstructor0().newInstance(entity.getHandler()));
 			} else if (PacketPlayOutSpawnEntityAccessor.getConstructor0() != null) {

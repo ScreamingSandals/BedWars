@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 ScreamingSandals
+ * Copyright (C) 2023 ScreamingSandals
  *
  * This file is part of Screaming BedWars.
  *
@@ -159,6 +159,7 @@ public class Configurator {
         checkOrSetConfig(modify, "respawn-cooldown.time", 5);
         checkOrSetConfig(modify, "stop-team-spawners-on-die", false);
         checkOrSetConfig(modify, "allow-fake-death", false);
+        checkOrSetConfig(modify, "prefer-1-19-4-display-entities", true);
 
         checkOrSetConfig(modify, "allowed-commands", new ArrayList<>());
         checkOrSetConfig(modify, "change-allowed-commands-to-blacklist", false);

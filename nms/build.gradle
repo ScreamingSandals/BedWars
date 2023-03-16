@@ -175,6 +175,26 @@ nmsGen {
         .reqConstructor(EntityCreature, boolean, Class[]) // old
         .reqConstructor(EntityCreature, Class[]) // new
     reqClass('spigot:EntityIronGolem')
+
+    // Text display entities
+    reqClass('net.minecraft.world.entity.EntityType') {
+        reqEnumField('TEXT_DISPLAY')
+    }
+
+    reqClass('net.minecraft.world.entity.Display$BillboardConstraints') {
+        reqEnumField('CENTER')
+    }
+
+    reqClass('net.minecraft.world.entity.Display') {
+        reqMethod('setBillboardConstraints', '@Display$BillboardConstraints')
+    }
+
+    reqClass('net.minecraft.world.entity.Display$TextDisplay') {
+        reqConstructor('@EntityType', World)
+
+        reqMethod('getText')
+        reqMethod('setText', IChatBaseComponent)
+    }
 }
 
 tasks.getByName('compileJava').dependsOn('generateNmsComponents')
