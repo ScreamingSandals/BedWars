@@ -19,6 +19,8 @@
 
 package org.screamingsandals.bedwars.region;
 
+import org.bukkit.block.data.Bisected;
+import org.bukkit.block.data.type.Door;
 import org.screamingsandals.bedwars.api.Region;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -68,6 +70,7 @@ public class FlatteningRegion implements Region {
         return block.getBlockData() instanceof Bed;
     }
 
+
     @Override
     public void regen() {
         for (Location block : builtBlocks) {
@@ -91,6 +94,16 @@ public class FlatteningRegion implements Region {
     @Override
     public boolean isBedHead(BlockState block) {
         return isBedBlock(block) && ((Bed) block.getBlockData()).getPart() == Part.HEAD;
+    }
+
+    @Override
+    public boolean isDoorBlock(BlockState block) {
+        return block.getBlockData() instanceof Door;
+    }
+
+    @Override
+    public boolean isDoorBottomBlock(BlockState block) {
+        return block.getBlockData() instanceof Door && ((Door) block.getBlockData()).getHalf() == Bisected.Half.BOTTOM;
     }
 
     @Override
