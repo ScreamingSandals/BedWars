@@ -487,13 +487,17 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             if (!region.isBedHead(block.getState())) {
                 loc = region.getBedNeighbor(block).getLocation();
             }
+        } else if (region.isDoorBlock(block.getState())) {
+            if (!region.isDoorBottomBlock(block.getState())) {
+                loc.subtract(0, 1, 0);
+            }
         }
         if (isTargetBlock(loc)) {
             if (region.isBedBlock(block.getState())) {
                 if (getPlayerTeam(player).teamInfo.bed.equals(loc)) {
                     return false;
                 }
-                bedDestroyed(loc, player.player, true, false, false);
+                bedDestroyed(loc, player.player, true, false, false, false);
                 region.putOriginalBlock(block.getLocation(), block.getState());
                 if (block.getLocation().equals(loc)) {
                     Block neighbor = region.getBedNeighbor(block);
@@ -511,13 +515,35 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                     }
                 }
                 return true;
+            } else if (region.isDoorBlock(block.getState())) {
+                if (getPlayerTeam(player).teamInfo.bed.equals(loc)) {
+                    return false;
+                }
+                bedDestroyed(loc, player.player, false, false, false, true);
+                region.putOriginalBlock(block.getLocation(), block.getState());
+                if (block.getLocation().equals(loc)) {
+                    Block neighbor = loc.clone().add(0, 1, 0).getBlock();
+                    region.putOriginalBlock(neighbor.getLocation(), neighbor.getState());
+                } else {
+                    region.putOriginalBlock(loc, loc.clone().add(0, 1, 0).getBlock().getState());
+                }
+                try {
+                    event.setDropItems(false);
+                } catch (Throwable tr) {
+                    if (region.isDoorBottomBlock(block.getState())) {
+                        loc.clone().add(0, 1, 0).getBlock().setType(Material.AIR);
+                    } else {
+                        block.setType(Material.AIR);
+                    }
+                }
+                return true;
             } else if (getOriginalOrInheritedCakeTargetBlockEating() && block.getType().name().contains("CAKE")) {
                 return false; // when CAKES are in eating mode, don't allow to just break it
             } else {
                 if (getPlayerTeam(player).teamInfo.bed.equals(loc)) {
                     return false;
                 }
-                bedDestroyed(loc, player.player, false, "RESPAWN_ANCHOR".equals(block.getType().name()), block.getType().name().contains("CAKE"));
+                bedDestroyed(loc, player.player, false, "RESPAWN_ANCHOR".equals(block.getType().name()), block.getType().name().contains("CAKE"), false);
                 region.putOriginalBlock(loc, block.getState());
                 try {
                     event.setDropItems(false);
@@ -541,10 +567,14 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             if (!region.isBedHead(block.getState())) {
                 loc = region.getBedNeighbor(block).getLocation();
             }
+        } else if (region.isDoorBlock(block.getState())) {
+            if (!region.isDoorBottomBlock(block.getState())) {
+                loc.subtract(0, 1, 0);
+            }
         }
         if (isTargetBlock(loc)) {
             if (region.isBedBlock(block.getState())) {
-                bedDestroyed(loc, null, true, false, false);
+                bedDestroyed(loc, null, true, false, false, false);
                 region.putOriginalBlock(block.getLocation(), block.getState());
                 if (block.getLocation().equals(loc)) {
                     Block neighbor = region.getBedNeighbor(block);
@@ -554,8 +584,19 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 }
                 region.getBedNeighbor(block).setType(Material.AIR, false);
                 block.setType(Material.AIR, false);
+            } else if (region.isDoorBlock(block.getState())) {
+                bedDestroyed(loc, null, false, false, false, true);
+                region.putOriginalBlock(block.getLocation(), block.getState());
+                if (block.getLocation().equals(loc)) {
+                    Block neighbor = loc.clone().add(0, 1, 0).getBlock();
+                    region.putOriginalBlock(neighbor.getLocation(), neighbor.getState());
+                } else {
+                    region.putOriginalBlock(loc, loc.clone().add(0, 1, 0).getBlock().getState());
+                }
+                loc.clone().add(0, 1, 0).getBlock().setType(Material.AIR, false);
+                loc.getBlock().setType(Material.AIR, false);
             } else {
-                bedDestroyed(loc, null, false, "RESPAWN_ANCHOR".equals(block.getType().name()), block.getType().name().contains("CAKE"));
+                bedDestroyed(loc, null, false, "RESPAWN_ANCHOR".equals(block.getType().name()), block.getType().name().contains("CAKE"), false);
                 region.putOriginalBlock(loc, block.getState());
                 block.setType(Material.AIR);
             }
@@ -593,7 +634,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         return null;
     }
 
-    public void bedDestroyed(Location loc, Player broker, boolean isItBedBlock, boolean isItAnchor, boolean isItCake) {
+    public void bedDestroyed(Location loc, Player broker, boolean isItBedBlock, boolean isItAnchor, boolean isItCake, boolean isItDoor) {
         if (status == GameStatus.RUNNING) {
             for (CurrentTeam team : teamsInGame) {
                 if (team.teamInfo.bed.equals(loc)) {
@@ -604,7 +645,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                         colored_broker = getPlayerTeam(Main.getPlayerGameProfile(broker)).teamInfo.color.chatColor + broker.getDisplayName();
                     }
                     for (GamePlayer player : players) {
-                        final String key = isItBedBlock ? "bed_is_destroyed" : (isItAnchor ? "anchor_is_destroyed" : (isItCake ? "cake_is_destroyed" : "target_is_destroyed"));
+                        final String key = isItDoor ? "door_is_destroyed" : (isItBedBlock ? "bed_is_destroyed" : (isItAnchor ? "anchor_is_destroyed" : (isItCake ? "cake_is_destroyed" : "target_is_destroyed")));
                         Title.send(player.player,
                                 i18n(key, false)
                                         .replace("%team%", team.teamInfo.color.chatColor + team.teamInfo.name)
@@ -636,7 +677,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
                     if (team.hasBedHolo()) {
                         team.getBedHolo().setLine(0,
-                                i18nonly(isItBedBlock ? "protect_your_bed_destroyed" : (isItAnchor ? "protect_your_anchor_destroyed" : (isItCake ? "protect_your_cake_destroyed" : "protect_your_target_destroyed"))));
+                                i18nonly(isItDoor ? "protect_your_door_destroyed" : (isItBedBlock ? "protect_your_bed_destroyed" : (isItAnchor ? "protect_your_anchor_destroyed" : (isItCake ? "protect_your_cake_destroyed" : "protect_your_target_destroyed")))));
                         team.getBedHolo().addViewers(team.getConnectedPlayers());
                     }
 
@@ -1961,6 +2002,17 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                                     region.putOriginalBlock(neighbor.getLocation(), neighbor.getState());
                                     neighbor.setType(Material.AIR, false);
                                     block.setType(Material.AIR);
+                                } else if (region.isDoorBlock(block.getState())) {
+                                    region.putOriginalBlock(block.getLocation(), block.getState());
+                                    Block neighbor;
+                                    if (region.isDoorBottomBlock(block.getState())) {
+                                        neighbor = block.getLocation().add(0, 1, 0).getBlock();
+                                    } else {
+                                        neighbor = block.getLocation().subtract(0, 1, 0).getBlock();
+                                    }
+                                    region.putOriginalBlock(neighbor.getLocation(), neighbor.getState());
+                                    neighbor.setType(Material.AIR, false);
+                                    block.setType(Material.AIR, false);
                                 } else {
                                     region.putOriginalBlock(loc, block.getState());
                                     block.setType(Material.AIR);
@@ -2002,15 +2054,19 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                             boolean isBlockTypeBed = region.isBedBlock(bed.getState());
                             boolean isAnchor = "RESPAWN_ANCHOR".equals(bed.getType().name());
                             boolean isCake = bed.getType().name().contains("CAKE");
+                            boolean isDoor = region.isDoorBlock(bed.getState());
+                            if (region.isDoorBottomBlock(bed.getState())) {
+                                loc.add(0, 0.5, 0);
+                            }
                             List<Player> enemies = getConnectedPlayers();
                             enemies.removeAll(team.getConnectedPlayers());
                             Hologram holo = Main.getHologramManager().spawnHologram(enemies, loc,
-                                    i18nonly(isBlockTypeBed ? "destroy_this_bed" : (isAnchor ? "destroy_this_anchor" : (isCake ? "destroy_this_cake" : "destroy_this_target")))
+                                    i18nonly(isDoor ? "destroy_this_door" : (isBlockTypeBed ? "destroy_this_bed" : (isAnchor ? "destroy_this_anchor" : (isCake ? "destroy_this_cake" : "destroy_this_target"))))
                                             .replace("%teamcolor%", team.teamInfo.color.chatColor.toString()));
                             createdHolograms.add(holo);
                             team.setBedHolo(holo);
                             Hologram protectHolo = Main.getHologramManager().spawnHologram(team.getConnectedPlayers(), loc,
-                                    i18nonly(isBlockTypeBed ? "protect_your_bed" : (isAnchor ? "protect_your_anchor" : (isCake ? "protect_your_cake" : "protect_your_target")))
+                                    i18nonly(isDoor ? "protect_your_door" : (isBlockTypeBed ? "protect_your_bed" : (isAnchor ? "protect_your_anchor" : (isCake ? "protect_your_cake" : "protect_your_target"))))
                                             .replace("%teamcolor%", team.teamInfo.color.chatColor.toString()));
                             createdHolograms.add(protectHolo);
                             team.setProtectHolo(protectHolo);

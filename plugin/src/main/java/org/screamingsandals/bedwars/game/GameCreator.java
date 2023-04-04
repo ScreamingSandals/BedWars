@@ -20,6 +20,8 @@
 package org.screamingsandals.bedwars.game;
 
 import org.bukkit.*;
+import org.bukkit.block.data.Bisected;
+import org.bukkit.block.data.type.Door;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.ArenaTime;
 import org.screamingsandals.bedwars.api.InGameConfigBooleanConstants;
@@ -554,12 +556,10 @@ public class GameCreator {
     private String setTeamBed(Player player, String name, Block block, boolean standingOn) {
         for (Team t : game.getTeams()) {
             if (t.name.equals(name)) {
-                Location loc;
                 if (standingOn) {
-                    loc = player.getLocation().getBlock().getLocation().subtract(0, 0.5, 0); // getBlock().getLocation() - normalize to block location
-                } else {
-                    loc = block.getLocation();
+                    block = player.getLocation().getBlock().getLocation().subtract(0, 0.5, 0).getBlock(); // getBlock().getLocation() - normalize to block location
                 }
+                Location loc = block.getLocation();
                 if (game.getPos1() == null || game.getPos2() == null) {
                     return i18n("admin_command_set_pos1_pos2_first");
                 }
@@ -578,6 +578,13 @@ public class GameCreator {
                         } else {
                             t.bed = loc;
                         }
+                    } else if (block.getState().getData() instanceof org.bukkit.material.Door) {
+                        org.bukkit.material.Door door = (org.bukkit.material.Door) block.getState().getData();
+                        if (door.isTopHalf()) {
+                            t.bed = loc.subtract(0, 1, 0);
+                        } else {
+                            t.bed = loc;
+                        }
                     } else {
                         t.bed = loc;
                     }
@@ -588,6 +595,13 @@ public class GameCreator {
                         Bed bed = (Bed) block.getBlockData();
                         if (bed.getPart() != Part.HEAD) {
                             t.bed = FlatteningBedUtils.getBedNeighbor(block).getLocation();
+                        } else {
+                            t.bed = loc;
+                        }
+                    } else if (block.getBlockData() instanceof Door) {
+                        Door door = (Door) block.getBlockData();
+                        if (door.getHalf() == Bisected.Half.TOP) {
+                            t.bed = loc.subtract(0, 1, 0);
                         } else {
                             t.bed = loc;
                         }

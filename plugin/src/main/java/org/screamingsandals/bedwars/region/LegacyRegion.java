@@ -206,6 +206,16 @@ public class LegacyRegion implements Region {
     }
 
     @Override
+    public boolean isDoorBlock(BlockState block) {
+        return block.getData() instanceof Door;
+    }
+
+    @Override
+    public boolean isDoorBottomBlock(BlockState block) {
+        return block.getData() instanceof Door && !((Door) block.getData()).isTopHalf();
+    }
+
+    @Override
     public Block getBedNeighbor(Block head) {
         return LegacyBedUtils.getBedNeighbor(head);
     }

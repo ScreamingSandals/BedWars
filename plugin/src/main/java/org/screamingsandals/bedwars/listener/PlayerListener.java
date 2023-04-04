@@ -790,7 +790,7 @@ public class PlayerListener implements Listener {
                                                 }
                                                 cake.setSlicesEaten(cake.getSlicesEaten() + 1);
                                                 if (cake.getSlicesEaten() >= 6) {
-                                                    game.bedDestroyed(event.getClickedBlock().getLocation(), event.getPlayer(), false, false, true);
+                                                    game.bedDestroyed(event.getClickedBlock().getLocation(), event.getPlayer(), false, false, true, false);
                                                     event.getClickedBlock().setType(Material.AIR);
                                                 } else {
                                                     BlockState state = event.getClickedBlock().getState();

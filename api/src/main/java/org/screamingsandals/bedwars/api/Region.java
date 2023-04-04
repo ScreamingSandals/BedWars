@@ -69,6 +69,10 @@ public interface Region {
      */
     boolean isBedHead(BlockState block);
 
+    boolean isDoorBlock(BlockState block);
+
+    boolean isDoorBottomBlock(BlockState block);
+
     /**
      * @param head
      * @return
