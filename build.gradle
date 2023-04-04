@@ -6,7 +6,7 @@ plugins {
 
 allprojects {
     group = 'org.screamingsandals.bedwars'
-    version = '0.2.29-SNAPSHOT'
+    version = '0.0.69-SNAPSHOT'
 }
 
 if (version.toString().endsWith('-SNAPSHOT')) {
@@ -38,8 +38,9 @@ subprojects {
 
     shadowJar {
         relocate 'com.zaxxer', 'org.screamingsandals.bedwars.lib.HikariCP'
-        relocate 'org.screamingsandals.simpleinventories', 'org.screamingsandals.bedwars.lib.sgui'
+        relocate 'org.screamingsandals.simpleinventories', 'org.screamingsandals.doorwars.lib.sgui'
         relocate 'org.bstats', 'org.screamingsandals.bedwars.lib.bstats'
+        relocate 'org.screamingsandals.bedwars', 'org.screamingsandals.doorwars'
 
         if (System.getenv('BUILD_NUMBER') != null) {
             archiveClassifier.set(System.getenv('BUILD_NUMBER'))

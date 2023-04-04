@@ -141,7 +141,7 @@ public class CheatCommand extends BaseCommand {
                         sender.sendMessage(i18n("cheat_received_kill").replace("%player%", player1.getName()));
                     }
                     break;
-                case "destroybed":
+                case "destroydoor":
                     {
                         if (game.getStatus() != GameStatus.RUNNING) {
                             sender.sendMessage(i18n("cheat_game_not_running"));
@@ -174,7 +174,7 @@ public class CheatCommand extends BaseCommand {
                         sender.sendMessage(i18n("cheat_received_target_block_destroy").replace("%name%", name));
                     }
                     break;
-                case "destroyallbeds":
+                case "destroyalldoors":
                     {
                         if (game.getStatus() != GameStatus.RUNNING) {
                             sender.sendMessage(i18n("cheat_game_not_running"));
@@ -255,7 +255,7 @@ public class CheatCommand extends BaseCommand {
         }
 
         if (args.size() == 1) {
-            completion.addAll(Arrays.asList("give", "kill", "startemptygame", "destroybed", "destroyallbeds", "jointeam"));
+            completion.addAll(Arrays.asList("give", "kill", "startemptygame", "destroydoor", "destroyalldoors", "jointeam"));
         }
         if (Main.isPlayerInGame((Player) sender)) {
             if (args.size() > 1 && args.get(0).equals("give")) {
@@ -274,7 +274,7 @@ public class CheatCommand extends BaseCommand {
                     completion.addAll(gPlayer.getGame().getConnectedPlayers().stream().map(Player::getName).collect(Collectors.toList()));
                 }
             }
-            if (args.size() > 1 && (args.get(0).equalsIgnoreCase("destroybed") || args.get(0).equalsIgnoreCase("jointeam"))) {
+            if (args.size() > 1 && (args.get(0).equalsIgnoreCase("destroydoor") || args.get(0).equalsIgnoreCase("jointeam"))) {
                 GamePlayer gPlayer = Main.getPlayerGameProfile((Player) sender);
                 if (args.size() == 2) {
                     completion.addAll(gPlayer.getGame().getRunningTeams().stream().map(Team::getName).collect(Collectors.toList()));

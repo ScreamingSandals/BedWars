@@ -1,20 +1,20 @@
 #
 # Copyright (C) 2023 ScreamingSandals
 #
-# This file is part of Screaming BedWars.
+# This file is part of Screaming DoorWars.
 #
-# Screaming BedWars is free software: you can redistribute it and/or modify it
+# Screaming DoorWars is free software: you can redistribute it and/or modify it
 # under the terms of the GNU Lesser General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# Screaming BedWars is distributed in the hope that it will be useful,
+# Screaming DoorWars is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public License
-# along with Screaming BedWars. If not, see <https://www.gnu.org/licenses/>.
+# along with Screaming DoorWars. If not, see <https://www.gnu.org/licenses/>.
 #
 
 ---
@@ -304,8 +304,8 @@ destroy_this_bed: "%teamcolor%&lÁgya kiütve"
 destroy_this_target: "%teamcolor%&lÁgya kiütve!"
 destroy_this_anchor: "%teamcolor%&lTörd szét ezt az ágyat!"
 destroy_this_cake: "%teamcolor%&lMegette ezt a tortát!"
-help_title: "Bedwars %version% - segítség"
-help_title_console: "BedWars %version% - Segítség a konzolba"
+help_title: "DoorWars %version% - segítség"
+help_title_console: "DoorWars %version% - Segítség a konzolba"
 help_bw_join: "/bw join <aréna> - &aCsatlakozás a játékba"
 help_bw_leave: "/bw leave - &aJáték elhagyása"
 help_bw_rejoin: "/bw rejoin - &aÚjra csatlakozás, az előző játékhoz"
@@ -364,15 +364,15 @@ help_bw_admin_customprefix: "/bw admin <arena> customprefix <name|off> - &eEnged
 help_bw_admin_remove: "/bw admin <arena> remove - &cAréna eltávolítása."
 help_bw_admin_edit: "/bw admin <arena> edit - &eAréna szerkesztése."
 help_bw_admin_save: "/bw admin <arena> save - &aAréna mentése."
-update_checker_zero: "§aÚj BedWars plugin verzió (%version%) elérhető!"
+update_checker_zero: "§aÚj DoorWars plugin verzió (%version%) elérhető!"
 update_checker_zero_second: "Letöltés: %url%"
-update_checker_one: "§bSBedWars és a(z) SBedWars+ hivatalosan megjelent! Több információ:\
+update_checker_one: "§bSDoorWars és a(z) SDoorWars+ hivatalosan megjelent! Több információ:\
   \ %url%"
 update_checker_one_second_good: "§bSzervered felkészült erre a kiadásra! Töltse le\
   \ most!"
 update_checker_one_second_bad: "§bSajnos a szerver régi! Minimum 1.13-as verziójú\
   \ Minecraft-ot és 11-es verziójú Java-t kell használnod"
-help_bw_alljoin: "/bw alljoin [arena] - &aMindenki becsatlakozik a megadott bedwars\
+help_bw_alljoin: "/bw alljoin [arena] - &aMindenki becsatlakozik a megadott DoorWars\
   \ arénába"
 admin_command_removed_spawners: "&7%count% &atermelők törölve lettek &7%x%&a/&7%y%&a/&7%z%\
   \ -es kordinátáról"
@@ -391,7 +391,7 @@ admin_command_post_game_waiting: "&aWaiting time after game has been successfull
 arena_info_postgamewaiting: "&7Post game waiting time: &f%time% s"
 leaderboard_no_scores: "&7There are no scores yet!"
 leaderboard_holo_added: "&aLeaderboard hologram was added to your position!"
-leaderboard_header: "&6BedWars Leaderboard - Top %number% players"
+leaderboard_header: "&6DoorWars Leaderboard - Top %number% players"
 leaderboard_line: "&l%order%. &7%player% - &a%score%"
 admin_command_customprefix_enabled: "&aCustom prefix was successfully set to &7%prefix%&a."
 admin_command_customprefix_disabled: "&aCustom prefix was successfully disabled."

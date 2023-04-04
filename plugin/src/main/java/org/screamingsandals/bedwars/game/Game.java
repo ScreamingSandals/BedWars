@@ -971,28 +971,28 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
             if (game.world == null) {
                 if (Bukkit.getPluginManager().isPluginEnabled("Multiverse-Core")) {
-                    Bukkit.getConsoleSender().sendMessage("§c[B§fW] §cWorld " + worldName
+                    Bukkit.getConsoleSender().sendMessage("§c[D§fW] §cWorld " + worldName
                             + " was not found, but we found Multiverse-Core, so we will try to load this world.");
 
                     Core multiverse = (Core) Bukkit.getPluginManager().getPlugin("Multiverse-Core");
                     if (multiverse != null && multiverse.getMVWorldManager().loadWorld(worldName)) {
-                        Bukkit.getConsoleSender().sendMessage("§c[B§fW] §aWorld " + worldName
+                        Bukkit.getConsoleSender().sendMessage("§c[D§fW] §aWorld " + worldName
                                 + " was succesfully loaded with Multiverse-Core, continue in arena loading.");
 
                         game.world = Bukkit.getWorld(worldName);
                     } else {
-                        Bukkit.getConsoleSender().sendMessage("§c[B§fW] §cArena " + game.name
+                        Bukkit.getConsoleSender().sendMessage("§c[D§fW] §cArena " + game.name
                                 + " can't be loaded, because world " + worldName + " is missing!");
                         return null;
                     }
                 } else if (firstAttempt) {
                     Bukkit.getConsoleSender().sendMessage(
-                            "§c[B§fW] §eArena " + game.name + " can't be loaded, because world " + worldName + " is missing! We will try it again after all plugins will be loaded!");
+                            "§c[D§fW] §eArena " + game.name + " can't be loaded, because world " + worldName + " is missing! We will try it again after all plugins will be loaded!");
                     Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> loadGame(file, false), 10L);
                     return null;
                 } else {
                     Bukkit.getConsoleSender().sendMessage(
-                            "§c[B§fW] §cArena " + game.name + " can't be loaded, because world " + worldName + " is missing!");
+                            "§c[D§fW] §cArena " + game.name + " can't be loaded, because world " + worldName + " is missing!");
                     return null;
                 }
             }
@@ -1008,28 +1008,28 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             World lobbySpawnWorld = Bukkit.getWorld(spawnWorld);
             if (lobbySpawnWorld == null) {
                 if (Bukkit.getPluginManager().isPluginEnabled("Multiverse-Core")) {
-                    Bukkit.getConsoleSender().sendMessage("§c[B§fW] §cWorld " + spawnWorld
+                    Bukkit.getConsoleSender().sendMessage("§c[D§fW] §cWorld " + spawnWorld
                             + " was not found, but we found Multiverse-Core, so we will try to load this world.");
 
                     Core multiverse = (Core) Bukkit.getPluginManager().getPlugin("Multiverse-Core");
                     if (multiverse != null && multiverse.getMVWorldManager().loadWorld(spawnWorld)) {
-                        Bukkit.getConsoleSender().sendMessage("§c[B§fW] §aWorld " + spawnWorld
+                        Bukkit.getConsoleSender().sendMessage("§c[D§fW] §aWorld " + spawnWorld
                                 + " was succesfully loaded with Multiverse-Core, continue in arena loading.");
 
                         lobbySpawnWorld = Bukkit.getWorld(spawnWorld);
                     } else {
-                        Bukkit.getConsoleSender().sendMessage("§c[B§fW] §cArena " + game.name
+                        Bukkit.getConsoleSender().sendMessage("§c[D§fW] §cArena " + game.name
                                 + " can't be loaded, because world " + spawnWorld + " is missing!");
                         return null;
                     }
                 } else if (firstAttempt) {
                     Bukkit.getConsoleSender().sendMessage(
-                            "§c[B§fW] §eArena " + game.name + " can't be loaded, because world " + worldName + " is missing! We will try it again after all plugins will be loaded!");
+                            "§c[D§fW] §eArena " + game.name + " can't be loaded, because world " + worldName + " is missing! We will try it again after all plugins will be loaded!");
                     Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> loadGame(file, false), 10L);
                     return null;
                 } else {
                     Bukkit.getConsoleSender().sendMessage(
-                            "§c[B§fW] §cArena " + game.name + " can't be loaded, because world " + spawnWorld + " is missing!");
+                            "§c[D§fW] §cArena " + game.name + " can't be loaded, because world " + spawnWorld + " is missing!");
                     return null;
                 }
             }
@@ -1139,7 +1139,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
 
             Main.addGame(game);
             game.start();
-            Bukkit.getConsoleSender().sendMessage("§c[B§fW] §aArena §f" + game.name + "§a loaded!");
+            Bukkit.getConsoleSender().sendMessage("§c[D§fW] §aArena §f" + game.name + "§a loaded!");
             return game;
         } catch (Throwable throwable) {
             Debug.warn("Something went wrong while loading arena file " + file.getName() + ". Please report this to our Discord or GitHub!", true);
@@ -2054,7 +2054,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                             boolean isBlockTypeBed = region.isBedBlock(bed.getState());
                             boolean isAnchor = "RESPAWN_ANCHOR".equals(bed.getType().name());
                             boolean isCake = bed.getType().name().contains("CAKE");
-                            boolean isDoor = region.isDoorBlock(bed.getState());
+                            boolean isDoor = region.isDoorBottomBlock(bed.getState());
                             if (isDoor) {
                                 loc.add(0, 0.5, 0);
                             }

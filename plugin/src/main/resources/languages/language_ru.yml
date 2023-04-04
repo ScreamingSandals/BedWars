@@ -1,24 +1,24 @@
 #
 # Copyright (C) 2023 ScreamingSandals
 #
-# This file is part of Screaming BedWars.
+# This file is part of Screaming DoorWars.
 #
-# Screaming BedWars is free software: you can redistribute it and/or modify it
+# Screaming DoorWars is free software: you can redistribute it and/or modify it
 # under the terms of the GNU Lesser General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# Screaming BedWars is distributed in the hope that it will be useful,
+# Screaming DoorWars is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public License
-# along with Screaming BedWars. If not, see <https://www.gnu.org/licenses/>.
+# along with Screaming DoorWars. If not, see <https://www.gnu.org/licenses/>.
 #
 
 lang_name: "Russian"
-prefix: "[BW]"
+prefix: "[DW]"
 item_shop_name: "Магазин"
 join: "%name% &aприсоединился к игре!&r &7[&a%players%&7/&a%maxplayers%&7]"
 leave: "%name% &cпокинул игру!"
@@ -312,8 +312,8 @@ destroy_this_bed: "%teamcolor%&lСломайте эту кровать!"
 destroy_this_target: "%teamcolor%&lСломайте этот главный блок!"
 destroy_this_anchor: "%teamcolor%&lРазрушьте этот якорь!"
 destroy_this_cake: "%teamcolor%&lСъешьте этот торт!"
-help_title: "BedWars %version% - помощь"
-help_title_console: "BedWars %version% - Помощь для консоли"
+help_title: "DoorWars %version% - помощь"
+help_title_console: "DoorWars %version% - Помощь для консоли"
 help_bw_join: "/bw join <арена> - &aПрисоединиться к игре"
 help_bw_leave: "/bw leave - &aПокинуть игру"
 help_bw_rejoin: "/bw rejoin - &aПрисоединиться к прошлой игре"
@@ -374,9 +374,9 @@ help_bw_admin_customprefix: "/bw admin <arena> customprefix <префикс|off>
 help_bw_admin_remove: "/bw admin <арена> remove - &cУдалить арену"
 help_bw_admin_edit: "/bw admin <арена> edit - &eПереключить арену в режим редактирования"
 help_bw_admin_save: "/bw admin <арена> save - &aСохранение арены и её запуск!"
-update_checker_zero: "§aДоступна новая стабильная версия BedWars: %version%!"
+update_checker_zero: "§aДоступна новая стабильная версия DoorWars: %version%!"
 update_checker_zero_second: "Загрузить: %url%"
-update_checker_one: "§bSBedWars и SBedWars+ официально вышли! Больше информации: %url%"
+update_checker_one: "§bSDoorWars и SDoorWars+ официально вышли! Больше информации: %url%"
 update_checker_one_second_good: "§bВаш сервер подготовлен к этому релизу! Загрузите\
   \ его сейчас!"
 update_checker_one_second_bad: "§bУвы, ваш сервер устарел! Необходимые минимальные\
@@ -396,7 +396,7 @@ admin_command_post_game_waiting: "&aВремя ожидания после ко�
 arena_info_postgamewaiting: "&7Время ожидания после конца игры: &f%time% с"
 leaderboard_no_scores: "&7Пока что очки отсутствуют!"
 leaderboard_holo_added: "&aТаблица лидеров была добавлена на ваших координатах!"
-leaderboard_header: "&6Таблица лидеров BedWars - Топ %number% игроков"
+leaderboard_header: "&6Таблица лидеров DoorWars - Топ %number% игроков"
 leaderboard_line: "&l%order%. &7%player% - &a%score%"
 admin_command_customprefix_enabled: "&aПрефикс для арены был успешно задан: &7%prefix%&a."
 admin_command_customprefix_disabled: "&aПрефикс для арены был успешно убран."

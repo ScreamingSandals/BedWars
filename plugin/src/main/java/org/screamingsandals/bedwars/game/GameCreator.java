@@ -20,6 +20,8 @@
 package org.screamingsandals.bedwars.game;
 
 import org.bukkit.*;
+import org.bukkit.block.data.Bisected;
+import org.bukkit.material.Door;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.ArenaTime;
 import org.screamingsandals.bedwars.api.InGameConfigBooleanConstants;
@@ -117,8 +119,16 @@ public class GameCreator {
                     }
                 } else if (args[0].equalsIgnoreCase("spawn")) {
                     response = setTeamSpawn(args[1], player.getLocation());
-                } else if (args[0].equalsIgnoreCase("bed")) {
-                    response = setTeamBed(player, args[1], player.getTargetBlock(null, 5), args.length >= 3 && args[2].equalsIgnoreCase("standing_on"));
+                } else if (args[0].equalsIgnoreCase("door")) {
+                    int yes = 0;
+                    if (args.length > 2) {
+                        for (int i = 2; i < args.length; i++) {
+                            if (args[i].equalsIgnoreCase("yes")) {
+                                yes++;
+                            }
+                        }
+                    }
+                    response = setTeamBed(player, args[1], null, true, yes >= 5);
                 }
             }
         } else if (action.equalsIgnoreCase("spawner")) {
@@ -551,12 +561,13 @@ public class GameCreator {
         return i18n("admin_command_team_is_not_exists");
     }
 
-    private String setTeamBed(Player player, String name, Block block, boolean standingOn) {
+    private String setTeamBed(Player player, String name, Block block, boolean standingOn, boolean confirmed) {
         for (Team t : game.getTeams()) {
             if (t.name.equals(name)) {
                 Location loc;
                 if (standingOn) {
-                    loc = player.getLocation().getBlock().getLocation().subtract(0, 0.5, 0); // getBlock().getLocation() - normalize to block location
+                    loc = player.getLocation().getBlock().getLocation().subtract(0, 0.5, 0).getBlock().getLocation(); // getBlock().getLocation() - normalize to block location
+                    block = loc.getBlock();
                 } else {
                     loc = block.getLocation();
                 }
@@ -571,10 +582,20 @@ public class GameCreator {
                 }
                 if (Main.isLegacy()) {
                     // Legacy
+                    if (!(block.getState().getData() instanceof Door) && !confirmed) {
+                        return i18n("must_be_door");
+                    }
+
                     if (block.getState().getData() instanceof org.bukkit.material.Bed) {
                         org.bukkit.material.Bed bed = (org.bukkit.material.Bed) block.getState().getData();
                         if (!bed.isHeadOfBed()) {
                             t.bed = LegacyBedUtils.getBedNeighbor(block).getLocation();
+                        } else {
+                            t.bed = loc;
+                        }
+                    } else if (block.getState().getData() instanceof Door) {
+                        if (((Door) block.getState().getData()).isTopHalf()) {
+                            t.bed = loc.subtract(0, 1, 0);
                         } else {
                             t.bed = loc;
                         }
@@ -583,11 +604,21 @@ public class GameCreator {
                     }
 
                 } else {
+                    if (!(block.getBlockData() instanceof org.bukkit.block.data.type.Door) && !confirmed) {
+                        return i18n("must_be_door");
+                    }
+
                     // 1.13+
                     if (block.getBlockData() instanceof Bed) {
                         Bed bed = (Bed) block.getBlockData();
                         if (bed.getPart() != Part.HEAD) {
                             t.bed = FlatteningBedUtils.getBedNeighbor(block).getLocation();
+                        } else {
+                            t.bed = loc;
+                        }
+                    } else if (block.getBlockData() instanceof org.bukkit.block.data.type.Door) {
+                        if (((org.bukkit.block.data.type.Door) block.getBlockData()).getHalf() == Bisected.Half.TOP) {
+                            t.bed = loc.subtract(0, 1, 0);
                         } else {
                             t.bed = loc;
                         }

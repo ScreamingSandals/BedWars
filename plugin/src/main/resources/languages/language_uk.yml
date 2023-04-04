@@ -1,24 +1,24 @@
 #
 # Copyright (C) 2023 ScreamingSandals
 #
-# This file is part of Screaming BedWars.
+# This file is part of Screaming DoorWars.
 #
-# Screaming BedWars is free software: you can redistribute it and/or modify it
+# Screaming DoorWars is free software: you can redistribute it and/or modify it
 # under the terms of the GNU Lesser General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# Screaming BedWars is distributed in the hope that it will be useful,
+# Screaming DoorWars is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public License
-# along with Screaming BedWars. If not, see <https://www.gnu.org/licenses/>.
+# along with Screaming DoorWars. If not, see <https://www.gnu.org/licenses/>.
 #
 
 lang_name: "Українська мова"
-prefix: "[BW]"
+prefix: "[DW]"
 item_shop_name: "Магазин"
 join: "%name% &aПідключився до гри!&r &7[&a%players%&7/&a%maxplayers%&7]"
 leave: "%name% &cВийшов з гри!"
@@ -317,8 +317,8 @@ destroy_this_bed: "%teamcolor%&lЗнищіть це ліжко!"
 destroy_this_target: "%teamcolor%&lЗнищіть цей цільовий блок!"
 destroy_this_anchor: "%teamcolor%&lЗнищіть цей якір відродження!"
 destroy_this_cake: "%teamcolor%&lЗ'їжте цей торт!"
-help_title: "BedWars %version% - Help"
-help_title_console: "BedWars %version% - Help for Console"
+help_title: "DoorWars %version% - Help"
+help_title_console: "DoorWars %version% - Help for Console"
 help_bw_join: "/bw join <arena> - &aПриєднатись до гри"
 help_bw_leave: "/bw leave - &aПокинути гру"
 help_bw_rejoin: "/bw rejoin - &aПовторно приєднатись до останньої гри"
@@ -387,15 +387,15 @@ help_bw_admin_remove: "/bw admin <arena> remove - &cВидалити арену"
 help_bw_admin_edit: "/bw admin <arena> edit - &eВимикає гру і переводить арену в режим\
   \ редагування"
 help_bw_admin_save: "/bw admin <arena> save - &aЗберігає гру і активує її!"
-update_checker_zero: "§aНова версія %version% BedWars тепер доступна!"
+update_checker_zero: "§aНова версія %version% DoorWars тепер доступна!"
 update_checker_zero_second: "Завантажте його за посиланням: %url%"
-update_checker_one: "§bSBedWars та SBedWars+ офіційно вийшли! Більше інформації: %url%."
+update_checker_one: "§bSDoorWars та SDoorWars+ офіційно вийшли! Більше інформації: %url%."
 update_checker_one_second_good: "§bВаш сервер підготовлений до цього релізу! Завантажуйте\
   \ прямо зараз!"
 update_checker_one_second_bad: "§bНа жаль, ваш сервер застарів! Вам знадобиться Minecraft\
   \ версії не нижче 1.13 та Java не нижче 11!"
 help_bw_alljoin: "/bw alljoin [arena] - &aПриєднує всіх гравців на сервері до гри\
-  \ Bedwars"
+  \ DoorWars"
 admin_command_removed_spawners: "&7%count% &aспавнерів було видалено з &7%x%&a/&7%y%&a/&7%z%"
 help_bw_admin_spawner_remove: "/bw admin <arena> spawner remove - &eВидаляє всі ресурсні\
   \ спавнери на цій локації"
@@ -412,7 +412,7 @@ admin_command_post_game_waiting: "&aЧас очікування після гр�
 arena_info_postgamewaiting: "&7Час очікування після гри: &f%time% сек"
 leaderboard_no_scores: "&7There are no scores yet!"
 leaderboard_holo_added: "&aВ вашому розташуванні додано голограму лідерборду!"
-leaderboard_header: "&6Лідерборд BedWars - Найкращі гравці %number% гравців"
+leaderboard_header: "&6Лідерборд DoorWars - Найкращі гравці %number% гравців"
 leaderboard_line: "&l%order%. &7%player% - &a%score%"
 admin_command_customprefix_enabled: "&aКористувацький префікс успішно встановлено:\
   \ &7%prefix%&a."

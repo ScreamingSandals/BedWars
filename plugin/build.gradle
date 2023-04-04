@@ -38,7 +38,7 @@ buildConfig {
 
     buildConfigField('String', 'NAME', "\"${project.name}\"")
     buildConfigField('String', 'VERSION', "\"${project.version}\"")
-    buildConfigField('String', 'BUILD_NUMBER', "\"branch-0.2.x/${System.getenv('BUILD_NUMBER') ?: "custom"}\"")
+    buildConfigField('String', 'BUILD_NUMBER', "\"${System.getenv('BUILD_NUMBER') ?: "69-420"}\"")
 }
 
 prepareTestTask()

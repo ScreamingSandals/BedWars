@@ -405,7 +405,7 @@ public class Configurator {
         checkOrSetConfig(modify, "game-effects.warppowdertick", new HashMap<String, Object>());
 
         checkOrSetConfig(modify, "lobby-scoreboard.enabled", true);
-        checkOrSetConfig(modify, "lobby-scoreboard.title", "&eBEDWARS");
+        checkOrSetConfig(modify, "lobby-scoreboard.title", "&eDOORWARS");
         checkOrSetConfig(modify, "lobby-scoreboard.content", Arrays.asList(" ", "&fMap: &2%arena%",
                 "&fPlayers: &2%players%&f/&2%maxplayers%", " ", "&fWaiting ...", " "));
 
@@ -441,8 +441,8 @@ public class Configurator {
         }
 
         checkOrSetConfig(modify, "holograms.enabled", true);
-        checkOrSetConfig(modify, "holograms.headline", "Your &eBEDWARS&f stats");
-        checkOrSetConfig(modify, "holograms.leaderboard.headline", "&6Bedwars Leaderboard");
+        checkOrSetConfig(modify, "holograms.headline", "Your &eDOORWARS&f stats");
+        checkOrSetConfig(modify, "holograms.leaderboard.headline", "&6DoorWars Leaderboard");
         checkOrSetConfig(modify, "holograms.leaderboard.format", "&l%order%. &7%name% - &a%score%");
         checkOrSetConfig(modify, "holograms.leaderboard.size", 10);
 
@@ -500,7 +500,7 @@ public class Configurator {
         checkOrSetConfig(modify, "lore.text",
                 Arrays.asList("&7Price:", "&7%price% %resource%", "&7Amount:", "&7%amount%"));
 
-        checkOrSetConfig(modify, "sign.lines", config.getList("sign", Arrays.asList("&c&l[BedWars]", "%arena%", "%status%", "%players%")));
+        checkOrSetConfig(modify, "sign.lines", config.getList("sign", Arrays.asList("&c&l[DoorWars]", "%arena%", "%status%", "%players%")));
 
         checkOrSetConfig(modify, "sign.block-behind.enabled", false);
         checkOrSetConfig(modify, "sign.block-behind.waiting", "ORANGE_STAINED_GLASS");
@@ -556,7 +556,7 @@ public class Configurator {
 
         checkOrSetConfig(modify, "tab.enable", false);
         checkOrSetConfig(modify, "tab.header.enabled", true);
-        checkOrSetConfig(modify, "tab.header.contents", Arrays.asList("&aMy awesome BedWars server", "&bMap: %map%", "&cPlayers: %respawnable%/%max%"));
+        checkOrSetConfig(modify, "tab.header.contents", Arrays.asList("&aMy awesome DoorWars server", "&bMap: %map%", "&cPlayers: %respawnable%/%max%"));
         checkOrSetConfig(modify, "tab.footer.enabled", true);
         checkOrSetConfig(modify, "tab.footer.contents", Arrays.asList("&eexample.com", "&fWow!!", "&a%spectators% are watching this match"));
         checkOrSetConfig(modify, "tab.hide-spectators", true);

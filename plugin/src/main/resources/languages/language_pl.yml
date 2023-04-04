@@ -1,25 +1,25 @@
 #
 # Copyright (C) 2023 ScreamingSandals
 #
-# This file is part of Screaming BedWars.
+# This file is part of Screaming DoorWars.
 #
-# Screaming BedWars is free software: you can redistribute it and/or modify it
+# Screaming DoorWars is free software: you can redistribute it and/or modify it
 # under the terms of the GNU Lesser General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# Screaming BedWars is distributed in the hope that it will be useful,
+# Screaming DoorWars is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public License
-# along with Screaming BedWars. If not, see <https://www.gnu.org/licenses/>.
+# along with Screaming DoorWars. If not, see <https://www.gnu.org/licenses/>.
 #
 
 ---
 lang_name: "Polski"
-prefix: "[BW]"
+prefix: "[DW]"
 item_shop_name: "Sklep"
 join: "%name% &adołączył do gry!&r &7[&a%players%&7/&a%maxplayers%&7]"
 leave: "%name% &copuścił grę!"
@@ -317,8 +317,8 @@ destroy_this_bed: "%teamcolor%&lŁóżko do zniszczenia!"
 destroy_this_target: "%teamcolor%&lCel do zniszczenia!"
 destroy_this_anchor: "%teamcolor%&lKotwica odrodzenia do zniszczenia"
 destroy_this_cake: "%teamcolor%&lZjedli Ciasto!"
-help_title: "BedWars %version% - Pomoc"
-help_title_console: "BedWars %version% - Pomoc konsolowa"
+help_title: "DoorWars %version% - Pomoc"
+help_title_console: "DoorWars %version% - Pomoc konsolowa"
 help_bw_join: "/bw join <arena> - &aDołącz do gry"
 help_bw_leave: "/bw leave - &aOpuść grę"
 help_bw_rejoin: "/bw rejoin - &aDołącz do ostatniej gry"
@@ -381,9 +381,9 @@ help_bw_admin_remove: "/bw admin <arena> remove - &cUsuwa arenę"
 help_bw_admin_edit: "/bw admin <arena> edit - &eWyłącza grę i włącza tryb edycji areny"
 help_bw_admin_save: "/bw admin <arena> save - &aZapisuje arenę w celu rozpoczęcia\
   \ gry!"
-update_checker_zero: "§aDostępna nowa wersja pluginu BedWars: %version%!"
+update_checker_zero: "§aDostępna nowa wersja pluginu DoorWars: %version%!"
 update_checker_zero_second: "Pobierz: %url%"
-update_checker_one: "§bSBedWars i SBedWars+ zostały wydane! Więcej informacji: %url%"
+update_checker_one: "§bSDoorWars i SDoorWars+ zostały wydane! Więcej informacji: %url%"
 update_checker_one_second_good: "§bNowa wersja będzie działać na twoim serwerze. Pobierz\
   \ teraz!"
 update_checker_one_second_bad: "§bTa wersja może nie działać poprawnie na tym serwerze\

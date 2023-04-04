@@ -1,25 +1,25 @@
 #
 # Copyright (C) 2023 ScreamingSandals
 #
-# This file is part of Screaming BedWars.
+# This file is part of Screaming DoorWars.
 #
-# Screaming BedWars is free software: you can redistribute it and/or modify it
+# Screaming DoorWars is free software: you can redistribute it and/or modify it
 # under the terms of the GNU Lesser General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# Screaming BedWars is distributed in the hope that it will be useful,
+# Screaming DoorWars is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public License
-# along with Screaming BedWars. If not, see <https://www.gnu.org/licenses/>.
+# along with Screaming DoorWars. If not, see <https://www.gnu.org/licenses/>.
 #
 
 ---
 lang_name: "Limba română"
-prefix: "[BW]"
+prefix: "[DW]"
 item_shop_name: "Magazin"
 join: "%name% &aA intrat in joc!&r &7[&a%players%&7/&a%maxplayers%&7]"
 leave: "%name% &cA iesit din joc!"
@@ -320,8 +320,8 @@ destroy_this_bed: "%teamcolor%&lSparge patul acesta!"
 destroy_this_target: "%teamcolor%&lSparge acest bloc tinta!"
 destroy_this_anchor: "%teamcolor%&lSparge aceasta ancora!"
 destroy_this_cake: "%teamcolor%&lMananca acest tort!"
-help_title: "BedWars %version% - Ajutor"
-help_title_console: "BedWars %version% - Help pentru consola"
+help_title: "DoorWars %version% - Ajutor"
+help_title_console: "DoorWars %version% - Help pentru consola"
 help_bw_join: "/bw join <arena> - &aAlatura-te jocului"
 help_bw_leave: "/bw leave - &aParaseste jocul"
 help_bw_rejoin: "/bw rejoin - &aAlatura-te din nou la ultimul joc"
@@ -390,15 +390,15 @@ help_bw_admin_remove: "/bw admin <arena> remove - &cElimina arena"
 help_bw_admin_edit: "/bw admin <arena> edit - &eOpreste jocul si schimba arena in\
   \ modul de editare"
 help_bw_admin_save: "/bw admin <arena> save - &aSalveaza arena si o activeaza!"
-update_checker_zero: "§aVersiunea noua %version% de BedWars este valabila!"
+update_checker_zero: "§aVersiunea noua %version% de DoorWars este valabila!"
 update_checker_zero_second: "Descarca de la %url%"
-update_checker_one: "§bSBedWars si SBedWars+ s-au lansat! Mai multe informatii: %url%"
+update_checker_one: "§bSDoorWars si SDoorWars+ s-au lansat! Mai multe informatii: %url%"
 update_checker_one_second_good: "§bServerul tau este pregatit pentru aceasta versiune!\
   \ Descarca acum!"
 update_checker_one_second_bad: "§bDin pacate, versiunea serverul tau este veche! Vei\
   \ avea nevoie de versiunea Minecraft 1.13 si Java 11!"
 help_bw_alljoin: "/bw alljoin [arena] - &aAlatura toti jucatorii server-ului la un\
-  \ joc de bedwars"
+  \ joc de DoorWars"
 admin_command_removed_spawners: "&7%count% &aspawnere au fost sterse de la &7%x%&a/&7%y%&a/&7%z%"
 help_bw_admin_spawner_remove: "/bw admin <arena> spawner remove - &eSterge toate spawnerele\
   \ de la locatie"
@@ -415,7 +415,7 @@ admin_command_post_game_waiting: "&aTimpul de asteptare dupa ce jocul a fost set
 arena_info_postgamewaiting: "&7Timpul de asteptare dupa joc: &f%time% s"
 leaderboard_no_scores: "&7Nu sunt scoruri inca!"
 leaderboard_holo_added: "&aHolograma top a fost adaugat la locatia ta!"
-leaderboard_header: "&6BedWars Top - Top %number% jucatori"
+leaderboard_header: "&6DoorWars Top - Top %number% jucatori"
 leaderboard_line: "&l%order%. &7%player% - &a%score%"
 admin_command_customprefix_enabled: "&aPrefixul personalizat a fost setat cu succes\
   \ la &7%prefix%&a."

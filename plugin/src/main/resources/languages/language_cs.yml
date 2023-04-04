@@ -1,24 +1,24 @@
 #
 # Copyright (C) 2023 ScreamingSandals
 #
-# This file is part of Screaming BedWars.
+# This file is part of Screaming DoorWars.
 #
-# Screaming BedWars is free software: you can redistribute it and/or modify it
+# Screaming DoorWars is free software: you can redistribute it and/or modify it
 # under the terms of the GNU Lesser General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# Screaming BedWars is distributed in the hope that it will be useful,
+# Screaming DoorWars is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public License
-# along with Screaming BedWars. If not, see <https://www.gnu.org/licenses/>.
+# along with Screaming DoorWars. If not, see <https://www.gnu.org/licenses/>.
 #
 
 lang_name: "Čeština"
-prefix: "[BW]"
+prefix: "[DW]"
 item_shop_name: "Obchod"
 join: "%name% &ase připojil do arény!&r &7[&a%players%&7/&a%maxplayers%&7]"
 leave: "%name% &copustil arénu!"
@@ -87,7 +87,7 @@ you_lost: "&cProhrál jsi!"
 team_win: "&aTým &r%team%&a vyhrál hru v čase: &7%time%"
 game_end: "&cHra skončila! Děkujeme za hraní!"
 command_is_not_allowed: "&cBěhem hry nejsou povoleny žádné příkazy s výjimkou příkazů\
-  \ pluginu BedWars!"
+  \ pluginu DoorWars!"
 price: "Cena:"
 amount: "Množství:"
 resource_bronze: "Bronz"
@@ -312,8 +312,8 @@ destroy_this_bed: "%teamcolor%&lZničte tuto postel!"
 destroy_this_target: "%teamcolor%&lZničte tento blok!"
 destroy_this_anchor: "%teamcolor%&lZničte tuto kotvu!"
 destroy_this_cake: "%teamcolor%&lSnězte tento dort!"
-help_title: "BedWars %version% - Nápověda"
-help_title_console: "BedWars %version% - Nápověda pro konzoli"
+help_title: "DoorWars %version% - Nápověda"
+help_title_console: "DoorWars %version% - Nápověda pro konzoli"
 help_bw_join: "/bw join <aréna> - &aPřipojí tě do arény"
 help_bw_leave: "/bw leave - &aOdpojí tě z arény"
 help_bw_rejoin: "/bw rejoin - &aPřipojí tě do poslední hrané hry"
@@ -380,9 +380,9 @@ help_bw_admin_customprefix: "/bw admin <arena> customprefix <name|off> - &ePovol
 help_bw_admin_remove: "/bw admin <aréna> remove - &cOdstraní arénu"
 help_bw_admin_edit: "/bw admin <aréna> edit - &eVypne hru a přepne arénu do módu úprav"
 help_bw_admin_save: "/bw admin <aréna> save - &aUloží hru a aktivuje jí!"
-update_checker_zero: "§aNová verze BedWars %version% je k dispozici!"
+update_checker_zero: "§aNová verze DoorWars %version% je k dispozici!"
 update_checker_zero_second: "Stáhněte ji z %url%"
-update_checker_one: "§bPluginy SBedWars a SBedWars+ byly oficiálně vydány! Více informací\
+update_checker_one: "§bPluginy SDoorWars a SDoorWars+ byly oficiálně vydány! Více informací\
   \ na %url%"
 update_checker_one_second_good: "§bVáš server je na tuto verzi připraven! Můžete ji\
   \ ihned stáhnout!"
@@ -404,7 +404,7 @@ admin_command_post_game_waiting: "&eČas čekání po hře byl úspěšně nasta
 arena_info_postgamewaiting: "&7Čas čekání po hře: &f%time% s"
 leaderboard_no_scores: "&7Zatím žádné skóre!"
 leaderboard_holo_added: "&aHologram s žebříčkem byl přidán na tvoji pozici!"
-leaderboard_header: "&6Žebříček BedWars - Top %number% hráčů"
+leaderboard_header: "&6Žebříček DoorWars - Top %number% hráčů"
 leaderboard_line: "&l%order%. &7%player% - &a%score%"
 admin_command_customprefix_enabled: "&aVlastní prefix byl úspěšně nastaven na &7%prefix%&a."
 admin_command_customprefix_disabled: "&aVlastní prefix byl úspěšně zakázán."

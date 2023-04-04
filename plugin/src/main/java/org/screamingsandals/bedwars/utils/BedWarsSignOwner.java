@@ -82,7 +82,7 @@ public class BedWarsSignOwner implements SignOwner {
 
 	@Override
 	public List<String> getSignPrefixes() {
-		return Arrays.asList("[bedwars]", "[bwgame]");
+		return Arrays.asList("[doorwars]", "[dwgame]");
 	}
 
 	@Override

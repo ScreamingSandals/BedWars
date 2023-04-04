@@ -1,24 +1,24 @@
 #
 # Copyright (C) 2023 ScreamingSandals
 #
-# This file is part of Screaming BedWars.
+# This file is part of Screaming DoorWars.
 #
-# Screaming BedWars is free software: you can redistribute it and/or modify it
+# Screaming DoorWars is free software: you can redistribute it and/or modify it
 # under the terms of the GNU Lesser General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# Screaming BedWars is distributed in the hope that it will be useful,
+# Screaming DoorWars is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public License
-# along with Screaming BedWars. If not, see <https://www.gnu.org/licenses/>.
+# along with Screaming DoorWars. If not, see <https://www.gnu.org/licenses/>.
 #
 
 lang_name: "German"
-prefix: "[BW]"
+prefix: "[DW]"
 item_shop_name: "Shop"
 join: "%name% &atritt dem Spiel bei!&r &7[&a%players%&7/&a%maxplayers%&7]"
 leave: "%name% &chat das Spiel verlassen!"
@@ -314,8 +314,8 @@ destroy_this_bed: "%teamcolor%&lZerstöre dieses Bett!"
 destroy_this_target: "%teamcolor%&lZerstöre diesen Ziel Block!"
 destroy_this_anchor: "%teamcolor%&lZerstöre diesen Anker!"
 destroy_this_cake: "%teamcolor%&lEsst diesen Kuchen!"
-help_title: "BedWars %version% - Hilfe"
-help_title_console: "BedWars %version% - Hilfe für Konsole"
+help_title: "DoorWars %version% - Hilfe"
+help_title_console: "DoorWars %version% - Hilfe für Konsole"
 help_bw_join: "/bw join <Spiel> - &aEinem Spiel beitreten"
 help_bw_leave: "/bw leave - &aEin Spiel verlassen"
 help_bw_rejoin: "/bw rejoin - &aTrete dem letzten Spiel erneut bei"
@@ -378,16 +378,16 @@ help_bw_admin_edit: "/bw admin <Spiel> edit - &eSchaltet das Spiel aus und aktiv
   \ den edit-Modus"
 help_bw_admin_save: "/bw admin <Spiel> save - &aSpeichert das Spiel und aktiviert\
   \ es!"
-update_checker_zero: "§aNeue RELEASE Version %version% von BedWars ist verfügbar!"
+update_checker_zero: "§aNeue RELEASE Version %version% von DoorWars ist verfügbar!"
 update_checker_zero_second: "Download sie von %url%"
-update_checker_one: "§bSBedWars und SBedWars+ sind offiziell erhältlich! Mehr Informationen:\
+update_checker_one: "§bSDoorWars und SDoorWars+ sind offiziell erhältlich! Mehr Informationen:\
   \ %url%"
 update_checker_one_second_good: "§bDein Server ist auf diese Version vorbereitet!\
   \ Lade sie jetzt herunter!"
 update_checker_one_second_bad: "§bLeider ist dein Server veraltet! Du wirst mindestens\
   \ Minecraft-Version 1.13 und Java 11 benötigen!"
 help_bw_alljoin: "/bw alljoin [arena] - &aVerbindet alle Spieler auf dem Server zum\
-  \ Bedwars Spiel"
+  \ DoorWars Spiel"
 admin_command_removed_spawners: "&7%count% &aSpawner wurden von &7%x%&a/&7%y%&a/7%z\
   \ % gelöscht"
 help_bw_admin_spawner_remove: "/bw admin <arena> spawner remove - &eEntfernt alle\
@@ -405,7 +405,7 @@ admin_command_post_game_waiting: "&aWartezeit nach erfolgreichem Spiel auf &7%nu
 arena_info_postgamewaiting: "&7Wartezeit nach dem Spiel: &f%time% s"
 leaderboard_no_scores: "&7Es gibt noch keine Punktzahlen!"
 leaderboard_holo_added: "&aLeaderboard Hologramm wurde zu deiner Position hinzugefügt!"
-leaderboard_header: "&6BedWars Rangliste - Top %number% Spieler"
+leaderboard_header: "&6DoorWars Rangliste - Top %number% Spieler"
 leaderboard_line: "&l%order%. &7%player% - &a%score%"
 admin_command_customprefix_enabled: "&aBenutzerdefiniertes Präfix wurde erfolgreich\
   \ auf &7%prefix%&a gesetzt."
