@@ -18,7 +18,7 @@ There are 5 event types:
 * `potion` - This event gives player a potion effect. The effect is configured using a variable `effect`.
 * `item` - This event gives player an item. This item is configured using a variable `stack`.
 
-Below is an example of fully-configured lucky block with all these event used. Additionally, each event can have a variable `message`. This message will then be send to the player who broke the block. 
+Below is an example of fully-configured lucky block with all these events used. Additionally, each event can have a variable `message`. This message will then be send to the player who broke the block. 
 
 
 !!! warning
@@ -29,26 +29,26 @@ Below is an example of fully-configured lucky block with all these event used. A
 ```yaml
 - price: 7 of iron
   properties:
-    - name: "LuckyBlock"
-      data:
-      - type: tnt
-      - type: nothing
-      - type: teleport
-        height: 50
-      - type: item
-        stack:
-          ==: org.bukkit.inventory.ItemStack
-          type: DIRT
-          v: 1519
-        message: "This sends you message, you can add it to all of these types."
-      - type: potion
-        effect:
-          ==: org.bukkit.potion.PotionEffect
-          effect: 15
-          amplifier: 2
-          duration: 100
-          ambient: true
-          has-particles: true
-          has-icon: true
-    stack: SPONGE;1;Lucky Block
+  - name: "LuckyBlock"
+    data:
+    - type: tnt
+    - type: nothing
+    - type: teleport
+      height: 50
+    - type: item
+      stack:
+        ==: org.bukkit.inventory.ItemStack
+        type: DIRT
+        v: 1519
+      message: "This sends you message, you can add it to all of these types."
+    - type: potion
+      effect:
+        ==: org.bukkit.potion.PotionEffect
+        effect: 15
+        amplifier: 2
+        duration: 100
+        ambient: true
+        has-particles: true
+        has-icon: true
+  stack: SPONGE;1;Lucky Block
 ```
