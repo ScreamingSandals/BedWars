@@ -427,13 +427,14 @@
 This block can be placed anywhere and when broken, a random configured event will occur. Lucky blocks are not in the shop by default; therefore, 
 you have to add them to the shop by yourself.</p>
 <p>Like other special items, lucky blocks use <code>properties</code> for their configuration. The property for these blocks is simply called <code>LuckyBlock</code> and have <code>data</code> section. This section is a list of events that may occur. </p>
-<p>There are 5 event types:
-* <code>nothing</code> - As the name implies, it does nothing.
-* <code>teleport</code> - This event teleports the player relatively on Y-axis and a variable <code>height</code> is used to configure this relative teleportation.
-    For example, if player is in height 60 and the configured height is 50, he will be teleported to Y 110.
-* <code>tnt</code>- A primed TNT entity is spawned when this event is chosen. This TNT explodes immediately.
-* <code>potion</code> - This event gives player a potion effect. The effect is configured using a variable <code>effect</code>.
-* <code>item</code> - This event gives player an item. This item is configured using a variable <code>stack</code>.</p>
+<p>There are 5 event types:  </p>
+<ul>
+<li><code>nothing</code> - As the name implies, it does nothing.</li>
+<li><code>teleport</code> - This event teleports the player relatively on Y-axis and a variable <code>height</code> is used to configure this relative teleportation. For example, if player is in height 60 and the configured height is 50, he will be teleported to Y 110.</li>
+<li><code>tnt</code>- A primed TNT entity is spawned when this event is chosen. This TNT explodes immediately.</li>
+<li><code>potion</code> - This event gives player a potion effect. The effect is configured using a variable <code>effect</code>.</li>
+<li><code>item</code> - This event gives player an item. This item is configured using a variable <code>stack</code>.</li>
+</ul>
 <p>Below is an example of fully-configured lucky block with all these event used. Additionally, each event can have a variable <code>message</code>. This message will then be send to the player who broke the block. </p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
