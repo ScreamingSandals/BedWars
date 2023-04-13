@@ -10,10 +10,10 @@ you have to add them to the shop by yourself.
 
 Like other special items, lucky blocks use `properties` for their configuration. The property for these blocks is simply called `LuckyBlock` and have `data` section. This section is a list of events that may occur. 
 
-There are 5 event types:
+There are 5 event types:  
+
 * `nothing` - As the name implies, it does nothing.
-* `teleport` - This event teleports the player relatively on Y-axis and a variable `height` is used to configure this relative teleportation.
-    For example, if player is in height 60 and the configured height is 50, he will be teleported to Y 110.
+* `teleport` - This event teleports the player relatively on Y-axis and a variable `height` is used to configure this relative teleportation. For example, if player is in height 60 and the configured height is 50, he will be teleported to Y 110.
 * `tnt`- A primed TNT entity is spawned when this event is chosen. This TNT explodes immediately.
 * `potion` - This event gives player a potion effect. The effect is configured using a variable `effect`.
 * `item` - This event gives player an item. This item is configured using a variable `stack`.
