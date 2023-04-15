@@ -50,6 +50,7 @@ Make sure your shop is YAML valid with [yamlchecker](https://yamlchecker.com/), 
 Well, you probably have WorldEdit or FastAsyncWorldEdit. The compass is used to teleport through walls. However it works only for people with permission or with OP. You can disable this tool or bound it to another item in WorldEdit configuration. You can also change the team selection item to another one in BedWars configuration.
 
 ## Permissions
+
 * `bw.admin` - Allows you to create/edit an arena, reload the plugin and use the cheat command if enabled.
 * `bw.vip.startitem` - Allows you to start the game using the item. All players will be automatically distributed to teams.
 * `bw.vip.forcejoin` - Allows you to join even if the game is full (player without this permission will be kicked).
@@ -95,6 +96,7 @@ gived-player-respawn-items:
 
 ## Villagers do not spawn
 Here is some info on how to troubleshoot this error:
+
 * Make sure that Mob Spawning is **enabled**
 * You are **NOT** protecting the arena with worldguard
 * Make sure that NPC's are **enabled**
@@ -119,6 +121,7 @@ Same goes for basically any other special item. 🙂
 
 ## PvP does not work
 Make sure:
+
 * It is enabled in MultiVerse (or similar multi-world plugin) and if it is not do `/mvm set pvp true <world name>`.
 * WorldGuard does not disallow fighting in the world where the arena is located (if yes do `/rg flag <region name> pvp allow`);
 * You have `spawn-protection` disabled (set it to 0 in server.properties).
@@ -132,6 +135,7 @@ That is not a BedWars issue, increase your server's game difficulty (from easy t
 
 ## Changing arena name
 First, we will provide no support if you mess this up somehow, **arena files are not supposed to be edited by people**.
+
 1. Go to your BedWars folder and then to arenas folder. The path should be `plugins/BedWars/arenas`
 2. Open the file you want to change the name
 3. First filled is name, enter your new one. The name cannot look like this `test arena` and always needs to be one string, that means `test-arena`. The name also must be unique, that means you cannot have two arenas with the same name.

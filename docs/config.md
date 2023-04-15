@@ -47,6 +47,8 @@ gived-game-start-items:
 disable-hunger: true
 automatic-coloring-in-shop: true
 sell-max-64-per-click-in-shop: true
+enable-cheat-command-for-admins: false
+shopkeepers-are-silent: true
 destroy-placed-blocks-by-explosion-except:
 - ''
 destroy-placed-blocks-by-explosion: true
@@ -59,6 +61,8 @@ respawn-cooldown:
   enabled: true
   time: 5
 stop-team-spawners-on-die: false
+# Whether or not should 1.19.4 display entities be used or not. Does work only on 1.19.4+
+prefer-1-19-4-display-entities: true
 allowed-commands: []
 change-allowed-commands-to-blacklist: false
 bungee:
@@ -80,15 +84,15 @@ farmBlocks:
   blocks: []
 scoreboard:
   enable: false
-  title: §a%game%§r - %time%
-  bedLost: §c✘
-  bedExists: §a✔
+  title: &a%game%&r - %time%
+  bedLost: &c✘
+  bedExists: &a✔
   teamTitle: '%bed%%color%%team%'
-  anchorEmpty: §e✘
+  anchorEmpty: &e✘
 title:
-  enabled: false
+  enabled: true
   fadeIn: 0
-  stay: 0
+  stay: 20
   fadeOut: 0
 items:
   jointeam: COMPASS
@@ -138,8 +142,10 @@ resources:
 respawn:
   protection-enabled: true
   protection-time: 5
+  show-messages: true
 specials:
   action-bar-messages: true
+  dont-show-success-messages: false
   rescue-platform:
     is-breakable: false
     delay: 0
@@ -178,14 +184,14 @@ specials:
   teamchest:
     turn-all-enderchests-to-teamchests: true
   throwable-fireball:
-    explosion: 3.0
-    damage: 2.0
+    damage: 3.0
+    incendiary: true
+    damage-thrower: true
   auto-igniteable-tnt:
     explosion-time: 3
     damage-placer: true
-tnt: {}
+    damage: 4.0
 sounds:
-  on_trap_triggered: ENTITY_ENDERMAN_TELEPORT
   bed_destroyed:
     sound: ENTITY_ENDER_DRAGON_GROWL
     volume: 1
@@ -233,13 +239,15 @@ game-effects:
       flicker: false
       trail: false
       colors:
-      - &id001
-        ==: Color
+      - ==: Color
         RED: 255
         BLUE: 255
         GREEN: 255
       fade-colors:
-      - *id001
+      - ==: Color
+        RED: 255
+        BLUE: 255
+        GREEN: 255
       type: BALL
     power: 1
     type: Firework
@@ -253,13 +261,13 @@ game-effects:
   warppowdertick: {}
 lobby-scoreboard:
   enabled: false
-  title: §eBEDWARS
+  title: &eBEDWARS
   content:
   - ' '
-  - '§fMap: §2%arena%'
-  - '§fPlayers: §2%players%§f/§2%maxplayers%'
+  - '&fMap: &2%arena%'
+  - '&fPlayers: &2%players%&f/&2%maxplayers%'
   - ' '
-  - §fWaiting ...
+  - &fWaiting ...
   - ' '
 statistics:
   enabled: true
@@ -292,16 +300,18 @@ bossbar:
     enable: true
     color: GREEN
     style: SEGMENTED_20
+  # The backend-entity field is present only if the server is running on 1.8.8. Allowed values: wither, dragon
+  backend-entity: dragon
 holograms:
   enabled: true
-  headline: Your §eBEDWARS§f stats
+  headline: Your &eBEDWARS&f stats
   leaderboard:
     headline: '&6Bedwars Leaderboard'
     format: '&l%order%. &7%name% - &a%score%'
     size: 10
 chat:
   override: true
-  format: '<%teamcolor%%name%§r> '
+  format: '<%teamcolor%%name%&r> '
   separate-chat:
     lobby: false
     game: false
@@ -318,6 +328,8 @@ rewards:
   enabled: false
   player-win:
   - /example {player} 200
+  player-win-run-immediately:
+  - /example {player} 200
   player-end-game:
   - /example {player} {score}
   player-destroy-bed:
@@ -329,11 +341,11 @@ rewards:
 lore:
   generate-automatically: true
   text:
-  - '§7Cost: §f%price% %resource%'
+  - '&7Cost: &f%price% %resource%'
   - ''
 sign:
   lines:
-  - §c§l[BedWars]
+  - &c&l[BedWars]
   - '%arena%'
   - '%status%'
   - '%players%'
@@ -360,7 +372,6 @@ mainlobby:
   enabled: false
   location: ''
   world: ''
-version: 2
 turnOnExperimentalGroovyShop: false
 preventSpectatorFlyingAway: false
 removePurchaseMessages: false
@@ -415,7 +426,7 @@ tab:
     contents:
     - '&eexample.com'
     - '&fWow!!'
-    - §a%spectators% are watching this match
+    - &a%spectators% are watching this match
   hide-spectators: true
   hide-foreign-players: false
 default-permissions:
@@ -426,7 +437,11 @@ default-permissions:
   rejoin: true
   autojoin: true
   leaderboard: true
-
+# The following sections requires Parties plugin to be installed
+party:
+  enabled: false
+  autojoin-members: false
+  notify-when-warped: true
 ```
 
 ## Custom resources
