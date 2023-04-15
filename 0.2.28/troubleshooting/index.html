@@ -700,10 +700,12 @@
 <span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">WOODEN_SWORD</span>
 </code></pre></div></td></tr></table></div>
 <h2 id="villagers-do-not-spawn">Villagers do not spawn<a class="headerlink" href="#villagers-do-not-spawn" title="Permanent link">&para;</a></h2>
-<p>Here is some info on how to troubleshoot this error:
-* Make sure that Mob Spawning is <strong>enabled</strong>
-* You are <strong>NOT</strong> protecting the arena with worldguard
-* Make sure that NPC's are <strong>enabled</strong></p>
+<p>Here is some info on how to troubleshoot this error:</p>
+<ul>
+<li>Make sure that Mob Spawning is <strong>enabled</strong></li>
+<li>You are <strong>NOT</strong> protecting the arena with worldguard</li>
+<li>Make sure that NPC's are <strong>enabled</strong></li>
+</ul>
 <h2 id="are-there-any-visualparticle-effects">Are there any visual/particle effects?<a class="headerlink" href="#are-there-any-visualparticle-effects" title="Permanent link">&para;</a></h2>
 <p>Yes, there are. Check out <a href="../config/#game-effects">this page</a></p>
 <h2 id="changing-damage-or-explosion-power-of-fireball">Changing damage or explosion power of Fireball<a class="headerlink" href="#changing-damage-or-explosion-power-of-fireball" title="Permanent link">&para;</a></h2>
@@ -721,21 +723,25 @@ It is located under specials, it is not that hard to find 😛</p>
 <li>Configure every game server to your liking. </li>
 </ol>
 <h2 id="pvp-does-not-work">PvP does not work<a class="headerlink" href="#pvp-does-not-work" title="Permanent link">&para;</a></h2>
-<p>Make sure:
-* It is enabled in MultiVerse (or similar multi-world plugin) and if it is not do <code>/mvm set pvp true &lt;world name&gt;</code>.
-* WorldGuard does not disallow fighting in the world where the arena is located (if yes do <code>/rg flag &lt;region name&gt; pvp allow</code>);
-* You have <code>spawn-protection</code> disabled (set it to 0 in server.properties).</p>
+<p>Make sure:</p>
+<ul>
+<li>It is enabled in MultiVerse (or similar multi-world plugin) and if it is not do <code>/mvm set pvp true &lt;world name&gt;</code>.</li>
+<li>WorldGuard does not disallow fighting in the world where the arena is located (if yes do <code>/rg flag &lt;region name&gt; pvp allow</code>);</li>
+<li>You have <code>spawn-protection</code> disabled (set it to 0 in server.properties).</li>
+</ul>
 <p>Keep in mind that BedWars <strong>does not moderate PvP</strong>. If PvP does not work for you, it is caused by a misconfiguration or another plugin. If tips above did not help you, please contact us on our Discord server.</p>
 <p>If you have WorldGuard installed, you can also use a command to check which plugin blocks PvP. The command is <code>/wg debug testdamage -t &lt;player_name&gt;</code> and you need a second player to test this out. Click <a href="https://worldguard.enginehub.org/en/latest/commands/#event-simulation">here</a> to read more about this command.</p>
 <h2 id="players-regenerate-too-quicklyswords-deal-very-little-damage">Players regenerate too quickly/swords deal very little damage<a class="headerlink" href="#players-regenerate-too-quicklyswords-deal-very-little-damage" title="Permanent link">&para;</a></h2>
 <p>That is not a BedWars issue, increase your server's game difficulty (from easy to normal for example).</p>
 <h2 id="changing-arena-name">Changing arena name<a class="headerlink" href="#changing-arena-name" title="Permanent link">&para;</a></h2>
-<p>First, we will provide no support if you mess this up somehow, <strong>arena files are not supposed to be edited by people</strong>.
-1. Go to your BedWars folder and then to arenas folder. The path should be <code>plugins/BedWars/arenas</code>
-2. Open the file you want to change the name
-3. First filled is name, enter your new one. The name cannot look like this <code>test arena</code> and always needs to be one string, that means <code>test-arena</code>. The name also must be unique, that means you cannot have two arenas with the same name.
-4. Save the file
-5. Restart or reload the server </p>
+<p>First, we will provide no support if you mess this up somehow, <strong>arena files are not supposed to be edited by people</strong>.</p>
+<ol>
+<li>Go to your BedWars folder and then to arenas folder. The path should be <code>plugins/BedWars/arenas</code></li>
+<li>Open the file you want to change the name</li>
+<li>First filled is name, enter your new one. The name cannot look like this <code>test arena</code> and always needs to be one string, that means <code>test-arena</code>. The name also must be unique, that means you cannot have two arenas with the same name.</li>
+<li>Save the file</li>
+<li>Restart or reload the server </li>
+</ol>
 <h2 id="kicked-from-server-with-strange-errors">Kicked from server with strange errors<a class="headerlink" href="#kicked-from-server-with-strange-errors" title="Permanent link">&para;</a></h2>
 <p>That is not our fault. You are probably using version older than <code>1.9.4</code>. Nametags, scoreboars and others might be causing that.<br />
 We <code>don't support 1.8.x</code> in any way.<br />
@@ -755,7 +761,7 @@ Remove those plugins or disable them in bedwars worlds. </p>
   <small>
     
       Last update:
-      2023-04-13
+      2023-04-15
     
   </small>
 </div>

@@ -913,7 +913,23 @@
 <span class="normal">422</span>
 <span class="normal">423</span>
 <span class="normal">424</span>
-<span class="normal">425</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1"># the language of the plugin&#39;s messages</span>
+<span class="normal">425</span>
+<span class="normal">426</span>
+<span class="normal">427</span>
+<span class="normal">428</span>
+<span class="normal">429</span>
+<span class="normal">430</span>
+<span class="normal">431</span>
+<span class="normal">432</span>
+<span class="normal">433</span>
+<span class="normal">434</span>
+<span class="normal">435</span>
+<span class="normal">436</span>
+<span class="normal">437</span>
+<span class="normal">438</span>
+<span class="normal">439</span>
+<span class="normal">440</span>
+<span class="normal">441</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1"># the language of the plugin&#39;s messages</span>
 <span class="nt">locale</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">en</span>
 <span class="c1"># enables debug messages, may help with resolving certain problems</span>
 <span class="nt">debug</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
@@ -959,6 +975,8 @@
 <span class="nt">disable-hunger</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
 <span class="nt">automatic-coloring-in-shop</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
 <span class="nt">sell-max-64-per-click-in-shop</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">enable-cheat-command-for-admins</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="nt">shopkeepers-are-silent</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
 <span class="nt">destroy-placed-blocks-by-explosion-except</span><span class="p">:</span>
 <span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;&#39;</span>
 <span class="nt">destroy-placed-blocks-by-explosion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
@@ -971,6 +989,8 @@
 <span class="w">  </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
 <span class="w">  </span><span class="nt">time</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span>
 <span class="nt">stop-team-spawners-on-die</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="c1"># Whether or not should 1.19.4 display entities be used or not. Does work only on 1.19.4+</span>
+<span class="nt">prefer-1-19-4-display-entities</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
 <span class="nt">allowed-commands</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[]</span>
 <span class="nt">change-allowed-commands-to-blacklist</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
 <span class="nt">bungee</span><span class="p">:</span>
@@ -992,15 +1012,15 @@
 <span class="w">  </span><span class="nt">blocks</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[]</span>
 <span class="nt">scoreboard</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">enable</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
-<span class="w">  </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">§a%game%§r - %time%</span>
-<span class="w">  </span><span class="nt">bedLost</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">§c✘</span>
-<span class="w">  </span><span class="nt">bedExists</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">§a✔</span>
+<span class="w">  </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="nl">&amp;a</span><span class="err">%</span><span class="l l-Scalar l-Scalar-Plain">game%&amp;r - %time%</span>
+<span class="w">  </span><span class="nt">bedLost</span><span class="p">:</span><span class="w"> </span><span class="nl">&amp;c</span><span class="l l-Scalar l-Scalar-Plain">✘</span>
+<span class="w">  </span><span class="nt">bedExists</span><span class="p">:</span><span class="w"> </span><span class="nl">&amp;a</span><span class="l l-Scalar l-Scalar-Plain">✔</span>
 <span class="w">  </span><span class="nt">teamTitle</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;%bed%%color%%team%&#39;</span>
-<span class="w">  </span><span class="nt">anchorEmpty</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">§e✘</span>
+<span class="w">  </span><span class="nt">anchorEmpty</span><span class="p">:</span><span class="w"> </span><span class="nl">&amp;e</span><span class="l l-Scalar l-Scalar-Plain">✘</span>
 <span class="nt">title</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="w">  </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
 <span class="w">  </span><span class="nt">fadeIn</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
-<span class="w">  </span><span class="nt">stay</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
+<span class="w">  </span><span class="nt">stay</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">20</span>
 <span class="w">  </span><span class="nt">fadeOut</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
 <span class="nt">items</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">jointeam</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">COMPASS</span>
@@ -1050,8 +1070,10 @@
 <span class="nt">respawn</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">protection-enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
 <span class="w">  </span><span class="nt">protection-time</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span>
+<span class="w">  </span><span class="nt">show-messages</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
 <span class="nt">specials</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">action-bar-messages</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">dont-show-success-messages</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
 <span class="w">  </span><span class="nt">rescue-platform</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">is-breakable</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
 <span class="w">    </span><span class="nt">delay</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
@@ -1090,14 +1112,14 @@
 <span class="w">  </span><span class="nt">teamchest</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">turn-all-enderchests-to-teamchests</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
 <span class="w">  </span><span class="nt">throwable-fireball</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">explosion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3.0</span>
-<span class="w">    </span><span class="nt">damage</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2.0</span>
+<span class="w">    </span><span class="nt">damage</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3.0</span>
+<span class="w">    </span><span class="nt">incendiary</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">    </span><span class="nt">damage-thrower</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
 <span class="w">  </span><span class="nt">auto-igniteable-tnt</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">explosion-time</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
 <span class="w">    </span><span class="nt">damage-placer</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<span class="nt">tnt</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span>
+<span class="w">    </span><span class="nt">damage</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4.0</span>
 <span class="nt">sounds</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">on_trap_triggered</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ENTITY_ENDERMAN_TELEPORT</span>
 <span class="w">  </span><span class="nt">bed_destroyed</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">sound</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ENTITY_ENDER_DRAGON_GROWL</span>
 <span class="w">    </span><span class="nt">volume</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
@@ -1145,13 +1167,15 @@
 <span class="w">      </span><span class="nt">flicker</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
 <span class="w">      </span><span class="nt">trail</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
 <span class="w">      </span><span class="nt">colors</span><span class="p">:</span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nl">&amp;id001</span>
-<span class="w">        </span><span class="nt">==</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Color</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">==</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Color</span>
 <span class="w">        </span><span class="nt">RED</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">255</span>
 <span class="w">        </span><span class="nt">BLUE</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">255</span>
 <span class="w">        </span><span class="nt">GREEN</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">255</span>
 <span class="w">      </span><span class="nt">fade-colors</span><span class="p">:</span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nv">*id001</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">==</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Color</span>
+<span class="w">        </span><span class="nt">RED</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">255</span>
+<span class="w">        </span><span class="nt">BLUE</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">255</span>
+<span class="w">        </span><span class="nt">GREEN</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">255</span>
 <span class="w">      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">BALL</span>
 <span class="w">    </span><span class="nt">power</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
 <span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Firework</span>
@@ -1165,13 +1189,13 @@
 <span class="w">  </span><span class="nt">warppowdertick</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span>
 <span class="nt">lobby-scoreboard</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
-<span class="w">  </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">§eBEDWARS</span>
+<span class="w">  </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="nl">&amp;eBEDWARS</span>
 <span class="w">  </span><span class="nt">content</span><span class="p">:</span>
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;</span><span class="nv"> </span><span class="s">&#39;</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;§fMap:</span><span class="nv"> </span><span class="s">§2%arena%&#39;</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;§fPlayers:</span><span class="nv"> </span><span class="s">§2%players%§f/§2%maxplayers%&#39;</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;&amp;fMap:</span><span class="nv"> </span><span class="s">&amp;2%arena%&#39;</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;&amp;fPlayers:</span><span class="nv"> </span><span class="s">&amp;2%players%&amp;f/&amp;2%maxplayers%&#39;</span>
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;</span><span class="nv"> </span><span class="s">&#39;</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">§fWaiting ...</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nl">&amp;fWaiting</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">...</span>
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;</span><span class="nv"> </span><span class="s">&#39;</span>
 <span class="nt">statistics</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
@@ -1204,16 +1228,18 @@
 <span class="w">    </span><span class="nt">enable</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
 <span class="w">    </span><span class="nt">color</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">GREEN</span>
 <span class="w">    </span><span class="nt">style</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SEGMENTED_20</span>
+<span class="w">  </span><span class="c1"># The backend-entity field is present only if the server is running on 1.8.8. Allowed values: wither, dragon</span>
+<span class="w">  </span><span class="nt">backend-entity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dragon</span>
 <span class="nt">holograms</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<span class="w">  </span><span class="nt">headline</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Your §eBEDWARS§f stats</span>
+<span class="w">  </span><span class="nt">headline</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Your &amp;eBEDWARS&amp;f stats</span>
 <span class="w">  </span><span class="nt">leaderboard</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">headline</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;&amp;6Bedwars</span><span class="nv"> </span><span class="s">Leaderboard&#39;</span>
 <span class="w">    </span><span class="nt">format</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;&amp;l%order%.</span><span class="nv"> </span><span class="s">&amp;7%name%</span><span class="nv"> </span><span class="s">-</span><span class="nv"> </span><span class="s">&amp;a%score%&#39;</span>
 <span class="w">    </span><span class="nt">size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
 <span class="nt">chat</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">override</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<span class="w">  </span><span class="nt">format</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;&lt;%teamcolor%%name%§r&gt;</span><span class="nv"> </span><span class="s">&#39;</span>
+<span class="w">  </span><span class="nt">format</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;&lt;%teamcolor%%name%&amp;r&gt;</span><span class="nv"> </span><span class="s">&#39;</span>
 <span class="w">  </span><span class="nt">separate-chat</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">lobby</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
 <span class="w">    </span><span class="nt">game</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
@@ -1230,6 +1256,8 @@
 <span class="w">  </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
 <span class="w">  </span><span class="nt">player-win</span><span class="p">:</span>
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/example {player} 200</span>
+<span class="w">  </span><span class="nt">player-win-run-immediately</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/example {player} 200</span>
 <span class="w">  </span><span class="nt">player-end-game</span><span class="p">:</span>
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/example {player} {score}</span>
 <span class="w">  </span><span class="nt">player-destroy-bed</span><span class="p">:</span>
@@ -1241,11 +1269,11 @@
 <span class="nt">lore</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">generate-automatically</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
 <span class="w">  </span><span class="nt">text</span><span class="p">:</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;§7Cost:</span><span class="nv"> </span><span class="s">§f%price%</span><span class="nv"> </span><span class="s">%resource%&#39;</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;&amp;7Cost:</span><span class="nv"> </span><span class="s">&amp;f%price%</span><span class="nv"> </span><span class="s">%resource%&#39;</span>
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;&#39;</span>
 <span class="nt">sign</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">lines</span><span class="p">:</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">§c§l[BedWars]</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nl">&amp;c&amp;l</span><span class="p p-Indicator">[</span><span class="nv">BedWars</span><span class="p p-Indicator">]</span>
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;%arena%&#39;</span>
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;%status%&#39;</span>
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;%players%&#39;</span>
@@ -1272,7 +1300,6 @@
 <span class="w">  </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
 <span class="w">  </span><span class="nt">location</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;&#39;</span>
 <span class="w">  </span><span class="nt">world</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;&#39;</span>
-<span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
 <span class="nt">turnOnExperimentalGroovyShop</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
 <span class="nt">preventSpectatorFlyingAway</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
 <span class="nt">removePurchaseMessages</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
@@ -1327,7 +1354,7 @@
 <span class="w">    </span><span class="nt">contents</span><span class="p">:</span>
 <span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;&amp;eexample.com&#39;</span>
 <span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;&amp;fWow!!&#39;</span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">§a%spectators% are watching this match</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nl">&amp;a</span><span class="err">%</span><span class="l l-Scalar l-Scalar-Plain">spectators% are watching this match</span>
 <span class="w">  </span><span class="nt">hide-spectators</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
 <span class="w">  </span><span class="nt">hide-foreign-players</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
 <span class="nt">default-permissions</span><span class="p">:</span>
@@ -1338,6 +1365,11 @@
 <span class="w">  </span><span class="nt">rejoin</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
 <span class="w">  </span><span class="nt">autojoin</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
 <span class="w">  </span><span class="nt">leaderboard</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="c1"># The following sections requires Parties plugin to be installed</span>
+<span class="nt">party</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="w">  </span><span class="nt">autojoin-members</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="w">  </span><span class="nt">notify-when-warped</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
 </code></pre></div></td></tr></table></div>
 <h2 id="custom-resources">Custom resources<a class="headerlink" href="#custom-resources" title="Permanent link">&para;</a></h2>
 <p>Open the config (<code>plugins/BedWars/config.yml</code>) and scroll down, until you find a section called <code>resources</code>. Using <code>Ctrl+F</code> helps you to search for it.</p>
@@ -1560,7 +1592,7 @@
   <small>
     
       Last update:
-      2023-04-13
+      2023-04-15
     
   </small>
 </div>
