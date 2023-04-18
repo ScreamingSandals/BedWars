@@ -77,14 +77,14 @@ public class PlayerListener implements Listener {
             GamePlayer gVictim = Main.getPlayerGameProfile(victim);
             Game game = gVictim.getGame();
             CurrentTeam victimTeam = game.getPlayerTeam(gVictim);
-            ChatColor victimColor = victimTeam.teamInfo.color.chatColor;
             List<ItemStack> drops = new ArrayList<>(event.getDrops());
             int respawnTime = Main.getConfigurator().config.getInt("respawn-cooldown.time", 5);
 
             event.setKeepInventory(game.getOriginalOrInheritedKeepInventory());
             event.setDroppedExp(0);
 
-            if (game.getStatus() == GameStatus.RUNNING) {
+            if (game.getStatus() == GameStatus.RUNNING && victimTeam != null) { // we shouldn't assume the victimTeam is not null, this can be spectator
+                ChatColor victimColor = victimTeam.teamInfo.color.chatColor;
                 if (!game.getOriginalOrInheritedPlayerDrops()) {
                     event.getDrops().clear();
                 }
@@ -206,6 +206,9 @@ public class PlayerListener implements Listener {
             if (!Main.getConfigurator().config.getBoolean("allow-fake-death")) {
                 PlayerUtils.respawn(Main.getInstance(), victim, 3L);
             }
+            if (victimTeam == null) {
+                return; // we shouldn't continue further in that case
+            }
             if (Main.getConfigurator().config.getBoolean("respawn-cooldown.enabled")
                     && victimTeam.isAlive()
                     && !gVictim.isSpectator) {
@@ -233,6 +236,27 @@ public class PlayerListener implements Listener {
                                     Main.getConfigurator().config.getString("sounds.respawn_cooldown_done.sound"),
                                     Sounds.UI_BUTTON_CLICK, (float) Main.getConfigurator().config.getDouble("sounds.respawn_cooldown_done.volume"), (float) Main.getConfigurator().config.getDouble("sounds.respawn_cooldown_done.pitch"));
 
+                            this.cancel();
+                        }
+                    }
+                }.runTaskTimer(Main.getInstance(), 20L, 20L);
+            } else if (!victimTeam.getConnectedPlayers().contains(victim) && Main.getConfigurator().config.getBoolean("kick-players-upon-final-death.enabled")) {
+                int delay = Main.getConfigurator().config.getInt("kick-players-upon-final-death.delay", 0);
+
+                new BukkitRunnable() {
+                    int kickTime = delay;
+                    GamePlayer gamePlayer = gVictim;
+                    Player player = gamePlayer.player;
+
+                    @Override
+                    public void run() {
+                        if (kickTime > 0) {
+                            MiscUtils.sendActionBarMessage(player, i18nonly("kicking_in").replace("%time%", String.valueOf(kickTime)));
+                        }
+
+                        kickTime--;
+                        if (kickTime == 0) {
+                            game.leaveFromGame(player);
                             this.cancel();
                         }
                     }

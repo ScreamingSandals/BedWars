@@ -161,6 +161,9 @@ public class Configurator {
         checkOrSetConfig(modify, "allow-fake-death", false);
         checkOrSetConfig(modify, "prefer-1-19-4-display-entities", true);
 
+        checkOrSetConfig(modify, "kick-players-upon-final-death.enabled", false);
+        checkOrSetConfig(modify, "kick-players-upon-final-death.delay", 5);
+
         checkOrSetConfig(modify, "allowed-commands", new ArrayList<>());
         checkOrSetConfig(modify, "change-allowed-commands-to-blacklist", false);
 

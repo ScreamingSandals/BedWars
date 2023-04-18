@@ -366,3 +366,4 @@ help_bw_cheat_destroybed: "/bw cheat destroybed <team> - &cDestroys bed of the s
 help_bw_cheat_destroyallbeds: "/bw cheat destroyallbeds - &cDestroys all beds in the game"
 help_bw_cheat_jointeam: "/bw cheat jointeam [team] - &cJoins an admin to the specified team or to current team ignoring its size (can also be used while the game is running, however the team must have some players)"
 cheat_received_target_blocks_destroy: "&aBeds of all teams have been destroyed!"
+kicking_in: "&cLeaving the arena in: &7%time%"
