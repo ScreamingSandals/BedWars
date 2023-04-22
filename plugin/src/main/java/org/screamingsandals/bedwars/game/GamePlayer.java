@@ -25,6 +25,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffect;
+import org.bukkit.scoreboard.Scoreboard;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.utils.BungeeUtils;
 import org.screamingsandals.bedwars.lib.nms.entity.PlayerUtils;
@@ -38,6 +39,7 @@ public class GamePlayer {
     private String latestGame = null;
     private StoredInventory oldInventory = new StoredInventory();
     private List<Player> hiddenPlayers = new ArrayList<>();
+    private Scoreboard scoreboard;
 
     public boolean isSpectator = false;
     public boolean isTeleportingFromGame_justForInventoryPlugins = false;
@@ -109,6 +111,10 @@ public class GamePlayer {
         oldInventory.listName = player.getPlayerListName();
         oldInventory.displayName = player.getDisplayName();
         oldInventory.foodLevel = player.getFoodLevel();
+
+        if (Main.getConfigurator().config.getBoolean("remember-what-scoreboards-players-had-before")) {
+            this.scoreboard = player.getScoreboard();
+        }
     }
 
     public void restoreInv() {
@@ -144,6 +150,11 @@ public class GamePlayer {
         player.updateInventory();
         player.resetPlayerTime();
         player.resetPlayerWeather();
+
+        if (scoreboard != null) {
+            player.setScoreboard(scoreboard);
+            scoreboard = null;
+        }
     }
 
     public void resetLife() {

@@ -160,6 +160,7 @@ public class Configurator {
         checkOrSetConfig(modify, "stop-team-spawners-on-die", false);
         checkOrSetConfig(modify, "allow-fake-death", false);
         checkOrSetConfig(modify, "prefer-1-19-4-display-entities", true);
+        checkOrSetConfig(modify, "remember-what-scoreboards-players-had-before", false);
 
         checkOrSetConfig(modify, "kick-players-upon-final-death.enabled", false);
         checkOrSetConfig(modify, "kick-players-upon-final-death.delay", 5);
