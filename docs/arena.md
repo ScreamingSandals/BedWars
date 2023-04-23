@@ -93,5 +93,5 @@ These entities allow players to select their team by right clicking at them. The
 * Now the entity gets name same as team and if the entity is Armor Stand it gets leather armor in team color. And it makes your entity persistent.
 * Now save your arena and you can play
 
-### Manually creation
+### Manual creation
 Create any living entity with custom name same as team name and place it in your lobby. The plugin will use the name to determine the team.
