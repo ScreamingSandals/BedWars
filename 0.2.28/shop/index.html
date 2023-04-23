@@ -8,20 +8,20 @@
       
       
       
-        <link rel="canonical" href="http://localhost:8000/0.2.28/upgrades/">
+        <link rel="canonical" href="http://localhost:8000/0.2.28/shop/">
       
       
-        <link rel="prev" href="../shop/">
+        <link rel="prev" href="../commands/">
       
       
-        <link rel="next" href="../placeholderapi/">
+        <link rel="next" href="../upgrades/">
       
       <link rel="icon" href="../assets/icon.png">
       <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.1.7">
     
     
       
-        <title>Upgrades - ScreamingBedWars</title>
+        <title>Shop - ScreamingBedWars</title>
       
     
     
@@ -73,7 +73,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#upgrades" class="md-skip">
+        <a href="#shop" class="md-skip">
           Skip to content
         </a>
       
@@ -121,7 +121,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Upgrades
+              Shop
             
           </span>
         </div>
@@ -314,21 +314,6 @@
 
   
   
-  
-    <li class="md-nav__item">
-      <a href="../shop/" class="md-nav__link">
-        Shop
-      </a>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
     
   
   
@@ -341,12 +326,12 @@
       
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
-          Upgrades
+          Shop
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
-        Upgrades
+        Shop
       </a>
       
         
@@ -365,16 +350,23 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#spawner-resource-quantity-upgrade" class="md-nav__link">
-    Spawner resource quantity upgrade
+  <a href="#creating-a-new-item" class="md-nav__link">
+    Creating a new item
   </a>
   
-    <nav class="md-nav" aria-label="Spawner resource quantity upgrade">
+    <nav class="md-nav" aria-label="Creating a new item">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#modes" class="md-nav__link">
-    Modes
+  <a href="#using-short-stack" class="md-nav__link">
+    Using short stack
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#using-long-stack" class="md-nav__link">
+    Using long stack
   </a>
   
 </li>
@@ -384,10 +376,32 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#using-item-as-a-category" class="md-nav__link">
+    Using item as a category
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
       
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../upgrades/" class="md-nav__link">
+        Upgrades
+      </a>
     </li>
   
 
@@ -467,9 +481,56 @@
                   
 
 
-<h1 id="upgrades">Upgrades<a class="headerlink" href="#upgrades" title="Permanent link">&para;</a></h1>
-<h2 id="spawner-resource-quantity-upgrade">Spawner resource quantity upgrade<a class="headerlink" href="#spawner-resource-quantity-upgrade" title="Permanent link">&para;</a></h2>
-<p>This is how it should look in you shop.yml file:</p>
+<h1 id="shop">Shop<a class="headerlink" href="#shop" title="Permanent link">&para;</a></h1>
+<p>Screaming BedWars plugin uses our own lib called SimpleInventories to create and render inventory-based guis, and therefore shops. This article will show you some basics of this format. Check <a href="https://github.com/ScreamingSandals/SimpleInventories/wiki">this wiki</a> for more advanced variables.</p>
+<h2 id="creating-a-new-item">Creating a new item<a class="headerlink" href="#creating-a-new-item" title="Permanent link">&para;</a></h2>
+<p>To create a new item, first you need to know internal item's name. You can either use Minecraft Wiki or <a href="https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html">this page</a> to get the name. If you use Minecraft Wiki, the name will usually start with <code>minecraft:</code>, this part can be omitted from the final name and for compatibility reasons it is better to omit it (so <code>minecraft:stone</code> will be just <code>stone</code> in the shop file). </p>
+<p>You can also use modern names in legacy environments (1.8.8-1.12.2). If the modern name does not work, check <a href="https://helpch.at/docs/1.12.2/org/bukkit/Material.html">this page</a> for old names. Old names are deprecated and they may not be supported in future releases of BedWars.</p>
+<p>There are two supported formats of items. We call them <code>short stack</code> and <code>long stack</code>.</p>
+<h3 id="using-short-stack">Using short stack<a class="headerlink" href="#using-short-stack" title="Permanent link">&para;</a></h3>
+<p>This format can describe only material name, amount, display name and lore. Except for material name, every part is optional. Each part is divided using semicolon.</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nt">items</span><span class="p">:</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">stone</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dirt;2</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">diamond_pickaxe;;Super Sword</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tnt;3;Trinitrotoluene;Does explode</span>
+</code></pre></div></td></tr></table></div>
+<p>To specify price and make the item buyable, suffix this format with <code>for &lt;amount&gt; &lt;resource&gt;</code>:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nt">items</span><span class="p">:</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">stone for 1 bronze</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dirt;2 for 3 iron</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">diamond_pickaxe;;Super Sword for 5 gold</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tnt;3;Trinitrotoluene;Does explode for 9 iron</span>
+</code></pre></div></td></tr></table></div>
+<p>In order to be able to specify other attributes (for example <code>properties</code>), we have to convert this from string to map. This is done by splitting the string into variables <code>stack</code> and <code>price</code>:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span>
+<span class="normal">9</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nt">items</span><span class="p">:</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">stack</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">stone</span>
+<span class="w">  </span><span class="nt">price</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1 bronze</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">stack</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dirt;2</span>
+<span class="w">  </span><span class="nt">price</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3 iron</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">stack</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">diamond_pickaxe;;Super Pickaxe</span>
+<span class="w">  </span><span class="nt">price</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5 gold</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">stack</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tnt;3;Trinitrotoluene;Does explode</span>
+<span class="w">  </span><span class="nt">price</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">9 iron</span>
+</code></pre></div></td></tr></table></div>
+<h3 id="using-long-stack">Using long stack<a class="headerlink" href="#using-long-stack" title="Permanent link">&para;</a></h3>
+<p>Long stack allows you to create items with enchantments and other attributes. Let's see the previous example rewritten in this format:</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
@@ -483,35 +544,64 @@
 <span class="normal">11</span>
 <span class="normal">12</span>
 <span class="normal">13</span>
-<span class="normal">14</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">price</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
-<span class="w">  </span><span class="nt">price-type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bronze</span>
-<span class="w">  </span><span class="nt">upgrade</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">entities</span><span class="p">:</span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">spawner</span>
-<span class="w">      </span><span class="nt">spawner-type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bronze</span>
-<span class="w">      </span><span class="nt">add-levels</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.2</span>
-<span class="w">      </span><span class="nt">max-level</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
-<span class="w">      </span><span class="nt">shop-name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Bronze</span><span class="nv"> </span><span class="s">upgrade</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">team</span><span class="nv"> </span><span class="s">%team%&quot;</span>
-<span class="w">      </span><span class="nt">notify-team</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<span class="w">  </span><span class="nt">stack</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">DIAMOND_BLOCK</span>
-<span class="w">    </span><span class="nt">amount</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
-<span class="w">    </span><span class="nt">display-name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Bronze</span><span class="nv"> </span><span class="s">upgrade</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">team</span><span class="nv"> </span><span class="s">%team%&quot;</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nt">items</span><span class="p">:</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">stack</span><span class="p">:</span><span class="w"> </span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">stone</span>
+<span class="w">  </span><span class="nt">price</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1 bronze</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">stack</span><span class="p">:</span><span class="w"> </span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dirt</span>
+<span class="w">    </span><span class="nt">amount</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
+<span class="w">  </span><span class="nt">price</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3 iron</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">stack</span><span class="p">:</span><span class="w"> </span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">diamond_pickaxe</span>
+<span class="w">    </span><span class="nt">display-name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Super Pickaxe</span>
+<span class="w">  </span><span class="nt">price</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5 gold</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">stack</span><span class="p">:</span><span class="w"> </span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tnt</span>
+<span class="w">    </span><span class="nt">amount</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
+<span class="w">    </span><span class="nt">display-name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Trinitrotoluene</span>
+<span class="w">    </span><span class="nt">lore</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Does explode</span>
+<span class="w">  </span><span class="nt">price</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">9 iron</span>
 </code></pre></div></td></tr></table></div>
-<p>Let's get into it.</p>
-<ul>
-<li>You <strong>must</strong> define the variables <code>upgrade</code>, <code>entities</code> and <code>type: spawner</code>. If any of these will be missing, upgrades won't work.</li>
-<li>We got these spawner modes: <code>spawner-name</code>, <code>spawner-type</code> and <code>team-upgrade</code></li>
-<li><code>add-levels</code> parameter defines how much levels we are going to add. (Default start level for the spawner is 1)</li>
-<li><code>max-level</code> defines the maximum level you can upgrade to. (default is no limit)</li>
-<li><code>shop-name</code> is displayed after you buy the upgrade. That's all.</li>
-<li><code>notify-team</code> if this is true, information will be send to all the players of the team.</li>
-</ul>
-<h3 id="modes">Modes<a class="headerlink" href="#modes" title="Permanent link">&para;</a></h3>
-<ul>
-<li><code>spawner-name</code>: You need to have your spawner name defined in arena.yml file or while creating arena (<code>/bw admin arenaName spawner add &lt;spawnerType&gt; &lt;holoEnabled&gt; &lt;startLevel (default: 1)&gt; &lt;customName&gt; &lt;team&gt;</code>). </li>
-<li><code>spawner-type</code> &amp; <code>team-upgrade</code>: You need to have team defined with the spawner.</li>
-</ul>
+<p>As we can see, the <code>stack</code> attribute is now map, which allows more attributes to be present. For example, we can enchant our Super Pickaxe with Fortune III.</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">stack</span><span class="p">:</span><span class="w"> </span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">diamond_pickaxe</span>
+<span class="w">    </span><span class="nt">display-name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Super Pickaxe</span>
+<span class="w">    </span><span class="nt">enchants</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">fortune</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
+<span class="w">  </span><span class="nt">price</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5 gold</span>
+</code></pre></div></td></tr></table></div>
+<p>The enchantment names can be found <a href="https://www.digminecraft.com/lists/enchantment_list_pc.php">here</a>. You can also use <a href="https://hub.spigotmc.org/javadocs/spigot/org/bukkit/enchantments/Enchantment.html">Bukkit names</a> to specify enchants.</p>
+<p>For list of all available options visit <a href="https://github.com/ScreamingSandals/SimpleInventories/wiki/Variable:-stack">this page</a>.</p>
+<h2 id="using-item-as-a-category">Using item as a category<a class="headerlink" href="#using-item-as-a-category" title="Permanent link">&para;</a></h2>
+<p>You can use any item as a category (even if the item is in another category). Players can then click on that item to open the category. The format is very similar, the only thing you have to specify is a list called <code>items</code>, where you put items of that specific category. Format of items in <code>items</code> is same as format in the base <code>data</code> list.</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">stack</span><span class="p">:</span><span class="w"> </span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">diamond_pickaxe</span>
+<span class="w">    </span><span class="nt">display-name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Super Pickaxes</span>
+<span class="w">    </span><span class="nt">lore</span><span class="p">:</span>
+<span class="w">     </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">You will never mine with anything else!</span>
+<span class="w">  </span><span class="nt">items</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">wooden_pickaxe for 10 gold</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">golden_pickaxe for 20 gold</span>
+</code></pre></div></td></tr></table></div>
 
   <hr>
 <div class="md-source-file">

@@ -17,7 +17,7 @@
         <link rel="next" href="../config/">
       
       <link rel="icon" href="../assets/icon.png">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.1.6">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.1.7">
     
     
       
@@ -61,7 +61,7 @@
     
     
     
-    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="teal" data-md-color-accent="">
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="teal" data-md-color-accent="indigo">
   
     
     
@@ -131,7 +131,9 @@
       <form class="md-header__option" data-md-component="palette">
         
           
-          <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="teal" data-md-color-accent=""  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+          
+          
+          <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="teal" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
           
             <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_2" hidden>
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3Z"/></svg>
@@ -139,7 +141,9 @@
           
         
           
-          <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent=""  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_2">
+          
+          
+          <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_2">
           
             <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6zm0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4zM7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
@@ -356,6 +360,40 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#join-signs" class="md-nav__link">
+    Join signs
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#team-entities" class="md-nav__link">
+    Team entities
+  </a>
+  
+    <nav class="md-nav" aria-label="Team entities">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#creation-by-jointeam-command" class="md-nav__link">
+    Creation by jointeam command
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#manually-creation" class="md-nav__link">
+    Manually creation
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -374,6 +412,36 @@
     <li class="md-nav__item">
       <a href="../config/" class="md-nav__link">
         Configuration
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../commands/" class="md-nav__link">
+        Commands and Permissions
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../shop/" class="md-nav__link">
+        Shop
       </a>
     </li>
   
@@ -517,13 +585,34 @@ If you would like to have a player with a skin as the shop keeper, use this comm
 <p>Add the lobby location for the arena by executing this command: <code>/bw admin &lt;arena&gt; lobby</code>.</p>
 <p>Add the spectator location for the arena by executing this command: <code>/bw admin &lt;arena&gt; spec</code>.</p>
 <p>Last but not least, remember to save the arena with <code>/bw admin &lt;arena&gt; save</code>.</p>
+<h2 id="join-signs">Join signs<a class="headerlink" href="#join-signs" title="Permanent link">&para;</a></h2>
+<p>You can use signs to join the arena. Follow these steps to create such sign.</p>
+<ul>
+<li>On the first line write [BedWars] or [BWGame]</li>
+<li>On the second line write the name of arena for join.</li>
+<li>For the first sign update join to game.</li>
+</ul>
+<p>Alternatively, you can create a leave sign by writing word <code>leave</code> instead of arena name.</p>
+<h2 id="team-entities">Team entities<a class="headerlink" href="#team-entities" title="Permanent link">&para;</a></h2>
+<p>These entities allow players to select their team by right clicking at them. There are two ways how these entities can be created.</p>
+<h3 id="creation-by-jointeam-command">Creation by jointeam command<a class="headerlink" href="#creation-by-jointeam-command" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Go to your bedwars lobby and place the entity</li>
+<li>Switch your arena to edit mode</li>
+<li>Run command <code>/bw admin &lt;arena&gt; jointeam &lt;team&gt;</code></li>
+<li>Right click the entity that you want to change to team entity</li>
+<li>Now the entity gets name same as team and if the entity is Armor Stand it gets leather armor in team color. And it makes your entity persistent.</li>
+<li>Now save your arena and you can play</li>
+</ul>
+<h3 id="manually-creation">Manually creation<a class="headerlink" href="#manually-creation" title="Permanent link">&para;</a></h3>
+<p>Create any living entity with custom name same as team name and place it in your lobby. The plugin will use the name to determine the team.</p>
 
   <hr>
 <div class="md-source-file">
   <small>
     
       Last update:
-      2023-04-15
+      2023-04-23
     
   </small>
 </div>
@@ -553,7 +642,7 @@ If you would like to have a player with a skin as the shop keeper, use this comm
       <div class="md-copyright">
   
     <div class="md-copyright__highlight">
-      Copyright &copy; 2022 ScreamingSandals
+      Copyright &copy; 2023 ScreamingSandals
     </div>
   
   

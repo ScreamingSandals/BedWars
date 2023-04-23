@@ -8,20 +8,20 @@
       
       
       
-        <link rel="canonical" href="http://localhost:8000/0.2.28/upgrades/">
+        <link rel="canonical" href="http://localhost:8000/0.2.28/commands/">
       
       
-        <link rel="prev" href="../shop/">
+        <link rel="prev" href="../config/">
       
       
-        <link rel="next" href="../placeholderapi/">
+        <link rel="next" href="../shop/">
       
       <link rel="icon" href="../assets/icon.png">
       <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.1.7">
     
     
       
-        <title>Upgrades - ScreamingBedWars</title>
+        <title>Commands and Permissions - ScreamingBedWars</title>
       
     
     
@@ -73,7 +73,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#upgrades" class="md-skip">
+        <a href="#commands-and-permissions" class="md-skip">
           Skip to content
         </a>
       
@@ -121,7 +121,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Upgrades
+              Commands and Permissions
             
           </span>
         </div>
@@ -299,11 +299,106 @@
 
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../commands/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Commands and Permissions
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         Commands and Permissions
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#permissions" class="md-nav__link">
+    Permissions
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#commands" class="md-nav__link">
+    Commands
+  </a>
+  
+    <nav class="md-nav" aria-label="Commands">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#player-commands" class="md-nav__link">
+    Player commands
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#admin-commands" class="md-nav__link">
+    Admin Commands
+  </a>
+  
+    <nav class="md-nav" aria-label="Admin Commands">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#arena-editing" class="md-nav__link">
+    Arena editing
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cheat-commands" class="md-nav__link">
+    Cheat commands
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#misc" class="md-nav__link">
+    Misc
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -329,65 +424,11 @@
 
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          Upgrades
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../upgrades/" class="md-nav__link">
         Upgrades
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#spawner-resource-quantity-upgrade" class="md-nav__link">
-    Spawner resource quantity upgrade
-  </a>
-  
-    <nav class="md-nav" aria-label="Spawner resource quantity upgrade">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#modes" class="md-nav__link">
-    Modes
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -467,50 +508,112 @@
                   
 
 
-<h1 id="upgrades">Upgrades<a class="headerlink" href="#upgrades" title="Permanent link">&para;</a></h1>
-<h2 id="spawner-resource-quantity-upgrade">Spawner resource quantity upgrade<a class="headerlink" href="#spawner-resource-quantity-upgrade" title="Permanent link">&para;</a></h2>
-<p>This is how it should look in you shop.yml file:</p>
-<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">price</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
-<span class="w">  </span><span class="nt">price-type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bronze</span>
-<span class="w">  </span><span class="nt">upgrade</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">entities</span><span class="p">:</span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">spawner</span>
-<span class="w">      </span><span class="nt">spawner-type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bronze</span>
-<span class="w">      </span><span class="nt">add-levels</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.2</span>
-<span class="w">      </span><span class="nt">max-level</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
-<span class="w">      </span><span class="nt">shop-name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Bronze</span><span class="nv"> </span><span class="s">upgrade</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">team</span><span class="nv"> </span><span class="s">%team%&quot;</span>
-<span class="w">      </span><span class="nt">notify-team</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<span class="w">  </span><span class="nt">stack</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">DIAMOND_BLOCK</span>
-<span class="w">    </span><span class="nt">amount</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
-<span class="w">    </span><span class="nt">display-name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Bronze</span><span class="nv"> </span><span class="s">upgrade</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">team</span><span class="nv"> </span><span class="s">%team%&quot;</span>
-</code></pre></div></td></tr></table></div>
-<p>Let's get into it.</p>
+<h1 id="commands-and-permissions">Commands and Permissions<a class="headerlink" href="#commands-and-permissions" title="Permanent link">&para;</a></h1>
+<h2 id="permissions">Permissions<a class="headerlink" href="#permissions" title="Permanent link">&para;</a></h2>
 <ul>
-<li>You <strong>must</strong> define the variables <code>upgrade</code>, <code>entities</code> and <code>type: spawner</code>. If any of these will be missing, upgrades won't work.</li>
-<li>We got these spawner modes: <code>spawner-name</code>, <code>spawner-type</code> and <code>team-upgrade</code></li>
-<li><code>add-levels</code> parameter defines how much levels we are going to add. (Default start level for the spawner is 1)</li>
-<li><code>max-level</code> defines the maximum level you can upgrade to. (default is no limit)</li>
-<li><code>shop-name</code> is displayed after you buy the upgrade. That's all.</li>
-<li><code>notify-team</code> if this is true, information will be send to all the players of the team.</li>
+<li><code>bw.admin</code> - Allows you to create/edit an arena, reload the plugin and use the cheat command if enabled.</li>
+<li><code>bw.vip.startitem</code> - Allows you to start the game using the item. All players will be automatically distributed to teams.</li>
+<li><code>bw.vip.forcejoin</code> - Allows you to join even if the game is full (player without this permission will be kicked).</li>
+<li><code>bw.otherstats</code> - Allows you to see stats of other players.</li>
+<li><code>bw.admin.alljoin</code> - Allows you to use /bw alljoin command.</li>
+<li><code>bw.disable.joinall</code> - Protects you from effects of /bw alljoin command.</li>
+<li><code>bw.cmd.join</code> - Allows you to use /bw join command.</li>
+<li><code>bw.cmd.leave</code> - Allows you to use /bw leave command.</li>
+<li><code>bw.cmd.stats</code> - Allows you to use /bw stats command.</li>
+<li><code>bw.cmd.rejoin</code> - Allows you to use /bw rejoin command.</li>
+<li><code>bw.cmd.autojoin</code> - Allows you to use /bw autojoin command.</li>
+<li><code>bw.cmd.list</code> - Allows you to use /bw list command.</li>
+<li><code>bw.cmd.leaderboard</code> - Allows you to use /bw leaderboard command.</li>
 </ul>
-<h3 id="modes">Modes<a class="headerlink" href="#modes" title="Permanent link">&para;</a></h3>
+<p>Every permission can be prefixed with <code>misat11.</code>. Note that this egoism is deprecated and will be removed in a future release.</p>
+<p>All permissions starting with <code>bw.cmd.</code> are allowed by default even if the permission is not explicitly given. This can be changed in <code>config.yml</code> in section <code>default-permissions</code></p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nt">default-permissions</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">join</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">leave</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">stats</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">list</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">rejoin</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">autojoin</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">leaderboard</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+</code></pre></div></td></tr></table></div>
+<h2 id="commands">Commands<a class="headerlink" href="#commands" title="Permanent link">&para;</a></h2>
+<p>Every command has its own specified permission in brackets. </p>
+<p><code>&lt;argument&gt;</code> is required argument. <br />
+<code>[argument]</code> is optional argument, and the command can be executed if this argument is not specified. However, every optional argument before this optional argument must be specified in order to be able to use this argument.</p>
+<h3 id="player-commands">Player commands<a class="headerlink" href="#player-commands" title="Permanent link">&para;</a></h3>
 <ul>
-<li><code>spawner-name</code>: You need to have your spawner name defined in arena.yml file or while creating arena (<code>/bw admin arenaName spawner add &lt;spawnerType&gt; &lt;holoEnabled&gt; &lt;startLevel (default: 1)&gt; &lt;customName&gt; &lt;team&gt;</code>). </li>
-<li><code>spawner-type</code> &amp; <code>team-upgrade</code>: You need to have team defined with the spawner.</li>
+<li><code>/bw help</code> - Shows list of commands (no permission required)</li>
+<li><code>/bw join [arena]</code> - Join the arena (permission: <code>bw.cmd.join</code>)</li>
+<li><code>/bw leave</code> - Leave the arena (permission: <code>bw.cmd.leave</code>)</li>
+<li><code>/bw list</code> - Lists all available arenas (permission: <code>bw.cmd.list</code>)</li>
+<li><code>/bw stats</code> - Shows your statistics (permission: <code>bw.cmd.stats</code>)</li>
+<li><code>/bw stats &lt;player&gt;</code> - Shows your statistics (permission: <code>bw.cmd.stats</code> together with <code>bw.otherstats</code> or <code>bw.admin</code>)</li>
+<li><code>/bw leaderboard</code> - Shows top players on this server (permission: <code>bw.cmd.leaderboard</code>)</li>
+<li><code>/bw rejoin</code> - Joins the latest game you have played (permission: <code>bw.cmd.rejoin</code>)</li>
+<li><code>/bw autojoin</code> - Joins random game (permission: <code>bw.cmd.autojoin</code>)</li>
+<li><code>/bw party warp</code> - Warps all players in your party to your game or towards you (permission: <code>bw.cmd.party</code>, requires <a href="https://alessiodp.com/parties">Parties</a> plugin and <code>party</code> section in config.yml enabled)</li>
+</ul>
+<h3 id="admin-commands">Admin Commands<a class="headerlink" href="#admin-commands" title="Permanent link">&para;</a></h3>
+<p>All these commands require <code>bw.admin</code> permission if not specified.</p>
+<h4 id="arena-editing">Arena editing<a class="headerlink" href="#arena-editing" title="Permanent link">&para;</a></h4>
+<ul>
+<li><code>/bw admin &lt;arena&gt; info [section]</code> - Shows all information about the arena</li>
+<li><code>/bw admin &lt;arena&gt; add</code> - Creates a new arena</li>
+<li><code>/bw admin &lt;arena&gt; lobby</code> - Sets lobby position to your position</li>
+<li><code>/bw admin &lt;arena&gt; spec</code> - Sets specatator's spawn to your position</li>
+<li><code>/bw admin &lt;arena&gt; pos1</code> - Sets the extreme point of the arena to your position</li>
+<li><code>/bw admin &lt;arena&gt; pos2</code> - Sets the second extreme point of the arena to your position</li>
+<li><code>/bw admin &lt;arena&gt; pausecountdown &lt;seconds&gt;</code> - Sets the pause duration before game starts</li>
+<li><code>/bw admin &lt;arena&gt; minplayers &lt;minimum&gt;</code> - Sets minimum of players needed to start the game</li>
+<li><code>/bw admin &lt;arena&gt; time &lt;seconds&gt;</code> - Sets the game's duration</li>
+<li><code>/bw admin &lt;arena&gt; team add &lt;team&gt; &lt;color&gt; &lt;max players&gt;</code> - Add a team to the game</li>
+<li><code>/bw admin &lt;arena&gt; team color &lt;team&gt; &lt;color&gt;</code> - Change team color</li>
+<li><code>/bw admin &lt;arena&gt; team maxplayers &lt;team&gt; &lt;max players&gt;</code> - Change max team players</li>
+<li><code>/bw admin &lt;arena&gt; team spawn &lt;team&gt;</code> - Sets team spawn to your position</li>
+<li><code>/bw admin &lt;arena&gt; team bed &lt;team&gt; [looking_at|standing_on]</code> - Sets team target block to your target position (it can be any block, not just bed)</li>
+<li><code>/bw admin &lt;arena&gt; jointeam &lt;team&gt;</code> - Sets the ability to connect to a team using an entity</li>
+<li><code>/bw admin &lt;arena&gt; spawner add &lt;bronze|gold|iron&gt; [hologram] [first level] [name] [team] [max spawned resources]</code> - Add item spawner to your position (alternatively you can specify max spawned resources without specifying team)</li>
+<li><code>/bw admin &lt;arena&gt; spawner reset</code> - Remove all spawners</li>
+<li><code>/bw admin &lt;arena&gt; spawner remove</code> - Removes all spawners at location</li>
+<li><code>/bw admin &lt;arena&gt; store add [name above dealer head] [file with shop] [use main shop]</code> - Add trading villager to your position</li>
+<li><code>/bw admin &lt;arena&gt; store remove</code> - Remove trading villager from your position</li>
+<li><code>/bw admin &lt;arena&gt; store type &lt;living entity&gt;</code> - Sets entity type of store (Villager, Horse, Cow, Pig etc.)</li>
+<li><code>/bw admin &lt;arena&gt; store child</code> - Mark this shopkeeper as child</li>
+<li><code>/bw admin &lt;arena&gt; store adult</code> - Mark this shopkeeper as adult</li>
+<li><code>/bw admin &lt;arena&gt; config &lt;constant&gt; &lt;value&gt;</code> - Sets value of constant variable for game</li>
+<li><code>/bw admin &lt;arena&gt; arenatime &lt;type&gt;</code> - Sets time in arena (DAY, NIGHT, etc.)</li>
+<li><code>/bw admin &lt;arena&gt; arenaweather &lt;type&gt;</code> - Sets weather in arena (default, CLEAN, DOWNFALL)</li>
+<li><code>/bw admin &lt;arena&gt; postgamewaiting &lt;seconds&gt;</code> - Sets the waiting time before player is teleported out of the arena</li>
+<li><code>/bw admin &lt;arena&gt; customprefix &lt;name|off&gt;</code> - Enables custom prefix for arena</li>
+<li><code>/bw admin &lt;arena&gt; save</code> - Saves the game and activates it!</li>
+<li><code>/bw admin &lt;arena&gt; edit</code> - Turns the game off and switches the arena to edit mode</li>
+<li><code>/bw admin &lt;arena&gt; remove</code> - Remove the arena</li>
+</ul>
+<h4 id="cheat-commands">Cheat commands<a class="headerlink" href="#cheat-commands" title="Permanent link">&para;</a></h4>
+<p>These command have to be enabled manually using the config option <code>enable-cheat-command-for-admins</code>. The admin must be in the game (running or in waiting lobby) in order to execute cheat.</p>
+<ul>
+<li><code>/bw cheat give &lt;resource&gt; [amount] [player]</code> - Gives player specified amount of resource</li>
+<li><code>/bw cheat kill [player]</code> - Kills specified player</li>
+<li><code>/bw cheat startemptygame</code> - Starts a game with only one team (useful for testing)</li>
+<li><code>/bw cheat destroybed &lt;team&gt;</code> - Destroys bed of the specific team</li>
+<li><code>/bw cheat destroyallbeds</code> - Destroys all beds in the game</li>
+<li><code>/bw cheat jointeam [team]</code> - Joins an admin to the specified team or to current team ignoring its size (can also be used while the game is running, however the team must have some players)</li>
+</ul>
+<h4 id="misc">Misc<a class="headerlink" href="#misc" title="Permanent link">&para;</a></h4>
+<ul>
+<li><code>/bw alljoin [arena]</code> - Joins all players without <code>bw.disable.alljoin</code> permission to the arena (permission: <code>bw.admin.alljoin</code>)</li>
+<li><code>/bw reload</code> - Reloads the plugin</li>
+<li><code>/bw mainlobby [enable|set]</code> - Enables main lobby or sets main lobby location</li>
+<li><code>/bw dump [paste.gg|pastes.dev]</code> - Dumps information about the server and gives you link to the dump. This link can be useful for support.</li>
+<li><code>/bw addholo [leaderboard|stats]</code> - Adds new hologram to your position</li>
+<li><code>/bw removeholo</code> - After executing this command, the player can right-click the holographic statistic to remove it</li>
 </ul>
 
   <hr>
