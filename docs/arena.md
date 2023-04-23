@@ -69,3 +69,29 @@ Add the lobby location for the arena by executing this command: `/bw admin <aren
 Add the spectator location for the arena by executing this command: `/bw admin <arena> spec`.
 
 Last but not least, remember to save the arena with `/bw admin <arena> save`.
+
+## Join signs
+
+You can use signs to join the arena. Follow these steps to create such sign.
+
+* On the first line write [BedWars] or [BWGame]
+* On the second line write the name of arena for join.
+* For the first sign update join to game.
+
+Alternatively, you can create a leave sign by writing word `leave` instead of arena name.
+
+## Team entities
+
+These entities allow players to select their team by right clicking at them. There are two ways how these entities can be created.
+
+### Creation by jointeam command
+
+* Go to your bedwars lobby and place the entity
+* Switch your arena to edit mode
+* Run command `/bw admin <arena> jointeam <team>`
+* Right click the entity that you want to change to team entity
+* Now the entity gets name same as team and if the entity is Armor Stand it gets leather armor in team color. And it makes your entity persistent.
+* Now save your arena and you can play
+
+### Manually creation
+Create any living entity with custom name same as team name and place it in your lobby. The plugin will use the name to determine the team.

@@ -38,7 +38,7 @@ extra:
     provider: mike
     default: latest
 
-copyright: Copyright &copy; 2022 ScreamingSandals
+copyright: Copyright &copy; 2023 ScreamingSandals
 
 markdown_extensions:
   - admonition
@@ -63,6 +63,8 @@ nav:
   - Home: index.md
   - Arena creation: arena.md
   - Configuration: config.md
+  - Commands and Permissions: commands.md
+  - Shop: shop.md
   - Upgrades: upgrades.md
   - Placeholder API: placeholderapi.md
   - Special items: specials.md

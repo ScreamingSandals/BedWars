@@ -51,23 +51,7 @@ Well, you probably have WorldEdit or FastAsyncWorldEdit. The compass is used to 
 
 ## Permissions
 
-* `bw.admin` - Allows you to create/edit an arena, reload the plugin and use the cheat command if enabled.
-* `bw.vip.startitem` - Allows you to start the game using the item. All players will be automatically distributed to teams.
-* `bw.vip.forcejoin` - Allows you to join even if the game is full (player without this permission will be kicked).
-* `bw.otherstats` - Allows you to see stats of other players.
-* `bw.admin.alljoin` - Allows you to use /bw alljoin command.
-* `bw.disable.joinall` - Protects you from effects of /bw alljoin command.
-* `bw.cmd.join` - Allows you to use /bw join command.
-* `bw.cmd.leave` - Allows you to use /bw leave command.
-* `bw.cmd.stats` - Allows you to use /bw stats command.
-* `bw.cmd.rejoin` - Allows you to use /bw rejoin command.
-* `bw.cmd.autojoin` - Allows you to use /bw autojoin command.
-* `bw.cmd.list` - Allows you to use /bw list command.
-* `bw.cmd.leaderboard` - Allows you to use /bw leaderboard command.
-
-Every permission can be prefixed with `misat11.`. Note that this egoism would eventually be removed in a future major release.
-
-All permissions starting with `bw.cmd.` are allowed by default even if the permission is not explicitly given. This can be changed in `config.yml`.
+See the [Commands and Permissions](commands.md#permissions) page.
 
 ## Adding start and respawn items
 You can by doing the following

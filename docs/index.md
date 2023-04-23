@@ -12,21 +12,14 @@ If you find any bugs, feel free to report it into [GitHub issues](https://github
 ## Features
 
 * All the basics of BedWars game (Beds, Teams and so on)
-* Other BedWars variants: CakeWars/EggWars/AnchorWars
-* Shop that supports multi-shop per arena!
-* BungeeCord
-* Vault rewards
-* Spectator mode (now, spectators can join running game!)
-* Arena rebuilding (Incredibly quick!)
-* BossBar or XP bar in lobby countdown or with game time
-* Breakable (those are refreshing after arena rebuild) / ignored blocks
-* SpecialItems (RescuePlatform, TNTSheep and so on) - they can be configured in shop too!
-* and many more
-
-### Customizable
-
-* Team selecting GUI
-* Auto coloring items (like armor and so)
-* Resource Spawners (you can have as much as you want)
-* Player statistics
+* Other BedWars variants: CakeWars/EggWars/AnchorWars/whatever you want to create
+* Highly customizable shop and multiple different shops per arena
+* Simple BungeeCord and Velocity integration
+* Vault rewards and reward commands
+* Spectator mode (spectators can also join running game)
+* Arena rebuilding (incredibly quick)
+* BossBar or XP bar in lobby and/or in game showing remaining time
+* Breakable blocks (refreshed after arena rebuild) / ignored blocks
+* Special items (RescuePlatform, TNTSheep, ...) with global and local configuration in shop
+* High configurability and configuration per arena
 * and many more
