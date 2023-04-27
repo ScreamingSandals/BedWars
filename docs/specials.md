@@ -1,6 +1,68 @@
 # Specials
 
-This page is not finished yet, and does not contain information about all special items.
+Special items can be sold in the shop and they have some special behaviour when used. For example, they spawn entity, reduce knockback, gives someone potion effects etc.
+
+Addons can also add new special items.
+
+Every special item in shop is configured using `properties`.
+
+## Arrow Blocker
+
+Arrow Blocker is an item which allows you to block arrows when used for a certain period of time.
+
+There are two options for an arrow blocker:
+* `protection-time` - A period of time (in seconds) for which a player cannot be damaged using projectiles.
+* `delay` - The delay (in seconds) after usage for which the player cannot use another arrow blocker.  
+
+Here is an example of the arrow blocker configured in shop:
+
+```yaml
+- price: 5 of gold
+  properties:
+  - name: "ArrowBlocker"
+    protection-time: 10
+    delay: 5
+  stack:
+    type: ENDER_EYE
+    display-name: "Arrow Blocker"
+    lore:
+      - "Block arrows that are coming"
+      - "for you with black magic."
+      - "I mean, with this item."
+```
+
+Global configuration in `config.yml` can also be used instead of local configuration. The global configuration in `config.yml` looks like this:
+
+```yaml
+specials:
+  arrow-blocker:
+    protection-time: 10
+    delay: 5
+```
+
+If you want to use the global configuration, you simply do not specify the options in the shop:
+
+```yaml
+- price: 5 of gold
+  properties: "ArrowBlocker"
+  stack:
+    type: ENDER_EYE
+    display-name: "Arrow Blocker"
+    lore:
+      - "Block arrows that are coming"
+      - "for you with black magic."
+      - "I mean, with this item."
+```
+
+
+
+## Auto Ignitable TNT
+
+TODO: docs
+
+## Golem
+
+TODO: docs
 
 ## Lucky Block
 
@@ -51,4 +113,89 @@ Below is an example of fully-configured lucky block with all these events used. 
         has-particles: true
         has-icon: true
   stack: SPONGE;1;Lucky Block
+```
+
+## Magnet Shoes
+
+TODO: docs
+
+## Protection Wall
+
+TODO: docs
+
+## Rescue Platform
+
+TODO: docs
+
+## Magnet Shoes
+
+TODO: docs
+
+## TNT Sheep
+
+TODO: docs
+
+## Team Chest
+
+TODO: docs
+
+## Throwable Fireball
+
+TODO: docs
+
+## Tracker
+
+TODO: docs
+
+## Trap
+
+TODO: docs
+
+## Warp Powder
+
+This special item teleports you to the team spawn when used. You have to wait few seconds and you must not move, otherwise you would cancel the teleportation.
+
+There are two options for warp powder:
+
+* `teleport-time` - Cooldown (in seconds) before the player gets teleported.
+* `delay`- The delay (in seconds) after usage for which the player cannot use another warp powder. 
+
+Here is an example of warp powder configured in shop:
+
+```yaml
+- price: 7 of iron
+  properties:
+  - name: "WarpPowder"
+    teleport-time: 6
+    delay: 0
+  stack:
+    type: GUNPOWDER
+    display-name: "Warp Powder"
+    lore:
+      - "When using this powder you'll get"
+      - "teleported to you spawn point within 6 seconds"
+      - "Warning: Any movement will stop the process"
+```
+
+Global configuration in `config.yml` can also be used instead of local configuration. The global configuration in `config.yml` looks like this:
+
+```yaml
+specials:
+  warp-powder:
+    teleport-time: 6
+    delay: 0
+```
+
+If you want to use the global configuration, you simply do not specify the options in the shop:
+
+```yaml
+- price: 7 of iron
+  properties: "WarpPowder"
+  stack:
+    type: GUNPOWDER
+    display-name: "Warp Powder"
+    lore:
+      - "When using this powder you'll get"
+      - "teleported to you spawn point within 6 seconds"
+      - "Warning: Any movement will stop the process"
 ```
