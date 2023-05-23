@@ -20,7 +20,6 @@
 package org.screamingsandals.bedwars.lib.nms.entity;
 
 import lombok.Getter;
-import lombok.Setter;
 import org.bukkit.Location;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
@@ -161,7 +160,7 @@ public class FakeEntityNMS<E extends Entity> extends EntityNMS implements Listen
     public Object createSpawnPacket() {
         if (this.entity instanceof LivingEntity) {
             try {
-                return PacketPlayOutSpawnEntityLivingAccessor.getConstructor0()
+                return ClientboundAddMobPacketAccessor.CONSTRUCTOR_0.get()
                         .newInstance(handler);
             } catch (Throwable t) {
                 Debug.warn("Failed to create Spawn packet for fake entity!: " + t.getMessage());
@@ -172,7 +171,7 @@ public class FakeEntityNMS<E extends Entity> extends EntityNMS implements Listen
 
     public Object createDespawnPacket() {
         try {
-            return PacketPlayOutEntityDestroyAccessor.getConstructor1()
+            return ClientboundRemoveEntitiesPacketAccessor.CONSTRUCTOR_1.get()
                     .newInstance(
                             new int[]{this.entity.getEntityId()}
                     );
@@ -184,7 +183,7 @@ public class FakeEntityNMS<E extends Entity> extends EntityNMS implements Listen
 
     public Object createLocationPacket() {
         try {
-            return PacketPlayOutEntityTeleportAccessor.getConstructor0()
+            return ClientboundTeleportEntityPacketAccessor.CONSTRUCTOR_0.get()
                     .newInstance(
                             handler
                     );
@@ -196,7 +195,7 @@ public class FakeEntityNMS<E extends Entity> extends EntityNMS implements Listen
 
     public void teleport(Player viewer, Location location) {
         try {
-            ClassStorage.getMethod(handler, EntityAccessor.getMethodSetLocation1())
+            ClassStorage.getMethod(handler, EntityAccessor.METHOD_ABSMOVETO.get())
                     .invoke(location.getX(), location.getY(), location.getZ(), location.getPitch(), location.getYaw());
         } catch (Throwable t) {
             Debug.warn("Failed to set location for fake entity!: " + t.getMessage());
@@ -222,7 +221,7 @@ public class FakeEntityNMS<E extends Entity> extends EntityNMS implements Listen
         if (dataWatcher != null) {
             try {
                 // 1.8.8 ONLY
-                DataWatcherAccessor.getMethodWatch1().invoke(dataWatcher, position, data);
+                SynchedEntityDataAccessor.METHOD_WATCH.get().invoke(dataWatcher, position, data);
             } catch (Throwable ignored) {
             }
             Object metadataPacket = createMetadataPacket();
@@ -233,7 +232,7 @@ public class FakeEntityNMS<E extends Entity> extends EntityNMS implements Listen
     public Object createMetadataPacket() {
         try {
             final Object dataWatcher = getDataWatcher();
-            return PacketPlayOutEntityMetadataAccessor.getConstructor0()
+            return ClientboundSetEntityDataPacketAccessor.CONSTRUCTOR_0.get()
                     .newInstance(entity.getEntityId(), dataWatcher, false);
         } catch (Throwable t) {
             Debug.warn("Failed to create metadata packet for fake entity!: " + t.getMessage());

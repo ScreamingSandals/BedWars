@@ -37,7 +37,7 @@ public class ClassStorage {
 	public static final class NMS {
 		/* not used by bw since 1.9 */
 		public static final Class<?> EnumParticle = safeGetClass("{nms}.EnumParticle"); // why is it even used
-		public static final Class<?> PacketPlayOutWorldParticles = PacketPlayOutWorldParticlesAccessor.getType();
+		public static final Class<?> PacketPlayOutWorldParticles = ClientboundLevelParticlesPacketAccessor.TYPE.get();
 	}
 	
 	private static String checkNMSVersion() {
@@ -245,18 +245,18 @@ public class ClassStorage {
 	public static Object getPlayerConnection(Player player) {
 		Object handler = getMethod(player, "getHandle").invoke();
 		if (handler != null) {
-			return getField(handler, EntityPlayerAccessor.getFieldPlayerConnection());
+			return getField(handler, ServerPlayerAccessor.FIELD_CONNECTION.get());
 		}
 		return null;
 	}
 	
 	public static boolean sendPacket(Player player, Object packet) {
-		if (!PacketAccessor.getType().isInstance(packet)) {
+		if (!PacketAccessor.TYPE.get().isInstance(packet)) {
 			return false;
 		}
 		Object connection = getPlayerConnection(player);
 		if (connection != null) {
-			getMethod(connection, PlayerConnectionAccessor.getMethodSendPacket1()).invoke(packet);
+			getMethod(connection, ServerGamePacketListenerImplAccessor.METHOD_SEND.get()).invoke(packet);
 			return true;
 		}
 		return false;
@@ -286,26 +286,26 @@ public class ClassStorage {
 	}
 
 	public static Object getMethodProfiler(Object handler) {
-		Object methodProfiler = getMethod(handler, WorldAccessor.getMethodGetMethodProfiler1()).invoke();
+		Object methodProfiler = getMethod(handler, LevelAccessor.METHOD_GETPROFILER.get()).invoke();
 		if (methodProfiler == null) {
-			methodProfiler = getField(handler, WorldAccessor.getFieldMethodProfiler());
+			methodProfiler = getField(handler, LevelAccessor.FIELD_METHODPROFILER.get());
 		}
 		return methodProfiler;
 	}
 	
 	public static Object obtainNewPathfinderSelector(Object handler) {
 		try {
-			Object world = getMethod(handler, EntityAccessor.getMethodGetWorld1()).invoke();
+			Object world = getMethod(handler, EntityAccessor.METHOD_GETCOMMANDSENDERWORLD.get()).invoke();
 			try {
 				// 1.17
-				return PathfinderGoalSelectorAccessor.getConstructor0().newInstance(getMethod(world, WorldAccessor.getMethodGetMethodProfilerSupplier1()).invoke());
+				return GoalSelectorAccessor.CONSTRUCTOR_0.get().newInstance(getMethod(world, LevelAccessor.METHOD_GETPROFILERSUPPLIER.get()).invoke());
 			} catch (Throwable ignored) {
 				try {
 					// 1.16
-					return PathfinderGoalSelectorAccessor.getConstructor0().newInstance((Supplier<?>) () -> getMethodProfiler(world));
+					return GoalSelectorAccessor.CONSTRUCTOR_0.get().newInstance((Supplier<?>) () -> getMethodProfiler(world));
 				} catch (Throwable ignore) {
 					// Pre 1.16
-					return PathfinderGoalSelectorAccessor.getType().getConstructors()[0].newInstance(getMethodProfiler(world));
+					return GoalSelectorAccessor.TYPE.get().getConstructors()[0].newInstance(getMethodProfiler(world));
 				}
 			}
 		} catch (Throwable t) {

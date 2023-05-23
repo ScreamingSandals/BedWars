@@ -23,13 +23,13 @@ import static org.screamingsandals.bedwars.lib.nms.utils.ClassStorage.*;
 
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
-import org.screamingsandals.bedwars.lib.nms.accessors.EntityArmorStandAccessor;
+import org.screamingsandals.bedwars.lib.nms.accessors.ArmorStandAccessor;
 
 public class ArmorStandNMS extends EntityNMS {
 
 	public ArmorStandNMS(Object handler) {
 		super(handler);
-		if (!EntityArmorStandAccessor.getType().isInstance(handler)) {
+		if (!ArmorStandAccessor.TYPE.get().isInstance(handler)) {
 			throw new IllegalArgumentException("Entity must be instance of EntityArmorStand!!");
 		}
 	}
@@ -39,41 +39,41 @@ public class ArmorStandNMS extends EntityNMS {
 	}
 	
 	public ArmorStandNMS(Location loc) throws Throwable {
-		this(EntityArmorStandAccessor.getConstructor0()
+		this(ArmorStandAccessor.CONSTRUCTOR_0.get()
 					.newInstance(getHandle(loc.getWorld()), loc.getX(), loc.getY(), loc.getZ()));
 		this.setLocation(loc); // Update rotation
 	}
 	
 	public void setSmall(boolean small) {
-		getMethod(handler, EntityArmorStandAccessor.getMethodSetSmall1()).invoke(small);
+		getMethod(handler, ArmorStandAccessor.METHOD_SETSMALL.get()).invoke(small);
 	}
 	
 	public boolean isSmall() {
-		return (boolean) getMethod(handler, EntityArmorStandAccessor.getMethodIsSmall1()).invoke();
+		return (boolean) getMethod(handler, ArmorStandAccessor.METHOD_ISSMALL.get()).invoke();
 	}
 	
 	public void setArms(boolean arms) {
-		getMethod(handler, EntityArmorStandAccessor.getMethodSetArms1()).invoke(arms);
+		getMethod(handler, ArmorStandAccessor.METHOD_SETSHOWARMS.get()).invoke(arms);
 	}
 	
 	public boolean isArms() {
-		return (boolean) getMethod(handler, EntityArmorStandAccessor.getMethodHasArms1()).invoke();
+		return (boolean) getMethod(handler, ArmorStandAccessor.METHOD_SHOULDSHOWARMS.get()).invoke();
 	}
 	
 	public void setBasePlate(boolean basePlate) {
-		getMethod(handler, EntityArmorStandAccessor.getMethodSetBasePlate1()).invoke(basePlate);
+		getMethod(handler, ArmorStandAccessor.METHOD_SETNOBASEPLATE.get()).invoke(basePlate);
 	}
 	
 	public boolean isBasePlate() {
-		return (boolean) getMethod(handler, EntityArmorStandAccessor.getMethodHasBasePlate1()).invoke();
+		return (boolean) getMethod(handler, ArmorStandAccessor.METHOD_ISNOBASEPLATE.get()).invoke();
 	}
 	
 	public void setMarker(boolean marker) {
-		getMethod(handler, EntityArmorStandAccessor.getMethodSetMarker1()).invoke(marker);
+		getMethod(handler, ArmorStandAccessor.METHOD_SETMARKER.get()).invoke(marker);
 	}
 	
 	public boolean isMarker() {
-		return (boolean) getMethod(handler, EntityArmorStandAccessor.getMethodIsMarker1()).invoke();
+		return (boolean) getMethod(handler, ArmorStandAccessor.METHOD_ISMARKER.get()).invoke();
 	}
 
 }

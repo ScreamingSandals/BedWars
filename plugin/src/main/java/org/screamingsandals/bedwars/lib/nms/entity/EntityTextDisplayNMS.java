@@ -30,25 +30,25 @@ import static org.screamingsandals.bedwars.lib.nms.utils.ClassStorage.getHandle;
 public class EntityTextDisplayNMS extends EntityNMS {
     public EntityTextDisplayNMS(Object handler) {
         super(handler);
-        if (!Display_i_TextDisplayAccessor.getType().isInstance(handler)) {
+        if (!Display$TextDisplayAccessor.TYPE.get().isInstance(handler)) {
             throw new IllegalArgumentException("Entity must be instance of Display$TextDisplay!!");
         }
-        ClassStorage.getMethod(handler, DisplayAccessor.getMethodSetBillboardConstraints1()).invoke(Display_i_BillboardConstraintsAccessor.getFieldCENTER());
+        ClassStorage.getMethod(handler, DisplayAccessor.METHOD_SETBILLBOARDCONSTRAINTS.get()).invoke(Display$BillboardConstraintsMapping.FIELD_CENTER.getConstantValue());
     }
 
     public EntityTextDisplayNMS(Location loc) throws Throwable {
-        this(Display_i_TextDisplayAccessor.getConstructor0().newInstance(EntityTypeAccessor.getFieldTEXT_DISPLAY(), getHandle(loc.getWorld())));
+        this(Display$TextDisplayAccessor.CONSTRUCTOR_0.get().newInstance(EntityTypeMapping.FIELD_TEXT_DISPLAY.getConstantValue(), getHandle(loc.getWorld())));
         this.setLocation(loc);
     }
 
     public void setText(String name) {
-        InstanceMethod method = ClassStorage.getMethod(handler, Display_i_TextDisplayAccessor.getMethodSetText1());
+        InstanceMethod method = ClassStorage.getMethod(handler, Display$TextDisplayAccessor.METHOD_SETTEXT.get());
         method.invoke(ClassStorage.getMethod(TabManager.getCorrectSerializingMethod()).invokeStatic("{\"text\": \"" + name + "\"}"));
     }
 
     public String getText() {
-        Object textComponent = ClassStorage.getMethod(handler, Display_i_TextDisplayAccessor.getMethodGetText1()).invoke();
-        return (String) ClassStorage.getMethod(textComponent, IChatBaseComponentAccessor.getMethodGetLegacyString1()).invoke();
+        Object textComponent = ClassStorage.getMethod(handler, Display$TextDisplayAccessor.METHOD_GETTEXT.get()).invoke();
+        return (String) ClassStorage.getMethod(textComponent, ComponentAccessor.METHOD_GETCOLOREDSTRING.get()).invoke();
     }
 
 }

@@ -33,7 +33,7 @@ public class EntityLivingNMS extends EntityNMS {
 
 	public EntityLivingNMS(Object handler) {
 		super(handler);
-		if (!EntityInsentientAccessor.getType().isInstance(handler)) {
+		if (!MobAccessor.TYPE.get().isInstance(handler)) {
 			throw new IllegalArgumentException("Entity must be instance of EntityInsentient!!");
 		}
 	}
@@ -56,7 +56,7 @@ public class EntityLivingNMS extends EntityNMS {
 	
 	public boolean hasAttribute(Object attr) {
 		try {
-			Object attr0 = getMethod(handler, EntityLivingAccessor.getMethodGetAttributeInstance1())
+			Object attr0 = getMethod(handler, LivingEntityAccessor.METHOD_GETATTRIBUTE.get())
 				.invoke(attr);
 			return attr0 != null;
 		} catch (Throwable t) {
@@ -70,9 +70,9 @@ public class EntityLivingNMS extends EntityNMS {
 	
 	public double getAttribute(Object attr) {
 		try {
-			Object attr0 = getMethod(handler, EntityLivingAccessor.getMethodGetAttributeInstance1())
+			Object attr0 = getMethod(handler, LivingEntityAccessor.METHOD_GETATTRIBUTE.get())
 				.invoke(attr);
-			return (double) getMethod(attr0, AttributeInstanceAccessor.getMethodGetValue1()).invoke();
+			return (double) getMethod(attr0, AttributeInstanceAccessor.METHOD_GETBASEVALUE.get()).invoke();
 		} catch (Throwable t) {
 		}
 		return 0;
@@ -85,25 +85,25 @@ public class EntityLivingNMS extends EntityNMS {
 	public void setAttribute(Object attr, double value) {
 		try {
 			if (value >= 0) {
-				Object attr0 = getMethod(handler, EntityLivingAccessor.getMethodGetAttributeInstance1())
+				Object attr0 = getMethod(handler, LivingEntityAccessor.METHOD_GETATTRIBUTE.get())
 					.invoke(attr);
 				if (attr0 == null) {
-					Object attrMap = getMethod(handler, EntityLivingAccessor.getMethodGetAttributeMap1()).invoke();
+					Object attrMap = getMethod(handler, LivingEntityAccessor.METHOD_GETATTRIBUTES.get()).invoke();
 					// Pre 1.16
-					attr0 = getMethod(attrMap, AttributeMapBaseAccessor.getMethodFunc_111150_b1()).invoke(attr);
-					if (attr0 == null || !AttributeInstanceAccessor.getType().isInstance(attr0)) {
+					attr0 = getMethod(attrMap, AttributeMapAccessor.METHOD_REGISTERATTRIBUTE.get()).invoke(attr);
+					if (attr0 == null || !AttributeInstanceAccessor.TYPE.get().isInstance(attr0)) {
 						// 1.16
-						Object provider = getField(attrMap,AttributeMapBaseAccessor.getFieldField_233777_d_());
+						Object provider = getField(attrMap, AttributeMapAccessor.FIELD_SUPPLIER.get());
 						Map<Object, Object> all = Maps
-								.newHashMap((Map<?, ?>) getField(provider, AttributeProviderAccessor.getFieldField_233802_a_()));
-						attr0 = AttributeInstanceAccessor.getConstructor0().newInstance(attr, (Consumer) o -> {
+								.newHashMap((Map<?, ?>) getField(provider, AttributeSupplierAccessor.FIELD_INSTANCES.get()));
+						attr0 = AttributeInstanceAccessor.CONSTRUCTOR_0.get().newInstance(attr, (Consumer) o -> {
 							// do nothing
 						});
 						all.put(attr, attr0);
-						setField(provider, AttributeProviderAccessor.getFieldField_233802_a_(), ImmutableMap.copyOf(all));
+						setField(provider, AttributeSupplierAccessor.FIELD_INSTANCES.get(), ImmutableMap.copyOf(all));
 					}
 				}
-				getMethod(attr0, AttributeInstanceAccessor.getMethodSetValue1()).invoke(value);
+				getMethod(attr0, AttributeInstanceAccessor.METHOD_SETBASEVALUE.get()).invoke(value);
 			}
 		} catch (Throwable ignore) {
 		}

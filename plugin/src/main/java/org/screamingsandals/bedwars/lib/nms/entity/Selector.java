@@ -19,8 +19,8 @@
 
 package org.screamingsandals.bedwars.lib.nms.entity;
 
-import org.screamingsandals.bedwars.lib.nms.accessors.EntityInsentientAccessor;
-import org.screamingsandals.bedwars.lib.nms.accessors.PathfinderGoalSelectorAccessor;
+import org.screamingsandals.bedwars.lib.nms.accessors.GoalSelectorAccessor;
+import org.screamingsandals.bedwars.lib.nms.accessors.MobAccessor;
 import org.screamingsandals.bedwars.lib.nms.utils.ClassStorage;
 
 import java.lang.reflect.Field;
@@ -31,7 +31,7 @@ public abstract class Selector {
 	protected Object selector;
 	
 	protected Selector(Object handler, Field field) {
-		if (!EntityInsentientAccessor.getType().isInstance(handler)) {
+		if (!MobAccessor.TYPE.get().isInstance(handler)) {
 			throw new IllegalArgumentException("Invalid mob type");
 		}
 		this.handler = handler;
@@ -41,7 +41,7 @@ public abstract class Selector {
 	
 	
 	public void registerPathfinder(int position, Object pathfinder) {
-		ClassStorage.getMethod(this.selector, PathfinderGoalSelectorAccessor.getMethodFunc_75776_a1()).invoke(position, pathfinder);
+		ClassStorage.getMethod(this.selector, GoalSelectorAccessor.METHOD_ADDGOAL.get()).invoke(position, pathfinder);
 	}
 	
 	protected Object getNMSSelector() {

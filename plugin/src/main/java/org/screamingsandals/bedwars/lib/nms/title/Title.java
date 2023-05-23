@@ -20,9 +20,9 @@
 package org.screamingsandals.bedwars.lib.nms.title;
 
 import org.bukkit.entity.Player;
-import org.screamingsandals.bedwars.lib.nms.accessors.IChatBaseComponent_i_ChatSerializerAccessor;
-import org.screamingsandals.bedwars.lib.nms.accessors.PacketPlayOutTitleAccessor;
-import org.screamingsandals.bedwars.lib.nms.accessors.PacketPlayOutTitle_i_EnumTitleActionAccessor;
+import org.screamingsandals.bedwars.lib.nms.accessors.ClientboundSetTitleTextPacketAccessor;
+import org.screamingsandals.bedwars.lib.nms.accessors.ClientboundSetTitlesPacket$TypeMapping;
+import org.screamingsandals.bedwars.lib.nms.accessors.Component$SerializerAccessor;
 import org.screamingsandals.bedwars.lib.nms.utils.ClassStorage;
 
 public class Title {
@@ -31,17 +31,17 @@ public class Title {
 			player.sendTitle(title, subtitle, fadeIn, stay, fadeOut);
 		} catch (Throwable t) {
 			try {
-				Object titleComponent = ClassStorage.getMethod(IChatBaseComponent_i_ChatSerializerAccessor.getMethodFunc_150699_a1())
+				Object titleComponent = ClassStorage.getMethod(Component$SerializerAccessor.METHOD_FROMJSON.get())
 					.invokeStatic("{\"text\": \"" + title + "\"}");
-				Object subtitleComponent = ClassStorage.getMethod(IChatBaseComponent_i_ChatSerializerAccessor.getMethodFunc_150699_a1())
+				Object subtitleComponent = ClassStorage.getMethod(Component$SerializerAccessor.METHOD_FROMJSON.get())
 					.invokeStatic("{\"text\": \"" + subtitle + "\"}");
 				
-				Object titlePacket = PacketPlayOutTitleAccessor.getConstructor0()
-					.newInstance(PacketPlayOutTitle_i_EnumTitleActionAccessor.getFieldTITLE(), titleComponent);
-				Object subtitlePacket = PacketPlayOutTitleAccessor.getConstructor0()
-					.newInstance(PacketPlayOutTitle_i_EnumTitleActionAccessor.getFieldSUBTITLE(), subtitleComponent);
-				Object timesPacket = PacketPlayOutTitleAccessor.getConstructor1()
-					.newInstance(PacketPlayOutTitle_i_EnumTitleActionAccessor.getFieldTIMES(), null, fadeIn, stay, fadeOut);
+				Object titlePacket = ClientboundSetTitleTextPacketAccessor.CONSTRUCTOR_0.get()
+					.newInstance(ClientboundSetTitlesPacket$TypeMapping.FIELD_TITLE.getConstantValue(), titleComponent);
+				Object subtitlePacket = ClientboundSetTitleTextPacketAccessor.CONSTRUCTOR_0.get()
+					.newInstance(ClientboundSetTitlesPacket$TypeMapping.FIELD_SUBTITLE.getConstantValue(), subtitleComponent);
+				Object timesPacket = ClientboundSetTitleTextPacketAccessor.CONSTRUCTOR_1.get()
+					.newInstance(ClientboundSetTitlesPacket$TypeMapping.FIELD_TIMES.getConstantValue(), null, fadeIn, stay, fadeOut);
 				
 				ClassStorage.sendPacket(player, titlePacket);
 				ClassStorage.sendPacket(player, subtitlePacket);
