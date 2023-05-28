@@ -1,7 +1,6 @@
 pluginManagement {
     repositories {
         mavenCentral()
-        mavenLocal()
         maven {
             url = "https://repo.screamingsandals.org/public/"
         }
