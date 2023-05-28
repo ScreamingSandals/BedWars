@@ -36,7 +36,7 @@ public class BossBarDragon extends FakeEntityNMS<EnderDragon> {
         try {
             final Object nmsEntity = EnderDragonAccessor.CONSTRUCTOR_0.get()
                     .newInstance(ClassStorage.getHandle(location.getWorld()));
-            ClassStorage.getMethod(EntityAccessor.METHOD_ABSMOVETO.get()).invokeInstance(
+            ClassStorage.getMethod(EntityAccessor.METHOD_ABS_MOVE_TO.get()).invokeInstance(
                     nmsEntity,
                     location.getX(),
                     location.getY(),

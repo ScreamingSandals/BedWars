@@ -45,35 +45,35 @@ public class ArmorStandNMS extends EntityNMS {
 	}
 	
 	public void setSmall(boolean small) {
-		getMethod(handler, ArmorStandAccessor.METHOD_SETSMALL.get()).invoke(small);
+		getMethod(handler, ArmorStandAccessor.METHOD_SET_SMALL.get()).invoke(small);
 	}
 	
 	public boolean isSmall() {
-		return (boolean) getMethod(handler, ArmorStandAccessor.METHOD_ISSMALL.get()).invoke();
+		return (boolean) getMethod(handler, ArmorStandAccessor.METHOD_IS_SMALL.get()).invoke();
 	}
 	
 	public void setArms(boolean arms) {
-		getMethod(handler, ArmorStandAccessor.METHOD_SETSHOWARMS.get()).invoke(arms);
+		getMethod(handler, ArmorStandAccessor.METHOD_SET_SHOW_ARMS.get()).invoke(arms);
 	}
 	
 	public boolean isArms() {
-		return (boolean) getMethod(handler, ArmorStandAccessor.METHOD_SHOULDSHOWARMS.get()).invoke();
+		return (boolean) getMethod(handler, ArmorStandAccessor.METHOD_SHOULD_SHOW_ARMS.get()).invoke();
 	}
 	
 	public void setBasePlate(boolean basePlate) {
-		getMethod(handler, ArmorStandAccessor.METHOD_SETNOBASEPLATE.get()).invoke(basePlate);
+		getMethod(handler, ArmorStandAccessor.METHOD_SET_NO_BASE_PLATE.get()).invoke(basePlate);
 	}
 	
 	public boolean isBasePlate() {
-		return (boolean) getMethod(handler, ArmorStandAccessor.METHOD_ISNOBASEPLATE.get()).invoke();
+		return (boolean) getMethod(handler, ArmorStandAccessor.METHOD_IS_NO_BASE_PLATE.get()).invoke();
 	}
 	
 	public void setMarker(boolean marker) {
-		getMethod(handler, ArmorStandAccessor.METHOD_SETMARKER.get()).invoke(marker);
+		getMethod(handler, ArmorStandAccessor.METHOD_SET_MARKER.get()).invoke(marker);
 	}
 	
 	public boolean isMarker() {
-		return (boolean) getMethod(handler, ArmorStandAccessor.METHOD_ISMARKER.get()).invoke();
+		return (boolean) getMethod(handler, ArmorStandAccessor.METHOD_IS_MARKER.get()).invoke();
 	}
 
 }

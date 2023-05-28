@@ -101,7 +101,7 @@ public class EntityUtils {
 					tag = CompoundTagAccessor.CONSTRUCTOR_0.get().newInstance();
 				}
 				ClassStorage.getMethod(handler, "c,func_184198_c", CompoundTagAccessor.TYPE.get()).invoke(tag);
-				ClassStorage.getMethod(CompoundTagAccessor.METHOD_PUTINT.get()).invokeInstance(tag, "NoAI", 1);
+				ClassStorage.getMethod(CompoundTagAccessor.METHOD_PUT_INT.get()).invokeInstance(tag, "NoAI", 1);
 				ClassStorage.getMethod(handler, EntityAccessor.METHOD_LOAD.get()).invoke(tag);
 			} catch (Throwable ignored) {
 			}

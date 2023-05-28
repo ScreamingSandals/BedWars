@@ -33,22 +33,22 @@ public class EntityTextDisplayNMS extends EntityNMS {
         if (!Display$TextDisplayAccessor.TYPE.get().isInstance(handler)) {
             throw new IllegalArgumentException("Entity must be instance of Display$TextDisplay!!");
         }
-        ClassStorage.getMethod(handler, DisplayAccessor.METHOD_SETBILLBOARDCONSTRAINTS.get()).invoke(Display$BillboardConstraintsMapping.FIELD_CENTER.getConstantValue());
+        ClassStorage.getMethod(handler, DisplayAccessor.METHOD_SET_BILLBOARD_CONSTRAINTS.get()).invoke(Display$BillboardConstraintsAccessor.FIELD_CENTER.get());
     }
 
     public EntityTextDisplayNMS(Location loc) throws Throwable {
-        this(Display$TextDisplayAccessor.CONSTRUCTOR_0.get().newInstance(EntityTypeMapping.FIELD_TEXT_DISPLAY.getConstantValue(), getHandle(loc.getWorld())));
+        this(Display$TextDisplayAccessor.CONSTRUCTOR_0.get().newInstance(EntityTypeAccessor.FIELD_TEXT_DISPLAY.get(), getHandle(loc.getWorld())));
         this.setLocation(loc);
     }
 
     public void setText(String name) {
-        InstanceMethod method = ClassStorage.getMethod(handler, Display$TextDisplayAccessor.METHOD_SETTEXT.get());
+        InstanceMethod method = ClassStorage.getMethod(handler, Display$TextDisplayAccessor.METHOD_SET_TEXT.get());
         method.invoke(ClassStorage.getMethod(TabManager.getCorrectSerializingMethod()).invokeStatic("{\"text\": \"" + name + "\"}"));
     }
 
     public String getText() {
-        Object textComponent = ClassStorage.getMethod(handler, Display$TextDisplayAccessor.METHOD_GETTEXT.get()).invoke();
-        return (String) ClassStorage.getMethod(textComponent, ComponentAccessor.METHOD_GETCOLOREDSTRING.get()).invoke();
+        Object textComponent = ClassStorage.getMethod(handler, Display$TextDisplayAccessor.METHOD_GET_TEXT.get()).invoke();
+        return (String) ClassStorage.getMethod(textComponent, ComponentAccessor.METHOD_GET_COLORED_STRING.get()).invoke();
     }
 
 }

@@ -25,10 +25,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.screamingsandals.bedwars.Main;
-import org.screamingsandals.bedwars.lib.nms.accessors.ClientboundSetExperiencePacketAccessor;
-import org.screamingsandals.bedwars.lib.nms.accessors.ServerGamePacketListenerImplAccessor;
-import org.screamingsandals.bedwars.lib.nms.accessors.ServerboundClientCommandPacket$ActionMapping;
-import org.screamingsandals.bedwars.lib.nms.accessors.ServerboundClientCommandPacketAccessor;
+import org.screamingsandals.bedwars.lib.nms.accessors.*;
 
 import static org.screamingsandals.bedwars.lib.nms.utils.ClassStorage.*;
 
@@ -42,7 +39,7 @@ public class PlayerUtils {
 					player.spigot().respawn();
 				} catch (Throwable t) {
 					try {
-						Object selectedObj = ServerboundClientCommandPacket$ActionMapping.FIELD_PERFORM_RESPAWN.getConstantValue();
+						Object selectedObj = ServerboundClientCommandPacket$ActionAccessor.FIELD_PERFORM_RESPAWN.get();
 						Object packet = ServerboundClientCommandPacketAccessor.CONSTRUCTOR_0.get()
 							.newInstance(selectedObj);
 						Object connection = getPlayerConnection(player);

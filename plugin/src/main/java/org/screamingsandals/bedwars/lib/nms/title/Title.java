@@ -21,7 +21,7 @@ package org.screamingsandals.bedwars.lib.nms.title;
 
 import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.lib.nms.accessors.ClientboundSetTitleTextPacketAccessor;
-import org.screamingsandals.bedwars.lib.nms.accessors.ClientboundSetTitlesPacket$TypeMapping;
+import org.screamingsandals.bedwars.lib.nms.accessors.ClientboundSetTitlesPacket$TypeAccessor;
 import org.screamingsandals.bedwars.lib.nms.accessors.Component$SerializerAccessor;
 import org.screamingsandals.bedwars.lib.nms.utils.ClassStorage;
 
@@ -31,17 +31,17 @@ public class Title {
 			player.sendTitle(title, subtitle, fadeIn, stay, fadeOut);
 		} catch (Throwable t) {
 			try {
-				Object titleComponent = ClassStorage.getMethod(Component$SerializerAccessor.METHOD_FROMJSON.get())
+				Object titleComponent = ClassStorage.getMethod(Component$SerializerAccessor.METHOD_FROM_JSON.get())
 					.invokeStatic("{\"text\": \"" + title + "\"}");
-				Object subtitleComponent = ClassStorage.getMethod(Component$SerializerAccessor.METHOD_FROMJSON.get())
+				Object subtitleComponent = ClassStorage.getMethod(Component$SerializerAccessor.METHOD_FROM_JSON.get())
 					.invokeStatic("{\"text\": \"" + subtitle + "\"}");
 				
 				Object titlePacket = ClientboundSetTitleTextPacketAccessor.CONSTRUCTOR_0.get()
-					.newInstance(ClientboundSetTitlesPacket$TypeMapping.FIELD_TITLE.getConstantValue(), titleComponent);
+					.newInstance(ClientboundSetTitlesPacket$TypeAccessor.FIELD_TITLE.get(), titleComponent);
 				Object subtitlePacket = ClientboundSetTitleTextPacketAccessor.CONSTRUCTOR_0.get()
-					.newInstance(ClientboundSetTitlesPacket$TypeMapping.FIELD_SUBTITLE.getConstantValue(), subtitleComponent);
+					.newInstance(ClientboundSetTitlesPacket$TypeAccessor.FIELD_SUBTITLE.get(), subtitleComponent);
 				Object timesPacket = ClientboundSetTitleTextPacketAccessor.CONSTRUCTOR_1.get()
-					.newInstance(ClientboundSetTitlesPacket$TypeMapping.FIELD_TIMES.getConstantValue(), null, fadeIn, stay, fadeOut);
+					.newInstance(ClientboundSetTitlesPacket$TypeAccessor.FIELD_TIMES.get(), null, fadeIn, stay, fadeOut);
 				
 				ClassStorage.sendPacket(player, titlePacket);
 				ClassStorage.sendPacket(player, subtitlePacket);

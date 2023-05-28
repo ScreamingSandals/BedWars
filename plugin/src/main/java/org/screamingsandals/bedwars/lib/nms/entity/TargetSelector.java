@@ -28,7 +28,7 @@ import org.screamingsandals.bedwars.lib.nms.utils.ClassStorage;
 public class TargetSelector extends Selector {
 	
 	public TargetSelector(Object handler) {
-		super(handler, MobAccessor.FIELD_TARGETSELECTOR.get());
+		super(handler, MobAccessor.FIELD_TARGET_SELECTOR.get());
 	}
 	
 	public TargetSelector attackTarget(LivingEntity target) {

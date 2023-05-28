@@ -56,7 +56,7 @@ public class EntityLivingNMS extends EntityNMS {
 	
 	public boolean hasAttribute(Object attr) {
 		try {
-			Object attr0 = getMethod(handler, LivingEntityAccessor.METHOD_GETATTRIBUTE.get())
+			Object attr0 = getMethod(handler, LivingEntityAccessor.METHOD_GET_ATTRIBUTE.get())
 				.invoke(attr);
 			return attr0 != null;
 		} catch (Throwable t) {
@@ -70,9 +70,9 @@ public class EntityLivingNMS extends EntityNMS {
 	
 	public double getAttribute(Object attr) {
 		try {
-			Object attr0 = getMethod(handler, LivingEntityAccessor.METHOD_GETATTRIBUTE.get())
+			Object attr0 = getMethod(handler, LivingEntityAccessor.METHOD_GET_ATTRIBUTE.get())
 				.invoke(attr);
-			return (double) getMethod(attr0, AttributeInstanceAccessor.METHOD_GETBASEVALUE.get()).invoke();
+			return (double) getMethod(attr0, AttributeInstanceAccessor.METHOD_GET_BASE_VALUE.get()).invoke();
 		} catch (Throwable t) {
 		}
 		return 0;
@@ -85,12 +85,12 @@ public class EntityLivingNMS extends EntityNMS {
 	public void setAttribute(Object attr, double value) {
 		try {
 			if (value >= 0) {
-				Object attr0 = getMethod(handler, LivingEntityAccessor.METHOD_GETATTRIBUTE.get())
+				Object attr0 = getMethod(handler, LivingEntityAccessor.METHOD_GET_ATTRIBUTE.get())
 					.invoke(attr);
 				if (attr0 == null) {
-					Object attrMap = getMethod(handler, LivingEntityAccessor.METHOD_GETATTRIBUTES.get()).invoke();
+					Object attrMap = getMethod(handler, LivingEntityAccessor.METHOD_GET_ATTRIBUTES.get()).invoke();
 					// Pre 1.16
-					attr0 = getMethod(attrMap, AttributeMapAccessor.METHOD_REGISTERATTRIBUTE.get()).invoke(attr);
+					attr0 = getMethod(attrMap, AttributeMapAccessor.METHOD_REGISTER_ATTRIBUTE.get()).invoke(attr);
 					if (attr0 == null || !AttributeInstanceAccessor.TYPE.get().isInstance(attr0)) {
 						// 1.16
 						Object provider = getField(attrMap, AttributeMapAccessor.FIELD_SUPPLIER.get());
@@ -103,7 +103,7 @@ public class EntityLivingNMS extends EntityNMS {
 						setField(provider, AttributeSupplierAccessor.FIELD_INSTANCES.get(), ImmutableMap.copyOf(all));
 					}
 				}
-				getMethod(attr0, AttributeInstanceAccessor.METHOD_SETBASEVALUE.get()).invoke(value);
+				getMethod(attr0, AttributeInstanceAccessor.METHOD_SET_BASE_VALUE.get()).invoke(value);
 			}
 		} catch (Throwable ignore) {
 		}

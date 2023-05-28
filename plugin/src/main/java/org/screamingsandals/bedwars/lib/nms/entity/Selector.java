@@ -41,7 +41,7 @@ public abstract class Selector {
 	
 	
 	public void registerPathfinder(int position, Object pathfinder) {
-		ClassStorage.getMethod(this.selector, GoalSelectorAccessor.METHOD_ADDGOAL.get()).invoke(position, pathfinder);
+		ClassStorage.getMethod(this.selector, GoalSelectorAccessor.METHOD_ADD_GOAL.get()).invoke(position, pathfinder);
 	}
 	
 	protected Object getNMSSelector() {

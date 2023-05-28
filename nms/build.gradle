@@ -12,10 +12,15 @@ dependencies {
 // after any changes in this file, please run the generateAccessors task to see changes in your ide
 
 accessors {
-    // exclude 1.16 and 1.10.1, they don't have most mappings and are basically not used at all
-    // exclude 1.8.9, client-only update - no Spigot mappings, no thank you
-    // exclude 1.9.1 and 1.9.3 - no mappings at all
-    versionRange '1.8.8', '1.19.4', '1.16', '1.10.1', '1.8.9', '1.9.1', '1.9.3'
+    versionRange('1.8.8', '1.19.4') {
+        // exclude 1.16 and 1.10.1, they don't have most mappings and are basically not used at all
+        // exclude 1.8.9, client-only update - no Spigot mappings, no thank you
+        // exclude 1.9.1 and 1.9.3 - no mappings at all
+        it.exclude '1.16', '1.10.1', '1.8.9', '1.9.1', '1.9.3'
+
+        // include only releases, no snapshots
+        it.includeTypes 'release'
+    }
     basePackage 'org.screamingsandals.bedwars.lib.nms.accessors'
     accessedNamespaces 'spigot', 'source'
     accessorFlavor 'reflection'
@@ -144,8 +149,8 @@ accessors {
         it.field int, 'entityId'
     }
     mapClass('net.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacket') {
-        it.constructor int
-        it.constructor int[] // 1.17
+        it.constructor int // 1.17
+        it.constructor int[]
     }
     mapClass('net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket') {
         it.constructor int, SynchedEntityData, boolean // <= 1.19.2

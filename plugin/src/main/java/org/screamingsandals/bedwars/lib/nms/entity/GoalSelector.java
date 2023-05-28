@@ -24,7 +24,7 @@ import org.screamingsandals.bedwars.lib.nms.accessors.MobAccessor;
 public class GoalSelector extends Selector {
 	
 	public GoalSelector(Object handler) {
-		super(handler, MobAccessor.FIELD_GOALSELECTOR.get());
+		super(handler, MobAccessor.FIELD_GOAL_SELECTOR.get());
 	}
 
 }

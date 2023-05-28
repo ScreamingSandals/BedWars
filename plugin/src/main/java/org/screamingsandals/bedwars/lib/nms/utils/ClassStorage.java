@@ -286,19 +286,19 @@ public class ClassStorage {
 	}
 
 	public static Object getMethodProfiler(Object handler) {
-		Object methodProfiler = getMethod(handler, LevelAccessor.METHOD_GETPROFILER.get()).invoke();
+		Object methodProfiler = getMethod(handler, LevelAccessor.METHOD_GET_PROFILER.get()).invoke();
 		if (methodProfiler == null) {
-			methodProfiler = getField(handler, LevelAccessor.FIELD_METHODPROFILER.get());
+			methodProfiler = getField(handler, LevelAccessor.FIELD_METHOD_PROFILER.get());
 		}
 		return methodProfiler;
 	}
 	
 	public static Object obtainNewPathfinderSelector(Object handler) {
 		try {
-			Object world = getMethod(handler, EntityAccessor.METHOD_GETCOMMANDSENDERWORLD.get()).invoke();
+			Object world = getMethod(handler, EntityAccessor.METHOD_GET_COMMAND_SENDER_WORLD.get()).invoke();
 			try {
 				// 1.17
-				return GoalSelectorAccessor.CONSTRUCTOR_0.get().newInstance(getMethod(world, LevelAccessor.METHOD_GETPROFILERSUPPLIER.get()).invoke());
+				return GoalSelectorAccessor.CONSTRUCTOR_0.get().newInstance(getMethod(world, LevelAccessor.METHOD_GET_PROFILER_SUPPLIER.get()).invoke());
 			} catch (Throwable ignored) {
 				try {
 					// 1.16

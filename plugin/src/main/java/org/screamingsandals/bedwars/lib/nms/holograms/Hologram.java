@@ -202,12 +202,12 @@ public class Hologram {
 						ArmorStandNMS stand = (ArmorStandNMS) entity;
 						stand.setCustomName(line);
 						if (ClientboundSetEntityDataPacketAccessor.CONSTRUCTOR_1.get() != null) {
-							Object watcherInList = ClassStorage.getMethod(stand.getDataWatcher(), SynchedEntityDataAccessor.METHOD_PACKDIRTY.get()).invoke();
+							Object watcherInList = ClassStorage.getMethod(stand.getDataWatcher(), SynchedEntityDataAccessor.METHOD_PACK_DIRTY.get()).invoke();
 							if (watcherInList != null) {
 								Object metadataPacket = ClientboundSetEntityDataPacketAccessor.CONSTRUCTOR_1.get()
 										.newInstance(stand.getId(), watcherInList);
 								packets.add(metadataPacket);
-								ClassStorage.getMethod(stand.getDataWatcher(), SynchedEntityDataAccessor.METHOD_CLEARDIRTY.get()).invoke();
+								ClassStorage.getMethod(stand.getDataWatcher(), SynchedEntityDataAccessor.METHOD_CLEAR_DIRTY.get()).invoke();
 							}
 						} else {
 							Object metadataPacket = ClientboundSetEntityDataPacketAccessor.CONSTRUCTOR_0.get()
@@ -219,12 +219,12 @@ public class Hologram {
 						EntityTextDisplayNMS display = (EntityTextDisplayNMS) entity;
 						display.setText(line);
 
-						Object watcherInList = ClassStorage.getMethod(display.getDataWatcher(), SynchedEntityDataAccessor.METHOD_PACKDIRTY.get()).invoke();
+						Object watcherInList = ClassStorage.getMethod(display.getDataWatcher(), SynchedEntityDataAccessor.METHOD_PACK_DIRTY.get()).invoke();
 						if (watcherInList != null) {
 							Object metadataPacket = ClientboundSetEntityDataPacketAccessor.CONSTRUCTOR_1.get()
 									.newInstance(display.getId(), watcherInList);
 							packets.add(metadataPacket);
-							ClassStorage.getMethod(display.getDataWatcher(), SynchedEntityDataAccessor.METHOD_CLEARDIRTY.get()).invoke();
+							ClassStorage.getMethod(display.getDataWatcher(), SynchedEntityDataAccessor.METHOD_CLEAR_DIRTY.get()).invoke();
 						}
 					}
 					if (positionChanged) {
@@ -243,12 +243,12 @@ public class Hologram {
 
 						packets.add(ClientboundAddEntityPacketAccessor.CONSTRUCTOR_1.get().newInstance(display.getHandler()));
 
-						Object watcherInList = ClassStorage.getMethod(display.getDataWatcher(), SynchedEntityDataAccessor.METHOD_PACKDIRTY.get()).invoke();
+						Object watcherInList = ClassStorage.getMethod(display.getDataWatcher(), SynchedEntityDataAccessor.METHOD_PACK_DIRTY.get()).invoke();
 						if (watcherInList != null) {
 							Object metadataPacket = ClientboundSetEntityDataPacketAccessor.CONSTRUCTOR_1.get()
 									.newInstance(display.getId(), watcherInList);
 							packets.add(metadataPacket);
-							ClassStorage.getMethod(display.getDataWatcher(), SynchedEntityDataAccessor.METHOD_CLEARDIRTY.get()).invoke();
+							ClassStorage.getMethod(display.getDataWatcher(), SynchedEntityDataAccessor.METHOD_CLEAR_DIRTY.get()).invoke();
 						}
 						if (this.entities.size() <= i) {
 							this.entities.add(display);
@@ -279,12 +279,12 @@ public class Hologram {
 						packets.add(spawnLivingPacket);
 						if (Version.isVersion(1, 15)) {
 							if (ClientboundSetEntityDataPacketAccessor.CONSTRUCTOR_1.get() != null) {
-								Object watcherInList = ClassStorage.getMethod(stand.getDataWatcher(), SynchedEntityDataAccessor.METHOD_PACKDIRTY.get()).invoke();
+								Object watcherInList = ClassStorage.getMethod(stand.getDataWatcher(), SynchedEntityDataAccessor.METHOD_PACK_DIRTY.get()).invoke();
 								if (watcherInList != null) {
 									Object metadataPacket = ClientboundSetEntityDataPacketAccessor.CONSTRUCTOR_1.get()
 											.newInstance(stand.getId(), watcherInList);
 									packets.add(metadataPacket);
-									ClassStorage.getMethod(stand.getDataWatcher(), SynchedEntityDataAccessor.METHOD_CLEARDIRTY.get()).invoke();
+									ClassStorage.getMethod(stand.getDataWatcher(), SynchedEntityDataAccessor.METHOD_CLEAR_DIRTY.get()).invoke();
 								}
 							} else {
 								Object metadataPacket = ClientboundSetEntityDataPacketAccessor.CONSTRUCTOR_0.get()
@@ -383,7 +383,7 @@ public class Hologram {
 			}
 			if (Version.isVersion(1, 15)) {
 				if (ClientboundSetEntityDataPacketAccessor.CONSTRUCTOR_1.get() != null) {
-					Object watcherInList = ClassStorage.getMethod(entity.getDataWatcher(), SynchedEntityDataAccessor.METHOD_GETALL.get()).invoke();
+					Object watcherInList = ClassStorage.getMethod(entity.getDataWatcher(), SynchedEntityDataAccessor.METHOD_GET_ALL.get()).invoke();
 					if (watcherInList != null) {
 						Object metadataPacket = ClientboundSetEntityDataPacketAccessor.CONSTRUCTOR_1.get()
 								.newInstance(entity.getId(), watcherInList);
