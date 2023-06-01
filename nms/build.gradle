@@ -6,13 +6,16 @@ import java.util.function.Supplier
 apply plugin: 'me.kcra.takenaka.accessor'
 
 dependencies {
+    mappingBundle "me.kcra.takenaka:mappings:1.8.8+1.19.4-SNAPSHOT"
     api "me.kcra.takenaka:generator-accessor-runtime:${BuildConfig.BUILD_VERSION}"
 }
 
 // after any changes in this file, please run the generateAccessors task to see changes in your ide
 
 accessors {
-    versionRange('1.8.8', '1.19.4') {
+    // uncomment this and remove the mappingBundle dependency,
+    // if you want to develop against custom versions
+    /*versionRange('1.8.8', '1.19.4') {
         // exclude 1.16 and 1.10.1, they don't have most mappings and are basically not used at all
         // exclude 1.8.9, client-only update - no Spigot mappings, no thank you
         // exclude 1.9.1 and 1.9.3 - no mappings at all
@@ -20,7 +23,8 @@ accessors {
 
         // include only releases, no snapshots
         it.includeTypes 'release'
-    }
+    }*/
+
     basePackage 'org.screamingsandals.bedwars.lib.nms.accessors'
     accessedNamespaces 'spigot', 'source'
     accessorFlavor 'reflection'
