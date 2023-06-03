@@ -25,7 +25,7 @@ import org.screamingsandals.bedwars.lib.nms.accessors.MobAccessor;
 import org.screamingsandals.bedwars.lib.nms.accessors.NearestAttackableTargetGoalAccessor;
 import org.screamingsandals.bedwars.lib.nms.utils.ClassStorage;
 
-public class TargetSelector extends Selector {
+public class TargetSelector extends Selector implements HurtByTargetGoalAccessor, NearestAttackableTargetGoalAccessor {
 	
 	public TargetSelector(Object handler) {
 		super(handler, MobAccessor.FIELD_TARGET_SELECTOR.get());

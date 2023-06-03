@@ -25,7 +25,7 @@ import org.screamingsandals.bedwars.lib.nms.utils.ClassStorage;
 
 import java.lang.reflect.Field;
 
-public abstract class Selector {
+public abstract class Selector implements GoalSelectorAccessor {
 	protected final Object handler;
 	protected final Field field;
 	protected Object selector;
@@ -41,7 +41,7 @@ public abstract class Selector {
 	
 	
 	public void registerPathfinder(int position, Object pathfinder) {
-		ClassStorage.getMethod(this.selector, GoalSelectorAccessor.METHOD_ADD_GOAL.get()).invoke(position, pathfinder);
+		ClassStorage.getMethod(this.selector, METHOD_ADD_GOAL.get()).invoke(position, pathfinder);
 	}
 	
 	protected Object getNMSSelector() {

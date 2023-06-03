@@ -19,8 +19,6 @@
 
 package org.screamingsandals.bedwars.lib.nms.entity;
 
-import static org.screamingsandals.bedwars.lib.nms.utils.ClassStorage.*;
-
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import org.bukkit.entity.LivingEntity;
@@ -29,7 +27,9 @@ import org.screamingsandals.bedwars.lib.nms.accessors.*;
 import java.util.Map;
 import java.util.function.Consumer;
 
-public class EntityLivingNMS extends EntityNMS {
+import static org.screamingsandals.bedwars.lib.nms.utils.ClassStorage.*;
+
+public class EntityLivingNMS extends EntityNMS implements LivingEntityAccessor {
 
 	public EntityLivingNMS(Object handler) {
 		super(handler);
@@ -56,7 +56,7 @@ public class EntityLivingNMS extends EntityNMS {
 	
 	public boolean hasAttribute(Object attr) {
 		try {
-			Object attr0 = getMethod(handler, LivingEntityAccessor.METHOD_GET_ATTRIBUTE.get())
+			Object attr0 = getMethod(handler, METHOD_GET_ATTRIBUTE.get())
 				.invoke(attr);
 			return attr0 != null;
 		} catch (Throwable t) {
@@ -70,7 +70,7 @@ public class EntityLivingNMS extends EntityNMS {
 	
 	public double getAttribute(Object attr) {
 		try {
-			Object attr0 = getMethod(handler, LivingEntityAccessor.METHOD_GET_ATTRIBUTE.get())
+			Object attr0 = getMethod(handler, METHOD_GET_ATTRIBUTE.get())
 				.invoke(attr);
 			return (double) getMethod(attr0, AttributeInstanceAccessor.METHOD_GET_BASE_VALUE.get()).invoke();
 		} catch (Throwable t) {
@@ -85,10 +85,10 @@ public class EntityLivingNMS extends EntityNMS {
 	public void setAttribute(Object attr, double value) {
 		try {
 			if (value >= 0) {
-				Object attr0 = getMethod(handler, LivingEntityAccessor.METHOD_GET_ATTRIBUTE.get())
+				Object attr0 = getMethod(handler, METHOD_GET_ATTRIBUTE.get())
 					.invoke(attr);
 				if (attr0 == null) {
-					Object attrMap = getMethod(handler, LivingEntityAccessor.METHOD_GET_ATTRIBUTES.get()).invoke();
+					Object attrMap = getMethod(handler, METHOD_GET_ATTRIBUTES.get()).invoke();
 					// Pre 1.16
 					attr0 = getMethod(attrMap, AttributeMapAccessor.METHOD_REGISTER_ATTRIBUTE.get()).invoke(attr);
 					if (attr0 == null || !AttributeInstanceAccessor.TYPE.get().isInstance(attr0)) {

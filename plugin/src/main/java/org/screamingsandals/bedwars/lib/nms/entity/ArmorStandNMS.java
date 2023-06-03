@@ -25,7 +25,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
 import org.screamingsandals.bedwars.lib.nms.accessors.ArmorStandAccessor;
 
-public class ArmorStandNMS extends EntityNMS {
+public class ArmorStandNMS extends EntityNMS implements ArmorStandAccessor {
 
 	public ArmorStandNMS(Object handler) {
 		super(handler);
@@ -39,41 +39,41 @@ public class ArmorStandNMS extends EntityNMS {
 	}
 	
 	public ArmorStandNMS(Location loc) throws Throwable {
-		this(ArmorStandAccessor.CONSTRUCTOR_0.get()
+		this(CONSTRUCTOR_0.get()
 					.newInstance(getHandle(loc.getWorld()), loc.getX(), loc.getY(), loc.getZ()));
 		this.setLocation(loc); // Update rotation
 	}
 	
 	public void setSmall(boolean small) {
-		getMethod(handler, ArmorStandAccessor.METHOD_SET_SMALL.get()).invoke(small);
+		getMethod(handler, METHOD_SET_SMALL.get()).invoke(small);
 	}
 	
 	public boolean isSmall() {
-		return (boolean) getMethod(handler, ArmorStandAccessor.METHOD_IS_SMALL.get()).invoke();
+		return (boolean) getMethod(handler, METHOD_IS_SMALL.get()).invoke();
 	}
 	
 	public void setArms(boolean arms) {
-		getMethod(handler, ArmorStandAccessor.METHOD_SET_SHOW_ARMS.get()).invoke(arms);
+		getMethod(handler, METHOD_SET_SHOW_ARMS.get()).invoke(arms);
 	}
 	
 	public boolean isArms() {
-		return (boolean) getMethod(handler, ArmorStandAccessor.METHOD_SHOULD_SHOW_ARMS.get()).invoke();
+		return (boolean) getMethod(handler, METHOD_SHOULD_SHOW_ARMS.get()).invoke();
 	}
 	
 	public void setBasePlate(boolean basePlate) {
-		getMethod(handler, ArmorStandAccessor.METHOD_SET_NO_BASE_PLATE.get()).invoke(basePlate);
+		getMethod(handler, METHOD_SET_NO_BASE_PLATE.get()).invoke(basePlate);
 	}
 	
 	public boolean isBasePlate() {
-		return (boolean) getMethod(handler, ArmorStandAccessor.METHOD_IS_NO_BASE_PLATE.get()).invoke();
+		return (boolean) getMethod(handler, METHOD_IS_NO_BASE_PLATE.get()).invoke();
 	}
 	
 	public void setMarker(boolean marker) {
-		getMethod(handler, ArmorStandAccessor.METHOD_SET_MARKER.get()).invoke(marker);
+		getMethod(handler, METHOD_SET_MARKER.get()).invoke(marker);
 	}
 	
 	public boolean isMarker() {
-		return (boolean) getMethod(handler, ArmorStandAccessor.METHOD_IS_MARKER.get()).invoke();
+		return (boolean) getMethod(handler, METHOD_IS_MARKER.get()).invoke();
 	}
 
 }
