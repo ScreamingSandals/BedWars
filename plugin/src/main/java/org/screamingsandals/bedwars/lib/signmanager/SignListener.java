@@ -28,6 +28,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.screamingsandals.bedwars.commands.BaseCommand;
+import org.screamingsandals.bedwars.lib.nms.utils.Version;
 
 import java.util.List;
 
@@ -87,6 +88,11 @@ public class SignListener implements Listener {
                 if (BaseCommand.hasPermission(event.getPlayer(), owner.getSignCreationPermissions(), false)) {
                     if (manager.registerSign(loc, event.getLine(1))) {
                         event.getPlayer().sendMessage(owner.returnTranslate("sign_successfully_created"));
+                        if (Version.isVersion(1, 20)) {
+                            Sign sign = (Sign) event.getBlock().getState();
+                            sign.setEditable(false);
+                            sign.update(true, false);
+                        }
                     } else {
                         event.getPlayer().sendMessage(owner.returnTranslate("sign_can_not_been_created"));
                         event.setCancelled(true);
