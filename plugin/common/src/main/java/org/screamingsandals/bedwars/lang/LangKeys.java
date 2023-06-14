@@ -72,6 +72,8 @@ public class LangKeys {
     public final String[] IN_GAME_TARGET_BLOCK_DESTROYED_ANY_CERTAIN_POPULAR_SERVER = {"in_game", "target_block", "destroyed", "any_certain_popular_server"};
     public final String[] IN_GAME_TARGET_BLOCK_DESTROYED_BED = {"in_game", "target_block", "destroyed", "bed"};
     public final String[] IN_GAME_TARGET_BLOCK_DESTROYED_BED_CERTAIN_POPULAR_SERVER = {"in_game", "target_block", "destroyed", "bed_certain_popular_server"};
+    public final String[] IN_GAME_TARGET_BLOCK_DESTROYED_DOOR = {"in_game", "target_block", "destroyed", "door"};
+    public final String[] IN_GAME_TARGET_BLOCK_DESTROYED_DOOR_CERTAIN_POPULAR_SERVER = {"in_game", "target_block", "destroyed", "door_certain_popular_server"};
     public final String[] IN_GAME_TARGET_BLOCK_DESTROYED_ANCHOR = {"in_game", "target_block", "destroyed", "anchor"};
     public final String[] IN_GAME_TARGET_BLOCK_DESTROYED_ANCHOR_CERTAIN_POPULAR_SERVER = {"in_game", "target_block", "destroyed", "anchor_certain_popular_server"};
     public final String[] IN_GAME_TARGET_BLOCK_DESTROYED_CAKE = {"in_game", "target_block", "destroyed", "cake"};
@@ -86,14 +88,17 @@ public class LangKeys {
     public final String[] IN_GAME_TARGET_BLOCK_DESTROYED_ALL_CAKES = {"in_game", "target_block", "destroyed", "all_cakes"};
     public final String[] IN_GAME_TARGET_BLOCK_HOLOGRAM_PROTECT_ANY = {"in_game", "target_block", "hologram", "protect", "any"};
     public final String[] IN_GAME_TARGET_BLOCK_HOLOGRAM_PROTECT_BED = {"in_game", "target_block", "hologram", "protect", "bed"};
+    public final String[] IN_GAME_TARGET_BLOCK_HOLOGRAM_PROTECT_DOOR = {"in_game", "target_block", "hologram", "protect", "door"};
     public final String[] IN_GAME_TARGET_BLOCK_HOLOGRAM_PROTECT_ANCHOR = {"in_game", "target_block", "hologram", "protect", "anchor"};
     public final String[] IN_GAME_TARGET_BLOCK_HOLOGRAM_PROTECT_CAKE = {"in_game", "target_block", "hologram", "protect", "cake"};
     public final String[] IN_GAME_TARGET_BLOCK_HOLOGRAM_DESTROYED_ANY = {"in_game", "target_block", "hologram", "destroyed", "any"};
     public final String[] IN_GAME_TARGET_BLOCK_HOLOGRAM_DESTROYED_BED = {"in_game", "target_block", "hologram", "destroyed", "bed"};
+    public final String[] IN_GAME_TARGET_BLOCK_HOLOGRAM_DESTROYED_DOOR = {"in_game", "target_block", "hologram", "destroyed", "door"};
     public final String[] IN_GAME_TARGET_BLOCK_HOLOGRAM_DESTROYED_ANCHOR = {"in_game", "target_block", "hologram", "destroyed", "anchor"};
     public final String[] IN_GAME_TARGET_BLOCK_HOLOGRAM_DESTROYED_CAKE = {"in_game", "target_block", "hologram", "destroyed", "cake"};
     public final String[] IN_GAME_TARGET_BLOCK_HOLOGRAM_DESTROY_ANY = {"in_game", "target_block", "hologram", "destroy", "any"};
     public final String[] IN_GAME_TARGET_BLOCK_HOLOGRAM_DESTROY_BED = {"in_game", "target_block", "hologram", "destroy", "bed"};
+    public final String[] IN_GAME_TARGET_BLOCK_HOLOGRAM_DESTROY_DOOR = {"in_game", "target_block", "hologram", "destroy", "door"};
     public final String[] IN_GAME_TARGET_BLOCK_HOLOGRAM_DESTROY_ANCHOR = {"in_game", "target_block", "hologram", "destroy", "anchor"};
     public final String[] IN_GAME_TARGET_BLOCK_HOLOGRAM_DESTROY_CAKE = {"in_game", "target_block", "hologram", "destroy", "cake"};
     public final String[] IN_GAME_RESPAWN_COOLDOWN_TITLE = {"in_game", "respawn_cooldown", "title"};
@@ -181,6 +186,7 @@ public class LangKeys {
     public final String[] IN_GAME_GAME_START_SUBTITLE = {"in_game", "game_start_subtitle"};
     public final String[] IN_GAME_ECONOMY_DEPOSITED = {"in_game", "economy_deposited"};
     public final String[] IN_GAME_ECONOMY_MISSING_COINS = {"in_game", "economy_missing_coins"};
+    public final String[] IN_GAME_KICKING_IN = {"in_game", "kicking_in"};
     public final String[] HELP_TITLE = {"help", "title"};
     public final String[] HELP_MESSAGES_COMMAND = {"help", "messages", "command"};
     public final String[] HELP_MESSAGES_DESCRIPTION = {"help", "messages", "description"};
@@ -514,6 +520,7 @@ public class LangKeys {
     public final String[] PARTY_COMMAND_WARPED = {"party", "command", "warped"};
     public final String[] DUMP_SUCCESS = {"dump", "success"};
     public final String[] DUMP_FAILED = {"dump", "failed"};
+    public final String[] DUMP_UNKNOWN_SERVICE = {"dump", "unknown_service"};
     public final String[] LANGUAGE_USAGE_BW_LANG = {"language", "usage_bw_lang"};
     public final String[] LANGUAGE_INVALID = {"language", "invalid"};
     public final String[] LANGUAGE_ALREADY_SET = {"language", "already_set"};

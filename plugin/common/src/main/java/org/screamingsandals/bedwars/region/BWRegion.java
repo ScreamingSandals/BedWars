@@ -46,6 +46,10 @@ public interface BWRegion extends Region {
 
     boolean isBedHead(BlockStateHolder block);
 
+    boolean isDoorBlock(BlockStateHolder block);
+
+    boolean isDoorBottomBlock(BlockStateHolder block);
+
     BlockHolder getBedNeighbor(BlockHolder head);
 
     boolean isChunkUsed(ChunkHolder chunk);
@@ -105,5 +109,17 @@ public interface BWRegion extends Region {
     @Deprecated
     default boolean isChunkUsed(Object chunk) {
         return isChunkUsed(ChunkMapper.wrapChunk(chunk).orElseThrow());
+    }
+
+    @Override
+    @Deprecated
+    default boolean isDoorBlock(Object blockState) {
+        return isDoorBlock(BlockStateMapper.wrapBlockState(blockState).orElseThrow());
+    }
+
+    @Override
+    @Deprecated
+    default boolean isDoorBottomBlock(Object blockState) {
+        return isDoorBottomBlock(BlockStateMapper.wrapBlockState(blockState).orElseThrow());
     }
 }

@@ -459,6 +459,8 @@ public class TeamCommand extends BaseAdminSubCommand {
             var chosenLoc = loc;
             if (block.getType().is("#beds") && !block.getType().get("part").map("head"::equals).orElse(true /* it should always be present unless it's not a bed */)) {
                 chosenLoc = Objects.requireNonNull(BedUtils.getBedNeighbor(block)).getLocation();
+            } else if (block.getType().is("#doors") && !block.getType().get("half").map("lower"::equals).orElse(true /* it should always be present unless it's not a door */)) {
+                chosenLoc = loc.subtract(0, 1, 0);
             }
             team.setTarget(new TargetBlockImpl(chosenLoc));
             var particle = new ParticleHolder(

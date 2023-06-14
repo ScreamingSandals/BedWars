@@ -138,4 +138,20 @@ public interface Region {
      * @return was anything in the chunk modified?
      */
     boolean isChunkUsed(Object chunk);
+
+    /**
+     * <p>Checks if a block state matches a door block.</p>
+     *
+     * @param blockState the block state (BlockStateHolder or the platform impl)
+     * @return does the block state match a door block?
+     */
+    boolean isDoorBlock(Object blockState);
+
+    /**
+     * <p>Checks if a block state matches a bottom door block.</p>
+     *
+     * @param blockState the block state (BlockStateHolder or the platform impl)
+     * @return does the block state match a bottom door block?
+     */
+    boolean isDoorBottomBlock(Object blockState);
 }

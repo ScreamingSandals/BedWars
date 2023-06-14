@@ -183,9 +183,9 @@ public class ShopInventory {
                         .map(property -> property.getPropertyData().childrenList().stream().map(ConfigurationNode::getString))
                         .orElseGet(() -> mainConfig.node("lore", "text").childrenList().stream().map(ConfigurationNode::getString))
                         .filter(Objects::nonNull)
-                        .map(s -> s.replaceAll("%price%", Integer.toString(price))
-                                .replaceAll("%resource%", type.getItemName().asComponent().toLegacy())
-                                .replaceAll("%amount%", Integer.toString(finalItem.getAmount())))
+                        .map(s -> s.replace("%price%", Integer.toString(price))
+                                .replace("%resource%", type.getItemName().asComponent().toLegacy())
+                                .replace("%amount%", Integer.toString(finalItem.getAmount())))
                         .map(Component::fromLegacy)
                         .collect(Collectors.toList());
 

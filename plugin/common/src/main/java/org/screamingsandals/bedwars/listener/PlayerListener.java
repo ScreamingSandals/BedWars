@@ -88,7 +88,6 @@ public class PlayerListener {
             final var gVictim = victim.as(BedWarsPlayer.class);
             final var game = gVictim.getGame();
             final var victimTeam = game.getPlayerTeam(gVictim);
-            final var victimColor = victimTeam.getColor().getTextColor();
             final var drops = List.copyOf(event.drops());
             int respawnTime = game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.RESPAWN_COOLDOWN_TIME, 5);
 
@@ -106,7 +105,8 @@ public class PlayerListener {
             event.keepInventory(game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.KEEP_INVENTORY_ON_DEATH, false));
             event.droppedExp(0);
 
-            if (game.getStatus() == GameStatus.RUNNING) {
+            if (game.getStatus() == GameStatus.RUNNING && victimTeam != null) { // we shouldn't assume the victimTeam is not null, this can be spectator
+                final var victimColor = victimTeam.getColor().getTextColor();
                 Debug.info(victim.getName() + " died while game was running");
                 if (!game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.PLAYER_DROPS, false)) {
                     event.drops().clear();
@@ -257,6 +257,9 @@ public class PlayerListener {
                 Debug.info(victim.getName() + " is going to be respawned via spigot api");
                 PlatformService.getInstance().respawnPlayer(victim, 3L);
             }
+            if (victimTeam == null) {
+                return; // we shouldn't continue further in that case
+            }
             if (game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.RESPAWN_COOLDOWN_ENABLED, false)
                     && victimTeam.isAlive()
                     && !gVictim.isSpectator()) {
@@ -298,6 +301,27 @@ public class PlayerListener {
                                 .delay(20, TaskerTime.TICKS)
                                 .repeat(20, TaskerTime.TICKS)
                                 .start()
+                );
+            } else if (!victimTeam.getPlayers().contains(gVictim) && game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.KICK_PLAYERS_UPON_FINAL_DEATH_ENABLED, false)) {
+                int delay = game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.KICK_PLAYERS_UPON_FINAL_DEATH_DELAY, 5);
+
+                final var kickingTime = new AtomicInteger(delay);
+                final var task = new AtomicReference<TaskerTask>();
+                task.set(
+                    Tasker.build(() -> {
+                                if (kickingTime.get() > 0) {
+                                    gVictim.sendActionBar(Message.of(LangKeys.IN_GAME_KICKING_IN).placeholder("time", kickingTime.get()));
+                                }
+
+                                kickingTime.decrementAndGet();
+                                if (kickingTime.get() == 0) {
+                                    game.leaveFromGame(gVictim);
+                                    task.get().cancel();
+                                }
+                            })
+                            .delay(20, TaskerTime.TICKS)
+                            .repeat(20, TaskerTime.TICKS)
+                            .start()
                 );
             }
         }
@@ -1215,7 +1239,7 @@ public class PlayerListener {
                 format = MainConfig.getInstance().node("chat", "all-chat").getString("[ALL] ") + format;
             }
 
-            event.format(format + message.replaceAll("%", "%%")); // Fix using % in chat
+            event.format(format + message.replace("%", "%%")); // Fix using % in chat
             var recipients = event.recipients().iterator();
             while (recipients.hasNext()) {
                 var recipient = recipients.next();

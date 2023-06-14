@@ -130,4 +130,7 @@ public interface GameConfigurationContainer extends ConfigurationContainer {
     ConfigurationKey<Integer> STATISTICS_SCORES_BED_DESTROY = ConfigurationKey.of(Integer.class, "statistics", "scores", "bed-destroy");
     ConfigurationKey<Integer> STATISTICS_SCORES_LOSE = ConfigurationKey.of(Integer.class, "statistics", "scores", "lose");
     ConfigurationKey<Integer> STATISTICS_SCORES_RECORD = ConfigurationKey.of(Integer.class, "statistics", "scores", "record");
+
+    ConfigurationKey<Boolean> KICK_PLAYERS_UPON_FINAL_DEATH_ENABLED = ConfigurationKey.of(Boolean.class, "kick-players-upon-final-death", "enabled");
+    ConfigurationKey<Integer> KICK_PLAYERS_UPON_FINAL_DEATH_DELAY = ConfigurationKey.of(Integer.class, "kick-players-upon-final-death", "delay");
 }

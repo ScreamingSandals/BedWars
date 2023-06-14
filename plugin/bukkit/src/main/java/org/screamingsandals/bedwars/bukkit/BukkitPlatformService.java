@@ -33,6 +33,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scoreboard.Scoreboard;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.BedWarsPlugin;
@@ -225,5 +226,17 @@ public class BukkitPlatformService extends PlatformService {
     @NotNull
     public BWRegion getLegacyRegion() {
         return new LegacyRegion();
+    }
+
+    @Override
+    public @Nullable Object savePlatformScoreboard(@NotNull PlayerWrapper player) {
+        return player.as(Player.class).getScoreboard();
+    }
+
+    @Override
+    public void restorePlatformScoreboard(@NotNull PlayerWrapper player, @NotNull Object scoreboard) {
+        if (scoreboard instanceof Scoreboard) {
+            player.as(Player.class).setScoreboard((Scoreboard) scoreboard);
+        }
     }
 }

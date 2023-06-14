@@ -22,8 +22,10 @@ package org.screamingsandals.bedwars.player;
 import lombok.Getter;
 import lombok.Setter;
 import org.screamingsandals.bedwars.BedWarsPlugin;
+import org.screamingsandals.bedwars.PlatformService;
 import org.screamingsandals.bedwars.api.player.BWPlayer;
 import org.screamingsandals.bedwars.commands.BedWarsPermission;
+import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.utils.BungeeUtils;
@@ -119,6 +121,10 @@ public class BedWarsPlayer extends ExtendablePlayerWrapper implements BWPlayer {
         oldInventory.setListName(getPlayerListName());
         oldInventory.setDisplayName(getDisplayName());
         oldInventory.setFoodLevel(getFoodLevel());
+
+        if (MainConfig.getInstance().node("remember-what-scoreboards-players-had-before").getBoolean()) {
+            oldInventory.setPlatformScoreboard(PlatformService.getInstance().savePlatformScoreboard(this));
+        }
     }
 
     public void restoreInv() {
@@ -155,6 +161,11 @@ public class BedWarsPlayer extends ExtendablePlayerWrapper implements BWPlayer {
         forceUpdateInventory();
         resetPlayerTime();
         setPlayerWeather(null);
+
+        if (oldInventory.getPlatformScoreboard() != null) {
+            PlatformService.getInstance().restorePlatformScoreboard(this, oldInventory.getPlatformScoreboard());
+            oldInventory.setPlatformScoreboard(null);
+        }
     }
 
     public void resetLife() {

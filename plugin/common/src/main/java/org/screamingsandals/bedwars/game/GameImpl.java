@@ -790,6 +790,10 @@ public class GameImpl implements Game {
             if (!region.isBedHead(block.getBlockState().orElseThrow())) {
                 loc = region.getBedNeighbor(block).getLocation();
             }
+        } else if (region.isDoorBlock(block.getBlockState().orElseThrow())) {
+            if (!region.isDoorBottomBlock(block.getBlockState().orElseThrow())) {
+                loc = loc.subtract(0, 1, 0);
+            }
         }
         var targetTeam = getTeamOfTargetBlock(loc);
         if (targetTeam != null) {
@@ -2094,12 +2098,16 @@ public class GameImpl implements Game {
                                         }
 
                                         if (MainConfig.getInstance().node("rewards", "enabled").getBoolean()) {
+                                            if (PlayerStatisticManager.isEnabled()) {
+                                                var statistic = PlayerStatisticManager.getInstance().getStatistic(player);
+                                                GameImpl.this.dispatchRewardCommands("player-win-run-immediately", player, statistic.getScore());
+                                            } else {
+                                                GameImpl.this.dispatchRewardCommands("player-win-run-immediately", player, 0);
+                                            }
                                             Tasker.build(() -> {
                                                 if (PlayerStatisticManager.isEnabled()) {
-                                                    var statistic = PlayerStatisticManager.getInstance()
-                                                            .getStatistic(player);
-                                                    GameImpl.this.dispatchRewardCommands("player-win", player,
-                                                            statistic.getScore());
+                                                    var statistic = PlayerStatisticManager.getInstance().getStatistic(player);
+                                                    GameImpl.this.dispatchRewardCommands("player-win", player, statistic.getScore());
                                                 } else {
                                                     GameImpl.this.dispatchRewardCommands("player-win", player, 0);
                                                 }
@@ -2405,9 +2413,9 @@ public class GameImpl implements Game {
         final var texts = MainConfig.getInstance().node("sign", "lines").childrenList().stream()
                 .map(ConfigurationNode::getString)
                 .map(s -> Objects.requireNonNullElse(s, "")
-                        .replaceAll("%arena%", this.displayName != null && !this.displayName.isBlank() ? Component.fromMiniMessage(this.displayName).toLegacy() : this.getName())
-                        .replaceAll("%status%", statusMessage.asComponent().toLegacy())
-                        .replaceAll("%players%", playerMessage.asComponent().toLegacy()))
+                        .replace("%arena%", this.displayName != null && !this.displayName.isBlank() ? Component.fromMiniMessage(this.displayName).toLegacy() : this.getName())
+                        .replace("%status%", statusMessage.asComponent().toLegacy())
+                        .replace("%players%", playerMessage.asComponent().toLegacy()))
                 .collect(Collectors.toList());
 
         final var finalBlockBehindMaterial = blockBehindMaterial;
@@ -2799,8 +2807,8 @@ public class GameImpl implements Game {
                 .map(ConfigurationNode::getString)
                 .filter(Objects::nonNull)
                 .map(s -> s
-                        .replaceAll("\\{player}", player.getName())
-                        .replaceAll("\\{score}", Integer.toString(score))
+                        .replace("{player}", player.getName())
+                        .replace("{score}", Integer.toString(score))
                 )
                 .map(s -> s.startsWith("/") ? s.substring(1) : s)
                 .forEach(player::tryToDispatchCommand);
