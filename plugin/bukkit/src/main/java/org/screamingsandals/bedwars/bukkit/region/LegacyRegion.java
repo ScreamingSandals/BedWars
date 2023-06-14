@@ -214,6 +214,17 @@ public class LegacyRegion implements BWRegion {
     }
 
     @Override
+    public boolean isDoorBlock(BlockStateHolder block) {
+        return block.as(BlockState.class).getData() instanceof Door;
+    }
+
+    @Override
+    public boolean isDoorBottomBlock(BlockStateHolder block) {
+        var data = block.as(BlockState.class).getData();
+        return data instanceof Door && !((Door) data).isTopHalf();
+    }
+
+    @Override
     public BlockHolder getBedNeighbor(BlockHolder head) {
         return BedUtils.getBedNeighbor(head);
     }

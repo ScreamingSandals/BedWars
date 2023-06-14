@@ -130,6 +130,8 @@ public class GameConfigurationContainerImpl extends ConfigurationContainerImpl i
         register(STATISTICS_SCORES_BED_DESTROY, "statistics", "scores", "bed-destroy");
         register(STATISTICS_SCORES_LOSE, "statistics", "scores", "lose");
         register(STATISTICS_SCORES_RECORD, "statistics", "scores", "record");
+        register(KICK_PLAYERS_UPON_FINAL_DEATH_ENABLED, "kick-players-upon-final-death", "enabled");
+        register(KICK_PLAYERS_UPON_FINAL_DEATH_ENABLED, "kick-players-upon-final-death", "delay");
     }
 
     protected void migrateOld(ConfigurationNode configurationNode) {

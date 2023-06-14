@@ -53,6 +53,7 @@ public class VariantImpl implements Variant {
     private final GameConfigurationContainerImpl configurationContainer = new GameConfigurationContainerImpl();
     @NotNull
     private final List<ItemSpawnerTypeImpl> customSpawnerTypes = new ArrayList<>();
+    private final @NotNull File file;
     private boolean defaultItemSpawnerTypesIncluded = true;
 
     public static VariantImpl loadVariant(File file) {
@@ -82,13 +83,13 @@ public class VariantImpl implements Variant {
 
             VariantImpl variant;
             if (file.getName().equalsIgnoreCase("default.yml")) {
-                variant = new VariantImpl("default");
+                variant = new VariantImpl("default", file);
             } else {
                 var name = configMap.node("name").getString();
                 if (name == null || name.isEmpty() || name.equalsIgnoreCase("default")) {
                     name = file.getName().split("\\.")[0];
                 }
-                variant = new VariantImpl(name);
+                variant = new VariantImpl(name, file);
             }
 
             variant.configurationContainer.applyNode(configMap.node("config"));

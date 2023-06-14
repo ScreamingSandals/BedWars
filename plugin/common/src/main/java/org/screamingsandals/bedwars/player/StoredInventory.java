@@ -42,4 +42,5 @@ public class StoredInventory {
     private Component listName;
     private GameModeHolder mode;
     private float xp;
+    private Object platformScoreboard;
 }

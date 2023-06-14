@@ -107,9 +107,9 @@ public class BedWarsSignService extends AbstractSignManager {
                 .stream()
                 .map(ConfigurationNode::getString)
                 .map(s -> Objects.requireNonNullElse(s, "")
-                        .replaceAll("%arena%", Message.of(LangKeys.IN_GAME_LOBBY_ITEMS_LEAVE_FROM_GAME_ITEM).getForAnyoneJoined().toLegacy())
-                        .replaceAll("%status%", "")
-                        .replaceAll("%players%", "")
+                        .replace("%arena%", Message.of(LangKeys.IN_GAME_LOBBY_ITEMS_LEAVE_FROM_GAME_ITEM).getForAnyoneJoined().toLegacy())
+                        .replace("%status%", "")
+                        .replace("%players%", "")
                 )
                 .map(Component::fromLegacy)
                 .collect(Collectors.toList());

@@ -69,6 +69,7 @@ public class TargetInvalidatedListener {
             var isItBedBlock = type != null && type.is("#beds");
             var isItAnchor = type != null && type.isSameType("respawn_anchor");
             var isItCake = type != null && type.isSameType("cake");
+            var isItDoor = type != null && type.is("#doors");
 
             var allPlayers = game.getConnectedPlayers();
 
@@ -87,9 +88,9 @@ public class TargetInvalidatedListener {
                     if (!cpsTitles || game.getPlayerTeam(player) == team) {
                         String[] keys;
                         if (cpsTitles) {
-                            keys = isItBedBlock ? LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_BED_CERTAIN_POPULAR_SERVER : (isItAnchor ? LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_ANCHOR_CERTAIN_POPULAR_SERVER : (isItCake ? LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_CAKE_CERTAIN_POPULAR_SERVER : LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_ANY_CERTAIN_POPULAR_SERVER));
+                            keys = isItDoor ? LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_DOOR_CERTAIN_POPULAR_SERVER : (isItBedBlock ? LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_BED_CERTAIN_POPULAR_SERVER : (isItAnchor ? LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_ANCHOR_CERTAIN_POPULAR_SERVER : (isItCake ? LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_CAKE_CERTAIN_POPULAR_SERVER : LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_ANY_CERTAIN_POPULAR_SERVER)));
                         } else {
-                            keys = isItBedBlock ? LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_BED : (isItAnchor ? LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_ANCHOR : (isItCake ? LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_CAKE : LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_ANY));
+                            keys = isItDoor ? LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_DOOR : (isItBedBlock ? LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_BED : (isItAnchor ? LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_ANCHOR : (isItCake ? LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_CAKE : LangKeys.IN_GAME_TARGET_BLOCK_DESTROYED_ANY)));
                         }
                         var message = Message
                                 .of(keys)
@@ -136,7 +137,7 @@ public class TargetInvalidatedListener {
             SpawnEffects.spawnEffect(game, ((TargetBlockImpl) target).getTargetBlock(), "game-effects.beddestroy");
 
             if (team.getHologram() != null) {
-                team.getHologram().replaceLine(0, Message.of(isItBedBlock ? LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_DESTROYED_BED : (isItAnchor ? LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_DESTROYED_ANCHOR : (isItCake ? LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_DESTROYED_CAKE : LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_DESTROYED_ANY))));
+                team.getHologram().replaceLine(0, Message.of(isItDoor ? LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_DESTROYED_DOOR : (isItBedBlock ? LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_DESTROYED_BED : (isItAnchor ? LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_DESTROYED_ANCHOR : (isItCake ? LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_DESTROYED_CAKE : LangKeys.IN_GAME_TARGET_BLOCK_HOLOGRAM_DESTROYED_ANY)))));
                 team.getPlayers().forEach(team.getHologram()::addViewer);
             }
 

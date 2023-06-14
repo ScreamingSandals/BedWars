@@ -161,49 +161,35 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                     if (PlayerManagerImpl.getInstance().isPlayerInGame(player.getUuid())) {
                         var gPlayer = PlayerManagerImpl.getInstance().getPlayer(player.getUuid()).orElseThrow();
                         var game = gPlayer.getGame();
-                        if (gPlayer.isSpectator()) {
+                        var team = game.getPlayerTeam(gPlayer);
+                        if (team != null) {
+                            return Component.text(team.getName());
+                        } else if (gPlayer.isSpectator()) {
                             return Component.text("spectator");
-                        } else {
-                            var team = game.getPlayerTeam(gPlayer);
-                            if (team != null) {
-                                return Component.text(team.getName());
-                            } else {
-                                return Component.text("none");
-                            }
                         }
-                    } else {
-                        return Component.text("none");
                     }
+                    return Component.text("none");
                 case "team_colored":
                     if (PlayerManagerImpl.getInstance().isPlayerInGame(player.getUuid())) {
                         var gPlayer = PlayerManagerImpl.getInstance().getPlayer(player.getUuid()).orElseThrow();
                         var game = gPlayer.getGame();
-                        if (gPlayer.isSpectator()) {
+                        var team = game.getPlayerTeam(gPlayer);
+                        if (team != null) {
+                            return Component.text(team.getName(), team.getColor().getTextColor());
+                        } else if (gPlayer.isSpectator()) {
                             return Component.text("spectator", Color.GRAY);
-                        } else {
-                            var team = game.getPlayerTeam(gPlayer);
-                            if (team != null) {
-                                return Component.text(team.getName(), team.getColor().getTextColor());
-                            } else {
-                                return Component.text("none", Color.RED);
-                            }
                         }
-                    } else {
-                        return Component.text("none", Color.RED);
                     }
+                    return Component.text("none", Color.RED);
                 case "team_color":
                     if (PlayerManagerImpl.getInstance().isPlayerInGame(player.getUuid())) {
                         var gPlayer = PlayerManagerImpl.getInstance().getPlayer(player.getUuid()).orElseThrow();
                         var game = gPlayer.getGame();
-                        if (gPlayer.isSpectator()) {
-                            return Component.text("", Color.GRAY);
+                        var team = game.getPlayerTeam(gPlayer);
+                        if (team != null) {
+                            return Component.text("", team.getColor().getTextColor());
                         } else {
-                            var team = game.getPlayerTeam(gPlayer);
-                            if (team != null) {
-                                return Component.text("", team.getColor().getTextColor());
-                            } else {
-                                return Component.text("", Color.GRAY);
-                            }
+                            return Component.text("", Color.GRAY);
                         }
                     } else {
                         return Component.empty();
@@ -212,70 +198,42 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                     if (PlayerManagerImpl.getInstance().isPlayerInGame(player.getUuid())) {
                         var gPlayer = PlayerManagerImpl.getInstance().getPlayer(player.getUuid()).orElseThrow();
                         var game = gPlayer.getGame();
-                        if (gPlayer.isSpectator()) {
-                            return Component.text("0");
-                        } else {
-                            var team = game.getPlayerTeam(gPlayer);
-                            if (team != null) {
-                                return Component.text(team.countConnectedPlayers());
-                            } else {
-                                return Component.text("0");
-                            }
+                        var team = game.getPlayerTeam(gPlayer);
+                        if (team != null) {
+                            return Component.text(team.countConnectedPlayers());
                         }
-                    } else {
-                        return Component.text("0");
                     }
+                    return Component.text("0");
                 case "team_maxplayers":
                     if (PlayerManagerImpl.getInstance().isPlayerInGame(player.getUuid())) {
                         var gPlayer = PlayerManagerImpl.getInstance().getPlayer(player.getUuid()).orElseThrow();
                         var game = gPlayer.getGame();
-                        if (gPlayer.isSpectator()) {
-                            return Component.text("0");
-                        } else {
-                            var team = game.getPlayerTeam(gPlayer);
-                            if (team != null) {
-                                return Component.text(team.getMaxPlayers());
-                            } else {
-                                return Component.text("0");
-                            }
+                        var team = game.getPlayerTeam(gPlayer);
+                        if (team != null) {
+                            return Component.text(team.getMaxPlayers());
                         }
-                    } else {
-                        return Component.text("0");
                     }
+                    return Component.text("0");
                 case "team_bed":
                     if (PlayerManagerImpl.getInstance().isPlayerInGame(player.getUuid())) {
                         var gPlayer = PlayerManagerImpl.getInstance().getPlayer(player.getUuid()).orElseThrow();
                         var game = gPlayer.getGame();
-                        if (gPlayer.isSpectator()) {
-                            return Component.text("no");
-                        } else {
-                            var team = game.getPlayerTeam(gPlayer);
-                            if (team != null) {
-                                return Component.text(team.getTarget().isValid() ? "yes" : "no");
-                            } else {
-                                return Component.text("no");
-                            }
+                        var team = game.getPlayerTeam(gPlayer);
+                        if (team != null) {
+                            return Component.text(team.getTarget().isValid() ? "yes" : "no");
                         }
-                    } else {
-                        return Component.text("no");
                     }
+                    return Component.text("no");
                 case "team_teamchests":
                     if (PlayerManagerImpl.getInstance().isPlayerInGame(player.getUuid())) {
                         var gPlayer = PlayerManagerImpl.getInstance().getPlayer(player.getUuid()).orElseThrow();
                         var game = gPlayer.getGame();
-                        if (gPlayer.isSpectator()) {
-                            return Component.text("0");
-                        } else {
-                            var team = game.getPlayerTeam(gPlayer);
-                            if (team != null) {
-                                return Component.text(team.countTeamChests());
-                            } else {
-                                return Component.text("0");
-                            }
+                        var team = game.getPlayerTeam(gPlayer);
+                        if (team != null) {
+                            return Component.text(team.countTeamChests());
                         }
-                    } else {
-                        return Component.text("0");
                     }
+                    return Component.text("0");
             }
         }
 

@@ -91,6 +91,18 @@ public class FlatteningRegion implements BWRegion {
     }
 
     @Override
+    public boolean isDoorBlock(BlockStateHolder block) {
+        var type = block.getType();
+        return type != null && type.is("#doors");
+    }
+
+    @Override
+    public boolean isDoorBottomBlock(BlockStateHolder block) {
+        var type = block.getType();
+        return type != null && type.is("#doors") && type.get("half").map("lower"::equals).orElse(false);
+    }
+
+    @Override
     public BlockHolder getBedNeighbor(BlockHolder head) {
         return BedUtils.getBedNeighbor(head);
     }

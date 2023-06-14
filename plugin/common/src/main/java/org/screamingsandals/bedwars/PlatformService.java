@@ -68,4 +68,8 @@ public abstract class PlatformService {
 
     @NotNull
     public abstract BWRegion getLegacyRegion();
+
+    public abstract @Nullable Object savePlatformScoreboard(@NotNull PlayerWrapper player);
+
+    public abstract void restorePlatformScoreboard(@NotNull PlayerWrapper player, @NotNull Object scoreboard);
 }

@@ -21,6 +21,10 @@ package org.screamingsandals.bedwars.commands;
 
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
+import cloud.commandframework.arguments.standard.EnumArgument;
+import cloud.commandframework.arguments.standard.StringArgument;
+import lombok.Data;
+import org.jetbrains.annotations.NotNull;
 import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.VersionInfo;
 import org.screamingsandals.bedwars.api.Team;
@@ -66,6 +70,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class DumpCommand extends BaseCommand {
+    private static final @NotNull List<@NotNull String> SERVICES = List.of("paste.gg", "pastes.dev");
+
     public DumpCommand() {
         super("dump", BedWarsPermission.ADMIN_PERMISSION, true);
     }
@@ -75,20 +81,31 @@ public class DumpCommand extends BaseCommand {
         // TODO: rework this so we use configurate properly and serializers actually work (it even refuses to serialize enums, like wtf)
         manager.command(
                 commandSenderWrapperBuilder
+                        .argument(
+                                StringArgument.<CommandSenderWrapper>newBuilder("service")
+                                        .withSuggestionsProvider((objectCommandContext, s) -> SERVICES)
+                                        .asOptionalWithDefault(SERVICES.get(0))
+                                        .build()
+                        )
                         .handler(commandContext -> {
                             var sender = commandContext.getSender();
+
+                            String service = commandContext.get("service");
+                            if (!SERVICES.contains(service.toLowerCase(Locale.ROOT))) {
+                                org.screamingsandals.lib.lang.Message.of(LangKeys.DUMP_SUCCESS)
+                                        .defaultPrefix()
+                                        .placeholderRaw("unknown_service", service)
+                                        .placeholderRaw("allowed_values", String.join(", ", SERVICES))
+                                        .send(sender);
+                                return;
+                            }
                             new Thread(() -> {
                                 try {
                                     var client = HttpClient.newHttpClient();
 
                                     var gsonBuilder = GsonConfigurationLoader.builder();
-                                    var files = new ArrayList<>();
-                                    files.add(Map.of(
-                                            "name", "dump.json",
-                                            "content", Map.of(
-                                                    "format", "text",
-                                                    "highlight_language", "json",
-                                                    "value", gsonBuilder.buildAndSaveString(gsonBuilder.build().createNode().set(Map.of(
+                                    var files = new ArrayList<AFile>();
+                                    files.add(new AFile("dump.json", "json", gsonBuilder.buildAndSaveString(gsonBuilder.build().createNode().set(Map.of(
                                                             "bedwars", Map.of(
                                                                     "version", VersionInfo.VERSION,
                                                                     "build", VersionInfo.BUILD_NUMBER,
@@ -117,7 +134,7 @@ public class DumpCommand extends BaseCommand {
                                                                     "main", plugin.getInstance().map(Object::getClass).map(Class::getName).orElse("undefined"),
                                                                     "authors", plugin.getAuthors()
                                                             )).collect(Collectors.toList()),
-                                                            "variants", VariantManagerImpl.getInstance().getVariants().stream().map(variant ->
+                                                            "variantsInMemory", VariantManagerImpl.getInstance().getVariants().stream().map(variant ->
                                                                     nullValuesAllowingMap(
                                                                             "name", variant.getName(),
                                                                             "configurationContainer", ConfigurateUtils.toMap(variant.getConfigurationContainer().getSaved()),
@@ -133,7 +150,7 @@ public class DumpCommand extends BaseCommand {
                                                                             )).collect(Collectors.toList())
                                                                     )
                                                             ).collect(Collectors.toList()),
-                                                            "games", GameManagerImpl.getInstance().getGames().stream().map(game ->
+                                                            "gamesInMemory", GameManagerImpl.getInstance().getGames().stream().map(game ->
                                                                     nullValuesAllowingMap(
                                                                             "file", game.getFile().getAbsolutePath(),
                                                                             "uuid", game.getUuid().toString(),
@@ -189,7 +206,7 @@ public class DumpCommand extends BaseCommand {
                                                                     )
                                                             ).collect(Collectors.toList()))))
                                             )
-                                    ));
+                                    );
                                     try {
                                         var loader = YamlConfigurationLoader.builder()
                                                 .path(BedWarsPlugin.getInstance().getPluginDescription().getDataFolder().resolve("config.yml"))
@@ -214,26 +231,34 @@ public class DumpCommand extends BaseCommand {
 
                                         configToString.save(config);
 
-                                        files.add(Map.of(
-                                                "name", "config.yml",
-                                                "content", Map.of(
-                                                        "format", "text",
-                                                        "highlight_language", "yaml",
-                                                        "value", writer.toString()
-                                                )
-                                        ));
+                                        files.add(new AFile("config.yml", "yaml", writer.toString()));
                                     } catch (ConfigurateException e) {
                                         e.printStackTrace();
                                     }
-                                    var mainShop = Map.of(
-                                            "name", MainConfig.getInstance().node("turnOnExperimentalGroovyShop").getBoolean() ? "shop.groovy" : "shop.yml",
-                                            "content", Map.of(
-                                                    "format", "text",
-                                                    "highlight_language", MainConfig.getInstance().node("turnOnExperimentalGroovyShop").getBoolean() ? "groovy" : "yaml",
-                                                    "value", String.join("\n", Files.readAllLines(BedWarsPlugin.getInstance().getPluginDescription().getDataFolder().resolve(MainConfig.getInstance().node("turnOnExperimentalGroovyShop").getBoolean() ? "shop/shop.groovy" : "shop/shop.yml"), StandardCharsets.UTF_8))
-                                            )
-                                    );
-                                    files.add(mainShop);
+                                    for (var game : GameManagerImpl.getInstance().getGames()) {
+                                        if (game.getFile() != null && game.getFile().exists()) {
+                                            files.add(new AFile(
+                                                    game.getFile().getParentFile().getName() + "/" + game.getFile().getName(),
+                                                    game.getFile().getName().endsWith(".json") ? "json" : "yaml",
+                                                    String.join("\n", Files.readAllLines(game.getFile().toPath(), StandardCharsets.UTF_8))
+                                            ));
+                                        }
+                                    }
+                                    for (var variant : VariantManagerImpl.getInstance().getVariants()) {
+                                        if (variant.getFile() != null && variant.getFile().exists()) {
+                                            files.add(new AFile(
+                                                    variant.getFile().getParentFile().getName() + "/" + variant.getFile().getName(),
+                                                    variant.getFile().getName().endsWith(".json") ? "json" : "yaml",
+                                                    String.join("\n", Files.readAllLines(variant.getFile().toPath(), StandardCharsets.UTF_8))
+                                            ));
+                                        }
+                                    }
+                                    String mainShopName = MainConfig.getInstance().node("turnOnExperimentalGroovyShop").getBoolean() ? "shop/shop.groovy" : "shop/shop.yml";
+                                    files.add(new AFile(
+                                            mainShopName,
+                                            mainShopName.endsWith(".groovy") ? "groovy" : "yaml",
+                                            String.join("\n", Files.readAllLines(BedWarsPlugin.getInstance().getPluginDescription().getDataFolder().resolve(mainShopName), StandardCharsets.UTF_8))
+                                    ));
                                     GameManagerImpl.getInstance()
                                             .getGames()
                                             .stream()
@@ -242,7 +267,7 @@ public class DumpCommand extends BaseCommand {
                                             .map(GameStore::getShopFile)
                                             .filter(Objects::nonNull)
                                             .distinct()
-                                            .filter(s -> !mainShop.get("name").equals(s))
+                                            .filter(s -> !mainShopName.equals(s))
                                             .forEach(s -> {
                                                 try {
                                                     final var file = ShopInventory.getInstance().normalizeShopFile(s);
@@ -250,13 +275,10 @@ public class DumpCommand extends BaseCommand {
                                                         return;
                                                     }
 
-                                                    files.add(Map.of(
-                                                            "name", file.getName(),
-                                                            "content", Map.of(
-                                                                    "format", "text",
-                                                                    "highlight_language", file.getName().endsWith(".groovy") ? "groovy" : "yaml",
-                                                                    "value", String.join("\n", Files.readAllLines(file.toPath(), StandardCharsets.UTF_8))
-                                                            )
+                                                    files.add(new AFile(
+                                                            file.getName(),
+                                                            file.getName().endsWith(".groovy") ? "groovy" : "yaml",
+                                                            String.join("\n", Files.readAllLines(file.toPath(), StandardCharsets.UTF_8))
                                                     ));
                                                 } catch (IOException e) {
                                                     Debug.warn("Cannot add shop file to dump, it probably does not exists..", true);
@@ -264,7 +286,57 @@ public class DumpCommand extends BaseCommand {
                                                 }
                                             });
 
-                                    client.sendAsync(HttpRequest.newBuilder()
+                                    if ("pastes.dev".equals(service)) {
+                                        var textBuilder = new StringBuilder("BedWars dump\n\nThis dump consists of multiple text files. All these files have names and have a special delimiter which marks the start and the end of the individual files (these are not really interesting for human beings).\n\nList of uploaded text files:\n");
+                                        for (var file : files) {
+                                            textBuilder.append("- ").append(file.getName()).append("\n");
+                                        }
+
+                                        var random = new Random();
+                                        for (var file : files) {
+                                            String generatedString;
+                                            do {
+                                                generatedString = random.ints(97, 123)
+                                                        .limit(9)
+                                                        .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+                                                        .toString();
+                                            } while (file.getContent().contains("-----" + generatedString)); // just in case
+
+                                            var delimiter = "-----" + generatedString;
+                                            textBuilder.append("\n\nFile: ")
+                                                    .append(file.getName())
+                                                    .append("\n")
+                                                    .append(delimiter)
+                                                    .append("\n\n")
+                                                    .append(file.getContent())
+                                                    .append("\n\n")
+                                                    .append(delimiter);
+                                        }
+
+                                        client.sendAsync(HttpRequest.newBuilder()
+                                                        .uri(URI.create("https://api.pastes.dev/post"))
+                                                        .header("Content-Type", "text/plain")
+                                                        .header("User-Agent", "ScreamingBedWars")
+                                                        .header("Allow-Modification", "false")
+                                                        .POST(HttpRequest.BodyPublishers.ofString(textBuilder.toString())).build(), HttpResponse.BodyHandlers.ofString())
+                                                .thenAccept(stringHttpResponse -> {
+                                                    if (stringHttpResponse.statusCode() >= 200 && stringHttpResponse.statusCode() <= 299) {
+                                                        var location = stringHttpResponse.headers().firstValue("Location");
+                                                        org.screamingsandals.lib.lang.Message.of(LangKeys.DUMP_SUCCESS)
+                                                                .defaultPrefix()
+                                                                .placeholder("dump", Component
+                                                                        .text()
+                                                                        .content("https://pastes.dev/" + location)
+                                                                        .color(Color.GRAY)
+                                                                        .clickEvent(ClickEvent.openUrl("https://pastes.dev/" + location))
+                                                                        .hoverEvent(HoverEvent.showText(Component.text("Open this link"))))
+                                                                .send(sender);
+                                                    } else {
+                                                        org.screamingsandals.lib.lang.Message.of(LangKeys.DUMP_FAILED).defaultPrefix().send(sender);
+                                                    }
+                                                });
+                                    } else {
+                                        client.sendAsync(HttpRequest.newBuilder()
                                                     .uri(URI.create("https://api.paste.gg/v1/pastes"))
                                                     .header("Content-Type", "application/json")
                                                     .POST(HttpRequest.BodyPublishers.ofString(gsonBuilder.buildAndSaveString(gsonBuilder.build().createNode().set(Map.of(
@@ -272,7 +344,15 @@ public class DumpCommand extends BaseCommand {
                                                             "description", "Dump generated by ScreamingBedwars plugin",
                                                             "visibility", "unlisted",
                                                             "expires", LocalDateTime.now().plusDays(30).format(DateTimeFormatter.ofPattern("YYYY-MM-dd'T'HH:mm:ss'Z'")),
-                                                            "files", files
+                                                            "files", files.stream()
+                                                                    .map(aFile -> nullValuesAllowingMap(
+                                                                            "name", aFile.getContent(),
+                                                                            "content", nullValuesAllowingMap(
+                                                                                    "format", "text",
+                                                                                    "highlight_language", aFile.getLanguage(),
+                                                                                    "value", aFile.getContent()
+                                                                            )
+                                                                    ))
                                                     ))))).build(), HttpResponse.BodyHandlers.ofString())
                                             .thenAccept(stringHttpResponse -> {
                                                 if (stringHttpResponse.statusCode() >= 200 && stringHttpResponse.statusCode() <= 299) {
@@ -294,6 +374,7 @@ public class DumpCommand extends BaseCommand {
                                                     org.screamingsandals.lib.lang.Message.of(LangKeys.DUMP_FAILED).defaultPrefix().send(sender);
                                                 }
                                             });
+                                    }
                                 } catch (Exception ex) {
                                     ex.printStackTrace();
                                     org.screamingsandals.lib.lang.Message.of(LangKeys.DUMP_FAILED).defaultPrefix().send(sender);
@@ -326,5 +407,12 @@ public class DumpCommand extends BaseCommand {
           "yaw", location.getYaw(),
           "pitch", location.getPitch()
         );
+    }
+
+    @Data
+    public static class AFile {
+        private final @NotNull String name;
+        private final @NotNull String language;
+        private final @NotNull String content;
     }
 }
