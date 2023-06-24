@@ -6,7 +6,7 @@ import java.util.function.Supplier
 apply plugin: 'me.kcra.takenaka.accessor'
 
 dependencies {
-    mappingBundle "me.kcra.takenaka:mappings:1.8.8+1.19.4-SNAPSHOT"
+    mappingBundle "me.kcra.takenaka:mappings:1.8.8+1.20.1-SNAPSHOT"
     api "me.kcra.takenaka:generator-accessor-runtime:${BuildConfig.BUILD_VERSION}"
 }
 
