@@ -2518,12 +2518,19 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         obj.setDisplayName(this.formatScoreboardTitle());
 
         for (CurrentTeam team : teamsInGame) {
-            this.gameScoreboard.resetScores(this.formatScoreboardTeam(team, false, false));
-            this.gameScoreboard.resetScores(this.formatScoreboardTeam(team, false, true));
-            this.gameScoreboard.resetScores(this.formatScoreboardTeam(team, true, false));
+            String teamLine = this.formatScoreboardTeam(team, !team.isBed, team.isBed && "RESPAWN_ANCHOR".equals(team.teamInfo.bed.getBlock().getType().name()) && Player116ListenerUtils.isAnchorEmpty(team.teamInfo.bed.getBlock()));
 
-            Score score = obj.getScore(this.formatScoreboardTeam(team, !team.isBed, team.isBed && "RESPAWN_ANCHOR".equals(team.teamInfo.bed.getBlock().getType().name()) && Player116ListenerUtils.isAnchorEmpty(team.teamInfo.bed.getBlock())));
-            score.setScore(team.players.size());
+            if (!this.gameScoreboard.getEntries().contains(teamLine)) {
+                // probably an older entry is on the scoreboard, we have to remove it
+                this.gameScoreboard.resetScores(this.formatScoreboardTeam(team, false, false));
+                this.gameScoreboard.resetScores(this.formatScoreboardTeam(team, false, true));
+                this.gameScoreboard.resetScores(this.formatScoreboardTeam(team, true, false));
+            }
+
+            Score score = obj.getScore(teamLine);
+            if (score.getScore() != team.players.size()) {
+                score.setScore(team.players.size());
+            }
         }
 
         for (GamePlayer player : players) {
