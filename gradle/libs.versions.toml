@@ -19,6 +19,8 @@ screaming-plugin-builder = "1.0.82"
 nms-mapper = "1.4.5"
 buildconfig = "3.0.2"
 
+configurate = "4.1.2"
+
 [libraries]
 # shaded libraries
 # screaming-lib and simple-inventories are handled by plugin
@@ -32,6 +34,7 @@ parties-api = { group = "com.alessiodp.parties", name = "parties-api", version.r
 perworldinventory-old = { group = "me.gnat008", name = "perworldinventory", version.ref = "perworldinventory-old" }
 perworldinventory-kt = { group = "me.ebonjaeger", name = "perworldinventory-kt", version.ref = "perworldinventory-kt" }
 multiverse = { group = "com.onarandombox.multiversecore", name = "Multiverse-Core", version.ref = "multiverse" }
+configurate-yaml = { group = "org.spongepowered", name = "configurate-yaml", version.ref = "configurate" }
 
 [plugins]
 screaming-plugin-builder = { id = "org.screamingsandals.plugin-builder", version.ref = "screaming-plugin-builder" }
