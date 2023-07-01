@@ -23,7 +23,7 @@ import java.util.ArrayList;
 
 import lombok.experimental.UtilityClass;
 import org.jetbrains.annotations.Nullable;
-import org.screamingsandals.lib.item.Item;
+import org.screamingsandals.lib.item.ItemStack;
 import org.spongepowered.configurate.BasicConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.gson.GsonConfigurationLoader;
@@ -32,7 +32,7 @@ import org.spongepowered.configurate.gson.GsonConfigurationLoader;
 public class ItemUtils {
 	public final String BEDWARS_NAMESPACED_KEY = "screaming-bedwars-hidden-api";
 
-	public Item saveData(Item item, String data) {
+	public ItemStack saveData(ItemStack item, String data) {
 		var itemData = item.getData();
 		try {
 			var old = itemData.get(BEDWARS_NAMESPACED_KEY, String.class);
@@ -50,7 +50,7 @@ public class ItemUtils {
 	}
 
 	@Nullable
-	public String getIfStartsWith(Item item, String startsWith) {
+	public String getIfStartsWith(ItemStack item, String startsWith) {
 		var data = item.getData().get(BEDWARS_NAMESPACED_KEY, String.class);
 		if (data != null && !data.isEmpty()) {
 			try {

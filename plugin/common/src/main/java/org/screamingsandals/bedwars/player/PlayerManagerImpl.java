@@ -23,17 +23,19 @@ import lombok.RequiredArgsConstructor;
 import org.screamingsandals.bedwars.api.player.PlayerManager;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.GameManagerImpl;
-import org.screamingsandals.lib.player.PlayerMapper;
-import org.screamingsandals.lib.player.PlayerWrapper;
+import org.screamingsandals.lib.player.Players;
+import org.screamingsandals.lib.player.Player;
 import org.screamingsandals.lib.plugin.ServiceManager;
 import org.screamingsandals.lib.utils.annotations.Service;
+import org.screamingsandals.lib.utils.annotations.ServiceDependencies;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-@Service(dependsOn = {
+@Service
+@ServiceDependencies(dependsOn = {
         GameManagerImpl.class
 })
 @RequiredArgsConstructor
@@ -41,9 +43,9 @@ public class PlayerManagerImpl implements PlayerManager {
     private final List<BedWarsPlayer> players = new ArrayList<>();
 
     {
-        PlayerMapper
+        Players
                 .UNSAFE_getPlayerConverter()
-                .registerP2W(BedWarsPlayer.class, bwPlayer -> (PlayerWrapper) bwPlayer.raw())
+                .registerP2W(BedWarsPlayer.class, bwPlayer -> (Player) bwPlayer.raw())
                 .registerW2P(BedWarsPlayer.class, playerWrapper -> getPlayer(playerWrapper).orElseThrow());
     }
 
@@ -51,7 +53,7 @@ public class PlayerManagerImpl implements PlayerManager {
         return ServiceManager.get(PlayerManagerImpl.class);
     }
 
-    public BedWarsPlayer getPlayerOrCreate(PlayerWrapper playerWrapper) {
+    public BedWarsPlayer getPlayerOrCreate(Player playerWrapper) {
         return getPlayer(playerWrapper)
                 .orElseGet(() -> {
                     var p = new BedWarsPlayer(playerWrapper);
@@ -61,16 +63,16 @@ public class PlayerManagerImpl implements PlayerManager {
     }
 
     public Optional<BedWarsPlayer> getPlayer(UUID uuid) {
-        return PlayerMapper.getPlayer(uuid).flatMap(this::getPlayer);
+        return Optional.ofNullable(Players.getPlayer(uuid)).flatMap(this::getPlayer);
     }
 
-    public Optional<BedWarsPlayer> getPlayer(PlayerWrapper playerWrapper) {
+    public Optional<BedWarsPlayer> getPlayer(Player playerWrapper) {
         return players.stream()
                 .filter(bedWarsPlayer -> bedWarsPlayer.getUuid().equals(playerWrapper.getUuid()))
                 .findFirst();
     }
 
-    public boolean isPlayerInGame(PlayerWrapper playerWrapper) {
+    public boolean isPlayerInGame(Player playerWrapper) {
         return getPlayer(playerWrapper).map(p -> p.getGame() != null).orElse(false);
     }
 
@@ -83,7 +85,7 @@ public class PlayerManagerImpl implements PlayerManager {
         players.remove(player);
     }
 
-    public boolean isPlayerRegistered(PlayerWrapper playerWrapper) {
+    public boolean isPlayerRegistered(Player playerWrapper) {
         return getPlayer(playerWrapper).isPresent();
     }
 
@@ -96,7 +98,7 @@ public class PlayerManagerImpl implements PlayerManager {
         return getPlayer(uuid).map(BedWarsPlayer::getGame);
     }
 
-    public Optional<GameImpl> getGameOfPlayer(PlayerWrapper playerWrapper) {
+    public Optional<GameImpl> getGameOfPlayer(Player playerWrapper) {
         return getPlayer(playerWrapper).map(BedWarsPlayer::getGame);
     }
 }

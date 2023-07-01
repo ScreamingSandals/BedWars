@@ -25,23 +25,26 @@ import org.screamingsandals.bedwars.api.special.LuckyBlock;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.TeamImpl;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
-import org.screamingsandals.lib.entity.EntityMapper;
-import org.screamingsandals.lib.item.builder.ItemFactory;
-import org.screamingsandals.lib.item.meta.PotionEffectHolder;
-import org.screamingsandals.lib.player.PlayerWrapper;
+import org.screamingsandals.lib.entity.Entities;
+import org.screamingsandals.lib.item.builder.ItemStackFactory;
+import org.screamingsandals.lib.item.meta.PotionEffect;
+import org.screamingsandals.lib.player.Player;
+import org.screamingsandals.lib.spectator.Component;
+import org.screamingsandals.lib.tasker.DefaultThreads;
 import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
-import org.screamingsandals.lib.world.LocationHolder;
+import org.screamingsandals.lib.world.Location;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 
 @Getter
 @EqualsAndHashCode(callSuper = true)
 public class LuckyBlockImpl extends SpecialItemImpl implements LuckyBlock {
     private final List<Map<String, Object>> luckyBlockData;
-    private LocationHolder blockLocation;
+    private Location blockLocation;
     private boolean placed;
 
     public LuckyBlockImpl(GameImpl game, BedWarsPlayer player, TeamImpl team, List<Map<String, Object>> luckyBlockData) {
@@ -50,12 +53,12 @@ public class LuckyBlockImpl extends SpecialItemImpl implements LuckyBlock {
         game.registerSpecialItem(this);
     }
 
-    public void place(LocationHolder loc) {
+    public void place(Location loc) {
         this.blockLocation = loc;
         this.placed = true;
     }
 
-    public void process(PlayerWrapper broker) {
+    public void process(Player broker) {
         game.unregisterSpecialItem(this);
 
         var rand = new Random();
@@ -66,20 +69,18 @@ public class LuckyBlockImpl extends SpecialItemImpl implements LuckyBlock {
         var type = (String) map.getOrDefault("type", "nothing");
         switch (type) {
             case "item":
-                var stack = ItemFactory.build(map.get("stack")).orElseThrow();
-                EntityMapper.dropItem(stack, blockLocation);
+                var stack = Objects.requireNonNull(ItemStackFactory.build(map.get("stack")));
+                Entities.dropItem(stack, blockLocation);
                 break;
             case "potion":
-                var potionEffect = PotionEffectHolder.of(map.get("effect"));
+                var potionEffect = PotionEffect.of(map.get("effect"));
                 broker.addPotionEffect(potionEffect);
                 break;
             case "tnt":
-                Tasker.build(() -> {
-                    var tnt = EntityMapper.spawn("tnt", blockLocation).orElseThrow();
+                Tasker.runDelayed(DefaultThreads.GLOBAL_THREAD, () -> {
+                    var tnt = Objects.requireNonNull(Entities.spawn("tnt", blockLocation));
                     tnt.setMetadata("fuse_ticks", 0);
-                })
-                .delay(10, TaskerTime.TICKS)
-                .start();
+                }, 10, TaskerTime.TICKS);
                 break;
             case "teleport":
                 broker.teleport(broker.getLocation().add(0, (int) map.get("height"), 0));
@@ -87,7 +88,7 @@ public class LuckyBlockImpl extends SpecialItemImpl implements LuckyBlock {
         }
 
         if (map.containsKey("message")) {
-            broker.sendMessage((String) map.get("message"));
+            broker.sendMessage(Component.fromLegacy((String) map.get("message")));
         }
     }
 }

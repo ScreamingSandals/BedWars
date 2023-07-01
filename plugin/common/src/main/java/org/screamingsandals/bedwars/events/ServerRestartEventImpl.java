@@ -20,7 +20,7 @@
 package org.screamingsandals.bedwars.events;
 
 import org.screamingsandals.bedwars.api.events.ServerRestartEvent;
-import org.screamingsandals.lib.event.SEvent;
+import org.screamingsandals.lib.event.Event;
 
-public class ServerRestartEventImpl implements ServerRestartEvent, SEvent {
+public class ServerRestartEventImpl implements ServerRestartEvent, Event {
 }

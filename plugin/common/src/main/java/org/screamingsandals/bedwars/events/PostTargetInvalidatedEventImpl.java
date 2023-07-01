@@ -28,16 +28,16 @@ import org.screamingsandals.bedwars.api.game.target.Target;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.TeamImpl;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
-import org.screamingsandals.lib.block.BlockTypeHolder;
-import org.screamingsandals.lib.event.SEvent;
+import org.screamingsandals.lib.block.Block;
+import org.screamingsandals.lib.event.Event;
 
 @Data
-public class PostTargetInvalidatedEventImpl implements PostTargetInvalidatedEvent, SEvent {
+public class PostTargetInvalidatedEventImpl implements PostTargetInvalidatedEvent, Event {
     private final @NotNull GameImpl game;
     private final @NotNull TeamImpl team;
     private final @NotNull Target target;
     private final @NotNull TargetInvalidationReason reason;
-    private final @Nullable BlockTypeHolder blockType;
+    private final @Nullable Block blockType;
     private final @Nullable BedWarsPlayer initiator;
 
     public static PostTargetInvalidatedEventImpl fromPre(PreTargetInvalidatedEventImpl event) {

@@ -29,7 +29,7 @@ import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.variants.VariantImpl;
 import org.screamingsandals.bedwars.variants.VariantManagerImpl;
 import org.screamingsandals.lib.lang.Message;
-import org.screamingsandals.lib.sender.CommandSenderWrapper;
+import org.screamingsandals.lib.sender.CommandSender;
 import org.screamingsandals.lib.utils.annotations.Service;
 
 @Service
@@ -39,11 +39,11 @@ public class AddCommand extends BaseAdminSubCommand {
     }
 
     @Override
-    public void construct(CommandManager<CommandSenderWrapper> manager, Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder) {
+    public void construct(CommandManager<CommandSender> manager, Command.Builder<CommandSender> commandSenderWrapperBuilder) {
         manager.command(
                 commandSenderWrapperBuilder
                         .argument(StringArgument
-                                .<CommandSenderWrapper>newBuilder("variant")
+                                .<CommandSender>newBuilder("variant")
                                 .withSuggestionsProvider((c, s) -> VariantManagerImpl.getInstance().getVariantNames())
                                 .asOptional()
                         )

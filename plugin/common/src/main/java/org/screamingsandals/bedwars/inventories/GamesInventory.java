@@ -30,7 +30,7 @@ import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.lib.event.EventManager;
 import org.screamingsandals.lib.lang.Message;
-import org.screamingsandals.lib.player.PlayerWrapper;
+import org.screamingsandals.lib.player.Player;
 import org.screamingsandals.lib.plugin.ServiceManager;
 import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.utils.annotations.methods.OnPostEnable;
@@ -119,7 +119,7 @@ public class GamesInventory {
         }
     }
 
-    public boolean openForPlayer(PlayerWrapper player, String type) {
+    public boolean openForPlayer(Player player, String type) {
         final var format = inventoryMap.get(type);
         if (format == null) {
             return false;

@@ -47,12 +47,12 @@ import org.screamingsandals.bedwars.statistics.PlayerStatisticImpl;
 import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.bedwars.utils.*;
 import org.screamingsandals.lib.Server;
-import org.screamingsandals.lib.SpecialSoundKey;
-import org.screamingsandals.lib.attribute.AttributeHolder;
-import org.screamingsandals.lib.attribute.AttributeTypeHolder;
-import org.screamingsandals.lib.block.BlockTypeHolder;
-import org.screamingsandals.lib.entity.EntityLiving;
-import org.screamingsandals.lib.entity.EntityProjectile;
+import org.screamingsandals.lib.attribute.Attribute;
+import org.screamingsandals.lib.attribute.AttributeType;
+import org.screamingsandals.lib.block.Block;
+import org.screamingsandals.lib.entity.LivingEntity;
+import org.screamingsandals.lib.entity.projectile.Fireball;
+import org.screamingsandals.lib.entity.projectile.ProjectileEntity;
 import org.screamingsandals.lib.event.EventManager;
 import org.screamingsandals.lib.event.EventPriority;
 import org.screamingsandals.lib.event.OnEvent;
@@ -60,14 +60,16 @@ import org.screamingsandals.lib.event.entity.*;
 import org.screamingsandals.lib.event.player.*;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.placeholders.PlaceholderManager;
-import org.screamingsandals.lib.player.PlayerWrapper;
+import org.screamingsandals.lib.player.Player;
 import org.screamingsandals.lib.spectator.Color;
 import org.screamingsandals.lib.spectator.Component;
 import org.screamingsandals.lib.spectator.sound.SoundSource;
 import org.screamingsandals.lib.spectator.sound.SoundStart;
+import org.screamingsandals.lib.tasker.DefaultThreads;
 import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
-import org.screamingsandals.lib.tasker.task.TaskerTask;
+import org.screamingsandals.lib.tasker.task.Task;
+import org.screamingsandals.lib.utils.ResourceLocation;
 import org.screamingsandals.lib.utils.annotations.Service;
 
 import java.util.*;
@@ -77,10 +79,10 @@ import java.util.stream.Collectors;
 
 @Service
 public class PlayerListener {
-    private final List<PlayerWrapper> explosionAffectedPlayers = new ArrayList<>();
+    private final List<Player> explosionAffectedPlayers = new ArrayList<>();
 
     @OnEvent(priority = org.screamingsandals.lib.event.EventPriority.HIGHEST)
-    public void onPlayerDeath(SPlayerDeathEvent event) {
+    public void onPlayerDeath(PlayerDeathEvent event) {
         final var victim = event.player();
 
         if (PlayerManagerImpl.getInstance().isPlayerInGame(victim)) {
@@ -97,7 +99,7 @@ public class PlayerListener {
                 Debug.info(victim.getName() + "'s armor contents: " +
                         Arrays.stream(armorContents)
                                 .filter(Objects::nonNull)
-                                .map(stack -> stack.getMaterial().platformName())
+                                .map(stack -> stack.getMaterial().location().asString())
                                 .collect(Collectors.toList()));
 
             }
@@ -150,23 +152,23 @@ public class PlayerListener {
                 var team = game.getPlayerTeam(gVictim);
                 SpawnEffects.spawnEffect(game, gVictim, "game-effects.kill");
                 boolean isBed = team.getTarget().isValid();
-                if (isBed && game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.TARGET_BLOCK_RESPAWN_ANCHOR_ENABLE_DECREASE, false) && team.getTarget() instanceof TargetBlockImpl && ((TargetBlockImpl) team.getTarget()).getTargetBlock().getBlock().getType().isSameType("respawn_anchor")) {
+                if (isBed && game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.TARGET_BLOCK_RESPAWN_ANCHOR_ENABLE_DECREASE, false) && team.getTarget() instanceof TargetBlockImpl && ((TargetBlockImpl) team.getTarget()).getTargetBlock().getBlock().block().isSameType("respawn_anchor")) {
                     var targetBlockLoc = ((TargetBlockImpl) team.getTarget()).getTargetBlock();
-                    var anchor = targetBlockLoc.getBlock().getType();
-                    int charges = anchor.get("charges").map(Integer::parseInt).orElse(0);
+                    var anchor = targetBlockLoc.getBlock().block();
+                    int charges = Objects.requireNonNullElse(anchor.getInt("charges"), 0);
                     if (charges > 0) {
                         var c = charges - 1;
-                        targetBlockLoc.getBlock().setType(anchor.with("charges", String.valueOf(c)));
+                        targetBlockLoc.getBlock().block(anchor.with("charges", c));
                         if (c == 0) {
                             targetBlockLoc.getWorld().playSound(SoundStart.sound(
-                                    SpecialSoundKey.key(MainConfig.getInstance().node("target-block", "respawn-anchor", "sound", "deplete").getString("block.respawn_anchor.deplete")),
+                                    ResourceLocation.of(MainConfig.getInstance().node("target-block", "respawn-anchor", "sound", "deplete").getString("block.respawn_anchor.deplete")),
                                     SoundSource.BLOCK,
                                     1,
                                     1
                             ), targetBlockLoc.getX(), targetBlockLoc.getY(), targetBlockLoc.getZ());
                         } else {
                             targetBlockLoc.getWorld().playSound(SoundStart.sound(
-                                    SpecialSoundKey.key(MainConfig.getInstance().node("target-block", "respawn-anchor", "sound", "deplete").getString("block.glass.break")),
+                                    ResourceLocation.of(MainConfig.getInstance().node("target-block", "respawn-anchor", "sound", "deplete").getString("block.glass.break")),
                                     SoundSource.BLOCK,
                                     1,
                                     1
@@ -205,14 +207,14 @@ public class PlayerListener {
                             SpawnEffects.spawnEffect(game, gVictim, "game-effects.teamkill");
 
                             killer.playSound(SoundStart.sound(
-                                    SpecialSoundKey.key(MainConfig.getInstance().node("sounds", "team_kill", "sound").getString("entity.player.levelup")),
+                                    ResourceLocation.of(MainConfig.getInstance().node("sounds", "team_kill", "sound").getString("entity.player.levelup")),
                                     SoundSource.AMBIENT,
                                     (float) MainConfig.getInstance().node("sounds", "team_kill", "volume").getDouble(),
                                     (float) MainConfig.getInstance().node("sounds", "team_kill", "pitch").getDouble()
                             ));
                         } else {
                             killer.playSound(SoundStart.sound(
-                                    SpecialSoundKey.key(MainConfig.getInstance().node("sounds", "player_kill", "sound").getString("entity.generic.big_fall")),
+                                    ResourceLocation.of(MainConfig.getInstance().node("sounds", "player_kill", "sound").getString("entity.generic.big_fall")),
                                     SoundSource.AMBIENT,
                                     (float) MainConfig.getInstance().node("sounds", "player_kill", "volume").getDouble(),
                                     (float) MainConfig.getInstance().node("sounds", "player_kill", "pitch").getDouble()
@@ -267,68 +269,56 @@ public class PlayerListener {
                 Debug.info(victim.getName() + " is in respawn cooldown");
 
                 final var livingTime = new AtomicInteger(respawnTime);
-                final var task = new AtomicReference<TaskerTask>();
-                task.set(
-                        Tasker.build(() -> {
-                                    if (livingTime.get() > 0) {
-                                        Message
-                                                .of(LangKeys.IN_GAME_RESPAWN_COOLDOWN_TITLE)
-                                                .placeholder("time", livingTime.get())
-                                                .times(TitleUtils.defaultTimes())
-                                                .title(gVictim);
-                                        gVictim.playSound(SoundStart.sound(
-                                                SpecialSoundKey.key(MainConfig.getInstance().node("sounds", "respawn_cooldown_wait", "sound").getString("block.stone_button.click_on")),
-                                                SoundSource.AMBIENT,
-                                                (float) MainConfig.getInstance().node("sounds", "respawn_cooldown_wait", "volume").getDouble(),
-                                                (float) MainConfig.getInstance().node("sounds", "respawn_cooldown_wait", "pitch").getDouble()
-                                        ));
-                                    }
+                Tasker.runDelayedAndRepeatedly(DefaultThreads.GLOBAL_THREAD, task -> {
+                            if (livingTime.get() > 0) {
+                                Message
+                                        .of(LangKeys.IN_GAME_RESPAWN_COOLDOWN_TITLE)
+                                        .placeholder("time", livingTime.get())
+                                        .times(TitleUtils.defaultTimes())
+                                        .title(gVictim);
+                                gVictim.playSound(SoundStart.sound(
+                                        ResourceLocation.of(MainConfig.getInstance().node("sounds", "respawn_cooldown_wait", "sound").getString("block.stone_button.click_on")),
+                                        SoundSource.AMBIENT,
+                                        (float) MainConfig.getInstance().node("sounds", "respawn_cooldown_wait", "volume").getDouble(),
+                                        (float) MainConfig.getInstance().node("sounds", "respawn_cooldown_wait", "pitch").getDouble()
+                                ));
+                            }
 
-                                    livingTime.decrementAndGet();
-                                    if (livingTime.get() == 0) {
-                                        game.makePlayerFromSpectator(gVictim);
-                                        gVictim.playSound(
-                                                SoundStart.sound(
-                                                        SpecialSoundKey.key(MainConfig.getInstance().node("sounds", "respawn_cooldown_done", "sound").getString("ui.button.click")),
-                                                        SoundSource.AMBIENT,
-                                                        (float) MainConfig.getInstance().node("sounds", "respawn_cooldown_done", "volume").getDouble(1),
-                                                        (float) MainConfig.getInstance().node("sounds", "respawn_cooldown_done", "pitch").getDouble(1)
-                                                )
-                                        );
-                                        task.get().cancel();
-                                    }
-                                })
-                                .delay(20, TaskerTime.TICKS)
-                                .repeat(20, TaskerTime.TICKS)
-                                .start()
-                );
+                            livingTime.decrementAndGet();
+                            if (livingTime.get() == 0) {
+                                game.makePlayerFromSpectator(gVictim);
+                                gVictim.playSound(
+                                        SoundStart.sound(
+                                                ResourceLocation.of(MainConfig.getInstance().node("sounds", "respawn_cooldown_done", "sound").getString("ui.button.click")),
+                                                SoundSource.AMBIENT,
+                                                (float) MainConfig.getInstance().node("sounds", "respawn_cooldown_done", "volume").getDouble(1),
+                                                (float) MainConfig.getInstance().node("sounds", "respawn_cooldown_done", "pitch").getDouble(1)
+                                        )
+                                );
+                                task.cancel();
+                            }
+                        }, 20, TaskerTime.TICKS, 20, TaskerTime.TICKS);
             } else if (!victimTeam.getPlayers().contains(gVictim) && game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.KICK_PLAYERS_UPON_FINAL_DEATH_ENABLED, false)) {
                 int delay = game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.KICK_PLAYERS_UPON_FINAL_DEATH_DELAY, 5);
 
                 final var kickingTime = new AtomicInteger(delay);
-                final var task = new AtomicReference<TaskerTask>();
-                task.set(
-                    Tasker.build(() -> {
-                                if (kickingTime.get() > 0) {
-                                    gVictim.sendActionBar(Message.of(LangKeys.IN_GAME_KICKING_IN).placeholder("time", kickingTime.get()));
-                                }
+                Tasker.runDelayedAndRepeatedly(DefaultThreads.GLOBAL_THREAD, task -> {
+                            if (kickingTime.get() > 0) {
+                                gVictim.sendActionBar(Message.of(LangKeys.IN_GAME_KICKING_IN).placeholder("time", kickingTime.get()));
+                            }
 
-                                kickingTime.decrementAndGet();
-                                if (kickingTime.get() == 0) {
-                                    game.leaveFromGame(gVictim);
-                                    task.get().cancel();
-                                }
-                            })
-                            .delay(20, TaskerTime.TICKS)
-                            .repeat(20, TaskerTime.TICKS)
-                            .start()
-                );
+                            kickingTime.decrementAndGet();
+                            if (kickingTime.get() == 0) {
+                                game.leaveFromGame(gVictim);
+                                task.cancel();
+                            }
+                        }, 20, TaskerTime.TICKS, 20, TaskerTime.TICKS);
             }
         }
     }
 
     @OnEvent
-    public void onPlayerQuit(SPlayerLeaveEvent event) {
+    public void onPlayerQuit(PlayerLeaveEvent event) {
         if (PlayerManagerImpl.getInstance().isPlayerRegistered(event.player())) {
             var gPlayer = event.player().as(BedWarsPlayer.class);
             if (gPlayer.isInGame()) {
@@ -344,12 +334,12 @@ public class PlayerListener {
     }
 
     @OnEvent
-    public void onPlayerJoin(SPlayerJoinEvent event) {
+    public void onPlayerJoin(PlayerJoinEvent event) {
         var player = event.player();
 
         if (GameImpl.isBungeeEnabled() && MainConfig.getInstance().node("bungee", "auto-game-connect").getBoolean()) {
             Debug.info(event.player().getName() + " joined the server and auto-game-connect is enabled. Registering task...");
-            Tasker.build(() -> {
+            Tasker.runDelayed(DefaultThreads.GLOBAL_THREAD, () -> {
                         try {
                             Debug.info("Selecting game for " + event.player().getName());
                             var gameManager = GameManagerImpl.getInstance();
@@ -370,9 +360,7 @@ public class PlayerListener {
                                 BungeeUtils.movePlayerToBungeeServer(player, false);
                             }
                         }
-                    })
-                    .delay(1, TaskerTime.TICKS)
-                    .start();
+                    }, 1, TaskerTime.TICKS);
         }
 
         if (MainConfig.getInstance().node("disable-server-message", "player-join").getBoolean()) {
@@ -385,7 +373,7 @@ public class PlayerListener {
     }
 
     @OnEvent(priority = org.screamingsandals.lib.event.EventPriority.HIGHEST)
-    public void onPlayerRespawn(SPlayerRespawnEvent event) {
+    public void onPlayerRespawn(PlayerRespawnEvent event) {
         if (PlayerManagerImpl.getInstance().isPlayerInGame(event.player())) {
             Debug.info(event.player().getName() + " is respawning in BedWars game");
             var gPlayer = event.player().as(BedWarsPlayer.class);
@@ -443,7 +431,7 @@ public class PlayerListener {
     }
 
     @OnEvent
-    public void onPlayerWorldChange(SPlayerWorldChangeEvent event) {
+    public void onPlayerWorldChange(PlayerWorldChangeEvent event) {
         if (PlayerManagerImpl.getInstance().isPlayerInGame(event.player())) {
             var gPlayer = event.player().as(BedWarsPlayer.class);
             var game = gPlayer.getGame();
@@ -456,7 +444,7 @@ public class PlayerListener {
     }
 
     @OnEvent(priority = org.screamingsandals.lib.event.EventPriority.HIGHEST)
-    public void onBlockPlace(SPlayerBlockPlaceEvent event) {
+    public void onBlockPlace(PlayerBlockPlaceEvent event) {
         if (event.cancelled()) {
             if (MainConfig.getInstance().node("event-hacks", "place").getBoolean() && PlayerManagerImpl.getInstance().isPlayerInGame(event.player())) {
                 event.cancelled(false);
@@ -482,7 +470,7 @@ public class PlayerListener {
             }
         } else if (MainConfig.getInstance().node("preventArenaFromGriefing").getBoolean()) {
             for (var game : GameManagerImpl.getInstance().getGames()) {
-                if (game.getStatus() != GameStatus.DISABLED && ArenaUtils.isInArea(event.block().getLocation(), game.getPos1(), game.getPos2())) {
+                if (game.getStatus() != GameStatus.DISABLED && ArenaUtils.isInArea(event.block().location(), game.getPos1(), game.getPos2())) {
                     event.cancelled(true);
                     Debug.info(event.player().getName() + " attempted to place a block in protected area while not playing BedWars game, canceled");
                     return;
@@ -492,7 +480,7 @@ public class PlayerListener {
     }
 
     @OnEvent(priority = org.screamingsandals.lib.event.EventPriority.HIGHEST)
-    public void onBlockBreak(SPlayerBlockBreakEvent event) {
+    public void onBlockBreak(PlayerBlockBreakEvent event) {
         if (event.cancelled()) {
             if (MainConfig.getInstance().node("event-hacks", "destroy").getBoolean() && PlayerManagerImpl.getInstance().isPlayerInGame(event.player())) {
                 event.cancelled(false);
@@ -521,13 +509,13 @@ public class PlayerListener {
 
             //Fix for obsidian dropping
             if (game.getStatus() == GameStatus.RUNNING && gamePlayer.isInGame()) {
-                if (block.getType().isSameType("ender_chest")) {
+                if (block.block().isSameType("ender_chest")) {
                     event.dropItems(false);
                 }
             }
         } else if (MainConfig.getInstance().node("preventArenaFromGriefing").getBoolean()) {
             for (var game : GameManagerImpl.getInstance().getGames()) {
-                if (game.getStatus() != GameStatus.DISABLED && ArenaUtils.isInArea(event.block().getLocation(), game.getPos1(), game.getPos2())) {
+                if (game.getStatus() != GameStatus.DISABLED && ArenaUtils.isInArea(event.block().location(), game.getPos1(), game.getPos2())) {
                     event.cancelled(true);
                     Debug.info(event.player().getName() + " attempted to break a block in protected area while not in BedWars game, canceled");
                     return;
@@ -537,7 +525,7 @@ public class PlayerListener {
     }
 
     @OnEvent(priority = org.screamingsandals.lib.event.EventPriority.HIGHEST)
-    public void onCommandExecuted(SPlayerCommandPreprocessEvent event) {
+    public void onCommandExecuted(PlayerCommandPreprocessEvent event) {
         if (event.cancelled()) {
             return;
         }
@@ -566,7 +554,7 @@ public class PlayerListener {
     }
 
     @OnEvent
-    public void onInventoryClick(SPlayerInventoryClickEvent event) {
+    public void onInventoryClick(PlayerInventoryClickEvent event) {
         if (event.inventory() == null) {
             return;
         }
@@ -579,7 +567,7 @@ public class PlayerListener {
                 if (game.getStatus() == GameStatus.WAITING || gPlayer.isSpectator()) {
                     event.cancelled(true);
                     Debug.info(p.getName() + " used item in lobby or as spectator");
-                    if (event.getClickType().isLeftClick() || event.getClickType().isRightClick()) {
+                    if (event.clickType().isLeftClick() || event.clickType().isRightClick()) {
                         var item = event.currentItem();
                         if (item != null) {
                             p.closeInventory();
@@ -612,12 +600,12 @@ public class PlayerListener {
     }
 
     @OnEvent(priority = org.screamingsandals.lib.event.EventPriority.HIGH)
-    public void onHunger(SFoodLevelChangeEvent event) {
+    public void onHunger(FoodLevelChangeEvent event) {
         if (!(event.entity().getEntityType().is("player")) || event.cancelled()) {
             return;
         }
 
-        var player = (PlayerWrapper) event.entity();
+        var player = (Player) event.entity();
         if (PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
             var gPlayer = player.as(BedWarsPlayer.class);
             var game = gPlayer.getGame();
@@ -634,7 +622,7 @@ public class PlayerListener {
     }
 
     @OnEvent
-    public void onCraft(SPlayerCraftItemEvent event) {
+    public void onCraft(PlayerCraftItemEvent event) {
         if (event.cancelled()) {
             return;
         }
@@ -653,7 +641,7 @@ public class PlayerListener {
     }
 
     @OnEvent(priority = org.screamingsandals.lib.event.EventPriority.HIGHEST)
-    public void onDamage(SEntityDamageEvent event) {
+    public void onDamage(EntityDamageEvent event) {
         if (event.cancelled()) {
             if (MainConfig.getInstance().node("event-hacks", "damage").getBoolean()
                     && event.entity().getEntityType().is("player")
@@ -677,11 +665,11 @@ public class PlayerListener {
                 }
             }
 
-            if (event instanceof SEntityDamageByEntityEvent) {
+            if (event instanceof EntityDamageByEntityEvent) {
                 if (event.entity().getEntityType().is("armor_stand")) {
-                    var damager = ((SEntityDamageByEntityEvent) event).damager();
+                    var damager = ((EntityDamageByEntityEvent) event).damager();
                     if (damager.getEntityType().is("player")) {
-                        var player = (PlayerWrapper) event.entity();
+                        var player = (Player) event.entity();
                         if (PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
                             var gPlayer = player.as(BedWarsPlayer.class);
                             if (gPlayer.getGame().getStatus() == GameStatus.WAITING || gPlayer.isSpectator()) {
@@ -695,7 +683,7 @@ public class PlayerListener {
             return;
         }
 
-        var player = (PlayerWrapper) event.entity();
+        var player = (Player) event.entity();
         if (PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
             Debug.info(player.getName() + " was damaged in game");
             var gPlayer = player.as(BedWarsPlayer.class);
@@ -728,8 +716,8 @@ public class PlayerListener {
                         event.damage(game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.TNT_JUMP_FALL_DAMAGE, 0.75));
                         explosionAffectedPlayers.remove(player);
                     }
-                } else if (event instanceof SEntityDamageByEntityEvent) {
-                    var edbee = (SEntityDamageByEntityEvent) event;
+                } else if (event instanceof EntityDamageByEntityEvent) {
+                    var edbee = (EntityDamageByEntityEvent) event;
 
                     if (game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.TNT_JUMP_ENABLED, false) && edbee.damager().getEntityType().is("tnt")) {
                         final var tnt = edbee.damager();
@@ -758,7 +746,7 @@ public class PlayerListener {
                         }
 
                     } else if (edbee.damager().getEntityType().is("player")) {
-                        var damager = (PlayerWrapper) ((SEntityDamageByEntityEvent) event).damager();
+                        var damager = (Player) ((EntityDamageByEntityEvent) event).damager();
                         if (PlayerManagerImpl.getInstance().isPlayerInGame(damager)) {
                             var gDamager = damager.as(BedWarsPlayer.class);
                             if (gDamager.isSpectator() || (gDamager.getGame().getPlayerTeam(gDamager) == game.getPlayerTeam(gPlayer) && !game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.FRIENDLYFIRE, false))) {
@@ -767,13 +755,13 @@ public class PlayerListener {
                         }
                     } else if (edbee.damager().getEntityType().is("firework") && game.getStatus() == GameStatus.GAME_END_CELEBRATING) {
                         event.cancelled(true);
-                    } else if (edbee.damager() instanceof EntityProjectile) {
-                        var projectile = (EntityProjectile) edbee.damager();
-                        if (projectile.getEntityType().is("minecraft:fireball", "minecraft:small_fireball", "minecraft:dragon_fireball") && game.getStatus() == GameStatus.RUNNING) {
+                    } else if (edbee.damager() instanceof ProjectileEntity) {
+                        var projectile = (ProjectileEntity) edbee.damager();
+                        if (projectile instanceof Fireball && game.getStatus() == GameStatus.RUNNING) {
                             final double damage = MainConfig.getInstance().node("specials", "throwable-fireball", "damage").getDouble(); // TODO: special items may have custom configuration
                             event.damage(damage);
-                        } else if (projectile.getShooter() instanceof PlayerWrapper) {
-                            var damager = projectile.getShooter().as(PlayerWrapper.class);
+                        } else if (projectile.getShooter() instanceof Player) {
+                            var damager = projectile.getShooter().as(Player.class);
                             if (PlayerManagerImpl.getInstance().isPlayerInGame(damager)) {
                                 var gDamager = damager.as(BedWarsPlayer.class);
                                 if (gDamager.isSpectator() || gDamager.getGame().getPlayerTeam(gDamager) == game.getPlayerTeam(gPlayer) && !game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.FRIENDLYFIRE, false)) {
@@ -798,14 +786,14 @@ public class PlayerListener {
     }
 
     @OnEvent
-    public void onLaunchProjectile(SProjectileLaunchEvent event) {
+    public void onLaunchProjectile(ProjectileLaunchEvent event) {
         if (event.cancelled()) {
             return;
         }
 
         var projectile = event.entity();
-        if (projectile.getShooter() instanceof PlayerWrapper) {
-            var damager = projectile.getShooter().as(PlayerWrapper.class);
+        if (projectile.getShooter() instanceof Player) {
+            var damager = projectile.getShooter().as(Player.class);
             if (PlayerManagerImpl.getInstance().isPlayerInGame(damager)) {
                 if (damager.as(BedWarsPlayer.class).isSpectator()) {
                     event.cancelled(true);
@@ -816,7 +804,7 @@ public class PlayerListener {
     }
 
     @OnEvent
-    public void onDrop(SPlayerDropItemEvent event) {
+    public void onDrop(PlayerDropItemEvent event) {
         if (event.cancelled()) {
             return;
         }
@@ -831,7 +819,7 @@ public class PlayerListener {
     }
 
     @OnEvent(priority = org.screamingsandals.lib.event.EventPriority.HIGHEST)
-    public void onFly(SPlayerToggleFlightEvent event) {
+    public void onFly(PlayerToggleFlightEvent event) {
         if (event.cancelled()) {
             return;
         }
@@ -849,23 +837,23 @@ public class PlayerListener {
 
     @SuppressWarnings("deprecation")
     @OnEvent
-    public void onPlayerInteract(SPlayerInteractEvent event) {
+    public void onPlayerInteract(PlayerInteractEvent event) {
         var player = event.player();
-        if ((event.cancelled() && event.action() != SPlayerInteractEvent.Action.RIGHT_CLICK_AIR) || !PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
+        if ((event.cancelled() && event.action() != PlayerInteractEvent.Action.RIGHT_CLICK_AIR) || !PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
             return;
         }
         var gPlayer = player.as(BedWarsPlayer.class);
         var game = Objects.requireNonNull(gPlayer.getGame());
 
         final var clickedBlock = event.clickedBlock();
-        if (event.action() == SPlayerInteractEvent.Action.RIGHT_CLICK_BLOCK
-                && clickedBlock != null && clickedBlock.getType().is("minecraft:chest")
+        if (event.action() == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK
+                && clickedBlock != null && clickedBlock.block().is("minecraft:chest")
                 && game.getStatus() == GameStatus.WAITING) {
             event.cancelled(true);
             return;
         }
 
-        if (event.action() == SPlayerInteractEvent.Action.RIGHT_CLICK_AIR || event.action() == SPlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
+        if (event.action() == PlayerInteractEvent.Action.RIGHT_CLICK_AIR || event.action() == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
             if (game.getStatus() == GameStatus.WAITING || gPlayer.isSpectator()) {
                 Debug.info(player.getName() + " used item in lobby or as spectator");
                 event.cancelled(true);
@@ -892,8 +880,8 @@ public class PlayerListener {
                 }
             } else if (game.getStatus() == GameStatus.RUNNING) {
                 if (clickedBlock != null) {
-                    if (clickedBlock.getType().isSameType("ender_chest")) {
-                        var team = game.getTeamOfChest(clickedBlock.getLocation());
+                    if (clickedBlock.block().isSameType("ender_chest")) {
+                        var team = game.getTeamOfChest(clickedBlock.location());
                         event.cancelled(true);
 
                         if (team == null) {
@@ -917,15 +905,15 @@ public class PlayerListener {
 
                         player.openInventory(team.getTeamChestInventory());
                         Debug.info(player.getName() + " opened team chest");
-                    } else if (clickedBlock.getBlockState().orElseThrow().holdsInventory()) {
-                        var inventory = clickedBlock.getBlockState().orElseThrow().getInventory().orElseThrow();
-                        game.addChestForFutureClear(clickedBlock.getLocation(), inventory);
+                    } else if (Objects.requireNonNull(clickedBlock.blockSnapshot()).holdsInventory()) {
+                        var inventory = clickedBlock.blockSnapshot().getInventory();
+                        game.addChestForFutureClear(clickedBlock.location(), inventory);
                         Debug.info(player.getName() + " used chest in BedWars game");
 
-                    } else if (clickedBlock.getType().platformName().toLowerCase().contains("cake")) {
+                    } else if (clickedBlock.block().is("cake")) {
                         if (game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.TARGET_BLOCK_CAKE_DESTROY_BY_EATING, false)) {
                             var pt = game.getPlayerTeam(gPlayer);
-                            if (pt.getTarget() instanceof TargetBlockImpl && ((TargetBlockImpl) pt.getTarget()).getTargetBlock().equals(clickedBlock.getLocation())) {
+                            if (pt.getTarget() instanceof TargetBlockImpl && ((TargetBlockImpl) pt.getTarget()).getTargetBlock().equals(clickedBlock.location())) {
                                 event.cancelled(true);
                             } else {
                                 if (game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.DISABLE_CAKE_EATING, true)) {
@@ -933,19 +921,19 @@ public class PlayerListener {
                                 }
                                 Debug.info(player.getName() + " is eating cake");
                                 for (var team : game.getActiveTeams()) {
-                                    if (team.getTarget() instanceof TargetBlockImpl && ((TargetBlockImpl) team.getTarget()).getTargetBlock().equals(clickedBlock.getLocation())) {
+                                    if (team.getTarget() instanceof TargetBlockImpl && ((TargetBlockImpl) team.getTarget()).getTargetBlock().equals(clickedBlock.location())) {
                                         event.cancelled(true);
-                                        var cake = clickedBlock.getType();
-                                        if (cake.get("bites").map("0"::equals).orElse(true)) {
-                                            game.getRegion().putOriginalBlock(clickedBlock.getLocation(), clickedBlock.getBlockState().orElseThrow());
+                                        var cake = clickedBlock.block();
+                                        if ("0".equals(cake.get("bites"))) {
+                                            game.getRegion().putOriginalBlock(clickedBlock.location(), clickedBlock.blockSnapshot());
                                         }
-                                        var bites = cake.get("bites").map(Integer::parseInt).orElse(0) + 1;
+                                        var bites = Objects.requireNonNullElse(cake.getInt("bites"), 0) + 1;
                                         cake = cake.with("bites", String.valueOf(bites));
 
                                         if (bites >= 6) {
                                             game.internalProcessInvalidation(team, team.getTarget(), event.player(), TargetInvalidationReason.TARGET_BLOCK_EATEN, false, false);
                                         } else {
-                                            clickedBlock.setType(cake);
+                                            clickedBlock.block(cake);
                                         }
                                         break;
                                     }
@@ -954,57 +942,57 @@ public class PlayerListener {
                         } else if (game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.DISABLE_CAKE_EATING, true)) {
                             event.cancelled(true);
                         }
-                    } else if (clickedBlock.getType().is("dragon_egg") && game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.DISABLE_DRAGON_EGG_TELEPORT, true)) {
+                    } else if (clickedBlock.block().is("dragon_egg") && game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.DISABLE_DRAGON_EGG_TELEPORT, true)) {
                         event.cancelled(true); // Fix - #432
                     }
                 }
             }
 
             if (clickedBlock != null) {
-                if (game.getRegion().isBedBlock(clickedBlock.getBlockState().orElseThrow()) || clickedBlock.getType().isSameType("respawn_anchor")) {
+                if (game.getRegion().isBedBlock(clickedBlock.blockSnapshot()) || clickedBlock.block().isSameType("respawn_anchor")) {
                     // prevent Essentials to set home in arena
                     event.cancelled(true);
 
-                    if (event.action() == SPlayerInteractEvent.Action.RIGHT_CLICK_BLOCK && game.getStatus() == GameStatus.RUNNING && !gPlayer.isSpectator()) {
+                    if (event.action() == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK && game.getStatus() == GameStatus.RUNNING && !gPlayer.isSpectator()) {
                         var stack = event.item();
                         if (stack != null && stack.getAmount() > 0) {
                             boolean anchorFilled = false;
                             var pt = game.getPlayerTeam(gPlayer);
                             if (game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.TARGET_BLOCK_RESPAWN_ANCHOR_ENABLE_DECREASE, false)
-                                    && clickedBlock.getType().isSameType("respawn_anchor")
-                                    && pt.getTarget() instanceof TargetBlockImpl && ((TargetBlockImpl) pt.getTarget()).getTargetBlock().equals(clickedBlock.getLocation())
+                                    && clickedBlock.block().isSameType("respawn_anchor")
+                                    && pt.getTarget() instanceof TargetBlockImpl && ((TargetBlockImpl) pt.getTarget()).getTargetBlock().equals(clickedBlock.location())
                                     && event.item() != null && event.item().getMaterial().is("glowstone")) {
                                 Debug.info(player.getName() + " filled respawn anchor");
-                                var anchor = clickedBlock.getType();
-                                int charges = anchor.get("charges").map(Integer::parseInt).orElse(0);
+                                var anchor = clickedBlock.block();
+                                int charges = Objects.requireNonNullElse(anchor.getInt("charges"), 0);
                                 charges++;
                                 if (charges <= 4) {
                                     anchorFilled = true;
-                                    clickedBlock.setType(anchor.with("charges", String.valueOf(charges)));
+                                    clickedBlock.block(anchor.with("charges", charges));
                                     stack.changeAmount(stack.getAmount() - 1);
 
-                                    clickedBlock.getLocation().getWorld().playSound(SoundStart.sound(
-                                            SpecialSoundKey.key(MainConfig.getInstance().node("target-block", "respawn-anchor", "sound", "charge").getString("block.respawn_anchor.charge")),
+                                    clickedBlock.location().getWorld().playSound(SoundStart.sound(
+                                            ResourceLocation.of(MainConfig.getInstance().node("target-block", "respawn-anchor", "sound", "charge").getString("block.respawn_anchor.charge")),
                                             SoundSource.BLOCK,
                                             1,
                                             1
-                                    ), clickedBlock.getLocation().getX(), clickedBlock.getLocation().getY(), clickedBlock.getLocation().getZ());
+                                    ), clickedBlock.location().getX(), clickedBlock.location().getY(), clickedBlock.location().getZ());
                                 }
                             }
 
                             if (
                                     !anchorFilled
-                                    && stack.getMaterial().block().isPresent()
+                                    && stack.getMaterial().block() != null
 
                                     /* These special items don't work with the feature below */
                                     && ItemUtils.getIfStartsWith(stack, ProtectionWallListener.PROTECTION_WALL_PREFIX) == null
                                     && ItemUtils.getIfStartsWith(stack, RescuePlatformListener.RESCUE_PLATFORM_PREFIX) == null
                             ) {
                                 var face = event.blockFace();
-                                var block = clickedBlock.getLocation().clone().add(face.getDirection()).getBlock();
-                                if (block.getType().isAir()) {
-                                    var originalState = block.getBlockState().orElseThrow();
-                                    block.setType(stack.getMaterial().block().orElseThrow());
+                                var block = clickedBlock.location().add(face.getDirection()).getBlock();
+                                if (block.block().isAir()) {
+                                    var originalState = block.blockSnapshot();
+                                    block.block(Objects.requireNonNull(stack.getMaterial().block()));
                                     var bEvent = PlatformService.getInstance().fireFakeBlockPlaceEvent(
                                             block, originalState, clickedBlock, stack, player, true
                                     );
@@ -1017,10 +1005,10 @@ public class PlayerListener {
                                         }
                                         if (!player.isSneaking()) {
                                             // TODO get right block place sound
-                                            block.getLocation().getWorld().playSound(SoundStart.sound(
-                                                    SpecialSoundKey.key("minecraft:block.stone.place"),
+                                            block.location().getWorld().playSound(SoundStart.sound(
+                                                    ResourceLocation.of("minecraft:block.stone.place"),
                                                     SoundSource.BLOCK, 1, 1
-                                            ), block.getLocation().getX(), block.getLocation().getY(), block.getLocation().getZ());
+                                            ), block.location().getX(), block.location().getY(), block.location().getZ());
                                         }
                                     }
                                 }
@@ -1029,9 +1017,9 @@ public class PlayerListener {
                     }
                 }
             }
-        } else if (event.action() == SPlayerInteractEvent.Action.LEFT_CLICK_BLOCK &&
+        } else if (event.action() == PlayerInteractEvent.Action.LEFT_CLICK_BLOCK &&
                 game.getStatus() == GameStatus.RUNNING && !gPlayer.isSpectator()
-                && clickedBlock != null && clickedBlock.getType().isSameType("dragon_egg")
+                && clickedBlock != null && clickedBlock.block().isSameType("dragon_egg")
                 && game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.DISABLE_DRAGON_EGG_TELEPORT, true)) {
             event.cancelled(true);
             Debug.info(player.getName() + " interacts with dragon egg");
@@ -1042,13 +1030,13 @@ public class PlayerListener {
             if (blockBreakEvent.dropItems()) {
                 clickedBlock.breakNaturally();
             } else {
-                clickedBlock.setType(BlockTypeHolder.air());
+                clickedBlock.block(Block.air());
             }
         }
     }
 
     @OnEvent
-    public void onEntityInteract(SPlayerInteractEntityEvent event) {
+    public void onEntityInteract(PlayerInteractEntityEvent event) {
         if (event.cancelled()) {
             return;
         }
@@ -1057,7 +1045,7 @@ public class PlayerListener {
         if (PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
             var gPlayer = player.as(BedWarsPlayer.class);
             var game = gPlayer.getGame();
-            if ((game.getStatus() == GameStatus.WAITING && !(event instanceof SPlayerInteractAtEntityEvent)) || gPlayer.isSpectator()) {
+            if ((game.getStatus() == GameStatus.WAITING && !(event instanceof PlayerInteractAtEntityEvent)) || gPlayer.isSpectator()) {
                 event.cancelled(true);
                 Debug.info(player.getName() + " interacts with entity in lobby or as spectator");
             }
@@ -1065,7 +1053,7 @@ public class PlayerListener {
     }
 
     @OnEvent
-    public void onSleep(SPlayerBedEnterEvent event) {
+    public void onSleep(PlayerBedEnterEvent event) {
         if (event.cancelled()) {
             return;
         }
@@ -1074,7 +1062,7 @@ public class PlayerListener {
             event.cancelled(true);
         } else {
             for (var game : GameManagerImpl.getInstance().getGames()) {
-                if (ArenaUtils.isInArea(event.bed().getLocation(), game.getPos1(), game.getPos2())) {
+                if (ArenaUtils.isInArea(event.bed().location(), game.getPos1(), game.getPos2())) {
                     event.cancelled(true);
                     Debug.info(event.player().getName() + " tried to sleep");
                     return;
@@ -1084,7 +1072,7 @@ public class PlayerListener {
     }
 
     @OnEvent
-    public void onInventoryOpen(SPlayerInventoryOpenEvent event) {
+    public void onInventoryOpen(PlayerInventoryOpenEvent event) {
         if (event.cancelled()) {
             return;
         }
@@ -1109,7 +1097,7 @@ public class PlayerListener {
     }
 
     @OnEvent(priority = org.screamingsandals.lib.event.EventPriority.HIGH)
-    public void onInteractAtEntity(SPlayerInteractAtEntityEvent event) {
+    public void onInteractAtEntity(PlayerInteractAtEntityEvent event) {
         if (event.cancelled()) {
             return;
         }
@@ -1120,7 +1108,7 @@ public class PlayerListener {
         if (PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
             var gPlayer = player.as(BedWarsPlayer.class);
             var game = gPlayer.getGame();
-            if (!(entity instanceof EntityLiving)) {
+            if (!(entity instanceof LivingEntity)) {
                 return;
             }
 
@@ -1145,12 +1133,12 @@ public class PlayerListener {
 
             event.cancelled(true);
 
-            if (!(entity instanceof EntityLiving)) {
+            if (!(entity instanceof LivingEntity)) {
                 player.sendMessage(Message.of(LangKeys.ADMIN_TEAM_JOIN_ENTITY_ENTITY_NOT_COMPATIBLE).defaultPrefix());
                 return;
             }
 
-            var living = (EntityLiving) entity;
+            var living = (LivingEntity) entity;
             living.setRemoveWhenFarAway(false);
             living.setCanPickupItems(false);
             living.setCustomName(Component.text(value.getName(), value.getColor().getTextColor()));
@@ -1166,7 +1154,7 @@ public class PlayerListener {
     }
 
     @OnEvent(priority = EventPriority.HIGHEST)
-    public void onChat(SPlayerChatEvent event) {
+    public void onChat(PlayerChatEvent event) {
         if (event.cancelled() || !MainConfig.getInstance().node("chat", "override").getBoolean()) {
             return;
         }
@@ -1250,7 +1238,7 @@ public class PlayerListener {
             }
 
             for (var p : event.recipients()) {
-                p.sendMessage(event.format());
+                p.sendMessage(Component.fromLegacy(event.format()));
             }
             event.cancelled(true);
         } else {
@@ -1271,7 +1259,7 @@ public class PlayerListener {
     }
 
     @OnEvent
-    public void onMove(SPlayerMoveEvent event) {
+    public void onMove(PlayerMoveEvent event) {
         if (event.cancelled()) {
             return;
         }
@@ -1283,13 +1271,14 @@ public class PlayerListener {
             if (game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.DAMAGE_WHEN_PLAYER_IS_NOT_IN_ARENA, false) && game.getStatus() == GameStatus.RUNNING
                     && !gPlayer.isSpectator()) {
                 if (!ArenaUtils.isInArea(event.newLocation(), game.getPos1(), game.getPos2())) {
-                    var armor = player.getAttribute(AttributeTypeHolder.of("minecraft:generic.armor"));
-                    var armorToughness = AttributeTypeHolder.ofOptional("minecraft:generic.armor_toughness").flatMap(player::getAttribute);
-                    if (armor.isEmpty()) {
+                    var armor = player.getAttribute(AttributeType.of("minecraft:generic.armor"));
+                    var armorToughnessType = AttributeType.ofNullable("minecraft:generic.armor_toughness");
+                    var armorToughness = armorToughnessType != null ? player.getAttribute(armorToughnessType) : null;
+                    if (armor == null) {
                         player.damage(5);
                     } else {
                         // this is not 100% accurate formula - armorToughness check contains weaponDamage which is hardcoded to 5 (4*5=20) but we don't know the weapon damage yet
-                        var multiplier = (1.0 - Math.min(20.0, Math.max(armor.get().getValue() / 5.0, armor.get().getValue() - 20.0 / (armorToughness.map(AttributeHolder::getValue).orElse(0.0) + 8))) / 25.0);
+                        var multiplier = (1.0 - Math.min(20.0, Math.max(armor.getValue() / 5.0, armor.getValue() - 20.0 / ((armorToughness != null ? armorToughness.getValue() : 0) + 8))) / 25.0);
                         if (multiplier < 1) {
                             multiplier = 2 - multiplier;
                         }
@@ -1308,8 +1297,8 @@ public class PlayerListener {
     }
 
     @OnEvent
-    public void onPlaceLiquid(SPlayerBucketEvent event) {
-        if (event.cancelled() || event.action() != SPlayerBucketEvent.Action.EMPTY) {
+    public void onPlaceLiquid(PlayerBucketEvent event) {
+        if (event.cancelled() || event.action() != PlayerBucketEvent.Action.EMPTY) {
             return;
         }
 
@@ -1317,14 +1306,14 @@ public class PlayerListener {
         if (PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
             var gPlayer = player.as(BedWarsPlayer.class);
             var game = gPlayer.getGame();
-            var loc = event.blockClicked().getLocation();
+            var loc = event.blockClicked().location();
 
             loc.add(event.blockFace().getDirection().normalize());
 
             var block = loc.getBlock();
             if (game.getStatus() == GameStatus.RUNNING) {
-                if (block.getType().isAir() || game.getRegion().isLocationModifiedDuringGame(block.getLocation())) {
-                    game.getRegion().addBuiltDuringGame(block.getLocation());
+                if (block.block().isAir() || game.getRegion().isLocationModifiedDuringGame(block.location())) {
+                    game.getRegion().addBuiltDuringGame(block.location());
                     Debug.info(player.getName() + " placed liquid");
                 } else {
                     event.cancelled(true);
@@ -1336,7 +1325,7 @@ public class PlayerListener {
             }
         } else if (MainConfig.getInstance().node("preventArenaFromGriefing").getBoolean()) {
             for (var game : GameManagerImpl.getInstance().getGames()) {
-                if (game.getStatus() != GameStatus.DISABLED && ArenaUtils.isInArea(event.blockClicked().getLocation(), game.getPos1(), game.getPos2())) {
+                if (game.getStatus() != GameStatus.DISABLED && ArenaUtils.isInArea(event.blockClicked().location(), game.getPos1(), game.getPos2())) {
                     event.cancelled(true);
                     Debug.info(player.getName() + " is doing prohibited actions in protected area while not playing BedWars");
                     return;
@@ -1346,7 +1335,7 @@ public class PlayerListener {
     }
 
     @OnEvent
-    public void onVehicleCreated(SVehicleCreateEvent event) {
+    public void onVehicleCreated(VehicleCreateEvent event) {
         if (event.cancelled()) {
             return;
         }
@@ -1362,7 +1351,7 @@ public class PlayerListener {
     }
 
     @OnEvent
-    public void onItemPickup(SPlayerPickupItemEvent event) {
+    public void onItemPickup(PlayerPickupItemEvent event) {
         if (event.cancelled()) {
             return;
         }
@@ -1383,7 +1372,7 @@ public class PlayerListener {
     }
 
     @OnEvent
-    public void onPlayerSwapHandItems(SPlayerSwapHandItemsEvent event) {
+    public void onPlayerSwapHandItems(PlayerSwapHandItemsEvent event) {
         var player = event.player();
         if (PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
             var gPlayer = player.as(BedWarsPlayer.class);
@@ -1395,7 +1384,7 @@ public class PlayerListener {
     }
 
     @OnEvent
-    public void onItemMerge(SItemMergeEvent event) {
+    public void onItemMerge(ItemMergeEvent event) {
         if (event.cancelled()) {
             return;
         }

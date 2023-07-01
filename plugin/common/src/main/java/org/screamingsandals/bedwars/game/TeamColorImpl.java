@@ -22,7 +22,7 @@ package org.screamingsandals.bedwars.game;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.screamingsandals.bedwars.api.TeamColor;
-import org.screamingsandals.lib.block.BlockTypeHolder;
+import org.screamingsandals.lib.block.Block;
 import org.screamingsandals.lib.spectator.Color;
 
 @RequiredArgsConstructor
@@ -51,7 +51,7 @@ public enum TeamColorImpl implements TeamColor {
     @Getter
     private final Color leatherColor;
 
-    public BlockTypeHolder getWoolBlockType() {
-        return BlockTypeHolder.of("WOOL").colorize(material1_13);
+    public Block getWoolBlockType() {
+        return Block.of("WOOL").colorize(material1_13);
     }
 }

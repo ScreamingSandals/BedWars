@@ -29,31 +29,33 @@ import org.screamingsandals.bedwars.utils.SerializableLocation;
 import org.screamingsandals.lib.Server;
 import org.screamingsandals.lib.event.EventPriority;
 import org.screamingsandals.lib.event.OnEvent;
-import org.screamingsandals.lib.event.player.SPlayerJoinEvent;
-import org.screamingsandals.lib.event.player.SPlayerLeaveEvent;
-import org.screamingsandals.lib.event.player.SPlayerWorldChangeEvent;
+import org.screamingsandals.lib.event.player.PlayerJoinEvent;
+import org.screamingsandals.lib.event.player.PlayerLeaveEvent;
+import org.screamingsandals.lib.event.player.PlayerWorldChangeEvent;
 import org.screamingsandals.lib.hologram.Hologram;
 import org.screamingsandals.lib.hologram.HologramManager;
 import org.screamingsandals.lib.hologram.event.HologramTouchEvent;
 import org.screamingsandals.lib.lang.Message;
-import org.screamingsandals.lib.player.PlayerWrapper;
+import org.screamingsandals.lib.player.Player;
 import org.screamingsandals.lib.plugin.ServiceManager;
 import org.screamingsandals.lib.spectator.Component;
 import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
 import org.screamingsandals.lib.utils.annotations.Service;
+import org.screamingsandals.lib.utils.annotations.ServiceDependencies;
 import org.screamingsandals.lib.utils.annotations.methods.OnPostEnable;
 import org.screamingsandals.lib.utils.annotations.methods.OnPreDisable;
 import org.screamingsandals.lib.utils.annotations.methods.ShouldRunControllable;
 import org.screamingsandals.lib.utils.annotations.parameters.ConfigFile;
 import org.screamingsandals.lib.utils.visual.TextEntry;
-import org.screamingsandals.lib.world.LocationHolder;
+import org.screamingsandals.lib.world.Location;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
 import java.util.*;
 
-@Service(dependsOn = {
+@Service
+@ServiceDependencies(dependsOn = {
         HologramManager.class,
         MainConfig.class,
         PlayerStatisticManager.class
@@ -67,7 +69,7 @@ public class StatisticsHolograms {
     private ArrayList<SerializableLocation> hologramLocations = null;
     private Map<UUID, List<Hologram>> holograms = null;
 
-    public void addHologramLocation(LocationHolder eyeLocation) {
+    public void addHologramLocation(Location eyeLocation) {
         this.hologramLocations.add(new SerializableLocation(eyeLocation.add(0, -3, 0)));
         this.updateHologramDatabase();
     }
@@ -118,64 +120,54 @@ public class StatisticsHolograms {
     }
 
     @OnEvent(priority = EventPriority.HIGHEST)
-    public void onJoin(SPlayerJoinEvent event) {
+    public void onJoin(PlayerJoinEvent event) {
         updateHolograms(event.player(), 10L);
     }
 
     @OnEvent
-    public void onWorldChange(SPlayerWorldChangeEvent event) {
+    public void onWorldChange(PlayerWorldChangeEvent event) {
         updateHolograms(event.player(), 10L);
     }
 
     @OnEvent
-    public void onLeave(SPlayerLeaveEvent event) {
+    public void onLeave(PlayerLeaveEvent event) {
         final var playerId = event.player().getUuid();
         if (holograms.containsKey(playerId)) {
-            Tasker
-                    .build(() -> {
+            Tasker.runAsync(() -> {
                         holograms.get(playerId).forEach(holo -> {
                             holo.hide();
                             HologramManager.removeHologram(holo);
                         });
                         holograms.remove(playerId);
-                    })
-                    .async()
-                    .start();
+                    });
         }
     }
 
-    public void updateHolograms(PlayerWrapper player) {
-        Tasker.build(() ->
+    public void updateHolograms(Player player) {
+        Tasker.runAsync(() ->
                 this.hologramLocations.forEach(holoLocation ->
-                        holoLocation.asOptional(LocationHolder.class).ifPresent(location ->
+                        holoLocation.asOptional(Location.class).ifPresent(location ->
                                 this.updatePlayerHologram(player, location)
                         )
-                ))
-                .async()
-                .start();
+                ));
     }
 
-    public void updateHolograms(PlayerWrapper player, long delay) {
-        Tasker.build(() -> this.updateHolograms(player))
-                .async()
-                .delay(delay, TaskerTime.TICKS)
-                .start();
+    public void updateHolograms(Player player, long delay) {
+        Tasker.runAsyncDelayed(() -> this.updateHolograms(player), delay, TaskerTime.TICKS);
     }
 
     public void updateHolograms() {
         Server.getConnectedPlayers().forEach(player ->
-                Tasker.build(() ->
+                Tasker.runAsync(() ->
                         this.hologramLocations.forEach(holoLocation ->
-                                holoLocation.asOptional(LocationHolder.class).ifPresent(location ->
+                                holoLocation.asOptional(Location.class).ifPresent(location ->
                                         this.updatePlayerHologram(player, location)
                                 )
                         ))
-                        .async()
-                        .start()
         );
     }
 
-    private Optional<Hologram> getHologramByLocation(List<Hologram> holograms, LocationHolder holoLocation) {
+    private Optional<Hologram> getHologramByLocation(List<Hologram> holograms, Location holoLocation) {
         return holograms.stream()
                 .filter(hologram -> {
                     var loc = hologram.location();
@@ -187,7 +179,7 @@ public class StatisticsHolograms {
                 .findFirst();
     }
 
-    public void updatePlayerHologram(PlayerWrapper player, LocationHolder holoLocation) {
+    public void updatePlayerHologram(Player player, Location holoLocation) {
         if (!this.holograms.containsKey(player.getUuid())) {
             this.holograms.put(player.getUuid(), new ArrayList<>());
         }
@@ -207,7 +199,7 @@ public class StatisticsHolograms {
         }
     }
 
-    private Hologram createPlayerStatisticHologram(PlayerWrapper player, LocationHolder holoLocation) {
+    private Hologram createPlayerStatisticHologram(Player player, Location holoLocation) {
         final var holo = HologramManager
                 .hologram(holoLocation)
                 .firstLine(TextEntry.of(Component.fromLegacy(mainConfig.node("holograms", "headline").getString("Your §eBEDWARS§f stats"))))
@@ -234,7 +226,7 @@ public class StatisticsHolograms {
         }
     }
 
-    private SerializableLocation getHologramLocationByLocation(LocationHolder holoLocation) {
+    private SerializableLocation getHologramLocationByLocation(Location holoLocation) {
         return hologramLocations.stream()
                 .filter(loc -> loc.getWorld().equals(holoLocation.getWorld().getName())
                         && loc.getX() == holoLocation.getX()
@@ -260,8 +252,7 @@ public class StatisticsHolograms {
         var location = holo.location();
 
         RemoveHoloCommand.PLAYERS_WITH_HOLOGRAM_REMOVER_IN_HAND.remove(player.getUuid());
-        Tasker
-                .build(() -> {
+        Tasker.runAsync(() -> {
                     // remove all player holograms on this location
                     for (var entry : holograms.entrySet()) {
                         var iterator = entry.getValue().iterator();
@@ -285,12 +276,10 @@ public class StatisticsHolograms {
                         updateHologramDatabase();
                     }
                     Message.of(LangKeys.ADMIN_HOLO_REMOVED).defaultPrefix().send(player);
-                })
-                .async()
-                .start();
+                });
     }
 
-    private void updatePlayerStatisticHologram(PlayerWrapper player, final Hologram holo) {
+    private void updatePlayerStatisticHologram(Player player, final Hologram holo) {
         var statistic = PlayerStatisticManager.getInstance().getStatistic(player);
 
         var lines = Message

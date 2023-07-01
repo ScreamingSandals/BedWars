@@ -28,7 +28,7 @@ import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.lib.Server;
 import org.screamingsandals.lib.lang.Message;
-import org.screamingsandals.lib.player.PlayerWrapper;
+import org.screamingsandals.lib.player.Player;
 import org.screamingsandals.lib.spectator.Color;
 import org.screamingsandals.lib.spectator.Component;
 
@@ -40,35 +40,35 @@ public class LobbyUtils {
         message
                 .placeholder("date", MiscUtils.getFormattedDate(MainConfig.getInstance().node("main-lobby", "date-format").getString("MM/dd/yy")))
                 .placeholder("players", () -> Server.getConnectedPlayers().size())
-                .placeholder("name", sender -> sender instanceof PlayerWrapper ? ((PlayerWrapper) sender).getDisplayName() : Component.text(sender.getName()))
+                .placeholder("name", sender -> sender instanceof Player ? ((Player) sender).getDisplayName() : Component.text(sender.getName()))
                 .placeholder("version", VersionInfo.VERSION);
 
         if (PlayerStatisticManager.isEnabled()) {
             var playerStatisticManager = PlayerStatisticManager.getInstance();
 
             message.placeholder("goal", sender -> {
-                if (sender instanceof PlayerWrapper) {
-                    return Component.text(MiscUtils.roundForMainLobbySidebar(playerStatisticManager.getStatistic((PlayerWrapper) sender).getNeededScoreToNextLevel()));
+                if (sender instanceof Player) {
+                    return Component.text(MiscUtils.roundForMainLobbySidebar(playerStatisticManager.getStatistic((Player) sender).getNeededScoreToNextLevel()));
                 }
                 return Component.text(0); // how
             }).placeholder("current-progress", sender -> {
-                if (sender instanceof PlayerWrapper) {
-                    return Component.text(MiscUtils.roundForMainLobbySidebar(playerStatisticManager.getStatistic((PlayerWrapper) sender).getScoreSincePreviousLevel()));
+                if (sender instanceof Player) {
+                    return Component.text(MiscUtils.roundForMainLobbySidebar(playerStatisticManager.getStatistic((Player) sender).getScoreSincePreviousLevel()));
                 }
                 return Component.text(0); // how
             }).placeholder("level", sender -> {
-                if (sender instanceof PlayerWrapper) {
-                    return Component.text(playerStatisticManager.getStatistic((PlayerWrapper) sender).getLevel() + "\u272B", Color.GRAY); // TODO: use prestiges when they are implemented
+                if (sender instanceof Player) {
+                    return Component.text(playerStatisticManager.getStatistic((Player) sender).getLevel() + "\u272B", Color.GRAY); // TODO: use prestiges when they are implemented
                 }
                 return Component.text(0); // how
             }).placeholder("level-number", sender -> {
-                if (sender instanceof PlayerWrapper) {
-                    return Component.text(playerStatisticManager.getStatistic((PlayerWrapper) sender).getLevel());
+                if (sender instanceof Player) {
+                    return Component.text(playerStatisticManager.getStatistic((Player) sender).getLevel());
                 }
                 return Component.text(0); // how
             }).placeholder("progress-bar", sender -> {
-                if (sender instanceof PlayerWrapper) {
-                    var statistic = playerStatisticManager.getStatistic((PlayerWrapper) sender);
+                if (sender instanceof Player) {
+                    var statistic = playerStatisticManager.getStatistic((Player) sender);
                     var progress = statistic.getScoreSincePreviousLevel();
                     var needed = statistic.getNeededScoreToNextLevel();
                     if (needed <= 0) { // invalid
@@ -85,43 +85,43 @@ public class LobbyUtils {
                 }
                 return Component.text(0); // how
             }).placeholder("kills", sender -> {
-                if (sender instanceof PlayerWrapper) {
-                    return Component.text(playerStatisticManager.getStatistic((PlayerWrapper) sender).getKills());
+                if (sender instanceof Player) {
+                    return Component.text(playerStatisticManager.getStatistic((Player) sender).getKills());
                 }
                 return Component.text(0); // how
             }).placeholder("deaths", sender -> {
-                if (sender instanceof PlayerWrapper) {
-                    return Component.text(playerStatisticManager.getStatistic((PlayerWrapper) sender).getDeaths());
+                if (sender instanceof Player) {
+                    return Component.text(playerStatisticManager.getStatistic((Player) sender).getDeaths());
                 }
                 return Component.text(0); // how
             }).placeholder("target-blocks-destroyed", sender -> {
-                if (sender instanceof PlayerWrapper) {
-                    return Component.text(playerStatisticManager.getStatistic((PlayerWrapper) sender).getDestroyedBeds());
+                if (sender instanceof Player) {
+                    return Component.text(playerStatisticManager.getStatistic((Player) sender).getDestroyedBeds());
                 }
                 return Component.text(0); // how
             }).placeholder("loses", sender -> {
-                if (sender instanceof PlayerWrapper) {
-                    return Component.text(playerStatisticManager.getStatistic((PlayerWrapper) sender).getLoses());
+                if (sender instanceof Player) {
+                    return Component.text(playerStatisticManager.getStatistic((Player) sender).getLoses());
                 }
                 return Component.text(0); // how
             }).placeholder("wins", sender -> {
-                if (sender instanceof PlayerWrapper) {
-                    return Component.text(playerStatisticManager.getStatistic((PlayerWrapper) sender).getWins());
+                if (sender instanceof Player) {
+                    return Component.text(playerStatisticManager.getStatistic((Player) sender).getWins());
                 }
                 return Component.text(0); // how
             }).placeholder("score", sender -> {
-                if (sender instanceof PlayerWrapper) {
-                    return Component.text(playerStatisticManager.getStatistic((PlayerWrapper) sender).getScore());
+                if (sender instanceof Player) {
+                    return Component.text(playerStatisticManager.getStatistic((Player) sender).getScore());
                 }
                 return Component.text(0); // how
             }).placeholder("kd-ratio", sender -> {
-                if (sender instanceof PlayerWrapper) {
-                    return Component.text(playerStatisticManager.getStatistic((PlayerWrapper) sender).getKD());
+                if (sender instanceof Player) {
+                    return Component.text(playerStatisticManager.getStatistic((Player) sender).getKD());
                 }
                 return Component.text(0); // how
             }).placeholder("played-games", sender -> {
-                if (sender instanceof PlayerWrapper) {
-                    return Component.text(playerStatisticManager.getStatistic((PlayerWrapper) sender).getGames());
+                if (sender instanceof Player) {
+                    return Component.text(playerStatisticManager.getStatistic((Player) sender).getGames());
                 }
                 return Component.text(0); // how
             });

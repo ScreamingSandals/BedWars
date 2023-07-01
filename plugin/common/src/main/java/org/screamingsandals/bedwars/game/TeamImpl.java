@@ -30,23 +30,25 @@ import org.screamingsandals.bedwars.game.target.ATargetCountdown;
 import org.screamingsandals.bedwars.game.target.TargetBlockImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
-import org.screamingsandals.lib.SpecialSoundKey;
-import org.screamingsandals.lib.block.BlockMapper;
+import org.screamingsandals.lib.block.BlockPlacements;
 import org.screamingsandals.lib.container.Container;
 import org.screamingsandals.lib.container.ContainerFactory;
-import org.screamingsandals.lib.container.type.InventoryTypeHolder;
+import org.screamingsandals.lib.container.type.InventoryType;
 import org.screamingsandals.lib.hologram.Hologram;
 import org.screamingsandals.lib.hologram.HologramManager;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.spectator.sound.SoundSource;
 import org.screamingsandals.lib.spectator.sound.SoundStart;
+import org.screamingsandals.lib.tasker.DefaultThreads;
 import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
-import org.screamingsandals.lib.world.LocationHolder;
-import org.screamingsandals.lib.world.LocationMapper;
+import org.screamingsandals.lib.utils.ResourceLocation;
+import org.screamingsandals.lib.world.Location;
+import org.screamingsandals.lib.impl.world.Locations;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -57,12 +59,12 @@ public class TeamImpl implements Team {
     private TeamColorImpl color;
     private String name;
     private Target target;
-    private final List<LocationHolder> teamSpawns = new ArrayList<>();
+    private final List<Location> teamSpawns = new ArrayList<>();
     private int maxPlayers;
     private GameImpl game;
 
     private Container teamChestInventory;
-    private final List<LocationHolder> chests = new ArrayList<>();
+    private final List<Location> chests = new ArrayList<>();
     private boolean started;
     private final List<BedWarsPlayer> players = new ArrayList<>();
     private Hologram hologram;
@@ -82,49 +84,47 @@ public class TeamImpl implements Team {
         if (target instanceof TargetBlockImpl) {
             var targetBlock = ((TargetBlockImpl) target).getTargetBlock();
             // Check target blocks existence
-            if (targetBlock.getBlock().getType().isAir()) {
+            if (targetBlock.getBlock().block().isAir()) {
                 var placedBlock = targetBlock.getBlock();
-                placedBlock.setType(color.getWoolBlockType());
+                placedBlock.block(color.getWoolBlockType());
             }
 
             ((TargetBlockImpl) this.target).setValid(true);
 
             // anchor wars
             var block = targetBlock.getBlock();
-            if (block.getType().isSameType("respawn_anchor")) {
-                Tasker.build(() -> {
-                            var anchor = block.getType();
-                            block.setType(anchor.with("charges", "0"));
+            if (block.block().isSameType("respawn_anchor")) {
+                Tasker.run(DefaultThreads.GLOBAL_THREAD, () -> {
+                            var anchor = block.block();
+                            block.block(anchor.with("charges", "0"));
                             if (game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.TARGET_BLOCK_RESPAWN_ANCHOR_FILL_ON_START, false)) {
                                 var atomic = new AtomicInteger();
-                                Tasker.build(taskBase -> () -> {
+                                Tasker.runDelayedAndRepeatedly(DefaultThreads.GLOBAL_THREAD, taskBase -> {
                                     var charges = atomic.incrementAndGet();
                                     if (charges > 4) {
                                         taskBase.cancel();
                                         return;
                                     }
-                                    block.setType(anchor.with("charges", String.valueOf(charges)));
+                                    block.block(anchor.with("charges", String.valueOf(charges)));
                                     targetBlock.getWorld().playSound(SoundStart.sound(
-                                            SpecialSoundKey.key(MainConfig.getInstance().node("target-block", "respawn-anchor", "sound", "charge").getString("block.respawn_anchor.charge")),
+                                            ResourceLocation.of(MainConfig.getInstance().node("target-block", "respawn-anchor", "sound", "charge").getString("block.respawn_anchor.charge")),
                                             SoundSource.BLOCK,
                                             1,
                                             1
                                     ), targetBlock.getX(), targetBlock.getY(), targetBlock.getZ());
-                                }).delay(50, TaskerTime.TICKS).repeat(10, TaskerTime.TICKS).start();
+                                }, 50, TaskerTime.TICKS, 10, TaskerTime.TICKS);
                             }
-                        })
-                        .afterOneTick()
-                        .start();
+                        });
             }
 
 
             if (game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.HOLOGRAMS_ABOVE_BEDS, false)) {
                 var bed = targetBlock.getBlock();
                 var loc = targetBlock.add(0.5, 1.5, 0.5);
-                var isBlockTypeBed = game.getRegion().isBedBlock(bed.getBlockState().orElseThrow());
-                var isAnchor = bed.getType().isSameType("respawn_anchor");
-                var isCake = bed.getType().isSameType("cake");
-                var isItDoor = bed.getType().is("#doors");
+                var isBlockTypeBed = game.getRegion().isBedBlock(bed.blockSnapshot());
+                var isAnchor = bed.block().isSameType("respawn_anchor");
+                var isCake = bed.block().isSameType("cake");
+                var isItDoor = bed.block().is("#doors");
                 var enemies = game.getConnectedPlayers()
                         .stream()
                         .filter(player -> !players.contains(player))
@@ -154,7 +154,7 @@ public class TeamImpl implements Team {
 
         // team chest inventory
         final var message = Message.of(LangKeys.SPECIALS_TEAM_CHEST_NAME).prefixOrDefault(game.getCustomPrefixComponent()).asComponent();
-        this.teamChestInventory = ContainerFactory.createContainer(InventoryTypeHolder.of("ender_chest"), message).orElseThrow();
+        this.teamChestInventory = Objects.requireNonNull(ContainerFactory.createContainer(InventoryType.of("ender_chest"), message));
         this.started = true;
     }
 
@@ -180,47 +180,47 @@ public class TeamImpl implements Team {
         forced = false;
     }
 
-    public void addTeamChest(LocationHolder location) {
+    public void addTeamChest(Location location) {
         if (!chests.contains(location)) {
             chests.add(location);
         }
     }
 
-    public void removeTeamChest(LocationHolder location) {
+    public void removeTeamChest(Location location) {
         chests.remove(location);
     }
 
-    public boolean isTeamChestRegistered(LocationHolder location) {
+    public boolean isTeamChestRegistered(Location location) {
         return chests.contains(location);
     }
 
     @Override
     public void addTeamChest(Object location) {
         try {
-            addTeamChest(LocationMapper.wrapLocation(location));
+            addTeamChest(Locations.wrapLocation(location));
         } catch (Exception ex) {
             // probably a block
-            addTeamChest(BlockMapper.wrapBlock(location).getLocation());
+            addTeamChest(Objects.requireNonNull(BlockPlacements.resolve(location)).location());
         }
     }
 
     @Override
     public void removeTeamChest(Object location) {
         try {
-            removeTeamChest(LocationMapper.wrapLocation(location));
+            removeTeamChest(Locations.wrapLocation(location));
         } catch (Exception ex) {
             // probably a block
-            removeTeamChest(BlockMapper.wrapBlock(location).getLocation());
+            removeTeamChest(Objects.requireNonNull(BlockPlacements.resolve(location)).location());
         }
     }
 
     @Override
     public boolean isTeamChestRegistered(Object location) {
         try {
-            return isTeamChestRegistered(LocationMapper.wrapLocation(location));
+            return isTeamChestRegistered(Locations.wrapLocation(location));
         } catch (Exception ex) {
             // probably a block
-            return isTeamChestRegistered(BlockMapper.wrapBlock(location).getLocation());
+            return isTeamChestRegistered(Objects.requireNonNull(BlockPlacements.resolve(location)).location());
         }
     }
 
@@ -248,7 +248,7 @@ public class TeamImpl implements Team {
     }
 
     @Override
-    public LocationHolder getRandomSpawn() {
+    public Location getRandomSpawn() {
         return teamSpawns.get(randomSpawn.nextInt(teamSpawns.size()));
     }
 }

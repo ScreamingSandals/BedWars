@@ -26,15 +26,15 @@ import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.api.game.GameStore;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.utils.MiscUtils;
-import org.screamingsandals.lib.entity.EntityLiving;
-import org.screamingsandals.lib.entity.EntityMapper;
-import org.screamingsandals.lib.entity.type.EntityTypeHolder;
+import org.screamingsandals.lib.entity.LivingEntity;
+import org.screamingsandals.lib.entity.Entities;
+import org.screamingsandals.lib.entity.type.EntityType;
 import org.screamingsandals.lib.npc.NPC;
 import org.screamingsandals.lib.npc.NPCManager;
 import org.screamingsandals.lib.npc.skin.NPCSkin;
 import org.screamingsandals.lib.spectator.Component;
-import org.screamingsandals.lib.world.LocationHolder;
-import org.screamingsandals.lib.world.LocationMapper;
+import org.screamingsandals.lib.world.Location;
+import org.screamingsandals.lib.impl.world.Locations;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 
@@ -44,25 +44,25 @@ import java.util.Optional;
 
 @Data
 public class GameStoreImpl implements GameStore, SerializableGameComponent {
-    private static final EntityTypeHolder VILLAGER = EntityTypeHolder.of("villager");
+    private static final EntityType VILLAGER = EntityType.of("villager");
 
     @NotNull
-    private final LocationHolder storeLocation;
+    private final Location storeLocation;
     @Nullable
     private String shopFile = null;
     @Nullable
     private String shopCustomName = null;
     @Nullable
-    private EntityLiving entity;
+    private LivingEntity entity;
     @Getter
     private NPC npc;
     @NotNull
-    private EntityTypeHolder entityType = VILLAGER;
+    private EntityType entityType = VILLAGER;
     private boolean isBaby = false;
     @Nullable
     private String skinName = null;
 
-    public GameStoreImpl(@NotNull LocationHolder storeLocation) {
+    public GameStoreImpl(@NotNull Location storeLocation) {
         this.storeLocation = storeLocation;
     }
 
@@ -88,11 +88,11 @@ public class GameStoreImpl implements GameStore, SerializableGameComponent {
 
                     return npc.show();
                 } catch (Throwable ignored) {}
-                typ = EntityTypeHolder.of("VILLAGER");
+                typ = VILLAGER;
                 npc = null;
             }
 
-            entity = EntityMapper.<EntityLiving>spawn(typ, storeLocation).orElseThrow();
+            entity = (LivingEntity) Objects.requireNonNull(Entities.spawn(typ, storeLocation));
             entity.setRemoveWhenFarAway(false);
 
             if (shopCustomName != null) {
@@ -117,7 +117,7 @@ public class GameStoreImpl implements GameStore, SerializableGameComponent {
         return entity;
     }
 
-    public EntityLiving kill() {
+    public LivingEntity kill() {
         final var livingEntity = entity;
         if (entity != null) {
             final var chunk = entity.getLocation().getChunk();
@@ -137,14 +137,14 @@ public class GameStoreImpl implements GameStore, SerializableGameComponent {
         return livingEntity;
     }
 
-    public void setEntityType(EntityTypeHolder type) {
+    public void setEntityType(EntityType type) {
         if (type != null && type.isAlive()) {
             this.entityType = type;
         }
     }
 
     public void setEntityTypeNPC(String skinName) {
-        this.entityType = EntityTypeHolder.of("player");
+        this.entityType = EntityType.of("player");
         this.skinName = skinName;
     }
 
@@ -152,7 +152,7 @@ public class GameStoreImpl implements GameStore, SerializableGameComponent {
     public void saveTo(@NotNull ConfigurationNode node) throws SerializationException {
         node.node("loc").set(MiscUtils.writeLocationToString(storeLocation));
         node.node("shop").set(shopFile);
-        node.node("type").set(entityType.platformName());
+        node.node("type").set(entityType.location().asString());
         if (shopCustomName != null) {
             node.node("custom-name").set(shopCustomName);
         }
@@ -171,15 +171,15 @@ public class GameStoreImpl implements GameStore, SerializableGameComponent {
                 if (oldStr != null) {
                     oldStr = MiscUtils.toMiniMessage(oldStr);
                 }
-                var store = new GameStoreImpl(LocationMapper.wrapLocation(MiscUtils.readLocationFromString(game.getWorld(), Objects.requireNonNull(node.node("loc").getString()))));
+                var store = new GameStoreImpl(Locations.wrapLocation(MiscUtils.readLocationFromString(game.getWorld(), Objects.requireNonNull(node.node("loc").getString()))));
                 store.setShopFile(node.node("shop").getString());
-                store.setEntityType(EntityTypeHolder.of(node.node("type").getString("VILLAGER").toUpperCase()));
+                store.setEntityType(EntityType.of(node.node("type").getString("VILLAGER")));
                 store.setShopCustomName(oldStr != null ? oldStr : node.node("custom-name").getString());
                 store.setBaby(node.node("isBaby").getBoolean());
                 store.setSkinName(node.node("skin").getString());
                 return Optional.of(store);
             } else {
-                return Optional.of(new GameStoreImpl(LocationMapper.wrapLocation(MiscUtils.readLocationFromString(game.getWorld(), Objects.requireNonNull(node.getString())))));
+                return Optional.of(new GameStoreImpl(Locations.wrapLocation(MiscUtils.readLocationFromString(game.getWorld(), Objects.requireNonNull(node.getString())))));
             }
         }
     }

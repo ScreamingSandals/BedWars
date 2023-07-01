@@ -22,9 +22,11 @@ package org.screamingsandals.bedwars.listener;
 import org.screamingsandals.bedwars.api.config.GameConfigurationContainer;
 import org.screamingsandals.bedwars.events.GameStartedEventImpl;
 import org.screamingsandals.bedwars.utils.MiscUtils;
-import org.screamingsandals.lib.block.BlockTypeHolder;
+import org.screamingsandals.lib.block.Block;
 import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.utils.annotations.Service;
+
+import java.util.Objects;
 
 @Service
 public class LobbyInvisibilityListener {
@@ -35,11 +37,11 @@ public class LobbyInvisibilityListener {
         if (game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.INVISIBLE_LOBBY_ON_GAME_START, true)) {
             if (game.getLobbyPos1() != null && game.getLobbyPos2() != null) {
                 MiscUtils.getLocationsBetween(game.getLobbyPos1(), game.getLobbyPos2()).forEach(loc -> {
-                    if (!loc.getBlock().getType().isAir()) {
+                    if (!loc.getBlock().block().isAir()) {
                         final var block = loc.getBlock();
-                        final var blockState = block.getBlockState().orElseThrow();
+                        final var blockState = Objects.requireNonNull(block.blockSnapshot());
                         game.getRegion().putOriginalBlock(loc, blockState);
-                        block.setType(BlockTypeHolder.air());
+                        block.alterBlockWithoutPhysics(Block.air());
                     }
                 });
             }

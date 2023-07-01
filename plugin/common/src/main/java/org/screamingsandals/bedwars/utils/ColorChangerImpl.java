@@ -22,18 +22,23 @@ package org.screamingsandals.bedwars.utils;
 import org.screamingsandals.bedwars.api.TeamColor;
 import org.screamingsandals.bedwars.api.utils.ColorChanger;
 import org.screamingsandals.bedwars.game.TeamColorImpl;
-import org.screamingsandals.lib.item.Item;
-import org.screamingsandals.lib.item.builder.ItemFactory;
+import org.screamingsandals.lib.item.ItemStack;
+import org.screamingsandals.lib.item.builder.ItemStackFactory;
 import org.screamingsandals.lib.utils.annotations.Service;
+
+import java.util.Objects;
 
 @Service
 public class ColorChangerImpl implements ColorChanger {
     @Override
-    public Item applyColor(TeamColor apiColor, Object item) {
+    public ItemStack applyColor(TeamColor apiColor, Object item) {
         var color = (TeamColorImpl) apiColor;
-        var newItem = item instanceof Item ? ((Item) item).clone() : ItemFactory.build(item).orElse(ItemFactory.getAir());
-        if (newItem.getMaterial().is("LEATHER_BOOTS", "LEATHER_CHESTPLATE", "LEATHER_HELMET", "LEATHER_LEGGINGS")) {
-            newItem = newItem.builder().color(color.getLeatherColor()).build().orElseThrow();
+        var newItem = item instanceof ItemStack ? ((ItemStack) item).clone() : ItemStackFactory.build(item);
+        if (newItem == null) {
+            newItem = ItemStackFactory.getAir();
+        }
+        if (newItem.getType().is("leather_boots", "leather_chestplate", "leather_helmet", "leather_leggings")) {
+            newItem = Objects.requireNonNull(newItem.builder().color(color.getLeatherColor()).build());
         } else {
             newItem = newItem.withType(newItem.getMaterial().colorize(color.material1_13));
         }

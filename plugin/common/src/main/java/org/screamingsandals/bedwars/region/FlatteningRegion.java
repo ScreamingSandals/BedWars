@@ -20,11 +20,11 @@
 package org.screamingsandals.bedwars.region;
 
 import org.screamingsandals.bedwars.utils.BedUtils;
-import org.screamingsandals.lib.block.BlockHolder;
-import org.screamingsandals.lib.block.BlockTypeHolder;
-import org.screamingsandals.lib.world.LocationHolder;
-import org.screamingsandals.lib.world.chunk.ChunkHolder;
-import org.screamingsandals.lib.block.state.BlockStateHolder;
+import org.screamingsandals.lib.block.BlockPlacement;
+import org.screamingsandals.lib.block.Block;
+import org.screamingsandals.lib.world.Location;
+import org.screamingsandals.lib.world.chunk.Chunk;
+import org.screamingsandals.lib.block.snapshot.BlockSnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,37 +32,37 @@ import java.util.List;
 import java.util.Map;
 
 public class FlatteningRegion implements BWRegion {
-    private final List<LocationHolder> builtBlocks = new ArrayList<>();
-    private final Map<LocationHolder, BlockTypeHolder> brokenOriginalBlocks = new HashMap<>();
+    private final List<Location> builtBlocks = new ArrayList<>();
+    private final Map<Location, Block> brokenOriginalBlocks = new HashMap<>();
 
     @Override
-    public boolean isLocationModifiedDuringGame(LocationHolder loc) {
+    public boolean isLocationModifiedDuringGame(Location loc) {
         return builtBlocks.contains(loc);
     }
 
     @Override
-    public void putOriginalBlock(LocationHolder loc, BlockStateHolder block) {
-        brokenOriginalBlocks.put(loc, block.getType());
+    public void putOriginalBlock(Location loc, BlockSnapshot block) {
+        brokenOriginalBlocks.put(loc, block.block());
     }
 
     @Override
-    public void addBuiltDuringGame(LocationHolder loc) {
+    public void addBuiltDuringGame(Location loc) {
         builtBlocks.add(loc);
     }
 
     @Override
-    public void removeBlockBuiltDuringGame(LocationHolder loc) {
+    public void removeBlockBuiltDuringGame(Location loc) {
         builtBlocks.remove(loc);
     }
 
     @Override
-    public boolean isLiquid(BlockTypeHolder material) {
+    public boolean isLiquid(Block material) {
         return material.isSameType("water", "lava");
     }
 
     @Override
-    public boolean isBedBlock(BlockStateHolder block) {
-        return BedUtils.isBedBlock(block.getType());
+    public boolean isBedBlock(BlockSnapshot block) {
+        return BedUtils.isBedBlock(block.block());
     }
 
     @Override
@@ -72,7 +72,7 @@ public class FlatteningRegion implements BWRegion {
             if (!chunk.isLoaded()) {
                 chunk.load();
             }
-            block.getBlock().setType(BlockTypeHolder.air());
+            block.getBlock().block(Block.air());
         }
         builtBlocks.clear();
         for (var block : brokenOriginalBlocks.entrySet()) {
@@ -80,35 +80,34 @@ public class FlatteningRegion implements BWRegion {
             if (!chunk.isLoaded()) {
                 chunk.load();
             }
-            block.getKey().getBlock().setType(block.getValue());
+            block.getKey().getBlock().block(block.getValue());
         }
         brokenOriginalBlocks.clear();
     }
 
     @Override
-    public boolean isBedHead(BlockStateHolder block) {
-        return isBedBlock(block) && block.getType().get("part").map("head"::equals).orElse(true);
+    public boolean isBedHead(BlockSnapshot block) {
+        return isBedBlock(block) && "head".equals(block.block().get("part"));
     }
 
     @Override
-    public boolean isDoorBlock(BlockStateHolder block) {
-        var type = block.getType();
-        return type != null && type.is("#doors");
+    public boolean isDoorBlock(BlockSnapshot block) {
+        return block.block().is("#doors");
     }
 
     @Override
-    public boolean isDoorBottomBlock(BlockStateHolder block) {
-        var type = block.getType();
-        return type != null && type.is("#doors") && type.get("half").map("lower"::equals).orElse(false);
+    public boolean isDoorBottomBlock(BlockSnapshot block) {
+        var type = block.block();
+        return type.is("#doors") && "lower".equals(type.get("half"));
     }
 
     @Override
-    public BlockHolder getBedNeighbor(BlockHolder head) {
+    public BlockPlacement getBedNeighbor(BlockPlacement head) {
         return BedUtils.getBedNeighbor(head);
     }
 
     @Override
-    public boolean isChunkUsed(ChunkHolder chunk) {
+    public boolean isChunkUsed(Chunk chunk) {
         if (chunk == null) {
             return false;
         }

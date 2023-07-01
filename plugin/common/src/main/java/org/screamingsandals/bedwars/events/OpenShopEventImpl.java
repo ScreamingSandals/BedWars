@@ -26,14 +26,14 @@ import org.screamingsandals.bedwars.api.events.OpenShopEvent;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.GameStoreImpl;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
-import org.screamingsandals.lib.entity.EntityBasic;
-import org.screamingsandals.lib.event.SEvent;
+import org.screamingsandals.lib.entity.Entity;
+import org.screamingsandals.lib.event.Event;
 
 @Data
-public class OpenShopEventImpl implements OpenShopEvent, SEvent {
+public class OpenShopEventImpl implements OpenShopEvent, Event {
     private final GameImpl game;
     @Nullable
-    private final EntityBasic entity;
+    private final Entity entity;
     private final BedWarsPlayer player;
     private final GameStoreImpl gameStore;
     @NotNull

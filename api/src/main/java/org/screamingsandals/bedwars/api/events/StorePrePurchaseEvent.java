@@ -25,7 +25,7 @@ import org.screamingsandals.bedwars.api.PurchaseType;
 import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.api.game.ItemSpawnerType;
 import org.screamingsandals.bedwars.api.player.BWPlayer;
-import org.screamingsandals.lib.utils.Wrapper;
+import org.screamingsandals.lib.api.Wrapper;
 
 import java.util.function.Consumer;
 

@@ -24,10 +24,10 @@ import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.api.events.GameEndingEvent;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.TeamImpl;
-import org.screamingsandals.lib.event.SEvent;
+import org.screamingsandals.lib.event.Event;
 
 @Data
-public class GameEndingEventImpl implements GameEndingEvent, SEvent {
+public class GameEndingEventImpl implements GameEndingEvent, Event {
     private final GameImpl game;
     @Nullable
     private final TeamImpl winningTeam;

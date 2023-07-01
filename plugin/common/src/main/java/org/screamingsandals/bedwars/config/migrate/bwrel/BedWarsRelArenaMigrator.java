@@ -26,9 +26,9 @@ import org.screamingsandals.bedwars.config.migrate.FileMigrator;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.lib.Server;
 import org.screamingsandals.lib.utils.annotations.Service;
-import org.screamingsandals.lib.world.LocationHolder;
-import org.screamingsandals.lib.world.WorldMapper;
-import org.screamingsandals.lib.world.chunk.ChunkHolder;
+import org.screamingsandals.lib.world.Location;
+import org.screamingsandals.lib.world.Worlds;
+import org.screamingsandals.lib.world.chunk.Chunk;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
@@ -37,6 +37,7 @@ import java.io.File;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.UUID;
 
 @Slf4j
@@ -52,17 +53,16 @@ public class BedWarsRelArenaMigrator implements FileMigrator {
             throw new UnsupportedOperationException("This migrator needs to be run synchronously!");
         }
         final var arenaUUID = UUID.randomUUID();
-        final var loader = YamlConfigurationLoader.builder().file(Paths.get(BedWarsPlugin.getInstance().getDataFolder().toAbsolutePath().toString(), "arenas", arenaUUID + ".yml").toFile()).build();
+        final var loader = YamlConfigurationLoader.builder().file(Paths.get(BedWarsPlugin.getInstance().getPluginDescription().dataFolder().toAbsolutePath().toString(), "arenas", arenaUUID + ".yml").toFile()).build();
         final var migrator = ConfigurationNodeMigrator.yaml(Paths.get(file.toPath().toAbsolutePath().toString(), "game.yml").toFile(), loader.createNode());
-        final var worldHolder = WorldMapper.getWorld(migrator.getOldNode().node("world").getString());
-        if (worldHolder.isPresent()) {
-            final var world = worldHolder.orElseThrow();
+        final var world = Worlds.getWorld(migrator.getOldNode().node("world").getString());
+        if (world != null) {
             final var pos1 = parseLocation(migrator.getOldNode().node("loc1"));
             final var pos2 = parseLocation(migrator.getOldNode().node("loc2"));
-            final var chunks = new ArrayList<ChunkHolder>();
+            final var chunks = new ArrayList<Chunk>();
             for (int x = Math.min(pos1.getChunk().getX(), pos2.getChunk().getX()); x <= Math.max(pos1.getChunk().getX(), pos2.getChunk().getX()); x += 16) {
                 for (int z = Math.min(pos1.getChunk().getZ(), pos2.getChunk().getZ()); z <= Math.max(pos1.getChunk().getZ(), pos2.getChunk().getZ()); z += 16) {
-                    chunks.add(world.getChunkAt(x, z).orElseThrow());
+                    chunks.add(Objects.requireNonNull(world.getChunkAt(x, z)));
                 }
             }
             chunks.stream()
@@ -151,14 +151,14 @@ public class BedWarsRelArenaMigrator implements FileMigrator {
                 .save(loader);
     }
 
-    private LocationHolder parseLocation(ConfigurationNode node) {
-        return new LocationHolder(
+    private Location parseLocation(ConfigurationNode node) {
+        return new Location(
                 node.node("x").getDouble(),
                 node.node("y").getDouble(),
                 node.node("z").getDouble(),
                 node.node("yaw").getFloat(),
                 node.node("pitch").getFloat(),
-                WorldMapper.getWorld(node.node("world").getString()).orElse(null)
+                Objects.requireNonNull(Worlds.getWorld(node.node("world").getString()))
         );
     }
 }

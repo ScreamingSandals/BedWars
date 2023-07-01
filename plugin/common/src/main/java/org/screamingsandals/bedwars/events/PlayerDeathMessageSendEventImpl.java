@@ -24,11 +24,11 @@ import lombok.NonNull;
 import org.screamingsandals.bedwars.api.events.PlayerDeathMessageSendEvent;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
-import org.screamingsandals.lib.event.SCancellableEvent;
+import org.screamingsandals.lib.event.CancellableEvent;
 import org.screamingsandals.lib.lang.Message;
 
 @Data
-public class PlayerDeathMessageSendEventImpl implements PlayerDeathMessageSendEvent, SCancellableEvent {
+public class PlayerDeathMessageSendEventImpl implements PlayerDeathMessageSendEvent, CancellableEvent {
     private final GameImpl game;
     private final BedWarsPlayer victim;
     @NonNull

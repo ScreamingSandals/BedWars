@@ -20,39 +20,41 @@
 package org.screamingsandals.bedwars.region;
 
 import org.screamingsandals.bedwars.api.Region;
-import org.screamingsandals.lib.block.BlockTypeHolder;
-import org.screamingsandals.lib.block.BlockHolder;
-import org.screamingsandals.lib.block.BlockMapper;
-import org.screamingsandals.lib.world.LocationHolder;
-import org.screamingsandals.lib.world.LocationMapper;
-import org.screamingsandals.lib.world.chunk.ChunkHolder;
-import org.screamingsandals.lib.world.chunk.ChunkMapper;
-import org.screamingsandals.lib.block.state.BlockStateHolder;
-import org.screamingsandals.lib.block.state.BlockStateMapper;
+import org.screamingsandals.lib.block.Block;
+import org.screamingsandals.lib.block.BlockPlacement;
+import org.screamingsandals.lib.block.BlockPlacements;
+import org.screamingsandals.lib.impl.block.snapshot.BlockSnapshots;
+import org.screamingsandals.lib.impl.world.chunk.Chunks;
+import org.screamingsandals.lib.world.Location;
+import org.screamingsandals.lib.impl.world.Locations;
+import org.screamingsandals.lib.world.chunk.Chunk;
+import org.screamingsandals.lib.block.snapshot.BlockSnapshot;
+
+import java.util.Objects;
 
 public interface BWRegion extends Region {
 
-    boolean isLocationModifiedDuringGame(LocationHolder loc);
+    boolean isLocationModifiedDuringGame(Location loc);
 
-    void putOriginalBlock(LocationHolder loc, BlockStateHolder block);
+    void putOriginalBlock(Location loc, BlockSnapshot block);
 
-    void addBuiltDuringGame(LocationHolder loc);
+    void addBuiltDuringGame(Location loc);
 
-    void removeBlockBuiltDuringGame(LocationHolder loc);
+    void removeBlockBuiltDuringGame(Location loc);
 
-    boolean isLiquid(BlockTypeHolder material);
+    boolean isLiquid(Block material);
 
-    boolean isBedBlock(BlockStateHolder block);
+    boolean isBedBlock(BlockSnapshot block);
 
-    boolean isBedHead(BlockStateHolder block);
+    boolean isBedHead(BlockSnapshot block);
 
-    boolean isDoorBlock(BlockStateHolder block);
+    boolean isDoorBlock(BlockSnapshot block);
 
-    boolean isDoorBottomBlock(BlockStateHolder block);
+    boolean isDoorBottomBlock(BlockSnapshot block);
 
-    BlockHolder getBedNeighbor(BlockHolder head);
+    BlockPlacement getBedNeighbor(BlockPlacement head);
 
-    boolean isChunkUsed(ChunkHolder chunk);
+    boolean isChunkUsed(Chunk chunk);
 
     void regen();
 
@@ -60,66 +62,66 @@ public interface BWRegion extends Region {
     @Override
     @Deprecated
     default boolean isLocationModifiedDuringGame(Object loc) {
-        return isLocationModifiedDuringGame(LocationMapper.wrapLocation(loc));
+        return isLocationModifiedDuringGame(Locations.wrapLocation(loc));
     }
 
     @Override
     @Deprecated
     default void markForRollback(Object loc, Object blockState) {
-        putOriginalBlock(LocationMapper.wrapLocation(loc), BlockStateMapper.wrapBlockState(blockState).orElseThrow());
+        putOriginalBlock(Locations.wrapLocation(loc), Objects.requireNonNull(BlockSnapshots.wrapBlockSnapshot(blockState)));
     }
 
     @Override
     @Deprecated
     default void addBuiltDuringGame(Object loc) {
-        addBuiltDuringGame(LocationMapper.wrapLocation(loc));
+        addBuiltDuringGame(Locations.wrapLocation(loc));
     }
 
     @Override
     @Deprecated
     default void removeBuiltDuringGame(Object loc) {
-        removeBlockBuiltDuringGame(LocationMapper.wrapLocation(loc));
+        removeBlockBuiltDuringGame(Locations.wrapLocation(loc));
     }
 
     @Override
     @Deprecated
     default boolean isLiquid(Object material) {
-        return isLiquid(BlockTypeHolder.of(material));
+        return isLiquid(Block.of(material));
     }
 
     @Override
     @Deprecated
     default boolean isBedBlock(Object blockState) {
-        return isBedBlock(BlockStateMapper.wrapBlockState(blockState).orElseThrow());
+        return isBedBlock(Objects.requireNonNull(BlockSnapshots.wrapBlockSnapshot(blockState)));
     }
 
     @Override
     @Deprecated
     default boolean isBedHead(Object blockState) {
-        return isBedHead(BlockStateMapper.wrapBlockState(blockState).orElseThrow());
+        return isBedHead(Objects.requireNonNull(BlockSnapshots.wrapBlockSnapshot(blockState)));
     }
 
     @Override
     @Deprecated
-    default BlockHolder getBedNeighbor(Object blockHead) {
-        return getBedNeighbor(BlockMapper.wrapBlock(blockHead));
+    default BlockPlacement getBedNeighbor(Object blockHead) {
+        return getBedNeighbor(BlockPlacements.resolve(blockHead));
     }
 
     @Override
     @Deprecated
     default boolean isChunkUsed(Object chunk) {
-        return isChunkUsed(ChunkMapper.wrapChunk(chunk).orElseThrow());
+        return isChunkUsed(Objects.requireNonNull(Chunks.wrapChunk(chunk)));
     }
 
     @Override
     @Deprecated
     default boolean isDoorBlock(Object blockState) {
-        return isDoorBlock(BlockStateMapper.wrapBlockState(blockState).orElseThrow());
+        return isDoorBlock(Objects.requireNonNull(BlockSnapshots.wrapBlockSnapshot(blockState)));
     }
 
     @Override
     @Deprecated
     default boolean isDoorBottomBlock(Object blockState) {
-        return isDoorBottomBlock(BlockStateMapper.wrapBlockState(blockState).orElseThrow());
+        return isDoorBottomBlock(Objects.requireNonNull(BlockSnapshots.wrapBlockSnapshot(blockState)));
     }
 }

@@ -25,10 +25,10 @@ import org.screamingsandals.bedwars.events.PlayerBuildBlockEventImpl;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.bedwars.special.AutoIgniteableTNTImpl;
-import org.screamingsandals.lib.block.BlockTypeHolder;
+import org.screamingsandals.lib.block.Block;
 import org.screamingsandals.lib.event.OnEvent;
-import org.screamingsandals.lib.event.entity.SEntityDamageByEntityEvent;
-import org.screamingsandals.lib.player.PlayerWrapper;
+import org.screamingsandals.lib.event.entity.EntityDamageByEntityEvent;
+import org.screamingsandals.lib.player.Player;
 import org.screamingsandals.lib.utils.annotations.Service;
 
 @Service
@@ -50,8 +50,8 @@ public class AutoIgniteableTNTListener {
         var player = event.getPlayer();
         var unhidden = ItemUtils.getIfStartsWith(stack, AUTO_IGNITEABLE_TNT_PREFIX);
         if (unhidden != null) {
-            block.setType(BlockTypeHolder.air());
-            var location = block.getLocation().add(0.5, 0.5, 0.5);
+            block.block(Block.air());
+            var location = block.location().add(0.5, 0.5, 0.5);
             final var propertiesSplit = unhidden.split(":");
             int explosionTime = Integer.parseInt(propertiesSplit[2]);
             boolean damagePlacer = Boolean.parseBoolean(propertiesSplit[3]);
@@ -62,12 +62,12 @@ public class AutoIgniteableTNTListener {
     }
 
     @OnEvent
-    public void onDamage(SEntityDamageByEntityEvent event) {
-        if (!(event.entity() instanceof PlayerWrapper)) {
+    public void onDamage(EntityDamageByEntityEvent event) {
+        if (!(event.entity() instanceof Player)) {
             return;
         }
 
-        var player = (PlayerWrapper) event.entity();
+        var player = (Player) event.entity();
 
         if (!PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
             return;

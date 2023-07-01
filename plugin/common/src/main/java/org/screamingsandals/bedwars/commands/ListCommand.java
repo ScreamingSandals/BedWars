@@ -26,7 +26,7 @@ import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.GameManagerImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.lib.lang.Message;
-import org.screamingsandals.lib.sender.CommandSenderWrapper;
+import org.screamingsandals.lib.sender.CommandSender;
 import org.screamingsandals.lib.spectator.Color;
 import org.screamingsandals.lib.spectator.Component;
 import org.screamingsandals.lib.utils.annotations.Service;
@@ -38,7 +38,7 @@ public class ListCommand extends BaseCommand {
     }
 
     @Override
-    protected void construct(Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder, CommandManager<CommandSenderWrapper> manager) {
+    protected void construct(Command.Builder<CommandSender> commandSenderWrapperBuilder, CommandManager<CommandSender> manager) {
         manager.command(
                 commandSenderWrapperBuilder
                         .handler(commandContext -> {
@@ -51,7 +51,7 @@ public class ListCommand extends BaseCommand {
         );
     }
 
-    public static void sendGameState(GameImpl game, CommandSenderWrapper sender) {
+    public static void sendGameState(GameImpl game, CommandSender sender) {
         sender.sendMessage(Component
                 .text()
                 .content(game.getName())

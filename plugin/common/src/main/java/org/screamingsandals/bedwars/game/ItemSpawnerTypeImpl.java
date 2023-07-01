@@ -23,11 +23,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.screamingsandals.bedwars.api.game.ItemSpawnerType;
 import org.screamingsandals.bedwars.utils.MiscUtils;
-import org.screamingsandals.lib.item.ItemTypeHolder;
+import org.screamingsandals.lib.item.ItemType;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.lang.Translation;
-import org.screamingsandals.lib.item.Item;
-import org.screamingsandals.lib.item.builder.ItemFactory;
+import org.screamingsandals.lib.item.ItemStack;
+import org.screamingsandals.lib.item.builder.ItemStackFactory;
 import org.screamingsandals.lib.spectator.Color;
 import org.screamingsandals.lib.spectator.Component;
 import org.screamingsandals.lib.tasker.TaskerTime;
@@ -36,6 +36,7 @@ import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 @AllArgsConstructor
 @Getter
@@ -44,10 +45,9 @@ public class ItemSpawnerTypeImpl implements ItemSpawnerType {
     private final String name;
     private final String translatableKey;
     private final double spread;
-    private final ItemTypeHolder itemType;
+    private final ItemType itemType;
     private final Color color;
     private final Pair<Long, TaskerTime> interval;
-    private final int damage;
 
     @Override
     public long getIntervalTicks() {
@@ -69,12 +69,12 @@ public class ItemSpawnerTypeImpl implements ItemSpawnerType {
         return getTranslatableKey().asComponent().withColor(color).withBold(true);
     }
 
-    public Item getItem() {
+    public ItemStack getItem() {
         return getItem(1);
     }
 
-    public Item getItem(int amount) {
-        return ItemFactory.build(itemType, builder -> builder.name(getItemName().asComponent()).amount(amount)).orElseThrow();
+    public ItemStack getItem(int amount) {
+        return Objects.requireNonNull(ItemStackFactory.build(itemType, builder -> builder.name(getItemName().asComponent()).amount(amount)));
     }
 
     public static ItemSpawnerTypeImpl deserialize(String spawnerKey, ConfigurationNode node) {
@@ -121,8 +121,8 @@ public class ItemSpawnerTypeImpl implements ItemSpawnerType {
             materialName += ":" + damage;
         }
 
-        var result = ItemTypeHolder.ofOptional(materialName).orElse(ItemTypeHolder.air());
-        if (result.isAir()) {
+        var result = ItemType.ofNullable(materialName);
+        if (result == null || result.isAir()) {
             return null; // no air
         }
 
@@ -133,8 +133,7 @@ public class ItemSpawnerTypeImpl implements ItemSpawnerType {
                 spread,
                 result,
                 MiscUtils.getColor(colorName),
-                interval,
-                result.forcedDurability()
+                interval
         );
     }
 }

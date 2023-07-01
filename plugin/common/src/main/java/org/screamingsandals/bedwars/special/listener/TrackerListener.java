@@ -26,9 +26,11 @@ import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.lib.event.OnEvent;
-import org.screamingsandals.lib.event.player.SPlayerInteractEvent;
+import org.screamingsandals.lib.event.player.PlayerInteractEvent;
 import org.screamingsandals.lib.lang.Message;
+import org.screamingsandals.lib.tasker.DefaultThreads;
 import org.screamingsandals.lib.tasker.Tasker;
+import org.screamingsandals.lib.tasker.ThreadProperty;
 import org.screamingsandals.lib.utils.annotations.Service;
 
 @Service
@@ -43,7 +45,7 @@ public class TrackerListener {
     }
 
     @OnEvent
-    public void onTrackerUse(SPlayerInteractEvent event) {
+    public void onTrackerUse(PlayerInteractEvent event) {
         var player = event.player();
         if (!PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
             return;
@@ -51,7 +53,7 @@ public class TrackerListener {
 
         var gamePlayer = PlayerManagerImpl.getInstance().getPlayer(player).orElseThrow();
         var game = gamePlayer.getGame();
-        if (event.action() == SPlayerInteractEvent.Action.RIGHT_CLICK_AIR || event.action() == SPlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
+        if (event.action() == PlayerInteractEvent.Action.RIGHT_CLICK_AIR || event.action() == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
             if (game != null && game.getStatus() == GameStatus.RUNNING && !gamePlayer.isSpectator()) {
                 if (event.item() != null) {
                     var stack = event.item();
@@ -59,7 +61,7 @@ public class TrackerListener {
                     if (unhidden != null) {
                         event.cancelled(true);
 
-                        Tasker.build(() -> {
+                        Tasker.run(DefaultThreads.GLOBAL_THREAD, () -> {
                             var target = MiscUtils.findTarget(game, player, Double.MAX_VALUE);
                             if (target != null) {
                                 player.setCompassTarget(target.getLocation());
@@ -70,9 +72,7 @@ public class TrackerListener {
                                 MiscUtils.sendActionBarMessage(player, Message.of(LangKeys.SPECIALS_TRACKER_NO_TARGET_FOUND));
                                 player.setCompassTarget(game.getTeamOfPlayer(gamePlayer).getRandomSpawn());
                             }
-                        })
-                        .afterOneTick()
-                        .start();
+                        });
                     }
                 }
             }

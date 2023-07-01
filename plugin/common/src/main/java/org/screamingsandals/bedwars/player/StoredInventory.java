@@ -21,26 +21,26 @@ package org.screamingsandals.bedwars.player;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.screamingsandals.lib.item.Item;
-import org.screamingsandals.lib.item.meta.PotionEffectHolder;
-import org.screamingsandals.lib.player.gamemode.GameModeHolder;
+import org.screamingsandals.lib.item.ItemStack;
+import org.screamingsandals.lib.item.meta.PotionEffect;
+import org.screamingsandals.lib.player.gamemode.GameMode;
 import org.screamingsandals.lib.spectator.Component;
-import org.screamingsandals.lib.world.LocationHolder;
+import org.screamingsandals.lib.world.Location;
 
 import java.util.Collection;
 
 @Getter
 @Setter
 public class StoredInventory {
-    private Item[] armor;
+    private ItemStack[] armor;
     private Component displayName;
-    private Collection<PotionEffectHolder> effects;
+    private Collection<PotionEffect> effects;
     private int foodLevel = 0;
-    private Item[] inventory;
-    private LocationHolder leftLocation;
+    private ItemStack[] inventory;
+    private Location leftLocation;
     private int level = 0;
     private Component listName;
-    private GameModeHolder mode;
+    private GameMode mode;
     private float xp;
     private Object platformScoreboard;
 }

@@ -28,10 +28,10 @@ import org.screamingsandals.bedwars.special.ArrowBlockerImpl;
 import org.screamingsandals.bedwars.utils.DelayFactoryImpl;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.lib.event.OnEvent;
-import org.screamingsandals.lib.event.entity.SEntityDamageEvent;
-import org.screamingsandals.lib.event.player.SPlayerInteractEvent;
+import org.screamingsandals.lib.event.entity.EntityDamageEvent;
+import org.screamingsandals.lib.event.player.PlayerInteractEvent;
 import org.screamingsandals.lib.lang.Message;
-import org.screamingsandals.lib.player.PlayerWrapper;
+import org.screamingsandals.lib.player.Player;
 import org.screamingsandals.lib.utils.annotations.Service;
 
 @Service
@@ -46,7 +46,7 @@ public class ArrowBlockerListener {
     }
 
     @OnEvent
-    public void onPlayerUseItem(SPlayerInteractEvent event) {
+    public void onPlayerUseItem(PlayerInteractEvent event) {
         var player = event.player();
         if (!PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
             return;
@@ -55,7 +55,7 @@ public class ArrowBlockerListener {
         var gPlayer = PlayerManagerImpl.getInstance().getPlayer(player).orElseThrow();
         var game = gPlayer.getGame();
 
-        if (event.action() == SPlayerInteractEvent.Action.RIGHT_CLICK_AIR || event.action() == SPlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
+        if (event.action() == PlayerInteractEvent.Action.RIGHT_CLICK_AIR || event.action() == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
             if (game != null && game.getStatus() == GameStatus.RUNNING && !gPlayer.isSpectator() && event.item() != null) {
                 var stack = event.item();
                 var unhidden = ItemUtils.getIfStartsWith(stack, ARROW_BLOCKER_PREFIX);
@@ -92,13 +92,13 @@ public class ArrowBlockerListener {
     }
 
     @OnEvent(priority = org.screamingsandals.lib.event.EventPriority.HIGH)
-    public void onDamage(SEntityDamageEvent event) {
+    public void onDamage(EntityDamageEvent event) {
         var entity = event.entity();
-        if (!(entity instanceof PlayerWrapper)) {
+        if (!(entity instanceof Player)) {
             return;
         }
 
-        var player = (PlayerWrapper) event.entity();
+        var player = (Player) event.entity();
 
         if (!PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
             return;

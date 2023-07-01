@@ -22,9 +22,9 @@ package org.screamingsandals.bedwars.events;
 import lombok.Data;
 import org.screamingsandals.bedwars.api.events.GameEndEvent;
 import org.screamingsandals.bedwars.game.GameImpl;
-import org.screamingsandals.lib.event.SEvent;
+import org.screamingsandals.lib.event.Event;
 
 @Data
-public class GameEndEventImpl implements GameEndEvent, SEvent {
+public class GameEndEventImpl implements GameEndEvent, Event {
     private final GameImpl game;
 }

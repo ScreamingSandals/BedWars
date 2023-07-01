@@ -25,9 +25,10 @@ import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.lib.lang.Message;
-import org.screamingsandals.lib.sender.CommandSenderWrapper;
+import org.screamingsandals.lib.sender.CommandSender;
 import org.screamingsandals.lib.utils.annotations.Service;
 
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
@@ -37,7 +38,7 @@ public class LeaderboardCommand extends BaseCommand {
     }
 
     @Override
-    protected void construct(Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder, CommandManager<CommandSenderWrapper> manager) {
+    protected void construct(Command.Builder<CommandSender> commandSenderWrapperBuilder, CommandManager<CommandSender> manager) {
         manager.command(
                 commandSenderWrapperBuilder
                 .handler(commandContext -> {
@@ -60,10 +61,9 @@ public class LeaderboardCommand extends BaseCommand {
                             statistics.forEach(leaderboardEntry ->
                                 Message.of(LangKeys.LEADERBOARD_LINE)
                                         .placeholder("order", l.getAndIncrement())
-                                        .placeholder("player", leaderboardEntry
-                                                .getPlayer()
-                                                .getLastName()
-                                                .orElse(leaderboardEntry.getLastKnownName() != null ? leaderboardEntry.getLastKnownName() : leaderboardEntry
+                                        .placeholder("player", Objects.requireNonNullElse(
+                                                leaderboardEntry.getPlayer().getLastName(),
+                                                leaderboardEntry.getLastKnownName() != null ? leaderboardEntry.getLastKnownName() : leaderboardEntry
                                                         .getPlayer()
                                                         .getUuid()
                                                         .toString()

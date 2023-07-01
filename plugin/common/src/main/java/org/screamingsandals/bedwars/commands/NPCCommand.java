@@ -35,8 +35,8 @@ import org.screamingsandals.bedwars.utils.SerializableLocation;
 import org.screamingsandals.bedwars.variants.VariantManagerImpl;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.npc.skin.NPCSkin;
-import org.screamingsandals.lib.player.PlayerWrapper;
-import org.screamingsandals.lib.sender.CommandSenderWrapper;
+import org.screamingsandals.lib.player.Player;
+import org.screamingsandals.lib.sender.CommandSender;
 import org.screamingsandals.lib.utils.annotations.Service;
 
 import java.util.*;
@@ -55,7 +55,7 @@ public class NPCCommand extends BaseCommand {
     }
 
     @Override
-    protected void construct(Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder, CommandManager<CommandSenderWrapper> manager) {
+    protected void construct(Command.Builder<CommandSender> commandSenderWrapperBuilder, CommandManager<CommandSender> manager) {
         NPCS_IN_HAND.clear(); // reset npcs in hand after reload
         SELECTING_NPC.clear();
 
@@ -63,7 +63,7 @@ public class NPCCommand extends BaseCommand {
                 commandSenderWrapperBuilder
                         .literal("add")
                         .handler(commandContext -> {
-                            var player = commandContext.getSender().as(PlayerWrapper.class);
+                            var player = commandContext.getSender().as(Player.class);
                             var loc = player.getLocation();
 
                             var npc = new BedWarsNPC();
@@ -86,7 +86,7 @@ public class NPCCommand extends BaseCommand {
                 commandSenderWrapperBuilder
                         .literal("select")
                         .handler(commandContext -> {
-                            var player = commandContext.getSender().as(PlayerWrapper.class);
+                            var player = commandContext.getSender().as(Player.class);
                             player.sendMessage(Message.of(LangKeys.ADMIN_NPC_NOW_CLICK).defaultPrefix());
                             NPCS_IN_HAND.remove(player.getUuid());
                             SELECTING_NPC.add(player.getUuid());
@@ -97,7 +97,7 @@ public class NPCCommand extends BaseCommand {
                 commandSenderWrapperBuilder
                         .literal("quit")
                         .handler(commandContext -> {
-                            var player = commandContext.getSender().as(PlayerWrapper.class);
+                            var player = commandContext.getSender().as(Player.class);
                             if (!NPCS_IN_HAND.containsKey(player.getUuid())) {
                                 player.sendMessage(Message.of(LangKeys.ADMIN_NPC_NOT_EDITING).defaultPrefix());
                                 return;
@@ -112,7 +112,7 @@ public class NPCCommand extends BaseCommand {
                         .literal("shouldLookAtPlayer")
                         .argument(BooleanArgument.of("shouldLookAtPlayer"))
                         .handler(commandContext -> {
-                            var player = commandContext.getSender().as(PlayerWrapper.class);
+                            var player = commandContext.getSender().as(Player.class);
                             boolean shouldLookAtPlayer = commandContext.get("shouldLookAtPlayer");
                             if (!NPCS_IN_HAND.containsKey(player.getUuid())) {
                                 player.sendMessage(Message.of(LangKeys.ADMIN_NPC_NOT_EDITING).defaultPrefix());
@@ -136,7 +136,7 @@ public class NPCCommand extends BaseCommand {
                 commandSenderWrapperBuilder
                         .literal("remove")
                         .handler(commandContext -> {
-                            var player = commandContext.getSender().as(PlayerWrapper.class);
+                            var player = commandContext.getSender().as(Player.class);
                             if (!NPCS_IN_HAND.containsKey(player.getUuid())) {
                                 player.sendMessage(Message.of(LangKeys.ADMIN_NPC_NOT_EDITING).defaultPrefix());
                                 return;
@@ -156,7 +156,7 @@ public class NPCCommand extends BaseCommand {
                         .literal("action")
                         .argument(EnumArgument.of(BedWarsNPC.Action.class, "action"))
                         .argument(StringArgument
-                                .<CommandSenderWrapper>newBuilder("value")
+                                .<CommandSender>newBuilder("value")
                                 .greedy()
                                 .withSuggestionsProvider((c, s) -> {
                                     switch (c.<BedWarsNPC.Action>get("action")) {
@@ -175,7 +175,7 @@ public class NPCCommand extends BaseCommand {
                                 .asOptional()
                         )
                         .handler(commandContext -> {
-                            var player = commandContext.getSender().as(PlayerWrapper.class);
+                            var player = commandContext.getSender().as(Player.class);
                             if (!NPCS_IN_HAND.containsKey(player.getUuid())) {
                                 player.sendMessage(Message.of(LangKeys.ADMIN_NPC_NOT_EDITING).defaultPrefix());
                                 return;
@@ -203,7 +203,7 @@ public class NPCCommand extends BaseCommand {
                         .literal("skin")
                         .argument(StringArgument.of("skin"))
                         .handler(commandContext -> {
-                            var player = commandContext.getSender().as(PlayerWrapper.class);
+                            var player = commandContext.getSender().as(Player.class);
                             String skin = commandContext.get("skin");
                             if (!NPCS_IN_HAND.containsKey(player.getUuid())) {
                                 player.sendMessage(Message.of(LangKeys.ADMIN_NPC_NOT_EDITING).defaultPrefix());
@@ -230,7 +230,7 @@ public class NPCCommand extends BaseCommand {
                         .literal("addline")
                         .argument(StringArgument.of("line", StringArgument.StringMode.GREEDY))
                         .handler(commandContext -> {
-                            var player = commandContext.getSender().as(PlayerWrapper.class);
+                            var player = commandContext.getSender().as(Player.class);
                             String line = commandContext.get("line");
                             if (!NPCS_IN_HAND.containsKey(player.getUuid())) {
                                 player.sendMessage(Message.of(LangKeys.ADMIN_NPC_NOT_EDITING).defaultPrefix());
@@ -254,7 +254,7 @@ public class NPCCommand extends BaseCommand {
                         .argument(IntegerArgument.of("lineNumber"))
                         .argument(StringArgument.of("line", StringArgument.StringMode.GREEDY))
                         .handler(commandContext -> {
-                            var player = commandContext.getSender().as(PlayerWrapper.class);
+                            var player = commandContext.getSender().as(Player.class);
                             int number = commandContext.get("lineNumber");
                             String line = commandContext.get("line");
                             if (!NPCS_IN_HAND.containsKey(player.getUuid())) {
@@ -288,7 +288,7 @@ public class NPCCommand extends BaseCommand {
                         .literal("remove")
                         .argument(IntegerArgument.of("lineNumber"))
                         .handler(commandContext -> {
-                            var player = commandContext.getSender().as(PlayerWrapper.class);
+                            var player = commandContext.getSender().as(Player.class);
                             int number = commandContext.get("lineNumber");
                             if (!NPCS_IN_HAND.containsKey(player.getUuid())) {
                                 player.sendMessage(Message.of(LangKeys.ADMIN_NPC_NOT_EDITING).defaultPrefix());
@@ -319,7 +319,7 @@ public class NPCCommand extends BaseCommand {
                         .literal("hologram")
                         .literal("clear")
                         .handler(commandContext -> {
-                            var player = commandContext.getSender().as(PlayerWrapper.class);
+                            var player = commandContext.getSender().as(Player.class);
                             if (!NPCS_IN_HAND.containsKey(player.getUuid())) {
                                 player.sendMessage(Message.of(LangKeys.ADMIN_NPC_NOT_EDITING).defaultPrefix());
                                 return;

@@ -26,22 +26,21 @@ import org.screamingsandals.bedwars.api.upgrades.UpgradeStorage;
 import org.screamingsandals.bedwars.api.utils.EventUtils;
 import org.screamingsandals.bedwars.events.*;
 import org.screamingsandals.bedwars.game.GameImpl;
-import org.screamingsandals.lib.event.AbstractEvent;
 import org.screamingsandals.lib.event.EventManager;
-import org.screamingsandals.lib.event.SEvent;
-import org.screamingsandals.lib.plugin.PluginContainer;
-import org.screamingsandals.lib.plugin.PluginDescription;
-import org.screamingsandals.lib.plugin.PluginManager;
+import org.screamingsandals.lib.event.Event;
+import org.screamingsandals.lib.plugin.Plugin;
+import org.screamingsandals.lib.plugin.Plugins;
 import org.screamingsandals.lib.plugin.ServiceManager;
 import org.screamingsandals.lib.plugin.event.PluginDisabledEvent;
 import org.screamingsandals.lib.utils.annotations.Service;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 @Service
 public class EventUtilsImpl implements EventUtils {
-    private static final Map<Class<?>, Class<? extends SEvent>> classMap = Map.ofEntries(
+    private static final Map<Class<?>, Class<? extends Event>> classMap = Map.ofEntries(
             Map.entry(ApplyPropertyToBoughtItemEvent.class, ApplyPropertyToBoughtItemEventImpl.class),
             Map.entry(ApplyPropertyToDisplayedItemEvent.class, ApplyPropertyToDisplayedItemEventImpl.class),
             Map.entry(ApplyPropertyToItemEvent.class, ApplyPropertyToItemEventImpl.class),
@@ -95,13 +94,11 @@ public class EventUtilsImpl implements EventUtils {
     @SuppressWarnings("unchecked")
     @Override
     public <T> void handle(Object pluginObject, Class<T> event, Consumer<T> consumer) {
-        PluginDescription plugin;
-        if (pluginObject instanceof PluginContainer) {
-            plugin = ((PluginContainer) pluginObject).getPluginDescription();
-        } else if (pluginObject instanceof PluginDescription) {
-            plugin = (PluginDescription) pluginObject;
+        Plugin plugin;
+        if (pluginObject instanceof Plugin) {
+            plugin = (Plugin) pluginObject;
         } else {
-            plugin = PluginManager.getPluginFromPlatformObject(pluginObject).orElseThrow();
+            plugin = Objects.requireNonNull(Plugins.getPluginFromPlatformObject(pluginObject));
         }
 
         var mapped = classMap.get(event);
@@ -110,11 +107,11 @@ public class EventUtilsImpl implements EventUtils {
         }
 
         var handler = EventManager.getDefaultEventManager()
-                .register((Class<AbstractEvent>) mapped, abstractEvent -> consumer.accept((T) abstractEvent));
+                .register((Class<Event>) mapped, abstractEvent -> consumer.accept((T) abstractEvent));
 
         EventManager.getDefaultEventManager()
                 .registerOneTime(PluginDisabledEvent.class, pluginDisabledEvent -> {
-                    if (pluginDisabledEvent.getPlugin().equals(plugin)) {
+                    if (pluginDisabledEvent.plugin().equals(plugin)) {
                         EventManager.getDefaultEventManager().unregister(handler);
                         return true;
                     }

@@ -24,10 +24,10 @@ import org.screamingsandals.bedwars.api.events.UpgradeRegisteredEvent;
 import org.screamingsandals.bedwars.api.upgrades.Upgrade;
 import org.screamingsandals.bedwars.api.upgrades.UpgradeStorage;
 import org.screamingsandals.bedwars.game.GameImpl;
-import org.screamingsandals.lib.event.SEvent;
+import org.screamingsandals.lib.event.Event;
 
 @Data
-public class UpgradeRegisteredEventImpl implements UpgradeRegisteredEvent, SEvent {
+public class UpgradeRegisteredEventImpl implements UpgradeRegisteredEvent, Event {
     private final GameImpl game;
     private final Upgrade upgrade;
     private final UpgradeStorage storage;

@@ -24,11 +24,11 @@ import org.screamingsandals.bedwars.api.PurchaseType;
 import org.screamingsandals.bedwars.api.events.PurchaseFailedEvent;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
-import org.screamingsandals.lib.event.SCancellableEvent;
+import org.screamingsandals.lib.event.CancellableEvent;
 import org.screamingsandals.simpleinventories.events.OnTradeEvent;
 
 @Data
-public class PurchaseFailedEventImpl implements PurchaseFailedEvent, SCancellableEvent {
+public class PurchaseFailedEventImpl implements PurchaseFailedEvent, CancellableEvent {
     private final GameImpl game;
     private final BedWarsPlayer player;
     private final PurchaseType type;

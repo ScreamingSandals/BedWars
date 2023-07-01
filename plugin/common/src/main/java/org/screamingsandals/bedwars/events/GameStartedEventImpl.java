@@ -22,9 +22,9 @@ package org.screamingsandals.bedwars.events;
 import lombok.Data;
 import org.screamingsandals.bedwars.api.events.GameStartedEvent;
 import org.screamingsandals.bedwars.game.GameImpl;
-import org.screamingsandals.lib.event.SEvent;
+import org.screamingsandals.lib.event.Event;
 
 @Data
-public class GameStartedEventImpl implements GameStartedEvent, SEvent {
+public class GameStartedEventImpl implements GameStartedEvent, Event {
     private final GameImpl game;
 }

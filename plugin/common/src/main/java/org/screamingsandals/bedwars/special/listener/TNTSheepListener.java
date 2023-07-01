@@ -27,13 +27,13 @@ import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.bedwars.special.TNTSheepImpl;
 import org.screamingsandals.bedwars.utils.ItemUtils;
 import org.screamingsandals.bedwars.utils.MiscUtils;
-import org.screamingsandals.lib.entity.EntityLiving;
+import org.screamingsandals.lib.entity.LivingEntity;
 import org.screamingsandals.lib.event.EventPriority;
 import org.screamingsandals.lib.event.OnEvent;
-import org.screamingsandals.lib.event.entity.SEntityDamageByEntityEvent;
-import org.screamingsandals.lib.event.player.SPlayerInteractEntityEvent;
-import org.screamingsandals.lib.event.player.SPlayerInteractEvent;
-import org.screamingsandals.lib.player.PlayerWrapper;
+import org.screamingsandals.lib.event.entity.EntityDamageByEntityEvent;
+import org.screamingsandals.lib.event.player.PlayerInteractEntityEvent;
+import org.screamingsandals.lib.event.player.PlayerInteractEvent;
+import org.screamingsandals.lib.player.Player;
 import org.screamingsandals.lib.utils.annotations.Service;
 
 import java.util.Objects;
@@ -51,7 +51,7 @@ public class TNTSheepListener {
     }
 
     @OnEvent
-    public void onTNTSheepUsed(SPlayerInteractEvent event) {
+    public void onTNTSheepUsed(PlayerInteractEvent event) {
         var player = event.player();
         if (!PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
             return;
@@ -60,7 +60,7 @@ public class TNTSheepListener {
         var gamePlayer = PlayerManagerImpl.getInstance().getPlayer(player).orElseThrow();
         var game = gamePlayer.getGame();
 
-        if (event.action() == SPlayerInteractEvent.Action.RIGHT_CLICK_AIR || event.action() == SPlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
+        if (event.action() == PlayerInteractEvent.Action.RIGHT_CLICK_AIR || event.action() == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
             if (game != null && game.getStatus() == GameStatus.RUNNING && !gamePlayer.isSpectator() && event.item() != null) {
                 var stack = event.item();
                 String unhidden = ItemUtils.getIfStartsWith(stack, TNT_SHEEP_PREFIX);
@@ -77,7 +77,7 @@ public class TNTSheepListener {
                     final var clickedBlock = event.clickedBlock();
                     var startLocation = (clickedBlock == null)
                             ? player.getLocation()
-                            : clickedBlock.getLocation().add(event.blockFace().getDirection());
+                            : clickedBlock.location().add(event.blockFace().getDirection());
 
                     var sheep = new TNTSheepImpl(game, gamePlayer, game.getPlayerTeam(gamePlayer),
                             startLocation, stack, speed, follow, maxTargetDistance, explosionTime);
@@ -89,13 +89,13 @@ public class TNTSheepListener {
     }
 
     @OnEvent(priority = EventPriority.HIGHEST)
-    public void onTNTSheepDamage(SEntityDamageByEntityEvent event) {
+    public void onTNTSheepDamage(EntityDamageByEntityEvent event) {
         if (event.cancelled() || event.damageCause().is("CUSTOM", "VOID", "FALL")) {
             return;
         }
 
-        if (event.entity() instanceof PlayerWrapper) {
-            var player = (PlayerWrapper) event.entity();
+        if (event.entity() instanceof Player) {
+            var player = (Player) event.entity();
             if (PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
                 var gamePlayer = PlayerManagerImpl.getInstance().getPlayer(player).orElseThrow();
                 var game = gamePlayer.getGame();
@@ -111,7 +111,7 @@ public class TNTSheepListener {
                     }
                 }
             }
-        } else if (event.entity() instanceof EntityLiving) {
+        } else if (event.entity() instanceof LivingEntity) {
             var mob = event.entity();
             for (var game : GameManagerImpl.getInstance().getGames()) {
                 if (game.getStatus() == GameStatus.RUNNING && mob.getLocation().getWorld().equals(game.getGameWorld())) {
@@ -129,7 +129,7 @@ public class TNTSheepListener {
     }
 
     @OnEvent
-    public void onTNTSheepInteractOtherUser(SPlayerInteractEntityEvent event) {
+    public void onTNTSheepInteractOtherUser(PlayerInteractEntityEvent event) {
         var player = event.player();
         if (PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
             var gamePlayer = PlayerManagerImpl.getInstance().getPlayer(player).orElseThrow();

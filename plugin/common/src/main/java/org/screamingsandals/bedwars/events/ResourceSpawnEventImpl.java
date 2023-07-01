@@ -25,31 +25,33 @@ import org.screamingsandals.bedwars.api.events.ResourceSpawnEvent;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.ItemSpawnerImpl;
 import org.screamingsandals.bedwars.game.ItemSpawnerTypeImpl;
-import org.screamingsandals.lib.event.SCancellableEvent;
-import org.screamingsandals.lib.item.Item;
-import org.screamingsandals.lib.item.builder.ItemFactory;
-import org.screamingsandals.lib.world.LocationHolder;
+import org.screamingsandals.lib.event.CancellableEvent;
+import org.screamingsandals.lib.item.ItemStack;
+import org.screamingsandals.lib.item.builder.ItemStackFactory;
+import org.screamingsandals.lib.world.Location;
+
+import java.util.Objects;
 
 @Data
-public class ResourceSpawnEventImpl implements ResourceSpawnEvent, SCancellableEvent {
+public class ResourceSpawnEventImpl implements ResourceSpawnEvent, CancellableEvent {
     private final GameImpl game;
     private final ItemSpawnerImpl itemSpawner;
     private final ItemSpawnerTypeImpl type;
     @NotNull
-    private Item resource;
+    private ItemStack resource;
     private boolean cancelled;
 
     @Override
-    public LocationHolder getLocation() {
+    public Location getLocation() {
         return itemSpawner.getLocation();
     }
 
     @Override
     public void setResource(Object resource) {
-        if (resource instanceof Item) {
-            this.resource = (Item) resource;
+        if (resource instanceof ItemStack) {
+            this.resource = (ItemStack) resource;
         } else {
-            this.resource = ItemFactory.build(resource).orElseThrow();
+            this.resource = Objects.requireNonNull(ItemStackFactory.build(resource));
         }
     }
 

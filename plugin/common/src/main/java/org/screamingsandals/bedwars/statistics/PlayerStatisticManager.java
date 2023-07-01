@@ -29,10 +29,10 @@ import org.screamingsandals.bedwars.events.SavePlayerStatisticEventImpl;
 import org.screamingsandals.bedwars.holograms.LeaderboardHolograms;
 import org.screamingsandals.lib.event.EventManager;
 import org.screamingsandals.lib.event.OnEvent;
-import org.screamingsandals.lib.player.OfflinePlayerWrapper;
-import org.screamingsandals.lib.player.PlayerMapper;
-import org.screamingsandals.lib.player.PlayerWrapper;
-import org.screamingsandals.lib.event.player.SPlayerLeaveEvent;
+import org.screamingsandals.lib.player.OfflinePlayer;
+import org.screamingsandals.lib.player.Players;
+import org.screamingsandals.lib.player.Player;
+import org.screamingsandals.lib.event.player.PlayerLeaveEvent;
 import org.screamingsandals.lib.plugin.ServiceManager;
 import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.utils.annotations.methods.OnEnable;
@@ -81,7 +81,7 @@ public class PlayerStatisticManager implements PlayerStatisticsManager {
         return ServiceManager.get(PlayerStatisticManager.class);
     }
 
-    public PlayerStatisticImpl getStatistic(OfflinePlayerWrapper player) {
+    public PlayerStatisticImpl getStatistic(OfflinePlayer player) {
         if (player == null) {
             return null;
         }
@@ -140,7 +140,7 @@ public class PlayerStatisticManager implements PlayerStatisticsManager {
     }
 
     @OnEvent
-    public void onLeave(SPlayerLeaveEvent event) {
+    public void onLeave(PlayerLeaveEvent event) {
         unloadStatistic(event.player());
     }
 
@@ -194,7 +194,7 @@ public class PlayerStatisticManager implements PlayerStatisticsManager {
                 .stream()
                 .sorted((c1, c2) -> Comparator.<Integer>reverseOrder().compare(c1.getValue().getValue(), c2.getValue().getValue()))
                 .limit(count)
-                .map(entry -> new LeaderboardEntryImpl(PlayerMapper.getOfflinePlayer(entry.getKey()), entry.getValue().getValue(), entry.getValue().getKey()))
+                .map(entry -> new LeaderboardEntryImpl(Players.getOfflinePlayer(entry.getKey()), entry.getValue().getValue(), entry.getValue().getKey()))
                 .collect(Collectors.toList());
     }
 
@@ -233,9 +233,10 @@ public class PlayerStatisticManager implements PlayerStatisticsManager {
             playerStatistic = new PlayerStatisticImpl(deserialize);
         }
 
-        PlayerMapper.getPlayer(uuid)
-                .map(PlayerWrapper::getName)
-                .ifPresent(playerStatistic::setName);
+        var player = Players.getPlayer(uuid);
+        if (player != null) {
+            playerStatistic.setName(player.getName());
+        }
 
         this.playerStatistic.put(playerStatistic.getUuid(), playerStatistic);
         this.allScores.put(uuid, new AbstractMap.SimpleEntry<>(playerStatistic.getName(), playerStatistic.getScore()));
@@ -256,9 +257,12 @@ public class PlayerStatisticManager implements PlayerStatisticsManager {
         var node = this.fileDatabase.node("data", uuid.toString());
         var playerStatistic = new PlayerStatisticImpl(node);
         playerStatistic.setUuid(uuid);
-        PlayerMapper.getPlayer(uuid)
-                .map(PlayerWrapper::getName)
-                .ifPresent(playerStatistic::setName);
+
+        var player = Players.getPlayer(uuid);
+        if (player != null) {
+            playerStatistic.setName(player.getName());
+        }
+
         this.playerStatistic.put(uuid, playerStatistic);
         this.allScores.put(uuid, new AbstractMap.SimpleEntry<>(playerStatistic.getName(), playerStatistic.getScore()));
         return playerStatistic;
@@ -324,7 +328,7 @@ public class PlayerStatisticManager implements PlayerStatisticsManager {
         }
     }
 
-    public void unloadStatistic(OfflinePlayerWrapper player) {
+    public void unloadStatistic(OfflinePlayer player) {
         if (statisticType == StatisticType.DATABASE) {
             this.playerStatistic.remove(player.getUuid());
         }

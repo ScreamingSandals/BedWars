@@ -28,16 +28,16 @@ import org.screamingsandals.bedwars.api.game.target.Target;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.TeamImpl;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
-import org.screamingsandals.lib.block.BlockTypeHolder;
-import org.screamingsandals.lib.event.SCancellableEvent;
+import org.screamingsandals.lib.block.Block;
+import org.screamingsandals.lib.event.CancellableEvent;
 
 @Data
-public class PreTargetInvalidatedEventImpl implements PreTargetInvalidatedEvent, SCancellableEvent {
+public class PreTargetInvalidatedEventImpl implements PreTargetInvalidatedEvent, CancellableEvent {
     private final @NotNull GameImpl game;
     private final @NotNull TeamImpl team;
     private final @NotNull Target target;
     private final @NotNull TargetInvalidationReason reason;
-    private final @Nullable BlockTypeHolder blockType;
+    private final @Nullable Block blockType;
     private final @Nullable BedWarsPlayer initiator;
 
     private boolean cancelled;

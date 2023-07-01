@@ -25,8 +25,8 @@ import org.jetbrains.annotations.NotNull;
 import org.screamingsandals.bedwars.BedWarsPlugin;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.lib.Server;
-import org.screamingsandals.lib.item.Item;
-import org.screamingsandals.lib.item.builder.ItemFactory;
+import org.screamingsandals.lib.item.ItemStack;
+import org.screamingsandals.lib.item.builder.ItemStackFactory;
 import org.screamingsandals.lib.plugin.ServiceManager;
 import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.utils.annotations.methods.OnEnable;
@@ -814,13 +814,15 @@ public class MainConfig {
         }
     }
 
-    public Item readDefinedItem(String item, String def) {
+    public ItemStack readDefinedItem(String item, String def) {
         var node = node("items", item);
         if (!node.empty()) {
             var obj = node.raw();
-            return ItemFactory.build(obj).orElse(ItemFactory.getAir());
+            var builtItem = ItemStackFactory.build(obj);
+            return builtItem != null ? builtItem : ItemStackFactory.getAir();
         }
 
-        return ItemFactory.build(def).orElse(ItemFactory.getAir());
+        var builtItem = ItemStackFactory.build(def);
+        return builtItem != null ? builtItem : ItemStackFactory.getAir();
     }
 }

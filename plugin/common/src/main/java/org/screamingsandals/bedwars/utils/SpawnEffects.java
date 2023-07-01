@@ -26,19 +26,20 @@ import org.screamingsandals.bedwars.events.PostSpawnEffectEventImpl;
 import org.screamingsandals.bedwars.events.PreSpawnEffectEventImpl;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
-import org.screamingsandals.lib.block.BlockTypeHolder;
-import org.screamingsandals.lib.entity.EntityFirework;
-import org.screamingsandals.lib.entity.type.EntityTypeHolder;
+import org.screamingsandals.lib.block.Block;
+import org.screamingsandals.lib.entity.projectile.FireworkRocket;
+import org.screamingsandals.lib.entity.type.EntityType;
 import org.screamingsandals.lib.event.EventManager;
-import org.screamingsandals.lib.firework.FireworkEffectHolder;
-import org.screamingsandals.lib.item.Item;
-import org.screamingsandals.lib.item.builder.ItemFactory;
+import org.screamingsandals.lib.firework.FireworkEffect;
+import org.screamingsandals.lib.item.ItemStack;
+import org.screamingsandals.lib.item.builder.ItemStackFactory;
 import org.screamingsandals.lib.particle.*;
 import org.screamingsandals.lib.spectator.Color;
 import org.screamingsandals.lib.utils.math.Vector3D;
-import org.screamingsandals.lib.world.LocationHolder;
+import org.screamingsandals.lib.world.Location;
 import org.spongepowered.configurate.ConfigurationNode;
 
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @UtilityClass
@@ -47,7 +48,7 @@ public class SpawnEffects {
         spawnEffect(game, player.getLocation(), particleName);
     }
 
-    public void spawnEffect(GameImpl game, LocationHolder location, String particleName) {
+    public void spawnEffect(GameImpl game, Location location, String particleName) {
         var firstEvent = new PreSpawnEffectEventImpl(game, location, particleName);
         EventManager.fire(firstEvent);
 
@@ -80,7 +81,7 @@ public class SpawnEffects {
         EventManager.fire(new PostSpawnEffectEventImpl(game, location, particleName));
     }
 
-    private void useEffect(String type, ConfigurationNode effect, LocationHolder location, GameImpl game) {
+    private void useEffect(String type, ConfigurationNode effect, Location location, GameImpl game) {
         if (type.equalsIgnoreCase("Particle")) {
             if (effect.hasChild("value")) {
                 var value = effect.node("value").getString("");
@@ -91,16 +92,16 @@ public class SpawnEffects {
                 var extra = effect.node("extra").getDouble(1);
                 var longDistance = effect.node("longDistance").getBoolean();
 
-                var particleType = ParticleTypeHolder.ofOptional(value);
+                var particleType = ParticleType.ofNullable(value);
 
                 var data = effect.node("data");
-                if (particleType.isPresent()) {
+                if (particleType != null) {
                     ParticleData particleData = null;
 
                     if (!data.empty()) {
-                        var clazz = particleType.get().expectedDataClass();
-                        if (clazz == BlockTypeHolder.class) {
-                            particleData = BlockTypeHolder.ofOptional(data.getString("")).orElse(null);
+                        var clazz = particleType.expectedDataClass();
+                        if (clazz == Block.class) {
+                            particleData = Block.ofNullable(data.getString(""));
                         } else if (clazz == DustOptions.class) {
                             particleData = new DustOptions(
                                     Color.rgb(
@@ -124,13 +125,13 @@ public class SpawnEffects {
                                     ),
                                     data.node("site").getFloat()
                             );
-                        } else if (clazz == Item.class) {
-                            particleData = ItemFactory.build(data.getString("")).orElse(null);
+                        } else if (clazz == ItemStack.class) {
+                            particleData = ItemStackFactory.build(data.getString(""));
                         }
                     }
 
-                    var particle = new ParticleHolder(
-                            particleType.get(),
+                    var particle = new Particle(
+                            particleType,
                             count,
                             new Vector3D(offsetX, offsetY, offsetZ),
                             extra,
@@ -147,10 +148,10 @@ public class SpawnEffects {
                 PlatformService.getInstance().spawnEffect(location, value);
             }
         } else if (type.equalsIgnoreCase("Firework")) {
-            var firework = EntityTypeHolder.of("minecraft:firework_rocket").<EntityFirework>spawn(location).orElseThrow();
+            var firework = (FireworkRocket) Objects.requireNonNull(EntityType.of("minecraft:firework_rocket").spawn(location));
             firework.setEffect(effect.node("effects").childrenList()
                     .stream()
-                    .map(FireworkEffectHolder::of)
+                    .map(FireworkEffect::of)
                     .collect(Collectors.toList()), effect.node("power").getInt(1));
         }
     }

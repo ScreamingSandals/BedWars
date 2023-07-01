@@ -30,11 +30,13 @@ import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.lib.Server;
-import org.screamingsandals.lib.entity.EntityBasic;
+import org.screamingsandals.lib.entity.Entity;
 import org.screamingsandals.lib.event.EventManager;
 import org.screamingsandals.lib.event.OnEvent;
-import org.screamingsandals.lib.event.player.SPlayerInteractEntityEvent;
+import org.screamingsandals.lib.event.player.PlayerInteractEntityEvent;
 import org.screamingsandals.lib.npc.event.NPCInteractEvent;
+import org.screamingsandals.lib.tasker.DefaultThreads;
+import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.utils.annotations.Service;
 
 @Service
@@ -44,7 +46,7 @@ public class VillagerListener {
     private final ShopInventory shopInventory;
 
     @OnEvent
-    public void onVillagerInteract(SPlayerInteractEntityEvent event) {
+    public void onVillagerInteract(PlayerInteractEntityEvent event) {
         final var player = event.player();
 
         if (playerManager.isPlayerInGame(player)) {
@@ -73,7 +75,7 @@ public class VillagerListener {
             if (!gPlayer.isSpectator() && gPlayer.getGame().getStatus() == GameStatus.RUNNING) {
                 for (var store : game.getGameStoreList()) {
                     if (event.visual().equals(store.getNpc())) {
-                        Server.runSynchronously(() -> open(store, gPlayer, null, game));
+                        Tasker.run(DefaultThreads.GLOBAL_THREAD, () -> open(store, gPlayer, null, game));
                         return;
                     }
                 }
@@ -81,7 +83,7 @@ public class VillagerListener {
         }
     }
 
-    public void open(GameStoreImpl store, BedWarsPlayer player, EntityBasic clickedEntity, GameImpl game) {
+    public void open(GameStoreImpl store, BedWarsPlayer player, Entity clickedEntity, GameImpl game) {
         var openShopEvent = new OpenShopEventImpl(game, clickedEntity, player, store);
         EventManager.fire(openShopEvent);
 

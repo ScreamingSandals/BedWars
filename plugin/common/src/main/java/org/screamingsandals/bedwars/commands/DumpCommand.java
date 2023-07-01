@@ -40,15 +40,17 @@ import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.variants.VariantManagerImpl;
 import org.screamingsandals.lib.Server;
-import org.screamingsandals.lib.plugin.PluginManager;
-import org.screamingsandals.lib.sender.CommandSenderWrapper;
+import org.screamingsandals.lib.plugin.Plugin;
+import org.screamingsandals.lib.plugin.Plugins;
+import org.screamingsandals.lib.sender.CommandSender;
 import org.screamingsandals.lib.spectator.Color;
 import org.screamingsandals.lib.spectator.Component;
 import org.screamingsandals.lib.spectator.event.ClickEvent;
 import org.screamingsandals.lib.spectator.event.HoverEvent;
 import org.screamingsandals.lib.utils.ConfigurateUtils;
 import org.screamingsandals.lib.utils.annotations.Service;
-import org.screamingsandals.lib.world.LocationHolder;
+import org.screamingsandals.lib.world.Location;
+import org.screamingsandals.lib.world.Worlds;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.gson.GsonConfigurationLoader;
 import org.spongepowered.configurate.yaml.NodeStyle;
@@ -77,12 +79,12 @@ public class DumpCommand extends BaseCommand {
     }
 
     @Override
-    protected void construct(Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder, CommandManager<CommandSenderWrapper> manager) {
+    protected void construct(Command.Builder<CommandSender> commandSenderWrapperBuilder, CommandManager<CommandSender> manager) {
         // TODO: rework this so we use configurate properly and serializers actually work (it even refuses to serialize enums, like wtf)
         manager.command(
                 commandSenderWrapperBuilder
                         .argument(
-                                StringArgument.<CommandSenderWrapper>newBuilder("service")
+                                StringArgument.<CommandSender>newBuilder("service")
                                         .withSuggestionsProvider((objectCommandContext, s) -> SERVICES)
                                         .asOptionalWithDefault(SERVICES.get(0))
                                         .build()
@@ -116,9 +118,9 @@ public class DumpCommand extends BaseCommand {
                                                                     "javaVersion", System.getProperty("java.version"),
                                                                     "os", System.getProperty("os.name")
                                                             ),
-                                                            "worlds", Server.getWorlds().stream().map(world -> Map.of(
+                                                            "worlds", Worlds.getWorlds().stream().map(world -> Map.of(
                                                                     "name", world.getName(),
-                                                                    "difficulty", world.getDifficulty().platformName(),
+                                                                    "difficulty", world.getDifficulty().location().asString(),
                                                                     "spawning", Map.of(
                                                                             "animals", world.isSpawningOfAnimalsAllowed(),
                                                                             "monsters", world.isSpawningOfMonstersAllowed()
@@ -127,12 +129,12 @@ public class DumpCommand extends BaseCommand {
                                                                     "minHeight", world.getMinY(),
                                                                     "keepSpawnInMemory", world.isSpawnKeptInMemory()
                                                             )).collect(Collectors.toList()),
-                                                            "plugins", PluginManager.getAllPlugins().stream().map(plugin -> Map.of(
+                                                            "plugins", Plugins.getAllPlugins().stream().map(plugin -> Map.of(
                                                                     "enabled", plugin.isEnabled(),
-                                                                    "name", plugin.getName(),
-                                                                    "version", plugin.getVersion(),
-                                                                    "main", plugin.getInstance().map(Object::getClass).map(Class::getName).orElse("undefined"),
-                                                                    "authors", plugin.getAuthors()
+                                                                    "name", plugin.name(),
+                                                                    "version", plugin.version(),
+                                                                    "main", Optional.ofNullable(plugin.getInstance()).map(Object::getClass).map(Class::getName).orElse("undefined"),
+                                                                    "authors", plugin.contributors().stream().map(Plugin.Contributor::name).collect(Collectors.joining(", "))
                                                             )).collect(Collectors.toList()),
                                                             "variantsInMemory", VariantManagerImpl.getInstance().getVariants().stream().map(variant ->
                                                                     nullValuesAllowingMap(
@@ -144,7 +146,7 @@ public class DumpCommand extends BaseCommand {
                                                                                     "name", itemSpawnerType.getName(),
                                                                                     "translatableKey", itemSpawnerType.getTranslatableKey().toJavaJson(),
                                                                                     "spread", itemSpawnerType.getSpread(),
-                                                                                    "itemType", itemSpawnerType.getItemType().platformName(),
+                                                                                    "itemType", itemSpawnerType.getItemType().location().asString(),
                                                                                     "color", itemSpawnerType.getColor().toString(),
                                                                                     "interval", itemSpawnerType.getInterval().first() + " " + itemSpawnerType.getInterval().second()
                                                                             )).collect(Collectors.toList())
@@ -167,7 +169,7 @@ public class DumpCommand extends BaseCommand {
                                                                                     "countdown", game.getGameTime(),
                                                                                     "pos1", locationToMap(game.getPos1()),
                                                                                     "pos2", locationToMap(game.getPos2()),
-                                                                                    "weather", game.getArenaWeather() != null ? game.getArenaWeather().platformName() : null,
+                                                                                    "weather", game.getArenaWeather() != null ? game.getArenaWeather().location().asString() : null,
                                                                                     "spawners", game.getSpawners().stream().map(itemSpawner -> nullValuesAllowingMap(
                                                                                             "type", itemSpawner.getItemSpawnerType().getConfigKey(),
                                                                                             "location", locationToMap(itemSpawner.getLocation()),
@@ -194,7 +196,7 @@ public class DumpCommand extends BaseCommand {
                                                                                             "maxPlayers", team.getMaxPlayers()
                                                                                     )).collect(Collectors.toList()),
                                                                                     "stores", game.getGameStores().stream().map(gameStore -> nullValuesAllowingMap(
-                                                                                            "entityType", gameStore.getEntityType().platformName(),
+                                                                                            "entityType", gameStore.getEntityType().location().asString(),
                                                                                             "location", locationToMap(gameStore.getStoreLocation()),
                                                                                             "shopFile", gameStore.getShopFile(),
                                                                                             "customName", gameStore.getShopCustomName(),
@@ -209,7 +211,7 @@ public class DumpCommand extends BaseCommand {
                                     );
                                     try {
                                         var loader = YamlConfigurationLoader.builder()
-                                                .path(BedWarsPlugin.getInstance().getPluginDescription().getDataFolder().resolve("config.yml"))
+                                                .path(BedWarsPlugin.getInstance().getPluginDescription().dataFolder().resolve("config.yml"))
                                                 .build();
 
                                         var writer = new StringWriter();
@@ -257,7 +259,7 @@ public class DumpCommand extends BaseCommand {
                                     files.add(new AFile(
                                             mainShopName,
                                             mainShopName.endsWith(".groovy") ? "groovy" : "yaml",
-                                            String.join("\n", Files.readAllLines(BedWarsPlugin.getInstance().getPluginDescription().getDataFolder().resolve(mainShopName), StandardCharsets.UTF_8))
+                                            String.join("\n", Files.readAllLines(BedWarsPlugin.getInstance().getPluginDescription().dataFolder().resolve(mainShopName), StandardCharsets.UTF_8))
                                     ));
                                     GameManagerImpl.getInstance()
                                             .getGames()
@@ -398,7 +400,7 @@ public class DumpCommand extends BaseCommand {
         return map;
     }
 
-    public static Map<?, ?> locationToMap(LocationHolder location) {
+    public static Map<?, ?> locationToMap(Location location) {
         return nullValuesAllowingMap(
           "world", location.getWorld().getName(),
           "x", location.getX(),

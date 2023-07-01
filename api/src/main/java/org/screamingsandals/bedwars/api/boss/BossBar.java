@@ -22,7 +22,7 @@ package org.screamingsandals.bedwars.api.boss;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.screamingsandals.lib.utils.Wrapper;
+import org.screamingsandals.lib.api.Wrapper;
 
 /**
  * @author ScreamingSandals

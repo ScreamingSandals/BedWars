@@ -24,11 +24,11 @@ import lombok.Data;
 import org.screamingsandals.bedwars.api.events.GameTickEvent;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.game.GameImpl;
-import org.screamingsandals.lib.event.SEvent;
+import org.screamingsandals.lib.event.Event;
 
 @Data
 @AllArgsConstructor
-public class GameTickEventImpl implements GameTickEvent, SEvent {
+public class GameTickEventImpl implements GameTickEvent, Event {
     private final GameImpl game;
     private final int previousCountdown;
     private final GameStatus previousStatus;

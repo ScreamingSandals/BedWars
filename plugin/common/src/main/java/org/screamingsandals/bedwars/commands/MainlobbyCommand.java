@@ -25,8 +25,8 @@ import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.lib.lang.Message;
-import org.screamingsandals.lib.player.PlayerWrapper;
-import org.screamingsandals.lib.sender.CommandSenderWrapper;
+import org.screamingsandals.lib.player.Player;
+import org.screamingsandals.lib.sender.CommandSender;
 import org.screamingsandals.lib.utils.annotations.Service;
 import org.spongepowered.configurate.serialize.SerializationException;
 
@@ -39,7 +39,7 @@ public class MainlobbyCommand extends BaseCommand {
     }
 
     @Override
-    protected void construct(Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder, CommandManager<CommandSenderWrapper> manager) {
+    protected void construct(Command.Builder<CommandSender> commandSenderWrapperBuilder, CommandManager<CommandSender> manager) {
         manager.command(
                 commandSenderWrapperBuilder
                         .argument(manager
@@ -64,7 +64,7 @@ public class MainlobbyCommand extends BaseCommand {
                             e.printStackTrace();
                         }
                     } else if (action.contains("set")) {
-                        var location = sender.as(PlayerWrapper.class).getLocation();
+                        var location = sender.as(Player.class).getLocation();
 
                         try {
                             MainConfig.getInstance().node("mainlobby", "location").set(MiscUtils.writeLocationToString(location));

@@ -29,7 +29,7 @@ import org.screamingsandals.bedwars.utils.DelayFactoryImpl;
 import org.screamingsandals.bedwars.utils.ItemUtils;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.lib.event.OnEvent;
-import org.screamingsandals.lib.event.player.SPlayerInteractEvent;
+import org.screamingsandals.lib.event.player.PlayerInteractEvent;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.utils.annotations.Service;
 
@@ -45,7 +45,7 @@ public class ProtectionWallListener {
     }
 
     @OnEvent
-    public void onPlayerUseItem(SPlayerInteractEvent event) {
+    public void onPlayerUseItem(PlayerInteractEvent event) {
         var player = event.player();
         if (!PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
             return;
@@ -54,7 +54,7 @@ public class ProtectionWallListener {
         var gPlayer = PlayerManagerImpl.getInstance().getPlayer(player).orElseThrow();
         var game = gPlayer.getGame();
 
-        if (event.action() == SPlayerInteractEvent.Action.RIGHT_CLICK_AIR || event.action() == SPlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
+        if (event.action() == PlayerInteractEvent.Action.RIGHT_CLICK_AIR || event.action() == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
             if (game != null && game.getStatus() == GameStatus.RUNNING && !gPlayer.isSpectator() && event.item() != null) {
                 var stack = event.item();
                 var unhidden = ItemUtils.getIfStartsWith(stack, PROTECTION_WALL_PREFIX);
@@ -75,7 +75,7 @@ public class ProtectionWallListener {
 
                         var protectionWall = new ProtectionWallImpl(game, gPlayer, game.getPlayerTeam(gPlayer), stack);
 
-                        if (!event.player().getEyeLocation().getBlock().getType().isAir()) {
+                        if (!event.player().getEyeLocation().getBlock().block().isAir()) {
                             MiscUtils.sendActionBarMessage(player, Message.of(LangKeys.SPECIALS_PROTECTION_WALL_NOT_USABLE_HERE));
                             return;
                         }

@@ -29,7 +29,7 @@ import org.screamingsandals.bedwars.api.statistics.PlayerStatisticsManager;
 import org.screamingsandals.bedwars.api.utils.ColorChanger;
 import org.screamingsandals.bedwars.api.utils.EventUtils;
 import org.screamingsandals.bedwars.api.variants.VariantManager;
-import org.screamingsandals.lib.utils.Wrapper;
+import org.screamingsandals.lib.api.Wrapper;
 
 import java.util.List;
 

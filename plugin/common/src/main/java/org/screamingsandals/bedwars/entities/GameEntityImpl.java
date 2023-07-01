@@ -22,10 +22,10 @@ package org.screamingsandals.bedwars.entities;
 import lombok.Data;
 import org.screamingsandals.bedwars.api.entities.GameEntity;
 import org.screamingsandals.bedwars.game.GameImpl;
-import org.screamingsandals.lib.entity.EntityBasic;
+import org.screamingsandals.lib.entity.Entity;
 
 @Data
 public class GameEntityImpl implements GameEntity {
     private final GameImpl game;
-    private final EntityBasic entity;
+    private final Entity entity;
 }

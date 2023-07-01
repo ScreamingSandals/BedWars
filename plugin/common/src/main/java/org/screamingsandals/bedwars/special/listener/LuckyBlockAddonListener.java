@@ -60,7 +60,7 @@ public class LuckyBlockAddonListener {
 
             for (var luckyBlock : event.getGame().getActiveSpecialItems(LuckyBlockImpl.class)) {
                 if (System.identityHashCode(luckyBlock) == classID) {
-                    luckyBlock.place(event.getBlock().getLocation());
+                    luckyBlock.place(event.getBlock().location());
                     return;
                 }
             }
@@ -75,7 +75,7 @@ public class LuckyBlockAddonListener {
 
         for (var luckyBlock : event.getGame().getActiveSpecialItems(LuckyBlockImpl.class)) {
             if (luckyBlock.isPlaced()) {
-                if (event.getBlock().getLocation().equals(luckyBlock.getBlockLocation())) {
+                if (event.getBlock().location().equals(luckyBlock.getBlockLocation())) {
                     event.setDrops(false);
                     luckyBlock.process(event.getPlayer());
                     return;

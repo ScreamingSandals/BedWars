@@ -24,6 +24,7 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.screamingsandals.lib.plugin.ServiceManager;
 import org.screamingsandals.lib.utils.annotations.Service;
+import org.screamingsandals.lib.utils.annotations.ServiceDependencies;
 import org.screamingsandals.lib.utils.annotations.methods.OnPostEnable;
 import org.screamingsandals.lib.utils.annotations.parameters.ConfigFile;
 import org.spongepowered.configurate.ConfigurateException;
@@ -35,7 +36,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
-@Service(dependsOn = {
+@Service
+@ServiceDependencies(dependsOn = {
         MainConfig.class
 })
 public class RecordSave {

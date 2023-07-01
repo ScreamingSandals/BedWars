@@ -24,11 +24,11 @@ import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.lib.economy.EconomyManager;
 import org.screamingsandals.lib.lang.Message;
-import org.screamingsandals.lib.player.PlayerWrapper;
+import org.screamingsandals.lib.player.Player;
 
 @UtilityClass
 public class EconomyUtils {
-    public void deposit(PlayerWrapper player, double coins) {
+    public void deposit(Player player, double coins) {
         if (MainConfig.getInstance().node("economy", "enabled").getBoolean() && coins > 0) {
             if (EconomyManager.depositPlayer(player, coins).isSuccessful()) {
                 Message.of(LangKeys.IN_GAME_ECONOMY_DEPOSITED)

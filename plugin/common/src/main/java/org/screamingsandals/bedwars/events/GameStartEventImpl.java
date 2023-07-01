@@ -22,10 +22,10 @@ package org.screamingsandals.bedwars.events;
 import lombok.Data;
 import org.screamingsandals.bedwars.api.events.GameStartEvent;
 import org.screamingsandals.bedwars.game.GameImpl;
-import org.screamingsandals.lib.event.SCancellableEvent;
+import org.screamingsandals.lib.event.CancellableEvent;
 
 @Data
-public class GameStartEventImpl implements GameStartEvent, SCancellableEvent {
+public class GameStartEventImpl implements GameStartEvent, CancellableEvent {
     private final GameImpl game;
     private boolean cancelled;
 

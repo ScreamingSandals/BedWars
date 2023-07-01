@@ -20,7 +20,7 @@
 package org.screamingsandals.bedwars.api.special;
 
 import org.jetbrains.annotations.ApiStatus;
-import org.screamingsandals.lib.utils.Wrapper;
+import org.screamingsandals.lib.api.Wrapper;
 
 @ApiStatus.NonExtendable
 public interface BridgeEgg extends SpecialItem {

@@ -22,10 +22,10 @@ package org.screamingsandals.bedwars.events;
 import lombok.Data;
 import org.screamingsandals.bedwars.api.events.SavePlayerStatisticEvent;
 import org.screamingsandals.bedwars.statistics.PlayerStatisticImpl;
-import org.screamingsandals.lib.event.SCancellableEvent;
+import org.screamingsandals.lib.event.CancellableEvent;
 
 @Data
-public class SavePlayerStatisticEventImpl implements SavePlayerStatisticEvent, SCancellableEvent {
+public class SavePlayerStatisticEventImpl implements SavePlayerStatisticEvent, CancellableEvent {
     private final PlayerStatisticImpl playerStatistic;
     private boolean cancelled;
 

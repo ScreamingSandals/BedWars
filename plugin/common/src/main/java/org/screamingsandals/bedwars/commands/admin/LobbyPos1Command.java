@@ -23,8 +23,8 @@ import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.lib.lang.Message;
-import org.screamingsandals.lib.player.PlayerWrapper;
-import org.screamingsandals.lib.sender.CommandSenderWrapper;
+import org.screamingsandals.lib.player.Player;
+import org.screamingsandals.lib.sender.CommandSender;
 import org.screamingsandals.lib.utils.annotations.Service;
 
 @Service
@@ -34,11 +34,11 @@ public class LobbyPos1Command extends BaseAdminSubCommand {
     }
 
     @Override
-    public void construct(CommandManager<CommandSenderWrapper> manager, Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder) {
+    public void construct(CommandManager<CommandSender> manager, Command.Builder<CommandSender> commandSenderWrapperBuilder) {
         manager.command(
                 commandSenderWrapperBuilder
                         .handler(commandContext -> editMode(commandContext, (sender, game) -> {
-                            var loc = sender.as(PlayerWrapper.class).getLocation();
+                            var loc = sender.as(Player.class).getLocation();
                             var lobbyWorld = game.getLobbyWorld();
 
                             if (lobbyWorld != null && (!game.getLobbyWorld().equals(loc.getWorld()))) {

@@ -26,7 +26,7 @@ import org.screamingsandals.bedwars.VersionInfo;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.lib.cloud.extras.MinecraftHelp;
 import org.screamingsandals.lib.lang.Message;
-import org.screamingsandals.lib.sender.CommandSenderWrapper;
+import org.screamingsandals.lib.sender.CommandSender;
 import org.screamingsandals.lib.utils.annotations.Service;
 
 @Service
@@ -36,7 +36,7 @@ public class HelpCommand extends BaseCommand {
     }
 
     @Override
-    protected void construct(Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder, CommandManager<CommandSenderWrapper> manager) {
+    protected void construct(Command.Builder<CommandSender> commandSenderWrapperBuilder, CommandManager<CommandSender> manager) {
         var minecraftHelp = MinecraftHelp.createNative("/bw help", manager)
                 .commandFilter((command, sender) -> {
                     if ((command.getSenderType().isPresent() && !command.getSenderType().get().isInstance(sender)) || command.isHidden()) {

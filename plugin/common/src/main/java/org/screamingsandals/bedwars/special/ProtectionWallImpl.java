@@ -28,14 +28,16 @@ import org.screamingsandals.bedwars.game.TeamImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.utils.MiscUtils;
-import org.screamingsandals.lib.block.BlockTypeHolder;
+import org.screamingsandals.lib.block.Block;
 import org.screamingsandals.lib.lang.Message;
-import org.screamingsandals.lib.item.Item;
-import org.screamingsandals.lib.item.builder.ItemFactory;
+import org.screamingsandals.lib.item.ItemStack;
+import org.screamingsandals.lib.item.builder.ItemStackFactory;
+import org.screamingsandals.lib.spectator.Component;
+import org.screamingsandals.lib.tasker.DefaultThreads;
 import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
-import org.screamingsandals.lib.tasker.task.TaskerTask;
-import org.screamingsandals.lib.block.BlockHolder;
+import org.screamingsandals.lib.tasker.task.Task;
+import org.screamingsandals.lib.block.BlockPlacement;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,19 +52,19 @@ public class ProtectionWallImpl extends SpecialItemImpl implements ProtectionWal
     private int distance;
     private boolean breakable;
 
-    private final Item item;
-    private BlockTypeHolder material;
-    private List<BlockHolder> wallBlocks;
-    private TaskerTask task;
+    private final ItemStack item;
+    private Block material;
+    private List<BlockPlacement> wallBlocks;
+    private Task task;
 
-    public ProtectionWallImpl(GameImpl game, BedWarsPlayer player, TeamImpl team, Item item) {
+    public ProtectionWallImpl(GameImpl game, BedWarsPlayer player, TeamImpl team, ItemStack item) {
         super(game, player, team);
         this.item = item;
     }
 
     @Override
     public void runTask() {
-        this.task = Tasker.build(() -> {
+        this.task = Tasker.runDelayedAndRepeatedly(DefaultThreads.GLOBAL_THREAD, () -> {
             livingTime++;
             int time = breakingTime - livingTime;
 
@@ -74,26 +76,23 @@ public class ProtectionWallImpl extends SpecialItemImpl implements ProtectionWal
 
             if (livingTime == breakingTime) {
                 for (var block : wallBlocks) {
-                    block.getLocation().getChunk().load(false);
-                    block.setType(BlockTypeHolder.air());
+                    block.location().getChunk().load(false);
+                    block.block(Block.air());
 
-                    game.getRegion().removeBlockBuiltDuringGame(block.getLocation());
+                    game.getRegion().removeBlockBuiltDuringGame(block.location());
                 }
                 game.unregisterSpecialItem(this);
                 this.task.cancel();
             }
-        })
-        .delay(20, TaskerTime.TICKS)
-        .repeat(20, TaskerTime.TICKS)
-        .start();
+        }, 20, TaskerTime.TICKS, 20, TaskerTime.TICKS);
     }
 
-    private void addBlockToList(BlockHolder block) {
+    private void addBlockToList(BlockPlacement block) {
         wallBlocks.add(block);
-        game.getRegion().addBuiltDuringGame(block.getLocation());
+        game.getRegion().addBuiltDuringGame(block.location());
     }
 
-    public void createWall(boolean bre, int time, int wid, int hei, int dis, BlockTypeHolder mat) {
+    public void createWall(boolean bre, int time, int wid, int hei, int dis, Block mat) {
         breakable = bre;
         breakingTime = time;
         width = wid;
@@ -103,7 +102,7 @@ public class ProtectionWallImpl extends SpecialItemImpl implements ProtectionWal
         wallBlocks = new ArrayList<>();
 
         if (width % 2 == 0) {
-            player.sendMessage("The width of a protection block has to be odd! " + width + " is not an odd number.");
+            player.sendMessage(Component.text("The width of a protection block has to be odd! " + width + " is not an odd number."));
             width = width + 1;
             if (width % 2 == 0) {
                 return;
@@ -152,12 +151,12 @@ public class ProtectionWallImpl extends SpecialItemImpl implements ProtectionWal
                 }
 
                 var placedBlock = wallBlock.getBlock();
-                if (!placedBlock.getType().isAir()) {
+                if (!placedBlock.block().isAir()) {
                     continue;
                 }
 
                 var coloredMaterial = material.colorize(team.getColor().material1_13);
-                placedBlock.setType(coloredMaterial);
+                placedBlock.block(coloredMaterial);
                 addBlockToList(placedBlock);
             }
         }
@@ -173,7 +172,7 @@ public class ProtectionWallImpl extends SpecialItemImpl implements ProtectionWal
             var stack = item.withAmount(1);
             try {
                 if (player.getPlayerInventory().getItemInOffHand().equals(stack)) {
-                    player.getPlayerInventory().setItemInOffHand(ItemFactory.getAir());
+                    player.getPlayerInventory().setItemInOffHand(ItemStackFactory.getAir());
                 } else {
                     player.getPlayerInventory().removeItem(stack);
                 }
@@ -191,7 +190,7 @@ public class ProtectionWallImpl extends SpecialItemImpl implements ProtectionWal
             var stack = item.withAmount(1);
             try {
                 if (player.getPlayerInventory().getItemInOffHand().equals(stack)) {
-                    player.getPlayerInventory().setItemInOffHand(ItemFactory.getAir());
+                    player.getPlayerInventory().setItemInOffHand(ItemStackFactory.getAir());
                 } else {
                     player.getPlayerInventory().removeItem(stack);
                 }

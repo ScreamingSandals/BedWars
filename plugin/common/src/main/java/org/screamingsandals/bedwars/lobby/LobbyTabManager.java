@@ -26,15 +26,17 @@ import org.screamingsandals.bedwars.events.PlayerLeaveEventImpl;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.lib.Server;
 import org.screamingsandals.lib.event.OnEvent;
-import org.screamingsandals.lib.event.player.SPlayerJoinEvent;
-import org.screamingsandals.lib.event.player.SPlayerLeaveEvent;
-import org.screamingsandals.lib.event.player.SPlayerWorldChangeEvent;
+import org.screamingsandals.lib.event.player.PlayerJoinEvent;
+import org.screamingsandals.lib.event.player.PlayerLeaveEvent;
+import org.screamingsandals.lib.event.player.PlayerWorldChangeEvent;
 import org.screamingsandals.lib.lang.Message;
-import org.screamingsandals.lib.player.PlayerWrapper;
+import org.screamingsandals.lib.player.Player;
 import org.screamingsandals.lib.spectator.Component;
+import org.screamingsandals.lib.tasker.DefaultThreads;
 import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
 import org.screamingsandals.lib.utils.annotations.Service;
+import org.screamingsandals.lib.utils.annotations.ServiceDependencies;
 import org.screamingsandals.lib.utils.annotations.methods.OnPostEnable;
 import org.screamingsandals.lib.utils.annotations.methods.ShouldRunControllable;
 import org.spongepowered.configurate.ConfigurationNode;
@@ -44,13 +46,14 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
-@Service(dependsOn = {
+@Service
+@ServiceDependencies(dependsOn = {
         MainConfig.class
 })
 @RequiredArgsConstructor
 public class LobbyTabManager {
     private final MainConfig mainConfig;
-    private final List<PlayerWrapper> viewers = new CopyOnWriteArrayList<>();
+    private final List<Player> viewers = new CopyOnWriteArrayList<>();
 
     private Message header;
     private Message footer;
@@ -77,27 +80,27 @@ public class LobbyTabManager {
             }
         });
 
-        Tasker.build(this::update).repeat(20, TaskerTime.TICKS).start();
+        Tasker.runRepeatedly(DefaultThreads.GLOBAL_THREAD, this::update, 20, TaskerTime.TICKS);
     }
 
     private void update() {
         viewers.forEach(this::updateForPlayer);
     }
 
-    private void updateForPlayer(PlayerWrapper player) {
+    private void updateForPlayer(Player player) {
         if (player.isOnline() && !PlayerManagerImpl.getInstance().isPlayerInGame(player) && (header != null || footer != null)) {
             player.sendPlayerListHeaderFooter(header != null ? header.asComponent(player) : Component.empty(), footer != null ? footer.asComponent(player) : Component.empty());
         }
     }
 
-    public void addViewer(PlayerWrapper player) {
+    public void addViewer(Player player) {
         if (!viewers.contains(player) && player.isOnline() && player.getLocation().getWorld().getName().equals(world)) {
             viewers.add(player);
             updateForPlayer(player);
         }
     }
 
-    public void removeViewer(PlayerWrapper player) {
+    public void removeViewer(Player player) {
         if (viewers.contains(player)) {
             viewers.remove(player);
             if (player.isOnline()) {
@@ -119,7 +122,7 @@ public class LobbyTabManager {
     }
 
     @OnEvent
-    public void onJoin(SPlayerJoinEvent event) {
+    public void onJoin(PlayerJoinEvent event) {
         var player = event.player();
 
         if (world.isEmpty()) {
@@ -132,12 +135,12 @@ public class LobbyTabManager {
     }
 
     @OnEvent
-    public void onLeave(SPlayerLeaveEvent event) {
+    public void onLeave(PlayerLeaveEvent event) {
         removeViewer(event.player());
     }
 
     @OnEvent
-    public void onWorldChange(SPlayerWorldChangeEvent event) {
+    public void onWorldChange(PlayerWorldChangeEvent event) {
         var player = event.player();
 
         if (world.isEmpty()) {
@@ -164,10 +167,10 @@ public class LobbyTabManager {
             return; // :(
         }
 
-        Tasker.build(() -> {
+        Tasker.runDelayed(DefaultThreads.GLOBAL_THREAD, () -> {
             if (player.isOnline() && player.getLocation().getWorld().getName().equals(world)) {
                 addViewer(player);
             }
-        }).delay(20, TaskerTime.TICKS).start();
+        }, 20, TaskerTime.TICKS);
     }
 }

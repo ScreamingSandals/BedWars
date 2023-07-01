@@ -24,19 +24,19 @@ import org.screamingsandals.bedwars.api.events.PlayerBreakBlockEvent;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.TeamImpl;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
-import org.screamingsandals.lib.block.BlockHolder;
-import org.screamingsandals.lib.event.SCancellableEvent;
+import org.screamingsandals.lib.block.BlockPlacement;
+import org.screamingsandals.lib.event.CancellableEvent;
 
 @Data
-public class PlayerBreakBlockEventImpl implements PlayerBreakBlockEvent, SCancellableEvent {
+public class PlayerBreakBlockEventImpl implements PlayerBreakBlockEvent, CancellableEvent {
     private final GameImpl game;
     private final BedWarsPlayer player;
     private final TeamImpl team;
-    private final BlockHolder block;
+    private final BlockPlacement block;
     private boolean drops;
     private boolean cancelled;
 
-    public PlayerBreakBlockEventImpl(GameImpl game, BedWarsPlayer player, TeamImpl team, BlockHolder block, boolean drops) {
+    public PlayerBreakBlockEventImpl(GameImpl game, BedWarsPlayer player, TeamImpl team, BlockPlacement block, boolean drops) {
         this.game = game;
         this.player = player;
         this.team = team;

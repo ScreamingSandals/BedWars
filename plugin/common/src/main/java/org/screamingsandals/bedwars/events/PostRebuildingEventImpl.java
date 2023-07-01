@@ -22,9 +22,9 @@ package org.screamingsandals.bedwars.events;
 import lombok.Data;
 import org.screamingsandals.bedwars.api.events.PostRebuildingEvent;
 import org.screamingsandals.bedwars.game.GameImpl;
-import org.screamingsandals.lib.event.SEvent;
+import org.screamingsandals.lib.event.Event;
 
 @Data
-public class PostRebuildingEventImpl implements PostRebuildingEvent, SEvent {
+public class PostRebuildingEventImpl implements PostRebuildingEvent, Event {
     private final GameImpl game;
 }

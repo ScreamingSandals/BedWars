@@ -28,11 +28,11 @@ import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.lib.lang.Message;
-import org.screamingsandals.lib.item.Item;
-import org.screamingsandals.lib.item.builder.ItemFactory;
+import org.screamingsandals.lib.item.ItemStack;
+import org.screamingsandals.lib.item.builder.ItemStackFactory;
+import org.screamingsandals.lib.tasker.DefaultThreads;
 import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
-import org.screamingsandals.lib.tasker.task.TaskerTask;
 
 @Getter
 @EqualsAndHashCode(callSuper = true)
@@ -40,10 +40,9 @@ public class ArrowBlockerImpl extends SpecialItemImpl implements ArrowBlocker {
     private final int protectionTime;
     private int usedTime;
     private boolean isActivated;
-    private final Item item;
-    private TaskerTask task;
+    private final ItemStack item;
 
-    public ArrowBlockerImpl(GameImpl game, BedWarsPlayer player, TeamImpl team, Item item, int protectionTime) {
+    public ArrowBlockerImpl(GameImpl game, BedWarsPlayer player, TeamImpl team, ItemStack item, int protectionTime) {
         super(game, player, team);
         this.item = item;
         this.protectionTime = protectionTime;
@@ -51,18 +50,16 @@ public class ArrowBlockerImpl extends SpecialItemImpl implements ArrowBlocker {
 
     @Override
     public void runTask() {
-        this.task = Tasker.build(() -> {
+        Tasker.runRepeatedly(DefaultThreads.GLOBAL_THREAD, task -> {
             usedTime++;
             if (usedTime == protectionTime) {
                 isActivated = false;
                 MiscUtils.sendActionBarMessage(player, Message.of(LangKeys.SPECIALS_ARROW_BLOCKER_ENDED));
 
                 game.unregisterSpecialItem(ArrowBlockerImpl.this);
-                this.task.cancel();
+                task.cancel();
             }
-        })
-        .repeat(20, TaskerTime.TICKS)
-        .start();
+        }, 20, TaskerTime.TICKS);
     }
 
     public void activate() {
@@ -73,7 +70,7 @@ public class ArrowBlockerImpl extends SpecialItemImpl implements ArrowBlocker {
             var stack = item.withAmount(1);
             try {
                 if (player.getPlayerInventory().getItemInOffHand().equals(stack)) {
-                    player.getPlayerInventory().setItemInOffHand(ItemFactory.getAir());
+                    player.getPlayerInventory().setItemInOffHand(ItemStackFactory.getAir());
                 } else {
                     player.getPlayerInventory().removeItem(stack);
                 }

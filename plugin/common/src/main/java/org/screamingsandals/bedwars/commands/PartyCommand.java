@@ -28,8 +28,8 @@ import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.lib.lang.Message;
-import org.screamingsandals.lib.player.PlayerWrapper;
-import org.screamingsandals.lib.sender.CommandSenderWrapper;
+import org.screamingsandals.lib.player.Player;
+import org.screamingsandals.lib.sender.CommandSender;
 import org.screamingsandals.lib.utils.annotations.Service;
 
 import java.util.List;
@@ -42,7 +42,7 @@ public class PartyCommand extends BaseCommand {
     }
 
     @Override
-    protected void construct(Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder, CommandManager<CommandSenderWrapper> manager) {
+    protected void construct(Command.Builder<CommandSender> commandSenderWrapperBuilder, CommandManager<CommandSender> manager) {
         manager.command(
             commandSenderWrapperBuilder
                     .argument(manager
@@ -51,7 +51,7 @@ public class PartyCommand extends BaseCommand {
                             .asOptional()
                     )
             .handler(commandContext -> {
-                var sender = commandContext.getSender().as(PlayerWrapper.class);
+                var sender = commandContext.getSender().as(Player.class);
 
                 Optional<String> action = commandContext.getOptional("action");
 

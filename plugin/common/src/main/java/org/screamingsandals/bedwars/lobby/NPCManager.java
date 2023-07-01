@@ -25,15 +25,17 @@ import lombok.Setter;
 import org.screamingsandals.bedwars.commands.NPCCommand;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.lib.event.OnEvent;
-import org.screamingsandals.lib.event.player.SPlayerJoinEvent;
-import org.screamingsandals.lib.event.player.SPlayerLeaveEvent;
+import org.screamingsandals.lib.event.player.PlayerJoinEvent;
+import org.screamingsandals.lib.event.player.PlayerLeaveEvent;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.npc.event.NPCInteractEvent;
 import org.screamingsandals.lib.plugin.ServiceManager;
+import org.screamingsandals.lib.tasker.DefaultThreads;
 import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
 import org.screamingsandals.lib.utils.InteractType;
 import org.screamingsandals.lib.utils.annotations.Service;
+import org.screamingsandals.lib.utils.annotations.ServiceDependencies;
 import org.screamingsandals.lib.utils.annotations.methods.OnPostEnable;
 import org.screamingsandals.lib.utils.annotations.methods.OnPreDisable;
 import org.screamingsandals.lib.utils.annotations.parameters.ConfigFile;
@@ -44,7 +46,8 @@ import org.spongepowered.configurate.serialize.SerializationException;
 import java.util.ArrayList;
 import java.util.List;
 
-@Service(dependsOn = {
+@Service
+@ServiceDependencies(dependsOn = {
         org.screamingsandals.lib.npc.NPCManager.class
 })
 @RequiredArgsConstructor
@@ -112,24 +115,22 @@ public class NPCManager {
     }
 
     @OnEvent
-    public void onPlayerJoin(SPlayerJoinEvent event) {
+    public void onPlayerJoin(PlayerJoinEvent event) {
         npcs.forEach(bedWarsNPC -> {
             var npc = bedWarsNPC.getNpc();
             if (npc != null) {
-                Tasker.build(() -> {
+                Tasker.runDelayed(DefaultThreads.GLOBAL_THREAD, () -> {
                             final var player = event.player();
                             if (player.isOnline()) {
                                 npc.addViewer(player);
                             }
-                        })
-                        .delay(10, TaskerTime.TICKS)
-                        .start();
+                        }, 10, TaskerTime.TICKS);
             }
         });
     }
 
     @OnEvent
-    public void onPlayerLeave(SPlayerLeaveEvent event) {
+    public void onPlayerLeave(PlayerLeaveEvent event) {
         npcs.forEach(bedWarsNPC -> {
             var npc = bedWarsNPC.getNpc();
             if (npc != null) {

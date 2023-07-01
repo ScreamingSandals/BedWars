@@ -28,11 +28,11 @@ import org.screamingsandals.bedwars.utils.DelayFactoryImpl;
 import org.screamingsandals.bedwars.utils.ItemUtils;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.lib.event.OnEvent;
-import org.screamingsandals.lib.event.entity.SEntityDamageEvent;
-import org.screamingsandals.lib.event.player.SPlayerBlockBreakEvent;
-import org.screamingsandals.lib.event.player.SPlayerInteractEvent;
+import org.screamingsandals.lib.event.entity.EntityDamageEvent;
+import org.screamingsandals.lib.event.player.PlayerBlockBreakEvent;
+import org.screamingsandals.lib.event.player.PlayerInteractEvent;
 import org.screamingsandals.lib.lang.Message;
-import org.screamingsandals.lib.player.PlayerWrapper;
+import org.screamingsandals.lib.player.Player;
 import org.screamingsandals.lib.utils.BlockFace;
 import org.screamingsandals.lib.utils.annotations.Service;
 
@@ -48,7 +48,7 @@ public class RescuePlatformListener {
     }
 
     @OnEvent
-    public void onPlayerUseItem(SPlayerInteractEvent event) {
+    public void onPlayerUseItem(PlayerInteractEvent event) {
         var player = event.player();
         if (!PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
             return;
@@ -57,7 +57,7 @@ public class RescuePlatformListener {
         var gPlayer = PlayerManagerImpl.getInstance().getPlayer(player).orElseThrow();
         var game = gPlayer.getGame();
 
-        if (event.action() == SPlayerInteractEvent.Action.RIGHT_CLICK_AIR || event.action() == SPlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
+        if (event.action() == PlayerInteractEvent.Action.RIGHT_CLICK_AIR || event.action() == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
             if (game != null && game.getStatus() == GameStatus.RUNNING && !gPlayer.isSpectator() && event.item() != null) {
                 var stack = event.item();
                 var unhidden = ItemUtils.getIfStartsWith(stack, RESCUE_PLATFORM_PREFIX);
@@ -75,7 +75,7 @@ public class RescuePlatformListener {
 
                         var rescuePlatform = new RescuePlatformImpl(game, gPlayer, game.getPlayerTeam(gPlayer), stack);
 
-                        if (!player.getLocation().add(BlockFace.DOWN).getBlock().getType().isAir()) {
+                        if (!player.getLocation().add(BlockFace.DOWN).getBlock().block().isAir()) {
                             MiscUtils.sendActionBarMessage(player, Message.of(LangKeys.SPECIALS_RESCUE_PLATFORM_NOT_IN_AIR).placeholder("time", delay));
                             return;
                         }
@@ -98,13 +98,13 @@ public class RescuePlatformListener {
     }
 
     @OnEvent
-    public void onFallDamage(SEntityDamageEvent event) {
+    public void onFallDamage(EntityDamageEvent event) {
         var entity = event.entity();
-        if (event.cancelled() || !(entity instanceof PlayerWrapper)) {
+        if (event.cancelled() || !(entity instanceof Player)) {
             return;
         }
 
-        var player = (PlayerWrapper) entity;
+        var player = (Player) entity;
         if (!PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
             return;
         }
@@ -118,16 +118,14 @@ public class RescuePlatformListener {
         var rescuePlatform = game.getFirstActiveSpecialItemOfPlayer(gPlayer, RescuePlatformImpl.class);
         if (rescuePlatform != null && event.damageCause().is("FALL")) {
             var block = player.getLocation().add(BlockFace.DOWN).getBlock();
-            if (block != null) {
-                if (block.getType().isSameType(rescuePlatform.getMaterial())) {
-                    event.cancelled(true);
-                }
+            if (block.block().isSameType(rescuePlatform.getMaterial())) {
+                event.cancelled(true);
             }
         }
     }
 
     @OnEvent
-    public void onBlockBreak(SPlayerBlockBreakEvent event) {
+    public void onBlockBreak(PlayerBlockBreakEvent event) {
         var player = event.player();
         if (!PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
             return;

@@ -20,7 +20,7 @@
 package org.screamingsandals.bedwars.api.game;
 
 import org.jetbrains.annotations.ApiStatus;
-import org.screamingsandals.lib.utils.Wrapper;
+import org.screamingsandals.lib.api.Wrapper;
 
 /**
  * @author ScreamingSandals
@@ -66,11 +66,6 @@ public interface ItemSpawnerType {
      * @return
      */
     Wrapper getItemBoldName();
-
-    /**
-     * @return
-     */
-    int getDamage();
 
     /**
      * @return

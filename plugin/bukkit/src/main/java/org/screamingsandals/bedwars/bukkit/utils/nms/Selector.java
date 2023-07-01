@@ -21,7 +21,7 @@ package org.screamingsandals.bedwars.bukkit.utils.nms;
 
 import org.screamingsandals.bedwars.nms.accessors.GoalSelectorAccessor;
 import org.screamingsandals.bedwars.nms.accessors.MobAccessor;
-import org.screamingsandals.lib.bukkit.utils.nms.ClassStorage;
+import org.screamingsandals.lib.impl.bukkit.utils.nms.ClassStorage;
 import org.screamingsandals.lib.utils.reflect.Reflect;
 
 import java.lang.reflect.Field;

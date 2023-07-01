@@ -31,19 +31,19 @@ import java.util.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.lang.LangKeys;
-import org.screamingsandals.lib.item.Item;
-import org.screamingsandals.lib.item.builder.ItemFactory;
+import org.screamingsandals.lib.item.ItemStack;
+import org.screamingsandals.lib.item.builder.ItemStackFactory;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.nbt.CompoundTag;
 import org.screamingsandals.lib.nbt.NumericTag;
 import org.screamingsandals.lib.nbt.SNBTSerializer;
 import org.screamingsandals.lib.nbt.StringTag;
-import org.screamingsandals.lib.player.PlayerWrapper;
-import org.screamingsandals.lib.sender.CommandSenderWrapper;
+import org.screamingsandals.lib.player.Player;
+import org.screamingsandals.lib.sender.CommandSender;
 import org.screamingsandals.lib.spectator.Component;
 import org.screamingsandals.lib.spectator.utils.ComponentMessageThrowable;
 
-public final class ItemArgument extends CommandArgument<CommandSenderWrapper, Item> {
+public final class ItemArgument extends CommandArgument<CommandSender, ItemStack> {
 
     private ItemArgument(final boolean required, final @NotNull String name, final @NotNull String defaultValue) {
         super(
@@ -51,7 +51,7 @@ public final class ItemArgument extends CommandArgument<CommandSenderWrapper, It
                 name,
                 new ItemParser(),
                 defaultValue,
-                TypeToken.get(Item.class),
+                TypeToken.get(ItemStack.class),
                 null,
                 new LinkedList<>()
         );
@@ -83,11 +83,11 @@ public final class ItemArgument extends CommandArgument<CommandSenderWrapper, It
     }
 
 
-    public static final class ItemParser implements ArgumentParser<CommandSenderWrapper, Item> {
+    public static final class ItemParser implements ArgumentParser<CommandSender, ItemStack> {
 
         @Override
         @NotNull
-        public ArgumentParseResult<@NotNull Item> parse(final @NotNull CommandContext<@NotNull CommandSenderWrapper> commandContext, final @NotNull Queue<@NotNull String> inputQueue) {
+        public ArgumentParseResult<@NotNull ItemStack> parse(final @NotNull CommandContext<@NotNull CommandSender> commandContext, final @NotNull Queue<@NotNull String> inputQueue) {
             if (inputQueue.peek() == null) {
                 return ArgumentParseResult.failure(
                         new NoInputProvidedException(
@@ -114,10 +114,10 @@ public final class ItemArgument extends CommandArgument<CommandSenderWrapper, It
 
             if ("itemInHand".equalsIgnoreCase(input)) {
                 var sender = commandContext.getSender();
-                if (sender instanceof PlayerWrapper) {
-                    var hand = ((PlayerWrapper) sender).getItemInMainHand();
+                if (sender instanceof Player) {
+                    var hand = ((Player) sender).getItemInMainHand();
                     if (hand == null || hand.isAir()) {
-                        hand = ((PlayerWrapper) sender).getItemInOffHand();
+                        hand = ((Player) sender).getItemInOffHand();
                     }
                     if (hand != null && !hand.isAir()) {
                         return ArgumentParseResult.success(hand);
@@ -131,9 +131,9 @@ public final class ItemArgument extends CommandArgument<CommandSenderWrapper, It
                     }
                 }
             }
-            var opt = ItemFactory.build(input);
-            if (opt.isPresent()) {
-                return ArgumentParseResult.success(opt.get());
+            var opt = ItemStackFactory.build(input);
+            if (opt != null) {
+                return ArgumentParseResult.success(opt);
             } else {
                 var snbt = SNBTSerializer.builder().shouldSaveLongArraysDirectly(true).build();
                 try {
@@ -143,15 +143,15 @@ public final class ItemArgument extends CommandArgument<CommandSenderWrapper, It
                         var count = tag.tag("count");
                         var metaTag = tag.tag("tag");
 
-                        var builder = ItemFactory.builder()
+                        var builder = ItemStackFactory.builder()
                                 .type(id.value())
                                 .amount(count instanceof NumericTag ? ((NumericTag) count).intValue() : 1);
                         if (metaTag instanceof CompoundTag) {
                             builder.tag((CompoundTag) metaTag);
                         }
                         var item = builder.build();
-                        if (item.isPresent()) {
-                            return ArgumentParseResult.success(item.get());
+                        if (item != null) {
+                            return ArgumentParseResult.success(item);
                         }
                     }
                 } catch (Throwable ignored) {
@@ -167,7 +167,7 @@ public final class ItemArgument extends CommandArgument<CommandSenderWrapper, It
         }
 
         @Override
-        public @NotNull List<@NotNull String> suggestions(final @NotNull CommandContext<CommandSenderWrapper> commandContext, final @NotNull String input) {
+        public @NotNull List<@NotNull String> suggestions(final @NotNull CommandContext<CommandSender> commandContext, final @NotNull String input) {
             final List<String> suggestions = new LinkedList<>();
             suggestions.add("itemInHand");
             suggestions.add("minecraft:stone");

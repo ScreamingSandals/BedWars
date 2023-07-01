@@ -30,19 +30,21 @@ import org.screamingsandals.bedwars.game.TeamImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.utils.MiscUtils;
-import org.screamingsandals.lib.entity.EntityLiving;
-import org.screamingsandals.lib.entity.EntityMapper;
-import org.screamingsandals.lib.item.Item;
-import org.screamingsandals.lib.item.builder.ItemFactory;
+import org.screamingsandals.lib.entity.LivingEntity;
+import org.screamingsandals.lib.entity.Entities;
+import org.screamingsandals.lib.item.ItemStack;
+import org.screamingsandals.lib.item.builder.ItemStackFactory;
 import org.screamingsandals.lib.lang.Message;
-import org.screamingsandals.lib.world.LocationHolder;
+import org.screamingsandals.lib.world.Location;
+
+import java.util.Objects;
 
 @Getter
 @EqualsAndHashCode(callSuper = true)
 public class GolemImpl extends SpecialItemImpl implements Golem {
-    private EntityLiving entity;
-    private final LocationHolder location;
-    private final Item item;
+    private LivingEntity entity;
+    private final Location location;
+    private final ItemStack item;
     private final double speed;
     private final double followRange;
     private final double health;
@@ -50,7 +52,7 @@ public class GolemImpl extends SpecialItemImpl implements Golem {
     private final boolean showName;
 
     public GolemImpl(GameImpl game, BedWarsPlayer player, TeamImpl team,
-                     Item item, LocationHolder location, double speed, double followRange, double health,
+                     ItemStack item, Location location, double speed, double followRange, double health,
                      String name, boolean showName) {
         super(game, player, team);
         this.location = location;
@@ -63,7 +65,7 @@ public class GolemImpl extends SpecialItemImpl implements Golem {
     }
 
     public void spawn() {
-        final var golem = EntityMapper.<EntityLiving>spawn("iron_golem", location).orElseThrow();
+        final var golem = (LivingEntity) Objects.requireNonNull(Entities.spawn("iron_golem", location));
         golem.setHealth(health);
         golem.setCustomName(name
                 .replace("%teamcolor%", MiscUtils.toLegacyColorCode(team.getColor().getTextColor()))
@@ -91,7 +93,7 @@ public class GolemImpl extends SpecialItemImpl implements Golem {
         var stack = item.withAmount(1);
         try {
             if (player.getPlayerInventory().getItemInOffHand().equals(stack)) {
-                player.getPlayerInventory().setItemInOffHand(ItemFactory.getAir());
+                player.getPlayerInventory().setItemInOffHand(ItemStackFactory.getAir());
             } else {
                 player.getPlayerInventory().removeItem(stack);
             }

@@ -24,9 +24,10 @@ import cloud.commandframework.CommandManager;
 import cloud.commandframework.arguments.standard.StringArgument;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.lib.lang.Message;
-import org.screamingsandals.lib.sender.CommandSenderWrapper;
+import org.screamingsandals.lib.sender.CommandSender;
+import org.screamingsandals.lib.utils.ResourceLocation;
 import org.screamingsandals.lib.utils.annotations.Service;
-import org.screamingsandals.lib.world.weather.WeatherHolder;
+import org.screamingsandals.lib.world.weather.WeatherType;
 
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -38,13 +39,13 @@ public class ArenaWeatherCommand extends BaseAdminSubCommand {
     }
 
     @Override
-    public void construct(CommandManager<CommandSenderWrapper> manager, Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder) {
+    public void construct(CommandManager<CommandSender> manager, Command.Builder<CommandSender> commandSenderWrapperBuilder) {
         manager.command(
                 commandSenderWrapperBuilder
                         .argument(StringArgument
-                                .<CommandSenderWrapper>newBuilder("arenaWeather")
+                                .<CommandSender>newBuilder("arenaWeather")
                                 .withSuggestionsProvider((c, s) ->
-                                        Stream.concat(WeatherHolder.all().stream().map(WeatherHolder::platformName), Stream.of("default")).collect(Collectors.toList())
+                                        Stream.concat(WeatherType.all().javaStreamOfLocations().map(ResourceLocation::asString), Stream.of("default")).collect(Collectors.toList())
                                 )
                             )
                         .handler(commandContext -> editMode(commandContext, (sender, game) -> {
@@ -52,10 +53,10 @@ public class ArenaWeatherCommand extends BaseAdminSubCommand {
 
                             if (!arenaWeather.equalsIgnoreCase("default")) {
                                 try {
-                                    var weatherType = WeatherHolder.of(arenaWeather);
+                                    var weatherType = WeatherType.of(arenaWeather);
                                     game.setArenaWeather(weatherType);
 
-                                    sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_WEATHER_SET).defaultPrefix().placeholder("weather", weatherType.platformName()));
+                                    sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_WEATHER_SET).defaultPrefix().placeholder("weather", weatherType.location().asString()));
                                 } catch (Exception e) {
                                     sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_INVALID_ARENA_WEATHER).defaultPrefix());
                                 }

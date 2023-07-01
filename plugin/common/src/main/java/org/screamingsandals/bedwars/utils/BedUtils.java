@@ -19,37 +19,36 @@
 
 package org.screamingsandals.bedwars.utils;
 
-import org.screamingsandals.lib.block.BlockTypeHolder;
+import org.screamingsandals.lib.block.Block;
 import org.screamingsandals.lib.utils.BlockFace;
-import org.screamingsandals.lib.block.BlockHolder;
+import org.screamingsandals.lib.block.BlockPlacement;
 
 public class BedUtils {
-    public static BlockHolder getBedNeighbor(BlockHolder head) {
+    public static BlockPlacement getBedNeighbor(BlockPlacement head) {
         if (!isBedBlock(head)) {
             return null;
         }
 
-        if (isBedBlock(head.getLocation().add(BlockFace.EAST).getBlock())) {
-            return head.getLocation().add(BlockFace.EAST).getBlock();
-        } else if (isBedBlock(head.getLocation().add(BlockFace.WEST).getBlock())) {
-            return head.getLocation().add(BlockFace.WEST).getBlock();
-        } else if (isBedBlock(head.getLocation().add(BlockFace.SOUTH).getBlock())) {
-            return head.getLocation().add(BlockFace.SOUTH).getBlock();
+        if (isBedBlock(head.location().add(BlockFace.EAST).getBlock())) {
+            return head.location().add(BlockFace.EAST).getBlock();
+        } else if (isBedBlock(head.location().add(BlockFace.WEST).getBlock())) {
+            return head.location().add(BlockFace.WEST).getBlock();
+        } else if (isBedBlock(head.location().add(BlockFace.SOUTH).getBlock())) {
+            return head.location().add(BlockFace.SOUTH).getBlock();
         } else {
-            return head.getLocation().add(BlockFace.NORTH).getBlock();
+            return head.location().add(BlockFace.NORTH).getBlock();
         }
     }
 
-    public static boolean isBedBlock(BlockHolder block) {
+    public static boolean isBedBlock(BlockPlacement block) {
         if (block == null) {
             return false;
         }
-        var data = block.getCurrentType();
 
-        return data.is("#beds");
+        return block.block().is("#beds");
     }
 
-    public static boolean isBedBlock(BlockTypeHolder data) {
+    public static boolean isBedBlock(Block data) {
         return data != null && data.is("#beds");
     }
 }

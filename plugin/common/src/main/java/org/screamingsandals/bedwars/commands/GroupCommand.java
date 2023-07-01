@@ -27,7 +27,7 @@ import org.screamingsandals.bedwars.game.GameManagerImpl;
 import org.screamingsandals.bedwars.game.GroupManagerImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.lib.lang.Message;
-import org.screamingsandals.lib.sender.CommandSenderWrapper;
+import org.screamingsandals.lib.sender.CommandSender;
 import org.screamingsandals.lib.utils.annotations.Service;
 
 import java.util.stream.Collectors;
@@ -44,16 +44,16 @@ public class GroupCommand extends BaseCommand {
     }
 
     @Override
-    protected void construct(Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder, CommandManager<CommandSenderWrapper> manager) {
+    protected void construct(Command.Builder<CommandSender> commandSenderWrapperBuilder, CommandManager<CommandSender> manager) {
         manager.command(
                 commandSenderWrapperBuilder
                         .literal("add")
-                        .argument(StringArgument.<CommandSenderWrapper>newBuilder("group")
+                        .argument(StringArgument.<CommandSender>newBuilder("group")
                                 .withSuggestionsProvider((c, s) ->
                                         groupManager.getExistingGroups()
                                 )
                         )
-                        .argument(StringArgument.<CommandSenderWrapper>newBuilder("game")
+                        .argument(StringArgument.<CommandSender>newBuilder("game")
                                 .withSuggestionsProvider((c, s) ->
                                         gameManager.getGameNames()
                                 )
@@ -82,12 +82,12 @@ public class GroupCommand extends BaseCommand {
         manager.command(
                 commandSenderWrapperBuilder
                         .literal("remove")
-                        .argument(StringArgument.<CommandSenderWrapper>newBuilder("group")
+                        .argument(StringArgument.<CommandSender>newBuilder("group")
                                 .withSuggestionsProvider((c, s) ->
                                         groupManager.getExistingGroups()
                                 )
                         )
-                        .argument(StringArgument.<CommandSenderWrapper>newBuilder("game")
+                        .argument(StringArgument.<CommandSender>newBuilder("game")
                                 .withSuggestionsProvider((c, s) ->
                                     groupManager.getGamesInGroup(c.get("group")).stream().map(GameImpl::getName).collect(Collectors.toList())
                                 )
@@ -111,7 +111,7 @@ public class GroupCommand extends BaseCommand {
         manager.command(
                 commandSenderWrapperBuilder
                         .literal("list")
-                        .argument(StringArgument.<CommandSenderWrapper>newBuilder("group")
+                        .argument(StringArgument.<CommandSender>newBuilder("group")
                                 .withSuggestionsProvider((c, s) ->
                                         groupManager.getExistingGroups()
                                 )

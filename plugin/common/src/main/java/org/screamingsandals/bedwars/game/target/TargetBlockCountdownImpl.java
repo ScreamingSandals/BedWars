@@ -29,7 +29,7 @@ import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.SerializableGameComponent;
 import org.screamingsandals.bedwars.game.SerializableGameComponentLoader;
 import org.screamingsandals.bedwars.utils.MiscUtils;
-import org.screamingsandals.lib.world.LocationHolder;
+import org.screamingsandals.lib.world.Location;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
@@ -45,7 +45,7 @@ public class TargetBlockCountdownImpl extends TargetBlockImpl implements TargetB
     private final int countdown;
     private volatile int remainingTime;
 
-    public TargetBlockCountdownImpl(@NotNull LocationHolder targetBlock, int countdown) {
+    public TargetBlockCountdownImpl(@NotNull Location targetBlock, int countdown) {
         super(targetBlock);
         this.countdown = countdown;
     }

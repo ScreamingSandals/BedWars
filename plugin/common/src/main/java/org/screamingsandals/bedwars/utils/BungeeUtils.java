@@ -23,8 +23,9 @@ import lombok.experimental.UtilityClass;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.lib.CustomPayload;
-import org.screamingsandals.lib.player.PlayerWrapper;
+import org.screamingsandals.lib.player.Player;
 import org.screamingsandals.lib.spectator.Component;
+import org.screamingsandals.lib.tasker.DefaultThreads;
 import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
 
@@ -34,17 +35,17 @@ import java.io.IOException;
 
 @UtilityClass
 public class BungeeUtils {
-    public void movePlayerToBungeeServer(PlayerWrapper player, boolean serverRestart) {
+    public void movePlayerToBungeeServer(Player player, boolean serverRestart) {
         if (serverRestart) {
             internalMove(player, true);
             return;
         }
 
-        Tasker.build(() -> internalMove(player, false)).afterOneTick().start();
+        Tasker.run(DefaultThreads.GLOBAL_THREAD, () -> internalMove(player, false));
     }
 
-    public void sendPlayerBungeeMessage(PlayerWrapper player, String string) {
-        Tasker.build(() -> {
+    public void sendPlayerBungeeMessage(Player player, String string) {
+        Tasker.runDelayed(DefaultThreads.GLOBAL_THREAD, () -> {
             var out = new ByteArrayOutputStream();
             var dout = new DataOutputStream(out);
 
@@ -57,12 +58,10 @@ public class BungeeUtils {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        })
-        .delay(30, TaskerTime.TICKS)
-        .start();
+        }, 30, TaskerTime.TICKS);
     }
 
-    private void internalMove(PlayerWrapper player, boolean restart) {
+    private void internalMove(Player player, boolean restart) {
         var server = MainConfig.getInstance().node("bungee", "server").getString("hub");
         var out = new ByteArrayOutputStream();
         var dout = new DataOutputStream(out);
@@ -77,13 +76,11 @@ public class BungeeUtils {
         }
         Debug.info("Player " + player.getName() + " has been moved to hub server.");
         if (!restart && MainConfig.getInstance().node("bungee", "kick-when-proxy-too-slow").getBoolean(true)) {
-            Tasker.build(() -> {
+            Tasker.runDelayed(DefaultThreads.GLOBAL_THREAD, () -> {
                 if (player.isOnline()) {
                     player.kick(Component.text("BedWars can't properly transfer player through bungee network. Contact server admin."));
                 }
-            })
-            .delay(20, TaskerTime.TICKS)
-            .start();
+            }, 20, TaskerTime.TICKS);
         }
     }
 }

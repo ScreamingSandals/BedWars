@@ -26,13 +26,12 @@ import org.screamingsandals.bedwars.bukkit.utils.nms.EntityLivingNMS;
 import org.screamingsandals.bedwars.nms.accessors.MeleeAttackGoalAccessor;
 import org.screamingsandals.bedwars.nms.accessors.MobAccessor;
 import org.screamingsandals.bedwars.utils.EntityUtils;
-import org.screamingsandals.lib.bukkit.utils.nms.ClassStorage;
-import org.screamingsandals.lib.entity.EntityLiving;
+import org.screamingsandals.lib.impl.bukkit.utils.nms.ClassStorage;
 import org.screamingsandals.lib.utils.reflect.Reflect;
 
 public class BukkitEntityUtils implements EntityUtils {
     @Nullable
-    public EntitySelector makeMobAttackTarget(EntityLiving mob, double speed, double follow, double attackDamage) {
+    public EntitySelector makeMobAttackTarget(org.screamingsandals.lib.entity.LivingEntity mob, double speed, double follow, double attackDamage) {
         try {
             var handler = ClassStorage.getHandle(mob.as(LivingEntity.class));
             if (!MobAccessor.getType().isInstance(handler)) {

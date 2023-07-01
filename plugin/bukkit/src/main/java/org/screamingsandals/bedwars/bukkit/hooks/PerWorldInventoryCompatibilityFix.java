@@ -19,12 +19,12 @@
 
 package org.screamingsandals.bedwars.bukkit.hooks;
 
+import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
-import org.screamingsandals.lib.plugin.PluginManager;
 import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.utils.annotations.methods.OnPostEnable;
 
@@ -33,9 +33,8 @@ public class PerWorldInventoryCompatibilityFix {
     @OnPostEnable
     public void applyFix(Plugin plugin) {
         try {
-            var key = PluginManager.createKey("PerWorldInventory").orElseThrow();
-            if (PluginManager.isEnabled(key)) {
-                final var pwi = PluginManager.getPlatformClass(key).orElseThrow();
+            final var pwi = Bukkit.getPluginManager().getPlugin("PerWorldInventory");
+            if (pwi != null) {
                 if (pwi.getClass().getName().equals("me.ebonjaeger.perworldinventory.PerWorldInventory")) {
                     // Kotlin version
                     plugin.getServer().getPluginManager().registerEvents(new Listener() {

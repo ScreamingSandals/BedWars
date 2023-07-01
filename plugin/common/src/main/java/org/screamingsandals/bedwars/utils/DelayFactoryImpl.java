@@ -24,9 +24,10 @@ import org.screamingsandals.bedwars.api.special.SpecialItem;
 import org.screamingsandals.bedwars.api.utils.DelayFactory;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
+import org.screamingsandals.lib.tasker.DefaultThreads;
 import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
-import org.screamingsandals.lib.tasker.task.TaskerTask;
+import org.screamingsandals.lib.tasker.task.Task;
 
 @Data
 public class DelayFactoryImpl implements DelayFactory {
@@ -35,7 +36,7 @@ public class DelayFactoryImpl implements DelayFactory {
     private final BedWarsPlayer player;
     private final GameImpl game;
     private boolean delayActive;
-    private TaskerTask task;
+    private Task task;
 
     public DelayFactoryImpl(int remainDelay, SpecialItem specialItem, BedWarsPlayer player, GameImpl game) {
         this.remainDelay = remainDelay;
@@ -47,7 +48,7 @@ public class DelayFactoryImpl implements DelayFactory {
     }
 
     private void runDelay() {
-        task = Tasker.build(() -> {
+        task = Tasker.runRepeatedly(DefaultThreads.GLOBAL_THREAD, () -> {
             if (remainDelay > 0) {
                 delayActive = true;
                 remainDelay--;
@@ -58,8 +59,6 @@ public class DelayFactoryImpl implements DelayFactory {
                     game.unregisterDelay(this);
                 }
             }
-        })
-        .repeat(20, TaskerTime.TICKS)
-        .start();
+        }, 20, TaskerTime.TICKS);
     }
 }

@@ -30,8 +30,7 @@ import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.GameManagerImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.lib.lang.Message;
-import org.screamingsandals.lib.sender.CommandSenderWrapper;
-import org.screamingsandals.lib.utils.TriFunction;
+import org.screamingsandals.lib.sender.CommandSender;
 import org.screamingsandals.lib.utils.annotations.ServiceDependencies;
 import org.screamingsandals.lib.utils.annotations.methods.OnPostEnable;
 import org.screamingsandals.lib.utils.annotations.parameters.ProvidedBy;
@@ -49,13 +48,13 @@ public abstract class BaseAdminSubCommand {
     private final String name;
 
     @OnPostEnable
-    public void onPostEnable(@ProvidedBy(CommandService.class) CommandManager<CommandSenderWrapper> manager, @ProvidedBy(AdminCommand.class) Command.Builder<CommandSenderWrapper> builder) {
+    public void onPostEnable(@ProvidedBy(CommandService.class) CommandManager<CommandSender> manager, @ProvidedBy(AdminCommand.class) Command.Builder<CommandSender> builder) {
         construct(manager, builder.literal(name));
     }
 
-    public abstract void construct(CommandManager<CommandSenderWrapper> manager, Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder);
+    public abstract void construct(CommandManager<CommandSender> manager, Command.Builder<CommandSender> commandSenderWrapperBuilder);
 
-    protected void editMode(CommandContext<CommandSenderWrapper> commandContext, BiConsumer<CommandSenderWrapper, GameImpl> handler) {
+    protected void editMode(CommandContext<CommandSender> commandContext, BiConsumer<CommandSender, GameImpl> handler) {
         var sender = commandContext.getSender();
         var game = editMode(commandContext);
 
@@ -66,7 +65,7 @@ public abstract class BaseAdminSubCommand {
         }
     }
 
-    protected void viewMode(CommandContext<CommandSenderWrapper> commandContext, BiConsumer<CommandSenderWrapper, GameImpl> handler) {
+    protected void viewMode(CommandContext<CommandSender> commandContext, BiConsumer<CommandSender, GameImpl> handler) {
         var sender = commandContext.getSender();
         var game = viewMode(commandContext);
 
@@ -77,7 +76,7 @@ public abstract class BaseAdminSubCommand {
         }
     }
 
-    protected BiFunction<CommandContext<CommandSenderWrapper>, String, List<String>> editModeSuggestion(TriFunction<CommandContext<CommandSenderWrapper>, CommandSenderWrapper, GameImpl, List<String>> handler) {
+    protected BiFunction<CommandContext<CommandSender>, String, List<String>> editModeSuggestion(TabCompletion handler) {
         return (commandContext, s) -> {
             var game = editMode(commandContext);
             var sender = commandContext.getSender();
@@ -89,7 +88,7 @@ public abstract class BaseAdminSubCommand {
         };
     }
 
-    protected BiFunction<CommandContext<CommandSenderWrapper>, String, List<String>> viewModeSuggestion(TriFunction<CommandContext<CommandSenderWrapper>, CommandSenderWrapper, GameImpl, List<String>> handler) {
+    protected BiFunction<CommandContext<CommandSender>, String, List<String>> viewModeSuggestion(TabCompletion handler) {
         return (commandContext, s) -> {
             var game = viewMode(commandContext);
             var sender = commandContext.getSender();
@@ -102,7 +101,7 @@ public abstract class BaseAdminSubCommand {
     }
 
     @Nullable
-    protected GameImpl editMode(CommandContext<CommandSenderWrapper> commandContext) {
+    protected GameImpl editMode(CommandContext<CommandSender> commandContext) {
         String gameName = commandContext.get("game");
 
         if (AdminCommand.gc.containsKey(gameName)) {
@@ -112,7 +111,7 @@ public abstract class BaseAdminSubCommand {
     }
 
     @Nullable
-    protected GameImpl viewMode(CommandContext<CommandSenderWrapper> commandContext) {
+    protected GameImpl viewMode(CommandContext<CommandSender> commandContext) {
         String gameName = commandContext.get("game");
 
         if (AdminCommand.gc.containsKey(gameName)) {
@@ -121,5 +120,9 @@ public abstract class BaseAdminSubCommand {
             return GameManagerImpl.getInstance().getGame(gameName).orElseThrow();
         }
         return null;
+    }
+
+    public interface TabCompletion {
+        List<String> apply(CommandContext<CommandSender> context, CommandSender commandSender, GameImpl game);
     }
 }

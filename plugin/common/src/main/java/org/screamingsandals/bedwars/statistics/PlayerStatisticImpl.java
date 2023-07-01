@@ -21,7 +21,7 @@ package org.screamingsandals.bedwars.statistics;
 
 import lombok.*;
 import org.screamingsandals.bedwars.api.statistics.PlayerStatistic;
-import org.screamingsandals.lib.player.PlayerMapper;
+import org.screamingsandals.lib.player.Players;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 
@@ -57,8 +57,10 @@ public class PlayerStatisticImpl implements PlayerStatistic {
     public PlayerStatisticImpl(UUID uuid) {
         this.uuid = uuid;
 
-        PlayerMapper.getPlayer(uuid)
-                .ifPresent(playerWrapper -> this.name = playerWrapper.getName());
+        var player = Players.getPlayer(uuid);
+        if (player != null) {
+            this.name = player.getName();
+        }
     }
 
     public PlayerStatisticImpl(Map<String, Object> deserialize) {

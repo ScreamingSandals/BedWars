@@ -29,11 +29,13 @@ import org.screamingsandals.lib.cloud.CloudConstructor;
 import org.screamingsandals.lib.cloud.extras.MinecraftExceptionHandler;
 import org.screamingsandals.lib.cloud.extras.MinecraftHelp;
 import org.screamingsandals.lib.lang.Message;
-import org.screamingsandals.lib.sender.CommandSenderWrapper;
+import org.screamingsandals.lib.sender.CommandSender;
 import org.screamingsandals.lib.utils.annotations.Service;
+import org.screamingsandals.lib.utils.annotations.ServiceDependencies;
 import org.screamingsandals.lib.utils.annotations.methods.Provider;
 
-@Service(dependsOn = {
+@Service
+@ServiceDependencies(dependsOn = {
         CloudConstructor.class
 }, initAnother = {
         AddholoCommand.class,
@@ -67,11 +69,11 @@ public class CommandService {
     public static final int HEADER_FOOTER_LENGTH = 55;
 
     @Provider(level = Provider.Level.POST_ENABLE)
-    public static CommandManager<CommandSenderWrapper> provideCommandManager() {
+    public static CommandManager<CommandSender> provideCommandManager() {
         try {
             var manager = CloudConstructor.construct(CommandExecutionCoordinator.simpleCoordinator());
 
-            new MinecraftExceptionHandler<CommandSenderWrapper>()
+            new MinecraftExceptionHandler<CommandSender>()
                     .withDefaultHandlers()
                     .withHandler(MinecraftExceptionHandler.ExceptionType.NO_PERMISSION, (senderWrapper, e) ->
                             Message.of(LangKeys.NO_PERMISSIONS).defaultPrefix().getForJoined(senderWrapper)

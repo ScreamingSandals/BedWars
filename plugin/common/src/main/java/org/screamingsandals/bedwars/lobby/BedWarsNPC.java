@@ -33,11 +33,11 @@ import org.screamingsandals.lib.Server;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.npc.NPC;
 import org.screamingsandals.lib.npc.skin.NPCSkin;
-import org.screamingsandals.lib.player.PlayerMapper;
-import org.screamingsandals.lib.player.PlayerWrapper;
+import org.screamingsandals.lib.player.Player;
+import org.screamingsandals.lib.tasker.DefaultThreads;
+import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.utils.InteractType;
-import org.screamingsandals.lib.utils.TriConsumer;
-import org.screamingsandals.lib.world.LocationHolder;
+import org.screamingsandals.lib.world.Location;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
 import java.util.ArrayList;
@@ -60,7 +60,7 @@ public class BedWarsNPC {
 
     public void spawn() {
         if (npc == null && location != null && location.isWorldLoaded()) {
-            npc = NPC.of(location.as(LocationHolder.class))
+            npc = NPC.of(location.as(Location.class))
                     .touchable(true)
                     .lookAtPlayer(shouldLookAtPlayer);
 
@@ -84,7 +84,7 @@ public class BedWarsNPC {
         }
     }
 
-    public void handleClick(PlayerWrapper player, InteractType type) {
+    public void handleClick(Player player, InteractType type) {
         if (action != null && (!action.requireArguments() || (value != null && !value.isEmpty()))) {
             action.handler.accept(this, player, type);
         }
@@ -95,39 +95,43 @@ public class BedWarsNPC {
         DUMMY((bedWarsNPC, player, type) -> {
         }),
         PLAYER_COMMAND((bedWarsNPC, player, type) -> {
-            Server.runSynchronously(() -> player.tryToDispatchCommand(bedWarsNPC.value));
+            Tasker.run(DefaultThreads.GLOBAL_THREAD, () -> player.tryToDispatchCommand(bedWarsNPC.value));
         }),
         CONSOLE_COMMAND((bedWarsNPC, player, type) -> {
-            Server.runSynchronously(() -> PlayerMapper.getConsoleSender().tryToDispatchCommand(bedWarsNPC.value));
+            Tasker.run(DefaultThreads.GLOBAL_THREAD, () -> Server.getConsoleSender().tryToDispatchCommand(bedWarsNPC.value));
         }),
         OPEN_GAMES_INVENTORY((bedWarsNPC, player, type) -> {
-            Server.runSynchronously(() -> GamesInventory.getInstance().openForPlayer(player, bedWarsNPC.value));
+            Tasker.run(DefaultThreads.GLOBAL_THREAD, () -> GamesInventory.getInstance().openForPlayer(player, bedWarsNPC.value));
         }),
         JOIN_GAME((bedWarsNPC, player, type) -> {
             GameManagerImpl.getInstance().getGame(bedWarsNPC.value).ifPresent(game1 ->
-                    Server.runSynchronously(() -> game1.joinToGame(PlayerManagerImpl.getInstance().getPlayerOrCreate(player)))
+                    Tasker.run(DefaultThreads.GLOBAL_THREAD, () -> game1.joinToGame(PlayerManagerImpl.getInstance().getPlayerOrCreate(player)))
             );
         }),
         JOIN_GROUP((bedWarsNPC, player, type) -> {
             MiscUtils.getGameWithHighestPlayers(GroupManagerImpl.getInstance().getGamesInGroup(bedWarsNPC.value), false).ifPresent(game ->
-                    Server.runSynchronously(() -> game.joinToGame(PlayerManagerImpl.getInstance().getPlayerOrCreate(player)))
+                    Tasker.run(DefaultThreads.GLOBAL_THREAD, () -> game.joinToGame(PlayerManagerImpl.getInstance().getPlayerOrCreate(player)))
             );
         }),
         JOIN_VARIANT((bedWarsNPC, player, type) -> {
             MiscUtils.getGameWithHighestPlayers(GameManagerImpl.getInstance().getGames().stream().filter(game -> game.getGameVariant().getName().equals(bedWarsNPC.value)).collect(Collectors.toList()), false).ifPresent(game ->
-                    Server.runSynchronously(() -> game.joinToGame(PlayerManagerImpl.getInstance().getPlayerOrCreate(player)))
+                    Tasker.run(DefaultThreads.GLOBAL_THREAD, () -> game.joinToGame(PlayerManagerImpl.getInstance().getPlayerOrCreate(player)))
             );
         }),
         JOIN_RANDOM((bedWarsNPC, player, type) -> {
             GameManagerImpl.getInstance().getGameWithHighestPlayers(false).ifPresent(game ->
-                    Server.runSynchronously(() -> game.joinToGame(PlayerManagerImpl.getInstance().getPlayerOrCreate(player)))
+                    Tasker.run(DefaultThreads.GLOBAL_THREAD, () -> game.joinToGame(PlayerManagerImpl.getInstance().getPlayerOrCreate(player)))
             );
         });
 
-        private final TriConsumer<BedWarsNPC, PlayerWrapper, InteractType> handler;
+        private final Handler handler;
 
         public boolean requireArguments() {
             return this != DUMMY && this != JOIN_RANDOM;
+        }
+
+        public interface Handler {
+            void accept(BedWarsNPC bedWarsNPC, Player player, InteractType type);
         }
     }
 

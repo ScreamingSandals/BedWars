@@ -23,10 +23,10 @@ import lombok.Data;
 import org.screamingsandals.bedwars.api.events.OpenTeamSelectionEvent;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
-import org.screamingsandals.lib.event.SCancellableEvent;
+import org.screamingsandals.lib.event.CancellableEvent;
 
 @Data
-public class OpenTeamSelectionEventImpl implements OpenTeamSelectionEvent, SCancellableEvent {
+public class OpenTeamSelectionEventImpl implements OpenTeamSelectionEvent, CancellableEvent {
     private final GameImpl game;
     private final BedWarsPlayer player;
     private boolean cancelled;

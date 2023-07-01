@@ -23,12 +23,12 @@ import lombok.Data;
 import org.screamingsandals.bedwars.api.events.PostSpawnEffectEvent;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
-import org.screamingsandals.lib.event.SEvent;
-import org.screamingsandals.lib.world.LocationHolder;
+import org.screamingsandals.lib.event.Event;
+import org.screamingsandals.lib.world.Location;
 
 @Data
-public class PostSpawnEffectEventImpl implements PostSpawnEffectEvent, SEvent {
+public class PostSpawnEffectEventImpl implements PostSpawnEffectEvent, Event {
     private final GameImpl game;
-    private final LocationHolder location;
+    private final Location location;
     private final String effectsGroupName;
 }

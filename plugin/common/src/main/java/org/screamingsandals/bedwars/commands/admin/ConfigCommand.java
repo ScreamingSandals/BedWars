@@ -24,7 +24,7 @@ import cloud.commandframework.CommandManager;
 import org.screamingsandals.bedwars.commands.ConfigCommandFactory;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.lib.lang.Message;
-import org.screamingsandals.lib.sender.CommandSenderWrapper;
+import org.screamingsandals.lib.sender.CommandSender;
 import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.utils.annotations.parameters.DataFolder;
 
@@ -40,7 +40,7 @@ public class ConfigCommand extends BaseAdminSubCommand {
     }
 
     @Override
-    public void construct(CommandManager<CommandSenderWrapper> manager, Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder) {
+    public void construct(CommandManager<CommandSender> manager, Command.Builder<CommandSender> commandSenderWrapperBuilder) {
         ConfigCommandFactory.builder()
                 .manager(manager)
                 .commandBuilder(commandSenderWrapperBuilder)

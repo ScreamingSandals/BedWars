@@ -28,22 +28,23 @@ import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.bedwars.special.BridgeEggImpl;
 import org.screamingsandals.bedwars.utils.DelayFactoryImpl;
 import org.screamingsandals.bedwars.utils.MiscUtils;
-import org.screamingsandals.lib.entity.EntityMapper;
-import org.screamingsandals.lib.entity.EntityProjectile;
+import org.screamingsandals.lib.entity.Entities;
+import org.screamingsandals.lib.entity.Entity;
 import org.screamingsandals.lib.event.OnEvent;
-import org.screamingsandals.lib.event.entity.SProjectileHitEvent;
-import org.screamingsandals.lib.event.player.SPlayerInteractEvent;
+import org.screamingsandals.lib.event.entity.ProjectileHitEvent;
+import org.screamingsandals.lib.event.player.PlayerInteractEvent;
 import org.screamingsandals.lib.lang.Message;
-import org.screamingsandals.lib.item.builder.ItemFactory;
+import org.screamingsandals.lib.item.builder.ItemStackFactory;
 import org.screamingsandals.lib.utils.annotations.Service;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 @Service
 public class BridgeEggListener {
     private static final String BRIDGE_EGG_PREFIX = "Module:BridgeEgg:";
-    private final Map<EntityProjectile, BridgeEggImpl> bridges = new HashMap<>();
+    private final Map<Entity, BridgeEggImpl> bridges = new HashMap<>();
 
     @OnEvent
     public void onEggRegistration(ApplyPropertyToBoughtItemEventImpl event) {
@@ -53,7 +54,7 @@ public class BridgeEggListener {
     }
 
     @OnEvent
-    public void onEggUse(SPlayerInteractEvent event) {
+    public void onEggUse(PlayerInteractEvent event) {
         final var player = event.player();
         if (!PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
             return;
@@ -61,7 +62,7 @@ public class BridgeEggListener {
 
         BedWarsPlayer gamePlayer = PlayerManagerImpl.getInstance().getPlayer(player).orElseThrow();
         final var game = gamePlayer.getGame();
-        if (event.action() == SPlayerInteractEvent.Action.RIGHT_CLICK_AIR || event.action() == SPlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
+        if (event.action() == PlayerInteractEvent.Action.RIGHT_CLICK_AIR || event.action() == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
             if (game != null && game.getStatus() == GameStatus.RUNNING && !gamePlayer.isSpectator() && event.item() != null) {
                 var stack = event.item();
                 String unhidden = ItemUtils.getIfStartsWith(stack, BRIDGE_EGG_PREFIX);
@@ -74,7 +75,7 @@ public class BridgeEggListener {
                         var material = MiscUtils.getBlockTypeFromString(propertiesSplit[3], "GLASS");
                         var delay = Integer.parseInt(propertiesSplit[4]);
 
-                        var egg = EntityMapper.<EntityProjectile>spawn("egg", player.getLocation().add(0, 1, 0)).orElseThrow();
+                        var egg = Objects.requireNonNull(Entities.spawn("egg", player.getLocation().add(0, 1, 0)));
                         egg.setVelocity(player.getLocation().getFacingDirection().multiply(2));
 
                         var bridgeEgg = new BridgeEggImpl(game, gamePlayer, game.getPlayerTeam(gamePlayer), egg, material, distance);
@@ -90,7 +91,7 @@ public class BridgeEggListener {
                         var stack2 = stack.withAmount(1); // we are removing exactly one egg
                         try {
                             if (player.getPlayerInventory().getItemInOffHand().equals(stack2)) {
-                                player.getPlayerInventory().setItemInOffHand(ItemFactory.getAir());
+                                player.getPlayerInventory().setItemInOffHand(ItemStackFactory.getAir());
                             } else {
                                 player.getPlayerInventory().removeItem(stack2);
                             }
@@ -110,11 +111,8 @@ public class BridgeEggListener {
     }
 
     @OnEvent
-    public void onProjectileHit(SProjectileHitEvent event) {
+    public void onProjectileHit(ProjectileHitEvent event) {
         final var egg = event.entity();
-        if (!(egg instanceof EntityProjectile)) {
-            return;
-        }
 
         if (this.bridges.containsKey(egg)) {
             egg.remove();

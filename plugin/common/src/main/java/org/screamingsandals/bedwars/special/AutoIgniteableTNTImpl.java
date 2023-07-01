@@ -26,13 +26,15 @@ import org.screamingsandals.bedwars.entities.EntitiesManagerImpl;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.TeamImpl;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
-import org.screamingsandals.lib.entity.type.EntityTypeHolder;
+import org.screamingsandals.lib.entity.type.EntityType;
+import org.screamingsandals.lib.tasker.DefaultThreads;
 import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
-import org.screamingsandals.lib.world.LocationHolder;
-import org.screamingsandals.lib.world.LocationMapper;
+import org.screamingsandals.lib.world.Location;
+import org.screamingsandals.lib.impl.world.Locations;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -55,23 +57,21 @@ public class AutoIgniteableTNTImpl extends SpecialItemImpl implements AutoIgnite
 
     @Override
     public void spawn(Object location) {
-        spawn(LocationMapper.wrapLocation(location));
+        spawn(Locations.wrapLocation(location));
     }
 
-    public void spawn(LocationHolder location) {
-        var tnt = EntityTypeHolder.of("tnt").spawn(location).orElseThrow();
+    public void spawn(Location location) {
+        var tnt = Objects.requireNonNull(EntityType.of("tnt").spawn(location));
         EntitiesManagerImpl.getInstance().addEntityToGame(tnt, game);
         tnt.setMetadata("yield", damage);
         tnt.setMetadata("fuse_ticks", explosionTime * 20);
         if (!allowedDamagingPlacer) {
             PROTECTED_PLAYERS.put(tnt.getEntityId(), player.getUuid());
         }
-        Tasker.build(() -> {
+        Tasker.runDelayed(DefaultThreads.GLOBAL_THREAD, () -> {
                     EntitiesManagerImpl.getInstance().removeEntityFromGame(tnt);
                     AutoIgniteableTNTImpl.PROTECTED_PLAYERS.remove(tnt.getEntityId());
-                })
-                .delay(explosionTime + 10, TaskerTime.TICKS)
-                .start();
+                }, explosionTime + 10, TaskerTime.TICKS);
     }
 
 }

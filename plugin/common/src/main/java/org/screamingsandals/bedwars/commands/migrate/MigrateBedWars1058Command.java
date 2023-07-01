@@ -28,8 +28,9 @@ import org.screamingsandals.bedwars.config.migrate.andrei.BedWars1058Configurati
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.lib.lang.Message;
-import org.screamingsandals.lib.sender.CommandSenderWrapper;
+import org.screamingsandals.lib.sender.CommandSender;
 import org.screamingsandals.lib.utils.annotations.Service;
+import org.screamingsandals.lib.utils.annotations.ServiceDependencies;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,7 +39,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.concurrent.CompletableFuture;
 
-@Service(dependsOn = {
+@Service
+@ServiceDependencies(dependsOn = {
         BedWars1058ConfigurationMigrator.class,
         BedWars1058ArenaMigrator.class
 })
@@ -48,7 +50,7 @@ public class MigrateBedWars1058Command extends MigrateCommand {
     private final FileMigrator arenaMigrator;
 
     @Override
-    protected void construct(Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder, CommandManager<CommandSenderWrapper> manager) {
+    protected void construct(Command.Builder<CommandSender> commandSenderWrapperBuilder, CommandManager<CommandSender> manager) {
         manager.command(
                 commandSenderWrapperBuilder
                         .literal("bw1058", "bedwars1058", "BedWars1058", "1058", "andrei1058")

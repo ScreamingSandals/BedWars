@@ -26,7 +26,7 @@ import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.SerializableGameComponent;
 import org.screamingsandals.bedwars.game.SerializableGameComponentLoader;
 import org.screamingsandals.bedwars.utils.MiscUtils;
-import org.screamingsandals.lib.world.LocationHolder;
+import org.screamingsandals.lib.world.Location;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
@@ -37,7 +37,7 @@ import java.util.Optional;
 @Data
 public class TargetBlockImpl implements TargetBlock, SerializableGameComponent {
     @NotNull
-    private final LocationHolder targetBlock;
+    private final Location targetBlock;
     private boolean valid = true;
 
     @Override
@@ -46,13 +46,13 @@ public class TargetBlockImpl implements TargetBlock, SerializableGameComponent {
             return false;
         }
 
-        var blockType = targetBlock.getBlock().getType();
+        var blockType = targetBlock.getBlock().block();
         if (!blockType.isSameType("respawn_anchor")) {
             return false;
         }
 
         var charges = blockType.getInt("charges");
-        return charges.map(a -> a == 0).orElse(true);
+        return charges != null && charges == 0;
     }
 
     @Override
@@ -61,12 +61,13 @@ public class TargetBlockImpl implements TargetBlock, SerializableGameComponent {
             return 0;
         }
 
-        var blockType = targetBlock.getBlock().getType();
+        var blockType = targetBlock.getBlock().block();
         if (!blockType.isSameType("respawn_anchor")) {
             return 1;
         }
 
-        return blockType.getInt("charges").orElse(1);
+        var charges = blockType.getInt("charges");
+        return charges != null ? charges : 1;
     }
 
     @Override

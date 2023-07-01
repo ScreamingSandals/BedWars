@@ -37,12 +37,12 @@ import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.bedwars.special.PopUpTowerImpl;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.lib.Server;
-import org.screamingsandals.lib.block.BlockTypeHolder;
-import org.screamingsandals.lib.entity.EntityMapper;
+import org.screamingsandals.lib.block.Block;
+import org.screamingsandals.lib.entity.Entities;
 import org.screamingsandals.lib.lang.Message;
-import org.screamingsandals.lib.player.PlayerMapper;
-import org.screamingsandals.lib.player.PlayerWrapper;
-import org.screamingsandals.lib.sender.CommandSenderWrapper;
+import org.screamingsandals.lib.player.Players;
+import org.screamingsandals.lib.player.Player;
+import org.screamingsandals.lib.sender.CommandSender;
 import org.screamingsandals.lib.utils.BlockFace;
 import org.screamingsandals.lib.utils.annotations.Service;
 
@@ -62,7 +62,7 @@ public class CheatCommand extends BaseCommand {
     }
 
     @Override
-    protected void construct(Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder, CommandManager<CommandSenderWrapper> manager) {
+    protected void construct(Command.Builder<CommandSender> commandSenderWrapperBuilder, CommandManager<CommandSender> manager) {
         if (!mainConfig.node("enable-cheat-command-for-admins").getBoolean()) {
             return;
         }
@@ -74,7 +74,7 @@ public class CheatCommand extends BaseCommand {
                         .withSuggestionsProvider((c, s) -> GameManagerImpl.getInstance().getGameNames())
                         .asOptional())
                 .handler(commandContext -> {
-                    var player = commandContext.getSender().as(PlayerWrapper.class);
+                    var player = commandContext.getSender().as(Player.class);
                     Optional<String> game = commandContext.getOptional("game");
 
                     var playerFace = MiscUtils.yawToFace(player.getLocation().getYaw(), false);
@@ -83,7 +83,7 @@ public class CheatCommand extends BaseCommand {
                         var arenaN = game.get();
                         GameManagerImpl.getInstance().getGame(arenaN).ifPresentOrElse(
                                 game1 -> {
-                                    var popupT = new PopUpTowerImpl(game1, playerManager.getPlayerOrCreate(player), null, BlockTypeHolder.of("minecraft:white_wool"), player.getLocation().getBlock().getLocation().add(playerFace).add(BlockFace.DOWN), playerFace);
+                                    var popupT = new PopUpTowerImpl(game1, playerManager.getPlayerOrCreate(player), null, Block.of("minecraft:white_wool"), player.getLocation().getBlock().location().add(playerFace).add(BlockFace.DOWN), playerFace);
                                     popupT.runTask();
                                     player.sendMessage(Message.of(LangKeys.IN_GAME_CHEAT_SPECIAL_ITEM_USED).placeholder("item", "Pop-Up Tower").defaultPrefix());
                                 },
@@ -91,7 +91,7 @@ public class CheatCommand extends BaseCommand {
                         );
                     } else if (playerManager.isPlayerInGame(player)) {
                         var bwPlayer = player.as(BedWarsPlayer.class);
-                        var popupT = new PopUpTowerImpl(bwPlayer.getGame(), bwPlayer, bwPlayer.getGame().getPlayerTeam(bwPlayer), BlockTypeHolder.of("minecraft:white_wool"), player.getLocation().getBlock().getLocation().add(playerFace).add(BlockFace.DOWN), playerFace);
+                        var popupT = new PopUpTowerImpl(bwPlayer.getGame(), bwPlayer, bwPlayer.getGame().getPlayerTeam(bwPlayer), Block.of("minecraft:white_wool"), player.getLocation().getBlock().location().add(playerFace).add(BlockFace.DOWN), playerFace);
                         popupT.runTask();
                         player.sendMessage(Message.of(LangKeys.IN_GAME_CHEAT_SPECIAL_ITEM_USED).placeholder("item", "Pop-Up Tower").defaultPrefix());
                     } else {
@@ -107,7 +107,7 @@ public class CheatCommand extends BaseCommand {
                         .withSuggestionsProvider((c, s) -> GameManagerImpl.getInstance().getGameNames())
                         .asOptional())
                 .handler(commandContext -> {
-                    var player = commandContext.getSender().as(PlayerWrapper.class);
+                    var player = commandContext.getSender().as(Player.class);
                     Optional<String> game = commandContext.getOptional("game");
 
                     if (game.isPresent()) {
@@ -134,7 +134,7 @@ public class CheatCommand extends BaseCommand {
                 .argument(manager
                         .argumentBuilder(String.class, "resource")
                         .withSuggestionsProvider((c, s) -> {
-                            var player = c.getSender().as(PlayerWrapper.class);
+                            var player = c.getSender().as(Player.class);
 
                             var game = playerManager.getGameOfPlayer(player);
                             if (game.isEmpty()) {
@@ -148,12 +148,12 @@ public class CheatCommand extends BaseCommand {
                 .argument(manager
                         .argumentBuilder(String.class, "player")
                         .withSuggestionsProvider((c, s) ->
-                                Server.getConnectedPlayers().stream().map(PlayerWrapper::getName).collect(Collectors.toList())
+                                Server.getConnectedPlayers().stream().map(Player::getName).collect(Collectors.toList())
                         )
                         .asOptional()
                 )
                 .handler(commandContext -> {
-                    var player = commandContext.getSender().as(PlayerWrapper.class);
+                    var player = commandContext.getSender().as(Player.class);
 
                     var game = playerManager.getGameOfPlayer(player);
                     if (game.isEmpty()) {
@@ -170,7 +170,7 @@ public class CheatCommand extends BaseCommand {
                     var receiver = commandContext.<String>getOptional("player");
                     BedWarsPlayer bwPlayer;
                     if (receiver.isPresent()) {
-                        var playerWrapper = receiver.flatMap(PlayerMapper::getPlayer);
+                        var playerWrapper = receiver.map(Players::getPlayer);
                         if (playerWrapper.isEmpty() || !playerManager.isPlayerInGame(playerWrapper.get())) {
                             player.sendMessage(Message.of(LangKeys.IN_GAME_CHEAT_INVALID_PLAYER));
                             return;
@@ -191,7 +191,7 @@ public class CheatCommand extends BaseCommand {
                     }
                     var remaining = bwPlayer.getPlayerInventory().addItem(spawnerType.getItem(amount));
                     remaining.forEach(item ->
-                        EntityMapper.dropItem(item, player.getLocation())
+                        Entities.dropItem(item, player.getLocation())
                     );
                     Message.of(LangKeys.IN_GAME_CHEAT_RECEIVED_GIVE)
                             .placeholder("player", player.getName())
@@ -208,11 +208,11 @@ public class CheatCommand extends BaseCommand {
                         .argument(manager
                                 .argumentBuilder(String.class, "player")
                                 .withSuggestionsProvider((c, s) ->
-                                        Server.getConnectedPlayers().stream().map(PlayerWrapper::getName).collect(Collectors.toList())
+                                        Server.getConnectedPlayers().stream().map(Player::getName).collect(Collectors.toList())
                                 )
                                 .asOptional())
                         .handler(commandContext -> {
-                            var player = commandContext.getSender().as(PlayerWrapper.class);
+                            var player = commandContext.getSender().as(Player.class);
 
                             var game = playerManager.getGameOfPlayer(player);
                             if (game.isEmpty()) {
@@ -227,7 +227,7 @@ public class CheatCommand extends BaseCommand {
                             var receiver = commandContext.<String>getOptional("player");
                             BedWarsPlayer bwPlayer;
                             if (receiver.isPresent()) {
-                                var playerWrapper = receiver.flatMap(PlayerMapper::getPlayer);
+                                var playerWrapper = receiver.map(Players::getPlayer);
                                 if (playerWrapper.isEmpty() || !playerManager.isPlayerInGame(playerWrapper.get())) {
                                     player.sendMessage(Message.of(LangKeys.IN_GAME_CHEAT_INVALID_PLAYER));
                                     return;
@@ -261,7 +261,7 @@ public class CheatCommand extends BaseCommand {
         manager.command(commandSenderWrapperBuilder
                 .literal("startEmptyGame")
                 .handler(commandContext -> {
-                    var player = commandContext.getSender().as(PlayerWrapper.class);
+                    var player = commandContext.getSender().as(Player.class);
 
                     var game = playerManager.getGameOfPlayer(player);
                     if (game.isEmpty()) {
@@ -281,9 +281,9 @@ public class CheatCommand extends BaseCommand {
 
         manager.command(commandSenderWrapperBuilder
                 .literal("invalidateTarget", "destroybed")
-                .argument(StringArgument.<CommandSenderWrapper>newBuilder("team")
+                .argument(StringArgument.<CommandSender>newBuilder("team")
                         .withSuggestionsProvider((c, s) -> {
-                            var player = c.getSender().as(PlayerWrapper.class);
+                            var player = c.getSender().as(Player.class);
 
                             var game = playerManager.getGameOfPlayer(player);
                             if (game.isEmpty()) {
@@ -294,7 +294,7 @@ public class CheatCommand extends BaseCommand {
                         })
                 )
                 .handler(commandContext -> {
-                    var player = commandContext.getSender().as(PlayerWrapper.class);
+                    var player = commandContext.getSender().as(Player.class);
 
                     var game = playerManager.getGameOfPlayer(player);
                     if (game.isEmpty()) {
@@ -349,7 +349,7 @@ public class CheatCommand extends BaseCommand {
         manager.command(commandSenderWrapperBuilder
                 .literal("invalidateAllTargets", "destroyallbeds")
                 .handler(commandContext -> {
-                    var player = commandContext.getSender().as(PlayerWrapper.class);
+                    var player = commandContext.getSender().as(Player.class);
 
                     var game = playerManager.getGameOfPlayer(player);
                     if (game.isEmpty()) {
@@ -377,9 +377,9 @@ public class CheatCommand extends BaseCommand {
 
         manager.command(commandSenderWrapperBuilder
                 .literal("joinTeam")
-                .argument(StringArgument.<CommandSenderWrapper>newBuilder("team")
+                .argument(StringArgument.<CommandSender>newBuilder("team")
                         .withSuggestionsProvider((c, s) -> {
-                            var player = c.getSender().as(PlayerWrapper.class);
+                            var player = c.getSender().as(Player.class);
 
                             var game = playerManager.getGameOfPlayer(player);
                             if (game.isEmpty()) {
@@ -390,14 +390,14 @@ public class CheatCommand extends BaseCommand {
                         })
                         .asOptional()
                 )
-                .argument(StringArgument.<CommandSenderWrapper>newBuilder("player")
+                .argument(StringArgument.<CommandSender>newBuilder("player")
                         .withSuggestionsProvider((c, s) ->
-                                Server.getConnectedPlayers().stream().map(PlayerWrapper::getName).collect(Collectors.toList())
+                                Server.getConnectedPlayers().stream().map(Player::getName).collect(Collectors.toList())
                         )
                         .asOptional()
                 )
                 .handler(commandContext -> {
-                    var player = commandContext.getSender().as(PlayerWrapper.class);
+                    var player = commandContext.getSender().as(Player.class);
 
                     var gameOpt = playerManager.getGameOfPlayer(player);
                     if (gameOpt.isEmpty()) {
@@ -409,14 +409,14 @@ public class CheatCommand extends BaseCommand {
                     @Nullable String teamName = commandContext.getOrDefault("team", null);
 
                     @Nullable String chosenPlayer = commandContext.getOrDefault("player", null);
-                    @Nullable PlayerWrapper chosenPlayerWrapper = null;
+                    @Nullable Player chosenPlayerWrapper = null;
                     if (chosenPlayer != null) {
-                        var chosenPlayerWrapperOpt = PlayerMapper.getPlayer(chosenPlayer);
-                        if (chosenPlayerWrapperOpt.isEmpty() || !playerManager.isPlayerInGame(chosenPlayerWrapperOpt.get())) {
+                        var chosenPlayerOpt = Players.getPlayer(chosenPlayer);
+                        if (chosenPlayerOpt == null || !playerManager.isPlayerInGame(chosenPlayerOpt)) {
                             player.sendMessage(Message.of(LangKeys.IN_GAME_CHEAT_INVALID_PLAYER));
                             return;
                         } else {
-                            chosenPlayerWrapper = chosenPlayerWrapperOpt.get();
+                            chosenPlayerWrapper = chosenPlayerOpt;
                         }
                     }
 

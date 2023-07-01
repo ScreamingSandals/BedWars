@@ -26,11 +26,11 @@ import org.screamingsandals.bedwars.api.events.BedDestroyedMessageSendEvent;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.TeamImpl;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
-import org.screamingsandals.lib.event.SCancellableEvent;
+import org.screamingsandals.lib.event.CancellableEvent;
 import org.screamingsandals.lib.lang.Message;
 
 @Data
-public class BedDestroyedMessageSendEventImpl implements BedDestroyedMessageSendEvent, SCancellableEvent {
+public class BedDestroyedMessageSendEventImpl implements BedDestroyedMessageSendEvent, CancellableEvent {
     private final GameImpl game;
     private final BedWarsPlayer victim;
     @Nullable

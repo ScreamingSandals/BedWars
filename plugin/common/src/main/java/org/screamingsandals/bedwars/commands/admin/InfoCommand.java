@@ -26,7 +26,7 @@ import org.screamingsandals.bedwars.game.GameManagerImpl;
 import org.screamingsandals.bedwars.game.target.TargetBlockImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.lib.lang.Message;
-import org.screamingsandals.lib.sender.CommandSenderWrapper;
+import org.screamingsandals.lib.sender.CommandSender;
 import org.screamingsandals.lib.spectator.Component;
 import org.screamingsandals.lib.spectator.event.ClickEvent;
 import org.screamingsandals.lib.utils.annotations.Service;
@@ -38,7 +38,7 @@ public class InfoCommand extends BaseAdminSubCommand {
     }
 
     @Override
-    public void construct(CommandManager<CommandSenderWrapper> manager, Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder) {
+    public void construct(CommandManager<CommandSender> manager, Command.Builder<CommandSender> commandSenderWrapperBuilder) {
         manager.command(
                 commandSenderWrapperBuilder.
                         literal("base").
@@ -289,7 +289,7 @@ public class InfoCommand extends BaseAdminSubCommand {
                                         .placeholder("yaw", loc_store.getYaw(), 5)
                                         .placeholder("pitch", loc_store.getPitch(), 5)
                                         .placeholder("world", loc_store.getWorld().getName())
-                                        .placeholder("type", store.getEntityType().platformName())
+                                        .placeholder("type", store.getEntityType().location().asString())
                                         .send(sender);
 
                                 Message
@@ -385,7 +385,7 @@ public class InfoCommand extends BaseAdminSubCommand {
                             Message
                                     .of(LangKeys.ADMIN_INFO_CONSTANT)
                                     .placeholder("constant", "arenaWeather")
-                                    .placeholder("value", weather != null ? weather.platformName() : "default")
+                                    .placeholder("value", weather != null ? weather.location().asString() : "default")
                                     .send(sender);
                         })
         );

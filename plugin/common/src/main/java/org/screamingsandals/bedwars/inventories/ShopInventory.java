@@ -40,18 +40,19 @@ import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.bedwars.special.listener.PermaItemListener;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.utils.MiscUtils;
-import org.screamingsandals.lib.SpecialSoundKey;
-import org.screamingsandals.lib.entity.EntityMapper;
+import org.screamingsandals.lib.entity.Entities;
 import org.screamingsandals.lib.event.EventManager;
 import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.lang.Message;
-import org.screamingsandals.lib.item.Item;
+import org.screamingsandals.lib.item.ItemStack;
 import org.screamingsandals.lib.plugin.ServiceManager;
 import org.screamingsandals.lib.spectator.Component;
 import org.screamingsandals.lib.spectator.sound.SoundSource;
 import org.screamingsandals.lib.spectator.sound.SoundStart;
 import org.screamingsandals.lib.utils.ConfigurateUtils;
+import org.screamingsandals.lib.utils.ResourceLocation;
 import org.screamingsandals.lib.utils.annotations.Service;
+import org.screamingsandals.lib.utils.annotations.ServiceDependencies;
 import org.screamingsandals.lib.utils.annotations.methods.OnPostEnable;
 import org.screamingsandals.lib.utils.annotations.parameters.DataFolder;
 import org.screamingsandals.simpleinventories.SimpleInventoriesCore;
@@ -69,7 +70,8 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Service(dependsOn = {
+@Service
+@ServiceDependencies(dependsOn = {
         SimpleInventoriesCore.class
 })
 @RequiredArgsConstructor
@@ -142,7 +144,7 @@ public class ShopInventory {
                 player.openInventory(shopMap.get("default"));
             }
         } catch (Throwable throwable) {
-            player.sendMessage("[BW] Your shop.yml/shop.groovy is invalid! Check it out or contact us on Discord.");
+            player.sendMessage(Component.text("[BW] Your shop.yml/shop.groovy is invalid! Check it out or contact us on Discord."));
             throwable.printStackTrace();
         }
     }
@@ -405,7 +407,7 @@ public class ShopInventory {
         shopMap.put(name, inventorySet);
     }
 
-    private static Component getNameOrCustomNameOfItem(Item item) {
+    private static Component getNameOrCustomNameOfItem(ItemStack item) {
         try {
             if (item.getDisplayName() != null) {
                 return item.getDisplayName();
@@ -413,7 +415,7 @@ public class ShopInventory {
         } catch (Throwable ignored) {
         }
 
-        var normalItemName = item.getMaterial().platformName().replace("_", " ").toLowerCase();
+        var normalItemName = item.getMaterial().location().path().replace("-", " ").replace("_", " ");
         var sArray = normalItemName.split(" ");
         var stringBuilder = new StringBuilder();
 
@@ -517,7 +519,7 @@ public class ShopInventory {
             event.sellStack(materialItem);
             var notFit = event.buyStack(newItem);
             if (!notFit.isEmpty()) {
-                notFit.forEach(stack -> EntityMapper.dropItem(stack, player.getLocation()));
+                notFit.forEach(stack -> Entities.dropItem(stack, player.getLocation()));
             }
 
             if (!mainConfig.node("removePurchaseMessages").getBoolean()) {
@@ -528,7 +530,7 @@ public class ShopInventory {
                         .send(event.getPlayer());
             }
             player.playSound(SoundStart.sound(
-                    SpecialSoundKey.key(mainConfig.node("sounds", "item_buy", "sound").getString("entity.item.pickup")),
+                    ResourceLocation.of(mainConfig.node("sounds", "item_buy", "sound").getString("entity.item.pickup")),
                     SoundSource.PLAYER,
                     (float) MainConfig.getInstance().node("sounds", "item_buy", "volume").getDouble(),
                     (float) MainConfig.getInstance().node("sounds", "item_buy", "pitch").getDouble()
@@ -669,7 +671,7 @@ public class ShopInventory {
                                     .send(player1);
                         }
                         player.playSound(SoundStart.sound(
-                                SpecialSoundKey.key(mainConfig.node("sounds", "upgrade_buy", "sound").getString("entity.experience_orb.pickup")),
+                                ResourceLocation.of(mainConfig.node("sounds", "upgrade_buy", "sound").getString("entity.experience_orb.pickup")),
                                 SoundSource.PLAYER,
                                 (float) MainConfig.getInstance().node("sounds", "upgrade_buy", "volume").getDouble(),
                                 (float) MainConfig.getInstance().node("sounds", "upgrade_buy", "pitch").getDouble()
@@ -685,7 +687,7 @@ public class ShopInventory {
                                 .send(event.getPlayer());
                     }
                     player.playSound(SoundStart.sound(
-                            SpecialSoundKey.key(mainConfig.node("sounds", "upgrade_buy", "sound").getString("entity.experience_orb.pickup")),
+                            ResourceLocation.of(mainConfig.node("sounds", "upgrade_buy", "sound").getString("entity.experience_orb.pickup")),
                             SoundSource.PLAYER,
                             (float) MainConfig.getInstance().node("sounds", "upgrade_buy", "volume").getDouble(),
                             (float) MainConfig.getInstance().node("sounds", "upgrade_buy", "pitch").getDouble()

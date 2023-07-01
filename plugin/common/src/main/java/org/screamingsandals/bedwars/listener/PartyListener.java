@@ -29,11 +29,13 @@ import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.lang.Message;
-import org.screamingsandals.lib.plugin.PluginManager;
+import org.screamingsandals.lib.plugin.Plugins;
 import org.screamingsandals.lib.utils.annotations.Service;
+import org.screamingsandals.lib.utils.annotations.ServiceDependencies;
 import org.screamingsandals.lib.utils.annotations.methods.ShouldRunControllable;
 
-@Service(dependsOn = {
+@Service
+@ServiceDependencies(dependsOn = {
     MainConfig.class
 })
 @UtilityClass
@@ -41,7 +43,7 @@ public class PartyListener {
 
     @ShouldRunControllable
     public boolean isEnabled() {
-        return MainConfig.getInstance().node("party", "enabled").getBoolean() && PluginManager.isEnabled(PluginManager.createKey("Parties").orElseThrow());
+        return MainConfig.getInstance().node("party", "enabled").getBoolean() && Plugins.isEnabled("Parties");
     }
 
     @OnEvent

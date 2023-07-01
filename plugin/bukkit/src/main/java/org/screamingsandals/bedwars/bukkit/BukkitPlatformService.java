@@ -54,26 +54,29 @@ import org.screamingsandals.bedwars.nms.accessors.ServerboundClientCommandPacket
 import org.screamingsandals.bedwars.region.BWRegion;
 import org.screamingsandals.bedwars.utils.EntityUtils;
 import org.screamingsandals.bedwars.utils.FakeDeath;
-import org.screamingsandals.lib.block.BlockHolder;
-import org.screamingsandals.lib.block.state.BlockStateHolder;
-import org.screamingsandals.lib.bukkit.event.player.SBukkitPlayerBlockBreakEvent;
-import org.screamingsandals.lib.bukkit.event.player.SBukkitPlayerBlockPlaceEvent;
-import org.screamingsandals.lib.bukkit.utils.nms.ClassStorage;
-import org.screamingsandals.lib.entity.EntityBasic;
-import org.screamingsandals.lib.entity.EntityMapper;
-import org.screamingsandals.lib.event.player.SPlayerBlockBreakEvent;
-import org.screamingsandals.lib.event.player.SPlayerBlockPlaceEvent;
-import org.screamingsandals.lib.item.Item;
+import org.screamingsandals.lib.block.BlockPlacement;
+import org.screamingsandals.lib.block.snapshot.BlockSnapshot;
+import org.screamingsandals.lib.entity.Entities;
+import org.screamingsandals.lib.entity.Entity;
+import org.screamingsandals.lib.event.player.PlayerBlockBreakEvent;
+import org.screamingsandals.lib.event.player.PlayerBlockPlaceEvent;
+import org.screamingsandals.lib.impl.bukkit.event.player.BukkitPlayerBlockBreakEvent;
+import org.screamingsandals.lib.impl.bukkit.event.player.BukkitPlayerBlockPlaceEvent;
+import org.screamingsandals.lib.impl.bukkit.utils.nms.ClassStorage;
 import org.screamingsandals.lib.lang.Message;
-import org.screamingsandals.lib.player.PlayerWrapper;
-import org.screamingsandals.lib.sender.CommandSenderWrapper;
+import org.screamingsandals.lib.sender.CommandSender;
+import org.screamingsandals.lib.spectator.Component;
+import org.screamingsandals.lib.tasker.DefaultThreads;
 import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
 import org.screamingsandals.lib.utils.annotations.Service;
+import org.screamingsandals.lib.utils.annotations.ServiceDependencies;
 import org.screamingsandals.lib.utils.reflect.Reflect;
-import org.screamingsandals.lib.world.LocationHolder;
 
-@Service(initAnother = {
+import java.util.Objects;
+
+@Service
+@ServiceDependencies(initAnother = {
         PerWorldInventoryCompatibilityFix.class,
         BukkitBStatsMetrics.class,
         BungeeMotdListener.class
@@ -84,9 +87,9 @@ public class BukkitPlatformService extends PlatformService {
     private final EntityUtils entityUtils = new BukkitEntityUtils();
 
     @Override
-    public void respawnPlayer(@NotNull PlayerWrapper playerWrapper, long delay) {
+    public void respawnPlayer(@NotNull org.screamingsandals.lib.player.Player playerWrapper, long delay) {
         var player = playerWrapper.as(Player.class);
-        Tasker.build(() -> {
+        Tasker.runDelayed(DefaultThreads.GLOBAL_THREAD, () -> {
             try {
                 player.spigot().respawn();
             } catch (Throwable t) {
@@ -99,11 +102,11 @@ public class BukkitPlatformService extends PlatformService {
                     t.printStackTrace();
                 }
             }
-        }).delay(delay, TaskerTime.TICKS).start();
+        }, delay, TaskerTime.TICKS);
     }
 
     @Override
-    public void reloadPlugin(@NotNull CommandSenderWrapper sender) {
+    public void reloadPlugin(@NotNull CommandSender sender) {
         sender.sendMessage(Message.of(LangKeys.SAFE_RELOAD).defaultPrefix());
 
         for (var game : GameManagerImpl.getInstance().getGameNames()) {
@@ -113,7 +116,7 @@ public class BukkitPlatformService extends PlatformService {
         var logger = BedWarsPlugin.getInstance().getLogger();
         var plugin = BedWarsPlugin.getInstance().getPluginDescription().as(JavaPlugin.class);
 
-        Tasker.build(taskBase -> new Runnable() {
+        Tasker.runRepeatedly(DefaultThreads.GLOBAL_THREAD, taskBase -> new Runnable() {
             public int timer = 60;
 
             @Override
@@ -141,7 +144,7 @@ public class BukkitPlatformService extends PlatformService {
                     }
 
                     try {
-                        Tasker.cancelAll();
+                        Bukkit.getScheduler().cancelTasks(plugin);
                     } catch (Throwable ex) {
                         logger.trace("Error occurred (in the plugin loader) while cancelling tasks for " + plugin.getDescription().getFullName() + " (Is it up to date?)", ex);
                     }
@@ -173,17 +176,17 @@ public class BukkitPlatformService extends PlatformService {
                         logger.trace("Error occurred (in the plugin loader) while removing chunk tickets for " + plugin.getDescription().getFullName() + " (Is it up to date?)", ex);
                     }
                     Bukkit.getServer().getPluginManager().enablePlugin(plugin);
-                    sender.sendMessage("Plugin reloaded! Keep in mind that restarting the server is safer!");
+                    sender.sendMessage(Component.text("Plugin reloaded! Keep in mind that restarting the server is safer!"));
                     return;
                 }
                 timer--;
             }
-        }).repeat(20, TaskerTime.TICKS).start();
+        }, 20, TaskerTime.TICKS);
     }
 
     // TODO: slib?
     @Override
-    public void spawnEffect(@NotNull LocationHolder location, @NotNull String value) {
+    public void spawnEffect(@NotNull org.screamingsandals.lib.world.Location location, @NotNull String value) {
         var particle = Effect.valueOf(value.toUpperCase());
         var bukkitLoc =  location.as(Location.class);
         bukkitLoc.getWorld().playEffect(bukkitLoc, particle, 1);
@@ -192,34 +195,34 @@ public class BukkitPlatformService extends PlatformService {
     // TODO: slib? (tnt source doesn't exist in Minestom for example)
     @Override
     @Nullable
-    public PlayerWrapper getSourceOfTnt(@NotNull EntityBasic tnt) {
+    public org.screamingsandals.lib.player.Player getSourceOfTnt(@NotNull Entity tnt) {
         if (!tnt.getEntityType().is("tnt")) {
             return null;
         }
         final var tntSource = tnt.as(TNTPrimed.class).getSource();
         if (tntSource instanceof Player) {
-            return EntityMapper.<PlayerWrapper>wrapEntity(tntSource).orElseThrow();
+            return Objects.requireNonNull(Entities.wrapEntity(tntSource)).as(org.screamingsandals.lib.player.Player.class);
         }
         return null;
     }
 
     @Override
     @NotNull
-    public SPlayerBlockPlaceEvent fireFakeBlockPlaceEvent(@NotNull BlockHolder block, @NotNull BlockStateHolder originalState, @NotNull BlockHolder clickedBlock, @NotNull Item item, @NotNull PlayerWrapper player, boolean canBuild) {
+    public PlayerBlockPlaceEvent fireFakeBlockPlaceEvent(@NotNull BlockPlacement block, @NotNull BlockSnapshot originalState, @NotNull BlockPlacement clickedBlock, @NotNull org.screamingsandals.lib.item.ItemStack item, @NotNull org.screamingsandals.lib.player.Player player, boolean canBuild) {
         var event = new BlockPlaceEvent(block.as(Block.class), originalState.as(BlockState.class),
                 clickedBlock.as(Block.class), item.as(ItemStack.class), player.as(Player.class), canBuild);
         Bukkit.getPluginManager().callEvent(event);
 
-        return new SBukkitPlayerBlockPlaceEvent(event);
+        return new BukkitPlayerBlockPlaceEvent(event);
     }
 
     @Override
     @NotNull
-    public SPlayerBlockBreakEvent fireFakeBlockBreakEvent(@NotNull BlockHolder block, @NotNull PlayerWrapper player) {
+    public PlayerBlockBreakEvent fireFakeBlockBreakEvent(@NotNull BlockPlacement block, @NotNull org.screamingsandals.lib.player.Player player) {
         var event = new BlockBreakEvent(block.as(Block.class), player.as(Player.class));
         Bukkit.getPluginManager().callEvent(event);
 
-        return new SBukkitPlayerBlockBreakEvent(event);
+        return new BukkitPlayerBlockBreakEvent(event);
     }
 
     @Override
@@ -229,12 +232,12 @@ public class BukkitPlatformService extends PlatformService {
     }
 
     @Override
-    public @Nullable Object savePlatformScoreboard(@NotNull PlayerWrapper player) {
+    public @Nullable Object savePlatformScoreboard(@NotNull org.screamingsandals.lib.player.Player player) {
         return player.as(Player.class).getScoreboard();
     }
 
     @Override
-    public void restorePlatformScoreboard(@NotNull PlayerWrapper player, @NotNull Object scoreboard) {
+    public void restorePlatformScoreboard(@NotNull org.screamingsandals.lib.player.Player player, @NotNull Object scoreboard) {
         if (scoreboard instanceof Scoreboard) {
             player.as(Player.class).setScoreboard((Scoreboard) scoreboard);
         }

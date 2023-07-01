@@ -24,7 +24,7 @@ import cloud.commandframework.CommandManager;
 import cloud.commandframework.arguments.standard.IntegerArgument;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.lib.lang.Message;
-import org.screamingsandals.lib.sender.CommandSenderWrapper;
+import org.screamingsandals.lib.sender.CommandSender;
 import org.screamingsandals.lib.utils.annotations.Service;
 
 @Service
@@ -34,11 +34,11 @@ public class MinPlayersCommand extends BaseAdminSubCommand {
     }
 
     @Override
-    public void construct(CommandManager<CommandSenderWrapper> manager, Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder) {
+    public void construct(CommandManager<CommandSender> manager, Command.Builder<CommandSender> commandSenderWrapperBuilder) {
         manager.command(
                 commandSenderWrapperBuilder
                         .argument(IntegerArgument
-                                    .<CommandSenderWrapper>newBuilder("minPlayers")
+                                    .<CommandSender>newBuilder("minPlayers")
                                     .withMin(2)
                         )
                         .handler(commandContext -> editMode(commandContext, (sender, game) -> {

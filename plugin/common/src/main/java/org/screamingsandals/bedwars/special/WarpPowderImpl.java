@@ -28,20 +28,21 @@ import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.utils.SpawnEffects;
 import org.screamingsandals.lib.lang.Message;
-import org.screamingsandals.lib.item.Item;
-import org.screamingsandals.lib.item.builder.ItemFactory;
+import org.screamingsandals.lib.item.ItemStack;
+import org.screamingsandals.lib.item.builder.ItemStackFactory;
+import org.screamingsandals.lib.tasker.DefaultThreads;
 import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
-import org.screamingsandals.lib.tasker.task.TaskerTask;
+import org.screamingsandals.lib.tasker.task.Task;
 
 @Getter
 @EqualsAndHashCode(callSuper = true)
 public class WarpPowderImpl extends SpecialItemImpl implements WarpPowder {
-    private final Item item;
-    private TaskerTask teleportingTask;
+    private final ItemStack item;
+    private Task teleportingTask;
     private int teleportingTime;
 
-    public WarpPowderImpl(GameImpl game, BedWarsPlayer player, TeamImpl team, Item item, int teleportingTime) {
+    public WarpPowderImpl(GameImpl game, BedWarsPlayer player, TeamImpl team, ItemStack item, int teleportingTime) {
         super(game, player, team);
         this.item = item;
         this.teleportingTime = teleportingTime;
@@ -72,13 +73,13 @@ public class WarpPowderImpl extends SpecialItemImpl implements WarpPowder {
                 .placeholder("time", teleportingTime)
                 .send(player);
 
-        teleportingTask = Tasker.build(() -> {
+        teleportingTask = Tasker.runRepeatedly(DefaultThreads.GLOBAL_THREAD, () -> {
             if (teleportingTime == 0) {
                 cancelTeleport(false);
                 var stack = item.withAmount(1);
                 try {
                     if (player.getPlayerInventory().getItemInOffHand().equals(stack)) {
-                        player.getPlayerInventory().setItemInOffHand(ItemFactory.getAir());
+                        player.getPlayerInventory().setItemInOffHand(ItemStackFactory.getAir());
                     } else {
                         player.getPlayerInventory().removeItem(stack);
                     }
@@ -91,8 +92,6 @@ public class WarpPowderImpl extends SpecialItemImpl implements WarpPowder {
                 SpawnEffects.spawnEffect(game, player, "game-effects.warppowdertick");
                 teleportingTime--;
             }
-        })
-        .repeat(20, TaskerTime.TICKS)
-        .start();
+        }, 20, TaskerTime.TICKS);
     }
 }

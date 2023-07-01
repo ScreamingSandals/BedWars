@@ -26,8 +26,8 @@ import org.screamingsandals.bedwars.special.ThrowableFireballImpl;
 import org.screamingsandals.bedwars.utils.ItemUtils;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.lib.event.OnEvent;
-import org.screamingsandals.lib.event.player.SPlayerInteractEvent;
-import org.screamingsandals.lib.item.builder.ItemFactory;
+import org.screamingsandals.lib.event.player.PlayerInteractEvent;
+import org.screamingsandals.lib.item.builder.ItemStackFactory;
 import org.screamingsandals.lib.utils.annotations.Service;
 
 @Service
@@ -42,7 +42,7 @@ public class ThrowableFireballListener {
     }
 
     @OnEvent
-    public void onFireballThrow(SPlayerInteractEvent event) {
+    public void onFireballThrow(PlayerInteractEvent event) {
         var player = event.player();
 
         if (!PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
@@ -52,7 +52,7 @@ public class ThrowableFireballListener {
         final var item = event.item();
         if (item != null) {
             var unhash = ItemUtils.getIfStartsWith(item, THROWABLE_FIREBALL_PREFIX);
-            if (unhash != null && (event.action() == SPlayerInteractEvent.Action.RIGHT_CLICK_BLOCK || event.action() == SPlayerInteractEvent.Action.RIGHT_CLICK_AIR)) {
+            if (unhash != null && (event.action() == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK || event.action() == PlayerInteractEvent.Action.RIGHT_CLICK_AIR)) {
                 var propertiesSplit = unhash.split(":");
                 var damage = (float) Double.parseDouble(propertiesSplit[2]);
                 var incendiary = Boolean.parseBoolean(propertiesSplit[3]);
@@ -75,7 +75,7 @@ public class ThrowableFireballListener {
                 var stack2 = item.withAmount(1);
                 try {
                     if (player.getPlayerInventory().getItemInOffHand().equals(stack2)) {
-                        player.getPlayerInventory().setItemInOffHand(ItemFactory.getAir());
+                        player.getPlayerInventory().setItemInOffHand(ItemStackFactory.getAir());
                     } else {
                         player.getPlayerInventory().removeItem(stack2);
                     }

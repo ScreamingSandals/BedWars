@@ -27,11 +27,10 @@ import org.bukkit.block.BlockState;
 import org.bukkit.material.*;
 import org.screamingsandals.bedwars.region.BWRegion;
 import org.screamingsandals.bedwars.utils.BedUtils;
-import org.screamingsandals.lib.block.BlockHolder;
-import org.screamingsandals.lib.block.BlockTypeHolder;
-import org.screamingsandals.lib.block.state.BlockStateHolder;
-import org.screamingsandals.lib.world.LocationHolder;
-import org.screamingsandals.lib.world.chunk.ChunkHolder;
+import org.screamingsandals.lib.block.BlockPlacement;
+import org.screamingsandals.lib.block.snapshot.BlockSnapshot;
+import org.screamingsandals.lib.world.Location;
+import org.screamingsandals.lib.world.chunk.Chunk;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,23 +39,23 @@ import java.util.List;
 // TODO: Check if FlatteningRegion can't be used
 // (we don't have to migrate this to slib, because slib is not going to target any legacy platforms other than bukkit)
 public class LegacyRegion implements BWRegion {
-    private final List<LocationHolder> builtBlocks = new ArrayList<>();
-    private final List<BlockHolder> brokenBlocks = new ArrayList<>();
-    private final HashMap<BlockHolder, BlockHolder> brokenBeds = new HashMap<>();
-    private final HashMap<BlockHolder, Byte> brokenBlockData = new HashMap<>();
-    private final HashMap<BlockHolder, BlockFace> brokenBlockFace = new HashMap<>();
-    private final HashMap<BlockHolder, Boolean> brokenBlockPower = new HashMap<>();
-    private final HashMap<BlockHolder, Material> brokenBlockTypes = new HashMap<>();
-    private final HashMap<BlockHolder, DyeColor> brokenBlockColors = new HashMap<>();
+    private final List<Location> builtBlocks = new ArrayList<>();
+    private final List<BlockPlacement> brokenBlocks = new ArrayList<>();
+    private final HashMap<BlockPlacement, BlockPlacement> brokenBeds = new HashMap<>();
+    private final HashMap<BlockPlacement, Byte> brokenBlockData = new HashMap<>();
+    private final HashMap<BlockPlacement, BlockFace> brokenBlockFace = new HashMap<>();
+    private final HashMap<BlockPlacement, Boolean> brokenBlockPower = new HashMap<>();
+    private final HashMap<BlockPlacement, Material> brokenBlockTypes = new HashMap<>();
+    private final HashMap<BlockPlacement, DyeColor> brokenBlockColors = new HashMap<>();
 
     @Override
-    public boolean isLocationModifiedDuringGame(LocationHolder loc) {
+    public boolean isLocationModifiedDuringGame(Location loc) {
         return builtBlocks.contains(loc);
     }
 
     @Override
-    public void putOriginalBlock(LocationHolder loc, BlockStateHolder block) {
-    	if (!block.getType().isSameType("BED_BLOCK")) {
+    public void putOriginalBlock(Location loc, BlockSnapshot block) {
+    	if (!block.block().isSameType("minecraft:legacy/bed_block")) {
     		brokenBlocks.add(loc.getBlock());
     	}
 
@@ -83,12 +82,12 @@ public class LegacyRegion implements BWRegion {
     }
 
     @Override
-    public void addBuiltDuringGame(LocationHolder loc) {
+    public void addBuiltDuringGame(Location loc) {
         builtBlocks.add(loc);
     }
 
     @Override
-    public void removeBlockBuiltDuringGame(LocationHolder loc) {
+    public void removeBlockBuiltDuringGame(Location loc) {
         builtBlocks.remove(loc);
 
     }
@@ -100,12 +99,12 @@ public class LegacyRegion implements BWRegion {
             if (!chunk.isLoaded()) {
                 chunk.load();
             }
-            block.getBlock().setType(BlockTypeHolder.air());
+            block.getBlock().block(org.screamingsandals.lib.block.Block.air());
         }
         builtBlocks.clear();
 
         for (var block : brokenBlocks) {
-            var chunk = block.getLocation().getChunk();
+            var chunk = block.location().getChunk();
             if (!chunk.isLoaded()) {
                 chunk.load();
             }
@@ -199,38 +198,38 @@ public class LegacyRegion implements BWRegion {
     }
 
     @Override
-    public boolean isLiquid(BlockTypeHolder material) {
+    public boolean isLiquid(org.screamingsandals.lib.block.Block material) {
         return material.isSameType("water", "lava", "stationary_water", "stationary_lava");
     }
 
     @Override
-    public boolean isBedBlock(BlockStateHolder block) {
+    public boolean isBedBlock(BlockSnapshot block) {
         return block.as(BlockState.class).getData() instanceof Bed;
     }
 
     @Override
-    public boolean isBedHead(BlockStateHolder block) {
+    public boolean isBedHead(BlockSnapshot block) {
         return isBedBlock(block) && ((Bed) block.as(BlockState.class).getData()).isHeadOfBed();
     }
 
     @Override
-    public boolean isDoorBlock(BlockStateHolder block) {
+    public boolean isDoorBlock(BlockSnapshot block) {
         return block.as(BlockState.class).getData() instanceof Door;
     }
 
     @Override
-    public boolean isDoorBottomBlock(BlockStateHolder block) {
+    public boolean isDoorBottomBlock(BlockSnapshot block) {
         var data = block.as(BlockState.class).getData();
         return data instanceof Door && !((Door) data).isTopHalf();
     }
 
     @Override
-    public BlockHolder getBedNeighbor(BlockHolder head) {
+    public BlockPlacement getBedNeighbor(BlockPlacement head) {
         return BedUtils.getBedNeighbor(head);
     }
 
     @Override
-    public boolean isChunkUsed(ChunkHolder chunk) {
+    public boolean isChunkUsed(Chunk chunk) {
         if (chunk == null) {
             return false;
         }
@@ -240,7 +239,7 @@ public class LegacyRegion implements BWRegion {
             }
         }
         for (var block : brokenBlocks) {
-            if (chunk.equals(block.getLocation().getChunk())) {
+            if (chunk.equals(block.location().getChunk())) {
                 return true;
             }
         }

@@ -25,8 +25,8 @@ import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.lib.container.PlayerContainer;
 import org.screamingsandals.lib.event.OnEvent;
-import org.screamingsandals.lib.event.player.SPlayerDropItemEvent;
-import org.screamingsandals.lib.event.player.SPlayerInventoryClickEvent;
+import org.screamingsandals.lib.event.player.PlayerDropItemEvent;
+import org.screamingsandals.lib.event.player.PlayerInventoryClickEvent;
 import org.screamingsandals.lib.utils.InventoryAction;
 import org.screamingsandals.lib.utils.annotations.Service;
 
@@ -64,13 +64,13 @@ public class PermaItemListener {
     }
 
     @OnEvent
-    public void onItemRemoval(SPlayerInventoryClickEvent event) {
+    public void onItemRemoval(PlayerInventoryClickEvent event) {
         var player = event.player();
         if (!PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
             return;
         }
 
-        if (event.inventory() != null) {
+        if (event.inventory() != null) { // TODO: what were these two ifs supposed to do? (inventory() is never null)
             if (!(event.inventory() instanceof PlayerContainer)) {
                 return;
             }
@@ -97,7 +97,7 @@ public class PermaItemListener {
     }
 
     @OnEvent
-    public void onItemDrop(SPlayerDropItemEvent event) {
+    public void onItemDrop(PlayerDropItemEvent event) {
         if (!PlayerManagerImpl.getInstance().isPlayerInGame(event.player())) {
             return;
         }

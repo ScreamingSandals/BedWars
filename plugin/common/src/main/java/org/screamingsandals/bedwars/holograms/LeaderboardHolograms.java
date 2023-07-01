@@ -35,26 +35,28 @@ import org.screamingsandals.lib.hologram.Hologram;
 import org.screamingsandals.lib.hologram.HologramManager;
 import org.screamingsandals.lib.hologram.event.HologramTouchEvent;
 import org.screamingsandals.lib.lang.Message;
-import org.screamingsandals.lib.player.PlayerWrapper;
-import org.screamingsandals.lib.event.player.SPlayerJoinEvent;
+import org.screamingsandals.lib.player.Player;
+import org.screamingsandals.lib.event.player.PlayerJoinEvent;
 import org.screamingsandals.lib.plugin.ServiceManager;
 import org.screamingsandals.lib.spectator.Component;
 import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
 import org.screamingsandals.lib.utils.annotations.Service;
+import org.screamingsandals.lib.utils.annotations.ServiceDependencies;
 import org.screamingsandals.lib.utils.annotations.methods.OnPostEnable;
 import org.screamingsandals.lib.utils.annotations.methods.OnPreDisable;
 import org.screamingsandals.lib.utils.annotations.methods.ShouldRunControllable;
 import org.screamingsandals.lib.utils.annotations.parameters.ConfigFile;
 import org.screamingsandals.lib.utils.visual.TextEntry;
-import org.screamingsandals.lib.world.LocationHolder;
+import org.screamingsandals.lib.world.Location;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
-@Service(dependsOn = {
+@Service
+@ServiceDependencies(dependsOn = {
         HologramManager.class,
         MainConfig.class,
         PlayerStatisticManager.class
@@ -66,7 +68,7 @@ public class LeaderboardHolograms {
     private final MainConfig mainConfig;
 
     private ArrayList<SerializableLocation> hologramLocations;
-    private Map<LocationHolder, Hologram> holograms;
+    private Map<Location, Hologram> holograms;
     private List<LeaderboardEntryImpl> entries;
 
     @ShouldRunControllable
@@ -81,7 +83,7 @@ public class LeaderboardHolograms {
         return ServiceManager.get(LeaderboardHolograms.class);
     }
 
-    public void addHologramLocation(LocationHolder eyeLocation) {
+    public void addHologramLocation(Location eyeLocation) {
         this.hologramLocations.add(new SerializableLocation(eyeLocation.add(0, -3, 0)));
         this.updateHologramDatabase();
 
@@ -123,9 +125,7 @@ public class LeaderboardHolograms {
             return;
         }
 
-        Tasker.build(this::updateEntries)
-                .async()
-                .start();
+        Tasker.runAsync(this::updateEntries);
     }
 
     private void updateHologramDatabase() {
@@ -151,24 +151,21 @@ public class LeaderboardHolograms {
     }
 
     @OnEvent(priority = EventPriority.HIGHEST)
-    public void onJoin(SPlayerJoinEvent event) {
+    public void onJoin(PlayerJoinEvent event) {
         addViewer(event.player());
     }
 
-    public void addViewer(PlayerWrapper player) {
+    public void addViewer(Player player) {
         holograms.values().forEach(hologram -> {
             if (!hologram.viewers().contains(player)) {
-                Tasker.build(() -> hologram.addViewer(player))
-                        .async()
-                        .delay(30, TaskerTime.TICKS)
-                        .start();
+                Tasker.runAsyncDelayed(() -> hologram.addViewer(player), 30, TaskerTime.TICKS);
             }
         });
     }
 
     private void updateHolograms() {
         hologramLocations.forEach(location ->
-                location.asOptional(LocationHolder.class).ifPresent(locationHolder -> {
+                location.asOptional(Location.class).ifPresent(locationHolder -> {
                     if (!holograms.containsKey(locationHolder)) {
                         var hologram = HologramManager
                                 .hologram(locationHolder)
@@ -195,7 +192,7 @@ public class LeaderboardHolograms {
             var l = new AtomicInteger(1);
             entries.forEach(leaderboardEntry ->
                     lines.add(line
-                            .replace("%name%", leaderboardEntry.getPlayer().getLastName().orElse(leaderboardEntry.getLastKnownName() != null ? leaderboardEntry.getLastKnownName() : leaderboardEntry.getPlayer().getUuid().toString()))
+                            .replace("%name%", Optional.ofNullable(leaderboardEntry.getPlayer().getLastName()).orElse(leaderboardEntry.getLastKnownName() != null ? leaderboardEntry.getLastKnownName() : leaderboardEntry.getPlayer().getUuid().toString()))
                             .replace("%score%", Integer.toString(leaderboardEntry.getTotalScore()))
                             .replace("%order%", Integer.toString(l.getAndIncrement()))
                     )
@@ -223,12 +220,11 @@ public class LeaderboardHolograms {
         var location = hologram.location();
 
         RemoveHoloCommand.PLAYERS_WITH_HOLOGRAM_REMOVER_IN_HAND.remove(player.getUuid());
-        Tasker
-                .build(() -> {
+        Tasker.runAsync(() -> {
                     hologram.hide();
                     HologramManager.removeHologram(hologram);
                     List.copyOf(hologramLocations).forEach(preparedLocation ->
-                            preparedLocation.asOptional(LocationHolder.class).ifPresent(locationHolder -> {
+                            preparedLocation.asOptional(Location.class).ifPresent(locationHolder -> {
                                 if (locationHolder.getWorld().getUuid().equals(location.getWorld().getUuid())
                                         && locationHolder.getX() == location.getX()
                                         && locationHolder.getY() == location.getY()
@@ -241,8 +237,6 @@ public class LeaderboardHolograms {
                             })
                     );
                     Message.of(LangKeys.ADMIN_HOLO_REMOVED).defaultPrefix().send(player);
-                })
-                .async()
-                .start();
+                });
     }
 }

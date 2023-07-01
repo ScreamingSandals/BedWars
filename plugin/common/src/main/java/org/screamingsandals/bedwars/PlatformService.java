@@ -24,21 +24,19 @@ import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.region.BWRegion;
 import org.screamingsandals.bedwars.utils.EntityUtils;
 import org.screamingsandals.bedwars.utils.FakeDeath;
-import org.screamingsandals.lib.block.BlockHolder;
-import org.screamingsandals.lib.block.state.BlockStateHolder;
-import org.screamingsandals.lib.entity.EntityBasic;
-import org.screamingsandals.lib.event.player.SPlayerBlockBreakEvent;
-import org.screamingsandals.lib.event.player.SPlayerBlockPlaceEvent;
-import org.screamingsandals.lib.item.Item;
-import org.screamingsandals.lib.player.PlayerWrapper;
+import org.screamingsandals.lib.block.BlockPlacement;
+import org.screamingsandals.lib.block.snapshot.BlockSnapshot;
+import org.screamingsandals.lib.entity.Entity;
+import org.screamingsandals.lib.event.player.PlayerBlockBreakEvent;
+import org.screamingsandals.lib.event.player.PlayerBlockPlaceEvent;
+import org.screamingsandals.lib.item.ItemStack;
+import org.screamingsandals.lib.player.Player;
 import org.screamingsandals.lib.plugin.ServiceManager;
-import org.screamingsandals.lib.sender.CommandSenderWrapper;
+import org.screamingsandals.lib.sender.CommandSender;
 import org.screamingsandals.lib.utils.annotations.AbstractService;
-import org.screamingsandals.lib.world.LocationHolder;
+import org.screamingsandals.lib.world.Location;
 
-@AbstractService(
-        replaceRule = "org.screamingsandals.bedwars.{platform}.{Platform}PlatformService"
-)
+@AbstractService("org.screamingsandals.bedwars.{platform}.{Platform}PlatformService")
 public abstract class PlatformService {
 
     public static PlatformService getInstance() {
@@ -51,25 +49,25 @@ public abstract class PlatformService {
     @NotNull
     public abstract EntityUtils getEntityUtils();
 
-    public abstract void respawnPlayer(@NotNull PlayerWrapper player, long delay);
+    public abstract void respawnPlayer(@NotNull Player player, long delay);
 
-    public abstract void reloadPlugin(@NotNull CommandSenderWrapper sender);
+    public abstract void reloadPlugin(@NotNull CommandSender sender);
 
-    public abstract void spawnEffect(@NotNull LocationHolder location, @NotNull String value);
+    public abstract void spawnEffect(@NotNull Location location, @NotNull String value);
 
     @Nullable
-    public abstract PlayerWrapper getSourceOfTnt(@NotNull EntityBasic tnt);
+    public abstract Player getSourceOfTnt(@NotNull Entity tnt);
 
     @NotNull
-    public abstract SPlayerBlockPlaceEvent fireFakeBlockPlaceEvent(@NotNull BlockHolder block, @NotNull BlockStateHolder originalState, @NotNull BlockHolder clickedBlock, @NotNull Item item, @NotNull PlayerWrapper player, boolean canBuild);
+    public abstract PlayerBlockPlaceEvent fireFakeBlockPlaceEvent(@NotNull BlockPlacement block, @NotNull BlockSnapshot originalState, @NotNull BlockPlacement clickedBlock, @NotNull ItemStack item, @NotNull Player player, boolean canBuild);
 
     @NotNull
-    public abstract SPlayerBlockBreakEvent fireFakeBlockBreakEvent(@NotNull BlockHolder block, @NotNull PlayerWrapper player);
+    public abstract PlayerBlockBreakEvent fireFakeBlockBreakEvent(@NotNull BlockPlacement block, @NotNull Player player);
 
     @NotNull
     public abstract BWRegion getLegacyRegion();
 
-    public abstract @Nullable Object savePlatformScoreboard(@NotNull PlayerWrapper player);
+    public abstract @Nullable Object savePlatformScoreboard(@NotNull Player player);
 
-    public abstract void restorePlatformScoreboard(@NotNull PlayerWrapper player, @NotNull Object scoreboard);
+    public abstract void restorePlatformScoreboard(@NotNull Player player, @NotNull Object scoreboard);
 }

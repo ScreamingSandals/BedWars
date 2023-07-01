@@ -22,7 +22,6 @@ package org.screamingsandals.bedwars.config.migrate;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.screamingsandals.lib.utils.TriConsumer;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.gson.GsonConfigurationLoader;
@@ -67,14 +66,18 @@ public final class ConfigurationNodeMigrator {
         private final ConfigurationNodeMigrator migrator;
         private final Object[] oldPath;
 
-        public ConfigurationNodeMigrator withMapper(TriConsumer<ConfigurationNode, ConfigurationNode, Object[]> mapper) {
-            mapper.accept(migrator.oldNode, migrator.newNode, oldPath);
+        public ConfigurationNodeMigrator withMapper(Mapper mapper) {
+            mapper.map(migrator.oldNode, migrator.newNode, oldPath);
             return migrator;
         }
 
         public ConfigurationNodeMigrator toNewPath(Object... keys) {
             migrator.newNode.node(keys).raw(migrator.oldNode.node(oldPath).raw());
             return migrator;
+        }
+
+        public interface Mapper {
+            void map(ConfigurationNode oldNode, ConfigurationNode newNode, Object[] oldPath);
         }
     }
 }

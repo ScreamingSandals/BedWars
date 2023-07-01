@@ -25,12 +25,12 @@ import org.screamingsandals.bedwars.api.upgrades.Upgrade;
 import org.screamingsandals.bedwars.api.upgrades.UpgradeStorage;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
-import org.screamingsandals.lib.event.SCancellableEvent;
+import org.screamingsandals.lib.event.CancellableEvent;
 
 import java.util.List;
 
 @Data
-public class UpgradeBoughtEventImpl implements UpgradeBoughtEvent, SCancellableEvent {
+public class UpgradeBoughtEventImpl implements UpgradeBoughtEvent, CancellableEvent {
     private final GameImpl game;
     private final BedWarsPlayer customer;
     private final List<Upgrade> upgrades;

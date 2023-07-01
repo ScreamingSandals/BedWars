@@ -28,7 +28,7 @@ import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.bedwars.special.TrapImpl;
 import org.screamingsandals.lib.event.OnEvent;
-import org.screamingsandals.lib.event.player.SPlayerMoveEvent;
+import org.screamingsandals.lib.event.player.PlayerMoveEvent;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.utils.annotations.Service;
 
@@ -64,7 +64,7 @@ public class TrapListener {
 
             for (var special : event.getGame().getActiveSpecialItems(TrapImpl.class)) {
                 if (System.identityHashCode(special) == classID) {
-                    special.place(event.getBlock().getLocation());
+                    special.place(event.getBlock().location());
                     event.getPlayer().sendMessage(Message.of(LangKeys.SPECIALS_TRAP_BUILT).prefixOrDefault((event.getGame()).getCustomPrefixComponent()));
                     return;
                 }
@@ -77,7 +77,7 @@ public class TrapListener {
         for (var special : event.getGame().getActiveSpecialItems(TrapImpl.class)) {
             var runningTeam = event.getTeam();
 
-            if (special.isPlaced() && event.getBlock().getLocation().equals(special.getLocation())) {
+            if (special.isPlaced() && event.getBlock().location().equals(special.getLocation())) {
                 event.setDrops(false);
                 special.process(event.getPlayer(), runningTeam, true);
             }
@@ -85,7 +85,7 @@ public class TrapListener {
     }
 
     @OnEvent
-    public void onMove(SPlayerMoveEvent event) {
+    public void onMove(PlayerMoveEvent event) {
         var player = event.player();
         if (event.cancelled() || !PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
             return;

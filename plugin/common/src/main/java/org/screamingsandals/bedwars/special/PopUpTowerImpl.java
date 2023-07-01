@@ -28,14 +28,15 @@ import org.screamingsandals.bedwars.game.TeamImpl;
 import org.screamingsandals.bedwars.game.target.TargetBlockImpl;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.utils.ArenaUtils;
-import org.screamingsandals.lib.SpecialSoundKey;
-import org.screamingsandals.lib.block.BlockTypeHolder;
+import org.screamingsandals.lib.block.Block;
 import org.screamingsandals.lib.spectator.sound.SoundSource;
 import org.screamingsandals.lib.spectator.sound.SoundStart;
+import org.screamingsandals.lib.tasker.DefaultThreads;
 import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
 import org.screamingsandals.lib.utils.BlockFace;
-import org.screamingsandals.lib.world.LocationHolder;
+import org.screamingsandals.lib.utils.ResourceLocation;
+import org.screamingsandals.lib.world.Location;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -48,30 +49,30 @@ import java.util.stream.Collectors;
 public class PopUpTowerImpl extends SpecialItemImpl implements PopUpTower {
     private final static List<BlockFace> pillarSides = List.of(BlockFace.NORTH, BlockFace.EAST, BlockFace.WEST, BlockFace.SOUTH);
 
-    private final BlockTypeHolder material;
-    private final LocationHolder centerPoint;
+    private final Block material;
+    private final Location centerPoint;
     private final BlockFace placementFace;
-    private final List<LocationHolder> entranceLocation = new ArrayList<>();
-    private List<LocationHolder> targetBlocks;
+    private final List<Location> entranceLocation = new ArrayList<>();
+    private List<Location> targetBlocks;
 
-    public PopUpTowerImpl(GameImpl game, BedWarsPlayer player, TeamImpl team, BlockTypeHolder mat, LocationHolder centerPoint, BlockFace placementFace) {
+    public PopUpTowerImpl(GameImpl game, BedWarsPlayer player, TeamImpl team, Block mat, Location centerPoint, BlockFace placementFace) {
         super(game, player, team);
         this.material = team != null ? mat.colorize(team.getColor().material1_13) : mat;
         this.centerPoint = centerPoint;
         this.placementFace = placementFace;
     }
 
-    private void placeBlock(LocationHolder location, BlockTypeHolder type) {
+    private void placeBlock(Location location, Block type) {
         var block = location.getBlock();
-        if (isLocationSafe(location) && ArenaUtils.isInArea(block.getLocation(), game.getPos1(), game.getPos2())) {
-            block.setType(type);
-            this.game.getRegion().addBuiltDuringGame(block.getLocation());
+        if (isLocationSafe(location) && ArenaUtils.isInArea(block.location(), game.getPos1(), game.getPos2())) {
+            block.block(type);
+            this.game.getRegion().addBuiltDuringGame(block.location());
             try {
                 this.player.playSound(
-                        SoundStart.sound(SpecialSoundKey.key("minecraft:block.stone.place"), SoundSource.BLOCK, 1f, 1f),
-                        block.getLocation().getX(),
-                        block.getLocation().getY(),
-                        block.getLocation().getZ()
+                        SoundStart.sound(ResourceLocation.of("minecraft:block.stone.place"), SoundSource.BLOCK, 1f, 1f),
+                        block.location().getX(),
+                        block.location().getY(),
+                        block.location().getZ()
                 );
             } catch (Throwable ignored) {}
         }
@@ -95,7 +96,7 @@ public class PopUpTowerImpl extends SpecialItemImpl implements PopUpTower {
         placeAnimated(BlockFace.WEST, BlockFace.SOUTH);
         placeAnimated(BlockFace.EAST, BlockFace.SOUTH);
 
-        Tasker.build(() -> {
+        Tasker.runDelayed(DefaultThreads.GLOBAL_THREAD, () -> {
             // second platform
             final var secondPlatform = centerPoint.add(BlockFace.UP, 5);
             placeBlock(secondPlatform, material);
@@ -145,7 +146,7 @@ public class PopUpTowerImpl extends SpecialItemImpl implements PopUpTower {
 
             final var firstLadderBlock = centerPoint.add(placementFace);
             placeLadderRow(5, firstLadderBlock, BlockFace.UP, placementFace.getOppositeFace());
-        }).delay(40L, TaskerTime.TICKS).start();
+        }, 40L, TaskerTime.TICKS);
     }
 
     public void placeAnimated(BlockFace direction, BlockFace start) {
@@ -153,16 +154,16 @@ public class PopUpTowerImpl extends SpecialItemImpl implements PopUpTower {
         placeRowAndColumn(3, 5, p1, start.getOppositeFace());
     }
 
-    public void placeRowAnimated(int length, LocationHolder loc, BlockFace face, int delay) {
+    public void placeRowAnimated(int length, Location loc, BlockFace face, int delay) {
         var lastLoc = loc;
         for (int i = 0; i < length; i++) {
             lastLoc = lastLoc.add(face);
             var finalLastLoc = lastLoc;
-            Tasker.build(() -> placeBlock(finalLastLoc, material)).delay((delay += 1), TaskerTime.TICKS).start();
+            Tasker.runDelayed(DefaultThreads.GLOBAL_THREAD, () -> placeBlock(finalLastLoc, material), (delay += 1), TaskerTime.TICKS);
         }
     }
 
-    public void placeRowAndColumn(int length, int height, LocationHolder loc, BlockFace face) {
+    public void placeRowAndColumn(int length, int height, Location loc, BlockFace face) {
         int sepTickedPlacement = 1;
         for (int i = 0; i < height; i++) {
             loc = loc.clone().add(0, 1, 0);
@@ -174,12 +175,12 @@ public class PopUpTowerImpl extends SpecialItemImpl implements PopUpTower {
         }
     }
 
-    private boolean isTargetBlockNear(List<LocationHolder> targetBlocks, LocationHolder loc) {
+    private boolean isTargetBlockNear(List<Location> targetBlocks, Location loc) {
         return targetBlocks.contains(loc) || Arrays.stream(BlockFace.values())
                 .anyMatch(blockFace -> targetBlocks.contains(loc.add(blockFace)));
     }
 
-    public void placeLadderRow(int length, LocationHolder loc, BlockFace face, BlockFace ladderFace) {
+    public void placeLadderRow(int length, Location loc, BlockFace face, BlockFace ladderFace) {
         var lastLoc = loc;
         for (int i = 0; i < length; i++) {
             lastLoc = lastLoc.add(face);
@@ -187,13 +188,13 @@ public class PopUpTowerImpl extends SpecialItemImpl implements PopUpTower {
             if (!isLocationSafe(lastLoc)) {
                 continue;
             }
-            var ladderType = BlockTypeHolder.of("minecraft:ladder[facing=" + ladderFace.name().toLowerCase() + "]");
-            ladder.setType(ladderType);
+            var ladderType = Block.of("minecraft:ladder[facing=" + ladderFace.name().toLowerCase() + "]");
+            ladder.block(ladderType);
             game.getRegion().removeBlockBuiltDuringGame(lastLoc);
             game.getRegion().addBuiltDuringGame(lastLoc);
             try {
                 this.player.playSound(
-                        SoundStart.sound(SpecialSoundKey.key("minecraft:block.ladder.place"), SoundSource.BLOCK, 1f, 1f),
+                        SoundStart.sound(ResourceLocation.of("minecraft:block.ladder.place"), SoundSource.BLOCK, 1f, 1f),
                         loc.getX(),
                         loc.getY(),
                         loc.getZ()
@@ -202,12 +203,12 @@ public class PopUpTowerImpl extends SpecialItemImpl implements PopUpTower {
         }
     }
 
-    public boolean isLocationSafe(LocationHolder location) {
+    public boolean isLocationSafe(Location location) {
         final var locBlock = location.getBlock();
-        return (locBlock.getType().isAir() || BedWarsPlugin.isBreakableBlock(location.getBlock().getType()) || game.getRegion().isLocationModifiedDuringGame(location)) && !isTargetBlockNear(targetBlocks, location) && !isEntranceLocation(location);
+        return (locBlock.block().isAir() || BedWarsPlugin.isBreakableBlock(location.getBlock().block()) || game.getRegion().isLocationModifiedDuringGame(location)) && !isTargetBlockNear(targetBlocks, location) && !isEntranceLocation(location);
     }
 
-    public boolean isEntranceLocation(LocationHolder toCheck) {
+    public boolean isEntranceLocation(Location toCheck) {
         return entranceLocation.contains(toCheck);
     }
 }

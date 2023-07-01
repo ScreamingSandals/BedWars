@@ -24,11 +24,13 @@ import org.screamingsandals.bedwars.VersionInfo;
 import org.screamingsandals.bedwars.commands.BedWarsPermission;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.lang.LangKeys;
+import org.screamingsandals.lib.Server;
 import org.screamingsandals.lib.event.EventManager;
 import org.screamingsandals.lib.lang.Message;
-import org.screamingsandals.lib.player.PlayerMapper;
-import org.screamingsandals.lib.event.player.SPlayerJoinEvent;
+import org.screamingsandals.lib.player.Players;
+import org.screamingsandals.lib.event.player.PlayerJoinEvent;
 import org.screamingsandals.lib.utils.annotations.Service;
+import org.screamingsandals.lib.utils.annotations.ServiceDependencies;
 import org.screamingsandals.lib.utils.annotations.methods.OnPostEnable;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.gson.GsonConfigurationLoader;
@@ -40,9 +42,10 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
-@Service(dependsOn = {
+@Service
+@ServiceDependencies(dependsOn = {
         MainConfig.class,
-        PlayerMapper.class
+        Players.class
 })
 @UtilityClass
 public class UpdateChecker {
@@ -67,10 +70,10 @@ public class UpdateChecker {
                                                 .defaultPrefix()
                                                 .placeholder("version", result.node("version").getString())
                                                 .placeholder("url", result.node("zero_download_url").getString())
-                                                .send(PlayerMapper.getConsoleSender());
+                                                .send(Server.getConsoleSender());
                                     }
                                     if (mainConfig.node("update-checker", "admins").getBoolean()) {
-                                        EventManager.getDefaultEventManager().register(SPlayerJoinEvent.class, event -> {
+                                        EventManager.getDefaultEventManager().register(PlayerJoinEvent.class, event -> {
                                             var player = event.player();
                                             if (player.hasPermission(BedWarsPermission.ADMIN_PERMISSION.asPermission())) {
                                                 if (mainConfig.node("update-checker", "admins").getBoolean() && result.node("zero_update").getBoolean()) {

@@ -31,19 +31,18 @@ import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
-import org.screamingsandals.lib.block.BlockTypeHolder;
+import org.screamingsandals.lib.block.Block;
 import org.screamingsandals.lib.container.PlayerContainer;
-import org.screamingsandals.lib.item.Item;
-import org.screamingsandals.lib.player.PlayerMapper;
-import org.screamingsandals.lib.player.PlayerWrapper;
+import org.screamingsandals.lib.item.ItemStack;
+import org.screamingsandals.lib.player.Players;
+import org.screamingsandals.lib.player.Player;
 import org.screamingsandals.lib.spectator.AudienceComponentLike;
 import org.screamingsandals.lib.spectator.Color;
 import org.screamingsandals.lib.spectator.Component;
 import org.screamingsandals.lib.spectator.mini.MiniMessageParser;
 import org.screamingsandals.lib.utils.BlockFace;
-import org.screamingsandals.lib.utils.MathUtils;
-import org.screamingsandals.lib.world.LocationHolder;
-import org.screamingsandals.lib.world.WorldHolder;
+import org.screamingsandals.lib.world.Location;
+import org.screamingsandals.lib.world.World;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -58,8 +57,8 @@ import java.util.stream.Collectors;
 public class MiscUtils {
     private final Random RANDOM = new Random();
     private final Pattern STRIP_COLOR_PATTERN = Pattern.compile("(?i)\u00A7[0-9A-FK-ORX]");
-    public final LocationHolder MAX_LOCATION = new LocationHolder(Double.MAX_VALUE, 256D, Double.MAX_VALUE, 0F, 0F, null); // not rly valid location :)
-    public final LocationHolder MIN_LOCATION = new LocationHolder(Double.MIN_VALUE, 0D, Double.MIN_VALUE, 0F, 0F, null);  // not rly valid location either :)
+    public final String MAX_LOCATION = writeLocationToString(Double.MAX_VALUE, 256D, Double.MAX_VALUE, 0F, 0F);
+    public final String MIN_LOCATION = writeLocationToString(Double.MIN_VALUE, 0D, Double.MIN_VALUE, 0F, 0F);
     public final Component BW_PREFIX = Component.text()
             .content("[")
             .color(Color.WHITE)
@@ -131,7 +130,7 @@ public class MiscUtils {
         return ID_TO_COLOR_MAP.getOrDefault(Integer.parseInt(colorCode.replace("§", ""), 16), Color.WHITE);
     }
 
-    public BlockFace getCardinalDirection(LocationHolder location) {
+    public BlockFace getCardinalDirection(Location location) {
         double rotation = (location.getYaw() - 90) % 360;
         if (rotation < 0) {
             rotation += 360.0;
@@ -161,7 +160,7 @@ public class MiscUtils {
     /* End of BedWarsRel */
 
     /* Special items  - CEPH*/
-    public void sendActionBarMessage(PlayerWrapper player, AudienceComponentLike senderMessage) {
+    public void sendActionBarMessage(Player player, AudienceComponentLike senderMessage) {
         if (MainConfig.getInstance().node("specials", "action-bar-messages").getBoolean()) {
             player.sendActionBar(senderMessage);
         } else {
@@ -210,28 +209,28 @@ public class MiscUtils {
         }
     }
 
-    public BlockTypeHolder getBlockTypeFromString(String name, String fallback) {
+    public Block getBlockTypeFromString(String name, String fallback) {
         if (name != null) {
-            var result = BlockTypeHolder.ofOptional(name);
-            if (result.isEmpty()) {
+            var result = Block.ofNullable(name);
+            if (result == null) {
                 Debug.warn("Wrong material configured: " + name, true);
             } else {
-                return result.get();
+                return result;
             }
         }
 
-        return BlockTypeHolder.of(fallback);
+        return Block.of(fallback);
     }
 
-    public PlayerWrapper findTarget(GameImpl game, PlayerWrapper player, double maxDist) {
-        PlayerWrapper playerTarget = null;
+    public Player findTarget(GameImpl game, Player player, double maxDist) {
+        Player playerTarget = null;
         var team = game.getPlayerTeam(player.as(BedWarsPlayer.class));
 
         var foundTargets = new ArrayList<>(game.getConnectedPlayers());
         foundTargets.removeAll(team.getPlayers());
 
 
-        for (PlayerWrapper p : foundTargets) {
+        for (Player p : foundTargets) {
             var gamePlayer = PlayerManagerImpl.getInstance().getPlayer(p.getUuid());
             if (gamePlayer.isEmpty()) {
                 continue;
@@ -246,7 +245,7 @@ public class MiscUtils {
             }
 
             double realDistance = player.getLocation().getDistanceSquared(p.getLocation());
-            if (realDistance < MathUtils.square(maxDist)) {
+            if (realDistance < maxDist * maxDist) {
                 playerTarget = p;
                 maxDist = realDistance;
             }
@@ -256,7 +255,7 @@ public class MiscUtils {
 
     /* End of Special Items */
 
-    public LocationHolder readLocationFromString(WorldHolder world, String location) {
+    public Location readLocationFromString(World world, String location) {
         int lpos = 0;
         double x = 0;
         double y = 0;
@@ -285,12 +284,16 @@ public class MiscUtils {
                     break;
             }
         }
-        return new LocationHolder(x, y, z, yaw, pitch, world);
+        return new Location(x, y, z, yaw, pitch, world);
     }
 
-    public String writeLocationToString(LocationHolder location) {
+    public String writeLocationToString(Location location) {
         return location.getX() + ";" + location.getY() + ";" + location.getZ() + ";" + location.getYaw() + ";"
                 + location.getPitch();
+    }
+
+    public String writeLocationToString(double x, double y, double z, float yaw, float pitch) {
+        return x + ";" + y + ";" + z + ";" + yaw + ";" + pitch;
     }
 
     public String convertColorToNewFormat(String oldColor, boolean isNewColor) {
@@ -338,18 +341,18 @@ public class MiscUtils {
         return newColor;
     }
 
-    public void giveItemsToPlayer(List<Item> itemStackList, PlayerWrapper player, TeamColor teamColor) {
-        for (Item itemStack : itemStackList) {
-            final String materialName = itemStack.getMaterial().platformName();
+    public void giveItemsToPlayer(List<ItemStack> itemStackList, Player player, TeamColor teamColor) {
+        for (ItemStack itemStack : itemStackList) {
+            final String materialName = itemStack.getMaterial().location().asString();
             final PlayerContainer playerInventory = player.getPlayerInventory();
 
-            if (materialName.contains("HELMET")) {
+            if (materialName.contains("helmet")) {
                 playerInventory.setHelmet(BedWarsPlugin.getInstance().getColorChanger().applyColor(teamColor, itemStack));
-            } else if (materialName.contains("CHESTPLATE")) {
+            } else if (materialName.contains("chestplate")) {
                 playerInventory.setChestplate(BedWarsPlugin.getInstance().getColorChanger().applyColor(teamColor, itemStack));
-            } else if (materialName.contains("LEGGINGS")) {
+            } else if (materialName.contains("leggings")) {
                 playerInventory.setLeggings(BedWarsPlugin.getInstance().getColorChanger().applyColor(teamColor, itemStack));
-            } else if (materialName.contains("BOOTS")) {
+            } else if (materialName.contains("boots")) {
                 playerInventory.setBoots(BedWarsPlugin.getInstance().getColorChanger().applyColor(teamColor, itemStack));
             } else {
                 playerInventory.addItem(BedWarsPlugin.getInstance().getColorChanger().applyColor(teamColor, itemStack));
@@ -357,29 +360,28 @@ public class MiscUtils {
         }
     }
 
-    public List<PlayerWrapper> getOnlinePlayers(Collection<UUID> uuids) {
+    public List<Player> getOnlinePlayers(Collection<UUID> uuids) {
         if (uuids == null || uuids.isEmpty()) {
             return Collections.emptyList();
         }
 
         return uuids.stream()
-                .map(PlayerMapper::getPlayer)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
+                .map(Players::getPlayer)
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }
 
-    public List<LocationHolder> getLocationsBetween(LocationHolder loc1, LocationHolder loc2){
+    public List<Location> getLocationsBetween(Location loc1, Location loc2){
         int lowX = Math.min(loc1.getBlockX(), loc2.getBlockX());
         int lowY = Math.min(loc1.getBlockY(), loc2.getBlockY());
         int lowZ = Math.min(loc1.getBlockZ(), loc2.getBlockZ());
 
-        final var locationList = new ArrayList<LocationHolder>();
+        final var locationList = new ArrayList<Location>();
 
         for(int x = 0; x<Math.abs(loc1.getBlockX()-loc2.getBlockX()); x++){
             for(int y = 0; y<Math.abs(loc1.getBlockY()-loc2.getBlockY()); y++){
                 for(int z = 0; z<Math.abs(loc1.getBlockZ()-loc2.getBlockZ()); z++){
-                    locationList.add(new LocationHolder(lowX+x, lowY+y, lowZ+z, 0, 0, loc1.getWorld()));
+                    locationList.add(new Location(lowX+x, lowY+y, lowZ+z, 0, 0, loc1.getWorld()));
                 }
             }
         }
@@ -387,8 +389,8 @@ public class MiscUtils {
         return locationList;
     }
 
-    public static LocationHolder findEmptyLocation(LocationHolder respawnLocation) {
-        if (respawnLocation.getY() > (respawnLocation.getWorld().getMaxY() - 1) || (!respawnLocation.getBlock().getType().isSolid() && !respawnLocation.clone().add(0,1,0).getBlock().getType().isSolid())) {
+    public static Location findEmptyLocation(Location respawnLocation) {
+        if (respawnLocation.getY() > (respawnLocation.getWorld().getMaxY() - 1) || (!respawnLocation.getBlock().block().isSolid() && !respawnLocation.clone().add(0,1,0).getBlock().block().isSolid())) {
             return respawnLocation;
         } else {
             return findEmptyLocation(respawnLocation.clone().add(0, 2, 0));
@@ -396,15 +398,11 @@ public class MiscUtils {
     }
 
     public static Color getColor(@Nullable String color) {
-        var val = Color.hexOrName(color);
-        if (val == null) {
-            return Color.WHITE;
-        }
-        return val;
+        return color == null ? Color.WHITE : Color.hexOrName(color);
     }
 
     public Path getPluginsFolder(String name) {
-        return Paths.get(BedWarsPlugin.getInstance().getDataFolder().getParent().toAbsolutePath().toString(), name);
+        return Paths.get(BedWarsPlugin.getInstance().getPluginDescription().dataFolder().getParent().toAbsolutePath().toString(), name);
     }
 
     /**

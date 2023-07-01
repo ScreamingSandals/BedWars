@@ -27,7 +27,7 @@ import org.screamingsandals.bedwars.commands.AdminCommand;
 import org.screamingsandals.bedwars.game.GameManagerImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.lib.lang.Message;
-import org.screamingsandals.lib.sender.CommandSenderWrapper;
+import org.screamingsandals.lib.sender.CommandSender;
 import org.screamingsandals.lib.spectator.Component;
 import org.screamingsandals.lib.spectator.event.ClickEvent;
 import org.screamingsandals.lib.utils.annotations.Service;
@@ -41,7 +41,7 @@ public class SaveCommand extends BaseAdminSubCommand {
     }
 
     @Override
-    public void construct(CommandManager<CommandSenderWrapper> manager, Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder) {
+    public void construct(CommandManager<CommandSender> manager, Command.Builder<CommandSender> commandSenderWrapperBuilder) {
         manager.command(
                 commandSenderWrapperBuilder
                         .handler(this::save)
@@ -54,7 +54,7 @@ public class SaveCommand extends BaseAdminSubCommand {
         );
     }
 
-    private void save(@NotNull CommandContext<CommandSenderWrapper> commandContext) {
+    private void save(@NotNull CommandContext<CommandSender> commandContext) {
         editMode(commandContext, (sender, game) -> {
             // SEVERE (currently)
             for (var team : game.getTeams()) {

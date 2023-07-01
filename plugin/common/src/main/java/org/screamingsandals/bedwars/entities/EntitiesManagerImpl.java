@@ -23,13 +23,14 @@ import org.screamingsandals.bedwars.api.entities.EntitiesManager;
 import org.screamingsandals.bedwars.api.entities.GameEntity;
 import org.screamingsandals.bedwars.api.game.Game;
 import org.screamingsandals.bedwars.game.GameImpl;
-import org.screamingsandals.lib.entity.EntityBasic;
-import org.screamingsandals.lib.entity.EntityMapper;
+import org.screamingsandals.lib.entity.Entity;
+import org.screamingsandals.lib.entity.Entities;
 import org.screamingsandals.lib.plugin.ServiceManager;
 import org.screamingsandals.lib.utils.annotations.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -48,27 +49,27 @@ public class EntitiesManagerImpl implements EntitiesManager {
 
     @Override
     public Optional<GameImpl> getGameOfEntity(Object entity) {
-        if (entity instanceof EntityBasic) {
-            return getGameOfEntity((EntityBasic) entity);
+        if (entity instanceof Entity) {
+            return getGameOfEntity((Entity) entity);
         } else {
-            return getGameOfEntity(EntityMapper.wrapEntity(entity).orElseThrow());
+            return getGameOfEntity(Objects.requireNonNull(Entities.wrapEntity(entity)));
         }
     }
 
-    public Optional<GameImpl> getGameOfEntity(EntityBasic entityBasic) {
+    public Optional<GameImpl> getGameOfEntity(Entity entityBasic) {
         return entities.stream().filter(gameEntity -> gameEntity.getEntity().equals(entityBasic)).findFirst().map(GameEntityImpl::getGame);
     }
 
     @Override
     public GameEntityImpl addEntityToGame(Object entity, Game game) {
-        if (entity instanceof EntityBasic) {
-            return addEntityToGame((EntityBasic) entity, game);
+        if (entity instanceof Entity) {
+            return addEntityToGame((Entity) entity, game);
         } else {
-            return addEntityToGame(EntityMapper.wrapEntity(entity).orElseThrow(), game);
+            return addEntityToGame(Objects.requireNonNull(Entities.wrapEntity(entity)), game);
         }
     }
 
-    public GameEntityImpl addEntityToGame(EntityBasic entityBasic, Game game) {
+    public GameEntityImpl addEntityToGame(Entity entityBasic, Game game) {
         if (!(game instanceof GameImpl)) {
             throw new IllegalArgumentException("Provided instance of game is not created by BedWars plugin!");
         }
@@ -80,14 +81,14 @@ public class EntitiesManagerImpl implements EntitiesManager {
 
     @Override
     public void removeEntityFromGame(Object entity) {
-        if (entity instanceof EntityBasic) {
-            removeEntityFromGame((EntityBasic) entity);
+        if (entity instanceof Entity) {
+            removeEntityFromGame((Entity) entity);
         } else {
-            removeEntityFromGame(EntityMapper.wrapEntity(entity).orElseThrow());
+            removeEntityFromGame(Objects.requireNonNull(Entities.wrapEntity(entity)));
         }
     }
 
-    public void removeEntityFromGame(EntityBasic entityBasic) {
+    public void removeEntityFromGame(Entity entityBasic) {
         entities.stream()
                 .filter(gameEntity -> gameEntity.getEntity().equals(entityBasic))
                 .findFirst()

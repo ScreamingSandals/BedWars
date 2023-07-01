@@ -28,7 +28,7 @@ subprojects {
 
             multiModulePlatforms('BedWars-%s', 'bukkit')
             multiModuleUniversalSubproject('BedWars') // custom name
-            multiModuleApiSubproject('BedWars-API', 'org.screamingsandals.bedwars.api.utils.Wrapper')
+            multiModuleApiSubproject('BedWars-API', 'org.screamingsandals.bedwars.api.types')
             useApiConfigurationInsteadOfImplementation(true)
 
             additionalContent {
@@ -61,7 +61,6 @@ subprojects {
     repositories {
         mavenLocal()
         mavenCentral()
-        maven { url 'https://repo.extendedclip.com/content/repositories/placeholderapi/'  }
         maven { url 'https://repo.onarandombox.com/content/groups/public'  }
         maven { url 'https://repo.codemc.org/repository/maven-public/'  }
         maven { url 'https://repo.alessiodp.com/releases/'  }

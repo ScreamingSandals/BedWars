@@ -29,29 +29,32 @@ import org.screamingsandals.bedwars.game.TeamImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.utils.MiscUtils;
-import org.screamingsandals.lib.entity.EntityBasic;
-import org.screamingsandals.lib.entity.EntityLiving;
-import org.screamingsandals.lib.entity.EntityMapper;
+import org.screamingsandals.lib.entity.Entity;
+import org.screamingsandals.lib.entity.LivingEntity;
+import org.screamingsandals.lib.entity.Entities;
 import org.screamingsandals.lib.lang.Message;
-import org.screamingsandals.lib.item.Item;
-import org.screamingsandals.lib.item.builder.ItemFactory;
+import org.screamingsandals.lib.item.ItemStack;
+import org.screamingsandals.lib.item.builder.ItemStackFactory;
+import org.screamingsandals.lib.tasker.DefaultThreads;
 import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
-import org.screamingsandals.lib.world.LocationHolder;
+import org.screamingsandals.lib.world.Location;
+
+import java.util.Objects;
 
 @Getter
 @EqualsAndHashCode(callSuper = true)
 public class TNTSheepImpl extends SpecialItemImpl implements TNTSheep {
-    private final LocationHolder initialLocation;
-    private final Item item;
+    private final Location initialLocation;
+    private final ItemStack item;
     private final double speed;
     private final double followRange;
     private final double maxTargetDistance;
     private final int explosionTime;
-    private EntityLiving entity;
-    private EntityBasic tnt;
+    private LivingEntity entity;
+    private Entity tnt;
 
-    public TNTSheepImpl(GameImpl game, BedWarsPlayer player, TeamImpl team, LocationHolder loc, Item item,
+    public TNTSheepImpl(GameImpl game, BedWarsPlayer player, TeamImpl team, Location loc, ItemStack item,
                         double speed, double followRange, double maxTargetDistance, int explosionTime) {
         super(game, player, team);
         this.initialLocation = loc;
@@ -63,7 +66,7 @@ public class TNTSheepImpl extends SpecialItemImpl implements TNTSheep {
     }
 
     public void spawn() {
-        var sheep = EntityMapper.<EntityLiving>spawn("sheep", initialLocation).orElseThrow();
+        var sheep = (LivingEntity) Objects.requireNonNull(Entities.spawn("sheep", initialLocation));
         var color = team.getColor();
         var target = MiscUtils.findTarget(game, player, maxTargetDistance);
 
@@ -82,7 +85,7 @@ public class TNTSheepImpl extends SpecialItemImpl implements TNTSheep {
         PlatformService.getInstance().getEntityUtils().makeMobAttackTarget(sheep, speed, followRange, 0)
                 .attackTarget(target);
 
-        tnt = EntityMapper.spawn("tnt", initialLocation).orElseThrow();
+        tnt = Objects.requireNonNull(Entities.spawn("tnt", initialLocation));
         tnt.setMetadata("fuse_ticks", explosionTime);
         tnt.setMetadata("is_incendiary", false);
         sheep.addPassenger(tnt);
@@ -95,7 +98,7 @@ public class TNTSheepImpl extends SpecialItemImpl implements TNTSheep {
         var stack = item.withAmount(1);
         try {
             if (player.getPlayerInventory().getItemInOffHand().equals(stack)) {
-                player.getPlayerInventory().setItemInOffHand(ItemFactory.getAir());
+                player.getPlayerInventory().setItemInOffHand(ItemStackFactory.getAir());
             } else {
                 player.getPlayerInventory().removeItem(stack);
             }
@@ -104,12 +107,10 @@ public class TNTSheepImpl extends SpecialItemImpl implements TNTSheep {
         }
         player.forceUpdateInventory();
 
-        Tasker.build(() -> {
+        Tasker.runDelayed(DefaultThreads.GLOBAL_THREAD, () -> {
                     tnt.remove();
                     sheep.remove();
                     game.unregisterSpecialItem(TNTSheepImpl.this);
-                })
-                .delay(explosionTime + 13, TaskerTime.TICKS)
-                .start();
+                }, explosionTime + 13, TaskerTime.TICKS);
     }
 }

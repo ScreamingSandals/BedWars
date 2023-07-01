@@ -66,30 +66,29 @@ import org.screamingsandals.bedwars.utils.*;
 import org.screamingsandals.bedwars.variants.VariantImpl;
 import org.screamingsandals.bedwars.variants.VariantManagerImpl;
 import org.screamingsandals.lib.Server;
-import org.screamingsandals.lib.SpecialSoundKey;
-import org.screamingsandals.lib.block.BlockHolder;
-import org.screamingsandals.lib.block.BlockTypeHolder;
-import org.screamingsandals.lib.block.state.BlockStateHolder;
-import org.screamingsandals.lib.block.state.SignHolder;
+import org.screamingsandals.lib.block.BlockPlacement;
+import org.screamingsandals.lib.block.Block;
+import org.screamingsandals.lib.block.snapshot.BlockSnapshot;
+import org.screamingsandals.lib.block.snapshot.SignBlockSnapshot;
 import org.screamingsandals.lib.container.Container;
-import org.screamingsandals.lib.container.type.InventoryTypeHolder;
+import org.screamingsandals.lib.container.type.InventoryType;
 import org.screamingsandals.lib.economy.EconomyManager;
-import org.screamingsandals.lib.entity.EntityBasic;
-import org.screamingsandals.lib.entity.EntityItem;
-import org.screamingsandals.lib.entity.EntityLiving;
-import org.screamingsandals.lib.entity.EntityMapper;
+import org.screamingsandals.lib.entity.Entity;
+import org.screamingsandals.lib.entity.ItemEntity;
+import org.screamingsandals.lib.entity.LivingEntity;
+import org.screamingsandals.lib.entity.Entities;
 import org.screamingsandals.lib.event.EventManager;
-import org.screamingsandals.lib.event.player.SPlayerBlockBreakEvent;
+import org.screamingsandals.lib.event.player.PlayerBlockBreakEvent;
 import org.screamingsandals.lib.healthindicator.HealthIndicator;
-import org.screamingsandals.lib.item.Item;
-import org.screamingsandals.lib.item.builder.ItemFactory;
+import org.screamingsandals.lib.item.ItemStack;
+import org.screamingsandals.lib.item.builder.ItemStackFactory;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.npc.NPC;
-import org.screamingsandals.lib.player.PlayerMapper;
-import org.screamingsandals.lib.player.PlayerWrapper;
-import org.screamingsandals.lib.player.SenderWrapper;
-import org.screamingsandals.lib.player.gamemode.GameModeHolder;
-import org.screamingsandals.lib.plugin.PluginManager;
+import org.screamingsandals.lib.player.Players;
+import org.screamingsandals.lib.player.Player;
+import org.screamingsandals.lib.player.Sender;
+import org.screamingsandals.lib.player.gamemode.GameMode;
+import org.screamingsandals.lib.plugin.Plugins;
 import org.screamingsandals.lib.spectator.Color;
 import org.screamingsandals.lib.spectator.Component;
 import org.screamingsandals.lib.spectator.bossbar.BossBarColor;
@@ -97,17 +96,20 @@ import org.screamingsandals.lib.spectator.bossbar.BossBarDivision;
 import org.screamingsandals.lib.spectator.sound.SoundSource;
 import org.screamingsandals.lib.spectator.sound.SoundStart;
 import org.screamingsandals.lib.spectator.title.Title;
+import org.screamingsandals.lib.tasker.DefaultThreads;
 import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
-import org.screamingsandals.lib.tasker.task.TaskerTask;
+import org.screamingsandals.lib.tasker.task.Task;
+import org.screamingsandals.lib.tasker.task.TaskState;
+import org.screamingsandals.lib.utils.ResourceLocation;
 import org.screamingsandals.lib.visuals.Visual;
-import org.screamingsandals.lib.world.LocationHolder;
-import org.screamingsandals.lib.world.LocationMapper;
-import org.screamingsandals.lib.world.WorldHolder;
-import org.screamingsandals.lib.world.WorldMapper;
-import org.screamingsandals.lib.world.chunk.ChunkHolder;
-import org.screamingsandals.lib.world.gamerule.GameRuleHolder;
-import org.screamingsandals.lib.world.weather.WeatherHolder;
+import org.screamingsandals.lib.world.Location;
+import org.screamingsandals.lib.impl.world.Locations;
+import org.screamingsandals.lib.world.World;
+import org.screamingsandals.lib.world.Worlds;
+import org.screamingsandals.lib.world.chunk.Chunk;
+import org.screamingsandals.lib.world.gamerule.GameRuleType;
+import org.screamingsandals.lib.world.weather.WeatherType;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.gson.GsonConfigurationLoader;
@@ -127,12 +129,12 @@ public class GameImpl implements Game {
     @Getter
     private final UUID uuid;
     private String name;
-    private LocationHolder pos1;
-    private LocationHolder pos2;
-    private LocationHolder lobbySpawn;
-    private LocationHolder lobbyPos1;
-    private LocationHolder lobbyPos2;
-    private LocationHolder specSpawn;
+    private Location pos1;
+    private Location pos2;
+    private Location lobbySpawn;
+    private Location lobbyPos1;
+    private Location lobbyPos2;
+    private Location specSpawn;
     private final List<TeamImpl> teams = new ArrayList<>();
     private final List<ItemSpawnerImpl> spawners = new ArrayList<>();
     private final Map<BedWarsPlayer, RespawnProtection> respawnProtectionMap = new HashMap<>();
@@ -143,9 +145,9 @@ public class GameImpl implements Game {
     private int gameTime;
     private int minPlayers;
     private final List<BedWarsPlayer> players = new ArrayList<>();
-    private WorldHolder world;
+    private World world;
     private final List<GameStoreImpl> gameStore = new ArrayList<>();
-    private WeatherHolder arenaWeather = null;
+    private WeatherType arenaWeather = null;
     private boolean preServerRestart = false;
     @Getter
     private File file;
@@ -163,12 +165,12 @@ public class GameImpl implements Game {
     private GameStatus afterRebuild = GameStatus.WAITING;
     private int countdown = -1, previousCountdown = -1;
     private int calculatedMaxPlayers;
-    private TaskerTask task;
+    private Task task;
     private final List<TeamImpl> teamsInGame = new ArrayList<>();
     private final BWRegion region = Server.isVersion(1, 13) ? new FlatteningRegion() : PlatformService.getInstance().getLegacyRegion();
     private TeamSelectorInventory teamSelectorInventory;
     private StatusBar statusbar;
-    private final Map<LocationHolder, Item[]> usedChests = new HashMap<>();
+    private final Map<Location, ItemStack[]> usedChests = new HashMap<>();
     private final List<SpecialItem> activeSpecialItems = new ArrayList<>();
     private final List<DelayFactory> activeDelays = new ArrayList<>();
     private final Map<BedWarsPlayer, Container> fakeEnderChests = new HashMap<>();
@@ -229,7 +231,7 @@ public class GameImpl implements Game {
             }
 
             if (GameManagerImpl.getInstance().getGame(uuid).isPresent()) {
-                PlayerMapper.getConsoleSender().sendMessage(
+                Server.getConsoleSender().sendMessage(
                         MiscUtils.BW_PREFIX.withAppendix(
                                 Component.text("Arena " + uuid + " has the same unique id as another arena that's already loaded. Skipping!", Color.RED)
                         )
@@ -245,28 +247,27 @@ public class GameImpl implements Game {
             game.gameTime = configMap.node("gameTime").getInt();
 
             var worldName = Objects.requireNonNull(configMap.node("world").getString());
-            game.world = WorldMapper.getWorld(worldName).orElse(null);
+            game.world = Worlds.getWorld(worldName);
 
-            var multiverseKey = PluginManager.createKey("Multiverse-Core").orElseThrow();
-            var multiverse = PluginManager.getPlatformClass(multiverseKey);
+            var multiverse = Plugins.getPlugin("Multiverse-Core");
             if (game.world == null) {
-                if (PluginManager.isEnabled(multiverseKey)) {
-                    PlayerMapper.getConsoleSender().sendMessage(
+                if (multiverse != null) {
+                    Server.getConsoleSender().sendMessage(
                             MiscUtils.BW_PREFIX.withAppendix(
                                     Component.text("World " + worldName + " was not found, but we found Multiverse-Core, so we will try to load this world.", Color.RED)
                             )
                     );
 
-                    if (multiverse.isPresent() && ((Core) multiverse.orElseThrow()).getMVWorldManager().loadWorld(worldName)) {
-                        PlayerMapper.getConsoleSender().sendMessage(
+                    if (((Core) multiverse).getMVWorldManager().loadWorld(worldName)) {
+                        Server.getConsoleSender().sendMessage(
                                 MiscUtils.BW_PREFIX.withAppendix(
                                         Component.text("World " + worldName + " was successfully loaded with Multiverse-Core, continue in arena loading.", Color.GREEN)
                                 )
                         );
 
-                        game.world = WorldMapper.getWorld(worldName).orElseThrow();
+                        game.world = Objects.requireNonNull(Worlds.getWorld(worldName));
                     } else {
-                        PlayerMapper.getConsoleSender().sendMessage(
+                        Server.getConsoleSender().sendMessage(
                                 MiscUtils.BW_PREFIX.withAppendix(
                                         Component.text("Arena " + game.name + " can't be loaded, because world " + worldName + " is missing!", Color.RED)
                                 )
@@ -274,15 +275,15 @@ public class GameImpl implements Game {
                         return null;
                     }
                 } else if (firstAttempt) {
-                    PlayerMapper.getConsoleSender().sendMessage(
+                    Server.getConsoleSender().sendMessage(
                             MiscUtils.BW_PREFIX.withAppendix(
                                     Component.text("Arena " + game.name + " can't be loaded, because world " + worldName + " is missing! We will try it again after all plugins have loaded!", Color.YELLOW)
                             )
                     );
-                    Tasker.build(() -> loadGame(file, false)).delay(10L, TaskerTime.TICKS).start();
+                    Tasker.runDelayed(DefaultThreads.GLOBAL_THREAD, () -> loadGame(file, false), 10L, TaskerTime.TICKS);
                     return null;
                 } else {
-                    PlayerMapper.getConsoleSender().sendMessage(
+                    Server.getConsoleSender().sendMessage(
                             MiscUtils.BW_PREFIX.withAppendix(
                                     Component.text("Arena " + game.name + " can't be loaded, because world " + worldName + " is missing!", Color.RED)
                             )
@@ -292,7 +293,7 @@ public class GameImpl implements Game {
             }
 
             if (Server.isVersion(1, 15)) {
-                game.world.setGameRuleValue(GameRuleHolder.of("doImmediateRespawn"), true);
+                game.world.setGameRuleValue(GameRuleType.of("doImmediateRespawn"), true);
             }
 
             game.pos1 = MiscUtils.readLocationFromString(game.world, Objects.requireNonNull(configMap.node("pos1").getString()));
@@ -300,12 +301,12 @@ public class GameImpl implements Game {
 
 
             if (MainConfig.getInstance().node("prevent-spawning-mobs").getBoolean(true)) {
-                for (EntityLiving e : game.world.getEntitiesByClass(EntityLiving.class)) {
+                for (LivingEntity e : game.world.getEntitiesByClass(LivingEntity.class)) {
                     if (!e.getEntityType().is("minecraft:player") && !e.getEntityType().is("minecraft:armor_stand")) {
                         if (ArenaUtils.isInArea(e.getLocation(), game.pos1, game.pos2)) {
-                            final Optional<ChunkHolder> chunk = e.getLocation().getWorld().getChunkAt(e.getLocation());
-                            if (chunk.isPresent() && !chunk.get().isLoaded()) {
-                                chunk.get().load();
+                            final Chunk chunk = e.getLocation().getWorld().getChunkAt(e.getLocation());
+                            if (chunk != null && !chunk.isLoaded()) {
+                                chunk.load();
                             }
                             e.remove();
                         }
@@ -315,25 +316,25 @@ public class GameImpl implements Game {
 
             game.specSpawn = MiscUtils.readLocationFromString(game.world, Objects.requireNonNull(configMap.node("specSpawn").getString()));
             var spawnWorld = configMap.node("lobbySpawnWorld").getString();
-            var lobbySpawnWorld = WorldMapper.getWorld(Objects.requireNonNull(spawnWorld)).orElse(null);
+            var lobbySpawnWorld = Worlds.getWorld(Objects.requireNonNull(spawnWorld));
             if (lobbySpawnWorld == null) {
-                if (PluginManager.isEnabled(multiverseKey)) {
-                    PlayerMapper.getConsoleSender().sendMessage(
+                if (multiverse != null) {
+                    Server.getConsoleSender().sendMessage(
                             MiscUtils.BW_PREFIX.withAppendix(
                                     Component.text("World " + spawnWorld + " was not found, but we found Multiverse-Core, so we will try to load this world.", Color.RED)
                             )
                     );
 
-                    if (multiverse.isPresent() && ((Core) multiverse.orElseThrow()).getMVWorldManager().loadWorld(spawnWorld)) {
-                        PlayerMapper.getConsoleSender().sendMessage(
+                    if (((Core) multiverse).getMVWorldManager().loadWorld(spawnWorld)) {
+                        Server.getConsoleSender().sendMessage(
                                 MiscUtils.BW_PREFIX.withAppendix(
                                         Component.text("World " + spawnWorld + " was successfully loaded with Multiverse-Core, continue in arena loading.", Color.GREEN)
                                 )
                         );
 
-                        lobbySpawnWorld = WorldMapper.getWorld(Objects.requireNonNull(spawnWorld)).orElseThrow();
+                        lobbySpawnWorld = Objects.requireNonNull(Worlds.getWorld(Objects.requireNonNull(spawnWorld)));
                     } else {
-                        PlayerMapper.getConsoleSender().sendMessage(
+                        Server.getConsoleSender().sendMessage(
                                 MiscUtils.BW_PREFIX.withAppendix(
                                         Component.text("Arena " + game.name + " can't be loaded, because world " + spawnWorld + " is missing!", Color.RED)
                                 )
@@ -341,15 +342,15 @@ public class GameImpl implements Game {
                         return null;
                     }
                 } else if (firstAttempt) {
-                    PlayerMapper.getConsoleSender().sendMessage(
+                    Server.getConsoleSender().sendMessage(
                             MiscUtils.BW_PREFIX.withAppendix(
                                     Component.text("Arena " + game.name + " can't be loaded, because world " + spawnWorld + " is missing! We will try it again after all plugins have loaded!", Color.YELLOW)
                             )
                     );
-                    Tasker.build(() -> loadGame(file, false)).delay(10L, TaskerTime.TICKS).start();
+                    Tasker.runDelayed(DefaultThreads.GLOBAL_THREAD, () -> loadGame(file, false), 10L, TaskerTime.TICKS);
                     return null;
                 } else {
-                    PlayerMapper.getConsoleSender().sendMessage(
+                    Server.getConsoleSender().sendMessage(
                             MiscUtils.BW_PREFIX.withAppendix(
                                     Component.text("Arena " + game.name + " can't be loaded, because world " + spawnWorld + " is missing!", Color.RED)
                             )
@@ -496,7 +497,7 @@ public class GameImpl implements Game {
             game.displayName = configMap.node("game-display-name").getString();
 
             game.start();
-            PlayerMapper.getConsoleSender().sendMessage(
+            Server.getConsoleSender().sendMessage(
                     MiscUtils.BW_PREFIX.withAppendix(
                             Component.text("Arena ", Color.GREEN),
                             Component.text(game.uuid + "/" + game.name + " (" + file.getName() + ")", Color.WHITE),
@@ -519,7 +520,7 @@ public class GameImpl implements Game {
         }
     }
 
-    public void removeEntity(EntityBasic e) {
+    public void removeEntity(Entity e) {
         if (ArenaUtils.isInArea(e.getLocation(), pos1, pos2)) {
             final var chunk = e.getLocation().getChunk();
             if (!chunk.isLoaded()) {
@@ -530,12 +531,12 @@ public class GameImpl implements Game {
     }
 
 
-    public static WeatherHolder loadWeather(String weather) {
+    public static WeatherType loadWeather(String weather) {
         try {
             if ("default".equalsIgnoreCase(weather)) {
                 return null;
             }
-            return WeatherHolder.ofOptional(weather).orElse(null);
+            return WeatherType.ofNullable(weather);
         } catch (Exception e) {
             return null;
         }
@@ -575,37 +576,37 @@ public class GameImpl implements Game {
         this.name = name;
     }
 
-    public WorldHolder getWorld() {
+    public World getWorld() {
         return world;
     }
 
-    public void setWorld(WorldHolder world) {
+    public void setWorld(World world) {
         if (this.world == null) {
             this.world = world;
         }
     }
 
-    public LocationHolder getPos1() {
+    public Location getPos1() {
         return pos1;
     }
 
-    public void setPos1(LocationHolder pos1) {
+    public void setPos1(Location pos1) {
         this.pos1 = pos1;
     }
 
-    public LocationHolder getPos2() {
+    public Location getPos2() {
         return pos2;
     }
 
-    public void setPos2(LocationHolder pos2) {
+    public void setPos2(Location pos2) {
         this.pos2 = pos2;
     }
 
-    public LocationHolder getLobbySpawn() {
+    public Location getLobbySpawn() {
         return lobbySpawn;
     }
 
-    public void setLobbySpawn(LocationHolder lobbySpawn) {
+    public void setLobbySpawn(Location lobbySpawn) {
         this.lobbySpawn = lobbySpawn;
     }
 
@@ -658,11 +659,11 @@ public class GameImpl implements Game {
         return gameStore;
     }
 
-    public LocationHolder getSpecSpawn() {
+    public Location getSpecSpawn() {
         return specSpawn;
     }
 
-    public void setSpecSpawn(LocationHolder specSpawn) {
+    public void setSpecSpawn(Location specSpawn) {
         this.specSpawn = specSpawn;
     }
 
@@ -691,7 +692,7 @@ public class GameImpl implements Game {
         return teamSelectorInventory;
     }
 
-    public boolean isBlockAddedDuringGame(LocationHolder loc) {
+    public boolean isBlockAddedDuringGame(Location loc) {
         return status == GameStatus.RUNNING && region.isLocationModifiedDuringGame(loc);
     }
 
@@ -700,17 +701,17 @@ public class GameImpl implements Game {
         return status == GameStatus.RUNNING && region.isLocationModifiedDuringGame(loc);
     }
 
-    public boolean blockPlace(BedWarsPlayer player, BlockHolder block, BlockStateHolder replaced, Item itemInHand) {
+    public boolean blockPlace(BedWarsPlayer player, BlockPlacement block, BlockSnapshot replaced, ItemStack itemInHand) {
         if (status != GameStatus.RUNNING) {
             return false; // ?
         }
         if (player.isSpectator()) {
             return false;
         }
-        if (BedWarsPlugin.isFarmBlock(block.getType())) {
+        if (BedWarsPlugin.isFarmBlock(block.block())) {
             return true;
         }
-        if (!ArenaUtils.isInArea(block.getLocation(), pos1, pos2)) {
+        if (!ArenaUtils.isInArea(block.location(), pos1, pos2)) {
             return false;
         }
 
@@ -721,31 +722,31 @@ public class GameImpl implements Game {
             return false;
         }
 
-        if (!replaced.getType().isAir()) {
-            if (region.isLocationModifiedDuringGame(replaced.getLocation())) {
+        if (!replaced.block().isAir()) {
+            if (region.isLocationModifiedDuringGame(replaced.location())) {
                 return true;
-            } else if (BedWarsPlugin.isBreakableBlock(replaced.getType()) || region.isLiquid(replaced.getType())) {
-                region.putOriginalBlock(block.getLocation(), replaced);
+            } else if (BedWarsPlugin.isBreakableBlock(replaced.block()) || region.isLiquid(replaced.block())) {
+                region.putOriginalBlock(block.location(), replaced);
             } else {
                 return false;
             }
         }
-        region.addBuiltDuringGame(block.getLocation());
+        region.addBuiltDuringGame(block.location());
 
         return true;
     }
 
-    public boolean blockBreak(BedWarsPlayer player, BlockHolder block, SPlayerBlockBreakEvent event) {
+    public boolean blockBreak(BedWarsPlayer player, BlockPlacement block, PlayerBlockBreakEvent event) {
         if (status != GameStatus.RUNNING) {
             return false; // ?
         }
         if (player.isSpectator()) {
             return false;
         }
-        if (BedWarsPlugin.isFarmBlock(block.getType())) {
+        if (BedWarsPlugin.isFarmBlock(block.block())) {
             return true;
         }
-        if (!ArenaUtils.isInArea(block.getLocation(), pos1, pos2)) {
+        if (!ArenaUtils.isInArea(block.location(), pos1, pos2)) {
             return false;
         }
 
@@ -756,13 +757,13 @@ public class GameImpl implements Game {
             return false;
         }
 
-        if (region.isLocationModifiedDuringGame(block.getLocation())) {
-            region.removeBlockBuiltDuringGame(block.getLocation());
+        if (region.isLocationModifiedDuringGame(block.location())) {
+            region.removeBlockBuiltDuringGame(block.location());
 
-            if (block.getType().isSameType("ender_chest")) {
-                var team = getTeamOfChest(block.getLocation());
+            if (block.block().isSameType("ender_chest")) {
+                var team = getTeamOfChest(block.location());
                 if (team != null) {
-                    team.removeTeamChest(block.getLocation());
+                    team.removeTeamChest(block.location());
                     var message = Message.of(LangKeys.SPECIALS_TEAM_CHEST_BROKEN).prefixOrDefault(getCustomPrefixComponent());
                     for (BedWarsPlayer gp : team.getPlayers()) {
                         gp.sendMessage(message);
@@ -770,7 +771,10 @@ public class GameImpl implements Game {
 
                     if (breakEvent.isDrops()) {
                         event.dropItems(false);
-                        player.getPlayerInventory().addItem(ItemFactory.build("ENDER_CHEST").orElse(ItemFactory.getAir()));
+                        var builtItem = ItemStackFactory.build("ENDER_CHEST");
+                        if (builtItem != null) {
+                            player.getPlayerInventory().addItem(builtItem);
+                        }
                     }
                 }
             }
@@ -779,25 +783,25 @@ public class GameImpl implements Game {
                 try {
                     event.dropItems(false);
                 } catch (Throwable tr) {
-                    block.setType(BlockTypeHolder.air());
+                    block.block(Block.air());
                 }
             }
             return true;
         }
 
-        var loc = block.getLocation();
-        if (region.isBedBlock(block.getBlockState().orElseThrow())) {
-            if (!region.isBedHead(block.getBlockState().orElseThrow())) {
-                loc = region.getBedNeighbor(block).getLocation();
+        var loc = block.location();
+        if (region.isBedBlock(block.blockSnapshot())) {
+            if (!region.isBedHead(block.blockSnapshot())) {
+                loc = region.getBedNeighbor(block).location();
             }
-        } else if (region.isDoorBlock(block.getBlockState().orElseThrow())) {
-            if (!region.isDoorBottomBlock(block.getBlockState().orElseThrow())) {
+        } else if (region.isDoorBlock(block.blockSnapshot())) {
+            if (!region.isDoorBottomBlock(block.blockSnapshot())) {
                 loc = loc.subtract(0, 1, 0);
             }
         }
         var targetTeam = getTeamOfTargetBlock(loc);
         if (targetTeam != null) {
-            if (configurationContainer.getOrDefault(GameConfigurationContainer.TARGET_BLOCK_CAKE_DESTROY_BY_EATING, false) && block.getType().isSameType("cake")) {
+            if (configurationContainer.getOrDefault(GameConfigurationContainer.TARGET_BLOCK_CAKE_DESTROY_BY_EATING, false) && block.block().isSameType("cake")) {
                 return false; // when CAKES are in eating mode, don't allow to just break it
             } else {
                 var pt = getPlayerTeam(player);
@@ -814,14 +818,14 @@ public class GameImpl implements Game {
                 return result;
             }
         }
-        if (BedWarsPlugin.isBreakableBlock(block.getType())) {
-            region.putOriginalBlock(block.getLocation(), block.getBlockState().orElseThrow());
+        if (BedWarsPlugin.isBreakableBlock(block.block())) {
+            region.putOriginalBlock(block.location(), block.blockSnapshot());
             return true;
         }
         return false;
     }
 
-    public @Nullable TeamImpl getTeamOfTargetBlock(@NotNull LocationHolder loc) {
+    public @Nullable TeamImpl getTeamOfTargetBlock(@NotNull Location loc) {
         for (var team : teamsInGame) {
             if (team.getTarget() instanceof TargetBlockImpl && ((TargetBlockImpl) team.getTarget()).getTargetBlock().equals(loc)) {
                 return team;
@@ -841,19 +845,19 @@ public class GameImpl implements Game {
                 .orElse(null);
     }
 
-    public boolean internalProcessInvalidation(@NotNull TeamImpl team, @NotNull Target target, @Nullable PlayerWrapper destroyer, @NotNull TargetInvalidationReason reason) {
+    public boolean internalProcessInvalidation(@NotNull TeamImpl team, @NotNull Target target, @Nullable Player destroyer, @NotNull TargetInvalidationReason reason) {
         return internalProcessInvalidation(team, target, destroyer, reason, true, false);
     }
 
-    public boolean internalProcessInvalidation(@NotNull TeamImpl team, @NotNull Target target, @Nullable PlayerWrapper destroyer, @NotNull TargetInvalidationReason reason, boolean putOriginalBlocks, boolean ignoreInvalidity) {
+    public boolean internalProcessInvalidation(@NotNull TeamImpl team, @NotNull Target target, @Nullable Player destroyer, @NotNull TargetInvalidationReason reason, boolean putOriginalBlocks, boolean ignoreInvalidity) {
         if (!teamsInGame.contains(team) || (!ignoreInvalidity && !target.isValid())) {
             return false;
         }
 
-        @Nullable BlockTypeHolder type = null;
+        @Nullable Block type = null;
         if (target instanceof TargetBlockImpl) {
             var loc = ((TargetBlockImpl) target).getTargetBlock();
-            type = loc.getBlock().getType();
+            type = loc.getBlock().block();
         }
 
         var preTargetInvalidatedEvent = new PreTargetInvalidatedEventImpl(
@@ -874,39 +878,39 @@ public class GameImpl implements Game {
             var loc = ((TargetBlockImpl) target).getTargetBlock();
             var block = loc.getBlock();
             if (type.is("#beds")) {
-                if (!region.isBedHead(block.getBlockState().orElseThrow())) {
-                    loc = region.getBedNeighbor(block).getLocation();
+                if (!region.isBedHead(block.blockSnapshot())) {
+                    loc = region.getBedNeighbor(block).location();
                 }
 
                 if (putOriginalBlocks) {
-                    region.putOriginalBlock(loc, block.getBlockState().orElseThrow());
-                    if (block.getLocation().equals(loc)) {
+                    region.putOriginalBlock(loc, block.blockSnapshot());
+                    if (block.location().equals(loc)) {
                         var neighbor = region.getBedNeighbor(block);
-                        region.putOriginalBlock(neighbor.getLocation(), neighbor.getBlockState().orElseThrow());
+                        region.putOriginalBlock(neighbor.location(), neighbor.blockSnapshot());
                     } else {
-                        region.putOriginalBlock(loc, region.getBedNeighbor(block).getBlockState().orElseThrow());
+                        region.putOriginalBlock(loc, region.getBedNeighbor(block).blockSnapshot());
                     }
                 }
-                region.getBedNeighbor(block).setTypeWithoutPhysics(BlockTypeHolder.air());
-                block.setType(BlockTypeHolder.air());
+                region.getBedNeighbor(block).alterBlockWithoutPhysics(Block.air());
+                block.block(Block.air());
             } else if (type.is("#doors", "#tall_flowers")) {
-                var neighbour = loc.add(0, type.get("half").map("lower"::equals).orElse(true) ? 1 : -1, 0);
+                var neighbour = loc.add(0, "lower".equals(type.get("half")) ? 1 : -1, 0);
                 var neighbourBlock = neighbour.getBlock();
-                if (neighbourBlock.getType().is("#doors", "#tall_flowers")) {
+                if (neighbourBlock.block().is("#doors", "#tall_flowers")) {
                     if (putOriginalBlocks) {
-                        region.putOriginalBlock(neighbour, neighbourBlock.getBlockState().orElseThrow());
+                        region.putOriginalBlock(neighbour, neighbourBlock.blockSnapshot());
                     }
-                    neighbourBlock.setTypeWithoutPhysics(BlockTypeHolder.air());
+                    neighbourBlock.alterBlockWithoutPhysics(Block.air());
                 }
                 if (putOriginalBlocks) {
-                    region.putOriginalBlock(loc, block.getBlockState().orElseThrow());
+                    region.putOriginalBlock(loc, block.blockSnapshot());
                 }
-                loc.getBlock().setType(BlockTypeHolder.air());
+                loc.getBlock().block(Block.air());
             } else {
                 if (putOriginalBlocks) {
-                    region.putOriginalBlock(loc, block.getBlockState().orElseThrow());
+                    region.putOriginalBlock(loc, block.blockSnapshot());
                 }
-                loc.getBlock().setType(BlockTypeHolder.air());
+                loc.getBlock().block(Block.air());
             }
 
             ((TargetBlockImpl) target).setValid(false);
@@ -928,7 +932,7 @@ public class GameImpl implements Game {
             Debug.info(gamePlayer.getName() + " can't join to the game: event cancelled");
             String message = joinEvent.getCancelMessage();
             if (message != null && !message.equals("")) {
-                gamePlayer.sendMessage(message);
+                gamePlayer.sendMessage(Component.fromLegacy(message));
             }
             gamePlayer.changeGame(null);
             return;
@@ -972,7 +976,7 @@ public class GameImpl implements Game {
                     .placeholder("players", players.size())
                     .placeholder("maxplayers", calculatedMaxPlayers)
                     .prefixOrDefault(getCustomPrefixComponent())
-                    .send(getConnectedPlayers().stream().map(PlayerMapper::wrapPlayer).collect(Collectors.toList()));
+                    .send(getConnectedPlayers().stream().map(Players::wrapPlayer).collect(Collectors.toList()));
 
             gamePlayer.teleport(lobbySpawn, () -> {
                 gamePlayer.invClean(); // temp fix for inventory issues?
@@ -1078,7 +1082,7 @@ public class GameImpl implements Game {
                         .send(players);
             }
         } else {
-            if (gamePlayer.getSpectatorTarget().isPresent()) {
+            if (gamePlayer.getSpectatorTarget() != null) {
                 gamePlayer.setSpectatorTarget(null);
             }
         }
@@ -1119,8 +1123,8 @@ public class GameImpl implements Game {
         if (MainConfig.getInstance().node("mainlobby", "enabled").getBoolean()
                 && !MainConfig.getInstance().node("bungee", "enabled").getBoolean()) {
             try {
-                LocationHolder mainLobbyLocation = MiscUtils.readLocationFromString(
-                        WorldMapper.getWorld(MainConfig.getInstance().node("mainlobby", "world").getString()).orElseThrow(),
+                Location mainLobbyLocation = MiscUtils.readLocationFromString(
+                        Objects.requireNonNull(Worlds.getWorld(MainConfig.getInstance().node("mainlobby", "world").getString())),
                         Objects.requireNonNull(MainConfig.getInstance().node("mainlobby", "location").getString())
                 );
                 gamePlayer.teleport(mainLobbyLocation);
@@ -1176,7 +1180,7 @@ public class GameImpl implements Game {
 
     @SneakyThrows
     public void saveToConfig() {
-        var dir = BedWarsPlugin.getInstance().getPluginDescription().getDataFolder().resolve("arenas").toFile();
+        var dir = BedWarsPlugin.getInstance().getPluginDescription().dataFolder().resolve("arenas").toFile();
         if (!dir.exists()) {
             //noinspection ResultOfMethodCallIgnored
             dir.mkdirs();
@@ -1250,7 +1254,7 @@ public class GameImpl implements Game {
 
         configMap.node("constant").from(configurationContainer.getSaved());
 
-        configMap.node("arenaWeather").set(arenaWeather == null ? "default" : arenaWeather.platformName());
+        configMap.node("arenaWeather").set(arenaWeather == null ? "default" : arenaWeather.location().asString());
 
         if (gameVariant != null) {
             configMap.node("variant").set(gameVariant.getName());
@@ -1274,7 +1278,7 @@ public class GameImpl implements Game {
             for (TeamImpl team : teams) {
                 calculatedMaxPlayers += team.getMaxPlayers();
             }
-            Tasker.build(GameImpl.this::updateSigns).afterOneTick().start();
+            Tasker.run(DefaultThreads.GLOBAL_THREAD, GameImpl.this::updateSigns);
 
             if (MainConfig.getInstance().node("bossbar", "use-xp-bar").getBoolean(false)) {
                 statusbar = new XPBarImpl();
@@ -1313,7 +1317,7 @@ public class GameImpl implements Game {
         }
 
         if (preparing) {
-            Tasker.build(() -> joinToGame(player)).delay(1L, TaskerTime.TICKS).start();
+            Tasker.runDelayed(DefaultThreads.GLOBAL_THREAD, () -> joinToGame(player), 1L, TaskerTime.TICKS);
             return;
         }
 
@@ -1398,14 +1402,14 @@ public class GameImpl implements Game {
             } else {
                 if (isBungeeEnabled()) {
                     BungeeUtils.movePlayerToBungeeServer(player, false);
-                    Tasker.build(() -> BungeeUtils.sendPlayerBungeeMessage(player,
+                    Tasker.runDelayed(DefaultThreads.GLOBAL_THREAD, () -> BungeeUtils.sendPlayerBungeeMessage(player,
                             Message
                                     .of(LangKeys.IN_GAME_ERRORS_GAME_IS_FULL)
                                     .placeholder("arena", GameImpl.this.name)
                                     .prefixOrDefault(getCustomPrefixComponent())
                                     .asComponent(player)
                                     .toLegacy()
-                    )).delay(5, TaskerTime.TICKS).start();
+                    ), 5, TaskerTime.TICKS);
                 } else {
                     Message
                             .of(LangKeys.IN_GAME_ERRORS_GAME_IS_FULL)
@@ -1527,17 +1531,17 @@ public class GameImpl implements Game {
             if (configurationContainer.getOrDefault(GameConfigurationContainer.ADD_WOOL_TO_INVENTORY_ON_JOIN, false)) {
                 int colorPosition = MainConfig.getInstance().node("hotbar", "color").getInt(1);
                 if (colorPosition >= 0 && colorPosition <= 8) {
-                    var item = ItemFactory.build(teamForJoin.getColor().material1_13 + "_WOOL",
+                    var item = ItemStackFactory.build(teamForJoin.getColor().material1_13 + "_WOOL",
                             builder -> builder.displayName(Component.text(teamForJoin.getName(), teamForJoin.getColor().getTextColor()))
-                    ).orElse(ItemFactory.getAir());
+                    );
                     player.getPlayerInventory().setItem(colorPosition, item);
                 }
             }
 
             if (configurationContainer.getOrDefault(GameConfigurationContainer.COLORED_LEATHER_BY_TEAM_IN_LOBBY, false)) {
-                var chestplate = ItemFactory.build("LEATHER_CHESTPLATE", builder ->
+                var chestplate = ItemStackFactory.build("leather_chestplate", builder ->
                         builder.color(teamForJoin.getColor().getLeatherColor())
-                ).orElse(ItemFactory.getAir());
+                );
                 player.getPlayerInventory().setChestplate(chestplate);
             }
         }
@@ -1596,7 +1600,7 @@ public class GameImpl implements Game {
         return teamForJoin;
     }
 
-    public LocationHolder makeSpectator(BedWarsPlayer gamePlayer, boolean leaveItem) {
+    public Location makeSpectator(BedWarsPlayer gamePlayer, boolean leaveItem) {
         Debug.info(gamePlayer.getName() + " spawning as spectator");
         gamePlayer.setSpectator(true);
         gamePlayer.teleport(specSpawn, () -> {
@@ -1605,7 +1609,7 @@ public class GameImpl implements Game {
             }
             gamePlayer.setAllowFlight(true);
             gamePlayer.setFlying(true);
-            gamePlayer.setGameMode(GameModeHolder.of("spectator"));
+            gamePlayer.setGameMode(GameMode.of("spectator"));
 
             if (leaveItem) {
                 if (MainConfig.getInstance().node("tab", "enabled").getBoolean() && MainConfig.getInstance().node("tab", "hide-spectators").getBoolean()) {
@@ -1626,14 +1630,11 @@ public class GameImpl implements Game {
             }
             healthIndicator.removeTrackedPlayer(gamePlayer);
 
-            Tasker
-                    .build(() -> {
+            Tasker.runDelayed(DefaultThreads.GLOBAL_THREAD, () -> {
                         if (!gamePlayer.getGameMode().is("spectator")) { // Fix Multiverse overriding our gamemode
-                            gamePlayer.setGameMode(GameModeHolder.of("spectator"));
+                            gamePlayer.setGameMode(GameMode.of("spectator"));
                         }
-                    })
-                    .delay(2, TaskerTime.TICKS)
-                    .start();
+                    }, 2, TaskerTime.TICKS);
         }, true);
 
         return specSpawn;
@@ -1645,13 +1646,13 @@ public class GameImpl implements Game {
 
         if (gamePlayer.getGame() == this && currentTeam != null) {
             gamePlayer.setSpectator(false);
-            if (gamePlayer.getSpectatorTarget().isPresent()) {
+            if (gamePlayer.getSpectatorTarget() != null) {
                 gamePlayer.setSpectatorTarget(null);
             }
             gamePlayer.teleport(MiscUtils.findEmptyLocation(currentTeam.getRandomSpawn()), () -> {
                 gamePlayer.setAllowFlight(false);
                 gamePlayer.setFlying(false);
-                gamePlayer.setGameMode(GameModeHolder.of("survival"));
+                gamePlayer.setGameMode(GameMode.of("survival"));
 
                 if (MainConfig.getInstance().node("tab", "enabled").getBoolean() && MainConfig.getInstance().node("tab", "hide-spectators").getBoolean()) {
                     players.forEach(p -> p.showPlayer(gamePlayer));
@@ -1791,7 +1792,7 @@ public class GameImpl implements Game {
                             player.showTitle(Title.title(Component.text(Integer.toString(countdown), Color.YELLOW), Component.empty(), TitleUtils.defaultTimes()));
                             player.playSound(
                                     SoundStart.sound(
-                                            SpecialSoundKey.key(MainConfig.getInstance().node("sounds", "countdown", "sound").getString("ui.button.click")),
+                                            ResourceLocation.of(MainConfig.getInstance().node("sounds", "countdown", "sound").getString("ui.button.click")),
                                             SoundSource.AMBIENT,
                                             (float) MainConfig.getInstance().node("sounds", "countdown", "volume").getDouble(1),
                                             (float) MainConfig.getInstance().node("sounds", "countdown", "pitch").getDouble(1)
@@ -1869,14 +1870,14 @@ public class GameImpl implements Game {
                         teamSelectorInventory.destroy();
                     teamSelectorInventory = null;
 
-                    Tasker.build(this::updateSigns).delay(3, TaskerTime.TICKS).start();
+                    Tasker.runDelayed(DefaultThreads.GLOBAL_THREAD, this::updateSigns, 3, TaskerTime.TICKS);
                     for (GameStoreImpl store : gameStore) {
                         var villager = store.spawn();
-                        if (villager instanceof EntityLiving) {
+                        if (villager instanceof LivingEntity) {
                             EntitiesManagerImpl.getInstance().addEntityToGame(villager, this);
-                            ((EntityLiving) villager).setAI(false);
-                            ((EntityLiving) villager).getLocation().getNearbyEntities(1).forEach(entity -> {
-                                if (entity.getEntityType().equals(((EntityLiving) villager).getEntityType()) && entity.getLocation().getBlock().equals(((EntityLiving) villager).getLocation().getBlock()) && !villager.equals(entity)) {
+                            ((LivingEntity) villager).setAI(false);
+                            ((LivingEntity) villager).getLocation().getNearbyEntities(1).forEach(entity -> {
+                                if (entity.getEntityType().equals(((LivingEntity) villager).getEntityType()) && entity.getLocation().getBlock().equals(((LivingEntity) villager).getLocation().getBlock()) && !villager.equals(entity)) {
                                     entity.remove();
                                 }
                             });
@@ -1920,7 +1921,7 @@ public class GameImpl implements Game {
                             var loc = makeSpectator(player, true);
                                 player.playSound(
                                         SoundStart.sound(
-                                                SpecialSoundKey.key(MainConfig.getInstance().node("sounds", "game_start", "sound").getString("entity.player.levelup")),
+                                                ResourceLocation.of(MainConfig.getInstance().node("sounds", "game_start", "sound").getString("entity.player.levelup")),
                                                 SoundSource.AMBIENT,
                                                 (float) MainConfig.getInstance().node("sounds", "game_start", "volume").getDouble(1),
                                                 (float) MainConfig.getInstance().node("sounds", "game_start", "pitch").getDouble(1)
@@ -1931,7 +1932,7 @@ public class GameImpl implements Game {
                                 );
                         } else {
                             player.teleport(team.getRandomSpawn(), () -> {
-                                player.setGameMode(GameModeHolder.of("survival"));
+                                player.setGameMode(GameMode.of("survival"));
                                 if (configurationContainer.getOrDefault(GameConfigurationContainer.GAME_START_ITEMS_ENABLED, false)) {
                                     var givenGameStartItems = configurationContainer.getOrDefault(GameConfigurationContainerImpl.GAME_START_ITEMS_ITEMS, List.of());
                                     if (!givenGameStartItems.isEmpty()) {
@@ -1943,7 +1944,7 @@ public class GameImpl implements Game {
                                 SpawnEffects.spawnEffect(this, player, "game-effects.start");
                                 player.playSound(
                                         SoundStart.sound(
-                                                SpecialSoundKey.key(MainConfig.getInstance().node("sounds", "game_start", "sound").getString("entity.player.levelup")),
+                                                ResourceLocation.of(MainConfig.getInstance().node("sounds", "game_start", "sound").getString("entity.player.levelup")),
                                                 SoundSource.AMBIENT,
                                                 (float) MainConfig.getInstance().node("sounds", "game_start", "volume").getDouble(1),
                                                 (float) MainConfig.getInstance().node("sounds", "game_start", "pitch").getDouble(1)
@@ -1956,17 +1957,17 @@ public class GameImpl implements Game {
                     if (configurationContainer.getOrDefault(GameConfigurationContainer.REMOVE_UNUSED_TARGET_BLOCKS, false)) {
                         for (TeamImpl team : teams) {
                             if (!teamsInGame.contains(team) && team.getTarget() instanceof TargetBlockImpl) {
-                                LocationHolder loc = ((TargetBlockImpl) team.getTarget()).getTargetBlock();
-                                BlockHolder block = loc.getBlock();
-                                if (region.isBedBlock(block.getBlockState().orElseThrow())) {
-                                    region.putOriginalBlock(block.getLocation(), block.getBlockState().orElseThrow());
+                                Location loc = ((TargetBlockImpl) team.getTarget()).getTargetBlock();
+                                BlockPlacement block = loc.getBlock();
+                                if (region.isBedBlock(block.blockSnapshot())) {
+                                    region.putOriginalBlock(block.location(), block.blockSnapshot());
                                     var neighbor = region.getBedNeighbor(block);
-                                    region.putOriginalBlock(neighbor.getLocation(), neighbor.getBlockState().orElseThrow());
-                                    neighbor.setTypeWithoutPhysics(BlockTypeHolder.air());
+                                    region.putOriginalBlock(neighbor.location(), neighbor.blockSnapshot());
+                                    neighbor.alterBlockWithoutPhysics(Block.air());
                                 } else {
-                                    region.putOriginalBlock(loc, block.getBlockState().orElseThrow());
+                                    region.putOriginalBlock(loc, block.blockSnapshot());
                                 }
-                                block.setType(BlockTypeHolder.air());
+                                block.block(Block.air());
                             }
                         }
                     }
@@ -1976,7 +1977,7 @@ public class GameImpl implements Game {
                     }
 
                     if (Server.isVersion(1, 15) && (!PlatformService.getInstance().getFakeDeath().isAvailable() || !configurationContainer.getOrDefault(GameConfigurationContainer.ALLOW_FAKE_DEATH, false))) {
-                        world.setGameRuleValue(GameRuleHolder.of("doImmediateRespawn"), true);
+                        world.setGameRuleValue(GameRuleType.of("doImmediateRespawn"), true);
                     }
                     preparing = false;
 
@@ -2104,14 +2105,14 @@ public class GameImpl implements Game {
                                             } else {
                                                 GameImpl.this.dispatchRewardCommands("player-win-run-immediately", player, 0);
                                             }
-                                            Tasker.build(() -> {
+                                            Tasker.runDelayed(DefaultThreads.GLOBAL_THREAD, () -> {
                                                 if (PlayerStatisticManager.isEnabled()) {
                                                     var statistic = PlayerStatisticManager.getInstance().getStatistic(player);
                                                     GameImpl.this.dispatchRewardCommands("player-win", player, statistic.getScore());
                                                 } else {
                                                     GameImpl.this.dispatchRewardCommands("player-win", player, 0);
                                                 }
-                                            }).delay((2 + postGameWaiting) * 20L, TaskerTime.TICKS).start();
+                                            }, (2 + postGameWaiting) * 20L, TaskerTime.TICKS);
                                         }
                                     } else {
                                         Message.of(LangKeys.IN_GAME_END_YOU_LOST)
@@ -2171,7 +2172,7 @@ public class GameImpl implements Game {
                 player.changeGame(null);
 
                 if (MainConfig.getInstance().node("rewards", "enabled").getBoolean()) {
-                    Tasker.build(() -> {
+                    Tasker.runDelayed(DefaultThreads.GLOBAL_THREAD, () -> {
                         if (PlayerStatisticManager.isEnabled()) {
                             var statistic = PlayerStatisticManager.getInstance()
                                     .getStatistic(player);
@@ -2179,7 +2180,7 @@ public class GameImpl implements Game {
                         } else {
                             GameImpl.this.dispatchRewardCommands("player-end-game", player, 0);
                         }
-                    }).delay(40, TaskerTime.TICKS).start();
+                    }, 40, TaskerTime.TICKS);
                 }
             }
 
@@ -2194,15 +2195,15 @@ public class GameImpl implements Game {
                     kickAllPlayers();
                 }
 
-                Tasker.build(() -> {
+                Tasker.runDelayed(DefaultThreads.GLOBAL_THREAD, () -> {
                     if (MainConfig.getInstance().node("bungee", "serverRestart").getBoolean()) {
                         EventManager.fire(new ServerRestartEventImpl());
 
-                        PlayerMapper.getConsoleSender().tryToDispatchCommand("restart");
+                        Server.getConsoleSender().tryToDispatchCommand("restart");
                     } else if (MainConfig.getInstance().node("bungee", "serverStop").getBoolean()) {
                         Server.shutdown();
                     }
-                }).delay(30, TaskerTime.TICKS).start();
+                }, 30, TaskerTime.TICKS);
             }
         }
     }
@@ -2242,9 +2243,9 @@ public class GameImpl implements Game {
 
         region.regen();
         // Remove items
-        for (EntityBasic e : this.world.getEntities()) {
+        for (Entity e : this.world.getEntities()) {
             if (ArenaUtils.isInArea(e.getLocation(), pos1, pos2)) {
-                if (e instanceof EntityItem) {
+                if (e instanceof ItemEntity) {
                     removeEntity(e);
                 }
             }
@@ -2260,9 +2261,9 @@ public class GameImpl implements Game {
             var block = location.getBlock();
             var contents = entry.getValue();
 
-            var state = block.getBlockState();
-            if (state.isPresent() && state.get().holdsInventory()) {
-                state.get().getInventory().orElseThrow().setContents(contents);
+            var state = block.blockSnapshot();
+            if (state != null && state.holdsInventory()) {
+                state.getInventory().setContents(contents);
             }
         }
         usedChests.clear();
@@ -2302,7 +2303,7 @@ public class GameImpl implements Game {
                     .game(this.getName())
                     .time(wonTime)
                     .team(t.getName())
-                    .winners(t.getPlayers().stream().map(SenderWrapper::getName).collect(Collectors.toList()))
+                    .winners(t.getPlayers().stream().map(Sender::getName).collect(Collectors.toList()))
                     .build()
             );
             return true;
@@ -2315,18 +2316,13 @@ public class GameImpl implements Game {
     }
 
     public void runTask() {
-        if (task != null) {
-            if (Tasker.getRunningTasks().containsKey(task.getId())) {
-                task.cancel();
-            }
-            task = null;
-        }
-        task = Tasker.build(GameImpl.this::run).repeat(1, TaskerTime.SECONDS).start();
+        cancelTask();
+        task = Tasker.runRepeatedly(DefaultThreads.GLOBAL_THREAD, GameImpl.this::run, 1, TaskerTime.SECONDS);
     }
 
     private void cancelTask() {
         if (task != null) {
-            if (Tasker.getRunningTasks().containsKey(task.getId())) {
+            if (task.getState() != TaskState.CANCELLED && task.getState() != TaskState.FINISHED) {
                 task.cancel();
             }
             task = null;
@@ -2379,7 +2375,7 @@ public class GameImpl implements Game {
 
         String[] statusLine;
         String[] playersLine;
-        BlockTypeHolder blockBehindMaterial;
+        Block blockBehindMaterial;
         switch (status) {
             case REBUILDING:
                 statusLine = LangKeys.SIGN_STATUS_REBUILDING_STATUS;
@@ -2420,14 +2416,14 @@ public class GameImpl implements Game {
 
         final var finalBlockBehindMaterial = blockBehindMaterial;
         for (var signBlock : gameSigns) {
-            signBlock.getLocation().asOptional(LocationHolder.class)
+            signBlock.getLocation().asOptional(Location.class)
                     .ifPresent(location -> {
                         if (location.getChunk().isLoaded()) {
-                            var blockState = location.getBlock().getBlockState();
-                            if (blockState.isPresent() && blockState.get() instanceof SignHolder) {
-                                var sign = (SignHolder) blockState.get();
+                            var blockState = location.getBlock().blockSnapshot();
+                            if (blockState instanceof SignBlockSnapshot) {
+                                var sign = (SignBlockSnapshot) blockState;
                                 for (int i = 0; i < texts.size() && i < 4; i++) {
-                                    sign.line(i, Component.fromLegacy(texts.get(i)));
+                                    sign.frontLine(i, Component.fromLegacy(texts.get(i)));
                                 }
                                 sign.updateBlock();
                             }
@@ -2436,7 +2432,7 @@ public class GameImpl implements Game {
                                 final var optionalBlock = SignUtils.getBlockBehindSign(signBlock);
                                 if (optionalBlock.isPresent()) {
                                     final var glassBlock = optionalBlock.get();
-                                    glassBlock.setType(finalBlockBehindMaterial);
+                                    glassBlock.block(finalBlockBehindMaterial);
                                 }
                             }
                         }
@@ -2461,12 +2457,12 @@ public class GameImpl implements Game {
     }
 
     @Override
-    public WorldHolder getGameWorld() {
+    public World getGameWorld() {
         return world;
     }
 
     @Override
-    public LocationHolder getSpectatorSpawn() {
+    public Location getSpectatorSpawn() {
         return specSpawn;
     }
 
@@ -2507,15 +2503,15 @@ public class GameImpl implements Game {
         if (location == null) {
             return false;
         }
-        return ArenaUtils.isInArea(LocationMapper.wrapLocation(location), pos1, pos2);
+        return ArenaUtils.isInArea(Locations.wrapLocation(location), pos1, pos2);
     }
 
-    public boolean isLocationInArena(LocationHolder location) {
+    public boolean isLocationInArena(Location location) {
         return ArenaUtils.isInArea(location, pos1, pos2);
     }
 
     @Override
-    public WorldHolder getLobbyWorld() {
+    public World getLobbyWorld() {
         if (lobbySpawn == null) return null;
         return lobbySpawn.getWorld();
     }
@@ -2530,10 +2526,10 @@ public class GameImpl implements Game {
         if (location == null) {
             return null;
         }
-        return getTeamOfChest(LocationMapper.wrapLocation(location));
+        return getTeamOfChest(Locations.wrapLocation(location));
     }
 
-    public TeamImpl getTeamOfChest(LocationHolder location) {
+    public TeamImpl getTeamOfChest(Location location) {
         for (var team : teamsInGame) {
             if (team.isTeamChestRegistered(location)) {
                 return team;
@@ -2542,10 +2538,10 @@ public class GameImpl implements Game {
         return null;
     }
 
-    public void addChestForFutureClear(LocationHolder loc, Container inventory) {
+    public void addChestForFutureClear(Location loc, Container inventory) {
         if (!usedChests.containsKey(loc)) {
             var contents = inventory.getContents();
-            var clone = new Item[contents.length];
+            var clone = new ItemStack[contents.length];
             for (int i = 0; i < contents.length; i++) {
                 var stack = contents[i];
                 if (stack != null)
@@ -2784,11 +2780,11 @@ public class GameImpl implements Game {
 
     @Override
     @Nullable
-    public WeatherHolder getArenaWeather() {
+    public WeatherType getArenaWeather() {
         return arenaWeather;
     }
 
-    public void setArenaWeather(WeatherHolder arenaWeather) {
+    public void setArenaWeather(WeatherType arenaWeather) {
         this.arenaWeather = arenaWeather;
     }
 
@@ -2797,7 +2793,7 @@ public class GameImpl implements Game {
         return List.copyOf(spawners);
     }
 
-    public void dispatchRewardCommands(String type, PlayerWrapper player, int score) {
+    public void dispatchRewardCommands(String type, Player player, int score) {
         if (!MainConfig.getInstance().node("rewards", "enabled").getBoolean()) {
             return;
         }
@@ -2840,8 +2836,13 @@ public class GameImpl implements Game {
 
     @Override
     public boolean isEntityShop(Object entity) {
+        var entityObj = Entities.wrapEntity(entity);
+        if (entityObj == null) {
+            return false; // not an entity :)
+        }
+
         for (var store : gameStore) {
-            if (EntityMapper.wrapEntity(entity).map(e -> e.equals(store.getEntity())).orElse(false)) {
+            if (entityObj.equals(store.getEntity())) {
                 return true;
             }
         }
@@ -2888,7 +2889,7 @@ public class GameImpl implements Game {
 
     public Container getFakeEnderChest(BedWarsPlayer player) {
         if (!fakeEnderChests.containsKey(player)) {
-            fakeEnderChests.put(player, InventoryTypeHolder.of("ender_chest").createContainer().orElseThrow());
+            fakeEnderChests.put(player, Objects.requireNonNull(InventoryType.of("ender_chest").createContainer()));
         }
         return fakeEnderChests.get(player);
     }
@@ -2917,12 +2918,12 @@ public class GameImpl implements Game {
     }
 
     @Override
-    public @Nullable LocationHolder getLobbyPos1() {
+    public @Nullable Location getLobbyPos1() {
         return lobbyPos1;
     }
 
     @Override
-    public @Nullable LocationHolder getLobbyPos2() {
+    public @Nullable Location getLobbyPos2() {
         return lobbyPos2;
     }
 
@@ -2934,11 +2935,11 @@ public class GameImpl implements Game {
         return internalProcessInvalidation((TeamImpl) team, team.getTarget(), null, TargetInvalidationReason.PLUGIN);
     }
 
-    public void setLobbyPos1(LocationHolder pos1) {
+    public void setLobbyPos1(Location pos1) {
         lobbyPos1 = pos1;
     }
 
-    public void setLobbyPos2(LocationHolder pos2) {
+    public void setLobbyPos2(Location pos2) {
         lobbyPos2 = pos2;
     }
 

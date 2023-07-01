@@ -27,15 +27,13 @@ import org.screamingsandals.bedwars.game.GameManagerImpl;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.lib.placeholders.PlaceholderExpansion;
-import org.screamingsandals.lib.player.PlayerMapper;
+import org.screamingsandals.lib.player.Players;
 import org.screamingsandals.lib.sender.MultiPlatformOfflinePlayer;
 import org.screamingsandals.lib.spectator.Color;
 import org.screamingsandals.lib.spectator.Component;
 import org.screamingsandals.lib.utils.annotations.Service;
 
-@Service(dependsOn = {
-        PlayerMapper.class
-})
+@Service
 public class BedwarsExpansion extends PlaceholderExpansion {
 
     public BedwarsExpansion() {
@@ -99,7 +97,7 @@ public class BedwarsExpansion extends PlaceholderExpansion {
             playerName = playerName.substring(0, index);
 
             var stats = PlayerStatisticManager.getInstance().getStatistic(
-                    PlayerMapper.getOfflinePlayer(playerName).orElse(null)
+                    Players.getOfflinePlayer(playerName)
             );
 
             if (stats == null) {
@@ -244,7 +242,7 @@ public class BedwarsExpansion extends PlaceholderExpansion {
                 return null;
             }
 
-            var stats = PlayerStatisticManager.getInstance().getStatistic(PlayerMapper.wrapPlayer(player));
+            var stats = PlayerStatisticManager.getInstance().getStatistic(Players.wrapPlayer(player));
 
             if (stats == null) {
                 return null;

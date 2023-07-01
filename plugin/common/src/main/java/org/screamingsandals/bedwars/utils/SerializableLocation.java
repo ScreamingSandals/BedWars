@@ -22,24 +22,27 @@ package org.screamingsandals.bedwars.utils;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.screamingsandals.lib.utils.Wrapper;
-import org.screamingsandals.lib.world.LocationHolder;
-import org.screamingsandals.lib.world.WorldMapper;
+import org.jetbrains.annotations.NotNull;
+import org.screamingsandals.lib.api.Wrapper;
+import org.screamingsandals.lib.world.Location;
+import org.screamingsandals.lib.world.Worlds;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
+
+import java.util.Objects;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @ConfigSerializable
 public class SerializableLocation implements Wrapper {
-    private String world;
+    private @NotNull String world;
     private double x;
     private double y;
     private double z;
     private double yaw = 0;
     private double pitch = 0;
 
-    public SerializableLocation(LocationHolder location) {
+    public SerializableLocation(@NotNull Location location) {
         this.world = location.getWorld().getName();
         this.x = location.getX();
         this.y = location.getY();
@@ -49,14 +52,14 @@ public class SerializableLocation implements Wrapper {
     }
 
     public boolean isWorldLoaded() {
-        return WorldMapper.getWorld(world).isPresent();
+        return Worlds.getWorld(world) != null;
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T> T as(Class<T> type) {
-        if (type == LocationHolder.class) {
-            var holder = new LocationHolder(x, y, z, (float) this.yaw, (float) this.pitch, WorldMapper.getWorld(world).orElseThrow());
+    public <T> @NotNull T as(@NotNull Class<T> type) {
+        if (type == Location.class) {
+            var holder = new Location(x, y, z, (float) this.yaw, (float) this.pitch, Objects.requireNonNull(Worlds.getWorld(world)));
             return (T) holder;
         }
         throw new UnsupportedOperationException("Unsupported type!");

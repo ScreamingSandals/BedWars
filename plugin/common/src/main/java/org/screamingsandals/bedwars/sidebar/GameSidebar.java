@@ -31,8 +31,8 @@ import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.lib.lang.Message;
-import org.screamingsandals.lib.packet.SClientboundSetPlayerTeamPacket;
-import org.screamingsandals.lib.player.PlayerWrapper;
+import org.screamingsandals.lib.packet.ClientboundSetPlayerTeamPacket;
+import org.screamingsandals.lib.player.Player;
 import org.screamingsandals.lib.sidebar.ScoreSidebar;
 import org.screamingsandals.lib.sidebar.Sidebar;
 import org.screamingsandals.lib.sidebar.TeamedSidebar;
@@ -40,7 +40,7 @@ import org.screamingsandals.lib.spectator.Color;
 import org.screamingsandals.lib.spectator.Component;
 import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
-import org.screamingsandals.lib.tasker.task.TaskerTask;
+import org.screamingsandals.lib.tasker.task.Task;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -52,7 +52,7 @@ public class GameSidebar {
     private Sidebar sidebar = Sidebar.of();
     private ScoreSidebar scoreboard;
     private TeamedSidebar<?> teamedSidebar = sidebar;
-    private final TaskerTask task;
+    private final Task task;
 
     public GameSidebar(GameImpl game) {
         this.game = game;
@@ -88,11 +88,7 @@ public class GameSidebar {
         }
         game.getConnectedPlayers().forEach(sidebar::addViewer);
 
-        this.task = Tasker
-                .build(this::update)
-                .async()
-                .repeat(20, TaskerTime.TICKS)
-                .start();
+        this.task = Tasker.runAsyncRepeatedly(this::update, 20, TaskerTime.TICKS);
     }
 
     private void switchToRunning() {
@@ -221,15 +217,15 @@ public class GameSidebar {
         }
 
         game.getActiveTeams().forEach(team -> {
-            if (teamedSidebar.getTeam(team.getName()).isEmpty()) {
+            if (teamedSidebar.getTeam(team.getName()) == null) {
                 var t = teamedSidebar.team(team.getName())
-                        .color(SClientboundSetPlayerTeamPacket.TeamColor.valueOf(Color.nearestNamedTo(team.getColor().getTextColor()).toString().toUpperCase())) // TODO: a better way
+                        .color(ClientboundSetPlayerTeamPacket.TeamColor.valueOf(Color.nearestNamedTo(team.getColor().getTextColor()).toString().toUpperCase())) // TODO: a better way
                         .friendlyFire(game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.FRIENDLYFIRE, false));
                 if (game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.USE_TEAM_LETTER_PREFIXES_BEFORE_PLAYER_NAMES, false)) {
                     t.teamPrefix(Component.text().content(team.getName().charAt(0) + " ").color(team.getColor().getTextColor()).bold().build());
                 }
             }
-            var sidebarTeam = teamedSidebar.getTeam(team.getName()).orElseThrow();
+            var sidebarTeam = Objects.requireNonNull(teamedSidebar.getTeam(team.getName()));
 
             List.copyOf(sidebarTeam.players())
                     .forEach(teamPlayer -> {
@@ -284,8 +280,8 @@ public class GameSidebar {
                     }
                 })
                 .placeholder("you", sender -> {
-                    if (sender instanceof PlayerWrapper) { // legacy sidebar means sender is null
-                        var player = sender.as(PlayerWrapper.class);
+                    if (sender instanceof Player) { // legacy sidebar means sender is null
+                        var player = sender.as(Player.class);
                         if (PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
                             var bwPlayer = player.as(BedWarsPlayer.class);
                             if (team.isPlayerInTeam(bwPlayer)) {
@@ -309,11 +305,11 @@ public class GameSidebar {
         teamedSidebar.destroy();
     }
 
-    public void addPlayer(PlayerWrapper player) {
+    public void addPlayer(Player player) {
         teamedSidebar.addViewer(player);
     }
 
-    public void removePlayer(PlayerWrapper player) {
+    public void removePlayer(Player player) {
         teamedSidebar.removeViewer(player);
     }
 

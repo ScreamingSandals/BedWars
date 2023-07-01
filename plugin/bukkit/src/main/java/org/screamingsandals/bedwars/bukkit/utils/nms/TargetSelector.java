@@ -24,8 +24,7 @@ import org.screamingsandals.bedwars.nms.accessors.MobAccessor;
 import org.screamingsandals.bedwars.nms.accessors.NearestAttackableTargetGoalAccessor;
 import org.screamingsandals.bedwars.nms.accessors.ServerPlayerAccessor;
 import org.screamingsandals.bedwars.utils.EntityUtils;
-import org.screamingsandals.lib.bukkit.utils.nms.ClassStorage;
-import org.screamingsandals.lib.entity.EntityLiving;
+import org.screamingsandals.lib.impl.bukkit.utils.nms.ClassStorage;
 import org.screamingsandals.lib.utils.reflect.Reflect;
 
 public class TargetSelector extends Selector implements EntityUtils.EntitySelector {
@@ -34,7 +33,7 @@ public class TargetSelector extends Selector implements EntityUtils.EntitySelect
 		super(handler, MobAccessor.getFieldTargetSelector());
 	}
 
-	public TargetSelector attackTarget(EntityLiving target) {
+	public TargetSelector attackTarget(org.screamingsandals.lib.entity.LivingEntity target) {
 		return attackTarget(target.as(LivingEntity.class));
 	}
 

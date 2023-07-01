@@ -26,9 +26,8 @@ import org.screamingsandals.bedwars.api.config.Configuration;
 import org.screamingsandals.bedwars.api.config.ConfigurationContainer;
 import org.screamingsandals.bedwars.api.config.ConfigurationKey;
 import org.screamingsandals.bedwars.api.config.ConfigurationListKey;
-import org.screamingsandals.lib.configurate.ItemSerializer;
 import org.screamingsandals.lib.configurate.SLibSerializers;
-import org.screamingsandals.lib.item.Item;
+import org.screamingsandals.lib.item.ItemStack;
 import org.spongepowered.configurate.BasicConfigurationNode;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.ConfigurationOptions;
@@ -211,8 +210,8 @@ public class ConfigurationContainerImpl implements ConfigurationContainer {
             if (object != null && object.getClass().isEnum()) {
                 object = object.toString(); // save enums as strings (thanks Configurate, rly)
             }
-            if (object instanceof Item) {
-                saved.node(key).set(Item.class, object);
+            if (object instanceof ItemStack) {
+                saved.node(key).set(ItemStack.class, object);
             } else {
                 saved.node(key).set(object);
             }

@@ -28,8 +28,9 @@ import org.screamingsandals.bedwars.config.migrate.bwrel.BedWarsRelConfiguration
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.lib.lang.Message;
-import org.screamingsandals.lib.sender.CommandSenderWrapper;
+import org.screamingsandals.lib.sender.CommandSender;
 import org.screamingsandals.lib.utils.annotations.Service;
+import org.screamingsandals.lib.utils.annotations.ServiceDependencies;
 
 import java.io.File;
 import java.nio.file.Paths;
@@ -37,7 +38,8 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-@Service(dependsOn = {
+@Service
+@ServiceDependencies(dependsOn = {
         BedWarsRelConfigurationMigrator.class,
         BedWarsRelArenaMigrator.class
 })
@@ -47,7 +49,7 @@ public class MigrateBedWarsRelCommand extends MigrateCommand {
     private final FileMigrator arenaMigrator;
 
     @Override
-    protected void construct(Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder, CommandManager<CommandSenderWrapper> manager) {
+    protected void construct(Command.Builder<CommandSender> commandSenderWrapperBuilder, CommandManager<CommandSender> manager) {
         manager.command(
                 commandSenderWrapperBuilder
                         .literal("BedWarsRel", "bwrel", "BWRel", "bedwarsrel")

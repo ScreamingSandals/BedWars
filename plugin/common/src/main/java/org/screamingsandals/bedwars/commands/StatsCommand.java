@@ -26,10 +26,10 @@ import org.screamingsandals.bedwars.statistics.PlayerStatisticImpl;
 import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.lib.Server;
 import org.screamingsandals.lib.lang.Message;
-import org.screamingsandals.lib.player.OfflinePlayerWrapper;
-import org.screamingsandals.lib.player.PlayerMapper;
-import org.screamingsandals.lib.player.PlayerWrapper;
-import org.screamingsandals.lib.sender.CommandSenderWrapper;
+import org.screamingsandals.lib.player.OfflinePlayer;
+import org.screamingsandals.lib.player.Players;
+import org.screamingsandals.lib.player.Player;
+import org.screamingsandals.lib.sender.CommandSender;
 import org.screamingsandals.lib.utils.annotations.Service;
 
 import java.util.List;
@@ -42,7 +42,7 @@ public class StatsCommand extends BaseCommand {
     }
 
     @Override
-    protected void construct(Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder, CommandManager<CommandSenderWrapper> manager) {
+    protected void construct(Command.Builder<CommandSender> commandSenderWrapperBuilder, CommandManager<CommandSender> manager) {
         manager.command(
                 commandSenderWrapperBuilder
                         .argument(manager
@@ -50,7 +50,7 @@ public class StatsCommand extends BaseCommand {
                                 .withSuggestionsProvider((c, s) -> {
                                     if (PlayerStatisticManager.isEnabled()
                                             && (c.getSender().hasPermission(BedWarsPermission.OTHER_STATS_PERMISSION.asPermission()) && !c.getSender().hasPermission(BedWarsPermission.ADMIN_PERMISSION.asPermission()))) {
-                                        return Server.getConnectedPlayers().stream().map(PlayerWrapper::getName).collect(Collectors.toList());
+                                        return Server.getConnectedPlayers().stream().map(Player::getName).collect(Collectors.toList());
                                     }
                                     return List.of();
                                 })
@@ -69,12 +69,12 @@ public class StatsCommand extends BaseCommand {
                                     sender.sendMessage(Message.of(LangKeys.NO_PERMISSIONS).defaultPrefix());
                                 } else {
                                     var name = playerName.get();
-                                    var off = PlayerMapper.getPlayerExact(name);
+                                    var off = Players.getPlayerExact(name);
 
-                                    if (off.isEmpty()) {
+                                    if (off == null) {
                                         sender.sendMessage(Message.of(LangKeys.STATISTICS_PLAYER_DOES_NOT_EXIST).defaultPrefix());
                                     } else {
-                                        var statistic = PlayerStatisticManager.getInstance().getStatistic(off.get());
+                                        var statistic = PlayerStatisticManager.getInstance().getStatistic(off);
                                         if (statistic == null) {
                                             sender.sendMessage(Message.of(LangKeys.STATISTICS_NOT_FOUND).defaultPrefix());
                                         } else {
@@ -83,8 +83,8 @@ public class StatsCommand extends BaseCommand {
                                     }
                                 }
                             } else {
-                                if (sender.getType() == CommandSenderWrapper.Type.PLAYER) {
-                                    var statistic = PlayerStatisticManager.getInstance().getStatistic(sender.as(OfflinePlayerWrapper.class));
+                                if (sender.getType() == CommandSender.Type.PLAYER) {
+                                    var statistic = PlayerStatisticManager.getInstance().getStatistic(sender.as(OfflinePlayer.class));
                                     if (statistic == null) {
                                         sender.sendMessage(Message.of(LangKeys.STATISTICS_NOT_FOUND).defaultPrefix());
                                     } else {
@@ -97,7 +97,7 @@ public class StatsCommand extends BaseCommand {
         );
     }
 
-    public static void sendStats(CommandSenderWrapper sender, PlayerStatisticImpl statistic) {
+    public static void sendStats(CommandSender sender, PlayerStatisticImpl statistic) {
         Message
                 .of(LangKeys.STATISTICS_HEADER)
                 .join(LangKeys.STATISTICS_KILLS)

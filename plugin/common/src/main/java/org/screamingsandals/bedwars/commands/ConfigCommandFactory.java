@@ -36,12 +36,11 @@ import org.screamingsandals.bedwars.commands.arguments.ItemArgument;
 import org.screamingsandals.bedwars.config.ConfigurationContainerImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.lib.cloud.extras.ComponentHelper;
-import org.screamingsandals.lib.item.Item;
+import org.screamingsandals.lib.item.ItemStack;
 import org.screamingsandals.lib.lang.Message;
-import org.screamingsandals.lib.sender.CommandSenderWrapper;
+import org.screamingsandals.lib.sender.CommandSender;
 import org.screamingsandals.lib.spectator.Component;
 import org.screamingsandals.lib.spectator.ComponentLike;
-import org.screamingsandals.lib.utils.TriConsumer;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -58,9 +57,9 @@ import java.util.stream.Stream;
 @Builder
 public class ConfigCommandFactory {
     @NotNull
-    private final CommandManager<CommandSenderWrapper> manager;
+    private final CommandManager<CommandSender> manager;
     @NotNull
-    private final Command.Builder<CommandSenderWrapper> commandBuilder;
+    private final Command.Builder<CommandSender> commandBuilder;
     @NotNull
     private final ConfigurationContainerResolver resolver;
     @Nullable
@@ -71,7 +70,7 @@ public class ConfigCommandFactory {
         manager.command(
                 commandBuilder
                         .literal("get", "show", "g")
-                        .argument(StringArgument.<CommandSenderWrapper>newBuilder("key")
+                        .argument(StringArgument.<CommandSender>newBuilder("key")
                                 .withSuggestionsProvider((c, s) -> makeSuggestion(c, true, ConfigurationContainerImpl::getJoinedRegisteredKeysForConfigCommand))
                         )
                         .handler(commandContext -> handleCommand(commandContext, true, (sender, container, configuredComponentName) -> { // Allow this without edit mode
@@ -197,7 +196,7 @@ public class ConfigCommandFactory {
         manager.command(
                 commandBuilder
                         .literal("reset", "inherit", "default", "set-to-default", "set-to-inherit", "r")
-                        .argument(StringArgument.<CommandSenderWrapper>newBuilder("key")
+                        .argument(StringArgument.<CommandSender>newBuilder("key")
                                 .withSuggestionsProvider((c, s) -> makeSuggestion(c, false, ConfigurationContainerImpl::getJoinedRegisteredKeysForConfigCommand))
                         )
                         .handler(commandContext -> handleCommand(commandContext, false, (sender, container) -> {
@@ -242,7 +241,7 @@ public class ConfigCommandFactory {
         generateCommands(
                 "string",
                 String.class,
-                argumentName -> StringArgument.<CommandSenderWrapper>newBuilder(argumentName)
+                argumentName -> StringArgument.<CommandSender>newBuilder(argumentName)
                         .greedy()
                         .withSuggestionsProvider((commandContext, sender) -> makeSuggestion(commandContext, false, container -> {
                             var keys = List.of(commandContext.<String>get("key").toLowerCase().split("\\."));
@@ -334,7 +333,7 @@ public class ConfigCommandFactory {
         // Item
         generateCommands(
                 "item",
-                Item.class,
+                ItemStack.class,
                 ItemArgument::of,
                 "items", "it"
         );
@@ -344,10 +343,10 @@ public class ConfigCommandFactory {
                 commandBuilder
                         .literal("set", "s")
                         .literal("enum", "enums", "e")
-                        .argument(StringArgument.<CommandSenderWrapper>newBuilder("key")
+                        .argument(StringArgument.<CommandSender>newBuilder("key")
                                 .withSuggestionsProvider((c, s) -> makeSuggestion(c, false, ConfigurationContainerImpl::getJoinedRegisteredKeysForConfigCommandEnums))
                         )
-                        .argument(StringArgument.<CommandSenderWrapper>newBuilder("value")
+                        .argument(StringArgument.<CommandSender>newBuilder("value")
                                 .withSuggestionsProvider((commandContext, sender) -> makeSuggestion(commandContext, false, container -> {
                                     var keys = List.of(commandContext.<String>get("key").toLowerCase().split("\\."));
 
@@ -412,7 +411,7 @@ public class ConfigCommandFactory {
     private <T> void generateCommands(
             @NotNull String typeName,
             @NotNull Class<T> type,
-            @NotNull Function<@NotNull String, @NotNull CommandArgument<CommandSenderWrapper, T>> argumentBuilder,
+            @NotNull Function<@NotNull String, @NotNull CommandArgument<CommandSender, T>> argumentBuilder,
             @NotNull String @NotNull... aliases
     ) {
         generateCommands(typeName, type, argumentBuilder, argumentBuilder, aliases);
@@ -421,8 +420,8 @@ public class ConfigCommandFactory {
     private <T> void generateCommands(
             @NotNull String typeName,
             @NotNull Class<T> type,
-            @NotNull Function<@NotNull String, @NotNull CommandArgument<CommandSenderWrapper, T>> argumentBuilder,
-            @NotNull Function<@NotNull String, @NotNull CommandArgument<CommandSenderWrapper, T>> argumentListBuilder,
+            @NotNull Function<@NotNull String, @NotNull CommandArgument<CommandSender, T>> argumentBuilder,
+            @NotNull Function<@NotNull String, @NotNull CommandArgument<CommandSender, T>> argumentListBuilder,
             @NotNull String @NotNull... aliases
     ) {
         // single value
@@ -430,7 +429,7 @@ public class ConfigCommandFactory {
                 commandBuilder
                         .literal("set", "s")
                         .literal(typeName, aliases)
-                        .argument(StringArgument.<CommandSenderWrapper>newBuilder("key")
+                        .argument(StringArgument.<CommandSender>newBuilder("key")
                                 .withSuggestionsProvider((c, s) -> makeSuggestion(c, false, container -> container.getJoinedRegisteredKeysForConfigCommand(type)))
                         )
                         .argument(argumentBuilder.apply("value"))
@@ -465,7 +464,7 @@ public class ConfigCommandFactory {
                 commandBuilder
                         .literal("list", "l")
                         .literal(typeName, aliases)
-                        .argument(StringArgument.<CommandSenderWrapper>newBuilder("key")
+                        .argument(StringArgument.<CommandSender>newBuilder("key")
                                 .withSuggestionsProvider((c, s) -> makeSuggestion(c, false, container -> container.getJoinedRegisteredKeysForConfigCommandList(type)))
                         )
                         .literal("add", "a")
@@ -505,7 +504,7 @@ public class ConfigCommandFactory {
                 commandBuilder
                         .literal("list", "l")
                         .literal(typeName, aliases)
-                        .argument(StringArgument.<CommandSenderWrapper>newBuilder("key")
+                        .argument(StringArgument.<CommandSender>newBuilder("key")
                                 .withSuggestionsProvider((c, s) -> makeSuggestion(c, false, container -> container.getJoinedRegisteredKeysForConfigCommandList(type)))
                         )
                         .literal("set", "s")
@@ -567,7 +566,7 @@ public class ConfigCommandFactory {
                 commandBuilder
                         .literal("list", "l")
                         .literal(typeName, aliases)
-                        .argument(StringArgument.<CommandSenderWrapper>newBuilder("key")
+                        .argument(StringArgument.<CommandSender>newBuilder("key")
                                 .withSuggestionsProvider((c, s) -> makeSuggestion(c, false, container -> container.getJoinedRegisteredKeysForConfigCommandList(type)))
                         )
                         .literal("remove", "delete", "r", "d")
@@ -614,7 +613,7 @@ public class ConfigCommandFactory {
                 commandBuilder
                         .literal("list", "l")
                         .literal(typeName, aliases)
-                        .argument(StringArgument.<CommandSenderWrapper>newBuilder("key")
+                        .argument(StringArgument.<CommandSender>newBuilder("key")
                                 .withSuggestionsProvider((c, s) -> makeSuggestion(c, false, container -> container.getJoinedRegisteredKeysForConfigCommandList(type)))
                         )
                         .literal("clear", "c")
@@ -645,10 +644,10 @@ public class ConfigCommandFactory {
     }
 
     private @NotNull Component stringValueOf(@NotNull Object object) {
-        if (object instanceof Item) {
-            var item = (Item) object;
+        if (object instanceof ItemStack) {
+            var item = (ItemStack) object;
             return Component.text()
-                    .content(item.getAmount() + "x " + item.getType().platformName())
+                    .content(item.getAmount() + "x " + item.getType().location().asString())
                     .hoverEvent(item.asItemContent())
                     .build();
         } else {
@@ -657,7 +656,7 @@ public class ConfigCommandFactory {
     }
     
     @NotNull
-    private List<String> makeSuggestion(@NotNull CommandContext<CommandSenderWrapper> context, boolean viewOnly, @NotNull Function<@NotNull ConfigurationContainerImpl, @NotNull List<String>> processor) {
+    private List<String> makeSuggestion(@NotNull CommandContext<CommandSender> context, boolean viewOnly, @NotNull Function<@NotNull ConfigurationContainerImpl, @NotNull List<String>> processor) {
         var result = resolver.resolveContainer(context, viewOnly);
         if (result.container != null) {
             return processor.apply(result.container);
@@ -665,11 +664,11 @@ public class ConfigCommandFactory {
         return List.of();
     }
 
-    private void handleCommand(@NotNull CommandContext<CommandSenderWrapper> context, boolean viewOnly, @NotNull BiConsumer<@NotNull CommandSenderWrapper, @NotNull ConfigurationContainerImpl> handler) {
+    private void handleCommand(@NotNull CommandContext<CommandSender> context, boolean viewOnly, @NotNull BiConsumer<@NotNull CommandSender, @NotNull ConfigurationContainerImpl> handler) {
         handleCommand(context, viewOnly, (c, con, s) -> handler.accept(c, con));
     }
     
-    private void handleCommand(@NotNull CommandContext<CommandSenderWrapper> context, boolean viewOnly, @NotNull TriConsumer<@NotNull CommandSenderWrapper, @NotNull ConfigurationContainerImpl, @Nullable String> handler) {
+    private void handleCommand(@NotNull CommandContext<CommandSender> context, boolean viewOnly, @NotNull CommandHandler handler) {
         var result = resolver.resolveContainer(context, viewOnly);
         if (result.container == null) {
             context.getSender().sendMessage(result.errorMessage != null ? result.errorMessage : Message.of(LangKeys.UNKNOWN_COMMAND).defaultPrefix());
@@ -680,7 +679,7 @@ public class ConfigCommandFactory {
 
     public interface ConfigurationContainerResolver {
         @NotNull
-        ResolverResult resolveContainer(@NotNull CommandContext<CommandSenderWrapper> context, boolean viewOnly);
+        ResolverResult resolveContainer(@NotNull CommandContext<CommandSender> context, boolean viewOnly);
     }
 
     @Data
@@ -692,5 +691,9 @@ public class ConfigCommandFactory {
         public final ConfigurationContainerImpl container;
         @Nullable
         public final ComponentLike errorMessage;
+    }
+
+    public interface CommandHandler {
+        void accept(@NotNull CommandSender commandSender, @NotNull ConfigurationContainerImpl configurationContainer, @Nullable String key);
     }
 }

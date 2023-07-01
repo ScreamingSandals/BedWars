@@ -25,15 +25,17 @@ import lombok.Getter;
 import org.screamingsandals.bedwars.commands.admin.*;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.GameManagerImpl;
-import org.screamingsandals.lib.sender.CommandSenderWrapper;
+import org.screamingsandals.lib.sender.CommandSender;
 import org.screamingsandals.lib.utils.annotations.Service;
+import org.screamingsandals.lib.utils.annotations.ServiceDependencies;
 import org.screamingsandals.lib.utils.annotations.methods.Provider;
 
 import java.util.HashMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-@Service(initAnother = {
+@Service
+@ServiceDependencies(initAnother = {
         AddCommand.class,
         ArenaWeatherCommand.class,
         ConfigCommand.class,
@@ -62,7 +64,7 @@ public class AdminCommand extends BaseCommand {
 
     public static HashMap<String, GameImpl> gc;
     @Getter(onMethod_ = @Provider(level = Provider.Level.POST_ENABLE))
-    private Command.Builder<CommandSenderWrapper> builder;
+    private Command.Builder<CommandSender> builder;
 
     public AdminCommand() {
         super("admin", BedWarsPermission.ADMIN_PERMISSION, false);
@@ -70,7 +72,7 @@ public class AdminCommand extends BaseCommand {
     }
 
     @Override
-    protected void construct(Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder, CommandManager<CommandSenderWrapper> manager) {
+    protected void construct(Command.Builder<CommandSender> commandSenderWrapperBuilder, CommandManager<CommandSender> manager) {
         builder = commandSenderWrapperBuilder
                 .argument(manager
                         .argumentBuilder(String.class, "game")

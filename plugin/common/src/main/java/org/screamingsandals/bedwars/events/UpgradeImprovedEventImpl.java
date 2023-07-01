@@ -24,10 +24,10 @@ import org.screamingsandals.bedwars.api.events.UpgradeImprovedEvent;
 import org.screamingsandals.bedwars.api.upgrades.Upgrade;
 import org.screamingsandals.bedwars.api.upgrades.UpgradeStorage;
 import org.screamingsandals.bedwars.game.GameImpl;
-import org.screamingsandals.lib.event.SCancellableEvent;
+import org.screamingsandals.lib.event.CancellableEvent;
 
 @Data
-public class UpgradeImprovedEventImpl implements UpgradeImprovedEvent, SCancellableEvent {
+public class UpgradeImprovedEventImpl implements UpgradeImprovedEvent, CancellableEvent {
     private final GameImpl game;
     private final Upgrade upgrade;
     private final UpgradeStorage storage;

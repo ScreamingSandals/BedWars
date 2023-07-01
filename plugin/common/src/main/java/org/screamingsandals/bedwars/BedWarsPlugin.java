@@ -20,6 +20,8 @@
 package org.screamingsandals.bedwars;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.screamingsandals.bedwars.api.BedwarsAPI;
 import org.screamingsandals.bedwars.commands.CommandService;
 import org.screamingsandals.bedwars.config.MainConfig;
@@ -44,12 +46,12 @@ import org.screamingsandals.bedwars.tab.TabManager;
 import org.screamingsandals.bedwars.utils.*;
 import org.screamingsandals.bedwars.variants.VariantManagerImpl;
 import org.screamingsandals.lib.CustomPayload;
-import org.screamingsandals.lib.block.BlockTypeHolder;
+import org.screamingsandals.lib.Server;
+import org.screamingsandals.lib.block.Block;
 import org.screamingsandals.lib.economy.EconomyManager;
 import org.screamingsandals.lib.healthindicator.HealthIndicatorManager;
-import org.screamingsandals.lib.player.PlayerMapper;
-import org.screamingsandals.lib.plugin.PluginContainer;
-import org.screamingsandals.lib.plugin.PluginManager;
+import org.screamingsandals.lib.plugin.PluginUtils;
+import org.screamingsandals.lib.plugin.Plugins;
 import org.screamingsandals.lib.plugin.ServiceManager;
 import org.screamingsandals.lib.sidebar.SidebarManager;
 import org.screamingsandals.lib.spectator.Color;
@@ -58,6 +60,10 @@ import org.screamingsandals.lib.utils.PlatformType;
 import org.screamingsandals.lib.utils.annotations.Init;
 import org.screamingsandals.lib.utils.annotations.Plugin;
 import org.screamingsandals.lib.utils.annotations.PluginDependencies;
+import org.screamingsandals.lib.utils.annotations.methods.OnDisable;
+import org.screamingsandals.lib.utils.annotations.methods.OnEnable;
+import org.screamingsandals.lib.utils.annotations.methods.OnPluginLoad;
+import org.screamingsandals.lib.utils.logger.LoggerWrapper;
 import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.io.IOException;
@@ -66,6 +72,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Plugin(
         id = "ScreamingBedWars",
@@ -125,7 +132,12 @@ import java.util.Objects;
                 "org.screamingsandals.bedwars.lobby"
         }
 )
-public class BedWarsPlugin extends PluginContainer implements BedwarsAPI {
+@RequiredArgsConstructor
+public class BedWarsPlugin implements BedwarsAPI {
+    @Getter
+    private final org.screamingsandals.lib.plugin.@NotNull Plugin pluginDescription;
+    @Getter
+    private final @NotNull LoggerWrapper logger;
     private static BedWarsPlugin instance;
 
     private boolean isDisabling = false;
@@ -136,7 +148,7 @@ public class BedWarsPlugin extends PluginContainer implements BedwarsAPI {
         return instance;
     }
 
-    public static boolean isFarmBlock(BlockTypeHolder mat) {
+    public static boolean isFarmBlock(Block mat) {
         if (MainConfig.getInstance().node("ignored-blocks", "enabled").getBoolean()) {
             try {
                 return mat.isSameType(Objects.requireNonNull(MainConfig.getInstance().node("ignored-blocks", "blocks").getList(String.class)).toArray());
@@ -147,12 +159,12 @@ public class BedWarsPlugin extends PluginContainer implements BedwarsAPI {
         return false;
     }
 
-    public static boolean isBreakableBlock(BlockTypeHolder mat) {
+    public static boolean isBreakableBlock(Block mat) {
         if (MainConfig.getInstance().node("breakable", "enabled").getBoolean()) {
             try {
                 var list = MainConfig.getInstance().node("breakable", "blocks").getList(String.class);
                 boolean asblacklist = MainConfig.getInstance().node("breakable", "blacklist-mode").getBoolean();
-                return Objects.requireNonNull(list).contains(mat.platformName()) != asblacklist;
+                return (list != null && mat.isSameType(list.toArray())) != asblacklist;
             } catch (SerializationException | NullPointerException e) {
                 e.printStackTrace();
             }
@@ -203,10 +215,10 @@ public class BedWarsPlugin extends PluginContainer implements BedwarsAPI {
         return game.getGameVariant().getItemSpawnerTypeNames();
     }
 
-    @Override
+    @OnPluginLoad
     public void load() {
-        if (PluginManager.getPlatformType() == PlatformType.BUKKIT) {
-            var folder = getDataFolder();
+        if (Plugins.getPlatformType() == PlatformType.BUKKIT) {
+            var folder = pluginDescription.dataFolder();
             if (!Files.exists(folder)) {
                 var sbw0_2_x = folder.getParent().resolve("BedWars");
                 /*
@@ -231,9 +243,9 @@ public class BedWarsPlugin extends PluginContainer implements BedwarsAPI {
                             }
                         });
                         Files.move(sbw0_2_x, sbw0_2_x.getParent().resolve("BedWars.old"));
-                        getLogger().info("Thank you for updating the plugin! We are now in new folder: plugins/ScreamingBedWars :)");
+                        logger.info("Thank you for updating the plugin! We are now in new folder: plugins/ScreamingBedWars :)");
                     } catch (Throwable e) {
-                        getLogger().info("We couldn't copy your old SBW 0.2.x setup. Sorry :(");
+                        logger.info("We couldn't copy your old SBW 0.2.x setup. Sorry :(");
                         e.printStackTrace();
                     }
                 }
@@ -244,11 +256,11 @@ public class BedWarsPlugin extends PluginContainer implements BedwarsAPI {
         BedwarsAPI.Internal.setBedWarsAPI(this);
     }
 
-    @Override
+    @OnEnable
     public void enable() {
         var snapshot = VersionInfo.VERSION.toLowerCase().contains("pre") || VersionInfo.VERSION.toLowerCase().contains("snapshot");
 
-        Debug.init(getPluginDescription().getName());
+        Debug.init(pluginDescription.name());
         Debug.setDebug(MainConfig.getInstance().node("debug").getBoolean());
 
         MainConfig.getInstance().node("resources").childrenMap().forEach((spawnerK, node) -> {
@@ -262,28 +274,28 @@ public class BedWarsPlugin extends PluginContainer implements BedwarsAPI {
             CustomPayload.registerOutgoingChannel("BungeeCord");
         }
 
-        if (!VersionInfo.VERSION.equals(getPluginDescription().getVersion())) {
-            PlayerMapper.getConsoleSender().sendMessage(Component.text()
+        if (!VersionInfo.VERSION.equals(pluginDescription.version())) {
+            Server.getConsoleSender().sendMessage(Component.text()
                     .content("Version in plugin.yml of ScreamingBedWars has been modified! Expected ")
                     .color(Color.RED)
                     .append(Component.text(VersionInfo.VERSION, Color.GRAY))
                     .append(", got")
-                    .append(Component.text(getPluginDescription().getVersion(), Color.GRAY))
+                    .append(Component.text(pluginDescription.version(), Color.GRAY))
             );
-            PlayerMapper.getConsoleSender().sendMessage(Component.text("You should download ScreamingBedWars from official sources!", Color.RED));
+            Server.getConsoleSender().sendMessage(Component.text("You should download ScreamingBedWars from official sources!", Color.RED));
         }
 
-        PlayerMapper.getConsoleSender().sendMessage(Component
+        Server.getConsoleSender().sendMessage(Component
                 .text()
                 .content("============")
                 .color(Color.AQUA)
                 .append(
                         Component.text("===", Color.RED),
-                        Component.text("======  by " + String.join(", ", getPluginDescription().getAuthors()), Color.WHITE)
+                        Component.text("======  by " + pluginDescription.contributors().stream().map(org.screamingsandals.lib.plugin.Plugin.Contributor::name).collect(Collectors.joining(", ")), Color.WHITE)
                 )
         );
 
-        PlayerMapper.getConsoleSender().sendMessage(Component
+        Server.getConsoleSender().sendMessage(Component
                 .text()
                 .content("+ Screaming ")
                 .color(Color.AQUA)
@@ -294,7 +306,7 @@ public class BedWarsPlugin extends PluginContainer implements BedwarsAPI {
                 )
         );
 
-        PlayerMapper.getConsoleSender().sendMessage(Component
+        Server.getConsoleSender().sendMessage(Component
                 .text()
                 .content("============")
                 .color(Color.AQUA)
@@ -305,11 +317,11 @@ public class BedWarsPlugin extends PluginContainer implements BedwarsAPI {
                 )
         );
 
-        PlayerMapper.getConsoleSender().sendMessage(Component.text("Everything has finished loading! If you like our work, consider subscribing to our Patreon! <3", Color.WHITE));
-        PlayerMapper.getConsoleSender().sendMessage(Component.text("https://www.patreon.com/screamingsandals", Color.WHITE));
+        Server.getConsoleSender().sendMessage(Component.text("Everything has finished loading! If you like our work, consider subscribing to our Patreon! <3", Color.WHITE));
+        Server.getConsoleSender().sendMessage(Component.text("https://www.patreon.com/screamingsandals", Color.WHITE));
     }
 
-    @Override
+    @OnDisable
     public void disable() {
         isDisabling = true;
     }
@@ -381,5 +393,14 @@ public class BedWarsPlugin extends PluginContainer implements BedwarsAPI {
 
     public static boolean isDisabling() {
         return instance.isDisabling;
+    }
+
+    public void saveResource(@NotNull String resourcePath, boolean replace) {
+        PluginUtils.saveResource(pluginDescription, logger, resourcePath, replace);
+    }
+
+    @Override
+    public <T> @NotNull T as(@NotNull Class<T> aClass) {
+        return pluginDescription.as(aClass);
     }
 }

@@ -24,10 +24,10 @@ import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.api.events.PlayerJoinEvent;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
-import org.screamingsandals.lib.event.SCancellableEvent;
+import org.screamingsandals.lib.event.CancellableEvent;
 
 @Data
-public class PlayerJoinEventImpl implements PlayerJoinEvent, SCancellableEvent {
+public class PlayerJoinEventImpl implements PlayerJoinEvent, CancellableEvent {
     private final GameImpl game;
     private final BedWarsPlayer player;
     @Nullable

@@ -26,7 +26,7 @@ import org.screamingsandals.bedwars.events.PlayerBuildBlockEventImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.lang.Message;
-import org.screamingsandals.lib.player.PlayerMapper;
+import org.screamingsandals.lib.player.Players;
 import org.screamingsandals.lib.utils.annotations.Service;
 
 import java.util.stream.Collectors;
@@ -51,17 +51,17 @@ public class TeamChestListener {
         var block = event.getBlock();
         var team = event.getTeam();
 
-        if (!block.getType().isSameType("ender_chest")) {
+        if (!block.block().isSameType("ender_chest")) {
             return;
         }
 
         var unhidden = ItemUtils.getIfStartsWith(event.getItemInHand(), TEAM_CHEST_PREFIX);
 
         if (unhidden != null || MainConfig.getInstance().node("specials", "teamchest", "turn-all-enderchests-to-teamchests").getBoolean(true)) {
-            team.addTeamChest(block.getLocation());
+            team.addTeamChest(block.location());
             Message.of(LangKeys.SPECIALS_TEAM_CHEST_PLACED)
                     .prefixOrDefault(event.getGame().getCustomPrefixComponent())
-                    .send(team.getPlayers().stream().map(PlayerMapper::wrapPlayer).collect(Collectors.toList()));
+                    .send(team.getPlayers().stream().map(Players::wrapPlayer).collect(Collectors.toList()));
         }
     }
 }

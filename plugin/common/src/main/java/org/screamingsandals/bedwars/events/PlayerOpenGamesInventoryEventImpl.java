@@ -21,12 +21,12 @@ package org.screamingsandals.bedwars.events;
 
 import lombok.Data;
 import org.screamingsandals.bedwars.api.events.PlayerOpenGamesInventoryEvent;
-import org.screamingsandals.lib.event.SCancellableEvent;
-import org.screamingsandals.lib.player.PlayerWrapper;
+import org.screamingsandals.lib.event.CancellableEvent;
+import org.screamingsandals.lib.player.Player;
 
 @Data
-public class PlayerOpenGamesInventoryEventImpl implements PlayerOpenGamesInventoryEvent, SCancellableEvent {
-    private final PlayerWrapper player;
+public class PlayerOpenGamesInventoryEventImpl implements PlayerOpenGamesInventoryEvent, CancellableEvent {
+    private final Player player;
     private final String type;
     private boolean cancelled;
 

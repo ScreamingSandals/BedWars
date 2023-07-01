@@ -33,20 +33,21 @@ import org.screamingsandals.bedwars.events.ResourceSpawnEventImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.utils.MiscUtils;
-import org.screamingsandals.lib.entity.EntityBasic;
-import org.screamingsandals.lib.entity.EntityItem;
-import org.screamingsandals.lib.entity.EntityMapper;
+import org.screamingsandals.lib.entity.Entity;
+import org.screamingsandals.lib.entity.ItemEntity;
+import org.screamingsandals.lib.entity.Entities;
 import org.screamingsandals.lib.event.EventManager;
 import org.screamingsandals.lib.hologram.Hologram;
 import org.screamingsandals.lib.hologram.HologramManager;
 import org.screamingsandals.lib.lang.Message;
-import org.screamingsandals.lib.item.builder.ItemFactory;
+import org.screamingsandals.lib.item.builder.ItemStackFactory;
+import org.screamingsandals.lib.tasker.DefaultThreads;
 import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
-import org.screamingsandals.lib.tasker.task.TaskerTask;
+import org.screamingsandals.lib.tasker.task.Task;
 import org.screamingsandals.lib.utils.Pair;
 import org.screamingsandals.lib.utils.visual.TextEntry;
-import org.screamingsandals.lib.world.LocationHolder;
+import org.screamingsandals.lib.world.Location;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
@@ -59,7 +60,7 @@ import java.util.concurrent.TimeUnit;
 
 public class ItemSpawnerImpl implements ItemSpawner, SerializableGameComponent {
     @Getter
-    private final LocationHolder location;
+    private final Location location;
     @Getter
     @Setter
     private ItemSpawnerTypeImpl itemSpawnerType;
@@ -101,13 +102,13 @@ public class ItemSpawnerImpl implements ItemSpawner, SerializableGameComponent {
     private Hologram hologram;
     @Getter
     private int tier;
-    private final List<EntityItem> spawnedItems = new ArrayList<>();
+    private final List<ItemEntity> spawnedItems = new ArrayList<>();
     private boolean spawnerIsFullHologram = false;
     private boolean rerenderHologram = false;
     private double currentLevelOnHologram = -1;
     private GameImpl game;
-    private TaskerTask spawningTask;
-    private TaskerTask hologramTask;
+    private Task spawningTask;
+    private Task hologramTask;
     private boolean started;
     private boolean disabled;
     private boolean certainPopularServerHolo;
@@ -117,7 +118,7 @@ public class ItemSpawnerImpl implements ItemSpawner, SerializableGameComponent {
     private long elapsedTime;
     private long remainingTimeToSpawn;
 
-    public ItemSpawnerImpl(LocationHolder location, ItemSpawnerTypeImpl itemSpawnerType) {
+    public ItemSpawnerImpl(Location location, ItemSpawnerTypeImpl itemSpawnerType) {
         this.location = location;
         this.itemSpawnerType = itemSpawnerType;
     }
@@ -141,7 +142,7 @@ public class ItemSpawnerImpl implements ItemSpawner, SerializableGameComponent {
         }
 
         /* Update spawned items */
-        spawnedItems.removeIf(EntityBasic::isDead);
+        spawnedItems.removeIf(Entity::isDead);
 
         int spawned = spawnedItems.size();
 
@@ -184,13 +185,13 @@ public class ItemSpawnerImpl implements ItemSpawner, SerializableGameComponent {
         return maxSpawnedResources - spawned;
     }
 
-    public void add(EntityItem item) {
+    public void add(ItemEntity item) {
         if (maxSpawnedResources > 0 && !spawnedItems.contains(item)) {
             spawnedItems.add(item);
         }
     }
 
-    public void remove(EntityItem item) {
+    public void remove(ItemEntity item) {
         if (maxSpawnedResources > 0 && spawnedItems.contains(item)) {
             spawnedItems.remove(item);
             if (spawnerIsFullHologram && maxSpawnedResources > spawnedItems.size()) {
@@ -250,7 +251,7 @@ public class ItemSpawnerImpl implements ItemSpawner, SerializableGameComponent {
 
     private void prepareHolograms(List<BedWarsPlayer> viewers, boolean countdownHologram) {
         try {
-            LocationHolder loc;
+            Location loc;
             if (floatingBlockEnabled &&
                     MainConfig.getInstance().node("floating-generator", "enabled").getBoolean(true)) {
                 loc = this.location.add(0, MainConfig.getInstance().node("floating-generator", "holo-height").getDouble(0.5), 0);
@@ -279,14 +280,13 @@ public class ItemSpawnerImpl implements ItemSpawner, SerializableGameComponent {
 
             if (floatingBlockEnabled &&
                     MainConfig.getInstance().node("floating-generator", "enabled").getBoolean(true)) {
-                var materialName = itemSpawnerType.getItemType().platformName();
-                var indexOfUnderscore = itemSpawnerType.getItemType().platformName().indexOf("_");
+                var materialName = itemSpawnerType.getItemType().location().asString();
+                var indexOfUnderscore = materialName.indexOf("_");
                 hologram
                         .item(
-                                ItemFactory
-                                        .build(materialName.substring(0, (indexOfUnderscore != -1 ? indexOfUnderscore : materialName.length())) + "_BLOCK")
-                                        .or(() -> ItemFactory.build(itemSpawnerType.getItemType()))
-                                        .orElseThrow()
+                                Objects.requireNonNullElseGet(ItemStackFactory
+                                        .build(materialName.substring(0, (indexOfUnderscore != -1 ? indexOfUnderscore : materialName.length())) + "_BLOCK"),
+                                        () -> ItemStackFactory.build(itemSpawnerType.getItemType()))
                         )
                         .itemPosition(Hologram.ItemPosition.BELOW)
                         .rotationMode(rotationMode)
@@ -369,8 +369,7 @@ public class ItemSpawnerImpl implements ItemSpawner, SerializableGameComponent {
 
         this.currentInterval = time;
 
-        spawningTask = Tasker
-                .build(() -> {
+        spawningTask = Tasker.runRepeatedly(DefaultThreads.GLOBAL_THREAD, () -> {
                     if (firstTick) {
                         firstTick = false;
                         return;
@@ -403,7 +402,7 @@ public class ItemSpawnerImpl implements ItemSpawner, SerializableGameComponent {
 
                     if (resource.getAmount() > 0) {
                         var loc = this.location.add(0, 0.05, 0);
-                        var item = EntityMapper.dropItem(resource, loc).orElseThrow();
+                        var item = Objects.requireNonNull(Entities.dropItem(resource, loc));
                         var spread = customSpread != null ? customSpread : itemSpawnerType.getSpread();
                         if (spread != 1.0) {
                             item.setVelocity(item.getVelocity().multiply(spread));
@@ -411,14 +410,12 @@ public class ItemSpawnerImpl implements ItemSpawner, SerializableGameComponent {
                         item.setPickupDelay(0, TimeUnit.SECONDS);
                         add(item);
                     }
-                })
-                .repeat(currentInterval.first(), currentInterval.second())
-                .start();
+                }, currentInterval.first(), currentInterval.second());
 
 
         if (hologramEnabled && game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.SPAWNER_HOLOGRAMS, false)
                 && game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.SPAWNER_COUNTDOWN_HOLOGRAM, false) ) {
-            hologramTask = Tasker.build(() -> {
+            hologramTask = Tasker.runAsyncDelayedAndRepeatedly(() -> {
                         if (disabled || firstTick) {
                             return;
                         }
@@ -449,11 +446,7 @@ public class ItemSpawnerImpl implements ItemSpawner, SerializableGameComponent {
                                 }
                             }
                         }
-                    })
-                    .async()
-                    .delay(5, TaskerTime.TICKS)
-                    .repeat(20, TaskerTime.TICKS)
-                    .start();
+                    }, 5, TaskerTime.TICKS, 20, TaskerTime.TICKS);
         }
     }
 

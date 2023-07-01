@@ -33,13 +33,13 @@ import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.bedwars.utils.EconomyUtils;
 import org.screamingsandals.bedwars.utils.SpawnEffects;
 import org.screamingsandals.bedwars.utils.TitleUtils;
-import org.screamingsandals.lib.SpecialSoundKey;
 import org.screamingsandals.lib.event.EventManager;
 import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.spectator.Component;
 import org.screamingsandals.lib.spectator.sound.SoundSource;
 import org.screamingsandals.lib.spectator.sound.SoundStart;
+import org.screamingsandals.lib.utils.ResourceLocation;
 import org.screamingsandals.lib.utils.annotations.Service;
 
 @Service
@@ -116,7 +116,7 @@ public class TargetInvalidatedListener {
                 if (game.getPlayerTeam(player) == team) {
                     player.playSound(
                             SoundStart.sound(
-                                    SpecialSoundKey.key(MainConfig.getInstance().node("sounds", "my_bed_destroyed", "sound").getString("entity.ender_dragon.growl")),
+                                    ResourceLocation.of(MainConfig.getInstance().node("sounds", "my_bed_destroyed", "sound").getString("entity.ender_dragon.growl")),
                                     SoundSource.AMBIENT,
                                     (float) MainConfig.getInstance().node("sounds", "my_bed_destroyed", "volume").getDouble(1),
                                     (float) MainConfig.getInstance().node("sounds", "my_bed_destroyed", "pitch").getDouble(1)
@@ -125,7 +125,7 @@ public class TargetInvalidatedListener {
                 } else if (reason != TargetInvalidationReason.TIMEOUT) {
                     player.playSound(
                             SoundStart.sound(
-                                    SpecialSoundKey.key(MainConfig.getInstance().node("sounds", "bed_destroyed", "sound").getString("entity.ender_dragon.growl")),
+                                    ResourceLocation.of(MainConfig.getInstance().node("sounds", "bed_destroyed", "sound").getString("entity.ender_dragon.growl")),
                                     SoundSource.AMBIENT,
                                     (float) MainConfig.getInstance().node("sounds", "bed_destroyed", "volume").getDouble(1),
                                     (float) MainConfig.getInstance().node("sounds", "bed_destroyed", "pitch").getDouble(1)

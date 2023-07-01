@@ -45,15 +45,15 @@ public class BedWars1058ArenaMigrator implements FileMigrator {
         }
         final var arenaUUID = UUID.randomUUID();
         final var name = file.getName().substring(0, file.getName().lastIndexOf("."));
-        final var loader = YamlConfigurationLoader.builder().file(Paths.get(BedWarsPlugin.getInstance().getDataFolder().toAbsolutePath().toString(), "arenas", arenaUUID + ".yml").toFile()).build();
+        final var loader = YamlConfigurationLoader.builder().file(Paths.get(BedWarsPlugin.getInstance().getPluginDescription().dataFolder().toAbsolutePath().toString(), "arenas", arenaUUID + ".yml").toFile()).build();
         ConfigurationNodeMigrator.yaml(file, loader.createNode())
                 .setExplicitly(arenaUUID.toString(), "uuid")
                 .setExplicitly(name, "name")
                 .setExplicitly(30, "pauseCountdown")
                 // TODO: remap game time
                 .setExplicitly(name, "world")
-                .setExplicitly(MiscUtils.writeLocationToString(MiscUtils.MAX_LOCATION), "pos1")
-                .setExplicitly(MiscUtils.writeLocationToString(MiscUtils.MIN_LOCATION), "pos2")
+                .setExplicitly(MiscUtils.MAX_LOCATION, "pos1") // TODO: add native support for whole world arenas instead of this max_location shit
+                .setExplicitly(MiscUtils.MIN_LOCATION, "pos2")
                 .remap("waiting", "Loc").toNewPath("specSpawn")
                 .remap("waiting", "Loc").toNewPath("lobbySpawn")
                 .setExplicitly(name, "lobbySpawnWorld")

@@ -22,29 +22,29 @@ package org.screamingsandals.bedwars.utils;
 import lombok.experimental.UtilityClass;
 import org.screamingsandals.lib.signs.ClickableSign;
 import org.screamingsandals.lib.utils.BlockFace;
-import org.screamingsandals.lib.block.BlockHolder;
-import org.screamingsandals.lib.world.LocationHolder;
+import org.screamingsandals.lib.block.BlockPlacement;
+import org.screamingsandals.lib.world.Location;
 
 import java.util.Optional;
 
 @UtilityClass
 public class SignUtils {
-    public Optional<BlockHolder> getBlockBehindSign(ClickableSign sign) {
+    public Optional<BlockPlacement> getBlockBehindSign(ClickableSign sign) {
         return Optional.ofNullable(getGlassBehind(sign));
     }
 
-    private BlockHolder getGlassBehind(ClickableSign sign) {
-        var location = sign.getLocation().as(LocationHolder.class);
+    private BlockPlacement getGlassBehind(ClickableSign sign) {
+        var location = sign.getLocation().as(Location.class);
         var block = location.getBlock();
 
-        var type = block.getType();
+        var type = block.block();
         if (!type.is("#signs")) {
             return null;
         }
 
         var data = type.get("facing");
-        if (data.isPresent()) {
-            return location.add(BlockFace.valueOf(data.get()).getOppositeFace()).getBlock();
+        if (data != null) {
+            return location.add(BlockFace.valueOf(data).getOppositeFace()).getBlock();
         } else {
             return location.add(BlockFace.DOWN).getBlock();
         }

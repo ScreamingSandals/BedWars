@@ -26,22 +26,25 @@ import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.lib.Server;
 import org.screamingsandals.lib.event.OnEvent;
-import org.screamingsandals.lib.event.player.SPlayerJoinEvent;
-import org.screamingsandals.lib.event.player.SPlayerLeaveEvent;
-import org.screamingsandals.lib.event.player.SPlayerWorldChangeEvent;
+import org.screamingsandals.lib.event.player.PlayerJoinEvent;
+import org.screamingsandals.lib.event.player.PlayerLeaveEvent;
+import org.screamingsandals.lib.event.player.PlayerWorldChangeEvent;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sidebar.Sidebar;
 import org.screamingsandals.lib.sidebar.SidebarManager;
+import org.screamingsandals.lib.tasker.DefaultThreads;
 import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
 import org.screamingsandals.lib.utils.annotations.Service;
+import org.screamingsandals.lib.utils.annotations.ServiceDependencies;
 import org.screamingsandals.lib.utils.annotations.methods.OnEnable;
 import org.screamingsandals.lib.utils.annotations.methods.ShouldRunControllable;
 import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.List;
 
-@Service(dependsOn = {
+@Service
+@ServiceDependencies(dependsOn = {
         SidebarManager.class,
         MainConfig.class,
         PlayerStatisticManager.class
@@ -56,7 +59,7 @@ public class LobbySidebarManager {
     }
 
     @OnEnable
-    public void onEnable(PlayerStatisticManager playerStatisticManager, MainConfig mainConfig) {
+    public void onEnable(MainConfig mainConfig) {
         var title = mainConfig.node("main-lobby", "sidebar", "title").getString("<yellow><bold>BED WARS");
         List<String> content;
         try {
@@ -84,11 +87,11 @@ public class LobbySidebarManager {
 
         sidebar.show();
 
-        Tasker.build(() -> sidebar.update()).async().repeat(20, TaskerTime.TICKS).start();
+        Tasker.runAsyncRepeatedly(() -> sidebar.update(), 20, TaskerTime.TICKS);
     }
 
     @OnEvent
-    public void onJoin(SPlayerJoinEvent event) {
+    public void onJoin(PlayerJoinEvent event) {
         var player = event.player();
 
         if (world.isEmpty()) {
@@ -101,12 +104,12 @@ public class LobbySidebarManager {
     }
 
     @OnEvent
-    public void onLeave(SPlayerLeaveEvent event) {
+    public void onLeave(PlayerLeaveEvent event) {
         sidebar.removeViewer(event.player());
     }
 
     @OnEvent
-    public void onWorldChange(SPlayerWorldChangeEvent event) {
+    public void onWorldChange(PlayerWorldChangeEvent event) {
         var player = event.player();
 
         if (world.isEmpty()) {
@@ -133,10 +136,10 @@ public class LobbySidebarManager {
             return; // :(
         }
 
-        Tasker.build(() -> {
+        Tasker.runDelayed(DefaultThreads.GLOBAL_THREAD, () -> {
             if (player.isOnline() && player.getLocation().getWorld().getName().equals(world)) {
                 sidebar.addViewer(player);
             }
-        }).delay(20, TaskerTime.TICKS).start();
+        }, 20, TaskerTime.TICKS);
     }
 }

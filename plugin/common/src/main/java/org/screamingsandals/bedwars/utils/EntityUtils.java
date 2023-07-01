@@ -20,14 +20,14 @@
 package org.screamingsandals.bedwars.utils;
 
 import org.jetbrains.annotations.Nullable;
-import org.screamingsandals.lib.entity.EntityLiving;
+import org.screamingsandals.lib.entity.LivingEntity;
 
 public interface EntityUtils {
     @Nullable
-    EntitySelector makeMobAttackTarget(EntityLiving mob, double speed, double follow, double attackDamage);
+    EntitySelector makeMobAttackTarget(LivingEntity mob, double speed, double follow, double attackDamage);
 
     interface EntitySelector {
-        EntitySelector attackTarget(EntityLiving target);
+        EntitySelector attackTarget(LivingEntity target);
 
         EntitySelector attackNearestPlayers(int order);
     }

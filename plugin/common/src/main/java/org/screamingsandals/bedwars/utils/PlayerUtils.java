@@ -20,17 +20,18 @@
 package org.screamingsandals.bedwars.utils;
 
 import lombok.experimental.UtilityClass;
-import org.screamingsandals.lib.packet.SClientboundSetExperiencePacket;
-import org.screamingsandals.lib.player.PlayerWrapper;
+import org.screamingsandals.lib.packet.ClientboundSetExperiencePacket;
+import org.screamingsandals.lib.player.Player;
 
 @UtilityClass
 public class PlayerUtils {
 
-	public void fakeExp(PlayerWrapper player, float percentage, int levels) {
-		new SClientboundSetExperiencePacket()
+	public void fakeExp(Player player, float percentage, int levels) {
+		ClientboundSetExperiencePacket.builder()
 				.percentage(percentage)
 				.totalExperience(player.getTotalExperience())
 				.level(levels)
+				.build()
 				.sendPacket(player);
 	}
 }

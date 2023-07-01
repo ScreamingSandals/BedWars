@@ -27,6 +27,8 @@ import org.screamingsandals.bedwars.game.TeamImpl;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 
+import java.util.Objects;
+
 @Getter
 public class ThrowableFireballImpl extends SpecialItemImpl implements ThrowableFireball {
     private final float damage;
@@ -47,10 +49,9 @@ public class ThrowableFireballImpl extends SpecialItemImpl implements ThrowableF
 
     @Override
     public void run() {
-        var fireball = player.launchProjectile("minecraft:fireball").orElseThrow();
+        var fireball = Objects.requireNonNull(player.launchProjectile("minecraft:fireball"));
         fireball.setMetadata("is_incendiary", false);
         fireball.setMetadata("yield", damage);
-        fireball.setBounce(false);
         fireball.setShooter(damagesThrower ? null : player);
         EntitiesManagerImpl.getInstance().addEntityToGame(fireball, PlayerManagerImpl.getInstance().getGameOfPlayer(player).orElseThrow());
     }

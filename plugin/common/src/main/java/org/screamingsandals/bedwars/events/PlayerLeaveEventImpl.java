@@ -24,10 +24,10 @@ import org.screamingsandals.bedwars.api.events.PlayerLeaveEvent;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.TeamImpl;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
-import org.screamingsandals.lib.event.SEvent;
+import org.screamingsandals.lib.event.Event;
 
 @Data
-public class PlayerLeaveEventImpl implements PlayerLeaveEvent, SEvent {
+public class PlayerLeaveEventImpl implements PlayerLeaveEvent, Event {
     private final GameImpl game;
     private final BedWarsPlayer player;
     private final TeamImpl team;

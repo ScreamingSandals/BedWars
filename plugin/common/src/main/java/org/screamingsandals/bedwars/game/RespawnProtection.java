@@ -27,7 +27,7 @@ import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
-import org.screamingsandals.lib.tasker.task.TaskerTask;
+import org.screamingsandals.lib.tasker.task.Task;
 
 @Data
 public class RespawnProtection implements Runnable {
@@ -36,7 +36,7 @@ public class RespawnProtection implements Runnable {
     private final int seconds;
     private int length;
     private boolean running;
-    private TaskerTask task;
+    private Task task;
 
     @Override
     public void run() {
@@ -59,11 +59,7 @@ public class RespawnProtection implements Runnable {
     public void runProtection() {
         if (!running) {
             running = true;
-            this.task = Tasker.build(this)
-                    .async()
-                    .delay(5, TaskerTime.TICKS)
-                    .repeat(20, TaskerTime.TICKS)
-                    .start();
+            this.task = Tasker.runAsyncDelayedAndRepeatedly(this, 5, TaskerTime.TICKS, 20, TaskerTime.TICKS);
         }
     }
 }

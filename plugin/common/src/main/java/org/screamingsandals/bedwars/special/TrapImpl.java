@@ -27,13 +27,13 @@ import org.screamingsandals.bedwars.game.TeamImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.utils.MiscUtils;
-import org.screamingsandals.lib.SpecialSoundKey;
-import org.screamingsandals.lib.block.BlockTypeHolder;
-import org.screamingsandals.lib.item.meta.PotionEffectHolder;
+import org.screamingsandals.lib.block.Block;
+import org.screamingsandals.lib.item.meta.PotionEffect;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.spectator.sound.SoundSource;
 import org.screamingsandals.lib.spectator.sound.SoundStart;
-import org.screamingsandals.lib.world.LocationHolder;
+import org.screamingsandals.lib.utils.ResourceLocation;
+import org.screamingsandals.lib.world.Location;
 
 import java.util.List;
 import java.util.Map;
@@ -42,7 +42,7 @@ import java.util.Map;
 @EqualsAndHashCode(callSuper = true)
 public class TrapImpl extends SpecialItemImpl implements Trap {
     private final List<Map<String, Object>> trapData;
-    private LocationHolder location;
+    private Location location;
 
     public TrapImpl(GameImpl game, BedWarsPlayer player, TeamImpl team, List<Map<String, Object>> trapData) {
         super(game, player, team);
@@ -56,14 +56,14 @@ public class TrapImpl extends SpecialItemImpl implements Trap {
         return location != null;
     }
 
-    public void place(LocationHolder loc) {
+    public void place(Location loc) {
         this.location = loc;
     }
 
     public void process(BedWarsPlayer player, TeamImpl runningTeam, boolean forceDestroy) {
         if (runningTeam == this.team || forceDestroy) {
             game.unregisterSpecialItem(this);
-            location.getBlock().setType(BlockTypeHolder.air());
+            location.getBlock().block(Block.air());
             return;
         }
 
@@ -73,7 +73,7 @@ public class TrapImpl extends SpecialItemImpl implements Trap {
                 try {
                     player.playSound(
                             SoundStart.sound(
-                                    SpecialSoundKey.key(sound),
+                                    ResourceLocation.of(sound),
                                     SoundSource.AMBIENT,
                                     1f,
                                     1f
@@ -84,7 +84,10 @@ public class TrapImpl extends SpecialItemImpl implements Trap {
             }
 
             if (data.containsKey("effect")) {
-                PotionEffectHolder.ofOptional(data.get("effect")).ifPresent(player::addPotionEffect);
+                var effect = PotionEffect.ofNullable(data.get("effect"));
+                if (effect != null) {
+                    player.addPotionEffect(effect);
+                }
             }
 
             if (data.containsKey("damage")) {

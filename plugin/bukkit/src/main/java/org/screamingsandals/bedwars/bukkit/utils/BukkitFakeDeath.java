@@ -33,10 +33,10 @@ import org.screamingsandals.bedwars.nms.accessors.ServerPlayerAccessor;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.utils.FakeDeath;
 import org.screamingsandals.lib.Server;
-import org.screamingsandals.lib.bukkit.utils.nms.ClassStorage;
+import org.screamingsandals.lib.impl.bukkit.utils.nms.ClassStorage;
 import org.screamingsandals.lib.nms.accessors.ComponentAccessor;
 import org.screamingsandals.lib.utils.reflect.Reflect;
-import org.screamingsandals.lib.world.LocationMapper;
+import org.screamingsandals.lib.world.Location;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -144,7 +144,7 @@ public class BukkitFakeDeath implements FakeDeath {
         var respawnEvent = new PlayerRespawnEvent(player, player.getLocation(), false);
         Bukkit.getServer().getPluginManager().callEvent(respawnEvent);
 
-        gamePlayer.teleport(LocationMapper.wrapLocation(respawnEvent.getRespawnLocation()));
+        gamePlayer.teleport(Location.fromPlatform(respawnEvent.getRespawnLocation()));
     }
 
     public int getOrbValue(int i) {

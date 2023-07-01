@@ -20,7 +20,7 @@
 package org.screamingsandals.bedwars.api.boss;
 
 import org.jetbrains.annotations.ApiStatus;
-import org.screamingsandals.lib.utils.Wrapper;
+import org.screamingsandals.lib.api.Wrapper;
 
 /**
  * @author ScreamingSandals

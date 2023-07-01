@@ -29,8 +29,7 @@ import org.screamingsandals.bedwars.config.GameConfigurationContainerImpl;
 import org.screamingsandals.bedwars.game.ItemSpawnerTypeImpl;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.utils.MiscUtils;
-import org.screamingsandals.lib.configurate.SLibSerializers;
-import org.screamingsandals.lib.player.PlayerMapper;
+import org.screamingsandals.lib.Server;
 import org.screamingsandals.lib.spectator.Color;
 import org.screamingsandals.lib.spectator.Component;
 import org.spongepowered.configurate.ConfigurateException;
@@ -110,7 +109,7 @@ public class VariantImpl implements Variant {
                 variant.defaultItemSpawnerTypesIncluded = true;
             }
 
-            PlayerMapper.getConsoleSender().sendMessage(
+            Server.getConsoleSender().sendMessage(
                     MiscUtils.BW_PREFIX.withAppendix(
                             Component.text("Variant ", Color.GREEN),
                             Component.text(variant.name + " (" + file.getName() + ")", Color.WHITE),

@@ -23,8 +23,8 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import org.bukkit.entity.LivingEntity;
 import org.screamingsandals.bedwars.nms.accessors.*;
-import org.screamingsandals.lib.bukkit.utils.nms.ClassStorage;
-import org.screamingsandals.lib.bukkit.utils.nms.entity.EntityNMS;
+import org.screamingsandals.lib.impl.bukkit.utils.nms.ClassStorage;
+import org.screamingsandals.lib.impl.bukkit.utils.nms.entity.EntityNMS;
 import org.screamingsandals.lib.utils.reflect.Reflect;
 
 import java.util.Map;

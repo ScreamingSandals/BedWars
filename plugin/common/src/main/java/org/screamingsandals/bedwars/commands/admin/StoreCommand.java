@@ -25,10 +25,11 @@ import cloud.commandframework.arguments.standard.StringArgument;
 import org.screamingsandals.bedwars.game.GameStoreImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.utils.ArenaUtils;
-import org.screamingsandals.lib.entity.type.EntityTypeHolder;
+import org.screamingsandals.lib.entity.type.EntityType;
 import org.screamingsandals.lib.lang.Message;
-import org.screamingsandals.lib.player.PlayerWrapper;
-import org.screamingsandals.lib.sender.CommandSenderWrapper;
+import org.screamingsandals.lib.player.Player;
+import org.screamingsandals.lib.sender.CommandSender;
+import org.screamingsandals.lib.utils.ResourceLocation;
 import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.utils.annotations.parameters.DataFolder;
 
@@ -48,12 +49,12 @@ public class StoreCommand extends BaseAdminSubCommand {
     }
 
     @Override
-    public void construct(CommandManager<CommandSenderWrapper> manager, Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder) {
+    public void construct(CommandManager<CommandSender> manager, Command.Builder<CommandSender> commandSenderWrapperBuilder) {
         manager.command(
                 commandSenderWrapperBuilder
                         .literal("add")
                         .handler(commandContext -> editMode(commandContext, (sender, game) -> {
-                            var loc = sender.as(PlayerWrapper.class).getLocation();
+                            var loc = sender.as(Player.class).getLocation();
 
                             if (game.getPos1() == null || game.getPos2() == null) {
                                 sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_SET_BOUNDS_FIRST).defaultPrefix());
@@ -94,7 +95,7 @@ public class StoreCommand extends BaseAdminSubCommand {
                 commandSenderWrapperBuilder
                         .literal("remove")
                         .handler(commandContext -> editMode(commandContext, (sender, game) -> {
-                            var loc = sender.as(PlayerWrapper.class).getLocation();
+                            var loc = sender.as(Player.class).getLocation();
 
                             if (!game.getWorld().equals(loc.getWorld())) {
                                 sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_MUST_BE_IN_SAME_WORLD).defaultPrefix());
@@ -127,7 +128,7 @@ public class StoreCommand extends BaseAdminSubCommand {
                 commandSenderWrapperBuilder
                         .literal("child")
                         .handler(commandContext -> editMode(commandContext, (sender, game) -> {
-                            var loc = sender.as(PlayerWrapper.class).getLocation();
+                            var loc = sender.as(Player.class).getLocation();
 
                             var store = game.getGameStoreList()
                                     .stream()
@@ -154,7 +155,7 @@ public class StoreCommand extends BaseAdminSubCommand {
                 commandSenderWrapperBuilder
                         .literal("adult")
                         .handler(commandContext -> editMode(commandContext, (sender, game) -> {
-                            var loc = sender.as(PlayerWrapper.class).getLocation();
+                            var loc = sender.as(Player.class).getLocation();
 
                             var store = game.getGameStoreList()
                                     .stream()
@@ -181,12 +182,12 @@ public class StoreCommand extends BaseAdminSubCommand {
                 commandSenderWrapperBuilder
                         .literal("type")
                         .argument(StringArgument
-                                .<CommandSenderWrapper>newBuilder("type")
-                                .withSuggestionsProvider((c, s) -> EntityTypeHolder.all().stream().map(EntityTypeHolder::platformName).collect(Collectors.toList()))
+                                .<CommandSender>newBuilder("type")
+                                .withSuggestionsProvider((c, s) -> EntityType.all().javaStreamOfLocations().map(ResourceLocation::asString).collect(Collectors.toList()))
                         )
                         .handler(commandContext -> editMode(commandContext, (sender, game) -> {
                             String type = commandContext.get("type");
-                            var loc = sender.as(PlayerWrapper.class).getLocation();
+                            var loc = sender.as(Player.class).getLocation();
 
                             var store = game.getGameStoreList()
                                     .stream()
@@ -194,7 +195,7 @@ public class StoreCommand extends BaseAdminSubCommand {
                                     .findFirst();
 
                             if (store.isPresent()) {
-                                var t = EntityTypeHolder.ofOptional(type.split(":", 2)[0].toUpperCase()).orElse(null);
+                                var t = EntityType.ofNullable(type); // TODO: .split(":", 2)[0].toUpperCase(), that splitting is bullshit, create set skin command
                                 if (t != null && !t.isAlive()) {
                                     sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_INVALID_ENTITY_TYPE).defaultPrefix());
                                     return;
@@ -231,7 +232,7 @@ public class StoreCommand extends BaseAdminSubCommand {
                 commandSenderWrapperBuilder
                         .literal("file")
                         .literal("set")
-                        .argument(StringArgument.<CommandSenderWrapper>newBuilder("file")
+                        .argument(StringArgument.<CommandSender>newBuilder("file")
                                 .greedy()
                                 .withSuggestionsProvider((c, s) -> {
                                     try (var walk = Files.walk(shopFolder)) {
@@ -246,7 +247,7 @@ public class StoreCommand extends BaseAdminSubCommand {
                         )
                         .handler(commandContext -> editMode(commandContext, (sender, game) -> {
                             String file = commandContext.get("file");
-                            var loc = sender.as(PlayerWrapper.class).getLocation();
+                            var loc = sender.as(Player.class).getLocation();
 
                             var store = game.getGameStoreList()
                                     .stream()
@@ -276,7 +277,7 @@ public class StoreCommand extends BaseAdminSubCommand {
                         .literal("file")
                         .literal("reset")
                         .handler(commandContext -> editMode(commandContext, (sender, game) -> {
-                            var loc = sender.as(PlayerWrapper.class).getLocation();
+                            var loc = sender.as(Player.class).getLocation();
 
                             var store = game.getGameStoreList()
                                     .stream()
@@ -307,7 +308,7 @@ public class StoreCommand extends BaseAdminSubCommand {
                         .argument(StringArgument.greedy("name"))
                         .handler(commandContext -> editMode(commandContext, (sender, game) -> {
                             String name = commandContext.get("name");
-                            var loc = sender.as(PlayerWrapper.class).getLocation();
+                            var loc = sender.as(Player.class).getLocation();
 
                             var store = game.getGameStoreList()
                                     .stream()
@@ -337,7 +338,7 @@ public class StoreCommand extends BaseAdminSubCommand {
                         .literal("custom-name")
                         .literal("reset")
                         .handler(commandContext -> editMode(commandContext, (sender, game) -> {
-                            var loc = sender.as(PlayerWrapper.class).getLocation();
+                            var loc = sender.as(Player.class).getLocation();
 
                             var store = game.getGameStoreList()
                                     .stream()

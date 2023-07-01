@@ -35,12 +35,12 @@ import org.screamingsandals.bedwars.game.target.TargetCountdownImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.utils.BedUtils;
 import org.screamingsandals.bedwars.utils.ArenaUtils;
-import org.screamingsandals.lib.block.BlockHolder;
+import org.screamingsandals.lib.block.BlockPlacement;
 import org.screamingsandals.lib.lang.Message;
-import org.screamingsandals.lib.particle.ParticleHolder;
-import org.screamingsandals.lib.particle.ParticleTypeHolder;
-import org.screamingsandals.lib.player.PlayerWrapper;
-import org.screamingsandals.lib.sender.CommandSenderWrapper;
+import org.screamingsandals.lib.particle.Particle;
+import org.screamingsandals.lib.particle.ParticleType;
+import org.screamingsandals.lib.player.Player;
+import org.screamingsandals.lib.sender.CommandSender;
 import org.screamingsandals.lib.spectator.Component;
 import org.screamingsandals.lib.spectator.event.ClickEvent;
 import org.screamingsandals.lib.spectator.event.HoverEvent;
@@ -57,14 +57,14 @@ public class TeamCommand extends BaseAdminSubCommand {
     }
 
     @Override
-    public void construct(CommandManager<CommandSenderWrapper> manager, Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder) {
+    public void construct(CommandManager<CommandSender> manager, Command.Builder<CommandSender> commandSenderWrapperBuilder) {
         manager.command(
                 commandSenderWrapperBuilder
                         .literal("add")
                         .argument(StringArgument.of("team-name"))
                         .argument(EnumArgument.of(TeamColorImpl.class, "color"))
                         .argument(IntegerArgument
-                                .<CommandSenderWrapper>newBuilder("maximum-players")
+                                .<CommandSender>newBuilder("maximum-players")
                                 .withMin(1)
                         )
                         .handler(commandContext -> editMode(commandContext, (sender, game) -> {
@@ -101,7 +101,7 @@ public class TeamCommand extends BaseAdminSubCommand {
         );
 
         var teamNameArgument = StringArgument
-                .<CommandSenderWrapper>newBuilder("team-name")
+                .<CommandSender>newBuilder("team-name")
                 .withSuggestionsProvider((c, s) -> {
                     if (AdminCommand.gc.containsKey(c.<String>get("game"))) {
                         return AdminCommand.gc.get(c.<String>get("game"))
@@ -164,7 +164,7 @@ public class TeamCommand extends BaseAdminSubCommand {
                         .literal("max-players")
                         .argument(teamNameArgument)
                         .argument(IntegerArgument
-                                .<CommandSenderWrapper>newBuilder("maximum-players")
+                                .<CommandSender>newBuilder("maximum-players")
                                 .withMin(1)
                         )
                         .handler(commandContext -> editMode(commandContext, (sender, game) -> {
@@ -200,7 +200,7 @@ public class TeamCommand extends BaseAdminSubCommand {
                         .handler(commandContext -> editMode(commandContext, (sender, game) -> {
                             String name = commandContext.get("team-name");
 
-                            var loc = sender.as(PlayerWrapper.class).getLocation();
+                            var loc = sender.as(Player.class).getLocation();
 
                             var team = game.getTeamFromName(name);
                             if (team == null) {
@@ -264,7 +264,7 @@ public class TeamCommand extends BaseAdminSubCommand {
                         .handler(commandContext -> editMode(commandContext, (sender, game) -> {
                             String name = commandContext.get("team-name");
 
-                            var loc = sender.as(PlayerWrapper.class).getLocation();
+                            var loc = sender.as(Player.class).getLocation();
 
                             var team = game.getTeamFromName(name);
                             if (team == null) {
@@ -286,7 +286,7 @@ public class TeamCommand extends BaseAdminSubCommand {
                             }
                             // .getBlock().getLocation() = exact block location, not relative entity location
                             if (team.getTeamSpawns().stream()
-                                    .anyMatch(l -> l.getBlock().getLocation().equals(loc.getBlock().getLocation()))) {
+                                    .anyMatch(l -> l.getBlock().location().equals(loc.getBlock().location()))) {
                                 sender.sendMessage(
                                         Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_TEAM_SPAWN_ON_THE_SAME_BLOCK).defaultPrefix()
                                 );
@@ -314,7 +314,7 @@ public class TeamCommand extends BaseAdminSubCommand {
                         .handler(commandContext -> editMode(commandContext, (sender, game) -> {
                             String name = commandContext.get("team-name");
 
-                            var loc = sender.as(PlayerWrapper.class).getLocation();
+                            var loc = sender.as(Player.class).getLocation();
 
                             var team = game.getTeamFromName(name);
                             if (team == null) {
@@ -335,7 +335,7 @@ public class TeamCommand extends BaseAdminSubCommand {
                                 return;
                             }
                             var loc2Opt = team.getTeamSpawns().stream()
-                                    .filter(l -> l.getBlock().getLocation().equals(loc.getBlock().getLocation()))
+                                    .filter(l -> l.getBlock().location().equals(loc.getBlock().location()))
                                     .findFirst();
                             if (loc2Opt.isEmpty()) {
                                 sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_TEAM_NO_SPAWN_THERE).defaultPrefix());
@@ -365,7 +365,7 @@ public class TeamCommand extends BaseAdminSubCommand {
                         .handler(commandContext -> editMode(commandContext, (sender, game) -> {
                             String name = commandContext.get("team-name");
 
-                            var loc = sender.as(PlayerWrapper.class).getLocation();
+                            var loc = sender.as(Player.class).getLocation();
 
                             var team = game.getTeamFromName(name);
                             if (team == null) {
@@ -391,7 +391,7 @@ public class TeamCommand extends BaseAdminSubCommand {
                         .handler(commandContext -> editMode(commandContext, (sender, game) -> {
                             String name = commandContext.get("team-name");
 
-                            var loc = sender.as(PlayerWrapper.class).getLocation();
+                            var loc = sender.as(Player.class).getLocation();
 
                             var team = game.getTeamFromName(name);
                             if (team == null) {
@@ -425,17 +425,17 @@ public class TeamCommand extends BaseAdminSubCommand {
                         }))
         );
 
-        CommandExecutionHandler<CommandSenderWrapper> handleTargetBlock = commandContext -> editMode(commandContext, (sender, game) -> {
+        CommandExecutionHandler<CommandSender> handleTargetBlock = commandContext -> editMode(commandContext, (sender, game) -> {
             String name = commandContext.get("team-name");
             TargetBlockSetModes mode = commandContext.get("mode");
 
-            BlockHolder block;
+            BlockPlacement block;
             if (mode == TargetBlockSetModes.LOOKING_AT) {
-                block = sender.as(PlayerWrapper.class).getTargetBlock(null, 5);
+                block = sender.as(Player.class).getTargetBlock(null, 5);
             } else {
-                block = sender.as(PlayerWrapper.class).getLocation().subtract(0, 0.5, 0).getBlock();
+                block = sender.as(Player.class).getLocation().subtract(0, 0.5, 0).getBlock();
             }
-            var loc = block.getLocation();
+            var loc = block.location();
 
             var team = game.getTeamFromName(name);
             if (team == null) {
@@ -457,14 +457,14 @@ public class TeamCommand extends BaseAdminSubCommand {
             }
 
             var chosenLoc = loc;
-            if (block.getType().is("#beds") && !block.getType().get("part").map("head"::equals).orElse(true /* it should always be present unless it's not a bed */)) {
-                chosenLoc = Objects.requireNonNull(BedUtils.getBedNeighbor(block)).getLocation();
-            } else if (block.getType().is("#doors") && !block.getType().get("half").map("lower"::equals).orElse(true /* it should always be present unless it's not a door */)) {
+            if (block.block().is("#beds") && !"head".equals(block.block().get("part"))) {
+                chosenLoc = Objects.requireNonNull(BedUtils.getBedNeighbor(block)).location();
+            } else if (block.block().is("#doors") && !"lower".equals(block.block().get("half"))) {
                 chosenLoc = loc.subtract(0, 1, 0);
             }
             team.setTarget(new TargetBlockImpl(chosenLoc));
-            var particle = new ParticleHolder(
-                    ParticleTypeHolder.of("minecraft:happy_villager")
+            var particle = new Particle(
+                    ParticleType.of("minecraft:happy_villager")
             );
             chosenLoc.add(0, 0, 0).sendParticle(particle);
             chosenLoc.add(0, 0, 1).sendParticle(particle);
@@ -483,7 +483,7 @@ public class TeamCommand extends BaseAdminSubCommand {
                             .placeholder("x", chosenLoc.getBlockX())
                             .placeholder("y", chosenLoc.getBlockY())
                             .placeholder("z", chosenLoc.getBlockZ())
-                            .placeholderRaw("material", chosenLoc.getBlock().getType().platformName())
+                            .placeholderRaw("material", chosenLoc.getBlock().block().location().asString())
             );
 
             if (game.getTeams().stream().anyMatch(a -> !(a.getTarget() instanceof TargetBlockImpl))) {
@@ -550,7 +550,7 @@ public class TeamCommand extends BaseAdminSubCommand {
                         .literal("target")
                         .literal("countdown")
                         .argument(teamNameArgument)
-                        .argument(IntegerArgument.<CommandSenderWrapper>newBuilder("countdown").withMin(1))
+                        .argument(IntegerArgument.<CommandSender>newBuilder("countdown").withMin(1))
                         .handler(commandContext -> editMode(commandContext, (sender, game) -> {
                             String name = commandContext.get("team-name");
                             int countdown = commandContext.get("countdown");
@@ -586,20 +586,20 @@ public class TeamCommand extends BaseAdminSubCommand {
                         .literal("target")
                         .literal("block-countdown")
                         .argument(teamNameArgument)
-                        .argument(IntegerArgument.<CommandSenderWrapper>newBuilder("countdown").withMin(1))
+                        .argument(IntegerArgument.<CommandSender>newBuilder("countdown").withMin(1))
                         .argument(EnumArgument.optional(TargetBlockSetModes.class, "mode", TargetBlockSetModes.LOOKING_AT))
                         .handler(commandContext -> editMode(commandContext, (sender, game) -> {
                             String name = commandContext.get("team-name");
                             int countdown = commandContext.get("countdown");
                             TargetBlockSetModes mode = commandContext.get("mode");
 
-                            BlockHolder block;
+                            BlockPlacement block;
                             if (mode == TargetBlockSetModes.LOOKING_AT) {
-                                block = sender.as(PlayerWrapper.class).getTargetBlock(null, 5);
+                                block = sender.as(Player.class).getTargetBlock(null, 5);
                             } else {
-                                block = sender.as(PlayerWrapper.class).getLocation().subtract(0, 0.5, 0).getBlock();
+                                block = sender.as(Player.class).getLocation().subtract(0, 0.5, 0).getBlock();
                             }
-                            var loc = block.getLocation();
+                            var loc = block.location();
 
                             var team = game.getTeamFromName(name);
                             if (team == null) {
@@ -621,12 +621,14 @@ public class TeamCommand extends BaseAdminSubCommand {
                             }
 
                             var chosenLoc = loc;
-                            if (block.getType().is("#beds") && !block.getType().get("part").map("head"::equals).orElse(true /* it should always be present unless it's not a bed */)) {
-                                chosenLoc = Objects.requireNonNull(BedUtils.getBedNeighbor(block)).getLocation();
+                            if (block.block().is("#beds") && !"head".equals(block.block().get("part"))) {
+                                chosenLoc = Objects.requireNonNull(BedUtils.getBedNeighbor(block)).location();
+                            } else if (block.block().is("#doors") && !"lower".equals(block.block().get("half"))) {
+                                chosenLoc = loc.subtract(0, 1, 0);
                             }
                             team.setTarget(new TargetBlockCountdownImpl(chosenLoc, countdown));
-                            var particle = new ParticleHolder(
-                                    ParticleTypeHolder.of("minecraft:happy_villager")
+                            var particle = new Particle(
+                                    ParticleType.of("minecraft:happy_villager")
                             );
                             chosenLoc.add(0, 0, 0).sendParticle(particle);
                             chosenLoc.add(0, 0, 1).sendParticle(particle);
@@ -645,7 +647,7 @@ public class TeamCommand extends BaseAdminSubCommand {
                                             .placeholder("x", chosenLoc.getBlockX())
                                             .placeholder("y", chosenLoc.getBlockY())
                                             .placeholder("z", chosenLoc.getBlockZ())
-                                            .placeholderRaw("material", chosenLoc.getBlock().getType().platformName())
+                                            .placeholderRaw("material", chosenLoc.getBlock().block().location().asString())
                                             .placeholder("countdown", countdown)
                             );
 

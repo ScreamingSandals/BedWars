@@ -23,16 +23,18 @@ import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.lib.event.OnEvent;
-import org.screamingsandals.lib.event.player.SPlayerChatEvent;
+import org.screamingsandals.lib.event.player.PlayerChatEvent;
 import org.screamingsandals.lib.placeholders.PlaceholderManager;
 import org.screamingsandals.lib.spectator.Color;
 import org.screamingsandals.lib.spectator.Component;
 import org.screamingsandals.lib.spectator.mini.placeholders.Placeholder;
 import org.screamingsandals.lib.utils.annotations.Service;
+import org.screamingsandals.lib.utils.annotations.ServiceDependencies;
 import org.screamingsandals.lib.utils.annotations.methods.OnPostEnable;
 import org.screamingsandals.lib.utils.annotations.methods.ShouldRunControllable;
 
-@Service(dependsOn = {
+@Service
+@ServiceDependencies(dependsOn = {
         MainConfig.class
 })
 public class LobbyChatManager {
@@ -51,7 +53,7 @@ public class LobbyChatManager {
     }
 
     @OnEvent
-    public void onChat(SPlayerChatEvent event) {
+    public void onChat(PlayerChatEvent event) {
         var player = event.player();
 
         if (PlayerManagerImpl.getInstance().isPlayerInGame(player)) {

@@ -29,8 +29,8 @@ import org.screamingsandals.bedwars.utils.DelayFactoryImpl;
 import org.screamingsandals.bedwars.utils.ItemUtils;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.lib.event.OnEvent;
-import org.screamingsandals.lib.event.player.SPlayerInteractEvent;
-import org.screamingsandals.lib.item.builder.ItemFactory;
+import org.screamingsandals.lib.event.player.PlayerInteractEvent;
+import org.screamingsandals.lib.item.builder.ItemStackFactory;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.utils.BlockFace;
 import org.screamingsandals.lib.utils.annotations.Service;
@@ -47,7 +47,7 @@ public class PopUpTowerListener {
     }
 
     @OnEvent
-    public void onPopUpTowerUse(SPlayerInteractEvent event) {
+    public void onPopUpTowerUse(PlayerInteractEvent event) {
         final var player = event.player();
         if (!PlayerManagerImpl.getInstance().isPlayerInGame(player)) {
             return;
@@ -56,8 +56,7 @@ public class PopUpTowerListener {
         var gamePlayer = player.as(BedWarsPlayer.class);
         final var game = gamePlayer.getGame();
         final var action = event.action();
-        if (action == SPlayerInteractEvent.Action.RIGHT_CLICK_AIR
-                || action == SPlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
+        if (action == PlayerInteractEvent.Action.RIGHT_CLICK_AIR || action == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
 
             if (game != null && game.getStatus() == GameStatus.RUNNING && !gamePlayer.isSpectator() && event.item() != null) {
                 var stack = event.item();
@@ -72,7 +71,7 @@ public class PopUpTowerListener {
 
                         var playerFace = MiscUtils.yawToFace(player.getLocation().getYaw(), false);
 
-                        var popupTower = new PopUpTowerImpl(game, gamePlayer, game.getPlayerTeam(gamePlayer), material, player.getLocation().getBlock().getLocation().add(playerFace).add(BlockFace.DOWN), playerFace);
+                        var popupTower = new PopUpTowerImpl(game, gamePlayer, game.getPlayerTeam(gamePlayer), material, player.getLocation().getBlock().location().add(playerFace).add(BlockFace.DOWN), playerFace);
 
                         if (delay > 0) {
                             var delayFactory = new DelayFactoryImpl(delay, popupTower, gamePlayer, game);
@@ -84,7 +83,7 @@ public class PopUpTowerListener {
                         var stack2 = stack.withAmount(1); // we are removing exactly one popup tower
                         try {
                             if (player.getPlayerInventory().getItemInOffHand().equals(stack2)) {
-                                player.getPlayerInventory().setItemInOffHand(ItemFactory.getAir());
+                                player.getPlayerInventory().setItemInOffHand(ItemStackFactory.getAir());
                             } else {
                                 player.getPlayerInventory().removeItem(stack2);
                             }

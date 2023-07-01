@@ -29,29 +29,29 @@ import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.utils.BungeeUtils;
-import org.screamingsandals.lib.attribute.AttributeTypeHolder;
-import org.screamingsandals.lib.item.Item;
-import org.screamingsandals.lib.player.ExtendablePlayerWrapper;
-import org.screamingsandals.lib.player.PlayerWrapper;
-import org.screamingsandals.lib.player.gamemode.GameModeHolder;
-import org.screamingsandals.lib.world.LocationHolder;
+import org.screamingsandals.lib.attribute.AttributeType;
+import org.screamingsandals.lib.item.ItemStack;
+import org.screamingsandals.lib.player.ExtendablePlayer;
+import org.screamingsandals.lib.player.Player;
+import org.screamingsandals.lib.player.gamemode.GameMode;
+import org.screamingsandals.lib.world.Location;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-public class BedWarsPlayer extends ExtendablePlayerWrapper implements BWPlayer {
+public class BedWarsPlayer extends ExtendablePlayer implements BWPlayer {
     @Getter
     private GameImpl game;
     @Getter
     private String latestGameName;
     private final StoredInventory oldInventory = new StoredInventory();
     @Getter
-    private final List<Item> permanentItemsPurchased = new ArrayList<>();
-    private final List<PlayerWrapper> hiddenPlayers = new ArrayList<>();
+    private final List<ItemStack> permanentItemsPurchased = new ArrayList<>();
+    private final List<Player> hiddenPlayers = new ArrayList<>();
     @Getter
     @Setter
-    private Item[] armorContents;
+    private ItemStack[] armorContents;
 
     @Getter
     @Setter
@@ -60,7 +60,7 @@ public class BedWarsPlayer extends ExtendablePlayerWrapper implements BWPlayer {
     public boolean mainLobbyUsed = false;
     public boolean forceSynchronousTeleportation = false;
 
-    public BedWarsPlayer(PlayerWrapper player) {
+    public BedWarsPlayer(Player player) {
         super(player);
     }
 
@@ -106,7 +106,7 @@ public class BedWarsPlayer extends ExtendablePlayerWrapper implements BWPlayer {
         return hasPermission(BedWarsPermission.FORCE_JOIN_PERMISSION.asPermission());
     }
 
-    public void addPermanentItem(Item stack) {
+    public void addPermanentItem(ItemStack stack) {
         this.permanentItemsPurchased.add(stack);
     }
 
@@ -178,11 +178,14 @@ public class BedWarsPlayer extends ExtendablePlayerWrapper implements BWPlayer {
         setFoodLevel(20);
         setSaturation(10);
         setExhaustion(0);
-        getAttribute(AttributeTypeHolder.of("minecraft:generic.max_health")).ifPresent(attributeHolder -> attributeHolder.setBaseValue(20));
+        var attribute = getAttribute(AttributeType.of("minecraft:generic.max_health"));
+        if (attribute != null) {
+            attribute.setBaseValue(20);
+        }
         setHealth(20D);
         setFireTicks(0);
         setFallDistance(0);
-        setGameMode(GameModeHolder.of("survival"));
+        setGameMode(GameMode.of("survival"));
 
         if (isInsideVehicle()) {
             leaveVehicle();
@@ -196,8 +199,8 @@ public class BedWarsPlayer extends ExtendablePlayerWrapper implements BWPlayer {
     public void invClean() {
         Debug.info("Cleaning inventory of: " + getName());
         var inv = getPlayerInventory();
-        inv.setArmorContents(new Item[4]);
-        inv.setContents(new Item[inv.getSize()]);
+        inv.setArmorContents(new ItemStack[4]);
+        inv.setContents(new ItemStack[inv.getSize()]);
         forceUpdateInventory();
     }
 
@@ -209,14 +212,14 @@ public class BedWarsPlayer extends ExtendablePlayerWrapper implements BWPlayer {
         new ArrayList<>(this.hiddenPlayers).forEach(this::showPlayer);
     }
 
-    public void hidePlayer(PlayerWrapper playerWrapper) {
+    public void hidePlayer(Player playerWrapper) {
         if (!hiddenPlayers.contains(playerWrapper) && !equals(playerWrapper)) {
             hiddenPlayers.add(playerWrapper);
             super.hidePlayer(playerWrapper);
         }
     }
 
-    public void showPlayer(PlayerWrapper playerWrapper) {
+    public void showPlayer(Player playerWrapper) {
         if (hiddenPlayers.contains(playerWrapper) && !equals(playerWrapper)) {
             hiddenPlayers.remove(playerWrapper);
             super.showPlayer(playerWrapper);
@@ -224,7 +227,7 @@ public class BedWarsPlayer extends ExtendablePlayerWrapper implements BWPlayer {
     }
 
     @Override
-    public CompletableFuture<Boolean> teleport(LocationHolder location) {
+    public CompletableFuture<Boolean> teleport(Location location) {
         if (forceSynchronousTeleportation) {
             return CompletableFuture.completedFuture(teleportSync(location));
         } else {
@@ -233,7 +236,7 @@ public class BedWarsPlayer extends ExtendablePlayerWrapper implements BWPlayer {
     }
 
     @Override
-    public CompletableFuture<Void> teleport(LocationHolder location, Runnable callback, boolean forceCallback) {
+    public CompletableFuture<Void> teleport(Location location, Runnable callback, boolean forceCallback) {
         if (forceSynchronousTeleportation) {
             if (teleportSync(location) || forceCallback) {
                 callback.run();

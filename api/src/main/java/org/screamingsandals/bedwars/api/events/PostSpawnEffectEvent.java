@@ -22,7 +22,7 @@ package org.screamingsandals.bedwars.api.events;
 import org.jetbrains.annotations.ApiStatus;
 import org.screamingsandals.bedwars.api.BedwarsAPI;
 import org.screamingsandals.bedwars.api.game.Game;
-import org.screamingsandals.lib.utils.Wrapper;
+import org.screamingsandals.lib.api.Wrapper;
 
 import java.util.function.Consumer;
 

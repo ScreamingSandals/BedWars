@@ -23,13 +23,13 @@ import lombok.Data;
 import org.screamingsandals.bedwars.api.events.PreSpawnEffectEvent;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
-import org.screamingsandals.lib.event.SCancellableEvent;
-import org.screamingsandals.lib.world.LocationHolder;
+import org.screamingsandals.lib.event.CancellableEvent;
+import org.screamingsandals.lib.world.Location;
 
 @Data
-public class PreSpawnEffectEventImpl implements PreSpawnEffectEvent, SCancellableEvent {
+public class PreSpawnEffectEventImpl implements PreSpawnEffectEvent, CancellableEvent {
     private final GameImpl game;
-    private final LocationHolder location;
+    private final Location location;
     private final String effectsGroupName;
     private boolean cancelled;
 

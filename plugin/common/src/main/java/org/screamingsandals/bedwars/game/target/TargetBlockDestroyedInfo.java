@@ -35,9 +35,9 @@ public class TargetBlockDestroyedInfo {
         this.team = team;
         if (team.getTarget() instanceof TargetBlockImpl) {
             var block = ((TargetBlockImpl) team.getTarget()).getTargetBlock().getBlock();
-            this.isItBedBlock = game.getRegion().isBedBlock(block.getBlockState().orElse(null));
-            this.isItAnchor = block.getType().isSameType("respawn_anchor");
-            this.isItCake = block.getType().isSameType("cake");
+            this.isItBedBlock = game.getRegion().isBedBlock(block.blockSnapshot());
+            this.isItAnchor = block.block().isSameType("respawn_anchor");
+            this.isItCake = block.block().isSameType("cake");
         } else {
             this.isItBedBlock = this.isItAnchor = this.isItCake = false;
         }

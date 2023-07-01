@@ -28,6 +28,7 @@ import org.screamingsandals.lib.lang.Lang;
 import org.screamingsandals.lib.lang.LangService;
 import org.screamingsandals.lib.spectator.Component;
 import org.screamingsandals.lib.utils.annotations.Service;
+import org.screamingsandals.lib.utils.annotations.ServiceDependencies;
 import org.screamingsandals.lib.utils.annotations.methods.OnEnable;
 import org.screamingsandals.lib.utils.annotations.parameters.DataFolder;
 import org.screamingsandals.lib.utils.logger.LoggerWrapper;
@@ -46,7 +47,8 @@ import java.util.Objects;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-@Service(dependsOn = {
+@Service
+@ServiceDependencies(dependsOn = {
         MainConfig.class
 })
 @RequiredArgsConstructor
