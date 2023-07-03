@@ -358,7 +358,7 @@ public class MainConfig {
                     .back()
                 .key("resources").defValue(() -> Map.of(
                             "bronze", Map.of(
-                                    "material", Server.isVersion(1,13) ? "BRICK" : "CLAY_BRICK",
+                                    "material", "BRICK",
                                     "interval", 1,
                                     "name", "Bronze",
                                     "translate", "resource_bronze",

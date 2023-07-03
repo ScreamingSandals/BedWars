@@ -8,6 +8,10 @@ dependencies {
     /* SHADED */
     implementation 'org.screamingsandals.language.bedwars:BedWarsLanguage:' + (project.version =~ /^\d+.\d+/).findAll()?.first() + '-SNAPSHOT'
     implementation libs.hikari
+
+    api(libs.configurate.gson) {
+        exclude(group: '*', module: '*')
+    }
     api libs.configurate.yaml
 }
 

@@ -71,7 +71,6 @@ subprojects {
         relocate 'org.bstats', 'org.screamingsandals.bedwars.lib.ext.bstats'
         relocate 'org.spongepowered.configurate', 'org.screamingsandals.bedwars.lib.ext.configurate'
         relocate 'org.yaml.snakeyaml', 'org.screamingsandals.bedwars.lib.ext.snakeyaml'
-        relocate 'com.google.gson', 'org.screamingsandals.bedwars.lib.ext.gson' // TODO: we need to get rid of bundling our gson (we have to patch configurate to support older versions)
         relocate 'io.leangen.geantyref', 'org.screamingsandals.bedwars.lib.ext.geantyref'
         relocate 'cloud.commandframework', 'org.screamingsandals.bedwars.lib.ext.cloud'
         relocate 'me.lucko.commodore', 'org.screamingsandals.bedwars.lib.ext.commodore'

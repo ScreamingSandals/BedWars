@@ -20,6 +20,7 @@ nms-mapper = "1.4.5"
 buildconfig = "3.0.2"
 
 configurate = "4.1.2"
+configurate-patched-gson = "4.1.2-sandals-patch"
 
 [libraries]
 # shaded libraries
@@ -34,6 +35,7 @@ parties-api = { group = "com.alessiodp.parties", name = "parties-api", version.r
 perworldinventory-old = { group = "me.gnat008", name = "perworldinventory", version.ref = "perworldinventory-old" }
 perworldinventory-kt = { group = "me.ebonjaeger", name = "perworldinventory-kt", version.ref = "perworldinventory-kt" }
 multiverse = { group = "com.onarandombox.multiversecore", name = "Multiverse-Core", version.ref = "multiverse" }
+configurate-gson = { group = "org.spongepowered", name = "configurate-gson", version.ref = "configurate-patched-gson" }
 configurate-yaml = { group = "org.spongepowered", name = "configurate-yaml", version.ref = "configurate" }
 
 [plugins]

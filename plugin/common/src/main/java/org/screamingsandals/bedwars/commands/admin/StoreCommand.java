@@ -183,7 +183,7 @@ public class StoreCommand extends BaseAdminSubCommand {
                         .literal("type")
                         .argument(StringArgument
                                 .<CommandSender>newBuilder("type")
-                                .withSuggestionsProvider((c, s) -> EntityType.all().javaStreamOfLocations().map(ResourceLocation::asString).collect(Collectors.toList()))
+                                .withSuggestionsProvider((c, s) -> EntityType.all().filter(EntityType::isAlive).javaStreamOfLocations().map(ResourceLocation::asString).collect(Collectors.toList()))
                         )
                         .handler(commandContext -> editMode(commandContext, (sender, game) -> {
                             String type = commandContext.get("type");
@@ -195,13 +195,13 @@ public class StoreCommand extends BaseAdminSubCommand {
                                     .findFirst();
 
                             if (store.isPresent()) {
-                                var t = EntityType.ofNullable(type); // TODO: .split(":", 2)[0].toUpperCase(), that splitting is bullshit, create set skin command
+                                var t = EntityType.ofNullable(type);
                                 if (t != null && !t.isAlive()) {
                                     sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_INVALID_ENTITY_TYPE).defaultPrefix());
                                     return;
                                 }
 
-                                if (t != null && t.is("player")) {
+                                if (t != null && t.is("player") || t == null && type.startsWith("player:")) {
                                     String[] splitted = type.split(":", 2);
                                     if (splitted.length != 2 || splitted[1].trim().equals("")) {
                                         sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_ERRORS_NPC_MUST_HAVE_SKIN_NAME).defaultPrefix());
@@ -220,7 +220,7 @@ public class StoreCommand extends BaseAdminSubCommand {
 
                                 store.get().setEntityType(t);
 
-                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_STORE_ENTITY_TYPE_SET).defaultPrefix().placeholder("type", t.toString()));
+                                sender.sendMessage(Message.of(LangKeys.ADMIN_ARENA_EDIT_SUCCESS_STORE_ENTITY_TYPE_SET).defaultPrefix().placeholder("type", t.location().asString()));
                                 return;
                             }
 
