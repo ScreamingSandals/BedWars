@@ -34,7 +34,7 @@ import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.utils.FakeDeath;
 import org.screamingsandals.lib.Server;
 import org.screamingsandals.lib.impl.bukkit.utils.nms.ClassStorage;
-import org.screamingsandals.lib.nms.accessors.ComponentAccessor;
+import org.screamingsandals.lib.impl.nms.accessors.ComponentAccessor;
 import org.screamingsandals.lib.utils.reflect.Reflect;
 import org.screamingsandals.lib.world.Location;
 

@@ -30,5 +30,9 @@ public interface EntityUtils {
         EntitySelector attackTarget(LivingEntity target);
 
         EntitySelector attackNearestPlayers(int order);
+
+        EntitySelector attackNearestGolems(int order);
+
+        EntitySelector hurtByTarget(int order);
     }
 }

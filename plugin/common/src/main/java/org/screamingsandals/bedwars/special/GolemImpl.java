@@ -81,7 +81,9 @@ public class GolemImpl extends SpecialItemImpl implements Golem {
 
         //noinspection ConstantConditions - suppressing nullability check, if this throws a NPE, something went wrong badly
         PlatformService.getInstance().getEntityUtils().makeMobAttackTarget(golem, speed, followRange, -1)
-                .attackNearestPlayers(0);
+                .hurtByTarget(1)
+                .attackNearestPlayers(2)
+                .attackNearestGolems(3);
 
         game.registerSpecialItem(this);
         EntitiesManagerImpl.getInstance().addEntityToGame(golem, game);

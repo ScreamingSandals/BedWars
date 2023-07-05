@@ -159,7 +159,7 @@ public class MainConfig {
                     .back()
                 .key("stop-team-spawners-on-die").defValue(false)
                 .key("allow-fake-death").defValue(false)
-                .key("prefer-1-19-4-display-entities").defValue(true) // TODO: implement in SLib and set it to this value
+                .key("prefer-1-19-4-display-entities").defValue(true)
                 .key("remember-what-scoreboards-players-had-before").defValue(false)
                 .section("kick-players-upon-final-death")
                     .key("enabled").defValue(false)
@@ -593,6 +593,10 @@ public class MainConfig {
                         }).defValue("NOTCHED_20")
                         .back()
                     .back();
+
+            if (!Server.isVersion(1, 9)) {
+                generator.start().key("bossbar", "backend-entity").defValue("dragon");
+            }
 
             generator.start()
                 .section("holograms")

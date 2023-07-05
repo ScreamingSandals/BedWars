@@ -26,6 +26,7 @@ import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.TeamImpl;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.lib.entity.Entities;
+import org.screamingsandals.lib.entity.PrimedTnt;
 import org.screamingsandals.lib.item.builder.ItemStackFactory;
 import org.screamingsandals.lib.item.meta.PotionEffect;
 import org.screamingsandals.lib.player.Player;
@@ -78,8 +79,8 @@ public class LuckyBlockImpl extends SpecialItemImpl implements LuckyBlock {
                 break;
             case "tnt":
                 Tasker.runDelayed(DefaultThreads.GLOBAL_THREAD, () -> {
-                    var tnt = Objects.requireNonNull(Entities.spawn("tnt", blockLocation));
-                    tnt.setMetadata("fuse_ticks", 0);
+                    var tnt = (PrimedTnt) Objects.requireNonNull(Entities.spawn("tnt", blockLocation));
+                    tnt.fuseTicks(0);
                 }, 10, TaskerTime.TICKS);
                 break;
             case "teleport":

@@ -2322,7 +2322,7 @@ public class GameImpl implements Game {
 
     private void cancelTask() {
         if (task != null) {
-            if (task.getState() != TaskState.CANCELLED && task.getState() != TaskState.FINISHED) {
+            if (task.isScheduledOrRunning()) {
                 task.cancel();
             }
             task = null;

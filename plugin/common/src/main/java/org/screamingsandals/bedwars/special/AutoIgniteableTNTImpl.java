@@ -26,6 +26,7 @@ import org.screamingsandals.bedwars.entities.EntitiesManagerImpl;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.TeamImpl;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
+import org.screamingsandals.lib.entity.PrimedTnt;
 import org.screamingsandals.lib.entity.type.EntityType;
 import org.screamingsandals.lib.tasker.DefaultThreads;
 import org.screamingsandals.lib.tasker.Tasker;
@@ -61,10 +62,10 @@ public class AutoIgniteableTNTImpl extends SpecialItemImpl implements AutoIgnite
     }
 
     public void spawn(Location location) {
-        var tnt = Objects.requireNonNull(EntityType.of("tnt").spawn(location));
+        var tnt = (PrimedTnt) Objects.requireNonNull(EntityType.of("tnt").spawn(location));
         EntitiesManagerImpl.getInstance().addEntityToGame(tnt, game);
-        tnt.setMetadata("yield", damage);
-        tnt.setMetadata("fuse_ticks", explosionTime * 20);
+        tnt.yield(damage);
+        tnt.fuseTicks(explosionTime * 20);
         if (!allowedDamagingPlacer) {
             PROTECTED_PLAYERS.put(tnt.getEntityId(), player.getUuid());
         }

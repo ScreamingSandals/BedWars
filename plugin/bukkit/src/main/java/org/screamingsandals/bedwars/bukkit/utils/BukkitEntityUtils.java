@@ -23,8 +23,7 @@ import org.bukkit.entity.LivingEntity;
 import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.bukkit.utils.nms.Attribute;
 import org.screamingsandals.bedwars.bukkit.utils.nms.EntityLivingNMS;
-import org.screamingsandals.bedwars.nms.accessors.MeleeAttackGoalAccessor;
-import org.screamingsandals.bedwars.nms.accessors.MobAccessor;
+import org.screamingsandals.bedwars.nms.accessors.*;
 import org.screamingsandals.bedwars.utils.EntityUtils;
 import org.screamingsandals.lib.impl.bukkit.utils.nms.ClassStorage;
 import org.screamingsandals.lib.utils.reflect.Reflect;
@@ -44,7 +43,10 @@ public class BukkitEntityUtils implements EntityUtils {
 
             var selector = entityLiving.getGoalSelector();
             selector.clearSelector();
-            selector.registerPathfinder(0, Reflect.construct(MeleeAttackGoalAccessor.getConstructor0(), handler, 1.0D, false));
+            selector.registerPathfinder(0, Reflect.construct(FloatGoalAccessor.getConstructor0(), handler));
+            selector.registerPathfinder(1, Reflect.construct(MeleeAttackGoalAccessor.getConstructor0(), handler, 1.0D, false));
+            selector.registerPathfinder(2, Reflect.construct(RandomStrollGoalAccessor.getConstructor0(), handler, 1.0D));
+            selector.registerPathfinder(3, Reflect.construct(RandomLookAroundGoalAccessor.getConstructor0(), handler));
 
             entityLiving.setAttribute(Attribute.MOVEMENT_SPEED, speed);
             entityLiving.setAttribute(Attribute.FOLLOW_RANGE, follow);

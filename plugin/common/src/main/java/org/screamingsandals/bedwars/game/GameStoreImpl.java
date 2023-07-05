@@ -26,9 +26,13 @@ import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.api.game.GameStore;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.utils.MiscUtils;
+import org.screamingsandals.lib.entity.Ageable;
 import org.screamingsandals.lib.entity.LivingEntity;
 import org.screamingsandals.lib.entity.Entities;
+import org.screamingsandals.lib.entity.monster.zombie.ZombieVillager;
 import org.screamingsandals.lib.entity.type.EntityType;
+import org.screamingsandals.lib.entity.villager.Profession;
+import org.screamingsandals.lib.entity.villager.Villager;
 import org.screamingsandals.lib.npc.NPC;
 import org.screamingsandals.lib.npc.NPCManager;
 import org.screamingsandals.lib.npc.skin.NPCSkin;
@@ -106,12 +110,14 @@ public class GameStoreImpl implements GameStore, SerializableGameComponent {
                 } catch (Throwable ignored) {}
             }
 
-            if (entity.getEntityType().is("villager")) {
-                entity.setMetadata("villager_profession", "farmer");
+            if (entity instanceof Villager) {
+                ((Villager) entity).profession(Profession.of("farmer"));
+            } else if (entity instanceof ZombieVillager) {
+                ((ZombieVillager) entity).profession(Profession.of("farmer"));
             }
 
-            if (entity.hasMetadata("is_baby")) {
-                entity.setMetadata("is_baby", isBaby);
+            if (entity instanceof Ageable) {
+                ((Ageable) entity).baby(isBaby);
             }
         }
         return entity;

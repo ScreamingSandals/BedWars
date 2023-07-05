@@ -10,6 +10,7 @@ nmsGen {
     basePackage = "org.screamingsandals.bedwars.nms.accessors"
     sourceSet = "src/generated/java"
     cleanOnRebuild = true
+    minMinecraftVersion = '1.8.8'
 
     reqClass('net.minecraft.world.entity.ai.attributes.Attributes') {
         reqField('MAX_HEALTH')
@@ -76,8 +77,28 @@ nmsGen {
     reqClass('net.minecraft.world.entity.ai.goal.Goal')
 
     reqClass('net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal') {
-        reqConstructor('@Mob', Class, boolean)
+        reqConstructor('@Mob', Class, boolean) // 1.14+
+        reqConstructor('@PathfinderMob', Class, boolean) // <= 1.13.2
     }
+
+    reqClass('net.minecraft.world.entity.ai.goal.FloatGoal') {
+        reqConstructor('@Mob')
+    }
+
+    reqClass('net.minecraft.world.entity.ai.goal.RandomStrollGoal') {
+        reqConstructor('@PathfinderMob', double)
+    }
+
+    reqClass('net.minecraft.world.entity.ai.goal.RandomLookAroundGoal') {
+        reqConstructor('@Mob')
+    }
+
+    reqClass('net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal') {
+        reqConstructor('@PathfinderMob', boolean, Class[]) // new
+        reqConstructor('@PathfinderMob', Class[]) // new
+    }
+
+    reqClass('net.minecraft.world.entity.animal.IronGolem')
 
     reqClass('net.minecraft.world.entity.ai.goal.GoalSelector') {
         reqMethod('addGoal', int, '@Goal')

@@ -55,9 +55,6 @@ public abstract class PlatformService {
 
     public abstract void spawnEffect(@NotNull Location location, @NotNull String value);
 
-    @Nullable
-    public abstract Player getSourceOfTnt(@NotNull Entity tnt);
-
     @NotNull
     public abstract PlayerBlockPlaceEvent fireFakeBlockPlaceEvent(@NotNull BlockPlacement block, @NotNull BlockSnapshot originalState, @NotNull BlockPlacement clickedBlock, @NotNull ItemStack item, @NotNull Player player, boolean canBuild);
 

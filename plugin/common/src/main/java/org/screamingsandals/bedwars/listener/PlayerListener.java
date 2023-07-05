@@ -47,10 +47,10 @@ import org.screamingsandals.bedwars.statistics.PlayerStatisticImpl;
 import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.bedwars.utils.*;
 import org.screamingsandals.lib.Server;
-import org.screamingsandals.lib.attribute.Attribute;
 import org.screamingsandals.lib.attribute.AttributeType;
 import org.screamingsandals.lib.block.Block;
 import org.screamingsandals.lib.entity.LivingEntity;
+import org.screamingsandals.lib.entity.PrimedTnt;
 import org.screamingsandals.lib.entity.projectile.Fireball;
 import org.screamingsandals.lib.entity.projectile.ProjectileEntity;
 import org.screamingsandals.lib.event.EventManager;
@@ -68,13 +68,11 @@ import org.screamingsandals.lib.spectator.sound.SoundStart;
 import org.screamingsandals.lib.tasker.DefaultThreads;
 import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
-import org.screamingsandals.lib.tasker.task.Task;
 import org.screamingsandals.lib.utils.ResourceLocation;
 import org.screamingsandals.lib.utils.annotations.Service;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 @Service
@@ -720,8 +718,8 @@ public class PlayerListener {
                     var edbee = (EntityDamageByEntityEvent) event;
 
                     if (game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.TNT_JUMP_ENABLED, false) && edbee.damager().getEntityType().is("tnt")) {
-                        final var tnt = edbee.damager();
-                        final var playerSource = PlatformService.getInstance().getSourceOfTnt(tnt);
+                        final var tnt = (PrimedTnt) edbee.damager();
+                        final var playerSource = tnt.source();
                         if (playerSource != null) {
                             if (playerSource.equals(player)) {
                                 event.damage(game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.TNT_JUMP_SOURCE_DAMAGE, 0.5));

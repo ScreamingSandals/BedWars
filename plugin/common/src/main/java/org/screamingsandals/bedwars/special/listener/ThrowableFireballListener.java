@@ -90,8 +90,8 @@ public class ThrowableFireballListener {
 
     private String applyProperty(ApplyPropertyToBoughtItemEventImpl event) {
         return THROWABLE_FIREBALL_PREFIX
-                + MiscUtils.getDoubleFromProperty("damage", "specials.throwable-fireball.damage", event)
-                + MiscUtils.getBooleanFromProperty("incendiary", "specials.throwable-fireball.incendiary", event)
+                + MiscUtils.getDoubleFromProperty("damage", "specials.throwable-fireball.damage", event) + ":"
+                + MiscUtils.getBooleanFromProperty("incendiary", "specials.throwable-fireball.incendiary", event) + ":"
                 + MiscUtils.getBooleanFromProperty("damage-thrower", "specials.throwable-fireball.damage-thrower", event);
     }
 

@@ -29,9 +29,9 @@ import org.screamingsandals.bedwars.game.TeamImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.utils.MiscUtils;
-import org.screamingsandals.lib.entity.Entity;
-import org.screamingsandals.lib.entity.LivingEntity;
 import org.screamingsandals.lib.entity.Entities;
+import org.screamingsandals.lib.entity.PrimedTnt;
+import org.screamingsandals.lib.entity.animal.Sheep;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.item.ItemStack;
 import org.screamingsandals.lib.item.builder.ItemStackFactory;
@@ -51,8 +51,8 @@ public class TNTSheepImpl extends SpecialItemImpl implements TNTSheep {
     private final double followRange;
     private final double maxTargetDistance;
     private final int explosionTime;
-    private LivingEntity entity;
-    private Entity tnt;
+    private Sheep entity;
+    private PrimedTnt tnt;
 
     public TNTSheepImpl(GameImpl game, BedWarsPlayer player, TeamImpl team, Location loc, ItemStack item,
                         double speed, double followRange, double maxTargetDistance, int explosionTime) {
@@ -66,11 +66,11 @@ public class TNTSheepImpl extends SpecialItemImpl implements TNTSheep {
     }
 
     public void spawn() {
-        var sheep = (LivingEntity) Objects.requireNonNull(Entities.spawn("sheep", initialLocation));
+        var sheep = (Sheep) Objects.requireNonNull(Entities.spawn("sheep", initialLocation));
         var color = team.getColor();
         var target = MiscUtils.findTarget(game, player, maxTargetDistance);
 
-        sheep.setMetadata("color", color.woolData);
+        sheep.woolColor(color.getDyeColor());
 
         if (target == null) {
             Message
@@ -85,9 +85,9 @@ public class TNTSheepImpl extends SpecialItemImpl implements TNTSheep {
         PlatformService.getInstance().getEntityUtils().makeMobAttackTarget(sheep, speed, followRange, 0)
                 .attackTarget(target);
 
-        tnt = Objects.requireNonNull(Entities.spawn("tnt", initialLocation));
-        tnt.setMetadata("fuse_ticks", explosionTime);
-        tnt.setMetadata("is_incendiary", false);
+        tnt = (PrimedTnt) Objects.requireNonNull(Entities.spawn("tnt", initialLocation));
+        tnt.fuseTicks(explosionTime);
+        tnt.isIncendiary(false);
         sheep.addPassenger(tnt);
 
         game.registerSpecialItem(this);

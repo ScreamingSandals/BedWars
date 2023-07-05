@@ -26,7 +26,6 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -45,6 +44,7 @@ import org.screamingsandals.bedwars.bukkit.listener.BungeeMotdListener;
 import org.screamingsandals.bedwars.bukkit.region.LegacyRegion;
 import org.screamingsandals.bedwars.bukkit.utils.BukkitEntityUtils;
 import org.screamingsandals.bedwars.bukkit.utils.BukkitFakeDeath;
+import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.game.GameImpl;
 import org.screamingsandals.bedwars.game.GameManagerImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
@@ -54,14 +54,15 @@ import org.screamingsandals.bedwars.nms.accessors.ServerboundClientCommandPacket
 import org.screamingsandals.bedwars.region.BWRegion;
 import org.screamingsandals.bedwars.utils.EntityUtils;
 import org.screamingsandals.bedwars.utils.FakeDeath;
+import org.screamingsandals.lib.Server;
 import org.screamingsandals.lib.block.BlockPlacement;
 import org.screamingsandals.lib.block.snapshot.BlockSnapshot;
-import org.screamingsandals.lib.entity.Entities;
-import org.screamingsandals.lib.entity.Entity;
 import org.screamingsandals.lib.event.player.PlayerBlockBreakEvent;
 import org.screamingsandals.lib.event.player.PlayerBlockPlaceEvent;
 import org.screamingsandals.lib.impl.bukkit.event.player.BukkitPlayerBlockBreakEvent;
 import org.screamingsandals.lib.impl.bukkit.event.player.BukkitPlayerBlockPlaceEvent;
+import org.screamingsandals.lib.impl.bukkit.spectator.bossbar.BukkitBossBar1_8;
+import org.screamingsandals.lib.impl.bukkit.spectator.bossbar.GlobalBossBarBackend1_8;
 import org.screamingsandals.lib.impl.bukkit.utils.nms.ClassStorage;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.sender.CommandSender;
@@ -71,9 +72,10 @@ import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
 import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.utils.annotations.ServiceDependencies;
+import org.screamingsandals.lib.utils.annotations.methods.OnPostEnable;
 import org.screamingsandals.lib.utils.reflect.Reflect;
 
-import java.util.Objects;
+import java.util.Locale;
 
 @Service
 @ServiceDependencies(initAnother = {
@@ -85,6 +87,21 @@ import java.util.Objects;
 public class BukkitPlatformService extends PlatformService {
     private final FakeDeath fakeDeath = new BukkitFakeDeath();
     private final EntityUtils entityUtils = new BukkitEntityUtils();
+
+    @OnPostEnable
+    public void onPostEnable() {
+        if (!Server.isVersion(1, 9)) {
+            var backend = MainConfig.getInstance().node("bossbar", "backend-entity").getString("dragon");
+            if ("dragon".equalsIgnoreCase(backend)) {
+                backend = "ender_dragon";
+            }
+            try {
+                GlobalBossBarBackend1_8.setBackend(BukkitBossBar1_8.Backend.valueOf(backend.toUpperCase(Locale.ROOT)));
+            } catch (Throwable ignored) {
+                // invalid value
+            }
+        }
+    }
 
     @Override
     public void respawnPlayer(@NotNull org.screamingsandals.lib.player.Player playerWrapper, long delay) {
@@ -190,20 +207,6 @@ public class BukkitPlatformService extends PlatformService {
         var particle = Effect.valueOf(value.toUpperCase());
         var bukkitLoc =  location.as(Location.class);
         bukkitLoc.getWorld().playEffect(bukkitLoc, particle, 1);
-    }
-
-    // TODO: slib? (tnt source doesn't exist in Minestom for example)
-    @Override
-    @Nullable
-    public org.screamingsandals.lib.player.Player getSourceOfTnt(@NotNull Entity tnt) {
-        if (!tnt.getEntityType().is("tnt")) {
-            return null;
-        }
-        final var tntSource = tnt.as(TNTPrimed.class).getSource();
-        if (tntSource instanceof Player) {
-            return Objects.requireNonNull(Entities.wrapEntity(tntSource)).as(org.screamingsandals.lib.player.Player.class);
-        }
-        return null;
     }
 
     @Override
