@@ -30,6 +30,7 @@ import org.screamingsandals.bedwars.utils.DelayFactoryImpl;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.lib.entity.Entities;
 import org.screamingsandals.lib.entity.Entity;
+import org.screamingsandals.lib.entity.projectile.ProjectileEntity;
 import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.event.entity.ProjectileHitEvent;
 import org.screamingsandals.lib.event.player.PlayerInteractEvent;
@@ -63,8 +64,8 @@ public class BridgeEggListener {
         BedWarsPlayer gamePlayer = PlayerManagerImpl.getInstance().getPlayer(player).orElseThrow();
         final var game = gamePlayer.getGame();
         if (event.action() == PlayerInteractEvent.Action.RIGHT_CLICK_AIR || event.action() == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
-            if (game != null && game.getStatus() == GameStatus.RUNNING && !gamePlayer.isSpectator() && event.item() != null) {
-                var stack = event.item();
+            var stack = event.item();
+            if (game != null && game.getStatus() == GameStatus.RUNNING && !gamePlayer.isSpectator() && stack != null) {
                 String unhidden = ItemUtils.getIfStartsWith(stack, BRIDGE_EGG_PREFIX);
                 if (unhidden != null) {
                     if (!game.isDelayActive(gamePlayer, BridgeEggImpl.class)) {
@@ -75,8 +76,10 @@ public class BridgeEggListener {
                         var material = MiscUtils.getBlockTypeFromString(propertiesSplit[3], "GLASS");
                         var delay = Integer.parseInt(propertiesSplit[4]);
 
-                        var egg = Objects.requireNonNull(Entities.spawn("egg", player.getLocation().add(0, 1, 0)));
-                        egg.setVelocity(player.getLocation().getFacingDirection().multiply(2));
+                        var egg = Objects.requireNonNull(Entities.spawn("egg", player.getLocation().add(0, 1, 0), projectile -> {
+                            projectile.setVelocity(player.getLocation().getFacingDirection().multiply(2));
+                            ((ProjectileEntity) projectile).setShooter(player);
+                        }));
 
                         var bridgeEgg = new BridgeEggImpl(game, gamePlayer, game.getPlayerTeam(gamePlayer), egg, material, distance);
 

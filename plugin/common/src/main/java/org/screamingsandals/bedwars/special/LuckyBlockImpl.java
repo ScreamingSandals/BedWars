@@ -79,8 +79,9 @@ public class LuckyBlockImpl extends SpecialItemImpl implements LuckyBlock {
                 break;
             case "tnt":
                 Tasker.runDelayed(DefaultThreads.GLOBAL_THREAD, () -> {
-                    var tnt = (PrimedTnt) Objects.requireNonNull(Entities.spawn("tnt", blockLocation));
-                    tnt.fuseTicks(0);
+                    Entities.spawn("tnt", blockLocation, tnt -> {
+                        ((PrimedTnt) tnt).fuseTicks(0);
+                    });
                 }, 10, TaskerTime.TICKS);
                 break;
             case "teleport":

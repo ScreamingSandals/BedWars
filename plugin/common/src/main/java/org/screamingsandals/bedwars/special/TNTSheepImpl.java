@@ -30,6 +30,7 @@ import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.lib.entity.Entities;
+import org.screamingsandals.lib.entity.LivingEntity;
 import org.screamingsandals.lib.entity.PrimedTnt;
 import org.screamingsandals.lib.entity.animal.Sheep;
 import org.screamingsandals.lib.lang.Message;
@@ -66,33 +67,35 @@ public class TNTSheepImpl extends SpecialItemImpl implements TNTSheep {
     }
 
     public void spawn() {
-        var sheep = (Sheep) Objects.requireNonNull(Entities.spawn("sheep", initialLocation));
         var color = team.getColor();
         var target = MiscUtils.findTarget(game, player, maxTargetDistance);
-
-        sheep.woolColor(color.getDyeColor());
 
         if (target == null) {
             Message
                     .of(LangKeys.SPECIALS_TNTSHEEP_NO_TARGET_FOUND)
                     .prefixOrDefault(game.getCustomPrefixComponent())
                     .send(player);
-            sheep.remove();
             return;
         }
 
-        entity = sheep;
-        PlatformService.getInstance().getEntityUtils().makeMobAttackTarget(sheep, speed, followRange, 0)
-                .attackTarget(target);
+        entity = (Sheep) Objects.requireNonNull(Entities.spawn("sheep", initialLocation, en -> {
+            ((Sheep) en).woolColor(color.getDyeColor());
 
-        tnt = (PrimedTnt) Objects.requireNonNull(Entities.spawn("tnt", initialLocation));
-        tnt.fuseTicks(explosionTime);
-        tnt.isIncendiary(false);
-        sheep.addPassenger(tnt);
+            //noinspection DataFlowIssue
+            PlatformService.getInstance().getEntityUtils().makeMobAttackTarget(((LivingEntity) en), speed, followRange, 0)
+                    .attackTarget(target);
+        }));
+
+        tnt = (PrimedTnt) Objects.requireNonNull(Entities.spawn("tnt", initialLocation, en -> {
+            var tnt1 = (PrimedTnt) en;
+            tnt1.fuseTicks(explosionTime);
+            tnt1.isIncendiary(false);
+        }));
+        entity.addPassenger(tnt);
 
         game.registerSpecialItem(this);
         var entitiesManager = EntitiesManagerImpl.getInstance();
-        entitiesManager.addEntityToGame(sheep, game);
+        entitiesManager.addEntityToGame(entity, game);
         entitiesManager.addEntityToGame(tnt, game);
 
         var stack = item.withAmount(1);
@@ -109,7 +112,7 @@ public class TNTSheepImpl extends SpecialItemImpl implements TNTSheep {
 
         Tasker.runDelayed(DefaultThreads.GLOBAL_THREAD, () -> {
                     tnt.remove();
-                    sheep.remove();
+                    entity.remove();
                     game.unregisterSpecialItem(TNTSheepImpl.this);
                 }, explosionTime + 13, TaskerTime.TICKS);
     }

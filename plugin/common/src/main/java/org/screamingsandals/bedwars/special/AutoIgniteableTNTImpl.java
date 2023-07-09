@@ -62,13 +62,15 @@ public class AutoIgniteableTNTImpl extends SpecialItemImpl implements AutoIgnite
     }
 
     public void spawn(Location location) {
-        var tnt = (PrimedTnt) Objects.requireNonNull(EntityType.of("tnt").spawn(location));
+        var tnt = Objects.requireNonNull(EntityType.of("tnt").spawn(location, en -> {
+            var tnt1 = (PrimedTnt) en;
+            tnt1.yield(damage);
+            tnt1.fuseTicks(explosionTime * 20);
+            if (!allowedDamagingPlacer) {
+                PROTECTED_PLAYERS.put(tnt1.getEntityId(), player.getUuid());
+            }
+        }));
         EntitiesManagerImpl.getInstance().addEntityToGame(tnt, game);
-        tnt.yield(damage);
-        tnt.fuseTicks(explosionTime * 20);
-        if (!allowedDamagingPlacer) {
-            PROTECTED_PLAYERS.put(tnt.getEntityId(), player.getUuid());
-        }
         Tasker.runDelayed(DefaultThreads.GLOBAL_THREAD, () -> {
                     EntitiesManagerImpl.getInstance().removeEntityFromGame(tnt);
                     AutoIgniteableTNTImpl.PROTECTED_PLAYERS.remove(tnt.getEntityId());

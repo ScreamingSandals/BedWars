@@ -65,28 +65,25 @@ public class GolemImpl extends SpecialItemImpl implements Golem {
     }
 
     public void spawn() {
-        final var golem = (LivingEntity) Objects.requireNonNull(Entities.spawn("iron_golem", location));
-        golem.setHealth(health);
-        golem.setCustomName(name
-                .replace("%teamcolor%", MiscUtils.toLegacyColorCode(team.getColor().getTextColor()))
-                .replace("%team%", team.getName()));
-        golem.setCustomNameVisible(showName);
-        try {
-            golem.setInvulnerable(false);
-        } catch (Throwable ignored) {
-            // Still can throw an exception on some old versions
-        }
-        
-        entity = golem;
+        entity = (LivingEntity) Objects.requireNonNull(Entities.spawn("iron_golem", location, en -> {
+            var lv = (LivingEntity) en;
 
-        //noinspection ConstantConditions - suppressing nullability check, if this throws a NPE, something went wrong badly
-        PlatformService.getInstance().getEntityUtils().makeMobAttackTarget(golem, speed, followRange, -1)
-                .hurtByTarget(1)
-                .attackNearestPlayers(2)
-                .attackNearestGolems(3);
+            lv.setHealth(health);
+            lv.setCustomName(name
+                    .replace("%teamcolor%", MiscUtils.toLegacyColorCode(team.getColor().getTextColor()))
+                    .replace("%team%", team.getName()));
+            lv.setCustomNameVisible(showName);
+            lv.setInvulnerable(false);
+
+            //noinspection ConstantConditions - suppressing nullability check, if this throws a NPE, something went wrong badly
+            PlatformService.getInstance().getEntityUtils().makeMobAttackTarget(lv, speed, followRange, -1)
+                    .hurtByTarget(1)
+                    .attackNearestPlayers(2)
+                    .attackNearestGolems(3);
+        }));
 
         game.registerSpecialItem(this);
-        EntitiesManagerImpl.getInstance().addEntityToGame(golem, game);
+        EntitiesManagerImpl.getInstance().addEntityToGame(entity, game);
         if (!MainConfig.getInstance().node("specials", "dont-show-success-messages").getBoolean()) {
             MiscUtils.sendActionBarMessage(player, Message.of(LangKeys.SPECIALS_GOLEM_CREATED));
         }

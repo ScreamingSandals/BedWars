@@ -148,11 +148,12 @@ public class SpawnEffects {
                 PlatformService.getInstance().spawnEffect(location, value);
             }
         } else if (type.equalsIgnoreCase("Firework")) {
-            var firework = (FireworkRocket) Objects.requireNonNull(EntityType.of("minecraft:firework_rocket").spawn(location));
-            firework.setEffect(effect.node("effects").childrenList()
-                    .stream()
-                    .map(FireworkEffect::of)
-                    .collect(Collectors.toList()), effect.node("power").getInt(1));
+            EntityType.of("minecraft:firework_rocket").spawn(location, en -> {
+                ((FireworkRocket) en).setEffect(effect.node("effects").childrenList()
+                        .stream()
+                        .map(FireworkEffect::of)
+                        .collect(Collectors.toList()), effect.node("power").getInt(1));
+            });
         }
     }
 }

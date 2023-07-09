@@ -96,29 +96,29 @@ public class GameStoreImpl implements GameStore, SerializableGameComponent {
                 npc = null;
             }
 
-            entity = (LivingEntity) Objects.requireNonNull(Entities.spawn(typ, storeLocation));
-            entity.setRemoveWhenFarAway(false);
+            entity = (LivingEntity) Objects.requireNonNull(Entities.spawn(typ, storeLocation, entity1 -> {
+                var lv = (LivingEntity) entity1;
+                lv.setRemoveWhenFarAway(false);
 
-            if (shopCustomName != null) {
-                entity.setCustomName(shopCustomName);
-                entity.setCustomNameVisible(true);
-            }
+                if (shopCustomName != null) {
+                    lv.setCustomName(shopCustomName);
+                    lv.setCustomNameVisible(true);
+                }
 
-            if (MainConfig.getInstance().node("shopkeepers-are-silent").getBoolean()) {
-                try {
-                    entity.setSilent(true);
-                } catch (Throwable ignored) {}
-            }
+                if (MainConfig.getInstance().node("shopkeepers-are-silent").getBoolean()) {
+                    lv.setSilent(true);
+                }
 
-            if (entity instanceof Villager) {
-                ((Villager) entity).profession(Profession.of("farmer"));
-            } else if (entity instanceof ZombieVillager) {
-                ((ZombieVillager) entity).profession(Profession.of("farmer"));
-            }
+                if (lv instanceof Villager) {
+                    ((Villager) lv).profession(Profession.of("farmer"));
+                } else if (lv instanceof ZombieVillager) {
+                    ((ZombieVillager) lv).profession(Profession.of("farmer"));
+                }
 
-            if (entity instanceof Ageable) {
-                ((Ageable) entity).baby(isBaby);
-            }
+                if (lv instanceof Ageable) {
+                    ((Ageable) lv).baby(isBaby);
+                }
+            }));
         }
         return entity;
     }

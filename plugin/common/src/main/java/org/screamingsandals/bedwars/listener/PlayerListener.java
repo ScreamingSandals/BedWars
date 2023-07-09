@@ -959,7 +959,7 @@ public class PlayerListener {
                             if (game.getConfigurationContainer().getOrDefault(GameConfigurationContainer.TARGET_BLOCK_RESPAWN_ANCHOR_ENABLE_DECREASE, false)
                                     && clickedBlock.block().isSameType("respawn_anchor")
                                     && pt.getTarget() instanceof TargetBlockImpl && ((TargetBlockImpl) pt.getTarget()).getTargetBlock().equals(clickedBlock.location())
-                                    && event.item() != null && event.item().getMaterial().is("glowstone")) {
+                                    && stack.getType().is("glowstone")) {
                                 Debug.info(player.getName() + " filled respawn anchor");
                                 var anchor = clickedBlock.block();
                                 int charges = Objects.requireNonNullElse(anchor.getInt("charges"), 0);
