@@ -23,7 +23,10 @@ import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -35,6 +38,7 @@ import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.event.world.StructureGrowEvent;
+import org.bukkit.projectiles.ProjectileSource;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.RunningTeam;
 import org.screamingsandals.bedwars.api.game.GameStatus;
@@ -104,7 +108,15 @@ public class WorldListener implements Listener {
         if (event.isCancelled()) {
             return;
         }
-        onExplode(event.getLocation(), event.blockList(), event);
+        Entity entity = event.getEntity();
+        boolean originatedInArena = Main.getInGameEntity(entity) != null;
+        if (!originatedInArena && entity instanceof Projectile) {
+            ProjectileSource shooter = ((Projectile) entity).getShooter();
+            if (shooter instanceof Player) {
+                originatedInArena = Main.isPlayerInGame((Player) shooter);
+            }
+        }
+        onExplode(event.getLocation(), event.blockList(), event, originatedInArena);
     }
 
     @EventHandler
@@ -112,10 +124,10 @@ public class WorldListener implements Listener {
         if (event.isCancelled()) {
             return;
         }
-        onExplode(event.getBlock().getLocation(), event.blockList(), event);
+        onExplode(event.getBlock().getLocation(), event.blockList(), event, false);
     }
 
-    public void onExplode(Location location, List<Block> blockList, Cancellable cancellable) {
+    public void onExplode(Location location, List<Block> blockList, Cancellable cancellable, boolean originatedInArena) {
         if (cancellable.isCancelled()) {
             return;
         }
@@ -144,9 +156,13 @@ public class WorldListener implements Listener {
                 } else {
                     cancellable.setCancelled(true);
                 }
+                return;
             }
         }
 
+        if (originatedInArena) {
+            cancellable.setCancelled(true);
+        }
     }
 
     @EventHandler
