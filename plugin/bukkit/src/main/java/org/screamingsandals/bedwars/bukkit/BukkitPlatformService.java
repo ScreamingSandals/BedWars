@@ -70,12 +70,14 @@ import org.screamingsandals.lib.spectator.Component;
 import org.screamingsandals.lib.tasker.DefaultThreads;
 import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
+import org.screamingsandals.lib.tasker.task.TaskBase;
 import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.utils.annotations.ServiceDependencies;
 import org.screamingsandals.lib.utils.annotations.methods.OnPostEnable;
 import org.screamingsandals.lib.utils.reflect.Reflect;
 
 import java.util.Locale;
+import java.util.function.Consumer;
 
 @Service
 @ServiceDependencies(initAnother = {
@@ -133,11 +135,11 @@ public class BukkitPlatformService extends PlatformService {
         var logger = BedWarsPlugin.getInstance().getLogger();
         var plugin = BedWarsPlugin.getInstance().getPluginDescription().as(JavaPlugin.class);
 
-        Tasker.runRepeatedly(DefaultThreads.GLOBAL_THREAD, taskBase -> new Runnable() {
+        Tasker.runRepeatedly(DefaultThreads.GLOBAL_THREAD, new Consumer<>() {
             public int timer = 60;
 
             @Override
-            public void run() {
+            public void accept(@NotNull TaskBase taskBase) {
                 boolean gameRuns = false;
                 for (var game : GameManagerImpl.getInstance().getGames()) {
                     if (game.getStatus() != GameStatus.DISABLED) {
