@@ -86,7 +86,7 @@ accessors {
         constructor Level, double, double, double
         method boolean, 'isSmall'
         setter boolean, 'small'
-        method boolean, 'shouldShowArms'
+        method boolean, 'isShowArms'
         setter boolean, 'showArms'
         method boolean, 'isNoBasePlate'
         setter boolean, 'noBasePlate'
@@ -178,8 +178,7 @@ accessors {
         enumConstant 'SUBTITLE'
         enumConstant 'TIMES'
     }
-    // formerly net.minecraft.network.protocol.game.ClientboundSetTitlesPacket, connected to ClientboundSetTitleTextPacket via Yarn
-    mapClass('net.minecraft.network.protocol.game.ClientboundSetTitleTextPacket') {
+    mapClass('net.minecraft.network.protocol.game.ClientboundSetTitlesPacket') {
         constructor ClientboundSetTitlesPacket$Type, Component
         constructor ClientboundSetTitlesPacket$Type, Component, int, int, int
     }
