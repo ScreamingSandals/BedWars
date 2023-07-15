@@ -7,9 +7,9 @@
 
 Flexible BedWars plugin formerly coded as a replacement for BedwarsRel.
 
-Supported versions: \[1.9.4 - 1.19\]. Recommended version: \[1.17.1/1.18.2\]
+Supported versions: \[1.8.8 - 1.20.1\]. Recommended version: \[1.19.4/1.20.1\]
 
-If you are using version 0.2.x, you are probably looking for this [branch](https://github.com/ScreamingSandals/BedWars/tree/ver/0.2.x)
+**If you are using version 0.2.x, you are probably looking for this [branch](https://github.com/ScreamingSandals/BedWars/tree/ver/0.2.x)**
 
 ## Support
 If you need any help, you can contact us on [Discord](https://discord.gg/4xB54Ts). Please make sure to look into older messages. There are many question already answered. It is really anoying to repeat the same thing over and over.
