@@ -27,7 +27,9 @@ import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.entities.EntitiesManagerImpl;
 import org.screamingsandals.bedwars.game.GameManagerImpl;
 import org.screamingsandals.bedwars.game.target.TargetBlockImpl;
+import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.bedwars.utils.ArenaUtils;
+import org.screamingsandals.lib.entity.projectile.ProjectileEntity;
 import org.screamingsandals.lib.event.Cancellable;
 import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.event.block.*;
@@ -36,6 +38,7 @@ import org.screamingsandals.lib.event.entity.CreatureSpawnEvent;
 import org.screamingsandals.lib.event.entity.EntityChangeBlockEvent;
 import org.screamingsandals.lib.event.entity.EntityExplodeEvent;
 import org.screamingsandals.lib.event.world.PlantGrowEvent;
+import org.screamingsandals.lib.player.Player;
 import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.block.BlockPlacement;
 import org.screamingsandals.lib.world.Location;
@@ -123,7 +126,15 @@ public class WorldListener {
         if (event.cancelled()) {
             return;
         }
-        onExplode(event.location(), event.blocks(), event);
+        var entity = event.entity();
+        boolean originatedInArena = EntitiesManagerImpl.getInstance().isEntityInGame(entity);
+        if (!originatedInArena && entity instanceof ProjectileEntity) {
+            var shooter = ((ProjectileEntity) entity).getShooter();
+            if (shooter instanceof Player) {
+                originatedInArena = PlayerManagerImpl.getInstance().isPlayerInGame((Player) shooter);
+            }
+        }
+        onExplode(event.location(), event.blocks(), event, originatedInArena);
     }
 
     @OnEvent
@@ -131,14 +142,14 @@ public class WorldListener {
         if (event.cancelled()) {
             return;
         }
-        onExplode(event.block().location(), event.destroyedBlocks(), event);
+        onExplode(event.block().location(), event.destroyedBlocks(), event, false);
     }
 
-    public void onExplode(Location location, Collection<BlockPlacement> blockList, org.screamingsandals.lib.event.Cancellable cancellable) {
+    public void onExplode(Location location, Collection<BlockPlacement> blockList, org.screamingsandals.lib.event.Cancellable cancellable, boolean originatedInArena) {
         final var explosionExceptionTypeName = MainConfig.getInstance().node("destroy-placed-blocks-by-explosion-except").childrenList().stream().map(ConfigurationNode::getString).toArray();
         final var destroyPlacedBlocksByExplosion = MainConfig.getInstance().node("destroy-placed-blocks-by-explosion").getBoolean(true);
 
-        GameManagerImpl.getInstance().getGames().forEach(game -> {
+        for (var game : GameManagerImpl.getInstance().getGames()) {
             if (ArenaUtils.isInArea(location, game.getPos1(), game.getPos2())) {
                 if (game.getStatus() == GameStatus.RUNNING || game.getStatus() == GameStatus.GAME_END_CELEBRATING) {
                     blockList.removeIf(block -> {
@@ -158,8 +169,13 @@ public class WorldListener {
                 } else {
                     cancellable.cancelled(true);
                 }
+                return;
             }
-        });
+        }
+
+        if (originatedInArena) {
+            cancellable.cancelled(true);
+        }
     }
 
     @OnEvent
