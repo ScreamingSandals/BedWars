@@ -134,6 +134,7 @@ public class WorldListener implements Listener {
 
         final List<String> explosionExceptionTypeName = Main.getConfigurator().config.getStringList("destroy-placed-blocks-by-explosion-except");
         final boolean destroyPlacedBlocksByExplosion = Main.getConfigurator().config.getBoolean("destroy-placed-blocks-by-explosion", true);
+        final boolean breakableExplosions = Main.getConfigurator().config.getBoolean("breakable.enabled") && Main.getConfigurator().config.getBoolean("breakable.explosions");
 
         for (String gameName : Main.getGameNames()) {
             Game game = Main.getGame(gameName);
@@ -145,11 +146,11 @@ public class WorldListener implements Listener {
                                 for (RunningTeam team : game.getRunningTeams()) {
                                     if (team.getTargetBlock().equals(block.getLocation())) {
                                         game.targetBlockExplode(team);
-                                        break;
+                                        return true;
                                     }
                                 }
                             }
-                            return true;
+                            return !breakableExplosions || !Main.isBreakableBlock(block.getType());
                         }
                         return (explosionExceptionTypeName.contains(block.getType().name())) || !destroyPlacedBlocksByExplosion;
                     });

@@ -519,6 +519,7 @@ public class Configurator {
 
         checkOrSetConfig(modify, "breakable.enabled", false);
         checkOrSetConfig(modify, "breakable.asblacklist", false);
+        checkOrSetConfig(modify, "breakable.explosions", false);
         checkOrSetConfig(modify, "breakable.blocks", new ArrayList<>());
 
         checkOrSetConfig(modify, "leaveshortcuts.enabled", false);
