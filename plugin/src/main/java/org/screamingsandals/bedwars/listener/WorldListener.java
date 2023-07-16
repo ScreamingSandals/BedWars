@@ -150,7 +150,12 @@ public class WorldListener implements Listener {
                                     }
                                 }
                             }
-                            return !breakableExplosions || !Main.isBreakableBlock(block.getType());
+                            if (breakableExplosions && Main.isBreakableBlock(block.getType())) {
+                                game.getRegion().putOriginalBlock(block.getLocation(), block.getState());
+                                return false;
+                            } else {
+                                return true;
+                            }
                         }
                         return (explosionExceptionTypeName.contains(block.getType().name())) || !destroyPlacedBlocksByExplosion;
                     });
