@@ -28,7 +28,7 @@ import org.screamingsandals.bedwars.special.TNTSheepImpl;
 import org.screamingsandals.bedwars.utils.ItemUtils;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.lib.entity.LivingEntity;
-import org.screamingsandals.lib.event.EventPriority;
+import org.screamingsandals.lib.event.EventExecutionOrder;
 import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.event.entity.EntityDamageByEntityEvent;
 import org.screamingsandals.lib.event.player.PlayerInteractEntityEvent;
@@ -88,7 +88,7 @@ public class TNTSheepListener {
         }
     }
 
-    @OnEvent(priority = EventPriority.HIGHEST)
+    @OnEvent(order = EventExecutionOrder.LAST)
     public void onTNTSheepDamage(EntityDamageByEntityEvent event) {
         if (event.cancelled() || event.damageCause().is("CUSTOM", "VOID", "FALL")) {
             return;

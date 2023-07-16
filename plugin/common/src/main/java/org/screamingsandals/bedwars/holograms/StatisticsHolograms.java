@@ -27,7 +27,7 @@ import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.bedwars.utils.SerializableLocation;
 import org.screamingsandals.lib.Server;
-import org.screamingsandals.lib.event.EventPriority;
+import org.screamingsandals.lib.event.EventExecutionOrder;
 import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.event.player.PlayerJoinEvent;
 import org.screamingsandals.lib.event.player.PlayerLeaveEvent;
@@ -119,7 +119,7 @@ public class StatisticsHolograms {
         }));
     }
 
-    @OnEvent(priority = EventPriority.HIGHEST)
+    @OnEvent(order = EventExecutionOrder.LAST)
     public void onJoin(PlayerJoinEvent event) {
         updateHolograms(event.player(), 10L);
     }

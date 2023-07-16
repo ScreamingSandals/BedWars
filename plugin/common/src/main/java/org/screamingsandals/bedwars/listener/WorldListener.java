@@ -31,6 +31,7 @@ import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.bedwars.utils.ArenaUtils;
 import org.screamingsandals.lib.entity.projectile.ProjectileEntity;
 import org.screamingsandals.lib.event.Cancellable;
+import org.screamingsandals.lib.event.EventExecutionOrder;
 import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.event.block.*;
 import org.screamingsandals.lib.event.chunk.ChunkUnloadEvent;
@@ -289,7 +290,7 @@ public class WorldListener {
         }
     }
 
-    @OnEvent(priority = org.screamingsandals.lib.event.EventPriority.HIGHEST)
+    @OnEvent(order = EventExecutionOrder.LAST)
     public void onBedWarsSpawncancelled(CreatureSpawnEvent event) {
         if (!event.cancelled()) {
             return;

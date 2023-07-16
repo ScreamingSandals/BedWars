@@ -53,8 +53,8 @@ import org.screamingsandals.lib.entity.LivingEntity;
 import org.screamingsandals.lib.entity.PrimedTnt;
 import org.screamingsandals.lib.entity.projectile.Fireball;
 import org.screamingsandals.lib.entity.projectile.ProjectileEntity;
+import org.screamingsandals.lib.event.EventExecutionOrder;
 import org.screamingsandals.lib.event.EventManager;
-import org.screamingsandals.lib.event.EventPriority;
 import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.event.entity.*;
 import org.screamingsandals.lib.event.player.*;
@@ -79,7 +79,7 @@ import java.util.stream.Collectors;
 public class PlayerListener {
     private final List<Player> explosionAffectedPlayers = new ArrayList<>();
 
-    @OnEvent(priority = org.screamingsandals.lib.event.EventPriority.HIGHEST)
+    @OnEvent(order = EventExecutionOrder.LAST)
     public void onPlayerDeath(PlayerDeathEvent event) {
         final var victim = event.player();
 
@@ -370,7 +370,7 @@ public class PlayerListener {
         }
     }
 
-    @OnEvent(priority = org.screamingsandals.lib.event.EventPriority.HIGHEST)
+    @OnEvent(order = EventExecutionOrder.LAST)
     public void onPlayerRespawn(PlayerRespawnEvent event) {
         if (PlayerManagerImpl.getInstance().isPlayerInGame(event.player())) {
             Debug.info(event.player().getName() + " is respawning in BedWars game");
@@ -441,7 +441,7 @@ public class PlayerListener {
         }
     }
 
-    @OnEvent(priority = org.screamingsandals.lib.event.EventPriority.HIGHEST)
+    @OnEvent(order = EventExecutionOrder.LAST)
     public void onBlockPlace(PlayerBlockPlaceEvent event) {
         if (event.cancelled()) {
             if (MainConfig.getInstance().node("event-hacks", "place").getBoolean() && PlayerManagerImpl.getInstance().isPlayerInGame(event.player())) {
@@ -477,7 +477,7 @@ public class PlayerListener {
         }
     }
 
-    @OnEvent(priority = org.screamingsandals.lib.event.EventPriority.HIGHEST)
+    @OnEvent(order = EventExecutionOrder.LAST)
     public void onBlockBreak(PlayerBlockBreakEvent event) {
         if (event.cancelled()) {
             if (MainConfig.getInstance().node("event-hacks", "destroy").getBoolean() && PlayerManagerImpl.getInstance().isPlayerInGame(event.player())) {
@@ -522,7 +522,7 @@ public class PlayerListener {
         }
     }
 
-    @OnEvent(priority = org.screamingsandals.lib.event.EventPriority.HIGHEST)
+    @OnEvent(order = EventExecutionOrder.LAST)
     public void onCommandExecuted(PlayerCommandPreprocessEvent event) {
         if (event.cancelled()) {
             return;
@@ -597,7 +597,7 @@ public class PlayerListener {
         }
     }
 
-    @OnEvent(priority = org.screamingsandals.lib.event.EventPriority.HIGH)
+    @OnEvent(order = EventExecutionOrder.LAST)
     public void onHunger(FoodLevelChangeEvent event) {
         if (!(event.entity().getEntityType().is("player")) || event.cancelled()) {
             return;
@@ -638,7 +638,7 @@ public class PlayerListener {
         }
     }
 
-    @OnEvent(priority = org.screamingsandals.lib.event.EventPriority.HIGHEST)
+    @OnEvent(order = EventExecutionOrder.LAST)
     public void onDamage(EntityDamageEvent event) {
         if (event.cancelled()) {
             if (MainConfig.getInstance().node("event-hacks", "damage").getBoolean()
@@ -816,7 +816,7 @@ public class PlayerListener {
         }
     }
 
-    @OnEvent(priority = org.screamingsandals.lib.event.EventPriority.HIGHEST)
+    @OnEvent(order = EventExecutionOrder.LAST)
     public void onFly(PlayerToggleFlightEvent event) {
         if (event.cancelled()) {
             return;
@@ -1094,7 +1094,7 @@ public class PlayerListener {
         }
     }
 
-    @OnEvent(priority = org.screamingsandals.lib.event.EventPriority.HIGH)
+    @OnEvent(order = EventExecutionOrder.LATE)
     public void onInteractAtEntity(PlayerInteractAtEntityEvent event) {
         if (event.cancelled()) {
             return;
@@ -1151,7 +1151,7 @@ public class PlayerListener {
         }
     }
 
-    @OnEvent(priority = EventPriority.HIGHEST)
+    @OnEvent(order = EventExecutionOrder.LAST)
     public void onChat(PlayerChatEvent event) {
         if (event.cancelled() || !MainConfig.getInstance().node("chat", "override").getBoolean()) {
             return;

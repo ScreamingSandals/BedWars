@@ -29,7 +29,7 @@ import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.bedwars.utils.SerializableLocation;
 import org.screamingsandals.lib.Server;
-import org.screamingsandals.lib.event.EventPriority;
+import org.screamingsandals.lib.event.EventExecutionOrder;
 import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.hologram.Hologram;
 import org.screamingsandals.lib.hologram.HologramManager;
@@ -150,7 +150,7 @@ public class LeaderboardHolograms {
         holograms.clear();
     }
 
-    @OnEvent(priority = EventPriority.HIGHEST)
+    @OnEvent(order = EventExecutionOrder.LAST)
     public void onJoin(PlayerJoinEvent event) {
         addViewer(event.player());
     }

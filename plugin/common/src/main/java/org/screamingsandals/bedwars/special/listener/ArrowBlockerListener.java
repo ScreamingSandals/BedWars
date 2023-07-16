@@ -27,6 +27,7 @@ import org.screamingsandals.bedwars.player.PlayerManagerImpl;
 import org.screamingsandals.bedwars.special.ArrowBlockerImpl;
 import org.screamingsandals.bedwars.utils.DelayFactoryImpl;
 import org.screamingsandals.bedwars.utils.MiscUtils;
+import org.screamingsandals.lib.event.EventExecutionOrder;
 import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.event.entity.EntityDamageEvent;
 import org.screamingsandals.lib.event.player.PlayerInteractEvent;
@@ -91,7 +92,7 @@ public class ArrowBlockerListener {
         }
     }
 
-    @OnEvent(priority = org.screamingsandals.lib.event.EventPriority.HIGH)
+    @OnEvent(order = EventExecutionOrder.LATE)
     public void onDamage(EntityDamageEvent event) {
         var entity = event.entity();
         if (!(entity instanceof Player)) {
