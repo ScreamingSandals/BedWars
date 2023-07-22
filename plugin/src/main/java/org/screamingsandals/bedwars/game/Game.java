@@ -71,6 +71,7 @@ import org.screamingsandals.bedwars.boss.BossBarSelector;
 import org.screamingsandals.bedwars.boss.XPBar;
 import org.screamingsandals.bedwars.commands.StatsCommand;
 import org.screamingsandals.bedwars.inventories.TeamSelectorInventory;
+import org.screamingsandals.bedwars.lib.nms.utils.ClassStorage;
 import org.screamingsandals.bedwars.listener.Player116ListenerUtils;
 import org.screamingsandals.bedwars.region.FlatteningRegion;
 import org.screamingsandals.bedwars.region.LegacyRegion;
@@ -233,6 +234,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     private int postGameWaiting = 3;
     private boolean preparing = false;
     private Map<UUID, TeamSelectorInventory> teamSelectorInventories = new HashMap();
+    private List<Chunk> chunksWithTickets = new ArrayList<>();
 
     private Game() {
 
@@ -1903,6 +1905,23 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                     }
                     gameScoreboard.clearSlot(DisplaySlot.SIDEBAR);
                     Bukkit.getScheduler().runTaskLater(Main.getInstance(), this::updateSigns, 3L);
+                    if (ClassStorage.HAS_CHUNK_TICKETS && Main.getConfigurator().config.getBoolean("use-chunk-tickets-if-available")) {
+                        int minX = Math.min(pos1.getBlockX(), pos2.getBlockX()) >> 4;
+                        int maxX = Math.max(pos1.getBlockX(), pos2.getBlockX()) >> 4;
+
+                        int minZ = Math.min(pos1.getBlockZ(), pos2.getBlockZ()) >> 4;
+                        int maxZ = Math.max(pos1.getBlockZ(), pos2.getBlockZ()) >> 4;
+
+                        Main main = Main.getInstance();
+                        for (int x = minX; x <= maxX; x++) {
+                            for (int z = minZ; z <= maxZ; z++) {
+                                Chunk chunk = world.getChunkAt(x, z);
+                                if (chunk.addPluginChunkTicket(main)) {
+                                    chunksWithTickets.add(chunk);
+                                }
+                            }
+                        }
+                    }
                     for (GameStore store : gameStore) {
                         LivingEntity villager = store.spawn();
                         if (villager != null) {
@@ -2426,6 +2445,14 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         countdownHolograms.clear();
 
         UpgradeRegistry.clearAll(this);
+
+        if (!chunksWithTickets.isEmpty()) {
+            Main main = Main.getInstance();
+            for (Chunk chunk : chunksWithTickets) {
+                chunk.removePluginChunkTicket(main);
+            }
+            chunksWithTickets.clear();
+        }
 
         BedwarsPostRebuildingEvent postRebuildingEvent = new BedwarsPostRebuildingEvent(this);
         Main.getInstance().getServer().getPluginManager().callEvent(postRebuildingEvent);
