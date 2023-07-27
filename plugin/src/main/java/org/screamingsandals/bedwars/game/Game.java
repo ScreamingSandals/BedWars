@@ -2756,6 +2756,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         finalStr = finalStr.replace("%arena%", name);
         finalStr = finalStr.replace("%players%", String.valueOf(players.size()));
         finalStr = finalStr.replace("%maxplayers%", String.valueOf(calculatedMaxPlayers));
+        finalStr = finalStr.replace("%countdown%", String.valueOf(countdown));
 
         return finalStr;
     }
