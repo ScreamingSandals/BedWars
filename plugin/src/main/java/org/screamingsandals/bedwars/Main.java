@@ -56,6 +56,7 @@ import org.screamingsandals.bedwars.special.SpecialRegister;
 import org.screamingsandals.bedwars.statistics.PlayerStatisticManager;
 import org.screamingsandals.bedwars.tab.TabManager;
 import org.screamingsandals.bedwars.utils.BedWarsSignOwner;
+import org.screamingsandals.bedwars.utils.MiscUtils;
 import org.screamingsandals.bedwars.utils.UpdateChecker;
 import org.screamingsandals.bedwars.lib.debug.Debug;
 import org.screamingsandals.bedwars.lib.nms.holograms.HologramManager;
@@ -766,6 +767,25 @@ public class Main extends JavaPlugin implements BedwarsAPI {
         }
 
         return availableGames.lastEntry().getValue();
+    }
+
+    public org.screamingsandals.bedwars.api.game.Game getRandomWaitingGameForBungeeMode() {
+        final TreeMap<Integer, List<Game>> availableGames = new TreeMap<>();
+        games.values().forEach(game -> {
+            if (game.getStatus() != GameStatus.WAITING) {
+                return;
+            }
+
+            availableGames.computeIfAbsent(game.getConnectedPlayers().size(), ArrayList::new).add(game);
+        });
+
+        if (availableGames.isEmpty()) {
+            return null;
+        }
+
+        List<Game> gamesWithMinimumPlayers = availableGames.lastEntry().getValue();
+
+        return gamesWithMinimumPlayers.get(MiscUtils.randInt(0, gamesWithMinimumPlayers.size() - 1));
     }
 
     public org.screamingsandals.bedwars.api.game.Game getFirstRunningGame() {

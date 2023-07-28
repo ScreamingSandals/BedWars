@@ -297,7 +297,12 @@ public class PlayerListener implements Listener {
             new BukkitRunnable() {
                 public void run() {
                     try {
-                        Game game = (Game) Main.getInstance().getFirstWaitingGame();
+                        Game game;
+                        if (Main.getConfigurator().config.getBoolean("bungee.select-random-game")) {
+                            game = (Game) Main.getInstance().getRandomWaitingGameForBungeeMode();
+                        } else {
+                            game = (Game) Main.getInstance().getFirstWaitingGame();
+                        }
                         if (game == null) {
                             game = (Game) Main.getInstance().getFirstRunningGame();
                         }
