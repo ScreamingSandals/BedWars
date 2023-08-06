@@ -12,6 +12,7 @@ This plugin adds new placeholders to PlaceholderAPI! All placeholders are player
 * %bedwars_current_connected_teams%
 * %bedwars_current_teamchests%
 * %bedwars_current_team%
+* %bedwars_current_team_color%
 * %bedwars_current_team_colored%
 * %bedwars_current_team_players%
 * %bedwars_current_team_maxplayers%
