@@ -27,7 +27,7 @@ accessors {
 
     basePackage 'org.screamingsandals.bedwars.lib.nms.accessors'
     accessedNamespaces 'spigot', 'source'
-    accessorFlavor 'reflection'
+    accessorType 'reflection'
 
     var CompoundTag = mapClass('net.minecraft.nbt.CompoundTag') {
         constructor()
