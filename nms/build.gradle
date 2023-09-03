@@ -99,7 +99,7 @@ accessors {
     }
     var AttributeInstance = mapClass('net.minecraft.world.entity.ai.attributes.AttributeInstance') {
         constructor Attribute, Consumer
-        getter double, 'baseValue'
+        getter double, 'value'
         setter double, 'baseValue'
     }
     var AttributeMap = mapClass('net.minecraft.world.entity.ai.attributes.AttributeMap') {

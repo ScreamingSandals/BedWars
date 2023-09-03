@@ -72,7 +72,7 @@ public class EntityLivingNMS extends EntityNMS implements LivingEntityAccessor {
 		try {
 			Object attr0 = getMethod(handler, METHOD_GET_ATTRIBUTE.get())
 				.invoke(attr);
-			return (double) getMethod(attr0, AttributeInstanceAccessor.METHOD_GET_BASE_VALUE.get()).invoke();
+			return (double) getMethod(attr0, AttributeInstanceAccessor.METHOD_GET_VALUE.get()).invoke();
 		} catch (Throwable t) {
 		}
 		return 0;
