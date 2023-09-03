@@ -20,8 +20,8 @@
 package org.screamingsandals.bedwars.lib.nms.title;
 
 import org.bukkit.entity.Player;
-import org.screamingsandals.bedwars.lib.nms.accessors.ClientboundSetTitleTextPacketAccessor;
 import org.screamingsandals.bedwars.lib.nms.accessors.ClientboundSetTitlesPacket$TypeAccessor;
+import org.screamingsandals.bedwars.lib.nms.accessors.ClientboundSetTitlesPacketAccessor;
 import org.screamingsandals.bedwars.lib.nms.accessors.Component$SerializerAccessor;
 import org.screamingsandals.bedwars.lib.nms.utils.ClassStorage;
 
@@ -36,11 +36,11 @@ public class Title {
 				Object subtitleComponent = ClassStorage.getMethod(Component$SerializerAccessor.METHOD_FROM_JSON.get())
 					.invokeStatic("{\"text\": \"" + subtitle + "\"}");
 				
-				Object titlePacket = ClientboundSetTitleTextPacketAccessor.CONSTRUCTOR_0.get()
+				Object titlePacket = ClientboundSetTitlesPacketAccessor.CONSTRUCTOR_0.get()
 					.newInstance(ClientboundSetTitlesPacket$TypeAccessor.FIELD_TITLE.get(), titleComponent);
-				Object subtitlePacket = ClientboundSetTitleTextPacketAccessor.CONSTRUCTOR_0.get()
+				Object subtitlePacket = ClientboundSetTitlesPacketAccessor.CONSTRUCTOR_0.get()
 					.newInstance(ClientboundSetTitlesPacket$TypeAccessor.FIELD_SUBTITLE.get(), subtitleComponent);
-				Object timesPacket = ClientboundSetTitleTextPacketAccessor.CONSTRUCTOR_1.get()
+				Object timesPacket = ClientboundSetTitlesPacketAccessor.CONSTRUCTOR_1.get()
 					.newInstance(ClientboundSetTitlesPacket$TypeAccessor.FIELD_TIMES.get(), null, fadeIn, stay, fadeOut);
 				
 				ClassStorage.sendPacket(player, titlePacket);
