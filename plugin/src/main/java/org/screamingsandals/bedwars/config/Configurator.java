@@ -161,6 +161,7 @@ public class Configurator {
         checkOrSetConfig(modify, "allow-fake-death", false);
         checkOrSetConfig(modify, "prefer-1-19-4-display-entities", true);
         checkOrSetConfig(modify, "remember-what-scoreboards-players-had-before", false);
+        checkOrSetConfig(modify, "use-chunk-tickets-if-available", true);
 
         checkOrSetConfig(modify, "kick-players-upon-final-death.enabled", false);
         checkOrSetConfig(modify, "kick-players-upon-final-death.delay", 5);
@@ -174,6 +175,7 @@ public class Configurator {
         checkOrSetConfig(modify, "bungee.server", "hub");
         checkOrSetConfig(modify, "bungee.auto-game-connect", false);
         checkOrSetConfig(modify, "bungee.kick-when-proxy-too-slow", true);
+        checkOrSetConfig(modify, "bungee.select-random-game", true);
         checkOrSetConfig(modify, "bungee.motd.enabled", false);
         checkOrSetConfig(modify, "bungee.motd.waiting", "%name%: Waiting for players [%current%/%max%]");
         checkOrSetConfig(modify, "bungee.motd.waiting_full", "%name%: Game is full [%current%/%max%]");
@@ -519,6 +521,7 @@ public class Configurator {
 
         checkOrSetConfig(modify, "breakable.enabled", false);
         checkOrSetConfig(modify, "breakable.asblacklist", false);
+        checkOrSetConfig(modify, "breakable.explosions", false);
         checkOrSetConfig(modify, "breakable.blocks", new ArrayList<>());
 
         checkOrSetConfig(modify, "leaveshortcuts.enabled", false);

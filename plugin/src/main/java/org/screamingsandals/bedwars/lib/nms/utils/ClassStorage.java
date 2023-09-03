@@ -24,14 +24,17 @@ import java.lang.reflect.Method;
 import java.util.function.Supplier;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.screamingsandals.bedwars.lib.nms.accessors.*;
 
 public class ClassStorage {
 
 	public static final boolean NMS_BASED_SERVER = safeGetClass("org.bukkit.craftbukkit.Main") != null;
 	public static final boolean IS_SPIGOT_SERVER = safeGetClass("org.spigotmc.SpigotConfig") != null;
+	public static final boolean HAS_CHUNK_TICKETS = getMethod(Chunk.class, "addPluginChunkTicket", Plugin.class).getReflectedMethod() != null;
 	public static final String NMS_VERSION = checkNMSVersion();
 
 	public static final class NMS {

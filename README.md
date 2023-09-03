@@ -2,12 +2,12 @@
 [![Build and publish BedWars ver/0.2.x](https://github.com/ScreamingSandals/BedWars/actions/workflows/build-0-2-x.yml/badge.svg)](https://github.com/ScreamingSandals/BedWars/actions/workflows/build-0-2-x.yml)
 [![Discord](https://img.shields.io/discord/582271436845219842?logo=discord)](https://discord.gg/4xB54Ts)
 
-This branch includes bugfixes for Minecraft: Java Edition 1.17, 1.18 & 1.19
+This branch includes bugfixes for Minecraft: Java Edition 1.17, 1.18, 1.19 & 1.20
 
 Complete rewrite of the BedWarsRel plugin.
 Thia project is now under complete rewrite and we don't have much of time, so be patient :)
 
-Supported versions: \[1.9.4 - 1.19\]. Recommended version: \[1.17.1/1.18.2\]
+Supported versions: \[1.8.8 - 1.20.1\]. Recommended version: \[1.18.2/1.19.4\]
 
 ## Support
 If you need any help, you can contact us on [Discord](https://discord.gg/4xB54Ts). Please make sure to look into older messages. There are many question already answered. It is really anoying to repeat the same thing over and over.
