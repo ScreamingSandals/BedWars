@@ -1,0 +1,23 @@
+name: Feature request
+about: Suggest an idea for this project
+title: '[Feature]: '
+labels: ['feature request', 'needs triage']
+assignees: ''
+body:
+  - type: markdown
+    attributes:
+      value: Thanks for taking the time to fill out this feature request! Please follow the description of each individual input field.
+  - type: textarea
+    id: feature-description
+    attributes:
+      label: Feature description
+      description: Describe the solution you would like
+    validations:
+      required: true
+  - type: textarea
+    id: related-problem
+    attributes:
+      label: 'Is your feature request related to a problem?'
+      description: 'If your feature request is related to a problem, please describe the problem. If the problem is already reported, please link the issue here.'
+    validations:
+      required: false
