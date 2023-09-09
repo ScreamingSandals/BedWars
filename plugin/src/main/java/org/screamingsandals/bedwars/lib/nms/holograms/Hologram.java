@@ -224,7 +224,6 @@ public class Hologram {
 							Object metadataPacket = ClientboundSetEntityDataPacketAccessor.CONSTRUCTOR_1.get()
 									.newInstance(display.getId(), watcherInList);
 							packets.add(metadataPacket);
-							ClassStorage.getMethod(display.getDataWatcher(), SynchedEntityDataAccessor.METHOD_CLEAR_DIRTY.get()).invoke();
 						}
 					}
 					if (positionChanged) {
@@ -248,7 +247,6 @@ public class Hologram {
 							Object metadataPacket = ClientboundSetEntityDataPacketAccessor.CONSTRUCTOR_1.get()
 									.newInstance(display.getId(), watcherInList);
 							packets.add(metadataPacket);
-							ClassStorage.getMethod(display.getDataWatcher(), SynchedEntityDataAccessor.METHOD_CLEAR_DIRTY.get()).invoke();
 						}
 						if (this.entities.size() <= i) {
 							this.entities.add(display);
@@ -383,7 +381,12 @@ public class Hologram {
 			}
 			if (Version.isVersion(1, 15)) {
 				if (ClientboundSetEntityDataPacketAccessor.CONSTRUCTOR_1.get() != null) {
-					Object watcherInList = ClassStorage.getMethod(entity.getDataWatcher(), SynchedEntityDataAccessor.METHOD_GET_ALL.get()).invoke();
+					Object watcherInList;
+					if (SynchedEntityDataAccessor.METHOD_GET_ALL.get() != null) {
+						watcherInList = ClassStorage.getMethod(entity.getDataWatcher(), SynchedEntityDataAccessor.METHOD_GET_ALL.get()).invoke();
+					} else {
+						watcherInList = ClassStorage.getMethod(entity.getDataWatcher(), SynchedEntityDataAccessor.METHOD_GET_NON_DEFAULT_VALUES.get()).invoke();
+					}
 					if (watcherInList != null) {
 						Object metadataPacket = ClientboundSetEntityDataPacketAccessor.CONSTRUCTOR_1.get()
 								.newInstance(entity.getId(), watcherInList);

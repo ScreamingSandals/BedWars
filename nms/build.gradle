@@ -15,7 +15,7 @@ dependencies {
 accessors {
     // uncomment this and remove the mappingBundle dependency,
     // if you want to develop against custom versions
-    /*versionRange('1.8.8', '1.19.4') {
+    /*versionRange('1.8.8', '1.20.1') {
         // exclude 1.16 and 1.10.1, they don't have most mappings and are basically not used at all
         // exclude 1.8.9, client-only update - no Spigot mappings, no thank you
         // exclude 1.9.1 and 1.9.3 - no mappings at all
@@ -26,7 +26,7 @@ accessors {
     }*/
 
     basePackage 'org.screamingsandals.bedwars.lib.nms.accessors'
-    accessedNamespaces 'spigot', 'source'
+    accessedNamespaces 'spigot'
     accessorType 'reflection'
 
     var CompoundTag = mapClass('net.minecraft.nbt.CompoundTag') {
@@ -47,6 +47,7 @@ accessors {
         method List, 'packDirty'
         method void, 'clearDirty'
         getter List, 'all'
+        getter List, 'nonDefaultValues'
     }
     var Level = mapClass('net.minecraft.world.level.Level') {
         getter Supplier, 'profilerSupplier' // 1.17 and newer
