@@ -151,21 +151,21 @@ public class GameManagerImpl implements GameManager {
 
     @Override
     public Optional<GameImpl> getGameWithHighestPlayers() {
-        return getGameWithHighestPlayers(true);
+        return getGameWithHighestPlayers(false);
     }
 
     @Override
     public Optional<GameImpl> getGameWithLowestPlayers() {
-        return getGameWithLowestPlayers(true);
+        return getGameWithLowestPlayers(false);
     }
 
     @Override
     public Optional<GameImpl> getFirstWaitingGame() {
-        return getFirstWaitingGame(true);
+        return getFirstWaitingGame(false);
     }
 
     @Override
     public Optional<GameImpl> getFirstRunningGame() {
-        return getFirstRunningGame(true);
+        return getFirstRunningGame(false);
     }
 }

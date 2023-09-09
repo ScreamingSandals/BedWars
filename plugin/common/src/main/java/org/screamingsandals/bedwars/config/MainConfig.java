@@ -176,6 +176,7 @@ public class MainConfig {
                     .key("server").defValue("hub")
                     .key("auto-game-connect").defValue(false)
                     .key("kick-when-proxy-too-slow").defValue(true)
+                    .key("select-random-game").defValue(true)
                     .section("motd")
                         .key("enabled").defValue(false)
                         .key("waiting").defValue("%name%: Waiting for players [%current%/%max%]")
@@ -300,6 +301,7 @@ public class MainConfig {
                                                     .replace("%date%", "<date>")
                                                     .replace("%mode%", "<mode>")
                                                     .replace("%state%", "<state>")
+                                                    .replace("%countdown%", "<time>")
                                             );
                                         }
                                     }
@@ -668,6 +670,7 @@ public class MainConfig {
                 .section("breakable")
                     .key("enabled").defValue(false)
                     .key("blacklist-mode").migrateOld("asblacklist").defValue(false)
+                    .key("explosions").defValue(false)
                     .key("blocks").defValue(List::of)
                     .back()
                 .section("leaveshortcuts")

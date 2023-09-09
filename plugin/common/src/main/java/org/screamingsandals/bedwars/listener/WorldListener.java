@@ -149,6 +149,7 @@ public class WorldListener {
     public void onExplode(Location location, Collection<BlockPlacement> blockList, org.screamingsandals.lib.event.Cancellable cancellable, boolean originatedInArena) {
         final var explosionExceptionTypeName = MainConfig.getInstance().node("destroy-placed-blocks-by-explosion-except").childrenList().stream().map(ConfigurationNode::getString).toArray();
         final var destroyPlacedBlocksByExplosion = MainConfig.getInstance().node("destroy-placed-blocks-by-explosion").getBoolean(true);
+        final var breakableExplosions = MainConfig.getInstance().node("breakable", "explosions").getBoolean(true);
 
         for (var game : GameManagerImpl.getInstance().getGames()) {
             if (ArenaUtils.isInArea(location, game.getPos1(), game.getPos2())) {
@@ -159,11 +160,16 @@ public class WorldListener {
                                 for (var team : game.getActiveTeams()) {
                                     if (team.getTarget() instanceof TargetBlockImpl && ((TargetBlockImpl) team.getTarget()).getTargetBlock().equals(block.location())) {
                                         game.internalProcessInvalidation(team, team.getTarget(), null, TargetInvalidationReason.TARGET_BLOCK_EXPLODED);
-                                        break;
+                                        return true;
                                     }
                                 }
                             }
-                            return true;
+                            if (breakableExplosions && BedWarsPlugin.isBreakableBlock(block.block())) {
+                                game.getRegion().putOriginalBlock(block.location(), block.blockSnapshot());
+                                return false;
+                            } else {
+                                return true;
+                            }
                         }
                         return block.block().is(explosionExceptionTypeName) || !destroyPlacedBlocksByExplosion;
                     });

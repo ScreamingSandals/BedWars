@@ -341,7 +341,11 @@ public class PlayerListener {
                         try {
                             Debug.info("Selecting game for " + event.player().getName());
                             var gameManager = GameManagerImpl.getInstance();
-                            var game = gameManager.getFirstWaitingGame().or(gameManager::getFirstRunningGame);
+                            var game = (
+                                    MainConfig.getInstance().node("bungee", "select-random-game").getBoolean()
+                                            ? gameManager.getGameWithHighestPlayers()
+                                            : gameManager.getFirstWaitingGame()
+                            ).or(gameManager::getFirstRunningGame);
                             if (game.isEmpty()) { // still nothing?
                                 if (!player.hasPermission(BedWarsPermission.ADMIN_PERMISSION.asPermission())) {
                                     Debug.info(event.player().getName() + " is not connecting to any game! Kicking...");
