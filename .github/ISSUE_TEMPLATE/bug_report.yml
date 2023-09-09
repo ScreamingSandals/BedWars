@@ -1,8 +1,8 @@
 name: Bug report
-about: Create a report to help us improve this project
+description: Create a report to help us improve this project
 title: '[Bug]: '
 labels: ['bug', 'needs triage']
-assignees: ''
+assignees: []
 body:
   - type: markdown
     attributes:
