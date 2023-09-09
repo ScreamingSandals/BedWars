@@ -21,7 +21,6 @@ package org.screamingsandals.bedwars.special;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import org.screamingsandals.bedwars.PlatformService;
 import org.screamingsandals.bedwars.api.special.TNTSheep;
 import org.screamingsandals.bedwars.entities.EntitiesManagerImpl;
 import org.screamingsandals.bedwars.game.GameImpl;
@@ -29,8 +28,9 @@ import org.screamingsandals.bedwars.game.TeamImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.utils.MiscUtils;
+import org.screamingsandals.lib.ai.AiManager;
+import org.screamingsandals.lib.attribute.AttributeType;
 import org.screamingsandals.lib.entity.Entities;
-import org.screamingsandals.lib.entity.LivingEntity;
 import org.screamingsandals.lib.entity.PrimedTnt;
 import org.screamingsandals.lib.entity.animal.Sheep;
 import org.screamingsandals.lib.lang.Message;
@@ -82,8 +82,22 @@ public class TNTSheepImpl extends SpecialItemImpl implements TNTSheep {
             ((Sheep) en).woolColor(color.getDyeColor());
 
             //noinspection DataFlowIssue
-            PlatformService.getInstance().getEntityUtils().makeMobAttackTarget(((LivingEntity) en), speed, followRange, 0)
-                    .attackTarget(target);
+
+            ((Sheep) en).getOrCreateAttribute(AttributeType.of("generic.movement_speed"), 0).setBaseValue(speed);
+            ((Sheep) en).getOrCreateAttribute(AttributeType.of("generic.follow_range"), 0).setBaseValue(followRange);
+            ((Sheep) en).getOrCreateAttribute(AttributeType.of("generic.attack_damage"), 0).setBaseValue(0);
+
+            var goalSelector = AiManager.goalSelector(en);
+            if (goalSelector != null) {
+                goalSelector.removeAll();
+
+                goalSelector.addFloatGoal(0);
+                goalSelector.addMeleeAttackGoal(1, 1, false);
+                goalSelector.addRandomStrollGoal(2, 1);
+                goalSelector.addRandomLookAroundGoal(3);
+            }
+
+            ((Sheep) en).setCurrentTarget(target);
         }));
 
         tnt = (PrimedTnt) Objects.requireNonNull(Entities.spawn("tnt", initialLocation, en -> {

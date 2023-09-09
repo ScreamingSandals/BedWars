@@ -42,7 +42,6 @@ import org.screamingsandals.bedwars.bukkit.hooks.BukkitBStatsMetrics;
 import org.screamingsandals.bedwars.bukkit.hooks.PerWorldInventoryCompatibilityFix;
 import org.screamingsandals.bedwars.bukkit.listener.BungeeMotdListener;
 import org.screamingsandals.bedwars.bukkit.region.LegacyRegion;
-import org.screamingsandals.bedwars.bukkit.utils.BukkitEntityUtils;
 import org.screamingsandals.bedwars.bukkit.utils.BukkitFakeDeath;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.game.GameImpl;
@@ -52,7 +51,6 @@ import org.screamingsandals.bedwars.nms.accessors.ServerGamePacketListenerImplAc
 import org.screamingsandals.bedwars.nms.accessors.ServerboundClientCommandPacketAccessor;
 import org.screamingsandals.bedwars.nms.accessors.ServerboundClientCommandPacket_i_ActionAccessor;
 import org.screamingsandals.bedwars.region.BWRegion;
-import org.screamingsandals.bedwars.utils.EntityUtils;
 import org.screamingsandals.bedwars.utils.FakeDeath;
 import org.screamingsandals.lib.Server;
 import org.screamingsandals.lib.block.BlockPlacement;
@@ -88,7 +86,6 @@ import java.util.function.Consumer;
 @Getter
 public class BukkitPlatformService extends PlatformService {
     private final FakeDeath fakeDeath = new BukkitFakeDeath();
-    private final EntityUtils entityUtils = new BukkitEntityUtils();
 
     @OnPostEnable
     public void onPostEnable() {

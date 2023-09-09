@@ -40,6 +40,7 @@ subprojects {
                 module('npc')
                 module('signs')
                 module('economy')
+                module('ai')
 
                 lang()
                 singleModule('cloud-extras')

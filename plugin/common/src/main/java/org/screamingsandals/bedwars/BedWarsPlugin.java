@@ -47,6 +47,7 @@ import org.screamingsandals.bedwars.utils.*;
 import org.screamingsandals.bedwars.variants.VariantManagerImpl;
 import org.screamingsandals.lib.CustomPayload;
 import org.screamingsandals.lib.Server;
+import org.screamingsandals.lib.ai.AiManager;
 import org.screamingsandals.lib.block.Block;
 import org.screamingsandals.lib.economy.EconomyManager;
 import org.screamingsandals.lib.healthindicator.HealthIndicatorManager;
@@ -98,6 +99,7 @@ import java.util.stream.Collectors;
         services = {
                 EconomyManager.class,
                 PlatformService.class,
+                AiManager.class,
                 CommandService.class,
                 VariantManagerImpl.class,
                 GameManagerImpl.class,

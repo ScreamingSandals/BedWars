@@ -22,11 +22,9 @@ package org.screamingsandals.bedwars;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.bedwars.region.BWRegion;
-import org.screamingsandals.bedwars.utils.EntityUtils;
 import org.screamingsandals.bedwars.utils.FakeDeath;
 import org.screamingsandals.lib.block.BlockPlacement;
 import org.screamingsandals.lib.block.snapshot.BlockSnapshot;
-import org.screamingsandals.lib.entity.Entity;
 import org.screamingsandals.lib.event.player.PlayerBlockBreakEvent;
 import org.screamingsandals.lib.event.player.PlayerBlockPlaceEvent;
 import org.screamingsandals.lib.item.ItemStack;
@@ -45,9 +43,6 @@ public abstract class PlatformService {
 
     @NotNull
     public abstract FakeDeath getFakeDeath();
-
-    @NotNull
-    public abstract EntityUtils getEntityUtils();
 
     public abstract void respawnPlayer(@NotNull Player player, long delay);
 

@@ -21,7 +21,6 @@ package org.screamingsandals.bedwars.special;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import org.screamingsandals.bedwars.PlatformService;
 import org.screamingsandals.bedwars.api.special.Golem;
 import org.screamingsandals.bedwars.config.MainConfig;
 import org.screamingsandals.bedwars.entities.EntitiesManagerImpl;
@@ -30,13 +29,17 @@ import org.screamingsandals.bedwars.game.TeamImpl;
 import org.screamingsandals.bedwars.lang.LangKeys;
 import org.screamingsandals.bedwars.player.BedWarsPlayer;
 import org.screamingsandals.bedwars.utils.MiscUtils;
+import org.screamingsandals.lib.ai.AiManager;
+import org.screamingsandals.lib.attribute.AttributeType;
 import org.screamingsandals.lib.entity.LivingEntity;
 import org.screamingsandals.lib.entity.Entities;
+import org.screamingsandals.lib.entity.type.EntityType;
 import org.screamingsandals.lib.item.ItemStack;
 import org.screamingsandals.lib.item.builder.ItemStackFactory;
 import org.screamingsandals.lib.lang.Message;
 import org.screamingsandals.lib.world.Location;
 
+import java.util.List;
 import java.util.Objects;
 
 @Getter
@@ -75,11 +78,22 @@ public class GolemImpl extends SpecialItemImpl implements Golem {
             lv.setCustomNameVisible(showName);
             lv.setInvulnerable(false);
 
-            //noinspection ConstantConditions - suppressing nullability check, if this throws a NPE, something went wrong badly
-            PlatformService.getInstance().getEntityUtils().makeMobAttackTarget(lv, speed, followRange, -1)
-                    .hurtByTarget(1)
-                    .attackNearestPlayers(2)
-                    .attackNearestGolems(3);
+            lv.getOrCreateAttribute(AttributeType.of("generic.movement_speed"), 0).setBaseValue(speed);
+            lv.getOrCreateAttribute(AttributeType.of("generic.follow_range"), 0).setBaseValue(followRange);
+
+            var goalSelector = AiManager.goalSelector(lv);
+            if (goalSelector != null) {
+                goalSelector.removeAll();
+
+                goalSelector.addFloatGoal(0);
+                goalSelector.addMeleeAttackGoal(1, 1, false);
+                goalSelector.addRandomStrollGoal(2, 1);
+                goalSelector.addRandomLookAroundGoal(3);
+
+                goalSelector.addHurtByTargetGoal(1, List.of());
+                goalSelector.addNearestAttackableTargetGoal(2, EntityType.of("player"), false);
+                goalSelector.addNearestAttackableTargetGoal(3, EntityType.of("iron_golem"), false);
+            }
         }));
 
         game.registerSpecialItem(this);
