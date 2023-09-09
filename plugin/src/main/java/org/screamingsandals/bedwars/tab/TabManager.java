@@ -23,8 +23,8 @@ import org.bukkit.ChatColor;
 import org.screamingsandals.bedwars.Main;
 import org.screamingsandals.bedwars.api.game.GameStatus;
 import org.screamingsandals.bedwars.game.GamePlayer;
-import org.screamingsandals.bedwars.lib.nms.accessors.IChatBaseComponent_i_ChatSerializerAccessor;
-import org.screamingsandals.bedwars.lib.nms.accessors.PacketPlayOutPlayerListHeaderFooterAccessor;
+import org.screamingsandals.bedwars.lib.nms.accessors.ClientboundTabListPacketAccessor;
+import org.screamingsandals.bedwars.lib.nms.accessors.Component$SerializerAccessor;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -71,12 +71,12 @@ public class TabManager {
                 }
 
                 Object packet;
-                if (PacketPlayOutPlayerListHeaderFooterAccessor.getConstructor1() != null) {
-                    packet = PacketPlayOutPlayerListHeaderFooterAccessor.getConstructor1().newInstance(headerComponent, footerComponent);
+                if (ClientboundTabListPacketAccessor.CONSTRUCTOR_1.get() != null) {
+                    packet = ClientboundTabListPacketAccessor.CONSTRUCTOR_1.get().newInstance(headerComponent, footerComponent);
                 } else {
-                    packet = PacketPlayOutPlayerListHeaderFooterAccessor.getConstructor0().newInstance();
-                    setField(packet, PacketPlayOutPlayerListHeaderFooterAccessor.getFieldHeader(), headerComponent);
-                    setField(packet, PacketPlayOutPlayerListHeaderFooterAccessor.getFieldFooter(), footerComponent);
+                    packet = ClientboundTabListPacketAccessor.CONSTRUCTOR_0.get().newInstance();
+                    setField(packet, ClientboundTabListPacketAccessor.FIELD_HEADER.get(), headerComponent);
+                    setField(packet, ClientboundTabListPacketAccessor.FIELD_FOOTER.get(), footerComponent);
                 }
                 sendPacket(player.player, packet);
             } catch (Exception ignored) {
@@ -97,12 +97,12 @@ public class TabManager {
                 Object blankComponent = getMethod(getCorrectSerializingMethod())
                         .invokeStatic(clearString);
                 Object packet;
-                if (PacketPlayOutPlayerListHeaderFooterAccessor.getConstructor1() != null) {
-                    packet = PacketPlayOutPlayerListHeaderFooterAccessor.getConstructor1().newInstance(blankComponent, blankComponent);
+                if (ClientboundTabListPacketAccessor.CONSTRUCTOR_1.get() != null) {
+                    packet = ClientboundTabListPacketAccessor.CONSTRUCTOR_1.get().newInstance(blankComponent, blankComponent);
                 } else {
-                    packet = PacketPlayOutPlayerListHeaderFooterAccessor.getConstructor0().newInstance();
-                    setField(packet, PacketPlayOutPlayerListHeaderFooterAccessor.getFieldHeader(), blankComponent);
-                    setField(packet, PacketPlayOutPlayerListHeaderFooterAccessor.getFieldFooter(), blankComponent);
+                    packet = ClientboundTabListPacketAccessor.CONSTRUCTOR_0.get().newInstance();
+                    setField(packet, ClientboundTabListPacketAccessor.FIELD_HEADER.get(), blankComponent);
+                    setField(packet, ClientboundTabListPacketAccessor.FIELD_FOOTER.get(), blankComponent);
                 }
                 sendPacket(player.player, packet);
             } catch (Exception ignored) {
@@ -123,9 +123,9 @@ public class TabManager {
     }
 
     public static Method getCorrectSerializingMethod() {
-        if (IChatBaseComponent_i_ChatSerializerAccessor.getMethodFunc_150699_a1() != null) {
-            return IChatBaseComponent_i_ChatSerializerAccessor.getMethodFunc_150699_a1();
+        if (Component$SerializerAccessor.METHOD_FROM_JSON.get() != null) {
+            return Component$SerializerAccessor.METHOD_FROM_JSON.get();
         }
-        return IChatBaseComponent_i_ChatSerializerAccessor.getMethodFunc_240643_a_1();
+        return Component$SerializerAccessor.METHOD_FROM_JSON_1.get();
     }
 }

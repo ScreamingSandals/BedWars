@@ -39,7 +39,7 @@ import org.screamingsandals.bedwars.lib.nms.utils.Version;
 public class Hologram {
 
 	public static final int VISIBILITY_DISTANCE_SQUARED = 4096;
-	public static final boolean DISPLAY_ENTITIES_AVAILABLE = Display_i_TextDisplayAccessor.getType() != null;
+	public static final boolean DISPLAY_ENTITIES_AVAILABLE = Display$TextDisplayAccessor.TYPE.get() != null;
 
 	private List<Player> viewers = new ArrayList<>();
 	private List<String> lines = new ArrayList<>();
@@ -201,16 +201,16 @@ public class Hologram {
 					if (entity instanceof ArmorStandNMS) {
 						ArmorStandNMS stand = (ArmorStandNMS) entity;
 						stand.setCustomName(line);
-						if (PacketPlayOutEntityMetadataAccessor.getConstructor1() != null) {
-							Object watcherInList = ClassStorage.getMethod(stand.getDataWatcher(), DataWatcherAccessor.getMethodPackDirty1()).invoke();
+						if (ClientboundSetEntityDataPacketAccessor.CONSTRUCTOR_1.get() != null) {
+							Object watcherInList = ClassStorage.getMethod(stand.getDataWatcher(), SynchedEntityDataAccessor.METHOD_PACK_DIRTY.get()).invoke();
 							if (watcherInList != null) {
-								Object metadataPacket = PacketPlayOutEntityMetadataAccessor.getConstructor1()
+								Object metadataPacket = ClientboundSetEntityDataPacketAccessor.CONSTRUCTOR_1.get()
 										.newInstance(stand.getId(), watcherInList);
 								packets.add(metadataPacket);
-								ClassStorage.getMethod(stand.getDataWatcher(), DataWatcherAccessor.getMethodClearDirty1()).invoke();
+								ClassStorage.getMethod(stand.getDataWatcher(), SynchedEntityDataAccessor.METHOD_CLEAR_DIRTY.get()).invoke();
 							}
 						} else {
-							Object metadataPacket = PacketPlayOutEntityMetadataAccessor.getConstructor0()
+							Object metadataPacket = ClientboundSetEntityDataPacketAccessor.CONSTRUCTOR_0.get()
 									.newInstance(stand.getId(),
 											stand.getDataWatcher(), false);
 							packets.add(metadataPacket);
@@ -219,18 +219,17 @@ public class Hologram {
 						EntityTextDisplayNMS display = (EntityTextDisplayNMS) entity;
 						display.setText(line);
 
-						Object watcherInList = ClassStorage.getMethod(display.getDataWatcher(), DataWatcherAccessor.getMethodPackDirty1()).invoke();
+						Object watcherInList = ClassStorage.getMethod(display.getDataWatcher(), SynchedEntityDataAccessor.METHOD_PACK_DIRTY.get()).invoke();
 						if (watcherInList != null) {
-							Object metadataPacket = PacketPlayOutEntityMetadataAccessor.getConstructor1()
+							Object metadataPacket = ClientboundSetEntityDataPacketAccessor.CONSTRUCTOR_1.get()
 									.newInstance(display.getId(), watcherInList);
 							packets.add(metadataPacket);
-							ClassStorage.getMethod(display.getDataWatcher(), DataWatcherAccessor.getMethodClearDirty1()).invoke();
 						}
 					}
 					if (positionChanged) {
 						Location localLoc = loc.clone().add(0, (this.lines.size() - i) * .30, 0);
-						entity.setLocation(localLoc);;
-						Object teleportPacket = PacketPlayOutEntityTeleportAccessor.getConstructor0()
+						entity.setLocation(localLoc);
+						Object teleportPacket = ClientboundTeleportEntityPacketAccessor.CONSTRUCTOR_0.get()
 								.newInstance(entity.getHandler());
 						packets.add(teleportPacket);
 					}
@@ -241,14 +240,13 @@ public class Hologram {
 						EntityTextDisplayNMS display = new EntityTextDisplayNMS(localLoc);
 						display.setText(line);
 
-						packets.add(PacketPlayOutSpawnEntityAccessor.getConstructor1().newInstance(display.getHandler()));
+						packets.add(ClientboundAddEntityPacketAccessor.CONSTRUCTOR_1.get().newInstance(display.getHandler()));
 
-						Object watcherInList = ClassStorage.getMethod(display.getDataWatcher(), DataWatcherAccessor.getMethodPackDirty1()).invoke();
+						Object watcherInList = ClassStorage.getMethod(display.getDataWatcher(), SynchedEntityDataAccessor.METHOD_PACK_DIRTY.get()).invoke();
 						if (watcherInList != null) {
-							Object metadataPacket = PacketPlayOutEntityMetadataAccessor.getConstructor1()
+							Object metadataPacket = ClientboundSetEntityDataPacketAccessor.CONSTRUCTOR_1.get()
 									.newInstance(display.getId(), watcherInList);
 							packets.add(metadataPacket);
-							ClassStorage.getMethod(display.getDataWatcher(), DataWatcherAccessor.getMethodClearDirty1()).invoke();
 						}
 						if (this.entities.size() <= i) {
 							this.entities.add(display);
@@ -266,28 +264,28 @@ public class Hologram {
 						stand.setGravity(false);
 						stand.setMarker(!touchable);
 						Object spawnLivingPacket;
-						if (PacketPlayOutSpawnEntityLivingAccessor.getType() != null) {
-							spawnLivingPacket = PacketPlayOutSpawnEntityLivingAccessor.getConstructor0()
+						if (ClientboundAddMobPacketAccessor.TYPE.get() != null) {
+							spawnLivingPacket = ClientboundAddMobPacketAccessor.CONSTRUCTOR_0.get()
 									.newInstance(stand.getHandler());
-						} else if (PacketPlayOutSpawnEntityAccessor.getConstructor0() != null) {
-							spawnLivingPacket = PacketPlayOutSpawnEntityAccessor.getConstructor0()
+						} else if (ClientboundAddEntityPacketAccessor.CONSTRUCTOR_0.get() != null) {
+							spawnLivingPacket = ClientboundAddEntityPacketAccessor.CONSTRUCTOR_0.get()
 									.newInstance(stand.getHandler());
 						} else {
-							spawnLivingPacket = PacketPlayOutSpawnEntityAccessor.getConstructor1()
+							spawnLivingPacket = ClientboundAddEntityPacketAccessor.CONSTRUCTOR_1.get()
 									.newInstance(stand.getHandler());
 						}
 						packets.add(spawnLivingPacket);
 						if (Version.isVersion(1, 15)) {
-							if (PacketPlayOutEntityMetadataAccessor.getConstructor1() != null) {
-								Object watcherInList = ClassStorage.getMethod(stand.getDataWatcher(), DataWatcherAccessor.getMethodPackDirty1()).invoke();
+							if (ClientboundSetEntityDataPacketAccessor.CONSTRUCTOR_1.get() != null) {
+								Object watcherInList = ClassStorage.getMethod(stand.getDataWatcher(), SynchedEntityDataAccessor.METHOD_PACK_DIRTY.get()).invoke();
 								if (watcherInList != null) {
-									Object metadataPacket = PacketPlayOutEntityMetadataAccessor.getConstructor1()
+									Object metadataPacket = ClientboundSetEntityDataPacketAccessor.CONSTRUCTOR_1.get()
 											.newInstance(stand.getId(), watcherInList);
 									packets.add(metadataPacket);
-									ClassStorage.getMethod(stand.getDataWatcher(), DataWatcherAccessor.getMethodClearDirty1()).invoke();
+									ClassStorage.getMethod(stand.getDataWatcher(), SynchedEntityDataAccessor.METHOD_CLEAR_DIRTY.get()).invoke();
 								}
 							} else {
-								Object metadataPacket = PacketPlayOutEntityMetadataAccessor.getConstructor0()
+								Object metadataPacket = ClientboundSetEntityDataPacketAccessor.CONSTRUCTOR_0.get()
 										.newInstance(stand.getId(),
 												stand.getDataWatcher(), false);
 								packets.add(metadataPacket);
@@ -309,13 +307,13 @@ public class Hologram {
 				}
 			}
 
-			if (PacketPlayOutEntityDestroyAccessor.getConstructor0() != null) { // weird 1.17 version
-				Constructor<?> constructor = PacketPlayOutEntityDestroyAccessor.getConstructor0();
+			if (ClientboundRemoveEntitiesPacketAccessor.CONSTRUCTOR_0.get() != null) { // weird 1.17 version
+				Constructor<?> constructor = ClientboundRemoveEntitiesPacketAccessor.CONSTRUCTOR_0.get();
 				for (Integer integer : forRemoval) {
 					packets.add(constructor.newInstance(integer));
 				}
 			} else {
-				Object destroyPacket = PacketPlayOutEntityDestroyAccessor.getConstructor1()
+				Object destroyPacket = ClientboundRemoveEntitiesPacketAccessor.CONSTRUCTOR_1.get()
 						.newInstance(forRemoval.stream().mapToInt(i -> i).toArray());
 
 				packets.add(destroyPacket);
@@ -353,9 +351,9 @@ public class Hologram {
 	public List<Object> getAllDestroyPackets() throws InstantiationException, IllegalAccessException,
 		IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
 		List<Object> packets = new ArrayList<>();
-
-		if (PacketPlayOutEntityDestroyAccessor.getConstructor0() != null) {
-			Constructor<?> constructor =  PacketPlayOutEntityDestroyAccessor.getConstructor0(); // weird 1.17 version
+		
+		if (ClientboundRemoveEntitiesPacketAccessor.CONSTRUCTOR_0.get() != null) {
+			Constructor<?> constructor =  ClientboundRemoveEntitiesPacketAccessor.CONSTRUCTOR_0.get(); // weird 1.17 version
 			for (EntityNMS integer : entities) {
 				packets.add(constructor.newInstance(integer.getId()));
 			}
@@ -365,7 +363,7 @@ public class Hologram {
 				removal[i] = (int) entities.get(i).getId();
 			}
 
-			packets.add(PacketPlayOutEntityDestroyAccessor.getConstructor1().newInstance(removal));
+			packets.add(ClientboundRemoveEntitiesPacketAccessor.CONSTRUCTOR_1.get().newInstance(removal));
 		}
 		return packets;
 	}
@@ -374,23 +372,28 @@ public class Hologram {
 		IllegalArgumentException, InvocationTargetException, SecurityException {
 		List<Object> packets = new ArrayList<>();
 		for (EntityNMS entity : entities) {
-			if (PacketPlayOutSpawnEntityLivingAccessor.getType() != null) {
-				packets.add(PacketPlayOutSpawnEntityLivingAccessor.getConstructor0().newInstance(entity.getHandler()));
-			} else if (PacketPlayOutSpawnEntityAccessor.getConstructor0() != null) {
-				packets.add(PacketPlayOutSpawnEntityAccessor.getConstructor0().newInstance(entity.getHandler()));
+			if (ClientboundAddMobPacketAccessor.TYPE.get() != null) {
+				packets.add(ClientboundAddMobPacketAccessor.CONSTRUCTOR_0.get().newInstance(entity.getHandler()));
+			} else if (ClientboundAddEntityPacketAccessor.CONSTRUCTOR_0.get() != null) {
+				packets.add(ClientboundAddEntityPacketAccessor.CONSTRUCTOR_0.get().newInstance(entity.getHandler()));
 			} else {
-				packets.add(PacketPlayOutSpawnEntityAccessor.getConstructor1().newInstance(entity.getHandler()));
+				packets.add(ClientboundAddEntityPacketAccessor.CONSTRUCTOR_1.get().newInstance(entity.getHandler()));
 			}
 			if (Version.isVersion(1, 15)) {
-				if (PacketPlayOutEntityMetadataAccessor.getConstructor1() != null) {
-					Object watcherInList = ClassStorage.getMethod(entity.getDataWatcher(), DataWatcherAccessor.getMethodGetAll1()).invoke();
+				if (ClientboundSetEntityDataPacketAccessor.CONSTRUCTOR_1.get() != null) {
+					Object watcherInList;
+					if (SynchedEntityDataAccessor.METHOD_GET_ALL.get() != null) {
+						watcherInList = ClassStorage.getMethod(entity.getDataWatcher(), SynchedEntityDataAccessor.METHOD_GET_ALL.get()).invoke();
+					} else {
+						watcherInList = ClassStorage.getMethod(entity.getDataWatcher(), SynchedEntityDataAccessor.METHOD_GET_NON_DEFAULT_VALUES.get()).invoke();
+					}
 					if (watcherInList != null) {
-						Object metadataPacket = PacketPlayOutEntityMetadataAccessor.getConstructor1()
+						Object metadataPacket = ClientboundSetEntityDataPacketAccessor.CONSTRUCTOR_1.get()
 								.newInstance(entity.getId(), watcherInList);
 						packets.add(metadataPacket);
 					}
 				} else {
-					Object metadataPacket = PacketPlayOutEntityMetadataAccessor.getConstructor0()
+					Object metadataPacket = ClientboundSetEntityDataPacketAccessor.CONSTRUCTOR_0.get()
 							.newInstance(entity.getId(), entity.getDataWatcher(), true);
 					packets.add(metadataPacket);
 				}

@@ -27,28 +27,28 @@ import org.screamingsandals.bedwars.tab.TabManager;
 
 import static org.screamingsandals.bedwars.lib.nms.utils.ClassStorage.getHandle;
 
-public class EntityTextDisplayNMS extends EntityNMS {
+public class EntityTextDisplayNMS extends EntityNMS implements DisplayAccessor, Display$TextDisplayAccessor {
     public EntityTextDisplayNMS(Object handler) {
         super(handler);
-        if (!Display_i_TextDisplayAccessor.getType().isInstance(handler)) {
+        if (!Display$TextDisplayAccessor.TYPE.get().isInstance(handler)) {
             throw new IllegalArgumentException("Entity must be instance of Display$TextDisplay!!");
         }
-        ClassStorage.getMethod(handler, DisplayAccessor.getMethodSetBillboardConstraints1()).invoke(Display_i_BillboardConstraintsAccessor.getFieldCENTER());
+        ClassStorage.getMethod(handler, METHOD_SET_BILLBOARD_CONSTRAINTS.get()).invoke(Display$BillboardConstraintsAccessor.FIELD_CENTER.get());
     }
 
     public EntityTextDisplayNMS(Location loc) throws Throwable {
-        this(Display_i_TextDisplayAccessor.getConstructor0().newInstance(EntityTypeAccessor.getFieldTEXT_DISPLAY(), getHandle(loc.getWorld())));
+        this(Display$TextDisplayAccessor.CONSTRUCTOR_0.get().newInstance(EntityTypeAccessor.FIELD_TEXT_DISPLAY.get(), getHandle(loc.getWorld())));
         this.setLocation(loc);
     }
 
     public void setText(String name) {
-        InstanceMethod method = ClassStorage.getMethod(handler, Display_i_TextDisplayAccessor.getMethodSetText1());
+        InstanceMethod method = ClassStorage.getMethod(handler, METHOD_SET_TEXT.get());
         method.invoke(ClassStorage.getMethod(TabManager.getCorrectSerializingMethod()).invokeStatic("{\"text\": \"" + name + "\"}"));
     }
 
     public String getText() {
-        Object textComponent = ClassStorage.getMethod(handler, Display_i_TextDisplayAccessor.getMethodGetText1()).invoke();
-        return (String) ClassStorage.getMethod(textComponent, IChatBaseComponentAccessor.getMethodGetLegacyString1()).invoke();
+        Object textComponent = ClassStorage.getMethod(handler, METHOD_GET_TEXT.get()).invoke();
+        return (String) ClassStorage.getMethod(textComponent, ComponentAccessor.METHOD_GET_COLORED_STRING.get()).invoke();
     }
 
 }

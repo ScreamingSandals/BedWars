@@ -20,19 +20,19 @@
 package org.screamingsandals.bedwars.lib.nms.entity;
 
 import org.bukkit.entity.LivingEntity;
-import org.screamingsandals.bedwars.lib.nms.accessors.EntityInsentientAccessor;
-import org.screamingsandals.bedwars.lib.nms.accessors.PathfinderGoalHurtByTargetAccessor;
-import org.screamingsandals.bedwars.lib.nms.accessors.PathfinderGoalNearestAttackableTargetAccessor;
+import org.screamingsandals.bedwars.lib.nms.accessors.HurtByTargetGoalAccessor;
+import org.screamingsandals.bedwars.lib.nms.accessors.MobAccessor;
+import org.screamingsandals.bedwars.lib.nms.accessors.NearestAttackableTargetGoalAccessor;
 import org.screamingsandals.bedwars.lib.nms.utils.ClassStorage;
 
-public class TargetSelector extends Selector {
+public class TargetSelector extends Selector implements HurtByTargetGoalAccessor, NearestAttackableTargetGoalAccessor {
 	
 	public TargetSelector(Object handler) {
-		super(handler, EntityInsentientAccessor.getFieldTargetSelector());
+		super(handler, MobAccessor.FIELD_TARGET_SELECTOR.get());
 	}
 	
 	public TargetSelector attackTarget(LivingEntity target) {
-		ClassStorage.setField(handler, EntityInsentientAccessor.getFieldGoalTarget(), target == null ? null : ClassStorage.getHandle(target));
+		ClassStorage.setField(handler, MobAccessor.FIELD_TARGET.get(), target == null ? null : ClassStorage.getHandle(target));
 		return this;
 	}
 
@@ -44,11 +44,11 @@ public class TargetSelector extends Selector {
 	public TargetSelector attackNearestTarget(int a, Class<?> targetClass) {
 		try {
 			Object targetNear;
-			if (PathfinderGoalNearestAttackableTargetAccessor.getConstructor0() != null) {
-				targetNear = PathfinderGoalNearestAttackableTargetAccessor.getConstructor0()
+			if (NearestAttackableTargetGoalAccessor.CONSTRUCTOR_0.get() != null) {
+				targetNear = NearestAttackableTargetGoalAccessor.CONSTRUCTOR_0.get()
 						.newInstance(handler, targetClass, false);
 			} else {
-				targetNear = PathfinderGoalNearestAttackableTargetAccessor.getConstructor1()
+				targetNear = NearestAttackableTargetGoalAccessor.CONSTRUCTOR_1.get()
 						.newInstance(handler, targetClass, false);
 			}
 			registerPathfinder(a, targetNear);
@@ -60,11 +60,11 @@ public class TargetSelector extends Selector {
 	public TargetSelector hurtByTarget(int a) {
 		try {
 			Object target;
-			if (PathfinderGoalHurtByTargetAccessor.getConstructor0() != null) {
-				target = PathfinderGoalHurtByTargetAccessor.getConstructor0()
+			if (HurtByTargetGoalAccessor.CONSTRUCTOR_0.get() != null) {
+				target = HurtByTargetGoalAccessor.CONSTRUCTOR_0.get()
 						.newInstance(handler, true, new Class[0]);
 			} else {
-				target = PathfinderGoalHurtByTargetAccessor.getConstructor1()
+				target = HurtByTargetGoalAccessor.CONSTRUCTOR_1.get()
 						.newInstance(handler, new Class[0]);
 			}
 			registerPathfinder(a, target);
