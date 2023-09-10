@@ -100,7 +100,6 @@ import org.screamingsandals.lib.tasker.DefaultThreads;
 import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
 import org.screamingsandals.lib.tasker.task.Task;
-import org.screamingsandals.lib.tasker.task.TaskState;
 import org.screamingsandals.lib.utils.ResourceLocation;
 import org.screamingsandals.lib.visuals.Visual;
 import org.screamingsandals.lib.world.Location;
@@ -179,6 +178,7 @@ public class GameImpl implements Game {
     private HealthIndicator healthIndicator = null;
     @Getter
     private final List<Visual<?>> otherVisuals = new ArrayList<>();
+    private final @NotNull List<@NotNull Chunk> chunksWithTickets = new ArrayList<>();
 
     @Getter
     private final GameConfigurationContainerImpl configurationContainer = new GameConfigurationContainerImpl();
@@ -1871,6 +1871,22 @@ public class GameImpl implements Game {
                     teamSelectorInventory = null;
 
                     Tasker.runDelayed(DefaultThreads.GLOBAL_THREAD, this::updateSigns, 3, TaskerTime.TICKS);
+                    if (MainConfig.getInstance().node("use-chunk-tickets-if-available").getBoolean()) {
+                        int minX = Math.min(pos1.getBlockX(), pos2.getBlockX()) >> 4;
+                        int maxX = Math.max(pos1.getBlockX(), pos2.getBlockX()) >> 4;
+
+                        int minZ = Math.min(pos1.getBlockZ(), pos2.getBlockZ()) >> 4;
+                        int maxZ = Math.max(pos1.getBlockZ(), pos2.getBlockZ()) >> 4;
+
+                        for (int x = minX; x <= maxX; x++) {
+                            for (int z = minZ; z <= maxZ; z++) {
+                                var chunk = world.getChunkAt(x, z);
+                                if (chunk != null && chunk.addPluginChunkTicket()) {
+                                    chunksWithTickets.add(chunk);
+                                }
+                            }
+                        }
+                    }
                     for (GameStoreImpl store : gameStore) {
                         var villager = store.spawn();
                         if (villager instanceof LivingEntity) {
@@ -2285,6 +2301,13 @@ public class GameImpl implements Game {
         }
 
         UpgradeRegistry.clearAll(this);
+
+        if (!chunksWithTickets.isEmpty()) {
+            for (var chunk : chunksWithTickets) {
+                chunk.removePluginChunkTicket();
+            }
+            chunksWithTickets.clear();
+        }
 
         EventManager.fire(new PostRebuildingEventImpl(this));
 

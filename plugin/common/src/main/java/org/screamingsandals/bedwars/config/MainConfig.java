@@ -161,6 +161,7 @@ public class MainConfig {
                 .key("allow-fake-death").defValue(false)
                 .key("prefer-1-19-4-display-entities").defValue(true)
                 .key("remember-what-scoreboards-players-had-before").defValue(false)
+                .key("use-chunk-tickets-if-available").defValue(true)
                 .section("kick-players-upon-final-death")
                     .key("enabled").defValue(false)
                     .key("delay").defValue(5)
