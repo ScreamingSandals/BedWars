@@ -1936,6 +1936,9 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                     }
 
                     for (ItemSpawner spawner : spawners) {
+                        spawner.countdownDelay = 0;
+                        spawner.currentCycle = spawner.type.getInterval();
+
                         UpgradeStorage storage = UpgradeRegistry.getUpgrade("spawner");
                         if (storage != null) {
                             storage.addUpgrade(this, spawner);
@@ -2231,12 +2234,25 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                             continue; // team of this spawner is not available. Fix #147
                         }
 
-                        ItemSpawnerType type = spawner.type;
-                        int cycle = type.getInterval();
+                        int cycle = spawner.currentCycle;
                         /*
                          * Calculate resource spawn from elapsedTime, not from remainingTime/countdown
                          */
-                        int elapsedTime = gameTime - countdown;
+                        int elapsedTime = gameTime - countdown - spawner.countdownDelay;
+                        boolean preventSpawn = false;
+
+                        if (Main.getConfigurator().config.getBoolean("reset-full-spawner-countdown-after-picking") && spawner.spawnerLockedFull) {
+                            if (spawner.getMaxSpawnedResources() > spawner.getSpawnedItemsCount()) {
+                                // the spawner is locked, but should now be unlocked
+                                elapsedTime += spawner.countdownDelay;
+                                spawner.countdownDelay = elapsedTime % cycle;
+                                elapsedTime -= spawner.countdownDelay;
+                                spawner.spawnerLockedFull = false;
+                                preventSpawn = true;
+                            } else {
+                                continue;
+                            }
+                        }
 
                         if (spawner.getHologramEnabled()) {
                             if (getOriginalOrInheritedSpawnerHolograms()
@@ -2259,7 +2275,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                             }
                         }
 
-                        if ((elapsedTime % cycle) == 0) {
+                        if (!preventSpawn && (elapsedTime % cycle) == 0) {
                             int calculatedStack = 1;
                             double currentLevel = spawner.getCurrentLevel();
                             calculatedStack = (int) currentLevel;
@@ -2272,6 +2288,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                                 }
                             }
 
+                            ItemSpawnerType type = spawner.type;
                             BedwarsResourceSpawnEvent resourceSpawnEvent = new BedwarsResourceSpawnEvent(this, spawner,
                                     type.getStack(calculatedStack));
                             Main.getInstance().getServer().getPluginManager().callEvent(resourceSpawnEvent);
