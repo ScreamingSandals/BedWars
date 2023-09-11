@@ -2242,6 +2242,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                         boolean preventSpawn = false;
 
                         if (Main.getConfigurator().config.getBoolean("reset-full-spawner-countdown-after-picking") && spawner.spawnerLockedFull) {
+                            spawner.flushDeathItems();
                             if (spawner.getMaxSpawnedResources() > spawner.getSpawnedItemsCount()) {
                                 // the spawner is locked, but should now be unlocked
                                 elapsedTime += spawner.countdownDelay;

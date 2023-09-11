@@ -131,9 +131,8 @@ public class ItemSpawner implements org.screamingsandals.bedwars.api.game.ItemSp
     		}
     		return calculated;
     	}
-    	
-    	/* Update spawned items */
-        spawnedItems.removeIf(Entity::isDead);
+
+        flushDeathItems();
     	
     	int spawned = getSpawnedItemsCount();
     	
@@ -183,6 +182,11 @@ public class ItemSpawner implements org.screamingsandals.bedwars.api.game.ItemSp
     			rerenderHologram = true;
     		}
     	}
+    }
+
+    public void flushDeathItems() {
+        /* Update spawned items */
+        spawnedItems.removeIf(Entity::isDead);
     }
 
     /**
