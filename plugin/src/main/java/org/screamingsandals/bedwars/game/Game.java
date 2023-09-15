@@ -2137,90 +2137,98 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                 }
                 if (runningTeams <= 1) {
                     if (runningTeams == 1) {
-                        CurrentTeam winner = null;
-                        for (CurrentTeam t : teamsInGame) {
-                            if (t.isAlive()) {
-                                winner = t;
-                                String time = getFormattedTimeLeft(gameTime - countdown);
-                                String message = i18nc("team_win", customPrefix)
-                                        .replace("%team%", TeamColor.fromApiColor(t.getColor()).chatColor + t.getName())
-                                        .replace("%time%", time);
-                                String subtitle = i18n("team_win", false)
-                                        .replace("%team%", TeamColor.fromApiColor(t.getColor()).chatColor + t.getName())
-                                        .replace("%time%", time);
-                                boolean madeRecord = processRecord(t, gameTime - countdown);
-                                for (GamePlayer player : players) {
-                                    player.player.sendMessage(message);
-                                    if (getPlayerTeam(player) == t) {
-                                        Title.send(player.player, i18nonly("you_won"), subtitle);
-                                        Main.depositPlayer(player.player, Main.getVaultWinReward());
+                        if (gameTime - countdown < Main.getConfigurator().config.getInt("players-can-win-game-only-after-seconds")) {
+                            for (GamePlayer player : players) {
+                                Title.send(player.player, i18n("you_lost", false), i18n("game_ended_too_early", false));
+                            }
 
-                                        SpawnEffects.spawnEffect(this, player.player, "game-effects.end");
+                            BedwarsGameEndingEvent endingEvent = new BedwarsGameEndingEvent(this, null);
+                            Bukkit.getPluginManager().callEvent(endingEvent);
+                        } else {
+                            CurrentTeam winner = null;
+                            for (CurrentTeam t : teamsInGame) {
+                                if (t.isAlive()) {
+                                    winner = t;
+                                    String time = getFormattedTimeLeft(gameTime - countdown);
+                                    String message = i18nc("team_win", customPrefix)
+                                            .replace("%team%", TeamColor.fromApiColor(t.getColor()).chatColor + t.getName())
+                                            .replace("%time%", time);
+                                    String subtitle = i18n("team_win", false)
+                                            .replace("%team%", TeamColor.fromApiColor(t.getColor()).chatColor + t.getName())
+                                            .replace("%time%", time);
+                                    boolean madeRecord = processRecord(t, gameTime - countdown);
+                                    for (GamePlayer player : players) {
+                                        player.player.sendMessage(message);
+                                        if (getPlayerTeam(player) == t) {
+                                            Title.send(player.player, i18nonly("you_won"), subtitle);
+                                            Main.depositPlayer(player.player, Main.getVaultWinReward());
 
-                                        if (Main.isPlayerStatisticsEnabled()) {
-                                            PlayerStatistic statistic = Main.getPlayerStatisticsManager()
-                                                    .getStatistic(player.player);
-                                            statistic.addWins(1);
-                                            statistic.addScore(Main.getConfigurator().config.getInt("statistics.scores.win", 50));
+                                            SpawnEffects.spawnEffect(this, player.player, "game-effects.end");
 
-                                            if (madeRecord) {
-                                                statistic.addScore(Main.getConfigurator().config.getInt("statistics.scores.record", 100));
-                                            }
-
-                                            if (Main.isHologramsEnabled()) {
-                                                Main.getHologramInteraction().updateHolograms(player.player);
-                                            }
-
-                                            if (Main.getConfigurator().config
-                                                    .getBoolean("statistics.show-on-game-end")) {
-                                                StatsCommand.sendStats(player.player, Main.getPlayerStatisticsManager().getStatistic(player.player));
-                                            }
-
-                                        }
-
-                                        if (Main.getConfigurator().config.getBoolean("rewards.enabled")) {
                                             if (Main.isPlayerStatisticsEnabled()) {
                                                 PlayerStatistic statistic = Main.getPlayerStatisticsManager()
                                                         .getStatistic(player.player);
-                                                Game.this.dispatchRewardCommands("player-win-run-immediately", player.player,
-                                                        statistic.getScore());
-                                            } else {
-                                                Game.this.dispatchRewardCommands("player-win-run-immediately", player.player, 0);
-                                            }
+                                                statistic.addWins(1);
+                                                statistic.addScore(Main.getConfigurator().config.getInt("statistics.scores.win", 50));
 
-                                            final Player pl = player.player;
-                                            new BukkitRunnable() {
-
-                                                @Override
-                                                public void run() {
-                                                    if (Main.isPlayerStatisticsEnabled()) {
-                                                        PlayerStatistic statistic = Main.getPlayerStatisticsManager()
-                                                                .getStatistic(player.player);
-                                                        Game.this.dispatchRewardCommands("player-win", pl,
-                                                                statistic.getScore());
-                                                    } else {
-                                                        Game.this.dispatchRewardCommands("player-win", pl, 0);
-                                                    }
+                                                if (madeRecord) {
+                                                    statistic.addScore(Main.getConfigurator().config.getInt("statistics.scores.record", 100));
                                                 }
 
-                                            }.runTaskLater(Main.getInstance(), (2 + postGameWaiting) * 20);
-                                        }
-                                    } else {
-                                        Title.send(player.player, i18n("you_lost", false), subtitle);
+                                                if (Main.isHologramsEnabled()) {
+                                                    Main.getHologramInteraction().updateHolograms(player.player);
+                                                }
 
-                                        if (Main.isPlayerStatisticsEnabled() && Main.isHologramsEnabled()) {
-                                            Main.getHologramInteraction().updateHolograms(player.player);
+                                                if (Main.getConfigurator().config
+                                                        .getBoolean("statistics.show-on-game-end")) {
+                                                    StatsCommand.sendStats(player.player, Main.getPlayerStatisticsManager().getStatistic(player.player));
+                                                }
+
+                                            }
+
+                                            if (Main.getConfigurator().config.getBoolean("rewards.enabled")) {
+                                                if (Main.isPlayerStatisticsEnabled()) {
+                                                    PlayerStatistic statistic = Main.getPlayerStatisticsManager()
+                                                            .getStatistic(player.player);
+                                                    Game.this.dispatchRewardCommands("player-win-run-immediately", player.player,
+                                                            statistic.getScore());
+                                                } else {
+                                                    Game.this.dispatchRewardCommands("player-win-run-immediately", player.player, 0);
+                                                }
+
+                                                final Player pl = player.player;
+                                                new BukkitRunnable() {
+
+                                                    @Override
+                                                    public void run() {
+                                                        if (Main.isPlayerStatisticsEnabled()) {
+                                                            PlayerStatistic statistic = Main.getPlayerStatisticsManager()
+                                                                    .getStatistic(player.player);
+                                                            Game.this.dispatchRewardCommands("player-win", pl,
+                                                                    statistic.getScore());
+                                                        } else {
+                                                            Game.this.dispatchRewardCommands("player-win", pl, 0);
+                                                        }
+                                                    }
+
+                                                }.runTaskLater(Main.getInstance(), (2 + postGameWaiting) * 20);
+                                            }
+                                        } else {
+                                            Title.send(player.player, i18n("you_lost", false), subtitle);
+
+                                            if (Main.isPlayerStatisticsEnabled() && Main.isHologramsEnabled()) {
+                                                Main.getHologramInteraction().updateHolograms(player.player);
+                                            }
                                         }
                                     }
+                                    break;
                                 }
-                                break;
                             }
+
+                            BedwarsGameEndingEvent endingEvent = new BedwarsGameEndingEvent(this, winner);
+                            Bukkit.getPluginManager().callEvent(endingEvent);
                         }
-
-                        BedwarsGameEndingEvent endingEvent = new BedwarsGameEndingEvent(this, winner);
-                        Bukkit.getPluginManager().callEvent(endingEvent);
                         Main.getInstance().getServer().getPluginManager().callEvent(statusE);
-
                         tick.setNextCountdown(postGameWaiting);
                         tick.setNextStatus(GameStatus.GAME_END_CELEBRATING);
                     } else {
