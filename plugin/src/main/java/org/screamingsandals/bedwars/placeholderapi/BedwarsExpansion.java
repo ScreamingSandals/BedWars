@@ -323,4 +323,8 @@ public class BedwarsExpansion extends PlaceholderExpansion {
         return null;
     }
 
+    @Override
+    public boolean persist() {
+        return true;
+    }
 }
