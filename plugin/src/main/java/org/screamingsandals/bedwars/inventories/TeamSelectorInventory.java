@@ -34,6 +34,7 @@ import org.screamingsandals.bedwars.game.GamePlayer;
 import org.screamingsandals.bedwars.game.Team;
 import org.screamingsandals.simpleinventories.SimpleInventories;
 import org.screamingsandals.simpleinventories.builder.FormatBuilder;
+import org.screamingsandals.simpleinventories.events.CloseInventoryEvent;
 import org.screamingsandals.simpleinventories.events.PostActionEvent;
 import org.screamingsandals.simpleinventories.inventory.GuiHolder;
 import org.screamingsandals.simpleinventories.inventory.Options;
@@ -45,16 +46,14 @@ import java.util.List;
 import static org.screamingsandals.bedwars.lib.lang.I18n.i18nonly;
 
 public class TeamSelectorInventory implements Listener {
-    private Player inventoryHolder;
     private Game game;
     private SimpleInventories simpleGuiFormat;
     private Options options;
     private List<Player> openedForPlayers = new ArrayList<>();
 
 
-    public TeamSelectorInventory(Main plugin, Game game, Player inventoryHolder) {
+    public TeamSelectorInventory(Main plugin, Game game) {
         this.game = game;
-        this.inventoryHolder = inventoryHolder;
 
         options = new Options(Main.getInstance());
         options.setPrefix(i18nonly("team_selection_name", "Select team - %arena%").replace("%arena%", game.getName()));
@@ -77,16 +76,17 @@ public class TeamSelectorInventory implements Listener {
         HandlerList.unregisterAll(this);
     }
 
-    public void openForPlayer() {
-        BedwarsOpenTeamSelectionEvent event = new BedwarsOpenTeamSelectionEvent(this.game, inventoryHolder);
+    public void openForPlayer(Player player) {
+        BedwarsOpenTeamSelectionEvent event = new BedwarsOpenTeamSelectionEvent(this.game, player);
         Main.getInstance().getServer().getPluginManager().callEvent(event);
 
         if (event.isCancelled()) {
             return;
         }
 
-        createData();
-        simpleGuiFormat.openForPlayer(inventoryHolder);
+        repaint();
+        openedForPlayers.add(player);
+        simpleGuiFormat.openForPlayer(player);
     }
 
     private void createData() {
@@ -140,20 +140,16 @@ public class TeamSelectorInventory implements Listener {
         return loreList;
     }
 
-    public void notifyNewPlayerOpened(Player player) {
-        if (!openedForPlayers.contains(player)) {
-            openedForPlayers.add(player);
-        }
-    }
-
     private void repaint() {
-        for (Player pl : openedForPlayers) {
+        createData();
+
+        for (Player pl : new ArrayList<>(openedForPlayers)) {
             GuiHolder guiHolder = simpleGuiFormat.getCurrentGuiHolder(pl);
             if (guiHolder == null) {
-                return;
+                openedForPlayers.remove(pl);
+                continue;
             }
 
-            createData();
             guiHolder.setFormat(simpleGuiFormat);
             guiHolder.repaint();
         }
@@ -165,25 +161,35 @@ public class TeamSelectorInventory implements Listener {
             return;
         }
 
-        openedForPlayers.remove(event.getPlayer());
-        if (!inventoryHolder.equals(event.getPlayer())) {
+        Player player = event.getPlayer();
+        if (!openedForPlayers.contains(player)) {
             return;
         }
 
         MapReader reader = event.getItem().getReader();
         if (reader.containsKey("team")) {
             Team team = (Team) reader.get("team");
-            game.selectTeam(Main.getPlayerGameProfile(inventoryHolder), team.getName());
-            inventoryHolder.closeInventory();
+            game.selectTeam(Main.getPlayerGameProfile(player), team.getName());
+            openedForPlayers.remove(player);
+            player.closeInventory();
 
             repaint();
         }
     }
 
     @EventHandler
+    public void onInventoryClose(CloseInventoryEvent event) {
+        if (event.getFormat() != simpleGuiFormat) {
+            return;
+        }
+
+        openedForPlayers.remove(event.getPlayer());
+    }
+
+    @EventHandler
     public void onPlayerLeave(BedwarsPlayerLeaveEvent event) {
         openedForPlayers.remove(event.getPlayer());
-        if (event.getGame() != game || !inventoryHolder.equals(event.getPlayer())) {
+        if (event.getGame() != game) {
             return;
         }
         repaint();

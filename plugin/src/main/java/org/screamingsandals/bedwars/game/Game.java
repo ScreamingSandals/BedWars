@@ -233,7 +233,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     private Map<GamePlayer, Inventory> fakeEnderChests = new HashMap<>();
     private int postGameWaiting = 3;
     private boolean preparing = false;
-    private Map<UUID, TeamSelectorInventory> teamSelectorInventories = new HashMap();
+    private TeamSelectorInventory teamSelectorInventory;
     private List<Chunk> chunksWithTickets = new ArrayList<>();
 
     private Game() {
@@ -370,22 +370,17 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
         this.gameStore = gameStore;
     }
 
-    public TeamSelectorInventory getTeamSelectorInventory(Player player) {
-        UUID uuid = player.getUniqueId();
-        if (teamSelectorInventories.containsKey(uuid)) {
-            return teamSelectorInventories.get(uuid);
+    public TeamSelectorInventory getTeamSelectorInventory() {
+        if (teamSelectorInventory == null) {
+            teamSelectorInventory = new TeamSelectorInventory(Main.getInstance(), this);
         }
-
-        TeamSelectorInventory inventory = new TeamSelectorInventory(Main.getInstance(), this, player);
-        teamSelectorInventories.put(player.getUniqueId(), inventory);
-        return inventory;
+        return teamSelectorInventory;
     }
 
     public void openTeamSelectorInventory(Player player) {
-        final TeamSelectorInventory inventory = getTeamSelectorInventory(player);
+        final TeamSelectorInventory inventory = getTeamSelectorInventory();
         if (inventory != null) {
-            inventory.openForPlayer();
-            teamSelectorInventories.values().forEach(inv -> inv.notifyNewPlayerOpened(player));
+            inventory.openForPlayer(player);
         }
     }
 
@@ -856,12 +851,6 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
             Main.getTabManager().clear(gamePlayer);
             players.forEach(Main.getTabManager()::modifyForPlayer);
         }
-
-        final TeamSelectorInventory inventory = teamSelectorInventories.get(gamePlayer.player.getUniqueId());
-        if (inventory != null) {
-            inventory.destroy();
-        }
-        teamSelectorInventories.remove(gamePlayer.player.getUniqueId());
 
         if (Main.getConfigurator().config.getBoolean("tab.enable") && Main.getConfigurator().config.getBoolean("tab.hide-foreign-players")) {
             players.forEach(p -> p.hidePlayer(gamePlayer.player));
@@ -1747,9 +1736,6 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                     bossBar18.setViaStyle(Main.getConfigurator().config.getString("bossbar.lobby.style"));
                 }
             }
-           // if (teamSelectorInventory == null) {
-           //     teamSelectorInventory = new TeamSelectorInventory(Main.getInstance(), this);
-           // }
             updateSigns();
         }
 
@@ -1897,8 +1883,8 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
                         }
                     }
 
-                    teamSelectorInventories.values().forEach(TeamSelectorInventory::destroy);
-                    teamSelectorInventories.clear();
+                    teamSelectorInventory.destroy();
+                    teamSelectorInventory = null;
 
                     if (gameScoreboard.getObjective("lobby") != null) {
                         gameScoreboard.getObjective("lobby").unregister();
