@@ -69,11 +69,11 @@ accessors {
         getter double, 'z'
         getter float, 'xRot'
         getter float, 'yRot'
-        method boolean, 'isCustomNameVisible'
+        getter boolean, 'customNameVisible'
         setter boolean, 'customNameVisible'
-        method boolean, 'isInvisible'
+        getter boolean, 'invisible'
         setter boolean, 'invisible'
-        method boolean, 'isNoGravity'
+        getter boolean, 'noGravity'
         setter boolean, 'noGravity'
         // old
         field float, 'yRot'
@@ -85,13 +85,13 @@ accessors {
     }
     mapClass('net.minecraft.world.entity.decoration.ArmorStand') {
         constructor Level, double, double, double
-        method boolean, 'isSmall'
+        getter boolean, 'small'
         setter boolean, 'small'
-        method boolean, 'isShowArms'
+        getter boolean, 'showArms'
         setter boolean, 'showArms'
-        method boolean, 'isNoBasePlate'
+        getter boolean, 'noBasePlate'
         setter boolean, 'noBasePlate'
-        method boolean, 'isMarker'
+        getter boolean, 'marker'
         setter boolean, 'marker'
     }
     var PathfinderMob = mapClass 'net.minecraft.world.entity.PathfinderMob'
