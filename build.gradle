@@ -18,6 +18,11 @@ if (version.toString().endsWith('-SNAPSHOT')) {
 subprojects {
     System.setProperty("JavadocUploadCustomDirectoryPath", "sbw-0-2-x")
     apply plugin: 'java'
+
+    if (project.name != 'BedWars-API' && project.name != 'BedWars') { // upload only BW and BW-API
+        project.ext.disablePublishingToMaven = true
+    }
+
     apply plugin: 'org.screamingsandals.plugin-builder'
 
     repositories {
