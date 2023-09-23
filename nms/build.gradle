@@ -6,7 +6,7 @@ import java.util.function.Supplier
 apply plugin: 'me.kcra.takenaka.accessor'
 
 dependencies {
-    mappingBundle "me.kcra.takenaka:mappings:1.8.8+1.20.1-SNAPSHOT"
+    mappingBundle "me.kcra.takenaka:mappings:1.8.8+1.20.2"
     api "me.kcra.takenaka:generator-accessor-runtime:${BuildConfig.BUILD_VERSION}"
 }
 
@@ -15,7 +15,7 @@ dependencies {
 accessors {
     // uncomment this and remove the mappingBundle dependency,
     // if you want to develop against custom versions
-    /*versionRange('1.8.8', '1.20.1') {
+    /*versionRange('1.8.8', '1.20.2') {
         // exclude 1.16 and 1.10.1, they don't have most mappings and are basically not used at all
         // exclude 1.8.9, client-only update - no Spigot mappings, no thank you
         // exclude 1.9.1 and 1.9.3 - no mappings at all
@@ -128,9 +128,13 @@ accessors {
         field 'io.netty.channel.Channel', 'channel'
     }
     var ServerGamePacketListenerImpl = mapClass('net.minecraft.server.network.ServerGamePacketListenerImpl') {
+        field Connection, 'connection' // <= 1.20.1
+        method void, 'send', Packet // <= 1.20.1
+        method void, 'handleClientCommand', ServerboundClientCommandPacket
+    }
+    mapClass('net.minecraft.server.network.ServerCommonPacketListenerImpl') { // 1.20.2+
         field Connection, 'connection'
         method void, 'send', Packet
-        method void, 'handleClientCommand', ServerboundClientCommandPacket
     }
     mapClass('net.minecraft.server.level.ServerPlayer') {
         field ServerGamePacketListenerImpl, 'connection'

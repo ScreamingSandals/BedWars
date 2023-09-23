@@ -24,6 +24,7 @@ import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import org.bukkit.entity.Player;
 import org.screamingsandals.bedwars.lib.nms.accessors.ConnectionAccessor;
+import org.screamingsandals.bedwars.lib.nms.accessors.ServerCommonPacketListenerImplAccessor;
 import org.screamingsandals.bedwars.lib.nms.accessors.ServerGamePacketListenerImplAccessor;
 
 import static org.screamingsandals.bedwars.lib.nms.utils.ClassStorage.getField;
@@ -69,7 +70,12 @@ public abstract class PacketInboundListener implements ServerGamePacketListenerI
 	
 	private Channel getChannel(Player player) {
 		try {
-			Object manager = getField(getPlayerConnection(player), FIELD_CONNECTION.get());
+			Object manager;
+			if (ServerCommonPacketListenerImplAccessor.FIELD_CONNECTION.get() != null) {
+				manager = getField(getPlayerConnection(player), ServerCommonPacketListenerImplAccessor.FIELD_CONNECTION.get());
+			} else {
+				manager = getField(getPlayerConnection(player), FIELD_CONNECTION.get());
+			}
 			Channel channel = (Channel) getField(manager, ConnectionAccessor.FIELD_CHANNEL.get());
 			return channel;
 		} catch (Throwable t) {

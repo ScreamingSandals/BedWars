@@ -259,7 +259,11 @@ public class ClassStorage {
 		}
 		Object connection = getPlayerConnection(player);
 		if (connection != null) {
-			getMethod(connection, ServerGamePacketListenerImplAccessor.METHOD_SEND.get()).invoke(packet);
+			if (ServerCommonPacketListenerImplAccessor.METHOD_SEND.get() != null) {
+				getMethod(connection, ServerCommonPacketListenerImplAccessor.METHOD_SEND.get()).invoke(packet);
+			} else {
+				getMethod(connection, ServerGamePacketListenerImplAccessor.METHOD_SEND.get()).invoke(packet);
+			}
 			return true;
 		}
 		return false;

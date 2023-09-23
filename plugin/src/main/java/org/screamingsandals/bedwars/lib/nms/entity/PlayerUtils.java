@@ -43,7 +43,11 @@ public class PlayerUtils {
 						Object packet = ServerboundClientCommandPacketAccessor.CONSTRUCTOR_0.get()
 							.newInstance(selectedObj);
 						Object connection = getPlayerConnection(player);
-						getMethod(connection, ServerGamePacketListenerImplAccessor.METHOD_SEND.get()).invoke(packet);
+						if (ServerCommonPacketListenerImplAccessor.METHOD_SEND.get() != null) {
+							getMethod(connection, ServerCommonPacketListenerImplAccessor.METHOD_SEND.get()).invoke(packet);
+						} else {
+							getMethod(connection, ServerGamePacketListenerImplAccessor.METHOD_SEND.get()).invoke(packet);
+						}
 					} catch (Throwable ignored) {
 						t.printStackTrace();
 					}
