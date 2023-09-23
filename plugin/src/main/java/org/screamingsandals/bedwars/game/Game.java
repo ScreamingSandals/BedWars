@@ -3520,7 +3520,7 @@ public class Game implements org.screamingsandals.bedwars.api.game.Game {
     @Override
     public boolean isEntityShop(Entity entity) {
         for (GameStore store : gameStore) {
-            if (store.getEntity().equals(entity)) {
+            if (entity.equals(store.getEntity())) {
                 return true;
             }
         }
